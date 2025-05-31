@@ -1,0 +1,1 @@
+export { TrainingScreen } from "./TrainingScreen";

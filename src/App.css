@@ -173,3 +173,150 @@ body {
     image-rendering: crisp-edges;
   }
 }
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #000a12 0%, #001a25 100%);
+  color: #ffffff;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  overflow: hidden;
+}
+
+.app-header {
+  padding: 1rem 2rem;
+  background: rgba(0, 10, 18, 0.9);
+  border-bottom: 2px solid #ffd700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+}
+
+.app-title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.korean-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.english-title {
+  font-size: 1rem;
+  color: #87ceeb;
+  font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.app-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.phase-indicator,
+.time-indicator {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.phase-indicator {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  border: 1px solid #ffd700;
+}
+
+.time-indicator {
+  background: rgba(135, 206, 235, 0.2);
+  color: #87ceeb;
+  border: 1px solid #87ceeb;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.app-debug {
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  font-family: "Courier New", monospace;
+  font-size: 0.8rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.app-debug summary {
+  padding: 0.5rem;
+  cursor: pointer;
+  background: rgba(0, 255, 0, 0.1);
+  border-bottom: 1px solid #00ff00;
+}
+
+.app-debug pre {
+  padding: 1rem;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0.5rem 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .korean-title {
+    font-size: 1.4rem;
+  }
+
+  .english-title {
+    font-size: 0.9rem;
+  }
+
+  .app-status {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+
+/* Korean traditional design elements */
+.app::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      rgba(255, 215, 0, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(135, 206, 235, 0.05) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Ensure Korean fonts load properly */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap");

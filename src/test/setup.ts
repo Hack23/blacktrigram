@@ -10,26 +10,38 @@ export const extendSpy = vi.fn();
 vi.mock("@pixi/react", async () => {
   return {
     extend: extendSpy,
-    Application: ({ children, ...props }: any): ReactElement => {
+    Stage: ({ children, ...props }: any): ReactElement => {
       return React.createElement(
         "div",
         {
-          "data-testid": "pixi-application",
-          "data-width": props.width?.toString(),
-          "data-height": props.height?.toString(),
-          "data-background-color": props.backgroundColor?.toString(),
-          "data-antialias": props.antialias?.toString(),
+          "data-testid": "pixi-stage",
           ...props,
         },
         children
       );
     },
     Container: ({ children, ...props }: any): ReactElement => {
+      // Fix: Handle onPointerDown properly in tests
+      const { onPointerDown, ...otherProps } = props;
+
+      const handleClick = () => {
+        if (onPointerDown) {
+          // Mock FederatedPointerEvent for tests
+          const mockEvent = {
+            preventDefault: vi.fn(),
+            stopPropagation: vi.fn(),
+            target: null,
+          };
+          onPointerDown(mockEvent);
+        }
+      };
+
       return React.createElement(
         "div",
         {
           "data-testid": "pixi-container",
-          ...props,
+          onClick: onPointerDown ? handleClick : undefined,
+          ...otherProps,
         },
         children
       );
@@ -49,6 +61,7 @@ vi.mock("@pixi/react", async () => {
           fill: vi.fn(),
           stroke: vi.fn(),
           closePath: vi.fn(),
+          lineStyle: vi.fn(),
         };
         try {
           draw(mockGraphics);
@@ -63,117 +76,49 @@ vi.mock("@pixi/react", async () => {
       });
     },
     Text: ({ text, style, ...props }: any): ReactElement => {
+      return React.createElement(
+        "div",
+        {
+          "data-testid": "pixi-text",
+          "data-text": text,
+          ...props,
+        },
+        text
+      );
+    },
+    Sprite: ({ ...props }: any): ReactElement => {
       return React.createElement("div", {
-        "data-testid": "pixi-text",
-        "data-text": text,
-        "data-font-family": style?.fontFamily,
-        "data-font-size": style?.fontSize?.toString(),
-        "data-fill": style?.fill?.toString(),
+        "data-testid": "pixi-sprite",
         ...props,
       });
     },
     useTick: vi.fn(),
+    useApp: vi.fn(() => ({
+      stage: { addChild: vi.fn(), removeChild: vi.fn() },
+      renderer: { render: vi.fn() },
+    })),
+    PixiComponent: vi.fn(),
   };
 });
 
-// Create comprehensive Howler mock with all required methods
-const mockHowlInstance = {
-  play: vi.fn().mockReturnValue(1),
-  stop: vi.fn(),
-  volume: vi.fn(),
-  fade: vi.fn(),
-  playing: vi.fn().mockReturnValue(false),
-  unload: vi.fn(),
-  rate: vi.fn(),
-  seek: vi.fn(),
-  duration: vi.fn().mockReturnValue(100),
-  state: vi.fn().mockReturnValue("loaded"),
-};
-
-const mockHowlerGlobal = {
-  volume: vi.fn(),
-  mute: vi.fn(),
-  stop: vi.fn(),
-  codecs: vi.fn().mockReturnValue(true),
-  state: vi.fn().mockReturnValue("loaded"),
-  ctx: {
-    createGain: vi.fn().mockReturnValue({
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      gain: {
-        value: 1,
-        setValueAtTime: vi.fn(),
-      },
-    }),
-    createGainNode: vi.fn().mockReturnValue({
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      gain: {
-        value: 1,
-        setValueAtTime: vi.fn(),
-      },
-    }),
-    destination: {},
-    currentTime: 0,
+// Mock audio for tests
+vi.mock("../audio/AudioManager", () => ({
+  useAudio: vi.fn(() => ({
+    playMusic: vi.fn(),
+    playSFX: vi.fn(),
+    playAttackSound: vi.fn(),
+    playHitSound: vi.fn(),
+    setMasterVolume: vi.fn(),
+    getMasterVolume: vi.fn(() => 0.7),
+    isEnabled: vi.fn(() => true),
+  })),
+  audioManager: {
+    playMusic: vi.fn(),
+    playSFX: vi.fn(),
+    playAttackSound: vi.fn(),
+    playHitSound: vi.fn(),
   },
-  masterGain: {
-    connect: vi.fn(),
-    gain: {
-      value: 1,
-      setValueAtTime: vi.fn(),
-    },
-  },
-  usingWebAudio: false, // Disable WebAudio to avoid complex mocking
-  _muted: false,
-  _volume: 1,
-};
-
-// Mock Howler before any imports
-vi.mock("howler", () => ({
-  Howl: vi.fn().mockImplementation(() => mockHowlInstance),
-  Howler: mockHowlerGlobal,
 }));
-
-// Mock AudioContext more thoroughly
-const mockAudioContext = {
-  createGain: vi.fn().mockReturnValue({
-    connect: vi.fn(),
-    disconnect: vi.fn(),
-    gain: {
-      value: 1,
-      setValueAtTime: vi.fn(),
-    },
-  }),
-  createGainNode: vi.fn().mockReturnValue({
-    connect: vi.fn(),
-    disconnect: vi.fn(),
-    gain: {
-      value: 1,
-      setValueAtTime: vi.fn(),
-    },
-  }),
-  createOscillator: vi.fn().mockReturnValue({
-    connect: vi.fn(),
-    start: vi.fn(),
-    stop: vi.fn(),
-    frequency: { value: 440 },
-  }),
-  destination: {},
-  state: "running",
-  currentTime: 0,
-  resume: vi.fn().mockResolvedValue(undefined),
-  suspend: vi.fn().mockResolvedValue(undefined),
-  close: vi.fn().mockResolvedValue(undefined),
-};
-
-// Override global constructors with proper typing
-(globalThis as any).AudioContext = vi
-  .fn()
-  .mockImplementation(() => mockAudioContext);
-Object.defineProperty(window, "webkitAudioContext", {
-  writable: true,
-  value: vi.fn().mockImplementation(() => mockAudioContext),
-});
 
 // Enhanced global test setup
 beforeAll(() => {

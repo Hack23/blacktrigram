@@ -1,151 +1,143 @@
-import type { JSX } from "react";
-import type { Graphics as PixiGraphics } from "pixi.js";
-
-export type TrigramStance =
-  | "geon"
-  | "tae"
-  | "li"
-  | "jin"
-  | "son"
-  | "gam"
-  | "gan"
-  | "gon";
-
-interface ProgressTrackerProps {
-  readonly practiceCount: Record<TrigramStance, number>;
-  readonly totalPractices: number;
-  readonly currentStance: TrigramStance;
-}
-
-const COLORS = {
-  CYAN: 0x00ffd0,
-  WHITE: 0xffffff,
-  DARK_BLUE: 0x000a12,
-  VITAL_ORANGE: 0xff7700,
-  GRAY_MEDIUM: 0x666666,
-} as const;
+import {
+  KOREAN_COLORS,
+  KOREAN_FONT_FAMILY,
+  TRIGRAM_DATA,
+  type ProgressTrackerProps,
+} from "../../types";
 
 export function ProgressTracker({
-  practiceCount,
-  totalPractices,
+  label,
+  current,
+  maximum,
   currentStance,
-}: ProgressTrackerProps): JSX.Element {
-  const completedStances = Object.values(practiceCount).filter(
-    (count) => count >= 10
-  ).length;
-  const overallProgress = Math.round((completedStances / 8) * 100);
+}: ProgressTrackerProps): React.ReactElement {
+  const percentage = Math.round((current / maximum) * 100);
+  const barColor = currentStance
+    ? `#${TRIGRAM_DATA[currentStance].color.toString(16).padStart(6, "0")}`
+    : `#${KOREAN_COLORS.CYAN.toString(16).padStart(6, "0")}`;
 
   return (
-    <pixiContainer
-      x={window.innerWidth - 250}
-      y={200}
-      data-testid="progress-tracker"
+    <div
+      className="progress-tracker"
+      style={{
+        marginBottom: "0.8rem",
+        width: "100%",
+        color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
+        fontFamily: KOREAN_FONT_FAMILY,
+      }}
     >
-      {/* Background panel */}
-      <pixiGraphics
-        draw={(g: PixiGraphics) => {
-          g.clear();
-          g.setFillStyle({ color: COLORS.DARK_BLUE, alpha: 0.8 });
-          g.roundRect(-10, -10, 220, 150, 10);
-          g.fill();
-
-          g.setStrokeStyle({ color: COLORS.CYAN, width: 2, alpha: 0.6 });
-          g.roundRect(-10, -10, 220, 150, 10);
-          g.stroke();
-        }}
-        data-testid="progress-background"
-      />
-
-      {/* Title */}
-      <pixiText
-        text="수련 진행도"
-        anchor={{ x: 0.5, y: 0.5 }}
-        x={100}
-        y={10}
+      {/* Label */}
+      <div
+        className="progress-label"
         style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 16,
-          fill: COLORS.CYAN,
-          fontWeight: "bold",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "0.3rem",
         }}
-        data-testid="progress-title"
-      />
+      >
+        <span
+          style={{
+            fontSize: "0.8rem",
+            color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
+            fontFamily: KOREAN_FONT_FAMILY,
+            fontWeight: "bold",
+          }}
+        >
+          {label}
+        </span>
 
-      {/* Current stance */}
-      <pixiText
-        text={`현재 자세: ${currentStance.toUpperCase()}`}
-        anchor={{ x: 0, y: 0.5 }}
-        x={10}
-        y={40}
+        <span
+          style={{
+            fontSize: "0.75rem",
+            color: `#${KOREAN_COLORS.GRAY_LIGHT.toString(16).padStart(6, "0")}`,
+            fontFamily: KOREAN_FONT_FAMILY,
+          }}
+        >
+          {current}/{maximum}
+        </span>
+      </div>
+
+      {/* Progress Bar */}
+      <div
         style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 12,
-          fill: COLORS.WHITE,
+          width: "100%",
+          height: "12px",
+          background: `#${KOREAN_COLORS.GRAY_DARK.toString(16).padStart(
+            6,
+            "0"
+          )}`,
+          borderRadius: "6px",
+          border: `1px solid #${KOREAN_COLORS.GOLD.toString(16).padStart(
+            6,
+            "0"
+          )}`,
+          overflow: "hidden",
+          position: "relative",
         }}
-        data-testid="current-stance"
-      />
+      >
+        {/* Progress Fill */}
+        <div
+          style={{
+            width: `${percentage}%`,
+            height: "100%",
+            background: `linear-gradient(90deg, ${barColor}, ${barColor}dd)`,
+            borderRadius: "5px",
+            transition: "width 0.3s ease",
+            position: "relative",
+          }}
+        >
+          {/* Glow effect for full bars */}
+          {percentage > 90 && (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: `linear-gradient(90deg, transparent, ${barColor}44, transparent)`,
+                animation: "pulse 2s infinite",
+              }}
+            />
+          )}
+        </div>
 
-      {/* Total practices */}
-      <pixiText
-        text={`총 연습: ${totalPractices}회`}
-        anchor={{ x: 0, y: 0.5 }}
-        x={10}
-        y={60}
+        {/* Low value warning */}
+        {percentage < 25 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: `linear-gradient(90deg, #${KOREAN_COLORS.Red.toString(
+                16
+              ).padStart(6, "0")}44, transparent)`,
+              animation: "pulse 1s infinite",
+            }}
+          />
+        )}
+      </div>
+
+      {/* Stance indicator if applicable */}
+      <div
+        className="progress-info"
         style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 12,
-          fill: COLORS.WHITE,
+          marginTop: "0.2rem",
+          fontSize: "0.7rem",
+          color: `#${KOREAN_COLORS.CYAN.toString(16).padStart(6, "0")}`,
+          fontFamily: KOREAN_FONT_FAMILY,
         }}
-        data-testid="total-practices"
-      />
-
-      {/* Overall progress */}
-      <pixiText
-        text={`전체 진행도: ${overallProgress}%`}
-        anchor={{ x: 0, y: 0.5 }}
-        x={10}
-        y={80}
-        style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 12,
-          fill: COLORS.VITAL_ORANGE,
-          fontWeight: "bold",
-        }}
-        data-testid="progress-percentage"
-      />
-
-      {/* Mastery indicator */}
-      <pixiText
-        text={`숙련된 자세: ${completedStances}/8`}
-        anchor={{ x: 0, y: 0.5 }}
-        x={10}
-        y={100}
-        style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 12,
-          fill: COLORS.WHITE,
-        }}
-        data-testid="mastery-count"
-      />
-
-      {/* Progress bar */}
-      <pixiGraphics
-        draw={(g: PixiGraphics) => {
-          g.clear();
-
-          // Background bar
-          g.setFillStyle({ color: COLORS.GRAY_MEDIUM, alpha: 0.3 });
-          g.roundRect(10, 115, 180, 8, 4);
-          g.fill();
-
-          // Progress bar
-          const progressWidth = (overallProgress / 100) * 180;
-          g.setFillStyle({ color: COLORS.CYAN, alpha: 0.8 });
-          g.roundRect(10, 115, progressWidth, 8, 4);
-          g.fill();
-        }}
-        data-testid="progress-bar"
-      />
-    </pixiContainer>
+      >
+        {currentStance && (
+          <div>
+            현재 자세: {TRIGRAM_DATA[currentStance].korean}{" "}
+            {TRIGRAM_DATA[currentStance].symbol}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

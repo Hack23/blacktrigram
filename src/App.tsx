@@ -1,162 +1,182 @@
-import { Application, extend } from "@pixi/react";
-import { Container, Graphics, Text, Sprite } from "pixi.js";
-import { useState, useCallback } from "react";
-import type { JSX } from "react";
-import "./App.css";
-import { GameEngine } from "./components/game/GameEngine";
-import { useAudio } from "./audio/AudioManager";
+import React, { useState, useCallback, useEffect } from "react";
 import { IntroScreen } from "./components/intro/IntroScreen";
+import { GameUI } from "./components/game/GameUI";
 import { TrainingScreen } from "./components/training/TrainingScreen";
+import {
+  createPlayerState,
+  type GamePhase,
+  type PlayerState,
+  type TrigramStance,
+} from "./types";
+import "./App.css";
 
-// Extend @pixi/react with the Pixi components we want to use
-extend({
-  Container,
-  Graphics,
-  Text,
-  Sprite,
-});
-
-// Declare the extended components for TypeScript
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      pixiContainer: any;
-      pixiGraphics: any;
-      pixiText: any;
-      pixiSprite: any;
-    }
-  }
+interface AppState {
+  readonly gamePhase: GamePhase;
+  readonly players: readonly [PlayerState, PlayerState];
+  readonly gameTime: number;
+  readonly currentRound: number;
+  readonly timeRemaining: number;
+  readonly combatLog: readonly string[];
+  readonly isPaused: boolean;
 }
 
-// Type definitions
-type GameMode = "intro" | "game" | "training";
+export default function App(): React.ReactElement {
+  // Initialize player states using helper function
+  const player1 = createPlayerState("player1", { x: 200, y: 400 }, "geon", {
+    health: 100,
+    maxHealth: 100,
+    ki: 50,
+    maxKi: 100,
+    facing: "right",
+  });
 
-interface BackButtonProps {
-  readonly onBack: () => void;
-}
+  const player2 = createPlayerState("player2", { x: 600, y: 400 }, "gon", {
+    health: 100,
+    maxHealth: 100,
+    ki: 50,
+    maxKi: 100,
+    facing: "left",
+  });
 
-// Constants
-const COLORS_APP = {
-  BLACK: 0x000000,
-  WHITE: 0xffffff,
-  DARK_BLUE: 0x000a12,
-  ACCENT_BLUE: 0x004455,
-  GRAY_TEXT: 0xcccccc,
-  CYAN: 0x00ffd0,
-} as const;
+  const [appState, setAppState] = useState<AppState>({
+    gamePhase: "intro",
+    players: [player1, player2],
+    gameTime: 0,
+    currentRound: 1,
+    timeRemaining: 90,
+    combatLog: [],
+    isPaused: false, // Add missing isPaused property
+  });
 
-function App(): JSX.Element {
-  const [gameMode, setGameMode] = useState<GameMode>("intro");
-  const audio = useAudio();
+  // Game loop for combat phase
+  useEffect(() => {
+    if (appState.gamePhase !== "combat" || appState.isPaused) return;
 
-  const startGame = useCallback((): void => {
-    audio.playSFX("menu_select");
-    setGameMode("game");
-  }, [audio]);
+    const gameLoop = setInterval(() => {
+      setAppState((prev) => ({
+        ...prev,
+        gameTime: prev.gameTime + 1,
+        timeRemaining: Math.max(0, prev.timeRemaining - 1),
+      }));
+    }, 1000);
 
-  const startTraining = useCallback((): void => {
-    audio.playSFX("menu_select");
-    setGameMode("training");
-  }, [audio]);
+    return () => clearInterval(gameLoop);
+  }, [appState.gamePhase, appState.isPaused]);
 
-  const returnToIntro = useCallback((): void => {
-    audio.playSFX("menu_back");
-    setGameMode("intro");
-  }, [audio]);
+  const handleGamePhaseChange = useCallback((phase: GamePhase) => {
+    setAppState((prev) => ({
+      ...prev,
+      gamePhase: phase,
+      // Reset game state when entering combat
+      ...(phase === "combat" && {
+        gameTime: 0,
+        timeRemaining: 180,
+        combatLog: ["전투 시작! (Combat Started!)"],
+        players: [
+          createPlayerState("player1", { x: 200, y: 300 }, "geon"),
+          createPlayerState("player2", { x: 600, y: 300 }, "gon"),
+        ],
+      }),
+    }));
+  }, []);
 
-  return (
-    <div className="app-container">
-      <Application
-        width={window.innerWidth}
-        height={window.innerHeight}
-        backgroundColor={COLORS_APP.BLACK}
-        antialias={true}
-        resizeTo={window}
-      >
-        {gameMode === "intro" && (
-          <IntroScreen
-            onStartGame={startGame}
-            onStartTraining={startTraining}
+  const handleStanceChange = useCallback(
+    (playerIndex: number, stance: TrigramStance): void => {
+      setAppState((prev) => ({
+        ...prev,
+        players: [
+          playerIndex === 0
+            ? { ...prev.players[0], stance, lastStanceChangeTime: Date.now() }
+            : prev.players[0],
+          playerIndex === 1
+            ? { ...prev.players[1], stance, lastStanceChangeTime: Date.now() }
+            : prev.players[1],
+        ] as [PlayerState, PlayerState],
+      }));
+    },
+    []
+  );
+
+  // Add separate handler for training screen
+  const handleTrainingStanceChange = useCallback(
+    (stance: TrigramStance): void => {
+      handleStanceChange(0, stance); // Always update player 0 in training
+    },
+    [handleStanceChange]
+  );
+
+  const handleStartMatch = useCallback(() => {
+    setAppState((prev) => ({
+      ...prev,
+      isPaused: false,
+      combatLog: [...prev.combatLog, "경기 시작! (Match Started!)"],
+    }));
+  }, []);
+
+  const handleResetMatch = useCallback(() => {
+    setAppState((prev) => ({
+      ...prev,
+      gameTime: 0,
+      timeRemaining: 180,
+      currentRound: 1,
+      isPaused: false,
+      players: [
+        createPlayerState("player1", { x: 200, y: 300 }, "geon"),
+        createPlayerState("player2", { x: 600, y: 300 }, "gon"),
+      ],
+      combatLog: ["경기 재시작! (Match Reset!)"],
+    }));
+  }, []);
+
+  const handleTogglePause = useCallback(() => {
+    setAppState((prev) => ({
+      ...prev,
+      isPaused: !prev.isPaused,
+      combatLog: [
+        ...prev.combatLog,
+        prev.isPaused ? "경기 재개 (Resumed)" : "일시정지 (Paused)",
+      ],
+    }));
+  }, []);
+
+  // Wrap the entire app with AudioManagerProvider
+  const renderCurrentPhase = (): React.ReactElement => {
+    switch (appState.gamePhase) {
+      case "intro":
+        return <IntroScreen onGamePhaseChange={handleGamePhaseChange} />;
+
+      case "training":
+        return (
+          <TrainingScreen
+            onGamePhaseChange={handleGamePhaseChange}
+            onStanceChange={handleTrainingStanceChange}
+            selectedStance={appState.players[0].stance}
           />
-        )}
-        {gameMode === "game" && (
-          <pixiContainer>
-            <GameEngine />
-            <BackButton onBack={returnToIntro} />
-          </pixiContainer>
-        )}
-        {gameMode === "training" && (
-          <pixiContainer>
-            <TrainingScreen onExit={returnToIntro} />
-            <BackButton onBack={returnToIntro} />
-          </pixiContainer>
-        )}
-      </Application>
-    </div>
-  );
+        );
+
+      case "combat":
+      case "philosophy":
+        return (
+          <GameUI
+            players={appState.players}
+            gamePhase={appState.gamePhase}
+            onGamePhaseChange={handleGamePhaseChange}
+            gameTime={appState.gameTime}
+            currentRound={appState.currentRound}
+            timeRemaining={appState.timeRemaining}
+            onStanceChange={handleStanceChange}
+            combatLog={appState.combatLog}
+            onStartMatch={handleStartMatch}
+            onResetMatch={handleResetMatch}
+            onTogglePause={handleTogglePause}
+          />
+        );
+
+      default:
+        return <IntroScreen onGamePhaseChange={handleGamePhaseChange} />;
+    }
+  };
+
+  // Remove AudioManagerProvider wrapper for now
+  return renderCurrentPhase();
 }
-
-function BackButton({ onBack }: BackButtonProps): JSX.Element {
-  const [isHovered, setIsHovered] = useState(false);
-  const audio = useAudio();
-
-  return (
-    <pixiContainer
-      x={50}
-      y={50}
-      interactive={true}
-      cursor="pointer"
-      onPointerDown={() => {
-        audio.playSFX("menu_back");
-        onBack();
-      }}
-      onPointerEnter={() => {
-        audio.playSFX("menu_hover");
-        setIsHovered(true);
-      }}
-      onPointerLeave={() => setIsHovered(false)}
-    >
-      <pixiGraphics
-        draw={(g: any) => {
-          g.clear();
-          g.setFillStyle({ color: COLORS_APP.DARK_BLUE, alpha: 0.9 });
-          g.roundRect(-40, -20, 80, 40, 5);
-          g.fill();
-
-          g.setStrokeStyle({
-            color: isHovered ? COLORS_APP.CYAN : COLORS_APP.ACCENT_BLUE,
-            width: isHovered ? 2 : 1,
-            alpha: isHovered ? 0.9 : 0.7,
-          });
-          g.roundRect(-40, -20, 80, 40, 5);
-          g.stroke();
-
-          g.setStrokeStyle({ color: COLORS_APP.CYAN, width: 1, alpha: 0.4 });
-          g.moveTo(-40, -10);
-          g.lineTo(-30, -20);
-          g.moveTo(40, -10);
-          g.lineTo(30, -20);
-          g.stroke();
-        }}
-      />
-      <pixiText
-        text="← 뒤로"
-        anchor={{ x: 0.5, y: 0.5 }}
-        style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 14,
-          fill: isHovered ? COLORS_APP.CYAN : COLORS_APP.GRAY_TEXT,
-          ...(isHovered && {
-            dropShadow: {
-              color: COLORS_APP.CYAN,
-              blur: 4,
-              distance: 0,
-            },
-          }),
-        }}
-      />
-    </pixiContainer>
-  );
-}
-
-export default App;

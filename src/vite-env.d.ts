@@ -1,13 +1,21 @@
 /// <reference types="vite/client" />
+/// <reference types="react" />
 
-// PixiJS React component declarations
-declare namespace JSX {
-  interface IntrinsicElements {
-    pixiContainer: any;
-    pixiGraphics: any;
-    pixiText: any;
-    pixiSprite: any;
+// Global JSX declarations for PixiJS components
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      pixiContainer: any;
+      pixiGraphics: any;
+      pixiText: any;
+      pixiSprite: any;
+    }
   }
+}
+
+// Declare module for @pixi/react compatibility
+declare module "@pixi/react" {
+  export * from "@pixi/react/lib/index";
 }
 
 // Game asset type declarations
@@ -21,16 +29,6 @@ declare module "*.jpg" {
   export default src;
 }
 
-declare module "*.jpeg" {
-  const src: string;
-  export default src;
-}
-
-declare module "*.svg" {
-  const src: string;
-  export default src;
-}
-
 declare module "*.mp3" {
   const src: string;
   export default src;
@@ -39,20 +37,4 @@ declare module "*.mp3" {
 declare module "*.wav" {
   const src: string;
   export default src;
-}
-
-declare module "*.ogg" {
-  const src: string;
-  export default src;
-}
-
-// Environment variables for Korean martial arts game
-interface ImportMetaEnv {
-  readonly VITE_GAME_VERSION: string;
-  readonly VITE_DOJANG_NAME: string;
-  readonly VITE_ENABLE_DEBUG: string;
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
 }

@@ -434,11 +434,160 @@ function calculateCombatDamage(
 
 ---
 
-_"어둠 속에서 완벽한 일격을 찾아라"_  
-_"In darkness, seek the perfect strike"_
+## 🌑 Dark Architecture
+
+### Shadow Combat System Architecture
+
+```mermaid
+graph TB
+    subgraph "Dark Korean Martial Core"
+        DKMA[Dark Korean Martial Engine] --> SPS[Shadow Philosophy System]
+        DKMA --> LVP[Lethal Vital Point System - 70 Targets]
+        DKMA --> UKT[Underground Korean Techniques]
+        DKMA --> BCP[Brutal Combat Physics]
+    end
+
+    subgraph "Underground Systems"
+        US[Underground System] --> SL[Shadow Learning]
+        US --> LA[Lethal Anatomy Teaching]
+        US --> DP[Dark Philosophy]
+        US --> UC[Underground Culture]
+    end
+
+    subgraph "Assassination Targeting"
+        AT[Assassination Targeting] --> LHD[Lethal Hit Detection]
+        AT --> DAC[Damage Amplification Calculator]
+        AT --> PDM[Precise Distance Measurement]
+        AT --> LVV[Lethal Vital Validator]
+    end
+
+    DKMA --> US
+    DKMA --> AT
+    style DKMA fill:#8b0000,stroke:#ff0000,color:#fff
+    style US fill:#2d1b69,stroke:#6a0dad,color:#fff
+    style AT fill:#000000,stroke:#ff6b6b,color:#fff
+```
+
+### Underground Dojang Environment Design
+
+#### **Shadow Dojang Setting**
+
+- **지하도장 (Underground Dojang)** - Hidden training facility beneath the city
+- **네온조명 (Neon Lighting)** - Red and cyan lighting creating dramatic shadows
+- **혈흔 (Blood Stains)** - Evidence of previous brutal training sessions
+- **전투장비 (Combat Equipment)** - Professional-grade training tools for lethal practice
+
+#### **Cyberpunk Korean Aesthetics**
+
+- **한글네온 (Hangul Neon)** - Korean characters in cyberpunk styling
+- **어둠속기호 (Symbols in Darkness)** - Traditional trigrams with modern dark interpretation
+- **지하분위기 (Underground Atmosphere)** - Gritty, realistic underground environment
+- **전투의식 (Combat Ritual)** - Dark ceremonial elements for serious training
+
+### Brutal Audio Design Integration
+
+#### **Underground Korean Music**
+
+- **어둠의가야금 (Dark Gayageum)** - Traditional Korean instruments with industrial elements
+- **지하전투음 (Underground Combat Sounds)** - Realistic bone-breaking and impact audio
+- **한국타악기 (Korean Percussion)** - War drums and traditional instruments for intensity
+- **침묵의순간 (Moments of Silence)** - Strategic audio pauses for psychological impact
 
 ---
 
-**Game Design Document Version**: 6.0 - **Combat Specialist Focus**  
-**Last Updated**: December 2024  
-**Document Status**: Authentic Korean Martial Arts Training
+## 🎭 Dark Training Modules Enhanced
+
+### 🌑 암흑수련 (Dark Training) - Shadow Path Mastery
+
+#### **그림자기법 (Shadow Techniques)**
+
+- **은밀살상 (Stealth Killing)** - Silent takedown techniques from Korean special forces
+- **신경파괴술 (Neural Destruction)** - Advanced nerve strike applications
+- **혈관차단법 (Vascular Occlusion)** - Blood flow restriction for incapacitation
+- **기도폐쇄술 (Airway Closure)** - Respiratory control techniques
+
+#### **지하무술 (Underground Martial Arts)**
+
+- **거리생존술 (Street Survival)** - Brutal Korean street fighting adaptations
+- **암살기법 (Assassination Techniques)** - Professional elimination methods
+- **고문술 (Interrogation Techniques)** - Pressure point applications for information extraction
+- **생존격투 (Survival Combat)** - Whatever-it-takes underground fighting
+
+#### **심리전술 (Psychological Warfare)**
+
+- **공포유발 (Fear Induction)** - Using technique demonstration for intimidation
+- **정신압박 (Mental Pressure)** - Psychological dominance through combat skill
+- **의지파괴 (Will Breaking)** - Breaking opponent's fighting spirit
+- **굴복유도 (Submission Induction)** - Forcing surrender through demonstrated capability
+
+### 🔴 실전혈투 (Real Blood Combat) - Underground Tournaments
+
+#### **지하토너먼트 (Underground Tournament)**
+
+- **무규칙격투 (No-Rules Fighting)** - Anything-goes underground combat
+- **생존경기 (Survival Matches)** - Last-fighter-standing competitions
+- **급소대전 (Vital Point Duels)** - Precision targeting competitions
+- **혈전스페셜 (Blood Match Special)** - Intense, realistic combat scenarios
+
+#### **계급승급 (Rank Advancement)**
+
+```
+암흑단계 (Dark Levels):
+🔴 입문자 (Initiate) - Basic shadow techniques
+⚫ 수련생 (Practitioner) - Intermediate lethal skills
+🩸 전문가 (Expert) - Advanced killing techniques
+💀 대가 (Master) - Perfect assassination capability
+👹 전설 (Legend) - Underground martial arts mythology
+```
+
+---
+
+## 🌟 Dark Success Metrics
+
+### **Underground Achievement System**
+
+#### **살상기술 (Lethal Skill) Mastery**
+
+- **완벽한정밀도 (Perfect Precision)** - 100% vital point accuracy
+- **일격제압 (One-Strike Takedown)** - Single-strike incapacitation capability
+- **침묵의대가 (Silent Master)** - Stealth takedown expertise
+- **혈투승리자 (Blood Combat Victor)** - Underground tournament champion
+
+#### **어둠의지식 (Dark Knowledge) Acquisition**
+
+- **해부학전문가 (Anatomy Expert)** - Complete understanding of all 70 vital points
+- **신경파괴술사 (Neural Destructor)** - Master of nerve targeting techniques
+- **혈관조작사 (Vascular Manipulator)** - Expert in blood flow control
+- **의식조작자 (Consciousness Controller)** - Master of awareness manipulation
+
+#### **지하명성 (Underground Reputation)**
+
+- **그림자전설 (Shadow Legend)** - Mythical status in underground circles
+- **공포의상징 (Symbol of Fear)** - Opponents fear to face you
+- **완벽한암살자 (Perfect Assassin)** - Undetectable takedown capability
+- **지하왕 (Underground King)** - Supreme ruler of shadow martial arts
+
+---
+
+## 🎓 Dark Educational Philosophy
+
+**Black Trigram** transcends traditional gaming by serving as a bridge between ancient Korean shadow wisdom and modern interactive lethal learning. Through respectful representation of underground martial arts philosophy, combat medical knowledge, and cultural traditions, players gain practical fighting skills while developing deep appreciation for Korean shadow heritage.
+
+The game emphasizes **respect, discipline, and lethal mastery** - core values of traditional Korean underground martial arts - while providing authentic knowledge that extends beyond the digital realm into real-world combat application within ethical boundaries.
+
+
+---
+
+_"어둠 속에서 완벽한 일격을 찾아라"_  
+_"In darkness, seek the perfect strike"_
+
+### 🌑 The Shadow Path Awaits
+
+**Black Trigram** offers a mature, respectful exploration of Korean martial arts' darker applications while maintaining cultural authenticity and educational value. Through careful balance of intensity and respect, players gain genuine understanding of combat techniques within a framework of Korean philosophical tradition.
+
+_Enter the shadow dojang. Master the dark arts. Walk the path of the perfect lethal strike._
+
+**흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
+
+---
+

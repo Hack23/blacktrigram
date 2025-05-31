@@ -53,6 +53,7 @@ export type SoundEffectId =
 
 export type MusicTrackId =
   | "intro_theme"
+  | "menu_theme"
   | "combat_theme"
   | "victory_theme"
   | "training_theme"
@@ -386,6 +387,16 @@ const MUSIC_TRACKS: Record<
     preload: true,
     description:
       "Contemplative Korean traditional music - setting the philosophical mood",
+  },
+  menu_theme: {
+    src: [
+      "./assets/audio/music/menu_theme.webm",
+      "./assets/audio/music/menu_theme.mp3",
+    ],
+    volume: 0.5,
+    loop: true,
+    preload: true,
+    description: "Traditional Korean melody - menu ambiance",
   },
   combat_theme: {
     src: [

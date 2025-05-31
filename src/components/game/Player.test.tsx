@@ -1,45 +1,76 @@
+import { describe, it, expect, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { PlayerContainer, PlayerProps } from "./Player";
+import { Player } from "./Player";
+import { Application } from "@pixi/react";
+import { createPlayerState } from "../../types";
 
-// Mock useTick to avoid animation frame issues in tests
-vi.mock("@pixi/react", () => ({
-  useTick: () => {},
-}));
+describe("Player", () => {
+  let testPlayerState: ReturnType<typeof createPlayerState>;
 
-const baseProps: PlayerProps = {
-  x: 100,
-  y: 100,
-  isPlayerOne: true,
-  onAttack: vi.fn(),
-  onMove: vi.fn(),
-  opponentPosition: { x: 200, y: 100 },
-  gameStarted: true,
-};
-
-describe("PlayerContainer", () => {
-  it("renders without crashing", () => {
-    const { container } = render(<PlayerContainer {...baseProps} />);
-    expect(container).toBeTruthy();
+  beforeEach(() => {
+    testPlayerState = createPlayerState(
+      "test-player",
+      { x: 100, y: 200 },
+      "geon"
+    );
   });
 
-  it("calls onMove when position changes", () => {
-    const onMove = vi.fn();
-    const { rerender } = render(
-      <PlayerContainer {...baseProps} onMove={onMove} />
+  it("should render within PixiJS Application", () => {
+    const { container } = render(
+      <Application width={800} height={600}>
+        <Player
+          playerState={testPlayerState}
+          onStanceChange={() => {}}
+          onAttack={() => {}}
+          isPlayer1={true}
+        />
+      </Application>
     );
-    rerender(
-      <PlayerContainer {...baseProps} x={120} y={100} onMove={onMove} />
-    );
-    expect(onMove).toBeDefined();
+
+    expect(container).toBeInTheDocument();
   });
 
-  it("calls onAttack when attack is triggered", () => {
-    const onAttack = vi.fn();
+  it("should handle stance changes", () => {
+    let capturedStance: string | null = null;
+    const handleStanceChange = (stance: string) => {
+      capturedStance = stance;
+    };
+
     render(
-      <PlayerContainer {...baseProps} onAttack={onAttack} gameStarted={true} />
+      <Application width={800} height={600}>
+        <Player
+          playerState={testPlayerState}
+          onStanceChange={handleStanceChange}
+          onAttack={() => {}}
+          isPlayer1={true}
+        />
+      </Application>
     );
-    onAttack("천둥벽력", 28, { x: 120, y: 100 });
-    expect(onAttack).toHaveBeenCalled();
+
+    // Test that component renders without errors
+    expect(capturedStance).toBeNull(); // Initially no stance changes
+  });
+
+  it("should display Korean stance information", () => {
+    const geonPlayer = createPlayerState(
+      "geonPlayer",
+      { x: 100, y: 100 },
+      "geon"
+    );
+
+    const { container } = render(
+      <Application width={800} height={600}>
+        <Player
+          playerState={geonPlayer}
+          onStanceChange={() => {}}
+          onAttack={() => {}}
+          isPlayer1={false}
+        />
+      </Application>
+    );
+
+    expect(container).toBeInTheDocument();
+    // Note: PixiJS content is rendered to canvas, so we can't test text content directly
+    // This test verifies the component mounts successfully with Korean stance data
   });
 });

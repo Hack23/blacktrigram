@@ -1,139 +1,88 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { extendSpy } from "./test/setup";
-import type { ComponentType } from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import App from "./App";
+
+// Mock the audio system
+const mockAudio = {
+  playSFX: vi.fn(),
+  playMusic: vi.fn(),
+  stopMusic: vi.fn(),
+  setMasterVolume: vi.fn(),
+  toggleMute: vi.fn(),
+  getState: vi.fn(() => ({
+    masterVolume: 0.8,
+    muted: false,
+    isInitialized: true,
+  })),
+};
+
+vi.mock("./audio/AudioManager", () => ({
+  useAudio: () => mockAudio,
+  audioManager: mockAudio,
+}));
+
+// Mock game components
+vi.mock("./components/game/GameEngine", () => ({
+  GameEngine: () => <div data-testid="game-engine">Game Engine</div>,
+}));
+
+vi.mock("./components/intro/IntroScreen", () => ({
+  IntroScreen: ({ onStartGame, onStartTraining }: any) => (
+    <div data-testid="intro-screen">
+      <button onClick={onStartGame} data-testid="start-game">
+        시작
+      </button>
+      <button onClick={onStartTraining} data-testid="start-training">
+        훈련
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("./components/training/TrainingScreen", () => ({
+  TrainingScreen: ({ onExit }: any) => (
+    <div data-testid="training-screen">
+      <button onClick={onExit} data-testid="exit-training">
+        나가기
+      </button>
+    </div>
+  ),
+}));
 
 describe("Black Trigram Game Application", () => {
-  let App: ComponentType;
-
-  beforeEach(async () => {
-    // Reset all mocks before each test
+  beforeEach(() => {
     vi.clearAllMocks();
-    extendSpy.mockClear();
-    vi.resetModules();
-
-    // Mock window dimensions for consistent testing
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: 1920,
-    });
-    Object.defineProperty(window, "innerHeight", {
-      writable: true,
-      configurable: true,
-      value: 1080,
-    });
-
-    // Import App which should trigger the extend call
-    const appModule = await import("./App");
-    App = appModule.default;
-  });
-
-  describe("Application Structure", () => {
-    it("renders the PixiJS Application with full-screen dimensions", () => {
-      render(<App />);
-      const pixiApp = screen.getByTestId("pixi-application");
-      expect(pixiApp).toBeInTheDocument();
-      // Verify dimensions are properly passed as data attributes
-      expect(pixiApp).toHaveAttribute("data-width", "1920");
-      expect(pixiApp).toHaveAttribute("data-height", "1080");
-    });
-
-    it("has the correct app container structure", () => {
-      const { container } = render(<App />);
-      const appContainer = container.querySelector(".app-container");
-      expect(appContainer).toBeInTheDocument();
-
-      // Verify PixiJS application is present
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
-    });
-
-    it("calls extend function with correct PixiJS components", () => {
-      render(<App />);
-      expect(extendSpy).toHaveBeenCalledWith({
-        Container: expect.any(Function),
-        Graphics: expect.any(Function),
-        Text: expect.any(Function),
-        Sprite: expect.any(Function),
-      });
-    });
-  });
-
-  describe("Korean Martial Arts Theme", () => {
-    it("renders with Korean martial arts background theme", () => {
-      render(<App />);
-      const pixiApp = screen.getByTestId("pixi-application");
-      expect(pixiApp).toHaveAttribute("data-background-color", "0");
-    });
-
-    it("applies Korean font family", () => {
-      render(<App />);
-      // Component should render with Korean font support
-      expect(document.documentElement).toBeInTheDocument();
-    });
-
-    it("uses traditional Korean color scheme", () => {
-      const { container } = render(<App />);
-      const appContainer = container.querySelector(".app-container");
-      expect(appContainer).toBeInTheDocument();
-    });
   });
 
   describe("Game Mode Management", () => {
-    it("starts in intro mode by default", () => {
+    it("renders intro screen by default", () => {
       render(<App />);
-      // Should render the intro screen
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
-    });
-
-    it("handles keyboard navigation in intro screen", async () => {
-      const user = userEvent.setup();
-      render(<App />);
-
-      // Test keyboard events without expecting specific behaviors
-      await user.keyboard("{ArrowLeft}");
-      await user.keyboard("{ArrowRight}");
-      await user.keyboard("a");
-      await user.keyboard("d");
-
-      // Component should remain stable
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
-    });
-
-    it("handles quick start keys", async () => {
-      const user = userEvent.setup();
-      render(<App />);
-
-      // Test number key shortcuts
-      await user.keyboard("1");
-      await user.keyboard("2");
-
-      // Component should handle these without errors
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
-    });
-
-    it("responds to space and enter keys", async () => {
-      const user = userEvent.setup();
-      render(<App />);
-
-      // Test confirmation keys
-      await user.keyboard(" ");
-      await user.keyboard("{Enter}");
-
-      // Component should handle these without errors
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+      expect(screen.getByTestId("intro-screen")).toBeInTheDocument();
     });
 
     it("handles alt key for training mode", async () => {
-      const user = userEvent.setup();
       render(<App />);
 
-      // Test alt key for training
-      await user.keyboard("{Alt}");
+      // Click training button
+      fireEvent.click(screen.getByTestId("start-training"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("training-screen")).toBeInTheDocument();
+      });
 
       // Component should handle this without errors
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+    });
+
+    it("transitions to game mode when start game is clicked", async () => {
+      render(<App />);
+
+      fireEvent.click(screen.getByTestId("start-game"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("game-engine")).toBeInTheDocument();
+      });
     });
   });
 
@@ -141,11 +90,19 @@ describe("Black Trigram Game Application", () => {
     it("should support 8 trigram fighting styles", () => {
       render(<App />);
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+
+      // Verify PixiJS application is properly initialized
+      const pixiApp = screen.getByTestId("pixi-application");
+      expect(pixiApp).toHaveAttribute("data-antialias", "true");
     });
 
     it("integrates Korean martial arts terminology", () => {
       render(<App />);
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+
+      // Check that Korean text is present
+      expect(screen.getByText("시작")).toBeInTheDocument();
+      expect(screen.getByText("훈련")).toBeInTheDocument();
     });
   });
 
@@ -153,11 +110,18 @@ describe("Black Trigram Game Application", () => {
     it("maintains Korean language support", () => {
       render(<App />);
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+
+      // Verify Korean text rendering
+      const koreanElements = screen.getAllByText(/[가-힣]/);
+      expect(koreanElements.length).toBeGreaterThan(0);
     });
 
     it("uses proper I Ching trigram philosophy", () => {
       render(<App />);
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+
+      // The app should load without errors, indicating proper trigram system integration
+      expect(screen.getByTestId("intro-screen")).toBeInTheDocument();
     });
   });
 
@@ -165,42 +129,65 @@ describe("Black Trigram Game Application", () => {
     it("maintains responsive design principles", () => {
       render(<App />);
       expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+
+      // Check viewport responsive attributes
+      const pixiApp = screen.getByTestId("pixi-application");
+      expect(pixiApp).toHaveAttribute("data-width");
+      expect(pixiApp).toHaveAttribute("data-height");
     });
 
     it("uses optimized PixiJS configuration", () => {
       render(<App />);
+
       const pixiApp = screen.getByTestId("pixi-application");
       expect(pixiApp).toHaveAttribute("data-antialias", "true");
+      expect(pixiApp).toHaveAttribute("data-background-color");
     });
 
-    it("handles window resize events", () => {
+    it("handles audio system initialization", () => {
       render(<App />);
 
-      // Simulate window resize
-      Object.defineProperty(window, "innerWidth", { value: 800 });
-      Object.defineProperty(window, "innerHeight", { value: 600 });
-      fireEvent(window, new Event("resize"));
+      // Audio should be initialized
+      expect(mockAudio.getState).toHaveBeenCalled();
+    });
 
-      // Component should continue to render properly
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+    it("supports Korean font loading", () => {
+      render(<App />);
+
+      // Check that Korean text elements are rendered
+      const koreanText = screen.getByText("시작");
+      expect(koreanText).toBeInTheDocument();
     });
   });
 
-  describe("Error Handling", () => {
-    it("handles PixiJS initialization gracefully", () => {
+  describe("Navigation Flow", () => {
+    it("allows navigation between modes", async () => {
       render(<App />);
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+
+      // Start with intro
+      expect(screen.getByTestId("intro-screen")).toBeInTheDocument();
+
+      // Go to training
+      fireEvent.click(screen.getByTestId("start-training"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("training-screen")).toBeInTheDocument();
+      });
+
+      // Return to intro
+      fireEvent.click(screen.getByTestId("exit-training"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("intro-screen")).toBeInTheDocument();
+      });
     });
 
-    it("maintains stability with rapid key inputs", async () => {
-      const user = userEvent.setup();
+    it("plays audio feedback on mode changes", async () => {
       render(<App />);
 
-      // Rapid key sequence
-      await user.keyboard("adadadad12121212    ");
+      fireEvent.click(screen.getByTestId("start-game"));
 
-      // Component should remain stable
-      expect(screen.getByTestId("pixi-application")).toBeInTheDocument();
+      expect(mockAudio.playSFX).toHaveBeenCalledWith("menu_select");
     });
   });
 });

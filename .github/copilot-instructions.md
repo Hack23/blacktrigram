@@ -1,5 +1,38 @@
 # Copilot Instructions
 
+# 🎨 Black Trigram — Art & Asset Style Guide
+
+**Goal:** Capture the dark, cyberpunk-meets-traditional Korean martial-arts vibe shown in the concept art, and translate it into a cohesive set of game assets—UI elements, icons, character silhouettes, environment textures, VFX, and more.
+
+## Executive Summary
+
+Black Trigram is a sophisticated 2D precision combat simulator deeply rooted in Korean martial arts and modern combat technology, set against a cyberpunk backdrop. It emphasizes anatomical realism, precise targeting, authentic martial techniques, and dark futuristic aesthetics.
+
+Game Identity
+Genre:
+2D Realistic Precision Combat Simulator / Traditional Korean Martial Arts Training (Cyberpunk Style)
+
+Platforms:
+
+Web-based (HTML5/WebGL via PixiJS)
+
+Optimized for authentic 60fps combat physics
+
+Audience:
+
+Fans of precise combat gameplay (Budokan, IK+)
+
+Practitioners and enthusiasts of Korean martial arts
+
+Cyberpunk aesthetics and narrative enthusiasts
+
+Players seeking realistic and anatomical combat precision
+
+Visual and Thematic Direction (Cyberpunk Korean Martial Arts)
+Based on the concept art:
+
+Dark cyberpunk aesthetic, blending traditional Korean martial attire with tactical modern gear.
+
 ## Coding Guidelines
 
 - **Strict Typing:**
@@ -18,6 +51,119 @@
   - Write tests for critical business logic and security paths.
 
 ## Summary
+
+## UX Components
+
+https://www.npmjs.com/package/@pixi/react?activeTab=readme
+https://pixijs.com/8.x/guides/getting-started/intro
+
+
+src/main.tsx
+src/components/intro/IntroScreen.tsx
+src/components/intro/components/MenuSection.tsx
+src/components/intro/components/ControlsSection.tsx
+src/components/intro/components/PhilosophySection.tsx
+src/components/game/GameUI.tsx
+src/components/game/PlayerVisuals.tsx
+src/components/game/GameEngine.tsx
+src/components/game/HitEffectsLayer.tsx
+src/components/game/DojangBackground.tsx
+src/components/game/Player.tsx
+src/components/ui/KoreanHeader.tsx
+src/components/ui/TrigramWheel.tsx
+src/components/ui/ProgressTracker.tsx
+src/components/ui/base/KoreanText.tsx
+src/components/ui/base/BackgroundGrid.tsx
+src/components/ui/base/BaseButton.tsx
+src/components/ui/base/KoreanPixiComponents.tsx
+src/components/ui/base/PixiComponents.tsx
+src/components/training/TrainingScreen.tsx
+src/App.tsx
+src/audio/AudioManager.tsx
+
+## System
+
+src/components/intro/components
+src/components/intro
+src/components/game
+src/components/ui/base/index.ts
+src/components/ui/base
+src/components/ui
+src/components/training/index.ts
+src/components/training
+src/components
+src/audio/placeholder-sounds.ts
+src/audio/AudioManager.ts
+src/audio/DefaultSoundGenerator.ts
+src/audio/AudioUtils.ts
+src/vite-env.d.ts
+src/hooks/useTexture.ts
+src/types/pixi-react.d.ts
+src/types/index.ts
+src/systems/CombatSystem.ts
+src/systems/VitalPointSystem.ts
+src/systems/TrigramSystem.ts
+src/systems/vitalpoint/KoreanAnatomy.ts
+src/systems/vitalpoint/AnatomicalRegions.ts
+src/systems/vitalpoint/KoreanVitalPoints.ts
+src/systems/vitalpoint/HitDetection.ts
+src/systems/vitalpoint/DamageCalculator.ts
+src/systems/trigram/StanceManager.ts
+src/systems/trigram/TrigramCalculator.ts
+src/systems/trigram/KoreanCulture.ts
+src/systems/trigram/TransitionCalculator.ts
+src/systems/trigram/KoreanTechniques.ts
+
+## Image assets
+
+src/assets/black-trigram-256.png
+src/assets/PlayerArchetypesExplained.png
+
+src/assets/black-trigram.png
+src/assets/CyberpunkTeamDynamics.png
+src/assets/PlayerArchetypesOverview.png
+src/assets/react.svg
+src/assets/dark-trigram.png
+src/assets/black-trigram.webp
+
+## CSS
+
+src/Game.css
+src/App.css
+src/index.css
+
+## Systemm
+
+src/components/intro/components
+src/components/intro
+src/components/game
+src/components/ui/base/index.ts
+src/components/ui/base
+src/components/ui
+src/components/training/index.ts
+src/components/training
+src/components
+src/audio/placeholder-sounds.ts
+src/audio/AudioManager.ts
+src/audio/DefaultSoundGenerator.ts
+src/audio/AudioUtils.ts
+src/vite-env.d.ts
+src/hooks/useTexture.ts
+src/types/pixi-react.d.ts
+src/types/index.ts
+src/systems/CombatSystem.ts
+src/systems/VitalPointSystem.ts
+src/systems/TrigramSystem.ts
+src/systems/vitalpoint/KoreanAnatomy.ts
+src/systems/vitalpoint/AnatomicalRegions.ts
+src/systems/vitalpoint/KoreanVitalPoints.ts
+src/systems/vitalpoint/HitDetection.ts
+src/systems/vitalpoint/DamageCalculator.ts
+src/systems/trigram/StanceManager.ts
+src/systems/trigram/TrigramCalculator.ts
+src/systems/trigram/KoreanCulture.ts
+src/systems/trigram/TransitionCalculator.ts
+src/systems/trigram/KoreanTechniques.ts
 
 Focus on stability, strict TypeScript usage, and Vite-enhanced testing while reusing existing code.
 

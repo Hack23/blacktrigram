@@ -1,142 +1,118 @@
-import type { JSX } from "react";
-import type { Graphics as PixiGraphics } from "pixi.js";
+import React from "react";
+import { KOREAN_COLORS, type GamePhase } from "../../types";
 
-interface KoreanHeaderProps {
-  readonly koreanTitle: string;
-  readonly englishTitle: string;
+export interface KoreanHeaderProps {
+  readonly currentPhase: GamePhase;
+  readonly onPhaseChange: (phase: GamePhase) => void;
+  readonly gameTime?: number;
+  readonly playerNames?: readonly [string, string];
+  readonly title?: string;
   readonly subtitle?: string;
-  readonly x?: number;
-  readonly y?: number;
-  readonly width?: number;
-  readonly height?: number;
+  readonly showBackButton?: boolean;
+  readonly onBack?: () => void;
 }
-
-const COLORS = {
-  PRIMARY_CYAN: 0x00ffd0,
-  WHITE: 0xffffff,
-  DARK_BG: 0x0a0e12,
-  KOREAN_RED: 0x8b0000,
-  TRADITIONAL_GOLD: 0xffd700,
-  GRAY_MEDIUM: 0x666666,
-} as const;
 
 export function KoreanHeader({
-  koreanTitle,
-  englishTitle,
+  currentPhase,
+  onPhaseChange,
+  gameTime = 0,
+  playerNames = ["플레이어 1", "플레이어 2"],
+  title,
   subtitle,
-  x = window.innerWidth / 2,
-  y = 150,
-  width = 800,
-  height = 150,
-}: KoreanHeaderProps): JSX.Element {
+  showBackButton = false,
+  onBack,
+}: KoreanHeaderProps): React.ReactElement {
   return (
-    <pixiContainer x={x} y={y} data-testid="korean-header">
-      {/* Background panel */}
-      <pixiGraphics
-        draw={(g: PixiGraphics) => {
-          g.clear();
-
-          // Main background with traditional Korean styling
-          g.setFillStyle({ color: COLORS.DARK_BG, alpha: 0.85 });
-          g.roundRect(-width / 2, -height / 2, width, height, 15);
-          g.fill();
-
-          // Traditional Korean border
-          g.setStrokeStyle({ color: COLORS.KOREAN_RED, width: 3, alpha: 0.8 });
-          g.roundRect(-width / 2, -height / 2, width, height, 15);
-          g.stroke();
-
-          // Inner accent border
-          g.setStrokeStyle({
-            color: COLORS.TRADITIONAL_GOLD,
-            width: 1,
-            alpha: 0.6,
-          });
-          g.roundRect(
-            -width / 2 + 5,
-            -height / 2 + 5,
-            width - 10,
-            height - 10,
-            10
-          );
-          g.stroke();
-
-          // Traditional corner decorations
-          const cornerSize = 20;
-          const corners = [
-            { x: -width / 2 + cornerSize, y: -height / 2 + cornerSize },
-            { x: width / 2 - cornerSize, y: -height / 2 + cornerSize },
-            { x: -width / 2 + cornerSize, y: height / 2 - cornerSize },
-            { x: width / 2 - cornerSize, y: height / 2 - cornerSize },
-          ];
-
-          corners.forEach((corner) => {
-            g.setStrokeStyle({
-              color: COLORS.PRIMARY_CYAN,
-              width: 2,
-              alpha: 0.7,
-            });
-            g.moveTo(corner.x - 10, corner.y);
-            g.lineTo(corner.x + 10, corner.y);
-            g.moveTo(corner.x, corner.y - 10);
-            g.lineTo(corner.x, corner.y + 10);
-            g.stroke();
-          });
-        }}
-        data-testid="header-background"
-      />
-
-      {/* Korean title */}
-      <pixiText
-        text={koreanTitle}
-        anchor={{ x: 0.5, y: 0.5 }}
-        y={-30}
-        style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 32,
-          fill: COLORS.KOREAN_RED,
-          fontWeight: "bold",
-          dropShadow: {
-            color: COLORS.TRADITIONAL_GOLD,
-            blur: 4,
-            distance: 2,
-          },
-        }}
-        data-testid="korean-title"
-      />
-
-      {/* English title */}
-      <pixiText
-        text={englishTitle}
-        anchor={{ x: 0.5, y: 0.5 }}
-        y={10}
-        style={{
-          fontFamily: "Orbitron",
-          fontSize: 16,
-          fill: COLORS.PRIMARY_CYAN,
-          fontWeight: "600",
-          letterSpacing: 2,
-        }}
-        alpha={0.9}
-        data-testid="english-title"
-      />
-
-      {/* Subtitle if provided */}
-      {subtitle && (
-        <pixiText
-          text={subtitle}
-          anchor={{ x: 0.5, y: 0.5 }}
-          y={45}
+    <header
+      className="korean-header"
+      style={{
+        background:
+          "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%)",
+        borderBottom: "2px solid #ffd700",
+        padding: "1rem 2rem",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
+        fontFamily: "Noto Sans KR, Arial, sans-serif",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+      }}
+    >
+      {showBackButton && onBack && (
+        <button
+          onClick={onBack}
           style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: 14,
-            fill: COLORS.WHITE,
-            fontWeight: "400",
+            color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
+            background: "transparent",
+            border: "none",
+            fontSize: "1.5rem",
+            cursor: "pointer",
+            padding: "0.5rem",
           }}
-          alpha={0.8}
-          data-testid="subtitle"
-        />
+        >
+          ← 뒤로
+        </button>
       )}
-    </pixiContainer>
+
+      <nav
+        style={{
+          display: "flex",
+          gap: "2rem",
+          alignItems: "center",
+        }}
+      >
+        <button
+          onClick={() => onPhaseChange("intro")}
+          style={{
+            background:
+              currentPhase === "intro"
+                ? `#${KOREAN_COLORS.GOLD.toString(16).padStart(6, "0")}`
+                : "transparent",
+            color: `#${KOREAN_COLORS.GOLD.toString(16).padStart(6, "0")}`,
+            border: "none",
+            padding: "0.5rem 1rem",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            transition: "all 0.3s ease",
+          }}
+        >
+          {title || "흑괘 무술 (Black Trigram)"}
+        </button>
+      </nav>
+
+      {subtitle && (
+        <div
+          style={{
+            color: `#${KOREAN_COLORS.CYAN.toString(16).padStart(6, "0")}`,
+            fontSize: "0.9rem",
+            fontStyle: "italic",
+            textAlign: "center",
+            flex: 1,
+          }}
+        >
+          {subtitle}
+        </div>
+      )}
+
+      <div
+        style={{
+          color: `#${KOREAN_COLORS.GOLD.toString(16).padStart(6, "0")}`,
+          fontSize: "0.9rem",
+          textAlign: "right",
+        }}
+      >
+        <div>
+          게임 시간: {Math.floor(gameTime / 60)}:
+          {(gameTime % 60).toString().padStart(2, "0")}
+        </div>
+        <div>
+          {playerNames[0]} vs {playerNames[1]}
+        </div>
+      </div>
+    </header>
   );
 }
+
+export default KoreanHeader;

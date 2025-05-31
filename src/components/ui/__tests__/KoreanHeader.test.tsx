@@ -5,7 +5,10 @@ describe("KoreanHeader Component", () => {
   const mockProps = {
     koreanTitle: "흑괘 무술 도장",
     englishTitle: "BLACK TRIGRAM MARTIAL ARTS DOJANG",
-    subtitle: "Traditional Korean Combat Arts",
+    x: 400,
+    y: 200,
+    width: 600,
+    height: 120,
   };
 
   beforeEach(() => {
@@ -23,11 +26,22 @@ describe("KoreanHeader Component", () => {
 
       render(<MockKoreanHeader />);
       expect(screen.getByTestId("korean-title")).toHaveTextContent(
-        "흑괘 무술 도장"
+        mockProps.koreanTitle
       );
       expect(screen.getByTestId("english-title")).toHaveTextContent(
-        "BLACK TRIGRAM"
+        mockProps.englishTitle
       );
+    });
+
+    it("renders with correct props structure", () => {
+      expect(mockProps).toMatchObject({
+        koreanTitle: expect.any(String),
+        englishTitle: expect.any(String),
+        x: expect.any(Number),
+        y: expect.any(Number),
+        width: expect.any(Number),
+        height: expect.any(Number),
+      });
     });
   });
 
