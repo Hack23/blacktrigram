@@ -4,6 +4,8 @@ import type {
   PlayerState,
   TrigramStance,
   TransitionPath,
+  CombatReadiness,
+  CombatState,
   // TrigramTransitionCost, // Unused
   // KoreanText, // Unused
 } from "../../types";
@@ -18,10 +20,10 @@ const createMockPlayerState = (
   lastStanceChangeTime = 0
 ): PlayerState => ({
   id: "player1",
-  name: "Test Player",
+  name: { korean: "테스트 플레이어", english: "Test Player" },
   archetype: "musa",
   position: { x: 0, y: 0 },
-  stance,
+  currentStance: stance,
   facing: "right",
   health: 100,
   maxHealth: 100,
@@ -34,11 +36,42 @@ const createMockPlayerState = (
   balance: 100,
   bloodLoss: 0,
   lastStanceChangeTime,
-  isAttacking: false,
-  combatReadiness: 100,
+  combatReadiness: "ready" as CombatReadiness,
   activeEffects: [],
-  combatState: "ready",
-  conditions: [],
+  combatState: "idle" as CombatState,
+  comboCount: 0,
+  lastActionTime: 0,
+  vitalPointDamage: {},
+  bodyPartStatus: {
+    head: "healthy",
+    face_upper: "healthy",
+    chest: "healthy",
+    abdomen: "healthy",
+    neck: "healthy",
+    torso: "healthy",
+    left_arm: "healthy",
+    right_arm: "healthy",
+    left_leg: "healthy",
+    right_leg: "healthy",
+  },
+  knownTechniques: [],
+  currentTargetId: null,
+  attributes: {
+    strength: 10,
+    agility: 10,
+    endurance: 10,
+    intelligence: 10,
+    focus: 10,
+    resilience: 10,
+  },
+  skills: {
+    striking: 10,
+    kicking: 10,
+    grappling: 10,
+    weaponry: 0,
+    meditation: 5,
+    strategy: 5,
+  },
 });
 
 describe("StanceManager", () => {
@@ -79,7 +112,7 @@ describe("StanceManager", () => {
       const result = stanceManager.changeStance(playerState, "tae");
       expect(result.success).toBe(true);
       expect(result.to).toBe("tae");
-      expect(result.newState.stance).toBe("tae");
+      expect(result.newState.currentStance).toBe("tae");
       expect(result.newState.ki).toBe(playerState.ki - 10);
       expect(result.newState.stamina).toBe(playerState.stamina - 5);
       expect(result.newState.lastStanceChangeTime).toBeGreaterThan(
@@ -98,7 +131,7 @@ describe("StanceManager", () => {
       const result = stanceManager.changeStance(playerState, "tae");
       expect(result.success).toBe(false);
       expect(result.reason).toBe("insufficient_ki");
-      expect(result.newState.stance).toBe("geon");
+      expect(result.newState.currentStance).toBe("geon");
     });
 
     it("should fail to change stance if on cooldown", () => {
@@ -127,7 +160,7 @@ describe("StanceManager", () => {
 
       const result = stanceManager.changeStance(playerState, "tae");
       expect(result.success).toBe(true);
-      expect(result.newState.stance).toBe("tae");
+      expect(result.newState.currentStance).toBe("tae");
       // vitestVi.spyOn(Date, 'now').mockRestore();
     });
   });
@@ -180,7 +213,7 @@ describe("StanceManager", () => {
 
       expect(pathResult).toEqual(mockPathData);
       expect(mockTrigramCalculator.calculateOptimalPath).toHaveBeenCalledWith(
-        playerState.stance,
+        playerState.currentStance,
         targetStance,
         playerState
         // 3 // Max depth argument if calculateOptimalPath uses it

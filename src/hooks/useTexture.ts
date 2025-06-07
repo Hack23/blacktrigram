@@ -51,9 +51,9 @@ const textureCache = new Map<string, Texture>();
 // Preload commonly used textures
 export async function preloadGameTextures(): Promise<void> {
   const commonTextures = [
-    "/dark-trigram-256.png",
-    "/trigram-effects.png",
-    "/vital-points.png",
+    "assets/visual/logo/black-trigram-256.png",
+    // "/trigram-effects.png", // Removed: Not found in provided asset list
+    // "/vital-points.png", // Removed: Not found in provided asset list
   ];
 
   try {

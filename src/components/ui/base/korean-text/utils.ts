@@ -1,7 +1,13 @@
 import * as PIXI from "pixi.js";
 import type { KoreanTextProps } from "./types";
-import { KOREAN_FONT_FAMILIES, KOREAN_TEXT_SIZES } from "./constants";
+import type { KoreanTextSize } from "../../../../types/korean-text";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import {
+  KOREAN_FONT_FAMILY,
+  KOREAN_TEXT_SIZES as BaseKoreanTextSizes,
+} from "./constants"; // KOREAN_FONT_FAMILIES was KOREAN_FONT_FAMILY
+
+const KOREAN_TEXT_SIZES = BaseKoreanTextSizes; // Use aliased import
 
 // Utility functions for Korean text processing
 export const isKoreanCharacter = (char: string): boolean => {
@@ -73,7 +79,7 @@ export const getPixiTextStyle = (
         KOREAN_TEXT_SIZES.medium;
 
   const style = new PIXI.TextStyle({
-    fontFamily: KOREAN_FONT_FAMILIES.PRIMARY,
+    fontFamily: KOREAN_FONT_FAMILY,
     fontSize,
     fill: baseColor,
     fontWeight: "400",
@@ -88,7 +94,7 @@ export const getPixiTextStyle = (
       alpha: 0.7,
       angle: Math.PI / 4,
       blur: 4,
-      color: KOREAN_COLORS.CYAN,
+      color: KOREAN_COLORS.PRIMARY_CYAN, // Changed from CYAN
       distance: 2,
     };
     style.stroke = { color: KOREAN_COLORS.BLACK, width: 2 };
@@ -196,4 +202,75 @@ export const cssToPixiTextStyle = (
   }
 
   return result;
+};
+
+export function getKoreanFontFamily(
+  variant?: "primary" | "secondary" | "mono" | "symbol"
+): string {
+  switch (variant) {
+    case "secondary":
+      return KOREAN_FONT_FAMILY; // Assuming KOREAN_FONT_FAMILY is an object with primary/secondary
+    case "mono":
+      return "monospace"; // Example
+    case "symbol":
+      return "Arial, sans-serif"; // Example for symbols
+    case "primary":
+    default:
+      return KOREAN_FONT_FAMILY;
+  }
+}
+
+export function getKoreanFontSize(
+  size?: KoreanTextSize | number,
+  baseSize: number = KOREAN_TEXT_SIZES.medium
+): number {
+  if (typeof size === "number") {
+    return size;
+  }
+  if (size && KOREAN_TEXT_SIZES[size]) {
+    return KOREAN_TEXT_SIZES[size];
+  }
+  return baseSize;
+}
+
+export function getKoreanUiColors() {
+  return {
+    primary: KOREAN_COLORS.PRIMARY_CYAN,
+    secondary: KOREAN_COLORS.ACCENT_SECONDARY,
+    textPrimary: KOREAN_COLORS.TEXT_PRIMARY,
+    textSecondary: KOREAN_COLORS.TEXT_SECONDARY,
+    background: KOREAN_COLORS.UI_BACKGROUND_DARK,
+    error: KOREAN_COLORS.NEGATIVE_RED,
+    warning: KOREAN_COLORS.WARNING_YELLOW,
+    success: KOREAN_COLORS.POSITIVE_GREEN,
+    // ... add more as needed
+  };
+}
+
+// Helper to convert KoreanText object to a display string
+export const formatKoreanText = (
+  textObj: { korean: string; english?: string; romanized?: string } | string,
+  lang: "korean" | "english" | "romanized" = "korean"
+): string => {
+  if (typeof textObj === "string") {
+    return textObj;
+  }
+  switch (lang) {
+    case "english":
+      return textObj.english || textObj.korean;
+    case "romanized":
+      return textObj.romanized || textObj.english || textObj.korean;
+    case "korean":
+    default:
+      return textObj.korean;
+  }
+};
+
+export const DEFAULT_TEXT_STYLE_OPTIONS = {
+  fontFamily: getKoreanFontFamily("primary"),
+  fontSize: getKoreanFontSize("medium"),
+  fill: KOREAN_COLORS.PRIMARY_CYAN,
+  align: "left",
+  wordWrap: true,
+  wordWrapWidth: 400, // Default word wrap width
 };

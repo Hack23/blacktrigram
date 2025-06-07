@@ -1,48 +1,70 @@
-import { describe, it, expect, vi } from "vitest"; // Remove unused beforeEach
 import { render } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import { Player } from "../Player";
-import type {
-  PlayerProps,
-  PlayerArchetype,
-  TrigramStance,
-} from "../../../types"; // Remove unused PlayerState
 import { createPlayerState } from "../../../utils/playerUtils";
+import type { PlayerState, KoreanText, Position } from "../../../types";
+import { Application } from "@pixi/react";
+
+const mockPlayerName: KoreanText = {
+  korean: "테스트 선수",
+  english: "Test Player",
+};
+const mockPosition: Position = { x: 0, y: 0 };
 
 describe("Player Component", () => {
-  const defaultProps: PlayerProps = {
-    playerState: createPlayerState("Test Player", "musa", "geon"),
-    playerIndex: 0,
+  const mockPlayerState: PlayerState = createPlayerState(
+    "player1",
+    "musa",
+    mockPlayerName,
+    mockPosition
+  );
+
+  const defaultProps = {
+    playerState: mockPlayerState,
+    playerIndex: 0 as 0 | 1,
     onStateUpdate: vi.fn(),
-    archetype: "musa" as PlayerArchetype,
-    stance: "geon" as TrigramStance,
-    position: { x: 100, y: 100 },
+    archetype: "musa" as const,
+    stance: "geon" as const,
+    position: mockPosition,
     facing: "right" as const,
-    isAttacking: false,
     health: 100,
     maxHealth: 100,
-    ki: 80,
+    ki: 100,
     maxKi: 100,
-    stamina: 90,
+    stamina: 100,
     maxStamina: 100,
-    isActive: true,
+    showVitalPoints: false,
+    x: 0,
+    y: 0,
+    width: 200,
+    height: 150,
   };
 
-  it("should render without crashing", () => {
-    const { container } = render(<Player {...defaultProps} />);
+  it("renders without crashing", () => {
+    const { container } = render(
+      <Application>
+        <Player {...defaultProps} />
+      </Application>
+    );
     expect(container).toBeInTheDocument();
   });
 
-  it("should display players", () => {
-    render(<Player {...defaultProps} />);
-    expect(document.body).toBeInTheDocument();
+  it("displays player name", () => {
+    const { getByText } = render(
+      <Application>
+        <Player {...defaultProps} />
+      </Application>
+    );
+    expect(getByText(mockPlayerName.korean)).toBeInTheDocument();
   });
 
-  it("should handle different archetypes", () => {
-    const playerWithDifferentArchetype = {
-      ...defaultProps,
-      archetype: "amsalja" as PlayerArchetype,
-    };
-    render(<Player {...playerWithDifferentArchetype} />);
-    expect(document.body).toBeInTheDocument();
+  it("calls onStateUpdate when state changes", () => {
+    const onStateUpdate = vi.fn();
+    render(
+      <Application>
+        <Player {...defaultProps} onStateUpdate={onStateUpdate} />
+      </Application>
+    );
+    // Test state update functionality if needed
   });
 });

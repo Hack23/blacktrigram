@@ -1,253 +1,276 @@
-import React, { useState, useCallback, useEffect } from "react";
-import type { CombatScreenProps } from "../../types/components";
-import { CombatArena } from "../combat/components/CombatArena";
-import { CombatHUD } from "../combat/components/CombatHUD";
-import { CombatControls } from "../combat/components/CombatControls";
-import { KoreanText } from "../ui/base/korean-text/KoreanText";
-import { KOREAN_COLORS } from "../../types/constants";
-import type { HitEffect, CombatResult, TrigramStance } from "../../types";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import * as PIXI from "pixi.js";
+import type {
+  CombatResult,
+  CombatScreenProps,
+  KoreanTechnique,
+  TrigramStance,
+} from "../../types";
+import {
+  CYBERPUNK_PALETTE,
+  GAME_CONFIG,
+  TRIGRAM_DATA,
+} from "../../types/constants";
+import { CombatArena } from "./components/CombatArena";
+import { CombatHUD } from "./components/CombatHUD";
+import { CombatControls } from "./components/CombatControls";
+import { CombatSystem } from "../../systems/CombatSystem";
+import {
+  KOREAN_FONT_FAMILY,
+  KoreanText as KoreanTextType,
+} from "../../types/korean-text";
+import { executeTechnique } from "../../utils/playerUtils";
+import { useAudio } from "../../audio/AudioProvider";
 
-export function CombatScreen({
+export const CombatScreen: React.FC<CombatScreenProps> = ({
   players,
-  onGamePhaseChange,
   onPlayerUpdate,
-  gameTime,
   currentRound,
   timeRemaining,
   isPaused,
-}: CombatScreenProps): React.JSX.Element {
-  const [combatEffects, setCombatEffects] = useState<HitEffect[]>([]);
+  width = GAME_CONFIG.CANVAS_WIDTH,
+  height = GAME_CONFIG.CANVAS_HEIGHT,
+}) => {
+  const [combatLog, setCombatLog] = useState<KoreanTextType[]>([]);
+  const [activePlayerIndex, setActivePlayerIndex] = useState<0 | 1>(0);
   const [isExecutingTechnique, setIsExecutingTechnique] = useState(false);
-  const [combatLog, setCombatLog] = useState<string[]>([]);
+  const [roundTimer, setRoundTimer] = useState(timeRemaining);
 
-  const [player1] = players;
+  const audioManager = useAudio();
 
-  // Handle technique execution
+  // Handle timer countdown
+  useEffect(() => {
+    setRoundTimer(timeRemaining);
+
+    if (timeRemaining <= 10 && timeRemaining > 0) {
+      audioManager.playSFX("countdown");
+    }
+  }, [timeRemaining, audioManager]);
+
+  // Check for win conditions
+  useEffect(() => {
+    const winner = CombatSystem.checkWinCondition(players);
+    if (winner) {
+      console.log(`Winner detected: ${winner}`);
+      // In a full implementation, this would trigger game phase change
+    }
+  }, [players]);
+
   const handleTechniqueExecute = useCallback(
-    async (playerIndex: number, technique: any) => {
-      setIsExecutingTechnique(true);
+    async (
+      playerIndex: 0 | 1,
+      technique: KoreanTechnique
+    ): Promise<CombatResult | undefined> => {
+      if (isExecutingTechnique || isPaused) return;
+
+      const attacker = players[playerIndex];
+      const defender = players[1 - playerIndex];
 
       try {
-        const attacker = players[playerIndex];
-        const defender = players[1 - playerIndex];
+        setIsExecutingTechnique(true);
+        const result = executeTechnique(attacker, defender, technique);
 
-        // Simulate technique execution
-        const damage = technique.damage || Math.floor(Math.random() * 20) + 10;
-        const newHealth = Math.max(0, defender.health - damage);
+        // Play appropriate audio
+        audioManager.playSFX("attack_light");
+        if (result.hitResult.hit) {
+          audioManager.playSFX("hit_light");
+        }
 
-        // Update defender
-        onPlayerUpdate(1 - playerIndex, {
-          health: newHealth,
-          pain: Math.min(100, defender.pain + damage * 0.5),
-        });
-
-        // Update attacker stamina/ki
-        onPlayerUpdate(playerIndex, {
-          stamina: Math.max(
-            0,
-            attacker.stamina - (technique.staminaCost || 10)
-          ),
-          ki: Math.max(0, attacker.ki - (technique.kiCost || 5)),
-        });
-
-        // Add combat effect
-        const effect: HitEffect = {
-          id: `hit-${Date.now()}`,
-          type:
-            damage > 30
-              ? "critical"
-              : damage > 20
-              ? "heavy"
-              : damage > 10
-              ? "medium"
-              : "light",
-          position: { x: defender.position.x, y: defender.position.y },
-          damage,
-          timestamp: gameTime,
-          duration: 1000,
-          color: KOREAN_COLORS.WHITE, // If HitEffect expects a number, leave as is
-          playerId: defender.id,
+        // Update combat log
+        const logEntry: KoreanTextType = {
+          korean: `${attacker.name.korean}이(가) ${
+            technique.koreanName
+          } 사용! ${
+            result.hitResult.hit ? `${result.hitResult.damage} 피해` : "빗나감"
+          }.`,
+          english: `${attacker.name.english} used ${technique.englishName}! ${
+            result.hitResult.hit ? `${result.hitResult.damage} damage` : "Miss"
+          }.`,
         };
+        setCombatLog((prev) => [logEntry, ...prev.slice(0, 4)]);
 
-        setCombatEffects((prev) => [...prev, effect]);
+        // Update player states
+        onPlayerUpdate(playerIndex, result.updatedAttacker);
+        onPlayerUpdate(1 - playerIndex, result.updatedDefender);
 
-        // Add to combat log
-        const logEntry = `${attacker.name}: ${technique.koreanName} (${damage} 데미지)`;
-        setCombatLog((prev) => [...prev.slice(-4), logEntry]);
+        // Switch active player after technique
+        setActivePlayerIndex((prev) => (prev === 0 ? 1 : 0));
+
+        return result.hitResult;
       } catch (error) {
-        console.error("Technique execution error:", error);
+        console.error("Failed to execute technique:", error);
+        const errorLog: KoreanTextType = {
+          korean: "기술 실행 실패",
+          english: "Technique execution failed",
+        };
+        setCombatLog((prev) => [errorLog, ...prev.slice(0, 4)]);
       } finally {
-        setTimeout(() => setIsExecutingTechnique(false), 500);
+        setIsExecutingTechnique(false);
       }
     },
-    [players, onPlayerUpdate, gameTime]
+    [players, isExecutingTechnique, isPaused, onPlayerUpdate, audioManager]
   );
 
-  // Handle combat result
-  const handleCombatResult = useCallback(
-    (result: CombatResult) => {
-      if (result.winner) {
-        const phase = result.winner === player1.id ? "victory" : "defeat";
-        onGamePhaseChange(phase);
-      }
+  const handleStanceChange = useCallback(
+    (playerIndex: 0 | 1, stance: (typeof players)[0]["currentStance"]) => {
+      if (isPaused) return;
+
+      onPlayerUpdate(playerIndex, { currentStance: stance });
+      audioManager.playSFX("stance_change");
+
+      const stanceData = TRIGRAM_DATA[stance as TrigramStance];
+      const logEntry: KoreanTextType = {
+        korean: `${players[playerIndex].name.korean}이(가) ${
+          stanceData?.name.korean || stance
+        } 자세로 변경.`,
+        english: `${players[playerIndex].name.english} changed to ${
+          stanceData?.name.english || stance
+        } stance.`,
+      };
+      setCombatLog((prevLog) => [logEntry, ...prevLog.slice(0, 4)]);
     },
-    [player1.id, onGamePhaseChange]
+    [players, onPlayerUpdate, isPaused, audioManager]
   );
 
-  // Clean up old effects
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCombatEffects((prev) =>
-        prev.filter((effect) => gameTime - effect.timestamp < effect.duration)
-      );
-    }, 100);
+  const combatLogStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: KOREAN_FONT_FAMILY,
+        fontSize: 14,
+        fill: CYBERPUNK_PALETTE.TEXT_SECONDARY,
+        align: "left",
+        wordWrap: true,
+        wordWrapWidth: GAME_CONFIG.CANVAS_WIDTH - 40,
+      }),
+    []
+  );
 
-    return () => clearInterval(interval);
-  }, [gameTime]);
+  const backgroundDraw = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+      g.beginFill(CYBERPUNK_PALETTE.UI_BACKGROUND_DARK, 0.9);
+      g.drawRect(0, 0, width, height);
+      g.endFill();
+
+      // Combat arena outline
+      g.lineStyle(2, CYBERPUNK_PALETTE.PRIMARY_CYAN, 0.3);
+      g.moveTo(20, height - 150);
+      g.lineTo(width - 20, height - 150);
+    },
+    [width, height]
+  );
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: `linear-gradient(135deg, #${KOREAN_COLORS.BLACK.toString(
-          16
-        )} 0%, #1a1a2e 50%, #16213e 100%)`,
-        color: "#" + KOREAN_COLORS.WHITE.toString(16),
-        position: "relative",
-      }}
-      data-testid="combat-screen"
-    >
+    <Container>
+      <Graphics draw={backgroundDraw} />
+
       {/* Combat HUD */}
       <CombatHUD
         players={players}
-        timeRemaining={timeRemaining}
+        timeRemaining={roundTimer}
         currentRound={currentRound}
+        maxRounds={3}
         isPaused={isPaused}
-        data-testid="combat-hud"
+        isPlayerTurn={activePlayerIndex === 0}
+        x={0}
+        y={0}
       />
 
-      {/* Main Combat Arena */}
-      <div
-        style={{
-          height: "calc(100vh - 120px)",
-          position: "relative",
-        }}
-        data-testid="combat-arena-container"
-      >
-        <CombatArena
-          players={players}
-          onPlayerUpdate={onPlayerUpdate}
-          onTechniqueExecute={handleTechniqueExecute}
-          onCombatResult={handleCombatResult}
-          combatEffects={combatEffects}
-          isExecutingTechnique={isExecutingTechnique}
-          showVitalPoints={false}
-          showDebugInfo={process.env.NODE_ENV === "development"}
-          data-testid="combat-arena"
-        />
-      </div>
+      {/* Combat Arena */}
+      <CombatArena
+        players={players}
+        onPlayerUpdate={onPlayerUpdate}
+        onTechniqueExecute={handleTechniqueExecute}
+        combatEffects={[]}
+        isExecutingTechnique={isExecutingTechnique}
+        showVitalPoints={false}
+        showDebugInfo={false}
+        x={0}
+        y={GAME_CONFIG.CANVAS_HEIGHT * 0.15}
+        width={GAME_CONFIG.CANVAS_WIDTH}
+        height={GAME_CONFIG.CANVAS_HEIGHT * 0.6}
+      />
 
       {/* Combat Controls */}
       <CombatControls
         players={players}
-        player={player1}
-        onStanceChange={(playerIndex: number, stance: string) => {
-          onPlayerUpdate(playerIndex, { stance: stance as TrigramStance });
-        }}
+        player={players[activePlayerIndex]}
+        onStanceChange={handleStanceChange}
         isExecutingTechnique={isExecutingTechnique}
         isPaused={isPaused}
         showVitalPoints={false}
-        data-testid="combat-controls"
+        x={0}
+        y={GAME_CONFIG.CANVAS_HEIGHT - 120}
+        width={GAME_CONFIG.CANVAS_WIDTH}
+        height={120}
       />
+
+      {/* Combat Log */}
+      <Container y={GAME_CONFIG.CANVAS_HEIGHT - 200} x={20}>
+        {combatLog.map((entry, index) => (
+          <Text
+            key={`log-${index}`}
+            text={`${entry.korean} / ${entry.english}`}
+            style={combatLogStyle}
+            y={index * -18}
+            x={0}
+            alpha={1 - index * 0.2}
+          />
+        ))}
+      </Container>
 
       {/* Pause Overlay */}
       {isPaused && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.8)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-          data-testid="pause-overlay"
-        >
-          <div
-            style={{
-              backgroundColor: "rgba(0,0,0,0.9)",
-              padding: "2rem",
-              borderRadius: "10px",
-              border: `2px solid ${KOREAN_COLORS.CYAN}`,
+        <Container>
+          <Graphics
+            draw={(g: PIXI.Graphics) => {
+              g.clear();
+              g.beginFill(CYBERPUNK_PALETTE.UI_BACKGROUND_DARK, 0.8);
+              g.drawRect(
+                0,
+                0,
+                GAME_CONFIG.CANVAS_WIDTH,
+                GAME_CONFIG.CANVAS_HEIGHT
+              );
+              g.endFill();
             }}
-            data-testid="pause-dialog"
+          />
+          <Container
+            x={GAME_CONFIG.CANVAS_WIDTH / 2}
+            y={GAME_CONFIG.CANVAS_HEIGHT / 2}
           >
-            <KoreanText
-              korean="일시 정지"
-              english="Paused"
-              size="xlarge"
-              weight="bold"
-              color={"#" + KOREAN_COLORS.CYAN.toString(16)}
-              data-testid="pause-title"
+            <Text
+              text="일시정지 (Paused)"
+              anchor={0.5}
+              style={
+                new PIXI.TextStyle({
+                  fontFamily: KOREAN_FONT_FAMILY,
+                  fontSize: 48,
+                  fill: CYBERPUNK_PALETTE.TEXT_ACCENT,
+                  align: "center",
+                })
+              }
+              y={-50}
             />
-            <div style={{ marginTop: "1rem", textAlign: "center" }}>
-              <button
-                onClick={() => onGamePhaseChange("intro")}
-                style={{
-                  backgroundColor: "#" + KOREAN_COLORS.RED.toString(16),
-                  color: "#" + KOREAN_COLORS.WHITE.toString(16),
-                  border: "none",
-                  padding: "0.75rem 1.5rem",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  fontFamily: '"Noto Sans KR", Arial, sans-serif',
-                }}
-                data-testid="return-to-menu-button"
-              >
-                <KoreanText korean="메인 메뉴" english="Main Menu" />
-              </button>
-            </div>
-          </div>
-        </div>
+            <Text
+              text="SPACE: 계속 (Resume) | ESC: 메뉴 (Menu)"
+              anchor={0.5}
+              style={
+                new PIXI.TextStyle({
+                  fontFamily: KOREAN_FONT_FAMILY,
+                  fontSize: 24,
+                  fill: CYBERPUNK_PALETTE.TEXT_SECONDARY,
+                  align: "center",
+                })
+              }
+              y={20}
+            />
+          </Container>
+        </Container>
       )}
-
-      {/* Combat Log */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          left: "10px",
-          backgroundColor: "rgba(0,0,0,0.7)",
-          padding: "1rem",
-          borderRadius: "5px",
-          maxWidth: "300px",
-        }}
-        data-testid="combat-log"
-      >
-        <KoreanText
-          korean="전투 기록"
-          english="Combat Log"
-          size="small"
-          weight="bold"
-          color={"#" + KOREAN_COLORS.CYAN.toString(16)}
-          data-testid="combat-log-title"
-        />
-        {combatLog.map((entry, index) => (
-          <div
-            key={index}
-            style={{ fontSize: "12px", marginTop: "0.25rem" }}
-            data-testid={`combat-log-entry-${index}`}
-          >
-            {entry}
-          </div>
-        ))}
-      </div>
-    </div>
+    </Container>
   );
-}
+};
 
 export default CombatScreen;

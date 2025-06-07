@@ -70,7 +70,7 @@ export class TrigramSystem {
     const healthRatio = playerState
       ? playerState.health / playerState.maxHealth
       : 1.0;
-    const modifier = healthRatio < 0.5 ? 1.5 : 1.0;
+    const modifier = healthRatio < 0.5 ? 1.5 : 1.0; // Ensure healthRatio is used correctly
 
     return {
       ki: Math.floor(baseKiCost * modifier),
@@ -96,7 +96,7 @@ export class TrigramSystem {
     }
 
     // Fix: Use correct method name and variable
-    const effectiveness = this.getStanceEffectiveness(fromStance, toStance);
+    const effectiveness = this.getStanceEffectiveness(fromStance, toStance); // Changed from calculateStanceEffectiveness
     const risk = this.calculateRisk(cost, playerState);
 
     return {
@@ -125,7 +125,7 @@ export class TrigramSystem {
     );
 
     // Fix: Use correct method name
-    const effectiveness = this.getStanceEffectiveness(fromStance, toStance);
+    const effectiveness = this.getStanceEffectiveness(fromStance, toStance); // Changed from calculateStanceEffectiveness
 
     // Calculate risk based on the cost and player state
     const risk = this.calculateRisk(directCost, playerState);
@@ -170,6 +170,7 @@ export class TrigramSystem {
   ): TransitionPath | null {
     // Simplified: direct path, consider "safest" as lowest cost or highest defensive gain
     const cost = this.trigramCalculator.calculateTransitionCost(
+      // Use this.trigramCalculator
       currentStance,
       targetStance,
       playerState
@@ -198,6 +199,7 @@ export class TrigramSystem {
   ): TransitionPath | null {
     // Simplified: direct path, "quickest" means lowest timeMilliseconds
     const cost = this.trigramCalculator.calculateTransitionCost(
+      // Use this.trigramCalculator
       currentStance,
       targetStance,
       playerState
@@ -224,6 +226,7 @@ export class TrigramSystem {
     defenderStance: TrigramStance
   ): number {
     return this.trigramCalculator.getStanceEffectiveness(
+      // Use this.trigramCalculator
       attackerStance,
       defenderStance
     );
@@ -264,7 +267,7 @@ export class TrigramSystem {
       "gan",
       "gon",
     ];
-    let bestStance: TrigramStance = playerState.stance;
+    let bestStance: TrigramStance = playerState.currentStance;
     let bestEffectiveness = 0;
 
     for (const stance of stances) {
@@ -283,13 +286,13 @@ export class TrigramSystem {
     newStance: TrigramStance
   ): {
     success: boolean;
-    cost: { ki: number; stamina: number; timeMilliseconds: number };
+    cost: { ki: number; stamina: number; timeMilliseconds: number }; // Ensure this matches TrigramTransitionCost
     newState?: PlayerState;
     reason?: string;
   } {
     // Check if player can afford the stance change
     const transitionCost = this.trigramCalculator.calculateTransitionCost(
-      playerState.stance,
+      playerState.currentStance as TrigramStance, // Ensure currentStance is used
       newStance,
       playerState
     );
@@ -313,10 +316,10 @@ export class TrigramSystem {
     // Execute stance change
     const newState: PlayerState = {
       ...playerState,
-      stance: newStance,
+      currentStance: newStance, // Use currentStance, not stance
       ki: playerState.ki - transitionCost.ki,
       stamina: playerState.stamina - transitionCost.stamina,
-      lastStanceChangeTime: Date.now(),
+      lastStanceChangeTime: Date.now(), // Ensure this field exists and is updated
     };
 
     return {
@@ -336,7 +339,9 @@ export class TrigramSystem {
 
   public getKiRecoveryRate(player: PlayerState): number {
     const baseRate = 1.0;
-    const stanceModifier = TRIGRAM_DATA[player.stance]?.kiFlowModifier || 1.0;
+    const stanceModifier =
+      TRIGRAM_DATA[player.currentStance as TrigramStance]?.kiFlowModifier || // Ensure currentStance is used
+      1.0;
     return baseRate * stanceModifier;
   }
 }

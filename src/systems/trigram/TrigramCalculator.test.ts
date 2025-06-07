@@ -15,10 +15,10 @@ const createMockPlayerState = (
   health = 100
 ): PlayerState => ({
   id: "player1",
-  name: "Test Player",
+  name: { korean: "테스트 플레이어", english: "Test Player" }, // Use KoreanText
   archetype: "musa",
   position: { x: 0, y: 0 },
-  stance,
+  currentStance: stance,
   facing: "right",
   health,
   maxHealth: 100,
@@ -31,11 +31,42 @@ const createMockPlayerState = (
   balance: 100,
   bloodLoss: 0,
   lastStanceChangeTime: 0,
-  isAttacking: false,
-  combatReadiness: 100,
+  combatReadiness: "ready", // Use a valid CombatReadiness string, not a number
   activeEffects: [],
-  combatState: "ready",
-  conditions: [],
+  combatState: "idle",
+  comboCount: 0,
+  lastActionTime: 0,
+  vitalPointDamage: {},
+  bodyPartStatus: {
+    head: "healthy",
+    face_upper: "healthy",
+    chest: "healthy",
+    abdomen: "healthy",
+    neck: "healthy",
+    torso: "healthy",
+    left_arm: "healthy",
+    right_arm: "healthy",
+    left_leg: "healthy",
+    right_leg: "healthy",
+  },
+  knownTechniques: [],
+  currentTargetId: null,
+  attributes: {
+    strength: 10,
+    agility: 10,
+    endurance: 10,
+    intelligence: 10,
+    focus: 10,
+    resilience: 10,
+  },
+  skills: {
+    striking: 10,
+    kicking: 10,
+    grappling: 10,
+    weaponry: 0,
+    meditation: 5,
+    strategy: 5,
+  },
 });
 
 describe("TrigramCalculator", () => {

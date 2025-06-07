@@ -101,7 +101,8 @@ export class TrigramCalculator {
     const baseRate = 1.5; // Base Ki recovery per second or tick
     const healthModifier = playerState.health / playerState.maxHealth; // Healthier recovers faster
     const stanceModifier =
-      TRIGRAM_DATA[playerState.stance]?.kiFlowModifier || 1.0; // Stance specific modifier
+      TRIGRAM_DATA[playerState.currentStance as TrigramStance]
+        ?.kiFlowModifier || 1.0; // Stance specific modifier
 
     // Consider active effects that might alter Ki recovery
     let effectsModifier = 1.0;

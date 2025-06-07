@@ -1,295 +1,99 @@
-import React, { useState, useCallback, useEffect, useReducer } from "react";
+import React, { Suspense, useMemo } from "react";
+import { Application as PixiApplication } from "@pixi/react";
+import { AudioManager } from "./audio/AudioManager";
 import { AudioProvider } from "./audio/AudioProvider";
-import { IntroScreen } from "./components/intro/IntroScreen";
-import { TrainingScreen } from "./components/training/TrainingScreen";
-import { CombatScreen } from "./components/combat/CombatScreen";
-import EndScreen from "./components/ui/EndScreen";
-import type {
-  AppState,
-  GamePhase,
-  PlayerState,
-  PlayerArchetype,
-  TrigramStance,
-} from "./types";
+import { GameEngine } from "./components/game/GameEngine";
+import { GAME_CONFIG } from "./types/constants";
 import { createPlayerState } from "./utils/playerUtils";
-import { KOREAN_COLORS } from "./types/constants";
+import type { PlayerState, GamePhase, KoreanText, GameState } from "./types";
 import "./App.css";
 
-// App state reducer for complex state management
-interface AppAction {
-  readonly type:
-    | "SET_PHASE"
-    | "UPDATE_PLAYER"
-    | "UPDATE_GAME_TIME"
-    | "SET_WINNER"
-    | "RESET_GAME"
-    | "TOGGLE_PAUSE"
-    | "ADD_COMBAT_LOG";
-  readonly payload?: any;
-}
+const App: React.FC = () => {
+  const [gamePhase, setGamePhase] = React.useState<GamePhase>("intro");
 
-function appReducer(state: AppState, action: AppAction): AppState {
-  switch (action.type) {
-    case "SET_PHASE":
-      return { ...state, gamePhase: action.payload };
+  const initialPlayer1Name: KoreanText = {
+    korean: "선수1",
+    english: "Player 1",
+  };
+  const initialPlayer2Name: KoreanText = {
+    korean: "선수2",
+    english: "Player 2",
+  };
 
-    case "UPDATE_PLAYER":
-      const { playerIndex, updates } = action.payload;
-      const newPlayers = [...state.players] as [PlayerState, PlayerState];
-      newPlayers[playerIndex] = { ...newPlayers[playerIndex], ...updates };
-      return { ...state, players: newPlayers };
+  const [player1, setPlayer1] = React.useState<PlayerState>(() =>
+    createPlayerState("player1", "musa", initialPlayer1Name)
+  );
+  const [player2, setPlayer2] = React.useState<PlayerState>(() =>
+    createPlayerState("player2", "amsalja", initialPlayer2Name)
+  );
 
-    case "UPDATE_GAME_TIME":
-      return {
-        ...state,
-        gameTime: action.payload,
-        timeRemaining: Math.max(0, state.timeRemaining - action.payload),
-      };
-
-    case "SET_WINNER":
-      return { ...state, winnerId: action.payload };
-
-    case "TOGGLE_PAUSE":
-      return { ...state, isPaused: !state.isPaused };
-
-    case "ADD_COMBAT_LOG":
-      return {
-        ...state,
-        combatLog: [...state.combatLog.slice(-9), action.payload],
-      };
-
-    case "RESET_GAME":
-      return {
-        ...state,
-        gamePhase: "intro",
-        gameTime: 0,
-        currentRound: 1,
-        timeRemaining: 180000,
-        combatLog: [],
-        isPaused: false,
-        winnerId: null,
-        players: [
-          createPlayerState("player1", "musa"),
-          createPlayerState("training_dummy", "musa"),
-        ],
-      };
-
-    default:
-      return state;
-  }
-}
-
-// Initial app state
-const initialAppState: AppState = {
-  gamePhase: "intro",
-  players: [
-    createPlayerState("player1", "musa"),
-    createPlayerState("training_dummy", "musa"),
-  ],
-  gameTime: 0,
-  currentRound: 1,
-  timeRemaining: 180000, // 3 minutes default
-  combatLog: [],
-  isPaused: false,
-  winnerId: null,
-};
-
-export default function App(): React.JSX.Element {
-  const [appState, dispatch] = useReducer(appReducer, initialAppState);
-  const [selectedArchetype, setSelectedArchetype] =
-    useState<PlayerArchetype>("musa");
-
-  // Handle game phase changes with proper type conversion
-  const handlePhaseChange = useCallback((phase: GamePhase | string) => {
-    const validPhase = phase as GamePhase;
-    dispatch({ type: "SET_PHASE", payload: validPhase });
+  const audioManager = useMemo(() => {
+    return new AudioManager();
   }, []);
 
-  // Handle player updates
-  const handlePlayerUpdate = useCallback(
-    (playerIndex: number, updates: Partial<PlayerState>) => {
-      dispatch({ type: "UPDATE_PLAYER", payload: { playerIndex, updates } });
-    },
-    []
-  );
-
-  // Handle archetype selection
-  const handleArchetypeSelect = useCallback(
-    (archetype: PlayerArchetype) => {
-      setSelectedArchetype(archetype);
-      // Update player 1 with new archetype
-      const updatedPlayer = createPlayerState("player1", archetype);
-      handlePlayerUpdate(0, updatedPlayer);
-    },
-    [handlePlayerUpdate]
-  );
-
-  // Handle stance selection
-  const handleStanceSelect = useCallback(
-    (stance: TrigramStance) => {
-      handlePlayerUpdate(0, { stance });
-    },
-    [handlePlayerUpdate]
-  );
-
-  // Game timer effect
-  useEffect(() => {
-    if (appState.gamePhase === "combat" && !appState.isPaused) {
-      const interval = setInterval(() => {
-        dispatch({ type: "UPDATE_GAME_TIME", payload: 16 }); // ~60fps
-      }, 16);
-
-      return () => clearInterval(interval);
-    }
-  }, [appState.gamePhase, appState.isPaused]);
-
-  // Check for victory conditions
-  useEffect(() => {
-    if (appState.gamePhase === "combat") {
-      const [player1, player2] = appState.players;
-
-      if (player1.health <= 0) {
-        dispatch({ type: "SET_WINNER", payload: player2.id });
-        handlePhaseChange("defeat");
-      } else if (player2.health <= 0) {
-        dispatch({ type: "SET_WINNER", payload: player1.id });
-        handlePhaseChange("victory");
-      } else if (appState.timeRemaining <= 0) {
-        // Time up - determine winner by health
-        const winner =
-          player1.health > player2.health ? player1.id : player2.id;
-        dispatch({ type: "SET_WINNER", payload: winner });
-        handlePhaseChange(
-          player1.health > player2.health ? "victory" : "defeat"
-        );
-      }
-    }
-  }, [
-    appState.players,
-    appState.timeRemaining,
-    appState.gamePhase,
-    handlePhaseChange,
-  ]);
-
-  // Render current game phase
-  const renderCurrentPhase = () => {
-    switch (appState.gamePhase) {
-      case "intro":
-        return (
-          <IntroScreen
-            onArchetypeSelect={handleArchetypeSelect}
-            onStartTraining={() => handlePhaseChange("training")}
-            onStartCombat={() => handlePhaseChange("combat")}
-            selectedArchetype={selectedArchetype}
-            data-testid="intro-screen"
-          />
-        );
-
-      case "training":
-        return (
-          <TrainingScreen
-            players={appState.players}
-            onPlayerUpdate={handlePlayerUpdate}
-            onStanceChange={handleStanceSelect}
-            gameTime={appState.gameTime}
-            onReturnToMenu={() => handlePhaseChange("intro")}
-            onStartCombat={() => handlePhaseChange("combat")}
-            data-testid="training-screen"
-          />
-        );
-
-      case "combat":
-        return (
-          <CombatScreen
-            players={appState.players}
-            onGamePhaseChange={handlePhaseChange}
-            onPlayerUpdate={handlePlayerUpdate}
-            gameTime={appState.gameTime}
-            currentRound={appState.currentRound}
-            timeRemaining={appState.timeRemaining}
-            isPaused={appState.isPaused}
-            data-testid="combat-screen"
-          />
-        );
-
-      case "victory":
-      case "defeat":
-        return (
-          <EndScreen
-            winnerId={appState.winnerId}
-            onRestart={() => dispatch({ type: "RESET_GAME" })}
-            onMenu={() => handlePhaseChange("intro")}
-            winner={appState.winnerId || ""}
-            data-testid="end-screen"
-          />
-        );
-
-      default:
-        return (
-          <div
-            style={{
-              color: `#${KOREAN_COLORS.WHITE.toString(16)}`,
-              backgroundColor: `#${KOREAN_COLORS.BLACK.toString(16)}`,
-              minHeight: "100vh",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            data-testid="loading-screen"
-          >
-            <h1>흑괘 (Black Trigram) - Loading...</h1>
-          </div>
-        );
+  const handlePlayerUpdate = (
+    playerIndex: number,
+    updates: Partial<PlayerState>
+  ) => {
+    if (playerIndex === 0) {
+      setPlayer1((prevPlayer) => ({ ...prevPlayer, ...updates }));
+    } else if (playerIndex === 1) {
+      setPlayer2((prevPlayer) => ({ ...prevPlayer, ...updates }));
     }
   };
 
-  return (
-    <AudioProvider>
-      <div
-        className="app"
-        style={{
-          minHeight: "100vh",
-          background: `linear-gradient(135deg, #${KOREAN_COLORS.BLACK.toString(
-            16
-          )} 0%, #1a1a2e 50%, #16213e 100%)`,
-          color: `#${KOREAN_COLORS.WHITE.toString(16)}`,
-          fontFamily: '"Noto Sans KR", Arial, sans-serif',
-        }}
-        data-testid="app-container"
-      >
-        {renderCurrentPhase()}
+  const handleGamePhaseChange = (newPhase: GamePhase | string) => {
+    setGamePhase(newPhase as GamePhase);
+    if (newPhase === "combat") {
+      setPlayer1((prev) =>
+        createPlayerState(prev.id, prev.archetype, prev.name)
+      );
+      setPlayer2((prev) =>
+        createPlayerState(prev.id, prev.archetype, prev.name)
+      );
+    }
+  };
 
-        {/* Debug information in development */}
-        {process.env.NODE_ENV === "development" && (
-          <div
-            style={{
-              position: "fixed",
-              top: 10,
-              right: 10,
-              backgroundColor: "rgba(0,0,0,0.7)",
-              color: `#${KOREAN_COLORS.CYAN.toString(16)}`,
-              padding: "10px",
-              borderRadius: "5px",
-              fontSize: "12px",
-              fontFamily: "monospace",
-              zIndex: 1000,
-            }}
-            data-testid="debug-panel"
-          >
-            <div data-testid="debug-phase">Phase: {appState.gamePhase}</div>
-            <div data-testid="debug-time">
-              Time: {Math.floor(appState.gameTime / 1000)}s
-            </div>
-            <div data-testid="debug-round">Round: {appState.currentRound}</div>
-            <div data-testid="debug-p1-health">
-              P1: {appState.players[0].health}HP
-            </div>
-            <div data-testid="debug-p2-health">
-              P2: {appState.players[1].health}HP
-            </div>
-          </div>
-        )}
+  const handleGameStateChange = (state: Partial<GameState>) => {
+    // Handle game state changes
+    console.log("Game state changed:", state);
+
+    // Update any global state management here
+    if (state.phase) {
+      // Handle phase changes
+      console.log("Game phase changed to:", state.phase);
+    }
+
+    if (state.isPaused !== undefined) {
+      // Handle pause state changes
+      console.log("Game pause state:", state.isPaused);
+    }
+
+    // Additional state handling logic as needed
+  };
+
+  return (
+    <AudioProvider manager={audioManager}>
+      <div className="app-container">
+        <PixiApplication
+          width={GAME_CONFIG.CANVAS_WIDTH}
+          height={GAME_CONFIG.CANVAS_HEIGHT}
+          options={{ backgroundColor: GAME_CONFIG.BACKGROUND_COLOR }}
+        >
+          <Suspense fallback={null}>
+            <GameEngine
+              gamePhase={gamePhase}
+              player1={player1}
+              player2={player2}
+              onGamePhaseChange={handleGamePhaseChange}
+              onPlayerUpdate={handlePlayerUpdate}
+              onGameStateChange={handleGameStateChange}
+            />
+          </Suspense>
+        </PixiApplication>
       </div>
     </AudioProvider>
   );
-}
+};
+
+export default App;

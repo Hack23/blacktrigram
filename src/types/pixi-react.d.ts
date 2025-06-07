@@ -10,24 +10,25 @@ import type {
   DisplayObject,
   FederatedPointerEvent,
   TextStyle,
-  Application,
+  Application as PIXIApplication, // Renamed to avoid conflict
 } from "pixi.js";
 
 // PIXI.js React integration type declarations
 declare module "@pixi/react" {
-  import { ComponentType, ReactNode, RefObject } from "react";
   import * as PIXI from "pixi.js";
+  import { ComponentType, ReactNode, RefObject } from "react";
 
   // Application component props (this is the React component, not the PIXI.Application class)
   export interface ApplicationProps {
     width?: number;
     height?: number;
-    backgroundColor?: number;
+    backgroundColor?: number; // Changed from background
     antialias?: boolean;
     resolution?: number;
-    style?: React.CSSProperties;
+    style?: React.CSSProperties; // Added
     children?: ReactNode;
     // Note: ref is handled by React.forwardRef, not as a direct prop
+    options?: Partial<PIXI.IApplicationOptions>; // Added to match usage
   }
 
   // Base PIXI component props
@@ -35,7 +36,7 @@ declare module "@pixi/react" {
     x?: number;
     y?: number;
     rotation?: number;
-    scale?: number | { x: number; y: number };
+    scale?: number | { x: number; y: number } | [number, number]; // Added [number, number]
     alpha?: number;
     visible?: boolean;
     interactive?: boolean;
@@ -52,8 +53,15 @@ declare module "@pixi/react" {
     onpointermove?: (event: PIXI.FederatedPointerEvent) => void;
     onpointerover?: (event: PIXI.FederatedPointerEvent) => void;
     onpointerout?: (event: PIXI.FederatedPointerEvent) => void;
-    onpointertap?: (event: PIXI.FederatedPointerEvent) => void;
-    onclick?: (event: PIXI.FederatedPointerEvent) => void;
+    onpointertap?: (event: PIXI.FederatedPointerEvent) => void; // Added
+    onclick?: (event: PIXI.FederatedPointerEvent) => void; // Added
+    pointertap?: (event: PIXI.FederatedPointerEvent) => void; // Added for consistency
+    click?: (event: PIXI.FederatedPointerEvent) => void; // Added for consistency
+    pointerdown?: (event: PIXI.FederatedPointerEvent) => void;
+    pointerup?: (event: PIXI.FederatedPointerEvent) => void;
+    pointermove?: (event: PIXI.FederatedPointerEvent) => void;
+    pointerover?: (event: PIXI.FederatedPointerEvent) => void;
+    pointerout?: (event: PIXI.FederatedPointerEvent) => void;
   }
 
   // Container component props
@@ -67,37 +75,41 @@ declare module "@pixi/react" {
   interface GraphicsProps extends PixiComponentProps {
     draw: (graphics: PIXI.Graphics) => void;
     clear?: boolean;
+    geometry?: PIXI.GraphicsGeometry; // Added
   }
 
   // Text component props
   interface TextProps extends PixiComponentProps {
     text: string;
-    style?: Partial<PIXI.TextStyle> | PIXI.TextStyle;
-    anchor?: number | { x: number; y: number };
+    style?: Partial<PIXI.ITextStyle> | PIXI.TextStyle; // Use ITextStyle for broader compatibility
+    anchor?: number | { x: number; y: number } | [number, number]; // Added [number, number]
     resolution?: number;
   }
 
   // Sprite component props
   interface SpriteProps extends PixiComponentProps {
     texture?: PIXI.Texture | string;
-    anchor?: number | { x: number; y: number };
+    anchor?: number | { x: number; y: number } | [number, number]; // Added [number, number]
     tint?: number;
     width?: number;
     height?: number;
-    image?: string;
+    image?: string; // Often used for initial texture loading
   }
 
   // AnimatedSprite component props
   interface AnimatedSpriteProps extends PixiComponentProps {
-    textures: PIXI.Texture[];
+    textures: PIXI.Texture[] | PIXI.FrameObject[];
     animationSpeed?: number;
     loop?: boolean;
     autoUpdate?: boolean;
     onComplete?: () => void;
     onFrameChange?: (currentFrame: number) => void;
     onLoop?: () => void;
-    anchor?: number | { x: number; y: number };
+    anchor?: number | { x: number; y: number } | [number, number]; // Added [number, number]
     tint?: number;
+    isPlaying?: boolean; // Added
+    initialFrame?: number; // Added
+    currentFrame?: number; // Added
   }
 
   // TilingSprite component props
@@ -105,10 +117,11 @@ declare module "@pixi/react" {
     texture: PIXI.Texture;
     width: number;
     height: number;
-    tilePosition?: { x: number; y: number };
-    tileScale?: { x: number; y: number };
-    anchor?: number | { x: number; y: number };
+    tilePosition?: { x: number; y: number } | PIXI.Point | PIXI.ObservablePoint;
+    tileScale?: { x: number; y: number } | PIXI.Point | PIXI.ObservablePoint;
+    anchor?: number | { x: number; y: number } | [number, number]; // Added [number, number]
     tint?: number;
+    tileTransform?: PIXI.Transform; // Added
   }
 
   // NineSliceSprite component props
@@ -120,12 +133,24 @@ declare module "@pixi/react" {
     bottomHeight?: number;
     width?: number;
     height?: number;
-    anchor?: number | { x: number; y: number };
+    anchor?: number | { x: number; y: number } | [number, number]; // Added [number, number]
     tint?: number;
   }
 
+  // Stage component props (Root container for PIXI elements)
+  export interface StageProps extends ContainerProps {
+    width?: number;
+    height?: number;
+    options?: Partial<PIXI.IApplicationOptions>;
+    raf?: boolean;
+    renderOnUpdate?: boolean;
+  }
+
   // Component exports - Application is the React component wrapper
-  export const Application: ComponentType<ApplicationProps>;
+  export const Application: ComponentType<
+    ApplicationProps & { children?: ReactNode }
+  >; // Ensure children is part of ApplicationProps
+  export const Stage: ComponentType<StageProps>; // Added Stage export
   export const Container: ComponentType<ContainerProps>;
   export const Graphics: ComponentType<GraphicsProps>;
   export const Text: ComponentType<TextProps>;
@@ -137,26 +162,37 @@ declare module "@pixi/react" {
   // Hooks
   export function useApp(): PIXI.Application;
   export function useTick(
-    callback: (delta: number) => void,
-    enabled?: boolean
+    callback: (delta: number, ticker: PIXI.Ticker) => void, // Added ticker
+    enabled?: boolean,
+    render?: boolean // Added
   ): void;
   export function extend(components: Record<string, any>): void;
+  export function usePixiApp(): PIXI.Application; // Alias often seen
 
   // Utility types for refs
   export type ContainerRef = RefObject<PIXI.Container>;
   export type GraphicsRef = RefObject<PIXI.Graphics>;
   export type TextRef = RefObject<PIXI.Text>;
   export type SpriteRef = RefObject<PIXI.Sprite>;
+
+  // For JSX IntrinsicElements
+  export interface PixiElements {
+    pixiContainer: ContainerProps;
+    pixiGraphics: GraphicsProps;
+    pixiText: TextProps;
+    pixiSprite: SpriteProps;
+    pixiAnimatedSprite: AnimatedSpriteProps;
+    pixiTilingSprite: TilingSpriteProps;
+    pixiNineSliceSprite: NineSliceSpriteProps;
+    // Add other components if needed
+  }
 }
 
 // Extend JSX namespace
 declare global {
   namespace JSX {
-    interface IntrinsicElements {
-      pixiContainer: import("@pixi/react").PixiElements["pixiContainer"];
-      pixiGraphics: import("@pixi/react").PixiElements["pixiGraphics"];
-      pixiText: import("@pixi/react").PixiElements["pixiText"];
-      pixiSprite: import("@pixi/react").PixiElements["pixiSprite"];
+    interface IntrinsicElements extends import("@pixi/react").PixiElements {
+      // Ensure PixiElements are merged correctly
     }
   }
 }
@@ -169,5 +205,3 @@ declare global {
     // If PIXI's own types are not being found, you might need to ensure @types/pixi.js is installed and configured.
   }
 }
-
-export {}; // Ensures this is treated as a module

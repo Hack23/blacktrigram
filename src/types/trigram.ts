@@ -29,8 +29,9 @@ export interface TransitionPath {
   readonly totalCost: TrigramTransitionCost;
   readonly overallEffectiveness: number;
   readonly cumulativeRisk: number;
-  readonly name: string;
+  readonly name: string; // Added
   readonly description: {
+    // Added
     readonly korean: string;
     readonly english: string;
   };
@@ -41,7 +42,7 @@ export interface TrigramTransitionRule {
   readonly from: TrigramStance;
   readonly to: TrigramStance;
   readonly cost: TrigramTransitionCost;
-  readonly effectiveness: number;
+  readonly effectiveness: number; // Added
   readonly conditions?: ReadonlyArray<{
     type: "player_stat" | "archetype" | "active_effect";
     stat?: "health" | "ki" | "stamina";
@@ -50,7 +51,7 @@ export interface TrigramTransitionRule {
     threshold?: number;
     value?: boolean | string;
   }>;
-  readonly description: KoreanText;
+  readonly description: KoreanText; // Added
 }
 
 // Ki flow factors with all required properties
@@ -67,16 +68,24 @@ export interface TrigramData {
   readonly name: KoreanText;
   readonly symbol: string;
   readonly element: KoreanText; // Changed from string to KoreanText
-  readonly direction: string;
+  readonly direction?: string; // Made optional
   readonly philosophy: KoreanText; // Added philosophy property
   readonly combatRole: KoreanText; // Added combat role property
   readonly technique: KoreanTechnique; // Associated signature technique
   readonly strengths?: readonly string[]; // Added strengths property
   readonly weaknesses?: readonly string[]; // Add missing weaknesses property
-  readonly offensiveBonus?: number;
-  readonly defensiveBonus?: number;
+  readonly offensiveBonus?: number; // Added
+  readonly defensiveBonus?: number; // Added
   readonly kiFlowModifier?: number; // How this stance affects Ki recovery or usage
   readonly staminaModifier?: number; // How this stance affects Stamina recovery or usage
+  readonly theme?: {
+    // Added theme for visual styling
+    readonly primary: number;
+    readonly secondary: number;
+    readonly active: number;
+    readonly hover: number;
+    readonly glow: number;
+  };
 }
 
 // Effectiveness matrix for stance combinations
@@ -90,13 +99,13 @@ export type TrigramEffectivenessMatrix = {
 export interface TrigramSystemInterface {
   getCurrentStance(): TrigramStance;
   setStance(stance: TrigramStance): Promise<boolean>; // Returns true if successful
-  getAvailableTechniques(stance: TrigramStance): readonly KoreanTechnique[];
+  getAvailableTechniques(stance: TrigramStance): readonly KoreanTechnique[]; // Changed parameter
   getTrigramData(stance: TrigramStance): TrigramData;
   calculateTransition(
     from: TrigramStance,
     to: TrigramStance,
-    playerKi: number,
-    playerStamina: number
+    playerKi: number, // Added
+    playerStamina: number // Added
   ): TrigramTransitionCost | null; // null if not possible
   getEffectiveness(
     attackerStance: TrigramStance,
@@ -115,6 +124,6 @@ export interface StanceTransition {
   readonly from: TrigramStance;
   readonly to: TrigramStance;
   readonly cost: TrigramTransitionCost;
-  readonly duration: number;
-  readonly difficulty: number;
+  readonly duration: number; // Added
+  readonly difficulty: number; // Added
 }

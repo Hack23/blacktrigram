@@ -1,129 +1,171 @@
-import React from "react";
-import { Container } from "@pixi/react";
-import { KoreanTitle, KoreanText } from "../../ui/base/korean-text";
-import { COMBAT_CONTROLS, KOREAN_COLORS } from "../../../types";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import * as PIXI from "pixi.js";
+import type { ControlsSectionProps } from "../../../types";
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  COMBAT_CONTROLS,
+} from "../../../types/constants";
 
-interface ControlsSectionProps {}
+export const ControlsSection: React.FC<ControlsSectionProps> = ({
+  title = "게임 조작법 (Game Controls)",
+  onBackToMenu,
+  width = 800,
+  height = 600,
+  x = 0,
+  y = 0,
+}) => {
+  const titleStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.large,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+        align: "center",
+      }),
+    []
+  );
 
-export const ControlsSection: React.FC<ControlsSectionProps> = () => {
-  let currentYPosition = 0;
+  const bodyStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.medium,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        fontWeight: FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight,
+        wordWrap: true,
+        wordWrapWidth: 350,
+      }),
+    []
+  );
 
-  const renderControlCategory = (
-    titleKorean: string,
-    titleEnglish: string,
-    controls: Record<string, any>,
-    isStance: boolean = false
-  ) => {
-    const categoryContainerY = currentYPosition;
-    let itemsHeight = 0;
-
-    const controlItems = Object.entries(controls).map(([key, value], index) => {
-      const textY = 30 + index * 25;
-      itemsHeight = textY + 20;
-      let controlTextKorean: string;
-      let controlTextEnglish: string;
-
-      if (
-        isStance &&
-        typeof value === "object" &&
-        value !== null &&
-        "korean" in value &&
-        "technique" in value &&
-        "stance" in value
-      ) {
-        controlTextKorean = `${key}: ${value.korean} (${value.technique})`;
-        controlTextEnglish = `${key}: ${value.stance} (${value.technique})`;
-      } else if (typeof value === "string") {
-        controlTextKorean = `${key}: ${value}`;
-        controlTextEnglish = `${key}: ${value}`;
-      } else {
-        controlTextKorean = `${key}: 정보 없음`;
-        controlTextEnglish = `${key}: No information`;
-      }
-
-      return (
-        <Container key={key} y={textY}>
-          <KoreanText
-            korean={controlTextKorean}
-            english={controlTextEnglish}
-            size="medium"
-            // WORKAROUND: Cast to 'any' because KOREAN_COLORS.CYAN (number)
-            // is not assignable to the current 'Fill' type.
-            // The 'Fill' type in korean-text.ts should ideally support numeric hex.
-            style={{ fill: KOREAN_COLORS.CYAN as any }}
-          />
-        </Container>
-      );
-    });
-
-    currentYPosition += itemsHeight + 40 + 20;
-
-    return (
-      <Container y={categoryContainerY}>
-        <Container y={0}>
-          <KoreanTitle
-            korean={titleKorean}
-            english={titleEnglish}
-            size="large"
-            // WORKAROUND: Cast to 'any' for KOREAN_COLORS.WHITE
-            style={{ fill: KOREAN_COLORS.WHITE as any }}
-          />
-        </Container>
-        {controlItems}
-      </Container>
-    );
+  const drawBackground = (g: PIXI.Graphics) => {
+    g.clear();
+    g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7);
+    g.lineStyle(2, KOREAN_COLORS.PRIMARY_CYAN, 0.5);
+    g.drawRoundedRect(0, 0, width, height, 15);
+    g.endFill();
   };
 
-  const sectionPadding = 60;
-  currentYPosition = sectionPadding;
-
-  const sections = [
-    {
-      titleKorean: "자세 조작",
-      titleEnglish: "Stance Controls",
-      controls: COMBAT_CONTROLS.stanceControls,
-      isStance: true,
-    },
-    {
-      titleKorean: "이동",
-      titleEnglish: "Movement",
-      controls: COMBAT_CONTROLS.movement,
-      isStance: false,
-    },
-    {
-      titleKorean: "전투",
-      titleEnglish: "Combat Actions",
-      controls: COMBAT_CONTROLS.combat,
-      isStance: false,
-    },
-    {
-      titleKorean: "시스템",
-      titleEnglish: "System Controls",
-      controls: COMBAT_CONTROLS.system,
-      isStance: false,
-    },
-  ];
-
-  currentYPosition = 80;
+  let currentY = 60;
 
   return (
-    <Container>
-      <Container y={20}>
-        <KoreanTitle
-          korean="조작법 안내"
-          english="Controls Guide"
-          size="xlarge"
-          // WORKAROUND: Cast to 'any' for KOREAN_COLORS.GOLD
-          style={{ fill: KOREAN_COLORS.GOLD as any }}
-        />
-      </Container>
-      {sections.map((section) =>
-        renderControlCategory(
-          section.titleKorean,
-          section.titleEnglish,
-          section.controls,
-          section.isStance
-        )
+    <Container x={x} y={y}>
+      <Graphics draw={drawBackground} />
+      <Text text={title} x={width / 2} y={25} anchor={0.5} style={titleStyle} />
+
+      <Text
+        text="팔괘 자세 (Trigram Stances): 1-8"
+        x={20}
+        y={currentY}
+        style={bodyStyle}
+      />
+
+      {Object.entries(COMBAT_CONTROLS.stanceControls).map(([key, detail]) => {
+        currentY += 25;
+        return (
+          <Text
+            key={key}
+            text={`${key}: ${detail.korean} (${detail.technique})`}
+            x={40}
+            y={currentY}
+            style={bodyStyle}
+          />
+        );
+      })}
+
+      {(() => {
+        currentY += 30;
+        return null;
+      })()}
+      <Text text="이동 (Movement)" x={20} y={currentY} style={bodyStyle} />
+
+      {Object.entries(COMBAT_CONTROLS.movement).map(([key, desc]) => {
+        currentY += 25;
+        return (
+          <Text
+            key={key}
+            text={`${key}: ${desc}`}
+            x={40}
+            y={currentY}
+            style={bodyStyle}
+          />
+        );
+      })}
+
+      {(() => {
+        currentY += 30;
+        return null;
+      })()}
+      <Text
+        text="전투 행동 (Combat Actions)"
+        x={20}
+        y={currentY}
+        style={bodyStyle}
+      />
+
+      {Object.entries(COMBAT_CONTROLS.combat).map(([key, desc]) => {
+        currentY += 25;
+        return (
+          <Text
+            key={key}
+            text={`${key}: ${desc}`}
+            x={40}
+            y={currentY}
+            style={bodyStyle}
+          />
+        );
+      })}
+
+      {(() => {
+        currentY += 30;
+        return null;
+      })()}
+      <Text text="시스템 (System)" x={20} y={currentY} style={bodyStyle} />
+
+      {Object.entries(COMBAT_CONTROLS.system).map(([key, desc]) => {
+        currentY += 25;
+        return (
+          <Text
+            key={key}
+            text={`${key}: ${desc}`}
+            x={40}
+            y={currentY}
+            style={bodyStyle}
+          />
+        );
+      })}
+
+      {/* Back Button */}
+      {onBackToMenu && (
+        <Container
+          x={width - 120}
+          y={height - 60}
+          interactive={true}
+          buttonMode={true}
+          pointertap={onBackToMenu}
+        >
+          <Graphics
+            draw={(g: PIXI.Graphics) => {
+              g.clear();
+              g.beginFill(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
+              g.lineStyle(2, KOREAN_COLORS.UI_BORDER);
+              g.drawRoundedRect(0, 0, 100, 40, 5);
+              g.endFill();
+            }}
+          />
+          <Text
+            text="뒤로 (Back)"
+            anchor={0.5}
+            x={50}
+            y={20}
+            style={bodyStyle}
+          />
+        </Container>
       )}
     </Container>
   );

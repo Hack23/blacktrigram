@@ -2,14 +2,20 @@
 
 import { Position } from "./common";
 import type { KoreanText } from "./korean-text";
-import type { BodyRegion, EffectIntensity, EffectType } from "./enums";
-import { StatusEffect } from "./effects";
+import type {
+  BodyRegion,
+  EffectIntensity,
+  EffectType,
+  VitalPointCategory as EnumVitalPointCategory,
+  VitalPointSeverity as EnumVitalPointSeverity,
+} from "./enums"; // Corrected imports
+import type { StatusEffect } from "./effects"; // Corrected to import StatusEffect from effects.ts
 
 // Vital point effect for Korean martial arts realism - FIXED: Use proper types
 export interface VitalPointEffect {
   readonly id: string;
-  readonly type: EffectType; // Fixed: Use imported type
-  readonly intensity: EffectIntensity; // Fixed: Use imported type
+  readonly type: EffectType; // Fixed: Use imported type from enums
+  readonly intensity: EffectIntensity; // Fixed: Use imported type from enums
   readonly duration: number; // Duration in milliseconds
   readonly description: KoreanText;
   readonly stackable: boolean;
@@ -33,10 +39,10 @@ export interface VitalPoint {
   readonly koreanName: string; // For easier access
   readonly englishName: string; // For easier access
   readonly korean?: string; // Original field, can be deprecated if name.korean is primary
-  readonly category: VitalPointCategory | string; // Allow string for flexibility if new categories emerge
+  readonly category: EnumVitalPointCategory | string; // Use imported EnumVitalPointCategory
   readonly description: KoreanText;
   readonly location: VitalPointLocation;
-  readonly severity: VitalPointSeverity;
+  readonly severity: EnumVitalPointSeverity; // Use imported EnumVitalPointSeverity
   readonly baseAccuracy: number; // Base chance to hit (0-1)
   readonly baseDamage: number; // Base damage if hit
   readonly damageMultiplier: number; // Multiplier for this vital point
@@ -72,7 +78,7 @@ export interface VitalPointHitResult {
   readonly effects: readonly StatusEffect[];
   readonly vitalPointsHit: readonly VitalPoint[];
   readonly vitalPoint?: VitalPoint;
-  readonly severity?: VitalPointSeverity;
+  readonly severity?: EnumVitalPointSeverity; // Use imported EnumVitalPointSeverity
   readonly criticalHit: boolean;
   readonly location: Position;
   readonly effectiveness: number;
@@ -144,21 +150,6 @@ export interface AnatomyModel {
   readonly overallMaxHealth: number;
 }
 
-export type VitalPointCategory =
-  | "head"
-  | "torso"
-  | "limbs"
-  | "joints"
-  | "nerve"
-  | "vascular"
-  | "organ"
-  | "pressure_point"
-  | "general" // Added as a general category
-  | "internal"; // Added as a general category
+export type VitalPointCategory = EnumVitalPointCategory; // Alias to imported enum
 
-export type VitalPointSeverity =
-  | "minor"
-  | "moderate"
-  | "severe"
-  | "critical"
-  | "lethal";
+export type VitalPointSeverity = EnumVitalPointSeverity; // Alias to imported enum

@@ -1,162 +1,167 @@
 // Complete Player component with Korean martial arts character rendering
 
-import React, { useMemo, useCallback } from "react";
-import type { PlayerProps } from "../../types/components";
-import { useAudio } from "../../audio/AudioProvider";
-import { KOREAN_COLORS, TRIGRAM_DATA } from "../../types/constants";
-import { KoreanTechnique } from "../../types";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import * as PIXI from "pixi.js";
+import type { PlayerProps, TrigramStance } from "../../types";
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  TRIGRAM_DATA,
+} from "../../types/constants";
 
-export function Player({
+const getStanceColor = (stance: string): number => {
+  const stanceData = TRIGRAM_DATA[stance as keyof typeof TRIGRAM_DATA];
+  return stanceData?.theme?.primary || KOREAN_COLORS.UI_STEEL_GRAY;
+};
+
+export const Player: React.FC<PlayerProps> = ({
   playerState,
-  playerIndex,
   onStateUpdate,
-  onAttack,
-  // Destructure props from playerState and component props
-  archetype = playerState.archetype,
-  stance = playerState.stance,
-  position = playerState.position,
-  facing = playerState.facing,
-  isAttacking = playerState.isAttacking,
-  health = playerState.health,
-  maxHealth = playerState.maxHealth,
-  ki = playerState.ki,
-  maxKi = playerState.maxKi,
-  stamina = playerState.stamina,
-  maxStamina = playerState.maxStamina,
+  archetype,
+  stance,
+  position,
+  facing,
+  health,
+  maxHealth,
+  ki,
+  maxKi,
+  stamina,
+  maxStamina,
+  showVitalPoints,
   x = 0,
   y = 0,
-  isActive = true,
-}: PlayerProps): React.JSX.Element {
-  const audio = useAudio(); // Now properly typed
+  width = 200,
+  height = 150,
+  ...props
+}) => {
+  const { name, currentStance } = playerState;
 
-  // Use playerMetrics in component logic
-  const playerStatus = useMemo(() => {
-    const playerMetrics = {
-      healthRatio: health / maxHealth,
-      kiRatio: ki / maxKi,
-      staminaRatio: stamina / maxStamina,
-      isLowStamina: stamina < maxStamina * 0.3,
-      needsRest: stamina < 20,
-    };
-
-    return {
-      ...playerMetrics,
-      statusColor:
-        playerMetrics.healthRatio < 0.3
-          ? 0xff6666
-          : KOREAN_COLORS[stance] || KOREAN_COLORS.WHITE,
-      canAct: playerMetrics.staminaRatio > 0.1,
-    };
-  }, [health, maxHealth, ki, maxKi, stamina, maxStamina, stance]);
-
-  // Handle stance changes using all required props
-  const handleStanceChange = useMemo(() => {
-    return (newStance: any) => {
-      onStateUpdate({ stance: newStance });
-      if (audio) audio.playSFX("stance_change");
-    };
-  }, [onStateUpdate, audio]);
-
-  // Update player state when archetype changes
-  const updatePlayerForArchetype = useMemo(() => {
-    return () => {
-      if (playerState.archetype !== archetype) {
-        onStateUpdate({ archetype });
-      }
-    };
-  }, [playerState.archetype, archetype, onStateUpdate]);
-
-  // Use playerIndex for player-specific logic
-  const isPlayer1 = useMemo(() => playerIndex === 0, [playerIndex]);
-
-  // Combat actions with proper audio integration
-  const executeTechnique = useCallback(
-    async (technique: KoreanTechnique) => {
-      if (!technique || !playerState) return;
-
-      try {
-        // Play technique sound using proper audio hook
-        if (audio) audio.playSFX("technique_execute");
-
-        // Update player state for technique execution
-        onStateUpdate({
-          stamina: Math.max(
-            0,
-            playerState.stamina - (technique.staminaCost || 10)
-          ),
-          ki: Math.max(0, playerState.ki - (technique.kiCost || 5)),
-          isAttacking: true,
-        });
-
-        // Play attack sound based on damage
-        if (technique.damage && audio) {
-          audio.playAttackSound(technique.damage);
-        }
-
-        // Reset attacking state after technique
-        setTimeout(() => {
-          onStateUpdate({ isAttacking: false });
-        }, technique.executionTime || 500);
-      } catch (error) {
-        console.error("Technique execution failed:", error);
-      }
-    },
-    [playerState, onStateUpdate, audio]
+  const nameTextStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.KOREAN_BATTLE,
+        fontSize: FONT_SIZES.medium,
+        fill: KOREAN_COLORS.TEXT_ACCENT,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+        stroke: { color: KOREAN_COLORS.BLACK_SOLID, width: 2 }, // Fixed: use stroke object
+      }),
+    []
   );
 
-  // Use onAttack prop
-  const handleAttack = useCallback(() => {
-    if (onAttack) {
-      onAttack(position);
-    }
-    // Also use executeTechnique for specific techniques
-    const currentTechnique = TRIGRAM_DATA[stance]?.technique;
-    if (currentTechnique) {
-      executeTechnique(currentTechnique);
-    }
-  }, [onAttack, position, stance, executeTechnique]);
+  const barHeight = 15;
+  const barWidth = width * 0.8;
+  const barSpacing = 5;
+
+  const drawBar = (
+    g: PIXI.Graphics,
+    currentValue: number,
+    maxValue: number,
+    color: number,
+    yOffset: number
+  ) => {
+    const ratio = currentValue / maxValue;
+
+    // Background bar
+    g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK);
+    g.drawRect(10, yOffset, barWidth, barHeight);
+    g.endFill();
+
+    // Fill bar
+    g.beginFill(color);
+    g.drawRect(10, yOffset, barWidth * ratio, barHeight);
+    g.endFill();
+
+    // Border
+    g.lineStyle(1, KOREAN_COLORS.UI_BORDER);
+    g.drawRect(10, yOffset, barWidth, barHeight);
+  };
+
+  const drawPlayerInfo = React.useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+
+      // Player background
+      g.beginFill(getStanceColor(currentStance), 0.2);
+      g.lineStyle(2, getStanceColor(currentStance));
+      g.drawRoundedRect(0, 0, width, height, 10);
+      g.endFill();
+
+      // Health bar
+      drawBar(g, health, maxHealth, KOREAN_COLORS.POSITIVE_GREEN, 30);
+
+      // Ki bar
+      drawBar(
+        g,
+        ki,
+        maxKi,
+        KOREAN_COLORS.PRIMARY_BLUE_LIGHT,
+        30 + barHeight + barSpacing
+      );
+
+      // Stamina bar
+      drawBar(
+        g,
+        stamina,
+        maxStamina,
+        KOREAN_COLORS.SECONDARY_YELLOW_LIGHT,
+        30 + (barHeight + barSpacing) * 2
+      );
+    },
+    [
+      width,
+      height,
+      health,
+      maxHealth,
+      ki,
+      maxKi,
+      stamina,
+      maxStamina,
+      currentStance,
+      drawBar,
+    ]
+  );
 
   return (
-    <pixiContainer
-      x={position.x + x}
-      y={position.y + y}
-      scale={{ x: facing === "left" ? -1 : 1, y: 1 }}
-      visible={isActive}
-      interactive={true}
-      eventMode="static"
-      alpha={playerStatus.staminaRatio * 0.3 + 0.7} // Use playerStatus
-      onClick={handleAttack} // Use handleAttack to utilize onAttack prop
-    >
-      {/* Player visual representation */}
-      <pixiContainer
-        x={0}
-        y={0}
-        tint={playerStatus.statusColor}
-        onClick={() => {
-          // Use functions that reference required props
-          handleStanceChange(stance);
-          updatePlayerForArchetype();
-        }}
-      >
-        {/* Player body representation */}
-        <pixiContainer x={0} y={0}>
-          {/* Show stance indicator using archetype */}
-          {TRIGRAM_DATA[stance] && isPlayer1 && (
-            <pixiContainer x={0} y={-40}>
-              {/* Trigram symbol representation */}
-            </pixiContainer>
-          )}
-        </pixiContainer>
-      </pixiContainer>
+    <Container x={x} y={y} {...props}>
+      <Graphics draw={drawPlayerInfo} />
 
-      {/* Combat effects */}
-      {isAttacking && (
-        <pixiContainer x={facing === "left" ? -20 : 20} y={0}>
-          {/* Attack effect visualization */}
-        </pixiContainer>
+      <Text
+        text={name.korean}
+        anchor={0.5}
+        x={width / 2}
+        y={10}
+        style={nameTextStyle}
+      />
+
+      <Text
+        text={
+          TRIGRAM_DATA[currentStance as TrigramStance]?.name.korean ||
+          currentStance
+        }
+        anchor={0.5}
+        x={width / 2}
+        y={height - 20}
+        style={{
+          ...nameTextStyle,
+          fontSize: FONT_SIZES.small,
+          fill: getStanceColor(currentStance),
+        }}
+      />
+
+      {showVitalPoints && (
+        <Graphics
+          draw={(g: PIXI.Graphics) => {
+            g.beginFill(KOREAN_COLORS.NEGATIVE_RED, 0.7);
+            g.drawCircle(width / 2, height / 2, 3);
+            g.endFill();
+          }}
+        />
       )}
-    </pixiContainer>
+    </Container>
   );
-}
+};
 
 export default Player;

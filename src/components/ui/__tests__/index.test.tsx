@@ -1,202 +1,142 @@
-import { describe, it, expect, vi } from "vitest";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { Application } from "@pixi/react"; // For context wrapping
+import { ProgressTracker } from "../ProgressTracker";
+import { TrigramWheel } from "../TrigramWheel";
+import { KoreanHeader } from "../KoreanHeader";
+import { KOREAN_COLORS } from "../../../types/constants";
+import { TrigramStance } from "@/types";
 import {
   KoreanText,
   KoreanTitle,
   KoreanTechniqueText,
   KoreanStatusText,
   KoreanMartialText,
-} from "../base/korean-text";
-import { TrigramWheel } from "../TrigramWheel";
-import { ProgressTracker } from "../ProgressTracker";
-import { KOREAN_COLORS } from "../../../types";
+} from "../base";
 
-// Mock PIXI React components
-vi.mock("@pixi/react", () => ({
-  Container: ({ children, ...props }: any) => (
-    <div data-testid="pixi-container" {...props}>
-      {children}
-    </div>
-  ),
-  Graphics: ({ draw, ...props }: any) => {
-    if (draw) {
-      const mockGraphics = {
-        clear: vi.fn(),
-        setFillStyle: vi.fn(),
-        setStrokeStyle: vi.fn(),
-        circle: vi.fn(),
-        rect: vi.fn(),
-        fill: vi.fn(),
-        stroke: vi.fn(),
-      };
-      draw(mockGraphics);
-    }
-    return <div data-testid="pixi-graphics" {...props} />;
-  },
-  Text: ({ text, children, ...props }: any) => (
-    <div data-testid="pixi-text" {...props}>
-      {text || children}
-    </div>
-  ),
-}));
+// Helper function (consider moving to a utils file if used elsewhere)
+const createKoreanText = (korean: string, english: string): KoreanTextType => ({
+  korean,
+  english,
+});
 
-// Mock PIXI
-vi.mock("pixi.js", () => ({
-  TextStyle: vi.fn().mockImplementation(() => ({})),
-}));
-
-describe("Korean Text Components", () => {
-  describe("KoreanTitle", () => {
-    it("renders with korean and english text", () => {
-      const { container } = render(
-        <KoreanTitle
-          korean="흑괘 무술"
-          english="Black Trigram"
-          subtitle="Traditional Korean Martial Arts"
-          level={1}
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders with different header levels", () => {
-      const { container } = render(<KoreanTitle korean="제목" level={2} />);
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders without english text", () => {
-      const { container } = render(<KoreanTitle korean="한국어만" />);
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders with subtitle", () => {
-      const { container } = render(
-        <KoreanTitle
-          korean="메인 제목"
-          english="Main Title"
-          subtitle="부제목"
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders with custom styling", () => {
-      const { container } = render(
-        <KoreanTitle korean="스타일 제목" style={{ fontSize: "2rem" }} />
-      );
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders with level 3", () => {
-      const { container } = render(<KoreanTitle korean="레벨 3" level={3} />);
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders with custom color", () => {
-      const { container } = render(
-        <KoreanTitle korean="색상 제목" color={KOREAN_COLORS.CYAN} />
-      );
-      expect(container).toBeInTheDocument();
-    });
-
-    it("renders complex title with all props", () => {
-      const { container } = render(
-        <KoreanTitle
-          korean="복잡한 제목"
-          english="Complex Title"
-          subtitle="모든 속성 포함"
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
+describe("Korean UI Components", () => {
+  it("KoreanText renders Korean and English text", () => {
+    const { getByText } = render(
+      <Application>
+        <Stage>
+          <KoreanText korean="안녕하세요" english="Hello" />
+        </Stage>
+      </Application>
+    );
+    expect(getByText("안녕하세요")).toBeInTheDocument();
+    expect(getByText("(Hello)")).toBeInTheDocument(); // Assuming English is wrapped in parens
   });
 
-  describe("KoreanText", () => {
-    it("renders basic korean text", () => {
-      const { container } = render(
-        <KoreanText korean="안녕하세요" english="Hello" />
-      );
-      expect(container).toBeInTheDocument();
-    });
+  it("KoreanTitle renders correctly", () => {
+    const { getByText } = render(
+      <Application>
+        <Stage>
+          <KoreanTitle korean="제목" english="Title" level={1} />
+        </Stage>
+      </Application>
+    );
+    expect(getByText("제목")).toBeInTheDocument();
+    expect(getByText("Title")).toBeInTheDocument();
   });
 
-  describe("ProgressTracker", () => {
-    it("renders progress bar", () => {
-      const { container } = render(
+  it("KoreanTechniqueText renders correctly", () => {
+    const { getByText } = render(
+      <Application>
+        <Stage>
+          <KoreanTechniqueText
+            korean={createKoreanText("천국의 주먹", "Heaven's Fist")} // Provide KoreanText object
+            trigram="geon"
+            showStanceSymbol
+          />
+        </Stage>
+      </Application>
+    );
+    expect(getByText("천국의 주먹")).toBeInTheDocument();
+    expect(getByText("(Heaven's Fist)")).toBeInTheDocument();
+  });
+
+  it("KoreanStatusText renders correctly", () => {
+    const { getByText } = render(
+      <Application>
+        <Stage>
+          <KoreanStatusText
+            korean={createKoreanText("건강", "Health")} // Provide KoreanText object
+            statusKey="health"
+            value={80}
+            maxValue={100}
+          />
+        </Stage>
+      </Application>
+    );
+    expect(getByText("건강: 80/100")).toBeInTheDocument();
+  });
+
+  it("KoreanMartialText renders correctly", () => {
+    const { getByText } = render(
+      <Application>
+        <Stage>
+          <KoreanMartialText // Use the component
+            korean={createKoreanText("사범", "Master")}
+            martialVariant="master"
+            showHonorific
+          />
+        </Stage>
+      </Application>
+    );
+    expect(getByText("사범님")).toBeInTheDocument(); // Assuming showHonorific adds 님
+  });
+
+  it("TrigramWheel renders", () => {
+    const { container } = render(
+      <Application>
+        <Stage>
+          <TrigramWheel
+            currentStance={"geon" as TrigramStance}
+            onStanceSelect={() => {}}
+          />
+        </Stage>
+      </Application>
+    );
+    expect(container.querySelector("canvas")).toBeInTheDocument(); // Basic check
+  });
+
+  it("ProgressTracker renders", () => {
+    const { container } = render(
+      <Application>
+        <Stage>
+          <ProgressTracker
+            label="Health"
+            value={75}
+            maxValue={100}
+            barColor={KOREAN_COLORS.SUCCESS_GREEN}
+          />
+        </Stage>
+      </Application>
+    );
+    expect(container.querySelector("canvas")).toBeInTheDocument(); // Basic check
+  });
+
+  it("renders ProgressTracker with correct props", () => {
+    render(
+      <Application>
         <ProgressTracker
-          label="Health"
-          value={80}
+          label="Test Health"
+          value={75}
           maxValue={100}
-          showText={true}
+          barColor={KOREAN_COLORS.POSITIVE_GREEN}
         />
-      );
-      expect(container).toBeInTheDocument();
-    });
+      </Application>
+    );
 
-    it("renders with custom dimensions", () => {
-      const { container } = render(
-        <ProgressTracker
-          label="Ki Energy"
-          value={45}
-          maxValue={100}
-          width={150}
-          height={25}
-          showText={true}
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  describe("TrigramWheel", () => {
-    it("renders trigram wheel", () => {
-      const { container } = render(
-        <TrigramWheel
-          currentStance="geon"
-          onStanceSelect={vi.fn()} // Fix: Use correct prop name
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  describe("KoreanTechniqueText", () => {
-    it("renders technique with Korean and English names", () => {
-      const { container } = render(
-        <KoreanTechniqueText
-          korean="천둥벽력"
-          english="Thunder Strike"
-          trigram="geon"
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  describe("KoreanStatusText", () => {
-    it("renders status text", () => {
-      const { container } = render(
-        <KoreanStatusText
-          korean="체력"
-          statusKey="health"
-          value={80}
-          maxValue={100}
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  describe("KoreanMartialText", () => {
-    it("renders martial arts text", () => {
-      const { container } = render(
-        <KoreanMartialText
-          korean="무사"
-          english="Warrior"
-          martialVariant="practitioner"
-        />
-      );
-      expect(container).toBeInTheDocument();
-    });
+    expect(screen.getByText("Test Health")).toBeInTheDocument();
+    expect(screen.getByText("75")).toBeInTheDocument();
+    expect(screen.getByText("/100")).toBeInTheDocument();
+    // Add more assertions as needed
   });
 });

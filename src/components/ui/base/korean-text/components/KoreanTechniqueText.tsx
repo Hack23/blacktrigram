@@ -1,25 +1,44 @@
 import React from "react";
-import type { KoreanTechniqueTextProps } from "../../../../../types/korean-text";
-import { KoreanText } from "./KoreanText";
+import type { KoreanTechniqueTextProps } from "../../../../../types";
+import { KoreanText } from "./KoreanText"; // Use the React DOM KoreanText component
+import { TRIGRAM_SYMBOL_DATA } from "../constants"; // Import from local constants
 
-export function KoreanTechniqueText({
+export const KoreanTechniqueText: React.FC<KoreanTechniqueTextProps> = ({
   korean,
   english,
+  koreanName: propKoreanName, // Use prop names
+  englishName: propEnglishName,
   trigram,
+  showStanceSymbol = false,
   damage,
-  mastered,
+  mastered = false,
   ...props
-}: KoreanTechniqueTextProps): React.JSX.Element {
-  const text = typeof korean === "string" ? korean : korean.korean;
-  const englishText =
-    english || (typeof korean === "object" ? korean.english : undefined);
+}) => {
+  const baseKorean = typeof korean === "string" ? korean : korean.korean;
+  const baseEnglish =
+    typeof korean === "string" ? english : korean.english || english;
+
+  const techniqueKoreanName = propKoreanName || baseKorean;
+  const techniqueEnglishName = propEnglishName || baseEnglish || "";
+
+  let displayText = techniqueKoreanName;
+  if (showStanceSymbol && trigram && TRIGRAM_SYMBOL_DATA[trigram]) {
+    displayText = `${TRIGRAM_SYMBOL_DATA[trigram]} ${displayText}`;
+  }
+  if (damage) {
+    displayText = `${displayText} (${damage})`;
+  }
+  if (mastered) {
+    displayText = `★ ${displayText}`;
+  }
 
   return (
-    <KoreanText
-      korean={text}
-      english={englishText}
+    <KoreanText // Use the React DOM KoreanText component
+      korean={displayText}
+      english={techniqueEnglishName}
       variant="technique"
+      // style={KOREAN_TECHNIQUE_TEXT_STYLES.default} // Apply styles via props or CSS
       {...props}
     />
   );
-}
+};

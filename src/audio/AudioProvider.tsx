@@ -1,94 +1,132 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import type { AudioManager } from "./AudioManager";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+  useState,
+  ReactNode,
+} from "react";
+import type {
+  IAudioManager,
+  AudioState,
+  SoundEffectId,
+  MusicTrackId,
+  AudioPlaybackOptions,
+} from "../types/audio";
+import { AudioManager } from "./AudioManager";
 
-interface AudioContextType {
-  audioManager: AudioManager | null;
-  isReady: boolean;
+interface AudioContextValue {
+  audioManager: IAudioManager;
+  isInitialized: boolean;
+  playSFX: (id: SoundEffectId, options?: AudioPlaybackOptions) => void;
+  playMusic: (id: MusicTrackId, options?: AudioPlaybackOptions) => void;
+  stopMusic: (id?: MusicTrackId, fadeOutDuration?: number) => void;
+  setMasterVolume: (volume: number) => void;
+  setSFXVolume: (volume: number) => void;
+  setMusicVolume: (volume: number) => void;
+  setMuted: (muted: boolean) => void;
+  getState: () => AudioState;
 }
 
-const AudioContext = createContext<AudioContextType>({
-  audioManager: null,
-  isReady: false,
-});
-
-export function useAudioContext(): AudioContextType {
-  const context = useContext(AudioContext);
-  if (!context) {
-    throw new Error("useAudioContext must be used within AudioProvider");
-  }
-  return context;
-}
-
-// Add this hook for compatibility with rest of codebase
-export function useAudio() {
-  const { audioManager } = useAudioContext();
-  return audioManager;
-}
+const AudioContext = createContext<AudioContextValue | null>(null);
 
 interface AudioProviderProps {
-  readonly children: React.ReactNode;
+  children: ReactNode;
+  manager?: IAudioManager;
 }
 
-export function AudioProvider({
+export const AudioProvider: React.FC<AudioProviderProps> = ({
   children,
-}: AudioProviderProps): React.JSX.Element {
-  const [audioManager, setAudioManager] = useState<AudioManager | null>(null);
-  const [isReady, setIsReady] = useState(false);
+  manager,
+}) => {
+  const [audioManager] = useState<IAudioManager>(
+    () => manager || new AudioManager()
+  );
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-
-    async function initializeAudio() {
+    const initializeAudio = async () => {
       try {
-        // Import the actual AudioManager implementation
-        const { AudioManager: AudioManagerClass } = await import(
-          "./AudioManager"
-        );
-        const manager = new AudioManagerClass();
-
-        if (mounted) {
-          setAudioManager(manager);
-          setIsReady(true);
-        }
+        await audioManager.init();
+        setIsInitialized(true);
+        console.log("Audio system initialized successfully");
       } catch (error) {
-        console.warn("Audio initialization failed:", error);
-        if (mounted) {
-          setIsReady(true); // Continue without audio
-        }
-      }
-    }
-
-    initializeAudio();
-
-    return () => {
-      mounted = false;
-      // Check if audioManager has cleanup methods before calling them
-      if (audioManager) {
-        // Use proper cleanup method based on AudioManager interface
-        if (
-          "cleanup" in audioManager &&
-          typeof audioManager.cleanup === "function"
-        ) {
-          audioManager.cleanup();
-        } else if (
-          "dispose" in audioManager &&
-          typeof audioManager.dispose === "function"
-        ) {
-          (audioManager as any).dispose();
-        }
-        // If no cleanup method exists, just set volume to 0 for graceful shutdown
-        try {
-          audioManager.setMasterVolume(0);
-        } catch (error) {
-          console.warn("Failed to cleanup audio manager:", error);
-        }
+        console.error("Failed to initialize audio system:", error);
+        setIsInitialized(false);
       }
     };
+
+    if (!audioManager.isInitialized) {
+      initializeAudio();
+    } else {
+      setIsInitialized(true);
+    }
   }, [audioManager]);
 
-  const contextValue: AudioContextType = {
+  const playSFX = useCallback(
+    (id: SoundEffectId, options?: AudioPlaybackOptions) => {
+      audioManager.playSFX(id, options);
+    },
+    [audioManager]
+  );
+
+  const playMusic = useCallback(
+    (id: MusicTrackId, options?: AudioPlaybackOptions) => {
+      audioManager.playMusic(id, options);
+    },
+    [audioManager]
+  );
+
+  const stopMusic = useCallback(
+    (id?: MusicTrackId, fadeOutDuration?: number) => {
+      audioManager.stopMusic(id, fadeOutDuration);
+    },
+    [audioManager]
+  );
+
+  const setMasterVolume = useCallback(
+    (volume: number) => {
+      audioManager.setMasterVolume(volume);
+    },
+    [audioManager]
+  );
+
+  const setSFXVolume = useCallback(
+    (volume: number) => {
+      audioManager.setSFXVolume(volume);
+    },
+    [audioManager]
+  );
+
+  const setMusicVolume = useCallback(
+    (volume: number) => {
+      audioManager.setMusicVolume(volume);
+    },
+    [audioManager]
+  );
+
+  const setMuted = useCallback(
+    (muted: boolean) => {
+      audioManager.setMuted(muted);
+    },
+    [audioManager]
+  );
+
+  const getState = useCallback(() => {
+    return audioManager.getState();
+  }, [audioManager]);
+
+  const contextValue: AudioContextValue = {
     audioManager,
-    isReady,
+    isInitialized,
+    playSFX,
+    playMusic,
+    stopMusic,
+    setMasterVolume,
+    setSFXVolume,
+    setMusicVolume,
+    setMuted,
+    getState,
   };
 
   return (
@@ -96,4 +134,15 @@ export function AudioProvider({
       {children}
     </AudioContext.Provider>
   );
-}
+};
+
+export const useAudio = (): AudioContextValue => {
+  const context = useContext(AudioContext);
+  if (!context) {
+    throw new Error("useAudio must be used within an AudioProvider");
+  }
+  return context;
+};
+
+// Export for convenience
+export { AudioManager };

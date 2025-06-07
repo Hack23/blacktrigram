@@ -6,10 +6,53 @@ import type { TrigramStance } from "./enums";
 export interface KoreanText {
   readonly korean: string;
   readonly english: string;
-  readonly culturalNote?: string; // Add optional culturalNote property
-  readonly romanization?: string;
-  readonly pronunciation?: string;
-  readonly context?: string;
+  readonly romanized?: string;
+}
+
+export interface KoreanTextConfig {
+  readonly primary: string;
+  readonly fallback: string;
+  readonly size: number;
+  readonly weight: number;
+  readonly color: number;
+}
+
+export interface KoreanPixiTextProps {
+  text: string | KoreanText;
+  style?: any;
+  anchor?: [number, number] | number;
+  position?: [number, number];
+  [key: string]: any;
+}
+
+// Korean text display utilities
+export interface KoreanTextStyle {
+  readonly fontFamily: string;
+  readonly fontSize: number;
+  readonly fill: number;
+  readonly align?: string;
+  readonly fontWeight?: string | number;
+  readonly dropShadow?: boolean;
+  readonly dropShadowColor?: number;
+  readonly dropShadowBlur?: number;
+  readonly fontStyle?: string;
+  readonly letterSpacing?: number;
+  readonly wordWrap?: boolean;
+  readonly wordWrapWidth?: number;
+  readonly alpha?: number;
+}
+
+// Korean martial arts specific text types
+export interface KoreanMartialText extends KoreanText {
+  readonly technique?: string;
+  readonly stance?: string;
+  readonly philosophy?: string;
+}
+
+export interface KoreanArchetypeText extends KoreanText {
+  readonly description: KoreanText;
+  readonly philosophy: KoreanText;
+  readonly specialization?: string;
 }
 
 // Korean text size type
@@ -18,13 +61,15 @@ export type KoreanTextSize =
   | "medium"
   | "large"
   | "xlarge"
-  | "xxlarge";
+  | "xxlarge" // Added
+  | "title"; // Added title to match KOREAN_TEXT_SIZES in constants/typography.ts and constants.ts
 export const KOREAN_TEXT_SIZES: Record<KoreanTextSize, number> = {
   small: 12,
   medium: 16,
   large: 20,
   xlarge: 24,
   xxlarge: 32,
+  title: 48,
 };
 
 // Korean font weight type
@@ -180,7 +225,27 @@ export interface PixiTextStyleConfig {
 export type KoreanPixiTextConfig = PixiTextStyleConfig;
 
 // Fix font family to be a string, not object
-export const KOREAN_FONT_FAMILY = "Noto Sans KR, Arial, sans-serif";
+export const KOREAN_FONT_FAMILY = "Noto Sans KR, Arial, sans-serif"; // Standardized
 
 // Export the font sizes with proper name
 export const KOREAN_FONT_SIZES = KOREAN_TEXT_SIZES;
+
+// Text formatting constants
+export const KOREAN_TEXT_ALIGNMENT = {
+  LEFT: "left",
+  CENTER: "center",
+  RIGHT: "right",
+} as const;
+
+export const KOREAN_TEXT_WEIGHTS = {
+  LIGHT: 300,
+  REGULAR: 400,
+  MEDIUM: 500,
+  BOLD: 700,
+  HEAVY: 900,
+} as const;
+
+export const KOREAN_TEXT_STYLES = {
+  NORMAL: "normal",
+  ITALIC: "italic",
+} as const;

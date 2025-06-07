@@ -1,29 +1,26 @@
-// Main exports for Korean text system
-export { KoreanText } from "./components/KoreanText";
+export { KoreanText } from "./KoreanText";
+export { KoreanPixiText } from "./components/KoreanPixiTextUtils"; // Corrected export
 export { KoreanTitle } from "./components/KoreanTitle";
 export { KoreanTechniqueText } from "./components/KoreanTechniqueText";
 export { KoreanStatusText } from "./components/KoreanStatusText";
 export { KoreanMartialText } from "./components/KoreanMartialText";
 
-// Export types
-export type * from "./types";
-
-// Export constants
-export * from "./constants";
-
-// Export utils (avoid conflicts)
-export {
-  isKoreanCharacter,
-  hasKoreanText,
-  formatKoreanNumber,
-  validateKoreanText,
-  KoreanTextUtils,
-  measureKoreanText,
-  cssToPixiTextStyle,
-} from "./utils";
-
-// Export hooks
-export { useKoreanTextStyle } from "./hooks/useKoreanTextStyle";
-
-// Default export for compatibility
-export { KoreanText as default } from "./components/KoreanText";
+export type {
+  KoreanTextProps,
+  KoreanTextHeaderProps,
+  KoreanTitleProps,
+  KoreanTechniqueTextProps,
+  KoreanStatusTextProps,
+  KoreanMartialTextProps,
+  KoreanTextSize,
+  KoreanFontWeight,
+  KoreanTextVariant,
+  KoreanTextEmphasis,
+  MartialVariant,
+  HonorLevel,
+  FontWeight,
+  StatusKey,
+  ColorValue,
+  PixiTextStyleConfig, // Export from types/korean-text
+  KoreanPixiTextConfig,
+} from "../../../../types/korean-text"; // Corrected path

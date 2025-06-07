@@ -1,129 +1,124 @@
-// Types related to player state and actions
+// Player state and archetype definitions for Korean martial arts game
 
-import type { CombatReadiness, CombatState, TrigramStance } from "./enums";
-import type { CombatCondition, Position } from "./common";
+import type {
+  PlayerArchetype as PlayerArchetypeEnum, // Use alias to avoid conflict if any local declaration was intended
+  TrigramStance,
+  CombatState,
+  BodyRegion,
+  CombatReadiness, // Import CombatReadiness
+} from "./enums";
+import type { Position, KoreanText } from "./index"; // Imports from the main index file
 import type { StatusEffect } from "./effects";
 
-// Player Archetype Data (for constants)
-// Player archetype data with Korean martial arts specializations
+// Define and export PlayerAttributes
+export interface PlayerAttributes {
+  strength: number;
+  agility: number;
+  endurance: number;
+  intelligence: number;
+  focus: number; // Ki control, precision
+  resilience: number; // Pain tolerance, recovery
+}
+
+// Define and export PlayerSkills
+export interface PlayerSkills {
+  striking: number; // 권법 (Gwongbeop) - Punching/Striking
+  kicking: number; // 발차기 (Balchagi) - Kicking
+  grappling: number; // 유술 (Yusul) - Grappling/Joint Locks
+  weaponry: number; // 무기술 (Mugisul) - Weaponry (if applicable)
+  meditation: number; // 명상 (Myeongsang) - Ki cultivation
+  strategy: number; // 전략 (Jeonryak) - Combat tactics
+}
+
+export interface PlayerState {
+  readonly id: string;
+  readonly archetype: PlayerArchetypeEnum; // Use aliased PlayerArchetypeEnum
+  name: KoreanText; // Made mutable for updates
+  health: number;
+  readonly maxHealth: number;
+  ki: number; // Spiritual energy
+  readonly maxKi: number;
+  stamina: number; // Physical endurance
+  readonly maxStamina: number;
+  consciousness: number; // Awareness, 0 = unconscious
+  pain: number; // Current pain level, affects actions
+  balance: number; // Stability, 0 = fallen
+  bloodLoss: number; // Cumulative blood loss
+  position: Position;
+  facing: "left" | "right"; // Made mutable for updates
+  currentTargetId?: string | null; // Made mutable for updates
+  activeEffects: readonly StatusEffect[]; // Made mutable for updates // Changed from StatusEffect[]
+  readonly attributes: PlayerAttributes;
+  readonly skills: PlayerSkills;
+  combatState: CombatState; // Made mutable for updates
+  readonly lastActionTime: number; // Changed from mutable
+  lastStanceChangeTime: number; // Made mutable for updates
+  comboCount: number; // Made mutable for updates
+  readonly vitalPointDamage: Record<string, number>;
+  readonly bodyPartStatus: Record<
+    BodyRegion,
+    "healthy" | "injured" | "critical"
+  >;
+  readonly knownTechniques: readonly string[];
+  currentStance: TrigramStance; // Made mutable for updates
+  combatReadiness?: CombatReadiness; // Added optional combatReadiness
+}
+
+export type PlayerArchetype = PlayerArchetypeEnum; // Export PlayerArchetype type alias
+
+// Player archetype specific bonuses
+export interface PlayerArchetypeBonuses {
+  readonly damageBonus: number;
+  readonly accuracyBonus: number;
+  readonly speedBonus: number;
+  readonly defenseBonus: number;
+  readonly damageResistance?: number;
+  readonly precisionBonus?: number;
+  readonly kiEfficiency?: number; // Added
+  readonly staminaEfficiency?: number; // Added
+  // Allow other string-based descriptive bonuses if necessary,
+  // but calculation-relevant ones should be numbers.
+  [key: string]: number | string | undefined;
+}
+
+// Player archetype data structure - Consolidated definition
 export interface PlayerArchetypeData {
   readonly name: { korean: string; english: string };
   readonly description: { korean: string; english: string };
-  readonly preferredTrigrams: readonly string[];
-  readonly specialization: string; // Add missing property
-  readonly bonuses: {
-    readonly damageBonus: number;
-    readonly accuracyBonus: number;
-    readonly speedBonus: number;
-    readonly defenseBonus: number;
-    readonly damageResistance?: number;
-    readonly precisionBonus?: number;
-  };
+  readonly preferredTrigrams: readonly TrigramStance[];
+  readonly specialization: string;
+  readonly bonuses: PlayerArchetypeBonuses; // Unified to use PlayerArchetypeBonuses
 }
 
-// Player state interface
-export interface PlayerState {
+export interface PlayerCombatStats {
   readonly id: string;
-  readonly name: string;
-  readonly archetype: PlayerArchetype; // Now uses the unified type
-  readonly stance: TrigramStance;
-  readonly health: number;
-  readonly maxHealth: number;
-  readonly ki: number;
-  readonly maxKi: number;
-  readonly stamina: number;
-  readonly maxStamina: number;
-  readonly position: Position;
-  readonly facing: "left" | "right";
-  readonly consciousness: number; // Typically 0-100
-  readonly pain: number; // Typically 0-100, affects performance
-  readonly balance: number; // Typically a scale, e.g., 0-100, or an enum for states
-  readonly bloodLoss: number; // Cumulative effect, 0-100
+  readonly archetype: PlayerArchetype;
+  readonly level: number;
+  readonly experience: number;
+  readonly nextLevelExperience: number;
+  readonly attributes: PlayerAttributes;
+  readonly skills: PlayerSkills;
+  readonly combatState: CombatState;
+  readonly lastActionTime: number;
   readonly lastStanceChangeTime: number;
-  readonly isAttacking: boolean;
-  readonly combatReadiness: CombatReadiness; // Enum value
-  readonly activeEffects: readonly StatusEffect[];
-  readonly combatState: CombatState; // Enum value from enums.ts
-  readonly conditions: readonly CombatCondition[]; // Array of CombatCondition from common.ts
-  // Add any other player-specific state needed, e.g., comboCounter, specialMeter
+  readonly comboCount: number;
+  readonly vitalPointDamage: Record<string, number>;
+  readonly bodyPartStatus: Record<
+    BodyRegion,
+    "healthy" | "injured" | "critical"
+  >;
+  readonly knownTechniques: readonly string[];
+  readonly currentStance: TrigramStance;
+  readonly combatReadiness: CombatReadiness; // Added
 }
 
-// Fix: Remove conflicting import of PlayerArchetype
-// import type { PlayerArchetype } from "./enums"; // REMOVED - causes conflict
-
-// Keep the local PlayerArchetype type definition
-export type PlayerArchetype =
-  | "musa"
-  | "amsalja"
-  | "hacker"
-  | "jeongbo_yowon"
-  | "jojik_pokryeokbae";
-
-// Fix: Add missing PLAYER_ARCHETYPE_DATA that playerUtils.ts expects
-export const PLAYER_ARCHETYPE_DATA: Record<
-  PlayerArchetype,
-  {
-    bonuses: {
-      damageBonus: number;
-      accuracyBonus: number;
-      speedBonus: number;
-      defenseBonus: number;
-      precisionBonus?: number;
-    };
-    preferredTrigrams: readonly string[];
-    specialization: string;
-  }
-> = {
-  musa: {
-    bonuses: {
-      damageBonus: 1.2,
-      accuracyBonus: 1.1,
-      speedBonus: 1.0,
-      defenseBonus: 1.3,
-    },
-    preferredTrigrams: ["geon", "jin"],
-    specialization: "Traditional warrior combat",
-  },
-  amsalja: {
-    bonuses: {
-      damageBonus: 1.5,
-      accuracyBonus: 1.8,
-      speedBonus: 1.4,
-      defenseBonus: 0.9,
-      precisionBonus: 2.0,
-    },
-    preferredTrigrams: ["son", "gam"],
-    specialization: "Silent elimination techniques",
-  },
-  hacker: {
-    bonuses: {
-      damageBonus: 1.1,
-      accuracyBonus: 1.6,
-      speedBonus: 1.2,
-      defenseBonus: 1.0,
-      precisionBonus: 1.4,
-    },
-    preferredTrigrams: ["li", "tae"],
-    specialization: "Tech-enhanced combat analysis",
-  },
-  jeongbo_yowon: {
-    bonuses: {
-      damageBonus: 1.3,
-      accuracyBonus: 1.5,
-      speedBonus: 1.1,
-      defenseBonus: 1.2,
-    },
-    preferredTrigrams: ["gan", "gon"],
-    specialization: "Intelligence-based tactical combat",
-  },
-  jojik_pokryeokbae: {
-    bonuses: {
-      damageBonus: 1.8,
-      accuracyBonus: 1.0,
-      speedBonus: 1.3,
-      defenseBonus: 1.1,
-    },
-    preferredTrigrams: ["jin", "gam"],
-    specialization: "Street fighting and survival",
-  },
-};
+export interface PlayerProgression {
+  readonly id: string;
+  readonly archetype: PlayerArchetype;
+  readonly level: number;
+  readonly experience: number;
+  readonly nextLevelExperience: number;
+  readonly attributes: PlayerAttributes;
+  readonly skills: PlayerSkills;
+  readonly knownTechniques: readonly string[];
+}

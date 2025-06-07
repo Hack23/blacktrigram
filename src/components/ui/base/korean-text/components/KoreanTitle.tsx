@@ -1,61 +1,82 @@
-import React from "react";
-import type { KoreanTitleProps } from "../types";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import React, { useMemo } from "react";
+import type { KoreanTitleProps } from "../../../../../types";
+import {
+  KOREAN_FONT_SIZES,
+  KOREAN_FONT_WEIGHTS,
+  KOREAN_COLORS,
+  FONT_FAMILY,
+} from "../../../../../types/constants";
 
-export function KoreanTitle({
+export const KoreanTitle: React.FC<KoreanTitleProps> = ({
   korean,
   english,
+  subtitle,
   level = 1,
-  size,
-  color = KOREAN_COLORS.GOLD,
+  // showLogo, // Not directly used in this text-based component
+  style: customStyle,
+  // onBackButtonClick, // Not handled here
   className,
-  style,
-}: KoreanTitleProps): React.ReactElement {
-  const getFontSize = (level: number, customSize?: string | number): string => {
-    if (customSize) {
-      return typeof customSize === "number" ? `${customSize}px` : customSize;
-    }
+  ...props
+}) => {
+  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
 
-    const sizes = {
-      1: "2.5rem",
-      2: "2rem",
-      3: "1.75rem",
-      4: "1.5rem",
-      5: "1.25rem",
-      6: "1rem",
-    };
-    return sizes[level as keyof typeof sizes] || "1.5rem";
-  };
+  const titleFontSize = useMemo(() => {
+    if (typeof props.size === "number") return props.size;
+    const sizeKey = (props.size ||
+      (level === 1
+        ? "title"
+        : level === 2
+        ? "xlarge"
+        : "large")) as keyof typeof KOREAN_FONT_SIZES;
+    return KOREAN_FONT_SIZES[sizeKey] || KOREAN_FONT_SIZES.large;
+  }, [level, props.size]);
 
-  const getColor = (): string => {
-    return typeof color === "number"
-      ? `#${color.toString(16).padStart(6, "0")}`
-      : color;
-  };
+  const titleStyle: React.CSSProperties = useMemo(
+    () => ({
+      fontFamily: FONT_FAMILY.PRIMARY,
+      fontSize: titleFontSize,
+      fontWeight: KOREAN_FONT_WEIGHTS.bold,
+      color: props.color?.toString() || KOREAN_COLORS.TEXT_PRIMARY.toString(16), // Ensure color is string
+      margin: 0,
+      ...customStyle,
+    }),
+    [titleFontSize, props.color, customStyle]
+  );
 
-  const titleStyle: React.CSSProperties = {
-    fontFamily: "Noto Sans KR, Arial, sans-serif",
-    fontSize: getFontSize(level, size),
-    fontWeight: level <= 2 ? "bold" : "normal",
-    color: getColor(),
-    margin: "0 0 1rem 0",
-    lineHeight: 1.2,
-    textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-    ...style,
-  };
-
-  const displayText = english ? `${korean}\n${english}` : korean;
+  const subtitleStyle: React.CSSProperties = useMemo(
+    () => ({
+      fontFamily: FONT_FAMILY.SECONDARY,
+      fontSize: KOREAN_FONT_SIZES.medium,
+      fontWeight: KOREAN_FONT_WEIGHTS.regular,
+      color: KOREAN_COLORS.TEXT_SECONDARY.toString(16), // Use existing color
+      marginTop: "0.25em",
+      marginBottom: "0.5em",
+    }),
+    []
+  );
 
   return (
-    <div className={className} style={titleStyle}>
-      {displayText.split("\n").map((line, index) => (
-        <div
-          key={index}
-          style={index > 0 ? { fontSize: "0.8em", opacity: 0.8 } : {}}
+    <div className={className} {...props}>
+      <Tag style={titleStyle}>{korean}</Tag>
+      {english && (
+        <p
+          style={{
+            ...subtitleStyle,
+            fontSize: KOREAN_FONT_SIZES.small,
+            marginTop: "-0.25em",
+            marginBottom: "0.5em",
+          }}
         >
-          {line}
-        </div>
-      ))}
+          {english}
+        </p>
+      )}
+      {subtitle && (
+        <p style={subtitleStyle}>
+          {typeof subtitle === "string" ? subtitle : subtitle.korean}
+        </p>
+      )}
     </div>
   );
-}
+};
+
+export default KoreanTitle;

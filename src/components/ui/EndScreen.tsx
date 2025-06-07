@@ -1,108 +1,87 @@
-import React from "react";
-import { KoreanText } from "./base/korean-text";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import type { EndScreenProps } from "../../types";
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  GAME_CONFIG,
+} from "../../types/constants";
+import * as PIXI from "pixi.js";
 
-interface EndScreenProps {
-  readonly winnerId: string | null;
-  readonly winner?: string;
-  readonly onRestart: () => void;
-  readonly onMenu: () => void;
-}
-
-/**
- * End Screen Component for victory/defeat display
- */
-export function EndScreen({
+export const EndScreen: React.FC<EndScreenProps> = ({
   winnerId,
-  winner,
   onRestart,
-  onMenu,
-}: EndScreenProps): React.JSX.Element {
-  const finalWinner = winnerId || winner || "Unknown";
+  onReturnToMenu,
+  width = GAME_CONFIG.CANVAS_WIDTH,
+  height = GAME_CONFIG.CANVAS_HEIGHT,
+  ...props
+}) => {
+  const resultText = useMemo(() => {
+    if (winnerId) {
+      return {
+        korean: "승리!",
+        english: "Victory!",
+      };
+    } else {
+      return {
+        korean: "무승부",
+        english: "Draw",
+      };
+    }
+  }, [winnerId]);
+
+  const titleStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.xlarge,
+        fill: winnerId
+          ? KOREAN_COLORS.POSITIVE_GREEN
+          : KOREAN_COLORS.SECONDARY_YELLOW,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+        align: "center",
+        dropShadow: {
+          color: KOREAN_COLORS.BLACK_SOLID,
+          blur: 5,
+          distance: 3,
+        },
+      }),
+    [winnerId]
+  );
 
   return (
-    <div className="end-screen">
-      <div className="end-content">
-        <KoreanText
-          korean="대련 종료"
-          english="Match End"
-          size="xlarge"
-          weight="bold"
-          className="end-title"
-        />
+    <Container {...props} x={0} y={0} width={width} height={height}>
+      <Graphics
+        draw={(g) => {
+          g.clear();
+          g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DEEP_DARK, 0.9);
+          g.drawRect(0, 0, width, height);
+          g.endFill();
+        }}
+      />
 
-        <KoreanText
-          korean={`승리자: ${finalWinner}`}
-          english={`Winner: ${finalWinner}`}
-          size="large"
-          className="winner-text"
-        />
-
-        <div className="end-buttons">
-          <button onClick={onRestart} className="restart-button">
-            <KoreanText korean="다시 시작" english="Restart" size="medium" />
-          </button>
-
-          <button onClick={onMenu} className="menu-button">
-            <KoreanText korean="메뉴로" english="Menu" size="medium" />
-          </button>
-        </div>
-      </div>
-
-      <style>{`
-        .end-screen {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
-          color: #ffffff;
-          font-family: 'Noto Sans KR', Arial, sans-serif;
-        }
-
-        .end-content {
-          text-align: center;
-          max-width: 600px;
-          padding: 3rem;
-          background: rgba(0, 0, 0, 0.7);
-          border-radius: 16px;
-          border: 2px solid rgba(0, 255, 255, 0.4);
-        }
-
-        .end-title {
-          margin-bottom: 2rem;
-          color: #ffd700;
-          text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .winner-text {
-          margin-bottom: 3rem;
-          color: #00ffff;
-        }
-
-        .end-buttons {
-          display: flex;
-          gap: 2rem;
-          justify-content: center;
-        }
-
-        .restart-button, .menu-button {
-          padding: 1rem 2rem;
-          border: 2px solid #00ffff;
-          border-radius: 8px;
-          background: transparent;
-          color: #00ffff;
-          font-family: 'Noto Sans KR', Arial, sans-serif;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .restart-button:hover, .menu-button:hover {
-          background: rgba(0, 255, 255, 0.1);
-          box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        }
-      `}</style>
-    </div>
+      <Text
+        text={resultText.korean}
+        anchor={0.5}
+        x={width / 2}
+        y={height / 2 - 100}
+        style={titleStyle}
+      />
+      <Text
+        text={resultText.english}
+        anchor={0.5}
+        x={width / 2}
+        y={height / 2 - 50}
+        style={{
+          ...titleStyle,
+          fontSize: FONT_SIZES.large,
+          fill: KOREAN_COLORS.TEXT_SECONDARY,
+        }}
+      />
+    </Container>
   );
-}
+};
 
 export default EndScreen;

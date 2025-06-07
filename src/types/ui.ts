@@ -26,12 +26,12 @@ export interface ProgressTrackerProps extends BaseUIComponentProps {
   readonly maxValue: number;
   readonly barColor?: ColorValue;
   readonly backgroundColor?: ColorValue;
-  readonly borderColor?: ColorValue;
-  readonly width?: number;
-  readonly height?: number;
-  readonly showText?: boolean;
-  readonly textColor?: ColorValue;
-  readonly borderWidth?: number;
+  readonly borderColor?: ColorValue; // Added
+  readonly width?: number; // Added
+  readonly height?: number; // Added
+  readonly showText?: boolean; // Added
+  readonly textColor?: ColorValue; // Added
+  readonly borderWidth?: number; // Added
   readonly color?: string; // CSS color alternative
 }
 
@@ -40,9 +40,9 @@ export interface TrigramWheelProps extends BaseUIComponentProps {
   readonly currentStance: TrigramStance;
   readonly onStanceSelect: (stance: TrigramStance) => void;
   readonly size?: number;
-  readonly position?: Position;
-  readonly interactive?: boolean;
-  readonly time?: number;
+  readonly position?: Position; // Added
+  readonly interactive?: boolean; // Added
+  readonly time?: number; // Added
 }
 
 // Korean text styling for PIXI
@@ -58,14 +58,17 @@ export interface KoreanPixiTextConfig {
 // Menu section props - FIXED: Ensure consistent with components.ts
 export interface MenuSectionProps extends BaseUIComponentProps {
   readonly onGamePhaseChange: (phase: GamePhase | string) => void;
-  readonly title?: string;
-  readonly onSelect?: (option: string) => void;
+  readonly title?: string; // Added
+  readonly onSelect?: (option: string) => void; // Added
 }
 
 // Philosophy section props - FIXED: Ensure consistent with components.ts
 export interface PhilosophySectionProps extends BaseUIComponentProps {
-  readonly onGamePhaseChange: (phase: GamePhase | string) => void;
+  readonly onGamePhaseChange: (phase: GamePhase) => void;
   readonly title?: string;
+  readonly selectedArchetype?: PlayerArchetype;
+  readonly onArchetypeSelect?: (archetype: PlayerArchetype) => void;
+  readonly onArchetypeChange?: (archetype: PlayerArchetype) => void;
 }
 
 // Training screen props
@@ -86,25 +89,26 @@ export interface TrainingScreenProps extends BaseUIComponentProps {
 export interface GameUIProps extends BaseUIComponentProps {
   readonly players: readonly [PlayerState, PlayerState];
   readonly gamePhase: GamePhase;
-  readonly onGamePhaseChange: (phase: GamePhase) => void;
+  readonly onGamePhaseChange: (phase: GamePhase) => void; // Changed from GamePhase | string
   readonly gameTime: number;
   readonly currentRound: number;
   readonly timeRemaining: number;
   readonly onStanceChange: (playerIndex: number, stance: TrigramStance) => void;
   readonly combatLog: readonly string[];
-  readonly onStartMatch?: () => void;
-  readonly onResetMatch?: () => void;
-  readonly onTogglePause?: () => void;
+  readonly onStartMatch?: () => void; // Added
+  readonly onResetMatch?: () => void; // Added
+  readonly onTogglePause?: () => void; // Added
   readonly onPlayerUpdate: (
+    // Added
     playerIndex: number,
     updates: Partial<PlayerState>
   ) => void;
-  readonly isPaused?: boolean;
+  readonly isPaused?: boolean; // Added
 }
 
 // Intro screen props
 export interface IntroScreenProps extends BaseUIComponentProps {
-  readonly onGamePhaseChange: (phase: GamePhase) => void;
+  readonly onGamePhaseChange: (phase: GamePhase | string) => void; // Ensure this matches string usage in App.tsx
   readonly currentSection?: string;
 }
 
@@ -119,8 +123,8 @@ export interface UITheme {
   };
   readonly fonts: {
     readonly primary: string;
-    readonly secondary: string;
-    readonly monospace: string;
+    readonly secondary: string; // Added
+    readonly monospace: string; // Added
   };
 }
 
@@ -132,24 +136,24 @@ export interface ColorScheme {
 export interface KoreanUIElement {
   readonly text: KoreanText;
   readonly style: UIElementStyle;
-  readonly interactive?: boolean;
-  readonly trigram?: TrigramStance;
+  readonly interactive?: boolean; // Added
+  readonly trigram?: TrigramStance; // Added
 }
 
 export interface UIElementStyle {
   readonly fontFamily: string;
   readonly fontSize: number;
-  readonly fontWeight: number;
+  readonly fontWeight: number; // Changed from string
   readonly color: number;
   readonly backgroundColor?: number;
   readonly border?: BorderStyle;
-  readonly cyberpunkGlow?: boolean;
+  readonly cyberpunkGlow?: boolean; // Added
 }
 
 export interface BorderStyle {
   readonly width: number;
   readonly color: number;
-  readonly style: "solid" | "dashed" | "neon";
+  readonly style: "solid" | "dashed" | "neon"; // Added "neon"
 }
 
 export interface TrigramWheelData {
@@ -157,8 +161,9 @@ export interface TrigramWheelData {
   readonly symbol: string;
   readonly name: KoreanText;
   readonly color: number;
-  readonly available: boolean;
+  readonly available: boolean; // Added
   readonly cost: {
+    // Added
     readonly ki: number;
     readonly stamina: number;
   };
@@ -169,7 +174,7 @@ export interface ArchetypeDisplayData {
   readonly name: KoreanText;
   readonly specialization: KoreanText;
   readonly preferredTrigrams: readonly TrigramStance[];
-  readonly philosophy: KoreanText;
+  readonly philosophy: KoreanText; // Added
 }
 
 export interface CombatUIState {
@@ -177,7 +182,7 @@ export interface CombatUIState {
   readonly playerKi: number;
   readonly playerStamina: number;
   readonly currentStance: TrigramStance;
-  readonly availableStances: readonly TrigramStance[];
+  readonly availableStances: readonly TrigramStance[]; // Added
   readonly combatLog: readonly KoreanText[];
-  readonly vitalPointsVisible: boolean;
+  readonly vitalPointsVisible: boolean; // Added
 }

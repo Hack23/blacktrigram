@@ -1,252 +1,166 @@
-// Player archetype data for Korean martial arts
+// Player archetype constants for Korean martial arts game
 
-import type { PlayerArchetype } from "../enums";
+import type {
+  PlayerArchetype,
+  PlayerArchetypeData,
+  TrigramStance,
+  KoreanText,
+} from "../../types"; // Ensure PlayerArchetypeData is imported correctly
 
-// Remove conflicting import and define interface locally
-export interface PlayerArchetypeData {
-  readonly name: { korean: string; english: string };
-  readonly description: { korean: string; english: string };
-  readonly preferredTrigrams: readonly string[];
-  readonly specialization: string; // Add missing property
-  readonly bonuses: {
-    readonly damageBonus: number;
-    readonly accuracyBonus: number;
-    readonly speedBonus: number;
-    readonly defenseBonus: number;
-    readonly damageResistance?: number;
-    readonly precisionBonus?: number;
-  };
-}
-
-// Player archetype data with Korean martial arts specializations
-export const PLAYER_ARCHETYPE_DATA: Record<
+// Define PLAYER_ARCHETYPES_DATA with explicit Record type
+export const PLAYER_ARCHETYPES_DATA: Record<
   PlayerArchetype,
   PlayerArchetypeData
 > = {
   musa: {
-    name: {
-      korean: "무사",
-      english: "Traditional Warrior",
-    },
+    // id: "musa", // Removed: Key is the ID
+    name: { korean: "무사", english: "Musa (Warrior)" },
     description: {
-      korean: "전통적인 무술가로 명예와 힘을 추구한다",
-      english: "Traditional martial artist pursuing honor and strength",
+      korean:
+        "균형 잡힌 능력치를 가진 다재다능한 전사입니다. 검술과 다양한 무술에 능숙합니다.",
+      english:
+        "A versatile warrior with balanced stats, skilled in swordsmanship and various martial arts.",
     },
-    preferredTrigrams: ["geon", "jin"],
-    specialization: "Direct combat and overwhelming force",
-    bonuses: {
-      damageBonus: 1.2,
-      accuracyBonus: 1.0,
-      speedBonus: 0.9,
-      defenseBonus: 1.3,
-      damageResistance: 1.2,
+    philosophy: {
+      korean: "명예롭고 정직한 전투를 통한 자기 수양",
+      english: "Self-cultivation through honorable and honest combat",
     },
-  },
-
-  amsalja: {
-    name: {
-      korean: "암살자",
-      english: "Shadow Assassin",
-    },
-    description: {
-      korean: "은밀한 암살을 통해 효율성을 추구한다",
-      english: "Pursues efficiency through stealth assassination",
-    },
-    preferredTrigrams: ["son", "gam"],
-    specialization: "Stealth approaches and instant takedowns",
-    bonuses: {
-      damageBonus: 1.8,
-      accuracyBonus: 1.4,
-      speedBonus: 1.5,
-      defenseBonus: 0.8,
-      precisionBonus: 1.1,
-    },
-  },
-
-  hacker: {
-    name: {
-      korean: "해커",
-      english: "Cyber Warrior",
-    },
-    description: {
-      korean: "정보기술을 활용한 전투 전문가",
-      english: "Combat specialist utilizing information technology",
-    },
-    preferredTrigrams: ["li", "tae"],
-    specialization: "Tech-assisted strikes and environmental control",
+    preferredTrigrams: ["geon", "jin", "gan"] as readonly TrigramStance[],
+    specialization: "검술 (Geomsul - Swordsmanship)",
     bonuses: {
       damageBonus: 1.1,
-      accuracyBonus: 1.6,
-      speedBonus: 1.2,
-      defenseBonus: 1.0,
+      accuracyBonus: 1.05,
+      speedBonus: 1.0,
+      defenseBonus: 1.05,
+      damageResistance: 0.05,
+      precisionBonus: 0.1,
+      kiEfficiency: 1.0,
+      staminaEfficiency: 1.0,
     },
   },
-
-  jeongbo_yowon: {
-    name: {
-      korean: "정보요원",
-      english: "Intelligence Operative",
-    },
+  amsalja: {
+    // id: "amsalja", // Removed: Key is the ID
+    name: { korean: "암살자", english: "Amsalja (Assassin)" },
     description: {
-      korean: "관찰과 분석을 통해 지식을 얻는 요원",
-      english: "Agent gaining knowledge through observation and analysis",
+      korean:
+        "빠르고 치명적인 암살자입니다. 은신과 급소 공격에 특화되어 있습니다.",
+      english:
+        "A swift and deadly assassin, specializing in stealth and critical strikes.",
     },
-    preferredTrigrams: ["gan", "gon"],
-    specialization: "Psychological manipulation and strategic thinking",
+    philosophy: {
+      korean: "최소한의 노력으로 최대한의 효과를 달성",
+      english: "Maximum effect with minimum effort",
+    },
+    preferredTrigrams: ["tae", "li", "son"] as readonly TrigramStance[],
+    specialization: "은신술 (Eunsinnsul - Stealth Techniques)",
+    bonuses: {
+      damageBonus: 1.2, // Higher base damage for surprise/criticals
+      accuracyBonus: 1.15, // Higher accuracy for vital points
+      speedBonus: 1.2,
+      defenseBonus: 0.85, // Lower defense, relies on evasion
+      damageResistance: 0.0,
+      precisionBonus: 0.25, // High precision for vital points
+      kiEfficiency: 1.1,
+      staminaEfficiency: 1.05,
+    },
+  },
+  hacker: {
+    // id: "hacker", // Removed: Key is the ID
+    name: { korean: "해커", english: "Hacker (Technomancer)" },
+    description: {
+      korean: "기술을 활용하여 전투 시스템을 교란하고 약화시키는 전략가입니다.",
+      english:
+        "A strategist who uses technology to disrupt and weaken combat systems.",
+    },
+    philosophy: {
+      korean: "지식과 기술을 통한 세상의 이해와 조작",
+      english:
+        "Understanding and manipulating the world through knowledge and technology",
+    },
+    preferredTrigrams: ["gam", "gon", "li"] as readonly TrigramStance[],
+    specialization: "전자기 교란 (Jeonjagi Gyoran - EMP & System Hacking)",
+    bonuses: {
+      damageBonus: 0.9, // Less direct damage
+      accuracyBonus: 1.0,
+      speedBonus: 0.95,
+      defenseBonus: 1.0,
+      // Special bonuses related to debuffs or system effects rather than direct combat stats
+      debuffEffectiveness: 1.25, // Example custom bonus
+      techResistance: 0.2, // Resistance to other tech attacks
+      damageResistance: 0.05,
+      precisionBonus: 0.05,
+      kiEfficiency: 1.2, // Represents energy management for tech
+      staminaEfficiency: 0.95,
+    },
+  },
+  jeongbo_yowon: {
+    // id: "jeongbo_yowon", // Removed: Key is the ID
+    name: { korean: "정보 요원", english: "Jeongbo Yowon (Intel Agent)" },
+    description: {
+      korean:
+        "정보 수집과 분석에 능하며, 상대의 약점을 파악하여 전투를 유리하게 이끌어갑니다.",
+      english:
+        "Excels at information gathering and analysis, turning battles by exploiting enemy weaknesses.",
+    },
+    philosophy: {
+      korean: "정보가 가장 강력한 무기라는 신념",
+      english: "Belief that information is the most powerful weapon",
+    },
+    preferredTrigrams: ["son", "gam", "gan"] as readonly TrigramStance[],
+    specialization: "심리전 (Simnijeon - Psychological Warfare)",
     bonuses: {
       damageBonus: 1.0,
-      accuracyBonus: 1.3,
-      speedBonus: 1.1,
-      defenseBonus: 1.4,
+      accuracyBonus: 1.1,
+      speedBonus: 1.05,
+      defenseBonus: 0.95,
+      // Bonuses related to exploiting weaknesses or predicting moves
+      weaknessExploitDamage: 1.3, // Example custom bonus
+      counterAttackChance: 0.15,
+      damageResistance: 0.0,
+      precisionBonus: 0.15,
+      kiEfficiency: 1.05,
+      staminaEfficiency: 1.1,
     },
   },
-
   jojik_pokryeokbae: {
+    // id: "jojik_pokryeokbae", // Removed: Key is the ID
     name: {
-      korean: "조직폭력배",
-      english: "Organized Crime",
+      korean: "조직 폭력배",
+      english: "Jojik Pokryeokbae (Syndicate Enforcer)",
     },
     description: {
-      korean: "생존을 위한 냉혹한 범죄 조직원",
-      english: "Ruthless criminal organization member focused on survival",
+      korean:
+        "강인한 육체와 다양한 불법 무기를 사용하는 위협적인 집행자입니다.",
+      english:
+        "A formidable enforcer using brute strength and various illicit weaponry.",
     },
-    preferredTrigrams: ["jin", "gam"],
-    specialization: "Dirty fighting and improvised weapons",
+    philosophy: {
+      korean: "승리가 모든 것을 정당화한다는 현실주의",
+      english: "Realism that victory justifies everything",
+    },
+    preferredTrigrams: ["jin", "gan", "geon"] as readonly TrigramStance[],
+    specialization: "불법 무기 사용 (Bulbeop Mugi Sayong - Illicit Weaponry)",
     bonuses: {
-      damageBonus: 1.6,
-      accuracyBonus: 0.9,
-      speedBonus: 1.3,
-      defenseBonus: 1.1,
+      damageBonus: 1.25, // High damage with weapons
+      accuracyBonus: 0.9, // Less precise, more brute force
+      speedBonus: 0.9,
+      defenseBonus: 1.15, // Tougher
+      damageResistance: 0.15,
+      intimidationFactor: 0.2, // Example custom bonus
+      precisionBonus: 0.0,
+      kiEfficiency: 0.9,
+      staminaEfficiency: 1.2, // High stamina for prolonged fights
     },
   },
-} as const;
+};
 
-// Player stats configuration
-export const PLAYER_BASE_STATS = {
-  HEALTH: 100,
-  MAX_HEALTH: 100,
-  KI: 100,
-  MAX_KI: 100,
-  STAMINA: 100,
-  MAX_STAMINA: 100,
-  CONSCIOUSNESS: 100,
-  PAIN: 0,
-  BALANCE: 100,
-  BLOOD_LOSS: 0,
-} as const;
+export const DEFAULT_PLAYER_NAME: KoreanText = {
+  korean: "무명",
+  english: "Nameless",
+  romanized: "Mumyeong",
+};
 
-// Archetype-specific stat modifiers
-export const ARCHETYPE_STAT_MODIFIERS: Record<
-  PlayerArchetype,
-  {
-    healthMultiplier: number;
-    kiMultiplier: number;
-    staminaMultiplier: number;
-    painResistance: number;
-    balanceBonus: number;
-  }
-> = {
-  musa: {
-    healthMultiplier: 1.2, // Higher health for traditional warrior
-    kiMultiplier: 1.1, // Moderate ki bonus
-    staminaMultiplier: 1.0, // Standard stamina
-    painResistance: 1.3, // High pain resistance
-    balanceBonus: 1.1, // Good balance
-  },
-  amsalja: {
-    healthMultiplier: 0.9, // Lower health (glass cannon)
-    kiMultiplier: 1.3, // High ki for stealth techniques
-    staminaMultiplier: 1.2, // High stamina for mobility
-    painResistance: 1.0, // Standard pain resistance
-    balanceBonus: 1.4, // Excellent balance for stealth
-  },
-  hacker: {
-    healthMultiplier: 0.8, // Lowest health (tech reliant)
-    kiMultiplier: 1.4, // Highest ki for tech enhancement
-    staminaMultiplier: 0.9, // Lower stamina (less physical)
-    painResistance: 0.8, // Lower pain resistance
-    balanceBonus: 1.0, // Standard balance
-  },
-  jeongbo_yowon: {
-    healthMultiplier: 1.0, // Standard health
-    kiMultiplier: 1.2, // Good ki for mental techniques
-    staminaMultiplier: 1.1, // Good stamina for endurance
-    painResistance: 1.4, // Very high pain resistance (trained)
-    balanceBonus: 1.2, // Good balance for control
-  },
-  jojik_pokryeokbae: {
-    healthMultiplier: 1.1, // Good health from street fighting
-    kiMultiplier: 0.9, // Lower ki (less spiritual)
-    staminaMultiplier: 1.3, // Highest stamina for survival
-    painResistance: 1.5, // Highest pain resistance (street tough)
-    balanceBonus: 0.9, // Lower balance (brawler style)
-  },
-} as const;
-
-// Korean martial arts ranking system
-export const MARTIAL_ARTS_RANKS = {
-  STUDENT: { korean: "제자", english: "Student", level: 1 },
-  PRACTITIONER: { korean: "수련자", english: "Practitioner", level: 2 },
-  INSTRUCTOR: { korean: "사범", english: "Instructor", level: 3 },
-  MASTER: { korean: "사부", english: "Master", level: 4 },
-  GRANDMASTER: { korean: "종사", english: "Grandmaster", level: 5 },
-} as const;
-
-// Combat readiness thresholds by archetype
-export const ARCHETYPE_COMBAT_THRESHOLDS: Record<
-  PlayerArchetype,
-  {
-    criticalHealth: number;
-    lowStamina: number;
-    kiDepletion: number;
-    painThreshold: number;
-  }
-> = {
-  musa: {
-    criticalHealth: 0.3, // Fights until 30% health
-    lowStamina: 0.2, // Alert at 20% stamina
-    kiDepletion: 0.15, // Ki warning at 15%
-    painThreshold: 70, // High pain tolerance
-  },
-  amsalja: {
-    criticalHealth: 0.4, // More cautious with health
-    lowStamina: 0.25, // Needs stamina for mobility
-    kiDepletion: 0.2, // Relies on ki for stealth
-    painThreshold: 50, // Standard pain tolerance
-  },
-  hacker: {
-    criticalHealth: 0.5, // Very cautious with health
-    lowStamina: 0.15, // Less reliant on stamina
-    kiDepletion: 0.25, // Heavily reliant on ki
-    painThreshold: 40, // Low pain tolerance
-  },
-  jeongbo_yowon: {
-    criticalHealth: 0.35, // Balanced health management
-    lowStamina: 0.3, // Good stamina management
-    kiDepletion: 0.2, // Moderate ki reliance
-    painThreshold: 80, // Very high pain tolerance
-  },
-  jojik_pokryeokbae: {
-    criticalHealth: 0.25, // Fights even when badly hurt
-    lowStamina: 0.35, // High stamina usage
-    kiDepletion: 0.1, // Low ki reliance
-    painThreshold: 85, // Highest pain tolerance
-  },
-} as const;
-
-// Archetype export and naming
-export const PLAYER_ARCHETYPES = [
-  "musa",
-  "amsalja",
-  "hacker",
-  "jeongbo_yowon",
-  "jojik_pokryeokbae",
-] as const;
-
-export const ARCHETYPE_NAMES = {
-  musa: { korean: "무사", english: "Traditional Warrior" },
-  amsalja: { korean: "암살자", english: "Shadow Assassin" },
-  hacker: { korean: "해커", english: "Cyber Warrior" },
-  jeongbo_yowon: { korean: "정보요원", english: "Intelligence Operative" },
-  jojik_pokryeokbae: { korean: "조직폭력배", english: "Organized Crime" },
-} as const;
+// Add missing PLAYER_ARCHETYPES export
+export const PLAYER_ARCHETYPES = Object.keys(
+  PLAYER_ARCHETYPES_DATA
+) as PlayerArchetype[];

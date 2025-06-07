@@ -1,29 +1,63 @@
-import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import { GameEngine } from "./GameEngine";
 import { createPlayerState } from "../../utils/playerUtils";
+import type { PlayerState, KoreanText, Position } from "../../types";
+import { Application } from "@pixi/react";
+
+const mockPlayer1Name: KoreanText = { korean: "선수1", english: "Player1" };
+const mockPlayer2Name: KoreanText = { korean: "선수2", english: "Player2" };
+const mockPosition: Position = { x: 0, y: 0 };
+
+const mockPlayer1: PlayerState = createPlayerState(
+  "player1",
+  "musa",
+  mockPlayer1Name,
+  mockPosition
+);
+const mockPlayer2: PlayerState = createPlayerState(
+  "player2",
+  "amsalja",
+  mockPlayer2Name,
+  mockPosition
+);
 
 describe("GameEngine", () => {
-  const mockPlayers = [
-    createPlayerState("player1", "musa", "geon"), // Fixed: Correct parameter order
-    createPlayerState("player2", "amsalja", "tae"), // Fixed: Correct parameter order
-  ] as const;
-
   const defaultProps = {
-    // Fix: Use correct prop names for GameEngineProps
-    player1: mockPlayers[0],
-    player2: mockPlayers[1],
+    player1: mockPlayer1,
+    player2: mockPlayer2,
+    gamePhase: "combat" as const,
     onGameStateChange: vi.fn(),
     onPlayerUpdate: vi.fn(),
     onGamePhaseChange: vi.fn(),
+    gameMode: "versus" as const,
   };
 
-  it("should render without crashing", () => {
-    render(<GameEngine {...defaultProps} />);
+  it("renders without crashing", () => {
+    const { container } = render(
+      <Application>
+        <GameEngine {...defaultProps} />
+      </Application>
+    );
+    expect(container).toBeInTheDocument();
   });
 
-  it("should display players", () => {
-    const { container } = render(<GameEngine {...defaultProps} />);
+  it("initializes game systems", () => {
+    render(
+      <Application>
+        <GameEngine {...defaultProps} />
+      </Application>
+    );
+
+    expect(defaultProps.onGameStateChange).toHaveBeenCalled();
+  });
+
+  it("initializes with correct game phase", () => {
+    const { container } = render(
+      <Application>
+        <GameEngine {...defaultProps} gamePhase="training" />
+      </Application>
+    );
     expect(container).toBeInTheDocument();
   });
 });

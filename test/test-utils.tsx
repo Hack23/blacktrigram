@@ -1,6 +1,8 @@
 import React, { ReactElement } from "react";
 import { render, RenderOptions } from "@testing-library/react";
 import { vi } from "vitest";
+import type { PlayerState, KoreanText } from "../src/types";
+import { createPlayerState } from "../src/utils/playerUtils";
 
 // Mock graphics context for PixiJS testing
 export const mockGraphicsContext = {
@@ -76,30 +78,23 @@ export const testUtils = {
 };
 
 // Player state factory for tests
-export function createTestPlayerState(overrides = {}) {
+export function createTestPlayerState(
+  overrides: Partial<PlayerState> = {}
+): PlayerState {
+  const defaultName: KoreanText = {
+    korean: "테스트 플레이어",
+    english: "Test Player",
+  };
+
+  const basePlayer = createPlayerState(
+    "test-player",
+    "musa",
+    defaultName,
+    "geon"
+  );
+
   return {
-    id: "test-player",
-    name: "Test Player",
-    archetype: "musa" as const,
-    position: { x: 100, y: 200 },
-    stance: "geon" as const,
-    facing: "right" as const,
-    health: 100,
-    maxHealth: 100,
-    ki: 100,
-    maxKi: 100,
-    stamina: 100,
-    maxStamina: 100,
-    consciousness: 100,
-    pain: 0,
-    balance: 100,
-    bloodLoss: 0,
-    lastStanceChangeTime: Date.now(),
-    isAttacking: false,
-    combatReadiness: 100,
-    activeEffects: [],
-    combatState: "ready" as const,
-    conditions: [],
+    ...basePlayer,
     ...overrides,
   };
 }

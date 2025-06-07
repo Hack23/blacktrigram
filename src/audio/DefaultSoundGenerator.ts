@@ -1,249 +1,311 @@
-import type { SoundEffectId } from "../types/audio";
-
 /**
- * Korean Martial Arts Default Sound Generator for Black Trigram (흑괘)
- * Procedural sound generation for fallback audio when assets are missing
+ * Procedural sound generation for Korean martial arts audio
+ * Generates placeholder sounds when audio files are not available
  */
+
+import type { ProceduralSoundConfig, SoundEffectId } from "../types/audio";
+import { AudioUtils } from "./AudioUtils";
+import { AudioVariantContext } from "./VariantSelector";
+
 export class DefaultSoundGenerator {
-  private static audioContext: AudioContext | null = null;
+  private audioContext: AudioContext | null = null;
+  private static sharedAudioContext: AudioContext | null = null;
 
-  private static getAudioContext(): AudioContext | null {
-    if (!DefaultSoundGenerator.audioContext) {
-      try {
-        DefaultSoundGenerator.audioContext = new (window.AudioContext ||
-          (window as any).webkitAudioContext)();
-      } catch (error) {
-        console.warn(
-          "Failed to create AudioContext for DefaultSoundGenerator:",
-          error
-        );
-        return null;
+  constructor() {
+    if (AudioUtils.isWebAudioSupported()) {
+      const AudioContextClass =
+        window.AudioContext || (window as any).webkitAudioContext;
+      this.audioContext = new AudioContextClass();
+    }
+  }
+
+  /**
+   * Get shared audio context for static methods
+   */
+  private static getSharedAudioContext(): AudioContext | null {
+    if (
+      !DefaultSoundGenerator.sharedAudioContext &&
+      AudioUtils.isWebAudioSupported()
+    ) {
+      const AudioContextClass =
+        window.AudioContext || (window as any).webkitAudioContext;
+      DefaultSoundGenerator.sharedAudioContext = new AudioContextClass();
+    }
+    return DefaultSoundGenerator.sharedAudioContext;
+  }
+
+  /**
+   * Generate a procedural sound based on configuration
+   */
+  async generateSound(
+    config: ProceduralSoundConfig
+  ): Promise<AudioBuffer | null> {
+    if (!this.audioContext) {
+      console.warn(
+        "Web Audio API not supported for procedural sound generation"
+      );
+      return null;
+    }
+
+    try {
+      const sampleRate = this.audioContext.sampleRate;
+      const samples = Math.floor(config.duration * sampleRate);
+      const buffer = this.audioContext.createBuffer(1, samples, sampleRate);
+      const channelData = buffer.getChannelData(0);
+
+      // Generate base waveform
+      this.generateWaveform(channelData, config, sampleRate);
+
+      // Apply ADSR envelope
+      this.applyEnvelope(channelData, config, sampleRate);
+
+      return buffer;
+    } catch (error) {
+      console.error("Error generating procedural sound:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Generate specific Korean martial arts sounds
+   */
+  async generateKoreanMartialArtsSound(
+    type: "strike" | "hit" | "block" | "stance_change" | "ki_energy",
+    intensity: number = 0.5
+  ): Promise<AudioBuffer | null> {
+    const configs: Record<string, ProceduralSoundConfig> = {
+      strike: {
+        type: "noise",
+        duration: 0.2,
+        attack: 0.01,
+        decay: 0.05,
+        sustain: 0.3,
+        release: 0.14,
+        volume: intensity * 0.7,
+      },
+      hit: {
+        type: "noise",
+        frequency: 200 + intensity * 300,
+        duration: 0.15,
+        attack: 0.005,
+        decay: 0.03,
+        sustain: 0.2,
+        release: 0.115,
+        volume: intensity * 0.8,
+      },
+      block: {
+        type: "square",
+        frequency: 150 + intensity * 100,
+        duration: 0.1,
+        attack: 0.01,
+        decay: 0.02,
+        sustain: 0.5,
+        release: 0.07,
+        volume: intensity * 0.6,
+      },
+      stance_change: {
+        type: "sine",
+        frequency: 300 + intensity * 200,
+        duration: 0.3,
+        attack: 0.05,
+        decay: 0.1,
+        sustain: 0.3,
+        release: 0.15,
+        volume: intensity * 0.4,
+      },
+      ki_energy: {
+        type: "sawtooth",
+        frequency: 100 + intensity * 400,
+        duration: 0.5,
+        attack: 0.1,
+        decay: 0.15,
+        sustain: 0.4,
+        release: 0.25,
+        volume: intensity * 0.5,
+      },
+    };
+
+    const config = configs[type];
+    if (!config) {
+      console.warn(`Unknown Korean martial arts sound type: ${type}`);
+      return null;
+    }
+
+    return this.generateSound(config);
+  }
+
+  /**
+   * Generate waveform based on type and frequency
+   */
+  private generateWaveform(
+    data: Float32Array,
+    config: ProceduralSoundConfig,
+    sampleRate: number
+  ): void {
+    const { type, frequency = 440 } = config;
+    const length = data.length;
+    const increment = (frequency * 2 * Math.PI) / sampleRate;
+
+    for (let i = 0; i < length; i++) {
+      const t = i * increment;
+
+      switch (type) {
+        case "sine":
+          data[i] = Math.sin(t);
+          break;
+        case "square":
+          data[i] = Math.sin(t) > 0 ? 1 : -1;
+          break;
+        case "sawtooth":
+          data[i] = 2 * ((t / (2 * Math.PI)) % 1) - 1;
+          break;
+        case "triangle":
+          const sawtoothValue = 2 * ((t / (2 * Math.PI)) % 1) - 1;
+          data[i] = 2 * Math.abs(sawtoothValue) - 1;
+          break;
+        case "noise":
+          data[i] = Math.random() * 2 - 1;
+          break;
+        default:
+          data[i] = Math.sin(t);
       }
     }
-    return DefaultSoundGenerator.audioContext;
   }
 
   /**
-   * Generate attack sound based on damage intensity
+   * Apply ADSR envelope to the generated sound
    */
-  public static async playAttackSound(damage: number): Promise<void> {
-    const context = DefaultSoundGenerator.getAudioContext();
-    if (!context) return;
+  private applyEnvelope(
+    data: Float32Array,
+    config: ProceduralSoundConfig,
+    sampleRate: number
+  ): void {
+    const {
+      attack = 0.1,
+      decay = 0.1,
+      sustain = 0.7,
+      release = 0.2,
+      volume = 0.5,
+    } = config;
 
-    try {
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
+    const length = data.length;
+    const attackSamples = Math.floor(attack * sampleRate);
+    const decaySamples = Math.floor(decay * sampleRate);
+    const releaseSamples = Math.floor(release * sampleRate);
+    const sustainSamples =
+      length - attackSamples - decaySamples - releaseSamples;
 
-      oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
+    for (let i = 0; i < length; i++) {
+      let envelope = 1;
 
-      // Frequency based on damage - higher damage = lower, more impactful sound
-      const frequency = Math.max(150, 400 - damage * 5);
-      oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-      oscillator.type = "square";
-
-      // Volume and duration based on damage intensity
-      const volume = Math.min(0.3, 0.1 + damage * 0.005);
-      const duration = Math.min(0.3, 0.1 + damage * 0.005);
-
-      gainNode.gain.setValueAtTime(volume, context.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        context.currentTime + duration
-      );
-
-      oscillator.start(context.currentTime);
-      oscillator.stop(context.currentTime + duration);
-    } catch (error) {
-      console.warn("Failed to generate attack sound:", error);
-    }
-  }
-
-  /**
-   * Generate hit sound with vital point consideration
-   */
-  public static async playHitSound(
-    damage: number,
-    isVitalPoint: boolean = false
-  ): Promise<void> {
-    const context = DefaultSoundGenerator.getAudioContext();
-    if (!context) return;
-
-    try {
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
-
-      if (isVitalPoint) {
-        // Sharp, piercing sound for vital point hits
-        oscillator.frequency.setValueAtTime(800, context.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(
-          200,
-          context.currentTime + 0.1
-        );
-        oscillator.type = "sawtooth";
+      if (i < attackSamples) {
+        // Attack phase - linear ramp up
+        envelope = i / attackSamples;
+      } else if (i < attackSamples + decaySamples) {
+        // Decay phase - linear ramp down to sustain level
+        const decayProgress = (i - attackSamples) / decaySamples;
+        envelope = 1 - decayProgress * (1 - sustain);
+      } else if (i < attackSamples + decaySamples + sustainSamples) {
+        // Sustain phase - constant level
+        envelope = sustain;
       } else {
-        // Duller impact sound for regular hits
-        const frequency = Math.max(100, 300 - damage * 3);
-        oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-        oscillator.type = "square";
+        // Release phase - linear ramp down to 0
+        const releaseProgress =
+          (i - attackSamples - decaySamples - sustainSamples) / releaseSamples;
+        envelope = sustain * (1 - releaseProgress);
       }
 
-      const volume = isVitalPoint ? 0.2 : Math.min(0.2, 0.05 + damage * 0.003);
-      const duration = isVitalPoint
-        ? 0.2
-        : Math.min(0.2, 0.08 + damage * 0.003);
-
-      gainNode.gain.setValueAtTime(volume, context.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        context.currentTime + duration
-      );
-
-      oscillator.start(context.currentTime);
-      oscillator.stop(context.currentTime + duration);
-    } catch (error) {
-      console.warn("Failed to generate hit sound:", error);
+      data[i] *= envelope * volume;
     }
   }
 
   /**
-   * Generate stance change sound
+   * Create a buffer source node from generated audio
    */
-  public static async playStanceChangeSound(): Promise<void> {
-    const context = DefaultSoundGenerator.getAudioContext();
-    if (!context) return;
+  createBufferSource(buffer: AudioBuffer): AudioBufferSourceNode | null {
+    if (!this.audioContext || !buffer) return null;
+
+    const source = this.audioContext.createBufferSource();
+    source.buffer = buffer;
+    return source;
+  }
+
+  /**
+   * Play a generated sound immediately
+   */
+  async playGeneratedSound(
+    type: "strike" | "hit" | "block" | "stance_change" | "ki_energy",
+    intensity: number = 0.5,
+    volume: number = 0.7
+  ): Promise<void> {
+    if (!this.audioContext) return;
 
     try {
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
+      const buffer = await this.generateKoreanMartialArtsSound(type, intensity);
+      if (!buffer) return;
 
-      oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
+      const source = this.createBufferSource(buffer);
+      if (!source) return;
 
-      // Rising tone for stance change
-      oscillator.frequency.setValueAtTime(300, context.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(
-        600,
-        context.currentTime + 0.15
-      );
-      oscillator.type = "sine";
+      const gainNode = this.audioContext.createGain();
+      gainNode.gain.value = AudioUtils.clampVolume(volume);
 
-      gainNode.gain.setValueAtTime(0.1, context.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        context.currentTime + 0.15
-      );
+      source.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
 
-      oscillator.start(context.currentTime);
-      oscillator.stop(context.currentTime + 0.15);
+      source.start();
     } catch (error) {
-      console.warn("Failed to generate stance change sound:", error);
+      console.error("Error playing generated sound:", error);
     }
   }
 
   /**
-   * Generate match start sound
+   * Generate Korean martial arts ambience
    */
-  public static async playMatchStartSound(): Promise<void> {
-    const context = DefaultSoundGenerator.getAudioContext();
-    if (!context) return;
+  async generateDojangAmbience(
+    duration: number = 10
+  ): Promise<AudioBuffer | null> {
+    if (!this.audioContext) return null;
 
     try {
-      // Create a bell-like sound for match start
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
+      const sampleRate = this.audioContext.sampleRate;
+      const samples = Math.floor(duration * sampleRate);
+      const buffer = this.audioContext.createBuffer(2, samples, sampleRate);
 
-      oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
+      // Generate subtle wind and room tone
+      for (let channel = 0; channel < 2; channel++) {
+        const channelData = buffer.getChannelData(channel);
 
-      oscillator.frequency.setValueAtTime(800, context.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(
-        400,
-        context.currentTime + 0.5
-      );
-      oscillator.type = "sine";
+        for (let i = 0; i < samples; i++) {
+          // Low-frequency room tone
+          const roomTone = Math.sin((i * 60 * 2 * Math.PI) / sampleRate) * 0.02;
 
-      gainNode.gain.setValueAtTime(0.2, context.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        context.currentTime + 0.5
-      );
+          // High-frequency wind texture
+          const windNoise = (Math.random() - 0.5) * 0.005;
 
-      oscillator.start(context.currentTime);
-      oscillator.stop(context.currentTime + 0.5);
+          // Occasional subtle harmonics
+          const harmonic =
+            (Math.sin((i * 120 * 2 * Math.PI) / sampleRate) * 0.01) /
+            Math.sin((i * 0.1 * 2 * Math.PI) / sampleRate);
+
+          channelData[i] = roomTone + windNoise + harmonic;
+        }
+      }
+
+      return buffer;
     } catch (error) {
-      console.warn("Failed to generate match start sound:", error);
+      console.error("Error generating dojang ambience:", error);
+      return null;
     }
   }
 
   /**
-   * Generate victory sound
+   * Cleanup audio context
    */
-  public static async playVictorySound(): Promise<void> {
-    const context = DefaultSoundGenerator.getAudioContext();
-    if (!context) return;
-
-    try {
-      // Create an ascending chord for victory
-      const frequencies = [523, 659, 784]; // C-E-G chord
-
-      frequencies.forEach((freq, index) => {
-        const oscillator = context.createOscillator();
-        const gainNode = context.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
-
-        oscillator.frequency.setValueAtTime(
-          freq,
-          context.currentTime + index * 0.1
-        );
-        oscillator.type = "sine";
-
-        gainNode.gain.setValueAtTime(0.1, context.currentTime + index * 0.1);
-        gainNode.gain.exponentialRampToValueAtTime(
-          0.01,
-          context.currentTime + 0.8 + index * 0.1
-        );
-
-        oscillator.start(context.currentTime + index * 0.1);
-        oscillator.stop(context.currentTime + 0.8 + index * 0.1);
-      });
-    } catch (error) {
-      console.warn("Failed to generate victory sound:", error);
-    }
-  }
-
-  /**
-   * Generate menu interaction sound
-   */
-  public static async playMenuSound(): Promise<void> {
-    const context = DefaultSoundGenerator.getAudioContext();
-    if (!context) return;
-
-    try {
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
-
-      oscillator.frequency.setValueAtTime(600, context.currentTime);
-      oscillator.type = "sine";
-
-      gainNode.gain.setValueAtTime(0.1, context.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        context.currentTime + 0.1
-      );
-
-      oscillator.start(context.currentTime);
-      oscillator.stop(context.currentTime + 0.1);
-    } catch (error) {
-      console.warn("Failed to generate menu sound:", error);
+  dispose(): void {
+    if (this.audioContext && this.audioContext.state !== "closed") {
+      this.audioContext.close();
+      this.audioContext = null;
     }
   }
 
@@ -310,4 +372,299 @@ export class DefaultSoundGenerator {
         await DefaultSoundGenerator.playMenuSound();
     }
   }
+
+  /**
+   * Generate procedural sound using shared context
+   */
+  private static async generateProceduralSound(
+    config: ProceduralSoundConfig
+  ): Promise<void> {
+    const audioContext = DefaultSoundGenerator.getSharedAudioContext();
+    if (!audioContext) return;
+
+    try {
+      const sampleRate = audioContext.sampleRate;
+      const samples = Math.floor((config.duration / 1000) * sampleRate);
+      const buffer = audioContext.createBuffer(1, samples, sampleRate);
+      const channelData = buffer.getChannelData(0);
+
+      // Generate waveform
+      DefaultSoundGenerator.generateStaticWaveform(
+        channelData,
+        config,
+        sampleRate
+      );
+
+      // Apply envelope
+      DefaultSoundGenerator.applyStaticEnvelope(
+        channelData,
+        config,
+        sampleRate
+      );
+
+      // Play the sound
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = config.volume || 0.5;
+
+      source.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      source.start();
+    } catch (error) {
+      console.error("Error generating static procedural sound:", error);
+    }
+  }
+
+  /**
+   * Generate waveform for static methods
+   */
+  private static generateStaticWaveform(
+    data: Float32Array,
+    config: ProceduralSoundConfig,
+    sampleRate: number
+  ): void {
+    const { type, frequency = 440 } = config;
+    const length = data.length;
+    const increment = (frequency * 2 * Math.PI) / sampleRate;
+
+    for (let i = 0; i < length; i++) {
+      const t = i * increment;
+
+      switch (type) {
+        case "sine":
+          data[i] = Math.sin(t);
+          break;
+        case "square":
+          data[i] = Math.sin(t) > 0 ? 1 : -1;
+          break;
+        case "sawtooth":
+          data[i] = 2 * ((t / (2 * Math.PI)) % 1) - 1;
+          break;
+        case "triangle":
+          const sawtoothValue = 2 * ((t / (2 * Math.PI)) % 1) - 1;
+          data[i] = 2 * Math.abs(sawtoothValue) - 1;
+          break;
+        case "noise":
+          data[i] = Math.random() * 2 - 1;
+          break;
+        default:
+          data[i] = Math.sin(t);
+      }
+    }
+  }
+
+  /**
+   * Apply envelope for static methods
+   */
+  private static applyStaticEnvelope(
+    data: Float32Array,
+    config: ProceduralSoundConfig,
+    sampleRate: number
+  ): void {
+    const {
+      attack = 0.1,
+      decay = 0.1,
+      sustain = 0.7,
+      release = 0.2,
+      volume = 0.5,
+    } = config;
+
+    const length = data.length;
+    const attackSamples = Math.floor((attack / 1000) * sampleRate);
+    const decaySamples = Math.floor((decay / 1000) * sampleRate);
+    const releaseSamples = Math.floor((release / 1000) * sampleRate);
+    const sustainSamples =
+      length - attackSamples - decaySamples - releaseSamples;
+
+    for (let i = 0; i < length; i++) {
+      let envelope = 1;
+
+      if (i < attackSamples) {
+        envelope = i / attackSamples;
+      } else if (i < attackSamples + decaySamples) {
+        const decayProgress = (i - attackSamples) / decaySamples;
+        envelope = 1 - decayProgress * (1 - sustain);
+      } else if (i < attackSamples + decaySamples + sustainSamples) {
+        envelope = sustain;
+      } else {
+        const releaseProgress =
+          (i - attackSamples - decaySamples - sustainSamples) / releaseSamples;
+        envelope = sustain * (1 - releaseProgress);
+      }
+
+      data[i] *= envelope * volume;
+    }
+  }
+
+  // Add missing static methods for audio manager compatibility
+  static async playAttackSound(damage: number): Promise<void> {
+    const frequency = 200 + damage * 5;
+    const duration = Math.min(300, 100 + damage * 10);
+
+    const config: ProceduralSoundConfig = {
+      type: "sawtooth",
+      frequency,
+      duration,
+      attack: 10,
+      decay: 100,
+      sustain: 0.7,
+      release: 200,
+      volume: 0.6,
+    };
+    await DefaultSoundGenerator.generateProceduralSound(config);
+  }
+
+  static async playHitSound(
+    damage: number,
+    isVitalPoint: boolean = false
+  ): Promise<void> {
+    const baseFreq = isVitalPoint ? 800 : 400;
+    const frequency = baseFreq + damage * 3;
+    const duration = isVitalPoint ? 400 : Math.min(250, 50 + damage * 8);
+
+    const config: ProceduralSoundConfig = {
+      type: isVitalPoint ? "square" : "sawtooth",
+      frequency,
+      duration,
+      attack: 5,
+      decay: 50,
+      sustain: 0.6,
+      release: isVitalPoint ? 300 : 150,
+      volume: isVitalPoint ? 0.8 : 0.5,
+    };
+    await DefaultSoundGenerator.generateProceduralSound(config);
+  }
+
+  static async playStanceChangeSound(): Promise<void> {
+    const config: ProceduralSoundConfig = {
+      type: "sine",
+      frequency: 440,
+      duration: 200,
+      attack: 20,
+      decay: 100,
+      sustain: 0.3,
+      release: 100,
+      volume: 0.4,
+    };
+    await DefaultSoundGenerator.generateProceduralSound(config);
+  }
+
+  static async playMatchStartSound(): Promise<void> {
+    const config: ProceduralSoundConfig = {
+      type: "triangle",
+      frequency: 523.25, // C5
+      duration: 500,
+      attack: 100,
+      decay: 200,
+      sustain: 0.8,
+      release: 200,
+      volume: 0.7,
+    };
+    await DefaultSoundGenerator.generateProceduralSound(config);
+  }
+
+  static async playVictorySound(): Promise<void> {
+    // Play ascending chord
+    const frequencies = [261.63, 329.63, 392.0]; // C-E-G major chord
+    for (const frequency of frequencies) {
+      const config: ProceduralSoundConfig = {
+        type: "sine",
+        frequency,
+        duration: 600,
+        attack: 100,
+        decay: 100,
+        sustain: 0.8,
+        release: 400,
+        volume: 0.6,
+      };
+      await DefaultSoundGenerator.generateProceduralSound(config);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+
+  static async playMenuSound(): Promise<void> {
+    const config: ProceduralSoundConfig = {
+      type: "sine",
+      frequency: 880, // A5
+      duration: 100,
+      attack: 10,
+      decay: 50,
+      sustain: 0.3,
+      release: 50,
+      volume: 0.3,
+    };
+    await DefaultSoundGenerator.generateProceduralSound(config);
+  }
+
+  public static async playVariantSound(
+    id: SoundEffectId,
+    _context: AudioVariantContext
+  ): Promise<void> {
+    try {
+      switch (id) {
+        case "attack_light":
+        case "attack_medium":
+        case "attack_heavy":
+        case "attack_critical":
+          const damage =
+            id === "attack_critical"
+              ? 50
+              : id === "attack_heavy"
+              ? 35
+              : id === "attack_medium"
+              ? 20
+              : 10;
+          await DefaultSoundGenerator.playAttackSound(damage);
+          break;
+
+        case "hit_light":
+        case "hit_medium":
+        case "hit_heavy":
+        case "critical_hit":
+          const hitDamage =
+            id === "critical_hit"
+              ? 60
+              : id === "hit_heavy"
+              ? 40
+              : id === "hit_medium"
+              ? 25
+              : 15;
+          await DefaultSoundGenerator.playHitSound(hitDamage);
+          break;
+
+        case "critical_hit":
+          await DefaultSoundGenerator.playHitSound(35, true);
+          break;
+
+        case "stance_change":
+          await DefaultSoundGenerator.playStanceChangeSound();
+          break;
+
+        case "match_start":
+          await DefaultSoundGenerator.playMatchStartSound();
+          break;
+
+        case "victory":
+          await DefaultSoundGenerator.playVictorySound();
+          break;
+
+        case "menu_hover":
+        case "menu_select":
+        case "menu_back":
+          await DefaultSoundGenerator.playMenuSound();
+          break;
+
+        default:
+          await DefaultSoundGenerator.playMenuSound();
+          break;
+      }
+    } catch (error) {
+      console.warn(`Failed to play variant sound ${id}:`, error);
+    }
+  }
+
+  // ...existing code...
 }

@@ -1,11 +1,8 @@
-// Korean typography constants for Black Trigram
+import * as PIXI from "pixi.js";
 
-// Korean font families for authentic display
-export const KOREAN_FONT_FAMILY_PRIMARY = "Noto Sans KR";
-export const KOREAN_FONT_FAMILY_SECONDARY = "Malgun Gothic, 맑은 고딕";
-
-// Korean text sizes mapping
+// Korean text size constants
 export const KOREAN_TEXT_SIZES = {
+  xsmall: 10,
   small: 12,
   medium: 16,
   large: 20,
@@ -14,132 +11,121 @@ export const KOREAN_TEXT_SIZES = {
   title: 48,
 } as const;
 
-// Korean font weights
+// Korean font weight constants
 export const KOREAN_FONT_WEIGHTS = {
   light: 300,
   regular: 400,
   medium: 500,
+  semibold: 600, // Added missing semibold
   bold: 700,
   heavy: 900,
 } as const;
 
-// Korean text styles for martial arts context
-export const KOREAN_TEXT_STYLES = {
-  normal: "normal",
-  italic: "italic",
-  traditional: "traditional", // For classical Korean text
-  modern: "modern", // For contemporary Korean text
-  cyberpunk: "cyberpunk", // For game aesthetic
-} as const;
+// Korean font family constants
+export const KOREAN_FONT_FAMILY =
+  '"Noto Sans KR", "Malgun Gothic", Arial, sans-serif';
 
-// Combined font family string
-export const KOREAN_FONT_FAMILY_COMBINED = `${KOREAN_FONT_FAMILY_PRIMARY}, ${KOREAN_FONT_FAMILY_SECONDARY}, Arial, sans-serif`;
+// PixiJS compatible text style options
+export interface KoreanTextStyleOptions extends Partial<PIXI.TextStyleOptions> {
+  // Korean specific extensions
+  hangeulSpacing?: number;
+  verticalAlignment?: "top" | "middle" | "bottom";
+  koreanEmphasis?: "normal" | "bold" | "outline" | "glow";
+}
 
-// Korean martial arts specific typography
-export const MARTIAL_ARTS_TYPOGRAPHY = {
-  technique_names: {
-    fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-    fontSize: 18,
-    fontWeight: 700,
-    color: 0xffd700, // Gold for technique names
+// Base Korean text styles for different contexts
+export const KOREAN_BASE_TEXT_STYLES: Record<string, KoreanTextStyleOptions> = {
+  default: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.medium,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight,
+    fill: 0xffffff,
+    align: "left",
   },
-  stance_labels: {
-    fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-    fontSize: 16,
-    fontWeight: 500,
-    color: 0x00ffff, // Cyan for stance labels
+  title: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.title,
+    fontWeight: KOREAN_FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+    fill: 0x00ffcc,
+    align: "center",
   },
-  damage_numbers: {
-    fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-    fontSize: 24,
-    fontWeight: 900,
-    color: 0xff4500, // Red-orange for damage
+  body: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.medium,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight,
+    fill: 0xcccccc,
+    wordWrap: true,
+    wordWrapWidth: 400,
   },
-  philosophy_text: {
-    fontFamily: KOREAN_FONT_FAMILY_SECONDARY,
-    fontSize: 14,
-    fontWeight: 400,
-    color: 0xf5f5dc, // Hanbok white for philosophy
+  small: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.small,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight,
+    fill: 0x999999,
   },
-} as const;
+};
 
-// Typography scales for responsive design
-export const TYPOGRAPHY_SCALE = {
-  base: 16,
-  ratio: 1.25, // Major third scale
-  sizes: {
-    xs: 12,
-    sm: 14,
-    base: 16,
-    lg: 20,
-    xl: 25,
-    "2xl": 31,
-    "3xl": 39,
-    "4xl": 49,
-    "5xl": 61,
+// Combat specific text styles
+export const COMBAT_TEXT_STYLES: Record<string, KoreanTextStyleOptions> = {
+  damage: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.large,
+    fontWeight: KOREAN_FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+    fill: 0xff4444,
+    stroke: { color: 0x000000, width: 2 },
   },
-} as const;
-
-// Line heights optimized for Korean text
-export const KOREAN_LINE_HEIGHTS = {
-  tight: 1.25,
-  normal: 1.5,
-  relaxed: 1.75,
-  loose: 2.0,
-} as const;
-
-// Letter spacing for Korean characters
-export const KOREAN_LETTER_SPACING = {
-  tighter: "-0.05em",
-  tight: "-0.025em",
-  normal: "0",
-  wide: "0.025em",
-  wider: "0.05em",
-  widest: "0.1em",
-} as const;
-
-// Export main font family for backward compatibility
-export const KOREAN_FONT_FAMILY = KOREAN_FONT_FAMILY_COMBINED;
-
-// Additional Korean typography constants
-export const KOREAN_FONTS = {
-  PRIMARY: "Noto Sans KR",
-  FALLBACK: "Arial, sans-serif",
-  TRADITIONAL: "Nanum Myeongjo",
-  MODERN: "Noto Sans KR",
-} as const;
-
-export const FONT_WEIGHTS = {
-  LIGHT: 300,
-  REGULAR: 400,
-  MEDIUM: 500,
-  BOLD: 700,
-  HEAVY: 900,
-} as const;
-
-export const FONT_SIZES = {
-  SMALL: 12,
-  MEDIUM: 16,
-  LARGE: 24,
-  XLARGE: 32,
-  TITLE: 48,
-  MASSIVE: 64,
-} as const;
-
-export const TEXT_STYLES = {
-  TECHNIQUE_NAME: {
-    fontFamily: KOREAN_FONTS.PRIMARY,
-    fontSize: FONT_SIZES.LARGE,
-    fontWeight: FONT_WEIGHTS.BOLD,
+  critical: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.xlarge,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.heavy.toString() as PIXI.TextStyleFontWeight,
+    fill: 0xffaa00,
+    stroke: { color: 0x000000, width: 3 },
+    dropShadow: {
+      color: 0xff0000,
+      blur: 4,
+      distance: 2,
+    },
   },
-  STANCE_DISPLAY: {
-    fontFamily: KOREAN_FONTS.TRADITIONAL,
-    fontSize: FONT_SIZES.TITLE,
-    fontWeight: FONT_WEIGHTS.HEAVY,
+  status: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.small,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.medium.toString() as PIXI.TextStyleFontWeight,
+    fill: 0x00ff88,
   },
-  UI_ELEMENT: {
-    fontFamily: KOREAN_FONTS.PRIMARY,
-    fontSize: FONT_SIZES.MEDIUM,
-    fontWeight: FONT_WEIGHTS.REGULAR,
+};
+
+// UI specific text styles
+export const UI_TEXT_STYLES: Record<string, KoreanTextStyleOptions> = {
+  button: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.medium,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.semibold.toString() as PIXI.TextStyleFontWeight,
+    fill: 0xffffff,
+    align: "center",
   },
-} as const;
+  menu: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.large,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.medium.toString() as PIXI.TextStyleFontWeight,
+    fill: 0x00ffcc,
+    align: "center",
+  },
+  label: {
+    fontFamily: KOREAN_FONT_FAMILY,
+    fontSize: KOREAN_TEXT_SIZES.small,
+    fontWeight:
+      KOREAN_FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight,
+    fill: 0xaaaaaa,
+  },
+};
+
+// Export convenience type
+export type KoreanTextSize = keyof typeof KOREAN_TEXT_SIZES;
+export type KoreanFontWeight = keyof typeof KOREAN_FONT_WEIGHTS;

@@ -1,16 +1,9 @@
-// Export all Korean text components
-export { KoreanText } from "./KoreanText";
-export { KoreanTitle } from "./KoreanTitle";
-export { KoreanTechniqueText } from "./KoreanTechniqueText";
-export { KoreanStatusText } from "./KoreanStatusText";
-export { KoreanMartialText } from "./KoreanMartialText";
+// Export only named exports that actually exist
+export {
+  KoreanPixiText,
+  createKoreanTextStyle,
+  getDisplayText,
+} from "./KoreanPixiTextUtils";
 
-// Export component types
-export type { KoreanTextProps } from "../types";
-export type { KoreanTitleProps } from "../types";
-export type { KoreanTechniqueTextProps } from "../types";
-export type { KoreanStatusTextProps } from "../types";
-export type { KoreanMartialTextProps } from "../types";
-
-// PIXI utilities
-export * from "./KoreanPixiTextUtils";
+// Remove all default exports that don't exist
+// Only export what is actually defined and exported from each component file

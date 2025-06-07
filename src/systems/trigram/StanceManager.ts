@@ -40,9 +40,9 @@ export class StanceManager {
   ): StanceTransitionResult {
     const now = Date.now();
 
-    if (playerState.stance === targetStance) {
+    if (playerState.currentStance === targetStance) {
       return {
-        from: playerState.stance,
+        from: playerState.currentStance,
         to: targetStance,
         cost: { ki: 0, stamina: 0, timeMilliseconds: 0 },
         effectiveness: 1, // No change, effectiveness is neutral or current
@@ -58,7 +58,7 @@ export class StanceManager {
       DEFAULT_STANCE_COOLDOWN_MS
     ) {
       return {
-        from: playerState.stance,
+        from: playerState.currentStance,
         to: targetStance,
         cost: { ki: 0, stamina: 0, timeMilliseconds: 0 }, // No cost incurred for failed attempt due to cooldown
         effectiveness: 0,
@@ -72,7 +72,7 @@ export class StanceManager {
     const transitionCheck = this.canTransitionTo(playerState, targetStance);
     if (!transitionCheck.possible) {
       return {
-        from: playerState.stance,
+        from: playerState.currentStance,
         to: targetStance,
         cost: transitionCheck.cost || {
           ki: 0,
@@ -92,7 +92,7 @@ export class StanceManager {
     // Successful transition
     const newState: PlayerState = {
       ...playerState,
-      stance: targetStance,
+      currentStance: targetStance,
       ki: playerState.ki - transitionCost.ki,
       stamina: playerState.stamina - transitionCost.stamina,
       lastStanceChangeTime: now,
@@ -101,11 +101,11 @@ export class StanceManager {
     // Effectiveness could be related to the target stance or the transition itself
     const effectiveness = this.trigramCalculator.getStanceEffectiveness(
       targetStance,
-      playerState.stance
+      playerState.currentStance
     ); // Example: effectiveness of new stance vs old
 
     return {
-      from: playerState.stance,
+      from: playerState.currentStance,
       to: targetStance,
       cost: transitionCost,
       effectiveness: effectiveness, // Placeholder, calculate actual effectiveness
@@ -119,7 +119,7 @@ export class StanceManager {
     playerState: PlayerState,
     targetStance: TrigramStance
   ): { possible: boolean; reason?: string; cost?: TrigramTransitionCost } {
-    if (playerState.stance === targetStance) {
+    if (playerState.currentStance === targetStance) {
       return {
         possible: true,
         cost: { ki: 0, stamina: 0, timeMilliseconds: 0 },
@@ -136,7 +136,7 @@ export class StanceManager {
     }
 
     const cost = this.trigramCalculator.calculateTransitionCost(
-      playerState.stance,
+      playerState.currentStance,
       targetStance,
       playerState
     );
@@ -167,7 +167,7 @@ export class StanceManager {
   ): TransitionPath | null {
     // Delegate to TrigramCalculator, ensuring all parameters are passed correctly
     return this.trigramCalculator.calculateOptimalPath(
-      playerState.stance,
+      playerState.currentStance,
       targetStance, // Pass targetStance
       playerState
       // maxDepth // Pass maxDepth if calculateOptimalPath uses it
@@ -187,7 +187,7 @@ export class StanceManager {
     const canTrans = this.canTransitionTo(playerState, targetStance);
     if (!canTrans.possible) {
       return {
-        from: playerState.stance,
+        from: playerState.currentStance,
         to: targetStance,
         cost: canTrans.cost || { ki: 0, stamina: 0, timeMilliseconds: 0 },
         effectiveness: 0,
@@ -202,7 +202,7 @@ export class StanceManager {
 
     const newPlayerState: PlayerState = {
       ...playerState,
-      stance: targetStance,
+      currentStance: targetStance,
       ki: playerState.ki - transitionCost.ki,
       stamina: playerState.stamina - transitionCost.stamina,
       lastStanceChangeTime: Date.now(),
@@ -210,11 +210,11 @@ export class StanceManager {
 
     const effectiveness = this.trigramCalculator.getStanceEffectiveness(
       targetStance,
-      playerState.stance
+      playerState.currentStance
     );
 
     return {
-      from: playerState.stance,
+      from: playerState.currentStance,
       to: targetStance,
       cost: transitionCost,
       effectiveness: effectiveness, // Placeholder

@@ -1,7 +1,7 @@
 // Core audio system types for Korean martial arts combat game
 
 import { TrigramStance } from "./enums";
-import { KoreanText } from "./korean-text";
+import type { KoreanText } from "./korean-text"; // Corrected import
 
 // Audio format and quality configuration - ONLY MP3 and WebM
 export type AudioFormat = "webm" | "mp3";
@@ -76,8 +76,12 @@ export type SoundEffectId =
   | "critical_hit"
   | "heavy_hit"
   | "light_hit"
-  | "stance_select"
-  | "technique_execute";
+  | "stance_select" // Added
+  | "technique_execute" // Added
+  | "combat_end" // Added from constants/combat.ts
+  | "miss" // Added from constants/combat.ts
+  | "guard" // Added from constants/combat.ts
+  | "technique"; // Added from constants/combat.ts
 
 // Music track IDs for Korean martial arts themes
 export type MusicTrackId =
@@ -94,19 +98,20 @@ export type MusicId = MusicTrackId;
 // Audio asset configuration
 export interface AudioAsset {
   readonly id: string;
+  readonly url: string; // Add missing url property
   readonly category: AudioCategory;
-  readonly basePath: string;
+  readonly basePath: string; // Changed from path
   readonly koreanContext: KoreanText; // Change from string to KoreanText
   readonly formats: readonly AudioFormat[];
   readonly volume: number;
   readonly preload: boolean;
   readonly loop?: boolean;
-  readonly fadeIn?: number;
-  readonly fadeOut?: number;
-  readonly variants?: readonly string[];
-  readonly trigram?: TrigramStance;
-  readonly culturalSignificance?: string;
-  readonly techniqueAssociation?: string;
+  readonly fadeIn?: number; // Added
+  readonly fadeOut?: number; // Added
+  readonly variants?: readonly string[]; // Added
+  readonly trigram?: TrigramStance; // Added
+  readonly culturalSignificance?: string; // Added
+  readonly techniqueAssociation?: string; // Added
 }
 
 // Audio asset registry structure
@@ -119,34 +124,34 @@ export interface AudioAssetRegistry {
 export interface AudioPlaybackOptions {
   readonly volume?: number;
   readonly loop?: boolean;
-  readonly rate?: number;
-  readonly fadeIn?: number;
-  readonly fadeOut?: number;
-  readonly delay?: number;
-  readonly variant?: string;
+  readonly rate?: number; // Corresponds to playbackRate
+  readonly fadeIn?: number; // Added
+  readonly fadeOut?: number; // Added
+  readonly delay?: number; // Added
+  readonly variant?: string; // Added
 }
 
 // Audio system state
 export interface AudioState {
-  readonly masterVolume: number;
-  readonly sfxVolume: number;
-  readonly musicVolume: number;
-  readonly muted: boolean;
-  readonly currentMusicTrack?: MusicTrackId | null; // Fixed: Use MusicTrackId
-  readonly isInitialized: boolean;
-  readonly fallbackMode?: boolean;
+  masterVolume: number; // Mutable
+  sfxVolume: number; // Mutable
+  musicVolume: number; // Mutable
+  muted: boolean; // Mutable
+  currentMusicTrack?: MusicTrackId | null; // Mutable
+  isInitialized: boolean; // Mutable
+  fallbackMode?: boolean; // Mutable
 }
 
 // Audio manager interface
 export interface IAudioManager {
   playSFX(id: SoundEffectId, options?: AudioPlaybackOptions): number | null;
-  playMusic(id: MusicTrackId, options?: AudioPlaybackOptions): number | null; // Fixed: Use MusicTrackId
-  stopMusic(): void;
+  playMusic(id: MusicTrackId, options?: AudioPlaybackOptions): number | null;
+  stopMusic(id?: MusicTrackId, fadeOutDuration?: number): void; // Updated signature
   setMasterVolume(volume: number): void;
   setSFXVolume(volume: number): void;
   setMusicVolume(volume: number): void;
   setMuted(muted: boolean): void;
-  getState(): AudioState; // Add missing method
+  getState(): AudioState;
 
   // Korean martial arts specific methods
   playAttackSound(damage: number): void;
@@ -154,7 +159,11 @@ export interface IAudioManager {
   playTechniqueSound(koreanName: string): void;
   playStanceChangeSound(): void;
   playBlockSound(): void;
-  stopAllSounds(): void;
+  stopAllSounds(): void; // Ensure this is present
+  init(): Promise<void>; // Added init
+  isInitialized: boolean; // Added isInitialized property
+  loadAudioAsset(asset: AudioAsset): Promise<void>; // Added
+  isMusicPlaying(id?: MusicTrackId): boolean; // Added
 }
 
 // Audio configuration constants
@@ -223,15 +232,13 @@ export interface AudioLoadResult {
 export interface AudioAnalytics {
   readonly totalAssetsLoaded: number;
   readonly failedLoads: number;
-  readonly fallbacksUsed: number;
+  readonly fallbacksUsed: number; // Added
   readonly averageLoadTime: number;
   readonly memoryUsage: number;
 }
 
-// Added missing types
-export type SoundLibrary = {
-  readonly [K in SoundEffectId]?: HTMLAudioElement | AudioBuffer;
-};
+// Changed SoundLibrary to be a mutable record of HTMLAudioElement
+export type SoundLibrary = Partial<Record<SoundEffectId, HTMLAudioElement>>;
 
 export interface MusicPlaylist {
   readonly id: string;
@@ -262,7 +269,8 @@ export interface ProceduralSoundConfig {
 
 // Missing audio types
 export interface AudioContextState {
-  readonly initialized: boolean;
+  // This seems like a duplicate of AudioState or for React context state specifically
+  readonly initialized: boolean; // If this is for React state, it can be readonly
   readonly suspended: boolean;
   readonly volume: number;
 }
@@ -270,10 +278,19 @@ export interface AudioContextState {
 export type SoundEffect = SoundEffectId; // Alias for compatibility
 
 export interface AudioManagerInterface {
+  // This seems like an older or alternative interface definition
   readonly isInitialized: boolean;
   readonly volume: number;
   playMusic(trackId: string, loop?: boolean): void;
   stopMusic(fadeOut?: boolean): void;
   playSFX(effectId: SoundEffectId): void;
   setVolume(volume: number): void;
+  // Add methods from IAudioManager if this is meant to be the primary one
+  init(): Promise<void>;
+  stopAllSounds(): void;
+}
+
+export interface AudioContextType extends IAudioManager {
+  // isInitialized is already part of IAudioManager, so it's inherited.
+  getIsInitialized: () => boolean;
 }

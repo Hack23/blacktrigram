@@ -1,185 +1,160 @@
-import React, { useState, useMemo } from "react";
-import type { PlayerState, TrigramStance } from "../../../types";
-import { KOREAN_COLORS, TRIGRAM_DATA } from "../../../types";
-import { useAudio } from "../../../audio/AudioProvider";
+import React, { useCallback, useState, useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import type { CombatControlsProps, TrigramStance } from "../../../types";
+import {
+  KOREAN_COLORS,
+  TRIGRAM_DATA,
+  TRIGRAM_STANCES_ORDER,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  COMBAT_CONTROLS,
+} from "../../../types/constants";
+import * as PIXI from "pixi.js"; // Import PIXI for PIXI.Graphics
 
-interface CombatControlsProps {
-  readonly players: readonly [PlayerState, PlayerState];
-  readonly player: PlayerState; // Add missing required prop
-  readonly onStanceChange: (playerIndex: number, stance: TrigramStance) => void;
-  readonly isExecutingTechnique: boolean;
-  readonly isPaused: boolean;
-  readonly showVitalPoints?: boolean;
-}
-
-export function CombatControls({
-  players,
+export const CombatControls: React.FC<CombatControlsProps> = ({
+  players, // Now used
   player,
   onStanceChange,
   isExecutingTechnique,
   isPaused,
-}: CombatControlsProps): React.JSX.Element {
-  const audio = useAudio(); // Now properly typed
-  const [selectedStance, setSelectedStance] = useState<TrigramStance>(
-    player.stance
+  showVitalPoints, // Now used
+  width = 800, // Default width
+  height = 100, // Default height
+  ...props
+}) => {
+  const [hoveredStance, setHoveredStance] = useState<TrigramStance | null>(
+    null
   );
 
-  // Use combatData to satisfy TypeScript
-  const handleCombatAction = useMemo(() => {
-    const otherPlayer = players.find((p) => p.id !== player.id) || players[1];
-    return {
-      otherPlayer,
-      canAttack: !isExecutingTechnique && !isPaused,
-      stanceCount: players.length,
-      executeAction: () => {
-        if (audio) {
-          audio.playSFX("stance_change");
-        }
-      },
-    };
-  }, [players, player.id, isExecutingTechnique, isPaused, audio]);
-
-  // Fix: Use correct property names (lowercase)
-  const STANCE_COLORS = {
-    geon: KOREAN_COLORS.geon,
-    tae: KOREAN_COLORS.tae,
-    li: KOREAN_COLORS.li,
-    jin: KOREAN_COLORS.jin,
-    son: KOREAN_COLORS.son,
-    gam: KOREAN_COLORS.gam,
-    gan: KOREAN_COLORS.gan,
-    gon: KOREAN_COLORS.gon,
-  };
-
-  const currentTechnique = useMemo(() => {
-    const trigramData = TRIGRAM_DATA[player.stance];
-    return (
-      trigramData?.technique || {
-        koreanName: "기본 기법",
-        englishName: "Basic Technique",
-        damage: 10,
-      }
-    );
-  }, [player.stance]);
-
-  const getStanceButtonStyle = (
-    stance: TrigramStance,
-    isSelected: boolean
-  ) => ({
-    width: "80px",
-    height: "80px",
-    borderRadius: "50%",
-    border: `3px solid ${isSelected ? "#00ffff" : "#666"}`,
-    backgroundColor: `#${STANCE_COLORS[stance].toString(16)}`,
-    color: "#ffffff",
-    fontSize: "12px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    display: "flex",
-    flexDirection: "column" as const,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "5px",
-    transition: "all 0.2s ease",
-    boxShadow: isSelected
-      ? "0 0 15px rgba(0, 255, 255, 0.7)"
-      : "0 2px 5px rgba(0, 0, 0, 0.3)",
-  });
-
-  const handleStanceSelect = useMemo(() => {
-    return (stance: TrigramStance) => {
+  const handleStanceClick = useCallback(
+    (stance: TrigramStance) => {
       if (!isExecutingTechnique && !isPaused) {
-        setSelectedStance(stance);
-        onStanceChange(0, stance);
-        if (audio) audio.playSFX("stance_change");
+        // Determine player index - assuming 'player' prop is the one to control
+        const playerIndex = players.findIndex((p) => p.id === player.id);
+        if (playerIndex !== -1) {
+          onStanceChange(playerIndex as 0 | 1, stance);
+        }
       }
-    };
-  }, [isExecutingTechnique, isPaused, onStanceChange, audio]);
+    },
+    [onStanceChange, isExecutingTechnique, isPaused, player, players]
+  );
 
-  const handleExecuteTechnique = useMemo(() => {
-    return () => {
-      if (audio) audio.playSFX("technique_execute");
-      // Technique execution logic here
-    };
-  }, [audio]);
+  const buttonWidth = width / TRIGRAM_STANCES_ORDER.length - 10;
+  const buttonHeight = height - 20;
+
+  const drawButton = useCallback(
+    (g: PIXI.Graphics, stance: TrigramStance, isCurrent: boolean) => {
+      const stanceData = TRIGRAM_DATA[stance];
+      const isDisabled = isExecutingTechnique || isPaused;
+      const isHover = hoveredStance === stance;
+
+      let fillColor =
+        stanceData?.theme?.primary || KOREAN_COLORS.UI_BACKGROUND_MEDIUM; // Fixed theme access
+      let lineColor = stanceData?.theme?.secondary || KOREAN_COLORS.UI_BORDER; // Fixed theme access
+      let alpha = isDisabled ? 0.5 : 1;
+
+      if (isCurrent) {
+        fillColor = stanceData?.theme?.active || KOREAN_COLORS.PRIMARY_CYAN; // Fixed theme access and color
+        lineColor = stanceData?.theme?.secondary || KOREAN_COLORS.WHITE_SOLID; // Fixed color
+      } else if (isHover && !isDisabled) {
+        fillColor =
+          stanceData?.theme?.hover || KOREAN_COLORS.UI_BACKGROUND_LIGHT; // Fixed theme access
+        lineColor = stanceData?.theme?.secondary || KOREAN_COLORS.PRIMARY_CYAN; // Fixed color
+      }
+
+      g.clear();
+      g.beginFill(fillColor, alpha);
+      g.lineStyle(2, lineColor, alpha);
+      g.drawRoundedRect(0, 0, buttonWidth, buttonHeight, 10);
+      g.endFill();
+    },
+    [buttonWidth, buttonHeight, hoveredStance, isExecutingTechnique, isPaused]
+  );
+
+  // Fix text style
+  const textStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.small,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        fontWeight: FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight, // Fixed: use lowercase
+        align: "center",
+      }),
+    []
+  );
 
   return (
-    <div style={{ padding: "20px", backgroundColor: "#1a1a1a" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-        {/* Stance Selection */}
-        <div>
-          <h3 style={{ color: "#ffffff", marginBottom: "10px" }}>
-            팔괘 (Eight Trigrams)
-          </h3>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            {(Object.keys(STANCE_COLORS) as TrigramStance[]).map((stance) => (
-              <button
-                key={stance}
-                style={getStanceButtonStyle(stance, selectedStance === stance)}
-                onClick={() => handleStanceSelect(stance)}
-                disabled={isExecutingTechnique || isPaused}
-              >
-                <div>{TRIGRAM_DATA[stance]?.symbol || "☰"}</div>
-                <div style={{ fontSize: "8px" }}>
-                  {TRIGRAM_DATA[stance]?.name.korean || stance}
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+    <Container x={props.x} y={props.y} width={width} height={height}>
+      {TRIGRAM_STANCES_ORDER.map((stance, index) => {
+        const stanceDetail = COMBAT_CONTROLS.stanceControls[
+          (index + 1).toString()
+        ] as { stance: TrigramStance; korean: string; technique: string };
+        const isCurrentStance = player.currentStance === stance;
 
-        {/* Current Technique Display */}
-        <div>
-          <h4 style={{ color: "#ffffff" }}>현재 기법 (Current Technique)</h4>
-          <div
-            style={{
-              padding: "15px",
-              backgroundColor: "#333",
-              borderRadius: "8px",
-              color: "#ffffff",
-            }}
+        return (
+          <Container
+            key={stance}
+            x={index * (buttonWidth + 10) + 5}
+            y={10}
+            interactive={!isExecutingTechnique && !isPaused}
+            buttonMode={!isExecutingTechnique && !isPaused}
+            pointertap={() => handleStanceClick(stance)}
+            pointerover={() => setHoveredStance(stance)}
+            pointerout={() => setHoveredStance(null)}
           >
-            <div>
-              <strong>{currentTechnique.koreanName}</strong> (
-              {currentTechnique.englishName})
-            </div>
-            <div style={{ fontSize: "12px", marginTop: "5px" }}>
-              데미지: {currentTechnique.damage}
-            </div>
-          </div>
-        </div>
-
-        {/* Execute Button */}
-        <button
-          onClick={handleExecuteTechnique}
-          disabled={isExecutingTechnique || isPaused}
-          style={{
-            padding: "15px 30px",
-            fontSize: "18px",
-            fontWeight: "bold",
-            backgroundColor: isExecutingTechnique ? "#666" : "#ff4444",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "8px",
-            cursor: isExecutingTechnique ? "not-allowed" : "pointer",
+            <Graphics
+              draw={(g: PIXI.Graphics) =>
+                drawButton(g, stance, isCurrentStance)
+              }
+            />
+            <Text
+              text={TRIGRAM_DATA[stance]?.symbol || ""}
+              anchor={0.5}
+              x={buttonWidth / 2}
+              y={buttonHeight / 2 - 10}
+              style={{
+                ...textStyle,
+                fontSize: FONT_SIZES.large,
+                fill: isCurrentStance
+                  ? KOREAN_COLORS.BLACK_SOLID
+                  : KOREAN_COLORS.TEXT_PRIMARY,
+              }}
+            />
+            <Text
+              text={
+                stanceDetail?.korean ||
+                TRIGRAM_DATA[stance]?.name.korean ||
+                stance
+              }
+              anchor={0.5}
+              x={buttonWidth / 2}
+              y={buttonHeight / 2 + 10}
+              style={{
+                ...textStyle,
+                fontSize: FONT_SIZES.small,
+                fill: isCurrentStance
+                  ? KOREAN_COLORS.BLACK_SOLID
+                  : KOREAN_COLORS.TEXT_SECONDARY,
+              }}
+            />
+          </Container>
+        );
+      })}
+      {showVitalPoints && ( // Example of using showVitalPoints
+        <Graphics
+          x={10}
+          y={10}
+          draw={(g: PIXI.Graphics) => {
+            g.beginFill(KOREAN_COLORS.POSITIVE_GREEN, 0.5);
+            g.drawCircle(0, 0, 5);
+            g.endFill();
           }}
-        >
-          {isExecutingTechnique ? "실행 중..." : "기법 실행"}
-        </button>
-
-        {/* Use handleCombatAction */}
-        <button onClick={handleCombatAction.executeAction}>
-          Combat Action
-        </button>
-      </div>
-    </div>
+        />
+      )}
+    </Container>
   );
-}
+};
 
 export default CombatControls;

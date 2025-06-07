@@ -1,226 +1,139 @@
-import React from "react";
-import type { KoreanHeaderProps } from "../../types/components";
-import { KoreanText } from "./base/korean-text";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import type { KoreanHeaderProps as ComponentKoreanHeaderProps } from "../../types"; // Renamed to avoid conflict
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  GAME_CONFIG,
+} from "../../types/constants";
+import * as PIXI from "pixi.js";
 
-/**
- * Korean Header Component for Black Trigram
- * Displays bilingual Korean-English headers with proper styling
- */
-export function KoreanHeader({
+export const KoreanHeader: React.FC<ComponentKoreanHeaderProps> = ({
   korean,
   english,
   subtitle,
   level = 1,
-  showLogo = false,
-  style = {},
+  showLogo = false, // Default to false
+  // style, // This is for React CSSProperties, not used directly in Pixi rendering here
   onBackButtonClick,
-  className = "",
-}: KoreanHeaderProps): React.JSX.Element {
-  const handleBackClick = () => {
-    if (onBackButtonClick) {
-      onBackButtonClick();
+  // className, // For HTML elements, not Pixi
+  width = GAME_CONFIG.CANVAS_WIDTH, // Default width
+  // height = 80, // Default height, can be dynamic
+}) => {
+  const titleFillColor: number = useMemo(() => {
+    switch (level) {
+      case 1:
+        return KOREAN_COLORS.ACCENT_PRIMARY;
+      case 2:
+        return KOREAN_COLORS.PRIMARY_CYAN;
+      default:
+        return KOREAN_COLORS.TEXT_PRIMARY;
     }
-  };
+  }, [level]);
 
-  // Fix: Properly type the dynamic header element
-  const headerProps = {
-    className: "main-title",
+  const titleFontSize = useMemo(() => {
+    switch (level) {
+      case 1:
+        return FONT_SIZES.xlarge;
+      case 2:
+        return FONT_SIZES.large;
+      default:
+        return FONT_SIZES.medium;
+    }
+  }, [level]);
+
+  const titleStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: titleFontSize,
+        fill: titleFillColor,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight, // Corrected
+        align: "center",
+      }),
+    [titleFontSize, titleFillColor]
+  );
+
+  const subtitleStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.SECONDARY,
+        fontSize: FONT_SIZES.small,
+        fill: KOREAN_COLORS.TEXT_SECONDARY,
+        fontWeight: FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight, // Corrected
+        align: "center",
+      }),
+    []
+  );
+
+  const headerHeight = subtitle
+    ? titleFontSize * 1.5 + FONT_SIZES.small * 1.5 + 30
+    : titleFontSize * 1.5 + 20;
+
+  const drawBackground = (g: PIXI.Graphics) => {
+    g.clear();
+    g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.5);
+    g.drawRect(0, 0, width, headerHeight);
+    g.endFill();
+
+    // Decorative line
+    g.beginFill(KOREAN_COLORS.PRIMARY_PINK);
+    g.drawRect(0, headerHeight - 5, width, 5);
+    g.endFill();
   };
 
   return (
-    <header className={`korean-header ${className}`} style={style}>
-      {/* Back Button (if callback provided) */}
-      {onBackButtonClick && (
-        <button onClick={handleBackClick} className="back-button">
-          ← 뒤로
-        </button>
-      )}
-
-      {/* Logo Section (if enabled) */}
+    <Container width={width} height={headerHeight}>
+      <Graphics draw={drawBackground} />
       {showLogo && (
-        <div className="logo-section">
-          <div className="trigram-symbol">☰☱☲☳☴☵☶☷</div>
-        </div>
+        <Text
+          text="흑괘"
+          x={50}
+          y={headerHeight / 2}
+          anchor={[0, 0.5]}
+          style={{
+            ...titleStyle,
+            fontSize: FONT_SIZES.medium,
+            fill: KOREAN_COLORS.ACCENT_SECONDARY,
+          }}
+        />
       )}
-
-      {/* Main Header - Fix: Use conditional rendering instead of dynamic tag */}
-      {level === 1 && (
-        <h1 {...headerProps}>
-          <KoreanText
-            korean={korean}
-            english={english}
-            size="xxlarge"
-            weight="bold"
-            className="header-text"
-          />
-        </h1>
-      )}
-      {level === 2 && (
-        <h2 {...headerProps}>
-          <KoreanText
-            korean={korean}
-            english={english}
-            size="xlarge"
-            weight="bold"
-            className="header-text"
-          />
-        </h2>
-      )}
-      {level === 3 && (
-        <h3 {...headerProps}>
-          <KoreanText
-            korean={korean}
-            english={english}
-            size="large"
-            weight="bold"
-            className="header-text"
-          />
-        </h3>
-      )}
-      {level > 3 && (
-        <h4 {...headerProps}>
-          <KoreanText
-            korean={korean}
-            english={english}
-            size="large"
-            weight="bold"
-            className="header-text"
-          />
-        </h4>
-      )}
-
-      {/* Subtitle */}
+      <Text
+        text={korean}
+        anchor={0.5}
+        x={width / 2}
+        y={
+          subtitle
+            ? headerHeight / 2 - FONT_SIZES.small * 0.75
+            : headerHeight / 2
+        }
+        style={titleStyle}
+      />
       {subtitle && (
-        <div className="subtitle">
-          {typeof subtitle === "string" ? (
-            <span className="subtitle-text">{subtitle}</span>
-          ) : (
-            <KoreanText
-              korean={subtitle.korean}
-              english={subtitle.english}
-              size="medium"
-              weight="regular"
-              className="subtitle-korean"
-            />
-          )}
-        </div>
+        <Text
+          text={typeof subtitle === "string" ? subtitle : subtitle.korean}
+          anchor={0.5}
+          x={width / 2}
+          y={headerHeight / 2 + titleFontSize * 0.75}
+          style={{ ...subtitleStyle, fill: KOREAN_COLORS.TEXT_SECONDARY }}
+        />
       )}
-
-      <style>{`
-        .korean-header {
-          text-align: center;
-          padding: 2rem;
-          position: relative;
-          background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(26, 26, 46, 0.8));
-          border-bottom: 2px solid #00ffff;
-          margin-bottom: 2rem;
-        }
-
-        .back-button {
-          position: absolute;
-          top: 1rem;
-          left: 1rem;
-          padding: 0.5rem 1rem;
-          background: rgba(0, 255, 255, 0.1);
-          border: 1px solid #00ffff;
-          border-radius: 4px;
-          color: #00ffff;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          font-family: 'Noto Sans KR', Arial, sans-serif;
-        }
-
-        .back-button:hover {
-          background: rgba(0, 255, 255, 0.2);
-          transform: translateX(-2px);
-        }
-
-        .logo-section {
-          margin-bottom: 1rem;
-        }
-
-        .trigram-symbol {
-          font-size: 2rem;
-          color: #ffd700;
-          text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-          letter-spacing: 0.5rem;
-          margin-bottom: 1rem;
-        }
-
-        .main-title {
-          margin: 0;
-          text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-        }
-
-        .header-text {
-          background: linear-gradient(45deg, #00ffff, #ffffff, #ffd700);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          font-weight: 900;
-        }
-
-        .subtitle {
-          margin-top: 1rem;
-        }
-
-        .subtitle-text {
-          color: #c0c0c0;
-          font-size: 1.1rem;
-          font-style: italic;
-          font-family: 'Noto Sans KR', Arial, sans-serif;
-        }
-
-        .subtitle-korean {
-          color: #c0c0c0;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-          .korean-header {
-            padding: 1rem;
-          }
-
-          .trigram-symbol {
-            font-size: 1.5rem;
-            letter-spacing: 0.3rem;
-          }
-
-          .back-button {
-            padding: 0.3rem 0.8rem;
-            font-size: 0.9rem;
-          }
-        }
-
-        /* Cyberpunk glow effects */
-        .korean-header::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-          pointer-events: none;
-          z-index: -1;
-        }
-
-        /* Animation for trigram symbols */
-        .trigram-symbol {
-          animation: trigramGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes trigramGlow {
-          0%, 100% {
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-          }
-          50% {
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
-          }
-        }
-      `}</style>
-    </header>
+      {onBackButtonClick && (
+        <Text
+          text="< 뒤로"
+          x={30}
+          y={headerHeight / 2}
+          anchor={[0, 0.5]}
+          interactive={true}
+          buttonMode={true}
+          pointertap={onBackButtonClick}
+          style={{ ...subtitleStyle, fill: KOREAN_COLORS.TEXT_SECONDARY }}
+        />
+      )}
+    </Container>
   );
-}
+};
 
 export default KoreanHeader;

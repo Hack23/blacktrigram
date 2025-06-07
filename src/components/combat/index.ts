@@ -1,4 +1,2 @@
-export { CombatScreen } from "./CombatScreen";
-export { CombatHUD } from "./components/CombatHUD";
-export { CombatArena } from "./components/CombatArena";
-export { CombatControls } from "./components/CombatControls";
+export { default as CombatScreen } from "./CombatScreen"; // Kept as default, as per CombatScreen.tsx to named export
+export * from "./components";

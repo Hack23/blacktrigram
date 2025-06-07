@@ -1,167 +1,248 @@
 /**
- * AudioUtils - Utility functions for audio management in Korean martial arts game
- * Provides cross-browser audio format detection and audio-related calculations
+ * Audio utility functions for Korean martial arts combat audio system
  */
 
-import type { AudioAsset } from "../types/audio";
+import type { AudioFormat, AudioAsset } from "../types/audio";
 
 export class AudioUtils {
   /**
-   * Detects the preferred audio format based on browser support
-   * Prioritizes OGG for better compression, falls back to MP3, then WAV
+   * Select the best supported audio format from available options
    */
-  static getPreferredAudioFormat(): string {
-    if (typeof window === "undefined") {
-      // Server-side rendering - default to OGG
-      return "ogg";
+  static selectAudioFormat(
+    availableFormats: readonly AudioFormat[],
+    preferredOrder: readonly AudioFormat[] = ["webm", "mp3"]
+  ): AudioFormat | null {
+    if (!availableFormats.length) return null;
+
+    // Check browser support for each preferred format
+    for (const format of preferredOrder) {
+      if (
+        availableFormats.includes(format) &&
+        this.canPlayType(this.getFormatMimeType(format))
+      ) {
+        return format;
+      }
     }
 
-    try {
-      const audio = new Audio();
-
-      // Check OGG support first (better compression for Korean martial arts sound effects)
-      const oggSupport = audio.canPlayType("audio/ogg; codecs=vorbis");
-      if (oggSupport === "probably" || oggSupport === "maybe") {
-        return "ogg";
+    // Fallback to first available format if none preferred
+    for (const format of availableFormats) {
+      if (this.canPlayType(this.getFormatMimeType(format))) {
+        return format;
       }
+    }
 
-      // Fallback to MP3 (wider browser support)
-      const mp3Support = audio.canPlayType("audio/mpeg");
-      if (mp3Support === "probably" || mp3Support === "maybe") {
-        return "mp3";
-      }
+    return null;
+  }
 
-      // Final fallback to WAV (universal support but larger files)
-      const wavSupport = audio.canPlayType("audio/wav");
-      if (wavSupport === "probably" || wavSupport === "maybe") {
-        return "wav";
-      }
+  /**
+   * Check if browser can play the given MIME type
+   */
+  static canPlayType(mimeType: string): boolean {
+    const audio = document.createElement("audio");
+    const canPlay = audio.canPlayType(mimeType);
+    return canPlay === "probably" || canPlay === "maybe";
+  }
 
-      // Ultimate fallback if no format is detected
-      return "mp3";
-    } catch (error) {
-      console.warn("Audio format detection failed:", error);
-      return "ogg"; // Default fallback
+  /**
+   * Get MIME type for audio format
+   */
+  private static getFormatMimeType(format: AudioFormat): string {
+    switch (format) {
+      case "webm":
+        return "audio/webm";
+      case "mp3":
+        return "audio/mpeg";
+      default:
+        return "";
     }
   }
 
   /**
-   * Creates an HTML audio element with optimized settings for game audio
+   * Get preferred format URL for an asset
    */
-  static createAudioElement(src: string): HTMLAudioElement {
-    const audio = new Audio();
-    audio.src = src;
-    audio.preload = "auto";
-    audio.crossOrigin = "anonymous"; // Enable CORS for web audio processing
-    return audio;
+  static getPreferredFormat(
+    availableFormats: readonly AudioFormat[],
+    basePath: string
+  ): string[] {
+    const selectedFormat = this.selectAudioFormat(availableFormats);
+    if (!selectedFormat) {
+      console.warn("No supported audio format found, using first available");
+      return [`${basePath}.${availableFormats[0] || "mp3"}`];
+    }
+    return [`${basePath}.${selectedFormat}`];
   }
 
   /**
-   * Calculates 3D spatial audio volume based on distance
-   * Used for Korean martial arts combat positioning
+   * Detect browser-supported audio formats
    */
-  static calculateVolume(distance: number, maxDistance: number): number {
-    // Handle edge cases
-    if (maxDistance <= 0) return 0;
-    if (distance < 0) return 0;
-    if (distance >= maxDistance) return 0;
+  static getSupportedFormats(): AudioFormat[] {
+    const formats: AudioFormat[] = [];
 
-    // Linear distance attenuation with smooth falloff
-    const normalizedDistance = distance / maxDistance;
-    return Math.max(0, 1 - normalizedDistance);
+    if (this.canPlayType("audio/webm")) {
+      formats.push("webm");
+    }
+    if (this.canPlayType("audio/mpeg")) {
+      formats.push("mp3");
+    }
+
+    return formats;
   }
 
   /**
-   * Formats audio duration in minutes:seconds format
-   * Used for Korean martial arts match timers and audio track displays
+   * Clamp volume to valid range (0-1)
    */
-  static formatAudioTime(seconds: number): string {
-    // Handle negative values
-    if (seconds < 0) return "0:00";
+  static clampVolume(volume: number): number {
+    return Math.max(0, Math.min(1, volume));
+  }
 
-    const totalSeconds = Math.floor(seconds);
-    const minutes = Math.floor(totalSeconds / 60);
-    const remainingSeconds = totalSeconds % 60;
+  /**
+   * Convert decibels to linear volume
+   */
+  static dbToLinear(db: number): number {
+    return Math.pow(10, db / 20);
+  }
+
+  /**
+   * Convert linear volume to decibels
+   */
+  static linearToDb(linear: number): number {
+    return 20 * Math.log10(Math.max(0.0001, linear));
+  }
+
+  /**
+   * Create audio fade curve for smooth transitions
+   */
+  static createFadeCurve(
+    duration: number,
+    type: "in" | "out" = "out"
+  ): Float32Array {
+    const samples = Math.max(256, Math.floor((duration * 44100) / 1000));
+    const curve = new Float32Array(samples);
+
+    for (let i = 0; i < samples; i++) {
+      const progress = i / (samples - 1);
+      curve[i] = type === "in" ? progress : 1 - progress;
+    }
+
+    return curve;
+  }
+
+  /**
+   * Calculate 3D positional audio parameters
+   */
+  static calculateSpatialAudio(
+    listenerPos: { x: number; y: number },
+    sourcePos: { x: number; y: number },
+    maxDistance: number = 100
+  ): { volume: number; pan: number } {
+    const dx = sourcePos.x - listenerPos.x;
+    const dy = sourcePos.y - listenerPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const volume = Math.max(0, 1 - distance / maxDistance);
+    const pan = Math.max(-1, Math.min(1, dx / maxDistance));
+
+    return { volume, pan };
+  }
+
+  /**
+   * Generate Korean martial arts audio event metadata
+   */
+  static createKoreanAudioMetadata(
+    korean: string,
+    english: string
+  ): {
+    korean: string;
+    english: string;
+  } {
+    return { korean, english };
+  }
+
+  /**
+   * Validate audio asset configuration
+   */
+  static validateAudioAsset(asset: AudioAsset): boolean {
+    return (
+      typeof asset.id === "string" &&
+      typeof asset.url === "string" &&
+      Array.isArray(asset.formats) &&
+      asset.formats.length > 0 &&
+      typeof asset.volume === "number" &&
+      asset.volume >= 0 &&
+      asset.volume <= 1
+    );
+  }
+
+  /**
+   * Format duration in milliseconds to readable string
+   */
+  static formatDuration(ms: number): string {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
 
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   }
 
   /**
-   * Calculates Korean martial arts technique audio parameters
-   * Based on damage and technique type for authentic combat feedback
+   * Check if audio context is available
    */
-  static calculateTechniqueAudioParams(
-    damage: number,
-    isVitalPoint: boolean = false
-  ): { volume: number; pitch: number; duration: number } {
-    const baseDamage = Math.max(0, Math.min(100, damage));
-    const intensity = baseDamage / 100;
-
-    return {
-      volume: 0.3 + intensity * 0.6, // Scale from 30% to 90% volume
-      pitch: isVitalPoint ? 1.3 : 0.8 + intensity * 0.4, // Higher pitch for vital hits
-      duration: isVitalPoint ? 0.3 : 0.1 + intensity * 0.2, // Longer duration for critical hits
-    };
+  static isAudioContextAvailable(): boolean {
+    return !!(window.AudioContext || (window as any).webkitAudioContext);
   }
 
   /**
-   * Validates audio file URL for Korean martial arts asset loading
+   * Check if Web Audio API is supported
    */
-  static isValidAudioUrl(url: string): boolean {
-    if (!url || typeof url !== "string") return false;
-
-    const validExtensions = [".mp3", ".ogg", ".wav", ".webm"];
-    const lowerUrl = url.toLowerCase();
-
-    return validExtensions.some((ext) => lowerUrl.endsWith(ext));
+  static isWebAudioSupported(): boolean {
+    return this.isAudioContextAvailable();
   }
 
   /**
-   * Generates audio asset paths for Korean martial arts techniques
+   * Create a data URL for silent audio of specified duration
    */
-  static generateKoreanTechniqueAudioPath(
-    technique: string,
-    type: "attack" | "hit" | "block",
-    format: string = "ogg"
-  ): string {
-    const sanitizedTechnique = technique.replace(/[^a-zA-Z0-9가-힣]/g, "_");
-    return `./assets/audio/sfx/${type}_${sanitizedTechnique}.${format}`;
-  }
-}
+  static createSilenceDataUrl(duration: number): string {
+    // Create a minimal silent WAV file
+    const sampleRate = 44100;
+    const samples = Math.floor(duration * sampleRate);
+    const bufferLength = 44 + samples * 2; // WAV header + 16-bit samples
 
-/**
- * Completes the properties of an audio asset with default values
- */
-export function completeAudioAsset(
-  partialAsset: Partial<AudioAsset> & { id: string; category: string }
-): AudioAsset {
-  return {
-    basePath: "/audio/default",
-    koreanContext: {
-      korean: partialAsset.id,
-      english: partialAsset.id.replace(/_/g, " "),
-      culturalNote: "Traditional Korean martial arts audio",
-    },
-    formats: ["webm", "mp3"],
-    volume: 0.5,
-    preload: false,
-    ...partialAsset,
-  } as AudioAsset;
-}
+    const buffer = new ArrayBuffer(bufferLength);
+    const view = new DataView(buffer);
 
-// Apply default properties to incomplete assets
-export function ensureCompleteAsset(asset: any): AudioAsset {
-  if (!asset.basePath) {
-    asset.basePath = `/audio/${asset.category}`;
-  }
-
-  if (!asset.koreanContext) {
-    asset.koreanContext = {
-      korean: asset.id,
-      english: asset.id.replace(/_/g, " "),
-      culturalNote: "Korean martial arts audio element",
+    // WAV header
+    const writeString = (offset: number, string: string) => {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
     };
-  }
 
-  return asset as AudioAsset;
+    writeString(0, "RIFF");
+    view.setUint32(4, bufferLength - 8, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true); // fmt chunk size
+    view.setUint16(20, 1, true); // PCM format
+    view.setUint16(22, 1, true); // mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); // byte rate
+    view.setUint16(32, 2, true); // block align
+    view.setUint16(34, 16, true); // bits per sample
+    writeString(36, "data");
+    view.setUint32(40, samples * 2, true); // data size
+
+    // Silent samples (all zeros)
+    for (let i = 0; i < samples; i++) {
+      view.setInt16(44 + i * 2, 0, true);
+    }
+
+    // Convert to base64 data URL
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+
+    return "data:audio/wav;base64," + btoa(binary);
+  }
 }

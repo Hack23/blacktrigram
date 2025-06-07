@@ -1,126 +1,127 @@
-import React from "react";
-import { KoreanText } from "../../ui/base/korean-text/components/KoreanText";
-import { KOREAN_COLORS } from "../../../types";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import type { ControlsSectionProps } from "../../../types";
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  COMBAT_CONTROLS,
+} from "../../../types/constants";
+import * as PIXI from "pixi.js";
 
-interface ControlsSectionProps {
-  readonly onGamePhaseChange: (phase: string) => void;
-}
+export const ControlsSection: React.FC<ControlsSectionProps> = ({
+  title = "게임 조작법 (Game Controls)",
+  x = 0,
+  y = 0,
+  width = 800,
+  height = 600,
+  ...props
+}) => {
+  const headerStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.KOREAN_BATTLE,
+        fontSize: FONT_SIZES.large,
+        fill: KOREAN_COLORS.TEXT_ACCENT,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight, // Fixed: use lowercase
+        align: "center",
+      }),
+    []
+  );
 
-export function ControlsSection({}: ControlsSectionProps): React.ReactElement {
-  const controlsData = [
-    {
-      title: "기본 조작",
-      titleEnglish: "Basic Controls",
-      controls: [
-        {
-          korean: "이동",
-          english: "Movement",
-          description: "W(앞), A(왼쪽), S(뒤), D(오른쪽)으로 이동",
-        },
-        {
-          korean: "공격",
-          english: "Attack",
-          description: "현재 팔괘 자세의 기술로 공격",
-        },
-        {
-          korean: "방어",
-          english: "Block/Guard",
-          description: "방어 자세로 전환하여 피해 감소",
-        },
-        {
-          korean: "메뉴",
-          english: "Menu",
-          description: "게임 메뉴로 돌아가기",
-        },
-      ],
-    },
-    {
-      title: "팔괘 조작",
-      titleEnglish: "Trigram Controls",
-      controls: [
-        {
-          korean: "팔괘 변경",
-          english: "Change Trigram Stance",
-          description:
-            "각 숫자 키로 팔괘 자세 변경 (1: 건, 2: 태, 3: 리, 4: 진, 5: 손, 6: 감, 7: 간, 8: 곤)",
-        },
-      ],
-    },
-  ];
+  const bodyStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.medium,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        fontWeight: FONT_WEIGHTS.regular.toString() as PIXI.TextStyleFontWeight, // Fixed: use lowercase
+        wordWrap: true,
+        wordWrapWidth: 350,
+      }),
+    []
+  );
 
-  const containerStyle: React.CSSProperties = {
-    textAlign: "center",
-  };
-
-  const controlsGridStyle: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "2rem",
-    maxWidth: "800px",
-    margin: "0 auto",
-  };
-
-  const sectionStyle: React.CSSProperties = {
-    background: "rgba(255,255,255,0.05)",
-    borderRadius: "8px",
-    padding: "1.5rem",
-    border: `1px solid #${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(
-      6,
-      "0"
-    )}`,
-  };
-
-  const controlItemStyle: React.CSSProperties = {
-    marginBottom: "1rem",
-    padding: "0.5rem",
-    background: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
-    color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
-    borderRadius: "4px",
-    fontWeight: "bold",
-    textAlign: "center",
+  const drawBackground = (g: PIXI.Graphics) => {
+    g.clear();
+    g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7);
+    g.lineStyle(2, KOREAN_COLORS.PRIMARY_CYAN, 0.5);
+    g.drawRoundedRect(0, 0, width, height, 15);
   };
 
   return (
-    <div style={containerStyle}>
-      <KoreanText
-        korean="조작법"
-        english="Controls"
-        size="xlarge"
-        color={`#${KOREAN_COLORS.GOLD.toString(16).padStart(6, "0")}`}
-        style={{ marginBottom: "2rem" }}
+    <Container x={x} y={y} width={width} height={height} {...props}>
+      <Graphics draw={drawBackground} />
+      <Text
+        text={title}
+        anchor={0.5}
+        x={width / 2}
+        y={30}
+        style={headerStyle}
       />
 
-      <div style={controlsGridStyle}>
-        {controlsData.map((section, sectionIndex) => (
-          <div key={sectionIndex} style={sectionStyle}>
-            <KoreanText
-              korean={section.title}
-              english={section.titleEnglish}
-              size="large"
-              weight={700}
-              style={{ marginBottom: "1rem" }}
+      {/* Basic Controls */}
+      <Container x={50} y={80}>
+        <Text
+          text="기본 조작 (Basic Controls)"
+          style={{
+            ...bodyStyle,
+            fontSize: FONT_SIZES.large,
+            fill: KOREAN_COLORS.ACCENT_PRIMARY,
+          }}
+          y={0}
+        />
+
+        {Object.entries(COMBAT_CONTROLS.stanceControls).map(([key, detail]) => (
+          <Container key={key} y={40 + parseInt(key) * 25}>
+            <Text
+              text={`${key}: ${detail.korean} (${detail.technique})`}
+              style={bodyStyle}
+              x={0}
+              y={0}
             />
-
-            {section.controls.map((control, controlIndex) => (
-              <div key={controlIndex} style={controlItemStyle}>
-                <KoreanText
-                  korean={control.korean}
-                  english={control.english}
-                  size="medium"
-                  style={{ marginBottom: "0.5rem" }}
-                />
-              </div>
-            ))}
-          </div>
+            <Text
+              text={`${key}: ${detail.stance} - ${detail.technique}`}
+              style={{
+                ...bodyStyle,
+                fontSize: FONT_SIZES.small,
+                fill: KOREAN_COLORS.TEXT_SECONDARY,
+              }}
+              x={20}
+              y={15}
+            />
+          </Container>
         ))}
-      </div>
+      </Container>
 
-      <KoreanText
-        korean="팁: 각 팔괘는 고유한 철학과 전투 스타일을 가지고 있습니다. 상황에 맞는 팔괘를 선택하여 최적의 전략을 구사하세요!"
-        size="small"
-        color={`#${KOREAN_COLORS.CYAN.toString(16).padStart(6, "0")}`}
-        style={{ fontStyle: "italic" }}
-      />
-    </div>
+      {/* Advanced Controls */}
+      <Container x={400} y={80}>
+        <Text
+          text="고급 조작 (Advanced Controls)"
+          style={{
+            ...bodyStyle,
+            fontSize: FONT_SIZES.large,
+            fill: KOREAN_COLORS.ACCENT_PRIMARY,
+          }}
+          y={0}
+        />
+
+        <Text
+          text="SPACE: 기술 실행 (Execute Technique)"
+          style={bodyStyle}
+          y={40}
+        />
+        <Text text="SHIFT: 방어 자세 (Guard Stance)" style={bodyStyle} y={65} />
+        <Text
+          text="CTRL: 급소 겨냥 (Vital Point Targeting)"
+          style={bodyStyle}
+          y={90}
+        />
+        <Text text="ESC: 일시정지 (Pause)" style={bodyStyle} y={115} />
+      </Container>
+    </Container>
   );
-}
+};
+
+export default ControlsSection;

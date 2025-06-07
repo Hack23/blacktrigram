@@ -1,16 +1,17 @@
 // Common shared types for Black Trigram Korean martial arts game
 
+import { StatusEffect } from "./effects";
 import type {
   DamageType,
   EffectIntensity,
   EffectType as EnumEffectType, // Renamed to avoid conflict with local EffectType if any
 } from "./enums";
-import type { KoreanText } from "./korean-text"; // For KoreanText in CombatCondition
+import type { KoreanText } from "./korean-text"; // Ensure KoreanText is imported
 
 // Basic shared types
 export interface Position {
-  x: number;
-  y: number;
+  readonly x: number; // Made readonly
+  readonly y: number; // Made readonly
 }
 
 export interface Dimensions {
@@ -26,6 +27,7 @@ export interface BoundingBox {
 }
 
 export interface Vector2D {
+  // Ensure this is consistently defined or imported if defined elsewhere
   readonly x: number;
   readonly y: number;
 }
@@ -78,39 +80,56 @@ export interface DamageRange {
 // Combat condition for status effects
 export interface CombatCondition {
   readonly id: string;
-  readonly name: KoreanText; // Use KoreanText for bilingual support
+  readonly name: KoreanText; // Use imported KoreanText
   readonly type: EnumEffectType; // Use EnumEffectType from enums
   readonly intensity: EffectIntensity;
   readonly duration: number; // Duration in game ticks or seconds
   readonly source?: string; // E.g., technique ID, environmental effect
-  readonly description?: KoreanText;
+  readonly description?: KoreanText; // Changed to KoreanText | undefined
+  readonly severity: "light" | "moderate" | "severe" | "critical"; // Added severity
+  readonly effects: ReadonlyArray<StatusEffect>; // Added effects, StatusEffect will be from ./effects
 }
 
-// Color types for Korean martial arts styling
-export type ColorValue = number; // Hexadecimal color representation (e.g., 0xff0000)
-export type RGBAColor = readonly [number, number, number, number];
+// Common types used throughout BlackTrigram
 
-// Time and duration types for martial arts training
-export type Duration = number; // Typically in milliseconds or game ticks
+// Position interface for 2D coordinates - single declaration
+// Removed duplicate Position
 
-// Probability and percentage types for combat calculations
-export type Probability = number; // Value between 0 and 1
-export type Percentage = number; // Value between 0 and 100
+// Color value type for UI elements
+export type ColorValue = number | string;
 
-// ID types for Korean martial arts entities
-export type PlayerId = "player1" | "player2";
-export type ArchetypeId = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
+// Korean text bilingual interface - define locally to avoid conflicts
+// Removed local KoreanTextType, use imported KoreanText
 
-// Utility types for Korean martial arts game state
-export type ReadonlyRecord<K extends keyof any, T> = {
-  readonly [P in K]: T;
-};
+// Status effect interface - define intensity locally
+// Removed local StatusEffect, use imported StatusEffect from ./effects
 
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+// Combat condition interface for player state effects
+// Merged with the definition above
 
-export type DeepReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
-};
+// Base interfaces
+export interface Identifiable {
+  readonly id: string;
+}
+
+export interface Timestamped {
+  readonly timestamp: number;
+}
+
+export interface Size {
+  readonly width: number;
+  readonly height: number;
+}
+
+export interface Rectangle extends Position, Size {}
+
+// Removed duplicate Vector2D definition, ensure it's defined once (e.g., above)
+
+// Export the local KoreanText type
+// export type { KoreanTextType as KoreanText }; // Removed, use imported KoreanText
 
 // Remove createPlayerState - it should be in utils/playerUtils.ts
 // Keep only common shared types here
+
+// Re-export StatusEffect from effects.ts for convenience if needed by other files that import from common.ts
+export type { StatusEffect } from "./effects";

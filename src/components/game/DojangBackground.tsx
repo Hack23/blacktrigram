@@ -1,143 +1,132 @@
 // Underground dojang background for Korean martial arts
 
-import React, { useCallback } from "react";
-import { KOREAN_COLORS, TRIGRAM_DATA } from "../../types/constants";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text, useTick } from "@pixi/react";
+import type { DojangBackgroundProps } from "../../types";
+import {
+  KOREAN_COLORS, // Keep if specific KOREAN_COLORS are used
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  GAME_CONFIG,
+} from "../../types/constants";
+import * as PIXI from "pixi.js"; // Import PIXI
 
-export interface DojangBackgroundProps {
-  readonly width: number;
-  readonly height: number;
-  readonly ambientLevel?: number;
-  readonly showTrigramSymbols?: boolean;
-}
+export const DojangBackground: React.FC<DojangBackgroundProps> = ({
+  timeOfDay = "day",
+  weather = "clear",
+  textureName, // Can be used with useTexture hook if needed
+  lighting = "atmospheric",
+  width = GAME_CONFIG.CANVAS_WIDTH,
+  height = GAME_CONFIG.CANVAS_HEIGHT,
+  children,
+  ...props
+}) => {
+  const [time, setTime] = React.useState(0);
+  useTick((delta) => setTime((t) => t + delta * 0.01)); // Slow down time for visual effect
 
-export function DojangBackground({
-  width,
-  height,
-  ambientLevel = 0.3,
-  showTrigramSymbols = true,
-}: DojangBackgroundProps): React.ReactElement {
-  // Draw main background
-  const drawBackground = useCallback(
-    (g: any) => {
-      if (!g || !g.clear) return;
+  const backgroundColor = useMemo(() => {
+    if (timeOfDay === "night") {
+      return lighting === "dim"
+        ? KOREAN_COLORS.UI_BACKGROUND_DARK
+        : KOREAN_COLORS.BLACK_SOLID;
+    }
+    return lighting === "bright"
+      ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
+      : KOREAN_COLORS.UI_BACKGROUND_MEDIUM;
+  }, [timeOfDay, lighting]);
 
-      g.clear();
+  const dynamicLightingColor = useMemo(() => {
+    const baseColor =
+      timeOfDay === "night"
+        ? KOREAN_COLORS.SECONDARY_BLUE_DARK
+        : KOREAN_COLORS.SECONDARY_YELLOW_LIGHT;
+    const intensity = Math.sin(time * 0.5) * 0.2 + 0.8; // Pulsating intensity
+    // This is a simplified way to "multiply" color intensity.
+    // For more accurate color manipulation, consider a color library or more complex PIXI.Color logic.
+    const r = (baseColor >> 16) & 0xff;
+    const g = (baseColor >> 8) & 0xff;
+    const b = baseColor & 0xff;
+    return (
+      (Math.floor(r * intensity) << 16) |
+      (Math.floor(g * intensity) << 8) |
+      Math.floor(b * intensity)
+    );
+  }, [timeOfDay, time]);
 
-      // Deep black base representing underground training hall
-      g.beginFill(KOREAN_COLORS.BLACK, 1.0);
-      g.drawRect(0, 0, width, height);
-      g.endFill();
-
-      // Subtle gray concrete texture (using existing SILVER color)
-      g.beginFill(KOREAN_COLORS.SILVER, 0.1);
-      for (let i = 0; i < 5; i++) {
-        const x = (width / 5) * i;
-        g.drawRect(x, 0, width / 5, height);
-      }
-      g.endFill();
-
-      // Neon accent lighting - cyberpunk Korean aesthetic
-      const neonIntensity = ambientLevel * 0.8;
-
-      // Cool cyan neon strips
-      g.beginFill(KOREAN_COLORS.CYAN, neonIntensity);
-      g.drawRect(0, height * 0.1, width, 2);
-      g.drawRect(0, height * 0.9, width, 2);
-      g.endFill();
-
-      // Traditional Korean blue accent
-      g.beginFill(KOREAN_COLORS.DOJANG_BLUE, neonIntensity * 0.6);
-      g.drawRect(width * 0.05, 0, 2, height);
-      g.drawRect(width * 0.95, 0, 2, height);
-      g.endFill();
-
-      // Center dojang area with subtle gold Korean traditional accent
-      g.lineStyle(1, KOREAN_COLORS.GOLD, neonIntensity);
-      g.drawRect(width * 0.2, height * 0.2, width * 0.6, height * 0.6);
-
-      // Combat training mat indication
-      g.beginFill(KOREAN_COLORS.HANBOK_WHITE, 0.05);
-      g.drawRect(width * 0.25, height * 0.25, width * 0.5, height * 0.5);
-      g.endFill();
-    },
-    [width, height, ambientLevel]
+  const textStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.large,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight, // Fixed: use lowercase
+        dropShadow: {
+          color: KOREAN_COLORS.BLACK_SOLID,
+          blur: 4,
+          angle: Math.PI / 6,
+          distance: 3,
+        },
+      }),
+    []
   );
 
-  // Trigram symbols positioned around the dojang
-  const drawTrigramSymbols = useCallback(
-    (g: any) => {
-      if (!g || !g.clear) return;
-
+  const weatherEffectsDraw = React.useCallback(
+    (g: PIXI.Graphics) => {
       g.clear();
-
-      // Draw the 8 trigram positions around the combat area
-      const centerX = width * 0.5;
-      const centerY = height * 0.5;
-      const radius = Math.min(width, height) * 0.4;
-
-      Object.entries(TRIGRAM_DATA).forEach(([stance], index) => {
-        const angle = (index / 8) * Math.PI * 2 - Math.PI / 2; // Start from top
-        const x = centerX + Math.cos(angle) * radius;
-        const y = centerY + Math.sin(angle) * radius;
-
-        // Traditional Korean blue glow around symbols
-        g.lineStyle(2, KOREAN_COLORS.WIND_GREEN, ambientLevel * 0.7);
-        g.drawCircle(x, y, 15);
-
-        // Stance-specific color accent
-        const stanceColor =
-          KOREAN_COLORS[stance as keyof typeof KOREAN_COLORS] ||
-          KOREAN_COLORS.WHITE;
-        g.beginFill(stanceColor, ambientLevel * 0.5);
-        g.drawCircle(x, y, 8);
+      if (weather === "rain") {
+        g.lineStyle(1, KOREAN_COLORS.PRIMARY_BLUE_LIGHT, 0.5);
+        for (let i = 0; i < 50; i++) {
+          const x = Math.random() * width;
+          const y = Math.random() * height;
+          g.moveTo(x, y);
+          g.lineTo(x - 5, y + 10);
+        }
+      } else if (weather === "snow") {
+        g.beginFill(KOREAN_COLORS.WHITE_SOLID, 0.8);
+        for (let i = 0; i < 50; i++) {
+          g.drawCircle(
+            Math.random() * width,
+            Math.random() * height,
+            Math.random() * 2 + 1
+          );
+        }
         g.endFill();
-      });
+      }
     },
-    [width, height, ambientLevel]
+    [weather, width, height]
   );
 
   return (
-    <pixiContainer>
-      {/* Main dojang background */}
-      <pixiGraphics draw={drawBackground} />
+    <Container {...props} width={width} height={height}>
+      <Graphics
+        draw={(g: PIXI.Graphics) => {
+          g.clear();
+          g.beginFill(backgroundColor);
+          g.drawRect(0, 0, width, height);
+          g.endFill();
 
-      {/* Trigram symbols if enabled */}
-      {showTrigramSymbols && <pixiGraphics draw={drawTrigramSymbols} />}
-
-      {/* Dojang identification text */}
-      <pixiText
-        text="흑괘 도장 (Black Trigram Dojang)"
-        x={width * 0.5}
-        y={height * 0.05}
-        anchor={0.5}
-        style={{
-          fontFamily: "Noto Sans KR, Arial, sans-serif",
-          fontSize: 18,
-          fill: KOREAN_COLORS.GOLD,
-          fontWeight: "bold",
-          dropShadow: {
-            color: KOREAN_COLORS.BLACK,
-            distance: 2,
-            alpha: 0.8,
-            angle: Math.PI / 4,
-            blur: 1,
-          },
+          // Atmospheric lighting effect
+          if (lighting === "atmospheric") {
+            g.beginFill(dynamicLightingColor, 0.2);
+            g.drawCircle(width / 2, height / 3, Math.min(width, height) / 2);
+            g.endFill();
+          }
         }}
       />
+      {/* Placeholder for texture if textureName is provided */}
+      {/* e.g., <Sprite texture={useTexture(textureName)} width={width} height={height} /> */}
 
-      {/* Traditional Korean martial arts atmosphere text */}
-      <pixiText
-        text="정격자의 길 (Path of the Precision Striker)"
-        x={width * 0.5}
-        y={height * 0.95}
+      <Graphics draw={weatherEffectsDraw} />
+
+      <Text
+        text="도장 (Dojang)"
+        x={width / 2}
+        y={50}
         anchor={0.5}
-        style={{
-          fontFamily: "Noto Sans KR, Arial, sans-serif",
-          fontSize: 12,
-          fill: KOREAN_COLORS.SILVER,
-          fontStyle: "italic",
-        }}
+        style={textStyle}
       />
-    </pixiContainer>
+      {children}
+    </Container>
   );
-}
+};

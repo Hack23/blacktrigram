@@ -1,117 +1,128 @@
 import React from "react";
+import { Container, Text } from "@pixi/react";
 import type { GameUIProps } from "../../types";
+import { Player } from "./Player";
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  GAME_CONFIG,
+  FONT_SIZES,
+} from "../../types/constants";
+import * as PIXI from "pixi.js";
 
-export function GameUI({
+export const GameUI: React.FC<GameUIProps> = ({
   players,
-  gameTime,
   currentRound,
-  gamePhase,
-  timeRemaining = 120,
-  isPaused = false,
+  gamePhase: currentGamePhase,
+  timeRemaining,
+  isPaused,
   onStanceChange,
   onPlayerUpdate,
   onGamePhaseChange,
-  onPauseToggle,
-  combatLog = [],
-  showDebug = false,
-}: GameUIProps): React.JSX.Element {
-  // Use the props to avoid unused variable warnings
-  const player1 = players[0];
-  const player2 = players[1];
+  width = GAME_CONFIG.CANVAS_WIDTH,
+  height = GAME_CONFIG.CANVAS_HEIGHT,
+  ...props
+}) => {
+  const headerStyle = React.useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.medium,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        stroke: KOREAN_COLORS.BLACK_SOLID,
+        align: "center",
+      }),
+    []
+  );
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+  const roundTextStyle = React.useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.large,
+        fill: KOREAN_COLORS.ACCENT_PRIMARY,
+        stroke: KOREAN_COLORS.BLACK_SOLID,
+        align: "center",
+      }),
+    []
+  );
 
-  const handleStanceChange = (playerIndex: 0 | 1, stance: any) => {
-    onStanceChange(playerIndex, stance);
-  };
-
-  const handlePlayerUpdate = (index: number, updates: any) => {
-    onPlayerUpdate(index, updates);
-  };
-
-  const handlePhaseChange = (phase: string) => {
-    onGamePhaseChange(phase);
-  };
-
-  const handlePauseToggle = () => {
-    onPauseToggle?.();
+  const renderPlayerUI = (playerState: (typeof players)[0], index: number) => {
+    if (!playerState) return null;
+    return (
+      <Player
+        key={playerState.id}
+        playerState={playerState}
+        onStateUpdate={(updates: Partial<typeof playerState>) =>
+          onPlayerUpdate(index, updates)
+        }
+        archetype={playerState.archetype}
+        stance={playerState.currentStance}
+        position={playerState.position}
+        facing={playerState.facing}
+        health={playerState.health}
+        maxHealth={playerState.maxHealth}
+        ki={playerState.ki}
+        maxKi={playerState.maxKi}
+        stamina={playerState.stamina}
+        maxStamina={playerState.maxStamina}
+        showVitalPoints={GAME_CONFIG.SHOW_VITAL_POINTS_DEBUG}
+        x={index === 0 ? 50 : width - 250}
+        y={50}
+        width={200}
+        height={150}
+      />
+    );
   };
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        padding: "1rem",
-        background: "rgba(0,0,0,0.1)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          Round {currentRound} | Time: {formatTime(timeRemaining)} | Game Time:{" "}
-          {gameTime}ms
-        </div>
-        <div>
-          Phase: {gamePhase} {isPaused && "| PAUSED"}
-        </div>
-      </div>
+    <Container {...props} width={width} height={height}>
+      {players.map((p, i) => renderPlayerUI(p, i))}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "1rem",
-        }}
-      >
-        <div>
-          <div>
-            {player1?.name}: {player1?.health}/{player1?.maxHealth} HP
-          </div>
-          <div>Stance: {player1?.stance}</div>
-        </div>
-        <div>
-          <div>
-            {player2?.name}: {player2?.health}/{player2?.maxHealth} HP
-          </div>
-          <div>Stance: {player2?.stance}</div>
-        </div>
-      </div>
-
-      {showDebug && (
-        <div style={{ marginTop: "1rem", fontSize: "0.8rem" }}>
-          <div>Combat Log: {combatLog.length} entries</div>
-        </div>
+      {currentGamePhase === "combat" && !isPaused && (
+        <Container x={width / 2} y={30}>
+          <Text
+            text={`Round: ${currentRound}`}
+            anchor={0.5}
+            style={roundTextStyle}
+            y={0}
+          />
+          <Text
+            text={`Time: ${timeRemaining?.toFixed(1)}s`}
+            anchor={0.5}
+            style={headerStyle}
+            y={30}
+          />
+        </Container>
       )}
 
-      <div style={{ marginTop: "1rem" }}>
-        <button onClick={() => handleStanceChange(0, "geon")}>P1 Geon</button>
-        <button
-          onClick={() =>
-            handlePlayerUpdate(0, {
-              health: player1?.health ? player1.health - 10 : 90,
-            })
-          }
-        >
-          P1 -10 HP
-        </button>
-        <button onClick={handlePauseToggle}>
-          {isPaused ? "Resume" : "Pause"}
-        </button>
-        <button onClick={() => handlePhaseChange("menu")}>Menu</button>
-      </div>
-    </div>
+      {isPaused && (
+        <Text
+          text="PAUSED"
+          anchor={0.5}
+          x={width / 2}
+          y={height / 2}
+          style={roundTextStyle}
+        />
+      )}
+      {(currentGamePhase === "victory" || currentGamePhase === "defeat") && (
+        <Text
+          text={currentGamePhase === "victory" ? "VICTORY!" : "DEFEAT!"}
+          anchor={0.5}
+          x={width / 2}
+          y={height / 2}
+          style={{
+            ...roundTextStyle,
+            fontSize: FONT_SIZES.xlarge,
+            fill:
+              currentGamePhase === "victory"
+                ? KOREAN_COLORS.POSITIVE_GREEN
+                : KOREAN_COLORS.NEGATIVE_RED,
+          }}
+        />
+      )}
+    </Container>
   );
-}
+};
+
+export default GameUI;

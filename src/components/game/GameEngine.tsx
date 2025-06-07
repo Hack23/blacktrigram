@@ -1,11 +1,14 @@
 // Complete game engine for Black Trigram Korean martial arts
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import type { Position, HitEffect } from "../../types";
-import { CombatSystem } from "../../systems/CombatSystem";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Container, // Changed from pixiContainer
+  Graphics, // Changed from pixiGraphics
+} from "@pixi/react";
 import { TrigramSystem } from "../../systems/TrigramSystem";
-import { AudioManager } from "../../audio/AudioManager";
-import type { GameEngineProps } from "../../types/components";
+import { CombatSystem } from "../../systems/CombatSystem"; // Changed to named import
+import { useAudio } from "../../audio/AudioProvider";
+import type { GameEngineProps, HitEffect, Position } from "../../types";
 
 export function GameEngine({
   player1,
@@ -16,10 +19,8 @@ export function GameEngine({
   onGamePhaseChange,
   gameMode = "versus",
 }: GameEngineProps): React.JSX.Element {
-  // Fix: Use gameMode in component logic
   const isTrainingMode = gameMode === "training";
 
-  // Fix: Use gameState in component logic
   const gameState = useMemo(
     () => ({
       phase: gamePhase,
@@ -32,7 +33,7 @@ export function GameEngine({
 
   const [combatEffects, setCombatEffects] = useState<readonly HitEffect[]>([]);
   const trigramSystem = new TrigramSystem();
-  const audioManager = new AudioManager(); // Fix: Create instance
+  const audioManager = useAudio();
 
   const updateCombatEffects = useCallback(() => {
     setCombatEffects((prev) =>
@@ -57,7 +58,7 @@ export function GameEngine({
       const playerState = playerIndex === 0 ? player1 : player2;
 
       const canTransition = trigramSystem.canTransitionTo(
-        playerState.stance,
+        playerState.currentStance,
         newStance as any,
         playerState
       );
@@ -70,7 +71,7 @@ export function GameEngine({
 
         if (transitionResult.success && transitionResult.newState) {
           onPlayerUpdate(playerIndex, transitionResult.newState);
-          audioManager.playSFX("stance_change"); // Fix: Use instance method
+          audioManager.playSFX("stance_change");
         }
       }
     },
@@ -137,8 +138,11 @@ export function GameEngine({
   // Use gameState to update parent component
   useEffect(() => {
     onGameStateChange({
-      ...gameState,
-      combatEffects: combatEffects.length,
+      phase: gameState.phase,
+      isTraining: gameState.isTraining,
+      player1: gameState.player1,
+      player2: gameState.player2,
+      combatEffects, // Use the actual combatEffects array
     });
   }, [gameState, combatEffects, onGameStateChange]);
 
@@ -180,18 +184,17 @@ export function GameEngine({
   }, [systemConfig, gamePhase, handleStanceChange, handleAttack]); // Add handleAttack to dependencies
 
   return (
-    <pixiContainer width={800} height={600}>
-      {/* Background */}
-      <pixiGraphics
-        draw={(g) => {
+    <Container width={800} height={600}>
+      <Graphics
+        draw={(g: any) => {
           g.clear();
           g.beginFill(0x1a1a1a);
           g.drawRect(0, 0, 800, 600);
           g.endFill();
         }}
       />
-      {/* Game components will be rendered here */}
-      {/* Combat effects can be rendered based on combatEffects state */}
-    </pixiContainer>
+    </Container>
   );
 }
+
+export default GameEngine; // Add default export

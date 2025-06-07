@@ -1,470 +1,462 @@
-import React, { useState, useCallback, useMemo } from "react";
-import type {
-  FederatedPointerEvent,
-  Graphics as PixiGraphics,
-  TextDropShadow,
-} from "pixi.js";
-import {
-  PixiContainerComponent,
-  PixiGraphicsComponent,
-  PixiTextComponent,
-  type PixiContainerComponentProps,
-  type PixiTextComponentProps,
-  type ExtendedPixiTextStyle,
-} from "./PixiComponents";
+import React, { useMemo, useCallback, useState } from "react";
+import { Container, Graphics, Text, Sprite } from "@pixi/react";
+import * as PIXI from "pixi.js";
 import {
   KOREAN_COLORS,
-  KOREAN_FONT_FAMILY_PRIMARY,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
   TRIGRAM_DATA,
+  // TRIGRAM_STANCES_ORDER, // Unused
+  KOREAN_FONT_FAMILY, // Use this for Korean fonts
 } from "../../../types/constants";
-import type { TrigramStance } from "../../../types";
+// import { KoreanPixiText } from "./korean-text"; // Unused
+import type {
+  KoreanText as KoreanTextType, // Keep this alias if used locally
+  TrigramStance,
+  // ProgressTrackerProps, // Unused
+  BaseComponentProps,
+  ColorValue,
+  Position,
+} from "../../../types";
+import { useTexture } from "../../../hooks/useTexture"; // Assuming useTexture hook
 
-// Fix prop interfaces to extend properly
-export interface KoreanButtonProps
-  extends Omit<PixiContainerComponentProps, "children" | "onpointertap"> {
-  // Omit onClick if handled internally or map it
-  readonly text?: string; // Made optional if koreanText is primary
-  readonly koreanText?: string;
-  readonly variant?: "primary" | "secondary" | "danger" | "accent"; // Added accent
-  readonly disabled?: boolean;
-  readonly size?: "small" | "medium" | "large";
-  readonly onClick?: (event: FederatedPointerEvent) => void; // Add onClick prop
-  readonly width?: number; // Allow explicit width/height
-  readonly height?: number;
+// ... (Keep existing interfaces like KoreanStyledTextProps, KoreanStyledButtonProps etc. if they are used elsewhere)
+
+// KoreanPixiProgressTracker
+interface KoreanPixiProgressTrackerProps extends BaseComponentProps {
+  label?: string | KoreanTextType;
+  value: number;
+  maxValue: number;
+  barColor?: ColorValue;
+  backgroundColor?: ColorValue;
+  borderColor?: ColorValue; // Added from props
+  borderWidth?: number; // Added from props
+  showText?: boolean;
+  textColor?: ColorValue; // Added from props
 }
 
-export function KoreanButton({
-  text,
-  koreanText,
-  variant = "primary",
-  disabled = false,
-  size = "medium",
-  onClick,
-  width: explicitWidth, // Renamed for clarity
-  height: explicitHeight, // Renamed for clarity
-  ...containerProps
-}: KoreanButtonProps): React.ReactElement {
-  const [isHovered, setIsHovered] = useState(false);
+export const KoreanPixiProgressTracker: React.FC<
+  KoreanPixiProgressTrackerProps
+> = ({
+  label,
+  value,
+  maxValue,
+  width = 200,
+  height = 20,
+  barColor = KOREAN_COLORS.PRIMARY_CYAN,
+  backgroundColor = KOREAN_COLORS.UI_BACKGROUND_SURFACE,
+  borderColor = KOREAN_COLORS.UI_STEEL_GRAY, // Used
+  borderWidth = 1, // Used
+  showText = true,
+  textColor = KOREAN_COLORS.TEXT_PRIMARY, // Used
+  x = 0, // Use prop x
+  y = 0, // Use prop y
+}) => {
+  // ... (implementation similar to ProgressTracker.tsx, using PIXI components)
+  const percentage =
+    maxValue > 0 ? Math.max(0, Math.min(1, value / maxValue)) : 0;
 
-  const { autoWidth, autoHeight } = useMemo(() => {
-    // Use explicit dimensions if provided, otherwise calculate based on size
-    switch (size) {
-      case "small":
-        return {
-          autoWidth: explicitWidth ?? 80,
-          autoHeight: explicitHeight ?? 24,
-        };
-      case "large":
-        return {
-          autoWidth: explicitWidth ?? 160,
-          autoHeight: explicitHeight ?? 36,
-        };
-      case "medium":
-      default:
-        return {
-          autoWidth: explicitWidth ?? 120,
-          autoHeight: explicitHeight ?? 30,
-        };
-    }
-  }, [size, explicitWidth, explicitHeight]);
-
-  const drawButton = useCallback(
-    (g: PixiGraphics) => {
-      g.clear();
-      let bgColor: number = KOREAN_COLORS.DOJANG_BLUE; // Type annotation for clarity
-      let borderColor: number = KOREAN_COLORS.GOLD; // Type annotation
-      const alpha = disabled ? 0.5 : 1;
-
-      switch (variant) {
-        case "secondary":
-          bgColor = KOREAN_COLORS.GRAY_DARK;
-          borderColor = KOREAN_COLORS.SILVER;
-          break;
-        case "danger":
-          bgColor = KOREAN_COLORS.CRITICAL_RED;
-          borderColor = KOREAN_COLORS.RED;
-          break;
-        case "accent":
-          bgColor = KOREAN_COLORS.CYAN;
-          borderColor = KOREAN_COLORS.ACCENT_BLUE;
-          break;
-        case "primary":
-        default:
-          // Default values are already set
-          break;
-      }
-
-      if (isHovered && !disabled) {
-        // Example hover: lighten or use accent color
-        bgColor =
-          variant === "accent"
-            ? KOREAN_COLORS.YELLOW
-            : KOREAN_COLORS.ACCENT_BLUE;
-        borderColor = KOREAN_COLORS.WHITE; // Example hover border
-      }
-
-      g.setFillStyle({ color: bgColor, alpha });
-      g.roundRect(0, 0, autoWidth, autoHeight, 5);
-      g.fill();
-      g.setStrokeStyle({ color: borderColor, width: 1, alpha });
-      g.roundRect(0, 0, autoWidth, autoHeight, 5);
-      g.stroke();
-    },
-    [variant, disabled, autoWidth, autoHeight, isHovered]
+  const textStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.MONO,
+        fontSize: FONT_SIZES.small * 0.9,
+        fill: textColor as number,
+        align: "center",
+      }),
+    [textColor]
   );
 
-  return (
-    <PixiContainerComponent
-      interactive={!disabled}
-      cursor={!disabled ? "pointer" : "default"}
-      onpointertap={!disabled && onClick ? onClick : undefined} // Should be compatible
-      onpointerover={!disabled ? () => setIsHovered(true) : undefined} // Should be compatible
-      onpointerout={!disabled ? () => setIsHovered(false) : undefined} // Should be compatible
-      {...containerProps}
-    >
-      <PixiGraphicsComponent draw={drawButton} />
-      <PixiTextComponent
-        text={koreanText || text || "Button"}
-        style={{
-          fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-          fontSize: 16,
-          fill: KOREAN_COLORS.WHITE,
-          fontWeight: "bold",
-          align: "center",
-        }}
-        x={autoWidth / 2}
-        y={autoHeight / 2}
-        anchor={{ x: 0.5, y: 0.5 }}
-      />
-    </PixiContainerComponent>
-  );
-}
-
-// Helper to create a valid TextDropShadow object
-const createDropShadow = (
-  color: number,
-  distance: number,
-  blur: number,
-  angle?: number,
-  alpha?: number
-): TextDropShadow => ({
-  color,
-  distance,
-  blur,
-  angle: angle ?? Math.PI / 4, // Default angle
-  alpha: alpha ?? 0.5, // Default alpha
-});
-
-// Text component interfaces
-export interface KoreanTitleTextProps
-  extends Omit<PixiTextComponentProps, "text" | "style"> {
-  readonly korean: string;
-  readonly english?: string;
-  readonly emphasis?: boolean;
-  readonly style?: ExtendedPixiTextStyle; // Allow overriding full style
-}
-
-// Korean title text
-export function KoreanTitleText({
-  korean,
-  english,
-  emphasis = false,
-  style,
-  ...textProps
-}: KoreanTitleTextProps): React.ReactElement {
-  const displayText = english ? `${korean} (${english})` : korean;
-
-  const titleStyle = useCallback((): ExtendedPixiTextStyle => {
-    const base: ExtendedPixiTextStyle = {
-      fontFamily: KOREAN_FONT_FAMILY_PRIMARY, // Use string constant
-      fontSize: 18,
-      fill: emphasis ? KOREAN_COLORS.GOLD : KOREAN_COLORS.WHITE,
-      fontWeight: "bold",
-    };
-    const combined = { ...base, ...style };
-    if (typeof combined.dropShadow === "boolean") {
-      if (combined.dropShadow)
-        combined.dropShadow = createDropShadow(KOREAN_COLORS.BLACK, 1, 2);
-      else delete combined.dropShadow;
-    } else if (combined.dropShadow && typeof combined.dropShadow === "object") {
-      combined.dropShadow = {
-        ...createDropShadow(KOREAN_COLORS.BLACK, 1, 2),
-        ...combined.dropShadow,
-      };
-    }
-    return combined;
-  }, [emphasis, style]);
-
-  return (
-    <PixiTextComponent {...textProps} text={displayText} style={titleStyle()} />
-  );
-}
-
-export interface KoreanBodyTextProps
-  extends Omit<PixiTextComponentProps, "text" | "style"> {
-  readonly text: string; // Add missing text property
-  readonly secondary?: boolean; // Add missing secondary property
-  readonly style?: ExtendedPixiTextStyle;
-}
-
-export function KoreanBodyText({
-  text,
-  secondary = false,
-  style,
-  ...textProps
-}: KoreanBodyTextProps): React.ReactElement {
-  const bodyStyle = useCallback((): ExtendedPixiTextStyle => {
-    const base: ExtendedPixiTextStyle = {
-      fontFamily: KOREAN_FONT_FAMILY_PRIMARY, // Use string constant
-      fontSize: 14,
-      fill: secondary ? KOREAN_COLORS.GRAY_LIGHT : KOREAN_COLORS.WHITE,
-    };
-    const combined = { ...base, ...style };
-    if (typeof combined.dropShadow === "boolean") {
-      if (combined.dropShadow)
-        combined.dropShadow = createDropShadow(KOREAN_COLORS.BLACK, 1, 1);
-      else delete combined.dropShadow;
-    } else if (combined.dropShadow && typeof combined.dropShadow === "object") {
-      combined.dropShadow = {
-        ...createDropShadow(KOREAN_COLORS.BLACK, 1, 1),
-        ...combined.dropShadow,
-      };
-    }
-    return combined;
-  }, [secondary, style]);
-  return <PixiTextComponent {...textProps} text={text} style={bodyStyle()} />;
-}
-
-export interface KoreanHighlightTextProps
-  extends Omit<PixiTextComponentProps, "text" | "style"> {
-  readonly text: string;
-  readonly type?: "info" | "warning" | "success";
-  readonly style?: ExtendedPixiTextStyle;
-}
-export function KoreanHighlightText({
-  text,
-  type = "info",
-  style,
-  ...textProps
-}: KoreanHighlightTextProps): React.ReactElement {
-  const colors = useMemo(
-    () => ({
-      info: KOREAN_COLORS.CYAN,
-      warning: KOREAN_COLORS.ORANGE,
-      success: KOREAN_COLORS.GREEN,
-    }),
+  const labelStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: KOREAN_FONT_FAMILY, // Use Korean font
+        fontSize: FONT_SIZES.small,
+        fill: KOREAN_COLORS.TEXT_SECONDARY,
+        fontWeight:
+          FONT_WEIGHTS.semibold.toString() as PIXI.TextStyleFontWeight,
+      }),
     []
   );
 
-  const highlightStyle = useCallback((): ExtendedPixiTextStyle => {
-    const base: ExtendedPixiTextStyle = {
-      fontFamily: KOREAN_FONT_FAMILY_PRIMARY, // Use string constant
-      fontSize: 16,
-      fill: colors[type],
-      fontWeight: "bold",
-    };
-    const combined = { ...base, ...style };
-    if (typeof combined.dropShadow === "boolean") {
-      if (combined.dropShadow)
-        combined.dropShadow = createDropShadow(KOREAN_COLORS.BLACK, 1, 2);
-      else delete combined.dropShadow;
-    } else if (combined.dropShadow && typeof combined.dropShadow === "object") {
-      combined.dropShadow = {
-        ...createDropShadow(KOREAN_COLORS.BLACK, 1, 2),
-        ...combined.dropShadow,
-      };
-    }
-    return combined;
-  }, [type, style, colors]);
+  const labelText = typeof label === "string" ? label : label?.korean;
 
-  return (
-    <PixiTextComponent {...textProps} text={text} style={highlightStyle()} />
-  );
-}
-
-// Korean combat status display
-export interface KoreanCombatStatusProps
-  extends Omit<PixiTextComponentProps, "text" | "style"> {
-  readonly status: string;
-  readonly warning?: boolean;
-  readonly style?: ExtendedPixiTextStyle;
-}
-
-export function KoreanCombatStatus({
-  status,
-  warning = false,
-  style,
-  ...textProps
-}: KoreanCombatStatusProps): React.ReactElement {
-  const statusStyle = useCallback((): ExtendedPixiTextStyle => {
-    const base: ExtendedPixiTextStyle = {
-      fontFamily: KOREAN_FONT_FAMILY_PRIMARY, // Use string constant
-      fontSize: 12,
-      fill: warning ? KOREAN_COLORS.CRITICAL_RED : KOREAN_COLORS.CYAN,
-      fontWeight: "bold",
-    };
-    const combined = { ...base, ...style };
-    if (typeof combined.dropShadow === "boolean") {
-      if (combined.dropShadow)
-        combined.dropShadow = createDropShadow(KOREAN_COLORS.BLACK, 1, 1);
-      else delete combined.dropShadow;
-    } else if (combined.dropShadow && typeof combined.dropShadow === "object") {
-      combined.dropShadow = {
-        ...createDropShadow(KOREAN_COLORS.BLACK, 1, 1),
-        ...combined.dropShadow,
-      };
-    }
-    return combined;
-  }, [warning, style]);
-
-  return (
-    <PixiTextComponent {...textProps} text={status} style={statusStyle()} />
-  );
-}
-
-export interface KoreanTrigramDisplayProps {
-  readonly stance: TrigramStance;
-  readonly x?: number;
-  readonly y?: number;
-  readonly size?: number;
-  readonly showKorean?: boolean;
-  readonly showEnglish?: boolean;
-}
-
-export function KoreanTrigramDisplay({
-  stance,
-  x = 0,
-  y = 0,
-  size = 48,
-  showKorean = true,
-  showEnglish = false,
-}: KoreanTrigramDisplayProps): React.ReactElement {
-  const trigram = TRIGRAM_DATA[stance];
-  const stanceColor = KOREAN_COLORS[stance] || KOREAN_COLORS.WHITE;
-
-  return (
-    <PixiContainerComponent x={x} y={y}>
-      {/* Trigram Symbol */}
-      <PixiTextComponent
-        text={trigram.symbol}
-        style={{
-          fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-          fontSize: size * 0.6,
-          fill: stanceColor,
-          align: "center",
-          fontWeight: "bold",
-        }}
-        anchor={{ x: 0.5, y: 0.5 }}
-        x={0}
-        y={0}
-      />
-
-      {/* Korean Name */}
-      {showKorean && (
-        <PixiTextComponent
-          text={trigram.name.korean}
-          style={{
-            fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-            fontSize: size * 0.25,
-            fill: KOREAN_COLORS.WHITE,
-            align: "center",
-          }}
-          anchor={{ x: 0.5, y: 0 }}
-          x={0}
-          y={size * 0.4}
-        />
-      )}
-
-      {/* English Name */}
-      {showEnglish && (
-        <PixiTextComponent
-          text={trigram.name.english}
-          style={{
-            fontFamily: KOREAN_FONT_FAMILY_PRIMARY,
-            fontSize: size * 0.2,
-            fill: KOREAN_COLORS.GRAY_LIGHT,
-            align: "center",
-          }}
-          anchor={{ x: 0.5, y: 0 }}
-          x={0}
-          y={size * 0.6}
-        />
-      )}
-    </PixiContainerComponent>
-  );
-}
-
-export interface KoreanHealthBarProps {
-  readonly current: number;
-  readonly maximum: number;
-  readonly x?: number;
-  readonly y?: number;
-  readonly width?: number;
-  readonly height?: number;
-  readonly showText?: boolean;
-  readonly barColor?: number;
-  readonly backgroundColor?: number;
-  readonly borderColor?: number;
-}
-
-export function KoreanHealthBar({
-  current,
-  maximum,
-  x = 0,
-  y = 0,
-  width = 200,
-  height = 20,
-  showText = true,
-  barColor = KOREAN_COLORS.RED, // Default to KOREAN_COLORS.RED
-  backgroundColor = KOREAN_COLORS.GRAY_DARK,
-  borderColor = KOREAN_COLORS.BLACK,
-}: KoreanHealthBarProps): React.ReactElement {
-  const healthPercent = Math.max(0, Math.min(1, current / maximum));
-
-  const drawHealthBar = useCallback(
-    (g: PixiGraphics) => {
+  const draw = useCallback(
+    (g: PIXI.Graphics) => {
       g.clear();
-      // Background
-      g.setFillStyle({ color: backgroundColor, alpha: 0.8 });
-      g.roundRect(0, 0, width, height, 3);
-      g.fill();
+      g.beginFill(backgroundColor as number, 0.8);
+      if (borderWidth > 0) {
+        g.lineStyle(borderWidth, borderColor as number, 1);
+      }
+      g.drawRoundedRect(0, 0, width, height, height / 4);
+      g.endFill();
 
-      // Fill
-      g.setFillStyle({ color: barColor, alpha: 1 });
-      g.roundRect(0, 0, width * healthPercent, height, 3);
-      g.fill();
-
-      // Border
-      g.setStrokeStyle({ color: borderColor, width: 1 });
-      g.roundRect(0, 0, width, height, 3);
-      g.stroke();
+      if (percentage > 0) {
+        g.beginFill(barColor as number, 1);
+        g.lineStyle(0);
+        g.drawRoundedRect(
+          borderWidth,
+          borderWidth,
+          (width - borderWidth * 2) * percentage,
+          height - borderWidth * 2,
+          (height - borderWidth * 2) / 4
+        );
+        g.endFill();
+      }
     },
-    [width, height, healthPercent, barColor, backgroundColor, borderColor]
-  );
-
-  const textStyle: ExtendedPixiTextStyle = useMemo(
-    () => ({
-      fontFamily: KOREAN_FONT_FAMILY_PRIMARY, // Use string constant
-      fontSize: height * 0.7,
-      fill: KOREAN_COLORS.WHITE, // Ensure this is KOREAN_COLORS.WHITE
-      align: "center",
-      // dropShadow: createDropShadow(KOREAN_COLORS.BLACK, 1, 1), // Optional: add shadow to text
-    }),
-    [height]
+    [
+      width,
+      height,
+      backgroundColor,
+      borderColor,
+      borderWidth,
+      barColor,
+      percentage,
+    ]
   );
 
   return (
-    <PixiContainerComponent x={x} y={y}>
-      <PixiGraphicsComponent draw={drawHealthBar} />
+    <Container x={x} y={y}>
+      {labelText && (
+        <Text text={labelText} y={-(FONT_SIZES.small + 5)} style={labelStyle} />
+      )}
+      <Graphics draw={draw} />
       {showText && (
-        <PixiTextComponent
-          text={`${Math.round(current)} / ${maximum}`}
-          style={textStyle}
-          anchor={{ x: 0.5, y: 0.5 }}
+        <Text
+          text={`${Math.round(value)} / ${maxValue}`}
+          anchor={0.5}
           x={width / 2}
           y={height / 2}
+          style={textStyle}
         />
       )}
-    </PixiContainerComponent>
+    </Container>
   );
+};
+
+// KoreanPixiTrigramWheel (Simplified example)
+interface KoreanPixiTrigramWheelProps extends BaseComponentProps {
+  currentStance: TrigramStance;
+  onStanceSelect: (stance: TrigramStance) => void;
+  size?: number;
+  isEnabled?: boolean;
 }
+
+export const KoreanPixiTrigramWheel: React.FC<KoreanPixiTrigramWheelProps> = ({
+  currentStance,
+  onStanceSelect,
+  size = 150,
+  isEnabled = true,
+  x = 0,
+  y = 0,
+}) => {
+  const radius = size / 2;
+  const segmentAngle = (2 * Math.PI) / TRIGRAM_DATA.orderedStances.length;
+
+  const drawWheel = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+      TRIGRAM_DATA.orderedStances.forEach((stanceId, index) => {
+        const stanceTheme = TRIGRAM_DATA[stanceId]?.theme;
+        const startAngle =
+          index * segmentAngle - Math.PI / 2 - segmentAngle / 2;
+        const endAngle = startAngle + segmentAngle;
+        const isActive = stanceId === currentStance;
+
+        g.lineStyle(
+          2,
+          isActive
+            ? stanceTheme?.glow || KOREAN_COLORS.ACCENT_PRIMARY
+            : stanceTheme?.secondary || KOREAN_COLORS.UI_BORDER,
+          isEnabled ? 1 : 0.5
+        );
+        g.beginFill(
+          isActive
+            ? stanceTheme?.active || KOREAN_COLORS.ACCENT_PRIMARY_LIGHT
+            : stanceTheme?.primary || KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+          isEnabled ? (isActive ? 0.9 : 0.7) : 0.4
+        );
+        g.moveTo(radius, radius);
+        g.arc(radius, radius, radius - 2, startAngle, endAngle);
+        g.lineTo(radius, radius);
+        g.endFill();
+      });
+      // Center circle
+      g.lineStyle(
+        2,
+        TRIGRAM_DATA[currentStance]?.theme.secondary || KOREAN_COLORS.UI_BORDER
+      );
+      g.beginFill(
+        TRIGRAM_DATA[currentStance]?.theme.primary ||
+          KOREAN_COLORS.UI_BACKGROUND_DARK
+      );
+      g.drawCircle(radius, radius, radius * 0.3);
+      g.endFill();
+    },
+    [radius, segmentAngle, currentStance, isEnabled]
+  );
+
+  return (
+    <Container x={x} y={y}>
+      <Graphics draw={drawWheel} />
+      {TRIGRAM_DATA.orderedStances.map((stanceId, index) => {
+        const angle = index * segmentAngle - Math.PI / 2;
+        const textRadius = radius * 0.7;
+        const textX = radius + textRadius * Math.cos(angle);
+        const textY = radius + textRadius * Math.sin(angle);
+        return (
+          <Text
+            key={stanceId}
+            text={TRIGRAM_DATA[stanceId]?.symbol || ""}
+            x={textX}
+            y={textY}
+            anchor={0.5}
+            interactive={isEnabled}
+            buttonMode={isEnabled}
+            pointertap={() => isEnabled && onStanceSelect(stanceId)}
+            style={{
+              fontFamily: FONT_FAMILY.SYMBOL,
+              fontSize: FONT_SIZES.large * (size / 150),
+              fill:
+                stanceId === currentStance
+                  ? KOREAN_COLORS.BLACK_SOLID
+                  : KOREAN_COLORS.TEXT_PRIMARY,
+              fontWeight:
+                FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+            }}
+          />
+        );
+      })}
+      <Text
+        text={TRIGRAM_DATA[currentStance]?.symbol}
+        x={radius}
+        y={radius}
+        anchor={0.5}
+        style={{
+          fontFamily: FONT_FAMILY.SYMBOL,
+          fontSize: FONT_SIZES.xlarge * (size / 150),
+          fill: KOREAN_COLORS.BLACK_SOLID, // Color for current stance symbol in center
+          fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+        }}
+      />
+    </Container>
+  );
+};
+
+// KoreanPixiHeader
+interface KoreanPixiHeaderProps extends BaseComponentProps {
+  korean: string;
+  english?: string;
+  level?: 1 | 2 | 3;
+}
+export const KoreanPixiHeader: React.FC<KoreanPixiHeaderProps> = ({
+  korean,
+  english,
+  level = 1,
+  width = 800,
+  height = 60,
+  x = 0,
+  y = 0,
+}) => {
+  const titleStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: KOREAN_FONT_FAMILY,
+        fontSize:
+          level === 1
+            ? FONT_SIZES.xlarge
+            : level === 2
+            ? FONT_SIZES.large
+            : FONT_SIZES.medium,
+        fill: KOREAN_COLORS.ACCENT_PRIMARY,
+        fontWeight: FONT_WEIGHTS.bold.toString() as PIXI.TextStyleFontWeight,
+      }),
+    [level]
+  );
+
+  const englishStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: level === 1 ? FONT_SIZES.medium : FONT_SIZES.small,
+        fill: KOREAN_COLORS.TEXT_SECONDARY,
+      }),
+    [level]
+  );
+
+  const drawBg = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+      g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK_TRANSLUCENT, 0.9);
+      g.lineStyle(1, KOREAN_COLORS.PRIMARY_CYAN, 0.8);
+      g.drawRect(0, 0, width, height);
+      g.endFill();
+    },
+    [width, height]
+  );
+
+  return (
+    <Container x={x} y={y}>
+      <Graphics draw={drawBg} />
+      <Text
+        text={korean}
+        x={width / 2}
+        y={english ? height / 2 - 10 : height / 2}
+        anchor={0.5}
+        style={titleStyle}
+      />
+      {english && (
+        <Text
+          text={english}
+          x={width / 2}
+          y={height / 2 + 10}
+          anchor={0.5}
+          style={englishStyle}
+        />
+      )}
+    </Container>
+  );
+};
+
+// KoreanPixiButton (Simplified from BaseButton)
+interface KoreanPixiButtonProps extends BaseComponentProps {
+  text: string | KoreanTextType;
+  onClick?: (event: PIXI.FederatedPointerEvent) => void;
+  variant?: "primary" | "secondary" | "ghost";
+  disabled?: boolean;
+  icon?: string | PIXI.Texture; // Path to icon texture or Texture object
+  color?: number; // Added color prop
+}
+
+export const KoreanPixiButton: React.FC<KoreanPixiButtonProps> = ({
+  text,
+  onClick,
+  variant = "primary",
+  disabled = false,
+  icon,
+  width = 150,
+  height = 40,
+  x = 0,
+  y = 0,
+  color = KOREAN_COLORS.PRIMARY_CYAN, // Default color
+  ...props
+}) => {
+  const [isHover, setIsHover] = useState(false);
+  const [isDown, setIsDown] = useState(false);
+
+  const iconTexture =
+    typeof icon === "string"
+      ? useTexture(icon)
+      : icon instanceof PIXI.Texture
+      ? icon
+      : null;
+
+  const drawButton = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+      let currentFill = color;
+      let alpha = disabled ? 0.5 : 1;
+
+      if (!disabled) {
+        if (isDown)
+          currentFill = PIXI.utils.mixColors(
+            color,
+            KOREAN_COLORS.BLACK_SOLID,
+            0.3
+          );
+        else if (isHover)
+          currentFill = PIXI.utils.mixColors(
+            color,
+            KOREAN_COLORS.WHITE_SOLID,
+            0.2
+          );
+      }
+
+      switch (variant) {
+        case "secondary":
+          currentFill =
+            isHover && !disabled
+              ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
+              : KOREAN_COLORS.UI_BACKGROUND_MEDIUM;
+          break;
+        case "ghost":
+          currentFill =
+            isHover && !disabled
+              ? KOREAN_COLORS.UI_BUTTON_HOVER_BG
+              : KOREAN_COLORS.TRANSPARENT;
+          break;
+      }
+
+      g.beginFill(currentFill, alpha);
+      g.lineStyle(
+        2,
+        variant === "ghost" && !isHover
+          ? KOREAN_COLORS.TRANSPARENT
+          : PIXI.utils.mixColors(currentFill, KOREAN_COLORS.BLACK_SOLID, 0.2),
+        alpha
+      );
+      g.drawRoundedRect(0, 0, width, height, height / 4);
+      g.endFill();
+    },
+    [width, height, color, disabled, isHover, isDown, variant]
+  );
+
+  const textContent = typeof text === "string" ? text : text.korean;
+  const textStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: KOREAN_FONT_FAMILY,
+        fontSize: FONT_SIZES.small,
+        fill: disabled
+          ? KOREAN_COLORS.UI_DISABLED_TEXT
+          : variant === "primary"
+          ? KOREAN_COLORS.BLACK_SOLID
+          : KOREAN_COLORS.TEXT_PRIMARY,
+        align: "center",
+      }),
+    [disabled, variant]
+  );
+
+  // PIXI.TextMetrics.measureText is available.
+  // const textMetrics = PIXI.TextMetrics.measureText(textContent, textStyle);
+  // const textX = iconTexture ? (width - textMetrics.width) / 2 + 15 : (width - textMetrics.width) / 2;
+  // const textY = (height - textMetrics.height) / 2;
+
+  return (
+    <Container
+      x={x}
+      y={y}
+      interactive={!disabled}
+      buttonMode={!disabled}
+      pointertap={!disabled ? onClick : undefined}
+      pointerover={() => setIsHover(true)}
+      pointerout={() => {
+        setIsHover(false);
+        setIsDown(false);
+      }}
+      pointerdown={() => setIsDown(true)}
+      pointerup={() => setIsDown(false)}
+      {...props}
+    >
+      <Graphics draw={drawButton} />
+      {iconTexture && (
+        <Sprite
+          texture={iconTexture}
+          x={10}
+          y={height / 2}
+          anchor={0.5}
+          width={height * 0.6}
+          height={height * 0.6}
+        />
+      )}
+      <Text
+        text={textContent}
+        x={width / 2}
+        y={height / 2}
+        anchor={0.5}
+        style={textStyle}
+      />
+    </Container>
+  );
+};

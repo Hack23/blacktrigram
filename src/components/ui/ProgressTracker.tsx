@@ -1,123 +1,104 @@
-import React, { useCallback, useMemo } from "react";
-import type { Graphics as PixiGraphics } from "pixi.js";
-import { KOREAN_COLORS } from "../../types/constants";
+import React, { useMemo } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
+import type { ProgressTrackerProps } from "../../types";
+import {
+  KOREAN_COLORS,
+  FONT_FAMILY,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+} from "../../types/constants";
+import * as PIXI from "pixi.js";
 
-export interface ProgressTrackerProps {
-  // Support both naming conventions for backward compatibility
-  readonly progress?: number;
-  readonly total?: number;
-  readonly value?: number;
-  readonly maxValue?: number;
-  readonly width?: number;
-  readonly height?: number;
-  readonly showPercentage?: boolean;
-  readonly showText?: boolean; // Alias for showPercentage
-  readonly showLabel?: boolean;
-  readonly label?: string;
-  readonly color?: number;
-  readonly barColor?: number; // Alias for color
-  readonly backgroundColor?: number;
-  readonly borderColor?: number; // Added for compatibility
-}
-
-export function ProgressTracker({
-  // Use progress/value and total/maxValue with appropriate fallbacks
-  progress,
-  total,
-  value,
-  maxValue,
+export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
+  label,
+  value = 0,
+  maxValue = 100,
   width = 200,
-  height = 30,
-  showPercentage = true,
-  showText, // Alias for showPercentage
-  showLabel = false,
-  label = "Progress",
-  color,
-  barColor, // Alias for color
-  backgroundColor = KOREAN_COLORS.GRAY_DARK,
-  borderColor = KOREAN_COLORS.WHITE,
-}: ProgressTrackerProps): React.ReactElement {
-  // Use progress/value and total/maxValue with appropriate fallbacks
-  const actualProgress = progress !== undefined ? progress : value ?? 0;
-  const actualTotal = total !== undefined ? total : maxValue ?? 100;
-  const actualColor =
-    color !== undefined ? color : barColor ?? KOREAN_COLORS.CYAN;
-  const actualShowPercentage =
-    showPercentage !== undefined ? showPercentage : showText;
+  height = 20,
+  barColor = KOREAN_COLORS.PRIMARY_CYAN,
+  backgroundColor = KOREAN_COLORS.UI_BACKGROUND_DARK,
+  borderColor = KOREAN_COLORS.UI_STEEL_GRAY,
+  borderWidth = 1,
+  showText = true,
+  textColor = KOREAN_COLORS.TEXT_PRIMARY,
+  showLabels = true, // Added from props
+  spacing = 5, // Added from props
+  x = 0, // Added from props
+  y = 0, // Added from props
+  ...props
+}) => {
+  const percentage =
+    maxValue > 0 ? Math.max(0, Math.min(1, value / maxValue)) : 0;
 
-  const percentage = useMemo(() => {
-    return Math.min(
-      100,
-      Math.round((actualProgress / Math.max(actualTotal, 1)) * 100)
-    );
-  }, [actualProgress, actualTotal]);
-
-  const drawProgressBar = useCallback(
-    (g: PixiGraphics) => {
-      g.clear();
-
-      // Draw background
-      g.setFillStyle({ color: backgroundColor, alpha: 0.6 });
-      g.roundRect(0, 0, width, height, 5);
-      g.fill();
-
-      // Draw progress fill
-      if (percentage > 0) {
-        const fillWidth = (width * percentage) / 100;
-        g.setFillStyle({ color: actualColor, alpha: 0.8 });
-        g.roundRect(0, 0, fillWidth, height, 5);
-        g.fill();
-      }
-
-      // Draw border
-      g.setStrokeStyle({ color: borderColor, width: 1, alpha: 0.8 });
-      g.roundRect(0, 0, width, height, 5);
-      g.stroke();
-    },
-    [width, height, percentage, actualColor, backgroundColor, borderColor]
+  const textStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.MONO,
+        fontSize: FONT_SIZES.small * 0.9, // Slightly smaller for bars
+        fill: textColor,
+        align: "center",
+      }),
+    [textColor]
   );
+
+  const labelStyle = useMemo(
+    () =>
+      new PIXI.TextStyle({
+        fontFamily: FONT_FAMILY.PRIMARY,
+        fontSize: FONT_SIZES.small,
+        fill: KOREAN_COLORS.TEXT_SECONDARY,
+        fontWeight:
+          FONT_WEIGHTS.semibold.toString() as PIXI.TextStyleFontWeight,
+      }),
+    []
+  );
+
+  const labelYPos = -(FONT_SIZES.small + spacing);
+
+  const draw = (g: PIXI.Graphics) => {
+    g.clear();
+
+    // Background
+    g.beginFill(backgroundColor as number, 0.8); // Cast as number if ColorValue can be string
+    if (borderWidth > 0) {
+      g.lineStyle(borderWidth, borderColor as number, 1); // Cast as number
+    }
+    g.drawRoundedRect(0, 0, width, height, height / 4);
+    g.endFill();
+
+    // Bar
+    if (percentage > 0) {
+      g.beginFill(barColor as number, 1); // Cast as number
+      // No border for the fill part to avoid double border
+      g.lineStyle(0);
+      g.drawRoundedRect(
+        borderWidth, // Offset by border
+        borderWidth, // Offset by border
+        (width - borderWidth * 2) * percentage,
+        height - borderWidth * 2,
+        (height - borderWidth * 2) / 4
+      );
+      g.endFill();
+    }
+  };
 
   return (
-    <pixiContainer data-testid="progress-tracker-container pixi-container">
-      <pixiGraphics
-        draw={drawProgressBar}
-        data-testid="progress-tracker-bar pixi-graphics"
-      />
-
-      {actualShowPercentage && (
-        <pixiText
-          text={`${percentage}%`}
+    <Container x={x} y={y} {...props}>
+      {showLabels && label && (
+        <Text text={label} y={labelYPos} style={labelStyle} />
+      )}
+      <Graphics draw={draw} />
+      {showText && (
+        <Text
+          text={`${Math.round(value)} / ${maxValue}`}
+          anchor={0.5}
           x={width / 2}
           y={height / 2}
-          anchor={{ x: 0.5, y: 0.5 }}
-          style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: height * 0.5,
-            fill: KOREAN_COLORS.WHITE,
-            fontWeight: "bold",
-          }}
-          data-testid="progress-tracker-percentage-text pixi-text"
-          data-text={`${percentage}%`}
+          style={textStyle}
         />
       )}
-
-      {showLabel && (
-        <pixiText
-          text={label}
-          x={width / 2}
-          y={-10}
-          anchor={{ x: 0.5, y: 1 }}
-          style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: height * 0.4,
-            fill: KOREAN_COLORS.WHITE,
-          }}
-          data-testid="progress-tracker-label-text"
-          data-text={label}
-        />
-      )}
-    </pixiContainer>
+    </Container>
   );
-}
+};
 
 export default ProgressTracker;
