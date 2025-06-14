@@ -62,31 +62,31 @@ extend({ Container, Graphics, Text });
 export interface TrainingDummyProps {
   /** Current state of the training dummy including health, position, and behavioral flags */
   readonly dummyState: TrainingDummyState;
-  
+
   /** Callback triggered when player executes a technique on the dummy */
   readonly onTechniqueExecute: () => void;
-  
+
   /** Callback to reset dummy to initial state (full health, clear status effects) */
   readonly onReset: () => void;
-  
+
   /** Screen width for responsive hit detection and visual scaling */
   readonly screenWidth: number;
-  
+
   /** Screen height for responsive layout calculations */
   readonly screenHeight: number;
-  
+
   /** Whether the interface is optimized for mobile devices */
   readonly isMobile: boolean;
 }
 
 /**
  * ## Training Dummy State Model
- * 
+ *
  * **Business Model:**
  * Represents the physical and logical state of a training dummy
  * throughout a practice session. Tracks damage accumulation,
  * defensive responses, and interaction history.
- * 
+ *
  * **State Management:**
  * Uses immutable state updates to ensure predictable behavior
  * and enable easy rollback/reset functionality.
@@ -94,43 +94,43 @@ export interface TrainingDummyProps {
 export interface TrainingDummyState {
   /** Current health points (0 = completely damaged) */
   readonly health: number;
-  
+
   /** Maximum health when dummy is in perfect condition */
   readonly maxHealth: number;
-  
+
   /** 2D position in training area coordinate system */
   readonly position: Position;
-  
+
   /** Whether dummy is available for technique practice */
   readonly isActive: boolean;
-  
+
   /** Timestamp of most recent technique hit */
   readonly lastHitTime: number;
-  
+
   /** Total number of successful hits received */
   readonly hitCount: number;
-  
+
   /** Whether dummy is in stunned state (brief period after hit) */
   readonly isStunned: boolean;
-  
+
   /** Whether dummy is in defensive mode (harder to hit) */
   readonly defensiveMode: boolean;
 }
 
 /**
  * ## Training Dummy Component Implementation
- * 
+ *
  * **Interaction Design:**
  * - Large hit zones for mobile accessibility
  * - Visual feedback for successful/missed hits
  * - Progressive damage visualization
  * - Clear reset affordances when heavily damaged
- * 
+ *
  * **Performance Considerations:**
  * - Efficient hit detection using PIXI interactive events
  * - Optimized graphics rendering for smooth animations
  * - Minimal state updates to prevent unnecessary re-renders
- * 
+ *
  * @param props - Training dummy configuration and event handlers
  * @returns JSX.Element representing the interactive training dummy
  */
@@ -199,7 +199,13 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
         g.stroke();
       }
     },
-    [dummySize, dummyHeight, dummyColor, dummyState.isActive, dummyState.isStunned]
+    [
+      dummySize,
+      dummyHeight,
+      dummyColor,
+      dummyState.isActive,
+      dummyState.isStunned,
+    ]
   );
 
   // Draw damage indicators
@@ -232,19 +238,19 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
 
   /**
    * **Business Logic:** Handles player technique execution on dummy
-   * 
+   *
    * Validates hit conditions and triggers appropriate responses:
    * - Checks if dummy is in valid state for hits
    * - Applies hit effects and damage calculations
    * - Triggers audio and visual feedback systems
    * - Updates training statistics and progression
-   * 
+   *
    * **Korean Martial Arts:** Simulates realistic striking feedback
    * based on traditional training dummy responses
    */
   const handleDummyHit = useCallback(() => {
     if (!dummyState.isActive || dummyState.isStunned) return;
-    
+
     onTechniqueExecute();
     audio.playSFX("training_hit");
   }, [dummyState.isActive, dummyState.isStunned, onTechniqueExecute, audio]);
@@ -261,7 +267,10 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
       <pixiGraphics draw={drawDummyBody} data-testid="dummy-body" />
 
       {/* Damage Indicators */}
-      <pixiGraphics draw={drawDamageIndicators} data-testid="dummy-damage-indicators" />
+      <pixiGraphics
+        draw={drawDamageIndicators}
+        data-testid="dummy-damage-indicators"
+      />
 
       {/* Hit Counter */}
       {dummyState.hitCount > 0 && (
@@ -282,7 +291,13 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
 
       {/* Dummy Status */}
       <pixiText
-        text={dummyState.isStunned ? "기절" : dummyState.defensiveMode ? "방어" : "대기"}
+        text={
+          dummyState.isStunned
+            ? "기절"
+            : dummyState.defensiveMode
+            ? "방어"
+            : "대기"
+        }
         style={{
           fontSize: isMobile ? 9 : 11,
           fill: dummyState.isStunned
@@ -300,7 +315,11 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
       />
 
       {/* Health Tracker */}
-      <pixiContainer x={-20} y={dummyHeight + 35} data-testid="training-dummy-container">
+      <pixiContainer
+        x={-20}
+        y={dummyHeight + 35}
+        data-testid="training-dummy-container"
+      >
         <ProgressTracker
           title="더미 체력"
           korean="체력"
@@ -327,7 +346,11 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
 
       {/* Reset Button (when health is low) */}
       {healthPercentage < 0.2 && (
-        <pixiContainer x={dummySize + 10} y={dummyHeight / 2} data-testid="dummy-reset-area">
+        <pixiContainer
+          x={dummySize + 10}
+          y={dummyHeight / 2}
+          data-testid="dummy-reset-area"
+        >
           <pixiGraphics
             draw={(g) => {
               g.clear();
@@ -335,7 +358,11 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
               g.circle(0, 0, 15);
               g.fill();
 
-              g.stroke({ width: 2, color: KOREAN_COLORS.WHITE_SOLID, alpha: 0.9 });
+              g.stroke({
+                width: 2,
+                color: KOREAN_COLORS.WHITE_SOLID,
+                alpha: 0.9,
+              });
               g.circle(0, 0, 15);
               g.stroke();
             }}
@@ -448,7 +475,17 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
           data-testid="dummy-state-text"
         />
       </pixiContainer>
-    </ResponsivePixiContainer>
+
+      {/* Interactive Elements */}
+      <pixiContainer
+        interactive={true}
+        onPointerDown={handleDummyClick}
+        data-testid="dummy-interactive-area"
+      >
+        {/* Dummy body graphics and other content */}
+        {/* ...existing dummy rendering code... */}
+      </pixiContainer>
+    </pixiContainer>
   );
 };
 

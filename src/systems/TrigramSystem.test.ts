@@ -1,22 +1,54 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { TrigramSystem } from "./TrigramSystem";
-import { TrigramStance } from "../types/enums";
+import { TrigramStance, PlayerArchetype } from "../types/enums";
+import type { PlayerState } from "../types/player";
 
-/**
- * ## Trigram System Test Suite
- *
- * **Business Purpose:**
- * Validates the core trigram philosophy system that provides authentic I Ching
- * based Korean martial arts stance relationships and combat mechanics.
- *
- * @since 0.2.5
- * @author Black Trigram Development Team
- */
 describe("TrigramSystem", () => {
   let trigramSystem: TrigramSystem;
+  let mockPlayer: PlayerState;
 
   beforeEach(() => {
     trigramSystem = new TrigramSystem();
+    mockPlayer = {
+      id: "test-player",
+      currentStance: TrigramStance.GEON,
+      archetype: PlayerArchetype.MUSA,
+    };
+  });
+
+  describe("Korean Trigram Philosophy Integration", () => {
+    it("should handle all eight trigram stances correctly", () => {
+      const stances = [
+        TrigramStance.GEON,
+        TrigramStance.TAE,
+        TrigramStance.LI,
+        TrigramStance.JIN,
+        TrigramStance.SON,
+        TrigramStance.GAM,
+        TrigramStance.GAN,
+        TrigramStance.GON,
+      ];
+
+      stances.forEach((stance) => {
+        const result = trigramSystem.changeStance(mockPlayer, stance);
+        expect(result.success).toBe(true);
+        expect(result.newStance).toBe(stance);
+      });
+    });
+
+    it("should calculate archetype mastery bonuses correctly", () => {
+      const musaMastery = trigramSystem.getStanceMastery(
+        PlayerArchetype.MUSA,
+        TrigramStance.GEON
+      );
+      const amsaljaMastery = trigramSystem.getStanceMastery(
+        PlayerArchetype.AMSALJA,
+        TrigramStance.SON
+      );
+
+      expect(musaMastery).toBeGreaterThan(1.0); // Musa should excel at Heaven stance
+      expect(amsaljaMastery).toBeGreaterThan(1.0); // Assassin should excel at Wind stance
+    });
   });
 
   it("should initialize with all eight trigram stances", () => {
@@ -29,9 +61,9 @@ describe("TrigramSystem", () => {
   it("should calculate stance relationships correctly", () => {
     const effectiveness = trigramSystem.calculateStanceEffectiveness(
       TrigramStance.GEON, // Heaven
-      TrigramStance.GON   // Earth
+      TrigramStance.GON // Earth
     );
-    
+
     // Heaven should be strong against Earth in I Ching philosophy
     expect(effectiveness).toBeGreaterThan(1.0);
   });
@@ -42,27 +74,16 @@ describe("TrigramSystem", () => {
       TrigramStance.TAE,
       { ki: 50, stamina: 50 }
     );
-    
+
     expect(typeof canTransition).toBe("boolean");
   });
 
   it("should provide Korean cultural context for stances", () => {
     const context = trigramSystem.getStanceContext(TrigramStance.GEON);
-    
+
     expect(context.koreanName).toBe("건");
     expect(context.englishName).toBe("Heaven");
     expect(context.philosophy).toBeTruthy();
-  });
-});
-        TrigramStance.GEON,
-        TrigramStance.TAE,
-        mockPlayerState
-      );
-
-      expect(cost.ki).toBeGreaterThan(0);
-      expect(cost.stamina).toBeGreaterThan(0);
-      expect(cost.timeMilliseconds).toBeGreaterThan(0);
-    });
   });
 
   describe("calculateStanceEffectiveness", () => {

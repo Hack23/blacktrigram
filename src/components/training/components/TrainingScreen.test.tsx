@@ -426,4 +426,126 @@ describe("Enhanced TrainingScreen", () => {
       });
     });
   });
+
+  describe("TrainingScreen Enhanced Integration", () => {
+    describe("Korean Martial Arts Cultural Accuracy", () => {
+      it("should integrate TrainingEnhancedIntegration component", async () => {
+        renderTrainingScreen();
+
+        await waitFor(() => {
+          // Check for enhanced integration component
+          expect(
+            screen.getByTestId("training-enhanced-integration")
+          ).toBeInTheDocument();
+        });
+      });
+
+      it("should coordinate all training subsystems", async () => {
+        renderTrainingScreen();
+
+        // Start training
+        fireEvent.click(await screen.findByTestId("start-training-button"));
+
+        // Change stance
+        fireEvent.click(await screen.findByTestId("training-trigram-wheel"));
+
+        // Execute technique
+        fireEvent.click(await screen.findByTestId("execute-technique-button"));
+
+        await waitFor(() => {
+          // All systems should be coordinated
+          expect(screen.getByTestId("training-feedback")).toBeInTheDocument();
+          expect(screen.getByTestId("training-statistics")).toBeInTheDocument();
+          expect(
+            screen.getByTestId("current-stance-indicator")
+          ).toBeInTheDocument();
+        });
+      });
+    });
+
+    describe("Responsive Design Integration", () => {
+      it("should maintain functionality across all screen sizes", async () => {
+        // Test mobile
+        renderTrainingScreen({ width: 400, height: 600 });
+        await waitFor(() => {
+          expect(screen.getByTestId("training-screen")).toBeInTheDocument();
+        });
+
+        // Test tablet
+        renderTrainingScreen({ width: 800, height: 600 });
+        await waitFor(() => {
+          expect(screen.getByTestId("training-screen")).toBeInTheDocument();
+        });
+
+        // Test desktop
+        renderTrainingScreen({ width: 1200, height: 800 });
+        await waitFor(() => {
+          expect(screen.getByTestId("training-screen")).toBeInTheDocument();
+        });
+      });
+    });
+  });
+});
+
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderWithPixi, screen } from "../../../test/test-utils";
+import TrainingScreen from "../TrainingScreen";
+import { TrigramStance, PlayerArchetype } from "../../../types/enums";
+
+/**
+ * ## Training Screen Component Test Suite
+ *
+ * **Business Purpose:**
+ * Comprehensive testing for the Korean martial arts training interface
+ * ensuring authentic cultural representation and effective learning experience.
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
+describe("TrainingScreen Component", () => {
+  const mockPlayer = {
+    id: "test-player",
+    name: { korean: "테스트 무사", english: "Test Warrior" },
+    archetype: PlayerArchetype.MUSA,
+    health: 100,
+    maxHealth: 100,
+    ki: 100,
+    maxKi: 100,
+    stamina: 100,
+    maxStamina: 100,
+    currentStance: TrigramStance.GEON,
+    experiencePoints: 0,
+  };
+
+  const defaultProps = {
+    player: mockPlayer,
+    onPlayerUpdate: vi.fn(),
+    onReturnToMenu: vi.fn(),
+    width: 1200,
+    height: 800,
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should render training screen correctly", () => {
+    renderWithPixi(<TrainingScreen {...defaultProps} />);
+
+    expect(screen.getByTestId("training-screen")).toBeInTheDocument();
+  });
+
+  it("should handle training mode selection", () => {
+    renderWithPixi(<TrainingScreen {...defaultProps} />);
+
+    const modeSelector = screen.getByTestId("training-mode-selector");
+    expect(modeSelector).toBeInTheDocument();
+  });
+
+  it("should display player and dummy correctly", () => {
+    renderWithPixi(<TrainingScreen {...defaultProps} />);
+
+    expect(screen.getByTestId("training-player")).toBeInTheDocument();
+    expect(screen.getByTestId("training-dummy")).toBeInTheDocument();
+  });
 });

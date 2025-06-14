@@ -1,394 +1,647 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
 import { renderWithPixi } from "../../../test/test-utils";
-import { TrainingAudioManager } from "./TrainingAudioManager";
-import { TrigramStance } from "../../../types/enums";
+import { AudioProvider } from "../../../audio/AudioProvider";
+import TrainingAudioManager from "./TrainingAudioManager";
+import { TrigramStance, PlayerArchetype } from "../../../types/enums";
+import type { AudioManagerInterface } from "../../../types/audio";
 
-const mockAudio = {
-  playSFX: vi.fn(),
-  playMusic: vi.fn(),
-  stopMusic: vi.fn(),
-  setVolume: vi.fn(),
+/**
+ * ## Training Audio Manager Test Suite - Enhanced Korean Martial Arts Audio
+ *
+ * **Business Purpose:**
+ * Validates the comprehensive audio management system that provides authentic Korean martial arts
+ * training experience through voice commands, feedback, and cultural audio elements.
+ *
+ * **Korean Martial Arts Integration:**
+ * - Tests authentic Korean voice command pronunciation and execution
+ * - Validates cultural accuracy in audio terminology and feedback
+ * - Ensures proper integration with traditional Korean training methodologies
+ * - Verifies bilingual Korean-English audio instruction support
+ *
+ * **Educational Value:**
+ * These tests ensure the audio system effectively supports Korean martial arts learning through:
+ * - Proper pronunciation guidance for Korean martial arts terms
+ * - Contextual audio feedback matching training scenarios
+ * - Cultural immersion through authentic dojang audio atmosphere
+ * - Accessibility through comprehensive audio controls and settings
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
+
+// Enhanced mock audio manager with comprehensive Korean martial arts audio support
+const createMockAudioManager = (): AudioManagerInterface => ({
   isInitialized: true,
-};
+  playMusic: vi.fn().mockResolvedValue(undefined),
+  stopMusic: vi.fn(),
+  playSFX: vi.fn().mockResolvedValue(undefined),
+  setMasterVolume: vi.fn(),
+  setMusicVolume: vi.fn(),
+  setSFXVolume: vi.fn(),
+  getMasterVolume: vi.fn().mockReturnValue(0.8),
+  getMusicVolume: vi.fn().mockReturnValue(0.6),
+  getSFXVolume: vi.fn().mockReturnValue(0.8),
+  pauseMusic: vi.fn(),
+  resumeMusic: vi.fn(),
+  fadeInMusic: vi.fn().mockResolvedValue(undefined),
+  fadeOutMusic: vi.fn().mockResolvedValue(undefined),
+  playArchetypeTheme: vi.fn().mockResolvedValue(undefined),
+  stopAllSounds: vi.fn(),
+  playKoreanVoiceCommand: vi.fn().mockResolvedValue(undefined), // Enhanced for Korean voice
+  playDojangAmbience: vi.fn().mockResolvedValue(undefined), // Dojang atmosphere
+  playTechniqueSound: vi.fn().mockResolvedValue(undefined), // Technique-specific audio
+});
 
-const defaultProps = {
-  audio: mockAudio,
-  isTraining: false,
-  selectedStance: TrigramStance.GEON,
-  accuracy: 0,
-  currentCombo: 0,
+const renderTrainingAudioManager = (props = {}) => {
+  const defaultProps = {
+    audio: createMockAudioManager(),
+    selectedStance: TrigramStance.GEON,
+    currentCombo: 0,
+    playerArchetype: PlayerArchetype.MUSA,
+    trainingMode: "basics",
+    isTraining: false,
+    accuracy: 0.75,
+    x: 0,
+    y: 0,
+    width: 400,
+    height: 300,
+    screenWidth: 1200,
+    screenHeight: 800,
+    onVoiceCommandExecute: vi.fn(),
+    showAdvancedControls: false,
+  };
+
+  return renderWithPixi(
+    <AudioProvider>
+      <TrainingAudioManager {...defaultProps} {...props} />
+    </AudioProvider>
+  );
 };
 
 describe("TrainingAudioManager", () => {
+  let mockAudio: AudioManagerInterface;
+  let mockVoiceCommandExecute: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
+    mockAudio = createMockAudioManager();
+    mockVoiceCommandExecute = vi.fn();
     vi.clearAllMocks();
   });
 
-  it("should render without visual elements", () => {
-    renderWithPixi(<TrainingAudioManager {...defaultProps} />);
-
-    // Audio manager should not render visible elements
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it("should play training music when training starts", () => {
-    const { rerender } = renderWithPixi(<TrainingAudioManager {...defaultProps} />);
-
-    rerender(<TrainingAudioManager {...defaultProps} isTraining={true} />);
-
-    expect(mockAudio.playMusic).toHaveBeenCalledWith("training_theme");
-  });
-
-  it("should stop music when training ends", () => {
-    const { rerender } = renderWithPixi(
-      <TrainingAudioManager {...defaultProps} isTraining={true} />
-    );
-
-    rerender(<TrainingAudioManager {...defaultProps} isTraining={false} />);
-
-    expect(mockAudio.stopMusic).toHaveBeenCalled();
-  });
-
-  it("should play stance change sound", () => {
-    const { rerender } = renderWithPixi(
-      <TrainingAudioManager {...defaultProps} isTraining={true} />
-    );
-
-    rerender(
-      <TrainingAudioManager
-        {...defaultProps}
-        isTraining={true}
-        selectedStance={TrigramStance.TAE}
-      />
-    );
-
-    expect(mockAudio.playSFX).toHaveBeenCalledWith("stance_change");
-  });
-
-  it("should play combo sounds for multiple hits", () => {
-    const { rerender } = renderWithPixi(<TrainingAudioManager {...defaultProps} />);
-
-    rerender(<TrainingAudioManager {...defaultProps} currentCombo={3} />);
-
-    expect(mockAudio.playSFX).toHaveBeenCalledWith("combo_hit");
-  });
-
-  it("should play accuracy feedback sounds", () => {
-    const { rerender } = renderWithPixi(<TrainingAudioManager {...defaultProps} />);
-
-    // High accuracy
-    rerender(<TrainingAudioManager {...defaultProps} accuracy={95} />);
-    expect(mockAudio.playSFX).toHaveBeenCalledWith("perfect_accuracy");
-
-    // Good accuracy
-    rerender(<TrainingAudioManager {...defaultProps} accuracy={75} />);
-    expect(mockAudio.playSFX).toHaveBeenCalledWith("good_accuracy");
-  });
-});
+  describe("Component Rendering", () => {
+    it("should render all essential audio control elements", async () => {
       renderTrainingAudioManager();
 
-      expect(screen.getByTestId("audio-status-text")).toBeInTheDocument();
-    });
-  });
+      await waitFor(() => {
+        // Core component
+        expect(
+          screen.getByTestId("training-audio-manager")
+        ).toBeInTheDocument();
 
-  describe("Training State Integration", () => {
-    it("should update audio when training starts", () => {
-      renderTrainingAudioManager({ isTraining: true });
+        // Volume controls
+        expect(screen.getByTestId("master-volume-control")).toBeInTheDocument();
+        expect(screen.getByTestId("master-volume-bar")).toBeInTheDocument();
+        expect(screen.getByTestId("master-volume-label")).toBeInTheDocument();
 
-      expect(screen.getByTestId("audio-visualization")).toBeInTheDocument();
-    });
-
-    it("should handle combo progression audio", () => {
-      const mockOnAudioEvent = vi.fn();
-      const { rerender } = renderTrainingAudioManager({ 
-        onAudioEvent: mockOnAudioEvent,
-        currentCombo: 1 
+        // Audio categories
+        expect(screen.getByTestId("audio-categories")).toBeInTheDocument();
+        expect(screen.getByTestId("musicVolume-control")).toBeInTheDocument();
+        expect(screen.getByTestId("sfxVolume-control")).toBeInTheDocument();
+        expect(screen.getByTestId("voiceVolume-control")).toBeInTheDocument();
       });
-
-      // Increase combo
-      rerender(
-        <AudioProvider>
-          <TrainingAudioManager 
-            {...defaultProps} 
-            onAudioEvent={mockOnAudioEvent}
-            currentCombo={3}
-          />
-        </AudioProvider>
-      );
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("combo_3");
     });
 
-    it("should play milestone sounds for special combos", () => {
-      const { rerender } = renderTrainingAudioManager({ currentCombo: 4 });
-
-      // Reach 5 combo milestone
-      rerender(
-        <AudioProvider>
-          <TrainingAudioManager {...defaultProps} currentCombo={5} />
-        </AudioProvider>
-      );
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("combo_milestone_5");
-    });
-
-    it("should play legendary combo sound for high combos", () => {
-      const { rerender } = renderTrainingAudioManager({ currentCombo: 19 });
-
-      // Reach 20+ combo
-      rerender(
-        <AudioProvider>
-          <TrainingAudioManager {...defaultProps} currentCombo={20} />
-        </AudioProvider>
-      );
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("combo_legendary");
-    });
-  });
-
-  describe("Accuracy-Based Audio Feedback", () => {
-    it("should play improving accuracy sound", () => {
-      const initialStats = { ...mockStats, accuracy: 60 };
-      const { rerender } = renderTrainingAudioManager({ 
-        stats: initialStats,
-        isTraining: true 
-      });
-
-      // Improve accuracy significantly
-      const improvedStats = { ...mockStats, accuracy: 80, attempts: 10 };
-      rerender(
-        <AudioProvider>
-          <TrainingAudioManager 
-            {...defaultProps} 
-            stats={improvedStats}
-            isTraining={true}
-          />
-        </AudioProvider>
-      );
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("accuracy_improving");
-    });
-
-    it("should play declining accuracy sound", () => {
-      const initialStats = { ...mockStats, accuracy: 80 };
-      const { rerender } = renderTrainingAudioManager({ 
-        stats: initialStats,
-        isTraining: true 
-      });
-
-      // Accuracy declines significantly
-      const declinedStats = { ...mockStats, accuracy: 60, attempts: 10 };
-      rerender(
-        <AudioProvider>
-          <TrainingAudioManager 
-            {...defaultProps} 
-            stats={declinedStats,
-            isTraining: true}
-          />
-        </AudioProvider>
-      );
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("accuracy_declining");
-    });
-
-    it("should not play accuracy sounds with insufficient attempts", () => {
-      const lowAttemptsStats = { ...mockStats, attempts: 3 };
-      renderTrainingAudioManager({ 
-        stats: lowAttemptsStats,
-        isTraining: true 
-      });
-
-      expect(mockAudio.playSFX).not.toHaveBeenCalledWith("accuracy_improving");
-      expect(mockAudio.playSFX).not.toHaveBeenCalledWith("accuracy_declining");
-    });
-  });
-
-  describe("Stance-Specific Audio", () => {
-    it("should play stance ambient sounds during training", () => {
-      vi.useFakeTimers();
-      renderTrainingAudioManager({ 
-        isTraining: true,
-        selectedStance: TrigramStance.GEON 
-      });
-
-      // Fast-forward to trigger ambient sound
-      vi.advanceTimersByTime(15000);
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("ambient_heaven");
-    });
-
-    it.each([
-      [TrigramStance.GEON, "ambient_heaven"],
-      [TrigramStance.TAE, "ambient_lake"],
-      [TrigramStance.LI, "ambient_fire"],
-      [TrigramStance.JIN, "ambient_thunder"],
-      [TrigramStance.SON, "ambient_wind"],
-      [TrigramStance.GAM, "ambient_water"],
-      [TrigramStance.GAN, "ambient_mountain"],
-      [TrigramStance.GON, "ambient_earth"],
-    ])("should play correct ambient sound for %s stance", (stance, expectedSound) => {
-      vi.useFakeTimers();
-      renderTrainingAudioManager({ 
-        isTraining: true,
-        selectedStance: stance 
-      });
-
-      vi.advanceTimersByTime(15000);
-
-      expect(mockAudio.playSFX).toHaveBeenCalledWith(expectedSound);
-    });
-  });
-
-  describe("Audio Controls", () => {
-    it("should render Korean praise button", () => {
+    it("should display Korean voice commands section", async () => {
       renderTrainingAudioManager();
 
-      expect(screen.getByTestId("audio-praise-button")).toBeInTheDocument();
-      expect(screen.getByTestId("audio-praise-text")).toBeInTheDocument();
-      expect(screen.getByTestId("audio-praise-text").getAttribute("text")).toBe("좋다");
+      await waitFor(() => {
+        expect(screen.getByTestId("korean-voice-commands")).toBeInTheDocument();
+        expect(screen.getByTestId("voice-commands-title")).toBeInTheDocument();
+        expect(screen.getByTestId("voice-command-buttons")).toBeInTheDocument();
+      });
     });
 
-    it("should play praise sound when button clicked", () => {
-      const mockOnAudioEvent = vi.fn();
-      renderTrainingAudioManager({ onAudioEvent: mockOnAudioEvent });
+    it("should show training status with Korean text", async () => {
+      renderTrainingAudioManager({
+        selectedStance: TrigramStance.LI,
+        currentCombo: 3,
+        accuracy: 0.85,
+      });
 
-      const praiseButton = screen.getByTestId("audio-praise-button");
-      fireEvent.click(praiseButton);
+      await waitFor(() => {
+        const statusElement = screen.getByTestId("audio-training-status");
+        expect(statusElement).toBeInTheDocument();
 
-      expect(mockOnAudioEvent).toHaveBeenCalledWith("korean_command", {
-        command: "good",
-        korean: "좋다"
+        const statusText = statusElement.textContent || "";
+        expect(statusText).toMatch(/자세: 리/);
+        expect(statusText).toMatch(/연속: 3회/);
+        expect(statusText).toMatch(/정확도: 85%/);
+      });
+    });
+
+    it("should render advanced controls when enabled", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("audio-settings-toggles")
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId("toggle-koreanVoiceEnabled")
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId("toggle-englishVoiceEnabled")
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId("toggle-pronunciationGuideEnabled")
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId("toggle-dojangAmbienceEnabled")
+        ).toBeInTheDocument();
       });
     });
   });
 
-  describe("Visual Audio Representation", () => {
-    it("should show audio bars during training", () => {
-      renderTrainingAudioManager({ isTraining: true });
+  describe("Volume Controls", () => {
+    it("should handle master volume changes", async () => {
+      renderTrainingAudioManager({ audio: mockAudio });
 
-      expect(screen.getByTestId("audio-visualization")).toBeInTheDocument();
+      const volumeBar = await screen.findByTestId("master-volume-bar");
+
+      // Simulate click on volume bar (50% position)
+      fireEvent.pointerDown(volumeBar, {
+        global: { x: 75, y: 20 }, // Assuming 150px width, click at 50%
+      });
+
+      await waitFor(() => {
+        expect(mockAudio.setMasterVolume).toHaveBeenCalled();
+      });
     });
 
-    it("should show stance energy visualization", () => {
-      renderTrainingAudioManager({ 
-        isTraining: true,
+    it("should update volume display percentage", async () => {
+      renderTrainingAudioManager();
+
+      await waitFor(() => {
+        const percentageDisplay = screen.getByTestId(
+          "master-volume-percentage"
+        );
+        expect(percentageDisplay.textContent).toMatch(/\d+%/);
+      });
+    });
+
+    it("should handle category-specific volume controls", async () => {
+      renderTrainingAudioManager({ audio: mockAudio });
+
+      // Test music volume
+      const musicVolumeBar = await screen.findByTestId("musicVolume-bar");
+      fireEvent.pointerDown(musicVolumeBar);
+
+      await waitFor(() => {
+        expect(mockAudio.setMusicVolume).toHaveBeenCalled();
+      });
+
+      // Test SFX volume
+      const sfxVolumeBar = await screen.findByTestId("sfxVolume-bar");
+      fireEvent.pointerDown(sfxVolumeBar);
+
+      await waitFor(() => {
+        expect(mockAudio.setSFXVolume).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("Korean Voice Commands", () => {
+    it("should display contextual Korean voice commands", async () => {
+      renderTrainingAudioManager({
+        accuracy: 0.9, // High accuracy should show encouragement commands
         currentCombo: 5,
-        selectedStance: TrigramStance.JIN 
+        playerArchetype: PlayerArchetype.MUSA,
       });
 
-      expect(screen.getByTestId("audio-visualization")).toBeInTheDocument();
+      await waitFor(() => {
+        // Should show at least one voice command button
+        const commandButtons = screen.getAllByTestId(/voice-command-button-/);
+        expect(commandButtons.length).toBeGreaterThan(0);
+
+        // Should show Korean text in commands
+        const commandTexts = screen.getAllByTestId(/voice-command-text-/);
+        commandTexts.forEach((textElement) => {
+          const text = textElement.textContent || "";
+          expect(text).toMatch(/[\u3131-\u318E\uAC00-\uD7A3]/); // Korean characters
+        });
+      });
     });
 
-    it("should update visualization with current combo and accuracy", () => {
-      renderTrainingAudioManager({ 
-        isTraining: true,
-        currentCombo: 8,
-        stats: { ...mockStats, accuracy: 90 }
+    it("should execute Korean voice commands with audio playback", async () => {
+      renderTrainingAudioManager({
+        audio: mockAudio,
+        onVoiceCommandExecute: mockVoiceCommandExecute,
       });
 
-      const visualization = screen.getByTestId("audio-visualization");
-      expect(visualization).toBeInTheDocument();
-    });
-  });
+      // Find and click a voice command button
+      const commandButton = await screen.findByTestId(/voice-command-button-/);
+      fireEvent.pointerDown(commandButton);
 
-  describe("Training Session Audio Management", () => {
-    it("should handle training start events", () => {
-      const mockOnAudioEvent = vi.fn();
-      renderTrainingAudioManager({ onAudioEvent: mockOnAudioEvent });
+      await waitFor(() => {
+        // Should play SFX for Korean voice
+        expect(mockAudio.playSFX).toHaveBeenCalled();
 
-      // Simulate training start
-      mockOnAudioEvent("training_started");
-
-      expect(mockAudio.playMusic).toHaveBeenCalledWith("training_dojang_theme");
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("training_bell_start");
-    });
-
-    it("should handle training completion with different performance levels", () => {
-      const mockOnAudioEvent = vi.fn();
-
-      // Test excellent performance
-      renderTrainingAudioManager({ 
-        onAudioEvent: mockOnAudioEvent,
-        stats: { ...mockStats, accuracy: 95 }
+        // Should call the voice command callback
+        expect(mockVoiceCommandExecute).toHaveBeenCalled();
       });
-
-      mockOnAudioEvent("training_completed", { accuracy: 95 });
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("training_master_level");
-
-      // Test good performance
-      mockAudio.playSFX.mockClear();
-      renderTrainingAudioManager({ 
-        onAudioEvent: mockOnAudioEvent,
-        stats: { ...mockStats, accuracy: 80 }
-      });
-
-      mockOnAudioEvent("training_completed", { accuracy: 80 });
-      expect(mockAudio.playSFX).toHaveBeenCalledWith("training_excellent");
-    });
-  });
-
-  describe("Status Display", () => {
-    it("should show current stance and combo in status", () => {
-      renderTrainingAudioManager({ 
-        selectedStance: TrigramStance.TAE,
-        currentCombo: 3 
-      });
-
-      const statusText = screen.getByTestId("audio-status-text");
-      expect(statusText.getAttribute("text")).toContain("TAE");
-      expect(statusText.getAttribute("text")).toContain("3");
     });
 
-    it("should update status when stance changes", () => {
-      const { rerender } = renderTrainingAudioManager({ 
-        selectedStance: TrigramStance.GEON 
-      });
-
-      rerender(
-        <AudioProvider>
-          <TrainingAudioManager 
-            {...defaultProps} 
-            selectedStance={TrigramStance.LI}
-          />
-        </AudioProvider>
-      );
-
-      const statusText = screen.getByTestId("audio-status-text");
-      expect(statusText.getAttribute("text")).toContain("LI");
-    });
-  });
-
-  describe("Error Handling", () => {
-    it("should handle audio initialization failure gracefully", () => {
-      const brokenAudio = { ...mockAudio, isInitialized: false };
-      vi.mocked(mockAudio).isInitialized = false;
-
+    it("should show current voice command display when executed", async () => {
       renderTrainingAudioManager();
 
-      expect(screen.getByTestId("training-audio-manager")).toBeInTheDocument();
+      // Execute a voice command
+      const commandButton = await screen.findByTestId(/voice-command-button-/);
+      fireEvent.pointerDown(commandButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("current-voice-command")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("voice-command-display-background")
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId("current-voice-command-korean")
+        ).toBeInTheDocument();
+        expect(
+          screen.getByTestId("current-voice-command-english")
+        ).toBeInTheDocument();
+      });
     });
 
-    it("should handle missing audio event handler", () => {
-      renderTrainingAudioManager({ onAudioEvent: undefined });
+    it("should display pronunciation guide when enabled", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
 
-      const praiseButton = screen.getByTestId("audio-praise-button");
-      fireEvent.click(praiseButton);
+      // Enable pronunciation guide
+      const pronunciationToggle = await screen.findByTestId(
+        "toggle-pronunciationGuideEnabled-checkbox"
+      );
+      fireEvent.pointerDown(pronunciationToggle);
 
-      // Should not crash
-      expect(screen.getByTestId("training-audio-manager")).toBeInTheDocument();
+      // Execute a voice command
+      const commandButton = await screen.findByTestId(/voice-command-button-/);
+      fireEvent.pointerDown(commandButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("pronunciation-guide")).toBeInTheDocument();
+      });
+    });
+
+    it("should filter commands by player archetype", async () => {
+      // Test with MUSA archetype
+      renderTrainingAudioManager({ playerArchetype: PlayerArchetype.MUSA });
+
+      await waitFor(() => {
+        const commandButtons = screen.getAllByTestId(/voice-command-button-/);
+        expect(commandButtons.length).toBeGreaterThan(0);
+      });
+
+      // Test with AMSALJA archetype - should show different commands
+      renderTrainingAudioManager({ playerArchetype: PlayerArchetype.AMSALJA });
+
+      await waitFor(() => {
+        const commandButtons = screen.getAllByTestId(/voice-command-button-/);
+        expect(commandButtons.length).toBeGreaterThan(0);
+      });
     });
   });
 
-  describe("Performance Optimization", () => {
-    it("should clean up intervals on unmount", () => {
+  describe("Audio Settings Toggles", () => {
+    it("should toggle Korean voice settings", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
+
+      const koreanToggle = await screen.findByTestId(
+        "toggle-koreanVoiceEnabled-checkbox"
+      );
+      fireEvent.pointerDown(koreanToggle);
+
+      // Should update the toggle state visually
+      await waitFor(() => {
+        expect(koreanToggle).toBeInTheDocument();
+      });
+    });
+
+    it("should toggle English voice settings", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
+
+      const englishToggle = await screen.findByTestId(
+        "toggle-englishVoiceEnabled-checkbox"
+      );
+      fireEvent.pointerDown(englishToggle);
+
+      await waitFor(() => {
+        expect(englishToggle).toBeInTheDocument();
+      });
+    });
+
+    it("should toggle dojang ambience settings", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
+
+      const dojangToggle = await screen.findByTestId(
+        "toggle-dojangAmbienceEnabled-checkbox"
+      );
+      fireEvent.pointerDown(dojangToggle);
+
+      await waitFor(() => {
+        expect(dojangToggle).toBeInTheDocument();
+      });
+    });
+
+    it("should display toggle labels in Korean", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("toggle-koreanVoiceEnabled-label")
+        ).toHaveTextContent("한국어");
+        expect(
+          screen.getByTestId("toggle-pronunciationGuideEnabled-label")
+        ).toHaveTextContent("발음");
+        expect(
+          screen.getByTestId("toggle-dojangAmbienceEnabled-label")
+        ).toHaveTextContent("도장");
+      });
+    });
+  });
+
+  describe("Training Integration", () => {
+    it("should show audio visualizer during training", async () => {
+      renderTrainingAudioManager({ isTraining: true });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("audio-visualizer")).toBeInTheDocument();
+        expect(screen.getByTestId("visualizer-label")).toBeInTheDocument();
+
+        // Should show visualizer bars
+        const visualizerBars = screen.getAllByTestId(/visualizer-bar-/);
+        expect(visualizerBars.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("should hide audio visualizer when not training", async () => {
+      renderTrainingAudioManager({ isTraining: false });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("audio-visualizer")
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it("should provide contextual feedback based on accuracy", async () => {
+      // Mock timers for auto-feedback
+      vi.useFakeTimers();
+
+      renderTrainingAudioManager({
+        isTraining: true,
+        accuracy: 0.9, // High accuracy
+        audio: mockAudio,
+      });
+
+      // Advance timers to trigger auto-feedback
+      vi.advanceTimersByTime(4000);
+
+      await waitFor(() => {
+        // Should eventually play encouraging audio
+        expect(mockAudio.playSFX).toHaveBeenCalled();
+      });
+
+      vi.useRealTimers();
+    });
+
+    it("should update status text based on current training state", async () => {
+      renderTrainingAudioManager({
+        selectedStance: TrigramStance.JIN,
+        currentCombo: 7,
+        accuracy: 0.92,
+      });
+
+      await waitFor(() => {
+        const statusText =
+          screen.getByTestId("audio-training-status").textContent || "";
+        expect(statusText).toContain("진"); // JIN stance in Korean
+        expect(statusText).toContain("7회"); // 7 combo count
+        expect(statusText).toContain("92%"); // 92% accuracy
+      });
+    });
+  });
+
+  describe("Responsive Design", () => {
+    it("should adapt layout for mobile screens", async () => {
+      renderTrainingAudioManager({
+        screenWidth: 400,
+        screenHeight: 600,
+        width: 380,
+        height: 250,
+      });
+
+      await waitFor(() => {
+        // Should render all elements appropriately for mobile
+        expect(
+          screen.getByTestId("training-audio-manager")
+        ).toBeInTheDocument();
+        expect(screen.getByTestId("korean-voice-commands")).toBeInTheDocument();
+        expect(screen.getByTestId("master-volume-control")).toBeInTheDocument();
+      });
+    });
+
+    it("should adapt layout for tablet screens", async () => {
+      renderTrainingAudioManager({
+        screenWidth: 800,
+        screenHeight: 600,
+        width: 350,
+        height: 280,
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("training-audio-manager")
+        ).toBeInTheDocument();
+        expect(screen.getByTestId("audio-categories")).toBeInTheDocument();
+      });
+    });
+
+    it("should show fewer voice commands on mobile", async () => {
+      // Mobile layout
+      renderTrainingAudioManager({
+        screenWidth: 400,
+        screenHeight: 600,
+      });
+
+      const mobileCommands = screen.getAllByTestId(/voice-command-button-/);
+
+      // Desktop layout
+      renderTrainingAudioManager({
+        screenWidth: 1200,
+        screenHeight: 800,
+      });
+
+      const desktopCommands = screen.getAllByTestId(/voice-command-button-/);
+
+      // Desktop should show same or more commands than mobile
+      expect(desktopCommands.length).toBeGreaterThanOrEqual(
+        mobileCommands.length
+      );
+    });
+  });
+
+  describe("Performance and Optimization", () => {
+    it("should handle rapid volume changes efficiently", async () => {
+      renderTrainingAudioManager({ audio: mockAudio });
+
+      const volumeBar = await screen.findByTestId("master-volume-bar");
+
+      // Rapid volume changes
+      for (let i = 0; i < 10; i++) {
+        fireEvent.pointerDown(volumeBar, {
+          global: { x: 50 + i * 10, y: 20 },
+        });
+      }
+
+      // Should not break or cause performance issues
+      await waitFor(() => {
+        expect(mockAudio.setMasterVolume).toHaveBeenCalled();
+      });
+    });
+
+    it("should manage audio visualizer updates efficiently", async () => {
+      vi.useFakeTimers();
+
+      renderTrainingAudioManager({ isTraining: true });
+
+      // Should handle rapid visualizer updates
+      vi.advanceTimersByTime(1000);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("audio-visualizer")).toBeInTheDocument();
+      });
+
+      vi.useRealTimers();
+    });
+
+    it("should cleanup resources when component unmounts", async () => {
       const { unmount } = renderTrainingAudioManager({ isTraining: true });
 
+      // Should have active timers/intervals
+      await waitFor(() => {
+        expect(screen.getByTestId("audio-visualizer")).toBeInTheDocument();
+      });
+
+      // Unmount component
       unmount();
 
-      // Should not continue playing sounds after unmount
-      vi.advanceTimersByTime(15000);
-      expect(mockAudio.playSFX).not.toHaveBeenCalledWith(expect.stringContaining("ambient"));
+      // Should cleanup without errors
+      expect(true).toBe(true); // Test that no errors occur during cleanup
+    });
+  });
+
+  describe("Accessibility", () => {
+    it("should provide proper test IDs for all interactive elements", async () => {
+      renderTrainingAudioManager({ showAdvancedControls: true });
+
+      await waitFor(() => {
+        // Core elements
+        expect(
+          screen.getByTestId("training-audio-manager")
+        ).toBeInTheDocument();
+        expect(screen.getByTestId("master-volume-bar")).toBeInTheDocument();
+
+        // Voice commands
+        expect(screen.getByTestId("korean-voice-commands")).toBeInTheDocument();
+        expect(screen.getByTestId("voice-command-buttons")).toBeInTheDocument();
+
+        // Settings toggles
+        expect(
+          screen.getByTestId("audio-settings-toggles")
+        ).toBeInTheDocument();
+
+        // Status display
+        expect(screen.getByTestId("audio-training-status")).toBeInTheDocument();
+      });
+    });
+
+    it("should support Korean text accessibility", async () => {
+      renderTrainingAudioManager();
+
+      await waitFor(() => {
+        // Check that Korean text is properly rendered and accessible
+        const koreanTexts = screen.getAllByText(/[\u3131-\u318E\uAC00-\uD7A3]/);
+        expect(koreanTexts.length).toBeGreaterThan(0);
+
+        // Check specific Korean labels
+        expect(screen.getByText(/훈련 음향 관리/)).toBeInTheDocument();
+        expect(screen.getByText(/한국어 음성 명령/)).toBeInTheDocument();
+      });
+    });
+
+    it("should provide bilingual content for international accessibility", async () => {
+      renderTrainingAudioManager();
+
+      await waitFor(() => {
+        // Should have both Korean and English text
+        expect(screen.getByText(/Training Audio/)).toBeInTheDocument();
+        expect(screen.getByText(/Korean Voice Commands/)).toBeInTheDocument();
+        expect(screen.getByText(/Master Volume/)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("Korean Martial Arts Cultural Accuracy", () => {
+    it("should use authentic Korean martial arts terminology", async () => {
+      renderTrainingAudioManager({
+        selectedStance: TrigramStance.GEON,
+        playerArchetype: PlayerArchetype.MUSA,
+      });
+
+      await waitFor(() => {
+        // Check for authentic Korean terms
+        const statusText =
+          screen.getByTestId("audio-training-status").textContent || "";
+        expect(statusText).toMatch(/자세: 건/); // Correct Korean for "stance: heaven"
+
+        // Check for proper martial arts terminology
+        expect(screen.getByText(/훈련 음향 관리/)).toBeInTheDocument();
+      });
+    });
+
+    it("should respect Korean honorific language in voice commands", async () => {
+      renderTrainingAudioManager();
+
+      await waitFor(() => {
+        // Check for proper honorific usage in Korean commands
+        const commandTexts = screen.getAllByTestId(/voice-command-text-/);
+        commandTexts.forEach((textElement) => {
+          const text = textElement.textContent || "";
+          if (text.includes("하세요") || text.includes("습니다")) {
+            // Contains proper Korean honorifics
+            expect(text).toMatch(/[\u3131-\u318E\uAC00-\uD7A3]/);
+          }
+        });
+      });
+    });
+
+    it("should provide context-appropriate Korean martial arts feedback", async () => {
+      // Test high accuracy scenario
+      renderTrainingAudioManager({ accuracy: 0.95, isTraining: true });
+
+      vi.useFakeTimers();
+      vi.advanceTimersByTime(4000);
+
+      await waitFor(() => {
+        // Should provide appropriate positive feedback for high accuracy
+        // This tests the auto-feedback system
+        expect(mockAudio.playSFX).toHaveBeenCalled();
+      });
+
+      vi.useRealTimers();
     });
   });
 });

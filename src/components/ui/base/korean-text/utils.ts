@@ -279,7 +279,6 @@ export function createKoreanText(
   english: string,
   romanized?: string
 ): KoreanText {
-  // Validate Korean text contains actual Korean characters
   const hasKorean = /[\u3131-\u318E\uAC00-\uD7A3]/.test(korean);
 
   if (!hasKorean) {
@@ -293,9 +292,6 @@ export function createKoreanText(
   };
 }
 
-/**
- * **Business Logic:** Formats Korean text for display with cultural sensitivity
- */
 export function formatKoreanText(
   text: KoreanText,
   showBoth: boolean = true,
@@ -307,25 +303,19 @@ export function formatKoreanText(
   return text.korean;
 }
 
-/**
- * **Business Logic:** Converts Korean text size enum to pixel value
- */
 export function sizeToPixelValue(size: KoreanTextSize): number {
   const sizeMap: Record<KoreanTextSize, number> = {
-    tiny: KOREAN_TEXT_CONSTANTS.FONT_SIZES.TINY,
-    small: KOREAN_TEXT_CONSTANTS.FONT_SIZES.SMALL,
-    medium: KOREAN_TEXT_CONSTANTS.FONT_SIZES.MEDIUM,
-    large: KOREAN_TEXT_CONSTANTS.FONT_SIZES.LARGE,
-    xlarge: KOREAN_TEXT_CONSTANTS.FONT_SIZES.XLARGE,
-    huge: KOREAN_TEXT_CONSTANTS.FONT_SIZES.HUGE,
+    tiny: 10,
+    small: 12,
+    medium: 16,
+    large: 20,
+    xlarge: 24,
+    huge: 32,
   };
 
-  return sizeMap[size] || KOREAN_TEXT_CONSTANTS.FONT_SIZES.MEDIUM;
+  return sizeMap[size] || 16;
 }
 
-/**
- * **Business Logic:** Converts Korean text weight enum to CSS font weight
- */
 export function weightToFontWeight(weight: KoreanTextWeight): string {
   const weightMap: Record<KoreanTextWeight, string> = {
     light: "300",
@@ -339,101 +329,9 @@ export function weightToFontWeight(weight: KoreanTextWeight): string {
   return weightMap[weight] || "400";
 }
 
-/**
- * **Business Logic:** Validates Korean text for cultural appropriateness
- */
-export function validateKoreanText(text: string): {
-  isValid: boolean;
-  hasKorean: boolean;
-  warnings: string[];
-} {
-  const warnings: string[] = [];
-  const hasKorean = /[\u3131-\u318E\uAC00-\uD7A3]/.test(text);
-
-  if (!hasKorean) {
-    warnings.push("Text does not contain Korean characters");
-  }
-
-  // Check for potentially inappropriate romanizations
-  const suspiciousPatterns = [
-    /\b(ninja|samurai|sensei)\b/i, // Japanese terms
-    /\b(kung fu|chi)\b/i, // Chinese terms
-  ];
-
-  suspiciousPatterns.forEach((pattern) => {
-    if (pattern.test(text)) {
-      warnings.push("Text may contain non-Korean martial arts terminology");
-    }
-  });
-
-  return {
-    isValid: warnings.length === 0 && hasKorean,
-    hasKorean,
-    warnings,
-  };
-}
-
-/**
- * **Business Logic:** Calculates optimal line height for Korean text display
- */
-export function calculateKoreanLineHeight(fontSize: number): number {
-  return Math.ceil(fontSize * KOREAN_TEXT_CONSTANTS.LAYOUT.LINE_HEIGHT_RATIO);
-}
-
-/**
- * **Business Logic:** Wraps Korean text to fit within specified width
- */
-export function wrapKoreanText(
-  text: string,
-  maxWidth: number,
-  fontSize: number
-): string[] {
-  // Simplified Korean text wrapping - can be enhanced with proper Korean word boundaries
-  const avgCharWidth = fontSize * 0.6; // Approximate Korean character width
-  const charsPerLine = Math.floor(maxWidth / avgCharWidth);
-
-  const lines: string[] = [];
-  let currentLine = "";
-
-  for (const char of text) {
-    if (currentLine.length >= charsPerLine) {
-      lines.push(currentLine);
-      currentLine = char;
-    } else {
-      currentLine += char;
-    }
-  }
-
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-
-  return lines;
-}
-
-/**
- * **Business Logic:** Gets appropriate Korean font family based on context
- */
-export function getKoreanFontFamily(
-  context: "display" | "body" | "mono" = "body"
-): string {
-  switch (context) {
-    case "display":
-      return KOREAN_TEXT_CONSTANTS.FONT_FAMILIES.DISPLAY;
-    case "mono":
-      return KOREAN_TEXT_CONSTANTS.FONT_FAMILIES.MONO;
-    default:
-      return KOREAN_TEXT_CONSTANTS.FONT_FAMILIES.PRIMARY;
-  }
-}
-
 export default {
   createKoreanText,
   formatKoreanText,
   sizeToPixelValue,
   weightToFontWeight,
-  validateKoreanText,
-  calculateKoreanLineHeight,
-  wrapKoreanText,
-  getKoreanFontFamily,
 };

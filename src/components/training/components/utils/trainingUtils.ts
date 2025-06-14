@@ -1,16 +1,16 @@
 /**
  * ## Training Utility Functions
- * 
+ *
  * **Business Purpose:**
  * Provides utility functions for Korean martial arts training calculations,
  * validation, and data processing. Ensures consistent training mechanics
  * across all training components.
- * 
+ *
  * **Korean Martial Arts Integration:**
  * - Implements authentic Korean martial arts scoring methodology
  * - Provides traditional Korean assessment terminology
  * - Maintains cultural accuracy in training calculations
- * 
+ *
  * @module TrainingUtils
  * @since 0.2.5
  * @author Black Trigram Development Team
@@ -22,7 +22,7 @@ import type { TrainingStatistics } from "../types/training";
 /**
  * **Business Logic:** Calculates training difficulty multiplier based on
  * traditional Korean martial arts progression principles
- * 
+ *
  * @param stance - Current trigram stance
  * @param playerLevel - Player's experience level
  * @returns Difficulty multiplier (0.5 - 2.0)
@@ -34,7 +34,7 @@ export const calculateDifficultyMultiplier = (
   const stanceDifficulty = {
     [TrigramStance.GEON]: 1.0, // Heaven - Balanced
     [TrigramStance.TAE]: 1.1, // Lake - Slightly complex
-    [TrigramStance.LI]: 1.3,  // Fire - Precise timing
+    [TrigramStance.LI]: 1.3, // Fire - Precise timing
     [TrigramStance.JIN]: 1.2, // Thunder - Quick execution
     [TrigramStance.SON]: 1.4, // Wind - Continuous flow
     [TrigramStance.GAM]: 1.5, // Water - Advanced technique
@@ -44,14 +44,14 @@ export const calculateDifficultyMultiplier = (
 
   const baseDifficulty = stanceDifficulty[stance];
   const levelAdjustment = Math.max(0.5, Math.min(2.0, playerLevel / 10));
-  
+
   return baseDifficulty * levelAdjustment;
 };
 
 /**
  * **Business Logic:** Generates Korean martial arts assessment based on
  * traditional Korean grading standards
- * 
+ *
  * @param accuracy - Training accuracy percentage (0-100)
  * @returns Korean assessment object with grade and description
  */
@@ -61,35 +61,35 @@ export const getKoreanAssessment = (accuracy: number) => {
       grade: "우수",
       english: "Excellent",
       description: "완벽한 실력! 고수의 경지입니다.",
-      color: "gold"
+      color: "gold",
     };
   } else if (accuracy >= 85) {
     return {
       grade: "양호",
-      english: "Good", 
+      english: "Good",
       description: "훌륭한 실력! 거의 완성 단계입니다.",
-      color: "green"
+      color: "green",
     };
   } else if (accuracy >= 70) {
     return {
       grade: "보통",
       english: "Average",
       description: "좋은 실력! 꾸준히 발전하고 있습니다.",
-      color: "cyan"
+      color: "cyan",
     };
   } else if (accuracy >= 50) {
     return {
       grade: "미흡",
       english: "Below Average",
       description: "괜찮은 실력! 더 많은 연습이 필요합니다.",
-      color: "yellow"
+      color: "yellow",
     };
   } else {
     return {
       grade: "부족",
       english: "Poor",
       description: "기본기부터 다시 시작하세요.",
-      color: "red"
+      color: "red",
     };
   }
 };
@@ -97,7 +97,7 @@ export const getKoreanAssessment = (accuracy: number) => {
 /**
  * **Business Logic:** Calculates experience points gained from training
  * using traditional Korean martial arts progression principles
- * 
+ *
  * @param stats - Current training statistics
  * @param archetype - Player's martial arts archetype
  * @param difficulty - Training difficulty multiplier
@@ -111,7 +111,7 @@ export const calculateExperienceGain = (
   const baseExp = stats.hits * 10;
   const accuracyBonus = (stats.accuracy / 100) * 20;
   const perfectBonus = stats.perfectStrikes * 5;
-  
+
   // Archetype-specific bonuses
   const archetypeMultiplier = {
     [PlayerArchetype.MUSA]: 1.0,
@@ -122,16 +122,14 @@ export const calculateExperienceGain = (
   }[archetype];
 
   return Math.round(
-    (baseExp + accuracyBonus + perfectBonus) * 
-    difficulty * 
-    archetypeMultiplier
+    (baseExp + accuracyBonus + perfectBonus) * difficulty * archetypeMultiplier
   );
 };
 
 /**
  * **Business Logic:** Validates if a training mode is accessible
  * based on Korean martial arts progression requirements
- * 
+ *
  * @param playerLevel - Current player level
  * @param requiredLevel - Required level for training mode
  * @param archetype - Player's archetype
@@ -151,19 +149,19 @@ export const canAccessTrainingMode = (
     [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1, // Harder path
   }[archetype];
 
-  return playerLevel >= (requiredLevel + specialAccess);
+  return playerLevel >= requiredLevel + specialAccess;
 };
 
 /**
  * **Business Logic:** Formats training time in Korean style
- * 
+ *
  * @param seconds - Time in seconds
  * @returns Formatted Korean time string
  */
 export const formatTrainingTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  
+
   if (minutes > 0) {
     return `${minutes}분 ${remainingSeconds}초`;
   }
@@ -173,7 +171,7 @@ export const formatTrainingTime = (seconds: number): string => {
 /**
  * **Business Logic:** Calculates combo multiplier based on
  * traditional Korean martial arts flow principles
- * 
+ *
  * @param comboCount - Current combo count
  * @returns Damage/score multiplier
  */
@@ -188,7 +186,7 @@ export const calculateComboMultiplier = (comboCount: number): number => {
 /**
  * **Business Logic:** Determines training feedback message
  * based on Korean martial arts teaching methodology
- * 
+ *
  * @param performance - Performance metrics
  * @returns Korean feedback message with type
  */
@@ -198,38 +196,38 @@ export const getTrainingFeedback = (performance: {
   recentTrend: "improving" | "stable" | "declining";
 }): { message: string; type: "success" | "warning" | "info" | "error" } => {
   const { accuracy, combo, recentTrend } = performance;
-  
+
   if (accuracy >= 90 && combo >= 5) {
     return {
       message: "완벽한 흐름! 진정한 무사의 경지입니다!",
-      type: "success"
+      type: "success",
     };
   }
-  
+
   if (recentTrend === "improving") {
     return {
       message: "실력이 향상되고 있습니다! 이 기세를 유지하세요!",
-      type: "success"
+      type: "success",
     };
   }
-  
+
   if (recentTrend === "declining") {
     return {
       message: "집중력이 흐트러지고 있습니다. 마음을 가다듬으세요.",
-      type: "warning"
+      type: "warning",
     };
   }
-  
+
   if (accuracy < 50) {
     return {
       message: "기본기부터 차근차근 다시 시작하세요.",
-      type: "error"
+      type: "error",
     };
   }
-  
+
   return {
     message: "꾸준히 연습하세요. 무예는 하루아침에 완성되지 않습니다.",
-    type: "info"
+    type: "info",
   };
 };
 
@@ -241,13 +239,13 @@ export default {
   formatTrainingTime,
   calculateComboMultiplier,
   getTrainingFeedback,
+  calculateTechniqueAccuracy,
+  getStanceMastery,
+  validateTrainingMode,
+  formatSessionTime,
+  getKoreanGrade,
+  calculateProgressPercentage,
 };
-  return Math.floor(baseStanceDamage * accuracyMultiplier * playerMultiplier);
-}
-
-/**
- * Get base damage for each trigram stance
- */
 export function getStanceBaseDamage(stance: TrigramStance): number {
   const stanceDamageMap: Record<TrigramStance, number> = {
     [TrigramStance.GEON]: 25, // Heaven - Strong direct strikes

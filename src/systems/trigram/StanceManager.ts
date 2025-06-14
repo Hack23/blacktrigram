@@ -11,149 +11,165 @@
 
 import { TrigramStance, PlayerArchetype } from "../../types/enums";
 import type { PlayerState } from "../../types/player";
-import { TransitionCalculator } from "./TransitionCalculator";
+
+export interface StanceTransitionRule {
+  fromStance: TrigramStance;
+  toStance: TrigramStance;
+  kiCost: number;
+  staminaCost: number;
+  transitionTime: number;
+  difficulty: number;
+}
 
 export interface StanceChangeResult {
-  readonly success: boolean;
-  readonly updatedPlayer: PlayerState;
-  readonly cost: {
-    readonly ki: number;
-    readonly stamina: number;
-    readonly time: number;
-  };
-  readonly message: string;
+  success: boolean;
+  newStance: TrigramStance;
+  kiCost: number;
+  staminaCost: number;
+  message?: string;
+  player: PlayerState;
 }
 
 export class StanceManager {
   private currentStance: TrigramStance = TrigramStance.GEON;
-  private transitionCalculator: TransitionCalculator;
+  private transitionRules: Map<string, StanceTransitionRule> = new Map();
 
   constructor() {
-    this.transitionCalculator = new TransitionCalculator();
+    this.initializeTransitionRules();
+  }
+
+  private initializeTransitionRules(): void {
+    const stances = Object.values(TrigramStance);
+    
+    stances.forEach(fromStance => {
+      stances.forEach(toStance => {
+        if (fromStance !== toStance) {
+          const rule: StanceTransitionRule = {
+            fromStance,
+            toStance,
+            kiCost: 10,
+            staminaCost: 5,
+            transitionTime: 500,
+            difficulty: 1,
+          };
+          
+          const key = `${fromStance}_to_${toStance}`;
+          this.transitionRules.set(key, rule);
+        }
+      });
+    });
   }
 
   /**
-   * **Business Logic:** Changes player stance with Korean martial arts validation
+   * Changes player stance with Korean martial arts validation
+   * 
+   * @param player - Current player state with resources and stance
+   * @param newStance - Target trigram stance to transition to
+   * @returns Result indicating success/failure and updated player state
    */
-  changeStance(
-    player: PlayerState,
-    targetStance: TrigramStance
-  ): StanceChangeResult {
-    // Same stance check
-    if (player.currentStance === targetStance) {
+  changeStance(player: PlayerState, newStance: TrigramStance): StanceChangeResult {
+    if (this.currentStance === newStance) {
       return {
-        success: true,
-        updatedPlayer: player,
-        cost: { ki: 0, stamina: 0, time: 0 },
+        success: false,
+        newStance: this.currentStance,
+        kiCost: 0,
+        staminaCost: 0,
         message: "이미 해당 자세입니다",
+        player,
       };
     }
 
-    // Calculate transition cost
-    const cost = this.transitionCalculator.calculateTransitionCost(
-      player,
-      targetStance
-    );
+    const rule = this.getTransitionRule(this.currentStance, newStance);
+    if (!rule) {
+      return {
+        success: false,
+        newStance: this.currentStance,
+        kiCost: 0,
+        staminaCost: 0,
+        message: "유효하지 않은 자세 전환입니다",
+        player,
+      };
+    }
 
-    // Check if player has sufficient resources
+    const cost = this.calculateStanceCost(player, rule);
     if (player.ki < cost.ki || player.stamina < cost.stamina) {
       return {
         success: false,
-        updatedPlayer: player,
-        cost,
-        message: `자원 부족 - 기력: ${cost.ki}, 체력: ${cost.stamina}`,
-      };
-    }
-
-    // Check cooldown
-    const timeSinceLastChange = Date.now() - player.lastStanceChangeTime;
-    if (timeSinceLastChange < 300) {
-      // 300ms cooldown
-      return {
-        success: false,
-        updatedPlayer: player,
-        cost,
-        message: "자세 변경 대기 중",
+        newStance: this.currentStance,
+        kiCost: cost.ki,
+        staminaCost: cost.stamina,
+        message: "기력이나 체력이 부족합니다",
+        player,
       };
     }
 
     // Apply stance change
     const updatedPlayer: PlayerState = {
       ...player,
-      currentStance: targetStance,
-      ki: player.ki - cost.ki,
-      stamina: player.stamina - cost.stamina,
+      currentStance: newStance,
+      ki: Math.max(0, player.ki - cost.ki),
+      stamina: Math.max(0, player.stamina - cost.stamina),
       lastStanceChangeTime: Date.now(),
     };
 
-    this.currentStance = targetStance;
+    this.currentStance = newStance;
 
+    const stanceData = TRIGRAM_STANCES_DATA[newStance];
     return {
       success: true,
       updatedPlayer,
       cost,
-      message: `${targetStance} 자세로 변경 완료`,
+      message: `${stanceData.korean} 자세로 전환`,
     };
   }
 
   /**
-   * **Business Logic:** Gets stance mastery bonus for archetype
+   * **Business Logic:** Gets transition rules between stances
+   * 
+   * @param fromStance - Current stance
+   * @param toStance - Target stance
+   * @returns Transition rule or null if invalid
+   * @internal
    */
-  getStanceMastery(archetype: PlayerArchetype, stance: TrigramStance): number {
-    const masteryMap = {
-      [PlayerArchetype.MUSA]: {
-        [TrigramStance.GEON]: 1.3, // Heaven mastery
-        [TrigramStance.GAN]: 1.2, // Mountain stability
-      },
-      [PlayerArchetype.AMSALJA]: {
-        [TrigramStance.SON]: 1.4, // Wind stealth
-        [TrigramStance.GAM]: 1.2, // Water adaptation
-      },
-      [PlayerArchetype.HACKER]: {
-        [TrigramStance.LI]: 1.4, // Fire precision
-        [TrigramStance.JIN]: 1.1, // Thunder speed
-      },
-      [PlayerArchetype.JEONGBO_YOWON]: {
-        [TrigramStance.GAM]: 1.3, // Water observation
-        [TrigramStance.TAE]: 1.2, // Lake communication
-      },
-      [PlayerArchetype.JOJIK_POKRYEOKBAE]: {
-        [TrigramStance.JIN]: 1.3, // Thunder aggression
-        [TrigramStance.GON]: 1.2, // Earth grounding
-      },
+  private getTransitionRule(
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ): StanceTransitionRule | null {
+    const key = `${fromStance}_to_${toStance}`;
+    return this.transitionRules.get(key) || null;
+  }
+
+  /**
+   * **Business Logic:** Calculates resource cost for stance transition
+   * 
+   * @param player - Current player state
+   * @param rule - Transition rule to apply
+   * @returns Resource costs for the transition
+   * @internal
+   */
+  private calculateStanceCost(
+    player: PlayerState,
+    rule: StanceTransitionRule
+  ): {
+    ki: number;
+    stamina: number;
+    timeMilliseconds: number;
+  } {
+    const baseCost = {
+      ki: rule.kiCost,
+      stamina: rule.staminaCost,
+      timeMilliseconds: rule.transitionTime,
     };
 
-    return masteryMap[archetype]?.[stance] || 1.0;
-  }
+    // Apply player condition modifiers
+    const healthPercent = player.health / player.maxHealth;
+    const conditionMultiplier = 0.5 + (healthPercent * 0.5); // 0.5x to 1.0x
 
-  /**
-   * **Business Logic:** Gets available stances for player
-   */
-  getAvailableStances(player: PlayerState): TrigramStance[] {
-    const allStances = Object.values(TrigramStance);
-
-    return allStances.filter((stance) => {
-      if (stance === player.currentStance) return false;
-
-      const cost = this.transitionCalculator.calculateTransitionCost(player, stance);
-      const hasResources = player.ki >= cost.ki && player.stamina >= cost.stamina;
-      const cooldownReady = Date.now() - player.lastStanceChangeTime >= 300;
-
-      return hasResources && cooldownReady;
-    });
-  }
-
-  /**
-   * **Business Logic:** Checks if stance change is possible
-   */
-  canChangeStance(player: PlayerState, targetStance: TrigramStance): boolean {
-    if (player.currentStance === targetStance) return true;
-
-    const cost = this.transitionCalculator.calculateTransitionCost(player, targetStance);
-    const hasResources = player.ki >= cost.ki && player.stamina >= cost.stamina;
-    const cooldownReady = Date.now() - player.lastStanceChangeTime >= 300;
-
-    return hasResources && cooldownReady && !player.isStunned;
+    return {
+      ki: Math.round(baseCost.ki / conditionMultiplier),
+      stamina: Math.round(baseCost.stamina / conditionMultiplier),
+      timeMilliseconds: Math.round(baseCost.timeMilliseconds / conditionMultiplier),
+    };
   }
 
   /**
@@ -164,183 +180,167 @@ export class StanceManager {
   }
 
   /**
-   * **Business Logic:** Resets stance manager
+   * **Business Logic:** Resets stance manager to initial state
    */
-  reset(initialStance: TrigramStance = TrigramStance.GEON): void {
-    this.currentStance = initialStance;
+  reset(stance: TrigramStance = TrigramStance.GEON): void {
+    this.currentStance = stance;
+  }
+
+  /**
+   * **Business Logic:** Gets required level for a stance
+   */
+  private getStanceRequiredLevel(stance: TrigramStance): number {
+    const levelMap: Record<TrigramStance, number> = {
+      [TrigramStance.GEON]: 0,
+      [TrigramStance.TAE]: 1,
+      [TrigramStance.LI]: 2,
+      [TrigramStance.JIN]: 3,
+      [TrigramStance.SON]: 4,
+      [TrigramStance.GAM]: 5,
+      [TrigramStance.GAN]: 6,
+      [TrigramStance.GON]: 7,
+    };
+
+    return levelMap[stance] || 0;
+  }
+
+  /**
+   * **Business Logic:** Validates if player can change to a specific stance
+   */
+  canChangeStance(player: PlayerState, newStance: TrigramStance): boolean {
+    if (this.currentStance === newStance) {
+      return false;
+    }
+
+    const rule = this.getTransitionRule(this.currentStance, newStance);
+    if (!rule) {
+      return false;
+    }
+
+    const cost = this.calculateStanceCost(player, rule);
+    return player.ki >= cost.ki && player.stamina >= cost.stamina;
+  }
+
+  /**
+   * **Business Logic:** Gets available stances based on player progression
+   */
+  getAvailableStances(player: PlayerState): TrigramStance[] {
+    const playerLevel = Math.floor((player.experiencePoints || 0) / 100);
+    const availableStances: TrigramStance[] = [];
+
+    Object.values(TrigramStance).forEach((stance) => {
+      const requiredLevel = this.getStanceRequiredLevel(stance);
+      if (playerLevel >= requiredLevel) {
+        availableStances.push(stance);
+      }
+    });
+
+    return availableStances;
+  }
+
+  /**
+   * **Business Logic:** Calculates stance mastery for archetype combinations
+   */
+  getStanceMastery(archetype: PlayerArchetype, stance: TrigramStance): number {
+    const masteryMap: Record<PlayerArchetype, Partial<Record<TrigramStance, number>>> = {
+      [PlayerArchetype.MUSA]: {
+        [TrigramStance.GEON]: 1.3,
+        [TrigramStance.GAN]: 1.2,
+      },
+      [PlayerArchetype.AMSALJA]: {
+        [TrigramStance.SON]: 1.4,
+        [TrigramStance.GAM]: 1.2,
+      },
+      [PlayerArchetype.HACKER]: {
+        [TrigramStance.LI]: 1.3,
+        [TrigramStance.JIN]: 1.1,
+      },
+      [PlayerArchetype.JEONGBO_YOWON]: {
+        [TrigramStance.TAE]: 1.2,
+        [TrigramStance.GAM]: 1.3,
+      },
+      [PlayerArchetype.JOJIK_POKRYEOKBAE]: {
+        [TrigramStance.JIN]: 1.3,
+        [TrigramStance.GON]: 1.2,
+      },
+    };
+
+    return masteryMap[archetype]?.[stance] || 1.0;
   }
 }
 
 export default StanceManager;
-    toStance: TrigramStance.GAM,
-    difficulty: "medium",
-    kiCost: 8,
-    staminaCost: 5,
-    minCooldown: 750,
-  },
-  {
-    fromStance: TrigramStance.SON,
-    toStance: TrigramStance.GEON,
-    difficulty: "hard",
-    kiCost: 15,
-    staminaCost: 10,
-    minCooldown: 1500,
-  },
+    };
 
-  // Water (감) transitions
-  {
-    fromStance: TrigramStance.GAM,
-    toStance: TrigramStance.SON,
-    difficulty: "easy",
-    kiCost: 5,
-    staminaCost: 3,
-    minCooldown: 500,
-  },
-  {
-    fromStance: TrigramStance.GAM,
-    toStance: TrigramStance.GAN,
-    difficulty: "medium",
-    kiCost: 8,
-    staminaCost: 5,
-    minCooldown: 750,
-  },
-  {
-    fromStance: TrigramStance.GAM,
-    toStance: TrigramStance.LI,
-    difficulty: "hard",
-    kiCost: 15,
-    staminaCost: 10,
-    minCooldown: 1500,
-  },
-
-  // Mountain (간) transitions
-  {
-    fromStance: TrigramStance.GAN,
-    toStance: TrigramStance.GAM,
-    difficulty: "easy",
-    kiCost: 5,
-    staminaCost: 3,
-    minCooldown: 500,
-  },
-  {
-    fromStance: TrigramStance.GAN,
-    toStance: TrigramStance.GON,
-    difficulty: "medium",
-    kiCost: 8,
-    staminaCost: 5,
-    minCooldown: 750,
-  },
-  {
-    fromStance: TrigramStance.GAN,
-    toStance: TrigramStance.TAE,
-    difficulty: "hard",
-    kiCost: 15,
-    staminaCost: 10,
-    minCooldown: 1500,
-  },
-
-  // Earth (곤) transitions
-  {
-    fromStance: TrigramStance.GON,
-    toStance: TrigramStance.GAN,
-    difficulty: "easy",
-    kiCost: 5,
-    staminaCost: 3,
-    minCooldown: 500,
-  },
-  {
-    fromStance: TrigramStance.GON,
-    toStance: TrigramStance.TAE,
-    difficulty: "medium",
-    kiCost: 8,
-    staminaCost: 5,
-    minCooldown: 750,
-  },
-  {
-    fromStance: TrigramStance.GON,
-    toStance: TrigramStance.GEON,
-    difficulty: "hard",
-    kiCost: 15,
-    staminaCost: 10,
-    minCooldown: 1500,
-  },
-];
-
-export class StanceManager {
-  private currentStance: TrigramStance;
-
-  constructor(initialStance: TrigramStance = TrigramStance.GEON) {
-    this.currentStance = initialStance;
+    // Apply player condition modifiers
+    const healthPercent = player.health / player.maxHealth;
+    const conditionMultiplier = 0.5 +
+   * @param fromStance - Current stance
+   * @param toStance - Target stance
+   * @returns Transition rule or null if invalid
+   * @internal
+   */
+  private getTransitionRule(
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ): StanceTransitionRule | null {
+    const ruleKey = `${fromStance}_to_${toStance}`;
+    return this.transitionRules.get(ruleKey) || null;
   }
 
   /**
-   * **Business Logic:** Attempts to change player's stance following Korean martial arts principles
-   *
-   * **Korean Martial Arts Integration:**
-   * - Validates transitions using traditional trigram relationships
-   * - Applies archetype-specific bonuses and restrictions
-   * - Respects ki and stamina resource management
-   * - Enforces cooldown periods for realistic combat flow
-   *
-   * @param player - Current player state with resources and stance
-   * @param newStance - Target trigram stance to transition to
-   * @returns Result indicating success/failure and updated player state
+   * **Business Logic:** Calculates resource cost for stance transition
+   * 
+   * @param player - Current player state
+   * @param rule - Transition rule to apply
+   * @returns Resource costs for the transition
+   * @internal
    */
-  changeStance(
+  private calculateStanceCost(
     player: PlayerState,
-    newStance: TrigramStance
-  ): StanceChangeResult {
-    // Same stance - no change needed but update timestamp
-    if (player.currentStance === newStance) {
-      return {
-        success: true,
-        updatedPlayer: {
-          ...player,
-          lastStanceChangeTime: Date.now(),
-        },
-        cost: { ki: 0, stamina: 0, timeMilliseconds: 0 },
-        message: "이미 해당 자세입니다",
-      };
-    }
+    rule: StanceTransitionRule
+  ): {
+    ki: number;
+    stamina: number;
+    timeMilliseconds: number;
+  } {
+    const baseCost = {
+      ki: rule.kiCost,
+      stamina: rule.staminaCost,
+      timeMilliseconds: rule.transitionTime,
+    };
 
-    // Find transition rule
-    const transitionRule = this.getTransitionRule(
-      player.currentStance,
-      newStance
-    );
-    if (!transitionRule) {
-      return {
-        success: false,
-        updatedPlayer: player,
-        cost: { ki: 0, stamina: 0, timeMilliseconds: 0 },
-        message: "불가능한 자세 전환입니다",
-      };
-    }
+    // Apply player condition modifiers
+    const healthPercent = player.health / player.maxHealth;
+    const conditionMultiplier = 0.5 + (healthPercent * 0.5); // 0.5x to 1.0x
 
-    // Calculate actual costs with archetype modifiers
-    const cost = this.calculateStanceCost(player, transitionRule);
+    return {
+      ki: Math.round(baseCost.ki / conditionMultiplier),
+      stamina: Math.round(baseCost.stamina / conditionMultiplier),
+      timeMilliseconds: Math.round(baseCost.timeMilliseconds / conditionMultiplier),
+    };
+  }
 
-    // Check cooldown
-    const timeSinceLastChange = Date.now() - player.lastStanceChangeTime;
-    if (timeSinceLastChange < transitionRule.minCooldown) {
-      return {
-        success: false,
-        updatedPlayer: player,
-        cost,
-        message: `자세 변경 대기시간: ${
-          Math.ceil((transitionRule.minCooldown - timeSinceLastChange) / 100) /
-          10
-        }초`,
-      };
-    }
+  /**
+   * **Business Logic:** Gets current stance
+   * 
+   * @returns Current trigram stance
+   */
+  getCurrentStance(): TrigramStance {
+    return this.currentStance;
+  }
 
-    // Check resource requirements
-    if (player.ki < cost.ki || player.stamina < cost.stamina) {
-      return {
-        success: false,
-        updatedPlayer: player,
-        cost,
-        message: player.ki < cost.ki ? "기력 부족" : "체력 부족",
+  /**
+   * **Business Logic:** Resets stance manager to initial state
+   * 
+   * @param stance - Initial stance to set (defaults to Heaven)
+   */
+  reset(stance: TrigramStance = TrigramStance.GEON): void {
+    this.currentStance = stance;
+  }
+}
+
+export default StanceManager;
       };
     }
 

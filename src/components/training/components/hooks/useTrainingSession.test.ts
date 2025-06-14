@@ -1,7 +1,9 @@
 import { renderHook, act } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useTrainingSession } from "./useTrainingSession";
-import { TrigramStance, PlayerArchetype } from "../../../../types/enums";
+import { PlayerArchetype, TrigramStance } from "../../../../types/enums";
+import type { PlayerState } from "../../../../types/player";
+import { TRAINING_MODES } from "../constants/trainingModes";
 
 /**
  * ## Training Session Hook Test Suite
@@ -14,30 +16,36 @@ import { TrigramStance, PlayerArchetype } from "../../../../types/enums";
  * @author Black Trigram Development Team
  */
 describe("useTrainingSession", () => {
-  const mockAudio = {
-    playSFX: vi.fn(),
-    playMusic: vi.fn(),
-    isInitialized: true,
-  };
-
-  const mockPlayer = {
-    id: "test-player",
-    name: { korean: "테스트", english: "Test" },
-    archetype: PlayerArchetype.MUSA,
-    health: 100,
-    maxHealth: 100,
-    ki: 100,
-    maxKi: 100,
-    stamina: 100,
-    maxStamina: 100,
-    currentStance: TrigramStance.GEON,
-    technique: 75,
-    experiencePoints: 0,
-    // ...other required properties
-  };
+  let mockPlayer: PlayerState;
+  let mockOnPlayerUpdate: ReturnType<typeof vi.fn>;
+  let mockAudio: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    mockAudio = {
+      playSFX: vi.fn(),
+      playMusic: vi.fn(),
+      isInitialized: true,
+    };
+
+    mockPlayer = {
+      id: "test-player",
+      name: { korean: "테스트 무사", english: "Test Warrior" },
+      archetype: PlayerArchetype.MUSA,
+      currentStance: TrigramStance.GEON,
+      health: 100,
+      maxHealth: 100,
+      ki: 100,
+      maxKi: 100,
+      stamina: 100,
+      maxStamina: 100,
+      technique: 75,
+      experiencePoints: 0,
+      // ...other required properties
+    };
+
+    mockOnPlayerUpdate = vi.fn();
   });
 
   it("should initialize with correct default values", () => {
@@ -94,7 +102,6 @@ describe("useTrainingSession", () => {
   });
 
   it("should execute techniques and update statistics", () => {
-    const mockOnPlayerUpdate = vi.fn();
     const { result } = renderHook(() =>
       useTrainingSession({
         mode: "basics",
@@ -144,5 +151,63 @@ describe("useTrainingSession", () => {
         experiencePoints: expect.any(Number),
       })
     );
+  });
+
+  describe("Korean Martial Arts Training Integration", () => {
+    it("should handle authentic Korean training progression", () => {
+      const { result } = renderHook(() =>
+        useTrainingSession({
+          mode: "basics",
+          modeData: TRAINING_MODES[0],
+          player: mockPlayer,
+          onPlayerUpdate: mockOnPlayerUpdate,
+          audio: mockAudio,
+        })
+      );
+
+      act(() => {
+        result.current.startTraining();
+      });
+
+      expect(result.current.isTraining).toBe(true);
+      expect(result.current.stats.sessionTime).toBeGreaterThanOrEqual(0);
+    });
+
+    it("should calculate Korean martial arts experience correctly", () => {
+      const { result } = renderHook(() =>
+        useTrainingSession({
+          mode: "basics",
+          modeData: TRAINING_MODES[0],
+          player: mockPlayer,
+          onPlayerUpdate: mockOnPlayerUpdate,
+          audio: mockAudio,
+        })
+      );
+
+      act(() => {
+        result.current.startTraining();
+        result.current.executeTrainingTechnique({
+          stance: TrigramStance.GEON,
+          dummy: {
+            health: 100,
+            maxHealth: 100,
+            position: { x: 0, y: 0 },
+            isActive: true,
+            lastHitTime: 0,
+            hitCount: 0,
+            isStunned: false,
+            defensiveMode: false,
+          },
+          currentCombo: 1,
+          lastTechniqueTime: 0,
+        });
+      });
+
+      expect(mockOnPlayerUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          experiencePoints: expect.any(Number),
+        })
+      );
+    });
   });
 });

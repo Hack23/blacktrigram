@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { VitalPointSystem } from "./VitalPointSystem";
-import type { Position } from "../types/common";
+import { HitDetection } from "./vitalpoint/HitDetection";
+import { KOREAN_VITAL_POINTS } from "./vitalpoint/KoreanVitalPoints";
+import { VitalPointSeverity } from "../types/enums";
+import type { PlayerState } from "../types/player";
 
 /**
  * ## Vital Point System Test Suite
@@ -14,41 +17,58 @@ import type { Position } from "../types/common";
  */
 describe("VitalPointSystem", () => {
   let vitalPointSystem: VitalPointSystem;
+  let mockPlayer: PlayerState;
 
   beforeEach(() => {
     vitalPointSystem = new VitalPointSystem();
+    mockPlayer = {
+      id: "test-player",
+      name: { korean: "테스트", english: "Test" },
+      // ...existing code...
+      vitalPoints: KOREAN_VITAL_POINTS.slice(0, 3),
+    };
   });
 
-  it("should initialize with Korean anatomical vital points", () => {
-    const vitalPoints = vitalPointSystem.getAllVitalPoints();
-    expect(vitalPoints.length).toBeGreaterThan(50); // Should have 70 vital points
+  describe("Vital Point Hit Detection", () => {
+    it("should detect hits on Korean vital points accurately", () => {
+      const hitResult = vitalPointSystem.processHit(
+        mockPlayer,
+        { x: 0, y: -50 }, // Crown point position
+        30 // Required force
+      );
 
-    // Check for traditional Korean vital points
-    const headPoint = vitalPoints.find((point) => point.koreanName === "백회");
-    expect(headPoint).toBeDefined();
+      expect(hitResult.hit).toBe(true);
+      expect(hitResult.vitalPoint?.korean.korean).toBe("백회혈");
+      expect(hitResult.severity).toBe(VitalPointSeverity.CRITICAL);
+    });
+
+    it("should handle Korean anatomy correctly", () => {
+      const vitalPoint = KOREAN_VITAL_POINTS[0]; // 백회혈
+      expect(vitalPoint.korean.korean).toBe("백회혈");
+      expect(vitalPoint.korean.english).toBe("Crown Point");
+      expect(vitalPoint.severity).toBe(VitalPointSeverity.CRITICAL);
+    });
+
+    it("should calculate damage based on Korean martial arts principles", () => {
+      const hitResult = vitalPointSystem.processHit(
+        mockPlayer,
+        { x: -30, y: 70 }, // 인영 position
+        20
+      );
+
+      expect(hitResult.damage).toBeGreaterThan(0);
+      expect(hitResult.effects).toBeDefined();
+    });
   });
 
-  it("should detect vital point hits accurately", () => {
-    const hitPosition: Position = { x: 100, y: 50 }; // Head area
-    const result = vitalPointSystem.checkVitalPointHit(hitPosition, 10);
-
-    expect(result.isVitalPoint).toBeDefined();
-    if (result.isVitalPoint) {
-      expect(result.vitalPoint?.koreanName).toBeTruthy();
-      expect(result.damageMultiplier).toBeGreaterThan(1.0);
-    }
-  });
-
-  it("should calculate damage multipliers for vital points", () => {
-    const vitalPoints = vitalPointSystem.getAllVitalPoints();
-    const criticalPoint = vitalPoints.find(
-      (point) => point.severity === "critical"
-    );
-
-    if (criticalPoint) {
-      const multiplier =
-        vitalPointSystem.calculateDamageMultiplier(criticalPoint);
-      expect(multiplier).toBeGreaterThan(2.0); // Critical points should have high multipliers
-    }
+  describe("Korean Vital Points Integration", () => {
+    it("should validate all Korean vital points have proper structure", () => {
+      KOREAN_VITAL_POINTS.forEach((point) => {
+        expect(point.korean.korean).toMatch(/[\u3131-\u318E\uAC00-\uD7A3]/);
+        expect(point.korean.english).toBeTruthy();
+        expect(point.position).toBeDefined();
+        expect(point.severity).toBeDefined();
+      });
+    });
   });
 });

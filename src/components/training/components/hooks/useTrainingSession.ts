@@ -454,7 +454,7 @@ export const useTrainingSession = ({
   }
 
   // Return the complete hook interface
-  return {
+  const trainingSession = {
     isTraining,
     isSessionPaused,
     stats,
@@ -467,10 +467,15 @@ export const useTrainingSession = ({
     executeTrainingTechnique,
     resetTrainingSession,
   };
+
+  return trainingSession;
 };
 
 export default useTrainingSession;
-  };
+
+export const useTrainingSession = (params: UseTrainingSessionParams) => {
+  // Implementation already exists - this is just to ensure the file is properly structured
+  // ...existing code...
 };
 
 export default useTrainingSession;
