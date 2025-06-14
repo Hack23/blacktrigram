@@ -1,221 +1,222 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { CombatSystem } from "./CombatSystem";
-import type {
-  PlayerState,
-  TrigramStance,
-  KoreanTechnique,
-  VitalPoint,
-  VitalPointCategory,
-  VitalPointSeverity,
-  EffectType,
-  EffectIntensity,
-  PlayerArchetype,
-  Position,
-  VitalPointEffect,
-  BodyRegion,
-} from "../types";
-import { TRIGRAM_DATA, STANCE_EFFECTIVENESS_MATRIX } from "../types/constants";
+import { TrigramStance, PlayerArchetype, CombatState } from "../types/enums";
+import type { PlayerState } from "../types/player";
 
-const createMockPlayer = (
-  id: string,
-  archetype: PlayerArchetype,
-  stance: TrigramStance,
-  health: number = 100,
-  ki: number = 100,
-  stamina: number = 100,
-  position: Position = { x: 0, y: 0 },
-  consciousness: number = 100 // Added consciousness parameter
-): PlayerState => ({
-  id,
-  name: `${archetype} ${id}`,
-  archetype,
-  stance,
-  health,
-  maxHealth: 100,
-  ki,
-  maxKi: 100,
-  stamina,
-  maxStamina: 100,
-  position,
-  facing: "right",
-  consciousness, // Use the parameter
-  pain: 0,
-  balance: 100,
-  bloodLoss: 0,
-  lastStanceChangeTime: 0,
-  isAttacking: false,
-  combatReadiness: 100,
-  activeEffects: [],
-  combatState: "ready",
-  conditions: [],
-});
-
-const mockGeonTechnique: KoreanTechnique = TRIGRAM_DATA.geon.technique;
-
-const mockVitalPoint: VitalPoint = {
-  id: "vp_test_head",
-  name: { korean: "테스트 머리 급소", english: "Test Head Vital Point" },
-  koreanName: "테스트 머리 급소",
-  englishName: "Test Head Vital Point",
-  category: "head" as VitalPointCategory,
-  description: { korean: "테스트용 급소", english: "A test vital point" },
-  location: { x: 50, y: 20, region: "head" as BodyRegion },
-  severity: "moderate" as VitalPointSeverity,
-  baseAccuracy: 0.9,
-  baseDamage: 10,
-  damageMultiplier: 1.5,
-  effects: [
-    {
-      id: "vp_stun",
-      type: "stun" as EffectType,
-      intensity: "moderate" as EffectIntensity,
-      duration: 1000,
-      description: { korean: "기절", english: "Stun" },
-      stackable: false,
-    },
-  ] as VitalPointEffect[],
-  techniques: ["strike"],
-  damage: 10,
-};
-
+/**
+ * ## Combat System Test Suite
+ *
+ * **Business Purpose:**
+ * Validates the core combat engine that powers Black Trigram's Korean martial arts
+ * combat simulation. Tests ensure that:
+ * - Combat mechanics follow traditional Korean martial arts principles
+ * - Trigram-based stance system operates with cultural authenticity
+ * - Damage calculations respect realistic martial arts physics
+ * - Player interactions maintain competitive balance and fairness
+ *
+ * **Korean Martial Arts Integration:**
+ * - Tests authentic Korean martial arts combat flow and timing
+ * - Validates traditional trigram philosophy implementation in combat
+ * - Ensures cultural accuracy in technique damage and effectiveness
+ * - Verifies realistic Korean martial arts stamina and ki management
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 describe("CombatSystem", () => {
-  describe("calculateTechnique", () => {
-    it("should calculate base damage for a technique", () => {
-      const result = CombatSystem.calculateTechnique(mockGeonTechnique, "musa");
-      expect(result.damage).toBeGreaterThan(0);
-      expect(result.attacker).toBe("musa");
-      expect(result.techniqueUsed.id).toBe(mockGeonTechnique.id);
-      expect(result.hit).toBe(true); // calculateTechnique assumes a hit for damage calculation part
+  let combatSystem: CombatSystem;
+  
+  const createMockPlayer = (overrides: Partial<PlayerState> = {}): PlayerState => ({
+    id: "test-player",
+    name: { korean: "테스트 무사", english: "Test Warrior" },
+    archetype: PlayerArchetype.MUSA,
+    health: 100,
+    maxHealth: 100,
+    ki: 100,
+    maxKi: 100,
+    stamina: 100,
+    maxStamina: 100,
+    energy: 100,
+    maxEnergy: 100,
+    attackPower: 75,
+    defense: 75,
+    speed: 75,
+    technique: 75,
+    pain: 0,
+    consciousness: 100,
+    balance: 100,
+    momentum: 0,
+    currentStance: TrigramStance.GEON,
+    combatState: CombatState.IDLE,
+    position: { x: 300, y: 400 },
+    isBlocking: false,
+    isStunned: false,
+    isCountering: false,
+    lastActionTime: 0,
+    recoveryTime: 0,
+    lastStanceChangeTime: 0,
+    statusEffects: [],
+    activeEffects: [],
+    vitalPoints: [],
+    totalDamageReceived: 0,
+    totalDamageDealt: 0,
+    hitsTaken: 0,
+    hitsLanded: 0,
+    perfectStrikes: 0,
+    vitalPointHits: 0,
+    experiencePoints: 0,
+    ...overrides,
+  });
+
+  beforeEach(() => {
+    combatSystem = new CombatSystem();
+  });
+
+  describe("System Initialization", () => {
+    it("should initialize combat system correctly", () => {
+      expect(combatSystem).toBeDefined();
+      expect(combatSystem.isActive()).toBe(false);
     });
 
-    it("should apply archetype-specific damage modifiers", () => {
-      const musaResult = CombatSystem.calculateTechnique(
-        mockGeonTechnique,
-        "musa"
-      );
-      const amsaljaResult = CombatSystem.calculateTechnique(
-        mockGeonTechnique,
-        "amsalja"
-      );
-      // Musa with Geon technique should generally do more or different damage than Amsalja with same
-      expect(musaResult.damage).not.toBe(amsaljaResult.damage);
-    });
-
-    it("should handle critical hits", () => {
-      // Corrected syntax: ()_=> to () =>
-      vi.spyOn(Math, "random").mockReturnValue(0.01);
-      const result = CombatSystem.calculateTechnique(mockGeonTechnique, "musa");
-      expect(result.critical).toBe(true);
-      expect(result.damage).toBeGreaterThan(
-        (mockGeonTechnique.damage || 20) *
-          (mockGeonTechnique.critMultiplier || 1.5)
-      );
-      vi.spyOn(Math, "random").mockRestore();
+    it("should start combat with Korean martial arts ceremony", () => {
+      const player1 = createMockPlayer({ id: "player1" });
+      const player2 = createMockPlayer({ id: "player2" });
+      
+      combatSystem.startCombat(player1, player2);
+      expect(combatSystem.isActive()).toBe(true);
     });
   });
 
-  describe("executeAttack", () => {
-    let attacker: PlayerState;
-    let defender: PlayerState;
-
-    beforeEach(() => {
-      attacker = createMockPlayer("attacker1", "musa", "geon");
-      defender = createMockPlayer("defender1", "amsalja", "tae");
-    });
-
-    it("should return a CombatResult indicating a hit", async () => {
-      const result = await CombatSystem.executeAttack(
-        attacker,
-        defender, // Add defender parameter
-        mockGeonTechnique
-      );
-      expect(result.hit).toBe(true);
-      expect(result.defenderDamaged).toBe(result.damage > 0);
-      expect(result.techniqueUsed.id).toBe(mockGeonTechnique.id);
-    });
-
-    it("should return a CombatResult indicating a miss", async () => {
-      // Mock Math.random to force a miss by setting accuracy very low
-      vi.spyOn(Math, "random").mockReturnValue(0.99); // High random value to force miss
-
-      // Create a technique with very low accuracy
-      const lowAccuracyTechnique: KoreanTechnique = {
-        ...mockGeonTechnique,
-        accuracy: 0.1, // Very low accuracy
-      };
-
-      // Since executeAttack currently always returns hit: true, we'll test the executeTechnique method instead
-      const techniqueResult = CombatSystem.executeTechnique(
-        lowAccuracyTechnique,
-        "musa"
-      );
-      expect(techniqueResult.hit).toBe(false);
-      expect(techniqueResult.damage).toBe(0);
-
-      vi.spyOn(Math, "random").mockRestore();
-    });
-
-    it("should apply vital point damage if targetPoint is provided and hit", async () => {
-      const result = await CombatSystem.executeAttack(
-        attacker,
-        defender,
-        mockGeonTechnique,
-        mockVitalPoint.id
+  describe("Technique Execution", () => {
+    it("should execute techniques with Korean martial arts accuracy", () => {
+      const attacker = createMockPlayer({ technique: 80 });
+      const defender = createMockPlayer();
+      
+      combatSystem.startCombat(attacker, defender);
+      
+      const result = combatSystem.executeTechnique(
+        attacker.id,
+        { 
+          name: "천둥벽력",
+          type: "strike",
+          stance: TrigramStance.GEON,
+          damage: 25,
+          kiCost: 10,
+          accuracy: 0.8
+        }
       );
 
-      expect(result.hit).toBe(true);
-      expect(result.damage).toBeGreaterThan(0);
-      expect(result.vitalPointsHit).toBeDefined();
+      expect(result).toBeDefined();
+      expect(result.success).toBe(true);
     });
   });
 
-  describe("checkWinCondition", () => {
-    it("should return player2 if player1 health is 0", () => {
-      const player1 = createMockPlayer("p1", "musa", "geon", 0);
-      const player2 = createMockPlayer("p2", "amsalja", "tae", 50);
-      const winner = CombatSystem.checkWinCondition([player1, player2]);
-      expect(winner).toBe(player2.id);
-    });
+  describe("Damage Calculation", () => {
+    it("should calculate damage based on Korean martial arts principles", () => {
+      const attacker = createMockPlayer({ 
+        attackPower: 80,
+        currentStance: TrigramStance.GEON 
+      });
+      const defender = createMockPlayer({ defense: 60 });
+      
+      const damage = combatSystem.calculateDamage(attacker, defender, {
+        baseDamage: 30,
+        criticalHit: false,
+        vitalPointHit: false
+      });
 
-    it("should return player1 if player2 consciousness is 0", () => {
-      const player1 = createMockPlayer("p1", "musa", "geon", 50);
-      const player2 = createMockPlayer(
-        "p2",
-        "amsalja",
-        "tae",
-        100,
-        100,
-        100,
-        { x: 1, y: 1 },
-        0
-      ); // Set consciousness to 0
-      const winner = CombatSystem.checkWinCondition([player1, player2]);
-      expect(winner).toBe(player1.id);
+      expect(damage).toBeGreaterThan(0);
+      expect(damage).toBeLessThan(30);
     });
-
-    it("should return null if no win condition is met", () => {
-      const player1 = createMockPlayer("p1", "musa", "geon", 50);
-      const player2 = createMockPlayer("p2", "amsalja", "tae", 50);
-      const winner = CombatSystem.checkWinCondition([player1, player2]);
-      expect(winner).toBeNull();
+  });
+});
+      expect(result).toBeGreaterThan(0.8);
     });
   });
 
-  describe("calculateStanceEffectiveness", () => {
-    it("Geon (Heaven) vs Tae (Lake) should have specific effectiveness", () => {
-      const effectiveness = CombatSystem.calculateStanceEffectiveness(
-        "geon",
-        "tae"
-      );
-      expect(effectiveness).toBe(STANCE_EFFECTIVENESS_MATRIX.geon.tae);
+  /**
+   * **Business Requirement:** Damage calculation must follow realistic Korean martial arts
+   * principles including vital point targeting and technique effectiveness
+   */
+  describe("Damage Calculation", () => {
+    it("should calculate damage based on Korean martial arts principles", () => {
+      const attacker = createMockPlayer({ 
+        attackPower: 80,
+        currentStance: TrigramStance.GEON 
+      });
+      const defender = createMockPlayer({ defense: 60 });
+      
+      const damage = combatSystem.calculateDamage(attacker, defender, {
+        baseDamage: 30,
+        criticalHit: false,
+        vitalPointHit: false
+      });
+
+      expect(damage).toBeGreaterThan(0);
+      expect(damage).toBeLessThan(30); // Should be reduced by defense
     });
 
-    it("Identical stances should have 1.0 effectiveness", () => {
-      const effectiveness = CombatSystem.calculateStanceEffectiveness(
-        "geon",
-        "geon"
-      );
-      expect(effectiveness).toBe(1.0);
+    it("should apply critical hit bonuses for perfect technique execution", () => {
+      const attacker = createMockPlayer({ technique: 95 });
+      const defender = createMockPlayer();
+      
+      const normalDamage = combatSystem.calculateDamage(attacker, defender, {
+        baseDamage: 25,
+        criticalHit: false,
+        vitalPointHit: false
+      });
+      
+      const criticalDamage = combatSystem.calculateDamage(attacker, defender, {
+        baseDamage: 25,
+        criticalHit: true,
+        vitalPointHit: false
+      });
+
+      expect(criticalDamage).toBeGreaterThan(normalDamage);
+    });
+  });
+
+  /**
+   * **Business Requirement:** Korean martial arts status effects must provide
+   * meaningful combat dynamics and strategic depth
+   */
+  describe("Status Effects", () => {
+    it("should apply and manage Korean martial arts status effects", () => {
+      const player = createMockPlayer();
+      
+      combatSystem.applyStatusEffect(player.id, {
+        type: "stun",
+        duration: 2000,
+        intensity: 1.0,
+        source: "thunder_technique"
+      });
+
+      expect(player.statusEffects.length).toBeGreaterThan(0);
+    });
+
+    it("should handle ki depletion effects", () => {
+      const player = createMockPlayer({ ki: 5, maxKi: 100 });
+      
+      const canExecute = combatSystem.canExecuteTechnique(player, {
+        kiCost: 20
+      });
+
+      expect(canExecute).toBe(false);
+    });
+  });
+});
+  describe("resetTrainingDummy", () => {
+    it("should reset the training dummy", () => {
+      // Fix: Remove unused originalDummy variable
+
+      // Modify dummy
+      trainingSystem.updateTrainingDummy({ health: 50 });
+
+      // Fix: Use resetTrainingSession instead of resetTrainingDummy
+      trainingSystem.resetTrainingSession();
+
+      const resetDummy = trainingSystem.getTrainingDummy();
+      expect(resetDummy.health).toBeGreaterThan(900);
     });
   });
 });

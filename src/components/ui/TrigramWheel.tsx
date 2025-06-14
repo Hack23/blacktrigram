@@ -1,205 +1,280 @@
-import { useCallback, useState, useMemo } from "react";
-import type { JSX } from "react";
-import type { Graphics as PixiGraphics } from "pixi.js";
-
-import type { TrigramStance } from "../../types";
-import { TRIGRAM_DATA, KOREAN_COLORS } from "../../types/constants";
+import React, { useCallback, useMemo } from "react";
+import { TrigramStance } from "../../types/enums";
+import { KOREAN_COLORS } from "../../types/constants";
+import { ResponsivePixiContainer } from "./base/ResponsivePixiComponents";
 
 export interface TrigramWheelProps {
-  readonly currentStance: TrigramStance;
+  readonly selectedStance: TrigramStance;
+  readonly onStanceChange: (stance: TrigramStance) => void;
   readonly onStanceSelect: (stance: TrigramStance) => void;
-  readonly size?: number;
+  readonly x: number;
+  readonly y: number;
+  readonly size: number;
   readonly interactive?: boolean;
-  readonly time?: number;
 }
 
-export function TrigramWheel({
-  currentStance,
-  onStanceSelect,
-  size = 200,
-  interactive = true,
-  time = 0,
-}: TrigramWheelProps): JSX.Element {
-  const [hoveredStance, setHoveredStance] = useState<TrigramStance | null>(
-    null
-  );
+const TRIGRAM_DATA = {
+  [TrigramStance.GEON]: {
+    korean: "건",
+    symbol: "☰",
+    angle: 0,
+    color: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
+    technique: "천둥벽력",
+  },
+  [TrigramStance.TAE]: {
+    korean: "태",
+    symbol: "☱",
+    angle: 45,
+    color: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
+    technique: "유수연타",
+  },
+  [TrigramStance.LI]: {
+    korean: "리",
+    symbol: "☲",
+    angle: 90,
+    color: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
+    technique: "화염지창",
+  },
+  [TrigramStance.JIN]: {
+    korean: "진",
+    symbol: "☳",
+    angle: 135,
+    color: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
+    technique: "벽력일섬",
+  },
+  [TrigramStance.SON]: {
+    korean: "손",
+    symbol: "☴",
+    angle: 180,
+    color: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
+    technique: "선풍연격",
+  },
+  [TrigramStance.GAM]: {
+    korean: "감",
+    symbol: "☵",
+    angle: 225,
+    color: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,
+    technique: "수류반격",
+  },
+  [TrigramStance.GAN]: {
+    korean: "간",
+    symbol: "☶",
+    angle: 270,
+    color: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,
+    technique: "반석방어",
+  },
+  [TrigramStance.GON]: {
+    korean: "곤",
+    symbol: "☷",
+    angle: 315,
+    color: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
+    technique: "대지포옹",
+  },
+};
 
-  const stances = useMemo(
-    () => Object.keys(TRIGRAM_DATA) as TrigramStance[],
-    []
-  );
+export const TrigramWheel: React.FC<TrigramWheelProps> = ({
+  selectedStance,
+  onStanceChange,
+  onStanceSelect,
+  x,
+  y,
+  size,
+  interactive = true,
+  ...props
+}) => {
+  const radius = size / 2;
+  const centerX = radius;
+  const centerY = radius;
 
   const handleStanceClick = useCallback(
     (stance: TrigramStance) => {
-      if (interactive) {
-        onStanceSelect(stance);
-      }
+      onStanceChange(stance);
+      onStanceSelect(stance);
     },
-    [interactive, onStanceSelect]
+    [onStanceChange, onStanceSelect]
   );
 
-  const radius = size * 0.4;
+  const stancePositions = useMemo(() => {
+    return Object.entries(TRIGRAM_DATA).map(([stance, data]) => {
+      const angleRad = (data.angle * Math.PI) / 180;
+      const stanceRadius = radius * 0.7;
+      const stanceX = centerX + Math.cos(angleRad) * stanceRadius;
+      const stanceY = centerY + Math.sin(angleRad) * stanceRadius;
+
+      return {
+        stance: stance as TrigramStance,
+        x: stanceX,
+        y: stanceY,
+        data,
+      };
+    });
+  }, [radius, centerX, centerY]);
 
   return (
-    <pixiContainer data-testid="trigram-wheel">
-      {/* Main wheel background */}
+    <ResponsivePixiContainer
+      x={x}
+      y={y}
+      screenWidth={size}
+      screenHeight={size}
+      data-testid="trigram-wheel"
+      {...props}
+    >
+      {/* Wheel Background */}
       <pixiGraphics
-        draw={(g: PixiGraphics) => {
+        draw={(g) => {
           g.clear();
-          const centerX = 0;
-          const centerY = 0;
-          const pulse = Math.sin(time * 0.05) * 0.3 + 0.7;
+          // Outer circle
+          g.fill({
+            color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+            alpha: 0.8,
+          });
+          g.circle(centerX, centerY, radius);
+          g.fill();
 
-          // Draw outer circle
-          g.setStrokeStyle({ color: KOREAN_COLORS.CYAN, width: 2, alpha: 0.6 });
+          // Border
+          g.stroke({
+            width: 3,
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.8,
+          });
           g.circle(centerX, centerY, radius);
           g.stroke();
 
-          // Inner core pulse effect
-          g.setFillStyle({ color: KOREAN_COLORS.CYAN, alpha: pulse * 0.3 });
-          g.circle(centerX, centerY, 30);
-          g.fill();
-
-          g.setStrokeStyle({
-            color: KOREAN_COLORS.CYAN,
-            width: 1,
-            alpha: pulse,
+          // Inner circle
+          g.fill({
+            color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+            alpha: 0.9,
           });
-          g.circle(centerX, centerY, 30);
-          g.stroke();
+          g.circle(centerX, centerY, radius * 0.3);
+          g.fill();
         }}
         data-testid="trigram-wheel-background"
       />
 
-      {/* Center Korean text */}
+      {/* Center Symbol */}
       <pixiText
-        text="흑괘"
-        anchor={{ x: 0.5, y: 0.5 }}
+        text="태극"
         style={{
-          fontFamily: "Noto Sans KR",
-          fontSize: 14,
-          fill: KOREAN_COLORS.GOLD,
+          fontSize: size / 8,
+          fill: KOREAN_COLORS.ACCENT_GOLD,
           fontWeight: "bold",
+          align: "center",
+          fontFamily: "Noto Sans KR",
         }}
-        data-testid="trigram-wheel-center-text"
+        x={centerX}
+        y={centerY}
+        anchor={0.5}
+        data-testid="trigram-wheel-center"
       />
 
-      {/* Trigram positions */}
-      {stances.map((stance, index) => {
-        const angle = (index * Math.PI * 2) / 8 - Math.PI / 2;
-        const x = Math.cos(angle) * radius * 0.7;
-        const y = Math.sin(angle) * radius * 0.7;
-        const isActive = stance === currentStance;
-        const isHovered = stance === hoveredStance;
-        const stanceColor = KOREAN_COLORS[stance] || KOREAN_COLORS.WHITE;
+      {/* Stance Positions */}
+      {stancePositions.map(({ stance, x: stanceX, y: stanceY, data }) => {
+        const isSelected = stance === selectedStance;
+        const stanceSize = size / 12;
 
         return (
           <pixiContainer
             key={stance}
-            x={x}
-            y={y}
-            interactive={interactive}
-            cursor="pointer"
-            onPointerDown={() => handleStanceClick(stance)}
-            onPointerEnter={() => setHoveredStance(stance)}
-            onPointerLeave={() => setHoveredStance(null)}
+            x={stanceX}
+            y={stanceY}
             data-testid={`trigram-stance-${stance}`}
           >
-            {/* Background circle */}
+            {/* Stance Background */}
             <pixiGraphics
-              draw={(g: PixiGraphics) => {
+              draw={(g) => {
                 g.clear();
-                const bgAlpha = isActive ? 0.8 : isHovered ? 0.7 : 0.5;
-                const bgColor = isActive ? stanceColor : KOREAN_COLORS.BLACK;
-
-                g.setFillStyle({ color: bgColor, alpha: bgAlpha });
-                g.circle(0, 0, isActive ? 12 : 8);
+                g.fill({
+                  color: isSelected ? KOREAN_COLORS.ACCENT_GOLD : data.color,
+                  alpha: isSelected ? 0.9 : 0.7,
+                });
+                g.circle(0, 0, stanceSize);
                 g.fill();
 
-                g.setStrokeStyle({
-                  color: KOREAN_COLORS.CYAN,
-                  width: isActive ? 2 : 1,
-                  alpha: isActive ? 1.0 : 0.6,
+                g.stroke({
+                  width: 2,
+                  color: isSelected
+                    ? KOREAN_COLORS.PRIMARY_CYAN
+                    : KOREAN_COLORS.ACCENT_GOLD,
+                  alpha: 0.9,
                 });
-                g.circle(0, 0, isActive ? 12 : 8);
+                g.circle(0, 0, stanceSize);
                 g.stroke();
+
+                // Glow effect for selected
+                if (isSelected) {
+                  g.stroke({
+                    width: 4,
+                    color: KOREAN_COLORS.PRIMARY_CYAN,
+                    alpha: 0.5,
+                  });
+                  g.circle(0, 0, stanceSize + 2);
+                  g.stroke();
+                }
               }}
-              data-testid={`trigram-bg-${stance}`}
+              interactive={interactive}
+              onPointerDown={() => handleStanceClick(stance)}
+              data-testid={`trigram-stance-bg-${stance}`}
             />
 
-            {/* Trigram symbol */}
+            {/* Trigram Symbol */}
             <pixiText
-              text={TRIGRAM_DATA[stance].symbol}
-              anchor={{ x: 0.5, y: 0.5 }}
+              text={data.symbol}
               style={{
-                fontFamily: "serif",
-                fontSize: 16,
-                fill: stanceColor,
+                fontSize: stanceSize * 0.8,
+                fill: isSelected
+                  ? KOREAN_COLORS.BLACK_SOLID
+                  : KOREAN_COLORS.TEXT_PRIMARY,
                 fontWeight: "bold",
+                align: "center",
               }}
+              anchor={0.5}
               data-testid={`trigram-symbol-${stance}`}
             />
 
-            {/* Korean name text */}
+            {/* Korean Text */}
             <pixiText
-              text={TRIGRAM_DATA[stance].name}
-              anchor={{ x: 0.5, y: -1.5 }}
+              text={data.korean}
               style={{
+                fontSize: stanceSize * 0.4,
+                fill: isSelected
+                  ? KOREAN_COLORS.BLACK_SOLID
+                  : KOREAN_COLORS.TEXT_SECONDARY,
+                fontWeight: "bold",
+                align: "center",
                 fontFamily: "Noto Sans KR",
-                fontSize: 8,
-                fill: isActive ? stanceColor : KOREAN_COLORS.WHITE,
-                fontWeight: isActive ? "bold" : "normal",
               }}
+              x={0}
+              y={stanceSize + 8}
+              anchor={0.5}
               data-testid={`trigram-korean-${stance}`}
             />
           </pixiContainer>
         );
       })}
 
-      {/* Yin-yang symbol in center */}
-      <pixiText
-        text="☯"
-        anchor={{ x: 0.5, y: 0.5 }}
-        style={{
-          fontFamily: "serif",
-          fontSize: 24,
-          fill: KOREAN_COLORS.WHITE,
-          fontWeight: "bold",
-        }}
-        data-testid="yin-yang-symbol"
-      />
-
-      {/* Active stance indicator */}
-      {currentStance && (
-        <pixiText
-          text={`현재: ${TRIGRAM_DATA[currentStance].name}`}
-          anchor={{ x: 0.5, y: 2.5 }}
-          style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: 10,
-            fill: KOREAN_COLORS.CYAN,
-            fontWeight: "bold",
-          }}
-          data-testid="current-stance-indicator"
-        />
+      {/* Selected Stance Indicator */}
+      {selectedStance && (
+        <pixiContainer
+          x={centerX}
+          y={centerY + radius * 0.5}
+          data-testid="selected-stance-indicator"
+        >
+          <pixiText
+            text={TRIGRAM_DATA[selectedStance].technique}
+            style={{
+              fontSize: size / 16,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              fontWeight: "bold",
+              align: "center",
+              fontFamily: "Noto Sans KR",
+            }}
+            anchor={0.5}
+            data-testid="selected-technique-name"
+          />
+        </pixiContainer>
       )}
-
-      {/* Hovered stance info */}
-      {hoveredStance && hoveredStance !== currentStance && (
-        <pixiText
-          text={`${TRIGRAM_DATA[hoveredStance].name.korean} - ${TRIGRAM_DATA[hoveredStance].name.english}`}
-          anchor={{ x: 0.5, y: 3.0 }}
-          style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: 8,
-            fill: KOREAN_COLORS.GOLD,
-            fontWeight: "normal",
-          }}
-          data-testid="hovered-stance-info"
-        />
-      )}
-    </pixiContainer>
+    </ResponsivePixiContainer>
   );
-}
+};
 
 export default TrigramWheel;

@@ -1,23 +1,40 @@
 /// <reference types="vite/client" />
 /// <reference types="react" />
 
+import type { Application, Container, Graphics, Text, Sprite } from "pixi.js";
+
 // Global JSX declarations for PixiJS components
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      pixiContainer: any;
-      pixiGraphics: any;
-      pixiText: any;
-      pixiSprite: any;
+      pixiContainer: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      pixiGraphics: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        draw?: (graphics: Graphics) => void;
+      };
+      pixiText: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      pixiSprite: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
     }
 
     // Fix JSX.Element for React 18
-    interface Element extends React.ReactElement<any, any> {}
+    interface Element
+      extends React.ReactElement<React.ComponentProps<any>, any> {}
   }
 
   // Fix PIXI global namespace
   namespace PIXI {
-    export { Graphics, Container, Text, Sprite } from "pixi.js";
+    export { Graphics, Container, Text, Sprite, Application };
   }
 }
 

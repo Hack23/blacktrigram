@@ -1,425 +1,361 @@
-// Trigram constants and data for Korean martial arts
+/**
+ * Trigram system constants for Black Trigram Korean martial arts
+ */
 
-import type {
-  KoreanTechnique,
-  TrigramEffectivenessMatrix,
-  TrigramStance,
-  KoreanText,
-} from "../index";
+import { KOREAN_COLORS } from "./colors";
+import { TrigramStance, TrigramStance as TrigramStanceEnum } from "../enums"; // Assuming enum definition
 
-// Create individual techniques to avoid array/single confusion
-const GEON_TECHNIQUE: KoreanTechnique = {
-  id: "geon_primary",
-  name: "Heaven's Strike",
-  koreanName: "천지격",
-  englishName: "Heaven's Strike",
-  romanized: "Cheonji-gyeok",
-  description: {
-    korean: "하늘의 힘을 담은 강력한 타격",
-    english: "Powerful strike imbued with heaven's force",
-  },
-  stance: "geon",
-  type: "strike",
-  damage: 35,
-  kiCost: 20,
-  staminaCost: 15,
-};
+// Helper function (optional, if you prefer this pattern)
+// const createTrigram = (
+//   id: TrigramStance,
+//   korean: string,
+//   english: string,
+//   symbol: string,
+//   description: string,
+//   theme: TrigramTheme,
+//   principle: string,
+//   qualities: string[],
+//   associatedTechniques: string[]
+// ): TrigramData => ({
+//   id,
+//   korean,
+//   english,
+//   symbol,
+//   description,
+//   theme,
+//   principle,
+//   qualities,
+//   associatedTechniques,
+// });
 
-const TAE_TECHNIQUE: KoreanTechnique = {
-  id: "tae_primary",
-  name: "Lake's Flow",
-  koreanName: "택류",
-  englishName: "Lake's Flow",
-  romanized: "Taek-ryu",
-  description: {
-    korean: "호수처럼 유연한 흐름의 기술",
-    english: "Fluid technique like a lake's flow",
-  },
-  stance: "tae",
-  type: "grapple",
-  damage: 25,
-  kiCost: 15,
-  staminaCost: 10,
-};
-
-const LI_TECHNIQUE: KoreanTechnique = {
-  id: "li_primary",
-  name: "Flame Strike",
-  koreanName: "화염격",
-  englishName: "Flame Strike",
-  romanized: "Hwayeom-gyeok",
-  description: {
-    korean: "불의 기세로 타는 강렬한 공격",
-    english: "Intense attack burning with fire's momentum",
-  },
-  stance: "li",
-  type: "strike",
-  damage: 40,
-  kiCost: 25,
-  staminaCost: 20,
-};
-
-const JIN_TECHNIQUE: KoreanTechnique = {
-  id: "jin_primary",
-  name: "Thunder Punch",
-  koreanName: "뇌전권",
-  englishName: "Thunder Punch",
-  romanized: "Noejeon-gwon",
-  description: {
-    korean: "천둥처럼 빠르고 강력한 주먹",
-    english: "Swift and powerful punch like thunder",
-  },
-  stance: "jin",
-  type: "punch",
-  damage: 30,
-  kiCost: 18,
-  staminaCost: 12,
-};
-
-const SON_TECHNIQUE: KoreanTechnique = {
-  id: "son_primary",
-  name: "Wind Blade",
-  koreanName: "풍인",
-  englishName: "Wind Blade",
-  romanized: "Pung-in",
-  description: {
-    korean: "바람처럼 예리한 손날 공격",
-    english: "Sharp hand blade attack like wind",
-  },
-  stance: "son",
-  type: "strike",
-  damage: 28,
-  kiCost: 16,
-  staminaCost: 14,
-};
-
-const GAM_TECHNIQUE: KoreanTechnique = {
-  id: "gam_primary",
-  name: "Water Flow",
-  koreanName: "수류",
-  englishName: "Water Flow",
-  romanized: "Su-ryu",
-  description: {
-    korean: "물의 흐름처럼 부드럽고 강한 기술",
-    english: "Soft yet strong technique like water's flow",
-  },
-  stance: "gam",
-  type: "grapple",
-  damage: 22,
-  kiCost: 12,
-  staminaCost: 8,
-};
-
-const GAN_TECHNIQUE: KoreanTechnique = {
-  id: "gan_primary",
-  name: "Mountain Strike",
-  koreanName: "산격",
-  englishName: "Mountain Strike",
-  romanized: "San-gyeok",
-  description: {
-    korean: "산처럼 견고하고 무거운 타격",
-    english: "Solid and heavy strike like a mountain",
-  },
-  stance: "gan",
-  type: "strike",
-  damage: 45,
-  kiCost: 30,
-  staminaCost: 25,
-};
-
-const GON_TECHNIQUE: KoreanTechnique = {
-  id: "gon_primary",
-  name: "Earth Palm",
-  koreanName: "지장",
-  englishName: "Earth Palm",
-  romanized: "Ji-jang",
-  description: {
-    korean: "대지의 안정감을 담은 장법",
-    english: "Palm technique with earth's stability",
-  },
-  stance: "gon",
-
-  type: "strike",
-  damage: 20,
-  kiCost: 10,
-  staminaCost: 5,
-};
-
-// Trigram data with all required properties
-export const TRIGRAM_DATA: Record<TrigramStance, TrigramData> = {
-  geon: {
-    id: "geon",
-    name: { korean: "건", english: "Heaven" },
-    symbol: "☰",
-    element: { korean: "금", english: "Metal" },
-    direction: "northwest",
-    philosophy: {
-      korean: "강건하고 창조적인 힘",
-      english: "Strong and creative power",
-    },
-    combatRole: { korean: "공격", english: "Attack" },
-    technique: GEON_TECHNIQUE,
-    strengths: ["high_damage", "breaking_power", "leadership"],
-    weaknesses: ["energy_drain", "predictable"],
-    color: 0xffd700, // Add missing color property
-    kiFlowModifier: 1.2,
-    offensiveBonus: 1.3,
-    defensiveBonus: 1.0,
-  },
-  tae: {
-    id: "tae",
-    name: { korean: "태", english: "Lake" },
-    symbol: "☱",
-    element: { korean: "금", english: "Metal" },
-    direction: "west",
-    philosophy: {
-      korean: "기쁨과 소통의 원리. 유연함과 적응력을 나타낸다.",
-      english:
-        "Principle of joy and communication. Represents flexibility and adaptability.",
-    },
-    combatRole: { korean: "방어", english: "Defense" },
-    technique: TAE_TECHNIQUE,
-    strengths: ["flexibility", "counter_attacks", "flow"],
-    weaknesses: ["lower_damage", "requires_timing"],
-    color: 0x87ceeb,
-    kiFlowModifier: 1.1,
-    offensiveBonus: 1.0,
-    defensiveBonus: 1.2,
-  },
-  li: {
-    id: "li",
-    name: { korean: "리", english: "Fire" },
-    symbol: "☲",
-    element: { korean: "화", english: "Fire" },
-    direction: "south",
-    philosophy: {
-      korean: "명료함과 지혜의 원리. 열정과 통찰력을 의미한다.",
-      english:
-        "Principle of clarity and wisdom. Signifies passion and insight.",
-    },
-    combatRole: { korean: "공격", english: "Attack" },
-    technique: LI_TECHNIQUE,
-    strengths: ["speed", "critical_hits", "insight"],
-    weaknesses: ["stamina_drain", "vulnerable_defense"],
-    color: 0xff4500,
-    kiFlowModifier: 1.0,
-    offensiveBonus: 1.4,
-    defensiveBonus: 0.9,
-  },
-  jin: {
-    id: "jin",
-    name: { korean: "진", english: "Thunder" },
-    symbol: "☳",
-    element: { korean: "목", english: "Wood" },
-    direction: "east",
-    philosophy: {
-      korean: "충격과 각성의 원리. 변화와 움직임을 촉진한다.",
-      english:
-        "Principle of shock and awakening. Promotes change and movement.",
-    },
-    combatRole: { korean: "공격", english: "Attack" },
-    technique: JIN_TECHNIQUE,
-    strengths: ["surprise_attacks", "mobility", "awakening"],
-    weaknesses: ["lacks_defense", "unpredictable"],
-    color: 0x9370db,
-    kiFlowModifier: 1.3,
-    offensiveBonus: 1.5,
-    defensiveBonus: 0.8,
-  },
-  son: {
-    id: "son",
-    name: { korean: "손", english: "Wind" },
-    symbol: "☴",
-    element: { korean: "목", english: "Wood" },
-    direction: "southeast",
-    philosophy: {
-      korean: "침투와 영향의 원리. 점진적이고 지속적인 힘을 나타낸다.",
-      english:
-        "Principle of penetration and influence. Represents gradual and persistent force.",
-    },
-    combatRole: { korean: "지원", english: "Support" },
-    technique: SON_TECHNIQUE,
-    strengths: ["penetration", "persistent_damage", "influence"],
-    weaknesses: ["gradual_effect", "requires_patience"],
-    color: 0x98fb98,
-    kiFlowModifier: 1.1,
-    offensiveBonus: 1.1,
-    defensiveBonus: 1.1,
-  },
-  gam: {
-    id: "gam",
-    name: { korean: "감", english: "Water" },
-    symbol: "☵",
-    element: { korean: "수", english: "Water" },
-    direction: "north",
-    philosophy: {
-      korean: "위험과 흐름의 원리. 적응과 극복의 지혜를 담는다.",
-      english:
-        "Principle of danger and flow. Contains wisdom of adaptation and overcoming.",
-    },
-    combatRole: { korean: "방어", english: "Defense" },
-    technique: GAM_TECHNIQUE,
-    strengths: ["adaptability", "flow_control", "wisdom"],
-    weaknesses: ["complex_execution", "vulnerable_to_force"],
-    color: 0x4169e1,
-    kiFlowModifier: 1.2,
-    offensiveBonus: 1.0,
-    defensiveBonus: 1.3,
-  },
-  gan: {
-    id: "gan",
-    name: { korean: "간", english: "Mountain" },
-    symbol: "☶",
-    element: { korean: "토", english: "Earth" },
-    direction: "northeast",
-    philosophy: {
-      korean: "정지와 명상의 원리. 침착함과 인내를 상징한다.",
-      english:
-        "Principle of stillness and meditation. Symbolizes calmness and patience.",
-    },
-    combatRole: { korean: "방어", english: "Defense" },
-    technique: GAN_TECHNIQUE,
-    strengths: ["defense", "endurance", "meditation"],
-    weaknesses: ["slow_attacks", "lacks_mobility"],
-    color: 0x8b4513,
-    kiFlowModifier: 0.9,
-    offensiveBonus: 0.8,
-    defensiveBonus: 1.5,
-  },
-  gon: {
-    id: "gon",
-    name: { korean: "곤", english: "Earth" },
-    symbol: "☷",
-    element: { korean: "토", english: "Earth" },
-    direction: "southwest",
-    philosophy: {
-      korean: "수용과 양육의 원리. 포용력과 지지를 나타낸다.",
-      english:
-        "Principle of receptivity and nourishment. Represents embrace and support.",
-    },
-    combatRole: { korean: "지원", english: "Support" },
-    technique: GON_TECHNIQUE,
-    strengths: ["support", "healing", "receptivity"],
-    weaknesses: ["passive_nature", "low_offense"],
-    color: 0x654321,
-    kiFlowModifier: 1.0,
-    offensiveBonus: 0.9,
-    defensiveBonus: 1.4,
-  },
-} as const;
-
-// Stance effectiveness matrix
-export const STANCE_EFFECTIVENESS_MATRIX: TrigramEffectivenessMatrix = {
-  geon: {
-    geon: 1.0,
-    tae: 1.2,
-    li: 0.8,
-    jin: 1.1,
-    son: 0.9,
-    gam: 1.3,
-    gan: 0.7,
-    gon: 1.4,
-  },
-  tae: {
-    geon: 0.8,
-    tae: 1.0,
-    li: 1.1,
-    jin: 0.9,
-    son: 1.2,
-    gam: 0.7,
-    gan: 1.3,
-    gon: 1.0,
-  },
-  li: {
-    geon: 1.2,
-    tae: 0.9,
-    li: 1.0,
-    jin: 1.3,
-    son: 0.8,
-    gam: 1.1,
-    gan: 0.6,
-    gon: 1.2,
-  },
-  jin: {
-    geon: 0.9,
-    tae: 1.1,
-    li: 0.7,
-    jin: 1.0,
-    son: 1.4,
-    gam: 0.8,
-    gan: 1.2,
-    gon: 0.9,
-  },
-  son: {
-    geon: 1.1,
-    tae: 0.8,
-    li: 1.2,
-    jin: 0.6,
-    son: 1.0,
-    gam: 1.3,
-    gan: 0.9,
-    gon: 1.1,
-  },
-  gam: {
-    geon: 0.7,
-    tae: 1.3,
-    li: 0.9,
-    jin: 1.2,
-    son: 0.7,
-    gam: 1.0,
-    gan: 1.1,
-    gon: 0.8,
-  },
-  gan: {
-    geon: 1.3,
-    tae: 0.7,
-    li: 1.4,
-    jin: 0.8,
-    son: 1.1,
-    gam: 0.9,
-    gan: 1.0,
-    gon: 1.2,
-  },
-  gon: {
-    geon: 0.6,
-    tae: 1.0,
-    li: 0.8,
-    jin: 1.1,
-    son: 0.9,
-    gam: 1.2,
-    gan: 0.8,
-    gon: 1.0,
-  },
-} as const;
-
-// Trigram stances in traditional order
+// Order of Trigrams for UI elements like wheels or selection lists
 export const TRIGRAM_STANCES_ORDER: readonly TrigramStance[] = [
-  "geon",
-  "tae",
-  "li",
-  "jin",
-  "son",
-  "gam",
-  "gan",
-  "gon",
+  "geon" as TrigramStance,
+  "tae" as TrigramStance,
+  "li" as TrigramStance,
+  "jin" as TrigramStance,
+  "son" as TrigramStance,
+  "gam" as TrigramStance,
+  "gan" as TrigramStance,
+  "gon" as TrigramStance,
 ] as const;
 
-// Additional TrigramData interface with strengths property
-export interface TrigramData {
-  readonly id: TrigramStance;
-  readonly name: KoreanText;
+export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
+  [TrigramStance.GEON]: {
+    name: { korean: "건", english: "Heaven" },
+    symbol: "☰",
+    element: "metal",
+    nature: "yang",
+    philosophy: { korean: "하늘", english: "Heaven" },
+    combat: { korean: "직접 공격", english: "Direct attack" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
+      secondary: KOREAN_COLORS.WHITE_SOLID,
+    },
+    defensiveBonus: 1.0,
+    kiFlowModifier: 1.0,
+    techniques: {
+      primary: {
+        korean: "천둥벽력",
+        english: "Thunder Strike",
+        damage: 15,
+        kiCost: 8,
+        staminaCost: 12,
+        hitChance: 0.85,
+        criticalChance: 0.12,
+        description: {
+          korean: "하늘의 힘으로 적을 타격한다",
+          english: "Strike the enemy with heavenly force",
+        },
+        targetAreas: ["torso", "head"],
+        effects: ["stun"],
+      },
+    },
+  },
+  [TrigramStance.TAE]: {
+    name: { korean: "태", english: "Lake" },
+    symbol: "☱",
+    element: "metal",
+    nature: "yin",
+    philosophy: { korean: "호수", english: "Lake" },
+    combat: { korean: "유동적 적응", english: "Fluid adaptation" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
+      secondary: KOREAN_COLORS.UI_STEEL_GRAY,
+    },
+    defensiveBonus: 1.1,
+    kiFlowModifier: 1.2,
+    techniques: {
+      primary: {
+        korean: "유수연타",
+        english: "Flowing Strikes",
+        damage: 10,
+        kiCost: 5,
+        staminaCost: 8,
+        hitChance: 0.9,
+        criticalChance: 0.1,
+        description: {
+          korean: "물의 흐름처럼 연속적인 타격",
+          english: "Continuous strikes like flowing water",
+        },
+        targetAreas: ["torso", "arms"],
+        effects: ["knockback"],
+      },
+    },
+  },
+  [TrigramStance.LI]: {
+    name: { korean: "리", english: "Fire" },
+    symbol: "☲",
+    element: "metal",
+    nature: "yang",
+    philosophy: { korean: "불", english: "Fire" },
+    combat: { korean: "접근 공격", english: "Close attack" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
+      secondary: KOREAN_COLORS.ACCENT_RED,
+    },
+    defensiveBonus: 0.9,
+    kiFlowModifier: 1.1,
+    techniques: {
+      primary: {
+        korean: "화염베기",
+        english: "Flame Slash",
+        damage: 18,
+        kiCost: 9,
+        staminaCost: 11,
+        hitChance: 0.8,
+        criticalChance: 0.15,
+        description: {
+          korean: "불의 형상을 한 날카로운 베기",
+          english: "A sharp slash in the form of fire",
+        },
+        targetAreas: ["torso", "legs"],
+        effects: ["burn"],
+      },
+    },
+  },
+  [TrigramStance.JIN]: {
+    name: { korean: "진", english: "Thunder" },
+    symbol: "☳",
+    element: "metal",
+    nature: "yang",
+    philosophy: { korean: "천둥", english: "Thunder" },
+    combat: { korean: "돌진 공격", english: "Charge attack" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
+      secondary: KOREAN_COLORS.SECONDARY_YELLOW,
+    },
+    defensiveBonus: 0.8,
+    kiFlowModifier: 1.3,
+    techniques: {
+      primary: {
+        korean: "천둥의 박치기",
+        english: "Thunder Clap",
+        damage: 20,
+        kiCost: 10,
+        staminaCost: 15,
+        hitChance: 0.82,
+        criticalChance: 0.18,
+        description: {
+          korean: "천둥의 힘으로 적을 가격",
+          english: "Strike the enemy with the force of thunder",
+        },
+        targetAreas: ["head", "torso"],
+        effects: ["stun", "knockback"],
+      },
+    },
+  },
+  [TrigramStance.SON]: {
+    name: { korean: "손", english: "Wind" },
+    symbol: "☴",
+    element: "metal",
+    nature: "yin",
+    philosophy: { korean: "바람", english: "Wind" },
+    combat: { korean: "회피 공격", english: "Evasive attack" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
+      secondary: KOREAN_COLORS.POSITIVE_GREEN_DARK,
+    },
+    defensiveBonus: 1.2,
+    kiFlowModifier: 0.9,
+    techniques: {
+      primary: {
+        korean: "바람베기",
+        english: "Wind Cut",
+        damage: 12,
+        kiCost: 6,
+        staminaCost: 10,
+        hitChance: 0.88,
+        criticalChance: 0.14,
+        description: {
+          korean: "바람의 힘으로 적을 베어내다",
+          english: "Cut through the enemy with the power of wind",
+        },
+        targetAreas: ["torso", "arms"],
+        effects: ["bleed"],
+      },
+    },
+  },
+  [TrigramStance.GAM]: {
+    name: { korean: "감", english: "Water" },
+    symbol: "☵",
+    element: "metal",
+    nature: "yin",
+    philosophy: { korean: "물", english: "Water" },
+    combat: { korean: "유동 공격", english: "Flowing attack" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,
+      secondary: KOREAN_COLORS.PRIMARY_BLUE_DARK,
+    },
+    defensiveBonus: 1.3,
+    kiFlowModifier: 1.1,
+    techniques: {
+      primary: {
+        korean: "수륙재해",
+        english: "Water Whip",
+        damage: 14,
+        kiCost: 7,
+        staminaCost: 9,
+        hitChance: 0.84,
+        criticalChance: 0.13,
+        description: {
+          korean: "물의 힘으로 적을 휘감아 타격",
+          english: "Strike the enemy by wrapping them with the power of water",
+        },
+        targetAreas: ["torso", "legs"],
+        effects: ["drown"],
+      },
+    },
+  },
+  [TrigramStance.GAN]: {
+    name: { korean: "간", english: "Mountain" },
+    symbol: "☶",
+    element: "metal",
+    nature: "yin",
+    philosophy: { korean: "산", english: "Mountain" },
+    combat: { korean: "방어 자세", english: "Defensive stance" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,
+      secondary: KOREAN_COLORS.UI_STEEL_GRAY_DARK,
+    },
+    defensiveBonus: 1.4,
+    kiFlowModifier: 0.8,
+    techniques: {
+      primary: {
+        korean: "산의 수호",
+        english: "Mountain Guard",
+        damage: 0,
+        kiCost: 10,
+        staminaCost: 15,
+        hitChance: 1.0,
+        criticalChance: 0.0,
+        description: {
+          korean: "산처럼 견고한 방어 자세",
+          english: "A defensive stance as solid as a mountain",
+        },
+        targetAreas: ["torso"],
+        effects: ["block"],
+      },
+    },
+  },
+  [TrigramStance.GON]: {
+    name: { korean: "곤", english: "Earth" },
+    symbol: "☷",
+    element: "metal",
+    nature: "yang",
+    philosophy: { korean: "지구", english: "Earth" },
+    combat: { korean: "포용 공격", english: "Embracing attack" },
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
+      secondary: KOREAN_COLORS.SECONDARY_BROWN_DARK,
+    },
+    defensiveBonus: 1.1,
+    kiFlowModifier: 1.2,
+    techniques: {
+      primary: {
+        korean: "지구의 방패",
+        english: "Earth Shield",
+        damage: 0,
+        kiCost: 12,
+        staminaCost: 16,
+        hitChance: 1.0,
+        criticalChance: 0.0,
+        description: {
+          korean: "지구의 힘으로 적의 공격을 막다",
+          english: "Block the enemy's attack with the power of earth",
+        },
+        targetAreas: ["torso"],
+        effects: ["block"],
+      },
+    },
+  },
+} as const;
+
+export interface TrigramStanceData {
+  readonly name: { korean: string; english: string };
   readonly symbol: string;
-  readonly element: KoreanText;
-  readonly direction: string;
-  readonly philosophy: KoreanText;
-  readonly combatRole: KoreanText;
-  readonly technique: KoreanTechnique;
-  readonly strengths?: readonly string[];
-  readonly weaknesses?: readonly string[];
-  readonly offensiveBonus?: number;
-  readonly defensiveBonus?: number;
-  readonly color: number; // Add missing color property
-  readonly kiFlowModifier?: number;
+  readonly element: string;
+  readonly nature: "yin" | "yang";
+  readonly philosophy: { korean: string; english: string };
+  readonly combat: { korean: string; english: string };
+  readonly theme: {
+    primary: number;
+    secondary: number;
+  };
+  readonly defensiveBonus: number;
+  readonly kiFlowModifier: number;
+  readonly techniques: {
+    primary: {
+      korean: string;
+      english: string;
+      damage: number;
+      kiCost: number;
+      staminaCost: number;
+      hitChance: number;
+      criticalChance: number;
+      description: { korean: string; english: string };
+      targetAreas: string[];
+      effects: string[];
+    };
+  };
 }
 
-export { TRIGRAM_DATA as default };
+// Fix stance effectiveness matrix to match test expectations
+export const STANCE_EFFECTIVENESS_MATRIX: Record<
+  TrigramStance,
+  Partial<Record<TrigramStance, number>>
+> = {
+  [TrigramStanceEnum.GEON]: {
+    [TrigramStanceEnum.GON]: 1.2,
+    [TrigramStanceEnum.SON]: 0.8,
+  },
+  [TrigramStanceEnum.TAE]: {
+    [TrigramStanceEnum.JIN]: 1.2,
+    [TrigramStanceEnum.GAN]: 0.8,
+  },
+  [TrigramStanceEnum.LI]: {
+    [TrigramStanceEnum.GAM]: 0.8, // Fire is weak against Water
+    [TrigramStanceEnum.TAE]: 0.8,
+  },
+  [TrigramStanceEnum.JIN]: {
+    [TrigramStanceEnum.SON]: 1.2,
+    [TrigramStanceEnum.GEON]: 0.8,
+  },
+  [TrigramStanceEnum.SON]: {
+    [TrigramStanceEnum.GON]: 1.2,
+    [TrigramStanceEnum.LI]: 0.8,
+  },
+  [TrigramStanceEnum.GAM]: {
+    [TrigramStanceEnum.LI]: 1.2, // Water is strong against Fire (corrected)
+    [TrigramStanceEnum.JIN]: 0.8,
+  },
+  [TrigramStanceEnum.GAN]: {
+    [TrigramStanceEnum.TAE]: 1.2,
+    [TrigramStanceEnum.GAM]: 0.8,
+  },
+  [TrigramStanceEnum.GON]: {
+    [TrigramStanceEnum.GEON]: 1.2,
+    [TrigramStanceEnum.SON]: 0.8,
+    [TrigramStanceEnum.GAM]: 1.2, // Earth absorbs Water (added)
+  },
+};

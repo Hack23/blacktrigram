@@ -1,107 +1,141 @@
 // Base button component with Korean martial arts styling
 
-import React, { useCallback } from "react";
-import { KOREAN_COLORS } from "../../../types";
+import React, { useState } from "react";
+import { usePixiExtensions } from "../../../utils/pixiExtensions";
+import type { BaseButtonProps } from "../../../types/components";
+import { KOREAN_COLORS } from "../../../types/constants";
 
-export interface BaseButtonProps
-  extends Omit<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    "onClick" | "style" | "className"
-  > {
-  readonly onClick?: () => void;
-  readonly style?: React.CSSProperties;
-  readonly className?: string;
-  readonly loading?: boolean;
-  readonly variant?: "primary" | "secondary" | "danger";
-  readonly size?: "small" | "medium" | "large";
-}
-
-export function BaseButton({
-  children,
-  variant = "primary",
-  size = "medium",
-  disabled = false,
-  loading = false,
+export const BaseButton: React.FC<BaseButtonProps> = ({
+  x = 0,
+  y = 0,
+  width = 150,
+  height = 40,
+  text = "",
+  koreanText = "",
   onClick,
-  className,
-  style,
-  ...props
-}: BaseButtonProps): React.ReactElement {
-  const handleClick = useCallback(() => {
-    if (onClick && !disabled && !loading) {
-      onClick();
-    }
-  }, [onClick, disabled, loading]);
+  disabled = false,
+  variant = "primary",
+  testId = "",
+}) => {
+  usePixiExtensions();
 
-  const getBackgroundColor = useCallback((): string => {
-    switch (variant) {
-      case "primary":
-        return `#${KOREAN_COLORS.DOJANG_BLUE.toString(16).padStart(6, "0")}`;
-      case "secondary":
-        return `#${KOREAN_COLORS.SILVER.toString(16).padStart(6, "0")}`;
-      case "danger":
-        return `#${KOREAN_COLORS.TRADITIONAL_RED.toString(16).padStart(
-          6,
-          "0"
-        )}`;
-      default:
-        return `#${KOREAN_COLORS.DOJANG_BLUE.toString(16).padStart(6, "0")}`;
-    }
-  }, [variant]);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
-  const getTextColor = useCallback((): string => {
-    switch (variant) {
-      case "primary":
-        return `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`;
-      case "secondary":
-        return `#${KOREAN_COLORS.BLACK.toString(16).padStart(6, "0")}`;
-      case "danger":
-        return `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`;
-      default:
-        return `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`;
+  const getButtonColors = () => {
+    if (disabled) {
+      return {
+        background: KOREAN_COLORS.UI_DISABLED_FILL,
+        border: KOREAN_COLORS.UI_DISABLED_BORDER,
+        text: KOREAN_COLORS.UI_DISABLED_TEXT,
+      };
     }
-  }, [variant]);
 
-  const getPadding = () => {
-    switch (size) {
-      case "small":
-        return "0.5rem 1rem";
-      case "medium":
-        return "0.75rem 1.5rem";
-      case "large":
-        return "1rem 2rem";
-      default:
-        return "0.75rem 1.5rem";
+    const variantColors = {
+      primary: {
+        background: KOREAN_COLORS.PRIMARY_CYAN,
+        border: KOREAN_COLORS.ACCENT_BLUE,
+        text: KOREAN_COLORS.BLACK_SOLID,
+      },
+      secondary: {
+        background: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        border: KOREAN_COLORS.UI_BORDER,
+        text: KOREAN_COLORS.TEXT_PRIMARY,
+      },
+      accent: {
+        background: KOREAN_COLORS.ACCENT_GOLD,
+        border: KOREAN_COLORS.ACCENT_ORANGE,
+        text: KOREAN_COLORS.BLACK_SOLID,
+      },
+      ghost: {
+        background: 0x000000,
+        border: KOREAN_COLORS.UI_BORDER,
+        text: KOREAN_COLORS.TEXT_PRIMARY,
+      },
+      danger: {
+        background: KOREAN_COLORS.NEGATIVE_RED,
+        border: KOREAN_COLORS.NEGATIVE_RED_DARK,
+        text: KOREAN_COLORS.WHITE_SOLID,
+      },
+    };
+
+    return variantColors[variant];
+  };
+
+  const colors = getButtonColors();
+  const alpha = isPressed ? 0.8 : isHovered ? 0.9 : 1.0;
+
+  const handlePointerDown = () => {
+    if (!disabled) {
+      setIsPressed(true);
+      onClick?.();
     }
   };
 
+  const handlePointerUp = () => {
+    setIsPressed(false);
+  };
+
+  const handlePointerOver = () => {
+    if (!disabled) {
+      setIsHovered(true);
+    }
+  };
+
+  const handlePointerOut = () => {
+    setIsHovered(false);
+    setIsPressed(false);
+  };
+
   return (
-    <button
-      {...props}
-      className={className}
-      style={{
-        backgroundColor: getBackgroundColor(),
-        color: getTextColor(),
-        padding: getPadding(),
-        fontSize:
-          size === "small"
-            ? "0.875rem"
-            : size === "large"
-            ? "1.125rem"
-            : "1rem",
-        border: "none",
-        borderRadius: "4px",
-        cursor: disabled || loading ? "not-allowed" : "pointer",
-        opacity: disabled || loading ? 0.6 : 1,
-        transition: "all 0.2s ease",
-        fontFamily: "Noto Sans KR, Arial, sans-serif",
-        fontWeight: 500,
-        ...style,
-      }}
-      onClick={handleClick}
-      disabled={disabled || loading}
-    >
-      {loading ? "Loading..." : children}
-    </button>
+    <pixiContainer x={x} y={y} data-testid={testId || "base-button"}>
+      {/* Button Background */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          g.beginFill(colors.background, alpha);
+          g.lineStyle(2, colors.border, alpha);
+          g.drawRoundedRect(0, 0, width, height, 5);
+          g.endFill();
+        }}
+        interactive={!disabled}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+      />
+
+      {/* Button Text */}
+      {koreanText && (
+        <pixiText
+          text={koreanText}
+          style={{
+            fontSize: 14,
+            fill: colors.text,
+            fontWeight: "bold",
+            align: "center",
+          }}
+          x={width / 2}
+          y={height / 2 - 8}
+          anchor={0.5}
+        />
+      )}
+
+      {text && (
+        <pixiText
+          text={text}
+          style={{
+            fontSize: 12,
+            fill: colors.text,
+            align: "center",
+          }}
+          x={width / 2}
+          y={height / 2 + (koreanText ? 6 : 0)}
+          anchor={0.5}
+        />
+      )}
+    </pixiContainer>
   );
-}
+};
+
+export default BaseButton;

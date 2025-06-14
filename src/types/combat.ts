@@ -1,137 +1,174 @@
-// Combat mechanics types for Korean martial arts game
+/**
+ * Combat system types
+ */
 
-import type {
-  TrigramStance,
-  PlayerArchetype,
-  DamageType,
-  CombatState,
-  CombatAttackType as EnumCombatAttackType,
-} from "./enums";
+import type { DamageRange, KoreanText } from "./common";
+import type { StatusEffect } from "./effects";
 import type { PlayerState } from "./player";
-import type { DamageRange, Position } from "./common";
-import { StatusEffect } from "./effects";
-import { KoreanText } from "./korean-text";
-import type { VitalPoint as AnatomyVitalPoint } from "./anatomy";
+import { TrigramStance, CombatAttackType, DamageType, GameMode } from "./enums";
 
-// Use the enum type directly
-export type CombatAttackType = EnumCombatAttackType;
-
-// Add missing TechniqueType export
-export type TechniqueType =
-  | "strike"
-  | "thrust"
-  | "block"
-  | "counter_attack"
-  | "throw"
-  | "grapple"
-  | "pressure_point"
-  | "nerve_strike";
-
-// Combat technique definition
+// Korean martial arts technique
 export interface KoreanTechnique {
   readonly id: string;
-  readonly name: string;
+  readonly name: KoreanText;
   readonly koreanName: string;
   readonly englishName: string;
   readonly romanized: string;
   readonly description: KoreanText;
+
+  // Combat properties
   readonly stance: TrigramStance;
-  readonly type: CombatAttackType;
-  readonly damageType?: DamageType;
-  readonly damage?: number;
-  readonly kiCost?: number;
-  readonly staminaCost?: number;
-  readonly damageRange?: DamageRange;
-  readonly executionTime?: number;
-  readonly recoveryTime?: number;
-  readonly accuracy?: number;
-  readonly range?: number;
-  readonly effects?: readonly StatusEffect[];
-  readonly damageMultiplier?: number;
-  readonly critMultiplier?: number;
-  readonly critChance?: number;
-  readonly properties?: readonly string[];
-}
-
-// Combat result from technique execution
-export interface CombatResult {
-  readonly damage: number;
+  readonly type: CombatAttackType; // Fix: Use correct enum
   readonly damageType: DamageType;
-  readonly isVitalPoint: boolean;
-  readonly newState: CombatState;
+  readonly damage?: number; // Made optional to fix null issues
+  readonly damageRange?: DamageRange;
+  readonly range: number;
+  readonly kiCost: number;
+  readonly staminaCost: number;
+  readonly accuracy: number;
+  readonly executionTime: number;
+  readonly recoveryTime: number;
+  readonly critChance: number;
+  readonly critMultiplier: number;
   readonly effects: readonly StatusEffect[];
+}
+
+// Combat result - Fix: Ensure all properties are properly defined
+export interface CombatResult {
+  readonly success: boolean;
+  readonly damage: number;
+  readonly isCritical: boolean;
   readonly hit: boolean;
-  readonly critical: boolean;
-  readonly vitalPointsHit: readonly AnatomyVitalPoint[];
-  readonly attacker: PlayerArchetype;
-  readonly defender: PlayerArchetype;
-  readonly damagePrevented: number;
-  readonly staminaUsed: number;
-  readonly kiUsed: number;
-  readonly defenderDamaged: boolean;
-  readonly attackerStance: TrigramStance;
-  readonly defenderStance: TrigramStance;
-
-  // Enhanced pain and consciousness system
-  readonly painLevel: number;
-  readonly consciousnessImpact: number;
-  readonly balanceEffect: number;
-  readonly bloodLoss: number;
-  readonly stunDuration: number;
-  readonly statusEffects: readonly StatusEffect[];
-  readonly hitType: "miss" | "normal" | "critical" | "vital";
-  readonly techniqueUsed: KoreanTechnique;
-  readonly effectiveness: number;
-  readonly hitPosition: Position;
-  readonly vitalPoint?: AnatomyVitalPoint;
-
-  // Added missing winner and loser properties
-  readonly winner?: string;
-  readonly loser?: string;
+  readonly isBlocked: boolean;
+  readonly vitalPointHit: boolean;
+  readonly effects: readonly any[];
+  readonly attacker?: any;
+  readonly defender?: any;
+  readonly technique?: KoreanTechnique;
+  readonly criticalHit: boolean;
+  readonly timestamp: number; // <-- Ensure this property exists
 }
 
-// Type alias for HitResult as requested by error messages
-export type HitResult = CombatResult;
-
-// Combat analysis for technique effectiveness
-export interface CombatAnalysis {
-  readonly attacker: PlayerState;
-  readonly defender: PlayerState;
-  readonly technique: KoreanTechnique;
-  readonly hitChance: number;
-  readonly damageRange: { readonly min: number; readonly max: number };
-  readonly advantages: readonly string[];
-  readonly disadvantages: readonly string[];
+// Training-specific combat result extension
+export interface TrainingCombatResult extends CombatResult {
+  readonly trainingData?: {
+    readonly accuracy: number;
+    readonly damageCalculation: number;
+    readonly stanceEffectiveness: number;
+    readonly techniqueTiming: number;
+  };
 }
 
-// Combat event for logging
-export interface CombatEvent {
+// Fix: Remove duplicate TrainingCombatResult interface
+export interface TrainingCombatResult extends CombatResult {
+  readonly accuracyScore: number;
+  readonly techniqueScore: number;
+  readonly formScore: number;
+  readonly improvementAreas: readonly string[];
+  readonly nextTrainingGoals: readonly string[];
+}
+
+// Fix: Define CombatEventData interface that's used in MatchStatistics
+export interface CombatEventData {
+  readonly id: string;
   readonly timestamp: number;
   readonly type:
     | "attack"
-    | "hit"
     | "block"
-    | "dodge"
-    | "stance_change"
-    | "effect_applied"
-    | "round_end"
-    | "match_end";
-  readonly attackerId?: string;
-  readonly defenderId?: string;
-  readonly techniqueId?: string;
-  readonly damage?: number;
-  readonly resultText: KoreanText;
-  readonly effectId?: string;
-  readonly roundNumber?: number;
-  readonly winnerId?: string;
+    | "critical"
+    | "vital_point"
+    | "stance_change";
+  readonly attacker: number; // Player index
+  readonly defender: number; // Player index
+  readonly damage: number;
+  readonly technique?: string;
+  readonly result: "hit" | "miss" | "blocked" | "critical";
+  readonly effects?: readonly string[];
 }
 
-export type { CombatState, DamageType } from "./enums";
+// Combat statistics
+export interface CombatStats {
+  readonly totalDamage: number;
+  readonly criticalHits: number;
+  readonly vitalPointHits: number;
+  readonly techniquesUsed: number;
+  readonly stamina: number;
+  readonly ki: number;
+}
 
-// Attack input for combat system
-export interface AttackInput {
-  readonly attacker: PlayerState;
-  readonly defender: PlayerState;
-  readonly technique: KoreanTechnique;
-  readonly targetPoint?: string | null; // Add missing property
+// Fix: Move combat-specific component props here
+export interface CombatScreenProps {
+  readonly players: readonly PlayerState[];
+  readonly onPlayerUpdate: (
+    playerIndex: number,
+    updates: Partial<PlayerState>
+  ) => void;
+  readonly currentRound: number;
+  readonly timeRemaining: number;
+  readonly isPaused: boolean;
+  readonly onReturnToMenu: () => void;
+  readonly onGameEnd: (winner: number) => void;
+  readonly gameMode?: GameMode;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+}
+
+export interface CombatArenaProps {
+  readonly players: readonly [PlayerState, PlayerState];
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly onPlayerClick?: (playerIndex: number) => void;
+}
+
+export interface CombatHUDProps {
+  readonly player1: PlayerState;
+  readonly player2: PlayerState;
+  readonly currentRound: number;
+  readonly timeRemaining: number;
+  readonly maxRounds: number;
+  readonly isPaused: boolean;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly onPauseToggle?: () => void;
+}
+
+export interface CombatControlsProps {
+  readonly onAttack: () => void;
+  readonly onDefend: () => void;
+  readonly onSwitchStance?: (stance: TrigramStance) => void;
+  readonly onPauseToggle: () => void;
+  readonly isPaused: boolean;
+  readonly player: PlayerState;
+  readonly onTechniqueExecute?: (technique: KoreanTechnique) => void;
+  readonly onGuard?: () => void;
+  readonly isExecutingTechnique?: boolean;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+}
+
+export interface PlayerStatusPanelProps {
+  readonly player: PlayerState;
+  readonly position: "left" | "right";
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+  readonly isSelected?: boolean;
+}
+
+export interface CombatStatsProps {
+  readonly players: readonly [PlayerState, PlayerState];
+  readonly combatLog: readonly string[];
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
 }

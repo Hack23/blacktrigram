@@ -1,186 +1,105 @@
 // Test setup for Black Trigram Korean martial arts game
 
-import { beforeEach, vi } from "vitest";
+import { beforeAll, afterEach, vi } from "vitest";
+import { expect } from "vitest";
+import * as matchers from "@testing-library/jest-dom/matchers";
 
-// Mock @pixi/react for Korean martial arts testing
-vi.mock("@pixi/react", () => ({
-  Stage: vi.fn(({ children, ...props }) => {
-    const React = require("react");
-    return React.createElement(
-      "div",
-      { "data-testid": "pixi-stage", ...props },
-      children
-    );
-  }),
-  Container: vi.fn(({ children, ...props }) => {
-    const React = require("react");
-    return React.createElement(
-      "div",
-      { "data-testid": "pixi-container", ...props },
-      children
-    );
-  }),
-  Graphics: vi.fn(({ children, ...props }) => {
-    const React = require("react");
-    return React.createElement(
-      "div",
-      { "data-testid": "pixi-graphics", ...props },
-      children
-    );
-  }),
-  Text: vi.fn(({ children, text, ...props }) => {
-    const React = require("react");
-    return React.createElement(
-      "div",
-      { "data-testid": "pixi-text", ...props },
-      text || children
-    );
-  }),
-}));
+expect.extend(matchers);
 
-// Mock react-error-boundary for Korean martial arts error handling
-vi.mock("react-error-boundary", () => ({
-  ErrorBoundary: vi.fn(({ children }) => {
-    const React = require("react");
-    return React.createElement(
-      "div",
-      { "data-testid": "error-boundary" },
-      children
-    );
-  }),
-}));
+beforeAll(() => {
+  // Enhanced Audio mock with proper HTMLAudioElement that matches test expectations
+  global.HTMLAudioElement = vi.fn().mockImplementation(() => ({
+    canPlayType: vi.fn((type: string) => {
+      // Return "probably" for mp3 to match test expectations
+      if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
+      if (type === "audio/wav") return "maybe";
+      if (type === "audio/ogg") return "maybe";
+      return ""; // Empty string means not supported (webm)
+    }),
+    play: vi.fn(() => Promise.resolve()),
+    pause: vi.fn(),
+    load: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    volume: 1,
+    currentTime: 0,
+    duration: 100,
+    paused: false,
+    ended: false,
+    src: "",
+    crossOrigin: null,
+    preload: "auto",
+  })) as any;
 
-// Mock AudioManager for Korean martial arts audio system
-vi.mock("../audio/AudioManager", () => {
-  const mockAudioManager = {
-    getState: vi.fn(() => ({
-      masterVolume: 1.0,
-      sfxVolume: 1.0,
-      musicVolume: 1.0,
-      muted: false,
-      currentMusicTrack: null,
-      isInitialized: true,
+  // Mock PixiJS Application constructor issues
+  global.HTMLCanvasElement = vi.fn().mockImplementation(() => ({
+    getContext: vi.fn(() => ({
+      fillRect: vi.fn(),
+      clearRect: vi.fn(),
+      canvas: { width: 800, height: 600 },
     })),
-    setVolume: vi.fn(),
-    setMasterVolume: vi.fn().mockImplementation((volume) => {
-      mockAudioManager.getState = vi.fn(() => ({
-        masterVolume: volume,
-        sfxVolume: 1.0,
-        musicVolume: 1.0,
-        muted: false,
-        currentMusicTrack: null,
-        isInitialized: true,
-      }));
-    }),
-    setSfxVolume: vi.fn(),
-    setMusicVolume: vi.fn(),
-    mute: vi.fn(),
-    unmute: vi.fn(),
-    toggleMute: vi.fn().mockImplementation(() => {
-      const currentState = mockAudioManager.getState();
-      mockAudioManager.getState = vi.fn(() => ({
-        ...currentState,
-        muted: !currentState.muted,
-      }));
-    }),
-    initialize: vi.fn(),
-    playSFX: vi.fn(),
-    playMusic: vi.fn(),
-    stopMusic: vi.fn(),
-    stopAllSounds: vi.fn(),
-    playAttackSound: vi.fn(),
-    playHitSound: vi.fn(),
-    playTechniqueSound: vi.fn(),
-    playStanceChangeSound: vi.fn(),
-    playVitalPointHit: vi.fn(),
-    playEnvironmentalSound: vi.fn(),
-  };
+    width: 800,
+    height: 600,
+    style: {},
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as any;
 
-  return {
-    AudioManager: vi.fn(() => mockAudioManager),
-    audioManager: mockAudioManager,
-    useAudio: vi.fn(() => mockAudioManager),
+  // Mock Canvas API
+  global.CanvasRenderingContext2D = vi.fn().mockImplementation(() => ({
+    fillRect: vi.fn(),
+    clearRect: vi.fn(),
+    beginPath: vi.fn(),
+    arc: vi.fn(),
+    fill: vi.fn(),
+    stroke: vi.fn(),
+  }));
+
+  // Mock requestAnimationFrame
+  global.requestAnimationFrame = vi.fn((cb) => window.setTimeout(cb, 16));
+  global.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
+
+  // Mock window.matchMedia
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+
+  // Mock ResizeObserver
+  global.ResizeObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }));
+
+  // Console warning suppression for cleaner test output
+  const originalWarn = console.warn;
+  console.warn = (...args) => {
+    // Suppress specific warnings that are expected in test environment
+    const message = args[0];
+    if (
+      typeof message === "string" &&
+      (message.includes("PixiJS") ||
+        message.includes("WebGL") ||
+        message.includes("AudioContext"))
+    ) {
+      return;
+    }
+    originalWarn(...args);
   };
 });
 
-// Mock AudioProvider
-vi.mock("../audio/AudioProvider", () => ({
-  AudioProvider: vi.fn(({ children }) => {
-    const React = require("react");
-    return React.createElement(
-      "div",
-      { "data-testid": "audio-provider" },
-      children
-    );
-  }),
-  useAudio: vi.fn(() => ({
-    getState: vi.fn(() => ({
-      masterVolume: 1.0,
-      sfxVolume: 1.0,
-      musicVolume: 1.0,
-      muted: false,
-      currentMusicTrack: null,
-      isInitialized: true,
-    })),
-    setVolume: vi.fn(),
-    setMasterVolume: vi.fn(),
-    setSfxVolume: vi.fn(),
-    setMusicVolume: vi.fn(),
-    mute: vi.fn(),
-    unmute: vi.fn(),
-    initialize: vi.fn(),
-    playSFX: vi.fn(),
-    playMusic: vi.fn(),
-    stopMusic: vi.fn(),
-    stopAllSounds: vi.fn(),
-    playAttackSound: vi.fn(),
-    playHitSound: vi.fn(),
-    playTechniqueSound: vi.fn(),
-    playStanceChangeSound: vi.fn(),
-    playVitalPointHit: vi.fn(),
-    playEnvironmentalSound: vi.fn(),
-  })),
-}));
-
-// Proper AudioContext mock for Korean martial arts audio
-class MockAudioContext {
-  createOscillator() {
-    return {
-      connect: vi.fn(),
-      start: vi.fn(),
-      stop: vi.fn(),
-      frequency: {
-        setValueAtTime: vi.fn(),
-        exponentialRampToValueAtTime: vi.fn(),
-      },
-    };
-  }
-
-  createGain() {
-    return {
-      connect: vi.fn(),
-      gain: {
-        setValueAtTime: vi.fn(),
-        exponentialRampToValueAtTime: vi.fn(),
-        linearRampToValueAtTime: vi.fn(),
-      },
-    };
-  }
-
-  get destination() {
-    return {};
-  }
-
-  get currentTime() {
-    return 0;
-  }
-}
-
-// Set up global AudioContext mock for Korean martial arts
-global.AudioContext = vi.fn(() => new MockAudioContext()) as any;
-(global as any).webkitAudioContext = global.AudioContext;
-
-beforeEach(() => {
-  // Reset all mocks before each Korean martial arts test
+// Cleanup after each test case
+afterEach(() => {
+  // Clean up any test-specific mocks
   vi.clearAllMocks();
 });

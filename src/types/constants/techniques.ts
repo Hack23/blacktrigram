@@ -1,64 +1,361 @@
-// Korean martial arts techniques for Black Trigram
+/**
+ * Korean martial arts techniques for each trigram stance
+ */
 
-import type { DamageType } from "../combat";
+import { TrigramStance, CombatAttackType, DamageType } from "../enums";
+import type { KoreanTechnique } from "../anatomy";
 
-// Single TECHNIQUE_PROPERTIES declaration - Korean martial arts authentic
-export const TECHNIQUE_PROPERTIES = {
-  strike: {
+// Base techniques for each trigram stance
+export const TRIGRAM_TECHNIQUES: Record<
+  TrigramStance,
+  readonly KoreanTechnique[]
+> = {
+  [TrigramStance.GEON]: [
+    {
+      id: "geon_heaven_strike",
+      name: {
+        korean: "천둥벽력",
+        english: "Thunder Strike",
+        romanized: "cheondung_byeokryeok",
+      }, // Fix: Use KoreanText structure
+      koreanName: "천둥벽력",
+      englishName: "Thunder Strike",
+      romanized: "cheondung_byeokryeok",
+      description: {
+        korean: "하늘의 힘을 담은 직접적인 타격",
+        english: "Direct strike imbued with heavenly power",
+      },
+      stance: TrigramStance.GEON,
+      type: CombatAttackType.STRIKE, // Fix: Use CombatAttackType
+      damageType: DamageType.BLUNT,
+      damage: 30,
+      kiCost: 15,
+      staminaCost: 20,
+      accuracy: 0.8,
+      range: 1.2,
+      executionTime: 800,
+      recoveryTime: 1200,
+      critChance: 0.1,
+      critMultiplier: 1.5,
+      effects: [],
+    },
+  ],
+  [TrigramStance.TAE]: [
+    {
+      id: "tae_flowing_strikes",
+      name: {
+        korean: "유수연타",
+        english: "Flowing Strikes",
+        romanized: "yusu_yeonta",
+      }, // Fix: Use KoreanText structure
+      koreanName: "유수연타",
+      englishName: "Flowing Strikes",
+      romanized: "yusu_yeonta",
+      description: {
+        korean: "물의 흐름처럼 연속적인 타격",
+        english: "Continuous strikes like flowing water",
+      },
+      stance: TrigramStance.TAE,
+      type: CombatAttackType.STRIKE,
+      damageType: DamageType.BLUNT,
+      damage: 25,
+      kiCost: 12,
+      staminaCost: 18,
+      accuracy: 0.85,
+      range: 1.0,
+      executionTime: 600,
+      recoveryTime: 1000,
+      critChance: 0.08,
+      critMultiplier: 1.3,
+      effects: [],
+    },
+  ],
+  [TrigramStance.LI]: [
+    {
+      id: "li_flame_spear",
+      name: {
+        korean: "화염지창",
+        english: "Flame Spear",
+        romanized: "hwayeom_jichang",
+      }, // Fix: Use KoreanText structure
+      koreanName: "화염지창",
+      englishName: "Flame Spear",
+      romanized: "hwayeom_jichang",
+      description: {
+        korean: "불꽃처럼 정확하고 날카로운 공격",
+        english: "Precise and sharp attack like flame",
+      },
+      stance: TrigramStance.LI,
+      type: CombatAttackType.THRUST,
+      damageType: DamageType.PIERCING,
+      damage: 35,
+      kiCost: 18,
+      staminaCost: 15,
+      accuracy: 0.9,
+      range: 1.5,
+      executionTime: 700,
+      recoveryTime: 1100,
+      critChance: 0.15,
+      critMultiplier: 1.8,
+      effects: [],
+    },
+  ],
+  [TrigramStance.JIN]: [
+    {
+      id: "jin_lightning_flash",
+      name: {
+        korean: "벽력일섬",
+        english: "Lightning Flash",
+        romanized: "byeokryeok_ilseom",
+      }, // Fix: Use KoreanText structure
+      koreanName: "벽력일섬",
+      englishName: "Lightning Flash",
+      romanized: "byeokryeok_ilseom",
+      description: {
+        korean: "번개처럼 빠른 일격",
+        english: "Swift strike like lightning",
+      },
+      stance: TrigramStance.JIN,
+      type: CombatAttackType.STRIKE,
+      damageType: DamageType.BLUNT,
+      damage: 28,
+      kiCost: 10,
+      staminaCost: 25,
+      accuracy: 0.75,
+      range: 1.0,
+      executionTime: 500,
+      recoveryTime: 800,
+      critChance: 0.12,
+      critMultiplier: 1.6,
+      effects: [],
+    },
+  ],
+  [TrigramStance.SON]: [
+    {
+      id: "son_whirlwind_barrage",
+      name: {
+        korean: "선풍연격",
+        english: "Whirlwind Barrage",
+        romanized: "seonpung_yeongyeok",
+      }, // Fix: Use KoreanText structure
+      koreanName: "선풍연격",
+      englishName: "Whirlwind Barrage",
+      romanized: "seonpung_yeongyeok",
+      description: {
+        korean: "바람처럼 연속적인 공격",
+        english: "Continuous attacks like wind",
+      },
+      stance: TrigramStance.SON,
+      type: CombatAttackType.STRIKE,
+      damageType: DamageType.BLUNT,
+      damage: 22,
+      kiCost: 8,
+      staminaCost: 30,
+      accuracy: 0.7,
+      range: 0.8,
+      executionTime: 400,
+      recoveryTime: 600,
+      critChance: 0.06,
+      critMultiplier: 1.2,
+      effects: [],
+    },
+  ],
+  [TrigramStance.GAM]: [
+    {
+      id: "gam_water_counter",
+      name: {
+        korean: "수류반격",
+        english: "Water Counter",
+        romanized: "suryu_bangyeok",
+      }, // Fix: Use KoreanText structure
+      koreanName: "수류반격",
+      englishName: "Water Counter",
+      romanized: "suryu_bangyeok",
+      description: {
+        korean: "물의 흐름으로 적의 공격을 받아넘기는 반격",
+        english: "Counter-attack that flows like water",
+      },
+      stance: TrigramStance.GAM,
+      type: CombatAttackType.COUNTER_ATTACK,
+      damageType: DamageType.BLUNT,
+      damage: 32,
+      kiCost: 20,
+      staminaCost: 12,
+      accuracy: 0.85,
+      range: 0.9,
+      executionTime: 600,
+      recoveryTime: 900,
+      critChance: 0.18,
+      critMultiplier: 1.7,
+      effects: [],
+    },
+  ],
+  [TrigramStance.GAN]: [
+    {
+      id: "gan_rock_defense",
+      name: {
+        korean: "반석방어",
+        english: "Rock Defense",
+        romanized: "banseok_bangeo",
+      }, // Fix: Use KoreanText structure
+      koreanName: "반석방어",
+      englishName: "Rock Defense",
+      romanized: "banseok_bangeo",
+      description: {
+        korean: "바위처럼 견고한 방어 자세",
+        english: "Solid defense like a rock",
+      },
+      stance: TrigramStance.GAN,
+      type: CombatAttackType.BLOCK,
+      damageType: DamageType.BLUNT,
+      damage: 15,
+      kiCost: 5,
+      staminaCost: 8,
+      accuracy: 0.95,
+      range: 0.5,
+      executionTime: 300,
+      recoveryTime: 500,
+      critChance: 0.02,
+      critMultiplier: 1.0,
+      effects: [],
+    },
+  ],
+  [TrigramStance.GON]: [
+    {
+      id: "gon_earth_embrace",
+      name: {
+        korean: "대지포옹",
+        english: "Earth Embrace",
+        romanized: "daeji_pooong",
+      }, // Fix: Use KoreanText structure
+      koreanName: "대지포옹",
+      englishName: "Earth Embrace",
+      romanized: "daeji_pooong",
+      description: {
+        korean: "대지의 힘으로 상대를 제압하는 기술",
+        english: "Grappling technique using earth's power",
+      },
+      stance: TrigramStance.GON,
+      type: CombatAttackType.GRAPPLE,
+      damageType: DamageType.BLUNT,
+      damage: 26,
+      kiCost: 16,
+      staminaCost: 22,
+      accuracy: 0.72,
+      range: 0.7,
+      executionTime: 900,
+      recoveryTime: 1300,
+      critChance: 0.08,
+      critMultiplier: 1.4,
+      effects: [],
+    },
+  ],
+};
+
+// Technique effectiveness modifiers
+export const TECHNIQUE_MODIFIERS = {
+  DAMAGE_VARIANCE: 0.15, // ±15% damage variance
+  CRITICAL_DAMAGE_BASE: 1.5,
+  VITAL_POINT_BONUS: 2.0,
+  STANCE_MISMATCH_PENALTY: 0.8,
+  COMBO_MULTIPLIER: 1.1,
+} as const;
+
+// Complete TECHNIQUE_PROPERTIES with proper enum usage
+export const TECHNIQUE_PROPERTIES: Record<
+  CombatAttackType, // Fix: Use CombatAttackType instead of string literals
+  {
+    baseDamage: number;
+    range: number;
+    accuracy: number;
+    kiCost: number;
+    staminaCost: number;
+  }
+> = {
+  [CombatAttackType.STRIKE]: {
     baseDamage: 20,
     range: 1.0,
     accuracy: 0.85,
     kiCost: 15,
     staminaCost: 10,
   },
-  thrust: {
+  [CombatAttackType.THRUST]: {
     baseDamage: 25,
     range: 1.5,
     accuracy: 0.9,
     kiCost: 18,
     staminaCost: 12,
   },
-  block: {
+  [CombatAttackType.BLOCK]: {
     baseDamage: 5,
     range: 0.5,
     accuracy: 0.95,
     kiCost: 8,
     staminaCost: 15,
   },
-  counter_attack: {
+  [CombatAttackType.COUNTER_ATTACK]: {
     baseDamage: 22,
     range: 1.0,
     accuracy: 0.88,
     kiCost: 20,
     staminaCost: 15,
   },
-  throw: {
+  [CombatAttackType.THROW]: {
     baseDamage: 30,
     range: 0.8,
     accuracy: 0.75,
     kiCost: 25,
     staminaCost: 20,
   },
-  grapple: {
+  [CombatAttackType.GRAPPLE]: {
     baseDamage: 15,
     range: 0.6,
     accuracy: 0.8,
     kiCost: 20,
     staminaCost: 25,
   },
-  pressure_point: {
+  [CombatAttackType.PRESSURE_POINT]: {
     baseDamage: 12,
     range: 0.8,
     accuracy: 0.95,
     kiCost: 25,
     staminaCost: 8,
   },
-  nerve_strike: {
+  [CombatAttackType.NERVE_STRIKE]: {
     baseDamage: 18,
     range: 1.0,
     accuracy: 0.9,
     kiCost: 22,
     staminaCost: 12,
+  },
+  [CombatAttackType.PUNCH]: {
+    baseDamage: 18,
+    range: 1.2,
+    accuracy: 0.88,
+    kiCost: 12,
+    staminaCost: 8,
+  },
+  // Fix: Add missing CombatAttackType properties
+  [CombatAttackType.KICK]: {
+    baseDamage: 22,
+    range: 1.8,
+    accuracy: 0.82,
+    kiCost: 16,
+    staminaCost: 14,
+  },
+  [CombatAttackType.ELBOW]: {
+    baseDamage: 26,
+    range: 0.9,
+    accuracy: 0.86,
+    kiCost: 18,
+    staminaCost: 12,
+  },
+  [CombatAttackType.KNEE]: {
+    baseDamage: 28,
+    range: 0.7,
+    accuracy: 0.84,
+    kiCost: 20,
+    staminaCost: 16,
   },
 } as const;
 
@@ -348,46 +645,116 @@ export const ARCHETYPE_TECHNIQUE_BONUSES = {
   musa: {
     korean: "무사",
     english: "Traditional Warrior",
-    preferredTechniques: ["strike", "block", "counter_attack"],
-    damageBonus: 1.2,
-    accuracyBonus: 1.1,
-    kiEfficiency: 1.0,
-    staminaEfficiency: 1.1,
+    philosophy: "Honor through strength, disciplined combat",
+    combatStyle: "Direct confrontation, overwhelming force",
+    preferredTrigrams: ["geon", "jin"],
+    techniques: {
+      관절기법: "Joint manipulation and control",
+      급소타격: "Military-taught pressure point targeting",
+      제압술: "Honor-based control methods",
+    },
+    bonuses: {
+      damageResistance: 1.2,
+      jointTechniques: 1.5,
+      militaryDiscipline: 1.3,
+      // Retaining original fields for compatibility, adjust as needed
+      damageBonus: 1.2,
+      accuracyBonus: 1.1,
+      kiEfficiency: 1.0,
+      staminaEfficiency: 1.1,
+    },
+    preferredTechniques: ["strike", "block", "counter_attack"], // Kept for potential compatibility
   },
   amsalja: {
     korean: "암살자",
     english: "Shadow Assassin",
-    preferredTechniques: ["nerve_strike", "pressure_point", "thrust"],
-    damageBonus: 1.5,
-    accuracyBonus: 1.3,
-    kiEfficiency: 1.2,
-    staminaEfficiency: 0.9,
+    philosophy: "Efficiency through invisibility, one perfect strike",
+    combatStyle: "Stealth approaches, instant takedowns",
+    preferredTrigrams: ["son", "gam"],
+    techniques: {
+      무성제압: "Silent takedowns preventing vocal response",
+      신경파괴: "Precise neural disruption for stealth",
+      호흡차단: "Silent breathing and consciousness targeting",
+    },
+    bonuses: {
+      stealthMultiplier: 1.8,
+      oneStrikeKill: 2.0,
+      silentMovement: 1.5,
+      // Retaining original fields for compatibility, adjust as needed
+      damageBonus: 1.5,
+      accuracyBonus: 1.3,
+      kiEfficiency: 1.2,
+      staminaEfficiency: 0.9,
+    },
+    preferredTechniques: ["nerve_strike", "pressure_point", "thrust"], // Kept for potential compatibility
   },
   hacker: {
     korean: "해커",
     english: "Cyber Warrior",
-    preferredTechniques: ["pressure_point", "nerve_strike"],
-    damageBonus: 1.1,
-    accuracyBonus: 1.4,
-    kiEfficiency: 1.3,
-    staminaEfficiency: 1.0,
+    philosophy: "Information as power, technological advantage",
+    combatStyle: "Environmental manipulation, tech-assisted strikes",
+    preferredTrigrams: ["li", "tae"],
+    techniques: {
+      해부학적분석: "Data-driven approach to vital points",
+      생체역학파괴: "Tech-enhanced body mechanics understanding",
+      체계적제압: "Algorithm-based damage accumulation",
+    },
+    bonuses: {
+      precisionAnalysis: 1.6,
+      environmentalControl: 1.4,
+      dataOptimization: 1.3,
+      // Retaining original fields for compatibility, adjust as needed
+      damageBonus: 1.1,
+      accuracyBonus: 1.4,
+      kiEfficiency: 1.3,
+      staminaEfficiency: 1.0,
+    },
+    preferredTechniques: ["pressure_point", "nerve_strike"], // Kept for potential compatibility
   },
   jeongbo_yowon: {
     korean: "정보요원",
     english: "Intelligence Operative",
-    preferredTechniques: ["grapple", "pressure_point"],
-    damageBonus: 1.1,
-    accuracyBonus: 1.2,
-    kiEfficiency: 1.1,
-    staminaEfficiency: 1.2,
+    philosophy: "Knowledge through observation, strategic thinking",
+    combatStyle: "Psychological manipulation, precise timing",
+    preferredTrigrams: ["gan", "gon"],
+    techniques: {
+      고통순응: "Intelligence-based submission through pain",
+      심리적압박: "Mental intimidation through technique",
+      정보추출: "Combat methods from interrogation training",
+    },
+    bonuses: {
+      psychologicalWarfare: 1.5,
+      strategicAnalysis: 1.4,
+      painCompliance: 1.7,
+      // Retaining original fields for compatibility, adjust as needed
+      damageBonus: 1.1,
+      accuracyBonus: 1.2,
+      kiEfficiency: 1.1,
+      staminaEfficiency: 1.2,
+    },
+    preferredTechniques: ["grapple", "pressure_point"], // Kept for potential compatibility
   },
   jojik_pokryeokbae: {
     korean: "조직폭력배",
     english: "Organized Crime",
-    preferredTechniques: ["strike", "throw", "grapple"],
-    damageBonus: 1.3,
-    accuracyBonus: 0.9,
-    kiEfficiency: 0.9,
-    staminaEfficiency: 1.3,
+    philosophy: "Survival through ruthlessness, practical violence",
+    combatStyle: "Dirty fighting, improvised weapons",
+    preferredTrigrams: ["jin", "gam"],
+    techniques: {
+      환경활용: "Street-smart use of surroundings as weapons",
+      더러운기법: "Brutal eye attacks, groin strikes, hair pulling",
+      생존격투: "Underground whatever-it-takes combat",
+    },
+    bonuses: {
+      dirtyFighting: 1.8,
+      survivalInstinct: 1.6,
+      streetSmart: 1.5,
+      // Retaining original fields for compatibility, adjust as needed
+      damageBonus: 1.3,
+      accuracyBonus: 0.9,
+      kiEfficiency: 0.9,
+      staminaEfficiency: 1.3,
+    },
+    preferredTechniques: ["strike", "throw", "grapple"], // Kept for potential compatibility
   },
 } as const;

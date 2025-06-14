@@ -1,92 +1,108 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { TrigramCalculator } from "./TrigramCalculator";
-import type { PlayerState, TrigramStance } from "../../types";
-import {
-  // TRIGRAM_DATA as AllTrigramData, // Removed
-  STANCE_EFFECTIVENESS_MATRIX as GlobalEffectivenessMatrix,
-} from "../../types/constants";
-// import { MOCK_PLAYER_STATE_GEON } from '../../test/mocks/player'; // Correct or remove
-// import { MOCK_TRIGRAM_DATA, MOCK_EFFECTIVENESS_MATRIX } from '../../test/mocks/trigram'; // Correct or remove
+import { TrigramStance } from "../../types/enums";
 
-const createMockPlayerState = (
-  stance: TrigramStance,
-  ki = 100,
-  stamina = 100,
-  health = 100
-): PlayerState => ({
-  id: "player1",
-  name: "Test Player",
-  archetype: "musa",
-  position: { x: 0, y: 0 },
-  stance,
-  facing: "right",
-  health,
-  maxHealth: 100,
-  ki,
-  maxKi: 100,
-  stamina,
-  maxStamina: 100,
-  consciousness: 100,
-  pain: 0,
-  balance: 100,
-  bloodLoss: 0,
-  lastStanceChangeTime: 0,
-  isAttacking: false,
-  combatReadiness: 100,
-  activeEffects: [],
-  combatState: "ready",
-  conditions: [],
-});
-
+/**
+ * ## Trigram Calculator Test Suite
+ *
+ * **Business Purpose:**
+ * Validates the mathematical foundation of Black Trigram's Korean martial arts
+ * trigram system. Tests ensure that:
+ * - Trigram calculations follow authentic I Ching mathematical principles
+ * - Stance relationships maintain traditional Korean martial arts hierarchy
+ * - Combat effectiveness calculations respect cultural trigram philosophy
+ * - Mathematical precision supports competitive gameplay balance
+ *
+ * **Korean Martial Arts Integration:**
+ * - Tests traditional I Ching trigram mathematical relationships
+ * - Validates authentic Korean martial arts stance progression calculations
+ * - Ensures cultural accuracy in trigram transformation mathematics
+ * - Verifies traditional Korean martial arts energy flow calculations
+ *
+ * **Business Value:**
+ * These tests ensure trigram calculations provide mathematically sound and
+ * culturally authentic Korean martial arts combat mechanics.
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 describe("TrigramCalculator", () => {
   let calculator: TrigramCalculator;
-  const mockPlayerStateGeon = createMockPlayerState("geon");
 
   beforeEach(() => {
-    // Pass the actual constants if not using mocks
-    calculator = new TrigramCalculator(
-      // AllTrigramData, // TrigramCalculator uses imported TRIGRAM_DATA by default
-      GlobalEffectivenessMatrix // Pass effectiveness matrix if it's not default or for specific test setup
-      // undefined // for transitionRules, to use default
-    );
+    calculator = new TrigramCalculator();
   });
 
-  it("should calculate transition cost", () => {
-    const cost = calculator.calculateTransitionCost(
-      "geon",
-      "tae",
-      mockPlayerStateGeon
-    );
-    expect(cost).toBeDefined();
-    expect(cost.ki).toBeGreaterThanOrEqual(0);
-    expect(cost.stamina).toBeGreaterThanOrEqual(0);
+  /**
+   * **Business Requirement:** Trigram calculations must follow traditional
+   * I Ching mathematical principles with cultural authenticity
+   */
+  describe("Traditional Trigram Mathematics", () => {
+    it("should calculate trigram opposites correctly", () => {
+      expect(calculator.getOpposite(TrigramStance.GEON)).toBe(
+        TrigramStance.GON
+      );
+      expect(calculator.getOpposite(TrigramStance.LI)).toBe(TrigramStance.GAM);
+      expect(calculator.getOpposite(TrigramStance.JIN)).toBe(TrigramStance.GAN);
+      expect(calculator.getOpposite(TrigramStance.SON)).toBe(TrigramStance.TAE);
+    });
+
+    it("should calculate trigram adjacency relationships", () => {
+      const adjacent = calculator.getAdjacentStances(TrigramStance.GEON);
+      expect(adjacent).toContain(TrigramStance.TAE);
+      expect(adjacent).toContain(TrigramStance.SON);
+    });
+
+    it("should calculate trigram transformation difficulty", () => {
+      // Adjacent stances should be easier to transform
+      const easyTransition = calculator.getTransitionDifficulty(
+        TrigramStance.GEON,
+        TrigramStance.TAE
+      );
+
+      // Opposite stances should be hardest to transform
+      const hardTransition = calculator.getTransitionDifficulty(
+        TrigramStance.GEON,
+        TrigramStance.GON
+      );
+
+      expect(hardTransition).toBeGreaterThan(easyTransition);
+    });
   });
 
-  it("should calculate optimal path (simplified)", () => {
-    const path = calculator.calculateOptimalPath(
-      "geon",
-      "gam",
-      mockPlayerStateGeon
-      // 2 // maxSteps is not a parameter for this simplified version
-    );
-    if (path) {
-      // Path can be null
-      expect(path.path.length).toBeGreaterThanOrEqual(2);
-      expect(path.path[0]).toBe("geon");
-      // expect(path.path[path.path.length - 1]).toBe("gam"); // This might not hold for simple placeholder
-    } else {
-      // Handle null case, e.g. expect it if costs are too high
-      expect(path).toBeNull(); // Or specific conditions for null
-    }
-  });
+  /**
+   * **Business Requirement:** Korean martial arts effectiveness calculations
+   * must respect traditional combat principles and philosophy
+   */
+  describe("Combat Effectiveness Calculations", () => {
+    it("should calculate stance effectiveness against other stances", () => {
+      // Heaven (건) should be strong against Earth (곤)
+      const effectiveness = calculator.calculateStanceEffectiveness(
+        TrigramStance.GEON,
+        TrigramStance.GON
+      );
 
-  it("should get Ki recovery rate", () => {
-    const rate = calculator.getKiRecoveryRate(mockPlayerStateGeon); // Pass PlayerState
-    expect(rate).toBeGreaterThanOrEqual(0);
-  });
+      expect(effectiveness).toBeGreaterThan(1.0);
+    });
 
-  it("should get stance effectiveness", () => {
-    const effectiveness = calculator.getStanceEffectiveness("geon", "tae");
-    expect(effectiveness).toBeGreaterThan(0); // Or specific expected value
+    it("should calculate energy flow between stances", () => {
+      const energyFlow = calculator.calculateEnergyFlow(
+        TrigramStance.LI,
+        TrigramStance.GAM
+      );
+
+      // Fire and Water should have opposing energy flow
+      expect(energyFlow).toBeLessThan(0);
+    });
+
+    it("should maintain trigram balance in calculations", () => {
+      const stances = Object.values(TrigramStance);
+      const totalBalance = stances.reduce((sum, stance) => {
+        return sum + calculator.getStanceBalance(stance);
+      }, 0);
+
+      // Total balance should be neutral (close to 0)
+      expect(Math.abs(totalBalance)).toBeLessThan(0.1);
+    });
   });
 });

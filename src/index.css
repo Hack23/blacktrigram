@@ -1,17 +1,12 @@
+/* Global styles for Black Trigram Korean martial arts game */
+
 :root {
-  font-family: "Noto Sans KR", Inter, system-ui, Avenir, Helvetica, Arial,
-    sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primary-cyan: #00ffff;
+  --primary-blue: #0074d9;
+  --accent-magenta: #ff00ff;
+  --background-dark: #0a0a0a;
+  --text-primary: #ffffff;
+  --font-korean: "Noto Sans KR", "Malgun Gothic", sans-serif;
 
   /* Korean martial arts theme colors */
   --korean-red: #8a0000;
@@ -21,6 +16,38 @@
   --dojang-blue: #4a89e2;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-korean);
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cyberpunk aesthetic */
+.cyberpunk-glow {
+  box-shadow: 0 0 10px var(--primary-cyan);
+  border: 1px solid var(--primary-cyan);
+}
+
+.korean-text {
+  font-family: var(--font-korean);
+  text-shadow: 0 0 5px currentColor;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -28,25 +55,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  font-family: "Noto Sans KR", Arial, sans-serif;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-  overflow-x: hidden;
-}
-
-#root {
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  text-align: center;
 }
 
 h1 {
@@ -75,14 +83,13 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Korean text styling */
-.korean-text {
-  font-family: "Noto Sans KR", Arial, sans-serif;
-  font-weight: 400;
-}
-
-.korean-text.bold {
-  font-weight: 700;
+/* Fix: Ensure app can receive focus for keyboard input */
+.app {
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* Game container styling */
@@ -95,10 +102,18 @@ button:focus-visible {
 
 /* Canvas styling for PixiJS */
 canvas {
-  display: block;
+  display: block !important;
+  position: relative !important; /* Change from fixed to relative */
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important; /* Ensure canvas is visible but below UI */
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+  cursor: pointer;
+  outline: none;
 }
 
 /* Combat UI styling */
@@ -191,3 +206,139 @@ html {
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* Loading screen styles */
+.app.loading {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+}
+
+/* Test-friendly classes for Cypress */
+.intro-screen {
+  /* Marker class for intro screen detection */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.training-screen {
+  /* Marker class for training screen detection */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.combat-screen {
+  /* Marker class for combat screen detection */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.test-overlay {
+  /* Overlay specifically for testing */
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 500; /* Lower than before to not cover canvas */
+  background: transparent;
+}
+
+/* Improve visibility for test elements */
+[data-testid] {
+  /* Add subtle outline in dev mode for debugging */
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable animations during testing */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Fix canvas visibility and z-index issues */
+canvas {
+  display: block !important;
+  position: relative !important; /* Change from fixed to relative */
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important; /* Ensure canvas is visible but below UI */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Fix test overlay positioning to not interfere with canvas */
+.test-overlay {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 500; /* Lower than before to not cover canvas */
+  background: transparent;
+}
+
+/* Ensure test elements are properly positioned */
+.test-overlay button,
+.test-overlay .archetype-section {
+  pointer-events: auto;
+  z-index: 501;
+}
+
+/* Mobile-specific fixes for better UX */
+@media (max-width: 768px) {
+  .test-overlay .archetype-section {
+    bottom: 2%;
+    left: 2%;
+    right: 2%;
+    max-width: none;
+  }
+
+  .test-overlay button {
+    font-size: 14px;
+    padding: 10px 16px;
+    min-width: 150px;
+  }
+
+  /* Better mobile button layout */
+  .training-button {
+    left: 5% !important;
+    right: 5% !important;
+    width: auto !important;
+  }
+
+  .combat-button {
+    left: 5% !important;
+    right: 5% !important;
+    width: auto !important;
+  }
+}
+
+/* Improved responsive design */
+@media (max-width: 375px) {
+  .test-overlay button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+/* If you add custom @font-face, add font-display: swap; */

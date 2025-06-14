@@ -1,29 +1,27 @@
-// Main exports for Korean text system
-export { KoreanText } from "./components/KoreanText";
-export { KoreanTitle } from "./components/KoreanTitle";
-export { KoreanTechniqueText } from "./components/KoreanTechniqueText";
-export { KoreanStatusText } from "./components/KoreanStatusText";
-export { KoreanMartialText } from "./components/KoreanMartialText";
+/**
+ * Korean text component exports for Black Trigram martial arts game
+ */
 
-// Export types
-export type * from "./types";
-
-// Export constants
-export * from "./constants";
-
-// Export utils (avoid conflicts)
+// Main Korean text system exports
+export { default as KoreanText } from "./KoreanText";
+export { KOREAN_TEXT_CONSTANTS } from "./constants";
+export { useKoreanTextStyle } from "./hooks/useKoreanTextStyle";
 export {
-  isKoreanCharacter,
-  hasKoreanText,
-  formatKoreanNumber,
-  validateKoreanText,
-  KoreanTextUtils,
-  measureKoreanText,
-  cssToPixiTextStyle,
+  createKoreanPixiText,
+  getKoreanTextMetrics,
+  formatKoreanText,
 } from "./utils";
 
-// Export hooks
-export { useKoreanTextStyle } from "./hooks/useKoreanTextStyle";
+// Component exports
+export { KoreanMartialText } from "./components/KoreanMartialText";
+export { KoreanStatusText } from "./components/KoreanStatusText";
+export { KoreanTechniqueText } from "./components/KoreanTechniqueText";
+export { KoreanText as KoreanTextComponent } from "./components/KoreanText";
+export { KoreanTitle } from "./components/KoreanTitle";
 
-// Default export for compatibility
-export { KoreanText as default } from "./components/KoreanText";
+// Type exports
+export type {
+  KoreanPixiTextProps,
+  KoreanTextStyle,
+  KoreanTextStyleConfig,
+} from "./types";

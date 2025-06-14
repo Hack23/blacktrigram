@@ -1,241 +1,280 @@
-// filepath: /workspaces/blacktrigram/src/types/constants/game.ts
 // General game engine and application constants
 
 export const DEFAULT_GAME_SPEED = 1.0;
 
-// Core game configuration for Black Trigram Korean martial arts simulator
+/**
+ * Core game configuration constants for Black Trigram
+ */
 
-// Main game configuration
+// Game configuration
 export const GAME_CONFIG = {
-  // Canvas and rendering
-  CANVAS_WIDTH: 800,
-  CANVAS_HEIGHT: 600,
+  // Canvas dimensions
+  CANVAS_WIDTH: 1200,
+  CANVAS_HEIGHT: 800,
   TARGET_FPS: 60,
-  PIXEL_RATIO: window.devicePixelRatio || 1,
+  MIN_FPS: 30,
 
-  // Combat mechanics
-  DEFAULT_HEALTH: 100,
-  DEFAULT_KI: 100,
-  DEFAULT_STAMINA: 100,
+  // Combat settings
+  ROUND_DURATION: 180, // seconds
+  MAX_ROUNDS: 3,
+  KO_THRESHOLD: 0,
 
-  // Korean martial arts transition costs
-  MAX_TRANSITION_COST_KI: 50,
-  MAX_TRANSITION_COST_STAMINA: 40,
-  MAX_TRANSITION_TIME_MILLISECONDS: 2000,
+  // Player settings
+  BASE_HEALTH: 100,
+  BASE_KI: 100,
+  BASE_STAMINA: 100,
+
+  // Player positions
+  PLAYER_START_POS_X_1: 300,
+  PLAYER_START_POS_X_2: 900,
+  PLAYER_START_POS_Y: 400,
+
+  // Physics
+  GRAVITY: 9.8,
+  FRICTION: 0.85,
+
+  // UI settings
+  UI_PADDING: 20,
+  BUTTON_HEIGHT: 50,
 
   // Audio settings
-  DEFAULT_VOLUME: 0.7,
+  MASTER_VOLUME: 1.0,
+  MUSIC_VOLUME: 0.7,
   SFX_VOLUME: 0.8,
-  MUSIC_VOLUME: 0.6,
+
+  // Debug settings
+  DEBUG_MODE: false,
+  SHOW_HITBOXES: false,
+  SHOW_VITAL_POINTS: false,
 } as const;
 
-// Korean martial arts philosophy integration
-export const PHILOSOPHY_CONFIG = {
-  // 팔괘 (Eight Trigrams) display timing
-  TRIGRAM_DISPLAY_DURATION: 2000,
-  TRIGRAM_TRANSITION_TIME: 500,
-
-  // 음양 (Yin-Yang) balance indicators
-  BALANCE_INDICATOR_SENSITIVITY: 0.1,
-  BALANCE_RESTORATION_TIME: 3000,
-
-  // 기 (Ki) energy visualization
-  KI_PARTICLE_COUNT: 20,
-  KI_FLOW_ANIMATION_SPEED: 1.5,
-  KI_AURA_INTENSITY: 0.7,
-
-  // 도장 (Dojang) environment
-  DOJANG_LIGHTING_CYCLE: 300000, // 5 minutes day/night cycle
-  MEDITATION_MODE_DURATION: 60000, // 1 minute meditation
-  RESPECT_BOW_DURATION: 1500, // Traditional bow timing
+// Add missing player colors
+export const PLAYER_COLORS = {
+  PLAYER_1_COLOR: 0x0099ff, // Blue
+  PLAYER_2_COLOR: 0xff9900, // Orange
 } as const;
 
-// Difficulty settings for Korean martial arts training
+// Fix: Re-export KOREAN_COLORS for convenience
+export { KOREAN_COLORS } from "./colors";
+
+// Difficulty settings
 export const DIFFICULTY_SETTINGS = {
   BEGINNER: {
-    korean: "초급",
-    english: "Beginner",
-
-    // Combat assistance
-    autoBlock: true,
-    vitalPointHighlight: true,
-    techniqueHints: true,
-    slowerCombat: true,
-
-    // Damage modifiers
-    playerDamageMultiplier: 1.5,
-    enemyDamageMultiplier: 0.7,
-
-    // Timing assistance
-    extendedBlockWindow: 1.5,
-    extendedCounterWindow: 1.3,
-
-    // Learning aids
-    showCombatAnalysis: true,
-    displayTechniqueNames: true,
-    culturalContext: true,
+    AI_REACTION_TIME: 800,
+    DAMAGE_MULTIPLIER: 0.7,
+    TECHNIQUE_SUCCESS_RATE: 0.6,
   },
-
   INTERMEDIATE: {
-    korean: "중급",
-    english: "Intermediate",
-
-    // Reduced assistance
-    autoBlock: false,
-    vitalPointHighlight: false,
-    techniqueHints: true,
-    slowerCombat: false,
-
-    // Balanced damage
-    playerDamageMultiplier: 1.0,
-    enemyDamageMultiplier: 1.0,
-
-    // Standard timing
-    extendedBlockWindow: 1.0,
-    extendedCounterWindow: 1.0,
-
-    // Some learning aids
-    showCombatAnalysis: true,
-    displayTechniqueNames: false,
-    culturalContext: true,
+    AI_REACTION_TIME: 600,
+    DAMAGE_MULTIPLIER: 1.0,
+    TECHNIQUE_SUCCESS_RATE: 0.8,
   },
-
   EXPERT: {
-    korean: "전문가",
-    english: "Expert",
-
-    // No assistance
-    autoBlock: false,
-    vitalPointHighlight: false,
-    techniqueHints: false,
-    slowerCombat: false,
-
-    // Realistic damage
-    playerDamageMultiplier: 1.0,
-    enemyDamageMultiplier: 1.2,
-
-    // Precise timing required
-    extendedBlockWindow: 0.8,
-    extendedCounterWindow: 0.9,
-
-    // Minimal aids
-    showCombatAnalysis: false,
-    displayTechniqueNames: false,
-    culturalContext: false,
+    AI_REACTION_TIME: 400,
+    DAMAGE_MULTIPLIER: 1.3,
+    TECHNIQUE_SUCCESS_RATE: 0.9,
   },
-
   MASTER: {
-    korean: "대가",
-    english: "Master",
-
-    // Maximum challenge
-    autoBlock: false,
-    vitalPointHighlight: false,
-    techniqueHints: false,
-    slowerCombat: false,
-
-    // Punishing damage
-    playerDamageMultiplier: 0.8,
-    enemyDamageMultiplier: 1.5,
-
-    // Strict timing
-    extendedBlockWindow: 0.7,
-    extendedCounterWindow: 0.8,
-
-    // No aids
-    showCombatAnalysis: false,
-    displayTechniqueNames: false,
-    culturalContext: false,
+    AI_REACTION_TIME: 200,
+    DAMAGE_MULTIPLIER: 1.5,
+    TECHNIQUE_SUCCESS_RATE: 0.95,
   },
 } as const;
 
-// Achievement and progression system
-export const ACHIEVEMENT_CONFIG = {
-  // Korean martial arts mastery levels
-  TECHNIQUE_MASTERY_THRESHOLD: 100, // Uses before mastery
-  STANCE_MASTERY_THRESHOLD: 50, // Successful stance changes
-  COMBO_MASTERY_THRESHOLD: 25, // Perfect combos executed
-
-  // Cultural understanding achievements
-  PHILOSOPHY_COMPLETION: 8, // All trigram philosophies learned
-  RESPECT_POINTS_MAX: 1000, // Maximum respect/honor points
-  MEDITATION_HOURS: 10, // Hours in meditation mode
-
-  // Combat achievements
-  PERFECT_ROUNDS: 10, // Rounds won without taking damage
-  VITAL_POINT_MASTERY: 70, // All vital points discovered
-  ARCHETYPE_MASTERY: 5, // All player archetypes mastered
-
-  // Progression milestones
-  TOTAL_MATCHES: 100, // Career matches played
-  WIN_STREAK_RECORD: 10, // Consecutive wins
-  COMEBACK_VICTORIES: 5, // Wins from critical health
+// Game phases
+export const GAME_PHASES = {
+  INTRO: "intro",
+  TRAINING: "training",
+  COMBAT: "combat",
+  VICTORY: "victory",
+  DEFEAT: "defeat",
 } as const;
 
-// Game constants for Black Trigram
+// Game version and metadata
+export const GAME_METADATA = {
+  VERSION: "1.0.0",
+  BUILD: "2024.1",
+  TITLE: "흑괘 (Black Trigram)",
+  SUBTITLE: "Korean Martial Arts Combat Simulator",
+  DEVELOPER: "Black Trigram Team",
+  COPYRIGHT: "© 2024 Black Trigram",
+} as const;
 
-export const DEFAULT_STANCE_COOLDOWN_MS = 500;
+// Performance thresholds
+export const PERFORMANCE_THRESHOLDS = {
+  TARGET_FPS: 60,
+  MIN_FPS: 30,
+  FRAME_TIME_WARNING: 20, // ms
+  MEMORY_WARNING: 100, // MB
+  GARBAGE_COLLECTION_THRESHOLD: 50, // MB
+} as const;
 
-export const GAME_CONSTANTS = {
-  MAX_HEALTH: 100,
-  MAX_KI: 100,
-  MAX_STAMINA: 100,
-  MAX_CONSCIOUSNESS: 100,
-  MAX_PAIN: 100,
-  MAX_BALANCE: 100,
-  MAX_BLOOD_LOSS: 100,
+// Combat timing constants
+export const COMBAT_TIMING = {
+  ATTACK_WINDOW: 500, // ms
+  DEFENSE_WINDOW: 300, // ms
+  RECOVERY_TIME: 200, // ms
+  COUNTER_WINDOW: 150, // ms
+} as const;
 
-  CRITICAL_HEALTH_THRESHOLD: 20,
-  LOW_HEALTH_THRESHOLD: 50,
+// Damage calculation constants
+export const DAMAGE_CONSTANTS = {
+  BASE_DAMAGE: 10,
+  CRITICAL_MULTIPLIER: 2.0,
+  VITAL_POINT_MULTIPLIER: 1.5,
+  ARMOR_REDUCTION: 0.1,
+  STANCE_DEFENSE_BONUS: 0.2,
+  BALANCE_IMPACT_MULTIPLIER: 0.3,
+  CONSCIOUSNESS_THRESHOLD: 30,
+  PAIN_THRESHOLD: 80,
+  BASE_CRIT_CHANCE: 0.1, // Added: Base critical hit chance (e.g., 10%)
+  TECHNIQUE_ACCURACY_MODIFIER: 1.0, // Added
+  STANCE_EFFECTIVENESS_RANGE: { MIN: 0.5, MAX: 1.5 }, // Added
+  PERFECT_TIMING_BONUS: 0.3, // Added
+} as const;
 
+// Animation timings
+export const ANIMATION_TIMINGS = {
+  STANCE_TRANSITION: 300,
+  TECHNIQUE_STARTUP: 150,
+  TECHNIQUE_ACTIVE: 100,
+  TECHNIQUE_RECOVERY: 250,
+  HIT_STUN: 200,
+  BLOCK_STUN: 100,
+  KNOCKDOWN_RECOVERY: 1000,
+} as const;
+
+// UI Layout constants
+export const UI_LAYOUT = {
+  HUD_HEIGHT: 80,
+  CONTROLS_HEIGHT: 120,
+  SIDEBAR_WIDTH: 200,
+  MARGIN: 20,
+  BUTTON_HEIGHT: 50,
+  BUTTON_WIDTH: 150,
+} as const;
+
+// Audio volume defaults
+export const AUDIO_DEFAULTS = {
+  MASTER_VOLUME: 0.7,
+  SFX_VOLUME: 0.8,
+  MUSIC_VOLUME: 0.5,
+  AMBIENT_VOLUME: 0.3,
+} as const;
+
+// Calculated constants based on GAME_CONFIG
+export const HALF_CANVAS_WIDTH = GAME_CONFIG.CANVAS_WIDTH / 2;
+export const HALF_CANVAS_HEIGHT = GAME_CONFIG.CANVAS_HEIGHT / 2;
+export const CANVAS_ASPECT_RATIO =
+  GAME_CONFIG.CANVAS_WIDTH / GAME_CONFIG.CANVAS_HEIGHT;
+export const FRAME_TIME = 1000 / GAME_CONFIG.TARGET_FPS;
+export const TICK_RATE = GAME_CONFIG.TARGET_FPS;
+
+// Player distance calculations
+export const PLAYER_DISTANCE =
+  GAME_CONFIG.PLAYER_START_POS_X_2 - GAME_CONFIG.PLAYER_START_POS_X_1;
+export const CENTER_POSITION_X =
+  (GAME_CONFIG.PLAYER_START_POS_X_1 + GAME_CONFIG.PLAYER_START_POS_X_2) / 2;
+
+// Combat ranges
+export const COMBAT_RANGES = {
+  MELEE_RANGE: 80,
+  CLOSE_RANGE: 120,
+  MEDIUM_RANGE: 200,
+  LONG_RANGE: 300,
+  MAX_RANGE: PLAYER_DISTANCE,
+} as const;
+
+// Game state constants
+export const GAME_STATES = {
+  LOADING: "loading",
+  MENU: "menu",
+  CHARACTER_SELECT: "character_select",
+  TRAINING: "training",
+  COMBAT: "combat",
+  PAUSED: "paused",
+  GAME_OVER: "game_over",
+} as const;
+
+// Input constants
+export const INPUT_CONSTANTS = {
+  DOUBLE_TAP_TIME: 300, // ms
+  HOLD_THRESHOLD: 500, // ms
+  GESTURE_TIMEOUT: 1000, // ms
+  COMBO_TIMEOUT: 2000, // ms
+} as const;
+
+// Visual effect constants
+export const VISUAL_EFFECTS = {
+  HIT_FLASH_DURATION: 100,
+  SCREEN_SHAKE_INTENSITY: 5,
+  PARTICLE_LIFETIME: 1000,
+  GLOW_PULSE_SPEED: 2,
+  STANCE_GLOW_OPACITY: 0.3,
+} as const;
+
+// Training mode constants
+export const TRAINING_CONFIG = {
+  DUMMY_HEALTH: 1000,
+  AUTO_RESET_TIME: 5000, // ms
+  SHOW_FRAME_DATA: true,
+  SHOW_HITBOXES: true,
+  INFINITE_KI: true,
+  INFINITE_STAMINA: true,
+} as const;
+
+// Game mode configurations
+export const GAME_MODE_CONFIG = {
+  VERSUS: {
+    allowPause: true,
+    timeLimit: 180,
+    rounds: 3,
+    enableAI: false,
+  },
+  TRAINING: {
+    allowPause: true,
+    timeLimit: null,
+    rounds: 1,
+    enableAI: true,
+    infiniteResources: true,
+  },
+  PRACTICE: {
+    allowPause: true,
+    timeLimit: null,
+    rounds: 1,
+    enableAI: false,
+    infiniteResources: true,
+  },
+} as const;
+
+// Performance settings
+export const PERFORMANCE_CONFIG = {
+  MAX_PARTICLES: 100,
+  MAX_SOUND_SOURCES: 16,
+  TEXTURE_QUALITY: "high",
+  ENABLE_SHADOWS: true,
+  ENABLE_POST_PROCESSING: true,
+} as const;
+
+// Korean martial arts specific settings
+export const MARTIAL_ARTS_CONFIG = {
+  VITAL_POINTS_COUNT: 70,
+  TRIGRAM_STANCES_COUNT: 8,
+  PLAYER_ARCHETYPES_COUNT: 5,
+
+  // Combat timing
+  ATTACK_WINDOW: 500, // milliseconds
+  COUNTER_WINDOW: 300,
+  BLOCK_WINDOW: 200,
+
+  // Stance transition
+  MIN_STANCE_CHANGE_INTERVAL: 500,
+  STANCE_CHANGE_COST_BASE: 10,
+
+  // Damage calculations
   BASE_DAMAGE_MULTIPLIER: 1.0,
   CRITICAL_HIT_MULTIPLIER: 1.5,
-
-  DEFAULT_ACCURACY: 0.8,
-  DEFAULT_TECHNIQUE_RANGE: 1.0,
-
-  KI_REGEN_RATE: 1.5,
-  STAMINA_REGEN_RATE: 2.0,
-  HEALTH_REGEN_RATE: 0.1,
+  VITAL_POINT_MULTIPLIER: 2.0,
 } as const;
 
-// Game state persistence
-export const SAVE_CONFIG = {
-  AUTOSAVE_INTERVAL: 60000, // Autosave every minute
-  MAX_SAVE_SLOTS: 3, // Number of save slots
-  SAVE_COMPRESSION: true, // Compress save data
-  CLOUD_SYNC: false, // Cloud save sync (future feature)
-
-  // Data retention
-  MATCH_HISTORY_LIMIT: 50, // Recent matches to keep
-  REPLAY_STORAGE_LIMIT: 10, // Replay files to store
-  SCREENSHOT_LIMIT: 20, // Screenshots to keep
-} as const;
-
-// Performance monitoring thresholds
-export const PERFORMANCE_THRESHOLDS = {
-  // Frame rate monitoring
-  MIN_FPS: 30, // Minimum acceptable FPS
-  TARGET_FPS: 60, // Target FPS
-  FPS_SAMPLE_SIZE: 60, // Frames to average for FPS calculation
-
-  // Memory usage alerts
-  MAX_MEMORY_MB: 512, // Maximum memory usage in MB
-  MEMORY_WARNING_THRESHOLD: 0.8, // Warning at 80% of max
-  GARBAGE_COLLECTION_THRESHOLD: 0.9, // Force GC at 90% of max
-
-  // Audio performance
-  MAX_AUDIO_LATENCY: 100, // Maximum audio latency in ms
-  AUDIO_BUFFER_SIZE: 4096, // Audio buffer size
-
-  // Rendering performance
-  MAX_DRAW_CALLS: 100, // Maximum draw calls per frame
-  TEXTURE_CACHE_LIMIT: 50, // Maximum cached textures
-} as const;
-
-// Export individual constants (no duplicates)
-export const {
-  MAX_TRANSITION_COST_KI,
-  MAX_TRANSITION_COST_STAMINA,
-  MAX_TRANSITION_TIME_MILLISECONDS,
-} = GAME_CONFIG;
+export default GAME_CONFIG;

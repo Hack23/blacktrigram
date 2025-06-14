@@ -1,205 +1,355 @@
-// Combat system constants for Korean martial arts
+/**
+ * Combat System Constants for Korean Martial Arts
+ */
+
+import type { SoundEffectId } from "../audio";
+import type { TrigramStance } from "../enums";
 
 // Combat configuration
 export const COMBAT_CONFIG = {
   MAX_HEALTH: 100,
   MAX_KI: 100,
   MAX_STAMINA: 100,
-  MAX_CONSCIOUSNESS: 100,
   MAX_BALANCE: 100,
+  MAX_CONSCIOUSNESS: 100,
 
-  // Damage thresholds
-  LIGHT_DAMAGE_THRESHOLD: 15,
-  MEDIUM_DAMAGE_THRESHOLD: 25,
-  HEAVY_DAMAGE_THRESHOLD: 35,
-  CRITICAL_DAMAGE_THRESHOLD: 45,
+  // Damage multipliers
+  CRITICAL_HIT_MULTIPLIER: 2.0,
+  VITAL_POINT_MULTIPLIER: 1.5,
+  COUNTER_ATTACK_MULTIPLIER: 1.3,
 
-  // Status effect durations (ms)
-  STUN_DURATION: 2000,
-  PAIN_DURATION: 5000,
-  BLEED_DURATION: 10000,
+  // Status thresholds
+  LOW_HEALTH_THRESHOLD: 25,
+  CRITICAL_HEALTH_THRESHOLD: 10,
+  UNCONSCIOUS_THRESHOLD: 0,
+  STAMINA_EXHAUSTED_THRESHOLD: 0,
+
+  // Recovery rates (per second)
+  STAMINA_RECOVERY_RATE: 10,
+  KI_RECOVERY_RATE: 5,
+  BALANCE_RECOVERY_RATE: 15,
+  CONSCIOUSNESS_RECOVERY_RATE: 2,
+
+  // Combat timing (milliseconds)
+  TECHNIQUE_COOLDOWN: 500,
+  STANCE_CHANGE_COOLDOWN: 200,
+  BLOCK_DURATION: 300,
+  RECOVERY_TIME: 400,
+} as const;
+
+// Enhanced damage calculation constants
+export const ENHANCED_DAMAGE_CONSTANTS = {
+  BASE_DAMAGE: 10,
+  CRITICAL_MULTIPLIER: 2.0,
+  VITAL_POINT_MULTIPLIER: 1.5,
+  ARMOR_REDUCTION: 0.1,
+  STANCE_DEFENSE_BONUS: 0.2,
+  BALANCE_IMPACT_MULTIPLIER: 0.3,
+  CONSCIOUSNESS_THRESHOLD: 30,
+  PAIN_THRESHOLD: 80,
+
+  // New damage factors
+  TECHNIQUE_POWER_MODIFIER: 0.2,
+  ARCHETYPE_BONUS: 0.15,
+  COMBO_MULTIPLIER: 1.2,
+  PERFECT_TIMING_BONUS: 0.3,
+  BASE_CRIT_CHANCE: 0.1, // Added: Base critical hit chance (e.g., 10%)
+} as const;
+
+// Combat system constants for Korean martial arts
+
+export const COMBAT_CONSTANTS = {
+  // Damage calculation
+  BASE_DAMAGE: 10,
+  CRITICAL_MULTIPLIER: 2.0,
+  VITAL_POINT_MULTIPLIER: 1.5,
+
+  // Status thresholds
+  LOW_HEALTH_THRESHOLD: 30,
+  CRITICAL_HEALTH_THRESHOLD: 15,
+  EXHAUSTED_STAMINA_THRESHOLD: 20,
+
+  // Recovery rates (per second)
+  STAMINA_RECOVERY_RATE: 5,
+  KI_RECOVERY_RATE: 3,
+  CONSCIOUSNESS_RECOVERY_RATE: 2,
 
   // Combat timing
-  ATTACK_WINDOW: 300,
-  COUNTER_WINDOW: 200,
-  BLOCK_WINDOW: 400,
-  RECOVERY_TIME: 500,
+  ATTACK_COOLDOWN: 500, // milliseconds
+  STANCE_CHANGE_COOLDOWN: 300,
+  BLOCK_WINDOW: 200,
+
+  // Balance and momentum
+  BALANCE_RECOVERY_RATE: 10,
+  MOMENTUM_DECAY_RATE: 5,
+
+  // Pain and status effects
+  PAIN_DECAY_RATE: 3,
+  STATUS_EFFECT_DURATION: 3000,
 } as const;
 
-// Damage ranges by attack type
-export const DAMAGE_RANGES = {
-  STRIKE: { min: 10, max: 20, type: "blunt" },
-  PUNCH: { min: 8, max: 18, type: "blunt" },
-  KICK: { min: 12, max: 22, type: "blunt" },
-  ELBOW: { min: 15, max: 25, type: "blunt" },
-  KNEE: { min: 18, max: 28, type: "blunt" },
-  GRAPPLE: { min: 5, max: 15, type: "joint" },
-  THROW: { min: 20, max: 30, type: "crushing" },
-  PRESSURE_POINT: { min: 25, max: 40, type: "nerve" },
-  NERVE_STRIKE: { min: 30, max: 45, type: "nerve" },
-  BONE_STRIKE: { min: 35, max: 50, type: "blunt" },
+// Trigram stance order for UI
+export const TRIGRAM_STANCES_ORDER = [
+  "geon",
+  "tae",
+  "li",
+  "jin",
+  "son",
+  "gam",
+  "gan",
+  "gon",
+] as const;
+
+// Combat controls mapping
+export const COMBAT_CONTROLS = {
+  // Trigram stance system (1-8 keys)
+  stanceControls: {
+    "1": {
+      stance: "geon" as TrigramStance,
+      korean: "건",
+      technique: "천둥벽력",
+    },
+    "2": {
+      stance: "tae" as TrigramStance,
+      korean: "태",
+      technique: "유수연타",
+    },
+    "3": { stance: "li" as TrigramStance, korean: "리", technique: "화염지창" },
+    "4": {
+      stance: "jin" as TrigramStance,
+      korean: "진",
+      technique: "벽력일섬",
+    },
+    "5": {
+      stance: "son" as TrigramStance,
+      korean: "손",
+      technique: "선풍연격",
+    },
+    "6": {
+      stance: "gam" as TrigramStance,
+      korean: "감",
+      technique: "수류반격",
+    },
+    "7": {
+      stance: "gan" as TrigramStance,
+      korean: "간",
+      technique: "반석방어",
+    },
+    "8": {
+      stance: "gon" as TrigramStance,
+      korean: "곤",
+      technique: "대지포옹",
+    },
+  },
+
+  // Movement controls
+  movement: {
+    WASD: "Tactical positioning and footwork",
+    ArrowKeys: "Alternative movement system",
+  },
+
+  // Combat actions
+  combat: {
+    SPACE: "Execute current stance technique",
+    SHIFT: "Defensive guard/block position",
+    CTRL: "Precision vital point targeting mode",
+    TAB: "Cycle through player archetypes",
+  },
+
+  // System controls
+  system: {
+    ESC: "Pause menu / Return to intro",
+    F1: "Help / Controls guide",
+    M: "Mute / Audio settings",
+  },
 } as const;
 
-// Damage ranges for combat levels
-export const DAMAGE_RANGES_LEVELS = {
-  light: { min: 5, max: 15 },
-  medium: { min: 15, max: 25 },
-  heavy: { min: 25, max: 40 },
-  critical: { min: 40, max: 60 },
-  vital_point: { min: 50, max: 80 },
+// Damage types
+export const DAMAGE_TYPES = {
+  PHYSICAL: "physical",
+  ENERGY: "energy",
+  VITAL_POINT: "vital_point",
+  PSYCHOLOGICAL: "psychological",
+} as const;
+
+// Combat phases
+export const COMBAT_PHASES = {
+  PREPARATION: "preparation",
+  ENGAGEMENT: "engagement",
+  EXECUTION: "execution",
+  RECOVERY: "recovery",
+  RESOLUTION: "resolution",
+} as const;
+
+// Combat audio mapping
+export const COMBAT_AUDIO_MAP: Record<string, SoundEffectId> = {
+  light_attack: "attack_light",
+  medium_attack: "attack_medium",
+  heavy_attack: "attack_heavy",
+  critical_attack: "attack_critical",
+
+  light_hit: "hit_light",
+  medium_hit: "hit_medium",
+  heavy_hit: "hit_heavy",
+  critical_hit: "critical_hit",
+
+  block: "block_success",
+  guard_break: "block_break",
+  miss: "miss",
+
+  stance_change: "stance_change",
+  technique: "technique_execute",
+
+  match_start: "match_start",
+  combat_end: "combat_end",
+  victory: "victory",
+  defeat: "defeat",
+
+  guard: "guard",
+} as const;
+
+// Combat state transitions
+export const COMBAT_STATE_MACHINE = {
+  idle: {
+    canTransitionTo: ["attacking", "defending", "moving", "stunned"],
+    duration: Infinity,
+  },
+  attacking: {
+    canTransitionTo: ["idle", "recovering", "stunned"],
+    duration: 500,
+  },
+  defending: {
+    canTransitionTo: ["idle", "attacking", "stunned"],
+    duration: 300,
+  },
+  moving: {
+    canTransitionTo: ["idle", "attacking", "defending"],
+    duration: 200,
+  },
+  stunned: {
+    canTransitionTo: ["idle"],
+    duration: 1000,
+  },
+  recovering: {
+    canTransitionTo: ["idle"],
+    duration: 400,
+  },
+  unconscious: {
+    canTransitionTo: ["idle"],
+    duration: 5000,
+  },
+} as const;
+
+// Training-specific combat constants
+export const TRAINING_COMBAT_SETTINGS = {
+  techniqueCooldown: 500,
+  perfectStrikeThreshold: 0.7,
+  maxTrainingSession: 300000, // 5 minutes
+  kiRegenerationRate: 2,
+  staminaRegenerationRate: 1.5,
+} as const;
+
+// Combat state transitions for training mode
+export const TRAINING_STATE_MACHINE = {
+  practicing: {
+    canTransitionTo: ["idle", "executing", "recovering"],
+    duration: Infinity,
+  },
+  executing: {
+    canTransitionTo: ["practicing", "idle"],
+    duration: 800,
+  },
+  recovering: {
+    canTransitionTo: ["practicing", "idle"],
+    duration: 300,
+  },
+} as const;
+
+// Technique execution results
+export const TECHNIQUE_RESULTS = {
+  SUCCESS: "success",
+  BLOCKED: "blocked",
+  MISSED: "missed",
+  COUNTERED: "countered",
+  INTERRUPTED: "interrupted",
 } as const;
 
 // Combat effectiveness modifiers
-export const COMBAT_MODIFIERS = {
-  ARCHETYPE_BONUS: {
-    MUSA: { damageResistance: 1.2, jointTechniques: 1.5 },
-    AMSALJA: { stealthMultiplier: 1.8, oneStrikeKill: 2.0 },
-    HACKER: { precisionAnalysis: 1.6, environmentalControl: 1.4 },
-    JEONGBO: { psychologicalWarfare: 1.5, strategicAnalysis: 1.4 },
-    JOJIK: { dirtyFighting: 1.8, survivalInstinct: 1.6 },
-  },
-
-  VITAL_POINT_MULTIPLIER: 2.5,
-  COUNTER_ATTACK_MULTIPLIER: 1.8,
-  CRITICAL_HIT_MULTIPLIER: 2.0,
-  PERFECT_TECHNIQUE_MULTIPLIER: 3.0,
+export const EFFECTIVENESS_MODIFIERS = {
+  stance_advantage: 1.2,
+  stance_disadvantage: 0.8,
+  counter_attack: 1.5,
+  perfect_timing: 1.3,
+  off_balance: 0.7,
+  fatigued: 0.6,
+  focused: 1.1,
 } as const;
-
-// Enhanced combat mechanics for Korean martial arts
-export const PAIN_RESPONSE_SYSTEM = {
-  SHOCK_PAIN_MULTIPLIER: 1.5,
-  CUMULATIVE_TRAUMA_FACTOR: 0.8,
-  PAIN_OVERLOAD_THRESHOLD: 85,
-  INCAPACITATION_THRESHOLD: 95,
-} as const;
-
-export const VITAL_POINT_MODIFIERS = {
-  HEAD: { damage: 2.0, consciousness: 3.0, stun: 2.5 },
-  NECK: { damage: 2.5, consciousness: 4.0, stun: 3.0 },
-  TORSO: { damage: 1.5, consciousness: 1.5, stun: 1.2 },
-  LIMBS: { damage: 1.2, consciousness: 0.8, stun: 1.0 },
-} as const;
-
-// Transition cost limits for stance changes
-export const MAX_TRANSITION_COST_KI = 50;
-export const MAX_TRANSITION_COST_STAMINA = 40;
-export const MAX_TRANSITION_TIME_MILLISECONDS = 2000;
 
 // Combat timing constants
 export const COMBAT_TIMING = {
-  ATTACK_COOLDOWN: 500, // milliseconds
-  STANCE_CHANGE_DURATION: 800, // milliseconds
-  BLOCK_WINDOW: 200, // milliseconds
-  COUNTER_WINDOW: 300, // milliseconds
-  COMBO_TIMEOUT: 2000, // milliseconds
+  ATTACK_WINDOW: 500, // milliseconds
+  COUNTER_WINDOW: 300,
+  BLOCK_WINDOW: 200,
+  DODGE_WINDOW: 250,
+
+  // Recovery times
+  LIGHT_ATTACK_RECOVERY: 300,
+  HEAVY_ATTACK_RECOVERY: 600,
+  BLOCK_RECOVERY: 200,
+  STANCE_CHANGE_RECOVERY: 400,
 } as const;
 
 // Damage calculation constants
 export const DAMAGE_CONSTANTS = {
-  BASE_DAMAGE_MIN: 5,
-  BASE_DAMAGE_MAX: 40,
-  CRITICAL_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
-  GLANCING_BLOW_MULTIPLIER: 0.3,
+  BASE_DAMAGE: 10,
+  CRITICAL_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.0,
+  COUNTER_MULTIPLIER: 1.3,
+
+  // Damage reduction
+  BLOCK_REDUCTION: 0.7,
+  GLANCING_REDUCTION: 0.5,
+  ARMOR_REDUCTION_MAX: 0.9,
 } as const;
 
-// Combat state thresholds
-export const COMBAT_THRESHOLDS = {
-  HEALTH_CRITICAL: 20, // percentage
-  STAMINA_LOW: 25, // percentage
-  KI_DEPLETED: 10, // percentage
-  PAIN_SEVERE: 80, // percentage
-  CONSCIOUSNESS_DANGER: 30, // percentage
+// Combat resource costs
+export const RESOURCE_COSTS = {
+  KI: {
+    BASIC_TECHNIQUE: 5,
+    ADVANCED_TECHNIQUE: 10,
+    SPECIAL_TECHNIQUE: 15,
+    ULTIMATE_TECHNIQUE: 25,
+  },
+  STAMINA: {
+    BASIC_ATTACK: 8,
+    HEAVY_ATTACK: 15,
+    BLOCK: 5,
+    DODGE: 10,
+    STANCE_CHANGE: 12,
+  },
 } as const;
 
-// Vital point targeting constants
-export const VITAL_POINT_CONSTANTS = {
-  BASE_ACCURACY: 0.7, // 70% base hit chance
-  PRECISION_BONUS: 0.2, // 20% bonus for aimed shots
-  DISTANCE_PENALTY: 0.1, // 10% penalty per unit distance
-  STANCE_MODIFIER_MAX: 0.3, // Maximum 30% modifier from stance
-} as const;
+// Hit detection constants
+export const HIT_DETECTION = {
+  PRECISION_THRESHOLD: 0.8,
+  VITAL_POINT_THRESHOLD: 0.9,
+  BASE_ACCURACY: 0.7,
+  MAX_ACCURACY: 0.95,
 
-// Korean martial arts specific combat values
-export const KOREAN_COMBAT_VALUES = {
-  RESPECT_BONUS: 1.1, // 10% damage bonus for honorable combat
-  DISHONOR_PENALTY: 0.8, // 20% damage penalty for dishonorable combat
-  MASTERY_THRESHOLD: 1000, // Experience points for technique mastery
-  PERFECT_TECHNIQUE_BONUS: 1.25, // 25% bonus for perfect execution
-} as const;
-
-// Export all constants
-export const COMBAT_CONSTANTS = {
-  ...COMBAT_TIMING,
-  ...DAMAGE_CONSTANTS,
-  ...COMBAT_THRESHOLDS,
-  ...VITAL_POINT_CONSTANTS,
-  ...KOREAN_COMBAT_VALUES,
-  MAX_TRANSITION_COST_KI,
-  MAX_TRANSITION_COST_STAMINA,
-  MAX_TRANSITION_TIME_MILLISECONDS,
-  BASE_ACCURACY: 0.8,
-  CRITICAL_HIT_CHANCE: 0.05,
-  CRITICAL_HIT_MULTIPLIER: 1.5,
-  MAX_DAMAGE_PER_HIT: 100,
-  MIN_DAMAGE_PER_HIT: 1,
-  STANCE_CHANGE_COOLDOWN_MS: 500,
-  DEFAULT_ATTACK_RANGE: 1.0,
-  VITAL_POINT_ACCURACY_BONUS: 0.15,
+  // Hit boxes
+  PLAYER_HITBOX_WIDTH: 60,
+  PLAYER_HITBOX_HEIGHT: 180,
+  VITAL_POINT_RADIUS: 15,
 } as const;
 
 // Status effect durations
-export const STATUS_EFFECT_DURATIONS = {
-  stun: 2000, // milliseconds
-  bleed: 5000,
-  pain: 3000,
-  vulnerable: 4000,
-  exhausted: 6000,
+export const STATUS_DURATIONS = {
+  STUN: 1500,
+  POISON: 5000,
+  BURN: 3000,
+  BLEED: 4000,
+  WEAKNESS: 6000,
+  STRENGTH_BUFF: 8000,
 } as const;
 
-// Effectiveness multipliers
-export const EFFECTIVENESS_MULTIPLIERS = {
-  superior: 1.5,
-  effective: 1.2,
-  normal: 1.0,
-  ineffective: 0.8,
-  weak: 0.6,
-} as const;
-
-// Combat distances
-export const COMBAT_DISTANCES = {
-  melee: 1.5, // meters
-  close: 2.0,
-  medium: 3.0,
-  long: 4.5,
-  maximum: 6.0,
-} as const;
-
-// Korean technique types
-export const KOREAN_TECHNIQUE_TYPES = {
-  strike: { korean: "타격", english: "Strike" },
-  thrust: { korean: "찌르기", english: "Thrust" },
-  block: { korean: "막기", english: "Block" },
-  counter_attack: { korean: "반격", english: "Counter Attack" },
-  throw: { korean: "던지기", english: "Throw" },
-  grapple: { korean: "잡기", english: "Grapple" },
-  pressure_point: { korean: "혈자리", english: "Pressure Point" },
-  nerve_strike: { korean: "신경타격", english: "Nerve Strike" },
-} as const;
-
-// Damage categories
-export const DAMAGE_CATEGORIES = {
-  LIGHT: { min: 1, max: 15, korean: "가벼운", english: "Light" },
-  MODERATE: { min: 16, max: 30, korean: "보통", english: "Moderate" },
-  HEAVY: { min: 31, max: 50, korean: "심한", english: "Heavy" },
-  SEVERE: { min: 51, max: 75, korean: "심각한", english: "Severe" },
-  CRITICAL: { min: 76, max: 100, korean: "치명적", english: "Critical" },
-} as const;
-
-// Add missing SoundEffectId values
-export const COMBAT_SOUND_EFFECTS = {
-  combat_end: "combat_end",
-  miss: "miss",
-  guard: "guard",
-  technique: "technique",
-} as const;
+export default COMBAT_CONFIG;

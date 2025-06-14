@@ -46,7 +46,7 @@
           { "directory": "./cypress", "changeProcessCWD": true }
         ],
         "eslint.options": {
-          "overrideConfigFile": "/workspaces/cia-compliance-manager/.eslintrc.cjs"
+          "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs"
         },
         "typescript.updateImportsOnFileMove.enabled": "always",
         "javascript.updateImportsOnFileMove.enabled": "always",

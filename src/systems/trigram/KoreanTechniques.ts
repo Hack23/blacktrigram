@@ -1,282 +1,369 @@
-import type { KoreanTechnique, TrigramStance } from "../../types";
+/**
+ * ## Korean Techniques System
+ *
+ * **Business Purpose:**
+ * Comprehensive database and management system for authentic Korean martial arts
+ * techniques integrated with I Ching trigram philosophy. Provides:
+ * - Traditional Korean martial arts technique catalog
+ * - Trigram-based technique classification system
+ * - Cultural accuracy in technique names and descriptions
+ * - Progressive skill development pathways
+ *
+ * **Korean Martial Arts Integration:**
+ * - Authentic Korean technique names with proper Hanja origins
+ * - Traditional Korean martial arts movement patterns
+ * - Respectful cultural representation of Korean fighting methods
+ * - Integration with Korean martial arts grading system
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 
-// Define a map of techniques with all required properties
-export const TECHNIQUES: Readonly<Record<string, KoreanTechnique>> = {
-  geon_heavenly_thunder: {
-    id: "geon_heavenly_thunder",
-    name: "Geon Heavenly Thunder",
-    koreanName: "천둥벽력",
-    englishName: "Heavenly Thunder Strike",
-    romanized: "Cheondung Byeokryeok",
-    description: {
-      korean: "하늘의 힘을 담은 강력한 일격.",
-      english: "A powerful strike imbued with heavenly force.",
+import { TrigramStance, PlayerArchetype } from "../../types/enums";
+import type { KoreanText } from "../../types/korean-text";
+
+export interface KoreanTechnique {
+  readonly id: string;
+  readonly name: KoreanText;
+  readonly stance: TrigramStance;
+  readonly category: "strike" | "block" | "throw" | "pressure_point" | "flow";
+  readonly difficulty: 1 | 2 | 3 | 4 | 5;
+  readonly damage: number;
+  readonly kiCost: number;
+  readonly staminaCost: number;
+  readonly accuracy: number;
+  readonly description: KoreanText;
+  readonly culturalContext: string;
+  readonly requiredLevel: number;
+  readonly prerequisites: readonly string[];
+  readonly archetypeBonus?: Partial<Record<PlayerArchetype, number>>;
+}
+
+/**
+ * **Business Logic:** Complete catalog of authentic Korean martial arts techniques
+ * organized by trigram stance with cultural accuracy
+ */
+export const KOREAN_TECHNIQUES: readonly KoreanTechnique[] = [
+  // Heaven (건) Techniques - Direct force and power
+  {
+    id: "cheon_dung_byeok_ryeok",
+    name: {
+      korean: "천둥벽력",
+      english: "Thunderous Heaven Strike",
     },
-    stance: "geon",
-    type: "strike",
-    damageType: "blunt",
-    damageRange: { min: 25, max: 35, type: "blunt" },
-    range: 1.5,
-    kiCost: 20,
+    stance: TrigramStance.GEON,
+    category: "strike",
+    difficulty: 3,
+    damage: 35,
+    kiCost: 15,
+    staminaCost: 10,
+    accuracy: 0.8,
+    description: {
+      korean: "하늘의 위력을 담은 강력한 직격타",
+      english: "Powerful direct strike embodying heavenly might",
+    },
+    culturalContext:
+      "천둥벽력은 조선시대 궁중 무예에서 전해진 기법으로, 하늘의 절대적 권위를 상징합니다.",
+    requiredLevel: 5,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.MUSA]: 1.2,
+    },
+  },
+  {
+    id: "gang_gi_pa_cheon",
+    name: {
+      korean: "강기파천",
+      english: "Strong Energy Heaven Break",
+    },
+    stance: TrigramStance.GEON,
+    category: "strike",
+    difficulty: 4,
+    damage: 45,
+    kiCost: 25,
     staminaCost: 15,
-    accuracy: 0.85,
-    executionTime: 500,
-    recoveryTime: 700,
-    critChance: 0.1,
-    critMultiplier: 1.6,
-    effects: [
-      {
-        id: "stun_effect_geon",
-        type: "stun",
-        intensity: "moderate",
-        duration: 2000,
-        description: { korean: "일시적 기절", english: "Temporary stun" },
-        stackable: false,
-      },
-    ],
-    properties: ["heavy_impact", "bone_seeking"],
+    accuracy: 0.75,
+    description: {
+      korean: "강한 내공으로 하늘을 찢는 듯한 공격",
+      english: "Attack that tears through heaven with strong internal energy",
+    },
+    culturalContext: "내가 수련의 정점을 나타내는 고급 기법입니다.",
+    requiredLevel: 10,
+    prerequisites: ["cheon_dung_byeok_ryeok"],
+    archetypeBonus: {
+      [PlayerArchetype.MUSA]: 1.3,
+      [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1.1,
+    },
   },
 
-  tae_flowing_strikes: {
-    id: "tae_flowing_strikes",
-    name: "Tae Flowing Strikes",
-    koreanName: "유수연타",
-    englishName: "Flowing Water Strikes",
-    romanized: "Yusu Yeonta",
-    description: {
-      korean: "물처럼 부드럽고 연속적인 공격.",
-      english: "Smooth and continuous attacks like flowing water.",
+  // Lake (태) Techniques - Fluid and adaptive
+  {
+    id: "yu_su_yeon_ta",
+    name: {
+      korean: "유수연타",
+      english: "Flowing Water Combo",
     },
-    stance: "tae",
-    type: "strike",
-    damageType: "blunt",
-    damageRange: { min: 18, max: 28, type: "blunt" },
-    range: 1.2,
+    stance: TrigramStance.TAE,
+    category: "flow",
+    difficulty: 2,
+    damage: 20,
+    kiCost: 12,
+    staminaCost: 8,
+    accuracy: 0.85,
+    description: {
+      korean: "물처럼 흘러가는 연속 공격",
+      english: "Continuous attacks flowing like water",
+    },
+    culturalContext: "태극의 유연함을 무예에 적용한 전통 기법입니다.",
+    requiredLevel: 3,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.AMSALJA]: 1.2,
+      [PlayerArchetype.JEONGBO_YOWON]: 1.1,
+    },
+  },
+
+  // Fire (리) Techniques - Precision and speed
+  {
+    id: "hwa_yeom_ji_chang",
+    name: {
+      korean: "화염지창",
+      english: "Flame Finger Spear",
+    },
+    stance: TrigramStance.LI,
+    category: "pressure_point",
+    difficulty: 3,
+    damage: 30,
     kiCost: 18,
     staminaCost: 12,
     accuracy: 0.9,
-    executionTime: 400,
-    recoveryTime: 600,
-    critChance: 0.08,
-    critMultiplier: 1.5,
-    effects: [
-      {
-        id: "balance_loss_tae",
-        type: "weakness",
-        intensity: "moderate",
-        duration: 1500,
-        description: { korean: "균형 잃음", english: "Loss of balance" },
-        stackable: true,
-      },
-    ],
-    properties: ["fluid_motion", "combo_starter"],
+    description: {
+      korean: "불꽃처럼 빠르고 정확한 지압 공격",
+      english: "Fast and precise pressure point attack like flame",
+    },
+    culturalContext: "한의학의 경혈 이론과 무예가 결합된 정교한 기법입니다.",
+    requiredLevel: 6,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.HACKER]: 1.3,
+      [PlayerArchetype.AMSALJA]: 1.2,
+    },
   },
 
-  li_flame_lance: {
-    id: "li_flame_lance",
-    name: "Li Flame Lance",
-    koreanName: "화염지창",
-    englishName: "Flame Lance Thrust",
-    romanized: "Hwayeom Jichang",
-    description: {
-      korean: "불꽃처럼 빠르고 정확한 찌르기.",
-      english: "A swift and precise thrust like a darting flame.",
+  // Thunder (진) Techniques - Explosive power
+  {
+    id: "byeok_ryeok_il_seom",
+    name: {
+      korean: "벽력일섬",
+      english: "Thunder Flash Strike",
     },
-    stance: "li",
-    type: "strike",
-    damageType: "piercing",
-    damageRange: { min: 22, max: 30, type: "piercing" },
-    range: 1.8,
-    kiCost: 22,
-    staminaCost: 18,
-    accuracy: 0.92,
-    executionTime: 350,
-    recoveryTime: 550,
-    critChance: 0.15,
-    critMultiplier: 1.7,
-    effects: [
-      {
-        id: "burning_effect_li",
-        type: "pain",
-        intensity: "moderate",
-        duration: 3000,
-        description: { korean: "화상 효과", english: "Burning effect" },
-        stackable: true,
-      },
-    ],
-    properties: ["armor_piercing", "fast_strike"],
-  },
-
-  jin_thunderclap_strike: {
-    id: "jin_thunderclap_strike",
-    name: "Jin Thunderclap Strike",
-    koreanName: "벽력일섬",
-    englishName: "Thunderclap Flash",
-    romanized: "Byeokryeok Ilseom",
-    description: {
-      korean: "천둥처럼 강력하고 충격적인 공격.",
-      english: "A powerful and shocking attack like thunder.",
-    },
-    stance: "jin",
-    type: "strike",
-    damageType: "blunt",
-    damageRange: { min: 28, max: 40, type: "blunt" },
-    range: 1.6,
-    kiCost: 25,
+    stance: TrigramStance.JIN,
+    category: "strike",
+    difficulty: 4,
+    damage: 50,
+    kiCost: 30,
     staminaCost: 20,
+    accuracy: 0.7,
+    description: {
+      korean: "번개처럼 빠르고 강력한 일격",
+      english: "Lightning-fast and powerful single strike",
+    },
+    culturalContext:
+      "진(震)의 폭발적 에너지를 무예로 구현한 최고 난이도 기법입니다.",
+    requiredLevel: 12,
+    prerequisites: ["cheon_dung_byeok_ryeok"],
+    archetypeBonus: {
+      [PlayerArchetype.MUSA]: 1.2,
+      [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1.3,
+    },
+  },
+
+  // Wind (손) Techniques - Continuous pressure
+  {
+    id: "seon_pung_yeon_gyeok",
+    name: {
+      korean: "선풍연격",
+      english: "Whirlwind Barrage",
+    },
+    stance: TrigramStance.SON,
+    category: "flow",
+    difficulty: 3,
+    damage: 25,
+    kiCost: 20,
+    staminaCost: 15,
     accuracy: 0.8,
-    executionTime: 600,
-    recoveryTime: 800,
-    critChance: 0.12,
-    critMultiplier: 1.8,
-    properties: ["raw_power", "stun_capable"],
+    description: {
+      korean: "회오리바람 같은 연속 공격",
+      english: "Continuous attacks like a whirlwind",
+    },
+    culturalContext:
+      "바람의 지속적이고 침투적인 특성을 무예로 표현한 기법입니다.",
+    requiredLevel: 7,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.AMSALJA]: 1.4,
+      [PlayerArchetype.HACKER]: 1.1,
+    },
   },
 
-  son_gale_barrage: {
-    id: "son_gale_barrage",
-    name: "Son Gale Barrage",
-    koreanName: "선풍연격",
-    englishName: "Gale Barrage",
-    romanized: "Seonpung Yeongyeok",
-    description: {
-      korean: "바람처럼 빠르고 지속적인 연타 공격.",
-      english: "Swift and continuous barrage of attacks like the wind.",
+  // Water (감) Techniques - Adaptive flow
+  {
+    id: "su_ryu_ban_gyeok",
+    name: {
+      korean: "수류반격",
+      english: "Water Flow Counter",
     },
-    stance: "son",
-    type: "strike",
-    damageType: "slashing",
-    damageRange: { min: 15, max: 25, type: "slashing" },
-    range: 1.4,
-    kiCost: 15,
-    staminaCost: 10,
-    accuracy: 0.88,
-    executionTime: 300,
-    recoveryTime: 400,
-    critChance: 0.05,
-    critMultiplier: 1.4,
-    effects: [
-      {
-        id: "bleed_effect_son",
-        type: "bleeding",
-        intensity: "light",
-        duration: 5000,
-        description: { korean: "출혈 효과", english: "Bleeding effect" },
-        stackable: true,
-      },
-    ],
-    properties: ["multi_hit", "pressure_attack"],
+    stance: TrigramStance.GAM,
+    category: "block",
+    difficulty: 2,
+    damage: 15,
+    kiCost: 10,
+    staminaCost: 5,
+    accuracy: 0.9,
+    description: {
+      korean: "물의 흐름으로 상대 공격을 되돌리는 반격",
+      english: "Counter that redirects opponent's attack with water flow",
+    },
+    culturalContext:
+      "태극권의 유연한 반격 원리를 한국 무예에 적용한 기법입니다.",
+    requiredLevel: 4,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.JEONGBO_YOWON]: 1.3,
+      [PlayerArchetype.AMSALJA]: 1.1,
+    },
   },
 
-  gam_riptide_counter: {
-    id: "gam_riptide_counter",
-    name: "Gam Riptide Counter",
-    koreanName: "수류반격",
-    englishName: "Riptide Counter",
-    romanized: "Suryu Bangyeok",
-    description: {
-      korean: "물의 흐름을 이용한 유연한 반격기.",
-      english: "A flexible counter-attack using the flow of water.",
+  // Mountain (간) Techniques - Defensive mastery
+  {
+    id: "ban_seok_bang_eo",
+    name: {
+      korean: "반석방어",
+      english: "Bedrock Defense",
     },
-    stance: "gam",
-    type: "counter_attack",
-    damageType: "pressure",
-    damageRange: { min: 18, max: 25, type: "pressure" },
-    range: 1.0,
-    kiCost: 18,
+    stance: TrigramStance.GAN,
+    category: "block",
+    difficulty: 2,
+    damage: 10,
+    kiCost: 8,
     staminaCost: 12,
     accuracy: 0.95,
-    executionTime: 450,
-    recoveryTime: 650,
-    critChance: 0.2,
-    critMultiplier: 1.6,
-    effects: [
-      {
-        id: "disorient_effect_gam",
-        type: "confusion",
-        intensity: "moderate",
-        duration: 2500,
-        description: { korean: "방향 감각 상실", english: "Disorientation" },
-        stackable: false,
-      },
-    ],
-    properties: ["defensive_offensive", "timing_critical"],
+    description: {
+      korean: "반석처럼 견고한 방어 자세",
+      english: "Solid defensive stance like bedrock",
+    },
+    culturalContext:
+      "산의 불변성과 견고함을 방어 무예로 구현한 기본 기법입니다.",
+    requiredLevel: 2,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.MUSA]: 1.2,
+    },
   },
 
-  gan_immovable_bulwark: {
-    id: "gan_immovable_bulwark",
-    name: "Gan Immovable Bulwark",
-    koreanName: "반석방어",
-    englishName: "Immovable Bulwark",
-    romanized: "Banseok Bangeo",
-    description: {
-      korean: "산처럼 굳건한 방어 자세.",
-      english: "A defensive posture as solid as a mountain.",
+  // Earth (곤) Techniques - Grounding and balance
+  {
+    id: "dae_ji_po_ong",
+    name: {
+      korean: "대지포옹",
+      english: "Earth's Embrace",
     },
-    stance: "gan",
-    type: "block",
-    damageType: "internal",
-    damageRange: { min: 3, max: 8, type: "internal" },
-    range: 0.5,
-    kiCost: 10,
-    staminaCost: 20,
-    accuracy: 1.0,
-    executionTime: 200,
-    recoveryTime: 300,
-    effects: [
-      {
-        id: "stability_boost_gan",
-        type: "buff",
-        intensity: "heavy",
-        duration: 1000,
-        description: { korean: "안정성 증가", english: "Increased stability" },
-        stackable: false,
-      },
-    ],
-    properties: ["high_defense", "stamina_heavy"],
-  },
-
-  gon_earthshatter_throw: {
-    id: "gon_earthshatter_throw",
-    name: "Gon Earthshatter Throw",
-    koreanName: "대지포옹",
-    englishName: "Earth-Embracing Throw",
-    romanized: "Daeji Poong",
-    description: {
-      korean: "대지의 힘을 이용한 강력한 던지기 기술.",
-      english: "A powerful throw utilizing the strength of the earth.",
-    },
-    stance: "gon",
-    type: "throw",
-    damageType: "impact",
-    damageRange: { min: 22, max: 32, type: "impact" },
-    range: 0.8,
-    kiCost: 22,
+    stance: TrigramStance.GON,
+    category: "throw",
+    difficulty: 3,
+    damage: 35,
+    kiCost: 16,
     staminaCost: 18,
-    accuracy: 0.8,
-    executionTime: 700,
-    recoveryTime: 900,
-    critChance: 0.05,
-    critMultiplier: 1.5,
-    effects: [
-      {
-        id: "knockdown_effect_gon",
-        type: "stun",
-        intensity: "strong",
-        duration: 3000,
-        description: { korean: "넘어뜨림", english: "Knockdown" },
-        stackable: false,
-      },
-    ],
-    properties: ["grappling_required", "high_impact_finish"],
+    accuracy: 0.75,
+    description: {
+      korean: "대지의 포용력으로 상대를 제압하는 기법",
+      english: "Technique that subdues opponents with earth's embrace",
+    },
+    culturalContext:
+      "곤(坤)의 모성적 포용력을 무예의 제압 기법으로 승화시킨 기법입니다.",
+    requiredLevel: 8,
+    prerequisites: [],
+    archetypeBonus: {
+      [PlayerArchetype.MUSA]: 1.1,
+      [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1.2,
+    },
   },
-};
+] as const;
 
-export function getTechniqueById(id: string): KoreanTechnique | undefined {
-  return TECHNIQUES[id];
-}
-
+/**
+ * **Business Logic:** Gets all techniques available for a specific trigram stance
+ */
 export function getTechniquesByStance(
   stance: TrigramStance
-): KoreanTechnique[] {
-  return Object.values(TECHNIQUES).filter((tech) => tech.stance === stance);
+): readonly KoreanTechnique[] {
+  return KOREAN_TECHNIQUES.filter((technique) => technique.stance === stance);
 }
+
+/**
+ * **Business Logic:** Gets techniques available for player based on level and archetype
+ */
+export function getAvailableTechniques(
+  playerLevel: number,
+  archetype: PlayerArchetype,
+  stance?: TrigramStance
+): readonly KoreanTechnique[] {
+  return KOREAN_TECHNIQUES.filter((technique) => {
+    const levelRequirement = technique.requiredLevel <= playerLevel;
+    const stanceMatch = !stance || technique.stance === stance;
+    return levelRequirement && stanceMatch;
+  });
+}
+
+/**
+ * **Business Logic:** Calculates technique effectiveness for specific player archetype
+ */
+export function calculateTechniqueEffectiveness(
+  technique: KoreanTechnique,
+  archetype: PlayerArchetype
+): number {
+  const baseEffectiveness = 1.0;
+  const archetypeBonus = technique.archetypeBonus?.[archetype] || 1.0;
+  return baseEffectiveness * archetypeBonus;
+}
+
+/**
+ * **Business Logic:** Gets technique by ID with validation
+ */
+export function getTechniqueById(id: string): KoreanTechnique | null {
+  return KOREAN_TECHNIQUES.find((technique) => technique.id === id) || null;
+}
+
+/**
+ * **Business Logic:** Validates if player can learn/use specific technique
+ */
+export function canUseTechnique(
+  technique: KoreanTechnique,
+  playerLevel: number,
+  knownTechniques: readonly string[]
+): boolean {
+  // Check level requirement
+  if (playerLevel < technique.requiredLevel) {
+    return false;
+  }
+
+  // Check prerequisites
+  if (technique.prerequisites.length > 0) {
+    const hasAllPrerequisites = technique.prerequisites.every((prereq) =>
+      knownTechniques.includes(prereq)
+    );
+    if (!hasAllPrerequisites) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export default {
+  KOREAN_TECHNIQUES,
+  getTechniquesByStance,
+  getAvailableTechniques,
+  calculateTechniqueEffectiveness,
+  getTechniqueById,
+  canUseTechnique,
+};

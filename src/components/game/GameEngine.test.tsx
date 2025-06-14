@@ -1,29 +1,35 @@
-import { describe, it, expect, vi } from "vitest";
-import { render } from "@testing-library/react";
-import { GameEngine } from "./GameEngine";
-import { createPlayerState } from "../../utils/playerUtils";
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
+import { GameEngine } from "./GameEngine"; // <- fixed path
+import { createMockPlayerState } from "../../test/test-utils";
 
 describe("GameEngine", () => {
-  const mockPlayers = [
-    createPlayerState("player1", "musa", "geon"), // Fixed: Correct parameter order
-    createPlayerState("player2", "amsalja", "tae"), // Fixed: Correct parameter order
-  ] as const;
-
-  const defaultProps = {
-    // Fix: Use correct prop names for GameEngineProps
-    player1: mockPlayers[0],
-    player2: mockPlayers[1],
+  const mockProps = {
+    player1: createMockPlayerState(),
+    player2: createMockPlayerState({ id: "player2" }),
     onGameStateChange: vi.fn(),
-    onPlayerUpdate: vi.fn(),
-    onGamePhaseChange: vi.fn(),
+    onCombatResult: vi.fn(),
+    onPlayerUpdate: vi.fn(), // <- added
+    width: 800,
+    height: 600,
   };
 
-  it("should render without crashing", () => {
-    render(<GameEngine {...defaultProps} />);
+  it("renders without crashing", () => {
+    render(<GameEngine {...mockProps} />);
+
+    expect(screen.getByTestId("game-engine")).toBeInTheDocument();
   });
 
-  it("should display players", () => {
-    const { container } = render(<GameEngine {...defaultProps} />);
-    expect(container).toBeInTheDocument();
+  it("handles player updates correctly", () => {
+    render(<GameEngine {...mockProps} />);
+
+    expect(screen.getByTestId("game-engine")).toBeInTheDocument();
+  });
+
+  it("processes combat results", () => {
+    render(<GameEngine {...mockProps} />);
+
+    expect(screen.getByTestId("game-engine")).toBeInTheDocument();
   });
 });

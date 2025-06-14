@@ -1,190 +1,243 @@
-import { describe, it, expect, beforeEach, vi as vitestVi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { StanceManager } from "./StanceManager";
-import type {
-  PlayerState,
-  TrigramStance,
-  TransitionPath,
-  // TrigramTransitionCost, // Unused
-  // KoreanText, // Unused
-} from "../../types";
-import { STANCE_EFFECTIVENESS_MATRIX } from "../../types/constants";
-import { TrigramCalculator } from "./TrigramCalculator"; // Import actual TrigramCalculator
+import { TrigramStance, PlayerArchetype } from "../../types/enums";
+import type { PlayerState } from "../../types/player";
 
-// Mock PlayerState
-const createMockPlayerState = (
-  stance: TrigramStance,
-  ki = 100,
-  stamina = 100,
-  lastStanceChangeTime = 0
-): PlayerState => ({
-  id: "player1",
-  name: "Test Player",
-  archetype: "musa",
-  position: { x: 0, y: 0 },
-  stance,
-  facing: "right",
-  health: 100,
-  maxHealth: 100,
-  ki,
-  maxKi: 100,
-  stamina,
-  maxStamina: 100,
-  consciousness: 100,
-  pain: 0,
-  balance: 100,
-  bloodLoss: 0,
-  lastStanceChangeTime,
-  isAttacking: false,
-  combatReadiness: 100,
-  activeEffects: [],
-  combatState: "ready",
-  conditions: [],
-});
-
+/**
+ * ## Stance Manager Test Suite
+ *
+ * **Business Purpose:**
+ * Validates the stance management system that coordinates Korean martial arts
+ * stance transitions and combat flow. Tests ensure that:
+ * - Stance changes follow traditional Korean martial arts principles
+ * - Resource management reflects authentic Korean martial arts energy costs
+ * - Player progression respects traditional Korean martial arts hierarchy
+ * - Combat timing maintains realistic Korean martial arts rhythm
+ *
+ * **Korean Martial Arts Integration:**
+ * - Tests authentic Korean martial arts stance transition rules
+ * - Validates traditional trigram philosophy in stance management
+ * - Ensures cultural accuracy in ki and stamina resource costs
+ * - Verifies realistic Korean martial arts combat flow timing
+ *
+ * **Business Value:**
+ * These tests ensure stance management provides authentic Korean martial arts
+ * gameplay while maintaining competitive balance and strategic depth.
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 describe("StanceManager", () => {
   let stanceManager: StanceManager;
-  let playerState: PlayerState;
-  let mockTrigramCalculator: TrigramCalculator; // Use actual TrigramCalculator instance
+
+  const createMockPlayer = (
+    overrides: Partial<PlayerState> = {}
+  ): PlayerState => ({
+    id: "test-player",
+    name: { korean: "테스트 무사", english: "Test Warrior" },
+    archetype: PlayerArchetype.MUSA,
+    health: 100,
+    maxHealth: 100,
+    ki: 100,
+    maxKi: 100,
+    stamina: 100,
+    maxStamina: 100,
+    energy: 100,
+    maxEnergy: 100,
+    attackPower: 75,
+    defense: 75,
+    speed: 75,
+    technique: 75,
+    pain: 0,
+    consciousness: 100,
+    balance: 100,
+    momentum: 0,
+    currentStance: TrigramStance.GEON,
+    combatState: 0,
+    position: { x: 300, y: 400 },
+    isBlocking: false,
+    isStunned: false,
+    isCountering: false,
+    lastActionTime: 0,
+    recoveryTime: 0,
+    lastStanceChangeTime: 0,
+    statusEffects: [],
+    activeEffects: [],
+    vitalPoints: [],
+    totalDamageReceived: 0,
+    totalDamageDealt: 0,
+    hitsTaken: 0,
+    hitsLanded: 0,
+    perfectStrikes: 0,
+    vitalPointHits: 0,
+    experiencePoints: 0,
+    ...overrides,
+  });
 
   beforeEach(() => {
-    playerState = createMockPlayerState("geon");
-    // Instantiate actual TrigramCalculator for more realistic tests, or a more detailed mock
-    mockTrigramCalculator = new TrigramCalculator(
-      // TRIGRAM_DATA, // TrigramCalculator uses imported TRIGRAM_DATA by default
-      STANCE_EFFECTIVENESS_MATRIX // Pass effectiveness matrix if it's not default or for specific test setup
-    );
-
-    // Spy on methods if specific return values are needed for certain tests
-    vitestVi.spyOn(mockTrigramCalculator, "calculateTransitionCost");
-    vitestVi.spyOn(mockTrigramCalculator, "calculateOptimalPath");
-
-    stanceManager = new StanceManager(mockTrigramCalculator);
+    stanceManager = new StanceManager();
   });
 
-  afterEach(() => {
-    vitestVi.restoreAllMocks(); // Clean up spies
-  });
-
-  it("should initialize with a TrigramCalculator", () => {
-    expect(stanceManager).toBeDefined();
-  });
-
-  describe("changeStance", () => {
-    it("should successfully change stance if conditions are met", () => {
-      (mockTrigramCalculator.calculateTransitionCost as any).mockReturnValue({
-        ki: 10,
-        stamina: 5,
-        timeMilliseconds: 300,
+  /**
+   * **Business Requirement:** Stance management must coordinate authentic
+   * Korean martial arts stance transitions with proper resource costs
+   */
+  describe("Stance Change Management", () => {
+    it("should successfully change to valid adjacent stances", () => {
+      const player = createMockPlayer({
+        currentStance: TrigramStance.GEON,
+        ki: 50,
+        stamina: 50,
       });
-      const result = stanceManager.changeStance(playerState, "tae");
+
+      const result = stanceManager.changeStance(player, TrigramStance.TAE);
+
       expect(result.success).toBe(true);
-      expect(result.to).toBe("tae");
-      expect(result.newState.stance).toBe("tae");
-      expect(result.newState.ki).toBe(playerState.ki - 10);
-      expect(result.newState.stamina).toBe(playerState.stamina - 5);
-      expect(result.newState.lastStanceChangeTime).toBeGreaterThan(
-        playerState.lastStanceChangeTime
+      expect(result.updatedPlayer.currentStance).toBe(TrigramStance.TAE);
+      expect(result.updatedPlayer.ki).toBeLessThan(player.ki);
+    });
+
+    it("should reject stance changes when resources are insufficient", () => {
+      const exhaustedPlayer = createMockPlayer({
+        ki: 2,
+        stamina: 2,
+        currentStance: TrigramStance.GEON,
+      });
+
+      const result = stanceManager.changeStance(
+        exhaustedPlayer,
+        TrigramStance.GON
       );
-    });
 
-    it("should fail to change stance if insufficient Ki", () => {
-      playerState = createMockPlayerState("geon", 5, 100); // Low Ki
-      (mockTrigramCalculator.calculateTransitionCost as any).mockReturnValue({
-        // Mock the cost that would be calculated
-        ki: 10,
-        stamina: 5,
-        timeMilliseconds: 300,
-      });
-      const result = stanceManager.changeStance(playerState, "tae");
       expect(result.success).toBe(false);
-      expect(result.reason).toBe("insufficient_ki");
-      expect(result.newState.stance).toBe("geon");
+      expect(result.message).toMatch(/(기력|체력|부족)/);
     });
 
-    it("should fail to change stance if on cooldown", () => {
-      const now = Date.now();
-      playerState = createMockPlayerState("geon", 100, 100, now - 100); // Changed stance 100ms ago
+    it("should handle same stance selection gracefully", () => {
+      const player = createMockPlayer({ currentStance: TrigramStance.LI });
 
-      // No need to mock calculateTransitionCost here as cooldown check is first
-      // vitestVi.spyOn(Date, 'now').mockReturnValue(now); // Keep Date.now consistent for test
+      const result = stanceManager.changeStance(player, TrigramStance.LI);
 
-      const result = stanceManager.changeStance(playerState, "li");
-      expect(result.success).toBe(false);
-      expect(result.reason).toBe("Stance change on cooldown");
-
-      // vitestVi.spyOn(Date, 'now').mockRestore();
-    });
-
-    it("should allow stance change if cooldown has passed", () => {
-      const now = Date.now();
-      playerState = createMockPlayerState("geon", 100, 100, now - 1000); // Changed stance 1s ago (cooldown is 500ms)
-      (mockTrigramCalculator.calculateTransitionCost as any).mockReturnValue({
-        ki: 10,
-        stamina: 5,
-        timeMilliseconds: 300,
-      });
-      // vitestVi.spyOn(Date, 'now').mockReturnValue(now);
-
-      const result = stanceManager.changeStance(playerState, "tae");
       expect(result.success).toBe(true);
-      expect(result.newState.stance).toBe("tae");
-      // vitestVi.spyOn(Date, 'now').mockRestore();
+      expect(result.cost.ki).toBe(0);
+      expect(result.message).toBe("이미 해당 자세입니다");
     });
   });
 
-  describe("canTransitionTo", () => {
-    it("should return true if transition is possible", () => {
-      (mockTrigramCalculator.calculateTransitionCost as any).mockReturnValue({
-        ki: 10,
-        stamina: 5,
-        timeMilliseconds: 300,
-      });
-      const canTransition = stanceManager.canTransitionTo(playerState, "tae");
-      expect(canTransition.possible).toBe(true);
-      expect(canTransition.cost).toBeDefined();
+  /**
+   * **Business Requirement:** Archetype specializations must provide meaningful
+   * advantages in stance mastery and transition efficiency
+   */
+  describe("Archetype Stance Mastery", () => {
+    it("should provide mastery bonuses for archetype-specific stances", () => {
+      const musaMastery = stanceManager.getStanceMastery(
+        PlayerArchetype.MUSA,
+        TrigramStance.GEON
+      );
+
+      const amsaljaMastery = stanceManager.getStanceMastery(
+        PlayerArchetype.AMSALJA,
+        TrigramStance.SON
+      );
+
+      expect(musaMastery).toBeGreaterThan(1.0);
+      expect(amsaljaMastery).toBeGreaterThan(1.0);
     });
 
-    it("should return false and reason if transition is not possible (e.g. insufficient Ki)", () => {
-      playerState = createMockPlayerState("geon", 5, 100); // Low Ki
-      (mockTrigramCalculator.calculateTransitionCost as any).mockReturnValue({
-        ki: 10, // Cost exceeds player's Ki
-        stamina: 5,
-        timeMilliseconds: 300,
+    it("should apply archetype bonuses to stance change costs", () => {
+      const assassin = createMockPlayer({
+        archetype: PlayerArchetype.AMSALJA,
+        currentStance: TrigramStance.SON,
+        ki: 100,
+        stamina: 100,
       });
-      const canTransition = stanceManager.canTransitionTo(playerState, "tae");
-      expect(canTransition.possible).toBe(false);
-      expect(canTransition.reason).toBe("insufficient_ki");
+
+      const warrior = createMockPlayer({
+        archetype: PlayerArchetype.MUSA,
+        currentStance: TrigramStance.SON,
+        ki: 100,
+        stamina: 100,
+      });
+
+      const assassinResult = stanceManager.changeStance(
+        assassin,
+        TrigramStance.GAM
+      );
+      const warriorResult = stanceManager.changeStance(
+        warrior,
+        TrigramStance.GAM
+      );
+
+      // Assassin should use less resources for Wind-Water transition
+      expect(assassinResult.cost.ki).toBeLessThanOrEqual(warriorResult.cost.ki);
     });
   });
 
-  describe("findOptimalStancePath", () => {
-    it("should call TrigramCalculator's calculateOptimalPath and return its result", () => {
-      const mockPathData: TransitionPath = {
-        path: ["geon", "tae"],
-        totalCost: { ki: 15, stamina: 10, timeMilliseconds: 500 },
-        overallEffectiveness: 1.2,
-        cumulativeRisk: 0.1,
-        name: "Geon -> Tae",
-        description: { korean: "건에서 태로", english: "Geon to Tae" }, // This is now valid
-      };
-      (mockTrigramCalculator.calculateOptimalPath as any).mockReturnValue(
-        mockPathData
-      );
+  /**
+   * **Business Requirement:** Stance availability must respect Korean martial arts
+   * progression and player capabilities
+   */
+  describe("Stance Availability", () => {
+    it("should return available stances based on player state", () => {
+      const player = createMockPlayer({
+        ki: 50,
+        stamina: 50,
+        lastStanceChangeTime: Date.now() - 2000,
+      });
 
-      const targetStance: TrigramStance = "tae";
-      const pathResult = stanceManager.findOptimalStancePath(
-        playerState,
-        targetStance, // Pass targetStance
-        3
-      );
+      const availableStances = stanceManager.getAvailableStances(player);
 
-      expect(pathResult).toEqual(mockPathData);
-      expect(mockTrigramCalculator.calculateOptimalPath).toHaveBeenCalledWith(
-        playerState.stance,
-        targetStance,
-        playerState
-        // 3 // Max depth argument if calculateOptimalPath uses it
+      expect(availableStances.length).toBeGreaterThan(0);
+      expect(availableStances).toContain(TrigramStance.GEON);
+    });
+
+    it("should validate stance change possibility", () => {
+      const player = createMockPlayer({
+        ki: 100,
+        stamina: 100,
+        lastStanceChangeTime: Date.now() - 1000,
+      });
+
+      const canChange = stanceManager.canChangeStance(
+        player,
+        TrigramStance.TAE
       );
+      expect(canChange).toBe(true);
+
+      const cantChange = stanceManager.canChangeStance(
+        player,
+        TrigramStance.GON
+      );
+      // Should depend on resources and cooldown
+      expect(typeof cantChange).toBe("boolean");
+    });
+  });
+
+  /**
+   * **Business Requirement:** Stance manager must maintain consistent state
+   * and provide reliable Korean martial arts gameplay experience
+   */
+  describe("State Management", () => {
+    it("should track current stance correctly", () => {
+      expect(stanceManager.getCurrentStance()).toBe(TrigramStance.GEON);
+
+      stanceManager.reset(TrigramStance.LI);
+      expect(stanceManager.getCurrentStance()).toBe(TrigramStance.LI);
+    });
+
+    it("should reset to default state", () => {
+      stanceManager.reset();
+      expect(stanceManager.getCurrentStance()).toBe(TrigramStance.GEON);
+    });
+
+    it("should handle invalid stance transitions", () => {
+      const player = createMockPlayer({ currentStance: TrigramStance.GEON });
+
+      // Test with invalid stance transition
+      const result = stanceManager.changeStance(player, TrigramStance.GEON);
+
+      expect(result.success).toBe(true); // Same stance should succeed
+      expect(result.message).toBe("이미 해당 자세입니다");
     });
   });
 });

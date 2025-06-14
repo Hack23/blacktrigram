@@ -1,47 +1,83 @@
 import React from "react";
-// Remove unused imports
-import type { CombatArenaProps } from "../../../types/components";
+import { usePixiExtensions } from "../../../utils/pixiExtensions";
+import { Player } from "../../game/Player";
+import type { PlayerState } from "../../../types/player";
+import { KOREAN_COLORS } from "../../../types/constants";
 
-export function CombatArena({
+export interface CombatArenaProps {
+  readonly players: readonly PlayerState[]; // now readonly
+  readonly onPlayerClick?: (idx: number) => void;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+}
+
+export const CombatArena: React.FC<CombatArenaProps> = ({
   players,
-  onPlayerUpdate,
-  onTechniqueExecute,
-  combatEffects,
-  isExecutingTechnique,
-  isActive = true,
-  showVitalPoints = false,
-  showDebugInfo = false,
-}: CombatArenaProps): React.JSX.Element {
-  const [player1, player2] = players;
-
-  // Use all the props to avoid unused variable warnings
-  const handleArenaAction = () => {
-    if (isExecutingTechnique) {
-      console.log("Technique in progress");
-    }
-    onPlayerUpdate(0, {});
-    onTechniqueExecute(0, {});
-  };
+  onPlayerClick,
+  width = 1200,
+  height = 800,
+  x = 0,
+  y = 0,
+}) => {
+  usePixiExtensions();
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "60%",
-        position: "relative",
-        opacity: isActive ? 1 : 0.5,
-      }}
-    >
-      <div>Player 1: {player1.name}</div>
-      <div>Player 2: {player2.name}</div>
-      <div>Effects: {combatEffects.length}</div>
+    <pixiContainer x={x} y={y}>
+      {/* Arena Floor */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          g.beginFill(KOREAN_COLORS.ARENA_BACKGROUND, 0.3);
+          g.drawRect(0, 0, width, height);
+          g.endFill();
 
-      {showVitalPoints && <div>Vital points visible</div>}
-      {showDebugInfo && <div>Debug mode active</div>}
+          // Center line
+          g.lineStyle(2, KOREAN_COLORS.UI_BORDER, 0.5);
+          g.moveTo(width / 2, 0);
+          g.lineTo(width / 2, height);
+        }}
+      />
 
-      <button onClick={handleArenaAction}>Arena Action</button>
-    </div>
+      {players.map((player, index) => (
+        <Player
+          key={player.id}
+          player={player}
+          x={index === 0 ? width * 0.25 : width * 0.75}
+          y={height * 0.7}
+          onClick={() => onPlayerClick?.(index)} // non-null
+        />
+      ))}
+
+      {/* Arena Boundaries */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          g.lineStyle(3, KOREAN_COLORS.ACCENT_GOLD, 0.8);
+          g.drawRect(50, 100, width - 100, height - 200);
+        }}
+      />
+
+      {/* Corner Markers */}
+      {[
+        [75, 125],
+        [width - 75, 125],
+        [75, height - 125],
+        [width - 75, height - 125],
+      ].map(([cornerX, cornerY], index) => (
+        <pixiGraphics
+          key={index}
+          draw={(g) => {
+            g.clear();
+            g.beginFill(KOREAN_COLORS.ACCENT_GOLD, 0.6);
+            g.drawCircle(cornerX, cornerY, 8);
+            g.endFill();
+          }}
+        />
+      ))}
+    </pixiContainer>
   );
-}
+};
 
 export default CombatArena;

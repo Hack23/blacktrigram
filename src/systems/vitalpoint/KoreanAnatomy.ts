@@ -1,13 +1,16 @@
-import { StatusEffect, TrigramStance } from "@/types";
-import type { VitalPoint } from "../../types/anatomy"; // AnatomicalLocation and VitalPointEffect were removed as they are unused locally
-import type { KoreanText } from "../../types/korean-text"; // Import KoreanText
+import type { KoreanText, Position } from "../../types/common";
 import type {
+  VitalPoint,
+  VitalPointEffect,
+  AnatomicalRegion,
+} from "../../types/anatomy";
+import {
   VitalPointCategory,
   VitalPointSeverity,
-  EffectType,
+  VitalPointEffectType,
   EffectIntensity,
-  BodyRegion,
 } from "../../types/enums";
+import { StatusEffect } from "@/types";
 
 /**
  * Korean Martial Arts Anatomy System
@@ -414,51 +417,37 @@ function isPositionInZone(
  */
 export function generateMeridianEffects(
   meridianId: string,
-  disruptionLevel: number // 0-1, how much it's disrupted
+  disruptionLevel: number
 ): readonly StatusEffect[] {
   const meridian = ENERGY_MERIDIANS[meridianId];
   if (!meridian) return [];
 
   const effects: StatusEffect[] = [];
   const intensityValue = Math.min(1.0, disruptionLevel);
-  const baseDuration = 3000; // ms
 
-  let effectIntensity: StatusEffect["intensity"] = "weak";
-  if (intensityValue > 0.7) effectIntensity = "strong";
+  // Fix: Use proper enum values for effect intensity
+  let effectIntensity: "minor" | "moderate" | "severe" | "critical" = "minor";
+  if (intensityValue > 0.7) effectIntensity = "severe";
   else if (intensityValue > 0.4) effectIntensity = "moderate";
 
-  let effectType: EffectType | null = null;
-
-  switch (meridian.element) {
-    case "metal": // Lung, Large Intestine - Related to breath, skin
-      if (disruptionLevel > 0.5) effectType = "stamina_drain";
-      break;
-    case "water": // Kidney, Bladder - Related to fear, cold, essence
-      if (disruptionLevel > 0.4) effectType = "vital_weakness";
-      break;
-    case "fire": // Heart, Small Intestine - Related to joy, heat, consciousness
-      if (disruptionLevel > 0.6) effectType = "vital_stunning";
-      break;
-    case "earth": // Spleen, Stomach - Related to worry, digestion, stability
-      if (disruptionLevel > 0.3) effectType = "damage_vulnerability";
-      break;
-    case "wood": // Liver, Gallbladder - Related to anger, sinews, decision
-      if (disruptionLevel > 0.4) effectType = "vital_paralysis";
-      break;
-  }
-
-  if (effectType) {
-    effects.push({
-      id: `${meridian.id}_disruption_${Date.now()}`,
-      type: effectType,
-      duration: baseDuration * intensityValue,
+  // Fix: Generate effects based on meridian type and disruption level
+  if (disruptionLevel > 0.3) {
+    const effect: StatusEffect = {
+      id: `meridian_disruption_${meridianId}_${Date.now()}`,
+      type: "weakened", // Use effects.ts EffectType
       intensity: effectIntensity,
+      duration: Math.floor(2000 + intensityValue * 3000),
       description: {
-        korean: `${meridian.koreanName} 경락 교란: ${effectType}`,
-        english: `${meridian.englishName} Meridian Disruption: ${effectType}`,
+        korean: "경락 차단 효과",
+        english: "Meridian disruption effect",
       },
       stackable: false,
-    });
+      source: meridianId,
+      startTime: Date.now(),
+      endTime: Date.now() + Math.floor(2000 + intensityValue * 3000),
+    };
+
+    effects.push(effect);
   }
 
   return effects;
@@ -508,279 +497,270 @@ export class KoreanAnatomySystem {
       ) => zone.meridians.includes(meridian.id)
     );
   }
-
-  getTrigramRelatedEffects(
-    vitalPoint: VitalPoint,
-    stance: TrigramStance
-  ): StatusEffect[] {
-    const effects: StatusEffect[] = [];
-    // const stanceData = TRIGRAM_DATA[stance]; // Unused
-
-    if (stance === "geon" && vitalPoint.category === "head") {
-      effects.push({
-        id: `geon_head_strike_buff_${Date.now()}`,
-        type: "buff",
-        intensity: "moderate",
-        duration: 10000, // ms
-        description: {
-          korean: "건의 기운: 머리 공격 강화",
-          english: "Geon Ki: Head attack enhanced",
-        },
-        stackable: false,
-      });
-    }
-
-    if (stance === "gam" && vitalPoint.category === "joints") {
-      // "joints" is now a valid category
-      effects.push({
-        id: `gam_joint_drain_${Date.now()}`,
-        type: "debuff", // "stamina_drain" is a valid EffectType, but "debuff" is more generic for the effect's role
-        // If you want to apply a specific "stamina_drain" effect, its properties would be defined here.
-        // For example, if "stamina_drain" is a type of debuff that specifically targets stamina:
-        // type: "stamina_drain", // This is now a valid EffectType
-        intensity: "moderate",
-        duration: 15000, // ms
-        description: {
-          korean: "감의 기운: 관절 타격 시 체력 흡수",
-          english: "Gam Ki: Stamina drain on joint hit",
-        },
-        stackable: true,
-        // Modifiers for the "stamina_drain" effect could be here if StatusEffect supports them
-        // e.g. modifiers: [{ attribute: "stamina", value: -10, type: "flat" }]
-      });
-    }
-    return effects;
-  }
 }
 
-export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
+// Helper function to create vital point effects with proper type
+export function createVitalPointEffect(
+  id: string,
+  type: VitalPointEffectType,
+  intensity: EffectIntensity,
+  duration: number,
+  description: KoreanText,
+  stackable: boolean = false
+): VitalPointEffect {
+  return {
+    id,
+    type,
+    intensity,
+    duration,
+    description,
+    stackable,
+    source: "vital_point_system",
+  };
+}
+
+// Complete vital points data with proper types
+export const SAMPLE_VITAL_POINTS: readonly VitalPoint[] = [
   {
-    id: "head_philtrum_injoong",
-    name: { korean: "인중", english: "Philtrum" },
-    korean: "인중",
-    englishName: "Philtrum", // Added required property
-    koreanName: "인중", // Added required property
-    category: "head",
+    id: "baekhoehoel",
+    korean: { korean: "백회혈", english: "Crown Point" },
+    english: "Crown Point",
+    anatomicalName: "Anterior Fontanelle",
+    category: VitalPointCategory.NEUROLOGICAL,
+    severity: VitalPointSeverity.CRITICAL,
+    position: { x: 0, y: -50 },
+    radius: 15,
+    effects: [
+      createVitalPointEffect(
+        "unconsciousness_effect",
+        VitalPointEffectType.UNCONSCIOUSNESS,
+        EffectIntensity.HIGH,
+        5000,
+        { korean: "의식 잃음", english: "Loss of consciousness" }
+      ),
+    ],
+    damage: { min: 40, max: 60, average: 50 },
     description: {
-      korean:
-        "코와 윗입술 사이의 정중선 오목한 부분. 충격 시 심한 통증과 방향 감각 상실을 유발한다.",
-      english:
-        "The midline groove between the nose and upper lip. Impact causes severe pain and disorientation.",
+      korean: "머리 정수리의 중요 혈점",
+      english: "Critical pressure point at crown of head",
     },
-    effects: [
-      {
-        id: "disorientation_philtrum",
-        type: "disoriented" as EffectType,
-        duration: 5000,
-        intensity: "strong" as EffectIntensity,
-        description: {
-          korean: "심한 방향 감각 상실",
-          english: "Severe disorientation",
-        },
-        stackable: false,
-      },
-      {
-        id: "pain_philtrum",
-        type: "pain_severe" as EffectType,
-        duration: 10000,
-        intensity: "high" as EffectIntensity,
-        description: { korean: "극심한 통증", english: "Excruciating pain" },
-        stackable: true,
-      },
-    ],
-    location: { x: 0.5, y: 0.15, region: "face_upper" },
-    severity: "severe",
-    techniques: ["pressure", "strike"], // Fixed: renamed from technique
-    baseAccuracy: 0.65,
-    baseDamage: 15, // Added required property
-    baseStun: 2500,
-    damageMultiplier: 1.8,
-    damage: 15, // Added required property
+    difficulty: 0.9,
+    requiredForce: 30,
+    safetyWarning: "Extremely dangerous - can cause death",
   },
   {
-    id: "chest_sternum_base",
-    name: { korean: "단중혈 부근", english: "Base of Sternum (CV17 area)" },
-    korean: "단중혈 부근",
-    englishName: "Base of Sternum (CV17 area)", // Added required property
-    koreanName: "단중혈 부근", // Added required property
-    category: "torso",
+    id: "inmyeong",
+    korean: { korean: "인영", english: "Man's Welcome" },
+    english: "Man's Welcome",
+    anatomicalName: "Carotid Artery",
+    category: VitalPointCategory.VASCULAR,
+    severity: VitalPointSeverity.MAJOR,
+    position: { x: -30, y: 70 },
+    radius: 20,
+    effects: [
+      createVitalPointEffect(
+        "blood_flow_restriction",
+        VitalPointEffectType.BLOOD_FLOW_RESTRICTION,
+        EffectIntensity.HIGH,
+        3000,
+        { korean: "혈류 제한", english: "Blood flow restriction" }
+      ),
+    ],
+    damage: { min: 25, max: 40, average: 32 },
     description: {
-      korean: "가슴 중앙, 흉골 하단부.",
-      english: "Center of chest, lower part of the sternum.",
+      korean: "목 옆의 중요 혈관",
+      english: "Critical blood vessel on side of neck",
     },
-    effects: [
-      {
-        id: "sternum_winded",
-        type: "winded" as EffectType,
-        intensity: "strong" as EffectIntensity,
-        duration: 10000,
-        description: {
-          korean: "심한 호흡 곤란 유발",
-          english: "Causes severe difficulty breathing",
-        },
-        stackable: true,
-      },
-      {
-        id: "sternum_pain",
-        type: "pain_severe" as EffectType,
-        intensity: "strong" as EffectIntensity,
-        duration: 20000,
-        description: {
-          korean: "극심한 흉부 통증",
-          english: "Intense chest pain",
-        },
-        stackable: false,
-      },
-    ],
-    location: { x: 0.5, y: 0.45, region: "chest" },
-    severity: "severe",
-    techniques: ["striking", "pressure"], // Fixed: renamed from technique
-    baseAccuracy: 0.75,
-    baseDamage: 25, // Added required property
-    baseStun: 3000,
-    damageMultiplier: 1.4,
-    damage: 25, // Added required property
+    difficulty: 0.7,
+    requiredForce: 20,
+    safetyWarning: "Can cause unconsciousness",
   },
   {
-    id: "vp_head_temple_kanjanori",
-    name: { korean: "관자놀이", english: "Temple (Kanjanori)" } as KoreanText,
-    korean: "관자놀이",
-    englishName: "Temple (Kanjanori)", // Added required property
-    koreanName: "관자놀이", // Added required property
-    category: "head" as VitalPointCategory,
-    description: {
-      korean:
-        "머리 측두부의 얇은 뼈와 신경이 집중된 부위. 강타 시 심각한 뇌진탕이나 의식 상실을 유발할 수 있음.",
-      english:
-        "Thin bone and nerve concentration on the temporal region of the head. A strong blow can cause severe concussion or loss of consciousness.",
-    } as KoreanText,
-    location: { x: 0.15, y: 0.08, region: "head_side" as BodyRegion },
+    id: "myeongmun",
+    korean: { korean: "명문", english: "Gate of Life" },
+    english: "Gate of Life",
+    anatomicalName: "L2-L3 Vertebrae",
+    category: VitalPointCategory.NEUROLOGICAL,
+    severity: VitalPointSeverity.MAJOR,
+    position: { x: 0, y: 250 },
+    radius: 25,
     effects: [
-      {
-        id: "eff_concussion_strong",
-        type: "stun" as EffectType,
-        duration: 3000,
-        intensity: "strong" as EffectIntensity,
-        description: {
-          korean: "강한 뇌진탕",
-          english: "Strong Concussion",
-        } as KoreanText,
-        stackable: false,
-      },
-      {
-        id: "eff_disorientation_severe",
-        type: "disoriented" as EffectType,
-        duration: 5000,
-        intensity: "severe" as EffectIntensity,
-        description: {
-          korean: "심각한 방향감각 상실",
-          english: "Severe Disorientation",
-        } as KoreanText,
-        stackable: true,
-      },
+      createVitalPointEffect(
+        "severe_pain_effect",
+        VitalPointEffectType.PAIN,
+        EffectIntensity.HIGH,
+        4000,
+        { korean: "극심한 통증", english: "Severe pain" }
+      ),
     ],
-    severity: "critical" as VitalPointSeverity,
-    baseAccuracy: 0.75,
-    baseDamage: 25, // Added required property
-    damageMultiplier: 2.5,
-    baseStun: 3000,
-    techniques: ["striking", "pressure"], // Fixed: renamed from technique
-    damage: 25, // Added required property
-  },
-  {
-    id: "vp_solar_plexus_myungchi",
-    name: { korean: "명치", english: "Solar Plexus (Myungchi)" } as KoreanText,
-    korean: "명치",
-    englishName: "Solar Plexus (Myungchi)", // Added required property
-    koreanName: "명치", // Added required property
-    category: "torso" as VitalPointCategory,
+    damage: { min: 30, max: 50, average: 40 },
     description: {
-      korean:
-        "흉골 바로 아래 위치한 신경총. 강타 시 호흡곤란과 극심한 고통을 유발.",
-      english:
-        "Nerve plexus located just below the sternum. A strong blow causes difficulty breathing and extreme pain.",
-    } as KoreanText,
-    location: {
-      x: 0.5,
-      y: 0.35,
-      region: "upper_abdomen_center" as BodyRegion,
+      korean: "등 아래쪽의 중요 혈점",
+      english: "Critical point on lower back",
     },
-    effects: [
-      {
-        id: "eff_winded_severe",
-        type: "stamina_drain" as EffectType,
-        duration: 6000,
-        intensity: "severe" as EffectIntensity,
-        description: {
-          korean: "심한 호흡 곤란",
-          english: "Severe Windedness",
-        } as KoreanText,
-        stackable: false,
-      },
-      {
-        id: "eff_pain_extreme",
-        type: "pain_severe" as EffectType,
-        duration: 4000,
-        intensity: "extreme" as EffectIntensity,
-        description: {
-          korean: "극심한 고통",
-          english: "Extreme Pain",
-        } as KoreanText,
-        stackable: true,
-      },
-    ],
-    severity: "severe" as VitalPointSeverity,
-    baseAccuracy: 0.85,
-    baseDamage: 20, // Added required property
-    damageMultiplier: 1.8,
-    baseStun: 1500,
-    techniques: ["striking", "pressure"], // Fixed: renamed from technique
-    damage: 20, // Added required property
+    difficulty: 0.8,
+    requiredForce: 25,
+    safetyWarning: "Can cause temporary paralysis",
   },
   {
-    id: "head_mastoid_process_wangu",
-    name: { korean: "완골", english: "Mastoid Process" },
-    korean: "완골",
-    englishName: "Mastoid Process", // Added required property
-    koreanName: "완골", // Added required property
-    category: "head",
-    description: {
-      korean:
-        "귀 뒤의 돌출된 뼈. 강타 시 균형 상실 및 의식 저하를 유발할 수 있다.",
-      english:
-        "Bony prominence behind the ear. A strong blow can cause loss of balance and reduced consciousness.",
-    },
+    id: "jungwan",
+    korean: { korean: "중완", english: "Middle Cavity" },
+    english: "Middle Cavity",
+    anatomicalName: "Solar Plexus",
+    category: VitalPointCategory.ORGAN,
+    severity: VitalPointSeverity.MAJOR,
+    position: { x: 0, y: 200 },
+    radius: 30,
     effects: [
-      {
-        id: "balance_loss_mastoid",
-        type: "balance_loss" as EffectType,
-        duration: 7000,
-        intensity: "strong" as EffectIntensity,
-        description: {
-          korean: "심각한 균형 상실",
-          english: "Severe loss of balance",
-        },
-        stackable: false,
-      },
-      {
-        id: "consciousness_reduction_mastoid",
-        type: "consciousness_loss" as EffectType,
-        duration: 3000,
-        intensity: "moderate" as EffectIntensity,
-        description: {
-          korean: "의식 저하",
-          english: "Reduced consciousness",
-        },
-        stackable: true,
-      },
+      createVitalPointEffect(
+        "breathlessness_effect",
+        VitalPointEffectType.BREATHLESSNESS,
+        EffectIntensity.MEDIUM,
+        3500,
+        { korean: "호흡 곤란", english: "Breathing difficulty" }
+      ),
     ],
-    location: { x: 0.2, y: 0.2, region: "head_side" },
-    severity: "severe",
-    techniques: ["strike", "pressure"], // Fixed: renamed from technique
-    baseAccuracy: 0.6,
-    baseDamage: 18, // Added required property
-    baseStun: 3000,
-    damageMultiplier: 1.7,
-    damage: 18, // Added required property
+    damage: { min: 20, max: 35, average: 27 },
+    description: {
+      korean: "가슴 중앙의 중요 혈점",
+      english: "Critical point at center of chest",
+    },
+    difficulty: 0.6,
+    requiredForce: 18,
+    safetyWarning: "Can cause breathing difficulties",
   },
-];
+  {
+    id: "tanjoong",
+    korean: { korean: "단중", english: "Chest Center" },
+    english: "Chest Center",
+    anatomicalName: "Sternum",
+    category: VitalPointCategory.RESPIRATORY,
+    severity: VitalPointSeverity.MODERATE,
+    position: { x: 0, y: 180 },
+    radius: 25,
+    effects: [
+      createVitalPointEffect(
+        "stun_effect",
+        VitalPointEffectType.STUN,
+        EffectIntensity.MEDIUM,
+        2000,
+        { korean: "기절", english: "Stun" }
+      ),
+    ],
+    damage: { min: 15, max: 25, average: 20 },
+    description: {
+      korean: "가슴 중앙의 호흡 혈점",
+      english: "Breathing point at chest center",
+    },
+    difficulty: 0.5,
+    requiredForce: 15,
+    safetyWarning: "Can cause temporary stunning",
+  },
+] as const;
+
+// Anatomical regions with proper boundaries
+export const ANATOMICAL_REGIONS: Record<string, AnatomicalRegion> = {
+  head: {
+    id: "head",
+    name: { korean: "머리", english: "Head" },
+    boundaries: [
+      { x: -100, y: -100 },
+      { x: 100, y: -100 },
+      { x: 100, y: 50 },
+      { x: -100, y: 50 },
+    ],
+    vitalPoints: SAMPLE_VITAL_POINTS.filter((vp) => vp.position.y < 50),
+  },
+  neck: {
+    id: "neck",
+    name: { korean: "목", english: "Neck" },
+    boundaries: [
+      { x: -50, y: 50 },
+      { x: 50, y: 50 },
+      { x: 50, y: 100 },
+      { x: -50, y: 100 },
+    ],
+    vitalPoints: SAMPLE_VITAL_POINTS.filter(
+      (vp) => vp.position.y >= 50 && vp.position.y < 100
+    ),
+  },
+  torso: {
+    id: "torso",
+    name: { korean: "몸통", english: "Torso" },
+    boundaries: [
+      { x: -150, y: 100 },
+      { x: 150, y: 100 },
+      { x: 150, y: 400 },
+      { x: -150, y: 400 },
+    ],
+    vitalPoints: SAMPLE_VITAL_POINTS.filter(
+      (vp) => vp.position.y >= 100 && vp.position.y < 400
+    ),
+  },
+  arms: {
+    id: "arms",
+    name: { korean: "팔", english: "Arms" },
+    boundaries: [
+      { x: -250, y: 100 },
+      { x: -150, y: 100 },
+      { x: 250, y: 300 },
+      { x: -250, y: 300 },
+    ],
+    vitalPoints: SAMPLE_VITAL_POINTS.filter(
+      (vp) =>
+        Math.abs(vp.position.x) > 150 &&
+        vp.position.y >= 100 &&
+        vp.position.y < 300
+    ),
+  },
+  legs: {
+    id: "legs",
+    name: { korean: "다리", english: "Legs" },
+    boundaries: [
+      { x: -100, y: 400 },
+      { x: 100, y: 400 },
+      { x: 100, y: 800 },
+      { x: -100, y: 800 },
+    ],
+    vitalPoints: SAMPLE_VITAL_POINTS.filter((vp) => vp.position.y >= 400),
+  },
+};
+
+// Helper functions for anatomy system
+export function getVitalPointsInRegion(
+  regionId: string
+): readonly VitalPoint[] {
+  return ANATOMICAL_REGIONS[regionId]?.vitalPoints || [];
+}
+
+export function getRegionBoundaries(regionId: string): readonly Position[] {
+  return ANATOMICAL_REGIONS[regionId]?.boundaries || [];
+}
+
+export function isPositionInRegion(
+  position: Position,
+  regionId: string
+): boolean {
+  const boundaries = getRegionBoundaries(regionId);
+  if (boundaries.length < 3) return false;
+
+  // Simple point-in-polygon test for rectangular regions
+  const [topLeft, topRight, , bottomLeft] = boundaries;
+  return (
+    position.x >= topLeft.x &&
+    position.x <= topRight.x &&
+    position.y >= topLeft.y &&
+    position.y <= bottomLeft.y
+  );
+}
+
+export function getRegionForPosition(position: Position): string | null {
+  for (const regionId of Object.keys(ANATOMICAL_REGIONS)) {
+    if (isPositionInRegion(position, regionId)) {
+      return regionId;
+    }
+  }
+  return null;
+}
+
+export default SAMPLE_VITAL_POINTS;

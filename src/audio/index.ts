@@ -1,9 +1,30 @@
-export { AudioManager, audioManager } from "./AudioManager";
-export { AudioProvider, useAudio } from "./AudioProvider";
-export { DefaultSoundGenerator } from "./DefaultSoundGenerator";
-export { AUDIO_ASSET_REGISTRY } from "./AudioAssetRegistry";
-export { VariantSelector } from "./VariantSelector";
-export * from "./AudioUtils";
+/**
+ * Audio system exports for Black Trigram
+ */
 
-// Re-export useAudio as default for backward compatibility
-export { useAudio as default } from "./AudioProvider";
+export { AudioProvider } from "./AudioProvider";
+export { AudioManager } from "./AudioManager";
+export { AudioAssetRegistry } from "./AudioAssetRegistry";
+export { AudioUtils } from "./AudioUtils";
+export { DefaultSoundGenerator } from "./DefaultSoundGenerator";
+export { VariantSelector } from "./VariantSelector";
+
+// Export placeholder sounds
+export * from "./placeholder-sounds";
+
+// Audio types
+export type {
+  AudioAsset,
+  MusicTrack,
+  SoundEffect,
+  VoiceLine,
+  AudioConfig,
+  AudioEvent,
+  AudioContext3D,
+  CombatAudioMap,
+  AudioManager as AudioManagerInterface,
+  AudioState,
+  SoundEffectId,
+  MusicTrackId,
+  VoiceLineId,
+} from "../types/audio";

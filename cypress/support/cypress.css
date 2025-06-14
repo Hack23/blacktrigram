@@ -26,3 +26,51 @@
     transform: translateY(0);
   }
 }
+
+/* Cypress component testing styles for Black Trigram */
+
+/* Korean martial arts theme for test runner */
+body {
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  color: #ffffff;
+}
+
+/* Test component container styling */
+[data-cy-root] {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* PixiJS canvas testing adjustments */
+canvas {
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Korean text testing visibility */
+.korean-text {
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Test element highlighting */
+[data-testid] {
+  outline: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+/* Cyberpunk theme for test UI */
+.cy-command-name {
+  color: #00ffff !important;
+}
+
+.cy-command-state-passed {
+  color: #00ff00 !important;
+}
+
+.cy-command-state-failed {
+  color: #ff3333 !important;
+}

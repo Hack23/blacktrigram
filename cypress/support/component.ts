@@ -12,17 +12,25 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
+/// <reference types="cypress" />
 
-// Import commands.ts using ES2015 syntax:
-import "./commands";
-
-// Use React 19 compatible mount function
+// Fix: Use correct React 18 mount import
 import { mount } from "cypress/react";
+import "./commands";
+import "./pixi-commands";
 
-// Augment the Cypress namespace to include type definitions for
-// your custom command.
-// Alternatively, can be defined in cypress/support/component.d.ts
-// with a <reference path="./component" /> at the top of your spec.
+// Global styles for component testing
+import "../../src/index.css";
+
+// Add mount command for React 18
+Cypress.Commands.add("mount", mount);
+
+// PixiJS component testing setup
+beforeEach(() => {
+  // Mock WebGL for component tests
+  cy.mockWebGL();
+});
+
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -30,8 +38,6 @@ declare global {
     }
   }
 }
-
-Cypress.Commands.add("mount", mount);
 
 // Add browser launch configuration for component tests
 Cypress.on("before:browser:launch", (browser, launchOptions) => {

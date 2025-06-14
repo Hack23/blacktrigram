@@ -1,25 +1,24 @@
 describe("Black Trigram Combat Mode", () => {
   beforeEach(() => {
-    // Use the new visitWithWebGLMock command
     cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
 
-    // Wait for intro screen
-    cy.get(".intro-screen").should("be.visible");
-
-    // Enter combat mode
-    cy.get('[data-testid="combat-button"]').click();
+    // Enter combat mode using the fixed navigation
+    cy.enterCombatMode();
   });
 
   it("should display combat screen elements", () => {
     cy.annotate("Checking combat screen elements");
 
-    // Since the combat screen renders different components, check for key elements
-    // These checks are more generic since we don't have specific selectors
-    cy.contains("Combat").should("exist");
+    // Check for combat screen marker
+    cy.get('[data-testid="combat-screen"]').should("exist");
 
-    // There should be some UI element for the pause button
-    cy.get("body").type("{esc}");
-    cy.get(".intro-screen").should("be.visible");
+    // Check for combat text in the overlay
+    cy.contains("Combat").should("be.visible");
+    cy.contains("전투").should("be.visible");
+
+    // Return to intro
+    cy.returnToIntro();
   });
 
   it("should support stance changes during combat", () => {
@@ -32,67 +31,75 @@ describe("Black Trigram Combat Mode", () => {
     }
 
     // Return to intro
-    cy.get("body").type("{esc}");
-    cy.get(".intro-screen").should("be.visible");
+    cy.returnToIntro();
   });
 
   it("should support basic attacks", () => {
     cy.annotate("Testing basic attacks");
 
-    // Select a stance
+    // Select a stance and execute attacks
     cy.get("body").type("1"); // First stance
     cy.wait(300);
-
-    // Execute attack (space key typically)
-    cy.get("body").type(" ");
+    cy.get("body").type(" "); // Execute attack
     cy.wait(300);
 
     // Try a different stance
     cy.get("body").type("3");
     cy.wait(300);
-
-    // Execute attack in new stance
     cy.get("body").type(" ");
     cy.wait(300);
 
     // Try movement keys
-    cy.get("body").type("w");
-    cy.get("body").type("a");
-    cy.get("body").type("s");
-    cy.get("body").type("d");
+    cy.gameActions(["w", "a", "s", "d"]);
 
     // Return to intro
-    cy.get("body").type("{esc}");
-    cy.get(".intro-screen").should("be.visible");
+    cy.returnToIntro();
   });
 
   it("should display combat log or feedback", () => {
+    // Check for combat screen
+    cy.get('[data-testid="combat-screen"]').should("exist");
+
     // Perform actions that would generate combat log entries
     cy.get("body").type("1"); // Select first stance
     cy.wait(300);
     cy.get("body").type(" "); // Execute attack
     cy.wait(500);
 
-    // Look for combat log or feedback elements
-    // This is generic as we don't know the exact selectors
-    cy.get("div").contains("전투").should("exist");
+    // Look for combat feedback - check for Korean text
+    cy.contains("전투").should("be.visible");
 
     // Return to intro
-    cy.get("body").type("{esc}");
-    cy.get(".intro-screen").should("be.visible");
+    cy.returnToIntro();
   });
 
   it("should handle rapid combat inputs", () => {
     cy.annotate("Testing rapid combat inputs");
 
     // Rapidly test all stances and attacks
-    cy.get("body").type("1 2 3 4 5 6 7 8", { delay: 100 });
+    cy.gameActions([
+      "1",
+      " ",
+      "2",
+      " ",
+      "3",
+      " ",
+      "4",
+      " ",
+      "5",
+      " ",
+      "6",
+      " ",
+      "7",
+      " ",
+      "8",
+      " ",
+    ]);
 
     // Try movement combined with attacks
-    cy.get("body").type("w 1 a 2 s 3 d 4", { delay: 100 });
+    cy.gameActions(["w", "1", "a", "2", "s", "3", "d", "4"]);
 
     // Return to intro
-    cy.get("body").type("{esc}");
-    cy.get(".intro-screen").should("be.visible");
+    cy.returnToIntro();
   });
 });

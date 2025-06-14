@@ -5691,3 +5691,12 @@ dist/assets/index-DhEMd0Oq.js
 dist/assets/pixi-DgHaZaFf.js
 dist/assets/webworkerAll-BOoFFBj4.js
 dist/assets/pixi-CmkkZA4O.js
+cypress/videos/app.cy.ts.mp4
+cypress/videos/combat-mode.cy.ts-compressed.mp4
+cypress/videos/combat-mode.cy.ts.mp4
+cypress/videos/core-features.cy.ts.mp4
+cypress/videos/game-flow.cy.ts-compressed.mp4
+cypress/videos/game-flow.cy.ts.mp4
+cypress/videos/game-flow.cy.ts.mp4.meta
+cypress/videos
+cypress/screenshots/**/*

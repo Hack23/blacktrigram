@@ -1,252 +1,189 @@
-// Player archetype data for Korean martial arts
+/**
+ * Player archetype constants for Korean martial arts
+ */
 
-import type { PlayerArchetype } from "../enums";
+import { PlayerArchetype, TrigramStance } from "../enums";
+import type { PlayerArchetypeData } from "../anatomy";
+import { KOREAN_COLORS } from "./colors";
 
-// Remove conflicting import and define interface locally
-export interface PlayerArchetypeData {
-  readonly name: { korean: string; english: string };
-  readonly description: { korean: string; english: string };
-  readonly preferredTrigrams: readonly string[];
-  readonly specialization: string; // Add missing property
-  readonly bonuses: {
-    readonly damageBonus: number;
-    readonly accuracyBonus: number;
-    readonly speedBonus: number;
-    readonly defenseBonus: number;
-    readonly damageResistance?: number;
-    readonly precisionBonus?: number;
-  };
-}
-
-// Player archetype data with Korean martial arts specializations
-export const PLAYER_ARCHETYPE_DATA: Record<
+// Player archetype data
+export const PLAYER_ARCHETYPES_DATA: Record<
   PlayerArchetype,
   PlayerArchetypeData
 > = {
-  musa: {
-    name: {
-      korean: "무사",
-      english: "Traditional Warrior",
-    },
+  [PlayerArchetype.MUSA]: {
+    id: "musa",
+    name: { korean: "무사", english: "Warrior" },
     description: {
-      korean: "전통적인 무술가로 명예와 힘을 추구한다",
-      english: "Traditional martial artist pursuing honor and strength",
+      korean: "전통 무사의 길",
+      english: "Path of the traditional warrior",
     },
-    preferredTrigrams: ["geon", "jin"],
-    specialization: "Direct combat and overwhelming force",
-    bonuses: {
-      damageBonus: 1.2,
-      accuracyBonus: 1.0,
-      speedBonus: 0.9,
-      defenseBonus: 1.3,
-      damageResistance: 1.2,
+    baseHealth: 120,
+    baseKi: 100,
+    baseStamina: 110,
+    coreStance: TrigramStance.GEON,
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
+      secondary: KOREAN_COLORS.KOREAN_RED,
+    },
+    colors: {
+      primary: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
+      secondary: KOREAN_COLORS.KOREAN_RED,
+    },
+    stats: {
+      attackPower: 85,
+      defense: 90,
+      speed: 70,
+      technique: 80,
+    },
+    favoredStances: [TrigramStance.GEON, TrigramStance.GAN],
+    specialAbilities: ["Honor Strike", "Defensive Mastery"],
+    philosophy: {
+      korean: "명예와 정의의 길",
+      english: "The way of honor and justice",
     },
   },
 
-  amsalja: {
-    name: {
-      korean: "암살자",
-      english: "Shadow Assassin",
-    },
+  [PlayerArchetype.AMSALJA]: {
+    id: "amsalja",
+    name: { korean: "암살자", english: "Assassin" },
     description: {
-      korean: "은밀한 암살을 통해 효율성을 추구한다",
-      english: "Pursues efficiency through stealth assassination",
+      korean: "그림자 속의 효율성",
+      english: "Efficiency from the shadows",
     },
-    preferredTrigrams: ["son", "gam"],
-    specialization: "Stealth approaches and instant takedowns",
-    bonuses: {
-      damageBonus: 1.8,
-      accuracyBonus: 1.4,
-      speedBonus: 1.5,
-      defenseBonus: 0.8,
-      precisionBonus: 1.1,
+    baseHealth: 80,
+    baseKi: 120,
+    baseStamina: 100,
+    coreStance: TrigramStance.SON,
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
+      secondary: KOREAN_COLORS.UI_BACKGROUND_DARK,
+    },
+    colors: {
+      primary: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
+      secondary: KOREAN_COLORS.UI_BACKGROUND_DARK,
+    },
+    stats: {
+      attackPower: 95,
+      defense: 60,
+      speed: 95,
+      technique: 90,
+    },
+    favoredStances: [TrigramStance.SON, TrigramStance.GAM],
+    specialAbilities: ["Shadow Strike", "Vital Point Mastery"],
+    philosophy: {
+      korean: "침묵과 정확성의 도",
+      english: "The way of silence and precision",
     },
   },
 
-  hacker: {
-    name: {
-      korean: "해커",
-      english: "Cyber Warrior",
-    },
+  [PlayerArchetype.HACKER]: {
+    id: "hacker",
+    name: { korean: "해커", english: "Hacker" },
     description: {
-      korean: "정보기술을 활용한 전투 전문가",
-      english: "Combat specialist utilizing information technology",
+      korean: "정보를 통한 힘",
+      english: "Power through information",
     },
-    preferredTrigrams: ["li", "tae"],
-    specialization: "Tech-assisted strikes and environmental control",
-    bonuses: {
-      damageBonus: 1.1,
-      accuracyBonus: 1.6,
-      speedBonus: 1.2,
-      defenseBonus: 1.0,
+    baseHealth: 90,
+    baseKi: 130,
+    baseStamina: 80,
+    coreStance: TrigramStance.LI,
+    theme: {
+      primary: KOREAN_COLORS.PRIMARY_CYAN,
+      secondary: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
+    },
+    colors: {
+      primary: KOREAN_COLORS.PRIMARY_CYAN,
+      secondary: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
+    },
+    stats: {
+      attackPower: 75,
+      defense: 70,
+      speed: 85,
+      technique: 95,
+    },
+    favoredStances: [TrigramStance.LI, TrigramStance.JIN],
+    specialAbilities: ["System Override", "Digital Precision"],
+    philosophy: {
+      korean: "지식과 기술의 융합",
+      english: "The fusion of knowledge and technology",
     },
   },
 
-  jeongbo_yowon: {
-    name: {
-      korean: "정보요원",
-      english: "Intelligence Operative",
-    },
+  [PlayerArchetype.JEONGBO_YOWON]: {
+    id: "jeongbo_yowon",
+    name: { korean: "정보요원", english: "Agent" },
     description: {
-      korean: "관찰과 분석을 통해 지식을 얻는 요원",
-      english: "Agent gaining knowledge through observation and analysis",
+      korean: "관찰을 통한 지식",
+      english: "Knowledge through observation",
     },
-    preferredTrigrams: ["gan", "gon"],
-    specialization: "Psychological manipulation and strategic thinking",
-    bonuses: {
-      damageBonus: 1.0,
-      accuracyBonus: 1.3,
-      speedBonus: 1.1,
-      defenseBonus: 1.4,
+    baseHealth: 100,
+    baseKi: 110,
+    baseStamina: 100,
+    coreStance: TrigramStance.TAE,
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
+      secondary: KOREAN_COLORS.UI_STEEL_GRAY,
+    },
+    colors: {
+      primary: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
+      secondary: KOREAN_COLORS.UI_STEEL_GRAY,
+    },
+    stats: {
+      attackPower: 80,
+      defense: 85,
+      speed: 80,
+      technique: 85,
+    },
+    favoredStances: [TrigramStance.TAE, TrigramStance.GAN],
+    specialAbilities: ["Intel Gathering", "Adaptive Combat"],
+    philosophy: {
+      korean: "적응과 전략의 예술",
+      english: "The art of adaptation and strategy",
     },
   },
 
-  jojik_pokryeokbae: {
-    name: {
-      korean: "조직폭력배",
-      english: "Organized Crime",
-    },
+  [PlayerArchetype.JOJIK_POKRYEOKBAE]: {
+    id: "jojik_pokryeokbae",
+    name: { korean: "조직폭력배", english: "Gangster" },
     description: {
-      korean: "생존을 위한 냉혹한 범죄 조직원",
-      english: "Ruthless criminal organization member focused on survival",
+      korean: "무자비함을 통한 생존",
+      english: "Survival through ruthlessness",
     },
-    preferredTrigrams: ["jin", "gam"],
-    specialization: "Dirty fighting and improvised weapons",
-    bonuses: {
-      damageBonus: 1.6,
-      accuracyBonus: 0.9,
-      speedBonus: 1.3,
-      defenseBonus: 1.1,
+    baseHealth: 110,
+    baseKi: 90,
+    baseStamina: 120,
+    coreStance: TrigramStance.JIN,
+    theme: {
+      primary: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
+      secondary: KOREAN_COLORS.NEGATIVE_RED,
+    },
+    colors: {
+      primary: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
+      secondary: KOREAN_COLORS.NEGATIVE_RED,
+    },
+    stats: {
+      attackPower: 90,
+      defense: 75,
+      speed: 75,
+      technique: 70,
+    },
+    favoredStances: [TrigramStance.JIN, TrigramStance.GON],
+    specialAbilities: ["Brutal Force", "Street Fighting"],
+    philosophy: {
+      korean: "강함과 의지의 길",
+      english: "The way of strength and will",
     },
   },
 } as const;
 
-// Player stats configuration
-export const PLAYER_BASE_STATS = {
+// Base player stats
+export const BASE_PLAYER_STATS = {
   HEALTH: 100,
-  MAX_HEALTH: 100,
   KI: 100,
-  MAX_KI: 100,
   STAMINA: 100,
-  MAX_STAMINA: 100,
-  CONSCIOUSNESS: 100,
-  PAIN: 0,
-  BALANCE: 100,
-  BLOOD_LOSS: 0,
-} as const;
-
-// Archetype-specific stat modifiers
-export const ARCHETYPE_STAT_MODIFIERS: Record<
-  PlayerArchetype,
-  {
-    healthMultiplier: number;
-    kiMultiplier: number;
-    staminaMultiplier: number;
-    painResistance: number;
-    balanceBonus: number;
-  }
-> = {
-  musa: {
-    healthMultiplier: 1.2, // Higher health for traditional warrior
-    kiMultiplier: 1.1, // Moderate ki bonus
-    staminaMultiplier: 1.0, // Standard stamina
-    painResistance: 1.3, // High pain resistance
-    balanceBonus: 1.1, // Good balance
-  },
-  amsalja: {
-    healthMultiplier: 0.9, // Lower health (glass cannon)
-    kiMultiplier: 1.3, // High ki for stealth techniques
-    staminaMultiplier: 1.2, // High stamina for mobility
-    painResistance: 1.0, // Standard pain resistance
-    balanceBonus: 1.4, // Excellent balance for stealth
-  },
-  hacker: {
-    healthMultiplier: 0.8, // Lowest health (tech reliant)
-    kiMultiplier: 1.4, // Highest ki for tech enhancement
-    staminaMultiplier: 0.9, // Lower stamina (less physical)
-    painResistance: 0.8, // Lower pain resistance
-    balanceBonus: 1.0, // Standard balance
-  },
-  jeongbo_yowon: {
-    healthMultiplier: 1.0, // Standard health
-    kiMultiplier: 1.2, // Good ki for mental techniques
-    staminaMultiplier: 1.1, // Good stamina for endurance
-    painResistance: 1.4, // Very high pain resistance (trained)
-    balanceBonus: 1.2, // Good balance for control
-  },
-  jojik_pokryeokbae: {
-    healthMultiplier: 1.1, // Good health from street fighting
-    kiMultiplier: 0.9, // Lower ki (less spiritual)
-    staminaMultiplier: 1.3, // Highest stamina for survival
-    painResistance: 1.5, // Highest pain resistance (street tough)
-    balanceBonus: 0.9, // Lower balance (brawler style)
-  },
-} as const;
-
-// Korean martial arts ranking system
-export const MARTIAL_ARTS_RANKS = {
-  STUDENT: { korean: "제자", english: "Student", level: 1 },
-  PRACTITIONER: { korean: "수련자", english: "Practitioner", level: 2 },
-  INSTRUCTOR: { korean: "사범", english: "Instructor", level: 3 },
-  MASTER: { korean: "사부", english: "Master", level: 4 },
-  GRANDMASTER: { korean: "종사", english: "Grandmaster", level: 5 },
-} as const;
-
-// Combat readiness thresholds by archetype
-export const ARCHETYPE_COMBAT_THRESHOLDS: Record<
-  PlayerArchetype,
-  {
-    criticalHealth: number;
-    lowStamina: number;
-    kiDepletion: number;
-    painThreshold: number;
-  }
-> = {
-  musa: {
-    criticalHealth: 0.3, // Fights until 30% health
-    lowStamina: 0.2, // Alert at 20% stamina
-    kiDepletion: 0.15, // Ki warning at 15%
-    painThreshold: 70, // High pain tolerance
-  },
-  amsalja: {
-    criticalHealth: 0.4, // More cautious with health
-    lowStamina: 0.25, // Needs stamina for mobility
-    kiDepletion: 0.2, // Relies on ki for stealth
-    painThreshold: 50, // Standard pain tolerance
-  },
-  hacker: {
-    criticalHealth: 0.5, // Very cautious with health
-    lowStamina: 0.15, // Less reliant on stamina
-    kiDepletion: 0.25, // Heavily reliant on ki
-    painThreshold: 40, // Low pain tolerance
-  },
-  jeongbo_yowon: {
-    criticalHealth: 0.35, // Balanced health management
-    lowStamina: 0.3, // Good stamina management
-    kiDepletion: 0.2, // Moderate ki reliance
-    painThreshold: 80, // Very high pain tolerance
-  },
-  jojik_pokryeokbae: {
-    criticalHealth: 0.25, // Fights even when badly hurt
-    lowStamina: 0.35, // High stamina usage
-    kiDepletion: 0.1, // Low ki reliance
-    painThreshold: 85, // Highest pain tolerance
-  },
-} as const;
-
-// Archetype export and naming
-export const PLAYER_ARCHETYPES = [
-  "musa",
-  "amsalja",
-  "hacker",
-  "jeongbo_yowon",
-  "jojik_pokryeokbae",
-] as const;
-
-export const ARCHETYPE_NAMES = {
-  musa: { korean: "무사", english: "Traditional Warrior" },
-  amsalja: { korean: "암살자", english: "Shadow Assassin" },
-  hacker: { korean: "해커", english: "Cyber Warrior" },
-  jeongbo_yowon: { korean: "정보요원", english: "Intelligence Operative" },
-  jojik_pokryeokbae: { korean: "조직폭력배", english: "Organized Crime" },
+  ATTACK_POWER: 75,
+  DEFENSE: 75,
+  SPEED: 75,
+  TECHNIQUE: 75,
 } as const;

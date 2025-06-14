@@ -29,6 +29,14 @@
 
     "types": ["node", "vitest/globals"] // Add vitest/globals for vi namespace
   },
-  "include": ["src/**/*", "src/**/*.tsx", "src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "build"]
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.cy.ts",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

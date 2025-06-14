@@ -1,183 +1,314 @@
-import type { ReactNode } from "react";
-import type { ColorValue, Position } from "./common";
-import type { TrigramStance, GamePhase } from "./enums";
-import type { PlayerState } from "./player";
-import type { KoreanText } from "./korean-text";
-import type { PlayerArchetype } from "./player";
+// UI-specific types for Black Trigram Korean martial arts game
 
-// Base component props
-export interface BaseComponentProps {
-  readonly className?: string;
-  readonly style?: React.CSSProperties;
+import type { ReactNode } from "react";
+import type {
+  PlayerState,
+  MatchStatistics,
+  GameMode,
+  HitEffect,
+  TrigramStance,
+} from "./index";
+import type { KoreanText } from "./korean-text";
+
+// Base UI component props
+export interface BaseUIProps {
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+  readonly alpha?: number;
+  readonly visible?: boolean;
   readonly children?: ReactNode;
 }
 
-// Base UI component props
-export interface BaseUIComponentProps {
-  readonly className?: string;
-  readonly style?: React.CSSProperties;
-  readonly testId?: string;
+// UI theme configuration
+export interface UITheme {
+  readonly primary: number;
+  readonly secondary: number;
+  readonly accent: number;
+  readonly background: number;
+  readonly text: number;
+  readonly border: number;
 }
 
-// Progress tracker props
-export interface ProgressTrackerProps extends BaseUIComponentProps {
-  readonly label: string;
-  readonly value: number;
-  readonly maxValue: number;
-  readonly barColor?: ColorValue;
-  readonly backgroundColor?: ColorValue;
-  readonly borderColor?: ColorValue;
+// Menu item definition
+export interface MenuItem {
+  readonly id: string;
+  readonly label: KoreanText;
+  readonly action: () => void;
+  readonly disabled?: boolean;
+  readonly icon?: string;
+}
+
+// Modal props
+export interface ModalProps extends BaseUIProps {
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly title?: KoreanText;
+  readonly content: ReactNode;
+}
+
+// Notification system
+export interface Notification {
+  readonly id: string;
+  readonly type: "info" | "success" | "warning" | "error";
+  readonly title: KoreanText;
+  readonly message: KoreanText;
+  readonly duration?: number;
+  readonly timestamp: number;
+}
+
+// Game settings
+export interface GameSettings {
+  readonly volume: {
+    readonly master: number;
+    readonly music: number;
+    readonly sfx: number;
+  };
+  readonly graphics: {
+    readonly quality: "low" | "medium" | "high";
+    readonly fullscreen: boolean;
+    readonly vsync: boolean;
+  };
+  readonly controls: {
+    readonly keyboardLayout: "qwerty" | "dvorak" | "colemak";
+    readonly mouseSensitivity: number;
+  };
+  readonly language: "korean" | "english" | "both";
+}
+
+// Screen navigation
+export interface ScreenNavigation {
+  readonly currentScreen: string;
+  readonly previousScreen?: string;
+  readonly navigate: (screen: string) => void;
+  readonly goBack: () => void;
+}
+
+// Loading state
+export interface LoadingState {
+  readonly isLoading: boolean;
+  readonly progress?: number;
+  readonly message?: KoreanText;
+}
+
+// Error state
+export interface ErrorState {
+  readonly hasError: boolean;
+  readonly error?: Error;
+  readonly message?: KoreanText;
+  readonly retry?: () => void;
+}
+
+// Screen component props
+export interface EndScreenProps {
+  readonly winner: PlayerState | null;
+  readonly matchStatistics: MatchStatistics;
+  readonly onRestart: () => void;
+  readonly onMainMenu: () => void;
+  readonly children?: ReactNode;
+}
+
+export interface IntroScreenProps {
+  readonly onStartGame: () => void;
+  readonly onShowTraining: () => void;
+  readonly onShowSettings: () => void;
+  readonly children?: ReactNode;
+}
+
+export interface TrainingScreenProps {
+  readonly onBack: () => void;
+  readonly player: PlayerState;
+  readonly onPlayerUpdate: (updates: Partial<PlayerState>) => void;
+  readonly children?: ReactNode;
   readonly width?: number;
   readonly height?: number;
-  readonly showText?: boolean;
-  readonly textColor?: ColorValue;
-  readonly borderWidth?: number;
-  readonly color?: string; // CSS color alternative
+  readonly trigramSystem?: any; // Fix: Add missing props
+  readonly vitalPointSystem?: any; // Fix: Add missing props
+  readonly onReturnToMenu: () => void; // Fix: Add missing props
 }
 
-// Trigram wheel props - FIXED: Match implementation signature
-export interface TrigramWheelProps extends BaseUIComponentProps {
-  readonly currentStance: TrigramStance;
-  readonly onStanceSelect: (stance: TrigramStance) => void;
-  readonly size?: number;
-  readonly position?: Position;
-  readonly interactive?: boolean;
-  readonly time?: number;
-}
-
-// Korean text styling for PIXI
-export interface KoreanPixiTextConfig {
-  readonly fontFamily?: string;
-  readonly fontSize?: number;
-  readonly fill?: ColorValue;
-  readonly align?: "left" | "center" | "right";
-  readonly wordWrap?: boolean;
-  readonly wordWrapWidth?: number;
-}
-
-// Menu section props - FIXED: Ensure consistent with components.ts
-export interface MenuSectionProps extends BaseUIComponentProps {
-  readonly onGamePhaseChange: (phase: GamePhase | string) => void;
-  readonly title?: string;
-  readonly onSelect?: (option: string) => void;
-}
-
-// Philosophy section props - FIXED: Ensure consistent with components.ts
-export interface PhilosophySectionProps extends BaseUIComponentProps {
-  readonly onGamePhaseChange: (phase: GamePhase | string) => void;
-  readonly title?: string;
-}
-
-// Training screen props
-export interface TrainingScreenProps extends BaseUIComponentProps {
-  readonly players: readonly [PlayerState, PlayerState];
-  readonly onGamePhaseChange: (phase: GamePhase) => void;
+// Component props that might be missing
+export interface CombatScreenProps {
+  readonly players: readonly PlayerState[];
   readonly onPlayerUpdate: (
     playerIndex: number,
     updates: Partial<PlayerState>
   ) => void;
-  readonly onStanceChange: (stance: TrigramStance) => void;
-  readonly selectedStance: TrigramStance;
-  readonly gameTime: number;
-  readonly currentRound: number;
-}
-
-// Game UI props
-export interface GameUIProps extends BaseUIComponentProps {
-  readonly players: readonly [PlayerState, PlayerState];
-  readonly gamePhase: GamePhase;
-  readonly onGamePhaseChange: (phase: GamePhase) => void;
-  readonly gameTime: number;
   readonly currentRound: number;
   readonly timeRemaining: number;
-  readonly onStanceChange: (playerIndex: number, stance: TrigramStance) => void;
-  readonly combatLog: readonly string[];
-  readonly onStartMatch?: () => void;
-  readonly onResetMatch?: () => void;
-  readonly onTogglePause?: () => void;
-  readonly onPlayerUpdate: (
-    playerIndex: number,
-    updates: Partial<PlayerState>
-  ) => void;
-  readonly isPaused?: boolean;
+  readonly isPaused: boolean;
+  readonly onReturnToMenu: () => void;
+  readonly onGameEnd: (winner: number) => void;
+  readonly gameMode?: GameMode;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
 }
 
-// Intro screen props
-export interface IntroScreenProps extends BaseUIComponentProps {
-  readonly onGamePhaseChange: (phase: GamePhase) => void;
-  readonly currentSection?: string;
-}
-
-// UI Theme
-export interface UITheme {
-  readonly colors: {
-    readonly primary: string;
-    readonly secondary: string;
-    readonly accent: string;
-    readonly background: string;
-    readonly text: string;
-  };
-  readonly fonts: {
-    readonly primary: string;
-    readonly secondary: string;
-    readonly monospace: string;
-  };
-}
-
-export interface ColorScheme {
-  readonly name: string;
-  readonly colors: Record<string, string>;
-}
-
-export interface KoreanUIElement {
-  readonly text: KoreanText;
-  readonly style: UIElementStyle;
-  readonly interactive?: boolean;
-  readonly trigram?: TrigramStance;
-}
-
-export interface UIElementStyle {
-  readonly fontFamily: string;
-  readonly fontSize: number;
-  readonly fontWeight: number;
-  readonly color: number;
-  readonly backgroundColor?: number;
-  readonly border?: BorderStyle;
-  readonly cyberpunkGlow?: boolean;
-}
-
-export interface BorderStyle {
+export interface HealthBarProps {
+  readonly current: number;
+  readonly max: number;
+  readonly playerName: string;
+  readonly position?: "left" | "right" | "center";
+  readonly x: number;
+  readonly y: number;
   readonly width: number;
-  readonly color: number;
-  readonly style: "solid" | "dashed" | "neon";
+  readonly height: number;
+  readonly screenWidth: number;
+  readonly screenHeight: number;
+  readonly showText?: boolean;
+  readonly animated?: boolean;
+  readonly showDamageIndicator?: boolean;
 }
 
-export interface TrigramWheelData {
+export interface StanceIndicatorProps {
   readonly stance: TrigramStance;
-  readonly symbol: string;
-  readonly name: KoreanText;
-  readonly color: number;
-  readonly available: boolean;
-  readonly cost: {
-    readonly ki: number;
-    readonly stamina: number;
+  readonly size?: number;
+  readonly showText?: boolean;
+  readonly x?: number;
+  readonly y?: number;
+}
+
+export interface TrigramWheelProps {
+  readonly currentStance: TrigramStance; // Fix: Make required
+  readonly onStanceChange: (stance: TrigramStance) => void;
+  readonly selectedStance?: TrigramStance;
+  readonly onStanceSelect?: (stance: TrigramStance) => void;
+  readonly size?: number;
+  readonly interactive?: boolean;
+  readonly disabledStances?: readonly TrigramStance[];
+  readonly x?: number;
+  readonly y?: number;
+}
+
+// Additional screen props that may be referenced
+export interface LoadingScreenProps {
+  readonly progress: number;
+  readonly message?: KoreanText;
+}
+
+export interface MainMenuScreenProps {
+  readonly onNewGame: () => void;
+  readonly onLoadGame: () => void;
+  readonly onSettings: () => void;
+  readonly onExit: () => void;
+}
+
+export interface SettingsScreenProps {
+  readonly onBack: () => void;
+  readonly onApply: (settings: any) => void;
+}
+
+export interface TrainingModeUIProps {
+  readonly player: PlayerState;
+  readonly onPlayerUpdate: (updates: Partial<PlayerState>) => void;
+  readonly onReset: () => void;
+}
+
+export interface VictoryPoseScreenProps {
+  readonly winner: PlayerState;
+  readonly onContinue: () => void;
+}
+
+export interface VitalPointDisplayProps {
+  readonly vitalPoints: readonly string[];
+  readonly onVitalPointSelect: (pointId: string) => void;
+  readonly selectedPoint?: string;
+}
+
+// Add missing GameUIProps export
+export interface GameUIProps extends BaseUIProps {
+  player1: PlayerState;
+  player2: PlayerState;
+  timeRemaining: number;
+  currentRound: number;
+  maxRounds: number;
+  combatEffects: readonly HitEffect[];
+}
+
+// UI component interfaces
+export interface UIComponentProps {
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly visible?: boolean;
+  readonly interactive?: boolean;
+}
+
+// Health bar interface
+export interface HealthBarProps extends UIComponentProps {
+  readonly currentHealth: number;
+  readonly maxHealth: number;
+  readonly showText?: boolean;
+  readonly variant?: "default" | "compact" | "detailed";
+}
+
+// Stance indicator interface
+export interface StanceIndicatorProps extends UIComponentProps {
+  readonly stance: TrigramStance;
+  readonly size?: number;
+  readonly showText?: boolean;
+  readonly isActive?: boolean;
+}
+
+// Progress tracker interface
+export interface ProgressTrackerProps extends UIComponentProps {
+  readonly progress: number;
+  readonly maxProgress: number;
+  readonly label?: string;
+  readonly showPercentage?: boolean;
+}
+
+// Score display interface
+export interface ScoreDisplayProps extends UIComponentProps {
+  readonly player1Score: number;
+  readonly player2Score: number;
+  readonly player1Name: string;
+  readonly player2Name: string;
+}
+
+// Round timer interface
+export interface RoundTimerProps extends UIComponentProps {
+  readonly timeRemaining: number;
+  readonly totalTime: number; // Fix: Change from maxTime to totalTime
+  readonly isRunning?: boolean;
+}
+
+// End screen interface
+export interface EndScreenProps extends UIComponentProps {
+  readonly winner: PlayerState | null;
+  readonly matchStats: {
+    readonly duration: number;
+    readonly totalRounds: number;
+    readonly player1Wins: number;
+    readonly player2Wins: number;
   };
+  readonly onRestart: () => void;
+  readonly onReturnToMenu: () => void;
 }
 
-export interface ArchetypeDisplayData {
-  readonly archetype: PlayerArchetype;
-  readonly name: KoreanText;
-  readonly specialization: KoreanText;
-  readonly preferredTrigrams: readonly TrigramStance[];
-  readonly philosophy: KoreanText;
+// Archetype display interface
+export interface ArchetypeDisplayProps extends UIComponentProps {
+  readonly player: PlayerState;
+  readonly showDetails?: boolean;
+  readonly compact?: boolean;
 }
 
-export interface CombatUIState {
-  readonly playerHealth: number;
-  readonly playerKi: number;
-  readonly playerStamina: number;
-  readonly currentStance: TrigramStance;
-  readonly availableStances: readonly TrigramStance[];
-  readonly combatLog: readonly KoreanText[];
-  readonly vitalPointsVisible: boolean;
+// Fix: Add missing ComponentState export
+export interface ComponentState {
+  readonly visible: boolean;
+  readonly interactive: boolean;
+  readonly loading: boolean;
+  readonly error?: string;
+}
+
+// Fix: Add missing InteractionEvent export
+export interface InteractionEvent {
+  readonly type: string;
+  readonly target: string;
+  readonly timestamp: number;
+  readonly data?: any;
 }

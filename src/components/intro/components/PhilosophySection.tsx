@@ -1,232 +1,123 @@
 import React from "react";
-import type { PhilosophySectionProps } from "../../../types";
-import { KOREAN_COLORS } from "../../../types";
-import { KoreanHeader } from "../../ui/base/KoreanHeader";
-import { KoreanText } from "../../ui/base/korean-text/KoreanText";
+import { usePixiExtensions } from "../../../utils/pixiExtensions";
+import { KOREAN_COLORS } from "../../../types/constants";
+import * as PIXI from "pixi.js";
 
-export function PhilosophySection({
-  onGamePhaseChange,
-}: PhilosophySectionProps): React.JSX.Element {
-  const philosophyContent = [
-    {
-      korean: "균형의 원리",
-      english: "The Principle of Balance",
-      description: "모든 무술의 기초는 몸과 마음의 균형에 있습니다.",
-    },
-    {
-      korean: "팔괘의 지혜",
-      english: "Wisdom of the Eight Trigrams",
-      description: "여덟 개의 괘를 통해 자연의 힘을 이해하고 활용합니다.",
-    },
-    {
-      korean: "기의 순환",
-      english: "Circulation of Ki",
-      description: "생명 에너지의 흐름을 조절하여 완벽한 기법을 구사합니다.",
-    },
-  ];
+export interface PhilosophySectionProps {
+  readonly onBack: () => void;
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+}
+
+export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
+  onBack,
+  x = 0,
+  y = 0,
+  width = 800,
+  height = 600,
+}) => {
+  usePixiExtensions();
+
+  const philosophyText = `
+흑괘 (Black Trigram) - 한국 무술의 철학
+
+팔괘는 고대 중국의 역경(I Ching)에서 유래한 
+여덟 가지 기본 기호로, 우주의 모든 현상을 
+나타냅니다. 한국 무술에서는 이를 전투 자세와 
+연결하여 몸과 마음의 조화를 추구합니다.
+
+• 건 (☰) - 하늘: 직접적인 힘
+• 태 (☱) - 호수: 유연한 적응
+• 리 (☲) - 불: 정밀한 공격
+• 진 (☳) - 천둥: 폭발적인 힘
+• 손 (☴) - 바람: 지속적인 압박
+• 감 (☵) - 물: 흐름과 반격
+• 간 (☶) - 산: 견고한 방어
+• 곤 (☷) - 땅: 포용과 제압
+
+무술은 단순한 격투가 아닌, 자신을 수양하고
+상대를 존중하는 도(道)입니다.
+  `;
 
   return (
-    <section className="philosophy-section">
-      <KoreanHeader
-        korean="흑괘의 철학"
-        english="Philosophy of Black Trigram"
-        subtitle="한국 무술의 깊은 지혜"
-        level={1}
+    <pixiContainer x={x} y={y} data-testid="philosophy-section">
+      {/* Background */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
+          g.drawRoundedRect(0, 0, width, height, 10);
+          g.endFill();
+
+          g.lineStyle(2, KOREAN_COLORS.ACCENT_GOLD, 0.6);
+          g.drawRoundedRect(0, 0, width, height, 10);
+        }}
       />
 
-      <div style={{ marginTop: "2rem" }}>
-        {philosophyContent.map((content, index) => (
-          <div
-            key={index}
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-              padding: "1.5rem",
-              margin: "1rem 0",
-              borderRadius: "8px",
-              border: `1px solid #${KOREAN_COLORS.GOLD.toString(16).padStart(
-                6,
-                "0"
-              )}`,
-            }}
-          >
-            <KoreanText
-              korean={content.korean}
-              english={content.english}
-              size="large"
-              weight={700}
-              style={{ marginBottom: "1rem" }}
-            />
-            <p
-              style={{
-                color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
-                lineHeight: "1.6",
-                margin: 0,
-              }}
-            >
-              {content.description}
-            </p>
-          </div>
-        ))}
-      </div>
+      {/* Title */}
+      <pixiText
+        text="무술 철학 (Martial Philosophy)"
+        style={
+          new PIXI.TextStyle({
+            fontSize: 32,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            fontFamily: "Arial, sans-serif",
+            align: "center",
+          })
+        }
+        x={width / 2}
+        y={40}
+        anchor={0.5}
+      />
 
-      <div style={{ textAlign: "center", marginTop: "3rem" }}>
-        <button
-          onClick={() => onGamePhaseChange("training")}
-          style={{
-            padding: "1rem 2rem",
-            backgroundColor: `#${KOREAN_COLORS.GOLD.toString(16).padStart(
-              6,
-              "0"
-            )}`,
-            color: `#${KOREAN_COLORS.BLACK.toString(16).padStart(6, "0")}`,
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "1.2rem",
-            cursor: "pointer",
-            margin: "0.5rem",
+      {/* Philosophy Text */}
+      <pixiText
+        text={philosophyText}
+        style={
+          new PIXI.TextStyle({
+            fontSize: 16,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontFamily: "Arial, sans-serif",
+            align: "left",
+            wordWrap: true,
+            wordWrapWidth: width - 80,
+            lineHeight: 24,
+          })
+        }
+        x={40}
+        y={100}
+      />
+
+      {/* Back Button */}
+      <pixiContainer x={width - 150} y={height - 80}>
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.beginFill(KOREAN_COLORS.ACCENT_RED, 0.8);
+            g.drawRoundedRect(0, 0, 120, 40, 5);
+            g.endFill();
           }}
-        >
-          훈련으로 이동 (Go to Training)
-        </button>
-
-        <button
-          onClick={() => onGamePhaseChange("menu")}
-          style={{
-            padding: "1rem 2rem",
-            backgroundColor: "transparent",
-            color: `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`,
-            border: `1px solid #${KOREAN_COLORS.WHITE.toString(16).padStart(
-              6,
-              "0"
-            )}`,
-            borderRadius: "4px",
-            fontSize: "1.2rem",
-            cursor: "pointer",
-            margin: "0.5rem",
-          }}
-        >
-          메뉴로 돌아가기 (Back to Menu)
-        </button>
-      </div>
-
-      {/* Philosophy sections */}
-      <div style={{ marginTop: "3rem" }}>
-        <KoreanHeader
-          korean="무도 철학"
-          english="Martial Arts Philosophy"
-          level={1}
+          interactive={true}
+          onPointerDown={onBack}
         />
-
-        {/* Add subtitle as separate element */}
-        <div style={{ marginBottom: "20px", color: "#888" }}>
-          Traditional Korean Martial Arts Wisdom
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          {[
-            { korean: "건", english: "Heaven", element: "Metal" },
-            { korean: "태", english: "Lake", element: "Metal" },
-            { korean: "리", english: "Fire", element: "Fire" },
-            { korean: "진", english: "Thunder", element: "Wood" },
-            { korean: "손", english: "Wind", element: "Wood" },
-            { korean: "감", english: "Water", element: "Water" },
-            { korean: "간", english: "Mountain", element: "Earth" },
-            { korean: "곤", english: "Earth", element: "Earth" },
-          ].map((trigram, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                padding: "1rem",
-                borderRadius: "4px",
-                textAlign: "center",
-              }}
-            >
-              <KoreanText
-                korean={trigram.korean}
-                english={trigram.english}
-                size="medium"
-                weight={700} // Changed from 600 to 700 (valid KoreanFontWeight)
-                color={KOREAN_COLORS.TRADITIONAL_BLUE}
-                className="philosophy-text"
-              />
-              <p
-                style={{
-                  margin: "0.5rem 0 0 0",
-                  fontSize: "0.9rem",
-                  color: `#${KOREAN_COLORS.GOLD.toString(16).padStart(6, "0")}`,
-                }}
-              >
-                {trigram.element}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ marginTop: "3rem" }}>
-        <KoreanHeader korean="팔괘" english="Eight Trigrams" level={2} />
-
-        {/* Add subtitle as separate element */}
-        <div style={{ marginBottom: "15px", color: "#888" }}>
-          Traditional Korean Martial Arts Wisdom
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          {[
-            { korean: "건", english: "Heaven", element: "Metal" },
-            { korean: "태", english: "Lake", element: "Metal" },
-            { korean: "리", english: "Fire", element: "Fire" },
-            { korean: "진", english: "Thunder", element: "Wood" },
-            { korean: "손", english: "Wind", element: "Wood" },
-            { korean: "감", english: "Water", element: "Water" },
-            { korean: "간", english: "Mountain", element: "Earth" },
-            { korean: "곤", english: "Earth", element: "Earth" },
-          ].map((trigram, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                padding: "1rem",
-                borderRadius: "4px",
-                textAlign: "center",
-              }}
-            >
-              <KoreanText
-                korean={trigram.korean}
-                english={trigram.english}
-                size="medium"
-                weight={700} // Changed from 600 to 700 (valid KoreanFontWeight)
-                color={KOREAN_COLORS.TRADITIONAL_BLUE}
-                className="philosophy-text"
-              />
-              <p
-                style={{
-                  margin: "0.5rem 0 0 0",
-                  fontSize: "0.9rem",
-                  color: `#${KOREAN_COLORS.GOLD.toString(16).padStart(6, "0")}`,
-                }}
-              >
-                {trigram.element}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+        <pixiText
+          text="돌아가기"
+          style={
+            new PIXI.TextStyle({
+              fontSize: 16,
+              fill: KOREAN_COLORS.TEXT_PRIMARY,
+              align: "center",
+            })
+          }
+          x={60}
+          y={20}
+          anchor={0.5}
+        />
+      </pixiContainer>
+    </pixiContainer>
   );
-}
+};
+
+export default PhilosophySection;

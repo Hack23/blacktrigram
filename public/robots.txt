@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://blacktrigram.com/sitemap.xml

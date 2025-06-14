@@ -20,6 +20,29 @@ export default defineConfig({
     deps: {
       inline: ["pixi.js", "@pixi/react"],
     },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      exclude: [
+        // top-level helpers
+        "cypress.reporter.config.js",
+        "docs/assets/**",
+        // built bundles
+        "*.js",
+        "blacktrigram/*.js",
+        "blacktrigram/docs/assets/**",
+        "blacktrigram/**/*.js",
+        // skip Pixi & other generated files
+        "**/pixi-*.js",
+        "**/webworkerAll-*.js",
+        "*config.ts",
+        ".*.cjs",
+        "**/*.cy.ts",
+        "cypress/**",
+        "dist/assets/**",
+        "scripts/**",
+      ],
+    },
   },
   resolve: {
     alias: {

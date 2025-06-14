@@ -1,5 +1,9 @@
 # GitHub Copilot Instructions for Black Trigram (흑괘)
 
+PRIO 1, complete functional game.
+PRIO 2, Use graphics for all componets pixiJs and pixi react , react 19 style, strict typing,
+PRIO 3, ui/ux cyberpunk style should be cool.
+
 ## Project Overview
 
 Black Trigram is a **realistic 2D precision combat simulator** deeply rooted in Korean martial arts and the I Ching trigram philosophy. The game emphasizes anatomical realism, precise targeting, authentic martial techniques, and cyberpunk aesthetics.
@@ -40,14 +44,20 @@ Black Trigram is a **realistic 2D precision combat simulator** deeply rooted in 
 
 ### System
 
+src/App.css
+src/App.tsx
+src/audio
 src/audio/AudioAssetRegistry.ts
+src/audio/AudioManager.test.ts
 src/audio/AudioManager.ts
 src/audio/AudioManager.tsx
 src/audio/AudioProvider.tsx
+src/audio/AudioUtils.test.ts
 src/audio/AudioUtils.ts
 src/audio/DefaultSoundGenerator.ts
 src/audio/index.ts
 src/audio/placeholder-sounds.ts
+src/audio/**tests**
 src/audio/VariantSelector.ts
 src/components
 src/components/combat
@@ -56,35 +66,76 @@ src/components/combat/components
 src/components/combat/components/CombatArena.tsx
 src/components/combat/components/CombatControls.tsx
 src/components/combat/components/CombatHUD.tsx
+src/components/combat/components/CombatStats.tsx
 src/components/combat/components/index.ts
+src/components/combat/components/PlayerStatusPanel.tsx
 src/components/combat/index.ts
 src/components/game
+src/components/game/DojangBackground.test.tsx
 src/components/game/DojangBackground.tsx
+src/components/game/GameAudio.test.tsx
+src/components/game/GameEngine.test.tsx
 src/components/game/GameEngine.tsx
-src/components/game/GameUI.tsx
 src/components/game/HitEffectsLayer.tsx
 src/components/game/index.ts
+src/components/game/Player.test.tsx
 src/components/game/Player.tsx
 src/components/game/PlayerVisuals.tsx
 src/components/index.ts
 src/components/intro
 src/components/intro/components
 src/components/intro/components/ControlsSection.tsx
+src/components/intro/components/index.ts
 src/components/intro/components/MenuSection.tsx
 src/components/intro/components/PhilosophySection.tsx
 src/components/intro/index.ts
 src/components/intro/IntroScreen.css
 src/components/intro/IntroScreen.tsx
-src/components/intro/sections
-src/components/intro/sections/ControlsSection.tsx
-src/components/intro/sections/index.ts
-src/components/intro/sections/MenuSection.tsx
-src/components/intro/sections/PhilosophySection.tsx
 src/components/training
 src/components/training/components
+src/components/training/components/constants
+src/components/training/components/constants/trainingModes.ts
+src/components/training/components/effects
+src/components/training/components/effects/TrainingVisualEffects.tsx
+src/components/training/components/hooks
+src/components/training/components/hooks/useTrainingFeedback.ts
+src/components/training/components/hooks/useTrainingSession.test.ts
+src/components/training/components/hooks/useTrainingSession.ts
+src/components/training/components/hooks/useTrainingStatistics.test.ts
+src/components/training/components/hooks/useTrainingStatistics.ts
+src/components/training/components/index.ts
+src/components/training/components/TrainingArtDisplay.test.tsx
+src/components/training/components/TrainingArtDisplay.tsx
+src/components/training/components/TrainingAudioManager.test.tsx
+src/components/training/components/TrainingAudioManager.tsx
+src/components/training/components/TrainingControls.test.tsx
+src/components/training/components/TrainingControls.tsx
+src/components/training/components/TrainingDummy.test.tsx
+src/components/training/components/TrainingDummy.tsx
+src/components/training/components/TrainingEnhancedIntegration.test.tsx
+src/components/training/components/TrainingEnhancedIntegration.tsx
+src/components/training/components/TrainingFeedbackSystem.test.tsx
+src/components/training/components/TrainingFeedbackSystem.tsx
+src/components/training/components/TrainingModeSelector.test.tsx
+src/components/training/components/TrainingModeSelector.tsx
+src/components/training/components/TrainingScreen.test.tsx
+src/components/training/components/TrainingStatisticsPanel.test.tsx
+src/components/training/components/TrainingStatisticsPanel.tsx
+src/components/training/components/TrainingStatistics.tsx
+src/components/training/components/types
+src/components/training/components/types/training.ts
+src/components/training/components/useTrainingFeedback.test.ts
+src/components/training/components/useTrainingSession.test.ts
+src/components/training/components/utils
+src/components/training/components/utils/trainingCalculations.ts
+src/components/training/components/utils/trainingUtils.test.ts
+src/components/training/components/utils/trainingUtils.ts
 src/components/training/index.ts
+src/components/training/systems
+src/components/training/TrainingScreen.test.tsx
 src/components/training/TrainingScreen.tsx
 src/components/ui
+src/components/ui/ArchetypeDisplay.tsx
 src/components/ui/base
 src/components/ui/base/BackgroundGrid.tsx
 src/components/ui/base/BaseButton.tsx
@@ -96,6 +147,7 @@ src/components/ui/base/korean-text/components
 src/components/ui/base/korean-text/components/index.ts
 src/components/ui/base/korean-text/components/KoreanMartialText.tsx
 src/components/ui/base/korean-text/components/KoreanPixiTextUtils.ts
+src/components/ui/base/korean-text/components/KoreanPixiTextUtils.tsx
 src/components/ui/base/korean-text/components/KoreanStatusText.tsx
 src/components/ui/base/korean-text/components/KoreanTechniqueText.tsx
 src/components/ui/base/korean-text/components/KoreanText.tsx
@@ -108,32 +160,71 @@ src/components/ui/base/korean-text/KoreanText.tsx
 src/components/ui/base/korean-text/types.ts
 src/components/ui/base/korean-text/utils.ts
 src/components/ui/base/PixiComponents.tsx
+src/components/ui/base/PixiTestableComponents.tsx
+src/components/ui/base/ResponsivePixiComponents.tsx
 src/components/ui/EndScreen.tsx
+src/components/ui/HealthBar.tsx
+src/components/ui/HitEffectsLayer.tsx
+src/components/ui/index.test.tsx
 src/components/ui/index.ts
+src/components/ui/KoreanHeader.test.tsx
 src/components/ui/KoreanHeader.tsx
+src/components/ui/Player.tsx
+src/components/ui/PlayerVisuals.tsx
 src/components/ui/ProgressTracker.tsx
+src/components/ui/ResponsivePixiComponents.test.tsx
+src/components/ui/RoundTimer.tsx
+src/components/ui/ScoreDisplay.tsx
+src/components/ui/StanceIndicator.tsx
+src/components/ui/TrigramWheel.test.tsx
 src/components/ui/TrigramWheel.tsx
+src/Game.css
+src/hooks
 src/hooks/useTexture.ts
+src/index.css
 src/main.tsx
+src/systems
+src/systems/combat
+src/systems/CombatSystem.test.ts
 src/systems/CombatSystem.ts
+src/systems/combat/TrainingCombatSystem.ts
+src/systems/trigram
+src/systems/trigram/KoreanCulture.test.ts
 src/systems/trigram/KoreanCulture.ts
+src/systems/trigram/KoreanTechniques.test.ts
 src/systems/trigram/KoreanTechniques.ts
+src/systems/trigram/StanceManager.test.ts
 src/systems/trigram/StanceManager.ts
+src/systems/TrigramSystem.test.ts
 src/systems/TrigramSystem.ts
+src/systems/trigram/TransitionCalculator.test.ts
 src/systems/trigram/TransitionCalculator.ts
+src/systems/trigram/TrigramCalculator.test.ts
 src/systems/trigram/TrigramCalculator.ts
+src/systems/vitalpoint
 src/systems/vitalpoint/AnatomicalRegions.ts
 src/systems/vitalpoint/DamageCalculator.ts
 src/systems/vitalpoint/HitDetection.ts
 src/systems/vitalpoint/KoreanAnatomy.ts
 src/systems/vitalpoint/KoreanVitalPoints.ts
+src/systems/VitalPointSystem.test.ts
 src/systems/VitalPointSystem.ts
+src/test
+src/test/pixi-cypress-helpers.ts
+src/test/pixi-test-helpers.ts
+src/test/setup.ts
+src/test/test-setup.ts
+src/test/test-utils.ts
+src/test/test-utils.tsx
+src/test-types.ts
+src/types
 src/types/anatomy.ts
 src/types/audio.ts
 src/types/combat.ts
 src/types/common.ts
 src/types/components.ts
 src/types/constants
+src/types/constants/animations.ts
 src/types/constants/colors.ts
 src/types/constants/combat.ts
 src/types/constants/controls.ts
@@ -144,6 +235,7 @@ src/types/constants/techniques.ts
 src/types/constants/trigram.ts
 src/types/constants.ts
 src/types/constants/typography.ts
+src/types/constants/ui.ts
 src/types/constants/vital-points.ts
 src/types/controls.ts
 src/types/effects.ts
@@ -154,9 +246,14 @@ src/types/korean-text.ts
 src/types/pixi-react.d.ts
 src/types/player.ts
 src/types/systems.ts
+src/types/training.ts
 src/types/trigram.ts
 src/types/ui.ts
+src/utils
 src/utils/colorUtils.ts
+src/utils/effectUtils.ts
+src/utils/hooks
+src/utils/pixiExtensions.ts
 src/utils/playerUtils.ts
 src/vite-env.d.ts
 
@@ -166,19 +263,307 @@ src/Game.css
 src/App.css
 src/index.css
 
+## ART Image assets
+
+src/assets/visual
+src/assets/visual/archetypes
+src/assets/visual/archetypes/amsalja.png
+src/assets/visual/archetypes/hacker.png
+src/assets/visual/archetypes/jeongbo_yowon.png
+src/assets/visual/archetypes/jojik_pokryeokbae.png
+src/assets/visual/archetypes/musa.png
+src/assets/visual/bg
+src/assets/visual/bg/archetyples
+src/assets/visual/bg/archetyples/CyberpunkTeamDynamics.png
+src/assets/visual/bg/archetyples/PlayerArchetypesExplained.png
+src/assets/visual/bg/archetyples/PlayerArchetypesOverview.png
+src/assets/visual/bg/dojang
+src/assets/visual/bg/dojang/dojang_floor_tex.png
+src/assets/visual/bg/dojang/dojang_wall_tex.png
+src/assets/visual/bg/intro
+src/assets/visual/bg/intro/intro_bg_loop.png
+src/assets/visual/logo
+src/assets/visual/logo/black-trigram-256.png
+src/assets/visual/logo/black-trigram.png
+
+## AUDIO assets
+
+# Music
+
+src/assets/audio/music/underground_theme.mp3
+src/assets/audio/music/intro_theme.webm
+src/assets/audio/music/intro_theme.mp3
+src/assets/audio/music/archetype_themes/amsalja_shadow.mp3
+src/assets/audio/music/archetype_themes/musa_warrior.mp3
+src/assets/audio/music/archetype_themes/hacker_cyber.mp3
+src/assets/audio/music/archetype_themes/jojik_street.mp3
+src/assets/audio/music/archetype_themes/jeongbo_intel.mp3
+src/assets/audio/music/archetype_themes
+src/assets/audio/music/cyberpunk_fusion.webm
+src/assets/audio/music/cyberpunk_fusion.mp3
+src/assets/audio/music/combat_theme.webm
+src/assets/audio/music/underground_theme.webm
+src/assets/audio/music/combat_theme.mp3
+
+# Sound effects
+
+src/assets/audio/sfx/\*
+
 ## 🎯 Strict TypeScript Usage
 
 **ALWAYS use explicit types from existing type system:**
 
-
 **Component Reuse Strategy**
-
 
 **ALWAYS check existing components before creating new ones:**
 
-
 ## 🎨 PixiJS + React Integration
 
+### Pixie React Usage
+
+```jsx
+import { Application, extend } from "@pixi/react";
+import { Container, Graphics } from "pixi.js";
+import { useCallback } from "react";
+
+extend({
+  Container,
+  Graphics,
+});
+
+const MyComponent = () => {
+  const drawCallback = useCallback((graphics) => {
+    graphics.clear();
+    graphics.setFillStyle({ color: "red" });
+    graphics.rect(0, 0, 100, 100);
+    graphics.fill();
+  }, []);
+
+  return (
+    <Application>
+      <pixiContainer x={100} y={100}>
+        <pixiGraphics draw={drawCallback} />
+      </pixiContainer>
+    </Application>
+  );
+};
+```
+
+## Docs
+
+### `extend`
+
+One of the most important concepts to understand with v8 is `extend`. Normally `@pixi/react` would have to import all pf Pixi.js to be able to provide the full library as JSX components. Instead, we use an internal catalogue of components populated by the `extend` API. This allows you to define exactly which parts of Pixi.js you want to import, keeping your bundle sizes small.
+
+To allow `@pixi/react` to use a Pixi.js component, pass it to the `extend` API:
+
+```jsx
+import { Container } from "pixi.js";
+import { extend } from "@pixi/react";
+
+extend({ Container });
+
+const MyComponent = () => <pixiContainer />;
+```
+
+> [!CAUTION]
+> Attempting to use components that haven't been passed to the `extend` API **will result in errors**.
+
+### Components
+
+#### `<Application>`
+
+The `<Application>` component is used to wrap your `@pixi/react` app. The `<Application>` component can take [all props that can be set](https://pixijs.download/release/docs/app.ApplicationOptions.html) on [`PIXI.Application`](https://pixijs.download/release/docs/app.Application.html).
+
+##### Example Usage
+
+```jsx
+import { Application } from "@pixi/react";
+
+const MyComponent = () => {
+  return <Application autoStart sharedTicker />;
+};
+```
+
+###### `defaultTextStyle`
+
+`defaultTextStyle` is a convenience property. Whatever is passed will automatically be assigned to Pixi.js's [`TextStyle.defaultTextStyle`](https://pixijs.download/release/docs/text.TextStyle.html#defaultTextStyle).
+
+> [!NOTE]
+> This property **is not retroactive**. It will only apply to text components created after `defaultTextStyle` is set. Any text components created before setting `defaultTextStyle` will retain the base styles they had before `defaultTextStyle` was changed.
+
+###### `extensions`
+
+`extensions` is an array of extensions to be loaded. Adding and removing items from this array will automatically load/unload the extensions. The first time this is handled happens before the application is initialised. See Pixi.js's [`extensions`](https://pixijs.download/release/docs/extensions.html) documentation for more info on extensions.
+
+###### `resizeTo`
+
+The `<Application>` component supports the `resizeTo` property, with some additional functionality: it can accept any HTML element **or** it can take a React `ref` directly.
+
+```jsx
+import { Application } from "@pixi/react";
+import { useRef } from "react";
+const MyComponent = () => {
+  const parentRef = useRef(null);
+  return (
+    <div ref={parentRef}>
+      <Application resizeTo={parentRef} />
+    </div>
+  );
+};
+```
+
+#### Pixi Components
+
+All other components should be included in your IDE's intellisense/autocomplete once you've installed/imported `@pixi/react`. If it's exported from Pixi.js, it's supported as a component with the `pixi` prefix. Here's a selection of commonly used components:
+
+```jsx
+<pixiContainer />
+<pixiGraphics />
+<pixiSprite />
+<pixiAnimatedSprite />
+<pixiText />
+<pixiHtmlText />
+```
+
+##### `<pixiGraphics>`
+
+The `pixiGraphics` component has a special `draw` property. `draw` takes a callback which receives the `Graphics` context, allowing drawing to happen on every tick.
+
+```jsx
+const MyComponent = () => {
+  return (
+    <pixiGraphics
+      draw={(graphics) => {
+        graphics.clear();
+        graphics.setFillStyle({ color: "red" });
+        graphics.rect(0, 0, 100, 100);
+        graphics.fill();
+      }}
+    />
+  );
+};
+```
+
+#### Custom Components
+
+`@pixi/react` supports custom components via the `extend` API. For example, you can create a `<viewport>` component using the [`pixi-viewport`](https://github.com/davidfig/pixi-viewport) library:
+
+```jsx
+import { extend } from "@pixi/react";
+import { Viewport } from "pixi-viewport";
+
+extend({ Viewport });
+
+const MyComponent = () => {
+  <viewport>
+    <pixiContainer />
+  </viewport>;
+};
+```
+
+The `extend` API will teach `@pixi/react` about your components, but TypeScript won't know about them nor their props.
+
+### Hooks
+
+#### `useApplication`
+
+`useApplication` allows access to the parent `PIXI.Application` created by the `<Application>` component. This hook _will not work_ outside of an `<Application>` component. Additionally, the parent application is passed via [React Context](https://react.dev/reference/react/useContext). This means `useApplication` will only work appropriately in _child components_, and in the same component that creates the `<Application>`.
+
+For example, the following example `useApplication` **will not** be able to access the parent application:
+
+```jsx
+import { Application, useApplication } from "@pixi/react";
+
+const ParentComponent = () => {
+  // This will cause an invariant violation.
+  const { app } = useApplication();
+
+  return <Application />;
+};
+```
+
+Here's a working example where `useApplication` **will** be able to access the parent application:
+
+```jsx
+import { Application, useApplication } from "@pixi/react";
+
+const ChildComponent = () => {
+  const { app } = useApplication();
+
+  console.log(app);
+
+  return <container />;
+};
+
+const ParentComponent = () => (
+  <Application>
+    <ChildComponent />
+  </Application>
+);
+```
+
+#### `useExtend`
+
+`useExtend` allows the `extend` API to be used as a React hook. Additionally, the `useExtend` hook is memoised, while the `extend` function is not.
+
+```jsx
+import { Container } from "pixi.js";
+import { useExtend } from "@pixi/react";
+
+const MyComponent = () => {
+  useExtend({ Container });
+
+  return <container />;
+};
+```
+
+#### `useTick`
+
+`useTick` allows a callback to be attached to the [`Ticker`](https://pixijs.download/release/docs/ticker.Ticker.html) on the parent application.
+
+```jsx
+import { useTick } from "@pixi/react";
+
+const MyComponent = () => {
+  useTick(() => console.log("This will be logged on every tick"));
+};
+```
+
+`useTick` optionally takes an options object. This allows control of all [`ticker.add`](https://pixijs.download/release/docs/ticker.Ticker.html#add) options, as well as adding the `isEnabled` option. Setting `isEnabled` to `false` will cause the callback to be disabled until the argument is changed to true again.
+
+```jsx
+import { useState } from 'react'
+import { useTick } from '@pixi/react'
+
+const MyComponent = () => {
+  const [isEnabled, setIsEnabled] = useState(false)
+
+  useTick(() => console.log('This will be logged on every tick as long as `isEnabled` is `true`'), isEnabled)
+
+  return (
+    <sprite onClick={setIsEnabled(previousState => !previousState)}>
+  )
+}
+```
+
+### For Typescript Users
+
+#### Custom Components
+
+`@pixi/react` already offers types for built-in components, but custom components need to be added to the library's type catalogue so it knows how to handle them. This can be achieved by adding your custom components to the `PixiElements` interface. Here's what it may look like to add the `viewport` component from our earlier `extend` example:
+
+```ts
+// global.d.ts
+import { type PixiReactElementProps } from "@pixi/react";
+import { type Viewport } from "pixi-viewport";
+
+declare module "@pixi/react" {
+  interface PixiElements {
+    viewport: PixiReactElementProps<typeof Viewport>;
+  }
+}
+```
 
 ## 🧪 Testing Strategy
 
@@ -193,7 +578,6 @@ src/index.css
 
 Testing best pracices, using test id in code, testable code and resilient test
 
-
 ## 🎯 Core Game Design Philosophy
 
 ### Combat Pillars (Must Guide All Implementation)
@@ -203,278 +587,13 @@ Testing best pracices, using test id in code, testable code and resilient test
 - **암살자 (Amsalja)** - Combat Specialist: Focus on immediate incapacitation
 - **급소격 (Geupsogyeok)** - Vital Point Strike: Authentic pressure point combat
 
-### Realistic Combat Mechanics 
+### Realistic Combat Mechanics
 
 ## 👤 Player Archetypes (Must Reference in All Combat Code)
-
-### Combat Specializations (Implement Unique Mechanics)
-
-#### 1. 무사 (Musa) - Traditional Warrior
-
-```typescript
-const MUSA_SPECIALIZATION = {
-  philosophy: "Honor through strength, disciplined combat",
-  combatStyle: "Direct confrontation, overwhelming force",
-  preferredTrigrams: ["geon", "jin"],
-  techniques: {
-    관절기법: "Joint manipulation and control",
-    급소타격: "Military-taught pressure point targeting",
-    제압술: "Honor-based control methods",
-  },
-  bonuses: {
-    damageResistance: 1.2,
-    jointTechniques: 1.5,
-    militaryDiscipline: 1.3,
-  },
-};
-```
-
-#### 2. 암살자 (Amsalja) - Shadow Assassin
-
-```typescript
-const AMSALJA_SPECIALIZATION = {
-  philosophy: "Efficiency through invisibility, one perfect strike",
-  combatStyle: "Stealth approaches, instant takedowns",
-  preferredTrigrams: ["son", "gam"],
-  techniques: {
-    무성제압: "Silent takedowns preventing vocal response",
-    신경파괴: "Precise neural disruption for stealth",
-    호흡차단: "Silent breathing and consciousness targeting",
-  },
-  bonuses: {
-    stealthMultiplier: 1.8,
-    oneStrikeKill: 2.0,
-    silentMovement: 1.5,
-  },
-};
-```
-
-#### 3. 해커 (Hacker) - Cyber Warrior
-
-```typescript
-const HACKER_SPECIALIZATION = {
-  philosophy: "Information as power, technological advantage",
-  combatStyle: "Environmental manipulation, tech-assisted strikes",
-  preferredTrigrams: ["li", "tae"],
-  techniques: {
-    해부학적분석: "Data-driven approach to vital points",
-    생체역학파괴: "Tech-enhanced body mechanics understanding",
-    체계적제압: "Algorithm-based damage accumulation",
-  },
-  bonuses: {
-    precisionAnalysis: 1.6,
-    environmentalControl: 1.4,
-    dataOptimization: 1.3,
-  },
-};
-```
-
-#### 4. 정보요원 (Jeongbo Yowon) - Intelligence Operative
-
-```typescript
-const JEONGBO_SPECIALIZATION = {
-  philosophy: "Knowledge through observation, strategic thinking",
-  combatStyle: "Psychological manipulation, precise timing",
-  preferredTrigrams: ["gan", "gon"],
-  techniques: {
-    고통순응: "Intelligence-based submission through pain",
-    심리적압박: "Mental intimidation through technique",
-    정보추출: "Combat methods from interrogation training",
-  },
-  bonuses: {
-    psychologicalWarfare: 1.5,
-    strategicAnalysis: 1.4,
-    painCompliance: 1.7,
-  },
-};
-```
-
-#### 5. 조직폭력배 (Jojik Pokryeokbae) - Organized Crime
-
-```typescript
-const JOJIK_SPECIALIZATION = {
-  philosophy: "Survival through ruthlessness, practical violence",
-  combatStyle: "Dirty fighting, improvised weapons",
-  preferredTrigrams: ["jin", "gam"],
-  techniques: {
-    환경활용: "Street-smart use of surroundings as weapons",
-    더러운기법: "Brutal eye attacks, groin strikes, hair pulling",
-    생존격투: "Underground whatever-it-takes combat",
-  },
-  bonuses: {
-    dirtyFighting: 1.8,
-    survivalInstinct: 1.6,
-    streetSmart: 1.5,
-  },
-};
-```
 
 ## 🎨 Visual Design System
 
 ### Cyberpunk Korean Aesthetic (Apply to All Visual Components)
-
-#### Color Palette (Use Existing KOREAN_COLORS)
-
-```typescript
-// Primary cyberpunk palette
-const CYBERPUNK_PALETTE = {
-  PRIMARY_CYAN: KOREAN_COLORS.CYAN,
-  NEON_RED: KOREAN_COLORS.TRADITIONAL_RED,
-  ELECTRIC_BLUE: KOREAN_COLORS.DOJANG_BLUE,
-  DIGITAL_GOLD: KOREAN_COLORS.GOLD,
-  SHADOW_BLACK: KOREAN_COLORS.BLACK,
-  TECH_WHITE: KOREAN_COLORS.WHITE,
-};
-
-// Stance-specific visual themes
-const STANCE_VISUAL_THEMES = {
-  geon: { primary: 0xffd700, secondary: 0x8b7355, glow: 0xffed4e },
-  tae: { primary: 0x87ceeb, secondary: 0x4682b4, glow: 0xb0e0e6 },
-  li: { primary: 0xff4500, secondary: 0x8b0000, glow: 0xff6347 },
-  jin: { primary: 0x9370db, secondary: 0x4b0082, glow: 0xda70d6 },
-  son: { primary: 0x98fb98, secondary: 0x228b22, glow: 0x90ee90 },
-  gam: { primary: 0x4169e1, secondary: 0x191970, glow: 0x6495ed },
-  gan: { primary: 0x8b4513, secondary: 0x654321, glow: 0xd2691e },
-  gon: { primary: 0x654321, secondary: 0x8b4513, glow: 0xa0522d },
-};
-```
-
-#### Underground Dojang Environment
-
-```typescript
-// Environment visual config
-const DOJANG_ENVIRONMENT = {
-  lighting: {
-    ambient: 0x0a0a0a,
-    neonAccents: [0x00ffff, 0xff0040, 0x00ff00],
-    bloodStains: 0x8b0000,
-    traditional: 0xffd700,
-  },
-  atmosphere: {
-    shadows: "Deep, dramatic shadows with neon highlights",
-    textures: "Worn concrete, traditional Korean patterns",
-    mood: "Underground, serious, authentic martial arts",
-  },
-  elements: {
-    koreanCalligraphy: "Traditional characters in neon styling",
-    trigramSymbols: "☰☱☲☳☴☵☶☷ with cyberpunk interpretation",
-    combatEquipment: "Professional-grade training tools",
-  },
-};
-```
-
-### UI/UX Visual Standards
-
-#### Korean Typography System
-
-```typescript
-// Use existing Korean text components with these standards
-const KOREAN_TYPOGRAPHY = {
-  primary: "Noto Sans KR",
-  fallback: "Arial, sans-serif",
-  weights: {
-    light: 300,
-    regular: 400,
-    bold: 700,
-    heavy: 900,
-  },
-  sizes: {
-    small: 12,
-    medium: 16,
-    large: 24,
-    xlarge: 32,
-    title: 48,
-  },
-};
-
-// Always use bilingual text
-<KoreanText
-  korean="흑괘 무술 도장"
-  english="Black Trigram Dojang"
-  size="title"
-  style="cyberpunk"
-/>;
-```
-
-## 🔊 Audio Design Integration
-
-### Realistic Combat Audio (Integrate with Existing AudioManager)
-
-#### Korean Martial Arts Soundscape
-
-```typescript
-// Combat audio categories (implement with existing audio system)
-const COMBAT_AUDIO_DESIGN = {
-  // Authentic Korean martial arts sounds
-  traditionalSounds: {
-    gayageum: "Dark traditional Korean string instrument",
-    buk: "Korean war drums for intensity",
-    kkwaenggwari: "Small gongs for technique emphasis",
-    haegeum: "Korean fiddle for atmospheric tension",
-  },
-
-  // Realistic combat effects
-  combatRealism: {
-    boneImpact: "Authentic bone fracture and contact sounds",
-    fleshContact: "Body impact with appropriate intensity",
-    jointManipulation: "Realistic joint stress and popping",
-    breathingEffects: "Gasping, wheezing, breath disruption",
-    bloodFlow: "Circulation and bleeding audio cues",
-  },
-
-  // Cyberpunk integration
-  futuristicElements: {
-    synthDrones: "Low-frequency electronic tension",
-    digitalGlitches: "Tech interference during combat",
-    neonHum: "Electric ambience of underground dojang",
-  },
-};
-
-// Audio feedback based on damage intensity
-function playRealisticCombatAudio(damage: number, vitalPoint?: VitalPoint) {
-  const audio = useAudio();
-
-  // Damage-based audio selection
-  if (damage < 10) {
-    audio.playSFX("hit_light");
-  } else if (damage < 25) {
-    audio.playSFX("hit_medium");
-  } else if (damage < 40) {
-    audio.playSFX("hit_heavy");
-  } else {
-    audio.playSFX("hit_critical");
-  }
-
-  // Vital point specific audio
-  if (vitalPoint) {
-    audio.playSFX(`vital_${vitalPoint.category}`);
-  }
-}
-```
-
-### Dynamic Audio Layers
-
-```typescript
-// Implement layered audio system
-const AUDIO_LAYERS = {
-  background: {
-    dojangAmbience: "Continuous underground atmosphere",
-    traditionalMusic: "Korean instruments with electronic elements",
-  },
-
-  combat: {
-    stanceChanges: "Audio cues for trigram transitions",
-    techniqueExecution: "Korean technique name pronunciation",
-    impactFeedback: "Realistic damage and effect sounds",
-  },
-
-  ui: {
-    menuNavigation: "Cyberpunk-styled interface sounds",
-    koreanVoiceover: "Authentic Korean pronunciation guide",
-    confirmation: "Traditional Korean chimes with modern twist",
-  },
-};
-```
 
 ## 🎮 Combat Controls & UX
 
@@ -545,95 +664,13 @@ function handleCombatInput(event: KeyboardEvent, player: PlayerState) {
 
 #### Visual Feedback System
 
-```typescript
-// Implement comprehensive visual feedback
-const VISUAL_FEEDBACK = {
-  // Stance indicators
-  stanceDisplay: {
-    trigramSymbol: "Large center display of current trigram ☰☱☲☳☴☵☶☷",
-    koreanName: "Korean and English stance names",
-    techniquePreview: "Available technique preview",
-    colorCoding: "Stance-specific color themes",
-  },
-
-  // Combat feedback
-  damageIndicators: {
-    numbers: "Floating damage numbers with Korean styling",
-    vitalPoints: "Highlighted anatomical targets",
-    effectsText: "Korean descriptions of combat effects",
-    bloodEffects: "Realistic trauma visualization",
-  },
-
-  // UI polish
-  interfaceElements: {
-    healthBars: "Traditional Korean-styled progress bars",
-    kiEnergy: "Flowing energy visualization",
-    stanceWheel: "Interactive trigram selection wheel",
-    combatLog: "Bilingual combat narration",
-  },
-};
-```
-
-#### Accessibility & Cultural Sensitivity
-
-```typescript
-// Implement cultural respect and accessibility
-const ACCESSIBILITY_FEATURES = {
-  // Korean language support
-  localization: {
-    fullKorean: "Complete Korean language option",
-    bilingualMode: "Korean with English subtitles",
-    pronunciation: "Audio pronunciation guide",
-    romanization: "Korean text romanization support",
-  },
-
-  // Combat accessibility
-  difficulty: {
-    precisionAssist: "Vital point targeting assistance",
-    techniqueGuides: "Visual combat technique tutorials",
-    slowerPaced: "Reduced speed options for learning",
-    culturalContext: "Martial arts philosophy education",
-  },
-
-  // Visual accessibility
-  display: {
-    colorBlindSupport: "Alternative color schemes",
-    textScaling: "Adjustable Korean font sizes",
-    contrastOptions: "High contrast cyberpunk themes",
-    motionReduction: "Reduced animation for sensitivity",
-  },
-};
-```
-
 ## 🏗️ Implementation Patterns
 
-### Component Structure (Follow These Patterns)
-
+### Component Structure (Follow EXISTING These Patterns)
 
 ### Testing Requirements (Follow Existing Patterns)
 
 #### Combat System Tests
-
-```typescript
-// Test Korean martial arts authenticity
-describe("Korean Martial Arts Combat", () => {
-  it("should execute authentic trigram techniques", () => {
-    const technique = TRIGRAM_DATA.geon.technique;
-    expect(technique.koreanName).toBe("천둥벽력");
-    expect(technique.englishName).toBe("Heavenly Thunder Strike");
-  });
-
-  it("should apply archetype-specific bonuses", () => {
-    const musaDamage = calculateArchetypeDamage("musa", technique);
-    const amsaljaDamage = calculateArchetypeDamage("amsalja", technique);
-    expect(musaDamage).not.toEqual(amsaljaDamage);
-  });
-
-  it("should maintain 60fps during intense combat", () => {
-    // Performance testing for combat sequences
-  });
-});
-```
 
 ## 🌟 Success Criteria
 
@@ -651,29 +688,6 @@ When following these guidelines, code should:
 ## 🎯 Philosophy Integration
 
 ### Traditional Korean Values (Integrate into All Interactions)
-
-```typescript
-// Implement respect for Korean martial arts tradition
-const MARTIAL_ARTS_PHILOSOPHY = {
-  respect: "존중 (Jonjung) - Honor the art and opponent",
-  discipline: "수련 (Suryeon) - Dedicated practice and learning",
-  precision: "정확 (Jeonghwak) - Exact technique execution",
-  wisdom: "지혜 (Jihye) - Understanding beyond physical technique",
-  balance: "균형 (Gyunhyeong) - Harmony of mind, body, spirit",
-};
-
-// Cultural authenticity checks
-function validateKoreanTechnique(technique: KoreanTechnique): boolean {
-  return (
-    technique.koreanName &&
-    technique.englishName &&
-    technique.description.korean &&
-    technique.stance in TRIGRAM_DATA
-  );
-}
-```
-
----
 
 **Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every implementation should honor this balance while providing authentic, educational, and respectful gameplay.
 

@@ -1,251 +1,310 @@
 /**
- * Audio Variant Selector for Korean Martial Arts Context
- * Selects appropriate audio variants based on game state and cultural context
+ * Audio Variant Selector for Korean martial arts context
+ * Selects appropriate audio variants based on combat context and archetype
  */
 
-import type { SoundEffectId, MusicId } from "../types/audio";
-import type { PlayerArchetype } from "../types/player";
-import type { TrigramStance } from "../types/trigram";
-import { getSoundAsset, getMusicAsset } from "./AudioAssetRegistry";
+import type { PlayerArchetype, TrigramStance } from "../types/enums";
+import type {
+  SoundEffect,
+  MusicTrack,
+  MusicTrackId,
+  SoundEffectId,
+} from "../types/audio";
 
-export interface AudioContext {
+export interface AudioVariantContext {
   readonly archetype?: PlayerArchetype;
   readonly stance?: TrigramStance;
-  readonly combatIntensity?: "low" | "medium" | "high" | "critical";
-  readonly culturalMode?: "traditional" | "cyberpunk" | "fusion";
-  readonly damage?: number;
+  readonly intensity?: "light" | "medium" | "heavy" | "critical";
+  readonly combatPhase?: "intro" | "combat" | "victory" | "defeat";
+  readonly damageAmount?: number;
   readonly isVitalPoint?: boolean;
-  readonly isCritical?: boolean;
+  readonly comboCount?: number;
 }
 
 export class VariantSelector {
   /**
-   * Select optimal sound variant based on context
+   * Select the best sound variant for the given context
    */
-  public static selectSoundVariant(
-    soundId: SoundEffectId,
-    context: AudioContext = {}
-  ): string {
-    const asset = getSoundAsset(soundId);
-    if (!asset || !asset.variants || asset.variants.length === 0) {
-      return "default";
-    }
-
-    const {
-      archetype,
-      stance,
-      combatIntensity = "medium",
-      culturalMode = "fusion",
-      damage = 0,
-      isVitalPoint = false,
-      isCritical = false,
-    } = context;
-
-    // Archetype-specific variant selection
-    if (archetype) {
-      const archetypeVariant = this.getArchetypeVariant(
-        soundId,
-        archetype,
-        [...asset.variants] // Convert readonly array to mutable
-      );
-      if (archetypeVariant) return archetypeVariant;
-    }
-
-    // Stance-specific variant selection
-    if (stance && this.isStanceRelatedSound(soundId)) {
-      if (asset.variants.includes(stance)) {
-        return stance;
-      }
-    }
-
-    // Combat intensity-based selection
-    if (this.isCombatSound(soundId)) {
-      return this.getCombatVariant(
-        [...asset.variants], // Convert readonly array to mutable
-        combatIntensity,
-        damage,
-        isVitalPoint,
-        isCritical
-      );
-    }
-
-    // Cultural mode-based selection
-    if (this.isUISound(soundId)) {
-      return this.getCulturalVariant([...asset.variants], culturalMode); // Convert readonly array to mutable
-    }
-
-    // Default selection
-    return asset.variants.includes("default")
-      ? "default"
-      : asset.variants[0] || "default";
-  }
-
-  /**
-   * Select optimal music variant based on context
-   */
-  public static selectMusicVariant(
-    musicId: MusicId,
-    context: AudioContext = {}
-  ): string {
-    const asset = getMusicAsset(musicId);
-    if (!asset || !asset.variants || asset.variants.length === 0) {
-      return "default";
-    }
-
-    const { archetype, culturalMode = "fusion" } = context;
-
-    // Archetype-specific music themes
-    if (archetype && this.hasArchetypeMusic(musicId)) {
-      const archetypeVariant = `${archetype}_theme`;
-      if (asset.variants.includes(archetypeVariant)) {
-        return archetypeVariant;
-      }
-    }
-
-    // Cultural mode preference
-    return this.getCulturalVariant([...asset.variants], culturalMode); // Convert readonly array to mutable
-  }
-
-  private static getArchetypeVariant(
-    _soundId: SoundEffectId, // Mark as unused
+  static selectSoundVariant(
+    baseSound: SoundEffect,
     archetype: PlayerArchetype,
-    variants: string[]
-  ): string | null {
-    // Archetype-specific sound preferences
-    const archetypePreferences: Record<PlayerArchetype, string[]> = {
-      musa: ["military", "disciplined", "traditional", "bone_breaking"],
-      amsalja: ["stealth", "precise", "silent", "nerve_shock"],
-      hacker: ["digital", "tech", "electronic", "cyber"],
-      jeongbo_yowon: ["strategic", "calculated", "psychological", "analytical"],
-      jojik_pokryeokbae: ["brutal", "harsh", "street", "devastating"],
+    stance?: TrigramStance
+  ): SoundEffect {
+    if (!baseSound.variations || baseSound.variations.length === 0) {
+      return baseSound;
+    }
+
+    // Select variant based on archetype
+    let variantIndex = 0;
+    switch (archetype) {
+      case "musa": // Traditional warrior - use original
+        variantIndex = 0;
+        break;
+      case "amsalja": // Assassin - use quieter variants
+        variantIndex = Math.min(1, baseSound.variations.length - 1);
+        break;
+      case "hacker": // Cyber warrior - use electronic variants
+        variantIndex = Math.min(2, baseSound.variations.length - 1);
+        break;
+      case "jeongbo_yowon": // Intelligence - use subtle variants
+        variantIndex = Math.min(3, baseSound.variations.length - 1);
+        break;
+      case "jojik_pokryeokbae": // Crime - use aggressive variants
+        variantIndex = Math.min(4, baseSound.variations.length - 1);
+        break;
+      default:
+        variantIndex = 0;
+    }
+
+    // Modify based on stance if provided
+    if (stance) {
+      const stanceModifier = this.getStanceModifier(stance);
+      variantIndex =
+        (variantIndex + stanceModifier) % baseSound.variations.length;
+    }
+
+    const selectedVariant = baseSound.variations[variantIndex];
+
+    return {
+      ...baseSound,
+      url: selectedVariant,
+      id: `${baseSound.id}_${archetype}_${stance || "default"}`,
     };
-
-    const preferences = archetypePreferences[archetype] || [];
-
-    for (const preference of preferences) {
-      if (variants.includes(preference)) {
-        return preference;
-      }
-    }
-
-    return null;
-  }
-
-  private static getCombatVariant(
-    variants: string[],
-    intensity: "low" | "medium" | "high" | "critical",
-    damage: number,
-    isVitalPoint: boolean,
-    isCritical: boolean
-  ): string {
-    // Critical hit takes highest priority
-    if (isCritical && variants.includes("critical_impact")) {
-      return "critical_impact";
-    }
-
-    // Vital point targeting
-    if (isVitalPoint && variants.includes("vital_point")) {
-      return "vital_point";
-    }
-
-    // Damage-based selection
-    if (damage > 30 && variants.includes("devastating_impact")) {
-      return "devastating_impact";
-    }
-    if (damage > 20 && variants.includes("heavy_trauma")) {
-      return "heavy_trauma";
-    }
-    if (damage > 10 && variants.includes("solid_hit")) {
-      return "solid_hit";
-    }
-
-    // Intensity-based selection
-    const intensityMap: Record<string, string[]> = {
-      critical: ["devastating_impact", "bone_breaking", "critical_impact"],
-      high: ["heavy_trauma", "powerful_strike", "explosive_finish"],
-      medium: ["solid_hit", "effective_strike", "focused_impact"],
-      low: ["light_contact", "glancing_blow", "soft_hit"],
-    };
-
-    const intensityVariants = intensityMap[intensity] || [];
-    for (const variant of intensityVariants) {
-      if (variants.includes(variant)) {
-        return variant;
-      }
-    }
-
-    return variants.includes("default") ? "default" : variants[0] || "default";
-  }
-
-  private static getCulturalVariant(
-    variants: string[],
-    culturalMode: "traditional" | "cyberpunk" | "fusion"
-  ): string {
-    const culturalMap: Record<string, string[]> = {
-      traditional: [
-        "traditional",
-        "korean_traditional",
-        "temple_gong",
-        "wood_block",
-      ],
-      cyberpunk: ["cyberpunk", "electronic", "digital", "neon"],
-      fusion: ["fusion", "traditional_cyber", "modern_traditional", "default"],
-    };
-
-    const culturalVariants = culturalMap[culturalMode] || [];
-    for (const variant of culturalVariants) {
-      if (variants.includes(variant)) {
-        return variant;
-      }
-    }
-
-    return variants.includes("default") ? "default" : variants[0] || "default";
-  }
-
-  private static isStanceRelatedSound(soundId: SoundEffectId): boolean {
-    return (
-      soundId === "stance_change" ||
-      soundId === "technique_execute" ||
-      soundId === "ki_release"
-    );
-  }
-
-  private static isCombatSound(soundId: SoundEffectId): boolean {
-    return (
-      soundId.startsWith("attack_") ||
-      soundId.startsWith("hit_") ||
-      soundId.includes("strike") ||
-      soundId.includes("combat")
-    );
-  }
-
-  private static isUISound(soundId: SoundEffectId): boolean {
-    return (
-      soundId.startsWith("menu_") ||
-      soundId.includes("select") ||
-      soundId.includes("hover")
-    );
-  }
-
-  private static hasArchetypeMusic(musicId: MusicId): boolean {
-    return musicId === "combat_theme" || musicId === "training_theme";
   }
 
   /**
-   * Get all available variants for a sound effect
+   * Select the best music variant for the given context
    */
-  public static getAvailableVariants(
-    soundId: SoundEffectId
-  ): readonly string[] {
-    const asset = getSoundAsset(soundId);
-    return asset?.variants || ["default"];
+  static selectMusicVariant(
+    baseMusic: MusicTrack,
+    archetype: PlayerArchetype,
+    intensity: number = 0.5
+  ): MusicTrack {
+    if (!baseMusic.variations || baseMusic.variations.length === 0) {
+      return baseMusic;
+    }
+
+    // Select based on archetype and intensity
+    const archetypeWeight = this.getArchetypeWeight(archetype);
+    const intensityWeight = Math.floor(intensity * 3); // 0-2 range
+
+    const variantIndex =
+      (archetypeWeight + intensityWeight) % baseMusic.variations.length;
+    const selectedVariant = baseMusic.variations[variantIndex];
+
+    return {
+      ...baseMusic,
+      url: selectedVariant,
+      id: `${baseMusic.id}_${archetype}_intensity${intensityWeight}`,
+      volume: (baseMusic.volume ?? 0.7) * (0.8 + intensity * 0.4), // Fix: Handle undefined volume
+    };
   }
 
   /**
-   * Check if a specific variant exists for a sound
+   * Get attack sound based on damage and archetype
    */
-  public static hasVariant(soundId: SoundEffectId, variant: string): boolean {
-    const variants = this.getAvailableVariants(soundId);
-    return variants.includes(variant);
+  static getAttackSound(context: AudioVariantContext): SoundEffectId {
+    const { damageAmount = 0, intensity } = context;
+
+    // Determine intensity from damage if not provided
+    let soundIntensity = intensity;
+    if (!soundIntensity) {
+      if (damageAmount > 50) soundIntensity = "critical";
+      else if (damageAmount > 30) soundIntensity = "heavy";
+      else if (damageAmount > 15) soundIntensity = "medium";
+      else soundIntensity = "light";
+    }
+
+    // Map intensity to sound ID
+    switch (soundIntensity) {
+      case "critical":
+        return context.isVitalPoint ? "critical_hit" : "attack_critical";
+      case "heavy":
+        return "attack_heavy";
+      case "medium":
+        return "attack_medium";
+      case "light":
+      default:
+        return "attack_light";
+    }
   }
+
+  /**
+   * Get hit sound based on damage and vital point status
+   */
+  static getHitSound(context: AudioVariantContext): SoundEffectId {
+    const { damageAmount = 0, isVitalPoint = false, intensity } = context;
+
+    if (isVitalPoint) {
+      return "critical_hit";
+    }
+
+    // Determine intensity from damage if not provided
+    let soundIntensity = intensity;
+    if (!soundIntensity) {
+      if (damageAmount > 50) soundIntensity = "critical";
+      else if (damageAmount > 30) soundIntensity = "heavy";
+      else if (damageAmount > 15) soundIntensity = "medium";
+      else soundIntensity = "light";
+    }
+
+    switch (soundIntensity) {
+      case "critical":
+        return "hit_critical";
+      case "heavy":
+        return "hit_heavy";
+      case "medium":
+        return "hit_medium";
+      case "light":
+      default:
+        return "hit_light";
+    }
+  }
+
+  /**
+   * Get appropriate music for combat phase and archetype
+   */
+  static getCombatMusic(context: AudioVariantContext): MusicTrackId {
+    const { combatPhase = "combat" } = context;
+
+    switch (combatPhase) {
+      case "intro":
+        return "intro_theme";
+      case "victory":
+        return "victory_theme";
+      case "defeat":
+        return "ambient_dojang"; // Somber ambient for defeat
+      case "combat":
+      default:
+        // Could vary by archetype in full implementation
+        return "combat_theme";
+    }
+  }
+
+  /**
+   * Get stance modifier for audio selection
+   */
+  private static getStanceModifier(stance: TrigramStance): number {
+    const stanceMap: Record<TrigramStance, number> = {
+      geon: 0, // Heaven - original
+      tae: 1, // Lake - fluid
+      li: 2, // Fire - intense
+      jin: 3, // Thunder - explosive
+      son: 4, // Wind - swift
+      gam: 5, // Water - flowing
+      gan: 6, // Mountain - stable
+      gon: 7, // Earth - grounded
+    };
+    return stanceMap[stance] || 0;
+  }
+
+  /**
+   * Get archetype weight for variant selection
+   */
+  private static getArchetypeWeight(archetype: PlayerArchetype): number {
+    const archetypeMap: Record<PlayerArchetype, number> = {
+      musa: 0, // Traditional
+      amsalja: 1, // Stealth
+      hacker: 2, // Tech
+      jeongbo_yowon: 3, // Intelligence
+      jojik_pokryeokbae: 4, // Aggressive
+    };
+    return archetypeMap[archetype] || 0;
+  }
+
+  /**
+   * Select context-appropriate audio variant
+   */
+  public static selectByContext(
+    baseAssetId: string,
+    context: {
+      archetype: PlayerArchetype;
+      stance?: TrigramStance;
+      intensity?: number;
+    }
+  ): { soundId?: string; musicId?: string } {
+    // Return string IDs instead of typed IDs
+    return {
+      soundId: `${baseAssetId}_${context.archetype}`,
+      musicId: `${baseAssetId}_${context.archetype}`,
+    };
+  }
+
+  /**
+   * Select the best music variant for the given context
+   */
+  public static selectMusicVariantForArchetype(
+    baseMusic: MusicTrack,
+    archetype: PlayerArchetype,
+    intensity: number = 1.0
+  ): string {
+    // Fix: Check for variations property existence
+    if (
+      !("variations" in baseMusic) ||
+      !baseMusic.variations ||
+      baseMusic.variations.length === 0
+    ) {
+      console.warn(`No variations available for music track: ${baseMusic.id}`);
+      return baseMusic.url;
+    }
+
+    const archetypeWeight = this.getArchetypeWeight(archetype);
+    const intensityWeight = Math.floor(intensity * 10);
+
+    const variantIndex =
+      (archetypeWeight + intensityWeight) % baseMusic.variations.length;
+    const selectedVariant = baseMusic.variations[variantIndex];
+
+    console.log(
+      `Selected variant for ${archetype} at intensity ${intensity}: ${selectedVariant}`
+    );
+
+    return selectedVariant;
+  }
+
+  /**
+   * Get random variant from available options
+   */
+  public static selectRandomVariant(
+    baseAsset: MusicTrack | SoundEffect
+  ): string {
+    // Fix: Type guard to check for variations
+    const hasVariations = (
+      asset: MusicTrack | SoundEffect
+    ): asset is SoundEffect => {
+      return (
+        "variations" in asset &&
+        Array.isArray(asset.variations) &&
+        asset.variations.length > 0
+      );
+    };
+
+    if (!hasVariations(baseAsset)) {
+      return baseAsset.url;
+    }
+
+    // Fix: Now TypeScript knows baseAsset.variations exists and is not empty
+    const randomIndex = Math.floor(
+      Math.random() * baseAsset.variations!.length
+    );
+    const selectedVariant = baseAsset.variations![randomIndex];
+
+    console.log(`Random variant selected: ${selectedVariant}`);
+    return selectedVariant;
+  }
+}
+
+export default VariantSelector;
+
+// Export convenience functions
+export function selectCombatSound(context: AudioVariantContext): SoundEffectId {
+  return VariantSelector.getAttackSound(context);
+}
+
+export function selectHitSound(context: AudioVariantContext): SoundEffectId {
+  return VariantSelector.getHitSound(context);
+}
+
+export function selectCombatMusic(context: AudioVariantContext): MusicTrackId {
+  return VariantSelector.getCombatMusic(context);
 }

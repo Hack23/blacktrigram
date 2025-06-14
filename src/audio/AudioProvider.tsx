@@ -1,99 +1,47 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import type { AudioManager } from "./AudioManager";
+import AudioManager from "./AudioManager";
+import type {
+  AudioManager as IAudioManager,
+  AudioAsset,
+  AudioConfig,
+} from "../types/audio";
+import placeholderAssets from "./placeholder-sounds"; // your array of assets
 
-interface AudioContextType {
-  audioManager: AudioManager | null;
-  isReady: boolean;
+export interface AudioProviderProps {
+  children: React.ReactNode;
+  config?: Partial<AudioConfig>;
+  manager?: IAudioManager;
 }
 
-const AudioContext = createContext<AudioContextType>({
-  audioManager: null,
-  isReady: false,
-});
+export const AudioContext = createContext<IAudioManager | null>(null);
 
-export function useAudioContext(): AudioContextType {
-  const context = useContext(AudioContext);
-  if (!context) {
-    throw new Error("useAudioContext must be used within AudioProvider");
-  }
-  return context;
-}
+export const useAudio = (): IAudioManager => {
+  const ctx = useContext(AudioContext);
+  if (!ctx) throw new Error("useAudio must be inside AudioProvider");
+  return ctx;
+};
 
-// Add this hook for compatibility with rest of codebase
-export function useAudio() {
-  const { audioManager } = useAudioContext();
-  return audioManager;
-}
-
-interface AudioProviderProps {
-  readonly children: React.ReactNode;
-}
-
-export function AudioProvider({
+export const AudioProvider: React.FC<AudioProviderProps> = ({
   children,
-}: AudioProviderProps): React.JSX.Element {
-  const [audioManager, setAudioManager] = useState<AudioManager | null>(null);
-  const [isReady, setIsReady] = useState(false);
+  config,
+  manager,
+}) => {
+  const [audioManager] = useState<IAudioManager>(
+    () => manager || new AudioManager(config)
+  );
 
   useEffect(() => {
-    let mounted = true;
-
-    async function initializeAudio() {
-      try {
-        // Import the actual AudioManager implementation
-        const { AudioManager: AudioManagerClass } = await import(
-          "./AudioManager"
-        );
-        const manager = new AudioManagerClass();
-
-        if (mounted) {
-          setAudioManager(manager);
-          setIsReady(true);
-        }
-      } catch (error) {
-        console.warn("Audio initialization failed:", error);
-        if (mounted) {
-          setIsReady(true); // Continue without audio
-        }
-      }
-    }
-
-    initializeAudio();
-
-    return () => {
-      mounted = false;
-      // Check if audioManager has cleanup methods before calling them
-      if (audioManager) {
-        // Use proper cleanup method based on AudioManager interface
-        if (
-          "cleanup" in audioManager &&
-          typeof audioManager.cleanup === "function"
-        ) {
-          audioManager.cleanup();
-        } else if (
-          "dispose" in audioManager &&
-          typeof audioManager.dispose === "function"
-        ) {
-          (audioManager as any).dispose();
-        }
-        // If no cleanup method exists, just set volume to 0 for graceful shutdown
-        try {
-          audioManager.setMasterVolume(0);
-        } catch (error) {
-          console.warn("Failed to cleanup audio manager:", error);
-        }
-      }
-    };
+    (async () => {
+      await audioManager.initialize(); // no args
+      // preload all placeholder assets
+      const list = Object.values(placeholderAssets).flat() as AudioAsset[];
+      await Promise.all(list.map((a) => audioManager.loadAsset(a)));
+    })();
   }, [audioManager]);
 
-  const contextValue: AudioContextType = {
-    audioManager,
-    isReady,
-  };
-
   return (
-    <AudioContext.Provider value={contextValue}>
+    <AudioContext.Provider value={audioManager}>
       {children}
     </AudioContext.Provider>
   );
-}
+};

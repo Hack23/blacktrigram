@@ -1,116 +1,130 @@
-// Common shared types for Black Trigram Korean martial arts game
+/**
+ * Common utility types for Korean martial arts game
+ */
 
-import type {
-  DamageType,
-  EffectIntensity,
-  EffectType as EnumEffectType, // Renamed to avoid conflict with local EffectType if any
-} from "./enums";
-import type { KoreanText } from "./korean-text"; // For KoreanText in CombatCondition
-
-// Basic shared types
+// Position in 2D space
 export interface Position {
   x: number;
   y: number;
 }
 
-export interface Dimensions {
+// Size dimensions
+export interface Size {
   readonly width: number;
   readonly height: number;
 }
 
-export interface BoundingBox {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
+// Rectangle bounds
+export interface Bounds extends Position, Size {}
 
-export interface Vector2D {
-  readonly x: number;
-  readonly y: number;
-}
+// Color as hex number
+export type Color = number;
 
-export interface Range {
-  readonly min: number;
-  readonly max: number;
-}
+// Time duration in milliseconds
+export type Duration = number;
 
-export interface TimeRange {
-  readonly start: number;
-  readonly end: number;
-  readonly duration: number;
-}
+// Percentage value (0-1)
+export type Percentage = number;
 
-export interface KoreanMartialArtsMetadata {
-  readonly culturalAccuracy: number; // 0-1 scale
-  readonly traditionalBasis: string;
-  readonly modernAdaptation: string;
-  readonly philosophicalDepth: number; // 1-5 scale
-}
+// ID string
+export type ID = string;
 
-export type Direction = "left" | "right" | "up" | "down";
-export type Facing = "left" | "right";
+// Generic callback function
+export type Callback<T = void> = () => T;
 
-// Fix: Remove duplicate Timestamp declarations - keep only one
-export type Timestamp = number;
+// Event handler
+export type EventHandler<T = any> = (event: T) => void;
 
-// Add missing exports for systems.ts
-export interface Velocity {
-  readonly x: number;
-  readonly y: number;
-}
+// Optional properties helper
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export type EntityId = string;
+// Required properties helper
+export type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
-export interface BilingualIdentifier {
+// Deep readonly
+export type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
+};
+
+// Korean text support
+export interface KoreanText {
   readonly korean: string;
   readonly english: string;
   readonly romanized?: string;
 }
 
-// Damage range specification (Canonical definition)
-export interface DamageRange {
-  readonly min: number;
-  readonly max: number;
-  readonly type?: DamageType; // Optional: specific damage type for this range
-}
-
-// Combat condition for status effects
-export interface CombatCondition {
-  readonly id: string;
-  readonly name: KoreanText; // Use KoreanText for bilingual support
-  readonly type: EnumEffectType; // Use EnumEffectType from enums
-  readonly intensity: EffectIntensity;
-  readonly duration: number; // Duration in game ticks or seconds
-  readonly source?: string; // E.g., technique ID, environmental effect
+// Base entity with Korean naming
+export interface KoreanEntity {
+  readonly id: ID;
+  readonly name: KoreanText;
   readonly description?: KoreanText;
 }
 
-// Color types for Korean martial arts styling
-export type ColorValue = number; // Hexadecimal color representation (e.g., 0xff0000)
-export type RGBAColor = readonly [number, number, number, number];
+// Damage range
+export interface DamageRange {
+  readonly min: number;
+  readonly max: number;
+  readonly type?: import("./enums").DamageType;
+  readonly average?: number;
+}
 
-// Time and duration types for martial arts training
-export type Duration = number; // Typically in milliseconds or game ticks
+// Status effect duration
+export interface EffectDuration {
+  readonly startTime: number;
+  readonly endTime: number;
+  readonly duration: number;
+}
 
-// Probability and percentage types for combat calculations
-export type Probability = number; // Value between 0 and 1
-export type Percentage = number; // Value between 0 and 100
+// Generic game entity
+export interface GameEntity extends KoreanEntity {
+  readonly position?: Position;
+  readonly size?: Size;
+  readonly active?: boolean;
+  readonly visible?: boolean;
+}
 
-// ID types for Korean martial arts entities
-export type PlayerId = "player1" | "player2";
-export type ArchetypeId = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
+// Animation frame data
+export interface AnimationFrame {
+  readonly duration: Duration;
+  readonly properties: Record<string, any>;
+  readonly easing?: string;
+}
 
-// Utility types for Korean martial arts game state
-export type ReadonlyRecord<K extends keyof any, T> = {
-  readonly [P in K]: T;
-};
+// Transition data
+export interface Transition {
+  readonly from: string;
+  readonly to: string;
+  readonly duration: Duration;
+  readonly easing?: string;
+}
 
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+// Theme colors
+export interface Theme {
+  readonly primary: Color;
+  readonly secondary: Color;
+  readonly accent?: Color;
+  readonly background?: Color;
+  readonly text?: Color;
+}
 
-export type DeepReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
-};
+// Configuration object
+export interface Config {
+  readonly [key: string]: any;
+}
 
-// Remove createPlayerState - it should be in utils/playerUtils.ts
-// Keep only common shared types here
+// Result with success/error
+export interface Result<T, E = Error> {
+  readonly success: boolean;
+  readonly data?: T;
+  readonly error?: E;
+  readonly message?: string;
+}
+
+// Validation result
+export interface ValidationResult {
+  readonly valid: boolean;
+  readonly errors: readonly string[];
+  readonly warnings?: readonly string[];
+}
+
+export default {};

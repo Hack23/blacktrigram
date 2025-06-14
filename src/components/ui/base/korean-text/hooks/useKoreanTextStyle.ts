@@ -1,31 +1,48 @@
 import { useMemo } from "react";
-import type { KoreanTextProps } from "../types";
-import { KOREAN_FONT_FAMILIES, KOREAN_TEXT_SIZES } from "../constants";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { KOREAN_TEXT_CONSTANTS } from "../constants";
+import type {
+  KoreanTextSize,
+  KoreanTextWeight,
+} from "../../../../../types/korean-text";
+import * as PIXI from "pixi.js";
 
-export function useKoreanTextStyle(
-  props: KoreanTextProps
-): React.CSSProperties {
-  return useMemo(() => {
-    const fontSize =
-      typeof props.size === "number"
-        ? props.size
-        : KOREAN_TEXT_SIZES[props.size as keyof typeof KOREAN_TEXT_SIZES] ||
-          KOREAN_TEXT_SIZES.medium;
-
-    const color = props.color
-      ? typeof props.color === "number"
-        ? `#${props.color.toString(16).padStart(6, "0")}`
-        : props.color
-      : `#${KOREAN_COLORS.WHITE.toString(16).padStart(6, "0")}`;
-
-    return {
-      fontFamily: KOREAN_FONT_FAMILIES.PRIMARY,
-      fontSize: `${fontSize}px`,
-      color,
-      textAlign: props.align || "left",
-      fontWeight: props.weight || 400,
-      ...props.style,
-    };
-  }, [props]);
+export interface UseKoreanTextStyleOptions {
+  readonly size?: KoreanTextSize;
+  readonly weight?: KoreanTextWeight;
+  readonly color?: number;
+  readonly alignment?: "left" | "center" | "right";
 }
+
+export const useKoreanTextStyle = (
+  options: UseKoreanTextStyleOptions = {}
+): PIXI.TextStyle => {
+  return useMemo(() => {
+    const {
+      size = "medium" as KoreanTextSize, // Fix: Use string literal
+      weight = "normal" as KoreanTextWeight, // Fix: Use string literal
+      color = KOREAN_TEXT_CONSTANTS.COLORS.PRIMARY,
+      alignment = "left",
+    } = options;
+
+    // Fix: Proper size lookup with string to uppercase conversion
+    const sizeKey =
+      size.toUpperCase() as keyof typeof KOREAN_TEXT_CONSTANTS.FONT_SIZES;
+    const fontSize = KOREAN_TEXT_CONSTANTS.FONT_SIZES[sizeKey] || 16;
+
+    // Fix: Proper weight conversion for PIXI using string comparison
+    const fontWeight =
+      weight === "normal" ? "400" : weight === "bold" ? "700" : "400";
+
+    return new PIXI.TextStyle({
+      fontFamily: KOREAN_TEXT_CONSTANTS.FONT_FAMILIES.PRIMARY,
+      fontSize,
+      fontWeight: fontWeight as PIXI.TextStyleFontWeight,
+      fill: color as PIXI.ColorSource,
+      align: alignment,
+      lineHeight: KOREAN_TEXT_CONSTANTS.LAYOUT.LINE_HEIGHT_RATIO,
+      letterSpacing: KOREAN_TEXT_CONSTANTS.LAYOUT.LETTER_SPACING,
+    });
+  }, [options.size, options.weight, options.color, options.alignment]);
+};
+
+export default useKoreanTextStyle;

@@ -1,107 +1,75 @@
-import { useCallback } from "react";
-import type { Graphics as PixiGraphics } from "pixi.js";
-import { KOREAN_COLORS } from "../../../types";
+import React from "react";
+import * as PIXI from "pixi.js";
+import { usePixiExtensions } from "../../../utils/pixiExtensions";
+import { KOREAN_COLORS } from "../../../types/constants";
 
 export interface BackgroundGridProps {
-  readonly width: number;
-  readonly height: number;
+  readonly width?: number;
+  readonly height?: number;
   readonly gridSize?: number;
-  readonly lineWidth?: number;
-  readonly color?: number;
-  readonly alpha?: number;
-  readonly animated?: boolean;
+  readonly lineColor?: number;
+  readonly lineAlpha?: number;
+  readonly showMajorLines?: boolean;
+  readonly x?: number;
+  readonly y?: number;
 }
 
-export function BackgroundGrid({
-  width,
-  height,
+export const BackgroundGrid: React.FC<BackgroundGridProps> = ({
+  width = 800,
+  height = 600,
   gridSize = 50,
-  lineWidth = 1,
-  color = KOREAN_COLORS.ACCENT_BLUE,
-  alpha = 0.3,
-  animated = false,
-}: BackgroundGridProps): React.ReactElement {
-  const drawGrid = useCallback(
-    (g: PixiGraphics) => {
+  lineColor = KOREAN_COLORS.UI_BORDER,
+  lineAlpha = 0.3,
+  showMajorLines = true,
+  x = 0,
+  y = 0,
+}) => {
+  usePixiExtensions();
+
+  const drawGrid = React.useCallback(
+    (g: PIXI.Graphics) => {
       g.clear();
 
-      const colorValue: number =
-        typeof color === "number" ? color : KOREAN_COLORS.ACCENT_BLUE;
+      // Minor grid lines
+      g.lineStyle(1, lineColor, lineAlpha);
 
-      // Draw vertical lines
-      g.lineStyle(lineWidth, colorValue, alpha);
-      for (let x = 0; x <= width; x += gridSize) {
-        g.moveTo(x, 0);
-        g.lineTo(x, height);
+      // Vertical lines
+      for (let i = 0; i <= width; i += gridSize) {
+        g.moveTo(i, 0);
+        g.lineTo(i, height);
       }
 
-      // Draw horizontal lines
-      for (let y = 0; y <= height; y += gridSize) {
-        g.moveTo(0, y);
-        g.lineTo(width, y);
+      // Horizontal lines
+      for (let i = 0; i <= height; i += gridSize) {
+        g.moveTo(0, i);
+        g.lineTo(width, i);
       }
 
-      // Add intersection points for cyberpunk feel
-      if (animated) {
-        g.lineStyle(2, KOREAN_COLORS.CYAN, alpha * 0.6);
+      // Major grid lines
+      if (showMajorLines) {
+        g.lineStyle(2, lineColor, lineAlpha * 1.5);
 
-        for (let x = 0; x <= width; x += gridSize) {
-          for (let y = 0; y <= height; y += gridSize) {
-            g.drawCircle(x, y, 2);
-          }
+        // Major vertical lines (every 5 grid units)
+        for (let i = 0; i <= width; i += gridSize * 5) {
+          g.moveTo(i, 0);
+          g.lineTo(i, height);
+        }
+
+        // Major horizontal lines (every 5 grid units)
+        for (let i = 0; i <= height; i += gridSize * 5) {
+          g.moveTo(0, i);
+          g.lineTo(width, i);
         }
       }
     },
-    [width, height, gridSize, lineWidth, color, alpha, animated]
+    [width, height, gridSize, lineColor, lineAlpha, showMajorLines]
   );
 
-  return <pixiGraphics draw={drawGrid} />;
-}
-
-export interface CyberpunkBackgroundProps {
-  readonly width: number;
-  readonly height: number;
-}
-
-export function CyberpunkBackground({
-  width,
-  height,
-}: CyberpunkBackgroundProps): React.ReactElement {
-  const drawBackground = useCallback(
-    (g: PixiGraphics) => {
-      g.clear();
-
-      // Dark base background
-      g.beginFill(KOREAN_COLORS.BLACK);
-      g.drawRect(0, 0, width, height);
-      g.endFill();
-
-      // Cyberpunk grid overlay
-      g.lineStyle(1, KOREAN_COLORS.ACCENT_BLUE, 0.2);
-
-      const gridSize = 40;
-      for (let x = 0; x <= width; x += gridSize) {
-        g.moveTo(x, 0);
-        g.lineTo(x, height);
-      }
-
-      for (let y = 0; y <= height; y += gridSize) {
-        g.moveTo(0, y);
-        g.lineTo(width, y);
-      }
-
-      // Add some glowing accents
-      g.lineStyle(2, KOREAN_COLORS.CYAN, 0.4);
-
-      // Diagonal accent lines
-      g.moveTo(0, 0);
-      g.lineTo(width, height);
-
-      g.moveTo(width, 0);
-      g.lineTo(0, height);
-    },
-    [width, height]
+  return (
+    <pixiContainer x={x} y={y} data-testid="background-grid">
+      <pixiGraphics draw={drawGrid} />
+    </pixiContainer>
   );
+};
 
-  return <pixiGraphics draw={drawBackground} />;
-}
+export default BackgroundGrid;

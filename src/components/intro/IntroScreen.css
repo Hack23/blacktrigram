@@ -1,246 +1,192 @@
 .intro-screen {
-  display: flex;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
-  color: #ffffff;
-  font-family: "Noto Sans KR", Arial, sans-serif;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  position: relative;
   overflow: hidden;
 }
 
-.intro-background {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.intro-background::before {
+.intro-screen::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(
-      circle at 20% 20%,
-      rgba(0, 255, 255, 0.1) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      rgba(255, 215, 0, 0.1) 0%,
-      transparent 50%
-    );
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
   pointer-events: none;
 }
 
-.intro-content {
-  position: relative;
-  text-align: center;
-  max-width: 800px;
-  padding: 2rem;
-  z-index: 1;
+.intro-section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.title-section {
+.intro-title {
+  font-family: "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.intro-subtitle {
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  font-size: 1.5rem;
+  color: #cccccc;
+  text-align: center;
   margin-bottom: 3rem;
 }
 
-.main-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: #ffd700;
-  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  margin-bottom: 1rem;
-  line-height: 1.2;
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
 }
 
-.subtitle {
-  font-size: 1.4rem;
-  font-weight: 300;
-  color: #00ffff;
-  text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+.menu-button {
+  background: linear-gradient(45deg, #0a74da 0%, #00d4ff 100%);
+  border: 2px solid #00ffff;
+  color: #000000;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+  text-align: center;
+}
+
+.menu-button:hover {
+  background: linear-gradient(45deg, #00d4ff 0%, #0a74da 100%);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.menu-button:active {
+  transform: translateY(0);
+}
+
+.mode-selection {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.mode-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mode-button.selected {
+  background: linear-gradient(45deg, #ffd700 0%, #ffaa00 100%);
+  border-color: #ffd700;
+  color: #000000;
+}
+
+.mode-button:hover:not(.selected) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.controls-text {
+  font-family: "Nanum Gothic Coding", monospace;
+  font-size: 0.9rem;
+  color: #cccccc;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .philosophy-section {
-  margin-bottom: 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-.philosophy-title {
-  font-size: 1.8rem;
-  font-weight: 500;
-  color: #ffffff;
-  margin-bottom: 1rem;
+.archetype-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
 }
 
-.trigram-symbols {
-  font-size: 2.5rem;
-  color: #ffd700;
-  letter-spacing: 1rem;
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-  font-family: serif;
-}
-
-.archetype-section {
-  margin-bottom: 3rem;
-  position: relative;
-}
-
-.archetype-toggle {
-  background: rgba(0, 255, 255, 0.1);
-  border: 2px solid #00ffff;
-  border-radius: 8px;
-  padding: 1rem 2rem;
-  color: #ffffff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  min-width: 300px;
-}
-
-.archetype-toggle:hover {
-  background: rgba(0, 255, 255, 0.2);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-}
-
-.selected-archetype {
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.archetype-list {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #00ffff;
+.archetype-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 1rem;
-  margin-top: 0.5rem;
-  min-width: 400px;
-  z-index: 10;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.archetype-option {
-  display: block;
-  width: 100%;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: left;
-  font-family: inherit;
-}
-
-.archetype-option:hover {
-  background: rgba(255, 215, 0, 0.1);
-  border-color: #ffd700;
-}
-
-.archetype-option.selected {
-  background: rgba(0, 255, 255, 0.2);
-  border-color: #00ffff;
+  text-align: center;
 }
 
 .archetype-name {
+  font-family: "Noto Sans KR", Arial, sans-serif;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: bold;
+  color: #00ffff;
   margin-bottom: 0.5rem;
 }
 
 .archetype-description {
+  font-family: "Noto Sans KR", Arial, sans-serif;
   font-size: 0.9rem;
   color: #cccccc;
-  margin-bottom: 0.3rem;
-  margin: 0;
+  line-height: 1.4;
 }
 
-.archetype-philosophy {
-  font-size: 0.8rem;
-  color: #ffd700;
-  font-style: italic;
-  margin: 0;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  margin-bottom: 3rem;
-}
-
-.primary-button,
-.secondary-button {
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 1.1rem;
-  font-weight: 600;
+.back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: "Noto Sans KR", Arial, sans-serif;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 180px;
 }
 
-.primary-button {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #000000;
-  border: none;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.primary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-}
-
-.secondary-button {
-  background: transparent;
-  color: #00ffff;
-  border: 2px solid #00ffff;
-}
-
-.secondary-button:hover {
-  background: rgba(0, 255, 255, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
-}
-
-.quote-section {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  padding-top: 2rem;
-}
-
-.closing-quote {
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: #ffffff;
-  font-style: italic;
-}
-
-/* Responsive design */
 @media (max-width: 768px) {
-  .intro-content {
-    padding: 1rem;
+  .intro-title {
+    font-size: 2rem;
   }
 
-  .main-title {
-    font-size: 2.5rem;
+  .intro-subtitle {
+    font-size: 1.2rem;
   }
 
-  .action-buttons {
+  .mode-selection {
     flex-direction: column;
     align-items: center;
   }
 
-  .archetype-list {
-    min-width: 90vw;
+  .archetype-grid {
+    grid-template-columns: 1fr;
   }
 }

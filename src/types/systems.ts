@@ -1,26 +1,33 @@
 // System types for Black Trigram game engines
-import type { Position, Timestamp, EntityId, Velocity } from "./common"; // Corrected import for Position
+import type { Position } from "./common"; // Fix: Remove non-existent imports
 import type {
   AudioAsset,
   AudioPlaybackOptions,
   SoundEffectId,
   MusicTrackId,
 } from "./audio";
-import type { PlayerArchetype, TrigramStance, InputAction } from "./enums";
-import type { KoreanTechnique, CombatResult } from "./combat"; // Removed unused CombatEvent
+import type { PlayerArchetype, TrigramStance } from "./enums";
+import type { KoreanTechnique, CombatResult } from "./combat";
 import type { PlayerState } from "./player";
 import type { StatusEffect } from "./effects";
-import type { VitalPoint } from "./anatomy"; // Removed unused TargetingResult, InjuryReport
 import type {
-  TrigramData,
-  // TrigramTransition, // Unused
-  // StanceTransition, // Unused
-} from "./trigram";
+  VitalPoint,
+  VitalPointHitResult as AnatomyVitalPointHitResult,
+} from "./anatomy";
+import type { TrigramData } from "./trigram";
 import type {
   Application as PixiApplication,
-  Container as PixiDisplayObject, // Using Container as the base display object type
+  Container as PixiDisplayObject,
   Texture,
-} from "pixi.js"; // For RenderingSystemInterface
+} from "pixi.js";
+
+// Fix: Add missing type definitions
+export type Timestamp = number;
+export type EntityId = string;
+export interface Velocity {
+  readonly x: number;
+  readonly y: number;
+}
 
 // Configuration for the VitalPointSystem
 export interface VitalPointSystemConfig {
@@ -31,43 +38,33 @@ export interface VitalPointSystemConfig {
   readonly vitalPointSeverityMultiplier?: Record<string, number>;
   readonly maxHitAngleDifference?: number;
   readonly baseVitalPointAccuracy?: number;
-  readonly criticalHitMultiplier?: number; // Added
+  readonly criticalHitMultiplier?: number;
 }
 
-// Result from VitalPointSystem's hit calculation
-export interface VitalPointHitResult {
-  readonly hit: boolean;
-  readonly damage: number;
-  readonly effects: readonly StatusEffect[];
-  readonly vitalPointsHit: readonly string[]; // IDs of vital points hit
-  readonly bodyPartId?: string; // ID of the body part hit
-  readonly isCritical?: boolean;
-  // Removed isVitalPointHit, vitalPointsHit array serves this purpose
-  // Removed vitalPoint, vitalPointsHit provides IDs, details can be fetched if needed
-  // Removed damageDealt, use 'damage' field
-}
+// Result from VitalPointSystem's hit calculation - unified with anatomy.ts version
+export type VitalPointHitResult = AnatomyVitalPointHitResult;
 
 // Combat system interface
 export interface CombatSystemInterface {
   calculateDamage: (
     technique: KoreanTechnique,
-    attacker: PlayerState, // Changed from PlayerArchetype to full PlayerState
+    attacker: PlayerState,
     defender: PlayerState,
-    hitResult: VitalPointHitResult // Changed from CombatResult to VitalPointHitResult for more specific input
+    hitResult: VitalPointHitResult
   ) => {
     baseDamage: number;
     modifierDamage: number;
     totalDamage: number;
     effectsApplied: readonly StatusEffect[];
-    finalDefenderState?: Partial<PlayerState>; // Optional: predicted state after damage
+    finalDefenderState?: Partial<PlayerState>;
   };
 
   resolveAttack: (
     attacker: PlayerState,
     defender: PlayerState,
     technique: KoreanTechnique,
-    targetedVitalPointId?: string // Optional: if player is specifically targeting a vital point
-  ) => CombatResult; // This should return the overall CombatResult
+    targetedVitalPointId?: string
+  ) => CombatResult;
 
   applyCombatResult: (
     result: CombatResult,
@@ -78,46 +75,55 @@ export interface CombatSystemInterface {
   getAvailableTechniques: (player: PlayerState) => readonly KoreanTechnique[];
 }
 
-// Vital point system interface - FIXED: Match implementation
+// Vital point system interface
 export interface VitalPointSystemInterface {
   getVitalPointsInRegion(region: string): readonly VitalPoint[];
-  getVitalPointById(id: string): VitalPoint | undefined; // Added missing method
-  getAllVitalPoints(): readonly VitalPoint[]; // Added missing method
+  getVitalPointById(id: string): VitalPoint | undefined;
+  getAllVitalPoints(): readonly VitalPoint[];
   calculateVitalPointAccuracy(
     targetPosition: Position,
     attackAccuracy: number,
     vitalPoint: VitalPoint
   ): number;
-  calculateVitalPointDamage( // Added missing method
+  calculateVitalPointDamage(
     vitalPoint: VitalPoint,
     baseDamage: number,
-    archetype: string
+    archetype: PlayerArchetype
   ): number;
+  processHit: (
+    targetPosition: Position,
+    technique: KoreanTechnique,
+    baseDamage: number,
+    attackerArchetype: PlayerArchetype,
+    targetDimensions: { width: number; height: number },
+    targetedVitalPointId?: string | null
+  ) => VitalPointHitResult;
   calculateHit: (
     technique: KoreanTechnique,
-    targetVitalPointId: string | null, // Explicitly allow null if no specific target
-    accuracyRoll: number, // Player's accuracy roll (0-1)
+    targetVitalPointId: string | null,
+    accuracyRoll: number,
     attackerPosition: Position,
     defenderPosition: Position,
     defenderStance: TrigramStance
-  ) => VitalPointHitResult; // Changed to use the new result type
+  ) => VitalPointHitResult;
   applyVitalPointEffects: (
     player: PlayerState,
     vitalPoint: VitalPoint,
     intensityMultiplier?: number
-  ) => PlayerState; // Returns updated player state
+  ) => PlayerState;
 }
 
 // Trigram system interface
 export interface TrigramSystemInterface {
-  getCurrentStanceData: (stance: TrigramStance) => TrigramData;
+  getCurrentStanceData(stance: TrigramStance): TrigramData | undefined;
   getTechniqueForStance: (
     stance: TrigramStance,
     archetype?: PlayerArchetype
   ) => KoreanTechnique | undefined;
   calculateStanceEffectiveness: (
     attackerStance: TrigramStance,
-    defenderStance: TrigramStance
+    defenderStance: TrigramStance,
+    technique?: KoreanTechnique
   ) => number;
   isValidTransition: (from: TrigramStance, to: TrigramStance) => boolean;
   getTransitionCost: (
@@ -133,11 +139,10 @@ export interface TrigramSystemInterface {
 
 // Input system interface
 export interface InputSystemInterface {
-  registerAction: (action: InputAction, callback: () => void) => void;
-  handleKeyPress: (key: string) => void;
-  handleGamePadInput: (gamepadState: GamepadState) => void;
-  getLastInputTime: () => Timestamp;
-  isActionActive: (action: InputAction) => boolean;
+  registerAction: (action: string, callback: () => void) => void;
+  unregisterAction: (action: string) => void;
+  clearActions: () => void;
+  isActionActive: (action: string) => boolean;
 }
 
 // Gamepad state
@@ -171,7 +176,7 @@ export interface AnimationConfig {
   readonly name: string;
   readonly frames: readonly { texture: Texture; duration: number }[]; // Texture from PIXI
   readonly loop?: boolean;
-  readonly speed?: number; // Playback speed multiplier
+  readonly speed?: number; // Playback speed multiplier // Added
 }
 
 // Added AnimationFrame and AnimationState for AnimationSystemInterface
@@ -210,7 +215,7 @@ export interface PhysicsEntityConfig {
   readonly shape:
     | { type: "circle"; radius: number }
     | { type: "rectangle"; width: number; height: number };
-  readonly isStatic?: boolean; // Cannot be moved by forces
+  readonly isStatic?: boolean; // Cannot be moved by forces // Added
 }
 
 // Added PhysicsEntityState and CollisionData for PhysicsSystemInterface
@@ -246,8 +251,8 @@ export interface RenderableConfig {
   readonly displayObject: PixiDisplayObject; // The PIXI object to render - use aliased import
   readonly zOrder?: number; // For sorting
   readonly visible?: boolean;
-  readonly alpha?: number;
-  readonly parent?: EntityId | "stage"; // ID of parent renderable or stage
+  readonly alpha?: number; // Added
+  readonly parent?: EntityId | "stage"; // ID of parent renderable or stage // Added
 }
 
 // Game system manager
@@ -292,4 +297,96 @@ export interface SystemConfig {
   readonly performanceMonitoring?: boolean;
 }
 
-export type { RegionData } from "./anatomy";
+// System-specific types for Korean martial arts combat
+
+// Combat system interfaces
+export interface CombatSystemConfig {
+  readonly damageMultiplier: number;
+  readonly criticalChance: number;
+  readonly blockEffectiveness: number;
+  readonly staminaDrainRate: number;
+}
+
+// Trigram system interfaces
+export interface TrigramSystemConfig {
+  readonly transitionSpeed: number;
+  readonly energyCost: number;
+  readonly effectivenessMatrix: Record<
+    TrigramStance,
+    Record<TrigramStance, number>
+  >;
+}
+
+// Vital point system interfaces
+export interface VitalPointSystemConfig {
+  readonly precisionRequired: number;
+  readonly damageMultipliers: Record<string, number>;
+  readonly effectDurations: Record<string, number>;
+}
+
+// AI system interfaces
+export interface AISystemConfig {
+  readonly difficulty: "easy" | "medium" | "hard" | "expert";
+  readonly reactionTime: number;
+  readonly aggressiveness: number;
+  readonly adaptability: number;
+}
+
+// Game state management
+export interface GameSystemState {
+  readonly combat: CombatSystemConfig;
+  readonly trigram: TrigramSystemConfig;
+  readonly vitalPoint: VitalPointSystemConfig;
+  readonly ai: AISystemConfig;
+}
+
+// System event types
+export interface SystemEvent {
+  readonly type: string;
+  readonly timestamp: number;
+  readonly source: string;
+  readonly data: Record<string, any>;
+}
+
+// Performance monitoring
+export interface SystemPerformance {
+  readonly fps: number;
+  readonly memoryUsage: number;
+  readonly renderTime: number;
+  readonly updateTime: number;
+}
+
+// Fix: Add system exports without duplicating imported types
+export interface CombatSystem {
+  readonly update: (
+    players: readonly [PlayerState, PlayerState],
+    deltaTime: number
+  ) => any;
+  readonly processTechnique: (
+    technique: KoreanTechnique,
+    attacker: PlayerState,
+    defender: PlayerState
+  ) => any;
+  readonly calculateDamage: (
+    technique: KoreanTechnique,
+    attacker: PlayerState,
+    defender: PlayerState
+  ) => number;
+}
+
+export interface TrigramSystem {
+  readonly getCurrentStance: (playerId: string) => TrigramStance;
+  readonly changeStance: (playerId: string, stance: TrigramStance) => boolean;
+  readonly getStanceEffectiveness: (
+    attacker: TrigramStance,
+    defender: TrigramStance
+  ) => number;
+}
+
+export interface VitalPointSystem {
+  readonly getVitalPoints: () => readonly VitalPoint[];
+  readonly checkHit: (position: Position, force: number) => VitalPointHitResult;
+  readonly calculateDamage: (vitalPoint: VitalPoint, force: number) => number;
+}
+
+export default GameSystemState;

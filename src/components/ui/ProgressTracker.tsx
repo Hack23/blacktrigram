@@ -1,123 +1,189 @@
-import React, { useCallback, useMemo } from "react";
-import type { Graphics as PixiGraphics } from "pixi.js";
+import React, { useMemo } from "react";
 import { KOREAN_COLORS } from "../../types/constants";
+import {
+  ResponsivePixiContainer,
+  ResponsivePixiPanel,
+} from "./base/ResponsivePixiComponents";
 
 export interface ProgressTrackerProps {
-  // Support both naming conventions for backward compatibility
-  readonly progress?: number;
-  readonly total?: number;
-  readonly value?: number;
-  readonly maxValue?: number;
-  readonly width?: number;
-  readonly height?: number;
-  readonly showPercentage?: boolean;
-  readonly showText?: boolean; // Alias for showPercentage
-  readonly showLabel?: boolean;
-  readonly label?: string;
+  readonly title: string;
+  readonly progress: number; // 0-1
+  readonly maxProgress: number;
+  readonly currentValue: number;
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+  readonly screenWidth: number;
+  readonly screenHeight: number;
   readonly color?: number;
-  readonly barColor?: number; // Alias for color
-  readonly backgroundColor?: number;
-  readonly borderColor?: number; // Added for compatibility
+  readonly showText?: boolean;
+  readonly korean?: string;
 }
 
-export function ProgressTracker({
-  // Use progress/value and total/maxValue with appropriate fallbacks
+export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
+  title,
   progress,
-  total,
-  value,
-  maxValue,
-  width = 200,
-  height = 30,
-  showPercentage = true,
-  showText, // Alias for showPercentage
-  showLabel = false,
-  label = "Progress",
-  color,
-  barColor, // Alias for color
-  backgroundColor = KOREAN_COLORS.GRAY_DARK,
-  borderColor = KOREAN_COLORS.WHITE,
-}: ProgressTrackerProps): React.ReactElement {
-  // Use progress/value and total/maxValue with appropriate fallbacks
-  const actualProgress = progress !== undefined ? progress : value ?? 0;
-  const actualTotal = total !== undefined ? total : maxValue ?? 100;
-  const actualColor =
-    color !== undefined ? color : barColor ?? KOREAN_COLORS.CYAN;
-  const actualShowPercentage =
-    showPercentage !== undefined ? showPercentage : showText;
+  maxProgress,
+  currentValue,
+  x,
+  y,
+  width,
+  height,
+  screenWidth,
+  screenHeight,
+  color = KOREAN_COLORS.ACCENT_GREEN,
+  showText = true,
+  korean,
+}) => {
+  const isMobile = screenWidth < 768;
 
-  const percentage = useMemo(() => {
-    return Math.min(
-      100,
-      Math.round((actualProgress / Math.max(actualTotal, 1)) * 100)
-    );
-  }, [actualProgress, actualTotal]);
+  const progressPercent = useMemo(() => {
+    return Math.max(0, Math.min(1, progress));
+  }, [progress]);
 
-  const drawProgressBar = useCallback(
-    (g: PixiGraphics) => {
-      g.clear();
-
-      // Draw background
-      g.setFillStyle({ color: backgroundColor, alpha: 0.6 });
-      g.roundRect(0, 0, width, height, 5);
-      g.fill();
-
-      // Draw progress fill
-      if (percentage > 0) {
-        const fillWidth = (width * percentage) / 100;
-        g.setFillStyle({ color: actualColor, alpha: 0.8 });
-        g.roundRect(0, 0, fillWidth, height, 5);
-        g.fill();
-      }
-
-      // Draw border
-      g.setStrokeStyle({ color: borderColor, width: 1, alpha: 0.8 });
-      g.roundRect(0, 0, width, height, 5);
-      g.stroke();
-    },
-    [width, height, percentage, actualColor, backgroundColor, borderColor]
-  );
+  const progressColor = useMemo(() => {
+    // Use the provided color as base, but adjust based on progress for better UX
+    if (progressPercent > 0.7) return KOREAN_COLORS.ACCENT_GREEN;
+    if (progressPercent > 0.3) return KOREAN_COLORS.ACCENT_GOLD;
+    if (progressPercent > 0) return KOREAN_COLORS.ACCENT_RED;
+    // Use the provided color as fallback when there's no progress
+    return color;
+  }, [progressPercent, color]);
 
   return (
-    <pixiContainer data-testid="progress-tracker-container pixi-container">
-      <pixiGraphics
-        draw={drawProgressBar}
-        data-testid="progress-tracker-bar pixi-graphics"
+    <ResponsivePixiContainer
+      x={x}
+      y={y}
+      screenWidth={screenWidth}
+      screenHeight={screenHeight}
+      data-testid={`progress-tracker-${title
+        .toLowerCase()
+        .replace(/\s+/g, "-")}`}
+    >
+      {/* Background Panel */}
+      <ResponsivePixiPanel
+        title=""
+        x={0}
+        y={0}
+        width={width}
+        height={height}
+        screenWidth={screenWidth}
+        screenHeight={screenHeight}
       />
 
-      {actualShowPercentage && (
+      {/* Title */}
+      {showText && (
         <pixiText
-          text={`${percentage}%`}
-          x={width / 2}
-          y={height / 2}
-          anchor={{ x: 0.5, y: 0.5 }}
+          text={korean ? `${korean} - ${title}` : title}
           style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: height * 0.5,
-            fill: KOREAN_COLORS.WHITE,
+            fontSize: isMobile ? 10 : 12,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
             fontWeight: "bold",
+            fontFamily: korean ? "Noto Sans KR" : undefined,
           }}
-          data-testid="progress-tracker-percentage-text pixi-text"
-          data-text={`${percentage}%`}
+          x={8}
+          y={8}
+          data-testid={`progress-title-${title}`}
         />
       )}
 
-      {showLabel && (
+      {/* Progress Bar Background */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          g.fill({
+            color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+            alpha: 0.8,
+          });
+          g.roundRect(
+            8,
+            showText ? (isMobile ? 25 : 30) : 8,
+            width - 16,
+            isMobile ? 12 : 16,
+            4
+          );
+          g.fill();
+
+          g.stroke({
+            width: 1,
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.6,
+          });
+          g.roundRect(
+            8,
+            showText ? (isMobile ? 25 : 30) : 8,
+            width - 16,
+            isMobile ? 12 : 16,
+            4
+          );
+          g.stroke();
+        }}
+        data-testid={`progress-bar-background-${title}`}
+      />
+
+      {/* Progress Bar Fill */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          const fillWidth = (width - 16) * progressPercent;
+          if (fillWidth > 0) {
+            g.fill({ color: progressColor, alpha: 0.9 });
+            g.roundRect(
+              8,
+              showText ? (isMobile ? 25 : 30) : 8,
+              fillWidth,
+              isMobile ? 12 : 16,
+              4
+            );
+            g.fill();
+          }
+        }}
+        data-testid={`progress-bar-fill-${title}`}
+      />
+
+      {/* Progress Text */}
+      {showText && (
         <pixiText
-          text={label}
-          x={width / 2}
-          y={-10}
-          anchor={{ x: 0.5, y: 1 }}
+          text={`${currentValue}/${maxProgress} (${Math.round(
+            progressPercent * 100
+          )}%)`}
           style={{
-            fontFamily: "Noto Sans KR",
-            fontSize: height * 0.4,
-            fill: KOREAN_COLORS.WHITE,
+            fontSize: isMobile ? 9 : 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            align: "center",
           }}
-          data-testid="progress-tracker-label-text"
-          data-text={label}
+          x={width / 2}
+          y={showText ? (isMobile ? 45 : 50) : 28}
+          anchor={0.5}
+          data-testid={`progress-text-${title}`}
         />
       )}
-    </pixiContainer>
+
+      {/* Glow effect for high progress */}
+      {progressPercent > 0.8 && (
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.stroke({
+              width: 2,
+              color: KOREAN_COLORS.ACCENT_GREEN,
+              alpha: 0.6,
+            });
+            g.roundRect(
+              6,
+              showText ? (isMobile ? 23 : 28) : 6,
+              width - 12,
+              isMobile ? 16 : 20,
+              6
+            );
+            g.stroke();
+          }}
+          data-testid={`progress-glow-${title}`}
+        />
+      )}
+    </ResponsivePixiContainer>
   );
-}
+};
 
 export default ProgressTracker;
