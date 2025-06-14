@@ -25,7 +25,9 @@ export interface TrainingFeedbackHook {
 export const useTrainingFeedback = (
   audio: AudioManagerInterface | null
 ): TrainingFeedbackHook => {
-  const [feedbackMessages, setFeedbackMessages] = useState<FeedbackMessage[]>([]);
+  const [feedbackMessages, setFeedbackMessages] = useState<FeedbackMessage[]>(
+    []
+  );
 
   const addFeedbackMessage = useCallback(
     (message: string, type: FeedbackType) => {
@@ -64,7 +66,6 @@ export const useTrainingFeedback = (
             break;
           default:
             audio.playSFX("menu_hover");
-            break;
         }
       }
     },
@@ -79,46 +80,26 @@ export const useTrainingFeedback = (
     return feedbackMessages.length > 0 ? feedbackMessages[0] : null;
   }, [feedbackMessages]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      setFeedbackMessages([]);
-    };
-  }, []);
+  const getFeedbackColor = useCallback(
+    (type: FeedbackType): number => {
+      if (!audio) return KOREAN_COLORS.TEXT_PRIMARY;
 
-  return {
-    feedbackMessages,
-    addFeedbackMessage,
-    clearFeedbackMessages,
-    getLatestFeedback,
-  };
-};
-
-export default useTrainingFeedback;
-            audio.playSFX("technique_success");
-            break;
-          case "warning":
-            audio.playSFX("warning_beep");
-            break;
-          case "error":
-            audio.playSFX("technique_miss");
-            break;
-          default:
-            audio.playSFX("menu_hover");
-        }
+      switch (type) {
+        case "success":
+          return KOREAN_COLORS.ACCENT_GREEN;
+        case "info":
+          return KOREAN_COLORS.PRIMARY_CYAN;
+        case "warning":
+          return KOREAN_COLORS.WARNING_YELLOW;
+        case "error":
+          return KOREAN_COLORS.ACCENT_RED;
+        default:
+          return KOREAN_COLORS.TEXT_PRIMARY;
       }
     },
     [audio]
   );
 
-  const clearFeedbackMessages = useCallback(() => {
-    setFeedbackMessages([]);
-  }, []);
-
-  const getLatestFeedback = useCallback(() => {
-    return feedbackMessages.length > 0 ? feedbackMessages[0] : null;
-  }, [feedbackMessages]);
-
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -130,23 +111,7 @@ export default useTrainingFeedback;
     feedbackMessages,
     addFeedbackMessage,
     clearFeedbackMessages,
-    getLatestFeedback,
-  };
-};
-
-export default useTrainingFeedback;
-  // Cleanup messages on unmount
-  useEffect(() => {
-    return () => {
-      setMessages([]);
-    };
-  }, []);
-
-  return {
-    feedbackMessages: messages,
-    addFeedbackMessage,
-    clearAllMessages,
-    getLatestMessage,
+    getFeedbackColor,
   };
 };
 
