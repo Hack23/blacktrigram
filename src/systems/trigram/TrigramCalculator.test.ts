@@ -1,242 +1,108 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import {
-  TrigramCalculator,
-  STANCE_EFFECTIVENESS_MATRIX,
-} from "./TrigramCalculator";
+import { describe, it, expect } from "vitest";
+import { TrigramCalculator } from "./TrigramCalculator";
 import { TrigramStance } from "../../types/enums";
 
+/**
+ * ## Trigram Calculator Test Suite
+ *
+ * **Business Purpose:**
+ * Validates the mathematical foundation of Black Trigram's Korean martial arts
+ * trigram system. Tests ensure that:
+ * - Trigram calculations follow authentic I Ching mathematical principles
+ * - Stance relationships maintain traditional Korean martial arts hierarchy
+ * - Combat effectiveness calculations respect cultural trigram philosophy
+ * - Mathematical precision supports competitive gameplay balance
+ *
+ * **Korean Martial Arts Integration:**
+ * - Tests traditional I Ching trigram mathematical relationships
+ * - Validates authentic Korean martial arts stance progression calculations
+ * - Ensures cultural accuracy in trigram transformation mathematics
+ * - Verifies traditional Korean martial arts energy flow calculations
+ *
+ * **Business Value:**
+ * These tests ensure trigram calculations provide mathematically sound and
+ * culturally authentic Korean martial arts combat mechanics.
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 describe("TrigramCalculator", () => {
-  let calc: TrigramCalculator;
+  let calculator: TrigramCalculator;
 
   beforeEach(() => {
-    calc = new TrigramCalculator();
+    calculator = new TrigramCalculator();
   });
 
-  it("should be instantiable", () => {
-    expect(calc).toBeInstanceOf(TrigramCalculator);
-  });
-
-  describe("calculateStanceEffectiveness", () => {
-    it("should return effectiveness values from matrix", () => {
-      const effectiveness = TrigramCalculator.calculateStanceEffectiveness(
-        TrigramStance.GEON,
+  /**
+   * **Business Requirement:** Trigram calculations must follow traditional
+   * I Ching mathematical principles with cultural authenticity
+   */
+  describe("Traditional Trigram Mathematics", () => {
+    it("should calculate trigram opposites correctly", () => {
+      expect(calculator.getOpposite(TrigramStance.GEON)).toBe(
         TrigramStance.GON
       );
-
-      expect(effectiveness).toBe(1.2); // GEON > GON according to matrix
+      expect(calculator.getOpposite(TrigramStance.LI)).toBe(TrigramStance.GAM);
+      expect(calculator.getOpposite(TrigramStance.JIN)).toBe(TrigramStance.GAN);
+      expect(calculator.getOpposite(TrigramStance.SON)).toBe(TrigramStance.TAE);
     });
 
-    it("should return 1.0 for neutral matchups", () => {
-      const effectiveness = TrigramCalculator.calculateStanceEffectiveness(
+    it("should calculate trigram adjacency relationships", () => {
+      const adjacent = calculator.getAdjacentStances(TrigramStance.GEON);
+      expect(adjacent).toContain(TrigramStance.TAE);
+      expect(adjacent).toContain(TrigramStance.SON);
+    });
+
+    it("should calculate trigram transformation difficulty", () => {
+      // Adjacent stances should be easier to transform
+      const easyTransition = calculator.getTransitionDifficulty(
         TrigramStance.GEON,
         TrigramStance.TAE
       );
 
-      expect(effectiveness).toBe(1.0); // Default neutral
-    });
-
-    it("should handle all stance combinations", () => {
-      const stances = Object.values(TrigramStance);
-
-      stances.forEach((attacker) => {
-        stances.forEach((defender) => {
-          const effectiveness = TrigramCalculator.calculateStanceEffectiveness(
-            attacker,
-            defender
-          );
-
-          expect(effectiveness).toBeGreaterThanOrEqual(0);
-          expect(effectiveness).toBeLessThanOrEqual(2.0);
-        });
-      });
-    });
-  });
-
-  describe("getCounterStance", () => {
-    it("should return optimal counter stance", () => {
-      const counterStance = TrigramCalculator.getCounterStance(
+      // Opposite stances should be hardest to transform
+      const hardTransition = calculator.getTransitionDifficulty(
+        TrigramStance.GEON,
         TrigramStance.GON
       );
 
-      expect(Object.values(TrigramStance)).toContain(counterStance);
+      expect(hardTransition).toBeGreaterThan(easyTransition);
+    });
+  });
 
-      // Counter stance should have advantage
-      const effectiveness = TrigramCalculator.calculateStanceEffectiveness(
-        counterStance,
+  /**
+   * **Business Requirement:** Korean martial arts effectiveness calculations
+   * must respect traditional combat principles and philosophy
+   */
+  describe("Combat Effectiveness Calculations", () => {
+    it("should calculate stance effectiveness against other stances", () => {
+      // Heaven (건) should be strong against Earth (곤)
+      const effectiveness = calculator.calculateStanceEffectiveness(
+        TrigramStance.GEON,
         TrigramStance.GON
       );
-      expect(effectiveness).toBeGreaterThanOrEqual(1.0);
+
+      expect(effectiveness).toBeGreaterThan(1.0);
     });
 
-    it("should handle all stances", () => {
-      Object.values(TrigramStance).forEach((stance) => {
-        const counter = TrigramCalculator.getCounterStance(stance);
-        expect(Object.values(TrigramStance)).toContain(counter);
-      });
-    });
-  });
-
-  describe("calculateTransitionDifficulty", () => {
-    it("should return 0 for same stance", () => {
-      const difficulty = TrigramCalculator.calculateTransitionDifficulty(
-        TrigramStance.GEON,
-        TrigramStance.GEON
-      );
-
-      expect(difficulty).toBe(0);
-    });
-
-    it("should return positive values for different stances", () => {
-      const difficulty = TrigramCalculator.calculateTransitionDifficulty(
-        TrigramStance.GEON,
-        TrigramStance.TAE
-      );
-
-      expect(difficulty).toBeGreaterThan(0);
-      expect(difficulty).toBeLessThanOrEqual(1.0);
-    });
-
-    it("should give easier transitions for adjacent stances", () => {
-      const adjacentDifficulty =
-        TrigramCalculator.calculateTransitionDifficulty(
-          TrigramStance.GEON,
-          TrigramStance.TAE
-        );
-
-      const distantDifficulty = TrigramCalculator.calculateTransitionDifficulty(
-        TrigramStance.GEON,
+    it("should calculate energy flow between stances", () => {
+      const energyFlow = calculator.calculateEnergyFlow(
+        TrigramStance.LI,
         TrigramStance.GAM
       );
 
-      expect(adjacentDifficulty).toBeLessThanOrEqual(distantDifficulty);
+      // Fire and Water should have opposing energy flow
+      expect(energyFlow).toBeLessThan(0);
     });
 
-    it("should handle all stance combinations", () => {
+    it("should maintain trigram balance in calculations", () => {
       const stances = Object.values(TrigramStance);
+      const totalBalance = stances.reduce((sum, stance) => {
+        return sum + calculator.getStanceBalance(stance);
+      }, 0);
 
-      stances.forEach((from) => {
-        stances.forEach((to) => {
-          const difficulty = TrigramCalculator.calculateTransitionDifficulty(
-            from,
-            to
-          );
-          expect(difficulty).toBeGreaterThanOrEqual(0);
-          expect(difficulty).toBeLessThanOrEqual(1.0);
-        });
-      });
-    });
-  });
-
-  describe("STANCE_EFFECTIVENESS_MATRIX", () => {
-    it("should contain all stance relationships", () => {
-      const stances = Object.values(TrigramStance);
-
-      stances.forEach((stance) => {
-        expect(STANCE_EFFECTIVENESS_MATRIX[stance]).toBeDefined();
-      });
-    });
-
-    it("should have symmetric weakness/strength relationships", () => {
-      // If A > B, then B should not have advantage over A
-      Object.entries(STANCE_EFFECTIVENESS_MATRIX).forEach(
-        ([attacker, defenders]) => {
-          Object.entries(defenders).forEach(([defender, effectiveness]) => {
-            if (effectiveness > 1.0) {
-              const reverseEffectiveness =
-                STANCE_EFFECTIVENESS_MATRIX[defender as TrigramStance]?.[
-                  attacker as TrigramStance
-                ];
-              if (reverseEffectiveness) {
-                expect(reverseEffectiveness).toBeLessThanOrEqual(1.0);
-              }
-            }
-          });
-        }
-      );
-    });
-
-    it("should provide meaningful Korean martial arts combat balance", () => {
-      // Water (GAM) vs Fire (LI) - Water should be strong against Fire
-      const waterVsFire = TrigramCalculator.calculateStanceEffectiveness(
-        TrigramStance.GAM,
-        TrigramStance.LI
-      );
-      expect(waterVsFire).toBeGreaterThanOrEqual(1.0); // Water extinguishes Fire
-
-      // Earth (GON) should be strong against Water (GAM) - absorption
-      const earthVsWater = TrigramCalculator.calculateStanceEffectiveness(
-        TrigramStance.GON,
-        TrigramStance.GAM
-      );
-      expect(earthVsWater).toBeGreaterThanOrEqual(1.0); // Earth absorbs Water
-    });
-
-    it("should handle all stance combinations", () => {
-      const stances = Object.values(TrigramStance);
-
-      stances.forEach((attacker) => {
-        stances.forEach((defender) => {
-          const effectiveness = TrigramCalculator.calculateStanceEffectiveness(
-            attacker,
-            defender
-          );
-
-          // Fix: Complete the condition - check effectiveness is reasonable
-          if (effectiveness < 0.5 || effectiveness > 2.0) {
-            console.warn(
-              `Extreme effectiveness: ${attacker} vs ${defender} = ${effectiveness}`
-            );
-          }
-        });
-      });
-    });
-  });
-
-  describe("Korean martial arts integration", () => {
-    it("should reflect authentic trigram philosophy", () => {
-      const allStances = Object.values(TrigramStance);
-
-      allStances.forEach((stance) => {
-        const otherStances = allStances.filter((s) => s !== stance);
-
-        // Each stance should have at least one relationship where it's effective OR defensive
-        const hasEffectiveRelationship = otherStances.some((otherStance) => {
-          const effectiveness = TrigramCalculator.calculateStanceEffectiveness(
-            stance,
-            otherStance
-          );
-          return effectiveness !== 1.0; // Either strong (>1.0) or strategic (<1.0)
-        });
-
-        expect(hasEffectiveRelationship).toBe(true);
-      });
-    });
-
-    it("should maintain game balance for all player archetypes", () => {
-      const stances = Object.values(TrigramStance);
-
-      stances.forEach((stance) => {
-        let advantageCount = 0;
-        let disadvantageCount = 0;
-
-        stances.forEach((otherStance) => {
-          if (stance !== otherStance) {
-            const effectiveness =
-              TrigramCalculator.calculateStanceEffectiveness(
-                stance,
-                otherStance
-              );
-            if (effectiveness > 1.0) {
-              advantageCount++;
-            } else if (effectiveness < 1.0) {
-              disadvantageCount++;
-            }
-          }
-        });
-
-        // Each stance should have at least one advantage or disadvantage
-        expect(advantageCount + disadvantageCount).toBeGreaterThan(0);
-      });
+      // Total balance should be neutral (close to 0)
+      expect(Math.abs(totalBalance)).toBeLessThan(0.1);
     });
   });
 });

@@ -1,9 +1,10 @@
 /**
- * Training mode components for Korean martial arts practice
+ * Training components exports for Black Trigram Korean martial arts game
  */
 
 // Main training screen
-export { TrainingScreen } from "./TrainingScreen";
-
-// Training-specific utilities and types
+export { default as TrainingScreen } from "./TrainingScreen";
 export type { TrainingScreenProps } from "./TrainingScreen";
+
+// Re-export for convenience
+export { TrainingScreen as default } from "./TrainingScreen";

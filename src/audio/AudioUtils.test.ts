@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import * as AudioUtils from "./AudioUtils";
+import { AudioUtils } from "./AudioUtils";
 import type { AudioFormat } from "../types/audio";
 
 // Enhanced mock Audio constructor for testing
@@ -22,6 +22,16 @@ const createMockAudio = (canPlayResponse: string = "probably") => {
   };
 };
 
+/**
+ * ## Audio Utilities Test Suite
+ *
+ * **Business Purpose:**
+ * Validates audio utility functions that support Korean martial arts
+ * immersive audio experience and cultural sound design.
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 describe("AudioUtils", () => {
   beforeEach(() => {
     // Reset mocks before each test
@@ -161,5 +171,24 @@ describe("AudioUtils", () => {
       const metadata = AudioUtils.getBestFormatMetadata(formats);
       expect(metadata.format).toBe("audio/mp3"); // mp3 should be preferred
     });
+  });
+
+  it("should validate audio file formats", () => {
+    expect(AudioUtils.isValidAudioFormat("test.mp3")).toBe(true);
+    expect(AudioUtils.isValidAudioFormat("test.webm")).toBe(true);
+    expect(AudioUtils.isValidAudioFormat("test.txt")).toBe(false);
+  });
+
+  it("should generate Korean martial arts sound variations", () => {
+    const variations = AudioUtils.generateSoundVariations("technique_hit");
+    expect(variations.length).toBeGreaterThan(1);
+    expect(variations[0]).toMatch(/technique_hit_\d+/);
+  });
+
+  it("should calculate audio fade curves", () => {
+    const curve = AudioUtils.calculateFadeCurve(1000, "exponential");
+    expect(curve.length).toBeGreaterThan(0);
+    expect(curve[0]).toBe(1.0);
+    expect(curve[curve.length - 1]).toBe(0.0);
   });
 });

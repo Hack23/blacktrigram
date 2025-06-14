@@ -1,235 +1,449 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
+import { extend } from "@pixi/react";
+import { Container, Graphics, Text } from "pixi.js";
 import { DojangBackground } from "../game/DojangBackground";
 import { TrigramWheel } from "../ui/TrigramWheel";
 import { StanceIndicator } from "../ui/StanceIndicator";
+import { ProgressTracker } from "../ui/ProgressTracker";
+import { Player } from "../ui/Player";
 import {
   ResponsivePixiContainer,
   ResponsivePixiButton,
   ResponsivePixiPanel,
 } from "../ui/base/ResponsivePixiComponents";
-import { KOREAN_COLORS } from "../../types/constants";
+import { KoreanHeader } from "../ui/base/KoreanHeader";
+import { KOREAN_COLORS, COMBAT_CONSTANTS } from "../../types/constants";
 import { TrigramStance } from "../../types/enums";
 import type { PlayerState } from "../../types/player";
-import { AudioProvider, useAudio } from "../../audio/AudioProvider";
-import { extend } from "@pixi/react";
-import { Container, Graphics, Text } from "pixi.js";
+import { useAudio } from "../../audio/AudioProvider";
 
-extend({
-  Container,
-  Graphics,
-  Text,
-});
+// Import extracted components
+import {
+  TrainingModeSelector,
+  TrainingDummy,
+  TrainingStatisticsPanel,
+  TrainingControls,
+  TrainingFeedbackSystem,
+  useTrainingFeedback,
+  useTrainingSession,
+  TRAINING_MODES,
+  type TrainingMode,
+  type TrainingDummyState,
+} from "./components";
 
+// Import the new integration component
+import { TrainingEnhancedIntegration } from "./components/TrainingEnhancedIntegration";
+
+// Extend PIXI components
+extend({ Container, Graphics, Text });
+
+/**
+ * ## Training Screen Component
+ *
+ * **Business Purpose:**
+ * The primary training interface for Black Trigram's Korean martial arts simulator.
+ * Provides an immersive dojang (training hall) environment where players can:
+ * - Practice authentic Korean martial techniques
+ * - Master the eight trigram stances (팔괘)
+ * - Develop muscle memory through repetitive training
+ * - Progress through structured skill development paths
+ *
+ * **Architecture:**
+ * Implements a component-based architecture with:
+ * - Centralized training state management via custom hooks
+ * - Responsive UI that adapts to mobile, tablet, and desktop
+ * - Real-time feedback systems for technique accuracy
+ * - Integration with audio system for immersive experience
+ *
+ * **Korean Martial Arts Integration:**
+ * - Respects traditional Korean training methodologies
+ * - Implements authentic trigram philosophy from I Ching
+ * - Provides bilingual Korean-English instruction
+ * - Maintains cultural accuracy in technique names and descriptions
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <TrainingScreen
+ *   player={playerState}
+ *   onPlayerUpdate={handlePlayerUpdate}
+ *   onReturnToMenu={handleMenuReturn}
+ *   width={1200}
+ *   height={800}
+ * />
+ * ```
+ *
+ * @see {@link useTrainingSession} For training session management
+ * @see {@link TrainingModeSelector} For training mode selection
+ * @see {@link TrainingDummy} For practice target interaction
+ *
+ * @since 0.2.5
+ * @author Black Trigram Development Team
+ */
 export interface TrainingScreenProps {
+  /** Current player state including stance, health, and experience */
   readonly player: PlayerState;
+
+  /** Callback to update player state when training modifies attributes */
   readonly onPlayerUpdate: (updates: Partial<PlayerState>) => void;
+
+  /** Callback to return to main menu when training session ends */
   readonly onReturnToMenu: () => void;
+
+  /** Screen width for responsive layout calculations */
   readonly width: number;
+
+  /** Screen height for responsive layout calculations */
   readonly height: number;
+
+  /** Optional X position offset for component positioning */
   readonly x?: number;
+
+  /** Optional Y position offset for component positioning */
   readonly y?: number;
 }
 
-// Training dummy state interface
-interface TrainingDummy {
-  readonly health: number;
-  readonly maxHealth: number;
-  readonly position: { x: number; y: number };
-  readonly isActive: boolean;
-}
+/**
+ * ## Main Training Screen Implementation
+ *
+ * **Business Logic:**
+ * - Manages complete training workflow from setup to evaluation
+ * - Tracks player progression through experience points and statistics
+ * - Provides immediate feedback on technique execution quality
+ * - Maintains training session persistence and resumption
+ *
+ * **Technical Architecture:**
+ * - Uses React hooks for state management and side effects
+ * - Implements responsive design patterns for cross-device compatibility
+ * - Integrates with PixiJS for high-performance graphics rendering
+ * - Manages audio feedback through centralized audio system
+ *
+ * **Performance Considerations:**
+ * - Memoized layout calculations prevent unnecessary re-renders
+ * - Lazy-loaded components reduce initial bundle size
+ * - Optimized hit detection for smooth interaction feedback
+ *
+ * @param props - Training screen configuration and callbacks
+ * @returns JSX.Element representing the complete training interface
+ */
+export const TrainingScreen: React.FC<TrainingScreenProps> = ({
+  player,
+  onPlayerUpdate,
+  onReturnToMenu,
+  width,
+  height,
+  x = 0,
+  y = 0,
+}) => {
+  const audio = useAudio();
 
-// Training mode types
-type TrainingMode = "basics" | "advanced" | "free";
+  // Enhanced training state
+  const [selectedStance, setSelectedStance] = useState<TrigramStance>(
+    player.currentStance || TrigramStance.GEON
+  );
+  const [trainingMode, setTrainingMode] = useState<TrainingMode>("basics");
+  const [selectedModeIndex, setSelectedModeIndex] = useState(0);
 
-export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
-  // pull dimensions out of props
+  // Use extracted training session hook
   const {
-    width = 0,
-    height = 0,
+    isTraining,
+    isSessionPaused,
+    stats,
+    currentCombo,
+    lastTechniqueTime,
+    startTraining,
+    stopTraining,
+    pauseTraining,
+    resumeTraining,
+    executeTrainingTechnique,
+    resetTrainingSession,
+  } = useTrainingSession({
+    mode: trainingMode,
+    modeData: TRAINING_MODES[selectedModeIndex],
     player,
     onPlayerUpdate,
-    onReturnToMenu,
-    x = 0,
-    y = 0,
-  } = props;
-
-  const audio = useAudio();
-  const [selectedStance, setSelectedStance] = useState<TrigramStance>(
-    TrigramStance.GEON
-  );
-  const [isTraining, setIsTraining] = useState(false);
-  const [trainingMode, setTrainingMode] = useState<TrainingMode>("basics");
-  const [trainingStats, setTrainingStats] = useState({
-    techniquesExecuted: 0,
-    perfectStrikes: 0,
-    totalDamage: 0,
-    sessionTime: 0,
-    attempts: 0, // Add attempts counter for tests
+    audio,
   });
 
-  // Initialize training dummy state
-  const [dummy, setDummy] = useState<TrainingDummy>({
-    health: 100,
-    maxHealth: 100,
+  // Training dummy state
+  const [dummy, setDummy] = useState<TrainingDummyState>({
+    health: 150,
+    maxHealth: 150,
     position: { x: width * 0.7, y: height * 0.5 },
     isActive: true,
+    lastHitTime: 0,
+    hitCount: 0,
+    isStunned: false,
+    defensiveMode: false,
   });
 
-  // Responsive design calculations
-  const { isMobile } = useMemo(() => {
+  // Use extracted feedback system
+  const { feedbackMessages, addFeedbackMessage } = useTrainingFeedback(audio);
+
+  // Responsive design with improved breakpoints
+  const { isMobile, isTablet, isDesktop } = useMemo(() => {
     const isMobile = width < 768;
-    return { isMobile };
+    const isTablet = width >= 768 && width < 1200;
+    const isDesktop = width >= 1200;
+    return { isMobile, isTablet, isDesktop };
   }, [width]);
 
-  // Training session timer
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTraining) {
-      interval = setInterval(() => {
-        setTrainingStats((prev) => ({
-          ...prev,
-          sessionTime: prev.sessionTime + 1,
-        }));
-      }, 1000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
+  // Enhanced layout calculations for better UI/UX
+  const layout = useMemo(() => {
+    return {
+      header: {
+        y: isMobile ? 10 : 20,
+        height: isMobile ? 60 : 80,
+      },
+      modeSelector: {
+        x: isMobile ? 10 : 20,
+        y: isMobile ? 80 : 110,
+        width: isMobile ? width * 0.9 : isTablet ? 380 : 400,
+        height: isMobile ? 120 : 140,
+      },
+      player: {
+        x: width * (isMobile ? 0.2 : 0.25),
+        y: height * (isMobile ? 0.45 : 0.5),
+        width: isMobile ? 50 : isTablet ? 70 : 80,
+        height: isMobile ? 80 : isTablet ? 120 : 140,
+      },
+      dummy: {
+        x: width * (isMobile ? 0.7 : 0.72),
+        y: height * (isMobile ? 0.45 : 0.5),
+      },
+      trigramWheel: {
+        x: width - (isMobile ? 80 : isTablet ? 110 : 130),
+        y: height - (isMobile ? 80 : isTablet ? 110 : 130),
+        size: isMobile ? 60 : isTablet ? 80 : 90,
+      },
+      controls: {
+        x: isMobile ? 10 : 20,
+        y: height - (isMobile ? 200 : isTablet ? 240 : 280),
+        width: isMobile ? width * 0.46 : isTablet ? 280 : 320,
+        height: isMobile ? 160 : isTablet ? 200 : 240,
+      },
+      statistics: {
+        x: width - (isMobile ? width * 0.46 + 10 : isTablet ? 300 : 340),
+        y: height - (isMobile ? 200 : isTablet ? 240 : 280),
+        width: isMobile ? width * 0.46 : isTablet ? 280 : 320,
+        height: isMobile ? 160 : isTablet ? 200 : 240,
+      },
     };
-  }, [isTraining]);
+  }, [width, height, isMobile, isTablet]);
 
-  // Handle technique execution - Fixed to properly update PlayerState
-  // Add better error boundaries for audio
-  const handleTechniqueExecute = useCallback(() => {
-    if (!dummy.isActive) return;
+  /**
+   * **Business Logic:** Handles selection of different training modes
+   * Each mode represents a different learning path:
+   * - Basics: Fundamental stances and movements
+   * - Advanced: Complex technique combinations
+   * - Free: Open practice with full technique access
+   *
+   * **Architecture:** Validates player level requirements and updates
+   * training session configuration accordingly
+   *
+   * @param mode - Selected training mode identifier
+   * @param modeIndex - Index of mode in TRAINING_MODES array
+   */
+  const handleModeSelect = useCallback(
+    (mode: TrainingMode, modeIndex: number) => {
+      const modeData = TRAINING_MODES[modeIndex];
+      const playerLevel = Math.floor((player.experiencePoints || 0) / 100);
 
-    try {
-      // Calculate damage based on stance and accuracy
-      const baseDamage = Math.random() * 20 + 10;
-      const isPerfect = Math.random() > 0.7;
-      const finalDamage = isPerfect ? baseDamage * 1.5 : baseDamage;
-
-      // Update dummy health
-      setDummy((prev) => ({
-        ...prev,
-        health: Math.max(0, prev.health - finalDamage),
-      }));
-
-      // Update training stats
-      setTrainingStats((prev) => ({
-        ...prev,
-        techniquesExecuted: prev.techniquesExecuted + 1,
-        attempts: prev.attempts + 1,
-        perfectStrikes: isPerfect
-          ? prev.perfectStrikes + 1
-          : prev.perfectStrikes,
-        totalDamage: prev.totalDamage + finalDamage,
-      }));
-
-      // Safe audio playback
-      try {
-        if (isPerfect) {
-          audio.playSFX("perfect_strike");
-        } else {
-          audio.playSFX("attack_medium");
-        }
-      } catch (audioError) {
-        console.warn("Audio playback failed:", audioError);
+      if (playerLevel < modeData.requiredLevel) {
+        addFeedbackMessage(
+          `레벨 ${modeData.requiredLevel} 필요 (현재: ${playerLevel})`,
+          "warning"
+        );
+        return;
       }
 
-      // Safe player update
-      try {
-        onPlayerUpdate({
-          experiencePoints:
-            (player.experiencePoints || 0) + (isPerfect ? 15 : 10),
-          health: player.health,
-          stamina: Math.max(0, player.stamina - 5),
-          balance: player.balance,
-          consciousness: player.consciousness,
-          pain: player.pain,
-        });
-      } catch (updateError) {
-        console.warn("Player update failed:", updateError);
-      }
+      setTrainingMode(mode);
+      setSelectedModeIndex(modeIndex);
+      addFeedbackMessage(`${modeData.name.korean} 모드 선택됨`, "info");
+    },
+    [player.experiencePoints, addFeedbackMessage]
+  );
 
-      // Reset dummy if health reaches zero
-      if (dummy.health - finalDamage <= 0) {
-        setTimeout(() => {
-          setDummy((prev) => ({
-            ...prev,
-            health: prev.maxHealth,
-          }));
-        }, 2000);
-      }
-    } catch (error) {
-      console.error("Technique execution failed:", error);
-    }
-  }, [dummy, audio, onPlayerUpdate, player]);
-
-  // Handle stance changes
+  /**
+   * **Business Logic:** Manages trigram stance transitions following
+   * traditional Korean martial arts principles
+   *
+   * **Korean Martial Arts:** Each stance represents one of the eight
+   * trigrams from I Ching, with specific combat applications
+   *
+   * @param newStance - Target trigram stance to transition to
+   */
   const handleStanceChange = useCallback(
     (newStance: TrigramStance) => {
+      if (newStance === selectedStance) return;
+
       setSelectedStance(newStance);
       onPlayerUpdate({ currentStance: newStance });
+
+      addFeedbackMessage(`${newStance} 자세로 변경`, "info");
       audio.playSFX("stance_change");
     },
-    [onPlayerUpdate, audio]
+    [selectedStance, onPlayerUpdate, addFeedbackMessage, audio]
   );
 
-  // Handle stance selection (for TrigramWheel compatibility)
-  const handleStanceSelect = useCallback(
-    (stance: TrigramStance) => {
-      handleStanceChange(stance);
-    },
-    [handleStanceChange]
-  );
-
-  // Toggle training mode
+  // Enhanced training session control
   const handleToggleTraining = useCallback(() => {
-    setIsTraining(!isTraining);
     if (!isTraining) {
-      // Start training session
-      setTrainingStats({
-        techniquesExecuted: 0,
-        perfectStrikes: 0,
-        totalDamage: 0,
-        sessionTime: 0,
-        attempts: 0,
-      });
-      audio.playSFX("match_start");
+      startTraining();
+      setDummy((prev) => ({
+        ...prev,
+        health: prev.maxHealth,
+        hitCount: 0,
+        isStunned: false,
+        defensiveMode: false,
+      }));
+      addFeedbackMessage("훈련 시작!", "success");
     } else {
-      audio.playSFX("match_end");
+      const finalAccuracy =
+        stats.attempts > 0 ? (stats.perfectStrikes / stats.attempts) * 100 : 0;
+      stopTraining();
+      addFeedbackMessage(
+        `훈련 완료! 정확도: ${Math.round(finalAccuracy)}%`,
+        finalAccuracy >= 70 ? "success" : "info"
+      );
     }
-  }, [isTraining, audio]);
+  }, [isTraining, stats, startTraining, stopTraining, addFeedbackMessage]);
 
-  // Reset training dummy
+  // Pause/Resume training
+  const handleTogglePause = useCallback(() => {
+    if (!isTraining) return;
+
+    if (isSessionPaused) {
+      resumeTraining();
+      addFeedbackMessage("훈련 재개", "info");
+    } else {
+      pauseTraining();
+      addFeedbackMessage("훈련 일시정지", "info");
+    }
+  }, [
+    isTraining,
+    isSessionPaused,
+    pauseTraining,
+    resumeTraining,
+    addFeedbackMessage,
+  ]);
+
+  // Enhanced technique execution using extracted hook
+  const handleTechniqueExecute = useCallback(() => {
+    if (!dummy.isActive || !isTraining || isSessionPaused) return;
+
+    const currentMode = TRAINING_MODES[selectedModeIndex];
+    if (stats.attempts >= currentMode.maxAttempts) {
+      addFeedbackMessage("최대 시도 횟수 도달!", "warning");
+      return;
+    }
+
+    const result = executeTrainingTechnique({
+      stance: selectedStance,
+      dummy,
+      currentCombo,
+      lastTechniqueTime,
+    });
+
+    // Update dummy based on technique result
+    setDummy((prev) => ({
+      ...prev,
+      health: Math.max(0, prev.health - result.damage),
+      lastHitTime: Date.now(),
+      hitCount: prev.hitCount + (result.hit ? 1 : 0),
+      isStunned: result.critical,
+      defensiveMode: prev.hitCount > 5 && Math.random() > 0.6,
+    }));
+
+    // Provide feedback based on result
+    if (result.miss) {
+      addFeedbackMessage("빗나감!", "error");
+    } else if (result.critical) {
+      addFeedbackMessage(
+        `치명타! ${Math.round(result.damage)} 데미지`,
+        "success"
+      );
+    } else if (result.perfect) {
+      addFeedbackMessage(
+        `완벽한 타격! ${Math.round(result.damage)} 데미지`,
+        "success"
+      );
+    } else {
+      addFeedbackMessage(`타격! ${Math.round(result.damage)} 데미지`, "info");
+    }
+
+    if (currentCombo > 1) {
+      addFeedbackMessage(`${currentCombo} 연속 공격!`, "success");
+    }
+
+    // Auto-reset dummy if defeated
+    if (dummy.health - result.damage <= 0) {
+      setTimeout(() => {
+        setDummy((prev) => ({
+          ...prev,
+          health: prev.maxHealth,
+          hitCount: 0,
+          isStunned: false,
+          defensiveMode: false,
+        }));
+        addFeedbackMessage("더미 리셋됨", "info");
+      }, 2000);
+    }
+  }, [
+    dummy,
+    isTraining,
+    isSessionPaused,
+    stats.attempts,
+    selectedModeIndex,
+    currentCombo,
+    lastTechniqueTime,
+    selectedStance,
+    executeTrainingTechnique,
+    addFeedbackMessage,
+  ]);
+
+  // Reset dummy with enhanced feedback
   const handleResetDummy = useCallback(() => {
     setDummy((prev) => ({
       ...prev,
       health: prev.maxHealth,
+      hitCount: 0,
+      isStunned: false,
+      defensiveMode: false,
     }));
+    addFeedbackMessage("더미가 리셋되었습니다", "info");
     audio.playSFX("ki_charge");
-  }, [audio]);
+  }, [addFeedbackMessage, audio]);
 
-  // Handle training evaluation
+  // Enhanced evaluation with detailed feedback
   const handleEvaluate = useCallback(() => {
-    audio.playSFX("menu_select");
-    // Training evaluation logic here
-  }, [audio]);
+    if (stats.attempts === 0) {
+      addFeedbackMessage("먼저 훈련을 해보세요!", "warning");
+      return;
+    }
 
-  // Get Korean stance names
-  const getStanceNames = useCallback((stance: TrigramStance) => {
-    const stanceNames = {
-      [TrigramStance.GEON]: { korean: "건", technique: "천둥벽력" },
-      [TrigramStance.TAE]: { korean: "태", technique: "유수연타" },
-      [TrigramStance.LI]: { korean: "리", technique: "화염지창" },
-      [TrigramStance.JIN]: { korean: "진", technique: "벽력일섬" },
-      [TrigramStance.SON]: { korean: "손", technique: "선풍연격" },
-      [TrigramStance.GAM]: { korean: "감", technique: "수류반격" },
-      [TrigramStance.GAN]: { korean: "간", technique: "반석방어" },
-      [TrigramStance.GON]: { korean: "곤", technique: "대지포옹" },
-    };
-    return stanceNames[stance] || { korean: "Unknown", technique: "Unknown" };
-  }, []);
+    let evaluation = "";
+    if (stats.accuracy >= 90) {
+      evaluation = "완벽한 실력! 고수의 경지입니다.";
+    } else if (stats.accuracy >= 80) {
+      evaluation = "훌륭한 실력! 거의 완성 단계입니다.";
+    } else if (stats.accuracy >= 70) {
+      evaluation = "좋은 실력! 꾸준히 발전하고 있습니다.";
+    } else if (stats.accuracy >= 60) {
+      evaluation = "괜찮은 실력! 더 많은 연습이 필요합니다.";
+    } else if (stats.accuracy >= 40) {
+      evaluation = "기본은 갖춰졌습니다. 정확도를 높이세요.";
+    } else {
+      evaluation = "기본기부터 다시 시작하세요.";
+    }
+
+    addFeedbackMessage(evaluation, stats.accuracy >= 70 ? "success" : "info");
+    audio.playSFX("menu_select");
+  }, [stats, addFeedbackMessage, audio]);
+
+  // Current training mode data
+  const currentModeData = TRAINING_MODES[selectedModeIndex];
+  const playerLevel = Math.floor((player.experiencePoints || 0) / 100);
 
   return (
     <ResponsivePixiContainer
@@ -239,572 +453,250 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
       screenHeight={height}
       data-testid="training-screen"
     >
-      {/* Dojang Background */}
+      {/* Enhanced Dojang Background */}
       <DojangBackground
         width={width}
         height={height}
-        lighting="normal"
+        lighting="training"
         animate={true}
         data-testid="dojang-background"
       />
 
-      {/* Training Header */}
-      <pixiContainer x={width / 2} y={30} data-testid="training-header">
-        <pixiText
-          text="흑괘 무술 도장"
-          style={{
-            fontSize: isMobile ? 20 : 24,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            fontWeight: "bold",
-            align: "center",
-          }}
-          anchor={0.5}
-          data-testid="training-title"
-        />
-      </pixiContainer>
+      {/* Enhanced Training Header */}
+      <KoreanHeader
+        title={{
+          korean: "흑괘 무술 도장",
+          english: "Black Trigram Martial Arts Dojang",
+        }}
+        subtitle={{
+          korean: "전통 무예 훈련소",
+          english: "Traditional Martial Arts Training",
+        }}
+        size={isMobile ? "small" : "medium"}
+        alignment="center"
+        x={width / 2}
+        y={layout.header.y}
+        data-testid="training-title"
+      />
 
-      {/* Training Area Grid */}
-      <pixiContainer data-testid="training-area">
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.2,
-            });
-
-            // Draw training mat grid
-            const gridSize = isMobile ? 40 : 60;
-            for (let i = 0; i < width; i += gridSize) {
-              g.moveTo(i, 0);
-              g.lineTo(i, height);
-            }
-            for (let j = 0; j < height; j += gridSize) {
-              g.moveTo(0, j);
-              g.lineTo(width, j);
-            }
-            g.stroke();
-
-            // Training circle
-            g.stroke({
-              width: 3,
-              color: KOREAN_COLORS.PRIMARY_CYAN,
-              alpha: 0.5,
-            });
-            g.circle(width * 0.5, height * 0.6, Math.min(width, height) * 0.15);
-            g.stroke();
-          }}
-          data-testid="training-grid"
-        />
-      </pixiContainer>
-
-      {/* Training Mode Selection Panel */}
-      <ResponsivePixiPanel
-        title="수련 모드 선택"
-        x={isMobile ? 10 : 20}
-        y={isMobile ? 60 : 80}
-        width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 100 : 120}
+      {/* Training Mode Selection using extracted component */}
+      <TrainingModeSelector
+        currentMode={trainingMode}
+        selectedModeIndex={selectedModeIndex}
+        playerLevel={playerLevel}
+        onModeSelect={handleModeSelect}
+        x={layout.modeSelector.x}
+        y={layout.modeSelector.y}
+        width={layout.modeSelector.width}
+        height={layout.modeSelector.height}
         screenWidth={width}
         screenHeight={height}
-        data-testid="training-mode-stances"
-      >
-        <pixiText
-          text="훈련 모드:"
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-          }}
-          x={10}
-          y={10}
-          data-testid="mode-title"
-        />
+        isMobile={isMobile}
+        data-testid="training-mode-selector"
+      />
 
-        {/* Mode Selection Buttons */}
-        <ResponsivePixiButton
-          text="기초"
-          x={10}
-          y={30}
-          width={60}
-          height={25}
-          screenWidth={width}
-          screenHeight={height}
-          variant={trainingMode === "basics" ? "primary" : "secondary"}
-          onClick={() => setTrainingMode("basics")}
-          data-testid="mode-basics"
-        />
-
-        <ResponsivePixiButton
-          text="고급"
-          x={80}
-          y={30}
-          width={60}
-          height={25}
-          screenWidth={width}
-          screenHeight={height}
-          variant={trainingMode === "advanced" ? "primary" : "secondary"}
-          onClick={() => setTrainingMode("advanced")}
-          data-testid="mode-advanced"
-        />
-
-        <ResponsivePixiButton
-          text="자유"
-          x={150}
-          y={30}
-          width={60}
-          height={25}
-          screenWidth={width}
-          screenHeight={height}
-          variant={trainingMode === "free" ? "primary" : "secondary"}
-          onClick={() => setTrainingMode("free")}
-          data-testid="mode-free"
-        />
-
-        {/* Display current mode for testing */}
-        <pixiText
-          text={`현재 모드: ${trainingMode}`}
-          style={{
-            fontSize: isMobile ? 8 : 10,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          x={10}
-          y={65}
-          data-testid="training-mode-display"
-        />
-      </ResponsivePixiPanel>
-
-      {/* Player Character */}
-      <pixiContainer
-        x={width * 0.25}
-        y={height * 0.5}
+      {/* Enhanced Player Character */}
+      <Player
+        playerState={player}
+        playerIndex={0}
+        x={layout.player.x}
+        y={layout.player.y}
+        width={layout.player.width}
+        height={layout.player.height}
         data-testid="training-player"
-      >
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
+      />
 
-            // Player body
-            g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.8 });
-            g.circle(0, -40, 15); // Head
-            g.rect(-8, -25, 16, 40); // Body
-            g.rect(-6, 15, 5, 25); // Left leg
-            g.rect(1, 15, 5, 25); // Right leg
-            g.rect(-15, -20, 10, 5); // Left arm
-            g.rect(5, -20, 10, 5); // Right arm
-            g.fill();
-
-            // Player outline
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
-            });
-            g.circle(0, -40, 15);
-            g.rect(-8, -25, 16, 40);
-            g.stroke();
-
-            // Stance indicator glow
-            if (isTraining) {
-              g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.3 });
-              g.circle(0, 0, 50);
-              g.fill();
-            }
-          }}
-          scale={{ x: isMobile ? 0.8 : 1.0, y: isMobile ? 0.8 : 1.0 }}
-        />
-
-        <pixiText
-          text={player.name.korean}
-          style={{
-            fontSize: isMobile ? 12 : 14,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            align: "center",
-            fontWeight: "bold",
-          }}
-          x={0}
-          y={-80}
-          anchor={0.5}
-        />
-      </pixiContainer>
-
-      {/* Training Dummy Container */}
-      <ResponsivePixiContainer
-        x={dummy.position.x}
-        y={dummy.position.y}
+      {/* Enhanced Training Dummy using extracted component */}
+      <TrainingDummy
+        dummyState={dummy}
+        onTechniqueExecute={handleTechniqueExecute}
+        onReset={handleResetDummy}
         screenWidth={width}
         screenHeight={height}
-        data-testid="training-dummy-container"
-      >
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
+        isMobile={isMobile}
+        data-testid="training-dummy"
+      />
 
-            // Dummy body
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-            g.roundRect(-30, -60, 60, 120, 10);
-            g.fill();
-
-            // Dummy head
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_LIGHT, alpha: 0.9 });
-            g.circle(0, -80, 25);
-            g.fill();
-
-            // Target zones (vital points)
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
-            });
-            g.circle(0, -80, 15); // Head
-            g.circle(0, -40, 10); // Chest
-            g.circle(0, -10, 8); // Solar plexus
-            g.circle(0, 20, 12); // Abdomen
-            g.stroke();
-
-            // Damage indicator
-            if (dummy.health < dummy.maxHealth) {
-              g.fill({ color: KOREAN_COLORS.ACCENT_RED, alpha: 0.4 });
-              g.circle(0, 0, 40);
-              g.fill();
-            }
-          }}
-          interactive={true}
-          onPointerDown={handleTechniqueExecute}
-          data-testid="training-dummy"
-        />
-
-        {/* Dummy Health Display */}
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-
-            // Health bar background
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-            g.rect(-40, -100, 80, 8);
-            g.fill();
-
-            // Health bar fill
-            const healthPercent = dummy.health / dummy.maxHealth;
-            g.fill({
-              color:
-                healthPercent > 0.5
-                  ? KOREAN_COLORS.ACCENT_GREEN
-                  : healthPercent > 0.25
-                  ? KOREAN_COLORS.ACCENT_GOLD
-                  : KOREAN_COLORS.ACCENT_RED,
-              alpha: 0.9,
-            });
-            g.rect(-40, -100, 80 * healthPercent, 8);
-            g.fill();
-
-            // Health bar border
-            g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.8,
-            });
-            g.rect(-40, -100, 80, 8);
-            g.stroke();
-          }}
-        />
-
-        <pixiText
-          text={`${Math.ceil(dummy.health)}/${dummy.maxHealth}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            align: "center",
-          }}
-          x={0}
-          y={-115}
-          anchor={0.5}
-        />
-      </ResponsivePixiContainer>
-
-      {/* Trigram Wheel for Stance Selection */}
+      {/* Enhanced Trigram Wheel */}
       <TrigramWheel
         selectedStance={selectedStance}
         onStanceChange={handleStanceChange}
-        onStanceSelect={handleStanceSelect}
-        x={width - (isMobile ? 120 : 150)}
-        y={height - (isMobile ? 120 : 150)}
-        size={isMobile ? 80 : 100}
+        onStanceSelect={handleStanceChange}
+        x={layout.trigramWheel.x}
+        y={layout.trigramWheel.y}
+        size={layout.trigramWheel.size}
         data-testid="training-trigram-wheel"
       />
-
-      {/* Stance Selection Area for Testing */}
-      <pixiContainer
-        x={width - (isMobile ? 120 : 150)}
-        y={height - (isMobile ? 200 : 220)}
-        data-testid="stance-selection"
-      >
-        <pixiText
-          text="자세 선택"
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
-          }}
-          anchor={0.5}
-        />
-
-        {/* Individual stance buttons for testing */}
-        <ResponsivePixiButton
-          text="건"
-          x={-40}
-          y={20}
-          width={25}
-          height={25}
-          screenWidth={width}
-          screenHeight={height}
-          variant={
-            selectedStance === TrigramStance.GEON ? "primary" : "secondary"
-          }
-          onClick={() => handleStanceChange(TrigramStance.GEON)}
-          data-testid="stance-geon-button"
-        />
-      </pixiContainer>
 
       {/* Current Stance Indicator */}
       <StanceIndicator
         stance={selectedStance}
-        x={isMobile ? width / 2 : width * 0.25}
-        y={height - (isMobile ? 120 : 140)}
+        x={layout.player.x - 25}
+        y={layout.player.y + layout.player.height + 20}
+        size={isMobile ? 35 : 45}
         data-testid="current-stance-indicator"
       />
 
-      {/* Training Controls Panel */}
-      <ResponsivePixiPanel
-        title="훈련 제어"
-        x={isMobile ? 10 : 20}
-        y={isMobile ? 200 : 220}
-        width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 140 : 180}
+      {/* Training Controls using extracted component */}
+      <TrainingControls
+        isTraining={isTraining}
+        isSessionPaused={isSessionPaused}
+        canExecute={stats.attempts < currentModeData.maxAttempts}
+        onToggleTraining={handleToggleTraining}
+        onTogglePause={handleTogglePause}
+        onExecuteTechnique={handleTechniqueExecute}
+        onResetDummy={handleResetDummy}
+        onEvaluate={handleEvaluate}
+        x={layout.controls.x}
+        y={layout.controls.y}
+        width={layout.controls.width}
+        height={layout.controls.height}
         screenWidth={width}
         screenHeight={height}
+        isMobile={isMobile}
         data-testid="training-controls"
-      >
-        {/* Training Toggle Button */}
-        <ResponsivePixiButton
-          text={isTraining ? "훈련 정지" : "훈련 시작"}
-          x={10}
-          y={10}
-          width={isMobile ? width * 0.35 : 200}
-          height={35}
-          screenWidth={width}
-          screenHeight={height}
-          variant={isTraining ? "secondary" : "primary"}
-          onClick={handleToggleTraining}
-          data-testid="start-training-button"
-        />
+      />
 
-        {/* Execute Technique Button */}
-        {isTraining && (
-          <ResponsivePixiButton
-            text={`${getStanceNames(selectedStance).technique} 실행`}
-            x={10}
-            y={55}
-            width={isMobile ? width * 0.35 : 200}
-            height={35}
-            screenWidth={width}
-            screenHeight={height}
-            variant="primary"
-            onClick={handleTechniqueExecute}
-            data-testid="execute-technique-button"
-          />
-        )}
-
-        {/* Reset Dummy Button */}
-        <ResponsivePixiButton
-          text="더미 리셋"
-          x={10}
-          y={100}
-          width={isMobile ? width * 0.35 : 200}
-          height={30}
-          screenWidth={width}
-          screenHeight={height}
-          variant="secondary"
-          onClick={handleResetDummy}
-          data-testid="reset-dummy-button"
-        />
-
-        {/* Evaluate Button */}
-        <ResponsivePixiButton
-          text="평가"
-          x={10}
-          y={140}
-          width={isMobile ? width * 0.35 : 200}
-          height={30}
-          screenWidth={width}
-          screenHeight={height}
-          variant="secondary"
-          onClick={handleEvaluate}
-          data-testid="evaluate-button"
-        />
-      </ResponsivePixiPanel>
-
-      {/* Training Statistics Panel */}
-      <ResponsivePixiPanel
-        title="훈련 통계"
-        x={width - (isMobile ? width * 0.45 + 10 : 270)}
-        y={isMobile ? 200 : 220}
-        width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 140 : 180}
+      {/* Training Statistics using extracted component */}
+      <TrainingStatisticsPanel
+        stats={stats}
+        currentCombo={currentCombo}
+        selectedStance={selectedStance}
+        maxAttempts={currentModeData.maxAttempts}
+        x={layout.statistics.x}
+        y={layout.statistics.y}
+        width={layout.statistics.width}
+        height={layout.statistics.height}
         screenWidth={width}
         screenHeight={height}
-        data-testid="training-stats-panel"
+        isMobile={isMobile}
+        data-testid="training-statistics"
+      />
+
+      {/* Enhanced Progress Trackers */}
+      <ProgressTracker
+        title="경험치"
+        korean="경험치"
+        progress={((player.experiencePoints || 0) % 100) / 100}
+        maxProgress={100}
+        currentValue={(player.experiencePoints || 0) % 100}
+        x={width / 2 - (isMobile ? 100 : 120)}
+        y={height - (isMobile ? 60 : 80)}
+        width={isMobile ? 200 : 240}
+        height={isMobile ? 35 : 45}
+        screenWidth={width}
+        screenHeight={height}
+        color={KOREAN_COLORS.ACCENT_CYAN}
+        showText={true}
+        data-testid="experience-tracker"
+      />
+
+      {/* Player Level Display */}
+      <ResponsivePixiContainer
+        x={width / 2}
+        y={height - (isMobile ? 80 : 100)}
+        screenWidth={width}
+        screenHeight={height}
+        data-testid="player-level-display"
       >
         <pixiText
-          text="훈련 통계"
+          text={`레벨 ${playerLevel} 무사`}
           style={{
-            fontSize: isMobile ? 10 : 12,
+            fontSize: isMobile ? 10 : 14,
             fill: KOREAN_COLORS.ACCENT_GOLD,
             fontWeight: "bold",
+            align: "center",
           }}
-          x={10}
-          y={-5}
-          data-testid="stats-title"
+          anchor={0.5}
+          data-testid="player-level-text"
         />
+      </ResponsivePixiContainer>
 
-        <pixiText
-          text={`시도: ${trainingStats.attempts}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-          }}
-          x={10}
-          y={15}
-          data-testid="attempts-count"
-        />
+      {/* Training Feedback System using extracted component */}
+      <TrainingFeedbackSystem
+        feedbackMessages={feedbackMessages}
+        x={width / 2}
+        y={isMobile ? 40 : 60}
+        screenWidth={width}
+        screenHeight={height}
+        isMobile={isMobile}
+        data-testid="training-feedback"
+      />
 
-        <pixiText
-          text={`기술 실행: ${trainingStats.techniquesExecuted}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-          }}
-          x={10}
-          y={35}
-        />
-
-        <pixiText
-          text={`완벽한 타격: ${trainingStats.perfectStrikes}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_GREEN,
-          }}
-          x={10}
-          y={55}
-        />
-
-        <pixiText
-          text={`총 데미지: ${Math.ceil(trainingStats.totalDamage)}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-          }}
-          x={10}
-          y={75}
-        />
-
-        <pixiText
-          text={`세션 시간: ${Math.floor(
-            trainingStats.sessionTime / 60
-          )}:${String(trainingStats.sessionTime % 60).padStart(2, "0")}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          x={10}
-          y={95}
-          data-testid="session-time"
-        />
-
-        {/* Current stance info */}
-        <pixiText
-          text={`현재 자세: ${getStanceNames(selectedStance).korean}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.PRIMARY_CYAN,
-            fontWeight: "bold",
-          }}
-          x={10}
-          y={115}
-        />
-
-        {/* Player experience display */}
-        <pixiText
-          text={`경험치: ${player.experiencePoints || 0}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-          }}
-          x={10}
-          y={135}
-        />
-
-        {/* Feedback message placeholder */}
-        <pixiText
-          text="계속 연습하세요!"
-          style={{
-            fontSize: isMobile ? 8 : 10,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontStyle: "italic",
-          }}
-          x={10}
-          y={155}
-          data-testid="feedback-message"
-        />
-      </ResponsivePixiPanel>
-
-      {/* Return to Menu Button */}
+      {/* Return to Menu */}
       <ResponsivePixiButton
         text="메뉴로 돌아가기"
-        x={isMobile ? width / 2 - 80 : width / 2 - 100}
-        y={height - (isMobile ? 40 : 50)}
-        width={isMobile ? 160 : 200}
-        height={isMobile ? 30 : 40}
+        x={width / 2 - (isMobile ? 80 : 110)}
+        y={height - (isMobile ? 25 : 35)}
+        width={isMobile ? 160 : 220}
+        height={isMobile ? 20 : 30}
         screenWidth={width}
         screenHeight={height}
         variant="secondary"
         onClick={onReturnToMenu}
-        data-testid="return-to-menu-button" // Fix: Consistent naming
+        data-testid="return-to-menu-button"
       />
 
       {/* Training Status Overlay */}
       {isTraining && (
-        <pixiContainer x={width / 2} y={50} data-testid="training-status">
+        <ResponsivePixiContainer
+          x={width / 2}
+          y={isMobile ? 20 : 30}
+          screenWidth={width}
+          screenHeight={height}
+          data-testid="training-status"
+        >
           <pixiGraphics
             draw={(g) => {
               g.clear();
-              g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.8 });
+              const statusColor = isSessionPaused
+                ? KOREAN_COLORS.WARNING_YELLOW
+                : KOREAN_COLORS.ACCENT_GREEN;
+
+              g.fill({ color: statusColor, alpha: 0.9 });
               g.roundRect(-60, -15, 120, 30, 8);
               g.fill();
+
+              g.stroke({
+                width: 2,
+                color: KOREAN_COLORS.PRIMARY_CYAN,
+                alpha: 0.8,
+              });
+              g.roundRect(-60, -15, 120, 30, 8);
+              g.stroke();
             }}
           />
           <pixiText
-            text="훈련 중"
+            text={isSessionPaused ? "훈련 일시정지" : "훈련 중"}
             style={{
-              fontSize: isMobile ? 14 : 16,
+              fontSize: isMobile ? 10 : 14,
               fill: KOREAN_COLORS.BLACK_SOLID,
               fontWeight: "bold",
               align: "center",
             }}
             anchor={0.5}
+            data-testid="training-active-indicator"
           />
-        </pixiContainer>
+        </ResponsivePixiContainer>
       )}
+
+      {/* Enhanced Integration Layer - NEW */}
+      <TrainingEnhancedIntegration
+        selectedStance={selectedStance}
+        playerArchetype={player.archetype}
+        trainingMode={trainingMode}
+        isTraining={isTraining}
+        currentCombo={currentCombo}
+        stats={stats}
+        screenWidth={width}
+        screenHeight={height}
+        onStateChange={(state) => {
+          // Handle integration state changes
+          console.log("Training integration state:", state);
+        }}
+      />
     </ResponsivePixiContainer>
   );
 };
 
-const TrainingScreenWrapper: React.FC<TrainingScreenProps> = (props) => {
-  return (
-    <AudioProvider>
-      <TrainingScreen {...props} width={props.width} height={props.height} />
-    </AudioProvider>
-  );
-};
-
-export default TrainingScreenWrapper;
+export default TrainingScreen;

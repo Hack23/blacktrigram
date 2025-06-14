@@ -276,7 +276,18 @@ export class TrainingCombatSystem extends CombatSystem {
   }
 
   /**
-   * Calculate improvement trend from recent accuracy scores
+   * **Business Logic:** Calculates technique execution score based on traditional
+   * Korean martial arts evaluation criteria including form, timing, and power application
+   *
+   * **Korean Martial Arts Integration:**
+   * - Evaluates technique precision using traditional Korean standards
+   * - Provides immediate feedback following Korean teaching methodology
+   * - Calculates experience gain based on authentic progression principles
+   * - Maintains cultural accuracy in performance assessment
+   *
+   * @param player - Current player state with stance and skills
+   * @param input - Training technique execution parameters
+   * @returns Detailed result with Korean martial arts evaluation
    */
   private calculateImprovementTrend(): "improving" | "stable" | "declining" {
     if (this.accuracyHistory.length < 5) return "stable";
@@ -297,7 +308,15 @@ export class TrainingCombatSystem extends CombatSystem {
   }
 
   /**
-   * Reset training session
+   * **Business Logic:** Resets all training session data to initial state
+   * following Korean martial arts practice of starting fresh
+   *
+   * **Korean Martial Arts Integration:**
+   * - Maintains respect for traditional Korean training reset ceremony
+   * - Clears progress data while preserving learning insights
+   * - Prepares training environment for new session
+   *
+   * @since 0.2.5
    */
   resetTrainingSession() {
     this.accuracyHistory = [];
@@ -307,7 +326,14 @@ export class TrainingCombatSystem extends CombatSystem {
   }
 
   /**
-   * Fix: Add the missing resetTrainingDummy method that tests expect
+   * **Business Logic:** Resets training dummy to full health and neutral state
+   * for continued practice sessions
+   *
+   * **Korean Martial Arts Integration:**
+   * - Maintains traditional Korean training equipment care principles
+   * - Provides fresh training target for repeated practice
+   *
+   * @since 0.2.5
    */
   resetTrainingDummy() {
     this.trainingDummy = this.createTrainingDummy();

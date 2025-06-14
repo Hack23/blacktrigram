@@ -4,22 +4,6 @@ import type { KoreanText } from "../../../../../types/korean-text";
 import { KOREAN_TEXT_CONSTANTS } from "../constants";
 import * as PIXI from "pixi.js";
 
-// Fix: Export all required functions properly
-export const createKoreanPixiText = (
-  text: KoreanText,
-  style?: PIXI.TextStyle
-): React.ReactElement => {
-  usePixiExtensions();
-
-  const defaultStyle = new PIXI.TextStyle({
-    fontFamily: KOREAN_TEXT_CONSTANTS.FONT_FAMILIES.PRIMARY,
-    fontSize: KOREAN_TEXT_CONSTANTS.FONT_SIZES.MEDIUM,
-    fill: KOREAN_TEXT_CONSTANTS.COLORS.PRIMARY as PIXI.ColorSource,
-  });
-
-  return <pixiText text={text.korean} style={style || defaultStyle} />;
-};
-
 export const getKoreanTextMetrics = (text: string, style?: PIXI.TextStyle) => {
   const textStyle =
     style ||
@@ -72,6 +56,22 @@ export const createKoreanPixiMultilineText = (
     style ||
     KoreanPixiTextStyle({
       wordWrap: true,
+      wordWrapWidth: maxWidth,
+      lineHeight: KOREAN_TEXT_CONSTANTS.LAYOUT.LINE_HEIGHT_RATIO * 16,
+    });
+
+  return <pixiText text={text.korean} style={textStyle} />;
+};
+
+// Fix: Add proper default export
+const KoreanPixiTextUtils = {
+  getKoreanTextMetrics,
+  KoreanPixiTextStyle,
+  createKoreanPixiTextWithFallback,
+  createKoreanPixiMultilineText,
+};
+
+export default KoreanPixiTextUtils;
       wordWrapWidth: maxWidth,
       lineHeight: KOREAN_TEXT_CONSTANTS.LAYOUT.LINE_HEIGHT_RATIO * 16,
     });

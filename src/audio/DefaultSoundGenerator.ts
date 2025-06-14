@@ -1,5 +1,6 @@
 /**
- * Default sound generator for Korean martial arts game
+ * Default sound generator for Black Trigram training system
+ * Creates procedural sounds when audio assets are unavailable
  */
 
 import type { SoundEffect, MusicTrack } from "../types/audio";
@@ -9,6 +10,24 @@ import { AudioCategory } from "../types/audio";
  * Generates Korean martial arts specific sounds for Black Trigram
  */
 export class DefaultSoundGenerator {
+  private audioContext: AudioContext | null = null;
+
+  constructor() {
+    this.initializeAudioContext();
+  }
+
+  private initializeAudioContext(): void {
+    try {
+      this.audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+    } catch (error) {
+      console.warn(
+        "Failed to initialize AudioContext for sound generation:",
+        error
+      );
+    }
+  }
+
   /**
    * Generate a sound effect with specific frequency and duration
    */
@@ -252,6 +271,181 @@ export class DefaultSoundGenerator {
     }
 
     return btoa(binary);
+  }
+
+  /**
+   * Generate a martial arts technique sound
+   */
+  generateTechniqueSound(technique: string): Promise<void> {
+    return new Promise((resolve) => {
+      if (!this.audioContext) {
+        resolve();
+        return;
+      }
+
+      const now = this.audioContext.currentTime;
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+
+      // Connect audio nodes
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      // Configure based on technique type
+      const config = this.getTechniqueConfig(technique);
+      oscillator.type = config.type;
+      oscillator.frequency.setValueAtTime(config.frequency, now);
+
+      // Apply envelope
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(config.volume, now + config.fadeIn);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + config.duration);
+
+      // Start and stop
+      oscillator.start(now);
+      oscillator.stop(now + config.duration);
+
+      oscillator.onended = () => resolve();
+    });
+  }
+
+  /**
+   * Generate Korean martial arts stance change sound
+   */
+  generateStanceSound(stance: string): Promise<void> {
+    return new Promise((resolve) => {
+      if (!this.audioContext) {
+        resolve();
+        return;
+      }
+
+      const stanceFreqs = this.getStanceFrequencies(stance);
+
+      // Create a chord-like effect for stance changes
+      const sounds = stanceFreqs.map((freq) => this.createTone(freq, 0.3, 0.1));
+
+      Promise.all(sounds).then(() => resolve());
+    });
+  }
+
+  /**
+   * Generate training feedback sounds
+   */
+  generateFeedbackSound(
+    type: "success" | "warning" | "error" | "info"
+  ): Promise<void> {
+    const configs = {
+      success: { frequency: 523.25, duration: 0.2, type: "sine" as const }, // C5
+      warning: { frequency: 415.3, duration: 0.3, type: "square" as const }, // G#4
+      error: { frequency: 277.18, duration: 0.4, type: "sawtooth" as const }, // C#4
+      info: { frequency: 329.63, duration: 0.15, type: "triangle" as const }, // E4
+    };
+
+    return this.createTone(
+      configs[type].frequency,
+      configs[type].duration,
+      0.3,
+      configs[type].type
+    );
+  }
+
+  /**
+   * Generate combo achievement sound
+   */
+  generateComboSound(comboLevel: number): Promise<void> {
+    const baseFreq = 440; // A4
+    const frequency = baseFreq * (1 + comboLevel * 0.1);
+    const duration = Math.min(0.5, 0.1 + comboLevel * 0.05);
+
+    return this.createTone(frequency, duration, 0.4, "sine");
+  }
+
+  /**
+   * Generate Korean ambient training sounds
+   */
+  generateAmbientSound(type: string): Promise<void> {
+    const ambientConfigs = {
+      dojang: { frequency: 110, duration: 2.0, type: "triangle" as const },
+      meditation: { frequency: 220, duration: 3.0, type: "sine" as const },
+      energy: { frequency: 880, duration: 1.5, type: "square" as const },
+    };
+
+    const config =
+      ambientConfigs[type as keyof typeof ambientConfigs] ||
+      ambientConfigs.dojang;
+    return this.createTone(config.frequency, config.duration, 0.1, config.type);
+  }
+
+  private createTone(
+    frequency: number,
+    duration: number,
+    volume: number = 0.3,
+    type: OscillatorType = "sine"
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      if (!this.audioContext) {
+        resolve();
+        return;
+      }
+
+      const now = this.audioContext.currentTime;
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, now);
+
+      // Smooth envelope
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(volume, now + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+
+      oscillator.onended = () => resolve();
+    });
+  }
+
+  private getTechniqueConfig(technique: string): SoundGenerationOptions {
+    const configs: Record<string, SoundGenerationOptions> = {
+      punch: { frequency: 200, duration: 0.1, volume: 0.4, type: "square" },
+      kick: { frequency: 150, duration: 0.15, volume: 0.5, type: "sawtooth" },
+      block: { frequency: 300, duration: 0.08, volume: 0.3, type: "triangle" },
+      throw: { frequency: 100, duration: 0.3, volume: 0.4, type: "sine" },
+      critical: { frequency: 500, duration: 0.2, volume: 0.6, type: "square" },
+      perfect: { frequency: 800, duration: 0.25, volume: 0.5, type: "sine" },
+    };
+
+    return configs[technique] || configs.punch;
+  }
+
+  private getStanceFrequencies(stance: string): number[] {
+    const stanceChords: Record<string, number[]> = {
+      GEON: [523.25, 659.25, 783.99], // C5 Major chord (Heaven)
+      TAE: [493.88, 622.25, 739.99], // B4 Major chord (Lake)
+      LI: [466.16, 587.33, 698.46], // Bb4 Major chord (Fire)
+      JIN: [440.0, 554.37, 659.25], // A4 Major chord (Thunder)
+      SON: [415.3, 523.25, 622.25], // Ab4 Major chord (Wind)
+      GAM: [392.0, 493.88, 587.33], // G4 Major chord (Water)
+      GAN: [369.99, 466.16, 554.37], // F#4 Major chord (Mountain)
+      GON: [349.23, 440.0, 523.25], // F4 Major chord (Earth)
+    };
+
+    return stanceChords[stance] || stanceChords.GEON;
+  }
+
+  /**
+   * Cleanup resources
+   */
+  dispose(): void {
+    if (this.audioContext && this.audioContext.state !== "closed") {
+      this.audioContext.close();
+    }
+    this.audioContext = null;
   }
 }
 
