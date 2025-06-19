@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { DojangBackground } from "../game/DojangBackground";
+import { DojangBackground } from "../combat/backgrounds/DojangBackground"; // Fix import path
 import { StanceIndicator } from "../ui/StanceIndicator";
 import {
   ResponsivePixiContainer,

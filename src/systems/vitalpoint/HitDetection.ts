@@ -8,7 +8,7 @@ import {
   EffectIntensity as VitalPointEffectIntensity,
 } from "../../types/enums";
 import type { VitalPointEffect } from "../../types/anatomy";
-import type { StatusEffect, EffectType } from "../../types/effects"; // Fix: Import from effects.ts
+import type { StatusEffect, HitEffectType } from "../../types/effects"; // Fix: Import HitEffectType instead of EffectType
 
 export class HitDetection {
   /**
@@ -21,7 +21,7 @@ export class HitDetection {
     const currentTime = Date.now();
 
     // Fix: Use EffectType from effects.ts (string literals)
-    const typeMapping: Record<VitalPointEffectType, EffectType> = {
+    const typeMapping: Record<VitalPointEffectType, HitEffectType> = {
       [VitalPointEffectType.UNCONSCIOUSNESS]: "stun",
       [VitalPointEffectType.BREATHLESSNESS]: "stamina_drain",
       [VitalPointEffectType.PAIN]: "weakened",

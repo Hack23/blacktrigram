@@ -1,19 +1,12 @@
 /**
- * Component props interfaces for Black Trigram Korean martial arts system
+ * @fileoverview Component prop interfaces for Korean martial arts game
  */
 
+import type { ReactNode } from "react";
 import type * as PIXI from "pixi.js";
-import type {
-  PlayerState,
-  GameMode,
-  MatchStatistics,
-  KoreanText,
-  KoreanTechnique,
-  TrigramStance,
-  PlayerArchetype,
-} from "./index";
-import type { CombatResult as CombatResultType } from "./combat";
-import type { HitEffect } from "./effects";
+import type { PlayerState } from "./player";
+import type { GameMode } from "./game";
+import type { TrigramStance } from "./enums";
 
 // Base component props interface
 export interface BaseComponentProps {
@@ -86,19 +79,22 @@ export interface EndScreenProps extends BaseComponentProps {
 }
 
 // Combat component props
-export interface CombatArenaProps extends BaseComponentProps {
-  readonly players: readonly [PlayerState, PlayerState];
-  readonly onPlayerClick?: (playerIndex: number) => void;
+export interface CombatArenaProps {
+  readonly players: readonly PlayerState[];
+  readonly onPlayerClick?: (idx: number) => void;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
 }
 
 export interface CombatHUDProps {
   readonly player1: PlayerState;
   readonly player2: PlayerState;
-  readonly players?: readonly PlayerState[]; // Optional for backward compatibility
   readonly timeRemaining: number;
   readonly currentRound: number;
   readonly maxRounds: number;
-  readonly isPaused: boolean;
+  readonly isPaused?: boolean;
   readonly onPauseToggle?: () => void;
   readonly width?: number;
   readonly height?: number;
@@ -106,16 +102,99 @@ export interface CombatHUDProps {
   readonly y?: number;
 }
 
-export interface CombatControlsProps extends BaseComponentProps {
+export interface CombatControlsProps {
   readonly onAttack: () => void;
   readonly onDefend: () => void;
-  readonly onSwitchStance?: (stance: TrigramStance) => void;
-  readonly onPauseToggle: () => void;
-  readonly isPaused: boolean;
+  readonly onSwitchStance: (stance: TrigramStance) => void;
   readonly player: PlayerState;
   readonly onTechniqueExecute?: (technique: KoreanTechnique) => void;
-  readonly onGuard?: () => void;
   readonly isExecutingTechnique?: boolean;
+  readonly onPauseToggle?: () => void;
+  readonly isPaused?: boolean;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+}
+
+export interface CombatStatsProps {
+  readonly players: readonly [PlayerState, PlayerState];
+  readonly combatLog: readonly string[];
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+}
+
+export interface PlayerStatusPanelProps {
+  readonly player: PlayerState;
+  readonly position: "left" | "right";
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+  readonly isSelected?: boolean;
+}
+
+export interface GameEngineProps {
+  readonly player1: PlayerState;
+  readonly player2: PlayerState;
+  readonly onPlayerUpdate: (
+    playerId: string,
+    updates: Partial<PlayerState>
+  ) => void;
+  readonly width: number;
+  readonly height: number;
+  readonly isPaused?: boolean;
+  readonly gameMode?: string;
+}
+
+export interface PlayerProps {
+  readonly playerState: PlayerState;
+  readonly playerIndex: number;
+  readonly onClick: () => void;
+  readonly x?: number;
+  readonly y?: number;
+  readonly gridPosition?: GridPosition;
+  readonly gridSize?: number;
+  readonly isActive?: boolean;
+}
+
+export interface PlayerVisualsProps {
+  readonly playerState: PlayerState;
+  readonly x?: number;
+  readonly y?: number;
+  readonly animationState?: string;
+  readonly scale?: number;
+  readonly showDetails?: boolean;
+  readonly showHitboxes?: boolean;
+}
+
+export interface HitEffectsLayerProps {
+  readonly effects: readonly HitEffect[];
+  readonly onEffectComplete: (effectId: string) => void;
+}
+
+/**
+ * Props for combat-related UI components
+ */
+export interface CombatStatsProps {
+  readonly players: readonly [PlayerState, PlayerState];
+  readonly combatLog: readonly string[];
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+}
+
+export interface PlayerStatusPanelProps {
+  readonly player: PlayerState;
+  readonly position: "left" | "right";
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+  readonly isSelected?: boolean;
 }
 
 // UI component props
@@ -272,8 +351,23 @@ export type CombatResult = CombatResultType;
 
 // Fix: Unify HitEffect interfaces - use the one from effects.ts
 export type { HitEffect } from "./effects";
+export type PixiText = PIXI.Text;
+export type PixiSprite = PIXI.Sprite;
+export type PixiTextStyle = PIXI.TextStyle;
 
-export interface HitEffectsLayerProps extends BaseComponentProps {
-  readonly effects: readonly HitEffect[]; // Fix: Now HitEffect is properly imported
-  readonly onEffectComplete: (effectId: string) => void;
-}
+// Re-export useful types
+export type {
+  PlayerState,
+  GameMode,
+  MatchStatistics,
+  KoreanText,
+  KoreanTechnique,
+  TrigramStance,
+  PlayerArchetype,
+} from "./index";
+
+// Fix: Remove duplicate CombatResult interface - use the one from combat.ts
+export type CombatResult = CombatResultType;
+
+// Fix: Unify HitEffect interfaces - use the one from effects.ts
+export type { HitEffect } from "./effects";

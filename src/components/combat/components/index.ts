@@ -1,62 +1,57 @@
 /**
- * Combat component exports with proper typing
+ * @fileoverview Complete Combat System exports for Black Trigram Korean martial arts game
+ * @description Provides comprehensive combat functionality including movement system,
+ * enhanced input handling, AI opponents, and traditional Korean martial arts mechanics
  */
 
-import React from "react";
+// Core combat screens and systems
 
+// Combat components
 export { CombatArena } from "./CombatArena";
-export { CombatHUD } from "./CombatHUD";
 export { CombatControls } from "./CombatControls";
+export { CombatHUD } from "./CombatHUD";
+export { CombatStats } from "./CombatStats";
+export { HitEffectsLayer } from "./HitEffectsLayer";
+export { Player } from "./Player";
+export { PlayerStatusPanel } from "./PlayerStatusPanel";
+export { PlayerVisuals } from "./PlayerVisuals";
 
-// Fix: Create proper React functional components instead of invalid JSX
-export const PlayerStatusPanel: React.FC<any> = ({
-  player,
-  position,
-  ...props
-}) => {
-  return React.createElement(
-    "pixiContainer",
-    props,
-    React.createElement("pixiText", {
-      text: `${player.name.korean} - ${position}`,
-      style: { fontSize: 14, fill: 0xffffff },
-    })
-  );
-};
+// Enhanced game components
+// Fix: Import from correct locations
+export { GameEngine } from "../engine/GameEngine";
+export { default as GameEngineDefault } from "../engine/GameEngine";
 
-export const CombatStats: React.FC<any> = ({
-  players,
-  combatLog,
-  ...props
-}) => {
-  return React.createElement(
-    "pixiContainer",
-    props,
-    React.createElement("pixiText", {
-      text: "Combat Stats",
-      style: { fontSize: 16, fill: 0xffd700 },
-    }),
-    ...(combatLog || []).slice(0, 3).map((entry: string, index: number) =>
-      React.createElement("pixiText", {
-        key: index,
-        text: entry,
-        style: { fontSize: 12, fill: 0xcccccc },
-        y: 20 + index * 15,
-      })
-    )
-  );
-};
+export { DojangBackground } from "../backgrounds/DojangBackground";
+export { default as DojangBackgroundDefault } from "../backgrounds/DojangBackground";
 
-// Export types for combat components
+// Component index export - remove duplicates
+export * from "./CombatArena";
+export * from "./CombatHUD";
+export * from "./CombatControls";
+export * from "./CombatStats";
+export * from "./PlayerStatusPanel";
+export * from "./Player";
+export * from "./PlayerVisuals";
+export * from "./HitEffectsLayer";
+
+// Re-export types for combat system
 export type {
+  CombatScreenProps,
   CombatArenaProps,
   CombatHUDProps,
   CombatControlsProps,
-  PlayerStatusPanelProps,
   CombatStatsProps,
+  PlayerStatusPanelProps,
+  GameEngineProps,
+  PlayerProps,
+  PlayerVisualsProps,
+  HitEffectsLayerProps,
 } from "../../../types/combat";
 
-// Default exports
-export { default as CombatArenaDefault } from "./CombatArena";
-export { default as CombatHUDDefault } from "./CombatHUD";
-export { default as CombatControlsDefault } from "./CombatControls";
+export type {
+  PlayerState,
+  KoreanTechnique,
+  CombatResult,
+  HitEffect,
+  DisplayHitEffect,
+} from "../../../types/";

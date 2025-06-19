@@ -61,7 +61,7 @@ export const KOREAN_COLORS = {
   UI_DISABLED_TEXT: 0x666666, // Fix: Add missing UI_DISABLED_TEXT
 
   // Combat effect colors
-  CRITICAL_HIT: 0xff0000, // Fix: Add missing CRITICAL_HIT
+  CRITICAL_HIT: 0xff4444, // Fix: Add missing CRITICAL_HIT
   BLOCKED_ATTACK: 0x808080, // Fix: Add missing BLOCKED_ATTACK
   PERFECT_STRIKE: 0xffd700, // Fix: Add missing PERFECT_STRIKE
   VITAL_POINT_HIT: 0xff00ff, // Fix: Add missing VITAL_POINT_HIT
@@ -117,7 +117,7 @@ export const KOREAN_COLORS = {
 
   // Fix: Add missing color constants for game components
   ARENA_BACKGROUND: 0x1a1a2e,
-  PLAYER_1_COLOR: 0x00ccff, // Cyan for player 1
+  PLAYER_1_COLOR: 0x00d4ff, // Cyan for player 1
   PLAYER_2_COLOR: 0xff6b35, // Orange for player 2
   SECONDARY_BLUE: 0x3366cc,
   SECONDARY_BLUE_LIGHT: 0x5588ee,

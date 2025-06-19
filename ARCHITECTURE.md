@@ -1183,3 +1183,20 @@ Once v1.0 stability is achieved, explore these extended opportunities:
 > - **Grey (#B0BEC5 / #d3d3d3)**: Renderer, neutral nodes, fallback
 
 ---
+
+# Black Trigram System Architecture
+
+## 🏗️ Architecture Overview
+
+Black Trigram is built as a modern web application using React 18, PixiJS 8, and TypeScript, designed for authentic Korean martial arts combat simulation with cyberpunk aesthetics.
+
+### Core Technology Stack
+
+- **Frontend**: React 18 with TypeScript (strict mode)
+- **Graphics**: PixiJS 8 with @pixi/react integration
+- **UI Framework**: @pixi/ui and @pixi/layout for responsive components
+- **Audio**: Howler.js for authentic Korean martial arts soundscapes
+- **Testing**: Vitest with comprehensive Korean cultural accuracy validation
+- **Build System**: Vite for optimized development and production builds
+
+## 📁 Project Structure

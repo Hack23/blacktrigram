@@ -1,155 +1,287 @@
-import type { VitalPoint, DamageResult } from "../../types/anatomy";
-import type { PlayerState } from "../../types/player";
-import type { StatusEffect } from "../../types/effects";
+/**
+ * @fileoverview Realistic Damage Calculation for Korean Martial Arts
+ * @description Authentic damage calculation based on vital point targeting and Korean martial arts principles
+ */
+
 import type { KoreanTechnique } from "../../types/combat";
-import { PlayerArchetype } from "../../types/enums";
+import type { PlayerState } from "../../types/player";
+import type { VitalPoint } from "../../types/anatomy";
+import type { HitEffect } from "../../types/effects";
+import { KoreanVitalPoints } from "./KoreanVitalPoints";
+import { HitEffectType } from "../../types/effects";
+
+export interface DamageResult {
+  readonly totalDamage: number;
+  readonly isCritical: boolean;
+  readonly vitalPointsHit: readonly VitalPoint[];
+  readonly effects: readonly HitEffect[];
+  readonly stunChance: number;
+  readonly consciousnessLoss: number;
+  readonly balanceLoss: number;
+  readonly techniqueEffectiveness: number;
+}
 
 export class DamageCalculator {
-  /**
-   * Calculate vital point damage with proper archetype bonuses
-   */
-  static calculateVitalPointDamage(
-    vitalPoint: VitalPoint,
-    baseDamage: number,
-    attacker: PlayerState,
-    accuracy: number
-  ): DamageResult {
-    const effects: StatusEffect[] = [];
-
-    // Fix: Use static method call instead of this
-    const archetypeModifier = DamageCalculator.getArchetypeModifier(
-      attacker.archetype
-    );
-    const techniqueEffectiveness = accuracy;
-
-    const finalDamage = Math.max(
-      1,
-      (vitalPoint.baseDamage || vitalPoint.damage?.min || baseDamage) *
-        archetypeModifier *
-        techniqueEffectiveness
-    );
-
-    // Create status effects from vital point
-    vitalPoint.effects.forEach((effect) => {
-      const statusEffect: StatusEffect = {
-        id: `${effect.id}_${Date.now()}`,
-        type: "weakened", // Map to valid EffectType
-        intensity: "moderate" as any,
-        duration: effect.duration,
-        description: effect.description,
-        stackable: effect.stackable,
-        source: vitalPoint.id,
-        startTime: Date.now(),
-        endTime: Date.now() + effect.duration,
-      };
-      effects.push(statusEffect);
-    });
-
-    return {
-      damage: finalDamage,
-      effects,
-      isCritical: accuracy > 0.9,
-      isVitalPoint: true,
-    };
-  }
+  constructor(private readonly vitalPoints: KoreanVitalPoints) {}
 
   /**
-   * Fix: Add missing getArchetypeModifier method
+   * Calculate damage with authentic Korean martial arts mechanics
    */
-  static getArchetypeModifier(archetype: PlayerArchetype): number {
-    switch (archetype) {
-      case PlayerArchetype.MUSA:
-        return 1.2; // Traditional warrior - strong base damage
-      case PlayerArchetype.AMSALJA:
-        return 1.5; // Assassin - high damage modifier
-      case PlayerArchetype.HACKER:
-        return 1.1; // Cyber warrior - precision over power
-      case PlayerArchetype.JEONGBO_YOWON:
-        return 1.1; // Intelligence operative - strategic damage
-      case PlayerArchetype.JOJIK_POKRYEOKBAE:
-        return 1.3; // Organized crime - brutal effectiveness
-      default:
-        return 1.0;
-    }
-  }
-
-  /**
-   * Calculate technique damage with vital point consideration
-   */
-  static calculateTechniqueDamage(
+  public async calculateDamage(
     technique: KoreanTechnique,
     attacker: PlayerState,
-    vitalPoint: VitalPoint | null,
-    accuracy: number
-  ): DamageResult {
-    // Fix: Remove unused baseDamage variable and use technique.damage directly
-    const effects: StatusEffect[] = [];
-    const archetypeModifier = DamageCalculator.getArchetypeModifier(
-      attacker.archetype
-    );
-
-    let finalDamage = (technique.damage || 15) * archetypeModifier * accuracy;
-
-    // Apply vital point multiplier if hitting a vital point
-    if (vitalPoint) {
-      finalDamage *=
-        (vitalPoint.baseDamage || vitalPoint.damage?.min || 10) / 10;
-
-      // Add vital point effects
-      vitalPoint.effects.forEach((effect) => {
-        const statusEffect: StatusEffect = {
-          id: `${effect.id}_${Date.now()}`,
-          type: "weakened",
-          intensity: "moderate" as any,
-          duration: effect.duration,
-          description: effect.description,
-          stackable: effect.stackable,
-          source: vitalPoint.id,
-          startTime: Date.now(),
-          endTime: Date.now() + effect.duration,
-        };
-        effects.push(statusEffect);
-      });
+    defender: PlayerState,
+    stanceMultiplier: number,
+    targetPosition?: { x: number; y: number }
+  ): Promise<DamageResult> {
+    // Base damage calculation
+    let baseDamage = technique.damage;
+    if (technique.damageRange) {
+      const randomFactor = Math.random();
+      baseDamage =
+        technique.damageRange.min +
+        (technique.damageRange.max - technique.damageRange.min) * randomFactor;
     }
 
+    // Apply stance effectiveness
+    baseDamage *= stanceMultiplier;
+
+    // Attacker modifiers
+    const attackerCondition = this.calculateAttackerCondition(attacker);
+    baseDamage *= attackerCondition;
+
+    // Vital point targeting
+    const vitalPointResult = this.calculateVitalPointDamage(
+      baseDamage,
+      technique,
+      targetPosition
+    );
+
+    // Defense calculation
+    const defenseReduction = this.calculateDefense(defender, technique);
+    const finalDamage = Math.max(
+      1,
+      vitalPointResult.damage * (1 - defenseReduction)
+    );
+
+    // Critical hit determination
+    const isCritical = this.determineCriticalHit(
+      technique,
+      attacker,
+      vitalPointResult.vitalPointsHit
+    );
+
+    // Apply critical multiplier
+    const criticalMultiplier = isCritical
+      ? technique.critMultiplier || 1.5
+      : 1.0;
+    const totalDamage = Math.round(finalDamage * criticalMultiplier);
+
+    // Generate effects
+    const effects = this.generateHitEffects(
+      technique,
+      vitalPointResult.vitalPointsHit,
+      isCritical,
+      totalDamage
+    );
+
     return {
-      damage: Math.max(1, Math.floor(finalDamage)),
+      totalDamage,
+      isCritical,
+      vitalPointsHit: vitalPointResult.vitalPointsHit,
       effects,
-      isCritical: accuracy > 0.8,
-      isVitalPoint: !!vitalPoint,
+      stunChance: vitalPointResult.stunChance,
+      consciousnessLoss: vitalPointResult.consciousnessLoss,
+      balanceLoss: vitalPointResult.balanceLoss,
+      techniqueEffectiveness: stanceMultiplier * attackerCondition,
     };
   }
 
   /**
-   * Calculate damage reduction from defense
+   * Calculate attacker's current condition affecting damage output
    */
-  static calculateDamageReduction(
-    incomingDamage: number,
-    defenderDefense: number,
-    isBlocking: boolean = false
-  ): number {
-    const blockMultiplier = isBlocking ? 0.5 : 1.0;
-    const defenseReduction = Math.min(0.8, defenderDefense / 200); // Max 80% reduction
+  private calculateAttackerCondition(attacker: PlayerState): number {
+    const healthCondition = attacker.health / attacker.maxHealth;
+    const staminaCondition = attacker.stamina / attacker.maxStamina;
+    const balanceCondition = attacker.balance / 100;
+    const consciousnessCondition = attacker.consciousness / 100;
 
-    return Math.max(
-      1,
-      incomingDamage * (1 - defenseReduction) * blockMultiplier
-    );
+    // Korean martial arts emphasizes mind-body unity
+    const mentalState = (consciousnessCondition + balanceCondition) / 2;
+    const physicalState = (healthCondition + staminaCondition) / 2;
+
+    return 0.5 + (mentalState * 0.3 + physicalState * 0.7) * 0.5;
   }
 
   /**
-   * Calculate critical hit chance
+   * Calculate vital point targeting damage
    */
-  static calculateCriticalChance(
-    baseCritChance: number,
-    attacker: PlayerState,
+  private calculateVitalPointDamage(
+    baseDamage: number,
+    technique: KoreanTechnique,
+    targetPosition?: { x: number; y: number }
+  ): {
+    damage: number;
+    vitalPointsHit: VitalPoint[];
+    stunChance: number;
+    consciousnessLoss: number;
+    balanceLoss: number;
+  } {
+    if (!targetPosition) {
+      // Random body targeting
+      return {
+        damage: baseDamage,
+        vitalPointsHit: [],
+        stunChance: 0.1,
+        consciousnessLoss: 0.05,
+        balanceLoss: 0.1,
+      };
+    }
+
+    // Find vital point near target
+    const vitalPoint = this.vitalPoints.findNearestVitalPoint(
+      targetPosition.x,
+      targetPosition.y,
+      0.5, // Default depth
+      0.15 // Search radius
+    );
+
+    if (!vitalPoint) {
+      return {
+        damage: baseDamage,
+        vitalPointsHit: [],
+        stunChance: 0.1,
+        consciousnessLoss: 0.05,
+        balanceLoss: 0.1,
+      };
+    }
+
+    // Calculate accuracy for vital point hit
+    const distance = Math.sqrt(
+      Math.pow(vitalPoint.location.x - targetPosition.x, 2) +
+        Math.pow(vitalPoint.location.y - targetPosition.y, 2)
+    );
+    const accuracy = Math.max(0.1, 1 - distance * 10);
+
+    // Apply vital point damage calculation
+    const vitalDamage = this.vitalPoints.calculateVitalPointDamage(
+      vitalPoint,
+      baseDamage,
+      accuracy
+    );
+
+    return {
+      damage: vitalDamage.totalDamage,
+      vitalPointsHit: [vitalPoint],
+      stunChance: vitalDamage.stunChance,
+      consciousnessLoss: vitalDamage.consciousnessLoss,
+      balanceLoss: vitalDamage.balanceLoss,
+    };
+  }
+
+  /**
+   * Calculate defender's damage reduction
+   */
+  private calculateDefense(
+    defender: PlayerState,
     technique: KoreanTechnique
   ): number {
-    const archetypeBonus =
-      DamageCalculator.getArchetypeModifier(attacker.archetype) * 0.1;
-    const techniqueBonus = (technique.critChance || 0.1) * 0.5;
+    let defenseValue = defender.defense || 0;
 
-    return Math.min(0.95, baseCritChance + archetypeBonus + techniqueBonus);
+    // Blocking bonus
+    if (defender.isBlocking) {
+      defenseValue *= 1.8;
+    }
+
+    // Stance defensive bonuses would be applied here
+    // (Implementation depends on stance system)
+
+    // Counter-attack preparation
+    if (defender.isCountering) {
+      defenseValue *= 1.3;
+    }
+
+    // Health and consciousness affect defense
+    const defenderCondition = Math.min(
+      defender.health / defender.maxHealth,
+      defender.consciousness / 100
+    );
+    defenseValue *= defenderCondition;
+
+    // Convert defense to damage reduction percentage
+    return Math.min(0.8, defenseValue / (defenseValue + 50));
+  }
+
+  /**
+   * Determine if attack is critical hit
+   */
+  private determineCriticalHit(
+    technique: KoreanTechnique,
+    attacker: PlayerState,
+    vitalPointsHit: readonly VitalPoint[]
+  ): boolean {
+    let critChance = technique.critChance || 0.1;
+
+    // Vital point hits increase critical chance
+    if (vitalPointsHit.length > 0) {
+      critChance *= 2.0;
+    }
+
+    // Attacker condition affects critical chance
+    const attackerCondition = this.calculateAttackerCondition(attacker);
+    critChance *= attackerCondition;
+
+    // Perfect balance increases critical chance
+    if (attacker.balance >= 95) {
+      critChance *= 1.2;
+    }
+
+    return Math.random() <= critChance;
+  }
+
+  /**
+   * Generate hit effects for visual feedback
+   */
+  private generateHitEffects(
+    technique: KoreanTechnique,
+    vitalPointsHit: readonly VitalPoint[],
+    isCritical: boolean,
+    damage: number
+  ): HitEffect[] {
+    const effects: HitEffect[] = [];
+    const timestamp = Date.now();
+
+    // Main hit effect
+    effects.push({
+      id: `hit_${timestamp}`,
+      type: isCritical ? HitEffectType.CRITICAL : HitEffectType.HIT_NORMAL,
+      attackerId: "attacker",
+      defenderId: "defender",
+      timestamp,
+      duration: isCritical ? 1500 : 1000,
+      position: { x: 0, y: 0 }, // Will be set by caller
+      intensity: isCritical ? 1.5 : 1.0,
+      startTime: timestamp,
+      text: isCritical ? "치명타!" : technique.name.korean,
+    });
+
+    // Vital point hit effects
+    vitalPointsHit.forEach((vitalPoint, index) => {
+      effects.push({
+        id: `vital_${timestamp}_${index}`,
+        type: HitEffectType.VITAL_POINT,
+        attackerId: "attacker",
+        defenderId: "defender",
+        timestamp,
+        duration: 2000,
+        position: { x: 0, y: 0 },
+        intensity: 1.2,
+        startTime: timestamp,
+        text: vitalPoint.name.korean,
+      });
+    });
+
+    return effects;
   }
 }
 

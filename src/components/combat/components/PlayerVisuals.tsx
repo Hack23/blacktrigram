@@ -1,8 +1,11 @@
 import React from "react";
-import { usePixiExtensions } from "../../utils/pixiExtensions";
-import { KOREAN_COLORS, PLAYER_ARCHETYPES_DATA } from "../../types/constants";
-import { lightenColor } from "../../utils/colorUtils";
-import type { PlayerState } from "../../types/player";
+import { usePixiExtensions } from "../../../utils/pixiExtensions"; // Fix: Correct path
+import {
+  KOREAN_COLORS,
+  PLAYER_ARCHETYPES_DATA,
+} from "../../../types/constants";
+import { lightenColor } from "../../../utils/colorUtils";
+import type { PlayerState } from "../../../types/player";
 
 export interface PlayerVisualsProps {
   readonly playerState: PlayerState;

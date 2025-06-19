@@ -1,499 +1,357 @@
-import type {
-  CombatSystemInterface,
-  VitalPointHitResult,
-} from "../types/systems";
-import type { PlayerState, CombatResult } from "../types";
-import type { StatusEffect } from "../types/effects";
-import { VitalPointSystem } from "./VitalPointSystem";
-import { TrigramSystem } from "./TrigramSystem";
-import { VitalPointSeverity } from "../types/enums";
-import { TRIGRAM_TECHNIQUES } from "../types/constants";
-import type { KoreanTechnique } from "../types/combat";
+/**
+ * @fileoverview Korean Martial Arts Combat System Implementation
+ * @description Complete combat system with authentic Korean martial arts mechanics
+ */
 
-export class CombatSystem implements CombatSystemInterface {
-  private vitalPointSystem: VitalPointSystem;
-  protected trigramSystem: TrigramSystem; // Fix: Change from private to protected
+import type { PlayerState } from "../types/player";
+import type { KoreanTechnique, CombatResult } from "../types/combat";
+import type { TrigramStance } from "../types/enums";
+import { StanceManager } from "./trigram/StanceManager";
+import { KoreanVitalPoints } from "./vitalpoint/KoreanVitalPoints";
+import { DamageCalculator } from "./vitalpoint/DamageCalculator";
+
+export class CombatSystem {
+  private readonly stanceManager: StanceManager;
+  private readonly vitalPoints: KoreanVitalPoints;
+  private readonly damageCalculator: DamageCalculator;
 
   constructor() {
-    this.vitalPointSystem = new VitalPointSystem();
-    this.trigramSystem = new TrigramSystem();
+    this.stanceManager = new StanceManager();
+    this.vitalPoints = new KoreanVitalPoints();
+    this.damageCalculator = new DamageCalculator(this.vitalPoints);
   }
 
   /**
-   * Fix: Update resolveAttack to match interface signature
+   * Execute Korean martial arts technique with authentic calculations
    */
-  resolveAttack(
+  public async executeKoreanTechnique(
     attacker: PlayerState,
+    technique: KoreanTechnique,
     defender: PlayerState,
-    technique: KoreanTechnique, // Fix: Add technique parameter
-    targetedVitalPointId?: string
-  ): CombatResult {
-    const timestamp = Date.now();
-
-    // Check if attacker can execute the technique
-    if (!this.canExecuteTechnique(attacker, technique)) {
+    targetPosition?: { x: number; y: number }
+  ): Promise<CombatResult> {
+    // Validate technique execution
+    const validation = this.validateTechnique(attacker, technique);
+    if (!validation.valid) {
       return {
-        hit: false,
+        hit: false, // Add this
         damage: 0,
-        criticalHit: false,
-        vitalPointHit: false,
+        isCritical: false,
         effects: [],
-        timestamp,
-        technique,
-        attacker,
-        defender,
-        success: false,
-        isCritical : false,
-        isBlocked: false,
+        message: validation.message,
       };
     }
 
-    // Fix: Use correct method signature - TrigramSystem.calculateStanceEffectiveness only takes 2 parameters
-    const stanceEffectiveness = this.trigramSystem.calculateStanceEffectiveness(
+    // Calculate stance effectiveness
+    const stanceMultiplier = this.stanceManager.getStanceEffectiveness(
       attacker.currentStance,
       defender.currentStance
     );
 
-    // Calculate base hit chance
-    const baseAccuracy = technique.accuracy * stanceEffectiveness;
+    // Determine hit success
+    const hitChance = this.calculateHitChance(attacker, defender, technique);
     const hitRoll = Math.random();
-    const hit = hitRoll <= baseAccuracy;
+    const hit = hitRoll <= hitChance;
 
     if (!hit) {
       return {
-        hit: false,
+        hit: false, // Add this
         damage: 0,
-        criticalHit: false,
-        vitalPointHit: false,
+        isCritical: false,
         effects: [],
-        timestamp,
-        technique,
-        attacker,
-        defender,
-        success: false,
-        isCritical : false,
-        isBlocked: false,
+        message: `${technique.name.korean} 빗나감 - ${technique.name.english} missed`,
       };
     }
 
-    // Process vital point hit if targeted
-    let vitalPointResult: VitalPointHitResult | null = null;
-    if (targetedVitalPointId) {
-      vitalPointResult = this.processVitalPointHit(
-        targetedVitalPointId,
-        technique.damage || 15,
-        attacker
-      );
-    }
-
-    // Calculate damage using the interface method
-    const damageResult = this.calculateDamage(
+    // Calculate damage with vital point targeting
+    const damageResult = await this.damageCalculator.calculateDamage(
       technique,
       attacker,
       defender,
-      vitalPointResult || {
-        hit: false,
-        damage: 0,
-        effects: [],
-        severity: VitalPointSeverity.MINOR,
-      }
+      stanceMultiplier,
+      targetPosition
     );
 
-    // Check for critical hit
-    const critRoll = Math.random();
-    const isCritical = critRoll <= (technique.critChance || 0.1);
-
-    return {
+    // Apply Korean martial arts combat effects
+    const combatResult: CombatResult = {
       hit: true,
-      damage: damageResult.totalDamage,
-      criticalHit: isCritical,
-      vitalPointHit: vitalPointResult?.hit || false,
-      effects: damageResult.effectsApplied,
-      timestamp,
-      technique,
-      attacker,
-      defender,
-      success: true,
-      isCritical : vitalPointResult?.hit || false,
-      isBlocked: false,
-    };
-  }
-
-  /**
-   * Fix: Make applyCombatResult non-static instance method
-   */
-  applyCombatResult(
-    result: CombatResult,
-    attacker: PlayerState,
-    defender: PlayerState
-  ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
-    return CombatSystem.applyCombatResult(result, attacker, defender);
-  }
-
-  /**
-   * Static version for backwards compatibility
-   */
-  static applyCombatResult(
-    result: CombatResult,
-    attacker: PlayerState,
-    defender: PlayerState
-  ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
-    // Apply damage and effects
-    let updatedDefender = defender;
-    let updatedAttacker = attacker;
-
-    if (result.hit) {
-      updatedDefender = {
-        ...defender,
-        health: Math.max(0, defender.health - result.damage),
-        totalDamageReceived: defender.totalDamageReceived + result.damage,
-        hitsTaken: defender.hitsTaken + 1,
-      };
-    }
-
-    // Apply technique costs to attacker
-    updatedAttacker = {
-      ...attacker,
-      ki: Math.max(0, attacker.ki - 5),
-      stamina: Math.max(0, attacker.stamina - 10),
-      totalDamageDealt:
-        attacker.totalDamageDealt + (result.hit ? result.damage : 0),
-      hitsLanded: attacker.hitsLanded + (result.hit ? 1 : 0),
+      damage: damageResult.damage,
+      isCritical: damageResult.isCritical,
+      effects: damageResult.effects,
+      // Remove duplicate effects and isCritical properties
+      ...damageResult,
     };
 
-    return { updatedAttacker, updatedDefender };
+    return combatResult;
   }
 
   /**
-   * Fix: Add missing getAvailableTechniques method required by interface
+   * Validate technique execution according to Korean martial arts rules
    */
-  getAvailableTechniques(player: PlayerState): readonly KoreanTechnique[] {
-    const allTechniques = TRIGRAM_TECHNIQUES[player.currentStance] || [];
-
-    // Filter techniques based on available resources using canExecuteTechnique
-    return allTechniques.filter((technique) =>
-      this.canExecuteTechnique(player, technique as KoreanTechnique)
-    ) as readonly KoreanTechnique[];
-  }
-
-  /**
-   * Check if attacker can execute technique
-   */
-  private canExecuteTechnique(
+  public validateTechnique(
     player: PlayerState,
     technique: KoreanTechnique
-  ): boolean {
-    return (
-      player.ki >= technique.kiCost &&
-      player.stamina >= technique.staminaCost &&
-      player.currentStance === technique.stance &&
-      !player.isStunned
-    );
+  ): { valid: boolean; message: string } {
+    // Check stance compatibility
+    if (technique.stance && technique.stance !== player.currentStance) {
+      return {
+        valid: false,
+        message: `${technique.stance} 자세가 필요합니다 - ${technique.stance} stance required`,
+      };
+    }
+
+    // Check resource requirements
+    if (player.ki < technique.kiCost) {
+      return {
+        valid: false,
+        message: "기력이 부족합니다 - Insufficient Ki",
+      };
+    }
+
+    if (player.stamina < technique.staminaCost) {
+      return {
+        valid: false,
+        message: "체력이 부족합니다 - Insufficient Stamina",
+      };
+    }
+
+    // Check if player is in recovery state
+    const currentTime = Date.now();
+    if (currentTime < player.lastActionTime + player.recoveryTime) {
+      return {
+        valid: false,
+        message: "아직 회복 중입니다 - Still recovering",
+      };
+    }
+
+    // Check if player is stunned or incapacitated
+    if (player.isStunned || player.consciousness <= 10) {
+      return {
+        valid: false,
+        message: "행동할 수 없는 상태입니다 - Unable to act",
+      };
+    }
+
+    return { valid: true, message: "" };
   }
 
   /**
-   * Static methods for backwards compatibility
+   * Calculate hit chance based on Korean martial arts principles
    */
-  static resolveAttack(
+  private calculateHitChance(
     attacker: PlayerState,
     defender: PlayerState,
     technique: KoreanTechnique
-  ): CombatResult {
-    const instance = new CombatSystem();
-    return instance.executeAttack(attacker, defender, technique);
-  }
-
-  /**
-   * Check if a player is defeated
-   */
-  isPlayerDefeated(player: PlayerState): boolean {
-    return player.health <= 0 || player.consciousness <= 0;
-  }
-
-  /**
-   * Update player state over time
-   */
-  updatePlayerState(player: PlayerState, deltaTime: number): PlayerState {
-    let updatedPlayer = { ...player };
-
-    // Apply natural regeneration
-    const regenRate = deltaTime / 1000; // Convert to seconds
-
-    // Ki regeneration (slower during combat)
-    if (updatedPlayer.ki < updatedPlayer.maxKi) {
-      updatedPlayer.ki = Math.min(
-        updatedPlayer.maxKi,
-        updatedPlayer.ki + regenRate * 2
-      );
-    }
-
-    // Stamina regeneration
-    if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
-      updatedPlayer.stamina = Math.min(
-        updatedPlayer.maxStamina,
-        updatedPlayer.stamina + regenRate * 3
-      );
-    }
-
-    // Health regeneration (very slow)
-    if (
-      updatedPlayer.health < updatedPlayer.maxHealth &&
-      updatedPlayer.health > 0
-    ) {
-      updatedPlayer.health = Math.min(
-        updatedPlayer.maxHealth,
-        updatedPlayer.health + regenRate * 0.5
-      );
-    }
-
-    // Update status effects
-    const currentTime = Date.now();
-    updatedPlayer.statusEffects = updatedPlayer.statusEffects.filter(
-      (effect) => effect.endTime > currentTime
-    );
-
-    // Clear temporary combat states
-    if (
-      updatedPlayer.lastActionTime &&
-      currentTime - updatedPlayer.lastActionTime > updatedPlayer.recoveryTime
-    ) {
-      updatedPlayer.isStunned = false;
-      updatedPlayer.isCountering = false;
-    }
-
-    return updatedPlayer;
-  }
-
-  /**
-   * Get combat statistics
-   */
-  getCombatStatistics(player: PlayerState): {
-    healthPercent: number;
-    kiPercent: number;
-    staminaPercent: number;
-    balancePercent: number;
-  } {
-    return {
-      healthPercent: (player.health / player.maxHealth) * 100,
-      kiPercent: (player.ki / player.maxKi) * 100,
-      staminaPercent: (player.stamina / player.maxStamina) * 100,
-      balancePercent: player.balance,
-    };
-  }
-
-  /**
-   * Fix: Integrate processVitalPointHit into the combat system
-   */
-  private processVitalPointHit(
-    vitalPointId: string,
-    baseDamage: number,
-    attacker: PlayerState
-  ): VitalPointHitResult {
-    const vitalPoint = this.vitalPointSystem.getVitalPointById(vitalPointId);
-
-    if (!vitalPoint) {
-      return {
-        hit: false,
-        damage: 0,
-        effects: [],
-        severity: VitalPointSeverity.MINOR,
-      };
-    }
-
-    // Fix: Use available methods instead of non-existent calculateVitalPointDamage
-    // Calculate damage based on vital point properties and attacker archetype
-    const archetypeModifier = this.getArchetypeVitalPointModifier(
-      attacker.archetype,
-      vitalPoint
-    );
-    const damage = Math.floor(baseDamage * archetypeModifier);
-
-    return {
-      hit: true,
-      vitalPoint,
-      damage,
-      effects: vitalPoint.effects.map((effect) => ({
-        id: `${effect.id}_${Date.now()}`,
-        type: effect.type as any,
-        intensity: effect.intensity as any,
-        duration: effect.duration,
-        description: effect.description,
-        stackable: effect.stackable,
-        source: vitalPointId,
-        startTime: Date.now(),
-        endTime: Date.now() + effect.duration,
-      })),
-      severity: vitalPoint.severity,
-    };
-  }
-
-  /**
-   * Helper method to get archetype-specific vital point damage modifier
-   */
-  private getArchetypeVitalPointModifier(
-    archetype: any,
-    vitalPoint: any
   ): number {
-    // Simple archetype-based modifiers
-    const baseModifier = 1.0;
+    let baseHitChance = technique.accuracy || 0.75;
 
-    // Different archetypes have different specializations
-    switch (archetype) {
-      case "amsalja": // Shadow Assassin - better at nerve strikes
-        return vitalPoint.category === "neurological" ? 1.3 : baseModifier;
-      case "musa": // Traditional Warrior - better at bone strikes
-        return vitalPoint.category === "skeletal" ? 1.2 : baseModifier;
-      case "hacker": // Cyber Warrior - better at nerve disruption
-        return vitalPoint.category === "neurological" ? 1.1 : baseModifier;
-      default:
-        return baseModifier;
-    }
-  }
-
-  /**
-   * Execute attack with technique
-   */
-  private executeAttack(
-    attacker: PlayerState,
-    defender: PlayerState,
-    technique: KoreanTechnique // Fix: Add technique parameter
-  ): CombatResult {
-    const hitRoll = Math.random();
-    const accuracy = technique.accuracy || 0.8;
-    const hit = hitRoll <= accuracy;
-
-    if (!hit) {
-      return {
-        hit: false,
-        damage: 0,
-        criticalHit: false,
-        vitalPointHit: false,
-        effects: [],
-        timestamp: Date.now(),
-        technique,
-        attacker,
-        defender,
-        success: false,
-        isCritical : false,
-        isBlocked: false,
-      };
-    }
-
-    // Calculate damage using the interface method
-    const vitalPointHit: VitalPointHitResult = {
-      hit: false,
-      damage: 0,
-      effects: [],
-      severity: "minor" as any, // Use any to satisfy enum type
-    };
-
-    const damageResult = this.calculateDamage(
-      technique,
-      attacker,
-      defender,
-      vitalPointHit
+    // Stance bonuses
+    const attackerBonuses = this.stanceManager.getStanceBonuses(
+      attacker.currentStance
     );
+    baseHitChance *= attackerBonuses.speed;
 
-    return {
-      hit: true,
-      damage: damageResult.totalDamage,
-      criticalHit: Math.random() < (technique.critChance || 0.1),
-      vitalPointHit: false,
-      effects: damageResult.effectsApplied,
-      timestamp: Date.now(),
-      technique,
-      attacker,
-      defender,
-      success: true,
-      isCritical : false,
-      isBlocked: false,
-    };
+    // Defender's evasion
+    const defenderBonuses = this.stanceManager.getStanceBonuses(
+      defender.currentStance
+    );
+    const evasionMultiplier = 1 - (defenderBonuses.defense - 1) * 0.5;
+    baseHitChance *= evasionMultiplier;
+
+    // Player condition modifiers
+    const attackerCondition = Math.min(
+      attacker.stamina / attacker.maxStamina,
+      attacker.consciousness / 100
+    );
+    baseHitChance *= 0.5 + attackerCondition * 0.5;
+
+    // Defender blocking
+    if (defender.isBlocking) {
+      baseHitChance *= 0.6;
+    }
+
+    // Balance affects accuracy
+    baseHitChance *= attacker.balance / 100;
+
+    return Math.max(0.05, Math.min(0.95, baseHitChance));
   }
 
   /**
-   * Fix: Add missing calculateDamage method required by interface
+   * Generate Korean combat message
    */
-  calculateDamage(
+  private generateCombatMessage(
     technique: KoreanTechnique,
-    attacker: PlayerState,
-    defender: PlayerState,
-    hitResult: VitalPointHitResult
-  ): {
-    baseDamage: number;
-    modifierDamage: number;
-    totalDamage: number;
-    effectsApplied: readonly StatusEffect[];
-    finalDefenderState?: Partial<PlayerState>;
-  } {
-    // Calculate base damage from technique
-    const baseDamage = technique.damage || 15;
-
-    // Apply attacker modifiers
-    const attackerBonus = attacker.attackPower * 0.1;
-
-    // Apply vital point modifiers if hit
-    let vitalPointMultiplier = 1.0;
-    if (hitResult.hit && hitResult.vitalPoint) {
-      const severityMultipliers = {
-        minor: 1.1,
-        moderate: 1.3,
-        major: 1.6,
-        critical: 2.0,
-        lethal: 3.0,
-      };
-      vitalPointMultiplier = severityMultipliers[hitResult.severity] || 1.0;
+    damageResult: any
+  ): string {
+    if (damageResult.isCritical) {
+      return `${technique.name.korean} 치명타! ${damageResult.totalDamage} 피해 - ${technique.name.english} Critical! ${damageResult.totalDamage} damage`;
     }
 
-    // Calculate total modifier damage
-    const modifierDamage = attackerBonus * vitalPointMultiplier;
+    if (damageResult.vitalPointsHit.length > 0) {
+      const vitalPoint = damageResult.vitalPointsHit[0];
+      return `${technique.name.korean}로 ${vitalPoint.name.korean} 타격! ${damageResult.totalDamage} 피해`;
+    }
 
-    // Apply defense reduction
-    const defenseReduction = defender.defense * 0.05;
-    const totalDamage = Math.max(
-      1,
-      baseDamage + modifierDamage - defenseReduction
-    );
+    return `${technique.name.korean} 적중! ${damageResult.totalDamage} 피해 - ${technique.name.english} hit! ${damageResult.totalDamage} damage`;
+  }
 
-    // Combine effects from technique and vital point hit
-    const effectsApplied = [...technique.effects, ...hitResult.effects];
+  /**
+   * Update combat system state
+   */
+  public update(deltaTime: number, players: PlayerState[]): void {
+    const currentTime = Date.now();
+
+    // Update player recovery and regeneration
+    players.forEach((player) => {
+      this.regenerateResources(player, deltaTime);
+    });
+  }
+
+  /**
+   * Get available techniques for player's current stance
+   */
+  public getAvailableTechniques(player: PlayerState): readonly string[] {
+    return this.stanceManager.getAvailableTechniques(player.currentStance);
+  }
+
+  /**
+   * Change player stance
+   */
+  public changeStance(
+    player: PlayerState,
+    newStance: TrigramStance
+  ): PlayerState {
+    const result = this.validateStanceChange(player, newStance);
+    if (!result.valid) {
+      return player;
+    }
 
     return {
-      baseDamage,
-      modifierDamage,
-      totalDamage: Math.floor(totalDamage),
-      effectsApplied,
-      finalDefenderState: {
-        health: Math.max(0, defender.health - totalDamage),
-      },
+      ...player,
+      currentStance: newStance,
+      ki: player.ki - result.cost * 0.6,
+      stamina: player.stamina - result.cost * 0.4,
+      lastActionTime: Date.now(),
     };
+  }
+
+  // Fix the regeneration methods to handle readonly properties
+  private regenerateResources(player: PlayerState, deltaTime: number): void {
+    // Create a mutable copy to update
+    const updates: Partial<PlayerState> = {};
+
+    if (player.ki < player.maxKi) {
+      updates.ki = Math.min(player.maxKi, player.ki + deltaTime * 0.5);
+    }
+
+    if (player.stamina < player.maxStamina) {
+      updates.stamina = Math.min(
+        player.maxStamina,
+        player.stamina + deltaTime * 0.8
+      );
+    }
+
+    if (player.balance < 100) {
+      updates.balance = Math.min(100, player.balance + deltaTime * 1.2);
+    }
+
+    if (player.consciousness < 100) {
+      updates.consciousness = Math.min(
+        100,
+        player.consciousness + deltaTime * 0.3
+      );
+    }
+
+    // Apply updates through the player update system
+    Object.assign(player as any, updates);
   }
 }
 
 /**
- * Creates a standardized CombatResult with all required fields
- * Ensures both 'critical' and 'criticalHit' are present for API compatibility
+ * Training-specific combat system for solo practice
  */
-export function createCombatResult(
-  partialResult: Partial<CombatResult>
-): CombatResult {
-  // Set default values
-  const result: CombatResult = {
-    success: partialResult.success ?? false,
-    damage: partialResult.damage ?? 0,
-    isCritical: partialResult.isCritical ?? partialResult.criticalHit ?? false,
-    hit: partialResult.hit ?? partialResult.success ?? false,
-    isBlocked: partialResult.isBlocked ?? false,
-    vitalPointHit: partialResult.vitalPointHit ?? false,
-    effects: partialResult.effects ?? [],
-    attacker: partialResult.attacker,
-    defender: partialResult.defender,
-    technique: partialResult.technique,
-    // Always set criticalHit to match critical for consistency
-    criticalHit: partialResult.isCritical ?? partialResult.criticalHit ?? false,
-    timestamp: Date.now(), // <-- Add this property
-  };
+export class TrainingCombatSystem extends CombatSystem {
+  private trainingDummy: PlayerState;
 
-  return result;
+  constructor() {
+    super();
+    this.trainingDummy = this.createTrainingDummy();
+  }
+
+  private createTrainingDummy(): PlayerState {
+    return {
+      id: "training_dummy",
+      name: { korean: "수련용 허수아비", english: "Training Dummy" },
+      archetype: "musa" as any,
+      currentStance: "geon" as any,
+      health: 1000,
+      maxHealth: 1000,
+      ki: 100,
+      maxKi: 100,
+      stamina: 100,
+      maxStamina: 100,
+      balance: 100,
+      consciousness: 100,
+      pain: 0,
+      experiencePoints: 0,
+      level: 1,
+      isBlocking: false,
+      isStunned: false,
+      isCountering: false,
+      statusEffects: [],
+      position: { x: 5, y: 5 },
+      hitsLanded: 0,
+      hitsTaken: 0,
+      totalDamageDealt: 0,
+      totalDamageReceived: 0,
+      combatStats: {
+        hitsLanded: 0,
+        hitsTaken: 0,
+        totalDamageDealt: 0,
+        totalDamageReceived: 0,
+        perfectStrikes: 0,
+        criticalHits: 0,
+      },
+      attackPower: 0,
+      defense: 10,
+      lastActionTime: 0,
+      recoveryTime: 0,
+    };
+  }
+
+  public async executeTrainingTechnique(
+    player: PlayerState,
+    technique: KoreanTechnique,
+    targetPosition?: { x: number; y: number }
+  ): Promise<CombatResult> {
+    const result = await this.executeKoreanTechnique(
+      player,
+      technique,
+      this.trainingDummy,
+      targetPosition
+    );
+
+    // Reset dummy health for continuous training
+    if (this.trainingDummy.health <= 0) {
+      this.resetTrainingDummy();
+    }
+
+    return result;
+  }
+
+  // Fix training dummy reset
+  public resetTrainingDummy(): void {
+    this.trainingDummy = {
+      ...this.trainingDummy,
+      health: this.trainingDummy.maxHealth,
+      consciousness: 100,
+      balance: 100,
+    };
+  }
+
+  public getTrainingDummy(): PlayerState {
+    return this.trainingDummy;
+  }
 }
 
 export default CombatSystem;

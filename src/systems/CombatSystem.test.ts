@@ -3,12 +3,16 @@ import CombatSystem from "./CombatSystem";
 import { TrainingCombatSystem } from "./combat/TrainingCombatSystem";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
 import {
+  createMockPlayer,
+  createBasicTechnique,
+} from "../test/mocks/playerMocks"; // Fix: Add missing import
+import {
   TrigramStance,
   PlayerArchetype,
   CombatAttackType,
   DamageType,
 } from "../types/enums";
-import type { PlayerState, KoreanTechnique } from "../types";
+import type { PlayerState, KoreanTechnique, CombatResult } from "../types"; // Fix: Add CombatResult import
 
 describe("CombatSystem", () => {
   let combatSystem: CombatSystem;
@@ -108,25 +112,49 @@ describe("CombatSystem", () => {
 
   describe("applyCombatResult", () => {
     it("should update player states based on combat result", () => {
-      // Fix: Use mockTechnique instead of undefined
-      const combatResult = combatSystem.resolveAttack(
+      const system = new CombatSystem();
+      const technique = createBasicTechnique();
+
+      const player1 = createMockPlayer({
+        ki: 50,
+        stamina: 50,
+        hitsLanded: 0,
+        totalDamageDealt: 0,
+      });
+
+      const player2 = createMockPlayer({
+        health: 100,
+        consciousness: 100,
+        balance: 100,
+        pain: 0,
+        hitsTaken: 0,
+        totalDamageReceived: 0,
+      });
+
+      const combatResult: CombatResult = {
+        hit: true,
+        damage: 20,
+        technique,
+        effects: [],
+        isCritical: false,
+        isBlocked: false,
+        criticalHit: false,
+        vitalPointHit: false,
+        success: true,
+        timestamp: Date.now(),
+        attacker: player1,
+        defender: player2,
+      };
+
+      const { updatedAttacker, updatedDefender } = system.applyCombatResult(
+        combatResult,
         player1,
-        player2,
-        mockTechnique // Fix: Pass proper technique object
+        player2
       );
-
-      const { updatedAttacker, updatedDefender } =
-        combatSystem.applyCombatResult(combatResult, player1, player2);
-
-      expect(updatedAttacker).toBeDefined();
-      expect(updatedDefender).toBeDefined();
-
-      if (combatResult.hit) {
-        expect(updatedDefender.health).toBeLessThanOrEqual(player2.health);
-      }
 
       expect(updatedAttacker.ki).toBeLessThanOrEqual(player1.ki);
       expect(updatedAttacker.stamina).toBeLessThanOrEqual(player1.stamina);
+      expect(updatedDefender.health).toBeLessThan(player2.health);
     });
   });
 

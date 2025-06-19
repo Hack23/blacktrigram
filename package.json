@@ -35,8 +35,10 @@
     "knip": "knip"
   },
   "dependencies": {
+    "@pixi/layout": "^3.0.2",
     "@pixi/react": "^8.0.2",
     "@pixi/sound": "^6.0.1",
+    "@pixi/ui": "^2.2.4",
     "howler": "^2.2.4",
     "pixi.js": "^8.10.1",
     "react": "^19.1.0",
@@ -70,6 +72,7 @@
     "cypress-wait-until": "^3.0.2",
     "dotenv": "^16.5.0",
     "eslint": "^9.29.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",

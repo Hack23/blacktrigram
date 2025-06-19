@@ -1,157 +1,189 @@
 /**
- * Player state and related types for Korean martial arts
+ * @fileoverview Player type definitions for Black Trigram Korean martial arts combat system
+ * @description Complete player state and archetype definitions with Korean cultural elements
  */
 
-import type { KoreanText, Position } from "./common";
+import type { PlayerArchetype, TrigramStance } from "./enums";
+import type { KoreanText } from "./korean-text";
 import type { StatusEffect } from "./effects";
-import { TrigramStance, PlayerArchetype, CombatState } from "./enums";
 
-// Core player state interface
+/**
+ * @interface PlayerState
+ * @description Complete player state for Korean martial arts combat system
+ */
 export interface PlayerState {
   readonly id: string;
   readonly name: KoreanText;
   readonly archetype: PlayerArchetype;
+  readonly currentStance: TrigramStance;
 
-  // Combat stats
+  // Core stats
   readonly health: number;
   readonly maxHealth: number;
   readonly ki: number;
   readonly maxKi: number;
   readonly stamina: number;
   readonly maxStamina: number;
-  readonly energy: number;
-  readonly maxEnergy: number;
+  readonly balance: number;
+  readonly consciousness: number;
+  readonly pain: number;
 
-  // Combat attributes
+  // Combat stats
   readonly attackPower: number;
   readonly defense: number;
-  readonly speed: number;
-  readonly technique: number;
-  readonly pain: number;
-  readonly consciousness: number;
-  readonly balance: number;
-  readonly momentum: number;
+  readonly experiencePoints: number;
+  readonly level: number;
 
   // Combat state
-  readonly currentStance: TrigramStance;
-  readonly combatState: CombatState;
-  readonly position: Position;
   readonly isBlocking: boolean;
   readonly isStunned: boolean;
   readonly isCountering: boolean;
+  readonly statusEffects: readonly StatusEffect[];
+
+  // Position and movement
+  readonly position: { readonly x: number; readonly y: number };
+
+  // Combat statistics
+  readonly hitsLanded: number;
+  readonly hitsTaken: number;
+  readonly totalDamageDealt: number;
+  readonly totalDamageReceived: number;
+  readonly combatStats: {
+    readonly hitsLanded: number;
+    readonly hitsTaken: number;
+    readonly totalDamageDealt: number;
+    readonly totalDamageReceived: number;
+    readonly perfectStrikes: number;
+    readonly criticalHits: number;
+  };
+
+  // Timing
   readonly lastActionTime: number;
   readonly recoveryTime: number;
-  readonly lastStanceChangeTime: number;
-
-  // Status and effects
-  readonly statusEffects: readonly StatusEffect[];
-  readonly activeEffects: readonly string[];
-
-  // Vital points state
-  readonly vitalPoints: readonly {
-    readonly id: string;
-    readonly isHit: boolean;
-    readonly damage: number;
-    readonly lastHitTime: number;
-  }[];
-
-  // Match statistics
-  readonly totalDamageReceived: number;
-  readonly totalDamageDealt: number;
-  readonly hitsTaken: number;
-  readonly hitsLanded: number;
-  readonly perfectStrikes: number;
-  readonly vitalPointHits: number;
-
-  // Fix: Add missing properties
-  readonly misses?: number;
-  readonly accuracy?: number;
-  readonly comboCount?: number;
-  readonly maxCombo?: number;
-  readonly roundsWon?: number;
-  readonly matchesWon?: number;
-  readonly experiencePoints?: number;
-  readonly rank?: string;
-  readonly wins?: number;
-  readonly losses?: number;
 }
 
-// Player creation data
-export interface PlayerCreationData {
+/**
+ * @interface PlayerArchetypeData
+ * @description Data structure for player archetype definitions
+ */
+export interface PlayerArchetypeData {
   readonly name: KoreanText;
-  readonly archetype: PlayerArchetype;
-  readonly preferredStance?: TrigramStance;
-  readonly customizations?: {
-    readonly colors?: { primary: number; secondary: number };
-    readonly techniques?: string[];
+  readonly description: KoreanText;
+  readonly specialties: readonly string[];
+  readonly preferredStances: readonly TrigramStance[];
+  readonly colors: {
+    readonly primary: number;
+    readonly secondary: number;
+    readonly accent: number;
+  };
+  readonly baseStats: {
+    readonly health: number;
+    readonly ki: number;
+    readonly stamina: number;
+    readonly attackPower: number;
+    readonly defense: number;
+  };
+  readonly bonuses: {
+    readonly [key: string]: number;
   };
 }
 
-// Player match statistics
-export interface PlayerMatchStats {
+/**
+ * @interface PlayerStats
+ * @description Enhanced combat statistics for players
+ */
+export interface PlayerStats {
+  readonly totalMatches: number;
   readonly wins: number;
   readonly losses: number;
-  readonly hitsTaken: number;
-  readonly hitsLanded: number;
-  readonly totalDamageDealt: number;
-  readonly totalDamageReceived: number;
-  readonly techniques: readonly string[];
-  readonly perfectStrikes: number;
-  readonly vitalPointHits: number;
-  readonly consecutiveWins: number;
-  readonly matchDuration: number;
+  readonly draws: number;
+  readonly winRate: number;
+  readonly averageDamagePerMatch: number;
+  readonly averageAccuracy: number;
+  readonly favoriteStance: TrigramStance;
+  readonly longestWinStreak: number;
+  readonly perfectVictories: number;
+  readonly comebackWins: number;
 }
 
-// Player update type for partial updates
-export type PlayerUpdateData = Partial<PlayerState>;
+/**
+ * @type PlayerUpdateFields
+ * @description Fields that can be updated on a player
+ */
+export type PlayerUpdateFields = Partial<
+  Pick<
+    PlayerState,
+    | "health"
+    | "ki"
+    | "stamina"
+    | "balance"
+    | "consciousness"
+    | "pain"
+    | "currentStance"
+    | "isBlocking"
+    | "isStunned"
+    | "isCountering"
+    | "statusEffects"
+    | "position"
+    | "hitsLanded"
+    | "hitsTaken"
+    | "totalDamageDealt"
+    | "totalDamageReceived"
+  >
+>;
 
-// Minimal PlayerState for error-free usage
-export interface MinimalPlayerState {
-  id: string;
-  name: { korean: string; english: string };
-  archetype: PlayerArchetype;
-  health: number;
-  maxHealth: number;
-  ki: number;
-  maxKi: number;
-  stamina: number;
-  maxStamina: number;
-  energy: number;
-  maxEnergy: number;
-  attackPower: number;
-  defense: number;
-  speed: number;
-  technique: number;
-  pain: number;
-  consciousness: number;
-  balance: number;
-  momentum: number;
-  currentStance: TrigramStance;
-  combatState: CombatState;
-  position: Position;
-  isBlocking: boolean;
-  isStunned: boolean;
-  isCountering: boolean;
-  lastActionTime: number;
-  recoveryTime: number;
-  lastStanceChangeTime: number;
-  statusEffects: any[];
-  activeEffects: any[];
-  vitalPoints: any[];
-  totalDamageReceived: number;
-  totalDamageDealt: number;
-  hitsTaken: number;
-  hitsLanded: number;
-  perfectStrikes: number;
-  vitalPointHits: number;
+/**
+ * @interface PlayerCreationOptions
+ * @description Options for creating a new player
+ */
+export interface PlayerCreationOptions {
+  readonly name: KoreanText;
+  readonly archetype: PlayerArchetype;
+  readonly customStats?: Partial<PlayerArchetypeData["baseStats"]>;
+  readonly startingStance?: TrigramStance;
+  readonly level?: number;
 }
-export interface PlayerTrainingStats {
-  readonly attempts: number;
-  readonly successes: number;
-  readonly failures: number;
-  readonly averageTime: number;
-  readonly bestTime: number;
-  readonly worstTime: number;
-  readonly techniquesUsed: readonly string[];
-  readonly dummyInteractions: number;
+
+/**
+ * @interface PlayerAbility
+ * @description Special abilities available to players
+ */
+export interface PlayerAbility {
+  readonly id: string;
+  readonly name: KoreanText;
+  readonly description: KoreanText;
+  readonly kiCost: number;
+  readonly staminaCost: number;
+  readonly cooldown: number;
+  readonly requiredStance?: TrigramStance;
+  readonly requiredLevel: number;
+  readonly effects: readonly string[];
+}
+
+/**
+ * @interface PlayerProgression
+ * @description Player progression and advancement
+ */
+export interface PlayerProgression {
+  readonly currentLevel: number;
+  readonly experiencePoints: number;
+  readonly experienceToNextLevel: number;
+  readonly skillPoints: number;
+  readonly unlockedAbilities: readonly string[];
+  readonly masteredStances: readonly TrigramStance[];
+  readonly achievements: readonly string[];
+}
+
+export default PlayerState;
+/**
+ * @interface TrainingPlayerState
+ * @description Extended player state for training mode
+ */
+export interface TrainingPlayerState extends PlayerState {
+  readonly trainingData: {
+    readonly sessionsCompleted: number;
+    readonly techniquesLearned: readonly string[];
+    readonly masteryCertifications: readonly string[];
+    readonly instructorNotes: readonly string[];
+  };
 }

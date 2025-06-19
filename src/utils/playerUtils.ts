@@ -1,19 +1,15 @@
 /**
- * Player state utilities and helper functions
+ * @fileoverview Player utility functions for Korean martial arts game
+ * @description Helper functions for player creation, state management, and archetype handling
  */
 
-import type {
-  PlayerState,
-  PlayerArchetype,
-  TrigramStance,
-  Position,
-  StatusEffect,
-} from "../types";
-import { CombatState } from "../types/enums";
+import type { PlayerState } from "../types/player";
+import { PlayerArchetype, TrigramStance } from "../types/enums";
 import { PLAYER_ARCHETYPES_DATA } from "../types/constants";
+import type { KoreanText } from "../types/korean-text";
 
 /**
- * Create a complete PlayerState from archetype and player index
+ * Creates a new player from an archetype with Korean martial arts characteristics
  */
 export function createPlayerFromArchetype(
   archetype: PlayerArchetype,
@@ -21,236 +17,238 @@ export function createPlayerFromArchetype(
 ): PlayerState {
   const archetypeData = PLAYER_ARCHETYPES_DATA[archetype];
 
-  const basePosition: Position = {
-    x: playerIndex === 0 ? 300 : 500,
-    y: 400,
+  const playerNames: Record<PlayerArchetype, KoreanText[]> = {
+    [PlayerArchetype.MUSA]: [
+      { korean: "강철무사", english: "Iron Warrior" },
+      { korean: "용맹무사", english: "Brave Warrior" },
+    ],
+    [PlayerArchetype.AMSALJA]: [
+      { korean: "그림자", english: "Shadow" },
+      { korean: "은밀자", english: "Stealth" },
+    ],
+    [PlayerArchetype.HACKER]: [
+      { korean: "사이버전사", english: "Cyber Warrior" },
+      { korean: "데이터침입자", english: "Data Infiltrator" },
+    ],
+    [PlayerArchetype.JEONGBO_YOWON]: [
+      { korean: "정보수집가", english: "Intelligence Gatherer" },
+      { korean: "관찰자", english: "Observer" },
+    ],
+    [PlayerArchetype.JOJIK_POKRYEOKBAE]: [
+      { korean: "폭력배", english: "Gangster" },
+      { korean: "거친자", english: "Rough One" },
+    ],
   };
 
+  const names = playerNames[archetype];
+  const selectedName = names[playerIndex % names.length];
+
   return {
-    id: `player_${playerIndex + 1}`,
-    name: archetypeData.name,
+    id: `player_${playerIndex}`,
+    name: selectedName,
     archetype,
-
-    // Combat stats
-    health: archetypeData.baseHealth,
-    maxHealth: archetypeData.baseHealth,
-    ki: archetypeData.baseKi,
-    maxKi: archetypeData.baseKi,
-    stamina: archetypeData.baseStamina,
-    maxStamina: archetypeData.baseStamina,
-    energy: 100,
-    maxEnergy: 100,
-
-    // Combat attributes
-    attackPower: archetypeData.stats.attackPower,
-    defense: archetypeData.stats.defense,
-    speed: archetypeData.stats.speed,
-    technique: archetypeData.stats.technique,
-    pain: 0,
-    consciousness: 100,
+    currentStance: TrigramStance.GEON,
+    health: archetypeData.stats.baseHealth,
+    maxHealth: archetypeData.stats.baseHealth,
+    ki: archetypeData.stats.baseKi,
+    maxKi: archetypeData.stats.baseKi,
+    stamina: archetypeData.stats.baseStamina,
+    maxStamina: archetypeData.stats.baseStamina,
     balance: 100,
-    momentum: 0,
-
-    // Combat state
-    currentStance: archetypeData.coreStance,
-    combatState: CombatState.IDLE,
-    position: basePosition,
+    consciousness: 100,
+    pain: 0,
+    experiencePoints: 0,
+    level: 1,
     isBlocking: false,
     isStunned: false,
     isCountering: false,
-    lastActionTime: 0,
-    recoveryTime: 0,
-    lastStanceChangeTime: 0,
-
-    // Status and effects
     statusEffects: [],
-    activeEffects: [],
-
-    // Vital points state
-    vitalPoints: [],
-
-    // Match statistics
-    totalDamageReceived: 0,
-    totalDamageDealt: 0,
-    hitsTaken: 0,
-    hitsLanded: 0,
-    perfectStrikes: 0,
-    vitalPointHits: 0,
+    combatStats: {
+      hitsLanded: 0,
+      hitsTaken: 0,
+      totalDamageDealt: 0,
+      totalDamageReceived: 0,
+      perfectStrikes: 0,
+      criticalHits: 0,
+    },
   };
 }
 
 /**
- * Update player state with partial updates
+ * Gets archetype-specific colors for UI theming
  */
-export function updatePlayerState(
-  player: PlayerState,
-  updates: Partial<PlayerState>
-): PlayerState {
-  return {
-    ...player,
-    ...updates,
-    // Ensure vital constraints
-    health: Math.max(
-      0,
-      Math.min(updates.health ?? player.health, player.maxHealth)
-    ),
-    ki: Math.max(0, Math.min(updates.ki ?? player.ki, player.maxKi)),
-    stamina: Math.max(
-      0,
-      Math.min(updates.stamina ?? player.stamina, player.maxStamina)
-    ),
-    consciousness: Math.max(
-      0,
-      Math.min(updates.consciousness ?? player.consciousness, 100)
-    ),
-    balance: Math.max(0, Math.min(updates.balance ?? player.balance, 100)),
-  };
-}
-
-/**
- * Apply damage to player
- */
-export function applyDamage(
-  player: PlayerState,
-  damage: number,
-  _damageType?: string // Fix: Add underscore for unused parameter
-): PlayerState {
-  const newHealth = Math.max(0, player.health - damage);
-  const isKnockedOut = newHealth <= 0;
-
-  return updatePlayerState(player, {
-    health: newHealth,
-    totalDamageReceived: player.totalDamageReceived + damage,
-    hitsTaken: player.hitsTaken + 1,
-    combatState: isKnockedOut ? CombatState.STUNNED : player.combatState,
-    consciousness: isKnockedOut ? 0 : player.consciousness,
-  });
-}
-
-/**
- * Apply status effect to player
- */
-export function applyStatusEffect(
-  player: PlayerState,
-  effect: StatusEffect
-): PlayerState {
-  const existingEffectIndex = player.statusEffects.findIndex(
-    (e) => e.type === effect.type && !e.stackable
-  );
-
-  let newEffects: StatusEffect[];
-  if (existingEffectIndex >= 0 && !effect.stackable) {
-    // Replace existing non-stackable effect
-    newEffects = [...player.statusEffects];
-    newEffects[existingEffectIndex] = effect;
-  } else {
-    // Add new effect
-    newEffects = [...player.statusEffects, effect];
-  }
-
-  return updatePlayerState(player, {
-    statusEffects: newEffects,
-    activeEffects: [...player.activeEffects, effect.type],
-  });
-}
-
-/**
- * Get vital point by ID (fix return type)
- */
-export function getVitalPointById(
-  player: PlayerState,
-  vitalPointId: string
-): {
-  readonly id: string;
-  readonly isHit: boolean;
-  readonly damage: number;
-  readonly lastHitTime: number;
-} | null {
-  return player.vitalPoints.find((vp) => vp.id === vitalPointId) || null;
-}
-
-/**
- * Check if player can act
- */
-export function canPlayerAct(player: PlayerState): boolean {
-  if (player.health <= 0) return false;
-  if (player.consciousness <= 0) return false;
-  if (player.combatState === CombatState.STUNNED) return false;
-  if (player.isStunned) return false;
-  return true;
-}
-
-/**
- * Get player's current stance effectiveness against opponent
- */
-export function getStanceEffectiveness(
-  _playerStance: TrigramStance, // Fix: Add underscore to unused parameter
-  _opponentStance: TrigramStance // Fix: Add underscore to unused parameter
-): number {
-  // Basic implementation - could be enhanced with stance matrix
-  return 1.0;
-}
-
-/**
- * Check if player has enough resources for action
- */
-export function hasEnoughResources(
-  player: PlayerState,
-  kiCost: number,
-  staminaCost: number
-): boolean {
-  return player.ki >= kiCost && player.stamina >= staminaCost;
-}
-
-/**
- * Get player archetype bonuses
- */
-export function getArchetypeBonuses(archetype: PlayerArchetype): {
-  attackBonus: number;
-  defenseBonus: number;
-  speedBonus: number;
-  techniqueBonus: number;
+export function getArchetypeColors(archetype: PlayerArchetype): {
+  primary: number;
+  secondary: number;
+  accent: number;
 } {
-  const data = PLAYER_ARCHETYPES_DATA[archetype];
-  return {
-    attackBonus: data.stats.attackPower * 0.1,
-    defenseBonus: data.stats.defense * 0.1,
-    speedBonus: data.stats.speed * 0.1,
-    techniqueBonus: data.stats.technique * 0.1,
-  };
+  return PLAYER_ARCHETYPES_DATA[archetype].colors;
 }
 
 /**
- * Calculate player's current combat effectiveness
+ * Calculates player combat effectiveness based on current state
  */
 export function calculateCombatEffectiveness(player: PlayerState): number {
   const healthFactor = player.health / player.maxHealth;
+  const kiFactor = player.ki / player.maxKi;
   const staminaFactor = player.stamina / player.maxStamina;
-  const consciousnessFactor = player.consciousness / 100;
   const balanceFactor = player.balance / 100;
+  const consciousnessFactor = player.consciousness / 100;
 
-  return (
-    (healthFactor + staminaFactor + consciousnessFactor + balanceFactor) / 4
+  // Weighted calculation favoring health and consciousness
+  return Math.round(
+    (healthFactor * 0.35 +
+      consciousnessFactor * 0.25 +
+      kiFactor * 0.2 +
+      staminaFactor * 0.15 +
+      balanceFactor * 0.05) * 100
   );
 }
 
 /**
- * Remove expired status effects
+ * Determines if a player can execute actions based on their state
  */
-export function updateStatusEffects(
-  player: PlayerState,
-  currentTime: number
-): PlayerState {
-  const activeEffects = player.statusEffects.filter(
-    (effect) => effect.endTime > currentTime
+export function canPlayerAct(player: PlayerState): boolean {
+  return (
+    player.health > 0 &&
+    player.consciousness > 0 &&
+    !player.isStunned &&
+    player.balance > 10
   );
-
-  return updatePlayerState(player, {
-    statusEffects: activeEffects,
-    activeEffects: activeEffects.map((e) => e.type),
-  });
 }
 
+/**
+ * Calculates resource costs for actions based on archetype
+ */
+export function getActionCosts(
+  player: PlayerState,
+  actionType: "attack" | "defend" | "technique" | "stance"
+): { ki: number; stamina: number } {
+  const archetype = player.archetype;
+  const baseModifier = PLAYER_ARCHETYPES_DATA[archetype].actionModifiers;
+
+  const baseCosts = {
+    attack: { ki: 10, stamina: 15 },
+    defend: { ki: 5, stamina: 10 },
+    technique: { ki: 20, stamina: 25 },
+    stance: { ki: 8, stamina: 12 },
+  };
+
+  const base = baseCosts[actionType];
+
+  return {
+    ki: Math.round(base.ki * baseModifier.kiCostModifier),
+    stamina: Math.round(base.stamina * baseModifier.staminaCostModifier),
+  };
+}
+
+/**
+ * Applies status effects to a player
+ */
+export function applyStatusEffect(
+  player: PlayerState,
+  effectType: "stun" | "poison" | "burn" | "bleed" | "strengthen" | "weaken",
+  duration: number,
+  intensity: number
+): PlayerState {
+  const newEffect = {
+    id: `${effectType}_${Date.now()}`,
+    type: effectType as any,
+    intensity: intensity > 0.75 ? "high" : intensity > 0.5 ? "medium" : "low" as any,
+    duration,
+    description: {
+      korean: getKoreanEffectName(effectType),
+      english: effectType.charAt(0).toUpperCase() + effectType.slice(1),
+    },
+    stackable: ["poison", "burn", "bleed"].includes(effectType),
+    source: "combat",
+    startTime: Date.now(),
+    endTime: Date.now() + duration,
+  };
+
+  return {
+    ...player,
+    statusEffects: [...player.statusEffects, newEffect],
+  };
+}
+
+/**
+ * Gets Korean name for status effects
+ */
+function getKoreanEffectName(effectType: string): string {
+  const koreanNames: Record<string, string> = {
+    stun: "기절",
+    poison: "중독",
+    burn: "화상",
+    bleed: "출혈",
+    strengthen: "강화",
+    weaken: "약화",
+  };
+  return koreanNames[effectType] || effectType;
+}
+
+/**
+ * Updates player resources after action
+ */
+export function updatePlayerResources(
+  player: PlayerState,
+  kiCost: number,
+  staminaCost: number
+): PlayerState {
+  return {
+    ...player,
+    ki: Math.max(0, player.ki - kiCost),
+    stamina: Math.max(0, player.stamina - staminaCost),
+  };
+}
+
+/**
+ * Regenerates player resources over time
+ */
+export function regeneratePlayerResources(
+  player: PlayerState,
+  deltaTime: number
+): PlayerState {
+  const regenRate = 0.1; // 10% per second
+  const kiRegen = player.maxKi * regenRate * (deltaTime / 1000);
+  const staminaRegen = player.maxStamina * regenRate * (deltaTime / 1000);
+
+  return {
+    ...player,
+    ki: Math.min(player.maxKi, player.ki + kiRegen),
+    stamina: Math.min(player.maxStamina, player.stamina + staminaRegen),
+  };
+}
+
+/**
+ * Checks if player is defeated
+ */
+export function isPlayerDefeated(player: PlayerState): boolean {
+  return player.health <= 0 || player.consciousness <= 0;
+}
+
+/**
+ * Gets player's combat stance data
+ */
+export function getPlayerStanceInfo(player: PlayerState): {
+  korean: string;
+  english: string;
+  symbol: string;
+} {
+  const stanceMap: Record<TrigramStance, { korean: string; english: string; symbol: string }> = {
+    [TrigramStance.GEON]: { korean: "건", english: "Heaven", symbol: "☰" },
+    [TrigramStance.TAE]: { korean: "태", english: "Lake", symbol: "☱" },
+    [TrigramStance.LI]: { korean: "리", english: "Fire", symbol: "☲" },
+    [TrigramStance.JIN]: { korean: "진", english: "Thunder", symbol: "☳" },
+    [TrigramStance.SON]: { korean: "손", english: "Wind", symbol: "☴" },
+    [TrigramStance.GAM]: { korean: "감", english: "Water", symbol: "☵" },
+    [TrigramStance.GAN]: { korean: "간", english: "Mountain", symbol: "☶" },
+    [TrigramStance.GON]: { korean: "곤", english: "Earth", symbol: "☷" },
+  };
+
+  return stanceMap[player.currentStance] || stanceMap[TrigramStance.GEON];
+}
+ 
 /**
  * Reset player to starting state
  */

@@ -1,176 +1,194 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { StanceManager } from "./StanceManager";
 import { TrigramStance, PlayerArchetype } from "../../types/enums";
-import { createPlayerFromArchetype } from "../../utils/playerUtils";
-import type { PlayerState } from "../../types";
+import { createMockPlayer } from "../../test/mocks/playerMocks";
+import type { PlayerState } from "../../types/player";
 
 describe("StanceManager", () => {
   let stanceManager: StanceManager;
-  let player: PlayerState;
+  let mockPlayer: PlayerState;
 
   beforeEach(() => {
     stanceManager = new StanceManager();
-    player = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+    mockPlayer = createMockPlayer({
+      archetype: PlayerArchetype.MUSA,
+      currentStance: TrigramStance.GEON,
+      ki: 100,
+      stamina: 100,
+    });
   });
 
-  it("should initialize with no active stance", () => {
-    expect(stanceManager.getCurrent()).toBeUndefined();
+  describe("canTransitionTo", () => {
+    it("should allow transition with sufficient resources", () => {
+      const canTransition = stanceManager.canTransitionTo(
+        mockPlayer,
+        TrigramStance.TAE
+      );
+      expect(canTransition).toBe(true);
+    });
+
+    it("should prevent transition with insufficient resources", () => {
+      const lowResourcePlayer = createMockPlayer({
+        ki: 5,
+        stamina: 5,
+      });
+
+      const canTransition = stanceManager.canTransitionTo(
+        lowResourcePlayer,
+        TrigramStance.TAE
+      );
+      expect(canTransition).toBe(false);
+    });
+
+    it("should allow staying in same stance", () => {
+      const canTransition = stanceManager.canTransitionTo(
+        mockPlayer,
+        mockPlayer.currentStance
+      );
+      expect(canTransition).toBe(true);
+    });
   });
 
-  describe("changeStance", () => {
-    it("should successfully change to a different stance", () => {
-      const newStance = TrigramStance.TAE;
-      const result = stanceManager.changeStance(player, newStance);
+  describe("getTransitionCost", () => {
+    it("should return zero cost for same stance", () => {
+      const cost = stanceManager.getTransitionCost(
+        mockPlayer.currentStance,
+        mockPlayer.currentStance
+      );
+      expect(cost.ki).toBe(0);
+      expect(cost.stamina).toBe(0);
+    });
+
+    it("should return positive cost for different stances", () => {
+      const cost = stanceManager.getTransitionCost(
+        TrigramStance.GEON,
+        TrigramStance.TAE
+      );
+      expect(cost.ki).toBeGreaterThan(0);
+      expect(cost.stamina).toBeGreaterThan(0);
+    });
+  });
+
+  describe("executeTransition", () => {
+    it("should successfully transition to new stance", () => {
+      const result = stanceManager.executeTransition(
+        mockPlayer,
+        TrigramStance.TAE
+      );
 
       expect(result.success).toBe(true);
-      expect(result.updatedPlayer.currentStance).toBe(newStance);
-      expect(result.updatedPlayer.lastStanceChangeTime).toBeGreaterThan(0);
+      expect(result.newStance).toBe(TrigramStance.TAE);
+      expect(result.updatedPlayer.currentStance).toBe(TrigramStance.TAE);
     });
 
-    it("should consume resources when changing stance", () => {
-      const originalKi = player.ki;
-      const originalStamina = player.stamina;
-
-      const result = stanceManager.changeStance(player, TrigramStance.LI);
-
-      if (result.success) {
-        expect(result.updatedPlayer.ki).toBeLessThanOrEqual(originalKi);
-        expect(result.updatedPlayer.stamina).toBeLessThanOrEqual(
-          originalStamina
-        );
-      }
-    });
-
-    it("should fail if player lacks resources", () => {
-      // Fix: Create new player with low resources
-      const lowResourcePlayer: PlayerState = {
-        ...player,
+    it("should fail transition with insufficient resources", () => {
+      const lowResourcePlayer = createMockPlayer({
         ki: 1,
         stamina: 1,
-      };
+      });
 
-      const result = stanceManager.changeStance(
+      const result = stanceManager.executeTransition(
         lowResourcePlayer,
-        TrigramStance.GON
+        TrigramStance.TAE
       );
 
       expect(result.success).toBe(false);
-      expect(result.updatedPlayer.currentStance).toBe(
-        lowResourcePlayer.currentStance
-      );
-    });
-
-    it("should handle same stance gracefully", () => {
-      const result = stanceManager.changeStance(player, player.currentStance);
-
-      expect(result.success).toBe(true);
-      expect(result.cost.ki).toBe(0);
-      expect(result.cost.stamina).toBe(0);
-    });
-  });
-
-  describe("canChangeStance", () => {
-    it("should return true for valid stance changes", () => {
-      const canChange = stanceManager.canChangeStance(
-        player,
-        TrigramStance.TAE
-      );
-
-      expect(canChange).toBe(true);
-    });
-
-    it("should return false for insufficient resources", () => {
-      const lowResourcePlayer = {
-        ...player,
-        ki: 0,
-        stamina: 0,
-      };
-
-      const canChange = stanceManager.canChangeStance(
-        lowResourcePlayer,
-        TrigramStance.GAM
-      );
-
-      expect(canChange).toBe(false);
-    });
-
-    it("should respect cooldown periods", () => {
-      const recentChangePlayer = {
-        ...player,
-        lastStanceChangeTime: Date.now() - 50, // Recent change
-      };
-
-      const canChange = stanceManager.canChangeStance(
-        recentChangePlayer,
-        TrigramStance.TAE
-      );
-
-      // Should respect cooldown
-      expect(canChange).toBe(false);
-    });
-  });
-
-  describe("getStanceTransitionCost", () => {
-    it("should return zero cost for same stance", () => {
-      const cost = stanceManager.getStanceTransitionCost(
-        player.currentStance,
-        player.currentStance,
-        player
-      );
-
-      expect(cost.ki).toBe(0);
-      expect(cost.stamina).toBe(0);
-      expect(cost.timeMilliseconds).toBe(0); // Fix: Use timeMilliseconds
-    });
-
-    it("should calculate cost for different stances", () => {
-      const cost = stanceManager.getStanceTransitionCost(
-        TrigramStance.GEON,
-        TrigramStance.GON,
-        player
-      );
-
-      expect(cost.ki).toBeGreaterThan(0);
-      expect(cost.stamina).toBeGreaterThan(0);
-      expect(cost.timeMilliseconds).toBeGreaterThan(0); // Fix: Use timeMilliseconds
-    });
-
-    it("should apply archetype modifiers", () => {
-      const musaCost = stanceManager.getStanceTransitionCost(
-        TrigramStance.GEON,
-        TrigramStance.GAN, // MUSA favored stance
-        player
-      );
-
-      const hacker = createPlayerFromArchetype(PlayerArchetype.HACKER, 1);
-      const hackerCost = stanceManager.getStanceTransitionCost(
-        TrigramStance.GEON,
-        TrigramStance.GAN,
-        hacker
-      );
-
-      // MUSA should have lower cost for favored stances
-      expect(musaCost.ki).toBeLessThanOrEqual(hackerCost.ki);
+      expect(result.newStance).toBe(lowResourcePlayer.currentStance);
     });
   });
 
   describe("getOptimalStance", () => {
-    it("should recommend stance based on opponent", () => {
-      // Fix: Create new player instead of modifying readonly property
-      const opponent: PlayerState = {
-        ...createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1),
-        currentStance: TrigramStance.SON,
-      };
+    it("should recommend counter stance for opponent", () => {
+      const opponentStance = TrigramStance.GEON;
+      const optimalStance = stanceManager.getOptimalStance(
+        mockPlayer,
+        opponentStance
+      );
 
-      const recommendation = stanceManager.getOptimalStance(player, opponent);
-
-      expect(Object.values(TrigramStance)).toContain(recommendation);
+      expect(Object.values(TrigramStance)).toContain(optimalStance);
     });
 
-    it("should consider player archetype preferences", () => {
-      const recommendation = stanceManager.getOptimalStance(player);
+    it("should consider player archetype in recommendations", () => {
+      const musaPlayer = createMockPlayer({
+        archetype: PlayerArchetype.MUSA,
+      });
 
-      expect(Object.values(TrigramStance)).toContain(recommendation);
+      const amsaljaPlayer = createMockPlayer({
+        archetype: PlayerArchetype.AMSALJA,
+      });
+
+      const musaOptimal = stanceManager.getOptimalStance(
+        musaPlayer,
+        TrigramStance.GEON
+      );
+
+      const amsaljaOptimal = stanceManager.getOptimalStance(
+        amsaljaPlayer,
+        TrigramStance.GEON
+      );
+
+      // Different archetypes may have different optimal choices
+      expect(Object.values(TrigramStance)).toContain(musaOptimal);
+      expect(Object.values(TrigramStance)).toContain(amsaljaOptimal);
+    });
+  });
+
+  describe("getAllAvailableStances", () => {
+    it("should return all trigram stances", () => {
+      const stances = stanceManager.getAllAvailableStances(mockPlayer);
+      expect(stances).toHaveLength(8); // 8 trigram stances
+      expect(stances).toContain(TrigramStance.GEON);
+      expect(stances).toContain(TrigramStance.TAE);
+      expect(stances).toContain(TrigramStance.LI);
+    });
+
+    it("should filter by available resources", () => {
+      const lowResourcePlayer = createMockPlayer({
+        ki: 5,
+        stamina: 5,
+      });
+
+      const availableStances =
+        stanceManager.getAllAvailableStances(lowResourcePlayer);
+
+      // Should still include current stance
+      expect(availableStances).toContain(lowResourcePlayer.currentStance);
+    });
+  });
+
+  describe("Korean martial arts integration", () => {
+    it("should respect traditional trigram philosophy", () => {
+      // Each stance should have meaningful costs and effects
+      const allStances = Object.values(TrigramStance);
+
+      allStances.forEach((stance) => {
+        const cost = stanceManager.getTransitionCost(
+          TrigramStance.GEON,
+          stance
+        );
+
+        if (stance === TrigramStance.GEON) {
+          expect(cost.ki).toBe(0);
+          expect(cost.stamina).toBe(0);
+        } else {
+          expect(cost.ki).toBeGreaterThanOrEqual(0);
+          expect(cost.stamina).toBeGreaterThanOrEqual(0);
+        }
+      });
+    });
+
+    it("should handle all player archetypes", () => {
+      const archetypes = Object.values(PlayerArchetype);
+
+      archetypes.forEach((archetype) => {
+        const player = createMockPlayer({ archetype });
+        const optimalStance = stanceManager.getOptimalStance(
+          player,
+          TrigramStance.GEON
+        );
+
+        expect(Object.values(TrigramStance)).toContain(optimalStance);
+      });
     });
   });
 });

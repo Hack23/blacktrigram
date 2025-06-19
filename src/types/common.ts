@@ -4,8 +4,8 @@
 
 // Position in 2D space
 export interface Position {
-  x: number;
-  y: number;
+  readonly x: number;
+  readonly y: number;
 }
 
 // Size dimensions
@@ -17,8 +17,15 @@ export interface Size {
 // Rectangle bounds
 export interface Bounds extends Position, Size {}
 
-// Color as hex number
-export type Color = number;
+/**
+ * RGBA color specification
+ */
+export interface Color {
+  readonly r: number;
+  readonly g: number;
+  readonly b: number;
+  readonly a?: number;
+}
 
 // Time duration in milliseconds
 export type Duration = number;

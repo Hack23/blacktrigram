@@ -1,10 +1,102 @@
 # GitHub Copilot Instructions for Black Trigram (흑괘)
 
-PRIO 1: Complete functional game with robust error handling
-PRIO 2: Use PixiJS graphics for all components with React 19 style and strict typing
-PRIO 3: Implement cyberpunk Korean aesthetic with excellent UX
+PRIO 1: Complete functional game with robust error handling and reusable UI components
+PRIO 2: Use PixiJS UI (@pixi/ui) and Layout (@pixi/layout) for all interface components
+PRIO 3: Implement cyberpunk Korean aesthetic with excellent UX/UI experience using extensible components
 
 ## 🔧 Code Completion Guidelines
+
+### PixiJS UI & Layout Integration
+
+- ALWAYS use @pixi/ui components as base building blocks
+- ALWAYS implement @pixi/layout for responsive layouts
+- ALWAYS extend existing UI components rather than creating from scratch
+- PREFER composition over inheritance for component reusability
+- USE layout properties for responsive design across all screen sizes
+
+### PixiJS UI Component Patterns
+
+```typescript
+// Preferred PixiJS UI component extension pattern
+import { Button, FancyButton } from "@pixi/ui";
+import "@pixi/layout"; // Import for layout mixins
+
+// Extend existing UI components for Korean martial arts theme
+class KoreanButton extends FancyButton {
+  constructor(options: KoreanButtonOptions) {
+    super({
+      ...options,
+      defaultView: "korean-button-idle.png",
+      hoverView: "korean-button-hover.png",
+      pressedView: "korean-button-pressed.png",
+      text: {
+        text: options.koreanText || options.text,
+        style: {
+          fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+          fill: KOREAN_COLORS.TEXT_PRIMARY,
+          fontSize: 16,
+        },
+      },
+    });
+  }
+}
+
+// Layout-powered container pattern
+const createKoreanPanel = (content: DisplayObject[]) => {
+  const panel = new Container({
+    layout: {
+      width: "100%",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 10,
+      padding: 20,
+      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      borderRadius: 8,
+    },
+  });
+
+  content.forEach((child) => panel.addChild(child));
+  return panel;
+};
+```
+
+### Layout System Best Practices
+
+```typescript
+// Always use layout properties for responsive design
+import "@pixi/layout";
+
+// Stage layout setup
+app.stage.layout = {
+  width: app.screen.width,
+  height: app.screen.height,
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+// Component layout patterns
+const combatHUD = new Container({
+  layout: {
+    width: "100%",
+    height: 80,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: { left: 20, right: 20 },
+  },
+});
+
+// Korean text with proper layout
+const koreanLabel = new Text("무사 (Musa)", {
+  fontFamily: "Noto Sans KR",
+  fontSize: 18,
+  fill: KOREAN_COLORS.ACCENT_GOLD,
+  layout: {
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+});
+```
 
 ### TypeScript Best Practices
 
@@ -17,380 +109,302 @@ PRIO 3: Implement cyberpunk Korean aesthetic with excellent UX
 ### File Structure Best Practices
 
 - ALWAYS add proper file headers with filepath comments
-- ALWAYS end files with a single newline character
 - ALWAYS use proper imports organization (external, internal, relative)
 - AVOID creating incomplete or truncated code blocks
 
-### React Component Patterns
+### React + PixiJS Integration Patterns
 
 ```typescript
-// Preferred component structure
-interface ComponentProps {
-  readonly prop: Type;
+// React component wrapping PixiJS UI components
+import { extend } from "@pixi/react";
+import { Container, Graphics } from "pixi.js";
+import { Button, ScrollBox } from "@pixi/ui";
+import "@pixi/layout";
+
+extend({ Container, Graphics, Button, ScrollBox });
+
+interface KoreanUIComponentProps {
+  readonly koreanText: KoreanText;
   readonly onAction?: (data: Type) => void;
 }
 
-export const Component: React.FC<ComponentProps> = ({ prop, onAction }) => {
-  // Implementation with proper error boundaries
-  return <></>;
+export const KoreanUIComponent: React.FC<KoreanUIComponentProps> = ({
+  koreanText,
+  onAction,
+}) => {
+  const handlePress = useCallback(() => {
+    onAction?.(/* data */);
+  }, [onAction]);
+
+  return (
+    <pixiContainer
+      layout={{
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 10,
+      }}
+    >
+      <pixiButton
+        text={koreanText.korean}
+        onPress={handlePress}
+        layout={{ marginBottom: 10 }}
+        data-testid="korean-button"
+      />
+    </pixiContainer>
+  );
 };
 
-export default Component;
+export default KoreanUIComponent;
 ```
 
-### PixiJS Integration Patterns
+## 📚 Project Documentation
 
-```typescript
-// Always use this pattern for PixiJS components
-import { extend } from "@pixi/react";
-import { Graphics, Container } from "pixi.js";
+### Core Documentation
 
-extend({ Graphics, Container });
+- **[Game Design](../game-design.md)** - Complete Korean martial arts combat system design, eight trigram philosophy, player archetypes, and cultural authenticity guidelines
+- **[System Architecture](../ARCHITECTURE.md)** - Technical architecture, state management, component patterns, and Korean martial arts integration
+- **[Combat Architecture](../COMBAT_ARCHITECTURE.md)** - Detailed combat system implementation, trigram effectiveness matrix, vital point system
+- **[Audio Assets](../AUDIO_ASSETS.md)** - Korean traditional instrument integration, combat audio, and cultural music guidelines
+- **[Art Assets](../ART_ASSETS.md)** - Korean cyberpunk visual design, color systems, character art, and UI iconography
+- **[Future Architecture](../FUTURE_ARCHITECTURE.md)** - Planned features, scalability considerations, and long-term technical roadmap
 
-// Use proper callbacks with useCallback
-const drawCallback = useCallback(
-  (graphics: Graphics) => {
-    graphics.clear();
-    // Implementation
-  },
-  [dependencies]
-);
-```
+## 🎯 Project Overview
 
-## Project Overview
-
-Black Trigram is a **realistic 2D precision combat simulator** deeply rooted in Korean martial arts and the I Ching trigram philosophy. The game emphasizes anatomical realism, precise targeting, authentic martial techniques, and cyberpunk aesthetics.
+Black Trigram is a **realistic 2D precision combat simulator** deeply rooted in Korean martial arts and the I Ching trigram philosophy. The game emphasizes anatomical realism, precise targeting, authentic martial techniques, and cyberpunk aesthetics through reusable, extensible UI components.
 
 **Genre**: 2D Realistic Precision Combat Simulator / Traditional Korean Martial Arts Training
 **Platform**: Web-based (HTML5/WebGL via PixiJS + React)
-**Core Focus**: Anatomical targeting, authentic Korean martial arts, 5 player archetypes, 70 vital points
+**Core Focus**: Extensible UI components, responsive layouts, authentic Korean martial arts
 
-## 🎯 Core Game Concepts
+### Key Features
 
-### Player Archetypes (Must Reference in All Combat Code)
+- **Eight Trigram Stances**: Traditional Korean martial arts forms (팔괘) with authentic techniques
+- **Five Player Archetypes**: 무사 (Musa), 암살자 (Amsalja), 해커 (Hacker), 정보요원 (Jeongbo Yowon), 조직폭력배 (Jojik Pokryeokbae)
+- **Anatomical Targeting**: 70+ vital points based on traditional Korean medicine
+- **Cyberpunk Korean Aesthetic**: Modern visual design honoring traditional culture
+- **Bilingual Support**: Korean-English throughout with proper romanization
 
-- **무사 (Musa)** - Traditional Warrior: Honor through strength
-- **암살자 (Amsalja)** - Shadow Assassin: Efficiency through invisibility
-- **해커 (Hacker)** - Cyber Warrior: Information as power
-- **정보요원 (Jeongbo Yowon)** - Intelligence Operative: Knowledge through observation
-- **조직폭력배 (Jojik Pokryeokbae)** - Organized Crime: Survival through ruthlessness
+## 🎯 UI Component Architecture
 
-### Eight Trigram Combat System (팔괘)
+### Core UI Component Library Structure
 
-- **☰ 건 (Geon)** - Heaven: Direct bone-striking force
+```plaintext
+src/components/ui/
+├── base/                    # Foundation components extending @pixi/ui
+│   ├── KoreanButton.ts     # Extended FancyButton with Korean styling
+│   ├── KoreanPanel.ts      # Layout-powered container with Korean aesthetics
+│   ├── ResponsiveContainer.ts # Layout-responsive wrapper component
+│   └── BasePixiComponents.ts # Core PixiJS UI extensions
+├── combat/                  # Combat-specific UI components
+│   ├── TrigramSelector.ts  # Eight trigram stance selection (RadioGroup)
+│   ├── StanceIndicator.ts  # Current stance display
+│   ├── HealthBar.ts        # Extended ProgressBar for combat stats
+│   └── VitalPointOverlay.ts # Anatomical targeting interface
+├── containers/              # Layout containers and panels
+│   ├── CombatHUD.ts        # Main combat interface layout
+│   ├── PlayerStatusPanel.ts # Player information display
+│   └── GameMenu.ts         # Menu system with Korean navigation
+└── texts/                   # Korean-English text components
+    ├── BilingualText.ts    # Korean-English dual display
+    ├── KoreanHeader.ts     # Styled Korean headers
+    └── CombatLog.ts        # Scrolling combat history
+```
+
+### Component Design Principles
+
+- **PixiJS UI Foundation**: All components extend @pixi/ui base classes (Button, FancyButton, ProgressBar, RadioGroup, etc.)
+- **Layout-Powered**: Use @pixi/layout for responsive design and flexible positioning
+- **Korean Theming**: Consistent cyberpunk Korean aesthetic with traditional color harmony
+- **Extensibility**: Components designed for easy customization and extension
+- **Composition**: Build complex interfaces through component composition
+- **Responsiveness**: All components adapt to mobile, tablet, and desktop screen sizes
+
+### PixiJS UI Extensions for Korean Martial Arts
+
+| **Base @pixi/ui Component** | **Korean Extension** | **Layout Features**                      | **Use Case**                     |
+| --------------------------- | -------------------- | ---------------------------------------- | -------------------------------- |
+| `Button`                    | `KoreanButton`       | Responsive padding, Korean text styling  | Basic actions with Korean labels |
+| `FancyButton`               | `TrigramButton`      | Flexbox alignment, hover animations      | Eight trigram stance selection   |
+| `ProgressBar`               | `HealthBar`, `KiBar` | Responsive width, status color changes   | Combat resource display          |
+| `RadioGroup`                | `TrigramSelector`    | Grid layout, responsive columns          | Stance selection interface       |
+| `ScrollBox`                 | `CombatLog`          | Flexible height, auto-scroll             | Combat history and notifications |
+| `Container`                 | `KoreanPanel`        | Flexbox layout, Korean border patterns   | UI panel backgrounds             |
+| `Input`                     | `KoreanInput`        | Bilingual validation, Korean IME support | Korean text input fields         |
+
+## 🔧 PixiJS UI & Layout Implementation Patterns
+
+### Responsive Layout Patterns
+
+```typescript
+// Korean-themed responsive layout constants
+export const KOREAN_LAYOUTS = {
+  // Main combat HUD layout
+  COMBAT_HUD: {
+    width: "100%",
+    height: 80,
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
+    alignItems: "center" as const,
+    padding: { left: 20, right: 20, top: 10, bottom: 10 },
+  },
+
+  // Trigram stance selector grid
+  TRIGRAM_GRID: {
+    display: "flex",
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    justifyContent: "center" as const,
+    gap: 15,
+    maxWidth: 400,
+    padding: 20,
+  },
+
+  // Player status panel layout
+  PLAYER_STATUS: {
+    width: 200,
+    flexDirection: "column" as const,
+    gap: 12,
+    padding: 15,
+    backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+    borderRadius: 8,
+  },
+
+  // Mobile-optimized layouts
+  MOBILE_COMBAT_HUD: {
+    width: "100%",
+    height: 60,
+    flexDirection: "column" as const,
+    alignItems: "center" as const,
+    gap: 5,
+    padding: 10,
+  },
+} as const;
+```
+
+### Korean UI Color System
+
+```typescript
+export const KOREAN_COLORS = {
+  // Primary cyberpunk Korean colors
+  PRIMARY_CYAN: 0x00ffff,
+  SECONDARY_YELLOW: 0xffd700,
+  ACCENT_GOLD: 0xffaa00,
+  ACCENT_BLUE: 0x0088ff,
+
+  // UI background colors
+  UI_BACKGROUND_DARK: 0x1a1a1a,
+  UI_BACKGROUND_MEDIUM: 0x2d2d2d,
+  UI_BACKGROUND_LIGHT: 0x404040,
+
+  // Korean traditional colors (오방색)
+  CARDINAL_EAST: 0x00ff88, // 동방 청색
+  CARDINAL_WEST: 0xffffff, // 서방 백색
+  CARDINAL_SOUTH: 0xff4444, // 남방 적색
+  CARDINAL_NORTH: 0x000000, // 북방 흑색
+  CARDINAL_CENTER: 0xffaa00, // 중앙 황색
+} as const;
+```
+
+## 🧪 Testing Strategy
+
+### PixiJS UI Component Testing
+
+```typescript
+// Test pattern for Korean UI components
+describe("KoreanTrigramSelector", () => {
+  it("should render all eight trigram options with layout", () => {
+    const selector = new TrigramSelector({
+      layout: KOREAN_LAYOUTS.TRIGRAM_GRID,
+      onStanceChange: mockHandler,
+    });
+
+    expect(selector.children).toHaveLength(8);
+    expect(selector.layout.gap).toBe(15);
+  });
+
+  it("should respond to stance selection", () => {
+    const onStanceChange = vi.fn();
+    const selector = new TrigramSelector({ onStanceChange });
+
+    selector.selectStance(TrigramStance.GEON);
+    expect(onStanceChange).toHaveBeenCalledWith(TrigramStance.GEON);
+  });
+
+  it("should adapt layout for mobile screens", () => {
+    const selector = new TrigramSelector({
+      responsive: true,
+      mobileLayout: KOREAN_LAYOUTS.MOBILE_TRIGRAM_GRID,
+    });
+
+    // Test responsive behavior
+    selector.updateScreenSize(400, 600); // Mobile dimensions
+    expect(selector.layout.flexDirection).toBe("column");
+  });
+});
+```
+
+### Test Coverage Goals
+
+- UI Component tests: >95% coverage
+- Layout responsiveness tests: >90% coverage
+- Korean text rendering tests: 100% accuracy validation
+- Accessibility tests: >85% coverage
+
+## 🎮 Korean Martial Arts Integration
+
+### Eight Trigram System (팔괘 체계)
+
+- **☰ 건 (Geon)** - Heaven: Direct force techniques
 - **☱ 태 (Tae)** - Lake: Fluid joint manipulation
 - **☲ 리 (Li)** - Fire: Precise nerve strikes
-- **☳ 진 (Jin)** - Thunder: Stunning techniques
-- **☴ 손 (Son)** - Wind: Continuous pressure
-- **☵ 감 (Gam)** - Water: Blood flow restriction
-- **☶ 간 (Gan)** - Mountain: Defensive counters
-- **☷ 곤 (Gon)** - Earth: Ground techniques
+- **☳ 진 (Jin)** - Thunder: Explosive power techniques
+- **☴ 손 (Son)** - Wind: Continuous pressure attacks
+- **☵ 감 (Gam)** - Water: Flow and adaptation techniques
+- **☶ 간 (Gan)** - Mountain: Defensive mastery
+- **☷ 곤 (Gon)** - Earth: Grounding and takedown techniques
 
-### Combat Mechanics Requirements
+### Player Archetypes (플레이어 원형)
 
-- **70 Anatomical Vital Points** for precise targeting
-- **Realistic Body Mechanics**: Health, consciousness, pain, balance, stamina
-- **Authentic Korean Techniques** with cultural accuracy
-- **Damage Calculation** based on technique precision and force
-
-## 🏗️ Architecture Guidelines
-
-### Component Reuse Strategy
-
-ALWAYS check existing components before creating new ones:
-
-- Use `ResponsivePixiContainer` for layout
-- Extend from base UI components in `src/components/ui/base/`
-- Reuse Korean text components from `korean-text/` directory
-- Follow existing patterns in combat and training systems
-
-### Type System Usage
-
-ALWAYS use explicit types from existing type system:
-
-```typescript
-import { TrigramStance, PlayerArchetype } from "../types/enums";
-import { CombatState, PlayerState } from "../types/combat";
-import { VitalPoint, AnatomicalRegion } from "../types/anatomy";
-```
-
-### Testing Requirements
-
-- Add `data-testid` attributes to all interactive elements
-- Use existing test utilities from `src/test/test-utils.ts`
-- Follow patterns in `src/audio/__tests__/` for comprehensive coverage
-- Write resilient tests that don't break on implementation changes
-
-## 🎨 Visual Design System
-
-### Cyberpunk Korean Aesthetic
-
-Apply to ALL visual components:
-
-```typescript
-import { KOREAN_COLORS } from "../types/constants/colors";
-
-// Use consistent color scheme
-const theme = {
-  primary: KOREAN_COLORS.ACCENT_NEON_BLUE,
-  secondary: KOREAN_COLORS.ACCENT_ELECTRIC_PURPLE,
-  accent: KOREAN_COLORS.ACCENT_GOLD,
-  background: KOREAN_COLORS.BG_DARK_METALLIC,
-  text: KOREAN_COLORS.TEXT_PRIMARY,
-};
-```
-
-### Korean Typography
-
-```typescript
-// Always use proper Korean font stacks
-const koreanTextStyle = {
-  fontFamily: "Noto Sans KR, NanumGothic, Malgun Gothic, sans-serif",
-  fontSize: 16,
-  fill: KOREAN_COLORS.TEXT_PRIMARY,
-};
-```
-
-## 🎮 Combat Controls Implementation
-
-### Primary Combat Controls Pattern
-
-```typescript
-const COMBAT_CONTROLS = {
-  // Trigram stance system (1-8 keys)
-  stanceControls: {
-    "1": { stance: TrigramStance.GEON, korean: "건", technique: "천둥벽력" },
-    "2": { stance: TrigramStance.TAE, korean: "태", technique: "유수연타" },
-    // ... continue for all 8 stances
-  },
-
-  combat: {
-    SPACE: "Execute current stance technique",
-    SHIFT: "Defensive guard/block position",
-    CTRL: "Precision vital point targeting mode",
-    TAB: "Cycle through player archetypes",
-  },
-};
-
-// Implement with proper event handling
-function handleCombatInput(
-  event: KeyboardEvent,
-  player: PlayerState
-): CombatAction | null {
-  const key = event.key;
-
-  if (key >= "1" && key <= "8") {
-    const stanceIndex = parseInt(key) - 1;
-    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
-    return executeStanceChange(player, stance);
-  }
-
-  switch (key) {
-    case " ":
-      return executeTechnique(player);
-    case "Shift":
-      return toggleGuard(player);
-    case "Control":
-      return enterVitalPointMode(player);
-    default:
-      return null;
-  }
-}
-```
-
-## 🧪 Code Quality Standards
-
-### Error Handling
-
-```typescript
-// Always include proper error boundaries
-try {
-  const result = await riskyOperation();
-  return result;
-} catch (error) {
-  console.error("Operation failed:", error);
-  // Handle gracefully without breaking the game
-  return fallbackValue;
-}
-```
-
-### Performance Considerations
-
-- Use `useCallback` for all PixiJS draw functions
-- Implement proper memoization with `useMemo` for expensive calculations
-- Use `React.memo` for components that render frequently
-- Optimize asset loading with proper preloading strategies
-
-### Korean Cultural Accuracy
-
-- Research proper Korean martial arts terminology
-- Use authentic Hanja (한자) characters where appropriate
-- Respect traditional Korean values in game mechanics
-- Include proper Korean-English bilingual support
+- **무사 (Musa)** - Traditional Warrior: Honor through disciplined strength
+- **암살자 (Amsalja)** - Shadow Assassin: Precision through stealth
+- **해커 (Hacker)** - Cyber Warrior: Technology-enhanced combat
+- **정보요원 (Jeongbo Yowon)** - Intelligence Operative: Strategic analysis
+- **조직폭력배 (Jojik Pokryeokbae)** - Organized Crime: Ruthless pragmatism
 
 ## 🌟 Success Criteria
 
-When following these guidelines, code should:
+When following these guidelines, UI code should:
 
-- ✅ Compile without TypeScript errors
-- ✅ Complete file generation without truncation
-- ✅ Implement authentic Korean martial arts mechanics
-- ✅ Achieve 60fps performance for all combat sequences
-- ✅ Include comprehensive test coverage with proper test IDs
-- ✅ Maintain cyberpunk aesthetic while respecting Korean culture
-- ✅ Provide excellent accessibility and UX
+- ✅ Use @pixi/ui and @pixi/layout as foundational building blocks
+- ✅ Extend existing components rather than creating from scratch
+- ✅ Implement responsive layouts that work across all screen sizes
+- ✅ Include proper Korean-English bilingual support
+- ✅ Follow accessibility best practices with proper test IDs
+- ✅ Maintain cyberpunk Korean aesthetic consistently
+- ✅ Achieve 60fps performance for all UI interactions
+- ✅ Provide comprehensive test coverage for all components
 
 ## 🎯 Philosophy Integration
 
-**Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every code completion should honor this balance while providing authentic, educational, and respectful gameplay.
+**Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every UI component should honor this balance while providing authentic, educational, and respectful user experience through extensible, reusable design patterns.
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
 
 ### Code Completion Anti-Patterns to Avoid
 
-- ❌ Truncated or incomplete function implementations
-- ❌ Missing return types on functions
-- ❌ Using `any` type instead of proper typing
-- ❌ Creating components without proper test IDs
-- ❌ Incomplete error handling
-- ❌ Missing Korean cultural context in martial arts code
-- ❌ Performance-heavy operations without optimization
-
-## 🎯 Strict TypeScript Usage
-
-**ALWAYS use explicit types from existing type system:**
-
-**Component Reuse Strategy**
-
-**ALWAYS check existing components before creating new ones:**
-
-## 🎨 PixiJS + React Integration
-
-### Pixie React Usage
-
-```jsx
-import { Application, extend } from "@pixi/react";
-import { Container, Graphics } from "pixi.js";
-import { useCallback } from "react";
-
-extend({
-  Container,
-  Graphics,
-});
-
-const MyComponent = () => {
-  const drawCallback = useCallback((graphics) => {
-    graphics.clear();
-    graphics.setFillStyle({ color: "red" });
-    graphics.rect(0, 0, 100, 100);
-    graphics.fill();
-  }, []);
-
-  return (
-    <Application>
-      <pixiContainer x={100} y={100}>
-        <pixiGraphics draw={drawCallback} />
-      </pixiContainer>
-    </Application>
+- ❌ Creating custom UI components when @pixi/ui alternatives exist
+- ❌ Hardcoded positioning instead of layout-based responsive design
+- ❌ Missing Korean cultural context in UI component design
+- ❌ Non-extensible component implementations
+- ❌ Incomplete accessibility implementation
+- ❌ Missing layout properties for responsive behavior
+- ❌ Performance-heavy UI operations without optimization
+  }}
+  />
   );
-};
-```
+  };
 
-## Docs
-
-### `extend`
-
-One of the most important concepts to understand with v8 is `extend`. Normally `@pixi/react` would have to import all pf Pixi.js to be able to provide the full library as JSX components. Instead, we use an internal catalogue of components populated by the `extend` API. This allows you to define exactly which parts of Pixi.js you want to import, keeping your bundle sizes small.
-
-To allow `@pixi/react` to use a Pixi.js component, pass it to the `extend` API:
-
-```jsx
-import { Container } from "pixi.js";
-import { extend } from "@pixi/react";
-
-extend({ Container });
-
-const MyComponent = () => <pixiContainer />;
-```
-
-> [!CAUTION]
-> Attempting to use components that haven't been passed to the `extend` API **will result in errors**.
-
-### Components
-
-#### `<Application>`
-
-The `<Application>` component is used to wrap your `@pixi/react` app. The `<Application>` component can take [all props that can be set](https://pixijs.download/release/docs/app.ApplicationOptions.html) on [`PIXI.Application`](https://pixijs.download/release/docs/app.Application.html).
-
-##### Example Usage
-
-```jsx
-import { Application } from "@pixi/react";
-
-const MyComponent = () => {
-  return <Application autoStart sharedTicker />;
-};
-```
-
-###### `defaultTextStyle`
-
-`defaultTextStyle` is a convenience property. Whatever is passed will automatically be assigned to Pixi.js's [`TextStyle.defaultTextStyle`](https://pixijs.download/release/docs/text.TextStyle.html#defaultTextStyle).
-
-> [!NOTE]
-> This property **is not retroactive**. It will only apply to text components created after `defaultTextStyle` is set. Any text components created before setting `defaultTextStyle` will retain the base styles they had before `defaultTextStyle` was changed.
-
-###### `extensions`
-
-`extensions` is an array of extensions to be loaded. Adding and removing items from this array will automatically load/unload the extensions. The first time this is handled happens before the application is initialised. See Pixi.js's [`extensions`](https://pixijs.download/release/docs/extensions.html) documentation for more info on extensions.
-
-###### `resizeTo`
-
-The `<Application>` component supports the `resizeTo` property, with some additional functionality: it can accept any HTML element **or** it can take a React `ref` directly.
-
-```jsx
-import { Application } from "@pixi/react";
-import { useRef } from "react";
-const MyComponent = () => {
-  const parentRef = useRef(null);
-  return (
-    <div ref={parentRef}>
-      <Application resizeTo={parentRef} />
-    </div>
-  );
-};
-```
-
-#### Pixi Components
-
-All other components should be included in your IDE's intellisense/autocomplete once you've installed/imported `@pixi/react`. If it's exported from Pixi.js, it's supported as a component with the `pixi` prefix. Here's a selection of commonly used components:
-
-```jsx
-<pixiContainer />
-<pixiGraphics />
-<pixiSprite />
-<pixiAnimatedSprite />
-<pixiText />
-<pixiHtmlText />
-```
-
-##### `<pixiGraphics>`
-
-The `pixiGraphics` component has a special `draw` property. `draw` takes a callback which receives the `Graphics` context, allowing drawing to happen on every tick.
-
-```jsx
-const MyComponent = () => {
-  return (
-    <pixiGraphics
-      draw={(graphics) => {
-        graphics.clear();
-        graphics.setFillStyle({ color: "red" });
-        graphics.rect(0, 0, 100, 100);
-        graphics.fill();
-      }}
-    />
-  );
-};
-```
+````
 
 #### Custom Components
 
@@ -407,7 +421,7 @@ const MyComponent = () => {
     <pixiContainer />
   </viewport>;
 };
-```
+````
 
 The `extend` API will teach `@pixi/react` about your components, but TypeScript won't know about them nor their props.
 
@@ -639,3 +653,7 @@ When following these guidelines, code should:
 **Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every implementation should honor this balance while providing authentic, educational, and respectful gameplay.
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
+
+```
+
+```

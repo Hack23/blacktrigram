@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo } from "react";
-import * as PIXI from "pixi.js";
+import React, { useCallback } from "react";
+import { extend } from "@pixi/react";
+import { Container, Graphics, Text } from "pixi.js";
 import { usePixiExtensions } from "../../../utils/pixiExtensions";
-import {
-  KOREAN_COLORS,
-  PLAYER_ARCHETYPES_DATA,
-  TRIGRAM_DATA,
-} from "../../../types/constants";
 import type { PlayerState } from "../../../types/player";
+import { KOREAN_COLORS, TRIGRAM_DATA } from "../../../types/constants";
+import * as PIXI from "pixi.js";
+
+extend({ Container, Graphics, Text });
 
 export interface PlayerStatusPanelProps {
   readonly player: PlayerState;
@@ -18,211 +18,109 @@ export interface PlayerStatusPanelProps {
   readonly isSelected?: boolean;
 }
 
+const getStatusColor = (percent: number): number => {
+  if (percent > 0.6) return KOREAN_COLORS.POSITIVE_GREEN;
+  if (percent > 0.3) return KOREAN_COLORS.WARNING_YELLOW;
+  return KOREAN_COLORS.NEGATIVE_RED;
+};
+
+const drawEnhancedStatusBar = (
+  g: PIXI.Graphics,
+  current: number,
+  max: number,
+  width: number,
+  height: number,
+  color: number
+): void => {
+  g.clear();
+
+  // Background
+  g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_LIGHT, alpha: 0.5 });
+  g.rect(0, 0, width, height);
+  g.fill();
+
+  // Status fill
+  const percent = current / max;
+  g.fill({ color, alpha: 0.9 });
+  g.rect(0, 0, width * percent, height);
+  g.fill();
+
+  // Border
+  g.stroke({ width: 1, color: KOREAN_COLORS.UI_BORDER, alpha: 0.6 });
+  g.rect(0, 0, width, height);
+  g.stroke();
+};
+
 export const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
   player,
   position,
   x = 0,
   y = 0,
-  width = 200,
-  height = 350,
+  width = 180,
+  height = 300,
   isSelected = false,
 }) => {
   usePixiExtensions();
 
-  const archetypeData = PLAYER_ARCHETYPES_DATA[player.archetype];
   const stanceData = TRIGRAM_DATA[player.currentStance];
-
-  // Calculate all status percentages
   const healthPercent = player.health / player.maxHealth;
   const kiPercent = player.ki / player.maxKi;
   const staminaPercent = player.stamina / player.maxStamina;
   const balancePercent = player.balance / 100;
   const consciousnessPercent = player.consciousness / 100;
 
-  // Calculate derived stats
-  const totalCombatRating = useMemo(() => {
-    return Math.round(
-      (healthPercent * 30 +
-        kiPercent * 25 +
-        staminaPercent * 25 +
-        balancePercent * 20) *
-        100
-    );
-  }, [healthPercent, kiPercent, staminaPercent, balancePercent]);
-
-  const combatReadiness = useMemo(() => {
-    if (totalCombatRating > 80)
-      return { text: "최상", color: KOREAN_COLORS.POSITIVE_GREEN };
-    if (totalCombatRating > 60)
-      return { text: "양호", color: KOREAN_COLORS.ACCENT_YELLOW };
-    if (totalCombatRating > 40)
-      return { text: "보통", color: KOREAN_COLORS.WARNING_ORANGE };
-    if (totalCombatRating > 20)
-      return { text: "위험", color: KOREAN_COLORS.WARNING_YELLOW };
-    return { text: "치명", color: KOREAN_COLORS.NEGATIVE_RED };
-  }, [totalCombatRating]);
-
-  // Status colors based on values
-  const getStatusColor = useCallback((percent: number) => {
-    if (percent > 0.7) return KOREAN_COLORS.POSITIVE_GREEN;
-    if (percent > 0.4) return KOREAN_COLORS.WARNING_YELLOW;
-    if (percent > 0.2) return KOREAN_COLORS.WARNING_ORANGE;
-    return KOREAN_COLORS.NEGATIVE_RED;
-  }, []);
-
-  // Enhanced panel background with Korean traditional elements
-  const panelDraw = useCallback(
+  const drawPanel = useCallback(
     (g: PIXI.Graphics) => {
-      g.clear();
-
-      // Main panel background
-      g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
-      g.lineStyle(
-        3,
-        isSelected ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.UI_BORDER,
-        0.8
-      );
-      g.drawRoundedRect(0, 0, width, height, 12);
-      g.endFill();
-
-      // Archetype color accent
-      g.beginFill(archetypeData.colors.primary, 0.3);
-      g.drawRoundedRect(5, 5, width - 10, 25, 8);
-      g.endFill();
-
-      // Selection glow effect
-      if (isSelected) {
-        g.lineStyle(4, KOREAN_COLORS.ACCENT_GOLD, 0.8);
-        g.drawRoundedRect(-2, -2, width + 4, height + 4, 14);
-
-        // Pulsing inner glow
-        g.lineStyle(6, KOREAN_COLORS.ACCENT_GOLD, 0.2);
-        g.drawRoundedRect(-4, -4, width + 8, height + 8, 16);
-      }
-    },
-    [width, height, isSelected, archetypeData.colors.primary]
-  );
-
-  // Enhanced status bar with segments and glow
-  const drawEnhancedStatusBar = useCallback(
-    (
-      g: PIXI.Graphics,
-      value: number,
-      maxValue: number,
-      barWidth: number,
-      barHeight: number,
-      color: number
-    ) => {
       g.clear();
 
       // Background
-      g.beginFill(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9);
-      g.drawRoundedRect(0, 0, barWidth, barHeight, barHeight / 2);
-      g.endFill();
+      g.fill({
+        color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+        alpha: isSelected ? 0.95 : 0.85,
+      });
+      g.roundRect(0, 0, width, height, 10);
+      g.fill();
 
-      // Fill
-      const fillWidth = Math.max(0, (value / maxValue) * (barWidth - 4));
-      if (fillWidth > 0) {
-        g.beginFill(color, 0.9);
-        g.drawRoundedRect(2, 2, fillWidth, barHeight - 4, (barHeight - 4) / 2);
-        g.endFill();
+      // Border
+      const borderColor = isSelected
+        ? KOREAN_COLORS.ACCENT_GOLD
+        : position === "left"
+        ? KOREAN_COLORS.PLAYER_1_COLOR
+        : KOREAN_COLORS.PLAYER_2_COLOR;
 
-        // Glow effect on fill
-        g.lineStyle(1, color, 0.6);
-        g.drawRoundedRect(2, 2, fillWidth, barHeight - 4, (barHeight - 4) / 2);
-      }
-
-      // Outer border
-      g.lineStyle(1, color, 0.8);
-      g.drawRoundedRect(0, 0, barWidth, barHeight, barHeight / 2);
+      g.stroke({ width: isSelected ? 3 : 2, color: borderColor, alpha: 0.8 });
+      g.roundRect(0, 0, width, height, 10);
+      g.stroke();
     },
-    []
-  );
-
-  // Combat effectiveness indicator
-  const drawCombatReadiness = useCallback(
-    (g: PIXI.Graphics) => {
-      g.clear();
-
-      // Background circle
-      g.beginFill(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
-      g.drawCircle(35, 35, 30);
-      g.endFill();
-
-      // Readiness arc
-      const arcAngle = (totalCombatRating / 100) * Math.PI * 2;
-      g.lineStyle(4, combatReadiness.color, 0.9);
-      g.arc(35, 35, 25, -Math.PI / 2, -Math.PI / 2 + arcAngle);
-
-      // Inner glow
-      g.lineStyle(2, combatReadiness.color, 0.3);
-      g.drawCircle(35, 35, 20);
-    },
-    [totalCombatRating, combatReadiness.color]
+    [width, height, isSelected, position]
   );
 
   return (
-    <pixiContainer x={x} y={y} data-testid={`player-status-panel-${position}`}>
-      {/* Enhanced Main Panel */}
-      <pixiGraphics draw={panelDraw} />
+    <pixiContainer x={x} y={y} data-testid="player-status-panel">
+      <pixiGraphics draw={drawPanel} />
 
-      {/* Player Header Section */}
-      <pixiContainer x={12} y={10}>
+      {/* Player name */}
+      <pixiContainer x={12} y={15}>
         <pixiText
           text={player.name.korean}
           style={{
-            fontSize: 16,
+            fontSize: 14,
             fill: KOREAN_COLORS.TEXT_PRIMARY,
             fontWeight: "bold",
-          }}
-        />
-        <pixiText
-          text={archetypeData.name.korean}
-          style={{
-            fontSize: 12,
-            fill: archetypeData.colors.primary,
-            fontWeight: "bold",
-          }}
-          y={20}
-        />
-      </pixiContainer>
-
-      {/* Combat Readiness Indicator */}
-      <pixiContainer x={width - 80} y={10}>
-        <pixiGraphics draw={drawCombatReadiness} />
-        <pixiText
-          text={`${totalCombatRating}`}
-          style={{
-            fontSize: 14,
-            fill: combatReadiness.color,
-            fontWeight: "bold",
             align: "center",
           }}
-          x={35}
-          y={30}
-          anchor={0.5}
-        />
-        <pixiText
-          text={combatReadiness.text}
-          style={{
-            fontSize: 8,
-            fill: combatReadiness.color,
-            align: "center",
-          }}
-          x={35}
-          y={42}
+          x={(width - 24) / 2}
           anchor={0.5}
         />
       </pixiContainer>
 
-      {/* Main Health Bar */}
-      <pixiContainer x={12} y={55}>
+      {/* Health Bar */}
+      <pixiContainer x={12} y={45}>
         <pixiText
           text="체력 Health"
           style={{
-            fontSize: 11,
+            fontSize: 10,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontWeight: "bold",
           }}
         />
         <pixiGraphics
@@ -232,31 +130,31 @@ export const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
               player.health,
               player.maxHealth,
               width - 24,
-              16,
+              12,
               getStatusColor(healthPercent)
             )
           }
-          y={14}
+          y={12}
         />
         <pixiText
           text={`${Math.round(player.health)}/${player.maxHealth} (${Math.round(
             healthPercent * 100
           )}%)`}
           style={{
-            fontSize: 9,
+            fontSize: 8,
             fill: KOREAN_COLORS.TEXT_PRIMARY,
             align: "center",
           }}
           x={(width - 24) / 2}
-          y={20}
+          y={27}
           anchor={0.5}
         />
       </pixiContainer>
 
-      {/* Ki Energy Bar */}
-      <pixiContainer x={12} y={95}>
+      {/* Ki Bar */}
+      <pixiContainer x={12} y={85}>
         <pixiText
-          text="기력 Ki Energy"
+          text="기력 Ki"
           style={{
             fontSize: 10,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
@@ -270,7 +168,7 @@ export const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
               player.maxKi,
               width - 24,
               12,
-              KOREAN_COLORS.PRIMARY_CYAN
+              getStatusColor(kiPercent)
             )
           }
           y={12}
@@ -285,7 +183,7 @@ export const PlayerStatusPanel: React.FC<PlayerStatusPanelProps> = ({
             align: "center",
           }}
           x={(width - 24) / 2}
-          y={17}
+          y={27}
           anchor={0.5}
         />
       </pixiContainer>

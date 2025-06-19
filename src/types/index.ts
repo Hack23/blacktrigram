@@ -21,7 +21,7 @@ export {
 // Export core types
 export type { KoreanText } from "./korean-text";
 export type { Position, DamageRange } from "./common";
-export type { StatusEffect, HitEffect } from "./effects"; // Fix: Export HitEffect
+export type { StatusEffect, HitEffect, DisplayHitEffect } from "./effects"; // Fix: Export HitEffect
 export type {
   TrigramData,
   TrigramTransitionCost,

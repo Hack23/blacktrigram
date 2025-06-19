@@ -21,15 +21,17 @@ export class TrigramSystem {
     toStance: TrigramStance,
     player: PlayerState
   ): boolean {
-    if (fromStance === toStance) return true;
+    if (fromStance === toStance) {
+      return true;
+    }
 
-    const cost = this.getTransitionCost(fromStance, toStance, player);
+    const cost = this.getTransitionCost(fromStance, toStance);
 
-    // Check if player has sufficient resources
-    const hasEnoughKi = player.ki >= cost.ki;
-    const hasEnoughStamina = player.stamina >= cost.stamina;
+    // Fix: Use nullish coalescing for safer property access
+    const playerKi = player.ki ?? 100;
+    const playerStamina = player.stamina ?? 100;
 
-    return hasEnoughKi && hasEnoughStamina;
+    return playerKi >= cost.ki && playerStamina >= cost.stamina;
   }
 
   /**

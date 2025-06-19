@@ -1,104 +1,111 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useReducer, useEffect } from "react";
+import { extend } from "@pixi/react";
+import { Container, Graphics, Text } from "pixi.js";
+import "@pixi/layout";
 import type { CombatScreenProps } from "../../types/combat";
 import type { PlayerState } from "../../types/player";
-import type { Position } from "../../types/common";
 import type { HitEffect } from "../../types/effects";
+import { HitEffectType } from "../../types/effects";
+import type { KoreanTechnique } from "../../types/combat";
+import { TrigramStance } from "../../types/enums";
 import { CombatArena } from "./components/CombatArena";
 import { CombatControls } from "./components/CombatControls";
 import { CombatHUD } from "./components/CombatHUD";
-import { HitEffectsLayer } from "../ui/HitEffectsLayer";
-import { DojangBackground } from "../game/DojangBackground";
-import { CombatStats, PlayerStatusPanel } from "./components/";
-import {
-  ResponsivePixiContainer,
-  ResponsivePixiButton,
-  ResponsivePixiPanel,
-} from "../ui/base/ResponsivePixiComponents";
+import { HitEffectsLayer } from "./components/HitEffectsLayer";
+import { CombatStats } from "./components/CombatStats";
+// Fix: Import from correct locations
+import { GameEngine } from "./engine/GameEngine";
+import { DojangBackground } from "./backgrounds/DojangBackground";
 import { KOREAN_COLORS } from "../../types/constants";
+
+// Extend PixiJS components for layout support
+extend({ Container, Graphics, Text });
+
+interface CombatState {
+  readonly phase: "preparation" | "combat" | "victory" | "defeat" | "paused";
+  readonly activePlayer: number;
+  readonly executingTechnique: boolean;
+  readonly selectedTargets: readonly string[];
+  readonly combatLog: readonly string[];
+  readonly effects: readonly HitEffect[];
+}
+
+interface CombatAction {
+  readonly type:
+    | "START_COMBAT"
+    | "EXECUTE_TECHNIQUE"
+    | "SWITCH_STANCE"
+    | "GUARD"
+    | "PAUSE"
+    | "RESUME"
+    | "END_COMBAT"
+    | "ADD_EFFECT"
+    | "REMOVE_EFFECT"
+    | "LOG_ACTION";
+  readonly payload?: any;
+}
+
+function combatReducer(state: CombatState, action: CombatAction): CombatState {
+  switch (action.type) {
+    case "START_COMBAT":
+      return {
+        ...state,
+        phase: "combat",
+        combatLog: [...state.combatLog, "전투 시작! - Combat begins!"],
+      };
+    case "EXECUTE_TECHNIQUE":
+      return {
+        ...state,
+        executingTechnique: true,
+        combatLog: [
+          ...state.combatLog,
+          `${action.payload.technique.name.korean} (${action.payload.technique.name.english}) 실행!`,
+        ],
+      };
+    case "SWITCH_STANCE":
+      return {
+        ...state,
+        combatLog: [
+          ...state.combatLog,
+          `자세 변경: ${action.payload.stance.korean} (${action.payload.stance.english})`,
+        ],
+      };
+    case "PAUSE":
+      return { ...state, phase: "paused" };
+    case "RESUME":
+      return { ...state, phase: "combat" };
+    case "ADD_EFFECT":
+      return {
+        ...state,
+        effects: [...state.effects, action.payload.effect],
+      };
+    case "REMOVE_EFFECT":
+      return {
+        ...state,
+        effects: state.effects.filter((e) => e.id !== action.payload.effectId),
+      };
+    case "LOG_ACTION":
+      return {
+        ...state,
+        combatLog: [...state.combatLog.slice(-9), action.payload.message],
+      };
+    default:
+      return state;
+  }
+}
 
 export const CombatScreen: React.FC<CombatScreenProps> = ({
   players,
   onPlayerUpdate,
   currentRound,
   timeRemaining,
-  isPaused,
   onReturnToMenu,
   onGameEnd,
   width = 1200,
   height = 800,
-  x = 0,
-  y = 0,
 }) => {
-  const [hitEffects, setHitEffects] = useState<HitEffect[]>([]);
-  const [isExecutingTechnique, setIsExecutingTechnique] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
-  const [combatLog] = useState<string[]>([]);
-
-  const createHitEffect = useCallback(
-    (
-      id: string,
-      type: "hit" | "critical" | "block" | "miss",
-      position: Position,
-      intensity: number
-    ): HitEffect => ({
-      id,
-      type: type as any,
-      attackerId: "player1",
-      defenderId: "player2",
-      timestamp: Date.now(),
-      duration: 1000,
-      position,
-      intensity,
-      startTime: Date.now(),
-    }),
-    []
-  );
-
-  const handleAttack = useCallback(() => {
-    const effect = createHitEffect(
-      `attack_${Date.now()}`,
-      "hit",
-      { x: 400, y: 300 },
-      1.0
-    );
-    setHitEffects((prev) => [...prev, effect]);
-  }, [createHitEffect]);
-
-  const handleDefend = useCallback(() => {
-    console.log("Defending");
-  }, []);
-
-  const handleTechniqueExecute = useCallback((technique: any) => {
-    setIsExecutingTechnique(true);
-    console.log("Executing technique:", technique.name);
-    setTimeout(() => setIsExecutingTechnique(false), 500);
-  }, []);
-
-  const handleStanceSwitch = useCallback(
-    (stance: any) => {
-      setIsExecutingTechnique(true);
-      console.log("Switching to stance:", stance);
-      onPlayerUpdate(0, { currentStance: stance });
-    },
-    [onPlayerUpdate]
-  );
-
-  const handleGuard = useCallback(() => {
-    console.log("Guarding");
-  }, []);
-
-  const handlePauseToggle = useCallback(() => {
-    setIsExecutingTechnique(true);
-    setTimeout(() => setIsExecutingTechnique(false), 800);
-  }, []);
-
-  const handleEffectComplete = useCallback((effectId: string) => {
-    setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
-  }, []);
-
   const validatedPlayers = useMemo(() => {
     if (players.length < 2) {
-      console.warn("CombatScreen: Not enough players provided");
       const dummyPlayer: PlayerState = {
         ...players[0],
         id: "dummy_player",
@@ -109,218 +116,432 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     return [players[0], players[1]] as const;
   }, [players]);
 
-  const addHitEffect = useCallback(
-    (type: "hit" | "critical" | "block" | "miss", position: Position) => {
-      const effect = createHitEffect(
-        `effect_${Date.now()}`,
-        type,
-        position,
-        1.0
+  const [combatState, dispatchCombat] = useReducer(combatReducer, {
+    phase: "preparation",
+    activePlayer: 0,
+    executingTechnique: false,
+    selectedTargets: [],
+    combatLog: [],
+    effects: [],
+  });
+
+  // Layout config using @pixi/layout
+  const { isMobile, layoutConfig } = useMemo(() => {
+    const isMobile = width < 768;
+    const layoutConfig = {
+      arena: {
+        width: width,
+        height: height * (isMobile ? 0.6 : 0.7),
+        y: height * (isMobile ? 0.15 : 0.1),
+      },
+      hud: {
+        width: "100%",
+        height: 80,
+        flexDirection: "row" as const,
+        justifyContent: "space-between" as const,
+        alignItems: "center" as const,
+        padding: 20,
+      },
+      playerPanels: {
+        width: isMobile ? width * 0.45 : 180,
+        height: isMobile ? 160 : 280,
+        spacing: isMobile ? 10 : 20,
+      },
+      controls: {
+        width: isMobile ? width - 20 : 400,
+        height: isMobile ? 50 : 100,
+        y: height - (isMobile ? 60 : 120),
+      },
+    };
+    return { isMobile, layoutConfig };
+  }, [width, height]);
+
+  // Combat logic methods
+  const executeKoreanTechnique = useCallback(
+    (technique: KoreanTechnique, attacker: PlayerState) => {
+      dispatchCombat({ type: "EXECUTE_TECHNIQUE", payload: { technique } });
+      const baseDamage = technique.damage || 15;
+      const stanceMultiplier = 1.0;
+      const archetypeMultiplier = 1.0;
+      const critRoll = Math.random();
+      const isCritical = critRoll <= (technique.critChance || 0.1);
+      const finalDamage = Math.round(
+        baseDamage *
+          stanceMultiplier *
+          archetypeMultiplier *
+          (isCritical ? technique.critMultiplier || 1.5 : 1)
       );
-      setHitEffects((prev) => [...prev, effect]);
+      const targetIndex = attacker.id === validatedPlayers[0].id ? 1 : 0;
+      const newHealth = Math.max(
+        0,
+        validatedPlayers[targetIndex].health - finalDamage
+      );
+      const kiDrain = Math.round(technique.kiCost * (1 + Math.random() * 0.2));
+      const staminaDrain = Math.round(
+        technique.staminaCost * (1 + Math.random() * 0.2)
+      );
+      onPlayerUpdate(targetIndex, { health: newHealth });
+      onPlayerUpdate(attacker.id === validatedPlayers[0].id ? 0 : 1, {
+        ki: Math.max(0, attacker.ki - kiDrain),
+        stamina: Math.max(0, attacker.stamina - staminaDrain),
+      });
+      const effect: HitEffect = {
+        id: `hit_${Date.now()}`,
+        type: isCritical ? HitEffectType.CRITICAL : HitEffectType.HIT_NORMAL,
+        attackerId: attacker.id,
+        defenderId: validatedPlayers[targetIndex].id,
+        timestamp: Date.now(),
+        duration: isCritical ? 1500 : 1000,
+        position: { x: width * 0.5, y: height * 0.5 },
+        intensity: isCritical ? 1.5 : 1.0,
+        text: isCritical
+          ? "치명타! (Critical!)"
+          : `${technique.name.korean} (${technique.name.english})`,
+        startTime: Date.now(),
+      };
+      dispatchCombat({ type: "ADD_EFFECT", payload: { effect } });
+      const combatMessage = isCritical
+        ? `${attacker.name.korean} (${attacker.name.english})가 ${technique.name.korean} (${technique.name.english})으로 치명적인 ${finalDamage} 피해를 입혔습니다!`
+        : `${attacker.name.korean} (${attacker.name.english})가 ${technique.name.korean} (${technique.name.english})으로 ${finalDamage} 피해를 입혔습니다.`;
+      dispatchCombat({
+        type: "LOG_ACTION",
+        payload: { message: combatMessage },
+      });
+      setTimeout(() => {
+        dispatchCombat({
+          type: "REMOVE_EFFECT",
+          payload: { effectId: effect.id },
+        });
+      }, effect.duration);
     },
-    [createHitEffect]
+    [onPlayerUpdate, validatedPlayers, width, height]
   );
 
-  const handleGameEndLogic = useCallback(() => {
-    if (validatedPlayers[0].health <= 0) {
+  const handleAttack = useCallback(() => {
+    if (combatState.executingTechnique) return;
+    const attacker = validatedPlayers[combatState.activePlayer];
+    const basicAttack: KoreanTechnique = {
+      id: "basic_attack",
+      name: {
+        korean: "기본 공격",
+        english: "Basic Attack",
+        romanized: "gibon_gonggyeok",
+      },
+      koreanName: "기본 공격",
+      englishName: "Basic Attack",
+      romanized: "gibon_gonggyeok",
+      description: { korean: "기본적인 공격", english: "Basic attack" },
+      stance: attacker.currentStance,
+      type: "strike" as any,
+      damageType: "blunt" as any,
+      damage: 15,
+      kiCost: 5,
+      staminaCost: 8,
+      accuracy: 0.85,
+      range: 1.0,
+      executionTime: 400,
+      recoveryTime: 200,
+      critChance: 0.1,
+      critMultiplier: 1.5,
+      effects: [],
+    };
+    executeKoreanTechnique(basicAttack, attacker);
+  }, [combatState, validatedPlayers, executeKoreanTechnique]);
+
+  const handleDefend = useCallback(() => {
+    onPlayerUpdate(combatState.activePlayer, { isBlocking: true });
+    dispatchCombat({
+      type: "LOG_ACTION",
+      payload: {
+        message: `${validatedPlayers[combatState.activePlayer].name.korean} (${
+          validatedPlayers[combatState.activePlayer].name.english
+        })가 방어 자세 (Defensive Stance)를 취했습니다!`,
+      },
+    });
+    setTimeout(() => {
+      onPlayerUpdate(combatState.activePlayer, { isBlocking: false });
+    }, 1000);
+  }, [combatState, validatedPlayers, onPlayerUpdate]);
+
+  const handleStanceSwitch = useCallback(
+    (newStance: TrigramStance) => {
+      onPlayerUpdate(combatState.activePlayer, { currentStance: newStance });
+      dispatchCombat({
+        type: "SWITCH_STANCE",
+        payload: {
+          stance: {
+            korean: newStance,
+            english: newStance,
+          },
+        },
+      });
+    },
+    [combatState, onPlayerUpdate]
+  );
+
+  const handlePauseToggle = useCallback(() => {
+    if (combatState.phase === "paused") {
+      dispatchCombat({ type: "RESUME" });
+    } else {
+      dispatchCombat({ type: "PAUSE" });
+    }
+  }, [combatState.phase]);
+
+  // Enhanced player selection handler
+  const handlePlayerSelection = useCallback(
+    (playerIndex: number) => {
+      console.log(`Player ${playerIndex + 1} selected for targeting`);
+      // Add player selection logic here if needed for targeting system
+      dispatchCombat({
+        type: "LOG_ACTION",
+        payload: {
+          message: `${
+            validatedPlayers[playerIndex].name.korean
+          } 선택됨 - Player ${playerIndex + 1} selected`,
+        },
+      });
+    },
+    [validatedPlayers]
+  );
+
+  // Effects and keyboard handling
+  useEffect(() => {
+    if (combatState.phase === "preparation") {
+      const timer = setTimeout(() => {
+        dispatchCombat({ type: "START_COMBAT" });
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [combatState.phase]);
+
+  useEffect(() => {
+    const player1Dead = validatedPlayers[0].health <= 0;
+    const player2Dead = validatedPlayers[1].health <= 0;
+    if (player1Dead && !player2Dead) {
+      dispatchCombat({
+        type: "LOG_ACTION",
+        payload: {
+          message: `${validatedPlayers[1].name.korean} (${validatedPlayers[1].name.english}) 승리! (Victory!)`,
+        },
+      });
       onGameEnd(1);
-    } else if (validatedPlayers[1].health <= 0) {
+    } else if (player2Dead && !player1Dead) {
+      dispatchCombat({
+        type: "LOG_ACTION",
+        payload: {
+          message: `${validatedPlayers[0].name.korean} (${validatedPlayers[0].name.english}) 승리! (Victory!)`,
+        },
+      });
       onGameEnd(0);
     }
   }, [validatedPlayers, onGameEnd]);
 
-  React.useEffect(() => {
-    handleGameEndLogic();
-  }, [handleGameEndLogic]);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (combatState.phase === "paused") return;
+      const key = event.key;
+      if (key >= "1" && key <= "8") {
+        const stanceIndex = parseInt(key) - 1;
+        const stances = Object.values(TrigramStance);
+        if (stances[stanceIndex]) {
+          handleStanceSwitch(stances[stanceIndex]);
+        }
+      }
+      switch (key) {
+        case " ":
+          event.preventDefault();
+          handleAttack();
+          break;
+        case "Shift":
+          event.preventDefault();
+          handleDefend();
+          break;
+        case "Escape":
+          event.preventDefault();
+          handlePauseToggle();
+          break;
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    combatState.phase,
+    handleStanceSwitch,
+    handleAttack,
+    handleDefend,
+    handlePauseToggle,
+  ]);
 
-  const { isMobile, isTablet } = useMemo(() => {
-    const isMobile = width < 768;
-    const isTablet = width >= 768 && width < 1024;
-
-    return { isMobile, isTablet };
-  }, [width, height]);
-
-  const handlePlayerClick = (idx: number) => {
-    setSelectedPlayer(idx);
-    addHitEffect("hit", { x: 100 + idx * 200, y: 200 });
-  };
-
+  // PixiJS UI Layout
   return (
-    <ResponsivePixiContainer x={x} y={y} data-testid="combat-screen">
+    <pixiContainer width={width} height={height} data-testid="combat-screen">
+      {/* Game Engine */}
+      <GameEngine
+        player1={validatedPlayers[0]}
+        player2={validatedPlayers[1]}
+        onPlayerUpdate={(playerId, updates) => {
+          const playerIndex = validatedPlayers.findIndex(
+            (p) => p.id === playerId
+          );
+          if (playerIndex >= 0) {
+            onPlayerUpdate(playerIndex, updates);
+          }
+        }}
+        width={width}
+        height={height}
+      />
+
+      {/* Dojang Background */}
       <DojangBackground
         width={width}
         height={height}
         lighting="cyberpunk"
-        animate={true}
+        animate={combatState.phase === "combat"}
       />
 
-      <pixiGraphics
-        draw={(g) => {
-          g.clear();
-          g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.1 });
-          const patternSize = isMobile ? 100 : isTablet ? 125 : 150;
-          const circleSize = isMobile ? 25 : isTablet ? 32 : 40;
-
-          for (let i = 0; i < width; i += patternSize) {
-            for (let j = 0; j < height; j += patternSize) {
-              g.circle(i + patternSize / 2, j + patternSize / 2, circleSize);
-              g.stroke();
-            }
-          }
-        }}
-      />
-
+      {/* Combat Arena with enhanced player selection */}
       <CombatArena
         players={validatedPlayers}
-        width={width}
-        height={height * (isMobile ? 0.65 : 0.75)}
-        y={height * (isMobile ? 0.2 : 0.15)}
-        onPlayerClick={handlePlayerClick}
+        width={width * 0.6}
+        height={height}
+        onPlayerClick={handlePlayerSelection} // Now actually used
       />
 
+      {/* Combat HUD */}
       <CombatHUD
         player1={validatedPlayers[0]}
         player2={validatedPlayers[1]}
         currentRound={currentRound}
         timeRemaining={timeRemaining}
         maxRounds={3}
-        isPaused={isPaused}
+        isPaused={combatState.phase === "paused"}
         width={width}
-        height={isMobile ? 80 : 120}
-        y={0}
+        height={80}
       />
 
-      <ResponsivePixiPanel
-        title={validatedPlayers[0].name.korean}
-        x={isMobile ? 10 : 20}
-        y={height * (isMobile ? 0.15 : 0.2)}
-        width={isMobile ? width * 0.4 : 180}
-        height={isMobile ? 200 : 300}
-        data-testid="player1-status"
-      >
-        <PlayerStatusPanel
-          player={validatedPlayers[0]}
-          position="left"
-          x={0}
-          y={0}
-          width={isMobile ? width * 0.4 - 20 : 160}
-          height={isMobile ? 180 : 280}
-          isSelected={selectedPlayer === 0}
-        />
-      </ResponsivePixiPanel>
+      {/* Hit Effects Layer */}
+      <HitEffectsLayer
+        effects={combatState.effects}
+        onEffectComplete={(effectId) => {
+          dispatchCombat({ type: "REMOVE_EFFECT", payload: { effectId } });
+        }}
+      />
 
-      <ResponsivePixiPanel
-        title={validatedPlayers[1].name.korean}
-        x={width - (isMobile ? width * 0.4 + 10 : 200)}
-        y={height * (isMobile ? 0.15 : 0.2)}
-        width={isMobile ? width * 0.4 : 180}
-        height={isMobile ? 200 : 300}
-        data-testid="player2-status"
-      >
-        <PlayerStatusPanel
-          player={validatedPlayers[1]}
-          position="right"
-          x={0}
-          y={0}
-          width={isMobile ? width * 0.4 - 20 : 160}
-          height={isMobile ? 180 : 280}
-          isSelected={selectedPlayer === 1}
-        />
-      </ResponsivePixiPanel>
+      {/* Pause Overlay */}
+      {combatState.phase === "paused" && (
+        <pixiContainer x={width / 2} y={height / 2} data-testid="pause-overlay">
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+              g.rect(-200, -100, 400, 200);
+              g.fill();
+            }}
+          />
+          <pixiText
+            text="일시 정지 - PAUSED"
+            style={{
+              fontSize: 36,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+              align: "center",
+              fontFamily: "Noto Sans KR",
+            }}
+            anchor={0.5}
+          />
+        </pixiContainer>
+      )}
 
-      <ResponsivePixiPanel
-        title="전투 통계"
-        x={isMobile ? 10 : width / 2 - 150}
-        y={height - (isMobile ? 160 : 180)}
-        width={isMobile ? width - 20 : 300}
-        height={isMobile ? 100 : 160}
-        data-testid="combat-stats-panel"
-      >
-        <CombatStats
-          players={validatedPlayers}
-          combatLog={combatLog}
-          x={0}
-          y={0}
-          width={isMobile ? width - 40 : 280}
-          height={isMobile ? 80 : 140}
-        />
-      </ResponsivePixiPanel>
-
-      <ResponsivePixiContainer
-        x={isMobile ? 10 : 20}
-        y={height - (isMobile ? 50 : 140)}
+      {/* Combat Controls */}
+      <pixiContainer
+        x={layoutConfig.playerPanels.spacing}
+        y={layoutConfig.controls.y}
         data-testid="combat-controls-container"
       >
         <CombatControls
           onAttack={handleAttack}
           onDefend={handleDefend}
           onSwitchStance={handleStanceSwitch}
+          player={validatedPlayers[combatState.activePlayer]}
+          isExecutingTechnique={combatState.executingTechnique}
           onPauseToggle={handlePauseToggle}
-          isPaused={isPaused}
-          player={validatedPlayers[0]}
-          onTechniqueExecute={handleTechniqueExecute}
-          onGuard={handleGuard}
-          isExecutingTechnique={isExecutingTechnique}
-          width={isMobile ? width - 20 : 400}
-          height={isMobile ? 40 : 120}
-          x={0}
-          y={0}
+          isPaused={combatState.phase === "paused"}
+          width={layoutConfig.controls.width}
+          height={layoutConfig.controls.height}
         />
-      </ResponsivePixiContainer>
+      </pixiContainer>
 
-      <HitEffectsLayer
-        effects={hitEffects}
-        onEffectComplete={handleEffectComplete}
-      />
+      {/* Combat Stats Panel */}
+      <pixiContainer
+        x={isMobile ? 10 : width / 2 - 150}
+        y={height - (isMobile ? 140 : 180)}
+        data-testid="combat-log-panel"
+      >
+        <CombatStats
+          players={validatedPlayers}
+          combatLog={combatState.combatLog}
+          width={isMobile ? width - 20 : 300}
+          height={isMobile ? 80 : 140}
+        />
+      </pixiContainer>
 
-      <ResponsivePixiButton
-        text="메뉴로"
-        x={width - (isMobile ? 80 : 150)}
+      {/* Return to Menu Button */}
+      <pixiContainer
+        x={width - (isMobile ? 80 : 130)}
         y={isMobile ? 10 : 20}
-        width={isMobile ? 70 : 120}
-        height={isMobile ? 35 : 45}
-        variant="secondary"
-        onClick={onReturnToMenu}
         data-testid="return-menu-button"
-      />
+      >
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
+            g.roundRect(0, 0, isMobile ? 70 : 100, isMobile ? 30 : 40, 4);
+            g.fill();
+            g.stroke({
+              width: 1,
+              color: KOREAN_COLORS.ACCENT_GOLD,
+              alpha: 0.8,
+            });
+            g.roundRect(0, 0, isMobile ? 70 : 100, isMobile ? 30 : 40, 4);
+            g.stroke();
+          }}
+          interactive={true}
+          onClick={onReturnToMenu}
+        />
+        <pixiText
+          text="메뉴로"
+          style={{
+            fontSize: isMobile ? 10 : 12,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontWeight: "bold",
+            align: "center",
+          }}
+          anchor={0.5}
+          x={(isMobile ? 70 : 100) / 2}
+          y={(isMobile ? 30 : 40) / 2}
+        />
+      </pixiContainer>
 
-      {isPaused && (
-        <ResponsivePixiContainer x={0} y={0} data-testid="pause-overlay">
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-              g.rect(0, 0, width, height);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="일시 정지"
-            style={{
-              fontSize: isMobile ? 32 : 48,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-              align: "center",
-            }}
-            x={width / 2}
-            y={height / 2 - 30}
-            anchor={0.5}
-          />
-          <pixiText
-            text="PAUSED"
-            style={{
-              fontSize: isMobile ? 16 : 24,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              align: "center",
-            }}
-            x={width / 2}
-            y={height / 2 + 20}
-            anchor={0.5}
-          />
-        </ResponsivePixiContainer>
-      )}
-    </ResponsivePixiContainer>
+      {/* Controls Guide */}
+      <pixiContainer x={10} y={height - 60} data-testid="korean-controls-guide">
+        <pixiText
+          text="조작법: 1-8 자세, 스페이스 공격, 시프트 방어"
+          style={{
+            fontSize: isMobile ? 8 : 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            fontFamily: "Noto Sans KR",
+          }}
+        />
+        <pixiText
+          text="Controls: 1-8 Stance, Space Attack, Shift Defend"
+          style={{
+            fontSize: isMobile ? 7 : 8, // Fix: Added missing colon
+            fill: KOREAN_COLORS.TEXT_TERTIARY,
+          }}
+          y={15}
+        />
+      </pixiContainer>
+    </pixiContainer>
   );
 };
 

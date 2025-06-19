@@ -1,247 +1,151 @@
-import React, { useState, useCallback, useMemo, ReactNode } from "react";
+import React, { useCallback } from "react";
+import { usePixiExtensions } from "../../../utils/pixiExtensions";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-// Responsive PixiJS Button with adaptive sizing
-export const ResponsivePixiButton: React.FC<ResponsivePixiButtonProps> = ({
-  x = 0,
-  y = 0,
-  text,
-  width,
-  height,
-  variant = "primary",
-  onClick,
-  disabled = false,
-  testId,
-  "data-testid": dataTestId,
-  screenWidth = 0,
-  screenHeight: _screenHeight = 0,
-}) => {
-  const sw = screenWidth;
-  const containerTestId = dataTestId ?? testId;
-  const [isHovered, setIsHovered] = useState(false);
+export interface ResponsivePixiContainerProps {
+  readonly children?: React.ReactNode;
+  readonly x?: number;
+  readonly y?: number;
+  readonly screenWidth?: number;
+  readonly screenHeight?: number;
+  readonly [key: string]: any;
+}
 
-  const fontSize = useMemo(() => {
-    const isMobile = sw < 768;
-    const isTablet = sw >= 768 && sw < 1024;
-    return isMobile ? 12 : isTablet ? 14 : 16;
-  }, [sw]);
-
-  const getButtonColor = useCallback(() => {
-    if (disabled) return KOREAN_COLORS.UI_DISABLED_BG;
-
-    switch (variant) {
-      case "primary":
-        return KOREAN_COLORS.PRIMARY_CYAN;
-      case "secondary":
-        return KOREAN_COLORS.UI_STEEL_GRAY;
-      case "accent":
-        return KOREAN_COLORS.ACCENT_GOLD;
-      case "ghost":
-        return KOREAN_COLORS.TRANSPARENT;
-      case "danger":
-        return KOREAN_COLORS.NEGATIVE_RED;
-      default:
-        return KOREAN_COLORS.PRIMARY_CYAN;
-    }
-  }, [variant, disabled]);
-
-  return (
-    <pixiContainer x={x} y={y} data-testid={containerTestId} onClick={onClick}>
-      <pixiGraphics
-        draw={(g) => {
-          g.clear();
-          const color = getButtonColor();
-          const alpha = isHovered ? 0.8 : 0.6;
-
-          g.fill({ color, alpha });
-          g.roundRect(0, 0, width || 120, height || 40, 8);
-          g.fill();
-
-          g.stroke({
-            width: 2,
-            color: disabled
-              ? KOREAN_COLORS.UI_DISABLED_BORDER
-              : KOREAN_COLORS.ACCENT_GOLD,
-            alpha: 0.8,
-          });
-          g.roundRect(0, 0, width || 120, height || 40, 8);
-          g.stroke();
-        }}
-        interactive={!disabled}
-        onPointerOver={() => !disabled && setIsHovered(true)}
-        onPointerOut={() => setIsHovered(false)}
-        onPointerDown={() => !disabled && onClick?.()}
-      />
-      <pixiText
-        text={text}
-        style={{
-          fontSize,
-          fill: disabled
-            ? KOREAN_COLORS.UI_DISABLED_TEXT
-            : KOREAN_COLORS.TEXT_PRIMARY,
-          align: "center",
-          fontWeight: "bold",
-        }}
-        x={(width || 120) / 2}
-        y={(height || 40) / 2}
-        anchor={0.5}
-        data-testid={`${containerTestId}-text`}
-      />
-    </pixiContainer>
-  );
-};
-
-// Responsive PixiJS Container that adapts to screen size
 export const ResponsivePixiContainer: React.FC<
   ResponsivePixiContainerProps
-> = ({
-  x = 0,
-  y = 0,
-  children,
-  testId,
-  "data-testid": dataTestId,
-  screenWidth: _screenWidth,
-  screenHeight: _screenHeight,
-}) => {
-  const containerTestId = dataTestId ?? testId;
+> = ({ children, x = 0, y = 0, ...props }) => {
+  usePixiExtensions();
+
   return (
-    <pixiContainer x={x} y={y} data-testid={containerTestId}>
+    <pixiContainer x={x} y={y} {...props}>
       {children}
     </pixiContainer>
   );
 };
 
-// Responsive PixiJS Panel with title bar
+export interface ResponsivePixiPanelProps extends ResponsivePixiContainerProps {
+  readonly title?: string;
+  readonly width?: number;
+  readonly height?: number;
+}
+
 export const ResponsivePixiPanel: React.FC<ResponsivePixiPanelProps> = ({
-  x = 0,
-  y = 0,
   title,
-  children,
   width = 200,
   height = 150,
-  testId,
-  "data-testid": dataTestId,
-  screenWidth: _screenWidth,
-  screenHeight: _screenHeight,
+  children,
+  x = 0,
+  y = 0,
+  ...props
 }) => {
-  const containerTestId = dataTestId ?? testId;
+  usePixiExtensions();
 
   return (
-    <pixiContainer x={x} y={y} data-testid={containerTestId}>
+    <pixiContainer x={x} y={y} {...props}>
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
           g.roundRect(0, 0, width, height, 8);
           g.fill();
-
-          g.stroke({
-            width: 2,
-            color: KOREAN_COLORS.ACCENT_GOLD,
-            alpha: 0.8,
-          });
+          g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
           g.roundRect(0, 0, width, height, 8);
           g.stroke();
         }}
       />
-
       {title && (
         <pixiText
           text={title}
-          data-testid={`${containerTestId}-title`}
           style={{
-            fontSize: 14,
+            fontSize: 12,
             fill: KOREAN_COLORS.ACCENT_GOLD,
             fontWeight: "bold",
           }}
-          x={10}
-          y={-20}
+          x={8}
+          y={8}
+          data-testid={`${title.toLowerCase().replace(/\s+/g, "-")}-title`}
         />
       )}
-
-      <pixiContainer x={0} y={25}>
+      <pixiContainer x={0} y={title ? 25 : 8}>
         {children}
       </pixiContainer>
     </pixiContainer>
   );
 };
 
-// Simple Pixi-React wrappers that forward data-testid, positioning, text, children and click handlers.
 export interface ResponsivePixiButtonProps {
-  text: string;
-  // allow both forms of test id
-  testId?: string;
-  "data-testid"?: string;
-  x?: number;
-  y?: number;
-  // sizing props
-  width?: number;
-  height?: number;
-  screenWidth?: number;
-  screenHeight?: number;
-  variant?: "primary" | "secondary" | "accent" | "ghost" | "danger";
-  disabled?: boolean;
-  onClick?: () => void;
+  readonly text: string;
+  readonly onClick?: () => void;
+  readonly variant?: "primary" | "secondary";
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly screenWidth?: number;
+  readonly screenHeight?: number;
+  readonly [key: string]: any;
 }
 
-export const ResponsivePixiButtonSimple: React.FC<
-  ResponsivePixiButtonProps
-> = ({ text, testId, x = 0, y = 0, onClick }) => {
+export const ResponsivePixiButton: React.FC<ResponsivePixiButtonProps> = ({
+  text,
+  onClick,
+  variant = "primary",
+  width = 100,
+  height = 40,
+  x = 0,
+  y = 0,
+  ...props
+}) => {
+  usePixiExtensions();
+
+  const buttonColor =
+    variant === "primary"
+      ? KOREAN_COLORS.ACCENT_GOLD
+      : KOREAN_COLORS.UI_BACKGROUND_MEDIUM;
+
+  // Fix: Proper click handler that actually gets called
   const handleClick = useCallback(() => {
     onClick?.();
   }, [onClick]);
 
+  const drawButton = (g: any) => {
+    g.clear();
+    g.fill({ color: buttonColor, alpha: 0.8 });
+    g.roundRect(0, 0, width, height, 6);
+    g.fill();
+    g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
+    g.roundRect(0, 0, width, height, 6);
+    g.stroke();
+  };
+
+  const testId = `${text.toLowerCase().replace(/\s+/g, "-")}-button`;
+
   return (
-    <pixiContainer
-      data-testid={testId}
-      x={x}
-      y={y}
-      interactive
-      onClick={handleClick}
-    >
+    <pixiContainer x={x} y={y} {...props}>
       <pixiGraphics
-        draw={(g) => {
-          g.clear();
-          g.beginFill(0x444444);
-          g.drawRect(0, 0, 120, 40);
-          g.endFill();
-        }}
+        draw={drawButton}
+        interactive={true}
+        onPointerDown={handleClick}
+        data-testid={testId}
       />
       <pixiText
-        data-testid={`${testId}-text`}
         text={text}
+        style={{
+          fontSize: 12,
+          fill:
+            variant === "primary"
+              ? KOREAN_COLORS.BLACK_SOLID
+              : KOREAN_COLORS.TEXT_PRIMARY,
+          align: "center",
+        }}
+        x={width / 2}
+        y={height / 2}
         anchor={0.5}
-        x={60}
-        y={20}
+        data-testid={`${text.toLowerCase().replace(/\s+/g, "-")}-text`}
       />
     </pixiContainer>
   );
 };
-
-export interface ResponsivePixiPanelProps {
-  title: string;
-  testId?: string;
-  "data-testid"?: string;
-  x?: number;
-  y?: number;
-  children?: React.ReactNode;
-  // sizing props
-  width?: number;
-  height?: number;
-  screenWidth?: number;
-  screenHeight?: number;
-}
-
-export interface ResponsivePixiContainerProps {
-  testId?: string;
-  "data-testid"?: string;
-  x?: number;
-  y?: number;
-  children?: ReactNode;
-  // responsive context
-  screenWidth?: number;
-  screenHeight?: number;
-}
 
 export default {
   ResponsivePixiContainer,

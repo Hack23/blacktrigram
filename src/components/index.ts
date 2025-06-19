@@ -6,10 +6,10 @@
 export * from "./combat";
 
 // Game components
-export { GameEngine } from "./game/GameEngine";
-export { DojangBackground } from "./game/DojangBackground";
-export { Player } from "./game/Player";
-export { PlayerVisuals } from "./game/PlayerVisuals";
+export { GameEngine } from "./combat/engine/GameEngine";
+export { DojangBackground } from "./combat/backgrounds/DojangBackground";
+export { Player } from "./combat/components/Player";
+export { PlayerVisuals } from "./combat/components/PlayerVisuals";
 
 // Create a simple GameUI component export
 export const GameUI: React.FC<any> = () => null; // Placeholder - implement as needed

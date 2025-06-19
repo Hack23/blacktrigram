@@ -2,16 +2,8 @@
  * Anatomical and vital point system types
  */
 
-import type { KoreanText, Position, DamageRange } from "./common";
-import { StatusEffect } from "./effects";
-import {
-  TrigramStance,
-  PlayerArchetype,
-  VitalPointCategory,
-  VitalPointSeverity,
-  VitalPointEffectType,
-  EffectIntensity,
-} from "./enums";
+import type { KoreanText, DamageRange } from "./common";
+import type { EffectIntensity } from "./effects";
 
 // Vital point definition
 export interface VitalPoint {
@@ -36,13 +28,11 @@ export interface VitalPoint {
 
 // Vital point effect
 export interface VitalPointEffect {
-  readonly id: string;
   readonly type: VitalPointEffectType;
   readonly intensity: EffectIntensity;
-  readonly duration: number;
+  readonly damage?: number;
+  readonly duration?: number;
   readonly description: KoreanText;
-  readonly stackable: boolean;
-  readonly source?: string; // Add missing source property
 }
 
 // Player archetype data
@@ -215,3 +205,94 @@ export interface KoreanTechnique {
   critMultiplier: number;
   effects: any[];
 }
+
+export enum VitalPointCategory {
+  HEAD = "head",
+  NECK = "neck",
+  TORSO = "torso",
+  ARMS = "arms",
+  LEGS = "legs",
+  NEUROLOGICAL = "neurological",
+  RESPIRATORY = "respiratory",
+  CIRCULATORY = "circulatory",
+  VASCULAR = "vascular",
+  ORGAN = "organ",
+}
+
+export enum VitalPointSeverity {
+  LOW = "low",
+  MINOR = "minor",
+  MEDIUM = "medium",
+  MODERATE = "moderate",
+  HIGH = "high",
+  MAJOR = "major",
+  CRITICAL = "critical",
+}
+
+export enum VitalPointEffectType {
+  UNCONSCIOUSNESS = "unconsciousness",
+  BREATHLESSNESS = "breathlessness",
+  PAIN = "pain",
+  PARALYSIS = "paralysis",
+  STUN = "stun",
+  WEAKNESS = "weakness",
+  DISORIENTATION = "disorientation",
+  BLOOD_FLOW_RESTRICTION = "blood_flow_restriction",
+  NERVE_DISRUPTION = "nerve_disruption",
+  ORGAN_DISRUPTION = "organ_disruption",
+}
+
+/**
+ * Effect intensity levels
+ */
+export enum EffectIntensity {
+  MINOR = "minor",
+  MEDIUM = "medium",
+  HIGH = "high",
+  CRITICAL = "critical",
+}
+
+/**
+ * 2D position coordinates
+ */
+export interface Position {
+  readonly x: number;
+  readonly y: number;
+}
+
+/**
+ * Vital point on the human body
+ */
+export interface VitalPoint {
+  readonly id: string;
+  readonly category: VitalPointCategory;
+  readonly severity: VitalPointSeverity;
+  readonly name: KoreanText;
+  readonly description: KoreanText;
+  readonly effects: readonly VitalPointEffect[];
+  readonly location?: Position;
+  readonly targetAreas: readonly string[];
+  readonly accessibility: number;
+  readonly accuracy: number;
+  readonly discoveryLevel: number;
+}
+
+/**
+ * Effect that occurs when a vital point is struck
+ */
+export interface VitalPointEffect {
+  readonly type: VitalPointEffectType;
+  readonly intensity: EffectIntensity;
+  readonly duration?: number;
+  readonly description: KoreanText;
+}
+
+export {
+  VitalPointCategory,
+  VitalPointSeverity,
+  VitalPointEffectType,
+  EffectIntensity,
+  type Position,
+  type VitalPoint,
+  type VitalPointEffect,
+};
