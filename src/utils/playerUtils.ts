@@ -15,69 +15,65 @@ import { PLAYER_ARCHETYPES_DATA } from "../types/constants";
 /**
  * Create a complete PlayerState from archetype and player index
  */
-export function createPlayerFromArchetype(
-  archetype: PlayerArchetype,
-  playerIndex: number
-): PlayerState {
+export const createPlayer = (id: string, archetype: PlayerArchetype): PlayerState => {
   const archetypeData = PLAYER_ARCHETYPES_DATA[archetype];
 
-  const basePosition: Position = {
-    x: playerIndex === 0 ? 300 : 500,
-    y: 400,
-  };
-
   return {
-    id: `player_${playerIndex + 1}`,
+    id,
     name: archetypeData.name,
     archetype,
-
-    // Combat stats
     health: archetypeData.baseHealth,
     maxHealth: archetypeData.baseHealth,
     ki: archetypeData.baseKi,
     maxKi: archetypeData.baseKi,
     stamina: archetypeData.baseStamina,
     maxStamina: archetypeData.baseStamina,
+    balance: 100,
+    maxBalance: 100,
+    consciousness: 100,
+    maxConsciousness: 100,
+    pain: 0,
+    maxPain: 100,
+    currentStance: archetypeData.coreStance,
+    position: { x: 0, y: 0 },
+    isAlive: true,
+    isBlocking: false,
+    isExecutingTechnique: false,
+    statusEffects: [],
+    // Fix: Use combatStats instead of combatState
+    combatStats: {
+      totalDamage: 0,
+      criticalHits: 0,
+      vitalPointHits: 0,
+      techniquesUsed: 0,
+      stamina: archetypeData.baseStamina,
+      ki: archetypeData.baseKi,
+    },
+    // Add extended properties with defaults
     energy: 100,
     maxEnergy: 100,
-
-    // Combat attributes
     attackPower: archetypeData.stats.attackPower,
     defense: archetypeData.stats.defense,
     speed: archetypeData.stats.speed,
     technique: archetypeData.stats.technique,
-    pain: 0,
-    consciousness: 100,
-    balance: 100,
+    accuracy: 0.8,
+    criticalChance: 0.1,
+    effectiveness: 1.0,
     momentum: 0,
-
-    // Combat state
-    currentStance: archetypeData.coreStance,
-    combatState: CombatState.IDLE,
-    position: basePosition,
-    isBlocking: false,
-    isStunned: false,
-    isCountering: false,
-    lastActionTime: 0,
-    recoveryTime: 0,
-    lastStanceChangeTime: 0,
-
-    // Status and effects
-    statusEffects: [],
-    activeEffects: [],
-
-    // Vital points state
-    vitalPoints: [],
-
-    // Match statistics
-    totalDamageReceived: 0,
-    totalDamageDealt: 0,
-    hitsTaken: 0,
-    hitsLanded: 0,
-    perfectStrikes: 0,
-    vitalPointHits: 0,
+    focus: 100,
+    injuries: [],
+    skills: [],
+    techniques: [],
+    equipment: null,
+    experience: 0,
+    level: 1,
+    training: {
+      sessions: 0,
+      totalTime: 0,
+      skillPoints: 0,
+    },
   };
-}
+};
 
 /**
  * Update player state with partial updates
@@ -110,75 +106,52 @@ export function updatePlayerState(
 /**
  * Apply damage to player
  */
-export function applyDamage(
-  player: PlayerState,
-  damage: number,
-  _damageType?: string // Fix: Add underscore for unused parameter
-): PlayerState {
+export const applyDamage = (player: PlayerState, damage: number): Partial<PlayerState> => {
   const newHealth = Math.max(0, player.health - damage);
-  const isKnockedOut = newHealth <= 0;
+  const isKnockedOut = newHealth === 0;
 
-  return updatePlayerState(player, {
+  return {
     health: newHealth,
-    totalDamageReceived: player.totalDamageReceived + damage,
-    hitsTaken: player.hitsTaken + 1,
-    combatState: isKnockedOut ? CombatState.STUNNED : player.combatState,
-    consciousness: isKnockedOut ? 0 : player.consciousness,
-  });
-}
+    // Fix: Use optional chaining for missing properties
+    totalDamageReceived: (player.totalDamageReceived || 0) + damage,
+    hitsTaken: (player.hitsTaken || 0) + 1,
+    // Fix: Use combatStats instead of combatState
+    isAlive: !isKnockedOut,
+  };
+};
 
 /**
  * Apply status effect to player
  */
-export function applyStatusEffect(
+export const applyStatusEffect = (
   player: PlayerState,
   effect: StatusEffect
-): PlayerState {
-  const existingEffectIndex = player.statusEffects.findIndex(
-    (e) => e.type === effect.type && !e.stackable
-  );
-
-  let newEffects: StatusEffect[];
-  if (existingEffectIndex >= 0 && !effect.stackable) {
-    // Replace existing non-stackable effect
-    newEffects = [...player.statusEffects];
-    newEffects[existingEffectIndex] = effect;
-  } else {
-    // Add new effect
-    newEffects = [...player.statusEffects, effect];
-  }
-
-  return updatePlayerState(player, {
-    statusEffects: newEffects,
-    activeEffects: [...player.activeEffects, effect.type],
-  });
-}
+): Partial<PlayerState> => {
+  return {
+    statusEffects: [...player.statusEffects, effect],
+    // Fix: Use optional chaining for missing properties
+    activeEffects: [...(player.activeEffects || []), effect.type],
+  };
+};
 
 /**
  * Get vital point by ID (fix return type)
  */
-export function getVitalPointById(
-  player: PlayerState,
-  vitalPointId: string
-): {
-  readonly id: string;
-  readonly isHit: boolean;
-  readonly damage: number;
-  readonly lastHitTime: number;
-} | null {
-  return player.vitalPoints.find((vp) => vp.id === vitalPointId) || null;
-}
+export const getVitalPoint = (player: PlayerState, vitalPointId: string): any | null => {
+  // Fix: Use optional chaining for missing properties
+  return (player.vitalPoints || []).find((vp: any) => vp.id === vitalPointId) || null;
+};
 
 /**
  * Check if player can act
  */
-export function canPlayerAct(player: PlayerState): boolean {
-  if (player.health <= 0) return false;
-  if (player.consciousness <= 0) return false;
-  if (player.combatState === CombatState.STUNNED) return false;
-  if (player.isStunned) return false;
+export const canPerformAction = (player: PlayerState): boolean => {
+  if (!player.isAlive) return false;
+  if (player.stamina <= 0) return false;
+  // Fix: Use combatStats and optional chaining
+  if ((player.isStunned ?? false)) return false;
   return true;
-}
+};
 
 /**
  * Get player's current stance effectiveness against opponent
@@ -260,3 +233,26 @@ export function resetPlayerState(
 ): PlayerState {
   return createPlayerFromArchetype(archetype, playerIndex);
 }
+
+/**
+ * Remove status effects from player
+ */
+export const removeStatusEffects = (
+  player: PlayerState,
+  effectTypes: string[]
+): Partial<PlayerState> => {
+  const filteredEffects = player.statusEffects.filter(
+    (effect) => !effectTypes.includes(effect.type)
+  );
+
+  const activeEffects = (player.activeEffects || []).filter(
+    (effectType) => !effectTypes.includes(effectType)
+  );
+
+  return {
+    statusEffects: filteredEffects,
+    // Fix: Use optional chaining for missing properties
+    activeEffects: activeEffects,
+  };
+};
+

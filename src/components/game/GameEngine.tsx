@@ -1,17 +1,10 @@
 // Complete game engine for Black Trigram Korean martial arts
 
-import React, { useCallback } from "react";
-import { extend } from "@pixi/react";
-import { Container, Graphics, Text } from "pixi.js";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import type { GameEngineProps } from "../../types/components";
+import { CombatSystem } from "../../systems/CombatSystem";
+import type { CombatResult } from "../../types/combat";
 import type { PlayerState } from "../../types/player";
-import type { KoreanTechnique } from "../../types/anatomy";
-
-// Extend PixiJS components
-extend({
-  Container,
-  Graphics,
-  Text,
-});
 
 // Define GameEngineProps interface locally to avoid conflicts
 interface GameEngineProps {
@@ -33,46 +26,109 @@ export const GameEngine: React.FC<GameEngineProps> = ({
   onPlayerUpdate,
 }) => {
   const players = [player1, player2];
+  const combatSystemRef = useRef<CombatSystem | null>(null);
+  const lastUpdateTimeRef = useRef<number>(Date.now());
+  const gameLoopRef = useRef<number | null>(null);
 
-  // Handle combat actions - using the action parameter to avoid unused warning
-  const handleCombatAction = useCallback(
-    (playerId: string, action: KoreanTechnique) => {
-      // Basic combat action processing
-      const updatedAction = {
-        ...action,
-        id: action.id || "basic_attack",
-        name: action.name || {
-          korean: "기본공격",
-          english: "Basic Attack",
-          romanized: "gibon_gonggyeok",
-        },
-        koreanName: action.koreanName || "기본공격",
-        englishName: action.englishName || "Basic Attack",
-        romanized: action.romanized || "gibon_gonggyeok",
-        description: action.description || {
-          korean: "기본 공격",
-          english: "Basic attack",
-        },
-        stance: action.stance,
-        type: action.type,
-        damageType: action.damageType,
-        damage: action.damage || 10,
-        kiCost: action.kiCost || 5,
-        staminaCost: action.staminaCost || 8,
-        accuracy: action.accuracy || 0.8,
-        range: action.range || 1.0,
-        executionTime: action.executionTime || 500,
-        recoveryTime: action.recoveryTime || 300,
-        critChance: action.critChance || 0.1,
-        critMultiplier: action.critMultiplier || 1.5,
-        effects: action.effects || [],
-      };
+  // Initialize combat system
+  const combatSystem = useMemo(() => {
+    if (!combatSystemRef.current) {
+      combatSystemRef.current = new CombatSystem();
+    }
+    return combatSystemRef.current;
+  }, []);
 
-      console.log(`Combat action for ${playerId}:`, updatedAction);
-      onPlayerUpdate(playerId, { lastActionTime: Date.now() });
+  // Handle player action
+  const handlePlayerAction = useCallback(
+    (playerId: number, action: string, data?: any) => {
+      const player = players[playerId];
+      if (!player) return;
+
+      try {
+        let result: CombatResult | null = null;
+
+        switch (action) {
+          case "attack":
+            const target = players[1 - playerId];
+            if (target) {
+              result = combatSystem.executeAttack(player, target, data);
+            }
+            break;
+          case "defend":
+            result = combatSystem.executeDefense(player, data);
+            break;
+          case "stance_change":
+            result = combatSystem.changeStance(player, data.stance);
+            break;
+          default:
+            console.warn("Unknown action:", action);
+            return;
+        }
+
+        if (result) {
+          onPlayerUpdate(playerId, { ...player, stamina: Math.max(0, player.stamina - 5) }); // Example update
+        }
+
+      } catch (error) {
+        console.error("Error handling player action:", error);
+      }
     },
-    [onPlayerUpdate]
+    [players, combatSystem, onPlayerUpdate]
   );
+
+  // Game loop
+  const gameLoop = useCallback(() => {
+    const currentTime = Date.now();
+    const deltaTime = currentTime - lastUpdateTimeRef.current;
+    lastUpdateTimeRef.current = currentTime;
+
+    try {
+      // Update combat system
+      if (combatSystem) {
+        const updatedPlayers = combatSystem.update(players, deltaTime);
+
+        // Apply updates if players changed
+        updatedPlayers.forEach((updatedPlayer, index) => {
+          if (updatedPlayer !== players[index]) {
+            onPlayerUpdate(index, updatedPlayer);
+          }
+        });
+      }
+
+      // Schedule next update
+      gameLoopRef.current = requestAnimationFrame(gameLoop);
+    } catch (error) {
+      console.error("Game loop error:", error);
+    }
+  }, [combatSystem, players, onPlayerUpdate]);
+
+  // Start/stop game loop
+  useEffect(() => {
+    gameLoopRef.current = requestAnimationFrame(gameLoop);
+
+    return () => {
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+      }
+    };
+  }, [gameLoop]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+      }
+    };
+  }, []);
+
+  // Expose game engine methods
+  useEffect(() => {
+    // onGameEvent("engine_ready", {
+    //   handlePlayerAction,
+    //   combatSystem,
+    // });
+  }, [handlePlayerAction, combatSystem]);
 
   // Render arena background - fix width/height undefined issues
   const renderArena = useCallback(
@@ -122,7 +178,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
             }}
             interactive={true}
             onPointerDown={() =>
-              handleCombatAction(player.id, {
+              handlePlayerAction(player.id, "attack", {
                 id: "basic_punch",
                 name: {
                   korean: "기본타격",
@@ -167,7 +223,7 @@ export const GameEngine: React.FC<GameEngineProps> = ({
         </pixiContainer>
       );
     },
-    [width, height, handleCombatAction]
+    [width, height, handlePlayerAction]
   );
 
   return (

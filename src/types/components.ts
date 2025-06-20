@@ -3,17 +3,17 @@
  */
 
 import type * as PIXI from "pixi.js";
-import type {
-  PlayerState,
-  GameMode,
-  MatchStatistics,
-  KoreanText,
-  KoreanTechnique,
-  TrigramStance,
-  PlayerArchetype,
-} from "./index";
 import type { CombatResult as CombatResultType } from "./combat";
 import type { HitEffect } from "./effects";
+import type {
+  GameMode,
+  KoreanTechnique,
+  KoreanText,
+  MatchStatistics,
+  PlayerArchetype,
+  PlayerState,
+  TrigramStance,
+} from "./index";
 
 // Base component props interface
 export interface BaseComponentProps {
@@ -49,9 +49,10 @@ export interface IntroScreenProps extends BaseComponentProps {
 
 export interface TrainingScreenProps extends BaseComponentProps {
   readonly onReturnToMenu: () => void;
-  readonly player?: PlayerState; // Fix: Add optional player prop
-  readonly selectedArchetype?: PlayerArchetype; // Fix: Add optional selectedArchetype prop
-  readonly onPlayerUpdate?: (updates: Partial<PlayerState>) => void; // Fix: Add optional onPlayerUpdate prop
+  readonly onStartCombat?: () => void;
+  readonly player?: PlayerState;
+  readonly selectedArchetype?: PlayerArchetype;
+  readonly onPlayerUpdate?: (updates: Partial<PlayerState>) => void;
   readonly width?: number;
   readonly height?: number;
   readonly x?: number;
@@ -258,13 +259,13 @@ export type PixiTextStyle = PIXI.TextStyle;
 
 // Re-export useful types
 export type {
-  PlayerState,
   GameMode,
-  MatchStatistics,
-  KoreanText,
   KoreanTechnique,
-  TrigramStance,
+  KoreanText,
+  MatchStatistics,
   PlayerArchetype,
+  PlayerState,
+  TrigramStance,
 } from "./index";
 
 // Fix: Remove duplicate CombatResult interface - use the one from combat.ts

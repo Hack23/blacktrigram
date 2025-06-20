@@ -331,6 +331,25 @@ export class TrainingCombatSystem extends CombatSystem {
       health: Math.max(this.trainingDummy.health, 900),
     };
   }
+
+  createTrainingPlayer(archetype: PlayerArchetype): PlayerState {
+    const basePlayer = createPlayer("training_player", archetype);
+    
+    return {
+      ...basePlayer,
+      // Fix: Use combatStats instead of combatState
+      combatStats: {
+        ...basePlayer.combatStats,
+        // Add any training-specific stats
+      },
+      // Add training-specific properties
+      training: {
+        sessions: 0,
+        totalTime: 0,
+        skillPoints: 0,
+      },
+    };
+  }
 }
 
 export default TrainingCombatSystem;

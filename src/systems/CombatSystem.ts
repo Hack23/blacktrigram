@@ -146,8 +146,9 @@ export class CombatSystem implements CombatSystemInterface {
       updatedDefender = {
         ...defender,
         health: Math.max(0, defender.health - result.damage),
-        totalDamageReceived: defender.totalDamageReceived + result.damage,
-        hitsTaken: defender.hitsTaken + 1,
+        // Fix: Use optional chaining for missing properties
+        totalDamageReceived: (defender.totalDamageReceived || 0) + result.damage,
+        hitsTaken: (defender.hitsTaken || 0) + 1,
       };
     }
 
@@ -158,7 +159,7 @@ export class CombatSystem implements CombatSystemInterface {
       stamina: Math.max(0, attacker.stamina - 10),
       totalDamageDealt:
         attacker.totalDamageDealt + (result.hit ? result.damage : 0),
-      hitsLanded: attacker.hitsLanded + (result.hit ? 1 : 0),
+      hitsLanded: (attacker.hitsLanded || 0) + (result.hit ? 1 : 0),
     };
 
     return { updatedAttacker, updatedDefender };
@@ -466,6 +467,66 @@ export class CombatSystem implements CombatSystemInterface {
         health: Math.max(0, defender.health - totalDamage),
       },
     };
+  }
+
+  private updateDefender(
+    defender: PlayerState,
+    result: CombatResult
+  ): PlayerState {
+    if (!result.hit) return defender;
+
+    return {
+      ...defender,
+      health: Math.max(0, defender.health - result.damage),
+      // Fix: Use optional chaining for missing properties
+      totalDamageReceived: (defender.totalDamageReceived || 0) + result.damage,
+      hitsTaken: (defender.hitsTaken || 0) + 1,
+    };
+  }
+
+  private updateAttacker(
+    attacker: PlayerState,
+    result: CombatResult
+  ): PlayerState {
+    return {
+      ...attacker,
+      // Fix: Use optional chaining for missing properties
+      totalDamageDealt: (attacker.totalDamageDealt || 0) + (result.hit ? result.damage : 0),
+      hitsLanded: (attacker.hitsLanded || 0) + (result.hit ? 1 : 0),
+    };
+  }
+
+  public canPerformAction(player: PlayerState): boolean {
+    return (
+      player.isAlive &&
+      player.stamina > 0 &&
+      // Fix: Use optional chaining for missing properties
+      !(player.isStunned ?? false)
+    );
+  }
+
+  private updatePlayerStates(players: PlayerState[]): PlayerState[] {
+    const currentTime = Date.now();
+    
+    return players.map((player) => {
+      const updatedPlayer = { ...player };
+
+      // Auto-recovery from stun and other temporary states
+      // Fix: Use optional chaining for missing properties
+      if (
+        (updatedPlayer.lastActionTime || 0) &&
+        currentTime - (updatedPlayer.lastActionTime || 0) > (updatedPlayer.recoveryTime || 1000)
+      ) {
+        // Clear temporary states
+        return {
+          ...updatedPlayer,
+          isStunned: false,
+          isCountering: false,
+        };
+      }
+
+      return updatedPlayer;
+    });
   }
 }
 

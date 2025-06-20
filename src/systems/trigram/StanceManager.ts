@@ -32,11 +32,11 @@ export class StanceManager {
   /**
    * Attempt to change stance
    */
-  changeStance(
+  public changeStance(
     player: PlayerState,
     newStance: TrigramStance
   ): StanceChangeResult {
-    const cost = this.getStanceTransitionCost(
+    const transitionCost = this.getStanceTransitionCost(
       player.currentStance,
       newStance,
       player
@@ -47,7 +47,7 @@ export class StanceManager {
       return {
         success: false,
         updatedPlayer: player,
-        cost,
+        cost: transitionCost,
         message:
           "Cannot change stance - insufficient resources or cooldown active",
       };
@@ -70,42 +70,42 @@ export class StanceManager {
     const updatedPlayer: PlayerState = {
       ...player,
       currentStance: newStance,
-      ki: Math.max(0, player.ki - cost.ki),
-      stamina: Math.max(0, player.stamina - cost.stamina),
+      ki: Math.max(0, player.ki - transitionCost.ki),
+      stamina: Math.max(0, player.stamina - transitionCost.stamina),
+      // Fix: Add as optional property
       lastStanceChangeTime: Date.now(),
     };
-    this.currentStance = newStance;
 
     return {
       success: true,
+      newStance,
+      cost: transitionCost,
       updatedPlayer,
-      cost,
     };
   }
 
-  /**
-   * Check if player can change to the specified stance
-   */
-  canChangeStance(player: PlayerState, newStance: TrigramStance): boolean {
-    const cost = this.getStanceTransitionCost(
-      player.currentStance,
-      newStance,
-      player
-    );
+  public forceStanceChange(
+    player: PlayerState,
+    newStance: TrigramStance
+  ): PlayerState {
+    return {
+      ...player,
+      currentStance: newStance,
+      // Fix: Add as optional property
+      lastStanceChangeTime: Date.now(),
+    };
+  }
 
-    // Check resources
-    if (player.ki < cost.ki || player.stamina < cost.stamina) {
-      return false;
-    }
-
+  private canChangeStance(player: PlayerState, newStance: TrigramStance): boolean {
     // Check cooldown
     const timeSinceLastChange = Date.now() - (player.lastStanceChangeTime || 0);
     if (timeSinceLastChange < this.minTransitionInterval) {
       return false;
     }
 
-    // Check if player is stunned or incapacitated
-    if (player.isStunned || player.consciousness < 50) {
+    // Check player state
+    // Fix: Use optional chaining for missing properties
+    if ((player.isStunned ?? false) || player.consciousness < 50) {
       return false;
     }
 

@@ -1,17 +1,19 @@
 import { Position } from "@/types";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import type { CombatScreenProps } from "../../types/combat";
+import type { CombatScreenProps } from "../../types/components";
 import { KOREAN_COLORS } from "../../types/constants";
-import { HitEffect, HitEffectType } from "../../types/effects"; // Fix: Import HitEffectType from effects.ts
+import { HitEffect, HitEffectType } from "../../types/effects";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
-import { DojangBackground } from "../game/DojangBackground";
+import { DojangBackground } from "../game";
+import { HitEffectsLayer } from "../ui";
 import { ResponsivePixiPanel } from "../ui/base/ResponsivePixiComponents";
-import { HitEffectsLayer } from "../ui/HitEffectsLayer";
-import { CombatArena } from "./components/CombatArena";
-import { CombatControls } from "./components/CombatControls";
-import { CombatHUD } from "./components/CombatHUD";
-import { CombatStats } from "./components/CombatStats";
-import { PlayerStatusPanel } from "./components/PlayerStatusPanel";
+import {
+  CombatArena,
+  CombatControls,
+  CombatHUD,
+  PlayerStatusPanel,
+} from "./components";
+import CombatStats from "./components/CombatStats";
 
 // Ensure PixiJS components are extended
 extendPixiComponents();
@@ -43,7 +45,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       intensity: number
     ): HitEffect => ({
       id,
-      type, // Now using the imported HitEffectType
+      type,
       attackerId: "player1",
       defenderId: "player2",
       timestamp: Date.now(),
@@ -139,7 +141,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   // Handle player click
   const handlePlayerClick = (idx: number) => {
     setSelectedPlayer(idx);
-    addHitEffect(HitEffectType.HIT, { x: 100 + idx * 200, y: 200 }); // Fix: Use enum value
+    addHitEffect(HitEffectType.HIT, { x: 100 + idx * 200, y: 200 });
   };
 
   return (
@@ -169,7 +171,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         }}
       />
 
-      {/* Combat Arena */}
       <CombatArena
         players={validPlayers}
         width={width}
@@ -178,7 +179,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         onPlayerClick={handlePlayerClick}
       />
 
-      {/* Combat HUD */}
       <CombatHUD
         player1={validPlayers[0]}
         player2={validPlayers[1]}
@@ -301,6 +301,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               alpha: 0.8,
             });
             g.roundRect(0, 0, isMobile ? 70 : 120, isMobile ? 35 : 45, 8);
+            g.stroke();
           }}
         />
         <pixiText

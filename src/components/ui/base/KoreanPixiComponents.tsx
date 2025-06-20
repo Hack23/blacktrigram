@@ -59,27 +59,41 @@ export const KoreanButton: React.FC<KoreanButtonProps> = ({
     }
   }, [disabled, onClick]);
 
+  const drawButton = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+
+      // PixiJS v8 fill syntax
+      const fillColor =
+        variant === "primary"
+          ? KOREAN_COLORS.PRIMARY_CYAN
+          : variant === "secondary"
+          ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+          : KOREAN_COLORS.ACCENT_GOLD;
+
+      g.fill({ color: fillColor, alpha: 0.8 });
+      g.roundRect(0, 0, width, height, 8);
+      g.fill();
+
+      // PixiJS v8 stroke syntax
+      g.stroke({
+        width: 2,
+        color: KOREAN_COLORS.ACCENT_GOLD,
+        alpha: 0.9,
+      });
+      g.roundRect(0, 0, width, height, 8);
+      g.stroke();
+    },
+    [width, height, variant]
+  );
+
   return (
     <pixiContainer x={x} y={y}>
-      {" "}
-      {/* Fix: Use pixiContainer */}
       <pixiGraphics
-        draw={(g: PIXI.Graphics) => {
-          g.clear();
-          const bgColor = disabled
-            ? KOREAN_COLORS.UI_DISABLED_BG
-            : variant === "primary"
-            ? KOREAN_COLORS.PRIMARY_CYAN
-            : KOREAN_COLORS.UI_BACKGROUND_MEDIUM;
-          g.beginFill(bgColor, 0.8);
-          g.drawRoundedRect(0, 0, width, height, 8);
-          g.endFill();
-
-          g.lineStyle(2, KOREAN_COLORS.UI_BORDER, 0.8);
-          g.drawRoundedRect(0, 0, width, height, 8);
-        }}
-        interactive={!disabled}
+        draw={drawButton}
+        interactive={true}
         onPointerDown={handleClick}
+        cursor="pointer"
       />
       <pixiText
         text={label}
@@ -112,8 +126,6 @@ export const KoreanTextDisplay: React.FC<KoreanTextDisplayProps> = ({
 
   return (
     <pixiContainer x={x} y={y}>
-      {" "}
-      {/* Fix: Use pixiContainer */}
       <pixiGraphics
         draw={(g: PIXI.Graphics) => {
           g.clear();
@@ -158,8 +170,6 @@ export const KoreanTrigramSelector: React.FC<KoreanTrigramSelectorProps> = ({
 
   return (
     <pixiContainer x={x} y={y}>
-      {" "}
-      {/* Fix: Use pixiContainer */}
       <pixiGraphics
         draw={(g: PIXI.Graphics) => {
           g.clear();
@@ -197,8 +207,6 @@ export const KoreanHealthBar: React.FC<KoreanHealthBarProps> = ({
 
   return (
     <pixiContainer x={x} y={y}>
-      {" "}
-      {/* Fix: Use pixiContainer */}
       <pixiGraphics
         draw={(g: PIXI.Graphics) => {
           g.clear();

@@ -40,9 +40,7 @@ export const Player: React.FC<PlayerProps> = ({ player, x, y, onClick }) => {
         x={0}
         y={-80}
         anchor={0.5}
-      >
-        {player.name.korean}
-      </pixiText>
+      />
 
       {/* Health bar */}
       <pixiGraphics

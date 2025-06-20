@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-// Fix: Remove unused import
 import { KOREAN_COLORS } from "./colors";
 
 // Font Families
@@ -73,8 +72,8 @@ export const DEFAULT_PIXI_TEXT_STYLE: Partial<PIXI.TextStyleOptions> = {
   fill: KOREAN_COLORS.TEXT_PRIMARY,
   align: "left",
   wordWrap: false,
-  fontWeight: PIXI_FONT_WEIGHTS.normal,
-  // Fix: Use correct PixiJS v8 drop shadow properties
+  fontWeight: "normal",
+  // PixiJS v8 drop shadow format
   dropShadow: {
     alpha: 0.5,
     angle: Math.PI / 6,
@@ -91,10 +90,9 @@ export const PIXI_TEXT_STYLES = {
     ...DEFAULT_PIXI_TEXT_STYLE,
     fontFamily: FONT_FAMILY.KOREAN_BATTLE,
     fontSize: FONT_SIZES.title,
-    fontWeight: PIXI_FONT_WEIGHTS.bold,
+    fontWeight: "bold",
     fill: KOREAN_COLORS.ACCENT_PRIMARY,
     align: "center",
-    // Fix: Use correct PixiJS v8 drop shadow format
     dropShadow: {
       alpha: 0.8,
       angle: Math.PI / 6,
@@ -106,7 +104,7 @@ export const PIXI_TEXT_STYLES = {
   SUBTITLE: new PIXI.TextStyle({
     ...DEFAULT_PIXI_TEXT_STYLE,
     fontSize: FONT_SIZES.large,
-    fontWeight: PIXI_FONT_WEIGHTS.normal,
+    fontWeight: "normal",
     fill: KOREAN_COLORS.TEXT_SECONDARY,
     align: "center",
   }),
@@ -118,7 +116,7 @@ export const PIXI_TEXT_STYLES = {
   BUTTON: new PIXI.TextStyle({
     ...DEFAULT_PIXI_TEXT_STYLE,
     fontSize: FONT_SIZES.medium,
-    fontWeight: PIXI_FONT_WEIGHTS.bold, // Fix: Change to bold
+    fontWeight: "bold",
     fill: KOREAN_COLORS.TEXT_PRIMARY,
     align: "center",
   }),

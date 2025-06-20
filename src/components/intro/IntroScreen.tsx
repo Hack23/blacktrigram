@@ -16,6 +16,7 @@ const ControlsSection = lazy(() => import("./components/ControlsSection"));
 import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
 import { GameMode } from "../../types/enums";
+import usePixiExtensions from "../../utils/pixiExtensions";
 import { KoreanHeader } from "../ui/KoreanHeader";
 
 // Responsive dimensions
@@ -94,6 +95,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   width: propWidth,
   height: propHeight,
 }) => {
+  usePixiExtensions();
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [currentSection, setCurrentSection] = useState<string>("menu");

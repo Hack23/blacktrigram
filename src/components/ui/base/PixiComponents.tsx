@@ -1,7 +1,8 @@
 // Reusable PIXI.js components for Black Trigram Korean martial arts game
 
-import React, { useState } from "react"; // Fix: Remove unused useCallback
-import usePixiExtensions, { useTick } from "../../../utils/pixiExtensions";
+import { useTick } from "@pixi/react"; // Fix: Import from @pixi/react
+import React, { useState } from "react";
+import usePixiExtensions from "../../../utils/pixiExtensions";
 // Remove direct PIXI React imports - use pixiContainer, etc. directly
 import type { BaseButtonProps } from "../../../types/components";
 import { KOREAN_COLORS } from "../../../types/constants";
@@ -364,4 +365,98 @@ export default {
   PixiProgressBar,
   CyberpunkButton,
   PixiTrigramWheel,
+};
+
+// Pulsating trigram symbol component
+export const PulsatingTrigramSymbol: React.FC<{
+  symbol: string;
+  x: number;
+  y: number;
+}> = ({ symbol, x, y }) => {
+  usePixiExtensions();
+  const [time, setTime] = useState(0);
+  const [pulse, setPulse] = useState(true);
+
+  // Fix: Add type annotation for delta parameter
+  useTick((delta: number) => pulse && setTime((t) => t + delta));
+
+  return (
+    <pixiContainer x={x} y={y}>
+      <pixiText
+        text={symbol}
+        style={{
+          fontSize: 24,
+          fill: KOREAN_COLORS.ACCENT_GOLD,
+          fontWeight: "bold",
+        }}
+        anchor={0.5}
+        y={-10}
+      />
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          const radius = 10 + Math.sin(time * 0.1) * 5;
+          g.lineStyle(2, KOREAN_COLORS.ACCENT_GOLD, 0.8);
+          g.drawCircle(0, 0, radius);
+        }}
+      />
+    </pixiContainer>
+  );
+};
+
+// Animated trigram symbol component
+interface AnimatedTrigramSymbolProps {
+  symbol: string;
+  x?: number;
+  y?: number;
+  size?: number;
+  color?: number;
+  isActive?: boolean;
+  pulseSpeed?: number;
+}
+
+export const AnimatedTrigramSymbol: React.FC<AnimatedTrigramSymbolProps> = ({
+  symbol,
+  x = 0,
+  y = 0,
+  size = 32,
+  color = KOREAN_COLORS.PRIMARY_CYAN,
+  isActive = false,
+  pulseSpeed = 2.0,
+}) => {
+  const [pulse] = useState(true); // Remove unused setPulse
+
+  return (
+    <pixiContainer x={x} y={y} data-testid="animated-trigram-symbol">
+      {/* Background Circle */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          const alpha = isActive ? (pulse ? 0.8 : 0.4) : 0.3;
+          g.fill({ color, alpha });
+          g.circle(0, 0, size);
+          g.fill();
+          
+          if (isActive) {
+            g.stroke({ width: 2, color, alpha: 0.9 });
+            g.circle(0, 0, size + 4);
+            g.stroke();
+          }
+        }}
+      />
+
+      {/* Trigram Symbol */}
+      <pixiText
+        text={symbol}
+        style={{
+          fontSize: size * 0.8,
+          fill: isActive ? KOREAN_COLORS.TEXT_PRIMARY : color,
+          align: "center",
+          fontWeight: "bold",
+        }}
+        anchor={0.5}
+        alpha={isActive ? 1.0 : 0.7}
+      />
+    </pixiContainer>
+  );
 };

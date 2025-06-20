@@ -2,8 +2,8 @@
  * Player archetype constants for Korean martial arts
  */
 
-import { PlayerArchetype, TrigramStance } from "../enums";
 import type { PlayerArchetypeData } from "../anatomy";
+import { PlayerArchetype, TrigramStance } from "../enums";
 import { KOREAN_COLORS } from "./colors";
 
 // Player archetype data
@@ -186,4 +186,70 @@ export const BASE_PLAYER_STATS = {
   DEFENSE: 75,
   SPEED: 75,
   TECHNIQUE: 75,
+} as const;
+
+// Fix: Add PLAYER_DEFAULTS for training and other components
+export const PLAYER_DEFAULTS = {
+  player1: {
+    id: "player1",
+    name: { korean: "플레이어 1", english: "Player 1" },
+    archetype: PlayerArchetype.MUSA,
+    health: BASE_PLAYER_STATS.HEALTH,
+    maxHealth: BASE_PLAYER_STATS.HEALTH,
+    ki: BASE_PLAYER_STATS.KI,
+    maxKi: BASE_PLAYER_STATS.KI,
+    stamina: BASE_PLAYER_STATS.STAMINA,
+    maxStamina: BASE_PLAYER_STATS.STAMINA,
+    balance: 100,
+    maxBalance: 100,
+    consciousness: 100,
+    maxConsciousness: 100,
+    pain: 0,
+    maxPain: 100,
+    currentStance: TrigramStance.GEON,
+    position: { x: 300, y: 400 },
+    isAlive: true,
+    isBlocking: false,
+    isExecutingTechnique: false,
+    statusEffects: [],
+    combatStats: {
+      totalDamage: 0,
+      criticalHits: 0,
+      vitalPointHits: 0,
+      techniquesUsed: 0,
+      stamina: BASE_PLAYER_STATS.STAMINA,
+      ki: BASE_PLAYER_STATS.KI,
+    },
+  },
+  player2: {
+    id: "player2",
+    name: { korean: "플레이어 2", english: "Player 2" },
+    archetype: PlayerArchetype.AMSALJA,
+    health: BASE_PLAYER_STATS.HEALTH,
+    maxHealth: BASE_PLAYER_STATS.HEALTH,
+    ki: BASE_PLAYER_STATS.KI,
+    maxKi: BASE_PLAYER_STATS.KI,
+    stamina: BASE_PLAYER_STATS.STAMINA,
+    maxStamina: BASE_PLAYER_STATS.STAMINA,
+    balance: 100,
+    maxBalance: 100,
+    consciousness: 100,
+    maxConsciousness: 100,
+    pain: 0,
+    maxPain: 100,
+    currentStance: TrigramStance.SON,
+    position: { x: 900, y: 400 },
+    isAlive: true,
+    isBlocking: false,
+    isExecutingTechnique: false,
+    statusEffects: [],
+    combatStats: {
+      totalDamage: 0,
+      criticalHits: 0,
+      vitalPointHits: 0,
+      techniquesUsed: 0,
+      stamina: BASE_PLAYER_STATS.STAMINA,
+      ki: BASE_PLAYER_STATS.KI,
+    },
+  },
 } as const;

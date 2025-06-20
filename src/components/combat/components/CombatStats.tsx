@@ -1,148 +1,148 @@
 import React from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
-import type { PlayerState } from "../../../types/player";
+import type { CombatStatsProps } from "../../../types/components";
 
 // Ensure PixiJS components are extended
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 extendPixiComponents();
 
-export interface CombatStatsProps {
-  readonly players: PlayerState[];
-  readonly combatLog: string[];
-  readonly x?: number;
-  readonly y?: number;
-  readonly width?: number;
-  readonly height?: number;
-}
-
-export const CombatStats: React.FC<CombatStatsProps> = ({
+const CombatStats: React.FC<CombatStatsProps> = ({
   players,
   combatLog,
   x = 0,
   y = 0,
-  width = 280,
-  height = 140,
+  width = 300,
+  height = 160,
 }) => {
-  const isMobile = width < 300;
-
   return (
     <pixiContainer x={x} y={y} data-testid="combat-stats">
-      {/* Stats Grid */}
+      {/* Background */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.6 });
-          g.roundRect(0, 0, width, height, 8); // Use height parameter
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+          g.roundRect(0, 0, width, height, 8);
           g.fill();
+          g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.6 });
+          g.roundRect(0, 0, width, height, 8);
+          g.stroke();
         }}
       />
 
-      {/* Stats Title */}
+      {/* Title */}
       <pixiText
-        text="전투 통계"
+        text="전투 통계 (Combat Stats)"
         style={{
-          fontSize: isMobile ? 10 : 14,
+          fontSize: 14,
           fill: KOREAN_COLORS.ACCENT_GOLD,
           fontWeight: "bold",
+          align: "center",
         }}
-        x={10}
+        x={width / 2}
         y={10}
+        anchor={0.5}
       />
 
-      {/* Combat Log */}
-      <pixiContainer x={10} y={30}>
-        {combatLog.length > 0 ? (
-          combatLog.slice(0, 4).map((log, index) => (
-            <pixiText
-              key={index}
-              text={log}
-              style={{
-                fontSize: isMobile ? 9 : 12,
-                fill: KOREAN_COLORS.TEXT_SECONDARY,
-              }}
-              x={0}
-              y={index * (isMobile ? 15 : 20)}
-            />
-          ))
-        ) : (
-          <pixiText
-            text="전투 기록이 없습니다"
-            style={{
-              fontSize: isMobile ? 9 : 12,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontStyle: "italic",
-            }}
-            x={0}
-            y={0}
-          />
-        )}
-      </pixiContainer>
-
-      {/* Stats Grid */}
-      <pixiContainer x={10} y={height - 60}>
-        {" "}
-        {/* Use height parameter here */}
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.4,
-            });
-            g.rect(0, 0, width - 20, 50);
-            g.moveTo(0, 25);
-            g.lineTo(width - 20, 25);
-            g.moveTo((width - 20) / 2, 0);
-            g.lineTo((width - 20) / 2, 50);
-            g.stroke();
-          }}
-        />
-        {/* Player 1 Stats */}
+      {/* Player 1 Stats */}
+      <pixiContainer x={10} y={35} data-testid="player1-stats">
         <pixiText
           text={players[0].name.korean}
           style={{
-            fontSize: isMobile ? 9 : 12,
+            fontSize: 12,
             fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontWeight: "bold",
           }}
-          x={(width - 20) / 4}
-          y={12.5}
-          anchor={0.5}
+          y={0}
         />
         <pixiText
-          text={`${players[0].wins || 0}승`}
+          text={`데미지: ${players[0].combatStats.totalDamage}`}
           style={{
-            fontSize: isMobile ? 9 : 12,
-            fill: KOREAN_COLORS.ACCENT_GREEN,
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-          x={(width - 20) / 4}
-          y={37.5}
-          anchor={0.5}
+          y={15}
         />
-        {/* Player 2 Stats */}
+        <pixiText
+          text={`크리티컬: ${players[0].combatStats.criticalHits}`}
+          style={{
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+          }}
+          y={30}
+        />
+        <pixiText
+          text={`승리: ${players[0].wins || 0}승`}
+          style={{
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+          }}
+          y={45}
+        />
+      </pixiContainer>
+
+      {/* Player 2 Stats */}
+      <pixiContainer x={width / 2 + 10} y={35} data-testid="player2-stats">
         <pixiText
           text={players[1].name.korean}
           style={{
-            fontSize: isMobile ? 9 : 12,
+            fontSize: 12,
             fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontWeight: "bold",
           }}
-          x={((width - 20) * 3) / 4}
-          y={12.5}
-          anchor={0.5}
+          y={0}
         />
         <pixiText
-          text={`${players[1].wins || 0}승`}
+          text={`데미지: ${players[1].combatStats.totalDamage}`}
           style={{
-            fontSize: isMobile ? 9 : 12,
-            fill: KOREAN_COLORS.ACCENT_GREEN,
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-          x={((width - 20) * 3) / 4}
-          y={37.5}
-          anchor={0.5}
+          y={15}
         />
+        <pixiText
+          text={`크리티컬: ${players[1].combatStats.criticalHits}`}
+          style={{
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+          }}
+          y={30}
+        />
+        <pixiText
+          text={`승리: ${players[1].wins || 0}승`}
+          style={{
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+          }}
+          y={45}
+        />
+      </pixiContainer>
+
+      {/* Combat Log Preview */}
+      <pixiContainer x={10} y={90} data-testid="combat-log-preview">
+        <pixiText
+          text="최근 로그:"
+          style={{
+            fontSize: 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            fontWeight: "bold",
+          }}
+          y={0}
+        />
+        {combatLog.slice(-3).map((log, index) => (
+          <pixiText
+            key={index}
+            text={log.substring(0, 25) + (log.length > 25 ? "..." : "")}
+            style={{
+              fontSize: 9,
+              fill: KOREAN_COLORS.TEXT_TERTIARY,
+            }}
+            y={15 + index * 12}
+          />
+        ))}
       </pixiContainer>
     </pixiContainer>
   );
 };
 
+export default CombatStats;
 export default CombatStats;
