@@ -1,11 +1,11 @@
 import React from "react";
-import {
-  ResponsivePixiContainer,
-  ResponsivePixiButton,
-  ResponsivePixiPanel,
-} from "../../ui/base/ResponsivePixiComponents";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { COMBAT_CONTROLS } from "../../../types/constants/controls";
+import {
+  ResponsivePixiButton,
+  ResponsivePixiContainer,
+  ResponsivePixiPanel,
+} from "../../ui/base/ResponsivePixiComponents";
 
 export interface ControlsSectionProps {
   readonly onBack: () => void;
@@ -176,18 +176,24 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
       </ResponsivePixiContainer>
 
       {/* Back Button */}
-      <ResponsivePixiButton
-        text="돌아가기"
+      <pixiContainer
         x={width - 150}
         y={height - 80}
-        width={120}
-        height={40}
-        screenWidth={width}
-        screenHeight={height}
-        variant="secondary"
-        onClick={onBack}
-        data-testid="controls-back-button"
-      />
+        layout={{
+          alignSelf: "flex-end",
+        }}
+      >
+        <ResponsivePixiButton
+          text="돌아가기"
+          width={120}
+          height={40}
+          screenWidth={width}
+          screenHeight={height}
+          variant="secondary"
+          onClick={onBack}
+          data-testid="controls-back-button"
+        />
+      </pixiContainer>
     </ResponsivePixiPanel>
   );
 };

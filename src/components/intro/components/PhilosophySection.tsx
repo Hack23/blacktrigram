@@ -38,7 +38,20 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
   `;
 
   return (
-    <pixiContainer x={x} y={y} data-testid="philosophy-section">
+    <pixiContainer
+      x={x}
+      y={y}
+      layout={{
+        width,
+        height,
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        padding: 32,
+        gap: 24,
+      }}
+      data-testid="philosophy-section"
+    >
       {/* Background */}
       <pixiGraphics
         draw={(g) => {
@@ -84,7 +97,13 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
       />
 
       {/* Back Button */}
-      <pixiContainer x={width - 150} y={height - 80}>
+      <pixiContainer
+        x={width - 150}
+        y={height - 80}
+        layout={{
+          alignSelf: "flex-end",
+        }}
+      >
         <pixiGraphics
           draw={(g) => {
             g.clear();
@@ -112,4 +131,3 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
 };
 
 export default PhilosophySection;
- 

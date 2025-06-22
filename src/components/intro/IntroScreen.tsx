@@ -1,3 +1,15 @@
+import "@pixi/layout";
+import { LayoutContainer } from "@pixi/layout/components";
+import "@pixi/layout/react";
+import { extend } from "@pixi/react";
+import { Container } from "pixi.js";
+
+// Register custom components for use as JSX tags in @pixi/react
+extend({
+  Container,
+  LayoutContainer,
+});
+
 import * as PIXI from "pixi.js";
 import React, {
   Suspense,
@@ -488,6 +500,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       width={screenWidth}
       height={screenHeight}
       data-testid="intro-screen"
+      layout={{
+        width: "100%",
+        height: "100%",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 20,
+        gap: 16,
+      }}
     >
       {/* Enhanced Background Layers */}
       <pixiGraphics

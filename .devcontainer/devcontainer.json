@@ -25,38 +25,21 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        // Core Development - Enhanced
+        // Core Development
         "dbaeumer.vscode-eslint",
-        "ms-vscode.vscode-typescript-next",
-        "bradlc.vscode-tailwindcss",
 
-        // GitHub extensions - Enhanced
+        // GitHub extensions
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "github.vscode-github-actions",
-        "github.vscode-pull-request-github",
 
-        // TypeScript/React/Node support - Enhanced
-        "christian-kohler.npm-intellisense",
-        "ms-vscode.vscode-json",
-        "formulahendry.auto-rename-tag",
-        "bradlc.vscode-tailwindcss",
+        // TypeScript/Node support
         "ms-vscode.vscode-typescript-next",
+        "christian-kohler.npm-intellisense",
+        "ritwickdey.LiveServer",
 
-        // Testing and debugging
-        "ms-vscode.test-adapter-converter",
-        "hbenl.vscode-test-explorer",
-
-        // Korean language support
-        "ms-ceintl.vscode-language-pack-ko",
-
-        // Formatting - Keep minimal
-        "esbenp.prettier-vscode",
-
-        // Performance and utilities
-        "aaron-bond.better-comments",
-        "usernamehw.errorlens",
-        "ms-vscode.hexeditor"
+        // Keep minimal formatting support
+        "esbenp.prettier-vscode"
       ],
 
       "settings": {
@@ -69,18 +52,28 @@
           "source.organizeImports": "explicit"
         },
 
-        // Copilot optimization
-        "github.copilot.enable": {
-          "*": true,
-          "plaintext": false,
-          "markdown": true
+        "eslint.workingDirectories": [
+          { "mode": "auto" },
+          { "directory": "./src", "changeProcessCWD": true },
+          { "directory": "./cypress", "changeProcessCWD": true }
+        ],
+        "eslint.options": {
+          "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs"
         },
-        "github.copilot.editor.iterativeEditing": true,
-
-        // Performance
         "typescript.updateImportsOnFileMove.enabled": "always",
+        "javascript.updateImportsOnFileMove.enabled": "always",
         "typescript.suggest.completeFunctionCalls": true,
-        "typescript.preferences.importModuleSpecifier": "shortest"
+
+        // Better import organization
+        "typescript.preferences.importModuleSpecifier": "shortest",
+        "javascript.preferences.importModuleSpecifier": "shortest",
+
+
+        // Ensure Copilot prefers TypeScript file extensions
+        "github.copilot.fileTypes": {
+          "javascript": "typescript",
+          "javascriptreact": "typescriptreact"
+        }
       }
     }
   },

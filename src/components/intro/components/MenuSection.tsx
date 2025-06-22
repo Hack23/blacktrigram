@@ -2,9 +2,12 @@ import React from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { GameMode } from "../../../types/enums";
 
-
 export interface MenuSectionProps {
-  readonly menuItems: Array<{ mode: GameMode; korean: string; english: string }>;
+  readonly menuItems: Array<{
+    mode: GameMode;
+    korean: string;
+    english: string;
+  }>;
   readonly selectedIndex: number;
   readonly onModeSelect: (mode: GameMode) => void;
   readonly width: number;
@@ -23,7 +26,20 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   y,
 }) => {
   return (
-    <pixiContainer x={x} y={y} data-testid="menu-section">
+    <pixiContainer
+      x={x}
+      y={y}
+      layout={{
+        width,
+        height,
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        gap: 24,
+        padding: 20,
+      }}
+      data-testid="menu-section"
+    >
       {/* Background Panel */}
       <pixiGraphics
         draw={(g) => {
@@ -56,11 +72,25 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       />
 
       {/* Menu Items Container */}
-      <pixiContainer x={20} y={50} data-testid="main-menu-buttons">
+      <pixiContainer
+        x={20}
+        y={50}
+        layout={{
+          width: width - 40,
+          flexDirection: "column",
+          gap: 16,
+        }}
+        data-testid="main-menu-buttons"
+      >
         {menuItems.map((item, index) => (
           <pixiContainer
             key={item.mode}
             y={index * 60}
+            layout={{
+              width: width - 40,
+              height: 50,
+              marginBottom: 12,
+            }}
             data-testid={`menu-item-${item.mode}`}
           >
             <pixiGraphics
