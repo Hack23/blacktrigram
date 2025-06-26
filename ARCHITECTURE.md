@@ -4,19 +4,19 @@
 
 ## 📚 Architecture Documentation Map
 
-| Document | Focus | Description |
-|----------|-------|-------------|
-| **[🌐 System Context](#-system-context)** | C4 Model | High-level view showing actors (Player, CDNs) and the entirely front-end application |
-| **[🏢 Container View](#-container-view)** | C4 Model | Frontend-only architecture: UI Layer, Game Logic, Asset Loader, Renderer, and State Management |
-| **[🧩 Component View](#-component-view)** | C4 Model | Detailed breakdown of all key modules: Combat System, Trigram System, Vital Point System, Audio, UI |
-| **[🔧 File Structure](#-file-structure-highlights)** | Organization | Current project structure and key file locations |
-| **[🔄 Combat Flow Sequence](#-combat-flow-sequence)** | Sequence Diagram | How input flows through logic to rendering and feedback in real time |
-| **[⚡ Security & Performance](#-security--performance-architecture)** | Performance | Client-side performance profiling, optimization techniques, and graceful degradation strategies |
-| **[📊 SWOT Analysis](#-swot-analysis)** | Strategy | Strengths, Weaknesses, Opportunities, Threats for a 100% frontend, no-persistence "Black Trigram" web game |
-| **[🎯 Core Game Concepts](#-core-game-concepts)** | Game Design | Player archetypes, trigram system, resources & mechanics |
-| **[🏗️ Architecture Concepts](#-architecture-concepts)** | Technical Design | Mindmap of system architecture layers and components |
-| **[🔄 UX Flow](#-ux-flow)** | User Experience | User journey through screens and interactions |
-| **[🔄 Combat Mechanics](#-combat-mechanics--data-relationships)** | Game Mechanics | Detailed combat system data flow and relationships |
+| Document                                                              | Focus            | Description                                                                                                |
+| --------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| **[🌐 System Context](#-system-context)**                             | C4 Model         | High-level view showing actors (Player, CDNs) and the entirely front-end application                       |
+| **[🏢 Container View](#-container-view)**                             | C4 Model         | Frontend-only architecture: UI Layer, Game Logic, Asset Loader, Renderer, and State Management             |
+| **[🧩 Component View](#-component-view)**                             | C4 Model         | Detailed breakdown of all key modules: Combat System, Trigram System, Vital Point System, Audio, UI        |
+| **[🔧 File Structure](#-file-structure-highlights)**                  | Organization     | Current project structure and key file locations                                                           |
+| **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | How input flows through logic to rendering and feedback in real time                                       |
+| **[⚡ Security & Performance](#-security--performance-architecture)** | Performance      | Client-side performance profiling, optimization techniques, and graceful degradation strategies            |
+| **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Strengths, Weaknesses, Opportunities, Threats for a 100% frontend, no-persistence "Black Trigram" web game |
+| **[🎯 Core Game Concepts](#-core-game-concepts)**                     | Game Design      | Player archetypes, trigram system, resources & mechanics                                                   |
+| **[🏗️ Architecture Concepts](#-architecture-concepts)**               | Technical Design | Mindmap of system architecture layers and components                                                       |
+| **[🔄 UX Flow](#-ux-flow)**                                           | User Experience  | User journey through screens and interactions                                                              |
+| **[🔄 Combat Mechanics](#-combat-mechanics--data-relationships)**     | Game Mechanics   | Detailed combat system data flow and relationships                                                         |
 
 ---
 
@@ -37,11 +37,11 @@ C4Context
 
   UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 
-  %% Styling
-  style player      fill:#A0D6B4,stroke:#333,stroke-width:2px,color:#000
-  style browserGame fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
-  style audioCDN    fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
-  style artCDN      fill:#FF6B6B,stroke:#333,stroke-width:2px,color:#000
+  %% Futuristic Cyberpunk Korean Styling
+  style player      fill:#00FFFF,stroke:#0088FF,stroke-width:3px,color:#000
+  style browserGame fill:#FFD700,stroke:#FF6600,stroke-width:3px,color:#000
+  style audioCDN    fill:#FF00FF,stroke:#AA00AA,stroke-width:3px,color:#FFF
+  style artCDN      fill:#00FF88,stroke:#00AA44,stroke-width:3px,color:#000
 ```
 
 > **Legend**
@@ -745,7 +745,7 @@ mindmap
         id1.5.1[Brutal efficiency]
         id1.5.2[Street techniques]
         id1.5.3[Overwhelming force]
-    
+
     id2[☯️ Eight Trigrams (팔괘)]
       id2.1[☰ 건 Geon - Heaven]
         id2.1.1[Direct strikes]
@@ -771,7 +771,7 @@ mindmap
       id2.8[☷ 곤 Gon - Earth]
         id2.8.1[Grounding attacks]
         id2.8.2[Takedown focus]
-    
+
     id3[🎯 Vital Points (급소)]
       id3.1[Critical Points (치명타)]
         id3.1.1[Instant KO potential]
@@ -782,7 +782,7 @@ mindmap
       id3.3[Standard Points (일반)]
         id3.3.1[Basic damage]
         id3.3.2[x1.5 damage multiplier]
-    
+
     id4[⚡ Resources]
       id4.1[❤️ Health (체력)]
         id4.1.1[100 HP per fighter]
@@ -817,7 +817,7 @@ mindmap
         id1.3.1[Korean Typography]
         id1.3.2[Cyberpunk Theme]
         id1.3.3[Responsive Layout]
-    
+
     id2[⚙️ Business Logic]
       id2.1[Combat System]
         id2.1.1[Damage Calculation]
@@ -831,7 +831,7 @@ mindmap
         id2.3.1[Anatomy Mapping]
         id2.3.2[Multipliers]
         id2.3.3[Effects]
-    
+
     id3[🗄️ State Management]
       id3.1[Zustand Stores]
         id3.1.1[Game State]
@@ -843,7 +843,7 @@ mindmap
       id3.3[Session Storage]
         id3.3.1[Temporary Data]
         id3.3.2[Settings]
-    
+
     id4[📦 Asset Management]
       id4.1[PixiJS Loader]
         id4.1.1[Texture Loading]
@@ -854,7 +854,7 @@ mindmap
       id4.3[Data Loading]
         id4.3.1[JSON Import]
         id4.3.2[Dynamic Loading]
-    
+
     id5[🔧 Infrastructure]
       id5.1[Build System]
         id5.1.1[Vite]
@@ -880,34 +880,34 @@ mindmap
 flowchart TD
     Start([🎮 Game Load]) --> Loading[⏳ Loading Assets]
     Loading --> Intro[🏮 Intro Screen]
-    
+
     Intro --> |New Game| CharSelect[👤 Archetype Selection]
     Intro --> |Training| Training[🎯 Training Mode]
     Intro --> |Settings| Settings[⚙️ Settings Menu]
-    
+
     CharSelect --> Combat[⚔️ Combat Arena]
     Training --> VitalPractice[🎯 Vital Point Practice]
     Training --> StancePractice[☯️ Stance Training]
-    
+
     Combat --> |Victory| Victory[🏆 Victory Screen]
     Combat --> |Defeat| Defeat[💀 Defeat Screen]
     Combat --> |Pause| PauseMenu[⏸️ Pause Menu]
-    
+
     Victory --> Intro
     Defeat --> Intro
     PauseMenu --> |Resume| Combat
     PauseMenu --> |Quit| Intro
-    
+
     VitalPractice --> |Exit| Training
     StancePractice --> |Exit| Training
     Training --> |Back| Intro
     Settings --> |Back| Intro
-    
+
     %% Styling
     classDef screenNode fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
     classDef actionNode fill:#00FFD0,stroke:#333,stroke-width:2px,color:#000
     classDef menuNode fill:#FF6B6B,stroke:#333,stroke-width:2px,color:#000
-    
+
     class Intro,CharSelect,Combat,Victory,Defeat,Training,Settings screenNode
     class Loading,VitalPractice,StancePractice actionNode
     class PauseMenu menuNode
@@ -926,7 +926,7 @@ graph TB
         MI[Mouse Input]
         TI[Touch Input]
     end
-    
+
     subgraph "⚙️ Combat Engine"
         IS[Input System]
         SM[Stance Manager]
@@ -935,43 +935,43 @@ graph TB
         DC[Damage Calculator]
         ES[Effect System]
     end
-    
+
     subgraph "📊 Game State"
         PS[Player State]
         ES2[Enemy State]
         CS[Combat State]
     end
-    
+
     subgraph "🎨 Rendering"
         VS[Visual System]
         AS[Audio System]
         PS2[Particle System]
     end
-    
+
     KI --> IS
     MI --> IS
     TI --> IS
-    
+
     IS --> SM
     SM --> TC
     TC --> HD
     HD --> DC
     DC --> ES
-    
+
     SM <--> PS
     DC <--> ES2
     ES <--> CS
-    
+
     CS --> VS
     CS --> AS
     CS --> PS2
-    
+
     %% Styling
     classDef inputClass fill:#87CEFA,stroke:#333,stroke-width:2px
     classDef engineClass fill:#00FFD0,stroke:#333,stroke-width:2px
     classDef stateClass fill:#FFD700,stroke:#333,stroke-width:2px
     classDef renderClass fill:#FF6B6B,stroke:#333,stroke-width:2px
-    
+
     class KI,MI,TI inputClass
     class IS,SM,TC,HD,DC,ES engineClass
     class PS,ES2,CS stateClass
@@ -992,7 +992,7 @@ graph LR
         GN[☶ 간 Gan]
         K[☷ 곤 Gon]
     end
-    
+
     %% Advantage relationships (→ means "has advantage over")
     G -->|Power > Fluid| T
     T -->|Fluid > Fire| L
@@ -1002,12 +1002,12 @@ graph LR
     GM -->|Water > Mountain| GN
     GN -->|Mountain > Earth| K
     K -->|Earth > Heaven| G
-    
+
     %% Defensive advantages (⇢ means "defends well against")
     G -.->|Blocks Earth| K
     GN -.->|Blocks Water| GM
     GM -.->|Blocks Wind| S
-    
+
     %% Style colors
     style G fill:#FFD700,stroke:#333,stroke-width:3px
     style T fill:#87CEEB,stroke:#333,stroke-width:3px
@@ -1032,10 +1032,10 @@ sequenceDiagram
     participant CDN as CDN Servers
     participant C as Cache
     participant G as Game Engine
-    
+
     B->>L: Initialize game
     L->>C: Check local cache
-    
+
     alt Assets cached
         C-->>L: Return cached assets
     else Assets not cached
@@ -1043,10 +1043,10 @@ sequenceDiagram
         CDN-->>L: Stream assets
         L->>C: Store in cache
     end
-    
+
     L->>G: Assets ready
     G->>B: Start game
-    
+
     Note over B,G: Lazy load non-critical assets during gameplay
 ```
 
@@ -1059,32 +1059,32 @@ graph TD
         DP[Damage Number Pool<br/>Pre-allocated: 50]
         EP[Effect Pool<br/>Pre-allocated: 100]
     end
-    
+
     subgraph "♻️ Object Lifecycle"
         CR[Create/Reset]
         US[Use in Scene]
         RE[Return to Pool]
     end
-    
+
     subgraph "🗑️ Garbage Collection Mitigation"
         RA[Reuse Allocations]
         PO[Pool Objects]
         LG[Limit Generation]
     end
-    
+
     PP --> CR
     DP --> CR
     EP --> CR
-    
+
     CR --> US
     US --> RE
     RE --> PP
     RE --> DP
     RE --> EP
-    
+
     RA --> PO
     PO --> LG
-    
+
     style PP fill:#A5D6A7,stroke:#333,stroke-width:2px
     style DP fill:#81C784,stroke:#333,stroke-width:2px
     style EP fill:#66BB6A,stroke:#333,stroke-width:2px
@@ -1104,27 +1104,27 @@ graph TB
         CORS[CORS Headers]
         VAL[Input Validation]
     end
-    
+
     subgraph "🔐 Asset Security"
         HTTPS[HTTPS Only CDN]
         SIGN[Signed Assets]
         HASH[Asset Hashing]
     end
-    
+
     subgraph "🚫 Attack Mitigation"
         XSS[XSS Prevention]
         CSRF[CSRF Protection]
         INJ[Injection Prevention]
     end
-    
+
     CSP --> XSS
     SRI --> SIGN
     CORS --> HTTPS
     VAL --> INJ
-    
+
     HTTPS --> HASH
     SIGN --> HASH
-    
+
     style CSP fill:#FF6B6B,stroke:#333,stroke-width:2px
     style HTTPS fill:#FFD700,stroke:#333,stroke-width:2px
     style XSS fill:#87CEEB,stroke:#333,stroke-width:2px
@@ -1142,40 +1142,40 @@ graph LR
         DEV[Local Dev]
         TEST[Test Suite]
     end
-    
+
     subgraph "🏗️ Build Pipeline"
         GH[GitHub Actions]
         BUILD[Vite Build]
         OPT[Optimization]
     end
-    
+
     subgraph "📦 Distribution"
         CDN1[Asset CDN]
         CDN2[App CDN]
         CACHE[Edge Cache]
     end
-    
+
     subgraph "🌍 Global Delivery"
         US[US Servers]
         EU[EU Servers]
         ASIA[Asia Servers]
     end
-    
+
     DEV --> TEST
     TEST --> GH
     GH --> BUILD
     BUILD --> OPT
-    
+
     OPT --> CDN1
     OPT --> CDN2
-    
+
     CDN1 --> CACHE
     CDN2 --> CACHE
-    
+
     CACHE --> US
     CACHE --> EU
     CACHE --> ASIA
-    
+
     style GH fill:#24292E,stroke:#fff,stroke-width:2px,color:#fff
     style CDN1 fill:#FF9500,stroke:#333,stroke-width:2px
     style CACHE fill:#00C851,stroke:#333,stroke-width:2px
@@ -1195,33 +1195,33 @@ graph TD
         LAT[Input Latency]
         LOAD[Asset Load Time]
     end
-    
+
     subgraph "📊 Game Metrics"
         DMG[Damage Dealt]
         ACC[Hit Accuracy]
         COMBO[Combo Success]
         TIME[Session Duration]
     end
-    
+
     subgraph "🔍 Analytics"
         GA[Google Analytics]
         CUSTOM[Custom Events]
         ERROR[Error Tracking]
     end
-    
+
     FPS --> GA
     MEM --> GA
     LAT --> CUSTOM
     LOAD --> CUSTOM
-    
+
     DMG --> CUSTOM
     ACC --> CUSTOM
     COMBO --> CUSTOM
     TIME --> GA
-    
+
     GA --> ERROR
     CUSTOM --> ERROR
-    
+
     style FPS fill:#4CAF50,stroke:#333,stroke-width:2px
     style GA fill:#FFA726,stroke:#333,stroke-width:2px
     style ERROR fill:#EF5350,stroke:#333,stroke-width:2px
@@ -1240,7 +1240,7 @@ graph TD
         LOCAL[Local State]
         CDN[Static CDN]
     end
-    
+
     subgraph "Future: Optional Backend"
         API[REST API]
         DB[Database]
@@ -1248,15 +1248,15 @@ graph TD
         LEAD[Leaderboards]
         SAVE[Save Games]
     end
-    
+
     FE -.->|Future Integration| API
     LOCAL -.->|Sync| DB
     CDN -.->|Dynamic Assets| API
-    
+
     API --> AUTH
     API --> LEAD
     API --> SAVE
-    
+
     style FE fill:#61DAFB,stroke:#333,stroke-width:2px
     style API fill:#FF6B6B,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
     style DB fill:#336791,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
@@ -1272,7 +1272,8 @@ graph TD
 **Date**: 2024-01-01  
 **Context**: Need to minimize operational complexity and maximize accessibility  
 **Decision**: Build as purely frontend application with no backend dependencies  
-**Consequences**: 
+**Consequences**:
+
 - ✅ Zero server costs
 - ✅ Instant deployment
 - ✅ No database management
@@ -1286,6 +1287,7 @@ graph TD
 **Context**: Need powerful 2D rendering with modern React development  
 **Decision**: Use @pixi/react for seamless integration  
 **Consequences**:
+
 - ✅ Best of both worlds
 - ✅ Strong ecosystem
 - ✅ Type safety with TypeScript
@@ -1299,6 +1301,7 @@ graph TD
 **Context**: Need lightweight state management without Redux complexity  
 **Decision**: Use Zustand for all global state  
 **Consequences**:
+
 - ✅ Minimal boilerplate
 - ✅ TypeScript friendly
 - ✅ DevTools support
@@ -1312,6 +1315,7 @@ graph TD
 Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging cutting-edge web technologies while maintaining simplicity through its frontend-only design. The modular architecture supports rapid iteration and easy deployment while providing a rich, culturally authentic gaming experience.
 
 ### Key Architectural Strengths:
+
 - **Zero Backend Complexity**: Pure frontend eliminates server management
 - **Modular Design**: Clear separation of concerns across systems
 - **Performance Focused**: Optimization strategies baked into architecture
@@ -1319,6 +1323,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 - **Developer Friendly**: TypeScript, modern React, comprehensive testing
 
 ### Areas for Future Enhancement:
+
 - **Persistence Layer**: Optional backend for save games
 - **Multiplayer Support**: WebRTC or server-based PvP
 - **Advanced Analytics**: Deeper player behavior tracking
@@ -1330,6 +1335,8 @@ The architecture is designed to scale with the game's ambitions while maintainin
 ---
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
+
 ```
 
 This completes the ARCHITECTURE.md document, providing a comprehensive technical architecture overview of the Black Trigram game, including all the remaining sections that were cut off in your original excerpt.This completes the ARCHITECTURE.md document, providing a comprehensive technical architecture overview of the Black Trigram game, including all the remaining sections that were cut off in your original excerpt.
+```
