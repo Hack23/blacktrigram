@@ -209,35 +209,6 @@ export interface VitalPointEffect {
   readonly source?: string;
 }
 
-// Vital point effect
-// Player archetype data
-export interface PlayerArchetypeData {
-  readonly id: string;
-  readonly name: KoreanText;
-  readonly description: KoreanText;
-  readonly baseHealth: number;
-  readonly baseKi: number;
-  readonly baseStamina: number;
-  readonly coreStance: TrigramStance;
-  readonly theme: {
-    primary: number;
-    secondary: number;
-  };
-  readonly colors: {
-    primary: number;
-    secondary: number;
-  };
-  readonly stats: {
-    attackPower: number;
-    defense: number;
-    speed: number;
-    technique: number;
-  };
-  readonly favoredStances: readonly TrigramStance[];
-  readonly specialAbilities: readonly string[];
-  readonly philosophy: KoreanText;
-}
-
 // Region data
 export interface RegionData {
   readonly name: KoreanText;

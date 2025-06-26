@@ -62,15 +62,29 @@
 
   // ESLint configuration
   "eslint.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown"
+  ],
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
-  "eslint.workingDirectories": [
-    { "mode": "auto" },
-    { "directory": "./src", "changeProcessCWD": true },
-    { "directory": "./cypress", "changeProcessCWD": true }
-  ],
+  "eslint.lintTask.options": "--ext .js,.jsx,.ts,.tsx .",
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "eslint.options": {
-    "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs"
+    "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs",
+    "reportUnusedDisableDirectives": true,
+    "extensions": [".js", ".jsx", ".ts", ".tsx"]
   },
 
   // React and JSX settings

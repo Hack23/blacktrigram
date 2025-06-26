@@ -8,8 +8,7 @@
 import { GameMode, GamePhase, Position, TrigramStance } from "@/types";
 import { PlayerMatchStats, PlayerState } from "../player";
 import { StatusEffect } from "../types";
-import { VitalPointHitResult } from "../vitalpoint";
-import { KoreanTechnique } from "../vitalpoint/types";
+import { KoreanTechnique, VitalPointHitResult } from "../vitalpoint/types";
 
 export interface CombatResult {
   readonly success: boolean;
