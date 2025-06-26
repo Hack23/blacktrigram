@@ -1,10 +1,10 @@
 import { VitalPointSeverity } from "../types/common";
-import { CombatResult, CombatSystemInterface } from "./combat";
+import { CombatResult, CombatSystemInterface } from "./combat/types";
 import { PlayerState } from "./player";
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
-import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint";
+import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
 
 export class CombatSystem implements CombatSystemInterface {
