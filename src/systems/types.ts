@@ -53,7 +53,7 @@ import type {
   DisplayObject as PixiDisplayObject,
   Texture,
 } from "pixi.js";
-import { PlayerArchetypeData } from "./vitalpoint";
+import { PlayerArchetypeData } from "./vitalpoint/types";
 
 export interface AnimationState {
   readonly currentAnimationName?: string;
