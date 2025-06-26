@@ -4,15 +4,19 @@
 
 ## 📚 Architecture Documentation Map
 
-| Document                      | Focus            | Description                                                                                                |
-| ----------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------- |
-| **🌐 System Context**         | C4 Model         | High-level view showing actors (Player, CDNs) and the entirely front-end application                       |
-| **🏢 Container View**         | C4 Model         | Frontend-only architecture: UI Layer, Game Logic, Asset Loader, Renderer, and State Management             |
-| **🧩 Component View**         | C4 Model         | Detailed breakdown of all key modules: Combat System, Trigram System, Vital Point System, Audio, UI        |
-| **🔄 Combat Flow Sequence**   | Sequence Diagram | How input flows through logic to rendering and feedback in real time                                       |
-| **⚡ Security & Performance** | Performance      | Client-side performance profiling, optimization techniques, and graceful degradation strategies            |
-| **📊 SWOT Analysis**          | Strategy         | Strengths, Weaknesses, Opportunities, Threats for a 100% frontend, no-persistence “Black Trigram” web game |
-| **🧠 Concept Mindmaps**       | Concept          | Mindmaps showing primary game concepts (combat, stances, archetypes), architectural ideas, and UX flows    |
+| Document | Focus | Description |
+|----------|-------|-------------|
+| **[🌐 System Context](#-system-context)** | C4 Model | High-level view showing actors (Player, CDNs) and the entirely front-end application |
+| **[🏢 Container View](#-container-view)** | C4 Model | Frontend-only architecture: UI Layer, Game Logic, Asset Loader, Renderer, and State Management |
+| **[🧩 Component View](#-component-view)** | C4 Model | Detailed breakdown of all key modules: Combat System, Trigram System, Vital Point System, Audio, UI |
+| **[🔧 File Structure](#-file-structure-highlights)** | Organization | Current project structure and key file locations |
+| **[🔄 Combat Flow Sequence](#-combat-flow-sequence)** | Sequence Diagram | How input flows through logic to rendering and feedback in real time |
+| **[⚡ Security & Performance](#-security--performance-architecture)** | Performance | Client-side performance profiling, optimization techniques, and graceful degradation strategies |
+| **[📊 SWOT Analysis](#-swot-analysis)** | Strategy | Strengths, Weaknesses, Opportunities, Threats for a 100% frontend, no-persistence "Black Trigram" web game |
+| **[🎯 Core Game Concepts](#-core-game-concepts)** | Game Design | Player archetypes, trigram system, resources & mechanics |
+| **[🏗️ Architecture Concepts](#-architecture-concepts)** | Technical Design | Mindmap of system architecture layers and components |
+| **[🔄 UX Flow](#-ux-flow)** | User Experience | User journey through screens and interactions |
+| **[🔄 Combat Mechanics](#-combat-mechanics--data-relationships)** | Game Mechanics | Detailed combat system data flow and relationships |
 
 ---
 
@@ -90,8 +94,8 @@ C4Container
 >   - React + TypeScript functional components.
 >   - Screens: `CombatScreen`, `TrainingScreen`, `IntroScreen`.
 >   - Common UI: `CombatHUD`, `TrigramWheel`, `ProgressTracker`, etc.
->   - Base modules in `src/components/ui/base`: `BaseButton`, `KoreanText`, `BackgroundGrid`, etc.
->   - CSS: `src/App.css`, `src/CombatScreen.css`, etc.
+>   - Base modules in base: `BaseButton`, `KoreanText`, `BackgroundGrid`, etc.
+>   - CSS: App.css, `src/CombatScreen.css`, etc.
 
 > - **⚙️ Game Logic Layer**:
 >
@@ -119,19 +123,19 @@ C4Container
 > - **📦 Asset Loader**:
 >
 >   - PixiJS `Loader` (`@pixi/loaders`) and custom hooks (`useTexture.ts`) for textures & JSON data.
->   - Helpers in `src/utils/playerUtils.ts`, `colorUtils.ts` map asset keys to URLs.
+>   - Helpers in playerUtils.ts, `colorUtils.ts` map asset keys to URLs.
 >   - Dynamically import large JSON (e.g., `src/types/constants/trigram.ts`) at runtime.
 
 > - **🎨 Rendering Engine**:
 >
->   - PixiJS (wrapped by `@pixi/react`) via `src/components/game/GameEngine.tsx`.
+>   - PixiJS (wrapped by `@pixi/react`) via GameEngine.tsx.
 >   - Manages a single PixiJS `Application` (Canvas/WebGL).
 >   - Renders: Character sprites (`PlayerVisuals.tsx`, `EnemyVisuals.tsx`), background (`DojangBackground.tsx`), particles (`HitEffectsLayer.tsx`).
 >   - Draws UI overlays (health, Ki, stance auras) via Pixi primitives (`Graphics`, `Text`).
 
 > - **🗄️ State Management**:
 >
->   - In-browser only (no backend). Uses **Zustand** (or React Context fallback) under `src/hooks/`.
+>   - In-browser only (no backend). Uses **Zustand** (or React Context fallback) under hooks.
 >   - `useGameState.ts`, `useUIState.ts`, `useEnemyState.ts` store: health, stamina, Ki, current stance, enemy state, UI flags.
 >   - **No Persistence**: Refresh resets all state / progress.
 
@@ -168,14 +172,14 @@ C4Component
         Component(AnatomicalRegions, "AnatomicalRegions.ts", "TypeScript", "Defines critical/secondary/standard regions")
         Component(HitDetection, "HitDetection.ts", "TypeScript", "Checks bounding-box intersection between attacks & targets")
         Component(DamageCalculatorVP, "DamageCalculator.ts", "TypeScript", "Applies vital-point multipliers to base damage")
-        Component(AudioManager, "AudioManager.ts", "TypeScript", "Interfaces with Web Audio API to play SFX/music")
+        Component(AudioManager, "AudioManager.ts", "TypeScript", "Interfaces with Howler.js to play SFX/music")
         Component(DefaultSoundGenerator, "DefaultSoundGenerator.ts", "TypeScript", "Generates procedural fallback sounds")
         Component(VariantSelector, "VariantSelector.ts", "TypeScript", "Randomizes audio variants for variety")
     }
 
     Container_Boundary(assetLoader, "📦 Asset Loader") {
-        Component(PixiLoader, "Pixi Loader (via useTexture)", "TypeScript", "Loads textures (sprites, particles) from Art CDN")
-        Component(AudioLoader, "AudioLoader.ts", "TypeScript", "Fetches audio buffers from Audio CDN, decodes via Web Audio API")
+        Component(PixiLoader, "Pixi Assets API", "TypeScript", "Loads textures (sprites, particles) from Art CDN")
+        Component(AudioLoader, "AudioLoader.ts", "TypeScript", "Fetches audio buffers from Audio CDN, decodes via Howler.js")
         Component(TrigramDataLoader, "TrigramData.ts / JSON", "TypeScript", "Loads JSON for stances & techniques at runtime")
         Component(VitalPointsDataLoader, "VitalPointsData.ts / JSON", "TypeScript", "Loads JSON for 70 vital points & anatomical data")
     }
@@ -395,7 +399,7 @@ graph TD
 1. **📦 PixiJS Sprite Batching**
 
    - Group sprites sharing textures into batch draw calls (e.g., `ParticleContainer` for hit effects).
-   - Use Pixi’s `ParticleContainer` or `SpriteBatch` for high particle counts (ki energy, blood).
+   - Use Pixi's `ParticleContainer` or `SpriteBatch` for high particle counts (ki energy, blood).
 
 2. **🎨 Texture Atlases**
 
@@ -441,7 +445,7 @@ graph TD
 1. **📉 Low Quality Mode**
 
    - Detect GPU capabilities at startup. If low, reduce canvas resolution and disable sub-pixel effects.
-   - Toggle via “Low Graphics” checkbox in settings (Zustand flag: `useUIState.isLowGraphicsMode`).
+   - Toggle via "Low Graphics" checkbox in settings (Zustand flag: `useUIState.isLowGraphicsMode`).
 
 2. **❌ Reduced Effects**
 
@@ -521,19 +525,9 @@ quadrantChart
     "🌐 Browser Standards Changes":[0.65,0.25] radius:6 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
 ```
 
-> **Quadrant Legend**
->
-> - 🟢 **Strengths** (Internal, Positive): Teal/Green points
-> - 🟠 **Weaknesses** (Internal, Negative): Warm Orange points
-> - 🔵 **Opportunities** (External, Positive): Cool Purple points
-> - 🔴 **Threats** (External, Negative): Muted Red points
+### Mindmap of Strengths
 
----
-
-## Strengths
-
-```mermaid
-mindmap
+```mindmap
   root((🟢 Strengths))
     id1(🛠️ Zero-Install Web App)
       id1.1[Play immediately—no download/sign-up]
@@ -573,24 +567,9 @@ mindmap
       id9.3[Performance tests (FPS, latency) with Stats.js]
 ```
 
-> **Analysis**
->
-> 1. **Zero-Install Web App**: Eliminates download friction; users can jump in instantly.
-> 2. **Fast Iteration**: Frontend-only means no backend migrations—instant feature rollouts.
-> 3. **Reduced Operational Costs**: Hosted statically; minimal DevOps.
-> 4. **Immediate CDN Updates**: Assets (sprites, audio, JSON) update in real time.
-> 5. **Global Accessibility**: Browser-based; cross-platform.
-> 6. **Authentic Korean Martial Arts Integration**: Deep I Ching philosophy (팔괘), 70 vital points, Korean text/audio.
-> 7. **Rich Audio-Visual Experience**: Traditional Korean instruments fused with cyberpunk aesthetics; immersive particles.
-> 8. **Modular Architecture**: Well-separated subsystems (CombatSystem, TrigramSystem, VitalPointSystem, AudioManager, etc.).
-> 9. **Comprehensive Testing Framework**: Unit, integration, and performance tests ensure reliability.
+### Mindmap of Weaknesses
 
----
-
-## Weaknesses
-
-```mermaid
-mindmap
+```mindmap
   root((🟠 Weaknesses))
     id1(🌀 No Persistence (Session-Only))
       id1.1[All progress lost on refresh]
@@ -630,24 +609,9 @@ mindmap
       id9.3[No A/B testing framework]
 ```
 
-> **Analysis**
->
-> 1. **No Persistence**: Refresh wipes all state; no saved progress or unlocks.
-> 2. **Asset Load Latency**: Large JSON/trigram data and high-res textures slow initial load.
-> 3. **Limited Offline Play**: Without PWA support, game unavailable offline.
-> 4. **Browser Compatibility Challenges**: Variations in WebGL/Web Audio support; mobile quirks.
-> 5. **Memory/GC Spikes**: Heavy particle scenes can cause GC pauses; frequent allocations.
-> 6. **Complex State Management**: Multiple Zustand slices may desynchronize; no single persistence layer.
-> 7. **Incomplete Features**: Some techniques/stances or training drills remain unpolished or missing.
-> 8. **UX Learning Curve**: Deep trigram & vital-point systems require onboarding/tutorials; can overwhelm newcomers.
-> 9. **Limited Analytics**: No built-in telemetry or analytics to track player behavior or performance.
+### Mindmap of Opportunities
 
----
-
-## Opportunities
-
-```mermaid
-mindmap
+```mindmap
   root((🔵 Opportunities))
     id1(💡 PWA & Offline Caching)
       id1.1[Implement service workers for asset caching]
@@ -687,24 +651,9 @@ mindmap
       id9.3[Region-specific AI tutor voice-overs]
 ```
 
-> **Future Opportunities**
->
-> 1. **PWA & Offline Caching**: Implement service workers + IndexedDB/localStorage to cache assets (JSON, textures), enabling offline play & state persistence.
-> 2. **Mobile-First UX**: Optimize touch controls (swipe, drag), responsive layouts, and possibly accelerometer-based stance changes.
-> 3. **Community Modding**: Allow players to load custom skins, particle packs, and even user-created stances & techniques via URL injection or JSON.
-> 4. **AI-Driven Tutorial Modules**: Leverage WebAssembly/TF.js to give real-time adaptive feedback (vital-point accuracy, stance transitions) and progressive difficulty.
-> 5. **Ecosystem Partnerships**: Partner with martial arts schools, Korean cultural institutions, and event organizers for sponsorships, cross-promotion, and authenticity.
-> 6. **Third-Party Integrations**: Integrate with Discord & Twitch for live overlays, leaderboards via Firebase, and social sharing (combo replays).
-> 7. **Advanced Analytics**: Build detailed telemetry (player heatmaps, vital-point accuracy), user segmentation, A/B testing for features.
-> 8. **E-Learning Mode**: Structured courses on 팔괘 theory, guided practice sessions, certification badges for achievements.
-> 9. **Global Localization**: Support multiple languages (KR, EN, JP, CN), localized UI/UX, region-specific voice-overs for AI tutor.
+### Mindmap of Threats
 
----
-
-## Threats
-
-```mermaid
-mindmap
+```mindmap
   root((🔴 Threats))
     id1(🌩️ CDN Outages / Latency)
       id1.1[Audio CDN or Art CDN downtime]
@@ -727,459 +676,660 @@ mindmap
       id5.2[Compromised asset hosting]
       id5.3[Unverified third-party scripts]
     id6(📶 Browser Standards Evolution)
-      id6.1[ECMAScript spec changes]
-      id6.2[New WebGL/WebGPU shifts]
-      id6.3[Web Audio API deprecations]
-    id7(🌐 Platform Provider Lock-in)
-      id7.1[Heavy reliance on GitHub for CI/CD & hosting]
-      id7.2[Netlify/Vercel policy changes]
-      id7.3[Sudden cost increases]
-    id8(⚔️ Complex Security Landscape)
-      id8.1[Evolving browser security sandboxes]
-      id8.2[Cross-origin restrictions affecting CDNs]
-      id8.3[CSP (Content Security Policy) changes]
-    id9(💀 Monotony & Engagement Drop)
-      id9.1[Learning curve too steep]
-      id9.2[Lack of long-term progression without persistence]
-      id9.3[Players switching to other genres]
+      id6.1[root((🔴 Threats))
+    id1(🌩️ CDN Outages / Latency)
+      id1.1[Audio CDN or Art CDN downtime]
+      id1.2[High global latency affects playability]
+      id1.3[Single region CDN cold starts]
+    id2(⚠️ WebGL / API Deprecation)
+      id2.1[Future browser changes break PixiJS]
+      id2.2[Web Audio API behavior shifts]
+      id2.3[Mobile browser limitations]
+    id3(🏆 Competitive Mobile Titles)
+      id3.1[Native mobile games with deeper UX]
+      id3.2[Lower-latency touch controls]
+      id3.3[Larger marketing budgets]
+    id4(📉 Technical Debt Accumulation)
+      id4.1[Complex Zustand stores & no persistence]
+      id4.2[Inconsistent data patterns]
+      id4.3[Inefficient combat loops]
+    id5(🔒 CDN Asset Security Risks)
+      id5.1[MITM if CDN not HTTPS + SRI]
+      id5.2[Compromised asset hosting]
+      id5.3[Unverified third-party scripts]
+    id6(📶 Browser Standards Evolution)
+      id6.1[Changes to ES modules affect bundling]
+      id6.2[New security policies (CORS, CSP)]
+      id6.3[Deprecated features in future standards]
+    id7(🎮 Player Retention Challenges)
+      id7.1[Without persistence, limited engagement]
+      id7.2[Lack of progression incentives]
+      id7.3[Session-only gameplay limits depth]
+    id8(💰 Monetization Limitations)
+      id8.1[No backend for payment processing]
+      id8.2[Limited ability to track purchases]
+      id8.3[Difficult to implement premium features]
+    id9(🌍 Cultural Sensitivity Issues)
+      id9.1[Misrepresentation of Korean culture]
+      id9.2[Inappropriate use of traditional symbols]
+      id9.3[Lack of cultural consultant validation]
 ```
 
-> **Threats Analysis**
->
-> 1. **CDN Outages / Latency**: If Audio CDN or Art CDN goes down or is slow, game becomes unplayable.
-> 2. **WebGL / API Deprecation**: Browser changes (WebGL→WebGPU) or Web Audio API shifts could break PixiJS-based rendering or audio.
-> 3. **Competitive Mobile Titles**: Native games offer deeper UX, lower-latency touch controls, and bigger marketing budgets.
-> 4. **Technical Debt**: Accumulating complexity in Zustand stores, inconsistent data patterns, inefficient combat loops hinder future development.
-> 5. **CDN Asset Security Risks**: MITM attacks if CDN assets not served over HTTPS with SRI; compromised asset hosting.
-> 6. **Browser Standards Evolution**: JS spec changes, new WebGL/WebGPU paradigms, Web Audio deprecations require ongoing maintenance.
-> 7. **Platform Provider Lock-in**: Dependence on GitHub for CI/CD, Netlify/Vercel for hosting; policy/cost changes could disrupt operations.
-> 8. **Complex Security Landscape**: Evolving browser security sandboxes, cross-origin restrictions, CSP changes may inhibit asset loading.
-> 9. **Monotony & Engagement Drop**: Steep learning curve (팔괘 + vital points), lack of saved progression, players might switch to other genres.
-
 ---
 
-## 🧠 Concept Mindmaps
+## 🎯 Core Game Concepts
 
-Below are fully **color-coded, grouped** mindmaps illustrating key contexts. Most Mermaid renderers will auto-assign distinct branch colors.
-
----
-
-### 🎯 Core Game Concepts
+### Player Archetypes & Combat Philosophy
 
 ```mermaid
 mindmap
-  root((🎯 Core Game Concepts))
-    Player Archetypes 🧑‍🤝‍🧑
-      무사 (Musa)
-        Melee Focus
-        High Stamina
-        Armor Proficiency
-      암살자 (Amsalja)
-        Stealth / Speed
-        Low Health, High Precision
-        Critical Attacks
-      해커 (Hacker)
-        Cyber-infused Moves
-        Tech-based Distractions
-        EMP Stuns
-      정보요원 (Jeongbo Yowon)
-        Recon / Ranged Takedowns
-        Enhanced Perception
-        Marked Targets
-      조직폭력배 (Jojik Pokryeokbae)
-        Brutal Power Moves
-        AoE Attacks
-        Crowd Control
-
-    Eight Trigram System 🔶
-      ☰ 건 (Geon – Heaven)
-        Bone Strikes
-        Knockback
-      ☱ 태 (Tae – Lake)
-        Joint Manipulation
-        Grapple Transitions
-      ☲ 리 (Li – Fire)
-        Nerve Strikes
-        Precision Damage
-      ☳ 진 (Jin – Thunder)
-        Stunning Techniques
-        AoE Shockwaves
-      ☴ 손 (Son – Wind)
-        Pressure Attacks
-        Rapid-fire Assaults
-      ☵ 감 (Gam – Water)
-        Blood Flow Restriction
-        Choke Holds
-      ☶ 간 (Gan – Mountain)
-        Defensive Counters
-        Hard Blocks
-      ☷ 곤 (Gon – Earth)
-        Ground Techniques
-        Sweep / Takedown
-
-    Resources & Mechanics ⚙️
-      Health / Pain / Consciousness
-      Ki (Energy) / Stamina
-      Balance / Weight
-      Armor / Body Part Resistances
-      70 Vital Points 🎯
-        Head (18)
-        Torso (32: Chest, Abdomen)
-        Arms (14: Shoulder, Elbow, Wrist)
-        Legs (20: Hip, Knee, Ankle)
-        Neck / Groin (6)
+  root((🥋 Black Trigram Core))
+    id1[🎮 Player Archetypes]
+      id1.1[무사 Musa - Traditional Warrior]
+        id1.1.1[Honor-bound combat]
+        id1.1.2[Balanced techniques]
+        id1.1.3[Strong fundamentals]
+      id1.2[암살자 Amsalja - Shadow Assassin]
+        id1.2.1[Precision strikes]
+        id1.2.2[Stealth mechanics]
+        id1.2.3[Critical damage focus]
+      id1.3[해커 Hacker - Cyber Warrior]
+        id1.3.1[Tech-enhanced combat]
+        id1.3.2[Digital disruption]
+        id1.3.3[Augmented abilities]
+      id1.4[정보요원 Jeongbo - Intelligence Op]
+        id1.4.1[Analytical combat]
+        id1.4.2[Predictive strikes]
+        id1.4.3[Tactical advantage]
+      id1.5[조직폭력배 Jojik - Crime Fighter]
+        id1.5.1[Brutal efficiency]
+        id1.5.2[Street techniques]
+        id1.5.3[Overwhelming force]
+    
+    id2[☯️ Eight Trigrams (팔괘)]
+      id2.1[☰ 건 Geon - Heaven]
+        id2.1.1[Direct strikes]
+        id2.1.2[Overwhelming power]
+      id2.2[☱ 태 Tae - Lake]
+        id2.2.1[Fluid movements]
+        id2.2.2[Joint manipulation]
+      id2.3[☲ 리 Li - Fire]
+        id2.3.1[Nerve strikes]
+        id2.3.2[Burning techniques]
+      id2.4[☳ 진 Jin - Thunder]
+        id2.4.1[Explosive attacks]
+        id2.4.2[Sudden impacts]
+      id2.5[☴ 손 Son - Wind]
+        id2.5.1[Continuous pressure]
+        id2.5.2[Rapid combos]
+      id2.6[☵ 감 Gam - Water]
+        id2.6.1[Adaptive defense]
+        id2.6.2[Flow counters]
+      id2.7[☶ 간 Gan - Mountain]
+        id2.7.1[Immovable defense]
+        id2.7.2[Counter strikes]
+      id2.8[☷ 곤 Gon - Earth]
+        id2.8.1[Grounding attacks]
+        id2.8.2[Takedown focus]
+    
+    id3[🎯 Vital Points (급소)]
+      id3.1[Critical Points (치명타)]
+        id3.1.1[Instant KO potential]
+        id3.1.2[x5.0 damage multiplier]
+      id3.2[Secondary Points (보조)]
+        id3.2.1[Major damage]
+        id3.2.2[x3.0 damage multiplier]
+      id3.3[Standard Points (일반)]
+        id3.3.1[Basic damage]
+        id3.3.2[x1.5 damage multiplier]
+    
+    id4[⚡ Resources]
+      id4.1[❤️ Health (체력)]
+        id4.1.1[100 HP per fighter]
+        id4.1.2[No regeneration]
+      id4.2[💪 Stamina (지구력)]
+        id4.2.1[Physical actions]
+        id4.2.2[Slow regeneration]
+      id4.3[🔵 Ki Energy (기)]
+        id4.3.1[Special techniques]
+        id4.3.2[Stance transitions]
 ```
 
 ---
 
-### 🏗️ Architecture Concepts
+## 🏗️ Architecture Concepts
+
+### System Architecture Layers
 
 ```mermaid
 mindmap
-  root((🏗️ Architecture Concepts))
-    UI Layer 🖥️
-      React Components
-        CombatScreen
-        TrainingScreen
-        IntroScreen
-      UI Base Components
-        BaseButton
-        BackgroundGrid
-        KoreanText Utilities
-      Styling & Theming
-        App.css
-        CombatScreen.css
-        UI Color Constants
-
-    Game Logic Layer ⚙️
-      CombatSystem
-      TrigramSystem 🔶
-        StanceManager
-        TransitionCalculator
-        TrigramCalculator
-        KoreanCulture Data
-      VitalPointSystem 🎯
-        AnatomicalRegions
-        HitDetection
-        DamageCalculator
-      Audio System 🎵
-        AudioManager
-        AudioAssetRegistry
-        VariantSelector
-
-    Asset Loader 📦
-      PixiLoader (useTexture Hook)
-      AudioLoader (Web Audio API)
-      JSON Data Loaders
-        TrigramData (stances/techniques)
-        VitalPointsData (70 points)
-
-    Rendering Engine 🎨
-      Pixi Stage / Application
-      PlayerVisuals
-      EnemyVisuals
-      ParticlesLayer
-      BackgroundRenderer
-
-    State Management 🗄️
-      useGameState (Zustand)
-      useUIState (Zustand)
-      useEnemyState (Zustand)
-      No Persistence (Memory Only)
-
-    Performance & Security ⚡
-      PerformanceMonitor (Stats.js)
-      PixiJS Sprite Batching
-      Texture Atlases
-      Object Pooling
-      Asset Caching (HTTP Cache / Service Worker)
-      Code Splitting (Dynamic Imports)
-      Graceful Degradation (Canvas2D, Low Quality Mode)
+  root((🏗️ Architecture))
+    id1[🖥️ Presentation Layer]
+      id1.1[React Components]
+        id1.1.1[Screens]
+        id1.1.2[HUD Elements]
+        id1.1.3[Controls]
+      id1.2[PixiJS Rendering]
+        id1.2.1[Sprites]
+        id1.2.2[Particles]
+        id1.2.3[Animations]
+      id1.3[UI/UX Design]
+        id1.3.1[Korean Typography]
+        id1.3.2[Cyberpunk Theme]
+        id1.3.3[Responsive Layout]
+    
+    id2[⚙️ Business Logic]
+      id2.1[Combat System]
+        id2.1.1[Damage Calculation]
+        id2.1.2[Hit Detection]
+        id2.1.3[Combat Flow]
+      id2.2[Trigram System]
+        id2.2.1[Stance Management]
+        id2.2.2[Transitions]
+        id2.2.3[Techniques]
+      id2.3[Vital Point System]
+        id2.3.1[Anatomy Mapping]
+        id2.3.2[Multipliers]
+        id2.3.3[Effects]
+    
+    id3[🗄️ State Management]
+      id3.1[Zustand Stores]
+        id3.1.1[Game State]
+        id3.1.2[UI State]
+        id3.1.3[Enemy State]
+      id3.2[React Context]
+        id3.2.1[Audio Context]
+        id3.2.2[Theme Context]
+      id3.3[Session Storage]
+        id3.3.1[Temporary Data]
+        id3.3.2[Settings]
+    
+    id4[📦 Asset Management]
+      id4.1[PixiJS Loader]
+        id4.1.1[Texture Loading]
+        id4.1.2[Sprite Sheets]
+      id4.2[Audio System]
+        id4.2.1[Howler.js]
+        id4.2.2[Web Audio API]
+      id4.3[Data Loading]
+        id4.3.1[JSON Import]
+        id4.3.2[Dynamic Loading]
+    
+    id5[🔧 Infrastructure]
+      id5.1[Build System]
+        id5.1.1[Vite]
+        id5.1.2[TypeScript]
+        id5.1.3[ESBuild]
+      id5.2[Testing]
+        id5.2.1[Vitest]
+        id5.2.2[React Testing Library]
+        id5.2.3[Cypress]
+      id5.3[Deployment]
+        id5.3.1[Static Hosting]
+        id5.3.2[CDN Distribution]
+        id5.3.3[CI/CD Pipeline]
 ```
 
 ---
 
-### 🔄 UX Flow & Menus
+## 🔄 UX Flow
 
-```mermaid
-mindmap
-  root((🔄 UX Flow))
-    Intro Screen
-      Title & Logo
-      Menu: Play / Training / Settings / Info
-      Philosophy Section (I Ching, Korean Culture)
-      Controls Overview
-
-    Combat Screen ⚔️
-      HUD: Health / Ki / Stamina Bars
-      Trigram Wheel (Stance Selector)
-      Combo / Technique Panel
-      Pause Menu: Resume / Settings / Quit
-
-    Training Screen 🎯
-      Select Archetype
-      Vital-Point Practice Panel
-      Timed Drills / Accuracy Scores
-      Leaderboards / Personal Bests
-
-    Settings ⚙️
-      Graphics Quality (High / Medium / Low)
-      Audio Volume: Music / SFX
-      Control Remapping (Keys / Touch)
-      Language Selection (KR / EN / Other)
-
-    End Screen 🎉
-      Post-Combat Summary: Damage, Vital Hit Count
-      Rewards / Medals
-      Retry / Main Menu Buttons
-```
-
----
-
-### 🖥️ Technical Stack & Data Flow
-
-```mermaid
-mindmap
-  root((🖥️ Technical Stack & Data Flow))
-    Frontend Framework
-      React v18 (Hooks, Hooks + Context)
-      TypeScript (Strict Mode)
-
-    Rendering Tech
-      PixiJS v7 (WebGL / Canvas)
-      @pixi/react (React Integration)
-
-    State Management
-      Zustand (useGameState, useUIState, useEnemyState)
-      React Context (Theming, Locale)
-
-    Data & Assets
-      JSON Data: TrigramData, VitalPointsData
-      CDNs: Audio CDN, Art CDN (Cloudflare / S3)
-      Local Storage (for PWA caching)
-
-    Build/Deploy
-      Vite (Fast Dev Server + ESBuild)
-      Netlify / Vercel (Static Hosting + CDN)
-      GitHub Actions (CI/CD)
-
-    Testing
-      Jest (Unit tests for Combat & Trigram logic)
-      React Testing Library (UI components)
-      Playwright / Puppeteer (End-to-end combat flow)
-      Stats.js (Performance monitoring)
-
-    Monitoring & Analytics
-      Stats.js (FPS / performance)
-      Sentry (Error reporting)
-      Google Analytics (User engagement)
-```
-
----
-
-### 🔄 Combat Mechanics & Data Relationships
-
-```mermaid
-mindmap
-  root((🔄 Combat Mechanics & Data Relationships))
-    Input Handling 🎮
-      • Keyboard / Mouse / Touch
-      • Key Bindings: 1–8 (Stances), Hotkeys for Techniques
-      • Input Buffer & Queue
-
-    Stance & Trigram 🔶
-      • StanceManager (Zustand slice)
-      • TransitionCalculator (Ki/Stamina cost)
-      • TrigramCalculator (Technique lookup & advantage multipliers)
-      • KoreanCulture (I Ching lore, Korean labels)
-
-    Vital Point System 🎯
-      • AnatomicalRegions (70 points, defined in KoreanVitalPoints)
-      • HitDetection (Bounding box vs attack hitbox)
-      • DamageCalculator (BaseDamage × TrigramAdvantage × VP multiplier)
-      • Medical Effects: Stun, Bleed, Knockback
-
-    Audio & Visual Feedback 🎵✨
-      • AudioManager (Plays SFX & music)
-      • Particle Effects (Ki energy, blood, sparks)
-      • UI Overlays: Critical Hit Marker, Damage Numbers (Korean/English)
-
-    State Transitions 🗄️
-      • CombatState (Idle, StanceChange, Executing, Recovery)
-      • Recovery Phase (Cooldown timers, animation locks)
-      • Health / Stamina / Ki updates (Zustand store)
-```
-
----
-
-## 📦 Supply Chain Security & Dependency Management
+### User Journey Through Game
 
 ```mermaid
 flowchart TD
-    subgraph "Current Controls"
-        A[Dependency Review]
-        B[Vulnerability Detection]
-        C[SBOM Generation]
-        D[License Checking]
-        E[Build Attestations]
-    end
-
-    subgraph "Recommended Enhancements"
-        F[Dependency Pinning]
-        G[Dependency Sandboxing]
-        H[Transitive Dependency Analysis]
-        I[Multi-Source Verification]
-    end
-
-    A --> B
-    C --> D
-    E --> A
-    B --> D
-
-    F --> G
-    H --> I
-
-    style A fill:#c8e6c9,stroke:#333,stroke-width:1px,color:black
-    style B fill:#c8e6c9,stroke:#333,stroke-width:1px,color:black
-    style C fill:#c8e6c9,stroke:#333,stroke-width:1px,color:black
-    style D fill:#c8e6c9,stroke:#333,stroke-width:1px,color:black
-    style E fill:#c8e6c9,stroke:#333,stroke-width:1px,color:black
-
-    style F fill:#fff2cc,stroke:#333,stroke-width:1px,color:black
-    style G fill:#fff2cc,stroke:#333,stroke-width:1px,color:black
-    style H fill:#fff2cc,stroke:#333,stroke-width:1px,color:black
-    style I fill:#fff2cc,stroke:#333,stroke-width:1px,color:black
+    Start([🎮 Game Load]) --> Loading[⏳ Loading Assets]
+    Loading --> Intro[🏮 Intro Screen]
+    
+    Intro --> |New Game| CharSelect[👤 Archetype Selection]
+    Intro --> |Training| Training[🎯 Training Mode]
+    Intro --> |Settings| Settings[⚙️ Settings Menu]
+    
+    CharSelect --> Combat[⚔️ Combat Arena]
+    Training --> VitalPractice[🎯 Vital Point Practice]
+    Training --> StancePractice[☯️ Stance Training]
+    
+    Combat --> |Victory| Victory[🏆 Victory Screen]
+    Combat --> |Defeat| Defeat[💀 Defeat Screen]
+    Combat --> |Pause| PauseMenu[⏸️ Pause Menu]
+    
+    Victory --> Intro
+    Defeat --> Intro
+    PauseMenu --> |Resume| Combat
+    PauseMenu --> |Quit| Intro
+    
+    VitalPractice --> |Exit| Training
+    StancePractice --> |Exit| Training
+    Training --> |Back| Intro
+    Settings --> |Back| Intro
+    
+    %% Styling
+    classDef screenNode fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
+    classDef actionNode fill:#00FFD0,stroke:#333,stroke-width:2px,color:#000
+    classDef menuNode fill:#FF6B6B,stroke:#333,stroke-width:2px,color:#000
+    
+    class Intro,CharSelect,Combat,Victory,Defeat,Training,Settings screenNode
+    class Loading,VitalPractice,StancePractice actionNode
+    class PauseMenu menuNode
 ```
 
-> **Current Controls** (Green)
->
-> - **Dependency Review** → **Vulnerability Detection**
-> - **SBOM Generation** → **License Checking**
-> - **Build Attestations** → **Dependency Review**
+---
 
-> **Recommended Enhancements** (Yellow)
->
-> - **Dependency Pinning** → **Dependency Sandboxing**
-> - **Transitive Dependency Analysis** → **Multi-Source Verification**
+## 🔄 Combat Mechanics & Data Relationships
+
+### Combat System Data Flow
+
+```mermaid
+graph TB
+    subgraph "🎮 Input Layer"
+        KI[Keyboard Input]
+        MI[Mouse Input]
+        TI[Touch Input]
+    end
+    
+    subgraph "⚙️ Combat Engine"
+        IS[Input System]
+        SM[Stance Manager]
+        TC[Technique Calculator]
+        HD[Hit Detection]
+        DC[Damage Calculator]
+        ES[Effect System]
+    end
+    
+    subgraph "📊 Game State"
+        PS[Player State]
+        ES2[Enemy State]
+        CS[Combat State]
+    end
+    
+    subgraph "🎨 Rendering"
+        VS[Visual System]
+        AS[Audio System]
+        PS2[Particle System]
+    end
+    
+    KI --> IS
+    MI --> IS
+    TI --> IS
+    
+    IS --> SM
+    SM --> TC
+    TC --> HD
+    HD --> DC
+    DC --> ES
+    
+    SM <--> PS
+    DC <--> ES2
+    ES <--> CS
+    
+    CS --> VS
+    CS --> AS
+    CS --> PS2
+    
+    %% Styling
+    classDef inputClass fill:#87CEFA,stroke:#333,stroke-width:2px
+    classDef engineClass fill:#00FFD0,stroke:#333,stroke-width:2px
+    classDef stateClass fill:#FFD700,stroke:#333,stroke-width:2px
+    classDef renderClass fill:#FF6B6B,stroke:#333,stroke-width:2px
+    
+    class KI,MI,TI inputClass
+    class IS,SM,TC,HD,DC,ES engineClass
+    class PS,ES2,CS stateClass
+    class VS,AS,PS2 renderClass
+```
+
+### Trigram Advantage Matrix
+
+```mermaid
+graph LR
+    subgraph "☯️ Trigram Relationships"
+        G[☰ 건 Geon]
+        T[☱ 태 Tae]
+        L[☲ 리 Li]
+        J[☳ 진 Jin]
+        S[☴ 손 Son]
+        GM[☵ 감 Gam]
+        GN[☶ 간 Gan]
+        K[☷ 곤 Gon]
+    end
+    
+    %% Advantage relationships (→ means "has advantage over")
+    G -->|Power > Fluid| T
+    T -->|Fluid > Fire| L
+    L -->|Fire > Thunder| J
+    J -->|Thunder > Wind| S
+    S -->|Wind > Water| GM
+    GM -->|Water > Mountain| GN
+    GN -->|Mountain > Earth| K
+    K -->|Earth > Heaven| G
+    
+    %% Defensive advantages (⇢ means "defends well against")
+    G -.->|Blocks Earth| K
+    GN -.->|Blocks Water| GM
+    GM -.->|Blocks Wind| S
+    
+    %% Style colors
+    style G fill:#FFD700,stroke:#333,stroke-width:3px
+    style T fill:#87CEEB,stroke:#333,stroke-width:3px
+    style L fill:#FF6347,stroke:#333,stroke-width:3px
+    style J fill:#FF1493,stroke:#333,stroke-width:3px
+    style S fill:#98FB98,stroke:#333,stroke-width:3px
+    style GM fill:#4682B4,stroke:#333,stroke-width:3px
+    style GN fill:#8B4513,stroke:#333,stroke-width:3px
+    style K fill:#D2691E,stroke:#333,stroke-width:3px
+```
 
 ---
 
-## Path to v1.0 – Critical Focus Areas
+## 📈 Performance Optimization Strategy
 
-Based on the SWOT analysis and architecture review, the following areas require immediate attention before v1.0:
+### Resource Loading Pipeline
 
-1. **Complete Feature Implementation**
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant L as Asset Loader
+    participant CDN as CDN Servers
+    participant C as Cache
+    participant G as Game Engine
+    
+    B->>L: Initialize game
+    L->>C: Check local cache
+    
+    alt Assets cached
+        C-->>L: Return cached assets
+    else Assets not cached
+        L->>CDN: Request assets
+        CDN-->>L: Stream assets
+        L->>C: Store in cache
+    end
+    
+    L->>G: Assets ready
+    G->>B: Start game
+    
+    Note over B,G: Lazy load non-critical assets during gameplay
+```
 
-   - Finalize all combat techniques/stances: grappling (유술), blocking (방어기), combinations, animations.
-   - Flesh out training mode: ensure all 70 vital points practice panels function.
+### Memory Management Strategy
 
-2. **State & Persistence Enhancements**
-
-   - Integrate PWA support (service worker + IndexedDB) to cache JSON & textures.
-   - Implement localStorage/IndexedDB persistence for player progress, unlocked moves, high scores.
-
-3. **Performance Optimization**
-
-   - Add memoization (`useMemo`, `React.memo`) for calculation-heavy components (DamageCalculator, TrigramCalculator).
-   - Optimize collision loops & particle pools to avoid GC spikes.
-   - Introduce object pooling for particles and temporary objects.
-
-4. **Error Handling & Resilience**
-
-   - Standardize error boundaries across React components (`ErrorBoundary` wrapper).
-   - Add fallback UIs/loading states for all data-fetching hooks.
-   - Ensure combat state remains consistent on unexpected exceptions.
-
-5. **UX Improvements & Onboarding**
-
-   - Develop interactive tutorials for trigram philosophy (팔괘) and vital-point targeting.
-   - Provide visual overlays/hints for stance advantages & counters.
-   - Simplify UI for new players: hide advanced options until tutorial completed.
-
-6. **Type Safety & Code Quality**
-
-   - Remove all `as` type casts; replace with proper type guards and exhaustive type definitions.
-   - Resolve all TypeScript warnings/errors; ensure 100% strict-mode compliance.
-   - Consolidate data access patterns: prefer centralized service hooks (e.g., `useTrigramData`, `useVitalPointsData`).
-
-7. **Security & CDN Hardening**
-
-   - Enforce HTTPS + Subresource Integrity (SRI) on all CDN assets (textures, audio, JSON).
-   - Regularly scan dependencies for vulnerabilities; pin direct dependencies in `package.json`.
-   - Implement transitive dependency analysis using tools like `npm audit --registry`.
-
-8. **Analytics & Telemetry**
-
-   - Integrate lightweight analytics (e.g., Plausible, or self-hosted) to track player engagement, vital-point hit rates, popular techniques.
-   - Build performance telemetry (FPS, memory usage) back to a monitoring dashboard for real-time insights.
-
-9. **Documentation & Testing**
-
-   - Complete documentation for all major modules: CombatSystem, TrigramSystem, VitalPointSystem, AudioManager.
-   - Expand unit & integration test coverage to 95%.
-   - Write end-to-end tests (Playwright) for full combat scenarios (stance → technique → hit → damage → feedback).
-
----
-
-## Post-v1.0 Strategic Roadmap
-
-Once v1.0 stability is achieved, explore these extended opportunities:
-
-1. **Context-Aware Security & Compliance (PWA Enhancements)**
-
-   - Fine-tune service worker caching strategies (stale-while-revalidate).
-   - Introduce user account integration to sync saved state across devices.
-
-2. **Evolving Combat Mechanics**
-
-   - Add new archetypes: `심리전가 (Shimlijeonga)` – Psychological Warfare specialist.
-   - Introduce single-player campaign with AI opponents using simple behavior trees.
-   - Implement local multiplayer via WebRTC peer-to-peer connections.
-
-3. **Expanded Community & Modding**
-
-   - Provide a “Mod Pack” manager UI for community-created assets & JSON stances.
-   - Host official asset marketplace for user submissions.
-
-4. **Business Intelligence & Analytics 2.0**
-
-   - Build a dashboard for community-wide aggregated data (avg stance usage, popular combos).
-   - Offer developer API for external analytics tools (e.g., Grafana).
-
-5. **Multi-Platform Deployment**
-
-   - Package as Electron desktop app with native file system & gamepad support.
-   - Export to mobile via React Native + PixiJS bridging.
-
-6. **Machine Learning Integration**
-
-   - Real-time AI opponents powered by lightweight WebAssembly inference.
-   - Personalized suggestions: “You hit Gam vital points too late; try shifting stance to Li earlier.”
-
-7. **Zero Trust & Security Hardening**
-
-   - Introduce OAuth2 / OpenID Connect for social login & cloud sync.
-   - Implement Zero Trust Architecture patterns: continuously validate assets, sandbox untrusted code (e.g., user mods).
-
-8. **Global Expansion & Localization**
-
-   - Fully localize UI/UX into KR, EN, JP, CN, ES, FR.
-   - Record voiceovers for tutorial modules in multiple languages.
-
-9. **Esports & Competitive Scene**
-
-   - Provide spectator mode with real-time telemetry and HUD overlays.
-   - Partner with fighting game communities for events/tournaments.
+```mermaid
+graph TD
+    subgraph "🧠 Memory Pools"
+        PP[Particle Pool<br/>Pre-allocated: 1000]
+        DP[Damage Number Pool<br/>Pre-allocated: 50]
+        EP[Effect Pool<br/>Pre-allocated: 100]
+    end
+    
+    subgraph "♻️ Object Lifecycle"
+        CR[Create/Reset]
+        US[Use in Scene]
+        RE[Return to Pool]
+    end
+    
+    subgraph "🗑️ Garbage Collection Mitigation"
+        RA[Reuse Allocations]
+        PO[Pool Objects]
+        LG[Limit Generation]
+    end
+    
+    PP --> CR
+    DP --> CR
+    EP --> CR
+    
+    CR --> US
+    US --> RE
+    RE --> PP
+    RE --> DP
+    RE --> EP
+    
+    RA --> PO
+    PO --> LG
+    
+    style PP fill:#A5D6A7,stroke:#333,stroke-width:2px
+    style DP fill:#81C784,stroke:#333,stroke-width:2px
+    style EP fill:#66BB6A,stroke:#333,stroke-width:2px
+```
 
 ---
 
-> **Color Legend for Diagrams**
->
-> - **Green (#A0D6B4 / #c8e6c9)**: Strengths, Stability, Current Controls
-> - **Yellow (#FFDAB9 / #fff2cc)**: State Management, Weaknesses, Recommended Supply Chain Enhancements
-> - **Blue/Purple (#A5D6A7 / #a4c2f4 / #2b83ba / #d1c4e9)**: Opportunities, UI layers, Mindmap branches
-> - **Red (#FF6B6B / #fdae61 / #d7191c / #f8cecc)**: Weaknesses, Threats, Errors / Critical Paths
-> - **Teal/Cyan (#4ecdc4 / #00FFD0)**: System context, optimization, performance elements
-> - **Grey (#B0BEC5 / #d3d3d3)**: Renderer, neutral nodes, fallback
+## 🔒 Security Considerations
+
+### Frontend Security Architecture
+
+```mermaid
+graph TB
+    subgraph "🛡️ Security Layers"
+        CSP[Content Security Policy]
+        SRI[Subresource Integrity]
+        CORS[CORS Headers]
+        VAL[Input Validation]
+    end
+    
+    subgraph "🔐 Asset Security"
+        HTTPS[HTTPS Only CDN]
+        SIGN[Signed Assets]
+        HASH[Asset Hashing]
+    end
+    
+    subgraph "🚫 Attack Mitigation"
+        XSS[XSS Prevention]
+        CSRF[CSRF Protection]
+        INJ[Injection Prevention]
+    end
+    
+    CSP --> XSS
+    SRI --> SIGN
+    CORS --> HTTPS
+    VAL --> INJ
+    
+    HTTPS --> HASH
+    SIGN --> HASH
+    
+    style CSP fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style HTTPS fill:#FFD700,stroke:#333,stroke-width:2px
+    style XSS fill:#87CEEB,stroke:#333,stroke-width:2px
+```
 
 ---
+
+## 🚀 Deployment Architecture
+
+### CI/CD Pipeline
+
+```mermaid
+graph LR
+    subgraph "🔧 Development"
+        DEV[Local Dev]
+        TEST[Test Suite]
+    end
+    
+    subgraph "🏗️ Build Pipeline"
+        GH[GitHub Actions]
+        BUILD[Vite Build]
+        OPT[Optimization]
+    end
+    
+    subgraph "📦 Distribution"
+        CDN1[Asset CDN]
+        CDN2[App CDN]
+        CACHE[Edge Cache]
+    end
+    
+    subgraph "🌍 Global Delivery"
+        US[US Servers]
+        EU[EU Servers]
+        ASIA[Asia Servers]
+    end
+    
+    DEV --> TEST
+    TEST --> GH
+    GH --> BUILD
+    BUILD --> OPT
+    
+    OPT --> CDN1
+    OPT --> CDN2
+    
+    CDN1 --> CACHE
+    CDN2 --> CACHE
+    
+    CACHE --> US
+    CACHE --> EU
+    CACHE --> ASIA
+    
+    style GH fill:#24292E,stroke:#fff,stroke-width:2px,color:#fff
+    style CDN1 fill:#FF9500,stroke:#333,stroke-width:2px
+    style CACHE fill:#00C851,stroke:#333,stroke-width:2px
+```
+
+---
+
+## 📊 Metrics & Monitoring
+
+### Performance Monitoring Dashboard
+
+```mermaid
+graph TD
+    subgraph "📈 Client Metrics"
+        FPS[FPS Counter]
+        MEM[Memory Usage]
+        LAT[Input Latency]
+        LOAD[Asset Load Time]
+    end
+    
+    subgraph "📊 Game Metrics"
+        DMG[Damage Dealt]
+        ACC[Hit Accuracy]
+        COMBO[Combo Success]
+        TIME[Session Duration]
+    end
+    
+    subgraph "🔍 Analytics"
+        GA[Google Analytics]
+        CUSTOM[Custom Events]
+        ERROR[Error Tracking]
+    end
+    
+    FPS --> GA
+    MEM --> GA
+    LAT --> CUSTOM
+    LOAD --> CUSTOM
+    
+    DMG --> CUSTOM
+    ACC --> CUSTOM
+    COMBO --> CUSTOM
+    TIME --> GA
+    
+    GA --> ERROR
+    CUSTOM --> ERROR
+    
+    style FPS fill:#4CAF50,stroke:#333,stroke-width:2px
+    style GA fill:#FFA726,stroke:#333,stroke-width:2px
+    style ERROR fill:#EF5350,stroke:#333,stroke-width:2px
+```
+
+---
+
+## 🎮 Future Architecture Considerations
+
+### Potential Backend Integration
+
+```mermaid
+graph TD
+    subgraph "Current: Frontend Only"
+        FE[React + PixiJS]
+        LOCAL[Local State]
+        CDN[Static CDN]
+    end
+    
+    subgraph "Future: Optional Backend"
+        API[REST API]
+        DB[Database]
+        AUTH[Authentication]
+        LEAD[Leaderboards]
+        SAVE[Save Games]
+    end
+    
+    FE -.->|Future Integration| API
+    LOCAL -.->|Sync| DB
+    CDN -.->|Dynamic Assets| API
+    
+    API --> AUTH
+    API --> LEAD
+    API --> SAVE
+    
+    style FE fill:#61DAFB,stroke:#333,stroke-width:2px
+    style API fill:#FF6B6B,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
+    style DB fill:#336791,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
+```
+
+---
+
+## 📝 Architecture Decision Records (ADRs)
+
+### ADR-001: Frontend-Only Architecture
+
+**Status**: Accepted  
+**Date**: 2024-01-01  
+**Context**: Need to minimize operational complexity and maximize accessibility  
+**Decision**: Build as purely frontend application with no backend dependencies  
+**Consequences**: 
+- ✅ Zero server costs
+- ✅ Instant deployment
+- ✅ No database management
+- ❌ No persistence
+- ❌ Limited multiplayer options
+
+### ADR-002: React + PixiJS Integration
+
+**Status**: Accepted  
+**Date**: 2024-01-01  
+**Context**: Need powerful 2D rendering with modern React development  
+**Decision**: Use @pixi/react for seamless integration  
+**Consequences**:
+- ✅ Best of both worlds
+- ✅ Strong ecosystem
+- ✅ Type safety with TypeScript
+- ❌ Learning curve for PixiJS
+- ❌ Bundle size considerations
+
+### ADR-003: Zustand for State Management
+
+**Status**: Accepted  
+**Date**: 2024-01-01  
+**Context**: Need lightweight state management without Redux complexity  
+**Decision**: Use Zustand for all global state  
+**Consequences**:
+- ✅ Minimal boilerplate
+- ✅ TypeScript friendly
+- ✅ DevTools support
+- ❌ Less ecosystem than Redux
+- ❌ Need custom persistence layer
+
+---
+
+## 🏁 Conclusion
+
+Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging cutting-edge web technologies while maintaining simplicity through its frontend-only design. The modular architecture supports rapid iteration and easy deployment while providing a rich, culturally authentic gaming experience.
+
+### Key Architectural Strengths:
+- **Zero Backend Complexity**: Pure frontend eliminates server management
+- **Modular Design**: Clear separation of concerns across systems
+- **Performance Focused**: Optimization strategies baked into architecture
+- **Culturally Rich**: Deep integration of Korean martial arts philosophy
+- **Developer Friendly**: TypeScript, modern React, comprehensive testing
+
+### Areas for Future Enhancement:
+- **Persistence Layer**: Optional backend for save games
+- **Multiplayer Support**: WebRTC or server-based PvP
+- **Advanced Analytics**: Deeper player behavior tracking
+- **Mobile Optimization**: Native app wrapper or PWA
+- **Content Expansion**: More stances, techniques, and vital points
+
+The architecture is designed to scale with the game's ambitions while maintaining the core philosophy of accessibility, authenticity, and engaging combat mechanics.
+
+---
+
+**흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
+```
+
+This completes the ARCHITECTURE.md document, providing a comprehensive technical architecture overview of the Black Trigram game, including all the remaining sections that were cut off in your original excerpt.This completes the ARCHITECTURE.md document, providing a comprehensive technical architecture overview of the Black Trigram game, including all the remaining sections that were cut off in your original excerpt.
