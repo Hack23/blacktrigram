@@ -331,43 +331,65 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    subgraph "🔍 Performance Monitoring & Profiling"
-      PM[📈 Performance Monitor] --> FPS[FPS Tracking (Stats.js)]
-      PM --> Memory[💾 Memory Usage (Chrome DevTools)]
-      PM --> GC[🗑️ GC Observations]
-      PM --> AssetTiming[⏱️ Asset Load Times (Network Tab)]
+    subgraph PM["🔍 Performance Monitoring & Profiling"]
+      PerfMon[📈 Performance Monitor]
+      FPS[📊 FPS Tracking Stats.js]
+      Memory[💾 Memory Usage Chrome DevTools]
+      GC[🗑️ GC Observations]
+      AssetTiming[⏱️ Asset Load Times Network Tab]
     end
 
-    subgraph "🚀 Optimization Techniques"
-      OT[⚙️ Optimization Engine] --> SpriteBatch[📦 PixiJS Sprite Batching]
-      OT --> AtlasTextures[🎨 Texture Atlases (Spritesheet)]
-      OT --> ObjectPooling[🔄 Object Pooling (Particles & Effects)]
-      OT --> AssetCaching[🔒 useTexture & React.lazy]
-      OT --> CodeSplitting[📂 Dynamic `import()`]
-      OT --> AudioCompression[🎵 OGG/MP3 Streaming]
-      OT --> Debounce[⏳ Debounce/Throttle Inputs & Animations]
-      OT --> Memoization[🧠 React.memo / useMemo / useCallback]
-      OT --> WebGLExtensions[🖥️ Enable EXT_disjoint_timer_query]
+    subgraph OT["🚀 Optimization Techniques"]
+      OptEngine[⚙️ Optimization Engine]
+      SpriteBatch[📦 PixiJS Sprite Batching]
+      AtlasTextures[🎨 Texture Atlases Spritesheet]
+      ObjectPooling[🔄 Object Pooling Particles & Effects]
+      AssetCaching[🔒 useTexture & React.lazy]
+      CodeSplitting[📂 Dynamic import]
+      AudioCompression[🎵 OGG/MP3 Streaming]
+      Debounce[⏳ Debounce/Throttle Inputs & Animations]
+      Memoization[🧠 React.memo / useMemo / useCallback]
+      WebGLExtensions[🖥️ Enable EXT_disjoint_timer_query]
     end
 
-    subgraph "🛡️ Fallback Systems (Graceful Degradation)"
-      FS[⚠️ Fallback Manager] --> LowQualityMode[📉 Low Quality Graphics on Low-end GPUs]
-      FS --> ReducedEffects[❌ Disable Blood / High-poly Particles]
-      FS --> ProceduralAudio[🎹 Procedural SFX fallback if CDN missing]
-      FS --> Canvas2D[🖼️ Fallback to Canvas 2D if WebGL Unsupported]
+    subgraph FS["🛡️ Fallback Systems"]
+      FallbackMgr[⚠️ Fallback Manager]
+      LowQualityMode[📉 Low Quality Graphics on Low-end GPUs]
+      ReducedEffects[❌ Disable Blood / High-poly Particles]
+      ProceduralAudio[🎹 Procedural SFX fallback if CDN missing]
+      Canvas2D[🖼️ Fallback to Canvas 2D if WebGL Unsupported]
     end
+
+    PerfMon --> FPS
+    PerfMon --> Memory
+    PerfMon --> GC
+    PerfMon --> AssetTiming
+
+    OptEngine --> SpriteBatch
+    OptEngine --> AtlasTextures
+    OptEngine --> ObjectPooling
+    OptEngine --> AssetCaching
+    OptEngine --> CodeSplitting
+    OptEngine --> AudioCompression
+    OptEngine --> Debounce
+    OptEngine --> Memoization
+    OptEngine --> WebGLExtensions
+
+    FallbackMgr --> LowQualityMode
+    FallbackMgr --> ReducedEffects
+    FallbackMgr --> ProceduralAudio
+    FallbackMgr --> Canvas2D
 
     PM -.-> OT
     OT -.-> FS
 
-    %% Styling
     classDef perfMon fill:#4ecdc4,stroke:#333,stroke-width:2px,color:#000
     classDef optTech fill:#45b7d1,stroke:#333,stroke-width:2px,color:#000
     classDef fallback fill:#f9ca24,stroke:#333,stroke-width:2px,color:#000
 
-    class PM, FPS, Memory, GC, AssetTiming perfMon
-    class OT, SpriteBatch, AtlasTextures, ObjectPooling, AssetCaching, CodeSplitting, AudioCompression, Debounce, Memoization, WebGLExtensions optTech
-    class FS, LowQualityMode, ReducedEffects, ProceduralAudio, Canvas2D fallback
+    class PerfMon,FPS,Memory,GC,AssetTiming perfMon
+    class OptEngine,SpriteBatch,AtlasTextures,ObjectPooling,AssetCaching,CodeSplitting,AudioCompression,Debounce,Memoization,WebGLExtensions optTech
+    class FallbackMgr,LowQualityMode,ReducedEffects,ProceduralAudio,Canvas2D fallback
 ```
 
 ### **Performance Monitoring**
