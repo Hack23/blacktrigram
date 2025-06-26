@@ -130,10 +130,9 @@ C4Container
 
 ## 🧩 Component View
 
-
 ```mermaid
 C4Component
-    title 🧩 Component Diagram – Black Trigram (Component-Level)
+    title "🧩 Component Diagram – Black Trigram (Component-Level)"
 
     Container_Boundary(UI, "🖥️ UI Layer") {
         Component(App, "📱 App.tsx", "React", "Root component; sets up routes & context providers")
@@ -213,6 +212,7 @@ C4Component
 ## Enhanced Icon Categories
 
 ### 🖥️ UI Layer Icons
+
 - **📱 App** - Mobile-first application root
 - **🏮 IntroScreen** - Traditional Korean lantern for welcome
 - **⚔️ CombatScreen** - Crossed swords for combat
@@ -226,6 +226,7 @@ C4Component
 - **⚏ BackgroundGrid** - Grid pattern for overlay
 
 ### ⚙️ Game Logic Icons
+
 - **🥊 CombatSystem** - Boxing glove for combat orchestration
 - **🔶 TrigramSystem** - Diamond for trigram system
 - **🥋 StanceManager** - Martial arts uniform for stance
@@ -241,23 +242,25 @@ C4Component
 - **🎲 VariantSelector** - Dice for randomization
 
 ### 📦 Asset Loader Icons
+
 - **🖼️ PixiLoader** - Framed picture for textures
 - **🎧 AudioLoader** - Headphones for audio assets
 - **📋 TrigramDataLoader** - Clipboard for data
 - **🧬 VitalPointsDataLoader** - DNA for anatomical data
 
 ### 🗄️ State Management Icons
+
 - **🎮 useGameState** - Game controller for game state
 - **🖱️ useUIState** - Computer mouse for UI state
 - **👹 useEnemyState** - Ogre for enemy state
 
 ### 🎨 Rendering Engine Icons
+
 - **🎭 PixiStage** - Theater masks for stage
 - **👤 PlayerVisuals** - Bust silhouette for player
 - **👺 EnemyVisuals** - Goblin for enemy
 - **✨ ParticlesLayer** - Sparkles for effects
 - **🌅 DojangBackground** - Sunrise for environment
-
 
 ---
 
