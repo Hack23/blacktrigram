@@ -36,12 +36,6 @@ C4Context
   Rel(browserGame, artCDN, "Fetches graphical assets from")
 
   UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
-
-  %% Futuristic Cyberpunk Korean Styling
-  style player      fill:#00FFFF,stroke:#0088FF,stroke-width:3px,color:#000
-  style browserGame fill:#FFD700,stroke:#FF6600,stroke-width:3px,color:#000
-  style audioCDN    fill:#FF00FF,stroke:#AA00AA,stroke-width:3px,color:#FFF
-  style artCDN      fill:#00FF88,stroke:#00AA44,stroke-width:3px,color:#000
 ```
 
 > **Legend**
