@@ -72,13 +72,6 @@ C4Container
     Rel(UI, renderer, "Instructs rendering via PixiJS")
 
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
-
-    %% Styling
-    style UI          fill:#A5D6A7,stroke:#333,stroke-width:2px,color:#000
-    style gameLogic   fill:#00FFD0,stroke:#333,stroke-width:2px,color:#000
-    style assetLoader fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
-    style renderer    fill:#B0BEC5,stroke:#333,stroke-width:2px,color:#000
-    style stateMgmt   fill:#FFDAB9,stroke:#333,stroke-width:2px,color:#000
 ```
 
 > **Containers Overview**
