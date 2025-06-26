@@ -504,30 +504,30 @@ quadrantChart
     quadrant-3 Weaknesses
     quadrant-4 Threats
 
-    "💡 PWA & Offline Caching":[0.8,0.9] radius:7 color:#a4c2f4 stroke-color:#3d64ba stroke-width:2px
-    "📱 Mobile-First UX":[0.7,0.8] radius:7 color:#a4c2f4 stroke-color:#3d64ba stroke-width:2px
-    "🎨 Community Modding":[0.85,0.75] radius:7 color:#a4c2f4 stroke-color:#3d64ba stroke-width:2px
-    "🤖 AI-Driven Tutorials":[0.75,0.85] radius:7 color:#a4c2f4 stroke-color:#3d64ba stroke-width:2px
-    "🌱 Ecosystem Partnerships":[0.65,0.7] radius:6 color:#a4c2f4 stroke-color:#3d64ba stroke-width:2px
+    "💡 PWA & Offline Caching": [0.8, 0.9] radius: 7, color: #a4c2f4, stroke-color: #3d64ba, stroke-width: 2px
+    "📱 Mobile-First UX": [0.7, 0.8] radius: 7, color: #a4c2f4, stroke-color: #3d64ba, stroke-width: 2px
+    "🎨 Community Modding": [0.85, 0.75] radius: 7, color: #a4c2f4, stroke-color: #3d64ba, stroke-width: 2px
+    "🤖 AI-Driven Tutorials": [0.75, 0.85] radius: 7, color: #a4c2f4, stroke-color: #3d64ba, stroke-width: 2px
+    "🌱 Ecosystem Partnerships": [0.65, 0.7] radius: 6, color: #a4c2f4, stroke-color: #3d64ba, stroke-width: 2px
 
-    "🛠️ Zero-Install Web App":[0.2,0.8] radius:7 color:#a2d2a4 stroke-color:#2c882c stroke-width:2px
-    "⏱ Fast Iteration":[0.25,0.75] radius:6 color:#a2d2a4 stroke-color:#2c882c stroke-width:2px
-    "💸 Reduced Operational Costs":[0.15,0.85] radius:6 color:#a2d2a4 stroke-color:#2c882c stroke-width:2px
-    "🚀 Immediate CDN Updates":[0.1,0.7] radius:7 color:#a2d2a4 stroke-color:#2c882c stroke-width:2px
-    "🌍 Global Accessibility":[0.05,0.9] radius:6 color:#a2d2a4 stroke-color:#2c882c stroke-width:2px
+    "🛠️ Zero-Install Web App": [0.2, 0.8] radius: 7, color: #a2d2a4, stroke-color: #2c882c, stroke-width: 2px
+    "⏱ Fast Iteration": [0.25, 0.75] radius: 6, color: #a2d2a4, stroke-color: #2c882c, stroke-width: 2px
+    "💸 Reduced Operational Costs": [0.15, 0.85] radius: 6, color: #a2d2a4, stroke-color: #2c882c, stroke-width: 2px
+    "🚀 Immediate CDN Updates": [0.1, 0.7] radius: 7, color: #a2d2a4, stroke-color: #2c882c, stroke-width: 2px
+    "🌍 Global Accessibility": [0.05, 0.9] radius: 6, color: #a2d2a4, stroke-color: #2c882c, stroke-width: 2px
 
-    "🌀 No Persistence (Session-Only)":[0.2,0.25] radius:7 color:#f5a9a9 stroke-color:#aa3939 stroke-width:2px
-    "🐢 Asset Load Latency":[0.3,0.2] radius:7 color:#f5a9a9 stroke-color:#aa3939 stroke-width:2px
-    "📴 Limited Offline Play":[0.15,0.3] radius:6 color:#f5a9a9 stroke-color:#aa3939 stroke-width:2px
-    "🌐 Browser Compatibility":[0.25,0.15] radius:7 color:#f5a9a9 stroke-color:#aa3939 stroke-width:2px
-    "⚠️ Memory/GC Spikes":[0.35,0.1] radius:6 color:#f5a9a9 stroke-color:#aa3939 stroke-width:2px
+    "🌀 No Persistence (Session-Only)": [0.2, 0.25] radius: 7, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
+    "🐢 Asset Load Latency": [0.3, 0.2] radius: 7, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
+    "📴 Limited Offline Play": [0.15, 0.3] radius: 6, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
+    "🌐 Browser Compatibility": [0.25, 0.15] radius: 7, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
+    "⚠️ Memory/GC Spikes": [0.35, 0.1] radius: 6, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
 
-    "🌩️ CDN Outages/Latency":[0.8,0.3] radius:7 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
-    "⚠️ WebGL Deprecation":[0.7,0.2] radius:7 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
-    "🏆 Competitive Mobile Games":[0.75,0.25] radius:7 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
-    "📉 Tech Debt (State Complexity)":[0.9,0.2] radius:6 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
-    "🔒 CDN Security Risks":[0.85,0.15] radius:6 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
-    "🌐 Browser Standards Changes":[0.65,0.25] radius:6 color:#d5a6bd stroke-color:#9b568a stroke-width:2px
+    "🌩️ CDN Outages/Latency": [0.8, 0.3] radius: 7, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
+    "⚠️ WebGL Deprecation": [0.7, 0.2] radius: 7, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
+    "🏆 Competitive Mobile Games": [0.75, 0.25] radius: 7, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
+    "📉 Tech Debt (State Complexity)": [0.9, 0.2] radius: 6, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
+    "🔒 CDN Security Risks": [0.85, 0.15] radius: 6, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
+    "🌐 Browser Standards Changes": [0.65, 0.25] radius: 6, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
 ```
 
 ### Mindmap of Strengths
