@@ -24,19 +24,26 @@
 
 ```mermaid
 C4Context
-  title 🌐 System Context Diagram – Black Trigram (흑괘)
+    title System Context - Black Trigram (흑괘) Web Application
 
-  Person(player, "🧑‍🤝‍🧑 Player", "Controls an archetype in realistic 2D combat via browser")
-  System(browserGame, "🌐 Black Trigram Web App", "Runs entirely in-browser (React + PixiJS) on modern browsers")
-  System_Ext(audioCDN, "🎵 Audio CDN", "Hosts Korean martial arts SFX & music assets")
-  System_Ext(artCDN, "🖼️ Art CDN", "Hosts graphical sprites, backgrounds, and particle textures")
+    Person(player, "🧑‍🤝‍🧑 Martial Arts Student", "Learns Korean vital point targeting through realistic combat simulation")
+    Person(instructor, "🥋 Martial Arts Instructor", "Uses for teaching traditional Korean techniques")
+    
+    System(blackTrigram, "🌐 Black Trigram (흑괘)", "Korean martial arts combat simulator with authentic vital point targeting")
+    
+    System_Ext(audioCDN, "🎵 Audio CDN", "Korean traditional music + cyberpunk SFX")
+    System_Ext(artCDN, "🖼️ Visual Assets CDN", "Character sprites, UI elements, particle effects")
+    System_Ext(culturalDB, "🏛️ Korean Cultural Database", "Authentic martial arts terminology, I Ching philosophy")
 
-  Rel(player, browserGame, "Plays via keyboard/mouse/touch")
-  Rel(browserGame, audioCDN, "Fetches Korean SFX & Music from")
-  Rel(browserGame, artCDN, "Fetches graphical assets from")
+    Rel(player, blackTrigram, "Practices combat techniques", "HTTPS/WebGL")
+    Rel(instructor, blackTrigram, "Demonstrates vital points", "HTTPS/WebGL")
+    
+    Rel(blackTrigram, audioCDN, "Streams traditional Korean audio", "HTTPS")
+    Rel(blackTrigram, artCDN, "Loads visual assets", "HTTPS")
+    Rel(blackTrigram, culturalDB, "References authentic terminology", "HTTPS/JSON")
 
-  UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
-```
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
+  ```
 
 > **Legend**
 >
@@ -51,27 +58,30 @@ C4Context
 
 ```mermaid
 C4Container
-    title 🏢 Container Diagram – Black Trigram (Frontend-Only)
+    title Container View - Black Trigram Performance Architecture
 
-    Person(player, "🧑‍🤝‍🧑 Player", "Controls an archetype in realistic 2D combat")
+    Person(user, "🧑‍🤝‍🧑 User", "Practices Korean martial arts")
 
-    System_Boundary(browserGame, "🌐 Black Trigram Web App") {
-        Container(UI, "🖥️ UI Layer", "React Components (TypeScript)", "Manages screens, HUD, menus, Korean text, and styling")
-        Container(gameLogic, "⚙️ Game Logic Layer", "TypeScript Modules", "Handles combat, trigram, vital-point calculations, and state")
-        Container(assetLoader, "📦 Asset Loader", "TypeScript (PixiJS Loader & Hooks)", "Dynamically loads images, audio, JSON from CDNs")
-        Container(renderer, "🎨 Rendering Engine", "PixiJS (TypeScript)", "Renders sprites, animations, particles, UI overlays")
-        Container(stateMgmt, "🗄️ State Management", "Zustand / React Context", "In-memory state: player, enemy, UI flags; no persistence")
+    System_Boundary(browserApp, "🌐 Black Trigram Browser Application") {
+        Container(ui, "🖥️ React UI Layer", "React 19 + TypeScript", "Korean-themed components, responsive design")
+        Container(gameEngine, "⚙️ Game Logic Engine", "TypeScript Modules", "Combat calculations, trigram system, vital points")
+        Container(renderer, "🎨 PixiJS Renderer", "PixiJS 8 + WebGL", "60fps 2D graphics, particle systems, animations")
+        Container(audioEngine, "🎵 Audio Engine", "Howler.js + Web Audio", "Korean traditional + cyberpunk audio")
+        Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Game state, UI state, performance metrics")
+        Container(assetLoader, "📦 Asset Loader", "PixiJS Assets + Custom", "Lazy loading, caching, compression")
+        Container(perfMonitor, "📈 Performance Monitor", "Stats.js + Custom", "FPS tracking, memory usage, optimization")
     }
 
-    Rel(player, UI, "Interacts with UI via mouse/keyboard/touch")
-    Rel(UI, gameLogic, "Dispatches player actions & reads game state")
-    Rel(gameLogic, assetLoader, "Requests asset URLs & metadata")
-    Rel(gameLogic, stateMgmt, "Reads/Writes combat & training state")
-    Rel(assetLoader, renderer, "Supplies textures & audio buffers")
-    Rel(stateMgmt, UI, "Provides state (health, stance, UI flags)")
-    Rel(UI, renderer, "Instructs rendering via PixiJS")
+    Rel(user, ui, "Interacts via input", "Touch/Mouse/Keyboard")
+    Rel(ui, gameEngine, "Dispatches actions", "Function calls")
+    Rel(gameEngine, renderer, "Updates visuals", "PixiJS API")
+    Rel(gameEngine, audioEngine, "Triggers sounds", "Howler.js API")
+    Rel(gameEngine, stateManager, "Updates state", "Zustand actions")
+    Rel(assetLoader, renderer, "Provides textures", "PixiJS Textures")
+    Rel(assetLoader, audioEngine, "Provides audio", "Audio Buffers")
+    Rel(perfMonitor, stateManager, "Reports metrics", "Performance data")
 
-    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
 > **Containers Overview**
@@ -132,81 +142,46 @@ C4Container
 
 ```mermaid
 C4Component
-    title "🧩 Component Diagram – Black Trigram (Component-Level)"
+    title Combat System Components - Korean Martial Arts Engine
 
-    Container_Boundary(UI, "🖥️ UI Layer") {
-        Component(App, "📱 App.tsx", "React", "Root component; sets up routes & context providers")
-        Component(IntroScreen, "🏮 IntroScreen.tsx", "React", "Title, menu, philosophy, controls overview")
-        Component(CombatScreen, "⚔️ CombatScreen.tsx", "React", "Hosts PixiJS canvas, HUD, stance wheel, controls")
-        Component(TrainingScreen, "🎯 TrainingScreen.tsx", "React", "Vital-point targeting practice, archetype drills")
-        Component(GameUI, "🎮 GameUI.tsx", "React", "Common UI: health bar, stamina bar, tooltips")
-        Component(CombatHUD, "📊 CombatHUD.tsx", "React", "Displays health, Ki, stamina, stance indicator")
-        Component(TrigramWheel, "☯️ TrigramWheel.tsx", "React", "Circular selector of 8 stances")
-        Component(EndScreen, "🏁 EndScreen.tsx", "React", "Post-combat summary and results")
-        Component(BaseButton, "🔘 BaseButton.tsx", "React", "Reusable styled button")
-        Component(KoreanText, "🇰🇷 KoreanText.tsx", "React", "Stylized Korean fonts & kerning")
-        Component(BackgroundGrid, "⚏ BackgroundGrid.tsx", "React", "Grid overlay for training mode")
+    Container_Boundary(combatSystem, "⚙️ Combat System") {
+        Component(combatController, "🥊 CombatController", "TypeScript", "Orchestrates all combat interactions")
+        Component(inputHandler, "🎮 InputHandler", "TypeScript", "Processes keyboard/mouse/touch input")
+        Component(trigramEngine, "☯️ TrigramEngine", "TypeScript", "Manages 8 trigram stances and transitions")
+        Component(vitalPointEngine, "🎯 VitalPointEngine", "TypeScript", "Handles 70 vital point targeting system")
+        Component(damageCalculator, "💥 DamageCalculator", "TypeScript", "Calculates realistic combat damage")
+        Component(effectsProcessor, "✨ EffectsProcessor", "TypeScript", "Manages visual and audio effects")
     }
 
-    Container_Boundary(gameLogic, "⚙️ Game Logic Layer") {
-        Component(CombatSystem, "🥊 CombatSystem.ts", "TypeScript", "Orchestrates combat step-by-step")
-        Component(TrigramSystem, "🔶 TrigramSystem.ts", "TypeScript", "Facade over stance, transition, technique modules")
-        Component(StanceManager, "🥋 StanceManager.ts", "TypeScript", "Maintains current stance state, Ki/Stamina deduction")
-        Component(TransitionCalculator, "🔄 TransitionCalculator.ts", "TypeScript", "Calculates cost of switching stances")
-        Component(TrigramCalculator, "🧮 TrigramCalculator.ts", "TypeScript", "Selects technique data, advantage multipliers")
-        Component(KoreanCulture, "🏛️ KoreanCulture.ts", "TypeScript", "Provides I Ching lore, Korean labels & descriptions")
-        Component(VitalPointSystem, "🎯 VitalPointSystem.ts", "TypeScript", "Facade over hit detection & damage calculation")
-        Component(AnatomicalRegions, "🫀 AnatomicalRegions.ts", "TypeScript", "Defines critical/secondary/standard regions")
-        Component(HitDetection, "💥 HitDetection.ts", "TypeScript", "Checks bounding-box intersection between attacks & targets")
-        Component(DamageCalculatorVP, "🩸 DamageCalculator.ts", "TypeScript", "Applies vital-point multipliers to base damage")
-        Component(AudioManager, "🎵 AudioManager.ts", "TypeScript", "Interfaces with Howler.js to play SFX/music")
-        Component(DefaultSoundGenerator, "🎹 DefaultSoundGenerator.ts", "TypeScript", "Generates procedural fallback sounds")
-        Component(VariantSelector, "🎲 VariantSelector.ts", "TypeScript", "Randomizes audio variants for variety")
+    Container_Boundary(dataLayer, "📊 Data Layer") {
+        Component(koreanTerminology, "🇰🇷 KoreanTerminology", "JSON/TypeScript", "Authentic Korean martial arts terms")
+        Component(anatomyData, "🫀 AnatomyData", "JSON/TypeScript", "Human anatomy and vital point locations")
+        Component(trigramData, "📊 TrigramData", "JSON/TypeScript", "I Ching trigram relationships and techniques")
+        Component(audioAssets, "🎵 AudioAssets", "WebM/OGG", "Korean traditional + cyberpunk audio")
     }
 
-    Container_Boundary(assetLoader, "📦 Asset Loader") {
-        Component(PixiLoader, "🖼️ Pixi Assets API", "TypeScript", "Loads textures (sprites, particles) from Art CDN")
-        Component(AudioLoader, "🎧 AudioLoader.ts", "TypeScript", "Fetches audio buffers from Audio CDN, decodes via Howler.js")
-        Component(TrigramDataLoader, "📋 TrigramData.ts / JSON", "TypeScript", "Loads JSON for stances & techniques at runtime")
-        Component(VitalPointsDataLoader, "🧬 VitalPointsData.ts / JSON", "TypeScript", "Loads JSON for 70 vital points & anatomical data")
+    Container_Boundary(rendering, "🎨 Rendering Layer") {
+        Component(combatRenderer, "⚔️ CombatRenderer", "PixiJS", "Renders combat scenes and animations")
+        Component(particleSystem, "✨ ParticleSystem", "PixiJS", "Ki energy, blood effects, impact sparks")
+        Component(hudRenderer, "📊 HUDRenderer", "PixiJS", "Health bars, stance indicators, damage numbers")
     }
 
-    Container_Boundary(stateMgmt, "🗄️ State Management") {
-        Component(useGameState, "🎮 useGameState.ts (Zustand)", "TypeScript", "Global game state: health, stamina, Ki, scores")
-        Component(useUIState, "🖱️ useUIState.ts (Zustand)", "TypeScript", "UI toggles: menu, training mode, debug overlays")
-        Component(useEnemyState, "👹 useEnemyState.ts (Zustand)", "TypeScript", "Current enemy health, stance, AI flags")
-    }
+    Rel(inputHandler, combatController, "Sends input events")
+    Rel(combatController, trigramEngine, "Requests stance changes")
+    Rel(combatController, vitalPointEngine, "Checks hit targets")
+    Rel(combatController, damageCalculator, "Calculates damage")
+    Rel(damageCalculator, effectsProcessor, "Triggers effects")
 
-    Container_Boundary(renderer, "🎨 Rendering Engine") {
-        Component(PixiStage, "🎭 StagePixi.tsx", "React + @pixi/react", "Creates & manages PIXI.Application instance")
-        Component(PlayerVisuals, "👤 PlayerVisuals.tsx", "React + PixiJS", "Draws player sprite, stance aura, animations")
-        Component(EnemyVisuals, "👺 EnemyVisuals.tsx", "React + PixiJS", "Draws enemy sprite, hit reactions, health bar")
-        Component(ParticlesLayer, "✨ HitEffectsLayer.tsx", "React + PixiJS", "Renders ki energy particles, hit sparks, blood effects")
-        Component(BackgroundRenderer, "🌅 DojangBackground.tsx", "React + PixiJS", "Draws dojo floor, background grid, environment")
-    }
+    Rel(trigramEngine, trigramData, "Loads stance data")
+    Rel(vitalPointEngine, anatomyData, "References vital points")
+    Rel(combatController, koreanTerminology, "Gets Korean terms")
+    Rel(effectsProcessor, audioAssets, "Plays sound effects")
 
-    Rel(App, IntroScreen, "🚦 Routes to")
-    Rel(App, CombatScreen, "🚦 Routes to")
-    Rel(App, TrainingScreen, "🚦 Routes to")
+    Rel(effectsProcessor, combatRenderer, "Updates visuals")
+    Rel(effectsProcessor, particleSystem, "Spawns particles")
+    Rel(combatController, hudRenderer, "Updates HUD")
 
-    Rel(CombatScreen, CombatSystem, "⚔️ Dispatches player inputs to")
-    Rel(CombatSystem, StanceManager, "🥋 Updates stance")
-    Rel(CombatSystem, TransitionCalculator, "🔁 Validates stance transitions")
-    Rel(CombatSystem, TrigramCalculator, "💡 Fetches technique data")
-    Rel(CombatSystem, VitalPointSystem, "🎯 Checks hits & calculates damage")
-    Rel(CombatSystem, AudioManager, "🔊 Plays SFX/music")
-    Rel(CombatSystem, stateMgmt, "🗄️ Reads/Writes game state")
-    Rel(CombatScreen, PixiStage, "📡 Sends rendering commands to")
-    Rel(PixiStage, PlayerVisuals, "👤 Draws player textures from PixiLoader")
-    Rel(PixiStage, EnemyVisuals, "👺 Draws enemy textures from PixiLoader")
-    Rel(PixiStage, ParticlesLayer, "💥 Renders hit & ki energy effects")
-    Rel(PixiStage, BackgroundRenderer, "🌳 Draws dojo environment")
-    Rel(CombatSystem, AudioLoader, "🎵 Requests audio assets from")
-    Rel(StanceManager, TrigramDataLoader, "📥 Loads stance/technique JSON from")
-    Rel(VitalPointSystem, VitalPointsDataLoader, "📥 Loads vital points JSON from")
-    Rel(PixiLoader, renderer, "🖼️ Supplies textures to")
-    Rel(AudioLoader, AudioManager, "🔊 Supplies decoded buffers to")
-    Rel(stateMgmt, UI, "📦 Provides reactive state to")
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
 ## Enhanced Icon Categories
