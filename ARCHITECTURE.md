@@ -130,59 +130,60 @@ C4Container
 
 ## 🧩 Component View
 
+
 ```mermaid
 C4Component
     title 🧩 Component Diagram – Black Trigram (Component-Level)
 
     Container_Boundary(UI, "🖥️ UI Layer") {
-        Component(App, "App.tsx", "React", "Root component; sets up routes & context providers")
-        Component(IntroScreen, "IntroScreen.tsx", "React", "Title, menu, philosophy, controls overview")
-        Component(CombatScreen, "CombatScreen.tsx", "React", "Hosts PixiJS canvas, HUD, stance wheel, controls")
-        Component(TrainingScreen, "TrainingScreen.tsx", "React", "Vital-point targeting practice, archetype drills")
-        Component(GameUI, "GameUI.tsx", "React", "Common UI: health bar, stamina bar, tooltips")
-        Component(CombatHUD, "CombatHUD.tsx", "React", "Displays health, Ki, stamina, stance indicator")
-        Component(TrigramWheel, "TrigramWheel.tsx", "React", "Circular selector of 8 stances")
-        Component(EndScreen, "EndScreen.tsx", "React", "Post-combat summary and results")
-        Component(BaseButton, "BaseButton.tsx", "React", "Reusable styled button")
-        Component(KoreanText, "KoreanText.tsx", "React", "Stylized Korean fonts & kerning")
-        Component(BackgroundGrid, "BackgroundGrid.tsx", "React", "Grid overlay for training mode")
+        Component(App, "📱 App.tsx", "React", "Root component; sets up routes & context providers")
+        Component(IntroScreen, "🏮 IntroScreen.tsx", "React", "Title, menu, philosophy, controls overview")
+        Component(CombatScreen, "⚔️ CombatScreen.tsx", "React", "Hosts PixiJS canvas, HUD, stance wheel, controls")
+        Component(TrainingScreen, "🎯 TrainingScreen.tsx", "React", "Vital-point targeting practice, archetype drills")
+        Component(GameUI, "🎮 GameUI.tsx", "React", "Common UI: health bar, stamina bar, tooltips")
+        Component(CombatHUD, "📊 CombatHUD.tsx", "React", "Displays health, Ki, stamina, stance indicator")
+        Component(TrigramWheel, "☯️ TrigramWheel.tsx", "React", "Circular selector of 8 stances")
+        Component(EndScreen, "🏁 EndScreen.tsx", "React", "Post-combat summary and results")
+        Component(BaseButton, "🔘 BaseButton.tsx", "React", "Reusable styled button")
+        Component(KoreanText, "🇰🇷 KoreanText.tsx", "React", "Stylized Korean fonts & kerning")
+        Component(BackgroundGrid, "⚏ BackgroundGrid.tsx", "React", "Grid overlay for training mode")
     }
 
     Container_Boundary(gameLogic, "⚙️ Game Logic Layer") {
-        Component(CombatSystem, "CombatSystem.ts", "TypeScript", "Orchestrates combat step-by-step")
-        Component(TrigramSystem, "TrigramSystem.ts", "TypeScript", "Facade over stance, transition, technique modules")
-        Component(StanceManager, "StanceManager.ts", "TypeScript", "Maintains current stance state, Ki/Stamina deduction")
-        Component(TransitionCalculator, "TransitionCalculator.ts", "TypeScript", "Calculates cost of switching stances")
-        Component(TrigramCalculator, "TrigramCalculator.ts", "TypeScript", "Selects technique data, advantage multipliers")
-        Component(KoreanCulture, "KoreanCulture.ts", "TypeScript", "Provides I Ching lore, Korean labels & descriptions")
-        Component(VitalPointSystem, "VitalPointSystem.ts", "TypeScript", "Facade over hit detection & damage calculation")
-        Component(AnatomicalRegions, "AnatomicalRegions.ts", "TypeScript", "Defines critical/secondary/standard regions")
-        Component(HitDetection, "HitDetection.ts", "TypeScript", "Checks bounding-box intersection between attacks & targets")
-        Component(DamageCalculatorVP, "DamageCalculator.ts", "TypeScript", "Applies vital-point multipliers to base damage")
-        Component(AudioManager, "AudioManager.ts", "TypeScript", "Interfaces with Howler.js to play SFX/music")
-        Component(DefaultSoundGenerator, "DefaultSoundGenerator.ts", "TypeScript", "Generates procedural fallback sounds")
-        Component(VariantSelector, "VariantSelector.ts", "TypeScript", "Randomizes audio variants for variety")
+        Component(CombatSystem, "🥊 CombatSystem.ts", "TypeScript", "Orchestrates combat step-by-step")
+        Component(TrigramSystem, "🔶 TrigramSystem.ts", "TypeScript", "Facade over stance, transition, technique modules")
+        Component(StanceManager, "🥋 StanceManager.ts", "TypeScript", "Maintains current stance state, Ki/Stamina deduction")
+        Component(TransitionCalculator, "🔄 TransitionCalculator.ts", "TypeScript", "Calculates cost of switching stances")
+        Component(TrigramCalculator, "🧮 TrigramCalculator.ts", "TypeScript", "Selects technique data, advantage multipliers")
+        Component(KoreanCulture, "🏛️ KoreanCulture.ts", "TypeScript", "Provides I Ching lore, Korean labels & descriptions")
+        Component(VitalPointSystem, "🎯 VitalPointSystem.ts", "TypeScript", "Facade over hit detection & damage calculation")
+        Component(AnatomicalRegions, "🫀 AnatomicalRegions.ts", "TypeScript", "Defines critical/secondary/standard regions")
+        Component(HitDetection, "💥 HitDetection.ts", "TypeScript", "Checks bounding-box intersection between attacks & targets")
+        Component(DamageCalculatorVP, "🩸 DamageCalculator.ts", "TypeScript", "Applies vital-point multipliers to base damage")
+        Component(AudioManager, "🎵 AudioManager.ts", "TypeScript", "Interfaces with Howler.js to play SFX/music")
+        Component(DefaultSoundGenerator, "🎹 DefaultSoundGenerator.ts", "TypeScript", "Generates procedural fallback sounds")
+        Component(VariantSelector, "🎲 VariantSelector.ts", "TypeScript", "Randomizes audio variants for variety")
     }
 
     Container_Boundary(assetLoader, "📦 Asset Loader") {
-        Component(PixiLoader, "Pixi Assets API", "TypeScript", "Loads textures (sprites, particles) from Art CDN")
-        Component(AudioLoader, "AudioLoader.ts", "TypeScript", "Fetches audio buffers from Audio CDN, decodes via Howler.js")
-        Component(TrigramDataLoader, "TrigramData.ts / JSON", "TypeScript", "Loads JSON for stances & techniques at runtime")
-        Component(VitalPointsDataLoader, "VitalPointsData.ts / JSON", "TypeScript", "Loads JSON for 70 vital points & anatomical data")
+        Component(PixiLoader, "🖼️ Pixi Assets API", "TypeScript", "Loads textures (sprites, particles) from Art CDN")
+        Component(AudioLoader, "🎧 AudioLoader.ts", "TypeScript", "Fetches audio buffers from Audio CDN, decodes via Howler.js")
+        Component(TrigramDataLoader, "📋 TrigramData.ts / JSON", "TypeScript", "Loads JSON for stances & techniques at runtime")
+        Component(VitalPointsDataLoader, "🧬 VitalPointsData.ts / JSON", "TypeScript", "Loads JSON for 70 vital points & anatomical data")
     }
 
     Container_Boundary(stateMgmt, "🗄️ State Management") {
-        Component(useGameState, "useGameState.ts (Zustand)", "TypeScript", "Global game state: health, stamina, Ki, scores")
-        Component(useUIState, "useUIState.ts (Zustand)", "TypeScript", "UI toggles: menu, training mode, debug overlays")
-        Component(useEnemyState, "useEnemyState.ts (Zustand)", "TypeScript", "Current enemy health, stance, AI flags")
+        Component(useGameState, "🎮 useGameState.ts (Zustand)", "TypeScript", "Global game state: health, stamina, Ki, scores")
+        Component(useUIState, "🖱️ useUIState.ts (Zustand)", "TypeScript", "UI toggles: menu, training mode, debug overlays")
+        Component(useEnemyState, "👹 useEnemyState.ts (Zustand)", "TypeScript", "Current enemy health, stance, AI flags")
     }
 
     Container_Boundary(renderer, "🎨 Rendering Engine") {
-        Component(PixiStage, "StagePixi.tsx", "React + @pixi/react", "Creates & manages PIXI.Application instance")
-        Component(PlayerVisuals, "PlayerVisuals.tsx", "React + PixiJS", "Draws player sprite, stance aura, animations")
-        Component(EnemyVisuals, "EnemyVisuals.tsx", "React + PixiJS", "Draws enemy sprite, hit reactions, health bar")
-        Component(ParticlesLayer, "HitEffectsLayer.tsx", "React + PixiJS", "Renders ki energy particles, hit sparks, blood effects")
-        Component(BackgroundRenderer, "DojangBackground.tsx", "React + PixiJS", "Draws dojo floor, background grid, environment")
+        Component(PixiStage, "🎭 StagePixi.tsx", "React + @pixi/react", "Creates & manages PIXI.Application instance")
+        Component(PlayerVisuals, "👤 PlayerVisuals.tsx", "React + PixiJS", "Draws player sprite, stance aura, animations")
+        Component(EnemyVisuals, "👺 EnemyVisuals.tsx", "React + PixiJS", "Draws enemy sprite, hit reactions, health bar")
+        Component(ParticlesLayer, "✨ HitEffectsLayer.tsx", "React + PixiJS", "Renders ki energy particles, hit sparks, blood effects")
+        Component(BackgroundRenderer, "🌅 DojangBackground.tsx", "React + PixiJS", "Draws dojo floor, background grid, environment")
     }
 
     Rel(App, IntroScreen, "🚦 Routes to")
@@ -208,6 +209,55 @@ C4Component
     Rel(AudioLoader, AudioManager, "🔊 Supplies decoded buffers to")
     Rel(stateMgmt, UI, "📦 Provides reactive state to")
 ```
+
+## Enhanced Icon Categories
+
+### 🖥️ UI Layer Icons
+- **📱 App** - Mobile-first application root
+- **🏮 IntroScreen** - Traditional Korean lantern for welcome
+- **⚔️ CombatScreen** - Crossed swords for combat
+- **🎯 TrainingScreen** - Target for practice mode
+- **🎮 GameUI** - Game controller for interface
+- **📊 CombatHUD** - Chart/dashboard for HUD
+- **☯️ TrigramWheel** - Yin-yang for Korean philosophy
+- **🏁 EndScreen** - Checkered flag for completion
+- **🔘 BaseButton** - Button for reusable component
+- **🇰🇷 KoreanText** - Korean flag for Korean text
+- **⚏ BackgroundGrid** - Grid pattern for overlay
+
+### ⚙️ Game Logic Icons
+- **🥊 CombatSystem** - Boxing glove for combat orchestration
+- **🔶 TrigramSystem** - Diamond for trigram system
+- **🥋 StanceManager** - Martial arts uniform for stance
+- **🔄 TransitionCalculator** - Refresh for transitions
+- **🧮 TrigramCalculator** - Abacus for calculations
+- **🏛️ KoreanCulture** - Classical building for culture
+- **🎯 VitalPointSystem** - Bullseye for targeting
+- **🫀 AnatomicalRegions** - Heart for anatomy
+- **💥 HitDetection** - Explosion for collision
+- **🩸 DamageCalculator** - Blood drop for damage
+- **🎵 AudioManager** - Musical note for audio
+- **🎹 DefaultSoundGenerator** - Piano for sound generation
+- **🎲 VariantSelector** - Dice for randomization
+
+### 📦 Asset Loader Icons
+- **🖼️ PixiLoader** - Framed picture for textures
+- **🎧 AudioLoader** - Headphones for audio assets
+- **📋 TrigramDataLoader** - Clipboard for data
+- **🧬 VitalPointsDataLoader** - DNA for anatomical data
+
+### 🗄️ State Management Icons
+- **🎮 useGameState** - Game controller for game state
+- **🖱️ useUIState** - Computer mouse for UI state
+- **👹 useEnemyState** - Ogre for enemy state
+
+### 🎨 Rendering Engine Icons
+- **🎭 PixiStage** - Theater masks for stage
+- **👤 PlayerVisuals** - Bust silhouette for player
+- **👺 EnemyVisuals** - Goblin for enemy
+- **✨ ParticlesLayer** - Sparkles for effects
+- **🌅 DojangBackground** - Sunrise for environment
+
 
 ---
 
