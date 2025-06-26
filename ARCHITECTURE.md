@@ -282,32 +282,14 @@ C4Component
 sequenceDiagram
     title 🔄 Combat Flow – Fully Frontend (Black Trigram)
 
-    participant Player                                           as "🧑‍🤝‍🧑 Player"
-    participant InputSystem        as "🎮 InputSystem"
-    participant CombatEngine       as "⚔️ Combat Engine"
-    participant TrigramSystem      as "🔶 Trigram System"
-    participant VitalPointSystem   as "🎯 VitalPoint System"
-    participant AudioManager       as "🎵 Audio Manager"
-    participant StateStore         as "🗄️ Zustand Store"
-    participant PixiStage          as "🎨 PixiJS Renderer"
-
-    classDef playerClass            fill:#A0D6B4,stroke:#333,stroke-width:2px,color:#000
-    classDef inputClass             fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
-    classDef combatClass            fill:#00FFD0,stroke:#333,stroke-width:2px,color:#000
-    classDef trigramClass           fill:#FFD700,stroke:#333,stroke-width:2px,color:#000
-    classDef vitalClass             fill:#FF6B6B,stroke:#333,stroke-width:2px,color:#000
-    classDef audioClass             fill:#9C27B0,stroke:#333,stroke-width:2px,color:#FFF
-    classDef stateClass             fill:#F8BBD0,stroke:#333,stroke-width:2px,color:#000
-    classDef rendererClass          fill:#B0BEC5,stroke:#333,stroke-width:2px,color:#000
-
-    class Player           playerClass
-    class InputSystem      inputClass
-    class CombatEngine     combatClass
-    class TrigramSystem    trigramClass
-    class VitalPointSystem vitalClass
-    class AudioManager     audioClass
-    class StateStore       stateClass
-    class PixiStage        rendererClass
+    participant Player as "🧑‍🤝‍🧑 Player"
+    participant InputSystem as "🎮 InputSystem"
+    participant CombatEngine as "⚔️ Combat Engine"
+    participant TrigramSystem as "🔶 Trigram System"
+    participant VitalPointSystem as "🎯 VitalPoint System"
+    participant AudioManager as "🎵 Audio Manager"
+    participant StateStore as "🗄️ Zustand Store"
+    participant PixiStage as "🎨 PixiJS Renderer"
 
     Note over Player,PixiStage: 🥋 Korean Martial Arts Real-Time Combat
 
