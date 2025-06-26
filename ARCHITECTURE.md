@@ -476,9 +476,9 @@ graph TD
   "theme": "neutral",
   "themeVariables": {
     "quadrant1Fill": "#2b83ba",
-    "quadrant2Fill": "#1a9641",
-    "quadrant3Fill": "#fdae61",
-    "quadrant4Fill": "#d7191c",
+    "quadrant2Fill": "#1a9641", 
+    "quadrant3Fill": "#d7191c",
+    "quadrant4Fill": "#756bb1",
     "quadrantTitleFill": "#ffffff",
     "quadrantPointFill": "#ffffff",
     "quadrantPointTextFill": "#000000",
