@@ -578,7 +578,7 @@ mindmap
 ```mermaid
 mindmap
   root((🟠 Weaknesses))
-    id1(🌀 No Persistence (Session-Only))
+    id1(🌀 No Persistence Session-Only)
       id1.1[All progress lost on refresh]
       id1.2[No saved unlocks or training logs]
       id1.3[Limited long-term engagement]
@@ -604,7 +604,7 @@ mindmap
       id6.3[Harder to trace bugs across stores]
     id7(❌ Incomplete Features)
       id7.1[Some techniques/stances lack polish]
-      id7.2[Missing grappling (유술) & blocking (방어기) for certain stances]
+      id7.2[Missing grappling & blocking for certain stances]
       id7.3[Training mode limited in scope]
     id8(🔍 UX Learning Curve)
       id8.1[Complex trigram interactions require tutorials]
@@ -644,17 +644,17 @@ mindmap
     id6(🔧 Third-Party Integrations)
       id6.1[Discord & Twitch combat overlays]
       id6.2[Leaderboard integration via Firebase]
-      id6.3[Social sharing (Twitter, Instagram) of combo replays]
+      id6.3[Social sharing of combo replays]
     id7(⚙️ Advanced Analytics)
       id7.1[Track detailed player telemetry]
       id7.2[Heatmaps of vital-point targeting accuracy]
       id7.3[User segmentation & A/B tests for features]
     id8(📚 E-Learning Mode)
-      id8.1[Structured courses on 팔괘 이론]
+      id8.1[Structured courses on trigram theory]
       id8.2[Guided practice sessions on vital points]
       id8.3[Certification badges for skill milestones]
     id9(🌐 Global Localization)
-      id9.1[Support multiple languages (KR, EN, JP, CN)]
+      id9.1[Support multiple languages - KR, EN, JP, CN]
       id9.2[Localized UI/UX for regional audiences]
       id9.3[Region-specific AI tutor voice-overs]
 ```
@@ -685,30 +685,8 @@ mindmap
       id5.2[Compromised asset hosting]
       id5.3[Unverified third-party scripts]
     id6(📶 Browser Standards Evolution)
-      id6.1[root((🔴 Threats))
-    id1(🌩️ CDN Outages / Latency)
-      id1.1[Audio CDN or Art CDN downtime]
-      id1.2[High global latency affects playability]
-      id1.3[Single region CDN cold starts]
-    id2(⚠️ WebGL / API Deprecation)
-      id2.1[Future browser changes break PixiJS]
-      id2.2[Web Audio API behavior shifts]
-      id2.3[Mobile browser limitations]
-    id3(🏆 Competitive Mobile Titles)
-      id3.1[Native mobile games with deeper UX]
-      id3.2[Lower-latency touch controls]
-      id3.3[Larger marketing budgets]
-    id4(📉 Technical Debt Accumulation)
-      id4.1[Complex Zustand stores & no persistence]
-      id4.2[Inconsistent data patterns]
-      id4.3[Inefficient combat loops]
-    id5(🔒 CDN Asset Security Risks)
-      id5.1[MITM if CDN not HTTPS + SRI]
-      id5.2[Compromised asset hosting]
-      id5.3[Unverified third-party scripts]
-    id6(📶 Browser Standards Evolution)
       id6.1[Changes to ES modules affect bundling]
-      id6.2[New security policies (CORS, CSP)]
+      id6.2[New security policies - CORS, CSP]
       id6.3[Deprecated features in future standards]
     id7(🎮 Player Retention Challenges)
       id7.1[Without persistence, limited engagement]
@@ -754,8 +732,7 @@ mindmap
         id1.5.1[Brutal efficiency]
         id1.5.2[Street techniques]
         id1.5.3[Overwhelming force]
-
-    id2[☯️ Eight Trigrams (팔괘)]
+    id2[☯️ Eight Trigrams]
       id2.1[☰ 건 Geon - Heaven]
         id2.1.1[Direct strikes]
         id2.1.2[Overwhelming power]
@@ -780,26 +757,24 @@ mindmap
       id2.8[☷ 곤 Gon - Earth]
         id2.8.1[Grounding attacks]
         id2.8.2[Takedown focus]
-
-    id3[🎯 Vital Points (급소)]
-      id3.1[Critical Points (치명타)]
+    id3[🎯 Vital Points]
+      id3.1[Critical Points]
         id3.1.1[Instant KO potential]
         id3.1.2[x5.0 damage multiplier]
-      id3.2[Secondary Points (보조)]
+      id3.2[Secondary Points]
         id3.2.1[Major damage]
         id3.2.2[x3.0 damage multiplier]
-      id3.3[Standard Points (일반)]
+      id3.3[Standard Points]
         id3.3.1[Basic damage]
         id3.3.2[x1.5 damage multiplier]
-
     id4[⚡ Resources]
-      id4.1[❤️ Health (체력)]
+      id4.1[❤️ Health]
         id4.1.1[100 HP per fighter]
         id4.1.2[No regeneration]
-      id4.2[💪 Stamina (지구력)]
+      id4.2[💪 Stamina]
         id4.2.1[Physical actions]
         id4.2.2[Slow regeneration]
-      id4.3[🔵 Ki Energy (기)]
+      id4.3[🔵 Ki Energy]
         id4.3.1[Special techniques]
         id4.3.2[Stance transitions]
 ```
