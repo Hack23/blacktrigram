@@ -545,7 +545,7 @@ mindmap
       id2.3[Hot reloading in dev mode]
     id3(💸 Reduced Operational Costs)
       id3.1[No server infrastructure costs]
-      id3.2[Leverage static CDNs (Cloudflare/AWS S3)]
+      id3.2[Leverage static CDNs - Cloudflare/AWS S3]
       id3.3[Minimal DevOps overhead]
     id4(🚀 Immediate CDN Updates)
       id4.1[Push new animations & sounds instantly]
@@ -556,7 +556,7 @@ mindmap
       id5.2[Cross-platform compatibility: desktop & mobile]
       id5.3[Low barrier to entry for users]
     id6(🔶 Authentic Korean Martial Arts Integration)
-      id6.1[Deep I Ching (팔괘) philosophy]
+      id6.1[Deep I Ching philosophy]
       id6.2[70 traditional vital points]
       id6.3[Korean labels, audio, cultural immersion]
     id7(🎵 Rich Audio-Visual Experience)
@@ -570,7 +570,7 @@ mindmap
     id9(🔑 Comprehensive Testing Framework)
       id9.1[Unit tests for combat & trigram logic]
       id9.2[Integration tests for full combat flow]
-      id9.3[Performance tests (FPS, latency) with Stats.js]
+      id9.3[Performance tests with Stats.js]
 ```
 
 ### Mindmap of Weaknesses
