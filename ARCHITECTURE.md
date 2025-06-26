@@ -532,7 +532,8 @@ quadrantChart
 
 ### Mindmap of Strengths
 
-```mindmap
+```mermaid
+mindmap
   root((🟢 Strengths))
     id1(🛠️ Zero-Install Web App)
       id1.1[Play immediately—no download/sign-up]
@@ -574,7 +575,8 @@ quadrantChart
 
 ### Mindmap of Weaknesses
 
-```mindmap
+```mermaid
+mindmap
   root((🟠 Weaknesses))
     id1(🌀 No Persistence (Session-Only))
       id1.1[All progress lost on refresh]
@@ -616,7 +618,8 @@ quadrantChart
 
 ### Mindmap of Opportunities
 
-```mindmap
+```mermaid
+mindmap
   root((🔵 Opportunities))
     id1(💡 PWA & Offline Caching)
       id1.1[Implement service workers for asset caching]
@@ -658,7 +661,8 @@ quadrantChart
 
 ### Mindmap of Threats
 
-```mindmap
+```mermaid
+mindmap
   root((🔴 Threats))
     id1(🌩️ CDN Outages / Latency)
       id1.1[Audio CDN or Art CDN downtime]
