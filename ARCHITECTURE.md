@@ -207,20 +207,6 @@ C4Component
     Rel(PixiLoader, renderer, "🖼️ Supplies textures to")
     Rel(AudioLoader, AudioManager, "🔊 Supplies decoded buffers to")
     Rel(stateMgmt, UI, "📦 Provides reactive state to")
-
-    %% Styling
-    style UI                      fill:#A5D6A7,stroke:#333,stroke-width:2px,color:#000
-    style gameLogic               fill:#00FFD0,stroke:#333,stroke-width:2px,color:#000
-    style assetLoader             fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
-    style stateMgmt               fill:#FFDAB9,stroke:#333,stroke-width:2px,color:#000
-    style renderer                fill:#B0BEC5,stroke:#333,stroke-width:2px,color:#000
-    style CombatSystem            fill:#00ffd0,stroke:#333,stroke-width:2px,color:#000
-    style TrigramSystem           fill:#ffd700,stroke:#333,stroke-width:2px,color:#000
-    style VitalPointSystem        fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#000
-    style AudioManager            fill:#87CEFA,stroke:#333,stroke-width:2px,color:#000
-    style PixiLoader              fill:#d3d3d3,stroke:#333,stroke-width:2px,color:#000
-    style useGameState            fill:#a5d6a7,stroke:#333,stroke-width:2px,color:#000
-    style PixiStage               fill:#b0bec5,stroke:#333,stroke-width:2px,color:#000
 ```
 
 ---
