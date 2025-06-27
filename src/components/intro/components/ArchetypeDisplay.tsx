@@ -1,13 +1,31 @@
+import { PlayerArchetypeData } from "@/systems";
+import { PlayerArchetype } from "@/types";
 import "@pixi/layout";
 import { extend } from "@pixi/react";
-import { FancyButton, List, MaskedFrame, ProgressBar } from "@pixi/ui";
+import { FancyButton, MaskedFrame, ProgressBar, ScrollBox } from "@pixi/ui";
 import * as PIXI from "pixi.js";
 import React, { useCallback, useEffect, useRef } from "react";
-import { ArchetypeDisplayProps } from "..";
 import { KOREAN_COLORS } from "../../../types/constants";
 
 // Extend PIXI components for React
 extend({ Container: PIXI.Container });
+
+// Define the proper props interface
+export interface ArchetypeDisplayProps {
+  archetype: PlayerArchetype;
+  archetypeData: PlayerArchetypeData;
+  texture?: PIXI.Texture | null;
+  total: number;
+  index: number;
+  onPrev: () => void;
+  onNext: () => void;
+  onSelect?: (archetype: PlayerArchetype) => void;
+  isSelected?: boolean;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+}
 
 // Helper function to create button graphics
 const createButtonGraphics = (
@@ -56,19 +74,25 @@ const MOBILE_IMAGE_SIZE = 80;
 export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
   ({
     archetype,
+    archetypeData,
     texture,
     total,
     index,
     onPrev,
     onNext,
-    width,
-    height,
-    x,
-    y,
+    onSelect,
+    isSelected = false,
+    width = 800,
+    height = 600,
+    x = 0,
+    y = 0,
   }) => {
     const isMobile = width < 768;
     const containerRef = useRef<PIXI.Container | null>(null);
     const imageSize = isMobile ? MOBILE_IMAGE_SIZE : IMAGE_SIZE;
+
+    // Get the primary color from archetypeData
+    const primaryColor = archetypeData.colors.primary;
 
     // Create fancy navigation buttons with enhanced styling
     const createNavButton = useCallback(
@@ -82,19 +106,19 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           defaultView: createButtonGraphics(
             40,
             40,
-            isDisabled ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM : archetype.color,
+            isDisabled ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM : primaryColor,
             isDisabled ? 0.4 : 0.8
           ),
           hoverView: createButtonGraphics(
             44,
             44,
-            isDisabled ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM : archetype.color,
+            isDisabled ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM : primaryColor,
             isDisabled ? 0.4 : 1
           ),
           pressedView: createButtonGraphics(
             38,
             38,
-            isDisabled ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM : archetype.color,
+            isDisabled ? KOREAN_COLORS.UI_BACKGROUND_MEDIUM : primaryColor,
             isDisabled ? 0.3 : 0.6
           ),
           text: new PIXI.Text({
@@ -133,63 +157,110 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
         return button;
       },
-      [archetype.color, onPrev, onNext, index, total]
+      [primaryColor, onPrev, onNext, index, total]
     );
 
     // Create portrait with MaskedFrame
     const createPortrait = useCallback(() => {
+      const portraitContainer = new PIXI.Container();
+
+      // Add select button functionality
+      const selectButton = new FancyButton({
+        defaultView:
+          texture ||
+          createButtonGraphics(
+            imageSize,
+            imageSize,
+            KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+            1
+          ),
+        hoverView:
+          texture ||
+          createButtonGraphics(imageSize, imageSize, primaryColor, 0.8),
+        pressedView:
+          texture ||
+          createButtonGraphics(imageSize, imageSize, primaryColor, 0.6),
+      });
+
       if (!texture) {
         // Create placeholder with Korean text
-        const placeholder = new PIXI.Container();
-
-        const bg = new PIXI.Graphics();
-        bg.roundRect(0, 0, imageSize, imageSize, 8);
-        bg.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM });
-
         const text = new PIXI.Text({
-          text: archetype.korean,
+          text: archetypeData.name.korean,
           style: {
             fontFamily: "Noto Sans KR, sans-serif",
             fontSize: imageSize / 4,
-            fill: archetype.color,
+            fill: primaryColor,
             fontWeight: "bold",
           },
         });
         text.anchor.set(0.5);
         text.position.set(imageSize / 2, imageSize / 2);
+        selectButton.addChild(text);
+      } else {
+        const sprite = new PIXI.Sprite(texture);
+        sprite.width = imageSize;
+        sprite.height = imageSize;
 
-        placeholder.addChild(bg, text);
-        return placeholder;
+        const maskedFrame = new MaskedFrame({
+          target: sprite,
+          mask: createRoundedRectMask(imageSize, 8),
+          borderWidth: isSelected ? 5 : 3,
+          borderColor: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
+        });
+
+        // Add subtle glow effect using ColorMatrixFilter
+        const colorMatrix = new PIXI.ColorMatrixFilter();
+        colorMatrix.brightness(isSelected ? 1.2 : 1.1, false);
+        colorMatrix.tint(primaryColor, true);
+        maskedFrame.filters = [colorMatrix];
+
+        selectButton.addChild(maskedFrame);
       }
 
-      const sprite = new PIXI.Sprite(texture);
-      sprite.width = imageSize;
-      sprite.height = imageSize;
+      // Handle selection
+      if (onSelect) {
+        selectButton.onPress.connect(() => onSelect(archetype));
+      }
 
-      const maskedFrame = new MaskedFrame({
-        target: sprite,
-        mask: createRoundedRectMask(imageSize, 8),
-        borderWidth: 3,
-        borderColor: archetype.color,
-      });
+      selectButton.layout = {
+        width: imageSize,
+        height: imageSize,
+      };
 
-      // Add subtle glow effect using ColorMatrixFilter instead
-      const colorMatrix = new PIXI.ColorMatrixFilter();
-      colorMatrix.brightness(1.1, false);
+      portraitContainer.addChild(selectButton);
 
-      // Apply a subtle tint using the color matrix
-      colorMatrix.tint(archetype.color, true);
+      // Add selection indicator
+      if (isSelected) {
+        const selectedIndicator = new PIXI.Text({
+          text: "✓ 선택됨",
+          style: {
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontSize: 12,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            fontWeight: "bold",
+          },
+        });
+        selectedIndicator.anchor.set(0.5);
+        selectedIndicator.position.set(imageSize / 2, imageSize + 10);
+        portraitContainer.addChild(selectedIndicator);
+      }
 
-      maskedFrame.filters = [colorMatrix];
-
-      return maskedFrame;
-    }, [texture, archetype, imageSize]);
+      return portraitContainer;
+    }, [
+      texture,
+      archetypeData,
+      archetype,
+      imageSize,
+      onSelect,
+      isSelected,
+      primaryColor,
+    ]);
 
     // Create selection progress bar with enhanced styling
     const createSelectionBar = useCallback(() => {
       const progressBar = new ProgressBar({
         bg: createProgressBg(200, 8),
-        fill: createProgressFill(archetype.color),
+        fill: createProgressFill(primaryColor),
         fillPaddings: { top: 2, right: 2, bottom: 2, left: 2 },
         progress: ((index + 1) / total) * 100,
       });
@@ -201,7 +272,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
       };
 
       return progressBar;
-    }, [index, total, archetype.color, isMobile]);
+    }, [index, total, primaryColor, isMobile]);
 
     // Create info container with enhanced layout
     const createInfoContainer = useCallback(() => {
@@ -216,11 +287,11 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
       // Title text
       const titleText = new PIXI.Text({
-        text: `${archetype.korean} - ${archetype.english}`,
+        text: `${archetypeData.name.korean} - ${archetypeData.name.english}`,
         style: {
           fontFamily: "Noto Sans KR, sans-serif",
           fontSize: isMobile ? 18 : 24,
-          fill: archetype.color,
+          fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
           fontWeight: "bold",
           align: "center",
           dropShadow: {
@@ -235,7 +306,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
       // Romanization text
       const romanText = new PIXI.Text({
-        text: archetype.romanization,
+        text: archetype.toLowerCase().replace(/_/g, " "),
         style: {
           fontFamily: "Noto Sans KR, sans-serif",
           fontSize: isMobile ? 12 : 14,
@@ -244,11 +315,11 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         },
       });
       romanText.anchor.set(0.5, 0);
-      romanText.y = titleText.height + 4;
 
-      // Description text
+      // Description text with scrollbox for long text
+      const descriptionContainer = new PIXI.Container();
       const descText = new PIXI.Text({
-        text: archetype.description,
+        text: archetypeData.description.korean,
         style: {
           fontFamily: "Noto Sans KR, sans-serif",
           fontSize: isMobile ? 12 : 14,
@@ -259,34 +330,42 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           lineHeight: 20,
         },
       });
-      descText.anchor.set(0.5, 0);
-      descText.y = romanText.y + romanText.height + 12;
+
+      // Use ScrollBox if description is long
+      if (descText.height > 100) {
+        const scrollBox = new ScrollBox({
+          width: isMobile ? 220 : 320,
+          height: 100,
+          items: [descText],
+        });
+        descriptionContainer.addChild(scrollBox);
+      } else {
+        descText.anchor.set(0.5, 0);
+        descriptionContainer.addChild(descText);
+      }
 
       // Stats container with enhanced visual design
       const statsContainer = new PIXI.Container();
-      statsContainer.y = descText.y + descText.height + 16;
+      statsContainer.layout = {
+        flexDirection: "column",
+        gap: 4,
+      };
 
       const statNames = [
-        { key: "strength", label: "Strength", icon: "💪" },
-        { key: "precision", label: "Precision", icon: "🎯" },
+        { key: "attackPower", label: "Strength", icon: "💪" },
+        { key: "technique", label: "Precision", icon: "🎯" },
         { key: "defense", label: "Defense", icon: "🛡️" },
-        { key: "agility", label: "Agility", icon: "⚡" },
+        { key: "speed", label: "Agility", icon: "⚡" },
       ] as const;
 
-      statNames.forEach((stat, idx) => {
-        const statValue = archetype.stats[stat.key];
-
-        const statBar = new ProgressBar({
-          bg: createProgressBg(150, 6),
-          fill: createProgressFill(archetype.color, (150 * statValue) / 100),
-          fillPaddings: { top: 1, right: 1, bottom: 1, left: 1 },
-          progress: statValue,
-        });
-
-        // Set size using layout
-        statBar.layout = {
-          width: 150,
-          height: 6,
+      statNames.forEach((stat) => {
+        const statValue = archetypeData.stats[stat.key];
+        const statRow = new PIXI.Container();
+        statRow.layout = {
+          flexDirection: "row",
+          gap: 10,
+          alignItems: "center",
+          width: 250,
         };
 
         const statLabel = new PIXI.Text({
@@ -297,32 +376,41 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             fontFamily: "Noto Sans KR, sans-serif",
           },
         });
+        statLabel.layout = { width: 80 };
+
+        const statBar = new ProgressBar({
+          bg: createProgressBg(120, 6),
+          fill: createProgressFill(primaryColor, (120 * statValue) / 100),
+          fillPaddings: { top: 1, right: 1, bottom: 1, left: 1 },
+          progress: statValue,
+        });
+        statBar.layout = {
+          width: 120,
+          height: 6,
+        };
 
         const statValueText = new PIXI.Text({
           text: `${statValue}%`,
           style: {
             fontSize: 10,
-            fill: archetype.color,
+            fill: primaryColor,
             fontWeight: "bold",
           },
         });
+        statValueText.layout = { width: 40 };
 
-        statBar.y = idx * 20;
-        statLabel.y = idx * 20 - 2;
-        statLabel.x = -60;
-        statValueText.y = idx * 20 - 2;
-        statValueText.x = 100;
-
-        statsContainer.addChild(statLabel, statBar, statValueText);
+        statRow.addChild(statLabel, statBar, statValueText);
+        statsContainer.addChild(statRow);
       });
 
-      container.addChild(titleText, romanText, descText, statsContainer);
-
-      // Center stats container
-      statsContainer.x = -statsContainer.width / 2;
-
+      container.addChild(
+        titleText,
+        romanText,
+        descriptionContainer,
+        statsContainer
+      );
       return container;
-    }, [archetype, isMobile]);
+    }, [archetypeData, archetype, isMobile, isSelected, primaryColor]);
 
     // Main content list with enhanced layout
     const createContentList = useCallback(() => {
@@ -330,10 +418,16 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
       const info = createInfoContainer();
       const selectionBar = createSelectionBar();
 
-      const items: PIXI.Container[] = [];
+      const contentContainer = new PIXI.Container();
 
       if (!isMobile) {
         // Desktop layout: horizontal with selection bar at bottom
+        contentContainer.layout = {
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 20,
+        };
+
         const mainContent = new PIXI.Container();
         mainContent.layout = {
           flexDirection: "row",
@@ -348,17 +442,15 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           createNavButton("next")
         );
 
-        const wrapper = new PIXI.Container();
-        wrapper.layout = {
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 20,
-        };
-
-        wrapper.addChild(mainContent, selectionBar);
-        items.push(wrapper);
+        contentContainer.addChild(mainContent, selectionBar);
       } else {
         // Mobile layout: vertical with nav at bottom
+        contentContainer.layout = {
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16,
+        };
+
         const navContainer = new PIXI.Container();
         navContainer.layout = {
           flexDirection: "row",
@@ -366,20 +458,12 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           gap: 20,
         };
 
-        const prevBtn = createNavButton("prev");
-        const nextBtn = createNavButton("next");
-        navContainer.addChild(prevBtn, nextBtn);
+        navContainer.addChild(createNavButton("prev"), createNavButton("next"));
 
-        items.push(portrait, info, selectionBar, navContainer);
+        contentContainer.addChild(portrait, info, selectionBar, navContainer);
       }
 
-      return new List({
-        type: isMobile ? "vertical" : "horizontal",
-        elementsMargin: isMobile ? 16 : 0,
-        vertPadding: 20,
-        horPadding: 20,
-        children: items,
-      });
+      return contentContainer;
     }, [
       isMobile,
       createNavButton,
@@ -395,21 +479,28 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
       // Clear existing children
       containerRef.current.removeChildren();
 
-      // Create background panel
-      const bgPanel = new PIXI.Graphics();
-      bgPanel.roundRect(0, 0, width * 0.9, height * 0.8, 12);
-      bgPanel.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+      // Create main container with layout
+      const mainContainer = new PIXI.Container();
+      mainContainer.layout = {
+        width: width * 0.9,
+        height: height * 0.8,
+        padding: 20,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+        backgroundAlpha: 0.9,
+        borderRadius: 12,
+        justifyContent: "center",
+        alignItems: "center",
+      };
 
       // Create and add the main content
       const contentList = createContentList();
+      mainContainer.addChild(contentList);
 
-      containerRef.current.addChild(bgPanel, contentList);
+      containerRef.current.addChild(mainContainer);
 
-      // Center everything
-      bgPanel.x = width * 0.05;
-      bgPanel.y = height * 0.1;
-      contentList.x = width / 2 - contentList.width / 2;
-      contentList.y = height / 2 - contentList.height / 2;
+      // Center the main container
+      mainContainer.x = width * 0.05;
+      mainContainer.y = height * 0.1;
     }, [createContentList, width, height]);
 
     return <pixiContainer ref={containerRef} x={x} y={y} />;

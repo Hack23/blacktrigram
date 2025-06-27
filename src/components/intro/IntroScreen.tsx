@@ -35,7 +35,8 @@ const PhilosophySection = lazy(() => import("./components/PhilosophySection"));
 const ControlsSection = lazy(() => import("./components/ControlsSection"));
 
 import { useAudio } from "../../audio/AudioProvider";
-import { GameMode } from "../../types/common";
+import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
+import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import ArchetypeDisplay from "./components/ArchetypeDisplay";
 
@@ -60,19 +61,9 @@ function useIntroAssets() {
   const [logoTexture, setLogoTexture] = useState<PIXI.Texture | null>(null);
   const [dojangWallTexture, setDojangWallTexture] =
     useState<PIXI.Texture | null>(null);
-  const [archetypeTextures, setArchetypeTextures] = useState<{
-    amsalja: PIXI.Texture | null;
-    hacker: PIXI.Texture | null;
-    jeongboYowon: PIXI.Texture | null;
-    jojikPokryeokbae: PIXI.Texture | null;
-    musa: PIXI.Texture | null;
-  }>({
-    amsalja: null,
-    hacker: null,
-    jeongboYowon: null,
-    jojikPokryeokbae: null,
-    musa: null,
-  });
+  const [archetypeTextures, setArchetypeTextures] = useState<
+    Partial<Record<PlayerArchetype, PIXI.Texture>>
+  >({});
 
   useEffect(() => {
     const loadAssets = async () => {
@@ -95,22 +86,29 @@ function useIntroAssets() {
         );
         setDojangWallTexture(dojangTex);
 
-        // Load archetype textures
-        const loadedTextures = await Promise.all([
-          PIXI.Assets.load("/assets/visual/archetypes/amsalja.png"),
-          PIXI.Assets.load("/assets/visual/archetypes/hacker.png"),
-          PIXI.Assets.load("/assets/visual/archetypes/jeongbo_yowon.png"),
-          PIXI.Assets.load("/assets/visual/archetypes/jojik_pokryeokbae.png"),
-          PIXI.Assets.load("/assets/visual/archetypes/musa.png"),
-        ]);
+        // Load archetype textures with proper PlayerArchetype keys
+        const textureMapping: Record<PlayerArchetype, string> = {
+          [PlayerArchetype.MUSA]: "/assets/visual/archetypes/musa.png",
+          [PlayerArchetype.AMSALJA]: "/assets/visual/archetypes/amsalja.png",
+          [PlayerArchetype.HACKER]: "/assets/visual/archetypes/hacker.png",
+          [PlayerArchetype.JEONGBO_YOWON]:
+            "/assets/visual/archetypes/jeongbo_yowon.png",
+          [PlayerArchetype.JOJIK_POKRYEOKBAE]:
+            "/assets/visual/archetypes/jojik_pokryeokbae.png",
+        };
 
-        setArchetypeTextures({
-          amsalja: loadedTextures[0],
-          hacker: loadedTextures[1],
-          jeongboYowon: loadedTextures[2],
-          jojikPokryeokbae: loadedTextures[3],
-          musa: loadedTextures[4],
-        });
+        const loadedTextures: Partial<Record<PlayerArchetype, PIXI.Texture>> =
+          {};
+        for (const [archetype, path] of Object.entries(textureMapping)) {
+          try {
+            const texture = await PIXI.Assets.load(path);
+            loadedTextures[archetype as PlayerArchetype] = texture;
+          } catch (error) {
+            console.warn(`Failed to load texture for ${archetype}: ${error}`);
+          }
+        }
+
+        setArchetypeTextures(loadedTextures);
       } catch (error) {
         console.error("Error loading intro assets:", error);
       }
@@ -136,48 +134,14 @@ const MENU_ITEMS: { mode: GameMode; korean: string; english: string }[] = [
   { mode: GameMode.PHILOSOPHY, korean: "철학", english: "Philosophy" },
 ];
 
-const ARCHETYPE_DATA = [
-  {
-    id: "musa",
-    korean: "무사",
-    english: "Warrior",
-    description: "전통적인 명예로운 전사",
-    color: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
-    textureKey: "musa",
-  },
-  {
-    id: "amsalja",
-    korean: "암살자",
-    english: "Shadow Assassin",
-    description: "은밀한 그림자 전투원",
-    color: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
-    textureKey: "amsalja",
-  },
-  {
-    id: "hacker",
-    korean: "해커",
-    english: "Cyber Warrior",
-    description: "기술 강화 사이버 전사",
-    color: KOREAN_COLORS.PRIMARY_CYAN,
-    textureKey: "hacker",
-  },
-  {
-    id: "jeongbo_yowon",
-    korean: "정보요원",
-    english: "Intelligence Operative",
-    description: "전략적 정보 분석가",
-    color: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
-    textureKey: "jeongboYowon",
-  },
-  {
-    id: "jojik_pokryeokbae",
-    korean: "조직폭력배",
-    english: "Organized Crime",
-    description: "무자비한 거리 생존자",
-    color: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
-    textureKey: "jojikPokryeokbae",
-  },
-] as const;
+// Get array of player archetypes in display order
+const ARCHETYPE_ORDER: PlayerArchetype[] = [
+  PlayerArchetype.MUSA,
+  PlayerArchetype.AMSALJA,
+  PlayerArchetype.HACKER,
+  PlayerArchetype.JEONGBO_YOWON,
+  PlayerArchetype.JOJIK_POKRYEOKBAE,
+];
 
 export const IntroScreen: React.FC<IntroScreenProps> = ({
   onMenuSelect,
@@ -187,7 +151,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [currentSection, setCurrentSection] = useState<string>("menu");
-  const [selectedArchetype, setSelectedArchetype] = useState(0);
+  const [selectedArchetypeIndex, setSelectedArchetypeIndex] = useState(0);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
 
   const { width, height } = useWindowSize();
@@ -196,6 +160,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   const { bgTexture, logoTexture, dojangWallTexture, archetypeTextures } =
     useIntroAssets();
+
+  // Get current archetype
+  const currentArchetype = ARCHETYPE_ORDER[selectedArchetypeIndex];
+  const currentArchetypeData = PLAYER_ARCHETYPES_DATA[currentArchetype];
 
   // Responsive calculations
   const isMobile = screenWidth < 768;
@@ -239,13 +207,16 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           audio.playSFX("ui_navigate");
           break;
         case "ArrowLeft":
-          setSelectedArchetype(
-            (prev) => (prev - 1 + ARCHETYPE_DATA.length) % ARCHETYPE_DATA.length
+          setSelectedArchetypeIndex(
+            (prev) =>
+              (prev - 1 + ARCHETYPE_ORDER.length) % ARCHETYPE_ORDER.length
           );
           audio.playSFX("ui_navigate");
           break;
         case "ArrowRight":
-          setSelectedArchetype((prev) => (prev + 1) % ARCHETYPE_DATA.length);
+          setSelectedArchetypeIndex(
+            (prev) => (prev + 1) % ARCHETYPE_ORDER.length
+          );
           audio.playSFX("ui_navigate");
           break;
         case "Enter":
@@ -451,25 +422,24 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         y={menuStartY}
       />
 
-      {/* Archetype Display */}
+      {/* Archetype Display - using proper PlayerArchetype and data */}
       <ArchetypeDisplay
-        archetype={ARCHETYPE_DATA[selectedArchetype]}
-        texture={
-          archetypeTextures[
-            ARCHETYPE_DATA[selectedArchetype]
-              .textureKey as keyof typeof archetypeTextures
-          ]
-        }
-        total={ARCHETYPE_DATA.length}
-        index={selectedArchetype}
+        archetype={currentArchetype}
+        archetypeData={currentArchetypeData}
+        texture={archetypeTextures[currentArchetype] || null}
+        total={ARCHETYPE_ORDER.length}
+        index={selectedArchetypeIndex}
         onPrev={() => {
-          setSelectedArchetype(
-            (prev) => (prev - 1 + ARCHETYPE_DATA.length) % ARCHETYPE_DATA.length
+          setSelectedArchetypeIndex(
+            (prev) =>
+              (prev - 1 + ARCHETYPE_ORDER.length) % ARCHETYPE_ORDER.length
           );
           audio.playSFX("ui_navigate");
         }}
         onNext={() => {
-          setSelectedArchetype((prev) => (prev + 1) % ARCHETYPE_DATA.length);
+          setSelectedArchetypeIndex(
+            (prev) => (prev + 1) % ARCHETYPE_ORDER.length
+          );
           audio.playSFX("ui_navigate");
         }}
         width={screenWidth}
