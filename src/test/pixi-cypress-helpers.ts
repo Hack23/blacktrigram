@@ -11,9 +11,6 @@ declare module "pixi.js" {
   interface Container {
     pixiData?: PixiTestData;
   }
-  interface DisplayObject {
-    pixiData?: PixiTestData;
-  }
 }
 
 // Global window extension for PixiJS app access
@@ -48,7 +45,7 @@ export function exposePixiAppForTesting(app: PIXI.Application): void {
  * Check if PixiJS object matches required test data
  */
 export function pixiObjectMatches(
-  pixiObject: PIXI.Container | PIXI.DisplayObject,
+  pixiObject: PIXI.Container,
   requiredData: Partial<PixiTestData>
 ): boolean {
   const pixiData = pixiObject.pixiData;
@@ -73,20 +70,17 @@ export function pixiObjectMatches(
 export function findPixiObject(
   container: PIXI.Container,
   requiredData: Partial<PixiTestData>
-): PIXI.Container | PIXI.DisplayObject | null {
+): PIXI.Container | null {
   // Check current container
   if (pixiObjectMatches(container, requiredData)) {
     return container;
   }
 
-  // Search children
+  // Search children recursively
   for (const child of container.children) {
-    if (child instanceof PIXI.Container) {
-      const found = findPixiObject(child, requiredData);
-      if (found) return found;
-    } else if (pixiObjectMatches(child, requiredData)) {
-      return child;
-    }
+    // In PixiJS v8, all children are Containers
+    const found = findPixiObject(child, requiredData);
+    if (found) return found;
   }
 
   return null;
@@ -98,19 +92,15 @@ export function findPixiObject(
 export function findAllPixiObjects(
   container: PIXI.Container,
   requiredData: Partial<PixiTestData>
-): (PIXI.Container | PIXI.DisplayObject)[] {
-  const results: (PIXI.Container | PIXI.DisplayObject)[] = [];
+): PIXI.Container[] {
+  const results: PIXI.Container[] = [];
 
   if (pixiObjectMatches(container, requiredData)) {
     results.push(container);
   }
 
   for (const child of container.children) {
-    if (child instanceof PIXI.Container) {
-      results.push(...findAllPixiObjects(child, requiredData));
-    } else if (pixiObjectMatches(child, requiredData)) {
-      results.push(child);
-    }
+    results.push(...findAllPixiObjects(child, requiredData));
   }
 
   return results;
