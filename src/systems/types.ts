@@ -50,9 +50,12 @@ export interface VitalPointSystemConfig {
 // Direct PixiJS imports for core types
 import type {
   Application as PixiApplication,
-  DisplayObject as PixiDisplayObject,
+  Container as PixiContainer,
   Texture,
 } from "pixi.js";
+
+// Use Container as the base display object type since DisplayObject is abstract
+export type PixiDisplayObject = PixiContainer;
 
 // Vital point effect
 // Player archetype data
@@ -480,7 +483,7 @@ export interface AISystemConfig {
 }
 
 // Re-export PixiJS types for convenience
-export type { PixiApplication, PixiDisplayObject };
+export type { PixiApplication };
 
 // Player archetype data
 export const PLAYER_ARCHETYPES_DATA: Record<
@@ -1030,16 +1033,6 @@ export function getStanceFromKey(key: string): TrigramStance | null {
     "8": TrigramStance.GON,
   };
   return stanceMap[key] || null;
-}
-
-export interface CombatControlsConfig {
-  readonly stanceControls: Record<
-    string,
-    { stance: string; korean: string; technique: string }
-  >;
-  readonly movement: Record<string, string>;
-  readonly combat: Record<string, string>;
-  readonly system: Record<string, string>;
 }
 
 // Input handling types
