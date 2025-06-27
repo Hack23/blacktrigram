@@ -50,7 +50,7 @@
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^4.1.0",
     "@elevenlabs/elevenlabs-js": "^2.4.1",
-    "@eslint/js": "^9.29.0",
+    "@eslint/js": "^9.30.0",
     "@size-limit/preset-app": "^11.2.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
