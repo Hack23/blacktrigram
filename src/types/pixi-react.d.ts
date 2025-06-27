@@ -63,7 +63,7 @@ interface LayoutMixinProps {
 }
 
 // Base props that all PIXI display objects share
-interface BasePixiProps<T extends PIXI.DisplayObject> extends LayoutMixinProps {
+interface BasePixiProps<T extends PIXI.Container> extends LayoutMixinProps {
   key?: React.Key;
   x?: number;
   y?: number;
@@ -89,7 +89,24 @@ interface BasePixiProps<T extends PIXI.DisplayObject> extends LayoutMixinProps {
   accessibleHint?: string;
   ref?: React.Ref<T>;
   children?: ReactNode;
-  // Event handlers (lowercase names for @pixi/react v8)
+
+  // Event handlers - Both camelCase and lowercase versions for compatibility
+  // CamelCase versions (commonly used in React)
+  onClick?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerDown?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerUp?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerUpOutside?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerOver?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerOut?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerMove?: (event: PIXI.FederatedPointerEvent) => void;
+  onPointerTap?: (event: PIXI.FederatedPointerEvent) => void;
+  onRightClick?: (event: PIXI.FederatedPointerEvent) => void;
+  onRightDown?: (event: PIXI.FederatedPointerEvent) => void;
+  onRightUp?: (event: PIXI.FederatedPointerEvent) => void;
+  onRightUpOutside?: (event: PIXI.FederatedPointerEvent) => void;
+  onWheel?: (event: PIXI.FederatedWheelEvent) => void;
+
+  // Lowercase versions (PIXI native style)
   onclick?: (event: PIXI.FederatedPointerEvent) => void;
   onpointerdown?: (event: PIXI.FederatedPointerEvent) => void;
   onpointerup?: (event: PIXI.FederatedPointerEvent) => void;
@@ -103,6 +120,7 @@ interface BasePixiProps<T extends PIXI.DisplayObject> extends LayoutMixinProps {
   onrightup?: (event: PIXI.FederatedPointerEvent) => void;
   onrightupoutside?: (event: PIXI.FederatedPointerEvent) => void;
   onwheel?: (event: PIXI.FederatedWheelEvent) => void;
+
   // Test data attributes
   "data-testid"?: string;
 }
@@ -359,7 +377,7 @@ declare module "@pixi/react" {
       : Instance extends UI.MaskedFrame
       ? MaskedFrameProps
       : BasePixiProps<
-          Instance extends PIXI.DisplayObject ? Instance : PIXI.DisplayObject
+          Instance extends PIXI.Container ? Instance : PIXI.Container
         >
     : never;
 
@@ -416,5 +434,29 @@ declare global {
     interface IntrinsicElements extends PixiElements {}
   }
 }
+
+// Export types for use in other files
+export type {
+  AnimatedSpriteProps,
+  BasePixiProps,
+  BitmapTextProps,
+  ButtonProps,
+  CheckBoxProps,
+  ContainerProps,
+  FancyButtonProps,
+  GraphicsProps,
+  InputProps,
+  LayoutMixinProps,
+  ListProps,
+  MaskedFrameProps,
+  ParticleContainerProps,
+  ProgressBarProps,
+  RadioGroupProps,
+  ScrollBoxProps,
+  SliderProps,
+  SpriteProps,
+  TextProps,
+  TilingSpriteProps,
+};
 
 export {};
