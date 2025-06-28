@@ -44,9 +44,14 @@ const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
   const doResize = useCallback(() => {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    layoutRef.current!.layout = { width, height };
-    // keep PIXI renderer in-sync as well
-    if (app?.renderer) app.renderer.resize(width, height);
+
+    // Guard: only update when the ref exists
+    if (layoutRef.current) {
+      layoutRef.current.layout = { width, height };
+    }
+
+    // Keep PIXI renderer in-sync as well
+    app?.renderer?.resize(width, height);
   }, [app]);
 
   useEffect(() => {
@@ -56,12 +61,16 @@ const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
   }, [doResize]);
 
   return (
-    <pixiContainer
+    /* NOTE: **layoutContainer** is required here so that the instance
+       created by React actually _has_ a `.layout` property. Using
+       `pixiContainer` (plain PIXI.Container) caused runtime crashes
+       because plain containers do not include the layout mixin. */
+    <layoutContainer
       ref={layoutRef}
       layout={{ width: window.innerWidth, height: window.innerHeight }}
     >
       {children}
-    </pixiContainer>
+    </layoutContainer>
   );
 };
 
