@@ -72,7 +72,7 @@
     "cypress-multi-reporters": "^2.0.5",
     "cypress-wait-until": "^3.0.2",
     "dotenv": "^17.0.0",
-    "eslint": "^9.29.0",
+    "eslint": "^9.30.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
