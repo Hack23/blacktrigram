@@ -1,6 +1,19 @@
-/**
- * PixiJS extensions and utilities for Black Trigram
- */
+/* ------------------------------------------------------------------ */
+/*  0-A.  Guarantee a global `Node` constructor for SSR / workers
+/* ------------------------------------------------------------------ */
+if (
+  typeof globalThis !== "undefined" &&
+  (globalThis as any).Node === undefined
+) {
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore – minimal, non-functional stub only used for `instanceof Node`
+  (globalThis as any).Node = class {};
+  /* eslint-enable @typescript-eslint/ban-ts-comment */
+}
+
+/* ------------------------------------------------------------------ */
+/*  PixiJS extensions and utilities for Black Trigram
+/* ------------------------------------------------------------------ */
 import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
