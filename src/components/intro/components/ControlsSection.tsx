@@ -1,11 +1,20 @@
 import "@pixi/layout";
+import { LayoutContainer, LayoutText } from "@pixi/layout/components";
+import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import { Container, Graphics, Text } from "pixi.js";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-extend({ Container, FancyButton, Graphics, Text });
+extend({
+  Container,
+  LayoutContainer,
+  FancyButton,
+  Graphics,
+  Text,
+  LayoutText,
+});
 
 // Combat controls organized by category
 const CONTROL_CATEGORIES = {
@@ -45,166 +54,361 @@ const CONTROL_CATEGORIES = {
 
 export interface ControlsSectionProps {
   readonly onBack: () => void;
-  readonly x?: number;
-  readonly y?: number;
   readonly width?: number;
   readonly height?: number;
 }
 
 export const ControlsSection: React.FC<ControlsSectionProps> = ({
   onBack,
-  x = 0,
-  y = 0,
   width = 800,
   height = 600,
 }) => {
-  const containerRef = useRef<PIXI.Container | null>(null);
   const backButtonRef = useRef<FancyButton | null>(null);
   const isMobile = width < 768;
   const padding = isMobile ? 20 : 40;
-  const contentWidth = width - padding * 2;
 
-  // Create back button using @pixi/ui FancyButton
-  useEffect(() => {
-    if (!containerRef.current || backButtonRef.current) return;
+  // Layout configuration objects
+  const defaults = useMemo(
+    () => ({
+      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      backgroundAlpha: 0.9,
+      borderRadius: 12,
+    }),
+    []
+  );
 
-    const backButton = new FancyButton({
+  // Main layout configuration
+  const rootLayout = useMemo(
+    () => ({
+      width,
+      height,
+      flexDirection: "column" as const,
+      alignItems: "center" as const,
+      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      backgroundAlpha: 0.95,
+      borderRadius: 16,
+      padding,
+    }),
+    [width, height, padding]
+  );
+
+  // Header layout
+  const headerLayout = useMemo(
+    () => ({
+      ...defaults,
+      width: width - padding * 2,
+      flexBasis: 100,
+      flexDirection: "column" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      margin: 10,
+    }),
+    [defaults, width, padding]
+  );
+
+  // Content grid layout
+  const contentLayout = useMemo(
+    () => ({
+      ...defaults,
+      width: width - padding * 2,
+      flexGrow: 1,
+      flexDirection: isMobile ? ("column" as const) : ("row" as const),
+      flexWrap: "wrap" as const,
+      justifyContent: "space-around" as const,
+      alignItems: "flex-start" as const,
+      gap: 20,
+      padding: 20,
+    }),
+    [defaults, width, padding, isMobile]
+  );
+
+  // Footer layout for back button
+  const footerLayout = useMemo(
+    () => ({
+      ...defaults,
+      width: width - padding * 2,
+      flexBasis: 60,
+      flexDirection: "row" as const,
+      justifyContent: "flex-end" as const,
+      alignItems: "center" as const,
+      padding: 20,
+    }),
+    [defaults, width, padding]
+  );
+
+  // Create button views for FancyButton
+  const buttonViews = useMemo(
+    () => ({
       defaultView: (() => {
         const g = new Graphics();
         g.roundRect(0, 0, 140, 40, 8);
         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
+        g.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: 0.8,
+        });
+        g.roundRect(0, 0, 140, 40, 8);
+        g.stroke();
         return g;
       })(),
       hoverView: (() => {
         const g = new Graphics();
         g.roundRect(0, 0, 140, 40, 8);
         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_LIGHT });
+        g.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: 1.0,
+        });
+        g.roundRect(0, 0, 140, 40, 8);
+        g.stroke();
         return g;
       })(),
       pressedView: (() => {
         const g = new Graphics();
         g.roundRect(0, 0, 140, 40, 8);
         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK });
+        g.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: 0.6,
+        });
+        g.roundRect(0, 0, 140, 40, 8);
+        g.stroke();
         return g;
       })(),
-      text: new Text({
-        text: "돌아가기\nBack",
-        style: {
-          fontSize: 14,
-          fill: KOREAN_COLORS.TEXT_PRIMARY,
-          fontFamily: "Noto Sans KR, sans-serif",
-          align: "center",
-          lineHeight: 16,
-        },
-      }),
-      padding: 10,
-      animations: {
-        hover: {
-          props: { scale: { x: 1.05, y: 1.05 } },
-          duration: 150,
-        },
-        pressed: {
-          props: { scale: { x: 0.95, y: 0.95 } },
-          duration: 100,
-        },
-      },
-    });
-
-    // Add event handler
-    backButton.onPress.connect(onBack);
-
-    // Position at bottom right
-    backButton.x = width - padding - 140;
-    backButton.y = height - padding - 40;
-
-    containerRef.current.addChild(backButton);
-    backButtonRef.current = backButton;
-
-    return () => {
-      if (backButtonRef.current) {
-        backButtonRef.current.destroy();
-        backButtonRef.current = null;
-      }
-    };
-  }, [onBack, width, height, padding]);
-
-  const KeyBadge: React.FC<{ keyText: string; symbol?: string }> = useCallback(
-    ({ keyText, symbol }) => (
-      <pixiContainer>
-        <pixiGraphics
-          draw={useCallback(
-            (g: Graphics) => {
-              const badgeWidth = keyText.length * 8 + 20;
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
-              g.roundRect(0, 0, badgeWidth, 28, 6);
-              g.fill();
-            },
-            [keyText]
-          )}
-        >
-          <pixiText
-            text={keyText}
-            style={{
-              fontSize: 14,
-              fill: KOREAN_COLORS.UI_BACKGROUND_DARK,
-              fontFamily: "monospace",
-              fontWeight: "bold",
-            }}
-            x={(keyText.length * 8 + 20) / 2}
-            y={14}
-            anchor={0.5}
-          />
-        </pixiGraphics>
-        {symbol && (
-          <pixiText
-            text={symbol}
-            style={{
-              fontSize: 18,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-            }}
-            x={keyText.length * 8 + 20 + 12}
-            y={14}
-            anchor={[0, 0.5]}
-          />
-        )}
-      </pixiContainer>
-    ),
+      buttonText: (() => {
+        const text = new Text({
+          text: "돌아가기\nBack",
+          style: {
+            fontSize: 14,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontFamily: "Noto Sans KR, sans-serif",
+            align: "center",
+            lineHeight: 16,
+          },
+        });
+        text.anchor.set(0.5);
+        return text;
+      })(),
+    }),
     []
   );
 
-  return (
-    <pixiContainer
-      ref={containerRef}
-      x={x}
-      y={y}
-      data-testid="controls-section"
-    >
-      {/* Background */}
-      <pixiGraphics
-        draw={useCallback(
-          (g: Graphics) => {
-            g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
-            g.roundRect(0, 0, width, height, 16);
-            g.fill();
+  // Key badge component using layout containers
+  const KeyBadge: React.FC<{ keyText: string; symbol?: string }> = useCallback(
+    ({ keyText, symbol }) => {
+      const badgeWidth = Math.max(keyText.length * 8 + 20, 60);
 
-            // Border gradient effect
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.4,
-            });
-            g.roundRect(0, 0, width, height, 16);
-            g.stroke();
-          },
-          [width, height]
-        )}
+      const badgeLayout = {
+        flexDirection: "row" as const,
+        alignItems: "center" as const,
+        gap: 8,
+      };
+
+      return (
+        <layoutContainer layout={badgeLayout}>
+          <pixiContainer width={badgeWidth} height={28}>
+            <pixiGraphics
+              draw={useCallback(
+                (g: Graphics) => {
+                  g.clear();
+                  g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
+                  g.roundRect(0, 0, badgeWidth, 28, 6);
+                  g.fill();
+                },
+                [badgeWidth]
+              )}
+            />
+            <layoutText
+              text={keyText}
+              style={{
+                fontSize: 14,
+                fill: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                fontFamily: "monospace",
+                fontWeight: "bold",
+              }}
+              layout={{
+                position: "absolute" as const,
+                left: badgeWidth / 2,
+                top: 14,
+              }}
+              anchor={0.5}
+            />
+          </pixiContainer>
+          {symbol && (
+            <layoutText
+              text={symbol}
+              style={{
+                fontSize: 18,
+                fill: KOREAN_COLORS.PRIMARY_CYAN,
+              }}
+              layout={{
+                marginLeft: 4,
+              }}
+            />
+          )}
+        </layoutContainer>
+      );
+    },
+    []
+  );
+
+  // Category card component using layout containers
+  const CategoryCard: React.FC<{
+    category: typeof CONTROL_CATEGORIES.stances;
+    categoryKey: string;
+  }> = useCallback(
+    ({ category, categoryKey }) => {
+      const cardWidth = isMobile
+        ? width - padding * 4
+        : (width - padding * 4) / 3 - 20;
+
+      const cardLayout = {
+        ...defaults,
+        width: cardWidth,
+        minHeight: 200,
+        flexDirection: "column" as const,
+        padding: 20,
+        margin: 10,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        backgroundAlpha: 0.9,
+        borderRadius: 12,
+      };
+
+      const headerLayout = {
+        width: cardWidth - 40,
+        flexBasis: 60,
+        flexDirection: "row" as const,
+        alignItems: "center" as const,
+        marginBottom: 15,
+        gap: 12,
+      };
+
+      const controlsLayout = {
+        width: cardWidth - 40,
+        flexGrow: 1,
+        flexDirection: "column" as const,
+        gap: 12,
+      };
+
+      const controlItemLayout = {
+        width: cardWidth - 40,
+        flexDirection: "row" as const,
+        alignItems: "center" as const,
+        gap: 16,
+      };
+
+      return (
+        <layoutContainer
+          layout={cardLayout}
+          data-testid={`category-${categoryKey}`}
+        >
+          {/* Category header */}
+          <layoutContainer layout={headerLayout}>
+            <layoutText
+              text={category.icon}
+              style={{
+                fontSize: 24,
+                fill: KOREAN_COLORS.PRIMARY_CYAN,
+              }}
+            />
+            <layoutContainer
+              layout={{
+                flexDirection: "column" as const,
+                flexGrow: 1,
+              }}
+            >
+              <layoutText
+                text={category.title.korean}
+                style={{
+                  fontSize: isMobile ? 16 : 18,
+                  fill: KOREAN_COLORS.PRIMARY_CYAN,
+                  fontFamily: "Noto Sans KR, sans-serif",
+                  fontWeight: "bold",
+                }}
+                layout={{
+                  marginBottom: 3,
+                }}
+              />
+              <layoutText
+                text={category.title.english}
+                style={{
+                  fontSize: isMobile ? 12 : 14,
+                  fill: KOREAN_COLORS.TEXT_SECONDARY,
+                }}
+              />
+            </layoutContainer>
+          </layoutContainer>
+
+          {/* Control items */}
+          <layoutContainer layout={controlsLayout}>
+            {category.controls.map((control, index) => (
+              <layoutContainer
+                key={`${categoryKey}-${index}`}
+                layout={controlItemLayout}
+              >
+                <KeyBadge keyText={control.key} symbol={control.symbol} />
+                <layoutText
+                  text={control.action}
+                  style={{
+                    fontSize: isMobile ? 13 : 15,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontFamily: "Noto Sans KR, sans-serif",
+                    wordWrap: true,
+                    wordWrapWidth: isMobile ? 150 : 200,
+                  }}
+                  layout={{
+                    flexGrow: 1,
+                  }}
+                />
+              </layoutContainer>
+            ))}
+          </layoutContainer>
+        </layoutContainer>
+      );
+    },
+    [defaults, width, height, padding, isMobile, KeyBadge]
+  );
+
+  // Create back button component
+  const BackButton: React.FC = useCallback(() => {
+    return (
+      <pixiFancyButton
+        ref={backButtonRef}
+        defaultView={buttonViews.defaultView}
+        hoverView={buttonViews.hoverView}
+        pressedView={buttonViews.pressedView}
+        text={buttonViews.buttonText}
+        data-testid="controls-back-button"
       />
+    );
+  }, [buttonViews]);
 
-      {/* Header */}
-      <pixiContainer>
-        <pixiText
+  // Connect the onPress handler using useEffect
+  useEffect(() => {
+    if (backButtonRef.current) {
+      const button = backButtonRef.current;
+
+      // Clear any existing connections
+      button.onPress.disconnectAll();
+
+      // Connect the onBack handler
+      button.onPress.connect(onBack);
+
+      return () => {
+        // Cleanup on unmount
+        button.onPress.disconnectAll();
+      };
+    }
+  }, [onBack]);
+
+  return (
+    <layoutContainer layout={rootLayout} data-testid="controls-section">
+      {/* Header Section */}
+      <layoutContainer layout={headerLayout}>
+        <layoutText
           text="조작법"
           style={{
             fontSize: isMobile ? 28 : 36,
@@ -215,125 +419,40 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
               color: 0x000000,
               blur: 4,
               distance: 2,
-              angle: Math.PI / 4,
             },
           }}
-          anchor={0.5}
-          x={width / 2}
-          y={40}
+          layout={{
+            marginBottom: 10,
+          }}
         />
-        <pixiText
+        <layoutText
           text="Controls"
           style={{
             fontSize: isMobile ? 16 : 20,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontFamily: "Arial, sans-serif",
           }}
-          anchor={0.5}
-          x={width / 2}
-          y={isMobile ? 70 : 80}
+          layout={{
+            marginBottom: 0,
+          }}
         />
-      </pixiContainer>
+      </layoutContainer>
 
-      {/* Controls grid */}
-      <pixiContainer x={padding} y={100}>
-        {Object.entries(CONTROL_CATEGORIES).map(
-          ([categoryKey, category], catIndex) => (
-            <React.Fragment key={categoryKey}>
-              <pixiContainer
-                x={
-                  isMobile
-                    ? 0
-                    : catIndex % 2 === 0
-                    ? 0
-                    : (contentWidth - 32) / 2 + 32
-                }
-                y={isMobile ? catIndex * 220 : Math.floor(catIndex / 2) * 220}
-              >
-                {/* Category background */}
-                <pixiGraphics
-                  draw={useCallback(
-                    (g: Graphics) => {
-                      g.clear();
-                      g.roundRect(
-                        0,
-                        0,
-                        isMobile ? contentWidth : (contentWidth - 32) / 2,
-                        180,
-                        8
-                      );
-                      g.fill({
-                        color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                        alpha: 0.9,
-                      });
-                    },
-                    [isMobile, contentWidth]
-                  )}
-                />
+      {/* Content Area with Control Categories */}
+      <layoutContainer layout={contentLayout}>
+        {Object.entries(CONTROL_CATEGORIES).map(([categoryKey, category]) => (
+          <CategoryCard
+            key={categoryKey}
+            category={category}
+            categoryKey={categoryKey}
+          />
+        ))}
+      </layoutContainer>
 
-                {/* Category header */}
-                <pixiContainer x={16} y={16}>
-                  <pixiText
-                    text={category.icon}
-                    style={{
-                      fontSize: 24,
-                      fill: KOREAN_COLORS.PRIMARY_CYAN,
-                    }}
-                  />
-                  <pixiContainer x={40}>
-                    <pixiText
-                      text={category.title.korean}
-                      style={{
-                        fontSize: isMobile ? 16 : 18,
-                        fill: KOREAN_COLORS.PRIMARY_CYAN,
-                        fontFamily: "Noto Sans KR, sans-serif",
-                        fontWeight: "bold",
-                      }}
-                    />
-                    <pixiText
-                      text={category.title.english}
-                      style={{
-                        fontSize: isMobile ? 12 : 14,
-                        fill: KOREAN_COLORS.TEXT_SECONDARY,
-                      }}
-                      y={20}
-                    />
-                  </pixiContainer>
-                </pixiContainer>
-
-                {/* Control items */}
-                <pixiContainer x={16} y={60}>
-                  {category.controls.map((control, index) => {
-                    const controlKey = `${categoryKey}-${index}`;
-                    return (
-                      <React.Fragment key={controlKey}>
-                        <pixiContainer y={index * 36}>
-                          <KeyBadge
-                            keyText={control.key}
-                            symbol={control.symbol}
-                          />
-                          <pixiText
-                            text={control.action}
-                            style={{
-                              fontSize: isMobile ? 13 : 15,
-                              fill: KOREAN_COLORS.TEXT_PRIMARY,
-                              fontFamily: "Noto Sans KR, sans-serif",
-                            }}
-                            x={120}
-                            y={14}
-                            anchor={[0, 0.5]}
-                          />
-                        </pixiContainer>
-                      </React.Fragment>
-                    );
-                  })}
-                </pixiContainer>
-              </pixiContainer>
-            </React.Fragment>
-          )
-        )}
-      </pixiContainer>
-    </pixiContainer>
+      {/* Footer with Back Button */}
+      <layoutContainer layout={footerLayout}>
+        <BackButton />
+      </layoutContainer>
+    </layoutContainer>
   );
 };
 
