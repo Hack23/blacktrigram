@@ -1,4 +1,6 @@
 import "@pixi/layout";
+import { LayoutContainer, LayoutText } from "@pixi/layout/components";
+import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import { Container, Graphics, Text } from "pixi.js";
@@ -6,15 +8,15 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { GameMode } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-// Extend Container and FancyButton with layout support
-extend({ Container, Graphics, Text, FancyButton });
-
-// Add layout type declaration for Container
-declare module "pixi.js" {
-  interface Container {
-    layout?: any; // Layout mixin from @pixi/layout
-  }
-}
+// Extend layout components
+extend({
+  Container,
+  LayoutContainer,
+  Graphics,
+  Text,
+  LayoutText,
+  FancyButton,
+});
 
 export interface MenuSectionProps {
   readonly menuItems: ReadonlyArray<{
@@ -40,7 +42,6 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   x,
   y,
 }) => {
-  const containerRef = useRef<PIXI.Container | null>(null);
   const buttonsRef = useRef<FancyButton[]>([]);
   const isMobile = width < 768;
   const buttonWidth = Math.min(width - 80, 320);
@@ -50,13 +51,19 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     () => ({
       width,
       height,
+      position: "absolute" as const,
+      top: y,
+      left: x,
       flexDirection: "column" as const,
       alignItems: "center" as const,
       justifyContent: "center" as const,
       gap: isMobile ? 12 : 16,
       padding: isMobile ? 20 : 40,
+      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      backgroundAlpha: 0.9,
+      borderRadius: 16,
     }),
-    [width, height, isMobile]
+    [width, height, x, y, isMobile]
   );
 
   // Helper function to create button graphics
@@ -65,93 +72,57 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       const graphics = new Graphics();
       graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
       graphics.fill({ color, alpha });
+      graphics.stroke({
+        width: 2,
+        color: KOREAN_COLORS.ACCENT_GOLD,
+        alpha: alpha * 0.8,
+      });
+      graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
+      graphics.stroke();
       return graphics;
     },
     [buttonWidth, buttonHeight]
   );
 
-  // Apply layout to container after ref is set
-  useEffect(() => {
-    if (containerRef.current) {
-      // Apply layout properties directly to the container
-      containerRef.current.layout = menuLayout;
-    }
-  }, [menuLayout]);
+  // Create menu button component
+  const MenuButton: React.FC<{
+    item: { mode: GameMode; korean: string; english: string };
+    index: number;
+    isSelected: boolean;
+  }> = useCallback(
+    ({ item, index, isSelected }) => {
+      const buttonRef = useRef<FancyButton | null>(null);
 
-  // Create menu buttons using @pixi/ui FancyButton
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Clear existing buttons
-    buttonsRef.current.forEach((btn) => btn.destroy());
-    buttonsRef.current = [];
-
-    // Find or create buttons container
-    let buttonsContainer = containerRef.current.children.find(
-      (child) => child.name === "buttons-container"
-    ) as PIXI.Container;
-
-    if (!buttonsContainer) {
-      buttonsContainer = new Container();
-      buttonsContainer.name = "buttons-container";
-      buttonsContainer.layout = {
-        flexDirection: "column",
-        gap: isMobile ? 10 : 12,
-        alignItems: "center",
-      };
-      containerRef.current.addChild(buttonsContainer);
-    }
-
-    // Clear the buttons container
-    buttonsContainer.removeChildren();
-
-    // Create buttons for each menu item
-    menuItems.forEach((item, index) => {
-      const isSelected = index === selectedIndex;
-
-      // Create button container for selection indicator
-      const buttonWrapper = new Container();
-      buttonWrapper.layout = {
-        flexDirection: "row",
-        alignItems: "center",
-        marginLeft: isSelected ? 20 : 0,
-      };
-
-      // Selection indicator
-      if (isSelected) {
-        const indicator = new Graphics();
-        indicator.fill({ color: KOREAN_COLORS.ACCENT_GOLD });
-        indicator.moveTo(0, -8);
-        indicator.lineTo(16, 0);
-        indicator.lineTo(0, 8);
-        indicator.closePath();
-        indicator.fill();
-        indicator.x = -30;
-        indicator.y = buttonHeight / 2;
-        buttonWrapper.addChild(indicator);
-      }
-
-      // Create FancyButton with proper views
-      const button = new FancyButton({
-        defaultView: createButtonGraphics(
+      // Create button views with proper PixiJS v8 API
+      const defaultView = useMemo(() => {
+        return createButtonGraphics(
           isSelected
             ? KOREAN_COLORS.ACCENT_GOLD
             : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
           isSelected ? 0.9 : 0.8
-        ),
-        hoverView: createButtonGraphics(
+        );
+      }, [isSelected]);
+
+      const hoverView = useMemo(() => {
+        return createButtonGraphics(
           isSelected
             ? KOREAN_COLORS.ACCENT_GOLD
             : KOREAN_COLORS.UI_BACKGROUND_LIGHT,
           1
-        ),
-        pressedView: createButtonGraphics(
+        );
+      }, [isSelected]);
+
+      const pressedView = useMemo(() => {
+        return createButtonGraphics(
           isSelected
             ? KOREAN_COLORS.ACCENT_YELLOW
             : KOREAN_COLORS.UI_BACKGROUND_DARK,
           1
-        ),
-        text: new Text({
+        );
+      }, [isSelected]);
+
+      const buttonText = useMemo(() => {
+        return new Text({
           text: `${item.korean} | ${item.english}`,
           style: {
             fontSize: isMobile ? 16 : 18,
@@ -162,76 +133,68 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             fontWeight: isSelected ? "bold" : "normal",
             align: "center",
           },
-        }),
-        padding: 15,
-        animations: {
-          hover: {
-            props: { scale: { x: 1.05, y: 1.05 } },
-            duration: 150,
-          },
-          pressed: {
-            props: { scale: { x: 0.95, y: 0.95 } },
-            duration: 100,
-          },
-        },
-      });
+        });
+      }, [item.korean, item.english, isSelected, isMobile]);
 
-      // Set layout for proper sizing
-      button.layout = {
-        width: buttonWidth,
-        height: buttonHeight,
-      };
+      useEffect(() => {
+        if (buttonRef.current) {
+          const button = buttonRef.current;
+          button.onPress.disconnectAll();
+          button.onPress.connect(() => onModeSelect(item.mode));
 
-      // Add event handler
-      button.onPress.connect(() => onModeSelect(item.mode));
+          // Store reference for cleanup
+          buttonsRef.current[index] = button;
 
-      // Add to wrapper and container
-      buttonWrapper.addChild(button);
-      buttonsContainer.addChild(buttonWrapper);
-      buttonsRef.current.push(button);
-    });
+          return () => {
+            button.onPress.disconnectAll();
+          };
+        }
+      }, [item.mode, index]);
 
-    // Position buttons container
-    buttonsContainer.y = 100; // Below title
-  }, [
-    menuItems,
-    selectedIndex,
-    onModeSelect,
-    createButtonGraphics,
-    buttonWidth,
-    buttonHeight,
-    isMobile,
-  ]);
+      return (
+        <layoutContainer
+          layout={{
+            flexDirection: "row" as const,
+            alignItems: "center" as const,
+            marginLeft: isSelected ? 20 : 0,
+          }}
+        >
+          {/* Selection indicator */}
+          {isSelected && (
+            <layoutText
+              text="▶"
+              style={{
+                fontSize: 20,
+                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fontWeight: "bold",
+              }}
+              layout={{
+                marginRight: 15,
+              }}
+            />
+          )}
+
+          <pixiFancyButton
+            ref={buttonRef}
+            defaultView={defaultView}
+            hoverView={hoverView}
+            pressedView={pressedView}
+            text={buttonText}
+            data-testid={`menu-button-${item.mode}`}
+          />
+        </layoutContainer>
+      );
+    },
+    [createButtonGraphics, isMobile, onModeSelect]
+  );
 
   return (
-    <pixiContainer ref={containerRef} x={x} y={y} data-testid="menu-section">
-      {/* Background panel */}
-      <pixiGraphics
-        draw={useCallback(
-          (g: Graphics) => {
-            g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
-            g.roundRect(0, 0, width, height, 16);
-            g.fill();
-
-            // Subtle border
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.3,
-            });
-            g.roundRect(0, 0, width, height, 16);
-            g.stroke();
-          },
-          [width, height]
-        )}
-      />
-
+    <layoutContainer layout={menuLayout} data-testid="menu-section">
       {/* Title */}
-      <pixiText
-        text="흑괘 (Black Trigram)"
+      <layoutText
+        text="격투가의 길"
         style={{
-          fontSize: isMobile ? 28 : 36,
+          fontSize: isMobile ? 20 : 24,
           fill: KOREAN_COLORS.ACCENT_GOLD,
           fontFamily: "Noto Sans KR, sans-serif",
           fontWeight: "bold",
@@ -244,24 +207,63 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           },
         }}
         anchor={0.5}
-        x={width / 2}
-        y={50}
+        layout={{
+          alignSelf: "center",
+          marginBottom: 10,
+        }}
       />
 
-      {/* Subtitle - positioned at bottom */}
-      <pixiText
+      {/* Subtitle */}
+      <layoutText
         text="한국 무술의 정수를 담은 격투 시뮬레이터"
         style={{
-          fontSize: isMobile ? 14 : 16,
+          fontSize: isMobile ? 12 : 14,
           fill: KOREAN_COLORS.TEXT_SECONDARY,
           fontFamily: "Noto Sans KR, sans-serif",
           align: "center",
+          wordWrap: true,
+          wordWrapWidth: width - 80,
         }}
         anchor={0.5}
-        x={width / 2}
-        y={height - 30}
+        layout={{
+          alignSelf: "center",
+          marginBottom: 20,
+        }}
       />
-    </pixiContainer>
+
+      {/* Menu buttons */}
+      <layoutContainer
+        layout={{
+          flexDirection: "column" as const,
+          alignItems: "center" as const,
+          gap: isMobile ? 10 : 12,
+        }}
+      >
+        {menuItems.map((item, index) => (
+          <MenuButton
+            key={item.mode}
+            item={item}
+            index={index}
+            isSelected={index === selectedIndex}
+          />
+        ))}
+      </layoutContainer>
+
+      {/* Footer hint */}
+      <layoutText
+        text="↑↓ 키로 선택, Enter로 확인"
+        style={{
+          fontSize: isMobile ? 10 : 12,
+          fill: KOREAN_COLORS.TEXT_SECONDARY,
+          fontStyle: "italic",
+        }}
+        anchor={0.5}
+        layout={{
+          alignSelf: "center",
+          marginTop: 15,
+        }}
+      />
+    </layoutContainer>
   );
 };
 

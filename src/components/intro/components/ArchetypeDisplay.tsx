@@ -485,12 +485,17 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         width: width * 0.9,
         height: height * 0.8,
         padding: 20,
-        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-        backgroundAlpha: 0.9,
         borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
       };
+
+      // Create background graphics
+      const background = new PIXI.Graphics();
+      background.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+      background.roundRect(0, 0, width * 0.9, height * 0.8, 12);
+      background.fill();
+      mainContainer.addChild(background);
 
       // Create and add the main content
       const contentList = createContentList();
