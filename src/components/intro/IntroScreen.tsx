@@ -176,11 +176,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const menuStartY = screenHeight * (isMobile ? 0.48 : isTablet ? 0.43 : 0.38);
   const archetypeStartY = menuStartY + (isMobile ? 260 : isTablet ? 280 : 300);
 
-  // Start intro music
+  // Start intro music - Fixed implementation
   useEffect(() => {
     if (audio.isInitialized && !introMusicStarted.current) {
-      audio.playMusic("intro");
-      introMusicStarted.current = true;
+      try {
+        audio.playMusic("intro");
+        introMusicStarted.current = true;
+      } catch (error) {
+        console.warn("Failed to play intro music:", error);
+      }
     }
   }, [audio.isInitialized, audio]);
 
@@ -252,7 +256,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     audio.playSFX("ui_cancel");
   }, [audio]);
 
-  // Enhanced cyberpunk background
+  // Enhanced cyberpunk background with proper gradient
   const drawEnhancedBackground = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
@@ -277,9 +281,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         g.fill();
       }
 
-      // Grid lines
-      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.1 });
-      const gridSize = isMobile ? 40 : 50;
+      // Enhanced cyberpunk grid overlay
+      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.15 });
+      const gridSize = isMobile ? 40 : 60;
       for (let x = 0; x < screenWidth; x += gridSize) {
         g.moveTo(x, 0);
         g.lineTo(x, screenHeight);
@@ -290,7 +294,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       }
       g.stroke();
 
-      // Neon accents
+      // Neon accent lines
+      g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 });
+      g.moveTo(0, screenHeight * 0.2);
+      g.lineTo(screenWidth, screenHeight * 0.2);
+      g.moveTo(0, screenHeight * 0.8);
+      g.lineTo(screenWidth, screenHeight * 0.8);
+      g.stroke();
+
+      // Neon accent circles
       const numAccents = isMobile ? 3 : 5;
       for (let i = 0; i < numAccents; i++) {
         const x = (screenWidth / (numAccents + 1)) * (i + 1);
@@ -360,18 +372,56 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         />
       )}
 
-      {/* Logo */}
-      {logoTexture && (
-        <pixiSprite
-          texture={logoTexture}
-          x={screenWidth / 2}
-          y={screenHeight * 0.15}
-          width={logoSize}
-          height={logoSize}
-          anchor={0.5}
-          data-testid="game-logo"
+      {/* Logo with enhanced glow effect */}
+      <pixiContainer x={screenWidth / 2} y={screenHeight * 0.15}>
+        {logoTexture && (
+          <pixiSprite
+            texture={logoTexture}
+            x={0}
+            y={0}
+            width={logoSize}
+            height={logoSize}
+            anchor={0.5}
+            data-testid="game-logo"
+          />
+        )}
+
+        {/* Enhanced glow effect around logo */}
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.fill({
+              color: KOREAN_COLORS.PRIMARY_CYAN,
+              alpha: 0.1,
+            });
+            g.circle(0, 0, logoSize * 0.6);
+            g.fill();
+            g.stroke({
+              width: 2,
+              color: KOREAN_COLORS.ACCENT_GOLD,
+              alpha: 0.6,
+            });
+            g.circle(0, 0, logoSize * 0.8);
+            g.stroke();
+          }}
+          data-testid="logo-glow-effect"
         />
-      )}
+
+        {/* Trigram Symbols */}
+        <pixiContainer y={logoSize * 0.7} data-testid="trigram-symbols">
+          <pixiText
+            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
+            style={{
+              fontSize: isMobile ? 20 : 28,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              align: "center",
+              letterSpacing: isMobile ? 8 : 12,
+            }}
+            anchor={0.5}
+            data-testid="trigram-symbols-text"
+          />
+        </pixiContainer>
+      </pixiContainer>
 
       {/* Title */}
       <pixiContainer x={screenWidth / 2} y={screenHeight * 0.28}>
@@ -398,18 +448,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           anchor={0.5}
         />
       </pixiContainer>
-
-      {/* Version */}
-      <pixiText
-        text={`v${APP_VERSION || "1.0.0"}`}
-        style={{
-          fontSize: 12,
-          fill: KOREAN_COLORS.TEXT_SECONDARY,
-        }}
-        x={screenWidth - 20}
-        y={screenHeight - 20}
-        anchor={{ x: 1, y: 1 }}
-      />
 
       {/* Menu Section */}
       <MenuSection
@@ -447,6 +485,68 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         x={0}
         y={archetypeStartY}
       />
+
+      {/* Enhanced Footer with Better Mobile Layout */}
+      <pixiContainer
+        x={screenWidth / 2}
+        y={screenHeight - (isMobile ? 40 : 60)}
+        data-testid="intro-footer"
+      >
+        <pixiText
+          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+          style={{
+            fontSize: isMobile ? 10 : 14,
+            fill: KOREAN_COLORS.ACCENT_CYAN,
+            align: "center",
+            fontStyle: "italic",
+          }}
+          x={0}
+          y={isMobile ? -20 : -25}
+          anchor={0.5}
+          data-testid="footer-motto"
+        />
+
+        <pixiText
+          text="Open Source Korean Martial Arts Game by Hack23"
+          style={{
+            fontSize: isMobile ? 9 : 12,
+            fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+            align: "center",
+            fontWeight: "bold",
+          }}
+          interactive={true}
+          onPointerTap={() =>
+            window.open("https://github.com/Hack23/blacktrigram", "_blank")
+          }
+          x={0}
+          y={isMobile ? -8 : -10}
+          anchor={0.5}
+          data-testid="footer-link"
+        />
+
+        <pixiText
+          text={`Version ${APP_VERSION || "1.0.0"}`}
+          style={{
+            fontSize: isMobile ? 9 : 12,
+            fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+            align: "center",
+            fontWeight: "bold",
+          }}
+          interactive={true}
+          onPointerTap={() =>
+            window.open(
+              `https://github.com/Hack23/blacktrigram/releases/tag/v${
+                APP_VERSION || "1.0.0"
+              }`,
+              "_blank"
+            )
+          }
+          x={0}
+          y={isMobile ? 8 : 10}
+          anchor={0.5}
+          data-testid="footer-version-link"
+        />
+      </pixiContainer>
     </pixiContainer>
   );
 };
