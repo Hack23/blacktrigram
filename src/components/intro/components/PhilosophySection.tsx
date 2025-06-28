@@ -1,21 +1,33 @@
 import "@pixi/layout";
-import type { PixiReactElementProps } from "@pixi/react";
+import {
+  LayoutContainer,
+  LayoutGraphics,
+  LayoutText,
+} from "@pixi/layout/components";
+import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { FancyButton, ScrollBox } from "@pixi/ui";
 import { Container, FederatedPointerEvent, Graphics, Text } from "pixi.js";
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-// Extend all necessary components including ScrollBox
-extend({ Container, ScrollBox, FancyButton, Graphics, Text });
-
-// Add module declaration for the custom JSX elements
-declare module "@pixi/react" {
-  interface PixiElements {
-    scrollBox: PixiReactElementProps<typeof ScrollBox>;
-    fancyButton: PixiReactElementProps<typeof FancyButton>;
-  }
-}
+// Extend with both regular PIXI and layout components
+extend({
+  Container,
+  LayoutContainer,
+  ScrollBox,
+  FancyButton,
+  Graphics,
+  LayoutGraphics,
+  Text,
+  LayoutText,
+});
 
 const PHILOSOPHY_CONTENT = {
   title: { korean: "무술 철학", english: "Martial Philosophy" },
@@ -114,8 +126,6 @@ vital points precisely is the core of martial arts mastery.`,
 
 export interface PhilosophySectionProps {
   readonly onBack: () => void;
-  readonly x?: number;
-  readonly y?: number;
   readonly width?: number;
   readonly height?: number;
 }
@@ -130,99 +140,184 @@ type TrigramData = {
 
 export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
   onBack,
-  x = 0,
-  y = 0,
   width = 800,
   height = 600,
 }) => {
   const [selectedTrigram, setSelectedTrigram] = useState<string | null>(null);
+  const backButtonRef = useRef<FancyButton | null>(null);
   const isMobile = width < 768;
   const padding = isMobile ? 20 : 40;
-  const contentWidth = width - padding * 2;
-  const scrollHeight = height - 180; // Reserve space for header and back button
 
-  // Memoized layout configurations
-  const containerLayout = useMemo(
+  // Layout configuration object similar to IntroScreen
+  const defaults = useMemo(
+    () => ({
+      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      backgroundAlpha: 0.9,
+      borderRadius: 12,
+    }),
+    []
+  );
+
+  // Main layout configuration
+  const rootLayout = useMemo(
     () => ({
       width,
       height,
-      position: { x, y },
+      flexDirection: "column" as const,
+      alignItems: "center" as const,
+      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      backgroundAlpha: 0.95,
+      borderRadius: 16,
+      padding,
     }),
-    [width, height, x, y]
+    [width, height, padding]
   );
 
-  // Create button views for FancyButton
+  // Header layout
+  const headerLayout = useMemo(
+    () => ({
+      ...defaults,
+      width: width - padding * 2,
+      flexBasis: 100,
+      flexDirection: "column" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      margin: 10,
+    }),
+    [defaults, width, padding]
+  );
+
+  // Content area layout
+  const contentLayout = useMemo(
+    () => ({
+      ...defaults,
+      width: width - padding * 2,
+      flexGrow: 1,
+      flexDirection: "column" as const,
+      padding: 20,
+      gap: 20,
+    }),
+    [defaults, width, padding]
+  );
+
+  // Footer layout for back button
+  const footerLayout = useMemo(
+    () => ({
+      ...defaults,
+      width: width - padding * 2,
+      flexBasis: 60,
+      flexDirection: "row" as const,
+      justifyContent: "flex-end" as const,
+      alignItems: "center" as const,
+      padding: 20,
+    }),
+    [defaults, width, padding]
+  );
+
+  // Create button views for FancyButton with proper text
   const buttonViews = useMemo(
     () => ({
       defaultView: (() => {
         const g = new Graphics();
         g.roundRect(0, 0, 140, 40, 8);
         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
+        g.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: 0.8,
+        });
+        g.roundRect(0, 0, 140, 40, 8);
+        g.stroke();
         return g;
       })(),
       hoverView: (() => {
         const g = new Graphics();
         g.roundRect(0, 0, 140, 40, 8);
         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_LIGHT });
+        g.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: 1.0,
+        });
+        g.roundRect(0, 0, 140, 40, 8);
+        g.stroke();
         return g;
       })(),
       pressedView: (() => {
         const g = new Graphics();
         g.roundRect(0, 0, 140, 40, 8);
         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK });
+        g.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: 0.6,
+        });
+        g.roundRect(0, 0, 140, 40, 8);
+        g.stroke();
         return g;
+      })(),
+      buttonText: (() => {
+        const text = new Text({
+          text: "돌아가기\nBack",
+          style: {
+            fontSize: 14,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontFamily: "Noto Sans KR, sans-serif",
+            align: "center",
+            lineHeight: 16,
+          },
+        });
+        text.anchor.set(0.5);
+        return text;
       })(),
     }),
     []
   );
 
-  // Trigram card component
+  // Trigram card component using layout containers
   const TrigramCard: React.FC<{
     trigram: TrigramData;
   }> = useCallback(
     ({ trigram }) => {
       const isSelected = selectedTrigram === trigram.symbol;
-      const cardWidth = isMobile
-        ? (contentWidth - 16) / 2
-        : (contentWidth - 48) / 4;
+      const cardWidth = isMobile ? 140 : 160;
+      const cardHeight = isSelected ? 140 : 100;
+
+      const cardLayout = {
+        ...defaults,
+        width: cardWidth,
+        height: cardHeight,
+        flexDirection: "column" as const,
+        alignItems: "center" as const,
+        justifyContent: "center" as const,
+        margin: 8,
+        backgroundColor: isSelected
+          ? KOREAN_COLORS.ACCENT_GOLD
+          : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        backgroundAlpha: 0.9,
+        borderRadius: 8,
+      };
 
       return (
-        <pixiContainer
+        <layoutContainer
+          layout={cardLayout}
           interactive
           cursor="pointer"
-          onpointertap={() =>
+          onPointerTap={() =>
             setSelectedTrigram(isSelected ? null : trigram.symbol)
           }
+          onPointerOver={(e: FederatedPointerEvent) => {
+            if (!isSelected) {
+              e.currentTarget.alpha = 0.8;
+            }
+          }}
+          onPointerOut={(e: FederatedPointerEvent) => {
+            e.currentTarget.alpha = 1;
+          }}
           data-testid={`trigram-${trigram.english.toLowerCase()}`}
         >
-          {/* Card background */}
-          <pixiGraphics
-            draw={useCallback(
-              (g: Graphics) => {
-                g.clear();
-                g.roundRect(0, 0, cardWidth, isSelected ? 140 : 100, 8);
-                g.fill({
-                  color: isSelected
-                    ? KOREAN_COLORS.ACCENT_GOLD
-                    : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                  alpha: 0.9,
-                });
-              },
-              [cardWidth, isSelected]
-            )}
-            interactive
-            onpointerover={(e: FederatedPointerEvent) => {
-              if (!isSelected) {
-                e.currentTarget.alpha = 0.8;
-              }
-            }}
-            onpointerout={(e: FederatedPointerEvent) => {
-              e.currentTarget.alpha = 1;
-            }}
-          />
-
           {/* Trigram symbol */}
-          <pixiText
+          <layoutText
             text={trigram.symbol}
             style={{
               fontSize: 32,
@@ -230,13 +325,13 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
                 ? KOREAN_COLORS.UI_BACKGROUND_DARK
                 : KOREAN_COLORS.PRIMARY_CYAN,
             }}
-            anchor={0.5}
-            x={cardWidth / 2}
-            y={25}
+            layout={{
+              marginBottom: 5,
+            }}
           />
 
           {/* Korean name */}
-          <pixiText
+          <layoutText
             text={trigram.name}
             style={{
               fontSize: 14,
@@ -246,13 +341,13 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
               fontFamily: "Noto Sans KR, sans-serif",
               fontWeight: "bold",
             }}
-            anchor={0.5}
-            x={cardWidth / 2}
-            y={55}
+            layout={{
+              marginBottom: 3,
+            }}
           />
 
           {/* English name */}
-          <pixiText
+          <layoutText
             text={trigram.english}
             style={{
               fontSize: 12,
@@ -260,14 +355,14 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
                 ? KOREAN_COLORS.UI_BACKGROUND_DARK
                 : KOREAN_COLORS.TEXT_SECONDARY,
             }}
-            anchor={0.5}
-            x={cardWidth / 2}
-            y={75}
+            layout={{
+              marginBottom: isSelected ? 8 : 0,
+            }}
           />
 
           {/* Meaning (only when selected) */}
           {isSelected && (
-            <pixiText
+            <layoutText
               text={trigram.meaning}
               style={{
                 fontSize: 11,
@@ -277,42 +372,54 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
                 wordWrap: true,
                 wordWrapWidth: cardWidth - 20,
               }}
-              anchor={0.5}
-              x={cardWidth / 2}
-              y={110}
+              layout={{
+                marginTop: 5,
+              }}
             />
           )}
-        </pixiContainer>
+        </layoutContainer>
       );
     },
-    [selectedTrigram, isMobile, contentWidth]
+    [selectedTrigram, isMobile, defaults]
   );
 
-  return (
-    <pixiContainer {...containerLayout} data-testid="philosophy-section">
-      {/* Main background */}
-      <pixiGraphics
-        draw={useCallback(
-          (g: Graphics) => {
-            g.clear();
-            g.roundRect(0, 0, width, height, 16);
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
-
-            // Decorative border
-            g.roundRect(0, 0, width, height, 16);
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.4,
-            });
-          },
-          [width, height]
-        )}
+  // Create back button component that handles FancyButton properly
+  const BackButton: React.FC = useCallback(() => {
+    return (
+      <pixiFancyButton
+        ref={backButtonRef}
+        defaultView={buttonViews.defaultView}
+        hoverView={buttonViews.hoverView}
+        pressedView={buttonViews.pressedView}
+        text={buttonViews.buttonText}
+        data-testid="philosophy-back-button"
       />
+    );
+  }, [buttonViews]);
 
-      {/* Header */}
-      <pixiContainer x={width / 2} y={padding}>
-        <pixiText
+  // Connect the onPress handler using useEffect
+  useEffect(() => {
+    if (backButtonRef.current) {
+      const button = backButtonRef.current;
+
+      // Clear any existing connections
+      button.onPress.disconnectAll();
+
+      // Connect the onBack handler
+      button.onPress.connect(onBack);
+
+      return () => {
+        // Cleanup on unmount
+        button.onPress.disconnectAll();
+      };
+    }
+  }, [onBack]);
+
+  return (
+    <layoutContainer layout={rootLayout} data-testid="philosophy-section">
+      {/* Header Section */}
+      <layoutContainer layout={headerLayout}>
+        <layoutText
           text={PHILOSOPHY_CONTENT.title.korean}
           style={{
             fontSize: isMobile ? 28 : 36,
@@ -325,54 +432,48 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
               distance: 2,
             },
           }}
-          anchor={0.5}
+          layout={{
+            marginBottom: 10,
+          }}
         />
-        <pixiText
+        <layoutText
           text={PHILOSOPHY_CONTENT.title.english}
           style={{
             fontSize: isMobile ? 16 : 20,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-          anchor={0.5}
-          y={isMobile ? 35 : 45}
+          layout={{
+            marginBottom: 0,
+          }}
         />
-      </pixiContainer>
+      </layoutContainer>
 
-      {/* ScrollBox for content - using lowercase element name */}
-      <pixiScrollBox
-        width={contentWidth}
-        height={scrollHeight}
-        x={padding}
-        y={padding + 80}
-        background={KOREAN_COLORS.UI_BACKGROUND_DARK}
-        elementsMargin={16}
-        padding={10}
-        radius={8}
-        disableDynamicRendering={false}
-      >
-        {/* Content container */}
-        <pixiContainer>
-          {PHILOSOPHY_CONTENT.sections.map((section, sectionIndex) => (
-            <pixiContainer
-              key={section.id}
-              y={sectionIndex * 300} // Approximate spacing
-            >
-              {/* Section background */}
-              <pixiGraphics
-                draw={(g: Graphics) => {
-                  g.clear();
-                  const sectionHeight = section.trigrams ? 400 : 200;
-                  g.roundRect(0, 0, contentWidth - 40, sectionHeight, 12);
-                  g.fill({
-                    color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                    alpha: 0.8,
-                  });
+      {/* Content Area with Scrollable Sections */}
+      <layoutContainer layout={contentLayout}>
+        {PHILOSOPHY_CONTENT.sections.map((section) => {
+          const sectionLayout = {
+            ...defaults,
+            width: width - padding * 4,
+            flexDirection: "column" as const,
+            padding: 20,
+            margin: 10,
+            backgroundColor: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+            backgroundAlpha: 0.8,
+            borderRadius: 12,
+          };
+
+          return (
+            <layoutContainer key={section.id} layout={sectionLayout}>
+              {/* Section Header */}
+              <layoutContainer
+                layout={{
+                  width: width - padding * 6,
+                  flexBasis: 80,
+                  flexDirection: "column" as const,
+                  marginBottom: 15,
                 }}
-              />
-
-              {/* Section header */}
-              <pixiContainer x={20} y={20}>
-                <pixiText
+              >
+                <layoutText
                   text={section.title}
                   style={{
                     fontSize: isMobile ? 20 : 24,
@@ -380,78 +481,76 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
                     fontFamily: "Noto Sans KR, sans-serif",
                     fontWeight: "bold",
                   }}
+                  layout={{
+                    marginBottom: 5,
+                  }}
                 />
-                <pixiText
+                <layoutText
                   text={section.subtitle}
                   style={{
                     fontSize: isMobile ? 14 : 16,
                     fill: KOREAN_COLORS.TEXT_SECONDARY,
                   }}
-                  y={30}
-                />
-              </pixiContainer>
-
-              {/* Section content */}
-              {section.content && (
-                <pixiText
-                  text={section.content}
-                  x={20}
-                  y={70}
-                  style={{
-                    fontSize: isMobile ? 13 : 15,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontFamily: "Noto Sans KR, sans-serif",
-                    lineHeight: 24,
-                    wordWrap: true,
-                    wordWrapWidth: contentWidth - 80,
+                  layout={{
+                    marginBottom: 0,
                   }}
                 />
+              </layoutContainer>
+
+              {/* Section Content */}
+              {section.content && (
+                <layoutContainer
+                  layout={{
+                    width: width - padding * 6,
+                    flexGrow: 0.5,
+                    marginBottom: section.trigrams ? 20 : 0,
+                  }}
+                >
+                  <layoutText
+                    text={section.content}
+                    style={{
+                      fontSize: isMobile ? 13 : 15,
+                      fill: KOREAN_COLORS.TEXT_PRIMARY,
+                      fontFamily: "Noto Sans KR, sans-serif",
+                      lineHeight: 24,
+                      wordWrap: true,
+                      wordWrapWidth: width - padding * 6,
+                    }}
+                    layout={{
+                      width: width - padding * 6,
+                    }}
+                  />
+                </layoutContainer>
               )}
 
-              {/* Trigram grid */}
+              {/* Trigram Grid */}
               {section.trigrams && (
-                <pixiContainer x={20} y={100}>
-                  {section.trigrams.map((trigram, index) => {
-                    const cardWidth = isMobile
-                      ? (contentWidth - 56) / 2
-                      : (contentWidth - 88) / 4;
-                    const col = index % (isMobile ? 2 : 4);
-                    const row = Math.floor(index / (isMobile ? 2 : 4));
-                    const xPos = col * (cardWidth + 16);
-                    const yPos = row * 120;
-
-                    return (
-                      <pixiContainer key={trigram.symbol} x={xPos} y={yPos}>
-                        <TrigramCard trigram={trigram} />
-                      </pixiContainer>
-                    );
-                  })}
-                </pixiContainer>
+                <layoutContainer
+                  layout={{
+                    width: width - padding * 6,
+                    flexGrow: 0.5,
+                    flexDirection: "row" as const,
+                    flexWrap: "wrap" as const,
+                    justifyContent: "center" as const,
+                    gap: 10,
+                    padding: 10,
+                  }}
+                >
+                  {section.trigrams.map((trigram) => (
+                    <TrigramCard key={trigram.symbol} trigram={trigram} />
+                  ))}
+                </layoutContainer>
               )}
-            </pixiContainer>
-          ))}
-        </pixiContainer>
-      </pixiScrollBox>
+            </layoutContainer>
+          );
+        })}
+      </layoutContainer>
 
-      {/* Back button using FancyButton - using lowercase element name */}
-      <pixiFancyButton
-        x={width - padding - 140}
-        y={height - padding - 40}
-        defaultView={buttonViews.defaultView}
-        hoverView={buttonViews.hoverView}
-        pressedView={buttonViews.pressedView}
-        onPress={onBack}
-        text="돌아가기\nBack"
-        textStyle={{
-          fontSize: 14,
-          fill: KOREAN_COLORS.TEXT_PRIMARY,
-          fontFamily: "Noto Sans KR, sans-serif",
-          align: "center",
-          lineHeight: 16,
-        }}
-        data-testid="philosophy-back-button"
-      />
-    </pixiContainer>
+      {/* Footer with Back Button */}
+      <layoutContainer layout={footerLayout}>
+        <BackButton />
+      </layoutContainer>
+    </layoutContainer>
   );
 };
 
