@@ -17,7 +17,7 @@ declare module "pixi.js" {
 }
 
 export interface MenuSectionProps {
-  readonly menuItems: Array<{
+  readonly menuItems: ReadonlyArray<{
     mode: GameMode;
     korean: string;
     english: string;

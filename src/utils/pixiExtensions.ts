@@ -1,15 +1,28 @@
 /**
  * PixiJS extensions and utilities for Black Trigram
  */
+import "@pixi/layout";
+import { LayoutContainer } from "@pixi/layout/components";
+import "@pixi/layout/react";
 import { extend, useTick } from "@pixi/react";
+import { Button, FancyButton } from "@pixi/ui";
 import * as PIXI from "pixi.js";
-import { Container, Graphics, Sprite, Text } from "pixi.js";
+import { Container, Graphics, Sprite, Text, TilingSprite } from "pixi.js";
 
 /**
  * Extend PIXI components for use with React
  */
 export const extendPixiComponents = () => {
-  extend({ Container, Graphics, Text, Sprite });
+  extend({
+    Container,
+    Graphics,
+    Sprite,
+    Text,
+    TilingSprite,
+    LayoutContainer,
+    Button,
+    FancyButton,
+  });
 };
 
 /**

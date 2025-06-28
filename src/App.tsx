@@ -1,4 +1,9 @@
-import { Application } from "@pixi/react";
+import "@pixi/layout";
+import { LayoutContainer } from "@pixi/layout/components";
+import "@pixi/layout/react";
+import { Application, extend, useApplication } from "@pixi/react";
+import { FancyButton } from "@pixi/ui";
+import { Container, Graphics, Text } from "pixi.js";
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
@@ -21,6 +26,49 @@ const TrainingScreen = lazy(
   () => import("./components/training/TrainingScreen")
 );
 
+/* ------------------------------------------------------------------
+ *  ⬇  Register Pixi display objects so <pixi…/> JSX tags compile
+ * -----------------------------------------------------------------*/
+extend({ Container, Graphics, Text, LayoutContainer, FancyButton });
+
+/* ------------------------------------------------------------------
+ *  ⬇  Generic wrapper that keeps a LayoutContainer the size
+ *     of the current browser viewport and updates on resize.
+ * -----------------------------------------------------------------*/
+const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { app } = useApplication();
+  const layoutRef = useRef<LayoutContainer>(null);
+
+  const doResize = useCallback(() => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    layoutRef.current!.layout = { width, height };
+    // keep PIXI renderer in-sync as well
+    if (app?.renderer) app.renderer.resize(width, height);
+  }, [app]);
+
+  useEffect(() => {
+    doResize();
+    window.addEventListener("resize", doResize);
+    return () => window.removeEventListener("resize", doResize);
+  }, [doResize]);
+
+  return (
+    <pixiContainer
+      ref={layoutRef}
+      layout={{ width: window.innerWidth, height: window.innerHeight }}
+    >
+      {children}
+    </pixiContainer>
+  );
+};
+
+/* ------------------------------------------------------------------
+ *  ⬇  Rest of App component (unchanged logic ‑- only the JSX shell
+ *     around <Application> is modified to insert <LayoutResizer/>.
+ * -----------------------------------------------------------------*/
 function App() {
   usePixiExtensions();
 
@@ -293,23 +341,18 @@ function App() {
         className="app"
         tabIndex={0}
         ref={containerRef}
-        style={{
-          outline: "none",
-          width: "100vw",
-          height: "100vh",
-          overflow: "hidden",
-        }}
+        style={{ outline: "none", width: "100vw", height: "100vh" }}
         data-testid="app-container"
       >
         <Application
           width={screenSize.width}
           height={screenSize.height}
           backgroundColor={0x0a0a0f}
-          antialias={true}
-          autoDensity={true}
+          antialias
           resizeTo={window}
         >
-          {renderCurrentScreen()}
+          {/* NEW: one root LayoutContainer that always matches canvas size */}
+          <LayoutResizer>{renderCurrentScreen()}</LayoutResizer>
         </Application>
       </div>
     </AudioProvider>
