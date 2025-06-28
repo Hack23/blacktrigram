@@ -2,6 +2,7 @@
 import "@pixi/layout";
 import {
   LayoutContainer,
+  LayoutGraphics,
   LayoutSprite,
   LayoutText,
   LayoutTilingSprite,
@@ -16,6 +17,7 @@ extend({
   Container,
   LayoutContainer,
   Graphics,
+  LayoutGraphics,
   Sprite,
   LayoutSprite,
   Text,
@@ -318,175 +320,175 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   }
 
   return (
-    <layoutContainer
-      layout={{
-        width: screenW,
-        height: screenH,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: isMobile ? 20 : 40,
-      }}
-      data-testid="intro-screen"
-    >
-      {/* Background gradient - Use regular pixiGraphics for custom drawing */}
+    <pixiContainer data-testid="intro-screen">
+      {/* Background - Use regular pixiGraphics for custom drawing */}
       <pixiGraphics
         x={0}
         y={0}
         draw={backgroundPainter(screenW, screenH, isMobile)}
       />
 
-      {/* Background textures - use LayoutTilingSprite */}
+      {/* Background textures - use regular sprites positioned absolutely */}
       {bgTexture && (
-        <layoutTilingSprite
+        <pixiSprite
           texture={bgTexture}
-          layout={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: screenW,
-            height: screenH,
-          }}
-          tileScale={{ x: 0.3, y: 0.3 }}
+          x={0}
+          y={0}
+          width={screenW}
+          height={screenH}
           alpha={0.05}
         />
       )}
 
       {dojangWallTexture && (
-        <layoutTilingSprite
+        <pixiSprite
           texture={dojangWallTexture}
-          layout={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: screenW,
-            height: screenH,
-          }}
-          tileScale={{ x: 0.5, y: 0.5 }}
+          x={0}
+          y={0}
+          width={screenW}
+          height={screenH}
           alpha={0.1}
         />
       )}
 
-      {/* Logo & Title */}
+      {/* Main content using layout system */}
       <layoutContainer
         layout={{
+          width: screenW,
+          height: screenH,
           flexDirection: "column",
           alignItems: "center",
-          gap: 8,
-          marginTop: 32,
+          justifyContent: "space-between",
+          padding: isMobile ? 20 : 40,
+          position: "absolute",
+          top: 0,
+          left: 0,
         }}
       >
-        {logoTexture && (
-          <layoutSprite
-            texture={logoTexture}
-            layout={{
-              width: logoSize,
-              height: logoSize,
+        {/* Logo & Title */}
+        <layoutContainer
+          layout={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 32,
+          }}
+        >
+          {logoTexture && (
+            <layoutSprite
+              texture={logoTexture}
+              layout={{
+                width: logoSize,
+                height: logoSize,
+              }}
+              anchor={0.5}
+            />
+          )}
+          <layoutText
+            text="흑괘 무술 도장"
+            style={{
+              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+              fontSize: isMobile ? 28 : isTablet ? 36 : 48,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
             }}
+            layout={{ alignSelf: "center" }}
             anchor={0.5}
           />
-        )}
-        <layoutText
-          text="흑괘 무술 도장"
-          style={{
-            fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-            fontSize: isMobile ? 28 : isTablet ? 36 : 48,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            fontWeight: "bold",
+          <layoutText
+            text="Black Trigram Dojo"
+            style={{
+              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+              fontSize: isMobile ? 16 : isTablet ? 20 : 24,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+            }}
+            layout={{ alignSelf: "center" }}
+            anchor={0.5}
+          />
+          <layoutText
+            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
+            style={{
+              fontSize: isMobile ? 20 : 28,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              letterSpacing: isMobile ? 8 : 12,
+            }}
+            layout={{ alignSelf: "center" }}
+            anchor={0.5}
+          />
+        </layoutContainer>
+
+        {/* Menu - Use regular pixiContainer positioned in the layout */}
+        <pixiContainer x={screenW / 2 - 200} y={screenH / 2 - 100}>
+          <MenuSection
+            menuItems={MENU_ITEMS}
+            selectedIndex={menuIdx}
+            onModeSelect={handleMenu}
+            width={isMobile ? screenW * 0.9 : 400}
+            height={220}
+            x={0}
+            y={0}
+          />
+        </pixiContainer>
+
+        {/* Archetype Display - Use regular pixiContainer */}
+        <pixiContainer x={0} y={screenH - (isMobile ? 300 : 350)}>
+          <ArchetypeDisplay
+            archetype={currentArchetype}
+            archetypeData={currentArchData}
+            texture={archetypeTextures[currentArchetype]}
+            total={ARCHETYPE_ORDER.length}
+            index={archIdx}
+            onPrev={() => {
+              setArchIdx(
+                (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
+              );
+              audio.playSFX("ui_navigate");
+            }}
+            onNext={() => {
+              setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
+              audio.playSFX("ui_navigate");
+            }}
+            width={screenW}
+            height={isMobile ? 250 : 300}
+          />
+        </pixiContainer>
+
+        {/* Footer */}
+        <layoutContainer
+          layout={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 4,
+            marginBottom: isMobile ? 20 : 32,
           }}
-          layout={{ alignSelf: "center" }}
-          anchor={0.5}
-        />
-        <layoutText
-          text="Black Trigram Dojo"
-          style={{
-            fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-            fontSize: isMobile ? 16 : isTablet ? 20 : 24,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          layout={{ alignSelf: "center" }}
-          anchor={0.5}
-        />
-        <layoutText
-          text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
-          style={{
-            fontSize: isMobile ? 20 : 28,
-            fill: KOREAN_COLORS.PRIMARY_CYAN,
-            letterSpacing: isMobile ? 8 : 12,
-          }}
-          layout={{ alignSelf: "center" }}
-          anchor={0.5}
-        />
+        >
+          <layoutText
+            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+            style={{
+              fontSize: isMobile ? 10 : 14,
+              fill: KOREAN_COLORS.ACCENT_CYAN,
+              fontStyle: "italic",
+            }}
+            layout={{ alignSelf: "center" }}
+            anchor={0.5}
+          />
+          <layoutText
+            interactive
+            cursor="pointer"
+            text="Open Source Korean Martial Arts Game by Hack23"
+            style={{
+              fontSize: isMobile ? 9 : 12,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+            }}
+            layout={{ alignSelf: "center" }}
+            anchor={0.5}
+            onPointerTap={() => {
+              window.open("https://github.com/Hack23/blacktrigram", "_blank");
+            }}
+          />
+        </layoutContainer>
       </layoutContainer>
-
-      {/* Menu */}
-      <MenuSection
-        menuItems={MENU_ITEMS}
-        selectedIndex={menuIdx}
-        onModeSelect={handleMenu}
-        width={isMobile ? screenW * 0.9 : 400}
-        height={220}
-        x={0}
-        y={0}
-      />
-
-      {/* Archetype Display */}
-      <ArchetypeDisplay
-        archetype={currentArchetype}
-        archetypeData={currentArchData}
-        texture={archetypeTextures[currentArchetype]}
-        total={ARCHETYPE_ORDER.length}
-        index={archIdx}
-        onPrev={() => {
-          setArchIdx(
-            (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-          );
-          audio.playSFX("ui_navigate");
-        }}
-        onNext={() => {
-          setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-          audio.playSFX("ui_navigate");
-        }}
-        width={screenW}
-        height={isMobile ? 250 : 300}
-      />
-
-      {/* Footer */}
-      <layoutContainer
-        layout={{
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 4,
-          marginBottom: isMobile ? 20 : 32,
-        }}
-      >
-        <layoutText
-          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-          style={{
-            fontSize: isMobile ? 10 : 14,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-            fontStyle: "italic",
-          }}
-          layout={{ alignSelf: "center" }}
-          anchor={0.5}
-        />
-        <layoutText
-          interactive
-          cursor="pointer"
-          text="Open Source Korean Martial Arts Game by Hack23"
-          style={{
-            fontSize: isMobile ? 9 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            // Remove textDecoration as it's not supported in PixiJS TextStyle
-          }}
-          layout={{ alignSelf: "center" }}
-          anchor={0.5}
-          onPointerTap={() => {
-            window.open("https://github.com/Hack23/blacktrigram", "_blank");
-          }}
-        />
-      </layoutContainer>
-    </layoutContainer>
+    </pixiContainer>
   );
 };
 
