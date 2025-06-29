@@ -9,7 +9,7 @@ import {
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
-import { Container, Graphics, Sprite, Text } from "pixi.js";
+import { Container, Graphics, GraphicsContext, Sprite, Text } from "pixi.js";
 
 // Register both layout and regular components
 extend({
@@ -41,7 +41,6 @@ import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
-import { createGraphicsContext } from "../../utils/pixiExtensions";
 
 /* ------------------------------------------------------------------ */
 /*  1.  Utility hooks                                                 */
@@ -246,20 +245,24 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   };
 
+  // Create the grid graphics context properly
   const gridContext = useMemo(() => {
-    return createGraphicsContext((g) => {
-      g.clear();
-      const gridSize = 30;
-      const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
+    const context = new GraphicsContext();
+    const g = new Graphics(context);
 
-      for (let i = 0; i < screenW / gridSize; i++) {
-        g.rect(i * gridSize, 0, 1, screenH);
-      }
-      for (let i = 0; i < screenH / gridSize; i++) {
-        g.rect(0, i * gridSize, screenW, 1);
-      }
-      g.fill({ color: gridColor, alpha: 0.08 });
-    });
+    g.clear();
+    const gridSize = 30;
+    const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
+
+    for (let i = 0; i < screenW / gridSize; i++) {
+      g.rect(i * gridSize, 0, 1, screenH);
+    }
+    for (let i = 0; i < screenH / gridSize; i++) {
+      g.rect(0, i * gridSize, screenW, 1);
+    }
+    g.fill({ color: gridColor, alpha: 0.08 });
+
+    return context;
   }, [screenW, screenH]);
 
   // Render different sections
@@ -300,7 +303,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       }}
       data-testid="intro-screen"
     >
-      {/* Background Grid - Use layoutGraphics for custom drawing */}
+      {/* Background Grid - Use layoutGraphics with GraphicsContext */}
       <layoutGraphics
         context={gridContext}
         layout={{

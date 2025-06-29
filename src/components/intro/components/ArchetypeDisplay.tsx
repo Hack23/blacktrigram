@@ -1,6 +1,6 @@
 import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype } from "@/types";
-import { FancyButton } from "@pixi/ui"; // Import from @pixi/ui instead of pixi.js
+import { FancyButton } from "@pixi/ui";
 import * as PIXI from "pixi.js";
 import React, { useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
@@ -129,6 +129,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
       [primaryColor]
     );
 
+    // Simplified layout without excessive nesting
     return (
       <layoutContainer
         layout={{
@@ -138,221 +139,213 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           borderRadius: 12,
           justifyContent: "center",
           alignItems: "center",
-          flexDirection: "column",
-          gap: 20,
           backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 16 : 24,
         }}
       >
-        {/* Main content row */}
-        <layoutContainer
-          layout={{
-            flexDirection: isMobile ? "column" : "row",
-            alignItems: "center",
-            gap: isMobile ? 16 : 24,
-          }}
-        >
-          {/* Desktop: Left navigation button */}
-          {!isMobile && (
-            <pixiFancyButton
-              ref={prevButtonRef}
-              defaultView={navButtonViews.prev.default}
-              hoverView={navButtonViews.prev.hover}
-              pressedView={navButtonViews.prev.pressed}
-              text={
-                new PIXI.Text({
-                  text: "◀",
-                  style: {
-                    fontSize: 20,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                    align: "center",
-                  },
-                })
-              }
-              animations={{
-                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-                pressed: {
-                  props: { scale: { x: 0.95, y: 0.95 } },
-                  duration: 100,
-                },
-              }}
-            />
-          )}
-
-          {/* Character image */}
-          <layoutContainer
-            layout={{
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <layoutSprite
-              texture={texture ?? PIXI.Texture.EMPTY}
-              layout={{
-                width: imageSize,
-                height: imageSize,
-              }}
-              anchor={0.5}
-              interactive={!!onSelect}
-              cursor={onSelect ? "pointer" : "default"}
-              onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
-            />
-            {isSelected && (
-              <layoutText
-                text="✓ 선택됨"
-                style={{
-                  fontFamily: "Noto Sans KR, sans-serif",
-                  fontSize: 12,
-                  fill: KOREAN_COLORS.ACCENT_GOLD,
+        {/* Desktop: Left navigation button */}
+        {!isMobile && (
+          <pixiFancyButton
+            ref={prevButtonRef}
+            defaultView={navButtonViews.prev.default}
+            hoverView={navButtonViews.prev.hover}
+            pressedView={navButtonViews.prev.pressed}
+            text={
+              new PIXI.Text({
+                text: "◀",
+                style: {
+                  fontSize: 20,
+                  fill: KOREAN_COLORS.TEXT_PRIMARY,
                   fontWeight: "bold",
-                }}
-              />
-            )}
-          </layoutContainer>
-
-          {/* Character info */}
-          <layoutContainer
-            layout={{
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8,
+                  align: "center",
+                },
+              })
+            }
+            animations={{
+              hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+              pressed: {
+                props: { scale: { x: 0.95, y: 0.95 } },
+                duration: 100,
+              },
             }}
-          >
-            <layoutText
-              text={`${archetypeData.name.korean} - ${archetypeData.name.english}`}
-              style={{
-                fontFamily: "Noto Sans KR, sans-serif",
-                fontSize: isMobile ? 18 : 24,
-                fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
-                fontWeight: "bold",
-                align: "center",
-                dropShadow: {
-                  color: 0x000000,
-                  alpha: 0.5,
-                  blur: 4,
-                  distance: 2,
-                },
-              }}
-            />
-            <layoutText
-              text={archetype.toLowerCase().replace(/_/g, " ")}
-              style={{
-                fontFamily: "Noto Sans KR, sans-serif",
-                fontSize: isMobile ? 12 : 14,
-                fill: KOREAN_COLORS.TEXT_SECONDARY,
-                align: "center",
-              }}
-            />
-            <layoutText
-              text={archetypeData.description.korean}
-              style={{
-                fontFamily: "Noto Sans KR, sans-serif",
-                fontSize: isMobile ? 12 : 14,
-                fill: KOREAN_COLORS.TEXT_PRIMARY,
-                align: "center",
-                wordWrap: true,
-                wordWrapWidth: isMobile ? 200 : 300,
-                lineHeight: 20,
-              }}
-            />
-          </layoutContainer>
-
-          {/* Desktop: Right navigation button */}
-          {!isMobile && (
-            <pixiFancyButton
-              ref={nextButtonRef}
-              defaultView={navButtonViews.next.default}
-              hoverView={navButtonViews.next.hover}
-              pressedView={navButtonViews.next.pressed}
-              text={
-                new PIXI.Text({
-                  text: "▶",
-                  style: {
-                    fontSize: 20,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                    align: "center",
-                  },
-                })
-              }
-              animations={{
-                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-                pressed: {
-                  props: { scale: { x: 0.95, y: 0.95 } },
-                  duration: 100,
-                },
-              }}
-            />
-          )}
-        </layoutContainer>
-
-        {/* Mobile: Navigation buttons row */}
-        {isMobile && (
-          <layoutContainer
-            layout={{
-              flexDirection: "row",
-              justifyContent: "center",
-              gap: 20,
-            }}
-          >
-            <pixiFancyButton
-              ref={prevButtonRef}
-              defaultView={navButtonViews.prev.default}
-              hoverView={navButtonViews.prev.hover}
-              pressedView={navButtonViews.prev.pressed}
-              text={
-                new PIXI.Text({
-                  text: "◀",
-                  style: {
-                    fontSize: 20,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                    align: "center",
-                  },
-                })
-              }
-              animations={{
-                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-                pressed: {
-                  props: { scale: { x: 0.95, y: 0.95 } },
-                  duration: 100,
-                },
-              }}
-            />
-            <pixiFancyButton
-              ref={nextButtonRef}
-              defaultView={navButtonViews.next.default}
-              hoverView={navButtonViews.next.hover}
-              pressedView={navButtonViews.next.pressed}
-              text={
-                new PIXI.Text({
-                  text: "▶",
-                  style: {
-                    fontSize: 20,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                    align: "center",
-                  },
-                })
-              }
-              animations={{
-                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-                pressed: {
-                  props: { scale: { x: 0.95, y: 0.95 } },
-                  duration: 100,
-                },
-              }}
-            />
-          </layoutContainer>
+          />
         )}
 
-        {/* Progress bar */}
+        {/* Character image and info - simplified structure */}
+        <layoutSprite
+          texture={texture ?? PIXI.Texture.EMPTY}
+          layout={{
+            width: imageSize,
+            height: imageSize,
+          }}
+          anchor={0.5}
+          interactive={!!onSelect}
+          cursor={onSelect ? "pointer" : "default"}
+          onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
+        />
+
+        {/* Character info as direct children instead of nested container */}
+        <layoutText
+          text={`${archetypeData.name.korean} - ${archetypeData.name.english}`}
+          style={{
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontSize: isMobile ? 18 : 24,
+            fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
+            fontWeight: "bold",
+            align: "center",
+            dropShadow: {
+              color: 0x000000,
+              alpha: 0.5,
+              blur: 4,
+              distance: 2,
+            },
+          }}
+          layout={{
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+        />
+
+        {/* Desktop: Right navigation button */}
+        {!isMobile && (
+          <pixiFancyButton
+            ref={nextButtonRef}
+            defaultView={navButtonViews.next.default}
+            hoverView={navButtonViews.next.hover}
+            pressedView={navButtonViews.next.pressed}
+            text={
+              new PIXI.Text({
+                text: "▶",
+                style: {
+                  fontSize: 20,
+                  fill: KOREAN_COLORS.TEXT_PRIMARY,
+                  fontWeight: "bold",
+                  align: "center",
+                },
+              })
+            }
+            animations={{
+              hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+              pressed: {
+                props: { scale: { x: 0.95, y: 0.95 } },
+                duration: 100,
+              },
+            }}
+          />
+        )}
+
+        {/* Mobile: Navigation buttons - positioned absolutely to avoid nesting */}
+        {isMobile && (
+          <>
+            <pixiFancyButton
+              ref={prevButtonRef}
+              defaultView={navButtonViews.prev.default}
+              hoverView={navButtonViews.prev.hover}
+              pressedView={navButtonViews.prev.pressed}
+              text={
+                new PIXI.Text({
+                  text: "◀",
+                  style: {
+                    fontSize: 20,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                    align: "center",
+                  },
+                })
+              }
+              layout={{
+                position: "absolute",
+                bottom: 60,
+                left: width * 0.3,
+              }}
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+            <pixiFancyButton
+              ref={nextButtonRef}
+              defaultView={navButtonViews.next.default}
+              hoverView={navButtonViews.next.hover}
+              pressedView={navButtonViews.next.pressed}
+              text={
+                new PIXI.Text({
+                  text: "▶",
+                  style: {
+                    fontSize: 20,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                    align: "center",
+                  },
+                })
+              }
+              layout={{
+                position: "absolute",
+                bottom: 60,
+                right: width * 0.3,
+              }}
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+          </>
+        )}
+
+        {/* Progress bar - positioned absolutely */}
         <pixiProgressBar
           bg={progressViews.bg}
           fill={progressViews.fill}
           fillPaddings={{ top: 2, right: 2, bottom: 2, left: 2 }}
           progress={((index + 1) / total) * 100}
+          layout={{
+            position: "absolute",
+            bottom: 20,
+            left: "center",
+          }}
+        />
+
+        {/* Selected indicator - positioned absolutely */}
+        {isSelected && (
+          <layoutText
+            text="✓ 선택됨"
+            style={{
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontSize: 12,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+            }}
+            layout={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+            }}
+          />
+        )}
+
+        {/* Description text - positioned absolutely to avoid deep nesting */}
+        <layoutText
+          text={archetypeData.description.korean}
+          style={{
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontSize: isMobile ? 12 : 14,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            align: "center",
+            wordWrap: true,
+            wordWrapWidth: isMobile ? 200 : 300,
+            lineHeight: 20,
+          }}
+          layout={{
+            position: "absolute",
+            bottom: 80,
+          }}
         />
       </layoutContainer>
     );
