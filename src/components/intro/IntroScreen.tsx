@@ -20,27 +20,15 @@ import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 
 import {
-  LayoutAnimatedSprite,
-  LayoutBitmapText,
-  LayoutContainer,
   LayoutGraphics,
-  LayoutNineSliceSprite,
-  LayoutSprite,
   LayoutText,
-  LayoutTilingSprite,
   LayoutView,
 } from "@pixi/layout/components";
 import { extend } from "@pixi/react";
 extend({
-  LayoutAnimatedSprite,
-  LayoutBitmapText,
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutNineSliceSprite,
-  LayoutSprite,
   LayoutText,
-  LayoutTilingSprite,
   LayoutView,
+  LayoutGraphics,
 });
 
 /* ------------------------------------------------------------------ */
