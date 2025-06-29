@@ -31,7 +31,6 @@ import {
   LayoutView,
 } from "@pixi/layout/components";
 import { extend } from "@pixi/react";
-
 extend({
   LayoutAnimatedSprite,
   LayoutBitmapText,

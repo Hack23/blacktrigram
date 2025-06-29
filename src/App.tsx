@@ -24,10 +24,6 @@ extend({
   FancyButton,
 });
 
-// Remove direct import of EndScreen and TrainingScreen
-// import { EndScreen } from "./components/ui/EndScreen";
-// import { TrainingScreen } from "./components";
-
 // Lazy load heavy screens
 const EndScreen = lazy(() => import("./components/ui/EndScreen"));
 const TrainingScreen = lazy(
@@ -35,12 +31,8 @@ const TrainingScreen = lazy(
 );
 
 /* ------------------------------------------------------------------
- *  ⬇  Register Pixi display objects so <pixi…/> JSX tags compile
- * -----------------------------------------------------------------*/
-
-/* ------------------------------------------------------------------
- *  ⬇  Generic wrapper that keeps a LayoutContainer the size
- *     of the current browser viewport and updates on resize.
+ *  ⬇  LayoutContainer-based wrapper that keeps content sized
+ *     to the current browser viewport and updates on resize.
  * -----------------------------------------------------------------*/
 
 interface LayoutResizerProps {
@@ -55,7 +47,6 @@ interface ScreenDimensions {
 }
 
 function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
-  const layoutRef = useRef<LayoutContainer>(null);
   const { app } = useApplication();
   const [dimensions, setDimensions] = useState<ScreenDimensions>({
     width: window.innerWidth,
@@ -88,13 +79,6 @@ function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
       const newDimensions = calculateDimensions();
       setDimensions(newDimensions);
 
-      if (layoutRef.current) {
-        layoutRef.current.layout = {
-          width: newDimensions.width,
-          height: newDimensions.height,
-        };
-      }
-
       // Scroll to top to avoid mobile resize issues
       window.scrollTo(0, 0);
     };
@@ -118,20 +102,24 @@ function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
     };
   }, [app]);
 
+  // Use layoutContainer with responsive layout
   return (
-    <pixiContainer
-      ref={layoutRef}
-      width={dimensions.width}
-      height={dimensions.height}
+    <layoutContainer
+      layout={{
+        width: dimensions.width,
+        height: dimensions.height,
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {children}
-    </pixiContainer>
+    </layoutContainer>
   );
 }
 
 /* ------------------------------------------------------------------
- *  ⬇  Rest of App component (unchanged logic ‑- only the JSX shell
- *     around <Application> is modified to insert <LayoutResizer/>.
+ *  ⬇  Rest of App component (unchanged logic)
  * -----------------------------------------------------------------*/
 function App() {
   usePixiExtensions();
