@@ -1,29 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import "@pixi/layout";
-import {
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutSprite,
-  LayoutText,
-} from "@pixi/layout/components";
 import "@pixi/layout/react";
-import { extend } from "@pixi/react";
-import { FancyButton } from "@pixi/ui";
-import { Container, Graphics, GraphicsContext, Sprite, Text } from "pixi.js";
-
-// Register both layout and regular components
-extend({
-  Container,
-  LayoutContainer,
-  Graphics,
-  LayoutGraphics,
-  Sprite,
-  LayoutSprite,
-  Text,
-  LayoutText,
-  FancyButton,
-});
-
+import "@pixi/layout";
 import * as PIXI from "pixi.js";
 import React, {
   Suspense,
@@ -34,6 +11,8 @@ import React, {
   useState,
 } from "react";
 
+
+
 import ArchetypeDisplay from "./components/ArchetypeDisplay";
 import { MenuSection } from "./components/MenuSection";
 
@@ -41,6 +20,32 @@ import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
+import { createGraphicsContext } from "../../utils/pixiExtensions";
+
+import {
+  LayoutAnimatedSprite,
+  LayoutBitmapText,
+  LayoutContainer,
+  LayoutGraphics,
+  LayoutNineSliceSprite,
+  LayoutSprite,
+  LayoutText,
+  LayoutTilingSprite,
+  LayoutView,
+} from "@pixi/layout/components";
+import { extend } from "@pixi/react";
+
+extend({
+  LayoutAnimatedSprite,
+  LayoutBitmapText,
+  LayoutContainer,
+  LayoutGraphics,
+  LayoutNineSliceSprite,
+  LayoutSprite,
+  LayoutText,
+  LayoutTilingSprite,
+  LayoutView,
+});
 
 /* ------------------------------------------------------------------ */
 /*  1.  Utility hooks                                                 */
@@ -75,14 +80,20 @@ function useIntroAssets() {
     /* eslint-disable @typescript-eslint/no-floating-promises */
     (async () => {
       try {
+        // Use PIXI.Texture.EMPTY as fallback instead of null
         setBgTexture(
-          await PIXI.Assets.load("/assets/visual/bg/intro/intro_bg_loop.png")
+          (await PIXI.Assets.load(
+            "/assets/visual/bg/intro/intro_bg_loop.png"
+          )) ?? PIXI.Texture.EMPTY
         );
         setLogoTexture(
-          await PIXI.Assets.load("/assets/visual/logo/black-trigram.png")
+          (await PIXI.Assets.load("/assets/visual/logo/black-trigram.png")) ??
+            PIXI.Texture.EMPTY
         );
         setDojangWallTexture(
-          await PIXI.Assets.load("/assets/visual/bg/dojang/dojang_wall_tex.png")
+          (await PIXI.Assets.load(
+            "/assets/visual/bg/dojang/dojang_wall_tex.png"
+          )) ?? PIXI.Texture.EMPTY
         );
 
         const paths: Record<PlayerArchetype, string> = {
@@ -98,12 +109,17 @@ function useIntroAssets() {
         const loaded: Partial<Record<PlayerArchetype, PIXI.Texture>> = {};
         await Promise.all(
           Object.entries(paths).map(async ([k, p]) => {
-            loaded[k as PlayerArchetype] = await PIXI.Assets.load(p);
+            loaded[k as PlayerArchetype] =
+              (await PIXI.Assets.load(p)) ?? PIXI.Texture.EMPTY;
           })
         );
         setArchetypeTextures(loaded);
       } catch (err) {
         console.error("Intro asset load error:", err);
+        // Set empty textures on error
+        setBgTexture(PIXI.Texture.EMPTY);
+        setLogoTexture(PIXI.Texture.EMPTY);
+        setDojangWallTexture(PIXI.Texture.EMPTY);
       }
     })();
     /* eslint-enable */
@@ -247,28 +263,29 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   // Create the grid graphics context properly
   const gridContext = useMemo(() => {
-    const context = new GraphicsContext();
-    const g = new Graphics(context);
+    return createGraphicsContext((g) => {
+      g.clear();
+      const gridSize = 30;
+      const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
 
-    g.clear();
-    const gridSize = 30;
-    const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
-
-    for (let i = 0; i < screenW / gridSize; i++) {
-      g.rect(i * gridSize, 0, 1, screenH);
-    }
-    for (let i = 0; i < screenH / gridSize; i++) {
-      g.rect(0, i * gridSize, screenW, 1);
-    }
-    g.fill({ color: gridColor, alpha: 0.08 });
-
-    return context;
+      for (let i = 0; i < screenW / gridSize; i++) {
+        g.rect(i * gridSize, 0, 1, screenH);
+      }
+      for (let i = 0; i < screenH / gridSize; i++) {
+        g.rect(0, i * gridSize, screenW, 1);
+      }
+      g.fill({ color: gridColor, alpha: 0.08 });
+    });
   }, [screenW, screenH]);
 
   // Render different sections
   if (section === "controls") {
     return (
-      <Suspense fallback={<layoutContainer />}>
+      <Suspense
+        fallback={
+          <layoutContainer layout={{ width: screenW, height: screenH }} />
+        }
+      >
         <ControlsSection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -280,7 +297,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   if (section === "philosophy") {
     return (
-      <Suspense fallback={<layoutContainer />}>
+      <Suspense
+        fallback={
+          <layoutContainer layout={{ width: screenW, height: screenH }} />
+        }
+      >
         <PhilosophySection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -303,144 +324,156 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       }}
       data-testid="intro-screen"
     >
-      {/* Background Grid - Use layoutGraphics with context option */}
-      <layoutGraphics
-        context={gridContext}
+      {/* Background layers - properly nested in single container */}
+      <layoutContainer
         layout={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-
-      {/* Background textures - use layoutSprites with texture option */}
-      {bgTexture && (
-        <layoutSprite
-          texture={bgTexture}
-          alpha={0.05}
-          layout={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        />
-      )}
-
-      {dojangWallTexture && (
-        <layoutSprite
-          texture={dojangWallTexture}
-          alpha={0.1}
-          layout={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        />
-      )}
-
-      {/* Logo & Title */}
-      <layoutContainer
-        layout={{
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 8,
-          marginTop: 32,
+          width: screenW,
+          height: screenH,
         }}
       >
-        {logoTexture && (
+        {/* Grid background */}
+        <layoutGraphics
+          context={gridContext}
+          layout={{
+            width: screenW,
+            height: screenH,
+          }}
+        />
+
+        {/* Background texture */}
+        {bgTexture && bgTexture !== PIXI.Texture.EMPTY && (
           <layoutSprite
-            texture={logoTexture}
-            anchor={0.5}
+            texture={bgTexture}
+            alpha={0.05}
             layout={{
-              width: logoSize,
-              height: logoSize,
+              width: screenW,
+              height: screenH,
             }}
           />
         )}
-        <layoutText
-          text="흑괘 무술 도장"
-          style={{
-            fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-            fontSize: isMobile ? 28 : isTablet ? 36 : 48,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            fontWeight: "bold",
-          }}
-          anchor={{ x: 0.5, y: 0.5 }}
-        />
-        <layoutText
-          text="Black Trigram Dojo"
-          style={{
-            fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-            fontSize: isMobile ? 16 : isTablet ? 20 : 24,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          anchor={{ x: 0.5, y: 0.5 }}
-        />
-        <layoutText
-          text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
-          style={{
-            fontSize: isMobile ? 20 : 28,
-            fill: KOREAN_COLORS.PRIMARY_CYAN,
-            letterSpacing: isMobile ? 8 : 12,
-          }}
-          anchor={{ x: 0.5, y: 0.5 }}
-        />
+
+        {/* Dojang wall texture */}
+        {dojangWallTexture && dojangWallTexture !== PIXI.Texture.EMPTY && (
+          <layoutSprite
+            texture={dojangWallTexture}
+            alpha={0.1}
+            layout={{
+              width: screenW,
+              height: screenH,
+            }}
+          />
+        )}
       </layoutContainer>
 
-      {/* Menu */}
-      <MenuSection
-        menuItems={MENU_ITEMS}
-        selectedIndex={menuIdx}
-        onModeSelect={handleMenu}
-        width={isMobile ? screenW * 0.9 : 400}
-        height={isMobile ? 280 : 320}
-      />
-
-      {/* Archetype Display */}
-      <ArchetypeDisplay
-        archetype={currentArchetype}
-        archetypeData={currentArchData}
-        texture={archetypeTextures[currentArchetype]}
-        total={ARCHETYPE_ORDER.length}
-        index={archIdx}
-        onPrev={() => {
-          setArchIdx(
-            (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-          );
-          audio.playSFX("ui_navigate");
-        }}
-        onNext={() => {
-          setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-          audio.playSFX("ui_navigate");
-        }}
-        width={screenW}
-        height={isMobile ? 250 : 300}
-      />
-
-      {/* Footer */}
+      {/* Main content container */}
       <layoutContainer
         layout={{
           flexDirection: "column",
           alignItems: "center",
-          gap: 4,
-          marginBottom: isMobile ? 20 : 32,
+          gap: 20,
         }}
       >
-        <layoutText
-          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-          style={{
-            fontSize: isMobile ? 10 : 14,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-            fontStyle: "italic",
+        {/* Logo & Title */}
+        <layoutContainer
+          layout={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 32,
           }}
-          anchor={{ x: 0.5, y: 0.5 }}
+        >
+          {logoTexture && logoTexture !== PIXI.Texture.EMPTY && (
+            <layoutSprite
+              texture={logoTexture}
+              anchor={0.5}
+              layout={{
+                width: logoSize,
+                height: logoSize,
+              }}
+            />
+          )}
+          <layoutText
+            text="흑괘 무술 도장"
+            style={{
+              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+              fontSize: isMobile ? 28 : isTablet ? 36 : 48,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+          />
+          <layoutText
+            text="Black Trigram Dojo"
+            style={{
+              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+              fontSize: isMobile ? 16 : isTablet ? 20 : 24,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+          />
+          <layoutText
+            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
+            style={{
+              fontSize: isMobile ? 20 : 28,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              letterSpacing: isMobile ? 8 : 12,
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+          />
+        </layoutContainer>
+
+        {/* Menu */}
+        <MenuSection
+          menuItems={MENU_ITEMS}
+          selectedIndex={menuIdx}
+          onModeSelect={handleMenu}
+          width={isMobile ? screenW * 0.9 : 400}
+          height={isMobile ? 280 : 320}
         />
+
+        {/* Archetype Display */}
+        <ArchetypeDisplay
+          archetype={currentArchetype}
+          archetypeData={currentArchData}
+          texture={archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY}
+          total={ARCHETYPE_ORDER.length}
+          index={archIdx}
+          onPrev={() => {
+            setArchIdx(
+              (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
+            );
+            audio.playSFX("ui_navigate");
+          }}
+          onNext={() => {
+            setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
+            audio.playSFX("ui_navigate");
+          }}
+          width={screenW}
+          height={isMobile ? 250 : 300}
+        />
+
+        {/* Footer */}
+        <layoutContainer
+          layout={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 4,
+            marginBottom: isMobile ? 20 : 32,
+          }}
+        >
+          <layoutText
+            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+            style={{
+              fontSize: isMobile ? 10 : 14,
+              fill: KOREAN_COLORS.ACCENT_CYAN,
+              fontStyle: "italic",
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+          />
+        </layoutContainer>
       </layoutContainer>
     </layoutContainer>
   );

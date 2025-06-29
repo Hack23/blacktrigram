@@ -16,6 +16,14 @@ import { GameMode, PlayerArchetype } from "./types/common";
 import { usePixiExtensions } from "./utils/pixiExtensions";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
+extend({
+  Container,
+  Graphics,
+  Text,
+  LayoutContainer,
+  FancyButton,
+});
+
 // Remove direct import of EndScreen and TrainingScreen
 // import { EndScreen } from "./components/ui/EndScreen";
 // import { TrainingScreen } from "./components";
@@ -29,76 +37,97 @@ const TrainingScreen = lazy(
 /* ------------------------------------------------------------------
  *  ⬇  Register Pixi display objects so <pixi…/> JSX tags compile
  * -----------------------------------------------------------------*/
-extend({ Container, Graphics, Text, LayoutContainer, FancyButton });
 
 /* ------------------------------------------------------------------
  *  ⬇  Generic wrapper that keeps a LayoutContainer the size
  *     of the current browser viewport and updates on resize.
  * -----------------------------------------------------------------*/
-const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const { app } = useApplication();
+
+interface LayoutResizerProps {
+  children: React.ReactNode;
+}
+
+// Add this interface to track screen dimensions
+interface ScreenDimensions {
+  width: number;
+  height: number;
+  scale: number;
+}
+
+function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
   const layoutRef = useRef<LayoutContainer>(null);
-  const [dimensions, setDimensions] = useState({
+  const { app } = useApplication();
+  const [dimensions, setDimensions] = useState<ScreenDimensions>({
     width: window.innerWidth,
-    height: window.innerHeight,
+    height: window.innerHeight - 100, // Account for header/footer
+    scale: 1,
   });
 
-  const doResize = useCallback(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    // Update dimensions state
-    setDimensions({ width, height });
-
-    // Update layout if ref exists
-    if (layoutRef.current) {
-      layoutRef.current.layout = { width, height };
-    }
-
-    // Keep PIXI renderer in-sync
-    if (app?.renderer) {
-      app.renderer.resize(width, height);
-    }
-
-    // Prevent mobile scroll issues
-    window.scrollTo(0, 0);
-  }, [app]);
-
   useEffect(() => {
-    // Initial resize
-    doResize();
+    const calculateDimensions = (): ScreenDimensions => {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight - 100; // Account for header/footer
 
-    // Listen for resize events
-    window.addEventListener("resize", doResize);
+      // Minimum content dimensions (adjust as needed for your game)
+      const minWidth = 800;
+      const minHeight = 600;
+
+      // Calculate scale factors
+      const scaleX = windowWidth < minWidth ? minWidth / windowWidth : 1;
+      const scaleY = windowHeight < minHeight ? minHeight / windowHeight : 1;
+      const scale = Math.max(scaleX, scaleY);
+
+      return {
+        width: windowWidth,
+        height: windowHeight,
+        scale: scale,
+      };
+    };
+
+    const handleResize = (): void => {
+      const newDimensions = calculateDimensions();
+      setDimensions(newDimensions);
+
+      if (layoutRef.current) {
+        layoutRef.current.layout = {
+          width: newDimensions.width,
+          height: newDimensions.height,
+        };
+      }
+
+      // Scroll to top to avoid mobile resize issues
+      window.scrollTo(0, 0);
+    };
+
+    // Initial resize
+    handleResize();
+
+    // Listen for window resize events
+    window.addEventListener("resize", handleResize);
 
     // Also listen for PixiJS resize events if available
     if (app?.renderer && typeof app.renderer.on === "function") {
-      app.renderer.on("resize", doResize);
+      app.renderer.on("resize", handleResize);
     }
 
     return () => {
-      window.removeEventListener("resize", doResize);
+      window.removeEventListener("resize", handleResize);
       if (app?.renderer && typeof app.renderer.off === "function") {
-        app.renderer.off("resize", doResize);
+        app.renderer.off("resize", handleResize);
       }
     };
-  }, [doResize, app]);
+  }, [app]);
 
-  // Use layoutContainer instead of pixiContainer for layout support
   return (
-    <layoutContainer
+    <pixiContainer
       ref={layoutRef}
-      layout={{
-        width: dimensions.width,
-        height: dimensions.height,
-      }}
+      width={dimensions.width}
+      height={dimensions.height}
     >
       {children}
-    </layoutContainer>
+    </pixiContainer>
   );
-};
+}
 
 /* ------------------------------------------------------------------
  *  ⬇  Rest of App component (unchanged logic ‑- only the JSX shell
