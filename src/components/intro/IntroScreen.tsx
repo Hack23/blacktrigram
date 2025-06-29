@@ -18,7 +18,6 @@ import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
-import { createGraphicsContext } from "../../utils/pixiExtensions";
 
 import {
   LayoutAnimatedSprite,
@@ -259,21 +258,22 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   };
 
-  // Create the grid graphics context properly
-  const gridContext = useMemo(() => {
-    return createGraphicsContext((g) => {
-      g.clear();
-      const gridSize = 30;
-      const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
+  // Create the grid graphics properly
+  const gridGraphics = useMemo(() => {
+    const graphics = new PIXI.Graphics();
+    const gridSize = 30;
+    const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
 
-      for (let i = 0; i < screenW / gridSize; i++) {
-        g.rect(i * gridSize, 0, 1, screenH);
-      }
-      for (let i = 0; i < screenH / gridSize; i++) {
-        g.rect(0, i * gridSize, screenW, 1);
-      }
-      g.fill({ color: gridColor, alpha: 0.08 });
-    });
+    graphics.clear();
+    for (let i = 0; i < screenW / gridSize; i++) {
+      graphics.rect(i * gridSize, 0, 1, screenH);
+    }
+    for (let i = 0; i < screenH / gridSize; i++) {
+      graphics.rect(0, i * gridSize, screenW, 1);
+    }
+    graphics.fill({ color: gridColor, alpha: 0.08 });
+
+    return graphics;
   }, [screenW, screenH]);
 
   // Render different sections
@@ -323,9 +323,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       data-testid="intro-screen"
     >
       {/* Background layers - use absolute positioning within the main container */}
-      {/* Grid background */}
+      {/* Grid background - use the graphics instance directly */}
       <layoutGraphics
-        context={gridContext}
+        context={gridGraphics.context}
         layout={{
           position: "absolute",
           top: 0,
