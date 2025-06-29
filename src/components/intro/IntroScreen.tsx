@@ -303,7 +303,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       }}
       data-testid="intro-screen"
     >
-      {/* Background Grid - Use layoutGraphics with GraphicsContext */}
+      {/* Background Grid - Use layoutGraphics with context option */}
       <layoutGraphics
         context={gridContext}
         layout={{
@@ -315,7 +315,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         }}
       />
 
-      {/* Background textures - use layoutSprites positioned absolutely */}
+      {/* Background textures - use layoutSprites with texture option */}
       {bgTexture && (
         <layoutSprite
           texture={bgTexture}
@@ -356,11 +356,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         {logoTexture && (
           <layoutSprite
             texture={logoTexture}
+            anchor={0.5}
             layout={{
               width: logoSize,
               height: logoSize,
             }}
-            anchor={0.5}
           />
         )}
         <layoutText

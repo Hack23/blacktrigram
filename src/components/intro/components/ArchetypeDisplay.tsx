@@ -155,6 +155,10 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         {/* Character image - positioned absolutely */}
         <layoutSprite
           texture={texture ?? PIXI.Texture.EMPTY}
+          anchor={0.5}
+          interactive={!!onSelect}
+          cursor={onSelect ? "pointer" : "default"}
+          onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
           layout={{
             position: "absolute",
             left: isMobile ? (width * 0.9) / 2 - imageSize / 2 : 100,
@@ -162,10 +166,6 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             width: imageSize,
             height: imageSize,
           }}
-          anchor={0.5}
-          interactive={!!onSelect}
-          cursor={onSelect ? "pointer" : "default"}
-          onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
         />
 
         {/* Character name - positioned absolutely */}
