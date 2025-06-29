@@ -1,17 +1,23 @@
 import "@pixi/layout";
-import { LayoutContainer, LayoutText } from "@pixi/layout/components";
+import {
+  LayoutContainer,
+  LayoutGraphics,
+  LayoutText,
+} from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import { Container, Graphics, Text } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
+import { createGraphicsContext } from "../../../utils/pixiExtensions";
 
 extend({
   Container,
   LayoutContainer,
   FancyButton,
   Graphics,
+  LayoutGraphics,
   Text,
   LayoutText,
 });
@@ -207,20 +213,26 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
         gap: 8,
       };
 
-      const drawBadge = useCallback(
-        (g: Graphics) => {
+      const badgeContext = useMemo(() => {
+        return createGraphicsContext((g) => {
           g.clear();
           g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
           g.roundRect(0, 0, badgeWidth, 28, 6);
           g.fill();
-        },
-        [badgeWidth]
-      );
+        });
+      }, [badgeWidth]);
 
       return (
         <layoutContainer layout={badgeLayout}>
-          <pixiContainer width={badgeWidth} height={28}>
-            <pixiGraphics draw={drawBadge} />
+          <layoutContainer
+            layout={{
+              width: badgeWidth,
+              height: 28,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <layoutGraphics context={badgeContext} />
             <layoutText
               text={keyText}
               style={{
@@ -229,14 +241,9 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                 fontFamily: "monospace",
                 fontWeight: "bold",
               }}
-              layout={{
-                position: "absolute" as const,
-                left: badgeWidth / 2,
-                top: 14,
-              }}
               anchor={0.5}
             />
-          </pixiContainer>
+          </layoutContainer>
           {symbol && (
             <layoutText
               text={symbol}
@@ -399,6 +406,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
 
       return () => {
         // Cleanup on unmount
+        if (button.destroyed) return;
         button.onPress.disconnectAll();
       };
     }

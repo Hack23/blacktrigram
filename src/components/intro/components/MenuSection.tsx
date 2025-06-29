@@ -94,7 +94,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
           isSelected ? 0.9 : 0.8
         );
-      }, [isSelected]);
+      }, [isSelected, createButtonGraphics]);
 
       const hoverView = useMemo(() => {
         return createButtonGraphics(
@@ -103,7 +103,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             : KOREAN_COLORS.UI_BACKGROUND_LIGHT,
           1
         );
-      }, [isSelected]);
+      }, [isSelected, createButtonGraphics]);
 
       const pressedView = useMemo(() => {
         return createButtonGraphics(
@@ -112,7 +112,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             : KOREAN_COLORS.UI_BACKGROUND_DARK,
           1
         );
-      }, [isSelected]);
+      }, [isSelected, createButtonGraphics]);
 
       const buttonText = useMemo(() => {
         return new Text({
@@ -143,7 +143,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             button.onPress.disconnectAll();
           };
         }
-      }, [item.mode, index]);
+      }, [item.mode, index, onModeSelect]);
 
       return (
         <layoutContainer

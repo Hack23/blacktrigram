@@ -114,10 +114,7 @@ peace over violence.`,
       id: "vital-points",
       title: "급소와 인체학",
       subtitle: "Vital Points and Anatomy",
-      content: `한국 전통 무술은 인체의 급소(急所)에 대한 깊은 이해를 바탕으로 합니다.
-70개 이상의 주요 급소를 정확히 알고 활용하는 것이 무술의 핵심입니다.
-
-Korean traditional martial arts are based on deep understanding 
+      content: `Korean traditional martial arts are based on deep understanding 
 of vital points (급소). Knowing and utilizing over 70 major 
 vital points precisely is the core of martial arts mastery.`,
     },
@@ -410,6 +407,7 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
 
       return () => {
         // Cleanup on unmount
+        if (button.destroyed) return;
         button.onPress.disconnectAll();
       };
     }

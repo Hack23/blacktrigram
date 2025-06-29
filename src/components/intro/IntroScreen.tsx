@@ -25,7 +25,14 @@ extend({
 });
 
 import * as PIXI from "pixi.js";
-import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  lazy,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import ArchetypeDisplay from "./components/ArchetypeDisplay";
 import { MenuSection } from "./components/MenuSection";
@@ -34,6 +41,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
+import { createGraphicsContext } from "../../utils/pixiExtensions";
 
 /* ------------------------------------------------------------------ */
 /*  1.  Utility hooks                                                 */
@@ -133,7 +141,6 @@ const ARCHETYPE_ORDER: PlayerArchetype[] = [
 const PhilosophySection = lazy(() => import("./components/PhilosophySection"));
 const ControlsSection = lazy(() => import("./components/ControlsSection"));
 
-
 /* ------------------------------------------------------------------ */
 /*  6.  IntroScreen Component                                         */
 /* ------------------------------------------------------------------ */
@@ -145,13 +152,13 @@ export interface IntroScreenProps {
 
 export const IntroScreen: React.FC<IntroScreenProps> = ({
   onMenuSelect,
-  width: explicitW,
-  height: explicitH,
+  width,
+  height,
 }) => {
   /* Window + audio helpers */
   const { width: ww, height: wh } = useWindowSize();
-  const screenW = explicitW ?? ww;
-  const screenH = explicitH ?? wh;
+  const screenW = width ?? ww;
+  const screenH = height ?? wh;
   const audio = useAudio();
 
   const { bgTexture, logoTexture, dojangWallTexture, archetypeTextures } =
@@ -239,6 +246,22 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   };
 
+  const gridContext = useMemo(() => {
+    return createGraphicsContext((g) => {
+      g.clear();
+      const gridSize = 30;
+      const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
+
+      for (let i = 0; i < screenW / gridSize; i++) {
+        g.rect(i * gridSize, 0, 1, screenH);
+      }
+      for (let i = 0; i < screenH / gridSize; i++) {
+        g.rect(0, i * gridSize, screenW, 1);
+      }
+      g.fill({ color: gridColor, alpha: 0.08 });
+    });
+  }, [screenW, screenH]);
+
   // Render different sections
   if (section === "controls") {
     return (
@@ -279,6 +302,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     >
       {/* Background Grid - Use layoutGraphics for custom drawing */}
       <layoutGraphics
+        context={gridContext}
         layout={{
           position: "absolute",
           top: 0,

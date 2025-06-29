@@ -53,13 +53,14 @@ export interface TestGameState {
 
 // Mock audio manager for testing
 export interface MockAudioManager {
-  readonly playMusic: jest.Mock | (() => void);
-  readonly stopMusic: jest.Mock | (() => void);
-  readonly playSFX: jest.Mock | (() => void);
-  readonly playAttackSound: jest.Mock | (() => void);
-  readonly playHitSound: jest.Mock | (() => void);
-  readonly setVolume: jest.Mock | (() => void);
+  readonly playMusic: (id: string) => Promise<void>;
+  readonly stopMusic: () => void;
+  readonly playSFX: (id: string) => void;
+  readonly playAttackSound: (id: string) => void;
+  readonly playHitSound: (id: string) => void;
+  readonly setVolume: (volume: number) => void;
   readonly isEnabled: boolean;
+  readonly isInitialized: boolean;
 }
 
 // Test utilities for Korean martial arts game

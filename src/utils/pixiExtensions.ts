@@ -20,7 +20,14 @@ import "@pixi/layout/react";
 import { extend, useTick } from "@pixi/react";
 import { Button, FancyButton } from "@pixi/ui";
 import * as PIXI from "pixi.js";
-import { Container, Graphics, Sprite, Text, TilingSprite } from "pixi.js";
+import {
+  Container,
+  Graphics,
+  GraphicsContext,
+  Sprite,
+  Text,
+  TilingSprite,
+} from "pixi.js";
 
 /**
  * Extend PIXI components for use with React
@@ -210,4 +217,19 @@ export const drawTrigramSymbol = (
 
   graphics.rect(x, y + (2 * size) / 3, size, size / 8);
   graphics.fill({ color: 0x00ffff });
+};
+
+/**
+ * Creates a PIXI.GraphicsContext for use with LayoutGraphics.
+ * This is the modern, preferred way to handle reusable graphics.
+ * @param drawFn A function that performs the drawing operations.
+ * @returns A PIXI.GraphicsContext object.
+ */
+export const createGraphicsContext = (
+  drawFn: (g: PIXI.Graphics) => void
+): PIXI.GraphicsContext => {
+  const context = new GraphicsContext();
+  const g = new Graphics(context);
+  drawFn(g);
+  return context;
 };

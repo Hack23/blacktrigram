@@ -172,8 +172,10 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           >
             <layoutSprite
               texture={texture ?? PIXI.Texture.EMPTY}
-              width={imageSize}
-              height={imageSize}
+              layout={{
+                width: imageSize,
+                height: imageSize,
+              }}
               anchor={0.5}
               interactive={!!onSelect}
               cursor={onSelect ? "pointer" : "default"}

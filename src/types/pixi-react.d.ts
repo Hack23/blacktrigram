@@ -11,6 +11,7 @@ import type {
   BitmapText,
   Container,
   Graphics,
+  GraphicsContext,
   ParticleContainer,
   Sprite,
   Text,
@@ -88,6 +89,7 @@ export interface TextProps extends BasePixiProps<Text> {
 }
 export interface GraphicsProps extends BasePixiProps<Graphics> {
   draw?: (g: Graphics) => void;
+  graphicsContext?: GraphicsContext;
 }
 export interface TilingSpriteProps extends BasePixiProps<TilingSprite> {
   texture?: PIXI.Texture | string;
@@ -113,7 +115,7 @@ export interface ParticleContainerProps
 //  Layout (@pixi/layout)
 // --------------------------------------
 export interface LayoutGraphicsProps extends BasePixiProps<LayoutGraphics> {
-  draw?: (g: PIXI.Graphics) => void;
+  context?: GraphicsContext;
 }
 
 // --------------------------------------
@@ -138,6 +140,7 @@ declare module "@pixi/react" {
     pixiText: PixiReactElementProps<typeof Text>;
     pixiTilingSprite: PixiReactElementProps<typeof TilingSprite>;
     pixiAnimatedSprite: PixiReactElementProps<typeof AnimatedSprite>;
+    pixiParticleContainer: ParticleContainerProps;
 
     /* --- @pixi/layout COMPONENTS --------------------------------------- */
     layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
