@@ -187,23 +187,25 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
         {/* Character info as direct children instead of nested container */}
         <layoutText
-          text={`${archetypeData.name.korean} - ${archetypeData.name.english}`}
-          style={{
-            fontFamily: "Noto Sans KR, sans-serif",
-            fontSize: isMobile ? 18 : 24,
-            fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
-            fontWeight: "bold",
-            align: "center",
-            dropShadow: {
-              color: 0x000000,
-              alpha: 0.5,
-              blur: 4,
-              distance: 2,
+          {...{
+            text: `${archetypeData.name.korean} - ${archetypeData.name.english}`,
+            style: {
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontSize: isMobile ? 18 : 24,
+              fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
+              fontWeight: "bold",
+              align: "center",
+              dropShadow: {
+                color: 0x000000,
+                alpha: 0.5,
+                blur: 4,
+                distance: 2,
+              },
             },
-          }}
-          layout={{
-            marginLeft: 10,
-            marginRight: 10,
+            layout: {
+              marginLeft: 10,
+              marginRight: 10,
+            },
           }}
         />
 
@@ -315,36 +317,40 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         {/* Selected indicator - positioned absolutely */}
         {isSelected && (
           <layoutText
-            text="✓ 선택됨"
-            style={{
-              fontFamily: "Noto Sans KR, sans-serif",
-              fontSize: 12,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-            }}
-            layout={{
-              position: "absolute",
-              top: 20,
-              right: 20,
+            {...{
+              text: "✓ 선택됨",
+              style: {
+                fontFamily: "Noto Sans KR, sans-serif",
+                fontSize: 12,
+                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fontWeight: "bold",
+              },
+              layout: {
+                position: "absolute",
+                top: 20,
+                right: 20,
+              },
             }}
           />
         )}
 
         {/* Description text - positioned absolutely to avoid deep nesting */}
         <layoutText
-          text={archetypeData.description.korean}
-          style={{
-            fontFamily: "Noto Sans KR, sans-serif",
-            fontSize: isMobile ? 12 : 14,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            align: "center",
-            wordWrap: true,
-            wordWrapWidth: isMobile ? 200 : 300,
-            lineHeight: 20,
-          }}
-          layout={{
-            position: "absolute",
-            bottom: 80,
+          {...{
+            text: archetypeData.description.korean,
+            style: {
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontSize: isMobile ? 12 : 14,
+              fill: KOREAN_COLORS.TEXT_PRIMARY,
+              align: "center",
+              wordWrap: true,
+              wordWrapWidth: isMobile ? 200 : 300,
+              lineHeight: 20,
+            },
+            layout: {
+              position: "absolute",
+              bottom: 80,
+            },
           }}
         />
       </layoutContainer>

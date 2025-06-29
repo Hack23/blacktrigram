@@ -371,7 +371,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fill: KOREAN_COLORS.ACCENT_GOLD,
             fontWeight: "bold",
           }}
-          anchor={0.5}
+          anchor={{ x: 0.5, y: 0.5 }}
         />
         <layoutText
           text="Black Trigram Dojo"
@@ -380,7 +380,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fontSize: isMobile ? 16 : isTablet ? 20 : 24,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-          anchor={0.5}
+          anchor={{ x: 0.5, y: 0.5 }}
         />
         <layoutText
           text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
@@ -389,7 +389,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fill: KOREAN_COLORS.PRIMARY_CYAN,
             letterSpacing: isMobile ? 8 : 12,
           }}
-          anchor={0.5}
+          anchor={{ x: 0.5, y: 0.5 }}
         />
       </layoutContainer>
 
@@ -439,20 +439,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fill: KOREAN_COLORS.ACCENT_CYAN,
             fontStyle: "italic",
           }}
-          anchor={0.5}
-        />
-        <layoutText
-          text="Open Source Korean Martial Arts Game by Hack23"
-          style={{
-            fontSize: isMobile ? 9 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          anchor={0.5}
-          interactive
-          cursor="pointer"
-          onPointerTap={() => {
-            window.open("https://github.com/Hack23/blacktrigram", "_blank");
-          }}
+          anchor={{ x: 0.5, y: 0.5 }}
         />
       </layoutContainer>
     </layoutContainer>
