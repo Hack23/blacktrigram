@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import "@pixi/layout/react";
 import "@pixi/layout";
+import "@pixi/layout/react";
 import * as PIXI from "pixi.js";
 import React, {
   Suspense,
@@ -10,8 +10,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-
-
 
 import ArchetypeDisplay from "./components/ArchetypeDisplay";
 import { MenuSection } from "./components/MenuSection";
@@ -324,8 +322,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       }}
       data-testid="intro-screen"
     >
-      {/* Background layers - properly nested in single container */}
-      <layoutContainer
+      {/* Background layers - use absolute positioning within the main container */}
+      {/* Grid background */}
+      <layoutGraphics
+        context={gridContext}
         layout={{
           position: "absolute",
           top: 0,
@@ -333,42 +333,39 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           width: screenW,
           height: screenH,
         }}
-      >
-        {/* Grid background */}
-        <layoutGraphics
-          context={gridContext}
-          layout={{
-            width: screenW,
-            height: screenH,
-          }}
-        />
+      />
 
-        {/* Background texture */}
-        {bgTexture && bgTexture !== PIXI.Texture.EMPTY && (
-          <layoutSprite
-            texture={bgTexture}
-            alpha={0.05}
-            layout={{
-              width: screenW,
-              height: screenH,
-            }}
-          />
-        )}
+      {/* Background texture - always render but control visibility with alpha */}
+      <layoutSprite
+        texture={bgTexture || PIXI.Texture.EMPTY}
+        alpha={bgTexture && bgTexture !== PIXI.Texture.EMPTY ? 0.05 : 0}
+        layout={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: screenW,
+          height: screenH,
+        }}
+      />
 
-        {/* Dojang wall texture */}
-        {dojangWallTexture && dojangWallTexture !== PIXI.Texture.EMPTY && (
-          <layoutSprite
-            texture={dojangWallTexture}
-            alpha={0.1}
-            layout={{
-              width: screenW,
-              height: screenH,
-            }}
-          />
-        )}
-      </layoutContainer>
+      {/* Dojang wall texture - always render but control visibility with alpha */}
+      <layoutSprite
+        texture={dojangWallTexture || PIXI.Texture.EMPTY}
+        alpha={
+          dojangWallTexture && dojangWallTexture !== PIXI.Texture.EMPTY
+            ? 0.1
+            : 0
+        }
+        layout={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: screenW,
+          height: screenH,
+        }}
+      />
 
-      {/* Main content container */}
+      {/* Main content container - higher z-index to appear above backgrounds */}
       <layoutContainer
         layout={{
           flexDirection: "column",
@@ -385,16 +382,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             marginTop: 32,
           }}
         >
-          {logoTexture && logoTexture !== PIXI.Texture.EMPTY && (
-            <layoutSprite
-              texture={logoTexture}
-              anchor={0.5}
-              layout={{
-                width: logoSize,
-                height: logoSize,
-              }}
-            />
-          )}
+          <layoutSprite
+            texture={logoTexture || PIXI.Texture.EMPTY}
+            anchor={0.5}
+            alpha={logoTexture && logoTexture !== PIXI.Texture.EMPTY ? 1 : 0}
+            layout={{
+              width: logoSize,
+              height: logoSize,
+            }}
+          />
           <layoutText
             text="흑괘 무술 도장"
             style={{
