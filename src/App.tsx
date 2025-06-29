@@ -86,9 +86,9 @@ const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [doResize, app]);
 
-  // Use a single pixiContainer with layout properties
+  // Use layoutContainer instead of pixiContainer for layout support
   return (
-    <pixiContainer
+    <layoutContainer
       ref={layoutRef}
       layout={{
         width: dimensions.width,
@@ -96,7 +96,7 @@ const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-    </pixiContainer>
+    </layoutContainer>
   );
 };
 

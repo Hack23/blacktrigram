@@ -1,29 +1,9 @@
 import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype } from "@/types";
-import "@pixi/layout";
-import {
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutSprite,
-  LayoutText,
-} from "@pixi/layout/components";
-import { extend } from "@pixi/react";
-import { FancyButton, MaskedFrame, ProgressBar, ScrollBox } from "@pixi/ui";
+import { FancyButton } from "@pixi/ui"; // Import from @pixi/ui instead of pixi.js
 import * as PIXI from "pixi.js";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
-
-// Extend PIXI components for React
-extend({
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutSprite,
-  LayoutText,
-  FancyButton,
-  ProgressBar,
-  ScrollBox,
-  MaskedFrame,
-});
 
 // Define the proper props interface
 export interface ArchetypeDisplayProps {
@@ -96,49 +76,57 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     // Get the primary color from archetypeData
     const primaryColor = archetypeData.colors.primary;
 
-    const NavButton: React.FC<{ direction: "prev" | "next" }> = useCallback(
-      ({ direction }) => {
-        const icon = direction === "prev" ? "◀" : "▶";
-        const onClick = direction === "prev" ? onPrev : onNext;
+    // Create button views outside of nested components to avoid memory issues
+    const navButtonViews = useMemo(
+      () => ({
+        prev: {
+          default: createButtonGraphics(40, 40, primaryColor, 0.8),
+          hover: createButtonGraphics(44, 44, primaryColor, 1),
+          pressed: createButtonGraphics(38, 38, primaryColor, 0.6),
+        },
+        next: {
+          default: createButtonGraphics(40, 40, primaryColor, 0.8),
+          hover: createButtonGraphics(44, 44, primaryColor, 1),
+          pressed: createButtonGraphics(38, 38, primaryColor, 0.6),
+        },
+      }),
+      [primaryColor]
+    );
 
-        const buttonRef = useRef<FancyButton>(null);
+    // Create refs for buttons with proper type from @pixi/ui
+    const prevButtonRef = useRef<FancyButton>(null);
+    const nextButtonRef = useRef<FancyButton>(null);
 
-        useEffect(() => {
-          if (buttonRef.current) {
-            const button = buttonRef.current;
-            button.onPress.disconnectAll();
-            button.onPress.connect(onClick);
-          }
-        }, [onClick]);
+    // Connect button handlers
+    useEffect(() => {
+      if (prevButtonRef.current) {
+        const button = prevButtonRef.current;
+        button.onPress.disconnectAll();
+        button.onPress.connect(onPrev);
+      }
+      if (nextButtonRef.current) {
+        const button = nextButtonRef.current;
+        button.onPress.disconnectAll();
+        button.onPress.connect(onNext);
+      }
 
-        return (
-          <pixiFancyButton
-            ref={buttonRef}
-            defaultView={createButtonGraphics(40, 40, primaryColor, 0.8)}
-            hoverView={createButtonGraphics(44, 44, primaryColor, 1)}
-            pressedView={createButtonGraphics(38, 38, primaryColor, 0.6)}
-            text={
-              new PIXI.Text({
-                text: icon,
-                style: {
-                  fontSize: 20,
-                  fill: KOREAN_COLORS.TEXT_PRIMARY,
-                  fontWeight: "bold",
-                  align: "center",
-                },
-              })
-            }
-            animations={{
-              hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-              pressed: {
-                props: { scale: { x: 0.95, y: 0.95 } },
-                duration: 100,
-              },
-            }}
-          />
-        );
-      },
-      [primaryColor, onPrev, onNext]
+      return () => {
+        if (prevButtonRef.current && !prevButtonRef.current.destroyed) {
+          prevButtonRef.current.onPress.disconnectAll();
+        }
+        if (nextButtonRef.current && !nextButtonRef.current.destroyed) {
+          nextButtonRef.current.onPress.disconnectAll();
+        }
+      };
+    }, [onPrev, onNext]);
+
+    // Create progress bar views
+    const progressViews = useMemo(
+      () => ({
+        bg: createProgressBg(200, 8),
+        fill: createProgressFill(primaryColor),
+      }),
+      [primaryColor]
     );
 
     return (
@@ -155,6 +143,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
         }}
       >
+        {/* Main content row */}
         <layoutContainer
           layout={{
             flexDirection: isMobile ? "column" : "row",
@@ -162,7 +151,35 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             gap: isMobile ? 16 : 24,
           }}
         >
-          {!isMobile && <NavButton direction="prev" />}
+          {/* Desktop: Left navigation button */}
+          {!isMobile && (
+            <pixiFancyButton
+              ref={prevButtonRef}
+              defaultView={navButtonViews.prev.default}
+              hoverView={navButtonViews.prev.hover}
+              pressedView={navButtonViews.prev.pressed}
+              text={
+                new PIXI.Text({
+                  text: "◀",
+                  style: {
+                    fontSize: 20,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                    align: "center",
+                  },
+                })
+              }
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+          )}
+
+          {/* Character image */}
           <layoutContainer
             layout={{
               flexDirection: "column",
@@ -194,6 +211,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             )}
           </layoutContainer>
 
+          {/* Character info */}
           <layoutContainer
             layout={{
               flexDirection: "column",
@@ -239,9 +257,37 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               }}
             />
           </layoutContainer>
-          {!isMobile && <NavButton direction="next" />}
+
+          {/* Desktop: Right navigation button */}
+          {!isMobile && (
+            <pixiFancyButton
+              ref={nextButtonRef}
+              defaultView={navButtonViews.next.default}
+              hoverView={navButtonViews.next.hover}
+              pressedView={navButtonViews.next.pressed}
+              text={
+                new PIXI.Text({
+                  text: "▶",
+                  style: {
+                    fontSize: 20,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                    align: "center",
+                  },
+                })
+              }
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+          )}
         </layoutContainer>
 
+        {/* Mobile: Navigation buttons row */}
         {isMobile && (
           <layoutContainer
             layout={{
@@ -250,14 +296,61 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               gap: 20,
             }}
           >
-            <NavButton direction="prev" />
-            <NavButton direction="next" />
+            <pixiFancyButton
+              ref={prevButtonRef}
+              defaultView={navButtonViews.prev.default}
+              hoverView={navButtonViews.prev.hover}
+              pressedView={navButtonViews.prev.pressed}
+              text={
+                new PIXI.Text({
+                  text: "◀",
+                  style: {
+                    fontSize: 20,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                    align: "center",
+                  },
+                })
+              }
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+            <pixiFancyButton
+              ref={nextButtonRef}
+              defaultView={navButtonViews.next.default}
+              hoverView={navButtonViews.next.hover}
+              pressedView={navButtonViews.next.pressed}
+              text={
+                new PIXI.Text({
+                  text: "▶",
+                  style: {
+                    fontSize: 20,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                    align: "center",
+                  },
+                })
+              }
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
           </layoutContainer>
         )}
 
+        {/* Progress bar */}
         <pixiProgressBar
-          bg={createProgressBg(200, 8)}
-          fill={createProgressFill(primaryColor)}
+          bg={progressViews.bg}
+          fill={progressViews.fill}
           fillPaddings={{ top: 2, right: 2, bottom: 2, left: 2 }}
           progress={((index + 1) / total) * 100}
         />

@@ -29,15 +29,13 @@ import type {
   LayoutText,
   LayoutTilingSprite,
   LayoutView,
-} from "@pixi/layout/components";
+} from "@pixi/layout";
 
 import type * as UI from "@pixi/ui";
 import type { ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 //  1.  **Minimal** base-props shared by all PIXI display objects
-//      (no `layout:` prop any more – that is handled by the layout components
-//       themselves)
 // ---------------------------------------------------------------------------
 interface BasePixiProps<T extends PIXI.Container> {
   key?: React.Key;
@@ -61,7 +59,7 @@ interface BasePixiProps<T extends PIXI.Container> {
   ref?: React.Ref<T>;
   children?: ReactNode;
 
-  //  Federated pointer events (camelCase variant only – use these in React code)
+  // Federated pointer events (camelCase variant only – use these in React code)
   onClick?: (e: PIXI.FederatedPointerEvent) => void;
   onPointerDown?: (e: PIXI.FederatedPointerEvent) => void;
   onPointerUp?: (e: PIXI.FederatedPointerEvent) => void;
@@ -69,8 +67,10 @@ interface BasePixiProps<T extends PIXI.Container> {
   onPointerOver?: (e: PIXI.FederatedPointerEvent) => void;
   onPointerOut?: (e: PIXI.FederatedPointerEvent) => void;
   onPointerMove?: (e: PIXI.FederatedPointerEvent) => void;
+  onPointerTap?: (e: PIXI.FederatedPointerEvent) => void;
+  onPointerCancel?: (e: PIXI.FederatedPointerEvent) => void;
 
-  //  Test-ids for RTL & Cypress
+  // Test-ids for RTL & Cypress
   "data-testid"?: string;
 }
 
@@ -89,7 +89,7 @@ export interface TextProps extends BasePixiProps<Text> {
 }
 export interface GraphicsProps extends BasePixiProps<Graphics> {
   draw?: (g: Graphics) => void;
-  graphicsContext?: GraphicsContext;
+  context?: GraphicsContext;
 }
 export interface TilingSpriteProps extends BasePixiProps<TilingSprite> {
   texture?: PIXI.Texture | string;
@@ -112,53 +112,91 @@ export interface ParticleContainerProps
 }
 
 // --------------------------------------
-//  Layout (@pixi/layout)
+//  Layout (@pixi/layout) - Correct types
 // --------------------------------------
-export interface LayoutGraphicsProps extends BasePixiProps<LayoutGraphics> {
-  context?: GraphicsContext;
-}
+export interface LayoutContainerProps
+  extends PixiReactElementProps<typeof LayoutContainer> {}
+export interface LayoutSpriteProps
+  extends PixiReactElementProps<typeof LayoutSprite> {}
+export interface LayoutTextProps
+  extends PixiReactElementProps<typeof LayoutText> {}
+export interface LayoutGraphicsProps
+  extends PixiReactElementProps<typeof LayoutGraphics> {}
+export interface LayoutTilingSpriteProps
+  extends PixiReactElementProps<typeof LayoutTilingSprite> {}
+export interface LayoutBitmapTextProps
+  extends PixiReactElementProps<typeof LayoutBitmapText> {}
+export interface LayoutAnimatedSpriteProps
+  extends PixiReactElementProps<typeof LayoutAnimatedSprite> {}
+export interface LayoutNineSliceSpriteProps
+  extends PixiReactElementProps<typeof LayoutNineSliceSprite> {}
+export interface LayoutGifSpriteProps
+  extends PixiReactElementProps<typeof LayoutGifSprite> {}
+export interface LayoutViewProps
+  extends PixiReactElementProps<typeof LayoutView> {}
 
 // --------------------------------------
 //  UI (@pixi/ui) – Make props permissive
 // --------------------------------------
-export type FancyButtonProps = PixiReactElementProps<UI.FancyButton, true>;
-export type ProgressBarProps = PixiReactElementProps<UI.ProgressBar, true>;
-export type ScrollBoxProps = PixiReactElementProps<UI.ScrollBox, true>;
-export type MaskedFrameProps = PixiReactElementProps<UI.MaskedFrame, true>;
+export type FancyButtonProps = PixiReactElementProps<
+  typeof UI.FancyButton,
+  true
+>;
+export type ProgressBarProps = PixiReactElementProps<
+  typeof UI.ProgressBar,
+  true
+>;
+export type ScrollBoxProps = PixiReactElementProps<typeof UI.ScrollBox, true>;
+export type MaskedFrameProps = PixiReactElementProps<
+  typeof UI.MaskedFrame,
+  true
+>;
+export type ButtonProps = PixiReactElementProps<typeof UI.Button, true>;
+export type SliderProps = PixiReactElementProps<typeof UI.Slider, true>;
+export type InputProps = PixiReactElementProps<typeof UI.Input, true>;
+export type CheckBoxProps = PixiReactElementProps<typeof UI.CheckBox, true>;
+export type RadioGroupProps = PixiReactElementProps<typeof UI.RadioGroup, true>;
+export type SelectProps = PixiReactElementProps<typeof UI.Select, true>;
 
 // ---------------------------------------------------------------------------
 //  3.  Global JSX intrinsic-element declarations
-//      Only _layout aware_ components + a handful of plain PIXI classes
 // ---------------------------------------------------------------------------
 declare module "@pixi/react" {
   /* eslint-disable @typescript-eslint/consistent-type-definitions */
   interface PixiElements {
     /* --- Plain PIXI display-objects (no layout) ------------------------- */
-    pixiContainer: PixiReactElementProps<typeof Container>;
-    pixiSprite: PixiReactElementProps<typeof Sprite>;
+    pixiContainer: ContainerProps;
+    pixiSprite: SpriteProps;
     pixiGraphics: GraphicsProps;
-    pixiText: PixiReactElementProps<typeof Text>;
-    pixiTilingSprite: PixiReactElementProps<typeof TilingSprite>;
-    pixiAnimatedSprite: PixiReactElementProps<typeof AnimatedSprite>;
+    pixiText: TextProps;
+    pixiTilingSprite: TilingSpriteProps;
+    pixiAnimatedSprite: AnimatedSpriteProps;
+    pixiBitmapText: BitmapTextProps;
     pixiParticleContainer: ParticleContainerProps;
 
     /* --- @pixi/layout COMPONENTS --------------------------------------- */
-    layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
-    layoutSprite: PixiReactElementProps<typeof LayoutSprite>;
-    layoutTilingSprite: PixiReactElementProps<typeof LayoutTilingSprite>;
-    layoutText: PixiReactElementProps<typeof LayoutText>;
-    layoutBitmapText: PixiReactElementProps<typeof LayoutBitmapText>;
-    layoutAnimatedSprite: PixiReactElementProps<typeof LayoutAnimatedSprite>;
+    layoutContainer: LayoutContainerProps;
+    layoutSprite: LayoutSpriteProps;
+    layoutTilingSprite: LayoutTilingSpriteProps;
+    layoutText: LayoutTextProps;
+    layoutBitmapText: LayoutBitmapTextProps;
+    layoutAnimatedSprite: LayoutAnimatedSpriteProps;
     layoutGraphics: LayoutGraphicsProps;
-    layoutNineSliceSprite: PixiReactElementProps<typeof LayoutNineSliceSprite>;
-    layoutGifSprite: PixiReactElementProps<typeof LayoutGifSprite>;
-    layoutView: PixiReactElementProps<typeof LayoutView>;
+    layoutNineSliceSprite: LayoutNineSliceSpriteProps;
+    layoutGifSprite: LayoutGifSpriteProps;
+    layoutView: LayoutViewProps;
 
-    /* --- @pixi/ui shortcuts (use these for UI) -------------------- */
+    /* --- @pixi/ui components ------------------------------------------- */
     pixiFancyButton: FancyButtonProps;
     pixiProgressBar: ProgressBarProps;
     pixiScrollBox: ScrollBoxProps;
     pixiMaskedFrame: MaskedFrameProps;
+    pixiButton: ButtonProps;
+    pixiSlider: SliderProps;
+    pixiInput: InputProps;
+    pixiCheckBox: CheckBoxProps;
+    pixiRadioGroup: RadioGroupProps;
+    pixiSelect: SelectProps;
   }
 }
 

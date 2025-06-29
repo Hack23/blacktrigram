@@ -368,7 +368,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fill: KOREAN_COLORS.ACCENT_GOLD,
             fontWeight: "bold",
           }}
-          layout={{ alignSelf: "center" }}
           anchor={0.5}
         />
         <layoutText
@@ -378,7 +377,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fontSize: isMobile ? 16 : isTablet ? 20 : 24,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-          layout={{ alignSelf: "center" }}
           anchor={0.5}
         />
         <layoutText
@@ -388,7 +386,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fill: KOREAN_COLORS.PRIMARY_CYAN,
             letterSpacing: isMobile ? 8 : 12,
           }}
-          layout={{ alignSelf: "center" }}
           anchor={0.5}
         />
       </layoutContainer>
@@ -439,19 +436,17 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fill: KOREAN_COLORS.ACCENT_CYAN,
             fontStyle: "italic",
           }}
-          layout={{ alignSelf: "center" }}
           anchor={0.5}
         />
         <layoutText
-          interactive
-          cursor="pointer"
           text="Open Source Korean Martial Arts Game by Hack23"
           style={{
             fontSize: isMobile ? 9 : 12,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-          layout={{ alignSelf: "center" }}
           anchor={0.5}
+          interactive
+          cursor="pointer"
           onPointerTap={() => {
             window.open("https://github.com/Hack23/blacktrigram", "_blank");
           }}

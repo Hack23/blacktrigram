@@ -141,7 +141,7 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
   height = 600,
 }) => {
   const [selectedTrigram, setSelectedTrigram] = useState<string | null>(null);
-  const backButtonRef = useRef<FancyButton | null>(null);
+  const backButtonRef = useRef<FancyButton | null>(null); // FancyButton from @pixi/ui
   const isMobile = width < 768;
   const padding = isMobile ? 20 : 40;
 

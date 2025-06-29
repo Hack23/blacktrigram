@@ -69,7 +69,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
   width = 800,
   height = 600,
 }) => {
-  const backButtonRef = useRef<FancyButton | null>(null);
+  const backButtonRef = useRef<FancyButton | null>(null); // FancyButton from @pixi/ui
   const isMobile = width < 768;
   const padding = isMobile ? 20 : 40;
 

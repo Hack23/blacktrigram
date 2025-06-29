@@ -15,12 +15,34 @@ if (
 /*  PixiJS extensions and utilities for Black Trigram
 /* ------------------------------------------------------------------ */
 import "@pixi/layout";
-import { LayoutContainer } from "@pixi/layout/components";
-import "@pixi/layout/react";
+import {
+  LayoutAnimatedSprite,
+  LayoutBitmapText,
+  LayoutContainer,
+  LayoutGraphics,
+  LayoutNineSliceSprite,
+  LayoutSprite,
+  LayoutText,
+  LayoutTilingSprite,
+  LayoutView,
+} from "@pixi/layout/components";
 import { extend, useTick } from "@pixi/react";
-import { Button, FancyButton } from "@pixi/ui";
+import {
+  Button,
+  CheckBox,
+  FancyButton,
+  Input,
+  MaskedFrame,
+  ProgressBar,
+  RadioGroup,
+  ScrollBox,
+  Select,
+  Slider,
+} from "@pixi/ui";
 import * as PIXI from "pixi.js";
 import {
+  AnimatedSprite,
+  BitmapText,
   Container,
   Graphics,
   GraphicsContext,
@@ -34,14 +56,37 @@ import {
  */
 export const extendPixiComponents = () => {
   extend({
+    // Plain PIXI components
     Container,
     Graphics,
     Sprite,
     Text,
     TilingSprite,
+    AnimatedSprite,
+    BitmapText,
+
+    // Layout components
     LayoutContainer,
+    LayoutSprite,
+    LayoutText,
+    LayoutGraphics,
+    LayoutTilingSprite,
+    LayoutAnimatedSprite,
+    LayoutBitmapText,
+    LayoutNineSliceSprite,
+    LayoutView,
+
+    // UI components
     Button,
     FancyButton,
+    ProgressBar,
+    ScrollBox,
+    MaskedFrame,
+    Slider,
+    Input,
+    CheckBox,
+    RadioGroup,
+    Select,
   });
 };
 

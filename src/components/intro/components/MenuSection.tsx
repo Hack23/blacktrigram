@@ -38,7 +38,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   width,
   height,
 }) => {
-  const buttonsRef = useRef<(FancyButton | null)[]>([]);
+  const buttonsRef = useRef<(FancyButton | null)[]>([]); // FancyButton from @pixi/ui
   const isMobile = width < 768;
   const buttonWidth = Math.min(width - 80, 320);
   const buttonHeight = isMobile ? 45 : 55;
@@ -84,7 +84,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     isSelected: boolean;
   }> = useCallback(
     ({ item, index, isSelected }) => {
-      const buttonRef = useRef<FancyButton | null>(null);
+      const buttonRef = useRef<FancyButton | null>(null); // FancyButton from @pixi/ui
 
       // Create button views with proper PixiJS v8 API
       const defaultView = useMemo(() => {
