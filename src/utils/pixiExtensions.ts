@@ -141,6 +141,18 @@ export const createResponsiveTextStyle = (
 };
 
 /**
+ * Create a graphics context for use with LayoutGraphics
+ * This is a helper to create graphics contexts in a type-safe way
+ */
+export const createGraphicsContext = (
+  drawFunction: (g: PIXI.Graphics) => void
+): PIXI.GraphicsContext => {
+  const graphics = new PIXI.Graphics();
+  drawFunction(graphics);
+  return graphics.context;
+};
+
+/**
  * Draw a simple rounded button
  */
 export const drawButton = (

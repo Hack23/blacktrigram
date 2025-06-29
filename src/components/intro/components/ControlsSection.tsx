@@ -214,7 +214,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
       };
 
       const badgeContext = useMemo(() => {
-        return createGraphicsContext((g) => {
+        return createGraphicsContext((g: PIXI.Graphics) => {
           g.clear();
           g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
           g.roundRect(0, 0, badgeWidth, 28, 6);
