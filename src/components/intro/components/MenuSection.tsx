@@ -29,8 +29,6 @@ export interface MenuSectionProps {
   readonly onModeSelect: (mode: GameMode) => void;
   readonly width: number;
   readonly height: number;
-  readonly x: number;
-  readonly y: number;
 }
 
 export const MenuSection: React.FC<MenuSectionProps> = ({
@@ -39,31 +37,26 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   onModeSelect,
   width,
   height,
-  x,
-  y,
 }) => {
-  const buttonsRef = useRef<FancyButton[]>([]);
+  const buttonsRef = useRef<(FancyButton | null)[]>([]);
   const isMobile = width < 768;
   const buttonWidth = Math.min(width - 80, 320);
-  const buttonHeight = isMobile ? 50 : 60;
+  const buttonHeight = isMobile ? 45 : 55;
 
   const menuLayout = useMemo(
     () => ({
       width,
       height,
-      position: "absolute" as const,
-      top: y,
-      left: x,
       flexDirection: "column" as const,
       alignItems: "center" as const,
       justifyContent: "center" as const,
       gap: isMobile ? 12 : 16,
-      padding: isMobile ? 20 : 40,
+      padding: isMobile ? 10 : 20,
       backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
       backgroundAlpha: 0.9,
       borderRadius: 16,
     }),
-    [width, height, x, y, isMobile]
+    [width, height, isMobile]
   );
 
   // Helper function to create button graphics
@@ -146,6 +139,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           buttonsRef.current[index] = button;
 
           return () => {
+            if (button.destroyed) return;
             button.onPress.disconnectAll();
           };
         }
@@ -235,7 +229,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       <layoutContainer
         layout={{
           flexDirection: "column" as const,
-          alignItems: "center" as const,
+          alignItems: "flex-start" as const,
           gap: isMobile ? 10 : 12,
         }}
       >

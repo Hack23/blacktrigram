@@ -5,12 +5,11 @@ import {
   LayoutGraphics,
   LayoutSprite,
   LayoutText,
-  LayoutTilingSprite,
 } from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
-import { Button, FancyButton } from "@pixi/ui";
-import { Container, Graphics, Sprite, Text, TilingSprite } from "pixi.js";
+import { FancyButton } from "@pixi/ui";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 
 // Register both layout and regular components
 extend({
@@ -22,9 +21,6 @@ extend({
   LayoutSprite,
   Text,
   LayoutText,
-  TilingSprite,
-  LayoutTilingSprite,
-  Button,
   FancyButton,
 });
 
@@ -137,57 +133,6 @@ const ARCHETYPE_ORDER: PlayerArchetype[] = [
 const PhilosophySection = lazy(() => import("./components/PhilosophySection"));
 const ControlsSection = lazy(() => import("./components/ControlsSection"));
 
-/* ------------------------------------------------------------------ */
-/*  5.  Helper functions                                              */
-/* ------------------------------------------------------------------ */
-const backgroundPainter =
-  (w: number, h: number, mobile: boolean) => (g: Graphics) => {
-    g.clear();
-    const steps = 10;
-    for (let i = 0; i < steps; i += 1) {
-      const r = i / steps;
-      g.fill({
-        color: lerpColor(
-          KOREAN_COLORS.UI_BACKGROUND_DARK,
-          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-          r
-        ),
-      });
-      g.rect(0, (h / steps) * i, w, h / steps + 1);
-      g.fill();
-    }
-
-    // grid
-    g.stroke({
-      width: 1,
-      color: KOREAN_COLORS.PRIMARY_CYAN,
-      alpha: 0.15,
-    });
-    const grid = mobile ? 40 : 60;
-    for (let x = 0; x < w; x += grid) {
-      g.moveTo(x, 0);
-      g.lineTo(x, h);
-    }
-    for (let y = 0; y < h; y += grid) {
-      g.moveTo(0, y);
-      g.lineTo(w, y);
-    }
-    g.stroke();
-  };
-
-function lerpColor(a: number, b: number, t: number): number {
-  const ar = (a >> 16) & 0xff;
-  const ag = (a >> 8) & 0xff;
-  const ab = a & 0xff;
-  const br = (b >> 16) & 0xff;
-  const bg = (b >> 8) & 0xff;
-  const bb = b & 0xff;
-  return (
-    ((ar + (br - ar) * t) << 16) |
-    ((ag + (bg - ag) * t) << 8) |
-    (ab + (bb - ab) * t)
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /*  6.  IntroScreen Component                                         */
@@ -297,7 +242,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   // Render different sections
   if (section === "controls") {
     return (
-      <Suspense fallback={<pixiContainer />}>
+      <Suspense fallback={<layoutContainer />}>
         <ControlsSection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -309,7 +254,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   if (section === "philosophy") {
     return (
-      <Suspense fallback={<pixiContainer />}>
+      <Suspense fallback={<layoutContainer />}>
         <PhilosophySection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -320,175 +265,175 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   }
 
   return (
-    <pixiContainer data-testid="intro-screen">
-      {/* Background - Use regular pixiGraphics for custom drawing */}
-      <pixiGraphics
-        x={0}
-        y={0}
-        draw={backgroundPainter(screenW, screenH, isMobile)}
+    <layoutContainer
+      layout={{
+        width: screenW,
+        height: screenH,
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: isMobile ? 20 : 40,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+      }}
+      data-testid="intro-screen"
+    >
+      {/* Background Grid - Use layoutGraphics for custom drawing */}
+      <layoutGraphics
+        layout={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
       />
 
-      {/* Background textures - use regular sprites positioned absolutely */}
+      {/* Background textures - use layoutSprites positioned absolutely */}
       {bgTexture && (
-        <pixiSprite
+        <layoutSprite
           texture={bgTexture}
-          x={0}
-          y={0}
-          width={screenW}
-          height={screenH}
           alpha={0.05}
+          layout={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+          }}
         />
       )}
 
       {dojangWallTexture && (
-        <pixiSprite
+        <layoutSprite
           texture={dojangWallTexture}
-          x={0}
-          y={0}
-          width={screenW}
-          height={screenH}
           alpha={0.1}
+          layout={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+          }}
         />
       )}
 
-      {/* Main content using layout system */}
+      {/* Logo & Title */}
       <layoutContainer
         layout={{
-          width: screenW,
-          height: screenH,
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "space-between",
-          padding: isMobile ? 20 : 40,
-          position: "absolute",
-          top: 0,
-          left: 0,
+          gap: 8,
+          marginTop: 32,
         }}
       >
-        {/* Logo & Title */}
-        <layoutContainer
-          layout={{
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 32,
+        {logoTexture && (
+          <layoutSprite
+            texture={logoTexture}
+            layout={{
+              width: logoSize,
+              height: logoSize,
+            }}
+            anchor={0.5}
+          />
+        )}
+        <layoutText
+          text="흑괘 무술 도장"
+          style={{
+            fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+            fontSize: isMobile ? 28 : isTablet ? 36 : 48,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            fontWeight: "bold",
           }}
-        >
-          {logoTexture && (
-            <layoutSprite
-              texture={logoTexture}
-              layout={{
-                width: logoSize,
-                height: logoSize,
-              }}
-              anchor={0.5}
-            />
-          )}
-          <layoutText
-            text="흑괘 무술 도장"
-            style={{
-              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-              fontSize: isMobile ? 28 : isTablet ? 36 : 48,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-            }}
-            layout={{ alignSelf: "center" }}
-            anchor={0.5}
-          />
-          <layoutText
-            text="Black Trigram Dojo"
-            style={{
-              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-              fontSize: isMobile ? 16 : isTablet ? 20 : 24,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-            }}
-            layout={{ alignSelf: "center" }}
-            anchor={0.5}
-          />
-          <layoutText
-            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
-            style={{
-              fontSize: isMobile ? 20 : 28,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              letterSpacing: isMobile ? 8 : 12,
-            }}
-            layout={{ alignSelf: "center" }}
-            anchor={0.5}
-          />
-        </layoutContainer>
-
-        {/* Menu - Use regular pixiContainer positioned in the layout */}
-        <pixiContainer x={screenW / 2 - 200} y={screenH / 2 - 100}>
-          <MenuSection
-            menuItems={MENU_ITEMS}
-            selectedIndex={menuIdx}
-            onModeSelect={handleMenu}
-            width={isMobile ? screenW * 0.9 : 400}
-            height={220}
-            x={0}
-            y={0}
-          />
-        </pixiContainer>
-
-        {/* Archetype Display - Use regular pixiContainer */}
-        <pixiContainer x={0} y={screenH - (isMobile ? 300 : 350)}>
-          <ArchetypeDisplay
-            archetype={currentArchetype}
-            archetypeData={currentArchData}
-            texture={archetypeTextures[currentArchetype]}
-            total={ARCHETYPE_ORDER.length}
-            index={archIdx}
-            onPrev={() => {
-              setArchIdx(
-                (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-              );
-              audio.playSFX("ui_navigate");
-            }}
-            onNext={() => {
-              setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-              audio.playSFX("ui_navigate");
-            }}
-            width={screenW}
-            height={isMobile ? 250 : 300}
-          />
-        </pixiContainer>
-
-        {/* Footer */}
-        <layoutContainer
-          layout={{
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            marginBottom: isMobile ? 20 : 32,
+          layout={{ alignSelf: "center" }}
+          anchor={0.5}
+        />
+        <layoutText
+          text="Black Trigram Dojo"
+          style={{
+            fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+            fontSize: isMobile ? 16 : isTablet ? 20 : 24,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
           }}
-        >
-          <layoutText
-            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-            style={{
-              fontSize: isMobile ? 10 : 14,
-              fill: KOREAN_COLORS.ACCENT_CYAN,
-              fontStyle: "italic",
-            }}
-            layout={{ alignSelf: "center" }}
-            anchor={0.5}
-          />
-          <layoutText
-            interactive
-            cursor="pointer"
-            text="Open Source Korean Martial Arts Game by Hack23"
-            style={{
-              fontSize: isMobile ? 9 : 12,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-            }}
-            layout={{ alignSelf: "center" }}
-            anchor={0.5}
-            onPointerTap={() => {
-              window.open("https://github.com/Hack23/blacktrigram", "_blank");
-            }}
-          />
-        </layoutContainer>
+          layout={{ alignSelf: "center" }}
+          anchor={0.5}
+        />
+        <layoutText
+          text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
+          style={{
+            fontSize: isMobile ? 20 : 28,
+            fill: KOREAN_COLORS.PRIMARY_CYAN,
+            letterSpacing: isMobile ? 8 : 12,
+          }}
+          layout={{ alignSelf: "center" }}
+          anchor={0.5}
+        />
       </layoutContainer>
-    </pixiContainer>
+
+      {/* Menu */}
+      <MenuSection
+        menuItems={MENU_ITEMS}
+        selectedIndex={menuIdx}
+        onModeSelect={handleMenu}
+        width={isMobile ? screenW * 0.9 : 400}
+        height={isMobile ? 280 : 320}
+      />
+
+      {/* Archetype Display */}
+      <ArchetypeDisplay
+        archetype={currentArchetype}
+        archetypeData={currentArchData}
+        texture={archetypeTextures[currentArchetype]}
+        total={ARCHETYPE_ORDER.length}
+        index={archIdx}
+        onPrev={() => {
+          setArchIdx(
+            (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
+          );
+          audio.playSFX("ui_navigate");
+        }}
+        onNext={() => {
+          setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
+          audio.playSFX("ui_navigate");
+        }}
+        width={screenW}
+        height={isMobile ? 250 : 300}
+      />
+
+      {/* Footer */}
+      <layoutContainer
+        layout={{
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 4,
+          marginBottom: isMobile ? 20 : 32,
+        }}
+      >
+        <layoutText
+          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+          style={{
+            fontSize: isMobile ? 10 : 14,
+            fill: KOREAN_COLORS.ACCENT_CYAN,
+            fontStyle: "italic",
+          }}
+          layout={{ alignSelf: "center" }}
+          anchor={0.5}
+        />
+        <layoutText
+          interactive
+          cursor="pointer"
+          text="Open Source Korean Martial Arts Game by Hack23"
+          style={{
+            fontSize: isMobile ? 9 : 12,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+          }}
+          layout={{ alignSelf: "center" }}
+          anchor={0.5}
+          onPointerTap={() => {
+            window.open("https://github.com/Hack23/blacktrigram", "_blank");
+          }}
+        />
+      </layoutContainer>
+    </layoutContainer>
   );
 };
 

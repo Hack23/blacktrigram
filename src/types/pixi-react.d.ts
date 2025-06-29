@@ -110,18 +110,19 @@ export interface ParticleContainerProps
 }
 
 // --------------------------------------
-//  UI (@pixi/ui) – only two we actually use
+//  Layout (@pixi/layout)
 // --------------------------------------
-export interface FancyButtonProps extends BasePixiProps<UI.FancyButton> {
-  defaultView?: string | PIXI.DisplayObject;
-  hoverView?: string | PIXI.DisplayObject;
-  pressedView?: string | PIXI.DisplayObject;
-  text?: string;
-  onPress?: () => void;
+export interface LayoutGraphicsProps extends BasePixiProps<LayoutGraphics> {
+  draw?: (g: PIXI.Graphics) => void;
 }
-export interface ProgressBarProps extends BasePixiProps<UI.ProgressBar> {
-  progress?: number;
-}
+
+// --------------------------------------
+//  UI (@pixi/ui) – Make props permissive
+// --------------------------------------
+export type FancyButtonProps = PixiReactElementProps<UI.FancyButton, true>;
+export type ProgressBarProps = PixiReactElementProps<UI.ProgressBar, true>;
+export type ScrollBoxProps = PixiReactElementProps<UI.ScrollBox, true>;
+export type MaskedFrameProps = PixiReactElementProps<UI.MaskedFrame, true>;
 
 // ---------------------------------------------------------------------------
 //  3.  Global JSX intrinsic-element declarations
@@ -133,26 +134,28 @@ declare module "@pixi/react" {
     /* --- Plain PIXI display-objects (no layout) ------------------------- */
     pixiContainer: PixiReactElementProps<typeof Container>;
     pixiSprite: PixiReactElementProps<typeof Sprite>;
-    pixiGraphics: PixiReactElementProps<typeof Graphics>;
+    pixiGraphics: GraphicsProps;
     pixiText: PixiReactElementProps<typeof Text>;
     pixiTilingSprite: PixiReactElementProps<typeof TilingSprite>;
     pixiAnimatedSprite: PixiReactElementProps<typeof AnimatedSprite>;
 
     /* --- @pixi/layout COMPONENTS --------------------------------------- */
-    pixiLayoutContainer: PixiReactElementProps<typeof LayoutContainer>;
+    layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
     layoutSprite: PixiReactElementProps<typeof LayoutSprite>;
     layoutTilingSprite: PixiReactElementProps<typeof LayoutTilingSprite>;
     layoutText: PixiReactElementProps<typeof LayoutText>;
     layoutBitmapText: PixiReactElementProps<typeof LayoutBitmapText>;
     layoutAnimatedSprite: PixiReactElementProps<typeof LayoutAnimatedSprite>;
-    layoutGraphics: PixiReactElementProps<typeof LayoutGraphics>;
+    layoutGraphics: LayoutGraphicsProps;
     layoutNineSliceSprite: PixiReactElementProps<typeof LayoutNineSliceSprite>;
     layoutGifSprite: PixiReactElementProps<typeof LayoutGifSprite>;
     layoutView: PixiReactElementProps<typeof LayoutView>;
 
-    /* --- @pixi/ui shortcuts (optional – use rarely) -------------------- */
-    pixiFancyButton: PixiReactElementProps<typeof UI.FancyButton>;
-    pixiProgressBar: PixiReactElementProps<typeof UI.ProgressBar>;
+    /* --- @pixi/ui shortcuts (use these for UI) -------------------- */
+    pixiFancyButton: FancyButtonProps;
+    pixiProgressBar: ProgressBarProps;
+    pixiScrollBox: ScrollBoxProps;
+    pixiMaskedFrame: MaskedFrameProps;
   }
 }
 

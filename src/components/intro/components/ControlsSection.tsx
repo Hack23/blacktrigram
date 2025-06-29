@@ -207,20 +207,20 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
         gap: 8,
       };
 
+      const drawBadge = useCallback(
+        (g: Graphics) => {
+          g.clear();
+          g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
+          g.roundRect(0, 0, badgeWidth, 28, 6);
+          g.fill();
+        },
+        [badgeWidth]
+      );
+
       return (
         <layoutContainer layout={badgeLayout}>
           <pixiContainer width={badgeWidth} height={28}>
-            <pixiGraphics
-              draw={useCallback(
-                (g: Graphics) => {
-                  g.clear();
-                  g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
-                  g.roundRect(0, 0, badgeWidth, 28, 6);
-                  g.fill();
-                },
-                [badgeWidth]
-              )}
-            />
+            <pixiGraphics draw={drawBadge} />
             <layoutText
               text={keyText}
               style={{
