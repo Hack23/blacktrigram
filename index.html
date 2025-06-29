@@ -164,27 +164,27 @@
             });
         });
       }
-
-      // Node polyfill for @pixi/layout compatibility
-      if (typeof Node === "undefined") {
-        window.Node = class Node {
-          static ELEMENT_NODE = 1;
-          static TEXT_NODE = 3;
-          static COMMENT_NODE = 8;
-          static DOCUMENT_NODE = 9;
-          static DOCUMENT_TYPE_NODE = 10;
-          static DOCUMENT_FRAGMENT_NODE = 11;
-
-          nodeType = 1;
-          constructor() {}
-        };
-      }
     </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <noscript>
+      <!-- Fallback for browsers with JavaScript disabled -->
+      <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Orbitron:wght@400;700;900&display=swap"
+        rel="stylesheet"
+      />
+      <div class="loading">
+        <h1>Black Trigram (흑괘)</h1>
+        <p>
+          This experience requires JavaScript to run. Please enable it in your
+          browser.
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>
       <!-- Fallback for browsers with JavaScript disabled -->
       <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Orbitron:wght@400;700;900&display=swap"
