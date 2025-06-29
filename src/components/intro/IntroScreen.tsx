@@ -2,34 +2,20 @@
 import "@pixi/layout";
 import "@pixi/layout/react";
 import * as PIXI from "pixi.js";
-import React, {
-  Suspense,
-  lazy,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
-import ArchetypeDisplay from "./components/ArchetypeDisplay";
-import { MenuSection } from "./components/MenuSection";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 
+// Import components correctly
 import {
-  LayoutGraphics,
-  LayoutText,
-  LayoutView,
-} from "@pixi/layout/components";
-import { extend } from "@pixi/react";
-extend({
-  LayoutText,
-  LayoutView,
-  LayoutGraphics,
-});
+  ArchetypeDisplay,
+  ControlsSection,
+  MenuSection,
+  PhilosophySection,
+} from "./components";
 
 /* ------------------------------------------------------------------ */
 /*  1.  Utility hooks                                                 */
@@ -61,10 +47,8 @@ function useIntroAssets() {
   >({});
 
   useEffect(() => {
-    /* eslint-disable @typescript-eslint/no-floating-promises */
     (async () => {
       try {
-        // Use PIXI.Texture.EMPTY as fallback instead of null
         setBgTexture(
           (await PIXI.Assets.load(
             "/assets/visual/bg/intro/intro_bg_loop.png"
@@ -100,13 +84,11 @@ function useIntroAssets() {
         setArchetypeTextures(loaded);
       } catch (err) {
         console.error("Intro asset load error:", err);
-        // Set empty textures on error
         setBgTexture(PIXI.Texture.EMPTY);
         setLogoTexture(PIXI.Texture.EMPTY);
         setDojangWallTexture(PIXI.Texture.EMPTY);
       }
     })();
-    /* eslint-enable */
   }, []);
 
   return { bgTexture, logoTexture, dojangWallTexture, archetypeTextures };
@@ -135,12 +117,6 @@ const ARCHETYPE_ORDER: PlayerArchetype[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  4.  Lazy components                                               */
-/* ------------------------------------------------------------------ */
-const PhilosophySection = lazy(() => import("./components/PhilosophySection"));
-const ControlsSection = lazy(() => import("./components/ControlsSection"));
-
-/* ------------------------------------------------------------------ */
 /*  6.  IntroScreen Component                                         */
 /* ------------------------------------------------------------------ */
 export interface IntroScreenProps {
@@ -154,7 +130,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   width,
   height,
 }) => {
-  /* Window + audio helpers */
   const { width: ww, height: wh } = useWindowSize();
   const screenW = width ?? ww;
   const screenH = height ?? wh;
@@ -163,7 +138,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const { bgTexture, logoTexture, dojangWallTexture, archetypeTextures } =
     useIntroAssets();
 
-  /* Local state */
   const [section, setSection] = useState<"menu" | "controls" | "philosophy">(
     "menu"
   );
@@ -178,7 +152,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const isTablet = screenW >= 768 && screenW < 1024;
   const logoSize = isMobile ? 80 : isTablet ? 120 : 160;
 
-  /* Music on mount */
   useEffect(() => {
     if (audio.isInitialized && !introMusicStarted.current) {
       introMusicStarted.current = true;
@@ -186,7 +159,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   }, [audio]);
 
-  /* Keyboard navigation */
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (section !== "menu") {
@@ -225,9 +197,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [section, menuIdx, audio]);
+  }, [section, menuIdx, archIdx, audio]);
 
-  /* Menu selection handler */
   const handleMenu = (mode: GameMode): void => {
     switch (mode) {
       case GameMode.CONTROLS:
@@ -245,7 +216,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   };
 
-  // Create the grid graphics properly
+  // FIX: Create a PIXI.Graphics instance for the grid
   const gridGraphics = useMemo(() => {
     const graphics = new PIXI.Graphics();
     const gridSize = 30;
@@ -263,14 +234,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     return graphics;
   }, [screenW, screenH]);
 
-  // Render different sections
   if (section === "controls") {
     return (
-      <Suspense
-        fallback={
-          <layoutContainer layout={{ width: screenW, height: screenH }} />
-        }
-      >
+      <Suspense fallback={null}>
         <ControlsSection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -282,11 +248,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   if (section === "philosophy") {
     return (
-      <Suspense
-        fallback={
-          <layoutContainer layout={{ width: screenW, height: screenH }} />
-        }
-      >
+      <Suspense fallback={null}>
         <PhilosophySection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -298,34 +260,34 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   return (
     <layoutContainer
+      sortableChildren={true}
       layout={{
         width: screenW,
         height: screenH,
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "flex-start", // Align content to the top
         padding: isMobile ? 20 : 40,
         backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+        position: "relative", // Needed for absolute children
       }}
       data-testid="intro-screen"
     >
-      {/* Background layers - use absolute positioning within the main container */}
-      {/* Grid background - use the graphics instance directly */}
+      {/* Background layers */}
       <layoutGraphics
+        // CORRECT: Pass the .context of the PIXI.Graphics instance
         context={gridGraphics.context}
+        zIndex={-3} // Use zIndex to layer backgrounds
         layout={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: screenW,
-          height: screenH,
         }}
       />
-
-      {/* Background texture - always render but control visibility with alpha */}
       <layoutSprite
         texture={bgTexture || PIXI.Texture.EMPTY}
-        alpha={bgTexture && bgTexture !== PIXI.Texture.EMPTY ? 0.05 : 0}
+        alpha={bgTexture ? 0.05 : 0}
+        zIndex={-2}
         layout={{
           position: "absolute",
           top: 0,
@@ -334,15 +296,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           height: screenH,
         }}
       />
-
-      {/* Dojang wall texture - always render but control visibility with alpha */}
       <layoutSprite
         texture={dojangWallTexture || PIXI.Texture.EMPTY}
-        alpha={
-          dojangWallTexture && dojangWallTexture !== PIXI.Texture.EMPTY
-            ? 0.1
-            : 0
-        }
+        alpha={dojangWallTexture ? 0.1 : 0}
+        zIndex={-1}
         layout={{
           position: "absolute",
           top: 0,
@@ -352,12 +309,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         }}
       />
 
-      {/* Main content container - higher z-index to appear above backgrounds */}
+      {/* Main content container */}
       <layoutContainer
         layout={{
+          width: "100%",
           flexDirection: "column",
           alignItems: "center",
-          gap: 20,
+          gap: isMobile ? 15 : 20,
         }}
       >
         {/* Logo & Title */}
@@ -366,13 +324,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             flexDirection: "column",
             alignItems: "center",
             gap: 8,
-            marginTop: 32,
+            marginTop: isMobile ? 16 : 32,
           }}
         >
           <layoutSprite
             texture={logoTexture || PIXI.Texture.EMPTY}
             anchor={0.5}
-            alpha={logoTexture && logoTexture !== PIXI.Texture.EMPTY ? 1 : 0}
+            alpha={logoTexture ? 1 : 0}
             layout={{
               width: logoSize,
               height: logoSize,
@@ -434,8 +392,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
             audio.playSFX("ui_navigate");
           }}
-          width={screenW}
-          height={isMobile ? 250 : 300}
+          width={isMobile ? screenW * 0.9 : 600}
+          height={isMobile ? 250 : 200}
         />
 
         {/* Footer */}
@@ -444,7 +402,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             flexDirection: "column",
             alignItems: "center",
             gap: 4,
-            marginBottom: isMobile ? 20 : 32,
+            marginTop: "auto", // Pushes footer to the bottom
+            marginBottom: isMobile ? 10 : 20,
           }}
         >
           <layoutText
