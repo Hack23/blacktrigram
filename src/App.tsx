@@ -40,37 +40,63 @@ const LayoutResizer: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { app } = useApplication();
   const layoutRef = useRef<LayoutContainer>(null);
+  const [dimensions, setDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   const doResize = useCallback(() => {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Guard: only update when the ref exists
+    // Update dimensions state
+    setDimensions({ width, height });
+
+    // Update layout if ref exists
     if (layoutRef.current) {
       layoutRef.current.layout = { width, height };
     }
 
-    // Keep PIXI renderer in-sync as well
-    app?.renderer?.resize(width, height);
+    // Keep PIXI renderer in-sync
+    if (app?.renderer) {
+      app.renderer.resize(width, height);
+    }
+
+    // Prevent mobile scroll issues
+    window.scrollTo(0, 0);
   }, [app]);
 
   useEffect(() => {
+    // Initial resize
     doResize();
-    window.addEventListener("resize", doResize);
-    return () => window.removeEventListener("resize", doResize);
-  }, [doResize]);
 
+    // Listen for resize events
+    window.addEventListener("resize", doResize);
+
+    // Also listen for PixiJS resize events if available
+    if (app?.renderer && typeof app.renderer.on === "function") {
+      app.renderer.on("resize", doResize);
+    }
+
+    return () => {
+      window.removeEventListener("resize", doResize);
+      if (app?.renderer && typeof app.renderer.off === "function") {
+        app.renderer.off("resize", doResize);
+      }
+    };
+  }, [doResize, app]);
+
+  // Use a single pixiContainer with layout properties
   return (
-    /* NOTE: **layoutContainer** is required here so that the instance
-       created by React actually _has_ a `.layout` property. Using
-       `pixiContainer` (plain PIXI.Container) caused runtime crashes
-       because plain containers do not include the layout mixin. */
-    <layoutContainer
+    <pixiContainer
       ref={layoutRef}
-      layout={{ width: window.innerWidth, height: window.innerHeight }}
+      layout={{
+        width: dimensions.width,
+        height: dimensions.height,
+      }}
     >
       {children}
-    </layoutContainer>
+    </pixiContainer>
   );
 };
 
@@ -341,7 +367,6 @@ function App() {
     );
   }
 
-  // Add a default player for training mode
   const trainingPlayer = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
 
   return (
@@ -358,7 +383,7 @@ function App() {
           height={screenSize.height}
           backgroundColor={0x0a0a0f}
           antialias
-          resizeTo={window}
+          // Remove resizeTo={window} as LayoutResizer handles this
         >
           {/* NEW: one root LayoutContainer that always matches canvas size */}
           <LayoutResizer>{renderCurrentScreen()}</LayoutResizer>
