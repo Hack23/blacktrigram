@@ -1,14 +1,61 @@
 /* ------------------------------------------------------------------ */
-/*  0-A.  Guarantee a global `Node` constructor for SSR / workers
+/*  Guarantee a global `Node` constructor for @pixi/layout compatibility
 /* ------------------------------------------------------------------ */
-if (
-  typeof globalThis !== "undefined" &&
-  (globalThis as any).Node === undefined
-) {
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore – minimal, non-functional stub only used for `instanceof Node`
-  (globalThis as any).Node = class {};
-  /* eslint-enable @typescript-eslint/ban-ts-comment */
+if (typeof globalThis !== "undefined" && !globalThis.Node) {
+  // Create a minimal Node polyfill for @pixi/layout
+  (globalThis as any).Node = class Node {
+    nodeType = 1;
+    nodeName = "NODE";
+    ownerDocument = null;
+    parentNode = null;
+    parentElement = null;
+    childNodes: any[] = [];
+    firstChild = null;
+    lastChild = null;
+    previousSibling = null;
+    nextSibling = null;
+    nodeValue = null;
+    textContent = "";
+
+    constructor() {}
+
+    // Minimal methods that might be checked
+    appendChild() {
+      return this;
+    }
+    removeChild() {
+      return this;
+    }
+    insertBefore() {
+      return this;
+    }
+    replaceChild() {
+      return this;
+    }
+    cloneNode() {
+      return new (globalThis as any).Node();
+    }
+    contains() {
+      return false;
+    }
+    hasChildNodes() {
+      return false;
+    }
+    isEqualNode() {
+      return false;
+    }
+    isSameNode() {
+      return false;
+    }
+  };
+
+  // Also ensure ELEMENT_NODE constant exists
+  (globalThis as any).Node.ELEMENT_NODE = 1;
+  (globalThis as any).Node.TEXT_NODE = 3;
+  (globalThis as any).Node.COMMENT_NODE = 8;
+  (globalThis as any).Node.DOCUMENT_NODE = 9;
+  (globalThis as any).Node.DOCUMENT_TYPE_NODE = 10;
+  (globalThis as any).Node.DOCUMENT_FRAGMENT_NODE = 11;
 }
 
 /* ------------------------------------------------------------------ */

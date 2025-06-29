@@ -1,8 +1,7 @@
 // Test setup for Black Trigram Korean martial arts game
 
-import { beforeAll, afterEach, vi } from "vitest";
-import { expect } from "vitest";
 import * as matchers from "@testing-library/jest-dom/matchers";
+import { afterEach, beforeAll, expect, vi } from "vitest";
 
 expect.extend(matchers);
 
@@ -96,6 +95,15 @@ beforeAll(() => {
     }
     originalWarn(...args);
   };
+
+  // Add Node polyfill for @pixi/layout
+  if (typeof globalThis !== "undefined" && !globalThis.Node) {
+    (globalThis as any).Node = class Node {
+      static ELEMENT_NODE = 1;
+      nodeType = 1;
+      constructor() {}
+    };
+  }
 });
 
 // Cleanup after each test case
