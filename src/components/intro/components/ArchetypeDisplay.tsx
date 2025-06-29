@@ -33,25 +33,6 @@ const createButtonGraphics = (
   return graphics;
 };
 
-// Helper function to create progress bar background
-const createProgressBg = (width: number, height: number): PIXI.Graphics => {
-  const bg = new PIXI.Graphics();
-  bg.roundRect(0, 0, width, height, height / 2);
-  bg.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-  return bg;
-};
-
-// Helper function to create progress bar fill
-const createProgressFill = (
-  color: number,
-  width: number = 200
-): PIXI.Graphics => {
-  const fill = new PIXI.Graphics();
-  fill.roundRect(0, 0, width, 8, 4);
-  fill.fill(color);
-  return fill;
-};
-
 // Constants
 const IMAGE_SIZE = 120;
 const MOBILE_IMAGE_SIZE = 80;
@@ -76,26 +57,48 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     // Get the primary color from archetypeData
     const primaryColor = archetypeData.colors.primary;
 
-    // Create button views outside of nested components to avoid memory issues
+    // Create button views once
     const navButtonViews = useMemo(
       () => ({
-        prev: {
-          default: createButtonGraphics(40, 40, primaryColor, 0.8),
-          hover: createButtonGraphics(44, 44, primaryColor, 1),
-          pressed: createButtonGraphics(38, 38, primaryColor, 0.6),
-        },
-        next: {
-          default: createButtonGraphics(40, 40, primaryColor, 0.8),
-          hover: createButtonGraphics(44, 44, primaryColor, 1),
-          pressed: createButtonGraphics(38, 38, primaryColor, 0.6),
-        },
+        default: createButtonGraphics(40, 40, primaryColor, 0.8),
+        hover: createButtonGraphics(44, 44, primaryColor, 1),
+        pressed: createButtonGraphics(38, 38, primaryColor, 0.6),
       }),
       [primaryColor]
     );
 
-    // Create refs for buttons with proper type from @pixi/ui
+    // Create refs for buttons
     const prevButtonRef = useRef<FancyButton>(null);
     const nextButtonRef = useRef<FancyButton>(null);
+
+    // Button text components
+    const prevButtonText = useMemo(
+      () =>
+        new PIXI.Text({
+          text: "◀",
+          style: {
+            fontSize: 20,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontWeight: "bold",
+            align: "center",
+          },
+        }),
+      []
+    );
+
+    const nextButtonText = useMemo(
+      () =>
+        new PIXI.Text({
+          text: "▶",
+          style: {
+            fontSize: 20,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontWeight: "bold",
+            align: "center",
+          },
+        }),
+      []
+    );
 
     // Connect button handlers
     useEffect(() => {
@@ -120,62 +123,42 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
       };
     }, [onPrev, onNext]);
 
-    // Create progress bar views
-    const progressViews = useMemo(
+    // Create progress bar graphics
+    const progressBarGraphics = useMemo(() => {
+      const bg = new PIXI.Graphics();
+      bg.roundRect(0, 0, 200, 8, 4);
+      bg.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
+
+      const fill = new PIXI.Graphics();
+      const fillWidth = (200 * (index + 1)) / total;
+      fill.roundRect(0, 0, fillWidth, 8, 4);
+      fill.fill(primaryColor);
+
+      return { bg, fill };
+    }, [primaryColor, index, total]);
+
+    // Main container layout - simplified without deep nesting
+    const mainLayout = useMemo(
       () => ({
-        bg: createProgressBg(200, 8),
-        fill: createProgressFill(primaryColor),
+        width: width * 0.9,
+        height,
+        padding: 20,
+        borderRadius: 12,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+        backgroundAlpha: 0.9,
       }),
-      [primaryColor]
+      [width, height]
     );
 
-    // Simplified layout without excessive nesting
     return (
-      <layoutContainer
-        layout={{
-          width: width * 0.9,
-          height,
-          padding: 20,
-          borderRadius: 12,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-          flexDirection: isMobile ? "column" : "row",
-          gap: isMobile ? 16 : 24,
-        }}
-      >
-        {/* Desktop: Left navigation button */}
-        {!isMobile && (
-          <pixiFancyButton
-            ref={prevButtonRef}
-            defaultView={navButtonViews.prev.default}
-            hoverView={navButtonViews.prev.hover}
-            pressedView={navButtonViews.prev.pressed}
-            text={
-              new PIXI.Text({
-                text: "◀",
-                style: {
-                  fontSize: 20,
-                  fill: KOREAN_COLORS.TEXT_PRIMARY,
-                  fontWeight: "bold",
-                  align: "center",
-                },
-              })
-            }
-            animations={{
-              hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-              pressed: {
-                props: { scale: { x: 0.95, y: 0.95 } },
-                duration: 100,
-              },
-            }}
-          />
-        )}
-
-        {/* Character image and info - simplified structure */}
+      <layoutContainer layout={mainLayout}>
+        {/* Character image - positioned absolutely */}
         <layoutSprite
           texture={texture ?? PIXI.Texture.EMPTY}
           layout={{
+            position: "absolute",
+            left: isMobile ? (width * 0.9) / 2 - imageSize / 2 : 100,
+            top: isMobile ? 20 : height / 2 - imageSize / 2,
             width: imageSize,
             height: imageSize,
           }}
@@ -185,81 +168,61 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
         />
 
-        {/* Character info as direct children instead of nested container */}
+        {/* Character name - positioned absolutely */}
         <layoutText
-          {...{
-            text: `${archetypeData.name.korean} - ${archetypeData.name.english}`,
-            style: {
-              fontFamily: "Noto Sans KR, sans-serif",
-              fontSize: isMobile ? 18 : 24,
-              fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
-              fontWeight: "bold",
-              align: "center",
-              dropShadow: {
-                color: 0x000000,
-                alpha: 0.5,
-                blur: 4,
-                distance: 2,
-              },
-            },
-            layout: {
-              marginLeft: 10,
-              marginRight: 10,
+          text={`${archetypeData.name.korean} - ${archetypeData.name.english}`}
+          style={{
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontSize: isMobile ? 18 : 24,
+            fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
+            fontWeight: "bold",
+            align: "center",
+            dropShadow: {
+              color: 0x000000,
+              alpha: 0.5,
+              blur: 4,
+              distance: 2,
             },
           }}
+          layout={{
+            position: "absolute",
+            top: isMobile ? imageSize + 40 : 40,
+          }}
+          anchor={isMobile ? 0.5 : 0}
         />
 
-        {/* Desktop: Right navigation button */}
-        {!isMobile && (
-          <pixiFancyButton
-            ref={nextButtonRef}
-            defaultView={navButtonViews.next.default}
-            hoverView={navButtonViews.next.hover}
-            pressedView={navButtonViews.next.pressed}
-            text={
-              new PIXI.Text({
-                text: "▶",
-                style: {
-                  fontSize: 20,
-                  fill: KOREAN_COLORS.TEXT_PRIMARY,
-                  fontWeight: "bold",
-                  align: "center",
-                },
-              })
-            }
-            animations={{
-              hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
-              pressed: {
-                props: { scale: { x: 0.95, y: 0.95 } },
-                duration: 100,
-              },
-            }}
-          />
-        )}
+        {/* Description - positioned absolutely */}
+        <layoutText
+          text={archetypeData.description.korean}
+          style={{
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontSize: isMobile ? 12 : 14,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            align: isMobile ? "center" : "left",
+            wordWrap: true,
+            wordWrapWidth: isMobile ? width * 0.8 : 400,
+            lineHeight: 20,
+          }}
+          layout={{
+            position: "absolute",
+            top: isMobile ? imageSize + 80 : 80,
+          }}
+          anchor={{ x: isMobile ? 0.5 : 0, y: 0 }}
+        />
 
-        {/* Mobile: Navigation buttons - positioned absolutely to avoid nesting */}
-        {isMobile && (
+        {/* Desktop navigation buttons */}
+        {!isMobile && (
           <>
             <pixiFancyButton
               ref={prevButtonRef}
-              defaultView={navButtonViews.prev.default}
-              hoverView={navButtonViews.prev.hover}
-              pressedView={navButtonViews.prev.pressed}
-              text={
-                new PIXI.Text({
-                  text: "◀",
-                  style: {
-                    fontSize: 20,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                    align: "center",
-                  },
-                })
-              }
+              defaultView={navButtonViews.default}
+              hoverView={navButtonViews.hover}
+              pressedView={navButtonViews.pressed}
+              text={prevButtonText}
               layout={{
                 position: "absolute",
-                bottom: 60,
-                left: width * 0.3,
+                left: 20,
+                top: height / 2 - 20,
               }}
               animations={{
                 hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
@@ -271,24 +234,14 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             />
             <pixiFancyButton
               ref={nextButtonRef}
-              defaultView={navButtonViews.next.default}
-              hoverView={navButtonViews.next.hover}
-              pressedView={navButtonViews.next.pressed}
-              text={
-                new PIXI.Text({
-                  text: "▶",
-                  style: {
-                    fontSize: 20,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                    align: "center",
-                  },
-                })
-              }
+              defaultView={navButtonViews.default}
+              hoverView={navButtonViews.hover}
+              pressedView={navButtonViews.pressed}
+              text={nextButtonText}
               layout={{
                 position: "absolute",
-                bottom: 60,
-                right: width * 0.3,
+                right: 20,
+                top: height / 2 - 20,
               }}
               animations={{
                 hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
@@ -301,58 +254,85 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           </>
         )}
 
-        {/* Progress bar - positioned absolutely */}
-        <pixiProgressBar
-          bg={progressViews.bg}
-          fill={progressViews.fill}
-          fillPaddings={{ top: 2, right: 2, bottom: 2, left: 2 }}
-          progress={((index + 1) / total) * 100}
+        {/* Mobile navigation buttons */}
+        {isMobile && (
+          <>
+            <pixiFancyButton
+              ref={prevButtonRef}
+              defaultView={navButtonViews.default}
+              hoverView={navButtonViews.hover}
+              pressedView={navButtonViews.pressed}
+              text={prevButtonText}
+              layout={{
+                position: "absolute",
+                bottom: 60,
+                left: width * 0.25,
+              }}
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+            <pixiFancyButton
+              ref={nextButtonRef}
+              defaultView={navButtonViews.default}
+              hoverView={navButtonViews.hover}
+              pressedView={navButtonViews.pressed}
+              text={nextButtonText}
+              layout={{
+                position: "absolute",
+                bottom: 60,
+                right: width * 0.25,
+              }}
+              animations={{
+                hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
+                pressed: {
+                  props: { scale: { x: 0.95, y: 0.95 } },
+                  duration: 100,
+                },
+              }}
+            />
+          </>
+        )}
+
+        {/* Progress bar */}
+        <layoutGraphics
+          context={progressBarGraphics.bg.context}
           layout={{
             position: "absolute",
             bottom: 20,
-            left: "center",
+            left: width * 0.45 - 100,
+          }}
+        />
+        <layoutGraphics
+          context={progressBarGraphics.fill.context}
+          layout={{
+            position: "absolute",
+            bottom: 20,
+            left: width * 0.45 - 100,
           }}
         />
 
-        {/* Selected indicator - positioned absolutely */}
+        {/* Selected indicator */}
         {isSelected && (
           <layoutText
-            {...{
-              text: "✓ 선택됨",
-              style: {
-                fontFamily: "Noto Sans KR, sans-serif",
-                fontSize: 12,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
-                fontWeight: "bold",
-              },
-              layout: {
-                position: "absolute",
-                top: 20,
-                right: 20,
-              },
+            text="✓ 선택됨"
+            style={{
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontSize: 12,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+            }}
+            layout={{
+              position: "absolute",
+              top: 20,
+              right: 20,
             }}
           />
         )}
-
-        {/* Description text - positioned absolutely to avoid deep nesting */}
-        <layoutText
-          {...{
-            text: archetypeData.description.korean,
-            style: {
-              fontFamily: "Noto Sans KR, sans-serif",
-              fontSize: isMobile ? 12 : 14,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-              wordWrap: true,
-              wordWrapWidth: isMobile ? 200 : 300,
-              lineHeight: 20,
-            },
-            layout: {
-              position: "absolute",
-              bottom: 80,
-            },
-          }}
-        />
       </layoutContainer>
     );
   }
