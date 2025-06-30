@@ -71,32 +71,14 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     const prevButtonRef = useRef<FancyButton>(null);
     const nextButtonRef = useRef<FancyButton>(null);
 
-    // Button text components
-    const prevButtonText = useMemo(
-      () =>
-        new PIXI.Text({
-          text: "◀",
-          style: {
-            fontSize: 20,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            fontWeight: "bold",
-            align: "center",
-          },
-        }),
-      []
-    );
-
-    const nextButtonText = useMemo(
-      () =>
-        new PIXI.Text({
-          text: "▶",
-          style: {
-            fontSize: 20,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            fontWeight: "bold",
-            align: "center",
-          },
-        }),
+    // --- FIX: Define button text style, not a PIXI.Text instance ---
+    const buttonTextStyle = useMemo(
+      () => ({
+        fontSize: 20,
+        fill: KOREAN_COLORS.TEXT_PRIMARY,
+        fontWeight: "bold",
+        align: "center",
+      }),
       []
     );
 
@@ -230,7 +212,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               defaultView={navButtonViews.default}
               hoverView={navButtonViews.hover}
               pressedView={navButtonViews.pressed}
-              text={prevButtonText}
+              // --- FIX: Pass text string and style object ---
+              text={"◀"}
+              textStyle={buttonTextStyle}
               layout={{
                 position: "absolute",
                 left: 20,
@@ -250,7 +234,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               defaultView={navButtonViews.default}
               hoverView={navButtonViews.hover}
               pressedView={navButtonViews.pressed}
-              text={nextButtonText}
+              // --- FIX: Pass text string and style object ---
+              text={"▶"}
+              textStyle={buttonTextStyle}
               layout={{
                 position: "absolute",
                 right: 20,
@@ -276,7 +262,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               defaultView={navButtonViews.default}
               hoverView={navButtonViews.hover}
               pressedView={navButtonViews.pressed}
-              text={prevButtonText}
+              // --- FIX: Pass text string and style object ---
+              text={"◀"}
+              textStyle={buttonTextStyle}
               layout={{
                 position: "absolute",
                 bottom: 60,
@@ -296,7 +284,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               defaultView={navButtonViews.default}
               hoverView={navButtonViews.hover}
               pressedView={navButtonViews.pressed}
-              text={nextButtonText}
+              // --- FIX: Pass text string and style object ---
+              text={"▶"}
+              textStyle={buttonTextStyle}
               layout={{
                 position: "absolute",
                 bottom: 60,
