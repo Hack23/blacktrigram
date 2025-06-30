@@ -18,23 +18,6 @@ import {
 } from "./components";
 
 /* ------------------------------------------------------------------ */
-/*  1.  Utility hooks                                                 */
-/* ------------------------------------------------------------------ */
-function useWindowSize() {
-  const [size, setSize] = useState<{ width: number; height: number }>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-  useEffect(() => {
-    const onResize = () =>
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return size;
-}
-
-/* ------------------------------------------------------------------ */
 /*  2.  Asset-loader hook                                             */
 /* ------------------------------------------------------------------ */
 function useIntroAssets() {
@@ -130,9 +113,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   width,
   height,
 }) => {
-  const { width: ww, height: wh } = useWindowSize();
-  const screenW = width ?? ww;
-  const screenH = height ?? wh;
+  const screenW = width || window.innerWidth;
+  const screenH = height || window.innerHeight;
   const audio = useAudio();
 
   const { bgTexture, logoTexture, dojangWallTexture, archetypeTextures } =
@@ -271,7 +253,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
         position: "relative", // Needed for absolute children
       }}
-      data-testid="intro-screen"
     >
       {/* Background layers */}
       <layoutGraphics

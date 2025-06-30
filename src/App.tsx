@@ -403,7 +403,7 @@ function App() {
           // Remove resizeTo={window} as LayoutResizer handles this
         >
           {/* NEW: one root LayoutContainer that always matches canvas size */}
-          <LayoutResizer>{renderCurrentScreen()}</LayoutResizer>
+          {renderCurrentScreen()}
         </Application>
       </div>
     </AudioProvider>
