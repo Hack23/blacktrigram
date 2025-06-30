@@ -3,6 +3,12 @@
 /// <reference types="@pixi/ui" />
 /// <reference types="@pixi/layout" />
 
+// Only declare the module for react-reconciler constants fix
+declare module "react-reconciler/constants" {
+  export * from "react-reconciler/constants.js";
+}
+
+
 import type * as Layout from "@pixi/layout";
 import "@pixi/react";
 import type { PixiReactElementProps } from "@pixi/react";
