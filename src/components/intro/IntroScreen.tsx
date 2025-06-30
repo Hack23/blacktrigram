@@ -2,7 +2,13 @@
 import "@pixi/layout";
 import "@pixi/layout/react";
 import * as PIXI from "pixi.js";
-import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
@@ -198,23 +204,22 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   };
 
-  // FIX: Create a PIXI.Graphics instance for the grid
-  const gridGraphics = useMemo(() => {
-    const graphics = new PIXI.Graphics();
-    const gridSize = 30;
-    const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
+  const drawGrid = useCallback(
+    (g: PIXI.Graphics) => {
+      const gridSize = 30;
+      const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
 
-    graphics.clear();
-    for (let i = 0; i < screenW / gridSize; i++) {
-      graphics.rect(i * gridSize, 0, 1, screenH);
-    }
-    for (let i = 0; i < screenH / gridSize; i++) {
-      graphics.rect(0, i * gridSize, screenW, 1);
-    }
-    graphics.fill({ color: gridColor, alpha: 0.08 });
-
-    return graphics;
-  }, [screenW, screenH]);
+      g.clear();
+      for (let i = 0; i < screenW / gridSize; i++) {
+        g.rect(i * gridSize, 0, 1, screenH);
+      }
+      for (let i = 0; i < screenH / gridSize; i++) {
+        g.rect(0, i * gridSize, screenW, 1);
+      }
+      g.fill({ color: gridColor, alpha: 0.08 });
+    },
+    [screenW, screenH]
+  );
 
   if (section === "controls") {
     return (
@@ -248,24 +253,25 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         height: screenH,
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "flex-start", // Align content to the top
+        justifyContent: "flex-start",
         padding: isMobile ? 20 : 40,
         backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-        position: "relative", // Needed for absolute children
+        position: "relative",
       }}
     >
       {/* Background layers */}
-      <layoutGraphics
-        // CORRECT: Pass the .context of the PIXI.Graphics instance
-        context={gridGraphics.context}
-        zIndex={-3} // Use zIndex to layer backgrounds
+      <pixiGraphics
+        draw={drawGrid}
+        zIndex={-3}
         layout={{
           position: "absolute",
           top: 0,
           left: 0,
+          width: "100%",
+          height: "100%",
         }}
       />
-      <layoutSprite
+      <pixiSprite
         texture={bgTexture || PIXI.Texture.EMPTY}
         alpha={bgTexture ? 0.05 : 0}
         zIndex={-2}
@@ -273,11 +279,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           position: "absolute",
           top: 0,
           left: 0,
-          width: screenW,
-          height: screenH,
+          width: "100%",
+          height: "100%",
         }}
       />
-      <layoutSprite
+      <pixiSprite
         texture={dojangWallTexture || PIXI.Texture.EMPTY}
         alpha={dojangWallTexture ? 0.1 : 0}
         zIndex={-1}
@@ -285,8 +291,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           position: "absolute",
           top: 0,
           left: 0,
-          width: screenW,
-          height: screenH,
+          width: "100%",
+          height: "100%",
         }}
       />
 
@@ -308,7 +314,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             marginTop: isMobile ? 16 : 32,
           }}
         >
-          <layoutSprite
+          <pixiSprite
             texture={logoTexture || PIXI.Texture.EMPTY}
             anchor={0.5}
             alpha={logoTexture ? 1 : 0}
@@ -317,7 +323,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               height: logoSize,
             }}
           />
-          <layoutText
+          <pixiText
             text="흑괘 무술 도장"
             style={{
               fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
@@ -327,7 +333,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             }}
             anchor={{ x: 0.5, y: 0.5 }}
           />
-          <layoutText
+          <pixiText
             text="Black Trigram Dojo"
             style={{
               fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
@@ -336,7 +342,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             }}
             anchor={{ x: 0.5, y: 0.5 }}
           />
-          <layoutText
+          <pixiText
             text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
             style={{
               fontSize: isMobile ? 20 : 28,
@@ -387,7 +393,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             marginBottom: isMobile ? 10 : 20,
           }}
         >
-          <layoutText
+          <pixiText
             text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
             style={{
               fontSize: isMobile ? 10 : 14,

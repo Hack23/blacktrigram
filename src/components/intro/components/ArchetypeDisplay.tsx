@@ -2,7 +2,7 @@ import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype } from "@/types";
 import { FancyButton } from "@pixi/ui";
 import * as PIXI from "pixi.js";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 
 // Define the proper props interface
@@ -123,19 +123,22 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
       };
     }, [onPrev, onNext]);
 
-    // Create progress bar graphics
-    const progressBarGraphics = useMemo(() => {
-      const bg = new PIXI.Graphics();
-      bg.roundRect(0, 0, 200, 8, 4);
-      bg.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
+    // Create progress bar draw callbacks
+    const drawProgressBarBg = useCallback((g: PIXI.Graphics) => {
+      g.clear();
+      g.roundRect(0, 0, 200, 8, 4);
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
+    }, []);
 
-      const fill = new PIXI.Graphics();
-      const fillWidth = (200 * (index + 1)) / total;
-      fill.roundRect(0, 0, fillWidth, 8, 4);
-      fill.fill(primaryColor);
-
-      return { bg, fill };
-    }, [primaryColor, index, total]);
+    const drawProgressBarFill = useCallback(
+      (g: PIXI.Graphics) => {
+        const fillWidth = (200 * (index + 1)) / total;
+        g.clear();
+        g.roundRect(0, 0, fillWidth, 8, 4);
+        g.fill(primaryColor);
+      },
+      [primaryColor, index, total]
+    );
 
     // Main container layout - simplified without deep nesting
     const mainLayout = useMemo(
@@ -146,6 +149,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         borderRadius: 12,
         backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
         backgroundAlpha: 0.9,
+        position: "relative" as const,
       }),
       [width, height]
     );
@@ -153,7 +157,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     return (
       <layoutContainer layout={mainLayout}>
         {/* Character image - positioned absolutely */}
-        <layoutSprite
+        <pixiSprite
           texture={texture ?? PIXI.Texture.EMPTY}
           anchor={0.5}
           interactive={!!onSelect}
@@ -161,15 +165,17 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
           layout={{
             position: "absolute",
-            left: isMobile ? (width * 0.9) / 2 - imageSize / 2 : 100,
-            top: isMobile ? 20 : height / 2 - imageSize / 2,
+            left: isMobile ? "50%" : 100,
+            top: isMobile ? 20 + imageSize / 2 : "50%",
             width: imageSize,
             height: imageSize,
+            marginLeft: isMobile ? -imageSize / 2 : 0,
+            marginTop: isMobile ? 0 : -imageSize / 2,
           }}
         />
 
         {/* Character name - positioned absolutely */}
-        <layoutText
+        <pixiText
           text={`${archetypeData.name.korean} - ${archetypeData.name.english}`}
           style={{
             fontFamily: "Noto Sans KR, sans-serif",
@@ -187,12 +193,15 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           layout={{
             position: "absolute",
             top: isMobile ? imageSize + 40 : 40,
+            left: isMobile ? "50%" : imageSize + 60,
+            marginLeft: isMobile ? -((width * 0.9) / 2) : 0,
+            width: isMobile ? width * 0.9 : "auto",
           }}
           anchor={isMobile ? 0.5 : 0}
         />
 
         {/* Description - positioned absolutely */}
-        <layoutText
+        <pixiText
           text={archetypeData.description.korean}
           style={{
             fontFamily: "Noto Sans KR, sans-serif",
@@ -206,6 +215,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           layout={{
             position: "absolute",
             top: isMobile ? imageSize + 80 : 80,
+            left: isMobile ? "50%" : imageSize + 60,
+            marginLeft: isMobile ? -((width * 0.9) / 2) : 0,
+            width: isMobile ? width * 0.9 : 400,
           }}
           anchor={{ x: isMobile ? 0.5 : 0, y: 0 }}
         />
@@ -222,7 +234,8 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               layout={{
                 position: "absolute",
                 left: 20,
-                top: height / 2 - 20,
+                top: "50%",
+                marginTop: -20,
               }}
               animations={{
                 hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
@@ -241,7 +254,8 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               layout={{
                 position: "absolute",
                 right: 20,
-                top: height / 2 - 20,
+                top: "50%",
+                marginTop: -20,
               }}
               animations={{
                 hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
@@ -266,7 +280,8 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               layout={{
                 position: "absolute",
                 bottom: 60,
-                left: width * 0.25,
+                left: "25%",
+                marginLeft: -20,
               }}
               animations={{
                 hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
@@ -285,7 +300,8 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               layout={{
                 position: "absolute",
                 bottom: 60,
-                right: width * 0.25,
+                right: "25%",
+                marginRight: -20,
               }}
               animations={{
                 hover: { props: { scale: { x: 1.1, y: 1.1 } }, duration: 150 },
@@ -299,26 +315,28 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         )}
 
         {/* Progress bar */}
-        <layoutGraphics
-          context={progressBarGraphics.bg.context}
+        <pixiGraphics
+          draw={drawProgressBarBg}
           layout={{
             position: "absolute",
             bottom: 20,
-            left: width * 0.45 - 100,
+            left: "50%",
+            marginLeft: -100,
           }}
         />
-        <layoutGraphics
-          context={progressBarGraphics.fill.context}
+        <pixiGraphics
+          draw={drawProgressBarFill}
           layout={{
             position: "absolute",
             bottom: 20,
-            left: width * 0.45 - 100,
+            left: "50%",
+            marginLeft: -100,
           }}
         />
 
         {/* Selected indicator */}
         {isSelected && (
-          <layoutText
+          <pixiText
             text="✓ 선택됨"
             style={{
               fontFamily: "Noto Sans KR, sans-serif",
