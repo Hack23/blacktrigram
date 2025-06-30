@@ -1,22 +1,184 @@
 import "@pixi/layout";
-import { LayoutContainer, LayoutText } from "@pixi/layout/components";
+import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
-import { extend } from "@pixi/react";
+import { extend, useTick } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
-import { Container, Graphics, Text } from "pixi.js";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { Container, Graphics, Text, Ticker } from "pixi.js";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { GameMode } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-// Extend layout components
+// Extend layout and base Pixi components for @pixi/react
 extend({
   Container,
   LayoutContainer,
   Graphics,
   Text,
-  LayoutText,
   FancyButton,
 });
+
+interface MenuButtonProps {
+  readonly item: { mode: GameMode; korean: string; english: string };
+  readonly isSelected: boolean;
+  readonly onSelect: (mode: GameMode) => void;
+  readonly buttonWidth: number;
+  readonly buttonHeight: number;
+  readonly isMobile: boolean;
+  readonly setButtonRef: (el: FancyButton | null) => void;
+}
+
+/**
+ * A memoized, reusable menu button component with Korean cyberpunk styling.
+ */
+const MenuButton: React.FC<MenuButtonProps> = React.memo(
+  ({
+    item,
+    isSelected,
+    onSelect,
+    buttonWidth,
+    buttonHeight,
+    isMobile,
+    setButtonRef,
+  }) => {
+    const createButtonGraphics = useCallback(
+      (color: number, alpha: number = 1): Graphics => {
+        const graphics = new Graphics();
+        graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
+        graphics.fill({ color, alpha });
+        graphics.stroke({
+          width: 2,
+          color: KOREAN_COLORS.ACCENT_GOLD,
+          alpha: alpha * 0.8,
+        });
+        return graphics;
+      },
+      [buttonWidth, buttonHeight]
+    );
+
+    const defaultView = useMemo(
+      () =>
+        createButtonGraphics(
+          isSelected
+            ? KOREAN_COLORS.ACCENT_GOLD
+            : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+          isSelected ? 0.9 : 0.8
+        ),
+      [isSelected, createButtonGraphics]
+    );
+
+    const hoverView = useMemo(
+      () =>
+        createButtonGraphics(
+          isSelected
+            ? KOREAN_COLORS.ACCENT_GOLD
+            : KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+          1
+        ),
+      [isSelected, createButtonGraphics]
+    );
+
+    const pressedView = useMemo(
+      () =>
+        createButtonGraphics(
+          isSelected
+            ? KOREAN_COLORS.ACCENT_YELLOW
+            : KOREAN_COLORS.UI_BACKGROUND_DARK,
+          1
+        ),
+      [isSelected, createButtonGraphics]
+    );
+
+    const buttonText = useMemo(
+      () =>
+        new Text({
+          text: `${item.korean} | ${item.english}`,
+          style: {
+            fontSize: isMobile ? 16 : 18,
+            fill: isSelected
+              ? KOREAN_COLORS.UI_BACKGROUND_DARK
+              : KOREAN_COLORS.TEXT_PRIMARY,
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontWeight: isSelected ? "bold" : "normal",
+            align: "center",
+          },
+        }),
+      [item.korean, item.english, isSelected, isMobile]
+    );
+
+    const buttonRef = useRef<FancyButton | null>(null);
+    const [marginLeft, setMarginLeft] = useState(isSelected ? 20 : 0);
+    const targetMargin = isSelected ? 20 : 0;
+
+    useTick((ticker: Ticker) => {
+      const difference = targetMargin - marginLeft;
+      // Stop updating if we are close enough to the target
+      if (Math.abs(difference) < 0.5) {
+        if (marginLeft !== targetMargin) {
+          setMarginLeft(targetMargin);
+        }
+        return;
+      }
+      // Animate with a simple easing function
+      setMarginLeft(marginLeft + difference * 0.2 * ticker.deltaTime);
+    });
+
+    useEffect(() => {
+      if (buttonRef.current) {
+        const button = buttonRef.current;
+        button.onPress.disconnectAll();
+        button.onPress.connect(() => onSelect(item.mode));
+        setButtonRef(button); // Pass ref to parent
+
+        return () => {
+          if (button && !button.destroyed) {
+            button.onPress.disconnectAll();
+          }
+          setButtonRef(null); // Clean up ref in parent
+        };
+      }
+    }, [item.mode, onSelect, setButtonRef]);
+
+    return (
+      <layoutContainer
+        layout={{
+          flexDirection: "row" as const,
+          alignItems: "center" as const,
+          marginLeft: marginLeft,
+        }}
+      >
+        {/* Selection indicator */}
+        {isSelected && (
+          <pixiText
+            text="▶"
+            style={{
+              fontSize: 20,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+            }}
+            layout={{
+              marginRight: 15,
+            }}
+          />
+        )}
+
+        <pixiFancyButton
+          ref={buttonRef}
+          defaultView={defaultView}
+          hoverView={hoverView}
+          pressedView={pressedView}
+          text={buttonText}
+          data-testid={`menu-button-${item.mode}`}
+        />
+      </layoutContainer>
+    );
+  }
+);
 
 export interface MenuSectionProps {
   readonly menuItems: ReadonlyArray<{
@@ -38,7 +200,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   width,
   height,
 }) => {
-  const buttonsRef = useRef<(FancyButton | null)[]>([]); // FancyButton from @pixi/ui
+  const buttonsRef = useRef<(FancyButton | null)[]>([]);
   const isMobile = width < 768;
   const buttonWidth = Math.min(width - 80, 320);
   const buttonHeight = isMobile ? 45 : 55;
@@ -59,133 +221,10 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     [width, height, isMobile]
   );
 
-  // Helper function to create button graphics
-  const createButtonGraphics = useCallback(
-    (color: number, alpha: number = 1): Graphics => {
-      const graphics = new Graphics();
-      graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
-      graphics.fill({ color, alpha });
-      graphics.stroke({
-        width: 2,
-        color: KOREAN_COLORS.ACCENT_GOLD,
-        alpha: alpha * 0.8,
-      });
-      graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
-      graphics.stroke();
-      return graphics;
-    },
-    [buttonWidth, buttonHeight]
-  );
-
-  // Create menu button component
-  const MenuButton: React.FC<{
-    item: { mode: GameMode; korean: string; english: string };
-    index: number;
-    isSelected: boolean;
-  }> = useCallback(
-    ({ item, index, isSelected }) => {
-      const buttonRef = useRef<FancyButton | null>(null); // FancyButton from @pixi/ui
-
-      // Create button views with proper PixiJS v8 API
-      const defaultView = useMemo(() => {
-        return createButtonGraphics(
-          isSelected
-            ? KOREAN_COLORS.ACCENT_GOLD
-            : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-          isSelected ? 0.9 : 0.8
-        );
-      }, [isSelected, createButtonGraphics]);
-
-      const hoverView = useMemo(() => {
-        return createButtonGraphics(
-          isSelected
-            ? KOREAN_COLORS.ACCENT_GOLD
-            : KOREAN_COLORS.UI_BACKGROUND_LIGHT,
-          1
-        );
-      }, [isSelected, createButtonGraphics]);
-
-      const pressedView = useMemo(() => {
-        return createButtonGraphics(
-          isSelected
-            ? KOREAN_COLORS.ACCENT_YELLOW
-            : KOREAN_COLORS.UI_BACKGROUND_DARK,
-          1
-        );
-      }, [isSelected, createButtonGraphics]);
-
-      const buttonText = useMemo(() => {
-        return new Text({
-          text: `${item.korean} | ${item.english}`,
-          style: {
-            fontSize: isMobile ? 16 : 18,
-            fill: isSelected
-              ? KOREAN_COLORS.UI_BACKGROUND_DARK
-              : KOREAN_COLORS.TEXT_PRIMARY,
-            fontFamily: "Noto Sans KR, sans-serif",
-            fontWeight: isSelected ? "bold" : "normal",
-            align: "center",
-          },
-        });
-      }, [item.korean, item.english, isSelected, isMobile]);
-
-      useEffect(() => {
-        if (buttonRef.current) {
-          const button = buttonRef.current;
-          button.onPress.disconnectAll();
-          button.onPress.connect(() => onModeSelect(item.mode));
-
-          // Store reference for cleanup
-          buttonsRef.current[index] = button;
-
-          return () => {
-            if (button.destroyed) return;
-            button.onPress.disconnectAll();
-          };
-        }
-      }, [item.mode, index, onModeSelect]);
-
-      return (
-        <layoutContainer
-          layout={{
-            flexDirection: "row" as const,
-            alignItems: "center" as const,
-            marginLeft: isSelected ? 20 : 0,
-          }}
-        >
-          {/* Selection indicator */}
-          {isSelected && (
-            <layoutText
-              text="▶"
-              style={{
-                fontSize: 20,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
-                fontWeight: "bold",
-              }}
-              layout={{
-                marginRight: 15,
-              }}
-            />
-          )}
-
-          <pixiFancyButton
-            ref={buttonRef}
-            defaultView={defaultView}
-            hoverView={hoverView}
-            pressedView={pressedView}
-            text={buttonText}
-            data-testid={`menu-button-${item.mode}`}
-          />
-        </layoutContainer>
-      );
-    },
-    [createButtonGraphics, isMobile, onModeSelect]
-  );
-
   return (
     <layoutContainer layout={menuLayout} data-testid="menu-section">
       {/* Title */}
-      <layoutText
+      <pixiText
         text="격투가의 길"
         style={{
           fontSize: isMobile ? 20 : 24,
@@ -208,7 +247,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       />
 
       {/* Subtitle */}
-      <layoutText
+      <pixiText
         text="한국 무술의 정수를 담은 격투 시뮬레이터"
         style={{
           fontSize: isMobile ? 12 : 14,
@@ -237,14 +276,18 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           <MenuButton
             key={item.mode}
             item={item}
-            index={index}
             isSelected={index === selectedIndex}
+            onSelect={onModeSelect}
+            buttonWidth={buttonWidth}
+            buttonHeight={buttonHeight}
+            isMobile={isMobile}
+            setButtonRef={(el) => (buttonsRef.current[index] = el)}
           />
         ))}
       </layoutContainer>
 
       {/* Footer hint */}
-      <layoutText
+      <pixiText
         text="↑↓ 키로 선택, Enter로 확인"
         style={{
           fontSize: isMobile ? 10 : 12,
