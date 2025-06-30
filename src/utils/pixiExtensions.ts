@@ -27,30 +27,23 @@ import {
   Slider,
 } from "@pixi/ui";
 import * as PIXI from "pixi.js";
-import {
-  AnimatedSprite,
-  BitmapText,
-  Container,
-  Graphics,
-  Sprite,
-  Text,
-  TilingSprite,
-} from "pixi.js";
+import { Graphics } from "pixi.js";
+
+let componentsExtended = false;
 
 /**
- * Extend PIXI components for use with React
+ * Extends PixiJS components for use with @pixi/react.
+ * This function should be called ONCE at the root of your application.
+ * It is idempotent and safe to call multiple times.
  */
 export const extendPixiComponents = () => {
-  extend({
-    // Plain PIXI components
-    Container,
-    Graphics,
-    Sprite,
-    Text,
-    TilingSprite,
-    AnimatedSprite,
-    BitmapText,
+  if (componentsExtended) {
+    return;
+  }
 
+  // @pixi/react v4+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
+  // We only need to extend the components from @pixi/layout and @pixi/ui.
+  extend({
     // Layout components
     LayoutContainer,
     LayoutSprite,
@@ -74,18 +67,18 @@ export const extendPixiComponents = () => {
     RadioGroup,
     Select,
   });
+
+  componentsExtended = true;
 };
 
 /**
- * Hook to use PixiJS extensions
+ * Hook to ensure PixiJS extensions are applied.
+ * It's recommended to call extendPixiComponents() once globally instead,
+ * but this hook is safe to use in components if needed.
+ * @deprecated Call extendPixiComponents() once at app root instead.
  */
 export const usePixiExtensions = () => {
-  // Extend PIXI components on first call
   extendPixiComponents();
-
-  return {
-    extendPixiComponents,
-  };
 };
 
 // Export useTick from @pixi/react for convenience
@@ -114,7 +107,7 @@ export const createResponsiveTextStyle = (
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
 
   // Adjust font size based on screen size
-  const fontSize = baseStyle.fontSize as number;
+  const fontSize = (baseStyle.fontSize as number) || 16;
   const responsiveFontSize = isMobile
     ? fontSize * 0.7
     : isTablet
@@ -163,14 +156,12 @@ export const drawButton = (
   } = options;
 
   g.clear();
-  g.fill({ color: fillColor, alpha });
   g.roundRect(0, 0, width, height, cornerRadius);
-  g.fill();
+  g.fill({ color: fillColor, alpha });
 
   if (strokeWidth > 0) {
-    g.stroke({ width: strokeWidth, color: strokeColor, alpha });
     g.roundRect(0, 0, width, height, cornerRadius);
-    g.stroke();
+    g.stroke({ width: strokeWidth, color: strokeColor, alpha });
   }
 };
 
@@ -198,13 +189,11 @@ export const drawKoreanPanel = (
   } = options;
 
   g.clear();
+  g.roundRect(0, 0, width, height, cornerRadius);
   g.fill({ color: fillColor, alpha });
-  g.roundRect(0, 0, width, height, cornerRadius);
-  g.fill();
 
-  g.stroke({ width: borderWidth, color: borderColor, alpha: 0.8 });
   g.roundRect(0, 0, width, height, cornerRadius);
-  g.stroke();
+  g.stroke({ width: borderWidth, color: borderColor, alpha: 0.8 });
 };
 
 /**
@@ -221,15 +210,15 @@ export const createKoreanGraphics = () => {
     height: number,
     radius: number
   ) => {
-    return graphics.roundRect(x, y, width, height, radius); // Updated API
+    return graphics.roundRect(x, y, width, height, radius);
   };
 
   const fillWithColor = (color: number, alpha = 1) => {
-    return graphics.fill({ color, alpha }); // Updated API - no beginFill/endFill needed
+    return graphics.fill({ color, alpha });
   };
 
   const strokeWithColor = (color: number, width = 1, alpha = 1) => {
-    return graphics.stroke({ color, width, alpha }); // Updated API
+    return graphics.stroke({ color, width, alpha });
   };
 
   return {
@@ -252,12 +241,7 @@ export const drawTrigramSymbol = (
   graphics.clear();
 
   // Draw trigram lines using modern API
-  graphics.rect(x, y, size, size / 8);
-  graphics.fill({ color: 0x00ffff });
-
-  graphics.rect(x, y + size / 3, size, size / 8);
-  graphics.fill({ color: 0x00ffff });
-
-  graphics.rect(x, y + (2 * size) / 3, size, size / 8);
-  graphics.fill({ color: 0x00ffff });
+  graphics.rect(x, y, size, size / 8).fill(0x00ffff);
+  graphics.rect(x, y + size / 3, size, size / 8).fill(0x00ffff);
+  graphics.rect(x, y + (2 * size) / 3, size, size / 8).fill(0x00ffff);
 };
