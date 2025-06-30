@@ -246,23 +246,20 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   }
 
   return (
+    // 1. This is the main container for the entire screen.
+    //    It should NOT have sortableChildren. Its job is just to hold layers.
     <layoutContainer
-      sortableChildren={true}
       layout={{
         width: screenW,
         height: screenH,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        padding: isMobile ? 20 : 40,
+        position: "relative", // Establishes a positioning context for children
         backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-        position: "relative",
       }}
     >
-      {/* Background layers */}
-      <pixiGraphics
-        draw={drawGrid}
-        zIndex={-3}
+      {/* 2. Create a DEDICATED container for background layers. */}
+      {/*    This container handles the z-index sorting. */}
+      <layoutContainer
+        sortableChildren={true}
         layout={{
           position: "absolute",
           top: 0,
@@ -270,38 +267,42 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           width: "100%",
           height: "100%",
         }}
-      />
-      <pixiSprite
-        texture={bgTexture || PIXI.Texture.EMPTY}
-        alpha={bgTexture ? 0.05 : 0}
-        zIndex={-2}
-        layout={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-      <pixiSprite
-        texture={dojangWallTexture || PIXI.Texture.EMPTY}
-        alpha={dojangWallTexture ? 0.1 : 0}
-        zIndex={-1}
-        layout={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
+      >
+        {/* Place all z-indexed background elements inside this container */}
+        <pixiGraphics
+          draw={drawGrid}
+          zIndex={-3}
+          // No layout prop needed here, parent container handles positioning
+        />
+        <pixiSprite
+          texture={bgTexture || PIXI.Texture.EMPTY}
+          alpha={bgTexture ? 0.05 : 0}
+          zIndex={-2}
+          width={screenW}
+          height={screenH}
+          // No layout prop needed here
+        />
+        <pixiSprite
+          texture={dojangWallTexture || PIXI.Texture.EMPTY}
+          alpha={dojangWallTexture ? 0.1 : 0}
+          zIndex={-1}
+          width={screenW}
+          height={screenH}
+          // No layout prop needed here
+        />
+      </layoutContainer>
 
-      {/* Main content container */}
+      {/* 3. This is your main content container. It is a sibling to the background container. */}
+      {/*    It will render on top by default. */}
       <layoutContainer
         layout={{
+          // This container now fills the screen and handles the main flex layout
           width: "100%",
+          height: "100%",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "flex-start",
+          padding: isMobile ? 20 : 40,
           gap: isMobile ? 15 : 20,
         }}
       >
