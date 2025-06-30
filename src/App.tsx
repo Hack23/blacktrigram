@@ -1,7 +1,7 @@
 import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
-import { Application, extend, useApplication } from "@pixi/react";
+import { Application, extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import { Container, Graphics, Text } from "pixi.js";
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
@@ -34,89 +34,6 @@ const TrainingScreen = lazy(
  *  ⬇  LayoutContainer-based wrapper that keeps content sized
  *     to the current browser viewport and updates on resize.
  * -----------------------------------------------------------------*/
-
-interface LayoutResizerProps {
-  children: React.ReactNode;
-}
-
-// Add this interface to track screen dimensions
-interface ScreenDimensions {
-  width: number;
-  height: number;
-  scale: number;
-}
-
-function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
-  const { app } = useApplication();
-  const [dimensions, setDimensions] = useState<ScreenDimensions>({
-    width: window.innerWidth,
-    height: window.innerHeight - 100, // Account for header/footer
-    scale: 1,
-  });
-
-  useEffect(() => {
-    const calculateDimensions = (): ScreenDimensions => {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight - 100; // Account for header/footer
-
-      // Minimum content dimensions (adjust as needed for your game)
-      const minWidth = 800;
-      const minHeight = 600;
-
-      // Calculate scale factors
-      const scaleX = windowWidth < minWidth ? minWidth / windowWidth : 1;
-      const scaleY = windowHeight < minHeight ? minHeight / windowHeight : 1;
-      const scale = Math.max(scaleX, scaleY);
-
-      return {
-        width: windowWidth,
-        height: windowHeight,
-        scale: scale,
-      };
-    };
-
-    const handleResize = (): void => {
-      const newDimensions = calculateDimensions();
-      setDimensions(newDimensions);
-
-      // Scroll to top to avoid mobile resize issues
-      window.scrollTo(0, 0);
-    };
-
-    // Initial resize
-    handleResize();
-
-    // Listen for window resize events
-    window.addEventListener("resize", handleResize);
-
-    // Also listen for PixiJS resize events if available
-    if (app?.renderer && typeof app.renderer.on === "function") {
-      app.renderer.on("resize", handleResize);
-    }
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (app?.renderer && typeof app.renderer.off === "function") {
-        app.renderer.off("resize", handleResize);
-      }
-    };
-  }, [app]);
-
-  // Use layoutContainer with responsive layout
-  return (
-    <layoutContainer
-      layout={{
-        width: dimensions.width,
-        height: dimensions.height,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {children}
-    </layoutContainer>
-  );
-}
 
 /* ------------------------------------------------------------------
  *  ⬇  Rest of App component (unchanged logic)
@@ -403,7 +320,16 @@ function App() {
           // Remove resizeTo={window} as LayoutResizer handles this
         >
           {/* NEW: one root LayoutContainer that always matches canvas size */}
-          {renderCurrentScreen()}
+
+          <layoutContainer
+            layout={{
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {renderCurrentScreen()}
+          </layoutContainer>
         </Application>
       </div>
     </AudioProvider>

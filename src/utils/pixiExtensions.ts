@@ -241,7 +241,7 @@ export const drawTrigramSymbol = (
   graphics.clear();
 
   // Draw trigram lines using modern API
-  graphics.rect(x, y, size, size / 8).fill(0x00ffff);
-  graphics.rect(x, y + size / 3, size, size / 8).fill(0x00ffff);
-  graphics.rect(x, y + (2 * size) / 3, size, size / 8).fill(0x00ffff);
+  graphics.rect(x, y, size, size / 8).fill({ color: 0x00ffff });
+  graphics.rect(x, y + size / 3, size, size / 8).fill({ color: 0x00ffff });
+  graphics.rect(x, y + (2 * size) / 3, size, size / 8).fill({ color: 0x00ffff });
 };
