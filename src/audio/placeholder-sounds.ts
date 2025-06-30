@@ -4,6 +4,9 @@ import { AudioCategory, MusicTrack, SoundEffect } from "./types";
 /**
  * Placeholder sound assets for Korean martial arts audio system
  * These are fallback sounds when actual audio files are not available
+ *
+ * CORRECTED: Paths have been updated to match the actual file structure
+ * in the `public/assets` directory to resolve 404 errors.
  */
 
 export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
@@ -11,8 +14,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "attack_light",
     name: "Light Attack",
     type: "sound",
-    url: "/assets/audio/sfx/attack_light.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_light.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.7,
     category: AudioCategory.SFX,
@@ -22,8 +25,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "attack_medium",
     name: "Medium Attack",
     type: "sound",
-    url: "/assets/audio/sfx/attack_medium.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_medium.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.8,
     category: AudioCategory.SFX,
@@ -33,8 +36,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "attack_heavy",
     name: "Heavy Attack",
     type: "sound",
-    url: "/assets/audio/sfx/attack_heavy.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_heavy.webm", // Note: Only .webm exists for this file
+    formats: ["audio/webm", "audio/mp3"],
     loaded: false,
     volume: 0.9,
     category: AudioCategory.SFX,
@@ -44,8 +47,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "stance_change",
     name: "Stance Change",
     type: "sound",
-    url: "/assets/audio/sfx/stance_change.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/movement/stance_change.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.6,
     category: AudioCategory.SFX,
@@ -55,8 +58,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "block_success",
     name: "Successful Block",
     type: "sound",
-    url: "/assets/audio/sfx/block_success.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/blocks/block_success.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.7,
     category: AudioCategory.SFX,
@@ -66,8 +69,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "vital_hit_critical",
     name: "Critical Vital Point Hit",
     type: "sound",
-    url: "/assets/audio/sfx/vital_hit_critical.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/hits/hit_critical.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.9,
     category: AudioCategory.SFX,
@@ -106,13 +109,13 @@ export const PLACEHOLDER_MUSIC_TRACKS: readonly MusicTrack[] = [
     id: "dojang_ambience",
     name: "Dojang Atmosphere",
     type: "music",
-    url: "/assets/audio/music/dojang_ambience.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/music/cyberpunk_fusion.mp3", // Corrected: dojang_ambience.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     title: { korean: "도장 분위기", english: "Dojang Atmosphere" },
     volume: 0.4,
     loop: true,
-    category: "music" as const, // Fix: Use literal string instead of enum
+    category: "music" as const,
     bpm: 60,
   },
 ] as const;
@@ -192,8 +195,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "geon_technique",
     name: "Heaven Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/geon_heaven.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_special_geon.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.8,
     category: AudioCategory.SFX,
@@ -203,8 +206,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "tae_technique",
     name: "Lake Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/tae_lake.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_punch_medium.mp3", // Fallback: tae_lake.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.7,
     category: AudioCategory.SFX,
@@ -214,8 +217,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "li_technique",
     name: "Fire Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/li_fire.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_critical.mp3", // Fallback: li_fire.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.9,
     category: AudioCategory.SFX,
@@ -225,8 +228,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "jin_technique",
     name: "Thunder Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/jin_thunder.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/combat/attack_heavy.webm", // Fallback: jin_thunder.mp3 does not exist
+    formats: ["audio/webm", "audio/mp3"],
     loaded: false,
     volume: 0.9,
     category: AudioCategory.SFX,
@@ -236,8 +239,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "son_technique",
     name: "Wind Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/son_wind.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/movement/dodge.mp3", // Fallback: son_wind.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.6,
     category: AudioCategory.SFX,
@@ -247,8 +250,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "gam_technique",
     name: "Water Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/gam_water.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/blocks/block_success.mp3", // Fallback: gam_water.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.7,
     category: AudioCategory.SFX,
@@ -258,8 +261,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "gan_technique",
     name: "Mountain Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/gan_mountain.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/blocks/block_break.mp3", // Fallback: gan_mountain.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.8,
     category: AudioCategory.SFX,
@@ -269,8 +272,8 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "gon_technique",
     name: "Earth Technique",
     type: "sound",
-    url: "/assets/audio/sfx/techniques/gon_earth.mp3",
-    formats: ["audio/mp3", "audio/wav"],
+    url: "/assets/audio/sfx/hits/hit_heavy.mp3", // Fallback: gon_earth.mp3 does not exist
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.8,
     category: AudioCategory.SFX,
