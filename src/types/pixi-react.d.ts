@@ -8,7 +8,6 @@ declare module "react-reconciler/constants" {
   export * from "react-reconciler/constants.js";
 }
 
-
 import type * as Layout from "@pixi/layout";
 import "@pixi/react";
 import type { PixiReactElementProps } from "@pixi/react";
@@ -112,11 +111,38 @@ declare module "@pixi/react" {
   }
 }
 
-// ---------------------------------------------------------------------------
-// 3. Augment the global JSX namespace to make TypeScript recognize the elements
-// ---------------------------------------------------------------------------
 declare global {
   namespace JSX {
-    interface IntrinsicElements extends import("@pixi/react").PixiElements {}
+    interface IntrinsicElements extends import("@pixi/react").PixiElements {
+      // PIXI React v8 automatically provides these after useExtend
+      pixiContainer: ContainerProps;
+      pixiSprite: SpriteProps;
+      pixiGraphics: GraphicsProps;
+      pixiText: TextProps;
+      pixiTilingSprite: TilingSpriteProps;
+      pixiAnimatedSprite: AnimatedSpriteProps;
+      pixiBitmapText: BitmapTextProps;
+      pixiParticleContainer: ParticleContainerProps;
+
+      /* --- @pixi/layout components --------------------------------------- */
+      layoutContainer: LayoutContainerProps;
+      layoutSprite: LayoutSpriteProps;
+      layoutTilingSprite: LayoutTilingSpriteProps;
+      layoutText: LayoutTextProps;
+      layoutAnimatedSprite: LayoutAnimatedSpriteProps;
+      layoutGraphics: LayoutGraphicsProps;
+
+      /* --- @pixi/ui components ------------------------------------------- */
+      pixiButton: ButtonProps;
+      pixiFancyButton: FancyButtonProps;
+      pixiProgressBar: ProgressBarProps;
+      pixiScrollBox: ScrollBoxProps;
+      pixiInput: InputProps;
+      pixiSlider: SliderProps;
+      pixiCheckBox: CheckBoxProps;
+      pixiRadioGroup: RadioGroupProps;
+      pixiSelect: SelectProps;
+      pixiMaskedFrame: MaskedFrameProps;
+    }
   }
 }
