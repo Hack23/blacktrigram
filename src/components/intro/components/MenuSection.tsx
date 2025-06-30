@@ -1,5 +1,5 @@
 import "@pixi/layout";
-import { LayoutContainer } from "@pixi/layout/components";
+import { LayoutContainer, LayoutText } from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend, useTick } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
@@ -14,12 +14,13 @@ import React, {
 import { GameMode } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-// Extend layout and base Pixi components for @pixi/react
+// ✅ FIXED: Proper component extension
 extend({
   Container,
   LayoutContainer,
   Graphics,
   Text,
+  LayoutText,
   FancyButton,
 });
 
@@ -30,155 +31,173 @@ interface MenuButtonProps {
   readonly buttonWidth: number;
   readonly buttonHeight: number;
   readonly isMobile: boolean;
-  readonly setButtonRef: (el: FancyButton | null) => void;
 }
 
-/**
- * A memoized, reusable menu button component with Korean cyberpunk styling.
- */
 const MenuButton: React.FC<MenuButtonProps> = React.memo(
-  ({
-    item,
-    isSelected,
-    onSelect,
-    buttonWidth,
-    buttonHeight,
-    isMobile,
-    setButtonRef,
-  }) => {
+  ({ item, isSelected, onSelect, buttonWidth, buttonHeight, isMobile }) => {
+    const buttonRef = useRef<FancyButton | null>(null);
+
+    // ✅ FIXED: Bounded animation with proper validation
+    const [animationOffset, setAnimationOffset] = useState(0);
+    const targetOffset = isSelected ? 20 : 0;
+
+    // Smooth animation with bounds checking
+    useTick((ticker: Ticker) => {
+      const difference = targetOffset - animationOffset;
+      if (Math.abs(difference) < 0.1) {
+        if (animationOffset !== targetOffset) {
+          setAnimationOffset(targetOffset);
+        }
+        return;
+      }
+
+      // ✅ FIXED: Bounded animation with clamping
+      const newOffset = animationOffset + difference * 0.15 * ticker.deltaTime;
+      const clampedOffset = Math.max(0, Math.min(30, newOffset)); // Clamp between 0-30
+      setAnimationOffset(clampedOffset);
+    });
+
+    // Create button graphics using PIXI v8 API
     const createButtonGraphics = useCallback(
       (color: number, alpha: number = 1): Graphics => {
         const graphics = new Graphics();
         graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
         graphics.fill({ color, alpha });
-        graphics.stroke({
-          width: 2,
-          color: KOREAN_COLORS.ACCENT_GOLD,
-          alpha: alpha * 0.8,
-        });
+
+        // Add stroke for selected state
+        if (isSelected) {
+          graphics.roundRect(0, 0, buttonWidth, buttonHeight, 8);
+          graphics.stroke({
+            width: 2,
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.8,
+          });
+        }
         return graphics;
       },
-      [buttonWidth, buttonHeight]
+      [buttonWidth, buttonHeight, isSelected]
     );
 
-    const defaultView = useMemo(
-      () =>
-        createButtonGraphics(
+    // Button view states
+    const buttonViews = useMemo(
+      () => ({
+        defaultView: createButtonGraphics(
           isSelected
             ? KOREAN_COLORS.ACCENT_GOLD
             : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
           isSelected ? 0.9 : 0.8
         ),
-      [isSelected, createButtonGraphics]
-    );
-
-    const hoverView = useMemo(
-      () =>
-        createButtonGraphics(
+        hoverView: createButtonGraphics(
           isSelected
             ? KOREAN_COLORS.ACCENT_GOLD
             : KOREAN_COLORS.UI_BACKGROUND_LIGHT,
           1
         ),
-      [isSelected, createButtonGraphics]
-    );
-
-    const pressedView = useMemo(
-      () =>
-        createButtonGraphics(
+        pressedView: createButtonGraphics(
           isSelected
             ? KOREAN_COLORS.ACCENT_YELLOW
             : KOREAN_COLORS.UI_BACKGROUND_DARK,
           1
         ),
-      [isSelected, createButtonGraphics]
+      }),
+      [createButtonGraphics, isSelected]
     );
 
-    const buttonText = useMemo(
-      () =>
-        new Text({
-          text: `${item.korean} | ${item.english}`,
-          style: {
-            fontSize: isMobile ? 16 : 18,
-            fill: isSelected
-              ? KOREAN_COLORS.UI_BACKGROUND_DARK
-              : KOREAN_COLORS.TEXT_PRIMARY,
-            fontFamily: "Noto Sans KR, sans-serif",
-            fontWeight: isSelected ? "bold" : "normal",
-            align: "center",
-          },
-        }),
-      [item.korean, item.english, isSelected, isMobile]
+    // Button text style
+    const textStyle = useMemo(
+      () => ({
+        fontSize: isMobile ? 14 : 16,
+        fill: isSelected
+          ? KOREAN_COLORS.UI_BACKGROUND_DARK
+          : KOREAN_COLORS.TEXT_PRIMARY,
+        fontFamily: "Noto Sans KR, sans-serif",
+        fontWeight: isSelected ? "bold" : "normal",
+        align: "center" as const,
+      }),
+      [isSelected, isMobile]
     );
 
-    const buttonRef = useRef<FancyButton | null>(null);
-    const [marginLeft, setMarginLeft] = useState(isSelected ? 20 : 0);
-    const targetMargin = isSelected ? 20 : 0;
+    const buttonText = `${item.korean} | ${item.english}`;
 
-    useTick((ticker: Ticker) => {
-      const difference = targetMargin - marginLeft;
-      // Stop updating if we are close enough to the target
-      if (Math.abs(difference) < 0.5) {
-        if (marginLeft !== targetMargin) {
-          setMarginLeft(targetMargin);
-        }
-        return;
-      }
-      // Animate with a simple easing function
-      setMarginLeft(marginLeft + difference * 0.2 * ticker.deltaTime);
-    });
-
+    // Connect button handler
     useEffect(() => {
       if (buttonRef.current) {
         const button = buttonRef.current;
         button.onPress.disconnectAll();
         button.onPress.connect(() => onSelect(item.mode));
-        setButtonRef(button); // Pass ref to parent
 
         return () => {
           if (button && !button.destroyed) {
             button.onPress.disconnectAll();
           }
-          setButtonRef(null); // Clean up ref in parent
         };
       }
-    }, [item.mode, onSelect, setButtonRef]);
+    }, [item.mode, onSelect]);
 
+    // ✅ FIXED: Proper layout hierarchy with constrained dimensions
     return (
       <layoutContainer
         layout={{
-          flexDirection: "row" as const,
-          alignItems: "center" as const,
-          marginLeft: marginLeft,
+          width: buttonWidth + 60, // Fixed container width
+          height: buttonHeight + 8, // Fixed container height with padding
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingLeft: Math.round(animationOffset), // Use padding instead of margin
         }}
+        data-testid={`menu-button-container-${item.mode}`}
       >
         {/* Selection indicator */}
-        {isSelected && (
-          <pixiText
-            text="▶"
-            style={{
-              fontSize: 20,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-            }}
-            layout={{
-              marginRight: 15,
+        <layoutContainer
+          layout={{
+            width: 20,
+            height: buttonHeight,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {isSelected && (
+            <layoutText
+              text="▶"
+              style={{
+                fontSize: 18,
+                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fontWeight: "bold",
+              }}
+            />
+          )}
+        </layoutContainer>
+
+        {/* Button */}
+        <layoutContainer
+          layout={{
+            width: buttonWidth,
+            height: buttonHeight,
+          }}
+        >
+          <pixiFancyButton
+            ref={buttonRef}
+            defaultView={buttonViews.defaultView}
+            hoverView={buttonViews.hoverView}
+            pressedView={buttonViews.pressedView}
+            text={buttonText}
+            textStyle={textStyle}
+            data-testid={`menu-button-${item.mode}`}
+            animations={{
+              hover: { props: { scale: { x: 1.02, y: 1.02 } }, duration: 150 },
+              pressed: {
+                props: { scale: { x: 0.98, y: 0.98 } },
+                duration: 100,
+              },
             }}
           />
-        )}
-
-        <pixiFancyButton
-          ref={buttonRef}
-          defaultView={defaultView}
-          hoverView={hoverView}
-          pressedView={pressedView}
-          text={buttonText}
-          data-testid={`menu-button-${item.mode}`}
-        />
+        </layoutContainer>
       </layoutContainer>
     );
   }
 );
+
+MenuButton.displayName = "MenuButton";
 
 export interface MenuSectionProps {
   readonly menuItems: ReadonlyArray<{
@@ -200,76 +219,101 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   width,
   height,
 }) => {
-  const buttonsRef = useRef<(FancyButton | null)[]>([]);
   const isMobile = width < 768;
-  const buttonWidth = Math.min(width - 80, 320);
-  const buttonHeight = isMobile ? 45 : 55;
+  const buttonWidth = Math.min(width - 100, 300);
+  const buttonHeight = isMobile ? 40 : 50;
 
-  const menuLayout = useMemo(
+  // ✅ FIXED: Validate and constrain dimensions
+  const safeWidth = Math.max(200, Math.min(800, width));
+  const safeHeight = Math.max(200, Math.min(800, height));
+  const contentWidth = safeWidth - (isMobile ? 40 : 80);
+
+  // Calculate total content height
+  const titleHeight = 60;
+  const subtitleHeight = 40;
+  const buttonAreaHeight = (buttonHeight + 12) * menuItems.length + 20;
+  const footerHeight = 30;
+  const totalContentHeight =
+    titleHeight + subtitleHeight + buttonAreaHeight + footerHeight;
+
+  // ✅ FIXED: Proper root layout with explicit dimensions
+  const rootLayout = useMemo(
     () => ({
-      width,
-      height,
+      width: safeWidth,
+      height: Math.min(safeHeight, totalContentHeight + 40), // Ensure content fits
       flexDirection: "column" as const,
       alignItems: "center" as const,
-      justifyContent: "center" as const,
-      gap: isMobile ? 12 : 16,
-      padding: isMobile ? 10 : 20,
+      justifyContent: "flex-start" as const,
       backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-      backgroundAlpha: 0.9,
+      backgroundAlpha: 0.95,
       borderRadius: 16,
+      padding: isMobile ? 20 : 30,
+      gap: isMobile ? 8 : 12,
     }),
-    [width, height, isMobile]
+    [safeWidth, safeHeight, totalContentHeight, isMobile]
   );
 
   return (
-    <layoutContainer layout={menuLayout} data-testid="menu-section">
-      {/* Title */}
-      <pixiText
-        text="격투가의 길"
-        style={{
-          fontSize: isMobile ? 20 : 24,
-          fill: KOREAN_COLORS.ACCENT_GOLD,
-          fontFamily: "Noto Sans KR, sans-serif",
-          fontWeight: "bold",
-          dropShadow: {
-            alpha: 0.5,
-            angle: 45,
-            blur: 4,
-            color: 0x000000,
-            distance: 2,
-          },
-        }}
-        anchor={0.5}
-        layout={{
-          alignSelf: "center",
-          marginBottom: 10,
-        }}
-      />
-
-      {/* Subtitle */}
-      <pixiText
-        text="한국 무술의 정수를 담은 격투 시뮬레이터"
-        style={{
-          fontSize: isMobile ? 12 : 14,
-          fill: KOREAN_COLORS.TEXT_SECONDARY,
-          fontFamily: "Noto Sans KR, sans-serif",
-          align: "center",
-          wordWrap: true,
-          wordWrapWidth: width - 80,
-        }}
-        anchor={0.5}
-        layout={{
-          alignSelf: "center",
-          marginBottom: 20,
-        }}
-      />
-
-      {/* Menu buttons */}
+    <layoutContainer layout={rootLayout} data-testid="menu-section">
+      {/* Title Section */}
       <layoutContainer
         layout={{
-          flexDirection: "column" as const,
-          alignItems: "flex-start" as const,
-          gap: isMobile ? 10 : 12,
+          width: contentWidth,
+          height: titleHeight,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <layoutText
+          text="격투가의 길"
+          style={{
+            fontSize: isMobile ? 20 : 24,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontWeight: "bold",
+            dropShadow: {
+              color: 0x000000,
+              blur: 4,
+              distance: 2,
+            },
+          }}
+        />
+      </layoutContainer>
+
+      {/* Subtitle Section */}
+      <layoutContainer
+        layout={{
+          width: contentWidth,
+          height: subtitleHeight,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <layoutText
+          text="한국 무술의 정수를 담은 격투 시뮬레이터"
+          style={{
+            fontSize: isMobile ? 11 : 13,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            fontFamily: "Noto Sans KR, sans-serif",
+            align: "center",
+            wordWrap: true,
+            wordWrapWidth: contentWidth - 20,
+          }}
+        />
+      </layoutContainer>
+
+      {/* Menu Buttons Section */}
+      <layoutContainer
+        layout={{
+          width: contentWidth,
+          height: buttonAreaHeight,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          gap: isMobile ? 8 : 12,
+          padding: 10,
         }}
       >
         {menuItems.map((item, index) => (
@@ -281,25 +325,29 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             buttonWidth={buttonWidth}
             buttonHeight={buttonHeight}
             isMobile={isMobile}
-            setButtonRef={(el) => (buttonsRef.current[index] = el)}
           />
         ))}
       </layoutContainer>
 
-      {/* Footer hint */}
-      <pixiText
-        text="↑↓ 키로 선택, Enter로 확인"
-        style={{
-          fontSize: isMobile ? 10 : 12,
-          fill: KOREAN_COLORS.TEXT_SECONDARY,
-          fontStyle: "italic",
-        }}
-        anchor={0.5}
+      {/* Footer Section */}
+      <layoutContainer
         layout={{
-          alignSelf: "center",
-          marginTop: 15,
+          width: contentWidth,
+          height: footerHeight,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
-      />
+      >
+        <layoutText
+          text="↑↓ 키로 선택, Enter로 확인"
+          style={{
+            fontSize: isMobile ? 9 : 11,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            fontStyle: "italic",
+          }}
+        />
+      </layoutContainer>
     </layoutContainer>
   );
 };

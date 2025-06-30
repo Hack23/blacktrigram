@@ -210,13 +210,17 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       const gridColor = KOREAN_COLORS.PRIMARY_CYAN;
 
       g.clear();
+      g.setStrokeStyle({ color: gridColor, width: 1, alpha: 0.08 });
+
       for (let i = 0; i < screenW / gridSize; i++) {
-        g.rect(i * gridSize, 0, 1, screenH);
+        g.moveTo(i * gridSize, 0);
+        g.lineTo(i * gridSize, screenH);
       }
       for (let i = 0; i < screenH / gridSize; i++) {
-        g.rect(0, i * gridSize, screenW, 1);
+        g.moveTo(0, i * gridSize);
+        g.lineTo(screenW, i * gridSize);
       }
-      g.fill({ color: gridColor, alpha: 0.08 });
+      g.stroke();
     },
     [screenW, screenH]
   );
@@ -245,60 +249,31 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     );
   }
 
+  // Fixed: Use a single root container without nested layout conflicts
   return (
-    // 1. This is the main container for the entire screen.
-    //    It should NOT have sortableChildren. Its job is just to hold layers.
-    <layoutContainer
-      layout={{
-        width: screenW,
-        height: screenH,
-        position: "relative", // Establishes a positioning context for children
-        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-      }}
-    >
-      {/* 2. Create a DEDICATED container for background layers. */}
-      {/*    This container handles the z-index sorting. */}
-      <layoutContainer
-        sortableChildren={true}
-        layout={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        {/* Place all z-indexed background elements inside this container */}
-        <pixiGraphics
-          draw={drawGrid}
-          zIndex={-3}
-          // No layout prop needed here, parent container handles positioning
-        />
-        <pixiSprite
-          texture={bgTexture || PIXI.Texture.EMPTY}
-          alpha={bgTexture ? 0.05 : 0}
-          zIndex={-2}
-          width={screenW}
-          height={screenH}
-          // No layout prop needed here
-        />
-        <pixiSprite
-          texture={dojangWallTexture || PIXI.Texture.EMPTY}
-          alpha={dojangWallTexture ? 0.1 : 0}
-          zIndex={-1}
-          width={screenW}
-          height={screenH}
-          // No layout prop needed here
-        />
-      </layoutContainer>
+    <pixiContainer data-testid="intro-screen">
+      {/* Background layers - use regular pixiContainer for non-layout elements */}
+      <pixiGraphics draw={drawGrid} />
 
-      {/* 3. This is your main content container. It is a sibling to the background container. */}
-      {/*    It will render on top by default. */}
+      <pixiSprite
+        texture={bgTexture || PIXI.Texture.EMPTY}
+        alpha={bgTexture ? 0.05 : 0}
+        width={screenW}
+        height={screenH}
+      />
+
+      <pixiSprite
+        texture={dojangWallTexture || PIXI.Texture.EMPTY}
+        alpha={dojangWallTexture ? 0.1 : 0}
+        width={screenW}
+        height={screenH}
+      />
+
+      {/* Main content using layoutContainer for proper yoga layout */}
       <layoutContainer
         layout={{
-          // This container now fills the screen and handles the main flex layout
-          width: "100%",
-          height: "100%",
+          width: screenW,
+          height: screenH,
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -306,7 +281,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           gap: isMobile ? 15 : 20,
         }}
       >
-        {/* Logo & Title */}
+        {/* Logo & Title Section */}
         <layoutContainer
           layout={{
             flexDirection: "column",
@@ -319,11 +294,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             texture={logoTexture || PIXI.Texture.EMPTY}
             anchor={0.5}
             alpha={logoTexture ? 1 : 0}
-            layout={{
-              width: logoSize,
-              height: logoSize,
-            }}
+            width={logoSize}
+            height={logoSize}
           />
+
           <pixiText
             text="흑괘 무술 도장"
             style={{
@@ -332,8 +306,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               fill: KOREAN_COLORS.ACCENT_GOLD,
               fontWeight: "bold",
             }}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={0.5}
           />
+
           <pixiText
             text="Black Trigram Dojo"
             style={{
@@ -341,8 +316,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               fontSize: isMobile ? 16 : isTablet ? 20 : 24,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
             }}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={0.5}
           />
+
           <pixiText
             text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
             style={{
@@ -350,39 +326,53 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               fill: KOREAN_COLORS.PRIMARY_CYAN,
               letterSpacing: isMobile ? 8 : 12,
             }}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={0.5}
           />
         </layoutContainer>
 
-        {/* Menu */}
-        <MenuSection
-          menuItems={MENU_ITEMS}
-          selectedIndex={menuIdx}
-          onModeSelect={handleMenu}
-          width={isMobile ? screenW * 0.9 : 400}
-          height={isMobile ? 280 : 320}
-        />
+        {/* Menu Section - Fixed container */}
+        <layoutContainer
+          layout={{
+            width: isMobile ? screenW * 0.9 : 400,
+            height: isMobile ? 280 : 320,
+          }}
+        >
+          <MenuSection
+            menuItems={MENU_ITEMS}
+            selectedIndex={menuIdx}
+            onModeSelect={handleMenu}
+            width={isMobile ? screenW * 0.9 : 400}
+            height={isMobile ? 280 : 320}
+          />
+        </layoutContainer>
 
-        {/* Archetype Display */}
-        <ArchetypeDisplay
-          archetype={currentArchetype}
-          archetypeData={currentArchData}
-          texture={archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY}
-          total={ARCHETYPE_ORDER.length}
-          index={archIdx}
-          onPrev={() => {
-            setArchIdx(
-              (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-            );
-            audio.playSFX("ui_navigate");
+        {/* Archetype Display - Fixed container */}
+        <layoutContainer
+          layout={{
+            width: isMobile ? screenW * 0.9 : 600,
+            height: isMobile ? 250 : 200,
           }}
-          onNext={() => {
-            setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-            audio.playSFX("ui_navigate");
-          }}
-          width={isMobile ? screenW * 0.9 : 600}
-          height={isMobile ? 250 : 200}
-        />
+        >
+          <ArchetypeDisplay
+            archetype={currentArchetype}
+            archetypeData={currentArchData}
+            texture={archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY}
+            total={ARCHETYPE_ORDER.length}
+            index={archIdx}
+            onPrev={() => {
+              setArchIdx(
+                (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
+              );
+              audio.playSFX("ui_navigate");
+            }}
+            onNext={() => {
+              setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
+              audio.playSFX("ui_navigate");
+            }}
+            width={isMobile ? screenW * 0.9 : 600}
+            height={isMobile ? 250 : 200}
+          />
+        </layoutContainer>
 
         {/* Footer */}
         <layoutContainer
@@ -390,7 +380,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             flexDirection: "column",
             alignItems: "center",
             gap: 4,
-            marginTop: "auto", // Pushes footer to the bottom
+            marginTop: "auto",
             marginBottom: isMobile ? 10 : 20,
           }}
         >
@@ -401,11 +391,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               fill: KOREAN_COLORS.ACCENT_CYAN,
               fontStyle: "italic",
             }}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={0.5}
           />
         </layoutContainer>
       </layoutContainer>
-    </layoutContainer>
+    </pixiContainer>
   );
 };
 

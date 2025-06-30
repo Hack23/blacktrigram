@@ -35,6 +35,17 @@ const TrainingScreen = lazy(
  *     to the current browser viewport and updates on resize.
  * -----------------------------------------------------------------*/
 
+export function initializePixiSystems(app: any): void {
+  // Ensure layout system is properly initialized
+  if (typeof window !== "undefined") {
+    // Initialize layout system
+    const layoutSystem = app.renderer.plugins.layout;
+    if (layoutSystem) {
+      layoutSystem.init();
+    }
+  }
+}
+
 /* ------------------------------------------------------------------
  *  ⬇  Rest of App component (unchanged logic)
  * -----------------------------------------------------------------*/
@@ -63,20 +74,23 @@ function App() {
     }
   }, []);
 
-  // Fix: Move useEffect inside component body
+  // Consolidate initialization into a single point
   useEffect(() => {
-    // Alternative way to access PIXI app if needed
-    const checkForApp = () => {
-      const pixiApp = (window as any).pixiApp;
-      if (pixiApp) {
-        handleApplicationReady(pixiApp);
-      }
+    let initialized = false;
+
+    const initializeOnce = (app: any) => {
+      if (initialized) return;
+      initialized = true;
+
+      initializePixiSystems(app);
+      handleApplicationReady(app);
     };
 
-    const timer = setInterval(checkForApp, 100);
-    setTimeout(() => clearInterval(timer), 5000); // Stop checking after 5 seconds
-
-    return () => clearInterval(timer);
+    // Single initialization check
+    const pixiApp = (window as any).pixiApp;
+    if (pixiApp) {
+      initializeOnce(pixiApp);
+    }
   }, [handleApplicationReady]);
 
   // Fix: Ensure app is properly initialized
