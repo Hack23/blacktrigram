@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host --open",
-    "build": "vite build --mode production",
+    "build": "tsc -b && vite build --mode production",
     "build:analyze": "tsc -b && vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",
     "build:production": "NODE_ENV=production tsc -b && vite build --mode production --minify esbuild",
     "build:profile": "tsc -b && vite build --mode production --profile --minify esbuild",
