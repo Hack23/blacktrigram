@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import "@pixi/layout";
-import "@pixi/layout/react";
 import * as PIXI from "pixi.js";
 import React, {
   Suspense,

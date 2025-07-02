@@ -1,29 +1,11 @@
 import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype, TrigramStance } from "@/types";
-import "@pixi/layout";
-import {
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutText,
-} from "@pixi/layout/components";
-import "@pixi/layout/react";
-import { extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import * as PIXI from "pixi.js";
-import { Container, Graphics, Text } from "pixi.js";
+import { Graphics } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { createGraphicsContext } from "../../../utils/pixiExtensions";
-
-extend({
-  Container,
-  LayoutContainer,
-  Graphics,
-  LayoutGraphics,
-  Text,
-  LayoutText,
-  FancyButton,
-});
 
 export interface ArchetypeDisplayProps {
   archetype: PlayerArchetype;
@@ -350,14 +332,13 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 alignItems: "center",
               }}
             >
-              <pixiSprite
-                texture={texture ?? PIXI.Texture.EMPTY}
+              <layoutSprite
+                layout={{ width: imageSize, height: imageSize }}
+                texture={texture ?? undefined}
                 anchor={0.5}
-                width={imageSize}
-                height={imageSize}
                 interactive={!!onSelect}
                 cursor={onSelect ? "pointer" : "default"}
-                onPointerTap={onSelect ? () => onSelect(archetype) : undefined}
+                onPointerTap={() => onSelect?.(archetype)}
               />
             </layoutContainer>
 

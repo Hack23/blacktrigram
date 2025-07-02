@@ -1,13 +1,5 @@
-import "@pixi/layout";
-import {
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutText,
-} from "@pixi/layout/components";
-import "@pixi/layout/react";
-import { extend } from "@pixi/react";
-import { FancyButton, ScrollBox } from "@pixi/ui";
-import { Container, FederatedPointerEvent, Graphics, Text } from "pixi.js";
+import { FancyButton } from "@pixi/ui";
+import { FederatedPointerEvent, Graphics, Text } from "pixi.js";
 import React, {
   useCallback,
   useEffect,
@@ -16,18 +8,6 @@ import React, {
   useState,
 } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
-
-// Extend with both regular PIXI and layout components
-extend({
-  Container,
-  LayoutContainer,
-  ScrollBox,
-  FancyButton,
-  Graphics,
-  LayoutGraphics,
-  Text,
-  LayoutText,
-});
 
 const PHILOSOPHY_CONTENT = {
   title: { korean: "무술 철학", english: "Martial Philosophy" },

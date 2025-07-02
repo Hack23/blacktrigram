@@ -1,26 +1,8 @@
-import "@pixi/layout";
-import {
-  LayoutContainer,
-  LayoutGraphics,
-  LayoutText,
-} from "@pixi/layout/components";
-import "@pixi/layout/react";
-import { extend } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
-import { Container, Graphics, Text } from "pixi.js";
+import { Graphics, Text } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { createGraphicsContext } from "../../../utils/pixiExtensions";
-
-extend({
-  Container,
-  LayoutContainer,
-  FancyButton,
-  Graphics,
-  LayoutGraphics,
-  Text,
-  LayoutText,
-});
 
 // Combat controls organized by category
 const CONTROL_CATEGORIES = {

@@ -1,9 +1,7 @@
-import "@pixi/layout";
-import { LayoutContainer } from "@pixi/layout/components";
-import "@pixi/layout/react";
-import { Application, extend } from "@pixi/react";
-import { FancyButton } from "@pixi/ui";
-import { Container, Graphics, Text } from "pixi.js";
+import "yoga-layout"; //  👈 pull in the pure-JS Yoga engine
+import "@pixi/layout"; //  👈 now the plugin can find Yoga
+import "@pixi/layout/react"; //  👈 react bindings
+import { Application, useApplication } from "@pixi/react";
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
@@ -13,16 +11,9 @@ import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { exposePixiAppForTesting } from "./test/pixi-cypress-helpers";
 import { GameMode, PlayerArchetype } from "./types/common";
-import { usePixiExtensions } from "./utils/pixiExtensions";
+import { extendPixiComponents } from "./utils/pixiExtensions";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
-
-extend({
-  Container,
-  Graphics,
-  Text,
-  LayoutContainer,
-  FancyButton,
-});
+extendPixiComponents();
 
 // Lazy load heavy screens
 const EndScreen = lazy(() => import("./components/ui/EndScreen"));
@@ -35,23 +26,19 @@ const TrainingScreen = lazy(
  *     to the current browser viewport and updates on resize.
  * -----------------------------------------------------------------*/
 
-export function initializePixiSystems(app: any): void {
-  // Ensure layout system is properly initialized
-  if (typeof window !== "undefined") {
-    // Initialize layout system
-    const layoutSystem = app.renderer.plugins.layout;
-    if (layoutSystem) {
-      layoutSystem.init();
-    }
-  }
+function PixiInitializer() {
+  const { app } = useApplication();
+  useEffect(() => {
+    const layout = (app.renderer as any).plugins.layout;
+    layout?.init?.(); // init once
+  }, [app]);
+  return null;
 }
 
 /* ------------------------------------------------------------------
  *  ⬇  Rest of App component (unchanged logic)
  * -----------------------------------------------------------------*/
 function App() {
-  usePixiExtensions();
-
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [isGameActive, setIsGameActive] = useState(false);
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
@@ -82,7 +69,6 @@ function App() {
       if (initialized) return;
       initialized = true;
 
-      initializePixiSystems(app);
       handleApplicationReady(app);
     };
 
@@ -331,17 +317,9 @@ function App() {
           height={screenSize.height}
           backgroundColor={0x0a0a0f}
           antialias
-          // Remove resizeTo={window} as LayoutResizer handles this
         >
-          {/* NEW: one root LayoutContainer that always matches canvas size */}
-
-          <layoutContainer
-            layout={{
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <PixiInitializer />
+          <layoutContainer layout={{ flex: 1 }}>
             {renderCurrentScreen()}
           </layoutContainer>
         </Application>

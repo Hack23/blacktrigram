@@ -1,9 +1,9 @@
-import "@pixi/layout";
-import { LayoutContainer, LayoutText } from "@pixi/layout/components";
+import { LayoutOptions } from "@pixi/layout";
+
 import "@pixi/layout/react";
-import { extend, useTick } from "@pixi/react";
+import { useTick } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
-import { Container, Graphics, Text, Ticker } from "pixi.js";
+import { Graphics, Ticker } from "pixi.js";
 import React, {
   useCallback,
   useEffect,
@@ -13,16 +13,6 @@ import React, {
 } from "react";
 import { GameMode } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
-
-// ✅ FIXED: Proper component extension
-extend({
-  Container,
-  LayoutContainer,
-  Graphics,
-  Text,
-  LayoutText,
-  FancyButton,
-});
 
 interface MenuButtonProps {
   readonly item: { mode: GameMode; korean: string; english: string };
@@ -117,8 +107,6 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
       [isSelected, isMobile]
     );
 
-    const buttonText = `${item.korean} | ${item.english}`;
-
     // Connect button handler
     useEffect(() => {
       if (buttonRef.current) {
@@ -134,69 +122,53 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
       }
     }, [item.mode, onSelect]);
 
-    // ✅ FIXED: Proper layout hierarchy with constrained dimensions
+    // the entire button lives in one LayoutView:
     return (
-      <layoutContainer
+      <layoutView
+        // 1) Build your flex row + animation offset
         layout={{
-          width: buttonWidth + 60,
-          height: buttonHeight + 8,
+          width: buttonWidth,
+          height: buttonHeight,
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-start",
-          paddingLeft: Math.round(animationOffset),
+          gap: 8,
+          paddingLeft: animationOffset,
         }}
       >
-        {/* ▶ selection arrow */}
-        <layoutContainer
-          layout={{
-            width: 20,
-            height: buttonHeight,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {isSelected && (
-            <layoutText
-              text="▶"
-              style={{
-                fontSize: 18,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
-                fontWeight: "bold",
-              }}
-            />
-          )}
-        </layoutContainer>
-
-        {/* the actual button */}
-        <layoutContainer layout={{ width: buttonWidth, height: buttonHeight }}>
-          <pixiFancyButton
-            ref={buttonRef}
-            views={{
-              default: buttonViews.defaultView,
-              hover: buttonViews.hoverView,
-              pressed: buttonViews.pressedView,
-            }}
-            text={buttonText}
+        {/* 2) slot is the actual display objects—in this case, an array */}
+        {isSelected && (
+          <layoutText
+            text="▶"
             style={{
-              fontSize: isMobile ? 14 : 16,
-              fill: isSelected
-                ? KOREAN_COLORS.UI_BACKGROUND_DARK
-                : KOREAN_COLORS.TEXT_PRIMARY,
-              fontFamily: "Noto Sans KR, sans-serif",
-              fontWeight: isSelected ? "bold" : "normal",
-              align: "center",
+              fontSize: 18,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
             }}
-            animations={{
-              hover: { props: { scale: { x: 1.02, y: 1.02 } }, duration: 150 },
-              pressed: {
-                props: { scale: { x: 0.98, y: 0.98 } },
-                duration: 100,
-              },
+            layout={{
+              width: 24,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            data-testid={`menu-button-${item.mode}`}
           />
-        </layoutContainer>
-      </layoutContainer>
+        )}
+        <pixiFancyButton
+          ref={buttonRef}
+          views={buttonViews}
+          text={`${item.korean} | ${item.english}`}
+          style={textStyle}
+          animations={{
+            hover: {
+              props: { scale: { x: 1.02, y: 1.02 } },
+              duration: 150,
+            },
+            pressed: {
+              props: { scale: { x: 0.98, y: 0.98 } },
+              duration: 100,
+            },
+          }}
+          data-testid={`menu-button-${item.mode}`}
+        />
+      </layoutView>
     );
   }
 );
@@ -224,51 +196,35 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   height,
 }) => {
   const isMobile = width < 768;
-  const buttonWidth = Math.min(width - 100, 300);
-  const buttonHeight = isMobile ? 40 : 50;
+  const contentWidth = Math.min(width * 0.9, 400);
 
-  // ✅ FIXED: Validate and constrain dimensions
-  const safeWidth = Math.max(200, Math.min(800, width));
-  const safeHeight = Math.max(200, Math.min(800, height));
-  const contentWidth = safeWidth - (isMobile ? 40 : 80);
-
-  // Calculate total content height
-  const titleHeight = 60;
-  const subtitleHeight = 40;
-  const buttonAreaHeight = (buttonHeight + 12) * menuItems.length + 20;
-  const footerHeight = 30;
-  const totalContentHeight =
-    titleHeight + subtitleHeight + buttonAreaHeight + footerHeight;
-
-  // ✅ FIXED: Proper root layout with explicit dimensions
-  const rootLayout = useMemo(
+  // add this import so you can refer to the proper LayoutOptions type
+  // annotate with the correct Pixi LayoutOptions (minus the 'target' property)
+  const rootLayout = useMemo<Omit<LayoutOptions, "target">>(
     () => ({
-      width: safeWidth,
-      height: Math.min(safeHeight, totalContentHeight + 40), // Ensure content fits
-      flexDirection: "column" as const,
-      alignItems: "center" as const,
-      justifyContent: "flex-start" as const,
+      width: contentWidth,
+      height: contentWidth, // optional, or you can omit
+      padding: isMobile ? 16 : 24,
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: isMobile ? 12 : 16,
       backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-      backgroundAlpha: 0.95,
-      borderRadius: 16,
-      padding: isMobile ? 20 : 30,
-      gap: isMobile ? 8 : 12,
+      borderRadius: 12,
     }),
-    [safeWidth, safeHeight, totalContentHeight, isMobile]
+    [contentWidth, isMobile]
   );
 
   return (
-    <layoutContainer layout={rootLayout} data-testid="menu-section">
-      {/* Title Section */}
-      <layoutContainer
-        layout={{
-          width: contentWidth,
-          height: titleHeight,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+    <layoutContainer
+      layout={{
+        width,
+        height, // use the prop you destructured
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <layoutContainer layout={rootLayout}>
         <layoutText
           text="격투가의 길"
           style={{
@@ -283,20 +239,9 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             },
           }}
         />
-      </layoutContainer>
 
-      {/* Subtitle Section */}
-      <layoutContainer
-        layout={{
-          width: contentWidth,
-          height: subtitleHeight,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
         <layoutText
-          text="한국 무술의 정수를 담은 격투 시뮬레이터"
+          text="한국 무술 시뮬레이터"
           style={{
             fontSize: isMobile ? 11 : 13,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
@@ -306,45 +251,30 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             wordWrapWidth: contentWidth - 20,
           }}
         />
-      </layoutContainer>
 
-      {/* Menu Buttons Section */}
-      <layoutContainer
-        layout={{
-          width: contentWidth,
-          height: buttonAreaHeight,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          gap: isMobile ? 8 : 12,
-          padding: 10,
-        }}
-      >
-        {menuItems.map((item, index) => (
-          <MenuButton
-            key={item.mode}
-            item={item}
-            isSelected={index === selectedIndex}
-            onSelect={onModeSelect}
-            buttonWidth={buttonWidth}
-            buttonHeight={buttonHeight}
-            isMobile={isMobile}
-          />
-        ))}
-      </layoutContainer>
+        {/* Menu Buttons Section */}
+        <layoutContainer
+          layout={{
+            width: "100%",
+            flexDirection: "column",
+            gap: isMobile ? 8 : 12,
+          }}
+        >
+          {menuItems.map((item, i) => (
+            <MenuButton
+              key={item.mode}
+              item={item}
+              isSelected={i === selectedIndex}
+              onSelect={onModeSelect}
+              buttonWidth={contentWidth}
+              buttonHeight={isMobile ? 40 : 50}
+              isMobile={isMobile}
+            />
+          ))}
+        </layoutContainer>
 
-      {/* Footer Section */}
-      <layoutContainer
-        layout={{
-          width: contentWidth,
-          height: footerHeight,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
         <layoutText
-          text="↑↓ 키로 선택, Enter로 확인"
+          text="↑↓키 선택 · Enter 확인"
           style={{
             fontSize: isMobile ? 9 : 11,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
