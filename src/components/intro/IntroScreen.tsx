@@ -29,8 +29,6 @@ import {
 function useIntroAssets() {
   const [bgTexture, setBgTexture] = useState<PIXI.Texture | null>(null);
   const [logoTexture, setLogoTexture] = useState<PIXI.Texture | null>(null);
-  const [dojangWallTexture, setDojangWallTexture] =
-    useState<PIXI.Texture | null>(null);
   const [archetypeTextures, setArchetypeTextures] = useState<
     Partial<Record<PlayerArchetype, PIXI.Texture>>
   >({});
@@ -47,12 +45,7 @@ function useIntroAssets() {
           (await PIXI.Assets.load("/assets/visual/logo/black-trigram.png")) ??
             PIXI.Texture.EMPTY
         );
-        setDojangWallTexture(
-          (await PIXI.Assets.load(
-            "/assets/visual/bg/dojang/dojang_wall_tex.png"
-          )) ?? PIXI.Texture.EMPTY
-        );
-
+ 
         const paths: Record<PlayerArchetype, string> = {
           [PlayerArchetype.MUSA]: "/assets/visual/archetypes/musa.png",
           [PlayerArchetype.AMSALJA]: "/assets/visual/archetypes/amsalja.png",
@@ -75,12 +68,11 @@ function useIntroAssets() {
         console.error("Intro asset load error:", err);
         setBgTexture(PIXI.Texture.EMPTY);
         setLogoTexture(PIXI.Texture.EMPTY);
-        setDojangWallTexture(PIXI.Texture.EMPTY);
       }
     })();
   }, []);
 
-  return { bgTexture, logoTexture, dojangWallTexture, archetypeTextures };
+  return { bgTexture, logoTexture, archetypeTextures };
 }
 
 /* ------------------------------------------------------------------ */
@@ -131,7 +123,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const screenH = height || window.innerHeight;
   const audio = useAudio();
 
-  const { bgTexture, logoTexture, dojangWallTexture, archetypeTextures } =
+  const { bgTexture, logoTexture, archetypeTextures } =
     useIntroAssets();
 
   const [section, setSection] = useState<"menu" | "controls" | "philosophy">(
@@ -146,7 +138,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   const isMobile = screenW < 768;
   const isTablet = screenW >= 768 && screenW < 1024;
-  const logoSize = isMobile ? 80 : isTablet ? 120 : 160;
+  const logoSize = isMobile ? 120 : isTablet ? 180 : 220;
 
   useEffect(() => {
     if (audio.isInitialized && !introMusicStarted.current) {
@@ -264,14 +256,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       <pixiSprite
         texture={bgTexture || PIXI.Texture.EMPTY}
-        alpha={bgTexture ? 0.05 : 0}
-        width={screenW}
-        height={screenH}
-      />
-
-      <pixiSprite
-        texture={dojangWallTexture || PIXI.Texture.EMPTY}
-        alpha={dojangWallTexture ? 0.1 : 0}
+        alpha={bgTexture ? 0.9 : 0}
         width={screenW}
         height={screenH}
       />
@@ -305,10 +290,17 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              marginTop: isMobile ? 8 : 32,
+              marginTop: isMobile ? 32 : 64,
             }}
           >
-            <layoutView>
+            <layoutView
+              layout={{
+                minHeight: isMobile ? 200 : 280,
+                width: "100%",
+                flexGrow: 0,
+                flexShrink: 0,
+              }}
+            >
               <pixiSprite
                 texture={logoTexture || PIXI.Texture.EMPTY}
                 anchor={0.5}
