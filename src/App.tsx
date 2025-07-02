@@ -1,12 +1,4 @@
-import "@pixi/layout"; //  👈 now the plugin can find Yoga
-import "@pixi/layout/react"; //  👈 react bindings
-import "yoga-layout"; //  👈 pull in the pure-JS Yoga engine
-
-// Import and call extensions FIRST
-import { extendPixiComponents } from "./utils/pixiExtensions";
-extendPixiComponents(); // 🔧 CRITICAL: Call this before any other imports
-
-import { Application, useApplication } from "@pixi/react";
+import { Application } from "@pixi/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
@@ -20,45 +12,9 @@ import { GameMode, PlayerArchetype } from "./types/common";
 import { createPlayerFromArchetype } from "./utils";
 
 /* ------------------------------------------------------------------
- *  ⬇  Enhanced LayoutContainer-based wrapper with proper error handling
+ *  ⬇  The PixiInitializer is no longer needed as setup is centralized.
  * -----------------------------------------------------------------*/
 
-function PixiInitializer() {
-  const { app } = useApplication();
-
-  useEffect(() => {
-    try {
-      // 🔧 CRITICAL: Proper layout plugin initialization with error handling
-      const renderer = app.renderer as any;
-
-      if (!renderer.plugins) {
-        console.warn("⚠️ Renderer plugins not available");
-        return;
-      }
-
-      const layoutPlugin = renderer.plugins.layout;
-
-      if (!layoutPlugin) {
-        console.warn("⚠️ Layout plugin not found");
-        return;
-      }
-
-      // Initialize layout plugin if not already initialized
-      if (typeof layoutPlugin.init === "function") {
-        layoutPlugin.init();
-        console.log("✅ Layout plugin initialized successfully");
-      }
-    } catch (error) {
-      console.error("❌ Failed to initialize layout plugin:", error);
-    }
-  }, [app]);
-
-  return null;
-}
-
-/* ------------------------------------------------------------------
- *  ⬇  Rest of App component (unchanged logic)
- * -----------------------------------------------------------------*/
 function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [isGameActive, setIsGameActive] = useState(false);
@@ -339,8 +295,7 @@ function App() {
           backgroundColor={0x0a0a0f}
           antialias
         >
-          <PixiInitializer />
-          <layoutContainer layout={{ flex: 1 }}>
+          <layoutContainer layout={{ flex: 1, width: "100%", height: "100%" }}>
             {renderCurrentScreen()}
           </layoutContainer>
         </Application>

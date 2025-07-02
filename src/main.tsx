@@ -1,29 +1,5 @@
-// 🔧 CRITICAL: Import pixiExtensions FIRST to ensure Node polyfill is available
+// 🔧 CRITICAL: Import pixiExtensions FIRST to ensure polyfills and extensions are loaded.
 import "./utils/pixiExtensions";
-
-// Polyfill Node for @pixi/layout (required for browser + Vite)
-if (typeof globalThis !== "undefined" && !("Node" in globalThis)) {
-  (globalThis as any).Node = class Node {
-    static ELEMENT_NODE = 1;
-    static TEXT_NODE = 3;
-    static DOCUMENT_NODE = 9;
-    nodeType = 1;
-    parentNode: any = null;
-    childNodes: any[] = [];
-    constructor() {}
-    appendChild(child: any) {
-      this.childNodes.push(child);
-      child.parentNode = this;
-    }
-    removeChild(child: any) {
-      const index = this.childNodes.indexOf(child);
-      if (index > -1) {
-        this.childNodes.splice(index, 1);
-        child.parentNode = null;
-      }
-    }
-  };
-}
 
 import React from "react";
 import ReactDOM from "react-dom/client";

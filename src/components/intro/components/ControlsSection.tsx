@@ -1,3 +1,4 @@
+import "../../../utils/pixiExtensions";
 import { FancyButton } from "@pixi/ui";
 import { Graphics, Text } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";

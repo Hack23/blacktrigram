@@ -1,3 +1,6 @@
+// 🔧 CRITICAL FIX: Ensure extensions are loaded before any other imports.
+import "../../utils/pixiExtensions";
+
 import * as PIXI from "pixi.js";
 import React, {
   Suspense,

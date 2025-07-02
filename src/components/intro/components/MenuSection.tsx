@@ -1,6 +1,5 @@
+import "../../../utils/pixiExtensions";
 import { LayoutOptions } from "@pixi/layout";
-
-import "@pixi/layout/react";
 import { useTick } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import { Graphics, Ticker } from "pixi.js";

@@ -1,9 +1,16 @@
 import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype, TrigramStance } from "@/types";
+import { useTick } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
 import * as PIXI from "pixi.js";
 import { Graphics } from "pixi.js";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { createGraphicsContext } from "../../../utils/pixiExtensions";
 
@@ -61,6 +68,18 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     const prevButtonRef = useRef<FancyButton>(null);
     const nextButtonRef = useRef<FancyButton>(null);
 
+    // Animation for selected state
+    const [selectedAnim, setSelectedAnim] = useState(0);
+    useTick((ticker) => {
+      const target = isSelected ? 1 : 0;
+      const diff = target - selectedAnim;
+      if (Math.abs(diff) > 0.01) {
+        setSelectedAnim(selectedAnim + diff * 0.2 * ticker.deltaTime);
+      } else {
+        setSelectedAnim(target);
+      }
+    });
+
     // Enhanced background with archetype-themed styling
     const mainBackgroundContext = useMemo(() => {
       return createGraphicsContext((g: PIXI.Graphics) => {
@@ -75,9 +94,19 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         g.stroke({ width: 2, color: primaryColor, alpha: 0.6 });
 
         // Selected state enhancement
-        if (isSelected) {
-          g.roundRect(-2, -2, width + 4, height + 4, 18);
-          g.stroke({ width: 3, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
+        if (selectedAnim > 0) {
+          g.roundRect(
+            -2 * selectedAnim,
+            -2 * selectedAnim,
+            width + 4 * selectedAnim,
+            height + 4 * selectedAnim,
+            18
+          );
+          g.stroke({
+            width: 2 + selectedAnim,
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.6 + 0.3 * selectedAnim,
+          });
         }
 
         // Decorative corner elements with archetype theme
@@ -87,7 +116,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         g.lineTo(16, cornerSize);
         g.stroke({ width: 3, color: primaryColor, alpha: 0.8 });
       });
-    }, [width, height, primaryColor, isSelected]);
+    }, [width, height, primaryColor, selectedAnim]);
 
     // Enhanced portrait background
     const portraitBackgroundContext = useMemo(() => {
@@ -304,18 +333,18 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         {/* Content container with proper constraints */}
         <layoutContainer
           layout={{
-            width: width - padding * 2,
-            height: height - padding * 2,
+            width: "100%",
+            height: "100%",
             flexDirection: isMobile ? "column" : "row",
             gap: isMobile ? 12 : 20,
-            alignItems: "flex-start",
+            alignItems: "stretch",
           }}
         >
           {/* Character Portrait Section */}
           <layoutContainer
             layout={{
               width: imageSize + 40,
-              height: imageSize + 60,
+              flexShrink: 0,
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
@@ -326,25 +355,28 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
             <layoutContainer
               layout={{
+                position: "absolute",
                 width: imageSize,
                 height: imageSize,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <layoutView layout={{ width: imageSize, height: imageSize }}>
-                <layoutSprite
-                  texture={texture ?? undefined}
-                  anchor={0.5}
-                  interactive={!!onSelect}
-                  cursor={onSelect ? "pointer" : "default"}
-                  onPointerTap={() => onSelect?.(archetype)}
-                />
-              </layoutView>
+              <layoutSprite
+                texture={texture ?? undefined}
+                anchor={0.5}
+                width={imageSize}
+                height={imageSize}
+                interactive={!!onSelect}
+                cursor={onSelect ? "pointer" : "default"}
+                onPointerTap={() => onSelect?.(archetype)}
+              />
             </layoutContainer>
 
             <layoutContainer
               layout={{
+                position: "absolute",
+                bottom: 10,
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 6,
@@ -372,9 +404,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           <layoutContainer
             layout={{
               flexGrow: 1,
-              maxWidth: width - imageSize - 120,
               flexDirection: "column",
               gap: 12,
+              overflow: "hidden",
             }}
           >
             {/* Header */}
@@ -401,7 +433,9 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                   fontSize: isMobile ? 11 : 13,
                   fill: KOREAN_COLORS.TEXT_PRIMARY,
                   wordWrap: true,
-                  wordWrapWidth: isMobile ? width - 120 : 300,
+                  wordWrapWidth: isMobile
+                    ? width - imageSize - 100
+                    : width - imageSize - 180,
                   lineHeight: 16,
                 }}
               />
@@ -501,7 +535,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           <layoutContainer
             layout={{
               width: 60,
-              height: isMobile ? 60 : height - padding * 4,
+              flexShrink: 0,
               flexDirection: isMobile ? "row" : "column",
               alignItems: "center",
               justifyContent: "space-around",
@@ -509,21 +543,19 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             }}
           >
             <layoutContainer layout={{ width: 56, height: 56 }}>
-              <layoutView>
-                <pixiFancyButton
-                  ref={prevButtonRef}
-                  defaultView={buttonViews.defaultView}
-                  hoverView={buttonViews.hoverView}
-                  pressedView={buttonViews.pressedView}
-                  text={isMobile ? "◀" : "▲"}
-                  textStyle={{
-                    fontSize: 16,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                  }}
-                  data-testid="archetype-prev-button"
-                />
-              </layoutView>
+              <pixiFancyButton
+                ref={prevButtonRef}
+                defaultView={buttonViews.defaultView}
+                hoverView={buttonViews.hoverView}
+                pressedView={buttonViews.pressedView}
+                text={isMobile ? "◀" : "▲"}
+                textStyle={{
+                  fontSize: 16,
+                  fill: KOREAN_COLORS.TEXT_PRIMARY,
+                  fontWeight: "bold",
+                }}
+                data-testid="archetype-prev-button"
+              />
             </layoutContainer>
 
             <layoutContainer
@@ -545,21 +577,19 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             </layoutContainer>
 
             <layoutContainer layout={{ width: 56, height: 56 }}>
-              <layoutView>
-                <pixiFancyButton
-                  ref={nextButtonRef}
-                  defaultView={buttonViews.defaultView}
-                  hoverView={buttonViews.hoverView}
-                  pressedView={buttonViews.pressedView}
-                  text={isMobile ? "▶" : "▼"}
-                  textStyle={{
-                    fontSize: 16,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontWeight: "bold",
-                  }}
-                  data-testid="archetype-next-button"
-                />
-              </layoutView>
+              <pixiFancyButton
+                ref={nextButtonRef}
+                defaultView={buttonViews.defaultView}
+                hoverView={buttonViews.hoverView}
+                pressedView={buttonViews.pressedView}
+                text={isMobile ? "▶" : "▼"}
+                textStyle={{
+                  fontSize: 16,
+                  fill: KOREAN_COLORS.TEXT_PRIMARY,
+                  fontWeight: "bold",
+                }}
+                data-testid="archetype-next-button"
+              />
             </layoutContainer>
           </layoutContainer>
         </layoutContainer>
@@ -571,7 +601,8 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               position: "absolute",
               top: 8,
               right: 8,
-              padding: 6,
+              backgroundColor: KOREAN_COLORS.ACCENT_GOLD,
+              borderRadius: 4,
             }}
           >
             <layoutText

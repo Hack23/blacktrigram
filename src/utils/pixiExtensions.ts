@@ -26,6 +26,11 @@ if (typeof globalThis !== "undefined" && !globalThis.Node) {
   };
 }
 
+// 🔧 CRITICAL: Import layout dependencies before extending
+import "@pixi/layout";
+import "@pixi/layout/react";
+import "yoga-layout";
+
 import {
   LayoutAnimatedSprite,
   LayoutBitmapText,
@@ -65,14 +70,8 @@ export const extendPixiComponents = () => {
     return;
   }
 
-  // Ensure Node polyfill is available before extending layout components
-  if (typeof globalThis !== "undefined" && !globalThis.Node) {
-    console.error("Node polyfill not available for @pixi/layout");
-    return;
-  }
-
   try {
-    // @pixi/react v4+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
+    // @pixi/react v8+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
     // We only need to extend the components from @pixi/layout and @pixi/ui.
     extend({
       // Layout components
@@ -106,6 +105,9 @@ export const extendPixiComponents = () => {
   }
 };
 
+// 🔧 CRITICAL: Immediately call the extension function
+extendPixiComponents();
+
 /**
  * Hook to ensure PixiJS extensions are applied.
  * It's recommended to call extendPixiComponents() once globally instead,
@@ -113,7 +115,7 @@ export const extendPixiComponents = () => {
  * @deprecated Call extendPixiComponents() once at app root instead.
  */
 export const usePixiExtensions = () => {
-  extendPixiComponents();
+  // The function is already called, this is for compatibility.
 };
 
 // Export useTick from @pixi/react for convenience

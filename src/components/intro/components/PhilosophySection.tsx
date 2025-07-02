@@ -1,3 +1,4 @@
+import "../../../utils/pixiExtensions"
 import { FancyButton } from "@pixi/ui";
 import { FederatedPointerEvent, Graphics, Text } from "pixi.js";
 import React, {
