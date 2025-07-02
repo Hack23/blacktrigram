@@ -206,15 +206,10 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
 
       return (
         <layoutContainer layout={badgeLayout}>
-          <layoutContainer
-            layout={{
-              width: badgeWidth,
-              height: 28,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <layoutView>
             <layoutGraphics context={badgeContext} />
+          </layoutView>
+          <layoutView>
             <layoutText
               text={keyText}
               style={{
@@ -225,18 +220,20 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
               }}
               anchor={0.5}
             />
-          </layoutContainer>
+          </layoutView>
           {symbol && (
-            <layoutText
-              text={symbol}
-              style={{
-                fontSize: 18,
-                fill: KOREAN_COLORS.PRIMARY_CYAN,
-              }}
-              layout={{
-                marginLeft: 4,
-              }}
-            />
+            <layoutView>
+              <layoutText
+                text={symbol}
+                style={{
+                  fontSize: 18,
+                  fill: KOREAN_COLORS.PRIMARY_CYAN,
+                }}
+                layout={{
+                  marginLeft: 4,
+                }}
+              />
+            </layoutView>
           )}
         </layoutContainer>
       );
@@ -338,20 +335,24 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                 key={`${categoryKey}-${index}`}
                 layout={controlItemLayout}
               >
-                <KeyBadge keyText={control.key} symbol={control.symbol} />
-                <layoutText
-                  text={control.action}
-                  style={{
-                    fontSize: isMobile ? 13 : 15,
-                    fill: KOREAN_COLORS.TEXT_PRIMARY,
-                    fontFamily: "Noto Sans KR, sans-serif",
-                    wordWrap: true,
-                    wordWrapWidth: isMobile ? 150 : 200,
-                  }}
-                  layout={{
-                    flexGrow: 1,
-                  }}
-                />
+                <layoutView>
+                  <KeyBadge keyText={control.key} symbol={control.symbol} />
+                </layoutView>
+                <layoutView>
+                  <layoutText
+                    text={control.action}
+                    style={{
+                      fontSize: isMobile ? 13 : 15,
+                      fill: KOREAN_COLORS.TEXT_PRIMARY,
+                      fontFamily: "Noto Sans KR, sans-serif",
+                      wordWrap: true,
+                      wordWrapWidth: isMobile ? 150 : 200,
+                    }}
+                    layout={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </layoutView>
               </layoutContainer>
             ))}
           </layoutContainer>
@@ -364,14 +365,16 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
   // Create back button component
   const BackButton: React.FC = useCallback(() => {
     return (
-      <pixiFancyButton
-        ref={backButtonRef}
-        defaultView={buttonViews.defaultView}
-        hoverView={buttonViews.hoverView}
-        pressedView={buttonViews.pressedView}
-        text={buttonViews.buttonText}
-        data-testid="controls-back-button"
-      />
+      <layoutView>
+        <pixiFancyButton
+          ref={backButtonRef}
+          defaultView={buttonViews.defaultView}
+          hoverView={buttonViews.hoverView}
+          pressedView={buttonViews.pressedView}
+          text={buttonViews.buttonText}
+          data-testid="controls-back-button"
+        />
+      </layoutView>
     );
   }, [buttonViews]);
 
