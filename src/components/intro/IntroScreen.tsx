@@ -246,10 +246,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     );
   }
 
-  // Fixed: Use a single root container without nested layout conflicts
+  // Fixed: Wrap all non-layout-aware components in layoutView
   return (
     <pixiContainer data-testid="intro-screen">
-      {/* Background layers - use regular pixiContainer for non-layout elements */}
+      {/* Background layers - keep these as regular pixiContainer children */}
       <pixiGraphics draw={drawGrid} />
 
       <pixiSprite
@@ -274,123 +274,159 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          padding: isMobile ? 20 : 40,
-          gap: isMobile ? 15 : 20,
+          padding: isMobile ? 12 : 32,
+          gap: isMobile ? 10 : 24,
         }}
       >
-        {/* Logo & Title Section */}
-        <layoutContainer
+        {/* Logo & Trigrams - wrapped in layoutView */}
+        <layoutView
           layout={{
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 8,
-            marginTop: isMobile ? 16 : 32,
+            minHeight: isMobile ? 100 : 180,
+            width: "100%",
+            flexGrow: 0,
+            flexShrink: 0,
           }}
         >
-          <pixiSprite
-            texture={logoTexture || PIXI.Texture.EMPTY}
-            anchor={0.5}
-            alpha={logoTexture ? 1 : 0}
-            width={logoSize}
-            height={logoSize}
-          />
-
-          <pixiText
-            text="흑괘 무술 도장"
-            style={{
-              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-              fontSize: isMobile ? 28 : isTablet ? 36 : 48,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
+          <layoutContainer
+            layout={{
+              width: "100%",
+              height: "100%",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              marginTop: isMobile ? 8 : 32,
             }}
-            anchor={0.5}
-          />
+          >
+            <layoutView>
+              <pixiSprite
+                texture={logoTexture || PIXI.Texture.EMPTY}
+                anchor={0.5}
+                width={logoSize}
+                height={logoSize}
+              />
+            </layoutView>
+            <layoutView>
+              <pixiText
+                text="흑괘 무술 도장"
+                style={{
+                  fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
+                  fontSize: isMobile ? 28 : 48,
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
+                  fontWeight: "bold",
+                }}
+                anchor={0.5}
+              />
+            </layoutView>
+            <layoutView>
+              <pixiText
+                text="Black Trigram Dojo"
+                style={{
+                  fontSize: isMobile ? 14 : 22,
+                  fill: KOREAN_COLORS.TEXT_SECONDARY,
+                }}
+                anchor={0.5}
+              />
+            </layoutView>
+            <layoutContainer
+              layout={{
+                flexDirection: "row",
+                gap: isMobile ? 6 : 12,
+                marginTop: 4,
+              }}
+            >
+              {/* Render each trigram as a separate text for spacing */}
+              {["☰", "☱", "☲", "☳", "☴", "☵", "☶", "☷"].map((t, i) => (
+                <layoutView key={i}>
+                  <pixiText
+                    text={t}
+                    style={{
+                      fontSize: isMobile ? 20 : 32,
+                      fill: KOREAN_COLORS.PRIMARY_CYAN,
+                      letterSpacing: isMobile ? 2 : 4,
+                    }}
+                    anchor={0.5}
+                  />
+                </layoutView>
+              ))}
+            </layoutContainer>
+          </layoutContainer>
+        </layoutView>
 
-          <pixiText
-            text="Black Trigram Dojo"
-            style={{
-              fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-              fontSize: isMobile ? 16 : isTablet ? 20 : 24,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-            }}
-            anchor={0.5}
-          />
-
-          <pixiText
-            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
-            style={{
-              fontSize: isMobile ? 20 : 28,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              letterSpacing: isMobile ? 8 : 12,
-            }}
-            anchor={0.5}
-          />
-        </layoutContainer>
-
-        {/* Menu Section - Fixed container */}
+        {/* Main Content Area: Menu + Archetype */}
         <layoutContainer
           layout={{
-            width: isMobile ? screenW * 0.9 : 400,
-            height: isMobile ? 280 : 320,
+            width: "100%",
+            flexGrow: 1,
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "stretch",
+            justifyContent: "center",
+            gap: isMobile ? 12 : 32,
+            minHeight: isMobile ? 320 : 400,
           }}
         >
-          <MenuSection
-            menuItems={MENU_ITEMS}
-            selectedIndex={menuIdx}
-            onModeSelect={handleMenu}
-            width={isMobile ? screenW * 0.9 : 400}
-            height={isMobile ? 280 : 320}
-          />
+          <layoutView layout={{ flex: 1, minWidth: 220, maxWidth: 400 }}>
+            <MenuSection
+              menuItems={MENU_ITEMS}
+              selectedIndex={menuIdx}
+              onModeSelect={handleMenu}
+              width={isMobile ? screenW * 0.9 : 400}
+              height={isMobile ? 280 : 320}
+            />
+          </layoutView>
+          <layoutView layout={{ flex: 2, minWidth: 260, maxWidth: 600 }}>
+            <ArchetypeDisplay
+              archetype={currentArchetype}
+              archetypeData={currentArchData}
+              texture={
+                archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY
+              }
+              total={ARCHETYPE_ORDER.length}
+              index={archIdx}
+              onPrev={() => {
+                setArchIdx(
+                  (p) =>
+                    (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
+                );
+                audio.playSFX("ui_navigate");
+              }}
+              onNext={() => {
+                setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
+                audio.playSFX("ui_navigate");
+              }}
+              width={isMobile ? screenW * 0.9 : 600}
+              height={isMobile ? 250 : 200}
+            />
+          </layoutView>
         </layoutContainer>
 
-        {/* Archetype Display - Fixed container */}
-        <layoutContainer
+        {/* Footer - wrapped in layoutView */}
+        <layoutView
           layout={{
-            width: isMobile ? screenW * 0.9 : 600,
-            height: isMobile ? 250 : 200,
-          }}
-        >
-          <ArchetypeDisplay
-            archetype={currentArchetype}
-            archetypeData={currentArchData}
-            texture={archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY}
-            total={ARCHETYPE_ORDER.length}
-            index={archIdx}
-            onPrev={() => {
-              setArchIdx(
-                (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-              );
-              audio.playSFX("ui_navigate");
-            }}
-            onNext={() => {
-              setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-              audio.playSFX("ui_navigate");
-            }}
-            width={isMobile ? screenW * 0.9 : 600}
-            height={isMobile ? 250 : 200}
-          />
-        </layoutContainer>
-
-        {/* Footer */}
-        <layoutContainer
-          layout={{
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
             marginTop: "auto",
             marginBottom: isMobile ? 10 : 20,
           }}
         >
-          <pixiText
-            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-            style={{
-              fontSize: isMobile ? 10 : 14,
-              fill: KOREAN_COLORS.ACCENT_CYAN,
-              fontStyle: "italic",
+          <layoutContainer
+            layout={{
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
             }}
-            anchor={0.5}
-          />
-        </layoutContainer>
+          >
+            <layoutView>
+              <pixiText
+                text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+                style={{
+                  fontSize: isMobile ? 10 : 14,
+                  fill: KOREAN_COLORS.ACCENT_CYAN,
+                  fontStyle: "italic",
+                }}
+                anchor={0.5}
+              />
+            </layoutView>
+          </layoutContainer>
+        </layoutView>
       </layoutContainer>
     </pixiContainer>
   );

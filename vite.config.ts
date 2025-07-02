@@ -130,6 +130,9 @@ export default defineConfig(({ command, mode }) => ({
     hmr: { overlay: false },
     middlewareMode: false,
     compress: true, // Enable gzip compression in dev
+    headers: {
+      "Cache-Control": "no-store",
+    },
   },
 
   // Preview server optimizations
