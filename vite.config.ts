@@ -58,8 +58,8 @@ export default defineConfig(({ command, mode }) => ({
       banner: {
         js: `
 // Node polyfill for @pixi/layout compatibility
-if (typeof globalThis !== 'undefined' && !globalThis.Node) {
-  globalThis.Node = class Node {
+if (typeof globalThis !== 'undefined' && !globalThis.CustomNode) {
+  globalThis.CustomNode = class CustomNode {
     static ELEMENT_NODE = 1;
     static TEXT_NODE = 3;
     static COMMENT_NODE = 8;
