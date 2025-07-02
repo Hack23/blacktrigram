@@ -1,37 +1,58 @@
-import "yoga-layout"; //  👈 pull in the pure-JS Yoga engine
 import "@pixi/layout"; //  👈 now the plugin can find Yoga
 import "@pixi/layout/react"; //  👈 react bindings
+import "yoga-layout"; //  👈 pull in the pure-JS Yoga engine
+
+// Import and call extensions FIRST
+import { extendPixiComponents } from "./utils/pixiExtensions";
+extendPixiComponents(); // 🔧 CRITICAL: Call this before any other imports
+
 import { Application, useApplication } from "@pixi/react";
-import { lazy, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
+import { EndScreen, TrainingScreen } from "./components";
 import { CombatScreen } from "./components/combat/CombatScreen";
 import { IntroScreen } from "./components/intro/IntroScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { exposePixiAppForTesting } from "./test/pixi-cypress-helpers";
 import { GameMode, PlayerArchetype } from "./types/common";
-import { extendPixiComponents } from "./utils/pixiExtensions";
-import { createPlayerFromArchetype } from "./utils/playerUtils";
-extendPixiComponents();
-
-// Lazy load heavy screens
-const EndScreen = lazy(() => import("./components/ui/EndScreen"));
-const TrainingScreen = lazy(
-  () => import("./components/training/TrainingScreen")
-);
+import { createPlayerFromArchetype } from "./utils";
 
 /* ------------------------------------------------------------------
- *  ⬇  LayoutContainer-based wrapper that keeps content sized
- *     to the current browser viewport and updates on resize.
+ *  ⬇  Enhanced LayoutContainer-based wrapper with proper error handling
  * -----------------------------------------------------------------*/
 
 function PixiInitializer() {
   const { app } = useApplication();
+
   useEffect(() => {
-    const layout = (app.renderer as any).plugins.layout;
-    layout?.init?.(); // init once
+    try {
+      // 🔧 CRITICAL: Proper layout plugin initialization with error handling
+      const renderer = app.renderer as any;
+
+      if (!renderer.plugins) {
+        console.warn("⚠️ Renderer plugins not available");
+        return;
+      }
+
+      const layoutPlugin = renderer.plugins.layout;
+
+      if (!layoutPlugin) {
+        console.warn("⚠️ Layout plugin not found");
+        return;
+      }
+
+      // Initialize layout plugin if not already initialized
+      if (typeof layoutPlugin.init === "function") {
+        layoutPlugin.init();
+        console.log("✅ Layout plugin initialized successfully");
+      }
+    } catch (error) {
+      console.error("❌ Failed to initialize layout plugin:", error);
+    }
   }, [app]);
+
   return null;
 }
 

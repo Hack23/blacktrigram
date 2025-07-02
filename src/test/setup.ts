@@ -1,6 +1,7 @@
 // Test setup for Black Trigram Korean martial arts game
 
-import * as matchers from "@testing-library/jest-dom/matchers";
+import "@testing-library/jest-dom";
+import matchers from "node_modules/@testing-library/jest-dom/types/matchers";
 import { afterEach, beforeAll, expect, vi } from "vitest";
 
 expect.extend(matchers);
@@ -100,8 +101,23 @@ beforeAll(() => {
   if (typeof globalThis !== "undefined" && !globalThis.Node) {
     (globalThis as any).Node = class Node {
       static ELEMENT_NODE = 1;
+      static TEXT_NODE = 3;
+      static DOCUMENT_NODE = 9;
       nodeType = 1;
+      parentNode: any = null;
+      childNodes: any[] = [];
       constructor() {}
+      appendChild(child: any) {
+        this.childNodes.push(child);
+        child.parentNode = this;
+      }
+      removeChild(child: any) {
+        const index = this.childNodes.indexOf(child);
+        if (index > -1) {
+          this.childNodes.splice(index, 1);
+          child.parentNode = null;
+        }
+      }
     };
   }
 });

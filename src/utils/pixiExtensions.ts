@@ -1,6 +1,31 @@
 /* ------------------------------------------------------------------ */
 /*  PixiJS extensions and utilities for Black Trigram
 /* ------------------------------------------------------------------ */
+
+// 🔧 CRITICAL: Add Node polyfill BEFORE any other imports
+if (typeof globalThis !== "undefined" && !globalThis.Node) {
+  (globalThis as any).Node = class Node {
+    static ELEMENT_NODE = 1;
+    static TEXT_NODE = 3;
+    static DOCUMENT_NODE = 9;
+    nodeType = 1;
+    parentNode: any = null;
+    childNodes: any[] = [];
+    constructor() {}
+    appendChild(child: any) {
+      this.childNodes.push(child);
+      child.parentNode = this;
+    }
+    removeChild(child: any) {
+      const index = this.childNodes.indexOf(child);
+      if (index > -1) {
+        this.childNodes.splice(index, 1);
+        child.parentNode = null;
+      }
+    }
+  };
+}
+
 import {
   LayoutAnimatedSprite,
   LayoutBitmapText,
@@ -40,34 +65,45 @@ export const extendPixiComponents = () => {
     return;
   }
 
-  // @pixi/react v4+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
-  // We only need to extend the components from @pixi/layout and @pixi/ui.
-  extend({
-    // Layout components
-    LayoutContainer,
-    LayoutSprite,
-    LayoutText,
-    LayoutGraphics,
-    LayoutTilingSprite,
-    LayoutAnimatedSprite,
-    LayoutBitmapText,
-    LayoutNineSliceSprite,
-    LayoutView,
+  // Ensure Node polyfill is available before extending layout components
+  if (typeof globalThis !== "undefined" && !globalThis.Node) {
+    console.error("Node polyfill not available for @pixi/layout");
+    return;
+  }
 
-    // UI components
-    Button,
-    FancyButton,
-    ProgressBar,
-    ScrollBox,
-    MaskedFrame,
-    Slider,
-    Input,
-    CheckBox,
-    RadioGroup,
-    Select,
-  });
+  try {
+    // @pixi/react v4+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
+    // We only need to extend the components from @pixi/layout and @pixi/ui.
+    extend({
+      // Layout components
+      LayoutContainer,
+      LayoutSprite,
+      LayoutText,
+      LayoutGraphics,
+      LayoutTilingSprite,
+      LayoutAnimatedSprite,
+      LayoutBitmapText,
+      LayoutNineSliceSprite,
+      LayoutView,
 
-  componentsExtended = true;
+      // UI components
+      Button,
+      FancyButton,
+      ProgressBar,
+      ScrollBox,
+      MaskedFrame,
+      Slider,
+      Input,
+      CheckBox,
+      RadioGroup,
+      Select,
+    });
+
+    componentsExtended = true;
+    console.log("✅ PixiJS components extended successfully");
+  } catch (error) {
+    console.error("❌ Failed to extend PixiJS components:", error);
+  }
 };
 
 /**
@@ -242,5 +278,7 @@ export const drawTrigramSymbol = (
   // Draw trigram lines using modern API
   graphics.rect(x, y, size, size / 8).fill({ color: 0x00ffff });
   graphics.rect(x, y + size / 3, size, size / 8).fill({ color: 0x00ffff });
-  graphics.rect(x, y + (2 * size) / 3, size, size / 8).fill({ color: 0x00ffff });
+  graphics
+    .rect(x, y + (2 * size) / 3, size, size / 8)
+    .fill({ color: 0x00ffff });
 };
