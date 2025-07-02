@@ -176,20 +176,19 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
           }}
         >
           <pixiFancyButton
-            ref={buttonRef}
-            defaultView={buttonViews.defaultView}
-            hoverView={buttonViews.hoverView}
-            pressedView={buttonViews.pressedView}
-            text={buttonText}
-            textStyle={textStyle}
-            data-testid={`menu-button-${item.mode}`}
-            animations={{
-              hover: { props: { scale: { x: 1.02, y: 1.02 } }, duration: 150 },
-              pressed: {
-                props: { scale: { x: 0.98, y: 0.98 } },
-                duration: 100,
-              },
+            views={{
+              default: buttonViews.defaultView,
+              hover: buttonViews.hoverView,
+              pressed: buttonViews.pressedView,
             }}
+            text={buttonText}
+            style={textStyle} // note: `style`, not `textStyle`
+            animations={{
+              hover: { props: { scale: 1.02 }, duration: 150 },
+              pressed: { props: { scale: 0.98 }, duration: 100 },
+            }}
+            ref={buttonRef}
+            data-testid={`menu-button-${item.mode}`}
           />
         </layoutContainer>
       </layoutContainer>
