@@ -3,14 +3,14 @@
 /// <reference types="@pixi/ui" />
 /// <reference types="@pixi/layout" />
 
+import type { PixiReactElementProps } from "@pixi/react";
+
 // Only declare the module for react-reconciler constants fix
 declare module "react-reconciler/constants" {
   export * from "react-reconciler/constants.js";
 }
 
-import type * as Layout from "@pixi/layout";
 import "@pixi/react";
-import type { PixiReactElementProps } from "@pixi/react";
 import type * as UI from "@pixi/ui";
 import type * as PIXI from "pixi.js";
 
@@ -32,25 +32,6 @@ export type BitmapTextProps = PixiReactElementProps<typeof PIXI.BitmapText>;
 export type ParticleContainerProps = PixiReactElementProps<
   typeof PIXI.ParticleContainer
 >;
-
-/* --- @pixi/layout Components --------------------------------------------- */
-export type LayoutContainerProps = PixiReactElementProps<
-  typeof Layout.LayoutContainer
->;
-export type LayoutSpriteProps = PixiReactElementProps<
-  typeof Layout.LayoutSprite
->;
-export type LayoutTextProps = PixiReactElementProps<typeof Layout.LayoutText>;
-export type LayoutGraphicsProps = PixiReactElementProps<
-  typeof Layout.LayoutGraphics
->;
-export type LayoutTilingSpriteProps = PixiReactElementProps<
-  typeof Layout.LayoutTilingSprite
->;
-export type LayoutAnimatedSpriteProps = PixiReactElementProps<
-  typeof Layout.LayoutAnimatedSprite
->;
-// Add any other @pixi/layout components you use here...
 
 /* --- @pixi/ui Components (using permissive props) ------------------------ */
 export type ButtonProps = PixiReactElementProps<typeof UI.Button, true>;
@@ -90,13 +71,23 @@ declare module "@pixi/react" {
     pixiParticleContainer: ParticleContainerProps;
 
     /* --- @pixi/layout components --------------------------------------- */
-    layoutContainer: LayoutContainerProps;
-    layoutSprite: LayoutSpriteProps;
-    layoutTilingSprite: LayoutTilingSpriteProps;
-    layoutText: LayoutTextProps;
-    layoutAnimatedSprite: LayoutAnimatedSpriteProps;
-    layoutGraphics: LayoutGraphicsProps;
-
+    layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
+    layoutView: PixiReactElementProps<typeof LayoutView>;
+    layoutSprite: PixiReactElementProps<typeof LayoutSprite>;
+    layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
+    layoutNineSliceSprite: PixiReactElementProps<typeof LayoutNineSliceSprite>;
+    layoutTilingSprite: PixiReactElementProps<typeof LayoutTilingSprite>;
+    layoutAnimatedSprite: PixiReactElementProps<typeof LayoutAnimatedSprite>;
+    layoutGifSprite: PixiReactElementProps<typeof LayoutGifSprite>;
+    layoutGraphics: PixiReactElementProps<typeof LayoutGraphics>;
+    layoutMesh: PixiReactElementProps<typeof LayoutMesh>;
+    layoutPerspectiveMesh: PixiReactElementProps<typeof LayoutPerspectiveMesh>;
+    layoutMeshPlane: PixiReactElementProps<typeof LayoutMeshPlane>;
+    layoutMeshRope: PixiReactElementProps<typeof LayoutMeshRope>;
+    layoutMeshSimple: PixiReactElementProps<typeof LayoutMeshSimple>;
+    layoutText: PixiReactElementProps<typeof LayoutText>;
+    layoutBitmapText: PixiReactElementProps<typeof LayoutBitmapText>;
+    layoutHTMLText: PixiReactElementProps<typeof LayoutHTMLText>;
     /* --- @pixi/ui components ------------------------------------------- */
     pixiButton: ButtonProps;
     pixiFancyButton: FancyButtonProps;
@@ -125,12 +116,27 @@ declare global {
       pixiParticleContainer: ParticleContainerProps;
 
       /* --- @pixi/layout components --------------------------------------- */
-      layoutContainer: LayoutContainerProps;
-      layoutSprite: LayoutSpriteProps;
-      layoutTilingSprite: LayoutTilingSpriteProps;
-      layoutText: LayoutTextProps;
-      layoutAnimatedSprite: LayoutAnimatedSpriteProps;
-      layoutGraphics: LayoutGraphicsProps;
+      layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
+      layoutView: PixiReactElementProps<typeof LayoutView>;
+      layoutSprite: PixiReactElementProps<typeof LayoutSprite>;
+      layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
+      layoutNineSliceSprite: PixiReactElementProps<
+        typeof LayoutNineSliceSprite
+      >;
+      layoutTilingSprite: PixiReactElementProps<typeof LayoutTilingSprite>;
+      layoutAnimatedSprite: PixiReactElementProps<typeof LayoutAnimatedSprite>;
+      layoutGifSprite: PixiReactElementProps<typeof LayoutGifSprite>;
+      layoutGraphics: PixiReactElementProps<typeof LayoutGraphics>;
+      layoutMesh: PixiReactElementProps<typeof LayoutMesh>;
+      layoutPerspectiveMesh: PixiReactElementProps<
+        typeof LayoutPerspectiveMesh
+      >;
+      layoutMeshPlane: PixiReactElementProps<typeof LayoutMeshPlane>;
+      layoutMeshRope: PixiReactElementProps<typeof LayoutMeshRope>;
+      layoutMeshSimple: PixiReactElementProps<typeof LayoutMeshSimple>;
+      layoutText: PixiReactElementProps<typeof LayoutText>;
+      layoutBitmapText: PixiReactElementProps<typeof LayoutBitmapText>;
+      layoutHTMLText: PixiReactElementProps<typeof LayoutHTMLText>;
 
       /* --- @pixi/ui components ------------------------------------------- */
       pixiButton: ButtonProps;

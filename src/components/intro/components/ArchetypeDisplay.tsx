@@ -507,19 +507,22 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               gap: 8,
             }}
           >
-            <pixiFancyButton
-              ref={prevButtonRef}
-              defaultView={buttonViews.defaultView}
-              hoverView={buttonViews.hoverView}
-              pressedView={buttonViews.pressedView}
-              text={isMobile ? "◀" : "▲"}
-              textStyle={{
-                fontSize: 16,
-                fill: KOREAN_COLORS.TEXT_PRIMARY,
-                fontWeight: "bold",
-              }}
-              data-testid="archetype-prev-button"
-            />
+            {/* wrap FancyButton in a layout‐aware container */}
+            <layoutContainer layout={{ width: 56, height: 56 }}>
+              <pixiFancyButton
+                ref={prevButtonRef}
+                defaultView={buttonViews.defaultView}
+                hoverView={buttonViews.hoverView}
+                pressedView={buttonViews.pressedView}
+                text={isMobile ? "◀" : "▲"}
+                textStyle={{
+                  fontSize: 16,
+                  fill: KOREAN_COLORS.TEXT_PRIMARY,
+                  fontWeight: "bold",
+                }}
+                data-testid="archetype-prev-button"
+              />
+            </layoutContainer>
 
             <layoutContainer
               layout={{
@@ -539,19 +542,22 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               />
             </layoutContainer>
 
-            <pixiFancyButton
-              ref={nextButtonRef}
-              defaultView={buttonViews.defaultView}
-              hoverView={buttonViews.hoverView}
-              pressedView={buttonViews.pressedView}
-              text={isMobile ? "▶" : "▼"}
-              textStyle={{
-                fontSize: 16,
-                fill: KOREAN_COLORS.TEXT_PRIMARY,
-                fontWeight: "bold",
-              }}
-              data-testid="archetype-next-button"
-            />
+            {/* wrap FancyButton in a layout‐aware container */}
+            <layoutContainer layout={{ width: 56, height: 56 }}>
+              <pixiFancyButton
+                ref={nextButtonRef}
+                defaultView={buttonViews.defaultView}
+                hoverView={buttonViews.hoverView}
+                pressedView={buttonViews.pressedView}
+                text={isMobile ? "▶" : "▼"}
+                textStyle={{
+                  fontSize: 16,
+                  fill: KOREAN_COLORS.TEXT_PRIMARY,
+                  fontWeight: "bold",
+                }}
+                data-testid="archetype-next-button"
+              />
+            </layoutContainer>
           </layoutContainer>
         </layoutContainer>
 

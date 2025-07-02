@@ -1,7 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*  PixiJS extensions and utilities for Black Trigram
 /* ------------------------------------------------------------------ */
-import "@pixi/layout";
 import {
   LayoutAnimatedSprite,
   LayoutBitmapText,

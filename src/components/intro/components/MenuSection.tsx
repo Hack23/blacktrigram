@@ -124,8 +124,7 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
 
     // the entire button lives in one LayoutView:
     return (
-      <layoutView
-        // 1) Build your flex row + animation offset
+      <layoutContainer
         layout={{
           width: buttonWidth,
           height: buttonHeight,
@@ -168,7 +167,7 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
           }}
           data-testid={`menu-button-${item.mode}`}
         />
-      </layoutView>
+      </layoutContainer>
     );
   }
 );
