@@ -53,49 +53,6 @@ export default defineConfig(({ command, mode }) => ({
       "src/types/constants/combat.ts",
       "src/audio/placeholder-sounds.ts",
     ],
-    esbuildOptions: {
-      // Inject the Node polyfill before any module loads
-      banner: {
-        js: `
-// Node polyfill for @pixi/layout compatibility
-if (typeof globalThis !== 'undefined' && !globalThis.CustomNode) {
-  globalThis.CustomNode = class CustomNode {
-    static ELEMENT_NODE = 1;
-    static TEXT_NODE = 3;
-    static COMMENT_NODE = 8;
-    static DOCUMENT_NODE = 9;
-    static DOCUMENT_TYPE_NODE = 10;
-    static DOCUMENT_FRAGMENT_NODE = 11;
-    
-    nodeType = 1;
-    nodeName = 'NODE';
-    ownerDocument = null;
-    parentNode = null;
-    parentElement = null;
-    childNodes = [];
-    firstChild = null;
-    lastChild = null;
-    previousSibling = null;
-    nextSibling = null;
-    nodeValue = null;
-    textContent = '';
-    
-    constructor() {}
-    
-    appendChild() { return this; }
-    removeChild() { return this; }
-    insertBefore() { return this; }
-    replaceChild() { return this; }
-    cloneNode() { return new globalThis.Node(); }
-    contains() { return false; }
-    hasChildNodes() { return false; }
-    isEqualNode() { return false; }
-    isSameNode() { return false; }
-  };
-}
-`,
-      },
-    },
   },
   build: {
     target: "es2022",
