@@ -227,7 +227,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               g.fill({ color: 0xffffff, alpha: 0.4 });
             }
           });
-        }, [value, maxValue, color]);
+        }, [value, maxValue, color, barWidth, barHeight]);
 
         return (
           <layoutContainer
@@ -332,7 +332,6 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 alignItems: "center",
               }}
             >
-              {/* ✅ FIXED: Wrap layoutSprite in layoutView */}
               <layoutView layout={{ width: imageSize, height: imageSize }}>
                 <layoutSprite
                   texture={texture ?? undefined}
@@ -509,7 +508,6 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               gap: 8,
             }}
           >
-            {/* ✅ FIXED: Wrap pixiFancyButton in layoutView inside layoutContainer */}
             <layoutContainer layout={{ width: 56, height: 56 }}>
               <layoutView>
                 <pixiFancyButton
@@ -546,7 +544,6 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               />
             </layoutContainer>
 
-            {/* ✅ FIXED: Wrap pixiFancyButton in layoutView inside layoutContainer */}
             <layoutContainer layout={{ width: 56, height: 56 }}>
               <layoutView>
                 <pixiFancyButton

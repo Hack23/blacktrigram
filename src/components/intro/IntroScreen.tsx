@@ -102,6 +102,14 @@ const ARCHETYPE_ORDER: PlayerArchetype[] = [
   PlayerArchetype.JOJIK_POKRYEOKBAE,
 ];
 
+const LoadingFallback = () => (
+  <pixiText
+    text="로딩 중..."
+    anchor={0.5}
+    style={{ fill: "white", fontSize: 24 }}
+  />
+);
+
 /* ------------------------------------------------------------------ */
 /*  6.  IntroScreen Component                                         */
 /* ------------------------------------------------------------------ */
@@ -224,7 +232,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   if (section === "controls") {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<LoadingFallback />}>
         <ControlsSection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -236,7 +244,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   if (section === "philosophy") {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<LoadingFallback />}>
         <PhilosophySection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -246,7 +254,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     );
   }
 
-  // Fixed: Wrap all non-layout-aware components in layoutView
   return (
     <pixiContainer data-testid="intro-screen">
       {/* Background layers - keep these as regular pixiContainer children */}
@@ -395,7 +402,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 audio.playSFX("ui_navigate");
               }}
               width={isMobile ? screenW * 0.9 : 600}
-              height={isMobile ? 250 : 200}
+              height={isMobile ? 250 : 300}
             />
           </layoutView>
         </layoutContainer>
