@@ -332,14 +332,16 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 alignItems: "center",
               }}
             >
-              <layoutSprite
-                layout={{ width: imageSize, height: imageSize }}
-                texture={texture ?? undefined}
-                anchor={0.5}
-                interactive={!!onSelect}
-                cursor={onSelect ? "pointer" : "default"}
-                onPointerTap={() => onSelect?.(archetype)}
-              />
+              {/* ✅ FIXED: Wrap layoutSprite in layoutView */}
+              <layoutView layout={{ width: imageSize, height: imageSize }}>
+                <layoutSprite
+                  texture={texture ?? undefined}
+                  anchor={0.5}
+                  interactive={!!onSelect}
+                  cursor={onSelect ? "pointer" : "default"}
+                  onPointerTap={() => onSelect?.(archetype)}
+                />
+              </layoutView>
             </layoutContainer>
 
             <layoutContainer
@@ -507,21 +509,23 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               gap: 8,
             }}
           >
-            {/* wrap FancyButton in a layout‐aware container */}
+            {/* ✅ FIXED: Wrap pixiFancyButton in layoutView inside layoutContainer */}
             <layoutContainer layout={{ width: 56, height: 56 }}>
-              <pixiFancyButton
-                ref={prevButtonRef}
-                defaultView={buttonViews.defaultView}
-                hoverView={buttonViews.hoverView}
-                pressedView={buttonViews.pressedView}
-                text={isMobile ? "◀" : "▲"}
-                textStyle={{
-                  fontSize: 16,
-                  fill: KOREAN_COLORS.TEXT_PRIMARY,
-                  fontWeight: "bold",
-                }}
-                data-testid="archetype-prev-button"
-              />
+              <layoutView>
+                <pixiFancyButton
+                  ref={prevButtonRef}
+                  defaultView={buttonViews.defaultView}
+                  hoverView={buttonViews.hoverView}
+                  pressedView={buttonViews.pressedView}
+                  text={isMobile ? "◀" : "▲"}
+                  textStyle={{
+                    fontSize: 16,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                  }}
+                  data-testid="archetype-prev-button"
+                />
+              </layoutView>
             </layoutContainer>
 
             <layoutContainer
@@ -542,21 +546,23 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               />
             </layoutContainer>
 
-            {/* wrap FancyButton in a layout‐aware container */}
+            {/* ✅ FIXED: Wrap pixiFancyButton in layoutView inside layoutContainer */}
             <layoutContainer layout={{ width: 56, height: 56 }}>
-              <pixiFancyButton
-                ref={nextButtonRef}
-                defaultView={buttonViews.defaultView}
-                hoverView={buttonViews.hoverView}
-                pressedView={buttonViews.pressedView}
-                text={isMobile ? "▶" : "▼"}
-                textStyle={{
-                  fontSize: 16,
-                  fill: KOREAN_COLORS.TEXT_PRIMARY,
-                  fontWeight: "bold",
-                }}
-                data-testid="archetype-next-button"
-              />
+              <layoutView>
+                <pixiFancyButton
+                  ref={nextButtonRef}
+                  defaultView={buttonViews.defaultView}
+                  hoverView={buttonViews.hoverView}
+                  pressedView={buttonViews.pressedView}
+                  text={isMobile ? "▶" : "▼"}
+                  textStyle={{
+                    fontSize: 16,
+                    fill: KOREAN_COLORS.TEXT_PRIMARY,
+                    fontWeight: "bold",
+                  }}
+                  data-testid="archetype-next-button"
+                />
+              </layoutView>
             </layoutContainer>
           </layoutContainer>
         </layoutContainer>

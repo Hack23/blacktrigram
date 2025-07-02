@@ -122,7 +122,7 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
       }
     }, [item.mode, onSelect]);
 
-    // the entire button lives in one LayoutView:
+    // ✅ FIXED: Wrap entire button in layoutContainer with proper structure
     return (
       <layoutContainer
         layout={{
@@ -134,7 +134,7 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
           paddingLeft: animationOffset,
         }}
       >
-        {/* 2) slot is the actual display objects—in this case, an array */}
+        {/* Selection indicator */}
         {isSelected && (
           <layoutText
             text="▶"
@@ -150,23 +150,32 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
             }}
           />
         )}
-        <pixiFancyButton
-          ref={buttonRef}
-          views={buttonViews}
-          text={`${item.korean} | ${item.english}`}
-          style={textStyle}
-          animations={{
-            hover: {
-              props: { scale: { x: 1.02, y: 1.02 } },
-              duration: 150,
-            },
-            pressed: {
-              props: { scale: { x: 0.98, y: 0.98 } },
-              duration: 100,
-            },
+
+        {/* ✅ FIXED: Wrap pixiFancyButton in layoutView */}
+        <layoutView
+          layout={{
+            width: buttonWidth - (isSelected ? 32 : 8),
+            height: buttonHeight,
           }}
-          data-testid={`menu-button-${item.mode}`}
-        />
+        >
+          <pixiFancyButton
+            ref={buttonRef}
+            views={buttonViews}
+            text={`${item.korean} | ${item.english}`}
+            style={textStyle}
+            animations={{
+              hover: {
+                props: { scale: { x: 1.02, y: 1.02 } },
+                duration: 150,
+              },
+              pressed: {
+                props: { scale: { x: 0.98, y: 0.98 } },
+                duration: 100,
+              },
+            }}
+            data-testid={`menu-button-${item.mode}`}
+          />
+        </layoutView>
       </layoutContainer>
     );
   }
