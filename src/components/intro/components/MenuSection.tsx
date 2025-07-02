@@ -138,16 +138,15 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
     return (
       <layoutContainer
         layout={{
-          width: buttonWidth + 60, // Fixed container width
-          height: buttonHeight + 8, // Fixed container height with padding
+          width: buttonWidth + 60,
+          height: buttonHeight + 8,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start",
-          paddingLeft: Math.round(animationOffset), // Use padding instead of margin
+          paddingLeft: Math.round(animationOffset),
         }}
-        data-testid={`menu-button-container-${item.mode}`}
       >
-        {/* Selection indicator */}
+        {/* ▶ selection arrow */}
         <layoutContainer
           layout={{
             width: 20,
@@ -168,26 +167,32 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
           )}
         </layoutContainer>
 
-        {/* Button */}
-        <layoutContainer
-          layout={{
-            width: buttonWidth,
-            height: buttonHeight,
-          }}
-        >
+        {/* the actual button */}
+        <layoutContainer layout={{ width: buttonWidth, height: buttonHeight }}>
           <pixiFancyButton
+            ref={buttonRef}
             views={{
               default: buttonViews.defaultView,
               hover: buttonViews.hoverView,
               pressed: buttonViews.pressedView,
             }}
             text={buttonText}
-            style={textStyle} // note: `style`, not `textStyle`
-            animations={{
-              hover: { props: { scale: 1.02 }, duration: 150 },
-              pressed: { props: { scale: 0.98 }, duration: 100 },
+            style={{
+              fontSize: isMobile ? 14 : 16,
+              fill: isSelected
+                ? KOREAN_COLORS.UI_BACKGROUND_DARK
+                : KOREAN_COLORS.TEXT_PRIMARY,
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontWeight: isSelected ? "bold" : "normal",
+              align: "center",
             }}
-            ref={buttonRef}
+            animations={{
+              hover: { props: { scale: { x: 1.02, y: 1.02 } }, duration: 150 },
+              pressed: {
+                props: { scale: { x: 0.98, y: 0.98 } },
+                duration: 100,
+              },
+            }}
             data-testid={`menu-button-${item.mode}`}
           />
         </layoutContainer>
