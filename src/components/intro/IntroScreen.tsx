@@ -241,7 +241,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         width={screenW}
         height={screenH}
       />
-
       <layoutContainer
         layout={{
           width: "100%",
@@ -251,111 +250,107 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           flexDirection: "column",
         }}
       >
-        <layoutSprite
-          texture={logoTexture ?? PIXI.Texture.EMPTY}
-          layout={{
-            marginBottom: 24,
-            alignSelf: "center",
-          }}
-        />
-        <layoutText
-          text="흑괘 Black Trigram"
-          style={{
-            fontFamily: "Noto Sans KR, sans-serif",
-            fontSize: 36,
-            fill: 0xffffff,
-            fontWeight: "bold",
-            letterSpacing: 2,
-          }}
-          layout={{
-            alignSelf: "center",
-          }}
-        />
-      </layoutContainer>
-
-      <layoutContainer
-        layout={{
-          width: "100%",
-          maxWidth: 1000,
-          flexGrow: 1,
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: sizing.gap * 2,
-          minHeight: 400,
-        }}
-      >
-        {/* Menu Section with background panel */}
-        <layoutView
-          layout={{
-            width: isMobile ? "90%" : 340,
-            minHeight: 280,
-            backgroundColor: "rgba(20,22,40,0.85)",
-            borderRadius: 18,
-            padding: sizing.gap,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <MenuSection
-            menuItems={MENU_ITEMS}
-            selectedIndex={menuIdx}
-            onModeSelect={handleMenu}
-            width={screenW}
-            height={screenH}
-          />
-        </layoutView>
-
-        {/* Archetype Display */}
-        <layoutView
-          layout={{
-            width: isMobile ? "90%" : 340,
-            minHeight: 280,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ArchetypeDisplay
-            archetype={currentArchetype}
-            archetypeData={currentArchData}
-            texture={archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY}
-            total={ARCHETYPE_ORDER.length}
-            index={archIdx}
-            onPrev={() => {
-              setArchIdx(
-                (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-              );
-              audio.playSFX("ui_navigate");
-            }}
-            onNext={() => {
-              setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-              audio.playSFX("ui_navigate");
+        <layoutContainer layout={{ margin: 5, flexGrow: 0.2 }}>
+          <layoutSprite
+            texture={logoTexture ?? PIXI.Texture.EMPTY}
+            layout={{
+              marginBottom: 24,
+              alignSelf: "center",
             }}
           />
-        </layoutView>
-      </layoutContainer>
+          <layoutText
+            text="흑괘 Black Trigram"
+            style={{
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontSize: 36,
+              fill: 0xffffff,
+              fontWeight: "bold",
+              letterSpacing: 2,
+            }}
+            layout={{
+              alignSelf: "center",
+            }}
+          />
+        </layoutContainer>
 
-      {/* --- Footer --- */}
-      <layoutView
-        layout={{
-          width: "100%",
-          marginTop: sizing.gap,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <pixiText
-          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-          style={{
-            fontSize: sizing.footerFont * 1.2,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-            fontStyle: "italic",
-            align: "center",
-            dropShadow: true,
-          }}
-          anchor={0.5}
-        />
-      </layoutView>
+        <layoutContainer layout={{ margin: 5, flexGrow: 0.3 }}>
+          <layoutView
+            layout={{
+              width: isMobile ? "90%" : 340,
+              minHeight: 280,
+              backgroundColor: "rgba(20,22,40,0.85)",
+              borderRadius: 18,
+              padding: sizing.gap,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <MenuSection
+              menuItems={MENU_ITEMS}
+              selectedIndex={menuIdx}
+              onModeSelect={handleMenu}
+              width={screenW}
+              height={screenH}
+            />
+          </layoutView>
+        </layoutContainer>
+
+        <layoutContainer layout={{ margin: 5, flexGrow: 0.4 }}>
+          {/* Archetype Display */}
+          <layoutView
+            layout={{
+              width: isMobile ? "90%" : 340,
+              minHeight: 280,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ArchetypeDisplay
+              archetype={currentArchetype}
+              archetypeData={currentArchData}
+              texture={
+                archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY
+              }
+              total={ARCHETYPE_ORDER.length}
+              index={archIdx}
+              onPrev={() => {
+                setArchIdx(
+                  (p) =>
+                    (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
+                );
+                audio.playSFX("ui_navigate");
+              }}
+              onNext={() => {
+                setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
+                audio.playSFX("ui_navigate");
+              }}
+            />
+          </layoutView>
+        </layoutContainer>
+
+        <layoutContainer layout={{ margin: 5, flexGrow: 0.1 }}>
+          <layoutView
+            layout={{
+              width: "100%",
+              marginTop: sizing.gap,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <pixiText
+              text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+              style={{
+                fontSize: sizing.footerFont * 1.2,
+                fill: KOREAN_COLORS.ACCENT_CYAN,
+                fontStyle: "italic",
+                align: "center",
+                dropShadow: true,
+              }}
+              anchor={0.5}
+            />
+          </layoutView>
+        </layoutContainer>
+      </layoutContainer>
     </pixiContainer>
   );
 };
