@@ -9,7 +9,7 @@ import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 
-// Import components correctly
+// Import sub-components for different sections
 import {
   ArchetypeDisplay,
   ControlsSection,
@@ -18,59 +18,93 @@ import {
 } from "./components";
 
 /* ------------------------------------------------------------------ */
-/*  2.  Asset-loader hook                                             */
+/*  1. Asset Definitions & Loader Hook                                */
 /* ------------------------------------------------------------------ */
+
+// Centralize asset paths to ensure they match available assets
+const INTRO_ASSET_PATHS = {
+  background: "/assets/visual/bg/intro/intro_bg_loop.png",
+  logo: "/assets/visual/logo/black-trigram.png",
+  archetypes: {
+    [PlayerArchetype.MUSA]: "/assets/visual/archetypes/musa.png",
+    [PlayerArchetype.AMSALJA]: "/assets/visual/archetypes/amsalja.png",
+    [PlayerArchetype.HACKER]: "/assets/visual/archetypes/hacker.png",
+    [PlayerArchetype.JEONGBO_YOWON]:
+      "/assets/visual/archetypes/jeongbo_yowon.png",
+    [PlayerArchetype.JOJIK_POKRYEOKBAE]:
+      "/assets/visual/archetypes/jojik_pokryeokbae.png",
+  },
+};
+
+type IntroAssetState = {
+  bgTexture: PIXI.Texture;
+  logoTexture: PIXI.Texture;
+  archetypeTextures: Record<PlayerArchetype, PIXI.Texture>;
+};
+
+// A more robust asset loading hook with clear states
 function useIntroAssets() {
-  const [bgTexture, setBgTexture] = useState<PIXI.Texture | null>(null);
-  const [logoTexture, setLogoTexture] = useState<PIXI.Texture | null>(null);
-  const [archetypeTextures, setArchetypeTextures] = useState<
-    Partial<Record<PlayerArchetype, PIXI.Texture>>
-  >({});
+  const [assets, setAssets] = useState<IntroAssetState | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
+    let isMounted = true;
+
+    const loadAssets = async () => {
       try {
-        setBgTexture(
-          (await PIXI.Assets.load(
-            "/assets/visual/bg/intro/intro_bg_loop.png"
-          )) ?? PIXI.Texture.EMPTY
-        );
-        setLogoTexture(
-          (await PIXI.Assets.load("/assets/visual/logo/black-trigram.png")) ??
-            PIXI.Texture.EMPTY
-        );
+        // Load all assets in parallel for efficiency
+        const [bg, logo, ...archetypeEntries] = await Promise.all([
+          PIXI.Assets.load<PIXI.Texture>(INTRO_ASSET_PATHS.background),
+          PIXI.Assets.load<PIXI.Texture>(INTRO_ASSET_PATHS.logo),
+          ...Object.entries(INTRO_ASSET_PATHS.archetypes).map(
+            async ([key, path]) => {
+              const texture = await PIXI.Assets.load<PIXI.Texture>(path);
+              return [key as PlayerArchetype, texture ?? PIXI.Texture.EMPTY];
+            }
+          ),
+        ]);
 
-        const paths: Record<PlayerArchetype, string> = {
-          [PlayerArchetype.MUSA]: "/assets/visual/archetypes/musa.png",
-          [PlayerArchetype.AMSALJA]: "/assets/visual/archetypes/amsalja.png",
-          [PlayerArchetype.HACKER]: "/assets/visual/archetypes/hacker.png",
-          [PlayerArchetype.JEONGBO_YOWON]:
-            "/assets/visual/archetypes/jeongbo_yowon.png",
-          [PlayerArchetype.JOJIK_POKRYEOKBAE]:
-            "/assets/visual/archetypes/jojik_pokryeokbae.png",
-        };
-
-        const loaded: Partial<Record<PlayerArchetype, PIXI.Texture>> = {};
-        await Promise.all(
-          Object.entries(paths).map(async ([k, p]) => {
-            loaded[k as PlayerArchetype] =
-              (await PIXI.Assets.load(p)) ?? PIXI.Texture.EMPTY;
-          })
-        );
-        setArchetypeTextures(loaded);
+        if (isMounted) {
+          setAssets({
+            bgTexture: bg ?? PIXI.Texture.EMPTY,
+            logoTexture: logo ?? PIXI.Texture.EMPTY,
+            archetypeTextures: Object.fromEntries(archetypeEntries) as Record<
+              PlayerArchetype,
+              PIXI.Texture
+            >,
+          });
+        }
       } catch (err) {
-        console.error("Intro asset load error:", err);
-        setBgTexture(PIXI.Texture.EMPTY);
-        setLogoTexture(PIXI.Texture.EMPTY);
+        console.error("Intro asset loading failed:", err);
+        if (isMounted) {
+          setError("Failed to load critical assets. Please refresh.");
+          // Provide fallback empty textures to prevent render errors
+          setAssets({
+            bgTexture: PIXI.Texture.EMPTY,
+            logoTexture: PIXI.Texture.EMPTY,
+            archetypeTextures: Object.fromEntries(
+              Object.keys(INTRO_ASSET_PATHS.archetypes).map((k) => [
+                k,
+                PIXI.Texture.EMPTY,
+              ])
+            ) as Record<PlayerArchetype, PIXI.Texture>,
+          });
+        }
       }
-    })();
+    };
+
+    loadAssets();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  return { bgTexture, logoTexture, archetypeTextures };
+  return { assets, isLoading: !assets && !error, error };
 }
 
 /* ------------------------------------------------------------------ */
-/*  3.  Constants                                                     */
+/*  2.  Constants & Fallbacks                                         */
 /* ------------------------------------------------------------------ */
 const MENU_ITEMS: ReadonlyArray<{
   mode: GameMode;
@@ -91,16 +125,30 @@ const ARCHETYPE_ORDER: PlayerArchetype[] = [
   PlayerArchetype.JOJIK_POKRYEOKBAE,
 ];
 
-const LoadingFallback = () => (
-  <pixiText
-    text="로딩 중..."
-    anchor={0.5}
-    style={{ fill: "white", fontSize: 24 }}
-  />
+const LoadingFallback = ({ text }: { text: string }) => (
+  // Use layoutContainer to ensure centering works
+  <layoutContainer
+    layout={{
+      width: "100%",
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <pixiText
+      text={text}
+      anchor={0.5}
+      style={{
+        fill: KOREAN_COLORS.ACCENT_CYAN,
+        fontSize: 24,
+        fontFamily: "Noto Sans KR, sans-serif",
+      }}
+    />
+  </layoutContainer>
 );
 
 /* ------------------------------------------------------------------ */
-/*  6.  IntroScreen Component                                         */
+/*  3.  IntroScreen Component                                         */
 /* ------------------------------------------------------------------ */
 export interface IntroScreenProps {
   readonly onMenuSelect: (mode: GameMode) => void;
@@ -117,7 +165,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const screenH = height || window.innerHeight;
   const audio = useAudio();
 
-  const { bgTexture, logoTexture, archetypeTextures } = useIntroAssets();
+  const { assets, isLoading, error } = useIntroAssets();
 
   const [section, setSection] = useState<"menu" | "controls" | "philosophy">(
     "menu"
@@ -129,22 +177,18 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const currentArchetype = ARCHETYPE_ORDER[archIdx];
   const currentArchData = PLAYER_ARCHETYPES_DATA[currentArchetype];
 
-  // --- Improved Responsive Sizing ---
+  // --- Responsive Sizing ---
   const isMobile = screenW < 768;
-  const isTablet = screenW >= 768 && screenW < 1280;
-
   const sizing = {
-    logo: isMobile ? 120 : isTablet ? 180 : 250,
-    titleFont: isMobile ? 32 : isTablet ? 48 : 64,
-    subtitleFont: isMobile ? 16 : isTablet ? 22 : 28,
-    trigramFont: isMobile ? 22 : isTablet ? 28 : 36,
-    footerFont: isMobile ? 10 : isTablet ? 14 : 16,
-    padding: isMobile ? 16 : isTablet ? 32 : 48,
-    gap: isMobile ? 16 : isTablet ? 24 : 32,
-    trigramGap: isMobile ? 8 : isTablet ? 12 : 16,
+    logo: isMobile ? 100 : 150,
+    titleFont: isMobile ? 28 : 48,
+    sloganFont: isMobile ? 14 : 18,
+    footerFont: isMobile ? 12 : 16,
+    padding: isMobile ? 15 : 30,
+    gap: isMobile ? 15 : 25,
   };
-  // --- End of Sizing ---
 
+  // --- Effects ---
   useEffect(() => {
     if (audio.isInitialized && !introMusicStarted.current) {
       introMusicStarted.current = true;
@@ -153,7 +197,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   }, [audio]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent): void => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
       if (section !== "menu") {
         if (e.key === "Escape") {
           setSection("menu");
@@ -162,37 +206,46 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         return;
       }
 
+      let newMenuIdx = menuIdx;
+      let newArchIdx = archIdx;
+
       switch (e.key) {
         case "ArrowUp":
-          setMenuIdx((p) => (p + MENU_ITEMS.length - 1) % MENU_ITEMS.length);
-          audio.playSFX("ui_navigate");
+          newMenuIdx = (menuIdx + MENU_ITEMS.length - 1) % MENU_ITEMS.length;
           break;
         case "ArrowDown":
-          setMenuIdx((p) => (p + 1) % MENU_ITEMS.length);
-          audio.playSFX("ui_navigate");
+          newMenuIdx = (menuIdx + 1) % MENU_ITEMS.length;
           break;
         case "ArrowLeft":
-          setArchIdx(
-            (p) => (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-          );
-          audio.playSFX("ui_navigate");
+          newArchIdx =
+            (archIdx + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length;
           break;
         case "ArrowRight":
-          setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-          audio.playSFX("ui_navigate");
+          newArchIdx = (archIdx + 1) % ARCHETYPE_ORDER.length;
           break;
         case "Enter":
         case " ":
-          handleMenu(MENU_ITEMS[menuIdx].mode);
-          break;
+          e.preventDefault();
+          handleMenuSelect(MENU_ITEMS[menuIdx].mode);
+          return;
+      }
+
+      if (newMenuIdx !== menuIdx) {
+        setMenuIdx(newMenuIdx);
+        audio.playSFX("ui_navigate");
+      }
+      if (newArchIdx !== archIdx) {
+        setArchIdx(newArchIdx);
+        audio.playSFX("ui_navigate");
       }
     };
 
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [section, menuIdx, archIdx, audio]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [section, menuIdx, archIdx, audio, onMenuSelect]);
 
-  const handleMenu = (mode: GameMode): void => {
+  // --- Handlers ---
+  const handleMenuSelect = (mode: GameMode): void => {
     switch (mode) {
       case GameMode.CONTROLS:
         setSection("controls");
@@ -209,9 +262,22 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   };
 
+  const handleArchetypeChange = (direction: "prev" | "next") => {
+    const delta = direction === "prev" ? -1 : 1;
+    setArchIdx(
+      (p) => (p + ARCHETYPE_ORDER.length + delta) % ARCHETYPE_ORDER.length
+    );
+    audio.playSFX("ui_navigate");
+  };
+
+  // --- Render Logic ---
+  if (isLoading) return <LoadingFallback text="로딩 중... (Loading...)" />;
+  if (error) return <LoadingFallback text={`오류: ${error}`} />;
+  if (!assets) return <LoadingFallback text="에셋을 불러올 수 없습니다." />;
+
   if (section === "controls") {
     return (
-      <Suspense fallback={<LoadingFallback />}>
+      <Suspense fallback={<LoadingFallback text="로딩 중..." />}>
         <ControlsSection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -223,7 +289,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   if (section === "philosophy") {
     return (
-      <Suspense fallback={<LoadingFallback />}>
+      <Suspense fallback={<LoadingFallback text="로딩 중..." />}>
         <PhilosophySection
           onBack={() => setSection("menu")}
           width={screenW}
@@ -234,121 +300,123 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   }
 
   return (
-    <pixiContainer data-testid="intro-screen">
-      {/* Use bgTexture directly in your pixiSprite */}
+    // Use a standard pixiContainer for the root, as it doesn't need layout properties itself.
+    <pixiContainer>
       <pixiSprite
-        texture={bgTexture ?? PIXI.Texture.EMPTY}
-        alpha={bgTexture ? 0.9 : 0}
+        texture={assets.bgTexture}
         width={screenW}
         height={screenH}
+        alpha={0.9}
       />
+
+      {/* Main layout container for all screen content */}
       <layoutContainer
         layout={{
           width: "100%",
           height: "100%",
-          justifyContent: "center",
+          flexDirection: "column",
+          justifyContent: "space-between", // Pushes header up, footer down
           alignItems: "center",
-          flexDirection: "row",
+          padding: sizing.padding,
+          gap: sizing.gap,
         }}
+        data-testid="intro-screen"
       >
-        <layoutContainer layout={{ margin: 5, flexGrow: 0.2 }}>
+        {/* Top Section: Logo, Title, Slogan */}
+        <layoutContainer
+          layout={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: isMobile ? 10 : 15,
+          }}
+        >
           <layoutSprite
-            texture={logoTexture ?? PIXI.Texture.EMPTY}
-            layout={{
-              alignSelf: "center",
-            }}
+            texture={assets.logoTexture}
+            layout={{ width: sizing.logo, height: sizing.logo }}
           />
           <layoutText
             text="흑괘 Black Trigram"
             style={{
               fontFamily: "Noto Sans KR, sans-serif",
-              fontSize: 36,
-              fill: 0xffffff,
+              fontSize: sizing.titleFont,
+              fill: KOREAN_COLORS.ACCENT_CYAN,
               fontWeight: "bold",
-              letterSpacing: 2,
+              align: "center",
             }}
-            layout={{
-              alignSelf: "center",
+          />
+          <layoutText
+            text="정밀 타격, 깊이 있는 전투"
+            style={{
+              fontFamily: "Noto Sans KR, sans-serif",
+              fontSize: sizing.sloganFont,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontStyle: "italic",
             }}
           />
         </layoutContainer>
 
-        <layoutContainer layout={{ margin: 5, flexGrow: 0.3 }}>
+        {/* Center Section: Menu and Archetype Display */}
+        <layoutContainer
+          layout={{
+            width: "100%",
+            maxWidth: 900,
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: sizing.gap,
+          }}
+        >
           <layoutView
             layout={{
-              width: isMobile ? "90%" : 340,
-              minHeight: 280,
-              backgroundColor: "rgba(20,22,40,0.85)",
-              borderRadius: 18,
-              padding: sizing.gap,
-              alignItems: "center",
-              justifyContent: "center",
+              width: isMobile ? "90%" : 320,
+              height: isMobile ? "auto" : 420,
             }}
           >
             <MenuSection
               menuItems={MENU_ITEMS}
               selectedIndex={menuIdx}
-              onModeSelect={handleMenu}
-              width={screenW}
-              height={screenH}
+              onModeSelect={handleMenuSelect}
+              width={isMobile ? screenW * 0.9 : 320}
+              height={isMobile ? 300 : 420}
             />
           </layoutView>
-        </layoutContainer>
 
-        <layoutContainer layout={{ margin: 5, flexGrow: 0.4 }}>
-          {/* Archetype Display */}
           <layoutView
             layout={{
-              width: isMobile ? "90%" : 340,
-              minHeight: 280,
-              alignItems: "center",
-              justifyContent: "center",
+              width: isMobile ? "90%" : 480,
+              height: isMobile ? "auto" : 420,
             }}
           >
             <ArchetypeDisplay
               archetype={currentArchetype}
               archetypeData={currentArchData}
-              texture={
-                archetypeTextures[currentArchetype] ?? PIXI.Texture.EMPTY
-              }
+              texture={assets.archetypeTextures[currentArchetype]}
               total={ARCHETYPE_ORDER.length}
               index={archIdx}
-              onPrev={() => {
-                setArchIdx(
-                  (p) =>
-                    (p + ARCHETYPE_ORDER.length - 1) % ARCHETYPE_ORDER.length
-                );
-                audio.playSFX("ui_navigate");
-              }}
-              onNext={() => {
-                setArchIdx((p) => (p + 1) % ARCHETYPE_ORDER.length);
-                audio.playSFX("ui_navigate");
-              }}
+              onPrev={() => handleArchetypeChange("prev")}
+              onNext={() => handleArchetypeChange("next")}
+              width={isMobile ? screenW * 0.9 : 480}
+              height={isMobile ? 380 : 420}
             />
           </layoutView>
         </layoutContainer>
 
-        <layoutContainer layout={{ margin: 5, flexGrow: 0.1 }}>
-          <layoutView
-            layout={{
-              width: "100%",
-              marginTop: sizing.gap,
-              alignItems: "center",
-              justifyContent: "center",
+        {/* Footer */}
+        <layoutContainer
+          layout={{
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <pixiText
+            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+            style={{
+              fontSize: sizing.footerFont,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontStyle: "italic",
             }}
-          >
-            <pixiText
-              text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-              style={{
-                fontSize: sizing.footerFont * 1.2,
-                fill: KOREAN_COLORS.ACCENT_CYAN,
-                fontStyle: "italic",
-                align: "center",
-                dropShadow: true,
-              }}
-              anchor={0.5}
-            />
-          </layoutView>
+            anchor={0.5}
+          />
         </layoutContainer>
       </layoutContainer>
     </pixiContainer>
