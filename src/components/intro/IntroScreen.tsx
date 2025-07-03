@@ -235,6 +235,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   return (
     <pixiContainer data-testid="intro-screen">
+      {/* Use bgTexture directly in your pixiSprite */}
       <pixiSprite
         texture={bgTexture ?? PIXI.Texture.EMPTY}
         alpha={bgTexture ? 0.9 : 0}
@@ -247,14 +248,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           height: "100%",
           justifyContent: "center",
           alignItems: "center",
-          flexDirection: "column",
+          flexDirection: "row",
         }}
       >
         <layoutContainer layout={{ margin: 5, flexGrow: 0.2 }}>
           <layoutSprite
             texture={logoTexture ?? PIXI.Texture.EMPTY}
             layout={{
-              marginBottom: 24,
               alignSelf: "center",
             }}
           />

@@ -1,3 +1,4 @@
+import "../../../utils/pixiExtensions";
 import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype, TrigramStance } from "@/types";
 import { useTick } from "@pixi/react";
