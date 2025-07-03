@@ -300,173 +300,178 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   // --- FIX: Use a single full-screen layoutContainer for all content ---
   return (
-    <pixiContainer>
-      {/* Background Sprite: always full screen */}
-      <pixiSprite
-        texture={assets.bgTexture}
-        width={screenW}
-        height={screenH}
-        alpha={0.9}
-      />
-
-      {/* Overlay for logo, header, menu, archetype, and footer */}
-      <layoutContainer
+    <layoutContainer
+      layout={{
+        width: screenW,
+        height: screenH,
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 0,
+        gap: 0,
+      }}
+      data-testid="intro-screen"
+    >
+      {/* Full-screen tiled background under all other content */}
+      <layoutView
         layout={{
           position: "absolute",
-          top: 0,
           left: 0,
-          width: screenW,
-          height: screenH,
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 0,
-          gap: 0,
+          top: 0,
+          width: "100%",
+          height: "100%",
         }}
-        data-testid="intro-screen"
       >
-        {/* --- Header: Centered Logo and Title --- */}
+        <layoutTilingSprite
+          texture={assets.bgTexture}
+          tileScale={{
+            x: screenW / (assets.bgTexture.width || screenW),
+            y: screenH / (assets.bgTexture.height || screenH),
+          }}
+          alpha={0.9}
+        />
+      </layoutView>
+
+      {/* Header */}
+      <layoutContainer
+        layout={{
+          width: "100%",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: isMobile ? 24 : 40,
+          gap: 8,
+        }}
+      >
+        <layoutSprite
+          texture={assets.logoTexture}
+          layout={{
+            width: sizing.logo,
+            height: sizing.logo,
+            alignSelf: "center",
+          }}
+        />
+        <layoutText
+          text="흑괘 Black Trigram"
+          style={{
+            fontFamily: "Noto Sans KR, sans-serif",
+            fontSize: sizing.titleFont,
+            fill: KOREAN_COLORS.ACCENT_CYAN,
+            fontWeight: "bold",
+            align: "center",
+            dropShadow: {
+              color: 0x000000,
+              blur: 4,
+              distance: 2,
+            },
+          }}
+          layout={{
+            alignSelf: "center",
+          }}
+        />
+        {/* Trigram symbols row */}
         <layoutContainer
           layout={{
-            width: "100%",
-            flexDirection: "column",
+            flexDirection: "row",
+            gap: 10,
+            marginTop: 6,
             alignItems: "center",
             justifyContent: "center",
-            marginTop: isMobile ? 24 : 40,
-            marginBottom: isMobile ? 8 : 16,
-            gap: 8,
           }}
         >
-          <layoutSprite
-            texture={assets.logoTexture}
-            layout={{
-              width: sizing.logo,
-              height: sizing.logo,
-              alignSelf: "center",
-            }}
-          />
-          <layoutText
-            text="흑괘 Black Trigram"
-            style={{
-              fontFamily: "Noto Sans KR, sans-serif",
-              fontSize: sizing.titleFont,
-              fill: KOREAN_COLORS.ACCENT_CYAN,
-              fontWeight: "bold",
-              align: "center",
-              dropShadow: {
-                color: 0x000000,
-                blur: 4,
-                distance: 2,
-              },
-            }}
-            layout={{
-              alignSelf: "center",
-            }}
-          />
-          {/* Trigram symbols row */}
-          <layoutContainer
-            layout={{
-              flexDirection: "row",
-              gap: 10,
-              marginTop: 6,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {["☰", "☱", "☲", "☳", "☴", "☵", "☶", "☷"].map((symbol, i) => (
-              <layoutText
-                key={symbol}
-                text={symbol}
-                style={{
-                  fontSize: isMobile ? 18 : 24,
-                  fill: KOREAN_COLORS.ACCENT_GOLD,
-                  fontWeight: "bold",
-                  fontFamily: "Noto Sans KR, sans-serif",
-                  align: "center",
-                }}
-                layout={{
-                  marginLeft: i === 0 ? 0 : 4,
-                }}
-              />
-            ))}
-          </layoutContainer>
-        </layoutContainer>
-
-        {/* --- Center: Menu + Archetype --- */}
-        <layoutContainer
-          layout={{
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: isMobile ? 24 : 48,
-            width: "100%",
-            maxWidth: 1100,
-            flexGrow: 1,
-          }}
-        >
-          <layoutView
-            layout={{
-              width: isMobile ? screenW * 0.95 : 340,
-              height: isMobile ? 260 : 420,
-              alignSelf: "center",
-              justifyContent: "center",
-            }}
-          >
-            <MenuSection
-              menuItems={MENU_ITEMS}
-              selectedIndex={menuIdx}
-              onModeSelect={handleMenuSelect}
-              width={isMobile ? screenW * 0.95 : 340}
-              height={isMobile ? 260 : 420}
+          {["☰", "☱", "☲", "☳", "☴", "☵", "☶", "☷"].map((symbol, i) => (
+            <layoutText
+              key={symbol}
+              text={symbol}
+              style={{
+                fontSize: isMobile ? 18 : 24,
+                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fontWeight: "bold",
+                fontFamily: "Noto Sans KR, sans-serif",
+                align: "center",
+              }}
+              layout={{
+                marginLeft: i === 0 ? 0 : 4,
+              }}
             />
-          </layoutView>
-
-          <layoutView
-            layout={{
-              width: isMobile ? screenW * 0.95 : 520,
-              height: isMobile ? 320 : 420,
-              alignSelf: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ArchetypeDisplay
-              archetype={currentArchetype}
-              archetypeData={currentArchData}
-              texture={assets.archetypeTextures[currentArchetype]}
-              total={ARCHETYPE_ORDER.length}
-              index={archIdx}
-              onPrev={() => handleArchetypeChange("prev")}
-              onNext={() => handleArchetypeChange("next")}
-              width={isMobile ? screenW * 0.95 : 520}
-              height={isMobile ? 320 : 420}
-            />
-          </layoutView>
-        </layoutContainer>
-
-        {/* --- Footer: Centered Slogan --- */}
-        <layoutContainer
-          layout={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: isMobile ? 10 : 24,
-            marginTop: isMobile ? 8 : 16,
-          }}
-        >
-          <pixiText
-            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-            style={{
-              fontSize: sizing.footerFont,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontStyle: "italic",
-              align: "center",
-              fontFamily: "Noto Sans KR, sans-serif",
-            }}
-            anchor={0.5}
-          />
+          ))}
         </layoutContainer>
       </layoutContainer>
-    </pixiContainer>
+
+      {/* --- Center: Menu + Archetype --- */}
+      <layoutContainer
+        layout={{
+          width: "100%",
+          maxWidth: 1100,
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          gap: isMobile ? 24 : 48,
+          flexGrow: 1,
+        }}
+      >
+        <layoutView
+          layout={{
+            width: isMobile ? screenW * 0.95 : 340,
+            height: isMobile ? 260 : 420,
+            alignSelf: "center",
+            justifyContent: "center",
+          }}
+        >
+          <MenuSection
+            menuItems={MENU_ITEMS}
+            selectedIndex={menuIdx}
+            onModeSelect={handleMenuSelect}
+            width={isMobile ? screenW * 0.95 : 340}
+            height={isMobile ? 260 : 420}
+          />
+        </layoutView>
+
+        <layoutView
+          layout={{
+            width: isMobile ? screenW * 0.95 : 520,
+            height: isMobile ? 320 : 420,
+            alignSelf: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ArchetypeDisplay
+            archetype={currentArchetype}
+            archetypeData={currentArchData}
+            texture={assets.archetypeTextures[currentArchetype]}
+            total={ARCHETYPE_ORDER.length}
+            index={archIdx}
+            onPrev={() => handleArchetypeChange("prev")}
+            onNext={() => handleArchetypeChange("next")}
+            width={isMobile ? screenW * 0.95 : 520}
+            height={isMobile ? 320 : 420}
+          />
+        </layoutView>
+      </layoutContainer>
+
+      {/* --- Footer: Centered Slogan --- */}
+      <layoutContainer
+        layout={{
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: isMobile ? 10 : 24,
+        }}
+      >
+        <pixiText
+          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+          style={{
+            fontSize: sizing.footerFont,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            fontStyle: "italic",
+            align: "center",
+            fontFamily: "Noto Sans KR, sans-serif",
+          }}
+          anchor={0.5}
+          layout={{ position: "relative" /* ensure centering */ }}
+        />
+      </layoutContainer>
+    </layoutContainer>
   );
 };
 
