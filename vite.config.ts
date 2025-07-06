@@ -46,13 +46,14 @@ export default defineConfig(({ command, mode }) => ({
   },
   optimizeDeps: {
     include: [
-      "@pixi/react",
+      "yoga-layout",
       "pixi.js",
+      "@pixi/react",
+      "@pixi/layout",
       "react-reconciler",
       "howler",
       "@pixi/sound",
       "@pixi/ui",
-      "@pixi/layout",
     ],
   },
   build: {

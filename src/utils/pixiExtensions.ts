@@ -1,3 +1,7 @@
+import "yoga-layout"; // <-- This must be first!
+import "@pixi/layout";
+import "@pixi/layout/react";
+
 /* ------------------------------------------------------------------ */
 /*  PixiJS extensions and utilities for Black Trigram
 /* ------------------------------------------------------------------ */
@@ -26,10 +30,6 @@ if (typeof globalThis !== "undefined" && !globalThis.Node) {
   };
 }
 
-// 🔧 CRITICAL: Import layout dependencies before extending
-import "@pixi/layout";
-import "@pixi/layout/react";
-import "yoga-layout";
 
 import {
   LayoutAnimatedSprite,
