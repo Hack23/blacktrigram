@@ -1,4 +1,3 @@
-import "../../../utils/pixiExtensions";
 import { LayoutOptions } from "@pixi/layout";
 import { useTick } from "@pixi/react";
 import { FancyButton } from "@pixi/ui";
@@ -12,6 +11,7 @@ import React, {
 } from "react";
 import { GameMode } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
+import "../../../utils/pixiExtensions";
 
 interface MenuButtonProps {
   readonly item: { mode: GameMode; korean: string; english: string };
@@ -150,8 +150,8 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
           />
         )}
 
-        {/* ✅ FIXED: Wrap pixiFancyButton in layoutView */}
-        <layoutView
+        {/* ✅ FIXED: Wrap pixiFancyButton in layoutContainer not layoutView */}
+        <layoutContainer
           layout={{
             width: buttonWidth - (isSelected ? 32 : 8),
             height: buttonHeight,
@@ -174,7 +174,7 @@ const MenuButton: React.FC<MenuButtonProps> = React.memo(
             }}
             data-testid={`menu-button-${item.mode}`}
           />
-        </layoutView>
+        </layoutContainer>
       </layoutContainer>
     );
   }

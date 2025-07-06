@@ -7,13 +7,12 @@ import { CombatScreen } from "./components/combat/CombatScreen";
 import { IntroScreen } from "./components/intro/IntroScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
-import { exposePixiAppForTesting } from "./test/pixi-cypress-helpers";
 import { GameMode, PlayerArchetype } from "./types/common";
 import { createPlayerFromArchetype } from "./utils";
+import { extendPixiComponents } from "./utils/pixiExtensions";
 
-/* ------------------------------------------------------------------
- *  ⬇  The PixiInitializer is no longer needed as setup is centralized.
- * -----------------------------------------------------------------*/
+// 🔧 CRITICAL: Single initialization flag
+let appInitialized = false;
 
 function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
@@ -21,6 +20,7 @@ function App() {
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
   const [matchStats, setMatchStats] = useState<MatchStatistics | null>(null);
   const [appReady, setAppReady] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
 
   // Add responsive screen size detection
   const [screenSize, setScreenSize] = useState({
@@ -31,35 +31,24 @@ function App() {
     isDesktop: window.innerWidth >= 1024,
   });
 
-  const handleApplicationReady = useCallback((app: any) => {
-    if (app && typeof window !== "undefined") {
-      // Expose for testing
-      exposePixiAppForTesting(app);
-    }
-  }, []);
 
-  // Consolidate initialization into a single point
+  // 🔧 CRITICAL: Single initialization with proper error handling
   useEffect(() => {
-    let initialized = false;
+    let isMounted = true;
 
-    const initializeOnce = (app: any) => {
-      if (initialized) return;
-      initialized = true;
-
-      handleApplicationReady(app);
-    };
-
-    // Single initialization check
-    const pixiApp = (window as any).pixiApp;
-    if (pixiApp) {
-      initializeOnce(pixiApp);
-    }
-  }, [handleApplicationReady]);
-
-  // Fix: Ensure app is properly initialized
-  useEffect(() => {
     const initializeApp = async () => {
+      // 🔧 CRITICAL: Prevent double initialization
+      if (appInitialized) {
+        setAppReady(true);
+        return;
+      }
+
       try {
+        console.log("🎯 Initializing Black Trigram app...");
+
+        // Wait for PixiJS extensions to be ready
+        await extendPixiComponents();
+
         // Focus window for input handling
         window.focus();
 
@@ -79,16 +68,30 @@ function App() {
           }
         });
 
-        setAppReady(true);
-        console.log("🎯 Black Trigram app initialized");
+        if (isMounted) {
+          appInitialized = true;
+          setAppReady(true);
+          console.log("✅ Black Trigram app initialized successfully");
+        }
       } catch (error) {
-        console.error("Failed to initialize app:", error);
-        setAppReady(true); // Continue with fallback
+        console.error("❌ Failed to initialize app:", error);
+        if (isMounted) {
+          setInitError(
+            error instanceof Error
+              ? error.message
+              : "Unknown initialization error"
+          );
+          setAppReady(true); // Continue with fallback
+        }
       }
     };
 
     initializeApp();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Empty dependency array - run only once
 
   const handleGameStart = useCallback((mode: GameMode) => {
     console.log("🎮 Starting game mode:", mode);
@@ -270,9 +273,22 @@ function App() {
             height: "100vh",
             color: "white",
             backgroundColor: "#1a1a2e",
+            flexDirection: "column",
+            gap: "20px",
           }}
         >
-          흑괘 로딩 중... Loading Black Trigram...
+          <div>흑괘 로딩 중... Loading Black Trigram...</div>
+          {initError && (
+            <div
+              style={{
+                color: "#ff6b6b",
+                fontSize: "14px",
+                textAlign: "center",
+              }}
+            >
+              Error: {initError}
+            </div>
+          )}
         </div>
       </div>
     );

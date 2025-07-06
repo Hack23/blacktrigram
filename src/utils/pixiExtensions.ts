@@ -1,6 +1,6 @@
-import "yoga-layout"; // <-- This must be first!
 import "@pixi/layout";
 import "@pixi/layout/react";
+import "yoga-layout"; // <-- This must be first!
 
 /* ------------------------------------------------------------------ */
 /*  PixiJS extensions and utilities for Black Trigram
@@ -30,7 +30,6 @@ if (typeof globalThis !== "undefined" && !globalThis.Node) {
   };
 }
 
-
 import {
   LayoutAnimatedSprite,
   LayoutBitmapText,
@@ -59,54 +58,92 @@ import * as PIXI from "pixi.js";
 import { Graphics } from "pixi.js";
 
 let componentsExtended = false;
+let initializationPromise: Promise<void> | null = null;
 
 /**
  * Extends PixiJS components for use with @pixi/react.
  * This function should be called ONCE at the root of your application.
  * It is idempotent and safe to call multiple times.
  */
-export const extendPixiComponents = () => {
+export const extendPixiComponents = (): Promise<void> => {
   if (componentsExtended) {
-    return;
+    return Promise.resolve();
   }
 
-  try {
-    // @pixi/react v8+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
-    // We only need to extend the components from @pixi/layout and @pixi/ui.
-    extend({
-      // Layout components
-      LayoutContainer,
-      LayoutSprite,
-      LayoutText,
-      LayoutGraphics,
-      LayoutTilingSprite,
-      LayoutAnimatedSprite,
-      LayoutBitmapText,
-      LayoutNineSliceSprite,
-      LayoutView,
-
-      // UI components
-      Button,
-      FancyButton,
-      ProgressBar,
-      ScrollBox,
-      MaskedFrame,
-      Slider,
-      Input,
-      CheckBox,
-      RadioGroup,
-      Select,
-    });
-
-    componentsExtended = true;
-    console.log("✅ PixiJS components extended successfully");
-  } catch (error) {
-    console.error("❌ Failed to extend PixiJS components:", error);
+  if (initializationPromise) {
+    return initializationPromise;
   }
+
+  initializationPromise = new Promise<void>(async (resolve, reject) => {
+    try {
+      // 🔧 CRITICAL: Wait for yoga-layout to be ready - FIXED
+      if (typeof window !== "undefined") {
+        // Wait for yoga-layout WASM to load with simplified check
+        let retries = 0;
+        const maxRetries = 50;
+
+        while (retries < maxRetries) {
+          try {
+            const yoga = await import("yoga-layout");
+            // ✅ FIXED: Check for yoga-layout readiness without .Node
+            if (yoga.default && typeof yoga.default === "function") {
+              break;
+            }
+          } catch (e) {
+            // Continue waiting
+          }
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          retries++;
+        }
+
+        if (retries >= maxRetries) {
+          console.warn(
+            "⚠️ Yoga layout not ready, continuing without layout features"
+          );
+        }
+      }
+
+      // @pixi/react v8+ extends base PIXI components (Container, Sprite, Text, etc.) by default.
+      // We only need to extend the components from @pixi/layout and @pixi/ui.
+      extend({
+        // Layout components
+        LayoutContainer,
+        LayoutSprite,
+        LayoutText,
+        LayoutGraphics,
+        LayoutTilingSprite,
+        LayoutAnimatedSprite,
+        LayoutBitmapText,
+        LayoutNineSliceSprite,
+        LayoutView,
+
+        // UI components
+        Button,
+        FancyButton,
+        ProgressBar,
+        ScrollBox,
+        MaskedFrame,
+        Slider,
+        Input,
+        CheckBox,
+        RadioGroup,
+        Select,
+      });
+
+      componentsExtended = true;
+      console.log("✅ PixiJS components extended successfully");
+      resolve();
+    } catch (error) {
+      console.error("❌ Failed to extend PixiJS components:", error);
+      reject(error);
+    }
+  });
+
+  return initializationPromise;
 };
 
-// 🔧 CRITICAL: Immediately call the extension function
-extendPixiComponents();
+// 🔧 CRITICAL: Immediately call the extension function and wait for it
+extendPixiComponents().catch(console.error);
 
 /**
  * Hook to ensure PixiJS extensions are applied.

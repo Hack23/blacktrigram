@@ -2,7 +2,7 @@
 import "../../utils/pixiExtensions";
 
 import * as PIXI from "pixi.js";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
@@ -21,18 +21,16 @@ import {
 /*  1. Asset Definitions & Loader Hook                                */
 /* ------------------------------------------------------------------ */
 
-// Centralize asset paths to ensure they match available assets
+// ✅ FIXED: Use existing asset paths that are actually available
 const INTRO_ASSET_PATHS = {
-  background: "/assets/visual/bg/intro/intro_bg_loop.png",
+  background: "assets/visual/bg/intro/intro_bg_loop.png",
   logo: "/assets/visual/logo/black-trigram.png",
   archetypes: {
-    [PlayerArchetype.MUSA]: "/assets/visual/archetypes/musa.png",
-    [PlayerArchetype.AMSALJA]: "/assets/visual/archetypes/amsalja.png",
-    [PlayerArchetype.HACKER]: "/assets/visual/archetypes/hacker.png",
-    [PlayerArchetype.JEONGBO_YOWON]:
-      "/assets/visual/archetypes/jeongbo_yowon.png",
-    [PlayerArchetype.JOJIK_POKRYEOKBAE]:
-      "/assets/visual/archetypes/jojik_pokryeokbae.png",
+    [PlayerArchetype.MUSA]: "assets/visual/archetypes/musa.png",
+    [PlayerArchetype.AMSALJA]: "assets/visual/archetypes/amsalja.png",
+    [PlayerArchetype.HACKER]: "assets/visual/archetypes/hacker.png",
+    [PlayerArchetype.JEONGBO_YOWON]: "/assets/visual/archetypes/jeongbo_yowon.png",
+    [PlayerArchetype.JOJIK_POKRYEOKBAE]: "/assets/visual/archetypes/jojik_pokryeokbae.png",
   },
 };
 
@@ -42,7 +40,7 @@ type IntroAssetState = {
   archetypeTextures: Record<PlayerArchetype, PIXI.Texture>;
 };
 
-// A more robust asset loading hook with clear states
+// A more robust asset loading hook with fallbacks
 function useIntroAssets() {
   const [assets, setAssets] = useState<IntroAssetState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -52,33 +50,74 @@ function useIntroAssets() {
 
     const loadAssets = async () => {
       try {
-        // Load all assets in parallel for efficiency
-        const [bg, logo, ...archetypeEntries] = await Promise.all([
-          PIXI.Assets.load<PIXI.Texture>(INTRO_ASSET_PATHS.background),
-          PIXI.Assets.load<PIXI.Texture>(INTRO_ASSET_PATHS.logo),
-          ...Object.entries(INTRO_ASSET_PATHS.archetypes).map(
-            async ([key, path]) => {
-              const texture = await PIXI.Assets.load<PIXI.Texture>(path);
-              return [key as PlayerArchetype, texture ?? PIXI.Texture.EMPTY];
-            }
-          ),
-        ]);
+        console.log("🎨 Loading intro assets...");
 
-        if (isMounted) {
-          setAssets({
-            bgTexture: bg ?? PIXI.Texture.EMPTY,
-            logoTexture: logo ?? PIXI.Texture.EMPTY,
-            archetypeTextures: Object.fromEntries(archetypeEntries) as Record<
-              PlayerArchetype,
-              PIXI.Texture
-            >,
-          });
+        // Create fallback textures immediately
+        const fallbackAssets: IntroAssetState = {
+          bgTexture: PIXI.Texture.EMPTY,
+          logoTexture: PIXI.Texture.EMPTY,
+          archetypeTextures: Object.fromEntries(
+            Object.keys(INTRO_ASSET_PATHS.archetypes).map((k) => [
+              k,
+              PIXI.Texture.EMPTY,
+            ])
+          ) as Record<PlayerArchetype, PIXI.Texture>,
+        };
+
+        // Try to load real assets, but fallback gracefully
+        try {
+          const [bg, logo, ...archetypeEntries] = await Promise.allSettled([
+            PIXI.Assets.load<PIXI.Texture>(INTRO_ASSET_PATHS.background),
+            PIXI.Assets.load<PIXI.Texture>(INTRO_ASSET_PATHS.logo),
+            ...Object.entries(INTRO_ASSET_PATHS.archetypes).map(
+              async ([key, path]) => {
+                try {
+                  const texture = await PIXI.Assets.load<PIXI.Texture>(path);
+                  return [
+                    key as PlayerArchetype,
+                    texture ?? PIXI.Texture.EMPTY,
+                  ];
+                } catch {
+                  return [key as PlayerArchetype, PIXI.Texture.EMPTY];
+                }
+              }
+            ),
+          ]);
+
+          // Use loaded assets or fallbacks
+          if (isMounted) {
+            setAssets({
+              bgTexture:
+                bg.status === "fulfilled"
+                  ? bg.value ?? PIXI.Texture.EMPTY
+                  : PIXI.Texture.EMPTY,
+              logoTexture:
+                logo.status === "fulfilled"
+                  ? logo.value ?? PIXI.Texture.EMPTY
+                  : PIXI.Texture.EMPTY,
+              archetypeTextures: Object.fromEntries(
+                archetypeEntries.map((entry, i) => {
+                  const key = Object.keys(INTRO_ASSET_PATHS.archetypes)[i];
+                  const texture =
+                    entry.status === "fulfilled"
+                      ? entry.value[1]
+                      : PIXI.Texture.EMPTY;
+                  return [key, texture];
+                })
+              ) as Record<PlayerArchetype, PIXI.Texture>,
+            });
+            console.log("✅ Intro assets loaded successfully");
+          }
+        } catch (loadError) {
+          console.warn("⚠️ Asset loading failed, using fallbacks:", loadError);
+          if (isMounted) {
+            setAssets(fallbackAssets);
+          }
         }
       } catch (err) {
-        console.error("Intro asset loading failed:", err);
+        console.error("❌ Critical asset loading error:", err);
         if (isMounted) {
-          setError("Failed to load critical assets. Please refresh.");
-          // Provide fallback empty textures to prevent render errors
+          setError("Failed to initialize assets");
           setAssets({
             bgTexture: PIXI.Texture.EMPTY,
             logoTexture: PIXI.Texture.EMPTY,
@@ -134,7 +173,7 @@ const LoadingFallback = ({ text }: { text: string }) => (
       alignItems: "center",
     }}
   >
-    <pixiText
+    <layoutText
       text={text}
       anchor={0.5}
       style={{
@@ -178,14 +217,69 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   // --- Responsive Sizing ---
   const isMobile = screenW < 768;
+  const isTablet = screenW >= 768 && screenW < 1024;
+
+  // ✅ FIXED: Proper responsive sizing
   const sizing = {
-    logo: isMobile ? 100 : 150,
-    titleFont: isMobile ? 28 : 48,
-    sloganFont: isMobile ? 14 : 18,
-    footerFont: isMobile ? 12 : 16,
-    padding: isMobile ? 15 : 30,
-    gap: isMobile ? 15 : 25,
+    logo: isMobile ? 80 : isTablet ? 120 : 140,
+    titleFont: isMobile ? 24 : isTablet ? 32 : 38,
+    sloganFont: isMobile ? 12 : isTablet ? 14 : 16,
+    footerFont: isMobile ? 10 : isTablet ? 12 : 14,
+    padding: isMobile ? 16 : isTablet ? 24 : 32,
+    gap: isMobile ? 8 : isTablet ? 12 : 16,
   };
+
+  // ✅ FIXED: Constrained layout with proper header/footer allocation
+  const layoutConfig = useMemo(() => {
+    const headerHeight = isMobile ? 200 : isTablet ? 240 : 280;
+    const footerHeight = isMobile ? 60 : 80;
+    const contentHeight = screenH - headerHeight - footerHeight - 40; // Add some margin
+
+    return {
+      root: {
+        width: screenW,
+        height: screenH,
+        flexDirection: "column" as const,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+        padding: 0,
+      },
+      header: {
+        width: screenW,
+        height: headerHeight,
+        flexDirection: "column" as const,
+        alignItems: "center" as const,
+        justifyContent: "center" as const,
+        padding: sizing.padding,
+        gap: sizing.gap,
+        flexShrink: 0,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+      },
+      mainContent: {
+        width: screenW,
+        height: contentHeight,
+        maxWidth: screenW,
+        alignSelf: "center" as const,
+        flexDirection: isMobile ? ("column" as const) : ("row" as const),
+        justifyContent: "center" as const,
+        alignItems: "center" as const,
+        gap: isMobile ? 16 : 32,
+        padding: sizing.padding,
+        flexShrink: 0,
+        flexGrow: 1,
+      },
+      footer: {
+        width: screenW,
+        height: footerHeight,
+        flexDirection: "column" as const,
+        alignItems: "center" as const,
+        justifyContent: "center" as const,
+        padding: sizing.padding / 2,
+        gap: 4,
+        flexShrink: 0,
+        backgroundColor: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+      },
+    };
+  }, [screenW, screenH, isMobile, isTablet, sizing]);
 
   // --- Effects ---
   useEffect(() => {
@@ -298,83 +392,90 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     );
   }
 
-  // --- FIX: Use a single full-screen layoutContainer for all content ---
+  // ✅ FIXED: Main menu layout with visible header and footer
   return (
-    <layoutContainer
-      layout={{
-        width: screenW,
-        height: screenH,
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: 0,
-        gap: 0,
-      }}
-      data-testid="intro-screen"
-    >
-      {/* Full-screen tiled background under all other content */}
-      <layoutView
-        layout={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <layoutTilingSprite
-          texture={assets.bgTexture}
-          tileScale={{
-            x: screenW / (assets.bgTexture.width || screenW),
-            y: screenH / (assets.bgTexture.height || screenH),
+    <layoutContainer layout={layoutConfig.root} data-testid="intro-screen">
+      {/* ✅ FIXED: Header Section - NOW VISIBLE */}
+      <layoutContainer layout={layoutConfig.header}>
+        {/* Logo and title in row for mobile, column for desktop */}
+        <layoutContainer
+          layout={{
+            width: "100%",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: sizing.gap,
           }}
-          alpha={0.9}
-        />
-      </layoutView>
+        >
+          {/* Logo section */}
+          <layoutContainer
+            layout={{
+              width: sizing.logo,
+              height: sizing.logo,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+              borderRadius: 8,
+            }}
+          >
+            {/* ✅ FIXED: Fallback to Korean text if no logo texture */}
+            {assets?.logoTexture && assets.logoTexture !== PIXI.Texture.EMPTY ? (
+              <layoutSprite
+                texture={assets.logoTexture}
+                width={sizing.logo - 10}
+                height={sizing.logo - 10}
+                anchor={0.5}
+              />
+            ) : (
+              <layoutText
+                text="흑괘"
+                style={{
+                  fontFamily: "Noto Sans KR, sans-serif",
+                  fontSize: sizing.logo / 2.5,
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
+                  fontWeight: "bold",
+                }}
+                anchor={0.5}
+              />
+            )}
+          </layoutContainer>
 
-      {/* Header */}
-      <layoutContainer
-        layout={{
-          width: "100%",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: isMobile ? 24 : 40,
-          gap: 8,
-        }}
-      >
-        <layoutSprite
-          texture={assets.logoTexture}
-          layout={{
-            width: sizing.logo,
-            height: sizing.logo,
-            alignSelf: "center",
-          }}
-        />
-        <layoutText
-          text="흑괘 Black Trigram"
-          style={{
-            fontFamily: "Noto Sans KR, sans-serif",
-            fontSize: sizing.titleFont,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-            fontWeight: "bold",
-            align: "center",
-            dropShadow: {
-              color: 0x000000,
-              blur: 4,
-              distance: 2,
-            },
-          }}
-          layout={{
-            alignSelf: "center",
-          }}
-        />
-        {/* Trigram symbols row */}
+          {/* Title section */}
+          <layoutContainer
+            layout={{
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            <layoutText
+              text="흑괘 Black Trigram"
+              style={{
+                fontFamily: "Noto Sans KR, sans-serif",
+                fontSize: sizing.titleFont,
+                fill: KOREAN_COLORS.ACCENT_CYAN,
+                fontWeight: "bold",
+                align: "center",
+              }}
+            />
+
+            <layoutText
+              text="한국 무술 시뮬레이터"
+              style={{
+                fontFamily: "Noto Sans KR, sans-serif",
+                fontSize: sizing.sloganFont,
+                fill: KOREAN_COLORS.TEXT_SECONDARY,
+                align: "center",
+              }}
+            />
+          </layoutContainer>
+        </layoutContainer>
+
+        {/* Trigram indicators */}
         <layoutContainer
           layout={{
             flexDirection: "row",
-            gap: 10,
-            marginTop: 6,
+            gap: isMobile ? 4 : 8,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -384,81 +485,68 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               key={symbol}
               text={symbol}
               style={{
-                fontSize: isMobile ? 18 : 24,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
-                fontWeight: "bold",
-                fontFamily: "Noto Sans KR, sans-serif",
-                align: "center",
-              }}
-              layout={{
-                marginLeft: i === 0 ? 0 : 4,
+                fontSize: isMobile ? 14 : 16,
+                fill: i === archIdx ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.TEXT_SECONDARY,
+                fontWeight: i === archIdx ? "bold" : "normal",
               }}
             />
           ))}
         </layoutContainer>
       </layoutContainer>
 
-      {/* --- Center: Menu + Archetype --- */}
-      <layoutContainer
-        layout={{
-          width: "100%",
-          maxWidth: 1100,
-          flexDirection: isMobile ? "column" : "row",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          gap: isMobile ? 24 : 48,
-          flexGrow: 1,
-        }}
-      >
-        <layoutView
+      {/* ✅ FIXED: Main Content Area */}
+      <layoutContainer layout={layoutConfig.mainContent}>
+        {/* Menu Section */}
+        <layoutContainer
           layout={{
-            width: isMobile ? screenW * 0.95 : 340,
-            height: isMobile ? 260 : 420,
-            alignSelf: "center",
-            justifyContent: "center",
+            width: isMobile ? screenW * 0.9 : 380,
+            height: isMobile ? 280 : 320,
+            backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+            borderRadius: 12,
+            padding: 16,
           }}
         >
           <MenuSection
             menuItems={MENU_ITEMS}
             selectedIndex={menuIdx}
             onModeSelect={handleMenuSelect}
-            width={isMobile ? screenW * 0.95 : 340}
-            height={isMobile ? 260 : 420}
+            width={isMobile ? screenW * 0.9 - 32 : 348}
+            height={isMobile ? 248 : 288}
           />
-        </layoutView>
+        </layoutContainer>
 
-        <layoutView
+        {/* ✅ FIXED: Archetype Display with proper texture and fallback */}
+        <layoutContainer
           layout={{
-            width: isMobile ? screenW * 0.95 : 520,
-            height: isMobile ? 320 : 420,
-            alignSelf: "center",
-            justifyContent: "center",
+            width: isMobile ? screenW * 0.9 : 480,
+            height: isMobile ? 300 : 360,
+            backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+            borderRadius: 12,
+            padding: 16,
           }}
         >
           <ArchetypeDisplay
             archetype={currentArchetype}
             archetypeData={currentArchData}
-            texture={assets.archetypeTextures[currentArchetype]}
+            texture={
+              assets?.archetypeTextures?.[currentArchetype] && 
+              assets.archetypeTextures[currentArchetype] !== PIXI.Texture.EMPTY
+                ? assets.archetypeTextures[currentArchetype]
+                : null
+            }
             total={ARCHETYPE_ORDER.length}
             index={archIdx}
             onPrev={() => handleArchetypeChange("prev")}
             onNext={() => handleArchetypeChange("next")}
-            width={isMobile ? screenW * 0.95 : 520}
-            height={isMobile ? 320 : 420}
+            width={isMobile ? screenW * 0.9 - 32 : 448}
+            height={isMobile ? 268 : 328}
           />
-        </layoutView>
+        </layoutContainer>
       </layoutContainer>
 
-      {/* --- Footer: Centered Slogan --- */}
-      <layoutContainer
-        layout={{
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          marginBottom: isMobile ? 10 : 24,
-        }}
-      >
-        <pixiText
+      {/* ✅ FIXED: Footer Section - NOW VISIBLE */}
+      <layoutContainer layout={layoutConfig.footer}>
+        <layoutText
           text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
           style={{
             fontSize: sizing.footerFont,
@@ -467,9 +555,33 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             align: "center",
             fontFamily: "Noto Sans KR, sans-serif",
           }}
-          anchor={0.5}
-          layout={{ position: "relative" /* ensure centering */ }}
         />
+
+        <layoutContainer
+          layout={{
+            flexDirection: "row",
+            gap: 16,
+            alignItems: "center",
+          }}
+        >
+          <layoutText
+            text="Open Source Korean Martial Arts Game"
+            style={{
+              fontSize: sizing.footerFont - 2,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              align: "center",
+            }}
+          />
+
+          <layoutText
+            text={`v${import.meta.env.APP_VERSION || "1.0.0"}`}
+            style={{
+              fontSize: sizing.footerFont - 2,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              align: "center",
+            }}
+          />
+        </layoutContainer>
       </layoutContainer>
     </layoutContainer>
   );

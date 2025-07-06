@@ -1,4 +1,3 @@
-import "../../../utils/pixiExtensions";
 import { PlayerArchetypeData } from "@/systems";
 import { PlayerArchetype, TrigramStance } from "@/types";
 import { useTick } from "@pixi/react";
@@ -13,6 +12,7 @@ import React, {
   useState,
 } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
+import "../../../utils/pixiExtensions";
 import { createGraphicsContext } from "../../../utils/pixiExtensions";
 
 export interface ArchetypeDisplayProps {
@@ -62,8 +62,8 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     const isTablet = width >= 768 && width < 1024;
 
     // Responsive sizing
-    const imageSize = isMobile ? 100 : isTablet ? 140 : 160;
-    const padding = isMobile ? 16 : isTablet ? 20 : 24;
+    const imageSize = isMobile ? 80 : isTablet ? 120 : 140;
+    const padding = isMobile ? 12 : isTablet ? 16 : 20;
     const primaryColor = archetypeData.colors.primary;
 
     const prevButtonRef = useRef<FancyButton>(null);
@@ -118,25 +118,6 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
         g.stroke({ width: 3, color: primaryColor, alpha: 0.8 });
       });
     }, [width, height, primaryColor, selectedAnim]);
-
-    // Enhanced portrait background
-    const portraitBackgroundContext = useMemo(() => {
-      return createGraphicsContext((g: PIXI.Graphics) => {
-        g.clear();
-
-        // Outer glow effect
-        g.roundRect(-4, -4, imageSize + 28, imageSize + 28, 16);
-        g.fill({ color: primaryColor, alpha: 0.1 });
-
-        // Main portrait frame
-        g.roundRect(0, 0, imageSize + 20, imageSize + 20, 12);
-        g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
-
-        // Inner border
-        g.roundRect(2, 2, imageSize + 16, imageSize + 16, 10);
-        g.stroke({ width: 2, color: primaryColor, alpha: 0.8 });
-      });
-    }, [imageSize, primaryColor]);
 
     // Enhanced progress bar
     const progressBarContext = useMemo(() => {
@@ -337,63 +318,92 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             width: "100%",
             height: "100%",
             flexDirection: isMobile ? "column" : "row",
-            gap: isMobile ? 12 : 20,
+            gap: isMobile ? 8 : 16,
             alignItems: "stretch",
           }}
         >
           {/* Character Portrait Section */}
           <layoutContainer
             layout={{
-              width: imageSize + 40,
+              width: imageSize + 20,
               flexShrink: 0,
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: 8,
+              gap: 6,
             }}
           >
-            <layoutGraphics context={portraitBackgroundContext} />
-
+            {/* Portrait background */}
             <layoutContainer
               layout={{
-                position: "absolute",
-                width: imageSize,
-                height: imageSize,
-                justifyContent: "center",
+                width: imageSize + 16,
+                height: imageSize + 16,
                 alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                borderRadius: 8,
               }}
             >
-              <layoutSprite
-                texture={texture ?? undefined}
-                anchor={0.5}
-                width={imageSize}
-                height={imageSize}
-                interactive={!!onSelect}
-                cursor={onSelect ? "pointer" : "default"}
-                onPointerTap={() => onSelect?.(archetype)}
-              />
+              {/* ✅ FIXED: Better texture handling with Korean text fallback */}
+              {texture && texture !== PIXI.Texture.EMPTY ? (
+                <layoutSprite
+                  texture={texture}
+                  anchor={0.5}
+                  width={imageSize}
+                  height={imageSize}
+                  interactive={!!onSelect}
+                  cursor={onSelect ? "pointer" : "default"}
+                  onPointerTap={() => onSelect?.(archetype)}
+                />
+              ) : (
+                <layoutContainer
+                  layout={{
+                    width: imageSize,
+                    height: imageSize,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: primaryColor,
+                    borderRadius: 4,
+                  }}
+                  interactive={!!onSelect}
+                  cursor={onSelect ? "pointer" : "default"}
+                  onPointerTap={() => onSelect?.(archetype)}
+                >
+                  {/* Korean character name as fallback */}
+                  <layoutText
+                    text={archetypeData.name.korean.slice(0, 2)}
+                    style={{
+                      fontSize: imageSize / 3,
+                      fill: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                      fontFamily: "Noto Sans KR, sans-serif",
+                      fontWeight: "bold",
+                      align: "center",
+                    }}
+                    anchor={0.5}
+                  />
+                </layoutContainer>
+              )}
             </layoutContainer>
 
+            {/* Core stance indicator */}
             <layoutContainer
               layout={{
-                position: "absolute",
-                bottom: 10,
                 flexDirection: "row",
                 alignItems: "center",
-                gap: 6,
+                gap: 4,
               }}
             >
               <layoutText
                 text={getTrigramSymbol(archetypeData.coreStance)}
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
                   fill: primaryColor,
                 }}
               />
               <layoutText
                 text="핵심"
                 style={{
-                  fontSize: 10,
+                  fontSize: 9,
                   fill: KOREAN_COLORS.TEXT_SECONDARY,
                   fontFamily: "Noto Sans KR, sans-serif",
                 }}
@@ -406,7 +416,7 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             layout={{
               flexGrow: 1,
               flexDirection: "column",
-              gap: 12,
+              gap: isMobile ? 6 : 10,
               overflow: "hidden",
             }}
           >
@@ -414,14 +424,14 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
             <layoutContainer
               layout={{
                 flexDirection: "column",
-                gap: 4,
+                gap: 3,
               }}
             >
               <layoutText
                 text={`${archetypeData.name.korean} | ${archetypeData.name.english}`}
                 style={{
                   fontFamily: "Noto Sans KR, sans-serif",
-                  fontSize: isMobile ? 16 : 20,
+                  fontSize: isMobile ? 14 : 18,
                   fill: isSelected ? KOREAN_COLORS.ACCENT_GOLD : primaryColor,
                   fontWeight: "bold",
                 }}
@@ -431,13 +441,11 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 text={archetypeData.description.korean}
                 style={{
                   fontFamily: "Noto Sans KR, sans-serif",
-                  fontSize: isMobile ? 11 : 13,
+                  fontSize: isMobile ? 10 : 12,
                   fill: KOREAN_COLORS.TEXT_PRIMARY,
                   wordWrap: true,
-                  wordWrapWidth: isMobile
-                    ? width - imageSize - 100
-                    : width - imageSize - 180,
-                  lineHeight: 16,
+                  wordWrapWidth: width - imageSize - 80,
+                  lineHeight: 14,
                 }}
               />
             </layoutContainer>
@@ -535,12 +543,13 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           {/* Navigation Controls */}
           <layoutContainer
             layout={{
-              width: 60,
+              width: isMobile ? "100%" : 50,
+              height: isMobile ? 40 : "100%",
               flexShrink: 0,
               flexDirection: isMobile ? "row" : "column",
               alignItems: "center",
               justifyContent: "space-around",
-              gap: 8,
+              gap: 6,
             }}
           >
             <layoutContainer layout={{ width: 56, height: 56 }}>
@@ -600,18 +609,18 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           <layoutContainer
             layout={{
               position: "absolute",
-              top: 8,
-              right: 8,
+              top: 6,
+              right: 6,
               backgroundColor: KOREAN_COLORS.ACCENT_GOLD,
-              borderRadius: 4,
+              borderRadius: 3,
+              padding: 4,
             }}
           >
             <layoutText
-              text="✓ 선택됨"
+              text="✓"
               style={{
-                fontFamily: "Noto Sans KR, sans-serif",
                 fontSize: 10,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fill: KOREAN_COLORS.UI_BACKGROUND_DARK,
                 fontWeight: "bold",
               }}
             />

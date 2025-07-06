@@ -1,4 +1,4 @@
-// 🔧 CRITICAL: Import pixiExtensions FIRST to ensure polyfills and extensions are loaded.
+// 🔧 CRITICAL: Import pixiExtensions FIRST but don't initialize immediately
 import "./utils/pixiExtensions";
 
 import React from "react";
@@ -63,15 +63,25 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-root.render(
-  <React.StrictMode>
+// 🔧 CRITICAL: Remove React.StrictMode in development to prevent double initialization
+const AppWrapper =
+  process.env.NODE_ENV === "development" ? (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AudioProvider>
         <App />
       </AudioProvider>
     </ErrorBoundary>
-  </React.StrictMode>
-);
+  ) : (
+    <React.StrictMode>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <AudioProvider>
+          <App />
+        </AudioProvider>
+      </ErrorBoundary>
+    </React.StrictMode>
+  );
+
+root.render(AppWrapper);
 
 // Set document title with Korean martial arts theme
 document.title = "흑괘 무술 도장 - Black Trigram Martial Arts";
