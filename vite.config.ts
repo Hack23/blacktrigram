@@ -45,13 +45,14 @@ export default defineConfig(({ command, mode }) => ({
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ["@pixi/react", "pixi.js", "react-reconciler", "howler"],
-    // Exclude heavy modules from dev pre-bundling to reduce TBT
-    exclude: [
+    include: [
+      "@pixi/react",
+      "pixi.js",
+      "react-reconciler",
+      "howler",
       "@pixi/sound",
-      "src/types/constants/techniques.ts",
-      "src/types/constants/combat.ts",
-      "src/audio/placeholder-sounds.ts",
+      "@pixi/ui",
+      "@pixi/layout",
     ],
   },
   build: {
@@ -110,8 +111,6 @@ export default defineConfig(({ command, mode }) => ({
   esbuild: {
     target: "es2022",
     jsx: "automatic",
-    // Remove console logs in production and development to align with production behavior
-    drop: ["console", "debugger"],
     // Optimize for smaller bundle
     legalComments: "none",
     minifyIdentifiers: true,
@@ -141,7 +140,7 @@ export default defineConfig(({ command, mode }) => ({
     host: true,
     // Production preview optimizations
     headers: {
-      "Cache-Control": "public, max-age=31536000, immutable",
+      "Cache-Control": "no-store",
       "Content-Encoding": "br", // Prefer Brotli if available
     },
   },
