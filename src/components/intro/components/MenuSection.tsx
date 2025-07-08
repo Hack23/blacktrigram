@@ -99,16 +99,16 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     <pixiContainer
       x={x}
       y={y}
+      data-testid="menu-section"
       layout={{
         width,
         height,
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: 24,
+        gap: 16,
         padding: 20,
       }}
-      data-testid="menu-section"
     >
       {/* Background Panel with enhanced styling */}
       <pixiGraphics
@@ -138,34 +138,53 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           g.stroke();
         }}
         data-testid="menu-panel-background"
-      />
-
-      {/* Menu Title with KoreanText for proper bilingual support */}
-      <KoreanText
-        text={{ korean: "메인 메뉴", english: "Main Menu" }}
-        style={{
-          fontSize: 18,
-          fill: KOREAN_COLORS.ACCENT_GOLD,
-          align: "center",
-          fontWeight: "bold",
-          fontFamily: FONT_FAMILY.KOREAN,
-        }}
-        x={width / 2}
-        y={20}
-        anchor={0.5}
-        data-testid="menu-title"
-      />
-
-      {/* Menu Items Container with proper layout */}
-      <pixiContainer
-        x={20}
-        y={50}
         layout={{
-          width: width - 40,
-          flexDirection: "column",
-          gap: 16,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
         }}
+      />
+
+      {/* Menu Title with layout */}
+      <pixiContainer
+        layout={{
+          width: "100%",
+          height: 40,
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <KoreanText
+          text={{ korean: "메인 메뉴", english: "Main Menu" }}
+          style={{
+            fontSize: 18,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            align: "center",
+            fontWeight: "bold",
+            fontFamily: FONT_FAMILY.KOREAN,
+          }}
+          x={0}
+          y={0}
+          anchor={0.5}
+          data-testid="menu-title"
+        />
+      </pixiContainer>
+
+      {/* Menu Items Container with flex layout */}
+      <pixiContainer
         data-testid="main-menu-buttons"
+        layout={{
+          width: "100%",
+          flexGrow: 1,
+          flexDirection: "column",
+          gap: 12,
+          paddingLeft: 20,
+          paddingRight: 20,
+          justifyContent: "center",
+        }}
       >
         {menuItems.map((item, index) => {
           const isSelected = selectedIndex === index;
@@ -174,13 +193,12 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           return (
             <pixiContainer
               key={item.mode}
-              y={index * 60}
-              layout={{
-                width: width - 40,
-                height: 50,
-                marginBottom: 12,
-              }}
               data-testid={`menu-item-${item.mode}`}
+              layout={{
+                width: "100%",
+                height: 50,
+                flexShrink: 0,
+              }}
             >
               {/* Menu Item Background */}
               <pixiGraphics
@@ -223,50 +241,73 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                 onPointerDown={() => handleMenuItemClick(item.mode, index)}
                 onPointerOver={() => handleMenuItemHover(index)}
                 onPointerOut={() => setHoveredItem(null)}
+                layout={{
+                  width: "100%",
+                  height: "100%",
+                }}
               />
 
-              {/* Menu Item Text with proper KoreanText integration */}
-              <KoreanText
-                text={{
-                  korean: item.korean,
-                  english: item.english,
+              {/* Menu Item Text with proper layout positioning */}
+              <pixiContainer
+                layout={{
+                  width: "100%",
+                  height: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                style={{
-                  fontSize: 16,
-                  fill: isSelected
-                    ? KOREAN_COLORS.UI_BACKGROUND_DARK
-                    : KOREAN_COLORS.TEXT_PRIMARY,
-                  align: "center",
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  fontWeight: isSelected ? "bold" : "normal",
-                }}
-                x={(width - 40) / 2}
-                y={25}
-                anchor={0.5}
-              />
+              >
+                <KoreanText
+                  text={{
+                    korean: item.korean,
+                    english: item.english,
+                  }}
+                  style={{
+                    fontSize: 16,
+                    fill: isSelected
+                      ? KOREAN_COLORS.UI_BACKGROUND_DARK
+                      : KOREAN_COLORS.TEXT_PRIMARY,
+                    align: "center",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    fontWeight: isSelected ? "bold" : "normal",
+                  }}
+                  x={0}
+                  y={0}
+                  anchor={0.5}
+                />
+              </pixiContainer>
             </pixiContainer>
           );
         })}
       </pixiContainer>
 
-      {/* Keyboard navigation hint with proper Korean text */}
-      <KoreanText
-        text={{
-          korean: "방향키로 메뉴 이동, Enter 키로 선택",
-          english: "Use arrow keys to navigate, Enter to select",
+      {/* Keyboard navigation hint with layout */}
+      <pixiContainer
+        layout={{
+          width: "100%",
+          height: 30,
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
         }}
-        style={{
-          fontSize: 12,
-          fill: KOREAN_COLORS.TEXT_SECONDARY,
-          align: "center",
-          fontStyle: "italic",
-          fontFamily: FONT_FAMILY.KOREAN,
-        }}
-        x={width / 2}
-        y={height - 20}
-        anchor={0.5}
-        data-testid="menu-navigation-hint"
-      />
+      >
+        <KoreanText
+          text={{
+            korean: "방향키로 메뉴 이동, Enter 키로 선택",
+            english: "Use arrow keys to navigate, Enter to select",
+          }}
+          style={{
+            fontSize: 12,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            align: "center",
+            fontStyle: "italic",
+            fontFamily: FONT_FAMILY.KOREAN,
+          }}
+          x={0}
+          y={0}
+          anchor={0.5}
+          data-testid="menu-navigation-hint"
+        />
+      </pixiContainer>
     </pixiContainer>
   );
 };

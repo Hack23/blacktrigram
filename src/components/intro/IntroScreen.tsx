@@ -16,9 +16,9 @@ import React, {
   lazy,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
-  useMemo,
 } from "react";
 import { ArchetypeDisplay } from "./components/ArchetypeDisplay";
 import { MenuSection } from "./components/MenuSection";
@@ -30,12 +30,10 @@ const PhilosophySection = lazy(() => import("./components/PhilosophySection"));
 const ControlsSection = lazy(() => import("./components/ControlsSection"));
 
 import { useAudio } from "../../audio/AudioProvider";
-import { GameMode } from "../../types/common";
+import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
+import { GameMode, PlayerArchetype } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { KoreanHeader } from "../ui/KoreanHeader";
-import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
-import { PlayerArchetype } from "../../types/common";
-
 
 // Responsive dimensions
 function useWindowSize() {
@@ -68,7 +66,7 @@ const MENU_ITEMS: { mode: GameMode; korean: string; english: string }[] = [
 // Texture key mapping for archetypes
 const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
   [PlayerArchetype.MUSA]: "musa",
-  [PlayerArchetype.AMSALJA]: "amsalja", 
+  [PlayerArchetype.AMSALJA]: "amsalja",
   [PlayerArchetype.HACKER]: "hacker",
   [PlayerArchetype.JEONGBO_YOWON]: "jeongboYowon",
   [PlayerArchetype.JOJIK_POKRYEOKBAE]: "jojikPokryeokbae",
@@ -114,7 +112,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       return {
         id: key.toLowerCase(),
         korean: data.name.korean,
-        english: data.name.english, 
+        english: data.name.english,
         description: data.description.korean, // Use Korean description as string
         color: data.colors.primary,
         textureKey: ARCHETYPE_TEXTURE_MAPPING[archetypeEnum],
@@ -289,9 +287,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     ? Math.min(screenWidth, screenHeight) * 0.25 * 0.75
     : Math.min(screenWidth, screenHeight) * 0.2 * 0.75;
 
-  // Adjust layout for better positioning
-  const menuStartY = screenHeight * (isMobile ? 0.48 : isTablet ? 0.43 : 0.38);
-  const archetypeStartY = menuStartY + (isMobile ? 260 : isTablet ? 280 : 300);
 
   // Enhanced cyberpunk background with neon grid
   const drawEnhancedBackground = useCallback(
@@ -330,13 +325,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     },
     [screenWidth, screenHeight, isMobile]
   );
-
-  // Calculate archetype display dimensions
-  const archetypeDisplayWidth = isMobile
-    ? screenWidth * 0.95
-    : isTablet
-    ? screenWidth * 0.8
-    : screenWidth * 0.5;
 
   // Function to render selected section content with proper fallback
   const renderSectionContent = () => {
@@ -425,30 +413,42 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         height: "100%",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-between",
-        paddingTop: isMobile ? "5%" : "2%",
+        justifyContent: "flex-start",
+        paddingTop: isMobile ? "2%" : "1%",
         paddingBottom: "2%",
         paddingLeft: isMobile ? "3%" : "5%",
         paddingRight: isMobile ? "3%" : "5%",
-        gap: isMobile ? 8 : 16,
+        gap: isMobile ? 12 : 20,
       }}
     >
       {/* Enhanced Background Layers */}
       <pixiGraphics
         draw={drawEnhancedBackground}
         data-testid="intro-background"
+        layout={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
       />
 
       {/* Main background texture */}
       {bgTexture && (
         <pixiSprite
           texture={bgTexture}
-          x={0}
-          y={0}
           width={screenWidth}
           height={screenHeight}
           alpha={0.4}
           data-testid="intro-bg-texture"
+          layout={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+          }}
         />
       )}
 
@@ -456,30 +456,42 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       {dojangWallTexture && (
         <pixiSprite
           texture={dojangWallTexture}
-          x={screenWidth * 0.8}
-          y={0}
           width={screenWidth * 0.3}
           height={screenHeight}
           alpha={0.2}
           data-testid="dojang-wall-accent"
+          layout={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: "30%",
+            height: "100%",
+          }}
         />
       )}
 
-      {/* Logo Section */}
+      {/* Logo Section with layout */}
       <pixiContainer
-        x={screenWidth / 2}
-        y={screenHeight * 0.16}
         data-testid="logo-section"
+        layout={{
+          width: "100%",
+          height: logoSize + 60,
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          marginTop: isMobile ? 10 : 20,
+        }}
       >
         {logoTexture && (
           <pixiSprite
             texture={logoTexture}
-            x={0}
-            y={0}
             scale={{ x: logoSize / 512, y: logoSize / 512 }}
             anchor={{ x: 0.5, y: 0.5 }}
             alpha={1}
             data-testid="main-logo"
+            layout={{
+              alignSelf: "center",
+            }}
           />
         )}
 
@@ -502,10 +514,21 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             g.stroke();
           }}
           data-testid="logo-glow-effect"
+          layout={{
+            position: "absolute",
+            alignSelf: "center",
+          }}
         />
 
-        {/* Trigram Symbols with Better Spacing */}
-        <pixiContainer y={logoSize * 0.7} data-testid="trigram-symbols">
+        {/* Trigram Symbols with layout positioning */}
+        <pixiContainer
+          data-testid="trigram-symbols"
+          layout={{
+            position: "absolute",
+            bottom: -40,
+            alignSelf: "center",
+          }}
+        >
           <pixiText
             text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
             style={{
@@ -520,69 +543,126 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         </pixiContainer>
       </pixiContainer>
 
-      {/* Enhanced Title with Better Typography */}
-      <KoreanHeader
-        title={{ korean: "흑괘", english: "Black Trigram" }}
-        subtitle={{
-          korean: "한국 무술 시뮬레이터",
-          english: "Korean Martial Arts Simulator",
-        }}
-        x={screenWidth / 2}
-        y={screenHeight * (isMobile ? 0.33 : 0.3)}
-        data-testid="main-title"
-      />
-
-      {/* Main Menu Section - Only shown when in menu mode */}
-      {currentSection === "menu" && (
-        <>
-          {/* Menu Section */}
-          <MenuSection
-            menuItems={MENU_ITEMS}
-            selectedIndex={selectedMenuIndex}
-            onModeSelect={handleMenuItemSelect}
-            onSelectedIndexChange={setSelectedMenuIndex}
-            onPlaySFX={audio.playSFX}
-            width={
-              isMobile ? screenWidth * 0.9 : isTablet ? screenWidth * 0.6 : 400
-            }
-            height={320}
-            x={
-              screenWidth / 2 -
-              (isMobile
-                ? screenWidth * 0.45
-                : isTablet
-                ? screenWidth * 0.3
-                : 200)
-            }
-            y={menuStartY}
-            data-testid="main-menu-section"
-          />
-
-          {/* Archetype Selection */}
-          <ArchetypeDisplay
-            archetypes={archetypeData}
-            selectedIndex={selectedArchetype}
-            textures={archetypeTextures}
-            onArchetypeChange={setSelectedArchetype}
-            onPlaySFX={audio.playSFX}
-            width={archetypeDisplayWidth}
-            height={isMobile ? 400 : 350}
-            x={screenWidth / 2 - archetypeDisplayWidth / 2}
-            y={archetypeStartY}
-            isMobile={isMobile}
-            data-testid="archetype-selection"
-          />
-        </>
-      )}
-
-      {/* Philosophy and Controls sections */}
-      {currentSection !== "menu" && renderSectionContent()}
-
-      {/* Enhanced Footer with Better Mobile Layout */}
+      {/* Enhanced Title with layout */}
       <pixiContainer
-        x={screenWidth / 2}
-        y={screenHeight - (isMobile ? 40 : 60)}
+        layout={{
+          width: "100%",
+          height: 80,
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <KoreanHeader
+          title={{ korean: "흑괘", english: "Black Trigram" }}
+          subtitle={{
+            korean: "한국 무술 시뮬레이터",
+            english: "Korean Martial Arts Simulator",
+          }}
+          x={0}
+          y={0}
+          data-testid="main-title"
+        />
+      </pixiContainer>
+
+      {/* Main Content Area with flex grow */}
+      <pixiContainer
+        data-testid="main-content"
+        layout={{
+          width: "100%",
+          flexGrow: 1,
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          gap: isMobile ? 16 : 24,
+          paddingTop: 20,
+          paddingBottom: 20,
+        }}
+      >
+        {/* Main Menu Section - Only shown when in menu mode */}
+        {currentSection === "menu" && (
+          <>
+            {/* Menu Section with proper flex sizing */}
+            <pixiContainer
+              layout={{
+                width: isMobile ? "100%" : "50%",
+                maxWidth: 450,
+                flexShrink: 0,
+              }}
+            >
+              <MenuSection
+                menuItems={MENU_ITEMS}
+                selectedIndex={selectedMenuIndex}
+                onModeSelect={handleMenuItemSelect}
+                onSelectedIndexChange={setSelectedMenuIndex}
+                onPlaySFX={audio.playSFX}
+                width={
+                  isMobile
+                    ? screenWidth * 0.9
+                    : Math.min(400, screenWidth * 0.4)
+                }
+                height={320}
+                x={0}
+                y={0}
+                data-testid="main-menu-section"
+              />
+            </pixiContainer>
+
+            {/* Archetype Selection with proper flex sizing */}
+            <pixiContainer
+              layout={{
+                width: isMobile ? "100%" : "50%",
+                maxWidth: 450,
+                flexShrink: 0,
+              }}
+            >
+              <ArchetypeDisplay
+                archetypes={archetypeData}
+                selectedIndex={selectedArchetype}
+                textures={archetypeTextures}
+                onArchetypeChange={setSelectedArchetype}
+                onPlaySFX={audio.playSFX}
+                width={
+                  isMobile
+                    ? screenWidth * 0.9
+                    : Math.min(400, screenWidth * 0.4)
+                }
+                height={isMobile ? 400 : 350}
+                x={0}
+                y={0}
+                isMobile={isMobile}
+                data-testid="archetype-selection"
+              />
+            </pixiContainer>
+          </>
+        )}
+
+        {/* Philosophy and Controls sections */}
+        {currentSection !== "menu" && (
+          <pixiContainer
+            layout={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {renderSectionContent()}
+          </pixiContainer>
+        )}
+      </pixiContainer>
+
+      {/* Enhanced Footer with layout positioning */}
+      <pixiContainer
         data-testid="intro-footer"
+        layout={{
+          width: "100%",
+          height: isMobile ? 60 : 80,
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          gap: 8,
+        }}
       >
         <pixiText
           text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
@@ -592,8 +672,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             align: "center",
             fontStyle: "italic",
           }}
-          x={0}
-          y={isMobile ? -20 : -25}
           anchor={0.5}
           data-testid="footer-motto"
         />
@@ -610,8 +688,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           onPointerDown={() =>
             window.open("https://github.com/Hack23/blacktrigram", "_blank")
           }
-          x={0}
-          y={isMobile ? -8 : -10}
           anchor={0.5}
           data-testid="footer-link"
         />
@@ -631,8 +707,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               "_blank"
             )
           }
-          x={0}
-          y={isMobile ? 8 : 10}
           anchor={0.5}
           data-testid="footer-version"
         />

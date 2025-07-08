@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import React, { useCallback } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { KoreanText } from "../../ui/base/korean-text/KoreanText";
-import { ResponsivePixiContainer } from "../../ui/base/ResponsivePixiComponents";
 
 // Shape matching ARCHETYPE_DATA entries
 export interface ArchetypeDataShape {
@@ -82,15 +81,30 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
     ];
 
     return (
-      <ResponsivePixiContainer
+      <pixiContainer
         x={x}
         y={y}
-        screenWidth={width}
-        screenHeight={height}
         data-testid="archetype-display-container"
+        layout={{
+          width,
+          height,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          gap: 12,
+        }}
       >
         {/* Compact Archetype Selection Header */}
-        <pixiContainer data-testid="archetype-header">
+        <pixiContainer
+          data-testid="archetype-header"
+          layout={{
+            width: "100%",
+            height: 35,
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
           <pixiGraphics
             draw={(g) => {
               g.clear();
@@ -108,6 +122,11 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               g.roundRect(0, 0, width, 35, 6);
               g.stroke();
             }}
+            layout={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
           />
           <KoreanText
             text={{
@@ -121,15 +140,25 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               fontWeight: "bold",
               fontFamily: FONT_FAMILY.KOREAN,
             }}
-            x={width / 2}
-            y={17.5}
+            x={0}
+            y={0}
             anchor={0.5}
           />
         </pixiContainer>
 
-        {/* Compact Main Archetype Display */}
-        <pixiContainer y={40} data-testid="archetype-main-display">
-          {/* Background panel with compact styling */}
+        {/* Main Archetype Display with flex layout */}
+        <pixiContainer
+          data-testid="archetype-main-display"
+          layout={{
+            width: "100%",
+            flexGrow: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            padding: 10,
+          }}
+        >
+          {/* Background panel */}
           <pixiGraphics
             draw={(g) => {
               g.clear();
@@ -158,65 +187,87 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               g.roundRect(2, 2, width - 4, height - 94, 6);
               g.stroke();
             }}
+            layout={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
           />
 
-          {/* Compact Character Image */}
-          {selectedTexture && (
-            <pixiContainer
-              x={10}
-              y={10}
-              data-testid="archetype-image-container"
-            >
-              {/* Compact image background */}
-              <pixiGraphics
-                draw={(g) => {
-                  g.clear();
-                  // Subtle glow
-                  g.fill({ color: selectedArchetype.color, alpha: 0.15 });
-                  g.circle(
-                    archImageDims.width / 2,
-                    archImageDims.height / 2,
-                    (archImageDims.width + 8) / 2
-                  );
-                  g.fill();
-
-                  // Border
-                  g.stroke({
-                    width: 1,
-                    color: selectedArchetype.color,
-                    alpha: 0.8,
-                  });
-                  g.roundRect(
-                    -2,
-                    -2,
-                    archImageDims.width + 4,
-                    archImageDims.height + 4,
-                    4
-                  );
-                  g.stroke();
-                }}
-              />
-
-              <pixiSprite
-                texture={selectedTexture}
-                width={archImageDims.width}
-                height={archImageDims.height}
-                x={0}
-                y={0}
-                interactive={true}
-                onPointerDown={handleImageClick}
-                data-testid="archetype-image"
-              />
-            </pixiContainer>
-          )}
-
-          {/* Compact Archetype Information */}
+          {/* Character Image Container */}
           <pixiContainer
-            x={10}
-            y={archImageDims.height + 20}
-            data-testid="archetype-info"
+            data-testid="archetype-image-container"
+            layout={{
+              width: archImageDims.width + 20,
+              height: archImageDims.height + 20,
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
           >
-            {/* Compact character name */}
+            {/* Image background and sprite */}
+            {selectedTexture && (
+              <>
+                <pixiGraphics
+                  draw={(g) => {
+                    g.clear();
+                    // Subtle glow
+                    g.fill({ color: selectedArchetype.color, alpha: 0.15 });
+                    g.circle(
+                      archImageDims.width / 2,
+                      archImageDims.height / 2,
+                      (archImageDims.width + 8) / 2
+                    );
+                    g.fill();
+
+                    // Border
+                    g.stroke({
+                      width: 1,
+                      color: selectedArchetype.color,
+                      alpha: 0.8,
+                    });
+                    g.roundRect(
+                      -2,
+                      -2,
+                      archImageDims.width + 4,
+                      archImageDims.height + 4,
+                      4
+                    );
+                    g.stroke();
+                  }}
+                  layout={{
+                    position: "absolute",
+                    alignSelf: "center",
+                  }}
+                />
+
+                <pixiSprite
+                  texture={selectedTexture}
+                  width={archImageDims.width}
+                  height={archImageDims.height}
+                  interactive={true}
+                  onPointerDown={handleImageClick}
+                  data-testid="archetype-image"
+                  layout={{
+                    alignSelf: "center",
+                  }}
+                />
+              </>
+            )}
+          </pixiContainer>
+
+          {/* Archetype Information with proper layout */}
+          <pixiContainer
+            data-testid="archetype-info"
+            layout={{
+              width: "100%",
+              flexGrow: 1,
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            {/* Character name */}
             <KoreanText
               text={{
                 korean: selectedArchetype.korean,
@@ -229,14 +280,23 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 align: "center",
                 fontFamily: FONT_FAMILY.KOREAN,
               }}
-              x={width / 2 - 10}
+              x={0}
               y={0}
               anchor={0.5}
               data-testid="archetype-title"
             />
 
             {/* Selection indicator */}
-            <pixiContainer y={20} data-testid="archetype-status">
+            <pixiContainer
+              data-testid="archetype-status"
+              layout={{
+                width: "90%",
+                height: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
               <pixiGraphics
                 draw={(g) => {
                   g.clear();
@@ -244,15 +304,20 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                     color: selectedArchetype.color,
                     alpha: 0.2,
                   });
-                  g.roundRect(0, 0, width - 20, 20, 3);
+                  g.roundRect(0, 0, width * 0.9, 20, 3);
                   g.fill();
                   g.stroke({
                     width: 1,
                     color: selectedArchetype.color,
                     alpha: 0.6,
                   });
-                  g.roundRect(0, 0, width - 20, 20, 3);
+                  g.roundRect(0, 0, width * 0.9, 20, 3);
                   g.stroke();
+                }}
+                layout={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
                 }}
               />
               <pixiText
@@ -264,15 +329,24 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                   fontWeight: "bold",
                   fontFamily: FONT_FAMILY.PRIMARY,
                 }}
-                x={(width - 20) / 2}
-                y={10}
+                x={0}
+                y={0}
                 anchor={0.5}
                 data-testid="archetype-counter"
               />
             </pixiContainer>
 
-            {/* Compact combat style indicators with Korean-English labels */}
-            <pixiContainer y={50} data-testid="combat-indicators">
+            {/* Combat style indicators */}
+            <pixiContainer
+              data-testid="combat-indicators"
+              layout={{
+                width: "100%",
+                flexGrow: 1,
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
               <KoreanText
                 text={{
                   korean: "전투 특성",
@@ -284,15 +358,31 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                   align: "center",
                   fontFamily: FONT_FAMILY.KOREAN,
                 }}
-                x={(width - 20) / 2}
+                x={0}
                 y={0}
                 anchor={0.5}
               />
 
-              {/* Compact style bars */}
-              <pixiContainer y={15} data-testid="style-bars">
-                {combatStats.map((stat, index) => (
-                  <pixiContainer key={stat.korean} y={index * 12}>
+              {/* Style bars with layout */}
+              <pixiContainer
+                data-testid="style-bars"
+                layout={{
+                  width: "90%",
+                  flexDirection: "column",
+                  gap: 4,
+                }}
+              >
+                {combatStats.map((stat) => (
+                  <pixiContainer
+                    key={stat.korean}
+                    layout={{
+                      width: "100%",
+                      height: 12,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
                     <KoreanText
                       text={{
                         korean: stat.korean,
@@ -310,16 +400,20 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                     <pixiGraphics
                       draw={(g) => {
                         g.clear();
+                        const barWidth = width * 0.6;
                         // Background bar
                         g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM });
-                        g.roundRect(35, -2, width - 65, 6, 1);
+                        g.roundRect(0, -2, barWidth, 6, 1);
                         g.fill();
 
                         // Filled portion based on stat value
-                        const fillWidth = stat.value * (width - 65);
+                        const fillWidth = stat.value * barWidth;
                         g.fill({ color: selectedArchetype.color, alpha: 0.8 });
-                        g.roundRect(35, -2, fillWidth, 6, 1);
+                        g.roundRect(0, -2, fillWidth, 6, 1);
                         g.fill();
+                      }}
+                      layout={{
+                        flexGrow: 1,
                       }}
                     />
                   </pixiContainer>
@@ -329,10 +423,29 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
           </pixiContainer>
         </pixiContainer>
 
-        {/* Compact Navigation Buttons with Korean-English labels */}
-        <pixiContainer y={height - 50} data-testid="archetype-navigation">
+        {/* Navigation Buttons with flex layout */}
+        <pixiContainer
+          data-testid="archetype-navigation"
+          layout={{
+            width: "100%",
+            height: 30,
+            flexDirection: "row",
+            gap: 10,
+            paddingLeft: 5,
+            paddingRight: 5,
+            flexShrink: 0,
+          }}
+        >
           {/* Previous Button */}
-          <pixiContainer x={5} data-testid="prev-archetype-button">
+          <pixiContainer
+            data-testid="prev-archetype-button"
+            layout={{
+              width: "50%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <pixiGraphics
               draw={(g) => {
                 g.clear();
@@ -352,6 +465,11 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               }}
               interactive={true}
               onPointerDown={handlePrevious}
+              layout={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+              }}
             />
             <KoreanText
               text={{
@@ -365,16 +483,21 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 fontWeight: "bold",
                 fontFamily: FONT_FAMILY.KOREAN,
               }}
-              x={(width - 15) / 4}
-              y={15}
+              x={0}
+              y={0}
               anchor={0.5}
             />
           </pixiContainer>
 
           {/* Next Button */}
           <pixiContainer
-            x={(width + 5) / 2}
             data-testid="next-archetype-button"
+            layout={{
+              width: "50%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             <pixiGraphics
               draw={(g) => {
@@ -395,6 +518,11 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
               }}
               interactive={true}
               onPointerDown={handleNext}
+              layout={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+              }}
             />
             <KoreanText
               text={{
@@ -408,13 +536,13 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
                 fontWeight: "bold",
                 fontFamily: FONT_FAMILY.KOREAN,
               }}
-              x={(width - 15) / 4}
-              y={15}
+              x={0}
+              y={0}
               anchor={0.5}
             />
           </pixiContainer>
         </pixiContainer>
-      </ResponsivePixiContainer>
+      </pixiContainer>
     );
   }
 );
