@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import React from "react";
+import React, { useCallback } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { KoreanText } from "../../ui/base/korean-text/KoreanText";
 import { ResponsivePixiContainer } from "../../ui/base/ResponsivePixiComponents";
@@ -15,108 +15,196 @@ export interface ArchetypeDataShape {
 }
 
 export interface ArchetypeDisplayProps {
-  readonly archetype: ArchetypeDataShape;
-  readonly texture: PIXI.Texture | null;
-  readonly total: number;
-  readonly index: number;
-  readonly onPrev: () => void;
-  readonly onNext: () => void;
+  readonly archetypes: readonly ArchetypeDataShape[];
+  readonly selectedIndex: number;
+  readonly textures: Record<string, PIXI.Texture | null>;
+  readonly onArchetypeChange: (index: number) => void;
+  readonly onPlaySFX: (sound: string) => void;
   readonly width: number;
+  readonly height: number;
+  readonly x: number;
+  readonly y: number;
   readonly isMobile: boolean;
 }
 
 export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
-  ({ archetype, texture, total, index, onPrev, onNext, width, isMobile }) => {
-    // Calculate dimensions for optimal layout
-    const containerHeight = isMobile ? 300 : 400;
-    const imageWidth = isMobile ? 120 : 180;
-    const imageHeight = isMobile ? 200 : 300;
-    const textWidth = isMobile ? width * 0.8 : width * 0.6;
-    const buttonSize = isMobile ? 36 : 40;
+  ({
+    archetypes,
+    selectedIndex,
+    textures,
+    onArchetypeChange,
+    onPlaySFX,
+    width,
+    height,
+    x,
+    y,
+    isMobile,
+  }) => {
+    const selectedArchetype = archetypes[selectedIndex];
+    const selectedTexture = textures[selectedArchetype.textureKey];
+
+    // Calculate optimal archetype image dimensions
+    const getArchetypeImageDimensions = useCallback(() => {
+      const baseWidth = isMobile ? 140 : 220;
+      const baseHeight = isMobile ? 230 : 360;
+      return {
+        width: baseWidth,
+        height: baseHeight,
+        scale: baseWidth / 331, // Based on original image width
+      };
+    }, [isMobile]);
+
+    const archImageDims = getArchetypeImageDimensions();
+
+    const handlePrevious = useCallback(() => {
+      const newIndex =
+        selectedIndex === 0 ? archetypes.length - 1 : selectedIndex - 1;
+      onArchetypeChange(newIndex);
+      onPlaySFX("menu_hover");
+    }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
+
+    const handleNext = useCallback(() => {
+      const newIndex = (selectedIndex + 1) % archetypes.length;
+      onArchetypeChange(newIndex);
+      onPlaySFX("menu_hover");
+    }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
+
+    const handleImageClick = useCallback(() => {
+      handleNext();
+    }, [handleNext]);
 
     return (
       <ResponsivePixiContainer
-        x={0}
-        y={0}
+        x={x}
+        y={y}
         screenWidth={width}
-        screenHeight={containerHeight}
-        data-testid={`archetype-display-${archetype.id}`}
+        screenHeight={height}
+        data-testid="archetype-display-container"
       >
-        {/* Main container with flexible layout */}
-        <pixiContainer
-          layout={{
-            width,
-            height: containerHeight,
-            flexDirection: isMobile ? "column" : "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: isMobile ? 16 : 24,
-            padding: 12,
-          }}
-          aria-label="Archetype selection"
-          data-testid="archetype-inner-container"
-        >
-          {/* Character image with enhanced styling */}
-          {texture && (
+        {/* Archetype Selection Header */}
+        <pixiContainer data-testid="archetype-header">
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+              g.fill({
+                color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                alpha: 0.9,
+              });
+              g.roundRect(0, 0, width, 40, 8);
+              g.fill();
+              g.stroke({
+                width: 2,
+                color: KOREAN_COLORS.ACCENT_GOLD,
+                alpha: 0.8,
+              });
+              g.roundRect(0, 0, width, 40, 8);
+              g.stroke();
+            }}
+          />
+          <pixiText
+            text="무사 선택 - Archetype Selection"
+            style={{
+              fontSize: isMobile ? 12 : 16,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              align: "center",
+              fontWeight: "bold",
+              fontFamily: FONT_FAMILY.KOREAN,
+            }}
+            x={width / 2}
+            y={20}
+            anchor={0.5}
+          />
+        </pixiContainer>
+
+        {/* Main Archetype Display */}
+        <pixiContainer y={50} data-testid="archetype-main-display">
+          {/* Background panel */}
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+              g.fill({
+                color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                alpha: 0.9,
+              });
+              g.roundRect(0, 0, width, height - 120, 8);
+              g.fill();
+              g.stroke({
+                width: 2,
+                color: selectedArchetype.color,
+                alpha: 0.8,
+              });
+              g.roundRect(0, 0, width, height - 120, 8);
+              g.stroke();
+            }}
+          />
+
+          {/* Character Image */}
+          {selectedTexture && (
             <pixiContainer data-testid="archetype-image-container">
               {/* Background glow in character's color */}
               <pixiGraphics
                 draw={(g) => {
                   g.clear();
-                  g.fill({ color: archetype.color, alpha: 0.15 });
+                  g.fill({ color: selectedArchetype.color, alpha: 0.15 });
                   g.circle(
-                    imageWidth / 2,
-                    imageHeight / 2,
-                    (imageWidth + 20) / 2
+                    archImageDims.width / 2,
+                    archImageDims.height / 2,
+                    (archImageDims.width + 20) / 2
                   );
                   g.fill();
 
                   // Border in character's color
-                  g.stroke({ width: 2, color: archetype.color, alpha: 0.6 });
-                  g.roundRect(-5, -5, imageWidth + 10, imageHeight + 10, 8);
+                  g.stroke({
+                    width: 2,
+                    color: selectedArchetype.color,
+                    alpha: 0.6,
+                  });
+                  g.roundRect(
+                    -5,
+                    -5,
+                    archImageDims.width + 10,
+                    archImageDims.height + 10,
+                    8
+                  );
                   g.stroke();
                 }}
+                x={isMobile ? (width - archImageDims.width) / 2 : 30}
+                y={isMobile ? 10 : 20}
               />
 
-              {/* Character sprite */}
               <pixiSprite
-                texture={texture}
-                width={imageWidth}
-                height={imageHeight}
-                anchor={isMobile ? { x: 0.5, y: 0 } : { x: 0, y: 0 }}
-                x={isMobile ? width / 2 : imageWidth / 2}
-                y={isMobile ? 20 : imageHeight / 2}
+                texture={selectedTexture}
+                width={archImageDims.width}
+                height={archImageDims.height}
+                x={isMobile ? (width - archImageDims.width) / 2 : 30}
+                y={isMobile ? 10 : 20}
+                interactive={true}
+                onPointerDown={handleImageClick}
                 data-testid="archetype-image"
               />
             </pixiContainer>
           )}
 
-          {/* Character information with proper Korean text support */}
+          {/* Archetype Information */}
           <pixiContainer
-            layout={{
-              flexDirection: "column",
-              alignItems: isMobile ? "center" : "flex-start",
-              gap: isMobile ? 8 : 12,
-              width: textWidth,
-            }}
-            x={isMobile ? 0 : imageWidth + 24}
-            y={isMobile ? imageHeight + 30 : 0}
+            x={isMobile ? 0 : archImageDims.width + 60}
+            y={isMobile ? archImageDims.height + 30 : 20}
             data-testid="archetype-info"
           >
-            {/* Character name */}
+            {/* Character name with KoreanText */}
             <KoreanText
               text={{
-                korean: archetype.korean,
-                english: archetype.english,
+                korean: selectedArchetype.korean,
+                english: selectedArchetype.english,
               }}
               style={{
-                fontSize: 18,
-                fill: archetype.color,
+                fontSize: isMobile ? 14 : 16,
+                fill: selectedArchetype.color,
                 fontWeight: "bold",
                 align: isMobile ? "center" : "left",
                 fontFamily: FONT_FAMILY.KOREAN,
               }}
-              x={isMobile ? textWidth / 2 : 0}
+              x={isMobile ? width / 2 : 0}
               y={0}
               anchor={isMobile ? { x: 0.5, y: 0 } : { x: 0, y: 0 }}
               data-testid="archetype-title"
@@ -124,146 +212,118 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
             {/* Character description */}
             <pixiText
-              text={archetype.description}
+              text={selectedArchetype.description}
               style={{
-                fontSize: 14,
+                fontSize: isMobile ? 12 : 14,
                 fill: KOREAN_COLORS.TEXT_SECONDARY,
                 align: isMobile ? "center" : "left",
                 wordWrap: true,
-                wordWrapWidth: textWidth,
+                wordWrapWidth: isMobile
+                  ? width - 40
+                  : width - archImageDims.width - 90,
                 fontFamily: FONT_FAMILY.KOREAN,
               }}
-              x={isMobile ? textWidth / 2 : 0}
-              y={isMobile ? 30 : 30}
+              x={isMobile ? width / 2 : 0}
+              y={30}
               anchor={isMobile ? { x: 0.5, y: 0 } : { x: 0, y: 0 }}
               data-testid="archetype-description"
             />
 
             {/* Selection indicator */}
             <pixiText
-              text={`${index + 1} / ${total}`}
+              text={`${selectedIndex + 1} / ${archetypes.length}`}
               style={{
                 fontSize: 12,
                 fill: KOREAN_COLORS.TEXT_SECONDARY,
                 align: isMobile ? "center" : "left",
                 fontFamily: FONT_FAMILY.PRIMARY,
               }}
-              x={isMobile ? textWidth / 2 : 0}
-              y={isMobile ? 60 : 60}
+              x={isMobile ? width / 2 : 0}
+              y={isMobile ? 80 : 100}
               anchor={isMobile ? { x: 0.5, y: 0 } : { x: 0, y: 0 }}
               data-testid="archetype-counter"
             />
+          </pixiContainer>
+        </pixiContainer>
 
-            {/* Navigation buttons with improved appearance */}
-            <pixiContainer
-              layout={{
-                flexDirection: "row",
-                gap: 16,
-                justifyContent: isMobile ? "center" : "flex-start",
-                width: isMobile ? textWidth : "auto",
+        {/* Navigation Buttons */}
+        <pixiContainer y={height - 70} data-testid="archetype-navigation">
+          {/* Previous Button */}
+          <pixiContainer
+            x={width * 0.25 - 30}
+            data-testid="prev-archetype-button"
+          >
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.roundRect(0, 0, 60, 30, 5);
+                g.fill();
+                g.stroke({
+                  width: 1,
+                  color: KOREAN_COLORS.ACCENT_GOLD,
+                  alpha: 0.6,
+                });
+                g.roundRect(0, 0, 60, 30, 5);
+                g.stroke();
               }}
-              x={isMobile ? 0 : 0}
-              y={isMobile ? 85 : 85}
-              data-testid="archetype-navigation"
-            >
-              {/* Previous button */}
-              <pixiContainer data-testid="prev-button-container">
-                <pixiGraphics
-                  draw={(g) => {
-                    g.clear();
-                    g.fill({
-                      color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                      alpha: 0.9,
-                    });
-                    g.roundRect(0, 0, buttonSize, buttonSize, 8);
-                    g.fill();
+              interactive={true}
+              onPointerDown={handlePrevious}
+            />
+            <pixiText
+              text="◀ 이전"
+              style={{
+                fontSize: 12,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                align: "center",
+                fontFamily: FONT_FAMILY.KOREAN,
+              }}
+              x={30}
+              y={15}
+              anchor={0.5}
+            />
+          </pixiContainer>
 
-                    g.stroke({
-                      width: 2,
-                      color: KOREAN_COLORS.ACCENT_GOLD,
-                      alpha: 0.7,
-                    });
-                    g.roundRect(0, 0, buttonSize, buttonSize, 8);
-                    g.stroke();
-
-                    // Arrow symbol
-                    g.stroke({
-                      width: 2,
-                      color: KOREAN_COLORS.TEXT_PRIMARY,
-                      alpha: 0.9,
-                    });
-                    g.moveTo(buttonSize * 0.7, buttonSize * 0.3);
-                    g.lineTo(buttonSize * 0.3, buttonSize * 0.5);
-                    g.lineTo(buttonSize * 0.7, buttonSize * 0.7);
-                    g.stroke();
-                  }}
-                  interactive={true}
-                  onPointerDown={onPrev}
-                  data-testid="prev-archetype-button"
-                />
-                <pixiText
-                  text="이전"
-                  style={{
-                    fontSize: 10,
-                    fill: KOREAN_COLORS.TEXT_SECONDARY,
-                    align: "center",
-                    fontFamily: FONT_FAMILY.KOREAN,
-                  }}
-                  x={buttonSize / 2}
-                  y={buttonSize + 5}
-                  anchor={0.5}
-                />
-              </pixiContainer>
-
-              {/* Next button */}
-              <pixiContainer data-testid="next-button-container">
-                <pixiGraphics
-                  draw={(g) => {
-                    g.clear();
-                    g.fill({
-                      color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                      alpha: 0.9,
-                    });
-                    g.roundRect(0, 0, buttonSize, buttonSize, 8);
-                    g.fill();
-
-                    g.stroke({
-                      width: 2,
-                      color: KOREAN_COLORS.ACCENT_GOLD,
-                      alpha: 0.7,
-                    });
-                    g.roundRect(0, 0, buttonSize, buttonSize, 8);
-                    g.stroke();
-
-                    // Arrow symbol
-                    g.stroke({
-                      width: 2,
-                      color: KOREAN_COLORS.TEXT_PRIMARY,
-                      alpha: 0.9,
-                    });
-                    g.moveTo(buttonSize * 0.3, buttonSize * 0.3);
-                    g.lineTo(buttonSize * 0.7, buttonSize * 0.5);
-                    g.lineTo(buttonSize * 0.3, buttonSize * 0.7);
-                    g.stroke();
-                  }}
-                  interactive={true}
-                  onPointerDown={onNext}
-                  data-testid="next-archetype-button"
-                />
-                <pixiText
-                  text="다음"
-                  style={{
-                    fontSize: 10,
-                    fill: KOREAN_COLORS.TEXT_SECONDARY,
-                    align: "center",
-                    fontFamily: FONT_FAMILY.KOREAN,
-                  }}
-                  x={buttonSize / 2}
-                  y={buttonSize + 5}
-                  anchor={0.5}
-                />
-              </pixiContainer>
-            </pixiContainer>
+          {/* Next Button */}
+          <pixiContainer
+            x={width * 0.75 - 30}
+            data-testid="next-archetype-button"
+          >
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.roundRect(0, 0, 60, 30, 5);
+                g.fill();
+                g.stroke({
+                  width: 1,
+                  color: KOREAN_COLORS.ACCENT_GOLD,
+                  alpha: 0.6,
+                });
+                g.roundRect(0, 0, 60, 30, 5);
+                g.stroke();
+              }}
+              interactive={true}
+              onPointerDown={handleNext}
+            />
+            <pixiText
+              text="다음 ▶"
+              style={{
+                fontSize: 12,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                align: "center",
+                fontFamily: FONT_FAMILY.KOREAN,
+              }}
+              x={30}
+              y={15}
+              anchor={0.5}
+            />
           </pixiContainer>
         </pixiContainer>
       </ResponsivePixiContainer>

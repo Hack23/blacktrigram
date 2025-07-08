@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { GameMode } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { KoreanText } from "../../ui/base/korean-text/KoreanText";
@@ -11,6 +11,8 @@ export interface MenuSectionProps {
   }>;
   readonly selectedIndex: number;
   readonly onModeSelect: (mode: GameMode) => void;
+  readonly onSelectedIndexChange: (index: number) => void;
+  readonly onPlaySFX: (sound: string) => void;
   readonly width: number;
   readonly height: number;
   readonly x: number;
@@ -21,6 +23,8 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   menuItems,
   selectedIndex,
   onModeSelect,
+  onSelectedIndexChange,
+  onPlaySFX,
   width,
   height,
   x,
@@ -28,6 +32,68 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
 }) => {
   // Track hover state for menu items
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Menu navigation with arrow keys
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        const nextIndex =
+          selectedIndex === 0 ? menuItems.length - 1 : selectedIndex - 1;
+        onSelectedIndexChange(nextIndex);
+        onPlaySFX("menu_hover");
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        const nextIndex =
+          selectedIndex === menuItems.length - 1 ? 0 : selectedIndex + 1;
+        onSelectedIndexChange(nextIndex);
+        onPlaySFX("menu_hover");
+      } else if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        onPlaySFX("menu_select");
+        onModeSelect(menuItems[selectedIndex].mode);
+      } else {
+        // Numeric shortcuts
+        const numKey = parseInt(event.key);
+        if (numKey >= 1 && numKey <= menuItems.length) {
+          const targetIndex = numKey - 1;
+          onSelectedIndexChange(targetIndex);
+          onPlaySFX("menu_select");
+          onModeSelect(menuItems[targetIndex].mode);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    selectedIndex,
+    menuItems,
+    onSelectedIndexChange,
+    onModeSelect,
+    onPlaySFX,
+  ]);
+
+  const handleMenuItemClick = useCallback(
+    (mode: GameMode, index: number) => {
+      onSelectedIndexChange(index);
+      onPlaySFX("menu_select");
+      onModeSelect(mode);
+    },
+    [onSelectedIndexChange, onPlaySFX, onModeSelect]
+  );
+
+  const handleMenuItemHover = useCallback(
+    (index: number) => {
+      setHoveredItem(index);
+      if (index !== selectedIndex) {
+        onSelectedIndexChange(index);
+        onPlaySFX("menu_hover");
+      }
+    },
+    [selectedIndex, onSelectedIndexChange, onPlaySFX]
+  );
 
   return (
     <pixiContainer
@@ -154,8 +220,8 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                   }
                 }}
                 interactive={true}
-                onPointerDown={() => onModeSelect(item.mode)}
-                onPointerOver={() => setHoveredItem(index)}
+                onPointerDown={() => handleMenuItemClick(item.mode, index)}
+                onPointerOver={() => handleMenuItemHover(index)}
                 onPointerOut={() => setHoveredItem(null)}
               />
 
