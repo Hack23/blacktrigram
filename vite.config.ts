@@ -164,6 +164,7 @@ export default defineConfig(({ command, mode }) => ({
         "**/*.d.ts",
         "**/*.config.*",
         "dist/",
+        "**/docs/**",
         "coverage/",
         "cypress/",
         "**/placeholder-sounds.ts",
