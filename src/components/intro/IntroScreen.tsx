@@ -18,6 +18,7 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from "react";
 import { ArchetypeDisplay } from "./components/ArchetypeDisplay";
 import { MenuSection } from "./components/MenuSection";
@@ -32,6 +33,9 @@ import { useAudio } from "../../audio/AudioProvider";
 import { GameMode } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { KoreanHeader } from "../ui/KoreanHeader";
+import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
+import { PlayerArchetype } from "../../types/common";
+
 
 // Responsive dimensions
 function useWindowSize() {
@@ -61,48 +65,14 @@ const MENU_ITEMS: { mode: GameMode; korean: string; english: string }[] = [
   { mode: GameMode.PHILOSOPHY, korean: "철학", english: "Philosophy" },
 ];
 
-const ARCHETYPE_DATA = [
-  {
-    id: "musa",
-    korean: "무사",
-    english: "Warrior",
-    description: "전통적인 명예로운 전사",
-    color: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
-    textureKey: "musa",
-  },
-  {
-    id: "amsalja",
-    korean: "암살자",
-    english: "Shadow Assassin",
-    description: "은밀한 그림자 전투원",
-    color: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
-    textureKey: "amsalja",
-  },
-  {
-    id: "hacker",
-    korean: "해커",
-    english: "Cyber Warrior",
-    description: "기술 강화 사이버 전사",
-    color: KOREAN_COLORS.PRIMARY_CYAN,
-    textureKey: "hacker",
-  },
-  {
-    id: "jeongbo_yowon",
-    korean: "정보요원",
-    english: "Intelligence Operative",
-    description: "전략적 정보 분석가",
-    color: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
-    textureKey: "jeongboYowon",
-  },
-  {
-    id: "jojik_pokryeokbae",
-    korean: "조직폭력배",
-    english: "Organized Crime",
-    description: "무자비한 거리 생존자",
-    color: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
-    textureKey: "jojikPokryeokbae",
-  },
-] as const;
+// Texture key mapping for archetypes
+const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
+  [PlayerArchetype.MUSA]: "musa",
+  [PlayerArchetype.AMSALJA]: "amsalja", 
+  [PlayerArchetype.HACKER]: "hacker",
+  [PlayerArchetype.JEONGBO_YOWON]: "jeongboYowon",
+  [PlayerArchetype.JOJIK_POKRYEOKBAE]: "jojikPokryeokbae",
+};
 
 export const IntroScreen: React.FC<IntroScreenProps> = ({
   onMenuSelect,
@@ -136,6 +106,21 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   // Use prop dimensions if provided, otherwise use window size
   const screenWidth = propWidth ?? width;
   const screenHeight = propHeight ?? height;
+
+  // Create archetype data with texture keys from PLAYER_ARCHETYPES_DATA
+  const archetypeData = useMemo(() => {
+    return Object.entries(PLAYER_ARCHETYPES_DATA).map(([key, data]) => {
+      const archetypeEnum = key as PlayerArchetype;
+      return {
+        id: key.toLowerCase(),
+        korean: data.name.korean,
+        english: data.name.english, 
+        description: data.description.korean, // Use Korean description as string
+        color: data.colors.primary,
+        textureKey: ARCHETYPE_TEXTURE_MAPPING[archetypeEnum],
+      };
+    });
+  }, []);
 
   // Enhanced asset loading with proper error handling
   useEffect(() => {
@@ -248,11 +233,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         // Archetype navigation
         if (event.key === "ArrowLeft") {
           setSelectedArchetype((prev) =>
-            prev === 0 ? ARCHETYPE_DATA.length - 1 : prev - 1
+            prev === 0 ? archetypeData.length - 1 : prev - 1
           );
           audio.playSFX("menu_hover");
         } else if (event.key === "ArrowRight") {
-          setSelectedArchetype((prev) => (prev + 1) % ARCHETYPE_DATA.length);
+          setSelectedArchetype((prev) => (prev + 1) % archetypeData.length);
           audio.playSFX("menu_hover");
         } else {
           // Letter shortcuts for quick access
@@ -271,7 +256,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSection, audio]);
+  }, [currentSection, audio, archetypeData.length]);
 
   // Handle menu item selection
   const handleMenuItemSelect = useCallback(
@@ -575,7 +560,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
           {/* Archetype Selection */}
           <ArchetypeDisplay
-            archetypes={ARCHETYPE_DATA}
+            archetypes={archetypeData}
             selectedIndex={selectedArchetype}
             textures={archetypeTextures}
             onArchetypeChange={setSelectedArchetype}
@@ -622,7 +607,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fontWeight: "bold",
           }}
           interactive={true}
-          onPointerTap={() =>
+          onPointerDown={() =>
             window.open("https://github.com/Hack23/blacktrigram", "_blank")
           }
           x={0}
@@ -640,7 +625,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             fontWeight: "bold",
           }}
           interactive={true}
-          onPointerTap={() =>
+          onPointerDown={() =>
             window.open(
               `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
               "_blank"
@@ -649,7 +634,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           x={0}
           y={isMobile ? 8 : 10}
           anchor={0.5}
-          data-testid="footer-link"
+          data-testid="footer-version"
         />
       </pixiContainer>
     </pixiContainer>
