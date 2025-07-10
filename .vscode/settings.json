@@ -6,10 +6,11 @@
   "typescript.suggest.completeFunctionCalls": true,
   "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
   "typescript.preferences.importModuleSpecifier": "shortest",
-  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.inlayHints.variableTypes.enabled": true,
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.suggest.autoImports": false,
 
   // JavaScript equivalent settings
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -106,7 +107,10 @@
     "**/node_modules/**": true,
     "**/dist/**": true,
     "**/build/**": true,
-    "**/.git/**": true
+    "**/.git/**": true,
+    "**/coverage/**": true,
+    "**/cypress/videos/**": true,
+    "**/cypress/screenshots/**": true
   },
 
   // Korean language support
@@ -120,5 +124,14 @@
   "terminal.integrated.env.linux": {
     "NODE_OPTIONS": "--max-old-space-size=8192",
     "DISPLAY": ":99"
-  }
+  },
+
+  // Connection stability improvements
+  "remote.autoForwardPorts": false,
+  "remote.restoreForwardedPorts": true,
+  "workbench.startupEditor": "none",
+
+  // Reduce extension load
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false
 }

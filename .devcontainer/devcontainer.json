@@ -63,7 +63,6 @@
         "typescript.preferences.importModuleSpecifier": "shortest",
         "javascript.preferences.importModuleSpecifier": "shortest",
 
-
         // Ensure Copilot prefers TypeScript file extensions
         "github.copilot.fileTypes": {
           "javascript": "typescript",
@@ -73,35 +72,26 @@
     }
   },
 
-  // Enhanced post-create commands with better error handling
+  // Split heavy installations across lifecycle commands
   "postCreateCommand": "npm install -g npm@latest typescript@latest eslint@latest && npm ci && npm run build && npx cypress verify",
 
-  // Optimized post-start command
-  "postStartCommand": "npm run build && echo '✓ Development environment ready'",
-
-  "remoteUser": "node",
-
-  // Enhanced environment variables for better performance
-  "containerEnv": {
-    "CYPRESS_VERIFY_TIMEOUT": "100000",
-    "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/dbus/system_bus_socket",
-    "DISPLAY": ":99",
-    "NODE_OPTIONS": "--max-old-space-size=8192 --no-warnings",
-    "NPM_CONFIG_UPDATE_NOTIFIER": "false",
-    "NPM_CONFIG_FUND": "false",
-    "TERM": "xterm-256color",
-    "LANG": "en_US.UTF-8",
-    "LC_ALL": "en_US.UTF-8"
-  },
-
-  // Enhanced runtime arguments
+  // Reduced memory allocation to prevent swapping
   "runArgs": [
-    "--privileged",
+    "--memory=6g", // Reduced from 8g
+    "--cpus=3", // Reduced from 4
+    "--shm-size=1g", // Add shared memory for Chrome
     "--security-opt",
-    "seccomp=unconfined",
-    "--memory=8g",
-    "--cpus=4"
+    "seccomp=unconfined"
   ],
+
+  // Enhanced environment for stability
+  "containerEnv": {
+    "DISPLAY": ":99",
+    "NODE_OPTIONS": "--max-old-space-size=4096", // Reduced from 8192
+    "CYPRESS_VERIFY_TIMEOUT": "60000", // Reduced timeout
+    "NPM_CONFIG_UPDATE_NOTIFIER": "false",
+    "NPM_CONFIG_FUND": "false"
+  },
 
   // Mount optimizations
   "mounts": [
