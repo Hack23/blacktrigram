@@ -125,7 +125,7 @@
   },
 
   // Connection stability improvements
-  "remote.autoForwardPorts": false,
+  "remote.autoForwardPorts": true,
   "remote.restoreForwardedPorts": true,
   "workbench.startupEditor": "none",
 
