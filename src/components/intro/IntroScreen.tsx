@@ -285,10 +285,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   // Smaller logo for full screen layout
   const logoSize = isMobile
-    ? Math.min(screenWidth, screenHeight) * 0.15
+    ? Math.min(screenWidth, screenHeight) * 0.3
     : isTablet
-    ? Math.min(screenWidth, screenHeight) * 0.12
-    : Math.min(screenWidth, screenHeight) * 0.1;
+    ? Math.min(screenWidth, screenHeight) * 0.24
+    : Math.min(screenWidth, screenHeight) * 0.2;
 
   // Enhanced cyberpunk background with neon grid
   const drawEnhancedBackground = useCallback(
@@ -527,7 +527,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           gap: isMobile ? 12 : 20,
           paddingLeft: isMobile ? 20 : 40,
           paddingRight: isMobile ? 20 : 40,
-          paddingTop: 10,
+          paddingTop: 100,
           paddingBottom: 60, // Add bottom padding to prevent footer overlap
         }}
       >
@@ -538,7 +538,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             <pixiContainer
               layout={{
                 width: isMobile ? "100%" : "70%",
-                maxWidth: 600,
+                maxWidth: 800,
                 flexShrink: 0,
               }}
             >
@@ -551,9 +551,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 width={
                   isMobile
                     ? screenWidth * 0.9
-                    : Math.min(600, screenWidth * 0.7)
+                    : Math.min(800, screenWidth * 0.7)
                 }
-                height={280}
+                height={isMobile ? 500 : 400}
                 x={0}
                 y={0}
                 data-testid="main-menu-section"
@@ -564,7 +564,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             <pixiContainer
               layout={{
                 width: isMobile ? "100%" : "70%",
-                maxWidth: 600,
+                maxWidth: 800,
                 flexShrink: 0,
               }}
             >
@@ -577,9 +577,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 width={
                   isMobile
                     ? screenWidth * 0.9
-                    : Math.min(600, screenWidth * 0.7)
+                    : Math.min(800, screenWidth * 0.7)
                 }
-                height={isMobile ? 320 : 280}
+                height={isMobile ? 500 : 400}
                 x={0}
                 y={0}
                 isMobile={isMobile}
@@ -654,6 +654,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            flexDirection: "row",
           }}
         >
           <pixiText
@@ -668,6 +669,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             }}
             anchor={0.5}
             data-testid="footer-motto"
+            x={screenWidth / 2}
+            y={0}
           />
         </pixiContainer>
 
@@ -679,6 +682,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            flexDirection: "row",
           }}
         >
           <pixiText
@@ -696,6 +700,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             }
             anchor={0.5}
             data-testid="footer-link"
+            x={screenWidth / 2}
+            y={0}
           />
         </pixiContainer>
       </pixiContainer>

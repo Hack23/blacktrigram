@@ -54,12 +54,12 @@ export const ArchetypeDisplay: React.FC<ArchetypeDisplayProps> = React.memo(
 
     // Compact archetype image dimensions for horizontal layout
     const getArchetypeImageDimensions = useCallback(() => {
-      const baseWidth = isMobile ? 70 : 90;
-      const baseHeight = isMobile ? 100 : 130;
+      const baseWidth = isMobile ? 140 : 180;
+      const baseHeight = isMobile ? 200 : 260;
       return {
         width: baseWidth,
         height: baseHeight,
-        scale: baseWidth / 331,
+        scale: baseWidth / 2,
       };
     }, [isMobile]);
 
