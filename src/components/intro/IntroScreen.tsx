@@ -116,6 +116,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         description: data.description.korean, // Use Korean description as string
         color: data.colors.primary,
         textureKey: ARCHETYPE_TEXTURE_MAPPING[archetypeEnum],
+        // Add real stats from PLAYER_ARCHETYPES_DATA
+        stats: data.stats,
+        philosophy: data.philosophy,
       };
     });
   }, []);
@@ -280,13 +283,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const isMobile = screenWidth < 768;
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
 
-  // Reduce logo size to 75% of current
+  // Smaller logo for full screen layout
   const logoSize = isMobile
-    ? Math.min(screenWidth, screenHeight) * 0.35 * 0.75
+    ? Math.min(screenWidth, screenHeight) * 0.15
     : isTablet
-    ? Math.min(screenWidth, screenHeight) * 0.25 * 0.75
-    : Math.min(screenWidth, screenHeight) * 0.2 * 0.75;
-
+    ? Math.min(screenWidth, screenHeight) * 0.12
+    : Math.min(screenWidth, screenHeight) * 0.1;
 
   // Enhanced cyberpunk background with neon grid
   const drawEnhancedBackground = useCallback(
@@ -409,16 +411,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     <pixiContainer
       data-testid="intro-screen"
       layout={{
-        width: "100%",
-        height: "100%",
+        width: screenWidth,
+        height: screenHeight,
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        paddingTop: isMobile ? "2%" : "1%",
-        paddingBottom: "2%",
-        paddingLeft: isMobile ? "3%" : "5%",
-        paddingRight: isMobile ? "3%" : "5%",
-        gap: isMobile ? 12 : 20,
+        padding: 0, // Remove padding for full screen
+        gap: isMobile ? 8 : 16,
       }}
     >
       {/* Enhanced Background Layers */}
@@ -429,8 +428,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           position: "absolute",
           top: 0,
           left: 0,
-          width: "100%",
-          height: "100%",
+          width: screenWidth,
+          height: screenHeight,
         }}
       />
 
@@ -446,8 +445,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             position: "absolute",
             top: 0,
             left: 0,
-            width: "100%",
-            height: "100%",
+            width: screenWidth,
+            height: screenHeight,
           }}
         />
       )}
@@ -470,16 +469,16 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         />
       )}
 
-      {/* Logo Section with layout */}
+      {/* Compact Logo Section */}
       <pixiContainer
         data-testid="logo-section"
         layout={{
           width: "100%",
-          height: logoSize + 60,
+          height: logoSize + 40,
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          marginTop: isMobile ? 10 : 20,
+          marginTop: isMobile ? 5 : 10,
         }}
       >
         {logoTexture && (
@@ -495,98 +494,51 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           />
         )}
 
-        {/* Enhanced glow effect around logo */}
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.fill({
-              color: KOREAN_COLORS.PRIMARY_CYAN,
-              alpha: 0.1,
-            });
-            g.circle(0, 0, logoSize * 0.6);
-            g.fill();
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
-            });
-            g.circle(0, 0, logoSize * 0.8);
-            g.stroke();
-          }}
-          data-testid="logo-glow-effect"
-          layout={{
-            position: "absolute",
-            alignSelf: "center",
-          }}
-        />
-
-        {/* Trigram Symbols with layout positioning */}
+        {/* Compact Title */}
         <pixiContainer
-          data-testid="trigram-symbols"
           layout={{
             position: "absolute",
-            bottom: -40,
+            bottom: -30,
             alignSelf: "center",
           }}
         >
-          <pixiText
-            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
-            style={{
-              fontSize: isMobile ? 20 : 28,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              align: "center",
-              letterSpacing: isMobile ? 8 : 12,
+          <KoreanHeader
+            title={{ korean: "흑괘", english: "Black Trigram" }}
+            subtitle={{
+              korean: "한국 무술 시뮬레이터",
+              english: "Korean Martial Arts Simulator",
             }}
-            anchor={0.5}
-            data-testid="trigram-symbols-text"
+            x={0}
+            y={0}
+            data-testid="main-title"
           />
         </pixiContainer>
       </pixiContainer>
 
-      {/* Enhanced Title with layout */}
-      <pixiContainer
-        layout={{
-          width: "100%",
-          height: 80,
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <KoreanHeader
-          title={{ korean: "흑괘", english: "Black Trigram" }}
-          subtitle={{
-            korean: "한국 무술 시뮬레이터",
-            english: "Korean Martial Arts Simulator",
-          }}
-          x={0}
-          y={0}
-          data-testid="main-title"
-        />
-      </pixiContainer>
-
-      {/* Main Content Area with flex grow */}
+      {/* Main Content Area - Full width, vertical layout */}
       <pixiContainer
         data-testid="main-content"
         layout={{
           width: "100%",
           flexGrow: 1,
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          gap: isMobile ? 16 : 24,
-          paddingTop: 20,
-          paddingBottom: 20,
+          flexDirection: "column", // Always vertical for full screen
+          alignItems: "center",
+          justifyContent: "flex-start",
+          gap: isMobile ? 12 : 20,
+          paddingLeft: isMobile ? 20 : 40,
+          paddingRight: isMobile ? 20 : 40,
+          paddingTop: 10,
+          paddingBottom: 10,
         }}
       >
         {/* Main Menu Section - Only shown when in menu mode */}
         {currentSection === "menu" && (
           <>
-            {/* Menu Section with proper flex sizing */}
+            {/* Menu Section - Top position, centered */}
             <pixiContainer
               layout={{
-                width: isMobile ? "100%" : "50%",
-                maxWidth: 450,
+                width: isMobile ? "100%" : "70%",
+                maxWidth: 600,
                 flexShrink: 0,
               }}
             >
@@ -599,20 +551,20 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 width={
                   isMobile
                     ? screenWidth * 0.9
-                    : Math.min(400, screenWidth * 0.4)
+                    : Math.min(600, screenWidth * 0.7)
                 }
-                height={320}
+                height={280}
                 x={0}
                 y={0}
                 data-testid="main-menu-section"
               />
             </pixiContainer>
 
-            {/* Archetype Selection with proper flex sizing */}
+            {/* Archetype Selection - Below menu, centered */}
             <pixiContainer
               layout={{
-                width: isMobile ? "100%" : "50%",
-                maxWidth: 450,
+                width: isMobile ? "100%" : "70%",
+                maxWidth: 600,
                 flexShrink: 0,
               }}
             >
@@ -625,9 +577,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 width={
                   isMobile
                     ? screenWidth * 0.9
-                    : Math.min(400, screenWidth * 0.4)
+                    : Math.min(600, screenWidth * 0.7)
                 }
-                height={isMobile ? 400 : 350}
+                height={isMobile ? 320 : 280}
                 x={0}
                 y={0}
                 isMobile={isMobile}
@@ -652,22 +604,22 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         )}
       </pixiContainer>
 
-      {/* Enhanced Footer with layout positioning */}
+      {/* Compact Footer */}
       <pixiContainer
         data-testid="intro-footer"
         layout={{
           width: "100%",
-          height: isMobile ? 60 : 80,
+          height: isMobile ? 40 : 50,
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          gap: 8,
+          gap: 4,
         }}
       >
         <pixiText
           text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
           style={{
-            fontSize: isMobile ? 10 : 14,
+            fontSize: isMobile ? 9 : 12,
             fill: KOREAN_COLORS.ACCENT_CYAN,
             align: "center",
             fontStyle: "italic",
@@ -677,9 +629,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         />
 
         <pixiText
-          text="Open Source Korean Martial Arts Game by Hack23"
+          text={`Version ${APP_VERSION} | Open Source Korean Martial Arts Game`}
           style={{
-            fontSize: isMobile ? 9 : 12,
+            fontSize: isMobile ? 8 : 10,
             fill: KOREAN_COLORS.SECONDARY_MAGENTA,
             align: "center",
             fontWeight: "bold",
@@ -690,25 +642,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           }
           anchor={0.5}
           data-testid="footer-link"
-        />
-
-        <pixiText
-          text={`Version ${APP_VERSION}`}
-          style={{
-            fontSize: isMobile ? 9 : 12,
-            fill: KOREAN_COLORS.SECONDARY_MAGENTA,
-            align: "center",
-            fontWeight: "bold",
-          }}
-          interactive={true}
-          onPointerDown={() =>
-            window.open(
-              `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
-              "_blank"
-            )
-          }
-          anchor={0.5}
-          data-testid="footer-version"
         />
       </pixiContainer>
     </pixiContainer>
