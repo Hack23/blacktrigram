@@ -50,6 +50,27 @@
   "editor.tabCompletion": "on",
   "editor.wordBasedSuggestions": "matchingDocuments",
 
+  // Default formatter configuration for different file types
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
   // IntelliSense and completion settings
   "editor.quickSuggestions": {
     "other": "on",
@@ -111,19 +132,6 @@
     "**/cypress/screenshots/**": true
   },
 
-  // Korean language support
-  "files.associations": {
-    "*.ko": "plaintext",
-    "*.한국어": "plaintext"
-  },
-
-  // Terminal settings
-  "terminal.integrated.defaultProfile.linux": "bash",
-  "terminal.integrated.env.linux": {
-    "NODE_OPTIONS": "--max-old-space-size=8192",
-    "DISPLAY": ":99"
-  },
-
   // Connection stability improvements
   "remote.autoForwardPorts": true,
   "remote.restoreForwardedPorts": true,
@@ -133,4 +141,3 @@
   "extensions.autoCheckUpdates": false,
   "extensions.autoUpdate": false
 }
-
