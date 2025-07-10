@@ -1,22 +1,25 @@
 {
   "name": "Black Trigram Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {
       "installDirectlyFromGitHubRelease": true,
       "version": "latest"
     },
+    // Using a single feature for Node.js for simplicity
     "ghcr.io/devcontainers/features/node:1": {
       "nodeGypDependencies": true,
-      "version": "24",
-      "nvmVersion": "latest"
+      "version": "24" // Aligned with base image
     },
     "ghcr.io/devcontainers/features/git:1": {
       "ppa": true,
       "version": "latest"
     }
   },
-  "onCreateCommand": "sudo apt-get update && sudo apt-get install -y graphviz libgtk2.0-0 libgtk-3-0 ffmpeg libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb dbus dbus-x11 fonts-noto fonts-noto-cjk fonts-noto-cjk-extra && sudo apt-get update && sudo apt-get install -y ca-certificates fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libxrender1 libxshmfence1 xdg-utils wget && wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && echo \"deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/google-chrome.list && sudo apt-get update && sudo apt-get install -y google-chrome-stable && .devcontainer/init-xvfb.sh",
+
+  // Use initializeCommand for prerequisite setup before other commands.
+  "initializeCommand": ".devcontainer/init-xvfb.sh",
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -41,17 +44,12 @@
         // Import optimized settings from .vscode/settings.json
         "typescript.tsdk": "./node_modules/typescript/lib",
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit",
           "source.organizeImports": "explicit"
         },
 
-        "eslint.workingDirectories": [
-          { "mode": "auto" },
-          { "directory": "./src", "changeProcessCWD": true },
-          { "directory": "./cypress", "changeProcessCWD": true }
-        ],
+        "eslint.workingDirectories": [{ "mode": "auto" }],
         "eslint.options": {
           "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs"
         },
@@ -73,22 +71,15 @@
   },
 
   // Split heavy installations across lifecycle commands
-  "postCreateCommand": "npm install -g npm@latest typescript@latest eslint@latest && npm ci && npm run build && npx cypress verify",
+  // Removed 'npm run build' and 'npx cypress verify' to speed up creation and reduce resource load.
+  "postCreateCommand": "npm install -g npm@latest typescript@latest eslint@latest && npm ci",
 
-  // Reduced memory allocation to prevent swapping
-  "runArgs": [
-    "--memory=6g", // Reduced from 8g
-    "--cpus=3", // Reduced from 4
-    "--shm-size=1g", // Add shared memory for Chrome
-    "--security-opt",
-    "seccomp=unconfined"
-  ],
+
 
   // Enhanced environment for stability
   "containerEnv": {
     "DISPLAY": ":99",
-    "NODE_OPTIONS": "--max-old-space-size=4096", // Reduced from 8192
-    "CYPRESS_VERIFY_TIMEOUT": "60000", // Reduced timeout
+    "NODE_OPTIONS": "--max-old-space-size=4096",
     "NPM_CONFIG_UPDATE_NOTIFIER": "false",
     "NPM_CONFIG_FUND": "false"
   },

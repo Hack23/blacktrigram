@@ -37,11 +37,9 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnType": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit",
-    "source.removeUnusedImports": "explicit"
+    "source.organizeImports": "explicit"
   },
   "editor.suggest.insertMode": "replace",
   "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -135,3 +133,4 @@
   "extensions.autoCheckUpdates": false,
   "extensions.autoUpdate": false
 }
+
