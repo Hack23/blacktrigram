@@ -83,6 +83,16 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   const buttonHeight = isMobile ? 44 : 54;
   const buttonFontSize = isMobile ? 16 : 20;
   const menuPanelRadius = isMobile ? 10 : 16;
+  const buttonSpacing = isMobile ? 12 : 18;
+  
+  // Calculate proper spacing to prevent overlap
+  const titleHeight = isMobile ? 48 : 60;
+  const buttonsAreaHeight = (buttonHeight + buttonSpacing) * menuItems.length;
+  const instructionsHeight = isMobile ? 40 : 50;
+  const totalContentHeight = titleHeight + buttonsAreaHeight + instructionsHeight;
+  
+  // Ensure we have enough space, otherwise adjust layout
+  const useCompactLayout = totalContentHeight > height - 64; // 64px for padding
 
   return (
     <pixiContainer
@@ -94,7 +104,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: isMobile ? 18 : 28,
+        gap: useCompactLayout ? (isMobile ? 12 : 16) : (isMobile ? 18 : 28),
         padding: isMobile ? 16 : 32,
       }}
       data-testid="menu-section"
@@ -146,7 +156,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       <KoreanText
         text={{ korean: "메인 메뉴", english: "Main Menu" }}
         style={{
-          fontSize: isMobile ? 20 : 28,
+          fontSize: useCompactLayout ? (isMobile ? 18 : 24) : (isMobile ? 20 : 28),
           fill: KOREAN_COLORS.ACCENT_GOLD,
           align: "center",
           fontWeight: "bold",
@@ -163,14 +173,14 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         data-testid="menu-title"
       />
 
-      {/* Menu Items - Replace pixiFancyButton with custom button implementation */}
+      {/* Menu Items Container with calculated positioning */}
       <pixiContainer
         x={0}
-        y={isMobile ? 56 : 72}
+        y={titleHeight}
         layout={{
           width: width,
           flexDirection: "column",
-          gap: isMobile ? 12 : 18,
+          gap: useCompactLayout ? (isMobile ? 8 : 12) : buttonSpacing,
           alignItems: "center",
         }}
         data-testid="main-menu-buttons"
@@ -188,7 +198,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                 height: buttonHeight,
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: isMobile ? 6 : 10,
+                marginBottom: useCompactLayout ? 2 : (isMobile ? 6 : 10),
               }}
               data-testid={`menu-item-${item.mode}`}
             >
@@ -249,7 +259,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
               <pixiText
                 text={`${item.korean} (${item.english})`}
                 style={{
-                  fontSize: buttonFontSize,
+                  fontSize: useCompactLayout ? (buttonFontSize - 2) : buttonFontSize,
                   fill: isSelected
                     ? KOREAN_COLORS.UI_BACKGROUND_DARK
                     : isHovered
@@ -276,24 +286,68 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         })}
       </pixiContainer>
 
-      {/* Navigation hint */}
-      <KoreanText
-        text={{
-          korean: "방향키/마우스 이동 • Enter/클릭 선택 • 숫자키 바로가기",
-          english: "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
+      {/* Navigation hint - FIXED POSITIONING */}
+      <pixiContainer
+        layout={{
+          position: "absolute", // Use absolute positioning
+          bottom: isMobile ? 16 : 24, // Position from bottom of container
+          left: 0,
+          right: 0,
+          width: "100%",
+          height: instructionsHeight,
+          alignItems: "center",
+          justifyContent: "center",
         }}
-        style={{
-          fontSize: isMobile ? 11 : 13,
-          fill: KOREAN_COLORS.TEXT_SECONDARY,
-          align: "center",
-          fontStyle: "italic",
-          fontFamily: FONT_FAMILY.KOREAN,
-        }}
-        x={width / 2}
-        y={height - (isMobile ? 24 : 32)}
-        anchor={0.5}
-        data-testid="menu-navigation-hint"
-      />
+        data-testid="navigation-hint-container"
+      >
+        {/* Background for instructions to ensure visibility */}
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            // Semi-transparent background to ensure text visibility
+            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
+            g.roundRect(-10, -5, width - 20, instructionsHeight - 10, 4);
+            g.fill();
+            
+            // Subtle border
+            g.stroke({
+              width: 1,
+              color: KOREAN_COLORS.ACCENT_GOLD,
+              alpha: 0.3,
+            });
+            g.roundRect(-10, -5, width - 20, instructionsHeight - 10, 4);
+            g.stroke();
+          }}
+          layout={{
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        />
+
+        <KoreanText
+          text={{
+            korean: useCompactLayout 
+              ? "방향키 이동 • Enter 선택" 
+              : "방향키/마우스 이동 • Enter/클릭 선택 • 숫자키 바로가기",
+            english: useCompactLayout
+              ? "Arrow keys • Enter to select"
+              : "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
+          }}
+          style={{
+            fontSize: useCompactLayout ? (isMobile ? 9 : 11) : (isMobile ? 11 : 13),
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            align: "center",
+            fontStyle: "italic",
+            fontFamily: FONT_FAMILY.KOREAN,
+            wordWrap: true,
+            wordWrapWidth: width - 40,
+          }}
+          x={width / 2}
+          y={instructionsHeight / 2}
+          anchor={0.5}
+          data-testid="menu-navigation-hint"
+        />
+      </pixiContainer>
     </pixiContainer>
   );
 };
