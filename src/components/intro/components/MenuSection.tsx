@@ -1,10 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GameMode } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { KoreanText } from "../../ui/base/korean-text/KoreanText";
-
-// Utility for focus ring
-const FOCUS_RING_COLOR = KOREAN_COLORS.ACCENT_CYAN;
 
 export interface MenuSectionProps {
   readonly menuItems: Array<{
@@ -14,8 +11,8 @@ export interface MenuSectionProps {
   }>;
   readonly selectedIndex: number;
   readonly onModeSelect: (mode: GameMode) => void;
-  readonly onSelectedIndexChange: (index: number) => void;
-  readonly onPlaySFX: (sound: string) => void;
+  readonly onSelectedIndexChange?: (index: number) => void;
+  readonly onPlaySFX?: (sound: string) => void;
   readonly width: number;
   readonly height: number;
   readonly x: number;
@@ -36,66 +33,41 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
 
-  // Keyboard navigation
+  // Keyboard navigation (optional)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (!onSelectedIndexChange) return;
       if (event.key === "ArrowUp") {
         event.preventDefault();
         const nextIndex =
           selectedIndex === 0 ? menuItems.length - 1 : selectedIndex - 1;
         onSelectedIndexChange(nextIndex);
-        onPlaySFX("menu_hover");
+        onPlaySFX?.("menu_hover");
       } else if (event.key === "ArrowDown") {
         event.preventDefault();
         const nextIndex =
           selectedIndex === menuItems.length - 1 ? 0 : selectedIndex + 1;
         onSelectedIndexChange(nextIndex);
-        onPlaySFX("menu_hover");
+        onPlaySFX?.("menu_hover");
       } else if (event.key === " " || event.key === "Enter") {
         event.preventDefault();
-        onPlaySFX("menu_select");
+        onPlaySFX?.("menu_select");
         onModeSelect(menuItems[selectedIndex].mode);
       } else {
         const numKey = parseInt(event.key);
         if (numKey >= 1 && numKey <= menuItems.length) {
           const targetIndex = numKey - 1;
           onSelectedIndexChange(targetIndex);
-          onPlaySFX("menu_select");
+          onPlaySFX?.("menu_select");
           onModeSelect(menuItems[targetIndex].mode);
         }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    selectedIndex,
-    menuItems,
-    onSelectedIndexChange,
-    onModeSelect,
-    onPlaySFX,
-  ]);
+  }, [selectedIndex, menuItems, onSelectedIndexChange, onModeSelect, onPlaySFX]);
 
-  const handleMenuItemClick = useCallback(
-    (mode: GameMode, index: number) => {
-      onSelectedIndexChange(index);
-      onPlaySFX("menu_select");
-      onModeSelect(mode);
-    },
-    [onSelectedIndexChange, onPlaySFX, onModeSelect]
-  );
-
-  const handleMenuItemHover = useCallback(
-    (index: number) => {
-      setHoveredItem(index);
-      if (index !== selectedIndex) {
-        onSelectedIndexChange(index);
-        onPlaySFX("menu_hover");
-      }
-    },
-    [selectedIndex, onSelectedIndexChange, onPlaySFX]
-  );
-
-  // Accessibility: focus ring on tab
+  // Focus ring for accessibility
   useEffect(() => {
     const handleFocus = () => setFocused(true);
     const handleBlur = () => setFocused(false);
@@ -107,48 +79,47 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     };
   }, []);
 
-  // Responsive sizing
   const isMobile = width < 480;
   const buttonHeight = isMobile ? 44 : 54;
-  const buttonFontSize = isMobile ? 15 : 18;
-  const menuPanelRadius = isMobile ? 8 : 12;
+  const buttonFontSize = isMobile ? 16 : 20;
+  const menuPanelRadius = isMobile ? 10 : 16;
 
   return (
     <pixiContainer
       x={x}
       y={y}
-      data-testid="menu-section"
       layout={{
         width,
         height,
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: 12,
-        padding: 24,
+        gap: isMobile ? 18 : 28,
+        padding: isMobile ? 16 : 32,
       }}
+      data-testid="menu-section"
     >
-      {/* Panel Background */}
+      {/* Enhanced Panel Background */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
           // Main background
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.97 });
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.96 });
           g.roundRect(0, 0, width, height, menuPanelRadius);
           g.fill();
 
-          // Outer border
+          // Neon border
           g.stroke({
             width: 3,
             color: KOREAN_COLORS.PRIMARY_CYAN,
-            alpha: 0.7,
+            alpha: 0.8,
           });
           g.roundRect(0, 0, width, height, menuPanelRadius);
           g.stroke();
 
-          // Inner accent border
+          // Gold accent border
           g.stroke({
-            width: 1,
+            width: 1.5,
             color: KOREAN_COLORS.ACCENT_GOLD,
             alpha: 0.5,
           });
@@ -159,244 +130,170 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           if (focused) {
             g.stroke({
               width: 2,
-              color: FOCUS_RING_COLOR,
-              alpha: 0.7,
+              color: KOREAN_COLORS.ACCENT_CYAN,
+              alpha: 0.8,
             });
-            g.roundRect(-3, -3, width + 6, height + 6, menuPanelRadius + 2);
+            g.roundRect(-4, -4, width + 8, height + 8, menuPanelRadius + 2);
             g.stroke();
           }
+
+          // Remove shadow since it's not available in PixiJS v8 Graphics API
         }}
         data-testid="menu-panel-background"
-        layout={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
       />
 
-      {/* Title */}
-      <pixiContainer
-        layout={{
-          width: "100%",
-          height: 48,
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          marginBottom: 8,
+      {/* Menu Title */}
+      <KoreanText
+        text={{ korean: "메인 메뉴", english: "Main Menu" }}
+        style={{
+          fontSize: isMobile ? 20 : 28,
+          fill: KOREAN_COLORS.ACCENT_GOLD,
+          align: "center",
+          fontWeight: "bold",
+          fontFamily: FONT_FAMILY.KOREAN,
+          dropShadow: {
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            distance: 2,
+            alpha: 0.7,
+          },
         }}
-      >
-        <KoreanText
-          text={{ korean: "메인 메뉴", english: "Main Menu" }}
-          style={{
-            fontSize: isMobile ? 18 : 22,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            align: "center",
-            fontWeight: "bold",
-            fontFamily: FONT_FAMILY.KOREAN,
-          }}
-          x={0}
-          y={-8}
-          anchor={0.5}
-          data-testid="menu-title"
-        />
-        <pixiText
-          text="Select your path in the Black Trigram"
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
-            fontStyle: "italic",
-            fontFamily: FONT_FAMILY.PRIMARY,
-          }}
-          x={0}
-          y={14}
-          anchor={0.5}
-          data-testid="menu-subtitle"
-        />
-      </pixiContainer>
+        x={width / 2}
+        y={isMobile ? 24 : 32}
+        anchor={0.5}
+        data-testid="menu-title"
+      />
 
-      {/* Menu Items */}
+      {/* Menu Items - Replace pixiFancyButton with custom button implementation */}
       <pixiContainer
-        data-testid="main-menu-buttons"
+        x={0}
+        y={isMobile ? 56 : 72}
         layout={{
-          width: "100%",
-          flexGrow: 1,
+          width: width,
           flexDirection: "column",
-          gap: 14,
-          paddingLeft: 18,
-          paddingRight: 18,
-          justifyContent: "center",
+          gap: isMobile ? 12 : 18,
+          alignItems: "center",
         }}
+        data-testid="main-menu-buttons"
       >
         {menuItems.map((item, index) => {
           const isSelected = selectedIndex === index;
           const isHovered = hoveredItem === index;
-          const buttonWidth = width - 36;
+          const buttonWidth = width - (isMobile ? 32 : 64);
 
           return (
             <pixiContainer
               key={item.mode}
-              data-testid={`menu-item-${item.mode}`}
               layout={{
-                width: "100%",
+                width: buttonWidth,
                 height: buttonHeight,
-                flexShrink: 0,
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: isMobile ? 6 : 10,
               }}
+              data-testid={`menu-item-${item.mode}`}
             >
               {/* Button Background */}
               <pixiGraphics
                 draw={(g) => {
                   g.clear();
+                  
                   // Button background
-                  g.fill({
-                    color: isSelected
-                      ? KOREAN_COLORS.ACCENT_GOLD
-                      : isHovered
-                      ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
-                      : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                    alpha: isSelected ? 0.96 : 0.92,
-                  });
-                  g.roundRect(0, 0, buttonWidth, buttonHeight, 7);
+                  const bgColor = isSelected
+                    ? KOREAN_COLORS.ACCENT_GOLD
+                    : isHovered
+                    ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
+                    : KOREAN_COLORS.UI_BACKGROUND_MEDIUM;
+                  
+                  const bgAlpha = isSelected ? 0.98 : 0.92;
+                  
+                  g.fill({ color: bgColor, alpha: bgAlpha });
+                  g.roundRect(0, 0, buttonWidth, buttonHeight, 8);
                   g.fill();
 
-                  // Border
-                  g.stroke({
-                    width: 2,
-                    color: isSelected
-                      ? KOREAN_COLORS.UI_BACKGROUND_DARK
-                      : isHovered
-                      ? KOREAN_COLORS.ACCENT_GOLD
-                      : KOREAN_COLORS.PRIMARY_CYAN,
-                    alpha: isSelected ? 1.0 : 0.7,
+                  // Button border
+                  const borderColor = isSelected
+                    ? KOREAN_COLORS.UI_BACKGROUND_DARK
+                    : isHovered
+                    ? KOREAN_COLORS.ACCENT_GOLD
+                    : KOREAN_COLORS.PRIMARY_CYAN;
+                  
+                  const borderAlpha = isSelected ? 1.0 : isHovered ? 0.8 : 0.7;
+                  const borderWidth = isSelected ? 3 : 2;
+                  
+                  g.stroke({ 
+                    width: borderWidth, 
+                    color: borderColor, 
+                    alpha: borderAlpha 
                   });
-                  g.roundRect(0, 0, buttonWidth, buttonHeight, 7);
+                  g.roundRect(0, 0, buttonWidth, buttonHeight, 8);
                   g.stroke();
-
-                  // Selection indicator bar
-                  if (isSelected) {
-                    g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 1 });
-                    g.roundRect(0, 0, 6, buttonHeight, 7);
-                    g.fill();
-                  }
-
-                  // Subtle glow for selected
-                  if (isSelected) {
-                    g.stroke({
-                      width: 1,
-                      color: KOREAN_COLORS.ACCENT_CYAN,
-                      alpha: 0.7,
-                    });
-                    g.roundRect(2, 2, buttonWidth - 4, buttonHeight - 4, 5);
-                    g.stroke();
-                  }
                 }}
                 interactive={true}
-                onPointerDown={() => handleMenuItemClick(item.mode, index)}
-                onPointerOver={() => handleMenuItemHover(index)}
+                onPointerDown={() => {
+                  onModeSelect(item.mode);
+                  onPlaySFX?.("menu_select");
+                }}
+                onPointerOver={() => {
+                  setHoveredItem(index);
+                  if (!isSelected) onPlaySFX?.("menu_hover");
+                }}
                 onPointerOut={() => setHoveredItem(null)}
                 layout={{
+                  position: "absolute",
                   width: "100%",
                   height: "100%",
                 }}
               />
 
-              {/* Button Content */}
-              <pixiContainer
-                layout={{
-                  width: "100%",
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingLeft: isSelected ? 18 : 14,
-                  paddingRight: 14,
+              {/* Button Text */}
+              <pixiText
+                text={`${item.korean} (${item.english})`}
+                style={{
+                  fontSize: buttonFontSize,
+                  fill: isSelected
+                    ? KOREAN_COLORS.UI_BACKGROUND_DARK
+                    : isHovered
+                    ? KOREAN_COLORS.ACCENT_GOLD
+                    : KOREAN_COLORS.TEXT_PRIMARY,
+                  align: "center",
+                  fontFamily: FONT_FAMILY.KOREAN,
+                  fontWeight: isSelected ? "bold" : "normal",
+                  letterSpacing: 1.2,
+                  dropShadow: isSelected
+                    ? {
+                        color: KOREAN_COLORS.ACCENT_GOLD,
+                        distance: 2,
+                        alpha: 0.7,
+                      }
+                    : undefined,
                 }}
-              >
-                <KoreanText
-                  text={{
-                    korean: item.korean,
-                    english: item.english,
-                  }}
-                  style={{
-                    fontSize: buttonFontSize,
-                    fill: isSelected
-                      ? KOREAN_COLORS.UI_BACKGROUND_DARK
-                      : KOREAN_COLORS.TEXT_PRIMARY,
-                    align: "center",
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    fontWeight: isSelected ? "bold" : "normal",
-                  }}
-                  x={0}
-                  y={0}
-                  anchor={0.5}
-                />
-                <pixiText
-                  text={(index + 1).toString()}
-                  style={{
-                    fontSize: isMobile ? 11 : 14,
-                    fill: isSelected
-                      ? KOREAN_COLORS.UI_BACKGROUND_DARK
-                      : KOREAN_COLORS.TEXT_SECONDARY,
-                    align: "right",
-                    fontWeight: "bold",
-                    fontFamily: FONT_FAMILY.PRIMARY,
-                  }}
-                  x={buttonWidth / 2 - 18}
-                  y={0}
-                  anchor={{ x: 1, y: 0.5 }}
-                />
-              </pixiContainer>
+                x={buttonWidth / 2}
+                y={buttonHeight / 2}
+                anchor={0.5}
+              />
             </pixiContainer>
           );
         })}
       </pixiContainer>
 
-      {/* Navigation Hint */}
-      <pixiContainer
-        layout={{
-          width: "100%",
-          height: 36,
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          marginTop: 10,
+      {/* Navigation hint */}
+      <KoreanText
+        text={{
+          korean: "방향키/마우스 이동 • Enter/클릭 선택 • 숫자키 바로가기",
+          english: "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
         }}
-      >
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.6 });
-            g.roundRect(0, 0, width - 36, 36, 5);
-            g.fill();
-            g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 });
-            g.roundRect(0, 0, width - 36, 36, 5);
-            g.stroke();
-          }}
-          layout={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-          }}
-        />
-        <KoreanText
-          text={{
-            korean: "방향키/마우스 이동 • Enter/클릭 선택 • 숫자키 바로가기",
-            english: "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
-          }}
-          style={{
-            fontSize: isMobile ? 9 : 11,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
-            fontStyle: "italic",
-            fontFamily: FONT_FAMILY.KOREAN,
-          }}
-          x={0}
-          y={0}
-          anchor={0.5}
-          data-testid="menu-navigation-hint"
-        />
-      </pixiContainer>
+        style={{
+          fontSize: isMobile ? 11 : 13,
+          fill: KOREAN_COLORS.TEXT_SECONDARY,
+          align: "center",
+          fontStyle: "italic",
+          fontFamily: FONT_FAMILY.KOREAN,
+        }}
+        x={width / 2}
+        y={height - (isMobile ? 24 : 32)}
+        anchor={0.5}
+        data-testid="menu-navigation-hint"
+      />
     </pixiContainer>
   );
 };
