@@ -106,36 +106,53 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: 16,
-        padding: 20,
+        gap: 12,
+        padding: 24,
       }}
     >
-      {/* Background Panel with enhanced styling */}
+      {/* Enhanced Background Panel */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          // Background fill with semi-transparency
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.92 });
-          g.roundRect(0, 0, width, height, 8);
+          
+          // Main background with enhanced styling
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+          g.roundRect(0, 0, width, height, 12);
           g.fill();
 
-          // Primary border
+          // Primary border with glow effect
           g.stroke({
-            width: 2,
+            width: 3,
             color: KOREAN_COLORS.PRIMARY_CYAN,
-            alpha: 0.7,
+            alpha: 0.8,
           });
-          g.roundRect(0, 0, width, height, 8);
+          g.roundRect(0, 0, width, height, 12);
           g.stroke();
 
-          // Secondary accent border
+          // Inner accent border
           g.stroke({
             width: 1,
             color: KOREAN_COLORS.ACCENT_GOLD,
-            alpha: 0.4,
+            alpha: 0.6,
           });
-          g.roundRect(4, 4, width - 8, height - 8, 6);
+          g.roundRect(6, 6, width - 12, height - 12, 8);
           g.stroke();
+
+          // Subtle corner accents
+          const cornerSize = 20;
+          g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 });
+          // Top-left corner
+          g.moveTo(12, 12);
+          g.lineTo(12 + cornerSize, 12);
+          g.lineTo(12, 12 + cornerSize);
+          g.closePath();
+          g.fill();
+          // Top-right corner
+          g.moveTo(width - 12, 12);
+          g.lineTo(width - 12 - cornerSize, 12);
+          g.lineTo(width - 12, 12 + cornerSize);
+          g.closePath();
+          g.fill();
         }}
         data-testid="menu-panel-background"
         layout={{
@@ -147,48 +164,66 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         }}
       />
 
-      {/* Menu Title with layout */}
+      {/* Menu Title Section */}
       <pixiContainer
         layout={{
           width: "100%",
-          height: 40,
+          height: 50,
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
+          marginBottom: 8,
         }}
       >
         <KoreanText
           text={{ korean: "메인 메뉴", english: "Main Menu" }}
           style={{
-            fontSize: 18,
+            fontSize: 22,
             fill: KOREAN_COLORS.ACCENT_GOLD,
             align: "center",
             fontWeight: "bold",
             fontFamily: FONT_FAMILY.KOREAN,
           }}
           x={0}
-          y={0}
+          y={-10}
           anchor={0.5}
           data-testid="menu-title"
         />
+        
+        {/* Subtitle for better context */}
+        <pixiText
+          text="Select your path in the Black Trigram"
+          style={{
+            fontSize: 12,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            align: "center",
+            fontStyle: "italic",
+            fontFamily: FONT_FAMILY.PRIMARY,
+          }}
+          x={0}
+          y={12}
+          anchor={0.5}
+          data-testid="menu-subtitle"
+        />
       </pixiContainer>
 
-      {/* Menu Items Container with flex layout */}
+      {/* Menu Items Container - Full width buttons */}
       <pixiContainer
         data-testid="main-menu-buttons"
         layout={{
           width: "100%",
           flexGrow: 1,
           flexDirection: "column",
-          gap: 12,
-          paddingLeft: 20,
-          paddingRight: 20,
+          gap: 16,
+          paddingLeft: 24,
+          paddingRight: 24,
           justifyContent: "center",
         }}
       >
         {menuItems.map((item, index) => {
           const isSelected = selectedIndex === index;
           const isHovered = hoveredItem === index;
+          const buttonWidth = width - 48; // Full width minus padding
 
           return (
             <pixiContainer
@@ -196,45 +231,65 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
               data-testid={`menu-item-${item.mode}`}
               layout={{
                 width: "100%",
-                height: 50,
+                height: 60, // Increased height for better visual impact
                 flexShrink: 0,
               }}
             >
-              {/* Menu Item Background */}
+              {/* Enhanced Menu Item Background */}
               <pixiGraphics
                 draw={(g) => {
                   g.clear();
 
-                  // Fill with appropriate color based on state
-                  g.fill({
-                    color: isSelected
-                      ? KOREAN_COLORS.ACCENT_GOLD
-                      : isHovered
-                      ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
-                      : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                    alpha: isSelected ? 0.9 : 0.8,
-                  });
-                  g.roundRect(0, 0, width - 40, 50, 5);
+                  // Main button background
+                  if (isSelected) {
+                    // Selected state - solid color with enhanced visual
+                    g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
+                  } else {
+                    // Normal/hover state
+                    g.fill({
+                      color: isHovered
+                        ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
+                        : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                      alpha: 0.9,
+                    });
+                  }
+                  g.roundRect(0, 0, buttonWidth, 60, 8);
                   g.fill();
 
-                  // Add border for visual enhancement
+                  // Enhanced border
                   g.stroke({
-                    width: 1,
+                    width: 2,
                     color: isSelected
-                      ? KOREAN_COLORS.ACCENT_ORANGE
+                      ? KOREAN_COLORS.UI_BACKGROUND_DARK
                       : isHovered
                       ? KOREAN_COLORS.ACCENT_GOLD
                       : KOREAN_COLORS.PRIMARY_CYAN,
-                    alpha: isSelected ? 0.9 : 0.6,
+                    alpha: isSelected ? 1.0 : 0.7,
                   });
-                  g.roundRect(0, 0, width - 40, 50, 5);
+                  g.roundRect(0, 0, buttonWidth, 60, 8);
                   g.stroke();
 
-                  // Add highlight indicator for selected item
+                  // Selection indicator bar (left side) - using separate roundRect calls
                   if (isSelected) {
-                    g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.9 });
-                    g.roundRect(0, 0, 4, 50, 2);
+                    g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 1.0 });
+                    // Create left-rounded rectangle manually
+                    g.roundRect(0, 0, 6, 60, 8);
                     g.fill();
+                    // Cover the right side to make it square
+                    g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 1.0 });
+                    g.rect(2, 0, 4, 60);
+                    g.fill();
+                  }
+
+                  // Subtle inner glow for selected
+                  if (isSelected) {
+                    g.stroke({
+                      width: 1,
+                      color: KOREAN_COLORS.ACCENT_CYAN,
+                      alpha: 0.8,
+                    });
+                    g.roundRect(2, 2, buttonWidth - 4, 56, 6);
+                    g.stroke();
                   }
                 }}
                 interactive={true}
@@ -247,13 +302,15 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                 }}
               />
 
-              {/* Menu Item Text with proper layout positioning */}
+              {/* Menu Item Text - Properly centered */}
               <pixiContainer
                 layout={{
                   width: "100%",
                   height: "100%",
                   alignItems: "center",
                   justifyContent: "center",
+                  paddingLeft: isSelected ? 20 : 16, // Account for selection indicator
+                  paddingRight: 16,
                 }}
               >
                 <KoreanText
@@ -262,7 +319,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                     english: item.english,
                   }}
                   style={{
-                    fontSize: 16,
+                    fontSize: 18,
                     fill: isSelected
                       ? KOREAN_COLORS.UI_BACKGROUND_DARK
                       : KOREAN_COLORS.TEXT_PRIMARY,
@@ -274,29 +331,64 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                   y={0}
                   anchor={0.5}
                 />
+
+                {/* Menu item number indicator */}
+                <pixiText
+                  text={(index + 1).toString()}
+                  style={{
+                    fontSize: 14,
+                    fill: isSelected
+                      ? KOREAN_COLORS.UI_BACKGROUND_DARK
+                      : KOREAN_COLORS.TEXT_SECONDARY,
+                    align: "right",
+                    fontWeight: "bold",
+                    fontFamily: FONT_FAMILY.PRIMARY,
+                  }}
+                  x={buttonWidth / 2 - 20}
+                  y={0}
+                  anchor={{ x: 1, y: 0.5 }}
+                />
               </pixiContainer>
             </pixiContainer>
           );
         })}
       </pixiContainer>
 
-      {/* Keyboard navigation hint with layout */}
+      {/* Enhanced Navigation Hint */}
       <pixiContainer
         layout={{
           width: "100%",
-          height: 30,
+          height: 40,
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
+          marginTop: 12,
         }}
       >
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.6 });
+            g.roundRect(0, 0, width - 48, 40, 6);
+            g.fill();
+            g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.4 });
+            g.roundRect(0, 0, width - 48, 40, 6);
+            g.stroke();
+          }}
+          layout={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+          }}
+        />
+        
         <KoreanText
           text={{
-            korean: "방향키로 메뉴 이동, Enter 키로 선택",
-            english: "Use arrow keys to navigate, Enter to select",
+            korean: "방향키/마우스로 이동 • Enter/클릭으로 선택 • 숫자키로 바로가기",
+            english: "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
           }}
           style={{
-            fontSize: 12,
+            fontSize: 11,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
             align: "center",
             fontStyle: "italic",

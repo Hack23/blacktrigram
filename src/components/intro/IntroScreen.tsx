@@ -32,7 +32,7 @@ const ControlsSection = lazy(() => import("./components/ControlsSection"));
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
-import { KOREAN_COLORS } from "../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { KoreanHeader } from "../ui/KoreanHeader";
 
 // Responsive dimensions
@@ -416,7 +416,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        padding: 0, // Remove padding for full screen
+        padding: 0,
         gap: isMobile ? 8 : 16,
       }}
     >
@@ -521,14 +521,14 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         layout={{
           width: "100%",
           flexGrow: 1,
-          flexDirection: "column", // Always vertical for full screen
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
           gap: isMobile ? 12 : 20,
           paddingLeft: isMobile ? 20 : 40,
           paddingRight: isMobile ? 20 : 40,
           paddingTop: 10,
-          paddingBottom: 10,
+          paddingBottom: 60, // Add bottom padding to prevent footer overlap
         }}
       >
         {/* Main Menu Section - Only shown when in menu mode */}
@@ -604,45 +604,100 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         )}
       </pixiContainer>
 
-      {/* Compact Footer */}
+      {/* Fixed Footer with proper spacing */}
       <pixiContainer
         data-testid="intro-footer"
         layout={{
           width: "100%",
-          height: isMobile ? 40 : 50,
+          height: isMobile ? 60 : 70, // Increased height for better spacing
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          gap: 4,
+          flexDirection: "column", // Stack vertically to prevent overlap
+          gap: 6,
+          paddingBottom: 10,
         }}
       >
-        <pixiText
-          text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
-          style={{
-            fontSize: isMobile ? 9 : 12,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-            align: "center",
-            fontStyle: "italic",
+        {/* Background for footer */}
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            // Subtle gradient background
+            const gradient = new PIXI.FillGradient(0, 0, 0, isMobile ? 60 : 70);
+            gradient.addColorStop(0, 0x000000);
+            gradient.addColorStop(0.5, 0x1a1a2e);
+            gradient.addColorStop(1, 0x0a0a0f);
+            g.fill(gradient);
+            g.rect(0, 0, screenWidth, isMobile ? 60 : 70);
+            g.fill();
+
+            // Top border
+            g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 });
+            g.moveTo(0, 0);
+            g.lineTo(screenWidth, 0);
+            g.stroke();
           }}
-          anchor={0.5}
-          data-testid="footer-motto"
+          layout={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+          }}
         />
 
-        <pixiText
-          text={`Version ${APP_VERSION} | Open Source Korean Martial Arts Game`}
-          style={{
-            fontSize: isMobile ? 8 : 10,
-            fill: KOREAN_COLORS.SECONDARY_MAGENTA,
-            align: "center",
-            fontWeight: "bold",
+        {/* Main motto text */}
+        <pixiContainer
+          layout={{
+            width: "100%",
+            height: 24,
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
           }}
-          interactive={true}
-          onPointerDown={() =>
-            window.open("https://github.com/Hack23/blacktrigram", "_blank")
-          }
-          anchor={0.5}
-          data-testid="footer-link"
-        />
+        >
+          <pixiText
+            text="흑괘의 길을 걸어라 - Walk the Path of the Black Trigram"
+            style={{
+              fontSize: isMobile ? 11 : 14,
+              fill: KOREAN_COLORS.ACCENT_CYAN,
+              align: "center",
+              fontStyle: "italic",
+              fontWeight: "bold",
+              fontFamily: FONT_FAMILY.KOREAN,
+            }}
+            anchor={0.5}
+            data-testid="footer-motto"
+          />
+        </pixiContainer>
+
+        {/* Version and link text */}
+        <pixiContainer
+          layout={{
+            width: "100%",
+            height: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <pixiText
+            text={`Version ${APP_VERSION} | Open Source Korean Martial Arts Game`}
+            style={{
+              fontSize: isMobile ? 9 : 11,
+              fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+              align: "center",
+              fontWeight: "normal",
+              fontFamily: FONT_FAMILY.PRIMARY,
+            }}
+            interactive={true}
+            onPointerDown={() =>
+              window.open("https://github.com/Hack23/blacktrigram", "_blank")
+            }
+            anchor={0.5}
+            data-testid="footer-link"
+          />
+        </pixiContainer>
       </pixiContainer>
     </pixiContainer>
   );
