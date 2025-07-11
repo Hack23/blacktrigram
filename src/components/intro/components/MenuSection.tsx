@@ -86,20 +86,21 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   }, []);
 
   const isMobile = width < 480;
-  const buttonHeight = isMobile ? 44 : 54;
-  const buttonFontSize = isMobile ? 16 : 20;
-  const menuPanelRadius = isMobile ? 10 : 16;
-  const buttonSpacing = isMobile ? 12 : 18;
+  const buttonHeight = isMobile ? 28 : 32; // Further reduced button height
+  const buttonFontSize = isMobile ? 10 : 12; // Further reduced font size
+  const menuPanelRadius = isMobile ? 6 : 8;
+  const buttonSpacing = isMobile ? 4 : 6; // Reduced spacing
 
   // Calculate proper spacing to prevent overlap
-  const titleHeight = isMobile ? 48 : 60;
+  const titleHeight = isMobile ? 50 : 60; // Title area
+  const instructionsHeight = isMobile ? 60 : 70; // Instructions area at bottom - increased
+  const padding = isMobile ? 16 : 20; // Increased padding
+  // Calculate available space for buttons
+  const availableHeight =
+    height - titleHeight - instructionsHeight - padding * 3;
   const buttonsAreaHeight = (buttonHeight + buttonSpacing) * menuItems.length;
-  const instructionsHeight = isMobile ? 40 : 50;
-  const totalContentHeight =
-    titleHeight + buttonsAreaHeight + instructionsHeight;
+  const useCompactLayout = buttonsAreaHeight > availableHeight;
 
-  // Ensure we have enough space, otherwise adjust layout
-  const useCompactLayout = totalContentHeight > height - 64; // 64px for padding
 
   return (
     <pixiContainer
@@ -301,72 +302,53 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         })}
       </pixiContainer>
 
-      {/* Navigation hint - FIXED POSITIONING */}
+      {/* Navigation Instructions - Fixed positioning */}
       <pixiContainer
+        x={0}
+        y={height - instructionsHeight}
         layout={{
-          position: "absolute", // Use absolute positioning
-          bottom: isMobile ? 16 : 24, // Position from bottom of container
-          left: 0,
-          right: 0,
-          width: "100%",
+          width: width,
           height: instructionsHeight,
           alignItems: "center",
           justifyContent: "center",
+          flexDirection: "column",
+          gap: isMobile ? 6 : 8,
+          padding: isMobile ? 8 : 12,
         }}
         data-testid="navigation-hint-container"
       >
-        {/* Background for instructions to ensure visibility */}
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            // Semi-transparent background to ensure text visibility
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-            g.roundRect(-10, -5, width - 20, instructionsHeight - 10, 4);
-            g.fill();
-
-            // Subtle border
-            g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.3,
-            });
-            g.roundRect(-10, -5, width - 20, instructionsHeight - 10, 4);
-            g.stroke();
-          }}
-          layout={{
-            position: "absolute",
-            alignSelf: "center",
-          }}
-        />
-
-        <KoreanText
-          text={{
-            korean: useCompactLayout
-              ? "방향키 이동 • Enter 선택"
-              : "방향키/마우스 이동 • Enter/클릭 선택 • 숫자키 바로가기",
-            english: useCompactLayout
-              ? "Arrow keys • Enter to select"
-              : "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
-          }}
+        {/* Single, clear instruction line */}
+        <pixiText
+          text="방향키/마우스로 이동 • Enter/클릭으로 선택 • 숫자키로 바로가기"
           style={{
-            fontSize: useCompactLayout
-              ? isMobile
-                ? 9
-                : 11
-              : isMobile
-              ? 11
-              : 13,
+            fontSize: isMobile ? 10 : 12,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
             align: "center",
-            fontStyle: "italic",
             fontFamily: FONT_FAMILY.KOREAN,
-            wordWrap: true,
-            wordWrapWidth: width - 40,
+            fontWeight: "normal",
+            letterSpacing: 0.5,
           }}
           x={width / 2}
-          y={instructionsHeight / 2}
+          y={instructionsHeight / 2 - (isMobile ? 8 : 10)}
           anchor={0.5}
-          data-testid="menu-navigation-hint"
+          data-testid="menu-navigation-hint-korean"
+        />
+
+        {/* English instruction */}
+        <pixiText
+          text="Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts"
+          style={{
+            fontSize: isMobile ? 9 : 10,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            align: "center",
+            fontFamily: FONT_FAMILY.KOREAN,
+            fontWeight: "normal",
+            letterSpacing: 0.4,
+          }}
+          x={width / 2}
+          y={instructionsHeight / 2 + (isMobile ? 8 : 10)}
+          anchor={0.5}
+          data-testid="menu-navigation-hint-english"
         />
       </pixiContainer>
     </pixiContainer>
