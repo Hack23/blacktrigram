@@ -521,7 +521,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           layout={{
             position: "relative",
             alignSelf: "center",
-            bottom:100
+            bottom: 100,
           }}
           data-testid="trigram-symbols"
         >
@@ -714,31 +714,52 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         {/* Version and link text */}
         <pixiContainer
           layout={{
-            width: "100%",
-            height: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            flexDirection: "row",
+            position: "relative",
+            alignSelf: "center",
+            bottom: 5,
           }}
         >
           <pixiText
-            text={`Version ${APP_VERSION} | Open Source Korean Martial Arts Game`}
+            text="Open Source Korean Martial Arts Game by Hack23"
             style={{
-              fontSize: isMobile ? 9 : 11,
+              fontSize: isMobile ? 9 : 12,
               fill: KOREAN_COLORS.SECONDARY_MAGENTA,
               align: "center",
-              fontWeight: "normal",
-              fontFamily: FONT_FAMILY.PRIMARY,
+              fontWeight: "bold",
             }}
             interactive={true}
-            onPointerDown={() =>
+            onPointerTap={() =>
               window.open("https://github.com/Hack23/blacktrigram", "_blank")
             }
             anchor={0.5}
             data-testid="footer-link"
-            x={screenWidth / 2}
-            y={0}
+          />
+        </pixiContainer>
+
+        <pixiContainer
+          layout={{
+            position: "relative",
+            alignSelf: "center",
+            bottom: -10,
+          }}
+        >
+          <pixiText
+            text={`Version ${APP_VERSION}`}
+            style={{
+              fontSize: isMobile ? 9 : 12,
+              fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+              align: "center",
+              fontWeight: "bold",
+            }}
+            interactive={true}
+            onPointerTap={() =>
+              window.open(
+                `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
+                "_blank"
+              )
+            }
+            anchor={0.5}
+            data-testid="footer-link"
           />
         </pixiContainer>
       </pixiContainer>
