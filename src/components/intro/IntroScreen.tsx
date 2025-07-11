@@ -469,16 +469,36 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         />
       )}
 
-      {/* Compact Logo Section */}
+      <pixiContainer
+        layout={{
+          position: "relative",
+          alignSelf: "center",
+          bottom: -40,
+        }}
+        data-testid="main-title-container"
+      >
+        {/* Animated Korean/English Title */}
+        <KoreanHeader
+          title={{ korean: "흑괘", english: "Black Trigram" }}
+          subtitle={{
+            korean: "한국 무술 시뮬레이터",
+            english: "Korean Martial Arts Simulator",
+          }}
+          x={0}
+          y={0}
+          data-testid="main-title"
+        />
+      </pixiContainer>
+
+      {/* Dynamic Logo with glow effect */}
       <pixiContainer
         data-testid="logo-section"
         layout={{
-          width: "100%",
-          height: logoSize + 40,
+          flexGrow: 1,
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          marginTop: isMobile ? 5 : 10,
+          justifyContent: "flex-start",
+          bottom: -60,
         }}
       >
         {logoTexture && (
@@ -487,30 +507,43 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             scale={{ x: logoSize / 512, y: logoSize / 512 }}
             anchor={{ x: 0.5, y: 0.5 }}
             alpha={1}
+            angle={Math.sin(Date.now() * 0.0005) * 2} // Subtle rotation
             data-testid="main-logo"
             layout={{
               alignSelf: "center",
+              position: "relative",
             }}
           />
         )}
 
-        {/* Compact Title */}
+        {/* Trigram Symbols with pulse animation */}
         <pixiContainer
           layout={{
-            position: "absolute",
-            bottom: -30,
+            position: "relative",
             alignSelf: "center",
+            bottom:100
           }}
+          data-testid="trigram-symbols"
         >
-          <KoreanHeader
-            title={{ korean: "흑괘", english: "Black Trigram" }}
-            subtitle={{
-              korean: "한국 무술 시뮬레이터",
-              english: "Korean Martial Arts Simulator",
+          <pixiText
+            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
+            style={{
+              fontSize: isMobile ? 20 : 28,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              align: "center",
+              letterSpacing: isMobile ? 8 : 12,
+              dropShadow: {
+                color: KOREAN_COLORS.PRIMARY_CYAN,
+                distance: 3 + Math.sin(Date.now() * 0.002) * 2,
+                alpha: 0.5 + Math.sin(Date.now() * 0.002) * 0.3,
+              },
             }}
-            x={0}
-            y={0}
-            data-testid="main-title"
+            anchor={0.5}
+            scale={{
+              x: 1 + Math.sin(Date.now() * 0.001) * 0.05,
+              y: 1 + Math.sin(Date.now() * 0.001) * 0.05,
+            }}
+            data-testid="trigram-symbols-text"
           />
         </pixiContainer>
       </pixiContainer>
@@ -527,8 +560,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           gap: isMobile ? 12 : 20,
           paddingLeft: isMobile ? 20 : 40,
           paddingRight: isMobile ? 20 : 40,
-          paddingTop: 100,
-          paddingBottom: 60, // Add bottom padding to prevent footer overlap
+          paddingTop: 10,
+          paddingBottom: 10, // Add bottom padding to prevent footer overlap
         }}
       >
         {/* Main Menu Section - Only shown when in menu mode */}
@@ -553,7 +586,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                     ? screenWidth * 0.9
                     : Math.min(800, screenWidth * 0.7)
                 }
-                height={isMobile ? 500 : 400}
+                height={isMobile ? 400 : 300}
                 x={0}
                 y={0}
                 data-testid="main-menu-section"
@@ -579,7 +612,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                     ? screenWidth * 0.9
                     : Math.min(800, screenWidth * 0.7)
                 }
-                height={isMobile ? 500 : 400}
+                height={isMobile ? 400 : 300}
                 x={0}
                 y={0}
                 isMobile={isMobile}
@@ -632,7 +665,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             g.fill();
 
             // Top border
-            g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 });
+            g.stroke({
+              width: 1,
+              color: KOREAN_COLORS.ACCENT_GOLD,
+              alpha: 0.3,
+            });
             g.moveTo(0, 0);
             g.lineTo(screenWidth, 0);
             g.stroke();
