@@ -48,13 +48,5 @@ else
     done
 fi
 
-# Setup D-Bus with better error handling
-echo "🔧 Setting up D-Bus..."
-if [ ! -e "/var/run/dbus/system_bus_socket" ]; then
-    sudo mkdir -p /var/run/dbus
-    if ! pgrep dbus-daemon > /dev/null; then
-        sudo dbus-daemon --system --fork
-    fi
-fi
 
 echo "✅ Display environment is ready."
