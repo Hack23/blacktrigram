@@ -10,6 +10,24 @@ declare module "react-reconciler/constants" {
   export * from "react-reconciler/constants.js";
 }
 
+import {
+  LayoutAnimatedSprite,
+  LayoutBitmapText,
+  LayoutContainer,
+  LayoutGifSprite,
+  LayoutGraphics,
+  LayoutHTMLText,
+  LayoutMesh,
+  LayoutMeshPlane,
+  LayoutMeshRope,
+  LayoutMeshSimple,
+  LayoutNineSliceSprite,
+  LayoutPerspectiveMesh,
+  LayoutSprite,
+  LayoutText,
+  LayoutTilingSprite,
+  LayoutView,
+} from "@pixi/layout/components";
 import "@pixi/react";
 import type * as UI from "@pixi/ui";
 import type * as PIXI from "pixi.js";
@@ -74,7 +92,6 @@ declare module "@pixi/react" {
     layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
     layoutView: PixiReactElementProps<typeof LayoutView>;
     layoutSprite: PixiReactElementProps<typeof LayoutSprite>;
-    layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
     layoutNineSliceSprite: PixiReactElementProps<typeof LayoutNineSliceSprite>;
     layoutTilingSprite: PixiReactElementProps<typeof LayoutTilingSprite>;
     layoutAnimatedSprite: PixiReactElementProps<typeof LayoutAnimatedSprite>;
@@ -119,7 +136,6 @@ declare global {
       layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
       layoutView: PixiReactElementProps<typeof LayoutView>;
       layoutSprite: PixiReactElementProps<typeof LayoutSprite>;
-      layoutContainer: PixiReactElementProps<typeof LayoutContainer>;
       layoutNineSliceSprite: PixiReactElementProps<
         typeof LayoutNineSliceSprite
       >;
