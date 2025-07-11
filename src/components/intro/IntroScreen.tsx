@@ -574,6 +574,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 maxWidth: 800,
                 flexShrink: 0,
               }}
+              data-testid="menu-section-container" // Add this test-id
             >
               <MenuSection
                 menuItems={MENU_ITEMS}
@@ -600,6 +601,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 maxWidth: 800,
                 flexShrink: 0,
               }}
+              data-testid="archetype-section-container" // Add this test-id
             >
               <ArchetypeDisplay
                 archetypes={archetypeData}
@@ -631,6 +633,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               alignItems: "center",
               justifyContent: "center",
             }}
+            data-testid="section-content-container" // Add this test-id
           >
             {renderSectionContent()}
           </pixiContainer>

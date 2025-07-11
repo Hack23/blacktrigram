@@ -101,7 +101,6 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   const buttonsAreaHeight = (buttonHeight + buttonSpacing) * menuItems.length;
   const useCompactLayout = buttonsAreaHeight > availableHeight;
 
-
   return (
     <pixiContainer
       x={x}
@@ -115,7 +114,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         gap: useCompactLayout ? (isMobile ? 12 : 16) : isMobile ? 18 : 28,
         padding: isMobile ? 16 : 32,
       }}
-      data-testid="menu-section"
+      data-testid="main-menu-section"
     >
       {/* Enhanced Panel Background */}
       <pixiGraphics
@@ -267,6 +266,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                   width: "100%",
                   height: "100%",
                 }}
+                data-testid={`menu-button-${item.mode}`} // Add this for better testing
               />
 
               {/* Button Text */}
@@ -296,6 +296,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                 x={buttonWidth / 2}
                 y={buttonHeight / 2}
                 anchor={0.5}
+                data-testid={`menu-text-${item.mode}`} // Add this for text testing
               />
             </pixiContainer>
           );
