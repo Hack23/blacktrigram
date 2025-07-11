@@ -6,17 +6,20 @@
       "installDirectlyFromGitHubRelease": true,
       "version": "latest"
     },
+    // Using a single feature for Node.js for simplicity
     "ghcr.io/devcontainers/features/node:1": {
       "nodeGypDependencies": true,
-      "version": "24",
-      "nvmVersion": "latest"
+      "version": "22" // Aligned with base image
     },
     "ghcr.io/devcontainers/features/git:1": {
       "ppa": true,
       "version": "latest"
     }
   },
-  "onCreateCommand": "sudo apt-get update && sudo apt-get install -y graphviz libgtk2.0-0 libgtk-3-0 ffmpeg libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb dbus dbus-x11 fonts-noto fonts-noto-cjk fonts-noto-cjk-extra && sudo apt-get update && sudo apt-get install -y ca-certificates fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libxrender1 libxshmfence1 xdg-utils wget && wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && echo \"deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/google-chrome.list && sudo apt-get update && sudo apt-get install -y google-chrome-stable && .devcontainer/init-xvfb.sh",
+
+  // Use initializeCommand for prerequisite setup before other commands.
+  "postStartCommand": ".devcontainer/init-xvfb.sh",
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -26,12 +29,9 @@
         // GitHub extensions
         "GitHub.copilot",
         "GitHub.copilot-chat",
-        "github.vscode-github-actions",
 
         // TypeScript/Node support
-        "ms-vscode.vscode-typescript-next",
         "christian-kohler.npm-intellisense",
-        "ritwickdey.LiveServer",
 
         // Keep minimal formatting support
         "esbenp.prettier-vscode"
@@ -40,78 +40,28 @@
       "settings": {
         // Import optimized settings from .vscode/settings.json
         "typescript.tsdk": "./node_modules/typescript/lib",
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": "explicit",
-          "source.organizeImports": "explicit"
-        },
-
-        "eslint.workingDirectories": [
-          { "mode": "auto" },
-          { "directory": "./src", "changeProcessCWD": true },
-          { "directory": "./cypress", "changeProcessCWD": true }
-        ],
-        "eslint.options": {
-          "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs"
-        },
-        "typescript.updateImportsOnFileMove.enabled": "always",
-        "javascript.updateImportsOnFileMove.enabled": "always",
-        "typescript.suggest.completeFunctionCalls": true,
-
-        // Better import organization
-        "typescript.preferences.importModuleSpecifier": "shortest",
-        "javascript.preferences.importModuleSpecifier": "shortest",
-
-
-        // Ensure Copilot prefers TypeScript file extensions
-        "github.copilot.fileTypes": {
-          "javascript": "typescript",
-          "javascriptreact": "typescriptreact"
-        }
+        "editor.formatOnSave": true
       }
     }
   },
 
-  // Enhanced post-create commands with better error handling
-  "postCreateCommand": "npm install -g npm@latest typescript@latest eslint@latest && npm ci && npm run build && npx cypress verify",
+  // Split heavy installations across lifecycle commands
+  // Removed 'npm run build' and 'npx cypress verify' to speed up creation and reduce resource load.
+  "postCreateCommand": "npm install -g npm@latest typescript@latest eslint@latest && npm ci",
 
-  // Optimized post-start command
-  "postStartCommand": "npm run build && echo '✓ Development environment ready'",
 
-  "remoteUser": "node",
 
-  // Enhanced environment variables for better performance
+  // Enhanced environment for stability
   "containerEnv": {
-    "CYPRESS_VERIFY_TIMEOUT": "100000",
-    "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/dbus/system_bus_socket",
     "DISPLAY": ":99",
-    "NODE_OPTIONS": "--max-old-space-size=8192 --no-warnings",
     "NPM_CONFIG_UPDATE_NOTIFIER": "false",
-    "NPM_CONFIG_FUND": "false",
-    "TERM": "xterm-256color",
-    "LANG": "en_US.UTF-8",
-    "LC_ALL": "en_US.UTF-8"
+    "NPM_CONFIG_FUND": "false"
   },
-
-  // Enhanced runtime arguments
-  "runArgs": [
-    "--privileged",
-    "--security-opt",
-    "seccomp=unconfined",
-    "--memory=8g",
-    "--cpus=4"
-  ],
-
-  // Mount optimizations
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
 
   "shutdownAction": "none",
 
   // Forward necessary ports
-  "forwardPorts": [5173, 3000, 8080],
+  "forwardPorts": [5173],
   "portsAttributes": {
     "5173": {
       "label": "Vite Dev Server",

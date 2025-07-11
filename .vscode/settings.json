@@ -1,15 +1,27 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
-
-  // Enhanced TypeScript settings
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.suggest.completeFunctionCalls": true,
-  "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+  // TypeScript settings - enhanced for quality
   "typescript.preferences.importModuleSpecifier": "shortest",
-  "typescript.preferences.includePackageJsonAutoImports": "on",
-  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggestionActions.enabled": true,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.preferences.useAliasesForRenames": false,
+  "typescript.suggest.completeJSDocs": true,
   "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.parameterTypes.enabled": true,
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.preferences.renameMatchingJsxTags": true,
+  "typescript.tsserver.maxTsServerMemory": 6144,
+  "typescript.tsserver.pluginPaths": [],
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents"
+  },
+  "typescript.tsserver.log": "off",
 
   // JavaScript equivalent settings
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -26,21 +38,16 @@
   "github.copilot.editor.enableCodeActions": true,
   "github.copilot.editor.iterativeEditing": true,
   "github.copilot.advanced": {
-    "length": 2000,
-    "temperature": 0.1,
-    "top_p": 1,
-    "inlineSuggestEnable": true
+    "length": 2000
   },
 
   // Editor settings for better completion
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnType": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit",
-    "source.removeUnusedImports": "explicit"
+    "source.organizeImports": "explicit"
   },
   "editor.suggest.insertMode": "replace",
   "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -50,6 +57,31 @@
   "editor.suggestSelection": "first",
   "editor.tabCompletion": "on",
   "editor.wordBasedSuggestions": "matchingDocuments",
+  "editor.minimap.enabled": false,
+  "breadcrumbs.enabled": false,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 10,
+
+  // Default formatter configuration for different file types
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 
   // IntelliSense and completion settings
   "editor.quickSuggestions": {
@@ -102,23 +134,25 @@
     "**/.git": true,
     "**/coverage": true
   },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true
+  },
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
     "**/build/**": true,
-    "**/.git/**": true
+    "**/.git/**": true,
+    "**/coverage/**": true
   },
 
-  // Korean language support
-  "files.associations": {
-    "*.ko": "plaintext",
-    "*.한국어": "plaintext"
-  },
+  // Connection stability improvements
+  "remote.autoForwardPorts": true,
+  "remote.restoreForwardedPorts": true,
+  "workbench.startupEditor": "none",
 
-  // Terminal settings
-  "terminal.integrated.defaultProfile.linux": "bash",
-  "terminal.integrated.env.linux": {
-    "NODE_OPTIONS": "--max-old-space-size=8192",
-    "DISPLAY": ":99"
-  }
+  // Reduce extension load
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false
 }

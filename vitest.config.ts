@@ -26,7 +26,9 @@ export default defineConfig({
       exclude: [
         // top-level helpers
         "cypress.reporter.config.js",
-        "docs/assets/**",
+        "**/docs/**",
+        "**/dist/**",
+        "**/public/**",
         // built bundles
         "*.js",
         "blacktrigram/*.js",
