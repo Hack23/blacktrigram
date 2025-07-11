@@ -65,7 +65,13 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedIndex, menuItems, onSelectedIndexChange, onModeSelect, onPlaySFX]);
+  }, [
+    selectedIndex,
+    menuItems,
+    onSelectedIndexChange,
+    onModeSelect,
+    onPlaySFX,
+  ]);
 
   // Focus ring for accessibility
   useEffect(() => {
@@ -84,13 +90,14 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   const buttonFontSize = isMobile ? 16 : 20;
   const menuPanelRadius = isMobile ? 10 : 16;
   const buttonSpacing = isMobile ? 12 : 18;
-  
+
   // Calculate proper spacing to prevent overlap
   const titleHeight = isMobile ? 48 : 60;
   const buttonsAreaHeight = (buttonHeight + buttonSpacing) * menuItems.length;
   const instructionsHeight = isMobile ? 40 : 50;
-  const totalContentHeight = titleHeight + buttonsAreaHeight + instructionsHeight;
-  
+  const totalContentHeight =
+    titleHeight + buttonsAreaHeight + instructionsHeight;
+
   // Ensure we have enough space, otherwise adjust layout
   const useCompactLayout = totalContentHeight > height - 64; // 64px for padding
 
@@ -104,7 +111,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: useCompactLayout ? (isMobile ? 12 : 16) : (isMobile ? 18 : 28),
+        gap: useCompactLayout ? (isMobile ? 12 : 16) : isMobile ? 18 : 28,
         padding: isMobile ? 16 : 32,
       }}
       data-testid="menu-section"
@@ -156,7 +163,13 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
       <KoreanText
         text={{ korean: "메인 메뉴", english: "Main Menu" }}
         style={{
-          fontSize: useCompactLayout ? (isMobile ? 18 : 24) : (isMobile ? 20 : 28),
+          fontSize: useCompactLayout
+            ? isMobile
+              ? 18
+              : 24
+            : isMobile
+            ? 20
+            : 28,
           fill: KOREAN_COLORS.ACCENT_GOLD,
           align: "center",
           fontWeight: "bold",
@@ -198,7 +211,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                 height: buttonHeight,
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: useCompactLayout ? 2 : (isMobile ? 6 : 10),
+                marginBottom: useCompactLayout ? 2 : isMobile ? 6 : 10,
               }}
               data-testid={`menu-item-${item.mode}`}
             >
@@ -206,16 +219,16 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
               <pixiGraphics
                 draw={(g) => {
                   g.clear();
-                  
+
                   // Button background
                   const bgColor = isSelected
                     ? KOREAN_COLORS.ACCENT_GOLD
                     : isHovered
                     ? KOREAN_COLORS.UI_BACKGROUND_LIGHT
                     : KOREAN_COLORS.UI_BACKGROUND_MEDIUM;
-                  
+
                   const bgAlpha = isSelected ? 0.98 : 0.92;
-                  
+
                   g.fill({ color: bgColor, alpha: bgAlpha });
                   g.roundRect(0, 0, buttonWidth, buttonHeight, 8);
                   g.fill();
@@ -226,14 +239,14 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                     : isHovered
                     ? KOREAN_COLORS.ACCENT_GOLD
                     : KOREAN_COLORS.PRIMARY_CYAN;
-                  
+
                   const borderAlpha = isSelected ? 1.0 : isHovered ? 0.8 : 0.7;
                   const borderWidth = isSelected ? 3 : 2;
-                  
-                  g.stroke({ 
-                    width: borderWidth, 
-                    color: borderColor, 
-                    alpha: borderAlpha 
+
+                  g.stroke({
+                    width: borderWidth,
+                    color: borderColor,
+                    alpha: borderAlpha,
                   });
                   g.roundRect(0, 0, buttonWidth, buttonHeight, 8);
                   g.stroke();
@@ -259,7 +272,9 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
               <pixiText
                 text={`${item.korean} (${item.english})`}
                 style={{
-                  fontSize: useCompactLayout ? (buttonFontSize - 2) : buttonFontSize,
+                  fontSize: useCompactLayout
+                    ? buttonFontSize - 2
+                    : buttonFontSize,
                   fill: isSelected
                     ? KOREAN_COLORS.UI_BACKGROUND_DARK
                     : isHovered
@@ -308,7 +323,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
             g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
             g.roundRect(-10, -5, width - 20, instructionsHeight - 10, 4);
             g.fill();
-            
+
             // Subtle border
             g.stroke({
               width: 1,
@@ -326,15 +341,21 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
 
         <KoreanText
           text={{
-            korean: useCompactLayout 
-              ? "방향키 이동 • Enter 선택" 
+            korean: useCompactLayout
+              ? "방향키 이동 • Enter 선택"
               : "방향키/마우스 이동 • Enter/클릭 선택 • 숫자키 바로가기",
             english: useCompactLayout
               ? "Arrow keys • Enter to select"
               : "Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts",
           }}
           style={{
-            fontSize: useCompactLayout ? (isMobile ? 9 : 11) : (isMobile ? 11 : 13),
+            fontSize: useCompactLayout
+              ? isMobile
+                ? 9
+                : 11
+              : isMobile
+              ? 11
+              : 13,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
             align: "center",
             fontStyle: "italic",

@@ -1,16 +1,27 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
-
-  // Enhanced TypeScript settings
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.suggest.completeFunctionCalls": true,
-  "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+  // TypeScript settings - enhanced for quality
   "typescript.preferences.importModuleSpecifier": "shortest",
-  "typescript.preferences.includePackageJsonAutoImports": "off",
-  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggestionActions.enabled": true,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.preferences.useAliasesForRenames": false,
+  "typescript.suggest.completeJSDocs": true,
   "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.parameterTypes.enabled": true,
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
-  "typescript.suggest.autoImports": false,
+  "typescript.preferences.renameMatchingJsxTags": true,
+  "typescript.tsserver.maxTsServerMemory": 6144,
+  "typescript.tsserver.pluginPaths": [],
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents"
+  },
+  "typescript.tsserver.log": "off",
 
   // JavaScript equivalent settings
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -27,10 +38,7 @@
   "github.copilot.editor.enableCodeActions": true,
   "github.copilot.editor.iterativeEditing": true,
   "github.copilot.advanced": {
-    "length": 2000,
-    "temperature": 0.1,
-    "top_p": 1,
-    "inlineSuggestEnable": true
+    "length": 2000
   },
 
   // Editor settings for better completion
@@ -49,6 +57,10 @@
   "editor.suggestSelection": "first",
   "editor.tabCompletion": "on",
   "editor.wordBasedSuggestions": "matchingDocuments",
+  "editor.minimap.enabled": false,
+  "breadcrumbs.enabled": false,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 10,
 
   // Default formatter configuration for different file types
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -122,14 +134,17 @@
     "**/.git": true,
     "**/coverage": true
   },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true
+  },
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
     "**/build/**": true,
     "**/.git/**": true,
-    "**/coverage/**": true,
-    "**/cypress/videos/**": true,
-    "**/cypress/screenshots/**": true
+    "**/coverage/**": true
   },
 
   // Connection stability improvements

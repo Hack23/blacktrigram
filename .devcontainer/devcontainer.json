@@ -29,12 +29,9 @@
         // GitHub extensions
         "GitHub.copilot",
         "GitHub.copilot-chat",
-        "github.vscode-github-actions",
 
         // TypeScript/Node support
-        "ms-vscode.vscode-typescript-next",
         "christian-kohler.npm-intellisense",
-        "ritwickdey.LiveServer",
 
         // Keep minimal formatting support
         "esbenp.prettier-vscode"
@@ -43,29 +40,7 @@
       "settings": {
         // Import optimized settings from .vscode/settings.json
         "typescript.tsdk": "./node_modules/typescript/lib",
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": "explicit",
-          "source.organizeImports": "explicit"
-        },
-
-        "eslint.workingDirectories": [{ "mode": "auto" }],
-        "eslint.options": {
-          "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs"
-        },
-        "typescript.updateImportsOnFileMove.enabled": "always",
-        "javascript.updateImportsOnFileMove.enabled": "always",
-        "typescript.suggest.completeFunctionCalls": true,
-
-        // Better import organization
-        "typescript.preferences.importModuleSpecifier": "shortest",
-        "javascript.preferences.importModuleSpecifier": "shortest",
-
-        // Ensure Copilot prefers TypeScript file extensions
-        "github.copilot.fileTypes": {
-          "javascript": "typescript",
-          "javascriptreact": "typescriptreact"
-        }
+        "editor.formatOnSave": true
       }
     }
   },
@@ -86,7 +61,7 @@
   "shutdownAction": "none",
 
   // Forward necessary ports
-  "forwardPorts": [5173, 3000, 8080],
+  "forwardPorts": [5173],
   "portsAttributes": {
     "5173": {
       "label": "Vite Dev Server",
