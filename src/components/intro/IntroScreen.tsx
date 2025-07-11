@@ -138,9 +138,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     const loadAssets = async () => {
       try {
         // Use more reliable asset paths
-        const bgPath = "/assets/visual/bg/intro/intro_bg_loop.png";
+        const bgPath = "/assets/visual/bg/intro/background.png";
         const logoPath = "/assets/visual/logo/black-trigram.png";
-        const dojangWallPath = "/assets/visual/bg/dojang/dojang_wall_tex.png";
+        const dojangWallPath = "/assets/visual/bg/intro/right-panel.png";
 
         const archetypePaths = {
           amsalja: "/assets/visual/archetypes/amsalja.png",
@@ -457,7 +457,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           texture={dojangWallTexture}
           width={screenWidth * 0.3}
           height={screenHeight}
-          alpha={0.2}
+          alpha={0.6}
           data-testid="dojang-wall-accent"
           layout={{
             position: "absolute",
@@ -498,7 +498,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          bottom: -60,
+          bottom: -20,
         }}
       >
         {logoTexture && (

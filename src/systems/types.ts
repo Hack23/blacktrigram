@@ -483,13 +483,10 @@ export interface AISystemConfig {
 export type { PixiApplication, PixiDisplayObject };
 
 // Player archetype data
-export const PLAYER_ARCHETYPES_DATA: Record<
-  PlayerArchetype,
-  PlayerArchetypeData
-> = {
+export const PLAYER_ARCHETYPES_DATA: Record<PlayerArchetype, PlayerArchetypeData> = {
   [PlayerArchetype.MUSA]: {
     id: "musa",
-    name: { korean: "무사", english: "Warrior" },
+    name: { korean: "무사 (Musa)", english: "Traditional Warrior" },
     description: {
       korean: "전통 무사의 길",
       english: "Path of the traditional warrior",
@@ -522,7 +519,7 @@ export const PLAYER_ARCHETYPES_DATA: Record<
 
   [PlayerArchetype.AMSALJA]: {
     id: "amsalja",
-    name: { korean: "암살자", english: "Assassin" },
+    name: { korean: "암살자 (Amsalja)", english: "Shadow Assassin" },
     description: {
       korean: "그림자 속의 효율성",
       english: "Efficiency from the shadows",
@@ -555,7 +552,7 @@ export const PLAYER_ARCHETYPES_DATA: Record<
 
   [PlayerArchetype.HACKER]: {
     id: "hacker",
-    name: { korean: "해커", english: "Hacker" },
+    name: { korean: "해커 (Hacker)", english: "Cyber Warrior" },
     description: {
       korean: "정보를 통한 힘",
       english: "Power through information",
@@ -588,7 +585,10 @@ export const PLAYER_ARCHETYPES_DATA: Record<
 
   [PlayerArchetype.JEONGBO_YOWON]: {
     id: "jeongbo_yowon",
-    name: { korean: "정보요원", english: "Agent" },
+    name: {
+      korean: "정보요원 (Jeongbo Yowon)",
+      english: "Intelligence Operative",
+    },
     description: {
       korean: "관찰을 통한 지식",
       english: "Knowledge through observation",
@@ -621,7 +621,10 @@ export const PLAYER_ARCHETYPES_DATA: Record<
 
   [PlayerArchetype.JOJIK_POKRYEOKBAE]: {
     id: "jojik_pokryeokbae",
-    name: { korean: "조직폭력배", english: "Gangster" },
+    name: {
+      korean: "조직폭력배 (Jojik Pokryeokbae)",
+      english: "Organized Crime",
+    },
     description: {
       korean: "무자비함을 통한 생존",
       english: "Survival through ruthlessness",
