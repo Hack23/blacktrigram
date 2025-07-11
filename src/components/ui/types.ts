@@ -5,109 +5,109 @@
  */
 
 // UI component imports
-import type { ReactNode } from "react";
 import type * as PIXI from "pixi.js";
+import type { ReactNode } from "react";
 import type { KoreanText } from "../../types";
 
 export interface BaseUIProps {
-    readonly x?: number;
-    readonly y?: number;
-    readonly width?: number;
-    readonly height?: number;
-    readonly alpha?: number;
-    readonly visible?: boolean;
-    readonly children?: ReactNode;
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+  readonly alpha?: number;
+  readonly visible?: boolean;
+  readonly children?: ReactNode;
 }
 
 export interface UITheme {
-    readonly primary: number;
-    readonly secondary: number;
-    readonly accent: number;
-    readonly background: number;
-    readonly text: number;
-    readonly border: number;
+  readonly primary: number;
+  readonly secondary: number;
+  readonly accent: number;
+  readonly background: number;
+  readonly text: number;
+  readonly border: number;
 }
 
 export interface MenuItem {
-    readonly id: string;
-    readonly label: KoreanText;
-    readonly action: () => void;
-    readonly disabled?: boolean;
-    readonly icon?: string;
+  readonly id: string;
+  readonly label: KoreanText;
+  readonly action: () => void;
+  readonly disabled?: boolean;
+  readonly icon?: string;
 }
 
 export interface Notification {
-    readonly id: string;
-    readonly type: "info" | "success" | "warning" | "error";
-    readonly title: KoreanText;
-    readonly message: KoreanText;
-    readonly duration?: number;
-    readonly timestamp: number;
+  readonly id: string;
+  readonly type: "info" | "success" | "warning" | "error";
+  readonly title: KoreanText;
+  readonly message: KoreanText;
+  readonly duration?: number;
+  readonly timestamp: number;
 }
 
 export interface ScreenNavigation {
-    readonly currentScreen: string;
-    readonly previousScreen?: string;
-    readonly navigate: (screen: string) => void;
-    readonly goBack: () => void;
+  readonly currentScreen: string;
+  readonly previousScreen?: string;
+  readonly navigate: (screen: string) => void;
+  readonly goBack: () => void;
 }
 
 export interface LoadingState {
-    readonly isLoading: boolean;
-    readonly progress?: number;
-    readonly message?: KoreanText;
+  readonly isLoading: boolean;
+  readonly progress?: number;
+  readonly message?: KoreanText;
 }
 
 export interface ErrorState {
-    readonly hasError: boolean;
-    readonly error?: Error;
-    readonly message?: KoreanText;
-    readonly retry?: () => void;
+  readonly hasError: boolean;
+  readonly error?: Error;
+  readonly message?: KoreanText;
+  readonly retry?: () => void;
 }
 
 export interface UIComponentProps {
-    readonly width?: number;
-    readonly height?: number;
-    readonly x?: number;
-    readonly y?: number;
-    readonly visible?: boolean;
-    readonly interactive?: boolean;
+  readonly width?: number;
+  readonly height?: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly visible?: boolean;
+  readonly interactive?: boolean;
 }
 
 export interface ComponentState {
-    readonly visible: boolean;
-    readonly interactive: boolean;
-    readonly loading: boolean;
-    readonly error?: string;
+  readonly visible: boolean;
+  readonly interactive: boolean;
+  readonly loading: boolean;
+  readonly error?: string;
 }
 
 export interface InteractionEvent {
-    readonly type: string;
-    readonly target: string;
-    readonly timestamp: number;
-    readonly data?: any;
+  readonly type: string;
+  readonly target: string;
+  readonly timestamp: number;
+  readonly data?: any;
 }
 
 export interface BaseComponentProps {
-    readonly x?: number;
-    readonly y?: number;
-    readonly width?: number;
-    readonly height?: number;
-    readonly visible?: boolean;
-    readonly interactive?: boolean;
-    readonly alpha?: number;
-    readonly rotation?: number;
-    readonly scale?: number | { x: number; y: number };
-    readonly anchor?: number | { x: number; y: number };
-    readonly pivot?: number | { x: number; y: number };
-    readonly tint?: number;
-    readonly blendMode?: PIXI.BLEND_MODES;
-    readonly filters?: PIXI.Filter[];
-    readonly mask?: PIXI.Container;
-    readonly renderable?: boolean;
-    readonly zIndex?: number;
-    readonly name?: string;
-    readonly accessibleTitle?: string;
-    readonly accessibleHint?: string;
-    readonly tabIndex?: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly width?: number;
+  readonly height?: number;
+  readonly visible?: boolean;
+  readonly interactive?: boolean;
+  readonly alpha?: number;
+  readonly rotation?: number;
+  readonly scale?: number | { x: number; y: number };
+  readonly anchor?: number | { x: number; y: number };
+  readonly pivot?: number | { x: number; y: number };
+  readonly tint?: number;
+  readonly blendMode?: PIXI.BLEND_MODES;
+  readonly filters?: PIXI.Filter[];
+  readonly mask?: PIXI.Container;
+  readonly renderable?: boolean;
+  readonly zIndex?: number;
+  readonly name?: string;
+  readonly accessibleTitle?: string;
+  readonly accessibleHint?: string;
+  readonly tabIndex?: number;
 }

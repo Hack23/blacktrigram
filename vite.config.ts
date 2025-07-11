@@ -45,10 +45,10 @@ export default defineConfig(({ command, mode }) => ({
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ["@pixi/react", "pixi.js", "react-reconciler", "howler"],
+    include: ["@pixi/react","@pixi/layout", "@pixi/ui", "pixi.js", "react-reconciler", "howler"],
     // Exclude heavy modules from dev pre-bundling to reduce TBT
     exclude: [
-      "@pixi/sound",
+      "@pixi/sound",      
       "src/types/constants/techniques.ts",
       "src/types/constants/combat.ts",
       "src/audio/placeholder-sounds.ts",
@@ -164,6 +164,7 @@ export default defineConfig(({ command, mode }) => ({
         "**/*.d.ts",
         "**/*.config.*",
         "dist/",
+        "**/docs/**",
         "coverage/",
         "cypress/",
         "**/placeholder-sounds.ts",
