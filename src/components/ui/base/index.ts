@@ -5,8 +5,6 @@
 
 export * from "./BaseButton";
 export * from "./korean-text";
-export * from "./KoreanPixiComponents";
-export * from "./PixiTestableComponents";
 export * from "./ResponsivePixiComponents";
 
 // Re-export component prop types
