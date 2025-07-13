@@ -8,7 +8,6 @@ import { usePlayerMovement } from "../../utils/inputSystem";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { DojangBackground } from "../game/DojangBackground";
-import { GameEngine } from "../game/GameEngine";
 import { HitEffectsLayer } from "../ui/HitEffectsLayer";
 import { PlayerVisuals } from "../ui/PlayerVisuals";
 import { CombatControls } from "./components/CombatControls";
@@ -663,17 +662,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         animate={true}
       />
 
-      {/* Game Engine for physics and combat logic */}
-      <GameEngine
-        width={width}
-        height={height}
-        player1={validPlayers[0]}
-        player2={validPlayers[1]}
-        onPlayerUpdate={(playerId, updates) => {
-          const playerIndex = playerId === validPlayers[0].id ? 0 : 1;
-          onPlayerUpdate(playerIndex, updates);
-        }}
-      />
 
       {/* Round Status Messages */}
       {!roundStarted && timeRemaining > 25 && (
