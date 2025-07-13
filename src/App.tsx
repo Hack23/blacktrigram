@@ -11,10 +11,6 @@ import { GameMode, PlayerArchetype } from "./types/common";
 import { usePixiExtensions } from "./utils/pixiExtensions";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
-// Remove direct import of EndScreen and TrainingScreen
-// import { EndScreen } from "./components/ui/EndScreen";
-// import { TrainingScreen } from "./components";
-
 // Lazy load heavy screens
 const EndScreen = lazy(() => import("./components/ui/EndScreen"));
 const TrainingScreen = lazy(
@@ -25,6 +21,9 @@ function App() {
   usePixiExtensions();
 
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
+  const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
+    PlayerArchetype.MUSA
+  );
   const [isGameActive, setIsGameActive] = useState(false);
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
   const [matchStats, setMatchStats] = useState<MatchStatistics | null>(null);
@@ -41,14 +40,11 @@ function App() {
 
   const handleApplicationReady = useCallback((app: any) => {
     if (app && typeof window !== "undefined") {
-      // Expose for testing
       exposePixiAppForTesting(app);
     }
   }, []);
 
-  // Fix: Move useEffect inside component body
   useEffect(() => {
-    // Alternative way to access PIXI app if needed
     const checkForApp = () => {
       const pixiApp = (window as any).pixiApp;
       if (pixiApp) {
@@ -57,26 +53,22 @@ function App() {
     };
 
     const timer = setInterval(checkForApp, 100);
-    setTimeout(() => clearInterval(timer), 5000); // Stop checking after 5 seconds
+    setTimeout(() => clearInterval(timer), 5000);
 
     return () => clearInterval(timer);
   }, [handleApplicationReady]);
 
-  // Fix: Ensure app is properly initialized
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        // Focus window for input handling
         window.focus();
 
-        // Set up global error handlers for audio issues
         window.addEventListener("error", (e) => {
           console.error("Global error:", e.error);
         });
 
         window.addEventListener("unhandledrejection", (e) => {
           console.error("Unhandled promise rejection:", e.reason);
-          // Prevent audio loading failures from failing tests
           if (
             e.reason?.message?.includes("Failed to load") ||
             e.reason?.message?.includes("no supported source")
@@ -89,78 +81,86 @@ function App() {
         console.log("🎯 Black Trigram app initialized");
       } catch (error) {
         console.error("Failed to initialize app:", error);
-        setAppReady(true); // Continue with fallback
+        setAppReady(true);
       }
     };
 
     initializeApp();
   }, []);
 
-  const handleGameStart = useCallback((mode: GameMode) => {
-    console.log("🎮 Starting game mode:", mode);
-    setGameMode(mode);
-    setIsGameActive(true);
-    setGameWinner(null);
-    setMatchStats(null);
-  }, []);
+  const handleGameStart = useCallback(
+    (mode: GameMode, archetype?: PlayerArchetype) => {
+      console.log("🎮 Starting game mode:", mode, "with archetype:", archetype);
+      setGameMode(mode);
+      setIsGameActive(true);
+      setGameWinner(null);
+      setMatchStats(null);
+      if (archetype) {
+        setSelectedArchetype(archetype);
+      }
+    },
+    []
+  );
 
-  const handleGameEnd = useCallback((winner: number) => {
-    setIsGameActive(false);
-    setGameWinner(createPlayerFromArchetype(PlayerArchetype.MUSA, winner));
+  const handleGameEnd = useCallback(
+    (winner: number) => {
+      setIsGameActive(false);
+      setGameWinner(createPlayerFromArchetype(selectedArchetype, winner));
 
-    // Create basic match statistics
-    setMatchStats({
-      totalDamageDealt: 150,
-      totalDamageTaken: 100,
-      criticalHits: 3,
-      vitalPointHits: 2,
-      techniquesUsed: 8,
-      perfectStrikes: 1,
-      consecutiveWins: 1,
-      matchDuration: 120,
-      totalMatches: 1,
-      maxRounds: 3,
-      winner: winner,
-      totalRounds: 2,
-      currentRound: 2,
-      timeRemaining: 0,
-      combatEvents: [],
-      finalScore: {
-        player1: winner === 0 ? 2 : 0,
-        player2: winner === 1 ? 2 : 0,
-      },
-      roundsWon: {
-        player1: winner === 0 ? 2 : 0,
-        player2: winner === 1 ? 2 : 0,
-      },
-      player1: {
-        wins: winner === 0 ? 1 : 0,
-        losses: winner === 0 ? 0 : 1,
-        hitsTaken: 5,
-        hitsLanded: 8,
-        totalDamageDealt: winner === 0 ? 150 : 100,
-        totalDamageReceived: winner === 0 ? 100 : 150,
-        techniques: ["천둥벽력", "유수연타"],
-        perfectStrikes: winner === 0 ? 1 : 0,
-        vitalPointHits: winner === 0 ? 2 : 1,
-        consecutiveWins: winner === 0 ? 1 : 0,
+      setMatchStats({
+        totalDamageDealt: 150,
+        totalDamageTaken: 100,
+        criticalHits: 3,
+        vitalPointHits: 2,
+        techniquesUsed: 8,
+        perfectStrikes: 1,
+        consecutiveWins: 1,
         matchDuration: 120,
-      },
-      player2: {
-        wins: winner === 1 ? 1 : 0,
-        losses: winner === 1 ? 0 : 1,
-        hitsTaken: 8,
-        hitsLanded: 5,
-        totalDamageDealt: winner === 1 ? 150 : 100,
-        totalDamageReceived: winner === 1 ? 100 : 150,
-        techniques: ["화염지창", "벽력일섬"],
-        perfectStrikes: winner === 1 ? 1 : 0,
-        vitalPointHits: winner === 1 ? 2 : 1,
-        consecutiveWins: winner === 1 ? 1 : 0,
-        matchDuration: 120,
-      },
-    });
-  }, []);
+        totalMatches: 1,
+        maxRounds: 3,
+        winner: winner,
+        totalRounds: 2,
+        currentRound: 2,
+        timeRemaining: 0,
+        combatEvents: [],
+        finalScore: {
+          player1: winner === 0 ? 2 : 0,
+          player2: winner === 1 ? 2 : 0,
+        },
+        roundsWon: {
+          player1: winner === 0 ? 2 : 0,
+          player2: winner === 1 ? 2 : 0,
+        },
+        player1: {
+          wins: winner === 0 ? 1 : 0,
+          losses: winner === 0 ? 0 : 1,
+          hitsTaken: 5,
+          hitsLanded: 8,
+          totalDamageDealt: winner === 0 ? 150 : 100,
+          totalDamageReceived: winner === 0 ? 100 : 150,
+          techniques: ["천둥벽력", "유수연타"],
+          perfectStrikes: winner === 0 ? 1 : 0,
+          vitalPointHits: winner === 0 ? 2 : 1,
+          consecutiveWins: winner === 0 ? 1 : 0,
+          matchDuration: 120,
+        },
+        player2: {
+          wins: winner === 1 ? 1 : 0,
+          losses: winner === 1 ? 0 : 1,
+          hitsTaken: 8,
+          hitsLanded: 5,
+          totalDamageDealt: winner === 1 ? 150 : 100,
+          totalDamageReceived: winner === 1 ? 100 : 150,
+          techniques: ["화염지창", "벽력일섬"],
+          perfectStrikes: winner === 1 ? 1 : 0,
+          vitalPointHits: winner === 1 ? 2 : 1,
+          consecutiveWins: winner === 1 ? 1 : 0,
+          matchDuration: 120,
+        },
+      });
+    },
+    [selectedArchetype]
+  );
 
   const handleReturnToMenu = useCallback(() => {
     setGameMode(null);
@@ -170,29 +170,30 @@ function App() {
   }, []);
 
   const renderCurrentScreen = () => {
-    // Show end screen if game ended
     if (gameWinner && matchStats) {
       return (
         <EndScreen
           winner={gameWinner}
           matchStatistics={matchStats}
           onReturnToMenu={handleReturnToMenu}
-          onRestart={() => handleGameStart(gameMode!)}
+          onRestart={() => handleGameStart(gameMode!, selectedArchetype)}
           width={screenSize.width}
           height={screenSize.height}
         />
       );
     }
 
-    // Show game screen based on mode
     if (isGameActive && gameMode) {
       switch (gameMode) {
         case GameMode.TRAINING:
+          const trainingPlayer = createPlayerFromArchetype(
+            selectedArchetype,
+            0
+          );
           return (
             <TrainingScreen
               player={trainingPlayer}
               onPlayerUpdate={(updates) => {
-                // Update training player state
                 console.log("Training player updated:", updates);
               }}
               onReturnToMenu={handleReturnToMenu}
@@ -202,7 +203,7 @@ function App() {
           );
         case GameMode.VERSUS:
         case GameMode.PRACTICE:
-          const player1 = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+          const player1 = createPlayerFromArchetype(selectedArchetype, 0);
           const player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
 
           return (
@@ -225,6 +226,8 @@ function App() {
           return (
             <IntroScreen
               onMenuSelect={handleGameStart}
+              onArchetypeSelect={setSelectedArchetype}
+              selectedArchetype={selectedArchetype}
               width={screenSize.width}
               height={screenSize.height}
             />
@@ -232,10 +235,11 @@ function App() {
       }
     }
 
-    // Default to intro screen with full dimensions
     return (
       <IntroScreen
         onMenuSelect={handleGameStart}
+        onArchetypeSelect={setSelectedArchetype}
+        selectedArchetype={selectedArchetype}
         width={screenSize.width}
         height={screenSize.height}
       />
@@ -283,9 +287,6 @@ function App() {
       </div>
     );
   }
-
-  // Add a default player for training mode
-  const trainingPlayer = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
 
   return (
     <AudioProvider>

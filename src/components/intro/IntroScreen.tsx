@@ -51,7 +51,9 @@ function useWindowSize() {
 }
 
 export interface IntroScreenProps {
-  readonly onMenuSelect: (mode: GameMode) => void;
+  readonly onMenuSelect: (mode: GameMode, archetype?: PlayerArchetype) => void;
+  readonly onArchetypeSelect?: (archetype: PlayerArchetype) => void;
+  readonly selectedArchetype?: PlayerArchetype;
   readonly width?: number;
   readonly height?: number;
 }
@@ -72,8 +74,22 @@ const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
   [PlayerArchetype.JOJIK_POKRYEOKBAE]: "jojikPokryeokbae",
 };
 
+// Helper function to convert PlayerArchetype enum to array index
+const getArchetypeIndex = (archetype: PlayerArchetype): number => {
+  const archetypeKeys = Object.keys(PLAYER_ARCHETYPES_DATA) as PlayerArchetype[];
+  return archetypeKeys.indexOf(archetype);
+};
+
+// Helper function to convert array index to PlayerArchetype enum
+const getArchetypeFromIndex = (index: number): PlayerArchetype => {
+  const archetypeKeys = Object.keys(PLAYER_ARCHETYPES_DATA) as PlayerArchetype[];
+  return archetypeKeys[index] || PlayerArchetype.MUSA;
+};
+
 export const IntroScreen: React.FC<IntroScreenProps> = ({
   onMenuSelect,
+  onArchetypeSelect,
+  selectedArchetype = PlayerArchetype.MUSA,
   width: propWidth,
   height: propHeight,
 }) => {
@@ -97,8 +113,14 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     jojikPokryeokbae: null,
     musa: null,
   });
-  const [selectedArchetype, setSelectedArchetype] = useState(0);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
+  
+  // Add local state for archetype management
+  const [currentArchetype, setCurrentArchetype] = useState<PlayerArchetype>(selectedArchetype);
+  const [selectedArchetypeIndex, setSelectedArchetypeIndex] = useState<number>(
+    getArchetypeIndex(selectedArchetype)
+  );
+
   const { width, height } = useWindowSize();
 
   // Use prop dimensions if provided, otherwise use window size
@@ -122,6 +144,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       };
     });
   }, []);
+
+  // Sync with prop changes
+  useEffect(() => {
+    setCurrentArchetype(selectedArchetype);
+    setSelectedArchetypeIndex(getArchetypeIndex(selectedArchetype));
+  }, [selectedArchetype]);
 
   // Enhanced asset loading with proper error handling
   useEffect(() => {
@@ -233,12 +261,14 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       if (currentSection === "menu") {
         // Archetype navigation
         if (event.key === "ArrowLeft") {
-          setSelectedArchetype((prev) =>
-            prev === 0 ? archetypeData.length - 1 : prev - 1
-          );
+          const newIndex = selectedArchetypeIndex === 0 
+            ? archetypeData.length - 1 
+            : selectedArchetypeIndex - 1;
+          handleArchetypeIndexChange(newIndex);
           audio.playSFX("menu_hover");
         } else if (event.key === "ArrowRight") {
-          setSelectedArchetype((prev) => (prev + 1) % archetypeData.length);
+          const newIndex = (selectedArchetypeIndex + 1) % archetypeData.length;
+          handleArchetypeIndexChange(newIndex);
           audio.playSFX("menu_hover");
         } else {
           // Letter shortcuts for quick access
@@ -257,9 +287,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSection, audio, archetypeData.length]);
+  }, [currentSection, audio, archetypeData.length, selectedArchetypeIndex]);
 
-  // Handle menu item selection
+  // Handle menu item selection with archetype
   const handleMenuItemSelect = useCallback(
     (mode: GameMode) => {
       if (mode === GameMode.CONTROLS) {
@@ -267,10 +297,25 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       } else if (mode === GameMode.PHILOSOPHY) {
         setCurrentSection("philosophy");
       } else {
-        onMenuSelect(mode);
+        // Pass the current selected archetype to the game
+        console.log(`🎮 Starting ${mode} with archetype:`, currentArchetype);
+        onMenuSelect(mode, currentArchetype);
       }
     },
-    [onMenuSelect]
+    [onMenuSelect, currentArchetype]
+  );
+
+  // Handle archetype change by index
+  const handleArchetypeIndexChange = useCallback(
+    (index: number) => {
+      const newArchetype = getArchetypeFromIndex(index);
+      setSelectedArchetypeIndex(index);
+      setCurrentArchetype(newArchetype);
+      onArchetypeSelect?.(newArchetype);
+      audio.playSFX("menu_hover");
+      console.log(`🥋 Selected archetype: ${newArchetype} (index: ${index})`);
+    },
+    [onArchetypeSelect, audio]
   );
 
   // Section navigation with audio feedback
@@ -574,7 +619,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 maxWidth: 800,
                 flexShrink: 0,
               }}
-              data-testid="menu-section-container" // Add this test-id
+              data-testid="menu-section-container"
             >
               <MenuSection
                 menuItems={MENU_ITEMS}
@@ -601,13 +646,13 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
                 maxWidth: 800,
                 flexShrink: 0,
               }}
-              data-testid="archetype-section-container" // Add this test-id
+              data-testid="archetype-section-container"
             >
               <ArchetypeDisplay
                 archetypes={archetypeData}
-                selectedIndex={selectedArchetype}
+                selectedIndex={selectedArchetypeIndex}
                 textures={archetypeTextures}
-                onArchetypeChange={setSelectedArchetype}
+                onArchetypeChange={handleArchetypeIndexChange}
                 onPlaySFX={audio.playSFX}
                 width={
                   isMobile
@@ -633,7 +678,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               alignItems: "center",
               justifyContent: "center",
             }}
-            data-testid="section-content-container" // Add this test-id
+            data-testid="section-content-container"
           >
             {renderSectionContent()}
           </pixiContainer>

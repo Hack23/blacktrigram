@@ -48,7 +48,8 @@ export type PlayerAnimationState =
   | "knocked_down"
   | "getting_up"
   | "victory"
-  | "defeat";
+  | "defeat"
+  | "walk";
 
 export type PlayerRenderContext =
   | "combat"
