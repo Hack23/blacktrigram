@@ -7,7 +7,7 @@ import { TrigramStance } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { DojangBackground } from "../game/DojangBackground";
 import { ResponsivePixiPanel } from "../ui/base/ResponsivePixiComponents";
-import { Player } from "../ui/Player";
+import { PlayerVisuals } from "../ui/PlayerVisuals";
 import { StanceIndicator } from "../ui/StanceIndicator";
 
 // Extend PIXI components for use with React
@@ -422,13 +422,37 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
         />
       </ResponsivePixiPanel>
 
-      <Player
+      <PlayerVisuals
         playerState={player}
-        playerIndex={0}
-        renderMode="training"
-        showHealthBar={false}
         x={width * 0.25}
         y={height * 0.5}
+        scale={isMobile ? 1.0 : 1.2}
+        renderMode="training"
+        facing="right"
+        showDetails={true}
+        showVitalPoints={true}
+        showKiAura={true}
+        showStanceIndicator={true}
+        showArchetypeSymbol={true}
+        interactive={true}
+        onVitalPointClick={(vitalPointId) => {
+          console.log(`Vital point clicked: ${vitalPointId}`);
+          // Add vital point training logic here
+          handleTechniqueExecute();
+        }}
+        onPlayerClick={() => {
+          console.log("Player clicked in training");
+        }}
+        highlightedVitalPoints={[
+          // Highlight based on current stance or training mode
+          trainingMode === "basics" ? "chest_solar" : "head_temple",
+        ]}
+        animationState={
+          isTraining && trainingStats.attempts > 0
+            ? "technique_execute"
+            : "idle"
+        }
+        data-testid="training-player"
       />
 
       <pixiContainer

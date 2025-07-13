@@ -7,6 +7,7 @@ import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { DojangBackground } from "../game/DojangBackground";
 import { ResponsivePixiPanel } from "../ui/base/ResponsivePixiComponents";
 import { HitEffectsLayer } from "../ui/HitEffectsLayer";
+import { PlayerVisuals } from "../ui/PlayerVisuals";
 import { CombatArena } from "./components/CombatArena";
 import { CombatControls } from "./components/CombatControls";
 import { CombatHUD } from "./components/CombatHUD";
@@ -15,6 +16,12 @@ import { PlayerStatusPanel } from "./components/PlayerStatusPanel";
 
 // Ensure PixiJS components are extended
 extendPixiComponents();
+
+// Player positions for combat
+const positions = [
+  { x: 300, y: 400 }, // Player 1 position
+  { x: 900, y: 400 }, // Player 2 position
+];
 
 export const CombatScreen: React.FC<CombatScreenProps> = ({
   players,
@@ -354,6 +361,54 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           />
         </pixiContainer>
       )}
+
+      {/* Player 1 Visuals */}
+      <PlayerVisuals
+        playerState={validPlayers[0]}
+        x={positions[0].x}
+        y={positions[0].y}
+        scale={isMobile ? 0.8 : 1.0}
+        renderMode="combat"
+        facing="right"
+        showDetails={true}
+        showVitalPoints={false}
+        showKiAura={true}
+        interactive={true}
+        onPlayerClick={() => handlePlayerClick(0)}
+        animationState={
+          isExecutingTechnique && selectedPlayer === 0
+            ? "technique_execute"
+            : validPlayers[0].isBlocking
+            ? "defend"
+            : validPlayers[0].health <= 0
+            ? "defeat"
+            : "idle"
+        }
+        data-testid="combat-player-1"
+      />
+
+      {/* Player 2 Visuals */}
+      <PlayerVisuals
+        playerState={validPlayers[1]}
+        x={positions[1].x}
+        y={positions[1].y}
+        scale={isMobile ? 0.8 : 1.0}
+        renderMode="combat"
+        facing="left"
+        showDetails={true}
+        showVitalPoints={false}
+        showKiAura={true}
+        interactive={true}
+        onPlayerClick={() => handlePlayerClick(1)}
+        animationState={
+          validPlayers[1].isBlocking
+            ? "defend"
+            : validPlayers[1].health <= 0
+            ? "defeat"
+            : "idle"
+        }
+        data-testid="combat-player-2"
+      />
     </pixiContainer>
   );
 };
