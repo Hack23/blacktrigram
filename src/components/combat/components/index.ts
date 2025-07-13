@@ -3,7 +3,6 @@
  * @category Combat System
  */
 
-export * from "./CombatArena";
 export * from "./CombatControls";
 export * from "./CombatHUD";
 export * from "./CombatStatsPanel";
