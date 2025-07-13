@@ -3,7 +3,6 @@
  * @category UI Components
  */
 
-export * from "./BackgroundGrid";
 export * from "./BaseButton";
 export * from "./korean-text";
 export * from "./KoreanPixiComponents";
