@@ -8,8 +8,6 @@ export * from "./combat";
 // Game components
 export { DojangBackground } from "./game/DojangBackground";
 export { GameEngine } from "./game/GameEngine";
-export { Player } from "./game/Player";
-export { PlayerVisuals } from "./game/PlayerVisuals";
 
 // UI components
 export { BaseButton } from "./ui/base/BaseButton";

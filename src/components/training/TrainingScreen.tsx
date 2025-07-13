@@ -6,8 +6,9 @@ import { AudioProvider, useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { DojangBackground } from "../game/DojangBackground";
-import { StanceIndicator } from "../ui/StanceIndicator";
 import { ResponsivePixiPanel } from "../ui/base/ResponsivePixiComponents";
+import { Player } from "../ui/Player";
+import { StanceIndicator } from "../ui/StanceIndicator";
 
 // Extend PIXI components for use with React
 extend({
@@ -421,58 +422,14 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
         />
       </ResponsivePixiPanel>
 
-      <pixiContainer
+      <Player
+        playerState={player}
+        playerIndex={0}
+        renderMode="training"
+        showHealthBar={false}
         x={width * 0.25}
         y={height * 0.5}
-        data-testid="training-player"
-      >
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-
-            // Player body
-            g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.8 });
-            g.circle(0, -40, 15); // Head
-            g.rect(-8, -25, 16, 40); // Body
-            g.rect(-6, 15, 5, 25); // Left leg
-            g.rect(1, 15, 5, 25); // Right leg
-            g.rect(-15, -20, 10, 5); // Left arm
-            g.rect(5, -20, 10, 5); // Right arm
-            g.fill();
-
-            // Player outline
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
-            });
-            g.circle(0, -40, 15);
-            g.rect(-8, -25, 16, 40);
-            g.stroke();
-
-            // Stance indicator glow
-            if (isTraining) {
-              g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.3 });
-              g.circle(0, 0, 50);
-              g.fill();
-            }
-          }}
-          scale={{ x: isMobile ? 0.8 : 1.0, y: isMobile ? 0.8 : 1.0 }}
-        />
-
-        <pixiText
-          text={player.name.korean}
-          style={{
-            fontSize: isMobile ? 12 : 14,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            align: "center",
-            fontWeight: "bold",
-          }}
-          x={0}
-          y={-80}
-          anchor={0.5}
-        />
-      </pixiContainer>
+      />
 
       <pixiContainer
         x={dummy.position.x}
