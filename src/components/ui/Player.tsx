@@ -8,10 +8,17 @@ import { getArchetypeColors } from "../../utils/colorUtils";
 import { usePixiExtensions } from "../../utils/pixiExtensions";
 import { BaseComponentProps } from "./types";
 
+// Define PlayerRenderMode type
+export type PlayerRenderMode = "full" | "compact" | "training" | "combat";
+
 export interface PlayerProps extends BaseComponentProps {
   readonly playerState: PlayerState;
   readonly playerIndex: number;
   readonly onClick?: () => void;
+  readonly renderMode?: PlayerRenderMode;
+  readonly showHealthBar?: boolean;
+  readonly showStatusEffects?: boolean;
+  readonly showArchetype?: boolean;
 }
 
 /**
@@ -22,6 +29,7 @@ export const Player: React.FC<PlayerProps> = ({
   playerState,
   playerIndex,
   onClick,
+  renderMode = "full", // Add default value and destructure the prop
   x = 0,
   y = 0,
   width = 80,
@@ -306,6 +314,43 @@ export const Player: React.FC<PlayerProps> = ({
     []
   );
 
+  // Render mode specific settings
+  const getRenderModeSettings = useCallback((mode: PlayerRenderMode) => {
+    switch (mode) {
+      case "training":
+        return {
+          showHealthBar: false,
+          showStatusEffects: false,
+          showArchetype: true,
+          scale: 1.2,
+        };
+      case "combat":
+        return {
+          showHealthBar: true,
+          showStatusEffects: true,
+          showArchetype: false,
+          scale: 1.0,
+        };
+      case "compact":
+        return {
+          showHealthBar: true,
+          showStatusEffects: false,
+          showArchetype: false,
+          scale: 0.8,
+        };
+      default: // 'full'
+        return {
+          showHealthBar: true,
+          showStatusEffects: true,
+          showArchetype: true,
+          scale: 1.0,
+        };
+    }
+  }, []);
+
+  const { showHealthBar, showStatusEffects, showArchetype, scale } =
+    getRenderModeSettings(renderMode);
+
   return (
     <pixiContainer
       x={x}
@@ -315,6 +360,7 @@ export const Player: React.FC<PlayerProps> = ({
       interactive={true}
       onPointerDown={onClick}
       data-testid={`player-${playerIndex}`}
+      scale={scale}
     >
       {/* Main player body */}
       <pixiGraphics draw={drawPlayerBody} />
@@ -329,13 +375,15 @@ export const Player: React.FC<PlayerProps> = ({
       />
 
       {/* Archetype name */}
-      <pixiText
-        text={archetypeData.name.korean}
-        style={archetypeTextStyle}
-        x={width / 2}
-        y={-12}
-        anchor={0.5}
-      />
+      {showArchetype && (
+        <pixiText
+          text={archetypeData.name.korean}
+          style={archetypeTextStyle}
+          x={width / 2}
+          y={-12}
+          anchor={0.5}
+        />
+      )}
 
       {/* Current stance indicator */}
       <pixiText
@@ -347,7 +395,7 @@ export const Player: React.FC<PlayerProps> = ({
       />
 
       {/* Health bar */}
-      <pixiGraphics draw={drawHealthBar} />
+      {showHealthBar && <pixiGraphics draw={drawHealthBar} />}
 
       {/* Ki bar */}
       <pixiGraphics draw={drawKiBar} />
@@ -365,7 +413,7 @@ export const Player: React.FC<PlayerProps> = ({
       />
 
       {/* Status effects */}
-      <pixiGraphics draw={drawStatusEffects} />
+      {showStatusEffects && <pixiGraphics draw={drawStatusEffects} />}
 
       {/* Combat state text */}
       {(playerState.isBlocking ||

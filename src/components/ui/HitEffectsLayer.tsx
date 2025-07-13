@@ -178,7 +178,6 @@ export const HitEffectsLayer: React.FC<HitEffectsLayerProps> = ({
                   g,
                   effect.position.x,
                   effect.position.y - 30,
-                  effect.position.x,
                   effect.position.y + 20,
                   5,
                   5

@@ -2,12 +2,14 @@ import { PlayerState } from "@/systems";
 import { extend } from "@pixi/react";
 import { Container, Graphics, Text } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { AudioProvider, useAudio } from "../../audio/AudioProvider";
+import { useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
+import { usePlayerMovement } from "../../utils/inputSystem";
 import { DojangBackground } from "../game/DojangBackground";
-import { StanceIndicator } from "../ui/StanceIndicator";
 import { ResponsivePixiPanel } from "../ui/base/ResponsivePixiComponents";
+import { PlayerAnimationState, PlayerVisuals } from "../ui/PlayerVisuals";
+import { StanceIndicator } from "../ui/StanceIndicator";
 
 // Extend PIXI components for use with React
 extend({
@@ -60,8 +62,13 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
     perfectStrikes: 0,
     totalDamage: 0,
     sessionTime: 0,
-    attempts: 0, // Add attempts counter for tests
+    attempts: 0,
   });
+
+  // Track last action for animation states
+  const [lastActionTime, setLastActionTime] = useState<number>(0);
+  const [currentAnimation, setCurrentAnimation] =
+    useState<PlayerAnimationState>("idle");
 
   // Initialize training dummy state
   const [dummy, setDummy] = useState<TrainingDummy>({
@@ -70,6 +77,65 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
     position: { x: width * 0.7, y: height * 0.5 },
     isActive: true,
   });
+
+  // Player movement system
+  const { movementState: playerMovement, isKeyPressed } = usePlayerMovement(
+    { x: width * 0.25, y: height * 0.5 },
+    { width, height }
+  );
+
+  // Update player position
+  useEffect(() => {
+    onPlayerUpdate({ position: playerMovement.position });
+  }, [playerMovement.position, onPlayerUpdate]);
+
+  // Animation state management
+  useEffect(() => {
+    const now = Date.now();
+
+    if (playerMovement.isMoving) {
+      setCurrentAnimation("walk");
+    } else if (now - lastActionTime < 1000) {
+      // Show attack animation for 1 second after technique
+      setCurrentAnimation("attack");
+    } else {
+      setCurrentAnimation("idle");
+    }
+  }, [playerMovement.isMoving, lastActionTime]);
+
+  // Training input handling
+  useEffect(() => {
+    const handleTrainingInput = () => {
+      // Attack with Space or Ctrl
+      if (isKeyPressed("Space") || isKeyPressed("ControlLeft")) {
+        handleTechniqueExecute();
+      }
+
+      // Stance changes with number keys
+      if (isKeyPressed("Digit1")) handleStanceChange(TrigramStance.GEON);
+      if (isKeyPressed("Digit2")) handleStanceChange(TrigramStance.TAE);
+      if (isKeyPressed("Digit3")) handleStanceChange(TrigramStance.LI);
+      if (isKeyPressed("Digit4")) handleStanceChange(TrigramStance.JIN);
+      if (isKeyPressed("Digit5")) handleStanceChange(TrigramStance.SON);
+      if (isKeyPressed("Digit6")) handleStanceChange(TrigramStance.GAM);
+      if (isKeyPressed("Digit7")) handleStanceChange(TrigramStance.GAN);
+      if (isKeyPressed("Digit8")) handleStanceChange(TrigramStance.GON);
+
+      // Toggle training mode with 'T'
+      if (isKeyPressed("KeyT")) handleToggleTraining();
+
+      // Mode switching with M key
+      if (isKeyPressed("KeyM")) {
+        const modes: TrainingMode[] = ["basics", "advanced", "free"];
+        const currentIndex = modes.indexOf(trainingMode);
+        const nextMode = modes[(currentIndex + 1) % modes.length];
+        handleTrainingModeChange(nextMode);
+      }
+    };
+
+    const interval = setInterval(handleTrainingInput, 100);
+    return () => clearInterval(interval);
+  }, [isKeyPressed]);
 
   // Responsive design calculations
   const { isMobile } = useMemo(() => {
@@ -93,12 +159,20 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
     };
   }, [isTraining]);
 
-  // Handle technique execution - Fixed to properly update PlayerState
-  // Add better error boundaries for audio
+  // Handle technique execution
   const handleTechniqueExecute = useCallback(() => {
     if (!dummy.isActive) return;
 
     try {
+      // Calculate distance to dummy
+      const distance = Math.sqrt(
+        Math.pow(playerMovement.position.x - dummy.position.x, 2) +
+          Math.pow(playerMovement.position.y - dummy.position.y, 2)
+      );
+
+      // Only execute if close enough to dummy
+      if (distance > 150) return; // Training range
+
       // Calculate damage based on stance and accuracy
       const baseDamage = Math.random() * 20 + 10;
       const isPerfect = Math.random() > 0.7;
@@ -121,12 +195,15 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
         totalDamage: prev.totalDamage + finalDamage,
       }));
 
+      // Set last action time for animation
+      setLastActionTime(Date.now());
+
       // Safe audio playback
       try {
         if (isPerfect) {
-          audio.playSFX("perfect_strike");
+          audio.playSFX("critical_hit");
         } else {
-          audio.playSFX("attack_medium");
+          audio.playSFX("hit_light");
         }
       } catch (audioError) {
         console.warn("Audio playback failed:", audioError);
@@ -135,31 +212,24 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
       // Safe player update
       try {
         onPlayerUpdate({
-          experiencePoints:
-            (player.experiencePoints || 0) + (isPerfect ? 15 : 10),
-          health: player.health,
-          stamina: Math.max(0, player.stamina - 5),
-          balance: player.balance,
-          consciousness: player.consciousness,
-          pain: player.pain,
+          ki: Math.max(0, player.ki - 5),
+          stamina: Math.max(0, player.stamina - 8),
+          lastActionTime: Date.now(),
         });
       } catch (updateError) {
-        console.warn("Player update failed:", updateError);
+        console.error("Player update failed:", updateError);
       }
 
       // Reset dummy if health reaches zero
       if (dummy.health - finalDamage <= 0) {
         setTimeout(() => {
-          setDummy((prev) => ({
-            ...prev,
-            health: prev.maxHealth,
-          }));
+          setDummy((prev) => ({ ...prev, health: prev.maxHealth }));
         }, 2000);
       }
     } catch (error) {
       console.error("Technique execution failed:", error);
     }
-  }, [dummy, audio, onPlayerUpdate, player]);
+  }, [dummy, audio, onPlayerUpdate, player, playerMovement.position]);
 
   // Handle stance changes
   const handleStanceChange = useCallback(
@@ -173,8 +243,10 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
 
   // Toggle training mode
   const handleToggleTraining = useCallback(() => {
-    setIsTraining(!isTraining);
-    if (!isTraining) {
+    const newTrainingState = !isTraining;
+    setIsTraining(newTrainingState);
+
+    if (newTrainingState) {
       // Start training session
       setTrainingStats({
         techniquesExecuted: 0,
@@ -189,6 +261,24 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
     }
   }, [isTraining, audio]);
 
+  // Handle training mode changes
+  const handleTrainingModeChange = useCallback(
+    (mode: TrainingMode) => {
+      setTrainingMode(mode);
+      audio.playSFX("menu_select");
+
+      // Reset stats when changing modes
+      setTrainingStats({
+        techniquesExecuted: 0,
+        perfectStrikes: 0,
+        totalDamage: 0,
+        sessionTime: 0,
+        attempts: 0,
+      });
+    },
+    [audio]
+  );
+
   // Reset training dummy
   const handleResetDummy = useCallback(() => {
     setDummy((prev) => ({
@@ -196,12 +286,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
       health: prev.maxHealth,
     }));
     audio.playSFX("ki_charge");
-  }, [audio]);
-
-  // Handle training evaluation
-  const handleEvaluate = useCallback(() => {
-    audio.playSFX("menu_select");
-    // Training evaluation logic here
   }, [audio]);
 
   // Get Korean stance names
@@ -219,25 +303,32 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
     return stanceNames[stance] || { korean: "Unknown", technique: "Unknown" };
   }, []);
 
-  // list of available stances
-  const trigramStances = Object.values(TrigramStance);
+  // Get current stance info for display
+  const currentStanceInfo = getStanceNames(selectedStance);
 
   return (
-    <pixiContainer
-      x={x}
-      y={y}
-      interactive={true} /* Make the entire container interactive */
-      data-testid="training-screen"
-    >
+    <pixiContainer x={x} y={y} interactive={true} data-testid="training-screen">
       <DojangBackground
         width={width}
         height={height}
-        lighting="normal"
+        lighting="traditional"
         animate={true}
         data-testid="dojang-background"
       />
 
-      <pixiContainer x={width / 2} y={30} data-testid="training-header">
+      {/* Movement instructions */}
+      <pixiContainer x={10} y={10} data-testid="training-instructions">
+        <pixiText
+          text="이동: ↑↓←→ | 공격: Space/Ctrl | 자세변경: 1-8 | 훈련모드: T | 더미에 가까이 가서 공격하세요"
+          style={{
+            fontSize: isMobile ? 9 : 11,
+            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fontFamily: "Noto Sans KR",
+          }}
+        />
+      </pixiContainer>
+
+      <pixiContainer x={width / 2} y={50} data-testid="training-header">
         <pixiText
           text="흑괘 무술 도장"
           style={{
@@ -251,229 +342,53 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
         />
       </pixiContainer>
 
-      <pixiContainer data-testid="training-area">
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.2,
-            });
-
-            // Draw training mat grid
-            const gridSize = isMobile ? 40 : 60;
-            for (let i = 0; i < width; i += gridSize) {
-              g.moveTo(i, 0);
-              g.lineTo(i, height);
-            }
-            for (let j = 0; j < height; j += gridSize) {
-              g.moveTo(0, j);
-              g.lineTo(width, j);
-            }
-            g.stroke();
-
-            // Training circle
-            g.stroke({
-              width: 3,
-              color: KOREAN_COLORS.PRIMARY_CYAN,
-              alpha: 0.5,
-            });
-            g.circle(width * 0.5, height * 0.6, Math.min(width, height) * 0.15);
-            g.stroke();
-          }}
-          data-testid="training-grid"
-        />
-      </pixiContainer>
-
-      <ResponsivePixiPanel
-        title="수련 모드 선택"
-        x={isMobile ? 10 : 20}
-        y={isMobile ? 60 : 80}
-        width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 100 : 120}
-        screenWidth={width}
-        screenHeight={height}
-        data-testid="training-mode-stances"
-      >
+      {/* Training Mode Indicator */}
+      <pixiContainer x={width / 2} y={80} data-testid="training-mode-indicator">
         <pixiText
-          text="훈련 모드:"
+          text={`훈련 모드: ${
+            isTraining ? "활성" : "비활성"
+          } | 수준: ${trainingMode}`}
           style={{
             fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-          }}
-          x={10}
-          y={10}
-          data-testid="mode-title"
-        />
-
-        <pixiContainer
-          x={10}
-          y={30}
-          data-testid="mode-basics-container"
-          interactive={true}
-          onPointerDown={() => setTrainingMode("basics")}
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({
-                color:
-                  trainingMode === "basics"
-                    ? KOREAN_COLORS.PRIMARY_CYAN
-                    : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                alpha: 0.8,
-              });
-              g.roundRect(0, 0, 60, 25, 5);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="기초"
-            style={{
-              fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-            }}
-            x={30}
-            y={12.5}
-            anchor={0.5}
-          />
-        </pixiContainer>
-
-        <pixiContainer
-          x={80}
-          y={30}
-          data-testid="mode-advanced-container"
-          interactive={true}
-          onPointerDown={() => setTrainingMode("advanced")}
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({
-                color:
-                  trainingMode === "advanced"
-                    ? KOREAN_COLORS.PRIMARY_CYAN
-                    : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                alpha: 0.8,
-              });
-              g.roundRect(0, 0, 60, 25, 5);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="고급"
-            style={{
-              fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-            }}
-            x={30}
-            y={12.5}
-            anchor={0.5}
-          />
-        </pixiContainer>
-
-        <pixiContainer
-          x={150}
-          y={30}
-          data-testid="mode-free-container"
-          interactive={true}
-          onPointerDown={() => setTrainingMode("free")}
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({
-                color:
-                  trainingMode === "free"
-                    ? KOREAN_COLORS.PRIMARY_CYAN
-                    : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                alpha: 0.8,
-              });
-              g.roundRect(0, 0, 60, 25, 5);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="자유"
-            style={{
-              fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-            }}
-            x={30}
-            y={12.5}
-            anchor={0.5}
-          />
-        </pixiContainer>
-
-        <pixiText
-          text={`현재 모드: ${trainingMode}`}
-          style={{
-            fontSize: isMobile ? 8 : 10,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          x={10}
-          y={65}
-          data-testid="training-mode-display"
-        />
-      </ResponsivePixiPanel>
-
-      <pixiContainer
-        x={width * 0.25}
-        y={height * 0.5}
-        data-testid="training-player"
-      >
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-
-            // Player body
-            g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.8 });
-            g.circle(0, -40, 15); // Head
-            g.rect(-8, -25, 16, 40); // Body
-            g.rect(-6, 15, 5, 25); // Left leg
-            g.rect(1, 15, 5, 25); // Right leg
-            g.rect(-15, -20, 10, 5); // Left arm
-            g.rect(5, -20, 10, 5); // Right arm
-            g.fill();
-
-            // Player outline
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
-            });
-            g.circle(0, -40, 15);
-            g.rect(-8, -25, 16, 40);
-            g.stroke();
-
-            // Stance indicator glow
-            if (isTraining) {
-              g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.3 });
-              g.circle(0, 0, 50);
-              g.fill();
-            }
-          }}
-          scale={{ x: isMobile ? 0.8 : 1.0, y: isMobile ? 0.8 : 1.0 }}
-        />
-
-        <pixiText
-          text={player.name.korean}
-          style={{
-            fontSize: isMobile ? 12 : 14,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
+            fill: isTraining
+              ? KOREAN_COLORS.POSITIVE_GREEN
+              : KOREAN_COLORS.TEXT_SECONDARY,
             align: "center",
-            fontWeight: "bold",
+            fontFamily: "Noto Sans KR",
           }}
-          x={0}
-          y={-80}
           anchor={0.5}
         />
       </pixiContainer>
 
+      {/* Training Player (moveable) */}
+      <PlayerVisuals
+        playerState={player}
+        x={playerMovement.position.x}
+        y={playerMovement.position.y}
+        scale={isMobile ? 1.0 : 1.2}
+        renderMode="training"
+        facing="right"
+        showDetails={true}
+        showVitalPoints={true}
+        showKiAura={true}
+        showStanceIndicator={true}
+        showArchetypeSymbol={true}
+        interactive={true}
+        onVitalPointClick={(vitalPointId) => {
+          console.log(`Vital point clicked: ${vitalPointId}`);
+          handleTechniqueExecute();
+        }}
+        onPlayerClick={() => {
+          console.log("Player clicked in training");
+        }}
+        highlightedVitalPoints={[
+          trainingMode === "basics" ? "chest_solar" : "head_temple",
+        ]}
+        animationState={currentAnimation}
+        data-testid="training-player"
+      />
+
+      {/* Training Dummy */}
       <pixiContainer
         x={dummy.position.x}
         y={dummy.position.y}
@@ -486,68 +401,60 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
             g.clear();
 
             // Dummy body
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-            g.roundRect(-30, -60, 60, 120, 10);
+            const bodyColor =
+              dummy.health > 50
+                ? KOREAN_COLORS.UI_STEEL_GRAY
+                : KOREAN_COLORS.WARNING_ORANGE;
+
+            g.fill({ color: bodyColor, alpha: 0.8 });
+            g.roundRect(-25, -50, 50, 100, 8);
             g.fill();
 
-            // Dummy head
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_LIGHT, alpha: 0.9 });
-            g.circle(0, -80, 25);
-            g.fill();
+            // Damage indicators
+            if (dummy.health < dummy.maxHealth) {
+              g.fill({ color: KOREAN_COLORS.ACCENT_RED, alpha: 0.3 });
+              g.circle(0, 0, 60);
+              g.fill();
+            }
 
-            // Target zones (vital points)
+            // Border
             g.stroke({
               width: 2,
               color: KOREAN_COLORS.ACCENT_GOLD,
               alpha: 0.6,
             });
-            g.circle(0, -80, 15); // Head
-            g.circle(0, -40, 10); // Chest
-            g.circle(0, -10, 8); // Solar plexus
-            g.circle(0, 20, 12); // Abdomen
+            g.roundRect(-25, -50, 50, 100, 8);
             g.stroke();
-
-            // Damage indicator
-            if (dummy.health < dummy.maxHealth) {
-              g.fill({ color: KOREAN_COLORS.ACCENT_RED, alpha: 0.4 });
-              g.circle(0, 0, 40);
-              g.fill();
-            }
           }}
           data-testid="training-dummy"
         />
 
+        {/* Dummy Health Bar */}
         <pixiGraphics
           draw={(g) => {
             g.clear();
+            const barWidth = 60;
+            const barHeight = 8;
+            const barY = -70;
 
-            // Health bar background
+            // Background
             g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-            g.rect(-40, -100, 80, 8);
+            g.roundRect(-barWidth / 2, barY, barWidth, barHeight, 3);
             g.fill();
 
-            // Health bar fill
+            // Health fill
             const healthPercent = dummy.health / dummy.maxHealth;
-            g.fill({
-              color:
-                healthPercent > 0.5
-                  ? KOREAN_COLORS.ACCENT_GREEN
-                  : healthPercent > 0.25
-                  ? KOREAN_COLORS.ACCENT_GOLD
-                  : KOREAN_COLORS.ACCENT_RED,
-              alpha: 0.9,
-            });
-            g.rect(-40, -100, 80 * healthPercent, 8);
-            g.fill();
+            const healthWidth = barWidth * healthPercent;
+            const healthColor =
+              healthPercent > 0.6
+                ? KOREAN_COLORS.POSITIVE_GREEN
+                : healthPercent > 0.3
+                ? KOREAN_COLORS.WARNING_YELLOW
+                : KOREAN_COLORS.NEGATIVE_RED;
 
-            // Health bar border
-            g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.8,
-            });
-            g.rect(-40, -100, 80, 8);
-            g.stroke();
+            g.fill({ color: healthColor, alpha: 0.9 });
+            g.roundRect(-barWidth / 2, barY, healthWidth, barHeight, 3);
+            g.fill();
           }}
         />
 
@@ -559,392 +466,265 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
             align: "center",
           }}
           x={0}
-          y={-115}
+          y={-85}
+          anchor={0.5}
+        />
+
+        <pixiText
+          text="훈련 더미"
+          style={{
+            fontSize: isMobile ? 9 : 11,
+            fill: KOREAN_COLORS.TEXT_SECONDARY,
+            align: "center",
+            fontFamily: "Noto Sans KR",
+          }}
+          x={0}
+          y={60}
           anchor={0.5}
         />
       </pixiContainer>
 
-      <pixiContainer x={1050} y={650} data-testid="training-trigram-wheel">
-        {trigramStances.map((stance) => (
-          <pixiContainer
-            key={stance}
-            data-testid={`trigram-stance-${stance}`}
-            interactive={true}
-            onPointerDown={() => handleStanceChange(stance)}
-          >
-            <pixiText
-              text={stance}
-              style={{ fontSize: 14, fill: KOREAN_COLORS.TEXT_PRIMARY }}
-              anchor={0.5}
-            />
-          </pixiContainer>
-        ))}
-      </pixiContainer>
-
+      {/* Distance indicator */}
       <pixiContainer
-        x={width - (isMobile ? 120 : 150)}
-        y={height - (isMobile ? 200 : 220)}
-        data-testid="stance-selection"
+        x={width / 2}
+        y={height - 120}
+        data-testid="distance-indicator"
       >
         <pixiText
-          text="자세 선택"
+          text={`더미까지 거리: ${Math.round(
+            Math.sqrt(
+              Math.pow(playerMovement.position.x - dummy.position.x, 2) +
+                Math.pow(playerMovement.position.y - dummy.position.y, 2)
+            )
+          )} (150 이하에서 공격 가능)`}
           style={{
             fontSize: isMobile ? 10 : 12,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
             align: "center",
+            fontFamily: "Noto Sans KR",
           }}
           anchor={0.5}
         />
-
-        <pixiContainer
-          x={-40}
-          y={20}
-          interactive={true}
-          onPointerDown={() => handleStanceChange(TrigramStance.GEON)}
-          data-testid="stance-geon-button-container"
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({
-                color:
-                  selectedStance === TrigramStance.GEON
-                    ? KOREAN_COLORS.PRIMARY_CYAN
-                    : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                alpha: 0.8,
-              });
-              g.roundRect(0, 0, 25, 25, 5);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="건"
-            style={{
-              fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-            }}
-            x={12.5}
-            y={12.5}
-            anchor={0.5}
-          />
-        </pixiContainer>
       </pixiContainer>
 
+      {/* Current Stance Display */}
+      <pixiContainer
+        x={width / 2}
+        y={height - 90}
+        data-testid="current-stance-display"
+      >
+        <pixiText
+          text={`현재 자세: ${currentStanceInfo.korean} (${currentStanceInfo.technique})`}
+          style={{
+            fontSize: isMobile ? 11 : 13,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            align: "center",
+            fontFamily: "Noto Sans KR",
+            fontWeight: "bold",
+          }}
+          anchor={0.5}
+        />
+      </pixiContainer>
+
+      {/* Current Stance Indicator */}
       <StanceIndicator
         stance={selectedStance}
         x={isMobile ? width / 2 : width * 0.25}
-        y={height - (isMobile ? 120 : 140)}
+        y={height - (isMobile ? 140 : 160)}
         data-testid="current-stance-indicator"
       />
 
+      {/* Training Controls Panel */}
       <ResponsivePixiPanel
         title="훈련 제어"
         x={isMobile ? 10 : 20}
-        y={isMobile ? 200 : 220}
+        y={isMobile ? 100 : 120}
         width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 140 : 180}
+        height={isMobile ? 200 : 240}
         screenWidth={width}
         screenHeight={height}
         data-testid="training-controls"
       >
-        <pixiContainer
-          x={10}
-          y={10}
-          interactive={true}
-          onPointerDown={handleToggleTraining}
-          data-testid="start-training-button-container"
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({
-                color: isTraining
-                  ? KOREAN_COLORS.ACCENT_RED
-                  : KOREAN_COLORS.ACCENT_GREEN,
-                alpha: 0.8,
-              });
-              g.roundRect(0, 0, isMobile ? width * 0.35 : 200, 35, 5);
-              g.fill();
-            }}
-          />
+        <pixiContainer x={10} y={30}>
+          {/* Training Stats */}
           <pixiText
-            text={isTraining ? "훈련 정지" : "훈련 시작"}
+            text="훈련 통계"
             style={{
-              fontSize: isMobile ? 12 : 14,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
+              fontSize: isMobile ? 10 : 12,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+              fontFamily: "Noto Sans KR",
             }}
-            x={(isMobile ? width * 0.35 : 200) / 2}
-            y={17.5}
-            anchor={0.5}
           />
-        </pixiContainer>
 
-        {isTraining && (
+          <pixiText
+            text={`시도: ${trainingStats.attempts}`}
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontFamily: "Noto Sans KR",
+            }}
+            y={20}
+          />
+
+          <pixiText
+            text={`완벽한 타격: ${trainingStats.perfectStrikes}`}
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontFamily: "Noto Sans KR",
+            }}
+            y={35}
+          />
+
+          <pixiText
+            text={`총 데미지: ${Math.round(trainingStats.totalDamage)}`}
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontFamily: "Noto Sans KR",
+            }}
+            y={50}
+          />
+
+          <pixiText
+            text={`정확도: ${
+              trainingStats.attempts > 0
+                ? Math.round(
+                    (trainingStats.perfectStrikes / trainingStats.attempts) *
+                      100
+                  )
+                : 0
+            }%`}
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.ACCENT_CYAN,
+              fontFamily: "Noto Sans KR",
+            }}
+            y={65}
+          />
+
+          <pixiText
+            text={`세션 시간: ${Math.floor(
+              trainingStats.sessionTime / 60
+            )}:${String(trainingStats.sessionTime % 60).padStart(2, "0")}`}
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontFamily: "Noto Sans KR",
+            }}
+            y={80}
+          />
+
+          {/* Control Buttons */}
           <pixiContainer
-            x={10}
-            y={55}
+            x={0}
+            y={100}
             interactive={true}
-            onPointerDown={handleTechniqueExecute}
-            data-testid="execute-technique-button-container"
+            onPointerDown={handleToggleTraining}
+            data-testid="toggle-training-button"
           >
             <pixiGraphics
               draw={(g) => {
                 g.clear();
-                g.fill({ color: KOREAN_COLORS.ACCENT_CYAN, alpha: 0.8 });
-                g.roundRect(0, 0, isMobile ? width * 0.35 : 200, 35, 5);
+                g.fill({
+                  color: isTraining
+                    ? KOREAN_COLORS.ACCENT_RED
+                    : KOREAN_COLORS.POSITIVE_GREEN,
+                  alpha: 0.8,
+                });
+                g.roundRect(0, 0, 80, 25, 4);
                 g.fill();
               }}
             />
             <pixiText
-              text={`${getStanceNames(selectedStance).technique} 실행`}
+              text={isTraining ? "훈련 종료" : "훈련 시작"}
               style={{
-                fontSize: isMobile ? 12 : 14,
+                fontSize: isMobile ? 9 : 10,
                 fill: KOREAN_COLORS.TEXT_PRIMARY,
                 align: "center",
+                fontFamily: "Noto Sans KR",
               }}
-              x={(isMobile ? width * 0.35 : 200) / 2}
-              y={17.5}
+              x={40}
+              y={12.5}
               anchor={0.5}
             />
           </pixiContainer>
-        )}
 
-        <pixiContainer
-          x={10}
-          y={100}
-          interactive={true}
-          onPointerDown={handleResetDummy}
-          data-testid="reset-dummy-button-container"
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.roundRect(0, 0, isMobile ? width * 0.35 : 200, 30, 5);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="더미 리셋"
-            style={{
-              fontSize: isMobile ? 12 : 14,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-            }}
-            x={(isMobile ? width * 0.35 : 200) / 2}
-            y={15}
-            anchor={0.5}
-          />
-        </pixiContainer>
-
-        <pixiContainer
-          x={10}
-          y={140}
-          interactive={true}
-          onPointerDown={handleEvaluate}
-          data-testid="evaluate-button-container"
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.roundRect(0, 0, isMobile ? width * 0.35 : 200, 30, 5);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="평가"
-            style={{
-              fontSize: isMobile ? 12 : 14,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              align: "center",
-            }}
-            x={(isMobile ? width * 0.35 : 200) / 2}
-            y={15}
-            anchor={0.5}
-          />
+          {/* Reset Button */}
+          <pixiContainer
+            x={90}
+            y={100}
+            interactive={true}
+            onPointerDown={handleResetDummy}
+            data-testid="reset-dummy-button"
+          >
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.8 });
+                g.roundRect(0, 0, 80, 25, 4);
+                g.fill();
+              }}
+            />
+            <pixiText
+              text="더미 리셋"
+              style={{
+                fontSize: isMobile ? 9 : 10,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                align: "center",
+                fontFamily: "Noto Sans KR",
+              }}
+              x={40}
+              y={12.5}
+              anchor={0.5}
+            />
+          </pixiContainer>
         </pixiContainer>
       </ResponsivePixiPanel>
 
-      <ResponsivePixiPanel
-        title="훈련 통계"
-        x={width - (isMobile ? width * 0.45 + 10 : 270)}
-        y={isMobile ? 200 : 220}
-        width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 140 : 180}
-        screenWidth={width}
-        screenHeight={height}
-        data-testid="training-stats-panel"
-      >
-        <pixiText
-          text="훈련 통계"
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            fontWeight: "bold",
-          }}
-          x={10}
-          y={-5}
-          data-testid="stats-title"
-        />
-
-        <pixiText
-          text={`시도: ${trainingStats.attempts}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-          }}
-          x={10}
-          y={15}
-          data-testid="attempts-count"
-        />
-
-        <pixiText
-          text={`기술 실행: ${trainingStats.techniquesExecuted}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-          }}
-          x={10}
-          y={35}
-        />
-
-        <pixiText
-          text={`완벽한 타격: ${trainingStats.perfectStrikes}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_GREEN,
-          }}
-          x={10}
-          y={55}
-        />
-
-        <pixiText
-          text={`총 데미지: ${Math.ceil(trainingStats.totalDamage)}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-          }}
-          x={10}
-          y={75}
-        />
-
-        <pixiText
-          text={`세션 시간: ${Math.floor(
-            trainingStats.sessionTime / 60
-          )}:${String(trainingStats.sessionTime % 60).padStart(2, "0")}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-          }}
-          x={10}
-          y={95}
-          data-testid="session-time"
-        />
-
-        <pixiText
-          text={`현재 자세: ${getStanceNames(selectedStance).korean}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.PRIMARY_CYAN,
-            fontWeight: "bold",
-          }}
-          x={10}
-          y={115}
-        />
-
-        <pixiText
-          text={`경험치: ${player.experiencePoints || 0}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.ACCENT_CYAN,
-          }}
-          x={10}
-          y={135}
-        />
-
-        <pixiText
-          text="계속 연습하세요!"
-          style={{
-            fontSize: isMobile ? 8 : 10,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontStyle: "italic",
-          }}
-          x={10}
-          y={155}
-          data-testid="feedback-message"
-        />
-      </ResponsivePixiPanel>
-
+      {/* Return to Menu Button */}
       <pixiContainer
-        x={isMobile ? width / 2 - 80 : width / 2 - 100}
-        y={height - (isMobile ? 40 : 50)}
+        x={width - (isMobile ? 80 : 120)}
+        y={isMobile ? 10 : 20}
         interactive={true}
         onPointerDown={onReturnToMenu}
-        data-testid="return-to-menu-button-container"
+        data-testid="return-menu-button"
       >
         <pixiGraphics
           draw={(g) => {
             g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-            g.roundRect(0, 0, isMobile ? 160 : 200, isMobile ? 30 : 40, 5);
+            g.fill({ color: KOREAN_COLORS.UI_STEEL_GRAY, alpha: 0.8 });
+            g.roundRect(0, 0, isMobile ? 70 : 100, isMobile ? 30 : 40, 8);
             g.fill();
             g.stroke({
-              width: 1,
-              color: KOREAN_COLORS.PRIMARY_CYAN,
+              width: 2,
+              color: KOREAN_COLORS.ACCENT_GOLD,
               alpha: 0.8,
             });
-            g.roundRect(0, 0, isMobile ? 160 : 200, isMobile ? 30 : 40, 5);
-            g.stroke();
+            g.roundRect(0, 0, isMobile ? 70 : 100, isMobile ? 30 : 40, 8);
           }}
         />
         <pixiText
-          text="메뉴로 돌아가기"
+          text="메뉴로"
           style={{
-            fontSize: isMobile ? 12 : 14,
+            fontSize: isMobile ? 10 : 14,
             fill: KOREAN_COLORS.TEXT_PRIMARY,
             align: "center",
+            fontWeight: "bold",
+            fontFamily: "Noto Sans KR",
           }}
-          x={(isMobile ? 160 : 200) / 2}
+          x={(isMobile ? 70 : 100) / 2}
           y={(isMobile ? 30 : 40) / 2}
           anchor={0.5}
         />
       </pixiContainer>
-
-      {isTraining && (
-        <pixiContainer x={width / 2} y={50} data-testid="training-status">
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.8 });
-              g.roundRect(-60, -15, 120, 30, 8);
-              g.fill();
-            }}
-          />
-          <pixiText
-            text="훈련 중"
-            style={{
-              fontSize: isMobile ? 14 : 16,
-              fill: KOREAN_COLORS.BLACK_SOLID,
-              fontWeight: "bold",
-              align: "center",
-            }}
-            anchor={0.5}
-          />
-        </pixiContainer>
-      )}
     </pixiContainer>
   );
 };
 
 const TrainingScreenWrapper: React.FC<TrainingScreenProps> = (props) => {
-  return (
-    <AudioProvider>
-      <TrainingScreen {...props} width={props.width} height={props.height} />
-    </AudioProvider>
-  );
+  return <TrainingScreen {...props} />;
 };
 
 export default TrainingScreenWrapper;

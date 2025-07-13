@@ -5,8 +5,8 @@ import {
   ResponsivePixiButton,
   ResponsivePixiPanel,
   ResponsivePixiContainer,
-} from "./base/ResponsivePixiComponents";
-import { renderWithPixi } from "../../test/test-utils";
+} from "./ResponsivePixiComponents";
+import { renderWithPixi } from "../../../test/test-utils";
 
 describe("ResponsivePixiComponents", () => {
   const mockOnClick = vi.fn();
