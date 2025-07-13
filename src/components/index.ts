@@ -7,7 +7,6 @@ export * from "./combat";
 
 // Game components
 export { DojangBackground } from "./game/DojangBackground";
-export { GameEngine } from "./game/GameEngine";
 
 // UI components
 export { BaseButton } from "./ui/base/BaseButton";
@@ -23,6 +22,5 @@ export { IntroScreen } from "./intro/IntroScreen";
 export { TrainingScreen } from "./training";
 
 // Combat components
-export { CombatArena } from "./combat/components/CombatArena";
 export { CombatControls } from "./combat/components/CombatControls";
 export { CombatHUD } from "./combat/components/CombatHUD";
