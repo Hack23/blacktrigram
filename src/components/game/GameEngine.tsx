@@ -1,9 +1,10 @@
 // Complete game engine for Black Trigram Korean martial arts
 
 import { PlayerState } from "@/systems";
+import { CombatSystem } from "@/systems/CombatSystem"; // Import the actual class
 import { extend } from "@pixi/react";
 import { Container, Graphics, Text } from "pixi.js";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { KoreanTechnique } from "../../systems/vitalpoint";
 
 // Extend PixiJS components
@@ -23,6 +24,7 @@ export interface GameEngineProps {
     playerId: string,
     updates: Partial<PlayerState>
   ) => void;
+  readonly isPaused?: boolean;
 }
 
 export const GameEngine: React.FC<GameEngineProps> = ({
@@ -31,12 +33,21 @@ export const GameEngine: React.FC<GameEngineProps> = ({
   player1,
   player2,
   onPlayerUpdate,
+  isPaused = false,
 }) => {
   const players = [player1, player2];
+
+  const combatSystem = useMemo(() => new CombatSystem(), []);
 
   // Handle combat actions - using the action parameter to avoid unused warning
   const handleCombatAction = useCallback(
     (playerId: string, action: KoreanTechnique) => {
+      // Skip processing if game is paused
+      if (isPaused) return;
+
+      const attacker = playerId === player1.id ? player1 : player2;
+      const defender = playerId === player1.id ? player2 : player1;
+
       // Basic combat action processing
       const updatedAction = {
         ...action,
@@ -68,10 +79,23 @@ export const GameEngine: React.FC<GameEngineProps> = ({
         effects: action.effects || [],
       };
 
+      // Use actual combat system
+      const result = combatSystem.resolveAttack(
+        attacker,
+        defender,
+        updatedAction
+      );
+      const { updatedAttacker, updatedDefender } =
+        combatSystem.applyCombatResult(result, attacker, defender);
+
+      // Update both players
+      onPlayerUpdate(attacker.id, updatedAttacker);
+      onPlayerUpdate(defender.id, updatedDefender);
+
       console.log(`Combat action for ${playerId}:`, updatedAction);
       onPlayerUpdate(playerId, { lastActionTime: Date.now() });
     },
-    [onPlayerUpdate]
+    [combatSystem, player1, player2, onPlayerUpdate, isPaused]
   );
 
   // Render arena background - fix width/height undefined issues

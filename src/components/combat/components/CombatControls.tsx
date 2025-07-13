@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { TRIGRAM_TECHNIQUES } from "../../../systems/trigram/techniques";
 import { TrigramStance } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
 
-// Import extendPixiComponents to ensure proper component registration
+// Import the actual CombatSystem class, not just the type
 import { PlayerState } from "@/systems";
+import { CombatSystem } from "@/systems/CombatSystem"; // Import the actual class
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
 // Ensure PixiJS components are extended
@@ -21,6 +21,7 @@ export interface CombatControlsProps {
   readonly height?: number;
   readonly x?: number;
   readonly y?: number;
+  readonly combatSystem?: CombatSystem; // This can stay as type annotation
 }
 
 export const CombatControls: React.FC<CombatControlsProps> = ({
@@ -34,12 +35,11 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
   height = 120,
   x = 0,
   y = 0,
+  combatSystem = new CombatSystem(), // Now this works because we imported the class
 }) => {
   const [showStanceMenu, setShowStanceMenu] = useState(false);
 
-  const availableTechniques = player.currentStance
-    ? TRIGRAM_TECHNIQUES[player.currentStance]
-    : TRIGRAM_TECHNIQUES[TrigramStance.GEON];
+  const availableTechniques = combatSystem.getAvailableTechniques(player);
 
   const toggleStanceMenu = useCallback(() => {
     setShowStanceMenu((prev) => !prev);
