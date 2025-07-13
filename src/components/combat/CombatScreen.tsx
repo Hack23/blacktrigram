@@ -1,7 +1,13 @@
 import { HitEffect, PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { GameMode, PlayerArchetype, Position, TrigramStance } from "@/types";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { HitEffectType } from "../../systems/effects";
 import { KOREAN_COLORS } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
@@ -55,6 +61,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundEnded, setRoundEnded] = useState(false);
 
+  // 🔧 FIX: Add missing matchStartTime using useRef for persistence
+  const matchStartTimeRef = useRef(Date.now());
+
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
@@ -79,7 +88,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     { width, height }
   );
 
-  // Ensure exactly 2 players with complete PlayerState objects - MOVED UP
+  // Ensure exactly 2 players with complete PlayerState objects
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
     if (players.length === 0) {
       // Create default players using the utility function
@@ -331,6 +340,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     [onPlayerUpdate, addCombatMessage, roundStarted, roundEnded]
   );
 
+  // AI combat handlers (existing code continues...)
   const handleAIAttack = useCallback(() => {
     const effect = createHitEffect(
       `ai_attack_${Date.now()}`,
@@ -652,6 +662,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     [validPlayers, isExecutingTechnique, player1Movement.isMoving]
   );
 
+  // 🔧 FIX: Calculate match duration using the ref
+  const matchDuration = useMemo(
+    () => Math.floor((Date.now() - matchStartTimeRef.current) / 1000),
+    []
+  );
+
   return (
     <pixiContainer x={x} y={y} data-testid="combat-screen">
       {/* Dojang Background */}
@@ -661,7 +677,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         lighting="cyberpunk"
         animate={true}
       />
-
 
       {/* Round Status Messages */}
       {!roundStarted && timeRemaining > 25 && (
@@ -908,23 +923,58 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       <CombatHUD
         player1={validPlayers[0]}
         player2={validPlayers[1]}
-        currentRound={currentRound}
         timeRemaining={timeRemaining}
+        currentRound={currentRound}
         maxRounds={3}
+        gameScore={{
+          player1: validPlayers[0].wins || 0,
+          player2: validPlayers[1].wins || 0,
+        }}
+        roundsWon={{
+          player1: validPlayers[0].wins || 0,
+          player2: validPlayers[1].wins || 0,
+        }}
         isPaused={isPaused}
+        onPauseToggle={() => console.log("Pause toggled")}
         width={width}
-        height={isMobile ? 80 : 120}
+        height={140}
+        x={0}
         y={0}
       />
 
       {/* Combat Stats Panel with bilingual support */}
       <CombatStatsPanel
         players={validPlayers}
-        combatLog={combatMessages}
-        x={width - 300}
-        y={height - 180}
-        width={280}
-        height={160}
+        combatLog={combatMessages.map((msg, index) => ({
+          id: `msg-${index}`,
+          timestamp: Date.now() - index * 1000,
+          korean: msg.split(" | ")[0] || msg,
+          english: msg.split(" | ")[1] || msg,
+          type: msg.includes("공격")
+            ? "attack"
+            : msg.includes("방어")
+            ? "defend"
+            : msg.includes("기술")
+            ? "technique"
+            : "info",
+        }))}
+        matchDuration={matchDuration}
+        totalDamageDealt={{
+          player1: validPlayers[0].totalDamageDealt || 0,
+          player2: validPlayers[1].totalDamageDealt || 0,
+        }}
+        criticalHits={{
+          player1: Math.floor((validPlayers[0].totalDamageDealt || 0) / 50),
+          player2: Math.floor((validPlayers[1].totalDamageDealt || 0) / 50),
+        }}
+        perfectStrikes={{
+          player1: validPlayers[0].perfectStrikes || 0,
+          player2: validPlayers[1].perfectStrikes || 0,
+        }}
+        x={width - 330}
+        y={150}
+        width={320}
+        height={180}
       />
 
       {/* Combat Controls with Korean/English labels */}

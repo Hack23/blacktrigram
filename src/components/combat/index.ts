@@ -14,12 +14,10 @@ export { CombatScreen, default as CombatScreenDefault } from "./CombatScreen";
 export * from "./components";
 
 // Individual component exports
-export { CombatArena } from "./components/CombatArena";
 export { CombatControls } from "./components/CombatControls";
 export { CombatHUD } from "./components/CombatHUD";
 
 // Default exports for convenience
-export { default as CombatArenaDefault } from "./components/CombatArena";
 export { default as CombatControlsDefault } from "./components/CombatControls";
 export { default as CombatHUDDefault } from "./components/CombatHUD";
 
