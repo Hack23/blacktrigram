@@ -325,8 +325,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   }, [audio]);
 
   // Responsive logo and layout calculations
-  const isMobile = screenWidth < 768;
-  const isTablet = screenWidth >= 768 && screenWidth < 1024;
+  const isMobile = PIXI.isMobile.phone;
+  const isTablet = PIXI.isMobile.tablet
 
   // Smaller logo for full screen layout
   const logoSize = isMobile
