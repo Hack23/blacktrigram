@@ -1,6 +1,8 @@
 import { COMBAT_CONTROLS } from "@/systems";
 import React from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
+import * as PIXI from "pixi.js";
+
 import {
   ResponsivePixiButton,
   ResponsivePixiContainer,
@@ -22,9 +24,8 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
   width = 800,
   height = 600,
 }) => {
-  const isMobile = width < 768;
-  const isTablet = width >= 768 && width < 1024;
-
+ const isMobile = PIXI.isMobile.phone;
+ const isTablet = PIXI.isMobile.tablet;
   return (
     <ResponsivePixiPanel
       title="조작법 (Controls)"

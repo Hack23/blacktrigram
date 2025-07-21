@@ -76,13 +76,17 @@ const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
 
 // Helper function to convert PlayerArchetype enum to array index
 const getArchetypeIndex = (archetype: PlayerArchetype): number => {
-  const archetypeKeys = Object.keys(PLAYER_ARCHETYPES_DATA) as PlayerArchetype[];
+  const archetypeKeys = Object.keys(
+    PLAYER_ARCHETYPES_DATA
+  ) as PlayerArchetype[];
   return archetypeKeys.indexOf(archetype);
 };
 
 // Helper function to convert array index to PlayerArchetype enum
 const getArchetypeFromIndex = (index: number): PlayerArchetype => {
-  const archetypeKeys = Object.keys(PLAYER_ARCHETYPES_DATA) as PlayerArchetype[];
+  const archetypeKeys = Object.keys(
+    PLAYER_ARCHETYPES_DATA
+  ) as PlayerArchetype[];
   return archetypeKeys[index] || PlayerArchetype.MUSA;
 };
 
@@ -114,9 +118,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     musa: null,
   });
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
-  
+
   // Add local state for archetype management
-  const [currentArchetype, setCurrentArchetype] = useState<PlayerArchetype>(selectedArchetype);
+  const [currentArchetype, setCurrentArchetype] =
+    useState<PlayerArchetype>(selectedArchetype);
   const [selectedArchetypeIndex, setSelectedArchetypeIndex] = useState<number>(
     getArchetypeIndex(selectedArchetype)
   );
@@ -261,9 +266,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       if (currentSection === "menu") {
         // Archetype navigation
         if (event.key === "ArrowLeft") {
-          const newIndex = selectedArchetypeIndex === 0 
-            ? archetypeData.length - 1 
-            : selectedArchetypeIndex - 1;
+          const newIndex =
+            selectedArchetypeIndex === 0
+              ? archetypeData.length - 1
+              : selectedArchetypeIndex - 1;
           handleArchetypeIndexChange(newIndex);
           audio.playSFX("menu_hover");
         } else if (event.key === "ArrowRight") {
@@ -326,7 +332,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   // Responsive logo and layout calculations
   const isMobile = PIXI.isMobile.phone;
-  const isTablet = PIXI.isMobile.tablet
+  const isTablet = PIXI.isMobile.tablet;
 
   // Smaller logo for full screen layout
   const logoSize = isMobile
@@ -403,10 +409,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         >
           <PhilosophySection
             onBack={handleBackToMenu}
-            width={screenWidth * 0.9}
-            height={screenHeight * 0.8}
-            x={screenWidth * 0.05}
-            y={screenHeight * 0.1}
+            width={screenWidth} // Full width instead of 90%
+            height={screenHeight} // Full height instead of 80%
+            x={0}
+            y={0}
             data-testid="philosophy-section"
           />
         </Suspense>
@@ -439,10 +445,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         >
           <ControlsSection
             onBack={handleBackToMenu}
-            width={screenWidth * 0.9}
-            height={screenHeight * 0.8}
-            x={screenWidth * 0.05}
-            y={screenHeight * 0.1}
+            width={screenWidth} // Full width instead of 90%
+            height={screenHeight} // Full height instead of 80%
+            x={0}
+            y={0}
             data-testid="controls-section"
           />
         </Suspense>
@@ -673,8 +679,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         {currentSection !== "menu" && (
           <pixiContainer
             layout={{
-              width: "100%",
-              height: "100%",
+              position: "relative", // Change to absolute positioning
+              top: 0,
+              left: 0,
+              width: screenWidth, // Full screen width
+              height: screenHeight, // Full screen height
               alignItems: "center",
               justifyContent: "center",
             }}
