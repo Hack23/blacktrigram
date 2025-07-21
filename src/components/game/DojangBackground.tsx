@@ -37,8 +37,8 @@ export const DojangBackground: React.FC<DojangBackgroundProps> = ({
     const loadTextures = async () => {
       try {
         const [floor, wall] = await Promise.all([
-          PIXI.Assets.load("/src/assets/visual/bg/dojang/dojang_floor_tex.png"),
-          PIXI.Assets.load("/src/assets/visual/bg/dojang/dojang_wall_tex.png"),
+          PIXI.Assets.load("/assets/visual/bg/dojang/dojang_floor_tex.png"),
+          PIXI.Assets.load("/assets/visual/bg/dojang/dojang_wall_tex.png"),
         ]);
 
         if (!destroyed) {
