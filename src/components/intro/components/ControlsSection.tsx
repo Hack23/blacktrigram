@@ -24,26 +24,39 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
   width = 800,
   height = 600,
 }) => {
-  // Consistent mobile detection
   const isMobile = PIXI.isMobile.phone;
   const isTablet = PIXI.isMobile.tablet;
 
-  // Enhanced escape key handling for this component
+  // Enhanced event handling with better cleanup
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Handle escape key or 'B' for back
       if (event.key === "Escape" || event.key.toLowerCase() === "b") {
         event.preventDefault();
+        event.stopPropagation();
         onBack();
       }
     };
 
-    // Add event listener when component mounts
-    window.addEventListener("keydown", handleKeyDown);
+    // Handle mouse events for additional back functionality
+    const handleContextMenu = (event: MouseEvent) => {
+      // Optional: Right-click to go back
+      if (event.button === 2) {
+        event.preventDefault();
+        onBack();
+      }
+    };
+
+    // Add event listeners
+    window.addEventListener("keydown", handleKeyDown, { passive: false });
+    document.addEventListener("contextmenu", handleContextMenu, {
+      passive: false,
+    });
 
     // Cleanup on unmount
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("contextmenu", handleContextMenu);
     };
   }, [onBack]);
 
