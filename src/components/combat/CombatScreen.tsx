@@ -842,22 +842,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         data-testid="combat-player-2"
       />
 
-      {/* Combat Arena Center Marker */}
-      <pixiContainer x={width / 2} y={height * 0.7} data-testid="arena-center">
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.3,
-            });
-            g.circle(0, 0, 50);
-            g.stroke();
-          }}
-        />
-      </pixiContainer>
-
       {/* Hit Effects Layer */}
       <HitEffectsLayer
         effects={hitEffects}
