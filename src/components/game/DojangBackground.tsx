@@ -142,65 +142,7 @@ export const DojangBackground: React.FC<DojangBackgroundProps> = ({
       }
       g.stroke();
 
-      // Center circle for training with lighting-appropriate color
-      const centerColor =
-        lighting === "cyberpunk"
-          ? KOREAN_COLORS.NEON_PURPLE
-          : lighting === "traditional"
-          ? KOREAN_COLORS.KOREAN_BLUE
-          : KOREAN_COLORS.PRIMARY_CYAN;
-
-      g.stroke({ width: 3, color: centerColor, alpha: 0.6 });
-      g.circle(width / 2, height / 2, Math.min(width, height) * 0.2);
-      g.stroke();
-
-      // Corner decorations with lighting-appropriate styling
-      const cornerSize = 40;
-      const cornerColor =
-        lighting === "cyberpunk"
-          ? KOREAN_COLORS.NEON_PINK
-          : lighting === "traditional"
-          ? KOREAN_COLORS.KOREAN_RED
-          : KOREAN_COLORS.ACCENT_GOLD;
-
-      g.fill({ color: cornerColor, alpha: settings.accentAlpha });
-      g.rect(0, 0, cornerSize, cornerSize);
-      g.rect(width - cornerSize, 0, cornerSize, cornerSize);
-      g.rect(0, height - cornerSize, cornerSize, cornerSize);
-      g.rect(width - cornerSize, height - cornerSize, cornerSize, cornerSize);
-      g.fill();
-
-      // Additional cyberpunk effects
-      if (lighting === "cyberpunk") {
-        // Neon strips along edges
-        g.stroke({ width: 2, color: KOREAN_COLORS.NEON_CYAN, alpha: 0.8 });
-        g.moveTo(0, height * 0.25);
-        g.lineTo(width, height * 0.25);
-        g.moveTo(0, height * 0.75);
-        g.lineTo(width, height * 0.75);
-        g.stroke();
-
-        // Glowing center accent
-        g.fill({ color: KOREAN_COLORS.NEON_PURPLE, alpha: 0.2 });
-        g.circle(width / 2, height / 2, Math.min(width, height) * 0.1);
-        g.fill();
-      }
-
-      // Additional traditional effects
-      if (lighting === "traditional") {
-        // Traditional Korean border pattern
-        g.stroke({ width: 4, color: KOREAN_COLORS.KOREAN_BLUE, alpha: 0.6 });
-        g.rect(20, 20, width - 40, height - 40);
-        g.stroke();
-
-        // Yin-yang symbol in center
-        g.fill({ color: KOREAN_COLORS.KOREAN_BLACK, alpha: 0.3 });
-        g.circle(width / 2, height / 2, 30);
-        g.fill();
-        g.fill({ color: KOREAN_COLORS.KOREAN_WHITE, alpha: 0.3 });
-        g.arc(width / 2, height / 2, 30, 0, Math.PI);
-        g.fill();
-      }
+   
     },
     [width, height, lighting, getLightingSettings]
   );
