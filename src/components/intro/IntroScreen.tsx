@@ -257,7 +257,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   // Enhanced keyboard input for global navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Global escape handling
       if (currentSection !== "menu" && event.key === "Escape") {
+        setCurrentSection("menu");
+        audio.playSFX("menu_back");
+        return;
+      }
+
+      // Add 'B' key for back navigation
+      if (currentSection !== "menu" && event.key.toLowerCase() === "b") {
         setCurrentSection("menu");
         audio.playSFX("menu_back");
         return;
@@ -277,7 +285,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           handleArchetypeIndexChange(newIndex);
           audio.playSFX("menu_hover");
         } else {
-          // Letter shortcuts for quick access
+          // Enhanced letter shortcuts for quick access
           switch (event.key.toLowerCase()) {
             case "c":
               setCurrentSection("controls");
@@ -287,10 +295,17 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
               setCurrentSection("philosophy");
               audio.playSFX("menu_select");
               break;
+            case "t":
+              handleMenuItemSelect(GameMode.TRAINING);
+              break;
+            case "v":
+              handleMenuItemSelect(GameMode.VERSUS);
+              break;
           }
         }
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentSection, audio, archetypeData.length, selectedArchetypeIndex]);
