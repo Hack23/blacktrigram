@@ -1,6 +1,6 @@
 import { COMBAT_CONTROLS } from "@/systems";
 import * as PIXI from "pixi.js";
-import React from "react";
+import React, { useEffect } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 
 import {
@@ -24,8 +24,28 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
   width = 800,
   height = 600,
 }) => {
+  // Consistent mobile detection
   const isMobile = PIXI.isMobile.phone;
   const isTablet = PIXI.isMobile.tablet;
+
+  // Enhanced escape key handling for this component
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Handle escape key or 'B' for back
+      if (event.key === "Escape" || event.key.toLowerCase() === "b") {
+        event.preventDefault();
+        onBack();
+      }
+    };
+
+    // Add event listener when component mounts
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onBack]);
 
   // Calculate responsive dimensions
   const contentPadding = isMobile ? 15 : 20;
@@ -81,9 +101,9 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           screenHeight={stanceSectionHeight}
           data-testid="trigram-controls"
         >
-          {/* Section Title */}
+          {/* Section Title - Enhanced Bilingual */}
           <pixiText
-            text="팔괘 자세 (Trigram Stances)"
+            text="팔괘 자세 (Trigram Stances) - 八卦姿勢"
             style={{
               fontSize: isMobile ? 16 : 20,
               fill: KOREAN_COLORS.TEXT_PRIMARY,
@@ -144,6 +164,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                         g.stroke();
                       }}
                     />
+                    {/* Enhanced bilingual display */}
                     <pixiText
                       text={`${key}: ${value.korean}`}
                       style={{
@@ -153,11 +174,11 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                         fontWeight: "bold",
                       }}
                       x={8}
-                      y={8}
+                      y={6}
                       anchor={{ x: 0, y: 0 }}
                     />
                     <pixiText
-                      text={`(${value.technique})`}
+                      text={`${value.technique}`}
                       style={{
                         fontSize: isMobile ? 8 : 10,
                         fill: KOREAN_COLORS.ACCENT_CYAN,
@@ -165,8 +186,8 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                         fontStyle: "italic",
                       }}
                       x={8}
-                      y={buttonHeight - 8}
-                      anchor={{ x: 0, y: 1 }}
+                      y={buttonHeight - 10}
+                      anchor={{ x: 0, y: 0 }}
                     />
                   </ResponsivePixiContainer>
                 );
@@ -183,9 +204,9 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           screenHeight={combatSectionHeight}
           data-testid="combat-controls"
         >
-          {/* Section Title */}
+          {/* Section Title - Enhanced Bilingual */}
           <pixiText
-            text="전투 조작 (Combat Controls)"
+            text="전투 조작 (Combat Controls) - 戰鬥操作"
             style={{
               fontSize: isMobile ? 16 : 20,
               fill: KOREAN_COLORS.TEXT_PRIMARY,
@@ -229,7 +250,6 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                         4
                       );
                       g.fill();
-                      // Add subtle border
                       g.stroke({
                         width: 1,
                         color: KOREAN_COLORS.ACCENT_CYAN,
@@ -274,7 +294,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           </ResponsivePixiContainer>
         </ResponsivePixiContainer>
 
-        {/* Additional Controls Info */}
+        {/* Enhanced Navigation Info Section */}
         <ResponsivePixiContainer
           x={contentPadding}
           y={
@@ -285,8 +305,8 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
             10
           }
           screenWidth={width - contentPadding * 2}
-          screenHeight={60}
-          data-testid="additional-controls"
+          screenHeight={80}
+          data-testid="navigation-info"
         >
           <pixiGraphics
             draw={(g) => {
@@ -295,43 +315,71 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                 color: KOREAN_COLORS.UI_BACKGROUND_DARK,
                 alpha: 0.7,
               });
-              g.roundRect(0, 0, width - contentPadding * 2, 50, 8);
+              g.roundRect(0, 0, width - contentPadding * 2, 75, 8);
               g.fill();
               g.stroke({
                 width: 2,
                 color: KOREAN_COLORS.PRIMARY_CYAN,
                 alpha: 0.5,
               });
-              g.roundRect(0, 0, width - contentPadding * 2, 50, 8);
+              g.roundRect(0, 0, width - contentPadding * 2, 75, 8);
               g.stroke();
             }}
           />
+
+          {/* Korean Navigation Tip */}
           <pixiText
-            text="💡 팁: ESC 키로 메뉴로 돌아가기"
+            text="💡 탐색 팁: ESC 또는 B 키로 메뉴로 돌아가기"
             style={{
-              fontSize: isMobile ? 12 : 14,
+              fontSize: isMobile ? 11 : 13,
               fill: KOREAN_COLORS.PRIMARY_CYAN,
               fontFamily: "Arial, sans-serif",
               fontWeight: "bold",
             }}
             x={15}
-            y={15}
+            y={12}
           />
+
+          {/* English Navigation Tip */}
           <pixiText
-            text="Tip: Press ESC to return to menu"
+            text="Navigation Tip: Press ESC or B to return to menu"
             style={{
-              fontSize: isMobile ? 10 : 12,
+              fontSize: isMobile ? 10 : 11,
               fill: KOREAN_COLORS.ACCENT_CYAN,
               fontFamily: "Arial, sans-serif",
               fontStyle: "italic",
             }}
             x={15}
-            y={32}
+            y={30}
+          />
+
+          {/* Additional Control Hint */}
+          <pixiText
+            text="추가 정보: 돌아가기 버튼을 클릭하거나 키보드 단축키 사용"
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontFamily: "Arial, sans-serif",
+            }}
+            x={15}
+            y={48}
+          />
+
+          <pixiText
+            text="Additional: Click Back button or use keyboard shortcuts"
+            style={{
+              fontSize: isMobile ? 8 : 9,
+              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontFamily: "Arial, sans-serif",
+              fontStyle: "italic",
+            }}
+            x={15}
+            y={62}
           />
         </ResponsivePixiContainer>
       </ResponsivePixiContainer>
 
-      {/* Fixed Back Button at Bottom */}
+      {/* Enhanced Fixed Back Button at Bottom */}
       <ResponsivePixiContainer
         x={0}
         y={height - buttonArea}
@@ -343,19 +391,20 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
         <pixiGraphics
           draw={(g) => {
             g.clear();
-            // Gradient background for footer
+            // Enhanced gradient background for footer
             const gradient = new PIXI.FillGradient(0, 0, 0, buttonArea);
             gradient.addColorStop(0, 0x1a1a2e);
+            gradient.addColorStop(0.5, 0x16213e);
             gradient.addColorStop(1, 0x0a0a0f);
             g.fill(gradient);
             g.rect(0, 0, width, buttonArea);
             g.fill();
 
-            // Top border line
+            // Enhanced top border line
             g.stroke({
               width: 2,
               color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
+              alpha: 0.8,
             });
             g.moveTo(0, 0);
             g.lineTo(width, 0);
@@ -363,18 +412,18 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           }}
         />
 
-        {/* Back Button - Centered */}
+        {/* Back Button - Centered with better styling */}
         <ResponsivePixiContainer
           x={width / 2}
           y={buttonArea / 2}
-          screenWidth={140}
-          screenHeight={40}
+          screenWidth={160}
+          screenHeight={45}
           data-testid="back-button-container"
         >
           <ResponsivePixiButton
             text="돌아가기 (Back)"
-            width={140}
-            height={40}
+            width={160}
+            height={45}
             screenWidth={width}
             screenHeight={height}
             variant="secondary"
@@ -383,19 +432,33 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           />
         </ResponsivePixiContainer>
 
-        {/* Keyboard shortcut hint */}
-        <pixiText
-          text="ESC"
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.SECONDARY_MAGENTA,
-            fontFamily: "Arial, sans-serif",
-            fontWeight: "bold",
-          }}
-          x={width - 30}
-          y={buttonArea / 2}
-          anchor={{ x: 0.5, y: 0.5 }}
-        />
+        {/* Enhanced Keyboard shortcut hints */}
+        <pixiContainer>
+          <pixiText
+            text="ESC"
+            style={{
+              fontSize: isMobile ? 10 : 12,
+              fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+              fontFamily: "Arial, sans-serif",
+              fontWeight: "bold",
+            }}
+            x={width - 50}
+            y={buttonArea / 2 - 8}
+            anchor={{ x: 0.5, y: 0.5 }}
+          />
+          <pixiText
+            text="B"
+            style={{
+              fontSize: isMobile ? 10 : 12,
+              fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+              fontFamily: "Arial, sans-serif",
+              fontWeight: "bold",
+            }}
+            x={width - 25}
+            y={buttonArea / 2 - 8}
+            anchor={{ x: 0.5, y: 0.5 }}
+          />
+        </pixiContainer>
       </ResponsivePixiContainer>
     </ResponsivePixiPanel>
   );
