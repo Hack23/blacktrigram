@@ -483,7 +483,10 @@ export interface AISystemConfig {
 export type { PixiApplication, PixiDisplayObject };
 
 // Player archetype data
-export const PLAYER_ARCHETYPES_DATA: Record<PlayerArchetype, PlayerArchetypeData> = {
+export const PLAYER_ARCHETYPES_DATA: Record<
+  PlayerArchetype,
+  PlayerArchetypeData
+> = {
   [PlayerArchetype.MUSA]: {
     id: "musa",
     name: { korean: "무사 (Musa)", english: "Traditional Warrior" },
@@ -750,67 +753,239 @@ export const COMBAT_CONSTANTS = {
   STATUS_EFFECT_DURATION: 3000,
 } as const;
 
-// Combat controls mapping
+// Combat controls mapping - Enhanced with realistic combat focus
 export const COMBAT_CONTROLS = {
-  // Trigram stance system (1-8 keys)
+  // Trigram stance system (1-8 keys) with authentic Korean martial arts techniques
   stanceControls: {
     "1": {
       stance: "geon" as TrigramStance,
       korean: "건",
-      technique: "천둥벽력",
+      english: "Heaven",
+      symbol: "☰",
+      technique: {
+        korean: "천둥벽력",
+        english: "Thunder Strike",
+      },
+      combatFocus: {
+        korean: "골격타격",
+        english: "Bone-striking force",
+      },
+      combatEffects: {
+        korean: "골절, 구조적 손상",
+        english: "Fractures, structural damage",
+      },
+      description: {
+        korean: "하늘의 힘으로 적의 뼈를 부수는 강력한 타격",
+        english:
+          "Powerful strikes that shatter enemy bones with heaven's force",
+      },
     },
     "2": {
       stance: "tae" as TrigramStance,
       korean: "태",
-      technique: "유수연타",
+      english: "Lake",
+      symbol: "☱",
+      technique: {
+        korean: "유수연타",
+        english: "Flowing Strike",
+      },
+      combatFocus: {
+        korean: "관절조작",
+        english: "Joint manipulation",
+      },
+      combatEffects: {
+        korean: "탈구, 이동력 상실",
+        english: "Dislocations, mobility loss",
+      },
+      description: {
+        korean: "호수처럼 부드럽게 흘러 관절을 조작하는 기법",
+        english: "Techniques that flow like water to manipulate joints",
+      },
     },
-    "3": { stance: "li" as TrigramStance, korean: "리", technique: "화염지창" },
+    "3": {
+      stance: "li" as TrigramStance,
+      korean: "리",
+      english: "Fire",
+      symbol: "☲",
+      technique: {
+        korean: "화염지창",
+        english: "Fire Spear",
+      },
+      combatFocus: {
+        korean: "정밀신경타격",
+        english: "Precise nerve strikes",
+      },
+      combatEffects: {
+        korean: "일시마비, 감각상실",
+        english: "Temporary paralysis, numbness",
+      },
+      description: {
+        korean: "불꽃같은 정확성으로 신경계를 공격하는 치명적 기법",
+        english:
+          "Deadly techniques targeting the nervous system with fire-like precision",
+      },
+    },
     "4": {
       stance: "jin" as TrigramStance,
       korean: "진",
-      technique: "벽력일섬",
+      english: "Thunder",
+      symbol: "☳",
+      technique: {
+        korean: "벽력일섬",
+        english: "Lightning Strike",
+      },
+      combatFocus: {
+        korean: "기절기법",
+        english: "Stunning techniques",
+      },
+      combatEffects: {
+        korean: "방향감각상실, 의식잃음",
+        english: "Disorientation, knockouts",
+      },
+      description: {
+        korean: "번개처럼 빠른 충격으로 적의 의식을 차단",
+        english: "Lightning-fast shocks that disrupt enemy consciousness",
+      },
     },
     "5": {
       stance: "son" as TrigramStance,
       korean: "손",
-      technique: "선풍연격",
+      english: "Wind",
+      symbol: "☴",
+      technique: {
+        korean: "선풍연격",
+        english: "Whirlwind Combo",
+      },
+      combatFocus: {
+        korean: "지속압박",
+        english: "Continuous pressure",
+      },
+      combatEffects: {
+        korean: "점진적 무력화",
+        english: "Gradual incapacitation",
+      },
+      description: {
+        korean: "바람처럼 끊임없는 연타로 적을 서서히 무력화",
+        english:
+          "Relentless wind-like strikes that gradually overwhelm the enemy",
+      },
     },
     "6": {
       stance: "gam" as TrigramStance,
       korean: "감",
-      technique: "수류반격",
+      english: "Water",
+      symbol: "☵",
+      technique: {
+        korean: "수류반격",
+        english: "Water Counter",
+      },
+      combatFocus: {
+        korean: "혈류차단",
+        english: "Blood flow restriction",
+      },
+      combatEffects: {
+        korean: "순환장애",
+        english: "Circulation disruption",
+      },
+      description: {
+        korean: "물의 흐름을 끊듯 혈액순환을 차단하는 위험한 기법",
+        english:
+          "Dangerous techniques that disrupt blood circulation like stopping water flow",
+      },
     },
     "7": {
       stance: "gan" as TrigramStance,
       korean: "간",
-      technique: "반석방어",
+      english: "Mountain",
+      symbol: "☶",
+      technique: {
+        korean: "반석방어",
+        english: "Mountain Defense",
+      },
+      combatFocus: {
+        korean: "방어반격",
+        english: "Defensive counters",
+      },
+      combatEffects: {
+        korean: "반격, 차단",
+        english: "Counter-attacks, blocks",
+      },
+      description: {
+        korean: "산처럼 견고한 방어에서 나오는 강력한 반격",
+        english: "Powerful counters emerging from mountain-solid defense",
+      },
     },
     "8": {
       stance: "gon" as TrigramStance,
       korean: "곤",
-      technique: "대지포옹",
+      english: "Earth",
+      symbol: "☷",
+      technique: {
+        korean: "대지포옹",
+        english: "Earth's Embrace",
+      },
+      combatFocus: {
+        korean: "지면기법",
+        english: "Ground techniques",
+      },
+      combatEffects: {
+        korean: "투척, 넘어뜨리기",
+        english: "Throws, takedowns",
+      },
+      description: {
+        korean: "대지의 힘으로 적을 땅에 내동댕이치는 투척술",
+        english:
+          "Throwing techniques that slam enemies to the ground with earth's power",
+      },
     },
   },
 
-  // Movement controls
+  // Movement controls with combat context
   movement: {
-    WASD: "Tactical positioning and footwork",
-    ArrowKeys: "Alternative movement system",
+    WASD: {
+      korean: "전술적 이동과 발놀림",
+      english: "Tactical positioning and footwork",
+    },
+    ArrowKeys: {
+      korean: "대체 이동 시스템",
+      english: "Alternative movement system",
+    },
   },
 
-  // Combat actions
+  // Combat actions with realistic descriptions
   combat: {
-    SPACE: "Execute current stance technique",
-    SHIFT: "Defensive guard/block position",
-    CTRL: "Precision vital point targeting mode",
-    TAB: "Cycle through player archetypes",
+    SPACE: {
+      korean: "현재 자세의 기법 실행",
+      english: "Execute current stance technique",
+    },
+    SHIFT: {
+      korean: "방어 자세/차단 위치",
+      english: "Defensive guard/block position",
+    },
+    CTRL: {
+      korean: "정밀 급소 타격 모드",
+      english: "Precision vital point targeting mode",
+    },
+    TAB: {
+      korean: "무술 원형 순환",
+      english: "Cycle through martial archetypes",
+    },
   },
 
   // System controls
   system: {
-    ESC: "Pause menu / Return to intro",
-    F1: "Help / Controls guide",
-    M: "Mute / Audio settings",
+    ESC: {
+      korean: "일시정지 메뉴 / 인트로로 돌아가기",
+      english: "Pause menu / Return to intro",
+    },
+    F1: {
+      korean: "도움말 / 조작법 가이드",
+      english: "Help / Controls guide",
+    },
+    M: {
+      korean: "음소거 / 오디오 설정",
+      english: "Mute / Audio settings",
+    },
   },
 } as const;
 
