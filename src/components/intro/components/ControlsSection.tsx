@@ -2,6 +2,7 @@ import { COMBAT_CONTROLS } from "@/systems";
 import * as PIXI from "pixi.js";
 import React, { useEffect } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
+import { KoreanText } from "../../ui/base/korean-text/KoreanText";
 
 import {
   ResponsivePixiButton,
@@ -70,26 +71,26 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
   const stanceControlsCount = Object.keys(
     COMBAT_CONTROLS.stanceControls
   ).length;
-  const buttonsPerRow = isMobile ? 2 : isTablet ? 3 : 4;
-  const buttonHeight = isMobile ? 35 : 40;
+  const buttonsPerRow = isMobile ? 1 : isTablet ? 2 : 2; // Reduced to accommodate more content
+  const buttonHeight = isMobile ? 80 : 100; // Increased for more content
   const buttonSpacing = 10;
   const stanceRows = Math.ceil(stanceControlsCount / buttonsPerRow);
   const stanceSectionHeight = Math.min(
-    35 + stanceRows * (buttonHeight + buttonSpacing) + 20,
-    availableHeight * 0.6
+    45 + stanceRows * (buttonHeight + buttonSpacing) + 20,
+    availableHeight * 0.7
   );
 
   // Calculate combat section height
   const combatControlsCount = Object.keys(COMBAT_CONTROLS.combat).length;
-  const combatItemHeight = isMobile ? 25 : 30;
+  const combatItemHeight = isMobile ? 40 : 50; // Increased for KoreanText
   const combatSectionHeight = Math.min(
-    35 + combatControlsCount * combatItemHeight + 20,
-    availableHeight * 0.4
+    45 + combatControlsCount * combatItemHeight + 20,
+    availableHeight * 0.3
   );
 
   return (
     <ResponsivePixiPanel
-      title="조작법 (Controls)"
+      title="무술 조작법 (Combat Controls)"
       x={x}
       y={y}
       width={width}
@@ -114,31 +115,43 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           screenHeight={stanceSectionHeight}
           data-testid="trigram-controls"
         >
-          {/* Section Title - Enhanced Bilingual */}
-          <pixiText
-            text="팔괘 자세 (Trigram Stances) - 八卦姿勢"
-            style={{
-              fontSize: isMobile ? 16 : 20,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              fontFamily: "Arial, sans-serif",
-              fontWeight: "bold",
+          {/* Section Title - Enhanced with Combat Context */}
+          <KoreanText
+            text={{
+              korean: "팔괘 무술 자세 (Eight Trigram Combat Stances)",
+              english: "Authentic Korean Martial Arts Fighting Forms",
             }}
+            size={isMobile ? "medium" : "large"}
+            weight="bold"
             x={contentPadding}
             y={0}
+          />
+
+          {/* Combat Philosophy Subtitle */}
+          <pixiText
+            text="☯ 태극과 팔괘의 무술철학을 바탕으로 한 실전 격투술 ☯"
+            style={{
+              fontSize: isMobile ? 11 : 13,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontFamily: "Arial, sans-serif",
+              fontStyle: "italic",
+            }}
+            x={contentPadding}
+            y={25}
           />
 
           {/* Stance Controls Grid */}
           <ResponsivePixiContainer
             x={contentPadding}
-            y={35}
+            y={45}
             screenWidth={width - contentPadding * 2}
-            screenHeight={stanceSectionHeight - 35}
+            screenHeight={stanceSectionHeight - 45}
             data-testid="stance-controls-grid"
           >
             {Object.entries(COMBAT_CONTROLS.stanceControls).map(
               ([key, value], index) => {
                 const buttonWidth = Math.max(
-                  isMobile ? 140 : 160,
+                  isMobile ? 300 : 360,
                   (width -
                     contentPadding * 2 -
                     (buttonsPerRow - 1) * buttonSpacing) /
@@ -162,36 +175,86 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                     <pixiGraphics
                       draw={(g) => {
                         g.clear();
+                        // Enhanced background with combat theme
                         g.fill({
                           color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                          alpha: 0.9,
+                        });
+                        g.roundRect(0, 0, buttonWidth, buttonHeight, 8);
+                        g.fill();
+
+                        // Trigram symbol background
+                        g.fill({
+                          color: KOREAN_COLORS.ACCENT_GOLD,
+                          alpha: 0.1,
+                        });
+                        g.roundRect(buttonWidth - 40, 5, 35, 30, 4);
+                        g.fill();
+
+                        // Border with stance-specific color
+                        g.stroke({
+                          width: 2,
+                          color: KOREAN_COLORS.ACCENT_GOLD,
                           alpha: 0.8,
                         });
-                        g.roundRect(0, 0, buttonWidth, buttonHeight, 6);
-                        g.fill();
-                        g.stroke({
-                          width: 1,
-                          color: KOREAN_COLORS.ACCENT_GOLD,
-                          alpha: 0.6,
-                        });
-                        g.roundRect(0, 0, buttonWidth, buttonHeight, 6);
+                        g.roundRect(0, 0, buttonWidth, buttonHeight, 8);
                         g.stroke();
                       }}
                     />
-                    {/* Enhanced bilingual display */}
+
+                    {/* Key and Symbol */}
                     <pixiText
-                      text={`${key}: ${value.korean}`}
+                      text={`${key}`}
                       style={{
-                        fontSize: isMobile ? 9 : 11,
-                        fill: KOREAN_COLORS.TEXT_SECONDARY,
+                        fontSize: isMobile ? 12 : 14,
+                        fill: KOREAN_COLORS.ACCENT_GOLD,
                         fontFamily: "Arial, sans-serif",
                         fontWeight: "bold",
                       }}
                       x={8}
-                      y={6}
-                      anchor={{ x: 0, y: 0 }}
+                      y={8}
                     />
+
                     <pixiText
-                      text={`${value.technique}`}
+                      text={value.symbol}
+                      style={{
+                        fontSize: isMobile ? 16 : 20,
+                        fill: KOREAN_COLORS.ACCENT_GOLD,
+                        fontFamily: "Arial, sans-serif",
+                      }}
+                      x={buttonWidth - 25}
+                      y={8}
+                      anchor={{ x: 0.5, y: 0 }}
+                    />
+
+                    {/* Stance Name - Korean/English */}
+                    <pixiText
+                      text={`${value.korean} (${value.english})`}
+                      style={{
+                        fontSize: isMobile ? 11 : 13,
+                        fill: KOREAN_COLORS.TEXT_PRIMARY,
+                        fontFamily: "Arial, sans-serif",
+                        fontWeight: "bold",
+                      }}
+                      x={35}
+                      y={8}
+                    />
+
+                    {/* Technique Name */}
+                    <pixiText
+                      text={value.technique.korean}
+                      style={{
+                        fontSize: isMobile ? 9 : 11,
+                        fill: KOREAN_COLORS.PRIMARY_CYAN,
+                        fontFamily: "Arial, sans-serif",
+                        fontStyle: "italic",
+                      }}
+                      x={8}
+                      y={26}
+                    />
+
+                    <pixiText
+                      text={value.technique.english}
                       style={{
                         fontSize: isMobile ? 8 : 10,
                         fill: KOREAN_COLORS.ACCENT_CYAN,
@@ -199,8 +262,32 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                         fontStyle: "italic",
                       }}
                       x={8}
-                      y={buttonHeight - 10}
-                      anchor={{ x: 0, y: 0 }}
+                      y={38}
+                    />
+
+                    {/* Combat Focus */}
+                    <pixiText
+                      text={`⚔️ ${value.combatFocus.korean}`}
+                      style={{
+                        fontSize: isMobile ? 8 : 9,
+                        fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+                        fontFamily: "Arial, sans-serif",
+                        fontWeight: "bold",
+                      }}
+                      x={8}
+                      y={52}
+                    />
+
+                    {/* Combat Effects */}
+                    <pixiText
+                      text={`💥 ${value.combatEffects.korean}`}
+                      style={{
+                        fontSize: isMobile ? 7 : 8,
+                        fill: KOREAN_COLORS.NEGATIVE_RED,
+                        fontFamily: "Arial, sans-serif",
+                      }}
+                      x={8}
+                      y={buttonHeight - 12}
                     />
                   </ResponsivePixiContainer>
                 );
@@ -217,25 +304,37 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           screenHeight={combatSectionHeight}
           data-testid="combat-controls"
         >
-          {/* Section Title - Enhanced Bilingual */}
+          {/* Section Title */}
+          <KoreanText
+            text={{
+              korean: "실전 격투 조작 (Combat Actions)",
+              english: "Authentic Martial Arts Combat Controls",
+            }}
+            size={isMobile ? "medium" : "large"}
+            weight="bold"
+            x={contentPadding}
+            y={0}
+          />
+
+          {/* Combat Warning */}
           <pixiText
-            text="전투 조작 (Combat Controls) - 戰鬥操作"
+            text="⚠️ 주의: 실제 무술 기법 - 교육 목적으로만 사용하세요"
             style={{
-              fontSize: isMobile ? 16 : 20,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
+              fontSize: isMobile ? 9 : 11,
+              fill: KOREAN_COLORS.NEGATIVE_RED,
               fontFamily: "Arial, sans-serif",
               fontWeight: "bold",
             }}
             x={contentPadding}
-            y={0}
+            y={25}
           />
 
           {/* Combat Controls List */}
           <ResponsivePixiContainer
             x={contentPadding}
-            y={35}
+            y={45}
             screenWidth={width - contentPadding * 2}
-            screenHeight={combatSectionHeight - 35}
+            screenHeight={combatSectionHeight - 45}
             data-testid="combat-controls-list"
           >
             {Object.entries(COMBAT_CONTROLS.combat).map(
@@ -253,53 +352,69 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                       g.clear();
                       g.fill({
                         color: KOREAN_COLORS.UI_BACKGROUND_LIGHT,
-                        alpha: 0.6,
+                        alpha: 0.8,
                       });
                       g.roundRect(
                         0,
                         0,
                         width - contentPadding * 3,
                         combatItemHeight - 5,
-                        4
+                        6
                       );
                       g.fill();
                       g.stroke({
                         width: 1,
                         color: KOREAN_COLORS.ACCENT_CYAN,
-                        alpha: 0.3,
+                        alpha: 0.4,
                       });
                       g.roundRect(
                         0,
                         0,
                         width - contentPadding * 3,
                         combatItemHeight - 5,
-                        4
+                        6
                       );
                       g.stroke();
                     }}
                   />
+
+                  {/* Key */}
                   <pixiText
                     text={key}
                     style={{
-                      fontSize: isMobile ? 11 : 13,
+                      fontSize: isMobile ? 12 : 14,
                       fill: KOREAN_COLORS.ACCENT_GOLD,
                       fontFamily: "Arial, sans-serif",
                       fontWeight: "bold",
                     }}
-                    x={8}
-                    y={(combatItemHeight - 5) / 2}
-                    anchor={{ x: 0, y: 0.5 }}
+                    x={10}
+                    y={8}
                   />
+
+                  {/* Korean Description */}
                   <pixiText
-                    text={`: ${description}`}
+                    text={description.korean}
                     style={{
                       fontSize: isMobile ? 10 : 12,
+                      fill: KOREAN_COLORS.TEXT_PRIMARY,
+                      fontFamily: "Arial, sans-serif",
+                      fontWeight: "bold",
+                    }}
+                    x={key.length * (isMobile ? 8 : 10) + 20}
+                    y={8}
+                  />
+
+                  {/* English Description */}
+                  <pixiText
+                    text={description.english}
+                    style={{
+                      fontSize: isMobile ? 9 : 10,
                       fill: KOREAN_COLORS.TEXT_SECONDARY,
                       fontFamily: "Arial, sans-serif",
+                      fontStyle: "italic",
                     }}
-                    x={key.length * (isMobile ? 7 : 8) + 15}
-                    y={(combatItemHeight - 5) / 2}
-                    anchor={{ x: 0, y: 0.5 }}
+                    x={key.length * (isMobile ? 8 : 10) + 20}
+                    y={24}
                   />
                 </ResponsivePixiContainer>
               )
@@ -307,7 +422,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           </ResponsivePixiContainer>
         </ResponsivePixiContainer>
 
-        {/* Enhanced Navigation Info Section */}
+        {/* Enhanced Combat Philosophy Section */}
         <ResponsivePixiContainer
           x={contentPadding}
           y={
@@ -318,76 +433,89 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
             10
           }
           screenWidth={width - contentPadding * 2}
-          screenHeight={80}
-          data-testid="navigation-info"
+          screenHeight={100}
+          data-testid="combat-philosophy"
         >
           <pixiGraphics
             draw={(g) => {
               g.clear();
               g.fill({
                 color: KOREAN_COLORS.UI_BACKGROUND_DARK,
-                alpha: 0.7,
+                alpha: 0.8,
               });
-              g.roundRect(0, 0, width - contentPadding * 2, 75, 8);
+              g.roundRect(0, 0, width - contentPadding * 2, 95, 8);
               g.fill();
               g.stroke({
                 width: 2,
-                color: KOREAN_COLORS.PRIMARY_CYAN,
-                alpha: 0.5,
+                color: KOREAN_COLORS.KOREAN_RED,
+                alpha: 0.6,
               });
-              g.roundRect(0, 0, width - contentPadding * 2, 75, 8);
+              g.roundRect(0, 0, width - contentPadding * 2, 95, 8);
               g.stroke();
             }}
           />
 
-          {/* Korean Navigation Tip */}
+          {/* Combat Philosophy Header */}
           <pixiText
-            text="💡 탐색 팁: ESC 또는 B 키로 메뉴로 돌아가기"
+            text="🥋 무도철학 (Martial Philosophy)"
             style={{
-              fontSize: isMobile ? 11 : 13,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              fontSize: isMobile ? 12 : 14,
+              fill: KOREAN_COLORS.KOREAN_RED,
               fontFamily: "Arial, sans-serif",
               fontWeight: "bold",
             }}
             x={15}
-            y={12}
+            y={10}
           />
 
-          {/* English Navigation Tip */}
+          {/* Korean Philosophy */}
           <pixiText
-            text="Navigation Tip: Press ESC or B to return to menu"
+            text="정확한 급소타격으로 적을 무력화하는 한국 전통무술의 정수"
             style={{
               fontSize: isMobile ? 10 : 11,
-              fill: KOREAN_COLORS.ACCENT_CYAN,
+              fill: KOREAN_COLORS.TEXT_PRIMARY,
               fontFamily: "Arial, sans-serif",
-              fontStyle: "italic",
             }}
             x={15}
-            y={30}
+            y={28}
           />
 
-          {/* Additional Control Hint */}
+          {/* English Philosophy */}
           <pixiText
-            text="추가 정보: 돌아가기 버튼을 클릭하거나 키보드 단축키 사용"
+            text="The essence of Korean martial arts - precise vital point strikes to incapacitate enemies"
             style={{
               fontSize: isMobile ? 9 : 10,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
               fontFamily: "Arial, sans-serif",
-            }}
-            x={15}
-            y={48}
-          />
-
-          <pixiText
-            text="Additional: Click Back button or use keyboard shortcuts"
-            style={{
-              fontSize: isMobile ? 8 : 9,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Arial, sans-serif",
               fontStyle: "italic",
             }}
             x={15}
+            y={44}
+          />
+
+          {/* Navigation Tip */}
+          <pixiText
+            text="💡 ESC 또는 B키로 메뉴 복귀 | Press ESC or B to return to menu"
+            style={{
+              fontSize: isMobile ? 9 : 10,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              fontFamily: "Arial, sans-serif",
+            }}
+            x={15}
             y={62}
+          />
+
+          {/* Educational Warning */}
+          <pixiText
+            text="⚠️ 교육용 시뮬레이션 - 실제 무술 수련은 전문가 지도하에 하세요"
+            style={{
+              fontSize: isMobile ? 8 : 9,
+              fill: KOREAN_COLORS.NEGATIVE_RED,
+              fontFamily: "Arial, sans-serif",
+              fontWeight: "bold",
+            }}
+            x={15}
+            y={78}
           />
         </ResponsivePixiContainer>
       </ResponsivePixiContainer>
@@ -416,7 +544,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
             // Enhanced top border line
             g.stroke({
               width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
+              color: KOREAN_COLORS.KOREAN_RED,
               alpha: 0.8,
             });
             g.moveTo(0, 0);
@@ -429,13 +557,13 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
         <ResponsivePixiContainer
           x={width / 2}
           y={buttonArea / 2}
-          screenWidth={160}
+          screenWidth={180}
           screenHeight={45}
           data-testid="back-button-container"
         >
           <ResponsivePixiButton
-            text="돌아가기 (Back)"
-            width={160}
+            text="무도장으로 돌아가기 (Return to Dojang)"
+            width={180}
             height={45}
             screenWidth={width}
             screenHeight={height}
@@ -455,7 +583,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
               fontFamily: "Arial, sans-serif",
               fontWeight: "bold",
             }}
-            x={width - 50}
+            x={width - 60}
             y={buttonArea / 2 - 8}
             anchor={{ x: 0.5, y: 0.5 }}
           />
@@ -467,7 +595,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
               fontFamily: "Arial, sans-serif",
               fontWeight: "bold",
             }}
-            x={width - 25}
+            x={width - 30}
             y={buttonArea / 2 - 8}
             anchor={{ x: 0.5, y: 0.5 }}
           />
