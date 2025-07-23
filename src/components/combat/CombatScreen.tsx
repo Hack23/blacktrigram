@@ -719,7 +719,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     padding: 10,
     hudHeight: 120,
     controlsHeight: 100,
-    footerHeight: 60,
+    footerHeight: 40,
   };
 
   return (
@@ -757,7 +757,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           layout={{
             width: "100%",
             height: layoutConstants.hudHeight,
-            alignItems: "center",
+            alignItems: "flex-start", // Align items to the top of the container
             justifyContent: "center",
             flexShrink: 0, // Prevents this container from shrinking
           }}
@@ -799,7 +799,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             playerState={validPlayers[0]}
             x={playerPositions[0].x}
             y={playerPositions[0].y}
-            scale={isMobile ? 0.7 : 0.9}
+            scale={isMobile ? 0.8 : 1.0}
             renderMode="combat"
             facing="right"
             showDetails={true}
@@ -817,7 +817,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             playerState={validPlayers[1]}
             x={playerPositions[1].x}
             y={playerPositions[1].y}
-            scale={isMobile ? 0.7 : 0.9}
+            scale={isMobile ? 0.8 : 1.0}
             renderMode="combat"
             facing="left"
             showDetails={true}
@@ -854,10 +854,11 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             width: "100%",
             height: layoutConstants.controlsHeight,
             flexDirection: "row",
-            alignItems: "center",
+            alignItems: "flex-end", // Align to the bottom of the container
             justifyContent: "space-between",
-            gap: 10,
+            gap: 20,
             flexShrink: 0,
+            paddingBottom: layoutConstants.footerHeight + 10, // Add padding to not overlap with footer
           }}
         >
           <CombatControls
@@ -867,8 +868,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             onTechniqueExecute={handleTechniqueExecute}
             player={validPlayers[0]}
             isExecutingTechnique={isExecutingTechnique}
-            width={isMobile ? 200 : 280}
-            height={90}
+            width={isMobile ? width * 0.45 : 400}
+            height={isMobile ? 90 : 120}
           />
           <CombatStatsPanel
             players={validPlayers}
@@ -898,18 +899,28 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               player1: validPlayers[0].perfectStrikes || 0,
               player2: validPlayers[1].perfectStrikes || 0,
             }}
-            width={isMobile ? 200 : 320}
-            height={90}
+            width={isMobile ? width * 0.45 : 400}
+            height={isMobile ? 90 : 120}
           />
         </pixiContainer>
 
         {/* Footer Area: Fixed height for instructions and menu button */}
-        <CombatFooter
-          onReturnToMenu={onReturnToMenu}
-          isMobile={isMobile}
-          width={width - layoutConstants.padding * 2}
-          height={layoutConstants.footerHeight}
-        />
+        <pixiContainer
+          layout={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            height: layoutConstants.footerHeight,
+          }}
+        >
+          <CombatFooter
+            onReturnToMenu={onReturnToMenu}
+            isMobile={isMobile}
+            width={width}
+            height={layoutConstants.footerHeight}
+          />
+        </pixiContainer>
       </pixiContainer>
 
       {/* Pause Overlay - Centered on the whole screen */}
