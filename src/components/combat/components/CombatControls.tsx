@@ -102,9 +102,10 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
   }, [availableTechniques, player.ki, player.stamina, isExecutingTechnique]);
 
   // Responsive layout
-  const isMobile = width < 400;
-  const buttonWidth = isMobile ? 70 : 90;
-  const buttonHeight = isMobile ? 30 : 40;
+  const isMobile = width < 300; // More specific mobile detection
+  const buttonWidth = isMobile ? 45 : 70; // Smaller buttons for mobile
+  const buttonHeight = isMobile ? 25 : 35;
+  const fontSize = isMobile ? 8 : 11;
 
   // Enhanced button drawing with hover effects
   const drawButton = useCallback(
@@ -189,7 +190,7 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
       </pixiContainer>
 
       {/* Enhanced Control Buttons */}
-      <pixiContainer x={10} y={isMobile ? 35 : 45}>
+      <pixiContainer x={5} y={isMobile ? 25 : 35}>
         {/* Attack Button */}
         <pixiContainer x={0} y={0} data-testid="attack-button">
           <pixiGraphics
@@ -209,30 +210,19 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
           <pixiText
             text="공격"
             style={{
-              fontSize: isMobile ? 11 : 14,
+              fontSize: fontSize,
               fill: KOREAN_COLORS.TEXT_PRIMARY,
               fontWeight: "bold",
               fontFamily: "Noto Sans KR",
             }}
             x={buttonWidth / 2}
-            y={buttonHeight / 2 - 8}
-            anchor={0.5}
-          />
-          <pixiText
-            text="Attack"
-            style={{
-              fontSize: isMobile ? 7 : 9,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontStyle: "italic",
-            }}
-            x={buttonWidth / 2}
-            y={buttonHeight / 2 + 6}
+            y={buttonHeight / 2}
             anchor={0.5}
           />
         </pixiContainer>
 
         {/* Defend Button */}
-        <pixiContainer x={buttonWidth + 10} y={0} data-testid="defend-button">
+        <pixiContainer x={buttonWidth + 5} y={0} data-testid="defend-button">
           <pixiGraphics
             draw={(g) =>
               drawButton(
@@ -250,31 +240,20 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
           <pixiText
             text="방어"
             style={{
-              fontSize: isMobile ? 11 : 14,
+              fontSize: fontSize,
               fill: KOREAN_COLORS.TEXT_PRIMARY,
               fontWeight: "bold",
               fontFamily: "Noto Sans KR",
             }}
             x={buttonWidth / 2}
-            y={buttonHeight / 2 - 8}
-            anchor={0.5}
-          />
-          <pixiText
-            text="Defend"
-            style={{
-              fontSize: isMobile ? 7 : 9,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontStyle: "italic",
-            }}
-            x={buttonWidth / 2}
-            y={buttonHeight / 2 + 6}
+            y={buttonHeight / 2}
             anchor={0.5}
           />
         </pixiContainer>
 
         {/* Technique Button with Resource Check */}
         <pixiContainer
-          x={(buttonWidth + 10) * 2}
+          x={(buttonWidth + 5) * 2}
           y={0}
           data-testid="technique-button"
         >
@@ -299,7 +278,7 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
           <pixiText
             text="기술"
             style={{
-              fontSize: isMobile ? 11 : 14,
+              fontSize: fontSize,
               fill: canExecuteTechnique
                 ? KOREAN_COLORS.TEXT_PRIMARY
                 : KOREAN_COLORS.TEXT_TERTIARY,
@@ -307,7 +286,7 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
               fontFamily: "Noto Sans KR",
             }}
             x={buttonWidth / 2}
-            y={buttonHeight / 2 - 8}
+            y={buttonHeight / 2}
             anchor={0.5}
           />
           <pixiText
@@ -344,7 +323,7 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
 
         {/* Stance Button with Current Stance Display */}
         <pixiContainer
-          x={(buttonWidth + 10) * 3}
+          x={(buttonWidth + 5) * 3}
           y={0}
           data-testid="stance-button"
         >
@@ -365,13 +344,13 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
           <pixiText
             text="자세"
             style={{
-              fontSize: isMobile ? 11 : 14,
+              fontSize: fontSize,
               fill: KOREAN_COLORS.TEXT_PRIMARY,
               fontWeight: "bold",
               fontFamily: "Noto Sans KR",
             }}
             x={buttonWidth / 2}
-            y={buttonHeight / 2 - 8}
+            y={buttonHeight / 2}
             anchor={0.5}
           />
           <pixiText

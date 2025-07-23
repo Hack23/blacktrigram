@@ -80,8 +80,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Fixed player positions for 2-player combat
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
-    { x: width * 0.25, y: height * 0.7 }, // Player 1 - left side
-    { x: width * 0.75, y: height * 0.7 }, // Player 2 - right side
+    { x: width * 0.3, y: height * 0.6 }, // Player 1 - moved more inward and up
+    { x: width * 0.7, y: height * 0.6 }, // Player 2 - moved more inward and up
   ]);
 
   // AI state for Player 2
@@ -474,7 +474,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
-      const speed = 2; // AI movement speed
+      const speed = 2;
 
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
@@ -486,9 +486,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           y: currentPos.y + (dy / distance) * speed,
         };
 
-        // Keep AI within bounds
-        newPos.x = Math.max(50, Math.min(width - 50, newPos.x));
-        newPos.y = Math.max(50, Math.min(height - 50, newPos.y));
+        // Keep AI within safer bounds - more margin from edges
+        newPos.x = Math.max(width * 0.15, Math.min(width * 0.85, newPos.x));
+        newPos.y = Math.max(height * 0.25, Math.min(height * 0.75, newPos.y));
 
         setPlayerPositions((prev) => [prev[0], newPos]);
         onPlayerUpdate(1, { position: newPos });
@@ -715,7 +715,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         />
       </pixiContainer>
 
-      {/* Main Combat Layout Container */}
+      {/* Main Combat Layout Container with proper spacing */}
       <pixiContainer
         layout={{
           width,
@@ -723,15 +723,17 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
+          padding: 10, // Add padding to prevent edge cutoff
         }}
       >
-        {/* Top HUD Area */}
+        {/* Top HUD Area - Fixed height and positioning */}
         <pixiContainer
           layout={{
-            width,
-            height: 140,
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
+            width: width - 20, // Account for padding
+            height: 120, // Reduced height to prevent overlap
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
           }}
         >
           <CombatHUD
@@ -750,30 +752,31 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             }}
             isPaused={isPaused}
             onPauseToggle={() => console.log("Pause toggled")}
-            width={width}
-            height={140}
+            width={width - 20}
+            height={120}
             x={0}
             y={0}
           />
         </pixiContainer>
 
-        {/* Combat Arena Area */}
+        {/* Combat Arena Area - Better calculated height */}
         <pixiContainer
           layout={{
-            width,
-            height: height - 280, // Subtract HUD and bottom controls
+            width: width - 20,
+            height: height - 300, // More space for HUD and controls
             alignItems: "center",
             justifyContent: "center",
             position: "relative",
+            flexGrow: 1,
           }}
         >
-          {/* Round Status Messages */}
+          {/* Round Status Messages - Better positioning */}
           {!roundStarted && timeRemaining > 25 && (
             <pixiContainer
               data-testid="round-ready"
               layout={{
                 position: "absolute",
-                top: "50%",
+                top: "40%", // Moved up from center
                 left: "50%",
                 alignItems: "center",
                 justifyContent: "center",
@@ -783,7 +786,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               <pixiText
                 text="준비하세요!"
                 style={{
-                  fontSize: 36,
+                  fontSize: isMobile ? 24 : 36,
                   fill: KOREAN_COLORS.ACCENT_GOLD,
                   fontWeight: "bold",
                   align: "center",
@@ -794,12 +797,13 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               <pixiText
                 text="GET READY!"
                 style={{
-                  fontSize: 24,
+                  fontSize: isMobile ? 16 : 24,
                   fill: KOREAN_COLORS.PRIMARY_CYAN,
                   fontWeight: "bold",
                   align: "center",
                 }}
                 anchor={0.5}
+                y={isMobile ? 30 : 40}
               />
             </pixiContainer>
           )}
@@ -810,7 +814,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               data-testid="round-end"
               layout={{
                 position: "absolute",
-                top: "50%",
+                top: "40%", // Moved up from center
                 left: "50%",
                 alignItems: "center",
                 justifyContent: "center",
@@ -820,7 +824,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               <pixiText
                 text="라운드 종료!"
                 style={{
-                  fontSize: 36,
+                  fontSize: isMobile ? 24 : 36,
                   fill: KOREAN_COLORS.ACCENT_GOLD,
                   fontWeight: "bold",
                   align: "center",
@@ -831,22 +835,23 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               <pixiText
                 text="ROUND OVER!"
                 style={{
-                  fontSize: 24,
+                  fontSize: isMobile ? 16 : 24,
                   fill: KOREAN_COLORS.PRIMARY_CYAN,
                   fontWeight: "bold",
                   align: "center",
                 }}
                 anchor={0.5}
+                y={isMobile ? 30 : 40}
               />
             </pixiContainer>
           )}
 
-          {/* Player 1 Layout - FIXED */}
+          {/* Player 1 Layout - Better positioned */}
           <pixiContainer
             layout={{
               position: "absolute",
-              left: playerPositions[0].x, // ✅ Use actual player position
-              top: playerPositions[0].y, // ✅ Use actual player position
+              left: Math.max(50, playerPositions[0].x - (width - 20) / 2), // Relative to arena container
+              top: Math.max(50, playerPositions[0].y - 120), // Account for HUD height
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -855,7 +860,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               playerState={validPlayers[0]}
               x={0}
               y={0}
-              scale={isMobile ? 0.8 : 1.0}
+              scale={isMobile ? 0.7 : 0.9} // Slightly smaller to fit better
               renderMode="combat"
               facing="right"
               showDetails={true}
@@ -869,12 +874,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             />
           </pixiContainer>
 
-          {/* Player 2 Layout - FIXED */}
+          {/* Player 2 Layout - Better positioned */}
           <pixiContainer
             layout={{
               position: "absolute",
-              left: playerPositions[1].x, // ✅ Use actual player position
-              top: playerPositions[1].y, // ✅ Use actual player position
+              left: Math.max(50, playerPositions[1].x - (width - 20) / 2), // Relative to arena container
+              top: Math.max(50, playerPositions[1].y - 120), // Account for HUD height
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -883,7 +888,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               playerState={validPlayers[1]}
               x={0}
               y={0}
-              scale={isMobile ? 0.8 : 1.0}
+              scale={isMobile ? 0.7 : 0.9} // Slightly smaller to fit better
               renderMode="combat"
               facing="left"
               showDetails={true}
@@ -897,31 +902,33 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             />
           </pixiContainer>
 
-          {/* ✅ FIXED: Hit Effects Layer with proper completion handler */}
+          {/* Hit Effects Layer */}
           <HitEffectsLayer
             effects={hitEffects}
             onEffectComplete={handleEffectComplete}
           />
         </pixiContainer>
 
-        {/* Bottom Control Area */}
+        {/* Bottom Control Area - Better spacing */}
         <pixiContainer
           layout={{
-            width,
-            height: 140,
+            width: width - 20,
+            height: 100, // Fixed height
             flexDirection: "row",
-            alignItems: "flex-end",
+            alignItems: "center",
             justifyContent: "space-between",
-            padding: 10,
+            gap: 10,
+            flexShrink: 0,
           }}
         >
-          {/* Combat Controls */}
+          {/* Combat Controls - Responsive sizing */}
           <pixiContainer
             layout={{
-              width: 280,
-              height: 120,
+              width: isMobile ? 200 : 280,
+              height: 90,
               alignItems: "flex-start",
               justifyContent: "flex-start",
+              flexShrink: 0,
             }}
           >
             <CombatControls
@@ -933,18 +940,19 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               isExecutingTechnique={isExecutingTechnique}
               x={0}
               y={0}
-              width={280}
-              height={120}
+              width={isMobile ? 200 : 280}
+              height={90}
             />
           </pixiContainer>
 
-          {/* Combat Stats Panel */}
+          {/* Combat Stats Panel - Responsive sizing */}
           <pixiContainer
             layout={{
-              width: 320,
-              height: 120,
+              width: isMobile ? 200 : 320,
+              height: 90,
               alignItems: "flex-end",
               justifyContent: "flex-start",
+              flexShrink: 0,
             }}
           >
             <CombatStatsPanel
@@ -981,51 +989,51 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               }}
               x={0}
               y={0}
-              width={320}
-              height={120}
+              width={isMobile ? 200 : 320}
+              height={90}
             />
           </pixiContainer>
         </pixiContainer>
 
-        {/* Instructions and Menu Button */}
+        {/* Footer Area - Fixed positioning and sizing */}
         <pixiContainer
           layout={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width,
+            width: width - 20,
             height: 60,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: 10,
+            gap: 10,
+            flexShrink: 0,
           }}
         >
           {/* Return to Menu Button */}
           <pixiContainer
             data-testid="return-menu-button"
             layout={{
-              width: 140,
-              height: 50,
+              width: isMobile ? 100 : 140,
+              height: 40,
               alignItems: "center",
               justifyContent: "center",
+              flexShrink: 0,
             }}
           >
             <pixiGraphics
               draw={(g) => {
+                const buttonWidth = isMobile ? 100 : 140;
                 g.clear();
                 g.fill({
                   color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   alpha: 0.8,
                 });
-                g.roundRect(0, 0, 140, 50, 8);
+                g.roundRect(0, 0, buttonWidth, 40, 6);
                 g.fill();
                 g.stroke({
                   width: 2,
                   color: KOREAN_COLORS.ACCENT_GOLD,
                   alpha: 0.6,
                 });
-                g.roundRect(0, 0, 140, 50, 8);
+                g.roundRect(0, 0, buttonWidth, 40, 6);
                 g.stroke();
               }}
               interactive={true}
@@ -1033,9 +1041,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
               cursor="pointer"
             />
             <pixiText
-              text="메뉴로 돌아가기"
+              text={isMobile ? "메뉴" : "메뉴로 돌아가기"}
               style={{
-                fontSize: 12,
+                fontSize: isMobile ? 10 : 12,
                 fill: KOREAN_COLORS.ACCENT_GOLD,
                 fontWeight: "bold",
                 align: "center",
@@ -1045,30 +1053,35 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             />
           </pixiContainer>
 
-          {/* Movement Instructions */}
+          {/* Movement Instructions - Responsive */}
           <pixiContainer
             data-testid="movement-instructions"
             layout={{
               flexGrow: 1,
-              height: 30,
+              height: 40,
               alignItems: "center",
               justifyContent: "center",
-              marginLeft: 20,
-              marginRight: 20,
+              marginLeft: 10,
+              marginRight: 10,
             }}
           >
             <pixiGraphics
               draw={(g) => {
+                const instructionWidth = width - (isMobile ? 240 : 320);
                 g.clear();
                 g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-                g.roundRect(0, 0, width - 200, 30, 5);
+                g.roundRect(0, 0, Math.max(200, instructionWidth), 30, 5);
                 g.fill();
               }}
             />
             <pixiText
-              text="조작법 | Controls: 이동 ↑↓←→ | 공격 Space | 방어 Shift | 특수기 Alt | 자세 1-8"
+              text={
+                isMobile
+                  ? "이동 ↑↓←→ | Space 공격 | Shift 방어"
+                  : "조작법 | Controls: 이동 ↑↓←→ | 공격 Space | 방어 Shift | 특수기 Alt | 자세 1-8"
+              }
               style={{
-                fontSize: isMobile ? 10 : 12,
+                fontSize: isMobile ? 8 : 10,
                 fill: KOREAN_COLORS.TEXT_PRIMARY,
                 fontFamily: "Noto Sans KR",
                 align: "center",
@@ -1077,59 +1090,61 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             />
           </pixiContainer>
         </pixiContainer>
-
-        {/* Pause Overlay */}
-        {isPaused && (
-          <pixiContainer
-            data-testid="pause-overlay"
-            layout={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-            }}
-          >
-            <pixiGraphics
-              draw={(g) => {
-                g.clear();
-                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-                g.roundRect(-100, -50, 200, 100, 10);
-                g.fill();
-                g.stroke({
-                  width: 3,
-                  color: KOREAN_COLORS.ACCENT_GOLD,
-                  alpha: 0.8,
-                });
-                g.roundRect(-100, -50, 200, 100, 10);
-                g.stroke();
-              }}
-            />
-            <pixiText
-              text="일시정지"
-              style={{
-                fontSize: 32,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
-                fontWeight: "bold",
-                align: "center",
-                fontFamily: "Noto Sans KR",
-              }}
-              anchor={0.5}
-            />
-            <pixiText
-              text="PAUSED"
-              style={{
-                fontSize: 24,
-                fill: KOREAN_COLORS.PRIMARY_CYAN,
-                fontWeight: "bold",
-                align: "center",
-              }}
-              anchor={0.5}
-            />
-          </pixiContainer>
-        )}
       </pixiContainer>
+
+      {/* Pause Overlay - Fixed positioning */}
+      {isPaused && (
+        <pixiContainer
+          data-testid="pause-overlay"
+          layout={{
+            position: "absolute",
+            top: height / 2,
+            left: width / 2,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+              g.roundRect(-100, -50, 200, 100, 10);
+              g.fill();
+              g.stroke({
+                width: 3,
+                color: KOREAN_COLORS.ACCENT_GOLD,
+                alpha: 0.8,
+              });
+              g.roundRect(-100, -50, 200, 100, 10);
+              g.stroke();
+            }}
+          />
+          <pixiText
+            text="일시정지"
+            style={{
+              fontSize: isMobile ? 24 : 32,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+              align: "center",
+              fontFamily: "Noto Sans KR",
+            }}
+            anchor={0.5}
+            y={-10}
+          />
+          <pixiText
+            text="PAUSED"
+            style={{
+              fontSize: isMobile ? 16 : 24,
+              fill: KOREAN_COLORS.PRIMARY_CYAN,
+              fontWeight: "bold",
+              align: "center",
+            }}
+            anchor={0.5}
+            y={15}
+          />
+        </pixiContainer>
+      )}
     </pixiContainer>
   );
 };
