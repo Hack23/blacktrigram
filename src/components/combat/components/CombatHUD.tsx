@@ -41,8 +41,8 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   y = 0,
 }) => {
   const isMobile = width < 768;
-  const healthBarWidth = isMobile ? 160 : 220;
-  const timerWidth = isMobile ? 140 : 180;
+  const healthBarWidth = isMobile ? 120 : 180; // Reduced for better fit
+  const timerWidth = isMobile ? 120 : 160; // Reduced for better fit
   const centerX = width / 2;
 
   // Get latest archetype data
@@ -62,23 +62,14 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
       g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
       g.rect(0, 0, width, height);
 
-      // Gold border with Korean traditional pattern
-      g.stroke({ width: 3, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
-      g.rect(5, 5, width - 10, height - 10);
+      // Simplified border
+      g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
+      g.rect(2, 2, width - 4, height - 4);
 
-      // Center divider with Taeguk symbol inspiration
-      g.stroke({ width: 2, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.6 });
-      g.moveTo(width / 2, 10);
-      g.lineTo(width / 2, height - 10);
-
-      // Yin-yang inspired circle at center
-      g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.4 });
-      g.circle(width / 2, height / 2, 30);
-
-      // Score panel backgrounds
-      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.7 });
-      g.roundRect(10, height - 35, 100, 25, 5); // Player 1 score
-      g.roundRect(width - 110, height - 35, 100, 25, 5); // Player 2 score
+      // Center divider
+      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.6 });
+      g.moveTo(width / 2, 5);
+      g.lineTo(width / 2, height - 5);
     },
     [width, height]
   );
@@ -88,13 +79,13 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
       {/* Enhanced Background */}
       <pixiGraphics draw={drawBackground} />
 
-      {/* Player 1 Info (Left Side) - Enhanced with latest state */}
-      <pixiContainer x={20} y={15}>
-        {/* Player Name - Korean/English */}
+      {/* Player 1 Info (Left Side) - More compact */}
+      <pixiContainer x={10} y={10}>
+        {/* Player Name - More compact */}
         <pixiText
           text={player1.name.korean}
           style={{
-            fontSize: isMobile ? 16 : 20,
+            fontSize: isMobile ? 14 : 18,
             fill: player1Archetype.colors.primary,
             fontWeight: "bold",
             fontFamily: "Noto Sans KR",
@@ -103,33 +94,22 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
         <pixiText
           text={player1.name.english}
           style={{
-            fontSize: isMobile ? 10 : 12,
+            fontSize: isMobile ? 8 : 10,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
             fontStyle: "italic",
           }}
-          y={isMobile ? 18 : 22}
+          y={isMobile ? 16 : 20}
         />
 
-        {/* Archetype - Korean/English */}
-        <pixiText
-          text={`${player1Archetype.name.korean} | ${player1Archetype.name.english}`}
-          style={{
-            fontSize: isMobile ? 9 : 11,
-            fill: KOREAN_COLORS.TEXT_TERTIARY,
-            fontFamily: "Noto Sans KR",
-          }}
-          y={isMobile ? 32 : 38}
-        />
-
-        {/* Enhanced Health Bar with latest values */}
+        {/* Health Bar - Compact positioning */}
         <HealthBar
           current={player1.health}
           max={player1.maxHealth}
           width={healthBarWidth}
-          height={25}
+          height={20} // Reduced height
           showText={true}
           x={0}
-          y={isMobile ? 45 : 50}
+          y={isMobile ? 28 : 35}
           position="left"
           playerName={player1.name.korean}
           screenWidth={width}
@@ -137,13 +117,13 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
           data-testid="player1-health-bar"
         />
 
-        {/* Real-time Resource Bars */}
-        <pixiContainer y={isMobile ? 75 : 85}>
-          {/* Ki Bar with Korean/English labels */}
+        {/* Resource Bars - More compact */}
+        <pixiContainer y={isMobile ? 52 : 60}>
+          {/* Ki Bar */}
           <pixiText
-            text="기력 | Ki"
+            text="기력"
             style={{
-              fontSize: 8,
+              fontSize: 7,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
               fontFamily: "Noto Sans KR",
             }}
@@ -151,77 +131,53 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
           <pixiGraphics
             draw={(g) => {
               g.clear();
-              // Background
               g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.rect(45, 0, 100, 8);
+              g.rect(25, 0, 80, 6); // Smaller bar
 
-              // Ki fill with current value
               const kiPercent =
                 player1.maxKi > 0 ? player1.ki / player1.maxKi : 0;
               g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
-              g.rect(45, 0, 100 * kiPercent, 8);
+              g.rect(25, 0, 80 * kiPercent, 6);
 
-              // Border
               g.stroke({
                 width: 1,
                 color: KOREAN_COLORS.PRIMARY_CYAN,
                 alpha: 0.6,
               });
-              g.rect(45, 0, 100, 8);
+              g.rect(25, 0, 80, 6);
             }}
-          />
-          <pixiText
-            text={`${Math.round(player1.ki)}/${player1.maxKi}`}
-            style={{
-              fontSize: 7,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-            }}
-            x={150}
-            y={2}
           />
 
           {/* Stamina Bar */}
           <pixiText
-            text="체력 | Stamina"
+            text="체력"
             style={{
-              fontSize: 8,
+              fontSize: 7,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
               fontFamily: "Noto Sans KR",
             }}
-            y={15}
+            y={10}
           />
           <pixiGraphics
             draw={(g) => {
               g.clear();
-              // Background
               g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.rect(65, 15, 80, 8);
+              g.rect(25, 10, 80, 6);
 
-              // Stamina fill with current value
               const staminaPercent =
                 player1.maxStamina > 0
                   ? player1.stamina / player1.maxStamina
                   : 0;
               g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
-              g.rect(65, 15, 80 * staminaPercent, 8);
+              g.rect(25, 10, 80 * staminaPercent, 6);
 
-              // Border
               g.stroke({
                 width: 1,
                 color: KOREAN_COLORS.SECONDARY_YELLOW,
                 alpha: 0.6,
               });
-              g.rect(65, 15, 80, 8);
+              g.rect(25, 10, 80, 6);
             }}
-          />
-          <pixiText
-            text={`${Math.round(player1.stamina)}/${player1.maxStamina}`}
-            style={{
-              fontSize: 7,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-            }}
-            x={150}
-            y={17}
           />
         </pixiContainer>
 
@@ -229,8 +185,8 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
         <StanceIndicator
           stance={player1.currentStance}
           x={0}
-          y={isMobile ? 110 : 125}
-          size={35}
+          y={isMobile ? 75 : 85}
+          size={25} // Smaller size
           showDetails={false}
           data-testid="player1-stance-indicator"
         />

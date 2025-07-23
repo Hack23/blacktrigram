@@ -1,6 +1,11 @@
 import { HitEffect, PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { GameMode, PlayerArchetype, Position, TrigramStance } from "@/types";
+import "@pixi/layout";
+import { LayoutContainer } from "@pixi/layout/components";
+import "@pixi/layout/react";
+import { extend } from "@pixi/react";
+import { Container } from "pixi.js";
 import React, {
   useCallback,
   useEffect,
@@ -19,6 +24,12 @@ import { PlayerVisuals } from "../ui/PlayerVisuals";
 import { CombatControls } from "./components/CombatControls";
 import { CombatHUD } from "./components/CombatHUD";
 import { CombatStatsPanel } from "./components/CombatStatsPanel";
+
+// Register custom components for use as JSX tags in @pixi/react
+extend({
+  Container,
+  LayoutContainer,
+});
 
 // Ensure PixiJS components are extended
 extendPixiComponents();
@@ -61,7 +72,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundEnded, setRoundEnded] = useState(false);
 
-  // 🔧 FIX: Add missing matchStartTime using useRef for persistence
+  // Match timing
   const matchStartTimeRef = useRef(Date.now());
 
   // Combat system
@@ -69,8 +80,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Fixed player positions for 2-player combat
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
-    { x: width * 0.25, y: height * 0.7 }, // Player 1 - left side
-    { x: width * 0.75, y: height * 0.7 }, // Player 2 - right side
+    { x: width * 0.3, y: height * 0.6 }, // Player 1 - moved more inward and up
+    { x: width * 0.7, y: height * 0.6 }, // Player 2 - moved more inward and up
   ]);
 
   // AI state for Player 2
@@ -87,6 +98,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     playerPositions[0],
     { width, height }
   );
+
+  // Responsive layout detection
+  const isMobile = useMemo(() => width < 768, [width]);
 
   // Ensure exactly 2 players with complete PlayerState objects
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
@@ -130,7 +144,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     setCombatMessages((prev) => [message, ...prev.slice(0, 4)]);
   }, []);
 
-  // Create hit effect with Korean/English feedback
+  // ✅ FIXED: Properly handle hit effect completion
+  const handleEffectComplete = useCallback((effectId: string) => {
+    setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
+  }, []);
+
+  // ✅ FIXED: Create hit effect with proper integration
   const createHitEffect = useCallback(
     (
       id: string,
@@ -149,6 +168,25 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       startTime: Date.now(),
     }),
     []
+  );
+
+  // ✅ FIXED: Add hit effect helper with proper usage
+  const addHitEffect = useCallback(
+    (type: HitEffectType, position: Position, intensity: number = 1) => {
+      const effect = createHitEffect(
+        `effect_${Date.now()}`,
+        type,
+        position,
+        intensity
+      );
+      setHitEffects((prev) => [...prev, effect]);
+
+      // Auto-remove effect after duration
+      setTimeout(() => {
+        handleEffectComplete(effect.id);
+      }, effect.duration);
+    },
+    [createHitEffect, handleEffectComplete]
   );
 
   // Update player 1 position based on movement
@@ -184,7 +222,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addCombatMessage,
   ]);
 
-  // Enhanced combat system integration
+  // ✅ FIXED: Enhanced combat system integration with proper hit effects
   const handleAttack = useCallback(() => {
     if (isExecutingTechnique || !roundStarted || roundEnded) return;
 
@@ -224,13 +262,14 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       basicAttack
     );
 
-    const effect = createHitEffect(
-      `attack_${Date.now()}`,
-      result.hit ? HitEffectType.HIT : HitEffectType.MISS,
-      player1Movement.position,
-      result.hit ? 1 : 0.5
-    );
-    setHitEffects((prev) => [...prev, effect]);
+    // ✅ FIXED: Use addHitEffect instead of creating manually
+    const effectType = result.hit
+      ? result.isCritical
+        ? HitEffectType.CRITICAL_HIT
+        : HitEffectType.HIT
+      : HitEffectType.MISS;
+
+    addHitEffect(effectType, player1Movement.position, result.hit ? 1 : 0.5);
 
     if (result.hit) {
       // Apply damage through combat system
@@ -255,7 +294,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     setTimeout(() => setIsExecutingTechnique(false), 500);
   }, [
-    createHitEffect,
     player1Movement.position,
     onPlayerUpdate,
     validPlayers,
@@ -264,6 +302,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     combatSystem,
     roundStarted,
     roundEnded,
+    addHitEffect, // ✅ Now properly used
   ]);
 
   // Handle defend with Korean feedback
@@ -272,12 +311,23 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     onPlayerUpdate(0, { isBlocking: true });
     addCombatMessage("방어 자세", "Defensive Stance");
+
+    // Add defensive effect
+    addHitEffect(HitEffectType.BLOCK, player1Movement.position, 0.8);
+
     setTimeout(() => {
       onPlayerUpdate(0, { isBlocking: false });
     }, 1000);
-  }, [onPlayerUpdate, addCombatMessage, roundStarted, roundEnded]);
+  }, [
+    onPlayerUpdate,
+    addCombatMessage,
+    roundStarted,
+    roundEnded,
+    addHitEffect,
+    player1Movement.position,
+  ]);
 
-  // Handle technique execution with Korean feedback
+  // ✅ FIXED: Handle technique execution with proper effects
   const handleTechniqueExecute = useCallback(() => {
     if (isExecutingTechnique || !roundStarted || roundEnded) return;
     if (validPlayers[0].ki < 10 || validPlayers[0].stamina < 15) {
@@ -287,13 +337,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     setIsExecutingTechnique(true);
 
-    const effect = createHitEffect(
-      `technique_${Date.now()}`,
-      HitEffectType.CRITICAL_HIT,
-      player1Movement.position,
-      1.5
-    );
-    setHitEffects((prev) => [...prev, effect]);
+    // Add technique effect
+    addHitEffect(HitEffectType.CRITICAL_HIT, player1Movement.position, 1.5);
 
     const distance = Math.sqrt(
       Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
@@ -318,7 +363,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     setTimeout(() => setIsExecutingTechnique(false), 800);
   }, [
-    createHitEffect,
     player1Movement.position,
     playerPositions,
     onPlayerUpdate,
@@ -327,6 +371,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addCombatMessage,
     roundStarted,
     roundEnded,
+    addHitEffect, // ✅ Now properly used
   ]);
 
   // Handle stance switch with Korean feedback
@@ -336,19 +381,23 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
       onPlayerUpdate(0, { currentStance: stance });
       addCombatMessage(`자세 변경: ${stance}`, `Stance Change: ${stance}`);
+
+      // Add stance change effect
+      addHitEffect(HitEffectType.STATUS_EFFECT, player1Movement.position, 0.6);
     },
-    [onPlayerUpdate, addCombatMessage, roundStarted, roundEnded]
+    [
+      onPlayerUpdate,
+      addCombatMessage,
+      roundStarted,
+      roundEnded,
+      addHitEffect,
+      player1Movement.position,
+    ]
   );
 
-  // AI combat handlers (existing code continues...)
+  // ✅ FIXED: AI combat handlers with proper effect integration
   const handleAIAttack = useCallback(() => {
-    const effect = createHitEffect(
-      `ai_attack_${Date.now()}`,
-      HitEffectType.HIT,
-      playerPositions[1],
-      1
-    );
-    setHitEffects((prev) => [...prev, effect]);
+    addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
 
     const distance = Math.sqrt(
       Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
@@ -370,17 +419,21 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     playerPositions,
     validPlayers,
     onPlayerUpdate,
-    createHitEffect,
     addCombatMessage,
+    addHitEffect, // ✅ Now properly used
   ]);
 
   const handleAIDefend = useCallback(() => {
     onPlayerUpdate(1, { isBlocking: true });
     addCombatMessage("AI 방어 자세", "AI Defensive Stance");
+
+    // Add AI defensive effect
+    addHitEffect(HitEffectType.BLOCK, playerPositions[1], 0.8);
+
     setTimeout(() => {
       onPlayerUpdate(1, { isBlocking: false });
     }, 1000);
-  }, [onPlayerUpdate, addCombatMessage]);
+  }, [onPlayerUpdate, addCombatMessage, addHitEffect, playerPositions]);
 
   const handleAITechnique = useCallback(() => {
     if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
@@ -388,13 +441,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       return;
     }
 
-    const effect = createHitEffect(
-      `ai_technique_${Date.now()}`,
-      HitEffectType.CRITICAL_HIT,
-      playerPositions[1],
-      1.5
-    );
-    setHitEffects((prev) => [...prev, effect]);
+    addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[1], 1.5);
 
     const distance = Math.sqrt(
       Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
@@ -419,15 +466,15 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     playerPositions,
     validPlayers,
     onPlayerUpdate,
-    createHitEffect,
     addCombatMessage,
     handleAIAttack,
+    addHitEffect, // ✅ Now properly used
   ]);
 
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
-      const speed = 2; // AI movement speed
+      const speed = 2;
 
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
@@ -439,9 +486,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           y: currentPos.y + (dy / distance) * speed,
         };
 
-        // Keep AI within bounds
-        newPos.x = Math.max(50, Math.min(width - 50, newPos.x));
-        newPos.y = Math.max(50, Math.min(height - 50, newPos.y));
+        // Keep AI within safer bounds - more margin from edges
+        newPos.x = Math.max(width * 0.15, Math.min(width * 0.85, newPos.x));
+        newPos.y = Math.max(height * 0.25, Math.min(height * 0.75, newPos.y));
 
         setPlayerPositions((prev) => [prev[0], newPos]);
         onPlayerUpdate(1, { position: newPos });
@@ -602,20 +649,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     handleStanceSwitch,
   ]);
 
-  // Handle effect completion
-  const handleEffectComplete = useCallback((effectId: string) => {
-    setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
-  }, []);
-
-  // Add hit effect helper
-  const addHitEffect = useCallback(
-    (type: HitEffectType, position: Position) => {
-      const effect = createHitEffect(`effect_${Date.now()}`, type, position, 1);
-      setHitEffects((prev) => [...prev, effect]);
-    },
-    [createHitEffect]
-  );
-
   // Check game end conditions
   const checkGameEnd = useCallback(() => {
     if (validPlayers[0].health <= 0) {
@@ -632,22 +665,13 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     checkGameEnd();
   }, [validPlayers[0].health, validPlayers[1].health, checkGameEnd]);
 
-  // Responsive layout
-  const isMobile = useMemo(() => width < 768, [width]);
-
-  // Handle player click
-  const handlePlayerClick = useCallback(
-    (idx: number) => {
-      addHitEffect(HitEffectType.HIT, playerPositions[idx]);
-      addCombatMessage(
-        `플레이어 ${idx + 1} 선택됨`,
-        `Player ${idx + 1} Selected`
-      );
-    },
-    [addHitEffect, playerPositions, addCombatMessage]
+  // Calculate match duration
+  const matchDuration = useMemo(
+    () => Math.floor((Date.now() - matchStartTimeRef.current) / 1000),
+    []
   );
 
-  // Get proper animation state
+  // Get player animation state
   const getPlayerAnimationState = useCallback(
     (playerIndex: number) => {
       const player = validPlayers[playerIndex];
@@ -662,199 +686,429 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     [validPlayers, isExecutingTechnique, player1Movement.isMoving]
   );
 
-  // 🔧 FIX: Calculate match duration using the ref
-  const matchDuration = useMemo(
-    () => Math.floor((Date.now() - matchStartTimeRef.current) / 1000),
-    []
-  );
-
   return (
-    <pixiContainer x={x} y={y} data-testid="combat-screen">
-      {/* Dojang Background */}
-      <DojangBackground
-        width={width}
-        height={height}
-        lighting="cyberpunk"
-        animate={true}
-      />
-
-      {/* Round Status Messages */}
-      {!roundStarted && timeRemaining > 25 && (
-        <pixiContainer x={width / 2} y={height / 2} data-testid="round-ready">
-          <pixiText
-            text="준비하세요!"
-            style={{
-              fontSize: 36,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-              align: "center",
-              fontFamily: "Noto Sans KR",
-            }}
-            anchor={0.5}
-            y={-20}
-          />
-          <pixiText
-            text="GET READY!"
-            style={{
-              fontSize: 24,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              fontWeight: "bold",
-              align: "center",
-            }}
-            anchor={0.5}
-            y={20}
-          />
-        </pixiContainer>
-      )}
-
-      {/* Round End Message */}
-      {roundEnded && (
-        <pixiContainer x={width / 2} y={height / 2} data-testid="round-end">
-          <pixiText
-            text="라운드 종료!"
-            style={{
-              fontSize: 36,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-              align: "center",
-              fontFamily: "Noto Sans KR",
-            }}
-            anchor={0.5}
-            y={-20}
-          />
-          <pixiText
-            text="ROUND OVER!"
-            style={{
-              fontSize: 24,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              fontWeight: "bold",
-              align: "center",
-            }}
-            anchor={0.5}
-            y={20}
-          />
-        </pixiContainer>
-      )}
-
-      {/* Enhanced Movement Instructions - Korean + English */}
-      <pixiContainer x={10} y={height - 30} data-testid="movement-instructions">
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-            g.roundRect(0, 0, width - 20, 25, 5);
-            g.fill();
-          }}
-        />
-        <pixiText
-          text="조작법 | Controls: 이동 ↑↓←→ | 공격 Space | 방어 Shift | 특수기 Alt | 자세 1-8 | Movement ↑↓←→ | Attack Space | Defend Shift | Technique Alt | Stance 1-8"
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            fontFamily: "Noto Sans KR",
-          }}
-          x={10}
-          y={12}
-          anchor={0.5}
+    <pixiContainer
+      data-testid="combat-screen"
+      layout={{
+        width,
+        height,
+        position: "absolute",
+        top: y,
+        left: x,
+      }}
+    >
+      {/* Dojang Background Layer */}
+      <pixiContainer
+        layout={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width,
+          height,
+        }}
+      >
+        <DojangBackground
+          width={width}
+          height={height}
+          lighting="cyberpunk"
+          animate={true}
         />
       </pixiContainer>
 
-      {/* Return to Menu Button */}
-      <pixiContainer x={20} y={20} data-testid="return-menu-button">
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-            g.roundRect(0, 0, 140, 50, 8);
-            g.fill();
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
-            });
-            g.roundRect(0, 0, 140, 50, 8);
-            g.stroke();
+      {/* Main Combat Layout Container with proper spacing */}
+      <pixiContainer
+        layout={{
+          width,
+          height,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          padding: 10, // Add padding to prevent edge cutoff
+        }}
+      >
+        {/* Top HUD Area - Fixed height and positioning */}
+        <pixiContainer
+          layout={{
+            width: width - 20, // Account for padding
+            height: 120, // Reduced height to prevent overlap
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
           }}
-          interactive={true}
-          onPointerDown={onReturnToMenu}
-          cursor="pointer"
-        />
-        <pixiText
-          text="메뉴로 돌아가기"
-          style={{
-            fontSize: 12,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            fontWeight: "bold",
-            align: "center",
-            fontFamily: "Noto Sans KR",
+        >
+          <CombatHUD
+            player1={validPlayers[0]}
+            player2={validPlayers[1]}
+            timeRemaining={timeRemaining}
+            currentRound={currentRound}
+            maxRounds={3}
+            gameScore={{
+              player1: validPlayers[0].wins || 0,
+              player2: validPlayers[1].wins || 0,
+            }}
+            roundsWon={{
+              player1: validPlayers[0].wins || 0,
+              player2: validPlayers[1].wins || 0,
+            }}
+            isPaused={isPaused}
+            onPauseToggle={() => console.log("Pause toggled")}
+            width={width - 20}
+            height={120}
+            x={0}
+            y={0}
+          />
+        </pixiContainer>
+
+        {/* Combat Arena Area - Better calculated height */}
+        <pixiContainer
+          layout={{
+            width: width - 20,
+            height: height - 300, // More space for HUD and controls
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+            flexGrow: 1,
           }}
-          x={70}
-          y={15}
-          anchor={0.5}
-        />
-        <pixiText
-          text="Return to Menu"
-          style={{
-            fontSize: 10,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
-            fontStyle: "italic",
+        >
+          {/* Round Status Messages - Better positioning */}
+          {!roundStarted && timeRemaining > 25 && (
+            <pixiContainer
+              data-testid="round-ready"
+              layout={{
+                position: "absolute",
+                top: "40%", // Moved up from center
+                left: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+              }}
+            >
+              <pixiText
+                text="준비하세요!"
+                style={{
+                  fontSize: isMobile ? 24 : 36,
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
+                  fontWeight: "bold",
+                  align: "center",
+                  fontFamily: "Noto Sans KR",
+                }}
+                anchor={0.5}
+              />
+              <pixiText
+                text="GET READY!"
+                style={{
+                  fontSize: isMobile ? 16 : 24,
+                  fill: KOREAN_COLORS.PRIMARY_CYAN,
+                  fontWeight: "bold",
+                  align: "center",
+                }}
+                anchor={0.5}
+                y={isMobile ? 30 : 40}
+              />
+            </pixiContainer>
+          )}
+
+          {/* Round End Message */}
+          {roundEnded && (
+            <pixiContainer
+              data-testid="round-end"
+              layout={{
+                position: "absolute",
+                top: "40%", // Moved up from center
+                left: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+              }}
+            >
+              <pixiText
+                text="라운드 종료!"
+                style={{
+                  fontSize: isMobile ? 24 : 36,
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
+                  fontWeight: "bold",
+                  align: "center",
+                  fontFamily: "Noto Sans KR",
+                }}
+                anchor={0.5}
+              />
+              <pixiText
+                text="ROUND OVER!"
+                style={{
+                  fontSize: isMobile ? 16 : 24,
+                  fill: KOREAN_COLORS.PRIMARY_CYAN,
+                  fontWeight: "bold",
+                  align: "center",
+                }}
+                anchor={0.5}
+                y={isMobile ? 30 : 40}
+              />
+            </pixiContainer>
+          )}
+
+          {/* Player 1 Layout - Better positioned */}
+          <pixiContainer
+            layout={{
+              position: "absolute",
+              left: Math.max(50, playerPositions[0].x - (width - 20) / 2), // Relative to arena container
+              top: Math.max(50, playerPositions[0].y - 120), // Account for HUD height
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PlayerVisuals
+              playerState={validPlayers[0]}
+              x={0}
+              y={0}
+              scale={isMobile ? 0.7 : 0.9} // Slightly smaller to fit better
+              renderMode="combat"
+              facing="right"
+              showDetails={true}
+              showVitalPoints={false}
+              showKiAura={true}
+              showKoreanLabels={true}
+              interactive={true}
+              onPlayerClick={() => console.log("Player 1 clicked")}
+              animationState={getPlayerAnimationState(0)}
+              data-testid="combat-player-1"
+            />
+          </pixiContainer>
+
+          {/* Player 2 Layout - Better positioned */}
+          <pixiContainer
+            layout={{
+              position: "absolute",
+              left: Math.max(50, playerPositions[1].x - (width - 20) / 2), // Relative to arena container
+              top: Math.max(50, playerPositions[1].y - 120), // Account for HUD height
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PlayerVisuals
+              playerState={validPlayers[1]}
+              x={0}
+              y={0}
+              scale={isMobile ? 0.7 : 0.9} // Slightly smaller to fit better
+              renderMode="combat"
+              facing="left"
+              showDetails={true}
+              showVitalPoints={false}
+              showKiAura={true}
+              showKoreanLabels={true}
+              interactive={true}
+              onPlayerClick={() => console.log("Player 2 clicked")}
+              animationState={getPlayerAnimationState(1)}
+              data-testid="combat-player-2"
+            />
+          </pixiContainer>
+
+          {/* Hit Effects Layer */}
+          <HitEffectsLayer
+            effects={hitEffects}
+            onEffectComplete={handleEffectComplete}
+          />
+        </pixiContainer>
+
+        {/* Bottom Control Area - Better spacing */}
+        <pixiContainer
+          layout={{
+            width: width - 20,
+            height: 100, // Fixed height
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            flexShrink: 0,
           }}
-          x={70}
-          y={35}
-          anchor={0.5}
-        />
+        >
+          {/* Combat Controls - Responsive sizing */}
+          <pixiContainer
+            layout={{
+              width: isMobile ? 200 : 280,
+              height: 90,
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              flexShrink: 0,
+            }}
+          >
+            <CombatControls
+              onAttack={handleAttack}
+              onDefend={handleDefend}
+              onSwitchStance={handleStanceSwitch}
+              onTechniqueExecute={handleTechniqueExecute}
+              player={validPlayers[0]}
+              isExecutingTechnique={isExecutingTechnique}
+              x={0}
+              y={0}
+              width={isMobile ? 200 : 280}
+              height={90}
+            />
+          </pixiContainer>
+
+          {/* Combat Stats Panel - Responsive sizing */}
+          <pixiContainer
+            layout={{
+              width: isMobile ? 200 : 320,
+              height: 90,
+              alignItems: "flex-end",
+              justifyContent: "flex-start",
+              flexShrink: 0,
+            }}
+          >
+            <CombatStatsPanel
+              players={validPlayers}
+              combatLog={combatMessages.map((msg, index) => ({
+                id: `msg-${index}`,
+                timestamp: Date.now() - index * 1000,
+                korean: msg.split(" | ")[0] || msg,
+                english: msg.split(" | ")[1] || msg,
+                type: msg.includes("공격")
+                  ? "attack"
+                  : msg.includes("방어")
+                  ? "defend"
+                  : msg.includes("기술")
+                  ? "technique"
+                  : "info",
+              }))}
+              matchDuration={matchDuration}
+              totalDamageDealt={{
+                player1: validPlayers[0].totalDamageDealt || 0,
+                player2: validPlayers[1].totalDamageDealt || 0,
+              }}
+              criticalHits={{
+                player1: Math.floor(
+                  (validPlayers[0].totalDamageDealt || 0) / 50
+                ),
+                player2: Math.floor(
+                  (validPlayers[1].totalDamageDealt || 0) / 50
+                ),
+              }}
+              perfectStrikes={{
+                player1: validPlayers[0].perfectStrikes || 0,
+                player2: validPlayers[1].perfectStrikes || 0,
+              }}
+              x={0}
+              y={0}
+              width={isMobile ? 200 : 320}
+              height={90}
+            />
+          </pixiContainer>
+        </pixiContainer>
+
+        {/* Footer Area - Fixed positioning and sizing */}
+        <pixiContainer
+          layout={{
+            width: width - 20,
+            height: 60,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            flexShrink: 0,
+          }}
+        >
+          {/* Return to Menu Button */}
+          <pixiContainer
+            data-testid="return-menu-button"
+            layout={{
+              width: isMobile ? 100 : 140,
+              height: 40,
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <pixiGraphics
+              draw={(g) => {
+                const buttonWidth = isMobile ? 100 : 140;
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.roundRect(0, 0, buttonWidth, 40, 6);
+                g.fill();
+                g.stroke({
+                  width: 2,
+                  color: KOREAN_COLORS.ACCENT_GOLD,
+                  alpha: 0.6,
+                });
+                g.roundRect(0, 0, buttonWidth, 40, 6);
+                g.stroke();
+              }}
+              interactive={true}
+              onPointerDown={onReturnToMenu}
+              cursor="pointer"
+            />
+            <pixiText
+              text={isMobile ? "메뉴" : "메뉴로 돌아가기"}
+              style={{
+                fontSize: isMobile ? 10 : 12,
+                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fontWeight: "bold",
+                align: "center",
+                fontFamily: "Noto Sans KR",
+              }}
+              anchor={0.5}
+            />
+          </pixiContainer>
+
+          {/* Movement Instructions - Responsive */}
+          <pixiContainer
+            data-testid="movement-instructions"
+            layout={{
+              flexGrow: 1,
+              height: 40,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginRight: 10,
+            }}
+          >
+            <pixiGraphics
+              draw={(g) => {
+                const instructionWidth = width - (isMobile ? 240 : 320);
+                g.clear();
+                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
+                g.roundRect(0, 0, Math.max(200, instructionWidth), 30, 5);
+                g.fill();
+              }}
+            />
+            <pixiText
+              text={
+                isMobile
+                  ? "이동 ↑↓←→ | Space 공격 | Shift 방어"
+                  : "조작법 | Controls: 이동 ↑↓←→ | 공격 Space | 방어 Shift | 특수기 Alt | 자세 1-8"
+              }
+              style={{
+                fontSize: isMobile ? 8 : 10,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                fontFamily: "Noto Sans KR",
+                align: "center",
+              }}
+              anchor={0.5}
+            />
+          </pixiContainer>
+        </pixiContainer>
       </pixiContainer>
 
-      {/* ONLY 2 PLAYERS - Player 1 Visual (Left) */}
-      <PlayerVisuals
-        playerState={validPlayers[0]}
-        x={playerPositions[0].x}
-        y={playerPositions[0].y}
-        scale={isMobile ? 0.8 : 1.0}
-        renderMode="combat"
-        facing="right"
-        showDetails={true}
-        showVitalPoints={false}
-        showKiAura={true}
-        showKoreanLabels={true}
-        interactive={true}
-        onPlayerClick={() => handlePlayerClick(0)}
-        animationState={getPlayerAnimationState(0)}
-        data-testid="combat-player-1"
-      />
-
-      {/* ONLY 2 PLAYERS - Player 2 Visual (Right) */}
-      <PlayerVisuals
-        playerState={validPlayers[1]}
-        x={playerPositions[1].x}
-        y={playerPositions[1].y}
-        scale={isMobile ? 0.8 : 1.0}
-        renderMode="combat"
-        facing="left"
-        showDetails={true}
-        showVitalPoints={false}
-        showKiAura={true}
-        showKoreanLabels={true}
-        interactive={true}
-        onPlayerClick={() => handlePlayerClick(1)}
-        animationState={getPlayerAnimationState(1)}
-        data-testid="combat-player-2"
-      />
-
-      {/* Hit Effects Layer */}
-      <HitEffectsLayer
-        effects={hitEffects}
-        onEffectComplete={handleEffectComplete}
-      />
-
-      {/* Pause Overlay */}
+      {/* Pause Overlay - Fixed positioning */}
       {isPaused && (
-        <pixiContainer x={width / 2} y={height / 2} data-testid="pause-overlay">
+        <pixiContainer
+          data-testid="pause-overlay"
+          layout={{
+            position: "absolute",
+            top: height / 2,
+            left: width / 2,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
           <pixiGraphics
             draw={(g) => {
               g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
+              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
               g.roundRect(-100, -50, 200, 100, 10);
               g.fill();
               g.stroke({
@@ -869,111 +1123,28 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           <pixiText
             text="일시정지"
             style={{
-              fontSize: 32,
+              fontSize: isMobile ? 24 : 32,
               fill: KOREAN_COLORS.ACCENT_GOLD,
               fontWeight: "bold",
               align: "center",
               fontFamily: "Noto Sans KR",
             }}
             anchor={0.5}
-            y={-20}
+            y={-10}
           />
           <pixiText
             text="PAUSED"
             style={{
-              fontSize: 24,
+              fontSize: isMobile ? 16 : 24,
               fill: KOREAN_COLORS.PRIMARY_CYAN,
               fontWeight: "bold",
               align: "center",
             }}
             anchor={0.5}
-            y={10}
-          />
-          <pixiText
-            text="아무 키나 눌러서 계속 | Press any key to continue"
-            style={{
-              fontSize: 14,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              align: "center",
-              fontFamily: "Noto Sans KR",
-            }}
-            y={45}
-            anchor={0.5}
+            y={15}
           />
         </pixiContainer>
       )}
-
-      {/* Combat HUD with enhanced Korean/English support */}
-      <CombatHUD
-        player1={validPlayers[0]}
-        player2={validPlayers[1]}
-        timeRemaining={timeRemaining}
-        currentRound={currentRound}
-        maxRounds={3}
-        gameScore={{
-          player1: validPlayers[0].wins || 0,
-          player2: validPlayers[1].wins || 0,
-        }}
-        roundsWon={{
-          player1: validPlayers[0].wins || 0,
-          player2: validPlayers[1].wins || 0,
-        }}
-        isPaused={isPaused}
-        onPauseToggle={() => console.log("Pause toggled")}
-        width={width}
-        height={140}
-        x={0}
-        y={0}
-      />
-
-      {/* Combat Stats Panel with bilingual support */}
-      <CombatStatsPanel
-        players={validPlayers}
-        combatLog={combatMessages.map((msg, index) => ({
-          id: `msg-${index}`,
-          timestamp: Date.now() - index * 1000,
-          korean: msg.split(" | ")[0] || msg,
-          english: msg.split(" | ")[1] || msg,
-          type: msg.includes("공격")
-            ? "attack"
-            : msg.includes("방어")
-            ? "defend"
-            : msg.includes("기술")
-            ? "technique"
-            : "info",
-        }))}
-        matchDuration={matchDuration}
-        totalDamageDealt={{
-          player1: validPlayers[0].totalDamageDealt || 0,
-          player2: validPlayers[1].totalDamageDealt || 0,
-        }}
-        criticalHits={{
-          player1: Math.floor((validPlayers[0].totalDamageDealt || 0) / 50),
-          player2: Math.floor((validPlayers[1].totalDamageDealt || 0) / 50),
-        }}
-        perfectStrikes={{
-          player1: validPlayers[0].perfectStrikes || 0,
-          player2: validPlayers[1].perfectStrikes || 0,
-        }}
-        x={width - 330}
-        y={150}
-        width={320}
-        height={180}
-      />
-
-      {/* Combat Controls with Korean/English labels */}
-      <CombatControls
-        onAttack={handleAttack}
-        onDefend={handleDefend}
-        onSwitchStance={handleStanceSwitch}
-        onTechniqueExecute={handleTechniqueExecute}
-        player={validPlayers[0]}
-        isExecutingTechnique={isExecutingTechnique}
-        x={10}
-        y={height - 200}
-        width={280}
-        height={120}
-      />
     </pixiContainer>
   );
 };
