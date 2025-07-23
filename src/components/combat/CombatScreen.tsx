@@ -14,7 +14,6 @@ import React, {
   useState,
 } from "react";
 import { HitEffectType } from "../../systems/effects";
-import { KOREAN_COLORS } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
@@ -22,8 +21,11 @@ import { DojangBackground } from "../game/DojangBackground";
 import { HitEffectsLayer } from "../ui/HitEffectsLayer";
 import { PlayerVisuals } from "../ui/PlayerVisuals";
 import { CombatControls } from "./components/CombatControls";
+import { CombatFooter } from "./components/CombatFooter";
 import { CombatHUD } from "./components/CombatHUD";
 import { CombatStatsPanel } from "./components/CombatStatsPanel";
+import { PauseOverlay } from "./components/PauseOverlay";
+import { RoundStatusDisplay } from "./components/RoundStatusDisplay";
 
 // Register custom components for use as JSX tags in @pixi/react
 extend({
@@ -71,6 +73,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const [combatMessages, setCombatMessages] = useState<string[]>([]);
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundEnded, setRoundEnded] = useState(false);
+  const [roundDisplayStatus, setRoundDisplayStatus] = useState<
+    "start" | "fight" | "ko" | "end" | null
+  >(null);
 
   // Match timing
   const matchStartTimeRef = useRef(Date.now());
@@ -197,9 +202,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Round Management
   useEffect(() => {
+    if (isPaused) return;
+
     if (timeRemaining <= 0 && !roundEnded) {
       setRoundEnded(true);
       setRoundStarted(false);
+      setRoundDisplayStatus("end");
 
       // Determine winner by health
       const winner = validPlayers[0].health > validPlayers[1].health ? 0 : 1;
@@ -207,11 +215,20 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
       setTimeout(() => {
         onGameEnd(winner);
-      }, 2000);
-    } else if (timeRemaining > 25 && !roundStarted) {
+      }, 2500);
+    } else if (
+      timeRemaining > 0 &&
+      !roundStarted &&
+      !roundEnded &&
+      currentRound > 0
+    ) {
       setRoundStarted(true);
-      setRoundEnded(false);
       addCombatMessage("라운드 시작!", "Round Start!");
+
+      setRoundDisplayStatus("start");
+      const fightTimer = setTimeout(() => setRoundDisplayStatus("fight"), 1500);
+
+      return () => clearTimeout(fightTimer);
     }
   }, [
     timeRemaining,
@@ -220,6 +237,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     validPlayers,
     onGameEnd,
     addCombatMessage,
+    currentRound,
+    isPaused,
   ]);
 
   // ✅ FIXED: Enhanced combat system integration with proper hit effects
@@ -651,14 +670,23 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Check game end conditions
   const checkGameEnd = useCallback(() => {
-    if (validPlayers[0].health <= 0) {
-      addCombatMessage("플레이어 1 패배", "Player 1 Defeated");
-      onGameEnd(1);
-    } else if (validPlayers[1].health <= 0) {
-      addCombatMessage("플레이어 1 승리!", "Player 1 Victory!");
-      onGameEnd(0);
+    if (roundEnded) return;
+
+    const p1Defeated = validPlayers[0].health <= 0;
+    const p2Defeated = validPlayers[1].health <= 0;
+
+    if (p1Defeated || p2Defeated) {
+      setRoundEnded(true);
+      setRoundStarted(false);
+      setRoundDisplayStatus("ko");
+      const winner = p1Defeated ? 1 : 0;
+      addCombatMessage(
+        p1Defeated ? "플레이어 1 패배" : "플레이어 1 승리!",
+        p1Defeated ? "Player 1 Defeated" : "Player 1 Victory!"
+      );
+      setTimeout(() => onGameEnd(winner), 2500);
     }
-  }, [validPlayers, onGameEnd, addCombatMessage]);
+  }, [validPlayers, onGameEnd, addCombatMessage, roundEnded]);
 
   // Check game end on health changes
   useEffect(() => {
@@ -686,6 +714,14 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     [validPlayers, isExecutingTechnique, player1Movement.isMoving]
   );
 
+  // Centralized layout constants for easier tweaking
+  const layoutConstants = {
+    padding: 10,
+    hudHeight: 120,
+    controlsHeight: 100,
+    footerHeight: 60,
+  };
+
   return (
     <pixiContainer
       data-testid="combat-screen"
@@ -697,43 +733,33 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         left: x,
       }}
     >
-      {/* Dojang Background Layer */}
-      <pixiContainer
-        layout={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width,
-          height,
-        }}
-      >
-        <DojangBackground
-          width={width}
-          height={height}
-          lighting="cyberpunk"
-          animate={true}
-        />
-      </pixiContainer>
+      {/* Dojang Background Layer - Stays in the back */}
+      <DojangBackground
+        width={width}
+        height={height}
+        lighting="cyberpunk"
+        animate={true}
+      />
 
-      {/* Main Combat Layout Container with proper spacing */}
+      {/* Main Combat Layout: A vertical flex container for all UI */}
       <pixiContainer
         layout={{
           width,
           height,
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "flex-start",
-          padding: 10, // Add padding to prevent edge cutoff
+          justifyContent: "space-between", // Pushes content to top and bottom
+          padding: layoutConstants.padding,
         }}
       >
-        {/* Top HUD Area - Fixed height and positioning */}
+        {/* Top HUD Area: Fixed height */}
         <pixiContainer
           layout={{
-            width: width - 20, // Account for padding
-            height: 120, // Reduced height to prevent overlap
+            width: "100%",
+            height: layoutConstants.hudHeight,
             alignItems: "center",
             justifyContent: "center",
-            flexShrink: 0,
+            flexShrink: 0, // Prevents this container from shrinking
           }}
         >
           <CombatHUD
@@ -752,168 +778,81 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             }}
             isPaused={isPaused}
             onPauseToggle={() => console.log("Pause toggled")}
-            width={width - 20}
-            height={120}
-            x={0}
-            y={0}
+            width={width - layoutConstants.padding * 2}
+            height={layoutConstants.hudHeight}
           />
         </pixiContainer>
 
-        {/* Combat Arena Area - Better calculated height */}
+        {/* Combat Arena Area: Flexible height, fills remaining space */}
         <pixiContainer
+          data-testid="combat-arena"
           layout={{
-            width: width - 20,
-            height: height - 300, // More space for HUD and controls
+            width: "100%",
+            flexGrow: 1, // Allows this container to take up available vertical space
+            position: "relative", // For absolute positioning of players and effects
             alignItems: "center",
             justifyContent: "center",
-            position: "relative",
-            flexGrow: 1,
           }}
         >
-          {/* Round Status Messages - Better positioning */}
-          {!roundStarted && timeRemaining > 25 && (
-            <pixiContainer
-              data-testid="round-ready"
-              layout={{
-                position: "absolute",
-                top: "40%", // Moved up from center
-                left: "50%",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <pixiText
-                text="준비하세요!"
-                style={{
-                  fontSize: isMobile ? 24 : 36,
-                  fill: KOREAN_COLORS.ACCENT_GOLD,
-                  fontWeight: "bold",
-                  align: "center",
-                  fontFamily: "Noto Sans KR",
-                }}
-                anchor={0.5}
-              />
-              <pixiText
-                text="GET READY!"
-                style={{
-                  fontSize: isMobile ? 16 : 24,
-                  fill: KOREAN_COLORS.PRIMARY_CYAN,
-                  fontWeight: "bold",
-                  align: "center",
-                }}
-                anchor={0.5}
-                y={isMobile ? 30 : 40}
-              />
-            </pixiContainer>
-          )}
+          {/* Player 1 Visuals */}
+          <PlayerVisuals
+            playerState={validPlayers[0]}
+            x={playerPositions[0].x}
+            y={playerPositions[0].y}
+            scale={isMobile ? 0.7 : 0.9}
+            renderMode="combat"
+            facing="right"
+            showDetails={true}
+            showVitalPoints={false}
+            showKiAura={true}
+            showKoreanLabels={true}
+            interactive={true}
+            onPlayerClick={() => console.log("Player 1 clicked")}
+            animationState={getPlayerAnimationState(0)}
+            data-testid="combat-player-1"
+          />
 
-          {/* Round End Message */}
-          {roundEnded && (
-            <pixiContainer
-              data-testid="round-end"
-              layout={{
-                position: "absolute",
-                top: "40%", // Moved up from center
-                left: "50%",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <pixiText
-                text="라운드 종료!"
-                style={{
-                  fontSize: isMobile ? 24 : 36,
-                  fill: KOREAN_COLORS.ACCENT_GOLD,
-                  fontWeight: "bold",
-                  align: "center",
-                  fontFamily: "Noto Sans KR",
-                }}
-                anchor={0.5}
-              />
-              <pixiText
-                text="ROUND OVER!"
-                style={{
-                  fontSize: isMobile ? 16 : 24,
-                  fill: KOREAN_COLORS.PRIMARY_CYAN,
-                  fontWeight: "bold",
-                  align: "center",
-                }}
-                anchor={0.5}
-                y={isMobile ? 30 : 40}
-              />
-            </pixiContainer>
-          )}
-
-          {/* Player 1 Layout - Better positioned */}
-          <pixiContainer
-            layout={{
-              position: "absolute",
-              left: Math.max(50, playerPositions[0].x - (width - 20) / 2), // Relative to arena container
-              top: Math.max(50, playerPositions[0].y - 120), // Account for HUD height
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PlayerVisuals
-              playerState={validPlayers[0]}
-              x={0}
-              y={0}
-              scale={isMobile ? 0.7 : 0.9} // Slightly smaller to fit better
-              renderMode="combat"
-              facing="right"
-              showDetails={true}
-              showVitalPoints={false}
-              showKiAura={true}
-              showKoreanLabels={true}
-              interactive={true}
-              onPlayerClick={() => console.log("Player 1 clicked")}
-              animationState={getPlayerAnimationState(0)}
-              data-testid="combat-player-1"
-            />
-          </pixiContainer>
-
-          {/* Player 2 Layout - Better positioned */}
-          <pixiContainer
-            layout={{
-              position: "absolute",
-              left: Math.max(50, playerPositions[1].x - (width - 20) / 2), // Relative to arena container
-              top: Math.max(50, playerPositions[1].y - 120), // Account for HUD height
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PlayerVisuals
-              playerState={validPlayers[1]}
-              x={0}
-              y={0}
-              scale={isMobile ? 0.7 : 0.9} // Slightly smaller to fit better
-              renderMode="combat"
-              facing="left"
-              showDetails={true}
-              showVitalPoints={false}
-              showKiAura={true}
-              showKoreanLabels={true}
-              interactive={true}
-              onPlayerClick={() => console.log("Player 2 clicked")}
-              animationState={getPlayerAnimationState(1)}
-              data-testid="combat-player-2"
-            />
-          </pixiContainer>
+          {/* Player 2 Visuals */}
+          <PlayerVisuals
+            playerState={validPlayers[1]}
+            x={playerPositions[1].x}
+            y={playerPositions[1].y}
+            scale={isMobile ? 0.7 : 0.9}
+            renderMode="combat"
+            facing="left"
+            showDetails={true}
+            showVitalPoints={false}
+            showKiAura={true}
+            showKoreanLabels={true}
+            interactive={true}
+            onPlayerClick={() => console.log("Player 2 clicked")}
+            animationState={getPlayerAnimationState(1)}
+            data-testid="combat-player-2"
+          />
 
           {/* Hit Effects Layer */}
           <HitEffectsLayer
             effects={hitEffects}
             onEffectComplete={handleEffectComplete}
           />
+
+          {/* Round Status Display */}
+          {roundDisplayStatus && (
+            <RoundStatusDisplay
+              status={roundDisplayStatus}
+              round={currentRound}
+              width={width}
+              height={height}
+              onAnimationComplete={() => setRoundDisplayStatus(null)}
+            />
+          )}
         </pixiContainer>
 
-        {/* Bottom Control Area - Better spacing */}
+        {/* Bottom UI Area: Contains controls and stats */}
         <pixiContainer
           layout={{
-            width: width - 20,
-            height: 100, // Fixed height
+            width: "100%",
+            height: layoutConstants.controlsHeight,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
@@ -921,230 +860,60 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             flexShrink: 0,
           }}
         >
-          {/* Combat Controls - Responsive sizing */}
-          <pixiContainer
-            layout={{
-              width: isMobile ? 200 : 280,
-              height: 90,
-              alignItems: "flex-start",
-              justifyContent: "flex-start",
-              flexShrink: 0,
+          <CombatControls
+            onAttack={handleAttack}
+            onDefend={handleDefend}
+            onSwitchStance={handleStanceSwitch}
+            onTechniqueExecute={handleTechniqueExecute}
+            player={validPlayers[0]}
+            isExecutingTechnique={isExecutingTechnique}
+            width={isMobile ? 200 : 280}
+            height={90}
+          />
+          <CombatStatsPanel
+            players={validPlayers}
+            combatLog={combatMessages.map((msg, index) => ({
+              id: `msg-${index}`,
+              timestamp: Date.now() - index * 1000,
+              korean: msg.split(" | ")[0] || msg,
+              english: msg.split(" | ")[1] || msg,
+              type: msg.includes("공격")
+                ? "attack"
+                : msg.includes("방어")
+                ? "defend"
+                : msg.includes("기술")
+                ? "technique"
+                : "info",
+            }))}
+            matchDuration={matchDuration}
+            totalDamageDealt={{
+              player1: validPlayers[0].totalDamageDealt || 0,
+              player2: validPlayers[1].totalDamageDealt || 0,
             }}
-          >
-            <CombatControls
-              onAttack={handleAttack}
-              onDefend={handleDefend}
-              onSwitchStance={handleStanceSwitch}
-              onTechniqueExecute={handleTechniqueExecute}
-              player={validPlayers[0]}
-              isExecutingTechnique={isExecutingTechnique}
-              x={0}
-              y={0}
-              width={isMobile ? 200 : 280}
-              height={90}
-            />
-          </pixiContainer>
-
-          {/* Combat Stats Panel - Responsive sizing */}
-          <pixiContainer
-            layout={{
-              width: isMobile ? 200 : 320,
-              height: 90,
-              alignItems: "flex-end",
-              justifyContent: "flex-start",
-              flexShrink: 0,
+            criticalHits={{
+              player1: Math.floor((validPlayers[0].totalDamageDealt || 0) / 50),
+              player2: Math.floor((validPlayers[1].totalDamageDealt || 0) / 50),
             }}
-          >
-            <CombatStatsPanel
-              players={validPlayers}
-              combatLog={combatMessages.map((msg, index) => ({
-                id: `msg-${index}`,
-                timestamp: Date.now() - index * 1000,
-                korean: msg.split(" | ")[0] || msg,
-                english: msg.split(" | ")[1] || msg,
-                type: msg.includes("공격")
-                  ? "attack"
-                  : msg.includes("방어")
-                  ? "defend"
-                  : msg.includes("기술")
-                  ? "technique"
-                  : "info",
-              }))}
-              matchDuration={matchDuration}
-              totalDamageDealt={{
-                player1: validPlayers[0].totalDamageDealt || 0,
-                player2: validPlayers[1].totalDamageDealt || 0,
-              }}
-              criticalHits={{
-                player1: Math.floor(
-                  (validPlayers[0].totalDamageDealt || 0) / 50
-                ),
-                player2: Math.floor(
-                  (validPlayers[1].totalDamageDealt || 0) / 50
-                ),
-              }}
-              perfectStrikes={{
-                player1: validPlayers[0].perfectStrikes || 0,
-                player2: validPlayers[1].perfectStrikes || 0,
-              }}
-              x={0}
-              y={0}
-              width={isMobile ? 200 : 320}
-              height={90}
-            />
-          </pixiContainer>
+            perfectStrikes={{
+              player1: validPlayers[0].perfectStrikes || 0,
+              player2: validPlayers[1].perfectStrikes || 0,
+            }}
+            width={isMobile ? 200 : 320}
+            height={90}
+          />
         </pixiContainer>
 
-        {/* Footer Area - Fixed positioning and sizing */}
-        <pixiContainer
-          layout={{
-            width: width - 20,
-            height: 60,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-            flexShrink: 0,
-          }}
-        >
-          {/* Return to Menu Button */}
-          <pixiContainer
-            data-testid="return-menu-button"
-            layout={{
-              width: isMobile ? 100 : 140,
-              height: 40,
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <pixiGraphics
-              draw={(g) => {
-                const buttonWidth = isMobile ? 100 : 140;
-                g.clear();
-                g.fill({
-                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                  alpha: 0.8,
-                });
-                g.roundRect(0, 0, buttonWidth, 40, 6);
-                g.fill();
-                g.stroke({
-                  width: 2,
-                  color: KOREAN_COLORS.ACCENT_GOLD,
-                  alpha: 0.6,
-                });
-                g.roundRect(0, 0, buttonWidth, 40, 6);
-                g.stroke();
-              }}
-              interactive={true}
-              onPointerDown={onReturnToMenu}
-              cursor="pointer"
-            />
-            <pixiText
-              text={isMobile ? "메뉴" : "메뉴로 돌아가기"}
-              style={{
-                fontSize: isMobile ? 10 : 12,
-                fill: KOREAN_COLORS.ACCENT_GOLD,
-                fontWeight: "bold",
-                align: "center",
-                fontFamily: "Noto Sans KR",
-              }}
-              anchor={0.5}
-            />
-          </pixiContainer>
-
-          {/* Movement Instructions - Responsive */}
-          <pixiContainer
-            data-testid="movement-instructions"
-            layout={{
-              flexGrow: 1,
-              height: 40,
-              alignItems: "center",
-              justifyContent: "center",
-              marginLeft: 10,
-              marginRight: 10,
-            }}
-          >
-            <pixiGraphics
-              draw={(g) => {
-                const instructionWidth = width - (isMobile ? 240 : 320);
-                g.clear();
-                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-                g.roundRect(0, 0, Math.max(200, instructionWidth), 30, 5);
-                g.fill();
-              }}
-            />
-            <pixiText
-              text={
-                isMobile
-                  ? "이동 ↑↓←→ | Space 공격 | Shift 방어"
-                  : "조작법 | Controls: 이동 ↑↓←→ | 공격 Space | 방어 Shift | 특수기 Alt | 자세 1-8"
-              }
-              style={{
-                fontSize: isMobile ? 8 : 10,
-                fill: KOREAN_COLORS.TEXT_PRIMARY,
-                fontFamily: "Noto Sans KR",
-                align: "center",
-              }}
-              anchor={0.5}
-            />
-          </pixiContainer>
-        </pixiContainer>
+        {/* Footer Area: Fixed height for instructions and menu button */}
+        <CombatFooter
+          onReturnToMenu={onReturnToMenu}
+          isMobile={isMobile}
+          width={width - layoutConstants.padding * 2}
+          height={layoutConstants.footerHeight}
+        />
       </pixiContainer>
 
-      {/* Pause Overlay - Fixed positioning */}
-      {isPaused && (
-        <pixiContainer
-          data-testid="pause-overlay"
-          layout={{
-            position: "absolute",
-            top: height / 2,
-            left: width / 2,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-        >
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
-              g.roundRect(-100, -50, 200, 100, 10);
-              g.fill();
-              g.stroke({
-                width: 3,
-                color: KOREAN_COLORS.ACCENT_GOLD,
-                alpha: 0.8,
-              });
-              g.roundRect(-100, -50, 200, 100, 10);
-              g.stroke();
-            }}
-          />
-          <pixiText
-            text="일시정지"
-            style={{
-              fontSize: isMobile ? 24 : 32,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
-              fontWeight: "bold",
-              align: "center",
-              fontFamily: "Noto Sans KR",
-            }}
-            anchor={0.5}
-            y={-10}
-          />
-          <pixiText
-            text="PAUSED"
-            style={{
-              fontSize: isMobile ? 16 : 24,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              fontWeight: "bold",
-              align: "center",
-            }}
-            anchor={0.5}
-            y={15}
-          />
-        </pixiContainer>
-      )}
+      {/* Pause Overlay - Centered on the whole screen */}
+      {isPaused && <PauseOverlay isMobile={isMobile} />}
     </pixiContainer>
   );
 };
