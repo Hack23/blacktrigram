@@ -155,6 +155,25 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     onPlayerUpdate({ position: playerPosition });
   }, [playerPosition, onPlayerUpdate]);
 
+  // Hide feedback after delay
+  useEffect(() => {
+    if (showFeedback) {
+      const timer = setTimeout(() => setShowFeedback(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showFeedback]);
+
+  // ESC key handler
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onReturnToMenu();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onReturnToMenu]);
+
   // Training handlers
   const handleStartTraining = useCallback(() => {
     setIsTraining(true);
@@ -201,28 +220,9 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     [isTraining]
   );
 
-  // Hide feedback after delay
-  useEffect(() => {
-    if (showFeedback) {
-      const timer = setTimeout(() => setShowFeedback(false), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showFeedback]);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onReturnToMenu();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu]);
-
   return (
     <pixiContainer x={x} y={y} data-testid="training-screen">
-      {/* Background */}
+      {/* ✅ ENHANCED: Make DojangBackground more visible and prominent */}
       <DojangBackground
         width={width}
         height={height}
@@ -231,19 +231,21 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
         data-testid="training-background"
       />
 
-      {/* Header Overlay */}
+      {/* ✅ IMPROVED: Less opaque header to show more background */}
       <pixiContainer x={0} y={0} data-testid="training-header">
         <pixiGraphics
           draw={(g) => {
             g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+            // Reduced opacity to show more background
+            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.7 });
             g.rect(0, 0, width, layout.headerHeight);
             g.fill();
 
+            // Subtle Korean-inspired border
             g.stroke({
               width: 2,
               color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.8,
+              alpha: 0.6,
             });
             g.moveTo(0, layout.headerHeight - 2);
             g.lineTo(width, layout.headerHeight - 2);
@@ -258,6 +260,13 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             fill: KOREAN_COLORS.ACCENT_GOLD,
             fontWeight: "bold",
             fontFamily: "Noto Sans KR",
+            // Add subtle glow effect
+            dropShadow: {
+              color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+              distance: 2,
+              alpha: 0.8,
+              blur: 3,
+            },
           }}
           x={width / 2}
           y={layout.headerHeight / 2}
@@ -278,7 +287,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           gap: layout.componentGap,
         }}
       >
-        {/* Left Panel - Controls and Mode Selection */}
+        {/* ✅ IMPROVED: More transparent left panel */}
         <pixiContainer
           layout={{
             width: layout.leftPanelWidth,
@@ -291,6 +300,36 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           }}
           data-testid="left-panel"
         >
+          {/* Semi-transparent panel background */}
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.4 });
+              g.roundRect(
+                0,
+                0,
+                layout.leftPanelWidth,
+                height - layout.headerHeight - layout.padding * 2,
+                12
+              );
+              g.fill();
+
+              g.stroke({
+                width: 1,
+                color: KOREAN_COLORS.ACCENT_GOLD,
+                alpha: 0.3,
+              });
+              g.roundRect(
+                0,
+                0,
+                layout.leftPanelWidth,
+                height - layout.headerHeight - layout.padding * 2,
+                12
+              );
+              g.stroke();
+            }}
+          />
+
           {/* Training Mode Selector */}
           <TrainingModeSelector
             currentMode={trainingMode}
@@ -361,7 +400,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           </pixiContainer>
         </pixiContainer>
 
-        {/* Center Area - Training Arena */}
+        {/* ✅ IMPROVED: Center Area - Training Arena with minimal overlay */}
         <pixiContainer
           x={
             isMobile
@@ -376,24 +415,16 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           }}
           data-testid="training-arena"
         >
-          {/* Arena Background */}
+          {/* ✅ REMOVED: Heavy arena background grid - now just subtle boundaries */}
           <pixiGraphics
             draw={(g) => {
               g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.3 });
-              g.roundRect(
-                0,
-                0,
-                layout.centerAreaWidth,
-                height - layout.headerHeight - layout.padding * 2,
-                12
-              );
-              g.fill();
 
+              // Only draw subtle training area boundary - no solid background
               g.stroke({
                 width: 2,
                 color: KOREAN_COLORS.ACCENT_GOLD,
-                alpha: 0.6,
+                alpha: 0.3,
               });
               g.roundRect(
                 0,
@@ -404,26 +435,52 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
               );
               g.stroke();
 
-              // Add training grid
+              // ✅ REMOVED: Red battle grid - replaced with minimal training markers
+              // Add only corner markers for training area reference
+              const cornerSize = 20;
+              const corners = [
+                { x: cornerSize, y: cornerSize },
+                { x: layout.centerAreaWidth - cornerSize, y: cornerSize },
+                {
+                  x: cornerSize,
+                  y:
+                    height -
+                    layout.headerHeight -
+                    layout.padding * 2 -
+                    cornerSize,
+                },
+                {
+                  x: layout.centerAreaWidth - cornerSize,
+                  y:
+                    height -
+                    layout.headerHeight -
+                    layout.padding * 2 -
+                    cornerSize,
+                },
+              ];
+
               g.stroke({
-                width: 1,
+                width: 2,
                 color: KOREAN_COLORS.PRIMARY_CYAN,
-                alpha: 0.2,
+                alpha: 0.4,
               });
-              const gridSize = 40;
-              for (let i = 0; i < layout.centerAreaWidth; i += gridSize) {
-                g.moveTo(i, 0);
-                g.lineTo(i, height - layout.headerHeight - layout.padding * 2);
-              }
-              for (
-                let j = 0;
-                j < height - layout.headerHeight - layout.padding * 2;
-                j += gridSize
-              ) {
-                g.moveTo(0, j);
-                g.lineTo(layout.centerAreaWidth, j);
-              }
+
+              corners.forEach((corner) => {
+                // Draw L-shaped corner markers
+                g.moveTo(corner.x - 10, corner.y);
+                g.lineTo(corner.x, corner.y);
+                g.lineTo(corner.x, corner.y - 10);
+              });
               g.stroke();
+
+              // Optional: Add center point marker for reference
+              const centerX = layout.centerAreaWidth / 2;
+              const centerY =
+                (height - layout.headerHeight - layout.padding * 2) / 2;
+
+              g.fill({ color: KOREAN_COLORS.ACCENT_CYAN, alpha: 0.3 });
+              g.circle(centerX, centerY, 4);
+              g.fill();
             }}
             data-testid="arena-background"
           />
@@ -468,7 +525,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             isMobile={isMobile}
           />
 
-          {/* Movement Instructions */}
+          {/* ✅ IMPROVED: Enhanced movement instructions with better visibility */}
           <pixiContainer
             x={layout.centerAreaWidth / 2}
             y={height - layout.headerHeight - layout.padding * 2 - 60}
@@ -477,16 +534,17 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             <pixiGraphics
               draw={(g) => {
                 g.clear();
-                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-                g.roundRect(-100, -20, 200, 40, 8);
+                // More transparent background to show dojang
+                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.6 });
+                g.roundRect(-120, -25, 240, 50, 8);
                 g.fill();
 
                 g.stroke({
                   width: 1,
                   color: KOREAN_COLORS.ACCENT_CYAN,
-                  alpha: 0.6,
+                  alpha: 0.8,
                 });
-                g.roundRect(-100, -20, 200, 40, 8);
+                g.roundRect(-120, -25, 240, 50, 8);
                 g.stroke();
               }}
             />
@@ -497,6 +555,14 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
                 fill: KOREAN_COLORS.TEXT_PRIMARY,
                 fontFamily: "Noto Sans KR",
                 align: "center",
+                fontWeight: "bold",
+                // Add text shadow for better readability
+                dropShadow: {
+                  color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                  distance: 1,
+                  alpha: 0.8,
+                  blur: 2,
+                },
               }}
               anchor={0.5}
               y={-8}
@@ -508,6 +574,12 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
                 fill: KOREAN_COLORS.TEXT_SECONDARY,
                 fontStyle: "italic",
                 align: "center",
+                dropShadow: {
+                  color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                  distance: 1,
+                  alpha: 0.6,
+                  blur: 1,
+                },
               }}
               anchor={0.5}
               y={8}
@@ -539,7 +611,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           </pixiContainer>
         </pixiContainer>
 
-        {/* Right Panel - Vital Point Training (Desktop only) */}
+        {/* ✅ IMPROVED: More transparent right panel */}
         {!isMobile && (
           <pixiContainer
             layout={{
@@ -551,6 +623,36 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             }}
             data-testid="right-panel"
           >
+            {/* Semi-transparent panel background */}
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.4 });
+                g.roundRect(
+                  0,
+                  0,
+                  layout.rightPanelWidth,
+                  height - layout.headerHeight - layout.padding * 2,
+                  12
+                );
+                g.fill();
+
+                g.stroke({
+                  width: 1,
+                  color: KOREAN_COLORS.ACCENT_GOLD,
+                  alpha: 0.3,
+                });
+                g.roundRect(
+                  0,
+                  0,
+                  layout.rightPanelWidth,
+                  height - layout.headerHeight - layout.padding * 2,
+                  12
+                );
+                g.stroke();
+              }}
+            />
+
             <VitalPointTrainingPanel
               selectedVitalPoint={selectedVitalPoint}
               onVitalPointSelect={setSelectedVitalPoint}
