@@ -21,7 +21,7 @@ export interface MovementState {
   readonly down: boolean;
   readonly left: boolean;
   readonly right: boolean;
-  readonly position: Position; // Add position to movement state
+  readonly position: Position; 
   readonly isMoving: boolean; // Add isMoving to movement state
 }
 
@@ -62,7 +62,7 @@ export function usePlayerMovement(
     bounds,
     onPositionChange,
     initialPosition = { x: 0, y: 0 },
-    moveSpeed = 300, // Increased default speed
+    moveSpeed = 300, 
   } = config;
 
   const [playerPosition, setPlayerPosition] =
@@ -369,7 +369,6 @@ export class InputSystem {
  * Get stance from keyboard input
  */
 export function getStanceFromKey(key: string): TrigramStance | null {
-  // Fix: Use proper type assertion and key validation
   const stanceKey = key as keyof typeof COMBAT_CONTROLS.stanceControls;
 
   if (stanceKey in COMBAT_CONTROLS.stanceControls) {
