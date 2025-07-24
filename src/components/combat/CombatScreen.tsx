@@ -105,7 +105,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     },
   ]);
 
-  // AI state for Player 2 - increased speed
   const [aiState, setAiState] = useState({
     nextAction: Date.now() + 1000,
     actionCooldown: 1000, // Reduced from 1500ms
@@ -114,7 +113,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     aggressionLevel: 0.5, // Increased from 0.3
   });
 
-  // Player 1 movement system - use new config-based API
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: !isPaused && roundStarted && !roundEnded,
     bounds: arenaBounds,
@@ -123,7 +121,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       onPlayerUpdate(0, { position: newPosition });
     },
     initialPosition: playerPositions[0],
-    moveSpeed: 300, // Increased from 200
+    moveSpeed: 300, 
   });
 
   // Responsive layout detection

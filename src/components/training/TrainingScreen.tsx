@@ -74,7 +74,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     [isMobile, width, height]
   );
 
-  // ✅ FIXED: Use similar arena bounds calculation as CombatScreen
   const arenaBounds = useMemo(
     () => ({
       x: 0, // Use relative coordinates like CombatScreen
@@ -85,7 +84,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     [layout]
   );
 
-  // ✅ FIXED: Use position state like CombatScreen
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
     {
       x: arenaBounds.width * 0.25,
@@ -149,7 +147,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     return () => window.removeEventListener("keydown", handleCombatInput);
   }, [isTraining, playerPosition, arenaBounds, onPlayerUpdate]);
 
-  // ✅ FIXED: Update player position when movement changes like CombatScreen
   useEffect(() => {
     setPlayerPositions([playerPosition]);
     onPlayerUpdate({ position: playerPosition });
@@ -222,7 +219,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
 
   return (
     <pixiContainer x={x} y={y} data-testid="training-screen">
-      {/* ✅ ENHANCED: Make DojangBackground more visible and prominent */}
       <DojangBackground
         width={width}
         height={height}
@@ -231,7 +227,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
         data-testid="training-background"
       />
 
-      {/* ✅ IMPROVED: Less opaque header to show more background */}
       <pixiContainer x={0} y={0} data-testid="training-header">
         <pixiGraphics
           draw={(g) => {
@@ -400,7 +395,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           </pixiContainer>
         </pixiContainer>
 
-        {/* ✅ IMPROVED: Center Area - Training Arena with minimal overlay */}
         <pixiContainer
           x={
             isMobile
@@ -415,7 +409,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           }}
           data-testid="training-arena"
         >
-          {/* ✅ REMOVED: Heavy arena background grid - now just subtle boundaries */}
           <pixiGraphics
             draw={(g) => {
               g.clear();
@@ -435,7 +428,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
               );
               g.stroke();
 
-              // ✅ REMOVED: Red battle grid - replaced with minimal training markers
               // Add only corner markers for training area reference
               const cornerSize = 20;
               const corners = [
@@ -485,7 +477,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             data-testid="arena-background"
           />
 
-          {/* ✅ FIXED: Player Character with correct position tracking */}
           <PlayerVisuals
             playerState={player}
             x={playerPosition.x}
@@ -502,7 +493,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             animationState={isMoving ? "walk" : "idle"}
           />
 
-          {/* ✅ FIXED: Training Dummy with relative positioning */}
           <TrainingDummy
             x={arenaBounds.width * 0.75}
             y={arenaBounds.height * 0.6}
@@ -525,7 +515,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             isMobile={isMobile}
           />
 
-          {/* ✅ IMPROVED: Enhanced movement instructions with better visibility */}
           <pixiContainer
             x={layout.centerAreaWidth / 2}
             y={height - layout.headerHeight - layout.padding * 2 - 60}
@@ -586,7 +575,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             />
           </pixiContainer>
 
-          {/* ✅ FIXED: Training status overlay with correct position data */}
           <pixiContainer x={10} y={10}>
             <pixiText
               text={`Stance: ${player.currentStance || "geon"} | Training: ${
@@ -611,7 +599,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           </pixiContainer>
         </pixiContainer>
 
-        {/* ✅ IMPROVED: More transparent right panel */}
         {!isMobile && (
           <pixiContainer
             layout={{
