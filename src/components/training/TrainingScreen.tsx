@@ -1,22 +1,21 @@
 import { PlayerState } from "@/systems";
+import { usePlayerMovement } from "@/utils/inputSystem";
+import "@pixi/layout";
 import { extend } from "@pixi/react";
-import { Container, Graphics, Text } from "pixi.js";
+import { Container } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useAudio } from "../../audio/AudioProvider";
-import { TrigramStance } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
-import { usePlayerMovement } from "../../utils/inputSystem";
-import { DojangBackground } from "../game/DojangBackground";
-import { ResponsivePixiPanel } from "../ui/base/ResponsivePixiComponents";
-import { PlayerAnimationState, PlayerVisuals } from "../ui/PlayerVisuals";
-import { StanceIndicator } from "../ui/StanceIndicator";
+import { DojangBackground } from "../game";
+import { PlayerVisuals } from "../ui/PlayerVisuals";
+import TrainingControlsPanel from "./components/TrainingControlsPanel";
+import TrainingDummy from "./components/TrainingDummy";
+import TrainingFeedback from "./components/TrainingFeedback";
+import TrainingModeSelector from "./components/TrainingModeSelector";
+import TrainingStatsPanel from "./components/TrainingStatsPanel";
+import VitalPointTrainingPanel from "./components/VitalPointTrainingPanel";
 
 // Extend PIXI components for use with React
-extend({
-  Container,
-  Graphics,
-  Text,
-});
+extend({ Container });
 
 export interface TrainingScreenProps {
   readonly player: PlayerState;
@@ -28,703 +27,866 @@ export interface TrainingScreenProps {
   readonly y?: number;
 }
 
-// Training dummy state interface
-interface TrainingDummy {
-  readonly health: number;
-  readonly maxHealth: number;
-  readonly position: { x: number; y: number };
-  readonly isActive: boolean;
-}
-
 // Training mode types
 type TrainingMode = "basics" | "advanced" | "free";
 
-export const TrainingScreen: React.FC<TrainingScreenProps> = (props) => {
-  // pull dimensions out of props
-  const {
-    width = 0,
-    height = 0,
-    player,
-    onPlayerUpdate,
-    onReturnToMenu,
-    x = 0,
-    y = 0,
-  } = props;
+// Extract layout calculation to separate function
+const calculateLayoutConstants = (isMobile: boolean, width: number) => ({
+  padding: isMobile ? 10 : 20,
+  headerHeight: isMobile ? 60 : 80,
+  footerHeight: isMobile ? 40 : 50,
+  leftPanelWidth: isMobile
+    ? Math.min(width * 0.4, 300)
+    : Math.min(width * 0.3, 350),
+  rightPanelWidth: isMobile ? 0 : Math.min(width * 0.25, 280),
+  componentGap: isMobile ? 8 : 15,
+  modeSelectorHeight: isMobile ? 40 : 50,
+  controlsPanelHeight: isMobile ? 70 : 90,
+  statsPanelHeight: isMobile ? 100 : 130,
+  vitalPointPanelHeight: isMobile ? 120 : 160,
+});
 
-  const audio = useAudio();
-  const [selectedStance, setSelectedStance] = useState<TrigramStance>(
-    TrigramStance.GEON
+// Extract dummy positions calculation
+const calculateDummyPositions = (trainingAreaWidth: number, height: number) => [
+  { x: trainingAreaWidth * 0.3, y: height * 0.4 },
+  { x: trainingAreaWidth * 0.6, y: height * 0.6 },
+  { x: trainingAreaWidth * 0.8, y: height * 0.45 },
+];
+
+// Extract feedback provider function
+const createFeedbackProvider = (
+  setFeedback: (feedback: string) => void,
+  setShowFeedback: (show: boolean) => void
+) => {
+  return useCallback(
+    (korean: string, english: string) => {
+      setFeedback(`${korean} | ${english}`);
+      setShowFeedback(true);
+      setTimeout(() => setShowFeedback(false), 2000);
+    },
+    [setFeedback, setShowFeedback]
   );
+};
+
+export const TrainingScreen: React.FC<TrainingScreenProps> = ({
+  player,
+  onPlayerUpdate,
+  onReturnToMenu,
+  width,
+  height,
+  x = 0,
+  y = 0,
+}) => {
+  // Training state
   const [isTraining, setIsTraining] = useState(false);
   const [trainingMode, setTrainingMode] = useState<TrainingMode>("basics");
-  const [trainingStats, setTrainingStats] = useState({
-    techniquesExecuted: 0,
-    perfectStrikes: 0,
-    totalDamage: 0,
-    sessionTime: 0,
-    attempts: 0,
-  });
+  const [score, setScore] = useState(0);
+  const [combo, setCombo] = useState(0);
+  const [feedback, setFeedback] = useState("");
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [selectedVitalPoint, setSelectedVitalPoint] = useState<string | null>(
+    null
+  );
 
-  // Track last action for animation states
-  const [lastActionTime, setLastActionTime] = useState<number>(0);
-  const [currentAnimation, setCurrentAnimation] =
-    useState<PlayerAnimationState>("idle");
-
-  // Initialize training dummy state
-  const [dummy, setDummy] = useState<TrainingDummy>({
-    health: 100,
-    maxHealth: 100,
-    position: { x: width * 0.7, y: height * 0.5 },
-    isActive: true,
-  });
-
-  // Player movement system
-  const { movementState: playerMovement, isKeyPressed } = usePlayerMovement(
-    { x: width * 0.25, y: height * 0.5 },
+  // Enhanced player movement system
+  const { movementState } = usePlayerMovement(
+    player.position || { x: width * 0.25, y: height * 0.7 },
     { width, height }
   );
 
-  // Update player position
-  useEffect(() => {
-    onPlayerUpdate({ position: playerMovement.position });
-  }, [playerMovement.position, onPlayerUpdate]);
+  // Determine if the device is mobile based on screen width
+  const isMobile = width < 768;
 
-  // Animation state management
-  useEffect(() => {
-    const now = Date.now();
+  // Memoized layout constants
+  const layoutConstants = useMemo(
+    () => calculateLayoutConstants(isMobile, width),
+    [isMobile, width]
+  );
 
-    if (playerMovement.isMoving) {
-      setCurrentAnimation("walk");
-    } else if (now - lastActionTime < 1000) {
-      // Show attack animation for 1 second after technique
-      setCurrentAnimation("attack");
-    } else {
-      setCurrentAnimation("idle");
-    }
-  }, [playerMovement.isMoving, lastActionTime]);
+  // Calculate training area dimensions
+  const trainingAreaWidth = useMemo(
+    () =>
+      width -
+      layoutConstants.leftPanelWidth -
+      layoutConstants.rightPanelWidth -
+      layoutConstants.padding * 3,
+    [width, layoutConstants]
+  );
 
-  // Training input handling
+  // Training dummy positions with better spacing
+  const dummyPositions = useMemo(
+    () => calculateDummyPositions(trainingAreaWidth, height),
+    [trainingAreaWidth, height]
+  );
+
+  // Enhanced visual effects system
+  const [visualEffects, setVisualEffects] = useState<
+    Array<{
+      id: string;
+      type: "hit" | "miss" | "perfect" | "combo";
+      position: { x: number; y: number };
+      timestamp: number;
+    }>
+  >([]);
+
+  // Enhanced feedback system
+  const provideFeedback = createFeedbackProvider(setFeedback, setShowFeedback);
+
+  // Training controls - extracted to reduce complexity
+  const trainingControls = useMemo(
+    () => ({
+      handleStartTraining: () => {
+        setIsTraining(true);
+        setScore(0);
+        setCombo(0);
+        provideFeedback("훈련 시작!", "Training Started!");
+      },
+      handleStopTraining: () => {
+        setIsTraining(false);
+        setCombo(0);
+        provideFeedback("훈련 종료", "Training Ended");
+      },
+      handleModeChange: (mode: TrainingMode) => {
+        setTrainingMode(mode);
+        setScore(0);
+        setCombo(0);
+        setSelectedVitalPoint(null);
+        const modeNames = {
+          basics: "기초 훈련",
+          advanced: "고급 훈련",
+          free: "자유 훈련",
+        };
+        provideFeedback(
+          `${modeNames[mode]} 모드`,
+          `${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`
+        );
+      },
+    }),
+    [provideFeedback]
+  );
+
+  // Update player position when movement changes
   useEffect(() => {
-    const handleTrainingInput = () => {
-      // Attack with Space or Ctrl
-      if (isKeyPressed("Space") || isKeyPressed("ControlLeft")) {
-        handleTechniqueExecute();
+    onPlayerUpdate({ position: movementState.position });
+  }, [movementState.position, onPlayerUpdate]);
+
+  // Enhanced feedback messages
+  const handleHitFeedback = useCallback(
+    (accuracy: number) => {
+      if (accuracy > 0.9) {
+        provideFeedback("완벽한 타격!", "Perfect Strike!");
+      } else if (accuracy > 0.7) {
+        provideFeedback("정확한 타격!", "Accurate Strike!");
+      } else {
+        provideFeedback("타격 성공", "Strike Hit");
+      }
+    },
+    [provideFeedback]
+  );
+
+  // Training hit detection with enhanced scoring
+  const handleDummyHit = useCallback(
+    (distance: number): boolean => {
+      if (!isTraining) return false;
+
+      const maxDistance = trainingMode === "advanced" ? 80 : 120;
+      const hit = distance <= maxDistance;
+
+      if (hit) {
+        const accuracy = Math.max(0, 1 - distance / maxDistance);
+        const basePoints = Math.floor(accuracy * 100);
+        const comboMultiplier = Math.floor(combo / 5) + 1;
+        const points = basePoints * comboMultiplier;
+
+        setScore((prev) => prev + points);
+        setCombo((prev) => prev + 1);
+
+        // Enhanced visual feedback
+        const effectType =
+          accuracy > 0.9 ? "perfect" : accuracy > 0.7 ? "hit" : "hit";
+        setVisualEffects((prev) => [
+          ...prev,
+          {
+            id: `effect_${Date.now()}`,
+            type: effectType,
+            position: { x: width * 0.6, y: height * 0.5 },
+            timestamp: Date.now(),
+          },
+        ]);
+
+        handleHitFeedback(accuracy);
+
+        // Resource management
+        if (player.stamina > 10) {
+          onPlayerUpdate({
+            stamina: player.stamina - 8,
+            totalDamageDealt: (player.totalDamageDealt || 0) + points,
+          });
+        }
+      } else {
+        setCombo(0);
+        setVisualEffects((prev) => [
+          ...prev,
+          {
+            id: `miss_${Date.now()}`,
+            type: "miss",
+            position: { x: width * 0.6, y: height * 0.5 },
+            timestamp: Date.now(),
+          },
+        ]);
+        provideFeedback("빗나감", "Miss");
       }
 
-      // Stance changes with number keys
-      if (isKeyPressed("Digit1")) handleStanceChange(TrigramStance.GEON);
-      if (isKeyPressed("Digit2")) handleStanceChange(TrigramStance.TAE);
-      if (isKeyPressed("Digit3")) handleStanceChange(TrigramStance.LI);
-      if (isKeyPressed("Digit4")) handleStanceChange(TrigramStance.JIN);
-      if (isKeyPressed("Digit5")) handleStanceChange(TrigramStance.SON);
-      if (isKeyPressed("Digit6")) handleStanceChange(TrigramStance.GAM);
-      if (isKeyPressed("Digit7")) handleStanceChange(TrigramStance.GAN);
-      if (isKeyPressed("Digit8")) handleStanceChange(TrigramStance.GON);
+      return hit;
+    },
+    [
+      isTraining,
+      trainingMode,
+      combo,
+      player.stamina,
+      player.totalDamageDealt,
+      onPlayerUpdate,
+      width,
+      height,
+      handleHitFeedback,
+    ]
+  );
 
-      // Toggle training mode with 'T'
-      if (isKeyPressed("KeyT")) handleToggleTraining();
+  // Vital point selection handler
+  const handleVitalPointSelect = useCallback(
+    (vitalPointId: string) => {
+      setSelectedVitalPoint(vitalPointId);
+      if (trainingMode === "advanced") {
+        provideFeedback("급소 선택됨", "Vital Point Selected");
+      }
+    },
+    [trainingMode, provideFeedback]
+  );
 
-      // Mode switching with M key
-      if (isKeyPressed("KeyM")) {
+  // Enhanced keyboard controls for training
+  useEffect(() => {
+    const handleTrainingInput = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        if (isTraining) {
+          trainingControls.handleStopTraining();
+        } else {
+          trainingControls.handleStartTraining();
+        }
+      } else if (event.key === "Tab") {
+        event.preventDefault();
         const modes: TrainingMode[] = ["basics", "advanced", "free"];
         const currentIndex = modes.indexOf(trainingMode);
-        const nextMode = modes[(currentIndex + 1) % modes.length];
-        handleTrainingModeChange(nextMode);
+        const nextIndex = (currentIndex + 1) % modes.length;
+        trainingControls.handleModeChange(modes[nextIndex]);
       }
     };
 
-    const interval = setInterval(handleTrainingInput, 100);
-    return () => clearInterval(interval);
-  }, [isKeyPressed]);
+    window.addEventListener("keydown", handleTrainingInput);
+    return () => window.removeEventListener("keydown", handleTrainingInput);
+  }, [
+    isTraining,
+    trainingMode,
+    trainingControls.handleStartTraining,
+    trainingControls.handleStopTraining,
+    trainingControls.handleModeChange,
+  ]);
 
-  // Responsive design calculations
-  const { isMobile } = useMemo(() => {
-    const isMobile = width < 768;
-    return { isMobile };
-  }, [width]);
-
-  // Training session timer
+  // Reset combo after inactivity
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTraining) {
-      interval = setInterval(() => {
-        setTrainingStats((prev) => ({
-          ...prev,
-          sessionTime: prev.sessionTime + 1,
-        }));
-      }, 1000);
+    if (combo > 0 && isTraining) {
+      const comboTimer = setTimeout(() => {
+        setCombo(0);
+      }, 3000);
+      return () => clearTimeout(comboTimer);
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isTraining]);
+  }, [combo, isTraining]);
 
-  // Handle technique execution
-  const handleTechniqueExecute = useCallback(() => {
-    if (!dummy.isActive) return;
-
-    try {
-      // Calculate distance to dummy
-      const distance = Math.sqrt(
-        Math.pow(playerMovement.position.x - dummy.position.x, 2) +
-          Math.pow(playerMovement.position.y - dummy.position.y, 2)
+  // Clean up visual effects
+  useEffect(() => {
+    const cleanup = setInterval(() => {
+      const now = Date.now();
+      setVisualEffects((prev) =>
+        prev.filter((effect) => now - effect.timestamp < 2000)
       );
-
-      // Only execute if close enough to dummy
-      if (distance > 150) return; // Training range
-
-      // Calculate damage based on stance and accuracy
-      const baseDamage = Math.random() * 20 + 10;
-      const isPerfect = Math.random() > 0.7;
-      const finalDamage = isPerfect ? baseDamage * 1.5 : baseDamage;
-
-      // Update dummy health
-      setDummy((prev) => ({
-        ...prev,
-        health: Math.max(0, prev.health - finalDamage),
-      }));
-
-      // Update training stats
-      setTrainingStats((prev) => ({
-        ...prev,
-        techniquesExecuted: prev.techniquesExecuted + 1,
-        attempts: prev.attempts + 1,
-        perfectStrikes: isPerfect
-          ? prev.perfectStrikes + 1
-          : prev.perfectStrikes,
-        totalDamage: prev.totalDamage + finalDamage,
-      }));
-
-      // Set last action time for animation
-      setLastActionTime(Date.now());
-
-      // Safe audio playback
-      try {
-        if (isPerfect) {
-          audio.playSFX("critical_hit");
-        } else {
-          audio.playSFX("hit_light");
-        }
-      } catch (audioError) {
-        console.warn("Audio playback failed:", audioError);
-      }
-
-      // Safe player update
-      try {
-        onPlayerUpdate({
-          ki: Math.max(0, player.ki - 5),
-          stamina: Math.max(0, player.stamina - 8),
-          lastActionTime: Date.now(),
-        });
-      } catch (updateError) {
-        console.error("Player update failed:", updateError);
-      }
-
-      // Reset dummy if health reaches zero
-      if (dummy.health - finalDamage <= 0) {
-        setTimeout(() => {
-          setDummy((prev) => ({ ...prev, health: prev.maxHealth }));
-        }, 2000);
-      }
-    } catch (error) {
-      console.error("Technique execution failed:", error);
-    }
-  }, [dummy, audio, onPlayerUpdate, player, playerMovement.position]);
-
-  // Handle stance changes
-  const handleStanceChange = useCallback(
-    (newStance: TrigramStance) => {
-      setSelectedStance(newStance);
-      onPlayerUpdate({ currentStance: newStance });
-      audio.playSFX("stance_change");
-    },
-    [onPlayerUpdate, audio]
-  );
-
-  // Toggle training mode
-  const handleToggleTraining = useCallback(() => {
-    const newTrainingState = !isTraining;
-    setIsTraining(newTrainingState);
-
-    if (newTrainingState) {
-      // Start training session
-      setTrainingStats({
-        techniquesExecuted: 0,
-        perfectStrikes: 0,
-        totalDamage: 0,
-        sessionTime: 0,
-        attempts: 0,
-      });
-      audio.playSFX("match_start");
-    } else {
-      audio.playSFX("match_end");
-    }
-  }, [isTraining, audio]);
-
-  // Handle training mode changes
-  const handleTrainingModeChange = useCallback(
-    (mode: TrainingMode) => {
-      setTrainingMode(mode);
-      audio.playSFX("menu_select");
-
-      // Reset stats when changing modes
-      setTrainingStats({
-        techniquesExecuted: 0,
-        perfectStrikes: 0,
-        totalDamage: 0,
-        sessionTime: 0,
-        attempts: 0,
-      });
-    },
-    [audio]
-  );
-
-  // Reset training dummy
-  const handleResetDummy = useCallback(() => {
-    setDummy((prev) => ({
-      ...prev,
-      health: prev.maxHealth,
-    }));
-    audio.playSFX("ki_charge");
-  }, [audio]);
-
-  // Get Korean stance names
-  const getStanceNames = useCallback((stance: TrigramStance) => {
-    const stanceNames = {
-      [TrigramStance.GEON]: { korean: "건", technique: "천둥벽력" },
-      [TrigramStance.TAE]: { korean: "태", technique: "유수연타" },
-      [TrigramStance.LI]: { korean: "리", technique: "화염지창" },
-      [TrigramStance.JIN]: { korean: "진", technique: "벽력일섬" },
-      [TrigramStance.SON]: { korean: "손", technique: "선풍연격" },
-      [TrigramStance.GAM]: { korean: "감", technique: "수류반격" },
-      [TrigramStance.GAN]: { korean: "간", technique: "반석방어" },
-      [TrigramStance.GON]: { korean: "곤", technique: "대지포옹" },
-    };
-    return stanceNames[stance] || { korean: "Unknown", technique: "Unknown" };
+    }, 100);
+    return () => clearInterval(cleanup);
   }, []);
 
-  // Get current stance info for display
-  const currentStanceInfo = getStanceNames(selectedStance);
-
   return (
-    <pixiContainer x={x} y={y} interactive={true} data-testid="training-screen">
+    <pixiContainer
+      data-testid="training-screen"
+      layout={{
+        width,
+        height,
+        position: "absolute",
+        top: y,
+        left: x,
+      }}
+    >
+      {/* Enhanced background with depth */}
       <DojangBackground
         width={width}
         height={height}
         lighting="traditional"
         animate={true}
-        data-testid="dojang-background"
       />
 
-      {/* Movement instructions */}
-      <pixiContainer x={10} y={10} data-testid="training-instructions">
-        <pixiText
-          text="이동: ↑↓←→ | 공격: Space/Ctrl | 자세변경: 1-8 | 훈련모드: T | 더미에 가까이 가서 공격하세요"
-          style={{
-            fontSize: isMobile ? 9 : 11,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            fontFamily: "Noto Sans KR",
-          }}
-        />
-      </pixiContainer>
-
-      <pixiContainer x={width / 2} y={50} data-testid="training-header">
-        <pixiText
-          text="흑괘 무술 도장"
-          style={{
-            fontSize: isMobile ? 20 : 24,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            fontWeight: "bold",
-            align: "center",
-          }}
-          anchor={0.5}
-          data-testid="training-title"
-        />
-      </pixiContainer>
-
-      {/* Training Mode Indicator */}
-      <pixiContainer x={width / 2} y={80} data-testid="training-mode-indicator">
-        <pixiText
-          text={`훈련 모드: ${
-            isTraining ? "활성" : "비활성"
-          } | 수준: ${trainingMode}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: isTraining
-              ? KOREAN_COLORS.POSITIVE_GREEN
-              : KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
-            fontFamily: "Noto Sans KR",
-          }}
-          anchor={0.5}
-        />
-      </pixiContainer>
-
-      {/* Training Player (moveable) */}
-      <PlayerVisuals
-        playerState={player}
-        x={playerMovement.position.x}
-        y={playerMovement.position.y}
-        scale={isMobile ? 1.0 : 1.2}
-        renderMode="training"
-        facing="right"
-        showDetails={true}
-        showVitalPoints={true}
-        showKiAura={true}
-        showStanceIndicator={true}
-        showArchetypeSymbol={true}
-        interactive={true}
-        onVitalPointClick={(vitalPointId) => {
-          console.log(`Vital point clicked: ${vitalPointId}`);
-          handleTechniqueExecute();
-        }}
-        onPlayerClick={() => {
-          console.log("Player clicked in training");
-        }}
-        highlightedVitalPoints={[
-          trainingMode === "basics" ? "chest_solar" : "head_temple",
-        ]}
-        animationState={currentAnimation}
-        data-testid="training-player"
-      />
-
-      {/* Training Dummy */}
+      {/* Main layout container */}
       <pixiContainer
-        x={dummy.position.x}
-        y={dummy.position.y}
-        interactive={true}
-        onPointerDown={handleTechniqueExecute}
-        data-testid="training-dummy-container"
+        layout={{
+          width,
+          height,
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          padding: layoutConstants.padding,
+          gap: layoutConstants.padding,
+        }}
       >
+        {/* Left Control Panel */}
+        <pixiContainer
+          layout={{
+            width: layoutConstants.leftPanelWidth,
+            height: height - layoutConstants.padding * 2,
+            flexDirection: "column",
+            alignItems: "stretch",
+            justifyContent: "flex-start",
+            gap: layoutConstants.componentGap,
+          }}
+          data-testid="training-left-panel"
+        >
+          {/* Training Mode Selector */}
+          <TrainingModeSelector
+            currentMode={trainingMode}
+            onModeChange={trainingControls.handleModeChange}
+            x={0}
+            y={0}
+            width={layoutConstants.leftPanelWidth}
+            height={layoutConstants.modeSelectorHeight}
+            isMobile={isMobile}
+          />
+
+          {/* Training Controls */}
+          <TrainingControlsPanel
+            isTraining={isTraining}
+            onStartTraining={trainingControls.handleStartTraining}
+            onStopTraining={trainingControls.handleStopTraining}
+            width={layoutConstants.leftPanelWidth}
+            height={layoutConstants.controlsPanelHeight}
+            isMobile={isMobile}
+          />
+
+          {/* Training Statistics */}
+          <TrainingStatsPanel
+            player={player}
+            score={score}
+            combo={combo}
+            isTraining={isTraining}
+            width={layoutConstants.leftPanelWidth}
+            height={layoutConstants.statsPanelHeight}
+            isMobile={isMobile}
+          />
+
+          {/* Vital Point Training Panel (Advanced Mode) */}
+          {trainingMode === "advanced" && (
+            <VitalPointTrainingPanel
+              selectedVitalPoint={selectedVitalPoint}
+              onVitalPointSelect={handleVitalPointSelect}
+              width={layoutConstants.leftPanelWidth}
+              height={layoutConstants.vitalPointPanelHeight}
+              isMobile={isMobile}
+            />
+          )}
+        </pixiContainer>
+
+        {/* Central Training Area */}
+        <pixiContainer
+          layout={{
+            width: trainingAreaWidth,
+            height: height - layoutConstants.padding * 2,
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+          data-testid="training-area"
+        >
+          {/* Enhanced Training Area Background */}
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+
+              // Main training area background
+              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.15 });
+              g.roundRect(
+                0,
+                0,
+                trainingAreaWidth,
+                height - layoutConstants.padding * 2,
+                15
+              );
+              g.fill();
+
+              // Dynamic border based on training state
+              const borderColor = isTraining
+                ? KOREAN_COLORS.ACCENT_GREEN
+                : trainingMode === "advanced"
+                ? KOREAN_COLORS.SECONDARY_MAGENTA
+                : KOREAN_COLORS.PRIMARY_CYAN;
+
+              g.stroke({ width: 2, color: borderColor, alpha: 0.6 });
+              g.roundRect(
+                0,
+                0,
+                trainingAreaWidth,
+                height - layoutConstants.padding * 2,
+                15
+              );
+              g.stroke();
+
+              // Grid for advanced mode
+              if (trainingMode === "advanced") {
+                g.stroke({
+                  width: 1,
+                  color: KOREAN_COLORS.TEXT_TERTIARY,
+                  alpha: 0.1,
+                });
+                const gridSize = 60;
+                for (let i = gridSize; i < trainingAreaWidth; i += gridSize) {
+                  g.moveTo(i, 20);
+                  g.lineTo(i, height - layoutConstants.padding * 2 - 20);
+                }
+                for (
+                  let i = gridSize;
+                  i < height - layoutConstants.padding * 2;
+                  i += gridSize
+                ) {
+                  g.moveTo(20, i);
+                  g.lineTo(trainingAreaWidth - 20, i);
+                }
+                g.stroke();
+              }
+            }}
+            layout={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          />
+
+          {/* Player Character */}
+          <PlayerVisuals
+            playerState={player}
+            x={
+              movementState.position.x -
+              layoutConstants.leftPanelWidth -
+              layoutConstants.padding
+            }
+            y={movementState.position.y - layoutConstants.padding}
+            scale={isMobile ? 0.9 : 1.2}
+            showDetails={true}
+            showKoreanLabels={true}
+            animationState={
+              movementState.isMoving
+                ? "walk"
+                : isTraining
+                ? "stance_change"
+                : "idle"
+            }
+            renderMode="training"
+            showVitalPoints={trainingMode === "advanced"}
+            showStanceIndicator={true}
+            showArchetypeSymbol={true}
+            showKiAura={isTraining}
+            onVitalPointClick={handleVitalPointSelect}
+            highlightedVitalPoints={
+              selectedVitalPoint ? [selectedVitalPoint] : []
+            }
+          />
+
+          {/* Enhanced Training Dummies */}
+          {dummyPositions.map((pos, index) => (
+            <TrainingDummy
+              key={`dummy-${index}`}
+              x={pos.x}
+              y={pos.y}
+              playerPosition={{
+                x:
+                  movementState.position.x -
+                  layoutConstants.leftPanelWidth -
+                  layoutConstants.padding,
+                y: movementState.position.y - layoutConstants.padding,
+              }}
+              trainingMode={trainingMode}
+              onHit={handleDummyHit}
+              isTraining={isTraining}
+              selectedVitalPoint={selectedVitalPoint}
+              scale={isMobile ? 0.8 : 1.0}
+            />
+          ))}
+
+          {/* Enhanced Visual Effects Layer */}
+          {visualEffects.map((effect) => (
+            <pixiContainer
+              key={effect.id}
+              x={effect.position.x}
+              y={effect.position.y}
+              data-testid={`visual-effect-${effect.type}`}
+            >
+              <pixiGraphics
+                draw={(g) => {
+                  const age = Date.now() - effect.timestamp;
+                  const alpha = Math.max(0, 1 - age / 2000);
+                  const scale = 1 + (age / 2000) * 0.5;
+
+                  g.clear();
+
+                  switch (effect.type) {
+                    case "perfect":
+                      g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha });
+                      g.star(0, 0, 8, 15 * scale, 8 * scale);
+                      g.fill();
+                      break;
+                    case "hit":
+                      g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha });
+                      g.circle(0, 0, 10 * scale);
+                      g.fill();
+                      break;
+                    case "miss":
+                      g.stroke({
+                        width: 3,
+                        color: KOREAN_COLORS.ACCENT_RED,
+                        alpha,
+                      });
+                      g.moveTo(-8 * scale, -8 * scale);
+                      g.lineTo(8 * scale, 8 * scale);
+                      g.moveTo(8 * scale, -8 * scale);
+                      g.lineTo(-8 * scale, 8 * scale);
+                      g.stroke();
+                      break;
+                    case "combo":
+                      g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha });
+                      g.circle(0, 0, 12 * scale);
+                      g.fill();
+                      break;
+                  }
+                }}
+              />
+            </pixiContainer>
+          ))}
+
+          {/* Enhanced Training Feedback */}
+          <TrainingFeedback
+            feedback={feedback}
+            score={score}
+            combo={combo}
+            x={trainingAreaWidth / 2}
+            y={100}
+            visible={showFeedback}
+            isMobile={isMobile}
+          />
+
+          {/* Enhanced Training Instructions */}
+          {!isTraining && (
+            <pixiContainer
+              x={trainingAreaWidth / 2}
+              y={height / 2 - 60}
+              data-testid="training-instructions"
+            >
+              <pixiGraphics
+                draw={(g) => {
+                  g.clear();
+                  g.fill({
+                    color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    alpha: 0.95,
+                  });
+                  g.roundRect(-160, -70, 320, 140, 15);
+                  g.fill();
+
+                  g.stroke({
+                    width: 3,
+                    color: KOREAN_COLORS.ACCENT_GOLD,
+                    alpha: 0.9,
+                  });
+                  g.roundRect(-160, -70, 320, 140, 15);
+                  g.stroke();
+                }}
+              />
+
+              <pixiText
+                text="훈련 준비 완료"
+                style={{
+                  fontSize: isMobile ? 16 : 22,
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
+                  fontWeight: "bold",
+                  fontFamily: "Noto Sans KR",
+                  align: "center",
+                }}
+                anchor={0.5}
+                y={-35}
+              />
+
+              <pixiText
+                text="Training Ready"
+                style={{
+                  fontSize: isMobile ? 12 : 14,
+                  fill: KOREAN_COLORS.TEXT_SECONDARY,
+                  fontStyle: "italic",
+                  align: "center",
+                }}
+                anchor={0.5}
+                y={-15}
+              />
+
+              <pixiText
+                text={`현재 모드: ${
+                  trainingMode === "basics"
+                    ? "기초 훈련"
+                    : trainingMode === "advanced"
+                    ? "고급 훈련"
+                    : "자유 훈련"
+                }`}
+                style={{
+                  fontSize: isMobile ? 11 : 13,
+                  fill: KOREAN_COLORS.PRIMARY_CYAN,
+                  align: "center",
+                  fontFamily: "Noto Sans KR",
+                  fontWeight: "bold",
+                }}
+                anchor={0.5}
+                y={5}
+              />
+
+              <pixiText
+                text="Enter 키로 시작 • Tab으로 모드 변경 • WASD로 이동"
+                style={{
+                  fontSize: isMobile ? 9 : 11,
+                  fill: KOREAN_COLORS.TEXT_SECONDARY,
+                  align: "center",
+                  fontFamily: "Noto Sans KR",
+                }}
+                anchor={0.5}
+                y={25}
+              />
+
+              <pixiText
+                text="Press Enter to Start • Tab to Change Mode • WASD to Move"
+                style={{
+                  fontSize: isMobile ? 8 : 10,
+                  fill: KOREAN_COLORS.TEXT_TERTIARY,
+                  align: "center",
+                  fontStyle: "italic",
+                }}
+                anchor={0.5}
+                y={45}
+              />
+            </pixiContainer>
+          )}
+        </pixiContainer>
+
+        {/* Right Panel for Desktop (performance metrics, tips) */}
+        {!isMobile && layoutConstants.rightPanelWidth > 0 && (
+          <pixiContainer
+            layout={{
+              width: layoutConstants.rightPanelWidth,
+              height: height - layoutConstants.padding * 2,
+              flexDirection: "column",
+              alignItems: "stretch",
+              justifyContent: "flex-start",
+              gap: layoutConstants.componentGap,
+            }}
+            data-testid="training-right-panel"
+          >
+            {/* Performance Analysis Panel */}
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+                g.roundRect(0, 0, layoutConstants.rightPanelWidth, 140, 8);
+                g.fill();
+
+                g.stroke({
+                  width: 2,
+                  color: KOREAN_COLORS.ACCENT_CYAN,
+                  alpha: 0.7,
+                });
+                g.roundRect(0, 0, layoutConstants.rightPanelWidth, 140, 8);
+                g.stroke();
+              }}
+            />
+
+            <pixiText
+              text="성과 분석"
+              style={{
+                fontSize: 14,
+                fill: KOREAN_COLORS.ACCENT_CYAN,
+                fontWeight: "bold",
+                fontFamily: "Noto Sans KR",
+              }}
+              x={15}
+              y={15}
+            />
+
+            <pixiText
+              text="Performance Analysis"
+              style={{
+                fontSize: 10,
+                fill: KOREAN_COLORS.TEXT_SECONDARY,
+                fontStyle: "italic",
+              }}
+              x={15}
+              y={30}
+            />
+
+            {/* Accuracy Display */}
+            <pixiText
+              text={`정확도: ${
+                combo > 0 ? Math.round((score / (combo * 100)) * 100) : 0
+              }%`}
+              style={{
+                fontSize: 12,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                fontFamily: "Noto Sans KR",
+              }}
+              x={15}
+              y={55}
+            />
+
+            <pixiText
+              text={`최고 연타: ${combo}회`}
+              style={{
+                fontSize: 12,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                fontFamily: "Noto Sans KR",
+              }}
+              x={15}
+              y={75}
+            />
+
+            <pixiText
+              text={`총 점수: ${score}점`}
+              style={{
+                fontSize: 12,
+                fill: KOREAN_COLORS.ACCENT_GOLD,
+                fontFamily: "Noto Sans KR",
+              }}
+              x={15}
+              y={95}
+            />
+          </pixiContainer>
+        )}
+      </pixiContainer>
+
+      {/* Enhanced Footer */}
+      <pixiContainer
+        layout={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: layoutConstants.footerHeight,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingLeft: 20,
+          paddingRight: 20,
+        }}
+        data-testid="training-footer"
+      >
+        {/* Footer background */}
         <pixiGraphics
           draw={(g) => {
             g.clear();
-
-            // Dummy body
-            const bodyColor =
-              dummy.health > 50
-                ? KOREAN_COLORS.UI_STEEL_GRAY
-                : KOREAN_COLORS.WARNING_ORANGE;
-
-            g.fill({ color: bodyColor, alpha: 0.8 });
-            g.roundRect(-25, -50, 50, 100, 8);
+            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+            g.rect(0, 0, width, layoutConstants.footerHeight);
             g.fill();
 
-            // Damage indicators
-            if (dummy.health < dummy.maxHealth) {
-              g.fill({ color: KOREAN_COLORS.ACCENT_RED, alpha: 0.3 });
-              g.circle(0, 0, 60);
-              g.fill();
-            }
-
-            // Border
             g.stroke({
               width: 2,
               color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.6,
+              alpha: 0.7,
             });
-            g.roundRect(-25, -50, 50, 100, 8);
+            g.moveTo(0, 0);
+            g.lineTo(width, 0);
             g.stroke();
           }}
-          data-testid="training-dummy"
-        />
-
-        {/* Dummy Health Bar */}
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            const barWidth = 60;
-            const barHeight = 8;
-            const barY = -70;
-
-            // Background
-            g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.8 });
-            g.roundRect(-barWidth / 2, barY, barWidth, barHeight, 3);
-            g.fill();
-
-            // Health fill
-            const healthPercent = dummy.health / dummy.maxHealth;
-            const healthWidth = barWidth * healthPercent;
-            const healthColor =
-              healthPercent > 0.6
-                ? KOREAN_COLORS.POSITIVE_GREEN
-                : healthPercent > 0.3
-                ? KOREAN_COLORS.WARNING_YELLOW
-                : KOREAN_COLORS.NEGATIVE_RED;
-
-            g.fill({ color: healthColor, alpha: 0.9 });
-            g.roundRect(-barWidth / 2, barY, healthWidth, barHeight, 3);
-            g.fill();
+          layout={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
           }}
         />
 
+        {/* Enhanced controls text */}
         <pixiText
-          text={`${Math.ceil(dummy.health)}/${dummy.maxHealth}`}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            align: "center",
-          }}
-          x={0}
-          y={-85}
-          anchor={0.5}
-        />
-
-        <pixiText
-          text="훈련 더미"
-          style={{
-            fontSize: isMobile ? 9 : 11,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
-            fontFamily: "Noto Sans KR",
-          }}
-          x={0}
-          y={60}
-          anchor={0.5}
-        />
-      </pixiContainer>
-
-      {/* Distance indicator */}
-      <pixiContainer
-        x={width / 2}
-        y={height - 120}
-        data-testid="distance-indicator"
-      >
-        <pixiText
-          text={`더미까지 거리: ${Math.round(
-            Math.sqrt(
-              Math.pow(playerMovement.position.x - dummy.position.x, 2) +
-                Math.pow(playerMovement.position.y - dummy.position.y, 2)
-            )
-          )} (150 이하에서 공격 가능)`}
+          text={
+            isMobile
+              ? "ESC-메뉴 • Enter-훈련 • Tab-모드"
+              : "ESC-메뉴로 돌아가기 | Return to Menu • Enter-훈련 시작/중지 | Start/Stop • Tab-모드 변경 | Change Mode • WASD-이동 | Move"
+          }
           style={{
             fontSize: isMobile ? 10 : 12,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
-            align: "center",
             fontFamily: "Noto Sans KR",
+            fontWeight: "500",
           }}
-          anchor={0.5}
         />
-      </pixiContainer>
 
-      {/* Current Stance Display */}
-      <pixiContainer
-        x={width / 2}
-        y={height - 90}
-        data-testid="current-stance-display"
-      >
-        <pixiText
-          text={`현재 자세: ${currentStanceInfo.korean} (${currentStanceInfo.technique})`}
-          style={{
-            fontSize: isMobile ? 11 : 13,
-            fill: KOREAN_COLORS.ACCENT_GOLD,
-            align: "center",
-            fontFamily: "Noto Sans KR",
-            fontWeight: "bold",
-          }}
-          anchor={0.5}
-        />
-      </pixiContainer>
+        {/* Enhanced return button */}
+        <pixiContainer
+          interactive={true}
+          onPointerDown={onReturnToMenu}
+          data-testid="return-button"
+        >
+          <pixiGraphics
+            draw={(g) => {
+              g.clear();
+              g.fill({ color: KOREAN_COLORS.ACCENT_RED, alpha: 0.9 });
+              g.roundRect(
+                0,
+                0,
+                isMobile ? 80 : 120,
+                layoutConstants.footerHeight - 10,
+                8
+              );
+              g.fill();
 
-      {/* Current Stance Indicator */}
-      <StanceIndicator
-        stance={selectedStance}
-        x={isMobile ? width / 2 : width * 0.25}
-        y={height - (isMobile ? 140 : 160)}
-        data-testid="current-stance-indicator"
-      />
-
-      {/* Training Controls Panel */}
-      <ResponsivePixiPanel
-        title="훈련 제어"
-        x={isMobile ? 10 : 20}
-        y={isMobile ? 100 : 120}
-        width={isMobile ? width * 0.45 : 250}
-        height={isMobile ? 200 : 240}
-        screenWidth={width}
-        screenHeight={height}
-        data-testid="training-controls"
-      >
-        <pixiContainer x={10} y={30}>
-          {/* Training Stats */}
+              g.stroke({
+                width: 2,
+                color: KOREAN_COLORS.TEXT_PRIMARY,
+                alpha: 0.9,
+              });
+              g.roundRect(
+                0,
+                0,
+                isMobile ? 80 : 120,
+                layoutConstants.footerHeight - 10,
+                8
+              );
+              g.stroke();
+            }}
+          />
           <pixiText
-            text="훈련 통계"
+            text="메뉴로 | Menu"
             style={{
               fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fill: KOREAN_COLORS.TEXT_PRIMARY,
               fontWeight: "bold",
               fontFamily: "Noto Sans KR",
+              align: "center",
             }}
+            x={(isMobile ? 80 : 120) / 2}
+            y={(layoutConstants.footerHeight - 10) / 2}
+            anchor={0.5}
           />
-
-          <pixiText
-            text={`시도: ${trainingStats.attempts}`}
-            style={{
-              fontSize: isMobile ? 9 : 10,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-            }}
-            y={20}
-          />
-
-          <pixiText
-            text={`완벽한 타격: ${trainingStats.perfectStrikes}`}
-            style={{
-              fontSize: isMobile ? 9 : 10,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-            }}
-            y={35}
-          />
-
-          <pixiText
-            text={`총 데미지: ${Math.round(trainingStats.totalDamage)}`}
-            style={{
-              fontSize: isMobile ? 9 : 10,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-            }}
-            y={50}
-          />
-
-          <pixiText
-            text={`정확도: ${
-              trainingStats.attempts > 0
-                ? Math.round(
-                    (trainingStats.perfectStrikes / trainingStats.attempts) *
-                      100
-                  )
-                : 0
-            }%`}
-            style={{
-              fontSize: isMobile ? 9 : 10,
-              fill: KOREAN_COLORS.ACCENT_CYAN,
-              fontFamily: "Noto Sans KR",
-            }}
-            y={65}
-          />
-
-          <pixiText
-            text={`세션 시간: ${Math.floor(
-              trainingStats.sessionTime / 60
-            )}:${String(trainingStats.sessionTime % 60).padStart(2, "0")}`}
-            style={{
-              fontSize: isMobile ? 9 : 10,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-            }}
-            y={80}
-          />
-
-          {/* Control Buttons */}
-          <pixiContainer
-            x={0}
-            y={100}
-            interactive={true}
-            onPointerDown={handleToggleTraining}
-            data-testid="toggle-training-button"
-          >
-            <pixiGraphics
-              draw={(g) => {
-                g.clear();
-                g.fill({
-                  color: isTraining
-                    ? KOREAN_COLORS.ACCENT_RED
-                    : KOREAN_COLORS.POSITIVE_GREEN,
-                  alpha: 0.8,
-                });
-                g.roundRect(0, 0, 80, 25, 4);
-                g.fill();
-              }}
-            />
-            <pixiText
-              text={isTraining ? "훈련 종료" : "훈련 시작"}
-              style={{
-                fontSize: isMobile ? 9 : 10,
-                fill: KOREAN_COLORS.TEXT_PRIMARY,
-                align: "center",
-                fontFamily: "Noto Sans KR",
-              }}
-              x={40}
-              y={12.5}
-              anchor={0.5}
-            />
-          </pixiContainer>
-
-          {/* Reset Button */}
-          <pixiContainer
-            x={90}
-            y={100}
-            interactive={true}
-            onPointerDown={handleResetDummy}
-            data-testid="reset-dummy-button"
-          >
-            <pixiGraphics
-              draw={(g) => {
-                g.clear();
-                g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.8 });
-                g.roundRect(0, 0, 80, 25, 4);
-                g.fill();
-              }}
-            />
-            <pixiText
-              text="더미 리셋"
-              style={{
-                fontSize: isMobile ? 9 : 10,
-                fill: KOREAN_COLORS.TEXT_PRIMARY,
-                align: "center",
-                fontFamily: "Noto Sans KR",
-              }}
-              x={40}
-              y={12.5}
-              anchor={0.5}
-            />
-          </pixiContainer>
         </pixiContainer>
-      </ResponsivePixiPanel>
-
-      {/* Return to Menu Button */}
-      <pixiContainer
-        x={width - (isMobile ? 80 : 120)}
-        y={isMobile ? 10 : 20}
-        interactive={true}
-        onPointerDown={onReturnToMenu}
-        data-testid="return-menu-button"
-      >
-        <pixiGraphics
-          draw={(g) => {
-            g.clear();
-            g.fill({ color: KOREAN_COLORS.UI_STEEL_GRAY, alpha: 0.8 });
-            g.roundRect(0, 0, isMobile ? 70 : 100, isMobile ? 30 : 40, 8);
-            g.fill();
-            g.stroke({
-              width: 2,
-              color: KOREAN_COLORS.ACCENT_GOLD,
-              alpha: 0.8,
-            });
-            g.roundRect(0, 0, isMobile ? 70 : 100, isMobile ? 30 : 40, 8);
-          }}
-        />
-        <pixiText
-          text="메뉴로"
-          style={{
-            fontSize: isMobile ? 10 : 14,
-            fill: KOREAN_COLORS.TEXT_PRIMARY,
-            align: "center",
-            fontWeight: "bold",
-            fontFamily: "Noto Sans KR",
-          }}
-          x={(isMobile ? 70 : 100) / 2}
-          y={(isMobile ? 30 : 40) / 2}
-          anchor={0.5}
-        />
       </pixiContainer>
     </pixiContainer>
   );
 };
 
-const TrainingScreenWrapper: React.FC<TrainingScreenProps> = (props) => {
-  return <TrainingScreen {...props} />;
-};
-
-export default TrainingScreenWrapper;
+export default TrainingScreen;
