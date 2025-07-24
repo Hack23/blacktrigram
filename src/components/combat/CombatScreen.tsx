@@ -107,7 +107,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   const [aiState, setAiState] = useState({
     nextAction: Date.now() + 1000,
-    actionCooldown: 1000, // Reduced from 1500ms
+    actionCooldown: 500, 
     isMoving: false,
     targetPosition: { x: width * 0.75, y: height * 0.7 },
     aggressionLevel: 0.5, // Increased from 0.3

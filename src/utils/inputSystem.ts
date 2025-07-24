@@ -192,7 +192,6 @@ export function usePlayerMovement(
     if (keyState.up) newY -= adjustedSpeed;
     if (keyState.down) newY += adjustedSpeed;
 
-    // ✅ FIXED: Proper bounds checking
     if (bounds) {
       newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX));
       newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY));
