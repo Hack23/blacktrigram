@@ -35,16 +35,16 @@ if pgrep -x "Xvfb" > /dev/null; then
     echo "✅ Xvfb already running."
 else
     echo "🖥️ Starting Xvfb on display $DISPLAY..."
-    #Xvfb $DISPLAY -screen 0 1280x1024x24 -ac +extension GLX &
+    Xvfb $DISPLAY -screen 0 1280x1024x24 -ac +extension GLX &
     
     # Wait for Xvfb to be ready
-   # for i in {1..10}; do
-    #    if xdpyinfo -display $DISPLAY >/dev/null 2>&1; then
-     #       echo "✅ Xvfb is ready."
-      #      break
-       # fi
-       # echo "Waiting for Xvfb..."
-       # sleep 1
+   for i in {1..10}; do
+       if xdpyinfo -display $DISPLAY >/dev/null 2>&1; then
+          echo "✅ Xvfb is ready."
+          break
+    fi
+    echo "Waiting for Xvfb..."
+    sleep 1
     done
 fi
 
