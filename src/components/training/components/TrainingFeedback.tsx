@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import {  KOREAN_COLORS } from "../../../types/constants";
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
 // Ensure PixiJS components are extended
@@ -24,57 +24,47 @@ export const TrainingFeedback: React.FC<TrainingFeedbackProps> = ({
   visible,
   isMobile,
 }) => {
-  const [alpha, setAlpha] = useState(0);
-  const [scale, setScale] = useState(1.2);
-  const [displayY, setDisplayY] = useState(y);
+  const [alpha, setAlpha] = useState(1);
+  const [offsetY, setOffsetY] = useState(0);
 
+  // Fade out animation
   useEffect(() => {
-    if (visible && feedback) {
-      // Fade in and animate
+    if (visible) {
       setAlpha(1);
-      setScale(1);
-      setDisplayY(y);
-
-      // Animate upward and fade out
-      const animateTimer = setTimeout(() => {
+      setOffsetY(0);
+      const timer = setTimeout(() => {
         setAlpha(0);
-        setScale(0.8);
-        setDisplayY(y - 50);
+        setOffsetY(-30);
       }, 1500);
-
-      return () => clearTimeout(animateTimer);
-    } else {
-      setAlpha(0);
+      return () => clearTimeout(timer);
     }
-  }, [visible, feedback, y]);
+  }, [visible, feedback]);
 
-  if (!visible || !feedback) return null;
-
-  const [koreanText, englishText] = feedback.split(" | ");
+  if (!visible) return null;
 
   return (
     <pixiContainer
       x={x}
-      y={displayY}
+      y={y + offsetY}
       alpha={alpha}
-      scale={{ x: scale, y: scale }}
       data-testid="training-feedback"
       layout={{
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
         gap: 8,
       }}
     >
-      {/* Feedback Background */}
+      {/* Enhanced background */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
           g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
-          g.roundRect(-120, -40, 240, 80, 12);
+          g.roundRect(-80, -30, 160, 60, 12);
           g.fill();
 
           g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
-          g.roundRect(-120, -40, 240, 80, 12);
+          g.roundRect(-80, -30, 160, 60, 12);
           g.stroke();
         }}
         layout={{
@@ -83,96 +73,62 @@ export const TrainingFeedback: React.FC<TrainingFeedbackProps> = ({
         }}
       />
 
-      {/* Korean Feedback Text */}
+      {/* Main feedback text */}
       <pixiText
-        text={koreanText || feedback}
+        text={feedback}
         style={{
-          fontSize: isMobile ? 16 : 20,
+          fontSize: isMobile ? 14 : 18,
           fill: KOREAN_COLORS.ACCENT_GOLD,
           fontWeight: "bold",
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: "Noto Sans KR",
           align: "center",
           dropShadow: {
             color: KOREAN_COLORS.BLACK,
             distance: 2,
-            alpha: 0.7,
+            alpha: 0.8,
           },
         }}
         anchor={0.5}
-        y={-15}
+        layout={{
+          alignSelf: "center",
+        }}
       />
 
-      {/* English Feedback Text */}
-      {englishText && (
-        <pixiText
-          text={englishText}
-          style={{
-            fontSize: isMobile ? 12 : 14,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontStyle: "italic",
-            fontFamily: FONT_FAMILY.PRIMARY,
-            align: "center",
+      {/* Score and combo display */}
+      {(score > 0 || combo > 0) && (
+        <pixiContainer
+          layout={{
+            flexDirection: "row",
+            gap: 15,
+            alignItems: "center",
           }}
-          anchor={0.5}
-          y={5}
-        />
-      )}
+          y={20}
+        >
+          {score > 0 && (
+            <pixiText
+              text={`점수: ${score}`}
+              style={{
+                fontSize: isMobile ? 10 : 12,
+                fill: KOREAN_COLORS.PRIMARY_CYAN,
+                fontFamily: "Noto Sans KR",
+                fontWeight: "bold",
+              }}
+              anchor={0.5}
+            />
+          )}
 
-      {/* Score Display */}
-      {score > 0 && (
-        <pixiContainer y={25}>
-          <pixiText
-            text={`점수: ${score} | Score: ${score}`}
-            style={{
-              fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              fontWeight: "bold",
-              fontFamily: FONT_FAMILY.KOREAN,
-              align: "center",
-            }}
-            anchor={0.5}
-          />
-        </pixiContainer>
-      )}
-
-      {/* Combo Display */}
-      {combo > 1 && (
-        <pixiContainer x={100} y={-20}>
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.ACCENT_RED, alpha: 0.8 });
-              g.circle(0, 0, 15);
-              g.fill();
-
-              g.stroke({ width: 2, color: KOREAN_COLORS.TEXT_PRIMARY });
-              g.circle(0, 0, 15);
-              g.stroke();
-            }}
-          />
-          <pixiText
-            text={`${combo}연`}
-            style={{
-              fontSize: isMobile ? 8 : 10,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              fontWeight: "bold",
-              fontFamily: FONT_FAMILY.KOREAN,
-              align: "center",
-            }}
-            anchor={0.5}
-            y={-3}
-          />
-          <pixiText
-            text="COMBO"
-            style={{
-              fontSize: 6,
-              fill: KOREAN_COLORS.TEXT_PRIMARY,
-              fontWeight: "bold",
-              align: "center",
-            }}
-            anchor={0.5}
-            y={8}
-          />
+          {combo > 1 && (
+            <pixiText
+              text={`${combo}연타!`}
+              style={{
+                fontSize: isMobile ? 10 : 12,
+                fill: KOREAN_COLORS.ACCENT_RED,
+                fontFamily: "Noto Sans KR",
+                fontWeight: "bold",
+              }}
+              anchor={0.5}
+            />
+          )}
         </pixiContainer>
       )}
     </pixiContainer>

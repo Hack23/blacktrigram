@@ -2,8 +2,8 @@ import { PlayerState } from "@/systems";
 import { usePlayerMovement } from "@/utils/inputSystem";
 import "@pixi/layout";
 import { extend } from "@pixi/react";
-import { Container } from "pixi.js"; // ✅ Removed unused isMobile import
-import React, { useCallback, useEffect, useState } from "react";
+import { Container } from "pixi.js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KOREAN_COLORS } from "../../types/constants";
 import { DojangBackground } from "../game";
 import { PlayerVisuals } from "../ui/PlayerVisuals";
@@ -29,6 +29,44 @@ export interface TrainingScreenProps {
 
 // Training mode types
 type TrainingMode = "basics" | "advanced" | "free";
+
+// Extract layout calculation to separate function
+const calculateLayoutConstants = (isMobile: boolean, width: number) => ({
+  padding: isMobile ? 10 : 20,
+  headerHeight: isMobile ? 60 : 80,
+  footerHeight: isMobile ? 40 : 50,
+  leftPanelWidth: isMobile
+    ? Math.min(width * 0.4, 300)
+    : Math.min(width * 0.3, 350),
+  rightPanelWidth: isMobile ? 0 : Math.min(width * 0.25, 280),
+  componentGap: isMobile ? 8 : 15,
+  modeSelectorHeight: isMobile ? 40 : 50,
+  controlsPanelHeight: isMobile ? 70 : 90,
+  statsPanelHeight: isMobile ? 100 : 130,
+  vitalPointPanelHeight: isMobile ? 120 : 160,
+});
+
+// Extract dummy positions calculation
+const calculateDummyPositions = (trainingAreaWidth: number, height: number) => [
+  { x: trainingAreaWidth * 0.3, y: height * 0.4 },
+  { x: trainingAreaWidth * 0.6, y: height * 0.6 },
+  { x: trainingAreaWidth * 0.8, y: height * 0.45 },
+];
+
+// Extract feedback provider function
+const createFeedbackProvider = (
+  setFeedback: (feedback: string) => void,
+  setShowFeedback: (show: boolean) => void
+) => {
+  return useCallback(
+    (korean: string, english: string) => {
+      setFeedback(`${korean} | ${english}`);
+      setShowFeedback(true);
+      setTimeout(() => setShowFeedback(false), 2000);
+    },
+    [setFeedback, setShowFeedback]
+  );
+};
 
 export const TrainingScreen: React.FC<TrainingScreenProps> = ({
   player,
@@ -56,8 +94,30 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     { width, height }
   );
 
-  // ✅ Fixed: Properly calculate isMobile without import conflict
+  // Determine if the device is mobile based on screen width
   const isMobile = width < 768;
+
+  // Memoized layout constants
+  const layoutConstants = useMemo(
+    () => calculateLayoutConstants(isMobile, width),
+    [isMobile, width]
+  );
+
+  // Calculate training area dimensions
+  const trainingAreaWidth = useMemo(
+    () =>
+      width -
+      layoutConstants.leftPanelWidth -
+      layoutConstants.rightPanelWidth -
+      layoutConstants.padding * 3,
+    [width, layoutConstants]
+  );
+
+  // Training dummy positions with better spacing
+  const dummyPositions = useMemo(
+    () => calculateDummyPositions(trainingAreaWidth, height),
+    [trainingAreaWidth, height]
+  );
 
   // Enhanced visual effects system
   const [visualEffects, setVisualEffects] = useState<
@@ -69,77 +129,60 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     }>
   >([]);
 
-  // Improved layout constants for better spacing
-  const layoutConstants = {
-    padding: isMobile ? 10 : 20,
-    headerHeight: isMobile ? 60 : 80,
-    footerHeight: isMobile ? 40 : 50,
-    leftPanelWidth: isMobile
-      ? Math.min(width * 0.4, 300)
-      : Math.min(width * 0.3, 350),
-    rightPanelWidth: isMobile ? 0 : Math.min(width * 0.25, 280),
-    componentGap: isMobile ? 8 : 15,
-    modeSelectorHeight: isMobile ? 40 : 50,
-    controlsPanelHeight: isMobile ? 70 : 90,
-    statsPanelHeight: isMobile ? 100 : 130,
-    vitalPointPanelHeight: isMobile ? 120 : 160,
-  };
+  // Enhanced feedback system
+  const provideFeedback = createFeedbackProvider(setFeedback, setShowFeedback);
 
-  // Calculate training area dimensions
-  const trainingAreaWidth =
-    width -
-    layoutConstants.leftPanelWidth -
-    layoutConstants.rightPanelWidth -
-    layoutConstants.padding * 3;
-
-  // Training dummy positions with better spacing
-  const dummyPositions = [
-    { x: trainingAreaWidth * 0.3, y: height * 0.4 },
-    { x: trainingAreaWidth * 0.6, y: height * 0.6 },
-    { x: trainingAreaWidth * 0.8, y: height * 0.45 },
-  ];
+  // Training controls - extracted to reduce complexity
+  const trainingControls = useMemo(
+    () => ({
+      handleStartTraining: () => {
+        setIsTraining(true);
+        setScore(0);
+        setCombo(0);
+        provideFeedback("훈련 시작!", "Training Started!");
+      },
+      handleStopTraining: () => {
+        setIsTraining(false);
+        setCombo(0);
+        provideFeedback("훈련 종료", "Training Ended");
+      },
+      handleModeChange: (mode: TrainingMode) => {
+        setTrainingMode(mode);
+        setScore(0);
+        setCombo(0);
+        setSelectedVitalPoint(null);
+        const modeNames = {
+          basics: "기초 훈련",
+          advanced: "고급 훈련",
+          free: "자유 훈련",
+        };
+        provideFeedback(
+          `${modeNames[mode]} 모드`,
+          `${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`
+        );
+      },
+    }),
+    [provideFeedback]
+  );
 
   // Update player position when movement changes
   useEffect(() => {
     onPlayerUpdate({ position: movementState.position });
   }, [movementState.position, onPlayerUpdate]);
 
-  // Training controls
-  const handleStartTraining = useCallback(() => {
-    setIsTraining(true);
-    setScore(0);
-    setCombo(0);
-    provideFeedback("훈련 시작!", "Training Started!");
-  }, []);
-
-  const handleStopTraining = useCallback(() => {
-    setIsTraining(false);
-    setCombo(0);
-    provideFeedback("훈련 종료", "Training Ended");
-  }, []);
-
-  const handleModeChange = useCallback((mode: TrainingMode) => {
-    setTrainingMode(mode);
-    setScore(0);
-    setCombo(0);
-    setSelectedVitalPoint(null);
-    const modeNames = {
-      basics: "기초 훈련",
-      advanced: "고급 훈련",
-      free: "자유 훈련",
-    };
-    provideFeedback(
-      `${modeNames[mode]} 모드`,
-      `${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`
-    );
-  }, []);
-
-  // Enhanced feedback system
-  const provideFeedback = useCallback((korean: string, english: string) => {
-    setFeedback(`${korean} | ${english}`);
-    setShowFeedback(true);
-    setTimeout(() => setShowFeedback(false), 2000);
-  }, []);
+  // Enhanced feedback messages
+  const handleHitFeedback = useCallback(
+    (accuracy: number) => {
+      if (accuracy > 0.9) {
+        provideFeedback("완벽한 타격!", "Perfect Strike!");
+      } else if (accuracy > 0.7) {
+        provideFeedback("정확한 타격!", "Accurate Strike!");
+      } else {
+        provideFeedback("타격 성공", "Strike Hit");
+      }
+    },
+    [provideFeedback]
+  );
 
   // Training hit detection with enhanced scoring
   const handleDummyHit = useCallback(
@@ -171,14 +214,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           },
         ]);
 
-        // Enhanced feedback messages
-        if (accuracy > 0.9) {
-          provideFeedback("완벽한 타격!", "Perfect Strike!");
-        } else if (accuracy > 0.7) {
-          provideFeedback("정확한 타격!", "Accurate Strike!");
-        } else {
-          provideFeedback("타격 성공", "Strike Hit");
-        }
+        handleHitFeedback(accuracy);
 
         // Resource management
         if (player.stamina > 10) {
@@ -212,7 +248,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
       onPlayerUpdate,
       width,
       height,
-      provideFeedback, // ✅ Added missing dependency
+      handleHitFeedback,
     ]
   );
 
@@ -224,7 +260,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
         provideFeedback("급소 선택됨", "Vital Point Selected");
       }
     },
-    [trainingMode, provideFeedback] // ✅ Added missing dependency
+    [trainingMode, provideFeedback]
   );
 
   // Enhanced keyboard controls for training
@@ -232,16 +268,16 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     const handleTrainingInput = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         if (isTraining) {
-          handleStopTraining();
+          trainingControls.handleStopTraining();
         } else {
-          handleStartTraining();
+          trainingControls.handleStartTraining();
         }
       } else if (event.key === "Tab") {
         event.preventDefault();
         const modes: TrainingMode[] = ["basics", "advanced", "free"];
         const currentIndex = modes.indexOf(trainingMode);
         const nextIndex = (currentIndex + 1) % modes.length;
-        handleModeChange(modes[nextIndex]);
+        trainingControls.handleModeChange(modes[nextIndex]);
       }
     };
 
@@ -250,9 +286,9 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
   }, [
     isTraining,
     trainingMode,
-    handleStartTraining,
-    handleStopTraining,
-    handleModeChange,
+    trainingControls.handleStartTraining,
+    trainingControls.handleStopTraining,
+    trainingControls.handleModeChange,
   ]);
 
   // Reset combo after inactivity
@@ -322,7 +358,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           {/* Training Mode Selector */}
           <TrainingModeSelector
             currentMode={trainingMode}
-            onModeChange={handleModeChange}
+            onModeChange={trainingControls.handleModeChange}
             x={0}
             y={0}
             width={layoutConstants.leftPanelWidth}
@@ -333,8 +369,8 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           {/* Training Controls */}
           <TrainingControlsPanel
             isTraining={isTraining}
-            onStartTraining={handleStartTraining}
-            onStopTraining={handleStopTraining}
+            onStartTraining={trainingControls.handleStartTraining}
+            onStopTraining={trainingControls.handleStopTraining}
             width={layoutConstants.leftPanelWidth}
             height={layoutConstants.controlsPanelHeight}
             isMobile={isMobile}

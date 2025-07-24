@@ -1,6 +1,6 @@
 import "@pixi/layout";
 import { extend } from "@pixi/react";
-import { Container, Graphics, Text } from "pixi.js"; // ✅ Import FederatedPointerEvent directly
+import { Container, Graphics, Text } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Position,
@@ -436,7 +436,7 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
       <pixiGraphics
         draw={drawDummyBody}
         interactive={isTraining}
-        onPointerDown={handleDummyHit} // ✅ No event parameter needed
+        onPointerDown={handleDummyHit}
         cursor={isTraining ? "pointer" : "default"}
         data-testid="dummy-body"
       />
@@ -506,7 +506,7 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
                   g.stroke();
                 }}
                 interactive={isTraining}
-                onPointerDown={() => handleVitalPointClick(vitalPoint.id)} // ✅ Fixed - no event param
+                onPointerDown={() => handleVitalPointClick(vitalPoint.id)}
                 onPointerOver={() => setHoveredVitalPoint(vitalPoint.id)}
                 onPointerOut={() => setHoveredVitalPoint(null)}
                 cursor={isTraining ? "crosshair" : "default"}
