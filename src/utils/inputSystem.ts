@@ -95,7 +95,72 @@ export function usePlayerMovement(
     return pressedKeys.current.has(key);
   }, []);
 
-  // Update player position based on movement state
+  // Enhanced keyboard event handlers
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!enabled) return;
+
+      const key = event.key.toLowerCase();
+      pressedKeys.current.add(key);
+
+      // ✅ FIXED: Add all movement keys including WASD and arrows
+      switch (key) {
+        case "w":
+        case "arrowup":
+          setKeyState((prev) => ({ ...prev, up: true }));
+          event.preventDefault();
+          break;
+        case "s":
+        case "arrowdown":
+          setKeyState((prev) => ({ ...prev, down: true }));
+          event.preventDefault();
+          break;
+        case "a":
+        case "arrowleft":
+          setKeyState((prev) => ({ ...prev, left: true }));
+          event.preventDefault();
+          break;
+        case "d":
+        case "arrowright":
+          setKeyState((prev) => ({ ...prev, right: true }));
+          event.preventDefault();
+          break;
+      }
+    },
+    [enabled]
+  );
+
+  const handleKeyUp = useCallback(
+    (event: KeyboardEvent) => {
+      if (!enabled) return;
+
+      const key = event.key.toLowerCase();
+      pressedKeys.current.delete(key);
+
+      // ✅ FIXED: Handle key release for all movement keys
+      switch (key) {
+        case "w":
+        case "arrowup":
+          setKeyState((prev) => ({ ...prev, up: false }));
+          break;
+        case "s":
+        case "arrowdown":
+          setKeyState((prev) => ({ ...prev, down: false }));
+          break;
+        case "a":
+        case "arrowleft":
+          setKeyState((prev) => ({ ...prev, left: false }));
+          break;
+        case "d":
+        case "arrowright":
+          setKeyState((prev) => ({ ...prev, right: false }));
+          break;
+      }
+    },
+    [enabled]
+  );
+
+  // ✅ FIXED: Proper movement calculation with correct bounds
   const updatePosition = useCallback(() => {
     if (!enabled || !isMoving) {
       animationFrameId.current = null;
@@ -103,7 +168,7 @@ export function usePlayerMovement(
     }
 
     const now = performance.now();
-    const deltaTime = Math.min(now - lastUpdateTime.current, 50); // Cap delta to prevent huge jumps
+    const deltaTime = Math.min(now - lastUpdateTime.current, 50);
     lastUpdateTime.current = now;
 
     if (deltaTime <= 0) {
@@ -115,7 +180,7 @@ export function usePlayerMovement(
     let newX = playerPosition.x;
     let newY = playerPosition.y;
 
-    // Apply movement with proper diagonal speed adjustment
+    // Apply movement with diagonal adjustment
     const diagonalFactor =
       (keyState.left || keyState.right) && (keyState.up || keyState.down)
         ? 0.707
@@ -127,10 +192,10 @@ export function usePlayerMovement(
     if (keyState.up) newY -= adjustedSpeed;
     if (keyState.down) newY += adjustedSpeed;
 
-    // Apply bounds if specified
+    // ✅ FIXED: Proper bounds checking
     if (bounds) {
-      newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX)); // Account for player width
-      newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY)); // Account for player height
+      newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX));
+      newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY));
     }
 
     const newPosition = { x: newX, y: newY };
@@ -164,75 +229,6 @@ export function usePlayerMovement(
   useEffect(() => {
     if (!enabled) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-      pressedKeys.current.add(event.code);
-      pressedKeys.current.add(key);
-
-      let shouldUpdate = false;
-
-      switch (key) {
-        case "w":
-        case "arrowup":
-          if (!keyState.up) {
-            setKeyState((prev) => ({ ...prev, up: true }));
-            shouldUpdate = true;
-          }
-          break;
-        case "s":
-        case "arrowdown":
-          if (!keyState.down) {
-            setKeyState((prev) => ({ ...prev, down: true }));
-            shouldUpdate = true;
-          }
-          break;
-        case "a":
-        case "arrowleft":
-          if (!keyState.left) {
-            setKeyState((prev) => ({ ...prev, left: true }));
-            shouldUpdate = true;
-          }
-          break;
-        case "d":
-        case "arrowright":
-          if (!keyState.right) {
-            setKeyState((prev) => ({ ...prev, right: true }));
-            shouldUpdate = true;
-          }
-          break;
-      }
-
-      if (shouldUpdate && !animationFrameId.current) {
-        lastUpdateTime.current = performance.now();
-        animationFrameId.current = requestAnimationFrame(updatePosition);
-      }
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-      pressedKeys.current.delete(event.code);
-      pressedKeys.current.delete(key);
-
-      switch (key) {
-        case "w":
-        case "arrowup":
-          setKeyState((prev) => ({ ...prev, up: false }));
-          break;
-        case "s":
-        case "arrowdown":
-          setKeyState((prev) => ({ ...prev, down: false }));
-          break;
-        case "a":
-        case "arrowleft":
-          setKeyState((prev) => ({ ...prev, left: false }));
-          break;
-        case "d":
-        case "arrowright":
-          setKeyState((prev) => ({ ...prev, right: false }));
-          break;
-      }
-    };
-
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
 
@@ -243,7 +239,7 @@ export function usePlayerMovement(
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [enabled, keyState, updatePosition]);
+  }, [enabled, handleKeyDown, handleKeyUp]);
 
   // Start animation loop when movement begins
   useEffect(() => {

@@ -74,57 +74,86 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     [isMobile, width, height]
   );
 
-  // Calculate proper arena bounds and initial position
+  // ✅ FIXED: Use similar arena bounds calculation as CombatScreen
   const arenaBounds = useMemo(
     () => ({
-      x: isMobile
-        ? layout.padding
-        : layout.leftPanelWidth + layout.componentGap,
-      y: layout.headerHeight + layout.padding,
+      x: 0, // Use relative coordinates like CombatScreen
+      y: 0,
       width: layout.centerAreaWidth - layout.padding * 2,
       height: layout.centerAreaHeight - layout.padding * 2,
     }),
-    [layout, isMobile]
+    [layout]
   );
 
-  const initialPlayerPosition = useMemo(
-    () => ({
-      x: arenaBounds.width * 0.25, // ✅ FIXED: Use relative coordinates within arena
+  // ✅ FIXED: Use position state like CombatScreen
+  const [playerPositions, setPlayerPositions] = useState<Position[]>([
+    {
+      x: arenaBounds.width * 0.25,
       y: arenaBounds.height * 0.6,
-    }),
-    [arenaBounds]
-  );
+    },
+  ]);
 
-  // ✅ FIXED: Use bounds that start at 0,0 for the movement system
-  const movementBounds = useMemo(
-    () => ({
-      x: 0,
-      y: 0,
-      width: arenaBounds.width,
-      height: arenaBounds.height,
-    }),
-    [arenaBounds]
-  );
-
-  // Player movement hook with corrected bounds
+  // ✅ FIXED: Use movement hook with proper configuration like CombatScreen
   const { playerPosition, isMoving } = usePlayerMovement({
-    enabled: isTraining,
-    bounds: movementBounds, // ✅ FIXED: Use 0,0 based bounds
+    enabled: true,
+    bounds: arenaBounds,
     onPositionChange: (newPosition: Position) => {
+      setPlayerPositions([newPosition]);
       onPlayerUpdate({ position: newPosition });
     },
-    initialPosition: initialPlayerPosition,
+    initialPosition: playerPositions[0],
     moveSpeed: 300,
   });
 
-  // Dummy position - positioned to the right of the player
-  const dummyPosition = useMemo(
-    () => ({
-      x: arenaBounds.width * 0.75, // ✅ FIXED: Use relative coordinates
-      y: arenaBounds.height * 0.6,
-    }),
-    [arenaBounds]
-  );
+  // ✅ FIXED: Add combat input handling similar to CombatScreen
+  useEffect(() => {
+    const handleCombatInput = (event: KeyboardEvent) => {
+      if (!isTraining) return;
+
+      const key = event.key.toLowerCase();
+
+      // Handle stance changes (1-8)
+      if (key >= "1" && key <= "8") {
+        const stanceIndex = parseInt(key) - 1;
+        const stances = [
+          "geon",
+          "tae",
+          "li",
+          "jin",
+          "son",
+          "gam",
+          "gan",
+          "gon",
+        ];
+        onPlayerUpdate({
+          currentStance: stances[stanceIndex] as any,
+          lastActionTime: Date.now(),
+        });
+        event.preventDefault();
+      }
+
+      // Handle attacks
+      if (key === " ") {
+        // Space key
+        handleDummyHit(
+          Math.sqrt(
+            Math.pow(playerPosition.x - arenaBounds.width * 0.75, 2) +
+              Math.pow(playerPosition.y - arenaBounds.height * 0.6, 2)
+          )
+        );
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleCombatInput);
+    return () => window.removeEventListener("keydown", handleCombatInput);
+  }, [isTraining, playerPosition, arenaBounds, onPlayerUpdate]);
+
+  // ✅ FIXED: Update player position when movement changes like CombatScreen
+  useEffect(() => {
+    setPlayerPositions([playerPosition]);
+    onPlayerUpdate({ position: playerPosition });
+  }, [playerPosition, onPlayerUpdate]);
 
   // Training handlers
   const handleStartTraining = useCallback(() => {
@@ -190,17 +219,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onReturnToMenu]);
-
-  // ✅ FIXED: Position sync without redundant effect
-  useEffect(() => {
-    onPlayerUpdate({
-      position: {
-        x: arenaBounds.x + playerPosition.x, // Convert back to absolute coordinates
-        y: arenaBounds.y + playerPosition.y,
-      },
-      ...(isMoving && { lastActionTime: Date.now() }),
-    });
-  }, [playerPosition, isMoving, onPlayerUpdate, arenaBounds]);
 
   return (
     <pixiContainer x={x} y={y} data-testid="training-screen">
@@ -345,13 +363,15 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
 
         {/* Center Area - Training Arena */}
         <pixiContainer
+          x={
+            isMobile
+              ? layout.padding
+              : layout.leftPanelWidth + layout.componentGap
+          }
+          y={layout.padding}
           layout={{
-            width: layout.centerAreaWidth,
-            height: height - layout.headerHeight - layout.padding * 2,
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            flexGrow: 1,
+            width: layout.centerAreaWidth - layout.padding * 2,
+            height: layout.centerAreaHeight - layout.padding * 2,
             position: "relative",
           }}
           data-testid="training-arena"
@@ -408,11 +428,11 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             data-testid="arena-background"
           />
 
-          {/* ✅ FIXED: Player Character - Position within arena container */}
+          {/* ✅ FIXED: Player Character with correct position tracking */}
           <PlayerVisuals
             playerState={player}
-            x={arenaBounds.x + playerPosition.x} // ✅ Convert to absolute position
-            y={arenaBounds.y + playerPosition.y}
+            x={playerPosition.x}
+            y={playerPosition.y}
             scale={isMobile ? 0.8 : 1.0}
             showDetails={true}
             showKoreanLabels={true}
@@ -425,14 +445,11 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             animationState={isMoving ? "walk" : "idle"}
           />
 
-          {/* ✅ FIXED: Training Dummy - Position within arena container */}
+          {/* ✅ FIXED: Training Dummy with relative positioning */}
           <TrainingDummy
-            x={arenaBounds.x + dummyPosition.x} // ✅ Convert to absolute position
-            y={arenaBounds.y + dummyPosition.y}
-            playerPosition={{
-              x: arenaBounds.x + playerPosition.x, // ✅ Pass absolute position
-              y: arenaBounds.y + playerPosition.y,
-            }}
+            x={arenaBounds.width * 0.75}
+            y={arenaBounds.height * 0.6}
+            playerPosition={playerPosition}
             trainingMode={trainingMode}
             onHit={handleDummyHit}
             isTraining={isTraining}
@@ -494,6 +511,30 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
               }}
               anchor={0.5}
               y={8}
+            />
+          </pixiContainer>
+
+          {/* ✅ FIXED: Training status overlay with correct position data */}
+          <pixiContainer x={10} y={10}>
+            <pixiText
+              text={`Stance: ${player.currentStance || "geon"} | Training: ${
+                isTraining ? "ON" : "OFF"
+              }`}
+              style={{
+                fontSize: 12,
+                fill: KOREAN_COLORS.TEXT_PRIMARY,
+                fontFamily: "Noto Sans KR",
+              }}
+            />
+            <pixiText
+              text={`Position: (${Math.round(playerPosition.x)}, ${Math.round(
+                playerPosition.y
+              )})`}
+              style={{
+                fontSize: 10,
+                fill: KOREAN_COLORS.TEXT_SECONDARY,
+              }}
+              y={15}
             />
           </pixiContainer>
         </pixiContainer>
