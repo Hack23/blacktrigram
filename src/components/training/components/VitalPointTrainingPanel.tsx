@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
 import { VitalPointSeverity } from "../../../types/common";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
 extendPixiComponents();
@@ -18,160 +18,262 @@ export interface VitalPointTrainingPanelProps {
 export const VitalPointTrainingPanel: React.FC<
   VitalPointTrainingPanelProps
 > = ({ selectedVitalPoint, onVitalPointSelect, width, height, isMobile }) => {
-  // Use actual Korean vital points data
-  const availableVitalPoints = KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 6);
+  // Use first 8 vital points for training panel
+  const availableVitalPoints = useMemo(() => {
+    return KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 8);
+  }, [isMobile]);
 
-  const getDifficultyColor = (difficulty: number) => {
-    if (difficulty <= 0.3) return KOREAN_COLORS.POSITIVE_GREEN;
-    if (difficulty <= 0.5) return KOREAN_COLORS.ACCENT_CYAN;
-    if (difficulty <= 0.7) return KOREAN_COLORS.WARNING_YELLOW;
-    if (difficulty <= 0.8) return KOREAN_COLORS.ACCENT_GOLD;
-    return KOREAN_COLORS.ACCENT_RED;
-  };
+  const getSeverityColor = useCallback(
+    (severity: VitalPointSeverity): number => {
+      switch (severity) {
+        case VitalPointSeverity.MINOR:
+          return KOREAN_COLORS.POSITIVE_GREEN;
+        case VitalPointSeverity.MODERATE:
+          return KOREAN_COLORS.WARNING_YELLOW;
+        case VitalPointSeverity.MAJOR:
+          return KOREAN_COLORS.ACCENT_GOLD;
+        case VitalPointSeverity.CRITICAL:
+          return KOREAN_COLORS.ACCENT_RED;
+        default:
+          return KOREAN_COLORS.TEXT_SECONDARY;
+      }
+    },
+    []
+  );
 
-  const getSeverityColor = (severity: VitalPointSeverity) => {
-    switch (severity) {
-      case VitalPointSeverity.MINOR:
-        return KOREAN_COLORS.POSITIVE_GREEN;
-      case VitalPointSeverity.MODERATE:
-        return KOREAN_COLORS.WARNING_YELLOW;
-      case VitalPointSeverity.MAJOR:
-        return KOREAN_COLORS.ACCENT_GOLD;
-      case VitalPointSeverity.CRITICAL:
-        return KOREAN_COLORS.ACCENT_RED;
-      default:
-        return KOREAN_COLORS.TEXT_SECONDARY;
-    }
-  };
-
-  const getDifficultyStars = (difficulty: number): string => {
+  const getDifficultyStars = useCallback((difficulty: number): string => {
     const stars = Math.ceil(difficulty * 5);
-    return "★".repeat(Math.min(stars, 5));
-  };
+    return "★".repeat(Math.min(stars, 5)) + "☆".repeat(5 - Math.min(stars, 5));
+  }, []);
 
-  const selectedPoint = availableVitalPoints.find(
-    (point) => point.id === selectedVitalPoint
+  const selectedPoint = useMemo(() => {
+    return availableVitalPoints.find(
+      (point) => point.id === selectedVitalPoint
+    );
+  }, [availableVitalPoints, selectedVitalPoint]);
+
+  // Enhanced background drawer with proper animation
+  const drawPanelBackground = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+      g.roundRect(0, 0, width, height, 12);
+      g.fill();
+
+      g.stroke({
+        width: 2,
+        color: KOREAN_COLORS.SECONDARY_MAGENTA,
+        alpha: 0.8,
+      });
+      g.roundRect(0, 0, width, height, 12);
+      g.stroke();
+
+      // Inner accent
+      g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.4 });
+      g.roundRect(2, 2, width - 4, height - 4, 10);
+      g.stroke();
+
+      // Corner decorations
+      [10, width - 10].forEach((x) => {
+        [10, height - 10].forEach((y) => {
+          g.stroke({
+            width: 2,
+            color: KOREAN_COLORS.PRIMARY_CYAN,
+            alpha: 0.6,
+          });
+          g.moveTo(x - 5, y);
+          g.lineTo(x + 5, y);
+          g.moveTo(x, y - 5);
+          g.lineTo(x, y + 5);
+          g.stroke();
+        });
+      });
+    },
+    [width, height]
+  );
+
+  // Enhanced selection background drawer with proper pulse animation
+  const createSelectionBackgroundDrawer = useCallback(
+    (isSelected: boolean, itemWidth: number, itemHeight: number) => {
+      return (g: PIXI.Graphics) => {
+        g.clear();
+        if (isSelected) {
+          // Gradient selection effect
+          g.fill({
+            color: KOREAN_COLORS.SECONDARY_MAGENTA,
+            alpha: 0.4,
+          });
+          g.roundRect(0, 0, itemWidth, itemHeight - 2, 6);
+          g.fill();
+
+          // Animated border with proper pulse calculation
+          const pulse = 1 + Math.sin(Date.now() * 0.005) * 0.3;
+          g.stroke({
+            width: 2 * pulse, // Apply pulse to stroke width
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.8,
+          });
+          g.roundRect(-2, -2, itemWidth + 4, itemHeight + 2, 8);
+          g.stroke();
+        }
+      };
+    },
+    []
+  );
+
+  // Enhanced severity indicator drawer
+  const createSeverityIndicatorDrawer = useCallback(
+    (point: VitalPoint, itemHeight: number) => {
+      return (g: PIXI.Graphics) => {
+        g.clear();
+        const severityColor = getSeverityColor(point.severity);
+
+        // Outer ring
+        g.stroke({ width: 2, color: severityColor, alpha: 0.6 });
+        g.circle(12, itemHeight / 2, 8);
+        g.stroke();
+
+        // Inner fill
+        g.fill({ color: severityColor, alpha: 0.8 });
+        g.circle(12, itemHeight / 2, 5);
+        g.fill();
+      };
+    },
+    [getSeverityColor]
+  );
+
+  // Enhanced selected point details drawer
+  const drawSelectedPointDetails = useCallback(
+    (g: PIXI.Graphics) => {
+      if (!selectedPoint) return;
+
+      g.clear();
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
+      g.roundRect(0, 0, width - 30, 80, 8);
+      g.fill();
+
+      g.stroke({
+        width: 1,
+        color: KOREAN_COLORS.ACCENT_GOLD,
+        alpha: 0.8,
+      });
+      g.roundRect(0, 0, width - 30, 80, 8);
+      g.stroke();
+
+      // Inner highlight
+      g.stroke({
+        width: 1,
+        color: KOREAN_COLORS.PRIMARY_CYAN,
+        alpha: 0.4,
+      });
+      g.roundRect(2, 2, width - 34, 76, 6);
+      g.stroke();
+    },
+    [selectedPoint, width]
   );
 
   return (
     <pixiContainer data-testid="vital-point-training-panel">
-      {/* Panel Background */}
-      <pixiGraphics
-        draw={(g) => {
-          g.clear();
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
-          g.roundRect(0, 0, width, height, 8);
-          g.fill();
+      {/* Enhanced Panel Background */}
+      <pixiGraphics draw={drawPanelBackground} />
 
-          g.stroke({
-            width: 2,
-            color: KOREAN_COLORS.SECONDARY_MAGENTA,
-            alpha: 0.8,
-          });
-          g.roundRect(0, 0, width, height, 8);
-          g.stroke();
-        }}
-      />
+      {/* Header with icon */}
+      <pixiContainer x={15} y={15}>
+        <pixiText
+          text="🎯"
+          style={{
+            fontSize: isMobile ? 16 : 20,
+          }}
+        />
 
-      {/* Header */}
-      <pixiContainer x={10} y={10}>
         <pixiText
           text="급소 훈련"
           style={{
-            fontSize: isMobile ? 12 : 16,
+            fontSize: isMobile ? 14 : 16,
             fill: KOREAN_COLORS.SECONDARY_MAGENTA,
             fontWeight: "bold",
-            fontFamily: "Noto Sans KR",
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
+          x={25}
         />
+
         <pixiText
           text="Vital Point Training"
           style={{
-            fontSize: isMobile ? 8 : 10,
+            fontSize: isMobile ? 9 : 11,
             fill: KOREAN_COLORS.TEXT_SECONDARY,
             fontStyle: "italic",
           }}
-          y={isMobile ? 15 : 18}
+          x={25}
+          y={isMobile ? 16 : 18}
         />
       </pixiContainer>
 
-      {/* Vital Points List */}
-      <pixiContainer x={10} y={isMobile ? 35 : 45}>
+      {/* Vital Points List with enhanced styling */}
+      <pixiContainer x={15} y={isMobile ? 45 : 55}>
         {availableVitalPoints.map((point: VitalPoint, index: number) => {
           const isSelected = selectedVitalPoint === point.id;
-          const itemHeight = isMobile ? 20 : 25;
+          const itemHeight = isMobile ? 25 : 30;
+          const itemY = index * itemHeight;
+          const itemWidth = width - 30;
 
           return (
             <pixiContainer
               key={point.id}
-              y={index * itemHeight}
+              y={itemY}
               interactive={true}
               onPointerDown={() => onVitalPointSelect(point.id)}
               data-testid={`vital-point-${point.id}`}
             >
-              {/* Selection background */}
+              {/* Enhanced selection background */}
               <pixiGraphics
-                draw={(g) => {
-                  g.clear();
-                  if (isSelected) {
-                    g.fill({
-                      color: KOREAN_COLORS.SECONDARY_MAGENTA,
-                      alpha: 0.3,
-                    });
-                    g.roundRect(0, 0, width - 20, itemHeight - 2, 4);
-                    g.fill();
-                  }
-                }}
+                draw={createSelectionBackgroundDrawer(
+                  isSelected,
+                  itemWidth,
+                  itemHeight
+                )}
               />
 
-              {/* Severity indicator circle */}
+              {/* Severity indicator with enhanced design */}
               <pixiGraphics
-                draw={(g) => {
-                  g.clear();
-                  g.fill({
-                    color: getSeverityColor(point.severity),
-                    alpha: 0.8,
-                  });
-                  g.circle(8, itemHeight / 2, 4);
-                  g.fill();
-                }}
+                draw={createSeverityIndicatorDrawer(point, itemHeight)}
               />
 
-              {/* Korean name */}
+              {/* Korean name with enhanced typography */}
               <pixiText
                 text={point.names.korean}
                 style={{
-                  fontSize: isMobile ? 9 : 11,
+                  fontSize: isMobile ? 11 : 13,
                   fill: isSelected
-                    ? KOREAN_COLORS.SECONDARY_MAGENTA
+                    ? KOREAN_COLORS.ACCENT_GOLD
                     : KOREAN_COLORS.TEXT_PRIMARY,
                   fontWeight: isSelected ? "bold" : "normal",
-                  fontFamily: "Noto Sans KR",
+                  fontFamily: FONT_FAMILY.KOREAN,
                 }}
-                x={20}
-                y={itemHeight / 2 - 6}
+                x={30}
+                y={itemHeight / 2 - 8}
               />
 
               {/* English name */}
               <pixiText
                 text={point.names.english}
                 style={{
-                  fontSize: isMobile ? 7 : 8,
+                  fontSize: isMobile ? 8 : 10,
                   fill: KOREAN_COLORS.TEXT_SECONDARY,
                   fontStyle: "italic",
                 }}
-                x={20}
-                y={itemHeight / 2 + 4}
+                x={30}
+                y={itemHeight / 2 + 6}
               />
 
-              {/* Difficulty stars */}
+              {/* Difficulty indicator */}
               <pixiText
                 text={getDifficultyStars(point.targetingDifficulty)}
                 style={{
                   fontSize: isMobile ? 8 : 10,
-                  fill: getDifficultyColor(point.targetingDifficulty),
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
                 }}
-                x={width - 60}
+                x={width - 70}
                 y={itemHeight / 2}
                 anchor={0.5}
               />
@@ -180,11 +282,11 @@ export const VitalPointTrainingPanel: React.FC<
               <pixiText
                 text={point.category.substring(0, 3).toUpperCase()}
                 style={{
-                  fontSize: isMobile ? 6 : 7,
+                  fontSize: isMobile ? 7 : 8,
                   fill: KOREAN_COLORS.TEXT_TERTIARY,
                   fontWeight: "bold",
                 }}
-                x={width - 90}
+                x={width - 35}
                 y={itemHeight / 2}
                 anchor={0.5}
               />
@@ -193,58 +295,43 @@ export const VitalPointTrainingPanel: React.FC<
         })}
       </pixiContainer>
 
-      {/* Selected Point Details */}
+      {/* Enhanced Selected Point Details */}
       {selectedPoint && (
-        <pixiContainer x={10} y={height - 80}>
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.roundRect(0, 0, width - 20, 70, 5);
-              g.fill();
-
-              g.stroke({
-                width: 1,
-                color: KOREAN_COLORS.SECONDARY_MAGENTA,
-                alpha: 0.6,
-              });
-              g.roundRect(0, 0, width - 20, 70, 5);
-              g.stroke();
-            }}
-          />
+        <pixiContainer x={15} y={height - 100}>
+          <pixiGraphics draw={drawSelectedPointDetails} />
 
           <pixiText
-            text="선택된 급소:"
+            text="📍 선택된 급소:"
             style={{
-              fontSize: isMobile ? 8 : 10,
+              fontSize: isMobile ? 9 : 11,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
-            x={5}
-            y={5}
+            x={10}
+            y={8}
           />
 
           <pixiText
             text={`${selectedPoint.names.korean} (${selectedPoint.names.english})`}
             style={{
-              fontSize: isMobile ? 10 : 12,
-              fill: KOREAN_COLORS.SECONDARY_MAGENTA,
+              fontSize: isMobile ? 11 : 13,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
               fontWeight: "bold",
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
-            x={5}
-            y={18}
+            x={10}
+            y={25}
           />
 
           <pixiText
             text={`범주: ${selectedPoint.category} | 심각도: ${selectedPoint.severity}`}
             style={{
-              fontSize: isMobile ? 7 : 9,
+              fontSize: isMobile ? 8 : 10,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
-            x={5}
-            y={35}
+            x={10}
+            y={45}
           />
 
           <pixiText
@@ -252,25 +339,25 @@ export const VitalPointTrainingPanel: React.FC<
               selectedPoint.targetingDifficulty * 100
             )}% | 기본 피해: ${selectedPoint.baseDamage || 0}`}
             style={{
-              fontSize: isMobile ? 7 : 9,
+              fontSize: isMobile ? 8 : 10,
               fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
-            x={5}
-            y={50}
+            x={10}
+            y={62}
           />
         </pixiContainer>
       )}
 
-      {/* Instructions */}
+      {/* Instructions when no point selected */}
       {!selectedPoint && (
-        <pixiContainer x={width / 2} y={height - 40}>
+        <pixiContainer x={width / 2} y={height - 50}>
           <pixiText
             text="급소를 선택하여 표적 훈련을 시작하세요"
             style={{
-              fontSize: isMobile ? 8 : 10,
+              fontSize: isMobile ? 9 : 11,
               fill: KOREAN_COLORS.TEXT_TERTIARY,
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
               align: "center",
             }}
             anchor={0.5}
@@ -278,25 +365,25 @@ export const VitalPointTrainingPanel: React.FC<
           <pixiText
             text="Select a vital point to begin targeting practice"
             style={{
-              fontSize: isMobile ? 7 : 8,
+              fontSize: isMobile ? 8 : 9,
               fill: KOREAN_COLORS.TEXT_TERTIARY,
               fontStyle: "italic",
               align: "center",
             }}
             anchor={0.5}
-            y={12}
+            y={15}
           />
         </pixiContainer>
       )}
 
-      {/* Legend */}
-      <pixiContainer x={10} y={height - 20}>
+      {/* Enhanced Legend */}
+      <pixiContainer x={15} y={height - 25}>
         <pixiText
-          text="● 심각도: 미미/보통/주요/치명적 | 난이도: ★☆☆☆☆ ~ ★★★★★"
+          text="범례: ● 심각도 색상 | ★ 난이도 (1-5) | 카테고리 약자"
           style={{
-            fontSize: isMobile ? 6 : 8,
+            fontSize: isMobile ? 7 : 9,
             fill: KOREAN_COLORS.TEXT_TERTIARY,
-            fontFamily: "Noto Sans KR",
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         />
       </pixiContainer>
