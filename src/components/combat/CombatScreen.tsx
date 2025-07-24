@@ -1,6 +1,6 @@
 import { HitEffect, PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
-import { GameMode, PlayerArchetype, Position, TrigramStance } from "@/types";
+import { GameMode, PlayerArchetype, Position } from "@/types";
 import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
@@ -83,26 +83,46 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
-  // Fixed player positions for 2-player combat
+  // Fixed player positions for 2-player combat with proper bounds
+  const arenaBounds = useMemo(
+    () => ({
+      x: width * 0.1,
+      y: height * 0.2,
+      width: width * 0.8,
+      height: height * 0.6,
+    }),
+    [width, height]
+  );
+
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
-    { x: width * 0.3, y: height * 0.6 }, // Player 1 - moved more inward and up
-    { x: width * 0.7, y: height * 0.6 }, // Player 2 - moved more inward and up
+    {
+      x: arenaBounds.x + arenaBounds.width * 0.3,
+      y: arenaBounds.y + arenaBounds.height * 0.6,
+    },
+    {
+      x: arenaBounds.x + arenaBounds.width * 0.7,
+      y: arenaBounds.y + arenaBounds.height * 0.6,
+    },
   ]);
 
-  // AI state for Player 2
   const [aiState, setAiState] = useState({
-    nextAction: Date.now() + 1000, // Next AI action time
-    actionCooldown: 1500, // AI action frequency
+    nextAction: Date.now() + 1000,
+    actionCooldown: 500, 
     isMoving: false,
     targetPosition: { x: width * 0.75, y: height * 0.7 },
-    aggressionLevel: 0.3, // 0.0 = passive, 1.0 = very aggressive
+    aggressionLevel: 0.5, // Increased from 0.3
   });
 
-  // Player 1 movement system
-  const { movementState: player1Movement, isKeyPressed } = usePlayerMovement(
-    playerPositions[0],
-    { width, height }
-  );
+  const { playerPosition, isMoving } = usePlayerMovement({
+    enabled: !isPaused && roundStarted && !roundEnded,
+    bounds: arenaBounds,
+    onPositionChange: (newPosition: Position) => {
+      setPlayerPositions((prev) => [newPosition, prev[1]]);
+      onPlayerUpdate(0, { position: newPosition });
+    },
+    initialPosition: playerPositions[0],
+    moveSpeed: 300, 
+  });
 
   // Responsive layout detection
   const isMobile = useMemo(() => width < 768, [width]);
@@ -196,9 +216,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Update player 1 position based on movement
   useEffect(() => {
-    setPlayerPositions((prev) => [player1Movement.position, prev[1]]);
-    onPlayerUpdate(0, { position: player1Movement.position });
-  }, [player1Movement.position, onPlayerUpdate]);
+    setPlayerPositions((prev) => [playerPosition, prev[1]]);
+    onPlayerUpdate(0, { position: playerPosition });
+  }, [playerPosition, onPlayerUpdate]);
 
   // Round Management
   useEffect(() => {
@@ -288,7 +308,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         : HitEffectType.HIT
       : HitEffectType.MISS;
 
-    addHitEffect(effectType, player1Movement.position, result.hit ? 1 : 0.5);
+    addHitEffect(effectType, playerPosition, result.hit ? 1 : 0.5);
 
     if (result.hit) {
       // Apply damage through combat system
@@ -313,7 +333,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     setTimeout(() => setIsExecutingTechnique(false), 500);
   }, [
-    player1Movement.position,
+    playerPosition,
     onPlayerUpdate,
     validPlayers,
     isExecutingTechnique,
@@ -321,7 +341,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     combatSystem,
     roundStarted,
     roundEnded,
-    addHitEffect, // ✅ Now properly used
+    addHitEffect,
   ]);
 
   // Handle defend with Korean feedback
@@ -332,7 +352,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addCombatMessage("방어 자세", "Defensive Stance");
 
     // Add defensive effect
-    addHitEffect(HitEffectType.BLOCK, player1Movement.position, 0.8);
+    addHitEffect(HitEffectType.BLOCK, playerPosition, 0.8);
 
     setTimeout(() => {
       onPlayerUpdate(0, { isBlocking: false });
@@ -343,7 +363,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     roundStarted,
     roundEnded,
     addHitEffect,
-    player1Movement.position,
+    playerPosition,
   ]);
 
   // ✅ FIXED: Handle technique execution with proper effects
@@ -357,7 +377,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     setIsExecutingTechnique(true);
 
     // Add technique effect
-    addHitEffect(HitEffectType.CRITICAL_HIT, player1Movement.position, 1.5);
+    addHitEffect(HitEffectType.CRITICAL_HIT, playerPosition, 1.5);
 
     const distance = Math.sqrt(
       Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
@@ -382,7 +402,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     setTimeout(() => setIsExecutingTechnique(false), 800);
   }, [
-    player1Movement.position,
+    playerPosition,
     playerPositions,
     onPlayerUpdate,
     validPlayers,
@@ -390,7 +410,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addCombatMessage,
     roundStarted,
     roundEnded,
-    addHitEffect, // ✅ Now properly used
+    addHitEffect,
   ]);
 
   // Handle stance switch with Korean feedback
@@ -402,7 +422,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       addCombatMessage(`자세 변경: ${stance}`, `Stance Change: ${stance}`);
 
       // Add stance change effect
-      addHitEffect(HitEffectType.STATUS_EFFECT, player1Movement.position, 0.6);
+      addHitEffect(HitEffectType.STATUS_EFFECT, playerPosition, 0.6);
     },
     [
       onPlayerUpdate,
@@ -410,7 +430,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       roundStarted,
       roundEnded,
       addHitEffect,
-      player1Movement.position,
+      playerPosition,
     ]
   );
 
@@ -439,7 +459,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     validPlayers,
     onPlayerUpdate,
     addCombatMessage,
-    addHitEffect, // ✅ Now properly used
+    addHitEffect,
   ]);
 
   const handleAIDefend = useCallback(() => {
@@ -487,13 +507,13 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     onPlayerUpdate,
     addCombatMessage,
     handleAIAttack,
-    addHitEffect, // ✅ Now properly used
+    addHitEffect,
   ]);
 
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
-      const speed = 2;
+      const speed = 4; // Increased from 2
 
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
@@ -505,15 +525,21 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           y: currentPos.y + (dy / distance) * speed,
         };
 
-        // Keep AI within safer bounds - more margin from edges
-        newPos.x = Math.max(width * 0.15, Math.min(width * 0.85, newPos.x));
-        newPos.y = Math.max(height * 0.25, Math.min(height * 0.75, newPos.y));
+        // Keep AI within bounds
+        newPos.x = Math.max(
+          arenaBounds.x,
+          Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x)
+        );
+        newPos.y = Math.max(
+          arenaBounds.y,
+          Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y)
+        );
 
         setPlayerPositions((prev) => [prev[0], newPos]);
         onPlayerUpdate(1, { position: newPos });
       }
     },
-    [playerPositions, width, height, onPlayerUpdate]
+    [playerPositions, arenaBounds, onPlayerUpdate]
   );
 
   // Execute AI Actions
@@ -554,7 +580,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           Math.pow(player1Pos.y - player2Pos.y, 2)
       );
 
-      // AI Decision Making
+      // AI Decision Making - more aggressive
       let aiAction = "idle";
       let newTargetPosition = aiState.targetPosition;
 
@@ -563,27 +589,30 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         aiAction = "retreat";
         newTargetPosition = {
           x: Math.max(
-            width * 0.1,
-            player2Pos.x + (player2Pos.x > player1Pos.x ? 50 : -50)
+            arenaBounds.x,
+            player2Pos.x + (player2Pos.x > player1Pos.x ? 80 : -80) // Increased retreat distance
           ),
           y: player2Pos.y,
         };
-      } else if (distanceToPlayer < 100) {
+      } else if (distanceToPlayer < 120) {
+        // Increased close combat range
         // Close combat
         const random = Math.random();
-        if (random < 0.4) {
+        if (random < 0.5) {
+          // Increased attack chance
           aiAction = "attack";
-        } else if (random < 0.7) {
+        } else if (random < 0.75) {
           aiAction = "defend";
         } else {
           aiAction = "technique";
         }
-      } else if (distanceToPlayer > 200) {
+      } else if (distanceToPlayer > 250) {
+        // Increased approach range
         // Move closer
         aiAction = "approach";
         newTargetPosition = {
-          x: player1Pos.x + (Math.random() - 0.5) * 100,
-          y: player1Pos.y + (Math.random() - 0.5) * 50,
+          x: player1Pos.x + (Math.random() - 0.5) * 120, // Increased variation
+          y: player1Pos.y + (Math.random() - 0.5) * 80,
         };
       } else {
         // Medium distance - tactical movement
@@ -593,21 +622,21 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           player1Pos.x - player2Pos.x
         );
         newTargetPosition = {
-          x: player1Pos.x + Math.cos(angle + Math.PI / 2) * 150,
-          y: player1Pos.y + Math.sin(angle + Math.PI / 2) * 150,
+          x: player1Pos.x + Math.cos(angle + Math.PI / 2) * 180, // Increased circle radius
+          y: player1Pos.y + Math.sin(angle + Math.PI / 2) * 180,
         };
       }
 
       // Execute AI action
       executeAIAction(aiAction, newTargetPosition);
 
-      // Set next action time
+      // Set next action time - reduced delay
       setAiState((prev) => ({
         ...prev,
-        nextAction: now + prev.actionCooldown + Math.random() * 500,
+        nextAction: now + prev.actionCooldown + Math.random() * 300, // Reduced random delay
         targetPosition: newTargetPosition,
       }));
-    }, 100); // Check AI every 100ms
+    }, 50); // Reduced from 100ms to 50ms for more responsive AI
 
     return () => clearInterval(aiInterval);
   }, [
@@ -619,54 +648,15 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     aiState.nextAction,
     aiState.actionCooldown,
     aiState.targetPosition,
-    width,
+    arenaBounds,
     executeAIAction,
   ]);
 
-  // Combat input handling for Player 1
+  // Force position updates to sync properly
   useEffect(() => {
-    const handleCombatInput = () => {
-      if (isPaused || !roundStarted || roundEnded) return;
-
-      // Attack with Space or Ctrl
-      if (isKeyPressed("Space") || isKeyPressed("ControlLeft")) {
-        handleAttack();
-      }
-
-      // Defend with Shift
-      if (isKeyPressed("ShiftLeft")) {
-        handleDefend();
-      }
-
-      // Technique with Alt
-      if (isKeyPressed("AltLeft")) {
-        handleTechniqueExecute();
-      }
-
-      // Stance changes with number keys
-      for (let i = 1; i <= 8; i++) {
-        if (isKeyPressed(`Digit${i}`)) {
-          // Map numbers to trigram stances
-          const stances = Object.values(TrigramStance);
-          if (stances[i - 1]) {
-            handleStanceSwitch(stances[i - 1]);
-          }
-        }
-      }
-    };
-
-    const interval = setInterval(handleCombatInput, 100);
-    return () => clearInterval(interval);
-  }, [
-    isKeyPressed,
-    isPaused,
-    roundStarted,
-    roundEnded,
-    handleAttack,
-    handleDefend,
-    handleTechniqueExecute,
-    handleStanceSwitch,
-  ]);
+    setPlayerPositions((prev) => [playerPosition, prev[1]]);
+    onPlayerUpdate(0, { position: playerPosition });
+  }, [playerPosition, onPlayerUpdate]);
 
   // Check game end conditions
   const checkGameEnd = useCallback(() => {
@@ -707,11 +697,11 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       if (player.health <= 0) return "defeat";
       if (player.isBlocking) return "defend";
       if (isExecutingTechnique && playerIndex === 0) return "technique_execute";
-      if (playerIndex === 0 && player1Movement.isMoving) return "walk";
+      if (playerIndex === 0 && isMoving) return "walk";
 
       return "idle";
     },
-    [validPlayers, isExecutingTechnique, player1Movement.isMoving]
+    [validPlayers, isExecutingTechnique, isMoving]
   );
 
   // Centralized layout constants for easier tweaking
@@ -794,7 +784,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             justifyContent: "center",
           }}
         >
-          {/* Player 1 Visuals */}
+          {/* Player 1 Visuals - Use absolute positioning */}
           <PlayerVisuals
             playerState={validPlayers[0]}
             x={playerPositions[0].x}
@@ -812,7 +802,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             data-testid="combat-player-1"
           />
 
-          {/* Player 2 Visuals */}
+          {/* Player 2 Visuals - Use absolute positioning */}
           <PlayerVisuals
             playerState={validPlayers[1]}
             x={playerPositions[1].x}

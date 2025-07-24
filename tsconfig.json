@@ -38,5 +38,12 @@
     "**/*.cy.ts",
     "**/*.spec.ts",
     "**/*.spec.tsx"
-  ]
+  ],
+  "watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": ["**/node_modules", "**/dist", "**/build"]
+  }
 }

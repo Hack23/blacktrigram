@@ -1,5 +1,5 @@
 {
-  // TypeScript settings - enhanced for quality
+  // TypeScript settings - enhanced for quality and performance
   "typescript.preferences.importModuleSpecifier": "shortest",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
@@ -15,13 +15,20 @@
   "typescript.inlayHints.parameterTypes.enabled": true,
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
   "typescript.preferences.renameMatchingJsxTags": true,
-  "typescript.tsserver.maxTsServerMemory": 6144,
-  "typescript.tsserver.pluginPaths": [],
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.log": "off",
+
+  // NEW: File watching optimization
+  "typescript.preferences.useFsEvents": true,
+  "typescript.tsserver.useSeparateSyntaxServer": true,
+  "typescript.tsserver.enableTracing": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
   "typescript.tsserver.watchOptions": {
     "watchFile": "useFsEvents",
-    "watchDirectory": "useFsEvents"
+    "watchDirectory": "useFsEvents",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": ["**/node_modules", "**/dist", "**/build", "**/.git"]
   },
-  "typescript.tsserver.log": "off",
 
   // JavaScript equivalent settings
   "javascript.updateImportsOnFileMove.enabled": "always",
