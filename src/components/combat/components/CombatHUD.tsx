@@ -1,4 +1,5 @@
 import { PLAYER_ARCHETYPES_DATA, PlayerState } from "@/systems";
+import { Texture } from "pixi.js"; // 1. Import Texture
 import React, { useCallback, useMemo } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
@@ -36,14 +37,15 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   isPaused = false,
   onPauseToggle,
   width = 1200,
-  height = 140, // Increased height for more info
+  height = 160, // Increased height for larger layout
   x = 0,
   y = 0,
 }) => {
   const isMobile = width < 768;
-  const healthBarWidth = isMobile ? 120 : 180; // Reduced for better fit
-  const timerWidth = isMobile ? 120 : 160; // Reduced for better fit
+  const healthBarWidth = isMobile ? 150 : 250; // Adjusted for new layout
+  const timerWidth = isMobile ? 120 : 160;
   const centerX = width / 2;
+  const portraitSize = isMobile ? 60 : 80;
 
   // Get latest archetype data
   const player1Archetype = useMemo(
@@ -59,15 +61,15 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   const drawBackground = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
-      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
       g.rect(0, 0, width, height);
 
       // Simplified border
-      g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
+      g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.7 });
       g.rect(2, 2, width - 4, height - 4);
 
       // Center divider
-      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.6 });
+      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.5 });
       g.moveTo(width / 2, 5);
       g.lineTo(width / 2, height - 5);
     },
@@ -79,144 +81,134 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
       {/* Enhanced Background */}
       <pixiGraphics draw={drawBackground} />
 
-      {/* Player 1 Info (Left Side) - More compact */}
-      <pixiContainer x={10} y={10}>
-        {/* Player Name - More compact */}
-        <pixiText
-          text={player1.name.korean}
-          style={{
-            fontSize: isMobile ? 14 : 18,
-            fill: player1Archetype.colors.primary,
-            fontWeight: "bold",
-            fontFamily: "Noto Sans KR",
-          }}
-        />
-        <pixiText
-          text={player1.name.english}
-          style={{
-            fontSize: isMobile ? 8 : 10,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontStyle: "italic",
-          }}
-          y={isMobile ? 16 : 20}
-        />
-
-        {/* Health Bar - Compact positioning */}
-        <HealthBar
-          current={player1.health}
-          max={player1.maxHealth}
-          width={healthBarWidth}
-          height={20} // Reduced height
-          showText={true}
-          x={0}
-          y={isMobile ? 28 : 35}
-          position="left"
-          playerName={player1.name.korean}
-          screenWidth={width}
-          screenHeight={height}
-          data-testid="player1-health-bar"
+      {/* Player 1 Info (Left Side) - Row Layout */}
+      <pixiContainer
+        x={10}
+        y={10}
+        layout={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 15,
+        }}
+      >
+        {/* Player 1 Archetype Portrait */}
+        <pixiSprite
+          texture={Texture.from(
+            // 2. Use imported Texture
+            `/assets/visual/archetypes/${player1.archetype}.png`
+          )}
+          width={portraitSize}
+          height={portraitSize}
+          anchor={0.5}
+          x={portraitSize / 2}
+          y={portraitSize / 2}
         />
 
-        {/* Resource Bars - More compact */}
-        <pixiContainer y={isMobile ? 52 : 60}>
-          {/* Ki Bar */}
+        {/* Player 1 Details Column */}
+        <pixiContainer
+          layout={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 5,
+          }}
+        >
+          {/* Player Name */}
           <pixiText
-            text="기력"
+            text={`${player1.name.korean} | ${player1.name.english}`}
             style={{
-              fontSize: 7,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontSize: isMobile ? 14 : 18,
+              fill: player1Archetype.colors.primary,
+              fontWeight: "bold",
               fontFamily: "Noto Sans KR",
             }}
           />
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.rect(25, 0, 80, 6); // Smaller bar
 
-              const kiPercent =
-                player1.maxKi > 0 ? player1.ki / player1.maxKi : 0;
-              g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
-              g.rect(25, 0, 80 * kiPercent, 6);
-
-              g.stroke({
-                width: 1,
-                color: KOREAN_COLORS.PRIMARY_CYAN,
-                alpha: 0.6,
-              });
-              g.rect(25, 0, 80, 6);
-            }}
+          {/* Health Bar */}
+          <HealthBar
+            current={player1.health}
+            max={player1.maxHealth}
+            width={healthBarWidth}
+            height={20}
+            showText={true}
+            position="left"
+            playerName={player1.name.korean}
+            screenWidth={width}
+            screenHeight={height}
+            x={0} // 3. Add missing prop
+            y={0} // 3. Add missing prop
+            data-testid="player1-health-bar"
           />
 
-          {/* Stamina Bar */}
-          <pixiText
-            text="체력"
-            style={{
-              fontSize: 7,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-            }}
-            y={10}
-          />
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.rect(25, 10, 80, 6);
-
-              const staminaPercent =
-                player1.maxStamina > 0
-                  ? player1.stamina / player1.maxStamina
-                  : 0;
-              g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
-              g.rect(25, 10, 80 * staminaPercent, 6);
-
-              g.stroke({
-                width: 1,
-                color: KOREAN_COLORS.SECONDARY_YELLOW,
-                alpha: 0.6,
-              });
-              g.rect(25, 10, 80, 6);
-            }}
-          />
+          {/* Resource Bars Row */}
+          <pixiContainer
+            layout={{ display: "flex", flexDirection: "row", gap: 10 }}
+          >
+            {/* Ki Bar */}
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                const kiPercent =
+                  player1.maxKi > 0 ? player1.ki / player1.maxKi : 0;
+                g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
+                g.rect(0, 0, (healthBarWidth / 2 - 5) * kiPercent, 8);
+              }}
+            />
+            {/* Stamina Bar */}
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                const staminaPercent =
+                  player1.maxStamina > 0
+                    ? player1.stamina / player1.maxStamina
+                    : 0;
+                g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
+                g.rect(0, 0, (healthBarWidth / 2 - 5) * staminaPercent, 8);
+              }}
+            />
+          </pixiContainer>
         </pixiContainer>
 
-        {/* Enhanced Stance Indicator */}
-        <StanceIndicator
-          stance={player1.currentStance}
-          x={0}
-          y={isMobile ? 75 : 85}
-          size={25} // Smaller size
-          showDetails={false}
-          data-testid="player1-stance-indicator"
-        />
-
-        {/* Player 1 Score Display */}
-        <pixiContainer x={-10} y={height - 50}>
-          <pixiText
-            text="승리 | Wins"
-            style={{
-              fontSize: 8,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-            }}
+        {/* Player 1 Stance & Score Column */}
+        <pixiContainer
+          layout={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <StanceIndicator
+            stance={player1.currentStance}
+            size={isMobile ? 30 : 40}
+            showDetails={false}
+            x={0} // 3. Add missing prop
+            y={0} // 3. Add missing prop
+            data-testid="player1-stance-indicator"
           />
           <pixiText
             text={`${roundsWon.player1}`}
             style={{
-              fontSize: 16,
+              fontSize: 24,
               fill: KOREAN_COLORS.ACCENT_GOLD,
               fontWeight: "bold",
             }}
-            x={70}
-            y={-3}
-            anchor={0.5}
           />
         </pixiContainer>
       </pixiContainer>
 
       {/* Enhanced Center Timer with Score */}
-      <pixiContainer x={centerX - timerWidth / 2} y={20}>
+      <pixiContainer x={centerX - timerWidth / 2} y={15}>
         <RoundTimer
           currentRound={currentRound}
           maxRounds={maxRounds}
@@ -224,19 +216,17 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
           totalTime={180}
           width={timerWidth}
           height={45}
-          x={0}
-          y={0}
           isPaused={isPaused}
           screenWidth={width}
           screenHeight={height}
+          x={0} // 3. Add missing prop
+          y={0} // 3. Add missing prop
           data-testid="round-timer"
         />
-
-        {/* Bilingual Round Label */}
         <pixiText
-          text={`라운드 ${currentRound}/${maxRounds} | Round ${currentRound}/${maxRounds}`}
+          text={`라운드 ${currentRound}`}
           style={{
-            fontSize: isMobile ? 10 : 12,
+            fontSize: isMobile ? 12 : 14,
             fill: KOREAN_COLORS.ACCENT_GOLD,
             align: "center",
             fontWeight: "bold",
@@ -246,247 +236,149 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
           y={50}
           anchor={0.5}
         />
-
-        {/* Match Score Display */}
-        <pixiContainer x={timerWidth / 2} y={70}>
-          <pixiText
-            text="경기 점수 | Match Score"
-            style={{
-              fontSize: 8,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              align: "center",
-              fontFamily: "Noto Sans KR",
-            }}
-            anchor={0.5}
-          />
-          <pixiText
-            text={`${gameScore.player1} - ${gameScore.player2}`}
-            style={{
-              fontSize: 18,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              align: "center",
-              fontWeight: "bold",
-            }}
-            y={15}
-            anchor={0.5}
-          />
-        </pixiContainer>
-
-        {/* Round Progress Indicators */}
-        <pixiContainer x={timerWidth / 2} y={105}>
-          {Array.from({ length: maxRounds }).map((_, i) => (
-            <pixiGraphics
-              key={i}
-              draw={(g) => {
-                g.clear();
-                const isCompleted = i < currentRound - 1;
-                const isCurrent = i === currentRound - 1;
-
-                if (isCurrent) {
-                  // Current round - pulsing
-                  const pulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
-                  g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: pulse });
-                } else if (isCompleted) {
-                  g.fill({ color: KOREAN_COLORS.POSITIVE_GREEN, alpha: 0.8 });
-                } else {
-                  g.fill({ color: KOREAN_COLORS.UI_GRAY, alpha: 0.4 });
-                }
-
-                g.circle(-30 + i * 15, 0, 5);
-              }}
-            />
-          ))}
-        </pixiContainer>
+        <pixiText
+          text={`${gameScore.player1} - ${gameScore.player2}`}
+          style={{
+            fontSize: 28,
+            fill: KOREAN_COLORS.PRIMARY_CYAN,
+            align: "center",
+            fontWeight: "bold",
+          }}
+          x={timerWidth / 2}
+          y={80}
+          anchor={0.5}
+        />
       </pixiContainer>
 
-      {/* Player 2 Info (Right Side) - Mirror of Player 1 */}
-      <pixiContainer x={width - 340} y={15}>
-        {/* Player Name - Korean/English (Right-aligned) */}
-        <pixiText
-          text={player2.name.korean}
-          style={{
-            fontSize: isMobile ? 16 : 20,
-            fill: player2Archetype.colors.primary,
-            fontWeight: "bold",
-            fontFamily: "Noto Sans KR",
-            align: "right",
-          }}
-          x={320}
-          anchor={{ x: 1, y: 0 }}
-        />
-        <pixiText
-          text={player2.name.english}
-          style={{
-            fontSize: isMobile ? 10 : 12,
-            fill: KOREAN_COLORS.TEXT_SECONDARY,
-            fontStyle: "italic",
-            align: "right",
-          }}
-          x={320}
-          y={isMobile ? 18 : 22}
-          anchor={{ x: 1, y: 0 }}
+      {/* Player 2 Info (Right Side) - Row Layout */}
+      <pixiContainer
+        x={width - 10}
+        y={10}
+        anchor={{ x: 1, y: 0 }}
+        layout={{
+          display: "flex",
+          flexDirection: "row-reverse", // Reverse row for right alignment
+          alignItems: "center",
+          gap: 15,
+        }}
+      >
+        {/* Player 2 Archetype Portrait */}
+        <pixiSprite
+          texture={Texture.from(
+            // 2. Use imported Texture
+            `/assets/visual/archetypes/${player2.archetype}.png`
+          )}
+          width={portraitSize}
+          height={portraitSize}
+          anchor={0.5}
+          x={-portraitSize / 2}
+          y={portraitSize / 2}
         />
 
-        {/* Archetype - Korean/English */}
-        <pixiText
-          text={`${player2Archetype.name.korean} | ${player2Archetype.name.english}`}
-          style={{
-            fontSize: isMobile ? 9 : 11,
-            fill: KOREAN_COLORS.TEXT_TERTIARY,
-            fontFamily: "Noto Sans KR",
-            align: "right",
+        {/* Player 2 Details Column */}
+        <pixiContainer
+          layout={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end", // Align text to the right
+            gap: 5,
           }}
-          x={320}
-          y={isMobile ? 32 : 38}
-          anchor={{ x: 1, y: 0 }}
-        />
-
-        {/* Health Bar */}
-        <HealthBar
-          current={player2.health}
-          max={player2.maxHealth}
-          width={healthBarWidth}
-          height={25}
-          showText={true}
-          x={320 - healthBarWidth}
-          y={isMobile ? 45 : 50}
-          position="right"
-          playerName={player2.name.korean}
-          screenWidth={width}
-          screenHeight={height}
-          data-testid="player2-health-bar"
-        />
-
-        {/* Resource Bars - Right-aligned */}
-        <pixiContainer x={100} y={isMobile ? 75 : 85}>
-          {/* Ki Bar */}
+        >
+          {/* Player Name */}
           <pixiText
-            text="기력 | Ki"
+            text={`${player2.name.korean} | ${player2.name.english}`}
             style={{
-              fontSize: 8,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
+              fontSize: isMobile ? 14 : 18,
+              fill: player2Archetype.colors.primary,
+              fontWeight: "bold",
               fontFamily: "Noto Sans KR",
-              align: "right",
             }}
-            x={120}
-            anchor={{ x: 1, y: 0 }}
-          />
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.rect(75, 0, 100, 8);
-
-              const kiPercent =
-                player2.maxKi > 0 ? player2.ki / player2.maxKi : 0;
-              g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
-              g.rect(75, 0, 100 * kiPercent, 8);
-
-              g.stroke({
-                width: 1,
-                color: KOREAN_COLORS.PRIMARY_CYAN,
-                alpha: 0.6,
-              });
-              g.rect(75, 0, 100, 8);
-            }}
-          />
-          <pixiText
-            text={`${Math.round(player2.ki)}/${player2.maxKi}`}
-            style={{
-              fontSize: 7,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              align: "right",
-            }}
-            x={70}
-            y={2}
-            anchor={{ x: 1, y: 0 }}
           />
 
-          {/* Stamina Bar */}
-          <pixiText
-            text="체력 | Stamina"
-            style={{
-              fontSize: 8,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-              align: "right",
-            }}
-            x={140}
-            y={15}
-            anchor={{ x: 1, y: 0 }}
+          {/* Health Bar */}
+          <HealthBar
+            current={player2.health}
+            max={player2.maxHealth}
+            width={healthBarWidth}
+            height={20}
+            showText={true}
+            position="right"
+            playerName={player2.name.korean}
+            screenWidth={width}
+            screenHeight={height}
+            x={0} // 3. Add missing prop
+            y={0} // 3. Add missing prop
+            data-testid="player2-health-bar"
           />
-          <pixiGraphics
-            draw={(g) => {
-              g.clear();
-              g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
-              g.rect(95, 15, 80, 8);
 
-              const staminaPercent =
-                player2.maxStamina > 0
-                  ? player2.stamina / player2.maxStamina
-                  : 0;
-              g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
-              g.rect(95, 15, 80 * staminaPercent, 8);
-
-              g.stroke({
-                width: 1,
-                color: KOREAN_COLORS.SECONDARY_YELLOW,
-                alpha: 0.6,
-              });
-              g.rect(95, 15, 80, 8);
-            }}
-          />
-          <pixiText
-            text={`${Math.round(player2.stamina)}/${player2.maxStamina}`}
-            style={{
-              fontSize: 7,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              align: "right",
-            }}
-            x={90}
-            y={17}
-            anchor={{ x: 1, y: 0 }}
-          />
+          {/* Resource Bars Row */}
+          <pixiContainer
+            layout={{ display: "flex", flexDirection: "row", gap: 10 }}
+          >
+            {/* Ki Bar */}
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                const kiPercent =
+                  player2.maxKi > 0 ? player2.ki / player2.maxKi : 0;
+                g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
+                g.rect(0, 0, (healthBarWidth / 2 - 5) * kiPercent, 8);
+              }}
+            />
+            {/* Stamina Bar */}
+            <pixiGraphics
+              draw={(g) => {
+                g.clear();
+                g.fill({
+                  color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  alpha: 0.8,
+                });
+                g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                const staminaPercent =
+                  player2.maxStamina > 0
+                    ? player2.stamina / player2.maxStamina
+                    : 0;
+                g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
+                g.rect(0, 0, (healthBarWidth / 2 - 5) * staminaPercent, 8);
+              }}
+            />
+          </pixiContainer>
         </pixiContainer>
 
-        {/* Stance Indicator */}
-        <StanceIndicator
-          stance={player2.currentStance}
-          x={280}
-          y={isMobile ? 110 : 125}
-          size={35}
-          showDetails={false}
-          data-testid="player2-stance-indicator"
-        />
-
-        {/* Player 2 Score Display */}
-        <pixiContainer x={230} y={height - 50}>
-          <pixiText
-            text="승리 | Wins"
-            style={{
-              fontSize: 8,
-              fill: KOREAN_COLORS.TEXT_SECONDARY,
-              fontFamily: "Noto Sans KR",
-              align: "right",
-            }}
-            x={80}
-            anchor={{ x: 1, y: 0 }}
+        {/* Player 2 Stance & Score Column */}
+        <pixiContainer
+          layout={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <StanceIndicator
+            stance={player2.currentStance}
+            size={isMobile ? 30 : 40}
+            showDetails={false}
+            x={0} // 3. Add missing prop
+            y={0} // 3. Add missing prop
+            data-testid="player2-stance-indicator"
           />
           <pixiText
             text={`${roundsWon.player2}`}
             style={{
-              fontSize: 16,
+              fontSize: 24,
               fill: KOREAN_COLORS.ACCENT_GOLD,
               fontWeight: "bold",
             }}
-            x={45}
-            y={-3}
-            anchor={0.5}
           />
         </pixiContainer>
       </pixiContainer>
 
-      {/* Enhanced Pause Toggle Button */}
+      {/* Pause Toggle Button remains at the bottom of the HUD area */}
       {onPauseToggle && (
         <pixiContainer x={width - 90} y={height - 45}>
           <pixiGraphics
@@ -501,6 +393,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
               g.roundRect(0, 0, 80, 35, 5);
             }}
             interactive={true}
+            cursor="pointer"
             onPointerDown={onPauseToggle}
           />
           <pixiText
