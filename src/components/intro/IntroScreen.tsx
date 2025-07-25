@@ -12,8 +12,6 @@ extend({
 
 import * as PIXI from "pixi.js";
 import React, {
-  Suspense,
-  lazy,
   useCallback,
   useEffect,
   useMemo,
@@ -24,10 +22,6 @@ import { ArchetypeDisplay } from "./components/ArchetypeDisplay";
 import { MenuSection } from "./components/MenuSection";
 
 const APP_VERSION = import.meta.env.APP_VERSION;
-
-// Lazy load heavy sections
-const PhilosophySection = lazy(() => import("./components/PhilosophySection"));
-const ControlsSection = lazy(() => import("./components/ControlsSection"));
 
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
@@ -99,7 +93,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 }) => {
   const audio = useAudio();
   const introMusicStarted = useRef(false);
-  const [currentSection, setCurrentSection] = useState<string>("menu");
   const [bgTexture, setBgTexture] = useState<PIXI.Texture | null>(null);
   const [logoTexture, setLogoTexture] = useState<PIXI.Texture | null>(null);
   const [dojangWallTexture, setDojangWallTexture] =
@@ -140,10 +133,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         id: key.toLowerCase(),
         korean: data.name.korean,
         english: data.name.english,
-        description: data.description.korean, // Use Korean description as string
+        description: data.description.korean,
         color: data.colors.primary,
         textureKey: ARCHETYPE_TEXTURE_MAPPING[archetypeEnum],
-        // Add real stats from PLAYER_ARCHETYPES_DATA
         stats: data.stats,
         philosophy: data.philosophy,
       };
@@ -251,77 +243,52 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       window.removeEventListener("touchstart", startMusic);
       audio.stopMusic();
     };
-    // eslint-disable-next-line
   }, [audio.isInitialized, audio]);
 
-  // Enhanced keyboard input for global navigation
+  // ✅ SIMPLIFIED: Direct keyboard navigation without section management
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Global escape handling
-      if (currentSection !== "menu" && event.key === "Escape") {
-        setCurrentSection("menu");
-        audio.playSFX("menu_back");
-        return;
-      }
-
-      // Add 'B' key for back navigation
-      if (currentSection !== "menu" && event.key.toLowerCase() === "b") {
-        setCurrentSection("menu");
-        audio.playSFX("menu_back");
-        return;
-      }
-
-      if (currentSection === "menu") {
-        // Archetype navigation
-        if (event.key === "ArrowLeft") {
-          const newIndex =
-            selectedArchetypeIndex === 0
-              ? archetypeData.length - 1
-              : selectedArchetypeIndex - 1;
-          handleArchetypeIndexChange(newIndex);
-          audio.playSFX("menu_hover");
-        } else if (event.key === "ArrowRight") {
-          const newIndex = (selectedArchetypeIndex + 1) % archetypeData.length;
-          handleArchetypeIndexChange(newIndex);
-          audio.playSFX("menu_hover");
-        } else {
-          // Enhanced letter shortcuts for quick access
-          switch (event.key.toLowerCase()) {
-            case "c":
-              setCurrentSection("controls");
-              audio.playSFX("menu_select");
-              break;
-            case "p":
-              setCurrentSection("philosophy");
-              audio.playSFX("menu_select");
-              break;
-            case "t":
-              handleMenuItemSelect(GameMode.TRAINING);
-              break;
-            case "v":
-              handleMenuItemSelect(GameMode.VERSUS);
-              break;
-          }
+      // Archetype navigation
+      if (event.key === "ArrowLeft") {
+        const newIndex =
+          selectedArchetypeIndex === 0
+            ? archetypeData.length - 1
+            : selectedArchetypeIndex - 1;
+        handleArchetypeIndexChange(newIndex);
+        audio.playSFX("menu_hover");
+      } else if (event.key === "ArrowRight") {
+        const newIndex = (selectedArchetypeIndex + 1) % archetypeData.length;
+        handleArchetypeIndexChange(newIndex);
+        audio.playSFX("menu_hover");
+      } else {
+        // Direct game mode shortcuts - no section switching
+        switch (event.key.toLowerCase()) {
+          case "c":
+            handleMenuItemSelect(GameMode.CONTROLS);
+            break;
+          case "p":
+            handleMenuItemSelect(GameMode.PHILOSOPHY);
+            break;
+          case "t":
+            handleMenuItemSelect(GameMode.TRAINING);
+            break;
+          case "v":
+            handleMenuItemSelect(GameMode.VERSUS);
+            break;
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSection, audio, archetypeData.length, selectedArchetypeIndex]);
+  }, [audio, archetypeData.length, selectedArchetypeIndex]);
 
-  // Handle menu item selection with archetype
+  // ✅ SIMPLIFIED: Direct menu selection - no section management
   const handleMenuItemSelect = useCallback(
     (mode: GameMode) => {
-      if (mode === GameMode.CONTROLS) {
-        setCurrentSection("controls");
-      } else if (mode === GameMode.PHILOSOPHY) {
-        setCurrentSection("philosophy");
-      } else {
-        // Pass the current selected archetype to the game
-        console.log(`🎮 Starting ${mode} with archetype:`, currentArchetype);
-        onMenuSelect(mode, currentArchetype);
-      }
+      // All modes directly trigger onMenuSelect - no internal section switching
+      console.log(`🎮 Starting ${mode} with archetype:`, currentArchetype);
+      onMenuSelect(mode, currentArchetype);
     },
     [onMenuSelect, currentArchetype]
   );
@@ -339,17 +306,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     [onArchetypeSelect, audio]
   );
 
-  // Section navigation with audio feedback
-  const handleBackToMenu = useCallback(() => {
-    setCurrentSection("menu");
-    audio.playSFX("menu_back");
-  }, [audio]);
-
   // Responsive logo and layout calculations
   const isMobile = PIXI.isMobile.phone;
   const isTablet = PIXI.isMobile.tablet;
 
-  // Smaller logo for full screen layout
   const logoSize = isMobile
     ? Math.min(screenWidth, screenHeight) * 0.3
     : isTablet
@@ -394,85 +354,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     [screenWidth, screenHeight, isMobile]
   );
 
-  // Function to render selected section content with proper fallback
-  const renderSectionContent = () => {
-    if (currentSection === "philosophy") {
-      return (
-        <Suspense
-          fallback={
-            <pixiContainer>
-              <pixiGraphics
-                draw={(g) => {
-                  g.clear();
-                  g.fill({
-                    color: KOREAN_COLORS.UI_BACKGROUND_DARK,
-                    alpha: 0.8,
-                  });
-                  g.roundRect(0, 0, screenWidth * 0.9, screenHeight * 0.5, 8);
-                  g.fill();
-                }}
-              />
-              <pixiText
-                text="로딩 중..."
-                style={{ fontSize: 24, fill: KOREAN_COLORS.TEXT_PRIMARY }}
-                x={screenWidth * 0.45}
-                y={screenHeight * 0.25}
-                anchor={0.5}
-              />
-            </pixiContainer>
-          }
-        >
-          <PhilosophySection
-            onBack={handleBackToMenu}
-            width={screenWidth} // Full width instead of 90%
-            height={screenHeight} // Full height instead of 80%
-            x={0}
-            y={0}
-            data-testid="philosophy-section"
-          />
-        </Suspense>
-      );
-    } else if (currentSection === "controls") {
-      return (
-        <Suspense
-          fallback={
-            <pixiContainer>
-              <pixiGraphics
-                draw={(g) => {
-                  g.clear();
-                  g.fill({
-                    color: KOREAN_COLORS.UI_BACKGROUND_DARK,
-                    alpha: 0.8,
-                  });
-                  g.roundRect(0, 0, screenWidth * 0.9, screenHeight * 0.5, 8);
-                  g.fill();
-                }}
-              />
-              <pixiText
-                text="로딩 중..."
-                style={{ fontSize: 24, fill: KOREAN_COLORS.TEXT_PRIMARY }}
-                x={screenWidth * 0.45}
-                y={screenHeight * 0.25}
-                anchor={0.5}
-              />
-            </pixiContainer>
-          }
-        >
-          <ControlsSection
-            onBack={handleBackToMenu}
-            width={screenWidth} // Full width instead of 90%
-            height={screenHeight} // Full height instead of 80%
-            x={0}
-            y={0}
-            data-testid="controls-section"
-          />
-        </Suspense>
-      );
-    }
-
-    return null;
-  };
-
   return (
     <pixiContainer
       data-testid="intro-screen"
@@ -486,7 +367,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         gap: isMobile ? 8 : 16,
       }}
     >
-      {/* Enhanced Background Layers */}
+      {/* ✅ SIMPLIFIED: Remove section switching logic - background layers only */}
       <pixiGraphics
         draw={drawEnhancedBackground}
         data-testid="intro-background"
@@ -630,83 +511,56 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           paddingBottom: 10, // Add bottom padding to prevent footer overlap
         }}
       >
-        {/* Main Menu Section - Only shown when in menu mode */}
-        {currentSection === "menu" && (
-          <>
-            {/* Menu Section - Top position, centered */}
-            <pixiContainer
-              layout={{
-                width: isMobile ? "100%" : "70%",
-                maxWidth: 800,
-                flexShrink: 0,
-              }}
-              data-testid="menu-section-container"
-            >
-              <MenuSection
-                menuItems={MENU_ITEMS}
-                selectedIndex={selectedMenuIndex}
-                onModeSelect={handleMenuItemSelect}
-                onSelectedIndexChange={setSelectedMenuIndex}
-                onPlaySFX={audio.playSFX}
-                width={
-                  isMobile
-                    ? screenWidth * 0.9
-                    : Math.min(800, screenWidth * 0.7)
-                }
-                height={isMobile ? 400 : 300}
-                x={0}
-                y={0}
-                data-testid="main-menu-section"
-              />
-            </pixiContainer>
+        {/* Menu Section - Always visible */}
+        <pixiContainer
+          layout={{
+            width: isMobile ? "100%" : "70%",
+            maxWidth: 800,
+            flexShrink: 0,
+          }}
+          data-testid="menu-section-container"
+        >
+          <MenuSection
+            menuItems={MENU_ITEMS}
+            selectedIndex={selectedMenuIndex}
+            onModeSelect={handleMenuItemSelect}
+            onSelectedIndexChange={setSelectedMenuIndex}
+            onPlaySFX={audio.playSFX}
+            width={
+              isMobile ? screenWidth * 0.9 : Math.min(800, screenWidth * 0.7)
+            }
+            height={isMobile ? 400 : 300}
+            x={0}
+            y={0}
+            data-testid="main-menu-section"
+          />
+        </pixiContainer>
 
-            {/* Archetype Selection - Below menu, centered */}
-            <pixiContainer
-              layout={{
-                width: isMobile ? "100%" : "70%",
-                maxWidth: 800,
-                flexShrink: 0,
-              }}
-              data-testid="archetype-section-container"
-            >
-              <ArchetypeDisplay
-                archetypes={archetypeData}
-                selectedIndex={selectedArchetypeIndex}
-                textures={archetypeTextures}
-                onArchetypeChange={handleArchetypeIndexChange}
-                onPlaySFX={audio.playSFX}
-                width={
-                  isMobile
-                    ? screenWidth * 0.9
-                    : Math.min(800, screenWidth * 0.7)
-                }
-                height={isMobile ? 400 : 300}
-                x={0}
-                y={0}
-                isMobile={isMobile}
-                data-testid="archetype-selection"
-              />
-            </pixiContainer>
-          </>
-        )}
-
-        {/* Philosophy and Controls sections */}
-        {currentSection !== "menu" && (
-          <pixiContainer
-            layout={{
-              position: "relative", // Change to absolute positioning
-              top: 0,
-              left: 0,
-              width: screenWidth, // Full screen width
-              height: screenHeight, // Full screen height
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            data-testid="section-content-container"
-          >
-            {renderSectionContent()}
-          </pixiContainer>
-        )}
+        {/* Archetype Selection - Always visible */}
+        <pixiContainer
+          layout={{
+            width: isMobile ? "100%" : "70%",
+            maxWidth: 800,
+            flexShrink: 0,
+          }}
+          data-testid="archetype-section-container"
+        >
+          <ArchetypeDisplay
+            archetypes={archetypeData}
+            selectedIndex={selectedArchetypeIndex}
+            textures={archetypeTextures}
+            onArchetypeChange={handleArchetypeIndexChange}
+            onPlaySFX={audio.playSFX}
+            width={
+              isMobile ? screenWidth * 0.9 : Math.min(800, screenWidth * 0.7)
+            }
+            height={isMobile ? 400 : 300}
+            x={0}
+            y={0}
+            isMobile={isMobile}
+            data-testid="archetype-selection"
+          />
+        </pixiContainer>
       </pixiContainer>
 
       {/* Fixed Footer with proper spacing */}

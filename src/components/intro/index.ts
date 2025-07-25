@@ -7,21 +7,16 @@
 // Main screen
 export { IntroScreen } from "./IntroScreen";
 
-// Components - avoid duplicate exports
-export * from "./components";
-
-// Re-export for convenience
-export { default as Intro } from "./IntroScreen";
+// ✅ SIMPLIFIED: Remove section re-exports since they're now standalone screens
+// Components - only export actual components, not sections
+export { default as ArchetypeDisplay } from "./components/ArchetypeDisplay";
+export { MenuSection } from "./components/MenuSection";
 
 // Type exports
-export { default as ArchetypeDisplay } from "./components/ArchetypeDisplay";
 export type { ArchetypeDisplayProps } from "./components/ArchetypeDisplay";
-export { ControlsSection } from "./components/ControlsSection";
-export type { ControlsSectionProps } from "./components/ControlsSection";
-export { MenuSection } from "./components/MenuSection";
 export type { MenuSectionProps } from "./components/MenuSection";
-export { PhilosophySection } from "./components/PhilosophySection";
-export type { PhilosophySectionProps } from "./components/PhilosophySection";
-
-// Re-export prop types
 export type { IntroScreenProps } from "./IntroScreen";
+
+export { PhilosophySection } from "../screens/PhilosophySection";
+export type { PhilosophySectionProps } from "../screens/PhilosophySection";
+export { default as Intro } from "./IntroScreen";

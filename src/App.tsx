@@ -4,6 +4,9 @@ import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
 import { CombatScreen } from "./components/combat/CombatScreen";
 import { IntroScreen } from "./components/intro/IntroScreen";
+// ✅ NEW: Import standalone screens
+import { ControlsScreen } from "./components/screens/ControlsScreen";
+import { PhilosophyScreen } from "./components/screens/PhilosophyScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { exposePixiAppForTesting } from "./test/pixi-cypress-helpers";
@@ -88,11 +91,20 @@ function App() {
     initializeApp();
   }, []);
 
+  // ✅ SIMPLIFIED: Handle game mode selection directly
   const handleGameStart = useCallback(
     (mode: GameMode, archetype?: PlayerArchetype) => {
       console.log("🎮 Starting game mode:", mode, "with archetype:", archetype);
-      setGameMode(mode);
-      setIsGameActive(true);
+
+      // ✅ NEW: Handle controls and philosophy as separate modes
+      if (mode === GameMode.CONTROLS || mode === GameMode.PHILOSOPHY) {
+        setGameMode(mode);
+        setIsGameActive(false); // These are not game modes, just screens
+      } else {
+        setGameMode(mode);
+        setIsGameActive(true);
+      }
+
       setGameWinner(null);
       setMatchStats(null);
       if (archetype) {
@@ -183,6 +195,28 @@ function App() {
       );
     }
 
+    // ✅ NEW: Handle standalone screens first
+    if (gameMode === GameMode.CONTROLS) {
+      return (
+        <ControlsScreen
+          onReturnToMenu={handleReturnToMenu}
+          width={screenSize.width}
+          height={screenSize.height}
+        />
+      );
+    }
+
+    if (gameMode === GameMode.PHILOSOPHY) {
+      return (
+        <PhilosophyScreen
+          onReturnToMenu={handleReturnToMenu}
+          width={screenSize.width}
+          height={screenSize.height}
+        />
+      );
+    }
+
+    // ✅ SIMPLIFIED: Only active game modes use isGameActive
     if (isGameActive && gameMode) {
       switch (gameMode) {
         case GameMode.TRAINING:
@@ -235,6 +269,7 @@ function App() {
       }
     }
 
+    // ✅ SIMPLIFIED: Default to intro screen
     return (
       <IntroScreen
         onMenuSelect={handleGameStart}
