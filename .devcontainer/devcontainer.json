@@ -1,6 +1,6 @@
 {
   "name": "Black Trigram Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {
       "installDirectlyFromGitHubRelease": true,
@@ -9,7 +9,7 @@
     // Using a single feature for Node.js for simplicity
     "ghcr.io/devcontainers/features/node:1": {
       "nodeGypDependencies": true,
-      "version": "22" // Aligned with base image
+      "version": "24" // Aligned with base image
     },
     "ghcr.io/devcontainers/features/git:1": {
       "ppa": true,
@@ -64,7 +64,7 @@
   "forwardPorts": [5173],
   "portsAttributes": {
     "5173": {
-      "label": "Vite Dev Server",
+      "label": "Black Trigram Dev Server",
       "onAutoForward": "notify"
     }
   }
