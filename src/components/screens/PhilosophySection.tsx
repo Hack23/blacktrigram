@@ -1,14 +1,14 @@
 import * as PIXI from "pixi.js";
 import React, { useEffect } from "react";
-import { PLAYER_ARCHETYPES_DATA } from "../../../systems";
-import { KoreanCulture } from "../../../systems/trigram/KoreanCulture";
-import { TRIGRAM_DATA } from "../../../systems/trigram/types";
-import { TrigramStance } from "../../../types";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { PLAYER_ARCHETYPES_DATA } from "../../systems";
+import { KoreanCulture } from "../../systems/trigram/KoreanCulture";
+import { TRIGRAM_DATA } from "../../systems/trigram/types";
+import { TrigramStance } from "../../types";
+import { KOREAN_COLORS } from "../../types/constants";
 import {
   ResponsivePixiButton,
   ResponsivePixiContainer,
-} from "../../ui/base/ResponsivePixiComponents";
+} from "../ui/base/ResponsivePixiComponents";
 
 export interface PhilosophySectionProps {
   readonly onBack: () => void;

@@ -1,12 +1,12 @@
 import { COMBAT_CONTROLS } from "@/systems";
 import * as PIXI from "pixi.js";
 import React, { useEffect } from "react";
-import { KOREAN_COLORS } from "../../../types/constants";
-import { KoreanText } from "../../ui/base/korean-text/KoreanText";
+import { KOREAN_COLORS } from "../../types/constants";
+import { KoreanText } from "../ui/base/korean-text/KoreanText";
 import {
   ResponsivePixiButton,
   ResponsivePixiContainer,
-} from "../../ui/base/ResponsivePixiComponents";
+} from "../ui/base/ResponsivePixiComponents";
 
 export interface ControlsSectionProps {
   readonly onBack: () => void;
