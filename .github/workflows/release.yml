@@ -82,6 +82,14 @@ jobs:
       - name: build
         run: npm run build
 
+      - name: Set Version for release
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          PLAIN_VERSION="${{ github.event.inputs.version }}"
+          # Remove 'v' prefix if present
+          PLAIN_VERSION="${PLAIN_VERSION#v}"
+          npm version $PLAIN_VERSION --no-git-tag-version
+
       - name: Verify Cypress
         run: npx cypress verify
 
@@ -95,14 +103,6 @@ jobs:
       - name: Run tests with coverage
         run: npm run coverage
 
-      - name: Set Version for release
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          PLAIN_VERSION="${{ github.event.inputs.version }}"
-          # Remove 'v' prefix if present
-          PLAIN_VERSION="${PLAIN_VERSION#v}"
-          npm version $PLAIN_VERSION --no-git-tag-version
-
       - uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
         if: github.event_name == 'workflow_dispatch'
         with:
@@ -111,6 +111,10 @@ jobs:
 
       - name: Generate api html documentation
         run: npm run docs
+
+      - name: Copy coverage
+        run: |
+          cp -r coverage docs/
 
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
