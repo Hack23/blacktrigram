@@ -116,6 +116,12 @@ jobs:
         run: |
           cp -r coverage docs/
 
+      - name: Generate dependencies documentation
+        run: npm run docs:dependencies
+
+      - name: Generate diagrams documentation
+        run: npm run docs:diagrams
+
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
         with:
