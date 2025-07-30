@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="64.223" tests="8" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-07-30T15:14:02" tests="0" file="cypress/e2e/training-mode.cy.ts" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Black Trigram Training Mode" timestamp="2025-07-30T15:14:02" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Training Mode Navigation" timestamp="2025-07-30T15:14:02" tests="5" failures="0" time="25.665">
+    <testcase name="Black Trigram Training Mode Training Mode Navigation should enter training mode successfully" time="6.645" classname="should enter training mode successfully" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram Training Mode Training Mode Navigation should display core training elements" time="7.263" classname="should display core training elements" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram Training Mode Training Mode Navigation should support basic training interactions" time="3.992" classname="should support basic training interactions" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram Training Mode Training Mode Navigation should track basic statistics" time="4.143" classname="should track basic statistics" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram Training Mode Training Mode Navigation should return to menu" time="3.622" classname="should return to menu" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Training Mode Functionality" timestamp="2025-07-30T15:14:34" tests="3" failures="0" time="38.558">
+    <testcase name="Black Trigram Training Mode Training Mode Functionality should start Training mode and display training screen" time="13.23" classname="should start Training mode and display training screen" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram Training Mode Training Mode Functionality should update player stats on interaction" time="12.7" classname="should update player stats on interaction" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram Training Mode Training Mode Functionality should return to menu" time="12.628" classname="should return to menu" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+</testsuites>
