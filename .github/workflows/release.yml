@@ -103,12 +103,6 @@ jobs:
       - name: Run tests with coverage
         run: npm run coverage
 
-      - uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
-        if: github.event_name == 'workflow_dispatch'
-        with:
-          commit_message: "chore(release): bump version to ${{ github.event.inputs.version }}"
-          tagging_message: "${{ github.event.inputs.version }}"
-
       - name: Generate api html documentation
         run: npm run docs
 
@@ -122,6 +116,12 @@ jobs:
       - name: Generate diagrams documentation
         run: npm run docs:diagrams
 
+      - name: Merge e2e test report
+        run: npm run test:e2ereportmerge
+
+      - name: Generate e2e html report
+        run: npm run test:e2ereporthtmlall
+
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
         with:
@@ -130,6 +130,13 @@ jobs:
           branch: main
           clean: false
           commit-message: "docs: update documentation for ${{ needs.prepare.outputs.version || 'development' }}"
+
+      - uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          commit_message: "chore(release): bump version to ${{ github.event.inputs.version }}"
+          tagging_message: "${{ github.event.inputs.version }}"
+
 
   build:
     name: Build Release Package
