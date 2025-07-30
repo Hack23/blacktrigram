@@ -45,10 +45,17 @@ export default defineConfig(({ command, mode }) => ({
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ["@pixi/react","@pixi/layout", "@pixi/ui", "pixi.js", "react-reconciler", "howler"],
+    include: [
+      "@pixi/react",
+      "@pixi/layout",
+      "@pixi/ui",
+      "pixi.js",
+      "react-reconciler",
+      "howler",
+    ],
     // Exclude heavy modules from dev pre-bundling to reduce TBT
     exclude: [
-      "@pixi/sound",      
+      "@pixi/sound",
       "src/types/constants/techniques.ts",
       "src/types/constants/combat.ts",
       "src/audio/placeholder-sounds.ts",
@@ -147,6 +154,28 @@ export default defineConfig(({ command, mode }) => ({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
+    // Enhanced test reporters for Korean martial arts testing
+    reporters: [
+      [
+        "verbose",
+        {
+          showSummary: true,
+          showSuccesses: true,
+          showSkipped: true,
+          showFailed: true,
+          renderSuccesses: true,
+        },
+      ],
+      "html",
+    ],
+    outputFile: {
+      html: "./docs/test-results/index.html",
+    },
+    // Configure types to ensure testing library matchers are recognized
+    typecheck: {
+      include: ["**/*.{test,spec}.{ts,tsx}"],
+      tsconfig: "./tsconfig.json",
+    },
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],

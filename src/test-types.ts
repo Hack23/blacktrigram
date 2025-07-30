@@ -1,5 +1,6 @@
 // Test utility types for Black Trigram Korean martial arts game
 
+import type { MockedFunction } from "vitest";
 import { PlayerState } from "./systems";
 import type { PlayerArchetype, TrigramStance } from "./types";
 
@@ -51,14 +52,14 @@ export interface TestGameState {
   readonly currentRound: number;
 }
 
-// Mock audio manager for testing
+// Mock audio manager for testing - Updated for Vitest
 export interface MockAudioManager {
-  readonly playMusic: jest.Mock | (() => void);
-  readonly stopMusic: jest.Mock | (() => void);
-  readonly playSFX: jest.Mock | (() => void);
-  readonly playAttackSound: jest.Mock | (() => void);
-  readonly playHitSound: jest.Mock | (() => void);
-  readonly setVolume: jest.Mock | (() => void);
+  readonly playMusic: MockedFunction<() => void>;
+  readonly stopMusic: MockedFunction<() => void>;
+  readonly playSFX: MockedFunction<() => void>;
+  readonly playAttackSound: MockedFunction<(damage: number) => void>;
+  readonly playHitSound: MockedFunction<(damage: number) => void>;
+  readonly setVolume: MockedFunction<(volume: number) => void>;
   readonly isEnabled: boolean;
 }
 

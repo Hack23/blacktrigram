@@ -52,7 +52,7 @@ jobs:
 
       - name: Setup display and dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y graphviz libgtk2.0-0 libgtk-3-0 ffmpeg libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb dbus dbus-x11 fonts-noto fonts-noto-cjk fonts-noto-cjk-extra && sudo apt-get update && sudo apt-get install -y ca-certificates fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libxrender1 libxshmfence1 xdg-utils wget && wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && echo \"deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/google-chrome.list && sudo apt-get update && sudo apt-get install -y google-chrome-stable
+          sudo apt-get update && sudo apt-get install -y graphviz libgtk2.0-0 libgtk-3-0 ffmpeg libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb dbus dbus-x11 fonts-noto fonts-noto-cjk fonts-noto-cjk-extra && sudo apt-get update && sudo apt-get install -y graphviz ca-certificates fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libxrender1 libxshmfence1 xdg-utils wget && wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && echo \"deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/google-chrome.list && sudo apt-get update && sudo apt-get install -y google-chrome-stable
           sudo mkdir -p /var/run/dbus
           sudo dbus-daemon --system --fork
 
@@ -103,18 +103,24 @@ jobs:
       - name: Run tests with coverage
         run: npm run coverage
 
-      - uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
-        if: github.event_name == 'workflow_dispatch'
-        with:
-          commit_message: "chore(release): bump version to ${{ github.event.inputs.version }}"
-          tagging_message: "${{ github.event.inputs.version }}"
-
       - name: Generate api html documentation
         run: npm run docs
 
       - name: Copy coverage
         run: |
           cp -r coverage docs/
+
+      - name: Generate dependencies documentation
+        run: npm run docs:dependencies
+
+      - name: Generate diagrams documentation
+        run: npm run docs:diagrams
+
+      - name: Merge e2e test report
+        run: npm run test:e2ereportmerge
+
+      - name: Generate e2e html report
+        run: npm run test:e2ereporthtmlall
 
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
@@ -124,6 +130,13 @@ jobs:
           branch: main
           clean: false
           commit-message: "docs: update documentation for ${{ needs.prepare.outputs.version || 'development' }}"
+
+      - uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          commit_message: "chore(release): bump version to ${{ github.event.inputs.version }}"
+          tagging_message: "${{ github.event.inputs.version }}"
+
 
   build:
     name: Build Release Package
