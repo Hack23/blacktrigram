@@ -373,4 +373,25 @@
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <url>
+    <loc>https://blacktrigram.com/test-results/index.html</loc>
+    <lastmod>2025-07-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/architecture/project-structure.html</loc>
+    <lastmod>2025-07-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://blacktrigram.com/cypress/mochawesome/index.html</loc>
+    <lastmod>2025-07-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
 </urlset>
