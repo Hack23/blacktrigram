@@ -31,6 +31,11 @@
     "find:unused": "npm run knip",
     "test:licenses": "license-compliance --direct --allow 'MIT;ISC;0BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Unlicense;CC0-1.0'",
     "docs": "typedoc --options typedoc.json",
+    "test:e2ereportmerge": "npx mochawesome-merge docs/cypress/mochawesome/*.json > docs/cypress/mochawesome-all.json",
+    "test:e2ereporthtmlall": "npx marge -f index.html -o docs/cypress/mochawesome docs/cypress/mochawesome-all.json",
+    "merge-test-reports": "node --experimental-json-modules ./cypress/support/plugins/merge-reports.js",
+    "docs:dependencies": "mkdir -p docs/dependencies && depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > docs/dependencies/module-dependencies.svg || echo 'Dependency diagram generation failed - continuing' && touch docs/dependencies/module-dependencies.svg",
+    "docs:diagrams": "node scripts/generate-architecture-diagrams.js",
     "knip": "knip",
     "madge": "npx madge --circular --ts-config ./tsconfig.json --extensions ts,tsx src/"
   },
@@ -97,6 +102,7 @@
     "vite": "^7.0.6",
     "vite-bundle-analyzer": "^1.1.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "dependency-cruiser": "^17.0.0"
   }
 }
