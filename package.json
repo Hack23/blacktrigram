@@ -25,7 +25,7 @@
     "cypress:verify": "cypress verify",
     "coverage": "vitest run --coverage --coverage.reportOnFailure ",
     "test:ci": "vitest run --coverage",
-    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome",
+    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome'",
     "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome'",
     "compress": "gzip -k dist/assets/*.js && gzip -k dist/assets/*.css",
     "find:unused": "npm run knip",
