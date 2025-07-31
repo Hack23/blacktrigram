@@ -109,6 +109,9 @@ jobs:
       - name: Run tests with coverage
         run: npm run coverage
 
+      - name: Copy coverage
+        run: cp -r coverage docs/
+
       - name: Generate api html documentation
         run: npm run docs
 
