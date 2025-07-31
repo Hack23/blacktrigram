@@ -112,9 +112,6 @@ jobs:
       - name: Generate api html documentation
         run: npm run docs
 
-      - name: Copy coverage
-        run: cp -r coverage docs/
-
       - name: Generate dependencies documentation
         run: npm run docs:dependencies
 
