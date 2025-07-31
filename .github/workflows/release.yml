@@ -113,8 +113,7 @@ jobs:
         run: npm run docs
 
       - name: Copy coverage
-        run: |
-          cp -r coverage docs/
+        run: cp -r coverage docs/
 
       - name: Generate dependencies documentation
         run: npm run docs:dependencies
@@ -211,8 +210,6 @@ jobs:
         id: attest
         with:
           subject-path: game-${{ needs.prepare.outputs.version }}.zip
-          subject-digest-algorithm: sha256
-          bundle-path: game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
 
       - name: Copy artifact attestation for zip
         run: cp ${{ steps.attest.outputs.bundle-path }} game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
