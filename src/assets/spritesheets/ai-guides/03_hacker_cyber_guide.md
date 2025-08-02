@@ -6,8 +6,8 @@
 **Philosophy**: Information as power, technological advantage  
 **Primary Color**: Cyan (#00FFFF)  
 **Secondary Color**: Electric Blue (#0080FF)  
-**Combat Focus**: Precise nerve strikes (☲ Li) and Stunning techniques (☳ Jin)  
-**Combat Effects**: Temporary paralysis, numbness, disorientation, knockouts
+**Combat Focus**: Precision nerve strikes (☲ Li) and Explosive power (☳ Jin)  
+**Combat Effects**: Temporary paralysis, neural disruption, disorientation, knockouts
 
 ## Visual Design Requirements
 
@@ -35,7 +35,7 @@
 
 #### Idle Animations
 
-- **South (Forward)**: Analytical stance, tech interface ready
+- **South (Forward)**: Analytical stance, neural targeting ready
 - **North (Back)**: System monitoring position, enhanced awareness
 - **East/West**: Profile tech-enhanced stances
 - **Diagonals**: Transitional analysis positions
@@ -50,25 +50,25 @@
 
 #### System Override (4 frames)
 
-- **Frame 0**: Interface activation, system analysis
-- **Frame 1**: Target acquisition, neural mapping
-- **Frame 2**: Precision strike calculation
-- **Frame 3**: Digital feedback integration
+- **Frame 0**: Interface activation, neural system analysis
+- **Frame 1**: Target acquisition, nerve pathway mapping
+- **Frame 2**: Precision strike calculation for neural disruption
+- **Frame 3**: Digital feedback integration, system confirmation
 
 ### 3. Trigram Stance Specializations
 
-#### ☲ Li (Fire) - Precise Nerve Strike Stance
+#### ☲ Li (Fire) - Precision Nerve Strike Stance
 
-- **Frames 0-1**: Digital targeting setup, nerve location analysis
-- **Frames 2-3**: Precision nerve strike execution
-- **Frames 4-5**: Digital feedback confirmation, effect monitoring
+- **Frames 0-1**: Digital targeting setup, exact nerve location analysis
+- **Frames 2-3**: Precision nerve strike execution for temporary paralysis
+- **Frames 4-5**: Digital feedback confirmation, neural effect monitoring
 - **Visual Elements**: Anatomical precision, tech-enhanced accuracy
 
-#### ☳ Jin (Thunder) - Stunning Technique Stance
+#### ☳ Jin (Thunder) - Explosive Power Stance
 
-- **Frames 0-1**: Neural disruption positioning
-- **Frames 2-3**: Precise stunning strike delivery
-- **Frames 4-5**: System confirmation of neural disruption
+- **Frames 0-1**: Neural disruption positioning for explosive impact
+- **Frames 2-3**: Tech-enhanced explosive strike delivery
+- **Frames 4-5**: System confirmation of neural disruption and disorientation
 - **Visual Elements**: Neural pathway targeting, consciousness disruption
 
 ### 4. Combat Animations
@@ -77,11 +77,11 @@
 
 - **Neural Precision**: Exact anatomical targeting for nerve disruption
 - **Digital Enhancement**: Tech-assisted accuracy and timing
-- **System Integration**: Real-time anatomical analysis
+- **System Integration**: Real-time anatomical analysis for maximum effect
 
 #### Combat Effects Visualization
 
-- **Nerve Disruption**: Targeting actual neural pathways
+- **Neural Disruption**: Targeting actual neural pathways for paralysis
 - **Temporary Paralysis**: Realistic nerve impairment effects
 - **Consciousness Disruption**: Accurate neural shutdown techniques
 

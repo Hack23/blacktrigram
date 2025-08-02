@@ -6,8 +6,8 @@
 **Philosophy**: Efficiency through invisibility, one perfect strike  
 **Primary Color**: Purple (#7B68EE)  
 **Secondary Color**: Shadow Black (#1A1A1A)  
-**Combat Focus**: Continuous pressure (☴ Son) and Blood flow restriction (☵ Gam)  
-**Combat Effects**: Gradual incapacitation, circulation disruption
+**Combat Focus**: Continuous pressure (☴ Son) and Adaptive flow (☵ Gam)  
+**Combat Effects**: Gradual incapacitation, cumulative pain, circulation disruption
 
 ## Visual Design Requirements
 
@@ -24,10 +24,10 @@
 
 ### Combat Specialization Visual Cues
 
+- **Continuous Pressure**: Fluid positioning for sustained pressure point attacks
 - **Stealth Optimization**: Low-profile gear, sound-dampening materials
-- **Precision Focus**: Finger precision wraps, targeting aids
 - **Circulation Targeting**: Pressure point markers, anatomical knowledge
-- **Quick Strike Ready**: Coiled spring posture, ready to strike
+- **Quick Strike Ready**: Coiled spring posture, ready for flow techniques
 
 ## Animation Requirements
 
@@ -35,8 +35,8 @@
 
 #### Idle Animations
 
-- **South (Forward)**: Low stealth crouch, ready to strike
-- **North (Back)**: Alert surveillance position
+- **South (Forward)**: Low stealth crouch, ready for continuous strikes
+- **North (Back)**: Alert surveillance position, flow-ready
 - **East/West**: Profile stealth stances, minimized silhouette
 - **Diagonals**: Transitional stealth positions
 
@@ -44,46 +44,46 @@
 
 - **Movement Style**: Silent, flowing, cat-like steps
 - **Posture**: Low profile, minimized noise
-- **Foot Placement**: Precise, silent placement
+- **Foot Placement**: Precise, silent placement for stealth approaches
 
 ### 2. Stealth-Specific Animations
 
 #### Stealth Idle (4 frames)
 
-- **Frame 0**: Deep crouch, observing
-- **Frame 1**: Slight weight shift, ready to move
-- **Frame 2**: Tension coiled, strike ready
-- **Frame 3**: Return to observation
+- **Frame 0**: Deep crouch, observing for pressure point opportunities
+- **Frame 1**: Slight weight shift, ready for continuous pressure
+- **Frame 2**: Tension coiled, flow technique ready
+- **Frame 3**: Return to observation, maintaining stealth
 
 ### 3. Trigram Stance Specializations
 
 #### ☴ Son (Wind) - Continuous Pressure Stance
 
-- **Frames 0-1**: Setup in wind stance, multiple strike ready
-- **Frames 2-3**: Rapid pressure sequence execution
-- **Frames 4-5**: Continuous flow maintenance, pressure buildup
-- **Visual Elements**: Fluid motion, pressure point targeting
+- **Frames 0-1**: Setup for sustained pressure point attacks
+- **Frames 2-3**: Continuous pressure sequence execution
+- **Frames 4-5**: Flow maintenance, cumulative pain buildup
+- **Visual Elements**: Fluid motion, persistent pressure application
 
-#### ☵ Gam (Water) - Blood Flow Restriction Stance
+#### ☵ Gam (Water) - Adaptive Flow Stance
 
-- **Frames 0-1**: Precision positioning for vascular targets
-- **Frames 2-3**: Precise strike to circulation points
-- **Frames 4-5**: Hold and pressure application
-- **Visual Elements**: Anatomical precision, circulation focus
+- **Frames 0-1**: Adaptive positioning for circulation targeting
+- **Frames 2-3**: Flow counter-technique execution
+- **Frames 4-5**: Circulation disruption maintenance
+- **Visual Elements**: Water-like adaptability, circulation focus
 
 ### 4. Combat Animations
 
 #### Attack Sequences
 
-- **Silent Strikes**: No wasted movement, precise targeting
-- **Pressure Points**: Specific anatomical targeting for circulation
-- **Flow Techniques**: Continuous pressure application
+- **Continuous Pressure**: No wasted movement, sustained attacks
+- **Circulation Focus**: Specific anatomical targeting for blood flow
+- **Adaptive Techniques**: Flow-based counter and pressure applications
 
 #### Combat Effects Visualization
 
-- **Circulation Disruption**: Targeting major blood vessels and pressure points
 - **Gradual Incapacitation**: Progressive weakening through sustained pressure
-- **Stealth Efficiency**: Minimal movement for maximum effect
+- **Circulation Disruption**: Targeting blood flow and pressure points
+- **Stealth Efficiency**: Minimal movement for maximum cumulative effect
 
 ## AI Generation Prompts
 

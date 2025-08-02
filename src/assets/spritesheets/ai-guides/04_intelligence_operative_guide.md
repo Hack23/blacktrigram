@@ -6,8 +6,8 @@
 **Philosophy**: Knowledge through observation, strategic thinking  
 **Primary Color**: Green (#32CD32)  
 **Secondary Color**: Military Gray (#708090)  
-**Combat Focus**: Joint manipulation (☱ Tae) and Defensive counters (☶ Gan)  
-**Combat Effects**: Dislocations, mobility loss, counter-attacks, blocks
+**Combat Focus**: Fluid adaptation (☱ Tae) and Immovable defense (☶ Gan)  
+**Combat Effects**: Dislocations, torn ligaments, counter-attacks, blocks
 
 ## Visual Design Requirements
 
@@ -50,40 +50,40 @@
 
 #### Observation Mode (4 frames)
 
-- **Frame 0**: Active surveillance position
-- **Frame 1**: Target analysis and assessment
-- **Frame 2**: Strategic positioning adjustment
-- **Frame 3**: Ready for tactical response
+- **Frame 0**: Active surveillance position for joint analysis
+- **Frame 1**: Target assessment for joint vulnerabilities
+- **Frame 2**: Strategic positioning adjustment for optimal control
+- **Frame 3**: Ready for tactical joint manipulation response
 
 ### 3. Trigram Stance Specializations
 
-#### ☱ Tae (Lake) - Joint Manipulation Stance
+#### ☱ Tae (Lake) - Fluid Adaptation Stance
 
-- **Frames 0-1**: Joint targeting setup, anatomical positioning
-- **Frames 2-3**: Precise joint manipulation execution
-- **Frames 4-5**: Control maintenance, mobility restriction
-- **Visual Elements**: Joint targeting, anatomical precision
+- **Frames 0-1**: Joint targeting setup, anatomical positioning for throws
+- **Frames 2-3**: Fluid joint manipulation execution
+- **Frames 4-5**: Control maintenance, mobility restriction through joint locks
+- **Visual Elements**: Joint targeting precision, fluid redirection techniques
 
-#### ☶ Gan (Mountain) - Defensive Counter Stance
+#### ☶ Gan (Mountain) - Immovable Defense Stance
 
-- **Frames 0-1**: Strategic defensive positioning
-- **Frames 2-3**: Professional counter-attack execution
-- **Frames 4-5**: Tactical advantage maintenance
-- **Visual Elements**: Professional combat form, strategic positioning
+- **Frames 0-1**: Strategic immovable defensive positioning
+- **Frames 2-3**: Professional counter-attack execution from solid foundation
+- **Frames 4-5**: Tactical advantage maintenance, defensive mastery
+- **Visual Elements**: Professional combat form, mountain-solid stability
 
 ### 4. Combat Animations
 
 #### Attack Sequences
 
-- **Joint Targeting**: Precise anatomical knowledge application
-- **Professional Technique**: Military-trained combat methodology
-- **Strategic Application**: Intelligence-informed combat choices
+- **Joint Targeting**: Precise anatomical knowledge for dislocation techniques
+- **Professional Technique**: Military-trained joint manipulation methodology
+- **Strategic Application**: Intelligence-informed defensive and counter choices
 
 #### Combat Effects Visualization
 
-- **Joint Disruption**: Targeting actual joint vulnerabilities
-- **Mobility Control**: Realistic joint manipulation effects
-- **Strategic Advantage**: Professional tactical positioning
+- **Joint Disruption**: Targeting actual joint vulnerabilities for dislocations
+- **Mobility Control**: Realistic joint manipulation for torn ligaments
+- **Strategic Defense**: Professional tactical positioning for counter-attacks
 
 ## AI Generation Prompts
 

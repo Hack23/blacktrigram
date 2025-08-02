@@ -6,8 +6,8 @@
 **Philosophy**: Honor through disciplined strength  
 **Primary Color**: Blue (#4A90E2)  
 **Secondary Color**: Korean Red (#C8102E)  
-**Combat Focus**: Bone-striking force (☰ Geon) and Defensive counters (☶ Gan)  
-**Combat Effects**: Fractures, structural damage, counter-attacks, blocks
+**Combat Focus**: Direct force (☰ Geon) and Defensive mastery (☶ Gan)  
+**Combat Effects**: Fractures, concussions, immediate trauma, counter-attacks, blocks
 
 ## Visual Design Requirements
 
@@ -24,10 +24,10 @@
 
 ### Combat Specialization Visual Cues
 
-- **Bone-Striking Focus**: Reinforced knuckles, wrapped hands/wrists
+- **Direct Force Focus**: Reinforced knuckles, wrapped hands/wrists for bone impacts
 - **Military Background**: Tactical patches, disciplined posture
 - **Honor Symbols**: Traditional Korean military insignia
-- **Defensive Stance**: Solid, grounded positioning
+- **Defensive Stance**: Solid, grounded positioning for immovable defense
 
 ## Animation Requirements
 
@@ -48,33 +48,33 @@
 
 ### 2. Trigram Stance Specializations
 
-#### ☰ Geon (Heaven) - Bone-Striking Stance
+#### ☰ Geon (Heaven) - Direct Force Stance
 
-- **Frames 0-2**: Setup with clenched fists, forward lean
-- **Frames 3-4**: Power strike execution, full body commitment
-- **Frame 5**: Recovery with defensive positioning
-- **Visual Elements**: Emphasized fist positioning, power lines
+- **Frames 0-2**: Setup with clenched fists, overwhelming power focus
+- **Frames 3-4**: Direct bone-striking execution, structural damage delivery
+- **Frame 5**: Recovery with disciplined positioning
+- **Visual Elements**: Emphasized fist positioning, power lines, bone impact focus
 
-#### ☶ Gan (Mountain) - Defensive Counter Stance
+#### ☶ Gan (Mountain) - Defensive Mastery Stance
 
-- **Frames 0-1**: Solid defensive position, arms up
-- **Frames 2-3**: Block and counter sequence
-- **Frames 4-5**: Follow-through strike, return to guard
-- **Visual Elements**: Strong blocking posture, mountain-like stability
+- **Frames 0-1**: Immovable defensive position, mountain-solid guard
+- **Frames 2-3**: Perfect block and precise counter sequence
+- **Frames 4-5**: Follow-through strike, return to impenetrable guard
+- **Visual Elements**: Strong blocking posture, mountain-like stability, defensive mastery
 
 ### 3. Combat Animations
 
 #### Attack Sequences
 
-- **Power Strikes**: Full-body commitment, traditional Korean martial arts form
-- **Defensive Counters**: Solid blocks followed by precise counters
-- **Bone Impacts**: Realistic contact poses showing structural damage focus
+- **Direct Force**: Full-body commitment to bone-breaking strikes
+- **Defensive Counters**: Solid blocks followed by precise counters from solid foundation
+- **Structural Damage**: Realistic contact poses showing bone impact focus
 
 #### Combat Effects Visualization
 
-- **Fracture Focus**: Strike positions targeting skeletal structure
-- **Structural Damage**: Power delivery through bone alignment
-- **Military Precision**: Every movement calculated and disciplined
+- **Bone Impact Focus**: Strike positions targeting skeletal structure for fractures
+- **Overwhelming Force**: Power delivery through perfect bone alignment
+- **Military Precision**: Every movement calculated and disciplined for maximum effectiveness
 
 ## AI Generation Prompts
 

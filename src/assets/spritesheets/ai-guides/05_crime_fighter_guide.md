@@ -6,7 +6,7 @@
 **Philosophy**: Survival through ruthlessness, practical violence  
 **Primary Color**: Orange (#FF4500)  
 **Secondary Color**: Dark Red (#8B0000)  
-**Combat Focus**: Stunning techniques (☳ Jin) and Ground techniques (☷ Gon)  
+**Combat Focus**: Explosive power (☳ Jin) and Grounding attacks (☷ Gon)  
 **Combat Effects**: Disorientation, knockouts, throws, takedowns
 
 ## Visual Design Requirements
@@ -51,39 +51,39 @@
 #### Intimidation Stance (4 frames)
 
 - **Frame 0**: Aggressive posturing, territorial display
-- **Frame 1**: Threatening advance, psychological pressure
-- **Frame 2**: Ready for violence, intimidation peak
-- **Frame 3**: Maintained threat, dominance assertion
+- **Frame 1**: Threatening advance, psychological pressure for stunning setup
+- **Frame 2**: Ready for explosive violence, intimidation peak
+- **Frame 3**: Maintained threat, dominance assertion for ground control
 
 ### 3. Trigram Stance Specializations
 
-#### ☳ Jin (Thunder) - Stunning Technique Stance
+#### ☳ Jin (Thunder) - Explosive Power Stance
 
-- **Frames 0-1**: Brutal setup for consciousness disruption
-- **Frames 2-3**: Devastating stunning strike delivery
+- **Frames 0-1**: Brutal setup for explosive consciousness disruption
+- **Frames 2-3**: Devastating explosive stunning strike delivery
 - **Frames 4-5**: Ruthless follow-through, knockout confirmation
-- **Visual Elements**: Brutal efficiency, survival-focused technique
+- **Visual Elements**: Brutal efficiency, explosive power for disorientation
 
-#### ☷ Gon (Earth) - Ground Technique Stance
+#### ☷ Gon (Earth) - Grounding Attacks Stance
 
 - **Frames 0-1**: Takedown positioning, ground control setup
-- **Frames 2-3**: Brutal throw or takedown execution
+- **Frames 2-3**: Brutal throw or takedown execution to ground
 - **Frames 4-5**: Ground dominance, submission positioning
-- **Visual Elements**: Street-fighting brutality, practical control
+- **Visual Elements**: Street-fighting brutality, practical ground control
 
 ### 4. Combat Animations
 
 #### Attack Sequences
 
-- **Street Brutality**: Practical, survival-focused techniques
-- **Intimidation Factor**: Psychological warfare through violence
-- **Ground Control**: Practical street fighting dominance
+- **Explosive Brutality**: Practical, survival-focused stunning techniques
+- **Intimidation Factor**: Psychological warfare through explosive violence
+- **Ground Control**: Practical street fighting takedown dominance
 
 #### Combat Effects Visualization
 
-- **Knockout Focus**: Brutal consciousness disruption techniques
+- **Knockout Focus**: Brutal consciousness disruption through explosive techniques
 - **Takedown Mastery**: Street-effective throwing and ground control
-- **Survival Efficiency**: Whatever works, practical violence
+- **Survival Efficiency**: Whatever works, practical explosive violence
 
 ## AI Generation Prompts
 
