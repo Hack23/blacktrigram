@@ -93,7 +93,7 @@
     "start-server-and-test": "^2.0.12",
     "ts-morph": "^26.0.0",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.28.8",
+    "typedoc": "^0.28.9",
     "typedoc-plugin-markdown": "^4.8.0",
     "typedoc-plugin-mermaid": "^1.12.0",
     "typedoc-plugin-missing-exports": "^4.0.0",
@@ -103,23 +103,5 @@
     "vite-bundle-analyzer": "^1.1.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
-  },
-  "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "overrides": {
-    "@testing-library/react": {
-      "react": "^19.0.0",
-      "react-dom": "^19.0.0"
-    },
-    "@cypress/react": {
-      "react": "^19.0.0",
-      "react-dom": "^19.0.0"
-    }
-  },
-  "resolutions": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
   }
 }
