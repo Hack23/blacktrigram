@@ -1,0 +1,226 @@
+{
+  "frames": {
+    "jeongbo_idle_south_0": {
+      "frame": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_idle_south_1": {
+      "frame": { "x": 64, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_idle_south_2": {
+      "frame": { "x": 128, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_idle_south_3": {
+      "frame": { "x": 192, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "jeongbo_idle_north_0": {
+      "frame": { "x": 256, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_idle_north_1": {
+      "frame": { "x": 320, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_idle_north_2": {
+      "frame": { "x": 384, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_idle_north_3": {
+      "frame": { "x": 448, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "jeongbo_walk_south_0": {
+      "frame": { "x": 0, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_walk_south_1": {
+      "frame": { "x": 64, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_walk_south_2": {
+      "frame": { "x": 128, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_walk_south_3": {
+      "frame": { "x": 192, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "jeongbo_observe_0": {
+      "frame": { "x": 256, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_observe_1": {
+      "frame": { "x": 320, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_observe_2": {
+      "frame": { "x": 384, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_observe_3": {
+      "frame": { "x": 448, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "jeongbo_attack_tae_0": {
+      "frame": { "x": 0, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_tae_1": {
+      "frame": { "x": 64, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_tae_2": {
+      "frame": { "x": 128, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_tae_3": {
+      "frame": { "x": 192, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_tae_4": {
+      "frame": { "x": 256, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_tae_5": {
+      "frame": { "x": 320, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "jeongbo_attack_gan_0": {
+      "frame": { "x": 384, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_gan_1": {
+      "frame": { "x": 448, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_gan_2": {
+      "frame": { "x": 512, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_gan_3": {
+      "frame": { "x": 576, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_gan_4": {
+      "frame": { "x": 640, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "jeongbo_attack_gan_5": {
+      "frame": { "x": 704, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    }
+  },
+  "animations": {
+    "jeongbo_idle_south": [
+      "jeongbo_idle_south_0",
+      "jeongbo_idle_south_1",
+      "jeongbo_idle_south_2",
+      "jeongbo_idle_south_3"
+    ],
+    "jeongbo_idle_north": [
+      "jeongbo_idle_north_0",
+      "jeongbo_idle_north_1",
+      "jeongbo_idle_north_2",
+      "jeongbo_idle_north_3"
+    ],
+    "jeongbo_walk_south": [
+      "jeongbo_walk_south_0",
+      "jeongbo_walk_south_1",
+      "jeongbo_walk_south_2",
+      "jeongbo_walk_south_3"
+    ],
+    "jeongbo_observe": [
+      "jeongbo_observe_0",
+      "jeongbo_observe_1",
+      "jeongbo_observe_2",
+      "jeongbo_observe_3"
+    ],
+    "jeongbo_attack_tae": [
+      "jeongbo_attack_tae_0",
+      "jeongbo_attack_tae_1",
+      "jeongbo_attack_tae_2",
+      "jeongbo_attack_tae_3",
+      "jeongbo_attack_tae_4",
+      "jeongbo_attack_tae_5"
+    ],
+    "jeongbo_attack_gan": [
+      "jeongbo_attack_gan_0",
+      "jeongbo_attack_gan_1",
+      "jeongbo_attack_gan_2",
+      "jeongbo_attack_gan_3",
+      "jeongbo_attack_gan_4",
+      "jeongbo_attack_gan_5"
+    ]
+  },
+  "meta": {
+    "image": "jeongbo_operative.png",
+    "format": "RGBA8888",
+    "size": { "w": 1024, "h": 2048 },
+    "scale": "1",
+    "description": "Intelligence Operative (정보요원) - Tactical animations with Lake and Mountain stance specializations"
+  }
+}
