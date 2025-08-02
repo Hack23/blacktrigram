@@ -1,0 +1,186 @@
+{
+  "frames": {
+    "musa_idle_south_0": {
+      "frame": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_idle_south_1": {
+      "frame": { "x": 64, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_idle_south_2": {
+      "frame": { "x": 128, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_idle_south_3": {
+      "frame": { "x": 192, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "musa_walk_south_0": {
+      "frame": { "x": 0, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_walk_south_1": {
+      "frame": { "x": 64, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_walk_south_2": {
+      "frame": { "x": 128, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_walk_south_3": {
+      "frame": { "x": 192, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "musa_idle_north_0": {
+      "frame": { "x": 256, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_idle_north_1": {
+      "frame": { "x": 320, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_idle_north_2": {
+      "frame": { "x": 384, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_idle_north_3": {
+      "frame": { "x": 448, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "musa_walk_north_0": {
+      "frame": { "x": 256, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_walk_north_1": {
+      "frame": { "x": 320, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_walk_north_2": {
+      "frame": { "x": 384, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_walk_north_3": {
+      "frame": { "x": 448, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "musa_attack_geon_0": {
+      "frame": { "x": 0, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_attack_geon_1": {
+      "frame": { "x": 64, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_attack_geon_2": {
+      "frame": { "x": 128, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_attack_geon_3": {
+      "frame": { "x": 192, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_attack_geon_4": {
+      "frame": { "x": 256, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "musa_attack_geon_5": {
+      "frame": { "x": 320, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    }
+  },
+  "animations": {
+    "musa_idle_south": [
+      "musa_idle_south_0",
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3"
+    ],
+    "musa_idle_north": [
+      "musa_idle_north_0",
+      "musa_idle_north_1",
+      "musa_idle_north_2",
+      "musa_idle_north_3"
+    ],
+    "musa_walk_south": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_walk_north": [
+      "musa_walk_north_0",
+      "musa_walk_north_1",
+      "musa_walk_north_2",
+      "musa_walk_north_3"
+    ],
+    "musa_attack_geon": [
+      "musa_attack_geon_0",
+      "musa_attack_geon_1",
+      "musa_attack_geon_2",
+      "musa_attack_geon_3",
+      "musa_attack_geon_4",
+      "musa_attack_geon_5"
+    ],
+    "musa_stance_geon": [
+      "musa_attack_geon_0",
+      "musa_attack_geon_1",
+      "musa_attack_geon_2"
+    ]
+  },
+  "meta": {
+    "image": "musa_warrior.png",
+    "format": "RGBA8888",
+    "size": { "w": 1024, "h": 2048 },
+    "scale": "1",
+    "description": "Traditional Korean Warrior (무사) - Complete animation set for 8-directional movement and 8 trigram stances"
+  }
+}

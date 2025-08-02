@@ -1,0 +1,226 @@
+{
+  "frames": {
+    "hacker_idle_south_0": {
+      "frame": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_idle_south_1": {
+      "frame": { "x": 64, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_idle_south_2": {
+      "frame": { "x": 128, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_idle_south_3": {
+      "frame": { "x": 192, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "hacker_idle_north_0": {
+      "frame": { "x": 256, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_idle_north_1": {
+      "frame": { "x": 320, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_idle_north_2": {
+      "frame": { "x": 384, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_idle_north_3": {
+      "frame": { "x": 448, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "hacker_walk_south_0": {
+      "frame": { "x": 0, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_walk_south_1": {
+      "frame": { "x": 64, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_walk_south_2": {
+      "frame": { "x": 128, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_walk_south_3": {
+      "frame": { "x": 192, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "hacker_override_0": {
+      "frame": { "x": 256, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_override_1": {
+      "frame": { "x": 320, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_override_2": {
+      "frame": { "x": 384, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_override_3": {
+      "frame": { "x": 448, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "hacker_attack_li_0": {
+      "frame": { "x": 0, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_li_1": {
+      "frame": { "x": 64, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_li_2": {
+      "frame": { "x": 128, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_li_3": {
+      "frame": { "x": 192, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_li_4": {
+      "frame": { "x": 256, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_li_5": {
+      "frame": { "x": 320, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+
+    "hacker_attack_jin_0": {
+      "frame": { "x": 384, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_jin_1": {
+      "frame": { "x": 448, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_jin_2": {
+      "frame": { "x": 512, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_jin_3": {
+      "frame": { "x": 576, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_jin_4": {
+      "frame": { "x": 640, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "hacker_attack_jin_5": {
+      "frame": { "x": 704, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    }
+  },
+  "animations": {
+    "hacker_idle_south": [
+      "hacker_idle_south_0",
+      "hacker_idle_south_1",
+      "hacker_idle_south_2",
+      "hacker_idle_south_3"
+    ],
+    "hacker_idle_north": [
+      "hacker_idle_north_0",
+      "hacker_idle_north_1",
+      "hacker_idle_north_2",
+      "hacker_idle_north_3"
+    ],
+    "hacker_walk_south": [
+      "hacker_walk_south_0",
+      "hacker_walk_south_1",
+      "hacker_walk_south_2",
+      "hacker_walk_south_3"
+    ],
+    "hacker_override": [
+      "hacker_override_0",
+      "hacker_override_1",
+      "hacker_override_2",
+      "hacker_override_3"
+    ],
+    "hacker_attack_li": [
+      "hacker_attack_li_0",
+      "hacker_attack_li_1",
+      "hacker_attack_li_2",
+      "hacker_attack_li_3",
+      "hacker_attack_li_4",
+      "hacker_attack_li_5"
+    ],
+    "hacker_attack_jin": [
+      "hacker_attack_jin_0",
+      "hacker_attack_jin_1",
+      "hacker_attack_jin_2",
+      "hacker_attack_jin_3",
+      "hacker_attack_jin_4",
+      "hacker_attack_jin_5"
+    ]
+  },
+  "meta": {
+    "image": "hacker_cyber.png",
+    "format": "RGBA8888",
+    "size": { "w": 1024, "h": 2048 },
+    "scale": "1",
+    "description": "Cyber Warrior (해커) - Digital effects with Fire and Thunder stance specializations"
+  }
+}

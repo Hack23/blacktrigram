@@ -1,0 +1,237 @@
+{
+  "frames": {
+    "amsalja_idle_south_0": {
+      "frame": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_south_1": {
+      "frame": { "x": 64, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_south_2": {
+      "frame": { "x": 128, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_south_3": {
+      "frame": { "x": 192, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_north_0": {
+      "frame": { "x": 256, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_north_1": {
+      "frame": { "x": 320, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_north_2": {
+      "frame": { "x": 384, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_north_3": {
+      "frame": { "x": 448, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_east_0": {
+      "frame": { "x": 512, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_east_1": {
+      "frame": { "x": 576, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_east_2": {
+      "frame": { "x": 640, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_east_3": {
+      "frame": { "x": 704, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_west_0": {
+      "frame": { "x": 768, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_west_1": {
+      "frame": { "x": 832, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_west_2": {
+      "frame": { "x": 896, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_idle_west_3": {
+      "frame": { "x": 960, "y": 0, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_walk_south_0": {
+      "frame": { "x": 0, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_walk_south_1": {
+      "frame": { "x": 64, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_walk_south_2": {
+      "frame": { "x": 128, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_walk_south_3": {
+      "frame": { "x": 192, "y": 128, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_stealth_idle_0": {
+      "frame": { "x": 0, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_stealth_idle_1": {
+      "frame": { "x": 64, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_stealth_idle_2": {
+      "frame": { "x": 128, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_stealth_idle_3": {
+      "frame": { "x": 192, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_attack_son_0": {
+      "frame": { "x": 256, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_attack_son_1": {
+      "frame": { "x": 320, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_attack_son_2": {
+      "frame": { "x": 384, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_attack_son_3": {
+      "frame": { "x": 448, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_attack_son_4": {
+      "frame": { "x": 512, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    },
+    "amsalja_attack_son_5": {
+      "frame": { "x": 576, "y": 256, "w": 64, "h": 128 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 128 },
+      "sourceSize": { "w": 64, "h": 128 },
+      "anchor": { "x": 0.5, "y": 0.8 }
+    }
+  },
+  "animations": {
+    "amsalja_idle_south": [
+      "amsalja_idle_south_0",
+      "amsalja_idle_south_1",
+      "amsalja_idle_south_2",
+      "amsalja_idle_south_3"
+    ],
+    "amsalja_idle_north": [
+      "amsalja_idle_north_0",
+      "amsalja_idle_north_1",
+      "amsalja_idle_north_2",
+      "amsalja_idle_north_3"
+    ],
+    "amsalja_idle_east": [
+      "amsalja_idle_east_0",
+      "amsalja_idle_east_1",
+      "amsalja_idle_east_2",
+      "amsalja_idle_east_3"
+    ],
+    "amsalja_idle_west": [
+      "amsalja_idle_west_0",
+      "amsalja_idle_west_1",
+      "amsalja_idle_west_2",
+      "amsalja_idle_west_3"
+    ],
+    "amsalja_walk_south": [
+      "amsalja_walk_south_0",
+      "amsalja_walk_south_1",
+      "amsalja_walk_south_2",
+      "amsalja_walk_south_3"
+    ],
+    "amsalja_stealth_idle": [
+      "amsalja_stealth_idle_0",
+      "amsalja_stealth_idle_1",
+      "amsalja_stealth_idle_2",
+      "amsalja_stealth_idle_3"
+    ],
+    "amsalja_attack_son": [
+      "amsalja_attack_son_0",
+      "amsalja_attack_son_1",
+      "amsalja_attack_son_2",
+      "amsalja_attack_son_3",
+      "amsalja_attack_son_4",
+      "amsalja_attack_son_5"
+    ]
+  },
+  "meta": {
+    "image": "amsalja_assassin.png",
+    "format": "RGBA8888",
+    "size": { "w": 1024, "h": 2048 },
+    "scale": "1",
+    "description": "Shadow Assassin (암살자) - Stealth-focused animations with Wind and Water stance specializations"
+  }
+}
