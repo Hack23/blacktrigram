@@ -1,4 +1,4 @@
-I# 🛡️ Black Trigram (흑괘) Future Security Architecture
+# 🛡️ Black Trigram (흑괘) Future Security Architecture
 
 This document outlines the comprehensive security architecture for Black Trigram's evolution into a full-stack Korean martial arts combat simulator with AWS cloud infrastructure, user accounts, and advanced security services.
 
@@ -321,13 +321,15 @@ graph TD
         K[🔌 VPC Endpoints] --> E
         L[🛡️ Security Groups] --> E
         M[🚧 NACLs] --> E
+        N[📝 DNS Query Logs] --> E
+        O[🌍 Multi-Region S3] --> E
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
     style B fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
     style C,D fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:white,font-weight:bold
     style E fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style F,G,H,I,J,K,L,M fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:white,font-weight:bold
+    style F,G,H,I,J,K,L,M,N,O fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Implementation
@@ -356,6 +358,10 @@ Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
 Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Resource-Policy: same-origin
+X-Permitted-Cross-Domain-Policies: none
+X-Download-Options: noopen
+X-DNS-Prefetch-Control: off
+Expect-CT: max-age=86400, enforce
 ```
 
 #### 🔒 VPC Security Architecture
@@ -365,6 +371,71 @@ Cross-Origin-Resource-Policy: same-origin
 - **✅ Network ACLs**: Network-level access control lists for defense in depth
 - **✅ VPC Flow Logs**: Complete network traffic monitoring with anomaly detection
 - **✅ DNS Firewall**: Protection against DNS-based attacks and data exfiltration
+- **✅ DNS Query Logs**: Complete DNS resolution logging for security analysis
+
+#### 🔍 DNS Firewall & Logging Implementation
+
+```yaml
+# DNS Firewall Configuration
+DNSFirewall:
+  Type: AWS::Route53Resolver::FirewallRuleGroup
+  Properties:
+    Name: BlackTrigramDNSFirewall
+    FirewallRules:
+      - Name: BlockMaliciousDomains
+        Action: BLOCK
+        BlockResponse: NODATA
+        Priority: 100
+        FirewallDomainListId: !Ref MaliciousDomainList
+      - Name: AllowKoreanCulturalSites
+        Action: ALLOW
+        Priority: 200
+        FirewallDomainListId: !Ref KoreanCulturalDomainList
+
+# DNS Query Logging
+DNSQueryLog:
+  Type: AWS::Route53Resolver::ResolverQueryLogConfig
+  Properties:
+    Name: BlackTrigramDNSLogs
+    DestinationArn: !GetAtt DNSLogGroup.Arn
+
+# CloudWatch Log Group for DNS Queries
+DNSLogGroup:
+  Type: AWS::Logs::LogGroup
+  Properties:
+    LogGroupName: /aws/route53resolver/blacktrigram-dns-queries
+    RetentionInDays: 365
+    KmsKeyId: !Ref DNSLogKMSKey
+```
+
+#### 🌍 Multi-Region S3 Architecture
+
+```mermaid
+graph TD
+    subgraph "Multi-Region S3 Security Architecture"
+        A[🌐 CloudFront] --> B[📦 S3 Primary<br/>US-East-1]
+        A --> C[📦 S3 Secondary<br/>US-West-2]
+
+        B <-->|"🔄 Cross-Region Replication"| C
+
+        D[🔐 S3 Bucket Encryption] --> B
+        D --> C
+
+        E[🛡️ S3 Bucket Policies] --> B
+        E --> C
+
+        F[📊 S3 Access Logging] --> G[📝 Access Log Bucket]
+        B --> F
+        C --> F
+
+        H[🔒 S3 Object Lock] --> B
+        H --> C
+    end
+
+    style A fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style B,C fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style D,E,F,G,H fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:white,font-weight:bold
+```
 
 #### 🔌 VPC Endpoints Implementation
 
@@ -380,72 +451,85 @@ Cross-Origin-Resource-Policy: same-origin
 - **🔄 Route53 Health Checks**: Automatic failover between regions with health monitoring
 - **⚡ Geo-latency Routing**: Optimal performance based on user location and Korean server proximity
 
-## 🔌 VPC Endpoints Security
+### DNS Security Enhanced Features
 
-**Status**: ✅ Comprehensive VPC Endpoints - All AWS Services Private Access
+#### 🔍 DNS Firewall Configuration
 
-```mermaid
-flowchart TD
-    subgraph "Secure VPC Endpoints Architecture"
-        A[⚙️ Lambda Functions<br/>Private Subnets] --> B[🔌 Interface Endpoints]
-        A --> C[🚪 Gateway Endpoints]
-
-        B --> D[🔐 Cognito VPC Endpoint]
-        B --> E[🔑 STS VPC Endpoint]
-        B --> F[📊 CloudWatch VPC Endpoint]
-        B --> G[🗄️ SSM VPC Endpoint]
-        B --> H[📝 CloudTrail VPC Endpoint]
-        B --> I[🔑 KMS VPC Endpoint]
-        B --> J[📧 SES VPC Endpoint]
-
-        C --> K[📦 S3 Gateway Endpoint]
-        C --> L[🗄️ DynamoDB Gateway Endpoint]
-
-        M[🛡️ Endpoint Policies] --> B
-        M --> C
-        N[🔒 Security Groups] --> B
-        O[📊 VPC Flow Logs] --> P[🔍 Endpoint Monitoring]
-    end
-
-    style A fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:white,font-weight:bold
-    style B,C fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
-    style D,E,F,G,H,I,J,K,L fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style M,N,O,P fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:white,font-weight:bold
+```json
+{
+  "DNSFirewallRules": {
+    "MalwareBlocking": {
+      "action": "BLOCK",
+      "priority": 100,
+      "domains": ["known-malware-domains.txt"],
+      "response": "NXDOMAIN"
+    },
+    "PhishingBlocking": {
+      "action": "BLOCK",
+      "priority": 200,
+      "domains": ["phishing-domains.txt"],
+      "response": "NXDOMAIN"
+    },
+    "KoreanCulturalAllowlist": {
+      "action": "ALLOW",
+      "priority": 300,
+      "domains": [
+        "*.korean-culture.org",
+        "*.martial-arts.kr",
+        "*.taekwondo.org"
+      ]
+    }
+  }
+}
 ```
 
-### Implementation
+#### 📝 DNS Query Logging
 
-Black Trigram implements comprehensive VPC endpoints for all AWS services:
+- **✅ Complete Query Logging**: All DNS queries from VPC logged to CloudWatch
+- **✅ Security Analysis**: Automated analysis of DNS patterns for threats
+- **✅ Anomaly Detection**: ML-based detection of unusual DNS behavior
+- **✅ Compliance**: DNS query logs retained for security auditing
 
-#### 🚪 Gateway Endpoints
+### Enhanced CloudFront Security Headers
 
-- **✅ S3 Gateway Endpoint**: Private access to combat data, user assets, and audit logs
-- **✅ DynamoDB Gateway Endpoint**: Private access to user data, sessions, and training records
-- **✅ No Internet Routing**: All data access through private AWS backbone with encryption
-
-#### 🔌 Interface Endpoints
-
-- **✅ Cognito VPC Endpoint**: Private authentication and user management operations
-- **✅ STS VPC Endpoint**: Private credential exchange and token validation
-- **✅ CloudWatch VPC Endpoint**: Private logging, metrics, and monitoring
-- **✅ SSM VPC Endpoint**: Private parameter store access for configuration management
-- **✅ CloudTrail VPC Endpoint**: Private audit logging and compliance tracking
-- **✅ KMS VPC Endpoint**: Private encryption key management and operations
-- **✅ SES VPC Endpoint**: Private email services for notifications and verification
-
-#### 🛡️ Endpoint Security Implementation
-
-- **✅ Restrictive Endpoint Policies**: Fine-grained access control limiting specific resources and actions
-- **✅ Security Groups**: Network-level access controls for endpoints with monitoring
-- **✅ Private DNS**: Internal DNS resolution for service discovery and communication
-- **✅ Comprehensive Monitoring**: VPC Flow Logs for all endpoint traffic with anomaly detection
-
-### Security Benefits
-
-- **🔒 Zero Internet Exposure**: AWS service communication stays within AWS private network
-- **📊 Complete Visibility**: All AWS API calls logged and monitored through CloudTrail
-- **🛡️ Reduced Attack Surface**: No public internet dependencies for AWS service access
-- **⚡ Enhanced Performance**: Lower latency through AWS backbone with improved reliability
+```yaml
+# CloudFront Response Headers Policy
+ResponseHeadersPolicy:
+  Type: AWS::CloudFront::ResponseHeadersPolicy
+  Properties:
+    ResponseHeadersPolicyConfig:
+      Name: BlackTrigramSecurityHeaders
+      SecurityHeadersConfig:
+        StrictTransportSecurity:
+          AccessControlMaxAgeSec: 31536000
+          IncludeSubdomains: true
+          Preload: true
+        ContentTypeOptions:
+          Override: true
+        FrameOptions:
+          FrameOption: DENY
+          Override: true
+        ReferrerPolicy:
+          ReferrerPolicy: strict-origin-when-cross-origin
+          Override: true
+      CustomHeadersConfig:
+        Items:
+          - Header: X-Permitted-Cross-Domain-Policies
+            Value: none
+            Override: true
+          - Header: X-Download-Options
+            Value: noopen
+            Override: true
+          - Header: X-DNS-Prefetch-Control
+            Value: "off"
+            Override: true
+          - Header: Expect-CT
+            Value: "max-age=86400, enforce"
+            Override: true
+          - Header: Permissions-Policy
+            Value: "geolocation=(), microphone=(), camera=(), payment=(), usb=(), accelerometer=(self), gyroscope=(self)"
+            Override: true
+```
 
 ## 🏗️ High Availability Design
 
@@ -1188,4 +1272,247 @@ Black Trigram implements advanced automated security operations:
 - **⚡ Faster Response**: Automated response reduces mean time to containment
 - **🎯 Consistency**: Standardized response procedures reduce human error
 - **📊 Scale**: Ability to handle large volumes of security events
-- **🔄 Continuous Improvement**:
+- **🔄 Continuous Improvement**: Automated learning and adaptation of security controls
+
+## 🔒 Application Security
+
+**Status**: ✅ Comprehensive Application Security - OWASP Top 10 Mitigations
+
+```mermaid
+flowchart TD
+    subgraph "Comprehensive Application Security Architecture"
+        A[👤 User Input] --> B[🔒 Input Validation]
+        A --> C[🛡️ WAF Protection]
+        A --> D[🔑 Authentication]
+
+        B --> E[✅ Allowlist Validation]
+        B --> F[🚫 Blocklist Validation]
+        B --> G[🔍 SQL Injection Prevention]
+        B --> H[🛡️ XSS Prevention]
+
+        D --> I[🔑 AWS Cognito]
+        D --> J[🔑 IAM Roles]
+
+        K[🔄 Session Management] --> L[🔑 Secure Cookies]
+        K --> M[⏱️ Session Expiration]
+        K --> N[🔒 Token Revocation]
+
+        O[📊 Security Monitoring] --> P[🔍 Anomaly Detection]
+        O --> Q[📈 Performance Monitoring]
+        O --> R[📋 Audit Logging]
+    end
+
+    style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
+    style B,C,D fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style E,F,G,H,I,J,K,L,M,N,O,P,Q,R fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Implementation
+
+Black Trigram implements comprehensive application security:
+
+#### 🔒 Input Validation
+
+- **✅ Allowlist Validation**: Strict validation against known good values for all inputs
+- **✅ Blocklist Validation**: Detection and blocking of known bad patterns and values
+- **✅ SQL Injection Prevention**: Parameterized queries and ORM usage to prevent SQLi
+- **✅ XSS Prevention**: Contextual output encoding and sanitization to prevent XSS
+
+#### 🛡️ WAF Protection
+
+- **✅ AWS WAF Integration**: Custom rules to block common web exploits and bots
+- **✅ Rate Limiting**: Protection against brute force and DDoS attacks
+- **✅ Geo-blocking**: Restrict access from unwanted geographic locations
+
+#### 🔑 Authentication & Session Management
+
+- **✅ AWS Cognito**: Comprehensive user authentication with MFA and fine-grained permissions
+- **✅ Secure Cookies**: HttpOnly and Secure flags set for all cookies
+- **✅ Session Expiration**: Inactivity timeout and absolute timeout for all sessions
+- **✅ Token Revocation**: Immediate revocation of tokens on password change or logout
+
+#### 📊 Security Monitoring
+
+- **✅ Anomaly Detection**: Monitoring for unusual patterns in application usage
+- **✅ Performance Monitoring**: Detection of potential security incidents through performance anomalies
+- **✅ Audit Logging**: Comprehensive logging of all security-relevant events
+
+## 📜 Compliance Framework
+
+**Status**: ✅ Comprehensive Compliance Framework - Multi-Standard Support
+
+```mermaid
+flowchart TD
+    subgraph "Comprehensive Compliance Framework"
+        A[📋 Compliance Standards] --> B[🔐 AWS Foundational Security Best Practices]
+        A --> C[🛡️ PCI DSS]
+        A --> D[🔒 ISO 27001]
+        A --> E[📊 Custom Standards]
+
+        F[🔄 Continuous Compliance] --> G[📈 Compliance Monitoring]
+        F --> H[🚨 Alerting]
+        F --> I[📋 Reporting]
+
+        J[🛠️ Remediation Actions] --> K[🔧 Automated Remediation]
+        J --> L[📱 Manual Remediation]
+        J --> M[🔄 Continuous Improvement]
+    end
+
+    style A fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style B,C,D,E fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style F,G,H,I,J,K,L,M fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Implementation
+
+Black Trigram implements a comprehensive compliance framework:
+
+#### 📋 Compliance Standards
+
+- **✅ AWS Foundational Security Best Practices**: Full implementation and continuous monitoring
+- **✅ PCI DSS**: Payment Card Industry Data Security Standard compliance for payment processing
+- **✅ ISO 27001**: Information security management standard compliance
+- **✅ Custom Standards**: Specific compliance requirements for Korean martial arts data
+
+#### 🔄 Continuous Compliance
+
+- **✅ Compliance Monitoring**: Real-time monitoring of compliance status with alerts
+- **✅ Alerting**: Immediate notification of compliance deviations
+- **✅ Reporting**: Regular compliance reports for management and auditors
+
+#### 🛠️ Remediation Actions
+
+- **✅ Automated Remediation**: Immediate correction of common compliance issues
+- **✅ Manual Remediation**: Procedures for manual correction of complex issues
+- **✅ Continuous Improvement**: Regular review and improvement of compliance processes
+
+## 🛡️ Defense-in-Depth Strategy
+
+**Status**: ✅ Comprehensive Defense-in-Depth Strategy - Multi-Layered Security
+
+```mermaid
+flowchart TD
+    subgraph "Comprehensive Defense-in-Depth Strategy"
+        A[🔒 Perimeter Defense] --> B[🛡️ AWS WAF]
+        A --> C[🌐 CloudFront]
+        A --> D[🚪 API Gateway]
+
+        E[🔑 Access Control] --> F[🔐 AWS Cognito]
+        E --> G[🔑 IAM Roles]
+
+        H[🛡️ Application Security] --> I[🔒 Input Validation]
+        H --> J[🛡️ WAF Protection]
+
+        K[📊 Monitoring & Response] --> L[📈 CloudWatch]
+        K --> M[🕵️ GuardDuty]
+        K --> N[🔍 Detective]
+
+        O[🔄 Incident Management] --> P[📱 Alerting]
+        O --> Q[🔧 Remediation]
+        O --> R[📊 Reporting]
+    end
+
+    style A,E,H,K,O fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style B,C,D,F,G,I,J,L,M,N,P,Q,R fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Implementation
+
+Black Trigram implements a comprehensive defense-in-depth strategy:
+
+#### 🔒 Perimeter Defense
+
+- **✅ AWS WAF**: Web application firewall to protect against common web exploits
+- **✅ CloudFront**: Content delivery network with DDoS protection and caching
+- **✅ API Gateway**: Managed API gateway with throttling and security controls
+
+#### 🔑 Access Control
+
+- **✅ AWS Cognito**: User authentication and authorization with MFA
+- **✅ IAM Roles**: Fine-grained access control for AWS resources
+
+#### 🛡️ Application Security
+
+- **✅ Input Validation**: Strict validation of all user inputs
+- **✅ WAF Protection**: Application-layer protection with AWS WAF
+
+#### 📊 Monitoring & Response
+
+- **✅ CloudWatch**: Real-time monitoring and alerting
+- **✅ GuardDuty**: Threat detection and continuous monitoring
+- **✅ Detective**: Security investigation and analysis
+
+#### 🔄 Incident Management
+
+- **✅ Alerting**: Immediate notification of security incidents
+- **✅ Remediation**: Automated and manual procedures for incident response
+- **✅ Reporting**: Comprehensive reporting of security incidents and responses
+
+## 🔄 Security Operations
+
+**Status**: ✅ Advanced Security Operations - 24/7 Monitoring & Response
+
+```mermaid
+flowchart TD
+    subgraph "Advanced Security Operations Center"
+        A[🕵️ Security Monitoring] --> B[📊 Security Dashboard]
+        A --> C[🚨 Alerting]
+        A --> D[🔍 Investigation]
+
+        E[🔄 Incident Response] --> F[📱 Notifications]
+        E --> G[🔧 Remediation]
+        E --> H[📋 Reporting]
+
+        I[📈 Threat Intelligence] --> J[🌐 Threat Feeds]
+        I --> K[📊 Threat Analysis]
+
+        L[🔒 Vulnerability Management] --> M[🔎 Scanning]
+        L --> N[📦 Patching]
+        L --> O[🔄 Verification]
+
+        P[📋 Compliance Management] --> Q[🔍 Auditing]
+        P --> R[📈 Reporting]
+    end
+
+    style A,E,I,L,P fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style B,C,D,F,G,H,J,K,M,N,O,Q,R fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Implementation
+
+Black Trigram implements advanced security operations:
+
+#### 🕵️ Security Monitoring
+
+- **✅ 24/7 Monitoring**: Continuous monitoring of all security events
+- **✅ Centralized Dashboard**: Unified view of security posture and incidents
+- **✅ Real-time Alerting**: Immediate notification of critical security events
+
+#### 🔄 Incident Response
+
+- **✅ Automated Response**: Immediate containment and mitigation of incidents
+- **✅ Manual Response**: Detailed procedures for security team intervention
+- **✅ Post-Incident Analysis**: Review and analysis of incidents for improvement
+
+#### 📈 Threat Intelligence
+
+- **✅ Integrated Threat Feeds**: Real-time threat intelligence from multiple sources
+- **✅ Threat Analysis**: In-depth analysis of threats and vulnerabilities
+
+#### 🔒 Vulnerability Management
+
+- **✅ Regular Scanning**: Automated scanning for vulnerabilities in applications and infrastructure
+- **✅ Timely Patching**: Rapid deployment of security patches and updates
+- **✅ Verification**: Validation of patch deployment and vulnerability remediation
+
+#### 📋 Compliance Management
+
+- **✅ Continuous Auditing**: Regular audits of security controls and compliance
+- **✅ Compliance Reporting**: Automated generation of compliance reports
+
+
+## 📝 Conclusion
+
+The Black Trigram Future Security Architecture is a comprehensive, multi-layered security framework designed to protect the integrity, availability, and confidentiality of the Black Trigram platform. By leveraging AWS's advanced security services and following best practices for security and compliance, Black Trigram will provide a secure and resilient environment for users to engage in Korean martial arts training and education.
+
+---
