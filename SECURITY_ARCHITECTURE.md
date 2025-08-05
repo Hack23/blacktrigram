@@ -193,40 +193,119 @@ Black Trigram security monitoring:
 
 ## 🌐 Network Security
 
-**Current Status**: ✅ HTTPS Only - Static Content Delivery
+**Current Status**: ✅ HTTPS Only - Static Content Delivery with DNS Security
 
 ```mermaid
 graph TD
-    subgraph "Static Content Network Security"
-        A[🌐 Internet] -->|"HTTPS Only"| B[⚖️ CDN/Load Balancer]
-        B -->|"Static Files"| C[📦 Asset Delivery]
+    subgraph "DNS & Network Security Infrastructure"
+        A[🌐 Internet] -->|"DNS Query"| B[🛡️ Route53 DNSSEC]
+        B -->|"Verified DNS"| C[⚖️ CDN/Load Balancer]
+        C -->|"HTTPS Only"| D[📦 Asset Delivery]
 
-        D[🔒 TLS 1.3] --> B
-        E[🛡️ HTTPS Redirect] --> B
-        F[📄 Static Assets] --> C
+        E[🔒 TLS 1.3] --> C
+        F[🛡️ HTTPS Redirect] --> C
+        G[📄 Static Assets] --> D
+        H[🔐 CAA Records] --> B
+        I[🔑 DNSSEC Validation] --> B
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
-    style B fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style C fill:#FFD600,stroke:#FF8F00,stroke-width:2px,color:black,font-weight:bold
-    style D,E,F fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style B fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style C fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style D fill:#FFD600,stroke:#FF8F00,stroke-width:2px,color:black,font-weight:bold
+    style E,F,G,H,I fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Current Implementation
 
-Black Trigram network security:
+Black Trigram network security includes comprehensive DNS protection:
+
+#### 🛡️ DNS Security (Route53 + DNSSEC)
+
+- **✅ DNSSEC Enabled**: Domain Name System Security Extensions for DNS integrity
+- **✅ Route53 Hosting**: AWS Route53 provides authoritative DNS with DNSSEC support
+- **✅ DNS Query Validation**: Cryptographic verification of DNS responses
+- **✅ Cache Poisoning Protection**: DNSSEC prevents DNS spoofing attacks
+
+#### 🔐 Certificate Authority Authorization (CAA)
+
+- **✅ CAA Records**: Specifies which Certificate Authorities can issue certificates
+- **✅ Email Validation**: CAA records configured for email-based certificate validation
+- **✅ Certificate Misuse Prevention**: Prevents unauthorized certificate issuance
+- **✅ Compliance**: Follows CAB Forum baseline requirements
+
+#### 🌐 Transport Security
 
 - **✅ HTTPS Only**: All traffic encrypted with TLS
 - **✅ Static Content**: No dynamic server-side processing
 - **✅ CDN Delivery**: Distributed content delivery for performance
 - **✅ No Backend**: No server infrastructure to secure
 
+### DNS Security Configuration
+
+```dns
+; Example DNSSEC and CAA configuration for blacktrigram.com
+blacktrigram.com.    IN    CAA    0 issue "letsencrypt.org"
+blacktrigram.com.    IN    CAA    0 issuewild "letsencrypt.org"
+blacktrigram.com.    IN    CAA    0 iodef "mailto:security@blacktrigram.com"
+
+; DNSSEC records automatically managed by Route53
+blacktrigram.com.    IN    DNSKEY    256 3 8 (base64-encoded-key)
+blacktrigram.com.    IN    DS        12345 8 2 (sha256-hash)
+blacktrigram.com.    IN    RRSIG     DNSKEY 8 2 86400 (signature-data)
+```
+
 ### Security Benefits
 
 - **🔒 Encrypted Traffic**: All communications protected by TLS
+- **🛡️ DNS Integrity**: DNSSEC prevents DNS manipulation attacks
+- **📜 Certificate Control**: CAA records prevent unauthorized certificate issuance
 - **📦 Static Assets**: No dynamic content vulnerabilities
 - **🌍 Global CDN**: Distributed delivery reduces single points of failure
 - **⚡ Minimal Attack Surface**: No server-side code to exploit
+
+### DNS Security Features
+
+#### 🔐 DNSSEC Protection
+
+- **Chain of Trust**: Complete cryptographic chain from root to domain
+- **Response Authentication**: All DNS responses cryptographically signed
+- **Data Integrity**: Prevents tampering with DNS records in transit
+- **Non-Existence Proof**: NSEC3 records prevent zone enumeration
+
+#### 📜 CAA Record Protection
+
+- **Certificate Authority Control**: Explicitly authorizes trusted CAs
+- **Email Notification**: Security contact for certificate-related incidents
+- **Wildcard Protection**: Separate controls for wildcard certificates
+- **Compliance**: Meets CAB Forum baseline requirements for domain validation
+
+#### 🌐 Route53 Security Benefits
+
+- **AWS Infrastructure**: Benefits from AWS's global security infrastructure
+- **DDoS Protection**: Built-in protection against DNS-based DDoS attacks
+- **High Availability**: Anycast network with multiple geographic locations
+- **Monitoring**: CloudWatch integration for DNS query monitoring
+
+### Domain Security Monitoring
+
+```mermaid
+flowchart LR
+    subgraph "DNS Security Monitoring"
+        A[🔍 DNSSEC Validation] --> B[📊 Query Monitoring]
+        C[📜 CAA Compliance] --> D[🚨 Certificate Alerts]
+        E[🛡️ Route53 Logs] --> F[📈 Security Metrics]
+    end
+
+    style A,B,C,D,E,F fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Security Compliance
+
+- **✅ RFC 4034**: DNSSEC DNS Security Extensions compliance
+- **✅ RFC 6844**: DNS Certification Authority Authorization compliance
+- **✅ CAB Forum**: Certificate Authority baseline requirements compliance
+- **✅ Industry Standards**: Follows DNS security best practices
 
 ## 🔌 VPC Endpoints Security
 
@@ -749,8 +828,8 @@ flowchart TD
         M --> P[🔒 Hardened Runners]
     end
 
-    style A,E,I,M fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
-    style B,C,D,F,G,H,J,K,L,N,O,P fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style A,B,C,D fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
+    style E,F,G,H,J,K,L,N,O,P fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Implemented CI/CD Security
@@ -769,7 +848,7 @@ Black Trigram implements comprehensive CI/CD security:
    - **SBOM Generation**: Software Bill of Materials for transparency
    - **Artifact Signing**: Secure signing of release artifacts
 
-3. **🌐 Deployment Security**:
+3. **🚀 Deployment Security**:
 
    - **GitHub Pages**: Secure static hosting with HTTPS enforcement
    - **Lighthouse Auditing**: Performance and security best practices validation
