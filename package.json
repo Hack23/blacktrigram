@@ -40,7 +40,7 @@
     "madge": "npx madge --circular --ts-config ./tsconfig.json --extensions ts,tsx src/"
   },
   "dependencies": {
-    "@pixi/layout": "^3.0.2",
+    "@pixi/layout": "^3.1.0",
     "@pixi/react": "^8.0.3",
     "@pixi/sound": "^6.0.1",
     "@pixi/ui": "^2.2.7",
