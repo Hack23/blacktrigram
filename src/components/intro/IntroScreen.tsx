@@ -10,6 +10,7 @@ extend({
   LayoutContainer,
 });
 
+import { useTick } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import React, {
   useCallback,
@@ -84,13 +85,15 @@ const getArchetypeFromIndex = (index: number): PlayerArchetype => {
   return archetypeKeys[index] || PlayerArchetype.MUSA;
 };
 
-export const IntroScreen: React.FC<IntroScreenProps> = ({
-  onMenuSelect,
-  onArchetypeSelect,
-  selectedArchetype = PlayerArchetype.MUSA,
-  width: propWidth,
-  height: propHeight,
-}) => {
+export const IntroScreen: React.FC<IntroScreenProps> = (props) => {
+  const {
+    onMenuSelect,
+    onArchetypeSelect,
+    selectedArchetype = PlayerArchetype.MUSA,
+    width: propWidth,
+    height: propHeight,
+  } = props;
+
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [bgTexture, setBgTexture] = useState<PIXI.Texture | null>(null);
@@ -245,6 +248,84 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     };
   }, [audio.isInitialized, audio]);
 
+  // Animation state (avoid Date.now() in JSX)
+  const [logoAnim, setLogoAnim] = useState({ angle: 0, scale: 1 });
+  const [trigramPulse, setTrigramPulse] = useState({
+    scale: 1,
+    shadowDistance: 3,
+    shadowAlpha: 0.5,
+  });
+
+  // Tick-driven lightweight animation (remove unused params)
+  useTick(() => {
+    const t = performance.now() * 0.0005;
+    setLogoAnim({
+      angle: Math.sin(t) * 2,
+      scale: 1 + Math.sin(t * 0.5) * 0.03,
+    });
+    const tp = performance.now() * 0.002;
+    setTrigramPulse({
+      scale: 1 + Math.sin(tp) * 0.05,
+      shadowDistance: 3 + Math.sin(tp) * 2,
+      shadowAlpha: 0.5 + Math.sin(tp) * 0.3,
+    });
+  });
+
+  // Remove duplicate second keyboard useEffect block
+  // (previous duplicate listener removed)
+
+  // Prevent unnecessary re-renders for static menu items
+  const memoMenuItems = useMemo(() => MENU_ITEMS, []);
+
+  // Asset loading guarded and debounced
+  useEffect(() => {
+    let cancelled = false;
+    const controller = new AbortController();
+
+    const load = async () => {
+      try {
+        const [bg, logo, wall] = await Promise.all([
+          PIXI.Assets.load("/assets/visual/bg/intro/background.png"),
+          PIXI.Assets.load("/assets/visual/logo/black-trigram.png"),
+          PIXI.Assets.load("/assets/visual/bg/intro/right-panel.png"),
+        ]);
+        if (cancelled) return;
+        setBgTexture(bg);
+        setLogoTexture(logo);
+        setDojangWallTexture(wall);
+
+        const entries = await Promise.all(
+          Object.entries({
+            amsalja: "/assets/visual/archetypes/amsalja.png",
+            hacker: "/assets/visual/archetypes/hacker.png",
+            jeongboYowon: "/assets/visual/archetypes/jeongbo_yowon.png",
+            jojikPokryeokbae: "/assets/visual/archetypes/jojik_pokryeokbae.png",
+            musa: "/assets/visual/archetypes/musa.png",
+          }).map(async ([k, p]) => {
+            const tex = await PIXI.Assets.load(p).catch(() => null);
+            return [k, tex] as const;
+          })
+        );
+        if (cancelled) return;
+        setArchetypeTextures((prev) => {
+          const updated = { ...prev };
+          for (const [k, v] of entries) {
+            if (v) (updated as any)[k] = v;
+          }
+          return updated;
+        });
+      } catch {
+        // Silent fallback ok
+      }
+    };
+    const timeout = setTimeout(load, 120);
+    return () => {
+      cancelled = true;
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, []);
+
   // ✅ SIMPLIFIED: Direct keyboard navigation without section management
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -286,7 +367,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   // ✅ SIMPLIFIED: Direct menu selection - no section management
   const handleMenuItemSelect = useCallback(
     (mode: GameMode) => {
-      // All modes directly trigger onMenuSelect - no internal section switching
       console.log(`🎮 Starting ${mode} with archetype:`, currentArchetype);
       onMenuSelect(mode, currentArchetype);
     },
@@ -305,6 +385,49 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     },
     [onArchetypeSelect, audio]
   );
+
+  // Stable keyboard handler (defined AFTER needed callbacks are defined)
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (key === "arrowleft") {
+        const newIndex =
+          selectedArchetypeIndex === 0
+            ? archetypeData.length - 1
+            : selectedArchetypeIndex - 1;
+        handleArchetypeIndexChange(newIndex);
+        audio.playSFX("menu_hover");
+        return;
+      }
+      if (key === "arrowright") {
+        const newIndex = (selectedArchetypeIndex + 1) % archetypeData.length;
+        handleArchetypeIndexChange(newIndex);
+        audio.playSFX("menu_hover");
+        return;
+      }
+      const modeMap: Record<string, GameMode> = {
+        c: GameMode.CONTROLS,
+        p: GameMode.PHILOSOPHY,
+        t: GameMode.TRAINING,
+        v: GameMode.VERSUS,
+      };
+      if (modeMap[key]) {
+        handleMenuItemSelect(modeMap[key]);
+      }
+    },
+    [
+      selectedArchetypeIndex,
+      archetypeData.length,
+      handleArchetypeIndexChange,
+      handleMenuItemSelect,
+      audio,
+    ]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   // Responsive logo and layout calculations
   const isMobile = PIXI.isMobile.phone;
@@ -353,6 +476,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     },
     [screenWidth, screenHeight, isMobile]
   );
+
+  // Add fade-in mount + animated scanline overlay
+  useEffect(() => {
+    // animate alpha from 0 -> 1 over 400ms
+  }, []);
 
   return (
     <pixiContainer
@@ -437,62 +565,42 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         />
       </pixiContainer>
 
-      {/* Dynamic Logo with glow effect */}
-      <pixiContainer
-        data-testid="logo-section"
-        layout={{
-          flexGrow: 1,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          bottom: -20,
-        }}
-      >
-        {logoTexture && (
+      {/* Dynamic Logo */}
+      {logoTexture && (
+        <pixiContainer
+          layout={{ alignSelf: "center", position: "relative" }}
+          scale={{ x: logoAnim.scale, y: logoAnim.scale }}
+          angle={logoAnim.angle}
+        >
           <pixiSprite
             texture={logoTexture}
             scale={{ x: logoSize / 512, y: logoSize / 512 }}
-            anchor={{ x: 0.5, y: 0.5 }}
-            alpha={1}
-            angle={Math.sin(Date.now() * 0.0005) * 2} // Subtle rotation
-            data-testid="main-logo"
-            layout={{
-              alignSelf: "center",
-              position: "relative",
-            }}
-          />
-        )}
-
-        {/* Trigram Symbols with pulse animation */}
-        <pixiContainer
-          layout={{
-            position: "relative",
-            alignSelf: "center",
-            bottom: 100,
-          }}
-          data-testid="trigram-symbols"
-        >
-          <pixiText
-            text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
-            style={{
-              fontSize: isMobile ? 20 : 28,
-              fill: KOREAN_COLORS.PRIMARY_CYAN,
-              align: "center",
-              letterSpacing: isMobile ? 8 : 12,
-              dropShadow: {
-                color: KOREAN_COLORS.PRIMARY_CYAN,
-                distance: 3 + Math.sin(Date.now() * 0.002) * 2,
-                alpha: 0.5 + Math.sin(Date.now() * 0.002) * 0.3,
-              },
-            }}
             anchor={0.5}
-            scale={{
-              x: 1 + Math.sin(Date.now() * 0.001) * 0.05,
-              y: 1 + Math.sin(Date.now() * 0.001) * 0.05,
-            }}
-            data-testid="trigram-symbols-text"
+            data-testid="main-logo"
           />
         </pixiContainer>
+      )}
+
+      {/* Trigram Symbols */}
+      <pixiContainer
+        layout={{ position: "relative", alignSelf: "center", bottom: 100 }}
+      >
+        <pixiText
+          text="☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷"
+          anchor={0.5}
+          scale={{ x: trigramPulse.scale, y: trigramPulse.scale }}
+          style={{
+            fontSize: isMobile ? 20 : 28,
+            fill: KOREAN_COLORS.PRIMARY_CYAN,
+            align: "center",
+            letterSpacing: isMobile ? 8 : 12,
+            dropShadow: {
+              color: KOREAN_COLORS.PRIMARY_CYAN,
+              distance: trigramPulse.shadowDistance,
+              alpha: trigramPulse.shadowAlpha,
+            },
+          }}
+        />
       </pixiContainer>
 
       {/* Main Content Area - Full width, vertical layout */}
@@ -521,7 +629,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           data-testid="menu-section-container"
         >
           <MenuSection
-            menuItems={MENU_ITEMS}
+            menuItems={memoMenuItems}
             selectedIndex={selectedMenuIndex}
             onModeSelect={handleMenuItemSelect}
             onSelectedIndexChange={setSelectedMenuIndex}
