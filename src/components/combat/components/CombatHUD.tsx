@@ -42,10 +42,10 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   y = 0,
 }) => {
   const isMobile = width < 768;
-  const healthBarWidth = isMobile ? 150 : 250; // Adjusted for new layout
+  const healthBarWidth = isMobile ? 160 : 300;
   const timerWidth = isMobile ? 120 : 160;
   const centerX = width / 2;
-  const portraitSize = isMobile ? 60 : 80;
+  const portraitSize = isMobile ? 66 : 88;
 
   // Get latest archetype data
   const player1Archetype = useMemo(
@@ -79,7 +79,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   return (
     <pixiContainer x={x} y={y} data-testid="combat-hud">
       {/* Enhanced Background */}
-      <pixiGraphics draw={drawBackground} />
+      <pixiGraphics draw={drawBackground} alpha={0.92} />
 
       {/* Player 1 Info (Left Side) - Row Layout */}
       <pixiContainer

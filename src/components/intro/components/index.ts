@@ -1,4 +1,8 @@
-// Introduction components exports
+/**
+ * Intro sub-components barrel
+ */
 
-export { default as ArchetypeDisplay } from "./ArchetypeDisplay";
+export { ArchetypeDisplay } from "./ArchetypeDisplay";
+export type { ArchetypeDisplayProps } from "./ArchetypeDisplay";
 export { MenuSection } from "./MenuSection";
+export type { MenuSectionProps } from "./MenuSection";

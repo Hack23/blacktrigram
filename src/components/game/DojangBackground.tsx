@@ -142,7 +142,37 @@ export const DojangBackground: React.FC<DojangBackgroundProps> = ({
       }
       g.stroke();
 
-   
+      // Adaptive finer grid + center focus ring
+      const step = Math.max(40, Math.min(70, width / 28));
+      for (let i = 0; i < width; i += step) {
+        g.moveTo(i, 0);
+        g.lineTo(i, height);
+      }
+      for (let j = 0; j < height; j += step) {
+        g.moveTo(0, j);
+        g.lineTo(width, j);
+      }
+      g.stroke();
+
+      // Subtle center ellipse (focus zone)
+      g.stroke({
+        width: 2,
+        color:
+          lighting === "cyberpunk"
+            ? KOREAN_COLORS.PRIMARY_CYAN
+            : KOREAN_COLORS.ACCENT_GOLD,
+        alpha: settings.accentAlpha * 0.55,
+      });
+      const cx = width / 2;
+      const cy = height * 0.62;
+      g.ellipse(cx, cy, width * 0.28, height * 0.18);
+      g.stroke();
+
+      // Vignette
+      g.beginFill(0x000000, 0.35);
+      g.drawRect(0, 0, width, height);
+      g.endFill();
+      g.blendMode = "overlay";
     },
     [width, height, lighting, getLightingSettings]
   );
