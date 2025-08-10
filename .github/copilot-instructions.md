@@ -1,213 +1,262 @@
 # GitHub Copilot Instructions for Black Trigram (흑괘)
 
-PRIO 1: Complete functional game with robust error handling and reusable UI components
-PRIO 2: Use PixiJS UI (@pixi/ui) and Layout (@pixi/layout) for all interface components
-PRIO 3: Implement cyberpunk Korean aesthetic with excellent UX/UI experience using extensible components
+PRIO 1: Follow existing React + PixiJS patterns with layout system integration
+PRIO 2: Use established component structure and Korean martial arts theming
+PRIO 3: Maintain type safety and proper error handling throughout
 
-## 🔧 Code Completion Guidelines
+## 🔧 Current Code Patterns & Architecture
 
-### PixiJS UI & Layout Integration
-
-- ALWAYS use @pixi/ui components as base building blocks
-- ALWAYS implement @pixi/layout for responsive layouts
-- ALWAYS extend existing UI components rather than creating from scratch
-- PREFER composition over inheritance for component reusability
-- USE layout properties for responsive design across all screen sizes
-
-### PixiJS UI Component Patterns
+### React + PixiJS Integration Pattern
 
 ```typescript
-// Preferred PixiJS UI component extension pattern
-import { Button, FancyButton } from "@pixi/ui";
-import "@pixi/layout"; // Import for layout mixins
-
-// Extend existing UI components for Korean martial arts theme
-class KoreanButton extends FancyButton {
-  constructor(options: KoreanButtonOptions) {
-    super({
-      ...options,
-      defaultView: "korean-button-idle.png",
-      hoverView: "korean-button-hover.png",
-      pressedView: "korean-button-pressed.png",
-      text: {
-        text: options.koreanText || options.text,
-        style: {
-          fontFamily: "Noto Sans KR, NanumGothic, sans-serif",
-          fill: KOREAN_COLORS.TEXT_PRIMARY,
-          fontSize: 16,
-        },
-      },
-    });
-  }
-}
-
-// Layout-powered container pattern
-const createKoreanPanel = (content: DisplayObject[]) => {
-  const panel = new Container({
-    layout: {
-      width: "100%",
-      flexDirection: "column",
-      alignItems: "center",
-      gap: 10,
-      padding: 20,
-      backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-      borderRadius: 8,
-    },
-  });
-
-  content.forEach((child) => panel.addChild(child));
-  return panel;
-};
-```
-
-### Layout System Best Practices
-
-```typescript
-// Always use layout properties for responsive design
+// ALWAYS follow this established pattern from existing components
 import "@pixi/layout";
-
-// Stage layout setup
-app.stage.layout = {
-  width: app.screen.width,
-  height: app.screen.height,
-  justifyContent: "center",
-  alignItems: "center",
-};
-
-// Component layout patterns
-const combatHUD = new Container({
-  layout: {
-    width: "100%",
-    height: 80,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: { left: 20, right: 20 },
-  },
-});
-
-// Korean text with proper layout
-const koreanLabel = new Text("무사 (Musa)", {
-  fontFamily: "Noto Sans KR",
-  fontSize: 18,
-  fill: KOREAN_COLORS.ACCENT_GOLD,
-  layout: {
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-});
-```
-
-### TypeScript Best Practices
-
-- ALWAYS use explicit return types for functions
-- ALWAYS use readonly modifiers for props interfaces
-- ALWAYS use strict null checks and proper error handling
-- PREFER type unions over any/unknown when possible
-- USE existing type definitions from the type system extensively
-
-### File Structure Best Practices
-
-- ALWAYS add proper file headers with filepath comments
-- ALWAYS use proper imports organization (external, internal, relative)
-- AVOID creating incomplete or truncated code blocks
-
-### React + PixiJS Integration Patterns
-
-```typescript
-// React component wrapping PixiJS UI components
+import { LayoutContainer } from "@pixi/layout/components";
+import "@pixi/layout/react";
 import { extend } from "@pixi/react";
-import { Container, Graphics } from "pixi.js";
-import { Button, ScrollBox } from "@pixi/ui";
-import "@pixi/layout";
+import { Container } from "pixi.js";
+import { extendPixiComponents } from "../../utils/pixiExtensions";
 
-extend({ Container, Graphics, Button, ScrollBox });
+// Register components
+extend({ Container, LayoutContainer });
+extendPixiComponents();
 
-interface KoreanUIComponentProps {
-  readonly koreanText: KoreanText;
-  readonly onAction?: (data: Type) => void;
-}
+// Component structure
+export const ComponentName: React.FC<Props> = ({ ...props }) => {
+  // State management with proper typing
+  const [state, setState] = useState<StateType>(initialValue);
 
-export const KoreanUIComponent: React.FC<KoreanUIComponentProps> = ({
-  koreanText,
-  onAction,
-}) => {
-  const handlePress = useCallback(() => {
-    onAction?.(/* data */);
-  }, [onAction]);
+  // Layout calculations (from CombatScreen pattern)
+  const layoutConstants = useMemo(
+    () => ({
+      padding: isMobile ? 10 : 20,
+      headerHeight: isMobile ? 50 : 60,
+      // ... other responsive calculations
+    }),
+    [isMobile]
+  );
 
   return (
     <pixiContainer
       layout={{
+        width,
+        height,
         flexDirection: "column",
         alignItems: "center",
-        gap: 10,
+        justifyContent: "space-between",
+        padding: layoutConstants.padding,
       }}
+      data-testid="component-name"
     >
-      <pixiButton
-        text={koreanText.korean}
-        onPress={handlePress}
-        layout={{ marginBottom: 10 }}
-        data-testid="korean-button"
-      />
+      {/* Component content */}
     </pixiContainer>
   );
 };
-
-export default KoreanUIComponent;
 ```
 
-## 📚 Project Documentation
+### Layout System Usage (From CombatScreen)
 
-### Core Documentation
+```typescript
+// ALWAYS use layout properties for responsive design
+const layoutConstants = {
+  padding: 10,
+  hudHeight: 120,
+  controlsHeight: 100,
+  footerHeight: 40,
+};
 
-- **[Game Design](../game-design.md)** - Complete Korean martial arts combat system design, eight trigram philosophy, player archetypes, and cultural authenticity guidelines
-- **[System Architecture](../ARCHITECTURE.md)** - Technical architecture, state management, component patterns, and Korean martial arts integration
-- **[Combat Architecture](../COMBAT_ARCHITECTURE.md)** - Detailed combat system implementation, trigram effectiveness matrix, vital point system
-- **[Audio Assets](../AUDIO_ASSETS.md)** - Korean traditional instrument integration, combat audio, and cultural music guidelines
-- **[Art Assets](../ART_ASSETS.md)** - Korean cyberpunk visual design, color systems, character art, and UI iconography
-- **[Future Architecture](../FUTURE_ARCHITECTURE.md)** - Planned features, scalability considerations, and long-term technical roadmap
+// Flex container pattern
+<pixiContainer
+  layout={{
+    width: "100%",
+    height: layoutConstants.hudHeight,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexShrink: 0, // Prevents shrinking
+  }}
+>
+```
 
-## 🎯 Project Overview
+### Korean Theming Pattern
 
-Black Trigram is a **realistic 2D precision combat simulator** deeply rooted in Korean martial arts and the I Ching trigram philosophy. The game emphasizes anatomical realism, precise targeting, authentic martial techniques, and cyberpunk aesthetics through reusable, extensible UI components.
+```typescript
+// ALWAYS use Korean colors and bilingual text
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 
-**Genre**: 2D Realistic Precision Combat Simulator / Traditional Korean Martial Arts Training
-**Platform**: Web-based (HTML5/WebGL via PixiJS + React)
-**Core Focus**: Extensible UI components, responsive layouts, authentic Korean martial arts
+// Bilingual text pattern (from IntroScreen)
+<pixiText
+  text={`${korean} | ${english}`}
+  style={{
+    fontSize: isMobile ? 14 : 18,
+    fill: KOREAN_COLORS.ACCENT_GOLD,
+    fontFamily: FONT_FAMILY.KOREAN,
+    fontWeight: "bold",
+  }}
+  data-testid="bilingual-text"
+/>
 
-### Key Features
+// Enhanced graphics with Korean aesthetics
+<pixiGraphics
+  draw={(g) => {
+    g.clear();
+    g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+    g.roundRect(0, 0, width, height, 8);
+    g.fill();
 
-- **Eight Trigram Stances**: Traditional Korean martial arts forms (팔괘) with authentic techniques
-- **Five Player Archetypes**: 무사 (Musa), 암살자 (Amsalja), 해커 (Hacker), 정보요원 (Jeongbo Yowon), 조직폭력배 (Jojik Pokryeokbae)
-- **Anatomical Targeting**: 70+ vital points based on traditional Korean medicine
-- **Cyberpunk Korean Aesthetic**: Modern visual design honoring traditional culture
-- **Bilingual Support**: Korean-English throughout with proper romanization
+    // Korean-inspired border
+    g.stroke({ width: 2, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.8 });
+    g.roundRect(0, 0, width, height, 8);
+    g.stroke();
+  }}
+/>
+```
 
-## 🎯 UI Component Architecture
+### State Management Pattern
 
-### Core UI Component Library Structure
+```typescript
+// ALWAYS use proper typing and responsive state
+interface ComponentState {
+  readonly isActive: boolean;
+  readonly selectedIndex: number;
+  // ... other state properties
+}
+
+// State with proper initialization
+const [componentState, setComponentState] = useState<ComponentState>({
+  isActive: false,
+  selectedIndex: 0,
+});
+
+// Event handlers with useCallback
+const handleAction = useCallback(
+  (param: string) => {
+    // Action logic
+    onAction?.(param);
+  },
+  [onAction]
+);
+```
+
+### Component Props Interface Pattern
+
+```typescript
+// ALWAYS use readonly properties with explicit types
+export interface ComponentProps {
+  readonly width: number;
+  readonly height: number;
+  readonly x?: number;
+  readonly y?: number;
+  readonly isMobile?: boolean;
+  readonly onAction?: (data: ActionData) => void;
+  readonly children?: React.ReactNode;
+}
+
+// Default props in destructuring
+export const Component: React.FC<ComponentProps> = ({
+  width = 1200,
+  height = 800,
+  x = 0,
+  y = 0,
+  isMobile = false,
+  onAction,
+  children,
+}) => {
+  // Component implementation
+};
+```
+
+### Responsive Design Pattern (From CombatScreen)
+
+```typescript
+// ALWAYS calculate responsive values
+const isMobile = useMemo(() => width < 768, [width]);
+
+const layoutCalculation = useMemo(() => ({
+  buttonSize: isMobile ? 40 : 60,
+  fontSize: isMobile ? 12 : 16,
+  padding: isMobile ? 10 : 20,
+  spacing: isMobile ? 8 : 15,
+}), [isMobile]);
+
+// Apply in components
+<pixiContainer
+  layout={{
+    gap: layoutCalculation.spacing,
+    padding: layoutCalculation.padding,
+  }}
+>
+```
+
+### Audio Integration Pattern
+
+```typescript
+// ALWAYS use audio context from provider
+import { useAudio } from "../../audio/AudioProvider";
+
+export const Component: React.FC<Props> = ({ ... }) => {
+  const audio = useAudio();
+
+  const handleAction = useCallback(() => {
+    audio.playSFX("menu_select");
+    // Action logic
+  }, [audio]);
+};
+```
+
+### Error Handling & Testing Pattern
+
+```typescript
+// ALWAYS include data-testid for testing
+<pixiContainer data-testid="unique-component-id">
+
+// ALWAYS handle potential null/undefined
+const safeValue = value ?? defaultValue;
+
+// ALWAYS use proper error boundaries
+try {
+  // Risky operation
+} catch (error) {
+  console.warn("Operation failed:", error);
+  // Fallback behavior
+}
+```
+
+## 📚 File Organization Patterns
+
+### Component File Structure
 
 ```plaintext
-src/components/ui/
-├── base/                    # Foundation components extending @pixi/ui
-│   ├── KoreanButton.ts     # Extended FancyButton with Korean styling
-│   ├── KoreanPanel.ts      # Layout-powered container with Korean aesthetics
-│   ├── ResponsiveContainer.ts # Layout-responsive wrapper component
-│   └── BasePixiComponents.ts # Core PixiJS UI extensions
-├── combat/                  # Combat-specific UI components
-│   ├── TrigramSelector.ts  # Eight trigram stance selection (RadioGroup)
-│   ├── StanceIndicator.ts  # Current stance display
-│   ├── HealthBar.ts        # Extended ProgressBar for combat stats
-│   └── VitalPointOverlay.ts # Anatomical targeting interface
-├── containers/              # Layout containers and panels
-│   ├── CombatHUD.ts        # Main combat interface layout
-│   ├── PlayerStatusPanel.ts # Player information display
-│   └── GameMenu.ts         # Menu system with Korean navigation
-└── texts/                   # Korean-English text components
-    ├── BilingualText.ts    # Korean-English dual display
-    ├── KoreanHeader.ts     # Styled Korean headers
-    └── CombatLog.ts        # Scrolling combat history
+src/components/
+├── ui/                       # UI components following @pixi/ui patterns
+│   ├── base/                 # Base components with Korean theming
+│   │   ├── KoreanButton.ts  # Extended button with Korean styles
+│   │   ├── KoreanPanel.ts   # Panel component with layout integration
+│   │   └── BasePixiComponents.ts # Core PixiJS UI extensions
+│   ├── combat/               # Combat-specific UI components
+│   │   ├── TrigramSelector.ts # Trigram stance selection component
+│   │   ├── HealthBar.ts     # Health bar with Korean aesthetics
+│   │   └── VitalPointOverlay.ts # Anatomical targeting interface
+│   ├── containers/           # Layout containers and panels
+│   │   ├── CombatHUD.ts     # Main combat interface layout
+│   │   └── PlayerStatusPanel.ts # Player information display
+│   └── texts/                # Text components with bilingual support
+│       ├── BilingualText.ts # Korean-English dual display
+│       └── CombatLog.ts     # Scrolling combat history
+├── audio/                    # Audio context and hooks
+│   ├── AudioProvider.ts     # Context provider for audio
+│   └── sounds/               # Audio files and assets
+├── hooks/                    # Custom hooks
+│   ├── useCombat.ts         # Combat-related hooks
+│   └── usePlayer.ts         # Player state hooks
+├── screens/                  # Screen components
+│   ├── CombatScreen.ts      # Main combat screen
+│   ├── IntroScreen.ts       # Introduction and menu screen
+│   └── SettingsScreen.ts    # Settings and configuration screen
+└── utils/                   # Utility functions and constants
+    ├── constants.ts         # Constant values and configurations
+    ├── pixiExtensions.ts    # PixiJS component extensions
+    └── helpers.ts           # Helper functions
 ```
 
 ### Component Design Principles
@@ -399,50 +448,8 @@ When following these guidelines, UI code should:
 - ❌ Incomplete accessibility implementation
 - ❌ Missing layout properties for responsive behavior
 - ❌ Performance-heavy UI operations without optimization
-  }}
-  />
-  );
-  };
 
 ````
-
-#### Custom Components
-
-`@pixi/react` supports custom components via the `extend` API. For example, you can create a `<viewport>` component using the [`pixi-viewport`](https://github.com/davidfig/pixi-viewport) library:
-
-```jsx
-import { extend } from "@pixi/react";
-import { Viewport } from "pixi-viewport";
-
-extend({ Viewport });
-
-const MyComponent = () => {
-  <viewport>
-    <pixiContainer />
-  </viewport>;
-};
-````
-
-The `extend` API will teach `@pixi/react` about your components, but TypeScript won't know about them nor their props.
-
-### Hooks
-
-#### `useApplication`
-
-`useApplication` allows access to the parent `PIXI.Application` created by the `<Application>` component. This hook _will not work_ outside of an `<Application>` component. Additionally, the parent application is passed via [React Context](https://react.dev/reference/react/useContext). This means `useApplication` will only work appropriately in _child components_, and in the same component that creates the `<Application>`.
-
-For example, the following example `useApplication` **will not** be able to access the parent application:
-
-```jsx
-import { Application, useApplication } from "@pixi/react";
-
-const ParentComponent = () => {
-  // This will cause an invariant violation.
-  const { app } = useApplication();
-
-  return <Application />;
-};
-```
 
 Here's a working example where `useApplication` **will** be able to access the parent application:
 
@@ -462,7 +469,7 @@ const ParentComponent = () => (
     <ChildComponent />
   </Application>
 );
-```
+````
 
 #### `useExtend`
 
