@@ -33,19 +33,36 @@ async function main() {
   }
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+  interface OpenAIVideoGenerateResponse {
+    data?: Array<{ b64_video?: string }>;
+  }
+  interface OpenAIVideoAPI {
+    generate: (args: {
+      model: string;
+      prompt: string;
+    }) => Promise<OpenAIVideoGenerateResponse>;
+  }
+  const maybeVideos: unknown = (openai as unknown as { videos?: unknown })
+    .videos;
+
+  const hasGenerate =
+    typeof maybeVideos === "object" &&
+    maybeVideos !== null &&
+    "generate" in maybeVideos &&
+    typeof (maybeVideos as { generate?: unknown }).generate === "function";
+
+  if (!hasGenerate) {
+    console.warn(
+      "⚠ OpenAI video endpoint not available in this SDK version. Placeholder only."
+    );
+    exit(0);
+  }
+
   try {
-    if (!(openai as any).videos?.generate) {
-      console.warn(
-        "⚠ OpenAI video endpoint not available in this SDK version. Placeholder only."
-      );
-      exit(0);
-    }
-    const result = await (openai as any).videos.generate({
+    const result = await (maybeVideos as OpenAIVideoAPI).generate({
       model,
       prompt,
-      // Add parameters as API stabilizes
     });
-    // Hypothetical: result.data[0].b64_video
     const b64 = result?.data?.[0]?.b64_video;
     if (!b64) throw new Error("No video data returned");
     await writeFile(out, Buffer.from(b64, "base64"));

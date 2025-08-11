@@ -39,6 +39,15 @@ async function jfetch<T>(url: string, init?: RequestInit): Promise<T> {
   return (await r.json()) as T;
 }
 
+const MAX_POLLING_ATTEMPTS = 60;
+const POLLING_INTERVAL_MS = 2000;
+
+interface SunoStatus {
+  status: "queued" | "processing" | "completed" | "failed";
+  audio_url?: string;
+  error?: string;
+}
+
 async function main() {
   const { prompt, out, style } = parse();
   const key = process.env.SUNO_API_KEY;
@@ -66,15 +75,14 @@ async function main() {
     console.log(`🛈 Suno music job: ${jobId}`);
 
     let url: string | undefined;
-    for (let i = 0; i < 60 && !url; i++) {
-      await sleep(2000);
-      const status = await jfetch<{
-        status: string;
-        audio_url?: string;
-        error?: string;
-      }>(`https://api.suno.ai/v1/music/${jobId}`, {
-        headers: { Authorization: `Bearer ${key}` },
-      });
+    for (let i = 0; i < MAX_POLLING_ATTEMPTS && !url; i++) {
+      await sleep(POLLING_INTERVAL_MS);
+      const status = await jfetch<SunoStatus>(
+        `https://api.suno.ai/v1/music/${jobId}`,
+        {
+          headers: { Authorization: `Bearer ${key}` },
+        }
+      );
       if (status.error) throw new Error(status.error);
       if (status.status === "completed") url = status.audio_url;
       else if (status.status === "failed") throw new Error("Generation failed");

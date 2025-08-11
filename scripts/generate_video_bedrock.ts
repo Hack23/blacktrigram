@@ -28,6 +28,20 @@ function parse() {
   };
 }
 
+async function bodyToString(body: any): Promise<string> {
+  if (!body) return "";
+  if (body instanceof Uint8Array) return new TextDecoder().decode(body);
+  if (typeof body === "string") return body;
+  if (body[Symbol.asyncIterator]) {
+    const chunks: Buffer[] = [];
+    for await (const c of body) {
+      chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c));
+    }
+    return Buffer.concat(chunks).toString("utf8");
+  }
+  return String(body);
+}
+
 async function main() {
   const { prompt, out, model } = parse();
   const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
@@ -37,9 +51,11 @@ async function main() {
   }
   const client = new BedrockRuntimeClient({ region });
 
+  const requestedDuration =
+    parseFloat(process.env.BEDROCK_VIDEO_DURATION || "5") || 5;
   const body = {
     prompt,
-    duration_seconds: 5,
+    duration_seconds: requestedDuration,
     resolution: "512x512",
     format: "mp4",
   };
@@ -54,14 +70,16 @@ async function main() {
       })
     );
     if (!resp.body) throw new Error("Empty response");
-    const json = JSON.parse(
-      Buffer.from(await resp.body.transformToByteArray()).toString()
-    );
-    const b64 = json.video || json.result?.video_base64;
+    const jsonText = await bodyToString(resp.body); // fixed
+    let json: any;
+    try {
+      json = JSON.parse(jsonText);
+    } catch {
+      throw new Error("Non-JSON video response");
+    }
+    const b64 = json.video || json.result?.video_base64 || json.data?.[0]?.b64;
     if (!b64) {
-      console.warn(
-        "⚠ No video field detected in response (model may not support video yet)."
-      );
+      console.warn("⚠ No recognizable video field in response.");
       return;
     }
     await writeFile(out, Buffer.from(b64, "base64"));

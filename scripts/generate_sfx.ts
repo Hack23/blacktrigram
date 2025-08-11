@@ -55,6 +55,14 @@ const elevenlabs = new ElevenLabsClient({
  * @param promptInfluence - Optional value (0–1) indicating how closely to follow the prompt.
  * @param outputFormat - Optional format string (e.g., mp3_44100_128).
  */
+const SUPPORTED_FORMATS = new Set([
+  "mp3_44100_128",
+  "mp3_22050_32",
+  "pcm_44100",
+  "ulaw_8000",
+  "mp3_44100_192",
+]);
+
 const generateAndSaveSound = async (
   prompt: string,
   outputFile: string,
@@ -63,14 +71,23 @@ const generateAndSaveSound = async (
   outputFormat: string = "mp3_44100_128"
 ) => {
   try {
+    // Added validation + output format handling
+    if (outputFormat && !SUPPORTED_FORMATS.has(outputFormat)) {
+      console.warn(
+        `⚠ Unsupported output_format "${outputFormat}" – falling back to mp3_44100_128`
+      );
+      outputFormat = "mp3_44100_128";
+    }
+
     const audio = await elevenlabs.textToSoundEffects.convert({
       text: prompt,
-      durationSeconds: durationSeconds,
-      promptInfluence: promptInfluence,
-    });
+      duration_seconds: durationSeconds,
+      prompt_influence: promptInfluence,
+      output_format: outputFormat,
+    } as any);
 
     await writeFile(outputFile, audio);
-    console.log(`✅ Audio saved to ${outputFile}`);
+    console.log(`✅ Audio saved to ${outputFile} (${outputFormat})`);
   } catch (error) {
     console.error("❌ Error generating or saving audio:", error);
   }

@@ -38,6 +38,20 @@ function parse(): Args {
   };
 }
 
+async function bodyToString(body: any): Promise<string> {
+  if (!body) return "";
+  if (body instanceof Uint8Array) return new TextDecoder().decode(body);
+  if (typeof body === "string") return body;
+  if (body[Symbol.asyncIterator]) {
+    const chunks: Buffer[] = [];
+    for await (const c of body) {
+      chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c));
+    }
+    return Buffer.concat(chunks).toString("utf8");
+  }
+  return String(body);
+}
+
 async function main() {
   const { prompt, out, w, h, model } = parse();
   const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
@@ -47,7 +61,26 @@ async function main() {
   }
   const client = new BedrockRuntimeClient({ region });
 
-  const body = model.includes("titan")
+  type TitanRequest = {
+    taskType: "TEXT_IMAGE";
+    textToImageParams: { text: string };
+    imageGenerationConfig: {
+      numberOfImages: number;
+      quality: "standard" | "premium";
+      width: number;
+      height: number;
+      cfgScale?: number;
+    };
+  };
+
+  type GenericDiffusionRequest = {
+    prompt: string;
+    width: number;
+    height: number;
+    num_images: number;
+  };
+
+  const body: TitanRequest | GenericDiffusionRequest = model.includes("titan")
     ? {
         taskType: "TEXT_IMAGE",
         textToImageParams: { text: prompt },
@@ -76,9 +109,13 @@ async function main() {
       })
     );
     if (!resp.body) throw new Error("Empty response body");
-    const json = JSON.parse(
-      Buffer.from(await resp.body.transformToByteArray()).toString()
-    );
+    const jsonRaw = await bodyToString(resp.body); // fixed: removed transformToByteArray
+    let json: any;
+    try {
+      json = JSON.parse(jsonRaw);
+    } catch {
+      throw new Error("Response not valid JSON");
+    }
     let b64: string | undefined;
 
     if (json.images?.[0]) b64 = json.images[0];
