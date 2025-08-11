@@ -10,7 +10,7 @@ This document provides comprehensive guidelines for generating all spritesheet a
 
 - **Korean Martial Arts Foundation**: All characters based on traditional Korean fighting styles
 - **Respectful Representation**: Honor Korean culture and martial arts heritage
-- - **Bilingual Integration**: Korean terminology with English translations
+- **Bilingual Integration**: Korean terminology with English translations
 - **Traditional Elements**: Include authentic Korean martial arts uniform elements
 
 ### 2. Combat Realism

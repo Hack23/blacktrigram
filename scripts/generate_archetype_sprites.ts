@@ -41,6 +41,17 @@ interface FrameDef {
   };
 }
 
+/**
+ * Manifest describing the generated archetype sprites.
+ *
+ * @interface Manifest
+ * @property archetype - The name of the archetype (e.g., "musa", "hacker")
+ * @property provider - The image generation provider used (e.g., "openai", "bedrock")
+ * @property size - The size of the generated images (e.g., "1024x1024")
+ * @property sourceGuide - The source guide file used for prompts
+ * @property templateId - The template identifier used for prompt generation
+ * @property frames - Array of frame objects describing each generated sprite
+ */
 interface Manifest {
   archetype: string;
   provider: string;
@@ -48,14 +59,24 @@ interface Manifest {
   sourceGuide: string;
   templateId: string;
   frames: Array<{
+    /** Unique key for the frame (e.g., "IDLE_SOUTH_0") */
     key: string;
+    /** Group/category for the frame (e.g., "IDLE", "ATTACK") */
     group: string;
+    /** Optional index for ordering frames within a group */
     index?: number;
+    /** Output file name for the frame relative to output directory */
     file: string;
+    /** Description of the frame action */
     description: string;
+    /** Hash of the prompt used for generation (for reproducibility) */
     promptHash: string;
-    finalFrameName?: string; // added finalFrameName
-    seed?: string | number; // added seed support
+    /** The final name assigned to the frame after post-processing or renaming.
+     * Used to track the definitive output file name if it differs from the initial `file` value. */
+    finalFrameName?: string;
+    /** The seed value used for deterministic image generation.
+     * Can be a string or number. Useful for reproducibility across runs. */
+    seed?: string | number;
   }>;
 }
 

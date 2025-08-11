@@ -87,14 +87,22 @@ async function main() {
       response_format: "b64_json",
     });
 
-    // Fix: Add proper null checking for response.data
-    if (!response.data || response.data.length === 0) {
-      throw new Error("No image data received from OpenAI API");
+    // Fix: More specific error messages for debugging
+    if (!response.data) {
+      throw new Error("OpenAI API response is missing the 'data' array");
+    }
+    if (!Array.isArray(response.data)) {
+      throw new Error("OpenAI API response 'data' property is not an array");
+    }
+    if (response.data.length === 0) {
+      throw new Error("OpenAI API response 'data' array is empty");
     }
 
     const imageData = response.data[0]?.b64_json;
     if (!imageData) {
-      throw new Error("No base64 image data in OpenAI response");
+      throw new Error(
+        "No base64 image data found in the first element of OpenAI response 'data' array"
+      );
     }
 
     await ensureDir(out);
