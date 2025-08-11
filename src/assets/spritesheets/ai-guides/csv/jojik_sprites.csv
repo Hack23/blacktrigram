@@ -1,0 +1,72 @@
+key,description,full_prompt,seed
+IDLE_SOUTH_0,hard-set street guard,"",5001
+IDLE_SOUTH_1,intimidation breath swell,"",5002
+IDLE_SOUTH_2,shoulder torque preload,"",5003
+IDLE_SOUTH_3,grounded dominance hold,"",5004
+WALK_SOUTH_0,heavy forward plant,"",5011
+WALK_SOUTH_1,weight drive advance,"",5012
+WALK_SOUTH_2,hip power shift,"",5013
+WALK_SOUTH_3,brutal intent reset,"",5014
+WALK_SOUTH_4,forceful push phase,"",5015
+WALK_SOUTH_5,dominance stride recovery,"",5016
+ATTACK_JIN_0,explosive load,"",5020
+ATTACK_JIN_1,initial burst,"",5021
+ATTACK_JIN_2,peak shock extension,"Organized crime enforcer jojik ruthless grounded force peak shock extension jin explosive concussive strike, 64x128 sprite, rugged layered street gi, orange + dark red accents cyan-orange shock arcs.",95022
+ATTACK_JIN_3,concussive follow-through,"",5023
+ATTACK_JIN_4,secondary impact settling,"",5024
+ATTACK_JIN_5,recovery guard,"",5025
+ATTACK_GON_0,low entry setup,"",5030
+ATTACK_GON_1,leg capture motion,"",5031
+ATTACK_GON_2,lift destabilization,"",5032
+ATTACK_GON_3,ground drive throw,"",5033
+ATTACK_GON_4,pin dominance,"",5034
+ATTACK_GON_5,stabilization posture,"",5035
+STANCE_IDLE_JIN_0,charged brutal coil,"",5040
+STANCE_IDLE_JIN_1,breathing aggression,"",5041
+STANCE_CHANGE_JIN_0,shift torque,"",5042
+STANCE_CHANGE_JIN_1,stance lock,"",5043
+STANCE_IDLE_GON_0,low grounded brace,"",5044
+STANCE_IDLE_GON_1,pressure anchor,"",5045
+STANCE_CHANGE_GON_0,entry capture,"",5046
+STANCE_CHANGE_GON_1,control consolidation,"",5047
+TECHNIQUE_WINDUP_JIN_0,explosive preload,"",5050
+TECHNIQUE_WINDUP_JIN_1,force stacking,"",5051
+TECHNIQUE_EXECUTE_JIN_0,shock vector release,"",5052
+TECHNIQUE_EXECUTE_JIN_1,impact surge,"",5053
+TECHNIQUE_RECOVER_JIN_0,force bleed off,"",5054
+TECHNIQUE_RECOVER_JIN_1,stance re-anchor,"",5055
+TECHNIQUE_WINDUP_GON_0,grapple structure load,"",5060
+TECHNIQUE_WINDUP_GON_1,hip elevation leverage,"",5061
+TECHNIQUE_EXECUTE_GON_0,takedown drive,"",5062
+TECHNIQUE_EXECUTE_GON_1,ground compression,"",5063
+TECHNIQUE_RECOVER_GON_0,dominance settle,"",5064
+TECHNIQUE_RECOVER_GON_1,pin stabilize,"",5065
+HIT_0,torso recoil start,"",5070
+HIT_1,impact stagger mid,"",5071
+HIT_2,loss of balance drift,"",5072
+HIT_3,recovering grind posture,"",5073
+DEFEND_0,guard raise onset,"",5075
+DEFEND_1,structured forearm brace,"",5076
+DEFEND_2,stabilized defense hold,"",5077
+BLOCK_0,short intercept brace,"",5078
+BLOCK_1,power diffusion,"",5079
+STUNNED_0,head snap disorientation,"",5080
+STUNNED_1,heavy sway,"",5081
+STUNNED_2,breathing shake,"",5082
+KNOCKED_DOWN_0,drop impact phase,"",5085
+KNOCKED_DOWN_1,low sprawl,"",5086
+KNOCKED_DOWN_2,ground breathe,"",5087
+GETTING_UP_0,arm post,"",5090
+GETTING_UP_1,hip drive,"",5091
+GETTING_UP_2,torso rise,"",5092
+GETTING_UP_3,stance reassert,"",5093
+VICTORY_0,respect nod rise,"",5100
+VICTORY_1,dominant hold posture,"",5101
+VICTORY_2,controlled exit breath,"",5102
+DEFEAT_0,drop phase,"",5105
+DEFEAT_1,kneel collapse transition,"",5106
+DEFEAT_2,slumped grounded state,"",5107
+INTIMIDATION_0,aggressive forward lean,"",5110
+INTIMIDATION_1,threat advance micro step,"",5111
+INTIMIDATION_2,clenched power coil,"",5112
+INTIMIDATION_3,dominance hold posture,"",5113

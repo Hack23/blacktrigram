@@ -193,6 +193,24 @@
       "jeongbo_walk_south_2",
       "jeongbo_walk_south_3"
     ],
+    "jeongbo_walk_north": [
+      "jeongbo_walk_south_0",
+      "jeongbo_walk_south_1",
+      "jeongbo_walk_south_2",
+      "jeongbo_walk_south_3"
+    ],
+    "jeongbo_run_south": [
+      "jeongbo_walk_south_0",
+      "jeongbo_walk_south_1",
+      "jeongbo_walk_south_2",
+      "jeongbo_walk_south_3"
+    ],
+    "jeongbo_run_north": [
+      "jeongbo_walk_south_0",
+      "jeongbo_walk_south_1",
+      "jeongbo_walk_south_2",
+      "jeongbo_walk_south_3"
+    ],
     "jeongbo_observe": [
       "jeongbo_observe_0",
       "jeongbo_observe_1",
@@ -214,6 +232,37 @@
       "jeongbo_attack_gan_3",
       "jeongbo_attack_gan_4",
       "jeongbo_attack_gan_5"
+    ],
+    "jeongbo_defend": [
+      "jeongbo_observe_1",
+      "jeongbo_observe_2",
+      "jeongbo_observe_3"
+    ],
+    "jeongbo_block": ["jeongbo_observe_2", "jeongbo_observe_3"],
+    "jeongbo_hit": [
+      "jeongbo_idle_south_2",
+      "jeongbo_idle_south_3",
+      "jeongbo_idle_south_1"
+    ],
+    "jeongbo_victory": [
+      "jeongbo_idle_north_0",
+      "jeongbo_idle_north_1",
+      "jeongbo_idle_north_2"
+    ],
+    "jeongbo_defeat": [
+      "jeongbo_idle_south_3",
+      "jeongbo_idle_south_2",
+      "jeongbo_idle_south_1"
+    ],
+    "jeongbo_stance_tae_loop": ["jeongbo_attack_tae_0", "jeongbo_attack_tae_1"],
+    "jeongbo_stance_change_tae": [
+      "jeongbo_attack_tae_1",
+      "jeongbo_attack_tae_2"
+    ],
+    "jeongbo_stance_gan_loop": ["jeongbo_attack_gan_0", "jeongbo_attack_gan_1"],
+    "jeongbo_stance_change_gan": [
+      "jeongbo_attack_gan_1",
+      "jeongbo_attack_gan_2"
     ]
   },
   "meta": {
@@ -221,6 +270,7 @@
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 2048 },
     "scale": "1",
-    "description": "Intelligence Operative (정보요원) - Tactical animations with Lake and Mountain stance specializations"
+    "description": "Intelligence Operative (정보요원) - Tactical animations with Lake and Mountain stance specializations",
+    "notes_added": "Added walk/run aliases and combat/stance placeholder animations."
   }
 }

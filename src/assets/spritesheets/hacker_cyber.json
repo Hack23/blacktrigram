@@ -214,13 +214,63 @@
       "hacker_attack_jin_3",
       "hacker_attack_jin_4",
       "hacker_attack_jin_5"
-    ]
+    ],
+    "hacker_run_south": [
+      "hacker_walk_south_0",
+      "hacker_walk_south_1",
+      "hacker_walk_south_2",
+      "hacker_walk_south_3"
+    ],
+    "hacker_run_north": [
+      "hacker_idle_north_0",
+      "hacker_idle_north_1",
+      "hacker_idle_north_2",
+      "hacker_idle_north_3"
+    ],
+    "hacker_run_east": [
+      "hacker_walk_south_0",
+      "hacker_walk_south_1",
+      "hacker_walk_south_2",
+      "hacker_walk_south_3"
+    ],
+    "hacker_run_west": [
+      "hacker_walk_south_0",
+      "hacker_walk_south_1",
+      "hacker_walk_south_2",
+      "hacker_walk_south_3"
+    ],
+    "hacker_defend": [
+      "hacker_override_1",
+      "hacker_override_2",
+      "hacker_override_3"
+    ],
+    "hacker_block": ["hacker_override_2", "hacker_override_3"],
+    "hacker_hit": [
+      "hacker_idle_south_2",
+      "hacker_idle_south_3",
+      "hacker_idle_south_1"
+    ],
+    "hacker_victory": [
+      "hacker_idle_north_0",
+      "hacker_idle_north_1",
+      "hacker_idle_north_2"
+    ],
+    "hacker_defeat": [
+      "hacker_idle_south_3",
+      "hacker_idle_south_2",
+      "hacker_idle_south_1"
+    ],
+    "hacker_stance_li_loop": ["hacker_attack_li_0", "hacker_attack_li_1"],
+    "hacker_stance_change_li": ["hacker_attack_li_1", "hacker_attack_li_2"],
+    "hacker_stance_jin_loop": ["hacker_attack_jin_0", "hacker_attack_jin_1"],
+    "hacker_stance_change_jin": ["hacker_attack_jin_1", "hacker_attack_jin_2"]
   },
   "meta": {
     "image": "hacker_cyber.png",
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 2048 },
     "scale": "1",
-    "description": "Cyber Warrior (해커) - Digital effects with Fire and Thunder stance specializations"
+    "description": "Cyber Warrior (해커) - Digital effects with Fire and Thunder stance specializations",
+    "notes_added": "Run, stance loop/change, and combat placeholder animations added."
   }
 }

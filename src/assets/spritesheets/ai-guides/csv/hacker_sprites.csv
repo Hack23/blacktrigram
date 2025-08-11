@@ -1,0 +1,97 @@
+key,description,full_prompt,seed
+IDLE_SOUTH_0,relaxed cyber guard forward,"",3001
+IDLE_SOUTH_1,neural scan micro tilt,"",3002
+IDLE_SOUTH_2,subtle breathing expansion,"",3003
+IDLE_SOUTH_3,refocus posture,"",3004
+IDLE_NORTH_0,reverse neural posture,"",3011
+IDLE_NORTH_1,data intake micro adjust,"",3012
+IDLE_NORTH_2,breath regulation,"",3013
+IDLE_NORTH_3,stable analysis stance,"",3014
+IDLE_EAST_0,profile neural readiness,"",3015
+IDLE_EAST_1,ocular recalibrate,"",3016
+IDLE_EAST_2,pulse stabilize,"",3017
+IDLE_EAST_3,return baseline,"",3018
+IDLE_WEST_0,reverse profile readiness,"",3019
+IDLE_WEST_1,head micro track,"",3020
+IDLE_WEST_2,visceral calm,"",3021
+IDLE_WEST_3,anchor reset,"",3022
+# Walk (south base)
+WALK_SOUTH_0,forward neural stride,"",3025
+WALK_SOUTH_1,balanced conduit step,"",3026
+WALK_SOUTH_2,controlled gait transfer,"",3027
+WALK_SOUTH_3,stabilized reset,"",3028
+# Run (6f)
+RUN_SOUTH_0,drive neural burst,"",3030
+RUN_SOUTH_1,propulsion phase,"",3031
+RUN_SOUTH_2,mid gait suspension,"",3032
+RUN_SOUTH_3,foot strike absorb,"",3033
+RUN_SOUTH_4,torso stabilize,"",3034
+RUN_SOUTH_5,cycle ready,"",3035
+# Override (channel)
+OVERRIDE_0,visor engagement onset,"",3036
+OVERRIDE_1,heightened neural channel glow,"",3037
+OVERRIDE_2,data pulse stabilization,"",3038
+OVERRIDE_3,controlled channel sustain,"",3039
+# Attack Li
+ATTACK_LI_0,precise nerve target alignment,"",3040
+ATTACK_LI_1,linear strike extension,"",3041
+ATTACK_LI_2,contact micro spark,"Cyber warrior hacker cyan neural vector Li contact micro spark precise nerve strike, 64x128 full body transparent, cyan + electric blue, amber spark filaments, realistic anatomy.",93042
+ATTACK_LI_3,follow-through taper,"",3043
+ATTACK_LI_4,secondary nerve jab,"",3044
+ATTACK_LI_5,recovery posture,"",3045
+# Attack Jin
+ATTACK_JIN_0,kinetic coil load,"",3050
+ATTACK_JIN_1,explosive release start,"",3051
+ATTACK_JIN_2,peak force arc,"",3052
+ATTACK_JIN_3,shockwave follow-through,"",3053
+ATTACK_JIN_4,recoil stabilization,"",3054
+ATTACK_JIN_5,ready stance reset,"",3055
+# Stance Li loop/change
+STANCE_IDLE_LI_0,subtle node pulse,"",3060
+STANCE_IDLE_LI_1,breathing neural modulation,"",3061
+STANCE_CHANGE_LI_0,channel alignment,"",3062
+STANCE_CHANGE_LI_1,channel lock,"",3063
+# Stance Jin loop/change
+STANCE_IDLE_JIN_0,compressed kinetic charge,"",3070
+STANCE_IDLE_JIN_1,stable charge retain,"",3071
+STANCE_CHANGE_JIN_0,impact vector prime,"",3072
+STANCE_CHANGE_JIN_1,field stabilize,"",3073
+# Technique phases Li
+TECHNIQUE_WINDUP_LI_0,nerve map acquisition,"",3080
+TECHNIQUE_WINDUP_LI_1,target lock micro spark,"",3081
+TECHNIQUE_EXECUTE_LI_0,precision filament strike,"",3082
+TECHNIQUE_EXECUTE_LI_1,secondary impulse,"",3083
+TECHNIQUE_RECOVER_LI_0,signal dissipation,"",3084
+TECHNIQUE_RECOVER_LI_1,baseline re-sync,"",3085
+# Technique phases Jin
+TECHNIQUE_WINDUP_JIN_0,coil compression,"",3090
+TECHNIQUE_WINDUP_JIN_1,power gating,"",3091
+TECHNIQUE_EXECUTE_JIN_0,explosive discharge,"",3092
+TECHNIQUE_EXECUTE_JIN_1,shockwave control,"",3093
+TECHNIQUE_RECOVER_JIN_0,residual bleed,"",3094
+TECHNIQUE_RECOVER_JIN_1,charge stabilization,"",3095
+# Reactions
+HIT_0,torso reactive jolt,"",3100
+HIT_1,neural disruption flinch,"",3101
+HIT_2,recovery recalibration,"",3102
+DEFEND_0,raised conduit guard,"",3103
+DEFEND_1,pulse reinforcement,"",3104
+DEFEND_2,guard sustain,"",3105
+BLOCK_0,short hard intercept,"",3106
+BLOCK_1,force diffusion,"",3107
+STUNNED_0,signal interference start,"",3108
+STUNNED_1,staggered recompute,"",3109
+STUNNED_2,stability regain,"",3110
+KNOCKED_DOWN_0,system overload collapse,"",3111
+KNOCKED_DOWN_1,low posture diagnostics,"",3112
+KNOCKED_DOWN_2,recovery buffer,"",3113
+GETTING_UP_0,hand plant,"",3114
+GETTING_UP_1,torso lift,"",3115
+GETTING_UP_2,stance align,"",3116
+GETTING_UP_3,guard restore,"",3117
+VICTORY_0,calm visor lift,"",3120
+VICTORY_1,neural channel idle,"",3121
+VICTORY_2,posture return,"",3122
+DEFEAT_0,system fatigue slump,"",3125
+DEFEAT_1,stabilize attempt,"",3126
+DEFEAT_2,still powered down,"",3127

@@ -1,0 +1,172 @@
+key,description,full_prompt,seed
+# Idle (8-way)
+IDLE_SOUTH_0,low poised stealth guard,"",2001
+IDLE_SOUTH_1,micro center shift right,"",2002
+IDLE_SOUTH_2,micro center shift left,"",2003
+IDLE_SOUTH_3,controlled exhale subtle,"",2004
+IDLE_NORTH_0,reverse low guard poised,"",2011
+IDLE_NORTH_1,balanced stealth inhale,"",2012
+IDLE_NORTH_2,quiet alignment check,"",2013
+IDLE_NORTH_3,latent strike readiness,"",2014
+IDLE_EAST_0,profile shadow coil,"",2021
+IDLE_EAST_1,weight bias forward,"",2022
+IDLE_EAST_2,slow controlled breath,"",2023
+IDLE_EAST_3,flow tension sustain,"",2024
+IDLE_WEST_0,profile reverse coil,"",2031
+IDLE_WEST_1,hip micro shift,"",2032
+IDLE_WEST_2,shoulder settle stealth,"",2033
+IDLE_WEST_3,breathing compression,"",2034
+IDLE_NORTHEAST_0,angled stealth poised,"",2035
+IDLE_NORTHEAST_1,subtle re-center,"",2036
+IDLE_NORTHEAST_2,quiet inhale,"",2037
+IDLE_NORTHEAST_3,micro exhale,"",2038
+IDLE_NORTHWEST_0,reverse angle poised,"",2039
+IDLE_NORTHWEST_1,heel micro adjust,"",2040
+IDLE_NORTHWEST_2,breath cadence,"",2041
+IDLE_NORTHWEST_3,return tension,"",2042
+IDLE_SOUTHEAST_0,forward angle coil,"",2043
+IDLE_SOUTHEAST_1,low center set,"",2044
+IDLE_SOUTHEAST_2,controlled micro shift,"",2045
+IDLE_SOUTHEAST_3,latent spring,"",2046
+IDLE_SOUTHWEST_0,angled low coil,"",2047
+IDLE_SOUTHWEST_1,center roll subtle,"",2048
+IDLE_SOUTHWEST_2,breathing hold,"",2049
+IDLE_SOUTHWEST_3,poised remain,"",2050
+# Walk (stealth glide) 8-way
+WALK_SOUTH_0,soft glide lead foot,"",2055
+WALK_SOUTH_1,trailing foot silent pass,"",2056
+WALK_SOUTH_2,weight transition fluid,"",2057
+WALK_SOUTH_3,poised recovery alignment,"",2058
+WALK_NORTH_0,reverse soft glide,"",2059
+WALK_NORTH_1,center controlled pass,"",2060
+WALK_NORTH_2,hip silent shift,"",2061
+WALK_NORTH_3,guard poised,"",2062
+WALK_EAST_0,profile glide entry,"",2063
+WALK_EAST_1,leg silent overlap,"",2064
+WALK_EAST_2,breath contained,"",2065
+WALK_EAST_3,return poised,"",2066
+WALK_WEST_0,reverse profile glide,"",2067
+WALK_WEST_1,center silent pass,"",2068
+WALK_WEST_2,torso minimize,"",2069
+WALK_WEST_3,recover coil,"",2070
+WALK_NORTHEAST_0,angled silent step,"",2071
+WALK_NORTHEAST_1,transfer concealed,"",2072
+WALK_NORTHEAST_2,low flow,"",2073
+WALK_NORTHEAST_3,stance ready,"",2074
+WALK_NORTHWEST_0,reverse angled step,"",2075
+WALK_NORTHWEST_1,center drift,"",2076
+WALK_NORTHWEST_2,stabilize flow,"",2077
+WALK_NORTHWEST_3,coil compress,"",2078
+WALK_SOUTHEAST_0,forward angled glide,"",2079
+WALK_SOUTHEAST_1,hip low pass,"",2080
+WALK_SOUTHEAST_2,silent transition,"",2081
+WALK_SOUTHEAST_3,guard refine,"",2082
+WALK_SOUTHWEST_0,low angled glide,"",2083
+WALK_SOUTHWEST_1,soft lateral pass,"",2084
+WALK_SOUTHWEST_2,controlled toe set,"",2085
+WALK_SOUTHWEST_3,posture tighten,"",2086
+# Run (shadow burst) 6f
+RUN_SOUTH_0,compressed burst prep,"",2090
+RUN_SOUTH_1,low propulsion,"",2091
+RUN_SOUTH_2,flight minimal profile,"",2092
+RUN_SOUTH_3,soft landing,"",2093
+RUN_SOUTH_4,forward displacement,"",2094
+RUN_SOUTH_5,recover stealth guard,"",2095
+RUN_NORTH_0,reverse burst prep,"",2096
+RUN_NORTH_1,hip loaded drive,"",2097
+RUN_NORTH_2,minimal silhouette,"",2098
+RUN_NORTH_3,landing absorption,"",2099
+RUN_NORTH_4,roll stabilization,"",2100
+RUN_NORTH_5,reset coil,"",2101
+RUN_EAST_0,profile burst,"",2102
+RUN_EAST_1,low stride,"",2103
+RUN_EAST_2,extension compact,"",2104
+RUN_EAST_3,soft impact,"",2105
+RUN_EAST_4,torso quiet align,"",2106
+RUN_EAST_5,reset stealth,"",2107
+RUN_WEST_0,reverse profile burst,"",2108
+RUN_WEST_1,low drive,"",2109
+RUN_WEST_2,aerial compression,"",2110
+RUN_WEST_3,landing silent,"",2111
+RUN_WEST_4,post correction,"",2112
+RUN_WEST_5,coil restore,"",2113
+RUN_NORTHEAST_0,angled shadow burst,"",2114
+RUN_NORTHEAST_1,drive compression,"",2115
+RUN_NORTHEAST_2,flight minimal,"",2116
+RUN_NORTHEAST_3,soft absorb,"",2117
+RUN_NORTHEAST_4,roll dampen,"",2118
+RUN_NORTHEAST_5,ready stance,"",2119
+RUN_NORTHWEST_0,reverse angled burst,"",2120
+RUN_NORTHWEST_1,displacement low,"",2121
+RUN_NORTHWEST_2,flight hush,"",2122
+RUN_NORTHWEST_3,landing hush,"",2123
+RUN_NORTHWEST_4,hip align,"",2124
+RUN_NORTHWEST_5,coil regain,"",2125
+RUN_SOUTHEAST_0,forward angled low,"",2126
+RUN_SOUTHEAST_1,compressed stride,"",2127
+RUN_SOUTHEAST_2,mid float,"",2128
+RUN_SOUTHEAST_3,soft anchor,"",2129
+RUN_SOUTHEAST_4,breath contain,"",2130
+RUN_SOUTHEAST_5,stealth posture,"",2131
+RUN_SOUTHWEST_0,angled stealth burst,"",2132
+RUN_SOUTHWEST_1,drive compact,"",2133
+RUN_SOUTHWEST_2,low flight,"",2134
+RUN_SOUTHWEST_3,landing align,"",2135
+RUN_SOUTHWEST_4,torso adjust,"",2136
+RUN_SOUTHWEST_5,coil rearm,"",2137
+# Dodge 4f
+DODGE_SOUTH_0,shadow slip prep,"",2140
+DODGE_SOUTH_1,lateral vanish,"",2141
+DODGE_SOUTH_2,transition blur,"Shadow assassin amsalja silent violet vector lateral displacement blur-free stealth slip, 64x128 sprite, matte stealth suit subtle teal-lilac flow trace, transparent bg.",92142
+DODGE_SOUTH_3,reappear guard,"",2143
+DODGE_EAST_0,profile slip load,"",2144
+DODGE_EAST_1,low vector shift,"",2145
+DODGE_EAST_2,flow realign,"",2146
+DODGE_EAST_3,stance tighten,"",2147
+DODGE_WEST_0,reverse slip load,"",2148
+DODGE_WEST_1,oblique displacement,"",2149
+DODGE_WEST_2,quiet restore,"",2150
+DODGE_WEST_3,guard compress,"",2151
+# Attack Son
+ATTACK_SON_0,fluid chain strike windup,"",2160
+ATTACK_SON_1,slicing forearm sweep,"",2161
+ATTACK_SON_2,seamless follow-through arc,"",2162
+ATTACK_SON_3,redirected second vector,"Shadow assassin amsalja silent violet vector redirection second vector fluid arc, 64x128 sprite, stealth matte fabrics, controlled teal-lilac flow wisps.",92163
+ATTACK_SON_4,pressure continuation,"",2164
+ATTACK_SON_5,recovery flowing guard,"",2165
+# Stance & Technique (Son)
+STANCE_IDLE_SON_0,low flow oscillation,"",2170
+STANCE_IDLE_SON_1,breathing micro pulse,"",2171
+STANCE_CHANGE_SON_0,shift compress,"",2172
+STANCE_CHANGE_SON_1,shift release,"",2173
+TECHNIQUE_WINDUP_SON_0,coil accumulation,"",2174
+TECHNIQUE_WINDUP_SON_1,vector alignment,"",2175
+TECHNIQUE_EXECUTE_SON_0,release pressure arc,"",2176
+TECHNIQUE_EXECUTE_SON_1,continuity glide,"",2177
+TECHNIQUE_RECOVER_SON_0,flow deceleration,"",2178
+TECHNIQUE_RECOVER_SON_1,neutral stealth reset,"",2179
+# Reactions / states
+HIT_0,torso recoil soft,"",2180
+HIT_1,sharp pain response,"",2181
+HIT_2,recenter stealth,"",2182
+DEFEND_0,low guard raise,"",2183
+DEFEND_1,brace containment,"",2184
+DEFEND_2,guard sustain,"",2185
+BLOCK_0,compressed intercept,"",2186
+BLOCK_1,pressure absorb,"",2187
+STUNNED_0,brief imbalance,"",2188
+STUNNED_1,micro sway,"",2189
+STUNNED_2,recover calibration,"",2190
+KNOCKED_DOWN_0,controlled descent,"",2191
+KNOCKED_DOWN_1,low collapse,"",2192
+KNOCKED_DOWN_2,ground minimize profile,"",2193
+GETTING_UP_0,arm post set,"",2194
+GETTING_UP_1,hip rise covert,"",2195
+GETTING_UP_2,torso align,"",2196
+GETTING_UP_3,stealth stance reinit,"",2197
+VICTORY_0,subtle nod,"",2198
+VICTORY_1,controlled breath,"",2199
+VICTORY_2,return neutrality,"",2200
+DEFEAT_0,kneel controlled,"",2201
+DEFEAT_1,lower head incline,"",2202
+DEFEAT_2,still subdued,"",2203
