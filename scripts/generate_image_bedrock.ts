@@ -11,8 +11,8 @@ import {
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
 import "dotenv/config";
-import { writeFile } from "fs/promises";
-import { argv, exit } from "process";
+import { mkdir, writeFile } from "fs/promises";
+import { dirname } from "path";
 
 interface Args {
   prompt: string;
@@ -23,11 +23,11 @@ interface Args {
 }
 
 function parse(): Args {
-  const a = argv.slice(2);
+  const a = process.argv.slice(2);
   const prompt = a[0];
   if (!prompt) {
     console.error('Usage: "<prompt>" [output_file] [width] [height] [modelId]');
-    exit(1);
+    process.exit(1);
   }
   return {
     prompt,
@@ -36,6 +36,10 @@ function parse(): Args {
     h: a[3] ? parseInt(a[3], 10) : 1024,
     model: a[4] || "amazon.titan-image-generator-v2",
   };
+}
+
+async function ensureDir(path: string) {
+  await mkdir(dirname(path), { recursive: true });
 }
 
 async function bodyToString(body: any): Promise<string> {
@@ -57,7 +61,7 @@ async function main() {
   const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION;
   if (!region) {
     console.error("Set AWS_REGION");
-    exit(1);
+    process.exit(1);
   }
   const client = new BedrockRuntimeClient({ region });
 

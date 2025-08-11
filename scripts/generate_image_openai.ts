@@ -6,8 +6,9 @@
  * Env: OPENAI_API_KEY
  */
 import "dotenv/config";
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import OpenAI from "openai";
+import { dirname } from "path";
 import { argv, exit } from "process";
 
 type AllowedImageSize =
@@ -62,6 +63,10 @@ function parse(): Args {
   };
 }
 
+async function ensureDir(path: string) {
+  await mkdir(dirname(path), { recursive: true });
+}
+
 async function main() {
   const { prompt, out, size, model } = parse();
   if (!process.env.OPENAI_API_KEY) {
@@ -71,16 +76,30 @@ async function main() {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
-    const res = await openai.images.generate({
+    console.log(`🎨 Generating image with OpenAI ${model}...`);
+    console.log(`📝 Prompt: ${prompt.slice(0, 100)}...`);
+
+    const response = await openai.images.generate({
       model,
       prompt,
       size,
       n: 1,
       response_format: "b64_json",
     });
-    const b64 = res.data?.[0]?.b64_json;
-    if (!b64) throw new Error("No image data returned");
-    await writeFile(out, Buffer.from(b64, "base64"));
+
+    // Fix: Add proper null checking for response.data
+    if (!response.data || response.data.length === 0) {
+      throw new Error("No image data received from OpenAI API");
+    }
+
+    const imageData = response.data[0]?.b64_json;
+    if (!imageData) {
+      throw new Error("No base64 image data in OpenAI response");
+    }
+
+    await ensureDir(out);
+    await writeFile(out, Buffer.from(imageData, "base64"));
+
     console.log(`✅ OpenAI image saved: ${out} (model=${model} size=${size})`);
   } catch (e) {
     console.error("❌ OpenAI image generation failed:", e);

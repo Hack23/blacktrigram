@@ -12,6 +12,7 @@
  *
  * Supports provider: openai (Bedrock stub for extension).
  */
+import { spawn } from "child_process";
 import { createHash } from "crypto";
 import "dotenv/config";
 import { existsSync } from "fs";
@@ -482,6 +483,7 @@ function hashPrompt(p: string): string {
   return createHash("sha256").update(p).digest("hex").slice(0, 16);
 }
 
+// Has its OWN OpenAI implementation
 async function generateOpenAI(
   size: AllowedImageSize,
   items: FrameDef[],
@@ -559,6 +561,68 @@ async function generateOpenAI(
   await Promise.all(workers);
 }
 
+async function generateWithExternalScript(
+  provider: "openai" | "bedrock",
+  items: FrameDef[],
+  outRoot: string,
+  dryRun: boolean,
+  defaults: any
+) {
+  if (dryRun) {
+    console.log(`🛈 Dry-run: skipping ${provider} API calls.`);
+    return;
+  }
+
+  const scriptPath =
+    provider === "openai"
+      ? "scripts/generate_image_openai.ts"
+      : "scripts/generate_image_bedrock.ts";
+
+  for (const frame of items) {
+    try {
+      await ensureDir(dirname(join(outRoot, frame.file)));
+
+      const args =
+        provider === "openai"
+          ? [
+              scriptPath,
+              frame.prompt,
+              join(outRoot, frame.file),
+              defaults.size || "1024x1024",
+              defaults.model,
+            ]
+          : [
+              scriptPath,
+              frame.prompt,
+              join(outRoot, frame.file),
+              "1024",
+              "1024",
+              defaults.model,
+            ];
+
+      await new Promise<void>((resolve, reject) => {
+        const child = spawn("npx", ["tsx", ...args], {
+          stdio: ["pipe", "pipe", "pipe"],
+          env: process.env,
+        });
+
+        child.on("close", (code) => {
+          if (code === 0) {
+            console.log(`✅ ${frame.key} -> ${frame.file}`);
+            resolve();
+          } else {
+            reject(new Error(`Script failed with code ${code}`));
+          }
+        });
+
+        child.on("error", reject);
+      });
+    } catch (err) {
+      console.error(`❌ Frame ${frame.key} failed:`, err);
+    }
+  }
+}
+
 // Canonical minimal requirement sets per archetype (can expand later)
 const ARCHETYPE_STANCES: Record<string, string[]> = {
   musa: ["geon"],
@@ -579,33 +643,35 @@ const DIRECTIONS_8 = [
   "northwest",
 ];
 
+// Add missing directional validation in buildExpectedKeys
 function buildExpectedKeys(archetype: string): Set<string> {
   const stances = ARCHETYPE_STANCES[archetype] || [];
   const expected = new Set<string>();
-  // Core directional (idle, walk, run, dodge)
+
+  // Core directional (idle, walk, run, dodge) - Fixed: all 8 directions
   for (const dir of DIRECTIONS_8) {
+    const dirUpper = dir.toUpperCase();
     for (const a of ["IDLE", "WALK"]) {
-      for (let i = 0; i < 4; i++)
-        expected.add(`${a}_${dir.toUpperCase()}_${i}`);
+      for (let i = 0; i < 4; i++) expected.add(`${a}_${dirUpper}_${i}`);
     }
+    // Run (6 frames) and dodge (4 frames)
+    for (let i = 0; i < 6; i++) expected.add(`RUN_${dirUpper}_${i}`);
+    for (let i = 0; i < 4; i++) expected.add(`DODGE_${dirUpper}_${i}`);
   }
-  // Optional run/dodge (6 run, 4 dodge)
-  for (const dir of DIRECTIONS_8) {
-    for (let i = 0; i < 6; i++) expected.add(`RUN_${dir.toUpperCase()}_${i}`);
-    for (let i = 0; i < 4; i++) expected.add(`DODGE_${dir.toUpperCase()}_${i}`);
-  }
-  // Attacks + stance idle/change + technique phases (6 /2 /2 /2 /2 /2)
+
+  // Attacks + stance idle/change + technique phases
   for (const stance of stances) {
-    for (let i = 0; i < 6; i++)
-      expected.add(`ATTACK_${stance.toUpperCase()}_${i}`);
+    const stanceUpper = stance.toUpperCase();
+    for (let i = 0; i < 6; i++) expected.add(`ATTACK_${stanceUpper}_${i}`);
     for (let i = 0; i < 2; i++) {
-      expected.add(`STANCE_IDLE_${stance.toUpperCase()}_${i}`);
-      expected.add(`STANCE_CHANGE_${stance.toUpperCase()}_${i}`);
-      expected.add(`TECHNIQUE_WINDUP_${stance.toUpperCase()}_${i}`);
-      expected.add(`TECHNIQUE_EXECUTE_${stance.toUpperCase()}_${i}`);
-      expected.add(`TECHNIQUE_RECOVER_${stance.toUpperCase()}_${i}`);
+      expected.add(`STANCE_IDLE_${stanceUpper}_${i}`);
+      expected.add(`STANCE_CHANGE_${stanceUpper}_${i}`);
+      expected.add(`TECHNIQUE_WINDUP_${stanceUpper}_${i}`);
+      expected.add(`TECHNIQUE_EXECUTE_${stanceUpper}_${i}`);
+      expected.add(`TECHNIQUE_RECOVER_${stanceUpper}_${i}`);
     }
   }
+
   // Reactions / status (variable counts)
   for (let i = 0; i < 4; i++) expected.add(`HIT_${i}`);
   for (let i = 0; i < 3; i++) expected.add(`DEFEND_${i}`);
@@ -615,87 +681,68 @@ function buildExpectedKeys(archetype: string): Set<string> {
   for (let i = 0; i < 4; i++) expected.add(`GETTING_UP_${i}`);
   for (let i = 0; i < 3; i++) expected.add(`VICTORY_${i}`);
   for (let i = 0; i < 3; i++) expected.add(`DEFEAT_${i}`);
+
+  // Add archetype-specific special animations
+  if (archetype === "amsalja") {
+    for (let i = 0; i < 4; i++) expected.add(`STEALTH_IDLE_${i}`);
+  }
+  if (archetype === "hacker") {
+    for (let i = 0; i < 4; i++) expected.add(`OVERRIDE_${i}`);
+  }
+  if (archetype === "jeongbo") {
+    for (let i = 0; i < 4; i++) expected.add(`OBSERVE_${i}`);
+  }
+  if (archetype === "jojik") {
+    for (let i = 0; i < 4; i++) expected.add(`INTIMIDATION_${i}`);
+  }
+
   return expected;
 }
 
-function validateCoverage(archetype: string, frames: FrameDef[]) {
-  const expected = buildExpectedKeys(archetype);
-  const present = new Set(frames.map((f) => f.key));
-  const missing: string[] = [];
-  expected.forEach((k) => {
-    if (!present.has(k)) missing.push(k);
-  });
-  missing.sort();
-  if (!missing.length) {
-    console.log("✅ All canonical frame keys present.");
-  } else {
-    console.log(
-      `⚠ Missing ${missing.length} canonical keys (showing up to 40):\n` +
-        missing.slice(0, 40).join(", ") +
-        (missing.length > 40 ? " ..." : "")
-    );
-  }
-}
-
-// Mapping function (ensure present)
+// Improve mapping function for better consistency
 function mapKeyToSpriteName(archetype: string, frame: FrameDef): string {
   const parts = frame.key.split("_");
   const baseParts = frame.index !== undefined ? parts.slice(0, -1) : parts;
   const frameIdx = frame.index ?? 0;
   const lowerParts = baseParts.map((p) => p.toLowerCase());
 
-  if (lowerParts.length === 1) {
-    const single = lowerParts[0];
-    if (["idle", "walk", "run", "dodge"].includes(single)) {
-      lowerParts.push("south");
-    }
+  // Handle directional actions (idle, walk, run, dodge)
+  const directionalActions = new Set(["idle", "walk", "run", "dodge"]);
+  if (directionalActions.has(lowerParts[0]) && lowerParts.length >= 2) {
+    return `${archetype}_${lowerParts[0]}_${lowerParts[1]}_${frameIdx}`;
   }
 
-  if (
-    lowerParts[0] === "technique" &&
-    ["windup", "execute", "recover"].includes(lowerParts[1]) &&
-    lowerParts.length >= 3
-  ) {
+  // Handle technique phases with stance
+  if (lowerParts[0] === "technique" && lowerParts.length >= 3) {
     return `${archetype}_technique_${lowerParts[1]}_${lowerParts[2]}_${frameIdx}`;
   }
 
-  if (
-    lowerParts[0] === "stance" &&
-    ["idle", "change"].includes(lowerParts[1]) &&
-    lowerParts.length >= 3
-  ) {
+  // Handle stance actions
+  if (lowerParts[0] === "stance" && lowerParts.length >= 3) {
     return `${archetype}_stance_${lowerParts[1]}_${lowerParts[2]}_${frameIdx}`;
   }
 
-  if (lowerParts[0] === "stance" && lowerParts.length === 2) {
-    return `${archetype}_stance_${lowerParts[1]}_${frameIdx}`;
-  }
-
+  // Handle attack with stance
   if (lowerParts[0] === "attack" && lowerParts.length >= 2) {
     return `${archetype}_attack_${lowerParts[1]}_${frameIdx}`;
   }
-  if (lowerParts[0] === "idle" && lowerParts.length >= 2) {
-    return `${archetype}_idle_${lowerParts[1]}_${frameIdx}`;
-  }
-  if (lowerParts[0] === "walk" && lowerParts.length >= 2) {
-    return `${archetype}_walk_${lowerParts[1]}_${frameIdx}`;
-  }
-  if (lowerParts[0] === "run" && lowerParts.length >= 2) {
-    return `${archetype}_run_${lowerParts[1]}_${frameIdx}`;
-  }
-  if (lowerParts[0] === "dodge" && lowerParts.length >= 2) {
-    return `${archetype}_dodge_${lowerParts[1]}_${frameIdx}`;
-  }
-  if (lowerParts[0] === "stealth" && lowerParts[1] === "idle") {
-    return `${archetype}_stealth_idle_${frameIdx}`;
-  }
-  if (lowerParts[0] === "override") {
-    return `${archetype}_override_${frameIdx}`;
-  }
-  if (lowerParts[0] === "observe") {
-    return `${archetype}_observe_${frameIdx}`;
+
+  // Handle special archetype actions
+  const specialActions = new Set([
+    "stealth",
+    "override",
+    "observe",
+    "intimidation",
+  ]);
+
+  if (specialActions.has(lowerParts[0])) {
+    if (lowerParts.length === 2 && lowerParts[1] === "idle") {
+      return `${archetype}_${lowerParts[0]}_idle_${frameIdx}`;
+    }
+    return `${archetype}_${lowerParts[0]}_${frameIdx}`;
   }
 
+  // Handle simple status actions
   const simpleActions = new Set([
     "hit",
     "block",
@@ -703,29 +750,29 @@ function mapKeyToSpriteName(archetype: string, frame: FrameDef): string {
     "victory",
     "defeat",
     "stunned",
-    "knocked",
-    "knocked_down",
-    "getting",
     "getting_up",
-    "getup",
-    "dodge",
-    "intimidation",
+    "knocked_down",
   ]);
 
-  if (simpleActions.has(lowerParts[0])) {
-    if (lowerParts[0] === "knocked" && lowerParts[1] === "down") {
-      return `${archetype}_knocked_down_${frameIdx}`;
-    }
-    if (lowerParts[0] === "getting" && lowerParts[1] === "up") {
-      return `${archetype}_getting_up_${frameIdx}`;
-    }
-    return `${archetype}_${lowerParts[0]}_${frameIdx}`;
+  if (
+    simpleActions.has(lowerParts[0]) ||
+    (lowerParts[0] === "knocked" && lowerParts[1] === "down") ||
+    (lowerParts[0] === "getting" && lowerParts[1] === "up")
+  ) {
+    const actionName =
+      lowerParts[0] === "knocked"
+        ? "knocked_down"
+        : lowerParts[0] === "getting"
+        ? "getting_up"
+        : lowerParts[0];
+    return `${archetype}_${actionName}_${frameIdx}`;
   }
 
+  // Fallback
   return `${archetype}_${lowerParts.join("_")}_${frameIdx}`;
 }
 
-// Output path builder (was missing)
+// Output path builder
 function buildOutputPath(
   archetype: string,
   frame: FrameDef,
@@ -745,6 +792,25 @@ function buildOutputPath(
     relativeFile: `${primary}/${spriteName}.png`,
     finalFrameName: spriteName,
   };
+}
+
+function validateCoverage(archetype: string, frames: FrameDef[]) {
+  const expected = buildExpectedKeys(archetype);
+  const present = new Set(frames.map((f) => f.key));
+  const missing: string[] = [];
+  expected.forEach((k) => {
+    if (!present.has(k)) missing.push(k);
+  });
+  missing.sort();
+  if (!missing.length) {
+    console.log("✅ All canonical frame keys present.");
+  } else {
+    console.log(
+      `⚠ Missing ${missing.length} canonical keys (showing up to 40):\n` +
+        missing.slice(0, 40).join(", ") +
+        (missing.length > 40 ? " ..." : "")
+    );
+  }
 }
 
 async function run() {
@@ -776,7 +842,6 @@ async function run() {
   allFrames.forEach((f) => {
     const naming = buildOutputPath(opts.archetype, f, opts.rawNames);
     f.file = naming.relativeFile;
-    // Overwrite key → keep original key in manifest but attach final name
     // Store final name on frame object (extend type dynamically)
     (f as any).finalFrameName = naming.finalFrameName;
   });
@@ -797,16 +862,31 @@ async function run() {
   if (opts.dryRun) {
     console.log("Dry-run complete. No API calls made.");
   } else if (opts.provider === "openai") {
-    await generateOpenAI(opts.size, allFrames, opts.outDir, opts.dryRun, {
-      model: opts.model!,
-      quality: opts.quality,
-      style: opts.style,
-      background: opts.background,
-      n: opts.n || 1,
-    });
-  } else {
-    console.warn(
-      "Provider 'bedrock' not yet implemented in this orchestrator (stub)."
+    await generateWithExternalScript(
+      "openai",
+      allFrames,
+      opts.outDir,
+      opts.dryRun,
+      {
+        model: opts.model!,
+        size: opts.size,
+        quality: opts.quality,
+        style: opts.style,
+        background: opts.background,
+        n: opts.n || 1,
+      }
+    );
+  } else if (opts.provider === "bedrock") {
+    await generateWithExternalScript(
+      "bedrock",
+      allFrames,
+      opts.outDir,
+      opts.dryRun,
+      {
+        model: "amazon.titan-image-generator-v2",
+        width: 1024,
+        height: 1024,
+      }
     );
   }
   // Manifest
@@ -827,7 +907,7 @@ async function run() {
       finalFrameName: (f as any).finalFrameName || null,
       seed: f.seed || undefined,
     })),
-  } as any;
+  };
   await writeFile(
     join(opts.outDir, "manifest.json"),
     JSON.stringify(manifest, null, 2),

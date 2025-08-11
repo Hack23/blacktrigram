@@ -246,7 +246,122 @@
       "musa_idle_south_1"
     ],
     "musa_stance_geon_loop": ["musa_attack_geon_0", "musa_attack_geon_1"],
-    "musa_stance_change_geon": ["musa_attack_geon_1", "musa_attack_geon_2"]
+    "musa_stance_change_geon": ["musa_attack_geon_1", "musa_attack_geon_2"],
+    "musa_idle_northeast": [
+      "musa_idle_north_0",
+      "musa_idle_north_1",
+      "musa_idle_north_2",
+      "musa_idle_north_3"
+    ],
+    "musa_idle_northwest": [
+      "musa_idle_north_0",
+      "musa_idle_north_1",
+      "musa_idle_north_2",
+      "musa_idle_north_3"
+    ],
+    "musa_idle_southeast": [
+      "musa_idle_south_0",
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3"
+    ],
+    "musa_idle_southwest": [
+      "musa_idle_south_0",
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3"
+    ],
+    "musa_walk_northeast": [
+      "musa_walk_north_0",
+      "musa_walk_north_1",
+      "musa_walk_north_2",
+      "musa_walk_north_3"
+    ],
+    "musa_walk_northwest": [
+      "musa_walk_north_0",
+      "musa_walk_north_1",
+      "musa_walk_north_2",
+      "musa_walk_north_3"
+    ],
+    "musa_walk_southeast": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_walk_southwest": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_dodge_south": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_0",
+      "musa_idle_south_1"
+    ],
+    "musa_dodge_north": [
+      "musa_idle_north_1",
+      "musa_idle_north_2",
+      "musa_idle_north_0",
+      "musa_idle_north_1"
+    ],
+    "musa_dodge_east": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_0",
+      "musa_idle_south_1"
+    ],
+    "musa_dodge_west": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_0",
+      "musa_idle_south_1"
+    ],
+    "musa_dodge_northeast": [
+      "musa_idle_north_1",
+      "musa_idle_north_2",
+      "musa_idle_north_0",
+      "musa_idle_north_1"
+    ],
+    "musa_dodge_northwest": [
+      "musa_idle_north_1",
+      "musa_idle_north_2",
+      "musa_idle_north_0",
+      "musa_idle_north_1"
+    ],
+    "musa_dodge_southeast": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_0",
+      "musa_idle_south_1"
+    ],
+    "musa_dodge_southwest": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_0",
+      "musa_idle_south_1"
+    ],
+    "musa_knocked_down": [
+      "musa_idle_south_3",
+      "musa_idle_south_2",
+      "musa_idle_south_1"
+    ],
+    "musa_getting_up": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3",
+      "musa_idle_south_0"
+    ],
+    "musa_stunned": [
+      "musa_idle_south_2",
+      "musa_idle_south_3",
+      "musa_idle_south_2"
+    ],
+    "musa_technique_windup_geon": ["musa_attack_geon_0", "musa_attack_geon_1"],
+    "musa_technique_execute_geon": ["musa_attack_geon_2", "musa_attack_geon_3"],
+    "musa_technique_recover_geon": ["musa_attack_geon_4", "musa_attack_geon_5"]
   },
   "meta": {
     "image": "musa_warrior.png",

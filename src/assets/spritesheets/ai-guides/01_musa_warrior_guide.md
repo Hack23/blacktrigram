@@ -121,7 +121,7 @@ NEGATIVE:
 cartoon, anime, chibi, deformed, extra arms, extra fingers, blur, bloom, grain, watermark, text, logo, heavy armor, mecha, fisheye, perspective warp, overexposed
 ```
 
-### 6. Frame Action Lines Examples
+### 6. Action Line Examples
 
 ```
 IDLE_SOUTH_0: calm neutral guard
@@ -129,10 +129,40 @@ IDLE_SOUTH_1: micro weight shift right
 IDLE_SOUTH_2: micro weight shift left
 IDLE_SOUTH_3: subtle breathing expansion
 
+IDLE_NORTH_0: reverse calm guard
+IDLE_NORTH_1: shoulder settle
+IDLE_NORTH_2: breath control focus
+IDLE_NORTH_3: centered poised stillness
+
+IDLE_EAST_0: profile guard stable
+IDLE_EAST_1: shoulder micro adjust
+IDLE_EAST_2: breathing cadence
+IDLE_EAST_3: return neutral
+
+IDLE_WEST_0: reverse profile guard
+IDLE_WEST_1: stance micro settle
+IDLE_WEST_2: weight micro shift
+IDLE_WEST_3: breathing discipline
+
 WALK_SOUTH_0: forward step lead foot extended
 WALK_SOUTH_1: trailing foot passes center
 WALK_SOUTH_2: weight transfer mid
 WALK_SOUTH_3: recovery stance
+
+WALK_NORTH_0: reverse advance start
+WALK_NORTH_1: passing step controlled
+WALK_NORTH_2: hip transfer restrained
+WALK_NORTH_3: guarded recovery
+
+WALK_EAST_0: profile advance start
+WALK_EAST_1: controlled step pass
+WALK_EAST_2: torso counter rotation
+WALK_EAST_3: reset alignment
+
+WALK_WEST_0: reverse profile step
+WALK_WEST_1: mid transfer
+WALK_WEST_2: arm balance adjust
+WALK_WEST_3: foot set recovery
 
 ATTACK_GEON_0: anticipatory lowering
 ATTACK_GEON_1: coiled torque load
@@ -140,6 +170,54 @@ ATTACK_GEON_2: explosive extension start
 ATTACK_GEON_3: peak impact extension
 ATTACK_GEON_4: controlled follow-through
 ATTACK_GEON_5: recoil recovery guard
+
+STANCE_IDLE_GEON_0: calm charged stance
+STANCE_IDLE_GEON_1: breathing expansion subtle
+
+STANCE_CHANGE_GEON_0: transition load
+STANCE_CHANGE_GEON_1: transition settle
+
+TECHNIQUE_WINDUP_GEON_0: focused entry load
+TECHNIQUE_WINDUP_GEON_1: coil compression
+
+TECHNIQUE_EXECUTE_GEON_0: release vector
+TECHNIQUE_EXECUTE_GEON_1: force channel
+
+TECHNIQUE_RECOVER_GEON_0: guard retraction
+TECHNIQUE_RECOVER_GEON_1: neutral reset
+
+HIT_0: torso recoil initial
+HIT_1: impact stagger
+HIT_2: guard recovery
+HIT_3: stance stabilization
+
+DEFEND_0: forearm guard set
+DEFEND_1: brace compression
+DEFEND_2: guard retention
+
+BLOCK_0: compact shield posture
+BLOCK_1: absorption stabilization
+
+STUNNED_0: dazed sway start
+STUNNED_1: oscillate micro drift
+STUNNED_2: recover focus attempt
+
+KNOCKED_DOWN_0: descent phase
+KNOCKED_DOWN_1: ground impact
+KNOCKED_DOWN_2: low posture still
+
+GETTING_UP_0: arm post support
+GETTING_UP_1: hip drive
+GETTING_UP_2: torso rise
+GETTING_UP_3: stance reestablish
+
+VICTORY_0: respectful acknowledgment start
+VICTORY_1: respectful acknowledgment hold
+VICTORY_2: return neutral guard
+
+DEFEAT_0: controlled kneel descent
+DEFEAT_1: lowered posture
+DEFEAT_2: still subdued
 ```
 
 ### 7. Negative Prompt (Reusable)

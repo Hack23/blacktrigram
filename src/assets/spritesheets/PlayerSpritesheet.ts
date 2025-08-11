@@ -225,7 +225,17 @@ export class PlayerSpritesheet {
     graphics.lineTo(width * 0.7, height * 0.95);
     graphics.stroke();
 
-    return PIXI.RenderTexture.create({ width, height });
+    // Fix: Generate texture from graphics properly
+    const renderTexture = PIXI.RenderTexture.create({ width, height });
+
+    // Create a temporary application for rendering
+    const tempApp = new PIXI.Application();
+    tempApp.renderer.render(graphics, { renderTexture });
+
+    graphics.destroy();
+    tempApp.destroy();
+
+    return renderTexture;
   }
 
   /**
@@ -492,20 +502,213 @@ export class PlayerSpritesheet {
   }
 
   /**
-   * Load actual spritesheet from file
+   * Load actual spritesheet from file with proper error handling
    */
   async loadArchetypeSpritesheetFromFile(
     archetype: PlayerArchetype,
     spritesheetPath: string
   ): Promise<void> {
     try {
-      const sheet = await PIXI.Assets.load(spritesheetPath);
-      // Process loaded spritesheet and update the archetype data
-      console.log(`Loaded spritesheet for ${archetype}:`, sheet);
+      // Load both the texture and JSON
+      const [textureAsset, jsonAsset] = await Promise.all([
+        PIXI.Assets.load(spritesheetPath.replace(".json", ".png")),
+        PIXI.Assets.load(spritesheetPath),
+      ]);
+
+      if (!jsonAsset || !jsonAsset.frames) {
+        throw new Error(`Invalid spritesheet JSON: ${spritesheetPath}`);
+      }
+
+      // Create textures from frames
+      const textures: Record<string, PIXI.Texture> = {};
+      const baseTexture = textureAsset.baseTexture || textureAsset;
+
+      for (const [frameName, frameData] of Object.entries(jsonAsset.frames)) {
+        const frame = frameData as any;
+        const rectangle = new PIXI.Rectangle(
+          frame.frame.x,
+          frame.frame.y,
+          frame.frame.w,
+          frame.frame.h
+        );
+
+        const texture = new PIXI.Texture({
+          source: baseTexture,
+          frame: rectangle,
+        });
+
+        // Fix: Store anchor data separately since PIXI v8 textures don't have anchor property
+        if (frame.anchor) {
+          (texture as any).anchorData = {
+            x: frame.anchor.x,
+            y: frame.anchor.y,
+          };
+        }
+
+        textures[frameName] = texture;
+      }
+
+      // Create animations from JSON
+      const animations = this.createAnimationSetFromJSON(
+        textures,
+        archetype,
+        jsonAsset.animations
+      );
+
+      // Update the archetype data
+      this.archetypeSheets.set(archetype, {
+        archetype,
+        textures,
+        animations,
+        defaultAnchor: { x: 0.5, y: 0.8 },
+        boundingBox: { width: 64, height: 128 },
+      });
+
+      console.log(`✅ Loaded real spritesheet for ${archetype}`);
     } catch (error) {
       console.warn(`Failed to load spritesheet for ${archetype}:`, error);
       // Keep using placeholder
     }
+  }
+
+  /**
+   * Create animation set from loaded JSON data
+   */
+  private createAnimationSetFromJSON(
+    textures: Record<string, PIXI.Texture>,
+    archetype: PlayerArchetype,
+    animationsData: Record<string, string[]>
+  ): PlayerAnimationSet {
+    const createDirectionalFromJSON = (
+      actionPrefix: string
+    ): DirectionalAnimations => {
+      const directions = [
+        "north",
+        "northeast",
+        "east",
+        "southeast",
+        "south",
+        "southwest",
+        "west",
+        "northwest",
+      ];
+      const result: any = {};
+
+      for (const dir of directions) {
+        const animKey = `${archetype}_${actionPrefix}_${dir}`;
+        const frames =
+          animationsData[animKey] ||
+          animationsData[`${archetype}_${actionPrefix}_south`] ||
+          [];
+        result[dir] = this.createAnimationFromFrameNames(
+          animKey,
+          frames,
+          textures,
+          true,
+          0.15
+        );
+      }
+
+      return result as DirectionalAnimations;
+    };
+
+    const createStanceFromJSON = (actionPrefix: string): StanceAnimations => {
+      const stances = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
+      const result: any = {};
+
+      for (const stance of stances) {
+        const animKey = `${archetype}_${actionPrefix}_${stance}`;
+        const frames = animationsData[animKey] || [];
+        result[stance] = this.createAnimationFromFrameNames(
+          animKey,
+          frames,
+          textures,
+          false,
+          0.1
+        );
+      }
+
+      return result as StanceAnimations;
+    };
+
+    const createSingleFromJSON = (
+      animKey: string,
+      loop: boolean = false,
+      speed: number = 0.15
+    ): PlayerAnimation => {
+      const frames = animationsData[animKey] || [];
+      return this.createAnimationFromFrameNames(
+        animKey,
+        frames,
+        textures,
+        loop,
+        speed
+      );
+    };
+
+    return {
+      // Basic movement
+      idle: createDirectionalFromJSON("idle"),
+      walk: createDirectionalFromJSON("walk"),
+      run: createDirectionalFromJSON("run"),
+
+      // Combat
+      attack: createStanceFromJSON("attack"),
+      defend: createSingleFromJSON(`${archetype}_defend`, false, 0.2),
+      hit: createSingleFromJSON(`${archetype}_hit`, false, 0.1),
+      block: createSingleFromJSON(`${archetype}_block`, true, 0.3),
+      dodge: createDirectionalFromJSON("dodge"),
+
+      // Stances
+      stance_change: createStanceFromJSON("stance_change"),
+      stance_idle: createStanceFromJSON("stance_idle"),
+
+      // Techniques
+      technique_windup: createStanceFromJSON("technique_windup"),
+      technique_execute: createStanceFromJSON("technique_execute"),
+      technique_recover: createStanceFromJSON("technique_recover"),
+
+      // Special states
+      knocked_down: createSingleFromJSON(
+        `${archetype}_knocked_down`,
+        false,
+        0.2
+      ),
+      getting_up: createSingleFromJSON(`${archetype}_getting_up`, false, 0.15),
+      stunned: createSingleFromJSON(`${archetype}_stunned`, true, 0.4),
+      victory: createSingleFromJSON(`${archetype}_victory`, false, 0.12),
+      defeat: createSingleFromJSON(`${archetype}_defeat`, false, 0.2),
+    };
+  }
+
+  /**
+   * Create animation from frame names array
+   */
+  private createAnimationFromFrameNames(
+    animationName: string,
+    frameNames: string[],
+    textures: Record<string, PIXI.Texture>,
+    loop: boolean,
+    speed: number
+  ): PlayerAnimation {
+    const frames: PlayerAnimationFrame[] = frameNames.map((frameName) => {
+      const texture = textures[frameName] || Object.values(textures)[0];
+      // Get anchor from stored data or use default
+      const anchorData = (texture as any).anchorData || { x: 0.5, y: 0.8 };
+
+      return {
+        texture,
+        duration: speed * 1000,
+        anchor: anchorData,
+      };
+    });
+
+    return {
+      name: animationName,
+      frames,
+      loop,
+      speed,
+    };
   }
 
   /**
@@ -531,4 +734,5 @@ export class PlayerSpritesheet {
 export const playerSpritesheet = new PlayerSpritesheet();
 
 // NOTE: Spritesheet JSONs normalized (added alias animations).
+// Future improvement: dynamic parsing of loaded atlas animations.
 // Future improvement: dynamic parsing of loaded atlas animations.
