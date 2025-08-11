@@ -91,10 +91,15 @@ cartoon, anime, bright neon flood, blur, bloom, watermark, text, logo, deformed 
 ### Action Line Examples
 
 ```
-IDLE_0: low poised stealth guard
-IDLE_1: micro center shift right
-IDLE_2: micro center shift left
-IDLE_3: controlled exhale subtle
+IDLE_SOUTH_0: low poised stealth guard
+IDLE_SOUTH_1: micro center shift right
+IDLE_SOUTH_2: micro center shift left
+IDLE_SOUTH_3: controlled exhale subtle
+
+WALK_SOUTH_0: soft glide lead foot
+WALK_SOUTH_1: trailing foot silent pass
+WALK_SOUTH_2: weight transition fluid
+WALK_SOUTH_3: poised recovery alignment
 
 STEALTH_IDLE_0: deeper crouch tension
 STEALTH_IDLE_1: shoulder micro roll

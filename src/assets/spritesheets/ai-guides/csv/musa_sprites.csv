@@ -1,0 +1,194 @@
+key,description,full_prompt,seed
+# Idle 8-way (4f)
+IDLE_SOUTH_0,calm neutral guard,"",1001
+IDLE_SOUTH_1,micro weight shift right,"",1002
+IDLE_SOUTH_2,micro weight shift left,"",1003
+IDLE_SOUTH_3,subtle breathing expansion,"",1004
+IDLE_NORTH_0,reverse guard calm,"",1011
+IDLE_NORTH_1,shoulder settle,"",1012
+IDLE_NORTH_2,breath control focus,"",1013
+IDLE_NORTH_3,centered poised stillness,"",1014
+IDLE_EAST_0,profile guard stable,"",1015
+IDLE_EAST_1,shoulder micro adjust,"",1016
+IDLE_EAST_2,breathing cadence,"",1017
+IDLE_EAST_3,return neutral,"",1018
+IDLE_WEST_0,reverse profile guard,"",1019
+IDLE_WEST_1,stance micro settle,"",1020
+IDLE_WEST_2,weight micro shift,"",1021
+IDLE_WEST_3,breathing discipline,"",1022
+IDLE_NORTHEAST_0,diagonal readiness,"",1023
+IDLE_NORTHEAST_1,small thoracic shift,"",1024
+IDLE_NORTHEAST_2,controlled inhale,"",1025
+IDLE_NORTHEAST_3,exhale focus,"",1026
+IDLE_NORTHWEST_0,diagonal reverse guard,"",1027
+IDLE_NORTHWEST_1,hip micro align,"",1028
+IDLE_NORTHWEST_2,soft breathing,"",1029
+IDLE_NORTHWEST_3,neutral return,"",1030
+IDLE_SOUTHEAST_0,forward diagonal poised,"",1031
+IDLE_SOUTHEAST_1,weight toward front,"",1032
+IDLE_SOUTHEAST_2,stable inhale,"",1033
+IDLE_SOUTHEAST_3,expansion controlled,"",1034
+IDLE_SOUTHWEST_0,guard angled low,"",1035
+IDLE_SOUTHWEST_1,heel settle,"",1036
+IDLE_SOUTHWEST_2,breathing shift,"",1037
+IDLE_SOUTHWEST_3,reset poised,"",1038
+# Walk 8-way (4f)
+WALK_SOUTH_0,forward step lead foot,"",1040
+WALK_SOUTH_1,trailing foot passes center,"",1041
+WALK_SOUTH_2,weight transfer mid,"",1042
+WALK_SOUTH_3,recovery stance,"",1043
+WALK_NORTH_0,reverse advance start,"",1044
+WALK_NORTH_1,passing step controlled,"",1045
+WALK_NORTH_2,hip transfer restrained,"",1046
+WALK_NORTH_3,guarded recovery,"",1047
+WALK_EAST_0,profile advance start,"",1048
+WALK_EAST_1,controlled step pass,"",1049
+WALK_EAST_2,torso counter rotation,"",1050
+WALK_EAST_3,reset alignment,"",1051
+WALK_WEST_0,reverse profile step,"",1052
+WALK_WEST_1,mid transfer,"",1053
+WALK_WEST_2,arm balance adjust,"",1054
+WALK_WEST_3,foot set recovery,"",1055
+WALK_NORTHEAST_0,diagonal ingress,"",1056
+WALK_NORTHEAST_1,passing controlled,"",1057
+WALK_NORTHEAST_2,torque stabilize,"",1058
+WALK_NORTHEAST_3,anchor restore,"",1059
+WALK_NORTHWEST_0,diagonal reverse ingress,"",1060
+WALK_NORTHWEST_1,hip micro shift,"",1061
+WALK_NORTHWEST_2,core stabilization,"",1062
+WALK_NORTHWEST_3,stance reset,"",1063
+WALK_SOUTHEAST_0,angled forward drive,"",1064
+WALK_SOUTHEAST_1,mid gait transfer,"",1065
+WALK_SOUTHEAST_2,controlled rotation,"",1066
+WALK_SOUTHEAST_3,neutral return,"",1067
+WALK_SOUTHWEST_0,angled low step,"",1068
+WALK_SOUTHWEST_1,mid pass,"",1069
+WALK_SOUTHWEST_2,torso stabilize,"",1070
+WALK_SOUTHWEST_3,recover guard,"",1071
+# Run 8-way (6f)
+RUN_SOUTH_0,drive start,"",1080
+RUN_SOUTH_1,propulsion load,"",1081
+RUN_SOUTH_2,mid stride aerial,"",1082
+RUN_SOUTH_3,landing absorb,"",1083
+RUN_SOUTH_4,transition torque,"",1084
+RUN_SOUTH_5,cycle recovery,"",1085
+RUN_NORTH_0,reverse drive start,"",1086
+RUN_NORTH_1,hip projection,"",1087
+RUN_NORTH_2,mid cycle,"",1088
+RUN_NORTH_3,stance catch,"",1089
+RUN_NORTH_4,upper stabilize,"",1090
+RUN_NORTH_5,recover guard,"",1091
+RUN_EAST_0,profile drive start,"",1092
+RUN_EAST_1,knee rise force,"",1093
+RUN_EAST_2,extension mid,"",1094
+RUN_EAST_3,impact absorb,"",1095
+RUN_EAST_4,torque settle,"",1096
+RUN_EAST_5,gait reset,"",1097
+RUN_WEST_0,reverse profile drive,"",1098
+RUN_WEST_1,cycle projection,"",1099
+RUN_WEST_2,mid suspension,"",1100
+RUN_WEST_3,contact absorb,"",1101
+RUN_WEST_4,upper correction,"",1102
+RUN_WEST_5,reset stance,"",1103
+RUN_NORTHEAST_0,angled acceleration,"",1104
+RUN_NORTHEAST_1,drive torque,"",1105
+RUN_NORTHEAST_2,flight phase,"",1106
+RUN_NORTHEAST_3,landing control,"",1107
+RUN_NORTHEAST_4,core stabilize,"",1108
+RUN_NORTHEAST_5,recover,"",1109
+RUN_NORTHWEST_0,reverse angled accel,"",1110
+RUN_NORTHWEST_1,projection load,"",1111
+RUN_NORTHWEST_2,flight control,"",1112
+RUN_NORTHWEST_3,ground contact,"",1113
+RUN_NORTHWEST_4,hip correction,"",1114
+RUN_NORTHWEST_5,reset guard,"",1115
+RUN_SOUTHEAST_0,forward diagonal burst,"",1116
+RUN_SOUTHEAST_1,step compression,"",1117
+RUN_SOUTHEAST_2,mid stride float,"",1118
+RUN_SOUTHEAST_3,impact set,"",1119
+RUN_SOUTHEAST_4,core adjust,"",1120
+RUN_SOUTHEAST_5,stance ready,"",1121
+RUN_SOUTHWEST_0,low burst diagonal,"",1122
+RUN_SOUTHWEST_1,knee drive,"",1123
+RUN_SOUTHWEST_2,extension float,"",1124
+RUN_SOUTHWEST_3,landing management,"",1125
+RUN_SOUTHWEST_4,torso correct,"",1126
+RUN_SOUTHWEST_5,recover posture,"",1127
+# Dodge (4f) 8-way
+DODGE_SOUTH_0,pre-shift load,"",1130
+DODGE_SOUTH_1,rapid lateral slip,"",1131
+DODGE_SOUTH_2,transition control,"",1132
+DODGE_SOUTH_3,recenter guard,"",1133
+DODGE_NORTH_0,reverse load,"",1134
+DODGE_NORTH_1,slide displacement,"",1135
+DODGE_NORTH_2,redirect stabilize,"",1136
+DODGE_NORTH_3,guard restore,"",1137
+DODGE_EAST_0,profile slip prep,"",1138
+DODGE_EAST_1,lateral displacement,"",1139
+DODGE_EAST_2,recover alignment,"",1140
+DODGE_EAST_3,stance ready,"",1141
+DODGE_WEST_0,reverse slip prep,"",1142
+DODGE_WEST_1,displacement control,"",1143
+DODGE_WEST_2,re-centering,"",1144
+DODGE_WEST_3,guard posture,"",1145
+DODGE_NORTHEAST_0,angled exit prep,"",1146
+DODGE_NORTHEAST_1,vector shift,"",1147
+DODGE_NORTHEAST_2,recover path,"",1148
+DODGE_NORTHEAST_3,ready guard,"",1149
+DODGE_NORTHWEST_0,reverse angled prep,"",1150
+DODGE_NORTHWEST_1,vector displacement,"",1151
+DODGE_NORTHWEST_2,stabilize,"",1152
+DODGE_NORTHWEST_3,reset stance,"",1153
+DODGE_SOUTHEAST_0,forward angle load,"",1154
+DODGE_SOUTHEAST_1,low glide,"",1155
+DODGE_SOUTHEAST_2,range adjustment,"",1156
+DODGE_SOUTHEAST_3,guard tighten,"",1157
+DODGE_SOUTHWEST_0,low angle prep,"",1158
+DODGE_SOUTHWEST_1,vector slip,"",1159
+DODGE_SOUTHWEST_2,center restore,"",1160
+DODGE_SOUTHWEST_3,stance settle,"",1161
+# Attack Geon (6f)
+ATTACK_GEON_0,anticipatory lowering,"",1200
+ATTACK_GEON_1,coiled torque load,"",1201
+ATTACK_GEON_2,explosive extension start,"Traditional Korean cyberpunk warrior (Musa) geon explosive extension, 64x128 full body sprite transparent, disciplined azure striker, reinforced martial jacket, cyan rim subtle, realistic anatomy crisp silhouette.",91202
+ATTACK_GEON_3,peak impact extension,"",1203
+ATTACK_GEON_4,controlled follow-through,"",1204
+ATTACK_GEON_5,recoil recovery guard,"",1205
+# Stance loop / change (2f each)
+STANCE_IDLE_GEON_0,calm charged stance,"",1210
+STANCE_IDLE_GEON_1,breathing expansion subtle,"",1211
+STANCE_CHANGE_GEON_0,transition load,"",1212
+STANCE_CHANGE_GEON_1,transition settle,"",1213
+# Technique phases (2f per phase)
+TECHNIQUE_WINDUP_GEON_0,focused entry load,"",1220
+TECHNIQUE_WINDUP_GEON_1,coil compression,"",1221
+TECHNIQUE_EXECUTE_GEON_0,release vector,"",1222
+TECHNIQUE_EXECUTE_GEON_1,force channel,"",1223
+TECHNIQUE_RECOVER_GEON_0,guard retraction,"",1224
+TECHNIQUE_RECOVER_GEON_1,neutral reset,"",1225
+# Reactions / status
+HIT_0,torso recoil initial,"",1230
+HIT_1,impact stagger,"",1231
+HIT_2,guard recovery,"",1232
+HIT_3,stance stabilization,"",1233
+DEFEND_0,forearm guard set,"",1234
+DEFEND_1,brace compression,"",1235
+DEFEND_2,guard retention,"",1236
+BLOCK_0,compact shield posture,"",1237
+BLOCK_1,absorption stabilization,"",1238
+STUNNED_0,dazed sway start,"",1240
+STUNNED_1,oscillate micro drift,"",1241
+STUNNED_2,recover focus attempt,"",1242
+KNOCKED_DOWN_0,descent phase,"",1245
+KNOCKED_DOWN_1,ground impact,"",1246
+KNOCKED_DOWN_2,low posture still,"",1247
+GETTING_UP_0,arm post support,"",1250
+GETTING_UP_1,hip drive,"",1251
+GETTING_UP_2,torso rise,"",1252
+GETTING_UP_3,stance reestablish,"",1253
+VICTORY_0,respectful acknowledgment start,"",1260
+VICTORY_1,respectful acknowledgment hold,"",1261
+VICTORY_2,return neutral guard,"",1262
+DEFEAT_0,controlled kneel descent,"",1270
+DEFEAT_1,lowered posture,"",1271
+DEFEAT_2,still subdued,"",1272

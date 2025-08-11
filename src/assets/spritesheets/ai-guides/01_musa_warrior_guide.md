@@ -124,15 +124,15 @@ cartoon, anime, chibi, deformed, extra arms, extra fingers, blur, bloom, grain, 
 ### 6. Frame Action Lines Examples
 
 ```
-IDLE_0: calm neutral guard
-IDLE_1: micro weight shift right
-IDLE_2: micro weight shift left
-IDLE_3: subtle breathing expansion
+IDLE_SOUTH_0: calm neutral guard
+IDLE_SOUTH_1: micro weight shift right
+IDLE_SOUTH_2: micro weight shift left
+IDLE_SOUTH_3: subtle breathing expansion
 
-WALK_0: forward step lead foot extended
-WALK_1: trailing foot passes center
-WALK_2: weight transfer mid
-WALK_3: recovery stance
+WALK_SOUTH_0: forward step lead foot extended
+WALK_SOUTH_1: trailing foot passes center
+WALK_SOUTH_2: weight transfer mid
+WALK_SOUTH_3: recovery stance
 
 ATTACK_GEON_0: anticipatory lowering
 ATTACK_GEON_1: coiled torque load

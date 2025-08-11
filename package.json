@@ -43,7 +43,8 @@
     "gen:video:openai": "tsx scripts/generate_video_openai.ts",
     "gen:image:bedrock": "tsx scripts/generate_image_bedrock.ts",
     "gen:video:bedrock": "tsx scripts/generate_video_bedrock.ts",
-    "gen:music:suno": "tsx scripts/generate_music_suno.ts"
+    "gen:music:suno": "tsx scripts/generate_music_suno.ts",
+    "gen:sprites:archetype": "tsx scripts/generate_archetype_sprites.ts"
   },
   "dependencies": {
     "@pixi/layout": "^3.1.0",

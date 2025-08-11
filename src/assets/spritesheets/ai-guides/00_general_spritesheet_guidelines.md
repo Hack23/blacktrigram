@@ -10,7 +10,7 @@ This document provides comprehensive guidelines for generating all spritesheet a
 
 - **Korean Martial Arts Foundation**: All characters based on traditional Korean fighting styles
 - **Respectful Representation**: Honor Korean culture and martial arts heritage
-- **Bilingual Integration**: Korean terminology with English translations
+- - **Bilingual Integration**: Korean terminology with English translations
 - **Traditional Elements**: Include authentic Korean martial arts uniform elements
 
 ### 2. Combat Realism
@@ -202,3 +202,132 @@ Accents: controlled geon stance micro electric filaments, restrained
 Use these patterns in each archetype guide.
 
 흑괘의 길을 걸어라
+
+### Automation & Pipeline (Orchestrated Generation)
+
+Use the coordinator script to expand Action Lines into per‑frame image generations.
+
+Command:
+
+```
+npx tsx scripts/generate_archetype_sprites.ts <archetype> [provider=openai] [--actions=CSV] [--out=dir] [--size=1024x1024] [--concurrency=2] [--dry-run]
+```
+
+Examples:
+
+```
+# Generate all Musa frames (OpenAI)
+npx tsx scripts/generate_archetype_sprites.ts musa
+
+# Only GEON attack frames
+npx tsx scripts/generate_archetype_sprites.ts musa --actions=ATTACK_GEON
+
+# Multiple actions + custom output
+npx tsx scripts/generate_archetype_sprites.ts hacker --actions=IDLE_SOUTH,ATTACK_LI --out=generated/hacker --size=1024x1024
+```
+
+Process:
+
+1. Script loads the archetype guide markdown.
+2. Extracts the first prompt template containing `{ACTION_LINE}` or `{ACTION_DESCRIPTION}` (provider-specific preference: OpenAI template first).
+3. Parses Action Lines code block(s) (keys like `ATTACK_GEON_3: peak impact extension`).
+4. Substitutes placeholder with frame description; logs final resolved prompt (dry-run prints only).
+5. Calls provider API → saves each frame as `{archetype}/{action_group}/{frameKey}.png`.
+6. Writes a manifest JSON summarizing generated frame → file mapping for packing.
+
+Notes:
+
+- Images are generated at high resolution (`--size`) for downscale/crop into 64x128 cells manually or via future post‑processor.
+- Maintain consistent seed manually (provider dependent) for loop coherence; future enhancement: `--seed`.
+- Bedrock path currently stubbed; extend template selection logic for Titan / SDXL with same placeholder semantics.
+
+Manifest Example (saved as `manifest.json` in output root):
+
+```
+{
+  "archetype": "musa",
+  "provider": "openai",
+  "size": "1024x1024",
+  "frames": [
+    { "key": "IDLE_0", "file": "musa/idle/IDLE_0.png", "promptHash": "..." }
+  ]
+}
+```
+
+Next Steps (not yet automated):
+
+- Crop & pack frames into 64x128 atlas grid.
+- Validate anchor alignment (center, foot baseline).
+- Inject into runtime loader & update spritesheet JSON definitions.
+
+### Action Line Coverage Requirements (For Orchestrator)
+
+To ensure the automation script can produce every frame required by the final spritesheet JSONs:
+
+- Provide an Action Line entry for every animation-direction or animation-stance-frame needed.
+- Directional keys MUST embed direction after the action, e.g. IDLE_SOUTH_0, IDLE_NORTH_3, WALK_EAST_1.
+- Stance attacks MUST use ATTACK*{STANCE}*{frameIndex}, e.g. ATTACK_GEON_5, ATTACK_JIN_2.
+- Stance idle loops (if needed) should use STANCE*{STANCE}*{frameIndex}.
+- Unique sequences (e.g. OVERRIDE, OBSERVE, STEALTH*IDLE) should follow {SEQUENCE_NAME}*{frameIndex}.
+
+If a frame key is omitted from the guide, the orchestrator will NOT generate it and the spritesheet JSON will remain incomplete.
+
+### Orchestrator Filename Mapping
+
+The generation script maps Action Line keys to final filenames as follows:
+
+```
+ATTACK_GEON_3      -> {archetype}_attack_geon_3.png
+IDLE_SOUTH_1       -> {archetype}_idle_south_1.png
+WALK_NORTH_2       -> {archetype}_walk_north_2.png
+OVERRIDE_0         -> {archetype}_override_0.png
+OBSERVE_3          -> {archetype}_observe_3.png
+STEALTH_IDLE_2     -> {archetype}_stealth_idle_2.png
+STANCE_GON_1       -> {archetype}_stance_gon_1.png
+```
+
+Directory layout groups by primary action (attack/, idle/, walk/, observe/, stealth/, stance/).
+
+Use `--raw-names` flag to retain legacy folder/key naming (UPPERCASE group folders) if needed.
+
+### Gap Analysis Reminder
+
+Current guides are missing directional Action Lines for:
+
+- Musa: north idle/walk + stance loop keys
+- Amsalja: idle direction variants (north/east/west) as explicit Action Lines
+  Add these to achieve parity with existing JSON spritesheets.
+
+### CSV-Based Generation (Optional Alternative)
+
+You can bypass markdown Action Line parsing with a per–archetype CSV:
+
+Location (auto-detected):
+src/assets/spritesheets/ai-guides/csv/<archetype>\_sprites.csv
+Example: src/assets/spritesheets/ai-guides/csv/musa_sprites.csv
+
+Invoke:
+
+```
+npx tsx scripts/generate_archetype_sprites.ts musa --csv=src/assets/spritesheets/ai-guides/csv/musa_sprites.csv
+```
+
+CSV Columns (header required, case-insensitive):
+key,description,full_prompt,seed
+
+Rules:
+
+- key: ACTION tokens (e.g. ATTACK_GEON_3, IDLE_SOUTH_0)
+- description: Used to fill template if full_prompt empty
+- full_prompt: If provided (non-empty) it overrides template substitution entirely
+- seed: Stored in manifest (future reproducibility)
+
+Example:
+
+```
+key,description,full_prompt,seed
+IDLE_SOUTH_0,calm neutral guard,,
+ATTACK_GEON_3,peak impact extension,"Traditional warrior sprite, musa disciplined azure striker, peak impact extension mid-strike, 64x128 transparent...",12345
+```
+
+If both CSV and markdown exist, CSV wins (unless --csv omitted and no auto file found).

@@ -114,6 +114,11 @@ IDLE_SOUTH_1: neural scan micro tilt
 IDLE_SOUTH_2: subtle breathing expansion
 IDLE_SOUTH_3: refocus posture
 
+WALK_SOUTH_0: forward neural stride
+WALK_SOUTH_1: balanced conduit step
+WALK_SOUTH_2: controlled gait transfer
+WALK_SOUTH_3: stabilized reset
+
 OVERRIDE_0: visor engagement onset
 OVERRIDE_1: heightened neural channel glow
 OVERRIDE_2: data pulse stabilization

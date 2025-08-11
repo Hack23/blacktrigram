@@ -529,3 +529,6 @@ export class PlayerSpritesheet {
 
 // Global instance
 export const playerSpritesheet = new PlayerSpritesheet();
+
+// NOTE: Spritesheet JSONs normalized (added alias animations).
+// Future improvement: dynamic parsing of loaded atlas animations.

@@ -225,6 +225,69 @@
       "amsalja_attack_son_3",
       "amsalja_attack_son_4",
       "amsalja_attack_son_5"
+    ],
+    "amsalja_run_south": [
+      "amsalja_walk_south_0",
+      "amsalja_walk_south_1",
+      "amsalja_walk_south_2",
+      "amsalja_walk_south_3"
+    ],
+    "amsalja_run_north": [
+      "amsalja_idle_north_0",
+      "amsalja_idle_north_1",
+      "amsalja_idle_north_2",
+      "amsalja_idle_north_3"
+    ],
+    "amsalja_run_east": [
+      "amsalja_walk_south_0",
+      "amsalja_walk_south_1",
+      "amsalja_walk_south_2",
+      "amsalja_walk_south_3"
+    ],
+    "amsalja_run_west": [
+      "amsalja_walk_south_0",
+      "amsalja_walk_south_1",
+      "amsalja_walk_south_2",
+      "amsalja_walk_south_3"
+    ],
+    "amsalja_attack_gam": [
+      "amsalja_attack_son_0",
+      "amsalja_attack_son_1",
+      "amsalja_attack_son_2",
+      "amsalja_attack_son_3",
+      "amsalja_attack_son_4",
+      "amsalja_attack_son_5"
+    ],
+    "amsalja_defend": [
+      "amsalja_stealth_idle_1",
+      "amsalja_stealth_idle_2",
+      "amsalja_stealth_idle_3"
+    ],
+    "amsalja_block": ["amsalja_stealth_idle_2", "amsalja_stealth_idle_3"],
+    "amsalja_hit": [
+      "amsalja_idle_south_2",
+      "amsalja_idle_south_3",
+      "amsalja_idle_south_1"
+    ],
+    "amsalja_victory": [
+      "amsalja_idle_north_0",
+      "amsalja_idle_north_1",
+      "amsalja_idle_north_2"
+    ],
+    "amsalja_defeat": [
+      "amsalja_idle_south_3",
+      "amsalja_idle_south_2",
+      "amsalja_idle_south_1"
+    ],
+    "amsalja_stance_son_loop": ["amsalja_attack_son_0", "amsalja_attack_son_1"],
+    "amsalja_stance_change_son": [
+      "amsalja_attack_son_1",
+      "amsalja_attack_son_2"
+    ],
+    "amsalja_stance_gam_loop": ["amsalja_attack_son_2", "amsalja_attack_son_3"],
+    "amsalja_stance_change_gam": [
+      "amsalja_attack_son_3",
+      "amsalja_attack_son_4"
     ]
   },
   "meta": {
@@ -232,6 +295,7 @@
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 2048 },
     "scale": "1",
-    "description": "Shadow Assassin (암살자) - Stealth-focused animations with Wind and Water stance specializations"
+    "description": "Shadow Assassin (암살자) - Stealth-focused animations with Wind and Water stance specializations",
+    "notes_added": "Added gam attack alias & combat/stance placeholder animations."
   }
 }

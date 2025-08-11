@@ -6,7 +6,8 @@
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 768 },
     "scale": "1",
-    "smartupdate": "$TexturePacker:SmartUpdate:d4f8c2a3c8b9e7f2a1b5c6d9e8f7a4b3$"
+    "smartupdate": "$TexturePacker:SmartUpdate:d4f8c2a3c8b9e7f2a1b5c6d9e8f7a4b3$",
+    "normalization": "Animation keys standardized; frame keys left intact."
   },
   "frames": {
     "jojik_idle_001.png": {
@@ -315,13 +316,13 @@
     }
   },
   "animations": {
-    "idle": [
+    "jojik_idle_south": [
       "jojik_idle_001.png",
       "jojik_idle_002.png",
       "jojik_idle_003.png",
       "jojik_idle_004.png"
     ],
-    "walk": [
+    "jojik_walk_south": [
       "jojik_walk_001.png",
       "jojik_walk_002.png",
       "jojik_walk_003.png",
@@ -329,7 +330,15 @@
       "jojik_walk_005.png",
       "jojik_walk_006.png"
     ],
-    "attack_street": [
+    "jojik_run_south": [
+      "jojik_walk_001.png",
+      "jojik_walk_002.png",
+      "jojik_walk_003.png",
+      "jojik_walk_004.png",
+      "jojik_walk_005.png",
+      "jojik_walk_006.png"
+    ],
+    "jojik_attack_jin": [
       "jojik_attack_street_001.png",
       "jojik_attack_street_002.png",
       "jojik_attack_street_003.png",
@@ -337,32 +346,47 @@
       "jojik_attack_street_005.png",
       "jojik_attack_street_006.png"
     ],
-    "attack_brutal": [
+    "jojik_attack_gon": [
       "jojik_attack_brutal_001.png",
       "jojik_attack_brutal_002.png",
       "jojik_attack_brutal_003.png",
       "jojik_attack_brutal_004.png",
       "jojik_attack_brutal_005.png"
     ],
-    "defend": [
+    "jojik_defend": [
       "jojik_defend_001.png",
       "jojik_defend_002.png",
       "jojik_defend_003.png"
     ],
-    "hit": [
+    "jojik_block": ["jojik_defend_002.png", "jojik_defend_003.png"],
+    "jojik_hit": [
       "jojik_hit_001.png",
       "jojik_hit_002.png",
       "jojik_hit_003.png",
       "jojik_hit_004.png"
     ],
-    "stance_jin": ["jojik_stance_jin_001.png", "jojik_stance_jin_002.png"],
-    "stance_gon": ["jojik_stance_gon_001.png", "jojik_stance_gon_002.png"],
-    "victory": [
+    "jojik_stance_jin_loop": [
+      "jojik_stance_jin_001.png",
+      "jojik_stance_jin_002.png"
+    ],
+    "jojik_stance_change_jin": [
+      "jojik_stance_jin_002.png",
+      "jojik_stance_jin_001.png"
+    ],
+    "jojik_stance_gon_loop": [
+      "jojik_stance_gon_001.png",
+      "jojik_stance_gon_002.png"
+    ],
+    "jojik_stance_change_gon": [
+      "jojik_stance_gon_002.png",
+      "jojik_stance_gon_001.png"
+    ],
+    "jojik_victory": [
       "jojik_victory_001.png",
       "jojik_victory_002.png",
       "jojik_victory_003.png"
     ],
-    "defeat": [
+    "jojik_defeat": [
       "jojik_defeat_001.png",
       "jojik_defeat_002.png",
       "jojik_defeat_003.png"

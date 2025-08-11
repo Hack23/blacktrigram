@@ -1,0 +1,87 @@
+key,description,full_prompt,seed
+IDLE_SOUTH_0,composed analytical stance,"",4001
+IDLE_SOUTH_1,subtle head shift scan left,"",4002
+IDLE_SOUTH_2,micro weight re-center,"",4003
+IDLE_SOUTH_3,quiet breath control,"",4004
+IDLE_NORTH_0,reverse observation base,"",4011
+IDLE_NORTH_1,ocular recalibration,"",4012
+IDLE_NORTH_2,respiratory regulation,"",4013
+IDLE_NORTH_3,anchored focus stillness,"",4014
+IDLE_EAST_0,profile analysis guard,"",4015
+IDLE_EAST_1,ocular shift,"",4016
+IDLE_EAST_2,breath realign,"",4017
+IDLE_EAST_3,return neutral,"",4018
+IDLE_WEST_0,reverse profile watch,"",4019
+IDLE_WEST_1,minor head adjust,"",4020
+IDLE_WEST_2,calm respiration,"",4021
+IDLE_WEST_3,stable center,"",4022
+WALK_SOUTH_0,deliberate recon step,"",4025
+WALK_SOUTH_1,measured center pass,"",4026
+WALK_SOUTH_2,controlled transfer,"",4027
+WALK_SOUTH_3,stable recovery alignment,"",4028
+RUN_SOUTH_0,low tactical advance,"",4030
+RUN_SOUTH_1,drive efficiency,"",4031
+RUN_SOUTH_2,mid gait control,"",4032
+RUN_SOUTH_3,contact absorb,"",4033
+RUN_SOUTH_4,upper realign,"",4034
+RUN_SOUTH_5,cycle ready,"",4035
+OBSERVE_0,sensor focus activation,"",4040
+OBSERVE_1,micro ocular lens flare,"",4041
+OBSERVE_2,data assessment posture,"",4042
+OBSERVE_3,conclusion stabilization,"",4043
+ATTACK_TAE_0,capture limb entry,"",4050
+ATTACK_TAE_1,joint redirection torque,"",4051
+ATTACK_TAE_2,leverage pivot,"",4052
+ATTACK_TAE_3,destabilization follow,"",4053
+ATTACK_TAE_4,controlled displacement,"Intelligence operative jeongbo tactical green analyst controlled displacement joint redirection frame, 64x128 sprite transparent, green primary slate secondary, realistic anatomy.",94054
+ATTACK_TAE_5,release neutral guard,"",4055
+ATTACK_GAN_0,structural guard set,"",4060
+ATTACK_GAN_1,intercept contact,"",4061
+ATTACK_GAN_2,force absorption,"",4062
+ATTACK_GAN_3,counter initiation,"",4063
+ATTACK_GAN_4,guided redirect,"",4064
+ATTACK_GAN_5,stabilized posture,"",4065
+STANCE_IDLE_TAE_0,fluid reflective edge,"",4070
+STANCE_IDLE_TAE_1,breathing modulation,"",4071
+STANCE_CHANGE_TAE_0,transition capture,"",4072
+STANCE_CHANGE_TAE_1,transition settle,"",4073
+STANCE_IDLE_GAN_0,static defensive contour,"",4074
+STANCE_IDLE_GAN_1,breathing minimal,"",4075
+STANCE_CHANGE_GAN_0,brace set,"",4076
+STANCE_CHANGE_GAN_1,brace lock,"",4077
+TECHNIQUE_WINDUP_TAE_0,limb engagement prep,"",4080
+TECHNIQUE_WINDUP_TAE_1,vector alignment,"",4081
+TECHNIQUE_EXECUTE_TAE_0,lever cascade,"",4082
+TECHNIQUE_EXECUTE_TAE_1,control sustain,"",4083
+TECHNIQUE_RECOVER_TAE_0,release articulation,"",4084
+TECHNIQUE_RECOVER_TAE_1,neutral re-center,"",4085
+TECHNIQUE_WINDUP_GAN_0,shield geometry load,"",4090
+TECHNIQUE_WINDUP_GAN_1,absorption alignment,"",4091
+TECHNIQUE_EXECUTE_GAN_0,intercept compression,"",4092
+TECHNIQUE_EXECUTE_GAN_1,redirect initiation,"",4093
+TECHNIQUE_RECOVER_GAN_0,force bleed,"",4094
+TECHNIQUE_RECOVER_GAN_1,guard re-stabilize,"",4095
+HIT_0,torso intercept recoil,"",4100
+HIT_1,stagger assessment,"",4101
+HIT_2,recenter structural,"",4102
+DEFEND_0,arm structural brace,"",4103
+DEFEND_1,absorption posture,"",4104
+DEFEND_2,brace retention,"",4105
+BLOCK_0,compact intercept,"",4106
+BLOCK_1,load diffusion,"",4107
+STUNNED_0,brief disorientation,"",4108
+STUNNED_1,ocular recalibration,"",4109
+STUNNED_2,cognitive restore,"",4110
+KNOCKED_DOWN_0,controlled descent,"",4111
+KNOCKED_DOWN_1,low structural posture,"",4112
+KNOCKED_DOWN_2,readiness recovery,"",4113
+GETTING_UP_0,hand support placement,"",4114
+GETTING_UP_1,hip elevation,"",4115
+GETTING_UP_2,torso alignment,"",4116
+GETTING_UP_3,guard posture,"",4117
+VICTORY_0,reserved nod,"",4120
+VICTORY_1,acknowledge hold,"",4121
+VICTORY_2,return analytical stance,"",4122
+DEFEAT_0,controlled kneel,"",4125
+DEFEAT_1,lowered gaze,"",4126
+DEFEAT_2,static composure,"",4127

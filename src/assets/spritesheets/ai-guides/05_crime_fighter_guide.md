@@ -188,6 +188,16 @@ Else: none
 ### Action Lines
 
 ```
+IDLE_SOUTH_0: hard-set street guard
+IDLE_SOUTH_1: intimidation breath swell
+IDLE_SOUTH_2: shoulder torque preload
+IDLE_SOUTH_3: grounded dominance hold
+
+WALK_SOUTH_0: heavy forward plant
+WALK_SOUTH_1: weight drive advance
+WALK_SOUTH_2: hip power shift
+WALK_SOUTH_3: brutal intent reset
+
 INTIMIDATION_0: aggressive forward lean
 INTIMIDATION_1: threat advance micro step
 INTIMIDATION_2: clenched power coil

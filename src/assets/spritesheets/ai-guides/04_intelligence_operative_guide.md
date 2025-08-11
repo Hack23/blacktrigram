@@ -116,6 +116,11 @@ IDLE_SOUTH_1: subtle head shift scan left
 IDLE_SOUTH_2: micro weight re-center
 IDLE_SOUTH_3: quiet breath control
 
+WALK_SOUTH_0: deliberate recon step
+WALK_SOUTH_1: measured center pass
+WALK_SOUTH_2: controlled transfer
+WALK_SOUTH_3: stable recovery alignment
+
 OBSERVE_0: sensor focus activation
 OBSERVE_1: micro ocular lens flare
 OBSERVE_2: data assessment posture

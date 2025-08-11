@@ -174,13 +174,86 @@
       "musa_attack_geon_0",
       "musa_attack_geon_1",
       "musa_attack_geon_2"
-    ]
+    ],
+    "musa_idle_east": [
+      "musa_idle_south_0",
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3"
+    ],
+    "musa_idle_west": [
+      "musa_idle_south_0",
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3"
+    ],
+    "musa_walk_east": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_walk_west": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_run_south": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_run_north": [
+      "musa_walk_north_0",
+      "musa_walk_north_1",
+      "musa_walk_north_2",
+      "musa_walk_north_3"
+    ],
+    "musa_run_east": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_run_west": [
+      "musa_walk_south_0",
+      "musa_walk_south_1",
+      "musa_walk_south_2",
+      "musa_walk_south_3"
+    ],
+    "musa_defend": [
+      "musa_idle_south_1",
+      "musa_idle_south_2",
+      "musa_idle_south_3"
+    ],
+    "musa_block": ["musa_idle_south_2", "musa_idle_south_3"],
+    "musa_hit": [
+      "musa_idle_south_2",
+      "musa_idle_south_3",
+      "musa_idle_south_2",
+      "musa_idle_south_1"
+    ],
+    "musa_victory": [
+      "musa_idle_north_0",
+      "musa_idle_north_1",
+      "musa_idle_north_2"
+    ],
+    "musa_defeat": [
+      "musa_idle_south_3",
+      "musa_idle_south_2",
+      "musa_idle_south_1"
+    ],
+    "musa_stance_geon_loop": ["musa_attack_geon_0", "musa_attack_geon_1"],
+    "musa_stance_change_geon": ["musa_attack_geon_1", "musa_attack_geon_2"]
   },
   "meta": {
     "image": "musa_warrior.png",
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 2048 },
     "scale": "1",
-    "description": "Traditional Korean Warrior (무사) - Complete animation set for 8-directional movement and 8 trigram stances"
+    "description": "Traditional Korean Warrior (무사) - Complete animation set for 8-directional movement and 8 trigram stances",
+    "notes_added": "Alias animations added for directional/run/combat placeholders without adding new frame rectangles."
   }
 }
