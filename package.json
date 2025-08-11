@@ -37,7 +37,13 @@
     "docs:dependencies": "mkdir -p docs/dependencies && depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > docs/dependencies/module-dependencies.svg || echo 'Dependency diagram generation failed - continuing' && touch docs/dependencies/module-dependencies.svg",
     "docs:diagrams": "node scripts/generate-architecture-diagrams.js",
     "knip": "knip",
-    "madge": "npx madge --circular --ts-config ./tsconfig.json --extensions ts,tsx src/"
+    "madge": "npx madge --circular --ts-config ./tsconfig.json --extensions ts,tsx src/",
+    "gen:sfx:11": "tsx scripts/generate_sfx.ts",
+    "gen:image:openai": "tsx scripts/generate_image_openai.ts",
+    "gen:video:openai": "tsx scripts/generate_video_openai.ts",
+    "gen:image:bedrock": "tsx scripts/generate_image_bedrock.ts",
+    "gen:video:bedrock": "tsx scripts/generate_video_bedrock.ts",
+    "gen:music:suno": "tsx scripts/generate_music_suno.ts"
   },
   "dependencies": {
     "@pixi/layout": "^3.1.0",
@@ -54,6 +60,8 @@
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^4.1.1",
     "@elevenlabs/elevenlabs-js": "^2.8.0",
+    "openai": "^5.12.2",
+    "@aws-sdk/client-bedrock-runtime": "^3.864.0",
     "@eslint/js": "^9.33.0",
     "@size-limit/preset-app": "^11.2.0",
     "@testing-library/jest-dom": "^6.6.4",

@@ -87,4 +87,135 @@
 
 ## AI Generation Prompts
 
-### Base Character Prompt
+### Master Prompt
+
+```
+CONTEXT:
+Organized crime enforcer (조직폭력배 Jojik) – survival ruthlessness, explosive power (Jin ☳) + grounding takedowns (Gon ☷). Realistic street-modified combat gear, weathered & practical.
+
+STYLE:
+Rugged layered street gi hybrid + reinforced urban jacket, scuffed flexible boots, taped knuckles, improvised protective panels. Primary orange (#FF4500) with dark red (#8B0000) distressed accents. Gritty but clean silhouette.
+
+TECH:
+64x128 frame cell, full body centered, transparent background, orthographic. Powerful compact physique.
+
+AUGMENTATIONS:
+Minimal – maybe forearm shock inducers (low-key), cervical stabilizer patch.
+
+LIGHTING:
+Warm-neutral key with subtle contrasting cyan rim to maintain HUD readability; controlled highlights.
+
+FX:
+Jin attack: explosive concussive cyan-orange shock arcs.
+Gon attack: ground dust displacement & low amber resonance under feet (subtle).
+
+NEGATIVE:
+cartoon, anime, extreme gore, bloom flood, mech armor, superhero cape, text, logo, extra limbs, perspective distortion.
+
+CONSISTENCY TOKEN:
+"jojik ruthless grounded force"
+```
+
+### Animation Focus
+
+```
+Intimidation Stance (4)
+Idle 8-direction set (if produced) or at least south/east/west/north
+Walk (aggressive low gait) 4–6
+Attack Jin (6): explosive strike cascade
+Attack Gon (6): takedown chain sequence
+Hit React (4)
+Defend / Block (3)
+Victory (3)
+Defeat (3–4)
+```
+
+### OpenAI gpt-image Prompt Template
+
+```
+Organized crime Korean enforcer, jojik ruthless grounded force, {ACTION_LINE}, realistic compact power build, 64x128 full body sprite, transparent background, rugged layered street gi + reinforced jacket, orange primary with dark red distress, taped knuckles, subtle forearm shock inducers, warm-neutral key light + cyan rim, clean silhouette.
+If Jin attack: explosive cyan-orange shock arcs mid-strike.
+If Gon attack: low amber ground resonance + subtle dust displacement.
+Avoid cartoon, bloom excess, text, logo, mecha armor, extra limbs.
+```
+
+### AWS Titan Image Prompt
+
+```
+Context:
+Realistic street combat survival specialist (Jojik). Emphasis: explosive kinetic power + grounding takedowns.
+
+Technical:
+64x128 sprite frame, centered, orthographic, transparent.
+
+Action:
+{ACTION_LINE}
+
+Style:
+Weathered orange (#FF4500) dominant, dark red (#8B0000) secondary, layered rugged fabrics, scuffed boots, taped hands, minimal tech.
+
+FX Rules:
+Jin frames: concise cyan-orange shock arcs (not over-bright).
+Gon frames: subtle dust + low amber ground pulse.
+
+Exclude:
+cartoon, anime, exaggerated gore, watermark, text, logo, heavy sci-fi armor, perspective warp.
+
+Consistency:
+Token = jojik ruthless grounded force
+```
+
+### AWS Stability SDXL Prompt
+
+```
+(jojik ruthless grounded force), realistic rugged Korean street combatant, full body, {ACTION_LINE}, 64x128 sprite, transparent background, warm-neutral lighting with cyan rim, layered weathered street gi hybrid, taped knuckles, compact powerful stance
+
+Conditional FX:
+{FX_LINE}
+
+NEGATIVE:
+cartoon, anime, bloom flood, watermark, text, logo, mecha, extra limbs, blur
+```
+
+FX_LINE examples:
+
+```
+Jin attack: explosive cyan-orange kinetic arcs
+Gon attack: subtle dust + amber ground pulse
+Else: none
+```
+
+### Action Lines
+
+```
+INTIMIDATION_0: aggressive forward lean
+INTIMIDATION_1: threat advance micro step
+INTIMIDATION_2: clenched power coil
+INTIMIDATION_3: dominance hold posture
+
+ATTACK_JIN_0: explosive load
+ATTACK_JIN_1: initial burst
+ATTACK_JIN_2: peak shock extension
+ATTACK_JIN_3: concussive follow-through
+ATTACK_JIN_4: secondary impact settling
+ATTACK_JIN_5: recovery guard
+
+ATTACK_GON_0: low entry setup
+ATTACK_GON_1: leg capture motion
+ATTACK_GON_2: lift destabilization
+ATTACK_GON_3: ground drive throw
+ATTACK_GON_4: pin dominance
+ATTACK_GON_5: stabilization posture
+```
+
+### Negative Prompt
+
+```
+low quality, blur, bloom overflow, cartoon, anime, chibi, watermark, text, logo, excessive gore, mecha plating, exosuit, distorted limbs, thick outline
+```
+
+### Consistency Notes
+
+Keep facial scar pattern, taped knuckle texture constant; maintain muscle volume proportion; minimize hue drift of orange primary across frames.
+
+흑괘의 길을 걸어라
