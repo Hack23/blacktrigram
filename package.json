@@ -84,7 +84,6 @@
     "cypress-multi-reporters": "^2.0.5",
     "cypress-wait-until": "^3.0.2",
     "dependency-cruiser": "^17.0.1",
-    "dotenv": "^17.2.1",
     "eslint": "^9.33.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
