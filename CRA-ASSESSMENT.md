@@ -362,9 +362,9 @@ No outstanding CRA documentation gaps identified for standard classification
 
 | 👤 **Role**                    | 📝 **Name**          | 📅 **Date**      | ✍️ **Assessment Attestation**                      |
 | ------------------------------ | -------------------- | ---------------- | -------------------------------------------------- |
-| 🔒 **CRA Security Assessment** | James Pether Sörling | {{CURRENT_DATE}} | Essential requirements documented and assessed     |
-| 🎯 **Product Responsibility**  | James Pether Sörling | {{CURRENT_DATE}} | Technical documentation complete and structured    |
-| ⚖️ **Legal Compliance Review** | James Pether Sörling | {{CURRENT_DATE}} | EU regulatory documentation requirements addressed |
+| 🔒 **CRA Security Assessment** | James Pether Sörling | 2025-08-23 | Essential requirements documented and assessed     |
+| 🎯 **Product Responsibility**  | James Pether Sörling | 2025-08-23 | Technical documentation complete and structured    |
+| ⚖️ **Legal Compliance Review** | James Pether Sörling | 2025-08-23 | EU regulatory documentation requirements addressed |
 
 **📊 CRA Assessment Status:** SELF_ASSESSMENT_DOCUMENTED
 
