@@ -1,0 +1,187 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 5,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-08-24T10:02:12.289Z",
+    "end": "2025-08-24T10:03:45.578Z",
+    "duration": 93289,
+    "testsRegistered": 5,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "c4e0d960-1247-4ed2-9ec2-d6857d342c34",
+      "title": "",
+      "fullFile": "cypress/e2e/combat-mode.cy.ts",
+      "file": "cypress/e2e/combat-mode.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "2827c1c0-8160-4273-b773-a38dcd934182",
+          "title": "Black Trigram Combat Mode",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display combat screen elements",
+              "fullTitle": "Black Trigram Combat Mode should display combat screen elements",
+              "timedOut": null,
+              "duration": 17040,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Checking combat screen elements\");\n// Check for combat screen marker\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n// Check for combat text in the overlay\ncy.contains(\"Combat\").should(\"be.visible\");\ncy.contains(\"전투\").should(\"be.visible\");\n// Return to intro\ncy.returnToIntro();",
+              "err": {},
+              "uuid": "bde7ff0b-e9b2-4e93-9a6a-5451db036557",
+              "parentUUID": "2827c1c0-8160-4273-b773-a38dcd934182",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should support stance changes during combat",
+              "fullTitle": "Black Trigram Combat Mode should support stance changes during combat",
+              "timedOut": null,
+              "duration": 16813,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing stance changes in combat\");\n// Use keyboard to change stances (1-8)\nfor (let i = 1; i <= 8; i++) {\n    cy.get(\"body\").type(`${i}`);\n    cy.wait(200);\n}\n// Return to intro\ncy.returnToIntro();",
+              "err": {},
+              "uuid": "e89240e4-e9b2-4d64-909f-ee5db2f7f232",
+              "parentUUID": "2827c1c0-8160-4273-b773-a38dcd934182",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should support basic attacks",
+              "fullTitle": "Black Trigram Combat Mode should support basic attacks",
+              "timedOut": null,
+              "duration": 13285,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing basic attacks\");\n// Select a stance and execute attacks\ncy.get(\"body\").type(\"1\"); // First stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Execute attack\ncy.wait(300);\n// Try a different stance\ncy.get(\"body\").type(\"3\");\ncy.wait(300);\ncy.get(\"body\").type(\" \");\ncy.wait(300);\n// Try movement keys\ncy.gameActions([\"w\", \"a\", \"s\", \"d\"]);\n// Return to intro\ncy.returnToIntro();",
+              "err": {},
+              "uuid": "b4bc376a-ffe9-4974-b64f-fdf72bdc8dec",
+              "parentUUID": "2827c1c0-8160-4273-b773-a38dcd934182",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display combat log or feedback",
+              "fullTitle": "Black Trigram Combat Mode should display combat log or feedback",
+              "timedOut": null,
+              "duration": 12292,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Check for combat screen\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n// Perform actions that would generate combat log entries\ncy.get(\"body\").type(\"1\"); // Select first stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Execute attack\ncy.wait(500);\n// Look for combat feedback - check for Korean text\ncy.contains(\"전투\").should(\"be.visible\");\n// Return to intro\ncy.returnToIntro();",
+              "err": {},
+              "uuid": "ee559179-8160-4b11-8266-27e3bd52f70d",
+              "parentUUID": "2827c1c0-8160-4273-b773-a38dcd934182",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should handle rapid combat inputs",
+              "fullTitle": "Black Trigram Combat Mode should handle rapid combat inputs",
+              "timedOut": null,
+              "duration": 29763,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing rapid combat inputs\");\n// Rapidly test all stances and attacks\ncy.gameActions([\n    \"1\",\n    \" \",\n    \"2\",\n    \" \",\n    \"3\",\n    \" \",\n    \"4\",\n    \" \",\n    \"5\",\n    \" \",\n    \"6\",\n    \" \",\n    \"7\",\n    \" \",\n    \"8\",\n    \" \",\n]);\n// Try movement combined with attacks\ncy.gameActions([\"w\", \"1\", \"a\", \"2\", \"s\", \"3\", \"d\", \"4\"]);\n// Return to intro\ncy.returnToIntro();",
+              "err": {},
+              "uuid": "7d413e98-3e12-457f-866e-521cc5af81b3",
+              "parentUUID": "2827c1c0-8160-4273-b773-a38dcd934182",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "bde7ff0b-e9b2-4e93-9a6a-5451db036557",
+            "e89240e4-e9b2-4d64-909f-ee5db2f7f232",
+            "b4bc376a-ffe9-4974-b64f-fdf72bdc8dec",
+            "ee559179-8160-4b11-8266-27e3bd52f70d",
+            "7d413e98-3e12-457f-866e-521cc5af81b3"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 89193,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "docs/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
