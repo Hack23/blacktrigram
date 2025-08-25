@@ -101,7 +101,7 @@
     "start-server-and-test": "^2.0.13",
     "ts-morph": "^26.0.0",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.28.10",
+    "typedoc": "^0.28.11",
     "typedoc-plugin-markdown": "^4.8.1",
     "typedoc-plugin-mermaid": "^1.12.0",
     "typedoc-plugin-missing-exports": "^4.1.0",
