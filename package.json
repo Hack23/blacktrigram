@@ -60,7 +60,7 @@
   "devDependencies": {
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^5.1.1",
-    "@elevenlabs/elevenlabs-js": "^2.13.0",
+    "@elevenlabs/elevenlabs-js": "^2.14.0",
     "openai": "^5.19.1",
     "@aws-sdk/client-bedrock-runtime": "^3.882.0",
     "@eslint/js": "^9.33.0",
@@ -98,7 +98,7 @@
     "mochawesome-merge": "5.0.0",
     "mochawesome-report-generator": "6.2.0",
     "rollup-plugin-analyzer": "^4.0.0",
-    "start-server-and-test": "^2.0.13",
+    "start-server-and-test": "^2.1.0",
     "ts-morph": "^26.0.0",
     "ts-node": "^10.9.2",
     "typedoc": "^0.28.12",
