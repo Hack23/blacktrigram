@@ -62,7 +62,7 @@
     "@cypress/webpack-dev-server": "^5.1.1",
     "@elevenlabs/elevenlabs-js": "^2.14.0",
     "openai": "^5.19.1",
-    "@aws-sdk/client-bedrock-runtime": "^3.882.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.883.0",
     "@eslint/js": "^9.35.0",
     "@size-limit/preset-app": "^11.2.0",
     "@testing-library/jest-dom": "^6.8.0",
