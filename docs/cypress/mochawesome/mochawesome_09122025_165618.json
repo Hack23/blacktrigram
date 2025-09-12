@@ -1,0 +1,324 @@
+{
+  "stats": {
+    "suites": 6,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-09-12T16:55:21.400Z",
+    "end": "2025-09-12T16:56:18.605Z",
+    "duration": 57205,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "d5bffd0d-5ea1-437b-b79b-dc469eaa286a",
+      "title": "",
+      "fullFile": "cypress/e2e/game-flow.cy.ts",
+      "file": "cypress/e2e/game-flow.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "32dbdaec-49e4-46d0-ae51-7e9b08b70c2d",
+          "title": "Full Game Flow",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should navigate from Menu → Training → Menu → Versus → Menu",
+              "fullTitle": "Full Game Flow should navigate from Menu → Training → Menu → Versus → Menu",
+              "timedOut": null,
+              "duration": 15446,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit(\"/\");\n// Training\ncy.get(\"[data-testid=menu-button-training]\").click();\ncy.get(\"[data-testid=training-screen]\").should(\"exist\");\ncy.get(\"[data-testid=return-menu-button]\").click();\ncy.get(\"[data-testid=intro-screen]\").should(\"exist\");\n// Versus\ncy.get(\"[data-testid=menu-button-versus]\").click();\ncy.get(\"[data-testid=combat-screen]\").should(\"exist\");\ncy.get(\"[data-testid=return-menu-button]\").click();\ncy.get(\"[data-testid=intro-screen]\").should(\"exist\");",
+              "err": {},
+              "uuid": "c3f0cd8d-5c51-47c6-a262-c4f7bf4719b9",
+              "parentUUID": "32dbdaec-49e4-46d0-ae51-7e9b08b70c2d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "c3f0cd8d-5c51-47c6-a262-c4f7bf4719b9"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 15446,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "72defa7d-35f1-48d9-993e-1f078dd32d7d",
+          "title": "Black Trigram - Game Flow",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "d45bb188-d9f4-4faa-930d-4d89b9c1aeed",
+              "title": "Core Game Navigation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support all critical game navigation paths",
+                  "fullTitle": "Black Trigram - Game Flow Core Game Navigation should support all critical game navigation paths",
+                  "timedOut": null,
+                  "duration": 14551,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Test arrow key and space navigation in one test\ncy.annotate(\"Testing intro screen navigation\");\n// Test all navigation controls at once\ncy.gameActions([\"a\", \"d\", \"{leftarrow}\", \"{rightarrow}\"]);\ncy.get(\"canvas\").should(\"be.visible\");\n// Test game mode entry/exit cycles\ncy.annotate(\"Testing game mode entry and exit\");\n// 1. Sparring mode via #1 key\ncy.annotate(\"Entering Sparring Mode via #1 key\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\n// 2. Training mode via #2 key\ncy.annotate(\"Entering Training Mode via #2 key\");\ncy.gameActions([\"2\"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\n// 3. Sparring mode via Space key\ncy.annotate(\"Entering Sparring Mode via Space key\");\ncy.gameActions([\" \"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\n// 4. Training mode via Alt key\ncy.annotate(\"Entering Training Mode via Alt key\");\ncy.gameActions([\"{alt}\"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "6281615e-2039-4b4a-be2f-f38248705dca",
+                  "parentUUID": "d45bb188-d9f4-4faa-930d-4d89b9c1aeed",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "6281615e-2039-4b4a-be2f-f38248705dca"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 14551,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "6a5bcc32-479f-4ad8-8988-0cf85881c200",
+              "title": "Combat Mechanics",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support all core combat interactions",
+                  "fullTitle": "Black Trigram - Game Flow Combat Mechanics should support all core combat interactions",
+                  "timedOut": null,
+                  "duration": 3615,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Enter combat mode once\ncy.annotate(\"Testing combat mechanics\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Test movement controls in batches\ncy.annotate(\"Testing movement controls\");\ncy.gameActions([\"w\", \"a\", \"s\", \"d\"]);\ncy.gameActions([\n    \"{uparrow}\",\n    \"{leftarrow}\",\n    \"{downarrow}\",\n    \"{rightarrow}\",\n]);\n// Test attacking with all 8 trigram techniques\ncy.annotate(\"Testing trigram techniques\");\ncy.gameActions([\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\"]);\n// Test blocking\ncy.annotate(\"Testing blocking\");\ncy.gameActions([\" \"]);\n// Test mouse interaction\ncy.annotate(\"Testing mouse attacks\");\ncy.get(\"canvas\").click(400, 300);\n// Exit combat mode\ncy.annotate(\"Exiting combat mode\");\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "9c53ba62-5d67-4b82-9678-28cf93965490",
+                  "parentUUID": "6a5bcc32-479f-4ad8-8988-0cf85881c200",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should handle AI interactions",
+                  "fullTitle": "Black Trigram - Game Flow Combat Mechanics should handle AI interactions",
+                  "timedOut": null,
+                  "duration": 3573,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Enter combat mode\ncy.annotate(\"Testing AI interactions\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Test AI response to player movement\ncy.annotate(\"Testing AI response to movement\");\n// Move toward AI then away\ncy.gameActions([\"d\", \"d\", \"d\", \"d\"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"a\", \"a\", \"a\", \"a\"]);\ncy.waitForCanvasReady();\n// Exit combat mode\ncy.annotate(\"Exiting combat mode\");\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "7590a354-0e61-4efa-99d3-eb535b361821",
+                  "parentUUID": "6a5bcc32-479f-4ad8-8988-0cf85881c200",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "9c53ba62-5d67-4b82-9678-28cf93965490",
+                "7590a354-0e61-4efa-99d3-eb535b361821"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 7188,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "635177a8-7a37-4f3e-99cf-dc08120ac39b",
+              "title": "Performance & Input Handling",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should maintain performance during intense combat",
+                  "fullTitle": "Black Trigram - Game Flow Performance & Input Handling should maintain performance during intense combat",
+                  "timedOut": null,
+                  "duration": 3542,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Enter combat mode\ncy.annotate(\"Testing intense combat performance\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Record start time for performance measurement\nconst startTime = Date.now();\n// Execute combat sequence\nconst combatSequence = [\n    \"wasd\", // Movement\n    \"1234\", // Attacks\n    \"wasd\", // More movement\n    \"5678\", // More attacks\n    \" \", // Block\n];\n// Execute all actions with minimal delay\ncy.annotate(\"Executing combat sequence\");\ncombatSequence.forEach((actions) => {\n    cy.gameActions([actions]);\n});\n// Verify performance with optimized threshold for CI/WebGL software rendering\ncy.wrap(null).then(() => {\n    const duration = Date.now() - startTime;\n    cy.task(\"logPerformance\", {\n        name: \"Intense Combat Sequence\",\n        duration,\n    });\n    cy.annotate(`Combat sequence completed in ${duration}ms`);\n    // Optimized threshold for CI environment with software WebGL\n    expect(duration).to.be.lessThan(20000);\n});\n// Exit combat mode\ncy.annotate(\"Exiting combat mode\");\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "ba569d17-e3e5-4c54-ab11-1cdcf81c777d",
+                  "parentUUID": "635177a8-7a37-4f3e-99cf-dc08120ac39b",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should handle complex input sequences",
+                  "fullTitle": "Black Trigram - Game Flow Performance & Input Handling should handle complex input sequences",
+                  "timedOut": null,
+                  "duration": 3489,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Enter combat mode\ncy.annotate(\"Testing complex input sequences\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Test rapid sequential inputs\ncy.annotate(\"Testing rapid input combinations\");\ncy.gameActions([\"w1\", \"a2\", \"s3\", \"d4\"]);\ncy.waitForCanvasReady();\n// Exit combat mode\ncy.annotate(\"Exiting combat mode\");\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "539903bf-7f8c-4e24-86e7-9c1c941ad0fc",
+                  "parentUUID": "635177a8-7a37-4f3e-99cf-dc08120ac39b",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "ba569d17-e3e5-4c54-ab11-1cdcf81c777d",
+                "539903bf-7f8c-4e24-86e7-9c1c941ad0fc"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 7031,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "c572d54f-3109-489a-afba-fe4b3944e600",
+              "title": "Responsiveness",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should work on different screen sizes",
+                  "fullTitle": "Black Trigram - Game Flow Responsiveness should work on different screen sizes",
+                  "timedOut": null,
+                  "duration": 4822,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Test 3 key screen sizes in one test\ncy.annotate(\"Testing responsive design\");\n[\n    [1280, 720], // Desktop\n    [768, 1024], // Tablet\n    [375, 667], // Mobile\n].forEach(([width, height]) => {\n    cy.annotate(`Testing viewport ${width}x${height}`);\n    cy.viewport(width, height);\n    cy.waitForCanvasReady();\n    // Enter and exit combat mode at each size\n    cy.gameActions([\"1\"]);\n    cy.waitForCanvasReady();\n    cy.gameActions([\"{esc}\"]);\n    cy.waitForCanvasReady();\n});",
+                  "err": {},
+                  "uuid": "4a757b9e-44cf-4f6f-8804-717e19ffabdf",
+                  "parentUUID": "c572d54f-3109-489a-afba-fe4b3944e600",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "4a757b9e-44cf-4f6f-8804-717e19ffabdf"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 4822,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "docs/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
