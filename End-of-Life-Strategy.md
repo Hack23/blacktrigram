@@ -139,7 +139,7 @@ Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/I
 
 ```mermaid
 gantt
-    title Node.js Lifecycle and Black Trigram Transition Timeline
+    title Node.js Lifecycle & Black Trigram Transition Timeline
     dateFormat YYYY-MM-DD
     axisFormat %Y-%m
 
@@ -148,21 +148,21 @@ gantt
     Node.js 24.x LTS        :active, node24lts, 2024-10-29, 2027-04-30
     Node.js 25.x Current    :node25, 2024-10-22, 2025-04-01
     Node.js 26.x Current    :node26, 2025-04-22, 2025-10-28
-    Node.js 26.x LTS        :milestone, node26lts, 2025-10-28, 2025-10-30
-    Node.js 24.x EOL        :crit, node24eol, 2027-04-30, 2027-05-02
+    Node.js 26.x LTS        :milestone, node26lts, 2025-10-28, 0d
+    Node.js 24.x EOL        :crit, node24eol, 2027-04-30, 0d
 
     section Black Trigram Strategy
     Current Node 24.x Production :active, bt24prod, 2024-12-01, 2026-10-01
-    Node.js 26.x Testing Phase   :testing, bt26test, 2025-08-01, 2025-10-28
-    Node.js 26.x Migration       :migration, bt26mig, 2025-10-28, 2026-01-31
+    Node.js 26.x Testing Phase   :bt26test, 2025-08-01, 2025-10-28
+    Node.js 26.x Migration       :bt26mig, 2025-10-28, 2026-01-31
     Node.js 26.x Production      :prod26, 2026-01-31, 2027-04-30
-    Legacy 24.x Support End      :milestone, legacy24end, 2026-10-01, 2026-10-03
+    Legacy 24.x Support End      :milestone, legacy24end, 2026-10-01, 0d
 
     section Risk Management
-    Compatibility Testing       :testing, compat, 2025-06-01, 2025-10-28
-    Dependency Validation       :testing, deps, 2025-07-01, 2025-10-28
-    Performance Benchmarking    :testing, perf, 2025-08-01, 2025-10-28
-    Migration Risk Assessment    :milestone, riskassess, 2025-09-15, 2025-09-17
+    Compatibility Testing       :compat, 2025-06-01, 2025-10-28
+    Dependency Validation       :deps, 2025-07-01, 2025-10-28
+    Performance Benchmarking    :perf, 2025-08-01, 2025-10-28
+    Migration Risk Assessment    :milestone, riskassess, 2025-09-15, 0d
 ```
 
 ### **📋 Node.js Transition Trigger Conditions**
@@ -330,29 +330,29 @@ gantt
 
     section Runtime and Core
     Node.js 24.x LTS          :active, node24, 2024-10-29, 2027-04-30
-    Node.js 26.x LTS (Target) :future, node26, 2025-10-28, 2028-04-30
-    Node.js 28.x LTS (Future) :future, node28, 2027-10-28, 2030-04-30
+    Node.js 26.x LTS (Target) :node26, 2025-10-28, 2028-04-30
+    Node.js 28.x LTS (Future) :node28, 2027-10-28, 2030-04-30
 
     section Frontend Framework
     React 19.x                :active, react19, 2024-12-05, 2027-12-31
-    React 20.x (Future)       :future, react20, 2025-12-01, 2028-12-31
-    React 21.x (Future)       :future, react21, 2026-12-01, 2029-12-31
+    React 20.x (Future)       :react20, 2025-12-01, 2028-12-31
+    React 21.x (Future)       :react21, 2026-12-01, 2029-12-31
 
     section Build and Tooling
     Vite 7.x                  :active, vite7, 2024-12-03, 2025-12-31
-    Vite 8.x (Future)         :future, vite8, 2025-06-01, 2026-12-31
+    Vite 8.x (Future)         :vite8, 2025-06-01, 2026-12-31
     TypeScript 5.x            :active, ts5, 2024-03-16, 2025-09-30
-    TypeScript 6.x (Future)   :future, ts6, 2025-03-01, 2026-09-30
+    TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
 
     section Graphics and Audio
     PixiJS 8.x                :active, pixi8, 2024-01-30, 2026-01-30
-    PixiJS 9.x (Future)       :future, pixi9, 2025-06-01, 2027-06-01
+    PixiJS 9.x (Future)       :pixi9, 2025-06-01, 2027-06-01
     Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
 
     section Critical Milestones
-    Node.js 24 Migration Alert :milestone, node24alert, 2026-04-30, 2026-05-02
-    React 19 Assessment       :milestone, react19assess, 2026-12-01, 2026-12-03
-    Major Stack Review        :milestone, stackreview, 2027-01-01, 2027-01-03
+    Node.js 24 Migration Alert :milestone, node24alert, 2026-04-30, 0d
+    React 19 Assessment       :milestone, react19assess, 2026-12-01, 0d
+    Major Stack Review        :milestone, stackreview, 2027-01-01, 0d
 ```
 
 ### **🚨 EOL Warning System**
