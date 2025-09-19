@@ -139,7 +139,7 @@ Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/I
 
 ```mermaid
 gantt
-    title ☕ Node.js Lifecycle & Black Trigram Transition Timeline
+    title Node.js Lifecycle & Black Trigram Transition Timeline
     dateFormat YYYY-MM-DD
     axisFormat %Y-%m
 
@@ -323,20 +323,8 @@ flowchart LR
 Real-time monitoring using [endoflife.date](https://endoflife.date/) references and automated tracking:
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#ffebee',
-      'primaryTextColor': '#c62828',
-      'lineColor': '#f44336',
-      'secondaryColor': '#e8f5e9',
-      'tertiaryColor': '#fff3e0'
-    }
-  }
-}%%
 gantt
-    title 📅 Black Trigram Technology End-of-Life Timeline (2025-2030)
+    title Black Trigram Technology End-of-Life Timeline (2025-2030)
     dateFormat YYYY-MM-DD
     axisFormat %Y
 
