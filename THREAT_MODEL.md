@@ -12,12 +12,12 @@
 <p align="center">
   <a><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
   <a><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
-  <a><img src="https://img.shields.io/badge/Effective-2025--01--15-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a><img src="https://img.shields.io/badge/Effective-2025--09--19-success?style=for-the-badge" alt="Effective Date"/></a>
   <a><img src="https://img.shields.io/badge/Review-Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-01-15 (UTC)  
-**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2026-01-15  
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-09-19 (UTC)  
+**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2026-09-19  
 **🏷️ Classification:** Public (Open Source Educational Gaming Platform)
 
 ---
@@ -91,14 +91,16 @@ Integrated with [🎯 Hack23 AB Threat Modeling Policy](https://github.com/Hack2
 
 Following [Hack23 AB Asset-Centric Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#asset-centric-threat-modeling) methodology:
 
-| Asset Category          | Why Valuable                               | Threat Goals                                   | Key Controls                                         | Business Value                                                                                                                                                                   |
-| ----------------------- | ------------------------------------------ | ---------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **🎮 Game Integrity**   | Educational value and user experience      | Content manipulation, gameplay disruption      | CSP headers, SRI, input validation                   | [![Trust Enhancement](https://img.shields.io/badge/Value-Trust_Enhancement-darkgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      |
-| **🇰🇷 Cultural Content** | Korean martial arts authenticity           | Cultural misrepresentation, offensive content  | Content validation, cultural consultation            | [![Competitive Advantage](https://img.shields.io/badge/Value-Competitive_Advantage-gold?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **🧠 Source Code**      | Game logic and educational algorithms      | IP theft, malicious injection                  | Private repo, dependency scanning, SLSA provenance   | [![Operational Excellence](https://img.shields.io/badge/Value-Operational_Excellence-blue?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
-| **📦 Static Assets**    | Visual and audio experience                | Asset tampering, malicious content injection   | CDN integrity, asset signing, SRI validation         | [![Risk Reduction](https://img.shields.io/badge/Value-Risk_Reduction-green?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)                |
-| **🎵 Audio Content**    | Traditional Korean music authenticity      | Copyright violation, cultural appropriation    | License compliance, cultural validation              | [![Partnership Value](https://img.shields.io/badge/Value-Partnership_Value-purple?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)         |
-| **🏗️ Build Pipeline**   | Security baseline and deployment integrity | Supply chain attacks, malicious code injection | Hardened workflows, attestations, dependency pinning | [![Security Excellence](https://img.shields.io/badge/Value-Security_Excellence-purple?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| Asset Category           | Why Valuable                               | Threat Goals                                   | Key Controls                                         | Business Value                                                                                                                                                                   |
+| ------------------------ | ------------------------------------------ | ---------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **🎮 Game Integrity**    | Educational value and user experience      | Content manipulation, gameplay disruption      | CSP headers, SRI, input validation                   | [![Trust Enhancement](https://img.shields.io/badge/Value-Trust_Enhancement-darkgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      |
+| **🇰🇷 Cultural Content**  | Korean martial arts authenticity           | Cultural misrepresentation, offensive content  | Content validation, cultural consultation            | [![Competitive Advantage](https://img.shields.io/badge/Value-Competitive_Advantage-gold?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **🧠 Source Code**       | Game logic and educational algorithms      | IP theft, malicious injection                  | Private repo, dependency scanning, SLSA provenance   | [![Operational Excellence](https://img.shields.io/badge/Value-Operational_Excellence-blue?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **📦 Static Assets**     | Visual and audio experience                | Asset tampering, malicious content injection   | CDN integrity, asset signing, SRI validation         | [![Risk Reduction](https://img.shields.io/badge/Value-Risk_Reduction-green?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)                |
+| **🎵 Audio Content**     | Traditional Korean music authenticity      | Copyright violation, cultural appropriation    | License compliance, cultural validation              | [![Partnership Value](https://img.shields.io/badge/Value-Partnership_Value-purple?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)         |
+| **🏗️ Build Pipeline**    | Security baseline and deployment integrity | Supply chain attacks, malicious code injection | Hardened workflows, attestations, dependency pinning | [![Security Excellence](https://img.shields.io/badge/Value-Security_Excellence-purple?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **👤 User Session Data** | Temporary game state and preferences       | Session hijacking, data manipulation           | Session-only design, secure storage APIs             | [![Privacy Protection](https://img.shields.io/badge/Value-Privacy_Protection-darkblue?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **🌐 Domain Reputation** | Blacktrigram.com brand trust               | Domain hijacking, DNS manipulation             | DNSSEC, CAA records, domain monitoring               | [![Brand Protection](https://img.shields.io/badge/Value-Brand_Protection-darkred?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)          |
 
 ### **🔐 Crown Jewel Analysis**
 
@@ -120,6 +122,7 @@ flowchart TB
         EDUCATIONAL[🎓 Educational Integrity<br/>Korean Martial Arts Authenticity]
         CULTURAL[🇰🇷 Cultural Content<br/>Traditional Knowledge & Respect]
         GAMEPLAY[🎮 Game Experience<br/>User Engagement & Performance]
+        DOMAIN[🌐 Domain Trust<br/>Blacktrigram.com Reputation]
     end
 
     subgraph ATTACK_VECTORS["⚔️ Primary Attack Vectors"]
@@ -127,6 +130,8 @@ flowchart TB
         SUPPLY_CHAIN[🔗 Supply Chain Attack]
         CLIENT_EXPLOIT[💻 Client-Side Exploitation]
         CULTURAL_ATTACK[🏛️ Cultural Misrepresentation]
+        DOMAIN_HIJACK[🌐 Domain Hijacking]
+        SESSION_ATTACK[👤 Session Manipulation]
     end
 
     subgraph THREAT_AGENTS["👥 Key Threat Agents"]
@@ -134,21 +139,28 @@ flowchart TB
         CULTURAL_TROLLS[🎭 Cultural Trolls<br/>Offensive Content Injection]
         MALWARE_DISTRIBUTORS[🦠 Malware Distributors<br/>Browser Exploitation]
         COMPETITOR_SABOTAGE[🏢 Competitor Sabotage<br/>Platform Disruption]
+        NATION_STATE[🏛️ Nation-State Actors<br/>Cultural/Political Agenda]
+        CRIMINAL_GROUPS[💰 Cybercriminal Groups<br/>Monetization/Disruption]
     end
 
     CONTENT_POISON --> EDUCATIONAL
     CULTURAL_ATTACK --> CULTURAL
     CLIENT_EXPLOIT --> GAMEPLAY
     SUPPLY_CHAIN --> EDUCATIONAL
+    DOMAIN_HIJACK --> DOMAIN
+    SESSION_ATTACK --> GAMEPLAY
 
     SCRIPT_KIDDIES --> CLIENT_EXPLOIT
     CULTURAL_TROLLS --> CULTURAL_ATTACK
     MALWARE_DISTRIBUTORS --> CONTENT_POISON
     COMPETITOR_SABOTAGE --> SUPPLY_CHAIN
+    NATION_STATE --> DOMAIN_HIJACK
+    CRIMINAL_GROUPS --> SESSION_ATTACK
 
     style EDUCATIONAL fill:#ffcdd2,stroke:#d32f2f,color:#000
     style CULTURAL fill:#ffcdd2,stroke:#d32f2f,color:#000
     style GAMEPLAY fill:#ffcdd2,stroke:#d32f2f,color:#000
+    style DOMAIN fill:#ffcdd2,stroke:#d32f2f,color:#000
 ```
 
 ---
@@ -196,6 +208,13 @@ flowchart TB
         GITHUB[📦 GitHub Repository]
         CI_CD[🔧 GitHub Actions]
         DEPENDENCIES[📚 NPM Dependencies]
+        ATTESTATIONS[🔏 SLSA Attestations]
+    end
+
+    subgraph TRUST_BOUNDARY_5["🌐 Domain Trust Boundary"]
+        DNS[🌍 DNS Resolution]
+        DOMAIN[🏷️ blacktrigram.com]
+        TLS[🔒 TLS Certificate]
     end
 
     USER -->|🎯 T1: Malicious Input| BROWSER
@@ -206,24 +225,30 @@ flowchart TB
     REACT_APP -->|🎯 T6: Data Exposure| LOCAL_STORAGE
     CI_CD -->|🎯 T7: Supply Chain| GITHUB
     DEPENDENCIES -->|🎯 T8: Dependency Poisoning| CI_CD
+    DNS -->|🎯 T9: DNS Poisoning| DOMAIN
+    DOMAIN -->|🎯 T10: Domain Hijacking| TLS
+    ATTESTATIONS -->|🎯 T11: Attestation Bypass| CI_CD
 
     style TRUST_BOUNDARY_1 fill:#ffebee,stroke:#f44336,stroke-width:3px,stroke-dasharray: 5 5
     style TRUST_BOUNDARY_2 fill:#fff3e0,stroke:#ff9800,stroke-width:3px,stroke-dasharray: 5 5
     style TRUST_BOUNDARY_3 fill:#e8f5e9,stroke:#4caf50,stroke-width:3px,stroke-dasharray: 5 5
     style TRUST_BOUNDARY_4 fill:#e3f2fd,stroke:#2196f3,stroke-width:3px,stroke-dasharray: 5 5
+    style TRUST_BOUNDARY_5 fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px,stroke-dasharray: 5 5
 ```
 
 ### **🎭 STRIDE per Element Analysis**
 
-| Element                | S                  | T                 | R               | I                    | D                  | E                     | Notable Mitigations                         |
-| ---------------------- | ------------------ | ----------------- | --------------- | -------------------- | ------------------ | --------------------- | ------------------------------------------- |
-| **🌐 Web Browser**     | Content spoof      | DOM manipulation  | Limited         | Same-origin bypass   | Crash/hang         | CSP bypass            | CSP headers, SRI, HTTPS enforcement         |
-| **⚛️ React App**       | Component hijack   | State tampering   | Action denial   | Data leakage         | Component failure  | Virtual DOM escape    | Input sanitization, React security patterns |
-| **🎨 PixiJS Renderer** | Asset spoof        | Texture tampering | Render denial   | GPU data leak        | WebGL crash        | Sandbox escape        | Asset validation, WebGL security context    |
-| **🎵 Audio Engine**    | Audio spoof        | Buffer overflow   | Playback denial | Audio fingerprinting | Audio system crash | Browser privilege esc | Audio validation, Howler.js security        |
-| **💾 Browser Storage** | Data substitution  | Storage tampering | Access denial   | Data extraction      | Storage exhaustion | Storage pollution     | Session-only design, size limits            |
-| **📦 Static CDN**      | Asset substitution | Content injection | CDN outage      | Metadata exposure    | DDoS               | Cache poisoning       | SRI, HTTPS, CDN security                    |
-| **🔧 CI/CD Pipeline**  | Workflow spoof     | Build tampering   | Deploy denial   | Secret exposure      | Pipeline DoS       | Runner compromise     | Hardened workflows, attestations            |
+| Element                | S                  | T                   | R               | I                    | D                  | E                     | Notable Mitigations                         |
+| ---------------------- | ------------------ | ------------------- | --------------- | -------------------- | ------------------ | --------------------- | ------------------------------------------- |
+| **🌐 Web Browser**     | Content spoof      | DOM manipulation    | Limited         | Same-origin bypass   | Crash/hang         | CSP bypass            | CSP headers, SRI, HTTPS enforcement         |
+| **⚛️ React App**       | Component hijack   | State tampering     | Action denial   | Data leakage         | Component failure  | Virtual DOM escape    | Input sanitization, React security patterns |
+| **🎨 PixiJS Renderer** | Asset spoof        | Texture tampering   | Render denial   | GPU data leak        | WebGL crash        | Sandbox escape        | Asset validation, WebGL security context    |
+| **🎵 Audio Engine**    | Audio spoof        | Buffer overflow     | Playback denial | Audio fingerprinting | Audio system crash | Browser privilege esc | Audio validation, Howler.js security        |
+| **💾 Browser Storage** | Data substitution  | Storage tampering   | Access denial   | Data extraction      | Storage exhaustion | Storage pollution     | Session-only design, size limits            |
+| **📦 Static CDN**      | Asset substitution | Content injection   | CDN outage      | Metadata exposure    | DDoS               | Cache poisoning       | SRI, HTTPS, CDN security                    |
+| **🔧 CI/CD Pipeline**  | Workflow spoof     | Build tampering     | Deploy denial   | Secret exposure      | Pipeline DoS       | Runner compromise     | Hardened workflows, attestations            |
+| **🌍 DNS System**      | DNS response spoof | Record tampering    | Query denial    | Zone enumeration     | DNS flood          | Cache poisoning       | DNSSEC, monitoring                          |
+| **🏷️ Domain**          | Domain spoof       | Registration hijack | Transfer denial | WHOIS exposure       | Domain lock        | Registrar compromise  | Domain monitoring, locks                    |
 
 ---
 
@@ -233,18 +258,28 @@ flowchart TB
 
 Following [MITRE ATT&CK-Driven Analysis](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#mitre-attck-driven-analysis) methodology:
 
-| Phase                    | Technique                    | ID                                                  | Black Trigram Context                                     | Control                             | Detection                               |
-| ------------------------ | ---------------------------- | --------------------------------------------------- | --------------------------------------------------------- | ----------------------------------- | --------------------------------------- |
-| **🔍 Initial Access**    | Drive-by Compromise          | [T1189](https://attack.mitre.org/techniques/T1189/) | Malicious ads or compromised websites leading to game     | Ad blockers, browser security       | Traffic analysis, browser monitoring    |
-| **🔍 Initial Access**    | Supply Chain Compromise      | [T1195](https://attack.mitre.org/techniques/T1195/) | Compromised NPM dependencies or CDN assets                | Dependency scanning, SRI, SLSA      | Dependency monitoring, integrity checks |
-| **⚡ Execution**         | User Execution               | [T1204](https://attack.mitre.org/techniques/T1204/) | Malicious game interactions or asset loading              | Input validation, CSP               | User behavior analysis                  |
-| **🔄 Persistence**       | Browser Session Hijacking    | [T1185](https://attack.mitre.org/techniques/T1185/) | Session token manipulation in browser storage             | Session-only design, secure storage | Session monitoring                      |
-| **🎭 Defense Evasion**   | Obfuscated Files             | [T1027](https://attack.mitre.org/techniques/T1027/) | Minified malicious JavaScript in assets                   | Static analysis, content validation | Code analysis, anomaly detection        |
-| **🔑 Credential Access** | Brute Force                  | [T1110](https://attack.mitre.org/techniques/T1110/) | Not applicable - no authentication system                 | N/A - no credentials                | N/A                                     |
-| **🔍 Discovery**         | Application Window Discovery | [T1010](https://attack.mitre.org/techniques/T1010/) | Browser fingerprinting through game canvas                | Canvas fingerprint protection       | Canvas access monitoring                |
-| **🏛️ Collection**        | Audio Capture                | [T1123](https://attack.mitre.org/techniques/T1123/) | Microphone access through Web Audio API                   | Microphone permission controls      | Audio permission monitoring             |
-| **📤 Exfiltration**      | Exfil Over Web Service       | [T1567](https://attack.mitre.org/techniques/T1567/) | Data exfiltration through game telemetry                  | No telemetry collection             | N/A - no data to exfiltrate             |
-| **💥 Impact**            | Defacement                   | [T1491](https://attack.mitre.org/techniques/T1491/) | Malicious content injection or cultural misrepresentation | Content validation, cultural review | Content monitoring                      |
+| Phase                       | Technique                    | ID                                                          | Black Trigram Context                                     | Control                                 | Detection                               |
+| --------------------------- | ---------------------------- | ----------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------- | --------------------------------------- |
+| **🔍 Initial Access**       | Drive-by Compromise          | [T1189](https://attack.mitre.org/techniques/T1189/)         | Malicious ads or compromised websites leading to game     | Ad blockers, browser security           | Traffic analysis, browser monitoring    |
+| **🔍 Initial Access**       | Supply Chain Compromise      | [T1195](https://attack.mitre.org/techniques/T1195/)         | Compromised NPM dependencies or CDN assets                | Dependency scanning, SRI, SLSA          | Dependency monitoring, integrity checks |
+| **🔍 Initial Access**       | External Remote Services     | [T1133](https://attack.mitre.org/techniques/T1133/)         | Compromise of GitHub or CDN services                      | MFA, access controls, monitoring        | Service access logs, anomaly detection  |
+| **⚡ Execution**            | User Execution               | [T1204](https://attack.mitre.org/techniques/T1204/)         | Malicious game interactions or asset loading              | Input validation, CSP                   | User behavior analysis                  |
+| **⚡ Execution**            | JavaScript                   | [T1059.007](https://attack.mitre.org/techniques/T1059/007/) | Malicious JavaScript execution in browser                 | CSP, SRI, content validation            | Script execution monitoring             |
+| **🔄 Persistence**          | Browser Session Hijacking    | [T1185](https://attack.mitre.org/techniques/T1185/)         | Session token manipulation in browser storage             | Session-only design, secure storage     | Session monitoring                      |
+| **🔄 Persistence**          | Browser Extensions           | [T1176](https://attack.mitre.org/techniques/T1176/)         | Malicious browser extensions affecting gameplay           | Extension security warnings             | Browser extension monitoring            |
+| **⬆️ Privilege Escalation** | Web Shell                    | [T1505.003](https://attack.mitre.org/techniques/T1505/003/) | Not applicable - no server-side code                      | N/A                                     | N/A                                     |
+| **🎭 Defense Evasion**      | Obfuscated Files             | [T1027](https://attack.mitre.org/techniques/T1027/)         | Minified malicious JavaScript in assets                   | Static analysis, content validation     | Code analysis, anomaly detection        |
+| **🎭 Defense Evasion**      | Domain Fronting              | [T1090.004](https://attack.mitre.org/techniques/T1090/004/) | CDN abuse for malicious content delivery                  | CDN security controls, monitoring       | Traffic pattern analysis                |
+| **🔑 Credential Access**    | Brute Force                  | [T1110](https://attack.mitre.org/techniques/T1110/)         | Not applicable - no authentication system                 | N/A - no credentials                    | N/A                                     |
+| **🔑 Credential Access**    | Browser Credential Dumping   | [T1555.003](https://attack.mitre.org/techniques/T1555/003/) | Extracting saved credentials from browser                 | No credential storage                   | Browser security monitoring             |
+| **🔍 Discovery**            | Application Window Discovery | [T1010](https://attack.mitre.org/techniques/T1010/)         | Browser fingerprinting through game canvas                | Canvas fingerprint protection           | Canvas access monitoring                |
+| **🔍 Discovery**            | System Information Discovery | [T1082](https://attack.mitre.org/techniques/T1082/)         | Browser and device fingerprinting                         | Fingerprint resistance                  | System access monitoring                |
+| **🏛️ Collection**           | Audio Capture                | [T1123](https://attack.mitre.org/techniques/T1123/)         | Microphone access through Web Audio API                   | Microphone permission controls          | Audio permission monitoring             |
+| **🏛️ Collection**           | Screen Capture               | [T1113](https://attack.mitre.org/techniques/T1113/)         | Screenshot capture during gameplay                        | Screen capture permissions              | Screen access monitoring                |
+| **📤 Exfiltration**         | Exfil Over Web Service       | [T1567](https://attack.mitre.org/techniques/T1567/)         | Data exfiltration through game telemetry                  | No telemetry collection                 | N/A - no data to exfiltrate             |
+| **📤 Exfiltration**         | Exfil Over DNS               | [T1048.003](https://attack.mitre.org/techniques/T1048/003/) | DNS tunneling for data exfiltration                       | DNS monitoring                          | DNS query analysis                      |
+| **💥 Impact**               | Defacement                   | [T1491](https://attack.mitre.org/techniques/T1491/)         | Malicious content injection or cultural misrepresentation | Content validation, cultural review     | Content monitoring                      |
+| **💥 Impact**               | Endpoint Denial of Service   | [T1499](https://attack.mitre.org/techniques/T1499/)         | Client-side DoS through resource exhaustion               | Resource limits, performance monitoring | Performance anomaly detection           |
 
 ### **🌳 Attack Tree Analysis**
 
@@ -264,40 +299,58 @@ Following [MITRE ATT&CK-Driven Analysis](https://github.com/Hack23/ISMS-PUBLIC/b
 flowchart TD
     GOAL[🎯 Compromise Black Trigram<br/>Educational Gaming Platform]
 
-    GOAL --> PATH1[🌐 Client-Side Attack]
-    GOAL --> PATH2[📦 Supply Chain Compromise]
-    GOAL --> PATH3[🎭 Content Manipulation]
-    GOAL --> PATH4[🔗 Infrastructure Attack]
+    GOAL --> PATH1[🚪 External Web Attack]
+    GOAL --> PATH2[🔒 Client-Side Abuse]
+    GOAL --> PATH3[🔗 Supply Chain Compromise]
+    GOAL --> PATH4[🌐 Infrastructure Attack]
+    GOAL --> PATH5[🏛️ Cultural/Social Attack]
 
-    PATH1 --> EXT1[🖥️ Browser Exploitation]
-    PATH1 --> EXT2[⚛️ React App Exploit]
-    PATH1 --> EXT3[🎨 WebGL/Canvas Attack]
+    PATH1 --> EXT1[🌐 Web Application Exploit]
+    PATH1 --> EXT2[🔌 CDN/Asset Abuse]
+    PATH1 --> EXT3[📧 Social Engineering]
 
-    EXT1 --> EXT1A[🔍 XSS Injection]
-    EXT1 --> EXT1B[💾 Storage Manipulation]
+    EXT1 --> EXT1A[🔍 XSS/CSRF Attack]
+    EXT1 --> EXT1B[💉 Content Injection]
     EXT1A --> EXT1A1[🎯 Session Hijacking]
     EXT1B --> EXT1B1[📊 Data Corruption]
 
-    PATH2 --> SUP1[📚 NPM Dependency Attack]
-    PATH2 --> SUP2[🔧 Build Pipeline Compromise]
+    EXT2 --> EXT2A[📦 Malicious Asset Injection]
+    EXT2 --> EXT2B[🎵 Audio Content Tampering]
+    EXT2A --> EXT2A1[🦠 Malware Distribution]
+    EXT2B --> EXT2B1[🎭 Cultural Offensive Content]
+
+    PATH2 --> CLI1[🖥️ Browser Exploitation]
+    PATH2 --> CLI2[👤 User Session Abuse]
+    CLI1 --> CLI1A[🎨 WebGL/Canvas Attack]
+    CLI1 --> CLI1B[🔊 Audio System Exploit]
+    CLI2 --> CLI2A[💾 Storage Manipulation]
+    CLI2 --> CLI2B[🎮 Gameplay Disruption]
+
+    PATH3 --> SUP1[📚 NPM Dependency Attack]
+    PATH3 --> SUP2[🔧 Build Pipeline Compromise]
     SUP1 --> SUP1A[🦠 Malicious Package Injection]
     SUP2 --> SUP2A[🏗️ CI/CD Tampering]
 
-    PATH3 --> CON1[🇰🇷 Cultural Content Attack]
-    PATH3 --> CON2[🎮 Game Logic Manipulation]
-    CON1 --> CON1A[🏛️ Cultural Misrepresentation]
-    CON2 --> CON2A[🎯 Gameplay Disruption]
+    PATH4 --> INF1[🌐 DNS/Domain Attack]
+    PATH4 --> INF2[📦 CDN Infrastructure]
+    INF1 --> INF1A[🏷️ Domain Hijacking]
+    INF1 --> INF1B[🌍 DNS Poisoning]
+    INF2 --> INF2A[📄 Asset Tampering]
+    INF2 --> INF2B[🔒 CDN Compromise]
 
-    PATH4 --> INF1[📦 CDN Compromise]
-    PATH4 --> INF2[🌐 DNS/Hosting Attack]
-    INF1 --> INF1A[📄 Asset Tampering]
-    INF2 --> INF2A[🔗 Domain Hijacking]
+    PATH5 --> CUL1[🇰🇷 Cultural Misrepresentation]
+    PATH5 --> CUL2[🎭 Community Manipulation]
+    CUL1 --> CUL1A[🏛️ Offensive Content Injection]
+    CUL1 --> CUL1B[📚 Educational Misinformation]
+    CUL2 --> CUL2A[👥 Social Media Campaign]
+    CUL2 --> CUL2B[🗣️ Reputation Attack]
 
     style GOAL fill:#d32f2f,color:#fff
     style PATH1 fill:#ff5722,color:#fff
     style PATH2 fill:#ff9800,color:#fff
     style PATH3 fill:#ffc107,color:#000
     style PATH4 fill:#9c27b0,color:#fff
+    style PATH5 fill:#e91e63,color:#fff
 ```
 
 ---
@@ -311,11 +364,13 @@ Following [Risk-Centric Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/b
 | #     | Scenario                               | MITRE Tactic                                               | Impact Focus                           | Likelihood | Risk                                                                                                                                               | Key Mitigations                                  | Residual Action                           |
 | ----- | -------------------------------------- | ---------------------------------------------------------- | -------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------- |
 | **1** | **🔗 Supply Chain Dependency Attack**  | [Initial Access](https://attack.mitre.org/tactics/TA0001/) | Educational integrity & user safety    | Medium     | [![Critical](https://img.shields.io/badge/Risk-Critical-red?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | SBOM, dependency scanning, SLSA attestations     | Implement automated dependency monitoring |
-| **2** | **🎭 Cultural Content Manipulation**   | [Impact](https://attack.mitre.org/tactics/TA0040/)         | Korean cultural authenticity & respect | Medium     | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | Content validation, cultural consultation        | Establish cultural advisory board         |
-| **3** | **📦 Malicious Asset Injection**       | [Initial Access](https://attack.mitre.org/tactics/TA0001/) | User device security & game integrity  | Low-Med    | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | SRI, CSP headers, asset validation               | Implement runtime asset verification      |
-| **4** | **🌐 Cross-Site Scripting (XSS)**      | [Execution](https://attack.mitre.org/tactics/TA0002/)      | User data & browser security           | Medium     | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | React security patterns, CSP, input sanitization | Add XSS testing to CI/CD                  |
-| **5** | **🎨 WebGL/Canvas Exploitation**       | [Execution](https://attack.mitre.org/tactics/TA0002/)      | Browser stability & user security      | Low        | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | PixiJS security practices, WebGL limits          | Monitor WebGL security advisories         |
-| **6** | **⚡ Denial of Service (Performance)** | [Impact](https://attack.mitre.org/tactics/TA0040/)         | User experience & accessibility        | Medium     | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    | Performance monitoring, resource limits          | Implement performance budgets             |
+| **2** | **🎭 Cultural Content Manipulation**   | [Impact](https://attack.mitre.org/tactics/TA0040/)         | Korean cultural authenticity & respect | Medium     | [![Critical](https://img.shields.io/badge/Risk-Critical-red?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Content validation, cultural consultation        | Establish cultural advisory board         |
+| **3** | **📦 Malicious Asset Injection**       | [Initial Access](https://attack.mitre.org/tactics/TA0001/) | User device security & game integrity  | Medium     | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | SRI, CSP headers, asset validation               | Implement runtime asset verification      |
+| **4** | **🌐 Domain Hijacking/DNS Attack**     | [Initial Access](https://attack.mitre.org/tactics/TA0001/) | Platform availability & user trust     | Low        | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | DNSSEC, domain monitoring, registrar locks       | Add domain monitoring automation          |
+| **5** | **🌐 Cross-Site Scripting (XSS)**      | [Execution](https://attack.mitre.org/tactics/TA0002/)      | User data & browser security           | Medium     | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | React security patterns, CSP, input sanitization | Add XSS testing to CI/CD                  |
+| **6** | **🎨 WebGL/Canvas Exploitation**       | [Execution](https://attack.mitre.org/tactics/TA0002/)      | Browser stability & user security      | Low        | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | PixiJS security practices, WebGL limits          | Monitor WebGL security advisories         |
+| **7** | **📱 Mobile Browser Exploitation**     | [Execution](https://attack.mitre.org/tactics/TA0002/)      | Mobile user security & performance     | Medium     | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Mobile-specific security headers, testing        | Enhance mobile security testing           |
+| **8** | **⚡ Denial of Service (Performance)** | [Impact](https://attack.mitre.org/tactics/TA0040/)         | User experience & accessibility        | Medium     | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    | Performance monitoring, resource limits          | Implement performance budgets             |
 
 ### **⚖️ Risk Heat Matrix**
 
@@ -340,16 +395,40 @@ quadrantChart
     quadrant-4 Mitigate & Control
 
     "🔗 Supply Chain Attack": [0.6, 0.9]
-    "🎭 Cultural Content Attack": [0.5, 0.8]
-    "📦 Malicious Asset Injection": [0.4, 0.75]
+    "🎭 Cultural Content Attack": [0.5, 0.85]
+    "📦 Malicious Asset Injection": [0.55, 0.75]
+    "🌐 Domain Hijacking": [0.3, 0.8]
     "🌐 XSS Injection": [0.6, 0.6]
     "🎨 WebGL Exploitation": [0.3, 0.65]
+    "📱 Mobile Browser Attack": [0.5, 0.55]
     "⚡ Performance DoS": [0.7, 0.4]
     "💾 Storage Manipulation": [0.5, 0.3]
     "🔍 Browser Fingerprinting": [0.8, 0.2]
     "📱 Mobile Compatibility": [0.6, 0.35]
     "🎵 Audio System Exploit": [0.2, 0.5]
+    "🌍 DNS Poisoning": [0.25, 0.7]
+    "🔒 CDN Compromise": [0.35, 0.65]
 ```
+
+---
+
+## 📊 Comprehensive Threat Agent Analysis
+
+### **🔍 Detailed Threat Actor Classification**
+
+Following [Hack23 AB Threat Agent Classification](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#threat-agent-classification) methodology:
+
+| Threat Agent                    | Category | Black Trigram Context                                        | MITRE Techniques                                                                                                                    | Risk Level                                                                                                                                         | Motivation                      |
+| ------------------------------- | -------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| **🐛 Script Kiddies**           | External | Basic web application attacks using automated tools          | [XSS](https://attack.mitre.org/techniques/T1059/007), [Client-side DoS](https://attack.mitre.org/techniques/T1499)                  | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Fame, learning, disruption      |
+| **🎭 Cultural Trolls**          | External | Targeting Korean cultural content for offensive manipulation | [Defacement](https://attack.mitre.org/techniques/T1491), [Content Injection](https://attack.mitre.org/techniques/T1059/007)         | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | Cultural hatred, trolling       |
+| **🦠 Malware Distributors**     | External | Using gaming platform to distribute malware to users         | [Drive-by Compromise](https://attack.mitre.org/techniques/T1189), [Supply Chain](https://attack.mitre.org/techniques/T1195)         | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | Financial gain, botnet building |
+| **🏢 Competitor Sabotage**      | External | Other gaming companies attempting platform disruption        | [DoS](https://attack.mitre.org/techniques/T1499), [Supply Chain](https://attack.mitre.org/techniques/T1195)                         | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Market competition              |
+| **🏛️ Nation-State Actors**      | External | State actors targeting Korean cultural representation        | [Domain Fronting](https://attack.mitre.org/techniques/T1090/004), [DNS Manipulation](https://attack.mitre.org/techniques/T1048/003) | [![Critical](https://img.shields.io/badge/Risk-Critical-red?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Political/cultural influence    |
+| **💰 Cybercriminal Groups**     | External | Professional criminals targeting user devices through gaming | [Exploit Kits](https://attack.mitre.org/techniques/T1189), [Browser Exploits](https://attack.mitre.org/techniques/T1059/007)        | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | Financial gain, data theft      |
+| **🔒 Accidental Insiders**      | Internal | Unintentional security issues in development process         | [Accidental Exposure](https://attack.mitre.org/techniques/T1552), [Misconfigurations](https://attack.mitre.org/techniques/T1611)    | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    | No malicious intent             |
+| **🎯 Malicious Insiders**       | Internal | Compromised developer accounts or malicious code injection   | [Supply Chain](https://attack.mitre.org/techniques/T1195), [Code Injection](https://attack.mitre.org/techniques/T1059/007)          | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | Various motivations             |
+| **🤝 Third-Party CDN/Services** | External | Compromise of external services used by the platform         | [Third-party Service](https://attack.mitre.org/techniques/T1199), [Supply Chain](https://attack.mitre.org/techniques/T1195)         | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Indirect compromise             |
 
 ---
 
@@ -592,7 +671,7 @@ flowchart LR
 
 ### **🎪 Educational Gaming Threat Workshop**
 
-Following [Hack23 AB Workshop Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#threat-modeling-workshop-framework) with gaming-specific adaptations:
+Following [Hack23 AB Workshop Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#threat-modeling-workshop) with gaming-specific adaptations:
 
 #### **🎯 Black Trigram-Specific Workshop Scope**
 
@@ -763,6 +842,6 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=unlock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  
-**📅 Effective Date:** 2025-01-15  
-**⏰ Next Review:** 2026-01-15  
+**📅 Effective Date:** 2025-09-19  
+**⏰ Next Review:** 2026-09-19  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Frontend Security](https://img.shields.io/badge/Frontend-Security_Hardened-darkgreen?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Hack23 Threat Modeling](https://img.shields.io/badge/Hack23-Threat_Modeling_Policy-purple?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
