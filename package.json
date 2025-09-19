@@ -98,7 +98,7 @@
     "mochawesome-merge": "5.0.0",
     "mochawesome-report-generator": "6.3.0",
     "rollup-plugin-analyzer": "^4.0.0",
-    "start-server-and-test": "^2.1.1",
+    "start-server-and-test": "^2.1.2",
     "ts-morph": "^27.0.0",
     "ts-node": "^10.9.2",
     "typedoc": "^0.28.13",
