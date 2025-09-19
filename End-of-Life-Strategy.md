@@ -138,18 +138,6 @@ mindmap
 Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md#proactive-runtime--operations-management), Black Trigram implements a **current-version-first** approach for optimal security and performance.
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#fff3e0',
-      'primaryTextColor': '#e65100',
-      'lineColor': '#ff9800',
-      'secondaryColor': '#e8f5e9',
-      'tertiaryColor': '#e3f2fd'
-    }
-  }
-}%%
 gantt
     title ☕ Node.js Lifecycle & Black Trigram Transition Timeline
     dateFormat YYYY-MM-DD
