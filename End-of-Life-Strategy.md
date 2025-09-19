@@ -139,7 +139,7 @@ Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/I
 
 ```mermaid
 gantt
-    title Node.js Lifecycle & Black Trigram Transition Timeline
+    title Node.js Lifecycle and Black Trigram Transition Timeline
     dateFormat YYYY-MM-DD
     axisFormat %Y-%m
 
@@ -328,7 +328,7 @@ gantt
     dateFormat YYYY-MM-DD
     axisFormat %Y
 
-    section Runtime & Core
+    section Runtime and Core
     Node.js 24.x LTS          :active, node24, 2024-10-29, 2027-04-30
     Node.js 26.x LTS (Target) :future, node26, 2025-10-28, 2028-04-30
     Node.js 28.x LTS (Future) :future, node28, 2027-10-28, 2030-04-30
@@ -338,13 +338,13 @@ gantt
     React 20.x (Future)       :future, react20, 2025-12-01, 2028-12-31
     React 21.x (Future)       :future, react21, 2026-12-01, 2029-12-31
 
-    section Build & Tooling
+    section Build and Tooling
     Vite 7.x                  :active, vite7, 2024-12-03, 2025-12-31
     Vite 8.x (Future)         :future, vite8, 2025-06-01, 2026-12-31
     TypeScript 5.x            :active, ts5, 2024-03-16, 2025-09-30
     TypeScript 6.x (Future)   :future, ts6, 2025-03-01, 2026-09-30
 
-    section Graphics & Audio
+    section Graphics and Audio
     PixiJS 8.x                :active, pixi8, 2024-01-30, 2026-01-30
     PixiJS 9.x (Future)       :future, pixi9, 2025-06-01, 2027-06-01
     Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
