@@ -61,7 +61,7 @@
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^5.1.2",
     "@elevenlabs/elevenlabs-js": "^2.16.0",
-    "openai": "^5.23.1",
+    "openai": "^5.23.2",
     "@aws-sdk/client-bedrock-runtime": "^3.899.0",
     "@eslint/js": "^9.36.0",
     "@size-limit/preset-app": "^11.2.0",
