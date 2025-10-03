@@ -1,0 +1,304 @@
+{
+  "stats": {
+    "suites": 5,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-10-03T09:00:02.887Z",
+    "end": "2025-10-03T09:01:06.923Z",
+    "duration": 64036,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "a7f905a8-0d36-46c6-b01e-f35ca227a7fa",
+      "title": "",
+      "fullFile": "cypress/e2e/app.cy.ts",
+      "file": "cypress/e2e/app.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "7e95c1ac-4aa5-4c76-8d64-7de79c58681d",
+          "title": "Black Trigram Intro Page E2E",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "ca55314a-8395-4403-90ae-1d9d708328c7",
+              "title": "Initial Page Load",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should display the Black Trigram intro page correctly",
+                  "fullTitle": "Black Trigram Intro Page E2E Initial Page Load should display the Black Trigram intro page correctly",
+                  "timedOut": null,
+                  "duration": 18202,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing intro page display\");\n// Verify app container\ncy.get('[data-testid=\"app-container\"]', { timeout: 10000 }).should(\"exist\");\n// Verify intro screen\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n// Verify canvas is present and functional\ncy.checkCanvasVisibility();\n// Verify essential buttons\ncy.get('[data-testid=\"training-button\"]', { timeout: 5000 }).should(\"be.visible\");\ncy.annotate(\"Training button found\");\ncy.get('[data-testid=\"combat-button\"]', { timeout: 5000 }).should(\"be.visible\");\ncy.annotate(\"Combat button found\");",
+                  "err": {},
+                  "uuid": "12de7a53-bfa1-4ff4-8cf8-6fb719ddc51d",
+                  "parentUUID": "ca55314a-8395-4403-90ae-1d9d708328c7",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should render all archetype options correctly",
+                  "fullTitle": "Black Trigram Intro Page E2E Initial Page Load should render all archetype options correctly",
+                  "timedOut": null,
+                  "duration": 6951,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing archetype options\");\n// Check if archetype toggle exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"archetype-toggle\"]').length > 0) {\n        cy.get('[data-testid=\"archetype-toggle\"]').should(\"exist\");\n        // Try to interact with archetype selection\n        cy.get('[data-testid=\"archetype-toggle\"]').click({ force: true });\n        // Verify archetype list\n        cy.get('[data-testid=\"archetype-list\"]').should(\"exist\");\n        // Check for individual archetype options\n        const archetypes = [\n            \"musa\",\n            \"amsalja\",\n            \"hacker\",\n            \"jeongbo_yowon\",\n            \"jojik_pokryeokbae\",\n        ];\n        archetypes.forEach((archetype) => {\n            cy.get(`[data-testid=\"archetype-option-${archetype}\"]`).should(\"exist\");\n        });\n    }\n    else {\n        cy.annotate(\"Archetype selection not implemented - skipping\");\n    }\n});",
+                  "err": {},
+                  "uuid": "701e19ad-0afa-4a8b-8a87-129db24a4b81",
+                  "parentUUID": "ca55314a-8395-4403-90ae-1d9d708328c7",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "12de7a53-bfa1-4ff4-8cf8-6fb719ddc51d",
+                "701e19ad-0afa-4a8b-8a87-129db24a4b81"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 25153,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "d9b51668-8050-4c8b-b007-1c19917e7bef",
+              "title": "User Interactions",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should allow archetype selection with correct UI updates",
+                  "fullTitle": "Black Trigram Intro Page E2E User Interactions should allow archetype selection with correct UI updates",
+                  "timedOut": null,
+                  "duration": 3233,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing archetype selection\");\n// Check if archetype toggle exists, if not skip this test gracefully\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"archetype-toggle\"]').length > 0) {\n        // Use force: true to overcome pointer-events: none\n        cy.get('[data-testid=\"archetype-toggle\"]').click({ force: true });\n        // Wait for archetype list to be visible\n        cy.get('[data-testid=\"archetype-list\"]', { timeout: 5000 }).should(\"exist\");\n        // Select Shadow Assassin archetype\n        cy.get('[data-testid=\"archetype-option-amsalja\"]').click({\n            force: true,\n        });\n        // Verify selection (check if UI updates)\n        cy.get('[data-testid=\"selected-archetype-value\"]').should(\"contain\", \"암살자\");\n        // Select another archetype to verify dynamic changes\n        cy.get('[data-testid=\"archetype-option-hacker\"]').click({\n            force: true,\n        });\n        cy.get('[data-testid=\"selected-archetype-value\"]').should(\"contain\", \"해커\");\n        cy.annotate(\"Archetype selection working correctly\");\n    }\n    else {\n        cy.annotate(\"Archetype selection UI not found - test skipped\");\n        // This is acceptable as the feature may not be fully implemented\n    }\n});",
+                  "err": {},
+                  "uuid": "07988a2d-4b6c-48e5-affc-45628bcc0746",
+                  "parentUUID": "d9b51668-8050-4c8b-b007-1c19917e7bef",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should navigate to training mode and back",
+                  "fullTitle": "Black Trigram Intro Page E2E User Interactions should navigate to training mode and back",
+                  "timedOut": null,
+                  "duration": 3531,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing training mode navigation\");\ncy.enterTrainingMode();\n// Check if we're in training mode\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-screen\"]').length > 0) {\n        cy.annotate(\"Successfully entered training mode\");\n    }\n    else {\n        cy.annotate(\"Training mode navigation - using keyboard fallback\");\n    }\n});\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "2d0c5294-9f30-4fac-a677-ab4b40369aee",
+                  "parentUUID": "d9b51668-8050-4c8b-b007-1c19917e7bef",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should navigate to combat mode and back",
+                  "fullTitle": "Black Trigram Intro Page E2E User Interactions should navigate to combat mode and back",
+                  "timedOut": null,
+                  "duration": 3466,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing combat mode navigation\");\ncy.enterCombatMode();\n// Check if we're in combat mode\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-screen\"]').length > 0) {\n        cy.annotate(\"Successfully entered combat mode\");\n    }\n    else {\n        cy.annotate(\"Combat mode navigation - using keyboard fallback\");\n    }\n});\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "2a29e19c-7c94-41b7-90e4-d940ce4a7462",
+                  "parentUUID": "d9b51668-8050-4c8b-b007-1c19917e7bef",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "07988a2d-4b6c-48e5-affc-45628bcc0746",
+                "2d0c5294-9f30-4fac-a677-ab4b40369aee",
+                "2a29e19c-7c94-41b7-90e4-d940ce4a7462"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 10230,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "29531881-dba0-4f6f-890e-987b3070e02c",
+              "title": "Responsive Design",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should adapt properly to different screen sizes",
+                  "fullTitle": "Black Trigram Intro Page E2E Responsive Design should adapt properly to different screen sizes",
+                  "timedOut": null,
+                  "duration": 13942,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.log(\"Testing responsive design\");\nconst viewports = [\n    { width: 1280, height: 800, name: \"Desktop\" },\n    { width: 768, height: 1024, name: \"Tablet\" },\n    { width: 375, height: 667, name: \"Mobile\" },\n];\nviewports.forEach((viewport) => {\n    cy.log(`Testing ${viewport.name} viewport (${viewport.width}x${viewport.height})`);\n    cy.viewport(viewport.width, viewport.height);\n    cy.wait(1000);\n    // Fix: Check that UI elements are responsive rather than canvas visibility\n    cy.get('[data-testid=\"app-container\"]').should(\"be.visible\");\n    if (viewport.width < 768) {\n        // Mobile specific checks\n        cy.get('[data-testid=\"training-button\"]').should(\"have.css\", \"font-size\", \"14px\");\n    }\n    else {\n        // Desktop/tablet checks\n        cy.get('[data-testid=\"training-button\"]').should(\"have.css\", \"font-size\", \"16px\");\n    }\n    // Check that buttons are properly positioned\n    cy.get('[data-testid=\"training-button\"]').should(\"be.visible\");\n    cy.get('[data-testid=\"combat-button\"]').should(\"be.visible\");\n});",
+                  "err": {},
+                  "uuid": "ac4ac0f7-1f72-4bbd-8551-6f7812e49865",
+                  "parentUUID": "29531881-dba0-4f6f-890e-987b3070e02c",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "ac4ac0f7-1f72-4bbd-8551-6f7812e49865"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 13942,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "012b02e7-02f6-45e4-bea4-9fa59e5cd482",
+              "title": "Keyboard Accessibility",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support keyboard navigation and shortcuts",
+                  "fullTitle": "Black Trigram Intro Page E2E Keyboard Accessibility should support keyboard navigation and shortcuts",
+                  "timedOut": null,
+                  "duration": 2879,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.log(\"Testing keyboard navigation\");\n// Fix: Ensure we're on the intro screen\ncy.get('[data-testid=\"app-container\"]').should(\"be.visible\");\n// Test keyboard shortcuts\ncy.get(\"body\").type(\"1\"); // Should select training mode\ncy.wait(500);\ncy.get(\"body\").type(\"{esc}\"); // Should return to menu\ncy.wait(500);\ncy.get(\"body\").type(\"2\"); // Should select combat mode\ncy.wait(500);\ncy.get(\"body\").type(\"{esc}\"); // Should return to menu\ncy.wait(500);",
+                  "err": {},
+                  "uuid": "565290b1-5c53-4d54-8074-98f0f425cb9b",
+                  "parentUUID": "012b02e7-02f6-45e4-bea4-9fa59e5cd482",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "565290b1-5c53-4d54-8074-98f0f425cb9b"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 2879,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "docs/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}
