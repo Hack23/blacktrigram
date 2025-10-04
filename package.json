@@ -63,7 +63,7 @@
     "@elevenlabs/elevenlabs-js": "^2.17.0",
     "openai": "^6.1.0",
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.37.0",
     "@size-limit/preset-app": "^11.2.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
