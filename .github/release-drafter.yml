@@ -86,10 +86,10 @@ template: |
   $CHANGES
 
   ## Security & Quality
-  [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/game/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/game)
+  [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/blacktrigram/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/blacktrigram)
 
   ## Security Compliance
-  [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/game/attestations/)
+  [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations/)
 
   ## Game Development Stack
   - ⚡ **Vite** - Fast build tool and dev server
@@ -103,7 +103,7 @@ template: |
   ## Contributors
   Thanks to $CONTRIBUTORS for their contributions to this release!
 
-  **Full Changelog**: https://github.com/Hack23/game/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+  **Full Changelog**: https://github.com/Hack23/blacktrigram/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
 
 version-resolver:
   major:
@@ -130,49 +130,199 @@ version-resolver:
   default: patch
 
 autolabeler:
+  # Features & Enhancements
   - label: "feature"
     title:
       - '/^feat(\([^)]+\))?:/i'
-  - label: "bug"
-    title:
-      - '/^fix(\([^)]+\))?:/i'
-  - label: "documentation"
-    title:
-      - '/^docs(\([^)]+\))?:/i'
+  
   - label: "enhancement"
     title:
       - '/^enhance(\([^)]+\))?:/i'
+      - '/^improve(\([^)]+\))?:/i'
+  
+  # Bug Fixes
+  - label: "bug"
+    title:
+      - '/^fix(\([^)]+\))?:/i'
+    branch:
+      - '/^fix\/.+/'
+      - '/^bugfix\/.+/'
+  
+  - label: "fix"
+    title:
+      - '/^fix(\([^)]+\))?:/i'
+  
+  # Documentation
+  - label: "documentation"
+    title:
+      - '/^docs(\([^)]+\))?:/i'
+    files:
+      - '**/*.md'
+      - 'docs/**/*'
+  
+  # UI/UX
   - label: "ui"
     title:
-      - '/^style(\([^)]+\))?:/i'
       - '/^ui(\([^)]+\))?:/i'
+    files:
+      - '**/*.css'
+      - '**/*.scss'
+  
+  - label: "design"
+    title:
       - '/^design(\([^)]+\))?:/i'
+  
+  - label: "style"
+    title:
+      - '/^style(\([^)]+\))?:/i'
+  
+  # Dependencies
   - label: "dependencies"
     title:
       - '/^build\(deps\):/i'
       - '/^deps(\([^)]+\))?:/i'
+      - '/^chore\(deps\):/i'
+    files:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'yarn.lock'
+      - 'pnpm-lock.yaml'
+  
+  # Security
   - label: "security"
     title:
       - '/^security(\([^)]+\))?:/i'
+      - '/^sec(\([^)]+\))?:/i'
+  
+  # Performance
   - label: "performance"
     title:
       - '/^perf(\([^)]+\))?:/i'
+  
+  # Infrastructure & Build
+  - label: "infrastructure"
+    title:
+      - '/^infra(\([^)]+\))?:/i'
+      - '/^ci(\([^)]+\))?:/i'
+    files:
+      - '.github/**/*'
+  
+  - label: "build"
+    title:
+      - '/^build(\([^)]+\))?:/i'
+      - '/^chore\(build\):/i'
+    files:
+      - 'vite.config.*'
+      - 'tsconfig.json'
+      - 'webpack.config.*'
+  
+  - label: "config"
+    title:
+      - '/^config(\([^)]+\))?:/i'
+      - '/^chore\(config\):/i'
+    files:
+      - '**/*.config.*'
+      - '.eslintrc.*'
+      - '.prettierrc.*'
+  
+  # Code Quality
   - label: "refactor"
     title:
       - '/^refactor(\([^)]+\))?:/i'
+  
+  - label: "testing"
+    title:
+      - '/^test(\([^)]+\))?:/i'
+    files:
+      - '**/*.test.*'
+      - '**/*.spec.*'
+      - 'tests/**/*'
+      - 'cypress/**/*'
+  
+  - label: "types"
+    title:
+      - '/^types(\([^)]+\))?:/i'
+    files:
+      - '**/*.d.ts'
+      - 'types/**/*'
+  
+  # Game Development
   - label: "game-logic"
     title:
       - '/^game(\([^)]+\))?:/i'
       - '/^logic(\([^)]+\))?:/i'
+  
   - label: "graphics"
     title:
       - '/^graphics(\([^)]+\))?:/i'
-      - '/^pixi(\([^)]+\))?:/i'
       - '/^render(\([^)]+\))?:/i'
+  
   - label: "audio"
     title:
       - '/^audio(\([^)]+\))?:/i'
       - '/^sound(\([^)]+\))?:/i'
-  - label: "testing"
+  
+  - label: "pixi-components"
     title:
-      - '/^test(\([^)]+\))?:/i'
+      - '/^pixi(\([^)]+\))?:/i'
+    files:
+      - '**/pixi/**/*'
+      - '**/*pixi*.ts'
+      - '**/*pixi*.tsx'
+  
+  # Test Coverage
+  - label: "test-coverage-impact"
+    title:
+      - '/test.?coverage/i'
+  
+  - label: "needs-tests"
+    title:
+      - '/needs.?tests?/i'
+  
+  - label: "e2e"
+    title:
+      - '/^e2e(\([^)]+\))?:/i'
+      - '/end.?to.?end/i'
+    files:
+      - 'cypress/**/*'
+      - '**/*.e2e.*'
+  
+  # Assets
+  - label: "assets"
+    files:
+      - 'public/**/*'
+      - 'assets/**/*'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.svg'
+      - '**/*.gif'
+      - '**/*.mp3'
+      - '**/*.wav'
+  
+  # Development Environment
+  - label: "devcontainer"
+    files:
+      - '.devcontainer/**/*'
+    title:
+      - '/devcontainer/i'
+  
+  # Component-specific labels
+  - label: "component-app"
+    files:
+      - 'src/App.*'
+      - 'src/app/**/*'
+  
+  - label: "component-main"
+    files:
+      - 'src/main.*'
+      - 'src/index.*'
+  
+  - label: "component-game"
+    files:
+      - 'src/game/**/*'
+      - 'src/components/game/**/*'
+  
+  - label: "component-ui"
+    files:
+      - 'src/ui/**/*'
+      - 'src/components/ui/**/*'
