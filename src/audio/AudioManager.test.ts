@@ -3,44 +3,55 @@ import { AudioManager } from "./AudioManager";
 import type { AudioConfig, MusicTrackId, SoundEffectId } from "./types";
 import { AudioCategory } from "./types";
 
-// Enhanced mock for HTML Audio Element
-const createMockHTMLAudioElement = () => ({
-  play: vi.fn(() => Promise.resolve()),
-  pause: vi.fn(),
-  load: vi.fn(),
-  canPlayType: vi.fn((type: string) => {
-    if (type.includes("mp3")) return "probably";
-    if (type.includes("wav")) return "maybe";
-    return "";
-  }),
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  volume: 1,
-  currentTime: 0,
-  duration: 100,
-  paused: false,
-  ended: false,
-  src: "",
-  crossOrigin: null,
-  preload: "auto",
-  onended: null,
-  onerror: null,
-  onloadeddata: null,
-});
-
 // Mock Web Audio API
-const mockAudioContext = {
-  createBuffer: vi.fn(),
-  createBufferSource: vi.fn(),
-  createGain: vi.fn(),
-  destination: {},
-  sampleRate: 44100,
-};
+class MockAudioContext {
+  createBuffer = vi.fn();
+  createBufferSource = vi.fn();
+  createGain = vi.fn();
+  destination = {};
+  sampleRate = 44100;
+}
 
-// Mock global Audio constructor
-global.Audio = vi.fn(() => createMockHTMLAudioElement()) as any;
-global.AudioContext = vi.fn(() => mockAudioContext) as any;
-(global as any).webkitAudioContext = vi.fn(() => mockAudioContext);
+// Mock global Audio constructor - must use class for Vitest 4.0
+class MockAudioElement {
+  canPlayType: ReturnType<typeof vi.fn>;
+  play: ReturnType<typeof vi.fn>;
+  pause: ReturnType<typeof vi.fn>;
+  load: ReturnType<typeof vi.fn>;
+  addEventListener: ReturnType<typeof vi.fn>;
+  removeEventListener: ReturnType<typeof vi.fn>;
+  volume = 1;
+  currentTime = 0;
+  duration = 0;
+  paused = true;
+  ended = false;
+  src = "";
+  crossOrigin = null;
+  preload = "auto";
+  onended = null;
+  onerror = null;
+  onloadeddata = null;
+
+  constructor(src?: string) {
+    if (src) {
+      this.src = src;
+    }
+    this.canPlayType = vi.fn((type: string) => {
+      if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
+      if (type === "audio/wav") return "maybe";
+      return "";
+    });
+    this.play = vi.fn(() => Promise.resolve());
+    this.pause = vi.fn();
+    this.load = vi.fn();
+    this.addEventListener = vi.fn();
+    this.removeEventListener = vi.fn();
+  }
+}
+
+global.Audio = MockAudioElement as any;
+global.AudioContext = MockAudioContext as any;
+(global as any).webkitAudioContext = MockAudioContext;
 
 describe("AudioManager", () => {
   const mockAudioConfig: AudioConfig = {
