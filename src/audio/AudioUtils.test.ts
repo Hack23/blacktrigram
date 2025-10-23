@@ -1,47 +1,47 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as AudioUtils from "./AudioUtils";
-import type { AudioFormat } from "../types/audio";
-
-// Enhanced mock Audio constructor for testing
-const createMockAudio = (canPlayResponse: string = "probably") => {
-  return {
-    canPlayType: vi.fn().mockReturnValue(canPlayResponse),
-    play: vi.fn(() => Promise.resolve()),
-    pause: vi.fn(),
-    load: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    volume: 1,
-    currentTime: 0,
-    duration: 100,
-    paused: false,
-    ended: false,
-    src: "",
-    crossOrigin: null,
-    preload: "auto",
-  };
-};
+import type { AudioFormat } from "./types";
 
 describe("AudioUtils", () => {
   beforeEach(() => {
     // Reset mocks before each test
     vi.clearAllMocks();
 
-    // Mock Audio constructor with proper format support
-    global.Audio = vi.fn().mockImplementation(() => {
-      const mockAudio = createMockAudio();
+    // Mock Audio constructor with proper class for Vitest 4.0
+    class MockAudio {
+      canPlayType: ReturnType<typeof vi.fn>;
+      play: ReturnType<typeof vi.fn>;
+      pause: ReturnType<typeof vi.fn>;
+      load: ReturnType<typeof vi.fn>;
+      addEventListener: ReturnType<typeof vi.fn>;
+      removeEventListener: ReturnType<typeof vi.fn>;
+      volume = 1;
+      currentTime = 0;
+      duration = 100;
+      paused = false;
+      ended = false;
+      src = "";
+      crossOrigin = null;
+      preload = "auto";
 
-      // Enhanced mock to properly support different formats
-      mockAudio.canPlayType = vi.fn((type: string) => {
-        if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
-        if (type === "audio/wav") return "maybe";
-        if (type === "audio/ogg") return "maybe";
-        if (type === "audio/webm") return ""; // Not supported by default
-        return "";
-      });
+      constructor() {
+        // Enhanced mock to properly support different formats
+        this.canPlayType = vi.fn((type: string) => {
+          if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
+          if (type === "audio/wav") return "maybe";
+          if (type === "audio/ogg") return "maybe";
+          if (type === "audio/webm") return ""; // Not supported by default
+          return "";
+        });
+        this.play = vi.fn(() => Promise.resolve());
+        this.pause = vi.fn();
+        this.load = vi.fn();
+        this.addEventListener = vi.fn();
+        this.removeEventListener = vi.fn();
+      }
+    }
 
-      return mockAudio;
-    }) as any;
+    global.Audio = MockAudio as any;
   });
 
   describe("selectAudioFormat", () => {

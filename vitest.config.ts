@@ -4,6 +4,27 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      // Alias for Korean text components
+      "@/korean-text": path.resolve(
+        __dirname,
+        "./src/components/ui/base/korean-text"
+      ),
+      // Alias for types
+      "@/types": path.resolve(__dirname, "./src/types"),
+      // Alias for systems
+      "@/systems": path.resolve(__dirname, "./src/systems"),
+      // Alias for constants
+      "@/constants": path.resolve(__dirname, "./src/types/constants"),
+      // Fix react-reconciler constants import for Vitest 4.0
+      "react-reconciler/constants": path.resolve(
+        __dirname,
+        "./node_modules/react-reconciler/constants.js"
+      ),
+    },
+  },
   test: {
     globals: true,
     environment: "jsdom",
@@ -17,8 +38,10 @@ export default defineConfig({
     ],
     exclude: ["node_modules", "dist", ".idea", ".git", ".cache"],
     // Mock specific modules for Korean martial arts testing
-    deps: {
-      inline: ["pixi.js", "@pixi/react"],
+    server: {
+      deps: {
+        inline: ["pixi.js", "@pixi/react"],
+      },
     },
     coverage: {
       provider: "v8",
@@ -45,24 +68,8 @@ export default defineConfig({
         "dist/assets/**",
         "scripts/**",
       ],
-      all: true, // Include all files in coverage
+      // Note: 'all' option removed in Vitest 4.0
       skipFull: false, // Don't skip files with 100% coverage
-    },
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      // Alias for Korean text components
-      "@/korean-text": path.resolve(
-        __dirname,
-        "./src/components/ui/base/korean-text"
-      ),
-      // Alias for types
-      "@/types": path.resolve(__dirname, "./src/types"),
-      // Alias for systems
-      "@/systems": path.resolve(__dirname, "./src/systems"),
-      // Alias for constants
-      "@/constants": path.resolve(__dirname, "./src/types/constants"),
     },
   },
   // Optimize deps for Korean martial arts components
