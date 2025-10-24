@@ -1,0 +1,694 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for types/constants/colors.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">types/constants</a> colors.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">27.27% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>3/11</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/3</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">27.27% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>3/11</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * Color palette for Black Trigram Korean martial arts game
+ * Cyberpunk aesthetic with Korean traditional influences
+ */
+&nbsp;
+// Primary color palette
+export const KOREAN_COLORS = {
+  // Primary colors (Cyberpunk neon)
+  PRIMARY_CYAN: 0x00ffff,
+  PRIMARY_BLUE: 0x0066ff,
+  PRIMARY_BLUE_DARK: 0x003399,
+&nbsp;
+  // Fix: Add missing PRIMARY_RED color
+  PRIMARY_RED: 0xff3333,
+&nbsp;
+  // Secondary colors
+  SECONDARY_MAGENTA: 0xff00ff,
+  SECONDARY_PURPLE: 0x9900ff,
+  SECONDARY_YELLOW: 0xffff00,
+  SECONDARY_ORANGE: 0xff6600,
+  SECONDARY_BROWN_DARK: 0x8b4513,
+&nbsp;
+  // Accent colors
+  ACCENT_GOLD: 0xffd700,
+  ACCENT_RED: 0xff3333,
+  ACCENT_GREEN: 0x00ff33,
+  ACCENT_PRIMARY: 0x00d4ff,
+  ACCENT_YELLOW: 0xffff00, // Fix: Add missing ACCENT_YELLOW
+  ACCENT_PURPLE: 0x9900ff, // Fix: Add missing ACCENT_PURPLE
+  ACCENT_CYAN: 0x00ffff, // Fix: Add missing ACCENT_CYAN
+  ACCENT_ORANGE: 0xff8833, // Fix: Add missing ACCENT_ORANGE
+  ACCENT_BLUE: 0x3399ff, // Fix: Add missing ACCENT_BLUE
+&nbsp;
+  // Korean traditional colors
+  KOREAN_RED: 0xc8102e,
+  KOREAN_BLUE: 0x003478,
+  KOREAN_WHITE: 0xffffff,
+  KOREAN_BLACK: 0x000000,
+&nbsp;
+  // Text colors
+  TEXT_PRIMARY: 0xffffff,
+  TEXT_SECONDARY: 0xcccccc,
+  TEXT_TERTIARY: 0x999999, // Fix: Add missing TEXT_TERTIARY
+  TEXT_ACCENT: 0x00ffff,
+  TEXT_WARNING: 0xffaa00,
+  TEXT_ERROR: 0xff3333,
+  TEXT_BRIGHT: 0xffffff, // Fix: Add missing TEXT_BRIGHT
+&nbsp;
+  // UI background colors
+  UI_BACKGROUND_DARK: 0x1a1a2e,
+  UI_BACKGROUND_MEDIUM: 0x16213e,
+  UI_BACKGROUND_LIGHT: 0x0f0f23,
+  UI_STEEL_GRAY: 0x4a5568,
+  UI_STEEL_GRAY_DARK: 0x2d3748,
+  UI_BORDER: 0x4a5568, // Fix: Add missing UI_BORDER
+  UI_BORDER_LIGHT: 0x4a4a6a, // Fix: Add missing UI_BORDER_LIGHT
+  UI_GRAY: 0x808080, // Fix: Add missing UI_GRAY
+  UI_DISABLED_FILL: 0x2d3748, // Fix: Add missing UI_DISABLED_FILL
+  UI_DISABLED_BORDER: 0x1a1a2e, // Fix: Add missing UI_DISABLED_BORDER
+  UI_DISABLED_BG: 0x333333, // Fix: Add missing UI_DISABLED_BG
+  UI_DISABLED_TEXT: 0x666666, // Fix: Add missing UI_DISABLED_TEXT
+&nbsp;
+  // Combat effect colors
+  CRITICAL_HIT: 0xff0000, // Fix: Add missing CRITICAL_HIT
+  BLOCKED_ATTACK: 0x808080, // Fix: Add missing BLOCKED_ATTACK
+  PERFECT_STRIKE: 0xffd700, // Fix: Add missing PERFECT_STRIKE
+  VITAL_POINT_HIT: 0xff00ff, // Fix: Add missing VITAL_POINT_HIT
+&nbsp;
+  // Warning colors
+  WARNING_ORANGE: 0xff6600, // Fix: Add missing WARNING_ORANGE
+  WARNING_YELLOW: 0xffff00, // Fix: Add missing WARNING_YELLOW
+&nbsp;
+  // Additional UI colors
+  ACTIVE_BORDER: 0x00ffff, // Fix: Add missing ACTIVE_BORDER
+&nbsp;
+  // Stance-specific colors (Trigram colors)
+  TRIGRAM_GEON_PRIMARY: 0xffd700, // Heaven - White
+  TRIGRAM_TAE_PRIMARY: 0x87ceeb, // Lake - Sky Blue
+  TRIGRAM_LI_PRIMARY: 0xff4500, // Fire - Orange Red
+  TRIGRAM_JIN_PRIMARY: 0x9370db, // Thunder - Yellow
+  TRIGRAM_SON_PRIMARY: 0x32cd32, // Wind - Light Green
+  TRIGRAM_GAM_PRIMARY: 0x1e90ff, // Water - Blue
+  TRIGRAM_GAN_PRIMARY: 0x8b4513, // Mountain - Brown
+  TRIGRAM_GON_PRIMARY: 0x2f4f4f, // Earth - Dark Khaki
+&nbsp;
+  // Status colors
+  POSITIVE_GREEN: 0x00ff00,
+  POSITIVE_GREEN_DARK: 0x006600,
+  NEGATIVE_RED: 0xff0000,
+  NEGATIVE_RED_DARK: 0x990000,
+  NEGATIVE_RED_LIGHT: 0xff4444, // Fix: Add missing NEGATIVE_RED_LIGHT
+  NEUTRAL_GRAY: 0x808080,
+&nbsp;
+  // Solid colors
+  WHITE_SOLID: 0xffffff,
+  BLACK_SOLID: 0x000000,
+  BLACK: 0x000000, // Fix: Add missing BLACK
+  TRANSPARENT: 0x000000, // With alpha 0
+&nbsp;
+  // Health bar colors
+  HEALTH_FULL: 0x00ff00,
+  HEALTH_MEDIUM: 0xffff00,
+  HEALTH_LOW: 0xff6600,
+  HEALTH_CRITICAL: 0xff0000,
+&nbsp;
+  // Ki/Energy colors
+  KI_FULL: 0x00ffff,
+  KI_MEDIUM: 0x0099cc,
+  KI_LOW: 0x006699,
+  KI_EMPTY: 0x003366,
+&nbsp;
+  // Stamina colors
+  STAMINA_FULL: 0xffff00,
+  STAMINA_MEDIUM: 0xffcc00,
+  STAMINA_LOW: 0xff9900,
+  STAMINA_EMPTY: 0xff6600,
+&nbsp;
+  // Fix: Add missing color constants for game components
+  ARENA_BACKGROUND: 0x1a1a2e,
+  PLAYER_1_COLOR: 0x00ccff, // Cyan for player 1
+  PLAYER_2_COLOR: 0xff6b35, // Orange for player 2
+  SECONDARY_BLUE: 0x3366cc,
+  SECONDARY_BLUE_LIGHT: 0x5588ee,
+  SECONDARY_BLUE_DARK: 0x1144aa,
+&nbsp;
+  // Cyberpunk neon colors (add for NEON_CYAN and others)
+  NEON_CYAN: 0x00ffff, // Neon cyan for cyberpunk UI
+  NEON_PURPLE: 0xff00ff,
+  NEON_GREEN: 0x00ff00,
+  NEON_PINK: 0xff1493,
+} as const;
+&nbsp;
+// Cyberpunk color palette
+export const CYBERPUNK_COLORS = {
+  // Primary neon colors - 사이버펑크 네온 색상
+  NEON_CYAN: 0x00ffff, // 네온 시안 - Primary UI
+  NEON_PURPLE: 0xff00ff, // 네온 보라 - Secondary accents
+  NEON_GREEN: 0x00ff00, // 네온 초록 - Success states
+  NEON_PINK: 0xff1493, // 네온 핑크 - Special effects
+&nbsp;
+  // Accent colors - 강조 색상
+  ACCENT_BLUE: 0x0080ff, // 강조 파랑 - Interactive elements
+  ACCENT_ORANGE: 0xff8000, // 강조 주황 - Warning/action
+  ACCENT_YELLOW: 0xffff00, // 강조 노랑 - Highlights
+&nbsp;
+  // Status colors - 상태 색상
+  WARNING_RED: 0xff4444, // 경고 빨강 - Danger/error
+  SUCCESS_GREEN: 0x44ff44, // 성공 초록 - Positive feedback
+  INFO_BLUE: 0x4444ff, // 정보 파랑 - Information
+&nbsp;
+  // Text colors - 텍스트 색상
+  TEXT_PRIMARY: 0xffffff, // 주요 텍스트 - High contrast
+  TEXT_SECONDARY: 0xcccccc, // 보조 텍스트 - Medium contrast
+  TEXT_MUTED: 0x888888, // 음소거 텍스트 - Low contrast
+&nbsp;
+  // Background colors - 배경 색상
+  BG_DARK: 0x0a0a0a, // 어두운 배경 - Main background
+  BG_DARKER: 0x050505, // 더 어두운 배경 - Deep background
+  BG_PANEL: 0x1a1a1a, // 패널 배경 - UI panels
+&nbsp;
+  // Neutral colors - 중성 색상
+  NEUTRAL_GRAY: 0x666666, // 중성 회색 - Disabled states
+  NEUTRAL_LIGHT: 0x999999, // 밝은 회색 - Borders
+  NEUTRAL_DARK: 0x333333, // 어두운 회색 - Separators
+&nbsp;
+  // Special effects - 특수 효과
+  SHADOW: 0x000000, // 그림자 - Drop shadows
+  GLOW: 0xffffff, // 글로우 - Glow effects
+  HIGHLIGHT: 0xffff80, // 하이라이트 - Selection highlight
+} as const;
+&nbsp;
+// Color utility functions
+export const colorUtils = {
+  /**
+   * Convert hex color to RGB components
+   */
+  hexToRgb: <span class="fstat-no" title="function not covered" >(h</span>ex: number) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+    r: (hex &gt;&gt; 16) &amp; 255,
+    g: (hex &gt;&gt; 8) &amp; 255,
+    b: hex &amp; 255,
+  }),
+&nbsp;
+  /**
+   * Convert RGB to hex color
+   */
+  rgbToHex: <span class="fstat-no" title="function not covered" >(r</span>: number, g: number, b: number) =&gt; {
+<span class="cstat-no" title="statement not covered" >    return (r &lt;&lt; 16) | (g &lt;&lt; 8) | b;</span>
+  },
+&nbsp;
+  /**
+   * Blend two colors
+   */
+  blend: <span class="fstat-no" title="function not covered" >(c</span>olor1: number, color2: number, factor: number) =&gt; {
+    const rgb1 = <span class="cstat-no" title="statement not covered" >colorUtils.hexToRgb(color1);</span>
+    const rgb2 = <span class="cstat-no" title="statement not covered" >colorUtils.hexToRgb(color2);</span>
+&nbsp;
+    const r = <span class="cstat-no" title="statement not covered" >Math.round(rgb1.r + (rgb2.r - rgb1.r) * factor);</span>
+    const g = <span class="cstat-no" title="statement not covered" >Math.round(rgb1.g + (rgb2.g - rgb1.g) * factor);</span>
+    const b = <span class="cstat-no" title="statement not covered" >Math.round(rgb1.b + (rgb2.b - rgb1.b) * factor);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return colorUtils.rgbToHex(r, g, b);</span>
+  },
+};
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-10-24T07:40:04.530Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    
