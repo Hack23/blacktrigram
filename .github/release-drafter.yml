@@ -78,19 +78,6 @@ categories:
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&'
 
-exclude-labels:
-  - "skip-changelog"
-  - "duplicate"
-  - "invalid"
-  - "wontfix"
-
-include-paths:
-  - "src"
-  - "public"
-  - "docs"
-  - ".github"
-  - ".devcontainer"
-
 template: |
   # Highlights
   $CHANGES
@@ -158,9 +145,6 @@ autolabeler:
     title:
       - '/^fix(\([^)]+\))?:/i'
       - '/^bug(\([^)]+\))?:/i'
-    branch:
-      - '/^fix\/.+/'
-      - '/^bugfix\/.+/'
   
   - label: "fix"
     title:
@@ -171,9 +155,6 @@ autolabeler:
     title:
       - '/^docs(\([^)]+\))?:/i'
       - '/^doc(\([^)]+\))?:/i'
-    files:
-      - '**/*.md'
-      - 'docs/**/*'
   
   # UI/UX
   - label: "ui"
@@ -204,9 +185,6 @@ autolabeler:
       - 'package-lock.json'
       - 'yarn.lock'
       - 'pnpm-lock.yaml'
-    branch:
-      - '/^dependabot\/.+/'
-      - '/^renovate\/.+/'
   
   # Security
   - label: "security"
