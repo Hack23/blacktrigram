@@ -609,15 +609,15 @@ Critical/Vital Impact (급소 치명타):
 
 #### Archetype-Specific Audio Design
 
-##### 🏯 무사 (Musa) - Traditional Warrior
+##### 🏯 암흑작전부대 (Amheuk Jakjeon Budae) - Dark Operations Unit
 
 ```
-Audio Signature: 군사적 절도 (Military Precision)
-- Impact Style: Clean, powerful, honorable
-- Frequency: Mid-range dominance (300-800Hz)
-- Effects: Military drum backing, disciplined strikes
-- Reverb: Formal dojang acoustics
-- Special: Honor-bound technique sounds with traditional backing
+Audio Signature: 어둠 속의 칼날 (Blade in the Darkness)
+- Impact Style: Silent, surgical, covert tactical
+- Frequency: Low-frequency stealth emphasis (60-300Hz), suppressed mid-range
+- Effects: Night-vision activation hum, tactical gear clicks, suppressed weapon sounds
+- Reverb: Minimal signature for covert operations, tactical environment acoustics
+- Special: Midnight infiltration sounds, surgical strike precision with stealth tech backing
 ```
 
 ##### 🥷 암살자 (Amsalja) - Shadow Assassin
