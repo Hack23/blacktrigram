@@ -28,6 +28,48 @@ GitHub Copilot agents are specialized AI assistants with focused expertise in sp
 
 ---
 
+### ⚛️ [Frontend Specialist](./frontend-specialist.md)
+**Specialization**: React 19 + Strict TypeScript
+
+**Use for:**
+- React 19 features and patterns
+- Strict TypeScript configuration
+- Component architecture design
+- React Testing Library tests
+- State management patterns
+- Type-safe development
+
+**Key Responsibilities:**
+- React 19 best practices
+- Strict TypeScript enforcement
+- Component composition patterns
+- React Testing Library integration
+- Performance optimization
+- Type safety validation
+
+---
+
+### 🎮 [Game Developer](./game-developer.md)
+**Specialization**: PixiJS 8.x + Game Systems
+
+**Use for:**
+- PixiJS 8.x integration
+- Game loop implementation
+- Audio system integration
+- Performance optimization
+- Collision detection
+- Rendering optimization
+
+**Key Responsibilities:**
+- PixiJS v8 best practices
+- Game loop patterns
+- Audio management with Howler.js
+- Texture and resource management
+- Object pooling
+- 60fps optimization
+
+---
+
 ### 🧪 [Testing Agent](./testing-agent.md)
 **Specialization**: Vitest & Cypress Testing
 
@@ -48,6 +90,27 @@ GitHub Copilot agents are specialized AI assistants with focused expertise in sp
 
 ---
 
+### 🔬 [Test Engineer](./test-engineer.md)
+**Specialization**: Vitest + Cypress + CI Integration
+
+**Use for:**
+- Comprehensive test strategies
+- Coverage enforcement
+- CI/CD test integration
+- Test parallelization
+- Performance testing
+- Accessibility testing
+
+**Key Responsibilities:**
+- Test suite organization
+- Coverage threshold enforcement
+- GitHub Actions integration
+- Visual regression testing
+- Test metrics and reporting
+- Mutation testing
+
+---
+
 ### 📚 [Documentation Agent](./documentation-agent.md)
 **Specialization**: Technical & Game Documentation
 
@@ -65,6 +128,27 @@ GitHub Copilot agents are specialized AI assistants with focused expertise in sp
 - Korean terminology documentation
 - Component usage documentation
 - Architecture documentation
+
+---
+
+### 📝 [Documentation Writer](./documentation-writer.md)
+**Specialization**: Technical Docs + Security Policies
+
+**Use for:**
+- TSDoc/JSDoc code documentation
+- User guides and tutorials
+- Security policy documentation
+- API reference documentation
+- Korean cultural context
+- Bilingual content creation
+
+**Key Responsibilities:**
+- Comprehensive code documentation
+- User guide creation
+- Security policy writing (SECURITY.md)
+- API reference generation
+- Korean martial arts explanations
+- Bilingual technical writing
 
 ---
 
@@ -107,6 +191,27 @@ GitHub Copilot agents are specialized AI assistants with focused expertise in sp
 - Memory management
 - Bundle analysis
 - Load time optimization
+
+---
+
+### 🛡️ [Security Specialist](./security-specialist.md)
+**Specialization**: Supply Chain + Compliance
+
+**Use for:**
+- Supply chain security
+- OSSF Scorecard compliance
+- SBOM generation
+- License compliance
+- Vulnerability management
+- Security automation
+
+**Key Responsibilities:**
+- Dependency security scanning
+- OSSF Scorecard optimization
+- Software Bill of Materials (SBOM)
+- License compatibility checking
+- Automated security workflows
+- Security policy enforcement
 
 ## How to Use These Agents
 
