@@ -105,7 +105,7 @@ Master combat through 5 distinct fighting philosophies:
 
 | Archetype |                           Name                            |        Combat Philosophy        |                   Special Focus                   |
 | :-------: | :-------------------------------------------------------: | :-----------------------------: | :-----------------------------------------------: |
-|    🏯     |         **무사 (Musa)**<br/>_Traditional Warrior_         |     Honor through strength      |      Military discipline, overwhelming force      |
+|    🏯     |         **암흑작전부대 (Amheuk Jakjeon Budae)**<br/>_Dark Operations Unit_         |     Blade in the darkness      |      Midnight infiltration, surgical strikes, black-site extraction      |
 |    🥷     |        **암살자 (Amsalja)**<br/>_Shadow Assassin_         | Efficiency through invisibility |       Stealth approaches, instant takedowns       |
 |    💻     |           **해커 (Hacker)**<br/>_Cyber Warrior_           |      Information as power       | Environmental manipulation, tech-assisted strikes |
 |    🕵️     | **정보요원 (Jeongbo Yowon)**<br/>_Intelligence Operative_ |  Knowledge through observation  |    Psychological manipulation, precise timing     |
@@ -229,7 +229,7 @@ Built for **combat realism** and **authentic simulation**:
 
 ### 🎭 원형 특화 (Archetype Mastery)
 
-- **🏯 무사도 (Warrior's Way)** – Traditional warrior discipline training
+- **🏯 암흑작전 (Dark Operations)** – Covert tactical operations and midnight infiltration training
 - **🥷 암영술 (Shadow Arts)** – Stealth and assassination techniques
 - **💻 사이버전 (Cyber Warfare)** – Tech-enhanced combat methods
 - **🕵️ 정보전 (Intelligence Warfare)** – Psychological and strategic combat
@@ -423,7 +423,7 @@ Each technique focuses on:
 - **🎓 급소대가 (Vital Point Master)** – Master all 70 vital-point targets
 - **🩸 전투전문가 (Combat Expert)** – Execute optimal combat techniques
 - **⚫ 고수 (Advanced Practitioner)** – Complete advanced technique training
-- **🔪 완벽한 무사 (Perfect Warrior)** – Achieve flawless combat records
+- **🔪 완벽한 작전원 (Perfect Operative)** – Achieve flawless tactical combat records
 
 ### 🥋 Martial Proficiency
 
@@ -434,7 +434,7 @@ Each technique focuses on:
 
 ### 🎭 Archetype Mastery
 
-- **🏯 무사완성 (Warrior Perfection)** – Master traditional warrior discipline
+- **🏯 암흑작전완성 (Dark Ops Perfection)** – Master covert tactical operations
 - **🥷 그림자대사 (Shadow Master)** – Perfect stealth & assassination arts
 - **💻 사이버무사 (Cyber Warrior)** – Tech-enhanced combat mastery
 - **🕵️ 정보대가 (Intelligence Master)** – Psychological warfare expertise
