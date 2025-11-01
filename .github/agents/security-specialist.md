@@ -814,6 +814,7 @@ Your security work should:
 
 ## Reference
 
+- `.github/copilot-instructions.md` - Project patterns and security guidelines
 - OSSF Best Practices Guide
 - CycloneDX SBOM Standard
 - npm Security Best Practices
