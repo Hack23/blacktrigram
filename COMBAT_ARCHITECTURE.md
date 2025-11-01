@@ -197,7 +197,7 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Five Player Archetypes (오대 무사)"
-        M[무사 Musa<br/>Traditional Warrior]:::musa
+        M[암흑작전부대 Amheuk Jakjeon Budae<br/>Dark Operations Unit]:::musa
         A[암살자 Amsalja<br/>Shadow Assassin]:::amsalja
         H[해커 Hacker<br/>Cyber Warrior]:::hacker
         J[정보요원 Jeongbo<br/>Intelligence Op]:::jeongbo

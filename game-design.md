@@ -78,31 +78,32 @@ COMBAT STATES:
 
 ### Player Archetypes
 
-#### 1. 무사 (Musa) - Traditional Warrior
+#### 1. 암흑작전부대 (Amheuk Jakjeon Budae) - Dark Operations Unit
 
-**Background**: Military special forces with traditional martial arts training  
-**Philosophy**: Honor through strength, disciplined combat  
-**Combat Style**: Direct confrontation, overwhelming force  
-**Preferred Trigrams**: ☰ Heaven, ☳ Thunder  
-**Equipment**: Tactical gear with traditional elements
+**Background**: Clandestine special forces task force operating under cover of darkness  
+**Motto**: 어둠 속의 칼날 (Eodum Sok-ui Kalnal) - Blade in the darkness  
+**Philosophy**: Operating under cover of darkness, blending cutting-edge technology with traditional fieldcraft  
+**Combat Style**: Midnight infiltration, surgical strikes, black-site extraction  
+**Preferred Trigrams**: ☰ Heaven (Geon), ☶ Mountain (Gan)  
+**Equipment**: Advanced tactical stealth gear, night-vision systems, suppressed weapons, covert operation technology
 
 **Combat Specialization**:
 
-- **관절기법 (Joint Techniques)** - Traditional joint manipulation and control
-- **급소타격 (Vital Point Strikes)** - Military-taught pressure point targeting
-- **제압술 (Submission Techniques)** - Honor-based control methods
+- **은밀침투 (Eunmil Chimtu)** - Stealth infiltration and covert positioning
+- **정밀타격 (Jeongmil Tagyeok)** - Surgical strike precision targeting
+- **암흑작전 (Amheuk Jakjeon)** - Black-site operation techniques
 
 **Special Abilities**:
 
-- **군인정신 (Gunin Jeongsin)** - Military discipline for increased focus
-- **돌격명령 (Dolgyeok Myeongryeong)** - Assault command for team coordination
-- **전투경험 (Jeontu Gyeongheom)** - Combat experience for damage resistance
+- **심야침투 (Simya Chimtu)** - Midnight Infiltration for enhanced stealth operations
+- **수술적타격 (Susuljjeok Tagyeok)** - Surgical Strike for precise vital point damage
+- **암흑추출 (Amheuk Chuchul)** - Black-Site Extraction for tactical positioning
 
 **Signature Techniques**:
 
-- **관절꺾기 (Joint Breaking)** - Honorable arm/wrist control for incapacitation
-- **경동맥압박 (Carotid Compression)** - Traditional blood flow restriction
-- **척추타격 (Spinal Strikes)** - Direct force spine-targeting attacks
+- **은밀제압 (Eunmil Jeap)** - Silent takedown with skeletal damage focus
+- **야간작전타격 (Yagan Jakjeon Tagyeok)** - Night operation strike for enhanced effectiveness
+- **전술적골절 (Jeonsuljeok Goljeol)** - Tactical bone fracture techniques
 
 #### 2. 암살자 (Amsalja) - Shadow Assassin
 

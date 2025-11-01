@@ -56,18 +56,18 @@ mindmap
 ```mermaid
 mindmap
   root((Fighter Archetypes))
-    무사 Musa
-      Traditional Warrior
-        Military Background
-        Honor Code
-        Direct Confrontation
+    암흑작전부대 Amheuk Jakjeon Budae
+      Dark Operations Unit
+        Clandestine Operations
+        Midnight Infiltration
+        Surgical Strikes
       Preferred Trigrams
-        건 Heaven
-        진 Thunder
+        건 Heaven (Geon)
+        간 Mountain (Gan)
       Techniques
-        관절기법 Joint Control
-        급소타격 Vital Strikes
-        제압술 Submission
+        은밀침투 Stealth Infiltration
+        정밀타격 Surgical Strike
+        암흑작전 Black-Site Ops
     암살자 Amsalja
       Shadow Assassin
         Covert Operations

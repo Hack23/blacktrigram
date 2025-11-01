@@ -712,10 +712,10 @@ mindmap
 mindmap
   root((🥋 Black Trigram Core))
     id1[🎮 Player Archetypes]
-      id1.1[무사 Musa - Traditional Warrior]
-        id1.1.1[Honor-bound combat]
-        id1.1.2[Balanced techniques]
-        id1.1.3[Strong fundamentals]
+      id1.1[암흑작전부대 Amheuk Jakjeon Budae - Dark Operations Unit]
+        id1.1.1[Midnight infiltration]
+        id1.1.2[Surgical strike precision]
+        id1.1.3[Black-site operations]
       id1.2[암살자 Amsalja - Shadow Assassin]
         id1.2.1[Precision strikes]
         id1.2.2[Stealth mechanics]
