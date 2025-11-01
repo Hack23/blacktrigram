@@ -647,15 +647,16 @@ export const TRIGRAM_TECHNIQUE_PROPERTIES = {
 // Korean archetype combat specializations (한국 무사 유형별 전투 특화)
 export const ARCHETYPE_TECHNIQUE_BONUSES = {
   musa: {
-    korean: "무사",
-    english: "Traditional Warrior",
-    philosophy: "Honor through strength, disciplined combat",
-    combatStyle: "Direct confrontation, overwhelming force",
+    korean: "암흑작전부대",
+    romanized: "Amheuk Jakjeon Budae",
+    english: "Dark Operations Unit",
+    philosophy: "Blade in the darkness - precision through covert operations",
+    combatStyle: "Midnight infiltration (심야 침투, Simya Chimtu), surgical strikes, tactical extraction",
     preferredTrigrams: ["geon", "jin"],
     techniques: {
-      관절기법: "Joint manipulation and control",
-      급소타격: "Military-taught pressure point targeting",
-      제압술: "Honor-based control methods",
+      은밀침투: "Stealth infiltration (Eunmil Chimtu)",
+      정밀타격: "Surgical strike precision (Jeongmil Tagyeok)",
+      암흑작전: "Black-site operations (Amheuk Jakjeon)",
     },
     bonuses: {
       damageResistance: 1.2,

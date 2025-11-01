@@ -337,7 +337,7 @@ export class CombatSystem implements CombatSystemInterface {
     switch (archetype) {
       case "amsalja": // Shadow Assassin - better at nerve strikes
         return vitalPoint.category === "neurological" ? 1.3 : baseModifier;
-      case "musa": // Traditional Warrior - better at bone strikes
+      case "musa": // Dark Operations Unit - better at surgical strikes and skeletal damage
         return vitalPoint.category === "skeletal" ? 1.2 : baseModifier;
       case "hacker": // Cyber Warrior - better at nerve disruption
         return vitalPoint.category === "neurological" ? 1.1 : baseModifier;

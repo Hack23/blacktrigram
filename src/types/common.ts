@@ -210,7 +210,7 @@ export enum GamePhase {
 
 // Player archetypes (Korean martial arts specialists)
 export enum PlayerArchetype {
-  MUSA = "musa", // 무사 - Traditional Warrior
+  MUSA = "musa", // 암흑작전부대 (Amheuk Jakjeon Budae) - Dark Operations Unit
   AMSALJA = "amsalja", // 암살자 - Shadow Assassin
   HACKER = "hacker", // 해커 - Cyber Warrior
   JEONGBO_YOWON = "jeongbo_yowon", // 정보요원 - Intelligence Operative

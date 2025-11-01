@@ -547,7 +547,7 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
           />
 
           <pixiText
-            text="무사 유형 철학 (Warrior Archetype Philosophy)"
+            text="암흑작전부대 철학 (Dark Operations Unit Philosophy)"
             style={{
               fontSize: isMobile ? 18 : 22,
               fill: KOREAN_COLORS.ACCENT_GOLD,

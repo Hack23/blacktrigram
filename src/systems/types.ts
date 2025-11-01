@@ -489,10 +489,11 @@ export const PLAYER_ARCHETYPES_DATA: Record<
 > = {
   [PlayerArchetype.MUSA]: {
     id: "musa",
-    name: { korean: "무사 (Musa)", english: "Traditional Warrior" },
+    name: { korean: "암흑작전부대 (Amheuk Jakjeon Budae)", english: "Dark Operations Unit", romanized: "Amheuk Jakjeon Budae" },
     description: {
-      korean: "전통 무사의 길",
-      english: "Path of the traditional warrior",
+      korean: "어둠 속의 칼날",
+      english: "Blade in the darkness - clandestine task force specializing in midnight infiltration, surgical strikes, and black-site extractions",
+      romanized: "Eodum Sok-ui Kalnal",
     },
     baseHealth: 120,
     baseKi: 100,
@@ -513,10 +514,10 @@ export const PLAYER_ARCHETYPES_DATA: Record<
       technique: 80,
     },
     favoredStances: [TrigramStance.GEON, TrigramStance.GAN],
-    specialAbilities: ["Honor Strike", "Defensive Mastery"],
+    specialAbilities: ["Midnight Infiltration (심야 침투, Simya Chimtu)", "Surgical Strike", "Black-Site Extraction"],
     philosophy: {
-      korean: "명예와 정의의 길",
-      english: "The way of honor and justice",
+      korean: "어둠 속에서 작전을 수행하며 첨단 기술과 전통 전술을 결합한다",
+      english: "Operating under cover of darkness, blending cutting-edge technology with traditional fieldcraft",
     },
   },
 

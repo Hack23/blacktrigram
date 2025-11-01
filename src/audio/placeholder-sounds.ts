@@ -124,12 +124,12 @@ export const PLACEHOLDER_MUSIC_TRACKS: readonly MusicTrack[] = [
 export const ARCHETYPE_MUSIC_THEMES: readonly MusicTrack[] = [
   {
     id: "musa_theme",
-    name: "Traditional Warrior",
+    name: "Dark Operations Unit",
     type: "music",
     url: "/assets/audio/music/archetype_themes/musa_warrior.mp3",
     formats: ["audio/mp3"],
     loaded: false,
-    title: { korean: "무사의 테마", english: "Warrior's Theme" },
+    title: { korean: "암흑작전부대의 테마", english: "Dark Operations Theme", romanized: "Amheuk Jakjeon Budae-ui Tema" },
     volume: 0.8,
     loop: true,
     category: AudioCategory.MUSIC,
