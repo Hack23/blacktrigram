@@ -518,6 +518,7 @@ export const PLAYER_ARCHETYPES_DATA: Record<
     philosophy: {
       korean: "어둠 속에서 작전을 수행하며 첨단 기술과 전통 전술을 결합한다",
       english: "Operating under cover of darkness, blending cutting-edge technology with traditional fieldcraft",
+      romanized: "Eodum sok-eseo jakjeon-eul suhaenghamyeo cheomdan gisulgwa jeongtong jeonsul-eul gyeolhabhanda",
     },
   },
 
