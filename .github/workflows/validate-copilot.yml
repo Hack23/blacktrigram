@@ -1,0 +1,43 @@
+name: Validate Copilot Setup
+
+on:
+  pull_request:
+    paths:
+      - '.github/copilot-instructions.md'
+      - '.github/agents/**'
+      - 'scripts/validate-copilot-setup.sh'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/copilot-instructions.md'
+      - '.github/agents/**'
+
+jobs:
+  validate:
+    name: Validate GitHub Copilot Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Make validation script executable
+        run: chmod +x scripts/validate-copilot-setup.sh
+      
+      - name: Run validation
+        run: ./scripts/validate-copilot-setup.sh
+      
+      - name: Check for markdown lint issues
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            .github/copilot-instructions.md
+            .github/agents/*.md
+        continue-on-error: true
+      
+      - name: Validation Summary
+        if: success()
+        run: |
+          echo "✅ Copilot setup validation passed!"
+          echo "All custom instructions and agent files are valid."
