@@ -386,7 +386,9 @@ Game/frontend will be open source with commercial backend supporting multiplayer
 🔒 **CI/CD & Security Features**
 
 - [🔒 development.md](https://github.com/Hack23/blacktrigram/blob/main/development.md)
-  _The development implements comprehensive security measures:._
+  _The development implements comprehensive security measures._
+- [🤖 Copilot MCP Setup](.github/COPILOT_MCP_SETUP.md)
+  _Model Context Protocol servers for enhanced Copilot capabilities._
 - **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
 - **📦 Dependency Protection** - Automated dependency vulnerability checks
