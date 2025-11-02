@@ -35,6 +35,7 @@ This template includes a fully configured development environment:
 - **💬 Copilot Chat** - In-editor AI assistance for debugging and explanations
 - **🔧 VS Code Extensions** - Pre-configured extensions for game development
 - **🔒 Secure Container** - Hardened development container with security features
+- **🔌 MCP Servers** - Model Context Protocol servers for enhanced Copilot capabilities ([learn more](.github/COPILOT_MCP_SETUP.md))
 
 ### 🚀 Codespaces Setup
 
@@ -43,8 +44,11 @@ This repository is fully configured for GitHub Codespaces, providing:
 - **One-click setup** - Start coding immediately with zero configuration
 - **Pre-installed dependencies** - All tools and libraries ready to use
 - **Configured test environment** - Cypress and Vitest ready to run
-- **GitHub Copilot integration** - AI-powered code assistance
+- **GitHub Copilot integration** - AI-powered code assistance with MCP servers
 - **Optimized performance** - Container configured for game development
+- **Enhanced AI capabilities** - MCP servers for GitHub, Playwright, filesystem, and sequential thinking
+
+> 📖 **Learn more**: See [Copilot MCP Setup Guide](.github/COPILOT_MCP_SETUP.md) for detailed information about MCP server configuration and usage.
 
 ```mermaid
 graph LR
