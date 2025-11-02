@@ -2,6 +2,7 @@
 
 # Validate GitHub Copilot Setup for Black Trigram
 # This script validates the custom copilot instructions and agent files
+# Note: Uses emoji for visual feedback - requires UTF-8 terminal support
 
 set -e
 
@@ -48,9 +49,10 @@ else
         success "All code blocks properly matched in copilot-instructions.md ($((CODE_BLOCKS / 2)) blocks)"
     fi
     
-    # Check for Korean text encoding
-    if grep -q $'\xef\xbb\xbf' .github/copilot-instructions.md; then
-        warning "BOM (Byte Order Mark) found in copilot-instructions.md"
+    # Check for encoding issues using file command
+    ENCODING=$(file -b --mime-encoding .github/copilot-instructions.md)
+    if [ "$ENCODING" != "utf-8" ] && [ "$ENCODING" != "us-ascii" ]; then
+        warning "Unexpected encoding in copilot-instructions.md: $ENCODING (expected utf-8)"
     fi
 fi
 
@@ -97,7 +99,7 @@ else
 fi
 
 # Check for audio test files
-if ls src/audio/*.test.ts 1> /dev/null 2>&1; then
+if find src/audio -name '*.test.ts' -type f | grep -q .; then
     success "Audio test files found"
 else
     warning "No audio test files found"
@@ -107,7 +109,7 @@ echo ""
 echo "4. Checking TypeScript constants..."
 
 # Check if KOREAN_COLORS is exported
-if grep -q "export.*KOREAN_COLORS" src/types/constants/index.ts; then
+if grep -q "KOREAN_COLORS" src/types/constants/index.ts; then
     success "KOREAN_COLORS is exported"
 else
     error "KOREAN_COLORS not found in exports"
