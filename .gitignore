@@ -5696,3 +5696,4 @@ cypress/videos/game-flow.cy.ts.mp4
 cypress/videos/game-flow.cy.ts.mp4.meta
 cypress/videos
 cypress/screenshots/**/*
+*.tsbuildinfo

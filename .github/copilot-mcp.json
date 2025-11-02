@@ -23,7 +23,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/home/runner/work/blacktrigram/blacktrigram"
+        "${GITHUB_WORKSPACE:-/home/runner/work/blacktrigram/blacktrigram}"
       ]
     },
     "sequential-thinking": {
