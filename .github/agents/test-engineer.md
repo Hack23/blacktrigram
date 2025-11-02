@@ -37,7 +37,7 @@ describe('CombatSystem', () => {
     it('should load combat data on startup', async () => {
       const system = new CombatSystem();
       await system.initialize();
-      
+
       expect(system.isReady).toBe(true);
       expect(system.stances).toHaveLength(8);
     });
@@ -54,7 +54,7 @@ describe('CombatSystem', () => {
 
     it('should calculate damage based on stance', () => {
       const damage = calculateDamage(attacker, defender, VitalPoint.BODY);
-      
+
       expect(damage).toBeGreaterThan(0);
       expect(damage).toBeLessThanOrEqual(attacker.attack * 2);
     });
@@ -62,17 +62,17 @@ describe('CombatSystem', () => {
     it('should apply vital point multipliers', () => {
       const bodyDamage = calculateDamage(attacker, defender, VitalPoint.BODY);
       const headDamage = calculateDamage(attacker, defender, VitalPoint.HEAD);
-      
+
       expect(headDamage).toBeGreaterThan(bodyDamage);
     });
 
     it('should respect defense values', () => {
       const weakDefender = createTestPlayer({ defense: 10, health: 100 });
       const strongDefender = createTestPlayer({ defense: 50, health: 100 });
-      
+
       const damageToWeak = calculateDamage(attacker, weakDefender, VitalPoint.BODY);
       const damageToStrong = calculateDamage(attacker, strongDefender, VitalPoint.BODY);
-      
+
       expect(damageToWeak).toBeGreaterThan(damageToStrong);
     });
   });
@@ -80,18 +80,18 @@ describe('CombatSystem', () => {
   describe('stance transitions', () => {
     it('should change stance with valid input', () => {
       const system = new CombatSystem();
-      
+
       system.changeStance(TrigramStance.TAE);
-      
+
       expect(system.currentStance).toBe(TrigramStance.TAE);
     });
 
     it('should trigger stance change callback', () => {
       const onStanceChange = vi.fn();
       const system = new CombatSystem({ onStanceChange });
-      
+
       system.changeStance(TrigramStance.LI);
-      
+
       expect(onStanceChange).toHaveBeenCalledWith(TrigramStance.LI);
       expect(onStanceChange).toHaveBeenCalledTimes(1);
     });
@@ -99,7 +99,7 @@ describe('CombatSystem', () => {
     it('should validate stance transitions', () => {
       const system = new CombatSystem();
       const invalidStance = 999 as TrigramStance;
-      
+
       expect(() => system.changeStance(invalidStance)).toThrow();
     });
   });
@@ -166,7 +166,7 @@ describe('TrigramSelector snapshots', () => {
         currentStance={TrigramStance.GEON}
       />
     );
-    
+
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -179,7 +179,7 @@ describe('TrigramSelector snapshots', () => {
         currentStance={TrigramStance.GEON}
       />
     );
-    
+
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -214,7 +214,7 @@ describe('Combat Flow', () => {
 
     // Execute attack
     cy.get('[data-testid="attack-button"]').click();
-    
+
     // Verify combat feedback
     cy.get('[data-testid="combat-log"]')
       .should('be.visible')
@@ -234,7 +234,7 @@ describe('Combat Flow', () => {
     // Simulate taking damage until defeat
     cy.get('[data-testid="player-health"]').then($health => {
       const maxHealth = parseInt($health.attr('data-max-health') || '100');
-      
+
       // Take enough damage to be defeated
       for (let i = 0; i < maxHealth / 10; i++) {
         cy.get('[data-testid="enemy-attack-trigger"]').click();
@@ -278,10 +278,10 @@ describe('Visual Regression', () => {
   it('should match combat screen appearance', () => {
     cy.visit('/combat');
     cy.get('[data-testid="combat-screen"]').should('be.visible');
-    
+
     // Wait for all assets to load
     cy.wait(1000);
-    
+
     // Take screenshot
     cy.screenshot('combat-screen-desktop', {
       capture: 'viewport',
@@ -292,7 +292,7 @@ describe('Visual Regression', () => {
   it('should match Korean text rendering', () => {
     cy.visit('/');
     cy.get('[data-testid="title"]').should('be.visible');
-    
+
     // Verify Korean characters render correctly
     cy.get('[data-testid="title"]')
       .should('contain', '흑괘')
@@ -316,14 +316,14 @@ describe('Performance', () => {
         if (lastTime !== 0) {
           const delta = now - lastTime;
           const fps = 1000 / delta;
-          
+
           if (fps < 50) {
             cy.log(`Low FPS detected: ${fps.toFixed(2)}`);
           }
-          
+
           expect(fps).to.be.greaterThan(30); // Minimum threshold
         }
-        
+
         lastTime = now;
         frameCount++;
 
@@ -340,7 +340,7 @@ describe('Performance', () => {
 
   it('should load within acceptable time', () => {
     const startTime = Date.now();
-    
+
     cy.visit('/');
     cy.get('[data-testid="game-ready"]', { timeout: 5000 })
       .should('be.visible');
@@ -359,11 +359,11 @@ describe('Performance', () => {
 describe('Accessibility', () => {
   it('should support keyboard navigation', () => {
     cy.visit('/');
-    
+
     // Tab through interactive elements
     cy.get('body').tab();
     cy.focused().should('have.attr', 'data-testid', 'start-button');
-    
+
     cy.focused().tab();
     cy.focused().should('have.attr', 'data-testid', 'settings-button');
 
@@ -464,31 +464,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run tests with coverage
         run: npm run test:coverage
-        
+
       - name: Check coverage thresholds
         run: |
           if [ $(grep -c "ERROR" coverage/coverage-summary.json) -gt 0 ]; then
             echo "Coverage thresholds not met"
             exit 1
           fi
-          
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
           flags: unittests
-          
+
       - name: Comment coverage on PR
         uses: romeovs/lcov-reporter-action@v0.3.1
         with:
@@ -598,7 +598,7 @@ export default defineConfig({
     threads: true,
     maxThreads: 4,
     minThreads: 1,
-    
+
     // Shard tests across multiple CI jobs
     shard: process.env.CI ? {
       current: parseInt(process.env.SHARD_INDEX || '1'),

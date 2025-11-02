@@ -260,7 +260,7 @@ function CombatScene() {
 
 **State Machine for Game States:**
 ```typescript
-type GameState = 
+type GameState =
   | { state: 'menu' }
   | { state: 'combat'; combatData: CombatData }
   | { state: 'paused'; previousState: GameState }
@@ -484,10 +484,10 @@ class SpatialAudioManager extends AudioManager {
     const dx = position.x - this.listenerPosition.x;
     const dy = position.y - this.listenerPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    
+
     // Inverse distance attenuation
     const volume = Math.max(0, 1 - (distance / maxDistance));
-    
+
     // Calculate stereo pan (-1 left, 1 right)
     const pan = Math.max(-1, Math.min(1, dx / maxDistance));
 
@@ -540,7 +540,7 @@ class TextureManager {
 
   async loadTextureAtlas(atlasPath: string): Promise<void> {
     const atlas = await Assets.load(atlasPath);
-    
+
     // Cache all textures from atlas
     Object.entries(atlas.textures).forEach(([name, texture]) => {
       this.textureCache.set(name, texture as Texture);
@@ -584,18 +584,18 @@ class ObjectPool<T> {
 
   acquire(): T {
     let obj = this.available.pop();
-    
+
     if (!obj) {
       obj = this.factory();
     }
-    
+
     this.inUse.add(obj);
     return obj;
   }
 
   release(obj: T): void {
     if (!this.inUse.has(obj)) return;
-    
+
     this.reset(obj);
     this.inUse.delete(obj);
     this.available.push(obj);
@@ -628,7 +628,7 @@ function createParticleEffect(x: number, y: number) {
   particle.x = x;
   particle.y = y;
   particle.visible = true;
-  
+
   // Animate and release after animation
   setTimeout(() => {
     particlePool.release(particle);
@@ -642,7 +642,7 @@ import { ParticleContainer } from '@pixi/react';
 
 // Use ParticleContainer for many similar sprites
 function ParticleSystem() {
-  const particles = useMemo(() => 
+  const particles = useMemo(() =>
     Array.from({ length: 1000 }, (_, i) => ({
       id: i,
       x: Math.random() * 1200,
