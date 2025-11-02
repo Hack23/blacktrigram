@@ -73,7 +73,7 @@ describe('KoreanButton', () => {
     const button = new KoreanButton({
       text: { korean: '공격', english: 'Attack' }
     });
-    
+
     expect(button.text).toContain('공격');
     expect(button.text).toContain('Attack');
   });
@@ -97,7 +97,7 @@ const style = { fontSize: 16, fill: color };
 
 // ✅ Good: Memoized style object
 const style = useMemo(
-  () => ({ fontSize: 16, fill: color }), 
+  () => ({ fontSize: 16, fill: color }),
   [color]
 );
 
@@ -106,7 +106,7 @@ const style = useMemo(
 
 // ✅ Good: Memoized callback
 const handleButtonClick = useCallback(
-  () => handleClick(id), 
+  () => handleClick(id),
   [id, handleClick]
 );
 ```
@@ -137,7 +137,7 @@ const handleButtonClick = useCallback(
 <pixiContainer data-testid="combat-hud">
 
 // ✅ Good: Descriptive names
-const attackButton = new KoreanButton({ 
+const attackButton = new KoreanButton({
   text: { korean: '공격', english: 'Attack' }
 });
 
@@ -207,7 +207,7 @@ handleKeyPress(event: KeyboardEvent) {
 
 ✅ **Good Feedback:**
 ```markdown
-**Performance Concern**: The `calculateDamage` function is called on every render. 
+**Performance Concern**: The `calculateDamage` function is called on every render.
 Consider memoizing with `useMemo`:
 
 \`\`\`typescript
@@ -227,11 +227,11 @@ This is slow. Fix it.
 
 ✅ **Good Feedback:**
 ```markdown
-**Korean Theming**: The component should use bilingual text. 
+**Korean Theming**: The component should use bilingual text.
 Update to follow the pattern:
 
 \`\`\`typescript
-<pixiText 
+<pixiText
   text={\`\${korean} | \${english}\`}
   style={{ fontFamily: FONT_FAMILY.KOREAN }}
 />

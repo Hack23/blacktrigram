@@ -349,7 +349,7 @@ describe('DataLoader', () => {
 
   it('should handle errors gracefully', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
-    
+
     render(<DataLoader url="/error" />);
 
     await waitFor(() => {

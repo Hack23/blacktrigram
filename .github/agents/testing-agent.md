@@ -50,10 +50,10 @@ describe('ComponentName', () => {
   it('should render with default props', () => {
     // Arrange
     const props = { width: 1200, height: 800 };
-    
+
     // Act
     const component = new Component(props);
-    
+
     // Assert
     expect(component).toBeDefined();
   });
@@ -140,7 +140,7 @@ describe('Combat System', () => {
     const vitalPoint = VitalPoint.HEAD;
 
     const damage = calculateDamage(attacker, defender, vitalPoint);
-    
+
     expect(damage).toBeGreaterThan(0);
     expect(damage).toBeLessThanOrEqual(attacker.attack * 2);
   });
@@ -163,23 +163,23 @@ describe('Combat System', () => {
 ```typescript
 describe('Responsive Component', () => {
   it('should use mobile layout on small screens', () => {
-    const component = new Component({ 
-      width: 400, 
+    const component = new Component({
+      width: 400,
       height: 600,
-      isMobile: true 
+      isMobile: true
     });
-    
+
     expect(component.layoutConstants.padding).toBe(10);
     expect(component.layoutConstants.fontSize).toBe(12);
   });
 
   it('should use desktop layout on large screens', () => {
-    const component = new Component({ 
-      width: 1920, 
+    const component = new Component({
+      width: 1920,
       height: 1080,
-      isMobile: false 
+      isMobile: false
     });
-    
+
     expect(component.layoutConstants.padding).toBe(20);
     expect(component.layoutConstants.fontSize).toBe(16);
   });
@@ -200,14 +200,14 @@ describe('Combat Flow', () => {
   it('should allow player to select stance and attack', () => {
     // Select a trigram stance
     cy.get('[data-testid="stance-geon"]').click();
-    
+
     // Verify stance is selected
     cy.get('[data-testid="current-stance"]')
       .should('contain', '건 | Geon');
-    
+
     // Execute attack
     cy.get('[data-testid="attack-button"]').click();
-    
+
     // Verify combat feedback
     cy.get('[data-testid="combat-log"]')
       .should('contain', '천둥벽력');
@@ -275,18 +275,18 @@ import { useCombat } from '../hooks/useCombat';
 describe('useCombat', () => {
   it('should initialize with default state', () => {
     const { result } = renderHook(() => useCombat());
-    
+
     expect(result.current.stance).toBe(TrigramStance.GEON);
     expect(result.current.health).toBe(100);
   });
 
   it('should update stance', () => {
     const { result } = renderHook(() => useCombat());
-    
+
     act(() => {
       result.current.changeStance(TrigramStance.TAE);
     });
-    
+
     expect(result.current.stance).toBe(TrigramStance.TAE);
   });
 });
@@ -298,16 +298,16 @@ describe('useCombat', () => {
 describe('Async Combat Actions', () => {
   it('should load combat data', async () => {
     const data = await loadCombatData();
-    
+
     expect(data).toBeDefined();
     expect(data.stances).toHaveLength(8);
   });
 
   it('should handle loading errors', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
-    
+
     const result = await loadCombatData().catch(e => e);
-    
+
     expect(result).toBeInstanceOf(Error);
   });
 });
@@ -319,12 +319,12 @@ describe('Async Combat Actions', () => {
 describe('Error Handling', () => {
   it('should catch and handle errors gracefully', () => {
     const consoleWarn = vi.spyOn(console, 'warn');
-    
+
     expect(() => {
       // Action that might throw
       component.riskyOperation();
     }).not.toThrow();
-    
+
     expect(consoleWarn).toHaveBeenCalled();
   });
 });

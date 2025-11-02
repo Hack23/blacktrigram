@@ -319,8 +319,8 @@ For questions or issues:
 
 ---
 
-**Project**: Black Trigram (흑괘)  
-**Description**: A realistic 2D precision combat game inspired by Korean martial arts  
+**Project**: Black Trigram (흑괘)
+**Description**: A realistic 2D precision combat game inspired by Korean martial arts
 **Tech Stack**: React, TypeScript, PixiJS, Vite, Vitest, Cypress
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_

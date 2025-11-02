@@ -35,15 +35,15 @@ You help write clear, comprehensive documentation that explains the game's syste
 ```typescript
 /**
  * Calculates combat damage based on attacker stance, defender position, and target vital point.
- * 
+ *
  * Uses the Eight Trigram system to apply stance modifiers and incorporates
  * traditional Korean martial arts principles for realistic damage calculation.
- * 
+ *
  * @param attacker - The attacking player with current stance
  * @param defender - The defending player with health and defense stats
  * @param vitalPoint - The targeted anatomical vital point (급소)
  * @returns Calculated damage value accounting for all modifiers
- * 
+ *
  * @example
  * ```typescript
  * const attacker = createPlayer({ stance: TrigramStance.GEON });
@@ -66,26 +66,26 @@ export function calculateDamage(
 ```typescript
 /**
  * Properties for PixiJS combat UI components with Korean theming.
- * 
+ *
  * All combat components should use these base props for consistency
  * and proper responsive behavior across mobile and desktop platforms.
  */
 export interface CombatComponentProps {
   /** Canvas width in pixels */
   readonly width: number;
-  
+
   /** Canvas height in pixels */
   readonly height: number;
-  
+
   /** Whether rendering on mobile device (screen width < 768px) */
   readonly isMobile?: boolean;
-  
+
   /** Current player combat state including stance and stats */
   readonly playerState: PlayerState;
-  
+
   /** Callback fired when player executes a combat technique */
   readonly onAttack?: (technique: CombatTechnique) => void;
-  
+
   /** Korean-English bilingual text content */
   readonly text?: BilingualText;
 }
@@ -303,8 +303,8 @@ Every major documentation file should have:
 ```markdown
 ## 급소격 (Geupsogyeok) - Vital Point Striking
 
-**Korean**: 급소격  
-**English**: Vital Point Striking  
+**Korean**: 급소격
+**English**: Vital Point Striking
 **Romanization**: Geupsogyeok
 
 The art of targeting anatomical weak points (급소) for maximum effect...

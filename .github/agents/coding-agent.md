@@ -35,11 +35,11 @@ import { extendPixiComponents } from "../../utils/pixiExtensions";
 extend({ Container, LayoutContainer });
 extendPixiComponents();
 
-export const ComponentName: React.FC<ComponentProps> = ({ 
+export const ComponentName: React.FC<ComponentProps> = ({
   width = 1200,
   height = 800,
   isMobile = false,
-  ...props 
+  ...props
 }) => {
   // Implementation with proper typing and layout system
 };
@@ -61,7 +61,7 @@ import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 
 // Use Korean traditional colors (오방색)
 - CARDINAL_EAST: 0x00ff88   // 동방 청색
-- CARDINAL_WEST: 0xffffff   // 서방 백색  
+- CARDINAL_WEST: 0xffffff   // 서방 백색
 - CARDINAL_SOUTH: 0xff4444  // 남방 적색
 - CARDINAL_NORTH: 0x000000  // 북방 흑색
 - CARDINAL_CENTER: 0xffaa00 // 중앙 황색
@@ -102,7 +102,7 @@ const layoutConstants = useMemo(() => ({
 When working with combat mechanics, reference the Eight Trigram System:
 
 - **☰ 건 (Geon)** - Heaven: Direct force techniques
-- **☱ 태 (Tae)** - Lake: Fluid joint manipulation  
+- **☱ 태 (Tae)** - Lake: Fluid joint manipulation
 - **☲ 리 (Li)** - Fire: Precise nerve strikes
 - **☳ 진 (Jin)** - Thunder: Explosive power techniques
 - **☴ 손 (Son)** - Wind: Continuous pressure attacks
@@ -220,7 +220,7 @@ src/
 Your code changes should:
 
 ✅ Follow React + PixiJS + layout integration patterns
-✅ Include proper TypeScript typing with readonly properties  
+✅ Include proper TypeScript typing with readonly properties
 ✅ Apply Korean theming and bilingual support
 ✅ Use layout system for responsive design
 ✅ Include data-testid attributes for testing
