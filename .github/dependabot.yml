@@ -141,3 +141,38 @@ updates:
         update-types:
           - "minor"
           - "patch"
+
+      # Testing utilities
+      testing-utils:
+        patterns:
+          - "jsdom"
+          - "globals"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Audio libraries
+      audio:
+        patterns:
+          - "howler"
+          - "@types/howler"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # AI/ML service SDKs
+      ai-services:
+        patterns:
+          - "openai"
+          - "@elevenlabs/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Build and performance analysis
+      build-analysis:
+        patterns:
+          - "@size-limit/*"
+        update-types:
+          - "minor"
+          - "patch"
