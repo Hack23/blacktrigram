@@ -103,17 +103,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
+
       - name: Verify lock file integrity
         run: |
           npm ci --prefer-offline --no-audit
           git diff --exit-code package-lock.json
-          
+
       - name: Check for lock file conflicts
         run: |
           if grep -r "<<<<<<< HEAD" package-lock.json; then
@@ -151,12 +151,12 @@ async function verifyPackageIntegrity(
     const packagePath = `node_modules/${pkg.name}/package.json`;
     const content = readFileSync(packagePath, 'utf-8');
     const actualHash = createHash('sha512').update(content).digest('hex');
-    
+
     if (actualHash !== pkg.expectedHash) {
       console.error(`⚠️  Package ${pkg.name}@${pkg.version} integrity check failed`);
       return false;
     }
-    
+
     console.log(`✅ Package ${pkg.name}@${pkg.version} verified`);
     return true;
   } catch (error) {
@@ -169,7 +169,7 @@ async function verifyAllPackages(): Promise<void> {
   const results = await Promise.all(
     TRUSTED_PACKAGES.map(pkg => verifyPackageIntegrity(pkg))
   );
-  
+
   if (results.some(r => !r)) {
     throw new Error('Package integrity verification failed');
   }
@@ -336,21 +336,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate SBOM
         run: |
           npm install -g @cyclonedx/cyclonedx-npm
           cyclonedx-npm --output-file sbom.json
           cyclonedx-npm --output-file sbom.xml --output-format xml
-          
+
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
         with:
@@ -358,7 +358,7 @@ jobs:
           path: |
             sbom.json
             sbom.xml
-            
+
       - name: Attach SBOM to release
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
@@ -391,27 +391,27 @@ interface SBOM {
 
 function validateSBOM(sbomPath: string): boolean {
   const sbom: SBOM = JSON.parse(readFileSync(sbomPath, 'utf-8'));
-  
+
   console.log(`Validating SBOM with ${sbom.components.length} components...`);
-  
+
   let valid = true;
-  
+
   // Check each component has required fields
   sbom.components.forEach(component => {
     if (!component.name || !component.version) {
       console.error(`❌ Component missing name or version: ${JSON.stringify(component)}`);
       valid = false;
     }
-    
+
     if (!component.licenses || component.licenses.length === 0) {
       console.warn(`⚠️  Component missing license: ${component.name}@${component.version}`);
     }
-    
+
     if (!component.purl) {
       console.warn(`⚠️  Component missing PURL: ${component.name}@${component.version}`);
     }
   });
-  
+
   return valid;
 }
 
@@ -447,22 +447,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Check licenses
         run: npm run test:licenses
-        
+
       - name: Generate license report
         run: |
           npx license-compliance --direct --format markdown > LICENSES.md
-          
+
       - name: Upload license report
         uses: actions/upload-artifact@v4
         with:
@@ -511,7 +511,7 @@ interface LicenseInfo {
 function generateAttribution(licenses: LicenseInfo[]): string {
   let attribution = '# Third-Party Licenses\n\n';
   attribution += 'This application uses the following open source packages:\n\n';
-  
+
   licenses.forEach(pkg => {
     attribution += `## ${pkg.name} v${pkg.version}\n`;
     attribution += `**License**: ${pkg.license}\n`;
@@ -523,7 +523,7 @@ function generateAttribution(licenses: LicenseInfo[]): string {
     }
     attribution += '\n---\n\n';
   });
-  
+
   return attribution;
 }
 
@@ -562,7 +562,7 @@ jobs:
         with:
           node-version: '20'
       - run: npm audit --audit-level=high
-      
+
   snyk:
     runs-on: ubuntu-latest
     steps:
@@ -572,7 +572,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-          
+
   codeql:
     runs-on: ubuntu-latest
     permissions:
@@ -611,7 +611,7 @@ class VulnerabilityTracker {
     try {
       const { stdout } = await execAsync('npm audit --json');
       const auditResult = JSON.parse(stdout);
-      
+
       this.vulnerabilities = Object.values(auditResult.vulnerabilities)
         .map((vuln: any) => ({
           id: vuln.via[0]?.source?.toString() || 'unknown',
@@ -628,18 +628,18 @@ class VulnerabilityTracker {
   }
 
   getCriticalVulnerabilities(): Vulnerability[] {
-    return this.vulnerabilities.filter(v => 
+    return this.vulnerabilities.filter(v =>
       v.severity === 'critical' || v.severity === 'high'
     );
   }
 
   generateReport(): string {
     const critical = this.getCriticalVulnerabilities();
-    
+
     let report = '# Vulnerability Report\n\n';
     report += `Total vulnerabilities: ${this.vulnerabilities.length}\n`;
     report += `Critical/High: ${critical.length}\n\n`;
-    
+
     if (critical.length > 0) {
       report += '## Critical & High Severity\n\n';
       critical.forEach(vuln => {
@@ -650,7 +650,7 @@ class VulnerabilityTracker {
         report += `- More info: ${vuln.url}\n\n`;
       });
     }
-    
+
     return report;
   }
 }
@@ -666,19 +666,19 @@ function validatePlayerName(name: string): boolean {
   if (name.length < 3 || name.length > 20) {
     return false;
   }
-  
+
   // Check characters (allow Korean, alphanumeric, spaces)
   const validPattern = /^[\u3131-\u3163\uac00-\ud7a3a-zA-Z0-9\s]+$/;
   if (!validPattern.test(name)) {
     return false;
   }
-  
+
   // Check for SQL injection attempts
   const sqlPattern = /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER)\b)/i;
   if (sqlPattern.test(name)) {
     return false;
   }
-  
+
   return true;
 }
 
@@ -686,13 +686,13 @@ function validatePlayerName(name: string): boolean {
 function parsePlayerData(input: string): PlayerState | null {
   try {
     const data = JSON.parse(input);
-    
+
     // Validate structure
     if (!isValidPlayerState(data)) {
       console.warn('Invalid player state structure');
       return null;
     }
-    
+
     // Sanitize values
     return {
       id: sanitizeString(data.id),
@@ -723,11 +723,11 @@ async function makeAuthenticatedRequest(
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     ?.getAttribute('content');
-  
+
   if (!csrfToken) {
     throw new Error('CSRF token not found');
   }
-  
+
   return fetch(url, {
     method: 'POST',
     headers: {

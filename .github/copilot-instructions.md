@@ -449,90 +449,6 @@ When following these guidelines, UI code should:
 - ❌ Missing layout properties for responsive behavior
 - ❌ Performance-heavy UI operations without optimization
 
-````
-
-Here's a working example where `useApplication` **will** be able to access the parent application:
-
-```jsx
-import { Application, useApplication } from "@pixi/react";
-
-const ChildComponent = () => {
-  const { app } = useApplication();
-
-  console.log(app);
-
-  return <container />;
-};
-
-const ParentComponent = () => (
-  <Application>
-    <ChildComponent />
-  </Application>
-);
-````
-
-#### `useExtend`
-
-`useExtend` allows the `extend` API to be used as a React hook. Additionally, the `useExtend` hook is memoised, while the `extend` function is not.
-
-```jsx
-import { Container } from "pixi.js";
-import { useExtend } from "@pixi/react";
-
-const MyComponent = () => {
-  useExtend({ Container });
-
-  return <container />;
-};
-```
-
-#### `useTick`
-
-`useTick` allows a callback to be attached to the [`Ticker`](https://pixijs.download/release/docs/ticker.Ticker.html) on the parent application.
-
-```jsx
-import { useTick } from "@pixi/react";
-
-const MyComponent = () => {
-  useTick(() => console.log("This will be logged on every tick"));
-};
-```
-
-`useTick` optionally takes an options object. This allows control of all [`ticker.add`](https://pixijs.download/release/docs/ticker.Ticker.html#add) options, as well as adding the `isEnabled` option. Setting `isEnabled` to `false` will cause the callback to be disabled until the argument is changed to true again.
-
-```jsx
-import { useState } from 'react'
-import { useTick } from '@pixi/react'
-
-const MyComponent = () => {
-  const [isEnabled, setIsEnabled] = useState(false)
-
-  useTick(() => console.log('This will be logged on every tick as long as `isEnabled` is `true`'), isEnabled)
-
-  return (
-    <sprite onClick={setIsEnabled(previousState => !previousState)}>
-  )
-}
-```
-
-### For Typescript Users
-
-#### Custom Components
-
-`@pixi/react` already offers types for built-in components, but custom components need to be added to the library's type catalogue so it knows how to handle them. This can be achieved by adding your custom components to the `PixiElements` interface. Here's what it may look like to add the `viewport` component from our earlier `extend` example:
-
-```ts
-// global.d.ts
-import { type PixiReactElementProps } from "@pixi/react";
-import { type Viewport } from "pixi-viewport";
-
-declare module "@pixi/react" {
-  interface PixiElements {
-    viewport: PixiReactElementProps<typeof Viewport>;
-  }
-}
-```
-
 ## 🧪 Testing Strategy
 
 ### Existing Test Infrastructure (✅ Excellent)
@@ -628,18 +544,6 @@ function handleCombatInput(event: KeyboardEvent, player: PlayerState) {
 }
 ```
 
-### Advanced UX Features
-
-#### Visual Feedback System
-
-## 🏗️ Implementation Patterns
-
-### Component Structure (Follow EXISTING These Patterns)
-
-### Testing Requirements (Follow Existing Patterns)
-
-#### Combat System Tests
-
 ## 🌟 Success Criteria
 
 When following these guidelines, code should:
@@ -655,13 +559,6 @@ When following these guidelines, code should:
 
 ## 🎯 Philosophy Integration
 
-### Traditional Korean Values (Integrate into All Interactions)
-
 **Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every implementation should honor this balance while providing authentic, educational, and respectful gameplay.
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
-
-- Ensure any headless browser testing picks up DISPLAY from init-xvfb.sh.
-- Do not duplicate Xvfb/dbus startup in postCreate/postStart – use `initializeCommand`.
-- cypress-init.sh now sources init-xvfb.sh for consistent setup.
-- Remember to export DISPLAY in containerEnv as well.

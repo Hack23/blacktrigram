@@ -23,13 +23,13 @@ function loadPlayerData(input: string) {
 function loadPlayerData(input: string): PlayerState | null {
   try {
     const data = JSON.parse(input);
-    
+
     // Validate structure
     if (!isValidPlayerState(data)) {
       console.warn('Invalid player data structure');
       return null;
     }
-    
+
     return data;
   } catch (error) {
     console.warn('Failed to parse player data:', error);
@@ -101,7 +101,7 @@ function loadSettings(): Settings | null {
   try {
     const data = localStorage.getItem('settings');
     if (!data) return null;
-    
+
     const parsed = JSON.parse(data);
     return isValidSettings(parsed) ? parsed : null;
   } catch {
@@ -132,7 +132,7 @@ function loadSettings(): Settings | null {
 // ❌ Slow: Recalculates every render
 function CombatComponent({ attacker, defender }) {
   const damage = calculateDamage(attacker, defender); // Expensive!
-  
+
   return <div>{damage}</div>;
 }
 
@@ -142,7 +142,7 @@ function CombatComponent({ attacker, defender }) {
     () => calculateDamage(attacker, defender),
     [attacker, defender]
   );
-  
+
   return <div>{damage}</div>;
 }
 
@@ -170,7 +170,7 @@ function Component({ onAction }) {
     () => onAction('attack'),
     [onAction]
   );
-  
+
   return <button onClick={handleClick}>Attack</button>;
 }
 ```
@@ -268,7 +268,7 @@ function Component({ width, height }) {
     }),
     [width, height]
   );
-  
+
   return <pixiContainer layout={layout} />;
 }
 ```
@@ -355,12 +355,12 @@ let lastTime = performance.now();
 useTick(() => {
   frameCount++;
   const currentTime = performance.now();
-  
+
   if (currentTime - lastTime >= 1000) {
     const fps = frameCount;
     frameCount = 0;
     lastTime = currentTime;
-    
+
     if (fps < 50) {
       console.warn(`Low FPS detected: ${fps}`);
     }
@@ -376,7 +376,7 @@ const loadStart = performance.now();
 window.addEventListener('load', () => {
   const loadTime = performance.now() - loadStart;
   console.log(`Page loaded in ${loadTime}ms`);
-  
+
   if (loadTime > 3000) {
     console.warn('Slow load time detected');
   }
@@ -390,7 +390,7 @@ if (performance.memory) {
   setInterval(() => {
     const { usedJSHeapSize, totalJSHeapSize } = performance.memory;
     const usage = (usedJSHeapSize / totalJSHeapSize) * 100;
-    
+
     if (usage > 90) {
       console.warn(`High memory usage: ${usage.toFixed(2)}%`);
     }
@@ -422,7 +422,7 @@ npx lighthouse https://blacktrigram.com --view
 useEffect(() => {
   const ticker = app.ticker.add(update);
   const listener = window.addEventListener('resize', handleResize);
-  
+
   return () => {
     app.ticker.remove(update);
     window.removeEventListener('resize', handleResize);
@@ -432,7 +432,7 @@ useEffect(() => {
 // ✅ Dispose of textures when done
 useEffect(() => {
   const texture = Texture.from('/large-image.png');
-  
+
   return () => {
     texture.destroy(true);
   };
@@ -441,7 +441,7 @@ useEffect(() => {
 // ✅ Clear timers and intervals
 useEffect(() => {
   const interval = setInterval(update, 1000);
-  
+
   return () => {
     clearInterval(interval);
   };

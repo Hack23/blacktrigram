@@ -37,42 +37,42 @@ You help create clear, comprehensive, and accessible documentation for this Kore
 ```typescript
 /**
  * Calculates combat damage based on the Eight Trigram system.
- * 
+ *
  * This function implements the traditional Korean martial arts principle
  * of targeting vital points (급소, geupso) with different stances from
  * the Eight Trigram system (팔괘, palgwe).
- * 
+ *
  * @param attacker - The attacking player with current stance and stats
  * @param defender - The defending player receiving the attack
  * @param vitalPoint - The targeted anatomical vital point (급소)
  * @returns The calculated damage value after all modifiers
- * 
+ *
  * @example
  * Calculate damage from Heaven stance to body
  * ```typescript
- * const attacker = createPlayer({ 
+ * const attacker = createPlayer({
  *   stance: TrigramStance.GEON, // 건 (Heaven)
- *   attack: 50 
+ *   attack: 50
  * });
- * const defender = createPlayer({ 
+ * const defender = createPlayer({
  *   defense: 30,
- *   health: 100 
+ *   health: 100
  * });
- * 
+ *
  * const damage = calculateDamage(
- *   attacker, 
- *   defender, 
+ *   attacker,
+ *   defender,
  *   VitalPoint.BODY
  * );
  * console.log(`Damage: ${damage}`); // Damage: 35
  * ```
- * 
+ *
  * @throws {Error} If attacker or defender is null
  * @throws {Error} If vital point is invalid
- * 
+ *
  * @see {@link TrigramStance} for stance definitions
  * @see {@link VitalPoint} for vital point enum
- * 
+ *
  * @since 0.3.0
  * @category Combat
  * @korean 공격 피해 계산
@@ -86,26 +86,26 @@ export function calculateDamage(
   if (!attacker || !defender) {
     throw new Error('Attacker and defender must be provided');
   }
-  
+
   if (!Object.values(VitalPoint).includes(vitalPoint)) {
     throw new Error(`Invalid vital point: ${vitalPoint}`);
   }
-  
+
   // Get stance modifier
   const stanceModifier = getStanceModifier(attacker.stance);
-  
+
   // Get vital point multiplier
   const vitalMultiplier = getVitalPointMultiplier(vitalPoint);
-  
+
   // Calculate base damage
   const baseDamage = attacker.attack - defender.defense;
-  
+
   // Apply modifiers
   const finalDamage = Math.max(
     0,
     baseDamage * stanceModifier * vitalMultiplier
   );
-  
+
   return Math.round(finalDamage);
 }
 ```
@@ -114,15 +114,15 @@ export function calculateDamage(
 ```typescript
 /**
  * Properties for combat UI components following Korean theming standards.
- * 
+ *
  * All combat-related components should extend this interface to ensure
  * consistent behavior across desktop and mobile platforms while maintaining
  * the cyberpunk Korean aesthetic.
- * 
+ *
  * @interface
  * @category Combat
  * @korean 전투 컴포넌트 속성
- * 
+ *
  * @example
  * Creating a combat component
  * ```typescript
@@ -130,7 +130,7 @@ export function calculateDamage(
  *   readonly showVitalPoints: boolean;
  *   readonly onStanceChange: (stance: TrigramStance) => void;
  * }
- * 
+ *
  * export const CombatHUD: React.FC<CombatHUDProps> = ({
  *   width,
  *   height,
@@ -150,34 +150,34 @@ export interface CombatComponentProps {
    * @default 1200
    */
   readonly width: number;
-  
+
   /**
    * Canvas height in pixels.
    * Should be responsive to viewport size.
    * @default 800
    */
   readonly height: number;
-  
+
   /**
    * Whether the component is rendering on a mobile device.
    * Triggers mobile-optimized layouts and touch controls.
    * @default false
    */
   readonly isMobile?: boolean;
-  
+
   /**
    * Current player combat state including stance, health, and stats.
    * Updates trigger re-renders for UI synchronization.
    */
   readonly playerState: PlayerState;
-  
+
   /**
    * Callback fired when player executes a combat technique.
    * Receives the technique data for processing by the combat system.
    * @param technique - The executed combat technique
    */
   readonly onAttack?: (technique: CombatTechnique) => void;
-  
+
   /**
    * Bilingual text content for UI labels.
    * Format: `{ korean: "한글", english: "English" }`
@@ -191,20 +191,20 @@ export interface CombatComponentProps {
 ```typescript
 /**
  * Audio manager for handling game sounds and music.
- * 
+ *
  * Manages all audio playback including background music, sound effects,
  * and spatial audio for combat interactions. Supports volume control,
  * muting, and audio sprites for efficient asset loading.
- * 
+ *
  * @class
  * @category Audio
  * @korean 오디오 관리자
- * 
+ *
  * @example
  * Basic usage
  * ```typescript
  * const audio = new AudioManager();
- * 
+ *
  * // Load audio assets
  * await audio.loadSound({
  *   id: 'combat',
@@ -214,26 +214,26 @@ export interface CombatComponentProps {
  *     'kick': [300, 400],
  *   },
  * });
- * 
+ *
  * // Play sound effect
  * audio.playSFX('combat', 'punch');
- * 
+ *
  * // Play background music
  * audio.playMusic('main-theme', 1000);
  * ```
- * 
+ *
  * @example
  * Volume control
  * ```typescript
  * // Set master volume
  * audio.setMasterVolume(0.8);
- * 
+ *
  * // Set SFX volume
  * audio.setSFXVolume(0.7);
- * 
+ *
  * // Set music volume
  * audio.setMusicVolume(0.5);
- * 
+ *
  * // Mute all audio
  * audio.toggleMute();
  * ```
@@ -241,7 +241,7 @@ export interface CombatComponentProps {
 export class AudioManager {
   private sounds: Map<string, Howl> = new Map();
   private music: Howl | null = null;
-  
+
   /**
    * Creates a new AudioManager instance.
    * Initializes the Howler audio system with default settings.
@@ -249,13 +249,13 @@ export class AudioManager {
   constructor() {
     Howler.volume(1.0);
   }
-  
+
   /**
    * Loads an audio asset into memory.
-   * 
+   *
    * @param asset - The audio asset configuration
    * @throws {Error} If asset loading fails
-   * 
+   *
    * @example
    * ```typescript
    * await audio.loadSound({
@@ -284,13 +284,13 @@ different combat philosophies and techniques rooted in Korean martial arts.
 
 ### ☰ 건 (Geon) - Heaven | 천(天)
 
-**Korean Name**: 건 (Geon)  
-**Chinese Character**: 天 (Heaven)  
-**Element**: Strong Yang (強陽)  
-**Direction**: Northwest  
+**Korean Name**: 건 (Geon)
+**Chinese Character**: 天 (Heaven)
+**Element**: Strong Yang (強陽)
+**Direction**: Northwest
 **Season**: Late Autumn
 
-**Philosophy**: 
+**Philosophy**:
 Direct force and overwhelming power from above, like thunder from heaven.
 Represents the ultimate masculine principle of yang energy in combat.
 
@@ -328,10 +328,10 @@ const heavenStance: TrigramStance = {
 
 ### ☱ 태 (Tae) - Lake | 택(澤)
 
-**Korean Name**: 태 (Tae)  
-**Chinese Character**: 澤 (Lake/Marsh)  
-**Element**: Soft Yang (柔陽)  
-**Direction**: West  
+**Korean Name**: 태 (Tae)
+**Chinese Character**: 澤 (Lake/Marsh)
+**Element**: Soft Yang (柔陽)
+**Direction**: West
 **Season**: Autumn
 
 **Philosophy**:
@@ -781,7 +781,7 @@ For general questions, use GitHub Discussions.
 
 ---
 
-**Last Updated**: 2025-11-01  
+**Last Updated**: 2025-11-01
 **Version**: 1.0
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
