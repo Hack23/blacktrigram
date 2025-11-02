@@ -134,6 +134,20 @@ The `.github/copilot-mcp.json` file defines how Copilot connects to each MCP ser
 }
 ```
 
+### Validating Configuration
+
+You can validate the MCP configuration at any time using:
+
+```bash
+npm run validate:mcp
+```
+
+This will check:
+- File existence and validity
+- JSON and YAML syntax
+- Required MCP servers are configured
+- Documentation is properly linked
+
 ## 🎮 Game Development Use Cases
 
 ### Korean Martial Arts Combat System

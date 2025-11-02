@@ -30,6 +30,7 @@
     "compress": "gzip -k dist/assets/*.js && gzip -k dist/assets/*.css",
     "find:unused": "npm run knip",
     "test:licenses": "license-compliance --direct --allow 'MIT;ISC;0BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Unlicense;CC0-1.0'",
+    "validate:mcp": "bash scripts/validate-mcp-config.sh",
     "docs": "typedoc --options typedoc.json",
     "test:e2ereportmerge": "npx mochawesome-merge docs/cypress/mochawesome/*.json > docs/cypress/mochawesome-all.json",
     "test:e2ereporthtmlall": "npx marge -f index.html -o docs/cypress/mochawesome docs/cypress/mochawesome-all.json",
