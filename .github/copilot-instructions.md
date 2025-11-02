@@ -228,35 +228,55 @@ try {
 
 ```plaintext
 src/components/
-├── ui/                       # UI components following @pixi/ui patterns
-│   ├── base/                 # Base components with Korean theming
-│   │   ├── KoreanButton.ts  # Extended button with Korean styles
-│   │   ├── KoreanPanel.ts   # Panel component with layout integration
-│   │   └── BasePixiComponents.ts # Core PixiJS UI extensions
-│   ├── combat/               # Combat-specific UI components
-│   │   ├── TrigramSelector.ts # Trigram stance selection component
-│   │   ├── HealthBar.ts     # Health bar with Korean aesthetics
-│   │   └── VitalPointOverlay.ts # Anatomical targeting interface
-│   ├── containers/           # Layout containers and panels
-│   │   ├── CombatHUD.ts     # Main combat interface layout
-│   │   └── PlayerStatusPanel.ts # Player information display
-│   └── texts/                # Text components with bilingual support
-│       ├── BilingualText.ts # Korean-English dual display
-│       └── CombatLog.ts     # Scrolling combat history
-├── audio/                    # Audio context and hooks
-│   ├── AudioProvider.ts     # Context provider for audio
-│   └── sounds/               # Audio files and assets
-├── hooks/                    # Custom hooks
-│   ├── useCombat.ts         # Combat-related hooks
-│   └── usePlayer.ts         # Player state hooks
-├── screens/                  # Screen components
-│   ├── CombatScreen.ts      # Main combat screen
-│   ├── IntroScreen.ts       # Introduction and menu screen
-│   └── SettingsScreen.ts    # Settings and configuration screen
-└── utils/                   # Utility functions and constants
-    ├── constants.ts         # Constant values and configurations
-    ├── pixiExtensions.ts    # PixiJS component extensions
-    └── helpers.ts           # Helper functions
+├── combat/                    # Combat screen and related components
+│   ├── CombatScreen.tsx       # Main combat screen
+│   └── components/            # Combat UI components
+│       ├── CombatHUD.tsx      # Main combat interface layout
+│       ├── PlayerStatusPanel.tsx # Player information display
+│       ├── CombatControls.tsx # Combat control interface
+│       ├── CombatStatsPanel.tsx # Stats display
+│       └── ...
+├── intro/                     # Introduction/menu screen
+│   ├── IntroScreen.tsx        # Main intro screen
+│   └── components/            # Menu components
+│       ├── ArchetypeDisplay.tsx
+│       └── MenuSection.tsx
+├── training/                  # Training mode components
+│   ├── TrainingScreen.tsx     # Training screen
+│   └── components/            # Training-specific components
+│       ├── TrainingDummy.tsx
+│       ├── VitalPointTrainingPanel.tsx
+│       └── ...
+├── screens/                   # Information screens
+│   ├── ControlsScreen.tsx     # Controls guide
+│   └── PhilosophyScreen.tsx   # Game philosophy
+├── ui/                        # Reusable UI components
+│   ├── base/                  # Base components with Korean theming
+│   │   ├── BaseButton.tsx     # Base button component
+│   │   ├── ResponsivePixiComponents.tsx # Responsive PixiJS components
+│   │   └── korean-text/       # Korean text components
+│   ├── HealthBar.tsx          # Health bar component
+│   ├── StanceIndicator.tsx    # Trigram stance indicator
+│   ├── TrigramWheel.tsx       # Trigram selection wheel
+│   └── ...
+└── game/                      # Game-level components
+    └── DojangBackground.tsx   # Training hall background
+
+src/audio/                     # Audio management (not in components/)
+├── AudioProvider.tsx          # Audio context provider
+├── AudioManager.ts            # Audio management
+└── AudioUtils.ts              # Audio utilities
+
+src/hooks/                     # Custom React hooks
+src/systems/                   # Game systems (combat, etc.)
+src/utils/                     # Utility functions
+├── pixiExtensions.ts          # PixiJS component extensions
+└── ...
+src/types/                     # TypeScript types and constants
+└── constants/                 # Constant values
+    ├── colors.ts              # Color definitions
+    ├── typography.ts          # Typography settings
+    └── index.ts               # Main constants export
 ```
 
 ### Component Design Principles
@@ -449,8 +469,6 @@ When following these guidelines, UI code should:
 - ❌ Missing layout properties for responsive behavior
 - ❌ Performance-heavy UI operations without optimization
 
-````
-
 Here's a working example where `useApplication` **will** be able to access the parent application:
 
 ```jsx
@@ -469,7 +487,7 @@ const ParentComponent = () => (
     <ChildComponent />
   </Application>
 );
-````
+```
 
 #### `useExtend`
 
@@ -537,10 +555,10 @@ declare module "@pixi/react" {
 
 ### Existing Test Infrastructure (✅ Excellent)
 
-- **Setup**: `src/test/setup.ts` (8) - PixiJS and audio mocking
-- **Utils**: `src/test/test-utils.ts` (4) - Testing utilities
-- **Audio Tests**: Comprehensive coverage in `src/audio/__tests__/`
-- **System Tests**: Coverage for combat systems
+- **Setup**: `src/test/setup.ts` - PixiJS and audio mocking
+- **Utils**: `src/test/test-utils.ts` - Testing utilities
+- **Audio Tests**: Comprehensive coverage in `src/audio/` (AudioManager.test.ts, AudioUtils.test.ts)
+- **System Tests**: Coverage for combat systems in `src/systems/`
 
 ### Test Patterns to Follow
 
