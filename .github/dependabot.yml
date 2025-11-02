@@ -1,11 +1,143 @@
 version: 2
 updates:
+  # GitHub Actions updates
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: daily
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(deps)"
 
+  # npm dependency updates with grouping
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: daily
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Vite build tool and related plugins
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "vite-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Vitest testing framework and plugins
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # ESLint and all its plugins
+      eslint:
+        patterns:
+          - "eslint"
+          - "@eslint/*"
+          - "eslint-plugin-*"
+          - "typescript-eslint"
+          - "@typescript-eslint/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # TypeScript and type definitions
+      typescript:
+        patterns:
+          - "typescript"
+          - "@types/*"
+          - "ts-node"
+          - "ts-morph"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Cypress E2E testing framework and plugins
+      cypress:
+        patterns:
+          - "cypress"
+          - "@cypress/*"
+          - "cypress-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Testing Library ecosystem
+      testing-library:
+        patterns:
+          - "@testing-library/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # React and related types
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-error-boundary"
+          - "@types/react"
+          - "@types/react-dom"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # PixiJS rendering engine and plugins
+      pixi:
+        patterns:
+          - "pixi.js"
+          - "@pixi/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # TypeDoc documentation generator and plugins
+      typedoc:
+        patterns:
+          - "typedoc"
+          - "typedoc-plugin-*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Development and build tools
+      dev-tools:
+        patterns:
+          - "rollup-plugin-*"
+          - "dependency-cruiser"
+          - "madge"
+          - "knip"
+          - "license-compliance"
+          - "start-server-and-test"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # AWS SDK packages
+      aws-sdk:
+        patterns:
+          - "@aws-sdk/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Mocha/Mochawesome reporting tools
+      mocha-reporters:
+        patterns:
+          - "mocha-*"
+          - "mochawesome*"
+        update-types:
+          - "minor"
+          - "patch"
