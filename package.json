@@ -71,7 +71,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/fs-extra": "11.0.4",
     "@types/howler": "^2.2.12",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
