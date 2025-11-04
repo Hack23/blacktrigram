@@ -107,7 +107,7 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
   const buttonHeight = isMobile ? 25 : 35;
   const fontSize = isMobile ? 8 : 11;
 
-  // Enhanced button drawing with hover effects
+  // Enhanced button drawing with hover effects and glow
   const drawButton = useCallback(
     (
       g: PIXI.Graphics,
@@ -120,11 +120,17 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
       const alpha = isDisabled ? 0.4 : isHovered ? 1.0 : 0.8;
       const borderWidth = isHovered ? 3 : 2;
 
+      // Add outer glow effect when hovered
+      if (isHovered && !isDisabled) {
+        g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.2 });
+        g.roundRect(-2, -2, buttonWidth + 4, buttonHeight + 4, 7);
+      }
+
       // Button background with gradient effect
       g.fill({ color, alpha });
       g.roundRect(0, 0, buttonWidth, buttonHeight, 5);
 
-      // Border
+      // Border with glow
       g.stroke({
         width: borderWidth,
         color: isHovered
@@ -133,6 +139,12 @@ export const CombatControls: React.FC<CombatControlsProps> = ({
         alpha: alpha * 0.8,
       });
       g.roundRect(0, 0, buttonWidth, buttonHeight, 5);
+
+      // Inner highlight for depth
+      if (!isDisabled) {
+        g.stroke({ width: 1, color: KOREAN_COLORS.TEXT_PRIMARY, alpha: 0.3 });
+        g.roundRect(1, 1, buttonWidth - 2, buttonHeight / 2, 4);
+      }
 
       // Disabled overlay
       if (isDisabled) {

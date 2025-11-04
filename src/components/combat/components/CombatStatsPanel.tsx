@@ -73,10 +73,15 @@ export const CombatStatsPanel: React.FC<CombatStatsPanelProps> = ({
 
   return (
     <pixiContainer x={x} y={y} data-testid="combat-stats">
-      {/* Enhanced Background */}
+      {/* Enhanced Background with animation pulse */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
+          // Pulsing glow effect
+          const glowAlpha = 0.1 + Math.sin(Date.now() / 1000) * 0.05;
+          g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: glowAlpha });
+          g.roundRect(-2, -2, width + 4, height + 4, 10);
+
           g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
           g.roundRect(0, 0, width, height, 8);
 

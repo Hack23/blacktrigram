@@ -52,28 +52,44 @@ export const RoundStatusDisplay: React.FC<RoundStatusDisplayProps> = ({
 }) => {
   const [alpha, setAlpha] = useState(0);
   const [scale, setScale] = useState(1.5);
+  const [rotation, setRotation] = useState(0);
   const textRef = useRef<PIXI.Text>(null);
 
   const { korean, english } = getStatusText(status, round);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let animationFrames: NodeJS.Timeout[] = [];
 
-    // Fade in and scale down
-    setAlpha(1);
-    setScale(1);
+    // Enhanced animation sequence with rotation
+    const frames = [
+      { alpha: 0, scale: 1.8, rotation: -0.1, delay: 0 },
+      { alpha: 1, scale: 1.0, rotation: 0, delay: 100 },
+      { alpha: 1, scale: 1.05, rotation: 0.02, delay: 300 },
+      { alpha: 1, scale: 1.0, rotation: 0, delay: 400 },
+    ];
 
-    // Hold for a moment, then fade out
-    timeoutId = setTimeout(() => {
+    frames.forEach(frame => {
+      const timeoutId = setTimeout(() => {
+        setAlpha(frame.alpha);
+        setScale(frame.scale);
+        setRotation(frame.rotation);
+      }, frame.delay);
+      animationFrames.push(timeoutId);
+    });
+
+    // Hold for a moment, then fade out with rotation
+    const holdTimeout = setTimeout(() => {
       setAlpha(0);
-      setScale(0.8);
+      setScale(0.7);
+      setRotation(0.1);
       if (onAnimationComplete) {
-        setTimeout(onAnimationComplete, 500); // Call complete after fade out
+        setTimeout(onAnimationComplete, 500);
       }
     }, 1500);
+    animationFrames.push(holdTimeout);
 
     return () => {
-      clearTimeout(timeoutId);
+      animationFrames.forEach(clearTimeout);
     };
   }, [status, round, onAnimationComplete]);
 
@@ -105,6 +121,7 @@ export const RoundStatusDisplay: React.FC<RoundStatusDisplayProps> = ({
       y={height / 2}
       alpha={alpha}
       scale={scale}
+      rotation={rotation}
       pivot={{ x: 0.5, y: 0.5 }}
       data-testid="round-status-display"
       layout={{
@@ -115,6 +132,17 @@ export const RoundStatusDisplay: React.FC<RoundStatusDisplayProps> = ({
         gap: 16,
       }}
     >
+      {/* Background glow effect */}
+      <pixiGraphics
+        draw={(g) => {
+          g.clear();
+          g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 * alpha });
+          g.circle(0, 0, 250);
+        }}
+        x={0}
+        y={20}
+      />
+
       <pixiText
         ref={textRef}
         text={korean}
