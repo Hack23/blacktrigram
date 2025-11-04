@@ -144,7 +144,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
           <pixiContainer
             layout={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            {/* Ki Bar */}
+            {/* Ki Bar with low warning */}
             <pixiGraphics
               draw={(g) => {
                 g.clear();
@@ -155,11 +155,24 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
                 g.rect(0, 0, healthBarWidth / 2 - 5, 8);
                 const kiPercent =
                   player1.maxKi > 0 ? player1.ki / player1.maxKi : 0;
-                g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
+                const kiColor =
+                  kiPercent < 0.25
+                    ? KOREAN_COLORS.ACCENT_RED
+                    : KOREAN_COLORS.PRIMARY_CYAN;
+                g.fill({ color: kiColor, alpha: 0.9 });
                 g.rect(0, 0, (healthBarWidth / 2 - 5) * kiPercent, 8);
+                // Add pulsing border when low
+                if (kiPercent < 0.25) {
+                  g.stroke({
+                    width: 1,
+                    color: KOREAN_COLORS.ACCENT_RED,
+                    alpha: 0.5 + Math.sin(Date.now() / 200) * 0.3,
+                  });
+                  g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                }
               }}
             />
-            {/* Stamina Bar */}
+            {/* Stamina Bar with low warning */}
             <pixiGraphics
               draw={(g) => {
                 g.clear();
@@ -172,8 +185,21 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
                   player1.maxStamina > 0
                     ? player1.stamina / player1.maxStamina
                     : 0;
-                g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
+                const staminaColor =
+                  staminaPercent < 0.25
+                    ? KOREAN_COLORS.ACCENT_RED
+                    : KOREAN_COLORS.SECONDARY_YELLOW;
+                g.fill({ color: staminaColor, alpha: 0.9 });
                 g.rect(0, 0, (healthBarWidth / 2 - 5) * staminaPercent, 8);
+                // Add pulsing border when low
+                if (staminaPercent < 0.25) {
+                  g.stroke({
+                    width: 1,
+                    color: KOREAN_COLORS.ACCENT_RED,
+                    alpha: 0.5 + Math.sin(Date.now() / 200) * 0.3,
+                  });
+                  g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                }
               }}
             />
           </pixiContainer>
@@ -315,7 +341,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
           <pixiContainer
             layout={{ display: "flex", flexDirection: "row", gap: 10 }}
           >
-            {/* Ki Bar */}
+            {/* Ki Bar with low warning */}
             <pixiGraphics
               draw={(g) => {
                 g.clear();
@@ -326,11 +352,24 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
                 g.rect(0, 0, healthBarWidth / 2 - 5, 8);
                 const kiPercent =
                   player2.maxKi > 0 ? player2.ki / player2.maxKi : 0;
-                g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.9 });
+                const kiColor =
+                  kiPercent < 0.25
+                    ? KOREAN_COLORS.ACCENT_RED
+                    : KOREAN_COLORS.PRIMARY_CYAN;
+                g.fill({ color: kiColor, alpha: 0.9 });
                 g.rect(0, 0, (healthBarWidth / 2 - 5) * kiPercent, 8);
+                // Add pulsing border when low
+                if (kiPercent < 0.25) {
+                  g.stroke({
+                    width: 1,
+                    color: KOREAN_COLORS.ACCENT_RED,
+                    alpha: 0.5 + Math.sin(Date.now() / 200) * 0.3,
+                  });
+                  g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                }
               }}
             />
-            {/* Stamina Bar */}
+            {/* Stamina Bar with low warning */}
             <pixiGraphics
               draw={(g) => {
                 g.clear();
@@ -343,8 +382,21 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
                   player2.maxStamina > 0
                     ? player2.stamina / player2.maxStamina
                     : 0;
-                g.fill({ color: KOREAN_COLORS.SECONDARY_YELLOW, alpha: 0.9 });
+                const staminaColor =
+                  staminaPercent < 0.25
+                    ? KOREAN_COLORS.ACCENT_RED
+                    : KOREAN_COLORS.SECONDARY_YELLOW;
+                g.fill({ color: staminaColor, alpha: 0.9 });
                 g.rect(0, 0, (healthBarWidth / 2 - 5) * staminaPercent, 8);
+                // Add pulsing border when low
+                if (staminaPercent < 0.25) {
+                  g.stroke({
+                    width: 1,
+                    color: KOREAN_COLORS.ACCENT_RED,
+                    alpha: 0.5 + Math.sin(Date.now() / 200) * 0.3,
+                  });
+                  g.rect(0, 0, healthBarWidth / 2 - 5, 8);
+                }
               }}
             />
           </pixiContainer>

@@ -1,6 +1,7 @@
 import { HitEffect, PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { GameMode, PlayerArchetype, Position } from "@/types";
+import { KOREAN_COLORS } from "@/types/constants";
 import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
@@ -76,6 +77,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const [roundDisplayStatus, setRoundDisplayStatus] = useState<
     "start" | "fight" | "ko" | "end" | null
   >(null);
+  const [comboCount, setComboCount] = useState(0);
+  const [lastHitTime, setLastHitTime] = useState(0);
 
   // Match timing
   const matchStartTimeRef = useRef(Date.now());
@@ -261,7 +264,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     isPaused,
   ]);
 
-  // ✅ FIXED: Enhanced combat system integration with proper hit effects
+  // ✅ FIXED: Enhanced combat system integration with proper hit effects and combo tracking
   const handleAttack = useCallback(() => {
     if (isExecutingTechnique || !roundStarted || roundEnded) return;
 
@@ -311,6 +314,13 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addHitEffect(effectType, playerPosition, result.hit ? 1 : 0.5);
 
     if (result.hit) {
+      // Combo tracking: reset combo if too much time passed
+      const now = Date.now();
+      const timeSinceLastHit = now - lastHitTime;
+      const newCombo = timeSinceLastHit < 2000 ? comboCount + 1 : 1;
+      setComboCount(newCombo);
+      setLastHitTime(now);
+
       // Apply damage through combat system
       const { updatedAttacker, updatedDefender } =
         combatSystem.applyCombatResult(
@@ -324,10 +334,14 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
       if (result.isCritical) {
         addCombatMessage("치명타 공격!", "Critical Hit!");
+      } else if (newCombo > 2) {
+        addCombatMessage(`${newCombo} 연속 공격!`, `${newCombo} Hit Combo!`);
       } else {
         addCombatMessage("공격 성공!", "Attack Hit!");
       }
     } else {
+      // Reset combo on miss
+      setComboCount(0);
       addCombatMessage("공격 빗나감", "Attack Missed");
     }
 
@@ -342,6 +356,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     roundStarted,
     roundEnded,
     addHitEffect,
+    comboCount,
+    lastHitTime,
   ]);
 
   // Handle defend with Korean feedback
@@ -825,6 +841,38 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             effects={hitEffects}
             onEffectComplete={handleEffectComplete}
           />
+
+          {/* Combo Counter Display */}
+          {comboCount > 1 && (
+            <pixiContainer
+              x={width / 2}
+              y={height * 0.3}
+              data-testid="combo-counter"
+            >
+              <pixiText
+                text={`${comboCount} HIT COMBO!`}
+                style={{
+                  fontSize: 32 + comboCount * 2,
+                  fill: KOREAN_COLORS.ACCENT_GOLD,
+                  fontWeight: "bold",
+                  fontFamily: "Noto Sans KR",
+                }}
+                anchor={0.5}
+                alpha={Math.min(1, comboCount / 5)}
+              />
+              <pixiText
+                text={`${comboCount} 연속 공격!`}
+                style={{
+                  fontSize: 20,
+                  fill: KOREAN_COLORS.PRIMARY_CYAN,
+                  fontWeight: "bold",
+                  fontFamily: "Noto Sans KR",
+                }}
+                anchor={0.5}
+                y={40}
+              />
+            </pixiContainer>
+          )}
 
           {/* Round Status Display */}
           {roundDisplayStatus && (
