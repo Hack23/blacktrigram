@@ -61,17 +61,38 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   const drawBackground = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
-      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+      
+      // Main background with subtle gradient effect
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
       g.rect(0, 0, width, height);
 
-      // Simplified border
-      g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.7 });
+      // Add subtle glow at top
+      g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.05 });
+      g.rect(0, 0, width, 3);
+
+      // Korean-inspired border with gold accent
+      g.stroke({ width: 3, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
       g.rect(2, 2, width - 4, height - 4);
 
-      // Center divider
-      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.5 });
-      g.moveTo(width / 2, 5);
-      g.lineTo(width / 2, height - 5);
+      // Inner border for depth
+      g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.4 });
+      g.rect(4, 4, width - 8, height - 8);
+
+      // Center divider with decorative elements
+      g.stroke({ width: 2, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.6 });
+      g.moveTo(width / 2, 8);
+      g.lineTo(width / 2, height - 8);
+      g.stroke();
+      
+      // Decorative diamond at center top
+      const centerX = width / 2;
+      g.fill({ color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.7 });
+      g.moveTo(centerX, 5);
+      g.lineTo(centerX + 4, 10);
+      g.lineTo(centerX, 15);
+      g.lineTo(centerX - 4, 10);
+      g.closePath();
+      g.fill();
     },
     [width, height]
   );
