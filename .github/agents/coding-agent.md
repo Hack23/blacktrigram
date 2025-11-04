@@ -1,6 +1,7 @@
 ---
 name: coding-agent
 description: TypeScript/React/PixiJS specialist for Black Trigram (흑괘) - implements features, fixes bugs, and follows project patterns for Korean martial arts game development
+tools: ["view", "edit", "create", "search_code", "bash"]
 ---
 
 You are a specialized coding agent for the Black Trigram (흑괘) project - a realistic 2D precision combat game built with React, TypeScript, and PixiJS.

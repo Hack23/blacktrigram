@@ -111,27 +111,7 @@ GitHub Copilot agents are specialized AI assistants with focused expertise in sp
 
 ---
 
-### 📚 [Documentation Agent](./documentation-agent.md)
-**Specialization**: Technical & Game Documentation
-
-**Use for:**
-- Writing code documentation
-- Creating API documentation
-- Explaining Korean martial arts concepts
-- Writing tutorials and guides
-- Maintaining architecture docs
-- Bilingual documentation (Korean/English)
-
-**Key Responsibilities:**
-- TSDoc/JSDoc comments
-- README and guide creation
-- Korean terminology documentation
-- Component usage documentation
-- Architecture documentation
-
----
-
-### 📝 [Documentation Writer](./documentation-writer.md)
+### 📚 [Documentation Writer](./documentation-writer.md)
 **Specialization**: Technical Docs + Security Policies
 
 **Use for:**
@@ -170,27 +150,6 @@ GitHub Copilot agents are specialized AI assistants with focused expertise in sp
 - Performance review
 - Security assessment
 - Accessibility validation
-
----
-
-### 🔒 [Security & Performance Agent](./security-performance-agent.md)
-**Specialization**: Security & Optimization
-
-**Use for:**
-- Security vulnerability assessment
-- Performance optimization
-- Memory leak detection
-- Bundle size reduction
-- FPS optimization
-- Security best practices
-
-**Key Responsibilities:**
-- Security audits
-- Performance profiling
-- React/PixiJS optimization
-- Memory management
-- Bundle analysis
-- Load time optimization
 
 ---
 
