@@ -1,103 +1,313 @@
-# GitHub Copilot Agent Instructions
+# 🤖 GitHub Copilot Custom Agents for Black Trigram (흑괘)
 
-This directory contains specialized agent instruction files for GitHub Copilot to assist with different aspects of Black Trigram (흑괘) development.
+This directory contains specialized GitHub Copilot custom agent profiles for Black Trigram development. Each agent is an expert in a specific domain, providing focused assistance for particular development tasks.
 
-## What are Copilot Agents?
+## 📖 Quick Start
 
-GitHub Copilot agents are specialized AI assistants with focused expertise in specific domains. Each agent has detailed instructions that help it provide better, more contextual assistance for particular tasks.
+GitHub Copilot custom agents are AI assistants with specialized knowledge. When working with Black Trigram, select the agent that matches your current task for context-aware assistance following project patterns.
 
-## Available Agents
+```mermaid
+graph LR
+    A[Development Task] --> B{Task Type?}
+    B -->|Feature/Bug| C[🛠️ Coding Agent]
+    B -->|UI/React| D[⚛️ Frontend Specialist]
+    B -->|Game Logic| E[🎮 Game Developer]
+    B -->|Testing| F[🧪 Testing Agent]
+    B -->|Documentation| G[📝 Documentation Writer]
+    B -->|Security| H[🛡️ Security Specialist]
+    B -->|Review| I[🔍 Code Review Agent]
+    B -->|Test Strategy| J[🔬 Test Engineer]
+    
+    style C fill:#4CAF50
+    style D fill:#2196F3
+    style E fill:#FF9800
+    style F fill:#9C27B0
+    style G fill:#00BCD4
+    style H fill:#F44336
+    style I fill:#FFC107
+    style J fill:#E91E63
+```
+
+## 🎯 Available Agents
 
 ### 🛠️ [Coding Agent](./coding-agent.md)
-**Specialization**: TypeScript/React/PixiJS Development
+**Primary Role:** Full-Stack TypeScript/React/PixiJS Development
 
-**Use for:**
-- Implementing new features
-- Creating UI components
-- Fixing bugs
-- Refactoring code
-- Integrating Korean theming
-- Working with PixiJS and layout system
+**When to Use:**
+- ✅ Implementing new game features
+- ✅ Creating UI components with Korean theming
+- ✅ Fixing bugs in React/PixiJS code
+- ✅ Refactoring existing code
+- ✅ Integrating @pixi/layout system
+- ✅ Implementing combat mechanics
 
-**Key Responsibilities:**
-- Component development with React + PixiJS
-- Korean theming and bilingual text support
-- Layout system integration
+**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
+
+**Expertise:**
+- React + PixiJS integration patterns
+- Korean theming and bilingual text
+- Layout system (@pixi/layout)
 - Combat system implementation
-- Error handling and type safety
+- Type-safe development with strict TypeScript
 
 ---
 
 ### ⚛️ [Frontend Specialist](./frontend-specialist.md)
-**Specialization**: React 19 + Strict TypeScript
+**Primary Role:** React 19 & Strict TypeScript Expert
 
-**Use for:**
-- React 19 features and patterns
-- Strict TypeScript configuration
-- Component architecture design
-- React Testing Library tests
-- State management patterns
-- Type-safe development
+**When to Use:**
+- ✅ Building type-safe React components
+- ✅ Implementing React 19 features
+- ✅ Component architecture design
+- ✅ State management patterns
+- ✅ React Testing Library tests
+- ✅ Performance optimization
 
-**Key Responsibilities:**
+**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
+
+**Expertise:**
 - React 19 best practices
-- Strict TypeScript enforcement
-- Component composition patterns
-- React Testing Library integration
-- Performance optimization
-- Type safety validation
+- Strict TypeScript configuration
+- Component composition
+- Testing with RTL
+- Performance profiling
 
 ---
 
 ### 🎮 [Game Developer](./game-developer.md)
-**Specialization**: PixiJS 8.x + Game Systems
+**Primary Role:** PixiJS 8.x Game Systems Engineer
 
-**Use for:**
-- PixiJS 8.x integration
-- Game loop implementation
-- Audio system integration
+**When to Use:**
+- ✅ Implementing game loops
+- ✅ Optimizing rendering (60fps target)
+- ✅ Audio system integration
+- ✅ Collision detection
+- ✅ Texture and resource management
+- ✅ Object pooling
+
+**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
+
+**Expertise:**
+- PixiJS v8 integration
+- Game loop architecture
+- Howler.js audio management
 - Performance optimization
-- Collision detection
-- Rendering optimization
-
-**Key Responsibilities:**
-- PixiJS v8 best practices
-- Game loop patterns
-- Audio management with Howler.js
-- Texture and resource management
-- Object pooling
-- 60fps optimization
+- WebGL rendering
 
 ---
 
 ### 🧪 [Testing Agent](./testing-agent.md)
-**Specialization**: Vitest & Cypress Testing
+**Primary Role:** Vitest & Cypress Testing Specialist
 
-**Use for:**
-- Writing unit tests
-- Creating integration tests
-- Developing E2E tests
-- Debugging test failures
-- Improving test coverage
-- Testing Korean UI components
+**When to Use:**
+- ✅ Writing unit tests
+- ✅ Creating integration tests
+- ✅ Developing E2E tests with Cypress
+- ✅ Debugging test failures
+- ✅ Testing PixiJS components
+- ✅ Testing Korean UI elements
 
-**Key Responsibilities:**
-- Unit testing with Vitest
-- PixiJS component testing
-- Combat system testing
-- Responsive design testing
-- E2E testing with Cypress
+**Tools Available:** `view`, `edit`, `create`, `bash`, `playwright-browser_*`
+
+**Expertise:**
+- Vitest unit testing
+- Cypress E2E testing
+- Component testing
+- Mock strategies
+- Test coverage
 
 ---
 
 ### 🔬 [Test Engineer](./test-engineer.md)
-**Specialization**: Vitest + Cypress + CI Integration
+**Primary Role:** Test Strategy & CI Integration Specialist
 
-**Use for:**
-- Comprehensive test strategies
+**When to Use:**
+- ✅ Designing comprehensive test strategies
+- ✅ Enforcing coverage standards (>90%)
+- ✅ Integrating tests into CI/CD
+- ✅ Setting up test parallelization
+- ✅ Performance and accessibility testing
+- ✅ Test metrics and reporting
+
+**Tools Available:** `view`, `edit`, `create`, `bash`, `search_code`, `playwright-browser_*`
+
+**Expertise:**
+- Test suite architecture
 - Coverage enforcement
-- CI/CD test integration
-- Test parallelization
+- GitHub Actions integration
+- Visual regression testing
+- Mutation testing
+
+---
+
+### 📝 [Documentation Writer](./documentation-writer.md)
+**Primary Role:** Technical Documentation Specialist
+
+**When to Use:**
+- ✅ Writing JSDoc/TSDoc comments
+- ✅ Creating API documentation
+- ✅ Writing user guides and tutorials
+- ✅ Documenting Korean martial arts concepts
+- ✅ Security policy documentation (SECURITY.md)
+- ✅ Bilingual content (Korean/English)
+
+**Tools Available:** `view`, `edit`, `create`, `search_code`, `playwright-browser_*`
+
+**Expertise:**
+- Code documentation
+- Technical writing
+- Korean cultural context
+- API references
+- Security policies
+
+---
+
+### 🔍 [Code Review Agent](./code-review-agent.md)
+**Primary Role:** Code Quality & Standards Reviewer
+
+**When to Use:**
+- ✅ Reviewing pull requests
+- ✅ Checking code quality and standards
+- ✅ Verifying Korean theming compliance
+- ✅ Validating test coverage
+- ✅ Security assessment
+- ✅ Performance review
+
+**Tools Available:** `view`, `search_code`, `playwright-browser_*` (read-only)
+
+**Expertise:**
+- Code quality assessment
+- Korean theming validation
+- Testing coverage verification
+- Security best practices
+- Accessibility standards
+
+---
+
+### 🛡️ [Security Specialist](./security-specialist.md)
+**Primary Role:** Supply Chain & Compliance Security Expert
+
+**When to Use:**
+- ✅ OSSF Scorecard compliance
+- ✅ SBOM generation (CycloneDX)
+- ✅ Vulnerability scanning
+- ✅ License compliance checking
+- ✅ Dependency security audits
+- ✅ Security automation
+
+**Tools Available:** `view`, `edit`, `create`, `bash`, `search_code`, `playwright-browser_*`
+
+**Expertise:**
+- Supply chain security
+- OSSF best practices
+- Software Bill of Materials
+- License compliance
+- Automated security workflows
+
+---
+
+## 🎨 Agent Selection Guide
+
+```mermaid
+flowchart TD
+    Start([Need Help?]) --> Type{What are you doing?}
+    
+    Type -->|Writing Code| Code{Code Type?}
+    Code -->|UI Components| Frontend[⚛️ Frontend Specialist]
+    Code -->|Game Logic| Game[🎮 Game Developer]
+    Code -->|General Feature| Coding[🛠️ Coding Agent]
+    
+    Type -->|Writing Tests| TestType{Test Type?}
+    TestType -->|Unit/E2E Tests| Testing[🧪 Testing Agent]
+    TestType -->|Test Strategy| TestEng[🔬 Test Engineer]
+    
+    Type -->|Documentation| Docs[📝 Documentation Writer]
+    Type -->|Code Review| Review[🔍 Code Review Agent]
+    Type -->|Security| Security[🛡️ Security Specialist]
+    
+    Frontend --> Action[Get Agent Help]
+    Game --> Action
+    Coding --> Action
+    Testing --> Action
+    TestEng --> Action
+    Docs --> Action
+    Review --> Action
+    Security --> Action
+    
+    style Frontend fill:#2196F3,color:#fff
+    style Game fill:#FF9800,color:#fff
+    style Coding fill:#4CAF50,color:#fff
+    style Testing fill:#9C27B0,color:#fff
+    style TestEng fill:#E91E63,color:#fff
+    style Docs fill:#00BCD4,color:#fff
+    style Review fill:#FFC107,color:#000
+    style Security fill:#F44336,color:#fff
+    style Action fill:#8BC34A,color:#fff
+```
+
+## 🛠️ Tools Available to Agents
+
+All agents have access to appropriate GitHub Copilot tools:
+
+| Tool Category | Tools | Purpose |
+|--------------|-------|---------|
+| **File Operations** | `view`, `edit`, `create` | Read, modify, and create files |
+| **Code Search** | `search_code` | Search codebase for patterns and references |
+| **Shell Access** | `bash` | Execute build, test, and automation commands |
+| **Browser Automation** | `playwright-browser_snapshot` | Capture DOM state for testing |
+| | `playwright-browser_take_screenshot` | Visual regression testing |
+| | `playwright-browser_navigate` | Navigate to URLs for E2E testing |
+| | `playwright-browser_click` | Interact with UI elements |
+| | `playwright-browser_type` | Input text for testing |
+| | `playwright-browser_evaluate` | Execute JavaScript in browser context |
+
+### Tool Access by Agent
+
+```mermaid
+graph TD
+    subgraph "Read-Only Agents"
+        Review[🔍 Code Review Agent]
+    end
+    
+    subgraph "Documentation Agents"
+        Docs[📝 Documentation Writer]
+    end
+    
+    subgraph "Development Agents"
+        Coding[🛠️ Coding Agent]
+        Frontend[⚛️ Frontend Specialist]
+        Game[🎮 Game Developer]
+    end
+    
+    subgraph "Testing Agents"
+        Testing[🧪 Testing Agent]
+        TestEng[🔬 Test Engineer]
+    end
+    
+    subgraph "Security Agents"
+        Security[🛡️ Security Specialist]
+    end
+    
+    Review --> ViewSearch[view + search_code + playwright-browser_*]
+    Docs --> ViewEdit[view + edit + create + search_code + playwright-browser_*]
+    Coding --> FullTools[All Tools]
+    Frontend --> FullTools
+    Game --> FullTools
+    Testing --> FullTools
+    TestEng --> FullTools
+    Security --> FullTools
+    
+    style Review fill:#FFC107,color:#000
+    style Docs fill:#00BCD4,color:#fff
+    style Coding fill:#4CAF50,color:#fff
+    style Frontend fill:#2196F3,color:#fff
+    style Game fill:#FF9800,color:#fff
+    style Testing fill:#9C27B0,color:#fff
+    style TestEng fill:#E91E63,color:#fff
+    style Security fill:#F44336,color:#fff
+```
+
+## 🎯 Agent Development Guidelines
 - Performance testing
 - Accessibility testing
 
