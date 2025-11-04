@@ -77,27 +77,38 @@ export const CombatStatsPanel: React.FC<CombatStatsPanelProps> = ({
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          // Pulsing glow effect
-          const glowAlpha = 0.1 + Math.sin(Date.now() / 1000) * 0.05;
+          // Enhanced pulsing glow effect
+          const time = Date.now() / 1000;
+          const glowAlpha = 0.15 + Math.sin(time * 2) * 0.08;
+          const glowRadius = 3 + Math.sin(time * 3) * 1;
+          
           g.fill({ color: KOREAN_COLORS.PRIMARY_CYAN, alpha: glowAlpha });
-          g.roundRect(-2, -2, width + 4, height + 4, 10);
+          g.roundRect(-glowRadius, -glowRadius, width + glowRadius * 2, height + glowRadius * 2, 10);
 
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+          // Main background with slight gradient effect
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
           g.roundRect(0, 0, width, height, 8);
 
-          // Border with Korean pattern inspiration
-          g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.6 });
+          // Enhanced border with Korean pattern inspiration
+          g.stroke({ width: 3, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.7 });
           g.roundRect(0, 0, width, height, 8);
+
+          // Inner accent line for depth
+          g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.5 });
+          g.roundRect(2, 2, width - 4, height - 4, 7);
 
           // Decorative corner elements (Korean knot pattern)
-          g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.4 });
+          g.stroke({ width: 2, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.5 });
+          const cornerSize = 12;
           for (let i = 0; i < 4; i++) {
-            const cornerX = i < 2 ? 10 : width - 20;
-            const cornerY = i % 2 === 0 ? 10 : height - 20;
+            const cornerX = i < 2 ? 8 : width - 8 - cornerSize;
+            const cornerY = i % 2 === 0 ? 8 : height - 8 - cornerSize;
+            
+            // Draw L-shaped corner
             g.moveTo(cornerX, cornerY);
-            g.lineTo(cornerX + 10, cornerY);
+            g.lineTo(cornerX + cornerSize, cornerY);
             g.moveTo(cornerX, cornerY);
-            g.lineTo(cornerX, cornerY + 10);
+            g.lineTo(cornerX, cornerY + cornerSize);
           }
           g.stroke();
         }}

@@ -1,0 +1,149 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-04T13:08:53.659Z",
+    "end": "2025-11-04T13:09:22.178Z",
+    "duration": 28519,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "d70b918e-c67f-49ea-ae12-a42dcee2868a",
+      "title": "",
+      "fullFile": "cypress/e2e/combat-screen-layout.cy.ts",
+      "file": "cypress/e2e/combat-screen-layout.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "98dc7f6c-c704-4aa2-a56a-8d344bebd792",
+          "title": "CombatScreen Visual Layout Test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display complete combat screen with all components visible",
+              "fullTitle": "CombatScreen Visual Layout Test should display complete combat screen with all components visible",
+              "timedOut": null,
+              "duration": 8064,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Visit the app\ncy.visitWithWebGLMock(\"/\", { timeout: 12000 });\ncy.waitForCanvasReady();\n// Enter combat mode\ncy.enterCombatMode();\n// Wait for combat screen to fully load\ncy.wait(1000);\n// Verify all major components are present\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.get('[data-testid=\"combat-hud\"]').should(\"exist\");\ncy.get('[data-testid=\"combat-arena\"]').should(\"exist\");\ncy.get('[data-testid=\"combat-controls\"]').should(\"exist\");\ncy.get('[data-testid=\"combat-stats\"]').should(\"exist\");\n// Verify player components\ncy.get('[data-testid=\"combat-player-1\"]').should(\"exist\");\ncy.get('[data-testid=\"combat-player-2\"]').should(\"exist\");\n// Verify HUD components\ncy.get('[data-testid=\"round-timer\"]').should(\"exist\");\ncy.get('[data-testid=\"player1-stance-indicator\"]').should(\"exist\");\ncy.get('[data-testid=\"player2-stance-indicator\"]').should(\"exist\");\n// Verify control buttons\ncy.get('[data-testid=\"attack-button\"]').should(\"exist\");\ncy.get('[data-testid=\"defend-button\"]').should(\"exist\");\ncy.get('[data-testid=\"technique-button\"]').should(\"exist\");\ncy.get('[data-testid=\"stance-button\"]').should(\"exist\");\n// Take a screenshot of the complete combat screen\ncy.screenshot(\"combat-screen-complete-layout\", {\n    capture: \"fullPage\",\n    overwrite: true,\n});\n// Verify Korean bilingual text is visible\ncy.contains(\"전투\").should(\"be.visible\");\ncy.contains(\"Combat\").should(\"be.visible\");",
+              "err": {},
+              "uuid": "0dbd5bb1-aa66-44ed-ba0b-4bbec64e4cf3",
+              "parentUUID": "98dc7f6c-c704-4aa2-a56a-8d344bebd792",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display combat screen at different viewport sizes",
+              "fullTitle": "CombatScreen Visual Layout Test should display combat screen at different viewport sizes",
+              "timedOut": null,
+              "duration": 9235,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Desktop view\ncy.viewport(1920, 1080);\ncy.visitWithWebGLMock(\"/\", { timeout: 12000 });\ncy.waitForCanvasReady();\ncy.enterCombatMode();\ncy.wait(1000);\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.screenshot(\"combat-screen-desktop-1920x1080\", {\n    capture: \"fullPage\",\n    overwrite: true,\n});\n// Return and test tablet view\ncy.returnToIntro();\ncy.wait(500);\ncy.viewport(768, 1024);\ncy.enterCombatMode();\ncy.wait(1000);\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.screenshot(\"combat-screen-tablet-768x1024\", {\n    capture: \"fullPage\",\n    overwrite: true,\n});",
+              "err": {},
+              "uuid": "bf12907d-c578-4b95-bfc2-e227b8e7e1bf",
+              "parentUUID": "98dc7f6c-c704-4aa2-a56a-8d344bebd792",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display all combat UI elements during active combat",
+              "fullTitle": "CombatScreen Visual Layout Test should display all combat UI elements during active combat",
+              "timedOut": null,
+              "duration": 7926,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visitWithWebGLMock(\"/\", { timeout: 12000 });\ncy.waitForCanvasReady();\ncy.enterCombatMode();\ncy.wait(1000);\n// Perform some combat actions\ncy.get(\"body\").type(\"1\"); // Select stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(500);\n// Take screenshot during active combat\ncy.screenshot(\"combat-screen-active-combat\", {\n    capture: \"fullPage\",\n    overwrite: true,\n});\n// Verify combat stats are visible\ncy.get('[data-testid=\"combat-stats\"]').should(\"exist\");",
+              "err": {},
+              "uuid": "01e53569-b2b8-4b69-8ad0-aee4832ab048",
+              "parentUUID": "98dc7f6c-c704-4aa2-a56a-8d344bebd792",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "0dbd5bb1-aa66-44ed-ba0b-4bbec64e4cf3",
+            "bf12907d-c578-4b95-bfc2-e227b8e7e1bf",
+            "01e53569-b2b8-4b69-8ad0-aee4832ab048"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 25225,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "docs/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}
