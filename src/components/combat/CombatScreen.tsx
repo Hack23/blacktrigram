@@ -79,6 +79,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   >(null);
   const [comboCount, setComboCount] = useState(0);
   const [lastHitTime, setLastHitTime] = useState(0);
+  const [screenShake, setScreenShake] = useState({ x: 0, y: 0 });
 
   // Match timing
   const matchStartTimeRef = useRef(Date.now());
@@ -110,10 +111,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   const [aiState, setAiState] = useState({
     nextAction: Date.now() + 1000,
-    actionCooldown: 500, 
+    actionCooldown: 400, // Reduced from 500 for faster reactions
     isMoving: false,
     targetPosition: { x: width * 0.75, y: height * 0.7 },
-    aggressionLevel: 0.5, // Increased from 0.3
+    aggressionLevel: 0.65, // Increased from 0.5 for more aggressive AI
+    lastActionType: "idle" as string,
+    consecutiveAttacks: 0,
   });
 
   const { playerPosition, isMoving } = usePlayerMovement({
@@ -382,7 +385,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     playerPosition,
   ]);
 
-  // ✅ FIXED: Handle technique execution with proper effects
+  // ✅ FIXED: Handle technique execution with proper effects and screen shake
   const handleTechniqueExecute = useCallback(() => {
     if (isExecutingTechnique || !roundStarted || roundEnded) return;
     if (validPlayers[0].ki < 10 || validPlayers[0].stamina < 15) {
@@ -394,6 +397,20 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
     // Add technique effect
     addHitEffect(HitEffectType.CRITICAL_HIT, playerPosition, 1.5);
+
+    // Screen shake effect for impact
+    const shakeIntensity = 8;
+    const shakeFrames = [
+      { x: shakeIntensity, y: -shakeIntensity * 0.5 },
+      { x: -shakeIntensity * 0.7, y: shakeIntensity * 0.8 },
+      { x: shakeIntensity * 0.5, y: shakeIntensity * 0.3 },
+      { x: -shakeIntensity * 0.3, y: -shakeIntensity * 0.6 },
+      { x: 0, y: 0 },
+    ];
+
+    shakeFrames.forEach((shake, index) => {
+      setTimeout(() => setScreenShake(shake), index * 50);
+    });
 
     const distance = Math.sqrt(
       Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
@@ -596,61 +613,109 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           Math.pow(player1Pos.y - player2Pos.y, 2)
       );
 
-      // AI Decision Making - more aggressive
+      // Enhanced AI Decision Making with combo logic
       let aiAction = "idle";
       let newTargetPosition = aiState.targetPosition;
+      const healthPercent = validPlayers[1].health / validPlayers[1].maxHealth;
+      const kiPercent = validPlayers[1].ki / validPlayers[1].maxKi;
+      const isLowHealth = healthPercent < 0.3;
+      const hasEnoughResources = kiPercent > 0.3;
 
-      if (validPlayers[1].health < validPlayers[1].maxHealth * 0.3) {
-        // Defensive when low health
-        aiAction = "retreat";
+      // Combo attack logic - continue attacking if on a roll
+      if (aiState.consecutiveAttacks > 0 && aiState.consecutiveAttacks < 3 && distanceToPlayer < 130) {
+        const comboRandom = Math.random();
+        if (comboRandom < 0.7) { // 70% chance to continue combo
+          aiAction = comboRandom < 0.5 ? "attack" : "technique";
+        }
+      } else if (isLowHealth) {
+        // Defensive when low health - smarter retreat
+        const shouldDefend = Math.random() < 0.4;
+        if (shouldDefend && distanceToPlayer < 150) {
+          aiAction = "defend";
+        } else {
+          aiAction = "retreat";
+          newTargetPosition = {
+            x: Math.max(
+              arenaBounds.x,
+              Math.min(
+                arenaBounds.x + arenaBounds.width - 60,
+                player2Pos.x + (player2Pos.x > player1Pos.x ? 100 : -100)
+              )
+            ),
+            y: player2Pos.y + (Math.random() - 0.5) * 40,
+          };
+        }
+      } else if (distanceToPlayer < 120) {
+        // Close combat - varied attacks
+        const random = Math.random();
+        const aggression = aiState.aggressionLevel;
+        
+        if (random < aggression * 0.8) {
+          aiAction = "attack";
+        } else if (random < aggression * 0.8 + 0.1 && hasEnoughResources) {
+          aiAction = "technique";
+        } else {
+          aiAction = "defend";
+        }
+      } else if (distanceToPlayer > 250) {
+        // Move closer with tactical positioning
+        aiAction = "approach";
+        const offsetX = (Math.random() - 0.5) * 100;
+        const offsetY = (Math.random() - 0.5) * 60;
         newTargetPosition = {
           x: Math.max(
             arenaBounds.x,
-            player2Pos.x + (player2Pos.x > player1Pos.x ? 80 : -80) // Increased retreat distance
+            Math.min(arenaBounds.x + arenaBounds.width - 60, player1Pos.x + offsetX)
           ),
-          y: player2Pos.y,
-        };
-      } else if (distanceToPlayer < 120) {
-        // Increased close combat range
-        // Close combat
-        const random = Math.random();
-        if (random < 0.5) {
-          // Increased attack chance
-          aiAction = "attack";
-        } else if (random < 0.75) {
-          aiAction = "defend";
-        } else {
-          aiAction = "technique";
-        }
-      } else if (distanceToPlayer > 250) {
-        // Increased approach range
-        // Move closer
-        aiAction = "approach";
-        newTargetPosition = {
-          x: player1Pos.x + (Math.random() - 0.5) * 120, // Increased variation
-          y: player1Pos.y + (Math.random() - 0.5) * 80,
+          y: Math.max(
+            arenaBounds.y,
+            Math.min(arenaBounds.y + arenaBounds.height - 180, player1Pos.y + offsetY)
+          ),
         };
       } else {
-        // Medium distance - tactical movement
-        aiAction = "circle";
-        const angle = Math.atan2(
-          player1Pos.y - player2Pos.y,
-          player1Pos.x - player2Pos.x
-        );
-        newTargetPosition = {
-          x: player1Pos.x + Math.cos(angle + Math.PI / 2) * 180, // Increased circle radius
-          y: player1Pos.y + Math.sin(angle + Math.PI / 2) * 180,
-        };
+        // Medium distance - tactical movement or opportunistic attack
+        const tacticChoice = Math.random();
+        if (tacticChoice < 0.3 && hasEnoughResources) {
+          aiAction = "technique";
+        } else if (tacticChoice < 0.5) {
+          aiAction = "approach";
+          newTargetPosition = {
+            x: player1Pos.x + (Math.random() - 0.5) * 80,
+            y: player1Pos.y + (Math.random() - 0.5) * 60,
+          };
+        } else {
+          aiAction = "circle";
+          const angle = Math.atan2(
+            player1Pos.y - player2Pos.y,
+            player1Pos.x - player2Pos.x
+          );
+          const circleRadius = 150 + Math.random() * 50;
+          newTargetPosition = {
+            x: player1Pos.x + Math.cos(angle + Math.PI / 2) * circleRadius,
+            y: player1Pos.y + Math.sin(angle + Math.PI / 2) * circleRadius,
+          };
+        }
       }
+
+      // Track consecutive attacks for combo logic
+      const newConsecutiveAttacks = 
+        (aiAction === "attack" || aiAction === "technique") 
+          ? aiState.consecutiveAttacks + 1 
+          : 0;
 
       // Execute AI action
       executeAIAction(aiAction, newTargetPosition);
 
-      // Set next action time - reduced delay
+      // Set next action time with dynamic cooldown based on action
+      const actionCooldown = 
+        aiAction === "attack" || aiAction === "technique" ? 600 : 400;
+      
       setAiState((prev) => ({
         ...prev,
-        nextAction: now + prev.actionCooldown + Math.random() * 300, // Reduced random delay
+        nextAction: now + actionCooldown + Math.random() * 200,
         targetPosition: newTargetPosition,
+        lastActionType: aiAction,
+        consecutiveAttacks: newConsecutiveAttacks,
       }));
     }, 50); // Reduced from 100ms to 50ms for more responsive AI
 
@@ -749,6 +814,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
       {/* Main Combat Layout: A vertical flex container for all UI */}
       <pixiContainer
+        x={screenShake.x}
+        y={screenShake.y}
         layout={{
           width,
           height,

@@ -15,9 +15,9 @@ export interface PauseOverlayProps {
 export const PauseOverlay: React.FC<PauseOverlayProps> = ({ isMobile }) => {
   const draw = useCallback((g: Graphics) => {
     g.clear();
-    g.beginFill(0x0a0f12, 0.85); // Dark obsidian with 85% opacity
-    g.drawRect(0, 0, window.innerWidth, window.innerHeight);
-    g.endFill();
+    // Enhanced gradient-like effect with multiple layers
+    g.fill({ color: 0x0a0f12, alpha: 0.85 });
+    g.rect(0, 0, window.innerWidth, window.innerHeight);
   }, []);
 
   const titleStyle = new TextStyle({
@@ -41,6 +41,14 @@ export const PauseOverlay: React.FC<PauseOverlayProps> = ({ isMobile }) => {
     align: "center",
   });
 
+  const instructionsStyle = new TextStyle({
+    fontFamily: '"Noto Sans KR", sans-serif',
+    fontSize: isMobile ? 14 : 18,
+    fill: "#ffd700",
+    align: "center",
+    fontWeight: "600",
+  });
+
   return (
     <pixiContainer
       layout={{
@@ -54,6 +62,8 @@ export const PauseOverlay: React.FC<PauseOverlayProps> = ({ isMobile }) => {
       }}
     >
       <pixiGraphics draw={draw} />
+      
+      {/* Enhanced central panel with decorative borders */}
       <pixiContainer
         layout={{
           flexDirection: "column",
@@ -61,11 +71,46 @@ export const PauseOverlay: React.FC<PauseOverlayProps> = ({ isMobile }) => {
           gap: 20,
         }}
       >
+        {/* Decorative top border */}
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.stroke({ width: 2, color: 0x00ffc8, alpha: 0.6 });
+            g.moveTo(-150, -10);
+            g.lineTo(150, -10);
+          }}
+        />
+
         <pixiText text="일시정지 | PAUSED" style={titleStyle} />
-        <pixiText
-          text="Press ESC to resume"
-          style={subtitleStyle}
-          visible={!isMobile}
+        
+        {/* Enhanced instructions panel */}
+        <pixiContainer
+          layout={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <pixiText
+            text="ESC 키로 계속하기 | Press ESC to resume"
+            style={instructionsStyle}
+            visible={!isMobile}
+          />
+          <pixiText
+            text={isMobile ? "화면 터치로 계속하기 | Tap to resume" : ""}
+            style={subtitleStyle}
+            visible={isMobile}
+          />
+        </pixiContainer>
+
+        {/* Decorative bottom border */}
+        <pixiGraphics
+          draw={(g) => {
+            g.clear();
+            g.stroke({ width: 2, color: 0x00ffc8, alpha: 0.6 });
+            g.moveTo(-150, 10);
+            g.lineTo(150, 10);
+          }}
         />
       </pixiContainer>
     </pixiContainer>
