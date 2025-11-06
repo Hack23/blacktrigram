@@ -97,6 +97,8 @@ describe("Black Trigram Combat Mode", () => {
   });
 
   it("should display combat log or feedback", () => {
+    cy.annotate("Checking for combat feedback");
+
     // Check for combat screen
     cy.get('[data-testid="combat-screen"]').should("exist");
 
