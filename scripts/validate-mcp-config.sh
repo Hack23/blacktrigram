@@ -10,8 +10,9 @@ echo "🔍 Validating Copilot MCP Configuration..."
 echo "📁 Checking file existence..."
 files=(
   ".github/copilot-mcp.json"
-  ".github/copilot-setup-steps.yml"
+  ".github/workflows/copilot-setup-steps.yml"
   ".github/COPILOT_MCP_SETUP.md"
+  ".github/copilot-instructions.md"
 )
 
 for file in "${files[@]}"; do
@@ -37,7 +38,7 @@ fi
 echo ""
 echo "🔍 Validating YAML syntax..."
 if command -v python3 &> /dev/null; then
-  if python3 -c "import yaml; yaml.safe_load(open('.github/copilot-setup-steps.yml'))" 2>/dev/null; then
+  if python3 -c "import yaml; yaml.safe_load(open('.github/workflows/copilot-setup-steps.yml'))" 2>/dev/null; then
     echo "  ✅ copilot-setup-steps.yml is valid YAML"
   else
     echo "  ❌ copilot-setup-steps.yml has invalid YAML syntax"
