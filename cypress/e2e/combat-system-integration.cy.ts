@@ -342,9 +342,21 @@ describe("Combat System Integration - Holistic Game Perspective", () => {
     it("should recover from errors and continue gameplay", () => {
       cy.annotate("Testing error recovery");
 
-      // Suppress uncaught exceptions for this test
-      cy.on("uncaught:exception", () => {
-        return false;
+      // Only suppress known, expected errors
+      cy.on("uncaught:exception", (err) => {
+        // Suppress expected errors related to combat or audio/WebGL
+        if (
+          err.message &&
+          (err.message.includes("Combat") ||
+            err.message.includes("Invalid stance") ||
+            err.message.includes("audio") ||
+            err.message.includes("WebGL") ||
+            err.message.includes("Failed to load"))
+        ) {
+          return false; // Suppress expected errors
+        }
+        // Let unexpected errors fail the test
+        return true;
       });
 
       cy.enterCombatMode();

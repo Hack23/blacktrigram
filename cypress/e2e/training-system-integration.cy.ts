@@ -352,8 +352,21 @@ describe("Training Mode Integration - Holistic Game Perspective", () => {
     it("should recover from errors and continue training", () => {
       cy.annotate("Testing error recovery in training");
 
-      cy.on("uncaught:exception", () => {
-        return false;
+      // Only suppress known, expected errors
+      cy.on("uncaught:exception", (err) => {
+        // Suppress expected errors related to training or audio/WebGL
+        if (
+          err.message &&
+          (err.message.includes("Training") ||
+            err.message.includes("Invalid stance") ||
+            err.message.includes("audio") ||
+            err.message.includes("WebGL") ||
+            err.message.includes("Failed to load"))
+        ) {
+          return false; // Suppress expected errors
+        }
+        // Let unexpected errors fail the test
+        return true;
       });
 
       cy.enterTrainingMode();
