@@ -557,6 +557,215 @@ When following these guidelines, code should:
 - ✅ Use existing type system and components extensively
 - ✅ Include proper Korean-English bilingual support
 
+## 🔨 Build and Development Workflow
+
+### Essential Commands
+
+```bash
+# Development
+npm run dev              # Start development server with hot reload
+npm run check            # Run TypeScript type checking
+npm run lint             # Run ESLint for code quality
+
+# Building
+npm run build            # Production build with optimizations
+npm run build:analyze    # Build with bundle size analysis
+npm run preview          # Preview production build locally
+
+# Testing
+npm test                 # Run unit tests with Vitest
+npm run coverage         # Run tests with coverage report
+npm run test:e2e         # Run Cypress E2E tests
+npm run test:systems     # Run combat system tests
+
+# Code Quality
+npm run find:unused      # Find unused code with Knip
+npm run test:licenses    # Validate dependency licenses
+npm run validate:mcp     # Validate Copilot MCP configuration
+npm run docs             # Generate TypeDoc documentation
+```
+
+### Development Workflow
+
+1. **Before coding**: Run `npm run check` and `npm run lint` to ensure clean baseline
+2. **During development**: Use `npm run dev` for hot reload testing
+3. **Before committing**: Run `npm run lint`, `npm run check`, and `npm test`
+4. **For PRs**: Ensure `npm run test:e2e` passes and review `npm run coverage`
+
+### TypeScript Configuration
+
+- **Strict mode enabled**: All code must pass strict TypeScript checks
+- **No implicit any**: Always provide explicit types
+- **Readonly properties**: Prefer readonly for interfaces and props
+- **Proper null handling**: Use `??` for null coalescing, avoid `||` where possible
+
+## 📦 Dependency Management
+
+### Adding Dependencies
+
+**ALWAYS check security before adding dependencies:**
+
+```bash
+# Check for vulnerabilities before adding
+npm audit
+npm run test:licenses
+
+# Add dependency with exact version
+npm install --save-exact package-name@version
+
+# Development dependencies
+npm install --save-dev --save-exact package-name@version
+```
+
+### Approved Dependency Categories
+
+- ✅ **Core**: React 19, PixiJS 8.x, TypeScript
+- ✅ **UI/Layout**: @pixi/react, @pixi/layout, @pixi/ui
+- ✅ **Audio**: Howler.js, @pixi/sound
+- ✅ **Testing**: Vitest, Cypress, Testing Library
+- ✅ **Build**: Vite, ESLint, TypeScript
+- ⚠️ **New dependencies**: Must pass security audit and license check
+
+### Dependency Update Policy
+
+- **Security updates**: Apply immediately
+- **Minor/patch updates**: Test thoroughly before merging
+- **Major updates**: Requires architecture review and comprehensive testing
+- **Deprecated packages**: Plan migration path before removal
+
+## 🔍 Code Review Standards
+
+### Before Requesting Review
+
+- [ ] All tests pass (`npm test` and `npm run test:e2e`)
+- [ ] No TypeScript errors (`npm run check`)
+- [ ] No ESLint warnings (`npm run lint`)
+- [ ] Coverage maintained or improved (`npm run coverage`)
+- [ ] Documentation updated (JSDoc, README, etc.)
+- [ ] MCP configuration validated (`npm run validate:mcp`)
+- [ ] No unused code (`npm run find:unused`)
+- [ ] License compliance verified (`npm run test:licenses`)
+
+### Code Review Checklist
+
+**Architecture & Design:**
+- [ ] Follows established React + PixiJS patterns
+- [ ] Uses @pixi/layout for responsive design
+- [ ] Korean theming applied consistently
+- [ ] Proper component composition
+
+**Code Quality:**
+- [ ] Type-safe with strict TypeScript
+- [ ] Proper error handling and null checks
+- [ ] Performance optimized (60fps target)
+- [ ] No console.log in production code
+- [ ] Proper use of useMemo/useCallback for optimization
+
+**Testing:**
+- [ ] Unit tests for all new logic
+- [ ] E2E tests for user workflows
+- [ ] Test IDs added to interactive elements
+- [ ] Edge cases covered
+
+**Documentation:**
+- [ ] JSDoc comments for public APIs
+- [ ] README updated if user-facing changes
+- [ ] Korean-English bilingual text provided
+- [ ] ARCHITECTURE.md updated if structure changes
+
+### Common Review Feedback
+
+**Avoid:**
+- ❌ Hardcoded positioning (use layout system)
+- ❌ Missing data-testid attributes
+- ❌ Non-readonly interface properties
+- ❌ Using `||` instead of `??` for defaults
+- ❌ Missing Korean cultural context
+- ❌ Performance-heavy operations without optimization
+- ❌ Incomplete error handling
+
+**Prefer:**
+- ✅ Layout-based responsive design
+- ✅ Comprehensive test coverage
+- ✅ Explicit typing (no implicit any)
+- ✅ Korean-English bilingual support
+- ✅ Proper component abstraction
+- ✅ Performance monitoring
+
+## ⚠️ Common Pitfalls and Solutions
+
+### PixiJS Integration Issues
+
+**Pitfall**: Direct PixiJS manipulation breaking React state
+```typescript
+// ❌ BAD: Direct manipulation
+pixiContainer.x = 100;
+
+// ✅ GOOD: Use layout properties
+<pixiContainer layout={{ position: { x: 100, y: 0 } }} />
+```
+
+**Pitfall**: Memory leaks from PixiJS objects
+```typescript
+// ✅ GOOD: Clean up in useEffect
+useEffect(() => {
+  const sprite = new Sprite(texture);
+  return () => {
+    sprite.destroy();
+  };
+}, [texture]);
+```
+
+### Korean Text Issues
+
+**Pitfall**: Font not loading for Korean characters
+```typescript
+// ✅ GOOD: Use FONT_FAMILY.KOREAN constant
+import { FONT_FAMILY } from "../../types/constants";
+
+<pixiText
+  style={{ fontFamily: FONT_FAMILY.KOREAN }}
+  text="한글 텍스트"
+/>
+```
+
+### Performance Issues
+
+**Pitfall**: Unnecessary re-renders in PixiJS components
+```typescript
+// ❌ BAD: Object created on every render
+<pixiContainer layout={{ width: 100, height: 100 }} />
+
+// ✅ GOOD: Memoized layout constants
+const layout = useMemo(() => ({ width: 100, height: 100 }), []);
+<pixiContainer layout={layout} />
+```
+
+### Testing Issues
+
+**Pitfall**: Missing data-testid for E2E tests
+```typescript
+// ❌ BAD: No test identifier
+<pixiContainer>
+
+// ✅ GOOD: Include data-testid
+<pixiContainer data-testid="combat-screen">
+```
+
+### Type Safety Issues
+
+**Pitfall**: Using non-null assertion operator
+```typescript
+// ❌ BAD: Unsafe non-null assertion
+const value = getValue()!;
+
+// ✅ GOOD: Proper null handling
+const value = getValue();
+if (value !== null) {
+  // Use value safely
+}
+```
+
 ## 🎯 Philosophy Integration
 
 **Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every implementation should honor this balance while providing authentic, educational, and respectful gameplay.

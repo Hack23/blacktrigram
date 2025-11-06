@@ -2,6 +2,10 @@
 
 This repository is configured with Model Context Protocol (MCP) servers to enhance GitHub Copilot's capabilities for this project.
 
+> **📖 New to GitHub Copilot on this project?**  
+> Start with [copilot-instructions.md](./copilot-instructions.md) for complete coding guidelines, patterns, and best practices.  
+> Then explore the [custom agents](./agents/README.md) for specialized assistance with different development tasks.
+
 ## 🤖 What is MCP?
 
 Model Context Protocol (MCP) is a protocol that allows AI assistants like GitHub Copilot to interact with external tools and services. This enables Copilot to:
@@ -247,6 +251,8 @@ MCP servers can only:
 - [@modelcontextprotocol/server-sequential-thinking](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking)
 
 ### Project Documentation
+- [Copilot Instructions](./copilot-instructions.md) - **START HERE**: Complete coding guidelines and patterns
+- [Custom Agents](./agents/README.md) - Specialized Copilot agents for different tasks
 - [Development Guide](./development.md)
 - [Contributing](./CONTRIBUTING.md)
 - [Game Design](./game-design.md)

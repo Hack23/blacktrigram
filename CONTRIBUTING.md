@@ -17,9 +17,9 @@ We'd also love PRs. If you're thinking of a large PR, we advise opening up an is
 ## Submitting a pull request
 
 1. [Fork][fork] and clone the repository.
-1. Configure and install the dependencies: 
-1. Make sure the tests pass on your machine:
-1. Create a new branch: 
+1. Configure and install the dependencies: `npm install`
+1. Make sure the tests pass on your machine: `npm test`
+1. Create a new branch: `git checkout -b my-branch-name`
 1. Make your change, add tests, and make sure the tests still pass.
 1. Push to your fork and [submit a pull request][pr].
 1. Pat your self on the back and wait for your pull request to be reviewed and merged.
@@ -31,6 +31,48 @@ Here are a few things you can do that will increase the likelihood of your pull 
 - Write a [good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 Work in Progress pull requests are also welcome to get feedback early on, or if there is something blocked you.
+
+## 🤖 Using GitHub Copilot
+
+This project is fully configured for GitHub Copilot with comprehensive instructions and custom agents:
+
+### Quick Start with Copilot
+
+1. **Read the Instructions**: Start with [.github/copilot-instructions.md](.github/copilot-instructions.md) for coding patterns and best practices
+2. **Use Custom Agents**: Check [.github/agents/README.md](.github/agents/README.md) for specialized agents:
+   - 🛠️ Coding Agent - Feature implementation and bug fixes
+   - ⚛️ Frontend Specialist - React 19 and TypeScript
+   - 🎮 Game Developer - PixiJS game systems
+   - 🧪 Testing Agent - Vitest and Cypress tests
+   - 📝 Documentation Writer - Technical documentation
+   - 🛡️ Security Specialist - Security and dependencies
+   - 🔍 Code Review Agent - Code quality reviews
+
+3. **MCP Configuration**: The project uses Model Context Protocol servers for enhanced capabilities - see [.github/COPILOT_MCP_SETUP.md](.github/COPILOT_MCP_SETUP.md)
+
+### Development Workflow with Copilot
+
+```bash
+# Validate your setup
+npm run validate:mcp
+
+# Start development with Copilot assistance
+npm run dev
+
+# Run checks before committing
+npm run check      # TypeScript validation
+npm run lint       # Code quality
+npm test           # Unit tests
+```
+
+### Best Practices
+
+- Follow the patterns in [copilot-instructions.md](.github/copilot-instructions.md)
+- Use the appropriate custom agent for your task
+- Include Korean-English bilingual text for all user-facing strings
+- Add `data-testid` attributes for testable components
+- Follow the React + PixiJS integration patterns
+- Maintain 60fps performance targets
 
 ## Resources
 
