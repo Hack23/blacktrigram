@@ -150,14 +150,14 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
             current={player1.health}
             max={player1.maxHealth}
             width={healthBarWidth}
-            height={20}
+            height={60}
             showText={true}
             position="left"
             playerName={player1.name.korean}
             screenWidth={width}
             screenHeight={height}
-            x={0} // 3. Add missing prop
-            y={0} // 3. Add missing prop
+            x={0}
+            y={0}
             data-testid="player1-health-bar"
           />
 
@@ -347,14 +347,14 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
             current={player2.health}
             max={player2.maxHealth}
             width={healthBarWidth}
-            height={20}
+            height={60}
             showText={true}
             position="right"
             playerName={player2.name.korean}
             screenWidth={width}
             screenHeight={height}
-            x={0} // 3. Add missing prop
-            y={0} // 3. Add missing prop
+            x={0}
+            y={0}
             data-testid="player2-health-bar"
           />
 
