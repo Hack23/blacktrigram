@@ -87,15 +87,39 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
+  // Responsive layout detection
+  const isMobile = useMemo(() => width < 768, [width]);
+
+  // Centralized layout constants for easier tweaking
+  const layoutConstants = useMemo(() => ({
+    padding: 10,
+    hudHeight: isMobile ? 100 : 140,
+    controlsHeight: isMobile ? 140 : 180,
+    footerHeight: isMobile ? 25 : 30,
+    healthBarHeight: isMobile ? 50 : 60,
+  }), [isMobile]);
+
   // Fixed player positions for 2-player combat with proper bounds
+  // Arena bounds should account for HUD at top and controls at bottom
   const arenaBounds = useMemo(
-    () => ({
-      x: width * 0.1,
-      y: height * 0.2,
-      width: width * 0.8,
-      height: height * 0.6,
-    }),
-    [width, height]
+    () => {
+      const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
+      
+      // Break down complex calculation for clarity
+      const totalReservedHeight = layoutConstants.hudHeight + 
+                                  layoutConstants.controlsHeight + 
+                                  layoutConstants.footerHeight;
+      const totalPadding = layoutConstants.padding * 3;
+      const arenaHeight = height - totalReservedHeight - totalPadding;
+      
+      return {
+        x: width * 0.1,
+        y: arenaY,
+        width: width * 0.8,
+        height: arenaHeight,
+      };
+    },
+    [width, height, layoutConstants]
   );
 
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
@@ -129,9 +153,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     initialPosition: playerPositions[0],
     moveSpeed: 300, 
   });
-
-  // Responsive layout detection
-  const isMobile = useMemo(() => width < 768, [width]);
 
   // Ensure exactly 2 players with complete PlayerState objects
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
@@ -785,14 +806,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     [validPlayers, isExecutingTechnique, isMoving]
   );
 
-  // Centralized layout constants for easier tweaking
-  const layoutConstants = {
-    padding: 10,
-    hudHeight: 120,
-    controlsHeight: 100,
-    footerHeight: 40,
-  };
-
   return (
     <pixiContainer
       data-testid="combat-screen"
@@ -830,8 +843,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           layout={{
             width: "100%",
             height: layoutConstants.hudHeight,
-            alignItems: "flex-start", // Align items to the top of the container
-            justifyContent: "center",
             flexShrink: 0, // Prevents this container from shrinking
           }}
         >
@@ -853,6 +864,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             onPauseToggle={() => console.log("Pause toggled")}
             width={width - layoutConstants.padding * 2}
             height={layoutConstants.hudHeight}
+            healthBarHeight={layoutConstants.healthBarHeight}
+            x={0}
+            y={0}
           />
         </pixiContainer>
 
@@ -861,13 +875,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           data-testid="combat-arena"
           layout={{
             width: "100%",
-            flexGrow: 1, // Allows this container to take up available vertical space
-            position: "relative", // For absolute positioning of players and effects
-            alignItems: "center",
-            justifyContent: "center",
+            height: height - layoutConstants.hudHeight - layoutConstants.controlsHeight - layoutConstants.footerHeight - layoutConstants.padding * 2,
+            flexShrink: 1,
+            minHeight: 300, // Minimum arena height
           }}
         >
-          {/* Player 1 Visuals - Use absolute positioning */}
+          {/* Player 1 Visuals - Use absolute positioning within arena */}
           <PlayerVisuals
             playerState={validPlayers[0]}
             x={playerPositions[0].x}
@@ -885,7 +898,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             data-testid="combat-player-1"
           />
 
-          {/* Player 2 Visuals - Use absolute positioning */}
+          {/* Player 2 Visuals - Use absolute positioning within arena */}
           <PlayerVisuals
             playerState={validPlayers[1]}
             x={playerPositions[1].x}
@@ -957,74 +970,88 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         <pixiContainer
           layout={{
             width: "100%",
-            height: layoutConstants.controlsHeight,
-            flexDirection: "row",
-            alignItems: "flex-end", // Align to the bottom of the container
-            justifyContent: "space-between",
-            gap: 20,
+            height: layoutConstants.controlsHeight + layoutConstants.footerHeight,
+            flexDirection: "column",
             flexShrink: 0,
-            paddingBottom: layoutConstants.footerHeight + 10, // Add padding to not overlap with footer
+            gap: 5,
           }}
         >
-          <CombatControls
-            onAttack={handleAttack}
-            onDefend={handleDefend}
-            onSwitchStance={handleStanceSwitch}
-            onTechniqueExecute={handleTechniqueExecute}
-            player={validPlayers[0]}
-            isExecutingTechnique={isExecutingTechnique}
-            width={isMobile ? width * 0.45 : 400}
-            height={isMobile ? 90 : 120}
-          />
-          <CombatStatsPanel
-            players={validPlayers}
-            combatLog={combatMessages.map((msg, index) => ({
-              id: `msg-${index}`,
-              timestamp: Date.now() - index * 1000,
-              korean: msg.split(" | ")[0] || msg,
-              english: msg.split(" | ")[1] || msg,
-              type: msg.includes("공격")
-                ? "attack"
-                : msg.includes("방어")
-                ? "defend"
-                : msg.includes("기술")
-                ? "technique"
-                : "info",
-            }))}
-            matchDuration={matchDuration}
-            totalDamageDealt={{
-              player1: validPlayers[0].totalDamageDealt || 0,
-              player2: validPlayers[1].totalDamageDealt || 0,
+          {/* Controls and Stats Row */}
+          <pixiContainer
+            layout={{
+              width: "100%",
+              height: layoutConstants.controlsHeight,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              paddingLeft: 10,
+              paddingRight: 10,
+              flexShrink: 0,
             }}
-            criticalHits={{
-              player1: Math.floor((validPlayers[0].totalDamageDealt || 0) / 50),
-              player2: Math.floor((validPlayers[1].totalDamageDealt || 0) / 50),
-            }}
-            perfectStrikes={{
-              player1: validPlayers[0].perfectStrikes || 0,
-              player2: validPlayers[1].perfectStrikes || 0,
-            }}
-            width={isMobile ? width * 0.45 : 400}
-            height={isMobile ? 90 : 120}
-          />
-        </pixiContainer>
+          >
+            <CombatControls
+              onAttack={handleAttack}
+              onDefend={handleDefend}
+              onSwitchStance={handleStanceSwitch}
+              onTechniqueExecute={handleTechniqueExecute}
+              player={validPlayers[0]}
+              isExecutingTechnique={isExecutingTechnique}
+              width={isMobile ? width * 0.45 : 400}
+              height={isMobile ? 120 : 140}
+              x={0}
+              y={0}
+            />
+            <CombatStatsPanel
+              players={validPlayers}
+              combatLog={combatMessages.map((msg, index) => ({
+                id: `msg-${index}`,
+                timestamp: Date.now() - index * 1000,
+                korean: msg.split(" | ")[0] || msg,
+                english: msg.split(" | ")[1] || msg,
+                type: msg.includes("공격")
+                  ? "attack"
+                  : msg.includes("방어")
+                  ? "defend"
+                  : msg.includes("기술")
+                  ? "technique"
+                  : "info",
+              }))}
+              matchDuration={matchDuration}
+              totalDamageDealt={{
+                player1: validPlayers[0].totalDamageDealt || 0,
+                player2: validPlayers[1].totalDamageDealt || 0,
+              }}
+              criticalHits={{
+                player1: Math.floor((validPlayers[0].totalDamageDealt || 0) / 50),
+                player2: Math.floor((validPlayers[1].totalDamageDealt || 0) / 50),
+              }}
+              perfectStrikes={{
+                player1: validPlayers[0].perfectStrikes || 0,
+                player2: validPlayers[1].perfectStrikes || 0,
+              }}
+              width={isMobile ? width * 0.45 : 400}
+              height={isMobile ? 120 : 140}
+              x={0}
+              y={0}
+            />
+          </pixiContainer>
 
-        {/* Footer Area: Fixed height for instructions and menu button */}
-        <pixiContainer
-          layout={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            height: layoutConstants.footerHeight,
-          }}
-        >
-          <CombatFooter
-            onReturnToMenu={onReturnToMenu}
-            isMobile={isMobile}
-            width={width}
-            height={layoutConstants.footerHeight}
-          />
+          {/* Footer Area: Fixed height for instructions and menu button */}
+          <pixiContainer
+            layout={{
+              width: "100%",
+              height: layoutConstants.footerHeight,
+              flexShrink: 0,
+            }}
+          >
+            <CombatFooter
+              onReturnToMenu={onReturnToMenu}
+              isMobile={isMobile}
+              width={width}
+              height={layoutConstants.footerHeight}
+            />
+          </pixiContainer>
         </pixiContainer>
       </pixiContainer>
 
