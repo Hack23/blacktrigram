@@ -95,7 +95,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     padding: 10,
     hudHeight: isMobile ? 100 : 140,
     controlsHeight: isMobile ? 140 : 180,
-    footerHeight: 30,
+    footerHeight: isMobile ? 25 : 30,
+    healthBarHeight: isMobile ? 50 : 60,
   }), [isMobile]);
 
   // Fixed player positions for 2-player combat with proper bounds
@@ -103,7 +104,13 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   const arenaBounds = useMemo(
     () => {
       const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
-      const arenaHeight = height - layoutConstants.hudHeight - layoutConstants.controlsHeight - layoutConstants.footerHeight - layoutConstants.padding * 3;
+      
+      // Break down complex calculation for clarity
+      const totalReservedHeight = layoutConstants.hudHeight + 
+                                  layoutConstants.controlsHeight + 
+                                  layoutConstants.footerHeight;
+      const totalPadding = layoutConstants.padding * 3;
+      const arenaHeight = height - totalReservedHeight - totalPadding;
       
       return {
         x: width * 0.1,
@@ -857,6 +864,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             onPauseToggle={() => console.log("Pause toggled")}
             width={width - layoutConstants.padding * 2}
             height={layoutConstants.hudHeight}
+            healthBarHeight={layoutConstants.healthBarHeight}
             x={0}
             y={0}
           />

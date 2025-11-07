@@ -24,6 +24,7 @@ export interface CombatHUDProps {
   readonly height?: number;
   readonly x?: number;
   readonly y?: number;
+  readonly healthBarHeight?: number;
 }
 
 export const CombatHUD: React.FC<CombatHUDProps> = ({
@@ -40,6 +41,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
   height = 160, // Increased height for larger layout
   x = 0,
   y = 0,
+  healthBarHeight = 60,
 }) => {
   const isMobile = width < 768;
   const healthBarWidth = isMobile ? 150 : 250; // Adjusted for new layout
@@ -150,7 +152,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
             current={player1.health}
             max={player1.maxHealth}
             width={healthBarWidth}
-            height={60}
+            height={healthBarHeight}
             showText={true}
             position="left"
             playerName={player1.name.korean}
@@ -347,7 +349,7 @@ export const CombatHUD: React.FC<CombatHUDProps> = ({
             current={player2.health}
             max={player2.maxHealth}
             width={healthBarWidth}
-            height={60}
+            height={healthBarHeight}
             showText={true}
             position="right"
             playerName={player2.name.korean}
