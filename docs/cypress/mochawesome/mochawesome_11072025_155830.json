@@ -1,0 +1,382 @@
+{
+  "stats": {
+    "suites": 7,
+    "tests": 9,
+    "passes": 9,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-07T15:56:51.268Z",
+    "end": "2025-11-07T15:58:30.425Z",
+    "duration": 99157,
+    "testsRegistered": 9,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b00ada02-287b-4394-baab-c01a6088cfaa",
+      "title": "",
+      "fullFile": "cypress/e2e/core-features.cy.ts",
+      "file": "cypress/e2e/core-features.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "96e632cb-1a10-4f23-8591-288243a0c492",
+          "title": "Core Intro & Menu Features",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display intro background and logo",
+              "fullTitle": "Core Intro & Menu Features should display intro background and logo",
+              "timedOut": null,
+              "duration": 15394,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get(\"[data-testid=intro-background]\").should(\"exist\");\ncy.get(\"[data-testid=main-logo]\").should(\"exist\");",
+              "err": {},
+              "uuid": "a860efd4-ad63-4178-8a45-9a3724498599",
+              "parentUUID": "96e632cb-1a10-4f23-8591-288243a0c492",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should render menu items and respond to hover/select",
+              "fullTitle": "Core Intro & Menu Features should render menu items and respond to hover/select",
+              "timedOut": null,
+              "duration": 14024,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get(\"[data-testid=menu-item-versus]\").trigger(\"mouseover\");\ncy.get(\"[data-testid=menu-item-versus]\").click();\ncy.get(\"[data-testid=combat-screen]\").should(\"exist\");",
+              "err": {},
+              "uuid": "deacdf12-a0a1-45df-9064-9280bd64167f",
+              "parentUUID": "96e632cb-1a10-4f23-8591-288243a0c492",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should have working footer link",
+              "fullTitle": "Core Intro & Menu Features should have working footer link",
+              "timedOut": null,
+              "duration": 10614,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get(\"[data-testid=footer-link]\")\n    .should(\"have.attr\", \"onpointertap\")\n    .and(\"include\", \"github.com/Hack23/blacktrigram\");",
+              "err": {},
+              "uuid": "9a96cca8-ec6a-42c0-aa0b-8dbb2d50069d",
+              "parentUUID": "96e632cb-1a10-4f23-8591-288243a0c492",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a860efd4-ad63-4178-8a45-9a3724498599",
+            "deacdf12-a0a1-45df-9064-9280bd64167f",
+            "9a96cca8-ec6a-42c0-aa0b-8dbb2d50069d"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 40032,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "59fa59fa-d31f-44ac-9055-a87322e0fab9",
+          "title": "Black Trigram Core Features",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "e0829c9c-1f6e-4808-a763-73d18bc4bddf",
+              "title": "Essential User Journeys",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support the complete game cycle",
+                  "fullTitle": "Black Trigram Core Features Essential User Journeys should support the complete game cycle",
+                  "timedOut": null,
+                  "duration": 4830,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Starting screen verification\ncy.title().should(\"contain\", \"흑괘\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.annotate(\"Starting Game Cycle Test\");\n// Enter Training -> Practice -> Return to Intro -> Combat -> Return\ncy.annotate(\"1. Entering Training Mode\");\ncy.enterTrainingMode();\ncy.annotate(\"2. Practicing Techniques\");\ncy.practiceStance(1, 2); // Practice first stance twice\ncy.practiceStance(2, 1); // Practice second stance once\ncy.annotate(\"3. Returning to Intro\");\ncy.returnToIntro();\ncy.annotate(\"4. Entering Combat Mode\");\ncy.enterCombatMode();\ncy.annotate(\"5. Testing Combat Actions\");\ncy.gameActions([\"w\", \"a\", \"s\", \"d\", \"1\", \"2\", \" \"]);\ncy.annotate(\"6. Returning to Intro\");\ncy.returnToIntro();\ncy.annotate(\"Game Cycle Test Complete\");",
+                  "err": {},
+                  "uuid": "5540847c-4ad1-4960-9528-7e9b0a5b49e9",
+                  "parentUUID": "e0829c9c-1f6e-4808-a763-73d18bc4bddf",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "5540847c-4ad1-4960-9528-7e9b0a5b49e9"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 4830,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "f18a3c27-072b-4656-a635-3d434e3b75b9",
+              "title": "Responsive Design",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should render properly across screen sizes",
+                  "fullTitle": "Black Trigram Core Features Responsive Design should render properly across screen sizes",
+                  "timedOut": null,
+                  "duration": 14868,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing responsive design\");\n// Test key screen sizes efficiently in one test\n[\n    [1280, 720], // Desktop\n    [768, 1024], // Tablet\n    [375, 667], // Mobile\n].forEach(([width, height]) => {\n    cy.annotate(`Testing viewport ${width}x${height}`);\n    cy.viewport(width, height);\n    cy.wait(1000); // Allow time for resize\n    // Check that essential UI elements are present and properly positioned\n    cy.get('[data-testid=\"app-container\"]').should(\"be.visible\");\n    // Check canvas exists and has proper dimensions (don't check visibility due to z-index)\n    cy.get(\"canvas\")\n        .should(\"exist\")\n        .and(($canvas) => {\n        const canvas = $canvas[0];\n        const rect = canvas.getBoundingClientRect();\n        expect(rect.width).to.be.greaterThan(100);\n        expect(rect.height).to.be.greaterThan(100);\n    });\n    // Check that buttons are accessible and properly sized\n    cy.get('[data-testid=\"training-button\"]').should(\"exist\");\n    cy.get('[data-testid=\"combat-button\"]').should(\"exist\");\n    // Verify responsive font sizes\n    if (width < 768) {\n        // Mobile checks - buttons should have smaller font\n        cy.get('[data-testid=\"training-button\"]').should(\"contain\", \"훈련\");\n        cy.get('[data-testid=\"combat-button\"]').should(\"contain\", \"대전\");\n    }\n    else {\n        // Desktop/tablet checks - buttons should be larger\n        cy.get('[data-testid=\"training-button\"]').should(\"contain\", \"훈련\");\n        cy.get('[data-testid=\"combat-button\"]').should(\"contain\", \"대전\");\n    }\n});",
+                  "err": {},
+                  "uuid": "7e3b4c6f-e0f9-45d2-b76e-23b1568bb794",
+                  "parentUUID": "f18a3c27-072b-4656-a635-3d434e3b75b9",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should support different screen sizes",
+                  "fullTitle": "Black Trigram Core Features Responsive Design should support different screen sizes",
+                  "timedOut": null,
+                  "duration": 12348,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Test mobile size\ncy.viewport(375, 667);\ncy.get(\"[data-testid=intro-screen]\").should(\"be.visible\");\n// Test tablet size\ncy.viewport(768, 1024);\ncy.get(\"[data-testid=intro-screen]\").should(\"be.visible\");\n// Test desktop size\ncy.viewport(1920, 1080);\ncy.get(\"[data-testid=intro-screen]\").should(\"be.visible\");\n// Verify buttons are positioned correctly on mobile\ncy.viewport(375, 667);\ncy.get(\"[data-testid=training-button]\").then((_$body) => {\n    // Button positioning test\n    cy.get(\"[data-testid=training-button]\").should(\"be.visible\");\n});",
+                  "err": {},
+                  "uuid": "bdfa8dd6-6ac6-4625-84e7-1675c247b0b9",
+                  "parentUUID": "f18a3c27-072b-4656-a635-3d434e3b75b9",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "7e3b4c6f-e0f9-45d2-b76e-23b1568bb794",
+                "bdfa8dd6-6ac6-4625-84e7-1675c247b0b9"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 27216,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "4cfb3851-f384-4d0a-b4be-3e62f16103b6",
+              "title": "Game Input Handling",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle various input combinations",
+                  "fullTitle": "Black Trigram Core Features Game Input Handling should handle various input combinations",
+                  "timedOut": null,
+                  "duration": 3643,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Test keyboard input handling\ncy.annotate(\"Testing input handling\");\ncy.enterTrainingMode();\n// Test rapid sequential inputs\ncy.annotate(\"Testing rapid sequential inputs\");\ncy.gameActions([\"1\", \"2\", \"3\", \"4\", \"5\"]);\n// Test key combinations\ncy.annotate(\"Testing key combinations\");\ncy.get(\"body\").type(\"{leftarrow}{rightarrow}\", { delay: 0 });\ncy.annotate(\"Returning to intro\");\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "3b993187-798c-421a-aba8-9272f592b3e5",
+                  "parentUUID": "4cfb3851-f384-4d0a-b4be-3e62f16103b6",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "3b993187-798c-421a-aba8-9272f592b3e5"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3643,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "cadd8251-96ca-4ac6-9732-f44083266771",
+              "title": "Performance",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should maintain rendering performance",
+                  "fullTitle": "Black Trigram Core Features Performance should maintain rendering performance",
+                  "timedOut": null,
+                  "duration": 3525,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing performance\");\ncy.enterCombatMode();\n// Record performance during action sequence\nconst start = Date.now();\n// Execute a sequence of actions quickly\ncy.annotate(\"Executing action sequence\");\ncy.gameActions([\"w\", \"a\", \"s\", \"d\", \"1\", \"2\", \"3\", \"4\"]);\n// Check time taken with realistic threshold for CI environment\ncy.wrap(null).then(() => {\n    const duration = Date.now() - start;\n    cy.task(\"logPerformance\", { name: \"Combat Action Sequence\", duration });\n    cy.annotate(`Sequence completed in ${duration}ms`);\n    // Realistic threshold for CI environment with WebGL software rendering\n    expect(duration).to.be.lessThan(15000);\n});\ncy.annotate(\"Returning to intro\");\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "540c4019-40c3-4760-bf4d-eee20864cf37",
+                  "parentUUID": "cadd8251-96ca-4ac6-9732-f44083266771",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "540c4019-40c3-4760-bf4d-eee20864cf37"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3525,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "68497d3a-f1b8-4b48-a9b8-cce7ece2750c",
+              "title": "Error Resilience",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle missing components gracefully",
+                  "fullTitle": "Black Trigram Core Features Error Resilience should handle missing components gracefully",
+                  "timedOut": null,
+                  "duration": 4007,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing error resilience\");\n// Test what happens when we try to access non-existent features\ncy.get(\"body\").then((_$body) => {\n    // Try to access philosophy section (might not be implemented)\n    cy.get(\"body\").type(\"4\");\n    cy.wait(1000);\n    // Return to main screen regardless\n    cy.get(\"body\").type(\"{esc}\");\n    cy.wait(1000);\n    cy.annotate(\"Error resilience test completed\");\n});",
+                  "err": {},
+                  "uuid": "57c01ec6-c163-4e6a-8b5a-c3e185d7a3d1",
+                  "parentUUID": "68497d3a-f1b8-4b48-a9b8-cce7ece2750c",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "57c01ec6-c163-4e6a-8b5a-c3e185d7a3d1"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 4007,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "docs/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
