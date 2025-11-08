@@ -103,75 +103,12 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     moveSpeed: 300,
   });
 
-  // ✅ FIXED: Add combat input handling similar to CombatScreen
-  useEffect(() => {
-    const handleCombatInput = (event: KeyboardEvent) => {
-      if (!isTraining) return;
-
-      const key = event.key.toLowerCase();
-
-      // Handle stance changes (1-8)
-      if (key >= "1" && key <= "8") {
-        const stanceIndex = parseInt(key) - 1;
-        const stances = [
-          "geon",
-          "tae",
-          "li",
-          "jin",
-          "son",
-          "gam",
-          "gan",
-          "gon",
-        ];
-        onPlayerUpdate({
-          currentStance: stances[stanceIndex] as any,
-          lastActionTime: Date.now(),
-        });
-        event.preventDefault();
-      }
-
-      // Handle attacks
-      if (key === " ") {
-        // Space key
-        handleDummyHit(
-          Math.sqrt(
-            Math.pow(playerPosition.x - arenaBounds.width * 0.75, 2) +
-              Math.pow(playerPosition.y - arenaBounds.height * 0.6, 2)
-          )
-        );
-        event.preventDefault();
-      }
-    };
-
-    window.addEventListener("keydown", handleCombatInput);
-    return () => window.removeEventListener("keydown", handleCombatInput);
-  }, [isTraining, playerPosition, arenaBounds, onPlayerUpdate]);
-
   useEffect(() => {
     setPlayerPositions([playerPosition]);
     onPlayerUpdate({ position: playerPosition });
   }, [playerPosition, onPlayerUpdate]);
 
-  // Hide feedback after delay
-  useEffect(() => {
-    if (showFeedback) {
-      const timer = setTimeout(() => setShowFeedback(false), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showFeedback]);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onReturnToMenu();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu]);
-
-  // Training handlers
+  // Training handlers - define before combat input useEffect
   const handleStartTraining = useCallback(() => {
     setIsTraining(true);
     setScore(0);
@@ -216,6 +153,69 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     },
     [isTraining]
   );
+
+  // ✅ FIXED: Add combat input handling similar to CombatScreen (after handlers)
+  useEffect(() => {
+    const handleCombatInput = (event: KeyboardEvent) => {
+      if (!isTraining) return;
+
+      const key = event.key.toLowerCase();
+
+      // Handle stance changes (1-8)
+      if (key >= "1" && key <= "8") {
+        const stanceIndex = parseInt(key) - 1;
+        const stances = [
+          "geon",
+          "tae",
+          "li",
+          "jin",
+          "son",
+          "gam",
+          "gan",
+          "gon",
+        ];
+        onPlayerUpdate({
+          currentStance: stances[stanceIndex] as any,
+          lastActionTime: Date.now(),
+        });
+        event.preventDefault();
+      }
+
+      // Handle attacks
+      if (key === " ") {
+        // Space key
+        handleDummyHit(
+          Math.sqrt(
+            Math.pow(playerPosition.x - arenaBounds.width * 0.75, 2) +
+              Math.pow(playerPosition.y - arenaBounds.height * 0.6, 2)
+          )
+        );
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleCombatInput);
+    return () => window.removeEventListener("keydown", handleCombatInput);
+  }, [isTraining, playerPosition, arenaBounds, onPlayerUpdate, handleDummyHit]);
+
+  // Hide feedback after delay
+  useEffect(() => {
+    if (showFeedback) {
+      const timer = setTimeout(() => setShowFeedback(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showFeedback]);
+
+  // ESC key handler
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onReturnToMenu();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onReturnToMenu]);
 
   return (
     <pixiContainer x={x} y={y} data-testid="training-screen">

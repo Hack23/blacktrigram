@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
 import { VitalPointSeverity } from "../../../types/common";
@@ -18,6 +18,27 @@ export interface VitalPointTrainingPanelProps {
 export const VitalPointTrainingPanel: React.FC<
   VitalPointTrainingPanelProps
 > = ({ selectedVitalPoint, onVitalPointSelect, width, height, isMobile }) => {
+  // Animation state for smooth pulsing effects
+  const [animationTime, setAnimationTime] = useState(0);
+
+  // Controlled animation loop using requestAnimationFrame
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000; // Convert to seconds
+      setAnimationTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   // Use first 8 vital points for training panel
   const availableVitalPoints = useMemo(() => {
     return KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 8);
@@ -56,40 +77,60 @@ export const VitalPointTrainingPanel: React.FC<
   const drawPanelBackground = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
-      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+      
+      // More transparent to show dojang
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.75 });
       g.roundRect(0, 0, width, height, 12);
       g.fill();
 
+      // Enhanced border with glow effect
       g.stroke({
         width: 2,
         color: KOREAN_COLORS.SECONDARY_MAGENTA,
-        alpha: 0.8,
+        alpha: 0.9,
       });
       g.roundRect(0, 0, width, height, 12);
       g.stroke();
 
-      // Inner accent
-      g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.4 });
+      // Inner accent with controlled animation
+      const innerPulse = 0.4 + Math.sin(animationTime * 3) * 0.1;
+      g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: innerPulse });
       g.roundRect(2, 2, width - 4, height - 4, 10);
       g.stroke();
 
-      // Corner decorations
+      // Enhanced corner decorations
       [10, width - 10].forEach((x) => {
         [10, height - 10].forEach((y) => {
           g.stroke({
             width: 2,
             color: KOREAN_COLORS.PRIMARY_CYAN,
-            alpha: 0.6,
+            alpha: 0.7,
           });
-          g.moveTo(x - 5, y);
-          g.lineTo(x + 5, y);
-          g.moveTo(x, y - 5);
-          g.lineTo(x, y + 5);
+          g.moveTo(x - 6, y);
+          g.lineTo(x + 6, y);
+          g.moveTo(x, y - 6);
+          g.lineTo(x, y + 6);
+          g.stroke();
+          
+          // Add diagonal accents
+          g.stroke({
+            width: 1,
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.5,
+          });
+          g.moveTo(x - 4, y - 4);
+          g.lineTo(x - 2, y - 2);
+          g.moveTo(x + 4, y - 4);
+          g.lineTo(x + 2, y - 2);
+          g.moveTo(x - 4, y + 4);
+          g.lineTo(x - 2, y + 2);
+          g.moveTo(x + 4, y + 4);
+          g.lineTo(x + 2, y + 2);
           g.stroke();
         });
       });
     },
-    [width, height]
+    [width, height, animationTime]
   );
 
   // Enhanced selection background drawer with proper pulse animation

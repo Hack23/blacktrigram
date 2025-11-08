@@ -26,27 +26,58 @@ export const TrainingFeedback: React.FC<TrainingFeedbackProps> = ({
 }) => {
   const [alpha, setAlpha] = useState(1);
   const [offsetY, setOffsetY] = useState(0);
+  const [scale, setScale] = useState(1);
 
-  // Fade out animation
+  // Enhanced fade out animation with scale
   useEffect(() => {
     if (visible) {
-      setAlpha(1);
-      setOffsetY(0);
-      const timer = setTimeout(() => {
+      // Use setTimeout with 0ms delay to avoid synchronous setState warning
+      setTimeout(() => {
+        setAlpha(1);
+        setOffsetY(0);
+        setScale(1.2); // Start larger
+      }, 0);
+      
+      // Scale down quickly
+      const scaleTimer = setTimeout(() => {
+        setScale(1);
+      }, 100);
+      
+      // Then fade out
+      const fadeTimer = setTimeout(() => {
         setAlpha(0);
         setOffsetY(-30);
       }, 1500);
-      return () => clearTimeout(timer);
+      
+      return () => {
+        clearTimeout(scaleTimer);
+        clearTimeout(fadeTimer);
+      };
     }
   }, [visible, feedback]);
 
   if (!visible) return null;
+
+  // Determine feedback color based on content
+  const getFeedbackColor = () => {
+    if (feedback.includes("완벽") || feedback.includes("Perfect")) {
+      return KOREAN_COLORS.ACCENT_GREEN;
+    } else if (feedback.includes("좋은") || feedback.includes("Good")) {
+      return KOREAN_COLORS.ACCENT_GOLD;
+    } else if (feedback.includes("빗나감") || feedback.includes("Miss")) {
+      return KOREAN_COLORS.ACCENT_RED;
+    }
+    return KOREAN_COLORS.PRIMARY_CYAN;
+  };
+
+  const feedbackColor = getFeedbackColor();
 
   return (
     <pixiContainer
       x={x}
       y={y + offsetY}
       alpha={alpha}
+      scale={scale}
       data-testid="training-feedback"
       layout={{
         flexDirection: "column",
@@ -55,16 +86,34 @@ export const TrainingFeedback: React.FC<TrainingFeedbackProps> = ({
         gap: 8,
       }}
     >
-      {/* Enhanced background */}
+      {/* Enhanced background with glow */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+          
+          // Outer glow
+          g.fill({ color: feedbackColor, alpha: 0.2 * alpha });
+          g.roundRect(-85, -32, 170, 64, 14);
+          g.fill();
+          
+          // Main background
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
           g.roundRect(-80, -30, 160, 60, 12);
           g.fill();
 
-          g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
+          // Gradient top highlight
+          g.fill({ color: feedbackColor, alpha: 0.3 });
+          g.roundRect(-78, -28, 156, 15, 10);
+          g.fill();
+
+          // Border with feedback color
+          g.stroke({ width: 2, color: feedbackColor, alpha: 0.9 });
           g.roundRect(-80, -30, 160, 60, 12);
+          g.stroke();
+          
+          // Inner accent
+          g.stroke({ width: 1, color: KOREAN_COLORS.TEXT_BRIGHT, alpha: 0.4 });
+          g.roundRect(-78, -28, 156, 56, 10);
           g.stroke();
         }}
         layout={{
@@ -73,19 +122,24 @@ export const TrainingFeedback: React.FC<TrainingFeedbackProps> = ({
         }}
       />
 
-      {/* Main feedback text */}
+      {/* Main feedback text with enhanced styling */}
       <pixiText
         text={feedback}
         style={{
-          fontSize: isMobile ? 14 : 18,
-          fill: KOREAN_COLORS.ACCENT_GOLD,
+          fontSize: isMobile ? 16 : 20,
+          fill: feedbackColor,
           fontWeight: "bold",
           fontFamily: "Noto Sans KR",
           align: "center",
           dropShadow: {
             color: KOREAN_COLORS.BLACK,
-            distance: 2,
-            alpha: 0.8,
+            distance: 3,
+            alpha: 0.9,
+            blur: 4,
+          },
+          stroke: {
+            color: KOREAN_COLORS.UI_BACKGROUND_DARK,
+            width: 2,
           },
         }}
         anchor={0.5}
