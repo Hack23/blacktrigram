@@ -31,9 +31,12 @@ export const TrainingFeedback: React.FC<TrainingFeedbackProps> = ({
   // Enhanced fade out animation with scale
   useEffect(() => {
     if (visible) {
-      setAlpha(1);
-      setOffsetY(0);
-      setScale(1.2); // Start larger
+      // Use microtask to avoid synchronous setState warning
+      Promise.resolve().then(() => {
+        setAlpha(1);
+        setOffsetY(0);
+        setScale(1.2); // Start larger
+      });
       
       // Scale down quickly
       const scaleTimer = setTimeout(() => {
