@@ -27,22 +27,42 @@ export const TrainingControlsPanel: React.FC<TrainingControlsPanelProps> = ({
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+          
+          // More transparent background
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.75 });
           g.roundRect(0, 0, width, height, 12);
           g.fill();
 
-          // Border with training state color
+          // Border with training state color and enhanced glow
           const borderColor = isTraining
             ? KOREAN_COLORS.ACCENT_GREEN
             : KOREAN_COLORS.PRIMARY_CYAN;
-          g.stroke({ width: 2, color: borderColor, alpha: 0.8 });
+          g.stroke({ width: 2, color: borderColor, alpha: 0.9 });
           g.roundRect(0, 0, width, height, 12);
           g.stroke();
 
-          // Inner accent border
-          g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.4 });
+          // Inner accent border with pulse for training state
+          const innerAlpha = isTraining ? 0.5 + Math.sin(Date.now() * 0.005) * 0.2 : 0.4;
+          g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: innerAlpha });
           g.roundRect(2, 2, width - 4, height - 4, 10);
           g.stroke();
+          
+          // Corner decorations for Korean aesthetic
+          const corners = [
+            { x: 8, y: 8 },
+            { x: width - 8, y: 8 },
+            { x: 8, y: height - 8 },
+            { x: width - 8, y: height - 8 },
+          ];
+          
+          corners.forEach((corner) => {
+            g.stroke({ width: 2, color: borderColor, alpha: 0.6 });
+            g.moveTo(corner.x - 4, corner.y);
+            g.lineTo(corner.x + 4, corner.y);
+            g.moveTo(corner.x, corner.y - 4);
+            g.lineTo(corner.x, corner.y + 4);
+            g.stroke();
+          });
         }}
       />
 
@@ -68,7 +88,7 @@ export const TrainingControlsPanel: React.FC<TrainingControlsPanelProps> = ({
         />
       </pixiContainer>
 
-      {/* Status Indicator */}
+      {/* Status Indicator with enhanced animation */}
       <pixiContainer x={width - 20} y={15}>
         <pixiGraphics
           draw={(g) => {
@@ -77,16 +97,24 @@ export const TrainingControlsPanel: React.FC<TrainingControlsPanelProps> = ({
               ? KOREAN_COLORS.ACCENT_GREEN
               : KOREAN_COLORS.UI_GRAY;
 
-            g.fill({ color: statusColor, alpha: 0.8 });
+            // Main status dot
+            g.fill({ color: statusColor, alpha: 0.9 });
             g.circle(0, 0, 6);
             g.fill();
 
-            // Pulsing effect when training
+            // Enhanced pulsing effect when training
             if (isTraining) {
-              const pulse = 1 + Math.sin(Date.now() * 0.005) * 0.3;
-              g.stroke({ width: 2, color: statusColor, alpha: 0.5 });
+              const pulse = 1 + Math.sin(Date.now() * 0.006) * 0.4;
+              
+              // Outer pulse ring
+              g.stroke({ width: 2, color: statusColor, alpha: 0.6 * (1 - pulse / 2) });
               g.circle(0, 0, 8 * pulse);
               g.stroke();
+              
+              // Inner glow
+              g.fill({ color: KOREAN_COLORS.TEXT_BRIGHT, alpha: 0.3 });
+              g.circle(0, 0, 3);
+              g.fill();
             }
           }}
         />

@@ -6,34 +6,60 @@ import { extendPixiComponents } from "../../../utils/pixiExtensions";
 // Ensure PixiJS components are extended
 extendPixiComponents();
 
-// Extract background drawing logic
+// Extract background drawing logic with enhanced visual effects
 const createBackgroundDrawer = (
   width: number,
   height: number,
   isTraining: boolean
 ) => (g: PIXI.Graphics) => {
   g.clear();
-  g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.9 });
+  
+  // More transparent background
+  g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.75 });
   g.roundRect(0, 0, width, height, 8);
   g.fill();
 
-  // Border with training indicator
+  // Border with training indicator and enhanced glow
   const borderColor = isTraining
     ? KOREAN_COLORS.ACCENT_GREEN
     : KOREAN_COLORS.PRIMARY_CYAN;
-  g.stroke({ width: 2, color: borderColor, alpha: 0.8 });
+  const borderAlpha = isTraining ? 0.9 : 0.7;
+  g.stroke({ width: 2, color: borderColor, alpha: borderAlpha });
   g.roundRect(0, 0, width, height, 8);
   g.stroke();
 
-  // Training status indicator
+  // Training status indicator banner
   if (isTraining) {
-    g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: 0.3 });
+    const pulse = 0.3 + Math.sin(Date.now() * 0.005) * 0.15;
+    g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: pulse });
     g.roundRect(5, 5, width - 10, 20, 4);
     g.fill();
+    
+    // Inner glow
+    g.stroke({ width: 1, color: KOREAN_COLORS.TEXT_BRIGHT, alpha: 0.3 });
+    g.roundRect(5, 5, width - 10, 20, 4);
+    g.stroke();
   }
+  
+  // Corner accents
+  const corners = [
+    { x: 10, y: 10 },
+    { x: width - 10, y: 10 },
+    { x: 10, y: height - 10 },
+    { x: width - 10, y: height - 10 },
+  ];
+  
+  corners.forEach((corner) => {
+    g.stroke({ width: 1.5, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.5 });
+    g.moveTo(corner.x - 3, corner.y);
+    g.lineTo(corner.x + 3, corner.y);
+    g.moveTo(corner.x, corner.y - 3);
+    g.lineTo(corner.x, corner.y + 3);
+    g.stroke();
+  });
 };
 
-// Extract resource bar drawer
+// Extract resource bar drawer with enhanced visuals
 const createResourceBarDrawer = (
   current: number,
   max: number,
@@ -41,14 +67,42 @@ const createResourceBarDrawer = (
   width: number = 70
 ) => (g: PIXI.Graphics) => {
   g.clear();
-  g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.8 });
+  
+  // Background with inner shadow effect
+  g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM, alpha: 0.9 });
   g.rect(0, 10, width, 6);
   g.fill();
-
-  const percent = max > 0 ? current / max : 0;
-  g.fill({ color, alpha: 0.9 });
-  g.rect(0, 10, width * percent, 6);
+  
+  // Inner shadow
+  g.fill({ color: KOREAN_COLORS.BLACK, alpha: 0.3 });
+  g.rect(0, 10, width, 2);
   g.fill();
+
+  // Resource fill with gradient simulation
+  const percent = max > 0 ? current / max : 0;
+  const fillWidth = width * percent;
+  
+  if (fillWidth > 0) {
+    // Main fill
+    g.fill({ color, alpha: 0.95 });
+    g.rect(0, 10, fillWidth, 6);
+    g.fill();
+    
+    // Highlight on top
+    g.fill({ color: KOREAN_COLORS.TEXT_BRIGHT, alpha: 0.3 });
+    g.rect(0, 10, fillWidth, 2);
+    g.fill();
+    
+    // Border for filled portion
+    g.stroke({ width: 1, color, alpha: 0.6 });
+    g.rect(0, 10, fillWidth, 6);
+    g.stroke();
+  }
+  
+  // Outer border
+  g.stroke({ width: 1, color: KOREAN_COLORS.TEXT_SECONDARY, alpha: 0.5 });
+  g.rect(0, 10, width, 6);
+  g.stroke();
 };
 
 export interface TrainingStatsPanelProps {

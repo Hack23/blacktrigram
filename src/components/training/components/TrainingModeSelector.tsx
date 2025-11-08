@@ -63,16 +63,24 @@ export const TrainingModeSelector: React.FC<TrainingModeSelectorProps> = ({
 
   return (
     <pixiContainer x={x} y={y} data-testid="training-mode-selector">
-      {/* Panel Background */}
+      {/* Enhanced Panel Background with gradient effect */}
       <pixiGraphics
         draw={(g) => {
           g.clear();
-          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+          
+          // More transparent background to show dojang
+          g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.7 });
           g.roundRect(0, 0, width, height, 10);
           g.fill();
 
-          g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.6 });
+          // Enhanced border with glow
+          g.stroke({ width: 2, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.8 });
           g.roundRect(0, 0, width, height, 10);
+          g.stroke();
+          
+          // Inner accent line for depth
+          g.stroke({ width: 1, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.4 });
+          g.roundRect(2, 2, width - 4, height - 4, 8);
           g.stroke();
         }}
       />
@@ -96,30 +104,44 @@ export const TrainingModeSelector: React.FC<TrainingModeSelectorProps> = ({
               draw={(g) => {
                 g.clear();
 
-                // Button background
+                // Enhanced button background with hover effect simulation
+                const bgAlpha = isSelected ? 0.95 : 0.75;
                 g.fill({
                   color: isSelected
                     ? modeData.color
                     : KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                  alpha: isSelected ? 0.9 : 0.7,
+                  alpha: bgAlpha,
                 });
                 g.roundRect(0, 0, buttonWidth, height - 20, 8);
                 g.fill();
 
-                // Selection glow
+                // Inner highlight for depth
                 if (isSelected) {
-                  g.stroke({ width: 2, color: modeData.color, alpha: 0.8 });
+                  g.fill({ color: KOREAN_COLORS.TEXT_BRIGHT, alpha: 0.1 });
+                  g.roundRect(2, 2, buttonWidth - 4, 8, 4);
+                  g.fill();
+                }
+
+                // Enhanced selection glow with pulse effect
+                if (isSelected) {
+                  const pulse = 1 + Math.sin(Date.now() * 0.003) * 0.2;
+                  g.stroke({ width: 2 * pulse, color: modeData.color, alpha: 0.9 });
                   g.roundRect(-2, -2, buttonWidth + 4, height - 16, 10);
+                  g.stroke();
+                  
+                  // Secondary glow
+                  g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.5 });
+                  g.roundRect(-4, -4, buttonWidth + 8, height - 12, 12);
                   g.stroke();
                 }
 
-                // Border
+                // Enhanced border
                 g.stroke({
-                  width: 1,
+                  width: isSelected ? 2 : 1,
                   color: isSelected
                     ? KOREAN_COLORS.TEXT_BRIGHT
                     : KOREAN_COLORS.TEXT_SECONDARY,
-                  alpha: 0.8,
+                  alpha: isSelected ? 1.0 : 0.6,
                 });
                 g.roundRect(0, 0, buttonWidth, height - 20, 8);
                 g.stroke();

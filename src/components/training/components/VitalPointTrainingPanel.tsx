@@ -56,35 +56,55 @@ export const VitalPointTrainingPanel: React.FC<
   const drawPanelBackground = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
-      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
+      
+      // More transparent to show dojang
+      g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.75 });
       g.roundRect(0, 0, width, height, 12);
       g.fill();
 
+      // Enhanced border with glow effect
       g.stroke({
         width: 2,
         color: KOREAN_COLORS.SECONDARY_MAGENTA,
-        alpha: 0.8,
+        alpha: 0.9,
       });
       g.roundRect(0, 0, width, height, 12);
       g.stroke();
 
-      // Inner accent
-      g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.4 });
+      // Inner accent with subtle animation
+      const innerPulse = 0.4 + Math.sin(Date.now() * 0.003) * 0.1;
+      g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: innerPulse });
       g.roundRect(2, 2, width - 4, height - 4, 10);
       g.stroke();
 
-      // Corner decorations
+      // Enhanced corner decorations
       [10, width - 10].forEach((x) => {
         [10, height - 10].forEach((y) => {
           g.stroke({
             width: 2,
             color: KOREAN_COLORS.PRIMARY_CYAN,
-            alpha: 0.6,
+            alpha: 0.7,
           });
-          g.moveTo(x - 5, y);
-          g.lineTo(x + 5, y);
-          g.moveTo(x, y - 5);
-          g.lineTo(x, y + 5);
+          g.moveTo(x - 6, y);
+          g.lineTo(x + 6, y);
+          g.moveTo(x, y - 6);
+          g.lineTo(x, y + 6);
+          g.stroke();
+          
+          // Add diagonal accents
+          g.stroke({
+            width: 1,
+            color: KOREAN_COLORS.ACCENT_GOLD,
+            alpha: 0.5,
+          });
+          g.moveTo(x - 4, y - 4);
+          g.lineTo(x - 2, y - 2);
+          g.moveTo(x + 4, y - 4);
+          g.lineTo(x + 2, y - 2);
+          g.moveTo(x - 4, y + 4);
+          g.lineTo(x - 2, y + 2);
+          g.moveTo(x + 4, y + 4);
+          g.lineTo(x + 2, y + 2);
           g.stroke();
         });
       });
