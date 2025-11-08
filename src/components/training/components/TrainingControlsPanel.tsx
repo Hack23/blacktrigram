@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
@@ -21,6 +21,27 @@ export const TrainingControlsPanel: React.FC<TrainingControlsPanelProps> = ({
   height,
   isMobile,
 }) => {
+  // Animation state for smooth pulsing effects
+  const [animationTime, setAnimationTime] = useState(0);
+
+  // Controlled animation loop
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000;
+      setAnimationTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
     <pixiContainer data-testid="training-controls-panel">
       {/* Enhanced Panel Background */}
@@ -41,8 +62,8 @@ export const TrainingControlsPanel: React.FC<TrainingControlsPanelProps> = ({
           g.roundRect(0, 0, width, height, 12);
           g.stroke();
 
-          // Inner accent border with pulse for training state
-          const innerAlpha = isTraining ? 0.5 + Math.sin(Date.now() * 0.005) * 0.2 : 0.4;
+          // Inner accent border with pulse for training state using controlled animation
+          const innerAlpha = isTraining ? 0.5 + Math.sin(animationTime * 5) * 0.2 : 0.4;
           g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: innerAlpha });
           g.roundRect(2, 2, width - 4, height - 4, 10);
           g.stroke();
@@ -102,9 +123,9 @@ export const TrainingControlsPanel: React.FC<TrainingControlsPanelProps> = ({
             g.circle(0, 0, 6);
             g.fill();
 
-            // Enhanced pulsing effect when training
+            // Enhanced pulsing effect when training using controlled animation
             if (isTraining) {
-              const pulse = 1 + Math.sin(Date.now() * 0.006) * 0.4;
+              const pulse = 1 + Math.sin(animationTime * 6) * 0.4;
               
               // Outer pulse ring
               g.stroke({ width: 2, color: statusColor, alpha: 0.6 * (1 - pulse / 2) });

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
 import { VitalPointSeverity } from "../../../types/common";
@@ -18,6 +18,27 @@ export interface VitalPointTrainingPanelProps {
 export const VitalPointTrainingPanel: React.FC<
   VitalPointTrainingPanelProps
 > = ({ selectedVitalPoint, onVitalPointSelect, width, height, isMobile }) => {
+  // Animation state for smooth pulsing effects
+  const [animationTime, setAnimationTime] = useState(0);
+
+  // Controlled animation loop using requestAnimationFrame
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000; // Convert to seconds
+      setAnimationTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   // Use first 8 vital points for training panel
   const availableVitalPoints = useMemo(() => {
     return KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 8);
@@ -71,8 +92,8 @@ export const VitalPointTrainingPanel: React.FC<
       g.roundRect(0, 0, width, height, 12);
       g.stroke();
 
-      // Inner accent with subtle animation
-      const innerPulse = 0.4 + Math.sin(Date.now() * 0.003) * 0.1;
+      // Inner accent with controlled animation
+      const innerPulse = 0.4 + Math.sin(animationTime * 3) * 0.1;
       g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: innerPulse });
       g.roundRect(2, 2, width - 4, height - 4, 10);
       g.stroke();
@@ -109,7 +130,7 @@ export const VitalPointTrainingPanel: React.FC<
         });
       });
     },
-    [width, height]
+    [width, height, animationTime]
   );
 
   // Enhanced selection background drawer with proper pulse animation

@@ -1,5 +1,5 @@
 import { PlayerState } from "@/systems";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
@@ -10,7 +10,8 @@ extendPixiComponents();
 const createBackgroundDrawer = (
   width: number,
   height: number,
-  isTraining: boolean
+  isTraining: boolean,
+  animationTime: number
 ) => (g: PIXI.Graphics) => {
   g.clear();
   
@@ -28,9 +29,9 @@ const createBackgroundDrawer = (
   g.roundRect(0, 0, width, height, 8);
   g.stroke();
 
-  // Training status indicator banner
+  // Training status indicator banner with controlled animation
   if (isTraining) {
-    const pulse = 0.3 + Math.sin(Date.now() * 0.005) * 0.15;
+    const pulse = 0.3 + Math.sin(animationTime * 5) * 0.15;
     g.fill({ color: KOREAN_COLORS.ACCENT_GREEN, alpha: pulse });
     g.roundRect(5, 5, width - 10, 20, 4);
     g.fill();
@@ -124,9 +125,30 @@ export const TrainingStatsPanel: React.FC<TrainingStatsPanelProps> = ({
   height = 120,
   isMobile = false,
 }) => {
+  // Animation state for smooth pulsing effects
+  const [animationTime, setAnimationTime] = useState(0);
+
+  // Controlled animation loop
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000;
+      setAnimationTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   const backgroundDrawer = useMemo(
-    () => createBackgroundDrawer(width, height, isTraining),
-    [width, height, isTraining]
+    () => createBackgroundDrawer(width, height, isTraining, animationTime),
+    [width, height, isTraining, animationTime]
   );
 
   const kiBarDrawer = useMemo(

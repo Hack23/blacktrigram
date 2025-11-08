@@ -37,6 +37,27 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
   const [hitAnimation, setHitAnimation] = useState(0);
   const [hoveredVitalPoint, setHoveredVitalPoint] = useState<string | null>(null);
   const [recentHits, setRecentHits] = useState<Array<{ id: string; timestamp: number }>>([]);
+  
+  // Animation state for smooth glow effects
+  const [animationTime, setAnimationTime] = useState(0);
+
+  // Controlled animation loop
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000;
+      setAnimationTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   // Use existing Korean vital points data instead of inline definition
   const visibleVitalPoints = useMemo(() => {
@@ -199,9 +220,9 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
       g.fill();
     }
 
-    // Enhanced training glow effect with multiple rings
+    // Enhanced training glow effect with multiple rings using controlled animation
     if (isTraining) {
-      const baseTime = Date.now() * 0.003;
+      const baseTime = animationTime * 3;
       
       // Outer ring
       g.stroke({ width: 1, color: KOREAN_COLORS.ACCENT_GOLD, alpha: 0.3 + Math.sin(baseTime) * 0.1 });
@@ -218,7 +239,7 @@ export const TrainingDummy: React.FC<TrainingDummyProps> = ({
       g.circle(0, 0, 65 + Math.sin(baseTime + 2) * 5);
       g.stroke();
     }
-  }, [isHit, hitAnimation, isTraining]);
+  }, [isHit, hitAnimation, isTraining, animationTime]);
 
   // Cleanup old hits
   useEffect(() => {

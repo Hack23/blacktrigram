@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
@@ -61,6 +61,27 @@ export const TrainingModeSelector: React.FC<TrainingModeSelectorProps> = ({
   const modes = Object.keys(MODE_DATA) as TrainingMode[];
   const buttonWidth = (width - 20) / modes.length - 10;
 
+  // Animation state for smooth pulsing effects
+  const [animationTime, setAnimationTime] = useState(0);
+
+  // Controlled animation loop
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000;
+      setAnimationTime(elapsed);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
     <pixiContainer x={x} y={y} data-testid="training-mode-selector">
       {/* Enhanced Panel Background with gradient effect */}
@@ -122,9 +143,9 @@ export const TrainingModeSelector: React.FC<TrainingModeSelectorProps> = ({
                   g.fill();
                 }
 
-                // Enhanced selection glow with pulse effect
+                // Enhanced selection glow with pulse effect using controlled animation
                 if (isSelected) {
-                  const pulse = 1 + Math.sin(Date.now() * 0.003) * 0.2;
+                  const pulse = 1 + Math.sin(animationTime * 3) * 0.2;
                   g.stroke({ width: 2 * pulse, color: modeData.color, alpha: 0.9 });
                   g.roundRect(-2, -2, buttonWidth + 4, height - 16, 10);
                   g.stroke();
