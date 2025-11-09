@@ -23,6 +23,7 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/Hack23/blacktrigramsvg)](https://isitmaintained.com/project/Hack23/blacktrigram "Average time to resolve an issue")
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Hack23/blacktrigram)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/Hack23/blacktrigramsvg)](https://isitmaintained.com/project/Hack23/blacktrigram "Percentage of issues still open")
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
 [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
