@@ -440,14 +440,12 @@ describe("Complete Workflow Integration", () => {
   describe("Error Recovery Workflow", () => {
     it("should recover from invalid state transitions", () => {
       let currentPlayer = player1;
-      const originalHealth = currentPlayer.health;
 
       // Try to apply excessive damage
       currentPlayer = applyDamage(currentPlayer, 999999);
 
       // Verify health clamped to 0 (not negative)
       expect(currentPlayer.health).toBe(0);
-      expect(currentPlayer.health).toBeGreaterThanOrEqual(0);
 
       // Try to restore health beyond max
       currentPlayer = updatePlayerState(currentPlayer, {
