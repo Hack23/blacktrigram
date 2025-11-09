@@ -159,7 +159,7 @@ describe("Complete Workflow Integration", () => {
         // Track hits
         if (vitalResult.hit && vitalResult.vitalPointHit) {
           // Successfully hit vital point
-          expect(vitalResult.vitalPointHit.names?.korean || vitalResult.vitalPointHit.id).toBeDefined();
+          expect(vitalResult.vitalPointHit?.names?.korean || vitalResult.vitalPointHit?.id).toBeDefined();
         }
 
         // Execute normal combat
@@ -460,7 +460,8 @@ describe("Complete Workflow Integration", () => {
 
     it("should handle invalid stance transitions gracefully", () => {
       const currentStance = player1.currentStance;
-      const invalidStance = 999 as TrigramStance;
+      // Test with a value that would fail validation
+      const invalidStance = "INVALID_STANCE" as any;
 
       // Validate invalid transition
       const validation = trigramSystem.validateTransition(
@@ -482,7 +483,11 @@ describe("Complete Workflow Integration", () => {
       if (typeof player1.name === "string") {
         koreanTexts.push(player1.name);
       } else if (player1.name && typeof player1.name === "object" && "korean" in player1.name) {
-        koreanTexts.push((player1.name as any).korean);
+        // Safely extract korean property using type guard
+        const nameObj = player1.name as { korean?: string };
+        if (nameObj.korean) {
+          koreanTexts.push(nameObj.korean);
+        }
       }
 
       // Collect from techniques

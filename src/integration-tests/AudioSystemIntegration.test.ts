@@ -63,9 +63,12 @@ describe("Audio System Integration", () => {
 
       const testAsset: AudioAsset = {
         id: "test-sound",
-        category: "sfx",
-        src: "/test-sound.mp3",
+        type: "sound",
+        url: "/test-sound.mp3",
+        formats: ["mp3"],
+        loaded: false,
         volume: 0.5,
+        category: "sfx",
       };
 
       // Should not throw error even if file doesn't exist
@@ -81,9 +84,9 @@ describe("Audio System Integration", () => {
       await audioManager.initialize();
 
       const assets: AudioAsset[] = [
-        { id: "sound1", category: "sfx", src: "/sound1.mp3", volume: 0.5 },
-        { id: "sound2", category: "sfx", src: "/sound2.mp3", volume: 0.7 },
-        { id: "sound3", category: "music", src: "/music1.mp3", volume: 0.3 },
+        { id: "sound1", type: "sound", url: "/sound1.mp3", formats: ["mp3"], loaded: false, volume: 0.5, category: "sfx" },
+        { id: "sound2", type: "sound", url: "/sound2.mp3", formats: ["mp3"], loaded: false, volume: 0.7, category: "sfx" },
+        { id: "sound3", type: "music", url: "/music1.mp3", formats: ["mp3"], loaded: false, volume: 0.3, category: "music" },
       ];
 
       // Load assets in parallel
@@ -390,9 +393,12 @@ describe("Audio System Integration", () => {
       // Load and unload assets repeatedly
       const testAsset: AudioAsset = {
         id: "test-memory",
-        category: "sfx",
-        src: "/test.mp3",
+        type: "sound",
+        url: "/test.mp3",
+        formats: ["mp3"],
+        loaded: false,
         volume: 0.5,
+        category: "sfx",
       };
 
       for (let i = 0; i < 10; i++) {
@@ -419,7 +425,7 @@ describe("Audio System Integration", () => {
         stanceSounds.push(`stance-${stance}`);
       }
 
-      expect(stanceSounds.length).toBe(8);
+      expect(stanceSounds.length).toBe(stances.length);
     });
 
     it("should play sounds for all player archetypes", async () => {

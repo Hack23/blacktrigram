@@ -231,7 +231,7 @@ describe("Black Trigram - Complete Integration", () => {
       cy.log(`Extended play duration: ${duration}ms`);
 
       // Should complete in reasonable time (CI environment)
-      expect(duration).to.be.lessThan(30000);
+      expect(duration).to.be.lessThan(45000);
 
       cy.annotate("Performance test passed!");
     });

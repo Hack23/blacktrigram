@@ -266,7 +266,7 @@ describe("Black Trigram - Cross-System Integration", () => {
     it("should handle sustained integrated operations", () => {
       cy.annotate("Testing sustained operations");
 
-      // 5 minutes of continuous gameplay
+      // 3 rounds of sustained integrated operations
       for (let round = 1; round <= 3; round++) {
         cy.annotate(`Round ${round} of 3`);
 

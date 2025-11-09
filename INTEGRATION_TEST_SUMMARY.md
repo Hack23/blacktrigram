@@ -75,11 +75,14 @@ Successfully implemented comprehensive integration testing for Black Trigram (�
 ## Test Statistics
 
 - **Total Tests**: 229 → 265 (+36, +15.7%)
-- **Integration Tests**: 0 → 57 (NEW)
+- **Unit Integration Tests**: 0 → 36 (NEW)
+- **E2E Integration Tests**: +21 scenarios added
 - **Test Files**: 19 → 21 (+2)
 - **E2E Files**: 9 → 11 (+2)
 - **Lines of Code**: +2,211 lines
 - **Pass Rate**: 100% (265/265)
+
+> **Note:** The baseline of 229 tests represents existing unit tests. The 36 new unit integration tests were added, bringing the total to 265. Additionally, 21 E2E integration test scenarios were added to existing E2E test files.
 
 ## System Coverage
 

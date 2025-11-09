@@ -262,7 +262,7 @@ on:
     branches: [main, develop]
   pull_request:
   schedule:
-    - cron: '0 2 * * *' # Nightly at 2 AM
+    - cron: '0 2 * * *' # Nightly at 2 AM UTC
 
 jobs:
   unit-integration:
