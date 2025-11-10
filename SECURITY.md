@@ -49,3 +49,17 @@ Upon receipt of a vulnerability report, our team will:
 We appreciate your effort in helping us maintain a secure and reliable project. If your report results in a confirmed security fix, we will recognize your contribution in the release notes and/or a public acknowledgment, unless you request to remain anonymous.
 
 Thank you for helping us keep the game project and its users safe.
+
+---
+
+## 🔐 Security Documentation & ISMS
+
+For comprehensive security documentation and our Information Security Management System (ISMS):
+
+- **📋 [ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Complete ISMS framework, policies, and procedures
+- **🗺️ [ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md)** - Complete mapping of ISMS policies referenced by Black Trigram
+- **🛡️ [Threat Model](./THREAT_MODEL.md)** - Security threat analysis and risk assessment
+- **📋 [CRA Assessment](./CRA-ASSESSMENT.md)** - EU Cyber Resilience Act compliance
+- **🏗️ [Security Architecture](./SECURITY_ARCHITECTURE.md)** - Current security implementation
+
+Our commitment to transparency means all security policies, risk assessments, and compliance documentation are publicly available for review.

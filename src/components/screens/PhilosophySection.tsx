@@ -743,6 +743,27 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
           anchor={0.5}
         />
 
+        {/* ISMS Public Security Link */}
+        <pixiText
+          text="🔐 공개 보안 정책 | View Security Policies"
+          style={{
+            fontSize: isMobile ? 10 : 12,
+            fill: KOREAN_COLORS.ACCENT_GOLD,
+            fontFamily: "Arial, sans-serif",
+            fontWeight: "bold",
+            align: "center",
+          }}
+          interactive={true}
+          cursor="pointer"
+          onPointerTap={() =>
+            window.open("https://github.com/Hack23/ISMS-PUBLIC", "_blank")
+          }
+          x={width / 2}
+          y={buttonArea - 30}
+          anchor={0.5}
+          data-testid="isms-public-link"
+        />
+
         {/* Back Button */}
         <ResponsivePixiButton
           text="돌아가기"
