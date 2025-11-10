@@ -238,6 +238,106 @@ Built for **combat realism** and **authentic simulation**:
 
 ---
 
+## 📝 Architecture & Development Insights
+
+Explore in-depth technical analysis and architectural insights about Black Trigram through blog posts by our development team.
+
+### ⭐ Simon Moon's Architecture Chronicles
+
+<div align="center">
+
+_System Architect | Pattern Recognition Expert | Philosopher-Engineer_
+
+[**View Agent Profile**](https://github.com/Hack23/homepage/blob/master/.github/agents/simon-moon.md)
+
+</div>
+
+Simon Moon reveals the hidden structures and sacred geometry in Black Trigram's architecture through the Law of Fives and numerological patterns.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+#### 🥋 Black Trigram Architecture
+
+**[Five Fighters, Sacred Geometry](https://hack23.com/blog-trigram-architecture.html)**
+
+Five fighter archetypes discovered through combat domain analysis. Cultural authenticity meeting mechanical depth with zero backend architecture.
+
+</td>
+<td width="33%" valign="top">
+
+#### ⚔️ Black Trigram Combat System
+
+**[70 Vital Points & Physics](https://hack23.com/blog-trigram-combat.html)**
+
+Traditional Korean martial arts mapped to 70 biomechanical vital points. Five collision systems with anatomical precision and respect for cultural tradition.
+
+</td>
+<td width="33%" valign="top">
+
+#### 🥽 Black Trigram Future Vision
+
+**[VR Martial Arts & Immersive Combat](https://hack23.com/blog-trigram-future.html)**
+
+Five-year evolution roadmap from 2D fighter to VR martial arts training platform. Korean martial arts preservation through immersive technology.
+
+</td>
+</tr>
+</table>
+
+### 🔍 George Dorn's Code Analysis
+
+<div align="center">
+
+_Developer | Repository Inspector | Code Archaeologist_
+
+[**View Agent Profile**](https://github.com/Hack23/homepage/blob/master/.github/agents/george-dorn.md)
+
+</div>
+
+George Dorn provides detailed repository deep-dives based on actual code inspection, not assumptions. Each analysis includes cloned repositories, file counts, dependency reviews, and verified metrics.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+#### 💻 Black Trigram Code Analysis
+
+**[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
+
+**Stack:** TypeScript 5.9, React 19, PixiJS 8, Vite 7  
+**Metrics:** 132 TypeScript files, 70 vital points system, 5 fighter archetypes
+
+Examined package.json dependencies, explored src/ structure, verified combat system implementation, and reviewed AI integrations.
+
+</td>
+<td width="50%" valign="top">
+
+#### 🎮 Black Trigram Implementation Reality
+
+**[Combat Code: TypeScript vs. Martial Arts Physics](https://hack23.com/blog-trigram-architecture.html#george-dorn-implementation)**
+
+George's technical commentary reveals collision detection challenges, performance optimization for 60fps combat, and Easter eggs hidden throughout the codebase.
+
+**Easter Eggs:** Land exactly 23 hits → FNORD victory screen. Konami code unlocks "Hagbard Mode". Health at 23% → UI pulses urgently.
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+### 🌟 Explore More Insights
+
+**[📚 Full Security Blog](https://hack23.com/blog.html)** — 50+ posts covering cybersecurity, ISMS policies, and software architecture through radical transparency
+
+_"Code is reality made computational. If it doesn't work, nothing else matters."_ — **George Dorn**
+
+</div>
+
+---
+
 ## 🔐 Commitment to Transparency and Security
 
 At Hack23 AB, we believe that true security comes through transparency and demonstrable practices. Our Information Security Management System (ISMS) is publicly available, showcasing our commitment to security excellence and organizational transparency.
