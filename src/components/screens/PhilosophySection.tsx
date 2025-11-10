@@ -1,10 +1,11 @@
 import * as PIXI from "pixi.js";
 import React, { useEffect } from "react";
+import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems";
 import { KoreanCulture } from "../../systems/trigram/KoreanCulture";
 import { TRIGRAM_DATA } from "../../systems/trigram/types";
 import { TrigramStance } from "../../types";
-import { KOREAN_COLORS } from "../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import {
   ResponsivePixiButton,
   ResponsivePixiContainer,
@@ -26,6 +27,7 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
   height = 600,
 }) => {
   const isMobile = PIXI.isMobile.phone;
+  const audio = useAudio();
 
   // Enhanced event handling
   useEffect(() => {
@@ -742,6 +744,35 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({
           y={42}
           anchor={0.5}
         />
+
+        {/* ISMS Public Security Link - using layout system */}
+        <pixiContainer
+          layout={{
+            position: "relative",
+            alignSelf: "center",
+            bottom: 30,
+          }}
+          data-testid="isms-link-container"
+        >
+          <pixiText
+            text="🔐 공개 보안 정책 | View Security Policies"
+            style={{
+              fontSize: isMobile ? 10 : 12,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontFamily: FONT_FAMILY.KOREAN,
+              fontWeight: "bold",
+              align: "center",
+            }}
+            interactive={true}
+            cursor="pointer"
+            onPointerTap={() => {
+              audio.playSFX("menu_select");
+              window.open("https://github.com/Hack23/ISMS-PUBLIC", "_blank");
+            }}
+            anchor={0.5}
+            data-testid="isms-public-link"
+          />
+        </pixiContainer>
 
         {/* Back Button */}
         <ResponsivePixiButton

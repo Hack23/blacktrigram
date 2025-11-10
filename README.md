@@ -265,6 +265,8 @@ At Hack23 AB, we believe that true security comes through transparency and demon
   </tr>
 </table>
 
+**📊 ISMS Reference Mapping**: For a complete mapping of all ISMS policies referenced by Black Trigram, see [ISMS_REFERENCE_MAPPING.md](./ISMS_REFERENCE_MAPPING.md)
+
 ### 🏆 Security Through Transparency
 
 Our approach to cybersecurity consulting is built on a foundation of transparent practices:
