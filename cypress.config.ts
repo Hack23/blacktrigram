@@ -20,9 +20,9 @@ export default defineConfig({
   screenshotsFolder: REPORTS.screenshots,
   videosFolder: REPORTS.videos,
   experimentalMemoryManagement: true,
-  numTestsKeptInMemory: 10, // Added for memory optimization
-  video: true,
-  videoCompression: 32, // Added for smaller video files
+  numTestsKeptInMemory: 5, // Reduced from 10 for memory optimization
+  video: false, // Disabled by default, enabled only on failure via retries
+  videoCompression: 15, // Reduced from 32 for faster encoding
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
   viewportWidth: 1280,
@@ -58,13 +58,13 @@ export default defineConfig({
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/e2e.ts",
     testIsolation: true,
-    // Enhanced timeout settings for Black Trigram's complex rendering
-    defaultCommandTimeout: 8000,
-    requestTimeout: 10000,
-    responseTimeout: 10000,
-    pageLoadTimeout: 20000, // Increased for PixiJS loading
+    // Optimized timeout settings for faster test execution
+    defaultCommandTimeout: 6000, // Reduced from 8000
+    requestTimeout: 8000, // Reduced from 10000
+    responseTimeout: 8000, // Reduced from 10000
+    pageLoadTimeout: 15000, // Reduced from 20000
     chromeWebSecurity: false,
-    experimentalRunAllSpecs: true, // Added for better test execution
+    experimentalRunAllSpecs: true,
     // Environment variables for Black Trigram testing
     env: {
       GAME_SPEED: 1.0,
