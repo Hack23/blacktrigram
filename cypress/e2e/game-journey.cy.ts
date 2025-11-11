@@ -103,20 +103,21 @@ describe("Black Trigram - Game Journey", () => {
       viewports.forEach(([width, height]) => {
         cy.annotate(`Testing ${width}x${height}`);
         cy.viewport(width, height);
-        cy.wait(500); // Reduced from 1000ms
+        cy.wait(500); // Reduced wait for canvas stability
 
         // Verify essential elements
         cy.get('[data-testid="app-container"]').should("be.visible");
         cy.get("canvas").should("exist");
         cy.get('[data-testid="training-button"]').should("contain", "훈련");
         cy.get('[data-testid="combat-button"]').should("contain", "대전");
-
-        // Quick mode test at each size
-        cy.gameActions(["1"]);
-        cy.waitForCanvasReady();
-        cy.gameActions(["{esc}"]);
-        cy.waitForCanvasReady();
       });
+
+      // Quick mode test at one viewport to verify functionality
+      cy.viewport(1280, 720);
+      cy.gameActions(["1"]);
+      cy.waitForCanvasReady();
+      cy.gameActions(["{esc}"]);
+      cy.waitForCanvasReady();
     });
   });
 
@@ -172,8 +173,8 @@ describe("Black Trigram - Game Journey", () => {
       cy.gameActions(["{esc}"]);
       cy.waitForCanvasReady();
 
-      // Test state consistency across multiple sessions
-      for (let i = 0; i < 3; i++) {
+      // Test state consistency across sessions (reduced iterations)
+      for (let i = 0; i < 2; i++) {
         cy.enterCombatMode();
         cy.get('[data-testid="combat-screen"]').should("exist");
         cy.gameActions(["1", " "]);

@@ -87,8 +87,9 @@ pageLoadTimeout: 15000         // Reduced from 20000
 
 **Batch Operations:**
 - Before: Test each of 8 stances individually with 300ms waits = 2400ms
-- After: Test all 8 stances in sequence without waits = ~800ms
+- After: Test all 8 stances in sequence without explicit waits = ~800ms (Cypress command delay only)
 - **Savings: 67% time reduction per stance test**
+- **Note:** Custom commands like `cy.practiceStance()` include internal waits (800ms per call), and navigation commands like `cy.enterCombatMode()`/`cy.returnToIntro()` each include 1500ms waits. Optimization achieved by: (1) removing redundant explicit waits, (2) using before/after hooks instead of beforeEach/afterEach to minimize navigation, (3) reducing iteration counts in stress tests.
 
 **Consolidated Viewport Tests:**
 - Before: 3 separate test cases for responsive design
@@ -114,8 +115,9 @@ pageLoadTimeout: 15000         // Reduced from 20000
 
 ### Expected Runtime
 - **Before**: ~21 minutes
-- **After**: ~6-8 minutes (estimated)
-- **Improvement**: 60-65% faster
+- **After**: ~10-12 minutes (estimated, pending CI verification)
+- **Improvement**: 40-45% faster (conservative estimate)
+- **Note:** This is a projected estimate. Custom commands include internal waits (1500ms for navigation, 800ms for practiceStance) that limit optimization gains. Actual performance will be confirmed after CI runs.
 
 ### Code Quality
 - ✅ No linting errors in new test files

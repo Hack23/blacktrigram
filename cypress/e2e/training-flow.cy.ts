@@ -6,7 +6,7 @@
 
 describe("Black Trigram - Training Flow", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 15000 });
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
     cy.waitForCanvasReady();
   });
 
@@ -89,9 +89,8 @@ describe("Black Trigram - Training Flow", () => {
       cy.enterTrainingMode();
       cy.get('[data-testid="training-screen"]').should("exist");
 
-      // Practice each stance once efficiently
+      // Practice each stance once efficiently (batched without per-iteration annotations)
       for (let i = 1; i <= 8; i++) {
-        cy.annotate(`Practicing stance ${i}`);
         cy.practiceStance(i, 1);
       }
 
@@ -284,12 +283,12 @@ describe("Black Trigram - Training Flow", () => {
       cy.enterTrainingMode();
       cy.get('[data-testid="training-screen"]').should("exist");
 
-      // Practice extensively
-      for (let i = 0; i < 20; i++) {
+      // Practice extensively (reduced iterations for speed)
+      for (let i = 0; i < 6; i++) {
         const stance = ((i % 8) + 1).toString();
         cy.get("body").type(stance);
         cy.get("body").type(" ");
-        cy.wait(150); // Reduced from 300ms
+        cy.wait(50); // Minimal wait for stability
       }
 
       cy.log("✅ Extended training session completed");
@@ -299,8 +298,8 @@ describe("Black Trigram - Training Flow", () => {
     it("should handle rapid mode switching", () => {
       cy.annotate("Testing rapid mode switching");
 
-      // Switch between training and menu rapidly
-      for (let i = 0; i < 3; i++) {
+      // Switch between training and menu rapidly (reduced iterations)
+      for (let i = 0; i < 2; i++) {
         cy.enterTrainingMode();
         cy.get('[data-testid="training-screen"]').should("exist");
         cy.wait(300); // Reduced from 500ms

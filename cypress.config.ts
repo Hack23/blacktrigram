@@ -21,8 +21,9 @@ export default defineConfig({
   videosFolder: REPORTS.videos,
   experimentalMemoryManagement: true,
   numTestsKeptInMemory: 5, // Reduced from 10 for memory optimization
-  video: false, // Disabled by default, enabled only on failure via retries
-  videoCompression: 15, // Reduced from 32 for faster encoding
+  video: true, // Video recording enabled; videos are only saved for failed tests
+  videoUploadOnPasses: false, // Only upload videos for failed tests
+  videoCompression: 15, // Lower value = higher compression (smaller files, slower encoding)
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
   viewportWidth: 1280,

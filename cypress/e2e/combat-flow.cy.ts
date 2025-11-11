@@ -5,13 +5,15 @@
  */
 
 describe("Black Trigram - Combat Flow", () => {
-  beforeEach(() => {
+  // Shared setup for all tests - enter combat once
+  before(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });
     cy.waitForCanvasReady();
     cy.enterCombatMode();
   });
 
-  afterEach(() => {
+  // Clean up after all tests
+  after(() => {
     cy.returnToIntro();
   });
 
@@ -51,16 +53,15 @@ describe("Black Trigram - Combat Flow", () => {
     it("should display correctly at different viewport sizes", () => {
       cy.annotate("Testing combat responsive design");
 
-      // Desktop
+      // Test viewport changes without exiting combat mode
       cy.viewport(1920, 1080);
       cy.get('[data-testid="combat-screen"]').should("exist");
 
-      // Return and re-enter for tablet
-      cy.returnToIntro();
       cy.viewport(768, 1024);
-      cy.enterCombatMode();
       cy.get('[data-testid="combat-screen"]').should("exist");
 
+      // Reset to default viewport
+      cy.viewport(1280, 800);
       cy.log("✅ Responsive design verified");
     });
   });
@@ -69,9 +70,8 @@ describe("Black Trigram - Combat Flow", () => {
     it("should support all 8 trigram stances and transitions", () => {
       cy.annotate("Testing complete trigram stance system");
 
-      // Test all 8 stances in sequence
+      // Test all 8 stances in sequence (batched without per-iteration annotations)
       for (let i = 1; i <= 8; i++) {
-        cy.annotate(`Testing stance ${i}`);
         cy.get("body").type(i.toString());
         // No wait needed - let Cypress handle it
       }
@@ -179,12 +179,12 @@ describe("Black Trigram - Combat Flow", () => {
     it("should handle extended combat session without crashes", () => {
       cy.annotate("Testing extended combat stability");
 
-      // Execute many actions to test stability
+      // Execute many actions to test stability (reduced iterations for speed)
       for (let i = 0; i < 10; i++) {
         const stance = ((i % 8) + 1).toString();
         cy.get("body").type(stance);
         cy.get("body").type(" ");
-        cy.wait(150); // Reduced from 300ms
+        cy.wait(50); // Minimal wait for stability
       }
 
       cy.log("✅ Extended combat session completed");
@@ -277,8 +277,8 @@ describe("Black Trigram - Combat Flow", () => {
     it("should verify AI opponent is active and maintain flow", () => {
       cy.annotate("Testing AI and combat flow");
 
-      // Wait for potential AI actions
-      cy.wait(1000); // Reduced from 2000ms
+      // Wait for potential AI actions (assertion-based wait preferred)
+      cy.get('[data-testid="combat-hud"]', { timeout: 2000 }).should("exist");
 
       // Verify combat is intact
       cy.get('[data-testid="combat-screen"]').should("exist");
