@@ -8,7 +8,26 @@ This document contains 5 carefully prioritized GitHub issues for the Black Trigr
 - Detailed implementation guidance with file paths
 - Clear priority and effort estimates
 
-**To create these issues:**
+## 🚀 Quick Create (Automated)
+
+**Recommended:** Use the automated script to create all 5 issues at once:
+
+```bash
+# Install GitHub CLI (if needed)
+# Visit: https://cli.github.com/
+
+# Authenticate
+gh auth login
+
+# Create all issues
+./scripts/create-release-issues.sh
+```
+
+See [`scripts/README.md`](scripts/README.md) for details.
+
+## 📝 Manual Creation
+
+Alternatively, create issues manually:
 1. Copy each issue section below
 2. Create a new GitHub issue at: https://github.com/Hack23/blacktrigram/issues/new
 3. Use the title and body provided
