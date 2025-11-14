@@ -63,7 +63,7 @@ This Business Continuity Plan (BCP) establishes procedures to maintain and rapid
 | **📦 Source Repository** | Critical       | IP protection, development continuity           | Critical          |
 | **🔧 CI/CD Pipeline**    | Standard       | Can rebuild manually if needed                  | Medium            |
 | **🎵 Static Assets**     | Standard       | Cached locally, tolerates temporary unavailable | Medium            |
-| **�� Security Scanning** | Standard       | Important but not blocking for recovery         | Low               |
+| **🔐 Security Scanning** | Standard       | Important but not blocking for recovery         | Low               |
 
 ### **⏱️ Recovery Time Objectives (RTO)**
 
@@ -83,6 +83,106 @@ This Business Continuity Plan (BCP) establishes procedures to maintain and rapid
 | **Static Assets**       | 1 day      | CDN cache + repository storage      | Daily versions acceptable    |
 | **User Session Data**   | N/A        | No persistence (session-only)       | No recovery needed           |
 | **Configuration Files** | 0 minutes  | Version controlled in repository    | Last commit only             |
+
+---
+
+## 🚨 Incident Response Procedures
+
+### **1. CDN Outage**
+**Detection:** Automated monitoring alerts or user reports.
+
+**Immediate Actions:**
+- Confirm outage via CDN status page and monitoring tools
+- Notify the Response Team (see Roles & Responsibilities)
+- Switch DNS to backup CDN provider if available
+- Communicate status to users via status page and social media
+
+**Escalation:** If outage exceeds 30 minutes, escalate to CTO and initiate Recovery Strategies.
+
+### **2. Repository Compromise or Loss**
+**Detection:** Security alert, unauthorized commit, or repository inaccessible.
+
+**Immediate Actions:**
+- Restrict repository access
+- Notify Security Lead and CEO
+- Initiate investigation and restore from latest backup if needed
+- Communicate with affected contributors
+
+**Escalation:** If data loss is confirmed, follow Recovery Strategies and notify all stakeholders.
+
+### **3. Build Pipeline Failure**
+**Detection:** Build failures, deployment errors, or CI/CD alerts.
+
+**Immediate Actions:**
+- Review build logs and error messages
+- Roll back to last successful build if possible
+- Notify DevOps Lead
+
+**Escalation:** If unresolved after 1 hour, escalate to CTO and consider manual deployment.
+
+---
+
+## 🔧 Recovery Strategies
+
+### **CDN/Static Asset Recovery**
+- Use backup CDN provider or direct hosting from GitHub Pages
+- Restore static assets from latest repository version
+- Update DNS records as needed
+- Target recovery time: < 1 hour
+
+### **Repository Recovery**
+- Restore from GitHub backup or local clones
+- Validate integrity of restored codebase
+- Re-enable access with updated credentials
+- Verify commit history and signatures
+- Target recovery time: < 2 hours
+
+### **Build Pipeline Recovery**
+- Re-run failed builds after addressing root cause
+- Use manual build and deployment scripts if CI/CD is unavailable
+- Document incident and update pipeline configuration as needed
+- Target recovery time: < 4 hours
+
+---
+
+## 📣 Communication Plan
+
+| Stakeholder         | Notification Method      | Escalation Contact      | Timeframe         |
+|--------------------|-------------------------|------------------------|-------------------|
+| CEO                | Phone, Email            | CTO                    | Immediate         |
+| CTO                | Phone, Email            | CEO                    | Immediate         |
+| DevOps Lead        | Slack, Email            | CTO                    | Within 15 minutes |
+| Security Lead      | Slack, Email            | CTO                    | Within 15 minutes |
+| All Staff          | Email, Slack            | CEO                    | Within 1 hour     |
+| Users/Public       | Status Page, Social Media| CEO/Comms Lead         | As needed         |
+
+**Escalation:** If primary contact is unavailable, escalate to next in chain.
+
+**Templates:** Use pre-approved incident notification templates for external communications.
+
+---
+
+## 🧪 Testing & Maintenance
+
+- **BCP Review:** Annually, or after any major incident
+- **Tabletop Exercises:** Semi-annually, simulate major incident scenarios
+- **Contact Verification:** Quarterly, verify all contact information
+- **Backup Verification:** Monthly, test restoration from backups
+- **Update Procedures:** After any process or personnel change
+
+---
+
+## 👥 Roles & Responsibilities
+
+| Role             | Name/Contact         | Responsibilities                                      |
+|------------------|---------------------|-------------------------------------------------------|
+| CEO              | [Name/Email/Phone]  | Final decision-maker, external communications         |
+| CTO              | [Name/Email/Phone]  | Technical lead, escalation point                      |
+| DevOps Lead      | [Name/Email/Phone]  | Infrastructure, build pipeline, recovery execution    |
+| Security Lead    | [Name/Email/Phone]  | Security incidents, repository integrity              |
+| Communications   | [Name/Email/Phone]  | User/public notifications, status updates             |
+
+**Note:** All team members must be familiar with this plan and their assigned roles.
 
 ---
 

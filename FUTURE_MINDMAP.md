@@ -6,7 +6,7 @@
 | --------------------------------------------- | ---------------- | ---------------------------------------------- |
 | [Current Mindmap](MINDMAP.md)                 | 🧠 Current Concept| Current Korean martial arts concepts          |
 | [Future Architecture](FUTURE_ARCHITECTURE.md) | 🚀 Future Vision | Planned architectural enhancements             |
-| [Future SWOT](FUTURE_SWOT.md)                 | �� Strategy      | Strategic analysis for future phases           |
+| [Future SWOT](FUTURE_SWOT.md)                 | 📊 Strategy      | Strategic analysis for future phases           |
 | [Future Flowchart](FUTURE_FLOWCHART.md)       | 🔄 Future Flow   | Planned workflow enhancements                  |
 
 ---

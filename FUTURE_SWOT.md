@@ -78,7 +78,7 @@ quadrantChart
     "📱 Mobile UX Complexity": [0.35, 0.28] radius: 6, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
     "🔄 State Sync Complexity": [0.12, 0.18] radius: 6, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
     "🎮 Unproven Market Fit": [0.28, 0.22] radius: 5, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
-    "�� No User Analytics Yet": [0.33, 0.12] radius: 5, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
+    "📊 No User Analytics Yet": [0.33, 0.12] radius: 5, color: #f5a9a9, stroke-color: #aa3939, stroke-width: 2px
 
     "🎮 AAA Fighting Game Competition": [0.8, 0.3] radius: 8, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
     "💰 Monetization Challenges": [0.85, 0.25] radius: 7, color: #d5a6bd, stroke-color: #9b568a, stroke-width: 2px
