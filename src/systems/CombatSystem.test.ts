@@ -149,6 +149,353 @@ describe("CombatSystem", () => {
         );
       });
     });
+
+    it("should filter out techniques when stunned", () => {
+      const stunnedPlayer: PlayerState = {
+        ...player1,
+        isStunned: true,
+      };
+
+      const techniques = combatSystem.getAvailableTechniques(stunnedPlayer);
+
+      // Should return no techniques when stunned
+      expect(techniques).toEqual([]);
+    });
+
+    it("should filter out techniques from wrong stance", () => {
+      const player = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+      // Player in GEON stance
+      player.currentStance = TrigramStance.GEON;
+
+      const techniques = combatSystem.getAvailableTechniques(player);
+
+      // All returned techniques should match the player's stance
+      techniques.forEach((technique) => {
+        expect(technique.stance).toBe(TrigramStance.GEON);
+      });
+    });
+  });
+
+  describe("isPlayerDefeated", () => {
+    it("should return true when health is 0", () => {
+      const defeatedPlayer: PlayerState = {
+        ...player1,
+        health: 0,
+      };
+
+      expect(combatSystem.isPlayerDefeated(defeatedPlayer)).toBe(true);
+    });
+
+    it("should return true when health is negative", () => {
+      const defeatedPlayer: PlayerState = {
+        ...player1,
+        health: -10,
+      };
+
+      expect(combatSystem.isPlayerDefeated(defeatedPlayer)).toBe(true);
+    });
+
+    it("should return true when consciousness is 0", () => {
+      const defeatedPlayer: PlayerState = {
+        ...player1,
+        consciousness: 0,
+      };
+
+      expect(combatSystem.isPlayerDefeated(defeatedPlayer)).toBe(true);
+    });
+
+    it("should return false when player has health and consciousness", () => {
+      expect(combatSystem.isPlayerDefeated(player1)).toBe(false);
+    });
+  });
+
+  describe("updatePlayerState", () => {
+    it("should regenerate ki over time", () => {
+      const lowKiPlayer: PlayerState = {
+        ...player1,
+        ki: 50,
+        maxKi: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(lowKiPlayer, 1000); // 1 second
+
+      expect(updated.ki).toBeGreaterThan(lowKiPlayer.ki);
+      expect(updated.ki).toBeLessThanOrEqual(lowKiPlayer.maxKi);
+    });
+
+    it("should regenerate stamina over time", () => {
+      const lowStaminaPlayer: PlayerState = {
+        ...player1,
+        stamina: 30,
+        maxStamina: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(lowStaminaPlayer, 1000);
+
+      expect(updated.stamina).toBeGreaterThan(lowStaminaPlayer.stamina);
+      expect(updated.stamina).toBeLessThanOrEqual(lowStaminaPlayer.maxStamina);
+    });
+
+    it("should regenerate health slowly over time", () => {
+      const lowHealthPlayer: PlayerState = {
+        ...player1,
+        health: 50,
+        maxHealth: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(lowHealthPlayer, 1000);
+
+      expect(updated.health).toBeGreaterThan(lowHealthPlayer.health);
+      expect(updated.health).toBeLessThanOrEqual(lowHealthPlayer.maxHealth);
+    });
+
+    it("should not exceed max ki", () => {
+      const almostFullKiPlayer: PlayerState = {
+        ...player1,
+        ki: 99,
+        maxKi: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(almostFullKiPlayer, 10000);
+
+      expect(updated.ki).toBe(almostFullKiPlayer.maxKi);
+    });
+
+    it("should not exceed max stamina", () => {
+      const almostFullStaminaPlayer: PlayerState = {
+        ...player1,
+        stamina: 98,
+        maxStamina: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(
+        almostFullStaminaPlayer,
+        10000
+      );
+
+      expect(updated.stamina).toBe(almostFullStaminaPlayer.maxStamina);
+    });
+
+    it("should not exceed max health", () => {
+      const almostFullHealthPlayer: PlayerState = {
+        ...player1,
+        health: 99,
+        maxHealth: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(
+        almostFullHealthPlayer,
+        10000
+      );
+
+      expect(updated.health).toBe(almostFullHealthPlayer.maxHealth);
+    });
+
+    it("should not regenerate health when at 0", () => {
+      const defeatedPlayer: PlayerState = {
+        ...player1,
+        health: 0,
+      };
+
+      const updated = combatSystem.updatePlayerState(defeatedPlayer, 1000);
+
+      expect(updated.health).toBe(0);
+    });
+
+    it("should remove expired status effects", () => {
+      const now = Date.now();
+      const playerWithEffects: PlayerState = {
+        ...player1,
+        statusEffects: [
+          {
+            id: "expired_effect",
+            type: "weakened",
+            intensity: "moderate" as any,
+            duration: 1000,
+            description: { korean: "만료된 효과", english: "Expired effect" },
+            stackable: false,
+            source: "test",
+            startTime: now - 2000,
+            endTime: now - 1000, // Already expired
+          },
+          {
+            id: "active_effect",
+            type: "stun",
+            intensity: "high" as any,
+            duration: 5000,
+            description: { korean: "활성 효과", english: "Active effect" },
+            stackable: false,
+            source: "test",
+            startTime: now,
+            endTime: now + 5000, // Still active
+          },
+        ],
+      };
+
+      const updated = combatSystem.updatePlayerState(playerWithEffects, 100);
+
+      expect(updated.statusEffects.length).toBe(1);
+      expect(updated.statusEffects[0].id).toBe("active_effect");
+    });
+  });
+
+  describe("static resolveAttack", () => {
+    it("should work as a static method", () => {
+      const result = CombatSystem.resolveAttack(player1, player2, mockTechnique);
+
+      expect(result).toBeDefined();
+      expect(result.hit).toBeDefined();
+      expect(result.damage).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe("applyCombatResult - static", () => {
+    it("should apply damage to defender when hit", () => {
+      const hitResult: any = {
+        hit: true,
+        damage: 25,
+        timestamp: Date.now(),
+      };
+
+      const { updatedDefender } = CombatSystem.applyCombatResult(
+        hitResult,
+        player1,
+        player2
+      );
+
+      expect(updatedDefender.health).toBe(player2.health - 25);
+      expect(updatedDefender.totalDamageReceived).toBe(
+        player2.totalDamageReceived + 25
+      );
+      expect(updatedDefender.hitsTaken).toBe(player2.hitsTaken + 1);
+    });
+
+    it("should not apply damage when miss", () => {
+      const missResult: any = {
+        hit: false,
+        damage: 0,
+        timestamp: Date.now(),
+      };
+
+      const { updatedDefender } = CombatSystem.applyCombatResult(
+        missResult,
+        player1,
+        player2
+      );
+
+      expect(updatedDefender.health).toBe(player2.health);
+    });
+
+    it("should deduct ki and stamina from attacker", () => {
+      const result: any = {
+        hit: true,
+        damage: 10,
+        timestamp: Date.now(),
+      };
+
+      const { updatedAttacker } = CombatSystem.applyCombatResult(
+        result,
+        player1,
+        player2
+      );
+
+      expect(updatedAttacker.ki).toBeLessThan(player1.ki);
+      expect(updatedAttacker.stamina).toBeLessThan(player1.stamina);
+    });
+
+    it("should update attacker damage dealt on hit", () => {
+      const result: any = {
+        hit: true,
+        damage: 30,
+        timestamp: Date.now(),
+      };
+
+      const { updatedAttacker } = CombatSystem.applyCombatResult(
+        result,
+        player1,
+        player2
+      );
+
+      expect(updatedAttacker.totalDamageDealt).toBe(
+        player1.totalDamageDealt + 30
+      );
+      expect(updatedAttacker.hitsLanded).toBe(player1.hitsLanded + 1);
+    });
+
+    it("should not update damage dealt on miss", () => {
+      const result: any = {
+        hit: false,
+        damage: 0,
+        timestamp: Date.now(),
+      };
+
+      const { updatedAttacker } = CombatSystem.applyCombatResult(
+        result,
+        player1,
+        player2
+      );
+
+      expect(updatedAttacker.totalDamageDealt).toBe(player1.totalDamageDealt);
+      expect(updatedAttacker.hitsLanded).toBe(player1.hitsLanded);
+    });
+
+    it("should not reduce health below 0", () => {
+      const highDamageResult: any = {
+        hit: true,
+        damage: 999,
+        timestamp: Date.now(),
+      };
+
+      const { updatedDefender } = CombatSystem.applyCombatResult(
+        highDamageResult,
+        player1,
+        player2
+      );
+
+      expect(updatedDefender.health).toBe(0);
+    });
+
+    it("should not reduce ki below 0", () => {
+      const lowKiPlayer: PlayerState = {
+        ...player1,
+        ki: 2,
+      };
+
+      const result: any = {
+        hit: true,
+        damage: 10,
+        timestamp: Date.now(),
+      };
+
+      const { updatedAttacker } = CombatSystem.applyCombatResult(
+        result,
+        lowKiPlayer,
+        player2
+      );
+
+      expect(updatedAttacker.ki).toBe(0);
+    });
+
+    it("should not reduce stamina below 0", () => {
+      const lowStaminaPlayer: PlayerState = {
+        ...player1,
+        stamina: 3,
+      };
+
+      const result: any = {
+        hit: true,
+        damage: 10,
+        timestamp: Date.now(),
+      };
+
+      const { updatedAttacker } = CombatSystem.applyCombatResult(
+        result,
+        lowStaminaPlayer,
+        player2
+      );
+
+      expect(updatedAttacker.stamina).toBe(0);
+    });
   });
 });
 
