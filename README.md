@@ -16,7 +16,10 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations)
 [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
 [![Test & Report](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
-[![Unit Test Plan](https://img.shields.io/badge/Unit%20Test%20Plan-ISMS%20Compliant-blue)](UnitTestPlan.md)
+
+**📋 Test Documentation:**
+[![E2E Test Plan](https://img.shields.io/badge/E2E-Test_Plan-00D9FF?style=flat&logo=cypress)](E2ETestPlan.md)
+[![Unit Test Plan](https://img.shields.io/badge/Unit-Test_Plan-4FC08D?style=flat&logo=vitest)](UnitTestPlan.md)
 
 [![Performance Testing](https://img.shields.io/badge/Performance-Documented-blue?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-Score_90+-success?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
@@ -32,7 +35,6 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/Hack23/blacktrigramsvg)](https://isitmaintained.com/project/Hack23/blacktrigram "Percentage of issues still open")
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
 [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
-
 
 _A realistic 2D precision combat game inspired by Korean martial arts philosophy and the I Ching_
 
