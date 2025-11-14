@@ -19,8 +19,7 @@ Per Hack23 AB's Secure Development Policy, this project maintains:
 | **Performance Assertions** | Load time & FPS monitoring | ✅ Tracked | Section 4.3.3.5 |
 
 **Evidence Links:**
-- [E2E Test Reports](https://hack23.github.io/blacktrigram/cypress/mochawesome/)
-- [CI Workflow](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
+- **E2E Test Reports:** Available as downloadable CI artifacts from the [CI Workflow](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml) (see the "Artifacts" section in each workflow run)
 - [Test Execution Badge](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml/badge.svg)
 
 **See Also:** 
@@ -91,10 +90,10 @@ Per Hack23 AB's Secure Development Policy, this project maintains:
 **Browser Testing Matrix:**
 | Browser | Version | Platform | Priority | Status |
 |---------|---------|----------|----------|--------|
-| **Chrome** | Latest (131+) | Windows/Mac/Linux | ✅ High | Tested |
-| **Firefox** | Latest (132+) | Windows/Mac/Linux | ✅ High | Tested |
-| **Edge** | Latest (131+) | Windows | ✅ High | Tested |
-| **Safari** | Latest (18+) | Mac | ⚠️ Medium | Planned |
+| **Chrome** | Latest Stable | Windows/Mac/Linux | ✅ High | Tested |
+| **Firefox** | Latest Stable | Windows/Mac/Linux | ✅ High | Tested |
+| **Edge** | Latest Stable | Windows | ✅ High | Tested |
+| **Safari** | Latest Stable | Mac | ⚠️ Medium | Planned |
 
 **Viewport Testing Matrix:**
 | Device Type | Width x Height | Orientation | Priority |
@@ -137,8 +136,6 @@ cypress/
 │   ├── e2e.ts                       # E2E support file
 │   ├── component.ts                 # Component support
 │   └── commands.ts                  # Custom Cypress commands
-└── plugins/
-    └── merge-reports.js             # Mochawesome report merging
 ```
 
 ### Custom Cypress Commands
@@ -191,16 +188,18 @@ npm run test:e2ereportmerge    # Merge JSON reports
 npm run test:e2ereporthtmlall  # Generate HTML report
 ```
 
-**3. Report Location:**
+**3. Report Location (Local):**
 - Individual JSON: `docs/cypress/mochawesome/*.json`
 - Merged JSON: `docs/cypress/mochawesome-all.json`
 - HTML Report: `docs/cypress/mochawesome/index.html`
 - JUnit XML: `docs/cypress/junit/results-*.xml`
 
 **4. CI Artifacts:**
-- Videos: `docs/cypress/videos/` (failures only)
-- Screenshots: `docs/cypress/screenshots/` (failures only)
-- Reports: Uploaded as GitHub Actions artifacts
+CI uploads artifacts from the following locations (configured in cypress.config.ts to write to `docs/cypress/` but uploaded from standard Cypress paths):
+- Videos: `cypress/videos/` (failures only) → uploaded to `docs/cypress/videos/`
+- Screenshots: `cypress/screenshots/` (failures only) → uploaded to `docs/cypress/screenshots/`
+- Results: `cypress/results/` → uploaded to `docs/cypress/results/`
+- Reports: Available as downloadable artifacts from [GitHub Actions workflow runs](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
 
 ### Mochawesome Report Contents
 - ✅ Test pass/fail summary with percentages
@@ -228,7 +227,7 @@ e2e-tests:
       run: npm install
     - name: Start app and run Cypress tests
       run: |
-        xvfb-run --auto-servernum           --server-args="-screen 0 1280x720x24"           npm run test:e2e
+        xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
     - name: Upload Cypress results
       if: always()
       uses: actions/upload-artifact@v5
