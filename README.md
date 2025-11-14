@@ -17,6 +17,10 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
 [![Test & Report](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
 
+[![Performance Testing](https://img.shields.io/badge/Performance-Documented-blue?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-Score_90+-success?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
+[![Performance Budget](https://img.shields.io/badge/Performance_Budget-Monitored-blue?style=flat-square&logo=lighthouse&logoColor=white)](./budget.json)
+
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
@@ -502,7 +506,7 @@ Game/frontend will be open source with commercial backend supporting multiplayer
 - **🔏 Build Attestations** - Cryptographic proof of build integrity
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
-- **⚡ Lighthouse Performance** - Automated performance and accessibility audits
+- **⚡ Lighthouse Performance** - [Automated performance and accessibility audits](./performance-testing.md)
 
 
 ---
