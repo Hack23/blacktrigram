@@ -1,4 +1,4 @@
-docs
+docs/**/*
 docs/coverage
 node_modules/
 cypress/results/
