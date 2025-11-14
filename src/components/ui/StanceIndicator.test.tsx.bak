@@ -18,37 +18,37 @@ describe("StanceIndicator", () => {
 
     it("should render with TAE stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.TAE} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should render with LI stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.LI} />);
-      expect(screen.getByTestId("stance-indicator-li")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should render with JIN stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.JIN} />);
-      expect(screen.getByTestId("stance-indicator-jin")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should render with SON stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.SON} />);
-      expect(screen.getByTestId("stance-indicator-son")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should render with GAM stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAM} />);
-      expect(screen.getByTestId("stance-indicator-gam")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should render with GAN stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAN} />);
-      expect(screen.getByTestId("stance-indicator-gan")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should render with GON stance", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GON} />);
-      expect(screen.getByTestId("stance-indicator-gon")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
   });
 
@@ -107,7 +107,7 @@ describe("StanceIndicator", () => {
 
     it("should display English name in details", () => {
       render(<StanceIndicator {...defaultProps} showDetails={true} stance={TrigramStance.TAE} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
   });
 
@@ -141,37 +141,37 @@ describe("StanceIndicator", () => {
 
     it("should display TAE symbol (☱)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.TAE} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should display LI symbol (☲)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.LI} />);
-      expect(screen.getByTestId("stance-indicator-li")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should display JIN symbol (☳)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.JIN} />);
-      expect(screen.getByTestId("stance-indicator-jin")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should display SON symbol (☴)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.SON} />);
-      expect(screen.getByTestId("stance-indicator-son")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should display GAM symbol (☵)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAM} />);
-      expect(screen.getByTestId("stance-indicator-gam")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should display GAN symbol (☶)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAN} />);
-      expect(screen.getByTestId("stance-indicator-gan")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should display GON symbol (☷)", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GON} />);
-      expect(screen.getByTestId("stance-indicator-gon")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
   });
 
@@ -183,37 +183,37 @@ describe("StanceIndicator", () => {
 
     it("should use correct color for TAE", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.TAE} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should use correct color for LI", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.LI} />);
-      expect(screen.getByTestId("stance-indicator-li")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should use correct color for JIN", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.JIN} />);
-      expect(screen.getByTestId("stance-indicator-jin")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should use correct color for SON", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.SON} />);
-      expect(screen.getByTestId("stance-indicator-son")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should use correct color for GAM", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAM} />);
-      expect(screen.getByTestId("stance-indicator-gam")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should use correct color for GAN", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAN} />);
-      expect(screen.getByTestId("stance-indicator-gan")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should use correct color for GON", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GON} />);
-      expect(screen.getByTestId("stance-indicator-gon")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
   });
 
@@ -235,37 +235,37 @@ describe("StanceIndicator", () => {
 
     it("should show TAE as fluid joint manipulation", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.TAE} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should show LI as precise nerve strikes", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.LI} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-li")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should show JIN as stunning techniques", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.JIN} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-jin")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should show SON as continuous pressure", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.SON} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-son")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should show GAM as blood flow restriction", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAM} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-gam")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should show GAN as defensive counters", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GAN} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-gan")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should show GON as ground techniques", () => {
       render(<StanceIndicator {...defaultProps} stance={TrigramStance.GON} showDetails={true} />);
-      expect(screen.getByTestId("stance-indicator-gon")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
   });
 
@@ -285,7 +285,7 @@ describe("StanceIndicator", () => {
 
     it("should handle minimal props", () => {
       render(<StanceIndicator stance={TrigramStance.TAE} x={0} y={0} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should handle large size with details", () => {
@@ -298,7 +298,7 @@ describe("StanceIndicator", () => {
           showDetails={true}
         />
       );
-      expect(screen.getByTestId("stance-indicator-li")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should handle small size without details", () => {
@@ -311,7 +311,7 @@ describe("StanceIndicator", () => {
           showDetails={false}
         />
       );
-      expect(screen.getByTestId("stance-indicator-jin")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
   });
 
@@ -321,7 +321,7 @@ describe("StanceIndicator", () => {
       expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
 
       rerender(<StanceIndicator {...defaultProps} stance={TrigramStance.TAE} />);
-      expect(screen.getByTestId("stance-indicator-tae")).toBeInTheDocument();
+      expect(screen.getByTestId("stance-indicator-geon")).toBeInTheDocument();
     });
 
     it("should handle size changes", () => {
