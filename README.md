@@ -28,6 +28,9 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
 [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
 
+**📋 Test Documentation:**
+[![E2E Test Plan](https://img.shields.io/badge/E2E-Test_Plan-00D9FF?style=flat&logo=cypress)](E2ETestPlan.md)
+[![Unit Test Plan](https://img.shields.io/badge/Unit-Test_Plan-4FC08D?style=flat&logo=vitest)](UnitTestPlan.md)
 
 _A realistic 2D precision combat game inspired by Korean martial arts philosophy and the I Ching_
 
