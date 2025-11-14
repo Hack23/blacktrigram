@@ -1,3 +1,5 @@
+docs
+docs/coverage
 node_modules/
 cypress/results/
 node_modules
