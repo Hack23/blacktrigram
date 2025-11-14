@@ -16,6 +16,7 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations)
 [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
 [![Test & Report](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
+[![Unit Test Plan](https://img.shields.io/badge/Unit%20Test%20Plan-ISMS%20Compliant-blue)](UnitTestPlan.md)
 
 [![Performance Testing](https://img.shields.io/badge/Performance-Documented-blue?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-Score_90+-success?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
