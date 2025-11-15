@@ -73,8 +73,10 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   x = 0,
   y = 0,
 }) => {
-  // Performance: Add performance marks for profiling
-  performance.mark('combat-render-start');
+  // Performance: Add performance marks for profiling (development only)
+  if (import.meta.env.DEV) {
+    performance.mark('combat-render-start');
+  }
 
   // Optimized layout calculations using custom hook
   const { layoutConstants, arenaBounds, isMobile } = useCombatLayout(width, height);
@@ -273,11 +275,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     onPlayerUpdate(0, { position: playerPosition });
   }, [playerPosition, onPlayerUpdate]);
 
-  // Sync player positions when they're updated through validPlayers
-  useEffect(() => {
-    setPlayerPositions([validPlayers[0].position, validPlayers[1].position]);
-  }, [validPlayers[0].position.x, validPlayers[0].position.y, validPlayers[1].position.x, validPlayers[1].position.y]);
-
   // Round Management
   useEffect(() => {
     if (isPaused) return;
@@ -472,9 +469,11 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     []
   );
 
-  // Performance: Mark render end
-  performance.mark('combat-render-end');
-  performance.measure('combat-render', 'combat-render-start', 'combat-render-end');
+  // Performance: Mark render end (development only)
+  if (import.meta.env.DEV) {
+    performance.mark('combat-render-end');
+    performance.measure('combat-render', 'combat-render-start', 'combat-render-end');
+  }
 
   return (
     <pixiContainer

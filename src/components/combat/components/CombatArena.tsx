@@ -63,9 +63,9 @@ function getPlayerAnimationState(
   const player = players[playerIndex];
   
   if (player.health <= 0) return "defeat";
-  if (player.combatState === CombatState.DEFENDING) return "defend";
+  if (player.isBlocking) return "defend";
   if (player.combatState === CombatState.ATTACKING) return "attack";
-  if (player.combatState === CombatState.STUNNED) return "hit";
+  if (player.isStunned) return "hit";
   if (isExecutingTechnique && playerIndex === 0) return "technique_execute";
   if (playerIndex === 0 && isMoving) return "walk";
 
@@ -151,7 +151,7 @@ export const CombatArena = React.memo<CombatArenaProps>(
 
         {/* Hit Effects Layer */}
         <HitEffectsLayer
-          effects={[...hitEffects]}
+          effects={hitEffects as HitEffect[]}
           onEffectComplete={onEffectComplete}
         />
 

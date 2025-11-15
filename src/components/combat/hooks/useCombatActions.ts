@@ -42,12 +42,12 @@ import { CombatSystem } from "@/systems/CombatSystem";
 import { Position, TrigramStance } from "@/types";
 import { HitEffectType } from "@/systems/effects";
 import { useCallback } from "react";
-import { CombatState, CombatActions } from "./useCombatState";
+import { CombatScreenState, CombatActions } from "./useCombatState";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
   readonly playerPositions: readonly [Position, Position];
-  readonly combatState: CombatState;
+  readonly combatState: CombatScreenState;
   readonly combatActions: CombatActions;
   readonly combatSystem: CombatSystem;
   readonly onPlayerUpdate: (playerIndex: number, updates: Partial<PlayerState>) => void;

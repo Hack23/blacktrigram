@@ -51,7 +51,7 @@ export interface CombatLayout {
 export function useCombatLayout(width: number, height: number): CombatLayout {
   // Performance: Only recalculate when crossing mobile breakpoint (768px)
   // This prevents recalculation on every pixel change during resize
-  const isMobile = useMemo(() => width < 768, [width < 768]);
+  const isMobile = useMemo(() => width < 768, [width]);
 
   // Centralized layout constants for easier tweaking
   // Optimized: Only depends on isMobile boolean, not exact width

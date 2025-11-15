@@ -24,9 +24,10 @@ import { HitEffect } from "@/systems";
 import { useCallback, useReducer } from "react";
 
 /**
- * Combat state managed by the reducer
+ * Combat screen state managed by the reducer
+ * Note: Renamed from CombatState to avoid conflict with CombatState enum in types/common.ts
  */
-export interface CombatState {
+export interface CombatScreenState {
   readonly hitEffects: HitEffect[];
   readonly isExecutingTechnique: boolean;
   readonly combatMessages: string[];
@@ -61,7 +62,7 @@ type CombatAction =
 /**
  * Initial combat state
  */
-const initialState: CombatState = {
+const initialState: CombatScreenState = {
   hitEffects: [],
   isExecutingTechnique: false,
   combatMessages: [],
@@ -77,7 +78,7 @@ const initialState: CombatState = {
  * Combat state reducer
  * Handles all combat state updates in a centralized, performant way
  */
-function combatReducer(state: CombatState, action: CombatAction): CombatState {
+function combatReducer(state: CombatScreenState, action: CombatAction): CombatScreenState {
   switch (action.type) {
     case "SET_HIT_EFFECTS":
       return { ...state, hitEffects: action.payload };
