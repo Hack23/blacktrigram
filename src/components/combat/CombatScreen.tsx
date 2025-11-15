@@ -29,6 +29,7 @@ import { CombatHUD } from "./components/CombatHUD";
 import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { PauseOverlay } from "./components/PauseOverlay";
 import { useAICombat } from "./hooks/useAICombat";
+import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
 
@@ -244,11 +245,38 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     [createHitEffect, handleEffectComplete, combatActions]
   );
 
+  // Combat action handlers using custom hook
+  const {
+    handleAttack,
+    handleDefend,
+    handleTechniqueExecute,
+    handleStanceSwitch,
+    handleAIAttack,
+    handleAIDefend,
+    handleAITechnique,
+    moveAIPlayer,
+  } = useCombatActions({
+    validPlayers,
+    playerPositions: [playerPositions[0], playerPositions[1]],
+    combatState,
+    combatActions,
+    combatSystem,
+    onPlayerUpdate,
+    addCombatMessage,
+    addHitEffect,
+    arenaBounds,
+  });
+
   // Update player 1 position based on movement
   useEffect(() => {
     setPlayerPositions((prev) => [playerPosition, prev[1]]);
     onPlayerUpdate(0, { position: playerPosition });
   }, [playerPosition, onPlayerUpdate]);
+
+  // Sync player positions when they're updated through validPlayers
+  useEffect(() => {
+    setPlayerPositions([validPlayers[0].position, validPlayers[1].position]);
+  }, [validPlayers[0].position.x, validPlayers[0].position.y, validPlayers[1].position.x, validPlayers[1].position.y]);
 
   // Round Management
   useEffect(() => {
@@ -291,316 +319,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     isPaused,
     combatActions,
   ]);
-
-  // ✅ FIXED: Enhanced combat system integration with proper hit effects and combo tracking
-  const handleAttack = useCallback(() => {
-    if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
-
-    combatActions.setExecutingTechnique(true);
-
-    // Create basic attack technique
-    const basicAttack = {
-      id: "basic_attack",
-      name: {
-        korean: "기본공격",
-        english: "Basic Attack",
-        romanized: "gibon_gonggyeok",
-      },
-      koreanName: "기본공격",
-      englishName: "Basic Attack",
-      romanized: "gibon_gonggyeok",
-      description: { korean: "기본 공격", english: "Basic attack" },
-      stance: validPlayers[0].currentStance,
-      type: "attack" as const,
-      damageType: "physical" as const,
-      damage: 15,
-      kiCost: 5,
-      staminaCost: 8,
-      accuracy: 0.8,
-      range: 1.0,
-      executionTime: 400,
-      recoveryTime: 300,
-      critChance: 0.1,
-      critMultiplier: 1.5,
-      effects: [],
-    };
-
-    // Use combat system for proper calculation
-    const result = combatSystem.resolveAttack(
-      validPlayers[0],
-      validPlayers[1],
-      basicAttack
-    );
-
-    // ✅ FIXED: Use addHitEffect instead of creating manually
-    const effectType = result.hit
-      ? result.isCritical
-        ? HitEffectType.CRITICAL_HIT
-        : HitEffectType.HIT
-      : HitEffectType.MISS;
-
-    addHitEffect(effectType, playerPosition, result.hit ? 1 : 0.5);
-
-    if (result.hit) {
-      // Combo tracking: reset combo if too much time passed
-      const now = Date.now();
-      const timeSinceLastHit = now - combatState.lastHitTime;
-      const newCombo = timeSinceLastHit < 2000 ? combatState.comboCount + 1 : 1;
-      combatActions.setComboCount(newCombo);
-      combatActions.setLastHitTime(now);
-
-      // Apply damage through combat system
-      const { updatedAttacker, updatedDefender } =
-        combatSystem.applyCombatResult(
-          result,
-          validPlayers[0],
-          validPlayers[1]
-        );
-
-      onPlayerUpdate(0, updatedAttacker);
-      onPlayerUpdate(1, updatedDefender);
-
-      if (result.isCritical) {
-        addCombatMessage("치명타 공격!", "Critical Hit!");
-      } else if (newCombo > 2) {
-        addCombatMessage(`${newCombo} 연속 공격!`, `${newCombo} Hit Combo!`);
-      } else {
-        addCombatMessage("공격 성공!", "Attack Hit!");
-      }
-    } else {
-      // Reset combo on miss
-      combatActions.resetCombo();
-      addCombatMessage("공격 빗나감", "Attack Missed");
-    }
-
-    setTimeout(() => combatActions.setExecutingTechnique(false), 500);
-  }, [
-    playerPosition,
-    onPlayerUpdate,
-    validPlayers,
-    combatState.isExecutingTechnique,
-    combatState.roundStarted,
-    combatState.roundEnded,
-    combatState.comboCount,
-    combatState.lastHitTime,
-    addCombatMessage,
-    combatSystem,
-    addHitEffect,
-    combatActions,
-  ]);
-
-  // Handle defend with Korean feedback
-  const handleDefend = useCallback(() => {
-    if (!combatState.roundStarted || combatState.roundEnded) return;
-
-    onPlayerUpdate(0, { isBlocking: true });
-    addCombatMessage("방어 자세", "Defensive Stance");
-
-    // Add defensive effect
-    addHitEffect(HitEffectType.BLOCK, playerPosition, 0.8);
-
-    setTimeout(() => {
-      onPlayerUpdate(0, { isBlocking: false });
-    }, 1000);
-  }, [
-    onPlayerUpdate,
-    addCombatMessage,
-    combatState.roundStarted,
-    combatState.roundEnded,
-    addHitEffect,
-    playerPosition,
-  ]);
-
-  // ✅ FIXED: Handle technique execution with proper effects and screen shake
-  const handleTechniqueExecute = useCallback(() => {
-    if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
-    if (validPlayers[0].ki < 10 || validPlayers[0].stamina < 15) {
-      addCombatMessage("기력/체력 부족", "Insufficient Ki/Stamina");
-      return;
-    }
-
-    combatActions.setExecutingTechnique(true);
-
-    // Add technique effect
-    addHitEffect(HitEffectType.CRITICAL_HIT, playerPosition, 1.5);
-
-    // Screen shake effect for impact
-    const shakeIntensity = 8;
-    const shakeFrames = [
-      { x: shakeIntensity, y: -shakeIntensity * 0.5 },
-      { x: -shakeIntensity * 0.7, y: shakeIntensity * 0.8 },
-      { x: shakeIntensity * 0.5, y: shakeIntensity * 0.3 },
-      { x: -shakeIntensity * 0.3, y: -shakeIntensity * 0.6 },
-      { x: 0, y: 0 },
-    ];
-
-    shakeFrames.forEach((shake, index) => {
-      setTimeout(() => combatActions.setScreenShake(shake), index * 50);
-    });
-
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-    );
-
-    if (distance < 150) {
-      onPlayerUpdate(1, {
-        health: Math.max(0, validPlayers[1].health - 25),
-        hitsTaken: validPlayers[1].hitsTaken + 1,
-      });
-      addCombatMessage("특수 기술 성공!", "Special Technique Hit!");
-    } else {
-      addCombatMessage("기술 실패", "Technique Failed");
-    }
-
-    // Consume resources
-    onPlayerUpdate(0, {
-      ki: Math.max(0, validPlayers[0].ki - 10),
-      stamina: Math.max(0, validPlayers[0].stamina - 15),
-    });
-
-    setTimeout(() => combatActions.setExecutingTechnique(false), 800);
-  }, [
-    playerPosition,
-    playerPositions,
-    onPlayerUpdate,
-    validPlayers,
-    combatState.isExecutingTechnique,
-    combatState.roundStarted,
-    combatState.roundEnded,
-    addCombatMessage,
-    addHitEffect,
-    combatActions,
-  ]);
-
-  // Handle stance switch with Korean feedback
-  const handleStanceSwitch = useCallback(
-    (stance: any) => {
-      if (!combatState.roundStarted || combatState.roundEnded) return;
-
-      onPlayerUpdate(0, { currentStance: stance });
-      addCombatMessage(`자세 변경: ${stance}`, `Stance Change: ${stance}`);
-
-      // Add stance change effect
-      addHitEffect(HitEffectType.STATUS_EFFECT, playerPosition, 0.6);
-    },
-    [
-      onPlayerUpdate,
-      addCombatMessage,
-      combatState.roundStarted,
-      combatState.roundEnded,
-      addHitEffect,
-      playerPosition,
-    ]
-  );
-
-  // ✅ FIXED: AI combat handlers with proper effect integration
-  const handleAIAttack = useCallback(() => {
-    addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
-
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-    );
-
-    if (distance < 120) {
-      // AI attack hits
-      const damage = 10 + Math.random() * 15;
-      onPlayerUpdate(0, {
-        health: Math.max(0, validPlayers[0].health - damage),
-        hitsTaken: validPlayers[0].hitsTaken + 1,
-      });
-      addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
-    } else {
-      addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
-    }
-  }, [
-    playerPositions,
-    validPlayers,
-    onPlayerUpdate,
-    addCombatMessage,
-    addHitEffect,
-  ]);
-
-  const handleAIDefend = useCallback(() => {
-    onPlayerUpdate(1, { isBlocking: true });
-    addCombatMessage("AI 방어 자세", "AI Defensive Stance");
-
-    // Add AI defensive effect
-    addHitEffect(HitEffectType.BLOCK, playerPositions[1], 0.8);
-
-    setTimeout(() => {
-      onPlayerUpdate(1, { isBlocking: false });
-    }, 1000);
-  }, [onPlayerUpdate, addCombatMessage, addHitEffect, playerPositions]);
-
-  const handleAITechnique = useCallback(() => {
-    if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
-      handleAIAttack(); // Fallback to basic attack
-      return;
-    }
-
-    addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[1], 1.5);
-
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-    );
-
-    if (distance < 150) {
-      const damage = 20 + Math.random() * 20;
-      onPlayerUpdate(0, {
-        health: Math.max(0, validPlayers[0].health - damage),
-        hitsTaken: validPlayers[0].hitsTaken + 1,
-      });
-      addCombatMessage("AI 특수 기술!", "AI Special Technique!");
-    }
-
-    // Consume AI resources
-    onPlayerUpdate(1, {
-      ki: Math.max(0, validPlayers[1].ki - 10),
-      stamina: Math.max(0, validPlayers[1].stamina - 15),
-    });
-  }, [
-    playerPositions,
-    validPlayers,
-    onPlayerUpdate,
-    addCombatMessage,
-    handleAIAttack,
-    addHitEffect,
-  ]);
-
-  const moveAIPlayer = useCallback(
-    (targetPos: Position) => {
-      const currentPos = playerPositions[1];
-      const speed = 4; // Increased from 2
-
-      const dx = targetPos.x - currentPos.x;
-      const dy = targetPos.y - currentPos.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > 5) {
-        const newPos = {
-          x: currentPos.x + (dx / distance) * speed,
-          y: currentPos.y + (dy / distance) * speed,
-        };
-
-        // Keep AI within bounds
-        newPos.x = Math.max(
-          arenaBounds.x,
-          Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x)
-        );
-        newPos.y = Math.max(
-          arenaBounds.y,
-          Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y)
-        );
-
-        setPlayerPositions((prev) => [prev[0], newPos]);
-        onPlayerUpdate(1, { position: newPos });
-      }
-    },
-    [playerPositions, arenaBounds, onPlayerUpdate]
-  );
 
   // Execute AI Actions
   const executeAIActionCallback = useCallback(
