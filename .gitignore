@@ -4,6 +4,12 @@ node_modules
 dist/
 dist
 cypress/results
+# Coverage reports
+docs/coverage/
+coverage/
+*.lcov
+lcov-report/
+lcov.info
 node_modules/.package-lock.json
 node_modules/.bin/acorn
 node_modules/.bin/browserslist
