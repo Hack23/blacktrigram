@@ -1,6 +1,10 @@
 import { HitEffect, PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
-import { GameMode, PlayerArchetype, Position } from "@/types";
+import {
+  AdaptiveDifficulty,
+  getPersonalityByArchetype,
+} from "@/systems/ai";
+import { GameMode, PlayerArchetype, Position, TrigramStance } from "@/types";
 import { KOREAN_COLORS } from "@/types/constants";
 import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
@@ -27,6 +31,7 @@ import { CombatHUD } from "./components/CombatHUD";
 import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { PauseOverlay } from "./components/PauseOverlay";
 import { RoundStatusDisplay } from "./components/RoundStatusDisplay";
+import { useAICombat } from "./hooks/useAICombat";
 
 // Register custom components for use as JSX tags in @pixi/react
 extend({
@@ -133,16 +138,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     },
   ]);
 
-  const [aiState, setAiState] = useState({
-    nextAction: Date.now() + 1000,
-    actionCooldown: 400, // Reduced from 500 for faster reactions
-    isMoving: false,
-    targetPosition: { x: width * 0.75, y: height * 0.7 },
-    aggressionLevel: 0.65, // Increased from 0.5 for more aggressive AI
-    lastActionType: "idle" as string,
-    consecutiveAttacks: 0,
-  });
-
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: !isPaused && roundStarted && !roundEnded,
     bounds: arenaBounds,
@@ -195,6 +190,25 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     const message = `${korean} | ${english}`;
     setCombatMessages((prev) => [message, ...prev.slice(0, 4)]);
   }, []);
+
+  // Initialize AI systems
+  const adaptiveDifficulty = useMemo(() => new AdaptiveDifficulty(), []);
+  const aiPersonality = useMemo(
+    () => getPersonalityByArchetype(validPlayers[1].archetype),
+    [validPlayers]
+  );
+
+  // AI Stance change handler
+  const handleAIStanceChange = useCallback(
+    (stance: TrigramStance) => {
+      onPlayerUpdate(1, { currentStance: stance });
+      addCombatMessage(
+        `AI 자세 변경: ${stance}`,
+        `AI Stance Change: ${stance}`
+      );
+    },
+    [onPlayerUpdate, addCombatMessage]
+  );
 
   // ✅ FIXED: Properly handle hit effect completion
   const handleEffectComplete = useCallback((effectId: string) => {
@@ -597,8 +611,8 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   );
 
   // Execute AI Actions
-  const executeAIAction = useCallback(
-    (action: string, targetPos: Position) => {
+  const executeAIActionCallback = useCallback(
+    (action: string, targetPos?: Position) => {
       switch (action) {
         case "attack":
           handleAIAttack();
@@ -607,152 +621,50 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           handleAIDefend();
           break;
         case "technique":
+        case "combo":
           handleAITechnique();
           break;
         case "approach":
         case "retreat":
         case "circle":
-          moveAIPlayer(targetPos);
+          if (targetPos) {
+            moveAIPlayer(targetPos);
+          }
+          break;
+        case "feint":
+          // Feint: quick move then retreat
+          addCombatMessage("AI 페인트", "AI Feint");
+          break;
+        case "counter":
+          // Counter attack when player attacks
+          handleAIAttack();
+          addCombatMessage("AI 반격!", "AI Counter!");
           break;
       }
     },
-    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer]
+    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer, addCombatMessage]
   );
 
-  // AI System - Enhanced for Korean martial arts
-  useEffect(() => {
-    if (isPaused || !roundStarted || roundEnded) return;
-
-    const aiInterval = setInterval(() => {
-      const now = Date.now();
-      if (now < aiState.nextAction) return;
-
-      const player1Pos = playerPositions[0];
-      const player2Pos = playerPositions[1];
-      const distanceToPlayer = Math.sqrt(
-        Math.pow(player1Pos.x - player2Pos.x, 2) +
-          Math.pow(player1Pos.y - player2Pos.y, 2)
-      );
-
-      // Enhanced AI Decision Making with combo logic
-      let aiAction = "idle";
-      let newTargetPosition = aiState.targetPosition;
-      const healthPercent = validPlayers[1].health / validPlayers[1].maxHealth;
-      const kiPercent = validPlayers[1].ki / validPlayers[1].maxKi;
-      const isLowHealth = healthPercent < 0.3;
-      const hasEnoughResources = kiPercent > 0.3;
-
-      // Combo attack logic - continue attacking if on a roll
-      if (aiState.consecutiveAttacks > 0 && aiState.consecutiveAttacks < 3 && distanceToPlayer < 130) {
-        const comboRandom = Math.random();
-        if (comboRandom < 0.7) { // 70% chance to continue combo
-          aiAction = comboRandom < 0.5 ? "attack" : "technique";
-        }
-      } else if (isLowHealth) {
-        // Defensive when low health - smarter retreat
-        const shouldDefend = Math.random() < 0.4;
-        if (shouldDefend && distanceToPlayer < 150) {
-          aiAction = "defend";
-        } else {
-          aiAction = "retreat";
-          newTargetPosition = {
-            x: Math.max(
-              arenaBounds.x,
-              Math.min(
-                arenaBounds.x + arenaBounds.width - 60,
-                player2Pos.x + (player2Pos.x > player1Pos.x ? 100 : -100)
-              )
-            ),
-            y: player2Pos.y + (Math.random() - 0.5) * 40,
-          };
-        }
-      } else if (distanceToPlayer < 120) {
-        // Close combat - varied attacks
-        const random = Math.random();
-        const aggression = aiState.aggressionLevel;
-        
-        if (random < aggression * 0.8) {
-          aiAction = "attack";
-        } else if (random < aggression * 0.8 + 0.1 && hasEnoughResources) {
-          aiAction = "technique";
-        } else {
-          aiAction = "defend";
-        }
-      } else if (distanceToPlayer > 250) {
-        // Move closer with tactical positioning
-        aiAction = "approach";
-        const offsetX = (Math.random() - 0.5) * 100;
-        const offsetY = (Math.random() - 0.5) * 60;
-        newTargetPosition = {
-          x: Math.max(
-            arenaBounds.x,
-            Math.min(arenaBounds.x + arenaBounds.width - 60, player1Pos.x + offsetX)
-          ),
-          y: Math.max(
-            arenaBounds.y,
-            Math.min(arenaBounds.y + arenaBounds.height - 180, player1Pos.y + offsetY)
-          ),
-        };
-      } else {
-        // Medium distance - tactical movement or opportunistic attack
-        const tacticChoice = Math.random();
-        if (tacticChoice < 0.3 && hasEnoughResources) {
-          aiAction = "technique";
-        } else if (tacticChoice < 0.5) {
-          aiAction = "approach";
-          newTargetPosition = {
-            x: player1Pos.x + (Math.random() - 0.5) * 80,
-            y: player1Pos.y + (Math.random() - 0.5) * 60,
-          };
-        } else {
-          aiAction = "circle";
-          const angle = Math.atan2(
-            player1Pos.y - player2Pos.y,
-            player1Pos.x - player2Pos.x
-          );
-          const circleRadius = 150 + Math.random() * 50;
-          newTargetPosition = {
-            x: player1Pos.x + Math.cos(angle + Math.PI / 2) * circleRadius,
-            y: player1Pos.y + Math.sin(angle + Math.PI / 2) * circleRadius,
-          };
-        }
-      }
-
-      // Track consecutive attacks for combo logic
-      const newConsecutiveAttacks = 
-        (aiAction === "attack" || aiAction === "technique") 
-          ? aiState.consecutiveAttacks + 1 
-          : 0;
-
-      // Execute AI action
-      executeAIAction(aiAction, newTargetPosition);
-
-      // Set next action time with dynamic cooldown based on action
-      const actionCooldown = 
-        aiAction === "attack" || aiAction === "technique" ? 600 : 400;
-      
-      setAiState((prev) => ({
-        ...prev,
-        nextAction: now + actionCooldown + Math.random() * 200,
-        targetPosition: newTargetPosition,
-        lastActionType: aiAction,
-        consecutiveAttacks: newConsecutiveAttacks,
-      }));
-    }, 50); // Reduced from 100ms to 50ms for more responsive AI
-
-    return () => clearInterval(aiInterval);
-  }, [
+  // Enhanced AI Combat System with strategic decision-making
+  const { aiState: _aiStateFromHook } = useAICombat({
+    player: validPlayers[1],
+    opponent: validPlayers[0],
+    personality: aiPersonality,
+    adaptiveDifficulty,
     isPaused,
     roundStarted,
     roundEnded,
-    playerPositions,
-    validPlayers,
-    aiState.nextAction,
-    aiState.actionCooldown,
-    aiState.targetPosition,
     arenaBounds,
-    executeAIAction,
-  ]);
+    onExecuteAction: executeAIActionCallback,
+    onStanceChange: handleAIStanceChange,
+  });
+
+  // Legacy AI System - REPLACED by useAICombat hook above
+  // aiState kept for potential future use
+
+  // Legacy AI System has been replaced by useAICombat hook
+  // The new system is integrated above with strategic decision-making,
+  // combo systems, and adaptive difficulty
 
   // Force position updates to sync properly
   useEffect(() => {
