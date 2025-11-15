@@ -162,7 +162,11 @@ export const CombatArena: React.FC<CombatArenaProps> = memo(
       prevProps.currentRound === nextProps.currentRound &&
       prevProps.isMobile === nextProps.isMobile &&
       prevProps.width === nextProps.width &&
-      prevProps.height === nextProps.height
+      prevProps.height === nextProps.height &&
+      prevProps.arenaHeight === nextProps.arenaHeight &&
+      prevProps.getPlayerAnimationState === nextProps.getPlayerAnimationState &&
+      prevProps.onEffectComplete === nextProps.onEffectComplete &&
+      prevProps.onRoundAnimationComplete === nextProps.onRoundAnimationComplete
     );
   }
 );

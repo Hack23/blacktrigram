@@ -179,6 +179,9 @@ export function useAICombat(
     [validPlayers, arenaBounds]
   );
 
+  // Destructure callbacks for granular dependencies
+  const { onAttack, onDefend, onTechnique, onMove } = callbacks;
+
   /**
    * Execute AI action
    */
@@ -186,22 +189,22 @@ export function useAICombat(
     (action: string, targetPos: Position) => {
       switch (action) {
         case "attack":
-          callbacks.onAttack();
+          onAttack();
           break;
         case "defend":
-          callbacks.onDefend();
+          onDefend();
           break;
         case "technique":
-          callbacks.onTechnique();
+          onTechnique();
           break;
         case "approach":
         case "retreat":
         case "circle":
-          callbacks.onMove(targetPos);
+          onMove(targetPos);
           break;
       }
     },
-    [callbacks]
+    [onAttack, onDefend, onTechnique, onMove]
   );
 
   // AI decision loop - uses functional setState to reduce dependencies
