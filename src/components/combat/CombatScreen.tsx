@@ -448,20 +448,20 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     ]
   );
 
-  // AI Combat System - Using extracted hook
-  useAICombat(
-    !isPaused && roundStarted && !roundEnded,
-    [playerPositions[0], playerPositions[1]],
-    validPlayers,
-    arenaBounds,
-    {
-      onAttack: useCallback(() => {
+  // Helper function to calculate distance between two positions
+  const calculateDistance = useCallback((pos1: Position, pos2: Position): number => {
+    return Math.sqrt(
+      Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2)
+    );
+  }, []);
+
+  // Memoized AI callbacks to prevent interval recreation
+  const aiCallbacks = useMemo(
+    () => ({
+      onAttack: () => {
         addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
 
-        const distance = Math.sqrt(
-          Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-            Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-        );
+        const distance = calculateDistance(playerPositions[0], playerPositions[1]);
 
         if (distance < 120) {
           const damage = 10 + Math.random() * 15;
@@ -473,9 +473,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         } else {
           addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
         }
-      }, [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect]),
+      },
 
-      onDefend: useCallback(() => {
+      onDefend: () => {
         onPlayerUpdate(1, { isBlocking: true });
         addCombatMessage("AI 방어 자세", "AI Defensive Stance");
         addHitEffect(HitEffectType.BLOCK, playerPositions[1], 0.8);
@@ -483,16 +483,13 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         setTimeout(() => {
           onPlayerUpdate(1, { isBlocking: false });
         }, 1000);
-      }, [onPlayerUpdate, addCombatMessage, addHitEffect, playerPositions]),
+      },
 
-      onTechnique: useCallback(() => {
+      onTechnique: () => {
         if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
           // Fallback to basic attack
           addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
-          const distance = Math.sqrt(
-            Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-              Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-          );
+          const distance = calculateDistance(playerPositions[0], playerPositions[1]);
           if (distance < 120) {
             const damage = 10 + Math.random() * 15;
             onPlayerUpdate(0, {
@@ -506,10 +503,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
         addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[1], 1.5);
 
-        const distance = Math.sqrt(
-          Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-            Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-        );
+        const distance = calculateDistance(playerPositions[0], playerPositions[1]);
 
         if (distance < 150) {
           const damage = 20 + Math.random() * 20;
@@ -524,40 +518,47 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           ki: Math.max(0, validPlayers[1].ki - 10),
           stamina: Math.max(0, validPlayers[1].stamina - 15),
         });
-      }, [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect]),
+      },
 
-      onMove: useCallback(
-        (targetPos: Position) => {
-          const currentPos = playerPositions[1];
-          const speed = 4;
+      onMove: (targetPos: Position) => {
+        const currentPos = playerPositions[1];
+        const speed = 4;
 
-          const dx = targetPos.x - currentPos.x;
-          const dy = targetPos.y - currentPos.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        const dx = targetPos.x - currentPos.x;
+        const dy = targetPos.y - currentPos.y;
+        const distance = calculateDistance(currentPos, targetPos);
 
-          if (distance > 5) {
-            const newPos = {
-              x: currentPos.x + (dx / distance) * speed,
-              y: currentPos.y + (dy / distance) * speed,
-            };
+        if (distance > 5) {
+          const newPos = {
+            x: currentPos.x + (dx / distance) * speed,
+            y: currentPos.y + (dy / distance) * speed,
+          };
 
-            // Keep AI within bounds
-            newPos.x = Math.max(
-              arenaBounds.x,
-              Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x)
-            );
-            newPos.y = Math.max(
-              arenaBounds.y,
-              Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y)
-            );
+          // Keep AI within bounds
+          newPos.x = Math.max(
+            arenaBounds.x,
+            Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x)
+          );
+          newPos.y = Math.max(
+            arenaBounds.y,
+            Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y)
+          );
 
-            setPlayerPositions((prev) => [prev[0], newPos]);
-            onPlayerUpdate(1, { position: newPos });
-          }
-        },
-        [playerPositions, arenaBounds, onPlayerUpdate]
-      ),
-    }
+          setPlayerPositions((prev) => [prev[0], newPos]);
+          onPlayerUpdate(1, { position: newPos });
+        }
+      },
+    }),
+    [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect, arenaBounds, calculateDistance]
+  );
+
+  // AI Combat System - Using extracted hook with memoized callbacks
+  useAICombat(
+    !isPaused && roundStarted && !roundEnded,
+    [playerPositions[0], playerPositions[1]],
+    validPlayers,
+    arenaBounds,
+    aiCallbacks
   );
 
   // Force position updates to sync properly

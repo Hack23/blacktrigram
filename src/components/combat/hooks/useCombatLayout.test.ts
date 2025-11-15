@@ -139,6 +139,26 @@ describe("useCombatLayout", () => {
       expect(result.current.arenaBounds.height).toBeGreaterThan(0);
     });
 
+    it("should enforce minimum arena height of 300px", () => {
+      // Screen with very limited height after UI elements
+      // With mobile layout: hudHeight=100, controlsHeight=140, footerHeight=25, padding=10*3=30
+      // Total reserved: 100 + 140 + 25 + 30 = 295
+      // For 400px height: 400 - 295 = 105 (would be less than 300 without minimum)
+      const { result } = renderHook(() => useCombatLayout(600, 400));
+
+      // Even if calculated height would be less, should be at least 300
+      expect(result.current.arenaBounds.height).toBeGreaterThanOrEqual(300);
+      expect(result.current.arenaBounds.height).toBe(300); // Should be exactly 300 for this case
+    });
+
+    it("should allow arena height greater than 300px when space is available", () => {
+      // Screen with sufficient height
+      const { result } = renderHook(() => useCombatLayout(1200, 1000));
+
+      // Should be greater than minimum when space allows
+      expect(result.current.arenaBounds.height).toBeGreaterThan(300);
+    });
+
     it("should handle very large screens", () => {
       const { result } = renderHook(() => useCombatLayout(3840, 2160));
 
