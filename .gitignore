@@ -38,4 +38,7 @@ yarn-error.log*
 
 # TypeScript
 *.tsbuildinfo
-tsconfig.tsbuildinfo
+
+# Build directory for test results (not committed during PR work)
+build/
+build
