@@ -1,0 +1,283 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 8,
+    "passes": 8,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-14T18:13:11.568Z",
+    "end": "2025-11-14T18:14:30.486Z",
+    "duration": 78918,
+    "testsRegistered": 8,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5b764d39-a704-4f43-898d-bd11d1e1d59a",
+      "title": "",
+      "fullFile": "cypress/e2e/training-mode.cy.ts",
+      "file": "cypress/e2e/training-mode.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "6396d5cf-0090-4f61-bf22-530d197708af",
+          "title": "Black Trigram Training Mode",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "2a20b012-6305-4887-86c2-c21dd593e4b3",
+              "title": "Training Mode Navigation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should enter training mode successfully",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Navigation should enter training mode successfully",
+                  "timedOut": null,
+                  "duration": 10109,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing training mode entry\");\ncy.enterTrainingMode();\n// Essential verification only\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 }).should(\"exist\");",
+                  "err": {},
+                  "uuid": "9c1403d1-cdaa-425e-a424-c6c7cf3ba510",
+                  "parentUUID": "2a20b012-6305-4887-86c2-c21dd593e4b3",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should display core training elements",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Navigation should display core training elements",
+                  "timedOut": null,
+                  "duration": 7268,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing core training elements\");\ncy.enterTrainingMode();\n// Wait for training screen first\ncy.get('[data-testid=\"training-screen\"]', { timeout: 15000 }).should(\"exist\");\n// Then check for essential elements with better error handling\nconst essentialElements = [\n    \"training-area\",\n    \"training-player\",\n    \"training-dummy-container\",\n];\nessentialElements.forEach((element) => {\n    cy.get(\"body\").then(($body) => {\n        if ($body.find(`[data-testid=\"${element}\"]`).length > 0) {\n            cy.get(`[data-testid=\"${element}\"]`).should(\"exist\");\n            cy.log(`✅ Found ${element}`);\n        }\n        else {\n            cy.log(`⚠️ ${element} not found, but continuing test`);\n        }\n    });\n});",
+                  "err": {},
+                  "uuid": "b8078cbd-7318-4f60-9bdd-461205d0c0bf",
+                  "parentUUID": "2a20b012-6305-4887-86c2-c21dd593e4b3",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should support basic training interactions",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Navigation should support basic training interactions",
+                  "timedOut": null,
+                  "duration": 3710,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing basic training interactions\");\ncy.enterTrainingMode();\n// Wait for training screen\ncy.get('[data-testid=\"training-screen\"]', { timeout: 15000 }).should(\"exist\");\n// Check if controls exist with better fallback\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-controls\"]').length > 0) {\n        cy.get('[data-testid=\"training-controls\"]').should(\"exist\");\n        // Try to start training if button exists\n        if ($body.find('[data-testid=\"start-training-button\"]').length > 0) {\n            cy.get('[data-testid=\"start-training-button\"]').click({\n                force: true,\n            });\n            cy.wait(1000);\n            // Check if technique button appears\n            if ($body.find('[data-testid=\"execute-technique-button\"]').length > 0) {\n                cy.get('[data-testid=\"execute-technique-button\"]').click({\n                    force: true,\n                });\n                cy.log(\"✅ Training interaction successful\");\n            }\n        }\n    }\n    else {\n        // Try keyboard interaction as fallback\n        cy.log(\"⚠️ Training controls not found, trying keyboard interaction\");\n        cy.get(\"body\").type(\" \"); // Try space key\n        cy.wait(500);\n    }\n});",
+                  "err": {},
+                  "uuid": "57930d5e-99c7-49c4-88bc-e7cf70dbc0b8",
+                  "parentUUID": "2a20b012-6305-4887-86c2-c21dd593e4b3",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should track basic statistics",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Navigation should track basic statistics",
+                  "timedOut": null,
+                  "duration": 3479,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing statistics tracking\");\ncy.enterTrainingMode();\n// Check if stats panel exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-stats-panel\"]').length > 0) {\n        cy.get('[data-testid=\"training-stats-panel\"]').should(\"exist\");\n        // Check attempts counter if it exists\n        if ($body.find('[data-testid=\"attempts-count\"]').length > 0) {\n            cy.get('[data-testid=\"attempts-count\"]').should(\"contain\", \"시도\");\n        }\n    }\n    else {\n        cy.log(\"⚠️ Stats panel not found - skipping statistics test\");\n    }\n});",
+                  "err": {},
+                  "uuid": "a018c28e-a4f6-4b60-9249-d797f7ca36c3",
+                  "parentUUID": "2a20b012-6305-4887-86c2-c21dd593e4b3",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should return to menu",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Navigation should return to menu",
+                  "timedOut": null,
+                  "duration": 3444,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing return to menu\");\ncy.enterTrainingMode();\n// Try return button or ESC key\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"return-to-menu-button\"]').length > 0) {\n        cy.get('[data-testid=\"return-to-menu-button\"]').click({\n            force: true,\n        });\n    }\n    else {\n        cy.get(\"body\").type(\"{esc}\");\n    }\n});\ncy.wait(1000);\n// Verify return (flexible check)\ncy.get(\"body\").then(($body) => {\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0;\n    const hasMenu = $body.find('[data-testid=\"main-menu-section\"]').length > 0;\n    if (hasIntro || hasMenu) {\n        cy.log(\"✅ Successfully returned to menu\");\n    }\n    else {\n        cy.log(\"⚠️ Return status unclear but test continues\");\n    }\n});",
+                  "err": {},
+                  "uuid": "4c5b9cea-2dba-45ea-adb8-84014d877630",
+                  "parentUUID": "2a20b012-6305-4887-86c2-c21dd593e4b3",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "9c1403d1-cdaa-425e-a424-c6c7cf3ba510",
+                "b8078cbd-7318-4f60-9bdd-461205d0c0bf",
+                "57930d5e-99c7-49c4-88bc-e7cf70dbc0b8",
+                "a018c28e-a4f6-4b60-9249-d797f7ca36c3",
+                "4c5b9cea-2dba-45ea-adb8-84014d877630"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 28010,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "50a144d9-85e6-41e9-9f36-acdf16481a3f",
+              "title": "Training Mode Functionality",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should start Training mode and display training screen",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Functionality should start Training mode and display training screen",
+                  "timedOut": null,
+                  "duration": 12981,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.visit(\"/\");\ncy.get(\"[data-testid=menu-button-training]\").click();\ncy.get(\"[data-testid=training-screen]\").should(\"exist\");\n// vital point system components\ncy.get(\"[data-testid=training-screen]\").within(() => {\n    cy.get(\"canvas\").should(\"exist\");\n});",
+                  "err": {},
+                  "uuid": "9681a732-ef48-4b3e-b33c-224a5ee617ae",
+                  "parentUUID": "50a144d9-85e6-41e9-9f36-acdf16481a3f",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should update player stats on interaction",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Functionality should update player stats on interaction",
+                  "timedOut": null,
+                  "duration": 12404,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// simulate a click on the training pad\ncy.get(\"[data-testid=training-screen]\").click(400, 400);\n// expect some UI feedback or state change\ncy.get(\"[data-testid=training-screen]\").should(\"exist\");",
+                  "err": {},
+                  "uuid": "6cc06022-e39f-49fa-9d71-3e1575beee2e",
+                  "parentUUID": "50a144d9-85e6-41e9-9f36-acdf16481a3f",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should return to menu",
+                  "fullTitle": "Black Trigram Training Mode Training Mode Functionality should return to menu",
+                  "timedOut": null,
+                  "duration": 12035,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get(\"[data-testid=return-menu-button]\").click();\ncy.get(\"[data-testid=intro-screen]\").should(\"exist\");",
+                  "err": {},
+                  "uuid": "7830c691-3617-4570-9052-6380b3b1955f",
+                  "parentUUID": "50a144d9-85e6-41e9-9f36-acdf16481a3f",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "9681a732-ef48-4b3e-b33c-224a5ee617ae",
+                "6cc06022-e39f-49fa-9d71-3e1575beee2e",
+                "7830c691-3617-4570-9052-6380b3b1955f"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 37420,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "docs/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

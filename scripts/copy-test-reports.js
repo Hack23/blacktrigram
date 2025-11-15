@@ -2,7 +2,22 @@
 
 /**
  * Copy test reports from build/ to docs/ for GitHub Pages deployment
- * This script is only run during release builds
+ * 
+ * This script is automatically run during release builds by the CI/CD pipeline.
+ * It should NOT be run during local development or PR work.
+ * 
+ * Purpose:
+ * - Copies test artifacts (coverage, cypress reports, test results) from build/ to docs/
+ * - Used exclusively in release.yml workflow after all tests have completed
+ * - Ensures test reports are available on GitHub Pages without cluttering PR diffs
+ * 
+ * Behavior:
+ * - In CI environments (CI=true or GITHUB_ACTIONS=true): Fails if build/ directory is missing
+ * - In local environments: Silently skips if build/ directory is missing
+ * 
+ * Usage:
+ *   npm run build:test-reports    # Run manually (not recommended)
+ *   # Automatically called in release.yml workflow
  */
 
 import fs from "fs";
@@ -26,28 +41,52 @@ function log(message, color = colors.reset) {
 }
 
 /**
- * Recursively copy a directory
+ * Remove a directory if it exists
+ * @param {string} dir - Directory path to remove
+ */
+function removeDirectoryIfExists(dir) {
+  if (fs.existsSync(dir)) {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+/**
+ * Recursively copy a directory with error handling
  * @param {string} src - Source directory
  * @param {string} dest - Destination directory
+ * @throws {Error} If copy operation fails
  */
 function copyDir(src, dest) {
-  // Create destination directory if it doesn't exist
-  if (!fs.existsSync(dest)) {
-    fs.mkdirSync(dest, { recursive: true });
-  }
-
-  // Read source directory
-  const entries = fs.readdirSync(src, { withFileTypes: true });
-
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-
-    if (entry.isDirectory()) {
-      copyDir(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
+  try {
+    // Create destination directory if it doesn't exist
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest, { recursive: true });
     }
+
+    // Read source directory
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const srcPath = path.join(src, entry.name);
+      const destPath = path.join(dest, entry.name);
+
+      if (entry.isDirectory()) {
+        copyDir(srcPath, destPath);
+      } else {
+        try {
+          fs.copyFileSync(srcPath, destPath);
+        } catch (error) {
+          throw new Error(
+            `Failed to copy file ${srcPath} to ${destPath}: ${error.message}`
+          );
+        }
+      }
+    }
+  } catch (error) {
+    if (error.message.startsWith("Failed to copy file")) {
+      throw error;
+    }
+    throw new Error(`Failed to copy directory ${src} to ${dest}: ${error.message}`);
   }
 }
 
@@ -59,11 +98,20 @@ function main() {
 
   const buildDir = path.join(__dirname, "..", "build");
   const docsDir = path.join(__dirname, "..", "docs");
+  const isCI = process.env.CI === "true" || process.env.GITHUB_ACTIONS === "true";
 
   // Check if build directory exists
   if (!fs.existsSync(buildDir)) {
-    log("⚠️  Warning: build/ directory does not exist. Skipping.", colors.yellow);
-    return;
+    const message = "build/ directory does not exist";
+    if (isCI) {
+      // In CI, missing test reports is an error
+      log(`❌ Error: ${message}. Tests may not have been run.`, colors.red);
+      process.exit(1);
+    } else {
+      // In local development, it's just a warning
+      log(`⚠️  Warning: ${message}. Skipping.`, colors.yellow);
+      return;
+    }
   }
 
   // Ensure docs directory exists
@@ -77,10 +125,7 @@ function main() {
   const docsCoverage = path.join(docsDir, "coverage");
   if (fs.existsSync(buildCoverage)) {
     log("  → Copying coverage reports...", colors.blue);
-    // Remove old coverage reports if they exist
-    if (fs.existsSync(docsCoverage)) {
-      fs.rmSync(docsCoverage, { recursive: true, force: true });
-    }
+    removeDirectoryIfExists(docsCoverage);
     copyDir(buildCoverage, docsCoverage);
     log("  ✓ Coverage reports copied", colors.green);
   } else {
@@ -92,10 +137,7 @@ function main() {
   const docsCypress = path.join(docsDir, "cypress");
   if (fs.existsSync(buildCypress)) {
     log("  → Copying Cypress reports...", colors.blue);
-    // Remove old cypress reports if they exist
-    if (fs.existsSync(docsCypress)) {
-      fs.rmSync(docsCypress, { recursive: true, force: true });
-    }
+    removeDirectoryIfExists(docsCypress);
     copyDir(buildCypress, docsCypress);
     log("  ✓ Cypress reports copied", colors.green);
   } else {
@@ -107,10 +149,7 @@ function main() {
   const docsTestResults = path.join(docsDir, "test-results");
   if (fs.existsSync(buildTestResults)) {
     log("  → Copying test results...", colors.blue);
-    // Remove old test results if they exist
-    if (fs.existsSync(docsTestResults)) {
-      fs.rmSync(docsTestResults, { recursive: true, force: true });
-    }
+    removeDirectoryIfExists(docsTestResults);
     copyDir(buildTestResults, docsTestResults);
     log("  ✓ Test results copied", colors.green);
   } else {
