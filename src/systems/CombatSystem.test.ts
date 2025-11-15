@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { PlayerState } from "../types";
 import {
   CombatAttackType,
@@ -507,19 +507,22 @@ describe("CombatSystem", () => {
         accuracy: 0.01, // Very low accuracy
       };
 
-      // Run multiple times to ensure we get at least one miss
-      const results = Array.from({ length: 20 }, () =>
-        combatSystem.resolveAttack(player1, player2, lowAccuracyTechnique)
+      // Mock Math.random to return a value greater than accuracy to force a miss
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5); // 0.5 > 0.01, so it will miss
+
+      const result = combatSystem.resolveAttack(
+        player1,
+        player2,
+        lowAccuracyTechnique
       );
 
-      // At least some should miss with 1% accuracy
-      const missedAttacks = results.filter((r) => !r.hit);
-      expect(missedAttacks.length).toBeGreaterThan(0);
-      missedAttacks.forEach((result) => {
-        expect(result.hit).toBe(false);
-        expect(result.damage).toBe(0);
-        expect(result.success).toBe(false);
-      });
+      // Verify the attack missed due to low accuracy
+      expect(result.hit).toBe(false);
+      expect(result.damage).toBe(0);
+      expect(result.success).toBe(false);
+
+      // Clean up the spy
+      randomSpy.mockRestore();
     });
 
     it("should return failure when attacker has insufficient ki", () => {
