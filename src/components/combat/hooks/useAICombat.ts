@@ -30,11 +30,14 @@ export interface AICombatCallbacks {
  * Custom hook for managing AI combat behavior
  * Extracts AI decision-making logic from main component
  * 
+ * NOTE: The callbacks object should be memoized in the parent component to prevent
+ * unnecessary re-creation of the AI interval. Use useMemo or ensure stable references.
+ * 
  * @param enabled - Whether AI is active
  * @param playerPositions - Current positions of both players
  * @param validPlayers - Player state objects
  * @param arenaBounds - Arena boundaries for movement
- * @param callbacks - AI action callbacks
+ * @param callbacks - AI action callbacks (should be stable references)
  */
 export function useAICombat(
   enabled: boolean,
@@ -67,12 +70,14 @@ export function useAICombat(
 
   /**
    * Determine AI action based on game state
+   * Uses current AI state passed as parameter to avoid dependency issues
    */
   const determineAIAction = useCallback(
     (
       player1Pos: Position,
       player2Pos: Position,
-      distanceToPlayer: number
+      distanceToPlayer: number,
+      currentAiState: AIState
     ): { action: string; targetPosition: Position } => {
       const healthPercent = validPlayers[1].health / validPlayers[1].maxHealth;
       const kiPercent = validPlayers[1].ki / validPlayers[1].maxKi;
@@ -80,12 +85,12 @@ export function useAICombat(
       const hasEnoughResources = kiPercent > 0.3;
 
       let aiAction = "idle";
-      let newTargetPosition = aiState.targetPosition;
+      let newTargetPosition = currentAiState.targetPosition;
 
       // Combo attack logic - continue attacking if on a roll
       if (
-        aiState.consecutiveAttacks > 0 &&
-        aiState.consecutiveAttacks < 3 &&
+        currentAiState.consecutiveAttacks > 0 &&
+        currentAiState.consecutiveAttacks < 3 &&
         distanceToPlayer < 130
       ) {
         const comboRandom = Math.random();
@@ -114,7 +119,7 @@ export function useAICombat(
       } else if (distanceToPlayer < 120) {
         // Close combat - varied attacks
         const random = Math.random();
-        const aggression = aiState.aggressionLevel;
+        const aggression = currentAiState.aggressionLevel;
 
         if (random < aggression * 0.8) {
           aiAction = "attack";
@@ -171,7 +176,7 @@ export function useAICombat(
 
       return { action: aiAction, targetPosition: newTargetPosition };
     },
-    [aiState, validPlayers, arenaBounds]
+    [validPlayers, arenaBounds]
   );
 
   /**
@@ -199,52 +204,50 @@ export function useAICombat(
     [callbacks]
   );
 
-  // AI decision loop
+  // AI decision loop - uses functional setState to reduce dependencies
   useEffect(() => {
     if (!enabled) return;
 
     const aiInterval = setInterval(() => {
-      const now = Date.now();
-      if (now < aiState.nextAction) return;
+      setAiState((prevState) => {
+        const now = Date.now();
+        if (now < prevState.nextAction) return prevState;
 
-      const player1Pos = playerPositions[0];
-      const player2Pos = playerPositions[1];
-      const distanceToPlayer = calculateDistance(player1Pos, player2Pos);
+        const player1Pos = playerPositions[0];
+        const player2Pos = playerPositions[1];
+        const distanceToPlayer = calculateDistance(player1Pos, player2Pos);
 
-      // Determine AI action
-      const { action: aiAction, targetPosition: newTargetPosition } =
-        determineAIAction(player1Pos, player2Pos, distanceToPlayer);
+        // Determine AI action using current state
+        const { action: aiAction, targetPosition: newTargetPosition } =
+          determineAIAction(player1Pos, player2Pos, distanceToPlayer, prevState);
 
-      // Track consecutive attacks for combo logic
-      const newConsecutiveAttacks =
-        aiAction === "attack" || aiAction === "technique"
-          ? aiState.consecutiveAttacks + 1
-          : 0;
+        // Track consecutive attacks for combo logic
+        const newConsecutiveAttacks =
+          aiAction === "attack" || aiAction === "technique"
+            ? prevState.consecutiveAttacks + 1
+            : 0;
 
-      // Execute AI action
-      executeAIAction(aiAction, newTargetPosition);
+        // Execute AI action (outside setState for side effects)
+        executeAIAction(aiAction, newTargetPosition);
 
-      // Set next action time with dynamic cooldown based on action
-      const actionCooldown =
-        aiAction === "attack" || aiAction === "technique" ? 600 : 400;
+        // Set next action time with dynamic cooldown based on action
+        const actionCooldown =
+          aiAction === "attack" || aiAction === "technique" ? 600 : 400;
 
-      setAiState((prev) => ({
-        ...prev,
-        nextAction: now + actionCooldown + Math.random() * 200,
-        targetPosition: newTargetPosition,
-        lastActionType: aiAction,
-        consecutiveAttacks: newConsecutiveAttacks,
-      }));
+        return {
+          ...prevState,
+          nextAction: now + actionCooldown + Math.random() * 200,
+          targetPosition: newTargetPosition,
+          lastActionType: aiAction,
+          consecutiveAttacks: newConsecutiveAttacks,
+        };
+      });
     }, 50); // 50ms interval for responsive AI
 
     return () => clearInterval(aiInterval);
   }, [
     enabled,
     playerPositions,
-    validPlayers,
-    aiState.nextAction,
-    aiState.consecutiveAttacks,
-    aiState.aggressionLevel,
     calculateDistance,
     determineAIAction,
     executeAIAction,

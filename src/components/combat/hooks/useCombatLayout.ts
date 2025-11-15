@@ -30,10 +30,11 @@ export interface ArenaBounds {
  * @returns Layout constants and arena bounds
  */
 export function useCombatLayout(width: number, height: number) {
-  // Optimize by checking breakpoint instead of exact width
-  const isMobile = useMemo(() => width < 768, [width]);
+  // Optimize by checking breakpoint - only changes when crossing 768px threshold
+  const isMobile = width < 768;
 
   // Centralized layout constants with optimized dependencies
+  // Only recalculates when crossing mobile breakpoint
   const layoutConstants = useMemo<CombatLayoutConstants>(
     () => ({
       padding: 10,
@@ -42,10 +43,11 @@ export function useCombatLayout(width: number, height: number) {
       footerHeight: isMobile ? 25 : 30,
       healthBarHeight: isMobile ? 50 : 60,
     }),
-    [isMobile] // Only recalculate when crossing mobile breakpoint
+    [isMobile]
   );
 
   // Calculate arena bounds with optimized dependencies
+  // Ensures minimum height of 300px to prevent rendering issues
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
 
@@ -55,7 +57,10 @@ export function useCombatLayout(width: number, height: number) {
       layoutConstants.controlsHeight +
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
-    const arenaHeight = height - totalReservedHeight - totalPadding;
+    const calculatedHeight = height - totalReservedHeight - totalPadding;
+    
+    // Ensure minimum arena height to prevent rendering issues on small screens
+    const arenaHeight = Math.max(300, calculatedHeight);
 
     return {
       x: width * 0.1,

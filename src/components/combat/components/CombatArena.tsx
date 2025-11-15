@@ -1,5 +1,5 @@
 import { HitEffect, PlayerState } from "@/systems";
-import { KOREAN_COLORS } from "@/types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
 import React, { memo } from "react";
 import { HitEffectsLayer } from "../../ui/HitEffectsLayer";
 import { PlayerAnimationState, PlayerVisuals } from "../../ui/PlayerVisuals";
@@ -72,7 +72,6 @@ export const CombatArena: React.FC<CombatArenaProps> = memo(
           showKiAura={true}
           showKoreanLabels={true}
           interactive={true}
-          onPlayerClick={() => console.log("Player 1 clicked")}
           animationState={getPlayerAnimationState(0)}
           data-testid="combat-player-1"
         />
@@ -90,7 +89,6 @@ export const CombatArena: React.FC<CombatArenaProps> = memo(
           showKiAura={true}
           showKoreanLabels={true}
           interactive={true}
-          onPlayerClick={() => console.log("Player 2 clicked")}
           animationState={getPlayerAnimationState(1)}
           data-testid="combat-player-2"
         />
@@ -114,7 +112,7 @@ export const CombatArena: React.FC<CombatArenaProps> = memo(
                 fontSize: 32 + comboCount * 2,
                 fill: KOREAN_COLORS.ACCENT_GOLD,
                 fontWeight: "bold",
-                fontFamily: "Noto Sans KR",
+                fontFamily: FONT_FAMILY.KOREAN,
               }}
               anchor={0.5}
               alpha={Math.min(1, comboCount / 5)}
@@ -125,7 +123,7 @@ export const CombatArena: React.FC<CombatArenaProps> = memo(
                 fontSize: 20,
                 fill: KOREAN_COLORS.PRIMARY_CYAN,
                 fontWeight: "bold",
-                fontFamily: "Noto Sans KR",
+                fontFamily: FONT_FAMILY.KOREAN,
               }}
               anchor={0.5}
               y={40}
@@ -158,10 +156,13 @@ export const CombatArena: React.FC<CombatArenaProps> = memo(
       prevProps.playerPositions[0].y === nextProps.playerPositions[0].y &&
       prevProps.playerPositions[1].x === nextProps.playerPositions[1].x &&
       prevProps.playerPositions[1].y === nextProps.playerPositions[1].y &&
-      prevProps.hitEffects.length === nextProps.hitEffects.length &&
+      prevProps.hitEffects === nextProps.hitEffects && // Reference equality check
       prevProps.comboCount === nextProps.comboCount &&
       prevProps.roundDisplayStatus === nextProps.roundDisplayStatus &&
-      prevProps.isMobile === nextProps.isMobile
+      prevProps.currentRound === nextProps.currentRound &&
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.width === nextProps.width &&
+      prevProps.height === nextProps.height
     );
   }
 );
