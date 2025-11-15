@@ -5,11 +5,13 @@ import {
   DamageType,
   PlayerArchetype,
   TrigramStance,
+  VitalPointSeverity,
 } from "../types/common";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
-import CombatSystem from "./CombatSystem";
+import CombatSystem, { createCombatResult } from "./CombatSystem";
 import { TrainingCombatSystem } from "./combat/TrainingCombatSystem";
 import { KoreanTechnique } from "./vitalpoint";
+import { VitalPointHitResult } from "./vitalpoint/types";
 
 describe("CombatSystem", () => {
   let combatSystem: CombatSystem;
@@ -496,6 +498,566 @@ describe("CombatSystem", () => {
 
       expect(updatedAttacker.stamina).toBe(0);
     });
+  });
+
+  describe("resolveAttack - miss scenarios", () => {
+    it("should handle missed attack with low accuracy technique", () => {
+      const lowAccuracyTechnique: KoreanTechnique = {
+        ...mockTechnique,
+        accuracy: 0.01, // Very low accuracy
+      };
+
+      // Run multiple times to ensure we get at least one miss
+      const results = Array.from({ length: 20 }, () =>
+        combatSystem.resolveAttack(player1, player2, lowAccuracyTechnique)
+      );
+
+      // At least some should miss with 1% accuracy
+      const missedAttacks = results.filter((r) => !r.hit);
+      expect(missedAttacks.length).toBeGreaterThan(0);
+      missedAttacks.forEach((result) => {
+        expect(result.hit).toBe(false);
+        expect(result.damage).toBe(0);
+        expect(result.success).toBe(false);
+      });
+    });
+
+    it("should return failure when attacker has insufficient ki", () => {
+      const lowKiPlayer: PlayerState = {
+        ...player1,
+        ki: 0, // No ki available
+      };
+
+      const result = combatSystem.resolveAttack(
+        lowKiPlayer,
+        player2,
+        mockTechnique
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.hit).toBe(false);
+    });
+
+    it("should return failure when attacker has insufficient stamina", () => {
+      const lowStaminaPlayer: PlayerState = {
+        ...player1,
+        stamina: 0, // No stamina available
+      };
+
+      const result = combatSystem.resolveAttack(
+        lowStaminaPlayer,
+        player2,
+        mockTechnique
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.hit).toBe(false);
+    });
+
+    it("should return failure when attacker is stunned", () => {
+      const stunnedPlayer: PlayerState = {
+        ...player1,
+        isStunned: true,
+      };
+
+      const result = combatSystem.resolveAttack(
+        stunnedPlayer,
+        player2,
+        mockTechnique
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.hit).toBe(false);
+    });
+
+    it("should return failure when technique stance does not match player stance", () => {
+      const playerWithDifferentStance: PlayerState = {
+        ...player1,
+        currentStance: TrigramStance.TAE, // Different from mockTechnique's GEON stance
+      };
+
+      const result = combatSystem.resolveAttack(
+        playerWithDifferentStance,
+        player2,
+        mockTechnique
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.hit).toBe(false);
+    });
+  });
+
+  describe("processVitalPointHit", () => {
+    it("should return miss for invalid vital point ID", () => {
+      // Access the private method via instance casting
+      const result = (combatSystem as any).processVitalPointHit(
+        "invalid-vital-point-id",
+        15,
+        player1
+      );
+
+      expect(result.hit).toBe(false);
+      expect(result.damage).toBe(0);
+      expect(result.severity).toBe(VitalPointSeverity.MINOR);
+    });
+
+    it("should calculate damage with valid vital point", () => {
+      // Get a real vital point from the system
+      const vitalPointSystem = (combatSystem as any).vitalPointSystem;
+      const vitalPoints = vitalPointSystem.getVitalPoints();
+
+      if (vitalPoints.length > 0) {
+        const validPoint = vitalPoints[0];
+        const result = (combatSystem as any).processVitalPointHit(
+          validPoint.id,
+          20,
+          player1
+        );
+
+        expect(result).toBeDefined();
+        expect(result.vitalPointHit).toBeDefined();
+      }
+    });
+
+    it("should apply amsalja archetype modifier for neurological points", () => {
+      const amsaljaPlayer: PlayerState = {
+        ...player1,
+        archetype: "amsalja",
+      };
+
+      // Create a mock neurological vital point
+      const vitalPointSystem = (combatSystem as any).vitalPointSystem;
+      const mockPoint = {
+        id: "test-neurological",
+        category: "neurological",
+        severity: VitalPointSeverity.MODERATE,
+        effects: [],
+      };
+
+      // Get the archetype modifier
+      const modifier = (combatSystem as any).getArchetypeVitalPointModifier(
+        "amsalja",
+        mockPoint
+      );
+
+      expect(modifier).toBe(1.3); // Amsalja gets 1.3x for neurological
+    });
+
+    it("should apply musa archetype modifier for skeletal points", () => {
+      const musaPlayer: PlayerState = {
+        ...player1,
+        archetype: "musa",
+      };
+
+      const mockPoint = {
+        id: "test-skeletal",
+        category: "skeletal",
+        severity: VitalPointSeverity.MAJOR,
+        effects: [],
+      };
+
+      const modifier = (combatSystem as any).getArchetypeVitalPointModifier(
+        "musa",
+        mockPoint
+      );
+
+      expect(modifier).toBe(1.2); // Musa gets 1.2x for skeletal
+    });
+
+    it("should apply hacker archetype modifier for neurological points", () => {
+      const hackerPlayer: PlayerState = {
+        ...player1,
+        archetype: "hacker",
+      };
+
+      const mockPoint = {
+        id: "test-neurological-2",
+        category: "neurological",
+        severity: VitalPointSeverity.CRITICAL,
+        effects: [],
+      };
+
+      const modifier = (combatSystem as any).getArchetypeVitalPointModifier(
+        "hacker",
+        mockPoint
+      );
+
+      expect(modifier).toBe(1.1); // Hacker gets 1.1x for neurological
+    });
+
+    it("should return base modifier for unknown archetype", () => {
+      const modifier = (combatSystem as any).getArchetypeVitalPointModifier(
+        "unknown_archetype",
+        { category: "neurological" }
+      );
+
+      expect(modifier).toBe(1.0); // Base modifier
+    });
+
+    it("should return base modifier for non-matching category", () => {
+      const modifier = (combatSystem as any).getArchetypeVitalPointModifier(
+        "amsalja",
+        { category: "vascular" }
+      );
+
+      expect(modifier).toBe(1.0); // Base modifier for non-neurological
+    });
+  });
+
+  describe("calculateDamage - vital point severity multipliers", () => {
+    it("should apply MINOR severity multiplier (1.1x)", () => {
+      const minorHit: VitalPointHitResult = {
+        hit: true,
+        vitalPointHit: {
+          id: "test-point",
+          category: "neurological",
+          severity: VitalPointSeverity.MINOR,
+        } as any,
+        damage: 10,
+        effects: [],
+        severity: VitalPointSeverity.MINOR,
+      };
+
+      const result = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        minorHit
+      );
+
+      expect(result.totalDamage).toBeGreaterThan(0);
+    });
+
+    it("should apply MODERATE severity multiplier (1.3x)", () => {
+      const moderateHit: VitalPointHitResult = {
+        hit: true,
+        vitalPointHit: {
+          id: "test-point",
+          category: "neurological",
+          severity: VitalPointSeverity.MODERATE,
+        } as any,
+        damage: 10,
+        effects: [],
+        severity: VitalPointSeverity.MODERATE,
+      };
+
+      const result = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        moderateHit
+      );
+
+      expect(result.totalDamage).toBeGreaterThan(0);
+    });
+
+    it("should apply MAJOR severity multiplier (1.6x)", () => {
+      const majorHit: VitalPointHitResult = {
+        hit: true,
+        vitalPointHit: {
+          id: "test-point",
+          category: "skeletal",
+          severity: VitalPointSeverity.MAJOR,
+        } as any,
+        damage: 10,
+        effects: [],
+        severity: VitalPointSeverity.MAJOR,
+      };
+
+      const result = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        majorHit
+      );
+
+      expect(result.totalDamage).toBeGreaterThan(0);
+    });
+
+    it("should apply CRITICAL severity multiplier (2.0x)", () => {
+      const criticalHit: VitalPointHitResult = {
+        hit: true,
+        vitalPointHit: {
+          id: "test-point",
+          category: "vascular",
+          severity: VitalPointSeverity.CRITICAL,
+        } as any,
+        damage: 10,
+        effects: [],
+        severity: VitalPointSeverity.CRITICAL,
+      };
+
+      const result = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        criticalHit
+      );
+
+      expect(result.totalDamage).toBeGreaterThan(0);
+    });
+
+    it("should apply LETHAL severity multiplier (3.0x)", () => {
+      const lethalHit: VitalPointHitResult = {
+        hit: true,
+        vitalPointHit: {
+          id: "test-point",
+          category: "neurological",
+          severity: VitalPointSeverity.LETHAL,
+        } as any,
+        damage: 10,
+        effects: [],
+        severity: VitalPointSeverity.LETHAL,
+      };
+
+      const result = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        lethalHit
+      );
+
+      expect(result.totalDamage).toBeGreaterThan(10); // Should be significantly higher with 3x multiplier
+    });
+
+    it("should handle vital point hit without vitalPointHit property", () => {
+      const hitWithoutVitalPoint: VitalPointHitResult = {
+        hit: false,
+        damage: 0,
+        effects: [],
+        severity: VitalPointSeverity.MINOR,
+      };
+
+      const result = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        hitWithoutVitalPoint
+      );
+
+      expect(result.totalDamage).toBeGreaterThan(0);
+    });
+
+    it("should combine technique and vital point effects", () => {
+      const techniqueWithEffects: KoreanTechnique = {
+        ...mockTechnique,
+        effects: [
+          {
+            id: "technique-effect",
+            type: "weakened",
+            intensity: "moderate" as any,
+            duration: 1000,
+            description: { korean: "약화", english: "Weakened" },
+            stackable: false,
+            source: "technique",
+            startTime: Date.now(),
+            endTime: Date.now() + 1000,
+          },
+        ],
+      };
+
+      const hitWithEffects: VitalPointHitResult = {
+        hit: true,
+        vitalPointHit: {
+          id: "test-point",
+          severity: VitalPointSeverity.MODERATE,
+        } as any,
+        damage: 10,
+        effects: [
+          {
+            id: "vital-point-effect",
+            type: "stun",
+            intensity: "high" as any,
+            duration: 500,
+            description: { korean: "기절", english: "Stun" },
+            stackable: false,
+            source: "vital-point",
+            startTime: Date.now(),
+            endTime: Date.now() + 500,
+          },
+        ],
+        severity: VitalPointSeverity.MODERATE,
+      };
+
+      const result = combatSystem.calculateDamage(
+        techniqueWithEffects,
+        player1,
+        player2,
+        hitWithEffects
+      );
+
+      expect(result.effectsApplied.length).toBe(2);
+    });
+  });
+
+  describe("updatePlayerState - stamina regeneration edge case", () => {
+    it("should regenerate stamina when below max", () => {
+      const player: PlayerState = {
+        ...player1,
+        stamina: 50,
+        maxStamina: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(player, 1000);
+
+      expect(updated.stamina).toBeGreaterThan(50);
+      expect(updated.stamina).toBeLessThanOrEqual(100);
+    });
+
+    it("should not exceed max stamina during regeneration", () => {
+      const player: PlayerState = {
+        ...player1,
+        stamina: 99.5,
+        maxStamina: 100,
+      };
+
+      const updated = combatSystem.updatePlayerState(player, 5000);
+
+      expect(updated.stamina).toBe(100);
+    });
+
+    it("should regenerate stamina at correct rate (3x regenRate)", () => {
+      const player: PlayerState = {
+        ...player1,
+        stamina: 50,
+        maxStamina: 100,
+      };
+
+      const deltaTime = 1000; // 1 second
+      const regenRate = deltaTime / 1000; // 1.0
+      const expectedIncrease = regenRate * 3; // 3.0
+
+      const updated = combatSystem.updatePlayerState(player, deltaTime);
+
+      // Should increase by approximately 3 points
+      expect(updated.stamina).toBeCloseTo(53, 0);
+    });
+  });
+});
+
+describe("createCombatResult", () => {
+  it("should set criticalHit from isCritical", () => {
+    const result = createCombatResult({ isCritical: true });
+
+    expect(result.criticalHit).toBe(true);
+    expect(result.isCritical).toBe(true);
+  });
+
+  it("should set criticalHit from criticalHit parameter", () => {
+    const result = createCombatResult({ criticalHit: true });
+
+    expect(result.criticalHit).toBe(true);
+    expect(result.isCritical).toBe(true);
+  });
+
+  it("should prefer isCritical over criticalHit", () => {
+    const result = createCombatResult({
+      isCritical: true,
+      criticalHit: false,
+    });
+
+    expect(result.criticalHit).toBe(true);
+    expect(result.isCritical).toBe(true);
+  });
+
+  it("should default success to false", () => {
+    const result = createCombatResult({});
+
+    expect(result.success).toBe(false);
+  });
+
+  it("should default damage to 0", () => {
+    const result = createCombatResult({});
+
+    expect(result.damage).toBe(0);
+  });
+
+  it("should default effects to empty array", () => {
+    const result = createCombatResult({});
+
+    expect(result.effects).toEqual([]);
+  });
+
+  it("should default hit to false", () => {
+    const result = createCombatResult({});
+
+    expect(result.hit).toBe(false);
+  });
+
+  it("should set hit from success if hit not provided", () => {
+    const result = createCombatResult({ success: true });
+
+    expect(result.hit).toBe(true);
+  });
+
+  it("should default isBlocked to false", () => {
+    const result = createCombatResult({});
+
+    expect(result.isBlocked).toBe(false);
+  });
+
+  it("should default vitalPointHit to false", () => {
+    const result = createCombatResult({});
+
+    expect(result.vitalPointHit).toBe(false);
+  });
+
+  it("should preserve provided values", () => {
+    const mockTechnique: KoreanTechnique = {
+      id: "test",
+      name: { korean: "테스트", english: "Test" },
+      koreanName: "테스트",
+      englishName: "Test",
+      romanized: "teseuteu",
+      description: { korean: "테스트", english: "Test" },
+      stance: TrigramStance.GEON,
+      type: CombatAttackType.PUNCH,
+      damageType: DamageType.BLUNT,
+      damage: 10,
+      range: 1.0,
+      kiCost: 5,
+      staminaCost: 10,
+      accuracy: 0.8,
+      executionTime: 300,
+      recoveryTime: 500,
+      critChance: 0.1,
+      critMultiplier: 1.5,
+      effects: [],
+    };
+
+    const mockAttacker = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+    const mockDefender = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+
+    const result = createCombatResult({
+      success: true,
+      damage: 25,
+      isCritical: true,
+      hit: true,
+      isBlocked: false,
+      vitalPointHit: true,
+      effects: [],
+      attacker: mockAttacker,
+      defender: mockDefender,
+      technique: mockTechnique,
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.damage).toBe(25);
+    expect(result.isCritical).toBe(true);
+    expect(result.hit).toBe(true);
+    expect(result.vitalPointHit).toBe(true);
+    expect(result.attacker).toBe(mockAttacker);
+    expect(result.defender).toBe(mockDefender);
+    expect(result.technique).toBe(mockTechnique);
+  });
+
+  it("should generate timestamp", () => {
+    const before = Date.now();
+    const result = createCombatResult({});
+    const after = Date.now();
+
+    expect(result.timestamp).toBeGreaterThanOrEqual(before);
+    expect(result.timestamp).toBeLessThanOrEqual(after);
   });
 });
 

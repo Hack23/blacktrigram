@@ -70,6 +70,16 @@ export default defineConfig({
       ],
       // Note: 'all' option removed in Vitest 4.0
       skipFull: false, // Don't skip files with 100% coverage
+      // Per-file coverage thresholds for critical systems per Secure Development Policy
+      thresholds: {
+        // CombatSystem.ts must meet 80%/70% coverage requirements
+        "src/systems/CombatSystem.ts": {
+          lines: 80,
+          branches: 70,
+          functions: 70,
+          statements: 80,
+        },
+      },
     },
   },
   // Optimize deps for Korean martial arts components
