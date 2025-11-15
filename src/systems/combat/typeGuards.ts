@@ -46,7 +46,13 @@ export function isVitalPoint(value: unknown): value is VitalPoint {
     typeof obj.severity === "string" &&
     Object.values(VitalPointSeverity).includes(obj.severity as VitalPointSeverity) &&
     hasValidPosition &&
-    Array.isArray(obj.effects)
+    Array.isArray(obj.effects) &&
+    typeof obj.names === "object" &&
+    obj.names !== null &&
+    typeof obj.description === "object" &&
+    obj.description !== null &&
+    typeof obj.targetingDifficulty === "number" &&
+    Array.isArray(obj.effectiveStances)
   );
 }
 
