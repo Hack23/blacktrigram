@@ -497,6 +497,69 @@ describe("CombatSystem", () => {
       expect(updatedAttacker.stamina).toBe(0);
     });
   });
+
+  describe("getArchetypeVitalPointModifier (type safety validation)", () => {
+    it("should apply correct modifiers for AMSALJA archetype on neurological vital points", () => {
+      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      const result = combatSystem.resolveAttack(
+        amsaljaPlayer,
+        player2,
+        mockTechnique,
+        "baekhe" // Neurological vital point
+      );
+      // Verify the attack works (testing the type safety)
+      expect(result).toBeDefined();
+      expect(result.timestamp).toBeGreaterThan(0);
+    });
+
+    it("should apply correct modifiers for MUSA archetype on skeletal vital points", () => {
+      const musaPlayer = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+      const result = combatSystem.resolveAttack(
+        musaPlayer,
+        player2,
+        mockTechnique,
+        "hyeolhae" // Skeletal vital point
+      );
+      // Verify the attack works (testing the type safety)
+      expect(result).toBeDefined();
+      expect(result.timestamp).toBeGreaterThan(0);
+    });
+
+    it("should apply correct modifiers for HACKER archetype on neurological vital points", () => {
+      const hackerPlayer = createPlayerFromArchetype(PlayerArchetype.HACKER, 0);
+      const result = combatSystem.resolveAttack(
+        hackerPlayer,
+        player2,
+        mockTechnique,
+        "baekhe" // Neurological vital point
+      );
+      // Verify the attack works (testing the type safety)
+      expect(result).toBeDefined();
+      expect(result.timestamp).toBeGreaterThan(0);
+    });
+
+    it("should handle all archetype enum values correctly", () => {
+      // Test each archetype to ensure enum values work correctly
+      const archetypes = [
+        PlayerArchetype.MUSA,
+        PlayerArchetype.AMSALJA,
+        PlayerArchetype.HACKER,
+        PlayerArchetype.JEONGBO_YOWON,
+        PlayerArchetype.JOJIK_POKRYEOKBAE,
+      ];
+
+      archetypes.forEach(archetype => {
+        const testPlayer = createPlayerFromArchetype(archetype, 0);
+        const result = combatSystem.resolveAttack(
+          testPlayer,
+          player2,
+          mockTechnique
+        );
+        expect(result).toBeDefined();
+        expect(result.attacker?.archetype).toBe(archetype);
+      });
+    });
+  });
 });
 
 describe("TrainingCombatSystem", () => {

@@ -1,10 +1,11 @@
-import { VitalPointSeverity } from "../types/common";
+import { PlayerArchetype, VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
+import { isValidArchetype, isVitalPoint } from "./combat/typeGuards";
 import { PlayerState } from "./player";
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
-import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
+import { KoreanTechnique, VitalPoint, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
 
 export class CombatSystem implements CombatSystemInterface {
@@ -310,8 +311,8 @@ export class CombatSystem implements CombatSystemInterface {
       damage,
       effects: vitalPoint.effects.map((effect) => ({
         id: `${effect.id}_${Date.now()}`,
-        type: effect.type as any,
-        intensity: effect.intensity as any,
+        type: effect.type as string,
+        intensity: effect.intensity,
         duration: effect.duration,
         description: effect.description,
         stackable: effect.stackable,
@@ -325,22 +326,34 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Helper method to get archetype-specific vital point damage modifier
+   * Uses type guards to ensure runtime type safety
    */
   private getArchetypeVitalPointModifier(
-    archetype: any,
-    vitalPoint: any
+    archetype: PlayerArchetype,
+    vitalPoint: VitalPoint
   ): number {
+    // Validate inputs using type guards
+    if (!isValidArchetype(archetype)) {
+      console.warn(`Invalid archetype provided: ${archetype}, using base modifier`);
+      return 1.0;
+    }
+
+    if (!isVitalPoint(vitalPoint)) {
+      console.warn(`Invalid vital point provided, using base modifier`);
+      return 1.0;
+    }
+
     // Simple archetype-based modifiers
     const baseModifier = 1.0;
 
     // Different archetypes have different specializations
     switch (archetype) {
-      case "amsalja": // Shadow Assassin - better at nerve strikes
-        return vitalPoint.category === "neurological" ? 1.3 : baseModifier;
-      case "musa": // Traditional Warrior - better at bone strikes
-        return vitalPoint.category === "skeletal" ? 1.2 : baseModifier;
-      case "hacker": // Cyber Warrior - better at nerve disruption
-        return vitalPoint.category === "neurological" ? 1.1 : baseModifier;
+      case PlayerArchetype.AMSALJA: // Shadow Assassin - better at nerve strikes
+        return vitalPoint.category === VitalPointCategory.NEUROLOGICAL ? 1.3 : baseModifier;
+      case PlayerArchetype.MUSA: // Traditional Warrior - better at bone strikes
+        return vitalPoint.category === VitalPointCategory.SKELETAL ? 1.2 : baseModifier;
+      case PlayerArchetype.HACKER: // Cyber Warrior - better at nerve disruption
+        return vitalPoint.category === VitalPointCategory.NEUROLOGICAL ? 1.1 : baseModifier;
       default:
         return baseModifier;
     }
