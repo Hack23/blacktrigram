@@ -124,6 +124,10 @@ jobs:
       - name: Generate e2e html report
         run: npm run test:e2ereporthtmlall
 
+      # Copy test reports from build/ to docs/ for GitHub Pages
+      - name: Copy test reports to docs
+        run: npm run build:test-reports
+
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4a3abc783e1a24aeb44c16e869ad83caf6b4cc23 # v4.7.4
         with:

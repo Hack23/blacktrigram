@@ -169,7 +169,7 @@ export default defineConfig(({ command, mode }) => ({
       "html",
     ],
     outputFile: {
-      html: "./docs/test-results/index.html",
+      html: "./build/test-results/index.html",
     },
     // Configure types to ensure testing library matchers are recognized
     typecheck: {

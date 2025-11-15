@@ -5697,12 +5697,7 @@ cypress/videos/game-flow.cy.ts.mp4.meta
 cypress/videos
 cypress/screenshots/**/*
 *.tsbuildinfo
-# Coverage reports
-coverage/
-*.lcov
-junit.xml
-lcov.info
 
-# Videos and screenshots
-cypress/videos/
-cypress/screenshots/
+# Build directory for test results (not committed during PR work)
+build/
+build
