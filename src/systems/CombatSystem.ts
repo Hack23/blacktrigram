@@ -311,7 +311,7 @@ export class CombatSystem implements CombatSystemInterface {
       damage,
       effects: vitalPoint.effects.map((effect) => ({
         id: `${effect.id}_${Date.now()}`,
-        type: effect.type as string,
+        type: effect.type,
         intensity: effect.intensity,
         duration: effect.duration,
         description: effect.description,
@@ -339,7 +339,7 @@ export class CombatSystem implements CombatSystemInterface {
     }
 
     if (!isVitalPoint(vitalPoint)) {
-      console.warn(`Invalid vital point provided, using base modifier`);
+      console.warn("Invalid vital point provided:", vitalPoint, "using base modifier");
       return 1.0;
     }
 

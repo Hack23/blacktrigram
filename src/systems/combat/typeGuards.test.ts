@@ -85,20 +85,16 @@ describe("Combat Type Guards", () => {
     });
 
     it("should return false for objects missing required properties", () => {
-      const missingId = { ...validVitalPoint };
-      delete (missingId as any).id;
+      const { id, ...missingId } = validVitalPoint;
       expect(isVitalPoint(missingId)).toBe(false);
 
-      const missingCategory = { ...validVitalPoint };
-      delete (missingCategory as any).category;
+      const { category, ...missingCategory } = validVitalPoint;
       expect(isVitalPoint(missingCategory)).toBe(false);
 
-      const missingPosition = { ...validVitalPoint };
-      delete (missingPosition as any).position;
+      const { position, ...missingPosition } = validVitalPoint;
       expect(isVitalPoint(missingPosition)).toBe(false);
 
-      const missingEffects = { ...validVitalPoint };
-      delete (missingEffects as any).effects;
+      const { effects, ...missingEffects } = validVitalPoint;
       expect(isVitalPoint(missingEffects)).toBe(false);
     });
 

@@ -3,7 +3,7 @@
  * Provides runtime type checking for better type safety
  */
 
-import { PlayerArchetype, VitalPointCategory } from "../../types/common";
+import { PlayerArchetype, VitalPointCategory, VitalPointSeverity } from "../../types/common";
 import { VitalPoint } from "../vitalpoint/types";
 
 /**
@@ -31,13 +31,21 @@ export function isVitalPoint(value: unknown): value is VitalPoint {
   
   const obj = value as Record<string, unknown>;
   
+  // Validate position structure
+  const hasValidPosition = 
+    obj.position !== undefined &&
+    typeof obj.position === "object" &&
+    obj.position !== null &&
+    typeof (obj.position as Record<string, unknown>).x === "number" &&
+    typeof (obj.position as Record<string, unknown>).y === "number";
+  
   return (
     typeof obj.id === "string" &&
     typeof obj.category === "string" &&
     Object.values(VitalPointCategory).includes(obj.category as VitalPointCategory) &&
     typeof obj.severity === "string" &&
-    obj.position !== undefined &&
-    typeof obj.position === "object" &&
+    Object.values(VitalPointSeverity).includes(obj.severity as VitalPointSeverity) &&
+    hasValidPosition &&
     Array.isArray(obj.effects)
   );
 }

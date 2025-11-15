@@ -548,7 +548,7 @@ describe("CombatSystem", () => {
         PlayerArchetype.JOJIK_POKRYEOKBAE,
       ];
 
-      archetypes.forEach(archetype => {
+      archetypes.forEach((archetype: PlayerArchetype) => {
         const testPlayer = createPlayerFromArchetype(archetype, 0);
         const result = combatSystem.resolveAttack(
           testPlayer,
