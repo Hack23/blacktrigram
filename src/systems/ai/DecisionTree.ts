@@ -197,14 +197,23 @@ export class AIDecisionTree {
   }
 
   /**
-   * Evaluate combo initiation
+   * Evaluate combo initiation (fix for issue #2529467014)
    */
   private evaluateComboStart(
     context: CombatContext,
     personality: AIPersonality,
-    _comboSystem: AIComboSystem
+    comboSystem: AIComboSystem
   ): AIDecision {
-    // Don't start combo if already in one or recently attacked
+    // Check if combo system is already active
+    if (comboSystem.isComboActive()) {
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: "Combo already active",
+      };
+    }
+
+    // Don't start combo if already in consecutive attacks
     if (this.consecutiveAttacks > 0) {
       return { action: AIActionType.WAIT, priority: 0, reason: "Combo cooldown" };
     }
@@ -508,21 +517,49 @@ export class AIDecisionTree {
   }
 
   /**
-   * Select counter-stance to opponent's stance
+   * Select counter-stance to opponent's stance (fix for issue #2529466994)
+   * Implements actual counter logic based on Korean martial arts philosophy
    */
   private selectCounterStance(
     opponentStance: TrigramStance,
     personality: AIPersonality
   ): TrigramStance {
-    // Korean martial arts philosophy: use favorable stances
-    const favored = personality.favoredStances;
+    // Define counter relationships based on trigram philosophy
+    const stanceCounters: Record<TrigramStance, TrigramStance[]> = {
+      [TrigramStance.GEON]: [TrigramStance.GAM, TrigramStance.GON], // Heaven countered by Water, Earth
+      [TrigramStance.TAE]: [TrigramStance.LI, TrigramStance.GEON], // Lake countered by Fire, Heaven
+      [TrigramStance.LI]: [TrigramStance.GAM, TrigramStance.SON], // Fire countered by Water, Wind
+      [TrigramStance.JIN]: [TrigramStance.GAN, TrigramStance.GON], // Thunder countered by Mountain, Earth
+      [TrigramStance.SON]: [TrigramStance.GAN, TrigramStance.GEON], // Wind countered by Mountain, Heaven
+      [TrigramStance.GAM]: [TrigramStance.GON, TrigramStance.GAN], // Water countered by Earth, Mountain
+      [TrigramStance.GAN]: [TrigramStance.JIN, TrigramStance.TAE], // Mountain countered by Thunder, Lake
+      [TrigramStance.GON]: [TrigramStance.SON, TrigramStance.LI], // Earth countered by Wind, Fire
+    };
+
+    const counters = stanceCounters[opponentStance] || [];
     
-    if (favored.length > 0) {
-      // Return random favored stance
-      return favored[Math.floor(Math.random() * favored.length)];
+    // Try to find a counter that's also in favored stances
+    const favoredCounters = counters.filter((s) =>
+      personality.favoredStances.includes(s)
+    );
+    
+    if (favoredCounters.length > 0) {
+      return favoredCounters[Math.floor(Math.random() * favoredCounters.length)];
+    }
+    
+    // Fallback to any counter stance
+    if (counters.length > 0) {
+      return counters[Math.floor(Math.random() * counters.length)];
+    }
+    
+    // Last resort: use favored stance
+    if (personality.favoredStances.length > 0) {
+      return personality.favoredStances[
+        Math.floor(Math.random() * personality.favoredStances.length)
+      ];
     }
 
-    // Fallback: return different stance
+    // Ultimate fallback: different stance
     const allStances = Object.values(TrigramStance);
     const filtered = allStances.filter((s) => s !== opponentStance);
     return filtered[Math.floor(Math.random() * filtered.length)];

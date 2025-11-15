@@ -632,8 +632,45 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           }
           break;
         case "feint":
-          // Feint: quick move then retreat
-          addCombatMessage("AI 페인트", "AI Feint");
+          // Feint: quick move towards player then retreat (fix for issue #2529467001)
+          {
+            const playerPos = validPlayers[0].position;
+            const aiPos = validPlayers[1].position;
+            
+            // Quick approach: move near the player
+            const feintOffset = 50;
+            const feintPos = {
+              x: playerPos.x + (Math.random() - 0.5) * feintOffset,
+              y: playerPos.y + (Math.random() - 0.5) * feintOffset,
+            };
+            moveAIPlayer(feintPos);
+            addCombatMessage("AI 페인트", "AI Feint");
+            
+            // Schedule retreat after short delay
+            setTimeout(() => {
+              const dx = aiPos.x - playerPos.x;
+              const dy = aiPos.y - playerPos.y;
+              const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+              const retreatDistance = 80;
+              const retreatPos = {
+                x: Math.max(
+                  arenaBounds.x,
+                  Math.min(
+                    arenaBounds.x + arenaBounds.width - 60,
+                    playerPos.x + (dx / dist) * retreatDistance
+                  )
+                ),
+                y: Math.max(
+                  arenaBounds.y,
+                  Math.min(
+                    arenaBounds.y + arenaBounds.height - 180,
+                    playerPos.y + (dy / dist) * retreatDistance
+                  )
+                ),
+              };
+              moveAIPlayer(retreatPos);
+            }, 200);
+          }
           break;
         case "counter":
           // Counter attack when player attacks
@@ -642,7 +679,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           break;
       }
     },
-    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer, addCombatMessage]
+    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer, addCombatMessage, validPlayers, arenaBounds]
   );
 
   // Enhanced AI Combat System with strategic decision-making
@@ -659,12 +696,25 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     onStanceChange: handleAIStanceChange,
   });
 
-  // Legacy AI System - REPLACED by useAICombat hook above
-  // aiState kept for potential future use
-
-  // Legacy AI System has been replaced by useAICombat hook
-  // The new system is integrated above with strategic decision-making,
-  // combo systems, and adaptive difficulty
+  // Update adaptive difficulty metrics after round ends (fix for issue #2529467017)
+  useEffect(() => {
+    if (roundEnded && validPlayers.length === 2) {
+      const player = validPlayers[0];
+      const totalAttacks = (player.hitsLanded ?? 0) + (player.hitsTaken ?? 0);
+      
+      adaptiveDifficulty.updateSkillMetrics({
+        hitsLanded: player.hitsLanded ?? 0,
+        totalAttacks: Math.max(totalAttacks, 1), // Avoid division by zero
+        combosExecuted: 0, // TODO: Track combo count in player state
+        perfectBlockCount: 0, // TODO: Track perfect blocks
+        avgReactionTimeMs: 500, // TODO: Track reaction time
+        vitalPointsHit: 0, // TODO: Track vital point hits
+        effectiveStanceChanges: 0, // TODO: Track effective stance changes
+        damageDealt: player.totalDamageDealt ?? 0,
+        damageTaken: player.totalDamageReceived ?? 0,
+      });
+    }
+  }, [roundEnded, adaptiveDifficulty, validPlayers]);
 
   // Force position updates to sync properly
   useEffect(() => {

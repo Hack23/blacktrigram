@@ -1,6 +1,48 @@
 /**
  * useAICombat Hook - AI Combat System Integration
- * Manages AI decision-making, combos, and adaptive difficulty
+ * 
+ * Custom hook for AI combat behavior with strategic decision-making.
+ *
+ * Manages AI opponent behavior including:
+ * - Strategic decision-making via DecisionTree
+ * - Combo attack sequences
+ * - Adaptive difficulty based on player skill
+ * - Performance monitoring (<5ms target for decisions)
+ *
+ * Side effects:
+ * - Manages internal state for AI actions and aggression
+ * - Sets up intervals/timers for AI action scheduling (50ms loop)
+ * - Updates state in response to combat events and round status
+ *
+ * @param config Configuration object for AI combat behavior
+ * @param config.player The AI-controlled player state
+ * @param config.opponent The opponent player state
+ * @param config.personality The AI's personality archetype
+ * @param config.adaptiveDifficulty Adaptive difficulty system instance
+ * @param config.isPaused Whether the game is paused
+ * @param config.roundStarted Whether the round has started
+ * @param config.roundEnded Whether the round has ended
+ * @param config.arenaBounds Combat arena boundaries
+ * @param config.onExecuteAction Callback to execute AI actions
+ * @param config.onStanceChange Optional callback for stance changes
+ * 
+ * @returns AI combat state and control functions
+ * 
+ * @example
+ * ```typescript
+ * const { aiState, comboSystem, adjustedPersonality } = useAICombat({
+ *   player: aiPlayer,
+ *   opponent: humanPlayer,
+ *   personality: AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+ *   adaptiveDifficulty,
+ *   isPaused,
+ *   roundStarted,
+ *   roundEnded,
+ *   arenaBounds,
+ *   onExecuteAction: handleAction,
+ *   onStanceChange: handleStanceChange,
+ * });
+ * ```
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -99,6 +141,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   // Performance tracking
   const lastDecisionTimeRef = useRef(0);
   const matchStartTimeRef = useRef(Date.now());
+  const previousDamageRef = useRef(0);
+  const nextActionRef = useRef(Date.now());
+  const consecutiveSlowDecisionsRef = useRef(0);
 
   /**
    * Execute AI action callback
@@ -118,6 +163,13 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     const dy = player.position.y - opponent.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
+    // Calculate recent damage taken (fix for issue #2529467021)
+    const recentDamageTaken = Math.max(
+      0,
+      player.totalDamageReceived - previousDamageRef.current
+    );
+    previousDamageRef.current = player.totalDamageReceived;
+
     return {
       playerPosition: player.position,
       opponentPosition: opponent.position,
@@ -133,16 +185,13 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       distanceToOpponent: distance,
       timeInMatch: Date.now() - matchStartTimeRef.current,
       isOpponentAttacking: opponent.combatState === "attacking",
-      recentDamageTaken: Math.max(
-        0,
-        player.totalDamageReceived - (player.totalDamageReceived || 0)
-      ),
+      recentDamageTaken,
       arenaBounds,
     };
   }, [player, opponent, arenaBounds]);
 
   /**
-   * AI decision loop
+   * AI decision loop (fixed memory leak - issue #2529466989)
    */
   useEffect(() => {
     if (isPaused || !roundStarted || roundEnded) {
@@ -152,8 +201,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     const aiInterval = setInterval(() => {
       const now = Date.now();
 
-      // Respect next action time
-      if (now < aiState.nextAction) {
+      // Respect next action time using ref (prevents stale closure)
+      if (now < nextActionRef.current) {
         return;
       }
 
@@ -170,10 +219,18 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         comboSystem
       );
 
-      // Performance: log if decision took too long
+      // Performance: warn if decision took too long (improved threshold - issue #2529466997)
       const decisionTime = performance.now() - decisionStart;
-      if (decisionTime > 5) {
-        console.warn(`AI decision took ${decisionTime.toFixed(2)}ms`);
+      if (decisionTime > 10) {
+        consecutiveSlowDecisionsRef.current += 1;
+        if (consecutiveSlowDecisionsRef.current >= 3) {
+          console.warn(
+            `AI decision took ${decisionTime.toFixed(2)}ms (3+ times in a row)`
+          );
+          consecutiveSlowDecisionsRef.current = 0;
+        }
+      } else {
+        consecutiveSlowDecisionsRef.current = 0;
       }
       lastDecisionTimeRef.current = decisionTime;
 
@@ -264,9 +321,12 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       const actionCooldown =
         actionType === "attack" || actionType === "technique" ? 600 : 400;
 
+      // Update next action time using ref (prevents stale closure)
+      nextActionRef.current = now + actionCooldown + Math.random() * 200;
+
       // Update AI state
       setAiState({
-        nextAction: now + actionCooldown + Math.random() * 200,
+        nextAction: nextActionRef.current,
         targetPosition: newTargetPosition,
         lastActionType: actionType,
         consecutiveAttacks: newConsecutiveAttacks,
@@ -280,7 +340,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     isPaused,
     roundStarted,
     roundEnded,
-    aiState.nextAction,
     buildCombatContext,
     decisionTree,
     adjustedPersonality,
