@@ -1,7 +1,6 @@
 import { HitEffect, PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { GameMode, PlayerArchetype, Position } from "@/types";
-import { KOREAN_COLORS } from "@/types/constants";
 import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
@@ -19,14 +18,14 @@ import { usePlayerMovement } from "../../utils/inputSystem";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { DojangBackground } from "../game/DojangBackground";
-import { HitEffectsLayer } from "../ui/HitEffectsLayer";
-import { PlayerVisuals } from "../ui/PlayerVisuals";
+import { CombatArena } from "./components/CombatArena";
 import { CombatControls } from "./components/CombatControls";
 import { CombatFooter } from "./components/CombatFooter";
 import { CombatHUD } from "./components/CombatHUD";
 import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { PauseOverlay } from "./components/PauseOverlay";
-import { RoundStatusDisplay } from "./components/RoundStatusDisplay";
+import { useCombatLayout } from "./hooks/useCombatLayout";
+import { useAICombat } from "./hooks/useAICombat";
 
 // Register custom components for use as JSX tags in @pixi/react
 extend({
@@ -87,39 +86,10 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
-  // Responsive layout detection
-  const isMobile = useMemo(() => width < 768, [width]);
-
-  // Centralized layout constants for easier tweaking
-  const layoutConstants = useMemo(() => ({
-    padding: 10,
-    hudHeight: isMobile ? 100 : 140,
-    controlsHeight: isMobile ? 140 : 180,
-    footerHeight: isMobile ? 25 : 30,
-    healthBarHeight: isMobile ? 50 : 60,
-  }), [isMobile]);
-
-  // Fixed player positions for 2-player combat with proper bounds
-  // Arena bounds should account for HUD at top and controls at bottom
-  const arenaBounds = useMemo(
-    () => {
-      const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
-      
-      // Break down complex calculation for clarity
-      const totalReservedHeight = layoutConstants.hudHeight + 
-                                  layoutConstants.controlsHeight + 
-                                  layoutConstants.footerHeight;
-      const totalPadding = layoutConstants.padding * 3;
-      const arenaHeight = height - totalReservedHeight - totalPadding;
-      
-      return {
-        x: width * 0.1,
-        y: arenaY,
-        width: width * 0.8,
-        height: arenaHeight,
-      };
-    },
-    [width, height, layoutConstants]
+  // Use optimized layout hook
+  const { isMobile, layoutConstants, arenaBounds } = useCombatLayout(
+    width,
+    height
   );
 
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
@@ -132,16 +102,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       y: arenaBounds.y + arenaBounds.height * 0.6,
     },
   ]);
-
-  const [aiState, setAiState] = useState({
-    nextAction: Date.now() + 1000,
-    actionCooldown: 400, // Reduced from 500 for faster reactions
-    isMoving: false,
-    targetPosition: { x: width * 0.75, y: height * 0.7 },
-    aggressionLevel: 0.65, // Increased from 0.5 for more aggressive AI
-    lastActionType: "idle" as string,
-    consecutiveAttacks: 0,
-  });
 
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: !isPaused && roundStarted && !roundEnded,
@@ -488,271 +448,117 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     ]
   );
 
-  // ✅ FIXED: AI combat handlers with proper effect integration
-  const handleAIAttack = useCallback(() => {
-    addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
-
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-    );
-
-    if (distance < 120) {
-      // AI attack hits
-      const damage = 10 + Math.random() * 15;
-      onPlayerUpdate(0, {
-        health: Math.max(0, validPlayers[0].health - damage),
-        hitsTaken: validPlayers[0].hitsTaken + 1,
-      });
-      addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
-    } else {
-      addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
-    }
-  }, [
-    playerPositions,
+  // AI Combat System - Using extracted hook
+  useAICombat(
+    !isPaused && roundStarted && !roundEnded,
+    [playerPositions[0], playerPositions[1]],
     validPlayers,
-    onPlayerUpdate,
-    addCombatMessage,
-    addHitEffect,
-  ]);
-
-  const handleAIDefend = useCallback(() => {
-    onPlayerUpdate(1, { isBlocking: true });
-    addCombatMessage("AI 방어 자세", "AI Defensive Stance");
-
-    // Add AI defensive effect
-    addHitEffect(HitEffectType.BLOCK, playerPositions[1], 0.8);
-
-    setTimeout(() => {
-      onPlayerUpdate(1, { isBlocking: false });
-    }, 1000);
-  }, [onPlayerUpdate, addCombatMessage, addHitEffect, playerPositions]);
-
-  const handleAITechnique = useCallback(() => {
-    if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
-      handleAIAttack(); // Fallback to basic attack
-      return;
-    }
-
-    addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[1], 1.5);
-
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
-    );
-
-    if (distance < 150) {
-      const damage = 20 + Math.random() * 20;
-      onPlayerUpdate(0, {
-        health: Math.max(0, validPlayers[0].health - damage),
-        hitsTaken: validPlayers[0].hitsTaken + 1,
-      });
-      addCombatMessage("AI 특수 기술!", "AI Special Technique!");
-    }
-
-    // Consume AI resources
-    onPlayerUpdate(1, {
-      ki: Math.max(0, validPlayers[1].ki - 10),
-      stamina: Math.max(0, validPlayers[1].stamina - 15),
-    });
-  }, [
-    playerPositions,
-    validPlayers,
-    onPlayerUpdate,
-    addCombatMessage,
-    handleAIAttack,
-    addHitEffect,
-  ]);
-
-  const moveAIPlayer = useCallback(
-    (targetPos: Position) => {
-      const currentPos = playerPositions[1];
-      const speed = 4; // Increased from 2
-
-      const dx = targetPos.x - currentPos.x;
-      const dy = targetPos.y - currentPos.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > 5) {
-        const newPos = {
-          x: currentPos.x + (dx / distance) * speed,
-          y: currentPos.y + (dy / distance) * speed,
-        };
-
-        // Keep AI within bounds
-        newPos.x = Math.max(
-          arenaBounds.x,
-          Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x)
-        );
-        newPos.y = Math.max(
-          arenaBounds.y,
-          Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y)
-        );
-
-        setPlayerPositions((prev) => [prev[0], newPos]);
-        onPlayerUpdate(1, { position: newPos });
-      }
-    },
-    [playerPositions, arenaBounds, onPlayerUpdate]
-  );
-
-  // Execute AI Actions
-  const executeAIAction = useCallback(
-    (action: string, targetPos: Position) => {
-      switch (action) {
-        case "attack":
-          handleAIAttack();
-          break;
-        case "defend":
-          handleAIDefend();
-          break;
-        case "technique":
-          handleAITechnique();
-          break;
-        case "approach":
-        case "retreat":
-        case "circle":
-          moveAIPlayer(targetPos);
-          break;
-      }
-    },
-    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer]
-  );
-
-  // AI System - Enhanced for Korean martial arts
-  useEffect(() => {
-    if (isPaused || !roundStarted || roundEnded) return;
-
-    const aiInterval = setInterval(() => {
-      const now = Date.now();
-      if (now < aiState.nextAction) return;
-
-      const player1Pos = playerPositions[0];
-      const player2Pos = playerPositions[1];
-      const distanceToPlayer = Math.sqrt(
-        Math.pow(player1Pos.x - player2Pos.x, 2) +
-          Math.pow(player1Pos.y - player2Pos.y, 2)
-      );
-
-      // Enhanced AI Decision Making with combo logic
-      let aiAction = "idle";
-      let newTargetPosition = aiState.targetPosition;
-      const healthPercent = validPlayers[1].health / validPlayers[1].maxHealth;
-      const kiPercent = validPlayers[1].ki / validPlayers[1].maxKi;
-      const isLowHealth = healthPercent < 0.3;
-      const hasEnoughResources = kiPercent > 0.3;
-
-      // Combo attack logic - continue attacking if on a roll
-      if (aiState.consecutiveAttacks > 0 && aiState.consecutiveAttacks < 3 && distanceToPlayer < 130) {
-        const comboRandom = Math.random();
-        if (comboRandom < 0.7) { // 70% chance to continue combo
-          aiAction = comboRandom < 0.5 ? "attack" : "technique";
-        }
-      } else if (isLowHealth) {
-        // Defensive when low health - smarter retreat
-        const shouldDefend = Math.random() < 0.4;
-        if (shouldDefend && distanceToPlayer < 150) {
-          aiAction = "defend";
-        } else {
-          aiAction = "retreat";
-          newTargetPosition = {
-            x: Math.max(
-              arenaBounds.x,
-              Math.min(
-                arenaBounds.x + arenaBounds.width - 60,
-                player2Pos.x + (player2Pos.x > player1Pos.x ? 100 : -100)
-              )
-            ),
-            y: player2Pos.y + (Math.random() - 0.5) * 40,
-          };
-        }
-      } else if (distanceToPlayer < 120) {
-        // Close combat - varied attacks
-        const random = Math.random();
-        const aggression = aiState.aggressionLevel;
-        
-        if (random < aggression * 0.8) {
-          aiAction = "attack";
-        } else if (random < aggression * 0.8 + 0.1 && hasEnoughResources) {
-          aiAction = "technique";
-        } else {
-          aiAction = "defend";
-        }
-      } else if (distanceToPlayer > 250) {
-        // Move closer with tactical positioning
-        aiAction = "approach";
-        const offsetX = (Math.random() - 0.5) * 100;
-        const offsetY = (Math.random() - 0.5) * 60;
-        newTargetPosition = {
-          x: Math.max(
-            arenaBounds.x,
-            Math.min(arenaBounds.x + arenaBounds.width - 60, player1Pos.x + offsetX)
-          ),
-          y: Math.max(
-            arenaBounds.y,
-            Math.min(arenaBounds.y + arenaBounds.height - 180, player1Pos.y + offsetY)
-          ),
-        };
-      } else {
-        // Medium distance - tactical movement or opportunistic attack
-        const tacticChoice = Math.random();
-        if (tacticChoice < 0.3 && hasEnoughResources) {
-          aiAction = "technique";
-        } else if (tacticChoice < 0.5) {
-          aiAction = "approach";
-          newTargetPosition = {
-            x: player1Pos.x + (Math.random() - 0.5) * 80,
-            y: player1Pos.y + (Math.random() - 0.5) * 60,
-          };
-        } else {
-          aiAction = "circle";
-          const angle = Math.atan2(
-            player1Pos.y - player2Pos.y,
-            player1Pos.x - player2Pos.x
-          );
-          const circleRadius = 150 + Math.random() * 50;
-          newTargetPosition = {
-            x: player1Pos.x + Math.cos(angle + Math.PI / 2) * circleRadius,
-            y: player1Pos.y + Math.sin(angle + Math.PI / 2) * circleRadius,
-          };
-        }
-      }
-
-      // Track consecutive attacks for combo logic
-      const newConsecutiveAttacks = 
-        (aiAction === "attack" || aiAction === "technique") 
-          ? aiState.consecutiveAttacks + 1 
-          : 0;
-
-      // Execute AI action
-      executeAIAction(aiAction, newTargetPosition);
-
-      // Set next action time with dynamic cooldown based on action
-      const actionCooldown = 
-        aiAction === "attack" || aiAction === "technique" ? 600 : 400;
-      
-      setAiState((prev) => ({
-        ...prev,
-        nextAction: now + actionCooldown + Math.random() * 200,
-        targetPosition: newTargetPosition,
-        lastActionType: aiAction,
-        consecutiveAttacks: newConsecutiveAttacks,
-      }));
-    }, 50); // Reduced from 100ms to 50ms for more responsive AI
-
-    return () => clearInterval(aiInterval);
-  }, [
-    isPaused,
-    roundStarted,
-    roundEnded,
-    playerPositions,
-    validPlayers,
-    aiState.nextAction,
-    aiState.actionCooldown,
-    aiState.targetPosition,
     arenaBounds,
-    executeAIAction,
-  ]);
+    {
+      onAttack: useCallback(() => {
+        addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
+
+        const distance = Math.sqrt(
+          Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
+            Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
+        );
+
+        if (distance < 120) {
+          const damage = 10 + Math.random() * 15;
+          onPlayerUpdate(0, {
+            health: Math.max(0, validPlayers[0].health - damage),
+            hitsTaken: validPlayers[0].hitsTaken + 1,
+          });
+          addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
+        } else {
+          addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
+        }
+      }, [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect]),
+
+      onDefend: useCallback(() => {
+        onPlayerUpdate(1, { isBlocking: true });
+        addCombatMessage("AI 방어 자세", "AI Defensive Stance");
+        addHitEffect(HitEffectType.BLOCK, playerPositions[1], 0.8);
+
+        setTimeout(() => {
+          onPlayerUpdate(1, { isBlocking: false });
+        }, 1000);
+      }, [onPlayerUpdate, addCombatMessage, addHitEffect, playerPositions]),
+
+      onTechnique: useCallback(() => {
+        if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
+          // Fallback to basic attack
+          addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
+          const distance = Math.sqrt(
+            Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
+              Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
+          );
+          if (distance < 120) {
+            const damage = 10 + Math.random() * 15;
+            onPlayerUpdate(0, {
+              health: Math.max(0, validPlayers[0].health - damage),
+              hitsTaken: validPlayers[0].hitsTaken + 1,
+            });
+            addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
+          }
+          return;
+        }
+
+        addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[1], 1.5);
+
+        const distance = Math.sqrt(
+          Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
+            Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
+        );
+
+        if (distance < 150) {
+          const damage = 20 + Math.random() * 20;
+          onPlayerUpdate(0, {
+            health: Math.max(0, validPlayers[0].health - damage),
+            hitsTaken: validPlayers[0].hitsTaken + 1,
+          });
+          addCombatMessage("AI 특수 기술!", "AI Special Technique!");
+        }
+
+        onPlayerUpdate(1, {
+          ki: Math.max(0, validPlayers[1].ki - 10),
+          stamina: Math.max(0, validPlayers[1].stamina - 15),
+        });
+      }, [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect]),
+
+      onMove: useCallback(
+        (targetPos: Position) => {
+          const currentPos = playerPositions[1];
+          const speed = 4;
+
+          const dx = targetPos.x - currentPos.x;
+          const dy = targetPos.y - currentPos.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance > 5) {
+            const newPos = {
+              x: currentPos.x + (dx / distance) * speed,
+              y: currentPos.y + (dy / distance) * speed,
+            };
+
+            // Keep AI within bounds
+            newPos.x = Math.max(
+              arenaBounds.x,
+              Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x)
+            );
+            newPos.y = Math.max(
+              arenaBounds.y,
+              Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y)
+            );
+
+            setPlayerPositions((prev) => [prev[0], newPos]);
+            onPlayerUpdate(1, { position: newPos });
+          }
+        },
+        [playerPositions, arenaBounds, onPlayerUpdate]
+      ),
+    }
+  );
 
   // Force position updates to sync properly
   useEffect(() => {
@@ -870,101 +676,28 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           />
         </pixiContainer>
 
-        {/* Combat Arena Area: Flexible height, fills remaining space */}
-        <pixiContainer
-          data-testid="combat-arena"
-          layout={{
-            width: "100%",
-            height: height - layoutConstants.hudHeight - layoutConstants.controlsHeight - layoutConstants.footerHeight - layoutConstants.padding * 2,
-            flexShrink: 1,
-            minHeight: 300, // Minimum arena height
-          }}
-        >
-          {/* Player 1 Visuals - Use absolute positioning within arena */}
-          <PlayerVisuals
-            playerState={validPlayers[0]}
-            x={playerPositions[0].x}
-            y={playerPositions[0].y}
-            scale={isMobile ? 0.8 : 1.0}
-            renderMode="combat"
-            facing="right"
-            showDetails={true}
-            showVitalPoints={false}
-            showKiAura={true}
-            showKoreanLabels={true}
-            interactive={true}
-            onPlayerClick={() => console.log("Player 1 clicked")}
-            animationState={getPlayerAnimationState(0)}
-            data-testid="combat-player-1"
-          />
-
-          {/* Player 2 Visuals - Use absolute positioning within arena */}
-          <PlayerVisuals
-            playerState={validPlayers[1]}
-            x={playerPositions[1].x}
-            y={playerPositions[1].y}
-            scale={isMobile ? 0.8 : 1.0}
-            renderMode="combat"
-            facing="left"
-            showDetails={true}
-            showVitalPoints={false}
-            showKiAura={true}
-            showKoreanLabels={true}
-            interactive={true}
-            onPlayerClick={() => console.log("Player 2 clicked")}
-            animationState={getPlayerAnimationState(1)}
-            data-testid="combat-player-2"
-          />
-
-          {/* Hit Effects Layer */}
-          <HitEffectsLayer
-            effects={hitEffects}
-            onEffectComplete={handleEffectComplete}
-          />
-
-          {/* Combo Counter Display */}
-          {comboCount > 1 && (
-            <pixiContainer
-              x={width / 2}
-              y={height * 0.3}
-              data-testid="combo-counter"
-            >
-              <pixiText
-                text={`${comboCount} HIT COMBO!`}
-                style={{
-                  fontSize: 32 + comboCount * 2,
-                  fill: KOREAN_COLORS.ACCENT_GOLD,
-                  fontWeight: "bold",
-                  fontFamily: "Noto Sans KR",
-                }}
-                anchor={0.5}
-                alpha={Math.min(1, comboCount / 5)}
-              />
-              <pixiText
-                text={`${comboCount} 연속 공격!`}
-                style={{
-                  fontSize: 20,
-                  fill: KOREAN_COLORS.PRIMARY_CYAN,
-                  fontWeight: "bold",
-                  fontFamily: "Noto Sans KR",
-                }}
-                anchor={0.5}
-                y={40}
-              />
-            </pixiContainer>
-          )}
-
-          {/* Round Status Display */}
-          {roundDisplayStatus && (
-            <RoundStatusDisplay
-              status={roundDisplayStatus}
-              round={currentRound}
-              width={width}
-              height={height}
-              onAnimationComplete={() => setRoundDisplayStatus(null)}
-            />
-          )}
-        </pixiContainer>
+        {/* Combat Arena Area - Extracted to component for performance */}
+        <CombatArena
+          players={validPlayers}
+          playerPositions={[playerPositions[0], playerPositions[1]]}
+          hitEffects={hitEffects}
+          comboCount={comboCount}
+          roundDisplayStatus={roundDisplayStatus}
+          currentRound={currentRound}
+          width={width}
+          height={height}
+          arenaHeight={
+            height -
+            layoutConstants.hudHeight -
+            layoutConstants.controlsHeight -
+            layoutConstants.footerHeight -
+            layoutConstants.padding * 2
+          }
+          isMobile={isMobile}
+          getPlayerAnimationState={getPlayerAnimationState}
+          onEffectComplete={handleEffectComplete}
+          onRoundAnimationComplete={() => setRoundDisplayStatus(null)}
+        />
 
         {/* Bottom UI Area: Contains controls and stats */}
         <pixiContainer

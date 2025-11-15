@@ -5,7 +5,7 @@ import { HitEffectType } from "../../systems/effects";
 import { KOREAN_COLORS } from "../../types/constants";
 
 export interface HitEffectsLayerProps {
-  readonly effects: HitEffect[];
+  readonly effects: readonly HitEffect[];
   readonly onEffectComplete?: (effectId: string) => void;
 }
 
@@ -43,7 +43,7 @@ export const HitEffectsLayer: React.FC<HitEffectsLayerProps> = ({
   effects,
   onEffectComplete,
 }) => {
-  const [activeEffects, setActiveEffects] = useState<HitEffect[]>([]);
+  const [activeEffects, setActiveEffects] = useState<readonly HitEffect[]>([]);
 
   // Process effects
   useEffect(() => {

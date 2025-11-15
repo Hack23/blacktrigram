@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { PlayerState, Position } from "@/types";
+import { PlayerState } from "@/systems";
+import { Position } from "@/types";
 import { ArenaBounds } from "./useCombatLayout";
 
 /**

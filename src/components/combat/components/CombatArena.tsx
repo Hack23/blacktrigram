@@ -2,7 +2,7 @@ import { HitEffect, PlayerState } from "@/systems";
 import { KOREAN_COLORS } from "@/types/constants";
 import React, { memo } from "react";
 import { HitEffectsLayer } from "../../ui/HitEffectsLayer";
-import { PlayerVisuals } from "../../ui/PlayerVisuals";
+import { PlayerAnimationState, PlayerVisuals } from "../../ui/PlayerVisuals";
 import { RoundStatusDisplay } from "./RoundStatusDisplay";
 
 /**
@@ -22,7 +22,7 @@ export interface CombatArenaProps {
   readonly height: number;
   readonly arenaHeight: number;
   readonly isMobile: boolean;
-  readonly getPlayerAnimationState: (playerIndex: number) => string;
+  readonly getPlayerAnimationState: (playerIndex: number) => PlayerAnimationState;
   readonly onEffectComplete: (effectId: string) => void;
   readonly onRoundAnimationComplete: () => void;
 }
