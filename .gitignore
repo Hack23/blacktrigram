@@ -5701,8 +5701,3 @@ cypress/screenshots/**/*
 # Build directory for test results (not committed during PR work)
 build/
 build
-
-# Test results in docs (generated during release from build/)
-docs/coverage/
-docs/cypress/
-docs/test-results/

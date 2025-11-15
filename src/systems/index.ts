@@ -75,6 +75,7 @@ export type {
   Velocity,
 } from "./types";
 
+export * from "./ai";
 export * from "./combat";
 export * from "./CombatSystem";
 export * from "./effects";
