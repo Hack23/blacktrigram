@@ -46,7 +46,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov", "json"],
-      reportsDirectory: "./docs/coverage", // Explicitly set the output directory
+      reportsDirectory: "./build/coverage", // Output to build dir (not committed during PR)
       exclude: [
         // top-level helpers
         "cypress.reporter.config.js",

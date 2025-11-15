@@ -121,7 +121,7 @@ jobs:
       - name: Run unit tests with coverage
         run: npm run coverage
         env:
-          JEST_JUNIT_OUTPUT_DIR: "docs/coverage"
+          JEST_JUNIT_OUTPUT_DIR: "build/coverage"
           JEST_JUNIT_OUTPUT_NAME: "junit.xml"
 
 
