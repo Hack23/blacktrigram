@@ -559,9 +559,12 @@ export class AIDecisionTree {
       ];
     }
 
-    // Ultimate fallback: different stance
+    // Ultimate fallback: different stance (issue #2529728009)
     const allStances = Object.values(TrigramStance);
     const filtered = allStances.filter((s) => s !== opponentStance);
+    if (filtered.length === 0) {
+      return opponentStance; // Edge case: same stance
+    }
     return filtered[Math.floor(Math.random() * filtered.length)];
   }
 

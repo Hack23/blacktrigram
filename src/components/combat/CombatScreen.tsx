@@ -193,6 +193,30 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Initialize AI systems
   const adaptiveDifficulty = useMemo(() => new AdaptiveDifficulty(), []);
+
+  // Persist adaptiveDifficulty metrics between sessions (issue #2529728004)
+  useEffect(() => {
+    // Load saved metrics on mount
+    try {
+      const savedMetrics = localStorage.getItem("ai_difficulty_metrics");
+      if (savedMetrics) {
+        adaptiveDifficulty.importMetrics(savedMetrics);
+      }
+    } catch (err) {
+      // Gracefully handle localStorage errors
+      console.warn("Failed to load AI difficulty metrics:", err);
+    }
+    // Save metrics on unmount
+    return () => {
+      try {
+        const metrics = adaptiveDifficulty.exportMetrics();
+        localStorage.setItem("ai_difficulty_metrics", metrics);
+      } catch (err) {
+        console.warn("Failed to save AI difficulty metrics:", err);
+      }
+    };
+  }, [adaptiveDifficulty]);
+
   const aiPersonality = useMemo(
     () => getPersonalityByArchetype(validPlayers[1].archetype),
     [validPlayers]
@@ -632,7 +656,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           }
           break;
         case "feint":
-          // Feint: quick move towards player then retreat (fix for issue #2529467001)
+          // Feint: quick move towards player then retreat (fix for issue #2529467001, #2529728016)
           {
             const playerPos = validPlayers[0].position;
             const aiPos = validPlayers[1].position;
@@ -646,29 +670,32 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             moveAIPlayer(feintPos);
             addCombatMessage("AI 페인트", "AI Feint");
             
-            // Schedule retreat after short delay
+            // Schedule retreat after short delay with cleanup
             setTimeout(() => {
-              const dx = aiPos.x - playerPos.x;
-              const dy = aiPos.y - playerPos.y;
-              const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-              const retreatDistance = 80;
-              const retreatPos = {
-                x: Math.max(
-                  arenaBounds.x,
-                  Math.min(
-                    arenaBounds.x + arenaBounds.width - 60,
-                    playerPos.x + (dx / dist) * retreatDistance
-                  )
-                ),
-                y: Math.max(
-                  arenaBounds.y,
-                  Math.min(
-                    arenaBounds.y + arenaBounds.height - 180,
-                    playerPos.y + (dy / dist) * retreatDistance
-                  )
-                ),
-              };
-              moveAIPlayer(retreatPos);
+              // Check if still in valid state before executing retreat
+              if (!roundEnded && roundStarted) {
+                const dx = aiPos.x - playerPos.x;
+                const dy = aiPos.y - playerPos.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const retreatDistance = 80;
+                const retreatPos = {
+                  x: Math.max(
+                    arenaBounds.x,
+                    Math.min(
+                      arenaBounds.x + arenaBounds.width - 60,
+                      playerPos.x + (dx / dist) * retreatDistance
+                    )
+                  ),
+                  y: Math.max(
+                    arenaBounds.y,
+                    Math.min(
+                      arenaBounds.y + arenaBounds.height - 180,
+                      playerPos.y + (dy / dist) * retreatDistance
+                    )
+                  ),
+                };
+                moveAIPlayer(retreatPos);
+              }
             }, 200);
           }
           break;
@@ -679,11 +706,11 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           break;
       }
     },
-    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer, addCombatMessage, validPlayers, arenaBounds]
+    [handleAIAttack, handleAIDefend, handleAITechnique, moveAIPlayer, addCombatMessage, validPlayers, arenaBounds, roundEnded, roundStarted]
   );
 
   // Enhanced AI Combat System with strategic decision-making
-  const { aiState: _aiStateFromHook } = useAICombat({
+  useAICombat({
     player: validPlayers[1],
     opponent: validPlayers[0],
     personality: aiPersonality,
@@ -702,14 +729,18 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       const player = validPlayers[0];
       const totalAttacks = (player.hitsLanded ?? 0) + (player.hitsTaken ?? 0);
       
+      // Only update metrics if there was at least one attack (issue #2529728006, #2529728014)
+      if (totalAttacks === 0) return;
+      
+      // Use available properties from PlayerState (issue #2529728002)
       adaptiveDifficulty.updateSkillMetrics({
         hitsLanded: player.hitsLanded ?? 0,
-        totalAttacks: Math.max(totalAttacks, 1), // Avoid division by zero
-        combosExecuted: 0, // TODO: Track combo count in player state
-        perfectBlockCount: 0, // TODO: Track perfect blocks
-        avgReactionTimeMs: 500, // TODO: Track reaction time
-        vitalPointsHit: 0, // TODO: Track vital point hits
-        effectiveStanceChanges: 0, // TODO: Track effective stance changes
+        totalAttacks,
+        combosExecuted: player.comboCount ?? 0,
+        perfectBlockCount: 0, // Not yet tracked in PlayerState
+        avgReactionTimeMs: 500, // Default value; not yet tracked in PlayerState
+        vitalPointsHit: player.vitalPointHits ?? 0,
+        effectiveStanceChanges: 0, // Not yet tracked in PlayerState
         damageDealt: player.totalDamageDealt ?? 0,
         damageTaken: player.totalDamageReceived ?? 0,
       });

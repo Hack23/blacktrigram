@@ -143,7 +143,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const matchStartTimeRef = useRef(Date.now());
   const previousDamageRef = useRef(0);
   const nextActionRef = useRef(Date.now());
-  const consecutiveSlowDecisionsRef = useRef(0);
+  const lastWarningTimeRef = useRef(0);
+
+  // Initialize previousDamageRef when round starts (issue #2529728007)
+  useEffect(() => {
+    if (roundStarted) {
+      matchStartTimeRef.current = Date.now();
+      previousDamageRef.current = player.totalDamageReceived;
+      decisionTree.reset();
+      comboSystem.resetCombo();
+    }
+  }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived]);
 
   /**
    * Execute AI action callback
@@ -219,18 +229,15 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         comboSystem
       );
 
-      // Performance: warn if decision took too long (improved threshold - issue #2529466997)
+      // Performance: warn if decision took too long with time-based throttle (issue #2529466997, #2529728019)
       const decisionTime = performance.now() - decisionStart;
       if (decisionTime > 10) {
-        consecutiveSlowDecisionsRef.current += 1;
-        if (consecutiveSlowDecisionsRef.current >= 3) {
-          console.warn(
-            `AI decision took ${decisionTime.toFixed(2)}ms (3+ times in a row)`
-          );
-          consecutiveSlowDecisionsRef.current = 0;
+        const now = Date.now();
+        if (now - lastWarningTimeRef.current > 5000) {
+          // Only warn every 5 seconds
+          console.warn(`AI decisions running slow: ${decisionTime.toFixed(2)}ms`);
+          lastWarningTimeRef.current = now;
         }
-      } else {
-        consecutiveSlowDecisionsRef.current = 0;
       }
       lastDecisionTimeRef.current = decisionTime;
 

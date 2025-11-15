@@ -213,7 +213,7 @@ Each trigram stance has one 3-hit combo sequence:
 ### Decision-Making
 
 - **Loop Interval:** 50ms (20 decisions per second)
-- **Decision Time:** <5ms target (monitored with warnings)
+- **Decision Time:** <10ms target (monitored with warnings)
 - **Cooldown:** 400-600ms between actions
 
 ### Memory Usage

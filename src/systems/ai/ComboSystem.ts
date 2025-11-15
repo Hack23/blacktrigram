@@ -184,12 +184,16 @@ export class AIComboSystem {
     count: number
   ): readonly KoreanTechnique[] {
     const techniques = TRIGRAM_TECHNIQUES[stance] ?? [];
-    // Take first 'count' techniques, or repeat if not enough
-    const sequence: KoreanTechnique[] = [];
-    for (let i = 0; i < count; i++) {
-      sequence.push(techniques[i % techniques.length]);
+    
+    // Warn if not enough techniques for full combo (issue #2529727989)
+    if (techniques.length < count) {
+      console.warn(
+        `[AIComboSystem] Not enough techniques defined for stance '${stance}'. Requested ${count}, but only ${techniques.length} available. Returning partial combo.`
+      );
     }
-    return sequence;
+    
+    // Return only available techniques
+    return techniques.slice(0, count);
   }
 
   /**
@@ -305,12 +309,12 @@ export class AIComboSystem {
   }
 
   /**
-   * Check if combo is active
+   * Check if combo is active (fix for issue #2529727999)
    */
   isComboActive(): boolean {
     return (
       this.currentCombo.length > 0 &&
-      this.comboProgress > 0 &&
+      this.comboProgress >= 0 &&
       this.comboProgress < this.currentCombo.length &&
       Date.now() - this.lastComboTime < this.comboTimeout
     );
