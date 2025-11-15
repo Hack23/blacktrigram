@@ -7,38 +7,38 @@
  * - Strategic decision-making via DecisionTree
  * - Combo attack sequences
  * - Adaptive difficulty based on player skill
- * - Performance monitoring (<5ms target for decisions)
+ * - Performance monitoring (<10ms target for decisions)
  *
  * Side effects:
  * - Manages internal state for AI actions and aggression
- * - Sets up intervals/timers for AI action scheduling (50ms loop)
+ * - Sets up intervals/timers for AI action scheduling
  * - Updates state in response to combat events and round status
  *
- * @param config Configuration object for AI combat behavior
- * @param config.player The AI-controlled player state
- * @param config.opponent The opponent player state
- * @param config.personality The AI's personality archetype
- * @param config.adaptiveDifficulty Adaptive difficulty system instance
- * @param config.isPaused Whether the game is paused
- * @param config.roundStarted Whether the round has started
- * @param config.roundEnded Whether the round has ended
- * @param config.arenaBounds Combat arena boundaries
- * @param config.onExecuteAction Callback to execute AI actions
- * @param config.onStanceChange Optional callback for stance changes
+ * @param config Configuration object for AI combat behavior.
+ * @param config.player The AI-controlled player state.
+ * @param config.opponent The opponent player state.
+ * @param config.personality The AI's personality archetype.
+ * @param config.adaptiveDifficulty Adaptive difficulty system instance.
+ * @param config.arenaBounds Arena boundaries for movement validation.
+ * @param config.roundStarted Whether the combat round has started.
+ * @param config.roundEnded Whether the combat round has ended.
+ * @param config.isPaused Whether the game is paused.
+ * @param config.onExecuteAction Callback to execute AI actions.
+ * @param config.onStanceChange Callback to handle stance changes.
  * 
  * @returns AI combat state and control functions
  * 
  * @example
  * ```typescript
- * const { aiState, comboSystem, adjustedPersonality } = useAICombat({
+ * const { aiState } = useAICombat({
  *   player: aiPlayer,
  *   opponent: humanPlayer,
  *   personality: AI_PERSONALITIES.AGGRESSIVE_STRIKER,
  *   adaptiveDifficulty,
- *   isPaused,
+ *   arenaBounds,
  *   roundStarted,
  *   roundEnded,
- *   arenaBounds,
+ *   isPaused,
  *   onExecuteAction: handleAction,
  *   onStanceChange: handleStanceChange,
  * });
@@ -56,6 +56,10 @@ import {
   AIActionType,
   CombatContext,
 } from "@/systems/ai";
+
+// Performance monitoring constants
+const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
+const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 seconds
 
 /**
  * AI state management
@@ -231,9 +235,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
 
       // Performance: warn if decision took too long with time-based throttle (issue #2529466997, #2529728019)
       const decisionTime = performance.now() - decisionStart;
-      if (decisionTime > 10) {
+      if (decisionTime > AI_DECISION_THRESHOLD_MS) {
         const now = Date.now();
-        if (now - lastWarningTimeRef.current > 5000) {
+        if (now - lastWarningTimeRef.current > WARNING_THROTTLE_MS) {
           // Only warn every 5 seconds
           console.warn(`AI decisions running slow: ${decisionTime.toFixed(2)}ms`);
           lastWarningTimeRef.current = now;
@@ -355,18 +359,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     onStanceChange,
     player,
     opponent,
+    aiState,
   ]);
-
-  /**
-   * Reset AI state when round starts
-   */
-  useEffect(() => {
-    if (roundStarted) {
-      matchStartTimeRef.current = Date.now();
-      decisionTree.reset();
-      comboSystem.resetCombo();
-    }
-  }, [roundStarted, decisionTree, comboSystem]);
 
   return {
     aiState,

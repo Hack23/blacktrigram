@@ -80,12 +80,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   },
 
   /**
-   * 균형잡힌자 (Gyunhyeongjabin-ja) - Balanced Fighter
+   * 균형 잡힌 자 (Gyunhyeong Jabin-ja) - Balanced Fighter
    * All-around fighter using Jeongbo Yowon archetype
    */
   BALANCED_FIGHTER: {
     name: "Balanced Fighter",
-    koreanName: "균형잡힌자",
+    koreanName: "균형 잡힌 자",
     archetype: PlayerArchetype.JEONGBO_YOWON,
     aggressionLevel: 0.6,
     defensePreference: 0.5,
@@ -106,12 +106,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   },
 
   /**
-   * 방어의달인 (Bangeo-ui Darin) - Defensive Specialist
+   * 방어의 달인 (Bangeo-ui Dallin) - Defensive Specialist
    * Counter-attack focused using Hacker archetype
    */
   DEFENSIVE_SPECIALIST: {
     name: "Defensive Specialist",
-    koreanName: "방어의달인",
+    koreanName: "방어의 달인",
     archetype: PlayerArchetype.HACKER,
     aggressionLevel: 0.35,
     defensePreference: 0.8,
@@ -131,12 +131,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   },
 
   /**
-   * 혼돈의전사 (Hondon-ui Jeonsa) - Chaos Warrior
+   * 혼돈의 전사 (Hondon-ui Jeonsa) - Chaos Warrior
    * Unpredictable fighter using Jojik Pokryeokbae archetype
    */
   CHAOS_WARRIOR: {
     name: "Chaos Warrior",
-    koreanName: "혼돈의전사",
+    koreanName: "혼돈의 전사",
     archetype: PlayerArchetype.JOJIK_POKRYEOKBAE,
     aggressionLevel: 0.75,
     defensePreference: 0.3,

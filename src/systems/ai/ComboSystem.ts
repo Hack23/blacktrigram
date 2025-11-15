@@ -215,8 +215,8 @@ export class AIComboSystem {
   ): boolean {
     const now = Date.now();
 
-    // No active combo
-    if (this.currentCombo.length === 0 || this.comboProgress === 0) {
+    // No active combo - check if combo exists
+    if (this.currentCombo.length === 0) {
       return false;
     }
 

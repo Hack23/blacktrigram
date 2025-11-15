@@ -212,7 +212,11 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         const metrics = adaptiveDifficulty.exportMetrics();
         localStorage.setItem("ai_difficulty_metrics", metrics);
       } catch (err) {
-        console.warn("Failed to save AI difficulty metrics:", err);
+        if (err instanceof DOMException && err.name === 'QuotaExceededError') {
+          console.warn("AI difficulty metrics: localStorage quota exceeded");
+        } else {
+          console.warn("Failed to save AI difficulty metrics:", err);
+        }
       }
     };
   }, [adaptiveDifficulty]);
@@ -659,7 +663,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           // Feint: quick move towards player then retreat (fix for issue #2529467001, #2529728016)
           {
             const playerPos = validPlayers[0].position;
-            const aiPos = validPlayers[1].position;
             
             // Quick approach: move near the player
             const feintOffset = 50;
@@ -673,9 +676,12 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
             // Schedule retreat after short delay with cleanup
             setTimeout(() => {
               // Check if still in valid state before executing retreat
-              if (!roundEnded && roundStarted) {
-                const dx = aiPos.x - playerPos.x;
-                const dy = aiPos.y - playerPos.y;
+              if (!roundEnded && roundStarted && validPlayers.length >= 2) {
+                // Recalculate positions at retreat time to account for movement
+                const currentPlayerPos = validPlayers[0].position;
+                const currentAiPos = validPlayers[1].position;
+                const dx = currentAiPos.x - currentPlayerPos.x;
+                const dy = currentAiPos.y - currentPlayerPos.y;
                 const dist = Math.sqrt(dx * dx + dy * dy) || 1;
                 const retreatDistance = 80;
                 const retreatPos = {
@@ -683,14 +689,14 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
                     arenaBounds.x,
                     Math.min(
                       arenaBounds.x + arenaBounds.width - 60,
-                      playerPos.x + (dx / dist) * retreatDistance
+                      currentPlayerPos.x + (dx / dist) * retreatDistance
                     )
                   ),
                   y: Math.max(
                     arenaBounds.y,
                     Math.min(
                       arenaBounds.y + arenaBounds.height - 180,
-                      playerPos.y + (dy / dist) * retreatDistance
+                      currentPlayerPos.y + (dy / dist) * retreatDistance
                     )
                   ),
                 };

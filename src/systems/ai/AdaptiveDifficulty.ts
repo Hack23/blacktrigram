@@ -100,7 +100,9 @@ export class AdaptiveDifficulty {
     const matchEfficiency =
       matchData.damageTaken > 0
         ? Math.min(1, matchData.damageDealt / matchData.damageTaken)
-        : 0.5;
+        : matchData.damageDealt > 0
+        ? 1.0 // Perfect defense with damage dealt
+        : 0.5; // No damage on either side
     metrics.damageEfficiency =
       metrics.damageEfficiency * (1 - this.learningRate) +
       matchEfficiency * this.learningRate;
