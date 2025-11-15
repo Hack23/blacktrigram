@@ -15,6 +15,7 @@ import React, {
 } from "react";
 import { HitEffectType } from "../../systems/effects";
 import { usePlayerMovement } from "../../utils/inputSystem";
+import { calculateDistance } from "../../utils/mathUtils";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { DojangBackground } from "../game/DojangBackground";
@@ -448,13 +449,6 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     ]
   );
 
-  // Helper function to calculate distance between two positions
-  const calculateDistance = useCallback((pos1: Position, pos2: Position): number => {
-    return Math.sqrt(
-      Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2)
-    );
-  }, []);
-
   // Memoized AI callbacks to prevent interval recreation
   const aiCallbacks = useMemo(
     () => ({
@@ -549,7 +543,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
         }
       },
     }),
-    [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect, arenaBounds, calculateDistance]
+    [playerPositions, validPlayers, onPlayerUpdate, addCombatMessage, addHitEffect, arenaBounds]
   );
 
   // AI Combat System - Using extracted hook with memoized callbacks

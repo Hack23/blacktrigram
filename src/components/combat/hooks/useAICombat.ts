@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { PlayerState } from "@/systems";
 import { Position } from "@/types";
+import { calculateDistance } from "@/utils/mathUtils";
 import { ArenaBounds } from "./useCombatLayout";
 
 /**
@@ -55,18 +56,6 @@ export function useAICombat(
     lastActionType: "idle",
     consecutiveAttacks: 0,
   });
-
-  /**
-   * Calculate distance between two positions
-   */
-  const calculateDistance = useCallback(
-    (pos1: Position, pos2: Position): number => {
-      return Math.sqrt(
-        Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2)
-      );
-    },
-    []
-  );
 
   /**
    * Determine AI action based on game state
