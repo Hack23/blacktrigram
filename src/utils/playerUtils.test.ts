@@ -518,7 +518,10 @@ describe("playerUtils", () => {
     it("should create fresh player state", () => {
       const player = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
       // Apply damage to verify reset works
-      applyDamage(player, 50);
+      const damaged = applyDamage(player, 50);
+      expect(damaged.health).toBe(player.maxHealth - 50);
+      expect(damaged.totalDamageReceived).toBe(50);
+      
       const reset = resetPlayerState(PlayerArchetype.MUSA, 0);
 
       expect(reset.health).toBe(reset.maxHealth);

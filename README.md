@@ -384,6 +384,8 @@ The API documentation includes:
 - ✅ **Usage examples** for complex functions
 - ✅ **Philosophy context** for martial arts concepts
 
+**Validation Approach**: Strict TypeDoc validation is enabled (`notDocumented: true`) to track documentation progress. This generates ~2,250 warnings initially, which are being addressed incrementally. The strict approach ensures all new exports are documented from the start, maintaining high documentation standards as the codebase evolves.
+
 ### Building Documentation Locally
 
 ```bash
