@@ -44,7 +44,7 @@ export interface KoreanTechnique {
   recoveryTime: number;
   critChance: number;
   critMultiplier: number;
-  effects: any[];
+  effects: readonly StatusEffect[];
 }
 
 /**

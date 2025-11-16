@@ -17,9 +17,9 @@ export interface CombatResult {
   readonly hit: boolean;
   readonly isBlocked: boolean;
   readonly vitalPointHit: boolean;
-  readonly effects: readonly any[];
-  readonly attacker?: any;
-  readonly defender?: any;
+  readonly effects: readonly StatusEffect[];
+  readonly attacker?: PlayerState;
+  readonly defender?: PlayerState;
   readonly technique?: KoreanTechnique;
   readonly criticalHit: boolean;
   readonly timestamp: number;
