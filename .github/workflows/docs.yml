@@ -1,0 +1,154 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**/*.ts'
+      - 'src/**/*.tsx'
+      - 'typedoc.json'
+      - 'README.md'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'src/**/*.ts'
+      - 'src/**/*.tsx'
+      - 'typedoc.json'
+      - 'README.md'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "docs-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Generate TypeDoc
+        run: npm run docs
+      
+      - name: Check for documentation warnings
+        id: doc-check
+        run: |
+          # Run TypeDoc and capture warnings
+          DOC_OUTPUT=$(npm run docs 2>&1)
+          echo "$DOC_OUTPUT"
+          
+          # Count warnings (excluding the @korean tag warnings which are expected)
+          WARNING_COUNT=$(echo "$DOC_OUTPUT" | grep -c "warning" || true)
+          echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+          
+          # Check for critical warnings (missing documentation)
+          CRITICAL_WARNINGS=$(echo "$DOC_OUTPUT" | grep -E "is referenced by .* but not included in the documentation" || true)
+          
+          if [ ! -z "$CRITICAL_WARNINGS" ]; then
+            echo "::warning::Found missing exports in documentation"
+            echo "$CRITICAL_WARNINGS"
+          fi
+          
+          # For now, we allow warnings but report them
+          # In the future, enable this to fail on warnings:
+          # if [ $WARNING_COUNT -gt 0 ]; then
+          #   echo "::error::Found $WARNING_COUNT documentation warnings"
+          #   exit 1
+          # fi
+      
+      - name: Check documentation coverage
+        run: |
+          # Count documented vs undocumented exports
+          echo "Documentation coverage report:"
+          
+          # Find all exported items
+          TOTAL_EXPORTS=$(grep -r "^export " src --include="*.ts" --include="*.tsx" --exclude="*.test.ts" --exclude="*.test.tsx" | wc -l)
+          echo "Total exports: $TOTAL_EXPORTS"
+          
+          # Calculate documentation rate (rough estimate)
+          DOC_COMMENTS=$(grep -r "\/\*\*" src --include="*.ts" --include="*.tsx" --exclude="*.test.ts" --exclude="*.test.tsx" | wc -l)
+          echo "Documentation comments: $DOC_COMMENTS"
+          
+          if [ $TOTAL_EXPORTS -gt 0 ]; then
+            COVERAGE=$((DOC_COMMENTS * 100 / TOTAL_EXPORTS))
+            echo "Estimated coverage: ${COVERAGE}%"
+            
+            if [ $COVERAGE -lt 80 ]; then
+              echo "::warning::Documentation coverage is below 80% (estimated: ${COVERAGE}%)"
+            fi
+          fi
+      
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-documentation
+          path: docs/api
+          retention-days: 30
+      
+      - name: Generate documentation summary
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## 📚 Documentation Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ TypeDoc documentation generated successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Warnings: ${{ steps.doc-check.outputs.warning_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View full documentation in the workflow artifacts." >> $GITHUB_STEP_SUMMARY
+  
+  deploy-docs:
+    name: Deploy to GitHub Pages
+    needs: build-docs
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Download documentation artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-documentation
+          path: docs/api
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/api
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
+      - name: Generate deployment summary
+        run: |
+          echo "## 📘 Documentation Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Documentation has been deployed to GitHub Pages." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **URL**: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
