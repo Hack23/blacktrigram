@@ -17,6 +17,7 @@ graph LR
     B -->|Security| H[🛡️ Security Specialist]
     B -->|Review| I[🔍 Code Review Agent]
     B -->|Test Strategy| J[🔬 Test Engineer]
+    B -->|Task Creation| K[🎯 Task Agent]
     
     style C fill:#4CAF50
     style D fill:#2196F3
@@ -26,6 +27,7 @@ graph LR
     style H fill:#F44336
     style I fill:#FFC107
     style J fill:#E91E63
+    style K fill:#673AB7
 ```
 
 ## 🎯 Available Agents
@@ -206,6 +208,34 @@ graph LR
 
 ---
 
+### 🎯 [Task Agent](./task-agent.md)
+**Primary Role:** Task Decomposition & GitHub Issue Creation Specialist
+
+**When to Use:**
+- ✅ Creating actionable GitHub issues for UX/UI improvements
+- ✅ Identifying code quality enhancements
+- ✅ Planning quality assurance tasks
+- ✅ Security compliance issue creation
+- ✅ ISMS policy alignment tasks
+- ✅ Product improvement roadmap planning
+
+**Tools Available:** `github_mcp_server`, `bash`, `view`, `search_code`
+
+**Expertise:**
+- Issue creation via GitHub MCP server
+- Metrics gathering and analysis
+- Priority scoring and task decomposition
+- Hack23 ISMS policy alignment
+- UX/UI excellence (React 19, PixiJS 8.x, Korean theming)
+- Code quality standards (TypeScript strict, testing coverage)
+- Quality assurance (Vitest, Cypress, visual regression)
+- Security compliance (OWASP, SBOM, SLSA)
+- ISMS alignment (ISO 27001, NIST CSF, CIS Controls)
+
+**Output:** 5 actual GitHub issues with URLs and metrics
+
+---
+
 ## 🎨 Agent Selection Guide
 
 ```mermaid
@@ -224,6 +254,7 @@ flowchart TD
     Type -->|Documentation| Docs[📝 Documentation Writer]
     Type -->|Code Review| Review[🔍 Code Review Agent]
     Type -->|Security| Security[🛡️ Security Specialist]
+    Type -->|Creating Tasks| TaskAgent[🎯 Task Agent]
     
     Frontend --> Action[Get Agent Help]
     Game --> Action
@@ -233,6 +264,7 @@ flowchart TD
     Docs --> Action
     Review --> Action
     Security --> Action
+    TaskAgent --> Action
     
     style Frontend fill:#2196F3,color:#fff
     style Game fill:#FF9800,color:#fff
@@ -242,6 +274,7 @@ flowchart TD
     style Docs fill:#00BCD4,color:#fff
     style Review fill:#FFC107,color:#000
     style Security fill:#F44336,color:#fff
+    style TaskAgent fill:#673AB7,color:#fff
     style Action fill:#8BC34A,color:#fff
 ```
 
@@ -288,6 +321,10 @@ graph TD
         Security[🛡️ Security Specialist]
     end
     
+    subgraph "Planning Agents"
+        TaskAgent[🎯 Task Agent]
+    end
+    
     Review --> ViewSearch[view + search_code + playwright-browser_*]
     Docs --> ViewEdit[view + edit + create + search_code + playwright-browser_*]
     Coding --> FullTools[All Tools]
@@ -296,6 +333,7 @@ graph TD
     Testing --> FullTools
     TestEng --> FullTools
     Security --> FullTools
+    TaskAgent --> MCPTools[github_mcp_server + bash + view + search_code]
     
     style Review fill:#FFC107,color:#000
     style Docs fill:#00BCD4,color:#fff
@@ -305,6 +343,7 @@ graph TD
     style Testing fill:#9C27B0,color:#fff
     style TestEng fill:#E91E63,color:#fff
     style Security fill:#F44336,color:#fff
+    style TaskAgent fill:#673AB7,color:#fff
 ```
 
 ## 🎯 Agent Development Guidelines
