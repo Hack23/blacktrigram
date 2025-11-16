@@ -15,7 +15,10 @@ import { EffectIntensity } from "./effects";
 import { KoreanTechnique, VitalPoint } from "./vitalpoint";
 
 // Helper function to create mock VitalPoint objects for testing
-function createMockVitalPoint(severity: VitalPointSeverity): VitalPoint {
+function createMockVitalPoint(
+  severity: VitalPointSeverity,
+  category: VitalPointCategory = VitalPointCategory.NEUROLOGICAL
+): VitalPoint {
   return {
     id: `test_vitalpoint_${severity}`,
     names: {
@@ -24,7 +27,7 @@ function createMockVitalPoint(severity: VitalPointSeverity): VitalPoint {
       romanized: "teseuteu hyeoljeom",
     },
     position: { x: 100, y: 100 },
-    category: VitalPointCategory.NEUROLOGICAL,
+    category,
     severity,
     baseDamage: 20,
     effects: [],
@@ -743,7 +746,12 @@ describe("CombatSystem", () => {
         vitalPointHit
       );
 
+      // Calculate expected modifier damage with 1.1x multiplier
+      const expectedAttackerBonus = player1.attackPower * 0.1;
+      const expectedModifierWithMultiplier = expectedAttackerBonus * 1.1;
+      
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
+      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
     });
 
     it("should apply MODERATE severity multiplier (1.3x)", () => {
@@ -763,7 +771,12 @@ describe("CombatSystem", () => {
         vitalPointHit
       );
 
+      // Calculate expected modifier damage with 1.3x multiplier
+      const expectedAttackerBonus = player1.attackPower * 0.1;
+      const expectedModifierWithMultiplier = expectedAttackerBonus * 1.3;
+      
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
+      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
     });
 
     it("should apply MAJOR severity multiplier (1.6x)", () => {
@@ -783,7 +796,12 @@ describe("CombatSystem", () => {
         vitalPointHit
       );
 
+      // Calculate expected modifier damage with 1.6x multiplier
+      const expectedAttackerBonus = player1.attackPower * 0.1;
+      const expectedModifierWithMultiplier = expectedAttackerBonus * 1.6;
+      
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
+      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
     });
 
     it("should apply CRITICAL severity multiplier (2.0x)", () => {
@@ -803,9 +821,12 @@ describe("CombatSystem", () => {
         vitalPointHit
       );
 
-      // Vital point multiplier applies to attackerBonus, not baseDamage
-      // So total damage should be greater than baseDamage
+      // Calculate expected modifier damage with 2.0x multiplier
+      const expectedAttackerBonus = player1.attackPower * 0.1;
+      const expectedModifierWithMultiplier = expectedAttackerBonus * 2.0;
+      
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
+      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
     });
 
     it("should apply LETHAL severity multiplier (3.0x)", () => {
@@ -825,17 +846,15 @@ describe("CombatSystem", () => {
         vitalPointHit
       );
 
-      // Vital point multiplier applies to attackerBonus, not baseDamage
-      // So total damage should be significantly greater than baseDamage
+      // Calculate expected modifier damage with 3.0x multiplier
+      const expectedAttackerBonus = player1.attackPower * 0.1;
+      const expectedModifierWithMultiplier = expectedAttackerBonus * 3.0;
+      
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
+      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
     });
 
     it("should apply defense reduction correctly", () => {
-      const highDefenseDefender: PlayerState = {
-        ...player2,
-        defense: 100,
-      };
-
       const vitalPointHit = {
         hit: false,
         damage: 0,
@@ -843,15 +862,30 @@ describe("CombatSystem", () => {
         severity: VitalPointSeverity.MINOR,
       };
 
-      const damageResult = combatSystem.calculateDamage(
+      // Calculate damage with normal defense
+      const normalDefenseResult = combatSystem.calculateDamage(
+        mockTechnique,
+        player1,
+        player2,
+        vitalPointHit
+      );
+
+      // Calculate damage with high defense
+      const highDefenseDefender: PlayerState = {
+        ...player2,
+        defense: 100,
+      };
+
+      const highDefenseResult = combatSystem.calculateDamage(
         mockTechnique,
         player1,
         highDefenseDefender,
         vitalPointHit
       );
 
-      // Damage should be reduced by defense
-      expect(damageResult.totalDamage).toBeGreaterThan(0);
+      // High defense should result in lower damage
+      expect(highDefenseResult.totalDamage).toBeLessThan(normalDefenseResult.totalDamage);
+      expect(highDefenseResult.totalDamage).toBeGreaterThan(0);
     });
 
     it("should ensure minimum damage of 1", () => {
