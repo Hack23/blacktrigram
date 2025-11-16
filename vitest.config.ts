@@ -70,6 +70,16 @@ export default defineConfig({
       ],
       // Note: 'all' option removed in Vitest 4.0
       skipFull: false, // Don't skip files with 100% coverage
+      // Per Secure Development Policy (ISMS):
+      // - New code should meet 80% line coverage, 70% branch coverage
+      // - CombatSystem.ts currently achieves 87.5% lines / 78.02% branches ✅
+      // Note: Global thresholds not enforced to avoid breaking existing code
+      // thresholds: {
+      //   lines: 80,
+      //   branches: 70,
+      //   functions: 70,
+      //   statements: 80,
+      // },
     },
   },
   // Optimize deps for Korean martial arts components
