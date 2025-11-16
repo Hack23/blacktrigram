@@ -6,9 +6,14 @@ This directory contains specialized GitHub Copilot custom agent profiles for Bla
 
 GitHub Copilot custom agents are AI assistants with specialized knowledge. When working with Black Trigram, select the agent that matches your current task for context-aware assistance following project patterns.
 
+**📊 New: [Agent Capabilities Matrix](./AGENT_CAPABILITIES.md)** - Comprehensive guide to all agents, their capabilities, and coordination patterns.
+
 ```mermaid
 graph LR
     A[Development Task] --> B{Task Type?}
+    B -->|Product Analysis| K[🎯 Task Agent]
+    B -->|Create Issues| K
+    B -->|Quality Check| K
     B -->|Feature/Bug| C[🛠️ Coding Agent]
     B -->|UI/React| D[⚛️ Frontend Specialist]
     B -->|Game Logic| E[🎮 Game Developer]
@@ -18,6 +23,15 @@ graph LR
     B -->|Review| I[🔍 Code Review Agent]
     B -->|Test Strategy| J[🔬 Test Engineer]
     
+    K -.Delegates.-> C
+    K -.Delegates.-> D
+    K -.Delegates.-> E
+    K -.Delegates.-> F
+    K -.Delegates.-> G
+    K -.Delegates.-> H
+    K -.Delegates.-> J
+    
+    style K fill:#8BC34A
     style C fill:#4CAF50
     style D fill:#2196F3
     style E fill:#FF9800
@@ -29,6 +43,33 @@ graph LR
 ```
 
 ## 🎯 Available Agents
+
+### 🎯 [Task Agent](./task-agent.md)
+**Primary Role:** Product Quality Orchestrator & Issue Manager
+
+**When to Use:**
+- ✅ Analyzing product quality holistically
+- ✅ Creating GitHub issues with clear acceptance criteria
+- ✅ Assigning work to appropriate specialized agents
+- ✅ Ensuring ISMS compliance and security alignment
+- ✅ Evaluating UI/UX against Korean theming standards
+- ✅ Monitoring test coverage and quality metrics
+- ✅ Performance analysis and optimization tracking
+
+**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `custom-agent`
+
+**MCP Servers:** GitHub, Playwright, AWS
+
+**Expertise:**
+- Product management and issue orchestration
+- Quality assurance across all dimensions
+- UI/UX evaluation and accessibility
+- ISMS alignment (ISO 27001, NIST CSF, CIS Controls)
+- Performance monitoring (60fps, bundle size)
+- Agent coordination and delegation
+- GitHub issue creation and management
+
+---
 
 ### 🛠️ [Coding Agent](./coding-agent.md)
 **Primary Role:** Full-Stack TypeScript/React/PixiJS Development
@@ -212,6 +253,12 @@ graph LR
 flowchart TD
     Start([Need Help?]) --> Type{What are you doing?}
     
+    Type -->|Product Management| Management{Management Type?}
+    Management -->|Create Issues| TaskAgent[🎯 Task Agent]
+    Management -->|Quality Analysis| TaskAgent
+    Management -->|ISMS Compliance| TaskAgent
+    Management -->|Agent Coordination| TaskAgent
+    
     Type -->|Writing Code| Code{Code Type?}
     Code -->|UI Components| Frontend[⚛️ Frontend Specialist]
     Code -->|Game Logic| Game[🎮 Game Developer]
@@ -225,7 +272,8 @@ flowchart TD
     Type -->|Code Review| Review[🔍 Code Review Agent]
     Type -->|Security| Security[🛡️ Security Specialist]
     
-    Frontend --> Action[Get Agent Help]
+    TaskAgent --> Action[Get Agent Help]
+    Frontend --> Action
     Game --> Action
     Coding --> Action
     Testing --> Action
@@ -234,6 +282,7 @@ flowchart TD
     Review --> Action
     Security --> Action
     
+    style TaskAgent fill:#8BC34A,color:#fff
     style Frontend fill:#2196F3,color:#fff
     style Game fill:#FF9800,color:#fff
     style Coding fill:#4CAF50,color:#fff
@@ -254,6 +303,7 @@ All agents have access to appropriate GitHub Copilot tools:
 | **File Operations** | `view`, `edit`, `create` | Read, modify, and create files |
 | **Code Search** | `search_code` | Search codebase for patterns and references |
 | **Shell Access** | `bash` | Execute build, test, and automation commands |
+| **Agent Delegation** | `custom-agent` | Invoke other specialized agents |
 | **Browser Automation** | `playwright-browser_snapshot` | Capture DOM state for testing |
 | | `playwright-browser_take_screenshot` | Visual regression testing |
 | | `playwright-browser_navigate` | Navigate to URLs for E2E testing |
@@ -261,10 +311,31 @@ All agents have access to appropriate GitHub Copilot tools:
 | | `playwright-browser_type` | Input text for testing |
 | | `playwright-browser_evaluate` | Execute JavaScript in browser context |
 
+### 🔌 MCP (Model Context Protocol) Servers
+
+The Task Agent has access to specialized MCP servers for enhanced capabilities:
+
+| MCP Server | Purpose | Operations |
+|------------|---------|------------|
+| **GitHub MCP** | Repository and issue management | Create/update issues, search code, manage PRs, releases |
+| **Playwright MCP** | Browser automation and UI testing | Navigate, screenshot, DOM analysis, interaction testing |
+| **AWS MCP** | Cloud infrastructure operations | Infrastructure monitoring, deployment validation, cost analysis |
+
+**Benefits of MCP Integration:**
+- 🎯 Direct GitHub API access for issue creation and management
+- 🌐 Live browser automation for UI/UX testing
+- ☁️ Cloud infrastructure insights and deployment validation
+- 🔄 Seamless integration with existing workflows
+- 📊 Real-time quality metrics and analysis
+
 ### Tool Access by Agent
 
 ```mermaid
 graph TD
+    subgraph "Orchestration Agent"
+        TaskAgent[🎯 Task Agent]
+    end
+    
     subgraph "Read-Only Agents"
         Review[🔍 Code Review Agent]
     end
@@ -288,6 +359,7 @@ graph TD
         Security[🛡️ Security Specialist]
     end
     
+    TaskAgent --> MCPTools[view + edit + create + search + bash + custom-agent<br/>+ GitHub MCP + Playwright MCP + AWS MCP]
     Review --> ViewSearch[view + search_code + playwright-browser_*]
     Docs --> ViewEdit[view + edit + create + search_code + playwright-browser_*]
     Coding --> FullTools[All Tools]
@@ -297,6 +369,7 @@ graph TD
     TestEng --> FullTools
     Security --> FullTools
     
+    style TaskAgent fill:#8BC34A,color:#fff
     style Review fill:#FFC107,color:#000
     style Docs fill:#00BCD4,color:#fff
     style Coding fill:#4CAF50,color:#fff
@@ -476,6 +549,77 @@ Effective agents should:
 ✅ Enhance documentation quality
 ✅ Improve security posture
 ✅ Optimize performance
+
+## 🎯 Using the Task Agent for Product Management
+
+The Task Agent is your entry point for comprehensive product quality management:
+
+### When to Invoke Task Agent
+
+**Use Task Agent for:**
+- 📊 **Quality Analysis**: "Analyze the current state of Black Trigram and identify areas for improvement"
+- 📝 **Issue Creation**: "Create issues for missing test coverage in combat systems"
+- 🔐 **ISMS Compliance**: "Check ISMS alignment and create issues for gaps"
+- 🎨 **UI/UX Audit**: "Evaluate UI/UX against Korean theming standards"
+- ⚡ **Performance Review**: "Analyze bundle size and create optimization issues"
+- 🤝 **Agent Coordination**: "Delegate the security issues to the appropriate agents"
+
+### Task Agent Workflow Example
+
+```bash
+# 1. Comprehensive Analysis
+@task-agent "Analyze Black Trigram holistically and identify improvement areas 
+across product quality, UI/UX, security, and ISMS compliance"
+
+# 2. Issue Creation
+# Task Agent will create GitHub issues with:
+# - Clear titles and descriptions
+# - Specific acceptance criteria
+# - ISMS policy references
+# - Appropriate labels and priorities
+# - Suggested agent assignments
+
+# 3. Agent Delegation
+# Task Agent will recommend:
+# - @security-specialist for vulnerability issues
+# - @frontend-specialist for UI/UX issues
+# - @test-engineer for coverage issues
+# - @documentation-writer for docs gaps
+
+# 4. Follow-up
+# Track created issues and monitor progress
+```
+
+### Example Task Agent Requests
+
+**Product Quality:**
+```
+@task-agent "Review game-design.md and create issues for unimplemented features"
+```
+
+**UI/UX Evaluation:**
+```
+@task-agent "Test the application with Playwright and create issues for 
+Korean font rendering and responsive design problems"
+```
+
+**ISMS Compliance:**
+```
+@task-agent "Review all security documentation and create issues for missing 
+ISMS policy references, focusing on SECURITY_ARCHITECTURE.md"
+```
+
+**Performance Analysis:**
+```
+@task-agent "Analyze bundle size, identify heavy dependencies, and create 
+optimization issues with specific recommendations"
+```
+
+**Test Coverage:**
+```
+@task-agent "Identify areas with <90% test coverage and create issues with 
+specific test scenarios needed"
+```
 
 ## Support
 
