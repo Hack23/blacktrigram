@@ -5,10 +5,12 @@ import {
   DamageType,
   PlayerArchetype,
   TrigramStance,
+  VitalPointSeverity,
 } from "../types/common";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
 import CombatSystem, { createCombatResult } from "./CombatSystem";
 import { TrainingCombatSystem } from "./combat/TrainingCombatSystem";
+import { EffectIntensity } from "./effects";
 import { KoreanTechnique } from "./vitalpoint";
 
 describe("CombatSystem", () => {
@@ -310,7 +312,7 @@ describe("CombatSystem", () => {
           {
             id: "expired_effect",
             type: "weakened",
-            intensity: "moderate" as any,
+            intensity: EffectIntensity.MODERATE,
             duration: 1000,
             description: { korean: "만료된 효과", english: "Expired effect" },
             stackable: false,
@@ -321,7 +323,7 @@ describe("CombatSystem", () => {
           {
             id: "active_effect",
             type: "stun",
-            intensity: "high" as any,
+            intensity: EffectIntensity.HIGH,
             duration: 5000,
             description: { korean: "활성 효과", english: "Active effect" },
             stackable: false,
@@ -680,11 +682,11 @@ describe("CombatSystem", () => {
 
   describe("calculateDamage - severity multipliers (coverage for lines 425-480)", () => {
     it("should calculate damage without vital point hit", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: false,
         damage: 0,
         effects: [],
-        severity: "MINOR",
+        severity: VitalPointSeverity.MINOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -700,15 +702,11 @@ describe("CombatSystem", () => {
     });
 
     it("should apply MINOR severity multiplier (1.1x)", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: true,
-        vitalPointHit: {
-          id: "test_vp",
-          severity: "MINOR",
-        },
         damage: 10,
         effects: [],
-        severity: "MINOR",
+        severity: VitalPointSeverity.MINOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -722,15 +720,11 @@ describe("CombatSystem", () => {
     });
 
     it("should apply MODERATE severity multiplier (1.3x)", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: true,
-        vitalPointHit: {
-          id: "test_vp",
-          severity: "MODERATE",
-        },
         damage: 15,
         effects: [],
-        severity: "MODERATE",
+        severity: VitalPointSeverity.MODERATE,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -744,15 +738,11 @@ describe("CombatSystem", () => {
     });
 
     it("should apply MAJOR severity multiplier (1.6x)", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: true,
-        vitalPointHit: {
-          id: "test_vp",
-          severity: "MAJOR",
-        },
         damage: 20,
         effects: [],
-        severity: "MAJOR",
+        severity: VitalPointSeverity.MAJOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -766,15 +756,11 @@ describe("CombatSystem", () => {
     });
 
     it("should apply CRITICAL severity multiplier (2.0x)", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: true,
-        vitalPointHit: {
-          id: "test_vp",
-          severity: "CRITICAL",
-        },
         damage: 25,
         effects: [],
-        severity: "CRITICAL",
+        severity: VitalPointSeverity.CRITICAL,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -790,15 +776,11 @@ describe("CombatSystem", () => {
     });
 
     it("should apply LETHAL severity multiplier (3.0x)", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: true,
-        vitalPointHit: {
-          id: "test_vp",
-          severity: "LETHAL",
-        },
         damage: 30,
         effects: [],
-        severity: "LETHAL",
+        severity: VitalPointSeverity.LETHAL,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -819,11 +801,11 @@ describe("CombatSystem", () => {
         defense: 100,
       };
 
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: false,
         damage: 0,
         effects: [],
-        severity: "MINOR",
+        severity: VitalPointSeverity.MINOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -843,11 +825,11 @@ describe("CombatSystem", () => {
         defense: 1000,
       };
 
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: false,
         damage: 0,
         effects: [],
-        severity: "MINOR",
+        severity: VitalPointSeverity.MINOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -868,7 +850,7 @@ describe("CombatSystem", () => {
           {
             id: "stun_1",
             type: "stun",
-            intensity: "high" as any,
+            intensity: EffectIntensity.HIGH,
             duration: 1000,
             description: { korean: "기절", english: "Stun" },
             stackable: false,
@@ -879,18 +861,14 @@ describe("CombatSystem", () => {
         ],
       };
 
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: true,
-        vitalPointHit: {
-          id: "test_vp",
-          severity: "MAJOR",
-        },
         damage: 20,
         effects: [
           {
             id: "bleed_1",
             type: "bleeding",
-            intensity: "moderate" as any,
+            intensity: EffectIntensity.MODERATE,
             duration: 2000,
             description: { korean: "출혈", english: "Bleeding" },
             stackable: true,
@@ -899,7 +877,7 @@ describe("CombatSystem", () => {
             endTime: Date.now() + 2000,
           },
         ],
-        severity: "MAJOR",
+        severity: VitalPointSeverity.MAJOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -913,11 +891,11 @@ describe("CombatSystem", () => {
     });
 
     it("should return finalDefenderState with updated health", () => {
-      const vitalPointHit: any = {
+      const vitalPointHit = {
         hit: false,
         damage: 0,
         effects: [],
-        severity: "MINOR",
+        severity: VitalPointSeverity.MINOR,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -1025,8 +1003,8 @@ describe("createCombatResult helper (coverage for lines 488-509)", () => {
       effects: [
         {
           id: "test_effect",
-          type: "stun" as any,
-          intensity: "high" as any,
+          type: "stun",
+          intensity: EffectIntensity.HIGH,
           duration: 1000,
           description: { korean: "기절", english: "Stun" },
           stackable: false,
