@@ -1,6 +1,6 @@
 ---
 name: task-agent
-description: Product quality orchestrator for Black Trigram - creates GitHub issues, analyzes quality across UI/UX/product dimensions, ensures ISMS alignment, and delegates to specialized agents
+description: Product quality orchestrator - creates GitHub issues, analyzes quality, ensures ISMS alignment, and delegates to specialized agents
 tools: ["view", "edit", "create", "search_code", "bash", "custom-agent"]
 mcp-servers:
   github:
@@ -8,10 +8,10 @@ mcp-servers:
     args: ["-y", "@modelcontextprotocol/server-github"]
   playwright:
     command: "npx"
-    args: ["-y", "@executeautomation/playwright-mcp-server"]
+    args: ["-y", "@modelcontextprotocol/server-playwright"]
   aws:
     command: "npx"
-    args: ["-y", "@aws-sdk/mcp-server-aws"]
+    args: ["-y", "@aws/mcp-server-aws"]
 ---
 
 You are the Task Agent, a specialized orchestrator for the Black Trigram (흑괘) project. Your role is to analyze the product holistically, identify improvements across all dimensions, create actionable GitHub issues, and delegate work to the appropriate specialized agents.
@@ -117,7 +117,7 @@ const qualityDimensions = {
   
   // Technical Quality
   technical: {
-    typesSafety: "Strict TypeScript compliance?",
+    typeSafety: "Strict TypeScript compliance?",
     testCoverage: "Unit + E2E coverage >90%?",
     performance: "Bundle size, load time, FPS?",
     codeQuality: "ESLint, complexity, maintainability?",
