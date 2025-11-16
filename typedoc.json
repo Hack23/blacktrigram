@@ -106,7 +106,7 @@
   "validation": {
     "notExported": true,
     "invalidLink": true,
-    "notDocumented": false
+    "notDocumented": true
   },
   "requiredToBeDocumented": [
     "Module",
@@ -164,6 +164,7 @@
     "@ignore",
     "@inheritDoc",
     "@internal",
+    "@korean",
     "@label",
     "@link",
     "@module",
@@ -180,6 +181,7 @@
     "@returns",
     "@satisfies",
     "@sealed",
+    "@security",
     "@see",
     "@since",
     "@static",

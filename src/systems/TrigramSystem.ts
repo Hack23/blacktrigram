@@ -5,15 +5,76 @@ import { TRIGRAM_STANCES_ORDER, TrigramTransitionCost } from "./trigram";
 import { TrigramCalculator } from "./trigram/TrigramCalculator";
 import { PLAYER_ARCHETYPES_DATA } from "./types";
 
+/**
+ * System for managing Eight Trigram (팔괘) stance transitions and combat calculations.
+ * 
+ * **Korean**: 팔괘 시스템 (Eight Trigram System)
+ * 
+ * The TrigramSystem implements the core mechanics of the Eight Trigram martial arts system,
+ * managing stance transitions, calculating effectiveness, and determining resource costs.
+ * Based on I Ching (易經) philosophy adapted for tactical combat.
+ * 
+ * ## Key Responsibilities
+ * 
+ * - Validate stance transitions based on Ki and Stamina costs
+ * - Calculate transition difficulty between stances
+ * - Recommend optimal stance choices
+ * - Determine stance effectiveness in combat matchups
+ * - Apply archetype-specific modifiers to transitions
+ * 
+ * @example
+ * ```typescript
+ * const trigramSystem = new TrigramSystem();
+ * 
+ * // Check if transition is possible
+ * const canTransition = trigramSystem.canTransitionTo(
+ *   TrigramStance.GEON,
+ *   TrigramStance.GAM,
+ *   playerState
+ * );
+ * 
+ * // Get recommended stance
+ * const recommendedStance = trigramSystem.recommendStance(playerState);
+ * ```
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 팔괘시스템
+ */
 export class TrigramSystem {
   private calculator: TrigramCalculator;
 
+  /**
+   * Creates a new TrigramSystem instance.
+   * 
+   * Initializes the internal calculator for stance effectiveness and transition difficulty.
+   */
   constructor() {
     this.calculator = new TrigramCalculator();
   }
 
   /**
-   * Check if player can transition to a new stance
+   * Checks if a player can transition from one stance to another.
+   * 
+   * Validates that the player has sufficient Ki (氣) and Stamina resources
+   * to perform the stance transition. Same-stance transitions are always valid.
+   * 
+   * @param fromStance - Current stance
+   * @param toStance - Target stance
+   * @param player - Player state with current Ki and Stamina
+   * @returns true if transition is possible, false otherwise
+   * 
+   * @example
+   * ```typescript
+   * const canChange = trigramSystem.canTransitionTo(
+   *   TrigramStance.GEON, // From Heaven
+   *   TrigramStance.GON,  // To Earth
+   *   player
+   * );
+   * ```
+   * 
+   * @public
+   * @korean 자세전환가능확인
    */
   canTransitionTo(
     fromStance: TrigramStance,
@@ -32,7 +93,25 @@ export class TrigramSystem {
   }
 
   /**
-   * Recommend optimal stance against opponent
+   * Recommends the optimal stance for current combat situation.
+   * 
+   * Calculates the least-cost stance transition from the player's current position.
+   * Uses combined cost of Ki, Stamina, and transition time to determine best option.
+   * 
+   * **Algorithm**: Evaluates all eight stances and selects the one with minimum
+   * total cost (Ki + Stamina + Time).
+   * 
+   * @param player - Player state with current stance
+   * @returns Recommended stance to transition to
+   * 
+   * @example
+   * ```typescript
+   * const recommended = trigramSystem.recommendStance(player);
+   * console.log(`Consider switching to ${recommended}`);
+   * ```
+   * 
+   * @public
+   * @korean 최적자세추천
    */
   recommendStance(player: PlayerState): TrigramStance {
     const from = player.currentStance;
@@ -52,7 +131,35 @@ export class TrigramSystem {
   }
 
   /**
-   * Get transition cost between stances
+   * Calculates the resource cost for transitioning between stances.
+   * 
+   * Determines Ki, Stamina, and time costs based on the I Ching philosophical
+   * distance between trigrams. Applies archetype-specific modifiers for favored stances.
+   * 
+   * ## Cost Calculation
+   * 
+   * - **Base Cost**: 10 Ki, 15 Stamina per difficulty point
+   * - **Base Time**: 500ms per difficulty point
+   * - **Archetype Modifier**: 0.8x for favored stances, 1.0x otherwise
+   * - **Same Stance**: Zero cost
+   * 
+   * @param from - Starting stance
+   * @param to - Target stance
+   * @param player - Optional player for archetype modifiers
+   * @returns Transition cost breakdown
+   * 
+   * @example
+   * ```typescript
+   * const cost = trigramSystem.getTransitionCost(
+   *   TrigramStance.GEON,
+   *   TrigramStance.TAE,
+   *   player
+   * );
+   * console.log(`Cost: ${cost.ki} Ki, ${cost.stamina} Stamina`);
+   * ```
+   * 
+   * @public
+   * @korean 자세전환비용
    */
   public getTransitionCost(
     from: TrigramStance,
@@ -94,7 +201,25 @@ export class TrigramSystem {
   }
 
   /**
-   * Calculate stance effectiveness
+   * Calculates stance effectiveness in combat matchup.
+   * 
+   * Determines the multiplier advantage/disadvantage when one stance attacks another.
+   * Based on I Ching elemental relationships (e.g., Water extinguishes Fire).
+   * 
+   * @param attackerStance - Attacking player's stance
+   * @param defenderStance - Defending player's stance
+   * @returns Effectiveness multiplier (0.5 = disadvantage, 1.0 = neutral, 1.5 = advantage)
+   * 
+   * @example
+   * ```typescript
+   * const effectiveness = trigramSystem.calculateStanceEffectiveness(
+   *   TrigramStance.GAM,  // Water
+   *   TrigramStance.LI    // Fire
+   * ); // Returns > 1.0 (Water beats Fire)
+   * ```
+   * 
+   * @public
+   * @korean 자세효과성계산
    */
   calculateStanceEffectiveness(
     attackerStance: TrigramStance,
@@ -107,7 +232,21 @@ export class TrigramSystem {
   }
 
   /**
-   * Get stance name in Korean and English
+   * Gets bilingual name for a stance.
+   * 
+   * Returns Korean (Hangul) and English names for display purposes.
+   * 
+   * @param stance - Stance to get name for
+   * @returns Object with korean and english name properties
+   * 
+   * @example
+   * ```typescript
+   * const name = trigramSystem.getStanceName(TrigramStance.GEON);
+   * console.log(`${name.korean} (${name.english})`); // "건 (Heaven)"
+   * ```
+   * 
+   * @public
+   * @korean 자세이름조회
    */
   getStanceName(stance: TrigramStance): { korean: string; english: string } {
     const stanceNames = {
@@ -125,7 +264,15 @@ export class TrigramSystem {
   }
 
   /**
-   * Get current stance data
+   * Gets complete stance data for UI display.
+   * 
+   * Returns structured data object containing stance ID and bilingual names.
+   * 
+   * @param stance - Stance to get data for
+   * @returns Stance data object
+   * 
+   * @public
+   * @korean 자세데이터조회
    */
   getCurrentStanceData(stance: TrigramStance): any {
     const stanceName = this.getStanceName(stance);
@@ -138,7 +285,30 @@ export class TrigramSystem {
   }
 
   /**
-   * Validate transition with detailed feedback
+   * Validates a stance transition with detailed feedback.
+   * 
+   * Checks if transition is valid and provides reason if not.
+   * More detailed than {@link canTransitionTo}, includes specific failure reasons.
+   * 
+   * @param fromStance - Current stance
+   * @param toStance - Target stance
+   * @param player - Player state
+   * @returns Validation result with optional failure reason
+   * 
+   * @example
+   * ```typescript
+   * const validation = trigramSystem.validateTransition(
+   *   TrigramStance.GEON,
+   *   TrigramStance.GON,
+   *   player
+   * );
+   * if (!validation.valid) {
+   *   console.error(validation.reason);
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 자세전환검증
    */
   validateTransition(
     fromStance: TrigramStance,
