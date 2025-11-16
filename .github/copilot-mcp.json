@@ -11,8 +11,8 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}"
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}"
+        "GITHUB_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
         "GITHUB_OWNER": "Hack23",
         "GITHUB_REPO": "blacktrigram"
       },      
@@ -53,6 +53,13 @@
       "args": ["-y", "@modelcontextprotocol/server-playwright"],
       "description": "Browser automation for testing and debugging web applications",
       "disabled": false
+    },
+    "aws": {
+      "command": "npx",
+      "args": ["-y", "@aws/mcp-server-aws"],
+      "description": "AWS infrastructure operations for cloud deployment and monitoring",
+      "disabled": true,
+      "note": "Enable this by configuring AWS credentials (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)"
     }
   },
   "globalShortcut": "Ctrl+Shift+Space"
