@@ -6,12 +6,37 @@ import {
   PlayerArchetype,
   TrigramStance,
   VitalPointSeverity,
+  VitalPointCategory,
 } from "../types/common";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
 import CombatSystem, { createCombatResult } from "./CombatSystem";
 import { TrainingCombatSystem } from "./combat/TrainingCombatSystem";
 import { EffectIntensity } from "./effects";
-import { KoreanTechnique } from "./vitalpoint";
+import { KoreanTechnique, VitalPoint } from "./vitalpoint";
+
+// Helper function to create mock VitalPoint objects for testing
+function createMockVitalPoint(severity: VitalPointSeverity): VitalPoint {
+  return {
+    id: `test_vitalpoint_${severity}`,
+    names: {
+      korean: "테스트 혈점",
+      english: "Test Vital Point",
+      romanized: "teseuteu hyeoljeom",
+    },
+    position: { x: 100, y: 100 },
+    category: VitalPointCategory.NEUROLOGICAL,
+    severity,
+    baseDamage: 20,
+    effects: [],
+    description: {
+      korean: "테스트용 혈점",
+      english: "Test vital point for testing",
+      romanized: "teseuteuyong hyeoljeom",
+    },
+    targetingDifficulty: 0.5,
+    effectiveStances: [],
+  };
+}
 
 describe("CombatSystem", () => {
   let combatSystem: CombatSystem;
@@ -702,11 +727,13 @@ describe("CombatSystem", () => {
     });
 
     it("should apply MINOR severity multiplier (1.1x)", () => {
+      const mockVitalPoint = createMockVitalPoint(VitalPointSeverity.MINOR);
       const vitalPointHit = {
         hit: true,
         damage: 10,
         effects: [],
         severity: VitalPointSeverity.MINOR,
+        vitalPointHit: mockVitalPoint,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -720,11 +747,13 @@ describe("CombatSystem", () => {
     });
 
     it("should apply MODERATE severity multiplier (1.3x)", () => {
+      const mockVitalPoint = createMockVitalPoint(VitalPointSeverity.MODERATE);
       const vitalPointHit = {
         hit: true,
         damage: 15,
         effects: [],
         severity: VitalPointSeverity.MODERATE,
+        vitalPointHit: mockVitalPoint,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -738,11 +767,13 @@ describe("CombatSystem", () => {
     });
 
     it("should apply MAJOR severity multiplier (1.6x)", () => {
+      const mockVitalPoint = createMockVitalPoint(VitalPointSeverity.MAJOR);
       const vitalPointHit = {
         hit: true,
         damage: 20,
         effects: [],
         severity: VitalPointSeverity.MAJOR,
+        vitalPointHit: mockVitalPoint,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -756,11 +787,13 @@ describe("CombatSystem", () => {
     });
 
     it("should apply CRITICAL severity multiplier (2.0x)", () => {
+      const mockVitalPoint = createMockVitalPoint(VitalPointSeverity.CRITICAL);
       const vitalPointHit = {
         hit: true,
         damage: 25,
         effects: [],
         severity: VitalPointSeverity.CRITICAL,
+        vitalPointHit: mockVitalPoint,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -776,11 +809,13 @@ describe("CombatSystem", () => {
     });
 
     it("should apply LETHAL severity multiplier (3.0x)", () => {
+      const mockVitalPoint = createMockVitalPoint(VitalPointSeverity.LETHAL);
       const vitalPointHit = {
         hit: true,
         damage: 30,
         effects: [],
         severity: VitalPointSeverity.LETHAL,
+        vitalPointHit: mockVitalPoint,
       };
 
       const damageResult = combatSystem.calculateDamage(
@@ -861,13 +896,14 @@ describe("CombatSystem", () => {
         ],
       };
 
+      const mockVitalPoint = createMockVitalPoint(VitalPointSeverity.MAJOR);
       const vitalPointHit = {
         hit: true,
         damage: 20,
         effects: [
           {
             id: "bleed_1",
-            type: "bleeding",
+            type: "bleed",
             intensity: EffectIntensity.MODERATE,
             duration: 2000,
             description: { korean: "출혈", english: "Bleeding" },
@@ -878,6 +914,7 @@ describe("CombatSystem", () => {
           },
         ],
         severity: VitalPointSeverity.MAJOR,
+        vitalPointHit: mockVitalPoint,
       };
 
       const damageResult = combatSystem.calculateDamage(
