@@ -4,7 +4,6 @@ import {
   CombatState,
   PlayerArchetype,
   TrigramStance,
-  VitalPointSeverity,
 } from "../types";
 import {
   applyDamage,
@@ -518,7 +517,8 @@ describe("playerUtils", () => {
   describe("resetPlayerState", () => {
     it("should create fresh player state", () => {
       const player = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
-      const damaged = applyDamage(player, 50);
+      // Apply damage to verify reset works
+      applyDamage(player, 50);
       const reset = resetPlayerState(PlayerArchetype.MUSA, 0);
 
       expect(reset.health).toBe(reset.maxHealth);
