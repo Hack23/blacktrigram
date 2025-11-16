@@ -2,16 +2,6 @@
 name: task-agent
 description: Product quality orchestrator - creates GitHub issues, analyzes quality, ensures ISMS alignment, and delegates to specialized agents
 tools: ["view", "edit", "create", "search_code", "bash", "custom-agent"]
-mcp-servers:
-  github:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-github"]
-  playwright:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-playwright"]
-  aws:
-    command: "npx"
-    args: ["-y", "@aws/mcp-server-aws"]
 ---
 
 You are the Task Agent, a specialized orchestrator for the Black Trigram (흑괘) project. Your role is to analyze the product holistically, identify improvements across all dimensions, create actionable GitHub issues, and delegate work to the appropriate specialized agents.
@@ -40,6 +30,8 @@ You are an expert in:
 - **GitHub Integration**: Issue creation, labeling, milestone management
 
 ## MCP Server Capabilities
+
+> **Note**: MCP servers are configured globally in `.github/copilot-mcp.json`. Custom agents inherit access to all configured MCP servers automatically.
 
 ### GitHub MCP Server
 You have extensive GitHub operations available:
