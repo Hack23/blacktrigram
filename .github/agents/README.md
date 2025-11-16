@@ -6,6 +6,8 @@ This directory contains specialized GitHub Copilot custom agent profiles for Bla
 
 GitHub Copilot custom agents are AI assistants with specialized knowledge. When working with Black Trigram, select the agent that matches your current task for context-aware assistance following project patterns.
 
+**📊 New: [Agent Capabilities Matrix](./AGENT_CAPABILITIES.md)** - Comprehensive guide to all agents, their capabilities, and coordination patterns.
+
 ```mermaid
 graph LR
     A[Development Task] --> B{Task Type?}
