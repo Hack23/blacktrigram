@@ -70,19 +70,35 @@ describe("Black Trigram - Combat Flow", () => {
     it("should support all 8 trigram stances and transitions", () => {
       cy.annotate("Testing complete trigram stance system");
 
+      // Verify stance indicators exist before testing
+      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 5000 })
+        .should("exist");
+      cy.get('[data-testid="player2-stance-indicator"]', { timeout: 5000 })
+        .should("exist");
+
       // Test all 8 stances in sequence (batched without per-iteration annotations)
       for (let i = 1; i <= 8; i++) {
         cy.get("body").type(i.toString());
-        // No wait needed - let Cypress handle it
+        cy.wait(100); // Small wait to allow stance to register
       }
+
+      // Verify combat is still functional after stance changes
+      cy.get('[data-testid="combat-hud"]').should("exist");
+      cy.get('[data-testid="combat-screen"]').should("exist");
 
       // Test rapid stance transitions
       cy.gameActions(["1", "3", "5", "7", "2", "4", "6", "8"]);
+
+      // Verify combat controls are still responsive
+      cy.get('[data-testid="combat-controls"]').should("exist");
 
       // Test rapid stance changes
       for (let i = 1; i <= 8; i++) {
         cy.get("body").type(i.toString());
       }
+
+      // Final verification that combat is still active
+      cy.get('[data-testid="combat-screen"]').should("exist");
 
       cy.log("✅ All trigram stances and transitions verified");
     });
@@ -92,27 +108,48 @@ describe("Black Trigram - Combat Flow", () => {
     it("should execute complete combat action sequence", () => {
       cy.annotate("Testing combat actions");
 
-      // Test attacks with space bar
+      // Verify combat screen is active
+      cy.get('[data-testid="combat-screen"]').should("exist");
+      cy.get('[data-testid="combat-hud"]').should("exist");
+
+      // Test attacks with space bar - verify screen remains stable
       cy.get("body").type("1");
       cy.wait(200);
       cy.get("body").type(" ");
       cy.wait(300);
+      
+      // Verify combat is still active after attack
+      cy.get('[data-testid="combat-screen"]').should("exist");
 
-      // Test movement (WASD and arrows)
+      // Test movement (WASD and arrows) - verify arena remains
       cy.gameActions(["w", "a", "s", "d"]);
+      cy.get('[data-testid="combat-arena"]').should("exist");
+      
       cy.gameActions(["{uparrow}", "{leftarrow}", "{downarrow}", "{rightarrow}"]);
+      cy.get('[data-testid="combat-arena"]').should("exist");
 
-      // Test defensive actions
+      // Test defensive actions - verify controls remain
       cy.get("body").type("{shift}");
+      cy.get('[data-testid="combat-controls"]').should("exist");
 
-      // Test combo attacks
+      // Test combo attacks - verify HUD remains visible
       cy.get("body").type("1");
       cy.wait(200);
       cy.get("body").type(" ");
       cy.wait(300);
+      cy.get('[data-testid="combat-hud"]').should("exist");
+      
       cy.get("body").type("3");
       cy.wait(200);
       cy.get("body").type(" ");
+      cy.wait(300);
+      cy.get('[data-testid="combat-hud"]').should("exist");
+
+      // Final verification that all components are still present
+      cy.get('[data-testid="combat-screen"]').should("exist");
+      cy.get('[data-testid="combat-hud"]').should("exist");
+      cy.get('[data-testid="combat-controls"]').should("exist");
+      cy.get('[data-testid="combat-arena"]').should("exist");
 
       cy.log("✅ Combat actions verified");
     });

@@ -44,7 +44,7 @@ describe("Black Trigram - Training Flow", () => {
       cy.enterTrainingMode();
       cy.get('[data-testid="training-screen"]').should("exist");
 
-      // Check for core training elements
+      // Check for core training elements - these MUST exist
       const essentialElements = [
         "training-area",
         "training-player",
@@ -52,25 +52,26 @@ describe("Black Trigram - Training Flow", () => {
       ];
 
       essentialElements.forEach((element) => {
-        cy.get("body").then(($body) => {
-          if ($body.find(`[data-testid="${element}"]`).length > 0) {
-            cy.get(`[data-testid="${element}"]`).should("exist");
-            cy.log(`✅ Found ${element}`);
-          } else {
-            cy.log(`⚠️ ${element} not found, but continuing test`);
-          }
-        });
+        cy.get(`[data-testid="${element}"]`, { timeout: 8000 })
+          .should("exist")
+          .then(() => {
+            cy.log(`✅ Found essential element: ${element}`);
+          });
       });
 
-      // Check for optional components
+      // Verify training screen is still functional after checks
+      cy.get('[data-testid="training-screen"]').should("exist");
+      cy.get('[data-testid="training-arena"]').should("exist");
+
+      // Check for optional components - log but don't fail
       cy.get("body").then(($body) => {
         if ($body.find('[data-testid="training-header"]').length > 0) {
           cy.log("✅ Training header found");
         }
-        if ($body.find('[data-testid="training-controls"]').length > 0) {
+        if ($body.find('[data-testid="training-controls-panel"]').length > 0) {
           cy.log("✅ Training controls found");
         }
-        if ($body.find('[data-testid="training-stats"]').length > 0) {
+        if ($body.find('[data-testid="training-stats-panel"]').length > 0) {
           cy.log("✅ Training stats found");
         }
         if ($body.find('[data-testid="training-dummy"]').length > 0) {
@@ -89,10 +90,23 @@ describe("Black Trigram - Training Flow", () => {
       cy.enterTrainingMode();
       cy.get('[data-testid="training-screen"]').should("exist");
 
+      // Verify training player and dummy are present before practicing
+      cy.get('[data-testid="training-player"]', { timeout: 5000 }).should("exist");
+      cy.get('[data-testid="training-dummy-container"]', { timeout: 5000 }).should("exist");
+
       // Practice each stance once efficiently (batched without per-iteration annotations)
       for (let i = 1; i <= 8; i++) {
         cy.practiceStance(i, 1);
+        
+        // Verify training screen still exists after each practice
+        if (i % 4 === 0) {
+          cy.get('[data-testid="training-screen"]').should("exist");
+        }
       }
+
+      // Final verification that training is still functional
+      cy.get('[data-testid="training-screen"]').should("exist");
+      cy.get('[data-testid="training-arena"]').should("exist");
 
       cy.log("✅ All 8 stances practiced");
       cy.returnToIntro();

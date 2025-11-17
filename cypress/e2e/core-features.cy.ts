@@ -39,22 +39,34 @@ describe("Black Trigram Core Features", () => {
       // Enter Training -> Practice -> Return to Intro -> Combat -> Return
       cy.annotate("1. Entering Training Mode");
       cy.enterTrainingMode();
+      cy.get('[data-testid="training-screen"]', { timeout: 10000 })
+        .should("exist");
 
       cy.annotate("2. Practicing Techniques");
       cy.practiceStance(1, 2); // Practice first stance twice
+      cy.get('[data-testid="training-screen"]').should("exist"); // Verify still in training
+      
       cy.practiceStance(2, 1); // Practice second stance once
+      cy.get('[data-testid="training-screen"]').should("exist"); // Verify still in training
 
       cy.annotate("3. Returning to Intro");
       cy.returnToIntro();
+      cy.get('[data-testid="intro-screen"]', { timeout: 5000 })
+        .should("exist");
 
       cy.annotate("4. Entering Combat Mode");
       cy.enterCombatMode();
+      cy.get('[data-testid="combat-screen"]', { timeout: 10000 })
+        .should("exist");
 
       cy.annotate("5. Testing Combat Actions");
       cy.gameActions(["w", "a", "s", "d", "1", "2", " "]);
+      cy.get('[data-testid="combat-screen"]').should("exist"); // Verify still in combat
 
       cy.annotate("6. Returning to Intro");
       cy.returnToIntro();
+      cy.get('[data-testid="intro-screen"]', { timeout: 5000 })
+        .should("exist");
 
       cy.annotate("Game Cycle Test Complete");
     });
