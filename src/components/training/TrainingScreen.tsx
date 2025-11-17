@@ -409,6 +409,13 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           }}
           data-testid="training-arena"
         >
+          {/* Add training-area alias for E2E test compatibility */}
+          <pixiContainer
+            data-testid="training-area"
+            layout={{ position: "absolute", width: "100%", height: "100%" }}
+            alpha={0}
+            interactive={false}
+          />
           <pixiGraphics
             draw={(g) => {
               g.clear();
@@ -477,32 +484,44 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
             data-testid="arena-background"
           />
 
-          <PlayerVisuals
-            playerState={player}
-            x={playerPosition.x}
-            y={playerPosition.y}
-            scale={isMobile ? 0.8 : 1.0}
-            showDetails={true}
-            showKoreanLabels={true}
-            renderMode="training"
-            showVitalPoints={trainingMode === "advanced"}
-            showStanceIndicator={true}
-            showArchetypeSymbol={true}
-            interactive={false}
-            facing="right"
-            animationState={isMoving ? "walk" : "idle"}
-          />
+          {/* Training player container wrapper for E2E test compatibility */}
+          <pixiContainer
+            data-testid="training-player"
+            layout={{ position: "relative" }}
+          >
+            <PlayerVisuals
+              playerState={player}
+              x={playerPosition.x}
+              y={playerPosition.y}
+              scale={isMobile ? 0.8 : 1.0}
+              showDetails={true}
+              showKoreanLabels={true}
+              renderMode="training"
+              showVitalPoints={trainingMode === "advanced"}
+              showStanceIndicator={true}
+              showArchetypeSymbol={true}
+              interactive={false}
+              facing="right"
+              animationState={isMoving ? "walk" : "idle"}
+            />
+          </pixiContainer>
 
-          <TrainingDummy
-            x={arenaBounds.width * 0.75}
-            y={arenaBounds.height * 0.6}
-            playerPosition={playerPosition}
-            trainingMode={trainingMode}
-            onHit={handleDummyHit}
-            isTraining={isTraining}
-            selectedVitalPoint={selectedVitalPoint}
-            scale={isMobile ? 0.8 : 1.0}
-          />
+          {/* Training dummy container wrapper for E2E test compatibility */}
+          <pixiContainer
+            data-testid="training-dummy-container"
+            layout={{ position: "relative" }}
+          >
+            <TrainingDummy
+              x={arenaBounds.width * 0.75}
+              y={arenaBounds.height * 0.6}
+              playerPosition={playerPosition}
+              trainingMode={trainingMode}
+              onHit={handleDummyHit}
+              isTraining={isTraining}
+              selectedVitalPoint={selectedVitalPoint}
+              scale={isMobile ? 0.8 : 1.0}
+            />
+          </pixiContainer>
 
           {/* Training Feedback - Centered in arena */}
           <TrainingFeedback
