@@ -237,6 +237,8 @@ describe("AudioManager", () => {
       const audioManager = new AudioManager();
       await audioManager.initialize(mockAudioConfig);
 
+      // TODO: Voice volume is currently a placeholder in AudioManager (see line 176-178)
+      // This test verifies the API accepts voice volume without errors
       // Should not throw when setting voice volume
       expect(() => {
         audioManager.setVolume("voice", 0.5);
@@ -279,10 +281,15 @@ describe("AudioManager", () => {
         volume: 1.0,
       });
 
+      const loadedAssets = audioManager.getLoadedAssets();
+      const testAudio = loadedAssets.get("test_sfx");
+      const playSpy = vi.spyOn(testAudio!, 'play');
+
       audioManager.mute();
       await audioManager.playSoundEffect("test_sfx" as SoundEffectId);
 
-      // Verify audio was not played when muted
+      // Verify audio.play() was not called when muted
+      expect(playSpy).not.toHaveBeenCalled();
       expect(audioManager.muted).toBe(true);
     });
 
@@ -740,7 +747,8 @@ describe("AudioManager", () => {
         volume: 1.0,
       });
 
-      // Manually inject the failing audio element
+      // UNSAFE: Cast readonly to mutable for test injection
+      // This is acceptable in tests but should never be done in production code
       const loadedAssets = audioManager.getLoadedAssets() as Map<string, HTMLAudioElement>;
       loadedAssets.set("failing_sfx", mockFailingAudio as any);
 

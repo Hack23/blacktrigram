@@ -3,14 +3,13 @@
  * Verifies AI combat behavior and decision-making
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useAICombat } from "./useAICombat";
 import { PlayerState } from "@/systems/player";
 import { TrigramStance, PlayerArchetype, Position } from "@/types";
 import { 
   AdaptiveDifficulty,
-  AIActionType,
 } from "@/systems/ai";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
 
@@ -496,7 +495,7 @@ describe("useAICombat", () => {
       const player = createMockPlayer();
       const opponent = createMockPlayer({ position: { x: 800, y: 300 } });
 
-      // Mock decision tree to always return stance change
+      // This test validates that the hook doesn't crash with stance changes
       const { result } = renderHook(() =>
         useAICombat({
           player,
@@ -518,7 +517,6 @@ describe("useAICombat", () => {
       });
 
       // Note: onStanceChange may or may not be called depending on decision tree logic
-      // This test validates that the hook doesn't crash
       expect(result.current).toBeDefined();
     });
 
@@ -569,15 +567,13 @@ describe("useAICombat", () => {
         })
       );
 
-      const initialActionType = result.current.aiState.lastActionType;
-
       act(() => {
         vi.advanceTimersByTime(1000);
       });
 
-      // AI state should update
+      // AI state should update and track actions
       expect(result.current.aiState).toBeDefined();
-      // lastActionType may or may not change depending on decisions
+      expect(result.current.aiState.lastActionType).toBeDefined();
     });
 
     it("should update consecutive attacks counter", async () => {
@@ -602,12 +598,16 @@ describe("useAICombat", () => {
         })
       );
 
+      const initialAttacks = result.current.aiState.consecutiveAttacks;
+
       act(() => {
         vi.advanceTimersByTime(2000);
       });
 
-      // Consecutive attacks should be tracked
+      // Consecutive attacks should be tracked (value may stay 0 or increase)
       expect(result.current.aiState.consecutiveAttacks).toBeGreaterThanOrEqual(0);
+      // Verify state is being tracked
+      expect(typeof result.current.aiState.consecutiveAttacks).toBe('number');
     });
   });
 
