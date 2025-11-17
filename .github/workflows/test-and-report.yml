@@ -151,9 +151,16 @@ jobs:
 
       - name: Start app and run Cypress tests
         run: |
+          echo "🚀 Starting E2E test execution at $(date +%T)"
+          START_TIME=$(date +%s)
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "✅ E2E tests completed in ${DURATION} seconds ($(date -u -d @${DURATION} +%T))"
+          echo "e2e_duration=${DURATION}" >> $GITHUB_OUTPUT
         env:
           CYPRESS_VIDEO: true
+        id: e2e_tests
 
       - name: Upload Cypress results
         if: always()
@@ -164,6 +171,25 @@ jobs:
             cypress/videos
             cypress/screenshots
             cypress/results
+
+      - name: Report E2E execution time
+        if: always()
+        run: |
+          if [ -n "${{ steps.e2e_tests.outputs.e2e_duration }}" ]; then
+            echo "📊 E2E Test Execution Metrics"
+            echo "================================"
+            echo "Total Duration: ${{ steps.e2e_tests.outputs.e2e_duration }} seconds"
+            echo "Target: 600-720 seconds (10-12 minutes)"
+            
+            DURATION=${{ steps.e2e_tests.outputs.e2e_duration }}
+            if [ $DURATION -le 720 ]; then
+              echo "✅ PASS: Test execution within target (≤12 minutes)"
+            elif [ $DURATION -le 900 ]; then
+              echo "⚠️  WARNING: Test execution slightly over target (12-15 minutes)"
+            else
+              echo "❌ FAIL: Test execution significantly over target (>15 minutes)"
+            fi
+          fi
 
   report:
     needs: [unit-tests, e2e-tests]
