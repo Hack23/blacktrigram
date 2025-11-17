@@ -18,6 +18,7 @@ import React, {
   useState,
 } from "react";
 import { HitEffectType } from "../../systems/effects";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
@@ -570,6 +571,31 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           padding: layoutConstants.padding,
         }}
       >
+        {/* Combat Title Header */}
+        <pixiContainer
+          layout={{
+            width: "100%",
+            height: 40,
+            flexShrink: 0,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <pixiText
+            text="전투 | Combat"
+            style={{
+              fontSize: isMobile ? 18 : 24,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+              fontFamily: FONT_FAMILY.KOREAN,
+              align: "center",
+            }}
+            anchor={0.5}
+            x={width / 2}
+            y={20}
+          />
+        </pixiContainer>
+
         {/* Top HUD Area: Fixed height */}
         <pixiContainer
           layout={{
