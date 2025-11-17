@@ -195,6 +195,92 @@ jobs:
             fi
           fi
 
+  # New job: Flakiness detection for pull requests
+  flakiness-detection:
+    needs: e2e-tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run E2E tests 3 times to detect flakiness
+        continue-on-error: true
+        run: |
+          mkdir -p flaky-test-results
+          FLAKY_COUNT=0
+          
+          for i in {1..3}; do
+            echo "🔄 Flakiness Detection Run $i of 3"
+            if ! xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e:smoke; then
+              echo "FAIL" >> flaky-test-results/run-$i.txt
+              FLAKY_COUNT=$((FLAKY_COUNT + 1))
+            else
+              echo "PASS" >> flaky-test-results/run-$i.txt
+            fi
+            
+            # Copy results for analysis
+            if [ -d "build/cypress/mochawesome" ]; then
+              mkdir -p "flaky-test-results/run-$i"
+              cp build/cypress/mochawesome/*.json "flaky-test-results/run-$i/" 2>/dev/null || true
+            fi
+            
+            # Small delay between runs
+            sleep 5
+          done
+          
+          echo "FLAKY_COUNT=$FLAKY_COUNT" >> $GITHUB_ENV
+
+      - name: Analyze flakiness
+        run: |
+          echo "📊 Flakiness Detection Results:"
+          echo "================================"
+          
+          if [ -f "flaky-test-results/run-1.txt" ]; then
+            for i in {1..3}; do
+              if [ -f "flaky-test-results/run-$i.txt" ]; then
+                result=$(cat "flaky-test-results/run-$i.txt")
+                echo "Run $i: $result"
+              fi
+            done
+          fi
+          
+          if [ "${FLAKY_COUNT:-0}" -gt 0 ] && [ "${FLAKY_COUNT:-0}" -lt 3 ]; then
+            echo ""
+            echo "⚠️  Flaky tests detected! Failed ${FLAKY_COUNT} out of 3 runs"
+            echo "This indicates test instability that should be investigated."
+            exit 1
+          elif [ "${FLAKY_COUNT:-0}" -eq 3 ]; then
+            echo ""
+            echo "❌ Tests failed consistently in all 3 runs"
+            echo "This is a consistent failure, not flakiness."
+            exit 1
+          else
+            echo ""
+            echo "✅ No flaky tests detected - all 3 runs passed!"
+          fi
+
+      - name: Upload flakiness detection results
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: flakiness-detection-results
+          path: flaky-test-results/
+
   report:
     needs: [unit-tests, e2e-tests]
     runs-on: ubuntu-latest
@@ -210,10 +296,31 @@ jobs:
         with:
           egress-policy: audit
 
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Download all artifacts
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           path: artifacts
+
+      - name: Generate test reliability report
+        continue-on-error: true
+        run: |
+          # Copy Cypress results for analysis
+          if [ -d "artifacts/cypress-results" ]; then
+            mkdir -p build/cypress/mochawesome
+            find artifacts/cypress-results -name "*.json" -exec cp {} build/cypress/mochawesome/ \;
+          fi
+          
+          # Generate reliability report
+          npm run test:reliability || echo "No test results to analyze"
 
       - name: Upload combined reports
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
@@ -222,3 +329,4 @@ jobs:
           path: |
             coverage
             artifacts/cypress-results
+            build/reports/test-reliability-report.html

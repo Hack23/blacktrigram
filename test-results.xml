@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="45.027" tests="7" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-11-17T21:38:09" tests="0" file="cypress/e2e/game-journey.cy.ts" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Black Trigram - Game Journey" timestamp="2025-11-17T21:38:10" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Complete Game Navigation Flow" timestamp="2025-11-17T21:38:10" tests="1" failures="0" time="12.567">
+    <testcase name="Black Trigram - Game Journey Complete Game Navigation Flow should support all navigation paths and game modes" time="12.567" classname="should support all navigation paths and game modes" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Combat Mechanics and Interactions" timestamp="2025-11-17T21:38:25" tests="2" failures="0" time="12.282">
+    <testcase name="Black Trigram - Game Journey Combat Mechanics and Interactions should support complete combat flow with all mechanics" time="8.439" classname="should support complete combat flow with all mechanics" failure="false" error="false" success="true">
+    </testcase>
+    <testcase name="Black Trigram - Game Journey Combat Mechanics and Interactions should handle intense combat performance" time="3.843" classname="should handle intense combat performance" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Responsive Design" timestamp="2025-11-17T21:38:42" tests="1" failures="0" time="9.034">
+    <testcase name="Black Trigram - Game Journey Responsive Design should work across all viewport sizes" time="9.034" classname="should work across all viewport sizes" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Input Handling" timestamp="2025-11-17T21:38:54" tests="1" failures="0" time="3.243">
+    <testcase name="Black Trigram - Game Journey Input Handling should handle various input combinations" time="3.243" classname="should handle various input combinations" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Error Resilience" timestamp="2025-11-17T21:39:02" tests="1" failures="0" time="4.236">
+    <testcase name="Black Trigram - Game Journey Error Resilience should handle missing components and errors gracefully" time="4.236" classname="should handle missing components and errors gracefully" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="AI and State Management" timestamp="2025-11-17T21:39:10" tests="1" failures="0" time="3.665">
+    <testcase name="Black Trigram - Game Journey AI and State Management should handle AI interactions and state consistency" time="3.665" classname="should handle AI interactions and state consistency" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+</testsuites>
