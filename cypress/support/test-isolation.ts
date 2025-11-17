@@ -108,21 +108,9 @@ export class TestIsolation {
         gameStateWin.__gameState = TestIsolation.getInitialGameState();
       }
 
-      // Clear all intervals and timeouts
-      // Get the highest timer ID and clear all timers
-      const highestTimeoutId = win.setTimeout(() => {
-        // Empty timeout to get highest ID
-      }, 0);
-      for (let i = 0; i < highestTimeoutId; i++) {
-        win.clearTimeout(i);
-      }
-
-      const highestIntervalId = win.setInterval(() => {
-        // Empty interval to get highest ID
-      }, 9999);
-      for (let i = 0; i < highestIntervalId; i++) {
-        win.clearInterval(i);
-      }
+      // Timer cleanup is intentionally omitted.
+      // Rely on Cypress/browser isolation between tests to clear timers.
+      // If explicit timer cleanup is needed, track timer IDs in a registry and clear only those.
 
       // Reset scroll position
       win.scrollTo(0, 0);

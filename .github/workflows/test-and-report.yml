@@ -239,8 +239,8 @@ jobs:
               cp build/cypress/mochawesome/*.json "flaky-test-results/run-$i/" 2>/dev/null || true
             fi
             
-            # Small delay between runs
-            sleep 5
+            # Configurable delay between runs to allow for resource cleanup (default: 10s)
+            sleep ${E2E_TEST_RUN_DELAY:-10}
           done
           
           echo "FLAKY_COUNT=$FLAKY_COUNT" >> $GITHUB_ENV

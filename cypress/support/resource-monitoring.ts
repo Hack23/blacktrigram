@@ -93,28 +93,59 @@ export class ResourceMonitor {
         });
       }
 
-      // Check for event listener leaks
+      // Check for event listener leaks (configurable threshold)
       const listenerDelta =
         currentResources.eventListenerCount -
         ResourceMonitor.initialResources.eventListenerCount;
-      if (listenerDelta > 5) {
-        // Allow some tolerance
+      const listenerThreshold =
+        (Cypress.env("EVENT_LISTENER_LEAK_THRESHOLD") as number | undefined) ?? 5;
+      if (listenerDelta > listenerThreshold) {
         leaks.push({
           type: "EventListeners",
-          message: `Event listeners leaked: ${listenerDelta}`,
+          message: `Event listeners leaked: ${listenerDelta} (threshold: ${listenerThreshold})`,
           delta: listenerDelta,
         });
       }
 
-      // Check for memory leaks (> 10MB growth)
+      // Check for memory leaks (configurable threshold)
       const memoryGrowthMB =
         (currentResources.memoryUsage -
           ResourceMonitor.initialResources.memoryUsage) /
         (1024 * 1024);
-      if (memoryGrowthMB > 10) {
+
+      // Allow configuration via Cypress env
+      const thresholdMB =
+        (Cypress.env("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ?? 10;
+      const thresholdPercent =
+        (Cypress.env("MEMORY_LEAK_THRESHOLD_PERCENT") as number | undefined) ?? null;
+
+      let percentGrowth: number | null = null;
+      if (ResourceMonitor.initialResources.memoryUsage > 0) {
+        percentGrowth =
+          ((currentResources.memoryUsage - ResourceMonitor.initialResources.memoryUsage) /
+            ResourceMonitor.initialResources.memoryUsage) *
+          100;
+      }
+
+      let memoryLeakDetected = false;
+      let leakReason = "";
+      if (memoryGrowthMB > thresholdMB) {
+        memoryLeakDetected = true;
+        leakReason = `>${thresholdMB}MB`;
+      }
+      if (
+        thresholdPercent !== null &&
+        percentGrowth !== null &&
+        percentGrowth > thresholdPercent
+      ) {
+        memoryLeakDetected = true;
+        leakReason = leakReason ? `${leakReason} and >${thresholdPercent}%` : `>${thresholdPercent}%`;
+      }
+
+      if (memoryLeakDetected) {
         leaks.push({
           type: "Memory",
-          message: `Memory leaked: ${memoryGrowthMB.toFixed(2)}MB`,
+          message: `Memory leaked: ${memoryGrowthMB.toFixed(2)}MB (${percentGrowth !== null ? percentGrowth.toFixed(1) : "?"}% growth, threshold: ${leakReason})`,
           delta: memoryGrowthMB,
         });
       }

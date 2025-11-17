@@ -59,7 +59,7 @@ function parseReports(reportsDir) {
   const consistentFailures = [];
 
   testResults.forEach((stats, testKey) => {
-    const [suite, test] = testKey.split('::');
+    const [suite, test] = testKey.split('::', 2);
     if (stats.passed > 0 && stats.failed > 0) {
       // Flaky test (sometimes passes, sometimes fails)
       flakyTests.push({
@@ -144,6 +144,17 @@ function processSuite(suite, testResults, parentSuite = '') {
  */
 function generateHTMLReport(report, outputPath) {
   const timestamp = new Date().toISOString();
+
+  // HTML escape function to prevent XSS
+  function escapeHtml(text) {
+    if (typeof text !== 'string') return text;
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
   const html = `
 <!DOCTYPE html>
@@ -313,9 +324,9 @@ function generateHTMLReport(report, outputPath) {
       <ul class="test-list">
         ${report.flakyTests.map(test => `
           <li class="test-item">
-            <div class="test-name">${test.test}</div>
+            <div class="test-name">${escapeHtml(test.test)}</div>
             <div class="test-stats">
-              Suite: ${test.suite}<br>
+              Suite: ${escapeHtml(test.suite)}<br>
               Pass Rate: ${test.passRate.toFixed(2)}% (${test.passes} passes, ${test.failures} failures)
             </div>
           </li>
@@ -335,12 +346,15 @@ function generateHTMLReport(report, outputPath) {
     <div class="section">
       <h2>❌ Consistently Failing Tests</h2>
       <ul class="test-list">
-        ${report.consistentFailures.map(testKey => `
+        ${report.consistentFailures.map(testKey => {
+          const [suite, test] = testKey.split('::', 2);
+          return `
           <li class="test-item consistent-fail">
-            <div class="test-name">${testKey.split('::')[1]}</div>
-            <div class="test-stats">Suite: ${testKey.split('::')[0]}</div>
+            <div class="test-name">${escapeHtml(test || testKey)}</div>
+            <div class="test-stats">Suite: ${escapeHtml(suite || '')}</div>
           </li>
-        `).join('')}
+        `;
+        }).join('')}
       </ul>
     </div>
     ` : ''}
