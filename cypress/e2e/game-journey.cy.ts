@@ -141,7 +141,7 @@ describe("Black Trigram - Game Journey", () => {
       viewports.forEach(([width, height]) => {
         cy.annotate(`Testing ${width}x${height}`);
         cy.viewport(width, height);
-        cy.wait(500); // Reduced wait for canvas stability
+        cy.wait(300); // Reduced from 500ms for canvas stability
 
         // Verify essential elements
         cy.get('[data-testid="app-container"]').should("be.visible");
@@ -180,11 +180,11 @@ describe("Black Trigram - Game Journey", () => {
 
       // Test non-existent features
       cy.get("body").type("4");
-      cy.wait(500); // Reduced from 1000ms
+      cy.wait(300); // Reduced from 500ms
 
       // Return to main screen
       cy.get("body").type("{esc}");
-      cy.wait(500); // Reduced from 1000ms
+      cy.wait(300); // Reduced from 500ms
 
       cy.get("body").then(($body) => {
         const hasIntro = $body.find('[data-testid="intro-screen"]').length > 0 ||

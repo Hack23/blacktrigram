@@ -71,7 +71,7 @@ describe("Black Trigram - Smoke Test", () => {
 
     // Test keyboard navigation to combat mode (key "1" for versus)
     cy.get("body").type("1");
-    cy.wait(1500); // Wait for screen transition
+    cy.wait(1000); // Reduced from 1500ms - wait for screen transition
     
     // Verify we entered combat mode
     cy.get("body").then(($body) => {
@@ -84,7 +84,7 @@ describe("Black Trigram - Smoke Test", () => {
     
     // Return to intro with ESC
     cy.get("body").type("{esc}");
-    cy.wait(1500);
+    cy.wait(1000); // Reduced from 1500ms
 
     // Verify app container still exists and is functional
     cy.get('[data-testid="app-container"]').should("exist");

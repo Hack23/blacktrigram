@@ -20,10 +20,10 @@ export default defineConfig({
   screenshotsFolder: REPORTS.screenshots,
   videosFolder: REPORTS.videos,
   experimentalMemoryManagement: true,
-  numTestsKeptInMemory: 5, // Reduced from 10 for memory optimization
+  numTestsKeptInMemory: 3, // Reduced from 5 for better memory management
   video: true, // Video recording enabled; videos are only saved for failed tests
   videoUploadOnPasses: false, // Only upload videos for failed tests
-  videoCompression: 15, // Lower value = higher compression (smaller files, slower encoding)
+  videoCompression: 25, // Increased from 15 for faster encoding (larger files, but faster CI)
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
   viewportWidth: 1280,
@@ -60,10 +60,10 @@ export default defineConfig({
     supportFile: "cypress/support/e2e.ts",
     testIsolation: true,
     // Optimized timeout settings for faster test execution
-    defaultCommandTimeout: 6000, // Reduced from 8000
-    requestTimeout: 8000, // Reduced from 10000
-    responseTimeout: 8000, // Reduced from 10000
-    pageLoadTimeout: 15000, // Reduced from 20000
+    defaultCommandTimeout: 5000, // Reduced from 6000 for faster failures
+    requestTimeout: 6000, // Reduced from 8000
+    responseTimeout: 6000, // Reduced from 8000
+    pageLoadTimeout: 12000, // Reduced from 15000
     chromeWebSecurity: false,
     experimentalRunAllSpecs: true,
     // Environment variables for Black Trigram testing
@@ -252,7 +252,6 @@ export default defineConfig({
     supportFile: "cypress/support/component.ts",
     experimentalMemoryManagement: true,
   },
-  waitForAnimations: false,
-  pageLoadTimeout: 20000, // Increased for PixiJS asset loading
-  requestTimeout: 10000, // Increased for better reliability
+  waitForAnimations: false, // Disable animation waits for faster tests
+  animationDistanceThreshold: 5, // Minimal animation threshold
 });

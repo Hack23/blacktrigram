@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import "./commands";
 import "./pixi-commands"; // Import PixiJS testing commands
+import "./performance"; // Import performance monitoring
 
 // Import cypress-wait-until for waitUntil command
 import "cypress-wait-until";
@@ -71,28 +72,11 @@ beforeEach(() => {
   });
 });
 
-// Global test configuration for Korean martial arts game
-Cypress.config("defaultCommandTimeout", 10000);
-Cypress.config("requestTimeout", 15000);
-Cypress.config("responseTimeout", 15000);
-Cypress.config("pageLoadTimeout", 30000);
-
-// Note: Tasks are configured in cypress.config.ts, not here
-// The tasks "log" and "silenceWebGLWarning" should be defined there
-
 // Import custom commands with type support
-import "./commands";
-import "./pixi-commands";
-
-// Fix: Ensure proper type declarations are loaded
 /// <reference types="cypress" />
 /// <reference path="./commands.ts" />
 /// <reference path="./pixi-commands.ts" />
 
-Cypress.on("fail", (err, _runnable) => {
-  console.error("Cypress test failed:", err.message);
-  return false;
-});
 Cypress.on("fail", (err, _runnable) => {
   console.error("Cypress test failed:", err.message);
   return false;
