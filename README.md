@@ -41,6 +41,14 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
 [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
 
+**🔐 ISMS Framework Compliance:**
+[![Information Security Policy](https://img.shields.io/badge/ISMS-Information_Security_Policy-0066CC?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
+[![Secure Development](https://img.shields.io/badge/ISMS-Secure_Development_Policy-00AA00?style=flat-square&logo=code&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+[![Threat Modeling](https://img.shields.io/badge/ISMS-Threat_Modeling-FF6B6B?style=flat-square&logo=target&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
+[![Vulnerability Management](https://img.shields.io/badge/ISMS-Vulnerability_Management-FFA500?style=flat-square&logo=bug&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)
+[![Open Source Policy](https://img.shields.io/badge/ISMS-Open_Source_Policy-FFD700?style=flat-square&logo=open-source-initiative&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+[![ISMS Transparency](https://img.shields.io/badge/ISMS-Transparency_Plan-9370DB?style=flat-square&logo=eye&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)
+
 _A realistic 2D precision combat game inspired by Korean martial arts philosophy and the I Ching_
 
 </div>
@@ -622,6 +630,48 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 **🥋 무도의 길을 걸어라 (Walk the Path of Martial Arts) 🥋**
 
 </div>
+
+---
+
+## 📚 Related Documents
+
+### 🔐 Security & Compliance
+- [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Enterprise-grade security framework
+- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Complete security implementation
+- [🔮 Future Security Architecture](./FUTURE_SECURITY_ARCHITECTURE.md) - Planned security enhancements
+- [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
+- [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
+- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting and disclosure
+- [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
+
+### 🛠️ Development & Architecture
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
+- [📐 Architecture](./ARCHITECTURE.md) - High-level system design
+- [⚔️ Combat Architecture](./COMBAT_ARCHITECTURE.md) - Combat system mechanics
+- [🔄 Workflows](./WORKFLOWS.md) - CI/CD security automation
+- [🔧 Development Guide](./development.md) - Security features and testing
+- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact analysis
+
+### 📊 Testing & Quality
+- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy
+- [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
+- [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+
+### 🎮 Game Design & Assets
+- [🎮 Game Design](./game-design.md) - Overall game mechanics
+- [📊 Game Status](./game-status.md) - Development progress
+- [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
+- [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
+- [🎬 Video Assets](./VIDEO_ASSETS.md) - Cinematic content
+
+### 🌐 ISMS Public Repository
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
+- [🤖 AI Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md) - AI governance framework
+- [🌐 ISMS Transparency Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md) - Public disclosure strategy
+- [📊 Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement
+
+---
 
 ## 🥋 Black Trigram Project Classification
 

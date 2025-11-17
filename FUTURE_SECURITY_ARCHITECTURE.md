@@ -40,6 +40,40 @@ This document outlines the comprehensive security architecture for Black Trigram
 | [Development Guide](development.md)                             | 🔧 Development | Security features and testing strategy              |
 | [Architecture](ARCHITECTURE.md)                                 | 🏛️ Structure   | Overall system architecture                         |
 
+## 🔐 ISMS Policy Alignment
+
+This future security architecture is designed to fully implement all controls from Hack23 AB's ISMS framework as the application evolves from frontend-only to a full-stack cloud platform. For complete policy mapping, see [ISMS_REFERENCE_MAPPING.md](./ISMS_REFERENCE_MAPPING.md).
+
+### Related ISMS Policies
+
+| **Policy Domain** | **Policy** | **Planned Implementation** |
+|-------------------|------------|----------------------------|
+| **🔐 Core Security** | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | Overall security governance framework for AWS deployment |
+| **🛠️ Development** | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | Security-integrated SDLC for backend development |
+| **🌐 Network** | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) | VPC architecture, WAF, security groups, CloudFront |
+| **🔒 Cryptography** | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) | KMS encryption, TLS 1.3, data encryption at rest |
+| **🔑 Access Control** | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | AWS Cognito, IAM, RBAC, least privilege |
+| **🏷️ Data Classification** | [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) | User data protection, game state security |
+| **🔍 Vulnerability** | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) | GuardDuty, Security Hub, Inspector, automated scanning |
+| **🚨 Incident Response** | [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) | AWS incident detection and response automation |
+| **💾 Backup & Recovery** | [Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) | Automated backups, point-in-time recovery, RDS |
+| **🔄 Business Continuity** | [Business Continuity Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Business_Continuity_Plan.md) | Multi-AZ deployment, auto-scaling, disaster recovery |
+| **🤝 Third-Party** | [Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) | AWS security assessment, CDN providers |
+| **🏷️ Classification** | [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Business impact analysis for backend services |
+
+### Security Control Implementation Roadmap
+
+| **ISMS Control Domain** | **Current Status** | **Future Implementation** | **Timeline** |
+|--------------------------|-------------------|---------------------------|--------------|
+| **🔑 Access Control** | ⚠️ Limited | ✅ AWS Cognito + IAM | Phase 1 |
+| **🔒 Cryptography** | ✅ Implemented | ✅ Enhanced (KMS, encryption at rest) | Phase 1 |
+| **🌐 Network Security** | ✅ Implemented | ✅ Enhanced (VPC, WAF, PrivateLink) | Phase 1 |
+| **🛠️ Secure Development** | ✅ Implemented | ✅ Extended to backend | Phase 1 |
+| **🔍 Vulnerability Management** | ✅ Implemented | ✅ Enhanced (GuardDuty, Security Hub) | Phase 1 |
+| **📊 Monitoring & Logging** | ⚠️ Limited | ✅ Full (CloudWatch, CloudTrail, X-Ray) | Phase 1 |
+| **💾 Data Protection** | ✅ Implemented | ✅ Enhanced (encryption, backup) | Phase 1 |
+| **🚨 Incident Response** | ✅ Documented | ✅ Automated detection and response | Phase 2 |
+
 ## 🔑 Authentication Architecture (AWS Cognito)
 
 **Status**: ✅ Comprehensive Authentication System - AWS Cognito Integration
@@ -1514,5 +1548,47 @@ Black Trigram implements advanced security operations:
 ## 📝 Conclusion
 
 The Black Trigram Future Security Architecture is a comprehensive, multi-layered security framework designed to protect the integrity, availability, and confidentiality of the Black Trigram platform. By leveraging AWS's advanced security services and following best practices for security and compliance, Black Trigram will provide a secure and resilient environment for users to engage in Korean martial arts training and education.
+
+---
+
+## 📚 Related Documents
+
+### 🔐 ISMS Policies
+- [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
+- [🌐 Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) - Network protection standards
+- [🔒 Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) - Encryption standards
+- [🔑 Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Identity and access management
+- [🏷️ Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) - Data protection standards
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+- [🚨 Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) - Security incident handling
+- [💾 Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) - Data backup and recovery
+- [🔄 Business Continuity Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Business_Continuity_Plan.md) - Business resilience
+- [🤝 Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) - Supplier security
+- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Risk assessment methodology
+
+### 🛡️ Black Trigram Security Documentation
+- [🛡️ Current Security Architecture](./SECURITY_ARCHITECTURE.md) - Frontend-only security implementation
+- [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
+- [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
+- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting
+- [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
+- [📅 End-of-Life Strategy](./End-of-Life-Strategy.md) - Security patching lifecycle
+
+### 🔄 Development & Operations
+- [🔄 Workflows](./WORKFLOWS.md) - Security-hardened CI/CD pipelines
+- [🔧 Development Guide](./development.md) - Security features and testing
+- [📐 Architecture](./ARCHITECTURE.md) - Overall system design
+- [🔮 Future Architecture](./FUTURE_ARCHITECTURE.md) - Planned system evolution
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
+**📅 Effective Date:** 2025-01-15  
+**⏰ Next Review:** 2025-04-15  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well_Architected-orange?style=flat-square&logo=amazon-aws&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
 
 ---

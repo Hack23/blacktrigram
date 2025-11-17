@@ -39,6 +39,38 @@ This document outlines the comprehensive security architecture of the Black Trig
 | [Development Guide](development.md)               | 🔧 Development | Security features and testing strategy |
 | [Architecture](ARCHITECTURE.md)                   | 🏛️ Structure   | Overall system architecture            |
 
+## 🔐 ISMS Policy Alignment
+
+This security architecture implements controls aligned with Hack23 AB's publicly available ISMS framework. For complete policy mapping, see [ISMS_REFERENCE_MAPPING.md](./ISMS_REFERENCE_MAPPING.md).
+
+### Related ISMS Policies
+
+| **Policy Domain** | **Policy** | **Relevance to Architecture** |
+|-------------------|------------|-------------------------------|
+| **🔐 Core Security** | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | Overall security governance and framework |
+| **🛠️ Development** | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | Security-integrated SDLC practices |
+| **🌐 Network** | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) | CDN security and network controls |
+| **🔒 Cryptography** | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) | TLS/HTTPS encryption standards |
+| **🔍 Vulnerability** | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) | Security scanning and remediation |
+| **🚨 Incident Response** | [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) | Security event handling procedures |
+| **🤝 Third-Party** | [Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) | Supplier security assessment (GitHub, CDN, npm) |
+| **🔓 Open Source** | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | Open source governance and licensing |
+| **📋 Compliance** | [Compliance Checklist](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md) | ISO 27001, NIST CSF, CIS Controls alignment |
+| **🏷️ Classification** | [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Business impact and risk assessment methodology |
+
+### Security Control Implementation Status
+
+| **ISMS Control Domain** | **Implementation Status** | **Notes** |
+|--------------------------|---------------------------|-----------|
+| **🔑 Access Control** | ⚠️ Limited | No authentication - frontend-only architecture |
+| **🔒 Cryptography** | ✅ Implemented | TLS 1.3, HTTPS-only, secure headers |
+| **🌐 Network Security** | ✅ Implemented | CDN security, DDoS protection, WAF |
+| **🛠️ Secure Development** | ✅ Implemented | SAST, SCA, DAST, security testing |
+| **🔍 Vulnerability Management** | ✅ Implemented | Automated scanning, Dependabot, CodeQL |
+| **📊 Monitoring & Logging** | ⚠️ Limited | CDN access logs only - no backend logging |
+| **💾 Data Protection** | ✅ Implemented | No persistent data - session-only storage |
+| **🚨 Incident Response** | ✅ Documented | GitHub Security Advisories, coordinated disclosure |
+
 ## 🔑 Authentication Architecture
 
 **Current Status**: ❌ No Authentication - Client-Side Only Web Application
@@ -896,6 +928,45 @@ Black Trigram implements a **security-first approach optimized for a frontend-on
 ### Future Security Considerations
 
 As documented in the [End-of-Life Strategy](End-of-Life-Strategy.md), any future evolution of Black Trigram toward backend services or user accounts would require implementing the traditional security layers currently marked as "not applicable."
+
+---
+
+## 📚 Related Documents
+
+### 🔐 ISMS Policies
+- [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
+- [🌐 Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) - Network protection standards
+- [🔒 Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) - Encryption standards
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+- [🚨 Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) - Security incident handling
+- [🤝 Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) - Supplier security
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
+- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Risk assessment methodology
+
+### 🛡️ Black Trigram Security Documentation
+- [🔮 Future Security Architecture](./FUTURE_SECURITY_ARCHITECTURE.md) - Planned security enhancements
+- [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
+- [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
+- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting
+- [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
+- [📅 End-of-Life Strategy](./End-of-Life-Strategy.md) - Security patching lifecycle
+
+### 🔄 Development & Operations
+- [🔄 Workflows](./WORKFLOWS.md) - Security-hardened CI/CD pipelines
+- [🔧 Development Guide](./development.md) - Security features and testing
+- [📐 Architecture](./ARCHITECTURE.md) - Overall system design
+- [⚔️ Combat Architecture](./COMBAT_ARCHITECTURE.md) - Combat system design
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
+**📅 Effective Date:** 2025-01-15  
+**⏰ Next Review:** 2025-04-15  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well_Architected-orange?style=flat-square&logo=amazon-aws&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram with Security_
 
