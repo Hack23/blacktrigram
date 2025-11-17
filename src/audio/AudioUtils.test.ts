@@ -24,7 +24,11 @@ describe("AudioUtils", () => {
       crossOrigin = null;
       preload = "auto";
 
-      constructor() {
+      constructor(src?: string) {
+        // Set src if provided
+        if (src) {
+          this.src = src;
+        }
         // Enhanced mock to properly support different formats
         this.canPlayType = vi.fn((type: string) => {
           if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
@@ -154,12 +158,14 @@ describe("AudioUtils", () => {
       const metadata = AudioUtils.getBestFormatMetadata(["audio/mp3"]);
       expect(metadata.supported).toBe(true); // mp3 is supported
       expect(metadata.format).toBe("audio/mp3");
+      expect(metadata.quality).toBeDefined();
     });
 
     it("should get format metadata through selectAudioFormat", () => {
       const formats: AudioFormat[] = ["audio/mp3", "audio/wav"];
       const metadata = AudioUtils.getBestFormatMetadata(formats);
       expect(metadata.format).toBe("audio/mp3"); // mp3 should be preferred
+      expect(metadata.quality).toBeDefined();
     });
 
     it("should return unsupported when no format matches", () => {
@@ -169,11 +175,12 @@ describe("AudioUtils", () => {
       expect(metadata.format).toBeNull();
     });
 
-    it("should include confidence level in metadata", () => {
+    it("should return quality in metadata", () => {
       const formats: AudioFormat[] = ["audio/mp3"];
       const metadata = AudioUtils.getBestFormatMetadata(formats);
-      expect(metadata.confidence).toBeDefined();
-      expect(typeof metadata.confidence).toBe("string");
+      // Check that quality property exists
+      expect(metadata.quality).toBeDefined();
+      expect(typeof metadata.quality).toBe("string");
     });
   });
 
@@ -191,9 +198,12 @@ describe("AudioUtils", () => {
 
     it("should get format metadata with static method", () => {
       const formats: AudioFormat[] = ["audio/mp3", "audio/wav"];
+      // Note: getBestFormatMetadata is available both as a function export
+      // and as AudioUtils class static method. The function export takes precedence.
       const metadata = AudioUtils.getBestFormatMetadata(formats);
       expect(metadata.format).toBe("audio/mp3");
       expect(metadata.supported).toBe(true);
+      expect(metadata.quality).toBeDefined();
     });
 
     it("should handle no available formats", () => {
@@ -234,7 +244,7 @@ describe("AudioUtils", () => {
     it("should create audio element with URL", () => {
       const audio = AudioUtils.createAudioElement("/test.mp3");
       expect(audio).toBeInstanceOf(Audio);
-      expect(audio.src).toContain("/test.mp3");
+      expect(audio.src).toBe("/test.mp3");
     });
 
     it("should create audio element with custom volume", () => {
