@@ -27,6 +27,8 @@
     "test:ci": "vitest run --coverage",
     "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome'",
     "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome'",
+    "test:e2e:smoke": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome --spec \"cypress/e2e/app.cy.ts,cypress/e2e/game-journey.cy.ts\"'",
+    "test:e2e:smoke:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome --spec \"cypress/e2e/app.cy.ts,cypress/e2e/game-journey.cy.ts\"'",
     "compress": "gzip -k dist/assets/*.js && gzip -k dist/assets/*.css",
     "find:unused": "npm run knip",
     "test:licenses": "license-compliance --direct --allow 'MIT;ISC;0BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Unlicense;CC0-1.0'",
