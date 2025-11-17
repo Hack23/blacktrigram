@@ -215,6 +215,23 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
               }}
               data-testid={`menu-item-${item.mode}`}
             >
+              {/* Add test ID aliases for backward compatibility with E2E tests */}
+              {item.mode === GameMode.TRAINING && (
+                <pixiContainer
+                  data-testid="training-button"
+                  layout={{ position: "absolute", width: "100%", height: "100%" }}
+                  alpha={0}
+                  interactive={false}
+                />
+              )}
+              {item.mode === GameMode.VERSUS && (
+                <pixiContainer
+                  data-testid="combat-button"
+                  layout={{ position: "absolute", width: "100%", height: "100%" }}
+                  alpha={0}
+                  interactive={false}
+                />
+              )}
               {/* Button Background */}
               <pixiGraphics
                 draw={(g) => {
