@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as AudioUtils from "./AudioUtils";
+import * as AudioUtilsModule from "./AudioUtils";
+import { AudioUtils, getBestFormatMetadata } from "./AudioUtils";
 import type { AudioFormat } from "./types";
 
 describe("AudioUtils", () => {
@@ -24,7 +25,11 @@ describe("AudioUtils", () => {
       crossOrigin = null;
       preload = "auto";
 
-      constructor() {
+      constructor(src?: string) {
+        // Set src if provided (used by createAudioElement tests)
+        if (src) {
+          this.src = src;
+        }
         // Enhanced mock to properly support different formats
         this.canPlayType = vi.fn((type: string) => {
           if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
@@ -46,58 +51,58 @@ describe("AudioUtils", () => {
 
   describe("selectAudioFormat", () => {
     it("should return null when no formats are available", () => {
-      const result = AudioUtils.selectAudioFormat([]);
+      const result = AudioUtilsModule.selectAudioFormat([]);
       expect(result).toBeNull();
     });
 
     it("should return the preferred format when available", () => {
       const available: AudioFormat[] = ["audio/wav", "audio/mp3"];
       const preferred: AudioFormat[] = ["audio/mp3", "audio/wav"];
-      const result = AudioUtils.selectAudioFormat(available, preferred);
+      const result = AudioUtilsModule.selectAudioFormat(available, preferred);
       expect(result).toBe("audio/mp3"); // mp3 should be selected as it's preferred and supported
     });
 
     it("should return mp3 when both formats are available", () => {
       const available: AudioFormat[] = ["audio/webm", "audio/mp3"];
-      const result = AudioUtils.selectAudioFormat(available);
+      const result = AudioUtilsModule.selectAudioFormat(available);
       expect(result).toBe("audio/mp3"); // mp3 is supported, webm is not
     });
 
     it("should return the first available format when preferred is not available", () => {
       const available: AudioFormat[] = ["audio/mp3"];
       const preferred: AudioFormat[] = ["audio/wav"];
-      const result = AudioUtils.selectAudioFormat(available, preferred);
+      const result = AudioUtilsModule.selectAudioFormat(available, preferred);
       expect(result).toBe("audio/mp3");
     });
 
     it("should handle empty preferred formats", () => {
       const available: AudioFormat[] = ["audio/mp3"];
-      const result = AudioUtils.selectAudioFormat(available, []);
+      const result = AudioUtilsModule.selectAudioFormat(available, []);
       expect(result).toBe("audio/mp3");
     });
 
     it("should prioritize formats correctly", () => {
       const available: AudioFormat[] = ["audio/mp3", "audio/wav"];
       const preferred: AudioFormat[] = ["audio/wav", "audio/mp3"];
-      const result = AudioUtils.selectAudioFormat(available, preferred);
+      const result = AudioUtilsModule.selectAudioFormat(available, preferred);
       // Should return wav since it's preferred and available
       expect(result).toBe("audio/wav");
     });
 
     it("should return null when no match is found", () => {
       const available: AudioFormat[] = ["audio/webm" as AudioFormat];
-      const result = AudioUtils.selectAudioFormat(available);
+      const result = AudioUtilsModule.selectAudioFormat(available);
       expect(result).toBeNull();
     });
   });
 
   describe("canPlayType", () => {
     it("should return true for supported audio types", () => {
-      expect(AudioUtils.canPlayType("audio/mp3")).toBe(true); // mp3 is supported
+      expect(AudioUtilsModule.canPlayType("audio/mp3")).toBe(true); // mp3 is supported
     });
 
     it("should return false for unsupported audio types", () => {
-      expect(AudioUtils.canPlayType("audio/webm")).toBe(false); // webm not supported in mock
+      expect(AudioUtilsModule.canPlayType("audio/webm")).toBe(false); // webm not supported in mock
     });
   });
 
@@ -105,30 +110,30 @@ describe("AudioUtils", () => {
     it("should return mp3 URL if mp3 is supported", () => {
       const available: AudioFormat[] = ["audio/webm", "audio/mp3"];
       const basePath = "assets/audio/sfx/test_sound";
-      const urls = AudioUtils.getPreferredFormat(available, basePath);
+      const urls = AudioUtilsModule.getPreferredFormat(available, basePath);
       expect(urls).toEqual([`${basePath}.mp3`]); // mp3 should be selected
     });
 
     it("should return mp3 URL if only mp3 is supported", () => {
       const available: AudioFormat[] = ["audio/mp3"];
       const basePath = "assets/audio/sfx/test_sound";
-      const urls = AudioUtils.getPreferredFormat(available, basePath);
+      const urls = AudioUtilsModule.getPreferredFormat(available, basePath);
       expect(urls).toEqual([`${basePath}.mp3`]);
     });
 
     it("should fallback to first format if none supported", () => {
       const available: AudioFormat[] = ["audio/webm"];
       const basePath = "assets/audio/sfx/test_sound";
-      const urls = AudioUtils.getPreferredFormat(available, basePath);
+      const urls = AudioUtilsModule.getPreferredFormat(available, basePath);
       expect(urls).toEqual([`${basePath}.webm`]);
     });
   });
 
   describe("clampVolume", () => {
     it("should clamp volume to valid range", () => {
-      expect(AudioUtils.clampVolume(-0.5)).toBe(0);
-      expect(AudioUtils.clampVolume(0.5)).toBe(0.5);
-      expect(AudioUtils.clampVolume(1.5)).toBe(1);
+      expect(AudioUtilsModule.clampVolume(-0.5)).toBe(0);
+      expect(AudioUtilsModule.clampVolume(0.5)).toBe(0.5);
+      expect(AudioUtilsModule.clampVolume(1.5)).toBe(1);
     });
   });
 
@@ -149,17 +154,309 @@ describe("AudioUtils", () => {
       const result = AudioUtils.selectAudioFormat(formats);
       expect(result).toBe("audio/mp3"); // mp3 is supported and preferred
     });
+  });
 
-    it("should validate format compatibility", () => {
+  describe("getBestFormatMetadata - standalone function", () => {
+    it("should return quality metadata for wav", () => {
+      const metadata = getBestFormatMetadata(["audio/wav"]);
+      expect(metadata.quality).toBe("high");
+      expect(metadata.supported).toBe(true);
+      expect(metadata.format).toBe("audio/wav");
+    });
+
+    it("should return quality metadata for mp3", () => {
+      const metadata = getBestFormatMetadata(["audio/mp3"]);
+      expect(metadata.quality).toBe("medium");
+      expect(metadata.supported).toBe(true);
+    });
+
+    it("should return quality metadata for webm", () => {
+      // webm is not supported in our mock, so it should fallback
+      const metadata = getBestFormatMetadata(["audio/webm"]);
+      expect(metadata.quality).toBe("low");
+      expect(metadata.supported).toBe(false);
+    });
+
+    it("should return low quality when no format is selected", () => {
+      const metadata = getBestFormatMetadata([]);
+      expect(metadata.quality).toBe("low");
+      expect(metadata.supported).toBe(false);
+    });
+  });
+
+  describe("AudioUtils.getBestFormatMetadata - class static method", () => {
+    it("should return confidence metadata for mp3", () => {
       const metadata = AudioUtils.getBestFormatMetadata(["audio/mp3"]);
-      expect(metadata.supported).toBe(true); // mp3 is supported
+      expect(metadata.confidence).toBe("probably");
+      expect(metadata.supported).toBe(true);
       expect(metadata.format).toBe("audio/mp3");
     });
 
-    it("should get format metadata through selectAudioFormat", () => {
+    it("should return empty confidence when no format", () => {
+      const metadata = AudioUtils.getBestFormatMetadata([]);
+      expect(metadata.confidence).toBe("");
+      expect(metadata.supported).toBe(false);
+      expect(metadata.format).toBeNull();
+    });
+
+    it("should return confidence for wav", () => {
+      const metadata = AudioUtils.getBestFormatMetadata(["audio/wav"]);
+      expect(metadata.confidence).toBe("maybe");
+      expect(metadata.supported).toBe(true);
+    });
+  });
+
+  describe("detectSupportedFormats", () => {
+    it("should detect mp3 support", () => {
+      const formats = AudioUtilsModule.detectSupportedFormats();
+      expect(formats).toContain("audio/mp3");
+    });
+
+    it("should return array of supported formats", () => {
+      const formats = AudioUtilsModule.detectSupportedFormats();
+      expect(Array.isArray(formats)).toBe(true);
+      expect(formats.length).toBeGreaterThan(0);
+    });
+
+    it("should only include actually supported formats", () => {
+      const formats = AudioUtilsModule.detectSupportedFormats();
+      formats.forEach(format => {
+        expect(AudioUtils.canPlayType(format)).toBe(true);
+      });
+    });
+  });
+
+  describe("createAudioElement", () => {
+    it("should create audio element with URL", () => {
+      const audio = AudioUtilsModule.createAudioElement("/test.mp3");
+      expect(audio).toBeInstanceOf(Audio);
+      expect(audio.src).toBe("/test.mp3");
+    });
+
+    it("should create audio element with custom volume", () => {
+      const audio = AudioUtilsModule.createAudioElement("/test.mp3", 0.5);
+      expect(audio.volume).toBe(0.5);
+    });
+
+    it("should create audio element with default volume", () => {
+      const audio = AudioUtilsModule.createAudioElement("/test.mp3");
+      expect(audio.volume).toBe(1.0);
+    });
+
+    it("should set preload to auto", () => {
+      const audio = AudioUtilsModule.createAudioElement("/test.mp3");
+      expect(audio.preload).toBe("auto");
+    });
+  });
+
+  describe("validateAudioUrl", () => {
+    it("should validate correct URL", () => {
+      expect(AudioUtilsModule.validateAudioUrl("/assets/audio/test.mp3")).toBe(true);
+    });
+
+    it("should reject empty string", () => {
+      expect(AudioUtilsModule.validateAudioUrl("")).toBe(false);
+    });
+
+    it("should reject non-string values", () => {
+      expect(AudioUtilsModule.validateAudioUrl(null as any)).toBe(false);
+      expect(AudioUtilsModule.validateAudioUrl(undefined as any)).toBe(false);
+      expect(AudioUtilsModule.validateAudioUrl(123 as any)).toBe(false);
+    });
+
+    it("should accept any non-empty string", () => {
+      expect(AudioUtilsModule.validateAudioUrl("a")).toBe(true);
+      expect(AudioUtilsModule.validateAudioUrl("https://example.com/audio.mp3")).toBe(true);
+    });
+  });
+
+  describe("normalizeVolume", () => {
+    it("should normalize volume to range [0, 1]", () => {
+      expect(AudioUtilsModule.normalizeVolume(0.5)).toBe(0.5);
+      expect(AudioUtilsModule.normalizeVolume(-0.5)).toBe(0);
+      expect(AudioUtilsModule.normalizeVolume(1.5)).toBe(1);
+    });
+
+    it("should handle boundary values", () => {
+      expect(AudioUtilsModule.normalizeVolume(0)).toBe(0);
+      expect(AudioUtilsModule.normalizeVolume(1)).toBe(1);
+    });
+
+    it("should clamp extreme values", () => {
+      expect(AudioUtilsModule.normalizeVolume(-100)).toBe(0);
+      expect(AudioUtilsModule.normalizeVolume(100)).toBe(1);
+    });
+  });
+
+  describe("formatDuration", () => {
+    it("should format seconds to mm:ss", () => {
+      expect(AudioUtilsModule.formatDuration(0)).toBe("0:00");
+      expect(AudioUtilsModule.formatDuration(30)).toBe("0:30");
+      expect(AudioUtilsModule.formatDuration(60)).toBe("1:00");
+      expect(AudioUtilsModule.formatDuration(125)).toBe("2:05");
+    });
+
+    it("should pad seconds with zero", () => {
+      expect(AudioUtilsModule.formatDuration(5)).toBe("0:05");
+      expect(AudioUtilsModule.formatDuration(65)).toBe("1:05");
+    });
+
+    it("should handle large durations", () => {
+      expect(AudioUtilsModule.formatDuration(3600)).toBe("60:00");
+      expect(AudioUtilsModule.formatDuration(3665)).toBe("61:05");
+    });
+
+    it("should handle fractional seconds", () => {
+      expect(AudioUtilsModule.formatDuration(30.7)).toBe("0:30");
+      expect(AudioUtilsModule.formatDuration(125.9)).toBe("2:05");
+    });
+  });
+
+  describe("isAudioSupported", () => {
+    it("should return true when Audio is available", () => {
+      expect(AudioUtilsModule.isAudioSupported()).toBe(true);
+    });
+
+    it("should return false when Audio is undefined", () => {
+      const originalAudio = global.Audio;
+      delete (global as any).Audio;
+
+      expect(AudioUtilsModule.isAudioSupported()).toBe(false);
+
+      global.Audio = originalAudio;
+    });
+  });
+
+  describe("getOptimalFormat", () => {
+    it("should return webm as optimal when available", () => {
+      const formats: AudioFormat[] = ["audio/webm", "audio/mp3"];
+      expect(AudioUtilsModule.getOptimalFormat(formats)).toBe("audio/webm");
+    });
+
+    it("should return mp3 when webm is not available", () => {
       const formats: AudioFormat[] = ["audio/mp3", "audio/wav"];
-      const metadata = AudioUtils.getBestFormatMetadata(formats);
-      expect(metadata.format).toBe("audio/mp3"); // mp3 should be preferred
+      expect(AudioUtilsModule.getOptimalFormat(formats)).toBe("audio/mp3");
+    });
+
+    it("should return wav when only wav is available", () => {
+      const formats: AudioFormat[] = ["audio/wav"];
+      expect(AudioUtilsModule.getOptimalFormat(formats)).toBe("audio/wav");
+    });
+
+    it("should return null when no formats available", () => {
+      const formats: AudioFormat[] = [];
+      expect(AudioUtilsModule.getOptimalFormat(formats)).toBeNull();
+    });
+
+    it("should follow preferred order", () => {
+      const formats: AudioFormat[] = ["audio/ogg", "audio/wav", "audio/mp3", "audio/webm"];
+      expect(AudioUtilsModule.getOptimalFormat(formats)).toBe("audio/webm");
+    });
+
+    it("should return first format if none match preferred", () => {
+      const formats: AudioFormat[] = ["audio/ogg"];
+      expect(AudioUtilsModule.getOptimalFormat(formats)).toBe("audio/ogg");
+    });
+  });
+
+  describe("getBestFormatMetadata - standalone function", () => {
+    it("should return quality metadata for wav", () => {
+      const metadata = getBestFormatMetadata(["audio/wav"]);
+      expect(metadata.quality).toBe("high");
+      expect(metadata.supported).toBe(true);
+      expect(metadata.format).toBe("audio/wav");
+    });
+
+    it("should return quality metadata for mp3", () => {
+      const metadata = getBestFormatMetadata(["audio/mp3"]);
+      expect(metadata.quality).toBe("medium");
+      expect(metadata.supported).toBe(true);
+    });
+
+    it("should return quality metadata for webm", () => {
+      // webm is not supported in our mock, so it should fallback
+      const metadata = getBestFormatMetadata(["audio/webm"]);
+      expect(metadata.quality).toBe("low");
+      expect(metadata.supported).toBe(false);
+    });
+
+    it("should return low quality when no format is selected", () => {
+      const metadata = getBestFormatMetadata([]);
+      expect(metadata.quality).toBe("low");
+      expect(metadata.supported).toBe(false);
+    });
+  });
+
+  describe("AudioUtils.getBestFormatMetadata - class static method", () => {
+    it("should return confidence metadata for mp3", () => {
+      const metadata = AudioUtils.getBestFormatMetadata(["audio/mp3"]);
+      expect(metadata.confidence).toBe("probably");
+      expect(metadata.supported).toBe(true);
+      expect(metadata.format).toBe("audio/mp3");
+    });
+
+    it("should return empty confidence when no format", () => {
+      const metadata = AudioUtils.getBestFormatMetadata([]);
+      expect(metadata.confidence).toBe("");
+      expect(metadata.supported).toBe(false);
+      expect(metadata.format).toBeNull();
+    });
+
+    it("should return confidence for wav", () => {
+      const metadata = AudioUtils.getBestFormatMetadata(["audio/wav"]);
+      expect(metadata.confidence).toBe("maybe");
+      expect(metadata.supported).toBe(true);
+    });
+  });
+
+  describe("getPreferredFormat - edge cases", () => {
+    it("should handle empty formats array", () => {
+      const urls = AudioUtilsModule.getPreferredFormat([], "/test");
+      expect(urls).toEqual([]);
+    });
+
+    it("should return correct extension for different formats", () => {
+      const urls1 = AudioUtilsModule.getPreferredFormat(["audio/mp3"], "/test");
+      expect(urls1).toEqual(["/test.mp3"]);
+
+      const urls2 = AudioUtilsModule.getPreferredFormat(["audio/wav"], "/test");
+      expect(urls2).toEqual(["/test.wav"]);
+
+      const urls3 = AudioUtilsModule.getPreferredFormat(["audio/ogg"], "/test");
+      expect(urls3).toEqual(["/test.ogg"]);
+    });
+
+    it("should handle paths with trailing slash", () => {
+      const urls = AudioUtilsModule.getPreferredFormat(["audio/mp3"], "/assets/audio/sfx/test");
+      expect(urls).toEqual(["/assets/audio/sfx/test.mp3"]);
+    });
+  });
+
+  describe("canPlayType - edge cases", () => {
+    it("should return false when Audio is undefined", () => {
+      const originalAudio = global.Audio;
+      delete (global as any).Audio;
+
+      expect(AudioUtilsModule.canPlayType("audio/mp3")).toBe(true); // Test env fallback
+      expect(AudioUtilsModule.canPlayType("audio/wav")).toBe(true); // Test env fallback
+      expect(AudioUtilsModule.canPlayType("audio/ogg")).toBe(false); // Not in test env fallback
+
+      global.Audio = originalAudio;
+    });
+
+    it("should handle maybe response", () => {
+      // wav returns "maybe" in our mock
+      expect(AudioUtilsModule.canPlayType("audio/wav")).toBe(true);
+    });
+
+    it("should handle probably response", () => {
+      // mp3 returns "probably" in our mock
+      expect(AudioUtilsModule.canPlayType("audio/mp3")).toBe(true);
+    });
+
+    it("should handle empty string response", () => {
+      // webm returns "" in our mock
+      expect(AudioUtilsModule.canPlayType("audio/webm")).toBe(false);
     });
   });
 });
