@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 /**
  * Performance monitoring hooks for E2E tests
  * Tracks test execution times and logs metrics for optimization
