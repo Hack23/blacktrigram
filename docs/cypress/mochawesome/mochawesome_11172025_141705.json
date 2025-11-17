@@ -1,0 +1,538 @@
+{
+  "stats": {
+    "suites": 11,
+    "tests": 13,
+    "passes": 13,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-17T14:15:44.376Z",
+    "end": "2025-11-17T14:17:05.451Z",
+    "duration": 81075,
+    "testsRegistered": 13,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "df6921bc-cc20-4792-8314-12d4e7949bec",
+      "title": "",
+      "fullFile": "cypress/e2e/training-flow.cy.ts",
+      "file": "cypress/e2e/training-flow.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e2d15a24-b54b-4b69-aee0-ccd9db21c462",
+          "title": "Black Trigram - Training Flow",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "f973433c-b8ee-4c4b-8184-cdc34e84b678",
+              "title": "Complete Training Flow",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support full training cycle and maintain progress",
+                  "fullTitle": "Black Trigram - Training Flow Complete Training Flow should support full training cycle and maintain progress",
+                  "timedOut": null,
+                  "duration": 16828,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing complete training flow\");\n// Verify intro screen\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\n// Enter training mode\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 }).should(\"exist\");\n// Practice multiple stances\ncy.practiceStance(1, 2);\ncy.practiceStance(3, 2);\n// Return and re-enter to test state persistence\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\ncy.practiceStance(5, 2);\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "df5c6cce-710e-47cd-bcb6-7891e0258bc7",
+                  "parentUUID": "f973433c-b8ee-4c4b-8184-cdc34e84b678",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "df5c6cce-710e-47cd-bcb6-7891e0258bc7"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 16828,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "70e637e9-6ea4-4fa7-900d-befd9fce995b",
+              "title": "Training UI Components",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should display all training screen components",
+                  "fullTitle": "Black Trigram - Training Flow Training UI Components should display all training screen components",
+                  "timedOut": null,
+                  "duration": 7000,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Verifying training UI components\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Check for core training elements - these MUST exist\nconst essentialElements = [\n    \"training-area\",\n    \"training-player\",\n    \"training-dummy-container\",\n];\nessentialElements.forEach((element) => {\n    cy.get(`[data-testid=\"${element}\"]`, { timeout: 8000 })\n        .should(\"exist\")\n        .then(() => {\n        cy.log(`✅ Found essential element: ${element}`);\n    });\n});\n// Verify training screen is still functional after checks\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\ncy.get('[data-testid=\"training-arena\"]').should(\"exist\");\n// Check for optional components - log but don't fail\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-header\"]').length > 0) {\n        cy.log(\"✅ Training header found\");\n    }\n    if ($body.find('[data-testid=\"training-controls-panel\"]').length > 0) {\n        cy.log(\"✅ Training controls found\");\n    }\n    if ($body.find('[data-testid=\"training-stats-panel\"]').length > 0) {\n        cy.log(\"✅ Training stats found\");\n    }\n    if ($body.find('[data-testid=\"training-dummy\"]').length > 0) {\n        cy.log(\"✅ Training dummy found\");\n    }\n});\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "fc0408cd-e659-4f40-8498-88293e2b7550",
+                  "parentUUID": "70e637e9-6ea4-4fa7-900d-befd9fce995b",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "fc0408cd-e659-4f40-8498-88293e2b7550"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 7000,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "5a94253f-61c9-4666-86a8-86b85a21f609",
+              "title": "Stance Practice and Progression",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should practice all 8 trigram stances efficiently",
+                  "fullTitle": "Black Trigram - Training Flow Stance Practice and Progression should practice all 8 trigram stances efficiently",
+                  "timedOut": null,
+                  "duration": 3536,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Practicing all 8 stances\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Verify training player and dummy are present before practicing\ncy.get('[data-testid=\"training-player\"]', { timeout: 5000 }).should(\"exist\");\ncy.get('[data-testid=\"training-dummy-container\"]', { timeout: 5000 }).should(\"exist\");\n// Practice each stance once efficiently (batched without per-iteration annotations)\nfor (let i = 1; i <= 8; i++) {\n    cy.practiceStance(i, 1);\n    // Verify training screen still exists after each practice\n    if (i % 4 === 0) {\n        cy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n    }\n}\n// Final verification that training is still functional\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\ncy.get('[data-testid=\"training-arena\"]').should(\"exist\");\ncy.log(\"✅ All 8 stances practiced\");\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "902c7071-1298-4145-9e99-27e287466333",
+                  "parentUUID": "5a94253f-61c9-4666-86a8-86b85a21f609",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should support repetitions and rapid stance switching",
+                  "fullTitle": "Black Trigram - Training Flow Stance Practice and Progression should support repetitions and rapid stance switching",
+                  "timedOut": null,
+                  "duration": 3477,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing training repetitions and transitions\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Practice first stance multiple times\ncy.practiceStance(1, 5);\n// Rapidly switch between stances\nconst stances = [\"1\", \"3\", \"5\", \"7\", \"2\", \"4\", \"6\", \"8\"];\ncy.gameActions(stances);\ncy.log(\"✅ Repetitions and rapid switching verified\");\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "ef1c9ca2-d52c-48af-929a-0ccd6076cea4",
+                  "parentUUID": "5a94253f-61c9-4666-86a8-86b85a21f609",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "902c7071-1298-4145-9e99-27e287466333",
+                "ef1c9ca2-d52c-48af-929a-0ccd6076cea4"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 7013,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "58f940ab-0fcb-46e4-ac59-9aca9367ea63",
+              "title": "Training Interactions",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support all training interactions and feedback",
+                  "fullTitle": "Black Trigram - Training Flow Training Interactions should support all training interactions and feedback",
+                  "timedOut": null,
+                  "duration": 3525,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing training interactions\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]', { timeout: 15000 }).should(\"exist\");\n// Check for controls and try interactions\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-controls\"]').length > 0) {\n        cy.get('[data-testid=\"training-controls\"]').should(\"exist\");\n        if ($body.find('[data-testid=\"start-training-button\"]').length > 0) {\n            cy.get('[data-testid=\"start-training-button\"]').click({ force: true });\n            cy.wait(500);\n            if ($body.find('[data-testid=\"execute-technique-button\"]').length > 0) {\n                cy.get('[data-testid=\"execute-technique-button\"]').click({ force: true });\n                cy.log(\"✅ Training interaction successful\");\n            }\n        }\n    }\n    else {\n        // Use keyboard interaction as fallback\n        cy.get(\"body\").type(\" \");\n        cy.wait(300);\n        cy.log(\"✅ Keyboard interaction successful\");\n    }\n});\n// Execute techniques\ncy.practiceStance(1, 3);\ncy.practiceStance(2, 3);\n// Check for feedback\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-feedback\"]').length > 0) {\n        cy.log(\"✅ Training feedback found\");\n    }\n    if ($body.find('[data-testid=\"training-stats\"]').length > 0) {\n        cy.log(\"✅ Training stats panel found\");\n    }\n});\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "31ee0259-65c3-4dcc-997b-668efd23e022",
+                  "parentUUID": "58f940ab-0fcb-46e4-ac59-9aca9367ea63",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "31ee0259-65c3-4dcc-997b-668efd23e022"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3525,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "8113735b-ef43-469e-905f-0894ccfff0f2",
+              "title": "Training Statistics",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should track training statistics",
+                  "fullTitle": "Black Trigram - Training Flow Training Statistics should track training statistics",
+                  "timedOut": null,
+                  "duration": 3514,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing statistics tracking\");\ncy.enterTrainingMode();\n// Check for stats panel\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-stats-panel\"]').length > 0) {\n        cy.get('[data-testid=\"training-stats-panel\"]').should(\"exist\");\n        if ($body.find('[data-testid=\"attempts-count\"]').length > 0) {\n            cy.get('[data-testid=\"attempts-count\"]').should(\"contain\", \"시도\");\n        }\n    }\n    else {\n        cy.log(\"⚠️ Stats panel not found - skipping statistics test\");\n    }\n});\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "e0fe1eb6-3e6b-4395-b84f-5312699b11c0",
+                  "parentUUID": "8113735b-ef43-469e-905f-0894ccfff0f2",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "e0fe1eb6-3e6b-4395-b84f-5312699b11c0"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3514,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "90cbccad-7cb3-47fb-a292-4051536b4bc7",
+              "title": "Korean Martial Arts Training Theming",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should display Korean text and themed visual elements",
+                  "fullTitle": "Black Trigram - Training Flow Korean Martial Arts Training Theming should display Korean text and themed visual elements",
+                  "timedOut": null,
+                  "duration": 3674,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Verifying Korean theming\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Check for Korean training terms\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    const koreanTerms = [\"훈련\", \"연습\", \"기술\", \"자세\"];\n    let foundKorean = false;\n    koreanTerms.forEach((term) => {\n        if (bodyText.includes(term)) {\n            foundKorean = true;\n            cy.log(`✅ Found Korean term: ${term}`);\n        }\n    });\n    if (!foundKorean) {\n        cy.log(\"⚠️ Korean text may be in canvas\");\n    }\n});\n// Verify canvas is present\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Korean themed canvas verified\");\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "45f5701d-0381-49fc-95e3-cc557cb49574",
+                  "parentUUID": "90cbccad-7cb3-47fb-a292-4051536b4bc7",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "45f5701d-0381-49fc-95e3-cc557cb49574"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3674,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "960d4172-bb5a-415d-ab58-f1f5854514e6",
+              "title": "Training Controls and Navigation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support keyboard controls and ESC key",
+                  "fullTitle": "Black Trigram - Training Flow Training Controls and Navigation should support keyboard controls and ESC key",
+                  "timedOut": null,
+                  "duration": 3200,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing training controls\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Test stance selection (1-8)\ncy.gameActions([\"1\", \"2\", \"3\", \"4\"]);\n// Test technique execution (space)\ncy.get(\"body\").type(\" \");\ncy.wait(200);\ncy.log(\"✅ Keyboard controls tested\");\n// Test ESC key to return to menu\ncy.get(\"body\").type(\"{esc}\");\ncy.wait(500);\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"intro-screen\"]').length > 0) {\n        cy.log(\"✅ ESC returned to menu\");\n    }\n    else {\n        cy.log(\"⚠️ ESC may require multiple presses\");\n    }\n});",
+                  "err": {},
+                  "uuid": "b6475a01-218b-4313-ae62-62c40f8c58a4",
+                  "parentUUID": "960d4172-bb5a-415d-ab58-f1f5854514e6",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should return to menu via button or ESC",
+                  "fullTitle": "Black Trigram - Training Flow Training Controls and Navigation should return to menu via button or ESC",
+                  "timedOut": null,
+                  "duration": 3631,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing return to menu\");\ncy.enterTrainingMode();\n// Try return button or ESC key\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"return-to-menu-button\"]').length > 0) {\n        cy.get('[data-testid=\"return-to-menu-button\"]').click({ force: true });\n    }\n    else {\n        cy.get(\"body\").type(\"{esc}\");\n    }\n});\ncy.wait(500);\n// Verify return\ncy.get(\"body\").then(($body) => {\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0;\n    const hasMenu = $body.find('[data-testid=\"main-menu-section\"]').length > 0;\n    if (hasIntro || hasMenu) {\n        cy.log(\"✅ Successfully returned to menu\");\n    }\n});",
+                  "err": {},
+                  "uuid": "e054315f-0739-49bd-9abd-7472b8d6d035",
+                  "parentUUID": "960d4172-bb5a-415d-ab58-f1f5854514e6",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "b6475a01-218b-4313-ae62-62c40f8c58a4",
+                "e054315f-0739-49bd-9abd-7472b8d6d035"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 6831,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "9b848a0b-4428-438c-a022-e85b5e658d7e",
+              "title": "Performance and Stability",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle extended training session",
+                  "fullTitle": "Black Trigram - Training Flow Performance and Stability should handle extended training session",
+                  "timedOut": null,
+                  "duration": 3603,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing extended training session\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Practice extensively (reduced iterations for speed)\nfor (let i = 0; i < 6; i++) {\n    const stance = ((i % 8) + 1).toString();\n    cy.get(\"body\").type(stance);\n    cy.get(\"body\").type(\" \");\n    cy.wait(50); // Minimal wait for stability\n}\ncy.log(\"✅ Extended training session completed\");\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "796099c5-b60d-4e9d-b7e5-1d64ee22c766",
+                  "parentUUID": "9b848a0b-4428-438c-a022-e85b5e658d7e",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should handle rapid mode switching",
+                  "fullTitle": "Black Trigram - Training Flow Performance and Stability should handle rapid mode switching",
+                  "timedOut": null,
+                  "duration": 3555,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing rapid mode switching\");\n// Switch between training and menu rapidly (reduced iterations)\nfor (let i = 0; i < 2; i++) {\n    cy.enterTrainingMode();\n    cy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n    cy.wait(300); // Reduced from 500ms\n    cy.returnToIntro();\n    cy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n    cy.wait(300); // Reduced from 500ms\n}\ncy.log(\"✅ Rapid mode switching completed\");",
+                  "err": {},
+                  "uuid": "20aa6c0c-a9de-402f-80fe-029b62c7955c",
+                  "parentUUID": "9b848a0b-4428-438c-a022-e85b5e658d7e",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "796099c5-b60d-4e9d-b7e5-1d64ee22c766",
+                "20aa6c0c-a9de-402f-80fe-029b62c7955c"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 7158,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "ce8c4a94-cc7d-4d12-8e49-42cb67f23f8f",
+              "title": "Training to Combat Transition",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should transition smoothly from training to combat",
+                  "fullTitle": "Black Trigram - Training Flow Training to Combat Transition should transition smoothly from training to combat",
+                  "timedOut": null,
+                  "duration": 3483,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing training to combat transition\");\n// Enter training\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\ncy.practiceStance(1, 2);\n// Return to menu\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n// Enter combat\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.gameActions([\"1\", \" \"]);\n// Return to menu\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\ncy.log(\"✅ Training to combat transition verified\");",
+                  "err": {},
+                  "uuid": "e4c106ae-afc1-4351-935c-e678c34e84b5",
+                  "parentUUID": "ce8c4a94-cc7d-4d12-8e49-42cb67f23f8f",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "e4c106ae-afc1-4351-935c-e678c34e84b5"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3483,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "9255731b-3937-4878-a9df-241a67650c79",
+              "title": "Error Handling",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle invalid inputs and recover from errors",
+                  "fullTitle": "Black Trigram - Training Flow Error Handling should handle invalid inputs and recover from errors",
+                  "timedOut": null,
+                  "duration": 3516,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing error handling\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Try invalid inputs\ncy.get(\"body\").type(\"9\"); // Invalid stance\ncy.get(\"body\").type(\"0\"); // Invalid stance\n// Should still be in training mode\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Test error recovery\ncy.on(\"uncaught:exception\", (err) => {\n    if (err.message &&\n        (err.message.includes(\"Training\") ||\n            err.message.includes(\"Invalid stance\") ||\n            err.message.includes(\"audio\") ||\n            err.message.includes(\"WebGL\") ||\n            err.message.includes(\"Failed to load\"))) {\n        return false;\n    }\n    return true;\n});\n// Execute various actions\ncy.practiceStance(1, 3);\ncy.practiceStance(5, 2);\n// Should still be functional\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\ncy.returnToIntro();\ncy.log(\"✅ Error handling and recovery verified\");",
+                  "err": {},
+                  "uuid": "3027eaa3-7153-445b-8e43-e2eab0cbf1d8",
+                  "parentUUID": "9255731b-3937-4878-a9df-241a67650c79",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "3027eaa3-7153-445b-8e43-e2eab0cbf1d8"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 3516,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
