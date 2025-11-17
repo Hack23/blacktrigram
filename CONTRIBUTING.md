@@ -74,8 +74,76 @@ npm test           # Unit tests
 - Follow the React + PixiJS integration patterns
 - Maintain 60fps performance targets
 
+## 🔐 Security Contribution Guidelines
+
+Black Trigram follows Hack23 AB's [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md). All contributions must:
+
+### Security Requirements
+
+- **🔍 Security Testing**: Run security checks before submitting PRs
+  ```bash
+  npm run check        # TypeScript validation
+  npm run lint         # ESLint security rules
+  npm test             # Unit tests with security test cases
+  npm run test:e2e     # E2E security tests
+  ```
+
+- **📦 Dependency Security**: All new dependencies must:
+  - Have no known high/critical vulnerabilities
+  - Use exact version pinning (no `^` or `~`)
+  - Include justification in PR description
+  - Pass FOSSA license compliance check
+
+- **🛡️ Secure Coding**: Follow secure coding practices:
+  - No hardcoded secrets or credentials
+  - Input validation for all user inputs
+  - Proper error handling (no sensitive data in errors)
+  - CSP-compliant code (no inline scripts)
+  - Follow [OWASP Top 10](https://owasp.org/www-project-top-ten/) guidelines
+
+- **🎯 Vulnerability Reporting**: Report security issues via:
+  - [GitHub Security Advisories](https://github.com/Hack23/blacktrigram/security/advisories)
+  - Follow [SECURITY.md](./SECURITY.md) disclosure process
+  - Do NOT open public issues for security vulnerabilities
+
+### ISMS Policy References
+
+Contributors should be familiar with:
+
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC standards
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
+- [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) - Risk-controlled changes
+
 ## Resources
 
 - [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
 - [Using Pull Requests](https://help.github.com/articles/about-pull-requests/)
 - [GitHub Help](https://help.github.com)
+
+---
+
+## 📚 Related Documents
+
+### 🔐 Security & Compliance
+- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting process
+- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Security implementation
+- [🎯 Threat Model](./THREAT_MODEL.md) - Security threat analysis
+
+### 🛠️ Development
+- [🔧 Development Guide](./development.md) - Security features and testing
+- [🔄 Workflows](./WORKFLOWS.md) - CI/CD security automation
+- [📐 Architecture](./ARCHITECTURE.md) - System design
+
+### 🧪 Testing
+- [🧪 Unit Test Plan](./UnitTestPlan.md) - Unit testing strategy
+- [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-01-15  
+**⏰ Next Review:** 2025-04-15

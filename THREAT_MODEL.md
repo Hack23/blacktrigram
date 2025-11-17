@@ -838,6 +838,35 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 
 ---
 
+## 📚 Related Documents
+
+### 🔐 ISMS Threat Modeling & Risk Management
+- [🎯 Threat Modeling Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) - STRIDE methodology and standards
+- [📉 Risk Assessment Methodology](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Assessment_Methodology.md) - Risk quantification framework
+- [📊 Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) - Enterprise risk tracking
+- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact analysis
+
+### 🔐 ISMS Security Policies
+- [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+- [🚨 Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) - Security incident handling
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
+
+### 🛡️ Black Trigram Security Documentation
+- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Current security implementation
+- [🔮 Future Security Architecture](./FUTURE_SECURITY_ARCHITECTURE.md) - Planned security enhancements
+- [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
+- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting
+- [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
+
+### 🔄 Development & Operations
+- [🔄 Workflows](./WORKFLOWS.md) - Security-hardened CI/CD pipelines
+- [🔧 Development Guide](./development.md) - Security features and testing
+- [📐 Architecture](./ARCHITECTURE.md) - Overall system design
+
+---
+
 **📋 Document Control:**  
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  

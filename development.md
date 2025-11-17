@@ -1,6 +1,22 @@
 # 🔒 Security Features
 
-This template implements comprehensive security measures:
+This development guide describes comprehensive security measures implemented per Hack23 AB's [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) and [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) procedures.
+
+## 🔐 ISMS-Aligned Security Controls
+
+Black Trigram implements security controls mandated by Hack23 AB's Information Security Management System (ISMS):
+
+| **Security Domain** | **Controls Implemented** | **ISMS Policy Reference** |
+|---------------------|-------------------------|---------------------------|
+| **🛡️ Supply Chain Security** | OSSF Scorecard, Dependency Review, SLSA attestations | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
+| **🔍 Static Security Testing** | CodeQL SAST, SonarCloud quality gates | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) |
+| **🕷️ Dynamic Security Testing** | OWASP ZAP DAST scanning | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) |
+| **📦 Dependency Management** | Dependabot, SBOM generation, license compliance | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) |
+| **🔐 CI/CD Hardening** | SHA-pinned actions, runner hardening, audit logging | [Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) |
+| **⚡ Performance Security** | Lighthouse audits, performance budgets | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
+| **🏆 Artifact Integrity** | Cryptographic signatures, build provenance | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) |
+
+## Security Implementation Details
 
 - **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
@@ -528,5 +544,41 @@ Track release quality and security with built-in metrics:
 
 
 All security workflows will automatically protect your game from common vulnerabilities and supply chain attacks, while providing full transparency through SBOM and attestations.
+
+---
+
+## 📚 Related Documents
+
+### 🔐 ISMS Policies
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC standards
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance and licensing
+- [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) - Risk-controlled change processes
+- [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+
+### 🛡️ Black Trigram Security Documentation
+- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Current security implementation
+- [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
+- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting
+- [🔄 Workflows](./WORKFLOWS.md) - Security-hardened CI/CD pipelines
+
+### 🧪 Testing Documentation
+- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy
+- [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
+- [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
+
+### 🏗️ Architecture Documentation
+- [📐 Architecture](./ARCHITECTURE.md) - Overall system design
+- [⚔️ Combat Architecture](./COMBAT_ARCHITECTURE.md) - Combat system implementation
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
+**📅 Effective Date:** 2025-01-15  
+**⏰ Next Review:** 2025-04-15  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
 
 Happy gaming! 🎮🔒
