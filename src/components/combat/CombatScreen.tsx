@@ -469,6 +469,69 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     []
   );
 
+  // Keyboard input handling for combat
+  useEffect(() => {
+    const handleCombatInput = (event: KeyboardEvent) => {
+      // Prevent handling if round hasn't started or already ended
+      if (!combatState.roundStarted || combatState.roundEnded || combatState.isExecutingTechnique) {
+        // Allow ESC even when round hasn't started
+        if (event.key === "Escape") {
+          onReturnToMenu();
+          event.preventDefault();
+        }
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+
+      // Stance changes (1-8)
+      if (key >= "1" && key <= "8") {
+        const stanceIndex = parseInt(key) - 1;
+        const stances: TrigramStance[] = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
+        ];
+        handleStanceSwitch(stances[stanceIndex]);
+        event.preventDefault();
+      }
+
+      // Attack with Space
+      if (key === " ") {
+        handleAttack();
+        event.preventDefault();
+      }
+
+      // Defend with Shift
+      if (event.key === "Shift") {
+        handleDefend();
+        event.preventDefault();
+      }
+
+      // ESC to return to menu
+      if (event.key === "Escape") {
+        onReturnToMenu();
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleCombatInput);
+    return () => window.removeEventListener("keydown", handleCombatInput);
+  }, [
+    combatState.roundStarted,
+    combatState.roundEnded,
+    combatState.isExecutingTechnique,
+    handleStanceSwitch,
+    handleAttack,
+    handleDefend,
+    onReturnToMenu,
+  ]);
+
   // Performance: Mark render end (development only)
   if (import.meta.env.DEV) {
     performance.mark('combat-render-end');
