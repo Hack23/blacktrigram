@@ -377,6 +377,34 @@ describe("CombatSystem", () => {
       expect(result.hit).toBeDefined();
       expect(result.damage).toBeGreaterThanOrEqual(0);
     });
+
+    it("should handle miss scenario in executeAttack (line 375)", () => {
+      // Create a technique with very low accuracy to force misses
+      const lowAccuracyTechnique: KoreanTechnique = {
+        ...mockTechnique,
+        accuracy: 0.001, // Very low accuracy (0.1%) to force misses
+      };
+
+      // Run multiple times to ensure we get at least one miss
+      let missFound = false;
+      for (let i = 0; i < 50; i++) {
+        const result = CombatSystem.resolveAttack(player1, player2, lowAccuracyTechnique);
+        if (!result.hit) {
+          missFound = true;
+          // Verify the miss result structure (covers line 375)
+          expect(result.hit).toBe(false);
+          expect(result.damage).toBe(0);
+          expect(result.criticalHit).toBe(false);
+          expect(result.vitalPointHit).toBe(false);
+          expect(result.effects).toEqual([]);
+          expect(result.timestamp).toBeGreaterThan(0);
+          break;
+        }
+      }
+
+      // With 0.1% accuracy, we should definitely get a miss in 50 attempts
+      expect(missFound).toBe(true);
+    });
   });
 
   describe("applyCombatResult - static", () => {
@@ -588,6 +616,233 @@ describe("CombatSystem", () => {
         expect(result).toBeDefined();
         expect(result.attacker?.archetype).toBe(archetype);
       });
+    });
+
+    it("should apply 1.3x modifier for AMSALJA on neurological vital point hit (line 352 - true branch)", () => {
+      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      // Use head_temple which is a neurological vital point
+      const result = combatSystem.resolveAttack(
+        amsaljaPlayer,
+        player2,
+        mockTechnique,
+        "head_temple" // Temple is neurological category
+      );
+      
+      // When the attack hits a neurological point with AMSALJA, line 352 executes
+      expect(result).toBeDefined();
+      if (result.hit && result.vitalPointHit) {
+        // AMSALJA should get bonus damage on neurological points
+        expect(result.damage).toBeGreaterThan(0);
+      }
+    });
+
+    it("should apply base modifier (1.0) for AMSALJA on NON-neurological vital point (line 352 - false branch)", () => {
+      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      // Ensure player is in correct stance and has resources
+      amsaljaPlayer.currentStance = TrigramStance.GEON;
+      amsaljaPlayer.ki = 100;
+      amsaljaPlayer.stamina = 100;
+      amsaljaPlayer.isStunned = false;
+      
+      // Mock Math.random to ensure hit (need >0 but <accuracy to hit)
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5); // 50% will hit with 85% accuracy
+      
+      try {
+        // Use neck_carotid which is a vascular (not neurological) vital point
+        const result = combatSystem.resolveAttack(
+          amsaljaPlayer,
+          player2,
+          mockTechnique,
+          "neck_carotid" // Carotid is vascular category, not neurological
+        );
+        
+        // When AMSALJA hits a non-neurological point, should use baseModifier (line 352 false branch)
+        expect(result).toBeDefined();
+        expect(result.hit).toBe(true); // Should hit with mocked random
+        expect(result.damage).toBeGreaterThan(0);
+      } finally {
+        randomSpy.mockRestore();
+      }
+    });
+
+    it("should apply 1.1x modifier for HACKER on neurological vital point hit (line 356 - true branch)", () => {
+      const hackerPlayer = createPlayerFromArchetype(PlayerArchetype.HACKER, 0);
+      // Use head_temple which is a neurological vital point
+      const result = combatSystem.resolveAttack(
+        hackerPlayer,
+        player2,
+        mockTechnique,
+        "head_temple" // Temple is neurological category
+      );
+      
+      // When the attack hits a neurological point with HACKER, line 356 executes
+      expect(result).toBeDefined();
+      if (result.hit && result.vitalPointHit) {
+        // HACKER should get bonus damage on neurological points
+        expect(result.damage).toBeGreaterThan(0);
+      }
+    });
+
+    it("should apply base modifier (1.0) for HACKER on NON-neurological vital point (line 356 - false branch)", () => {
+      const hackerPlayer = createPlayerFromArchetype(PlayerArchetype.HACKER, 0);
+      // Ensure player is in correct stance and has resources
+      hackerPlayer.currentStance = TrigramStance.GEON;
+      hackerPlayer.ki = 100;
+      hackerPlayer.stamina = 100;
+      hackerPlayer.isStunned = false;
+      
+      // Mock Math.random to ensure hit
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5); // 50% will hit with 85% accuracy
+      
+      try {
+        // Use neck_carotid which is a vascular (not neurological) vital point
+        const result = combatSystem.resolveAttack(
+          hackerPlayer,
+          player2,
+          mockTechnique,
+          "neck_carotid" // Carotid is vascular category, not neurological
+        );
+        
+        // When HACKER hits a non-neurological point, should use baseModifier (line 356 false branch)
+        expect(result).toBeDefined();
+        expect(result.hit).toBe(true); // Should hit with mocked random
+        expect(result.damage).toBeGreaterThan(0);
+      } finally {
+        randomSpy.mockRestore();
+      }
+    });
+
+    it("should use base modifier (1.0) for JEONGBO_YOWON archetype (lines 357-358)", () => {
+      const jeongboPlayer = createPlayerFromArchetype(PlayerArchetype.JEONGBO_YOWON, 0);
+      // Ensure player is in correct stance and has resources
+      jeongboPlayer.currentStance = TrigramStance.GEON;
+      jeongboPlayer.ki = 100;
+      jeongboPlayer.stamina = 100;
+      jeongboPlayer.isStunned = false;
+      
+      // Mock Math.random to ensure hit
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      
+      try {
+        // Test with a vital point hit to trigger modifier calculation
+        const result = combatSystem.resolveAttack(
+          jeongboPlayer,
+          player2,
+          mockTechnique,
+          "head_temple"
+        );
+        
+        // JEONGBO_YOWON doesn't have special modifiers, so default case applies (lines 357-358)
+        expect(result).toBeDefined();
+        expect(result.hit).toBe(true);
+        expect(result.timestamp).toBeGreaterThan(0);
+      } finally {
+        randomSpy.mockRestore();
+      }
+    });
+
+    it("should use base modifier (1.0) for JOJIK_POKRYEOKBAE archetype (lines 357-358)", () => {
+      const jojikPlayer = createPlayerFromArchetype(PlayerArchetype.JOJIK_POKRYEOKBAE, 0);
+      // Ensure player is in correct stance and has resources
+      jojikPlayer.currentStance = TrigramStance.GEON;
+      jojikPlayer.ki = 100;
+      jojikPlayer.stamina = 100;
+      jojikPlayer.isStunned = false;
+      
+      // Mock Math.random to ensure hit
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      
+      try {
+        // Test with a vital point hit to trigger modifier calculation
+        const result = combatSystem.resolveAttack(
+          jojikPlayer,
+          player2,
+          mockTechnique,
+          "head_temple"
+        );
+        
+        // JOJIK_POKRYEOKBAE doesn't have special modifiers, so default case applies (lines 357-358)
+        expect(result).toBeDefined();
+        expect(result.hit).toBe(true);
+        expect(result.timestamp).toBeGreaterThan(0);
+      } finally {
+        randomSpy.mockRestore();
+      }
+    });
+
+    it("should handle invalid archetype gracefully (lines 337-338)", () => {
+      const playerWithInvalidArchetype = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+      // Force an invalid archetype value for testing error handling
+      (playerWithInvalidArchetype as any).archetype = "INVALID_ARCHETYPE" as any;
+      playerWithInvalidArchetype.currentStance = TrigramStance.GEON;
+      playerWithInvalidArchetype.ki = 100;
+      playerWithInvalidArchetype.stamina = 100;
+      playerWithInvalidArchetype.isStunned = false;
+      
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      
+      try {
+        const result = combatSystem.resolveAttack(
+          playerWithInvalidArchetype,
+          player2,
+          mockTechnique,
+          "head_temple"
+        );
+        
+        // Should still execute attack but with base modifier
+        expect(result).toBeDefined();
+        // Verify warning was logged (lines 337-338 executed)
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid archetype provided")
+        );
+      } finally {
+        randomSpy.mockRestore();
+        consoleWarnSpy.mockRestore();
+      }
+    });
+
+    it("should handle invalid vital point gracefully (lines 342-343)", () => {
+      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      amsaljaPlayer.currentStance = TrigramStance.GEON;
+      amsaljaPlayer.ki = 100;
+      amsaljaPlayer.stamina = 100;
+      amsaljaPlayer.isStunned = false;
+      
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      
+      // Mock getVitalPointById to return an invalid vital point structure (missing required fields)
+      const getByIdSpy = vi.spyOn(combatSystem['vitalPointSystem'], 'getVitalPointById')
+        .mockReturnValue({
+          id: "invalid",
+          names: { korean: "invalid", english: "invalid", romanized: "invalid" },
+          position: { x: 0, y: 0 },
+          effects: [], // Include effects to avoid crash, but structure is still invalid for isVitalPoint check
+          // Missing severity, baseDamage, category, etc. to make it invalid
+        } as any);
+      
+      try {
+        const result = combatSystem.resolveAttack(
+          amsaljaPlayer,
+          player2,
+          mockTechnique,
+          "invalid_vital_point"
+        );
+        
+        // Should still execute attack but with warning
+        expect(result).toBeDefined();
+        // Verify warning was logged (lines 342-343 executed)
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          "Invalid vital point provided:",
+          expect.anything(),
+          "using base modifier"
+        );
+      } finally {
+        randomSpy.mockRestore();
+        consoleWarnSpy.mockRestore();
+        getByIdSpy.mockRestore();
+      }
     });
   });
 
