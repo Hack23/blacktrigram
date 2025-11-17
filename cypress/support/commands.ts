@@ -190,8 +190,8 @@ Cypress.Commands.add("enterCombatMode", () => {
     }
   });
 
-  // Wait for combat screen to appear - reduced from 1500ms
-  cy.wait(800);
+  // Wait for combat screen using assertion-based wait
+  cy.get('[data-testid="combat-screen"]', { timeout: 2000 }).should("exist");
 
   // Verify we're in combat mode
   cy.get("body").then(($body) => {
@@ -218,8 +218,8 @@ Cypress.Commands.add("returnToIntro", () => {
     }
   });
 
-  // Reduced wait from 1500ms
-  cy.wait(800);
+  // Wait for intro screen using assertion-based wait
+  cy.get('[data-testid="intro-screen"]', { timeout: 2000 }).should("exist");
 
   // Verify we're back on intro screen
   cy.get("body").then(($body) => {

@@ -7,15 +7,15 @@
  */
 
 describe("Black Trigram - Training (Consolidated)", () => {
-  // Shared setup - enter training once for most tests
-  before(() => {
+  // Per-test setup - enter training before each test for isolation
+  beforeEach(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });
     cy.waitForCanvasReady();
     cy.enterTrainingMode();
   });
 
-  // Clean up after all tests
-  after(() => {
+  // Clean up after each test
+  afterEach(() => {
     cy.returnToIntro();
   });
 

@@ -152,12 +152,16 @@ jobs:
       - name: Start app and run Cypress tests
         run: |
           echo "🚀 Starting E2E test execution at $(date +%T)"
-          START_TIME=$(date +%s)
+          START_TIME=$(date +%s) || START_TIME=0
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - START_TIME))
-          echo "✅ E2E tests completed in ${DURATION} seconds ($(date -u -d @${DURATION} +%T))"
-          echo "e2e_duration=${DURATION}" >> $GITHUB_OUTPUT
+          END_TIME=$(date +%s) || END_TIME=$START_TIME
+          if [ "$START_TIME" -ne 0 ]; then
+            DURATION=$((END_TIME - START_TIME))
+            echo "✅ E2E tests completed in ${DURATION} seconds ($(date -u -d @${DURATION} +%T))"
+            echo "e2e_duration=${DURATION}" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Could not measure test duration"
+          fi
         env:
           CYPRESS_VIDEO: true
         id: e2e_tests

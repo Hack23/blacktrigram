@@ -5,7 +5,7 @@
  * Tracks test execution times and logs metrics for optimization
  */
 
-let testStartTime: number;
+let testStartTime: number = Date.now();
 let suiteStartTime: number;
 const testTimings: Record<string, number> = {};
 
@@ -37,12 +37,12 @@ afterEach(function () {
     test: testTitle,
     status,
     duration,
-  }).then(() => {
-    // Warn on slow tests
-    if (duration > 15000) {
-      console.warn(`⚠️  SLOW TEST DETECTED: ${testTitle} took ${duration}ms`);
-    }
-  });
+  }, { log: false });
+
+  // Warn on slow tests (always executes, regardless of task success)
+  if (duration > 15000) {
+    console.warn(`⚠️  SLOW TEST DETECTED: ${testTitle} took ${duration}ms`);
+  }
 });
 
 // Log suite summary

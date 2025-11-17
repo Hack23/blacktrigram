@@ -7,15 +7,15 @@
  */
 
 describe("Black Trigram - Combat (Consolidated)", () => {
-  // Shared setup - enter combat once for most tests
-  before(() => {
+  // Per-test setup - enter combat before each test for isolation
+  beforeEach(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });
     cy.waitForCanvasReady();
     cy.enterCombatMode();
   });
 
-  // Clean up after all tests
-  after(() => {
+  // Clean up after each test
+  afterEach(() => {
     cy.returnToIntro();
   });
 

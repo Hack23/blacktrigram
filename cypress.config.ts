@@ -254,6 +254,4 @@ export default defineConfig({
   },
   waitForAnimations: false, // Disable animation waits for faster tests
   animationDistanceThreshold: 5, // Minimal animation threshold
-  pageLoadTimeout: 20000, // Increased for PixiJS asset loading
-  requestTimeout: 10000, // Increased for better reliability
 });
