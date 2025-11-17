@@ -16,9 +16,6 @@
   <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** James Pether Sörling, CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-01-15 (UTC)  
-**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2025-04-15
-
 ---
 
 # Security Policy

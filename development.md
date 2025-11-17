@@ -558,8 +558,11 @@ All security workflows will automatically protect your game from common vulnerab
 
 ### 🛡️ Black Trigram Security Documentation
 - [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Current security implementation
+- [🔮 Future Security Architecture](./FUTURE_SECURITY_ARCHITECTURE.md) - Planned security enhancements
 - [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
+- [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
 - [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting
+- [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
 - [🔄 Workflows](./WORKFLOWS.md) - Security-hardened CI/CD pipelines
 
 ### 🧪 Testing Documentation

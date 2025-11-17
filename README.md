@@ -42,12 +42,12 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
 
 **🔐 ISMS Framework Compliance:**
-[![Information Security Policy](https://img.shields.io/badge/ISMS-Information_Security_Policy-0066CC?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
-[![Secure Development](https://img.shields.io/badge/ISMS-Secure_Development_Policy-00AA00?style=flat-square&logo=code&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-[![Threat Modeling](https://img.shields.io/badge/ISMS-Threat_Modeling-FF6B6B?style=flat-square&logo=target&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
-[![Vulnerability Management](https://img.shields.io/badge/ISMS-Vulnerability_Management-FFA500?style=flat-square&logo=bug&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)
-[![Open Source Policy](https://img.shields.io/badge/ISMS-Open_Source_Policy-FFD700?style=flat-square&logo=open-source-initiative&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
-[![ISMS Transparency](https://img.shields.io/badge/ISMS-Transparency_Plan-9370DB?style=flat-square&logo=eye&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)
+[![Information Security Policy](https://img.shields.io/badge/ISMS-Information%20Security%20Policy-0066CC?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
+[![Secure Development Policy](https://img.shields.io/badge/ISMS-Secure%20Development%20Policy-00AA00?style=flat-square&logo=code&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+[![Threat Modeling](https://img.shields.io/badge/ISMS-Threat%20Modeling-FF6B6B?style=flat-square&logo=target&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
+[![Vulnerability Management](https://img.shields.io/badge/ISMS-Vulnerability%20Management-FFA500?style=flat-square&logo=bug&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)
+[![Open Source Policy](https://img.shields.io/badge/ISMS-Open%20Source%20Policy-FFD700?style=flat-square&logo=open-source-initiative&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+[![Transparency Plan](https://img.shields.io/badge/ISMS-Transparency%20Plan-9370DB?style=flat-square&logo=eye&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)
 
 _A realistic 2D precision combat game inspired by Korean martial arts philosophy and the I Ching_
 
