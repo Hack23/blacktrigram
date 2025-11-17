@@ -57,30 +57,25 @@ export class TestIsolation {
     }
 
     cy.window().then((win) => {
+      const state = TestIsolation.originalState;
+      if (!state) return;
+
       // Restore localStorage
       localStorage.clear();
-      Object.keys(TestIsolation.originalState!.localStorage).forEach((key) => {
-        localStorage.setItem(
-          key,
-          TestIsolation.originalState!.localStorage[key]
-        );
+      Object.keys(state.localStorage).forEach((key) => {
+        localStorage.setItem(key, state.localStorage[key]);
       });
 
       // Restore sessionStorage
       sessionStorage.clear();
-      Object.keys(TestIsolation.originalState!.sessionStorage).forEach(
-        (key) => {
-          sessionStorage.setItem(
-            key,
-            TestIsolation.originalState!.sessionStorage[key]
-          );
-        }
-      );
+      Object.keys(state.sessionStorage).forEach((key) => {
+        sessionStorage.setItem(key, state.sessionStorage[key]);
+      });
 
       // Restore game state
-      if (TestIsolation.originalState!.gameState) {
+      if (state.gameState) {
         (win as unknown as { __gameState: unknown }).__gameState = {
-          ...TestIsolation.originalState!.gameState,
+          ...state.gameState,
         };
       }
     });

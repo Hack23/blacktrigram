@@ -113,7 +113,7 @@ afterEach(function () {
       try {
         pixiWin.__pixiApp.destroy(true, { children: true, texture: true });
         delete pixiWin.__pixiApp;
-      } catch (error) {
+      } catch {
         // Ignore cleanup errors
       }
     }
