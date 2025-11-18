@@ -104,8 +104,17 @@ export class AudioManager implements IAudioManager {
     const startTime = performance.now();
 
     try {
+      // Use faster timeouts for testing environment
+      const isTest = typeof process !== "undefined" && process.env.NODE_ENV === "test";
+      const loadOptions: LoadOptions = {
+        timeout: isTest ? 100 : 10000,
+        maxRetries: isTest ? 1 : 3,
+        retryDelay: isTest ? 10 : 1000,
+        ...options,
+      };
+
       // Use AudioAssetLoader with retry and fallback
-      const result = await this.assetLoader.loadAsset(asset, options);
+      const result = await this.assetLoader.loadAsset(asset, loadOptions);
 
       if (result.success && result.audio) {
         result.audio.volume = asset.volume ?? 1.0;
