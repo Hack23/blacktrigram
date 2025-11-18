@@ -17,6 +17,9 @@ import {
 
 export type LoadPriority = "critical" | "high" | "normal" | "low";
 
+// Estimated average size per audio asset in MB (based on typical compressed audio file sizes)
+const ESTIMATED_ASSET_SIZE_MB = 0.5;
+
 export interface IAudioAssetRegistry {
   readonly music: Record<string, MusicTrack>;
   readonly sfx: Record<string, SoundEffect>;
@@ -512,7 +515,7 @@ export class AudioAssetRegistry {
     });
 
     const totalAssets = Object.keys(allAssets).length;
-    const estimatedSizeMB = totalAssets * 0.5; // Rough estimate
+    const estimatedSizeMB = totalAssets * ESTIMATED_ASSET_SIZE_MB;
 
     return {
       version: "1.0.0",

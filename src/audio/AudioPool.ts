@@ -226,6 +226,8 @@ export class AudioElementPool {
 
   /**
    * Remove a pool and dispose its resources
+   * @param assetId - The ID of the asset whose pool should be removed
+   * @returns true if the pool existed and was removed, false if no pool was found for the asset
    */
   removePool(assetId: string): boolean {
     const pool = this.pools.get(assetId);

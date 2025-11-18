@@ -9,6 +9,9 @@ import { AudioAssetLoader, LoadOptions } from "./AudioAssetLoader";
 import { AudioElementPool } from "./AudioPool";
 import { AudioMonitor } from "./AudioMonitor";
 
+// Estimated average size per audio asset in MB (based on typical compressed audio file sizes)
+const ESTIMATED_ASSET_SIZE_MB = 0.5;
+
 export class AudioManager implements IAudioManager {
   private _masterVolume: number = 1.0;
   private _musicVolume: number = 0.7;
@@ -41,6 +44,27 @@ export class AudioManager implements IAudioManager {
     this.assetLoader = new AudioAssetLoader();
     this.audioPool = new AudioElementPool();
     this.monitor = new AudioMonitor();
+  }
+
+  /**
+   * Helper method to release pooled audio back to the pool after playback
+   * @param id - Asset ID
+   * @param audio - Audio element to release
+   */
+  private releasePooledAudio(id: string, audio: HTMLAudioElement): void {
+    setTimeout(() => {
+      if (!audio.paused) {
+        audio.addEventListener(
+          "ended",
+          () => {
+            this.audioPool.release(id, audio);
+          },
+          { once: true }
+        );
+      } else {
+        this.audioPool.release(id, audio);
+      }
+    }, 0);
   }
 
   // Interface getters
@@ -105,7 +129,10 @@ export class AudioManager implements IAudioManager {
 
     try {
       // Use faster timeouts for testing environment
-      const isTest = typeof process !== "undefined" && process.env.NODE_ENV === "test";
+      // Safely check for Node.js environment to avoid runtime errors in browsers
+      const isTest =
+        typeof process !== "undefined" &&
+        process?.env?.NODE_ENV === "test";
       const loadOptions: LoadOptions = {
         timeout: isTest ? 100 : 10000,
         maxRetries: isTest ? 1 : 3,
@@ -122,8 +149,7 @@ export class AudioManager implements IAudioManager {
 
         // Track performance and memory
         const loadTime = performance.now() - startTime;
-        const estimatedSizeMB = 0.5; // Rough estimate per asset
-        this.monitor.recordLoad(asset.id, loadTime, estimatedSizeMB);
+        this.monitor.recordLoad(asset.id, loadTime, ESTIMATED_ASSET_SIZE_MB);
 
         // Create pool for frequently used sounds
         if (this.frequentSounds.has(asset.id)) {
@@ -164,19 +190,7 @@ export class AudioManager implements IAudioManager {
           await audio.play();
 
           // Release back to pool after playback (non-blocking)
-          setTimeout(() => {
-            if (!audio.paused) {
-              audio.addEventListener(
-                "ended",
-                () => {
-                  this.audioPool.release(id, audio);
-                },
-                { once: true }
-              );
-            } else {
-              this.audioPool.release(id, audio);
-            }
-          }, 0);
+          this.releasePooledAudio(id, audio);
 
           const latency = performance.now() - playbackStart;
           this.monitor.recordPlaybackLatency(latency);
@@ -214,19 +228,7 @@ export class AudioManager implements IAudioManager {
           await audio.play();
 
           // Release back to pool after playback (non-blocking)
-          setTimeout(() => {
-            if (!audio.paused) {
-              audio.addEventListener(
-                "ended",
-                () => {
-                  this.audioPool.release(id, audio);
-                },
-                { once: true }
-              );
-            } else {
-              this.audioPool.release(id, audio);
-            }
-          }, 0);
+          this.releasePooledAudio(id, audio);
 
           const latency = performance.now() - playbackStart;
           this.monitor.recordPlaybackLatency(latency);

@@ -233,15 +233,13 @@ export class AudioAssetLoader {
     let failed = 0;
 
     for (const asset of assets) {
-      onProgress?.(
-        {
-          total: assets.length,
-          loaded,
-          failed,
-          currentAsset: asset.id,
-          progress: loaded / assets.length,
-        }
-      );
+      onProgress?.({
+        total: assets.length,
+        loaded,
+        failed,
+        currentAsset: asset.id,
+        progress: (loaded + 1) / assets.length, // +1 to reflect current asset being loaded
+      });
 
       const result = await this.loadAsset(asset, options);
       results.push(result);
@@ -339,7 +337,8 @@ export class AudioAssetLoader {
    */
   private createSilentPlaceholder(): HTMLAudioElement {
     const audio = new Audio();
-    // Create a tiny silent audio data URL
+    // 8-bit 8kHz silent WAV file (0.01s duration), used as a silent placeholder for failed audio loads
+    // Base64-encoded minimal silent audio data URI to ensure audio element is valid
     audio.src =
       "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
     return audio;
