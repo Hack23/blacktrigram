@@ -132,10 +132,15 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     [adaptiveDifficulty, personality]
   );
 
-  // Update AI difficulty level based on adaptive difficulty (issue requirement)
+  // Update AI difficulty level based on adaptive difficulty (only when skill level meaningfully changes)
+  const lastSkillLevelRef = useRef(0.5);
   useEffect(() => {
-    const skillLevel = adaptiveDifficulty.calculatePlayerSkill();
-    decisionTree.setDifficultyLevel(skillLevel);
+    const newSkillLevel = adaptiveDifficulty.calculatePlayerSkill();
+    // Only update if skill level changed by more than 1%
+    if (Math.abs(newSkillLevel - lastSkillLevelRef.current) > 0.01) {
+      lastSkillLevelRef.current = newSkillLevel;
+      decisionTree.setDifficultyLevel(newSkillLevel);
+    }
   }, [adaptiveDifficulty, decisionTree]);
 
   // AI state

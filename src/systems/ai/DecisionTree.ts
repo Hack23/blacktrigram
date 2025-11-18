@@ -12,7 +12,8 @@ import { Position, TrigramStance } from "@/types";
 import { AIPersonality } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 import { TrigramSystem } from "@/systems/TrigramSystem";
-import { KOREAN_VITAL_POINTS } from "@/systems/vitalpoint/KoreanVitalPoints";
+import { KOREAN_VITAL_POINTS, getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
+import { PlayerState } from "@/systems/player";
 
 /**
  * AI action types
@@ -304,12 +305,13 @@ export class AIDecisionTree {
     }
 
     // Use TrigramSystem to recommend optimal stance
+    // Create a minimal PlayerState object with only the properties actually used by recommendStance
     const playerState = {
       currentStance: context.playerStance,
       ki: context.playerKi,
       stamina: context.playerStamina,
       archetype: personality.archetype,
-    } as any;
+    } as unknown as PlayerState;
 
     const recommendedStance = this.trigramSystem.recommendStance(playerState);
     
@@ -389,6 +391,11 @@ export class AIDecisionTree {
 
     // Select vital point target based on difficulty
     const targetVitalPoint = this.selectVitalPointTarget(context, personality);
+    
+    // Get Korean name for logging if vital point is selected
+    const vitalPointName = targetVitalPoint 
+      ? (getVitalPointById(targetVitalPoint)?.names.korean ?? targetVitalPoint)
+      : undefined;
 
     if (Math.random() < aggression * 0.8) {
       return {
@@ -396,7 +403,7 @@ export class AIDecisionTree {
         targetVitalPoint,
         priority: targetVitalPoint ? 7 : 6,
         reason: targetVitalPoint 
-          ? `Close range - vital point attack (급소 타격: ${targetVitalPoint})`
+          ? `Close range - vital point attack (급소 타격: ${vitalPointName})`
           : "Close range - aggressive strike",
       };
     } else if (Math.random() < aggression * 0.9 && hasResources) {
@@ -405,7 +412,7 @@ export class AIDecisionTree {
         targetVitalPoint,
         priority: targetVitalPoint ? 6 : 5,
         reason: targetVitalPoint
-          ? `Close range - technique on vital point (급소 기술: ${targetVitalPoint})`
+          ? `Close range - technique on vital point (급소 기술: ${vitalPointName})`
           : "Close range - technique execution",
       };
     } else {
@@ -430,6 +437,11 @@ export class AIDecisionTree {
     context: CombatContext,
     personality: AIPersonality
   ): string | undefined {
+    // Guard: Ensure vital points are available
+    if (KOREAN_VITAL_POINTS.length === 0) {
+      return undefined;
+    }
+
     // Check if AI attempts vital point targeting based on difficulty
     const targetChance = this.difficultyLevel * personality.aggressionLevel;
     if (Math.random() > targetChance) {
@@ -449,32 +461,37 @@ export class AIDecisionTree {
 
     // Select based on difficulty level
     if (this.difficultyLevel < 0.3) {
-      // Beginner: Random selection from effective points
+      // Beginner: Random selection from effective points.
+      // NOTE: This uses Math.random(), which is not seeded and thus not deterministic.
+      // For reproducible AI behavior (e.g., in testing or balancing), consider using a seeded RNG.
+      // Also, this "beginner" AI still filters by effective points (stance-appropriate), which may be more sophisticated than a true novice.
+      // If true beginner behavior is desired, select from all KOREAN_VITAL_POINTS instead.
       const randomIndex = Math.floor(Math.random() * effectivePoints.length);
       return effectivePoints[randomIndex].id;
     } else if (this.difficultyLevel < 0.6) {
       // Intermediate: Prefer easier targets (lower difficulty)
-      const easierPoints = effectivePoints
-        .filter(p => p.targetingDifficulty < 0.7)
-        .sort((a, b) => a.targetingDifficulty - b.targetingDifficulty);
+      const easierPoints = effectivePoints.filter(p => p.targetingDifficulty < 0.7);
       
       if (easierPoints.length > 0) {
-        return easierPoints[0].id;
+        // Sort without mutating original array
+        const sortedEasierPoints = [...easierPoints].sort((a, b) => a.targetingDifficulty - b.targetingDifficulty);
+        return sortedEasierPoints[0].id;
       }
       return effectivePoints[0].id;
     } else {
       // Advanced/Master: Target high-value critical points
       const criticalPoints = effectivePoints
-        .filter(p => p.severity === "critical" || p.severity === "major")
-        .sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+        .filter(p => p.severity === "critical" || p.severity === "major");
 
       if (criticalPoints.length > 0) {
-        return criticalPoints[0].id;
+        // Sort without mutating original array
+        const sortedCritical = [...criticalPoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+        return sortedCritical[0].id;
       }
       
-      // Fallback to highest damage point
-      const sortedByDamage = effectivePoints.sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
-      return sortedByDamage[0].id;
+      // Fallback to highest damage point (guaranteed to exist due to earlier check at line 444)
+      const sortedByDamage = [...effectivePoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+      return sortedByDamage[0]?.id ?? effectivePoints[0].id;
     }
   }
 

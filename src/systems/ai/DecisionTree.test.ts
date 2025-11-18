@@ -136,12 +136,13 @@ describe("AIDecisionTree", () => {
 
       // At master level with aggressive personality at close range, should sometimes target vital points
       // This is probabilistic based on aggression (0.85) * difficulty (0.9) = 0.765 chance per attack decision
-      // Note: Not all decisions will be attacks, so we just check that it happened at least once
+      // With 100 decisions and ~76.5% chance per attack, expect at least 30 vital point targets
       console.log(`Vital point targeting: ${vitalPointCount}/${totalDecisions} decisions`);
       
-      // With 100 decisions and probabilistic targeting, should see at least some vital point targets
-      // If this still fails, the targeting logic may need adjustment
-      expect(hasVitalPointTargets || totalDecisions > 0).toBe(true);
+      // Should have at least one vital point target
+      expect(hasVitalPointTargets).toBe(true);
+      // With high difficulty and aggression, expect reasonable vital point targeting frequency
+      expect(vitalPointCount).toBeGreaterThan(10);
     });
 
     it("should make valid decisions at beginner difficulty", () => {
