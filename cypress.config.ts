@@ -29,8 +29,8 @@ export default defineConfig({
   viewportWidth: 1280,
   viewportHeight: 800,
   retries: {
-    runMode: 2,
-    openMode: 1,
+    runMode: 1, // Reduced from 2 for better flaky test detection
+    openMode: 0, // Reduced from 1 to encourage fixing tests immediately
   },
   reporter: "cypress-multi-reporters",
   reporterOptions: {
@@ -230,8 +230,8 @@ export default defineConfig({
       return config;
     },
     retries: {
-      runMode: 2, // Keep your current retry settings
-      openMode: 1,
+      runMode: 1, // Reduced from 2 for better flaky test detection
+      openMode: 0, // Reduced from 1 to encourage fixing tests immediately
     },
   },
   component: {

@@ -35,6 +35,7 @@
     "validate:mcp": "bash scripts/validate-mcp-config.sh",
     "docs": "typedoc --options typedoc.json",
     "build:test-reports": "node scripts/copy-test-reports.js",
+    "test:reliability": "node scripts/generate-reliability-report.cjs",
     "test:e2ereportmerge": "npx mochawesome-merge build/cypress/mochawesome/*.json > build/cypress/mochawesome-all.json",
     "test:e2ereporthtmlall": "npx marge -f index.html -o build/cypress/mochawesome build/cypress/mochawesome-all.json",
     "merge-test-reports": "node --experimental-json-modules ./cypress/support/plugins/merge-reports.js",

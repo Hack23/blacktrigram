@@ -210,10 +210,31 @@ jobs:
         with:
           egress-policy: audit
 
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Download all artifacts
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           path: artifacts
+
+      - name: Generate test reliability report
+        continue-on-error: true
+        run: |
+          # Copy Cypress results for analysis
+          if [ -d "artifacts/cypress-results" ]; then
+            mkdir -p build/cypress/mochawesome
+            find artifacts/cypress-results -name "*.json" -exec cp {} build/cypress/mochawesome/ \;
+          fi
+          
+          # Generate reliability report
+          npm run test:reliability || echo "No test results to analyze"
 
       - name: Upload combined reports
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
@@ -222,3 +243,4 @@ jobs:
           path: |
             coverage
             artifacts/cypress-results
+            build/reports/test-reliability-report.html

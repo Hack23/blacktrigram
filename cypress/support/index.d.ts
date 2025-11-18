@@ -36,6 +36,18 @@ declare namespace Cypress {
     executeTrigramTechnique(technique: string): Chainable<void>;
     testVitalPointTargeting(): Chainable<void>;
     checkKoreanTextRendering(): Chainable<void>;
+
+    // Test isolation commands
+    isolateTest(): Chainable<void>;
+    cleanupTest(): Chainable<void>;
+    captureState(): Chainable<void>;
+    restoreState(): Chainable<void>;
+
+    // Resource monitoring commands
+    startResourceMonitoring(): Chainable<void>;
+    detectResourceLeaks(): Chainable<void>;
+    logResourceReport(): Chainable<void>;
+    forceResourceCleanup(): Chainable<void>;
   }
 }
 
