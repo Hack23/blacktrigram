@@ -393,7 +393,8 @@ describe("AIDecisionTree", () => {
     it("should respect decision cooldown", () => {
       const context = createMockContext();
 
-      const decision1 = decisionTree.makeDecision(
+      // First decision triggers cooldown for the next one
+      decisionTree.makeDecision(
         context,
         AI_PERSONALITIES.BALANCED_FIGHTER,
         comboSystem
