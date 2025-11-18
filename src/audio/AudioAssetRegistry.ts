@@ -3,6 +3,7 @@
  * Manages all audio assets including Korean martial arts specific sounds
  */
 
+import type { AudioAsset } from "./types";
 import {
   AudioCategory,
   CombatAudioMap,
@@ -13,6 +14,8 @@ import {
   VoiceLine,
   VoiceLineId,
 } from "./types";
+
+export type LoadPriority = "critical" | "high" | "normal" | "low";
 
 export interface IAudioAssetRegistry {
   readonly music: Record<string, MusicTrack>;
@@ -36,7 +39,7 @@ export interface EnhancedAudioAsset {
     readonly channels?: number;
     readonly sampleRate?: number;
   };
-  readonly preloadPriority?: "high" | "medium" | "low";
+  readonly preloadPriority?: LoadPriority;
   readonly streaming?: boolean;
   readonly compressionOptions?: {
     readonly format: string;
@@ -49,11 +52,30 @@ export interface EnhancedAudioAssetRegistry extends AudioAssetRegistry {
   readonly enhanced?: Record<string, EnhancedAudioAsset>;
 }
 
+// Asset group definition for batch loading
+export interface AssetGroup {
+  readonly id: string;
+  readonly name: string;
+  readonly priority: LoadPriority;
+  readonly assets: readonly string[]; // Asset IDs
+  readonly lazyLoad?: boolean;
+}
+
+// Manifest for efficient asset registration
+export interface AudioAssetManifest {
+  readonly version: string;
+  readonly totalAssets: number;
+  readonly totalSizeMB: number;
+  readonly groups: readonly AssetGroup[];
+  readonly assets: Record<string, EnhancedAudioAsset>;
+}
+
 // Fix: Use class implementation instead of interface merging
 export class AudioAssetRegistry {
   private sfxMap = new Map<SoundEffectId, SoundEffect>();
   private musicMap = new Map<MusicTrackId, MusicTrack>();
   private voiceMap = new Map<VoiceLineId, VoiceLine>();
+  private assetGroups: Map<string, AssetGroup> = new Map();
 
   // Fix: Implement required combat property with proper stances
   public combat: CombatAudioMap = {
@@ -79,6 +101,7 @@ export class AudioAssetRegistry {
 
   constructor() {
     this.initializeDefaultAssets();
+    this.initializeAssetGroups();
   }
 
   private initializeDefaultAssets(): void {
@@ -355,6 +378,149 @@ export class AudioAssetRegistry {
   public async loadAssets(): Promise<void> {
     console.log("Loading audio assets...");
     // Implementation would preload audio files
+  }
+
+  /**
+   * Initialize asset groups for batch loading
+   */
+  private initializeAssetGroups(): void {
+    // Critical assets - load immediately on startup
+    this.registerAssetGroup({
+      id: "critical",
+      name: "Critical UI Sounds",
+      priority: "critical",
+      assets: ["hit_light", "stance_change"],
+      lazyLoad: false,
+    });
+
+    // High priority - load during intro screen
+    this.registerAssetGroup({
+      id: "intro_music",
+      name: "Intro Screen Music",
+      priority: "high",
+      assets: ["intro_theme"],
+      lazyLoad: false,
+    });
+
+    // Normal priority - load during gameplay preparation
+    this.registerAssetGroup({
+      id: "combat_sfx",
+      name: "Combat Sound Effects",
+      priority: "normal",
+      assets: ["attack_light", "vital_hit_critical"],
+      lazyLoad: false,
+    });
+
+    // Low priority - lazy load when needed
+    this.registerAssetGroup({
+      id: "ambient_music",
+      name: "Ambient Background Music",
+      priority: "low",
+      assets: ["dojang_ambience"],
+      lazyLoad: true,
+    });
+  }
+
+  /**
+   * Register an asset group
+   */
+  public registerAssetGroup(group: AssetGroup): void {
+    this.assetGroups.set(group.id, group);
+  }
+
+  /**
+   * Get asset group by ID
+   */
+  public getAssetGroup(groupId: string): AssetGroup | undefined {
+    return this.assetGroups.get(groupId);
+  }
+
+  /**
+   * Get all asset groups
+   */
+  public getAllAssetGroups(): readonly AssetGroup[] {
+    return Array.from(this.assetGroups.values());
+  }
+
+  /**
+   * Get asset groups by priority
+   */
+  public getAssetGroupsByPriority(priority: LoadPriority): readonly AssetGroup[] {
+    return Array.from(this.assetGroups.values()).filter(
+      (group) => group.priority === priority
+    );
+  }
+
+  /**
+   * Get all assets in a group
+   */
+  public getAssetsInGroup(groupId: string): readonly AudioAsset[] {
+    const group = this.assetGroups.get(groupId);
+    if (!group) return [];
+
+    const assets: AudioAsset[] = [];
+    for (const assetId of group.assets) {
+      const sfx = this.getSFX(assetId);
+      if (sfx) {
+        assets.push(sfx);
+        continue;
+      }
+
+      const music = this.getMusic(assetId);
+      if (music) {
+        assets.push(music);
+        continue;
+      }
+
+      const voice = this.getVoice(assetId);
+      if (voice) {
+        assets.push(voice);
+      }
+    }
+
+    return assets;
+  }
+
+  /**
+   * Create a manifest for efficient asset registration
+   */
+  public createManifest(): AudioAssetManifest {
+    const allAssets: Record<string, EnhancedAudioAsset> = {};
+
+    // Add SFX assets
+    this.sfxMap.forEach((sfx, id) => {
+      allAssets[id] = {
+        ...sfx,
+        preloadPriority: "normal",
+      } as EnhancedAudioAsset;
+    });
+
+    // Add music assets
+    this.musicMap.forEach((music, id) => {
+      allAssets[id] = {
+        ...music,
+        preloadPriority: "high",
+      } as EnhancedAudioAsset;
+    });
+
+    // Add voice assets
+    this.voiceMap.forEach((voice, id) => {
+      allAssets[id] = {
+        ...voice,
+        preloadPriority: "normal",
+      } as EnhancedAudioAsset;
+    });
+
+    const totalAssets = Object.keys(allAssets).length;
+    const estimatedSizeMB = totalAssets * 0.5; // Rough estimate
+
+    return {
+      version: "1.0.0",
+      totalAssets,
+      totalSizeMB: estimatedSizeMB,
+      groups: this.getAllAssetGroups(),
+      assets: allAssets,
+    };
   }
 }
 
