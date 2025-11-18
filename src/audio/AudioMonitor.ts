@@ -48,6 +48,8 @@ export class AudioMonitor {
   private baselineFPS = 60;
   private currentFPS = 60;
   private fpsHistory: number[] = [];
+  private lastWarningTime = 0;
+  private readonly WARNING_COOLDOWN_MS = 5000; // 5 seconds between similar warnings
 
   /**
    * Record a successful asset load
@@ -209,11 +211,17 @@ export class AudioMonitor {
   }
 
   /**
-   * Check memory threshold and create warnings
+   * Check memory threshold and create warnings with rate limiting
    */
   private checkMemoryThreshold(): void {
     const stats = this.getMemoryStats();
     const currentMB = stats.totalLoadedMB;
+    const now = Date.now();
+
+    // Rate limit warnings to prevent spam during rapid asset loading
+    if (now - this.lastWarningTime < this.WARNING_COOLDOWN_MS) {
+      return;
+    }
 
     if (currentMB > this.memoryThresholdMB * 1.5) {
       // 150% threshold
@@ -222,8 +230,9 @@ export class AudioMonitor {
         message: `Audio memory usage critical: ${currentMB.toFixed(1)}MB (threshold: ${this.memoryThresholdMB}MB)`,
         currentMB,
         thresholdMB: this.memoryThresholdMB,
-        timestamp: Date.now(),
+        timestamp: now,
       });
+      this.lastWarningTime = now;
     } else if (currentMB > this.memoryThresholdMB) {
       // 100% threshold
       this.addWarning({
@@ -231,8 +240,9 @@ export class AudioMonitor {
         message: `Audio memory usage high: ${currentMB.toFixed(1)}MB (threshold: ${this.memoryThresholdMB}MB)`,
         currentMB,
         thresholdMB: this.memoryThresholdMB,
-        timestamp: Date.now(),
+        timestamp: now,
       });
+      this.lastWarningTime = now;
     } else if (currentMB > this.memoryThresholdMB * 0.8) {
       // 80% threshold
       this.addWarning({
@@ -240,8 +250,9 @@ export class AudioMonitor {
         message: `Audio memory usage approaching threshold: ${currentMB.toFixed(1)}MB (threshold: ${this.memoryThresholdMB}MB)`,
         currentMB,
         thresholdMB: this.memoryThresholdMB,
-        timestamp: Date.now(),
+        timestamp: now,
       });
+      this.lastWarningTime = now;
     }
   }
 
@@ -276,9 +287,12 @@ export class AudioMonitor {
     const recent = this.fpsHistory.slice(-30);
     const avg = recent.reduce((sum, fps) => sum + fps, 0) / recent.length;
 
-    // Update baseline if current average is higher (system is performing better)
+    // Allow baseline to adjust with dampening (slower downward adjustment)
     if (avg > this.baselineFPS) {
       this.baselineFPS = Math.min(avg, 60); // Cap at 60fps
+    } else if (avg < this.baselineFPS - 5) {
+      // Only adjust down if significantly lower (5fps drop)
+      this.baselineFPS = Math.max(avg, 30); // Floor at 30fps
     }
   }
 

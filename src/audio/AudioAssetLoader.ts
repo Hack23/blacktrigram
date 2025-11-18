@@ -200,20 +200,33 @@ export class AudioAssetLoader {
       const audio = new Audio();
       audio.preload = "auto";
 
-      const timeoutId = setTimeout(() => {
+      let timeoutId: NodeJS.Timeout | null = null;
+      let resolved = false;
+
+      const onLoad = () => {
+        if (resolved) return;
+        resolved = true;
+        if (timeoutId) clearTimeout(timeoutId);
+        resolve(audio);
+      };
+
+      const onError = () => {
+        if (resolved) return;
+        resolved = true;
+        if (timeoutId) clearTimeout(timeoutId);
+        audio.src = "";
+        reject(new Error(`Failed to load: ${url}`));
+      };
+
+      timeoutId = setTimeout(() => {
+        if (resolved) return;
+        resolved = true;
         audio.src = "";
         reject(new Error(`Load timeout after ${timeout}ms`));
       }, timeout);
 
-      audio.addEventListener("canplaythrough", () => {
-        clearTimeout(timeoutId);
-        resolve(audio);
-      });
-
-      audio.addEventListener("error", () => {
-        clearTimeout(timeoutId);
-        reject(new Error(`Failed to load: ${url}`));
-      });
+      audio.addEventListener("canplaythrough", onLoad, { once: true });
+      audio.addEventListener("error", onError, { once: true });
 
       audio.src = url;
       audio.load();
@@ -283,6 +296,8 @@ export class AudioAssetLoader {
 
   /**
    * Unload an asset and free memory
+   * @param assetId - ID of the asset to unload
+   * @returns true if the asset was cached and unloaded, false if not found
    */
   unloadAsset(assetId: string): boolean {
     const audio = this.loadCache.get(assetId);
@@ -299,6 +314,8 @@ export class AudioAssetLoader {
 
   /**
    * Get cached audio element
+   * @param assetId - ID of the asset to retrieve
+   * @returns The cached audio element or undefined if not found
    */
   getCached(assetId: string): HTMLAudioElement | undefined {
     return this.loadCache.get(assetId);
@@ -306,6 +323,8 @@ export class AudioAssetLoader {
 
   /**
    * Check if asset is cached
+   * @param assetId - ID of the asset to check
+   * @returns true if the asset is in cache, false otherwise
    */
   isCached(assetId: string): boolean {
     return this.loadCache.has(assetId);
@@ -313,13 +332,14 @@ export class AudioAssetLoader {
 
   /**
    * Get total number of cached assets
+   * @returns The number of assets currently in cache
    */
   getCacheSize(): number {
     return this.loadCache.size;
   }
 
   /**
-   * Clear all cached assets
+   * Clear all cached assets and free memory
    */
   clearCache(): void {
     this.loadCache.forEach((audio) => {
@@ -352,7 +372,8 @@ export class AudioAssetLoader {
   }
 
   /**
-   * Get loading statistics
+   * Get loading statistics including cache size, loading count, and total attempts
+   * @returns Object with cached count, loading count, and total attempts
    */
   getStatistics(): {
     readonly cached: number;

@@ -6,8 +6,14 @@ import {
   SoundEffectId,
 } from "./types";
 import { AudioAssetLoader, LoadOptions } from "./AudioAssetLoader";
-import { AudioElementPool } from "./AudioPool";
-import { AudioMonitor } from "./AudioMonitor";
+import { AudioElementPool, PoolStatistics } from "./AudioPool";
+import {
+  AudioMonitor,
+  AudioMemoryStats,
+  AudioPerformanceStats,
+  AudioFPSImpact,
+  MemoryWarning,
+} from "./AudioMonitor";
 
 // Estimated average size per audio asset in MB (based on typical compressed audio file sizes)
 const ESTIMATED_ASSET_SIZE_MB = 0.5;
@@ -52,19 +58,17 @@ export class AudioManager implements IAudioManager {
    * @param audio - Audio element to release
    */
   private releasePooledAudio(id: string, audio: HTMLAudioElement): void {
-    setTimeout(() => {
-      if (!audio.paused) {
-        audio.addEventListener(
-          "ended",
-          () => {
-            this.audioPool.release(id, audio);
-          },
-          { once: true }
-        );
-      } else {
-        this.audioPool.release(id, audio);
-      }
-    }, 0);
+    if (!audio.paused) {
+      audio.addEventListener(
+        "ended",
+        () => {
+          this.audioPool.release(id, audio);
+        },
+        { once: true }
+      );
+    } else {
+      this.audioPool.release(id, audio);
+    }
   }
 
   // Interface getters
@@ -111,7 +115,7 @@ export class AudioManager implements IAudioManager {
 
       // Set memory threshold if configured
       if (config?.maxSimultaneousSounds) {
-        const estimatedMemoryMB = config.maxSimultaneousSounds * 0.5;
+        const estimatedMemoryMB = config.maxSimultaneousSounds * ESTIMATED_ASSET_SIZE_MB;
         this.monitor.setMemoryThreshold(estimatedMemoryMB);
       }
     } catch (error) {
@@ -435,6 +439,10 @@ export class AudioManager implements IAudioManager {
 
   /**
    * Batch load multiple assets with progress tracking
+   * @param assets - Array of audio assets to load
+   * @param options - Optional load configuration (timeout, retries, etc.)
+   * @param onProgress - Optional callback for progress updates with loaded and total counts
+   * @returns Promise that resolves when all assets are processed
    */
   async batchLoadAssets(
     assets: readonly AudioAsset[],
@@ -468,6 +476,8 @@ export class AudioManager implements IAudioManager {
 
   /**
    * Unload an asset to free memory
+   * @param assetId - ID of the asset to unload
+   * @returns true if asset was unloaded, false if asset was not found
    */
   unloadAsset(assetId: string): boolean {
     // Remove from cache
@@ -493,44 +503,55 @@ export class AudioManager implements IAudioManager {
   }
 
   /**
-   * Get memory statistics
+   * Get memory statistics including total loaded MB, asset count, and warnings
+   * @returns Memory statistics object
    */
-  getMemoryStats() {
+  getMemoryStats(): AudioMemoryStats {
     return this.monitor.getMemoryStats();
   }
 
   /**
-   * Get performance statistics
+   * Get performance statistics including load times and playback latency
+   * @returns Performance statistics object
    */
-  getPerformanceStats() {
+  getPerformanceStats(): AudioPerformanceStats {
     return this.monitor.getPerformanceStats();
   }
 
   /**
-   * Get FPS impact analysis
+   * Get FPS impact analysis showing baseline vs current FPS and detected drops
+   * @returns FPS impact analysis object
    */
-  getFPSImpact() {
+  getFPSImpact(): AudioFPSImpact {
     return this.monitor.getFPSImpact();
   }
 
   /**
    * Update FPS measurement for monitoring
+   * @param fps - Current frames per second measurement
    */
   updateFPS(fps: number): void {
     this.monitor.updateFPS(fps);
   }
 
   /**
-   * Get comprehensive monitoring report
+   * Get comprehensive monitoring report including memory, performance, FPS, and warnings
+   * @returns Comprehensive monitoring report object
    */
-  getMonitoringReport() {
+  getMonitoringReport(): {
+    readonly memory: AudioMemoryStats;
+    readonly performance: AudioPerformanceStats;
+    readonly fps: AudioFPSImpact;
+    readonly warnings: readonly MemoryWarning[];
+  } {
     return this.monitor.getReport();
   }
 
   /**
-   * Get memory warnings
+   * Get all memory warnings
+   * @returns Array of memory warnings
    */
-  getMemoryWarnings() {
+  getMemoryWarnings(): readonly MemoryWarning[] {
     return this.monitor.getWarnings();
   }
 
@@ -542,9 +563,11 @@ export class AudioManager implements IAudioManager {
   }
 
   /**
-   * Get pool statistics
+   * Get pool statistics for a specific asset or all pools
+   * @param assetId - Optional asset ID to get specific pool stats
+   * @returns Pool statistics for the specified asset or all pools
    */
-  getPoolStatistics(assetId?: string) {
+  getPoolStatistics(assetId?: string): PoolStatistics | Map<string, PoolStatistics> | undefined {
     if (assetId) {
       return this.audioPool.getPoolStatistics(assetId);
     }
@@ -552,9 +575,14 @@ export class AudioManager implements IAudioManager {
   }
 
   /**
-   * Get loader statistics
+   * Get loader statistics including cached assets and loading state
+   * @returns Loader statistics object
    */
-  getLoaderStatistics() {
+  getLoaderStatistics(): {
+    readonly cached: number;
+    readonly loading: number;
+    readonly totalAttempts: number;
+  } {
     return this.assetLoader.getStatistics();
   }
 }

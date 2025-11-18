@@ -82,9 +82,11 @@ export class ObjectPool<T> {
 
   /**
    * Release all objects back to the pool
+   * Resets all in-use objects and returns them to the available pool
    */
   releaseAll(): void {
     this.inUse.forEach((obj) => {
+      this.releaseCount++;
       this.reset(obj);
       this.available.push(obj);
     });

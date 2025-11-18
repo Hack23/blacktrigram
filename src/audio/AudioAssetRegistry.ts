@@ -425,7 +425,8 @@ export class AudioAssetRegistry {
   }
 
   /**
-   * Register an asset group
+   * Register an asset group for batch loading
+   * @param group - Asset group configuration with ID, name, priority, and asset IDs
    */
   public registerAssetGroup(group: AssetGroup): void {
     this.assetGroups.set(group.id, group);
@@ -433,20 +434,25 @@ export class AudioAssetRegistry {
 
   /**
    * Get asset group by ID
+   * @param groupId - ID of the asset group to retrieve
+   * @returns The asset group or undefined if not found
    */
   public getAssetGroup(groupId: string): AssetGroup | undefined {
     return this.assetGroups.get(groupId);
   }
 
   /**
-   * Get all asset groups
+   * Get all registered asset groups
+   * @returns Array of all asset groups
    */
   public getAllAssetGroups(): readonly AssetGroup[] {
     return Array.from(this.assetGroups.values());
   }
 
   /**
-   * Get asset groups by priority
+   * Get asset groups filtered by priority level
+   * @param priority - Priority level to filter by (critical/high/normal/low)
+   * @returns Array of asset groups matching the priority
    */
   public getAssetGroupsByPriority(priority: LoadPriority): readonly AssetGroup[] {
     return Array.from(this.assetGroups.values()).filter(
@@ -455,7 +461,9 @@ export class AudioAssetRegistry {
   }
 
   /**
-   * Get all assets in a group
+   * Get all assets belonging to a specific group
+   * @param groupId - ID of the asset group
+   * @returns Array of audio assets in the group, or empty array if group not found
    */
   public getAssetsInGroup(groupId: string): readonly AudioAsset[] {
     const group = this.assetGroups.get(groupId);
@@ -463,21 +471,10 @@ export class AudioAssetRegistry {
 
     const assets: AudioAsset[] = [];
     for (const assetId of group.assets) {
-      const sfx = this.getSFX(assetId);
-      if (sfx) {
-        assets.push(sfx);
-        continue;
-      }
-
-      const music = this.getMusic(assetId);
-      if (music) {
-        assets.push(music);
-        continue;
-      }
-
-      const voice = this.getVoice(assetId);
-      if (voice) {
-        assets.push(voice);
+      // Check all maps, take first match
+      const asset = this.getSFX(assetId) ?? this.getMusic(assetId) ?? this.getVoice(assetId);
+      if (asset) {
+        assets.push(asset);
       }
     }
 
@@ -486,6 +483,7 @@ export class AudioAssetRegistry {
 
   /**
    * Create a manifest for efficient asset registration
+   * @returns Audio asset manifest with version, total assets, size estimates, groups, and all assets
    */
   public createManifest(): AudioAssetManifest {
     const allAssets: Record<string, EnhancedAudioAsset> = {};
