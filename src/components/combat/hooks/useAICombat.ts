@@ -132,6 +132,12 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     [adaptiveDifficulty, personality]
   );
 
+  // Update AI difficulty level based on adaptive difficulty (issue requirement)
+  useEffect(() => {
+    const skillLevel = adaptiveDifficulty.calculatePlayerSkill();
+    decisionTree.setDifficultyLevel(skillLevel);
+  }, [adaptiveDifficulty, decisionTree]);
+
   // AI state
   const [aiState, setAiState] = useState<AIState>({
     nextAction: Date.now(),
