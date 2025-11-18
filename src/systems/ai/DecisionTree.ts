@@ -489,7 +489,7 @@ export class AIDecisionTree {
         return sortedCritical[0].id;
       }
       
-      // Fallback to highest damage point (guaranteed to exist due to earlier check at line 444)
+      // Fallback to highest damage point (guaranteed to exist due to check at line 456)
       const sortedByDamage = [...effectivePoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
       return sortedByDamage[0]?.id ?? effectivePoints[0].id;
     }

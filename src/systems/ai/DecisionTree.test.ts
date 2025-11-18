@@ -176,10 +176,11 @@ describe("AIDecisionTree", () => {
 
       // Make multiple decisions to check for stance changes
       let foundStanceChange = false;
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 100; i++) {
+        decisionTree.reset(); // Reset to clear cooldowns
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.CHAOS_WARRIOR, // High stance switch frequency
+          AI_PERSONALITIES.CHAOS_WARRIOR, // High stance switch frequency (0.8)
           comboSystem
         );
 
@@ -192,7 +193,7 @@ describe("AIDecisionTree", () => {
         }
       }
 
-      // With chaos warrior's high stance switch frequency, should find stance changes
+      // With chaos warrior's high stance switch frequency (0.8), should find stance changes
       expect(foundStanceChange).toBe(true);
     });
 
