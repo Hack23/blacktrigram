@@ -104,36 +104,11 @@ export class AudioAssetRegistry {
 
   constructor() {
     this.initializeDefaultAssets();
+    this.initializeCombatAudioAssets();
     this.initializeAssetGroups();
   }
 
   private initializeDefaultAssets(): void {
-    // Initialize with placeholder Korean martial arts sound effects
-    this.registerSFX("hit_light", {
-      id: "hit_light",
-      type: "sound",
-      name: "Light Hit", // Fix: Use simple string instead of KoreanText object
-      category: "sfx", // Fix: Use string literal instead of enum
-      url: "placeholder://hit_light",
-      formats: ["audio/wav", "audio/mp3"],
-      loaded: false,
-      volume: 1.0,
-      variations: [],
-    });
-
-    this.registerMusic("combat_theme", {
-      id: "combat_theme",
-      type: "music",
-      name: "Combat Theme", // Fix: Use simple string instead of KoreanText object
-      title: { korean: "전투 테마", english: "Combat Theme" },
-      category: "music", // Fix: Use string literal instead of enum
-      url: "placeholder://combat_theme",
-      formats: ["audio/wav", "audio/mp3"],
-      loaded: false,
-      volume: 0.7,
-      loop: true,
-    });
-
     // Add intro_theme music with both mp3 and webm for intro screen
     this.registerMusic("intro_theme", {
       id: "intro_theme",
@@ -154,6 +129,272 @@ export class AudioAssetRegistry {
       fadeInTime: 3000,
       fadeOutTime: 3000,
     });
+  }
+
+  /**
+   * Initialize comprehensive combat audio assets
+   * Registers attack sounds, hit reactions, blocks, dodges, and stance changes
+   */
+  private initializeCombatAudioAssets(): void {
+    // Combat Music Tracks
+    this.registerMusic("combat_theme", {
+      id: "combat_theme",
+      type: "music",
+      name: "Combat Theme",
+      title: { korean: "전투 테마", english: "Combat Theme" },
+      category: "music",
+      url: "/assets/audio/music/combat_theme.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.6,
+      loop: true,
+      variations: [
+        "/assets/audio/music/combat_theme.webm",
+        "/assets/audio/music/combat_theme.mp3",
+      ],
+      bpm: 140,
+      fadeInTime: 2000,
+      fadeOutTime: 2000,
+    });
+
+    // Archetype-Specific Music Themes
+    const archetypeThemes = [
+      { id: "musa_warrior_theme", name: "Musa Warrior Theme", korean: "무사 테마", file: "musa_warrior" },
+      { id: "amsalja_shadow_theme", name: "Amsalja Shadow Theme", korean: "암살자 테마", file: "amsalja_shadow" },
+      { id: "hacker_cyber_theme", name: "Hacker Cyber Theme", korean: "해커 테마", file: "hacker_cyber" },
+      { id: "jeongbo_intel_theme", name: "Jeongbo Intel Theme", korean: "정보요원 테마", file: "jeongbo_intel" },
+      { id: "jojik_street_theme", name: "Jojik Street Theme", korean: "조직폭력배 테마", file: "jojik_street" },
+    ];
+
+    archetypeThemes.forEach(theme => {
+      this.registerMusic(theme.id, {
+        id: theme.id,
+        type: "music",
+        name: theme.name,
+        title: { korean: theme.korean, english: theme.name },
+        category: "music",
+        url: `/assets/audio/music/archetype_themes/${theme.file}.mp3`,
+        formats: ["audio/mp3"],
+        loaded: false,
+        volume: 0.6,
+        loop: true,
+        bpm: 130,
+        fadeInTime: 2000,
+        fadeOutTime: 2000,
+      });
+    });
+
+    // Attack Sounds - Light Punches (8 variations)
+    for (let i = 1; i <= 8; i++) {
+      this.registerSFX(`attack_punch_light_${i}`, {
+        id: `attack_punch_light_${i}`,
+        type: "sound",
+        name: `Light Punch ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/combat/attack_punch_light_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.6,
+      });
+    }
+
+    // Attack Sounds - Medium Punches (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`attack_punch_medium_${i}`, {
+        id: `attack_punch_medium_${i}`,
+        type: "sound",
+        name: `Medium Punch ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/combat/attack_punch_medium_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.7,
+      });
+    }
+
+    // Attack Sounds - Generic Light/Medium/Heavy
+    this.registerSFX("attack_light", {
+      id: "attack_light",
+      type: "sound",
+      name: "Light Attack",
+      category: "sfx",
+      url: "/assets/audio/sfx/combat/attack_light.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.6,
+      variations: [
+        "/assets/audio/sfx/combat/attack_light.webm",
+        "/assets/audio/sfx/combat/attack_light_3.webm",
+        "/assets/audio/sfx/combat/attack_light_4.webm",
+      ],
+    });
+
+    this.registerSFX("attack_medium", {
+      id: "attack_medium",
+      type: "sound",
+      name: "Medium Attack",
+      category: "sfx",
+      url: "/assets/audio/sfx/combat/attack_medium.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.7,
+      variations: [
+        "/assets/audio/sfx/combat/attack_medium.webm",
+        "/assets/audio/sfx/combat/attack_medium_1.webm",
+        "/assets/audio/sfx/combat/attack_medium_3.webm",
+      ],
+    });
+
+    this.registerSFX("attack_heavy", {
+      id: "attack_heavy",
+      type: "sound",
+      name: "Heavy Attack",
+      category: "sfx",
+      url: "/assets/audio/sfx/combat/attack_heavy.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.8,
+    });
+
+    // Attack Sounds - Critical (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`attack_critical_${i}`, {
+        id: `attack_critical_${i}`,
+        type: "sound",
+        name: `Critical Attack ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/combat/attack_critical_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.9,
+      });
+    }
+
+    // Attack Sounds - Special Geon Technique (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`attack_special_geon_${i}`, {
+        id: `attack_special_geon_${i}`,
+        type: "sound",
+        name: `Geon Special ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/combat/attack_special_geon_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.8,
+      });
+    }
+
+    // Hit Reaction Sounds - Light (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`hit_light_${i}`, {
+        id: `hit_light_${i}`,
+        type: "sound",
+        name: `Light Hit ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/hits/hit_light_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.5,
+      });
+    }
+
+    // Hit Reaction Sounds - Medium (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`hit_medium_${i}`, {
+        id: `hit_medium_${i}`,
+        type: "sound",
+        name: `Medium Hit ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/hits/hit_medium_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.6,
+      });
+    }
+
+    // Hit Reaction Sounds - Heavy (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`hit_heavy_${i}`, {
+        id: `hit_heavy_${i}`,
+        type: "sound",
+        name: `Heavy Hit ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/hits/hit_heavy_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.7,
+      });
+    }
+
+    // Hit Reaction Sounds - Critical (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`hit_critical_${i}`, {
+        id: `hit_critical_${i}`,
+        type: "sound",
+        name: `Critical Hit ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/hits/hit_critical_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.9,
+      });
+    }
+
+    // Block Sounds - Success (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`block_success_${i}`, {
+        id: `block_success_${i}`,
+        type: "sound",
+        name: `Block Success ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/blocks/block_success_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.6,
+      });
+    }
+
+    // Block Sounds - Break (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`block_break_${i}`, {
+        id: `block_break_${i}`,
+        type: "sound",
+        name: `Block Break ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/blocks/block_break_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.8,
+      });
+    }
+
+    // Dodge Sounds (8 variations)
+    for (let i = 1; i <= 8; i++) {
+      this.registerSFX(`dodge_${i}`, {
+        id: `dodge_${i}`,
+        type: "sound",
+        name: `Dodge ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/movement/dodge_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.5,
+      });
+    }
+
+    // Stance Change Sounds (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`stance_change_${i}`, {
+        id: `stance_change_${i}`,
+        type: "sound",
+        name: `Stance Change ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/movement/stance_change_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.4,
+      });
+    }
   }
 
   public registerSFX(id: SoundEffectId, effect: SoundEffect): void {
@@ -392,7 +633,11 @@ export class AudioAssetRegistry {
       id: "critical",
       name: "Critical UI Sounds",
       priority: "critical",
-      assets: ["hit_light", "stance_change"],
+      assets: [
+        "hit_light_1",
+        "attack_light",
+        "stance_change_1",
+      ],
       lazyLoad: false,
     });
 
@@ -405,22 +650,81 @@ export class AudioAssetRegistry {
       lazyLoad: false,
     });
 
-    // Normal priority - load during gameplay preparation
+    // Combat music - high priority for combat screen
     this.registerAssetGroup({
-      id: "combat_sfx",
-      name: "Combat Sound Effects",
-      priority: "normal",
-      assets: ["attack_light", "vital_hit_critical"],
+      id: "combat_music",
+      name: "Combat Background Music",
+      priority: "high",
+      assets: [
+        "combat_theme",
+        "musa_warrior_theme",
+        "amsalja_shadow_theme",
+        "hacker_cyber_theme",
+        "jeongbo_intel_theme",
+        "jojik_street_theme",
+      ],
       lazyLoad: false,
     });
 
-    // Low priority - lazy load when needed
+    // Normal priority - combat SFX
     this.registerAssetGroup({
-      id: "ambient_music",
-      name: "Ambient Background Music",
-      priority: "low",
-      assets: ["dojang_ambience"],
-      lazyLoad: true,
+      id: "combat_attacks",
+      name: "Combat Attack Sounds",
+      priority: "normal",
+      assets: [
+        "attack_light",
+        "attack_medium",
+        "attack_heavy",
+        "attack_punch_light_1",
+        "attack_punch_light_2",
+        "attack_punch_medium_1",
+        "attack_critical_1",
+        "attack_critical_2",
+      ],
+      lazyLoad: false,
+    });
+
+    this.registerAssetGroup({
+      id: "combat_hits",
+      name: "Combat Hit Reactions",
+      priority: "normal",
+      assets: [
+        "hit_light_1",
+        "hit_light_2",
+        "hit_medium_1",
+        "hit_medium_2",
+        "hit_heavy_1",
+        "hit_critical_1",
+      ],
+      lazyLoad: false,
+    });
+
+    this.registerAssetGroup({
+      id: "combat_defense",
+      name: "Combat Defense Sounds",
+      priority: "normal",
+      assets: [
+        "block_success_1",
+        "block_success_2",
+        "block_break_1",
+        "dodge_1",
+        "dodge_2",
+      ],
+      lazyLoad: false,
+    });
+
+    this.registerAssetGroup({
+      id: "combat_movement",
+      name: "Combat Movement Sounds",
+      priority: "normal",
+      assets: [
+        "stance_change_1",
+        "stance_change_2",
+        "stance_change_3",
+        "dodge_3",
+        "dodge_4",
+      ],
+      lazyLoad: false,
     });
   }
 
