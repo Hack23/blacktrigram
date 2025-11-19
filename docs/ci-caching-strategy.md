@@ -51,7 +51,7 @@ This document describes the comprehensive caching strategy implemented across al
   uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
   with:
     path: ~/.cache/Cypress
-    key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       cypress-${{ runner.os }}-
 ```
@@ -95,27 +95,28 @@ This document describes the comprehensive caching strategy implemented across al
 
 **Configuration**:
 ```yaml
-- name: Cache build artifacts
+- name: Cache TypeScript incremental build
   uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
   with:
-    path: |
-      node_modules
-      .tsbuildinfo
-    key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
+    path: .tsbuildinfo
+    key: ${{ runner.os }}-tsbuild-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
     restore-keys: |
-      ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-
-      ${{ runner.os }}-build-
+      ${{ runner.os }}-tsbuild-${{ hashFiles('**/package-lock.json') }}-
+      ${{ runner.os }}-tsbuild-
 ```
 
 **Benefits**:
 - 📦 Incremental TypeScript compilation
 - ⚡ Faster type checking on partial changes
 - 🔄 Multi-level fallback for better cache hit rates
+- 💾 Small cache size (~5-10MB for .tsbuildinfo only)
 
 **Cache Invalidation**: 
 - Primary: When source files or dependencies change
 - Fallback: When only dependencies change
 - Last resort: Any previous build for the OS
+
+**Note**: We cache only `.tsbuildinfo` for TypeScript incremental builds, not `node_modules`. This follows GitHub Actions best practices as caching `node_modules` can lead to platform-specific binary issues and excessive cache size. The npm package cache (`~/.npm`) handled by `setup-node` provides the performance benefit for dependency installation.
 
 ---
 
@@ -178,9 +179,12 @@ uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
 ✅ All caches have restore-keys for fallback scenarios
 
 ### 3. Minimal Cache Paths
-✅ Caching only necessary directories, not build outputs (except for TypeScript incremental builds)
+✅ Caching only NPM package cache (`~/.npm`) and TypeScript incremental build info (`.tsbuildinfo`), not `node_modules` or build outputs
 
-### 4. Appropriate Cache Keys
+### 4. Setup-Node Built-in Caching
+✅ Using `cache: "npm"` in `actions/setup-node` for efficient npm package caching
+
+### 5. Appropriate Cache Keys
 ✅ Using content hashes for automatic invalidation
 
 ### 5. Multi-level Fallback
@@ -214,7 +218,7 @@ GitHub provides cache analytics at:
 | NPM Dependencies | ~200-300MB | Compressed npm packages |
 | Cypress Binary | ~350MB | Cypress test runner |
 | Vite Build Cache | ~50-100MB | Bundler optimizations |
-| TypeScript Build | ~500MB | node_modules + .tsbuildinfo |
+| TypeScript Build | ~5-10MB | .tsbuildinfo only |
 
 ---
 
@@ -223,9 +227,9 @@ GitHub provides cache analytics at:
 ### Network Failure Scenarios
 
 **Scenario 1: npm registry is slow/unavailable**
-- ✅ NPM cache provides fallback
-- ✅ Workflow continues with cached dependencies
-- ✅ Reduced external dependency
+- ✅ NPM cache provides fallback **only if the cache is available (cache hit)**
+- ✅ Workflow continues with cached dependencies **on subsequent runs with no dependency changes**
+- ⚠️ Reduced external dependency **only when the cache is available; on first run, after dependency updates, or after cache expiry (7 days of inactivity), the workflow still requires access to the npm registry**
 
 **Scenario 2: Cypress CDN is slow**
 - ✅ Cypress binary cache avoids download
@@ -269,7 +273,12 @@ GitHub provides cache analytics at:
 - Total cache size per repository: 10GB (enterprise: adjustable)
 - Cache retention: 7 days for unused caches
 
-**Current usage**: ~1-1.5GB total across all caches
+**Current usage**:  
+- ~600-760MB total across all caches (TypeScript cache excludes `node_modules`, as recommended in best practices)
+  - NPM Dependencies: ~200-300MB
+  - Cypress Binary: ~350MB
+  - Vite Build Cache: ~50-100MB
+  - TypeScript Build: ~5-10MB (.tsbuildinfo only)
 
 ---
 
