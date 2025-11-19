@@ -16,6 +16,9 @@
 // Import commands.js using ES2015 syntax:
 import "./commands";
 import "./pixi-commands"; // Import PixiJS testing commands
+import "./performance"; // Import performance monitoring
+import "./test-isolation"; // Import test isolation utilities
+import "./resource-monitoring"; // Import resource monitoring utilities
 
 // Import cypress-wait-until for waitUntil command
 import "cypress-wait-until";
@@ -37,9 +40,84 @@ Cypress.on("window:before:load", (win) => {
   };
 });
 
-// Add WebGL mocking to all tests by default
+// Global test isolation and cleanup hooks
 beforeEach(() => {
+  // Clear browser storage for test isolation
+  cy.clearLocalStorage();
+  cy.clearCookies();
+
+  // Reset viewport to standard size
+  cy.viewport(1280, 720);
+
+  // Clear any test data from previous runs
+  cy.window().then((win) => {
+    // Reset any global game state
+    const gameStateWin = win as Window & { __gameState?: unknown };
+    if (gameStateWin.__gameState) {
+      delete gameStateWin.__gameState;
+    }
+
+    // Clear any event listeners
+    const eventListenersWin = win as Window & {
+      __eventListeners?: Array<() => void>;
+    };
+    if (eventListenersWin.__eventListeners) {
+      eventListenersWin.__eventListeners.forEach((cleanup) => cleanup());
+      eventListenersWin.__eventListeners = [];
+    }
+  });
+
+  // Add WebGL mocking to all tests
   cy.mockWebGL();
+
+  // Start resource monitoring for leak detection
+  cy.startResourceMonitoring();
+});
+
+afterEach(function () {
+  // Detect resource leaks
+  cy.detectResourceLeaks();
+
+  // Log test result for monitoring
+  const testResult = this.currentTest?.state ?? "unknown";
+  const testName = this.currentTest?.title ?? "unknown";
+  const testDuration = this.currentTest?.duration ?? 0;
+
+  cy.task("logTestMetrics", {
+    test: testName,
+    status: testResult,
+    duration: testDuration,
+  });
+
+  // Force cleanup of any remaining resources
+  cy.window().then((win) => {
+    // Stop any running audio
+    const audioElements = document.getElementsByTagName("audio");
+    Array.from(audioElements).forEach((audio) => {
+      audio.pause();
+      audio.remove();
+    });
+
+    // Clear PixiJS resources
+    const pixiWin = win as Window & {
+      PIXI?: unknown;
+      __pixiApp?: {
+        destroy: (
+          removeView: boolean,
+          options?: { children?: boolean; texture?: boolean }
+        ) => void;
+      };
+    };
+
+    if (pixiWin.PIXI && pixiWin.__pixiApp) {
+      try {
+        pixiWin.__pixiApp.destroy(true, { children: true, texture: true });
+        delete pixiWin.__pixiApp;
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
+  });
 });
 
 // Improve visual test feedback
@@ -62,7 +140,7 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
 });
 
 // Performance logging for CI
-beforeEach(() => {
+afterEach(() => {
   cy.window().then((win) => {
     // Clear any previous performance marks
     if (win.performance?.clearMarks) {
@@ -71,28 +149,11 @@ beforeEach(() => {
   });
 });
 
-// Global test configuration for Korean martial arts game
-Cypress.config("defaultCommandTimeout", 10000);
-Cypress.config("requestTimeout", 15000);
-Cypress.config("responseTimeout", 15000);
-Cypress.config("pageLoadTimeout", 30000);
-
-// Note: Tasks are configured in cypress.config.ts, not here
-// The tasks "log" and "silenceWebGLWarning" should be defined there
-
 // Import custom commands with type support
-import "./commands";
-import "./pixi-commands";
-
-// Fix: Ensure proper type declarations are loaded
 /// <reference types="cypress" />
 /// <reference path="./commands.ts" />
 /// <reference path="./pixi-commands.ts" />
 
-Cypress.on("fail", (err, _runnable) => {
-  console.error("Cypress test failed:", err.message);
-  return false;
-});
 Cypress.on("fail", (err, _runnable) => {
   console.error("Cypress test failed:", err.message);
   return false;

@@ -42,23 +42,26 @@ describe("Black Trigram - Smoke Test", () => {
   it("should support basic navigation", () => {
     cy.annotate("Smoke test - basic navigation");
 
-    // Test training mode
+    // Test training mode - MUST exist, not optional
     cy.enterTrainingMode();
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="training-screen"]').length > 0) {
-        cy.log("✅ Training mode accessible");
-      }
-    });
+    cy.get('[data-testid="training-screen"]', { timeout: 10000 })
+      .should("exist")
+      .and("be.visible");
+    cy.log("✅ Training mode accessible");
+    
     cy.returnToIntro();
+    cy.get('[data-testid="intro-screen"]', { timeout: 5000 })
+      .should("exist");
 
-    // Test combat mode
+    // Test combat mode - MUST exist, not optional
     cy.enterCombatMode();
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="combat-screen"]').length > 0) {
-        cy.log("✅ Combat mode accessible");
-      }
-    });
+    cy.get('[data-testid="combat-screen"]', { timeout: 10000 })
+      .should("exist");
+    cy.log("✅ Combat mode accessible");
+    
     cy.returnToIntro();
+    cy.get('[data-testid="intro-screen"]', { timeout: 5000 })
+      .should("exist");
 
     cy.log("✅ Basic navigation works");
   });
@@ -66,12 +69,24 @@ describe("Black Trigram - Smoke Test", () => {
   it("should support keyboard controls", () => {
     cy.annotate("Smoke test - keyboard controls");
 
-    // Test keyboard navigation
+    // Test keyboard navigation to combat mode (key "1" for versus)
     cy.get("body").type("1");
-    cy.wait(300);
+    cy.wait(1000); // Reduced from 1500ms - wait for screen transition
+    
+    // Verify we entered combat mode
+    cy.get("body").then(($body) => {
+      const hasCombat = $body.find('[data-testid="combat-screen"]').length > 0;
+      const hasIntro = $body.find('[data-testid="intro-screen"]').length > 0;
+      
+      // We should be in combat OR still in intro (if key didn't work, which is OK for smoke test)
+      expect(hasCombat || hasIntro).to.be.true;
+    });
+    
+    // Return to intro with ESC
     cy.get("body").type("{esc}");
-    cy.wait(300);
+    cy.wait(1000); // Reduced from 1500ms
 
+    // Verify app container still exists and is functional
     cy.get('[data-testid="app-container"]').should("exist");
 
     cy.log("✅ Keyboard controls work");

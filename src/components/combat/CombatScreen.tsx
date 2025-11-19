@@ -18,6 +18,7 @@ import React, {
   useState,
 } from "react";
 import { HitEffectType } from "../../systems/effects";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
@@ -30,6 +31,7 @@ import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { PauseOverlay } from "./components/PauseOverlay";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
+import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
 
@@ -83,6 +85,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Consolidated state management using useReducer
   const { state: combatState, actions: combatActions } = useCombatState();
+
+  // Combat audio system
+  const combatAudio = useCombatAudio();
 
   // Player positions state (still needed for movement)
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
@@ -267,6 +272,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addCombatMessage,
     addHitEffect,
     arenaBounds,
+    combatAudio,
   });
 
   // Update player 1 position based on movement
@@ -284,6 +290,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       combatActions.setRoundStarted(false);
       combatActions.setRoundDisplayStatus("end");
 
+      // Stop combat music on round end
+      combatAudio.stopCombatMusic(1000);
+
       // Determine winner by health
       const winner = validPlayers[0].health > validPlayers[1].health ? 0 : 1;
       addCombatMessage("라운드 종료!", "Round Over!");
@@ -300,6 +309,15 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       combatActions.setRoundStarted(true);
       addCombatMessage("라운드 시작!", "Round Start!");
 
+      // Play combat music with fade-in when round starts
+      const player = validPlayers[0];
+      if (player?.archetype) {
+        const playerArchetype = player.archetype.toLowerCase();
+        combatAudio.playArchetypeMusic(playerArchetype, 2000);
+      } else {
+        combatAudio.playCombatMusic(2000);
+      }
+
       combatActions.setRoundDisplayStatus("start");
       const fightTimer = setTimeout(() => combatActions.setRoundDisplayStatus("fight"), 1500);
 
@@ -315,6 +333,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     currentRound,
     isPaused,
     combatActions,
+    combatAudio,
   ]);
 
   // Execute AI Actions
@@ -469,6 +488,69 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     []
   );
 
+  // Keyboard input handling for combat
+  useEffect(() => {
+    const handleCombatInput = (event: KeyboardEvent) => {
+      // Prevent handling if round hasn't started or already ended
+      if (!combatState.roundStarted || combatState.roundEnded || combatState.isExecutingTechnique) {
+        // Allow ESC even when round hasn't started
+        if (event.key === "Escape") {
+          onReturnToMenu();
+          event.preventDefault();
+        }
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+
+      // Stance changes (1-8)
+      if (key >= "1" && key <= "8") {
+        const stanceIndex = parseInt(key) - 1;
+        const stances: TrigramStance[] = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
+        ];
+        handleStanceSwitch(stances[stanceIndex]);
+        event.preventDefault();
+      }
+
+      // Attack with Space
+      if (key === " ") {
+        handleAttack();
+        event.preventDefault();
+      }
+
+      // Defend with Shift
+      if (event.key === "Shift") {
+        handleDefend();
+        event.preventDefault();
+      }
+
+      // ESC to return to menu
+      if (event.key === "Escape") {
+        onReturnToMenu();
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleCombatInput);
+    return () => window.removeEventListener("keydown", handleCombatInput);
+  }, [
+    combatState.roundStarted,
+    combatState.roundEnded,
+    combatState.isExecutingTechnique,
+    handleStanceSwitch,
+    handleAttack,
+    handleDefend,
+    onReturnToMenu,
+  ]);
+
   // Performance: Mark render end (development only)
   if (import.meta.env.DEV) {
     performance.mark('combat-render-end');
@@ -507,6 +589,31 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
           padding: layoutConstants.padding,
         }}
       >
+        {/* Combat Title Header */}
+        <pixiContainer
+          layout={{
+            width: "100%",
+            height: 40,
+            flexShrink: 0,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <pixiText
+            text="전투 | Combat"
+            style={{
+              fontSize: isMobile ? 18 : 24,
+              fill: KOREAN_COLORS.ACCENT_GOLD,
+              fontWeight: "bold",
+              fontFamily: FONT_FAMILY.KOREAN,
+              align: "center",
+            }}
+            anchor={0.5}
+            x={width / 2}
+            y={20}
+          />
+        </pixiContainer>
+
         {/* Top HUD Area: Fixed height */}
         <pixiContainer
           layout={{

@@ -70,15 +70,23 @@ export default defineConfig({
       ],
       // Note: 'all' option removed in Vitest 4.0
       skipFull: false, // Don't skip files with 100% coverage
-      // Per Secure Development Policy (ISMS):
-      // - New code should meet 80% line coverage, 70% branch coverage
-      // - CombatSystem.ts currently achieves 87.5% lines / 78.02% branches ✅
-      // Note: Global thresholds not enforced to avoid breaking existing code
+      // Per Secure Development Policy (ISMS) & Issue #increase-combat-test-coverage:
+      // - Long-term target: 80% line coverage, 70% branch coverage overall
+      // - Minimum threshold for new/changed files: 75% coverage
+      // - Specific files improved in this PR must maintain their new coverage levels
+      // Note: Global thresholds commented out to avoid breaking existing code.
+      // These should be enforced via CI checks for new/changed files only.
+      // 
+      // Recommended CI approach:
+      // 1. Run coverage on base branch and PR branch
+      // 2. Compare coverage deltas for changed files
+      // 3. Fail PR if any changed file drops below 75% coverage (minimum threshold)
+      //
       // thresholds: {
-      //   lines: 80,
+      //   lines: 75,
       //   branches: 70,
       //   functions: 70,
-      //   statements: 80,
+      //   statements: 75,
       // },
     },
   },

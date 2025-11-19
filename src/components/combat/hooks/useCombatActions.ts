@@ -43,6 +43,7 @@ import { Position, TrigramStance } from "@/types";
 import { HitEffectType } from "@/systems/effects";
 import { useCallback } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
+import { AttackIntensity } from "./useCombatAudio";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -58,6 +59,14 @@ export interface UseCombatActionsConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+  };
+  readonly combatAudio?: {
+    readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
+    readonly playHitSound: (damage: number) => Promise<void>;
+    readonly playBlockSound: (guardBroken?: boolean) => Promise<void>;
+    readonly playDodgeSound: () => Promise<void>;
+    readonly playStanceChangeSound: () => Promise<void>;
+    readonly playSpecialTechniqueSound: () => Promise<void>;
   };
 }
 
@@ -86,6 +95,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     arenaBounds,
+    combatAudio,
   } = config;
 
   // Player attack handler
@@ -121,6 +131,14 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       effects: [],
     };
 
+    // Play attack sound based on technique damage/intensity
+    const damage = basicAttack.damage ?? 10;
+    const intensity: AttackIntensity = 
+      damage >= 40 ? "critical" : 
+      damage >= 25 ? "heavy" : 
+      damage >= 10 ? "medium" : "light";
+    combatAudio?.playAttackSound(intensity);
+
     // Use combat system for proper calculation
     const result = combatSystem.resolveAttack(
       validPlayers[0],
@@ -137,6 +155,9 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[0], result.hit ? 1 : 0.5);
 
     if (result.hit) {
+      // Play hit sound based on damage
+      combatAudio?.playHitSound(result.damage);
+
       // Combo tracking: reset combo if too much time passed
       const now = Date.now();
       const timeSinceLastHit = now - combatState.lastHitTime;
@@ -181,11 +202,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
+    combatAudio,
   ]);
 
   // Player defend handler
   const handleDefend = useCallback(() => {
     if (!combatState.roundStarted || combatState.roundEnded) return;
+
+    // Play block sound
+    combatAudio?.playBlockSound(false);
 
     onPlayerUpdate(0, { isBlocking: true });
     addCombatMessage("방어 자세", "Defensive Stance");
@@ -201,6 +226,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     playerPositions,
+    combatAudio,
   ]);
 
   // Player technique handler
@@ -212,6 +238,10 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     }
 
     combatActions.setExecutingTechnique(true);
+
+    // Play special technique sound
+    combatAudio?.playSpecialTechniqueSound();
+
     addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[0], 1.5);
 
     // Screen shake effect for impact
@@ -234,6 +264,9 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     );
 
     if (distance < 150) {
+      // Play heavy hit sound for technique
+      combatAudio?.playHitSound(30);
+
       onPlayerUpdate(1, {
         health: Math.max(0, validPlayers[1].health - 25),
         hitsTaken: validPlayers[1].hitsTaken + 1,
@@ -260,12 +293,16 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
+    combatAudio,
   ]);
 
   // Player stance switch handler
   const handleStanceSwitch = useCallback(
     (stance: TrigramStance) => {
       if (!combatState.roundStarted || combatState.roundEnded) return;
+
+      // Play stance change sound
+      combatAudio?.playStanceChangeSound();
 
       onPlayerUpdate(0, { currentStance: stance });
       addCombatMessage(`자세 변경: ${stance}`, `Stance Change: ${stance}`);
@@ -278,6 +315,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       addCombatMessage,
       addHitEffect,
       playerPositions,
+      combatAudio,
     ]
   );
 
