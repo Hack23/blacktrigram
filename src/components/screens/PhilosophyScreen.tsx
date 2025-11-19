@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "@pixi/layout";
 import { extend } from "@pixi/react";
 import { Container, FillGradient } from "pixi.js";
+import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
 import { PhilosophySection } from "./PhilosophySection";
 
@@ -18,18 +19,36 @@ export const PhilosophyScreen: React.FC<PhilosophyScreenProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  const audio = useAudio();
+
+  // Audio lifecycle management for philosophy screen
+  useEffect(() => {
+    // Fade in background music when entering philosophy screen
+    const startMusic = async () => {
+      await audio.playMusic("underground_theme");
+      await audio.fadeIn("underground_theme", 2000);
+    };
+    void startMusic().catch((err) => console.warn("Failed to start philosophy music:", err));
+
+    return () => {
+      // Fade out music when leaving philosophy screen
+      void audio.fadeOut(2000).then(() => audio.stopMusic()).catch((err) => console.warn("Failed to stop philosophy music:", err));
+    };
+  }, [audio]);
+
   // Enhanced keyboard handling for screen-level navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" || event.key.toLowerCase() === "m") {
         event.preventDefault();
+        audio.playSFX("menu_back");
         onReturnToMenu();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown, { passive: false });
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu]);
+  }, [onReturnToMenu, audio]);
 
   return (
     <pixiContainer

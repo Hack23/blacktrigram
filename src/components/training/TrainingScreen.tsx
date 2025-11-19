@@ -4,6 +4,7 @@ import "@pixi/layout";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useAudio } from "../../audio/AudioProvider";
 import { Position } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { DojangBackground } from "../game";
@@ -74,6 +75,23 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     [isMobile, width, height]
   );
 
+  const audio = useAudio();
+
+  // Audio lifecycle management for training screen
+  useEffect(() => {
+    // Fade in background music when entering training screen
+    const startMusic = async () => {
+      await audio.playMusic("cyberpunk_fusion");
+      await audio.fadeIn("cyberpunk_fusion", 2000);
+    };
+    void startMusic().catch((err) => console.warn("Failed to start training music:", err));
+
+    return () => {
+      // Fade out music when leaving training screen
+      void audio.fadeOut(2000).then(() => audio.stopMusic()).catch((err) => console.warn("Failed to stop training music:", err));
+    };
+  }, [audio]);
+
   const arenaBounds = useMemo(
     () => ({
       x: 0, // Use relative coordinates like CombatScreen
@@ -115,13 +133,15 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
     setCombo(0);
     setFeedback("훈련 시작!");
     setShowFeedback(true);
-  }, []);
+    audio.playSFX("menu_select");
+  }, [audio]);
 
   const handleStopTraining = useCallback(() => {
     setIsTraining(false);
     setFeedback("훈련 종료");
     setShowFeedback(true);
-  }, []);
+    audio.playSFX("menu_back");
+  }, [audio]);
 
   const handleDummyHit = useCallback(
     (distance: number): boolean => {
@@ -137,10 +157,13 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
 
         if (accuracy > 0.9) {
           setFeedback("완벽한 타격!");
+          audio.playSFX("ki_release"); // Perfect strike gets ki release sound
         } else if (accuracy > 0.7) {
           setFeedback("좋은 타격!");
+          audio.playSFX("ki_charge"); // Good strike gets ki charge sound
         } else {
           setFeedback("타격 성공");
+          audio.playSFX("menu_click"); // Regular hit gets click sound
         }
         setShowFeedback(true);
         return true;
@@ -148,10 +171,11 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
         setCombo(0);
         setFeedback("빗나감");
         setShowFeedback(true);
+        audio.playSFX("menu_navigate"); // Miss gets navigate sound
         return false;
       }
     },
-    [isTraining]
+    [isTraining, audio]
   );
 
   // ✅ FIXED: Add combat input handling similar to CombatScreen (after handlers)
@@ -178,6 +202,8 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           currentStance: stances[stanceIndex] as any,
           lastActionTime: Date.now(),
         });
+        // Play stance change sound
+        audio.playSFX("stance_change_1");
         event.preventDefault();
       }
 
@@ -196,7 +222,7 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
 
     window.addEventListener("keydown", handleCombatInput);
     return () => window.removeEventListener("keydown", handleCombatInput);
-  }, [isTraining, playerPosition, arenaBounds, onPlayerUpdate, handleDummyHit]);
+  }, [isTraining, playerPosition, arenaBounds, onPlayerUpdate, handleDummyHit, audio]);
 
   // Hide feedback after delay
   useEffect(() => {
@@ -328,7 +354,10 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           {/* Training Mode Selector */}
           <TrainingModeSelector
             currentMode={trainingMode}
-            onModeChange={setTrainingMode}
+            onModeChange={(mode) => {
+              setTrainingMode(mode);
+              audio.playSFX("menu_navigate");
+            }}
             x={0}
             y={0}
             width={layout.leftPanelWidth}
@@ -360,7 +389,10 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           {/* Return Button */}
           <pixiContainer
             interactive={true}
-            onPointerDown={onReturnToMenu}
+            onPointerDown={() => {
+              audio.playSFX("menu_back");
+              onReturnToMenu();
+            }}
             data-testid="return-button"
           >
             <pixiGraphics
@@ -661,7 +693,10 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
 
             <VitalPointTrainingPanel
               selectedVitalPoint={selectedVitalPoint}
-              onVitalPointSelect={setSelectedVitalPoint}
+              onVitalPointSelect={(point) => {
+                setSelectedVitalPoint(point);
+                audio.playSFX("menu_click");
+              }}
               width={layout.rightPanelWidth}
               height={
                 height -
@@ -686,7 +721,10 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
           >
             <VitalPointTrainingPanel
               selectedVitalPoint={selectedVitalPoint}
-              onVitalPointSelect={setSelectedVitalPoint}
+              onVitalPointSelect={(point) => {
+                setSelectedVitalPoint(point);
+                audio.playSFX("menu_click");
+              }}
               width={layout.leftPanelWidth}
               height={200}
               isMobile={true}

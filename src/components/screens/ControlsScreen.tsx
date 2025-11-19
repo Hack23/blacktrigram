@@ -2,6 +2,7 @@ import "@pixi/layout";
 import { extend } from "@pixi/react";
 import { Container, FillGradient } from "pixi.js";
 import React, { useEffect, useMemo } from "react";
+import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
 import { ControlsSection } from "./ControlsSection";
 
@@ -18,6 +19,7 @@ export const ControlsScreen: React.FC<ControlsScreenProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  const audio = useAudio();
   const isMobile = useMemo(() => width < 768, [width]);
   const layoutConstants = useMemo(
     () => ({
@@ -33,13 +35,14 @@ export const ControlsScreen: React.FC<ControlsScreenProps> = ({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" || event.key.toLowerCase() === "m") {
         event.preventDefault();
+        audio.playSFX("menu_back");
         onReturnToMenu();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown, { passive: false });
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu]);
+  }, [onReturnToMenu, audio]);
 
   return (
     <pixiContainer
