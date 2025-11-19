@@ -3,12 +3,16 @@ import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
+import { extendPixiComponents } from "../../utils/pixiExtensions";
 
 // Register custom components for use as JSX tags in @pixi/react
 extend({
   Container,
   LayoutContainer,
 });
+
+// Ensure PixiJS components are extended
+extendPixiComponents();
 
 import * as PIXI from "pixi.js";
 import React, {
@@ -321,7 +325,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     (g: PIXI.Graphics) => {
       g.clear();
 
-      // Base dark gradient using new PixiJS v8 gradient capabilities
+      // Base dark gradient using PixiJS v8 gradient API
       const gradient = new PIXI.FillGradient(0, 0, screenWidth, screenHeight);
       gradient.addColorStop(0, 0x0a0a0f);
       gradient.addColorStop(0.5, 0x1a1a2e);
