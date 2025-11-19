@@ -55,7 +55,7 @@ export const useCombatAudio = () => {
     }
 
     return true;
-  }, [lastPlayTime]);
+  }, []);
 
   /**
    * Register a sound as active and auto-remove after duration

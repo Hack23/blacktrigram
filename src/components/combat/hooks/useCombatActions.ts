@@ -133,7 +133,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     // Play attack sound based on technique damage/intensity
     const damage = basicAttack.damage ?? 10;
-    const intensity: import("./useCombatAudio").AttackIntensity = 
+    const intensity: AttackIntensity = 
       damage >= 40 ? "critical" : 
       damage >= 25 ? "heavy" : 
       damage >= 10 ? "medium" : "light";
