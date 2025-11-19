@@ -81,7 +81,6 @@ export const TrainingScreen: React.FC<TrainingScreenProps> = ({
   useEffect(() => {
     // Fade in background music when entering training screen
     const startMusic = async () => {
-      await audio.playMusic("cyberpunk_fusion");
       await audio.fadeIn("cyberpunk_fusion", 2000);
     };
     void startMusic().catch((err) => console.warn("Failed to start training music:", err));
