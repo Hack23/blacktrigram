@@ -4,7 +4,7 @@
  */
 
 import { useAudio } from "../../../audio/AudioProvider";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 
 /**
  * Attack intensity levels for sound selection
@@ -17,17 +17,22 @@ export type AttackIntensity = "light" | "medium" | "heavy" | "critical";
 const MAX_SIMULTANEOUS_SOUNDS = 5;
 
 /**
- * Active sounds tracker to enforce simultaneous sound limit
- */
-const activeSounds = new Set<string>();
-
-/**
  * Combat audio hook for playing attack, hit, block, dodge, and stance sounds
  * @returns Object with methods for playing various combat sounds
  */
 export const useCombatAudio = () => {
   const audio = useAudio();
   const lastPlayTime = useRef<Record<string, number>>({});
+  const activeSounds = useRef(new Set<string>());
+  const timeoutIds = useRef<Set<NodeJS.Timeout>>(new Set());
+
+  // Cleanup all timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutIds.current.forEach(clearTimeout);
+      timeoutIds.current.clear();
+    };
+  }, []);
 
   /**
    * Check if we can play a sound (rate limiting and simultaneous sound check)
@@ -45,12 +50,12 @@ export const useCombatAudio = () => {
     }
 
     // Check simultaneous sounds limit
-    if (activeSounds.size >= MAX_SIMULTANEOUS_SOUNDS) {
+    if (activeSounds.current.size >= MAX_SIMULTANEOUS_SOUNDS) {
       return false;
     }
 
     return true;
-  }, []);
+  }, [lastPlayTime]);
 
   /**
    * Register a sound as active and auto-remove after duration
@@ -58,10 +63,12 @@ export const useCombatAudio = () => {
    * @param duration - Duration in milliseconds (default 500ms)
    */
   const registerActiveSound = useCallback((soundId: string, duration = 500) => {
-    activeSounds.add(soundId);
-    setTimeout(() => {
-      activeSounds.delete(soundId);
+    activeSounds.current.add(soundId);
+    const timeoutId = setTimeout(() => {
+      activeSounds.current.delete(soundId);
+      timeoutIds.current.delete(timeoutId);
     }, duration);
+    timeoutIds.current.add(timeoutId);
   }, []);
 
   /**
@@ -105,7 +112,8 @@ export const useCombatAudio = () => {
         soundId = getRandomVariant("attack_critical", 4);
         break;
       default:
-        soundId = "attack_light";
+        console.warn(`Unknown attack intensity: ${intensity}, defaulting to light`);
+        soundId = getRandomVariant("attack_punch_light", 8);
     }
 
     try {
@@ -264,7 +272,7 @@ export const useCombatAudio = () => {
 
   /**
    * Play archetype-specific music theme
-   * @param archetype - Player archetype (musa, amsalja, hacker, jeongbo, jojik)
+   * @param archetype - Player archetype (musa, amsalja, hacker, jeongbo_yowon, jojik_pokryeokbae)
    * @param fadeInDuration - Fade-in duration in milliseconds
    */
   const playArchetypeMusic = useCallback(async (
@@ -275,8 +283,8 @@ export const useCombatAudio = () => {
       musa: "musa_warrior_theme",
       amsalja: "amsalja_shadow_theme",
       hacker: "hacker_cyber_theme",
-      jeongbo: "jeongbo_intel_theme",
-      jojik: "jojik_street_theme",
+      jeongbo_yowon: "jeongbo_intel_theme",
+      jojik_pokryeokbae: "jojik_street_theme",
     };
 
     const musicId = archetypeMap[archetype.toLowerCase()];
@@ -313,7 +321,7 @@ export const useCombatAudio = () => {
    * @returns Number of active sounds
    */
   const getActiveSoundCount = useCallback((): number => {
-    return activeSounds.size;
+    return activeSounds.current.size;
   }, []);
 
   return {

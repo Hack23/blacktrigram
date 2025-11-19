@@ -104,9 +104,6 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     combatActions.setExecutingTechnique(true);
 
-    // Play attack sound
-    combatAudio?.playAttackSound("light");
-
     // Create basic attack technique
     const basicAttack = {
       id: "basic_attack",
@@ -133,6 +130,14 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       critMultiplier: 1.5,
       effects: [],
     };
+
+    // Play attack sound based on technique damage/intensity
+    const damage = basicAttack.damage ?? 10;
+    const intensity: import("./useCombatAudio").AttackIntensity = 
+      damage >= 40 ? "critical" : 
+      damage >= 25 ? "heavy" : 
+      damage >= 10 ? "medium" : "light";
+    combatAudio?.playAttackSound(intensity);
 
     // Use combat system for proper calculation
     const result = combatSystem.resolveAttack(

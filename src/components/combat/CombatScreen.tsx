@@ -310,8 +310,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       addCombatMessage("라운드 시작!", "Round Start!");
 
       // Play combat music with fade-in when round starts
-      if (validPlayers.length >= 2) {
-        const playerArchetype = validPlayers[0].archetype.toLowerCase();
+      const player = validPlayers[0];
+      if (player?.archetype) {
+        const playerArchetype = player.archetype.toLowerCase();
         combatAudio.playArchetypeMusic(playerArchetype, 2000);
       } else {
         combatAudio.playCombatMusic(2000);

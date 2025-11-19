@@ -635,8 +635,10 @@ export class AudioAssetRegistry {
       priority: "critical",
       assets: [
         "hit_light_1",
+        "hit_light_2",
         "attack_light",
         "stance_change_1",
+        "stance_change_2",
       ],
       lazyLoad: false,
     });

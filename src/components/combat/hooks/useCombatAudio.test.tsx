@@ -6,7 +6,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useCombatAudio } from "./useCombatAudio";
 import { AudioProvider } from "../../../audio/AudioProvider";
-import AudioManager from "../../../audio/AudioManager";
 import React from "react";
 
 // Mock audio manager
@@ -398,15 +397,27 @@ describe("useCombatAudio", () => {
         });
       }
 
-      const callsAfterFive = mockAudioManager.playSFX.mock.calls.length;
+      // Should have exactly 5 calls
+      expect(mockAudioManager.playSFX).toHaveBeenCalledTimes(5);
 
-      // Try to play a 6th sound (should be blocked)
+      // Try to play a 6th sound immediately (should be blocked by max simultaneous limit)
       await act(async () => {
         await result.current.playAttackSound("light");
       });
 
-      // Should still be the same number of calls
-      expect(mockAudioManager.playSFX.mock.calls.length).toBe(callsAfterFive);
+      // Should still only have 5 calls
+      expect(mockAudioManager.playSFX).toHaveBeenCalledTimes(5);
+
+      // After sounds complete, should be able to play again
+      await act(async () => {
+        vi.advanceTimersByTime(500); // Wait for sounds to complete
+      });
+
+      await act(async () => {
+        await result.current.playAttackSound("light");
+      });
+
+      expect(mockAudioManager.playSFX).toHaveBeenCalledTimes(6);
     });
   });
 
