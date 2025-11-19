@@ -3,16 +3,12 @@ import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
-import { extendPixiComponents } from "../../utils/pixiExtensions";
 
 // Register custom components for use as JSX tags in @pixi/react
 extend({
   Container,
   LayoutContainer,
 });
-
-// Ensure PixiJS components are extended
-extendPixiComponents();
 
 import * as PIXI from "pixi.js";
 import React, {
