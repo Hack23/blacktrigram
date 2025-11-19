@@ -1,0 +1,149 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-19T10:06:16.063Z",
+    "end": "2025-11-19T10:06:27.284Z",
+    "duration": 11221,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "764ad2cd-9c1c-4ac5-a8d9-25b08984ddf2",
+      "title": "",
+      "fullFile": "cypress/e2e/app.cy.ts",
+      "file": "cypress/e2e/app.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4830ebe3-e260-416c-8898-6f8191770222",
+          "title": "Black Trigram - Smoke Test",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should load and display essential elements",
+              "fullTitle": "Black Trigram - Smoke Test should load and display essential elements",
+              "timedOut": null,
+              "duration": 7622,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Smoke test - essential elements\");\n// Verify core elements exist\ncy.get('[data-testid=\"app-container\"]', { timeout: 8000 }).should(\"exist\");\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\ncy.checkCanvasVisibility();\n// Verify essential buttons\ncy.get('[data-testid=\"training-button\"]').should(\"be.visible\");\ncy.get('[data-testid=\"combat-button\"]').should(\"be.visible\");\ncy.log(\"✅ Essential elements loaded\");",
+              "err": {},
+              "uuid": "10873310-d051-4647-8110-36602a536f2c",
+              "parentUUID": "4830ebe3-e260-416c-8898-6f8191770222",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should support basic navigation",
+              "fullTitle": "Black Trigram - Smoke Test should support basic navigation",
+              "timedOut": null,
+              "duration": 1937,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Smoke test - basic navigation\");\n// Test training mode - MUST exist, not optional\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 })\n    .should(\"exist\")\n    .and(\"be.visible\");\ncy.log(\"✅ Training mode accessible\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 })\n    .should(\"exist\");\n// Test combat mode - MUST exist, not optional\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 10000 })\n    .should(\"exist\");\ncy.log(\"✅ Combat mode accessible\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 })\n    .should(\"exist\");\ncy.log(\"✅ Basic navigation works\");",
+              "err": {},
+              "uuid": "24bce350-9ac5-44a3-9fe4-618d53a285b7",
+              "parentUUID": "4830ebe3-e260-416c-8898-6f8191770222",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should support keyboard controls",
+              "fullTitle": "Black Trigram - Smoke Test should support keyboard controls",
+              "timedOut": null,
+              "duration": 957,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Smoke test - keyboard controls\");\n// Test keyboard navigation to combat mode (key \"1\" for versus)\ncy.get(\"body\").type(\"1\");\ncy.wait(1000); // Reduced from 1500ms - wait for screen transition\n// Verify we entered combat mode\ncy.get(\"body\").then(($body) => {\n    const hasCombat = $body.find('[data-testid=\"combat-screen\"]').length > 0;\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0;\n    // We should be in combat OR still in intro (if key didn't work, which is OK for smoke test)\n    expect(hasCombat || hasIntro).to.be.true;\n});\n// Return to intro with ESC\ncy.get(\"body\").type(\"{esc}\");\ncy.wait(1000); // Reduced from 1500ms\n// Verify app container still exists and is functional\ncy.get('[data-testid=\"app-container\"]').should(\"exist\");\ncy.log(\"✅ Keyboard controls work\");",
+              "err": {},
+              "uuid": "0891f7fd-30f2-430c-9919-1f24a9c954b5",
+              "parentUUID": "4830ebe3-e260-416c-8898-6f8191770222",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "10873310-d051-4647-8110-36602a536f2c",
+            "24bce350-9ac5-44a3-9fe4-618d53a285b7",
+            "0891f7fd-30f2-430c-9919-1f24a9c954b5"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 10516,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
