@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="15.862" tests="3" failures="0">
-  <testsuite name="Root Suite" timestamp="2025-11-19T11:23:20" tests="0" file="cypress/e2e/app.cy.ts" failures="0" time="0">
+<testsuites name="Mocha Tests" time="12.724" tests="3" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-11-19T12:30:19" tests="0" file="cypress/e2e/app.cy.ts" failures="0" time="0">
   </testsuite>
-  <testsuite name="Black Trigram - Smoke Test" timestamp="2025-11-19T11:23:20" tests="3" failures="0" time="15.862">
-    <testcase name="Black Trigram - Smoke Test should load and display essential elements" time="9.163" classname="should load and display essential elements" failure="false" error="false" success="true">
+  <testsuite name="Black Trigram - Smoke Test" timestamp="2025-11-19T12:30:19" tests="3" failures="0" time="12.724">
+    <testcase name="Black Trigram - Smoke Test should load and display essential elements" time="8.689" classname="should load and display essential elements" failure="false" error="false" success="true">
     </testcase>
-    <testcase name="Black Trigram - Smoke Test should support basic navigation" time="4.826" classname="should support basic navigation" failure="false" error="false" success="true">
+    <testcase name="Black Trigram - Smoke Test should support basic navigation" time="2.774" classname="should support basic navigation" failure="false" error="false" success="true">
     </testcase>
-    <testcase name="Black Trigram - Smoke Test should support keyboard controls" time="1.873" classname="should support keyboard controls" failure="false" error="false" success="true">
+    <testcase name="Black Trigram - Smoke Test should support keyboard controls" time="1.261" classname="should support keyboard controls" failure="false" error="false" success="true">
     </testcase>
   </testsuite>
 </testsuites>
