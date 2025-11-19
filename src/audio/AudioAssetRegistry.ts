@@ -129,6 +129,93 @@ export class AudioAssetRegistry {
       fadeInTime: 3000,
       fadeOutTime: 3000,
     });
+
+    // Menu UI Sound Effects
+    this.registerSFX("menu_hover", {
+      id: "menu_hover",
+      type: "sound",
+      name: "Menu Hover",
+      category: "sfx",
+      url: "/assets/audio/sfx/menu/menu_hover.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.5,
+      variations: [
+        "/assets/audio/sfx/menu/menu_hover.webm",
+        "/assets/audio/sfx/menu/menu_hover_1.webm",
+        "/assets/audio/sfx/menu/menu_hover_2.webm",
+        "/assets/audio/sfx/menu/menu_hover_3.webm",
+      ],
+    });
+
+    this.registerSFX("menu_select", {
+      id: "menu_select",
+      type: "sound",
+      name: "Menu Select",
+      category: "sfx",
+      url: "/assets/audio/sfx/menu/menu_select.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.7,
+      variations: [
+        "/assets/audio/sfx/menu/menu_select.webm",
+        "/assets/audio/sfx/menu/menu_select_1.webm",
+        "/assets/audio/sfx/menu/menu_select_2.webm",
+        "/assets/audio/sfx/menu/menu_select_3.webm",
+        "/assets/audio/sfx/menu/menu_select_4.webm",
+      ],
+    });
+
+    this.registerSFX("menu_back", {
+      id: "menu_back",
+      type: "sound",
+      name: "Menu Back",
+      category: "sfx",
+      url: "/assets/audio/sfx/menu/menu_back.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.6,
+      variations: [
+        "/assets/audio/sfx/menu/menu_back.webm",
+        "/assets/audio/sfx/menu/menu_back_1.webm",
+        "/assets/audio/sfx/menu/menu_back_2.webm",
+        "/assets/audio/sfx/menu/menu_back_3.webm",
+      ],
+    });
+
+    this.registerSFX("menu_navigate", {
+      id: "menu_navigate",
+      type: "sound",
+      name: "Menu Navigate",
+      category: "sfx",
+      url: "/assets/audio/sfx/misc/menu_navigate.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.5,
+      variations: [
+        "/assets/audio/sfx/misc/menu_navigate.webm",
+        "/assets/audio/sfx/misc/menu_navigate_1.webm",
+        "/assets/audio/sfx/misc/menu_navigate_2.webm",
+        "/assets/audio/sfx/misc/menu_navigate_3.webm",
+      ],
+    });
+
+    this.registerSFX("menu_click", {
+      id: "menu_click",
+      type: "sound",
+      name: "Menu Click",
+      category: "sfx",
+      url: "/assets/audio/sfx/misc/menu_click.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.6,
+      variations: [
+        "/assets/audio/sfx/misc/menu_click.webm",
+        "/assets/audio/sfx/misc/menu_click_1.webm",
+        "/assets/audio/sfx/misc/menu_click_2.webm",
+        "/assets/audio/sfx/misc/menu_click_3.webm",
+      ],
+    });
   }
 
   /**
@@ -628,17 +715,17 @@ export class AudioAssetRegistry {
    * Initialize asset groups for batch loading
    */
   private initializeAssetGroups(): void {
-    // Critical assets - load immediately on startup
+    // Critical assets - load immediately on startup (menu UI sounds)
     this.registerAssetGroup({
       id: "critical",
       name: "Critical UI Sounds",
       priority: "critical",
       assets: [
-        "hit_light_1",
-        "hit_light_2",
-        "attack_light",
-        "stance_change_1",
-        "stance_change_2",
+        "menu_hover",
+        "menu_select",
+        "menu_click",
+        "menu_navigate",
+        "menu_back",
       ],
       lazyLoad: false,
     });
@@ -649,6 +736,21 @@ export class AudioAssetRegistry {
       name: "Intro Screen Music",
       priority: "high",
       assets: ["intro_theme"],
+      lazyLoad: false,
+    });
+
+    // Menu UI sounds - high priority for intro screen
+    this.registerAssetGroup({
+      id: "menu_ui",
+      name: "Menu UI Sounds",
+      priority: "high",
+      assets: [
+        "menu_hover",
+        "menu_select",
+        "menu_click",
+        "menu_navigate",
+        "menu_back",
+      ],
       lazyLoad: false,
     });
 

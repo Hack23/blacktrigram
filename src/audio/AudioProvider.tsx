@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AudioManager from "./AudioManager";
+import { audioAssetRegistry } from "./AudioAssetRegistry";
 import placeholderAssets from "./placeholder-sounds";
 import { AudioAsset, AudioConfig, IAudioManager } from "./types";
 
@@ -29,9 +30,28 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   useEffect(() => {
     (async () => {
       await audioManager.initialize(); // no args
-      // preload all placeholder assets
+      
+      // Preload all placeholder assets
       const list = Object.values(placeholderAssets).flat() as AudioAsset[];
       await Promise.all(list.map((a) => audioManager.loadAsset(a)));
+
+      // Preload menu UI sounds from registry (critical for intro screen)
+      const menuSounds = [
+        audioAssetRegistry.getSFX("menu_hover"),
+        audioAssetRegistry.getSFX("menu_select"),
+        audioAssetRegistry.getSFX("menu_click"),
+        audioAssetRegistry.getSFX("menu_navigate"),
+        audioAssetRegistry.getSFX("menu_back"),
+      ];
+
+      const menuAssets = menuSounds.filter((asset) => asset !== undefined) as AudioAsset[];
+      await Promise.all(menuAssets.map((a) => audioManager.loadAsset(a)));
+
+      // Preload intro music
+      const introMusic = audioAssetRegistry.getMusic("intro_theme");
+      if (introMusic) {
+        await audioManager.loadAsset(introMusic as AudioAsset);
+      }
     })();
   }, [audioManager]);
 
