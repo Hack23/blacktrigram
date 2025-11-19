@@ -252,6 +252,48 @@ export class AudioAssetRegistry {
       fadeOutTime: 2000,
     });
 
+    // Philosophy Screen Music
+    this.registerMusic("underground_theme", {
+      id: "underground_theme",
+      type: "music",
+      name: "Underground Theme",
+      title: { korean: "언더그라운드 테마", english: "Underground Theme" },
+      category: "music",
+      url: "/assets/audio/music/underground_theme.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.5,
+      loop: true,
+      variations: [
+        "/assets/audio/music/underground_theme.webm",
+        "/assets/audio/music/underground_theme.mp3",
+      ],
+      bpm: 110,
+      fadeInTime: 2000,
+      fadeOutTime: 2000,
+    });
+
+    // Training Screen Music
+    this.registerMusic("cyberpunk_fusion", {
+      id: "cyberpunk_fusion",
+      type: "music",
+      name: "Cyberpunk Fusion",
+      title: { korean: "사이버펑크 퓨전", english: "Cyberpunk Fusion" },
+      category: "music",
+      url: "/assets/audio/music/cyberpunk_fusion.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.5,
+      loop: true,
+      variations: [
+        "/assets/audio/music/cyberpunk_fusion.webm",
+        "/assets/audio/music/cyberpunk_fusion.mp3",
+      ],
+      bpm: 120,
+      fadeInTime: 2000,
+      fadeOutTime: 2000,
+    });
+
     // Archetype-Specific Music Themes
     const archetypeThemes = [
       { id: "musa_warrior_theme", name: "Musa Warrior Theme", korean: "무사 테마", file: "musa_warrior" },
@@ -490,6 +532,71 @@ export class AudioAssetRegistry {
         volume: 0.4,
       });
     }
+
+    // Ki Energy Sounds - Charge (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`ki_charge_${i}`, {
+        id: `ki_charge_${i}`,
+        type: "sound",
+        name: `Ki Charge ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/ki_energy/ki_charge_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.5,
+      });
+    }
+
+    // Ki Energy Sounds - Release (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`ki_release_${i}`, {
+        id: `ki_release_${i}`,
+        type: "sound",
+        name: `Ki Release ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/ki_energy/ki_release_${i}.webm`,
+        formats: ["audio/webm", "audio/mp3"],
+        loaded: false,
+        volume: 0.6,
+      });
+    }
+
+    // Generic Ki sounds with variations
+    this.registerSFX("ki_charge", {
+      id: "ki_charge",
+      type: "sound",
+      name: "Ki Charge",
+      category: "sfx",
+      url: "/assets/audio/sfx/ki_energy/ki_charge.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.5,
+      variations: [
+        "/assets/audio/sfx/ki_energy/ki_charge.webm",
+        "/assets/audio/sfx/ki_energy/ki_charge_1.webm",
+        "/assets/audio/sfx/ki_energy/ki_charge_2.webm",
+        "/assets/audio/sfx/ki_energy/ki_charge_3.webm",
+        "/assets/audio/sfx/ki_energy/ki_charge_4.webm",
+      ],
+    });
+
+    this.registerSFX("ki_release", {
+      id: "ki_release",
+      type: "sound",
+      name: "Ki Release",
+      category: "sfx",
+      url: "/assets/audio/sfx/ki_energy/ki_release.webm",
+      formats: ["audio/webm", "audio/mp3"],
+      loaded: false,
+      volume: 0.6,
+      variations: [
+        "/assets/audio/sfx/ki_energy/ki_release.webm",
+        "/assets/audio/sfx/ki_energy/ki_release_1.webm",
+        "/assets/audio/sfx/ki_energy/ki_release_2.webm",
+        "/assets/audio/sfx/ki_energy/ki_release_3.webm",
+        "/assets/audio/sfx/ki_energy/ki_release_4.webm",
+      ],
+    });
   }
 
   public registerSFX(id: SoundEffectId, effect: SoundEffect): void {
@@ -671,7 +778,7 @@ export class AudioAssetRegistry {
 
   // Fix: Remove Map.find usage - Maps don't have find method
   public findSoundEffectByName(name: string): SoundEffect | undefined {
-    for (const [_, effect] of this.soundEffects) {
+    for (const [, effect] of this.soundEffects) {
       if (effect.name === name) {
         return effect;
       }
@@ -680,7 +787,7 @@ export class AudioAssetRegistry {
   }
 
   public findMusicTrackByName(name: string): MusicTrack | undefined {
-    for (const [_, track] of this.musicTracks) {
+    for (const [, track] of this.musicTracks) {
       if (track.name === name) {
         return track;
       }
@@ -763,6 +870,18 @@ export class AudioAssetRegistry {
       lazyLoad: false,
     });
 
+    // Screen music - normal priority for informational screens
+    this.registerAssetGroup({
+      id: "screen_music",
+      name: "Screen Background Music",
+      priority: "normal",
+      assets: [
+        "underground_theme",
+        "cyberpunk_fusion",
+      ],
+      lazyLoad: true,
+    });
+
     // Normal priority - combat SFX
     this.registerAssetGroup({
       id: "combat_attacks",
@@ -822,6 +941,22 @@ export class AudioAssetRegistry {
         "dodge_4",
       ],
       lazyLoad: false,
+    });
+
+    // Training-specific sounds
+    this.registerAssetGroup({
+      id: "training_sfx",
+      name: "Training Sound Effects",
+      priority: "normal",
+      assets: [
+        "ki_charge",
+        "ki_release",
+        "ki_charge_1",
+        "ki_charge_2",
+        "ki_release_1",
+        "ki_release_2",
+      ],
+      lazyLoad: true,
     });
   }
 
