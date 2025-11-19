@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@cypress/react": "^9.0.1",
-    "@cypress/webpack-dev-server": "^5.1.5",
+    "@cypress/webpack-dev-server": "^5.2.0",
     "@elevenlabs/elevenlabs-js": "^2.24.1",
     "openai": "^6.9.1",
     "@aws-sdk/client-bedrock-runtime": "^3.934.0",
