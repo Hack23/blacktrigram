@@ -29,28 +29,39 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 
   useEffect(() => {
     (async () => {
-      await audioManager.initialize(); // no args
-      
-      // Preload all placeholder assets
-      const list = Object.values(placeholderAssets).flat() as AudioAsset[];
-      await Promise.all(list.map((a) => audioManager.loadAsset(a)));
+      try {
+        await audioManager.initialize(); // no args
+        
+        // Preload all placeholder assets
+        const list = Object.values(placeholderAssets).flat() as AudioAsset[];
+        await Promise.all(list.map((a) => audioManager.loadAsset(a).catch(err => {
+          console.warn(`Failed to load placeholder asset: ${a.id}`, err);
+        })));
 
-      // Preload menu UI sounds from registry (critical for intro screen)
-      const menuSounds = [
-        audioAssetRegistry.getSFX("menu_hover"),
-        audioAssetRegistry.getSFX("menu_select"),
-        audioAssetRegistry.getSFX("menu_click"),
-        audioAssetRegistry.getSFX("menu_navigate"),
-        audioAssetRegistry.getSFX("menu_back"),
-      ];
+        // Preload menu UI sounds from registry (critical for intro screen)
+        const menuSounds = [
+          audioAssetRegistry.getSFX("menu_hover"),
+          audioAssetRegistry.getSFX("menu_select"),
+          audioAssetRegistry.getSFX("menu_click"),
+          audioAssetRegistry.getSFX("menu_navigate"),
+          audioAssetRegistry.getSFX("menu_back"),
+        ];
 
-      const menuAssets = menuSounds.filter((asset) => asset !== undefined) as AudioAsset[];
-      await Promise.all(menuAssets.map((a) => audioManager.loadAsset(a)));
+        const menuAssets = menuSounds.filter((asset) => asset !== undefined) as AudioAsset[];
+        await Promise.all(menuAssets.map((a) => audioManager.loadAsset(a).catch(err => {
+          console.warn(`Failed to load menu asset: ${a.id}`, err);
+        })));
 
-      // Preload intro music
-      const introMusic = audioAssetRegistry.getMusic("intro_theme");
-      if (introMusic) {
-        await audioManager.loadAsset(introMusic as AudioAsset);
+        // Preload intro music
+        const introMusic = audioAssetRegistry.getMusic("intro_theme");
+        if (introMusic) {
+          await audioManager.loadAsset(introMusic as AudioAsset).catch(err => {
+            console.warn("Failed to load intro theme music", err);
+          });
+        }
+      } catch (error) {
+        console.error("Failed to initialize audio manager:", error);
+        // Continue without audio - silent mode fallback
       }
     })();
   }, [audioManager]);

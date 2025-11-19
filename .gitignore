@@ -5701,3 +5701,6 @@ cypress/screenshots/**/*
 # Build directory for test results (not committed during PR work)
 build/
 build
+
+# Test results
+test-results.xml

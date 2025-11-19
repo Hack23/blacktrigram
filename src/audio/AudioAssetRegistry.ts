@@ -145,6 +145,7 @@ export class AudioAssetRegistry {
         "/assets/audio/sfx/menu/menu_hover_1.webm",
         "/assets/audio/sfx/menu/menu_hover_2.webm",
         "/assets/audio/sfx/menu/menu_hover_3.webm",
+        "/assets/audio/sfx/menu/menu_hover_4.webm",
       ],
     });
 
@@ -163,6 +164,10 @@ export class AudioAssetRegistry {
         "/assets/audio/sfx/menu/menu_select_2.webm",
         "/assets/audio/sfx/menu/menu_select_3.webm",
         "/assets/audio/sfx/menu/menu_select_4.webm",
+        "/assets/audio/sfx/menu/menu_select_5.webm",
+        "/assets/audio/sfx/menu/menu_select_6.webm",
+        "/assets/audio/sfx/menu/menu_select_7.webm",
+        "/assets/audio/sfx/menu/menu_select_8.webm",
       ],
     });
 
@@ -180,6 +185,7 @@ export class AudioAssetRegistry {
         "/assets/audio/sfx/menu/menu_back_1.webm",
         "/assets/audio/sfx/menu/menu_back_2.webm",
         "/assets/audio/sfx/menu/menu_back_3.webm",
+        "/assets/audio/sfx/menu/menu_back_4.webm",
       ],
     });
 
@@ -197,6 +203,7 @@ export class AudioAssetRegistry {
         "/assets/audio/sfx/misc/menu_navigate_1.webm",
         "/assets/audio/sfx/misc/menu_navigate_2.webm",
         "/assets/audio/sfx/misc/menu_navigate_3.webm",
+        "/assets/audio/sfx/misc/menu_navigate_4.webm",
       ],
     });
 
@@ -214,6 +221,7 @@ export class AudioAssetRegistry {
         "/assets/audio/sfx/misc/menu_click_1.webm",
         "/assets/audio/sfx/misc/menu_click_2.webm",
         "/assets/audio/sfx/misc/menu_click_3.webm",
+        "/assets/audio/sfx/misc/menu_click_4.webm",
       ],
     });
   }
@@ -736,21 +744,6 @@ export class AudioAssetRegistry {
       name: "Intro Screen Music",
       priority: "high",
       assets: ["intro_theme"],
-      lazyLoad: false,
-    });
-
-    // Menu UI sounds - high priority for intro screen
-    this.registerAssetGroup({
-      id: "menu_ui",
-      name: "Menu UI Sounds",
-      priority: "high",
-      assets: [
-        "menu_hover",
-        "menu_select",
-        "menu_click",
-        "menu_navigate",
-        "menu_back",
-      ],
       lazyLoad: false,
     });
 
