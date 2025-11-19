@@ -190,8 +190,8 @@ Cypress.Commands.add("enterCombatMode", () => {
     }
   });
 
-  // Wait for combat screen to appear
-  cy.wait(1500);
+  // Wait for combat screen using assertion-based wait
+  cy.get('[data-testid="combat-screen"]', { timeout: 2000 }).should("exist");
 
   // Verify we're in combat mode
   cy.get("body").then(($body) => {
@@ -218,7 +218,8 @@ Cypress.Commands.add("returnToIntro", () => {
     }
   });
 
-  cy.wait(1500);
+  // Wait for intro screen using assertion-based wait
+  cy.get('[data-testid="intro-screen"]', { timeout: 2000 }).should("exist");
 
   // Verify we're back on intro screen
   cy.get("body").then(($body) => {
@@ -235,10 +236,10 @@ Cypress.Commands.add(
   "practiceStance",
   (stanceNumber: number, repetitions: number = 1) => {
     for (let i = 0; i < repetitions; i++) {
-      cy.get("body").type(stanceNumber.toString(), { delay: 100 });
-      cy.wait(300);
-      cy.get("body").type(" ", { delay: 100 }); // Execute technique
-      cy.wait(500);
+      cy.get("body").type(stanceNumber.toString(), { delay: 50 }); // Reduced delay
+      cy.wait(200); // Reduced from 300ms
+      cy.get("body").type(" ", { delay: 50 }); // Execute technique, reduced delay
+      cy.wait(300); // Reduced from 500ms
     }
   }
 );
@@ -246,9 +247,9 @@ Cypress.Commands.add(
 // Execute a sequence of game actions with reliable typing
 Cypress.Commands.add("gameActions", (actions: string[]) => {
   actions.forEach((action, index) => {
-    cy.get("body").type(action, { delay: 100 });
+    cy.get("body").type(action, { delay: 50 }); // Reduced delay from 100ms
     if (index < actions.length - 1) {
-      cy.wait(200);
+      cy.wait(150); // Reduced from 200ms
     }
   });
 });

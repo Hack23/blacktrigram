@@ -1,11 +1,19 @@
 /**
  * AI Decision Tree for Korean Martial Arts Combat
  * Strategic decision-making system with multiple tactical options
+ * 
+ * **Korean Philosophy Integration (한국 무술 철학)**:
+ * - 지피지기백전불태 (知彼知己百戰不殆) - Know the enemy, know yourself, and victory is certain
+ * - 이순응변 (以柔應變) - Adapt with flexibility and flow like water
+ * - 급소공격 (急所攻擊) - Strike vital points with precision and timing
  */
 
 import { Position, TrigramStance } from "@/types";
 import { AIPersonality } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
+import { TrigramSystem } from "@/systems/TrigramSystem";
+import { KOREAN_VITAL_POINTS, getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
+import { PlayerState } from "@/systems/player";
 
 /**
  * AI action types
@@ -31,6 +39,7 @@ export interface AIDecision {
   readonly action: AIActionType;
   readonly targetPosition?: Position;
   readonly targetStance?: TrigramStance;
+  readonly targetVitalPoint?: string; // ID of vital point to target
   readonly priority: number; // 0-10: Decision confidence
   readonly reason: string; // For debugging/analysis
 }
@@ -64,6 +73,15 @@ export interface CombatContext {
 
 /**
  * AI Decision Tree System
+ * 
+ * **Korean Combat Philosophy (한국 무술 철학)**:
+ * This system embodies traditional Korean martial arts principles:
+ * 
+ * - **팔괘 응용** (Trigram Application): Uses Eight Trigram system for stance transitions
+ * - **급소 타격** (Vital Point Strikes): Targets anatomical weak points with precision
+ * - **상황 판단** (Situational Awareness): Adapts tactics based on combat context
+ * - **기술 조합** (Technique Combinations): Chains attacks into flowing combos
+ * - **방어 우선** (Defense First): Prioritizes survival and tactical retreat when needed
  */
 export class AIDecisionTree {
   private lastDecisionTime = 0;
@@ -71,6 +89,22 @@ export class AIDecisionTree {
   private consecutiveAttacks = 0;
   private lastStanceChange = 0;
   private readonly stanceChangeCooldown = 3000; // 3 seconds
+  
+  // Systems for advanced decision-making
+  private trigramSystem: TrigramSystem;
+  private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
+
+  constructor() {
+    this.trigramSystem = new TrigramSystem();
+  }
+
+  /**
+   * Set AI difficulty level for vital point targeting accuracy
+   * @param level - 0.0 (beginner) to 1.0 (master)
+   */
+  setDifficultyLevel(level: number): void {
+    this.difficultyLevel = Math.max(0, Math.min(1, level));
+  }
 
   /**
    * Make strategic decision based on combat context
@@ -241,7 +275,11 @@ export class AIDecisionTree {
   }
 
   /**
-   * Evaluate stance change
+   * Evaluate stance change using TrigramSystem
+   * 
+   * **Korean Philosophy (자세 전환)**: 
+   * Uses I Ching-based trigram system to find optimal stance transitions.
+   * Considers resource costs and counter-stance effectiveness.
    */
   private evaluateStanceChange(
     context: CombatContext,
@@ -266,19 +304,47 @@ export class AIDecisionTree {
       };
     }
 
-    // Select counter-stance to opponent
-    const counterStance = this.selectCounterStance(
-      context.opponentStance,
-      personality
+    // Use TrigramSystem to recommend optimal stance
+    // Create a minimal PlayerState object with only the properties actually used by recommendStance
+    const playerState = {
+      currentStance: context.playerStance,
+      ki: context.playerKi,
+      stamina: context.playerStamina,
+      archetype: personality.archetype,
+    } as unknown as PlayerState;
+
+    const recommendedStance = this.trigramSystem.recommendStance(playerState);
+    
+    // Check if we can afford the transition
+    const canTransition = this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      recommendedStance,
+      playerState
     );
+
+    if (!canTransition) {
+      // Try counter-stance instead
+      const counterStance = this.selectCounterStance(
+        context.opponentStance,
+        personality
+      );
+      
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: counterStance,
+        priority: 5,
+        reason: `Counter stance to ${context.opponentStance} (급소 대응)`,
+      };
+    }
 
     this.lastStanceChange = now;
 
     return {
       action: AIActionType.STANCE_CHANGE,
-      targetStance: counterStance,
-      priority: 5,
-      reason: `Changing to counter ${context.opponentStance}`,
+      targetStance: recommendedStance,
+      priority: 6,
+      reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
     };
   }
 
@@ -309,7 +375,11 @@ export class AIDecisionTree {
   }
 
   /**
-   * Evaluate close range tactics
+   * Evaluate close range tactics with vital point targeting
+   * 
+   * **Korean Philosophy (급소 공격)**:
+   * At close range, AI targets specific vital points based on difficulty level.
+   * Higher difficulty = more precise targeting of critical points.
    */
   private evaluateCloseRange(
     context: CombatContext,
@@ -319,24 +389,109 @@ export class AIDecisionTree {
       context.playerKi > 10 && context.playerStamina > 15;
     const aggression = personality.aggressionLevel;
 
+    // Select vital point target based on difficulty
+    const targetVitalPoint = this.selectVitalPointTarget(context, personality);
+    
+    // Get Korean name for logging if vital point is selected
+    const vitalPointName = targetVitalPoint 
+      ? (getVitalPointById(targetVitalPoint)?.names.korean ?? targetVitalPoint)
+      : undefined;
+
     if (Math.random() < aggression * 0.8) {
       return {
         action: AIActionType.ATTACK,
-        priority: 6,
-        reason: "Close range - aggressive strike",
+        targetVitalPoint,
+        priority: targetVitalPoint ? 7 : 6,
+        reason: targetVitalPoint 
+          ? `Close range - vital point attack (급소 타격: ${vitalPointName})`
+          : "Close range - aggressive strike",
       };
     } else if (Math.random() < aggression * 0.9 && hasResources) {
       return {
         action: AIActionType.TECHNIQUE,
-        priority: 5,
-        reason: "Close range - technique execution",
+        targetVitalPoint,
+        priority: targetVitalPoint ? 6 : 5,
+        reason: targetVitalPoint
+          ? `Close range - technique on vital point (급소 기술: ${vitalPointName})`
+          : "Close range - technique execution",
       };
     } else {
       return {
         action: AIActionType.DEFEND,
         priority: 4,
-        reason: "Close range - defensive posture",
+        reason: "Close range - defensive posture (방어 자세)",
       };
+    }
+  }
+
+  /**
+   * Select vital point to target based on difficulty and stance
+   * 
+   * **Korean Philosophy (급소 선택)**:
+   * - Beginner AI: Random targeting or no specific target
+   * - Intermediate AI: Favors easier vital points
+   * - Advanced AI: Targets appropriate points for current stance
+   * - Master AI: Targets critical points with high precision
+   */
+  private selectVitalPointTarget(
+    context: CombatContext,
+    personality: AIPersonality
+  ): string | undefined {
+    // Guard: Ensure vital points are available
+    if (KOREAN_VITAL_POINTS.length === 0) {
+      return undefined;
+    }
+
+    // Check if AI attempts vital point targeting based on difficulty
+    const targetChance = this.difficultyLevel * personality.aggressionLevel;
+    if (Math.random() > targetChance) {
+      return undefined; // No specific vital point target
+    }
+
+    // Filter vital points by effective stance
+    const effectivePoints = KOREAN_VITAL_POINTS.filter(point =>
+      point.effectiveStances?.includes(context.playerStance)
+    );
+
+    if (effectivePoints.length === 0) {
+      // Fallback to any vital point
+      const randomIndex = Math.floor(Math.random() * KOREAN_VITAL_POINTS.length);
+      return KOREAN_VITAL_POINTS[randomIndex].id;
+    }
+
+    // Select based on difficulty level
+    if (this.difficultyLevel < 0.3) {
+      // Beginner: Random selection from effective points.
+      // NOTE: This uses Math.random(), which is not seeded and thus not deterministic.
+      // For reproducible AI behavior (e.g., in testing or balancing), consider using a seeded RNG.
+      // Also, this "beginner" AI still filters by effective points (stance-appropriate), which may be more sophisticated than a true novice.
+      // If true beginner behavior is desired, select from all KOREAN_VITAL_POINTS instead.
+      const randomIndex = Math.floor(Math.random() * effectivePoints.length);
+      return effectivePoints[randomIndex].id;
+    } else if (this.difficultyLevel < 0.6) {
+      // Intermediate: Prefer easier targets (lower difficulty)
+      const easierPoints = effectivePoints.filter(p => p.targetingDifficulty < 0.7);
+      
+      if (easierPoints.length > 0) {
+        // Sort without mutating original array
+        const sortedEasierPoints = [...easierPoints].sort((a, b) => a.targetingDifficulty - b.targetingDifficulty);
+        return sortedEasierPoints[0].id;
+      }
+      return effectivePoints[0].id;
+    } else {
+      // Advanced/Master: Target high-value critical points
+      const criticalPoints = effectivePoints
+        .filter(p => p.severity === "critical" || p.severity === "major");
+
+      if (criticalPoints.length > 0) {
+        // Sort without mutating original array
+        const sortedCritical = [...criticalPoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+        return sortedCritical[0].id;
+      }
+      
+      // Fallback to highest damage point (guaranteed to exist due to check at line 456)
+      const sortedByDamage = [...effectivePoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+      return sortedByDamage[0]?.id ?? effectivePoints[0].id;
     }
   }
 

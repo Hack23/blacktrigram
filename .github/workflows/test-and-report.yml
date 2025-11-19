@@ -21,7 +21,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: "24"
@@ -33,14 +33,6 @@ jobs:
           sudo mkdir -p /var/run/dbus
           sudo dbus-daemon --system --fork
 
-      - name: Cache dependencies
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm install
 
@@ -48,7 +40,9 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
 
       - name: Verify Cypress
         run: npx cypress verify
@@ -68,19 +62,19 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: "24"
           cache: "npm"
 
-      - name: Cache dependencies
+      - name: Cache Vite build cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: node_modules/.vite
+          key: ${{ runner.os }}-vite-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-vite-
 
       - name: Install dependencies
         run: npm ci
@@ -109,7 +103,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: "24"
@@ -140,20 +134,39 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: "24"
           cache: "npm"
+
+      - name: Cache Cypress binary
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
 
       - name: Install dependencies
         run: npm install
 
       - name: Start app and run Cypress tests
         run: |
+          echo "🚀 Starting E2E test execution at $(date +%T)"
+          START_TIME=$(date +%s) || START_TIME=0
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
+          END_TIME=$(date +%s) || END_TIME=$START_TIME
+          if [ "$START_TIME" -ne 0 ]; then
+            DURATION=$((END_TIME - START_TIME))
+            echo "✅ E2E tests completed in ${DURATION} seconds ($(date -u -d @${DURATION} +%T))"
+            echo "e2e_duration=${DURATION}" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Could not measure test duration"
+          fi
         env:
           CYPRESS_VIDEO: true
+        id: e2e_tests
 
       - name: Upload Cypress results
         if: always()
@@ -164,6 +177,25 @@ jobs:
             cypress/videos
             cypress/screenshots
             cypress/results
+
+      - name: Report E2E execution time
+        if: always()
+        run: |
+          if [ -n "${{ steps.e2e_tests.outputs.e2e_duration }}" ]; then
+            echo "📊 E2E Test Execution Metrics"
+            echo "================================"
+            echo "Total Duration: ${{ steps.e2e_tests.outputs.e2e_duration }} seconds"
+            echo "Target: 600-720 seconds (10-12 minutes)"
+            
+            DURATION=${{ steps.e2e_tests.outputs.e2e_duration }}
+            if [ $DURATION -le 720 ]; then
+              echo "✅ PASS: Test execution within target (≤12 minutes)"
+            elif [ $DURATION -le 900 ]; then
+              echo "⚠️  WARNING: Test execution slightly over target (12-15 minutes)"
+            else
+              echo "❌ FAIL: Test execution significantly over target (>15 minutes)"
+            fi
+          fi
 
   report:
     needs: [unit-tests, e2e-tests]
@@ -180,10 +212,31 @@ jobs:
         with:
           egress-policy: audit
 
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Download all artifacts
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           path: artifacts
+
+      - name: Generate test reliability report
+        continue-on-error: true
+        run: |
+          # Copy Cypress results for analysis
+          if [ -d "artifacts/cypress-results" ]; then
+            mkdir -p build/cypress/mochawesome
+            find artifacts/cypress-results -name "*.json" -exec cp {} build/cypress/mochawesome/ \;
+          fi
+          
+          # Generate reliability report
+          npm run test:reliability || echo "No test results to analyze"
 
       - name: Upload combined reports
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
@@ -192,3 +245,4 @@ jobs:
           path: |
             coverage
             artifacts/cypress-results
+            build/reports/test-reliability-report.html
