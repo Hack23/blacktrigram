@@ -80,6 +80,8 @@ export interface IAudioManager {
   stopMusic(): void;
   mute(): void;
   unmute(): void;
+  fadeIn(trackId: string, duration?: number): Promise<void>; // ✅ Added for combat audio
+  fadeOut(duration?: number): Promise<void>; // ✅ Added for combat audio
   playKoreanTechniqueSound(
     techniqueId: string,
     archetype: string

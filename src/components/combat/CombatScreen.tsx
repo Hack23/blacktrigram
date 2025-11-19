@@ -31,6 +31,7 @@ import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { PauseOverlay } from "./components/PauseOverlay";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
+import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
 
@@ -84,6 +85,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
 
   // Consolidated state management using useReducer
   const { state: combatState, actions: combatActions } = useCombatState();
+
+  // Combat audio system
+  const combatAudio = useCombatAudio();
 
   // Player positions state (still needed for movement)
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
@@ -268,6 +272,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     addCombatMessage,
     addHitEffect,
     arenaBounds,
+    combatAudio,
   });
 
   // Update player 1 position based on movement
@@ -285,6 +290,9 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       combatActions.setRoundStarted(false);
       combatActions.setRoundDisplayStatus("end");
 
+      // Stop combat music on round end
+      combatAudio.stopCombatMusic(1000);
+
       // Determine winner by health
       const winner = validPlayers[0].health > validPlayers[1].health ? 0 : 1;
       addCombatMessage("라운드 종료!", "Round Over!");
@@ -301,6 +309,15 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
       combatActions.setRoundStarted(true);
       addCombatMessage("라운드 시작!", "Round Start!");
 
+      // Play combat music with fade-in when round starts
+      const player = validPlayers[0];
+      if (player?.archetype) {
+        const playerArchetype = player.archetype.toLowerCase();
+        combatAudio.playArchetypeMusic(playerArchetype, 2000);
+      } else {
+        combatAudio.playCombatMusic(2000);
+      }
+
       combatActions.setRoundDisplayStatus("start");
       const fightTimer = setTimeout(() => combatActions.setRoundDisplayStatus("fight"), 1500);
 
@@ -316,6 +333,7 @@ export const CombatScreen: React.FC<CombatScreenProps> = ({
     currentRound,
     isPaused,
     combatActions,
+    combatAudio,
   ]);
 
   // Execute AI Actions
