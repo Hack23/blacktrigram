@@ -52,6 +52,10 @@ export default defineConfig(({ command, mode }) => ({
       "pixi.js",
       "react-reconciler",
       "howler",
+      // Three.js dependencies for optimized dev performance
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
     ],
     // Exclude heavy modules from dev pre-bundling to reduce TBT
     exclude: [

@@ -239,6 +239,121 @@ C4Component
 
 ---
 
+## 🎮 Three.js Infrastructure Setup
+
+Black Trigram is transitioning from PixiJS (2D rendering) to Three.js (3D rendering) to enhance visual capabilities while maintaining Korean martial arts theming and 60fps performance.
+
+### 📦 Three.js Dependencies
+
+The following Three.js packages are now installed and configured:
+
+- **three@0.181.2** - Core Three.js 3D engine
+- **@react-three/fiber@9.4.0** - React renderer for Three.js (declarative 3D in React)
+- **@react-three/drei@10.7.7** - Useful helpers and abstractions for @react-three/fiber
+- **@types/three@0.181.0** - TypeScript type definitions for Three.js
+
+### 🏗️ Architecture Integration
+
+```mermaid
+graph LR
+    A[React UI Layer] --> B[@react-three/fiber Canvas]
+    B --> C[Three.js Scene]
+    C --> D[3D Models & Meshes]
+    C --> E[Lighting & Materials]
+    C --> F[Korean-themed Shaders]
+    G[@react-three/drei Helpers] --> B
+    H[PixiJS 2D Components] --> A
+    
+    style B fill:#00ffff
+    style C fill:#ffd700
+    style F fill:#ff4444
+```
+
+### 📁 File Structure
+
+- **src/components/test/**
+  - `HelloThreeJS.tsx` - Test component demonstrating Three.js setup
+  - `HelloThreeJS.test.tsx` - Unit tests for Three.js infrastructure
+
+### 🔧 Configuration
+
+**Vite Configuration (`vite.config.ts`):**
+```typescript
+optimizeDeps: {
+  include: [
+    // ... existing PixiJS deps
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+  ],
+}
+```
+
+**TypeScript Configuration (`tsconfig.json`):**
+- `skipLibCheck: true` - Handles Three.js type complexities
+- `moduleResolution: "bundler"` - Optimized for Vite + Three.js
+
+**Test Setup (`src/test/setup.ts`):**
+- WebGL context mocking for Three.js tests
+- ResizeObserver polyfill for @react-three/fiber
+
+### 🎨 Usage Example
+
+```typescript
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import { KOREAN_COLORS } from "../../types/constants";
+
+export const ThreeJSComponent: React.FC = () => {
+  return (
+    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[10, 10, 5]} intensity={1} />
+      
+      <mesh>
+        <boxGeometry args={[2, 2, 2]} />
+        <meshStandardMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
+      </mesh>
+      
+      <OrbitControls enableDamping dampingFactor={0.05} />
+    </Canvas>
+  );
+};
+```
+
+### 📊 Performance Considerations
+
+- **Bundle Size**: Three.js adds ~600KB to the bundle (uncompressed)
+- **Tree Shaking**: Only imported Three.js modules are bundled
+- **Lazy Loading**: Three.js components can be code-split for optimal performance
+- **Coexistence**: PixiJS and Three.js run independently without conflicts
+
+### 🚀 Migration Strategy
+
+1. **Phase 1**: Infrastructure setup (complete) ✅
+2. **Phase 2**: Create 3D Korean-themed materials and shaders
+3. **Phase 3**: Migrate particle systems to Three.js
+4. **Phase 4**: Implement 3D character models with vital point visualization
+5. **Phase 5**: Gradual replacement of PixiJS components with Three.js equivalents
+
+### 🧪 Testing
+
+Three.js components are tested using:
+- **Unit tests**: Component imports and TypeScript type safety
+- **E2E tests**: Visual rendering and interaction (Cypress)
+- **Manual testing**: Browser-based visual verification
+
+**Note**: Full Canvas rendering tests are complex in jsdom due to WebGL requirements. Visual verification is primarily done through E2E tests and manual browser testing.
+
+### 📚 Resources
+
+- [Three.js Documentation](https://threejs.org/docs/)
+- [@react-three/fiber Documentation](https://docs.pmnd.rs/react-three/fiber/)
+- [@react-three/drei Helpers](https://github.com/pmndrs/drei)
+- [Hack23/game Reference Implementation](https://github.com/Hack23/game)
+
+---
+
 ## 🔧 File Structure Highlights
 
 - **src/components/ui/base**
