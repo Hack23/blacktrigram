@@ -528,6 +528,10 @@ export const AnimatedMesh: React.FC<AnimatedMeshProps> = ({
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
+  
+  // Reusable Vector3 instances to avoid allocations in useFrame
+  const targetScaleHovered = useMemo(() => new THREE.Vector3(1.2, 1.2, 1.2), []);
+  const targetScaleNormal = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
   // useFrame runs at 60fps, synced with render loop
   useFrame((state, delta) => {
@@ -539,15 +543,9 @@ export const AnimatedMesh: React.FC<AnimatedMeshProps> = ({
 
     // Hover animation
     if (hovered) {
-      meshRef.current.scale.lerp(
-        new THREE.Vector3(1.2, 1.2, 1.2),
-        0.1
-      );
+      meshRef.current.scale.lerp(targetScaleHovered, 0.1);
     } else {
-      meshRef.current.scale.lerp(
-        new THREE.Vector3(1, 1, 1),
-        0.1
-      );
+      meshRef.current.scale.lerp(targetScaleNormal, 0.1);
     }
   });
 
@@ -569,6 +567,7 @@ export const AnimatedMesh: React.FC<AnimatedMeshProps> = ({
 
 **Advanced Animation with Springs:**
 ```typescript
+// Note: Requires @react-spring/three (install with `npm install @react-spring/three`)
 import { useSpring, animated } from '@react-spring/three';
 import { useFrame } from '@react-three/fiber';
 
@@ -759,18 +758,9 @@ export const ParticleField: React.FC = () => {
   );
 
   return (
-    <Instances
-      limit={1000}
-      range={1000}
-      geometry={<sphereGeometry args={[0.1, 8, 8]} />}
-      material={
-        <meshBasicMaterial
-          color={KOREAN_COLORS.PRIMARY_CYAN}
-          transparent
-          opacity={0.6}
-        />
-      }
-    >
+    <Instances limit={1000}>
+      <sphereGeometry args={[0.1, 8, 8]} />
+      <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
       {particles.map((particle) => (
         <Instance
           key={particle.id}

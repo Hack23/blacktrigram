@@ -360,8 +360,9 @@ export const KOREAN_COLORS = {
 
 ```typescript
 import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, Environment, Html } from '@react-three/drei';
+import { PerspectiveCamera, Environment, Html, Stats } from '@react-three/drei';
 import { KOREAN_COLORS } from '../../types/constants';
+import * as THREE from 'three';
 
 interface Scene3DWrapperProps {
   readonly width: number;
@@ -462,7 +463,7 @@ export const AnimatedCharacter: React.FC<CharacterProps> = ({
       velocityRef.current.clone().multiplyScalar(delta)
     );
 
-    // Breathing animation
+    // Breathing animation (Note: For many characters, consider batching or using shaders)
     const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
     groupRef.current.scale.y = breathScale;
 
@@ -739,7 +740,7 @@ useEffect(() => {
     sharedGeometry.dispose();
     sharedMaterial.dispose();
   };
-}, []);
+}, [sharedGeometry, sharedMaterial]);
 ```
 
 ### Testing Three.js Components
@@ -748,6 +749,7 @@ useEffect(() => {
 import { render } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
 import { describe, it, expect } from 'vitest';
+import { Suspense } from 'react';
 
 // Helper to render Three.js components
 function render3D(component: React.ReactElement) {

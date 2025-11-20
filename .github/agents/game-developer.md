@@ -822,7 +822,7 @@ export const CombatScene3D: React.FC = () => {
 
 **3D State Management with Zustand:**
 ```typescript
-import create from 'zustand';
+import { create } from 'zustand';
 import * as THREE from 'three';
 
 interface GameState3D {
@@ -870,8 +870,10 @@ export const useGameStore3D = create<GameState3D>((set) => ({
 
 **3D Combat System Integration:**
 ```typescript
+// Note: Requires @react-three/rapier for physics support (install with `npm install @react-three/rapier`)
 import { useFrame } from '@react-three/fiber';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
+import { Html } from '@react-three/drei';
 import { KOREAN_COLORS } from '../../types/constants';
 
 interface CombatCharacter3DProps {
@@ -1062,6 +1064,7 @@ export function useOptimizedTextures(paths: string[]) {
     (Array.isArray(textures) ? textures : [textures]).forEach(texture => {
       texture.generateMipmaps = true;
       texture.minFilter = THREE.LinearMipmapLinearFilter;
+      // Note: Check renderer.capabilities.getMaxAnisotropy() and clamp for cross-device compatibility
       texture.anisotropy = 16;
     });
   }, [textures]);
