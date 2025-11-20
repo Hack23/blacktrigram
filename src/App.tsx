@@ -182,6 +182,13 @@ function App() {
     setMatchStats(null);
   }, []);
 
+  // Determine if current screen uses Three.js or PixiJS
+  const isThreeJSScreen = useCallback(() => {
+    // IntroScreen (when gameMode is null) uses Three.js
+    // All other screens (VERSUS, TRAINING, CONTROLS, etc.) use PixiJS
+    return gameMode === null;
+  }, [gameMode]);
+
   const renderCurrentScreen = () => {
     if (gameWinner && matchStats) {
       return (
@@ -338,16 +345,22 @@ function App() {
         }}
         data-testid="app-container"
       >
-        <Application
-          width={screenSize.width}
-          height={screenSize.height}
-          backgroundColor={0x0a0a0f}
-          antialias={true}
-          autoDensity={true}
-          resizeTo={window}
-        >
-          {renderCurrentScreen()}
-        </Application>
+        {isThreeJSScreen() ? (
+          // Three.js screens render directly without PixiJS wrapper
+          renderCurrentScreen()
+        ) : (
+          // PixiJS screens need the Application wrapper
+          <Application
+            width={screenSize.width}
+            height={screenSize.height}
+            backgroundColor={0x0a0a0f}
+            antialias={true}
+            autoDensity={true}
+            resizeTo={window}
+          >
+            {renderCurrentScreen()}
+          </Application>
+        )}
       </div>
     </AudioProvider>
   );
