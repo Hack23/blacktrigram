@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { GameMode } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 import "./MenuSection.css";
 
 export interface MenuSectionHTMLProps {
@@ -33,29 +34,42 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
 
-  // Keyboard navigation
+  // Memoize RGBA color calculations to avoid repeated bit-shift operations
+  const colors = useMemo(() => ({
+    background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.96),
+    border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8),
+    shadow: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.8),
+    titleColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+  }), []);
+
+  // Keyboard navigation - stops propagation to prevent conflicts with parent
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!onSelectedIndexChange) return;
+      
       if (event.key === "ArrowUp") {
         event.preventDefault();
+        event.stopPropagation();
         const nextIndex =
           selectedIndex === 0 ? menuItems.length - 1 : selectedIndex - 1;
         onSelectedIndexChange(nextIndex);
         onPlaySFX?.("menu_hover");
       } else if (event.key === "ArrowDown") {
         event.preventDefault();
+        event.stopPropagation();
         const nextIndex =
           selectedIndex === menuItems.length - 1 ? 0 : selectedIndex + 1;
         onSelectedIndexChange(nextIndex);
         onPlaySFX?.("menu_hover");
       } else if (event.key === " " || event.key === "Enter") {
         event.preventDefault();
+        event.stopPropagation();
         onPlaySFX?.("menu_select");
         onModeSelect(menuItems[selectedIndex].mode);
       } else {
         const numKey = parseInt(event.key);
         if (numKey >= 1 && numKey <= menuItems.length) {
+          event.stopPropagation();
           const targetIndex = numKey - 1;
           onSelectedIndexChange(targetIndex);
           onPlaySFX?.("menu_select");
@@ -118,12 +132,10 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
         justifyContent: "flex-start",
         gap: isMobile ? "12px" : "20px",
         padding: isMobile ? "20px" : "32px",
-        background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_DARK & 255}, 0.96)`,
+        background: colors.background,
         borderRadius: isMobile ? "6px" : "8px",
-        border: `3px solid rgba(${(KOREAN_COLORS.PRIMARY_CYAN >> 16) & 255}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 255}, ${KOREAN_COLORS.PRIMARY_CYAN & 255}, 0.8)`,
-        boxShadow: focused
-          ? `0 0 20px rgba(${(KOREAN_COLORS.ACCENT_CYAN >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_CYAN >> 8) & 255}, ${KOREAN_COLORS.ACCENT_CYAN & 255}, 0.8)`
-          : "none",
+        border: `3px solid ${colors.border}`,
+        boxShadow: focused ? `0 0 20px ${colors.shadow}` : "none",
         position: "relative",
       }}
       data-testid="main-menu-section"
@@ -132,11 +144,11 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
       <div
         style={{
           fontSize: isMobile ? "20px" : "28px",
-          color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+          color: colors.titleColor,
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
           textAlign: "center",
-          textShadow: `0 2px 8px rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
+          textShadow: `0 2px 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7)}`,
         }}
         data-testid="menu-title"
       >

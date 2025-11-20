@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 import "./MenuSection.css";
 
 // Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
@@ -92,7 +93,15 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
       ];
     }, [selectedArchetype.stats]);
 
-    const archetypeColor = `#${selectedArchetype.color.toString(16).padStart(6, "0")}`;
+    // Memoize RGBA color calculations
+    const colors = useMemo(() => ({
+      archetypeColor: `#${selectedArchetype.color.toString(16).padStart(6, "0")}`,
+      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
+      border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
+      titleGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+      statsBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9),
+      statsBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5),
+    }), [selectedArchetype.color]);
 
     // Get archetype image path
     const archetypeImagePath = useMemo(() => {
@@ -112,9 +121,9 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
           alignItems: "flex-start",
           justifyContent: "flex-start",
           gap: "16px",
-          background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_DARK & 255}, 0.95)`,
+          background: colors.background,
           borderRadius: "8px",
-          border: `2px solid ${archetypeColor}`,
+          border: `2px solid ${colors.archetypeColor}`,
           padding: "20px",
           position: "relative",
         }}
@@ -142,9 +151,9 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
               alignItems: "center",
               justifyContent: "center",
               position: "relative",
-              background: `radial-gradient(circle, ${archetypeColor}26, transparent)`,
+              background: `radial-gradient(circle, ${colors.archetypeColor}26, transparent)`,
               borderRadius: "4px",
-              border: `2px solid ${archetypeColor}`,
+              border: `2px solid ${colors.archetypeColor}`,
             }}
             data-testid="archetype-image-container"
           >
@@ -199,8 +208,8 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 fontSize: "14px",
                 fontWeight: "bold",
                 color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
-                background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 0.9)`,
-                border: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
+                background: colors.statsBackground,
+                border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7)}`,
                 borderRadius: "4px",
                 cursor: "pointer",
               }}
@@ -218,8 +227,8 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 fontSize: "14px",
                 fontWeight: "bold",
                 color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
-                background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 0.9)`,
-                border: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
+                background: colors.statsBackground,
+                border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7)}`,
                 borderRadius: "4px",
                 cursor: "pointer",
               }}
@@ -257,7 +266,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 fontSize: isMobile ? "14px" : "18px",
                 fontWeight: "bold",
                 fontFamily: FONT_FAMILY.KOREAN,
-                color: archetypeColor,
+                color: colors.archetypeColor,
               }}
               data-testid="archetype-title"
             >
@@ -268,7 +277,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 fontSize: "12px",
                 fontWeight: "bold",
                 fontFamily: FONT_FAMILY.PRIMARY,
-                color: archetypeColor,
+                color: colors.archetypeColor,
               }}
               data-testid="archetype-counter"
             >
@@ -344,7 +353,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                     background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 1)`,
                     borderRadius: "2px",
                     position: "relative",
-                    border: `1px solid ${archetypeColor}`,
+                    border: `1px solid ${colors.archetypeColor}`,
                   }}
                 >
                   <div
@@ -365,7 +374,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                     fontSize: isMobile ? "9px" : "11px",
                     fontWeight: "bold",
                     fontFamily: FONT_FAMILY.PRIMARY,
-                    color: archetypeColor,
+                    color: colors.archetypeColor,
                     textAlign: "right",
                     flexShrink: 0,
                   }}
@@ -380,5 +389,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
     );
   }
 );
+
+ArchetypeDisplayHTML.displayName = 'ArchetypeDisplayHTML';
 
 export default ArchetypeDisplayHTML;

@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { IntroScreenThreeJS } from "./IntroScreenThreeJS";
-import { GameMode, PlayerArchetype } from "../../types/common";
+import { PlayerArchetype } from "../../types/common";
 import { AudioProvider } from "../../audio/AudioProvider";
 
 // Mock AudioProvider

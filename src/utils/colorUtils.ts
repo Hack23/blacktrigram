@@ -144,5 +144,16 @@ export function getHealthColor(healthPercentage: number): number {
   }
 }
 
+/**
+ * Convert hex color to RGBA string for CSS
+ * @param hex - Hex color value (e.g., 0x1a1a1a)
+ * @param alpha - Alpha value between 0 and 1 (default: 1)
+ * @returns RGBA string (e.g., "rgba(26, 26, 26, 0.96)")
+ */
+export function hexToRgbaString(hex: number, alpha: number = 1): string {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 // DO NOT ADD ANY MORE FUNCTIONS BELOW THIS LINE
 // All functions are already exported above using individual export statements
