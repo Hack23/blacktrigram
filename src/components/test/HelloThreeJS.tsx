@@ -11,7 +11,7 @@
  */
 
 import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useRef } from "react";
 import type { Mesh } from "three";
 import { KOREAN_COLORS } from "../../types/constants";
@@ -29,18 +29,14 @@ interface RotatingBoxProps {
 const RotatingBox: React.FC<RotatingBoxProps> = ({ color }) => {
   const meshRef = useRef<Mesh>(null);
 
-  // Rotate the mesh on each frame
-  React.useEffect(() => {
-    const animate = () => {
-      if (meshRef.current) {
-        meshRef.current.rotation.x += 0.01;
-        meshRef.current.rotation.y += 0.01;
-      }
-      requestAnimationFrame(animate);
-    };
-    const animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
-  }, []);
+  // Use @react-three/fiber's useFrame hook for animation
+  // This properly manages the animation loop lifecycle
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.01;
+      meshRef.current.rotation.y += 0.01;
+    }
+  });
 
   return (
     <mesh ref={meshRef} data-testid="rotating-cube">
