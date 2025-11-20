@@ -749,6 +749,411 @@ class SpatialGrid<T> {
 }
 ```
 
+### 6. Three.js Integration with @react-three/fiber
+
+**3D Game Loop with useFrame:**
+```typescript
+import { useFrame, useThree } from '@react-three/fiber';
+import { useRef, useMemo } from 'react';
+import * as THREE from 'three';
+
+interface GameEntity {
+  readonly id: string;
+  readonly position: THREE.Vector3;
+  readonly velocity: THREE.Vector3;
+  readonly health: number;
+}
+
+export function useGameLoop3D(
+  entities: GameEntity[],
+  updateEntity: (entity: GameEntity, delta: number) => GameEntity
+) {
+  const entitiesRef = useRef(entities);
+  const { clock } = useThree();
+
+  // Update at 60fps
+  useFrame((state, delta) => {
+    // Fixed timestep for physics consistency
+    const maxDelta = 1 / 30; // Cap at 30fps minimum
+    const safeDelta = Math.min(delta, maxDelta);
+
+    // Update all entities
+    entitiesRef.current = entitiesRef.current.map(entity =>
+      updateEntity(entity, safeDelta)
+    );
+  });
+
+  return entitiesRef.current;
+}
+
+// Example usage in combat system
+export const CombatScene3D: React.FC = () => {
+  const [entities, setEntities] = useState<GameEntity[]>([]);
+
+  const updateCombatEntity = useCallback((entity: GameEntity, delta: number) => {
+    // Physics update
+    const newPosition = entity.position.clone().add(
+      entity.velocity.clone().multiplyScalar(delta)
+    );
+
+    // Collision detection
+    if (newPosition.y < 0) {
+      newPosition.y = 0;
+      entity.velocity.y = 0;
+    }
+
+    return {
+      ...entity,
+      position: newPosition,
+    };
+  }, []);
+
+  useGameLoop3D(entities, updateCombatEntity);
+
+  return (
+    <>
+      {entities.map(entity => (
+        <CombatEntity key={entity.id} entity={entity} />
+      ))}
+    </>
+  );
+};
+```
+
+**3D State Management with Zustand:**
+```typescript
+import create from 'zustand';
+import * as THREE from 'three';
+
+interface GameState3D {
+  readonly camera: {
+    position: THREE.Vector3;
+    target: THREE.Vector3;
+  };
+  readonly entities: Map<string, GameEntity3D>;
+  readonly selectedEntity: string | null;
+  
+  // Actions
+  readonly updateCamera: (position: THREE.Vector3, target: THREE.Vector3) => void;
+  readonly addEntity: (entity: GameEntity3D) => void;
+  readonly removeEntity: (id: string) => void;
+  readonly selectEntity: (id: string | null) => void;
+}
+
+export const useGameStore3D = create<GameState3D>((set) => ({
+  camera: {
+    position: new THREE.Vector3(0, 10, 20),
+    target: new THREE.Vector3(0, 0, 0),
+  },
+  entities: new Map(),
+  selectedEntity: null,
+
+  updateCamera: (position, target) =>
+    set({ camera: { position, target } }),
+
+  addEntity: (entity) =>
+    set((state) => ({
+      entities: new Map(state.entities).set(entity.id, entity),
+    })),
+
+  removeEntity: (id) =>
+    set((state) => {
+      const newEntities = new Map(state.entities);
+      newEntities.delete(id);
+      return { entities: newEntities };
+    }),
+
+  selectEntity: (id) =>
+    set({ selectedEntity: id }),
+}));
+```
+
+**3D Combat System Integration:**
+```typescript
+import { useFrame } from '@react-three/fiber';
+import { RigidBody, CuboidCollider } from '@react-three/rapier';
+import { KOREAN_COLORS } from '../../types/constants';
+
+interface CombatCharacter3DProps {
+  readonly id: string;
+  readonly position: [number, number, number];
+  readonly stance: TrigramStance;
+  readonly health: number;
+  readonly onHit?: (damage: number, vitalPoint: VitalPoint) => void;
+}
+
+export const CombatCharacter3D: React.FC<CombatCharacter3DProps> = ({
+  id,
+  position,
+  stance,
+  health,
+  onHit,
+}) => {
+  const rigidBodyRef = useRef<RapierRigidBody>(null);
+  const [isAttacking, setIsAttacking] = useState(false);
+
+  // Combat animation loop
+  useFrame((state, delta) => {
+    if (!rigidBodyRef.current) return;
+
+    // Update stance animation
+    updateStanceAnimation(rigidBodyRef.current, stance, delta);
+
+    // Handle attack states
+    if (isAttacking) {
+      performAttackAnimation(rigidBodyRef.current, delta);
+    }
+  });
+
+  const handleCollision = useCallback((other: CollisionPayload) => {
+    if (other.rigidBody?.userData?.type === 'attack') {
+      const damage = calculateDamage(stance, other.rigidBody.userData.stance);
+      const vitalPoint = detectVitalPoint(other.manifold.localNormal());
+      onHit?.(damage, vitalPoint);
+    }
+  }, [stance, onHit]);
+
+  return (
+    <RigidBody
+      ref={rigidBodyRef}
+      position={position}
+      type="dynamic"
+      userData={{ id, type: 'character' }}
+      onCollisionEnter={handleCollision}
+    >
+      {/* Character mesh */}
+      <mesh castShadow receiveShadow>
+        <capsuleGeometry args={[0.5, 1.5, 16, 32]} />
+        <meshStandardMaterial
+          color={getStanceColor(stance)}
+          emissive={KOREAN_COLORS.PRIMARY_CYAN}
+          emissiveIntensity={health < 30 ? 0.5 : 0.1}
+        />
+      </mesh>
+
+      {/* Collision shape */}
+      <CuboidCollider args={[0.5, 1, 0.5]} />
+
+      {/* Vital points */}
+      <VitalPointMarkers visible={isAttacking} />
+
+      {/* UI overlay */}
+      <Html position={[0, 2.5, 0]} center>
+        <CharacterHUD
+          name={getCharacterName(id)}
+          health={health}
+          stance={stance}
+        />
+      </Html>
+    </RigidBody>
+  );
+};
+```
+
+**3D Particle Systems:**
+```typescript
+import { Points, PointMaterial } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+
+interface ParticleSystem3DProps {
+  readonly count: number;
+  readonly color: number;
+  readonly size?: number;
+  readonly spread?: number;
+}
+
+export const ParticleSystem3D: React.FC<ParticleSystem3DProps> = ({
+  count,
+  color,
+  size = 0.1,
+  spread = 5,
+}) => {
+  const pointsRef = useRef<THREE.Points>(null);
+
+  // Generate particles once
+  const particles = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const velocities = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      // Position
+      positions[i3] = (Math.random() - 0.5) * spread;
+      positions[i3 + 1] = (Math.random() - 0.5) * spread;
+      positions[i3 + 2] = (Math.random() - 0.5) * spread;
+
+      // Velocity
+      velocities[i3] = (Math.random() - 0.5) * 0.1;
+      velocities[i3 + 1] = Math.random() * 0.2;
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.1;
+    }
+
+    return { positions, velocities };
+  }, [count, spread]);
+
+  // Animate particles
+  useFrame((state, delta) => {
+    if (!pointsRef.current) return;
+
+    const positions = pointsRef.current.geometry.attributes.position.array as Float32Array;
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+
+      // Update position
+      positions[i3] += particles.velocities[i3] * delta;
+      positions[i3 + 1] += particles.velocities[i3 + 1] * delta;
+      positions[i3 + 2] += particles.velocities[i3 + 2] * delta;
+
+      // Apply gravity
+      particles.velocities[i3 + 1] -= 9.8 * delta;
+
+      // Reset if out of bounds
+      if (positions[i3 + 1] < -spread) {
+        positions[i3] = (Math.random() - 0.5) * spread;
+        positions[i3 + 1] = spread;
+        positions[i3 + 2] = (Math.random() - 0.5) * spread;
+        particles.velocities[i3 + 1] = 0;
+      }
+    }
+
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+  });
+
+  return (
+    <Points ref={pointsRef} positions={particles.positions}>
+      <PointMaterial
+        color={color}
+        size={size}
+        sizeAttenuation
+        transparent
+        opacity={0.8}
+        depthWrite={false}
+      />
+    </Points>
+  );
+};
+```
+
+**3D Performance Optimization:**
+```typescript
+import { useGLTF, useTexture } from '@react-three/drei';
+import { Suspense } from 'react';
+
+// Model loading with caching
+export function useOptimizedModel(path: string) {
+  // Automatically cached by drei
+  const { scene, animations } = useGLTF(path);
+
+  // Clone for multiple instances
+  return useMemo(() => ({
+    scene: scene.clone(),
+    animations,
+  }), [scene, animations]);
+}
+
+// Texture loading with caching
+export function useOptimizedTextures(paths: string[]) {
+  const textures = useTexture(paths);
+
+  // Configure for performance
+  useMemo(() => {
+    (Array.isArray(textures) ? textures : [textures]).forEach(texture => {
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.anisotropy = 16;
+    });
+  }, [textures]);
+
+  return textures;
+}
+
+// Optimized scene with LOD and instancing
+export const OptimizedCombatScene: React.FC = () => {
+  return (
+    <Suspense fallback={<LoadingPlaceholder />}>
+      {/* Use instancing for repeated objects */}
+      <InstancedEnvironment count={100} />
+
+      {/* LOD for distant objects */}
+      <LODCharacters />
+
+      {/* Frustum culling (automatic) */}
+      <group frustumCulled>
+        <DetailedEnvironment />
+      </group>
+    </Suspense>
+  );
+};
+```
+
+**3D Audio Integration:**
+```typescript
+import { PositionalAudio } from '@react-three/drei';
+import { useRef } from 'react';
+import * as THREE from 'three';
+
+interface SpatialAudio3DProps {
+  readonly url: string;
+  readonly position: [number, number, number];
+  readonly volume?: number;
+  readonly refDistance?: number;
+  readonly rolloffFactor?: number;
+}
+
+export const SpatialAudio3D: React.FC<SpatialAudio3DProps> = ({
+  url,
+  position,
+  volume = 1,
+  refDistance = 1,
+  rolloffFactor = 1,
+}) => {
+  const audioRef = useRef<THREE.PositionalAudio>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.setRefDistance(refDistance);
+      audioRef.current.setRolloffFactor(rolloffFactor);
+      audioRef.current.setVolume(volume);
+    }
+  }, [refDistance, rolloffFactor, volume]);
+
+  return (
+    <PositionalAudio
+      ref={audioRef}
+      url={url}
+      position={position}
+      autoplay
+      loop
+    />
+  );
+};
+
+// Usage in combat
+export const CombatAudio3D: React.FC = () => {
+  return (
+    <>
+      {/* Attack sounds follow character */}
+      <SpatialAudio3D
+        url="/sounds/sword_swing.mp3"
+        position={[playerX, playerY, playerZ]}
+        refDistance={5}
+        rolloffFactor={2}
+      />
+
+      {/* Ambient environmental audio */}
+      <SpatialAudio3D
+        url="/sounds/wind.mp3"
+        position={[0, 0, 0]}
+        volume={0.3}
+        refDistance={50}
+      />
+    </>
+  );
+};
+```
+
 ## Best Practices Checklist
 
 ### PixiJS Integration
@@ -787,11 +1192,23 @@ class SpatialGrid<T> {
 - [ ] Use culling for off-screen objects
 - [ ] Monitor memory usage
 
+### Three.js 3D Integration
+- [ ] Use useFrame for game loop at 60fps
+- [ ] Implement proper physics with Rapier/Cannon
+- [ ] Use instancing for repeated geometry
+- [ ] Implement LOD for performance
+- [ ] Cache models and textures
+- [ ] Use PositionalAudio for spatial sound
+- [ ] Dispose Three.js resources properly
+- [ ] Use Suspense for async loading
+- [ ] Apply Korean theming to materials
+
 ## Success Criteria
 
 Your game development should:
 ✅ Achieve consistent 60fps gameplay
-✅ Use PixiJS 8.x efficiently
+✅ Use PixiJS 8.x efficiently (2D)
+✅ Use Three.js efficiently (3D)
 ✅ Implement proper game loop patterns
 ✅ Integrate audio seamlessly
 ✅ Optimize rendering performance
@@ -804,6 +1221,9 @@ Your game development should:
 - `.github/copilot-instructions.md` - Project patterns
 - PixiJS v8 Documentation - API reference
 - @pixi/react Documentation - React integration
+- @react-three/fiber Documentation - Three.js integration
+- @react-three/drei Documentation - Three.js helpers
+- Three.js Documentation - 3D library reference
 - Howler.js Documentation - Audio features
 - Project `src/components/screens/` - Game screens
 
