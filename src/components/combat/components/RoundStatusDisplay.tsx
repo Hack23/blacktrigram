@@ -2,20 +2,17 @@
 import "@pixi/layout";
 import { extend } from "@pixi/react";
 import * as PIXI from "pixi.js";
-import { Container } from "pixi.js";
-
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React, { useEffect, useRef, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
 // Register PixiJS classes for use as JSX components
 extend({
   Container,
+  Graphics,
+  Sprite,
   Text,
 });
-
-// Ensure PixiJS components are extended
-extendPixiComponents();
 
 export interface RoundStatusDisplayProps {
   readonly round: number;

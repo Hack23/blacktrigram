@@ -1,9 +1,10 @@
+import { extend } from "@pixi/react";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React, { useEffect, useState } from "react";
-import {  KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
+import { KOREAN_COLORS } from "../../../types/constants";
 
-// Ensure PixiJS components are extended
-extendPixiComponents();
+// Register PixiJS components
+extend({ Container, Graphics, Sprite, Text });
 
 export interface TrainingFeedbackProps {
   readonly feedback: string;

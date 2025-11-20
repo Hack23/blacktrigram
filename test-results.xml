@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="12.724" tests="3" failures="0">
-  <testsuite name="Root Suite" timestamp="2025-11-19T12:30:19" tests="0" file="cypress/e2e/app.cy.ts" failures="0" time="0">
+<testsuites name="Mocha Tests" time="37.498" tests="7" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-11-19T23:03:35" tests="0" file="cypress/e2e/game-journey.cy.ts" failures="0" time="0">
   </testsuite>
-  <testsuite name="Black Trigram - Smoke Test" timestamp="2025-11-19T12:30:19" tests="3" failures="0" time="12.724">
-    <testcase name="Black Trigram - Smoke Test should load and display essential elements" time="8.689" classname="should load and display essential elements" failure="false" error="false" success="true">
+  <testsuite name="Black Trigram - Game Journey" timestamp="2025-11-19T23:03:35" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Complete Game Navigation Flow" timestamp="2025-11-19T23:03:35" tests="1" failures="0" time="8.44">
+    <testcase name="Black Trigram - Game Journey Complete Game Navigation Flow should support all navigation paths and game modes" time="8.44" classname="should support all navigation paths and game modes" failure="false" error="false" success="true">
     </testcase>
-    <testcase name="Black Trigram - Smoke Test should support basic navigation" time="2.774" classname="should support basic navigation" failure="false" error="false" success="true">
+  </testsuite>
+  <testsuite name="Combat Mechanics and Interactions" timestamp="2025-11-19T23:03:44" tests="2" failures="0" time="4.021">
+    <testcase name="Black Trigram - Game Journey Combat Mechanics and Interactions should support complete combat flow with all mechanics" time="2.871" classname="should support complete combat flow with all mechanics" failure="false" error="false" success="true">
     </testcase>
-    <testcase name="Black Trigram - Smoke Test should support keyboard controls" time="1.261" classname="should support keyboard controls" failure="false" error="false" success="true">
+    <testcase name="Black Trigram - Game Journey Combat Mechanics and Interactions should handle intense combat performance" time="1.15" classname="should handle intense combat performance" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Responsive Design" timestamp="2025-11-19T23:03:49" tests="1" failures="0" time="6.279">
+    <testcase name="Black Trigram - Game Journey Responsive Design should work across all viewport sizes" time="6.279" classname="should work across all viewport sizes" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Input Handling" timestamp="2025-11-19T23:03:55" tests="1" failures="0" time="11.021">
+    <testcase name="Black Trigram - Game Journey Input Handling should handle various input combinations" time="11.021" classname="should handle various input combinations" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="Error Resilience" timestamp="2025-11-19T23:04:06" tests="1" failures="0" time="1.078">
+    <testcase name="Black Trigram - Game Journey Error Resilience should handle missing components and errors gracefully" time="1.078" classname="should handle missing components and errors gracefully" failure="false" error="false" success="true">
+    </testcase>
+  </testsuite>
+  <testsuite name="AI and State Management" timestamp="2025-11-19T23:04:07" tests="1" failures="0" time="6.659">
+    <testcase name="Black Trigram - Game Journey AI and State Management should handle AI interactions and state consistency" time="6.659" classname="should handle AI interactions and state consistency" failure="false" error="false" success="true">
     </testcase>
   </testsuite>
 </testsuites>
