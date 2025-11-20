@@ -239,7 +239,7 @@ C4Component
 
 ---
 
-## 🎮 Three.js Infrastructure Setup
+## 🎮 Three.js 3D Rendering Architecture
 
 Black Trigram is transitioning from PixiJS (2D rendering) to Three.js (3D rendering) to enhance visual capabilities while maintaining Korean martial arts theming and 60fps performance.
 
@@ -247,110 +247,497 @@ Black Trigram is transitioning from PixiJS (2D rendering) to Three.js (3D render
 
 The following Three.js packages are now installed and configured:
 
-- **three@0.181.2** - Core Three.js 3D engine
+- **three@0.181.2** - Core Three.js 3D engine with WebGL rendering
 - **@react-three/fiber@9.4.0** - React renderer for Three.js (declarative 3D in React)
-- **@react-three/drei@10.7.7** - Useful helpers and abstractions for @react-three/fiber
+- **@react-three/drei@10.7.7** - Useful helpers and abstractions (@react-three/fiber)
 - **@types/three@0.181.0** - TypeScript type definitions for Three.js
 
 ### 🏗️ Architecture Integration
 
 ```mermaid
-graph LR
-    A[React UI Layer] --> B[@react-three/fiber Canvas]
-    B --> C[Three.js Scene]
-    C --> D[3D Models & Meshes]
-    C --> E[Lighting & Materials]
-    C --> F[Korean-themed Shaders]
-    G[@react-three/drei Helpers] --> B
-    H[PixiJS 2D Components] --> A
+graph TD
+    subgraph "React 19 Application Layer"
+        A[React Components]
+        B[State Management - Zustand]
+        C[Korean Theming - KOREAN_COLORS]
+    end
     
-    style B fill:#00ffff
-    style C fill:#ffd700
-    style F fill:#ff4444
+    subgraph "Rendering Layer"
+        D[@react-three/fiber Canvas]
+        E[PixiJS 2D Renderer]
+    end
+    
+    subgraph "Three.js 3D Scene"
+        F[Scene Graph]
+        G[3D Characters]
+        H[Vital Point Markers]
+        I[Particle Systems]
+        J[Korean-Themed Materials]
+        K[Lighting Setup]
+    end
+    
+    subgraph "UI Overlay Layer"
+        L[Html Components]
+        M[Combat HUD]
+        N[Status Panels]
+    end
+    
+    A --> D
+    A --> E
+    B --> A
+    C --> A
+    C --> J
+    
+    D --> F
+    F --> G
+    F --> H
+    F --> I
+    F --> J
+    F --> K
+    
+    D --> L
+    L --> M
+    L --> N
+    
+    style D fill:#00ffff,stroke:#333,stroke-width:3px
+    style F fill:#ffd700,stroke:#333,stroke-width:3px
+    style J fill:#ff4444,stroke:#333,stroke-width:2px
+    style L fill:#98fb98,stroke:#333,stroke-width:2px
+```
+
+### 📐 Rendering Pipeline
+
+```mermaid
+sequenceDiagram
+    participant React as React Component
+    participant Canvas as @react-three/fiber Canvas
+    participant Scene as Three.js Scene
+    participant WebGL as WebGL Renderer
+    participant Display as Browser Display
+    
+    React->>Canvas: Render 3D components
+    Canvas->>Scene: Build scene graph
+    Scene->>Scene: Apply Korean materials
+    Scene->>Scene: Position characters
+    Scene->>Scene: Update particles
+    
+    loop Animation Loop (60fps)
+        Canvas->>Scene: useFrame hook
+        Scene->>WebGL: Render scene
+        WebGL->>Display: Draw to canvas
+    end
+    
+    Note over React,Display: Html overlays render separately via React DOM
 ```
 
 ### 📁 File Structure
 
+#### Current Implementation
 - **src/components/test/**
   - `HelloThreeJS.tsx` - Test component demonstrating Three.js setup
   - `HelloThreeJS.test.tsx` - Unit tests for Three.js infrastructure
+  - `HelloThreeJS-demo.tsx` - Interactive demo with controls
+
+#### Planned Structure
+```
+src/components/combat/
+├── characters/
+│   ├── CharacterModel3D.tsx           # Base 3D character model
+│   ├── VitalPointMarkers3D.tsx        # 70 vital points in 3D
+│   ├── StanceAnimation3D.tsx          # Eight trigram stances
+│   └── DamageVisualization3D.tsx      # Blood and injury effects
+├── particles/
+│   ├── KiEnergyParticles3D.tsx        # Ki energy particle system
+│   ├── HitEffects3D.tsx               # Impact effects and sparks
+│   └── BloodSplatter3D.tsx            # Realistic blood effects
+├── arena/
+│   ├── CombatArena3D.tsx              # Complete 3D combat scene
+│   ├── DojangFloor3D.tsx              # Traditional dojang floor
+│   └── KoreanLighting3D.tsx           # Korean-themed lighting setup
+└── ui/
+    ├── CombatHUDOverlay.tsx           # Html UI over 3D scene
+    ├── PlayerNameplate3D.tsx          # Player info in 3D space
+    └── VitalPointTooltip3D.tsx        # Interactive tooltips
+```
 
 ### 🔧 Configuration
 
 **Vite Configuration (`vite.config.ts`):**
 ```typescript
-optimizeDeps: {
-  include: [
-    // ... existing PixiJS deps
-    "three",
-    "@react-three/fiber",
-    "@react-three/drei",
-  ],
-}
+export default defineConfig({
+  plugins: [react()],
+  optimizeDeps: {
+    include: [
+      // PixiJS dependencies
+      "@pixi/react",
+      "@pixi/layout",
+      "@pixi/ui",
+      "pixi.js",
+      // Three.js dependencies
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
+    ],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+        },
+      },
+    },
+  },
+});
 ```
 
 **TypeScript Configuration (`tsconfig.json`):**
-- `skipLibCheck: true` - Handles Three.js type complexities
-- `moduleResolution: "bundler"` - Optimized for Vite + Three.js
+```json
+{
+  "compilerOptions": {
+    "skipLibCheck": true,          // Handles Three.js type complexities
+    "moduleResolution": "bundler",  // Optimized for Vite + Three.js
+    "strict": true,                 // Strict type checking
+    "jsx": "react-jsx",             // React 19 JSX transform
+    "types": ["vite/client", "node"]
+  }
+}
+```
 
 **Test Setup (`src/test/setup.ts`):**
-- WebGL context mocking for Three.js tests
-- ResizeObserver polyfill for @react-three/fiber
+```typescript
+// WebGL context mocking for Three.js tests
+class MockWebGLRenderingContext {
+  getExtension = vi.fn();
+  getParameter = vi.fn();
+  // ... full WebGL API mock
+}
 
-### 🎨 Usage Example
+// ResizeObserver polyfill for @react-three/fiber
+class MockResizeObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+}
+
+global.ResizeObserver = MockResizeObserver;
+```
+
+### 🎨 Core Patterns
+
+#### Pattern 1: Canvas Setup with Korean Theming
 
 ```typescript
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { KOREAN_COLORS } from "../../types/constants";
+import * as THREE from "three";
 
-export const ThreeJSComponent: React.FC = () => {
+export function CombatScene3D() {
   return (
-    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
+    <Canvas
+      gl={{
+        antialias: true,
+        alpha: false,
+        powerPreference: 'high-performance',
+      }}
+      dpr={[1, 2]}
+      shadows
+      onCreated={({ gl, scene }) => {
+        // Korean cyberpunk background
+        gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+        scene.fog = new THREE.Fog(
+          KOREAN_COLORS.UI_BACKGROUND_DARK,
+          10,
+          50
+        );
+      }}
+    >
+      {/* Korean-themed lighting */}
+      <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
+      <directionalLight
+        position={[10, 10, 5]}
+        intensity={1}
+        castShadow
+        color={KOREAN_COLORS.ACCENT_GOLD}
+      />
       
-      <mesh>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
-      </mesh>
+      {/* Environment reflections */}
+      <Environment preset="city" />
       
-      <OrbitControls enableDamping dampingFactor={0.05} />
+      {/* Camera */}
+      <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
+      
+      {/* Game content */}
+      <CombatArena3D />
     </Canvas>
   );
-};
+}
 ```
 
-### 📊 Performance Considerations
+#### Pattern 2: useFrame Animation Loop
 
-- **Bundle Size**: Three.js adds ~600KB to the bundle (uncompressed)
-- **Tree Shaking**: Only imported Three.js modules are bundled
-- **Lazy Loading**: Three.js components can be code-split for optimal performance
-- **Coexistence**: PixiJS and Three.js run independently without conflicts
+```typescript
+import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import * as THREE from "three";
+
+export function AnimatedCharacter({ stance, health }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  // 60fps animation loop
+  useFrame((state, delta) => {
+    if (!meshRef.current) return;
+    
+    // Breathing animation
+    const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
+    meshRef.current.scale.y = breathScale;
+    
+    // Stance-based rotation
+    meshRef.current.rotation.y = getStanceRotation(stance);
+  });
+  
+  return (
+    <mesh ref={meshRef} castShadow receiveShadow>
+      <capsuleGeometry args={[0.5, 1.5, 16, 32]} />
+      <meshStandardMaterial color={getHealthColor(health)} />
+    </mesh>
+  );
+}
+```
+
+#### Pattern 3: Html Overlays for UI
+
+```typescript
+import { Html } from "@react-three/drei";
+
+export function PlayerNameplate3D({ name, nameKorean, health }) {
+  return (
+    <Html position={[0, 2.5, 0]} center>
+      <div style={{
+        background: `${KOREAN_COLORS.UI_BACKGROUND_DARK}cc`,
+        border: `2px solid ${KOREAN_COLORS.PRIMARY_CYAN}`,
+        borderRadius: '8px',
+        padding: '12px',
+        fontFamily: 'Korean Font',
+      }}>
+        <div style={{ color: KOREAN_COLORS.ACCENT_GOLD }}>
+          {nameKorean} | {name}
+        </div>
+        <HealthBar health={health} />
+      </div>
+    </Html>
+  );
+}
+```
+
+#### Pattern 4: Korean Materials and Lighting
+
+```typescript
+// Eight Trigram color mapping
+const TRIGRAM_COLORS: Record<TrigramStance, number> = {
+  geon: KOREAN_COLORS.CARDINAL_CENTER,  // ☰ Heaven - Yellow
+  tae: KOREAN_COLORS.PRIMARY_CYAN,      // ☱ Lake - Cyan
+  li: KOREAN_COLORS.CARDINAL_SOUTH,     // ☲ Fire - Red
+  jin: KOREAN_COLORS.SECONDARY_YELLOW,  // ☳ Thunder - Yellow
+  son: KOREAN_COLORS.CARDINAL_EAST,     // ☴ Wind - Green
+  gam: KOREAN_COLORS.ACCENT_BLUE,       // ☵ Water - Blue
+  gan: KOREAN_COLORS.UI_BACKGROUND_LIGHT, // ☶ Mountain - Gray
+  gon: KOREAN_COLORS.UI_BACKGROUND_DARK,  // ☷ Earth - Dark
+};
+
+// Cardinal directions lighting (오방색)
+export function CardinalLighting() {
+  return (
+    <>
+      <pointLight position={[10, 0, 0]} color={KOREAN_COLORS.CARDINAL_EAST} />
+      <pointLight position={[-10, 0, 0]} color={KOREAN_COLORS.CARDINAL_WEST} />
+      <pointLight position={[0, 0, 10]} color={KOREAN_COLORS.CARDINAL_SOUTH} />
+      <pointLight position={[0, 0, -10]} color={KOREAN_COLORS.CARDINAL_NORTH} />
+      <pointLight position={[0, 10, 0]} color={KOREAN_COLORS.CARDINAL_CENTER} />
+    </>
+  );
+}
+```
+
+### 📊 Performance Optimization
+
+#### Bundle Size Management
+
+| Asset | Size (Uncompressed) | Size (Gzipped) | Notes |
+|-------|---------------------|----------------|-------|
+| Three.js core | ~600KB | ~150KB | Tree-shaken imports |
+| @react-three/fiber | ~100KB | ~30KB | React integration |
+| @react-three/drei | ~200KB | ~60KB | Only imported helpers |
+| **Total** | **~900KB** | **~240KB** | Lazy-loaded when needed |
+
+#### Optimization Techniques
+
+1. **Instancing for Particles**
+```typescript
+import { Instances, Instance } from '@react-three/drei';
+
+<Instances limit={1000}>
+  <sphereGeometry args={[0.1, 8, 8]} />
+  <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
+  {particles.map((p, i) => (
+    <Instance key={i} position={p.position} scale={p.scale} />
+  ))}
+</Instances>
+```
+
+2. **LOD (Level of Detail)**
+```typescript
+import { Detailed } from '@react-three/drei';
+
+<Detailed distances={[0, 10, 20]}>
+  <HighDetailCharacter />
+  <MediumDetailCharacter />
+  <LowDetailCharacter />
+</Detailed>
+```
+
+3. **Object Pooling**
+```typescript
+// Reuse objects instead of creating new ones
+const particlePool = new ParticlePool(createParticle, resetParticle, 100);
+```
 
 ### 🚀 Migration Strategy
 
-1. **Phase 1**: Infrastructure setup (complete) ✅
-2. **Phase 2**: Create 3D Korean-themed materials and shaders
-3. **Phase 3**: Migrate particle systems to Three.js
-4. **Phase 4**: Implement 3D character models with vital point visualization
-5. **Phase 5**: Gradual replacement of PixiJS components with Three.js equivalents
+#### Phase 1: Infrastructure Setup ✅ COMPLETE
+- [x] Three.js dependencies installed
+- [x] Test component created (`HelloThreeJS`)
+- [x] Korean theming verified
+- [x] Build and test pipeline working
 
-### 🧪 Testing
+#### Phase 2: Particle Systems (In Progress)
+- [ ] Migrate ki energy particles to Three.js `Instances`
+- [ ] Create 3D blood splatter effects
+- [ ] Implement impact sparks with lighting
+- [ ] Performance validation (1000+ particles at 60fps)
 
-Three.js components are tested using:
-- **Unit tests**: Component imports and TypeScript type safety
-- **E2E tests**: Visual rendering and interaction (Cypress)
-- **Manual testing**: Browser-based visual verification
+#### Phase 3: Character Models (Planned)
+- [ ] Create 3D character base model
+- [ ] Implement 70 vital point markers in 3D space
+- [ ] Add stance-based animations (Eight Trigrams)
+- [ ] Integrate damage visualization
 
-**Note**: Full Canvas rendering tests are complex in jsdom due to WebGL requirements. Visual verification is primarily done through E2E tests and manual browser testing.
+#### Phase 4: Combat Arena (Planned)
+- [ ] Build 3D dojang environment
+- [ ] Korean-themed lighting setup
+- [ ] Shadow and reflection effects
+- [ ] Environmental particles (dust, air)
 
-### 📚 Resources
+#### Phase 5: UI Integration (Planned)
+- [ ] Convert Combat HUD to Html overlays
+- [ ] 3D-positioned player status panels
+- [ ] Floating damage numbers
+- [ ] Vital point targeting interface
 
-- [Three.js Documentation](https://threejs.org/docs/)
-- [@react-three/fiber Documentation](https://docs.pmnd.rs/react-three/fiber/)
-- [@react-three/drei Helpers](https://github.com/pmndrs/drei)
-- [Hack23/game Reference Implementation](https://github.com/Hack23/game)
+#### Phase 6: Polish & Optimization (Planned)
+- [ ] Post-processing effects (bloom, color grading)
+- [ ] Advanced particle systems
+- [ ] Mobile performance optimization
+- [ ] Production deployment
+
+### 🧪 Testing Strategy
+
+#### Unit Tests
+```typescript
+// Test Three.js component imports and props
+describe('CharacterModel3D', () => {
+  it('should be defined and importable', () => {
+    expect(CharacterModel3D).toBeDefined();
+  });
+  
+  it('should accept Korean colors', () => {
+    expect(typeof KOREAN_COLORS.PRIMARY_CYAN).toBe('number');
+  });
+});
+```
+
+#### E2E Tests
+```typescript
+// cypress/e2e/threejs-combat.cy.ts
+describe('Three.js Combat Arena', () => {
+  it('should render 3D scene without errors', () => {
+    cy.visit('/combat');
+    cy.get('canvas').should('exist');
+    cy.wait(1000); // Allow scene to load
+  });
+  
+  it('should maintain 60fps during combat', () => {
+    // Use custom FPS counter to validate performance
+  });
+});
+```
+
+#### Manual Testing Checklist
+- [ ] Visual quality on desktop (1920x1080)
+- [ ] Visual quality on mobile (720p)
+- [ ] 60fps sustained on desktop
+- [ ] 55fps minimum on mobile
+- [ ] Korean colors render correctly
+- [ ] Html overlays positioned properly
+- [ ] No WebGL errors in console
+- [ ] Memory usage stays below 500MB (desktop)
+
+### 🎯 Performance Targets
+
+| Platform | Resolution | Target FPS | Particles | Memory |
+|----------|-----------|------------|-----------|--------|
+| Desktop | 1920x1080 | 60fps (sustained) | 1000+ | <500MB |
+| Tablet | 1024x768 | 60fps (target) | 750+ | <400MB |
+| Mobile | 720p | 55fps (minimum) | 500+ | <300MB |
+
+### 📚 Documentation & Resources
+
+#### Project Documentation
+- **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)** - Complete PixiJS to Three.js migration guide
+- **[docs/three-js-patterns.md](./docs/three-js-patterns.md)** - Common patterns and examples
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - This document (architecture overview)
+
+#### External Resources
+- **[Three.js Documentation](https://threejs.org/docs/)** - Official Three.js docs
+- **[@react-three/fiber](https://docs.pmnd.rs/react-three-fiber/)** - React Three Fiber docs
+- **[@react-three/drei](https://github.com/pmndrs/drei)** - Helper library
+- **[Hack23/game](https://github.com/Hack23/game)** - Reference implementation
+
+#### Learning Resources
+- **Three.js Journey** - Comprehensive Three.js course
+- **Discover three.js** - Free online book
+- **React Three Fiber Examples** - Official example gallery
+
+### ✅ Success Criteria
+
+**Infrastructure:**
+- [x] Three.js packages installed and configured
+- [x] TypeScript support enabled
+- [x] Korean theming integration verified
+- [x] Build pipeline working
+- [x] Test infrastructure set up
+
+**Performance:**
+- [ ] 60fps sustained on desktop at 1920x1080
+- [ ] 55fps minimum on mobile at 720p
+- [ ] 1000+ particles at 60fps (desktop)
+- [ ] Memory usage <500MB (desktop)
+- [ ] Bundle size <1MB gzipped
+
+**Quality:**
+- [ ] Korean cultural aesthetics maintained
+- [ ] Smooth martial arts animations
+- [ ] Realistic vital point visualization
+- [ ] Immersive combat experience
+- [ ] Bilingual UI (Korean | English)
+
+**Documentation:**
+- [x] Architecture documented
+- [x] Migration guide created
+- [x] Pattern library established
+- [ ] API documentation updated
+- [ ] Team training completed
 
 ---
 

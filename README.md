@@ -177,23 +177,26 @@ Built for **combat realism** and **authentic simulation**:
 
 <div align="center">
 
-### 🎮 Combat Physics Engine
+### 🎮 Rendering Engine
 
+![Three.js](https://img.shields.io/badge/Three.js-0.181-000000?style=for-the-badge&logo=three.js)
+![React Three Fiber](https://img.shields.io/badge/R3F-9.4-00ffff?style=for-the-badge&logo=react)
 ![PixiJS](https://img.shields.io/badge/PixiJS-8.x-ff6b6b?style=for-the-badge&logo=javascript)
 ![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)
 
 ### ⚡ Performance Optimized
 
-![Vite](https://img.shields.io/badge/Vite-Fast-646cff?style=for-the-badge&logo=vite)
+![Vite](https://img.shields.io/badge/Vite-7.x-646cff?style=for-the-badge&logo=vite)
 ![WebGL](https://img.shields.io/badge/WebGL-Hardware_Accelerated-990000?style=for-the-badge)
 ![Howler.js](https://img.shields.io/badge/Audio-Howler.js-ff9500?style=for-the-badge)
+![60fps](https://img.shields.io/badge/Target-60fps-4caf50?style=for-the-badge)
 
-### 🎨 Visual Effects
+### 🎨 3D Visual Effects
 
-![Particles](https://img.shields.io/badge/Particles-Custom_Engine-9c27b0?style=for-the-badge)
-![Shaders](https://img.shields.io/badge/Shaders-WebGL-ff5722?style=for-the-badge)
-![Animation](https://img.shields.io/badge/Animation-60fps-4caf50?style=for-the-badge)
+![Three.js 3D](https://img.shields.io/badge/3D_Models-Three.js-9c27b0?style=for-the-badge)
+![Particles](https://img.shields.io/badge/Particles-Instanced-ff5722?style=for-the-badge)
+![Shaders](https://img.shields.io/badge/Shaders-Korean_Themed-ffd700?style=for-the-badge)
 
 </div>
 
@@ -203,6 +206,7 @@ Built for **combat realism** and **authentic simulation**:
 - **CombatTracker** – Real-time damage and status monitoring
 - **TechniqueCalculator** – Precise combat effectiveness calculations
 - **CombatAnalyzer** – Post-match technique analysis
+- **ThreeJS Renderer** – Hardware-accelerated 3D combat visualization
 
 ---
 
