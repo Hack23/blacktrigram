@@ -59,7 +59,7 @@
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.4.0",
     "howler": "^2.2.4",
-    "pixi.js": "^8.14.2",
+    "pixi.js": "^8.14.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0",
