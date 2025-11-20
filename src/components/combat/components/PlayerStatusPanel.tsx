@@ -1,10 +1,11 @@
 import { PlayerState } from "@/systems";
+import { extend } from "@pixi/react";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
-// Ensure PixiJS components are extended
-extendPixiComponents();
+// Register PixiJS components
+extend({ Container, Graphics, Sprite, Text });
 
 export interface PlayerStatusPanelProps {
   readonly player: PlayerState;

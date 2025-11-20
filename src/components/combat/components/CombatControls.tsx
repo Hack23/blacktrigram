@@ -1,7 +1,8 @@
+import { extend } from "@pixi/react";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React, { useCallback, useMemo, useState } from "react";
 import { TrigramStance } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
 // Import PlayerState type and create a mock CombatSystem for now
 import type { PlayerState } from "@/systems";
@@ -21,8 +22,8 @@ class MockCombatSystem {
   }
 }
 
-// Ensure PixiJS components are extended
-extendPixiComponents();
+// Register PixiJS components
+extend({ Container, Graphics, Sprite, Text });
 
 export interface CombatControlsProps {
   readonly onAttack: () => void;

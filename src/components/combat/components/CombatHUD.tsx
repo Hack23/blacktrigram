@@ -1,14 +1,14 @@
 import { PLAYER_ARCHETYPES_DATA, PlayerState } from "@/systems";
-import { Texture } from "pixi.js"; // 1. Import Texture
+import { extend } from "@pixi/react";
+import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import React, { useCallback, useMemo } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 import { HealthBar } from "../../ui/HealthBar";
 import { RoundTimer } from "../../ui/RoundTimer";
 import { StanceIndicator } from "../../ui/StanceIndicator";
 
-// Ensure PixiJS components are extended
-extendPixiComponents();
+// Register PixiJS components
+extend({ Container, Graphics, Sprite, Text });
 
 export interface CombatHUDProps {
   readonly player1: PlayerState;

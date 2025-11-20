@@ -1,16 +1,14 @@
 import "@pixi/layout";
 import { extend } from "@pixi/react";
-import { Container, Graphics, Text } from "pixi.js";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
 import { Position, VitalPointSeverity } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
 // Extend PixiJS components
-extend({ Container, Graphics, Text });
-extendPixiComponents();
+extend({ Container, Graphics, Sprite, Text });
 
 export interface TrainingDummyProps {
   readonly x: number;

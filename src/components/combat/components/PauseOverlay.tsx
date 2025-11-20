@@ -1,12 +1,10 @@
 // src/components/combat/components/PauseOverlay.tsx
 import { extend } from "@pixi/react";
-import { Container, Graphics, TextStyle } from "pixi.js";
+import { Container, Graphics, Sprite, Text, TextStyle } from "pixi.js";
 import React, { useCallback } from "react";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
-// Ensure PixiJS components are extended
-extendPixiComponents();
-extend({ Container });
+// Register PixiJS components
+extend({ Container, Graphics, Sprite, Text });
 
 export interface PauseOverlayProps {
   readonly isMobile: boolean;

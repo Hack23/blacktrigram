@@ -3,16 +3,6 @@ import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
 import { Container, Graphics, Sprite, Text } from "pixi.js";
-
-// Register custom components for use as JSX tags in @pixi/react
-extend({
-  Container,
-  LayoutContainer,
-  Graphics,
-  Sprite,
-  Text,
-});
-
 import * as PIXI from "pixi.js";
 import React, {
   useCallback,
@@ -31,6 +21,15 @@ import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { KoreanHeader } from "../ui/KoreanHeader";
+
+// Register custom components for use as JSX tags in @pixi/react
+extend({
+  Container,
+  LayoutContainer,
+  Graphics,
+  Sprite,
+  Text,
+});
 
 // Responsive dimensions
 function useWindowSize() {

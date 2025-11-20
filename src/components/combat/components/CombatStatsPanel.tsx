@@ -1,9 +1,11 @@
 import { PlayerState } from "@/systems";
+import { extend } from "@pixi/react";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React, { useMemo } from "react";
 import { KOREAN_COLORS } from "../../../types/constants";
-import { extendPixiComponents } from "../../../utils/pixiExtensions";
 
-extendPixiComponents();
+// Register PixiJS components
+extend({ Container, Graphics, Sprite, Text });
 
 export interface CombatLogEntry {
   id: string;

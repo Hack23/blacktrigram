@@ -9,7 +9,7 @@ import "@pixi/layout";
 import { LayoutContainer } from "@pixi/layout/components";
 import "@pixi/layout/react";
 import { extend } from "@pixi/react";
-import { Container } from "pixi.js";
+import { Container, Graphics, Sprite, Text } from "pixi.js";
 import React, {
   useCallback,
   useEffect,
@@ -20,7 +20,6 @@ import React, {
 import { HitEffectType } from "../../systems/effects";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
-import { extendPixiComponents } from "../../utils/pixiExtensions";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { DojangBackground } from "../game/DojangBackground";
 import { CombatArena } from "./components/CombatArena";
@@ -39,10 +38,10 @@ import { useCombatState } from "./hooks/useCombatState";
 extend({
   Container,
   LayoutContainer,
+  Graphics,
+  Sprite,
+  Text,
 });
-
-// Ensure PixiJS components are extended
-extendPixiComponents();
 
 export interface CombatScreenProps {
   readonly players: readonly PlayerState[];
