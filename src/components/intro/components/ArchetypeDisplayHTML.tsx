@@ -1,0 +1,370 @@
+import React, { useCallback, useMemo } from "react";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+
+// Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
+export interface ArchetypeDataShape {
+  readonly id: string;
+  readonly korean: string;
+  readonly english: string;
+  readonly description: string;
+  readonly color: number;
+  readonly textureKey: string;
+  readonly stats: {
+    readonly attackPower: number;
+    readonly defense: number;
+    readonly speed: number;
+    readonly technique: number;
+  };
+  readonly philosophy: {
+    readonly korean: string;
+    readonly english: string;
+  };
+}
+
+export interface ArchetypeDisplayHTMLProps {
+  readonly archetypes: readonly ArchetypeDataShape[];
+  readonly selectedIndex: number;
+  readonly onArchetypeChange: (index: number) => void;
+  readonly onPlaySFX: (sound: string) => void;
+  readonly width?: number;
+  readonly height?: number;
+  readonly isMobile?: boolean;
+}
+
+/**
+ * HTML-based ArchetypeDisplay component for Three.js integration
+ * Migrated from PixiJS to work with @react-three/drei Html component
+ */
+export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.memo(
+  ({
+    archetypes,
+    selectedIndex,
+    onArchetypeChange,
+    onPlaySFX,
+    width = 800,
+    height = 300,
+    isMobile = false,
+  }) => {
+    const selectedArchetype = archetypes[selectedIndex];
+
+    const handlePrevious = useCallback(() => {
+      const newIndex =
+        selectedIndex === 0 ? archetypes.length - 1 : selectedIndex - 1;
+      onArchetypeChange(newIndex);
+      onPlaySFX("menu_hover");
+    }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
+
+    const handleNext = useCallback(() => {
+      const newIndex = (selectedIndex + 1) % archetypes.length;
+      onArchetypeChange(newIndex);
+      onPlaySFX("menu_hover");
+    }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
+
+    // Convert real stats to 0-1 scale for visualization
+    const normalizeStats = useCallback(() => {
+      const maxStatValue = 100;
+      return [
+        {
+          korean: "공격",
+          english: "Attack",
+          value: selectedArchetype.stats.attackPower / maxStatValue,
+          rawValue: selectedArchetype.stats.attackPower,
+        },
+        {
+          korean: "방어",
+          english: "Defense",
+          value: selectedArchetype.stats.defense / maxStatValue,
+          rawValue: selectedArchetype.stats.defense,
+        },
+        {
+          korean: "속도",
+          english: "Speed",
+          value: selectedArchetype.stats.speed / maxStatValue,
+          rawValue: selectedArchetype.stats.speed,
+        },
+        {
+          korean: "기술",
+          english: "Technique",
+          value: selectedArchetype.stats.technique / maxStatValue,
+          rawValue: selectedArchetype.stats.technique,
+        },
+      ];
+    }, [selectedArchetype.stats]);
+
+    const combatStats = normalizeStats();
+
+    const archetypeColor = `#${selectedArchetype.color.toString(16).padStart(6, "0")}`;
+
+    // Get archetype image path
+    const archetypeImagePath = useMemo(() => {
+      return `/assets/visual/archetypes/${selectedArchetype.textureKey}.png`;
+    }, [selectedArchetype.textureKey]);
+
+    const archImageWidth = isMobile ? 140 : 180;
+    const archImageHeight = isMobile ? 200 : 260;
+
+    return (
+      <div
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          gap: "16px",
+          background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_DARK & 255}, 0.95)`,
+          borderRadius: "8px",
+          border: `2px solid ${archetypeColor}`,
+          padding: "20px",
+          position: "relative",
+        }}
+        data-testid="archetype-display-container"
+      >
+        {/* Left Side - Character Image and Navigation */}
+        <div
+          style={{
+            width: `${archImageWidth + 40}px`,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            flexShrink: 0,
+          }}
+          data-testid="archetype-image-section"
+        >
+          {/* Character Image */}
+          <div
+            style={{
+              width: `${archImageWidth + 20}px`,
+              height: `${archImageHeight + 20}px`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              background: `radial-gradient(circle, ${archetypeColor}26, transparent)`,
+              borderRadius: "4px",
+              border: `2px solid ${archetypeColor}`,
+            }}
+            data-testid="archetype-image-container"
+          >
+            <img
+              src={archetypeImagePath}
+              alt={`${selectedArchetype.korean} - ${selectedArchetype.english}`}
+              style={{
+                width: `${archImageWidth}px`,
+                height: `${archImageHeight}px`,
+                objectFit: "contain",
+                cursor: "pointer",
+              }}
+              onClick={handleNext}
+              data-testid="archetype-image"
+              onError={(e) => {
+                // Fallback if image doesn't load
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+
+          {/* Navigation Buttons */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "8px",
+              width: "100%",
+            }}
+            data-testid="archetype-navigation"
+          >
+            <button
+              onClick={handlePrevious}
+              style={{
+                flex: 1,
+                height: "30px",
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+                background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 0.9)`,
+                border: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
+                borderRadius: "4px",
+                cursor: "pointer",
+                outline: "none",
+              }}
+              data-testid="prev-archetype-button"
+            >
+              ◀
+            </button>
+            <button
+              onClick={handleNext}
+              style={{
+                flex: 1,
+                height: "30px",
+                fontSize: "14px",
+                fontWeight: "bold",
+                color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+                background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 0.9)`,
+                border: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
+                borderRadius: "4px",
+                cursor: "pointer",
+                outline: "none",
+              }}
+              data-testid="next-archetype-button"
+            >
+              ▶
+            </button>
+          </div>
+        </div>
+
+        {/* Right Side - Archetype Information */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            gap: "12px",
+          }}
+          data-testid="archetype-info"
+        >
+          {/* Header with name and counter */}
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div
+              style={{
+                fontSize: isMobile ? "14px" : "18px",
+                fontWeight: "bold",
+                fontFamily: FONT_FAMILY.KOREAN,
+                color: archetypeColor,
+              }}
+              data-testid="archetype-title"
+            >
+              {selectedArchetype.korean} | {selectedArchetype.english}
+            </div>
+            <div
+              style={{
+                fontSize: "12px",
+                fontWeight: "bold",
+                fontFamily: FONT_FAMILY.PRIMARY,
+                color: archetypeColor,
+              }}
+              data-testid="archetype-counter"
+            >
+              {selectedIndex + 1} / {archetypes.length}
+            </div>
+          </div>
+
+          {/* Philosophy */}
+          <div
+            style={{
+              fontSize: isMobile ? "10px" : "12px",
+              fontStyle: "italic",
+              fontFamily: FONT_FAMILY.KOREAN,
+              color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+              lineHeight: "1.4",
+            }}
+            data-testid="archetype-philosophy"
+          >
+            {selectedArchetype.philosophy.korean} | {selectedArchetype.philosophy.english}
+          </div>
+
+          {/* Combat Stats */}
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+            }}
+            data-testid="combat-stats"
+          >
+            <div
+              style={{
+                fontSize: isMobile ? "12px" : "14px",
+                fontWeight: "bold",
+                fontFamily: FONT_FAMILY.KOREAN,
+                color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+              }}
+            >
+              전투 능력치 | Combat Stats
+            </div>
+
+            {/* Individual stat bars */}
+            {combatStats.map((stat) => (
+              <div
+                key={stat.korean}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
+                {/* Stat label */}
+                <div
+                  style={{
+                    width: "80px",
+                    fontSize: isMobile ? "9px" : "11px",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+                    flexShrink: 0,
+                  }}
+                >
+                  {stat.korean} | {stat.english}
+                </div>
+
+                {/* Stat bar container */}
+                <div
+                  style={{
+                    flex: 1,
+                    height: "12px",
+                    background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 1)`,
+                    borderRadius: "2px",
+                    position: "relative",
+                    border: `1px solid ${archetypeColor}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${stat.value * 100}%`,
+                      height: "100%",
+                      background: `rgba(${(selectedArchetype.color >> 16) & 255}, ${(selectedArchetype.color >> 8) & 255}, ${selectedArchetype.color & 255}, 0.9)`,
+                      borderRadius: "2px",
+                      transition: "width 0.3s ease",
+                    }}
+                  />
+                </div>
+
+                {/* Stat value */}
+                <div
+                  style={{
+                    width: "30px",
+                    fontSize: isMobile ? "9px" : "11px",
+                    fontWeight: "bold",
+                    fontFamily: FONT_FAMILY.PRIMARY,
+                    color: archetypeColor,
+                    textAlign: "right",
+                    flexShrink: 0,
+                  }}
+                >
+                  {stat.rawValue}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
+
+export default ArchetypeDisplayHTML;
