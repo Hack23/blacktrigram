@@ -354,6 +354,443 @@ export const KOREAN_COLORS = {
 } as const;
 ```
 
+## 🎮 Three.js 3D Integration Patterns
+
+### Canvas Setup with Korean Theming
+
+```typescript
+import { Canvas } from '@react-three/fiber';
+import { PerspectiveCamera, Environment, Html, Stats } from '@react-three/drei';
+import { KOREAN_COLORS } from '../../types/constants';
+import * as THREE from 'three';
+
+interface Scene3DWrapperProps {
+  readonly width: number;
+  readonly height: number;
+  readonly children: React.ReactNode;
+  readonly showStats?: boolean;
+}
+
+export const Scene3DWrapper: React.FC<Scene3DWrapperProps> = ({
+  width,
+  height,
+  children,
+  showStats = false,
+}) => {
+  return (
+    <Canvas
+      style={{ width, height }}
+      gl={{
+        antialias: true,
+        alpha: false,
+        powerPreference: 'high-performance',
+      }}
+      dpr={[1, 2]}
+      shadows
+      onCreated={({ gl, scene }) => {
+        // Korean cyberpunk background
+        gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+        scene.fog = new THREE.Fog(
+          KOREAN_COLORS.UI_BACKGROUND_DARK,
+          10,
+          50
+        );
+      }}
+    >
+      {/* Korean-themed lighting */}
+      <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
+      <directionalLight
+        position={[10, 10, 5]}
+        intensity={1}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        color={KOREAN_COLORS.ACCENT_GOLD}
+      />
+      <pointLight
+        position={[-10, 5, -5]}
+        intensity={0.5}
+        color={KOREAN_COLORS.ACCENT_BLUE}
+      />
+
+      {/* Environment for reflections */}
+      <Environment preset="city" />
+
+      {/* Camera */}
+      <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
+
+      {/* Game content */}
+      {children}
+
+      {/* Performance stats in development */}
+      {showStats && process.env.NODE_ENV === 'development' && (
+        <Html fullscreen>
+          <div style={{ position: 'absolute', top: 10, left: 10 }}>
+            <Stats />
+          </div>
+        </Html>
+      )}
+    </Canvas>
+  );
+};
+```
+
+### useFrame Animation Pattern
+
+```typescript
+import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+import * as THREE from 'three';
+
+// ALWAYS use useFrame for 60fps animations
+export const AnimatedCharacter: React.FC<CharacterProps> = ({
+  position,
+  stance,
+  isMoving,
+}) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const velocityRef = useRef(new THREE.Vector3());
+
+  // Game loop at 60fps
+  useFrame((state, delta) => {
+    if (!groupRef.current) return;
+
+    // Update velocity based on stance
+    const targetVelocity = calculateStanceVelocity(stance, isMoving);
+    velocityRef.current.lerp(targetVelocity, 0.1);
+
+    // Update position
+    groupRef.current.position.add(
+      velocityRef.current.clone().multiplyScalar(delta)
+    );
+
+    // Breathing animation (Note: For many characters, consider batching or using shaders)
+    const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
+    groupRef.current.scale.y = breathScale;
+
+    // Combat stance rotation
+    const targetRotation = getStanceRotation(stance);
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(
+      groupRef.current.rotation.y,
+      targetRotation,
+      0.1
+    );
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <CharacterMesh stance={stance} />
+      <StanceAuraEffect stance={stance} />
+    </group>
+  );
+};
+```
+
+### Html Overlay vs 3D Mesh Decision
+
+**Use Html Overlays for:**
+```typescript
+import { Html } from '@react-three/drei';
+
+// ✅ UI elements (buttons, text, stats)
+export const PlayerHUD3D: React.FC = ({ player }) => {
+  return (
+    <Html
+      position={[0, 2.5, 0]}
+      center
+      distanceFactor={10}
+      occlude={false}
+      style={{ pointerEvents: 'all' }}
+    >
+      <div style={{
+        background: `${KOREAN_COLORS.UI_BACKGROUND_DARK}dd`,
+        border: `2px solid ${KOREAN_COLORS.PRIMARY_CYAN}`,
+        borderRadius: '8px',
+        padding: '12px',
+        fontFamily: 'Korean Font',
+      }}>
+        <div>{player.nameKorean} | {player.name}</div>
+        <HealthBar value={player.health} />
+        <StanceIndicator stance={player.stance} />
+      </div>
+    </Html>
+  );
+};
+
+// ✅ Interactive menus
+export const CombatMenu3D: React.FC = ({ onAction }) => {
+  return (
+    <Html fullscreen>
+      <div style={{ 
+        position: 'absolute', 
+        bottom: 20, 
+        left: '50%', 
+        transform: 'translateX(-50%)'
+      }}>
+        <button onClick={() => onAction('attack')}>
+          공격 | Attack
+        </button>
+        <button onClick={() => onAction('defend')}>
+          방어 | Defend
+        </button>
+      </div>
+    </Html>
+  );
+};
+```
+
+**Use 3D Meshes for:**
+```typescript
+// ✅ Game objects, characters, effects
+export const CombatCharacter3D: React.FC = ({ 
+  position, 
+  stance, 
+  isAttacking 
+}) => {
+  return (
+    <group position={position}>
+      {/* Character mesh with Korean-themed materials */}
+      <mesh castShadow receiveShadow>
+        <capsuleGeometry args={[0.5, 1.5, 16, 32]} />
+        <meshStandardMaterial
+          color={getStanceColor(stance)}
+          emissive={KOREAN_COLORS.PRIMARY_CYAN}
+          emissiveIntensity={isAttacking ? 0.5 : 0.1}
+          metalness={0.3}
+          roughness={0.7}
+        />
+      </mesh>
+
+      {/* Particle effects */}
+      {isAttacking && (
+        <AttackParticles color={KOREAN_COLORS.ACCENT_GOLD} />
+      )}
+
+      {/* Stance aura (3D effect) */}
+      <StanceAura3D stance={stance} />
+    </group>
+  );
+};
+
+// ✅ Visual effects
+export const HitEffect3D: React.FC = ({ position, type }) => {
+  return (
+    <group position={position}>
+      <pointLight
+        intensity={2}
+        distance={5}
+        decay={2}
+        color={type === 'critical' 
+          ? KOREAN_COLORS.CARDINAL_SOUTH 
+          : KOREAN_COLORS.ACCENT_GOLD
+        }
+      />
+      <ImpactParticles count={50} spread={2} />
+    </group>
+  );
+};
+```
+
+**Hybrid Approach (Recommended):**
+```typescript
+// ✅ Combine both for best results
+export const CombatSceneHybrid: React.FC = () => {
+  return (
+    <Scene3DWrapper width={1200} height={800}>
+      {/* 3D game world */}
+      <CombatArena />
+      
+      {/* 3D characters */}
+      <CombatCharacter3D position={[-5, 0, 0]} stance="geon" />
+      <CombatCharacter3D position={[5, 0, 0]} stance="gon" />
+      
+      {/* 3D effects */}
+      <ParticleSystem3D />
+      
+      {/* Html UI overlays */}
+      <Html position={[-5, 2.5, 0]} center>
+        <PlayerNametag name="Player 1" health={85} />
+      </Html>
+      
+      <Html position={[5, 2.5, 0]} center>
+        <PlayerNametag name="Player 2" health={72} />
+      </Html>
+      
+      {/* Fullscreen UI */}
+      <Html fullscreen>
+        <CombatHUD />
+        <ControlPanel />
+      </Html>
+    </Scene3DWrapper>
+  );
+};
+```
+
+### TypeScript Types for Three.js
+
+```typescript
+// ALWAYS use proper types from three package
+import * as THREE from 'three';
+import { ThreeEvent, RootState } from '@react-three/fiber';
+
+// Mesh references
+interface MeshRef {
+  current: THREE.Mesh | null;
+}
+
+interface GroupRef {
+  current: THREE.Group | null;
+}
+
+// Event handlers
+type PointerEventHandler = (event: ThreeEvent<PointerEvent>) => void;
+type ClickEventHandler = (event: ThreeEvent<MouseEvent>) => void;
+
+// Component props with Three.js types
+interface Mesh3DProps {
+  readonly position?: THREE.Vector3Tuple;
+  readonly rotation?: THREE.EulerTuple;
+  readonly scale?: number | THREE.Vector3Tuple;
+  readonly color?: THREE.ColorRepresentation;
+  readonly onClick?: ClickEventHandler;
+  readonly onPointerOver?: PointerEventHandler;
+  readonly onPointerOut?: PointerEventHandler;
+}
+
+// Material configuration
+interface KoreanMaterialConfig {
+  readonly color: number;
+  readonly metalness?: number;
+  readonly roughness?: number;
+  readonly emissive?: number;
+  readonly emissiveIntensity?: number;
+  readonly transparent?: boolean;
+  readonly opacity?: number;
+}
+
+// Scene state
+interface Scene3DState {
+  readonly camera: THREE.PerspectiveCamera;
+  readonly scene: THREE.Scene;
+  readonly gl: THREE.WebGLRenderer;
+  readonly clock: THREE.Clock;
+}
+```
+
+### Performance Optimization for Three.js
+
+```typescript
+// ✅ Use instancing for repeated geometry
+import { Instances, Instance } from '@react-three/drei';
+
+export const OptimizedParticles: React.FC = () => {
+  const particles = useMemo(
+    () => Array.from({ length: 1000 }, (_, i) => ({
+      id: i,
+      position: [
+        Math.random() * 20 - 10,
+        Math.random() * 10,
+        Math.random() * 20 - 10,
+      ] as [number, number, number],
+    })),
+    []
+  );
+
+  return (
+    <Instances limit={1000}>
+      <sphereGeometry args={[0.1, 8, 8]} />
+      <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
+      {particles.map((p) => (
+        <Instance key={p.id} position={p.position} />
+      ))}
+    </Instances>
+  );
+};
+
+// ✅ Use LOD for distant objects
+import { Detailed } from '@react-three/drei';
+
+export const OptimizedCharacter: React.FC = () => {
+  return (
+    <Detailed distances={[0, 10, 20]}>
+      <HighDetailCharacter />
+      <MediumDetailCharacter />
+      <LowDetailCharacter />
+    </Detailed>
+  );
+};
+
+// ✅ Memoize geometries and materials
+const sharedGeometry = useMemo(
+  () => new THREE.BoxGeometry(1, 1, 1),
+  []
+);
+
+const sharedMaterial = useMemo(
+  () => new THREE.MeshStandardMaterial({
+    color: KOREAN_COLORS.ACCENT_GOLD,
+    metalness: 0.5,
+    roughness: 0.5,
+  }),
+  []
+);
+
+// ✅ Clean up resources
+useEffect(() => {
+  return () => {
+    sharedGeometry.dispose();
+    sharedMaterial.dispose();
+  };
+}, [sharedGeometry, sharedMaterial]);
+```
+
+### Testing Three.js Components
+
+```typescript
+import { render } from '@testing-library/react';
+import { Canvas } from '@react-three/fiber';
+import { describe, it, expect } from 'vitest';
+import { Suspense } from 'react';
+
+// Helper to render Three.js components
+function render3D(component: React.ReactElement) {
+  return render(
+    <Canvas>
+      <Suspense fallback={null}>
+        {component}
+      </Suspense>
+    </Canvas>
+  );
+}
+
+describe('CombatCharacter3D', () => {
+  it('should render without crashing', () => {
+    const { container } = render3D(
+      <CombatCharacter3D 
+        position={[0, 0, 0]} 
+        stance="geon" 
+      />
+    );
+
+    expect(container.querySelector('canvas')).toBeInTheDocument();
+  });
+
+  it('should apply Korean theming', () => {
+    const { container } = render3D(
+      <CombatCharacter3D 
+        position={[0, 0, 0]} 
+        stance="geon" 
+      />
+    );
+
+    // Test that component renders
+    expect(container).toBeTruthy();
+  });
+});
+
+// For more complex 3D testing, use @react-three/test-renderer
+// See: https://github.com/pmndrs/react-three-fiber/tree/master/packages/test-renderer
+```
+
 ## 🧪 Testing Strategy
 
 ### PixiJS UI Component Testing
