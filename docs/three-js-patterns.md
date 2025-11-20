@@ -152,7 +152,7 @@ export function VitalPointMarkers3D({
   return (
     <group>
       {points.map((point, index) => (
-        <group key={index} position={point.position3D}>
+        <group key={point.id ?? point.nameKorean ?? index} position={point.position3D}>
           {/* 3D marker sphere */}
           <mesh
             onClick={() => onPointClick?.(point)}
@@ -184,13 +184,13 @@ export function VitalPointMarkers3D({
           >
             <div style={{
               background: `${KOREAN_COLORS.UI_BACKGROUND_DARK}dd`,
-              color: getPointColor(point.severity),
+              color: `#${getPointColor(point.severity).toString(16).padStart(6, '0')}`,
               padding: '2px 6px',
               borderRadius: '3px',
               fontSize: '10px',
               fontFamily: 'Korean Font',
               whiteSpace: 'nowrap',
-              border: `1px solid ${getPointColor(point.severity).toString(16)}`,
+              border: `1px solid #${getPointColor(point.severity).toString(16).padStart(6, '0')}`,
             }}>
               {point.nameKorean}
             </div>
