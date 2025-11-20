@@ -1,5 +1,5 @@
 import { Html } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -80,19 +80,12 @@ const getArchetypeFromIndex = (index: number): PlayerArchetype => {
 const BackgroundScene: React.FC = () => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
-  // Animate grid
-  useEffect(() => {
-    if (!gridRef.current) return;
-
-    const animate = () => {
-      if (gridRef.current) {
-        gridRef.current.rotation.y += 0.0005;
-      }
-    };
-
-    const intervalId = setInterval(animate, 16); // ~60fps
-    return () => clearInterval(intervalId);
-  }, []);
+  // Animate grid using useFrame for proper sync with render loop
+  useFrame(() => {
+    if (gridRef.current) {
+      gridRef.current.rotation.y += 0.0005;
+    }
+  });
 
   return (
     <>
@@ -179,7 +172,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Direct menu selection - MOVED BEFORE useEffect that uses it
   const handleMenuItemSelect = useCallback(
     (mode: GameMode) => {
-      console.log(`🎮 Starting ${mode} with archetype:`, currentArchetype);
       onMenuSelect(mode, currentArchetype);
     },
     [onMenuSelect, currentArchetype]
@@ -193,7 +185,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
       audio.playSFX("menu_hover");
-      console.log(`🥋 Selected archetype: ${newArchetype} (index: ${index})`);
     },
     [onArchetypeSelect, audio]
   );
@@ -205,17 +196,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         introMusicStarted.current = true;
         audio.playMusic("intro_theme");
       }
-      window.removeEventListener("keydown", startMusic);
-      window.removeEventListener("mousedown", startMusic);
-      window.removeEventListener("touchstart", startMusic);
     };
     window.addEventListener("keydown", startMusic, { once: true });
     window.addEventListener("mousedown", startMusic, { once: true });
     window.addEventListener("touchstart", startMusic, { once: true });
     return () => {
-      window.removeEventListener("keydown", startMusic);
-      window.removeEventListener("mousedown", startMusic);
-      window.removeEventListener("touchstart", startMusic);
       audio.stopMusic();
     };
   }, [audio.isInitialized, audio]);

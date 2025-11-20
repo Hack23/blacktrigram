@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { GameMode } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import "./MenuSection.css";
 
 export interface MenuSectionHTMLProps {
   readonly menuItems: Array<{
@@ -162,6 +163,10 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
               onClick={() => handleButtonClick(item.mode)}
               onMouseEnter={() => handleButtonHover(index, true)}
               onMouseLeave={() => handleButtonHover(index, false)}
+              aria-label={`${item.korean} (${item.english})`}
+              aria-selected={isSelected}
+              role="menuitem"
+              className="menu-button"
               style={{
                 width: "100%",
                 height: `${buttonHeight}px`,
@@ -190,7 +195,6 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
                 textShadow: isSelected
                   ? `0 2px 4px rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`
                   : "none",
-                outline: "none",
               }}
               data-testid={`menu-item-${item.mode}`}
             >

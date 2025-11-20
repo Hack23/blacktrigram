@@ -1,6 +1,7 @@
 import React from "react";
 import type { KoreanText } from "../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import "./KoreanHeaderHTML.css";
 
 export interface KoreanHeaderHTMLProps {
   readonly title: KoreanText;
@@ -250,24 +251,6 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
           </div>
         </>
       )}
-
-      {/* CSS animations */}
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.02); opacity: 0.95; }
-        }
-
-        @keyframes glow {
-          0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 4px #ffd700); }
-          50% { opacity: 1; filter: drop-shadow(0 0 8px #ffd700); }
-        }
-
-        @keyframes glow-alt {
-          0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 3px #00ffff); }
-          50% { opacity: 0.8; filter: drop-shadow(0 0 6px #00ffff); }
-        }
-      `}</style>
     </div>
   );
 };

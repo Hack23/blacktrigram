@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import "./MenuSection.css";
 
 // Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
 export interface ArchetypeDataShape {
@@ -61,7 +62,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
     }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
 
     // Convert real stats to 0-1 scale for visualization
-    const normalizeStats = useCallback(() => {
+    const combatStats = useMemo(() => {
       const maxStatValue = 100;
       return [
         {
@@ -90,8 +91,6 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
         },
       ];
     }, [selectedArchetype.stats]);
-
-    const combatStats = normalizeStats();
 
     const archetypeColor = `#${selectedArchetype.color.toString(16).padStart(6, "0")}`;
 
@@ -159,10 +158,23 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 cursor: "pointer",
               }}
               onClick={handleNext}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleNext();
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label={`${selectedArchetype.korean} ${selectedArchetype.english} - Click or press Enter to cycle to next archetype`}
               data-testid="archetype-image"
               onError={(e) => {
-                // Fallback if image doesn't load
-                e.currentTarget.style.display = "none";
+                // Fallback if image doesn't load: swap to placeholder, update alt, prevent infinite loop
+                const target = e.currentTarget as HTMLImageElement;
+                if (!target.src.endsWith("/assets/visual/archetypes/placeholder.png")) {
+                  target.src = "/assets/visual/archetypes/placeholder.png";
+                  target.alt = `${selectedArchetype.korean} (image unavailable)`;
+                }
               }}
             />
           </div>
@@ -179,6 +191,8 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
           >
             <button
               onClick={handlePrevious}
+              aria-label="Previous archetype"
+              className="archetype-nav-button"
               style={{
                 flex: 1,
                 height: "30px",
@@ -189,7 +203,6 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 border: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
                 borderRadius: "4px",
                 cursor: "pointer",
-                outline: "none",
               }}
               data-testid="prev-archetype-button"
             >
@@ -197,6 +210,8 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
             </button>
             <button
               onClick={handleNext}
+              aria-label="Next archetype"
+              className="archetype-nav-button"
               style={{
                 flex: 1,
                 height: "30px",
@@ -207,7 +222,6 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                 border: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`,
                 borderRadius: "4px",
                 cursor: "pointer",
-                outline: "none",
               }}
               data-testid="next-archetype-button"
             >

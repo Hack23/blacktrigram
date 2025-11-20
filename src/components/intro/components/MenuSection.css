@@ -1,0 +1,10 @@
+/* Menu Section Styles */
+.menu-button:focus-visible {
+  outline: 3px solid #ffd700 !important;
+  outline-offset: 2px;
+}
+
+.archetype-nav-button:focus-visible {
+  outline: 3px solid #ffd700 !important;
+  outline-offset: 2px;
+}
