@@ -79,6 +79,16 @@ const LABEL_STYLES = {
 } as const;
 
 /**
+ * Convert color number to RGBA hex string
+ * @param color - Color as number (e.g., 0xFF0000)
+ * @param alpha - Alpha channel as hex string (e.g., "dd" for semi-transparent)
+ * @returns RGBA hex string (e.g., "#ff0000dd")
+ */
+const colorToRgbaHex = (color: number, alpha: string = "ff"): string => {
+  return `#${color.toString(16).padStart(6, "0")}${alpha}`;
+};
+
+/**
  * Convert 2D screen position to 3D body position
  * Maps training dummy 2D coordinates to 3D character model space
  */
@@ -88,7 +98,10 @@ const convert2DTo3D = (
 ): [number, number, number] => {
   // Normalize from pixel coordinates to character-relative coordinates
   const normalizedX = pos2D.x / PIXEL_TO_WORLD_SCALE;
-  const normalizedY = CHARACTER_HEIGHT - (pos2D.y + PIXEL_TO_WORLD_SCALE) / PIXEL_TO_WORLD_SCALE;
+  
+  // Add PIXEL_TO_WORLD_SCALE to y to offset the origin from top-left to model base (centered at character feet)
+  const offsetY = pos2D.y + PIXEL_TO_WORLD_SCALE;
+  const normalizedY = CHARACTER_HEIGHT - offsetY / PIXEL_TO_WORLD_SCALE;
   const normalizedZ = 0; // Keep depth neutral for now
 
   return [
@@ -148,19 +161,19 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
   }, [selected, hovered, vitalPoint.severity]);
 
   const markerSize = useMemo(() => {
-    // Size based on severity
+    // Base marker size and severity multipliers
     const DEFAULT_MARKER_SIZE = 0.05;
     
     switch (vitalPoint.severity) {
       case VitalPointSeverity.LETHAL:
       case VitalPointSeverity.CRITICAL:
-        return 0.08 * scale;
+        return DEFAULT_MARKER_SIZE * 1.6 * scale; // 0.08
       case VitalPointSeverity.MAJOR:
-        return 0.06 * scale;
+        return DEFAULT_MARKER_SIZE * 1.2 * scale; // 0.06
       case VitalPointSeverity.MODERATE:
-        return 0.05 * scale;
+        return DEFAULT_MARKER_SIZE * 1.0 * scale; // 0.05
       case VitalPointSeverity.MINOR:
-        return 0.04 * scale;
+        return DEFAULT_MARKER_SIZE * 0.8 * scale; // 0.04
       default:
         return DEFAULT_MARKER_SIZE * scale;
     }
@@ -216,7 +229,7 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
         >
           <div
             style={{
-              background: `#${color.toString(16).padStart(6, "0")}dd`,
+              background: colorToRgbaHex(color, "dd"),
               color: "#ffffff",
               padding: LABEL_STYLES.padding,
               borderRadius: LABEL_STYLES.borderRadius,
@@ -224,7 +237,7 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
               whiteSpace: "nowrap",
               textAlign: "center",
-              border: `${LABEL_STYLES.borderWidth} solid #${color.toString(16).padStart(6, "0")}`,
+              border: `${LABEL_STYLES.borderWidth} solid ${colorToRgbaHex(color)}`,
             }}
           >
             <div>{vitalPoint.names.korean}</div>
