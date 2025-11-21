@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { COMBAT_CONTROLS } from "../../systems";
-import { KOREAN_COLORS } from "../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 
 export interface ControlsScreenThreeJSProps {
@@ -199,7 +199,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
               display: "flex",
               flexDirection: "column",
               color: colors.textPrimary,
-              fontFamily: "Arial, sans-serif",
+              fontFamily: FONT_FAMILY.KOREAN,
               pointerEvents: "auto",
             }}
           >

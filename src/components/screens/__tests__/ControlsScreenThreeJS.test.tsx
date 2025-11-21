@@ -18,8 +18,8 @@ vi.mock("../../../audio/AudioProvider", () => ({
     playSFX: vi.fn(),
     playMusic: vi.fn(),
     stopMusic: vi.fn(),
-    fadeIn: vi.fn(),
-    fadeOut: vi.fn(),
+    fadeIn: vi.fn().mockResolvedValue(undefined),
+    fadeOut: vi.fn().mockResolvedValue(undefined),
     isInitialized: true,
   }),
 }));
