@@ -1,7 +1,7 @@
 /**
  * TrainingDummy3D - 3D training dummy with vital points
  * 
- * Provides anatomically accurate training dummy with 70 vital points
+ * Provides anatomically accurate training dummy with 12 vital points
  * for Korean martial arts practice
  */
 
@@ -23,8 +23,6 @@ export interface TrainingDummy3DProps {
   readonly selectedVitalPoint: string | null;
   /** Whether training is active */
   readonly isTraining: boolean;
-  /** Callback when dummy is hit */
-  readonly onHit: (vitalPointId: string, accuracy: number) => boolean;
 }
 
 /**
@@ -86,6 +84,9 @@ const VitalPointMarker: React.FC<{
 }> = ({ point, isSelected, isTraining, onClick }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
+  
+  // Reusable vector for scale lerp
+  const targetScale = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
   // Animate selected and hovered markers
   useFrame((state) => {
@@ -95,7 +96,8 @@ const VitalPointMarker: React.FC<{
       const pulse = Math.sin(state.clock.elapsedTime * 4) * 0.1 + 1;
       meshRef.current.scale.setScalar(pulse);
     } else {
-      meshRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+      targetScale.set(1, 1, 1);
+      meshRef.current.scale.lerp(targetScale, 0.1);
     }
   });
 
@@ -134,6 +136,9 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   isTraining,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
+  
+  // Reusable vector for scale manipulation
+  const scaleVector = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
   // Use first 12 vital points for training (full 70 would be overwhelming)
   const vitalPoints = useMemo(
@@ -146,7 +151,8 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     if (!groupRef.current) return;
     
     const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
-    groupRef.current.scale.y = breathScale;
+    scaleVector.set(1, breathScale, 1);
+    groupRef.current.scale.copy(scaleVector);
   });
 
   // Handle vital point selection

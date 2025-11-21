@@ -4,7 +4,7 @@
  * Provides the ground plane for the training area with Korean-themed aesthetics
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../types/constants";
 
@@ -35,6 +35,13 @@ export const TrainingArena3D: React.FC<TrainingArena3DProps> = ({
       side: THREE.FrontSide,
     });
   }, []);
+  
+  // Cleanup material on unmount
+  useEffect(() => {
+    return () => {
+      floorMaterial.dispose();
+    };
+  }, [floorMaterial]);
 
   // Grid helper color
   const gridColor = useMemo(() => {

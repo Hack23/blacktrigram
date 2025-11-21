@@ -42,10 +42,7 @@ vi.mock("../../utils/inputSystem", () => ({
 }));
 
 describe("TrainingScreen3D", () => {
-  const mockPlayer: PlayerState = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
-
   const defaultProps = {
-    player: mockPlayer,
     onPlayerUpdate: vi.fn(),
     onReturnToMenu: vi.fn(),
     width: 1200,

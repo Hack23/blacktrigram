@@ -79,6 +79,9 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef<Particle[]>([]);
   const [isActive, setIsActive] = useState(false);
+  
+  // Reusable vectors to avoid allocations in animation loop
+  const tempVelocity = useMemo(() => new THREE.Vector3(), []);
 
   // Initialize particles when effect becomes visible
   useEffect(() => {
@@ -117,10 +120,9 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
       if (particle.life > 0) {
         allDead = false;
         
-        // Update position
-        particle.position.add(
-          particle.velocity.clone().multiplyScalar(delta)
-        );
+        // Update position using temp vector to avoid allocation
+        tempVelocity.copy(particle.velocity).multiplyScalar(delta);
+        particle.position.add(tempVelocity);
         
         // Apply gravity
         particle.velocity.y -= 9.8 * delta;

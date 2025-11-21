@@ -11,10 +11,9 @@ import { TrainingScreen3D } from "@/components/training";
 import { PlayerState } from "@/systems";
 
 function MyTrainingMode() {
-  const [player, setPlayer] = useState<PlayerState>(initialPlayer);
-
   const handlePlayerUpdate = (updates: Partial<PlayerState>) => {
-    setPlayer(prev => ({ ...prev, ...updates }));
+    // Update player state in your app's state management
+    updatePlayer(updates);
   };
 
   const handleReturnToMenu = () => {
@@ -24,7 +23,6 @@ function MyTrainingMode() {
 
   return (
     <TrainingScreen3D
-      player={player}
       onPlayerUpdate={handlePlayerUpdate}
       onReturnToMenu={handleReturnToMenu}
       width={1920}

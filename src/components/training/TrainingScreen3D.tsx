@@ -41,10 +41,7 @@ export interface TrainingScreen3DProps {
   readonly height?: number;
 }
 
-/**
- * Training mode types
- */
-type TrainingMode = "basics" | "advanced" | "free";
+import type { TrainingMode } from "./components/TrainingModeSelectorHTML";
 
 /**
  * Training statistics
@@ -103,13 +100,28 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Audio lifecycle management
   useEffect(() => {
+    let audioStarted = false;
+    
     const startMusic = async () => {
-      await audio.fadeIn("cyberpunk_fusion", 2000);
+      try {
+        await audio.fadeIn("cyberpunk_fusion", 2000);
+        audioStarted = true;
+      } catch (err) {
+        console.warn("Failed to start training music:", err);
+        // Show user-visible feedback that audio failed
+        setFeedback("오디오 초기화 실패 | Audio initialization failed");
+        setShowFeedback(true);
+      }
     };
-    void startMusic().catch((err) => console.warn("Failed to start training music:", err));
+    
+    void startMusic();
 
     return () => {
-      void audio.fadeOut(2000).then(() => audio.stopMusic()).catch((err) => console.warn("Failed to stop training music:", err));
+      if (audioStarted) {
+        void audio.fadeOut(2000).then(() => audio.stopMusic()).catch((err) => 
+          console.warn("Failed to stop training music:", err)
+        );
+      }
     };
   }, [audio]);
 
@@ -258,12 +270,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [isTraining, audio, nextEffectId]
   );
 
-  // Combat input handling
+  // Consolidated keyboard input handling
   useEffect(() => {
-    const handleCombatInput = (event: KeyboardEvent) => {
-      if (!isTraining) return;
-
+    const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
+
+      // ESC key - return to menu
+      if (key === "escape") {
+        onReturnToMenu();
+        return;
+      }
+
+      // Training mode controls only work when training is active
+      if (!isTraining) return;
 
       // Handle stance changes (1-8)
       if (key >= "1" && key <= "8") {
@@ -289,19 +308,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       // Handle attacks (Space key)
       if (key === " ") {
         // Calculate distance to dummy (at position [5, 0, 0])
+        // Use squared distance to avoid expensive Math.sqrt
         const dx = player3DPosition[0] - 5;
         const dz = player3DPosition[2] - 0;
-        const distance = Math.sqrt(dx * dx + dz * dz);
-        const accuracy = Math.max(0, 1 - distance / 8);
+        const squaredDistance = dx * dx + dz * dz;
+        const accuracy = Math.max(0, 1 - squaredDistance / 64);
         
         handleDummyHit(selectedVitalPoint ?? "generic", accuracy);
         event.preventDefault();
       }
     };
 
-    window.addEventListener("keydown", handleCombatInput);
-    return () => window.removeEventListener("keydown", handleCombatInput);
-  }, [isTraining, player3DPosition, selectedVitalPoint, onPlayerUpdate, handleDummyHit, audio]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isTraining, player3DPosition, selectedVitalPoint, onPlayerUpdate, handleDummyHit, audio, onReturnToMenu]);
 
   // Hide feedback after delay
   useEffect(() => {
@@ -315,17 +335,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const handleEffectComplete = useCallback((effectId: number) => {
     setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
   }, []);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onReturnToMenu();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu]);
 
   return (
     <div
@@ -405,7 +414,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           position={[5, 0, 0]}
           selectedVitalPoint={selectedVitalPoint}
           isTraining={isTraining}
-          onHit={handleDummyHit}
         />
 
         {/* Player model (simplified for now) */}
