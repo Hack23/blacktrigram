@@ -2,7 +2,8 @@ import { Application } from "@pixi/react";
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
-import { CombatScreen } from "./components/combat/CombatScreen";
+// ✅ MIGRATED: Use Three.js CombatScreen instead of PixiJS version
+import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
 // ✅ MIGRATED: Use Three.js IntroScreen instead of PixiJS version
 import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
 // ✅ NEW: Import standalone screens
