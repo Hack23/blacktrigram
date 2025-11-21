@@ -14,14 +14,26 @@ import { TrigramStance } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { getArchetypeColors } from "../../../utils/colorUtils";
 
+/**
+ * Props for the Player3DModel component.
+ * Configures the 3D character model appearance and behavior.
+ */
 export interface Player3DModelProps {
+  /** The current state of the player including health, stance, and combat status */
   readonly playerState: PlayerState;
+  /** 3D world position [x, y, z] of the player model. Defaults to [0, 0, 0] */
   readonly position?: [number, number, number];
+  /** Scale multiplier for the model. Defaults to 1.0 */
   readonly scale?: number;
+  /** Whether to show Html overlay with name, health bar, and status. Defaults to true */
   readonly showDetails?: boolean;
+  /** Current animation state affecting model pose and movement */
   readonly animationState?: PlayerAnimationState;
+  /** Direction the player is facing ("left" flips the model). Defaults to "right" */
   readonly facing?: "left" | "right";
+  /** Whether to show health bar in Html overlay. Defaults to true */
   readonly showHealthBar?: boolean;
+  /** Whether to show stance indicator ring and symbol. Defaults to true */
   readonly showStanceIndicator?: boolean;
 }
 
@@ -108,7 +120,14 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
         playerState.isCountering ||
         kiPercent > 0.7,
     };
-  }, [playerState]);
+  }, [
+    playerState.health,
+    playerState.maxHealth,
+    playerState.ki,
+    playerState.maxKi,
+    playerState.isBlocking,
+    playerState.isCountering,
+  ]);
 
   // Cache material reference on mount
   useEffect(() => {
@@ -125,13 +144,20 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
     if (visualStates.isLowHealth) return KOREAN_COLORS.ACCENT_RED;
     if (visualStates.isHighKi) return KOREAN_COLORS.PRIMARY_CYAN;
     return archetypeColors.primary;
-  }, [playerState, visualStates, archetypeColors]);
+  }, [playerState.isStunned, visualStates.isLowHealth, visualStates.isHighKi, archetypeColors.primary]);
 
   // Stance color
   const stanceColor = useMemo(
     () => getStanceColor(playerState.currentStance),
     [playerState.currentStance]
   );
+
+  // Reset attack animation timer when animation state changes
+  useEffect(() => {
+    if (animationState !== "attack") {
+      attackTimeRef.current = 0;
+    }
+  }, [animationState]);
 
   // Animation loop using useFrame (60fps)
   useFrame((state, delta) => {
@@ -182,8 +208,10 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
       );
     }
 
-    // Ki aura rotation
-    if (visualStates.shouldGlow) {
+    // Ki aura rotation - use fresh state values to avoid stale closure
+    const shouldGlow = playerState.isBlocking || playerState.isCountering || 
+                       (playerState.ki / playerState.maxKi) > 0.7;
+    if (shouldGlow) {
       groupRef.current.rotation.y = state.clock.elapsedTime * 0.5;
     } else {
       groupRef.current.rotation.y = 0;

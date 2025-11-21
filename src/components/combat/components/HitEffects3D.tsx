@@ -12,9 +12,17 @@ import { HitEffect } from "../../../systems";
 import { HitEffectType } from "../../../systems/effects";
 import { KOREAN_COLORS } from "../../../types/constants";
 
+/**
+ * Props for the HitEffects3D component.
+ * Controls which effects are displayed and callbacks for effect lifecycle.
+ */
 export interface HitEffects3DProps {
+  /** Array of active hit effects to render in the scene */
   readonly effects: HitEffect[];
+  /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
+  /** Arena bounds for accurate coordinate conversion */
+  readonly arenaBounds?: { x: number; y: number; width: number; height: number };
 }
 
 interface ActiveEffect extends HitEffect {
@@ -26,29 +34,35 @@ interface ActiveEffect extends HitEffect {
  * Renders a single effect with Three.js primitives
  */
 const HitEffectVisual: React.FC<{
-  effect: ActiveEffect;
-}> = ({ effect }) => {
+  effect: HitEffect;
+  effectRef: React.MutableRefObject<ActiveEffect | null>;
+  arenaBounds?: { x: number; y: number; width: number; height: number };
+}> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
-  const { progress } = effect;
-  const alpha = 1 - progress;
 
   // Position in 3D space - convert 2D position to 3D
   const position3D: [number, number, number] = useMemo(() => {
     if (!effect.position) return [0, 1, 0];
     
     // Convert from screen coordinates to 3D world coordinates
-    // Assuming arena is roughly -10 to 10 in X, 0-5 in Y, -5 to 5 in Z
-    const x = (effect.position.x / 600) * 10 - 5; // Normalize to -5 to 5
+    // Use arena bounds if available, otherwise use default normalization
+    const bounds = arenaBounds || { x: 0, y: 0, width: 1200, height: 800 };
+    const relX = (effect.position.x - bounds.x) / bounds.width;
+    const relZ = (effect.position.y - bounds.y) / bounds.height;
+    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
     const y = 1.5; // Mid-height for effects
-    const z = 0;
+    const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
     
     return [x, y, z];
-  }, [effect.position]);
+  }, [effect.position, arenaBounds]);
 
   // Animate effect based on type
   useFrame(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !effectRef.current) return;
 
+    // Access fresh progress value from ref
+    const progress = effectRef.current.progress;
+    
     // Rotate for some effects
     if (effect.type === HitEffectType.COUNTER || effect.type === HitEffectType.VITAL_POINT_STRIKE) {
       groupRef.current.rotation.y += 0.1;
@@ -60,6 +74,9 @@ const HitEffectVisual: React.FC<{
       groupRef.current.scale.set(pulse, pulse, pulse);
     }
   });
+
+  // Get alpha from effect ref for current frame
+  const alpha = effectRef.current ? 1 - effectRef.current.progress : 1;
 
   // Render based on effect type
   switch (effect.type) {
@@ -153,7 +170,7 @@ const HitEffectVisual: React.FC<{
               key={i}
               position={[
                 (i - 1) * 0.2,
-                Math.sin(progress * Math.PI) * 0.3,
+                Math.sin((1 - alpha) * Math.PI) * 0.3, // Use alpha (1 - progress)
                 0,
               ]}
             >
@@ -319,69 +336,78 @@ const HitEffectVisual: React.FC<{
 /**
  * HitEffects3D Component
  * Manages all active hit effects in the combat scene
+ * Uses refs to avoid triggering React re-renders at 60fps
  */
 export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   effects,
   onEffectComplete,
+  arenaBounds,
 }) => {
-  const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
+  // Use refs to track effects without causing re-renders
+  const effectRefsMap = useRef<Map<string, React.MutableRefObject<ActiveEffect | null>>>(new Map());
   const completedEffectsRef = useRef<Set<string>>(new Set());
+  const [effectIds, setEffectIds] = useState<string[]>([]);
 
-  // Update active effects with progress
+  // Update effect IDs when effects change (minimal state updates)
   useEffect(() => {
-    setActiveEffects(
-      effects.map((effect) => ({
-        ...effect,
-        progress: Math.min(
-          (Date.now() - effect.startTime) / effect.duration,
-          1
-        ),
-      }))
-    );
-  }, [effects]);
-
-  // Update progress and clean up expired effects
-  useFrame(() => {
-    const now = Date.now();
+    const newIds = effects.map(e => e.id);
+    setEffectIds(newIds);
     
-    setActiveEffects((prev) => {
-      const updated = prev
-        .map((effect) => ({
-          ...effect,
-          progress: Math.min(
-            (now - effect.startTime) / effect.duration,
-            1
-          ),
-        }))
-        .filter((effect) => {
-          const isExpired = effect.progress >= 1;
-          // Only call completion callback once per effect
-          if (isExpired && onEffectComplete && !completedEffectsRef.current.has(effect.id)) {
-            completedEffectsRef.current.add(effect.id);
-            onEffectComplete(effect.id);
-          }
-          return !isExpired;
-        });
-      
-      return updated;
-    });
-  });
-
-  // Clean up completed effects set when effects change
-  useEffect(() => {
-    const currentIds = new Set(effects.map(e => e.id));
-    completedEffectsRef.current.forEach(id => {
-      if (!currentIds.has(id)) {
+    // Clean up refs for removed effects
+    const currentIdSet = new Set(newIds);
+    effectRefsMap.current.forEach((_ref, id) => {
+      if (!currentIdSet.has(id)) {
+        effectRefsMap.current.delete(id);
         completedEffectsRef.current.delete(id);
+      }
+    });
+
+    // Initialize refs for new effects
+    effects.forEach(effect => {
+      if (!effectRefsMap.current.has(effect.id)) {
+        effectRefsMap.current.set(effect.id, { current: { ...effect, progress: 0 } });
       }
     });
   }, [effects]);
 
+  // Update progress using refs (no setState in useFrame)
+  useFrame(() => {
+    const now = Date.now();
+    
+    effectRefsMap.current.forEach((ref, id) => {
+      if (!ref.current) return;
+      
+      const progress = Math.min(
+        (now - ref.current.startTime) / ref.current.duration,
+        1
+      );
+      ref.current.progress = progress;
+      
+      // Handle completion
+      const isExpired = progress >= 1;
+      if (isExpired && onEffectComplete && !completedEffectsRef.current.has(id)) {
+        completedEffectsRef.current.add(id);
+        onEffectComplete(id);
+      }
+    });
+  });
+
   return (
     <group>
-      {activeEffects.map((effect) => (
-        <HitEffectVisual key={effect.id} effect={effect} />
-      ))}
+      {effectIds.map((id) => {
+        const effect = effects.find(e => e.id === id);
+        const effectRef = effectRefsMap.current.get(id);
+        if (!effect || !effectRef) return null;
+        
+        return (
+          <HitEffectVisual 
+            key={id} 
+            effect={effect} 
+            effectRef={effectRef}
+            arenaBounds={arenaBounds}
+          />
+        );
+      })}
     </group>
   );
 };

@@ -40,19 +40,57 @@ import CombatArena3D from "./components/CombatArena3D";
 import HitEffects3D from "./components/HitEffects3D";
 import Player3DModel from "./components/Player3DModel";
 
+/**
+ * Props for the CombatScreen3D component.
+ * Provides all state and callbacks required for the 3D combat screen.
+ */
 export interface CombatScreen3DProps {
+  /**
+   * Array of player states (expects exactly 2 players).
+   * Each PlayerState contains all combat and status information for a player.
+   */
   readonly players: readonly PlayerState[];
+  /**
+   * Callback to update a player's state by index.
+   * @param playerIndex - Index of the player to update (0 or 1).
+   * @param updates - Partial PlayerState with updated fields.
+   */
   readonly onPlayerUpdate: (
     playerIndex: number,
     updates: Partial<PlayerState>
   ) => void;
+  /**
+   * Current round number (1-based).
+   */
   readonly currentRound: number;
+  /**
+   * Remaining time in seconds for the current round.
+   */
   readonly timeRemaining: number;
+  /**
+   * Whether combat is currently paused.
+   */
   readonly isPaused: boolean;
+  /**
+   * Callback when the user exits to the menu.
+   */
   readonly onReturnToMenu: () => void;
+  /**
+   * Callback when the match ends, with the winner's index (0 or 1).
+   * @param winner - Index of the winning player.
+   */
   readonly onGameEnd: (winner: number) => void;
+  /**
+   * Optional game mode (affects rules/behavior).
+   */
   readonly gameMode?: GameMode;
+  /**
+   * Canvas width in pixels. Defaults to 1200.
+   */
   readonly width?: number;
+  /**
+   * Canvas height in pixels. Defaults to 800.
+   */
   readonly height?: number;
 }
 
@@ -109,14 +147,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Convert 2D positions to 3D world coordinates
   const player1Position3D: [number, number, number] = useMemo(() => {
-    const x = (playerPositions[0].x / arenaBounds.width) * 16 - 8;
-    const z = (playerPositions[0].y / arenaBounds.height) * 8 - 4;
+    const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
+    const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
+    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
   const player2Position3D: [number, number, number] = useMemo(() => {
-    const x = (playerPositions[1].x / arenaBounds.width) * 16 - 8;
-    const z = (playerPositions[1].y / arenaBounds.height) * 8 - 4;
+    const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
+    const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
+    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
@@ -614,6 +656,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <HitEffects3D
           effects={combatState.hitEffects}
           onEffectComplete={handleEffectComplete}
+          arenaBounds={arenaBounds}
         />
 
         {/* Round display status overlay */}
@@ -695,7 +738,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               player2: validPlayers[1].wins || 0,
             }}
             isPaused={isPaused}
-            onPauseToggle={() => console.log("Pause toggled")}
             width={width - 20}
             height={layoutConstants.hudHeight}
             healthBarHeight={layoutConstants.healthBarHeight}

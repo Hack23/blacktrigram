@@ -10,7 +10,12 @@ import React, { useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../types/constants";
 
+/**
+ * Props for the CombatArena3D component.
+ * Configures the lighting and atmosphere of the 3D arena.
+ */
 export interface CombatArena3DProps {
+  /** Lighting theme affecting ambiance and colors. Defaults to "cyberpunk" */
   readonly lighting?: "cyberpunk" | "traditional" | "neutral";
 }
 
@@ -22,7 +27,6 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   lighting = "cyberpunk",
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
-  const floorRef = useRef<THREE.Mesh>(null);
 
   // Animate grid rotation
   useFrame(() => {
@@ -78,7 +82,6 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 
       {/* Arena floor - dojang mat */}
       <mesh
-        ref={floorRef}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, 0, 0]}
         receiveShadow
