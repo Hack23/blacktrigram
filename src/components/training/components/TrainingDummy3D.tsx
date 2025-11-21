@@ -152,8 +152,9 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   // Handle vital point selection
   const handlePointClick = useCallback(
     (_pointId: string) => {
-      // This is just for selection - actual hit happens from player attack
-      // The selection helps with targeting
+      // TODO: Implement vital point selection feedback
+      // This will be used to highlight the selected vital point
+      // and provide targeting assistance to the player
     },
     []
   );

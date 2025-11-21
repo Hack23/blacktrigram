@@ -4,7 +4,7 @@
  * Displays score, combo, hits, misses, and accuracy
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { FONT_FAMILY } from "../../../types/constants";
 
 /**
@@ -37,6 +37,12 @@ export const TrainingStatsHTML: React.FC<TrainingStatsHTMLProps> = ({
   isMobile,
 }) => {
   const panelWidth = isMobile ? 240 : 260;
+  
+  // Format accuracy with memoization
+  const formattedAccuracy = useMemo(
+    () => stats.accuracy.toFixed(1),
+    [stats.accuracy]
+  );
 
   return (
     <div
@@ -116,7 +122,7 @@ export const TrainingStatsHTML: React.FC<TrainingStatsHTMLProps> = ({
         <StatRow
           korean="정확도"
           english="Accuracy"
-          value={`${stats.accuracy.toFixed(1)}%`}
+          value={`${formattedAccuracy}%`}
           color={
             stats.accuracy >= 80
               ? "#00ff88"

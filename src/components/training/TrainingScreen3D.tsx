@@ -15,7 +15,7 @@ import React, {
 } from "react";
 import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
-import { Position } from "../../types/common";
+import { Position, TrigramStance } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import TrainingArena3D from "./components/TrainingArena3D";
@@ -31,8 +31,6 @@ import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
  * Props for the TrainingScreen3D component
  */
 export interface TrainingScreen3DProps {
-  /** Player state for training */
-  readonly player: PlayerState;
   /** Callback to update player state */
   readonly onPlayerUpdate: (updates: Partial<PlayerState>) => void;
   /** Callback when returning to menu */
@@ -270,18 +268,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       // Handle stance changes (1-8)
       if (key >= "1" && key <= "8") {
         const stanceIndex = parseInt(key) - 1;
-        const stances = [
-          "geon",
-          "tae",
-          "li",
-          "jin",
-          "son",
-          "gam",
-          "gan",
-          "gon",
+        const stances: readonly TrigramStance[] = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
         ];
         onPlayerUpdate({
-          currentStance: stances[stanceIndex] as any,
+          currentStance: stances[stanceIndex],
           lastActionTime: Date.now(),
         });
         audio.playSFX("stance_change_1");
