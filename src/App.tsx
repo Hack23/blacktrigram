@@ -183,11 +183,10 @@ function App() {
   }, []);
 
   // Determine if current screen uses Three.js or PixiJS
-  const isThreeJSScreen = useCallback(() => {
-    // IntroScreen (when gameMode is null) uses Three.js
-    // All other screens (VERSUS, TRAINING, CONTROLS, etc.) use PixiJS
-    return gameMode === null;
-  }, [gameMode]);
+  // Check if current screen uses Three.js (IntroScreen) vs PixiJS (all others)
+  // IntroScreen (when gameMode is null) uses Three.js
+  // All other screens (VERSUS, TRAINING, CONTROLS, etc.) use PixiJS
+  const isThreeJSScreen = gameMode === null;
 
   const renderCurrentScreen = () => {
     if (gameWinner && matchStats) {
@@ -345,7 +344,7 @@ function App() {
         }}
         data-testid="app-container"
       >
-        {isThreeJSScreen() ? (
+        {isThreeJSScreen ? (
           // Three.js screens render directly without PixiJS wrapper
           renderCurrentScreen()
         ) : (

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import type { KoreanText } from "../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { hexToRgbaString } from "../../utils/colorUtils";
 import "./KoreanHeaderHTML.css";
 
 export interface KoreanHeaderHTMLProps {
@@ -32,6 +33,15 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
   const alignmentStyle =
     alignment === "center" ? "center" : alignment === "right" ? "flex-end" : "flex-start";
 
+  // Memoize RGBA color calculations with glowIntensity
+  const colors = useMemo(() => ({
+    titleTextShadow: `0 3px 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6 * glowIntensity)}, 0 0 40px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4 * glowIntensity)}`,
+    titleStroke: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
+    subtitleTextShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4 * glowIntensity)}`,
+    svgCircleFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
+    svgCircleCenterFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6),
+  }), [glowIntensity]);
+
   return (
     <div
       style={{
@@ -51,9 +61,9 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
           color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
           fontWeight: "bold",
           textAlign: alignment,
-          textShadow: `0 3px 8px rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, ${0.6 * glowIntensity}), 0 0 40px rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, ${0.4 * glowIntensity})`,
+          textShadow: colors.titleTextShadow,
           animation: animated ? "pulse 2s ease-in-out infinite" : "none",
-          WebkitTextStroke: `1px rgba(${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_DARK & 255}, 0.8)`,
+          WebkitTextStroke: `1px ${colors.titleStroke}`,
         }}
       >
         {title.korean}
@@ -67,7 +77,7 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
           color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
           fontStyle: "italic",
           textAlign: alignment,
-          textShadow: `0 2px 4px rgba(${(KOREAN_COLORS.PRIMARY_CYAN >> 16) & 255}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 255}, ${KOREAN_COLORS.PRIMARY_CYAN & 255}, ${0.4 * glowIntensity})`,
+          textShadow: colors.subtitleTextShadow,
           opacity: 0.9,
         }}
       >
@@ -205,7 +215,7 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
               cx={titleSize * 3}
               cy={14}
               r="6"
-              fill={`rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.3)`}
+              fill={colors.svgCircleFill}
               style={{
                 animation: animated ? "pulse 2.5s ease-in-out infinite" : "none",
               }}
@@ -214,7 +224,7 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
               cx={titleSize * 3}
               cy={14}
               r="3"
-              fill={`rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.6)`}
+              fill={colors.svgCircleCenterFill}
               style={{
                 animation: animated ? "pulse 2.5s ease-in-out infinite" : "none",
               }}

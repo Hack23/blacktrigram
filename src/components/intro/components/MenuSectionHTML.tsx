@@ -40,6 +40,14 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
     border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8),
     shadow: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.8),
     titleColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    // Button state colors
+    buttonSelectedBg: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.98),
+    buttonHoveredBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.92),
+    buttonDefaultBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.92),
+    buttonSelectedBorder: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1.0),
+    buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
+    buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
+    buttonTextShadow: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7),
   }), []);
 
   // Keyboard navigation - stops propagation to prevent conflicts with parent
@@ -192,20 +200,20 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
                   ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`
                   : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
                 background: isSelected
-                  ? `rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.98)`
+                  ? colors.buttonSelectedBg
                   : isHovered
-                  ? `rgba(${(KOREAN_COLORS.UI_BACKGROUND_LIGHT >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_LIGHT >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_LIGHT & 255}, 0.92)`
-                  : `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 0.92)`,
+                  ? colors.buttonHoveredBg
+                  : colors.buttonDefaultBg,
                 border: isSelected
-                  ? `3px solid rgba(${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_DARK & 255}, 1.0)`
+                  ? `3px solid ${colors.buttonSelectedBorder}`
                   : isHovered
-                  ? `2px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.8)`
-                  : `2px solid rgba(${(KOREAN_COLORS.PRIMARY_CYAN >> 16) & 255}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 255}, ${KOREAN_COLORS.PRIMARY_CYAN & 255}, 0.7)`,
+                  ? `2px solid ${colors.buttonHoveredBorder}`
+                  : `2px solid ${colors.buttonDefaultBorder}`,
                 borderRadius: "8px",
                 cursor: "pointer",
                 transition: "all 0.2s ease",
                 textShadow: isSelected
-                  ? `0 2px 4px rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.7)`
+                  ? `0 2px 4px ${colors.buttonTextShadow}`
                   : "none",
               }}
               data-testid={`menu-item-${item.mode}`}

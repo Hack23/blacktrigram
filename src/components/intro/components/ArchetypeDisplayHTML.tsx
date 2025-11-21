@@ -101,6 +101,8 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
       titleGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
       statsBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9),
       statsBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5),
+      statBarBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 1),
+      statBarFill: hexToRgbaString(selectedArchetype.color, 0.9),
     }), [selectedArchetype.color]);
 
     // Get archetype image path
@@ -350,7 +352,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                   style={{
                     flex: 1,
                     height: "12px",
-                    background: `rgba(${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_MEDIUM >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_MEDIUM & 255}, 1)`,
+                    background: colors.statBarBackground,
                     borderRadius: "2px",
                     position: "relative",
                     border: `1px solid ${colors.archetypeColor}`,
@@ -360,7 +362,7 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
                     style={{
                       width: `${stat.value * 100}%`,
                       height: "100%",
-                      background: `rgba(${(selectedArchetype.color >> 16) & 255}, ${(selectedArchetype.color >> 8) & 255}, ${selectedArchetype.color & 255}, 0.9)`,
+                      background: colors.statBarFill,
                       borderRadius: "2px",
                       transition: "width 0.3s ease",
                     }}
