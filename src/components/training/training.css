@@ -1,0 +1,138 @@
+/**
+ * Training component styles
+ * CSS classes for Html overlay components to avoid inline style manipulation
+ */
+
+/* Training Controls Button */
+.training-button {
+  width: 100%;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.training-button-start {
+  background: #00ff88;
+}
+
+.training-button-stop {
+  background: #ff4444;
+}
+
+.training-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px currentColor;
+}
+
+/* Training Mode Selector */
+.mode-button {
+  background: rgba(45, 45, 45, 0.5);
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.mode-button.selected {
+  background: rgba(0, 255, 255, 0.3);
+  border-color: #00ffff;
+}
+
+.mode-button:not(.selected):hover {
+  background: rgba(64, 64, 64, 0.7);
+  border-color: #00ffff;
+}
+
+/* Vital Point Button */
+.vital-point-button {
+  background: rgba(45, 45, 45, 0.5);
+  border: 2px solid rgba(255, 170, 0, 0.5);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: left;
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.vital-point-button.selected {
+  background: rgba(255, 170, 0, 0.3);
+}
+
+.vital-point-button:not(.selected):hover {
+  background: rgba(64, 64, 64, 0.7);
+}
+
+/* Training Feedback Animation */
+@keyframes feedbackPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.training-feedback {
+  background: rgba(0, 0, 0, 0.9);
+  border: 3px solid #ffd700;
+  border-radius: 16px;
+  color: #ffd700;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: feedbackPulse 0.5s ease-in-out;
+  min-width: 200px;
+}
+
+.training-feedback.mobile {
+  padding: 20px 30px;
+  font-size: 20px;
+}
+
+.training-feedback.desktop {
+  padding: 30px 50px;
+  font-size: 28px;
+}
+
+/* Pulsing Status Indicator (replaces requestAnimationFrame) */
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 8px currentColor;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 16px currentColor;
+  }
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00ff88;
+}
+
+.status-indicator.active {
+  animation: statusPulse 1s ease-in-out infinite;
+}
+
+.status-indicator.inactive {
+  background: #888888;
+}
