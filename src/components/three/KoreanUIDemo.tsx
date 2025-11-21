@@ -323,7 +323,7 @@ export const KoreanUIDemo: React.FC<KoreanUIDemoProps> = ({
                 </div>
 
                 <div style={{ color: "#fff" }}>
-                  <div style={{ marginBottom: "8px" }}>체력 | Stamina: {stamina}%</div>
+                  <div style={{ marginBottom: "8px" }}>지구력 | Stamina: {stamina}%</div>
                   <div
                     style={{
                       width: "100%",

@@ -162,7 +162,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         ? `0 0 10px ${hexToRgbaString(colors.glow, 0.5)}`
         : "none",
     };
-  }, [percentage, colors, type, animated]);
+  }, [percentage, colors, animated]);
 
   // Memoize shine effect styles for performance
   const shineStyle = useMemo<React.CSSProperties>(
