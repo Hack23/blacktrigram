@@ -38,6 +38,7 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
     titleTextShadow: `0 3px 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6 * glowIntensity)}, 0 0 40px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4 * glowIntensity)}`,
     titleStroke: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
     subtitleTextShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4 * glowIntensity)}`,
+    subtitleSectionTextShadow: `0 1px 4px ${hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.3 * glowIntensity)}`,
     svgCircleFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
     svgCircleCenterFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6),
   }), [glowIntensity]);
@@ -242,7 +243,7 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
               fontSize: `${subtitleSize}px`,
               color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
               textAlign: alignment,
-              textShadow: `0 1px 4px rgba(${(KOREAN_COLORS.TEXT_SECONDARY >> 16) & 255}, ${(KOREAN_COLORS.TEXT_SECONDARY >> 8) & 255}, ${KOREAN_COLORS.TEXT_SECONDARY & 255}, ${0.3 * glowIntensity})`,
+              textShadow: colors.subtitleSectionTextShadow,
               marginTop: "10px",
             }}
           >

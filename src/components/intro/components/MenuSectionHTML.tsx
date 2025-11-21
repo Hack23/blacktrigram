@@ -156,7 +156,7 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
           textAlign: "center",
-          textShadow: `0 2px 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7)}`,
+          textShadow: `0 2px 8px ${colors.buttonTextShadow}`,
         }}
         data-testid="menu-title"
       >

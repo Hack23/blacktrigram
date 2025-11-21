@@ -12,6 +12,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { hexToRgbaString } from "../../utils/colorUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
 import { MenuSectionHTML } from "./components/MenuSectionHTML";
@@ -145,6 +146,13 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Use prop dimensions if provided, otherwise use window size
   const screenWidth = propWidth ?? width;
   const screenHeight = propHeight ?? height;
+
+  // Memoize colors for performance
+  const colors = useMemo(() => ({
+    trigramTextShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
+    footerBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
+    footerBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
+  }), []);
 
   // Create archetype data with texture keys from PLAYER_ARCHETYPES_DATA
   const archetypeData = useMemo(() => {
@@ -358,7 +366,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   letterSpacing: isMobile ? "8px" : "12px",
                   textAlign: "center",
                   marginTop: "20px",
-                  textShadow: `0 0 10px rgba(${(KOREAN_COLORS.PRIMARY_CYAN >> 16) & 255}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 255}, ${KOREAN_COLORS.PRIMARY_CYAN & 255}, 0.8)`,
+                  textShadow: colors.trigramTextShadow,
                 }}
                 data-testid="trigram-symbols"
               >
@@ -439,8 +447,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 justifyContent: "center",
                 gap: "6px",
                 paddingBottom: "10px",
-                background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 16) & 255}, ${(KOREAN_COLORS.UI_BACKGROUND_DARK >> 8) & 255}, ${KOREAN_COLORS.UI_BACKGROUND_DARK & 255}, 0.9))`,
-                borderTop: `1px solid rgba(${(KOREAN_COLORS.ACCENT_GOLD >> 16) & 255}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 255}, ${KOREAN_COLORS.ACCENT_GOLD & 255}, 0.3)`,
+                background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
+                borderTop: `1px solid ${colors.footerBorder}`,
                 pointerEvents: "auto",
               }}
               data-testid="intro-footer"
