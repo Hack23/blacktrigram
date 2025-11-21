@@ -7,7 +7,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { PlayerState } from "../../../systems";
 import { TrigramStance } from "../../../types/common";
@@ -84,6 +84,7 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const bodyRef = useRef<THREE.Mesh>(null);
+  const bodyMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const attackTimeRef = useRef(0);
 
   // Get archetype colors
@@ -108,6 +109,15 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
         kiPercent > 0.7,
     };
   }, [playerState]);
+
+  // Cache material reference on mount
+  useEffect(() => {
+    if (bodyRef.current && bodyRef.current.material) {
+      if ("emissiveIntensity" in bodyRef.current.material) {
+        bodyMaterialRef.current = bodyRef.current.material as THREE.MeshStandardMaterial;
+      }
+    }
+  }, []);
 
   // Body color based on state
   const bodyColor = useMemo(() => {
@@ -150,15 +160,15 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
       }
     }
 
-    // Hit animation - flash and recoil
+    // Hit animation - flash and recoil (using cached material)
     if (animationState === "hit") {
       const hitFlash = Math.sin(state.clock.elapsedTime * 20);
-      if (bodyRef.current.material && "emissiveIntensity" in bodyRef.current.material) {
-        (bodyRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = Math.abs(hitFlash) * 0.5;
+      if (bodyMaterialRef.current) {
+        bodyMaterialRef.current.emissiveIntensity = Math.abs(hitFlash) * 0.5;
       }
     } else {
-      if (bodyRef.current.material && "emissiveIntensity" in bodyRef.current.material) {
-        (bodyRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.1;
+      if (bodyMaterialRef.current) {
+        bodyMaterialRef.current.emissiveIntensity = 0.1;
       }
     }
 

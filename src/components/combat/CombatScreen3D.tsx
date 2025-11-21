@@ -71,10 +71,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   width = 1200,
   height = 800,
 }) => {
-  // Performance marks
-  if (import.meta.env.DEV) {
-    performance.mark("combat-3d-render-start");
-  }
+  // Performance marks - only in dev mode and memoized
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      performance.mark("combat-3d-render-start");
+      return () => {
+        performance.mark("combat-3d-render-end");
+        performance.measure(
+          "combat-3d-render",
+          "combat-3d-render-start",
+          "combat-3d-render-end"
+        );
+      };
+    }
+  }, []);
 
   // Layout calculations
   const { layoutConstants, arenaBounds, isMobile } = useCombatLayout(width, height);
@@ -545,16 +555,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleDefend,
     onReturnToMenu,
   ]);
-
-  // Performance mark
-  if (import.meta.env.DEV) {
-    performance.mark("combat-3d-render-end");
-    performance.measure(
-      "combat-3d-render",
-      "combat-3d-render-start",
-      "combat-3d-render-end"
-    );
-  }
 
   return (
     <div

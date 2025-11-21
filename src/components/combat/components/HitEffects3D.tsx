@@ -325,6 +325,7 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   onEffectComplete,
 }) => {
   const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
+  const completedEffectsRef = useRef<Set<string>>(new Set());
 
   // Update active effects with progress
   useEffect(() => {
@@ -354,9 +355,10 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
         }))
         .filter((effect) => {
           const isExpired = effect.progress >= 1;
-          if (isExpired && onEffectComplete) {
-            // Report completion on next frame
-            setTimeout(() => onEffectComplete(effect.id), 0);
+          // Only call completion callback once per effect
+          if (isExpired && onEffectComplete && !completedEffectsRef.current.has(effect.id)) {
+            completedEffectsRef.current.add(effect.id);
+            onEffectComplete(effect.id);
           }
           return !isExpired;
         });
@@ -364,6 +366,16 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
       return updated;
     });
   });
+
+  // Clean up completed effects set when effects change
+  useEffect(() => {
+    const currentIds = new Set(effects.map(e => e.id));
+    completedEffectsRef.current.forEach(id => {
+      if (!currentIds.has(id)) {
+        completedEffectsRef.current.delete(id);
+      }
+    });
+  }, [effects]);
 
   return (
     <group>
