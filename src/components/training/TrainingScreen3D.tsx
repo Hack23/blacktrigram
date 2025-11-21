@@ -22,9 +22,9 @@ import TrainingArena3D from "./components/TrainingArena3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
 import TrainingHitEffects3D from "./components/TrainingHitEffects3D";
 import TrainingControlsHTML from "./components/TrainingControlsHTML";
-import TrainingStatsHTML from "./components/TrainingStatsHTML";
+import TrainingStatsHTML, { type TrainingStats } from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
-import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
+import TrainingModeSelectorHTML, { type TrainingMode } from "./components/TrainingModeSelectorHTML";
 import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
 
 /**
@@ -39,19 +39,6 @@ export interface TrainingScreen3DProps {
   readonly width?: number;
   /** Canvas height in pixels. Defaults to 800 */
   readonly height?: number;
-}
-
-import type { TrainingMode } from "./components/TrainingModeSelectorHTML";
-
-/**
- * Training statistics
- */
-interface TrainingStats {
-  readonly score: number;
-  readonly combo: number;
-  readonly hits: number;
-  readonly misses: number;
-  readonly accuracy: number;
 }
 
 /**

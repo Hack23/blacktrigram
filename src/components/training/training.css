@@ -57,6 +57,7 @@
 /* Vital Point Button */
 .vital-point-button {
   background: rgba(45, 45, 45, 0.5);
+  border: 2px solid rgba(255, 170, 0, 0.5);
   border-radius: 8px;
   padding: 8px;
   cursor: pointer;

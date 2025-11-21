@@ -16,7 +16,6 @@ describe("TrainingDummy3D", () => {
     position: [0, 0, 0] as [number, number, number],
     selectedVitalPoint: null,
     isTraining: false,
-    onHit: vi.fn(),
   };
 
   it("should render without crashing", () => {
