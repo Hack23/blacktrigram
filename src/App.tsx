@@ -6,9 +6,9 @@ import { AudioProvider } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
 // ✅ MIGRATED: Use Three.js IntroScreen instead of PixiJS version
 import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
-// ✅ NEW: Import standalone screens
-import { ControlsScreen } from "./components/screens/ControlsScreen";
-import { PhilosophyScreen } from "./components/screens/PhilosophyScreen";
+// ✅ MIGRATED: Use Three.js screens
+import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
+import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { exposePixiAppForTesting } from "./test/pixi-cypress-helpers";
