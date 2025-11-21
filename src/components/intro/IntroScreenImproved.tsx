@@ -199,7 +199,7 @@ export const IntroScreenImproved: React.FC<IntroScreenImprovedProps> = ({
         audio.stopMusic();
       }
     };
-  }, [audio.isInitialized]);
+  }, [audio]);
 
   const isMobile = screenWidth < 768;
 
