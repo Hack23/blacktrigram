@@ -23,7 +23,7 @@ import {
   getPersonalityByArchetype,
 } from "../../systems/ai";
 import { HitEffectType } from "../../systems/effects";
-import { GameMode, PlayerArchetype, Position, TrigramStance } from "../../types";
+import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity } from "../../types";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
@@ -638,6 +638,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               : "idle"
           }
           facing="right"
+          showVitalPoints={true}
+          vitalPointSeverityFilter={[
+            VitalPointSeverity.CRITICAL,
+            VitalPointSeverity.MAJOR,
+          ]}
         />
 
         {/* Player 2 (AI) */}
@@ -646,6 +651,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           position={player2Position3D}
           animationState="idle"
           facing="left"
+          showVitalPoints={true}
+          vitalPointSeverityFilter={[
+            VitalPointSeverity.CRITICAL,
+            VitalPointSeverity.MAJOR,
+          ]}
         />
 
         {/* Hit Effects */}
