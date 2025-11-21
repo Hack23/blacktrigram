@@ -24,3 +24,25 @@ export { TrainingScreen } from "./training";
 // Combat components
 export { CombatControls } from "./combat/components/CombatControls";
 export { CombatHUD } from "./combat/components/CombatHUD";
+
+// Three.js UI components (explicit exports to avoid naming conflicts)
+export {
+  KoreanButton,
+  KoreanPanel,
+  KoreanText as KoreanText3D,
+  MenuList,
+  ArchetypeCard,
+  ProgressBar,
+  KoreanUIDemo,
+} from "./three";
+export type {
+  KoreanButtonProps,
+  KoreanPanelProps,
+  KoreanTextProps,
+  MenuListProps,
+  MenuItem,
+  ArchetypeCardProps,
+  ProgressBarProps,
+  ProgressBarType,
+  KoreanUIDemoProps,
+} from "./three";

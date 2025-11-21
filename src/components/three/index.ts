@@ -23,3 +23,6 @@ export type { ArchetypeCardProps } from "./ArchetypeCard";
 
 export { ProgressBar } from "./ProgressBar";
 export type { ProgressBarProps, ProgressBarType } from "./ProgressBar";
+
+export { KoreanUIDemo } from "./KoreanUIDemo";
+export type { KoreanUIDemoProps } from "./KoreanUIDemo";
