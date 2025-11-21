@@ -8,6 +8,7 @@ import React, { useMemo } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPointSeverity } from "../../../types/common";
 import { FONT_FAMILY } from "../../../types/constants";
+import "../training.css";
 
 /**
  * Props for VitalPointTrainingHTML component
@@ -114,29 +115,11 @@ export const VitalPointTrainingHTML: React.FC<VitalPointTrainingHTMLProps> = ({
             <button
               key={point.id}
               onClick={() => onVitalPointSelect(point.id)}
-              data-testid={`vital-point-${point.id}`}
+              className={`vital-point-button ${isSelected ? "selected" : ""}`}
               style={{
-                background: isSelected
-                  ? "rgba(255, 170, 0, 0.3)"
-                  : "rgba(45, 45, 45, 0.5)",
-                border: `2px solid ${isSelected ? "#ffd700" : severityColor}`,
-                borderRadius: "8px",
-                padding: "8px",
-                cursor: "pointer",
-                textAlign: "left",
-                color: "#ffffff",
-                transition: "all 0.2s",
+                borderColor: isSelected ? "#ffd700" : severityColor,
               }}
-              onMouseOver={(e) => {
-                if (!isSelected) {
-                  e.currentTarget.style.background = "rgba(64, 64, 64, 0.7)";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!isSelected) {
-                  e.currentTarget.style.background = "rgba(45, 45, 45, 0.5)";
-                }
-              }}
+              data-testid={`vital-point-${point.id}`}
             >
               <div
                 style={{

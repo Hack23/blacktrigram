@@ -6,6 +6,7 @@
 
 import React from "react";
 import { FONT_FAMILY } from "../../../types/constants";
+import "../training.css";
 
 /**
  * Training mode types
@@ -102,31 +103,12 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
             <button
               key={mode}
               onClick={() => onModeChange(mode)}
-              data-testid={`mode-${mode}`}
+              className={`mode-button ${isSelected ? "selected" : ""}`}
               style={{
-                background: isSelected
-                  ? "rgba(0, 255, 255, 0.3)"
-                  : "rgba(45, 45, 45, 0.5)",
-                border: `2px solid ${isSelected ? "#00ffff" : "rgba(0, 255, 255, 0.5)"}`,
-                borderRadius: "8px",
                 padding: "10px",
-                cursor: "pointer",
                 textAlign: "left",
-                color: "#ffffff",
-                transition: "all 0.2s",
               }}
-              onMouseOver={(e) => {
-                if (!isSelected) {
-                  e.currentTarget.style.background = "rgba(64, 64, 64, 0.7)";
-                  e.currentTarget.style.borderColor = "#00ffff";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!isSelected) {
-                  e.currentTarget.style.background = "rgba(45, 45, 45, 0.5)";
-                  e.currentTarget.style.borderColor = "rgba(0, 255, 255, 0.5)";
-                }
-              }}
+              data-testid={`mode-${mode}`}
             >
               <div
                 style={{
