@@ -1,8 +1,7 @@
 /**
- * TrainingHitEffects3D - Optimized particle effects using InstancedMesh
+ * TrainingHitEffects3D - Particle effects for training hits
  * 
  * Provides visual feedback for successful and missed strikes
- * Uses InstancedMesh for better performance with many particles
  */
 
 import { useFrame } from "@react-three/fiber";
@@ -69,7 +68,7 @@ const getParticleCount = (type: "success" | "perfect" | "miss"): number => {
 
 /**
  * TrainingHitEffects3D Component
- * Optimized particle burst effect using InstancedMesh for better performance
+ * Particle burst effect for training hits
  */
 export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   position,
@@ -78,24 +77,19 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   onComplete,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
-  const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
   const particlesRef = useRef<Particle[]>([]);
   const [isActive, setIsActive] = useState(false);
   
-  // Reusable objects to avoid allocations in animation loop
-  const tempMatrix = useMemo(() => new THREE.Matrix4(), []);
+  // Reusable vectors to avoid allocations in animation loop
   const tempVelocity = useMemo(() => new THREE.Vector3(), []);
-  const tempColor = useMemo(() => new THREE.Color(), []);
-
-  const particleCount = useMemo(() => getParticleCount(type), [type]);
-  const color = useMemo(() => new THREE.Color(getEffectColor(type)), [type]);
 
   // Initialize particles when effect becomes visible
   useEffect(() => {
     if (visible && !isActive) {
       setIsActive(true);
       
-      particlesRef.current = Array.from({ length: particleCount }, () => {
+      const count = getParticleCount(type);
+      particlesRef.current = Array.from({ length: count }, () => {
         // Random direction in sphere
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(2 * Math.random() - 1);
@@ -114,16 +108,15 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
         };
       });
     }
-  }, [visible, type, isActive, particleCount]);
+  }, [visible, type, isActive]);
 
   // Animate particles
   useFrame((_, delta) => {
-    const mesh = instancedMeshRef.current;
-    if (!isActive || !mesh || particlesRef.current.length === 0) return;
+    if (!isActive || particlesRef.current.length === 0) return;
 
     let allDead = true;
 
-    particlesRef.current.forEach((particle, index) => {
+    particlesRef.current.forEach((particle) => {
       if (particle.life > 0) {
         allDead = false;
         
@@ -135,35 +128,9 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
         particle.velocity.y -= 9.8 * delta;
         
         // Decay life
-        particle.life -= delta * 1.5;
-        
-        // Update instance matrix
-        const opacity = Math.max(0, particle.life / particle.maxLife);
-        const scale = particle.size * (0.5 + opacity * 0.5);
-        
-        tempMatrix.identity();
-        tempMatrix.setPosition(particle.position);
-        tempMatrix.scale(new THREE.Vector3(scale, scale, scale));
-        mesh.setMatrixAt(index, tempMatrix);
-        
-        // Update color with opacity
-        tempColor.copy(color);
-        mesh.setColorAt(index, tempColor);
-      } else {
-        // Hide dead particles by scaling to 0
-        tempMatrix.identity();
-        tempMatrix.scale(new THREE.Vector3(0, 0, 0));
-        mesh.setMatrixAt(index, tempMatrix);
+        particle.life -= delta * 1.5; // Effect lasts ~0.67 seconds
       }
     });
-
-    // Mark instances as needing update
-    if (mesh.instanceMatrix) {
-      mesh.instanceMatrix.needsUpdate = true;
-    }
-    if (mesh.instanceColor) {
-      mesh.instanceColor.needsUpdate = true;
-    }
 
     if (allDead) {
       setIsActive(false);
@@ -172,25 +139,7 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
     }
   });
 
-  // Shared geometry and material
-  const geometry = useMemo(() => new THREE.SphereGeometry(1, 8, 8), []);
-  const material = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        transparent: true,
-        opacity: 0.9,
-        depthWrite: false,
-      }),
-    []
-  );
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      geometry.dispose();
-      material.dispose();
-    };
-  }, [geometry, material]);
+  const color = useMemo(() => getEffectColor(type), [type]);
 
   if (!isActive || particlesRef.current.length === 0) {
     return null;
@@ -198,12 +147,22 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
 
   return (
     <group ref={groupRef} position={position}>
-      {/* InstancedMesh for all particles - single draw call */}
-      <instancedMesh
-        ref={instancedMeshRef}
-        args={[geometry, material, particleCount]}
-        frustumCulled={false}
-      />
+      {particlesRef.current.map((particle, index) => {
+        const opacity = Math.max(0, particle.life / particle.maxLife);
+        const scale = particle.size * (0.5 + opacity * 0.5);
+
+        return (
+          <mesh key={index} position={particle.position} scale={scale}>
+            <sphereGeometry args={[1, 8, 8]} />
+            <meshBasicMaterial
+              color={color}
+              transparent
+              opacity={opacity}
+              depthWrite={false}
+            />
+          </mesh>
+        );
+      })}
       
       {/* Central flash for perfect hits */}
       {type === "perfect" && (
