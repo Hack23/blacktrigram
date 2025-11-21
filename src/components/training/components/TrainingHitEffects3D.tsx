@@ -86,6 +86,7 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   const tempMatrix = useMemo(() => new THREE.Matrix4(), []);
   const tempVelocity = useMemo(() => new THREE.Vector3(), []);
   const tempColor = useMemo(() => new THREE.Color(), []);
+  const tempScaleVector = useMemo(() => new THREE.Vector3(), []);
 
   const particleCount = useMemo(() => getParticleCount(type), [type]);
   const color = useMemo(() => new THREE.Color(getEffectColor(type)), [type]);
@@ -143,7 +144,8 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
         
         tempMatrix.identity();
         tempMatrix.setPosition(particle.position);
-        tempMatrix.scale(new THREE.Vector3(scale, scale, scale));
+        tempScaleVector.set(scale, scale, scale);
+        tempMatrix.scale(tempScaleVector);
         mesh.setMatrixAt(index, tempMatrix);
         
         // Update color with opacity
@@ -152,7 +154,8 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
       } else {
         // Hide dead particles by scaling to 0
         tempMatrix.identity();
-        tempMatrix.scale(new THREE.Vector3(0, 0, 0));
+        tempScaleVector.set(0, 0, 0);
+        tempMatrix.scale(tempScaleVector);
         mesh.setMatrixAt(index, tempMatrix);
       }
     });

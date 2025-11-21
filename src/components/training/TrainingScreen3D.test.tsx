@@ -5,9 +5,6 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import TrainingScreen3D from "./TrainingScreen3D";
-import { PlayerState } from "../../systems";
-import { PlayerArchetype, TrigramStance } from "../../types/common";
-import { createPlayerFromArchetype } from "../../utils/playerUtils";
 
 // Mock Three.js and React Three Fiber
 vi.mock("@react-three/fiber", () => ({

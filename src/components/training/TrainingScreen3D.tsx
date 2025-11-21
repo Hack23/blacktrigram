@@ -336,6 +336,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
   }, []);
 
+  // Memoize camera configuration for stable reference
+  const cameraConfig = useMemo(
+    () => ({
+      position: [0, 8, 12] as [number, number, number],
+      fov: 60,
+    }),
+    []
+  );
+
   return (
     <div
       style={{
@@ -357,10 +366,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         onCreated={({ gl }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
         }}
-        camera={{
-          position: [0, 8, 12],
-          fov: 60,
-        }}
+        camera={cameraConfig}
       >
         {/* Korean-themed lighting (오방색 - Five Cardinal Colors) */}
         <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
