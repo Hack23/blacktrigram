@@ -54,20 +54,17 @@ const MENU_ITEMS: { mode: GameMode; korean: string; english: string }[] = [
   { mode: GameMode.PHILOSOPHY, korean: "철학", english: "Philosophy" },
 ];
 
+// Memoized archetype keys array for efficient lookup
+const ARCHETYPE_KEYS = Object.keys(PLAYER_ARCHETYPES_DATA) as PlayerArchetype[];
+
 // Helper function to convert PlayerArchetype enum to array index
 const getArchetypeIndex = (archetype: PlayerArchetype): number => {
-  const archetypeKeys = Object.keys(
-    PLAYER_ARCHETYPES_DATA
-  ) as PlayerArchetype[];
-  return archetypeKeys.indexOf(archetype);
+  return ARCHETYPE_KEYS.indexOf(archetype);
 };
 
 // Helper function to convert array index to PlayerArchetype enum
 const getArchetypeFromIndex = (index: number): PlayerArchetype => {
-  const archetypeKeys = Object.keys(
-    PLAYER_ARCHETYPES_DATA
-  ) as PlayerArchetype[];
-  return archetypeKeys[index] ?? PlayerArchetype.MUSA;
+  return ARCHETYPE_KEYS[index] ?? PlayerArchetype.MUSA;
 };
 
 /**
@@ -195,9 +192,14 @@ export const IntroScreenImproved: React.FC<IntroScreenImprovedProps> = ({
     window.addEventListener("touchstart", startMusic, { once: true });
     
     return () => {
-      audio.stopMusic();
+      window.removeEventListener("keydown", startMusic);
+      window.removeEventListener("mousedown", startMusic);
+      window.removeEventListener("touchstart", startMusic);
+      if (introMusicStarted.current) {
+        audio.stopMusic();
+      }
     };
-  }, [audio.isInitialized, audio]);
+  }, [audio.isInitialized]);
 
   const isMobile = screenWidth < 768;
 
