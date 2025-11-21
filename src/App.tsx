@@ -182,10 +182,7 @@ function App() {
     setMatchStats(null);
   }, []);
 
-  // Determine if current screen uses Three.js or PixiJS
-  // Check if current screen uses Three.js (IntroScreen) vs PixiJS (all others)
-  // IntroScreen (when gameMode is null) uses Three.js
-  // All other screens (VERSUS, TRAINING, CONTROLS, etc.) use PixiJS
+  // IntroScreen (gameMode === null) uses Three.js; all other screens use PixiJS
   const isThreeJSScreen = gameMode === null;
 
   const renderCurrentScreen = () => {

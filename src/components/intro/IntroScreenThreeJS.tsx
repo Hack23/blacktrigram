@@ -205,9 +205,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         audio.playMusic("intro_theme");
       }
     };
+    // Event listeners with { once: true } are automatically removed after triggering
     window.addEventListener("keydown", startMusic, { once: true });
     window.addEventListener("mousedown", startMusic, { once: true });
     window.addEventListener("touchstart", startMusic, { once: true });
+    
     return () => {
       audio.stopMusic();
     };
@@ -216,18 +218,16 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Archetype navigation
+      // Archetype navigation (handleArchetypeIndexChange already plays menu_hover SFX)
       if (event.key === "ArrowLeft") {
         const newIndex =
           selectedArchetypeIndex === 0
             ? archetypeData.length - 1
             : selectedArchetypeIndex - 1;
         handleArchetypeIndexChange(newIndex);
-        audio.playSFX("menu_hover");
       } else if (event.key === "ArrowRight") {
         const newIndex = (selectedArchetypeIndex + 1) % archetypeData.length;
         handleArchetypeIndexChange(newIndex);
-        audio.playSFX("menu_hover");
       } else {
         // Direct game mode shortcuts
         switch (event.key.toLowerCase()) {
