@@ -8,6 +8,15 @@ import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../types/common";
 import { ArchetypeCard, KoreanButton, KoreanText as KoreanText3D } from "../../three";
 
+// Shared constant for archetype ID to enum mapping
+const ARCHETYPE_ID_TO_ENUM: Record<string, PlayerArchetype> = {
+  musa: PlayerArchetype.MUSA,
+  amsalja: PlayerArchetype.AMSALJA,
+  hacker: PlayerArchetype.HACKER,
+  jeongbo_yowon: PlayerArchetype.JEONGBO_YOWON,
+  jojik_pokryeokbae: PlayerArchetype.JOJIK_POKRYEOKBAE,
+};
+
 export interface ArchetypeDataShape {
   readonly id: string;
   readonly korean: string;
@@ -65,14 +74,7 @@ export const ArchetypeDisplayThree: React.FC<ArchetypeDisplayThreeProps> = ({
 
   // Map archetype ID to PlayerArchetype enum
   const archetypeEnum = useMemo(() => {
-    const mapping: Record<string, PlayerArchetype> = {
-      musa: PlayerArchetype.MUSA,
-      amsalja: PlayerArchetype.AMSALJA,
-      hacker: PlayerArchetype.HACKER,
-      jeongbo_yowon: PlayerArchetype.JEONGBO_YOWON,
-      jojik_pokryeokbae: PlayerArchetype.JOJIK_POKRYEOKBAE,
-    };
-    return mapping[selectedArchetype.id] ?? PlayerArchetype.MUSA;
+    return ARCHETYPE_ID_TO_ENUM[selectedArchetype.id] ?? PlayerArchetype.MUSA;
   }, [selectedArchetype.id]);
 
   const handlePrevious = useCallback(() => {
@@ -91,14 +93,7 @@ export const ArchetypeDisplayThree: React.FC<ArchetypeDisplayThreeProps> = ({
   const handleSelect = useCallback(
     (archetype: PlayerArchetype) => {
       const index = archetypes.findIndex((a) => {
-        const mapping: Record<string, PlayerArchetype> = {
-          musa: PlayerArchetype.MUSA,
-          amsalja: PlayerArchetype.AMSALJA,
-          hacker: PlayerArchetype.HACKER,
-          jeongbo_yowon: PlayerArchetype.JEONGBO_YOWON,
-          jojik_pokryeokbae: PlayerArchetype.JOJIK_POKRYEOKBAE,
-        };
-        return mapping[a.id] === archetype;
+        return ARCHETYPE_ID_TO_ENUM[a.id] === archetype;
       });
       if (index >= 0) {
         onArchetypeChange(index);
