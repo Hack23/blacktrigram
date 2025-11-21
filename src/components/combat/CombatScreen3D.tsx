@@ -289,12 +289,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         intensity
       );
       combatActions.addHitEffect(effect);
-
-      setTimeout(() => {
-        handleEffectComplete(effect.id);
-      }, effect.duration);
     },
-    [createHitEffect, handleEffectComplete, combatActions]
+    [createHitEffect, combatActions]
   );
 
   // Combat action handlers
