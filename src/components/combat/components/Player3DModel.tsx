@@ -10,9 +10,10 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { PlayerState } from "../../../systems";
-import { TrigramStance } from "../../../types/common";
+import { TrigramStance, VitalPointSeverity } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { getArchetypeColors } from "../../../utils/colorUtils";
+import VitalPointMarkers3D from "./VitalPointMarkers3D";
 
 /**
  * Props for the Player3DModel component.
@@ -35,6 +36,16 @@ export interface Player3DModelProps {
   readonly showHealthBar?: boolean;
   /** Whether to show stance indicator ring and symbol. Defaults to true */
   readonly showStanceIndicator?: boolean;
+  /** Whether to show vital point markers. Defaults to false */
+  readonly showVitalPoints?: boolean;
+  /** Severity filter for vital point markers */
+  readonly vitalPointSeverityFilter?: VitalPointSeverity[];
+  /** Selected vital point ID for highlighting */
+  readonly selectedVitalPoint?: string | null;
+  /** Callback when a vital point is clicked */
+  readonly onVitalPointClick?: (vitalPointId: string) => void;
+  /** Callback when a vital point is hovered */
+  readonly onVitalPointHover?: (vitalPointId: string | null) => void;
 }
 
 export type PlayerAnimationState =
@@ -93,6 +104,11 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
   facing = "right",
   showHealthBar = true,
   showStanceIndicator = true,
+  showVitalPoints = false,
+  vitalPointSeverityFilter,
+  selectedVitalPoint = null,
+  onVitalPointClick,
+  onVitalPointHover,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const bodyRef = useRef<THREE.Mesh>(null);
@@ -432,6 +448,21 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
             )}
           </div>
         </Html>
+      )}
+
+      {/* Vital Point Markers */}
+      {showVitalPoints && (
+        <VitalPointMarkers3D
+          position={[0, 0, 0]}
+          visible
+          selectedPoint={selectedVitalPoint}
+          onPointClick={onVitalPointClick}
+          onPointHover={onVitalPointHover}
+          severityFilter={vitalPointSeverityFilter}
+          showLabels={showDetails}
+          scale={scale}
+          animated
+        />
       )}
     </group>
   );
