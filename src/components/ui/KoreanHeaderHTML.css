@@ -1,0 +1,33 @@
+/* Korean Header Animations */
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+  50% { 
+    transform: scale(1.02); 
+    opacity: 0.95; 
+  }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    opacity: 0.8; 
+    filter: drop-shadow(0 0 4px #ffd700); 
+  }
+  50% { 
+    opacity: 1; 
+    filter: drop-shadow(0 0 8px #ffd700); 
+  }
+}
+
+@keyframes glow-alt {
+  0%, 100% { 
+    opacity: 0.6; 
+    filter: drop-shadow(0 0 3px #00ffff); 
+  }
+  50% { 
+    opacity: 0.8; 
+    filter: drop-shadow(0 0 6px #00ffff); 
+  }
+}
