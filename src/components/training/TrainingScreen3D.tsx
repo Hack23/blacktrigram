@@ -20,6 +20,7 @@ import { KOREAN_COLORS } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import TrainingArena3D from "./components/TrainingArena3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
+import TrainingHitEffects3D from "./components/TrainingHitEffects3D";
 import TrainingControlsHTML from "./components/TrainingControlsHTML";
 import TrainingStatsHTML from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
@@ -59,6 +60,16 @@ interface TrainingStats {
 }
 
 /**
+ * Hit effect state
+ */
+interface HitEffect {
+  readonly id: number;
+  readonly position: [number, number, number];
+  readonly type: "success" | "perfect" | "miss";
+  readonly visible: boolean;
+}
+
+/**
  * TrainingScreen3D Component
  * Three.js-based training screen with 3D dummy and Html UI
  */
@@ -74,6 +85,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [selectedVitalPoint, setSelectedVitalPoint] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
+  const [hitEffects, setHitEffects] = useState<HitEffect[]>([]);
+  const [nextEffectId, setNextEffectId] = useState(0);
   
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
@@ -165,6 +178,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     (_vitalPointId: string, accuracy: number): boolean => {
       if (!isTraining) return false;
 
+      // Determine hit position (dummy is at [5, 0, 0])
+      const hitPosition: [number, number, number] = [5, 1.5, 0];
+      
+      let effectType: "success" | "perfect" | "miss";
+
       if (accuracy > 0.5) {
         const points = Math.round(accuracy * 100);
         
@@ -183,14 +201,31 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         if (accuracy > 0.9) {
           setFeedback("완벽한 타격! | Perfect Strike!");
           audio.playSFX("ki_release");
+          effectType = "perfect";
         } else if (accuracy > 0.7) {
           setFeedback("좋은 타격! | Good Strike!");
           audio.playSFX("ki_charge");
+          effectType = "success";
         } else {
           setFeedback("타격 성공 | Strike Success");
           audio.playSFX("menu_click");
+          effectType = "success";
         }
+        
         setShowFeedback(true);
+        
+        // Add hit effect
+        setHitEffects((prev) => [
+          ...prev,
+          {
+            id: nextEffectId,
+            position: hitPosition,
+            type: effectType,
+            visible: true,
+          },
+        ]);
+        setNextEffectId((prev) => prev + 1);
+        
         return true;
       } else {
         setStats((prev) => {
@@ -206,10 +241,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         setFeedback("빗나감 | Miss");
         setShowFeedback(true);
         audio.playSFX("menu_navigate");
+        
+        // Add miss effect
+        setHitEffects((prev) => [
+          ...prev,
+          {
+            id: nextEffectId,
+            position: hitPosition,
+            type: "miss",
+            visible: true,
+          },
+        ]);
+        setNextEffectId((prev) => prev + 1);
+        
         return false;
       }
     },
-    [isTraining, audio]
+    [isTraining, audio, nextEffectId]
   );
 
   // Combat input handling
@@ -264,6 +312,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       return () => clearTimeout(timer);
     }
   }, [showFeedback]);
+
+  // Handle hit effect completion
+  const handleEffectComplete = useCallback((effectId: number) => {
+    setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
+  }, []);
 
   // ESC key handler
   useEffect(() => {
@@ -368,6 +421,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             />
           </mesh>
         </group>
+
+        {/* Hit effects */}
+        {hitEffects.map((effect) => (
+          <TrainingHitEffects3D
+            key={effect.id}
+            position={effect.position}
+            type={effect.type}
+            visible={effect.visible}
+            onComplete={() => handleEffectComplete(effect.id)}
+          />
+        ))}
 
         {/* Html UI Overlays */}
         <Html fullscreen>
