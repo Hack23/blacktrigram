@@ -2,7 +2,8 @@
  * VitalPointMarkers3D - 3D vital point visualization
  * 
  * Renders anatomical vital points (급소) in 3D space around character models
- * Provides accurate 70-point Korean martial arts targeting system
+ * Provides Korean martial arts targeting system visualization
+ * Note: Currently displays points from KOREAN_VITAL_POINTS data (expandable to 70 points)
  */
 
 import { Html } from "@react-three/drei";
@@ -62,6 +63,21 @@ const getSeverityColor = (severity: VitalPointSeverity): number => {
   }
 };
 
+// Coordinate conversion constants
+const PIXEL_TO_WORLD_SCALE = 100;
+const CHARACTER_HEIGHT = 2;
+const X_SCALE_FACTOR = 0.5;
+
+// Label styling constants
+const LABEL_STYLES = {
+  padding: "4px 8px",
+  borderRadius: "4px",
+  fontSize: "10px",
+  subtextSize: "8px",
+  subtextOpacity: 0.8,
+  borderWidth: "1px",
+} as const;
+
 /**
  * Convert 2D screen position to 3D body position
  * Maps training dummy 2D coordinates to 3D character model space
@@ -71,13 +87,12 @@ const convert2DTo3D = (
   basePosition: [number, number, number]
 ): [number, number, number] => {
   // Normalize from pixel coordinates to character-relative coordinates
-  // Assuming character is about 2 units tall (0 to 2)
-  const normalizedX = pos2D.x / 100; // Scale down X
-  const normalizedY = 2 - (pos2D.y + 100) / 100; // Invert Y and scale
+  const normalizedX = pos2D.x / PIXEL_TO_WORLD_SCALE;
+  const normalizedY = CHARACTER_HEIGHT - (pos2D.y + PIXEL_TO_WORLD_SCALE) / PIXEL_TO_WORLD_SCALE;
   const normalizedZ = 0; // Keep depth neutral for now
 
   return [
-    basePosition[0] + normalizedX * 0.5,
+    basePosition[0] + normalizedX * X_SCALE_FACTOR,
     basePosition[1] + normalizedY,
     basePosition[2] + normalizedZ,
   ];
@@ -134,6 +149,8 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
 
   const markerSize = useMemo(() => {
     // Size based on severity
+    const DEFAULT_MARKER_SIZE = 0.05;
+    
     switch (vitalPoint.severity) {
       case VitalPointSeverity.LETHAL:
       case VitalPointSeverity.CRITICAL:
@@ -145,7 +162,7 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
       case VitalPointSeverity.MINOR:
         return 0.04 * scale;
       default:
-        return 0.05 * scale;
+        return DEFAULT_MARKER_SIZE * scale;
     }
   }, [vitalPoint.severity, scale]);
 
@@ -201,17 +218,17 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
             style={{
               background: `#${color.toString(16).padStart(6, "0")}dd`,
               color: "#ffffff",
-              padding: "4px 8px",
-              borderRadius: "4px",
-              fontSize: "10px",
+              padding: LABEL_STYLES.padding,
+              borderRadius: LABEL_STYLES.borderRadius,
+              fontSize: LABEL_STYLES.fontSize,
               fontFamily: FONT_FAMILY.KOREAN,
               whiteSpace: "nowrap",
               textAlign: "center",
-              border: `1px solid #${color.toString(16).padStart(6, "0")}`,
+              border: `${LABEL_STYLES.borderWidth} solid #${color.toString(16).padStart(6, "0")}`,
             }}
           >
             <div>{vitalPoint.names.korean}</div>
-            <div style={{ fontSize: "8px", opacity: 0.8 }}>
+            <div style={{ fontSize: LABEL_STYLES.subtextSize, opacity: LABEL_STYLES.subtextOpacity }}>
               {vitalPoint.names.english}
             </div>
           </div>
