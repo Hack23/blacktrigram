@@ -150,7 +150,8 @@ export const CombatScene: React.FC = () => {
 ### Example: Combat with Spatial Audio
 
 ```tsx
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useState, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
 import { Html, PerspectiveCamera } from "@react-three/drei";
 import { useAudio } from "../../audio/AudioProvider";
 import { SpatialAudio3D } from "./SpatialAudio3D";
@@ -167,6 +168,13 @@ export const CombatScreen3D: React.FC = () => {
       audio.fadeOut(2000);
     };
   }, [audio]);
+
+  // Update player position on attack
+  const handleAttack = () => {
+    // Player moves forward during attack
+    setPlayerPosition([0, 0, -1]);
+    setTimeout(() => setPlayerPosition([0, 0, 0]), 500);
+  };
 
   return (
     <Canvas>
@@ -189,6 +197,9 @@ export const CombatScreen3D: React.FC = () => {
       
       {/* UI Overlay with global audio */}
       <Html fullscreen>
+        <button onClick={handleAttack}>
+          Attack
+        </button>
         <button onClick={() => audio.playSFX("menu_select")}>
           Return to Menu
         </button>
