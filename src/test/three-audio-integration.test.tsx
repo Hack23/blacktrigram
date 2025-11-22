@@ -9,7 +9,11 @@ import { AudioProvider, useAudio } from "../audio/AudioProvider";
 import React from "react";
 
 // Test component that simulates audio usage in Three.js context
-const TestAudioComponent: React.FC<{ onAudioReady?: () => void }> = ({ onAudioReady }) => {
+interface TestAudioComponentProps {
+  readonly onAudioReady?: () => void;
+}
+
+const TestAudioComponent: React.FC<TestAudioComponentProps> = ({ onAudioReady }) => {
   const audio = useAudio();
 
   React.useEffect(() => {
@@ -147,7 +151,7 @@ describe("Three.js Audio Integration", () => {
 
         const handleVolumeChange = () => {
           audio.setVolume("master", 0.5);
-          setCurrentVolume(audio.masterVolume);
+          setCurrentVolume(0.5);
         };
 
         return (

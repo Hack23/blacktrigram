@@ -79,6 +79,7 @@ export const SpatialAudio3D: React.FC<SpatialAudioProps> = ({
 }) => {
   const audioRef = useRef<THREE.PositionalAudio>(null);
 
+  // Update audio parameters when they change
   useEffect(() => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
@@ -88,14 +89,19 @@ export const SpatialAudio3D: React.FC<SpatialAudioProps> = ({
     audio.setVolume(volume);
     audio.setLoop(loop);
     
-    if (autoplay) {
+    if (autoplay && !audio.isPlaying) {
       audio.play();
     }
-
-    return () => {
-      audio.stop();
-    };
   }, [refDistance, rolloffFactor, volume, loop, autoplay]);
+
+  // Only stop audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.stop();
+      }
+    };
+  }, []);
 
   return (
     <group position={position}>
@@ -105,34 +111,28 @@ export const SpatialAudio3D: React.FC<SpatialAudioProps> = ({
 };
 ```
 
-### Adding AudioListener to Camera
+### AudioListener Management
 
-For spatial audio to work, Three.js requires an `AudioListener` attached to the camera. With @react-three/drei's `PositionalAudio`, you **must** add an `AudioListener` manually:
+**Important**: The `PositionalAudio` component from @react-three/drei **automatically creates and manages the AudioListener** internally. You do **not** need to manually add an AudioListener to the camera - this is handled for you.
+
+The component automatically:
+- Creates an AudioListener instance
+- Attaches it to the camera on mount
+- Removes it from the camera on unmount
+- Manages all cleanup
+
+Here's a simple example showing spatial audio usage:
 
 ```tsx
+import { PositionalAudio } from "@react-three/drei";
 import { PerspectiveCamera } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
-import { useEffect } from "react";
-import * as THREE from "three";
 
 export const CombatScene: React.FC = () => {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    // Add audio listener to camera for spatial audio
-    const listener = new THREE.AudioListener();
-    camera.add(listener);
-
-    return () => {
-      camera.remove(listener);
-    };
-  }, [camera]);
-
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
       
-      {/* Combat character with spatial hit sound */}
+      {/* Combat character with spatial hit sound - AudioListener handled automatically */}
       <group position={[-3, 0, 0]}>
         <Player3DModel />
         <SpatialAudio3D
@@ -147,7 +147,7 @@ export const CombatScene: React.FC = () => {
 };
 ```
 
-**Note**: The `AudioListener` enables 3D spatial audio positioning. Without it, PositionalAudio will not work correctly.
+**Note**: If you need manual control over the AudioListener (advanced use case), you can create your own implementation, but for most cases, using @react-three/drei's `PositionalAudio` is recommended as it handles all the complexity for you.
 
 ### Example: Combat with Spatial Audio
 
@@ -184,13 +184,10 @@ export const CombatScreen3D: React.FC = () => {
       {/* Camera setup */}
       <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
       
-      {/* Add AudioListener for spatial audio (required for PositionalAudio) */}
-      <CameraWithListener />
-      
       {/* 3D Scene */}
       <CombatArena />
       
-      {/* Player 1 with spatial attack sounds */}
+      {/* Player 1 with spatial attack sounds - AudioListener managed automatically by PositionalAudio */}
       <group position={playerPosition}>
         <Player3DModel />
         <SpatialAudio3D
@@ -212,19 +209,6 @@ export const CombatScreen3D: React.FC = () => {
       </Html>
     </Canvas>
   );
-};
-
-// Helper component to add AudioListener to camera
-const CameraWithListener: React.FC = () => {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    const listener = new THREE.AudioListener();
-    camera.add(listener);
-    return () => camera.remove(listener);
-  }, [camera]);
-
-  return null;
 };
 ```
 
@@ -285,13 +269,30 @@ await audio.fadeOut(1000);
 - Projectile sounds
 - Technique execution sounds from specific positions
 
+**Using drei's PositionalAudio directly:**
+
 ```tsx
+import { PositionalAudio } from "@react-three/drei";
+
 <PositionalAudio
   url="/assets/audio/sfx/hit_medium.webm"
-  distance={5}  // How far the sound travels
-  rolloffFactor={2}  // How quickly it fades with distance
+  distance={5}  // drei component uses 'distance' prop
+  loop={true}
 />
 ```
+
+**Using the custom SpatialAudio3D wrapper:**
+
+```tsx
+<SpatialAudio3D
+  url="/assets/audio/sfx/hit_medium.webm"
+  position={[0, 1.5, 0]}
+  refDistance={5}  // wrapper component uses 'refDistance' for consistency with THREE.js API
+  rolloffFactor={2}
+/>
+```
+
+**Note**: The drei `PositionalAudio` component uses `distance` as its prop name, while the THREE.js API uses `setRefDistance()`. The custom `SpatialAudio3D` wrapper uses `refDistance` to match the THREE.js naming convention.
 
 ## Performance Considerations
 
