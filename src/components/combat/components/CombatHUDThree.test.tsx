@@ -7,7 +7,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CombatHUDThree } from "./CombatHUDThree";
 import { PlayerState } from "../../../systems";
-import { PlayerArchetype, TrigramStance } from "../../../types/common";
+import { PlayerArchetype } from "../../../types/common";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 
 // Mock @react-three/drei Html component
