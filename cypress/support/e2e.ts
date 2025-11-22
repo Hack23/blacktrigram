@@ -15,7 +15,6 @@
 
 // Import commands.js using ES2015 syntax:
 import "./commands";
-import "./pixi-commands"; // Import PixiJS testing commands
 import "./performance"; // Import performance monitoring
 import "./test-isolation"; // Import test isolation utilities
 import "./resource-monitoring"; // Import resource monitoring utilities
@@ -152,7 +151,6 @@ afterEach(() => {
 // Import custom commands with type support
 /// <reference types="cypress" />
 /// <reference path="./commands.ts" />
-/// <reference path="./pixi-commands.ts" />
 
 Cypress.on("fail", (err, _runnable) => {
   console.error("Cypress test failed:", err.message);

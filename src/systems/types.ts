@@ -47,16 +47,9 @@ export interface VitalPointSystemConfig {
   readonly effectDurations: Record<string, number>;
 }
 
-// NOTE: PixiJS types commented out after migration to Three.js
-// These interfaces remain for backward compatibility but are no longer actively used
-// Direct PixiJS imports for core types
-// import type {
-//   Application as PixiApplication,
-//   DisplayObject as PixiDisplayObject,
-//   Texture,
-// } from "pixi.js";
-
-// Placeholder types to maintain interface compatibility during migration
+// Deprecated placeholder types for backward compatibility
+// These were used with PixiJS but are no longer needed with Three.js
+// @deprecated These types will be removed in a future version
 type PixiApplication = any;
 type PixiDisplayObject = any;
 type Texture = any;
@@ -123,6 +116,8 @@ export interface PhysicsEntityState {
   readonly angularVelocity?: number;
 }
 
+// Deprecated: Rendering system interface was used with PixiJS
+// @deprecated Use Three.js rendering instead
 export interface RenderableConfig {
   readonly displayObject: PixiDisplayObject;
   readonly zOrder?: number;
@@ -248,6 +243,8 @@ export interface PhysicsSystemInterface {
   applyForce: (entityId: EntityId, force: Velocity) => void;
 }
 
+// Deprecated: Rendering system interface was used with PixiJS
+// @deprecated Use Three.js rendering instead
 export interface RenderingSystemInterface {
   readonly app: PixiApplication;
   addRenderable: (entityId: EntityId, config: RenderableConfig) => void;
@@ -401,12 +398,15 @@ export interface GamepadState {
   readonly buttons: readonly { pressed: boolean; value: number }[];
 }
 
-// Added AnimationFrame and AnimationState for AnimationSystemInterface
+// Deprecated: AnimationFrame and AnimationState were used with PixiJS
+// Three.js uses built-in animation systems
+// @deprecated Use Three.js animation system instead
 export interface AnimationFrame {
-  readonly texture: Texture; // Texture from PIXI
+  readonly texture: Texture;
   readonly duration: number;
 }
 
+// @deprecated Use Three.js animation system instead
 export interface AnimationState {
   readonly currentAnimationName?: string;
   readonly currentFrameIndex: number;
@@ -443,15 +443,7 @@ export interface CollisionData {
   readonly penetration: number; // How much they are overlapping
 }
 
-// Rendering system interface
-// Renderable configuration
-export interface RenderableConfig {
-  readonly displayObject: PixiDisplayObject; // The PIXI object to render - use aliased import
-  readonly zOrder?: number; // For sorting
-  readonly visible?: boolean;
-  readonly alpha?: number; // Added
-  readonly parent?: EntityId | "stage"; // ID of parent renderable or stage // Added
-}
+// Rendering system interface (deprecated - use Three.js rendering)
 
 // Game system manager
 // System event base type
@@ -485,9 +477,6 @@ export interface AISystemConfig {
   readonly aggressiveness: number;
   readonly adaptability: number;
 }
-
-// Re-export PixiJS types for convenience
-export type { PixiApplication, PixiDisplayObject };
 
 // Player archetype data
 export const PLAYER_ARCHETYPES_DATA: Record<
