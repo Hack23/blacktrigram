@@ -21,11 +21,10 @@ export function monitorFPS(
   duration: number = 2000,
   targetFPS: number = 60
 ): Cypress.Chainable<FPSMetrics> {
-  return cy.window().then((win) => {
+  return cy.window().then((_win) => {
     return new Cypress.Promise<FPSMetrics>((resolve) => {
       const samples: number[] = [];
       let lastTime = performance.now();
-      let frameCount = 0;
       let droppedFrames = 0;
       const startTime = performance.now();
       const minFrameTime = 1000 / targetFPS;
@@ -45,7 +44,6 @@ export function monitorFPS(
         }
 
         lastTime = now;
-        frameCount++;
 
         if (now - startTime < duration) {
           requestAnimationFrame(measureFrame);
@@ -151,8 +149,8 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
   return cy.get("canvas").then(($canvas) => {
     const canvas = $canvas[0] as HTMLCanvasElement;
     
-    return cy.window().then((win) => {
-      return new Cypress.Promise<void>((resolve, reject) => {
+    return cy.window().then((_win) => {
+      return new Cypress.Promise<void>((resolve) => {
         let lastPixelData: Uint8ClampedArray | null = null;
         let changeCount = 0;
         const checkInterval = 200; // Check every 200ms
@@ -174,7 +172,7 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
               if (lastPixelData) {
                 // Check if pixels changed
                 const changed = !imageData.data.every(
-                  (val, idx) => val === lastPixelData![idx]
+                  (val, idx) => lastPixelData && val === lastPixelData[idx]
                 );
                 if (changed) {
                   changeCount++;

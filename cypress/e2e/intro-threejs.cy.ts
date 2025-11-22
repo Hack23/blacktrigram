@@ -6,6 +6,8 @@
  * Tests the complete Three.js implementation of the intro screen
  */
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 describe("Black Trigram - IntroScreen Three.js", () => {
   beforeEach(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });

@@ -6,6 +6,8 @@
  * Tests Canvas rendering performance across all screens
  */
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 describe("Black Trigram - Three.js Performance", () => {
   beforeEach(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });
