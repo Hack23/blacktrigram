@@ -361,22 +361,21 @@ describe("Black Trigram - IntroScreen Three.js", () => {
     it("should maintain performance during animation", () => {
       cy.annotate("Testing animation performance");
 
-      const startTime = Date.now();
+      // Use async-aware timing pattern
+      cy.wrap(Date.now()).then((startTime) => {
+        // Wait for several render cycles
+        cy.wait(2000);
 
-      // Wait for several render cycles
-      cy.wait(2000);
-
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        
-        // Should complete without significant delays
-        expect(duration).to.be.lessThan(3000);
-        cy.task("logPerformance", { 
-          name: "IntroScreen Animation", 
-          duration 
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          // Should complete without significant delays
+          expect(duration).to.be.lessThan(3000);
+          cy.task("logPerformance", { 
+            name: "IntroScreen Animation", 
+            duration 
+          });
+          
+          cy.log(`✅ Animation performance: ${duration}ms`);
         });
-        
-        cy.log(`✅ Animation performance: ${duration}ms`);
       });
 
       // Canvas should still be visible and functional

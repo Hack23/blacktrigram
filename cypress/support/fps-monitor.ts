@@ -50,17 +50,28 @@ export function monitorFPS(
           requestAnimationFrame(measureFrame);
         } else {
           // Calculate metrics
-          const averageFPS = samples.reduce((a, b) => a + b, 0) / samples.length;
-          const minFPS = Math.min(...samples);
-          const maxFPS = Math.max(...samples);
+          if (samples.length === 0) {
+            // No samples collected - resolve with zero values
+            resolve({
+              averageFPS: 0,
+              minFPS: 0,
+              maxFPS: 0,
+              samples: 0,
+              droppedFrames: 0,
+            });
+          } else {
+            const averageFPS = samples.reduce((a, b) => a + b, 0) / samples.length;
+            const minFPS = Math.min(...samples);
+            const maxFPS = Math.max(...samples);
 
-          resolve({
-            averageFPS,
-            minFPS,
-            maxFPS,
-            samples: samples.length,
-            droppedFrames,
-          });
+            resolve({
+              averageFPS,
+              minFPS,
+              maxFPS,
+              samples: samples.length,
+              droppedFrames,
+            });
+          }
         }
       };
 
@@ -109,38 +120,40 @@ export function assertMinFPS(
  */
 export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<void> {
   return monitorFPS(duration, 60).then((metrics) => {
-    cy.task("logPerformance", {
-      name: "Smooth FPS Check",
-      duration,
-      metrics: {
-        average: metrics.averageFPS.toFixed(2),
-        min: metrics.minFPS.toFixed(2),
-        max: metrics.maxFPS.toFixed(2),
-        dropped: metrics.droppedFrames,
-      },
+    return cy.wrap(null).then(() => {
+      cy.task("logPerformance", {
+        name: "Smooth FPS Check",
+        duration,
+        metrics: {
+          average: metrics.averageFPS.toFixed(2),
+          min: metrics.minFPS.toFixed(2),
+          max: metrics.maxFPS.toFixed(2),
+          dropped: metrics.droppedFrames,
+        },
+      });
+
+      // Check average FPS is above 50 (allowing some margin)
+      expect(metrics.averageFPS).to.be.greaterThan(50);
+      
+      // Check minimum FPS doesn't drop too low
+      expect(metrics.minFPS).to.be.greaterThan(40);
+      
+      // Check that we don't drop too many frames
+      const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
+      expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
+
+      if (metrics.averageFPS >= 55 && dropRate < 10) {
+        cy.log(
+          `✅ Excellent FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
+          `(${dropRate.toFixed(1)}% frame drops)`
+        );
+      } else {
+        cy.log(
+          `⚠️ Acceptable FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
+          `(${dropRate.toFixed(1)}% frame drops)`
+        );
+      }
     });
-
-    // Check average FPS is above 50 (allowing some margin)
-    expect(metrics.averageFPS).to.be.greaterThan(50);
-    
-    // Check minimum FPS doesn't drop too low
-    expect(metrics.minFPS).to.be.greaterThan(40);
-    
-    // Check that we don't drop too many frames
-    const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
-    expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
-
-    if (metrics.averageFPS >= 55 && dropRate < 10) {
-      cy.log(
-        `✅ Excellent FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
-        `(${dropRate.toFixed(1)}% frame drops)`
-      );
-    } else {
-      cy.log(
-        `⚠️ Acceptable FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
-        `(${dropRate.toFixed(1)}% frame drops)`
-      );
-    }
   });
 }
 
