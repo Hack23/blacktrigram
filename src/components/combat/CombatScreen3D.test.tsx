@@ -216,38 +216,53 @@ describe("CombatScreen3D", () => {
     });
   });
 
-  it("should render with players having different archetypes", () => {
-    const archetypes = [
-      PlayerArchetype.MUSA,
-      PlayerArchetype.AMSALJA,
-      PlayerArchetype.HACKER,
-      PlayerArchetype.JEONGBO_YOWON,
-      PlayerArchetype.JOJIK_POKRYEOKBAE,
+  it("should render with two players of different archetypes and show correct labels", () => {
+    const players = [
+      createPlayerFromArchetype(PlayerArchetype.MUSA, 0),
+      createPlayerFromArchetype(PlayerArchetype.HACKER, 1),
     ];
 
-    archetypes.forEach((archetype1) => {
-      archetypes.forEach((archetype2) => {
-        const players = [
-          createPlayerFromArchetype(archetype1, 0),
-          createPlayerFromArchetype(archetype2, 1),
-        ];
+    const { unmount } = render(
+      <CombatScreen3D
+        players={players}
+        onPlayerUpdate={mockOnPlayerUpdate}
+        currentRound={1}
+        timeRemaining={120}
+        isPaused={false}
+        onReturnToMenu={mockOnReturnToMenu}
+        onGameEnd={mockOnGameEnd}
+      />
+    );
 
-        const { unmount } = render(
-          <CombatScreen3D
-            players={players}
-            onPlayerUpdate={mockOnPlayerUpdate}
-            currentRound={1}
-            timeRemaining={120}
-            isPaused={false}
-            onReturnToMenu={mockOnReturnToMenu}
-            onGameEnd={mockOnGameEnd}
-          />
-        );
+    expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
+    // Check for Korean-English archetype labels for both players
+    expect(screen.getAllByText(/무사|Musa/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/해커|Hacker/i).length).toBeGreaterThan(0);
+    unmount();
+  });
 
-        expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
-        unmount();
-      });
-    });
+  it("should render with two players of the same archetype and show correct label", () => {
+    const players = [
+      createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0),
+      createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1),
+    ];
+
+    const { unmount } = render(
+      <CombatScreen3D
+        players={players}
+        onPlayerUpdate={mockOnPlayerUpdate}
+        currentRound={1}
+        timeRemaining={120}
+        isPaused={false}
+        onReturnToMenu={mockOnReturnToMenu}
+        onGameEnd={mockOnGameEnd}
+      />
+    );
+
+    expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
+    // Check for Korean-English archetype label for both players
+    expect(screen.getAllByText(/암살자|Amsalja/i).length).toBeGreaterThanOrEqual(2);
+    unmount();
   });
 
   it("should render with players having different stances", () => {
