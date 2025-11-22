@@ -137,8 +137,8 @@ export class PerformanceMonitor {
       maxFps: this.getMaxFPS(),
       frameTime: currentFps > 0 ? 1000 / currentFps : 0,
       memoryMB: this.getMemoryUsageMB(),
-      drawCalls: renderer?.info.render.calls ?? 0,
-      triangles: renderer?.info.render.triangles ?? 0,
+      drawCalls: renderer?.info?.render?.calls ?? 0,
+      triangles: renderer?.info?.render?.triangles ?? 0,
     };
   }
 
@@ -161,7 +161,7 @@ export class PerformanceMonitor {
 
     const avgFps = this.getAverageFPS();
     const memoryMB = this.getMemoryUsageMB();
-    const drawCalls = renderer?.info.render.calls ?? 0;
+    const drawCalls = renderer?.info?.render?.calls ?? 0;
 
     // Check FPS
     if (avgFps < this.thresholds.minAcceptableFps) {

@@ -164,8 +164,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
-  // Match timing
-  const matchStartTimeRef = useRef(Date.now());
+  // Match timing - use useRef with lazy initialization
+  const matchStartTimeRef = useRef<number | null>(null);
+  if (matchStartTimeRef.current === null) {
+    matchStartTimeRef.current = Date.now();
+  }
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
@@ -532,7 +535,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Match duration
   // @ts-expect-error - Unused after removing PixiJS UI components
   const matchDuration = useMemo(
-    () => Math.floor((Date.now() - matchStartTimeRef.current) / 1000),
+    () => Math.floor((Date.now() - (matchStartTimeRef.current ?? Date.now())) / 1000),
     []
   );
 
