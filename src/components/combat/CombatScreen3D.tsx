@@ -27,6 +27,7 @@ import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity 
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
+import { PerformanceOverlay3D } from "../../utils/performance";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -666,6 +667,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           onEffectComplete={handleEffectComplete}
           arenaBounds={arenaBounds}
         />
+
+        {/* Performance Overlay (Development Only) */}
+        {import.meta.env.DEV && (
+          <PerformanceOverlay3D
+            position={[-7, 4, 0]}
+            visible={true}
+          />
+        )}
 
         {/* Round display status overlay */}
         {combatState.roundDisplayStatus && combatState.roundDisplayStatus !== null && (

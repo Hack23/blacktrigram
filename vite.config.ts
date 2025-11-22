@@ -99,18 +99,21 @@ export default defineConfig(({ command, mode }) => ({
           }
           return "assets/[name]-[hash:6][extname]";
         },
+
+        // Three.js tree shaking optimization
+        manualChunks: undefined, // Disable manual chunking for single bundle
+      },
+      
+      // Tree shaking optimization for Three.js
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        trySideEffects: false,
       },
     },
 
     // Aggressive asset optimization
     reportCompressedSize: false, // Skip for faster builds
-
-    // Tree shaking optimization (Reverted to default for stability)
-    // treeshake: {
-    //   moduleSideEffects: false,
-    //   propertyReadSideEffects: false,
-    //   unknownGlobalSideEffects: false,
-    // },
   },
 
   esbuild: {
