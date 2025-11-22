@@ -27,10 +27,11 @@ import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity 
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
-import { CombatControls } from "./components/CombatControls";
-import { CombatFooter } from "./components/CombatFooter";
-import { CombatHUD } from "./components/CombatHUD";
-import { CombatStatsPanel } from "./components/CombatStatsPanel";
+// TODO: Create HTML versions of these UI components for Three.js
+// import { CombatControls } from "./components/CombatControls";
+// import { CombatFooter } from "./components/CombatFooter";
+// import { CombatHUD } from "./components/CombatHUD";
+// import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -528,6 +529,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [validPlayers[0].health, validPlayers[1].health, checkGameEnd]);
 
   // Match duration
+  // @ts-expect-error - Unused after removing PixiJS UI components
   const matchDuration = useMemo(
     () => Math.floor((Date.now() - matchStartTimeRef.current) / 1000),
     []
@@ -729,27 +731,30 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             right: "10px",
           }}
         >
-          <CombatHUD
-            player1={validPlayers[0]}
-            player2={validPlayers[1]}
-            timeRemaining={timeRemaining}
-            currentRound={currentRound}
-            maxRounds={3}
-            gameScore={{
-              player1: validPlayers[0].wins || 0,
-              player2: validPlayers[1].wins || 0,
-            }}
-            roundsWon={{
-              player1: validPlayers[0].wins || 0,
-              player2: validPlayers[1].wins || 0,
-            }}
-            isPaused={isPaused}
-            width={width - 20}
-            height={layoutConstants.hudHeight}
-            healthBarHeight={layoutConstants.healthBarHeight}
-            x={0}
-            y={0}
-          />
+          {/* TODO: Replace with CombatHUDHTML component */}
+          <div style={{
+            background: "rgba(10, 10, 15, 0.9)",
+            border: "2px solid #00ffff",
+            borderRadius: "8px",
+            padding: "15px",
+            fontFamily: FONT_FAMILY.KOREAN,
+            color: "#00ffff",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+              <div>
+                <div>{validPlayers[0].name.korean} | {validPlayers[0].name.english}</div>
+                <div>HP: {validPlayers[0].health}/{validPlayers[0].maxHealth}</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div>Round {currentRound}/3</div>
+                <div>Time: {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, "0")}</div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div>{validPlayers[1].name.korean} | {validPlayers[1].name.english}</div>
+                <div>HP: {validPlayers[1].health}/{validPlayers[1].maxHealth}</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Combat Controls and Stats */}
@@ -764,54 +769,33 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             pointerEvents: "auto",
           }}
         >
-          <div style={{ width: isMobile ? "45%" : "400px" }}>
-            <CombatControls
-              onAttack={handleAttack}
-              onDefend={handleDefend}
-              onSwitchStance={handleStanceSwitch}
-              onTechniqueExecute={handleTechniqueExecute}
-              player={validPlayers[0]}
-              isExecutingTechnique={combatState.isExecutingTechnique}
-              width={isMobile ? width * 0.45 : 400}
-              height={isMobile ? 120 : 140}
-              x={0}
-              y={0}
-            />
+          {/* TODO: Replace with CombatControlsHTML component */}
+          <div style={{ 
+            width: isMobile ? "45%" : "400px",
+            background: "rgba(10, 10, 15, 0.8)",
+            border: "2px solid #00ffff",
+            borderRadius: "8px",
+            padding: "10px",
+            color: "#00ffff",
+            fontFamily: FONT_FAMILY.KOREAN,
+          }}>
+            <div>Controls: A/D - Attack/Defend | 1-8 - Stances</div>
           </div>
-          <div style={{ width: isMobile ? "45%" : "400px" }}>
-            <CombatStatsPanel
-              players={validPlayers}
-              combatLog={combatState.combatMessages.map((msg, index) => ({
-                id: `msg-${index}`,
-                timestamp: Date.now() - index * 1000,
-                korean: msg.split(" | ")[0] || msg,
-                english: msg.split(" | ")[1] || msg,
-                type: msg.includes("공격")
-                  ? "attack"
-                  : msg.includes("방어")
-                  ? "defend"
-                  : msg.includes("기술")
-                  ? "technique"
-                  : "info",
-              }))}
-              matchDuration={matchDuration}
-              totalDamageDealt={{
-                player1: validPlayers[0].totalDamageDealt || 0,
-                player2: validPlayers[1].totalDamageDealt || 0,
-              }}
-              criticalHits={{
-                player1: Math.floor((validPlayers[0].totalDamageDealt || 0) / 50),
-                player2: Math.floor((validPlayers[1].totalDamageDealt || 0) / 50),
-              }}
-              perfectStrikes={{
-                player1: validPlayers[0].perfectStrikes || 0,
-                player2: validPlayers[1].perfectStrikes || 0,
-              }}
-              width={isMobile ? width * 0.45 : 400}
-              height={isMobile ? 120 : 140}
-              x={0}
-              y={0}
-            />
+          {/* TODO: Replace with CombatStatsPanelHTML component */}
+          <div style={{ 
+            width: isMobile ? "45%" : "400px",
+            background: "rgba(10, 10, 15, 0.8)",
+            border: "2px solid #00ffff",
+            borderRadius: "8px",
+            padding: "10px",
+            color: "#00ffff",
+            fontFamily: FONT_FAMILY.KOREAN,
+            maxHeight: "140px",
+            overflow: "auto",
+          }}>
+            {combatState.combatMessages.slice(-5).map((msg, i) => (
+              <div key={i} style={{ fontSize: "12px", marginBottom: "4px" }}>{msg}</div>
+            ))}
           </div>
         </div>
 
@@ -825,12 +809,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             pointerEvents: "auto",
           }}
         >
-          <CombatFooter
-            onReturnToMenu={onReturnToMenu}
-            isMobile={isMobile}
-            width={width}
-            height={layoutConstants.footerHeight}
-          />
+          {/* TODO: Replace with CombatFooterHTML component */}
+          <div style={{ 
+            textAlign: "center",
+            background: "rgba(10, 10, 15, 0.8)",
+            border: "2px solid #00ffff",
+            borderRadius: "8px",
+            padding: "8px",
+            margin: "0 10px",
+          }}>
+            <button 
+              onClick={onReturnToMenu}
+              style={{
+                background: "#00ffff",
+                color: "#0a0a0f",
+                border: "none",
+                borderRadius: "4px",
+                padding: "8px 16px",
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              메뉴로 | Return to Menu
+            </button>
+          </div>
         </div>
 
         {/* Pause Overlay */}

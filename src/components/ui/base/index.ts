@@ -3,9 +3,8 @@
  * @category UI Components
  */
 
-export * from "./BaseButton";
-export * from "./korean-text";
-export * from "./ResponsivePixiComponents";
-
-// Re-export component prop types
-export type { BaseButtonProps } from "./BaseButton";
+// Note: PixiJS base components have been archived
+// Use Three.js components from ../three/ instead
+// export * from "./BaseButton"; // Archived
+// export * from "./korean-text"; // Archived  
+// export * from "./ResponsivePixiComponents"; // Archived
