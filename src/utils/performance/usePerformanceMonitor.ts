@@ -54,9 +54,20 @@ export function usePerformanceMonitor(
 
   const gl = useThree((state) => state.gl);
   
+  // Memoize thresholds to prevent unnecessary monitor recreation
+  const stableThresholds = useMemo(
+    () => thresholds,
+    [
+      thresholds?.targetFps,
+      thresholds?.minAcceptableFps,
+      thresholds?.maxMemoryMB,
+      thresholds?.maxDrawCalls,
+    ]
+  );
+
   const monitor = useMemo(
-    () => new PerformanceMonitor(thresholds),
-    [thresholds]
+    () => new PerformanceMonitor(stableThresholds),
+    [stableThresholds]
   );
 
   const [state, setState] = useState<PerformanceMonitorState>(() => ({

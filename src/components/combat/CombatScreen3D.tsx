@@ -164,11 +164,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
-  // Match timing - use useRef with lazy initialization
-  const matchStartTimeRef = useRef<number | null>(null);
-  if (matchStartTimeRef.current === null) {
-    matchStartTimeRef.current = Date.now();
-  }
+  // Match timing - use useMemo for initialization
+  const matchStartTimeRef = useRef(
+    useMemo(() => Date.now(), [])
+  );
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
