@@ -41,7 +41,7 @@ export interface PerformanceMonitorState {
  *           <div>FPS: {metrics.fps.toFixed(1)}</div>
  *         </Html>
  *       )}
- *       {/* 3D content *\/}
+ *       {/＊ 3D content ＊/}
  *     </>
  *   );
  * }
@@ -57,12 +57,7 @@ export function usePerformanceMonitor(
   // Memoize thresholds to prevent unnecessary monitor recreation
   const stableThresholds = useMemo(
     () => thresholds,
-    [
-      thresholds?.targetFps,
-      thresholds?.minAcceptableFps,
-      thresholds?.maxMemoryMB,
-      thresholds?.maxDrawCalls,
-    ]
+    [thresholds]
   );
 
   const monitor = useMemo(

@@ -13,6 +13,10 @@ describe('PerformanceMonitor', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('FPS tracking', () => {
     it('should initialize with zero FPS', () => {
       expect(monitor.getCurrentFPS()).toBe(0);
@@ -50,11 +54,20 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should calculate average FPS correctly', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate 5 frames
       for (let i = 1; i <= 5; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 
@@ -64,7 +77,7 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should track min and max FPS', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
       
       // Simulate varying frame times
       vi.spyOn(performance, 'now')
@@ -87,22 +100,34 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should handle zero delta gracefully', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
       
       vi.spyOn(performance, 'now')
-        .mockReturnValueOnce(startTime)
-        .mockReturnValueOnce(startTime); // Same time - zero delta
-
+        .mockReturnValue(startTime);
+      
+      // Reset to initialize with mocked time
+      monitor.reset();
+      
+      // Now both calls return the same time (zero delta)
       const fps = monitor.update();
       expect(fps).toBe(0);
     });
 
     it('should limit frame samples to maximum', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate 100 frames (more than maxFrameSamples of 60)
       for (let i = 1; i <= 100; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 
@@ -129,11 +154,20 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should check if performance is good', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate good performance (60fps)
       for (let i = 1; i <= 10; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 
@@ -141,11 +175,20 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should detect poor performance', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 33.33);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate poor performance (30fps)
       for (let i = 1; i <= 10; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 33.33));
         monitor.update();
       }
 
@@ -155,11 +198,20 @@ describe('PerformanceMonitor', () => {
 
   describe('Metrics', () => {
     it('should get comprehensive metrics', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate a few frames
       for (let i = 1; i <= 5; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 
@@ -180,11 +232,20 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should get performance summary string', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate a few frames
       for (let i = 1; i <= 5; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 
@@ -201,11 +262,20 @@ describe('PerformanceMonitor', () => {
 
   describe('Reset', () => {
     it('should reset all metrics', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate some frames
       for (let i = 1; i <= 5; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 
@@ -241,11 +311,20 @@ describe('PerformanceMonitor', () => {
     });
 
     it('should not generate warnings with good performance', () => {
-      const startTime = performance.now();
+      const startTime = 1000;
+      let callCount = 0;
+      
+      vi.spyOn(performance, 'now').mockImplementation(() => {
+        const time = startTime + (callCount * 16.67);
+        callCount++;
+        return time;
+      });
+      
+      // Reset monitor to use mocked time
+      monitor.reset();
       
       // Simulate good performance (60fps)
       for (let i = 1; i <= 65; i++) {
-        vi.spyOn(performance, 'now').mockReturnValue(startTime + (i * 16.67));
         monitor.update();
       }
 

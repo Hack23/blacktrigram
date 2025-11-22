@@ -320,7 +320,6 @@ build: {
     treeshake: {
       moduleSideEffects: false,
       propertyReadSideEffects: false,
-      trySideEffects: false,
     },
   },
 }
