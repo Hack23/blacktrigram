@@ -1,11 +1,20 @@
 /**
  * Tests for ProgressBar component
+ * Enhanced with actual rendering tests using @testing-library/react
  */
 
-import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { KOREAN_COLORS } from "../../types/constants";
 import { ProgressBar } from "./ProgressBar";
 import type { ProgressBarType } from "./ProgressBar";
+
+// Mock @react-three/drei Html component
+vi.mock("@react-three/drei", () => ({
+  Html: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="html-overlay">{children}</div>
+  ),
+}));
 
 describe("ProgressBar", () => {
   it("should be defined and importable", () => {
@@ -17,37 +26,110 @@ describe("ProgressBar", () => {
     expect(ProgressBar.displayName).toBe("ProgressBar");
   });
 
-  it("should accept TypeScript props correctly", () => {
-    // TypeScript compilation test
-    const validProps = {
-      type: "health" as ProgressBarType,
-      current: 75,
-      max: 100,
-      label: { korean: "체력", english: "Health" },
-      position: [0, 0, 0] as [number, number, number],
-      width: 200,
-      height: 24,
-      showText: true,
-      animated: true,
-    };
+  it("should render health bar", () => {
+    render(
+      <ProgressBar
+        type="health"
+        current={75}
+        max={100}
+      />
+    );
 
-    expect(validProps.type).toBe("health");
-    expect(validProps.current).toBe(75);
-    expect(validProps.max).toBe(100);
-    expect(validProps.width).toBe(200);
+    expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
+  });
+
+  it("should render ki bar", () => {
+    render(
+      <ProgressBar
+        type="ki"
+        current={60}
+        max={100}
+      />
+    );
+
+    expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
+  });
+
+  it("should render stamina bar", () => {
+    render(
+      <ProgressBar
+        type="stamina"
+        current={50}
+        max={100}
+      />
+    );
+
+    expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
+  });
+
+  it("should render with custom test ID", () => {
+    render(
+      <ProgressBar
+        type="health"
+        current={80}
+        max={100}
+        testId="custom-progress-bar"
+      />
+    );
+
+    expect(screen.getByTestId("custom-progress-bar")).toBeInTheDocument();
+  });
+
+  it("should render with bilingual labels", () => {
+    render(
+      <ProgressBar
+        type="health"
+        current={85}
+        max={100}
+        label={{ korean: "체력", english: "Health" }}
+      />
+    );
+
+    expect(screen.getByText("체력 | Health")).toBeInTheDocument();
+  });
+
+  it("should display current/max values", () => {
+    render(
+      <ProgressBar
+        type="health"
+        current={75}
+        max={100}
+        label={{ korean: "체력", english: "Health" }}
+        showText={true}
+      />
+    );
+
+    expect(screen.getByText("75 / 100")).toBeInTheDocument();
+  });
+
+  it("should display percentage", () => {
+    render(
+      <ProgressBar
+        type="health"
+        current={75}
+        max={100}
+        showText={true}
+      />
+    );
+
+    expect(screen.getByText("75%")).toBeInTheDocument();
   });
 
   it("should support all progress bar types", () => {
     const types: ProgressBarType[] = ["health", "ki", "stamina"];
 
     types.forEach((type) => {
-      const props = {
-        type,
-        current: 50,
-        max: 100,
-      };
+      const { unmount } = render(
+        <ProgressBar
+          type={type}
+          current={50}
+          max={100}
+          testId={`bar-${type}`}
+        />
+      );
 
-      expect(props.type).toBe(type);
+      expect(screen.getByTestId(`bar-${type}`)).toBeInTheDocument();
+      unmount();
     });
   });
 
@@ -80,91 +162,80 @@ describe("ProgressBar", () => {
     expect(percentage3).toBe(1);
   });
 
-  it("should support custom dimensions", () => {
-    const props = {
-      type: "health" as ProgressBarType,
-      current: 80,
-      max: 100,
-      width: 300,
-      height: 32,
-    };
+  it("should render with custom dimensions", () => {
+    render(
+      <ProgressBar
+        type="health"
+        current={80}
+        max={100}
+        width={300}
+        height={32}
+      />
+    );
 
-    expect(props.width).toBe(300);
-    expect(props.height).toBe(32);
+    expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
   });
 
-  it("should support custom position", () => {
+  it("should render with custom position", () => {
     const position: [number, number, number] = [5, 10, 0];
-    const props = {
-      type: "ki" as ProgressBarType,
-      current: 60,
-      max: 100,
-      position,
-    };
+    render(
+      <ProgressBar
+        type="ki"
+        current={60}
+        max={100}
+        position={position}
+      />
+    );
 
-    expect(props.position).toEqual([5, 10, 0]);
-  });
-
-  it("should support bilingual labels", () => {
-    const label = { korean: "기력", english: "Ki" };
-    const props = {
-      type: "ki" as ProgressBarType,
-      current: 70,
-      max: 100,
-      label,
-    };
-
-    expect(props.label?.korean).toBe("기력");
-    expect(props.label?.english).toBe("Ki");
+    expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
   });
 
   it("should support showing/hiding text", () => {
-    const propsWithText = {
-      type: "health" as ProgressBarType,
-      current: 85,
-      max: 100,
-      showText: true,
-    };
+    const { container: withText } = render(
+      <ProgressBar
+        type="health"
+        current={85}
+        max={100}
+        showText={true}
+      />
+    );
 
-    const propsWithoutText = {
-      type: "health" as ProgressBarType,
-      current: 85,
-      max: 100,
-      showText: false,
-    };
+    expect(withText).toBeTruthy();
 
-    expect(propsWithText.showText).toBe(true);
-    expect(propsWithoutText.showText).toBe(false);
+    const { container: withoutText } = render(
+      <ProgressBar
+        type="health"
+        current={85}
+        max={100}
+        showText={false}
+      />
+    );
+
+    expect(withoutText).toBeTruthy();
   });
 
   it("should support animation toggle", () => {
-    const propsAnimated = {
-      type: "stamina" as ProgressBarType,
-      current: 55,
-      max: 100,
-      animated: true,
-    };
+    const { container: animated } = render(
+      <ProgressBar
+        type="stamina"
+        current={55}
+        max={100}
+        animated={true}
+      />
+    );
 
-    const propsStatic = {
-      type: "stamina" as ProgressBarType,
-      current: 55,
-      max: 100,
-      animated: false,
-    };
+    expect(animated).toBeTruthy();
 
-    expect(propsAnimated.animated).toBe(true);
-    expect(propsStatic.animated).toBe(false);
-  });
+    const { container: staticBar } = render(
+      <ProgressBar
+        type="stamina"
+        current={55}
+        max={100}
+        animated={false}
+      />
+    );
 
-  it("should support custom test ID", () => {
-    const props = {
-      type: "health" as ProgressBarType,
-      current: 90,
-      max: 100,
-      testId: "custom-progress-bar",
-    };
-
-    expect(props.testId).toBe("custom-progress-bar");
+    expect(staticBar).toBeTruthy();
   });
 
   it("should use Korean colors for theming", () => {
@@ -205,16 +276,41 @@ describe("ProgressBar", () => {
       { current: 10, max: 100, description: "Critical health" },
     ];
 
-    scenarios.forEach(({ current, max, description }) => {
-      const props = {
-        type: "health" as ProgressBarType,
-        current,
-        max,
-      };
+    scenarios.forEach(({ current, max }) => {
+      const { unmount } = render(
+        <ProgressBar
+          type="health"
+          current={current}
+          max={max}
+        />
+      );
 
       const percentage = max > 0 ? current / max : 0;
       expect(percentage).toBeGreaterThanOrEqual(0);
       expect(percentage).toBeLessThanOrEqual(1);
+      unmount();
+    });
+  });
+
+  it("should render bilingual labels for all resource types", () => {
+    const labels = [
+      { type: "health" as ProgressBarType, korean: "체력", english: "Health" },
+      { type: "ki" as ProgressBarType, korean: "기력", english: "Ki" },
+      { type: "stamina" as ProgressBarType, korean: "지구력", english: "Stamina" },
+    ];
+
+    labels.forEach(({ type, korean, english }) => {
+      const { unmount } = render(
+        <ProgressBar
+          type={type}
+          current={70}
+          max={100}
+          label={{ korean, english }}
+        />
+      );
+
+      expect(screen.getByText(`${korean} | ${english}`)).toBeInTheDocument();
+      unmount();
     });
   });
 });
