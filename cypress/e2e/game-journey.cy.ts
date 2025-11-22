@@ -7,6 +7,8 @@
  * Tests verify Canvas rendering, Html overlays, and complete game navigation flow
  */
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 describe("Black Trigram - Game Journey", () => {
   beforeEach(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });

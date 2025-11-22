@@ -6,6 +6,8 @@
  * Tests the complete Three.js migration for all screens and components
  */
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 describe("Black Trigram - Three.js Korean Martial Arts", () => {
   beforeEach(() => {
     cy.visitWithWebGLMock("/", { timeout: 12000 });

@@ -6,6 +6,8 @@
  * Tests verify Three.js Canvas exists and Html overlays render correctly
  */
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 describe("Black Trigram - Smoke Test", () => {
   beforeEach(() => {
     cy.on("uncaught:exception", (err) => {
