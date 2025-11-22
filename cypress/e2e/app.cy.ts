@@ -1,18 +1,21 @@
 /**
  * Fast Smoke Test - Essential App Functionality
  * Optimized for speed to catch critical failures quickly
+ * 
+ * ✅ Three.js Compatible - Updated for Three.js Canvas rendering
+ * Tests verify Three.js Canvas exists and Html overlays render correctly
  */
 
 describe("Black Trigram - Smoke Test", () => {
   beforeEach(() => {
     cy.on("uncaught:exception", (err) => {
-      // Ignore audio, WebGL, and asset loading errors
+      // Ignore audio, WebGL, Three.js, and asset loading errors
       if (
         err.message.includes("Failed to load") ||
         err.message.includes("no supported source") ||
         err.message.includes("play() request was interrupted") ||
         err.message.includes("WebGL") ||
-        err.message.includes("PIXI") ||
+        err.message.includes("Three.js") ||
         err.message.includes("audio")
       ) {
         return false;

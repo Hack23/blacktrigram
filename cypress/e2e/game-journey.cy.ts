@@ -2,6 +2,9 @@
  * Consolidated Game Journey E2E Tests
  * Combines game-flow.cy.ts and core-features.cy.ts into efficient journey-based tests
  * Eliminates duplication and reduces unnecessary waits
+ * 
+ * ✅ Three.js Compatible - Updated for all Three.js screens
+ * Tests verify Canvas rendering, Html overlays, and complete game navigation flow
  */
 
 describe("Black Trigram - Game Journey", () => {
