@@ -108,7 +108,6 @@ export default defineConfig(({ command, mode }) => ({
       treeshake: {
         moduleSideEffects: false,
         propertyReadSideEffects: false,
-        trySideEffects: false,
       },
     },
 

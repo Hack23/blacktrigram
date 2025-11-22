@@ -94,7 +94,7 @@ export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
             <span>Memory:</span>
             <span
               style={{
-                color: metrics.memoryMB > 250 ? '#ffaa00' : metrics.memoryMB > 300 ? '#ff4444' : '#00ffff',
+                color: metrics.memoryMB > 300 ? '#ff4444' : metrics.memoryMB > 250 ? '#ffaa00' : '#00ffff',
               }}
             >
               {metrics.memoryMB > 0 ? `${metrics.memoryMB.toFixed(1)}MB` : 'N/A'}
@@ -104,7 +104,7 @@ export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
             <span>Draw Calls:</span>
             <span
               style={{
-                color: metrics.drawCalls > 100 ? '#ffaa00' : metrics.drawCalls > 150 ? '#ff4444' : '#00ffff',
+                color: metrics.drawCalls > 150 ? '#ff4444' : metrics.drawCalls > 100 ? '#ffaa00' : '#00ffff',
               }}
             >
               {metrics.drawCalls}
