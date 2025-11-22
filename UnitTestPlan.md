@@ -104,7 +104,7 @@ src/
 │   ├── ui/
 │   │   ├── KoreanHeader.test.tsx     # Korean text rendering
 │   │   └── base/
-│   │       └── ResponsivePixiComponents.test.tsx
+│   │       └── (PixiJS components archived - migrated to Three.js)
 │   ├── game/
 │   │   ├── DojangBackground.test.tsx # Korean dojo aesthetics
 │   │   └── GameAudio.test.tsx
@@ -508,10 +508,10 @@ Coverage reports are:
   - [ ] CombatHUD rendering tests (15 tests)
   - [ ] CombatStatsPanel update tests (10 tests)
 
-- [ ] **PixiJS Components** (32.69% → 70%)
-  - [ ] ResponsivePixiComponents tests (15 tests)
-  - [ ] Korean theming validation (10 tests)
-  - [ ] Layout system integration (10 tests)
+- [x] **PixiJS Components** (ARCHIVED - Migrated to Three.js)
+  - [x] ResponsivePixiComponents removed (replaced with Three.js Html overlays)
+  - [ ] Korean theming validation (10 tests) - migrated to Three.js components
+  - [ ] Layout system integration (10 tests) - using standard CSS layouts
 
 **Expected Outcome**: Overall coverage 70%+ by end of Q2 2025
 
