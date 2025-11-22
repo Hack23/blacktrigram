@@ -17,7 +17,6 @@
 // Fix: Use correct React 18 mount import
 import { mount } from "cypress/react";
 import "./commands";
-import "./pixi-commands";
 
 // Global styles for component testing
 import "../../src/index.css";
@@ -25,7 +24,7 @@ import "../../src/index.css";
 // Add mount command for React 18
 Cypress.Commands.add("mount", mount);
 
-// PixiJS component testing setup
+// Component testing setup
 beforeEach(() => {
   // Mock WebGL for component tests
   cy.mockWebGL();

@@ -1,6 +1,5 @@
 import React from "react";
 import { render, RenderOptions } from "@testing-library/react";
-import { Application } from "@pixi/react";
 import { AudioProvider } from "../src/audio/AudioProvider";
 import type { IAudioManager } from "../src/types/audio";
 
@@ -43,7 +42,7 @@ class MockAudioManager implements IAudioManager {
   }
 }
 
-// Test wrapper with providers
+// Test wrapper with providers (Three.js Canvas wrapper removed as tests provide their own)
 interface TestWrapperProps {
   children: React.ReactNode;
 }
@@ -51,13 +50,7 @@ interface TestWrapperProps {
 function TestWrapper({ children }: TestWrapperProps) {
   const mockAudioManager = new MockAudioManager();
 
-  return (
-    <AudioProvider manager={mockAudioManager}>
-      <Application width={800} height={600}>
-        {children}
-      </Application>
-    </AudioProvider>
-  );
+  return <AudioProvider manager={mockAudioManager}>{children}</AudioProvider>;
 }
 
 // Custom render function

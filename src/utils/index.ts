@@ -6,5 +6,4 @@
 
 export * from "./colorUtils";
 export * from "./effectUtils";
-// export * from "./pixiExtensions"; // Archived - PixiJS utilities
 export * from "./playerUtils";

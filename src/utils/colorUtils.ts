@@ -107,17 +107,10 @@ export function interpolateColor(
 }
 
 /**
- * Get color with alpha (for PIXI)
+ * Get color with alpha
  */
 export function getColorWithAlpha(color: number, alpha: number): number {
   return (Math.floor(alpha * 255) << 24) | color;
-}
-
-/**
- * Convert PIXI color to standard hex
- */
-export function pixiToHex(pixiColor: number): string {
-  return `#${pixiColor.toString(16).padStart(6, "0")}`;
 }
 
 /**

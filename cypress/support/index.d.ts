@@ -1,5 +1,4 @@
 /// <reference types="cypress" />
-/// <reference types="pixi.js" />
 
 declare namespace Cypress {
   interface Chainable {
@@ -13,23 +12,6 @@ declare namespace Cypress {
     ): Chainable<void>;
     waitForCanvasReady(): Chainable<void>;
     annotate(message: string): Chainable<void>;
-
-    // PixiJS testing commands
-    getPixiApp(): Chainable<PIXI.Application>;
-    findPixiObject(data: Record<string, any>): Chainable<PIXI.DisplayObject>;
-    waitForPixiObject(
-      data: Record<string, any>,
-      timeout?: number
-    ): Chainable<PIXI.DisplayObject>;
-    waitForNoPixiObject(
-      data: Record<string, any>,
-      timeout?: number
-    ): Chainable<void>;
-    clickPixiObject(selector: string): Chainable<void>;
-    testPixiStance(stance: string): Chainable<void>;
-    testPixiPlayer(playerId: string): Chainable<void>;
-    testPixiText(text: string): Chainable<void>;
-    testPixiPerformance(): Chainable<void>;
 
     // Korean martial arts specific commands
     selectArchetype(archetype: string): Chainable<void>;
@@ -55,8 +37,6 @@ declare namespace Cypress {
 declare global {
   interface Window {
     blackTrigramApp?: any;
-    pixiApp?: any;
-    __PIXI_APP__?: any;
   }
 }
 

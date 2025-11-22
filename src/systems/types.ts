@@ -47,16 +47,9 @@ export interface VitalPointSystemConfig {
   readonly effectDurations: Record<string, number>;
 }
 
-// NOTE: PixiJS types commented out after migration to Three.js
-// These interfaces remain for backward compatibility but are no longer actively used
-// Direct PixiJS imports for core types
-// import type {
-//   Application as PixiApplication,
-//   DisplayObject as PixiDisplayObject,
-//   Texture,
-// } from "pixi.js";
-
-// Placeholder types to maintain interface compatibility during migration
+// Deprecated placeholder types for backward compatibility
+// These were used with PixiJS but are no longer needed with Three.js
+// @deprecated These types will be removed in a future version
 type PixiApplication = any;
 type PixiDisplayObject = any;
 type Texture = any;
@@ -485,9 +478,6 @@ export interface AISystemConfig {
   readonly aggressiveness: number;
   readonly adaptability: number;
 }
-
-// Re-export PixiJS types for convenience
-export type { PixiApplication, PixiDisplayObject };
 
 // Player archetype data
 export const PLAYER_ARCHETYPES_DATA: Record<
