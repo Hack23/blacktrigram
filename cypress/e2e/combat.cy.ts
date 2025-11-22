@@ -4,6 +4,9 @@
  * 
  * This file consolidates all combat-related tests to reduce duplication and improve execution time.
  * Originally these were spread across 3 separate files with significant overlap.
+ * 
+ * ✅ Three.js Compatible - Updated for CombatScreen3D with Canvas and Html overlays
+ * Tests verify Three.js 3D combat rendering, character models, and Html UI components
  */
 
 describe("Black Trigram - Combat (Consolidated)", () => {

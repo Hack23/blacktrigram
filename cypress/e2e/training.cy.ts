@@ -4,6 +4,9 @@
  * 
  * This file consolidates all training-related tests to reduce duplication and improve execution time.
  * Originally these were spread across 2 separate files with significant overlap.
+ * 
+ * ✅ Three.js Compatible - Updated for TrainingScreen3D with 3D training dummy
+ * Tests verify Three.js 3D training rendering, TrainingDummy3D, and Html UI overlays
  */
 
 describe("Black Trigram - Training (Consolidated)", () => {

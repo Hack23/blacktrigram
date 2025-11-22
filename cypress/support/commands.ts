@@ -127,7 +127,7 @@ Cypress.Commands.add("waitForCanvasReady", () => {
     expect(rect.height).to.be.greaterThan(50);
   });
 
-  // Shorter wait for PixiJS
+  // Shorter wait for Three.js Canvas initialization
   cy.wait(500);
 });
 
@@ -290,19 +290,19 @@ Cypress.Commands.add(
 // Store a flag to track if WebGL mocking has been applied
 let isWebGLMocked = false;
 
-// Enhanced WebGL mocking for better compatibility
+// Enhanced WebGL mocking for better compatibility with Three.js
 Cypress.Commands.add("mockWebGL", () => {
   if (isWebGLMocked) return;
 
   cy.window().then((win) => {
-    // Mock WebGL context creation
+    // Mock WebGL context creation for Three.js compatibility
     const originalGetContext = win.HTMLCanvasElement.prototype.getContext;
     win.HTMLCanvasElement.prototype.getContext = function (
       type: string,
       ...args: any[]
     ) {
       if (type === "webgl" || type === "webgl2") {
-        // Return a more complete mock WebGL context
+        // Return a more complete mock WebGL context for Three.js
         return {
           canvas: this,
           drawingBufferWidth: this.width || 800,
@@ -332,7 +332,7 @@ Cypress.Commands.add("mockWebGL", () => {
           disable: () => {},
           blendFunc: () => {},
           viewport: () => {},
-          // Add more methods as needed by PixiJS
+          // Add more methods as needed by Three.js
         };
       }
       return originalGetContext.call(this, type, ...args);
@@ -355,7 +355,7 @@ Cypress.Commands.add(
         "no supported source",
         "play() request was interrupted",
         "WebGL",
-        "PIXI",
+        "Three.js",
         "audio",
         "NetworkError",
         "AbortError",
@@ -441,7 +441,7 @@ Cypress.Commands.add("waitForGameReady", () => {
   );
   cy.get("canvas", { timeout: 15000 }).should("be.visible");
 
-  // Wait for PixiJS to initialize with better timing
+  // Wait for Three.js to initialize with better timing
   cy.wait(1500);
 
   // Verify the app is interactive
