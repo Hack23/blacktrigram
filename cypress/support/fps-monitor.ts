@@ -192,7 +192,7 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
               if (lastPixelData) {
                 // Check if pixels changed
                 const changed = !imageData.data.every(
-                  (val, idx) => lastPixelData && val === lastPixelData[idx]
+                  (val, idx) => val === lastPixelData?.[idx]
                 );
                 if (changed) {
                   changeCount++;
@@ -221,7 +221,7 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
                 resolve(); // Don't fail, just warn
               }
             }
-          } catch (error) {
+          } catch {
             // Canvas may be WebGL (can't read directly), that's OK for Three.js
             cy.log("⚠️ Canvas is WebGL/Three.js (pixel reading not supported in test environment)");
             resolve();
