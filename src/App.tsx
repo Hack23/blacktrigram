@@ -11,10 +11,12 @@ import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screen
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
+import { FONT_FAMILY } from "./types/constants";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
-const EndScreen = lazy(() => import("./components/ui/EndScreen"));
+// TODO: Restore EndScreen or create EndScreenThreeJS
+// const EndScreen = lazy(() => import("./components/ui/EndScreen"));
 // ✅ MIGRATED: Use Three.js TrainingScreen instead of PixiJS version
 const TrainingScreen = lazy(
   () => import("./components/training/TrainingScreen3D").then(m => ({ default: m.TrainingScreen3D }))
@@ -161,15 +163,41 @@ function App() {
 
   const renderCurrentScreen = () => {
     if (gameWinner && matchStats) {
+      // TODO: Create EndScreenThreeJS or restore EndScreen
       return (
-        <EndScreen
-          winner={gameWinner}
-          matchStatistics={matchStats}
-          onReturnToMenu={handleReturnToMenu}
-          onRestart={() => handleGameStart(gameMode!, selectedArchetype)}
-          width={screenSize.width}
-          height={screenSize.height}
-        />
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          background: "#0a0a0f",
+          color: "#00ffff",
+          fontFamily: FONT_FAMILY.KOREAN,
+          padding: "20px",
+        }}>
+          <h1 style={{ fontSize: "48px", marginBottom: "20px" }}>
+            승리! | Victory!
+          </h1>
+          <p style={{ fontSize: "24px", marginBottom: "30px" }}>
+            {gameWinner.name.korean} | {gameWinner.name.english}
+          </p>
+          <button
+            onClick={handleReturnToMenu}
+            style={{
+              background: "#00ffff",
+              color: "#0a0a0f",
+              border: "none",
+              borderRadius: "8px",
+              padding: "15px 30px",
+              fontSize: "20px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            메뉴로 | Return to Menu
+          </button>
+        </div>
       );
     }
 

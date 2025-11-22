@@ -126,7 +126,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Layout calculations
-  const { layoutConstants, arenaBounds, isMobile } = useCombatLayout(width, height);
+  const { layoutConstants: _layoutConstants, arenaBounds, isMobile } = useCombatLayout(width, height);
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -298,7 +298,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const {
     handleAttack,
     handleDefend,
-    handleTechniqueExecute,
+    handleTechniqueExecute: _handleTechniqueExecute,
     handleStanceSwitch,
     handleAIAttack,
     handleAIDefend,
