@@ -352,7 +352,7 @@ export const KOREAN_LAYOUTS = {
     flexDirection: 'column' as const,
     gap: '12px',
     padding: '15px',
-    backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
+    backgroundColor: '#1a1a1a',
     borderRadius: '8px',
   },
 
