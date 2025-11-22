@@ -107,6 +107,47 @@ declare global {
        * @param vitalPointName Name of the vital point to test
        */
       testVitalPointInteraction(vitalPointName: string): void;
+
+      /**
+       * Monitor FPS performance for a given duration
+       * @param duration Duration to monitor in milliseconds (default 2000)
+       * @param targetFPS Target FPS to compare against (default 60)
+       */
+      monitorFPS(
+        duration?: number,
+        targetFPS?: number
+      ): Chainable<{
+        averageFPS: number;
+        minFPS: number;
+        maxFPS: number;
+        samples: number;
+        droppedFrames: number;
+      }>;
+
+      /**
+       * Assert that FPS is above minimum threshold
+       * @param minFPS Minimum acceptable FPS (default 30)
+       * @param duration Duration to monitor (default 2000ms)
+       */
+      assertMinFPS(minFPS?: number, duration?: number): Chainable<void>;
+
+      /**
+       * Assert that FPS is consistently above 60fps (ideal for 3D games)
+       * @param duration Duration to monitor (default 2000ms)
+       */
+      assertSmoothFPS(duration?: number): Chainable<void>;
+
+      /**
+       * Monitor Canvas rendering and detect if it's frozen
+       * @param duration Duration to monitor (default 1000ms)
+       */
+      assertCanvasRendering(duration?: number): Chainable<void>;
+
+      /**
+       * Check for memory leaks by monitoring memory usage
+       * @param duration Duration to monitor (default 3000ms)
+       */
+      assertNoMemoryLeaks(duration?: number): Chainable<void>;
     }
   }
 }
@@ -520,5 +561,21 @@ Cypress.Commands.add("selectArchetype", (archetypeId: string) => {
     }
   });
 });
+
+// Import FPS monitoring utilities
+import {
+  monitorFPS,
+  assertMinFPS,
+  assertSmoothFPS,
+  assertCanvasRendering,
+  assertNoMemoryLeaks,
+} from "./fps-monitor";
+
+// Add FPS monitoring commands
+Cypress.Commands.add("monitorFPS", monitorFPS);
+Cypress.Commands.add("assertMinFPS", assertMinFPS);
+Cypress.Commands.add("assertSmoothFPS", assertSmoothFPS);
+Cypress.Commands.add("assertCanvasRendering", assertCanvasRendering);
+Cypress.Commands.add("assertNoMemoryLeaks", assertNoMemoryLeaks);
 
 export {};
