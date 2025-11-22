@@ -1,32 +1,27 @@
 # GitHub Copilot Instructions for Black Trigram (흑괘)
 
-PRIO 1: Follow existing React + PixiJS patterns with layout system integration
+PRIO 1: Follow existing React + Three.js patterns for 3D rendering and UI overlays
 PRIO 2: Use established component structure and Korean martial arts theming
 PRIO 3: Maintain type safety and proper error handling throughout
 
 ## 🔧 Current Code Patterns & Architecture
 
-### React + PixiJS Integration Pattern
+### React + Three.js Integration Pattern
 
 ```typescript
 // ALWAYS follow this established pattern from existing components
-import "@pixi/layout";
-import { LayoutContainer } from "@pixi/layout/components";
-import "@pixi/layout/react";
-import { extend } from "@pixi/react";
-import { Container } from "pixi.js";
-import { extendPixiComponents } from "../../utils/pixiExtensions";
+import { Canvas } from '@react-three/fiber';
+import { Html, PerspectiveCamera } from '@react-three/drei';
+import { KOREAN_COLORS } from '../../types/constants';
+import * as THREE from 'three';
+import { useMemo } from 'react';
 
-// Register components
-extend({ Container, LayoutContainer });
-extendPixiComponents();
-
-// Component structure
+// Component structure with 3D scene
 export const ComponentName: React.FC<Props> = ({ ...props }) => {
   // State management with proper typing
   const [state, setState] = useState<StateType>(initialValue);
 
-  // Layout calculations (from CombatScreen pattern)
+  // Layout calculations for responsive design
   const layoutConstants = useMemo(
     () => ({
       padding: isMobile ? 10 : 20,
@@ -37,45 +32,59 @@ export const ComponentName: React.FC<Props> = ({ ...props }) => {
   );
 
   return (
-    <pixiContainer
-      layout={{
-        width,
-        height,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: layoutConstants.padding,
-      }}
+    <Canvas
+      style={{ width, height }}
+      gl={{ antialias: true, alpha: true }}
+      dpr={[1, 2]}
       data-testid="component-name"
     >
-      {/* Component content */}
-    </pixiContainer>
+      {/* 3D Scene content */}
+      <ambientLight intensity={0.5} />
+      <PerspectiveCamera makeDefault position={[0, 5, 10]} />
+      
+      {/* UI Overlay using Html */}
+      <Html fullscreen>
+        <div style={{ padding: layoutConstants.padding }}>
+          {/* Component UI content */}
+        </div>
+      </Html>
+    </Canvas>
   );
 };
 ```
 
-### Layout System Usage (From CombatScreen)
+### Three.js Scene Setup (From CombatScreen)
 
 ```typescript
-// ALWAYS use layout properties for responsive design
-const layoutConstants = {
-  padding: 10,
-  hudHeight: 120,
-  controlsHeight: 100,
-  footerHeight: 40,
+// ALWAYS use proper lighting and camera setup
+const sceneSetup = {
+  camera: {
+    position: [0, 5, 10] as [number, number, number],
+    fov: 75,
+  },
+  lighting: {
+    ambient: { intensity: 0.5, color: KOREAN_COLORS.PRIMARY_CYAN },
+    directional: { intensity: 1, position: [10, 10, 5] as [number, number, number] },
+  },
 };
 
-// Flex container pattern
-<pixiContainer
-  layout={{
-    width: "100%",
-    height: layoutConstants.hudHeight,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexShrink: 0, // Prevents shrinking
-  }}
->
+// Scene component pattern
+<Canvas gl={{ antialias: true, alpha: true }}>
+  <ambientLight 
+    intensity={sceneSetup.lighting.ambient.intensity}
+    color={sceneSetup.lighting.ambient.color}
+  />
+  <directionalLight 
+    position={sceneSetup.lighting.directional.position}
+    intensity={sceneSetup.lighting.directional.intensity}
+    castShadow
+  />
+  <PerspectiveCamera 
+    makeDefault 
+    position={sceneSetup.camera.position} 
+    fov={sceneSetup.camera.fov} 
+  />
+</Canvas>
 ```
 
 ### Korean Theming Pattern
@@ -84,32 +93,32 @@ const layoutConstants = {
 // ALWAYS use Korean colors and bilingual text
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 
-// Bilingual text pattern (from IntroScreen)
-<pixiText
-  text={`${korean} | ${english}`}
-  style={{
-    fontSize: isMobile ? 14 : 18,
-    fill: KOREAN_COLORS.ACCENT_GOLD,
-    fontFamily: FONT_FAMILY.KOREAN,
-    fontWeight: "bold",
-  }}
-  data-testid="bilingual-text"
-/>
+// Bilingual text pattern using Html overlay
+<Html center position={[0, 2, 0]}>
+  <div
+    style={{
+      fontSize: isMobile ? 14 : 18,
+      color: KOREAN_COLORS.ACCENT_GOLD,
+      fontFamily: FONT_FAMILY.KOREAN,
+      fontWeight: "bold",
+    }}
+    data-testid="bilingual-text"
+  >
+    {korean} | {english}
+  </div>
+</Html>
 
-// Enhanced graphics with Korean aesthetics
-<pixiGraphics
-  draw={(g) => {
-    g.clear();
-    g.fill({ color: KOREAN_COLORS.UI_BACKGROUND_DARK, alpha: 0.95 });
-    g.roundRect(0, 0, width, height, 8);
-    g.fill();
-
-    // Korean-inspired border
-    g.stroke({ width: 2, color: KOREAN_COLORS.PRIMARY_CYAN, alpha: 0.8 });
-    g.roundRect(0, 0, width, height, 8);
-    g.stroke();
-  }}
-/>
+// Enhanced 3D materials with Korean aesthetics
+<mesh castShadow receiveShadow>
+  <boxGeometry args={[width, height, 0.1]} />
+  <meshStandardMaterial
+    color={KOREAN_COLORS.UI_BACKGROUND_DARK}
+    emissive={KOREAN_COLORS.PRIMARY_CYAN}
+    emissiveIntensity={0.2}
+    metalness={0.5}
+    roughness={0.5}
+  />
+</mesh>
 ```
 
 ### State Management Pattern
@@ -179,13 +188,19 @@ const layoutCalculation = useMemo(() => ({
   spacing: isMobile ? 8 : 15,
 }), [isMobile]);
 
-// Apply in components
-<pixiContainer
-  layout={{
-    gap: layoutCalculation.spacing,
-    padding: layoutCalculation.padding,
-  }}
->
+// Apply in UI overlays using Html
+<Html fullscreen>
+  <div
+    style={{
+      padding: layoutCalculation.padding,
+      gap: layoutCalculation.spacing,
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    {/* UI content */}
+  </div>
+</Html>
 ```
 
 ### Audio Integration Pattern
@@ -208,7 +223,17 @@ export const Component: React.FC<Props> = ({ ... }) => {
 
 ```typescript
 // ALWAYS include data-testid for testing
-<pixiContainer data-testid="unique-component-id">
+<Canvas data-testid="unique-component-id">
+  <group data-testid="game-objects">
+    {/* 3D content */}
+  </group>
+  
+  <Html fullscreen>
+    <div data-testid="ui-overlay">
+      {/* UI content */}
+    </div>
+  </Html>
+</Canvas>
 
 // ALWAYS handle potential null/undefined
 const safeValue = value ?? defaultValue;
@@ -228,104 +253,118 @@ try {
 
 ```plaintext
 src/components/
-├── ui/                       # UI components following @pixi/ui patterns
-│   ├── base/                 # Base components with Korean theming
-│   │   ├── KoreanButton.ts  # Extended button with Korean styles
-│   │   ├── KoreanPanel.ts   # Panel component with layout integration
-│   │   └── BasePixiComponents.ts # Core PixiJS UI extensions
+├── ui/                       # UI components with React + CSS
+│   ├── base/                 # Base UI components with Korean theming
+│   │   ├── KoreanButton.tsx # Button component with Korean styles
+│   │   ├── KoreanPanel.tsx  # Panel component with Korean aesthetics
+│   │   └── BaseComponents.tsx # Core React UI components
 │   ├── combat/               # Combat-specific UI components
-│   │   ├── TrigramSelector.ts # Trigram stance selection component
-│   │   ├── HealthBar.ts     # Health bar with Korean aesthetics
-│   │   └── VitalPointOverlay.ts # Anatomical targeting interface
+│   │   ├── TrigramSelector.tsx # Trigram stance selection component
+│   │   ├── HealthBar.tsx    # Health bar with Korean aesthetics
+│   │   └── VitalPointOverlay.tsx # Anatomical targeting interface
 │   ├── containers/           # Layout containers and panels
-│   │   ├── CombatHUD.ts     # Main combat interface layout
-│   │   └── PlayerStatusPanel.ts # Player information display
+│   │   ├── CombatHUD.tsx    # Main combat interface layout
+│   │   └── PlayerStatusPanel.tsx # Player information display
 │   └── texts/                # Text components with bilingual support
-│       ├── BilingualText.ts # Korean-English dual display
-│       └── CombatLog.ts     # Scrolling combat history
+│       ├── BilingualText.tsx # Korean-English dual display
+│       └── CombatLog.tsx    # Scrolling combat history
+├── three/                    # Three.js 3D components
+│   ├── scenes/               # 3D scene components
+│   │   ├── CombatScene.tsx  # Main 3D combat scene
+│   │   └── TrainingScene.tsx # Training area 3D scene
+│   ├── models/               # 3D model components
+│   │   ├── Character3D.tsx  # Player/enemy 3D models
+│   │   └── Environment3D.tsx # Environment objects
+│   └── effects/              # 3D visual effects
+│       ├── ParticleEffects.tsx # Particle systems
+│       └── StanceAura3D.tsx # Stance visual effects
 ├── audio/                    # Audio context and hooks
 │   ├── AudioProvider.ts     # Context provider for audio
 │   └── sounds/               # Audio files and assets
 ├── hooks/                    # Custom hooks
 │   ├── useCombat.ts         # Combat-related hooks
-│   └── usePlayer.ts         # Player state hooks
+│   ├── usePlayer.ts         # Player state hooks
+│   └── useThreeScene.ts     # Three.js scene management hooks
 ├── screens/                  # Screen components
-│   ├── CombatScreen.ts      # Main combat screen
-│   ├── IntroScreen.ts       # Introduction and menu screen
-│   └── SettingsScreen.ts    # Settings and configuration screen
+│   ├── CombatScreen.tsx     # Main combat screen with 3D
+│   ├── IntroScreen.tsx      # Introduction and menu screen
+│   └── SettingsScreen.tsx   # Settings and configuration screen
 └── utils/                   # Utility functions and constants
     ├── constants.ts         # Constant values and configurations
-    ├── pixiExtensions.ts    # PixiJS component extensions
-    └── helpers.ts           # Helper functions
+    ├── threeHelpers.ts      # Three.js utility functions
+    └── helpers.ts           # General helper functions
 ```
 
 ### Component Design Principles
 
-- **PixiJS UI Foundation**: All components extend @pixi/ui base classes (Button, FancyButton, ProgressBar, RadioGroup, etc.)
-- **Layout-Powered**: Use @pixi/layout for responsive design and flexible positioning
+- **Three.js Foundation**: All 3D content uses @react-three/fiber and @react-three/drei
+- **Html Overlays**: Use Html from @react-three/drei for UI elements over 3D scenes
 - **Korean Theming**: Consistent cyberpunk Korean aesthetic with traditional color harmony
 - **Extensibility**: Components designed for easy customization and extension
 - **Composition**: Build complex interfaces through component composition
 - **Responsiveness**: All components adapt to mobile, tablet, and desktop screen sizes
 
-### PixiJS UI Extensions for Korean Martial Arts
+### Three.js Component Extensions for Korean Martial Arts
 
-| **Base @pixi/ui Component** | **Korean Extension** | **Layout Features**                      | **Use Case**                     |
+| **Base Pattern** | **Korean Extension** | **Features**                      | **Use Case**                     |
 | --------------------------- | -------------------- | ---------------------------------------- | -------------------------------- |
-| `Button`                    | `KoreanButton`       | Responsive padding, Korean text styling  | Basic actions with Korean labels |
-| `FancyButton`               | `TrigramButton`      | Flexbox alignment, hover animations      | Eight trigram stance selection   |
-| `ProgressBar`               | `HealthBar`, `KiBar` | Responsive width, status color changes   | Combat resource display          |
-| `RadioGroup`                | `TrigramSelector`    | Grid layout, responsive columns          | Stance selection interface       |
-| `ScrollBox`                 | `CombatLog`          | Flexible height, auto-scroll             | Combat history and notifications |
-| `Container`                 | `KoreanPanel`        | Flexbox layout, Korean border patterns   | UI panel backgrounds             |
-| `Input`                     | `KoreanInput`        | Bilingual validation, Korean IME support | Korean text input fields         |
+| `mesh`                    | `KoreanStyledMesh`       | Korean color materials, emissive effects  | Game objects with Korean aesthetics |
+| `group`               | `CharacterGroup`      | Stance-based positioning, animations      | Character models in eight trigram stances   |
+| `Html`               | `KoreanHUD`, `StatusPanel` | Bilingual text, responsive layout   | Combat HUD and player information          |
+| `pointLight`                | `StanceAura`    | Color-coded by stance, pulsing effects          | Trigram stance visual indicators       |
+| `particleSystem`                 | `CombatEffects`          | Korean-themed particles, impact effects             | Attack and defense visual feedback         |
+| `Canvas`                 | `GameCanvas`        | Korean color scheme, optimized settings   | Main game rendering surface     |
 
-## 🔧 PixiJS UI & Layout Implementation Patterns
+## 🔧 Three.js 3D & UI Implementation Patterns
 
-### Responsive Layout Patterns
+### Responsive Layout Patterns with Html Overlays
 
 ```typescript
 // Korean-themed responsive layout constants
 export const KOREAN_LAYOUTS = {
   // Main combat HUD layout
   COMBAT_HUD: {
-    width: "100%",
-    height: 80,
-    flexDirection: "row" as const,
-    justifyContent: "space-between" as const,
-    alignItems: "center" as const,
-    padding: { left: 20, right: 20, top: 10, bottom: 10 },
+    position: 'fixed' as const,
+    width: '100%',
+    height: '80px',
+    display: 'flex',
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
+    padding: '10px 20px',
   },
 
   // Trigram stance selector grid
   TRIGRAM_GRID: {
-    display: "flex",
-    flexDirection: "row" as const,
-    flexWrap: "wrap" as const,
-    justifyContent: "center" as const,
-    gap: 15,
-    maxWidth: 400,
-    padding: 20,
+    display: 'flex',
+    flexDirection: 'row' as const,
+    flexWrap: 'wrap' as const,
+    justifyContent: 'center' as const,
+    gap: '15px',
+    maxWidth: '400px',
+    padding: '20px',
   },
 
   // Player status panel layout
   PLAYER_STATUS: {
-    width: 200,
-    flexDirection: "column" as const,
-    gap: 12,
-    padding: 15,
-    backgroundColor: KOREAN_COLORS.UI_BACKGROUND_DARK,
-    borderRadius: 8,
+    width: '200px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '12px',
+    padding: '15px',
+    backgroundColor: '#1a1a1a',
+    borderRadius: '8px',
   },
 
   // Mobile-optimized layouts
   MOBILE_COMBAT_HUD: {
-    width: "100%",
-    height: 60,
-    flexDirection: "column" as const,
-    alignItems: "center" as const,
-    gap: 5,
-    padding: 10,
+    width: '100%',
+    height: '60px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center' as const,
+    gap: '5px',
+    padding: '10px',
   },
 } as const;
 ```
@@ -793,46 +832,53 @@ describe('CombatCharacter3D', () => {
 
 ## 🧪 Testing Strategy
 
-### PixiJS UI Component Testing
+### Three.js Component Testing
 
 ```typescript
-// Test pattern for Korean UI components
-describe("KoreanTrigramSelector", () => {
-  it("should render all eight trigram options with layout", () => {
-    const selector = new TrigramSelector({
-      layout: KOREAN_LAYOUTS.TRIGRAM_GRID,
-      onStanceChange: mockHandler,
-    });
+// Test pattern for Korean Three.js components
+import { render } from '@testing-library/react';
+import { Canvas } from '@react-three/fiber';
 
-    expect(selector.children).toHaveLength(8);
-    expect(selector.layout.gap).toBe(15);
+describe("KoreanTrigramSelector3D", () => {
+  it("should render all eight trigram options in 3D", () => {
+    const { container } = render(
+      <Canvas>
+        <TrigramSelector3D onStanceChange={mockHandler} />
+      </Canvas>
+    );
+
+    expect(container.querySelector('canvas')).toBeInTheDocument();
   });
 
-  it("should respond to stance selection", () => {
+  it("should respond to stance selection", async () => {
     const onStanceChange = vi.fn();
-    const selector = new TrigramSelector({ onStanceChange });
+    const { container } = render(
+      <Canvas>
+        <TrigramSelector3D onStanceChange={onStanceChange} />
+      </Canvas>
+    );
 
-    selector.selectStance(TrigramStance.GEON);
-    expect(onStanceChange).toHaveBeenCalledWith(TrigramStance.GEON);
+    // Test interaction logic
+    // Note: 3D interaction testing requires special setup
+    expect(container).toBeTruthy();
   });
 
-  it("should adapt layout for mobile screens", () => {
-    const selector = new TrigramSelector({
-      responsive: true,
-      mobileLayout: KOREAN_LAYOUTS.MOBILE_TRIGRAM_GRID,
-    });
+  it("should adapt for mobile screens", () => {
+    const { container } = render(
+      <Canvas style={{ width: 400, height: 600 }}>
+        <TrigramSelector3D responsive />
+      </Canvas>
+    );
 
-    // Test responsive behavior
-    selector.updateScreenSize(400, 600); // Mobile dimensions
-    expect(selector.layout.flexDirection).toBe("column");
+    expect(container.querySelector('canvas')).toHaveStyle({ width: '400px' });
   });
 });
 ```
 
 ### Test Coverage Goals
 
-- UI Component tests: >95% coverage
-- Layout responsiveness tests: >90% coverage
+- Three.js component tests: >85% coverage (3D testing complexity)
+- UI component tests: >95% coverage
 - Korean text rendering tests: 100% accuracy validation
 - Accessibility tests: >85% coverage
 
@@ -859,45 +905,47 @@ describe("KoreanTrigramSelector", () => {
 
 ## 🌟 Success Criteria
 
-When following these guidelines, UI code should:
+When following these guidelines, code should:
 
-- ✅ Use @pixi/ui and @pixi/layout as foundational building blocks
-- ✅ Extend existing components rather than creating from scratch
+- ✅ Use Three.js with @react-three/fiber for 3D rendering
+- ✅ Use Html overlays from @react-three/drei for UI elements
 - ✅ Implement responsive layouts that work across all screen sizes
 - ✅ Include proper Korean-English bilingual support
 - ✅ Follow accessibility best practices with proper test IDs
 - ✅ Maintain cyberpunk Korean aesthetic consistently
-- ✅ Achieve 60fps performance for all UI interactions
+- ✅ Achieve 60fps performance for all 3D rendering and interactions
 - ✅ Provide comprehensive test coverage for all components
+- ✅ Use proper Three.js optimization techniques (instancing, LOD, etc.)
 
 ## 🎯 Philosophy Integration
 
-**Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every UI component should honor this balance while providing authentic, educational, and respectful user experience through extensible, reusable design patterns.
+**Remember**: Black Trigram represents the intersection of traditional Korean martial arts wisdom and modern interactive technology. Every component should honor this balance while providing authentic, educational, and respectful user experience through 3D immersion and extensible design patterns.
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
 
 ### Code Completion Anti-Patterns to Avoid
 
-- ❌ Creating custom UI components when @pixi/ui alternatives exist
-- ❌ Hardcoded positioning instead of layout-based responsive design
-- ❌ Missing Korean cultural context in UI component design
+- ❌ Using Html overlays for everything (prefer 3D meshes for in-world objects)
+- ❌ Creating new Three.js objects every frame (causes performance issues)
+- ❌ Hardcoded positioning instead of responsive design
+- ❌ Missing Korean cultural context in component design
 - ❌ Non-extensible component implementations
 - ❌ Incomplete accessibility implementation
-- ❌ Missing layout properties for responsive behavior
-- ❌ Performance-heavy UI operations without optimization
+- ❌ Not cleaning up Three.js resources on unmount
+- ❌ Performance-heavy operations without optimization
 
 ## 🧪 Testing Strategy
 
 ### Existing Test Infrastructure (✅ Excellent)
 
-- **Setup**: `src/test/setup.ts` (8) - PixiJS and audio mocking
-- **Utils**: `src/test/test-utils.ts` (4) - Testing utilities
+- **Setup**: `src/test/setup.ts` - Audio and Three.js mocking
+- **Utils**: `src/test/test-utils.ts` - Testing utilities
 - **Audio Tests**: Comprehensive coverage in `src/audio/__tests__/`
 - **System Tests**: Coverage for combat systems
 
 ### Test Patterns to Follow
 
-Testing best pracices, using test id in code, testable code and resilient test
+Testing best practices, using test id in code, testable code and resilient test
 
 ## 🎯 Core Game Design Philosophy
 
@@ -1056,9 +1104,9 @@ npm install --save-dev --save-exact package-name@version
 
 ### Approved Dependency Categories
 
-- ✅ **Core**: React 19, PixiJS 8.x, TypeScript
-- ✅ **UI/Layout**: @pixi/react, @pixi/layout, @pixi/ui
-- ✅ **Audio**: Howler.js, @pixi/sound
+- ✅ **Core**: React 19, Three.js, TypeScript
+- ✅ **3D**: @react-three/fiber, @react-three/drei
+- ✅ **Audio**: Howler.js
 - ✅ **Testing**: Vitest, Cypress, Testing Library
 - ✅ **Build**: Vite, ESLint, TypeScript
 - ⚠️ **New dependencies**: Must pass security audit and license check
@@ -1086,8 +1134,8 @@ npm install --save-dev --save-exact package-name@version
 ### Code Review Checklist
 
 **Architecture & Design:**
-- [ ] Follows established React + PixiJS patterns
-- [ ] Uses @pixi/layout for responsive design
+- [ ] Follows established React + Three.js patterns
+- [ ] Uses Html overlays appropriately for UI
 - [ ] Korean theming applied consistently
 - [ ] Proper component composition
 
@@ -1122,7 +1170,7 @@ npm install --save-dev --save-exact package-name@version
 - ❌ Incomplete error handling
 
 **Prefer:**
-- ✅ Layout-based responsive design
+- ✅ Html overlays for UI, 3D meshes for game objects
 - ✅ Comprehensive test coverage
 - ✅ Explicit typing (no implicit any)
 - ✅ Korean-English bilingual support
@@ -1131,63 +1179,51 @@ npm install --save-dev --save-exact package-name@version
 
 ## ⚠️ Common Pitfalls and Solutions
 
-### PixiJS Integration Issues
+### Three.js Integration Issues
 
-**Pitfall**: Direct PixiJS manipulation breaking React state
+**Pitfall**: Creating new Three.js objects every frame
 ```typescript
-// ❌ BAD: Direct manipulation
-pixiContainer.x = 100;
+// ❌ BAD: Creating new objects in useFrame
+useFrame(() => {
+  const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+  mesh.material = material;
+});
 
-// ✅ GOOD: Use layout properties
-<pixiContainer layout={{ position: { x: 100, y: 0 } }} />
+// ✅ GOOD: Reuse objects with useMemo
+const material = useMemo(
+  () => new THREE.MeshStandardMaterial({ color: KOREAN_COLORS.PRIMARY_CYAN }),
+  []
+);
 ```
 
-**Pitfall**: Memory leaks from PixiJS objects
+**Pitfall**: Memory leaks from Three.js objects
 ```typescript
 // ✅ GOOD: Clean up in useEffect
 useEffect(() => {
-  const sprite = new Sprite(texture);
+  const geometry = new THREE.BoxGeometry();
+  const material = new THREE.MeshStandardMaterial();
+  
   return () => {
-    sprite.destroy();
+    geometry.dispose();
+    material.dispose();
   };
-}, [texture]);
+}, []);
 ```
 
 ### Korean Text Issues
 
-**Pitfall**: Font not loading for Korean characters
+**Pitfall**: Font not loading for Korean characters in Html overlays
 ```typescript
 // ✅ GOOD: Use FONT_FAMILY.KOREAN constant
 import { FONT_FAMILY } from "../../types/constants";
 
-<pixiText
-  style={{ fontFamily: FONT_FAMILY.KOREAN }}
-  text="한글 텍스트"
-/>
+<Html center>
+  <div style={{ fontFamily: FONT_FAMILY.KOREAN }}>
+    한글 텍스트
+  </div>
+</Html>
 ```
 
-### Performance Issues
-
-**Pitfall**: Unnecessary re-renders in PixiJS components
-```typescript
-// ❌ BAD: Object created on every render
-<pixiContainer layout={{ width: 100, height: 100 }} />
-
-// ✅ GOOD: Memoized layout constants
-const layout = useMemo(() => ({ width: 100, height: 100 }), []);
-<pixiContainer layout={layout} />
-```
-
-### Testing Issues
-
-**Pitfall**: Missing data-testid for E2E tests
-```typescript
-// ❌ BAD: No test identifier
-<pixiContainer>
-
-// ✅ GOOD: Include data-testid
-<pixiContainer data-testid="combat-screen">
-```
 
 ### Type Safety Issues
 

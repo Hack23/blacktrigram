@@ -119,16 +119,16 @@ C4Container
 
 > - **📦 Asset Loader**:
 >
->   - PixiJS `Loader` (`@pixi/loaders`) and custom hooks (`useTexture.ts`) for textures & JSON data.
+>   - Asset loading via custom hooks and helpers for textures & JSON data.
 >   - Helpers in playerUtils.ts, `colorUtils.ts` map asset keys to URLs.
 >   - Dynamically import large JSON (e.g., `src/types/constants/trigram.ts`) at runtime.
 
 > - **🎨 Rendering Engine**:
 >
->   - PixiJS (wrapped by `@pixi/react`) via GameEngine.tsx.
->   - Manages a single PixiJS `Application` (Canvas/WebGL).
->   - Renders: Character sprites (`PlayerVisuals.tsx`, `EnemyVisuals.tsx`), background (`DojangBackground.tsx`), particles (`HitEffectsLayer.tsx`).
->   - Draws UI overlays (health, Ki, stance auras) via Pixi primitives (`Graphics`, `Text`).
+>   - Three.js (wrapped by `@react-three/fiber`) via GameEngine.tsx.
+>   - Manages 3D scene with WebGL rendering via Canvas component.
+>   - Renders: Character 3D models, environment, particles, and visual effects.
+>   - UI overlays via Html component from `@react-three/drei` for HUD, health, Ki, stance indicators.
 
 > - **🗄️ State Management**:
 >
@@ -368,15 +368,12 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: [
-      // PixiJS dependencies
-      "@pixi/react",
-      "@pixi/layout",
-      "@pixi/ui",
-      "pixi.js",
       // Three.js dependencies
       "three",
       "@react-three/fiber",
       "@react-three/drei",
+      // Audio
+      "howler",
     ],
   },
   build: {
@@ -824,7 +821,7 @@ sequenceDiagram
 > - **TrigramSystem**: Handles stance logic, technique lookup, state updates (Zustand).
 > - **VitalPointSystem**: Performs in-memory geometry collision detection & returns multipliers.
 > - **AudioManager**: Web Audio API plays sound buffers loaded at runtime from the Audio CDN.
-> - **PixiStage**: Via `@pixi/react` (`StagePixi.tsx`), renders player, enemy, UI overlays, particles.
+> - **Three.js Scene**: Via `@react-three/fiber` Canvas component, renders 3D characters, environment, effects, and UI overlays via Html.
 > - **Zustand Store**: All shared state (player health, Ki, stance) resides in memory; React components subscribe.
 
 ---
@@ -1770,14 +1767,15 @@ graph TD
 
 **Status**: Accepted  
 **Date**: 2024-01-01  
-**Context**: Need powerful 2D rendering with modern React development  
-**Decision**: Use @pixi/react for seamless integration  
+**Context**: Need powerful 3D rendering with modern React development  
+**Decision**: Use @react-three/fiber for seamless Three.js integration  
 **Consequences**:
 
-- ✅ Best of both worlds
-- ✅ Strong ecosystem
+- ✅ Best of both worlds (React + Three.js)
+- ✅ Strong ecosystem (@react-three/drei helpers)
 - ✅ Type safety with TypeScript
-- ❌ Learning curve for PixiJS
+- ✅ Declarative 3D scene graph
+- ❌ Learning curve for Three.js concepts
 - ❌ Bundle size considerations
 
 ### ADR-003: Zustand for State Management
