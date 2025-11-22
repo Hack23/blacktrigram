@@ -107,7 +107,7 @@ export const SpatialAudio3D: React.FC<SpatialAudioProps> = ({
 
 ### Adding AudioListener to Camera
 
-For spatial audio to work, add an `AudioListener` to the camera:
+For spatial audio to work, Three.js requires an `AudioListener` attached to the camera. With @react-three/drei's `PositionalAudio`, you **must** add an `AudioListener` manually:
 
 ```tsx
 import { PerspectiveCamera } from "@react-three/drei";
@@ -147,12 +147,15 @@ export const CombatScene: React.FC = () => {
 };
 ```
 
+**Note**: The `AudioListener` enables 3D spatial audio positioning. Without it, PositionalAudio will not work correctly.
+
 ### Example: Combat with Spatial Audio
 
 ```tsx
 import { useState, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { Html, PerspectiveCamera } from "@react-three/drei";
+import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { SpatialAudio3D } from "./SpatialAudio3D";
 
@@ -178,8 +181,11 @@ export const CombatScreen3D: React.FC = () => {
 
   return (
     <Canvas>
-      {/* Camera with audio listener (handled by Three.js automatically) */}
+      {/* Camera setup */}
       <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
+      
+      {/* Add AudioListener for spatial audio (required for PositionalAudio) */}
+      <CameraWithListener />
       
       {/* 3D Scene */}
       <CombatArena />
@@ -206,6 +212,19 @@ export const CombatScreen3D: React.FC = () => {
       </Html>
     </Canvas>
   );
+};
+
+// Helper component to add AudioListener to camera
+const CameraWithListener: React.FC = () => {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+    return () => camera.remove(listener);
+  }, [camera]);
+
+  return null;
 };
 ```
 
