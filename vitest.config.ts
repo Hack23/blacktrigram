@@ -40,7 +40,7 @@ export default defineConfig({
     // Mock specific modules for Korean martial arts testing
     server: {
       deps: {
-        inline: ["pixi.js", "@pixi/react"],
+        inline: [],
       },
     },
     coverage: {
@@ -58,8 +58,7 @@ export default defineConfig({
         "blacktrigram/*.js",
         "blacktrigram/docs/assets/**",
         "blacktrigram/**/*.js",
-        // skip Pixi & other generated files
-        "**/pixi-*.js",
+        // skip other generated files
         "**/webworkerAll-*.js",
         "*config.ts",
         ".*.cjs",
@@ -92,7 +91,7 @@ export default defineConfig({
   },
   // Optimize deps for Korean martial arts components
   optimizeDeps: {
-    include: ["react", "react-dom", "pixi.js", "@pixi/react"],
+    include: ["react", "react-dom", "three", "@react-three/fiber", "@react-three/drei"],
     exclude: ["vitest", "@vitest/ui"],
   },
 });
