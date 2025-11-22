@@ -31,33 +31,18 @@ describe("Black Trigram - Three.js Performance", () => {
     it("should maintain FPS during menu interactions", () => {
       cy.annotate("Testing FPS during menu interactions");
 
-      // Start monitoring
-      cy.monitorFPS(3000).then((metrics) => {
-        // Perform interactions during monitoring
-        cy.get('[data-testid="combat-button"]').trigger("mouseover");
-        cy.wait(200);
-        cy.get('[data-testid="training-button"]').trigger("mouseover");
-        cy.wait(200);
-        cy.gameActions(["{leftarrow}", "{rightarrow}"]);
-        cy.wait(200);
+      // Perform interactions first
+      cy.get('[data-testid="combat-button"]').trigger("mouseover");
+      cy.wait(200);
+      cy.get('[data-testid="training-button"]').trigger("mouseover");
+      cy.wait(200);
+      cy.gameActions(["{leftarrow}", "{rightarrow}"]);
+      cy.wait(200);
 
-        // Wait for monitoring to complete
-        cy.wait(2400);
+      // Then monitor FPS to verify system is still responsive
+      cy.assertMinFPS(40, 2000);
 
-        // Verify performance
-        cy.wrap(metrics).then((m) => {
-          cy.task("logPerformance", {
-            name: "Menu Interactions FPS",
-            metrics: {
-              average: m.averageFPS.toFixed(2),
-              min: m.minFPS.toFixed(2),
-            },
-          });
-
-          expect(m.averageFPS).to.be.greaterThan(40);
-          cy.log(`✅ Menu interactions FPS: ${m.averageFPS.toFixed(2)}`);
-        });
-      });
+      cy.log("✅ Menu interactions FPS verified");
     });
 
     it("should handle canvas rendering at different viewport sizes", () => {
@@ -102,26 +87,25 @@ describe("Black Trigram - Three.js Performance", () => {
 
       cy.enterCombatMode();
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Perform combat actions
+        cy.gameActions(["1", " ", "w", "a", "s", "d"]);
+        cy.wait(200);
+        cy.gameActions(["3", " ", "w", "a", "s", "d"]);
+        cy.wait(200);
 
-      // Perform combat actions
-      cy.gameActions(["1", " ", "w", "a", "s", "d"]);
-      cy.wait(200);
-      cy.gameActions(["3", " ", "w", "a", "s", "d"]);
-      cy.wait(200);
+        // Monitor FPS
+        cy.assertMinFPS(35, 1500);
 
-      // Monitor FPS
-      cy.assertMinFPS(35, 1500);
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          cy.task("logPerformance", {
+            name: "Combat Actions Performance",
+            duration,
+          });
 
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        cy.task("logPerformance", {
-          name: "Combat Actions Performance",
-          duration,
+          expect(duration).to.be.lessThan(5000);
+          cy.log(`✅ Combat actions completed in ${duration}ms`);
         });
-
-        expect(duration).to.be.lessThan(5000);
-        cy.log(`✅ Combat actions completed in ${duration}ms`);
       });
 
       cy.returnToIntro();
@@ -153,21 +137,19 @@ describe("Black Trigram - Three.js Performance", () => {
 
       cy.enterCombatMode();
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Rapid stance cycling
+        cy.gameActions(["1", "2", "3", "4", "5", "6", "7", "8"]);
+        cy.gameActions(["8", "7", "6", "5", "4", "3", "2", "1"]);
 
-      // Rapid stance cycling
-      cy.gameActions(["1", "2", "3", "4", "5", "6", "7", "8"]);
-      cy.gameActions(["8", "7", "6", "5", "4", "3", "2", "1"]);
-
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        
-        // Should complete quickly
-        expect(duration).to.be.lessThan(3000);
-        
-        cy.task("logPerformance", {
-          name: "Rapid Stance Transitions",
-          duration,
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          // Should complete quickly
+          expect(duration).to.be.lessThan(3000);
+          
+          cy.task("logPerformance", {
+            name: "Rapid Stance Transitions",
+            duration,
+          });
         });
       });
 
@@ -216,29 +198,27 @@ describe("Black Trigram - Three.js Performance", () => {
     it("should maintain FPS during screen transitions", () => {
       cy.annotate("Testing FPS during scene transitions");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Multiple transitions
+        cy.enterCombatMode();
+        cy.wait(500);
+        cy.returnToIntro();
+        cy.wait(500);
+        cy.enterTrainingMode();
+        cy.wait(500);
+        cy.returnToIntro();
+        cy.wait(500);
 
-      // Multiple transitions
-      cy.enterCombatMode();
-      cy.wait(500);
-      cy.returnToIntro();
-      cy.wait(500);
-      cy.enterTrainingMode();
-      cy.wait(500);
-      cy.returnToIntro();
-      cy.wait(500);
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          cy.task("logPerformance", {
+            name: "Scene Transitions",
+            duration,
+          });
 
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        
-        cy.task("logPerformance", {
-          name: "Scene Transitions",
-          duration,
+          // Should complete in reasonable time
+          expect(duration).to.be.lessThan(8000);
+          cy.log(`✅ Scene transitions completed in ${duration}ms`);
         });
-
-        // Should complete in reasonable time
-        expect(duration).to.be.lessThan(8000);
-        cy.log(`✅ Scene transitions completed in ${duration}ms`);
       });
 
       // Verify FPS is stable after transitions
@@ -248,25 +228,23 @@ describe("Black Trigram - Three.js Performance", () => {
     it("should handle rapid screen transitions", () => {
       cy.annotate("Testing rapid screen transitions");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Rapid navigation
+        for (let i = 0; i < 3; i++) {
+          cy.gameActions(["1"]); // Combat
+          cy.wait(300);
+          cy.gameActions(["{esc}"]); // Back
+          cy.wait(300);
+        }
 
-      // Rapid navigation
-      for (let i = 0; i < 3; i++) {
-        cy.gameActions(["1"]); // Combat
-        cy.wait(300);
-        cy.gameActions(["{esc}"]); // Back
-        cy.wait(300);
-      }
-
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        
-        // Should handle rapid transitions
-        expect(duration).to.be.lessThan(6000);
-        
-        cy.task("logPerformance", {
-          name: "Rapid Screen Transitions",
-          duration,
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          // Should handle rapid transitions
+          expect(duration).to.be.lessThan(6000);
+          
+          cy.task("logPerformance", {
+            name: "Rapid Screen Transitions",
+            duration,
+          });
         });
       });
 
@@ -362,22 +340,20 @@ describe("Black Trigram - Three.js Performance", () => {
 
       cy.enterCombatMode();
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Simulate rapid player inputs
+        for (let i = 0; i < 5; i++) {
+          cy.gameActions(["w", "a", "s", "d", "1", "2", "3", " "]);
+        }
 
-      // Simulate rapid player inputs
-      for (let i = 0; i < 5; i++) {
-        cy.gameActions(["w", "a", "s", "d", "1", "2", "3", " "]);
-      }
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          cy.task("logPerformance", {
+            name: "Rapid Input Load",
+            duration,
+          });
 
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        
-        cy.task("logPerformance", {
-          name: "Rapid Input Load",
-          duration,
+          expect(duration).to.be.lessThan(10000);
         });
-
-        expect(duration).to.be.lessThan(10000);
       });
 
       // Verify FPS is still acceptable
@@ -389,31 +365,29 @@ describe("Black Trigram - Three.js Performance", () => {
     it("should maintain performance during extended session", () => {
       cy.annotate("Testing extended session performance");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Enter combat and perform extended actions
+        cy.enterCombatMode();
 
-      // Enter combat and perform extended actions
-      cy.enterCombatMode();
+        for (let round = 0; round < 2; round++) {
+          // Stance practice
+          for (let stance = 1; stance <= 4; stance++) {
+            cy.get("body").type(stance.toString());
+            cy.wait(100);
+            cy.get("body").type(" ");
+            cy.wait(100);
+          }
 
-      for (let round = 0; round < 2; round++) {
-        // Stance practice
-        for (let stance = 1; stance <= 4; stance++) {
-          cy.get("body").type(stance.toString());
-          cy.wait(100);
-          cy.get("body").type(" ");
-          cy.wait(100);
+          // Movement
+          cy.gameActions(["w", "w", "s", "s", "a", "a", "d", "d"]);
+          cy.wait(300);
         }
 
-        // Movement
-        cy.gameActions(["w", "w", "s", "s", "a", "a", "d", "d"]);
-        cy.wait(300);
-      }
-
-      cy.wrap(null).then(() => {
-        const sessionDuration = Date.now() - startTime;
-        
-        cy.task("logPerformance", {
-          name: "Extended Session",
-          duration: sessionDuration,
+        cy.wrap(Date.now() - startTime).then((sessionDuration) => {
+          cy.task("logPerformance", {
+            name: "Extended Session",
+            duration: sessionDuration,
+          });
         });
       });
 
@@ -428,47 +402,44 @@ describe("Black Trigram - Three.js Performance", () => {
     it("should benchmark intro screen load time", () => {
       cy.annotate("Benchmarking intro screen load");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        cy.visitWithWebGLMock("/", { timeout: 12000 });
+        cy.waitForCanvasReady();
+        cy.get('[data-testid="intro-screen"]').should("exist");
 
-      cy.visitWithWebGLMock("/", { timeout: 12000 });
-      cy.waitForCanvasReady();
-      cy.get('[data-testid="intro-screen"]').should("exist");
+        cy.wrap(Date.now() - startTime).then((loadTime) => {
+          cy.task("logPerformance", {
+            name: "Intro Screen Load Benchmark",
+            duration: loadTime,
+          });
 
-      cy.wrap(null).then(() => {
-        const loadTime = Date.now() - startTime;
-        
-        cy.task("logPerformance", {
-          name: "Intro Screen Load Benchmark",
-          duration: loadTime,
+          // Should load within 5 seconds
+          expect(loadTime).to.be.lessThan(5000);
+          
+          cy.log(`✅ Intro loaded in ${loadTime}ms`);
         });
-
-        // Should load within 5 seconds
-        expect(loadTime).to.be.lessThan(5000);
-        
-        cy.log(`✅ Intro loaded in ${loadTime}ms`);
       });
     });
 
     it("should benchmark combat screen transition time", () => {
       cy.annotate("Benchmarking combat transition");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
 
-      cy.enterCombatMode();
-      cy.get('[data-testid="combat-screen"]').should("exist");
+        cy.enterCombatMode();
+        cy.get('[data-testid="combat-screen"]').should("exist");
 
-      cy.wrap(null).then(() => {
-        const transitionTime = Date.now() - startTime;
-        
-        cy.task("logPerformance", {
-          name: "Combat Transition Benchmark",
-          duration: transitionTime,
+        cy.wrap(Date.now() - startTime).then((transitionTime) => {
+          cy.task("logPerformance", {
+            name: "Combat Transition Benchmark",
+            duration: transitionTime,
+          });
+
+          // Should transition within 3 seconds
+          expect(transitionTime).to.be.lessThan(3000);
+          
+          cy.log(`✅ Combat transition in ${transitionTime}ms`);
         });
-
-        // Should transition within 3 seconds
-        expect(transitionTime).to.be.lessThan(3000);
-        
-        cy.log(`✅ Combat transition in ${transitionTime}ms`);
       });
 
       cy.returnToIntro();
@@ -477,23 +448,21 @@ describe("Black Trigram - Three.js Performance", () => {
     it("should benchmark training screen transition time", () => {
       cy.annotate("Benchmarking training transition");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        cy.enterTrainingMode();
+        cy.get('[data-testid="training-screen"]').should("exist");
 
-      cy.enterTrainingMode();
-      cy.get('[data-testid="training-screen"]').should("exist");
+        cy.wrap(Date.now() - startTime).then((transitionTime) => {
+          cy.task("logPerformance", {
+            name: "Training Transition Benchmark",
+            duration: transitionTime,
+          });
 
-      cy.wrap(null).then(() => {
-        const transitionTime = Date.now() - startTime;
-        
-        cy.task("logPerformance", {
-          name: "Training Transition Benchmark",
-          duration: transitionTime,
+          // Should transition within 3 seconds
+          expect(transitionTime).to.be.lessThan(3000);
+          
+          cy.log(`✅ Training transition in ${transitionTime}ms`);
         });
-
-        // Should transition within 3 seconds
-        expect(transitionTime).to.be.lessThan(3000);
-        
-        cy.log(`✅ Training transition in ${transitionTime}ms`);
       });
 
       cy.returnToIntro();

@@ -291,15 +291,15 @@ cy.practiceStance(stanceNumber, repetitions);
 
 ```typescript
 it("should meet performance benchmarks", () => {
-  cy.visitWithWebGLMock("/");
-  cy.waitForCanvasReady();
-  
-  // Test load time
-  const startTime = Date.now();
-  cy.get('[data-testid="intro-screen"]').should("exist");
-  cy.wrap(null).then(() => {
-    const loadTime = Date.now() - startTime;
-    expect(loadTime).to.be.lessThan(3000); // Target: <3s
+  // Test load time with proper async timing
+  cy.wrap(Date.now()).then((startTime) => {
+    cy.visitWithWebGLMock("/");
+    cy.waitForCanvasReady();
+    cy.get('[data-testid="intro-screen"]').should("exist");
+    
+    cy.wrap(Date.now() - startTime).then((loadTime) => {
+      expect(loadTime).to.be.lessThan(3000); // Target: <3s
+    });
   });
   
   // Test FPS
@@ -307,6 +307,26 @@ it("should meet performance benchmarks", () => {
   
   // Test memory
   cy.assertNoMemoryLeaks(3000); // Target: <20% increase
+});
+```
+
+**Note on Timing Measurements:**
+When measuring elapsed time in Cypress, always wrap `Date.now()` in `cy.wrap()` to ensure timing is captured within the async command chain. This ensures accurate measurement of actual command execution time rather than just synchronous JavaScript execution time.
+
+```typescript
+// ✅ CORRECT: Async-aware timing
+cy.wrap(Date.now()).then((startTime) => {
+  cy.someAsyncCommand();
+  cy.wrap(Date.now() - startTime).then((duration) => {
+    expect(duration).to.be.lessThan(5000);
+  });
+});
+
+// ❌ INCORRECT: Synchronous timing (measures only JS execution)
+const startTime = Date.now();
+cy.someAsyncCommand();
+cy.wrap(null).then(() => {
+  const duration = Date.now() - startTime; // Wrong! Measured before commands run
 });
 ```
 

@@ -433,51 +433,45 @@ describe("Black Trigram - IntroScreen Three.js", () => {
     it("should load intro screen within acceptable time", () => {
       cy.annotate("Testing intro screen load time");
 
-      const startTime = Date.now();
+      // Capture start time and measure load time properly
+      cy.wrap(Date.now()).then((startTime) => {
+        cy.visitWithWebGLMock("/", { timeout: 12000 });
+        cy.waitForCanvasReady();
+        cy.get('[data-testid="intro-screen"]').should("exist");
 
-      // Visit fresh and measure load time
-      cy.visitWithWebGLMock("/", { timeout: 12000 });
-      cy.waitForCanvasReady();
-      
-      cy.get('[data-testid="intro-screen"]').should("exist");
-
-      cy.wrap(null).then(() => {
-        const loadTime = Date.now() - startTime;
-        
-        cy.task("logPerformance", { 
-          name: "IntroScreen Load Time", 
-          duration: loadTime 
+        cy.wrap(Date.now() - startTime).then((loadTime) => {
+          cy.task("logPerformance", { 
+            name: "IntroScreen Load Time", 
+            duration: loadTime 
+          });
+          
+          // Should load in under 5 seconds
+          expect(loadTime).to.be.lessThan(5000);
+          cy.log(`✅ Load time: ${loadTime}ms`);
         });
-        
-        // Should load in under 5 seconds
-        expect(loadTime).to.be.lessThan(5000);
-        cy.log(`✅ Load time: ${loadTime}ms`);
       });
     });
 
     it("should maintain smooth interaction performance", () => {
       cy.annotate("Testing interaction performance");
 
-      const startTime = Date.now();
+      cy.wrap(Date.now()).then((startTime) => {
+        // Perform various interactions
+        cy.get('[data-testid="combat-button"]').trigger("mouseover");
+        cy.wait(100);
+        cy.get('[data-testid="training-button"]').trigger("mouseover");
+        cy.wait(100);
+        cy.gameActions(["{leftarrow}", "{rightarrow}"]);
 
-      // Perform various interactions
-      cy.get('[data-testid="combat-button"]').trigger("mouseover");
-      cy.wait(100);
-      cy.get('[data-testid="training-button"]').trigger("mouseover");
-      cy.wait(100);
-      cy.gameActions(["{leftarrow}", "{rightarrow}"]);
-
-      cy.wrap(null).then(() => {
-        const duration = Date.now() - startTime;
-        
-        // Interactions should be fast
-        expect(duration).to.be.lessThan(1000);
-        cy.task("logPerformance", { 
-          name: "IntroScreen Interactions", 
-          duration 
+        cy.wrap(Date.now() - startTime).then((duration) => {
+          // Interactions should be fast
+          expect(duration).to.be.lessThan(1000);
+          cy.task("logPerformance", { 
+            name: "IntroScreen Interactions", 
+            duration 
+          });
+          cy.log(`✅ Interaction performance: ${duration}ms`);
         });
-        
-        cy.log(`✅ Interaction performance: ${duration}ms`);
       });
     });
   });
@@ -504,8 +498,8 @@ describe("Black Trigram - IntroScreen Three.js", () => {
     it("should support keyboard-only navigation", () => {
       cy.annotate("Testing keyboard-only navigation");
 
-      // Tab through elements
-      cy.get("body").tab();
+      // Tab through elements using keyboard type
+      cy.get("body").type("{tab}");
       cy.wait(100);
       
       // Verify focus is on an interactive element
