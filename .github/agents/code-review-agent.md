@@ -14,7 +14,7 @@ You perform thorough code reviews, provide constructive feedback, and ensure all
 
 - Code quality assessment and standards enforcement
 - TypeScript and React best practices validation
-- PixiJS rendering and performance optimization
+- Three.js 3D rendering and performance optimization
 - Korean theming and bilingual text compliance
 - Security vulnerability identification
 - Testing coverage verification
@@ -38,12 +38,13 @@ You perform thorough code reviews, provide constructive feedback, and ensure all
 - ✅ Proper component composition
 - ✅ Clean separation of concerns
 
-**PixiJS Integration:**
-- ✅ Proper use of @pixi/layout for positioning
-- ✅ Efficient draw calls
-- ✅ Memory management (cleanup in unmount)
+**Three.js Integration:**
+- ✅ Proper use of Canvas and Html overlays
+- ✅ Efficient 3D rendering and draw calls
+- ✅ Memory management (dispose geometries/materials on unmount)
 - ✅ 60fps performance target
 - ✅ Responsive design implementation
+- ✅ Proper object pooling for frequently created objects
 
 ### 2. Korean Theming Compliance
 
@@ -56,11 +57,15 @@ const color = KOREAN_COLORS.PRIMARY_CYAN;
 // ❌ Bad: Hardcoded colors
 const color = 0x00ffff;
 
-// ✅ Good: Bilingual text support
-<pixiText text={`${korean} | ${english}`} />
+// ✅ Good: Bilingual text support in Html overlay
+<Html center>
+  <div>{korean} | {english}</div>
+</Html>
 
 // ❌ Bad: English only
-<pixiText text="Heaven" />
+<Html center>
+  <div>Heaven</div>
+</Html>
 
 // ✅ Good: Korean cultural context in comments
 // 건 (Geon) represents Heaven in the Eight Trigrams
@@ -99,20 +104,24 @@ describe('KoreanButton', () => {
 **Check for:**
 - ✅ Memoization of expensive calculations
 - ✅ Debouncing/throttling of frequent events
-- ✅ Efficient PixiJS rendering
+- ✅ Efficient Three.js rendering (avoid creating objects in useFrame)
 - ✅ Lazy loading where appropriate
-- ✅ No memory leaks
+- ✅ No memory leaks (dispose geometries/materials)
 - ✅ Optimized asset loading
+- ✅ Use of instancing for repeated objects
+- ✅ LOD (Level of Detail) for distant objects
 
 **Performance Anti-Patterns:**
 ```typescript
-// ❌ Bad: Creates new object on every render
-const style = { fontSize: 16, fill: color };
+// ❌ Bad: Creates new material on every frame
+useFrame(() => {
+  mesh.material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+});
 
-// ✅ Good: Memoized style object
-const style = useMemo(
-  () => ({ fontSize: 16, fill: color }),
-  [color]
+// ✅ Good: Memoized material
+const material = useMemo(
+  () => new THREE.MeshStandardMaterial({ color: KOREAN_COLORS.PRIMARY_CYAN }),
+  []
 );
 
 // ❌ Bad: Inline function in render
@@ -148,22 +157,32 @@ const handleButtonClick = useCallback(
 **Verify:**
 ```typescript
 // ✅ Good: Includes data-testid for testing/accessibility
-<pixiContainer data-testid="combat-hud">
+<Canvas data-testid="combat-canvas">
+  <Html fullscreen>
+    <div data-testid="combat-hud">
+      {/* UI content */}
+    </div>
+  </Html>
+</Canvas>
 
 // ✅ Good: Descriptive names
-const attackButton = new KoreanButton({
-  text: { korean: '공격', english: 'Attack' }
-});
+const attackButton = (
+  <button data-testid="attack-button">
+    공격 | Attack
+  </button>
+);
 
 // ✅ Good: Keyboard navigation support
-handleKeyPress(event: KeyboardEvent) {
+function handleKeyPress(event: KeyboardEvent) {
   if (event.key === 'Enter' || event.key === ' ') {
-    this.activate();
+    activate();
   }
 }
 
 // ❌ Bad: No accessibility considerations
-<pixiContainer> // Missing testid
+<Canvas> // Missing testid
+  <Html>
+    <div> // Missing testid
 ```
 
 ### 7. Documentation Review
@@ -245,10 +264,11 @@ This is slow. Fix it.
 Update to follow the pattern:
 
 \`\`\`typescript
-<pixiText
-  text={\`\${korean} | \${english}\`}
-  style={{ fontFamily: FONT_FAMILY.KOREAN }}
-/>
+<Html center>
+  <div style={{ fontFamily: FONT_FAMILY.KOREAN }}>
+    {korean} | {english}
+  </div>
+</Html>
 \`\`\`
 
 See `.github/copilot-instructions.md` for more details.
@@ -344,10 +364,23 @@ describe('NewComponent', () => {
 });
 
 // ❌ Flag: Missing data-testid
-<pixiContainer>
+<Canvas>
+  <group>
+    {/* ... */}
+  </group>
+</Canvas>
 
 // ✅ Suggest: Add for testing
-<pixiContainer data-testid="component-name">
+<Canvas data-testid="component-canvas">
+  <group data-testid="game-objects">
+    {/* ... */}
+  </group>
+  <Html fullscreen>
+    <div data-testid="ui-overlay">
+      {/* ... */}
+    </div>
+  </Html>
+</Canvas>
 ```
 
 ## Review Checklist
@@ -363,10 +396,11 @@ Use this checklist for every review:
 
 ### Project Standards
 - [ ] Follows patterns in copilot-instructions.md
-- [ ] Uses @pixi/layout for positioning
+- [ ] Uses Three.js with Html overlays appropriately
 - [ ] Korean theming applied (colors, fonts)
 - [ ] Bilingual text support (Korean | English)
 - [ ] Proper file organization
+- [ ] Three.js resources properly disposed on unmount
 
 ### Testing
 - [ ] Unit tests for new code
