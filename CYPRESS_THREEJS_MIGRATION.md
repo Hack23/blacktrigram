@@ -144,7 +144,7 @@ Updated all Cypress E2E tests to support Three.js-migrated components, replacing
 - [x] Tests verify Three.js Canvas exists and renders
 - [x] Performance tests verify rendering during test runs
 - [x] All tests pass TypeScript compilation
-- [x] Test execution time remains efficient (&lt;5min target)
+- [x] Test execution time remains efficient (<5min target)
 - [x] No flaky tests introduced
 
 ## 🧪 Testing Strategy
@@ -232,10 +232,10 @@ npm run test:e2e:smoke:ci
 **Smoke tests only:** ~2min (app.cy.ts + game-journey.cy.ts)
 
 ### Performance Targets
-- ✅ Individual test: &lt;10s per test case
-- ✅ Test suite: &lt;3min per file
-- ✅ Full E2E: &lt;10min total
-- ✅ Smoke tests: &lt;3min total
+- ✅ Individual test: <10s per test case
+- ✅ Test suite: <3min per file
+- ✅ Full E2E: <10min total
+- ✅ Smoke tests: <3min total
 
 ## 🔍 Migration Verification
 

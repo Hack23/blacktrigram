@@ -91,9 +91,9 @@ All test files verify:
 - ✅ Player archetypes
 
 ### Performance Tests
-- ✅ Rendering performance (&lt;5s per operation)
-- ✅ Scene transitions (&lt;8s per transition)
-- ✅ Rapid interactions (&lt;5s for sequences)
+- ✅ Rendering performance (<5s per operation)
+- ✅ Scene transitions (<8s per transition)
+- ✅ Rapid interactions (<5s for sequences)
 
 ### Responsive Design
 - ✅ Desktop (1280x720)
@@ -252,7 +252,7 @@ Tests pass when:
 - ✅ No uncaught exceptions (except ignored)
 - ✅ Canvas renders correctly
 - ✅ Html overlays are visible
-- ✅ Performance targets met (&lt;5s per test)
+- ✅ Performance targets met (<5s per test)
 - ✅ All screens navigate properly
 
 ## 🔧 Troubleshooting
