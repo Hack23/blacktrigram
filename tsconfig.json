@@ -37,8 +37,7 @@
     "**/*.test.tsx",
     "**/*.cy.ts",
     "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "src/_archived_pixi/**/*"
+    "**/*.spec.tsx"
   ],
   "watchOptions": {
     "watchFile": "useFsEvents",
