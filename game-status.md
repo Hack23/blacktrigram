@@ -31,7 +31,7 @@ Black Trigram has shifted from architectural readiness into a cohesive combat pr
 
 ### ✅ Strengths
 
-- `ResponsivePixiComponents` drive adaptive layouts across HUD, timers, and post-fight panels.
+- Three.js Html overlays drive adaptive layouts across HUD, timers, and post-fight panels (migrated from PixiJS ResponsivePixiComponents).
 - `HitEffectsLayer` visualizes hits, crits, blocks, and misses with bilingual overlays and configurable fades.
 - `PlayerVisuals` centralizes archetype materials, stance glyphs, and vital-point overlays for combat, training, and selection contexts.
 - `CombatHUD` and `HealthBar` provide bilingual readouts, gradient bars, and stance-aware cues; `RoundTimer` highlights urgency with color/scale transitions.
@@ -182,8 +182,8 @@ Black Trigram has shifted from architectural readiness into a cohesive combat pr
 
 - Unit suites exist for core systems: `TrigramSystem.test.ts`, `TrigramCalculator.test.ts`, `TransitionCalculator.test.ts`, `KoreanCulture.test.ts`, and `CombatSystem.test.ts`.
 - Audio infrastructure validated via `AudioManager.test.ts`, `AudioUtils.test.ts`, and `GameAudio.test.tsx` for React hooks.
-- UI smoke tests (`ResponsivePixiComponents.test.tsx`, `KoreanHeader.test.tsx`, `DojangBackground.test.tsx`) confirm rendering and prop handling.
-- Test helpers in `src/test/` mock Pixi, audio, and input systems; leverage them when expanding coverage to `CombatScreen` and `TrainingScreen`.
+- UI smoke tests (Three.js component tests, `KoreanHeader.test.tsx`, `DojangBackground.test.tsx`) confirm rendering and prop handling. PixiJS tests (like `ResponsivePixiComponents.test.tsx`) have been archived after migration to Three.js.
+- Test helpers in `src/test/` mock Three.js, audio, and input systems; leverage them when expanding coverage to `CombatScreen` and `TrainingScreen`.
 - Recommendation: Add integration tests for end-to-end combat flow and snapshot baselines for `HitEffectsLayer` once animation states stabilize.
 
 ---
@@ -192,8 +192,8 @@ Black Trigram has shifted from architectural readiness into a cohesive combat pr
 
 ### Base Layer (`components/ui/base`)
 
-- `BaseButton.tsx` and `ResponsivePixiComponents.tsx` encapsulate Pixi layout patterns, hit slop, and hover states; tests (`ResponsivePixiComponents.test.tsx`) validate rendering across breakpoints.
-- Korean typography suite (`base/korean-text/`) centralizes Hangul/English pairing with sizing constants—a strong foundation for bilingual UI.
+- PixiJS components (`BaseButton.tsx`, `ResponsivePixiComponents.tsx`) have been archived and replaced with Three.js Html overlays and standard React components.
+- Korean typography suite (`components/three/KoreanText.tsx`) centralizes Hangul/English pairing with sizing constants—a strong foundation for bilingual UI in the Three.js migration.
 - Opportunity: expose a style token map so combat/intro screens reference theme values without duplicating inline styles.
 
 ### Combat & HUD Elements (`components/ui`)
@@ -251,7 +251,7 @@ Black Trigram has shifted from architectural readiness into a cohesive combat pr
 
 ### EndScreen (`EndScreen.tsx`)
 
-- **What works**: Responsive gradient backdrop, bilingual victory messaging, match summary slots, and menu actions already integrate with `ResponsivePixiContainer`.
+- **What works**: Responsive gradient backdrop, bilingual victory messaging, match summary slots, and menu actions use Three.js Html overlays for adaptive layouts.
 - **Gaps**: Real match statistics aren’t piped in yet, celebration animation is minimal, and rematch/menu flows don’t surface player progression rewards.
 - **Action plan**: Connect `CombatStatsPanel` telemetry into display slots, introduce victory animations (stance-specific) and particle FX, and surface rewards/XP hooks alongside buttons for rematch, training, or archetype review.
 
