@@ -2,43 +2,20 @@
 /**
  * @module components/ui
  * @category UI Components
+ * 
+ * Note: All PixiJS UI components have been archived.
+ * Use Three.js components from ../three/ instead.
  */
 
-export * from "./base";
-export * from "./EndScreen";
-export * from "./HealthBar";
-export * from "./HitEffectsLayer";
-export * from "./KoreanHeader";
-export * from "./Player";
-export * from "./PlayerVisuals";
-export * from "./RoundTimer";
-export * from "./StanceIndicator";
-export * from "./TrigramWheel";
-export * from "./types";
-
-// Re-export component prop types
-export type { EndScreenProps } from "./EndScreen";
-export type { HealthBarProps } from "./HealthBar";
-export type { KoreanHeaderProps } from "./KoreanHeader";
-export type { PlayerProps } from "./Player";
-export type { PlayerVisualsProps } from "./PlayerVisuals";
-export type { StanceIndicatorProps } from "./StanceIndicator";
-export type { TrigramWheelProps } from "./TrigramWheel";
-
-/**
- * Barrel exports for ui types
- */
-
-export type {
-  BaseComponentProps,
-  BaseUIProps,
-  ComponentState,
-  ErrorState,
-  InteractionEvent,
-  LoadingState,
-  MenuItem,
-  Notification,
-  ScreenNavigation,
-  UIComponentProps,
-  UITheme,
-} from "./types";
+// All UI components archived - use Three.js versions instead
+// export * from "./base"; // Archived - PixiJS base components
+// export * from "./EndScreen"; // Archived - PixiJS
+// export * from "./HealthBar"; // Archived - PixiJS
+// export * from "./HitEffectsLayer"; // Archived - PixiJS
+// export * from "./KoreanHeader"; // Archived - PixiJS
+// export * from "./Player"; // Archived - PixiJS
+// export * from "./PlayerVisuals"; // Archived - PixiJS
+// export * from "./RoundTimer"; // Archived - PixiJS
+// export * from "./StanceIndicator"; // Archived - PixiJS
+// export * from "./TrigramWheel"; // Archived - PixiJS
+// export * from "./types"; // Archived - PixiJS types

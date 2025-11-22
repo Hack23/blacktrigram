@@ -46,10 +46,6 @@ export default defineConfig(({ command, mode }) => ({
   },
   optimizeDeps: {
     include: [
-      "@pixi/react",
-      "@pixi/layout",
-      "@pixi/ui",
-      "pixi.js",
       "react-reconciler",
       "howler",
       // Three.js dependencies for optimized dev performance
@@ -59,7 +55,6 @@ export default defineConfig(({ command, mode }) => ({
     ],
     // Exclude heavy modules from dev pre-bundling to reduce TBT
     exclude: [
-      "@pixi/sound",
       "src/types/constants/techniques.ts",
       "src/types/constants/combat.ts",
       "src/audio/placeholder-sounds.ts",

@@ -1,4 +1,3 @@
-import { Application } from "@pixi/react";
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
@@ -11,20 +10,19 @@ import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/Co
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
-import { exposePixiAppForTesting } from "./test/pixi-cypress-helpers";
 import { GameMode, PlayerArchetype } from "./types/common";
-import { usePixiExtensions } from "./utils/pixiExtensions";
+import { FONT_FAMILY } from "./types/constants";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
-const EndScreen = lazy(() => import("./components/ui/EndScreen"));
+// TODO: Restore EndScreen or create EndScreenThreeJS
+// const EndScreen = lazy(() => import("./components/ui/EndScreen"));
+// ✅ MIGRATED: Use Three.js TrainingScreen instead of PixiJS version
 const TrainingScreen = lazy(
-  () => import("./components/training/TrainingScreen")
+  () => import("./components/training/TrainingScreen3D").then(m => ({ default: m.TrainingScreen3D }))
 );
 
 function App() {
-  usePixiExtensions();
-
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
     PlayerArchetype.MUSA
@@ -42,26 +40,6 @@ function App() {
     isTablet: window.innerWidth >= 768 && window.innerWidth < 1024,
     isDesktop: window.innerWidth >= 1024,
   });
-
-  const handleApplicationReady = useCallback((app: any) => {
-    if (app && typeof window !== "undefined") {
-      exposePixiAppForTesting(app);
-    }
-  }, []);
-
-  useEffect(() => {
-    const checkForApp = () => {
-      const pixiApp = (window as any).pixiApp;
-      if (pixiApp) {
-        handleApplicationReady(pixiApp);
-      }
-    };
-
-    const timer = setInterval(checkForApp, 100);
-    setTimeout(() => clearInterval(timer), 5000);
-
-    return () => clearInterval(timer);
-  }, [handleApplicationReady]);
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -183,20 +161,43 @@ function App() {
     setMatchStats(null);
   }, []);
 
-  // IntroScreen (gameMode === null) uses Three.js; all other screens use PixiJS
-  const isThreeJSScreen = gameMode === null;
-
   const renderCurrentScreen = () => {
     if (gameWinner && matchStats) {
+      // TODO: Create EndScreenThreeJS or restore EndScreen
       return (
-        <EndScreen
-          winner={gameWinner}
-          matchStatistics={matchStats}
-          onReturnToMenu={handleReturnToMenu}
-          onRestart={() => handleGameStart(gameMode!, selectedArchetype)}
-          width={screenSize.width}
-          height={screenSize.height}
-        />
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          background: "#0a0a0f",
+          color: "#00ffff",
+          fontFamily: FONT_FAMILY.KOREAN,
+          padding: "20px",
+        }}>
+          <h1 style={{ fontSize: "48px", marginBottom: "20px" }}>
+            승리! | Victory!
+          </h1>
+          <p style={{ fontSize: "24px", marginBottom: "30px" }}>
+            {gameWinner.name.korean} | {gameWinner.name.english}
+          </p>
+          <button
+            onClick={handleReturnToMenu}
+            style={{
+              background: "#00ffff",
+              color: "#0a0a0f",
+              border: "none",
+              borderRadius: "8px",
+              padding: "15px 30px",
+              fontSize: "20px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            메뉴로 | Return to Menu
+          </button>
+        </div>
       );
     }
 
@@ -225,13 +226,8 @@ function App() {
     if (isGameActive && gameMode) {
       switch (gameMode) {
         case GameMode.TRAINING:
-          const trainingPlayer = createPlayerFromArchetype(
-            selectedArchetype,
-            0
-          );
           return (
             <TrainingScreen
-              player={trainingPlayer}
               onPlayerUpdate={(updates) => {
                 console.log("Training player updated:", updates);
               }}
@@ -342,22 +338,8 @@ function App() {
         }}
         data-testid="app-container"
       >
-        {isThreeJSScreen ? (
-          // Three.js screens render directly without PixiJS wrapper
-          renderCurrentScreen()
-        ) : (
-          // PixiJS screens need the Application wrapper
-          <Application
-            width={screenSize.width}
-            height={screenSize.height}
-            backgroundColor={0x0a0a0f}
-            antialias={true}
-            autoDensity={true}
-            resizeTo={window}
-          >
-            {renderCurrentScreen()}
-          </Application>
-        )}
+        {/* All screens now use Three.js or pure React/HTML */}
+        {renderCurrentScreen()}
       </div>
     </AudioProvider>
   );

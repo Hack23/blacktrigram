@@ -52,14 +52,9 @@
     "gen:sprites:archetype": "tsx scripts/generate_archetype_sprites.ts"
   },
   "dependencies": {
-    "@pixi/layout": "^3.2.0",
-    "@pixi/react": "^8.0.4",
-    "@pixi/sound": "^6.0.1",
-    "@pixi/ui": "^2.3.0",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.4.0",
     "howler": "^2.2.4",
-    "pixi.js": "^8.14.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0",

@@ -8,10 +8,10 @@ export {
   FONT_FAMILY,
   FONT_SIZES,
   FONT_WEIGHTS,
-  KOREAN_FONT_FAMILY,
+  // KOREAN_FONT_FAMILY, // Not exported from typography.ts
   KOREAN_FONT_WEIGHTS,
   KOREAN_TEXT_SIZES,
-  PIXI_TEXT_STYLES,
+  // PIXI_TEXT_STYLES, // Archived - PixiJS
 } from "./typography";
 export { HEALTH_COLORS, UI_CONSTANTS } from "./ui";
 
@@ -19,10 +19,10 @@ export { HEALTH_COLORS, UI_CONSTANTS } from "./ui";
 export { KOREAN_COLORS as default } from "./colors";
 
 // Fix: Add missing KOREAN_TYPOGRAPHY export
-export { KOREAN_TYPOGRAPHY } from "./typography";
+// export { KOREAN_TYPOGRAPHY } from "./typography"; // Archived - PixiJS
 
 // Fix: Add missing PIXI_FONT_WEIGHTS export
-export { PIXI_FONT_WEIGHTS } from "./typography";
+// export { PIXI_FONT_WEIGHTS } from "./typography"; // Archived - PixiJS
 
 // Fix: Add missing ANIMATION_DURATIONS export
 export { ANIMATION_DURATIONS } from "./animations";

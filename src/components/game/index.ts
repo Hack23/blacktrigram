@@ -3,7 +3,5 @@
  * @category Game Components
  */
 
-export * from "./DojangBackground";
-
-// Re-export component prop types
-export type { DojangBackgroundProps } from "./DojangBackground";
+// Note: DojangBackground (PixiJS) has been archived. 
+// Three.js screens use custom 3D environments instead.
