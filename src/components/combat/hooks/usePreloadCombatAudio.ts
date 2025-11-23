@@ -125,10 +125,10 @@ export function usePreloadCombatAudio(): PreloadCombatAudioState {
     for (const assetId of CRITICAL_COMBAT_ASSETS) {
       try {
         // Get asset from registry (try SFX first, then Music)
-        let asset = audioAssetRegistry.getSFX(assetId);
-        if (!asset) {
-          asset = audioAssetRegistry.getMusic(assetId);
-        }
+        // Need to use type union since getSFX returns SoundEffect and getMusic returns MusicTrack
+        const sfxAsset = audioAssetRegistry.getSFX(assetId);
+        const musicAsset = sfxAsset ? undefined : audioAssetRegistry.getMusic(assetId);
+        const asset = sfxAsset || musicAsset;
 
         if (asset) {
           await audio.loadAsset(asset as AudioAsset);
