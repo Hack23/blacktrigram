@@ -18,7 +18,7 @@ describe("Screen Audio Integration", () => {
       expect(undergroundTheme?.id).toBe("underground_theme");
       expect(undergroundTheme?.type).toBe("music");
       expect(undergroundTheme?.loop).toBe(true);
-      expect(undergroundTheme?.volume).toBe(0.5);
+      expect(undergroundTheme?.volume).toBe(0.4);
       expect(undergroundTheme?.fadeInTime).toBe(2000);
       expect(undergroundTheme?.fadeOutTime).toBe(2000);
     });
@@ -29,7 +29,7 @@ describe("Screen Audio Integration", () => {
       expect(cyberpunkFusion?.id).toBe("cyberpunk_fusion");
       expect(cyberpunkFusion?.type).toBe("music");
       expect(cyberpunkFusion?.loop).toBe(true);
-      expect(cyberpunkFusion?.volume).toBe(0.5);
+      expect(cyberpunkFusion?.volume).toBe(0.4);
       expect(cyberpunkFusion?.fadeInTime).toBe(2000);
       expect(cyberpunkFusion?.fadeOutTime).toBe(2000);
     });
@@ -39,7 +39,7 @@ describe("Screen Audio Integration", () => {
       expect(kiCharge).toBeDefined();
       expect(kiCharge?.id).toBe("ki_charge");
       expect(kiCharge?.type).toBe("sound");
-      expect(kiCharge?.volume).toBe(0.5);
+      expect(kiCharge?.volume).toBe(0.7);
       expect(kiCharge?.variations).toBeDefined();
       expect(kiCharge?.variations?.length).toBeGreaterThan(0);
     });
@@ -49,7 +49,7 @@ describe("Screen Audio Integration", () => {
       expect(kiRelease).toBeDefined();
       expect(kiRelease?.id).toBe("ki_release");
       expect(kiRelease?.type).toBe("sound");
-      expect(kiRelease?.volume).toBe(0.6);
+      expect(kiRelease?.volume).toBe(0.7);
       expect(kiRelease?.variations).toBeDefined();
       expect(kiRelease?.variations?.length).toBeGreaterThan(0);
     });
@@ -59,7 +59,7 @@ describe("Screen Audio Integration", () => {
         const kiCharge = audioAssetRegistry.getSFX(`ki_charge_${i}`);
         expect(kiCharge).toBeDefined();
         expect(kiCharge?.id).toBe(`ki_charge_${i}`);
-        expect(kiCharge?.volume).toBe(0.5);
+        expect(kiCharge?.volume).toBe(0.7);
       }
     });
 
@@ -68,7 +68,7 @@ describe("Screen Audio Integration", () => {
         const kiRelease = audioAssetRegistry.getSFX(`ki_release_${i}`);
         expect(kiRelease).toBeDefined();
         expect(kiRelease?.id).toBe(`ki_release_${i}`);
-        expect(kiRelease?.volume).toBe(0.6);
+        expect(kiRelease?.volume).toBe(0.7);
       }
     });
 
@@ -110,7 +110,7 @@ describe("Screen Audio Integration", () => {
         const stanceChange = audioAssetRegistry.getSFX(`stance_change_${i}`);
         expect(stanceChange).toBeDefined();
         expect(stanceChange?.id).toBe(`stance_change_${i}`);
-        expect(stanceChange?.volume).toBe(0.4);
+        expect(stanceChange?.volume).toBe(0.7);
       }
     });
   });
