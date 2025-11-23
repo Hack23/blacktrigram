@@ -11,8 +11,9 @@ import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { ARCHETYPE_BACKGROUNDS, FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
+import { getArchetypeAssets } from "../../utils/playerUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
 import { MenuSectionHTML } from "./components/MenuSectionHTML";
@@ -193,6 +194,13 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
       audio.playSFX("menu_hover");
+      
+      // Play archetype theme music preview when archetype changes
+      // Use getArchetypeAssets utility for proper error handling and fallback
+      const archetypeAssets = getArchetypeAssets(newArchetype);
+      // Stop intro music and play archetype theme
+      audio.stopMusic();
+      audio.playMusic(archetypeAssets.themeId);
     },
     [onArchetypeSelect, audio]
   );
@@ -271,6 +279,25 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       }}
       data-testid="intro-screen"
     >
+      {/* Archetype background image (subtle, behind 3D scene) */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundImage: `url(${ARCHETYPE_BACKGROUNDS.overview})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.15,
+          filter: "blur(2px)",
+          zIndex: 0,
+        }}
+        data-testid="archetype-background"
+      />
+      
       {/* Three.js Canvas for 3D background */}
       <Canvas
         style={{
@@ -279,16 +306,17 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
           left: 0,
           width: "100%",
           height: "100%",
+          zIndex: 1,
         }}
         gl={{
           antialias: true,
-          alpha: false,
+          alpha: true,
           powerPreference: "high-performance",
         }}
         dpr={[1, 2]}
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
         }}
       >
         {/* 3D Background Scene */}
