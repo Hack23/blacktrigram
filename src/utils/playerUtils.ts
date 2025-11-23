@@ -5,6 +5,7 @@
 import { PLAYER_ARCHETYPES_DATA, PlayerState, StatusEffect } from "../systems";
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
+import { ARCHETYPE_ASSETS } from "../types/constants";
 
 /**
  * Create a complete PlayerState from archetype and player index
@@ -266,8 +267,6 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
   readonly name_english: string;
   readonly textureKey: string;
 } {
-  // Import at runtime to avoid circular dependencies
-  const { ARCHETYPE_ASSETS } = require("../types/constants");
   const archetypeId = archetype.toLowerCase();
   const asset = ARCHETYPE_ASSETS[archetypeId as keyof typeof ARCHETYPE_ASSETS];
   
