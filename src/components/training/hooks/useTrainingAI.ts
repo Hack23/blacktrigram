@@ -6,7 +6,7 @@
 
 import { useState, useCallback, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { TrainingAI, TrainingDifficulty } from "../../../systems/ai/TrainingAI";
+import { TrainingAI, AITrainingDifficulty } from "../../../systems/ai/TrainingAI";
 import { PlayerState } from "../../../systems/player";
 import { Position, TrigramStance, PlayerArchetype } from "../../../types/common";
 import { AIActionType } from "../../../systems/ai/DecisionTree";
@@ -28,7 +28,7 @@ export interface TrainingAIDisplayState {
  */
 export interface UseTrainingAIOptions {
   readonly enabled: boolean;
-  readonly difficulty: TrainingDifficulty;
+  readonly difficulty: AITrainingDifficulty;
   readonly onAIAction?: (actionType: AIActionType) => void;
 }
 
@@ -38,7 +38,7 @@ export interface UseTrainingAIOptions {
 export interface UseTrainingAIReturn {
   readonly aiDisplayState: TrainingAIDisplayState;
   readonly aiPlayerState: PlayerState;
-  readonly setDifficulty: (difficulty: TrainingDifficulty) => void;
+  readonly setDifficulty: (difficulty: AITrainingDifficulty) => void;
   readonly resetAI: () => void;
 }
 
@@ -170,7 +170,7 @@ export function useTrainingAI(
   });
 
   // Set difficulty
-  const setDifficulty = useCallback((newDifficulty: TrainingDifficulty) => {
+  const setDifficulty = useCallback((newDifficulty: AITrainingDifficulty) => {
     if (aiRef.current) {
       aiRef.current.setDifficulty(newDifficulty);
     }

@@ -20,13 +20,13 @@ import { AdaptiveDifficulty } from "./AdaptiveDifficulty";
 /**
  * Training AI difficulty levels
  */
-export type TrainingDifficulty = "easy" | "medium" | "hard";
+export type AITrainingDifficulty = "easy" | "medium" | "hard";
 
 /**
  * Training AI state
  */
 export interface TrainingAIState {
-  readonly difficulty: TrainingDifficulty;
+  readonly difficulty: AITrainingDifficulty;
   readonly personality: AIPersonality;
   readonly currentAction: AIDecision | null;
   readonly position: Position;
@@ -49,7 +49,7 @@ interface DifficultyConfig {
   readonly aiSkillLevel: number; // For DecisionTree
 }
 
-const DIFFICULTY_CONFIGS: Record<TrainingDifficulty, DifficultyConfig> = {
+const DIFFICULTY_CONFIGS: Record<AITrainingDifficulty, DifficultyConfig> = {
   easy: {
     reactionTime: 500, // 500ms reaction delay
     blockChance: 0.3,
@@ -84,11 +84,10 @@ export class TrainingAI {
   private decisionTree: AIDecisionTree;
   private comboSystem: AIComboSystem;
   private adaptiveDifficulty: AdaptiveDifficulty;
-  private lastDecisionTime: number = 0;
   private actionDelayTimer: number = 0;
 
   constructor(
-    difficulty: TrainingDifficulty = "medium",
+    difficulty: AITrainingDifficulty = "medium",
     initialPosition: Position = { x: 5, y: 0 },
     personalityKey?: string
   ) {
@@ -124,7 +123,7 @@ export class TrainingAI {
    * Select appropriate personality for difficulty level
    */
   private selectPersonalityForDifficulty(
-    difficulty: TrainingDifficulty
+    difficulty: AITrainingDifficulty
   ): AIPersonality {
     switch (difficulty) {
       case "easy":
@@ -217,8 +216,7 @@ export class TrainingAI {
 
     // Get adjusted personality from adaptive difficulty
     const adjustedPersonality = this.adjustPersonalityForTraining(
-      this.state.personality,
-      context
+      this.state.personality
     );
 
     // Make decision using decision tree
@@ -245,8 +243,7 @@ export class TrainingAI {
    * Adjust personality based on training context
    */
   private adjustPersonalityForTraining(
-    basePersonality: AIPersonality,
-    context: CombatContext
+    basePersonality: AIPersonality
   ): AIPersonality {
     const config = DIFFICULTY_CONFIGS[this.state.difficulty];
 
@@ -297,9 +294,9 @@ export class TrainingAI {
   }
 
   /**
-   * Change AI difficulty level
+   * Set difficulty
    */
-  setDifficulty(difficulty: TrainingDifficulty): void {
+  setDifficulty(difficulty: AITrainingDifficulty): void {
     const config = DIFFICULTY_CONFIGS[difficulty];
     const personality = this.selectPersonalityForDifficulty(difficulty);
 
@@ -321,7 +318,6 @@ export class TrainingAI {
   reset(): void {
     this.decisionTree.reset();
     this.comboSystem.resetCombo();
-    this.lastDecisionTime = 0;
     this.actionDelayTimer = 0;
 
     this.state = {

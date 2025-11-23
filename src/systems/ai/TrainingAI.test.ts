@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { TrainingAI, TrainingDifficulty } from "./TrainingAI";
+import { TrainingAI, AITrainingDifficulty } from "./TrainingAI";
 import { PlayerState } from "../player";
 import { TrigramStance, PlayerArchetype } from "@/types";
 
