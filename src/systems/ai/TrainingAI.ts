@@ -160,12 +160,15 @@ export class TrainingAI {
   }
 
   /**
-   * Update AI behavior (call from useFrame)
+   * Update AI behavior (60fps game loop)
+   * 
+   * Internal method called each frame by the TrainingAI system to process AI decision-making and update state.
+   * Respects reaction time delays based on difficulty level.
    * 
    * @param deltaTime - Time since last frame in seconds
    * @param playerState - Current player state
    * @param aiPlayerState - Current AI player state (for combat systems)
-   * @returns Updated AI decision
+   * @returns Updated AI decision or null if inactive/delayed
    */
   update(
     deltaTime: number,

@@ -54,6 +54,7 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const stanceAuraRef = useRef<THREE.Mesh>(null);
+  const attackOffsetRef = useRef(0);
 
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
@@ -65,6 +66,11 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     const time = state.clock.elapsedTime;
 
     // Breathing animation
+    // NOTE: This per-character animation is acceptable for training mode (single AI opponent).
+    // If planning to display multiple AI characters simultaneously (e.g., multiplayer),
+    // batch breathing animations using InstancedMesh or limit animation to active combat participants only.
+    // 한 명의 AI 상대만 표시되는 훈련 모드에서는 성능 문제가 없으나,
+    // 다수의 AI가 동시에 표시되는 경우에는 InstancedMesh 또는 배치 애니메이션으로 최적화 필요.
     const breathScale = Math.sin(time * 2) * 0.02 + 1;
     groupRef.current.scale.y = breathScale;
 
@@ -72,17 +78,20 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     const auraPulse = Math.sin(time * 3) * 0.1 + 0.9;
     stanceAuraRef.current.scale.setScalar(auraPulse);
 
-    // Attack animation
+    // Attack animation with offset
     if (isAttacking) {
-      const attackPulse = Math.sin(time * 10) * 0.1;
-      groupRef.current.position.z = position[2] + attackPulse;
+      attackOffsetRef.current = Math.sin(time * 10) * 0.1;
     } else {
-      groupRef.current.position.z = position[2];
+      attackOffsetRef.current = 0;
     }
   });
 
   return (
-    <group ref={groupRef} position={position} data-testid="training-ai-character-3d">
+    <group 
+      ref={groupRef} 
+      position={[position[0], position[1], position[2] + attackOffsetRef.current]}
+      data-testid="training-ai-character-3d"
+    >
       {/* Main body - capsule representing the AI fighter */}
       <mesh castShadow receiveShadow>
         <capsuleGeometry args={[0.4, 1.2, 16, 32]} />

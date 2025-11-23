@@ -4,7 +4,7 @@
  * Manages AI opponent state and behavior in training mode
  */
 
-import { useState, useCallback, useRef, useMemo } from "react";
+import { useState, useCallback, useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { TrainingAI, AITrainingDifficulty } from "../../../systems/ai/TrainingAI";
 import { PlayerState } from "../../../systems/player";
@@ -103,27 +103,49 @@ export function useTrainingAI(
 
   // Initialize AI system
   const aiRef = useRef<TrainingAI | null>(null);
+  const attackTimerRef = useRef(0);
   const [aiHealth, setAIHealth] = useState(100);
   const [aiStance, setAIStance] = useState<TrigramStance>(TrigramStance.GEON);
   const [aiPosition, setAIPosition] = useState<Position>({ x: 5, y: 0 });
   const [isAttacking, setIsAttacking] = useState(false);
   const [currentAction, setCurrentAction] = useState<string>("idle");
 
-  // Initialize AI if not exists
-  if (!aiRef.current) {
-    aiRef.current = new TrainingAI(difficulty, aiPosition);
-  }
+  // Initialize AI on mount
+  useEffect(() => {
+    if (!aiRef.current) {
+      aiRef.current = new TrainingAI(difficulty, { x: 5, y: 0 });
+    }
+  }, []);
+
+  // Update AI difficulty when it changes
+  useEffect(() => {
+    if (aiRef.current) {
+      aiRef.current.setDifficulty(difficulty);
+    }
+  }, [difficulty]);
 
   // Activate/deactivate AI based on enabled state
-  if (enabled && !aiRef.current.getState().isActive) {
-    aiRef.current.activate();
-  } else if (!enabled && aiRef.current.getState().isActive) {
-    aiRef.current.deactivate();
-  }
+  useEffect(() => {
+    if (!aiRef.current) return;
+
+    if (enabled && !aiRef.current.getState().isActive) {
+      aiRef.current.activate();
+    } else if (!enabled && aiRef.current.getState().isActive) {
+      aiRef.current.deactivate();
+    }
+  }, [enabled]);
 
   // AI update loop using useFrame
   useFrame((_state, delta) => {
     if (!enabled || !aiRef.current) return;
+
+    // Update attack timer
+    if (attackTimerRef.current > 0) {
+      attackTimerRef.current = Math.max(0, attackTimerRef.current - delta);
+      if (attackTimerRef.current === 0) {
+        setIsAttacking(false);
+      }
+    }
 
     const aiPlayerState = createAIPlayerState(aiPosition, aiStance, aiHealth);
 
@@ -138,8 +160,7 @@ export function useTrainingAI(
         case AIActionType.ATTACK:
         case AIActionType.TECHNIQUE:
           setIsAttacking(true);
-          // Auto-reset attacking state after short delay
-          setTimeout(() => setIsAttacking(false), 300);
+          attackTimerRef.current = 0.3; // 300ms in seconds
           onAIAction?.(decision.action);
           break;
 
@@ -155,11 +176,12 @@ export function useTrainingAI(
         case AIActionType.CIRCLE:
           if (decision.targetPosition) {
             // Smoothly interpolate to target position
-            setAIPosition((prev) => ({
-              x: prev.x + (decision.targetPosition!.x - prev.x) * delta * 2,
-              y: prev.y + (decision.targetPosition!.y - prev.y) * delta * 2,
-            }));
-            aiRef.current.updatePosition(aiPosition);
+            const newPosition = {
+              x: aiPosition.x + (decision.targetPosition.x - aiPosition.x) * delta * 2,
+              y: aiPosition.y + (decision.targetPosition.y - aiPosition.y) * delta * 2,
+            };
+            setAIPosition(() => newPosition);
+            aiRef.current.updatePosition(newPosition);
           }
           break;
 

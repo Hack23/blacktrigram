@@ -5,7 +5,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { TrainingAI, AITrainingDifficulty } from "./TrainingAI";
 import { PlayerState } from "../player";
-import { TrigramStance, PlayerArchetype } from "@/types";
+import { TrigramStance } from "@/types";
+import { createMockPlayerState } from "../../test/test-utils";
 
 describe("TrainingAI", () => {
   let trainingAI: TrainingAI;
@@ -16,47 +17,13 @@ describe("TrainingAI", () => {
     trainingAI = new TrainingAI("medium");
 
     mockPlayerState = {
+      ...createMockPlayerState(),
       id: "player",
-      name: { korean: "플레이어", english: "Player" },
-      archetype: PlayerArchetype.MUSA,
-      health: 100,
-      maxHealth: 100,
-      ki: 100,
-      maxKi: 100,
-      stamina: 100,
-      maxStamina: 100,
-      energy: 100,
-      maxEnergy: 100,
-      attackPower: 50,
-      defense: 50,
-      speed: 50,
-      technique: 50,
-      pain: 0,
-      consciousness: 100,
-      balance: 100,
-      momentum: 0,
-      currentStance: TrigramStance.GEON,
-      combatState: "idle" as any,
       position: { x: -5, y: 0 },
-      isBlocking: false,
-      isStunned: false,
-      isCountering: false,
-      lastActionTime: Date.now(),
-      recoveryTime: 0,
-      lastStanceChangeTime: 0,
-      statusEffects: [],
-      activeEffects: [],
-      vitalPoints: [],
-      totalDamageReceived: 0,
-      totalDamageDealt: 0,
-      hitsTaken: 0,
-      hitsLanded: 0,
-      perfectStrikes: 0,
-      vitalPointHits: 0,
     };
 
     mockAIPlayerState = {
-      ...mockPlayerState,
+      ...createMockPlayerState(),
       id: "ai",
       name: { korean: "AI", english: "AI" },
       position: { x: 5, y: 0 },
