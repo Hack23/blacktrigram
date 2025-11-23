@@ -76,6 +76,11 @@ const CRITICAL_COMBAT_ASSETS = [
 /**
  * Hook to preload critical combat audio assets
  * 
+ * This hook preloads essential combat sounds when the component mounts,
+ * ensuring audio plays without delay during combat. It loads assets
+ * sequentially to avoid overwhelming the browser and provides progress
+ * tracking for loading indicators.
+ * 
  * @returns Preload state with loading status, progress, and errors
  * 
  * @example
@@ -119,10 +124,11 @@ export function usePreloadCombatAudio(): PreloadCombatAudioState {
     // Load each asset sequentially to avoid overwhelming the browser
     for (const assetId of CRITICAL_COMBAT_ASSETS) {
       try {
-        // Get asset from registry (could be SFX or Music)
-        const asset = 
-          audioAssetRegistry.getSFX(assetId) ?? 
-          audioAssetRegistry.getMusic(assetId);
+        // Get asset from registry (try SFX first, then Music)
+        let asset = audioAssetRegistry.getSFX(assetId);
+        if (!asset) {
+          asset = audioAssetRegistry.getMusic(assetId);
+        }
 
         if (asset) {
           await audio.loadAsset(asset as AudioAsset);
