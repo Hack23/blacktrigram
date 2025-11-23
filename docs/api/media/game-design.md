@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-**Black Trigram** is a **realistic 2D precision combat game** inspired by classic martial arts fighters like **Budokan: The Martial Spirit** and **International Karate+**, reimagined with authentic Korean martial arts and modern combat techniques. Players master traditional vital point striking through precise, physics-based combat that emphasizes **anatomical targeting** and **one-strike effectiveness**.
+**Black Trigram** is a **realistic 3D precision combat game** inspired by classic martial arts fighters like **Budokan: The Martial Spirit** and **International Karate+**, reimagined with authentic Korean martial arts and modern combat techniques. Players master traditional vital point striking through precise, physics-based combat that emphasizes **anatomical targeting** and **one-strike effectiveness**.
 
 ### Core Pillars
 
@@ -15,11 +15,11 @@
 
 ### Genre
 
-2D Realistic Combat Simulator / Traditional Martial Arts Training
+3D Realistic Combat Simulator / Traditional Martial Arts Training
 
 ### Platform
 
-Web-based (HTML5/WebGL via PixiJS) optimized for authentic 60fps combat physics
+Web-based (HTML5/WebGL via ThreeJS) optimized for authentic 60fps combat physics
 
 ### Target Audience
 
@@ -417,7 +417,7 @@ graph TB
     DKMA --> US
     DKMA --> AT
     style DKMA fill:#8b0000,stroke:#ff0000,color:#fff
-    style US fill:#2d1b69,stroke:#6a0dad,color:#fff
+    style US fill:#3D1b69,stroke:#6a0dad,color:#fff
     style AT fill:#000000,stroke:#ff6b6b,color:#fff
 ```
 
@@ -955,7 +955,7 @@ Players press **1–8** to select one of the eight Trigrams (☰–☷). Each Tr
 * `Space` + `→` → **Back-Hand Strike**; 🔋 –9; 13 frames; echoing thump.
 * **Rotational Backcast:** Press `Space` then `↓` in same frame → 180° pivot (10 frames) + spinning back strike (10 frames); 🔋 –15; radial neon shock.
 * **Queued Attacks:** While moving (`Arrow` or `Z+Arrow`), hold `Space+Arrow` to queue immediate limb strike on landing. HUD attack icon flashes **#FF0055**.                                                                                                                |
-  \| **Rotate Camera / UI**               | (N/A in 2D)                      | Not applicable; fixed 2D side view.                                                                                                                                                                                                                                          |
+  \| **Rotate Camera / UI**               | (N/A in 3D)                      | Not applicable; fixed 3D side view.                                                                                                                                                                                                                                          |
 
 ---
 
@@ -1260,12 +1260,12 @@ Each limb attack targets a specific anatomical zone (vital point). Landing high-
   - `CyberpunkTeamDynamics.png`: Could be used in a similar context if team-based modes or lore are expanded.
   - `PlayerArchetypesOverview.png`: Similar to `PlayerArchetypesExplained.png`.
 - **Backgrounds**: Cyberpunk-themed Dojang backgrounds.
-- **Character Sprites**: Silhouettes or detailed 2D sprites with traditional Korean martial arts attire mixed with tactical gear.
+- **Character Sprites**: Silhouettes or detailed 3D sprites with traditional Korean martial arts attire mixed with tactical gear.
 - **VFX**: Effects for Ki energy, impacts, stance auras.
 
 ## 6. Technical Details
 
-- **Platform**: Web-based (HTML5/WebGL via PixiJS with React).
+- **Platform**: Web-based (HTML5/WebGL via ThreeJS with React).
 - **Physics**: Aim for authentic 60fps combat physics.
 - **Audio**: Dynamic sound effects based on impact, damage, and Korean martial arts themes.
 
