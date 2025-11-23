@@ -61,7 +61,6 @@ export const VictoryAnimation3D: React.FC = () => {
           <bufferAttribute
             attach="attributes-position"
             count={150}
-            array={particlePositions}
             itemSize={3}
             args={[particlePositions, 3]}
           />

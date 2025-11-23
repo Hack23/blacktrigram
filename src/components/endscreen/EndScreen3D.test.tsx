@@ -30,6 +30,9 @@ vi.mock("@react-three/drei", () => ({
   Html: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="html-overlay">{children}</div>
   ),
+  PerspectiveCamera: ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="perspective-camera">{children}</div>
+  ),
 }));
 
 describe("EndScreen3D", () => {

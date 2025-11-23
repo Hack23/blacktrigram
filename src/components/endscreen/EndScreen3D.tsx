@@ -1,4 +1,4 @@
-import { Html } from "@react-three/drei";
+import { Html, PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -84,7 +84,6 @@ const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
         <bufferAttribute
           attach="attributes-position"
           count={100}
-          array={positions}
           itemSize={3}
           args={[positions, 3]}
         />
@@ -196,17 +195,22 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   useEffect(() => {
     if (isVictory) {
       audio.playSFX?.("victory_fanfare");
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         audio.playMusic?.("victory_theme");
       }, 1000);
+
+      return () => {
+        clearTimeout(timeoutId);
+        audio.stopMusic?.();
+      };
     } else {
       audio.playSFX?.("defeat_sound");
       audio.playMusic?.("defeat_theme");
-    }
 
-    return () => {
-      audio.stopMusic?.();
-    };
+      return () => {
+        audio.stopMusic?.();
+      };
+    }
   }, [audio, isVictory]);
 
   const handleReturnToMenu = useCallback(() => {
@@ -263,7 +267,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
         data-testid="end-screen-canvas"
       >
         {/* Camera */}
-        <perspectiveCamera position={[0, 5, 15]} fov={60} />
+        <PerspectiveCamera makeDefault position={[0, 5, 15]} fov={60} />
 
         {/* Background scene */}
         <EndScreenBackground3D isVictory={isVictory} />
