@@ -2,7 +2,7 @@
  * Tests for TrainingAI system
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { TrainingAI, AITrainingDifficulty } from "./TrainingAI";
 import { PlayerState } from "../player";
 import { TrigramStance, PlayerArchetype } from "@/types";
