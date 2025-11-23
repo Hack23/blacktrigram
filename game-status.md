@@ -1,321 +1,1147 @@
-# 🎮 Black Trigram (흑괘) – Game Status Report
+# 🎮 Black Trigram (흑괘) – Comprehensive Game Status Report
 
-**Assessment Scope**: Frontend combat experience, systems integration, cultural fidelity, and asset readiness across UI, audio, and gameplay layers.
-
----
-
-## 🎯 Executive Summary
-
-Black Trigram has shifted from architectural readiness into a cohesive combat prototype. The arena (`CombatScreen.tsx`) now instantiates the shared `CombatSystem`, processes live attacks, and pipes bilingual combat feedback through HUD, hit FX, and logs. Layered UI elements—`HitEffectsLayer`, `PlayerVisuals`, `CombatHUD`, and the responsive `EndScreen`—are aligned behind the Pixi layout pipeline, while constants for color, typography, and animation duration are centralized. Remaining work sits squarely in polish: animation timing, richer AI, and performance tuning still lag the underlying systems.
-
-### Overall Rating: **8.1/10** (Systems connected, polish phase underway)
-
-**Strengths**: Fully wired combat UI stack, robust systems layer, comprehensive constants/tests, exceptional cultural authenticity, mature audio scaffolding.  
-**Critical Needs**: Production-grade animation & transitions, deeper AI and technique variety, finalized visual FX pipeline, UX performance pass.
+**Analysis Date**: November 23, 2025  
+**Assessment Scope**: Complete analysis of implementation vs game-design.md specifications across all game systems, screens, and mechanics.
 
 ---
 
-## 🚀 What’s New Since Last Review
+## 📊 Executive Summary
 
-- `src/components/combat/CombatScreen.tsx` instantiates `CombatSystem`, streams live hit resolution, manages arena layout, pause overlay, round banners, and AI stubs.
-- Combat UI suite: `CombatControls.tsx`, `CombatHUD.tsx`, `CombatStatsPanel.tsx`, `PlayerStatusPanel.tsx`, `CombatFooter.tsx`, `PauseOverlay.tsx`, and `RoundStatusDisplay.tsx` provide full HUD coverage with responsive Korean theming.
-- `src/components/ui/PlayerVisuals.tsx`, `HitEffectsLayer.tsx`, `RoundTimer.tsx`, `HealthBar.tsx`, `TrigramWheel.tsx`, `StanceIndicator.tsx`, and `KoreanHeader.tsx` deliver reusable combat visuals, bilingual typography, and status rendering.
-- `src/components/ui/EndScreen.tsx` plus updated responsive base components complete the post-match flow.
-- Systems refinements: `systems/game.ts` for match/session contracts, refreshed `systems/index.ts` exports, extended `TrigramSystem.ts`, `VitalPointSystem.ts`, and `CombatSystem.ts` logic now consumed by the UI.
-- Constants & utilities refresh: `types/constants/animations.ts`, expanded `colors.ts`, upgraded `effectUtils.ts`, `colorUtils.ts`, and `playerUtils.ts`.
-- Documentation now reflects the combat-focused stack; references to retired UI scaffolding have been removed.
+### Overall Implementation Status: **6.8/10** (Alpha Stage - Playable Prototype)
 
----
+Black Trigram has established a solid technical foundation with **Three.js migration complete**, core combat systems operational, and all primary screens functional. However, **significant gaps remain** between game-design.md specifications and current implementation, particularly in vital point coverage (3/70 = 4.3%), technique depth (8 base techniques vs. comprehensive system needed), and combat mechanics completeness.
 
-## 🎨 Visual & UX Assessment – **7.6/10** (Responsive & complete, needs motion polish)
-
-### ✅ Strengths
-
-- Three.js Html overlays drive adaptive layouts across HUD, timers, and post-fight panels (migrated from PixiJS ResponsivePixiComponents).
-- `HitEffectsLayer` visualizes hits, crits, blocks, and misses with bilingual overlays and configurable fades.
-- `PlayerVisuals` centralizes archetype materials, stance glyphs, and vital-point overlays for combat, training, and selection contexts.
-- `CombatHUD` and `HealthBar` provide bilingual readouts, gradient bars, and stance-aware cues; `RoundTimer` highlights urgency with color/scale transitions.
-
-### ⚠️ Gaps
-
-- Attack, stance transition, and knockback animations remain placeholder; no tweened motion in `PlayerVisuals` yet.
-- Environmental FX (`DojangBackground`) lacks parallax or lighting shifts, muting the cyberpunk tone.
-- `CombatControls` still enumerates techniques from a mock class—real data exists in `CombatSystem` but is not surfaced.
-- Mobile touch affordances exist, yet button sizing and drag thresholds still need usability testing.
-
-### Key Screen Reviews
-
-- **IntroScreen – 8.4/10**: Maintains bilingual archetype carousel, audio feedback, and responsive layout; next step is animated cityscape/background shaders.
-- **CombatScreen – 6.5/10**: Major upgrade—player movement, AI stubs, round flow, and hit resolution are functional. Remaining work: connect full animation states, add camera motion, and harden stamina blocking/KO transitions.
-- **TrainingScreen – 7.6/10**: Tracks accuracy, stances, and vital-point hits; needs richer visual cues when techniques land and difficulty scaling.
-- **EndScreen – 7.8/10**: New bilingual summary with responsive layout and neon framing; connect aggregate combat stats once telemetry is finalized.
+**Critical Findings:**
+- ✅ **Strengths**: Three.js migration complete, 5/5 player archetypes implemented, 8/8 trigram stances functional, audio system mature (84% coverage)
+- ⚠️ **Major Gaps**: Only 4.3% of vital points implemented (3/70), minimal technique variety (1 per stance), EndScreen missing, pain/consciousness systems incomplete
+- 🎯 **Priority**: Expand vital point database, implement comprehensive technique system, complete combat feedback loops
 
 ---
 
-## 🏗️ Systems & Architecture – **9.3/10** (Battle-tested foundation)
+## 🎯 Game-Design.md Compliance Matrix
 
-- `CombatSystem.resolveAttack` and `.applyCombatResult` now drive the arena, producing deterministic damage, stamina, and status updates.
-- `TrigramSystem` enforces stance transitions, costs, and matchup advantages; exposed via `systems/index.ts` for UI consumption.
-- `VitalPointSystem` keeps its 70-point anatomical map with precise falloff and damage curves—ready for integration with `HitEffectsLayer` callouts.
-- `systems/game.ts` defines `MatchConfig`, `GameEvent`, and save data contracts for upcoming persistence work.
-- Type exports (`types/common.ts`, `types/constants/index.ts`) remain exhaustive, preserving TypeScript confidence across UI and systems.
-
----
-
-## 🎵 Audio Integration – **8.7/10** (Mature, poised for polish)
-
-- `AudioProvider`/`useAudio` wrap the component tree; combat events already trigger menu/interaction SFX.
-- `VariantSelector` maps archetype, stance, and context to contextual tracks, ready to drive `CombatScreen` events.
-- Asset registry includes combat, intro, and archetype themes; remaining gaps lie in alternate SFX layers for parries and heavy techniques.
-- Recommendation: trigger stance transition swells and KO stingers once animation timing stabilizes.
-
----
-
-## 🥋 Korean Cultural Authenticity – **9.8/10**
-
-- Stance names, combat logs, and HUD copy remain bilingual (`건 | Heaven`, etc.).
-- Trigram symbolism colors draw straight from `KOREAN_COLORS.TRIGRAM_*`.
-- Vital points, archetype lore, and technique descriptors stay authentic and educational.
-
----
-
-## ⚔️ Gameplay Implementation – **6.1/10** (Playable prototype, presentation lagging)
-
-### Combat Loop
-
-- Primary attack flow uses real combat math and spawns matching hit FX; defending toggles blocking with visual cues.
-- Technique execution queue exists, but only a basic strike is exposed; integrate `CombatSystem.getAvailableTechniques` and stamina gating UI.
-- KO/round transitions fire round banners but not full victory cutscenes yet.
-
-### AI & Input
-
-- Player one uses `usePlayerMovement` bounds-aware WASD; player two ships with an aggression-level stub needing behavior trees.
-- Keyboard mapping to stance hotkeys lives in `inputSystem.ts`; on-screen controls emit events but still share mock data.
-
-### Training Mode
-
-- Tracks precision metrics, vital-point hits, and stance switches; add progressive target logic and audio coaching for mastery feedback.
-
-### Game Flow
-
-- `App.tsx` now transitions among intro, combat, training, and `EndScreen`; match statistics plumbing exists but awaits data binding.
+| Feature Category | game-design.md Spec | Implementation Status | Completion % | Priority |
+|------------------|---------------------|----------------------|--------------|----------|
+| **Core Combat Mechanics** |
+| Health System | Lines 43-52 | ✅ Fully Implemented | 100% | ✅ Complete |
+| Pain Response | Lines 56-61 | ⚠️ Basic Implementation | 40% | 🔴 Critical |
+| Balance/Vulnerability | Lines 62-70 | ⚠️ Partially Implemented | 50% | 🟡 High |
+| Consciousness Levels | Lines 72-78 | ⚠️ Basic State Machine | 35% | 🟡 High |
+| **Player Archetypes** |
+| Musa (무사) | Lines 81-100 | ✅ Fully Implemented | 100% | ✅ Complete |
+| Amsalja (암살자) | Lines 107-131 | ✅ Fully Implemented | 100% | ✅ Complete |
+| Hacker (해커) | Lines 132-156 | ✅ Fully Implemented | 100% | ✅ Complete |
+| Jeongbo Yowon (정보요원) | Lines 157-181 | ✅ Fully Implemented | 100% | ✅ Complete |
+| Jojik Pokryeokbae (조직폭력배) | Lines 182-206 | ✅ Fully Implemented | 100% | ✅ Complete |
+| **Trigram System** |
+| Eight Stances (☰☱☲☳☴☵☶☷) | Lines 207-272 | ✅ All 8 Implemented | 100% | ✅ Complete |
+| Stance Transitions | Impl in TrigramSystem | ✅ Fully Functional | 95% | ✅ Complete |
+| Stance Matchups | TrigramCalculator | ✅ Implemented | 90% | ✅ Complete |
+| Base Techniques | 1 per stance | ⚠️ Minimal Coverage | 15% | 🔴 Critical |
+| **Vital Point System** |
+| Total Vital Points | 70 points required | ❌ Only 3 Implemented | 4.3% | 🔴 Critical |
+| Head/Neck Points | ~15 points | ⚠️ 2 Implemented | 13% | 🔴 Critical |
+| Torso Points | ~20 points | ⚠️ 1 Implemented | 5% | 🔴 Critical |
+| Limb Points | ~25 points | ❌ Not Implemented | 0% | 🔴 Critical |
+| Hit Detection | Functional | ✅ Implemented | 85% | ✅ Complete |
+| **Visual & Audio** |
+| Combat Effects | Lines 273-298 | ⚠️ Basic Implementation | 45% | 🟡 High |
+| Blood/Trauma | Lines 277-283 | ❌ Not Implemented | 0% | 🟡 High |
+| Sound Design | Lines 284-291 | ✅ Comprehensive Library | 80% | ✅ Good |
+| Body Response | Lines 292-298 | ⚠️ Basic Animations | 30% | 🟡 High |
+| **Training Modes** |
+| Anatomical Study | Lines 317-323 | ⚠️ Basic Training Mode | 50% | 🟡 High |
+| Martial Techniques | Lines 324-330 | ⚠️ Limited Variety | 25% | 🟡 High |
+| Combat Training | Lines 331-337 | ⚠️ Single Mode Only | 40% | 🟡 High |
+| Mental Cultivation | Lines 338-344 | ❌ Not Implemented | 0% | 🟠 Medium |
+| **Game Screens** |
+| Intro Screen | Functional | ✅ Three.js Implementation | 90% | ✅ Good |
+| Combat Screen | Functional | ✅ Three.js Implementation | 75% | ✅ Good |
+| Training Screen | Functional | ✅ Three.js Implementation | 65% | 🟡 Needs Work |
+| Controls Screen | Functional | ✅ Three.js Implementation | 95% | ✅ Complete |
+| Philosophy Screen | Functional | ✅ Three.js Implementation | 95% | ✅ Complete |
+| End Screen | Required | ❌ Not Implemented | 0% | 🔴 Critical |
 
 ---
 
-## 📱 Platform & Performance – **8.2/10**
+## 🔬 Detailed System Analysis
 
-- Layout relies on `@pixi/layout` with mobile/tablet/desktop heuristics; HUD resizes cleanly down to ~640 px width.
-- Need to profile `HitEffectsLayer` interval timer and large `PlayerVisuals` graphics to ensure 60 fps on mid-tier mobile.
-- Add a formal performance script (e.g., simulated combat loop) before beta.
+### 1. Combat System Deep Dive – **6.5/10**
 
----
+**What's Implemented:**
+- ✅ Core combat resolution (`CombatSystem.resolveAttack`)
+- ✅ Damage calculation with stance modifiers
+- ✅ Hit detection and collision processing
+- ✅ Stamina and Ki management
+- ✅ Basic status effects system
+- ✅ Health tracking and depletion
 
-## 🧪 Training & Practice Modes – **7.8/10**
+**Implementation Files:**
+- `src/systems/CombatSystem.ts` (279 lines) - Core combat logic
+- `src/systems/combat/TrainingCombatSystem.ts` - Training variant
+- `src/systems/combat/types.ts` - Type definitions
+- `src/systems/effects.ts` - Status effects
 
-- `components/training/TrainingScreen.tsx` orchestrates dummy targets, stance swaps, and metric tracking via `TrainingControlsPanel`, `TrainingStatsPanel`, and `TrainingFeedback`.
-- Vital-point rehearsal is live through `VitalPointTrainingPanel` and `TrainingDummy`, drawing directly from `systems/vitalpoint/KoreanVitalPoints.ts`.
-- Scenario presets (`TrainingModeSelector`) make it easy to pivot between precision drills and endurance sets; introduce scripted difficulty curves and randomized dummy behavior next.
-- Audio callouts and haptic-style cues are not yet wired—leverage `AudioManager` hooks once technique coaching VO is authored.
-- Recommendation: Log per-session telemetry (accuracy, time-on-target) to feed future progression systems.
+**What's Missing:**
+- ❌ Pain overload system (game-design.md lines 56-61)
+- ❌ Cumulative trauma tracking
+- ❌ Balance state transitions (only basic states implemented)
+- ❌ Consciousness level gradations (needs 4 levels: Alert, Disoriented, Stunned, Unconscious)
+- ❌ Realistic injury adaptation (movement changes based on damage)
+- ❌ Environmental combat integration
 
----
+**Test Coverage**: 
+- CombatSystem.test.ts: Core logic tested
+- Overall system coverage: ~75% (estimated)
 
-## 🧠 Systems Deep Dive
-
-### Trigram Combat Engine
-
-- `systems/trigram/TrigramCalculator.ts` and `TransitionCalculator.ts` model stance synergy, transition costs, and matchup weighting; unit tests (`*.test.ts`) validate cultural accuracy and balance.
-- `TrigramSystem.ts` exposes `canTransitionTo`, `recommendStance`, and `getTransitionCost`, all consumed by combat/training UI.
-- Cultural fidelity modules (`KoreanCulture.ts`, `KoreanTechniques.ts`) keep philosophy aligned with 오방색 color theory and trigram lore.
-
-### Vital Point Damage Stack
-
-- `systems/vitalpoint` package covers anatomy metadata, hit detection, distance falloff, and damage curves; `DamageCalculator.ts` blends strike intensity with positional accuracy.
-- Integration hooks exist in `VitalPointSystem.ts` and `CombatSystem.ts`; expose granular feedback in `HitEffectsLayer` (e.g., highlight the exact point struck).
-
-### Combat Core
-
-- `CombatSystem.ts` now merges technique data, stance bonuses, status effects from `systems/effects.ts`, and stamina gating.
-- Training variant (`systems/combat/TrainingCombatSystem.ts`) softens penalties and logs practice metrics—ideal for automated tutorials.
-- Status effect utilities (`utils/effectUtils.ts`) compute intensity, duration modifiers, and cumulative stat shifts for future buff/debuff UI overlays.
-
----
-
-## 🎨 Asset Pipeline & Content Readiness
-
-### Spritesheet Production Pipeline
-
-- Core JSON manifests (`assets/spritesheets/amsalja_assassin.json`, `musa_warrior.json`, `jojik_crime.json`, `jeongbo_operative.json`, `hacker_cyber.json`) define frame coordinates, animation tags, and hitbox metadata for each archetype; `PlayerSpritesheet.ts` offers the runtime lookup layer wiring those manifests into `spriteUtils`.
-- Authoring aides include markdown playbooks (`ai-guides/00_general_spritesheet_guidelines.md` plus archetype-specific guides `01_musa_warrior_guide.md`–`05_crime_fighter_guide.md`) that document pose requirements, costume notes, and cultural rationale.
-- CSV manifests (`ai-guides/csv/*.csv`) enumerate desired animation clips per archetype, keeping parity between design intent and delivered imagery.
-- Status: assets are organised and ready for ingestion; outstanding work is stitching these animations into `PlayerVisuals` and validating timing curves for attacks, blocks, and KO recoveries.
-
-### Visual Assets
-
-- Archetype portraits (`assets/visual/archetypes/{musa,amsalja,jojik_pokryeokbae,jeongbo_yowon,hacker}.png`) supply high-res character art for selection menus, HUD badges, and lore screens.
-- Dojang environment textures (`assets/visual/bg/dojang/dojang_floor_tex.png`, `dojang_wall_tex.png`) drive the combat backdrop; intro skyline layers (`assets/visual/bg/intro/intro_bg_loop.png`, `background.png`, `right-panel.png`) provide parallax-ready panels.
-- Knowledge visuals (`assets/visual/bg/archetyples/*.png`) and logos (`assets/visual/logo/black-trigram.png`, `black-trigram-256.png`) round out marketing and UI chrome.
-- Status: coverage is complete for archetypes and primary environments; next steps include exporting additional resolution variants for device-specific optimization and introducing animated overlays (rain, neon flicker) to lift atmosphere.
-
-### Audio Library
-
-- Music catalogue pairs MP3/WebM versions for intro, combat, underground ambient, and each archetype theme (`assets/audio/music/**`).
-- SFX families cover ki energy surges, blocks, movement, hits, combat techniques, match events, menu navigation, and special “perfect strike” cues. Each folder maintains MP3+WebM parity to safeguard browser compatibility, and helper scripts (e.g., `generate-missing-audio.sh`, `fix-1-version.sh`) keep naming conventions aligned.
-- Status: breadth is excellent; recommended follow-up is levelling loudness across sets (movement vs. combat), tagging priority clips for streaming, and wiring the remaining categories (e.g., ki charge variants) into the in-game event matrix.
-
-### Tooling & Scripts
-
-- Generation scripts under `scripts/` (audio/video/image) streamline asset updates; ensure README callouts for usage before onboarding new contributors.
+**Priority Actions:**
+1. 🔴 Implement pain accumulation tracking
+2. 🔴 Add balance state machine with transitions
+3. 🟡 Expand consciousness level system
+4. 🟡 Add injury-based movement penalties
 
 ---
 
-## 🌐 Holistic Art & Audio Experience – What Works Today
+### 2. Vital Point System – **2.1/10** 🔴 CRITICAL GAP
 
-- **Visual Cohesion**: Archetype portraits, dojang textures, and intro skyline assets render cleanly within Pixi containers, delivering a cohesive Korean cyberpunk tone. Spritesheet manifests are production-ready, enabling the upcoming animation system to swap stance-specific poses without re-exporting art.
-- **Audio Coverage**: Background music shifts seamlessly between intro, combat, and archetype themes; SFX libraries already power menu interactions, hit confirmation, and match start cues via `AudioManager` + `VariantSelector`.
-- **Combat Feedback Loop**: `HitEffectsLayer`, HUD elements, and audio triggers combine to make basic attacks feel responsive—the pipeline from `CombatSystem.resolveAttack` to visuals/sounds is proven.
-- **Outstanding Polish**: Real-time animation playback (spritesheet-driven), dynamic environmental FX, and fine-grained audio balancing are the key unlocks to elevate the immersion from prototype to ship-ready.
+**Current Implementation:**
+```
+Implemented: 3 vital points (4.3% of target)
+Target: 70 vital points
+File: src/systems/vitalpoint/KoreanVitalPoints.ts (195 lines)
+```
 
----
+**Implemented Vital Points:**
+1. **백회혈 (baekhoehoel)** - Crown Point / Anterior Fontanelle - Critical
+2. **인영 (inmyeong)** - Man's Welcome / Carotid Artery - Major
+3. **명문 (myeongmun)** - Gate of Life / L2-L3 Vertebrae - Major
 
-## ✅ Testing & Tooling Coverage
+**Missing Vital Points (67 total):**
+- **Head/Neck** (~14 missing): Temple (태양혈), Jaw point, Throat, Back of neck, etc.
+- **Torso** (~20 missing): Solar plexus, Liver, Kidney, Floating ribs, Sternum, etc.
+- **Upper Limbs** (~13 missing): Shoulder, Elbow, Wrist, Hand pressure points, etc.
+- **Lower Limbs** (~13 missing): Hip, Knee, Ankle, Foot pressure points, etc.
+- **Back** (~7 missing): Spine segments, Kidney region, Lower back, etc.
 
-- Unit suites exist for core systems: `TrigramSystem.test.ts`, `TrigramCalculator.test.ts`, `TransitionCalculator.test.ts`, `KoreanCulture.test.ts`, and `CombatSystem.test.ts`.
-- Audio infrastructure validated via `AudioManager.test.ts`, `AudioUtils.test.ts`, and `GameAudio.test.tsx` for React hooks.
-- UI smoke tests (Three.js component tests, `KoreanHeader.test.tsx`, `DojangBackground.test.tsx`) confirm rendering and prop handling. PixiJS tests (like `ResponsivePixiComponents.test.tsx`) have been archived after migration to Three.js.
-- Test helpers in `src/test/` mock Three.js, audio, and input systems; leverage them when expanding coverage to `CombatScreen` and `TrainingScreen`.
-- Recommendation: Add integration tests for end-to-end combat flow and snapshot baselines for `HitEffectsLayer` once animation states stabilize.
+**What Works Well:**
+- ✅ Excellent data structure with bilingual names
+- ✅ Category system (Neurological, Vascular, Respiratory, etc.)
+- ✅ Severity levels (Minor, Moderate, Major, Critical, Lethal)
+- ✅ Hit detection with distance falloff
+- ✅ Effect system integration
 
----
+**VitalPointSystem.ts Implementation:**
+- ✅ Hit processing logic (100 lines)
+- ✅ Distance-based accuracy
+- ✅ Damage multipliers
+- ✅ Status effect application
 
-## 🧩 UI Component Library – **8.0/10**
+**Priority Actions:**
+1. 🔴 **URGENT**: Expand to 70 vital points (add 67 points)
+2. 🔴 Create anatomical reference documentation
+3. 🟡 Add visual vital point overlay for training
+4. 🟡 Implement difficulty-based vital point availability
 
-### Base Layer (`components/ui/base`)
-
-- PixiJS components (`BaseButton.tsx`, `ResponsivePixiComponents.tsx`) have been archived and replaced with Three.js Html overlays and standard React components.
-- Korean typography suite (`components/three/KoreanText.tsx`) centralizes Hangul/English pairing with sizing constants—a strong foundation for bilingual UI in the Three.js migration.
-- Opportunity: expose a style token map so combat/intro screens reference theme values without duplicating inline styles.
-
-### Combat & HUD Elements (`components/ui`)
-
-- `HealthBar.tsx`, `StanceIndicator.tsx`, `RoundTimer.tsx`, and `TrigramWheel.tsx` combine responsive layout with trigram color coding.
-- `Player.tsx` and `PlayerVisuals.tsx` render archetype silhouettes, status effects, and stance glyphs; animation hooks are stubbed but not yet bound to spritesheets.
-- `HitEffectsLayer.tsx` now owns visual FX, though shader-driven highlights and performance batching remain on the backlog.
-- Recommendation: create a shared animation controller to coordinate these components with `CombatScreen` events.
-
-### Meta & Post-Match UI
-
-- `EndScreen.tsx` and `KoreanHeader.tsx` supply finish-state visuals and bilingual headings, backed by Vitest snapshots.
-- Expand `EndScreen` stats once telemetry is plumbed from combat logs.
-
----
-
-## 🖥️ Screen Suite & Meta Navigation – **7.4/10**
-
-- `components/screens` contains focused sections (Philosophy, Controls) reused in intro and future story beats; each leverages bilingual text blocks and responsive panels.
-- `IntroScreen.tsx` orchestrates archetype carousel, menu flows, and audio cues via `MenuSection` and `ArchetypeDisplay`—solid UX requiring only background motion polish.
-- `ControlsScreen.tsx` and `PhilosophyScreen.tsx` function as static guides; convert to dynamic data sources to ease localisation and content updates.
-- Routing remains manual in `App.tsx`; consider abstracting screen transitions into a finite state machine for clarity and analytics hooks.
-
-## 🗺️ Screen-by-Screen Status & Action Plans
-
-### IntroScreen (`IntroScreen.tsx`)
-
-- **What works**: Responsive layout adapts to desktop/mobile, archetype carousel syncs with `ArchetypeDisplay`, bilingual copy and audio cues reinforce tone, and menu selection drives navigation events cleanly.
-- **Gaps**: Background parallax and animated skyline layers are static, version/motd blocks read from hardcoded constants, and touch gestures for carousel/menus need validation.
-- **Action plan**: Wire cityscape textures into a multi-layer parallax scroller, fetch release notes + patch highlights from configuration, and implement swipe/drag gesture handling paired with `useAudio` feedback for mobile.
-
-### CombatScreen (`CombatScreen.tsx`)
-
-- **What works**: Fully instantiates `CombatSystem`, streams hit results into HUD/FX/audio, manages round banners via `RoundStatusDisplay`, and coordinates `HitEffectsLayer`, `PlayerVisuals`, and `CombatHUD` under a responsive layout.
-- **Gaps**: Player animations still rely on placeholder states, AI routine is a basic aggression stub, technique list in `CombatControls` is mocked, and camera/environment lack dynamic reactions.
-- **Action plan**: Bind spritesheet animations through `PlayerVisuals` + `PlayerSpritesheet`, expose real techniques from `CombatSystem` into `CombatControls`, implement stance-aware AI behaviors, and add camera shake/parallax/environment FX tied to combat events.
-
-### TrainingScreen (`TrainingScreen.tsx`)
-
-- **What works**: Mode selector, vital-point targeting, scoring, and bilingual feedback run off live `VitalPointTrainingPanel`, `TrainingDummy`, and `TrainingStatsPanel` components with responsive positioning.
-- **Gaps**: Dummy behaviour is stationary, combo/score multipliers lack persistence, and coaching audio/SFX hooks are not yet triggered.
-- **Action plan**: Add scripted dummy movement + timing challenges, persist training telemetry for progression, and map milestone events to `AudioManager` cues alongside subtle hit FX.
-
-### ControlsScreen (`ControlsScreen.tsx`)
-
-- **What works**: Presents combat/stance/system controls in Korean-English format, keyboard navigation allows on-screen focus shifts, and layout maintains readability across breakpoints.
-- **Gaps**: Content duplicates definitions from `COMBAT_CONTROLS`, there’s no live preview of inputs, and controller/touch mappings aren’t surfaced.
-- **Action plan**: Source control strings directly from shared constants, embed interactive button demos (e.g., highlight `TrigramWheel` on stance key), and document controller/touch layouts with future gamepad detection hooks.
-
-### PhilosophyScreen (`PhilosophyScreen.tsx`)
-
-- **What works**: Delivers martial values, trigram lore, and archetype philosophies with bilingual styling and responsive columns, matching cultural brief.
-- **Gaps**: Static content requires code edits for updates, lacks ambient narration/audio, and absence of timeline or interactive storytelling reduces engagement.
-- **Action plan**: Externalise philosophy content into data files, layer ambient soundscape + optional voiceover via `AudioProvider`, and add interactive timeline/cards to connect values with gameplay scenarios.
-
-### EndScreen (`EndScreen.tsx`)
-
-- **What works**: Responsive gradient backdrop, bilingual victory messaging, match summary slots, and menu actions use Three.js Html overlays for adaptive layouts.
-- **Gaps**: Real match statistics aren’t piped in yet, celebration animation is minimal, and rematch/menu flows don’t surface player progression rewards.
-- **Action plan**: Connect `CombatStatsPanel` telemetry into display slots, introduce victory animations (stance-specific) and particle FX, and surface rewards/XP hooks alongside buttons for rematch, training, or archetype review.
+**Estimated Effort**: 35-40 hours for complete vital point database with testing  
+_Note: Estimate assumes standardized data entry process after first 10 points._
 
 ---
 
-## 🛖 In-Game Environment Components – **7.0/10**
+### 3. Trigram System – **8.5/10** ✅ Strong Foundation
 
-- `components/game/DojangBackground.tsx` renders layered parallax panels with customizable neon accents; paired tests confirm gradient and texture application.
-- Environmental SFX (`GameAudio.test.tsx`) validate audio triggers but visual effects (e.g., volumetric lighting, crowd silhouettes) are pending.
-- Future work: tie background mood to match state (round start, KO) and integrate subtle camera sway.
+**Implementation Status:**
+
+**Eight Trigram Stances** (All Implemented):
+- ☰ **건 (Geon)** - Heaven: Direct force techniques ✅
+- ☱ **태 (Tae)** - Lake: Fluid joint manipulation ✅
+- ☲ **리 (Li)** - Fire: Precise nerve strikes ✅
+- ☳ **진 (Jin)** - Thunder: Explosive power techniques ✅
+- ☴ **손 (Son)** - Wind: Continuous pressure attacks ✅
+- ☵ **감 (Gam)** - Water: Flow and adaptation techniques ✅
+- ☶ **간 (Gan)** - Mountain: Defensive mastery ✅
+- ☷ **곤 (Gon)** - Earth: Grounding and takedown techniques ✅
+
+**System Files:**
+- `src/systems/TrigramSystem.ts` (195 lines) - Main system API
+- `src/systems/trigram/TrigramCalculator.ts` - Stance effectiveness
+- `src/systems/trigram/TransitionCalculator.ts` - Transition costs
+- `src/systems/trigram/KoreanCulture.ts` - Cultural authenticity
+- `src/systems/trigram/KoreanTechniques.ts` - Technique management
+- `src/systems/trigram/techniques.ts` (765 lines) - Technique definitions
+- `src/systems/trigram/StanceManager.ts` - Stance state management
+
+**Techniques Implemented:**
+| Stance | Technique | Korean Name | Status |
+|--------|-----------|-------------|--------|
+| Geon | Thunder Strike | 천둥벽력 | ✅ Implemented |
+| Tae | Flowing Strikes | 유수연타 | ✅ Implemented |
+| Li | Flame Spear | 화염지창 | ✅ Implemented |
+| Jin | Lightning Flash | 벽력일섬 | ✅ Implemented |
+| Son | Whirlwind Barrage | 선풍연격 | ✅ Implemented |
+| Gam | Water Counter | 수류반격 | ✅ Implemented |
+| Gan | Rock Defense | 반석방어 | ✅ Implemented |
+| Gon | Earth Embrace | 대지포옹 | ✅ Implemented |
+
+**What's Missing:**
+- ⚠️ Only 1 technique per stance (needs 3-5 per stance for variety)
+- ⚠️ Advanced/Master level techniques not implemented
+- ⚠️ Combo system needs expansion (AI shows warnings about insufficient techniques)
+- ⚠️ Archetype-specific technique variations limited
+
+**Test Coverage:**
+- `TrigramSystem.test.ts`: ✅ Comprehensive
+- `TrigramCalculator.test.ts`: ✅ Comprehensive
+- `TransitionCalculator.test.ts`: ✅ Comprehensive
+- `KoreanCulture.test.ts`: ✅ Comprehensive
+- Overall coverage: ~90%
+
+**Priority Actions:**
+1. 🟡 Add 2-4 additional techniques per stance (total 24-40 techniques)
+2. 🟡 Implement technique unlock/progression system
+3. 🟠 Add archetype-specific technique variants
+4. 🟠 Expand combo chains (current AI warnings indicate need)
 
 ---
 
-## 🛠️ Utility & Hook Infrastructure – **8.5/10**
+### 4. Player Archetypes – **9.2/10** ✅ Excellent Implementation
 
-- `utils/colorUtils.ts` and `effectUtils.ts` provide color blending, status effect math, and hit effect builders consumed by combat and HUD layers.
-- Movement/input handled by `inputSystem.ts` (hook + class) supporting WASD and stance hotkeys; extend to controller/touch gestures soon.
-- `spriteUtils.ts` and `PlayerSpritesheet.ts` map archetype animation states to spritesheet frames, ready for the animation system once timing is defined.
-- `pixiExtensions.ts` standardizes Pixi component registration and text styling.
-- Hooks (`hooks/useTexture.ts`, index exports) abstract asset loading; add suspense/error boundaries for resilience.
+All 5 archetypes from game-design.md fully implemented with complete data:
+
+#### 1. 무사 (Musa) - Traditional Warrior ✅
+- **Philosophy**: Honor through strength, disciplined combat
+- **Combat Style**: Direct confrontation, overwhelming force
+- **Preferred Trigrams**: ☰ Heaven, ☳ Thunder
+- **Techniques**: 관절기법 (Joint Techniques), 급소타격 (Vital Point Strikes), 제압술 (Submission)
+- **Bonuses**: Damage resistance +20%, Joint techniques +50%, Military discipline +30%
+- **Status**: Fully implemented with cultural authenticity
+
+#### 2. 암살자 (Amsalja) - Shadow Assassin ✅
+- **Philosophy**: Efficiency through invisibility, one perfect strike
+- **Combat Style**: Stealth approaches, instant takedowns
+- **Preferred Trigrams**: ☴ Wind, ☵ Water
+- **Techniques**: 무성제압 (Silent Takedowns), 신경파괴 (Nerve Strikes), 호흡차단 (Respiratory Attacks)
+- **Bonuses**: Stealth +80%, One-strike kill +100%, Silent movement +50%
+- **Status**: Fully implemented with stealth mechanics
+
+#### 3. 해커 (Hacker) - Cyber Warrior ✅
+- **Philosophy**: Information as power, technological advantage
+- **Combat Style**: Environmental manipulation, tech-assisted strikes
+- **Preferred Trigrams**: ☲ Fire, ☱ Lake
+- **Techniques**: 해부학적분석 (Anatomical Analysis), 생체역학파괴 (Biomechanical Destruction), 체계적제압 (Systematic Incapacitation)
+- **Bonuses**: Precision analysis +60%, Environmental control +40%, Data optimization +30%
+- **Status**: Fully implemented with tech theme
+
+#### 4. 정보요원 (Jeongbo Yowon) - Intelligence Operative ✅
+- **Philosophy**: Knowledge through observation, strategic thinking
+- **Combat Style**: Psychological manipulation, precise timing
+- **Preferred Trigrams**: ☶ Mountain, ☷ Earth
+- **Techniques**: 고통순응 (Pain Compliance), 심리적압박 (Psychological Pressure), 정보추출 (Information Extraction)
+- **Bonuses**: Psychological warfare +50%, Strategic analysis +40%, Pain compliance +70%
+- **Status**: Fully implemented with psychological elements
+
+#### 5. 조직폭력배 (Jojik Pokryeokbae) - Organized Crime ✅
+- **Philosophy**: Survival through ruthlessness, practical violence
+- **Combat Style**: Dirty fighting, improvised weapons
+- **Preferred Trigrams**: ☳ Thunder, ☵ Water
+- **Techniques**: 환경활용 (Environmental Usage), 더러운기법 (Dirty Techniques), 생존격투 (Survival Fighting)
+- **Bonuses**: Dirty fighting +80%, Survival instinct +60%, Street smart +50%
+- **Status**: Fully implemented with ruthless mechanics
+
+**Implementation File**: `src/systems/types.ts` and `src/systems/trigram/techniques.ts`
+
+**What's Missing:**
+- ⚠️ Archetype-specific story/lore screens (only brief descriptions)
+- ⚠️ Visual differentiation in combat (animations/effects)
+- ⚠️ Unique ultimate techniques per archetype
 
 ---
 
-## 📚 Types, Config & Entry Points – **9.0/10**
+### 5. Screen-by-Screen Analysis
 
-- `types/constants/*.ts` consolidate typography, colors, UI constants, and animation timing—minimizes magic numbers across components.
-- `types/common.ts`, `systems/types.ts`, and `test-types.ts` offer deep TypeScript coverage, aiding autocomplete and reducing runtime bugs.
-- `vite-env.d.ts` extends Pixi JSX intrinsics and environment variables, keeping bundler typings aligned.
-- Entry files (`App.tsx`, `main.tsx`, `index.ts`) bootstrap Pixi/React integration, manage lazy-loaded screens, and register providers (Audio, Pixi extensions).
-- Suggest documenting environment variable usage (`VITE_API_URL`, analytics flags) and adding an automated type-check in CI if absent.
+#### IntroScreen – **8.4/10** ✅ Production Ready
+
+**File**: `src/components/intro/IntroScreenThreeJS.tsx` (414 lines)
+
+**What Works:**
+- ✅ Three.js implementation with Html overlays
+- ✅ Archetype selection carousel (5 archetypes)
+- ✅ Bilingual UI (Korean/English)
+- ✅ Audio integration (menu sounds, archetype themes)
+- ✅ Responsive layout (desktop/mobile)
+- ✅ Menu navigation (Combat, Training, Controls, Philosophy)
+- ✅ Korean cyberpunk aesthetic
+
+**Components:**
+- `ArchetypeDisplayThree.tsx` - 3D archetype visualization
+- `ArchetypeDisplayHTML.tsx` - UI overlay
+- `MenuSectionHTML.tsx` - Menu options
+- `MenuSectionThree.tsx` - 3D menu elements
+
+**What's Missing:**
+- ⚠️ Background parallax (static currently)
+- ⚠️ Animated cityscape layers
+- ⚠️ Touch gesture support for mobile (swipe to change archetype)
+- ⚠️ Version/MOTD blocks (hardcoded)
+
+**Test Coverage**: 60% (IntroScreenThreeJS.test.tsx)
+
+**Priority Actions:**
+1. 🟡 Add parallax background layers
+2. 🟠 Implement touch gestures
+3. 🟠 Dynamic version/news loading
 
 ---
 
-## 🔧 Priority Work (Next 2–3 Sprints)
+#### CombatScreen3D – **6.5/10** ⚠️ Needs Polish
 
-1. **Animation & Motion System**: Wire `PlayerVisuals` to trigram animations, add tweened stance transitions, integrate knockback/KO sequences.
-2. **Technique & AI Expansion**: Replace mock technique list in `CombatControls`, surface `CombatSystem` techniques, and implement archetype-specific AI routines.
-3. **FX & Feedback Polish**: Layer particle shaders, camera shake, and damage popups; synchronize hit SFX with `HitEffectsLayer`.
-4. **Telemetry & EndScreen Data**: Pipe combat stats (damage dealt, perfect strikes, stance usage) into `CombatStatsPanel` and `EndScreen`.
-5. **Performance Pass**: Benchmark on mobile, optimize `HitEffectsLayer`, and ensure asset loading is streamed.
+**File**: `src/components/combat/CombatScreen3D.tsx` (622 lines)
+
+**What Works:**
+- ✅ Three.js arena with 3D characters
+- ✅ Real-time combat system integration
+- ✅ Player movement (WASD controls)
+- ✅ Hit detection and damage application
+- ✅ Round system (timer, round counter)
+- ✅ Pause functionality
+- ✅ Audio feedback (combat sounds)
+- ✅ Basic AI opponent
+
+**Components:**
+- `CombatArena3D.tsx` - 3D arena environment
+- `Player3DModel.tsx` - Character 3D models
+- `HitEffects3D.tsx` - Visual combat effects
+- `CombatHUDThree.tsx` - UI overlay
+- `VitalPointMarkers3D.tsx` - Vital point visualization
+
+**Hooks:**
+- `useCombatState.ts` - Combat state management (97% coverage)
+- `useCombatActions.ts` - Action handling (86% coverage)
+- `useCombatAudio.ts` - Audio integration (89% coverage)
+- `useAICombat.ts` - AI behavior (69% coverage)
+- `useCombatLayout.ts` - Responsive layout (100% coverage)
+
+**What's Missing:**
+- ❌ Technique selection UI (only basic attack available)
+- ❌ Stance change visualization
+- ❌ Advanced animations (attack, defense, hit reactions)
+- ❌ Camera shake/effects
+- ❌ Particle effects for impacts
+- ❌ Combo counter/feedback
+- ❌ Damage numbers display
+- ⚠️ AI is basic (only aggression level, no tactics)
+
+**Test Coverage**: 51.11% (needs improvement)
+
+**Priority Actions:**
+1. 🔴 Add technique selection UI
+2. 🔴 Implement stance change controls (1-8 keys)
+3. 🟡 Enhance animations (attack/defense/hit)
+4. 🟡 Add visual feedback (damage numbers, combo counter)
+5. 🟡 Improve AI behavior
 
 ---
 
-## 📊 Updated Development Priorities
+#### TrainingScreen3D – **6.0/10** ⚠️ Functional But Limited
 
-| Feature                        | Technical Readiness | Visual Implementation | System Integration | Priority     |
-| ------------------------------ | ------------------- | --------------------- | ------------------ | ------------ |
-| **Combat Logic**               | 9/10                | 5/10                  | 6/10               | **CRITICAL** |
-| **Player Visuals & Animation** | 7/10                | 4/10                  | 4/10               | **CRITICAL** |
-| **AI System**                  | 6/10                | N/A                   | 3/10               | **HIGH**     |
-| **Audio/FX Synchronization**   | 8/10                | 5/10                  | 5/10               | **HIGH**     |
-| **Game Flow & Telemetry**      | 8/10                | 6/10                  | 5/10               | **MEDIUM**   |
-| **Performance/Optimization**   | 6/10                | 5/10                  | 4/10               | **MEDIUM**   |
+**File**: `src/components/training/TrainingScreen3D.tsx` (431 lines)
+
+**What Works:**
+- ✅ Training arena with dummy target
+- ✅ Vital point targeting practice
+- ✅ Accuracy tracking
+- ✅ Stance switching
+- ✅ Bilingual feedback
+- ✅ Responsive layout
+
+**Components:**
+- `TrainingArena3D.tsx` - 3D training environment
+- `TrainingDummy3D.tsx` - Targetable dummy
+- `TrainingControlsHTML.tsx` - Control panel
+- `TrainingStatsHTML.tsx` - Statistics display
+- `TrainingFeedbackHTML.tsx` - Feedback messages
+- `TrainingModeSelectorHTML.tsx` - Mode selection
+- `VitalPointTrainingHTML.tsx` - Vital point tutorial
+- `TrainingHitEffects3D.tsx` - Visual effects
+
+**What's Missing:**
+- ❌ Progressive difficulty system
+- ❌ Dummy movement/reactions
+- ❌ Combo practice mode
+- ❌ Score persistence/leaderboard
+- ❌ Audio coaching/feedback
+- ❌ Multiple training scenarios
+- ⚠️ Limited vital points (only 3 to practice)
+
+**Test Coverage**: 35.2% (needs significant improvement)
+
+**Priority Actions:**
+1. 🟡 Add difficulty progression
+2. 🟡 Implement moving targets
+3. 🟡 Add audio coaching
+4. 🟠 Expand training modes
+5. 🔴 Wait for vital point expansion (currently limited by 3/70 points)
 
 ---
 
-## 🛣️ Path to Alpha
+#### ControlsScreen – **9.5/10** ✅ Excellent
 
-1. **Connect Technique Catalog** – surface stance-specific techniques in `CombatControls`, hook into `CombatSystem`.
-2. **Ship Animation Layer** – implement state machine in `PlayerVisuals` and coordinate with `RoundStatusDisplay`.
-3. **Finalize FX & Audio Hooks** – ensure every hit, block, KO triggers synchronized visuals and sounds.
-4. **Deliver End-to-End Match Loop** – fully populate `CombatStatsPanel`, enable rematch/menu flows, and log telemetry for balancing.
-5. **Run Performance QA** – mobile/desktop FPS validation, memory profiling, asset streaming audit.
+**File**: `src/components/screens/ControlsScreenThreeJS.tsx` (572 lines)
+
+**What Works:**
+- ✅ Comprehensive control listing
+- ✅ Bilingual (Korean/English)
+- ✅ Organized by category (Combat, Stance, System)
+- ✅ Keyboard navigation
+- ✅ Responsive layout
+- ✅ Visual styling
+
+**What's Missing:**
+- ⚠️ No interactive preview
+- ⚠️ Controller/gamepad mapping not documented
+- ⚠️ Touch controls for mobile not detailed
+
+**Test Coverage**: 72.54%
+
+**Priority Actions:**
+1. 🟠 Add interactive control demos
+2. 🟠 Document gamepad controls
+3. 🟠 Add mobile touch control guide
+
+---
+
+#### PhilosophyScreen – **9.5/10** ✅ Excellent
+
+**File**: `src/components/screens/PhilosophyScreenThreeJS.tsx` (657 lines)
+
+**What Works:**
+- ✅ Eight trigram philosophy detailed
+- ✅ Archetype philosophies
+- ✅ Korean martial arts values
+- ✅ Bilingual content
+- ✅ Beautiful layout
+- ✅ Cultural authenticity
+
+**What's Missing:**
+- ⚠️ Content is hardcoded (should be data-driven)
+- ⚠️ No ambient audio/narration
+- ⚠️ No interactive elements
+
+**Test Coverage**: 68.57%
+
+**Priority Actions:**
+1. 🟠 Externalize content to data files
+2. 🟠 Add ambient soundscape
+3. 🟠 Add interactive philosophy demonstrations
+
+---
+
+#### EndScreen – **0/10** ❌ NOT IMPLEMENTED
+
+**Status**: Commented out in `App.tsx` (line 19)
+
+**Required Features** (from game-design.md):
+- Winner announcement
+- Match statistics (damage dealt, vital points hit, accuracy, etc.)
+- Performance rating
+- Replay option
+- Return to menu
+- Continue to next match
+
+**Priority**: 🔴 **CRITICAL** - Required for complete game flow
+
+**Estimated Effort**: 8-12 hours
+
+---
+
+## 🎵 Audio System – **8.7/10** ✅ Mature Implementation
+
+**Overall Test Coverage**: 84.29%
+
+### Audio Infrastructure
+
+**Files:**
+- `AudioManager.ts` (586 lines) - 68.37% coverage
+- `AudioProvider.tsx` (79 lines) - 82.92% coverage
+- `AudioAssetLoader.ts` (312 lines) - 97.54% coverage
+- `AudioAssetRegistry.ts` (1054 lines) - 75.93% coverage
+- `AudioMonitor.ts` (295 lines) - 91.57% coverage
+- `AudioPool.ts` - 100% coverage
+- `AudioUtils.ts` (206 lines) - 94.66% coverage
+
+**What Works:**
+- ✅ Howler.js integration
+- ✅ Asset registry with 100+ sound files
+- ✅ MP3/WebM format support
+- ✅ Volume controls (SFX/Music separate)
+- ✅ Audio pooling for performance
+- ✅ Spatial audio support (3D positioning)
+- ✅ Preloading system
+- ✅ Error handling
+
+**Audio Categories:**
+- ✅ Music (Intro, Combat, Archetype themes)
+- ✅ SFX (Menu, Combat, Movement, Hits, Ki effects)
+- ✅ Combat techniques
+- ✅ Match events
+
+**What's Missing:**
+- ⚠️ Some combat technique sounds not wired
+- ⚠️ Victory/defeat stingers not implemented
+- ⚠️ Environmental audio (crowd, ambiance)
+- ⚠️ Voice lines/coaching (training mode)
+
+**Priority Actions:**
+1. 🟡 Wire remaining combat sounds
+2. 🟡 Add victory/defeat audio
+3. 🟠 Implement environmental ambiance
+4. 🟠 Record coaching voice lines
+
+---
+
+## 🧪 Testing & Quality Metrics
+
+### Overall Test Coverage: **71.02%**
+
+| Category | Statements | Branches | Functions | Lines |
+|----------|-----------|----------|-----------|-------|
+| **Overall** | 71.02% | 61% | 70% | 71.71% |
+| Audio | 84.29% | 73.2% | 79.89% | 84.35% |
+| Combat Components | 51.11% | 38.52% | 63.88% | 50.58% |
+| Combat Hooks | 84.37% | 73.41% | 94.2% | 84.61% |
+| Intro Components | 60% | 69.84% | 56% | 58.62% |
+| Screen Components | 70.24% | 49.26% | 63.46% | 68.96% |
+| Training Components | 35.2% | 15.62% | 39.39% | 36.6% |
+| Three.js Components | 41.48% | 44.84% | 33.89% | 40.43% |
+
+### Test Files Exist:
+- ✅ `CombatSystem.test.ts`
+- ✅ `TrigramSystem.test.ts`
+- ✅ `VitalPointSystem.test.ts`
+- ✅ `AudioManager.test.ts`
+- ✅ `CombatArena3D.test.tsx`
+- ✅ `Player3DModel.test.tsx`
+- ✅ `HitEffects3D.test.tsx`
+- ✅ `IntroScreenThreeJS.test.tsx`
+- ✅ `TrainingScreen3D.test.tsx`
+- ✅ `ControlsScreenThreeJS.test.tsx`
+- ✅ `PhilosophyScreenThreeJS.test.tsx`
+
+### Areas Needing More Tests:
+- 🔴 Combat components: 51% → Target 80%
+- 🔴 Training components: 35% → Target 75%
+- 🔴 Three.js components: 41% → Target 70%
+- 🟡 Integration tests for full game flow
+
+---
+
+## 🏗️ Technical Architecture – **8.5/10**
+
+### Three.js Migration: ✅ **Complete**
+
+All screens migrated from PixiJS to Three.js:
+- ✅ IntroScreen → IntroScreenThreeJS.tsx
+- ✅ CombatScreen → CombatScreen3D.tsx
+- ✅ TrainingScreen → TrainingScreen3D.tsx
+- ✅ ControlsScreen → ControlsScreenThreeJS.tsx
+- ✅ PhilosophyScreen → PhilosophyScreenThreeJS.tsx
+
+### Architecture Strengths:
+- ✅ Clear separation of concerns (Systems, Components, Hooks)
+- ✅ TypeScript throughout (strict mode)
+- ✅ Modular system design
+- ✅ React hooks for state management
+- ✅ Comprehensive type definitions
+- ✅ Audio system well-architected
+- ✅ Test infrastructure in place
+
+### Architecture Weaknesses:
+- ⚠️ EndScreen missing breaks game flow
+- ⚠️ Some circular dependencies (manageable)
+- ⚠️ Performance monitoring needs expansion
+- ⚠️ Asset loading could be optimized
+
+### Build Status: ✅ **Successful**
+```bash
+npm run build
+✓ 690 modules transformed
+dist/index.html: 6.84 kB
+dist/assets/game-etAA_w.css: 16.68 kB
+dist/assets/index-Bc296C.js: 1,268.91 kB
+✓ built in 7.91s
+```
+
+---
+
+## 📂 File Structure Analysis
+
+### Component Count: **78 files** (components only)
+
+**Distribution:**
+- Combat: 13 files (including hooks)
+- Intro: 4 component files
+- Training: 10 component files
+- Screens: 2 files
+- Three.js base components: 9 files
+- UI utilities: Multiple shared components
+
+### System Files:
+- CombatSystem.ts (279 lines)
+- TrigramSystem.ts (195 lines)
+- VitalPointSystem.ts (100 lines)
+- Trigram subsystem: 7 files (1474 total lines)
+- Vitalpoint subsystem: 6 files
+- AI subsystem: 5 files
+- Effects & game state: 4 files
+
+### Line Counts (Key Files):
+- game-design.md: **1,277 lines** (comprehensive spec)
+- techniques.ts: 765 lines (technique definitions)
+- AudioAssetRegistry.ts: 1,054 lines (sound library)
+- CombatScreen3D.tsx: 622 lines (main combat screen)
+
+---
+
+## 🎯 Priority Development Roadmap
+
+### Phase 1: Critical Gaps (6-8 weeks)
+
+#### Sprint 1-2: Vital Point Expansion (🔴 Critical Priority)
+**Effort**: 35-40 hours  
+_Note: Estimate assumes standardized data entry process after first 10 points._
+- [ ] Research and document 67 additional vital points
+- [ ] Implement anatomical database with Korean names
+- [ ] Add bilingual descriptions and effects
+- [ ] Create visual reference diagrams
+- [ ] Update VitalPointMarkers3D for display
+- [ ] Add tests for all vital points
+- **Deliverable**: 70/70 vital points implemented (up from 3/70)
+
+#### Sprint 3: EndScreen Implementation (🔴 Critical Priority)
+**Effort**: 12 hours
+- [ ] Create EndScreenThreeJS.tsx
+- [ ] Implement match statistics display
+- [ ] Add victory/defeat animations
+- [ ] Connect to CombatSystem statistics
+- [ ] Add replay/menu navigation
+- [ ] Implement responsive layout
+- **Deliverable**: Complete game flow (Intro → Combat → End → Repeat)
+
+#### Sprint 4: Combat Mechanics Polish (🔴 Critical Priority)
+**Effort**: 20 hours
+- [ ] Implement pain accumulation system
+- [ ] Add balance state transitions (4 states)
+- [ ] Expand consciousness levels (4 levels)
+- [ ] Add injury-based movement penalties
+- [ ] Implement stamina recovery mechanics
+- [ ] Add visual feedback for all states
+- **Deliverable**: Complete combat mechanics from game-design.md
+
+### Phase 2: Feature Expansion (4-6 weeks)
+
+#### Sprint 5-6: Technique System Expansion (🟡 High Priority)
+**Effort**: 25 hours
+- [ ] Add 2-4 techniques per stance (16-32 new techniques, total 24-40)
+- [ ] Implement technique unlock system
+- [ ] Add combo chains (2-3 technique combos)
+- [ ] Create technique selection UI
+- [ ] Add technique animations
+- [ ] Implement archetype-specific variants
+- **Deliverable**: Rich technique variety (24-40 total techniques)
+
+#### Sprint 7: Combat Visual Polish (🟡 High Priority)
+**Effort**: 18 hours
+- [ ] Implement attack animations
+- [ ] Add defense/block animations
+- [ ] Create hit reaction animations
+- [ ] Add particle effects for impacts
+- [ ] Implement damage number display
+- [ ] Add combo counter UI
+- [ ] Camera shake and dynamic effects
+- **Deliverable**: Professional combat visuals
+
+#### Sprint 8: Training Mode Enhancement (🟡 High Priority)
+**Effort**: 15 hours
+- [ ] Add difficulty progression (Easy/Medium/Hard/Master)
+- [ ] Implement moving dummy targets
+- [ ] Create combo practice mode
+- [ ] Add audio coaching
+- [ ] Implement score persistence
+- [ ] Create multiple training scenarios
+- **Deliverable**: Comprehensive training system
+
+### Phase 3: Polish & Optimization (3-4 weeks)
+
+#### Sprint 9: Audio & Visual Polish (🟠 Medium Priority)
+**Effort**: 12 hours
+- [ ] Wire remaining combat sounds
+- [ ] Add victory/defeat stingers
+- [ ] Implement environmental ambiance
+- [ ] Add intro screen parallax
+- [ ] Create animated backgrounds
+- [ ] Optimize asset loading
+- **Deliverable**: Polished audiovisual experience
+
+#### Sprint 10: AI Enhancement (🟠 Medium Priority)
+**Effort**: 16 hours
+- [ ] Implement tactical AI behaviors
+- [ ] Add difficulty levels
+- [ ] Create archetype-specific AI
+- [ ] Implement combo recognition
+- [ ] Add defensive tactics
+- [ ] Balance AI aggression
+- **Deliverable**: Challenging AI opponents
+
+#### Sprint 11: Performance & Testing (🟠 Medium Priority)
+**Effort**: 10 hours
+- [ ] Optimize Three.js rendering
+- [ ] Reduce bundle size
+- [ ] Add performance monitoring
+- [ ] Increase test coverage to 80%
+- [ ] Add integration tests
+- [ ] Mobile performance tuning
+- **Deliverable**: Stable 60fps on mid-range devices
+
+### Phase 4: Advanced Features (2-3 weeks)
+
+#### Sprint 12: Mental Cultivation Mode (🟠 Medium Priority)
+**Effort**: 12 hours
+- [ ] Design psychological training mechanics
+- [ ] Implement pain tolerance training
+- [ ] Add focus/concentration exercises
+- [ ] Create willpower challenges
+- [ ] Add meditation mechanics
+- **Deliverable**: Mental training mode from game-design.md
+
+#### Sprint 13: Story & Lore (🟢 Low Priority)
+**Effort**: 8 hours
+- [ ] Create archetype backstory screens
+- [ ] Add philosophy interactive demos
+- [ ] Implement tutorial mode
+- [ ] Add contextual help system
+- [ ] Create achievement system
+- **Deliverable**: Rich narrative experience
+
+---
+
+## 📊 Feature Implementation Status Summary
+
+### Fully Implemented (100%) ✅
+1. **Player Archetypes** - All 5 archetypes with complete data
+2. **Trigram Stances** - All 8 stances functional
+3. **Health System** - Complete with damage tracking
+4. **Stamina/Ki Systems** - Fully operational
+5. **Audio Infrastructure** - Comprehensive with 84% test coverage
+6. **IntroScreen** - Production-ready with minor polish needed
+7. **ControlsScreen** - Comprehensive control documentation
+8. **PhilosophyScreen** - Complete trigram/archetype philosophy
+
+### Partially Implemented (40-80%) ⚠️
+1. **Combat System** - 65% (core works, missing pain/consciousness depth)
+2. **CombatScreen** - 65% (functional but needs polish)
+3. **Trigram Techniques** - 65% (1 per stance, need 3-5 each)
+4. **Training Mode** - 60% (basic functionality, needs expansion)
+5. **Visual Effects** - 45% (basic effects, needs particles/animations)
+6. **AI System** - 50% (basic aggression, needs tactical behaviors)
+
+### Minimally Implemented (1-40%) 🔴
+1. **Vital Point System** - 4.3% (3/70 points)
+2. **Pain/Consciousness Mechanics** - 35% (basic states only)
+3. **Blood/Trauma System** - 0% (not started)
+4. **Three.js Components** - 41% (test coverage low)
+5. **Training Components** - 35% (test coverage low)
+
+### Not Implemented (0%) ❌
+1. **EndScreen** - Critical blocker for complete game flow
+2. **Mental Cultivation Mode** - From game-design.md spec
+3. **Injury Adaptation System** - Movement penalties based on damage
+4. **Environmental Combat** - Using surroundings in combat
+5. **Tournament Mode** - Underground tournament system
+6. **Achievement System** - Player progression tracking
+
+---
+
+## 🎓 Cultural Authenticity Assessment – **9.6/10** ✅ Excellent
+
+### Korean Terminology: ✅ Comprehensive
+- All trigram names in Korean (건, 태, 리, 진, 손, 감, 간, 곤)
+- Vital points with Korean names (백회혈, 인영, 명문, etc.)
+- Techniques with authentic Korean names
+- Bilingual UI throughout (Korean | English)
+- Romanization provided for learning
+
+### Cultural Accuracy: ✅ Strong
+- I Ching (易經) principles correctly applied
+- Traditional Korean martial arts philosophy respected
+- Archetype naming and concepts authentic
+- Combat terminology accurate
+- Educational value maintained
+
+### Areas for Enhancement:
+- 🟠 Add more cultural context in philosophy screen
+- 🟠 Include historical references for techniques
+- 🟠 Add pronunciation guide for Korean terms
+
+---
+
+## 🔧 Technical Debt & Refactoring Needs
+
+### High Priority:
+1. 🔴 Fix circular dependencies in combat system
+2. 🔴 Optimize Three.js rendering (reduce draw calls)
+3. 🟡 Implement proper error boundaries
+4. 🟡 Add performance monitoring hooks
+5. 🟡 Optimize asset loading (lazy loading, code splitting)
+
+### Medium Priority:
+1. 🟠 Refactor combat state management (consider Zustand/Redux)
+2. 🟠 Standardize component prop interfaces
+3. 🟠 Extract magic numbers to constants
+4. 🟠 Improve type safety (reduce `any` usage)
+
+### Low Priority:
+1. 🟢 Add JSDoc comments to all public APIs
+2. 🟢 Standardize file naming conventions
+3. 🟢 Create component style guide
+4. 🟢 Add Storybook for component development
+
+---
+
+## 🎮 Playability Assessment
+
+### Current State: **Alpha Playable Prototype**
+
+**What Works in Gameplay:**
+- ✅ Can start game from intro
+- ✅ Select archetype
+- ✅ Enter combat with AI opponent
+- ✅ Move characters around arena
+- ✅ Execute basic attacks
+- ✅ Take damage and see health decrease
+- ✅ Round system with timer
+- ✅ Pause functionality
+- ✅ Practice in training mode
+- ✅ View controls and philosophy
+
+**What Doesn't Work:**
+- ❌ Cannot finish match (EndScreen missing)
+- ❌ Very limited technique variety (only 1 per stance)
+- ❌ No visual feedback for stances
+- ❌ Cannot target specific vital points easily
+- ❌ AI is predictable
+- ❌ No progression system
+- ❌ No save/load functionality
+
+**Player Experience Gaps:**
+- Missing sense of mastery (limited techniques)
+- Lack of strategic depth (AI too simple)
+- Insufficient feedback (visual/audio)
+- No progression hooks (achievements, unlocks)
+- Limited replayability
+
+---
+
+## 🎮 Game Controls & Input System
+
+### Desktop Controls (Keyboard Focus)
+
+Black Trigram's combat system is designed for precise, frame-perfect inputs on keyboard. All controls follow Korean martial arts principles with the Eight Trigram system at its core.
+
+#### Core Combat Controls (Desktop)
+
+**Trigram Stance System (1-8 Keys)**
+| Key | Trigram | Korean | Stance | Combat Style |
+|-----|---------|--------|--------|--------------|
+| **1** | ☰ Geon | 건 (Heaven) | Ap Seogi (Walking) | Direct force, bone-breaking attacks |
+| **2** | ☱ Tae | 태 (Lake) | Ap Koobi Seogi (Front) | Fluid redirection, joint manipulation |
+| **3** | ☲ Li | 리 (Fire) | Juchum Seogi (Horse) | Precise vital point targeting |
+| **4** | ☳ Jin | 진 (Thunder) | Dwi Koobi Seogi (Back) | Explosive nerve strikes |
+| **5** | ☴ Son | 손 (Wind) | Niunja Seogi (L-Stance) | Continuous pressure attacks |
+| **6** | ☵ Gam | 감 (Water) | Narani Seogi (Parallel) | Adaptive flow, counters |
+| **7** | ☶ Gan | 간 (Mountain) | Gibo Seogi (Basic) | Immovable defense |
+| **8** | ☷ Gon | 곤 (Earth) | Joong Ha Seogi (Deep) | Grounding, takedowns |
+
+**Movement Controls**
+- **WASD / Arrow Keys**: Grid-based movement (8 directions)
+  - W/↑: Forward step
+  - S/↓: Backward step
+  - A/←: Left step
+  - D/→: Right step
+  - Diagonals: Combined keys (W+A, W+D, etc.)
+- **Z + Arrow**: Short-step (half-cell move, 10 frames, -5 stamina)
+- **X + Arrow**: Swap foot + move (foot stance change, 14 frames, -10 stamina)
+- **Hold Arrow**: Full step movement (10 frames per cell)
+
+**Attack System**
+- **SPACE**: Execute current stance's front-hand strike
+- **SPACE + ↑**: Front-leg kick (16 frames, -12 stamina)
+- **SPACE + ←**: Front-elbow strike (14 frames, -10 stamina)
+- **SPACE + ↓**: Front-knee strike (14 frames, -10 stamina)
+- **SPACE + →**: Back-hand strike (13 frames, -9 stamina)
+- **SPACE then ↓** (same frame): Spinning back strike (20 frames total, -15 stamina)
+
+**Defensive Controls**
+- **B (Tap)**: Snap block (instant guard, bonus +10% resistance)
+- **B (Hold)**: Sustained guard (-2 stamina/sec, active resistance)
+- **Shift**: Toggle defensive stance (blocks high/mid attacks automatically)
+
+**Advanced Techniques**
+- **CTRL**: Precision vital point targeting mode (slows time 50%, highlights vital points)
+- **TAB**: Cycle between available techniques for current stance
+- **R**: Reset stance to neutral (emergency recovery, 20 frame penalty)
+- **Q**: Quick-switch to last used stance (instant, no stamina cost)
+
+**System Controls**
+- **ESC**: Pause menu / Return to intro
+- **F1**: Help / Controls guide (in-game overlay)
+- **M**: Mute / Audio settings
+- **F11**: Fullscreen toggle
+- **` (Tilde)**: Debug console (dev mode only)
+
+#### Input Queuing System
+
+Black Trigram uses a sophisticated input queue system for combo execution:
+
+**Queue Mechanics:**
+- Up to **3 inputs** can be queued during animation frames
+- Queued inputs execute immediately on animation completion
+- Input buffer: **6 frames** (0.1 seconds at 60fps)
+- Queue is cleared on hit, block, or stance change
+
+**Example Combo Flow:**
+```
+1. Press 3 (Switch to Li stance) → 8 frames
+2. During stance transition, press SPACE+↑ → Queued
+3. Li stance active → Front-leg kick executes immediately
+4. During kick animation, press SPACE+← → Queued
+5. Kick completes → Elbow strike executes
+```
+
+---
+
+### Mobile Controls (Touch-Optimized)
+
+Mobile controls adapt the desktop experience for touch screens with context-sensitive buttons and gesture recognition.
+
+#### Touch Layout
+
+**HUD Overlay (Always Visible)**
+- **Top-Left**: Player health, stamina, stance indicator
+- **Top-Right**: Opponent health, timer
+- **Bottom-Left**: Virtual D-pad (movement)
+- **Bottom-Right**: Action buttons (attack, defend, special)
+- **Bottom-Center**: Stance wheel (8-segment circular selector)
+
+#### Mobile Control Scheme
+
+**Movement (Bottom-Left Virtual D-pad)**
+- **Tap direction**: Single step in that direction
+- **Double-tap**: Quick step (Z+Arrow equivalent)
+- **Hold direction**: Continuous movement
+- **Swipe**: Fast movement with momentum
+
+**Attack Controls (Bottom-Right)**
+- **Primary Attack Button** (large, center-right)
+  - Tap: Front-hand strike
+  - Hold: Charge power attack (visual indicator shows charge level)
+- **Directional Attack Ring** (surrounding primary button)
+  - Swipe ↑: Kick
+  - Swipe ←: Elbow
+  - Swipe ↓: Knee
+  - Swipe →: Back-hand
+
+**Defense Controls**
+- **Block Button** (bottom-right, secondary)
+  - Tap: Snap block
+  - Hold: Sustained guard
+- **Dodge Gesture**: Swipe away from opponent (costs stamina)
+
+**Stance Controls (Bottom-Center Wheel)**
+- **8-Segment Circular Selector**
+  - Tap segment: Change to that trigram stance
+  - Visual feedback: Haptic + glow animation
+  - Center displays current stance icon
+- **Alternative**: Swipe up from bottom → Full stance wheel overlay
+
+**Special Techniques**
+- **Two-Finger Tap**: Activate vital point targeting mode
+- **Three-Finger Swipe Down**: Emergency block (high stamina cost)
+- **Long Press on Opponent**: Target specific body region
+
+#### Mobile Gesture System
+
+**Combat Gestures:**
+- **Horizontal Swipe (opponent direction)**: Aggressive advance
+- **Horizontal Swipe (away)**: Defensive retreat
+- **Vertical Swipe Up**: High attack/block mode
+- **Vertical Swipe Down**: Low attack/block mode
+- **Pinch**: Zoom to see vital points
+- **Spread**: Zoom out to full arena view
+- **Two-Finger Rotate**: Change camera angle (if 3D mode enabled)
+
+**Combo Shortcuts (Mobile)**
+Mobile includes preset combo buttons that appear contextually:
+- When in specific stances, combo buttons appear with Korean names
+- Tap combo button to execute 2-3 hit sequence automatically
+- Trade-off: Slight damage reduction vs. manual combos
+
+#### Accessibility Features (Mobile)
+
+**Touch Assistance:**
+- **Auto-aim**: Optional soft targeting for vital points
+- **Button Size**: Adjustable (Small/Medium/Large)
+- **Haptic Feedback**: Vibration on hits, blocks, stance changes
+- **Visual Feedback**: Hit confirms with screen flash + color coding
+
+**Simplified Mode:**
+- Reduces stance count to 4 (Heaven, Fire, Mountain, Earth)
+- Larger buttons, clearer visual cues
+- Auto-blocking when not attacking
+- Recommended for casual players or small screens
+
+---
+
+### Control Mapping Philosophy
+
+**Design Principles:**
+1. **Frame-Perfect Precision**: Desktop controls allow 60fps frame-perfect inputs for competitive play
+2. **Touch Accessibility**: Mobile controls sacrifice some precision for ease of use
+3. **Consistent Feedback**: All inputs provide visual, audio, and (mobile) haptic confirmation
+4. **No Input Eating**: Proper input buffering ensures no dropped commands
+5. **Graceful Degradation**: System scales from expert to casual seamlessly
+
+**Best Practices:**
+- Desktop players: Master 1-8 stance hotkeys for instant trigram switching
+- Mobile players: Use stance wheel for visual reference, learn common stances
+- Both: Practice input queuing in Training Mode
+- Advanced: Memorize frame data for each technique to optimize combos
+
+---
+
+### Future Control Enhancements (Planned)
+
+**Gamepad Support** (Priority: Medium)
+- D-pad: Movement
+- Face buttons (ABXY): Attacks
+- Shoulder buttons: Block, stance modifiers
+- Triggers: Special techniques, target lock
+- Bumpers: Quick stance switch
+
+**Custom Key Bindings** (Priority: High)
+- Allow players to remap all keyboard controls
+- Save/load control schemes
+- Preset configurations for different playstyles
+
+**Macro System** (Priority: Low)
+- Record combo sequences
+- Assign to single button
+- Limited to 5-hit maximum for balance
+
+**Voice Commands** (Priority: Low)
+- Korean voice input for stance changes
+- "Geon!", "Tae!", etc. to switch stances
+- Accessibility feature for motor-impaired players
+
+---
+
+## 📈 Progress Since Last Assessment
+
+**Positive Changes:**
+- ✅ Three.js migration complete (all screens converted)
+- ✅ Combat system stabilized
+- ✅ Audio system mature (84% coverage)
+- ✅ Test coverage improved (71% overall)
+- ✅ Build pipeline stable
+
+**Remaining Concerns:**
+- 🔴 Vital points still critically low (3/70)
+- 🔴 EndScreen still not implemented
+- 🔴 Technique variety still limited
+- 🟡 Combat visual polish lagging
+- 🟡 AI needs significant work
+
+---
+
+## 🎯 Recommended Next Steps (Prioritized)
+
+### Immediate (This Week):
+1. 🔴 **Implement EndScreen** - Unblocks complete game flow
+2. 🔴 **Start vital point expansion** - Most critical gap (4.3%)
+3. 🟡 **Add technique selection UI** - Basic combat depth
+
+### Short Term (Next 2-4 Weeks):
+1. 🔴 **Complete vital point database** - Add 67 points (currently 3/70)
+2. 🟡 **Expand technique system** - 3-5 techniques per stance
+3. 🟡 **Polish combat visuals** - Animations, particles, feedback
+4. 🟡 **Enhance AI** - Tactical behaviors, difficulty levels
+
+### Medium Term (1-2 Months):
+1. 🟠 **Training mode expansion** - Multiple scenarios, difficulty
+2. 🟠 **Audio polish** - Wire all sounds, add ambiance
+3. 🟠 **Performance optimization** - 60fps target
+4. 🟠 **Increase test coverage** - 80% target
+
+### Long Term (2-3 Months):
+1. 🟢 **Mental cultivation mode** - New game mode
+2. 🟢 **Achievement system** - Player progression
+3. 🟢 **Story/lore expansion** - Narrative depth
+4. 🟢 **Polish and balance** - Final tuning
+
+---
+
+## 📊 Success Metrics
+
+### Current vs. Target:
+
+| Metric | Current | Target | Gap |
+|--------|---------|--------|-----|
+| Vital Points | 3 | 70 | -67 (95.7% gap) |
+| Techniques | 8 | 40 | -32 (80% gap) |
+| Screens Complete | 5/6 | 6/6 | -1 (EndScreen) |
+| Test Coverage | 71% | 85% | -14% |
+| Combat Mechanics | 65% | 100% | -35% |
+| Visual Polish | 45% | 90% | -45% |
+| AI Sophistication | 35% | 80% | -45% |
+
+### Estimated Time to Beta:
+- **With focused effort**: 12-16 weeks
+- **With current velocity**: 20-24 weeks
+
+### Estimated Time to 1.0:
+- **With focused effort**: 20-26 weeks
+- **With current velocity**: 30-40 weeks
+
+---
+
+## 💡 Conclusion
+
+Black Trigram has established a **solid foundation** with complete Three.js migration, robust audio system, and functional core gameplay. However, **significant feature gaps** remain between the current implementation and game-design.md specifications.
+
+**Strengths:**
+- Strong technical architecture
+- Excellent cultural authenticity
+- Complete player archetype system
+- Mature audio implementation
+- All primary screens functional (except EndScreen)
+
+**Critical Gaps:**
+- Only 4.3% of vital points implemented (3/70)
+- Limited technique variety (1 per stance vs. 3-5 needed)
+- Missing EndScreen blocks complete game flow
+- Combat mechanics incomplete (pain, consciousness systems)
+- Visual and AI polish significantly behind
+
+**Recommended Focus:**
+1. **First**: Implement EndScreen (critical blocker)
+2. **Second**: Expand vital point database to 70 points
+3. **Third**: Add technique variety (3-5 per stance)
+4. **Fourth**: Polish combat visuals and AI
+
+With focused development on these priorities, Black Trigram can progress from **Alpha Playable Prototype** to **Beta** within 12-16 weeks.
 
 ---
 
 **흑괘의 길을 걸어라** – _Walk the Path of the Black Trigram_
+
+**Assessment Date**: November 23, 2025  
+**Next Review**: December 21, 2025 (4 weeks)  
+**Document Version**: 2.0.0
