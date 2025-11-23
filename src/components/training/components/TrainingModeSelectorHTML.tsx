@@ -11,7 +11,13 @@ import "../training.css";
 /**
  * Training mode types
  */
-export type TrainingMode = "basics" | "advanced" | "free";
+export type TrainingMode = 
+  | "basics"              // Basic Training - Simple striking practice
+  | "advanced"            // Advanced Training - Vital point precision
+  | "free"                // Free Practice - Open combat vs AI
+  | "stance_training"     // Stance Training - Practice 8 trigrams
+  | "vital_point"         // Vital Point Training - Precision targeting
+  | "combo_practice";     // Combo Practice - Multi-hit techniques
 
 /**
  * Props for TrainingModeSelectorHTML component
@@ -41,8 +47,23 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
   },
   free: {
     korean: "자유 훈련",
-    english: "Free Training",
-    description: "제한 없는 연습 | Unrestricted practice",
+    english: "Free Practice",
+    description: "AI 대련 | Combat vs AI opponent",
+  },
+  stance_training: {
+    korean: "팔괘 수련",
+    english: "Stance Training",
+    description: "팔괘 전환 연습 | Eight trigrams mastery",
+  },
+  vital_point: {
+    korean: "급소 훈련",
+    english: "Vital Point Training",
+    description: "정밀 타격 연습 | Precision targeting drill",
+  },
+  combo_practice: {
+    korean: "연속 기술",
+    english: "Combo Practice",
+    description: "연속 타격 훈련 | Multi-hit techniques",
   },
 };
 
