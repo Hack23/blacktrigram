@@ -180,10 +180,10 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.m
               aria-label={`${selectedArchetype.korean} ${selectedArchetype.english} - Click or press Enter to cycle to next archetype`}
               data-testid="archetype-image"
               onError={(e) => {
-                // Fallback if image doesn't load: swap to placeholder, update alt, prevent infinite loop
+                // Fallback if image doesn't load: use Black Trigram logo, prevent infinite loop
                 const target = e.currentTarget as HTMLImageElement;
-                if (!target.src.endsWith("/assets/visual/archetypes/placeholder.png")) {
-                  target.src = "/assets/visual/archetypes/placeholder.png";
+                if (!target.src.endsWith("/assets/visual/logo/black-trigram-256.png")) {
+                  target.src = "/assets/visual/logo/black-trigram-256.png";
                   target.alt = `${selectedArchetype.korean} (image unavailable)`;
                 }
               }}
