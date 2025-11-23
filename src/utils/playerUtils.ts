@@ -260,6 +260,7 @@ export function resetPlayerState(
  * Get archetype asset paths (image, theme music, etc.)
  */
 export function getArchetypeAssets(archetype: PlayerArchetype): {
+  readonly id: string;
   readonly image: string;
   readonly theme: string;
   readonly themeId: string;
@@ -273,6 +274,7 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
   if (!asset) {
     console.warn(`No assets found for archetype: ${archetype}`);
     return {
+      id: "unknown",
       image: "/assets/visual/logo/black-trigram-256.png",
       theme: "/assets/audio/music/intro_theme.mp3",
       themeId: "intro_theme",

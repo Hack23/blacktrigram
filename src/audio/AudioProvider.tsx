@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { ARCHETYPE_ASSETS } from "../types/constants";
 import AudioManager from "./AudioManager";
 import { audioAssetRegistry } from "./AudioAssetRegistry";
 import placeholderAssets from "./placeholder-sounds";
@@ -61,13 +62,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
         }
 
         // Preload archetype theme music for character selection
-        const archetypeThemes = [
-          audioAssetRegistry.getMusic("musa_warrior_theme"),
-          audioAssetRegistry.getMusic("amsalja_shadow_theme"),
-          audioAssetRegistry.getMusic("hacker_cyber_theme"),
-          audioAssetRegistry.getMusic("jeongbo_intel_theme"),
-          audioAssetRegistry.getMusic("jojik_street_theme"),
-        ];
+        const archetypeThemeIds = Object.values(ARCHETYPE_ASSETS).map(a => a.themeId);
+        const archetypeThemes = archetypeThemeIds.map(id => audioAssetRegistry.getMusic(id));
 
         const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
         await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {

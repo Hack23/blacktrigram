@@ -195,12 +195,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       audio.playSFX("menu_hover");
       
       // Play archetype theme music preview when archetype changes
-      const archetypeId = newArchetype.toLowerCase();
-      const archetypeAsset = ARCHETYPE_ASSETS[archetypeId as keyof typeof ARCHETYPE_ASSETS];
-      if (archetypeAsset && archetypeAsset.themeId) {
+      const archetypeAssets = ARCHETYPE_ASSETS[newArchetype.toLowerCase() as keyof typeof ARCHETYPE_ASSETS];
+      if (archetypeAssets && archetypeAssets.themeId) {
         // Stop intro music and play archetype theme
         audio.stopMusic();
-        audio.playMusic(archetypeAsset.themeId);
+        audio.playMusic(archetypeAssets.themeId);
       }
     },
     [onArchetypeSelect, audio]
