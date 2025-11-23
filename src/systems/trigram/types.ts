@@ -467,6 +467,11 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
   },
 } as const;
 
+/**
+ * Data structure for a Trigram stance containing philosophical,
+ * combat, and visual properties for the Eight Trigrams system.
+ * Includes Chinese characters, Korean/English names, attributes, and meanings.
+ */
 export interface TrigramStanceData {
   readonly name: { korean: string; english: string };
   readonly symbol: string;
