@@ -9,11 +9,11 @@
 
 ### Overall Implementation Status: **6.8/10** (Alpha Stage - Playable Prototype)
 
-Black Trigram has established a solid technical foundation with **Three.js migration complete**, core combat systems operational, and all primary screens functional. However, **significant gaps remain** between game-design.md specifications and current implementation, particularly in vital point coverage (6/70 = 8.6%), technique depth (8 base techniques vs. comprehensive system needed), and combat mechanics completeness.
+Black Trigram has established a solid technical foundation with **Three.js migration complete**, core combat systems operational, and all primary screens functional. However, **significant gaps remain** between game-design.md specifications and current implementation, particularly in vital point coverage (3/70 = 4.3%), technique depth (8 base techniques vs. comprehensive system needed), and combat mechanics completeness.
 
 **Critical Findings:**
 - ✅ **Strengths**: Three.js migration complete, 5/5 player archetypes implemented, 8/8 trigram stances functional, audio system mature (84% coverage)
-- ⚠️ **Major Gaps**: Only 8.6% of vital points implemented (6/70), minimal technique variety (1 per stance), EndScreen missing, pain/consciousness systems incomplete
+- ⚠️ **Major Gaps**: Only 4.3% of vital points implemented (3/70), minimal technique variety (1 per stance), EndScreen missing, pain/consciousness systems incomplete
 - 🎯 **Priority**: Expand vital point database, implement comprehensive technique system, complete combat feedback loops
 
 ---
@@ -39,7 +39,7 @@ Black Trigram has established a solid technical foundation with **Three.js migra
 | Stance Matchups | TrigramCalculator | ✅ Implemented | 90% | ✅ Complete |
 | Base Techniques | 1 per stance | ⚠️ Minimal Coverage | 15% | 🔴 Critical |
 | **Vital Point System** |
-| Total Vital Points | 70 points required | ❌ Only 6 Implemented | 8.6% | 🔴 Critical |
+| Total Vital Points | 70 points required | ❌ Only 3 Implemented | 4.3% | 🔴 Critical |
 | Head/Neck Points | ~15 points | ⚠️ 2 Implemented | 13% | 🔴 Critical |
 | Torso Points | ~20 points | ⚠️ 1 Implemented | 5% | 🔴 Critical |
 | Limb Points | ~25 points | ❌ Not Implemented | 0% | 🔴 Critical |
@@ -106,7 +106,7 @@ Black Trigram has established a solid technical foundation with **Three.js migra
 
 **Current Implementation:**
 ```
-Implemented: 6 vital points (8.6% of target)
+Implemented: 3 vital points (4.3% of target)
 Target: 70 vital points
 File: src/systems/vitalpoint/KoreanVitalPoints.ts (195 lines)
 ```
@@ -115,12 +115,11 @@ File: src/systems/vitalpoint/KoreanVitalPoints.ts (195 lines)
 1. **백회혈 (baekhoehoel)** - Crown Point / Anterior Fontanelle - Critical
 2. **인영 (inmyeong)** - Man's Welcome / Carotid Artery - Major
 3. **명문 (myeongmun)** - Gate of Life / L2-L3 Vertebrae - Major
-4. 3 additional basic points (details in code)
 
-**Missing Vital Points (64 total):**
-- **Head/Neck** (~13 missing): Temple (태양혈), Jaw point, Throat, Back of neck, etc.
-- **Torso** (~19 missing): Solar plexus, Liver, Kidney, Floating ribs, Sternum, etc.
-- **Upper Limbs** (~12 missing): Shoulder, Elbow, Wrist, Hand pressure points, etc.
+**Missing Vital Points (67 total):**
+- **Head/Neck** (~14 missing): Temple (태양혈), Jaw point, Throat, Back of neck, etc.
+- **Torso** (~20 missing): Solar plexus, Liver, Kidney, Floating ribs, Sternum, etc.
+- **Upper Limbs** (~13 missing): Shoulder, Elbow, Wrist, Hand pressure points, etc.
 - **Lower Limbs** (~13 missing): Hip, Knee, Ankle, Foot pressure points, etc.
 - **Back** (~7 missing): Spine segments, Kidney region, Lower back, etc.
 
@@ -138,12 +137,13 @@ File: src/systems/vitalpoint/KoreanVitalPoints.ts (195 lines)
 - ✅ Status effect application
 
 **Priority Actions:**
-1. 🔴 **URGENT**: Expand to 70 vital points (add 64 points)
+1. 🔴 **URGENT**: Expand to 70 vital points (add 67 points)
 2. 🔴 Create anatomical reference documentation
 3. 🟡 Add visual vital point overlay for training
 4. 🟡 Implement difficulty-based vital point availability
 
-**Estimated Effort**: 20-30 hours for complete vital point database with testing
+**Estimated Effort**: 35-40 hours for complete vital point database with testing  
+_Note: Estimate assumes standardized data entry process after first 10 points._
 
 ---
 
@@ -370,7 +370,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 - ❌ Score persistence/leaderboard
 - ❌ Audio coaching/feedback
 - ❌ Multiple training scenarios
-- ⚠️ Limited vital points (only 6 to practice)
+- ⚠️ Limited vital points (only 3 to practice)
 
 **Test Coverage**: 35.2% (needs significant improvement)
 
@@ -379,7 +379,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 2. 🟡 Implement moving targets
 3. 🟡 Add audio coaching
 4. 🟠 Expand training modes
-5. 🔴 Wait for vital point expansion (currently limited by 6/70 points)
+5. 🔴 Wait for vital point expansion (currently limited by 3/70 points)
 
 ---
 
@@ -606,14 +606,15 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 ### Phase 1: Critical Gaps (6-8 weeks)
 
 #### Sprint 1-2: Vital Point Expansion (🔴 Critical Priority)
-**Effort**: 30 hours
-- [ ] Research and document 64 additional vital points
+**Effort**: 35-40 hours  
+_Note: Estimate assumes standardized data entry process after first 10 points._
+- [ ] Research and document 67 additional vital points
 - [ ] Implement anatomical database with Korean names
 - [ ] Add bilingual descriptions and effects
 - [ ] Create visual reference diagrams
 - [ ] Update VitalPointMarkers3D for display
 - [ ] Add tests for all vital points
-- **Deliverable**: 70/70 vital points implemented
+- **Deliverable**: 70/70 vital points implemented (up from 3/70)
 
 #### Sprint 3: EndScreen Implementation (🔴 Critical Priority)
 **Effort**: 12 hours
@@ -639,7 +640,7 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 
 #### Sprint 5-6: Technique System Expansion (🟡 High Priority)
 **Effort**: 25 hours
-- [ ] Add 2-4 techniques per stance (16-32 new techniques)
+- [ ] Add 2-4 techniques per stance (16-32 new techniques, total 24-40)
 - [ ] Implement technique unlock system
 - [ ] Add combo chains (2-3 technique combos)
 - [ ] Create technique selection UI
@@ -743,7 +744,7 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 6. **AI System** - 50% (basic aggression, needs tactical behaviors)
 
 ### Minimally Implemented (1-40%) 🔴
-1. **Vital Point System** - 8.6% (6/70 points)
+1. **Vital Point System** - 4.3% (3/70 points)
 2. **Pain/Consciousness Mechanics** - 35% (basic states only)
 3. **Blood/Trauma System** - 0% (not started)
 4. **Three.js Components** - 41% (test coverage low)
@@ -839,6 +840,209 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 
 ---
 
+## 🎮 Game Controls & Input System
+
+### Desktop Controls (Keyboard Focus)
+
+Black Trigram's combat system is designed for precise, frame-perfect inputs on keyboard. All controls follow Korean martial arts principles with the Eight Trigram system at its core.
+
+#### Core Combat Controls (Desktop)
+
+**Trigram Stance System (1-8 Keys)**
+| Key | Trigram | Korean | Stance | Combat Style |
+|-----|---------|--------|--------|--------------|
+| **1** | ☰ Geon | 건 (Heaven) | Ap Seogi (Walking) | Direct force, bone-breaking attacks |
+| **2** | ☱ Tae | 태 (Lake) | Ap Koobi Seogi (Front) | Fluid redirection, joint manipulation |
+| **3** | ☲ Li | 리 (Fire) | Juchum Seogi (Horse) | Precise vital point targeting |
+| **4** | ☳ Jin | 진 (Thunder) | Dwi Koobi Seogi (Back) | Explosive nerve strikes |
+| **5** | ☴ Son | 손 (Wind) | Niunja Seogi (L-Stance) | Continuous pressure attacks |
+| **6** | ☵ Gam | 감 (Water) | Narani Seogi (Parallel) | Adaptive flow, counters |
+| **7** | ☶ Gan | 간 (Mountain) | Gibo Seogi (Basic) | Immovable defense |
+| **8** | ☷ Gon | 곤 (Earth) | Joong Ha Seogi (Deep) | Grounding, takedowns |
+
+**Movement Controls**
+- **WASD / Arrow Keys**: Grid-based movement (8 directions)
+  - W/↑: Forward step
+  - S/↓: Backward step
+  - A/←: Left step
+  - D/→: Right step
+  - Diagonals: Combined keys (W+A, W+D, etc.)
+- **Z + Arrow**: Short-step (half-cell move, 10 frames, -5 stamina)
+- **X + Arrow**: Swap foot + move (foot stance change, 14 frames, -10 stamina)
+- **Hold Arrow**: Full step movement (10 frames per cell)
+
+**Attack System**
+- **SPACE**: Execute current stance's front-hand strike
+- **SPACE + ↑**: Front-leg kick (16 frames, -12 stamina)
+- **SPACE + ←**: Front-elbow strike (14 frames, -10 stamina)
+- **SPACE + ↓**: Front-knee strike (14 frames, -10 stamina)
+- **SPACE + →**: Back-hand strike (13 frames, -9 stamina)
+- **SPACE then ↓** (same frame): Spinning back strike (20 frames total, -15 stamina)
+
+**Defensive Controls**
+- **B (Tap)**: Snap block (instant guard, bonus +10% resistance)
+- **B (Hold)**: Sustained guard (-2 stamina/sec, active resistance)
+- **Shift**: Toggle defensive stance (blocks high/mid attacks automatically)
+
+**Advanced Techniques**
+- **CTRL**: Precision vital point targeting mode (slows time 50%, highlights vital points)
+- **TAB**: Cycle between available techniques for current stance
+- **R**: Reset stance to neutral (emergency recovery, 20 frame penalty)
+- **Q**: Quick-switch to last used stance (instant, no stamina cost)
+
+**System Controls**
+- **ESC**: Pause menu / Return to intro
+- **F1**: Help / Controls guide (in-game overlay)
+- **M**: Mute / Audio settings
+- **F11**: Fullscreen toggle
+- **` (Tilde)**: Debug console (dev mode only)
+
+#### Input Queuing System
+
+Black Trigram uses a sophisticated input queue system for combo execution:
+
+**Queue Mechanics:**
+- Up to **3 inputs** can be queued during animation frames
+- Queued inputs execute immediately on animation completion
+- Input buffer: **6 frames** (0.1 seconds at 60fps)
+- Queue is cleared on hit, block, or stance change
+
+**Example Combo Flow:**
+```
+1. Press 3 (Switch to Li stance) → 8 frames
+2. During stance transition, press SPACE+↑ → Queued
+3. Li stance active → Front-leg kick executes immediately
+4. During kick animation, press SPACE+← → Queued
+5. Kick completes → Elbow strike executes
+```
+
+---
+
+### Mobile Controls (Touch-Optimized)
+
+Mobile controls adapt the desktop experience for touch screens with context-sensitive buttons and gesture recognition.
+
+#### Touch Layout
+
+**HUD Overlay (Always Visible)**
+- **Top-Left**: Player health, stamina, stance indicator
+- **Top-Right**: Opponent health, timer
+- **Bottom-Left**: Virtual D-pad (movement)
+- **Bottom-Right**: Action buttons (attack, defend, special)
+- **Bottom-Center**: Stance wheel (8-segment circular selector)
+
+#### Mobile Control Scheme
+
+**Movement (Bottom-Left Virtual D-pad)**
+- **Tap direction**: Single step in that direction
+- **Double-tap**: Quick step (Z+Arrow equivalent)
+- **Hold direction**: Continuous movement
+- **Swipe**: Fast movement with momentum
+
+**Attack Controls (Bottom-Right)**
+- **Primary Attack Button** (large, center-right)
+  - Tap: Front-hand strike
+  - Hold: Charge power attack (visual indicator shows charge level)
+- **Directional Attack Ring** (surrounding primary button)
+  - Swipe ↑: Kick
+  - Swipe ←: Elbow
+  - Swipe ↓: Knee
+  - Swipe →: Back-hand
+
+**Defense Controls**
+- **Block Button** (bottom-right, secondary)
+  - Tap: Snap block
+  - Hold: Sustained guard
+- **Dodge Gesture**: Swipe away from opponent (costs stamina)
+
+**Stance Controls (Bottom-Center Wheel)**
+- **8-Segment Circular Selector**
+  - Tap segment: Change to that trigram stance
+  - Visual feedback: Haptic + glow animation
+  - Center displays current stance icon
+- **Alternative**: Swipe up from bottom → Full stance wheel overlay
+
+**Special Techniques**
+- **Two-Finger Tap**: Activate vital point targeting mode
+- **Three-Finger Swipe Down**: Emergency block (high stamina cost)
+- **Long Press on Opponent**: Target specific body region
+
+#### Mobile Gesture System
+
+**Combat Gestures:**
+- **Horizontal Swipe (opponent direction)**: Aggressive advance
+- **Horizontal Swipe (away)**: Defensive retreat
+- **Vertical Swipe Up**: High attack/block mode
+- **Vertical Swipe Down**: Low attack/block mode
+- **Pinch**: Zoom to see vital points
+- **Spread**: Zoom out to full arena view
+- **Two-Finger Rotate**: Change camera angle (if 3D mode enabled)
+
+**Combo Shortcuts (Mobile)**
+Mobile includes preset combo buttons that appear contextually:
+- When in specific stances, combo buttons appear with Korean names
+- Tap combo button to execute 2-3 hit sequence automatically
+- Trade-off: Slight damage reduction vs. manual combos
+
+#### Accessibility Features (Mobile)
+
+**Touch Assistance:**
+- **Auto-aim**: Optional soft targeting for vital points
+- **Button Size**: Adjustable (Small/Medium/Large)
+- **Haptic Feedback**: Vibration on hits, blocks, stance changes
+- **Visual Feedback**: Hit confirms with screen flash + color coding
+
+**Simplified Mode:**
+- Reduces stance count to 4 (Heaven, Fire, Mountain, Earth)
+- Larger buttons, clearer visual cues
+- Auto-blocking when not attacking
+- Recommended for casual players or small screens
+
+---
+
+### Control Mapping Philosophy
+
+**Design Principles:**
+1. **Frame-Perfect Precision**: Desktop controls allow 60fps frame-perfect inputs for competitive play
+2. **Touch Accessibility**: Mobile controls sacrifice some precision for ease of use
+3. **Consistent Feedback**: All inputs provide visual, audio, and (mobile) haptic confirmation
+4. **No Input Eating**: Proper input buffering ensures no dropped commands
+5. **Graceful Degradation**: System scales from expert to casual seamlessly
+
+**Best Practices:**
+- Desktop players: Master 1-8 stance hotkeys for instant trigram switching
+- Mobile players: Use stance wheel for visual reference, learn common stances
+- Both: Practice input queuing in Training Mode
+- Advanced: Memorize frame data for each technique to optimize combos
+
+---
+
+### Future Control Enhancements (Planned)
+
+**Gamepad Support** (Priority: Medium)
+- D-pad: Movement
+- Face buttons (ABXY): Attacks
+- Shoulder buttons: Block, stance modifiers
+- Triggers: Special techniques, target lock
+- Bumpers: Quick stance switch
+
+**Custom Key Bindings** (Priority: High)
+- Allow players to remap all keyboard controls
+- Save/load control schemes
+- Preset configurations for different playstyles
+
+**Macro System** (Priority: Low)
+- Record combo sequences
+- Assign to single button
+- Limited to 5-hit maximum for balance
+
+**Voice Commands** (Priority: Low)
+- Korean voice input for stance changes
+- "Geon!", "Tae!", etc. to switch stances
+- Accessibility feature for motor-impaired players
+
+---
+
 ## 📈 Progress Since Last Assessment
 
 **Positive Changes:**
@@ -849,7 +1053,7 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 - ✅ Build pipeline stable
 
 **Remaining Concerns:**
-- 🔴 Vital points still critically low (6/70)
+- 🔴 Vital points still critically low (3/70)
 - 🔴 EndScreen still not implemented
 - 🔴 Technique variety still limited
 - 🟡 Combat visual polish lagging
@@ -861,11 +1065,11 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 
 ### Immediate (This Week):
 1. 🔴 **Implement EndScreen** - Unblocks complete game flow
-2. 🔴 **Start vital point expansion** - Most critical gap (8.6%)
+2. 🔴 **Start vital point expansion** - Most critical gap (4.3%)
 3. 🟡 **Add technique selection UI** - Basic combat depth
 
 ### Short Term (Next 2-4 Weeks):
-1. 🔴 **Complete vital point database** - Reach 70/70 points
+1. 🔴 **Complete vital point database** - Add 67 points (currently 3/70)
 2. 🟡 **Expand technique system** - 3-5 techniques per stance
 3. 🟡 **Polish combat visuals** - Animations, particles, feedback
 4. 🟡 **Enhance AI** - Tactical behaviors, difficulty levels
@@ -890,7 +1094,7 @@ dist/assets/index-Bc296C.js: 1,268.91 kB
 
 | Metric | Current | Target | Gap |
 |--------|---------|--------|-----|
-| Vital Points | 6 | 70 | -64 (91.4% gap) |
+| Vital Points | 3 | 70 | -67 (95.7% gap) |
 | Techniques | 8 | 40 | -32 (80% gap) |
 | Screens Complete | 5/6 | 6/6 | -1 (EndScreen) |
 | Test Coverage | 71% | 85% | -14% |
@@ -920,7 +1124,7 @@ Black Trigram has established a **solid foundation** with complete Three.js migr
 - All primary screens functional (except EndScreen)
 
 **Critical Gaps:**
-- Only 8.6% of vital points implemented (6/70)
+- Only 4.3% of vital points implemented (3/70)
 - Limited technique variety (1 per stance vs. 3-5 needed)
 - Missing EndScreen blocks complete game flow
 - Combat mechanics incomplete (pain, consciousness systems)
