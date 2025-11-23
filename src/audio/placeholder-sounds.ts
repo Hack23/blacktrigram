@@ -281,15 +281,73 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
   },
 ] as const;
 
+// Victory and defeat sound effects
+export const END_SCREEN_SOUND_EFFECTS: readonly SoundEffect[] = [
+  {
+    id: "victory_fanfare",
+    name: "Victory Fanfare",
+    type: "sound",
+    url: "/assets/audio/sfx/ui/victory_fanfare.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    volume: 0.9,
+    category: AudioCategory.SFX,
+    pitch: 1.0,
+  },
+  {
+    id: "defeat_sound",
+    name: "Defeat Sound",
+    type: "sound",
+    url: "/assets/audio/sfx/ui/defeat.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    volume: 0.7,
+    category: AudioCategory.SFX,
+    pitch: 0.8,
+  },
+] as const;
+
+// Victory and defeat music tracks
+export const END_SCREEN_MUSIC_TRACKS: readonly MusicTrack[] = [
+  {
+    id: "victory_theme",
+    name: "Victory Theme",
+    type: "music",
+    url: "/assets/audio/music/victory_theme.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    title: { korean: "승리 테마", english: "Victory Theme" },
+    volume: 0.6,
+    loop: true,
+    category: AudioCategory.MUSIC,
+    bpm: 140,
+  },
+  {
+    id: "defeat_theme",
+    name: "Defeat Theme",
+    type: "music",
+    url: "/assets/audio/music/defeat_theme.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    title: { korean: "패배 테마", english: "Defeat Theme" },
+    volume: 0.4,
+    loop: true,
+    category: AudioCategory.MUSIC,
+    bpm: 60,
+  },
+] as const;
+
 // Combine all placeholder sounds
 export const ALL_PLACEHOLDER_SOUNDS = [
   ...PLACEHOLDER_SOUND_EFFECTS,
   ...TECHNIQUE_SOUND_EFFECTS,
+  ...END_SCREEN_SOUND_EFFECTS,
 ] as const;
 
 export const ALL_PLACEHOLDER_MUSIC = [
   ...PLACEHOLDER_MUSIC_TRACKS,
   ...ARCHETYPE_MUSIC_THEMES,
+  ...END_SCREEN_MUSIC_TRACKS,
 ] as const;
 
 // Add missing export alias for backward compatibility
@@ -298,6 +356,8 @@ export const PLACEHOLDER_AUDIO_ASSETS = {
   musicTracks: ALL_PLACEHOLDER_MUSIC,
   techniques: TECHNIQUE_SOUND_EFFECTS,
   archetypeThemes: ARCHETYPE_MUSIC_THEMES,
+  endScreenSounds: END_SCREEN_SOUND_EFFECTS,
+  endScreenMusic: END_SCREEN_MUSIC_TRACKS,
 };
 
 // Default export for convenience
@@ -306,4 +366,6 @@ export default {
   musicTracks: ALL_PLACEHOLDER_MUSIC,
   techniques: TECHNIQUE_SOUND_EFFECTS,
   archetypeThemes: ARCHETYPE_MUSIC_THEMES,
+  endScreenSounds: END_SCREEN_SOUND_EFFECTS,
+  endScreenMusic: END_SCREEN_MUSIC_TRACKS,
 };
