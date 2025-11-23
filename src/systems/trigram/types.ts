@@ -198,6 +198,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☰",
     element: "metal",
     nature: "yang",
+    chinese: "天",
+    attribute: { korean: "강건", chinese: "剛健" },
+    meaning: { korean: "창조와 리더십", english: "Creation and Leadership" },
     philosophy: { korean: "하늘", english: "Heaven" },
     combat: { korean: "직접 공격", english: "Direct attack" },
     theme: {
@@ -229,6 +232,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☱",
     element: "metal",
     nature: "yin",
+    chinese: "澤",
+    attribute: { korean: "유열", chinese: "愉悅" },
+    meaning: { korean: "기쁨과 교류", english: "Joy and Exchange" },
     philosophy: { korean: "호수", english: "Lake" },
     combat: { korean: "유동적 적응", english: "Fluid adaptation" },
     theme: {
@@ -260,6 +266,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☲",
     element: "metal",
     nature: "yang",
+    chinese: "火",
+    attribute: { korean: "광명", chinese: "光明" },
+    meaning: { korean: "열정과 명료함", english: "Passion and Clarity" },
     philosophy: { korean: "불", english: "Fire" },
     combat: { korean: "접근 공격", english: "Close attack" },
     theme: {
@@ -291,6 +300,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☳",
     element: "metal",
     nature: "yang",
+    chinese: "雷",
+    attribute: { korean: "진동", chinese: "震動" },
+    meaning: { korean: "움직임과 각성", english: "Movement and Awakening" },
     philosophy: { korean: "천둥", english: "Thunder" },
     combat: { korean: "돌진 공격", english: "Charge attack" },
     theme: {
@@ -322,6 +334,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☴",
     element: "metal",
     nature: "yin",
+    chinese: "風",
+    attribute: { korean: "손순", chinese: "巽順" },
+    meaning: { korean: "침투와 영향", english: "Penetration and Influence" },
     philosophy: { korean: "바람", english: "Wind" },
     combat: { korean: "회피 공격", english: "Evasive attack" },
     theme: {
@@ -353,6 +368,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☵",
     element: "metal",
     nature: "yin",
+    chinese: "水",
+    attribute: { korean: "험난", chinese: "險難" },
+    meaning: { korean: "적응과 흐름", english: "Adaptation and Flow" },
     philosophy: { korean: "물", english: "Water" },
     combat: { korean: "유동 공격", english: "Flowing attack" },
     theme: {
@@ -384,6 +402,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☶",
     element: "metal",
     nature: "yin",
+    chinese: "山",
+    attribute: { korean: "지정", chinese: "止靜" },
+    meaning: { korean: "안정과 명상", english: "Stability and Meditation" },
     philosophy: { korean: "산", english: "Mountain" },
     combat: { korean: "방어 자세", english: "Defensive stance" },
     theme: {
@@ -415,6 +436,9 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     symbol: "☷",
     element: "metal",
     nature: "yang",
+    chinese: "地",
+    attribute: { korean: "순종", chinese: "順從" },
+    meaning: { korean: "수용과 지지", english: "Receptiveness and Support" },
     philosophy: { korean: "지구", english: "Earth" },
     combat: { korean: "포용 공격", english: "Embracing attack" },
     theme: {
@@ -448,6 +472,9 @@ export interface TrigramStanceData {
   readonly symbol: string;
   readonly element: string;
   readonly nature: "yin" | "yang";
+  readonly chinese: string; // Chinese character (天, 澤, etc.)
+  readonly attribute: { korean: string; chinese: string }; // Attribute (剛健, etc.)
+  readonly meaning: { korean: string; english: string }; // Core meaning
   readonly philosophy: { korean: string; english: string };
   readonly combat: { korean: string; english: string };
   readonly theme: {
