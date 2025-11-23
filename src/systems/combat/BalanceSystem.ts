@@ -333,18 +333,22 @@ export class BalanceSystem {
   }
 
   /**
-   * Checks if knockdown should occur.
+   * Checks if knockdown should occur, using a provided random function for determinism.
    * 
    * @param player - Current player state
+   * @param randomFn - Optional random number generator (returns number in [0,1)), defaults to Math.random
    * @returns True if knockdown should occur
    * 
    * @public
    * @korean 넘어짐확인
    */
-  shouldKnockdown(player: PlayerState): boolean {
+  shouldKnockdown(
+    player: PlayerState,
+    randomFn: () => number = Math.random
+  ): boolean {
     const level = this.getBalanceLevel(player.balance);
     const effects = this.getEffects(level);
-    return Math.random() < effects.knockdownRisk;
+    return randomFn() < effects.knockdownRisk;
   }
 
   /**

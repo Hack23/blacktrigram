@@ -96,7 +96,7 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     description: {
       korean: "코뼈 골절, 시야 방해",
       english: "Nasal bone fracture, vision impairment",
-      romanized: "kopppyeo goljeol",
+      romanized: "koppyeo goljeol",
     },
     targetingDifficulty: 0.5,
     effectiveStances: [TrigramStance.LI, TrigramStance.GEON],
@@ -731,7 +731,7 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
       english: "Right Shoulder Blade",
       romanized: "u-gyeongapgol",
     },
-    position: { x: 75, y: 115 },
+    position: { x: 129, y: 115 },
     category: VitalPointCategory.SKELETAL,
     severity: VitalPointSeverity.MODERATE,
     baseDamage: 28,
