@@ -24,15 +24,15 @@ describe("VitalPointSystem", () => {
       expect(temple).toBeDefined();
       expect(temple?.names.english).toBe("Temple");
       expect(temple?.names.korean).toBe("태양혈");
-      expect(temple?.severity).toBe(VitalPointSeverity.MAJOR);
+      expect(temple?.severity).toBe(VitalPointSeverity.CRITICAL);
     });
 
     it("should have carotid artery vital point", () => {
-      const carotid = system.getVitalPointById("neck_carotid");
+      const carotid = system.getVitalPointById("head_side_neck");
       
       expect(carotid).toBeDefined();
-      expect(carotid?.names.english).toBe("Carotid Artery");
-      expect(carotid?.names.korean).toBe("경동맥");
+      expect(carotid?.names.english).toBe("Side Neck");
+      expect(carotid?.names.korean).toBe("목옆");
       expect(carotid?.severity).toBe(VitalPointSeverity.CRITICAL);
     });
   });
@@ -47,7 +47,7 @@ describe("VitalPointSystem", () => {
       expect(result.hit).toBe(true);
       expect(result.vitalPointHit).toBeDefined();
       expect(result.damage).toBeGreaterThan(0);
-      expect(result.severity).toBe(VitalPointSeverity.MAJOR);
+      expect(result.severity).toBe(VitalPointSeverity.CRITICAL);
     });
 
     it("should calculate accuracy based on distance", () => {
@@ -75,22 +75,22 @@ describe("VitalPointSystem", () => {
       const position = { x: 200, y: 200 }; // Not near any vital point
       const hitBox = { width: 10, height: 10 };
 
-      const result = system.processHit(position, hitBox, "neck_carotid");
+      const result = system.processHit(position, hitBox, "head_side_neck");
 
       expect(result.hit).toBe(true);
-      expect(result.vitalPointHit?.id).toBe("neck_carotid");
+      expect(result.vitalPointHit?.id).toBe("head_side_neck");
     });
 
     it("should calculate higher damage for critical vital points", () => {
-      const templePosition = { x: 100, y: 50 };
-      const carotidPosition = { x: 100, y: 80 };
+      const templePosition = { x: 100, y: 50 }; // Temple (CRITICAL, 35 damage)
+      const jawPosition = { x: 105, y: 80 }; // Jaw (MAJOR, 30 damage)
       const hitBox = { width: 10, height: 10 };
 
       const templeResult = system.processHit(templePosition, hitBox);
-      const carotidResult = system.processHit(carotidPosition, hitBox);
+      const jawResult = system.processHit(jawPosition, hitBox);
 
-      // Carotid (CRITICAL) should do more damage than temple (MAJOR)
-      expect(carotidResult.damage).toBeGreaterThan(templeResult.damage);
+      // Temple (CRITICAL) should do more damage than jaw (MAJOR)
+      expect(templeResult.damage).toBeGreaterThan(jawResult.damage);
     });
   });
 
@@ -185,8 +185,8 @@ describe("VitalPointSystem", () => {
 
   describe("damage calculation", () => {
     it("should calculate damage proportional to vital point severity", () => {
-      const criticalPoint = system.getVitalPointById("neck_carotid");
-      const majorPoint = system.getVitalPointById("head_temple");
+      const criticalPoint = system.getVitalPointById("head_temple"); // CRITICAL, 35 damage
+      const majorPoint = system.getVitalPointById("head_jaw"); // MAJOR, 30 damage
 
       expect(criticalPoint?.baseDamage).toBeGreaterThan(
         majorPoint?.baseDamage || 0

@@ -48,6 +48,7 @@
  */
 import { Position, VitalPointSeverity } from "../types/common";
 import { VitalPoint, VitalPointHitResult } from "./vitalpoint/types";
+import { VITAL_POINTS_DATA } from "./vitalpoint/VitalPointsData";
 
 export class VitalPointSystem {
   private vitalPoints: VitalPoint[] = [];
@@ -55,11 +56,10 @@ export class VitalPointSystem {
   /**
    * Creates a new VitalPointSystem instance.
    * 
-   * Initializes the system with a set of basic vital points for testing.
-   * In production, vital points would be loaded from a comprehensive database.
+   * Initializes the system with comprehensive Korean vital points database.
    */
   constructor() {
-    // Initialize with some basic vital points
+    // Initialize with comprehensive Korean vital points database
     this.initializeVitalPoints();
   }
 
@@ -359,62 +359,17 @@ export class VitalPointSystem {
   }
 
   /**
-   * Initializes the system with basic vital points for testing.
+   * Initializes the system with comprehensive Korean vital points.
    * 
-   * In production, this would load from a comprehensive vital point database
-   * containing all 70 Korean vital points with full anatomical details.
-   * 
-   * Current test points:
-   * - **태양혈 (Temple)**: Neurological, Major severity
-   * - **경동맥 (Carotid Artery)**: Vascular, Critical severity
+   * Loads all 70 Korean vital points from the comprehensive database
+   * covering head, torso, arms, and legs with proper categorization.
    * 
    * @private
    * @korean 급소초기화
    */
   private initializeVitalPoints(): void {
-    // Add some basic vital points for testing
-    this.vitalPoints = [
-      {
-        id: "head_temple",
-        names: {
-          korean: "태양혈",
-          english: "Temple",
-          romanized: "taeyang-hyeol",
-        },
-        position: { x: 100, y: 50 },
-        category: "neurological" as any,
-        severity: VitalPointSeverity.MAJOR,
-        baseDamage: 25,
-        effects: [],
-        description: {
-          korean: "관자놀이의 압박점",
-          english: "Pressure point at the temple",
-          romanized: "gwanja-nori-ui apbakjeom",
-        },
-        targetingDifficulty: 0.7,
-        effectiveStances: [],
-      },
-      {
-        id: "neck_carotid",
-        names: {
-          korean: "경동맥",
-          english: "Carotid Artery",
-          romanized: "gyeong-dong-maek",
-        },
-        position: { x: 100, y: 80 },
-        category: "vascular" as any,
-        severity: VitalPointSeverity.CRITICAL,
-        baseDamage: 35,
-        effects: [],
-        description: {
-          korean: "목의 주요 동맥",
-          english: "Major artery in the neck",
-          romanized: "mog-ui juyo dong-maek",
-        },
-        targetingDifficulty: 0.8,
-        effectiveStances: [],
-      },
-    ];
+    // Load all 70 vital points from the comprehensive database
+    this.vitalPoints = [...VITAL_POINTS_DATA];
   }
 }
 
