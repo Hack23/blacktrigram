@@ -233,7 +233,7 @@ export const TRIGRAM_DATA: Record<TrigramStance, TrigramStanceData> = {
     element: "metal",
     nature: "yin",
     chinese: "澤",
-    attribute: { korean: "유열", chinese: "愉悅" },
+    attribute: { korean: "기쁨", chinese: "愉悅" },
     meaning: { korean: "기쁨과 교류", english: "Joy and Exchange" },
     philosophy: { korean: "호수", english: "Lake" },
     combat: { korean: "유동적 적응", english: "Fluid adaptation" },

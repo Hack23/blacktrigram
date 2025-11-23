@@ -424,7 +424,7 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                           marginBottom: "4px",
                         }}
                       >
-                        {trigram.symbol} {trigram.name.korean} ({trigram.name.english})
+                        {trigram.name.korean} ({trigram.name.english})
                       </div>
 
                       {/* Chinese character and attribute */}
