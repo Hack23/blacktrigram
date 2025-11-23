@@ -59,6 +59,20 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
             console.warn("Failed to load intro theme music", err);
           });
         }
+
+        // Preload archetype theme music for character selection
+        const archetypeThemes = [
+          audioAssetRegistry.getMusic("musa_warrior_theme"),
+          audioAssetRegistry.getMusic("amsalja_shadow_theme"),
+          audioAssetRegistry.getMusic("hacker_cyber_theme"),
+          audioAssetRegistry.getMusic("jeongbo_intel_theme"),
+          audioAssetRegistry.getMusic("jojik_street_theme"),
+        ];
+
+        const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
+        await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {
+          console.warn(`Failed to load archetype theme: ${a.id}`, err);
+        })));
       } catch (error) {
         console.error("Failed to initialize audio manager:", error);
         // Continue without audio - silent mode fallback

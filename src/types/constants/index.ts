@@ -37,3 +37,70 @@ export const ARCHETYPE_TECHNIQUE_BONUSES: Record<
 export const MAX_TRANSITION_COST_KI = 50;
 export const MAX_TRANSITION_COST_STAMINA = 30;
 export const MAX_TRANSITION_TIME_MILLISECONDS = 1000;
+
+/**
+ * Archetype asset mapping for visual and audio integration
+ * Maps each player archetype to its visual assets, theme music, and metadata
+ * 
+ * @category Player Archetypes
+ * @korean 플레이어 원형 에셋
+ */
+export const ARCHETYPE_ASSETS = {
+  musa: {
+    id: "musa",
+    image: "/assets/visual/archetypes/musa.png",
+    theme: "/assets/audio/music/archetype_themes/musa_warrior.mp3",
+    themeId: "musa_warrior_theme",
+    name_korean: "무사",
+    name_english: "Traditional Warrior",
+    textureKey: "musa",
+  },
+  amsalja: {
+    id: "amsalja",
+    image: "/assets/visual/archetypes/amsalja.png",
+    theme: "/assets/audio/music/archetype_themes/amsalja_shadow.mp3",
+    themeId: "amsalja_shadow_theme",
+    name_korean: "암살자",
+    name_english: "Shadow Assassin",
+    textureKey: "amsalja",
+  },
+  hacker: {
+    id: "hacker",
+    image: "/assets/visual/archetypes/hacker.png",
+    theme: "/assets/audio/music/archetype_themes/hacker_cyber.mp3",
+    themeId: "hacker_cyber_theme",
+    name_korean: "해커",
+    name_english: "Cyber Warrior",
+    textureKey: "hacker",
+  },
+  jeongbo_yowon: {
+    id: "jeongbo_yowon",
+    image: "/assets/visual/archetypes/jeongbo_yowon.png",
+    theme: "/assets/audio/music/archetype_themes/jeongbo_intel.mp3",
+    themeId: "jeongbo_intel_theme",
+    name_korean: "정보요원",
+    name_english: "Intelligence Operative",
+    textureKey: "jeongbo_yowon",
+  },
+  jojik_pokryeokbae: {
+    id: "jojik_pokryeokbae",
+    image: "/assets/visual/archetypes/jojik_pokryeokbae.png",
+    theme: "/assets/audio/music/archetype_themes/jojik_street.mp3",
+    themeId: "jojik_street_theme",
+    name_korean: "조직폭력배",
+    name_english: "Organized Crime",
+    textureKey: "jojik_pokryeokbae",
+  },
+} as const;
+
+/**
+ * Background images for archetype-related screens
+ * 
+ * @category Visual Assets
+ * @korean 원형 배경 이미지
+ */
+export const ARCHETYPE_BACKGROUNDS = {
+  overview: "/assets/visual/bg/archetyples/PlayerArchetypesOverview.png",
+  explained: "/assets/visual/bg/archetyples/PlayerArchetypesExplained.png",
+  teamDynamics: "/assets/visual/bg/archetyples/CyberpunkTeamDynamics.png",
+} as const;

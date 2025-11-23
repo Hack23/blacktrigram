@@ -254,3 +254,34 @@ export function resetPlayerState(
 ): PlayerState {
   return createPlayerFromArchetype(archetype, playerIndex);
 }
+
+/**
+ * Get archetype asset paths (image, theme music, etc.)
+ */
+export function getArchetypeAssets(archetype: PlayerArchetype): {
+  readonly image: string;
+  readonly theme: string;
+  readonly themeId: string;
+  readonly name_korean: string;
+  readonly name_english: string;
+  readonly textureKey: string;
+} {
+  // Import at runtime to avoid circular dependencies
+  const { ARCHETYPE_ASSETS } = require("../types/constants");
+  const archetypeId = archetype.toLowerCase();
+  const asset = ARCHETYPE_ASSETS[archetypeId as keyof typeof ARCHETYPE_ASSETS];
+  
+  if (!asset) {
+    console.warn(`No assets found for archetype: ${archetype}`);
+    return {
+      image: "/assets/visual/logo/black-trigram-256.png",
+      theme: "/assets/audio/music/intro_theme.mp3",
+      themeId: "intro_theme",
+      name_korean: "알 수 없음",
+      name_english: "Unknown",
+      textureKey: archetype,
+    };
+  }
+  
+  return asset;
+}

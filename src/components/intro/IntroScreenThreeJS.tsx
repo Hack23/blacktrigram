@@ -11,7 +11,7 @@ import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { ARCHETYPE_ASSETS, FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
@@ -193,6 +193,15 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
       audio.playSFX("menu_hover");
+      
+      // Play archetype theme music preview when archetype changes
+      const archetypeId = newArchetype.toLowerCase();
+      const archetypeAsset = ARCHETYPE_ASSETS[archetypeId as keyof typeof ARCHETYPE_ASSETS];
+      if (archetypeAsset && archetypeAsset.themeId) {
+        // Stop intro music and play archetype theme
+        audio.stopMusic();
+        audio.playMusic(archetypeAsset.themeId);
+      }
     },
     [onArchetypeSelect, audio]
   );
