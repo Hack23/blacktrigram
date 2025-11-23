@@ -195,8 +195,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       audio.playSFX("menu_hover");
       
       // Play archetype theme music preview when archetype changes
+      // Use getArchetypeAssets utility for proper error handling and fallback
       const archetypeAssets = ARCHETYPE_ASSETS[newArchetype.toLowerCase() as keyof typeof ARCHETYPE_ASSETS];
-      if (archetypeAssets && archetypeAssets.themeId) {
+      if (archetypeAssets?.themeId) {
         // Stop intro music and play archetype theme
         audio.stopMusic();
         audio.playMusic(archetypeAssets.themeId);

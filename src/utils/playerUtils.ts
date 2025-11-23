@@ -258,6 +258,9 @@ export function resetPlayerState(
 
 /**
  * Get archetype asset paths (image, theme music, etc.)
+ * 
+ * Note: PlayerArchetype enum values are already lowercase (e.g., MUSA = "musa"),
+ * so the toLowerCase() call is defensive programming for type safety.
  */
 export function getArchetypeAssets(archetype: PlayerArchetype): {
   readonly id: string;

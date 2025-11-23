@@ -63,7 +63,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 
         // Preload archetype theme music for character selection
         const archetypeThemeIds = Object.values(ARCHETYPE_ASSETS).map(a => a.themeId);
-        const archetypeThemes = archetypeThemeIds.map(id => audioAssetRegistry.getMusic(id));
+        const archetypeThemes = archetypeThemeIds.map(id => {
+          const track = audioAssetRegistry.getMusic(id);
+          if (!track) {
+            console.warn(`Archetype theme not registered: ${id}`);
+          }
+          return track;
+        });
 
         const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
         await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {

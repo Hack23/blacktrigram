@@ -96,6 +96,9 @@ export const ARCHETYPE_ASSETS = {
 /**
  * Background images for archetype-related screens
  * 
+ * Note: Directory name "archetyples" is intentionally spelled this way to match
+ * the actual directory structure in /public/assets/visual/bg/
+ * 
  * @category Visual Assets
  * @korean 원형 배경 이미지
  */
