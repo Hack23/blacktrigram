@@ -108,12 +108,15 @@ const isDevelopment =
   window.location.hostname === 'localhost' ||
   window.location.hostname === '127.0.0.1' ||
   window.location.hostname.startsWith('192.168.') ||
-  window.location.port !== '';
+  window.location.hostname.startsWith('10.') || // Also common for local networks
+  (window.location.port !== '' &&
+   window.location.port !== '80' &&
+   window.location.port !== '443');
 const swPath = isDevelopment ? '/sw.js' : './sw.js';
 navigator.serviceWorker.register(swPath);
 ```
 
-**Note:** This checks for common development scenarios including localhost, 127.0.0.1, local network IPs (192.168.x.x), and any URL with a port number to properly detect development environments.
+**Note:** This checks for common development scenarios including localhost, 127.0.0.1, local network IPs (192.168.x.x and 10.x.x.x), and non-standard ports (excluding standard HTTP/HTTPS ports 80/443) to properly detect development environments while avoiding false positives for production sites with custom ports.
 
 ### 5. Improved Error Handling
 
