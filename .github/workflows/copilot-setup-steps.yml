@@ -28,7 +28,7 @@ jobs:
     # Steps run before the agent starts working
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5 # v4.3.1
 
       # JavaScript/TypeScript linting
       - name: Setup Node.js
