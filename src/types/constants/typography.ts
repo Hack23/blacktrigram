@@ -1,6 +1,5 @@
 /**
- * Typography constants for Black Trigram (non-PixiJS)
- * PixiJS-specific typography constants have been archived
+ * Typography constants for Black Trigram
  */
 
 // Font Families

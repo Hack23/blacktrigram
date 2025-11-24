@@ -1,7 +1,6 @@
 /**
  * CombatHUDThree - Combat HUD using Three.js Korean UI components
  * 
- * Replaces PixiJS CombatHUD with reusable Three.js components
  */
 
 import React, { useMemo } from "react";

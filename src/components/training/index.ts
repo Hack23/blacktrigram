@@ -12,7 +12,6 @@ export * from "./components";
 // Re-export component props for external use
 export type { TrainingScreen3DProps } from "./TrainingScreen3D";
 
-// Old PixiJS components archived:
 // export { default as TrainingControlsPanel } from "./components/TrainingControlsPanel";
 // export { default as TrainingDummy } from "./components/TrainingDummy";
 // export { default as TrainingFeedback } from "./components/TrainingFeedback";

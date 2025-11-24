@@ -4,7 +4,6 @@ import App from "./App";
 import { AudioProvider } from "./audio/AudioProvider";
 import "./index.css";
 
-// Render the app directly using React and Three.js
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
