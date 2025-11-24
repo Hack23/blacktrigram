@@ -1,11 +1,11 @@
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { AudioProvider } from "./audio/AudioProvider";
-// ✅ MIGRATED: Use Three.js CombatScreen instead of PixiJS version
+// ✅ Three.js-based CombatScreen with 3D rendering
 import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
 // ✅ NEW: EndScreen3D for victory/defeat display
 import { EndScreen3D } from "./components/endscreen";
-// ✅ MIGRATED: Use Three.js IntroScreen instead of PixiJS version
+// ✅ Three.js-based IntroScreen with 3D rendering
 import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
 // ✅ MIGRATED: Use Three.js screens
 import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
@@ -16,7 +16,7 @@ import { GameMode, PlayerArchetype } from "./types/common";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
-// ✅ MIGRATED: Use Three.js TrainingScreen instead of PixiJS version
+// ✅ Three.js-based TrainingScreen with 3D rendering
 const TrainingScreen = lazy(
   () => import("./components/training/TrainingScreen3D").then(m => ({ default: m.TrainingScreen3D }))
 );

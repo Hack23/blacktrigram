@@ -13,7 +13,7 @@ export * from "./types";
 export * from "./utils";
 export * from "./audio";
 export * from "./systems";
-// export * from "./hooks"; // Archived - all hooks were PixiJS-specific
+// export * from "./hooks"; // Archived - legacy hooks have been removed
 export * from "./components";
 
 // Export main application components
