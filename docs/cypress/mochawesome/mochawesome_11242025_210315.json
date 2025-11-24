@@ -1,0 +1,344 @@
+{
+  "stats": {
+    "suites": 7,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-11-24T21:02:39.953Z",
+    "end": "2025-11-24T21:03:15.089Z",
+    "duration": 35136,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "e6353711-876a-4ba7-aa50-8a23f5d1385f",
+      "title": "",
+      "fullFile": "cypress/e2e/game-journey.cy.ts",
+      "file": "cypress/e2e/game-journey.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1654b7e1-bb49-441f-aac1-1f41bc163bc9",
+          "title": "Black Trigram - Game Journey",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "c026de96-953c-4821-94da-15ccd874eeb7",
+              "title": "Complete Game Navigation Flow",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support all navigation paths and game modes",
+                  "fullTitle": "Black Trigram - Game Journey Complete Game Navigation Flow should support all navigation paths and game modes",
+                  "timedOut": null,
+                  "duration": 6796,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing complete game navigation\");\n// Verify starting at intro screen\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\n// Test arrow key and space navigation\ncy.gameActions([\"a\", \"d\", \"{leftarrow}\", \"{rightarrow}\"]);\ncy.get(\"canvas\").should(\"be.visible\");\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\"); // Should still be at intro\n// Test all mode entry methods in sequence\ncy.annotate(\"Testing Sparring Mode entry via #1\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Verify we entered combat or are still at intro (flexible for keyboard implementation)\ncy.get(\"body\").then(($body) => {\n    const hasCombat = $body.find('[data-testid=\"combat-screen\"]').length > 0;\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0;\n    expect(hasCombat || hasIntro).to.be.true;\n});\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.annotate(\"Testing Training Mode entry via #2\");\ncy.gameActions([\"2\"]);\ncy.waitForCanvasReady();\n// Verify we entered training or are still at intro (flexible for keyboard implementation)\ncy.get(\"body\").then(($body) => {\n    const hasTraining = $body.find('[data-testid=\"training-screen\"]').length > 0;\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0;\n    expect(hasTraining || hasIntro).to.be.true;\n});\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\n// Verify intro screen after navigation\ncy.get('[data-testid=\"app-container\"]').should(\"be.visible\");\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.annotate(\"Navigation flow test complete\");",
+                  "err": {},
+                  "uuid": "48109fff-e4b5-4913-a6df-ca72e189a20f",
+                  "parentUUID": "c026de96-953c-4821-94da-15ccd874eeb7",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "48109fff-e4b5-4913-a6df-ca72e189a20f"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 6796,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "09e667e0-123a-49c0-8ef4-c4128308bd19",
+              "title": "Combat Mechanics and Interactions",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should support complete combat flow with all mechanics",
+                  "fullTitle": "Black Trigram - Game Journey Combat Mechanics and Interactions should support complete combat flow with all mechanics",
+                  "timedOut": null,
+                  "duration": 5118,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing combat mechanics\");\n// Enter combat once\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Verify we're in combat mode\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-screen\"]').length > 0) {\n        cy.log(\"✅ Combat mode entered\");\n        // If in combat, test all mechanics\n        cy.annotate(\"Testing movement\");\n        cy.gameActions([\"w\", \"a\", \"s\", \"d\", \"{uparrow}\", \"{leftarrow}\", \"{downarrow}\", \"{rightarrow}\"]);\n        cy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n        // Test all trigram stances and techniques in batch\n        cy.annotate(\"Testing all 8 trigram stances\");\n        for (let i = 1; i <= 8; i++) {\n            cy.get(\"body\").type(i.toString());\n            if (i % 4 === 0) {\n                cy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n            }\n        }\n        // Test combat sequence\n        cy.annotate(\"Testing combat sequence\");\n        cy.gameActions([\"1\", \" \", \"3\", \" \", \"5\", \" \", \"7\", \" \"]);\n        cy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n        // Test mouse interaction\n        cy.get(\"canvas\").click(400, 300);\n        cy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n    }\n    else {\n        cy.log(\"⚠️ Did not enter combat mode, skipping mechanics test\");\n    }\n});\n// Exit combat\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.annotate(\"Combat mechanics test complete\");",
+                  "err": {},
+                  "uuid": "1f75b465-a869-4753-80c8-8bc621376cd8",
+                  "parentUUID": "09e667e0-123a-49c0-8ef4-c4128308bd19",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "should handle intense combat performance",
+                  "fullTitle": "Black Trigram - Game Journey Combat Mechanics and Interactions should handle intense combat performance",
+                  "timedOut": null,
+                  "duration": 1493,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing combat performance\");\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\nconst startTime = Date.now();\n// Execute rapid combat sequence\ncy.gameActions([\"wasd\", \"1234\", \"wasd\", \"5678\", \" \"]);\ncy.wrap(null).then(() => {\n    const duration = Date.now() - startTime;\n    cy.task(\"logPerformance\", { name: \"Combat Performance\", duration });\n    expect(duration).to.be.lessThan(15000);\n});\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "773eb94a-f9a3-4d81-a32a-87320802286f",
+                  "parentUUID": "09e667e0-123a-49c0-8ef4-c4128308bd19",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "1f75b465-a869-4753-80c8-8bc621376cd8",
+                "773eb94a-f9a3-4d81-a32a-87320802286f"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 6611,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "f9ccb58c-a1f7-4df7-bf1e-a84a9f29b601",
+              "title": "Responsive Design",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should work across all viewport sizes",
+                  "fullTitle": "Black Trigram - Game Journey Responsive Design should work across all viewport sizes",
+                  "timedOut": null,
+                  "duration": 6589,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing responsive design\");\n// Test all key screen sizes efficiently\nconst viewports = [\n    [1280, 720], // Desktop\n    [768, 1024], // Tablet\n    [375, 667], // Mobile\n];\nviewports.forEach(([width, height]) => {\n    cy.annotate(`Testing ${width}x${height}`);\n    cy.viewport(width, height);\n    cy.wait(300); // Reduced from 500ms for canvas stability\n    // Verify essential elements\n    cy.get('[data-testid=\"app-container\"]').should(\"be.visible\");\n    cy.get(\"canvas\").should(\"exist\");\n    cy.get('[data-testid=\"training-button\"]').should(\"contain\", \"훈련\");\n    cy.get('[data-testid=\"combat-button\"]').should(\"contain\", \"대전\");\n});\n// Quick mode test at one viewport to verify functionality\ncy.viewport(1280, 720);\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();",
+                  "err": {},
+                  "uuid": "c737353a-5f08-4871-aecd-b9a2d1e39286",
+                  "parentUUID": "f9ccb58c-a1f7-4df7-bf1e-a84a9f29b601",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "c737353a-5f08-4871-aecd-b9a2d1e39286"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 6589,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "f1f2beca-a841-45a9-b43b-d650064fc700",
+              "title": "Input Handling",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle various input combinations",
+                  "fullTitle": "Black Trigram - Game Journey Input Handling should handle various input combinations",
+                  "timedOut": null,
+                  "duration": 6264,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing input handling\");\ncy.enterTrainingMode();\n// Test rapid sequential inputs\ncy.gameActions([\"1\", \"2\", \"3\", \"4\", \"5\"]);\n// Test key combinations\ncy.get(\"body\").type(\"{leftarrow}{rightarrow}\", { delay: 0 });\ncy.returnToIntro();",
+                  "err": {},
+                  "uuid": "9257daa7-1a15-4194-a589-93cbd942b1cd",
+                  "parentUUID": "f1f2beca-a841-45a9-b43b-d650064fc700",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "9257daa7-1a15-4194-a589-93cbd942b1cd"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 6264,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "c5e439b1-3aa5-4951-a71d-0217aba46843",
+              "title": "Error Resilience",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle missing components and errors gracefully",
+                  "fullTitle": "Black Trigram - Game Journey Error Resilience should handle missing components and errors gracefully",
+                  "timedOut": null,
+                  "duration": 1262,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing error resilience\");\n// Test non-existent features\ncy.get(\"body\").type(\"4\");\ncy.wait(300); // Reduced from 500ms\n// Return to main screen\ncy.get(\"body\").type(\"{esc}\");\ncy.wait(300); // Reduced from 500ms\ncy.get(\"body\").then(($body) => {\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0 ||\n        $body.find('[data-testid=\"app-container\"]').length > 0;\n    if (hasIntro) {\n        cy.log(\"✅ Error resilience verified\");\n    }\n});",
+                  "err": {},
+                  "uuid": "053aa94d-dd45-449c-ae01-eec9f8214879",
+                  "parentUUID": "c5e439b1-3aa5-4951-a71d-0217aba46843",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "053aa94d-dd45-449c-ae01-eec9f8214879"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1262,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "dbc385ac-2d87-4884-8731-5b58cdda1e03",
+              "title": "AI and State Management",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should handle AI interactions and state consistency",
+                  "fullTitle": "Black Trigram - Game Journey AI and State Management should handle AI interactions and state consistency",
+                  "timedOut": null,
+                  "duration": 1296,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.annotate(\"Testing AI and state management\");\n// Enter combat and test AI response\ncy.gameActions([\"1\"]);\ncy.waitForCanvasReady();\n// Move toward then away from AI\ncy.gameActions([\"d\", \"d\", \"d\", \"d\", \"a\", \"a\", \"a\", \"a\"]);\ncy.waitForCanvasReady();\ncy.gameActions([\"{esc}\"]);\ncy.waitForCanvasReady();\n// Test state consistency across sessions (reduced iterations)\nfor (let i = 0; i < 2; i++) {\n    cy.enterCombatMode();\n    cy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n    cy.gameActions([\"1\", \" \"]);\n    cy.returnToIntro();\n    cy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n}\ncy.log(\"✅ AI and state management verified\");",
+                  "err": {},
+                  "uuid": "51a27f65-74b0-4bad-93dc-47b6367a8186",
+                  "parentUUID": "dbc385ac-2d87-4884-8731-5b58cdda1e03",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "51a27f65-74b0-4bad-93dc-47b6367a8186"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1296,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
