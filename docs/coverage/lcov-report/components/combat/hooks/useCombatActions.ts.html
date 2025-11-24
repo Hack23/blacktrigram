@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.98% </span>
+                <span class="strong">76.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>92/107</span>
+                <span class='fraction'>82/107</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">67.85% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>42/56</span>
+                <span class='fraction'>38/56</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88% </span>
+                <span class="strong">78% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>88/100</span>
+                <span class='fraction'>78/100</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -666,36 +666,36 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1102,45 +1102,45 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     );
 &nbsp;
     const effectType = result.hit
-      ? result.isCritical
-        ? <span class="branch-0 cbranch-no" title="branch not covered" >HitEffectType.CRITICAL_HIT</span>
+      ? <span class="branch-0 cbranch-no" title="branch not covered" >result.isCritical</span>
+        ? HitEffectType.CRITICAL_HIT
         : HitEffectType.HIT
-      : <span class="branch-1 cbranch-no" title="branch not covered" >HitEffectType.MISS;</span>
+      : HitEffectType.MISS;
 &nbsp;
-    addHitEffect(effectType, playerPositions[0], result.hit ? 1 : <span class="branch-1 cbranch-no" title="branch not covered" >0.5)</span>;
+    addHitEffect(effectType, playerPositions[0], result.hit ? <span class="branch-0 cbranch-no" title="branch not covered" >1 : 0</span>.5);
 &nbsp;
-    if (result.hit) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (result.hit) {
       // Play hit sound based on damage
-      combatAudio?.playHitSound(result.damage);
+<span class="cstat-no" title="statement not covered" >      combatAudio?.playHitSound(result.damage);</span>
 &nbsp;
       // Combo tracking: reset combo if too much time passed
-      const now = Date.now();
-      const timeSinceLastHit = now - combatState.lastHitTime;
-      const newCombo = timeSinceLastHit &lt; 2000 ? <span class="branch-0 cbranch-no" title="branch not covered" >combatState.comboCount + 1 : 1</span>;
-      combatActions.setComboCount(newCombo);
-      combatActions.setLastHitTime(now);
+      const now = <span class="cstat-no" title="statement not covered" >Date.now();</span>
+      const timeSinceLastHit = <span class="cstat-no" title="statement not covered" >now - combatState.lastHitTime;</span>
+      const newCombo = <span class="cstat-no" title="statement not covered" >timeSinceLastHit &lt; 2000 ? combatState.comboCount + 1 : 1;</span>
+<span class="cstat-no" title="statement not covered" >      combatActions.setComboCount(newCombo);</span>
+<span class="cstat-no" title="statement not covered" >      combatActions.setLastHitTime(now);</span>
 &nbsp;
       // Apply damage through combat system
       const { updatedAttacker, updatedDefender } =
-        combatSystem.applyCombatResult(
+<span class="cstat-no" title="statement not covered" >        combatSystem.applyCombatResult(</span>
           result,
           validPlayers[0],
           validPlayers[1]
         );
 &nbsp;
-      onPlayerUpdate(0, updatedAttacker);
-      onPlayerUpdate(1, updatedDefender);
+<span class="cstat-no" title="statement not covered" >      onPlayerUpdate(0, updatedAttacker);</span>
+<span class="cstat-no" title="statement not covered" >      onPlayerUpdate(1, updatedDefender);</span>
 &nbsp;
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (result.isCritical) {
+<span class="cstat-no" title="statement not covered" >      if (result.isCritical) {</span>
 <span class="cstat-no" title="statement not covered" >        addCombatMessage("치명타 공격!", "Critical Hit!");</span>
-      <span class="missing-if-branch" title="if path not taken" >I</span>} else if (newCombo &gt; 2) {
+<span class="cstat-no" title="statement not covered" >      } else if (newCombo &gt; 2) {</span>
 <span class="cstat-no" title="statement not covered" >        addCombatMessage(`${newCombo} 연속 공격!`, `${newCombo} Hit Combo!`);</span>
       } else {
-        addCombatMessage("공격 성공!", "Attack Hit!");
+<span class="cstat-no" title="statement not covered" >        addCombatMessage("공격 성공!", "Attack Hit!");</span>
       }
-    } else <span class="missing-if-branch" title="else path not taken" >E</span>{
-<span class="cstat-no" title="statement not covered" >      combatActions.resetCombo();</span>
-<span class="cstat-no" title="statement not covered" >      addCombatMessage("공격 빗나감", "Attack Missed");</span>
+    } else {
+      combatActions.resetCombo();
+      addCombatMessage("공격 빗나감", "Attack Missed");
     }
 &nbsp;
     setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ombatActions.setExecutingTechnique(false), 5</span>00);
@@ -1405,7 +1405,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-24T19:10:34.865Z
+                at 2025-11-24T21:12:34.063Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
