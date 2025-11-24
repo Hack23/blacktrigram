@@ -104,11 +104,16 @@ Changed absolute paths to relative:
 
 ```javascript
 // Adaptive service worker registration
-const swPath = window.location.hostname === 'localhost' 
-  ? '/sw.js' 
-  : './sw.js';
+const isDevelopment =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname.startsWith('192.168.') ||
+  window.location.port !== '';
+const swPath = isDevelopment ? '/sw.js' : './sw.js';
 navigator.serviceWorker.register(swPath);
 ```
+
+**Note:** This checks for common development scenarios including localhost, 127.0.0.1, local network IPs (192.168.x.x), and any URL with a port number to properly detect development environments.
 
 ### 5. Improved Error Handling
 

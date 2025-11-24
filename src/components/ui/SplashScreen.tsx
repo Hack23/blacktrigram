@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { KOREAN_COLORS } from "../../types/constants";
+import React, { useCallback, useMemo, useState } from "react";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 
 // Constants
 const LOADING_DELAY_MS = 100; // Delay to show loading state before starting
@@ -34,13 +34,26 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleStart = () => {
+  // Memoize responsive breakpoint calculation
+  const isMobile = useMemo(() => width < 768, [width]);
+
+  // Memoize responsive layout values
+  const layoutCalculation = useMemo(() => ({
+    titleFontSize: isMobile ? 36 : 64,
+    subtitleFontSize: isMobile ? 16 : 24,
+    bodyFontSize: isMobile ? 12 : 14,
+    instructionsFontSize: isMobile ? 11 : 12,
+    buttonPadding: isMobile ? "16px 48px" : "20px 60px",
+    buttonFontSize: isMobile ? 16 : 20,
+  }), [isMobile]);
+
+  const handleStart = useCallback(() => {
     setIsLoading(true);
     // Small delay to show loading state
     setTimeout(() => {
       onStart();
     }, LOADING_DELAY_MS);
-  };
+  }, [onStart]);
 
   return (
     <div
@@ -53,7 +66,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         alignItems: "center",
         background: "linear-gradient(180deg, #0a0f12 0%, #1a1a2e 100%)",
         color: "#fff",
-        fontFamily: "'Orbitron', 'Noto Sans KR', sans-serif",
+        fontFamily: FONT_FAMILY.CYBER,
         position: "relative",
         overflow: "hidden",
       }}
@@ -94,7 +107,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
       >
         <h1
           style={{
-            fontSize: width < 768 ? "36px" : "64px",
+            fontSize: `${layoutCalculation.titleFontSize}px`,
             fontWeight: 900,
             color: `#${HEX_COLORS.PRIMARY_CYAN}`,
             textShadow: `0 0 20px #${HEX_COLORS.PRIMARY_CYAN}80`,
@@ -106,7 +119,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         </h1>
         <h2
           style={{
-            fontSize: width < 768 ? "16px" : "24px",
+            fontSize: `${layoutCalculation.subtitleFontSize}px`,
             fontWeight: 400,
             color: `#${HEX_COLORS.ACCENT_GOLD}`,
             letterSpacing: "2px",
@@ -117,7 +130,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         </h2>
         <p
           style={{
-            fontSize: width < 768 ? "12px" : "14px",
+            fontSize: `${layoutCalculation.bodyFontSize}px`,
             color: "#aaa",
             marginTop: "20px",
             letterSpacing: "1px",
@@ -132,9 +145,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         onClick={handleStart}
         disabled={isLoading}
         style={{
-          padding: width < 768 ? "16px 48px" : "20px 60px",
-          fontSize: width < 768 ? "16px" : "20px",
-          fontFamily: "'Orbitron', 'Noto Sans KR', sans-serif",
+          padding: layoutCalculation.buttonPadding,
+          fontSize: `${layoutCalculation.buttonFontSize}px`,
+          fontFamily: FONT_FAMILY.CYBER,
           fontWeight: 700,
           color: isLoading ? "#666" : "#000",
           background: isLoading
@@ -160,8 +173,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = `0 4px 20px #${HEX_COLORS.PRIMARY_CYAN}40`;
+          if (!isLoading) {
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.boxShadow = `0 4px 20px #${HEX_COLORS.PRIMARY_CYAN}40`;
+          }
         }}
         data-testid="splash-start-button"
       >
@@ -174,7 +189,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           marginTop: "40px",
           textAlign: "center",
           color: "#888",
-          fontSize: width < 768 ? "11px" : "12px",
+          fontSize: `${layoutCalculation.instructionsFontSize}px`,
           maxWidth: "600px",
           padding: "0 20px",
           zIndex: 1,
@@ -199,7 +214,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           zIndex: 1,
         }}
       >
-        v{(globalThis as any).APP_VERSION || "0.5.3"}
+        v{typeof APP_VERSION !== "undefined" ? APP_VERSION : "0.5.3"}
       </div>
     </div>
   );
