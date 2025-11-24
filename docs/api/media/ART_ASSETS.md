@@ -8,27 +8,32 @@ Additionally, we call out the **Pixi.js modules** (dependencies) you’ll actual
 
 ## CURRENT ASSETS Available
 
+## Asset Audit
+
+Run `npm run audit:assets` to verify all visual asset references in the codebase point to existing files. This ensures no broken asset links and helps maintain asset integrity.
+
+
 ```
-src/assets/visual
-src/assets/visual/archetypes
-src/assets/visual/archetypes/amsalja.png
-src/assets/visual/archetypes/hacker.png
-src/assets/visual/archetypes/jeongbo_yowon.png
-src/assets/visual/archetypes/jojik_pokryeokbae.png
-src/assets/visual/archetypes/musa.png
-src/assets/visual/bg
-src/assets/visual/bg/archetyples
-src/assets/visual/bg/archetyples/CyberpunkTeamDynamics.png
-src/assets/visual/bg/archetyples/PlayerArchetypesExplained.png
-src/assets/visual/bg/archetyples/PlayerArchetypesOverview.png
-src/assets/visual/bg/dojang
-src/assets/visual/bg/dojang/dojang_floor_tex.png
-src/assets/visual/bg/dojang/dojang_wall_tex.png
-src/assets/visual/bg/intro
-src/assets/visual/bg/intro/intro_bg_loop.png
-src/assets/visual/logo
-src/assets/visual/logo/black-trigram-256.png
-src/assets/visual/logo/black-trigram.png
+public/assets/visual
+public/assets/visual/archetypes
+public/assets/visual/archetypes/amsalja.png
+public/assets/visual/archetypes/hacker.png
+public/assets/visual/archetypes/jeongbo_yowon.png
+public/assets/visual/archetypes/jojik_pokryeokbae.png
+public/assets/visual/archetypes/musa.png
+public/assets/visual/bg
+public/assets/visual/bg/archetyples
+public/assets/visual/bg/archetyples/CyberpunkTeamDynamics.png
+public/assets/visual/bg/archetyples/PlayerArchetypesExplained.png
+public/assets/visual/bg/archetyples/PlayerArchetypesOverview.png
+public/assets/visual/bg/dojang
+public/assets/visual/bg/dojang/dojang_floor_tex.png
+public/assets/visual/bg/dojang/dojang_wall_tex.png
+public/assets/visual/bg/intro
+public/assets/visual/bg/intro/intro_bg_loop.png
+public/assets/visual/logo
+public/assets/visual/logo/black-trigram-256.png
+public/assets/visual/logo/black-trigram.png
 ---
 
 ## 1. Backgrounds & Environments
