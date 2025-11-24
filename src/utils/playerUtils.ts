@@ -5,6 +5,7 @@
 import { PLAYER_ARCHETYPES_DATA, PlayerState, StatusEffect } from "../systems";
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
+import { ARCHETYPE_ASSETS } from "../types/constants";
 
 /**
  * Create a complete PlayerState from archetype and player index
@@ -253,4 +254,38 @@ export function resetPlayerState(
   playerIndex: number
 ): PlayerState {
   return createPlayerFromArchetype(archetype, playerIndex);
+}
+
+/**
+ * Get archetype asset paths (image, theme music, etc.)
+ * 
+ * Note: PlayerArchetype enum values are already lowercase (e.g., MUSA = "musa"),
+ * so the toLowerCase() call is defensive programming for type safety.
+ */
+export function getArchetypeAssets(archetype: PlayerArchetype): {
+  readonly id: string;
+  readonly image: string;
+  readonly theme: string;
+  readonly themeId: string;
+  readonly name_korean: string;
+  readonly name_english: string;
+  readonly textureKey: string;
+} {
+  const archetypeId = archetype.toLowerCase();
+  const asset = ARCHETYPE_ASSETS[archetypeId as keyof typeof ARCHETYPE_ASSETS];
+  
+  if (!asset) {
+    console.warn(`No assets found for archetype: ${archetype}`);
+    return {
+      id: "unknown",
+      image: "/assets/visual/logo/black-trigram-256.png",
+      theme: "/assets/audio/music/intro_theme.mp3",
+      themeId: "intro_theme",
+      name_korean: "알 수 없음",
+      name_english: "Unknown",
+      textureKey: archetype,
+    };
+  }
+  
+  return asset;
 }

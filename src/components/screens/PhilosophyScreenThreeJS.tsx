@@ -78,7 +78,6 @@ const BackgroundScene: React.FC = () => {
 
 /**
  * Three.js-based PhilosophyScreen Component
- * Migrated from PixiJS to Three.js using @react-three/fiber and Html overlays
  */
 export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = ({
   onReturnToMenu,
@@ -414,17 +413,42 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                         {trigram.symbol}
                       </div>
 
-                      {/* Name */}
+                      {/* Name with Chinese character */}
                       <div
                         style={{
                           fontSize: isMobile ? "12px" : "14px",
                           fontWeight: "bold",
                           color: colors.textPrimary,
                           textAlign: "center",
-                          marginBottom: "8px",
+                          marginBottom: "4px",
                         }}
                       >
                         {trigram.name.korean} ({trigram.name.english})
+                      </div>
+
+                      {/* Chinese character and attribute */}
+                      <div
+                        style={{
+                          fontSize: isMobile ? "11px" : "13px",
+                          color: colors.accentGold,
+                          textAlign: "center",
+                          marginBottom: "8px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {trigram.chinese} - {trigram.attribute.chinese}, {trigram.attribute.korean}
+                      </div>
+
+                      {/* Core meaning */}
+                      <div
+                        style={{
+                          fontSize: isMobile ? "10px" : "11px",
+                          color: colors.accentCyan,
+                          textAlign: "center",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        {trigram.meaning.korean} | {trigram.meaning.english}
                       </div>
 
                       {/* Philosophy */}

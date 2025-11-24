@@ -1,7 +1,7 @@
 {
   "name": "game-app",
   "private": true,
-  "version": "0.4.1",
+  "version": "0.5.1",
   "type": "module",
   "scripts": {
     "dev": "vite --host --open",
@@ -49,7 +49,9 @@
     "gen:image:bedrock": "tsx scripts/generate_image_bedrock.ts",
     "gen:video:bedrock": "tsx scripts/generate_video_bedrock.ts",
     "gen:music:suno": "tsx scripts/generate_music_suno.ts",
-    "gen:sprites:archetype": "tsx scripts/generate_archetype_sprites.ts"
+    "gen:sprites:archetype": "tsx scripts/generate_archetype_sprites.ts",
+    "audit:assets": "tsx scripts/audit-assets.ts",
+    "audit:assets:verbose": "tsx scripts/audit-assets.ts --verbose"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",
@@ -73,7 +75,7 @@
     "@types/fs-extra": "11.0.4",
     "@types/howler": "^2.2.12",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@types/three": "0.181.0",
     "@typescript-eslint/eslint-plugin": "^8.47.0",

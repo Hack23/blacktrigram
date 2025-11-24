@@ -1,7 +1,6 @@
 /**
  * Player3DModel - 3D character representation for combat
  * 
- * Replaces PixiJS PlayerVisuals with Three.js 3D model
  * Uses simple geometries for performance while maintaining Korean aesthetic
  */
 

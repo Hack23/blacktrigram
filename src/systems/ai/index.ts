@@ -8,3 +8,4 @@ export * from "./AIPersonality";
 export * from "./ComboSystem";
 export * from "./AdaptiveDifficulty";
 export * from "./DecisionTree";
+export * from "./TrainingAI";

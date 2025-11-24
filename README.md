@@ -49,7 +49,7 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 [![Open Source Policy](https://img.shields.io/badge/ISMS-Open%20Source%20Policy-FFD700?style=flat-square&logo=open-source-initiative&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
 [![Transparency Plan](https://img.shields.io/badge/ISMS-Transparency%20Plan-9370DB?style=flat-square&logo=eye&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)
 
-_A realistic 2D precision combat game inspired by Korean martial arts philosophy and the I Ching_
+_An immersive 3D precision combat game powered by Three.js, inspired by Korean martial arts philosophy and the I Ching_
 
 </div>
 
@@ -57,7 +57,7 @@ _A realistic 2D precision combat game inspired by Korean martial arts philosophy
 
 ## ⚡ Combat Mastery
 
-**Black Trigram** is a **realistic combat simulator** that teaches authentic Korean martial arts through precise anatomical targeting. Master traditional vital-point techniques via modern 2D combat mechanics across 5 distinct fighter archetypes.
+**Black Trigram** is a **realistic combat simulator** that teaches authentic Korean martial arts through precise anatomical targeting. Master traditional vital-point techniques via modern 3D combat mechanics powered by Three.js across 5 distinct fighter archetypes.
 
 ### 🎯 Combat Disciplines
 
@@ -181,7 +181,6 @@ Built for **combat realism** and **authentic simulation**:
 
 ![Three.js](https://img.shields.io/badge/Three.js-0.181-000000?style=for-the-badge&logo=three.js)
 ![React Three Fiber](https://img.shields.io/badge/R3F-9.4-00ffff?style=for-the-badge&logo=react)
-![PixiJS](https://img.shields.io/badge/PixiJS-8.x-ff6b6b?style=for-the-badge&logo=javascript)
 ![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)
 
@@ -304,7 +303,7 @@ Traditional Korean martial arts mapped to 70 biomechanical vital points. Five co
 
 **[VR Martial Arts & Immersive Combat](https://hack23.com/blog-trigram-future.html)**
 
-Five-year evolution roadmap from 2D fighter to VR martial arts training platform. Korean martial arts preservation through immersive technology.
+Five-year evolution roadmap from immersive 3D fighter to VR martial arts training platform. Korean martial arts preservation through immersive technology.
 
 </td>
 </tr>
@@ -330,7 +329,7 @@ George Dorn provides detailed repository deep-dives based on actual code inspect
 
 **[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
 
-**Stack:** TypeScript 5.9, React 19, PixiJS 8, Vite 7  
+**Stack:** TypeScript 5.9, React 19, Three.js 0.181, Vite 7  
 **Metrics:** 132 TypeScript files, 70 vital points system, 5 fighter archetypes
 
 Examined package.json dependencies, explored src/ structure, verified combat system implementation, and reviewed AI integrations.

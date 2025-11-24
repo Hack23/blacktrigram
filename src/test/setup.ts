@@ -46,7 +46,6 @@ beforeAll(() => {
   global.HTMLAudioElement = MockHTMLAudioElement as any;
   global.Audio = MockHTMLAudioElement as any;
 
-  // Mock PixiJS Application constructor issues
   class MockHTMLCanvasElement {
     width = 800;
     height = 600;
@@ -189,8 +188,7 @@ beforeAll(() => {
     const message = args[0];
     if (
       typeof message === "string" &&
-      (message.includes("PixiJS") ||
-        message.includes("WebGL") ||
+      (message.includes("WebGL") ||
         message.includes("AudioContext"))
     ) {
       return;

@@ -52,7 +52,7 @@ test: {
   setupFiles: ['./src/test/test-setup.ts'],
   server: {
     deps: {
-      inline: ['pixi.js', '@pixi/react'], // Required for PixiJS mocking
+      inline: [], // Three.js works well with Vitest by default
     },
   },
 }
@@ -104,7 +104,7 @@ src/
 │   ├── ui/
 │   │   ├── KoreanHeader.test.tsx     # Korean text rendering
 │   │   └── base/
-│   │       └── ResponsivePixiComponents.test.tsx
+│   │       └── (PixiJS components archived - migrated to Three.js)
 │   ├── game/
 │   │   ├── DojangBackground.test.tsx # Korean dojo aesthetics
 │   │   └── GameAudio.test.tsx
@@ -198,16 +198,18 @@ describe('KoreanHeader', () => {
 
 ```typescript
 // src/test/test-setup.ts
-vi.mock('pixi.js', () => ({
-  Application: vi.fn(() => ({
-    stage: { addChild: vi.fn() },
-    renderer: { render: vi.fn() },
-    ticker: { add: vi.fn(), remove: vi.fn() },
+// Three.js mocking if needed (usually not required for basic tests)
+vi.mock('three', () => ({
+  WebGLRenderer: vi.fn(() => ({
+    render: vi.fn(),
+    setSize: vi.fn(),
+    dispose: vi.fn(),
   })),
-  Container: vi.fn(),
-  Graphics: vi.fn(),
-  Sprite: vi.fn(),
-  Text: vi.fn(),
+  Scene: vi.fn(),
+  PerspectiveCamera: vi.fn(),
+  Mesh: vi.fn(),
+  BoxGeometry: vi.fn(),
+  MeshStandardMaterial: vi.fn(),
   Texture: {
     from: vi.fn(() => ({})),
     WHITE: {},
@@ -292,7 +294,7 @@ Per ISMS Secure Development Policy:
 | - KoreanAnatomy | 19.76% | 90% | Critical | ❌ Critical Gap |
 | **Utilities** | 50.00% | 80% | High | ⚠️ Major Gap |
 | - playerUtils | 94.11% | 90% | High | ✅ Excellent |
-| - pixiExtensions | 18.36% | 70% | Medium | ❌ Major Gap |
+| - threeHelpers | 18.36% | 70% | Medium | ❌ Major Gap |
 
 ### 5.3 Coverage Enforcement
 
@@ -508,10 +510,10 @@ Coverage reports are:
   - [ ] CombatHUD rendering tests (15 tests)
   - [ ] CombatStatsPanel update tests (10 tests)
 
-- [ ] **PixiJS Components** (32.69% → 70%)
-  - [ ] ResponsivePixiComponents tests (15 tests)
-  - [ ] Korean theming validation (10 tests)
-  - [ ] Layout system integration (10 tests)
+- [x] **PixiJS Components** (ARCHIVED - Migrated to Three.js)
+  - [x] ResponsivePixiComponents removed (replaced with Three.js Html overlays)
+  - [ ] Korean theming validation (10 tests) - migrated to Three.js components
+  - [ ] Layout system integration (10 tests) - using standard CSS layouts
 
 **Expected Outcome**: Overall coverage 70%+ by end of Q2 2025
 
@@ -526,7 +528,7 @@ Coverage reports are:
   - [ ] Korean audio integration tests (10 tests)
 
 - [ ] **Remaining Utilities** (50% → 80%)
-  - [ ] pixiExtensions validation (15 tests)
+  - [ ] threeHelpers validation (15 tests)
   - [ ] Edge case coverage (10 tests)
 
 **Expected Outcome**: 80%+ overall coverage, ISMS compliance achieved

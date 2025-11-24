@@ -48,10 +48,7 @@ export interface VitalPointSystemConfig {
 }
 
 // Deprecated placeholder types for backward compatibility
-// These were used with PixiJS but are no longer needed with Three.js
 // @deprecated These types will be removed in a future version
-type PixiApplication = any;
-type PixiDisplayObject = any;
 type Texture = any;
 
 // Vital point effect
@@ -116,10 +113,8 @@ export interface PhysicsEntityState {
   readonly angularVelocity?: number;
 }
 
-// Deprecated: Rendering system interface was used with PixiJS
 // @deprecated Use Three.js rendering instead
 export interface RenderableConfig {
-  readonly displayObject: PixiDisplayObject;
   readonly zOrder?: number;
   readonly visible?: boolean;
   readonly alpha?: number;
@@ -243,17 +238,14 @@ export interface PhysicsSystemInterface {
   applyForce: (entityId: EntityId, force: Velocity) => void;
 }
 
-// Deprecated: Rendering system interface was used with PixiJS
 // @deprecated Use Three.js rendering instead
 export interface RenderingSystemInterface {
-  readonly app: PixiApplication;
   addRenderable: (entityId: EntityId, config: RenderableConfig) => void;
   removeRenderable: (entityId: EntityId) => void;
   updateRenderable: (
     entityId: EntityId,
     updates: Partial<RenderableConfig>
   ) => void;
-  getDisplayObject: (entityId: EntityId) => PixiDisplayObject | undefined;
   render: () => void;
 }
 
@@ -398,7 +390,6 @@ export interface GamepadState {
   readonly buttons: readonly { pressed: boolean; value: number }[];
 }
 
-// Deprecated: AnimationFrame and AnimationState were used with PixiJS
 // Three.js uses built-in animation systems
 // @deprecated Use Three.js animation system instead
 export interface AnimationFrame {

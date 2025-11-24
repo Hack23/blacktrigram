@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { ARCHETYPE_ASSETS } from "../types/constants";
 import AudioManager from "./AudioManager";
 import { audioAssetRegistry } from "./AudioAssetRegistry";
 import placeholderAssets from "./placeholder-sounds";
@@ -59,6 +60,21 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
             console.warn("Failed to load intro theme music", err);
           });
         }
+
+        // Preload archetype theme music for character selection
+        const archetypeThemeIds = Object.values(ARCHETYPE_ASSETS).map(a => a.themeId);
+        const archetypeThemes = archetypeThemeIds.map(id => {
+          const track = audioAssetRegistry.getMusic(id);
+          if (!track) {
+            console.warn(`Archetype theme not registered: ${id}`);
+          }
+          return track;
+        });
+
+        const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
+        await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {
+          console.warn(`Failed to load archetype theme: ${a.id}`, err);
+        })));
       } catch (error) {
         console.error("Failed to initialize audio manager:", error);
         // Continue without audio - silent mode fallback

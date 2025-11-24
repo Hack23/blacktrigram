@@ -1,7 +1,6 @@
 /**
  * TrainingControlsHTML - Html overlay for training controls
  * 
- * Migrated from PixiJS TrainingControlsPanel to Html overlay
  * Uses CSS animations instead of requestAnimationFrame for better performance
  */
 

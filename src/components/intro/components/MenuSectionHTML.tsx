@@ -20,7 +20,6 @@ export interface MenuSectionHTMLProps {
 
 /**
  * HTML-based MenuSection component for Three.js integration
- * Migrated from PixiJS to work with @react-three/drei Html component
  */
 export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
   menuItems,
