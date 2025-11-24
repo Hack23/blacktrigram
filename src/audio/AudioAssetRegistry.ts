@@ -137,7 +137,7 @@ export class AudioAssetRegistry {
       name: "Menu Hover",
       category: "sfx",
       url: "/assets/audio/sfx/menu/menu_hover.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.5,
       variations: [
@@ -155,7 +155,7 @@ export class AudioAssetRegistry {
       name: "Menu Select",
       category: "sfx",
       url: "/assets/audio/sfx/menu/menu_select.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7,
       variations: [
@@ -177,7 +177,7 @@ export class AudioAssetRegistry {
       name: "Menu Back",
       category: "sfx",
       url: "/assets/audio/sfx/menu/menu_back.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.6,
       variations: [
@@ -195,7 +195,7 @@ export class AudioAssetRegistry {
       name: "Menu Navigate",
       category: "sfx",
       url: "/assets/audio/sfx/misc/menu_navigate.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.5,
       variations: [
@@ -213,7 +213,7 @@ export class AudioAssetRegistry {
       name: "Menu Click",
       category: "sfx",
       url: "/assets/audio/sfx/misc/menu_click.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.6,
       variations: [
@@ -239,7 +239,7 @@ export class AudioAssetRegistry {
       title: { korean: "전투 테마", english: "Combat Theme" },
       category: "music",
       url: "/assets/audio/music/combat_theme.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.4, // 40% volume per acceptance criteria
       loop: true,
@@ -260,7 +260,7 @@ export class AudioAssetRegistry {
       title: { korean: "언더그라운드 테마", english: "Underground Theme" },
       category: "music",
       url: "/assets/audio/music/underground_theme.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.4, // 40% volume per acceptance criteria
       loop: true,
@@ -281,7 +281,7 @@ export class AudioAssetRegistry {
       title: { korean: "사이버펑크 퓨전", english: "Cyberpunk Fusion" },
       category: "music",
       url: "/assets/audio/music/cyberpunk_fusion.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.4, // 40% volume per acceptance criteria
       loop: true,
@@ -329,7 +329,7 @@ export class AudioAssetRegistry {
         name: `Light Punch ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/combat/attack_punch_light_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -343,7 +343,7 @@ export class AudioAssetRegistry {
         name: `Medium Punch ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/combat/attack_punch_medium_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7,
       });
@@ -356,7 +356,7 @@ export class AudioAssetRegistry {
       name: "Light Attack",
       category: "sfx",
       url: "/assets/audio/sfx/combat/attack_light.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7, // 70% volume per acceptance criteria
       variations: [
@@ -372,7 +372,7 @@ export class AudioAssetRegistry {
       name: "Medium Attack",
       category: "sfx",
       url: "/assets/audio/sfx/combat/attack_medium.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7,
       variations: [
@@ -387,8 +387,8 @@ export class AudioAssetRegistry {
       type: "sound",
       name: "Heavy Attack",
       category: "sfx",
-      url: "/assets/audio/sfx/combat/attack_heavy.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      url: "/assets/audio/sfx/combat/attack_heavy.mp3",
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7, // 70% volume per acceptance criteria
     });
@@ -401,7 +401,7 @@ export class AudioAssetRegistry {
         name: `Critical Attack ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/combat/attack_critical_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -415,7 +415,7 @@ export class AudioAssetRegistry {
         name: `Geon Special ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/combat/attack_special_geon_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -429,7 +429,7 @@ export class AudioAssetRegistry {
         name: `Light Hit ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/hits/hit_light_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -443,7 +443,7 @@ export class AudioAssetRegistry {
         name: `Medium Hit ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/hits/hit_medium_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -457,7 +457,7 @@ export class AudioAssetRegistry {
         name: `Heavy Hit ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/hits/hit_heavy_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -471,7 +471,7 @@ export class AudioAssetRegistry {
         name: `Critical Hit ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/hits/hit_critical_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -485,7 +485,7 @@ export class AudioAssetRegistry {
         name: `Block Success ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/blocks/block_success_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -499,7 +499,7 @@ export class AudioAssetRegistry {
         name: `Block Break ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/blocks/block_break_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -513,7 +513,7 @@ export class AudioAssetRegistry {
         name: `Dodge ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/movement/dodge_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -527,7 +527,7 @@ export class AudioAssetRegistry {
         name: `Stance Change ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/movement/stance_change_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -541,7 +541,7 @@ export class AudioAssetRegistry {
         name: `Ki Charge ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/ki_energy/ki_charge_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -555,7 +555,7 @@ export class AudioAssetRegistry {
         name: `Ki Release ${i}`,
         category: "sfx",
         url: `/assets/audio/sfx/ki_energy/ki_release_${i}.webm`,
-        formats: ["audio/webm", "audio/mp3"],
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
       });
@@ -568,7 +568,7 @@ export class AudioAssetRegistry {
       name: "Ki Charge",
       category: "sfx",
       url: "/assets/audio/sfx/ki_energy/ki_charge.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7, // 70% volume per acceptance criteria
       variations: [
@@ -586,7 +586,7 @@ export class AudioAssetRegistry {
       name: "Ki Release",
       category: "sfx",
       url: "/assets/audio/sfx/ki_energy/ki_release.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7, // 70% volume per acceptance criteria
       variations: [
