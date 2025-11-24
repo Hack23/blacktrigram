@@ -643,13 +643,13 @@ export class AudioAssetRegistry {
         id: "attack_light",
         name: "Light Attack", // Fix: Use string instead of KoreanText object
         type: "sound",
-        url: "/assets/audio/sfx/attack_light.mp3",
-        formats: ["audio/mp3", "audio/wav"],
+        url: "/assets/audio/sfx/combat/attack_light.mp3",
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.8,
         category: "sfx", // Fix: Use string literal instead of enum
         pitch: 1.0,
-        variations: ["attack_light_1.mp3", "attack_light_2.mp3"],
+        variations: ["/assets/audio/sfx/combat/attack_light_1.mp3", "/assets/audio/sfx/combat/attack_light_2.mp3"],
       },
     ],
     [
@@ -658,8 +658,8 @@ export class AudioAssetRegistry {
         id: "stance_change",
         name: "Stance Change", // Fix: Use string instead of KoreanText object
         type: "sound",
-        url: "/assets/audio/sfx/stance_change.mp3",
-        formats: ["audio/mp3", "audio/wav"],
+        url: "/assets/audio/sfx/movement/stance_change.mp3",
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.6,
         category: "sfx", // Fix: Use string literal instead of enum
@@ -672,8 +672,8 @@ export class AudioAssetRegistry {
         id: "vital_hit_critical",
         name: "Critical Vital Point Hit", // Fix: Use string instead of KoreanText object
         type: "sound",
-        url: "/assets/audio/sfx/vital_hit_critical.mp3",
-        formats: ["audio/mp3", "audio/wav"],
+        url: "/assets/audio/sfx/combat/attack_critical.mp3",
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.9,
         category: "sfx", // Fix: Use string literal instead of enum
@@ -686,15 +686,15 @@ export class AudioAssetRegistry {
         id: "hit_light",
         name: "Light Hit", // Fix: Use simple string instead of KoreanText object
         type: "sound",
-        url: "/assets/audio/sfx/hit_light.mp3",
-        formats: ["audio/mp3", "audio/wav"],
+        url: "/assets/audio/sfx/hits/hit_light.mp3",
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7,
         category: "sfx", // Fix: Use string literal instead of enum
         pitch: 1.0,
         variations: [
-          "/assets/audio/sfx/hit_light_1.mp3",
-          "/assets/audio/sfx/hit_light_2.mp3",
+          "/assets/audio/sfx/hits/hit_light_1.mp3",
+          "/assets/audio/sfx/hits/hit_light_2.mp3",
         ],
       },
     ],
@@ -747,8 +747,8 @@ export class AudioAssetRegistry {
         id: "dojang_ambience",
         name: "Dojang Atmosphere", // Fix: Use string instead of KoreanText object
         type: "music",
-        url: "/assets/audio/music/dojang_ambience.mp3",
-        formats: ["audio/mp3", "audio/wav"],
+        url: "/assets/audio/music/underground_theme.mp3",
+        formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         title: { korean: "도장 분위기", english: "Dojang Atmosphere" },
         volume: 0.4,

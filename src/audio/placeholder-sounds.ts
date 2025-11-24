@@ -287,7 +287,8 @@ export const END_SCREEN_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "victory_fanfare",
     name: "Victory Fanfare",
     type: "sound",
-    url: "/assets/audio/sfx/ui/victory_fanfare.mp3",
+    // TODO: Create victory fanfare asset - using combat theme as placeholder
+    url: "/assets/audio/music/combat_theme.mp3",
     formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.9,
@@ -298,7 +299,8 @@ export const END_SCREEN_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "defeat_sound",
     name: "Defeat Sound",
     type: "sound",
-    url: "/assets/audio/sfx/ui/defeat.mp3",
+    // TODO: Create defeat sound asset - using hit heavy as placeholder
+    url: "/assets/audio/sfx/hits/hit_heavy.mp3",
     formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.7,
@@ -313,7 +315,8 @@ export const END_SCREEN_MUSIC_TRACKS: readonly MusicTrack[] = [
     id: "victory_theme",
     name: "Victory Theme",
     type: "music",
-    url: "/assets/audio/music/victory_theme.mp3",
+    // TODO: Create victory theme asset - using cyberpunk fusion as placeholder
+    url: "/assets/audio/music/cyberpunk_fusion.mp3",
     formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     title: { korean: "승리 테마", english: "Victory Theme" },
@@ -326,7 +329,8 @@ export const END_SCREEN_MUSIC_TRACKS: readonly MusicTrack[] = [
     id: "defeat_theme",
     name: "Defeat Theme",
     type: "music",
-    url: "/assets/audio/music/defeat_theme.mp3",
+    // TODO: Create defeat theme asset - using underground theme as placeholder
+    url: "/assets/audio/music/underground_theme.mp3",
     formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     title: { korean: "패배 테마", english: "Defeat Theme" },
