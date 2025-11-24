@@ -1,7 +1,6 @@
 /**
  * TrainingScreen3D - Three.js-based training screen
  * 
- * Migrated from PixiJS TrainingScreen to Three.js using @react-three/fiber
  * Provides 3D training dummy with vital point targeting and Html UI overlays
  */
 

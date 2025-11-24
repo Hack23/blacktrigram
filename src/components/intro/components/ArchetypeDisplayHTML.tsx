@@ -35,7 +35,6 @@ export interface ArchetypeDisplayHTMLProps {
 
 /**
  * HTML-based ArchetypeDisplay component for Three.js integration
- * Migrated from PixiJS to work with @react-three/drei Html component
  */
 export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> = React.memo(
   ({

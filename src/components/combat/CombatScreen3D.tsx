@@ -1,7 +1,6 @@
 /**
  * CombatScreen3D - Three.js-based combat screen
  * 
- * Migrated from PixiJS CombatScreen to Three.js using @react-three/fiber
  * Maintains all existing combat logic and state management
  * Uses Html overlays for UI and 3D meshes for game objects
  */
@@ -12,7 +11,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import * as THREE from "three";
@@ -163,9 +161,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
-
-  // Match timing - useRef for initialization
-  const matchStartTimeRef = useRef(Date.now());
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
@@ -528,13 +523,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   useEffect(() => {
     checkGameEnd();
   }, [validPlayers[0].health, validPlayers[1].health, checkGameEnd]);
-
-  // Match duration
-  // @ts-expect-error - Unused after removing PixiJS UI components
-  const matchDuration = useMemo(
-    () => Math.floor((Date.now() - matchStartTimeRef.current) / 1000),
-    []
-  );
 
   // Keyboard input handling
   useEffect(() => {

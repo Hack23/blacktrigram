@@ -4,7 +4,6 @@ import App from "./App";
 import { AudioProvider } from "./audio/AudioProvider";
 import "./index.css";
 
-// Render the app directly (no longer need PixiJS layout engine)
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

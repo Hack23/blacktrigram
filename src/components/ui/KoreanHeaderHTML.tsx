@@ -16,7 +16,6 @@ export interface KoreanHeaderHTMLProps {
 
 /**
  * HTML-based KoreanHeader component for Three.js integration
- * Migrated from PixiJS to work with @react-three/drei Html component
  */
 export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
   title,

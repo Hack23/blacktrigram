@@ -1,7 +1,6 @@
 /**
  * HitEffects3D - Three.js particle effects for combat
  * 
- * Replaces PixiJS HitEffectsLayer with Three.js 3D particle effects
  * Maintains Korean theming and visual feedback for combat actions
  */
 

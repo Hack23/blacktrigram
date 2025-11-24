@@ -75,7 +75,6 @@ const BackgroundScene: React.FC = () => {
 
 /**
  * Three.js-based ControlsScreen Component
- * Migrated from PixiJS to Three.js using @react-three/fiber and Html overlays
  */
 export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   onReturnToMenu,

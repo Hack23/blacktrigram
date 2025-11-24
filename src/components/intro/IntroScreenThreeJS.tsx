@@ -122,7 +122,6 @@ const BackgroundScene: React.FC = () => {
 
 /**
  * Three.js-based IntroScreen Component
- * Migrated from PixiJS to Three.js using @react-three/fiber
  */
 export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   onMenuSelect,

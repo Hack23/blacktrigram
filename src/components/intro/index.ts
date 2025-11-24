@@ -13,7 +13,6 @@ export * from "./components";
 // Type exports
 export type { IntroScreenThreeJSProps } from "./IntroScreenThreeJS";
 
-// Old PixiJS components archived:
 // export { IntroScreen } from "./IntroScreen";
 // export { default as ArchetypeDisplay } from "./components/ArchetypeDisplay";
 // export { MenuSection } from "./components/MenuSection";

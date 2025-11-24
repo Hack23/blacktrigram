@@ -12,6 +12,5 @@ export { PhilosophyScreenThreeJS } from "./PhilosophyScreenThreeJS";
 export type { ControlsScreenThreeJSProps } from "./ControlsScreenThreeJS";
 export type { PhilosophyScreenThreeJSProps } from "./PhilosophyScreenThreeJS";
 
-// Old PixiJS versions archived:
 // export { ControlsScreen } from "./ControlsScreen";
 // export { PhilosophyScreen } from "./PhilosophyScreen";

@@ -1,7 +1,6 @@
 /**
  * VitalPointTrainingHTML - Html overlay for vital point selection
  * 
- * Migrated from PixiJS VitalPointTrainingPanel to Html overlay
  */
 
 import React, { useMemo } from "react";
