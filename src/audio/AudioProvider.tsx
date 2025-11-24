@@ -9,11 +9,27 @@ export interface AudioProviderProps {
   children: React.ReactNode;
   config?: Partial<AudioConfig>;
   manager?: IAudioManager;
+  /**
+   * If true, defers audio initialization until initializeAudio() is called.
+   * This is useful for requiring user gesture before creating AudioContext.
+   */
+  deferInitialization?: boolean;
 }
 
-export const AudioContext = createContext<IAudioManager | null>(null);
+export interface AudioContextValue extends IAudioManager {
+  /**
+   * Initialize audio manager. Must be called after user gesture if deferInitialization is true.
+   */
+  initializeAudio: () => Promise<void>;
+  /**
+   * Whether audio has been initialized
+   */
+  isAudioReady: boolean;
+}
 
-export const useAudio = (): IAudioManager => {
+export const AudioContext = createContext<AudioContextValue | null>(null);
+
+export const useAudio = (): AudioContextValue => {
   const ctx = useContext(AudioContext);
   if (!ctx) throw new Error("useAudio must be inside AudioProvider");
   return ctx;
@@ -23,15 +39,20 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   children,
   config,
   manager,
+  deferInitialization = false,
 }) => {
   const [audioManager] = useState<IAudioManager>(
     () => manager || new AudioManager(config)
   );
+  const [isAudioReady, setIsAudioReady] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await audioManager.initialize(); // no args
+  const initializeAudio = React.useCallback(async () => {
+    if (isAudioReady) {
+      return; // Already initialized
+    }
+
+    try {
+      await audioManager.initialize(); // no args
         
         // Preload all placeholder assets
         const list = Object.values(placeholderAssets).flat() as AudioAsset[];
@@ -71,19 +92,37 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
           return track;
         });
 
-        const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
-        await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {
-          console.warn(`Failed to load archetype theme: ${a.id}`, err);
-        })));
-      } catch (error) {
-        console.error("Failed to initialize audio manager:", error);
-        // Continue without audio - silent mode fallback
-      }
-    })();
-  }, [audioManager]);
+      const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
+      await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {
+        console.warn(`Failed to load archetype theme: ${a.id}`, err);
+      })));
+
+      setIsAudioReady(true);
+    } catch (error) {
+      console.error("Failed to initialize audio manager:", error);
+      // Continue without audio - silent mode fallback
+      setIsAudioReady(true); // Mark as ready even in fallback mode
+    }
+  }, [audioManager, isAudioReady]);
+
+  // Auto-initialize if not deferred
+  useEffect(() => {
+    if (!deferInitialization) {
+      initializeAudio();
+    }
+  }, [deferInitialization, initializeAudio]);
+
+  const contextValue = React.useMemo<AudioContextValue>(
+    () => ({
+      ...audioManager,
+      initializeAudio,
+      isAudioReady,
+    }),
+    [audioManager, initializeAudio, isAudioReady]
+  );
 
   return (
-    <AudioContext.Provider value={audioManager}>
+    <AudioContext.Provider value={contextValue}>
       {children}
     </AudioContext.Provider>
   );

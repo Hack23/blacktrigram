@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <AudioProvider>
+    <AudioProvider deferInitialization={true}>
       <App />
     </AudioProvider>
   </React.StrictMode>

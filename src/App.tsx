@@ -1,11 +1,12 @@
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
-import { AudioProvider } from "./audio/AudioProvider";
+import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
 import { EndScreen3D } from "./components/endscreen";
 import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
 import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
+import { SplashScreen } from "./components/ui/SplashScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
@@ -25,6 +26,9 @@ function App() {
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
   const [matchStats, setMatchStats] = useState<MatchStatistics | null>(null);
   const [appReady, setAppReady] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+
+  const audio = useAudio();
 
   // Add responsive screen size detection
   const [screenSize, setScreenSize] = useState({
@@ -64,6 +68,19 @@ function App() {
 
     initializeApp();
   }, []);
+
+  // Handle splash screen start - initialize audio on user gesture
+  const handleSplashStart = useCallback(async () => {
+    try {
+      await audio.initializeAudio();
+      setShowSplash(false);
+      console.log("🎵 Audio initialized after user gesture");
+    } catch (error) {
+      console.error("Failed to initialize audio:", error);
+      // Continue without audio
+      setShowSplash(false);
+    }
+  }, [audio]);
 
   // ✅ SIMPLIFIED: Handle game mode selection directly
   const handleGameStart = useCallback(
@@ -292,24 +309,35 @@ function App() {
     );
   }
 
-  return (
-    <AudioProvider>
-      <div
-        className="app"
-        tabIndex={0}
-        ref={containerRef}
-        style={{
-          outline: "none",
-          width: "100vw",
-          height: "100vh",
-          overflow: "hidden",
-        }}
-        data-testid="app-container"
-      >
-        {/* All screens now use Three.js or pure React/HTML */}
-        {renderCurrentScreen()}
+  // Show splash screen first to get user gesture for audio
+  if (showSplash) {
+    return (
+      <div className="app" data-testid="app-container">
+        <SplashScreen
+          onStart={handleSplashStart}
+          width={screenSize.width}
+          height={screenSize.height}
+        />
       </div>
-    </AudioProvider>
+    );
+  }
+
+  return (
+    <div
+      className="app"
+      tabIndex={0}
+      ref={containerRef}
+      style={{
+        outline: "none",
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+      data-testid="app-container"
+    >
+      {/* All screens now use Three.js or pure React/HTML */}
+      {renderCurrentScreen()}
+    </div>
   );
 }
 
