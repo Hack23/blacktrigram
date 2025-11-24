@@ -36,8 +36,8 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "attack_heavy",
     name: "Heavy Attack",
     type: "sound",
-    url: "/assets/audio/sfx/combat/attack_heavy.webm", // Note: Only .webm exists for this file
-    formats: ["audio/webm", "audio/mp3"],
+    url: "/assets/audio/sfx/combat/attack_heavy.mp3",
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.9,
     category: AudioCategory.SFX,

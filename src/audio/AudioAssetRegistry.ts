@@ -387,8 +387,8 @@ export class AudioAssetRegistry {
       type: "sound",
       name: "Heavy Attack",
       category: "sfx",
-      url: "/assets/audio/sfx/combat/attack_heavy.webm",
-      formats: ["audio/webm", "audio/mp3"],
+      url: "/assets/audio/sfx/combat/attack_heavy.mp3",
+      formats: ["audio/mp3", "audio/webm"],
       loaded: false,
       volume: 0.7, // 70% volume per acceptance criteria
     });
