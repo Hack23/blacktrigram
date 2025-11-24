@@ -228,7 +228,7 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     id: "jin_technique",
     name: "Thunder Technique",
     type: "sound",
-    url: "/assets/audio/sfx/combat/attack_heavy.webm", // Fallback: jin_thunder.mp3 does not exist
+    url: "/assets/audio/sfx/combat/attack_heavy.mp3", // Fallback: jin_thunder.mp3 does not exist
     formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.9,
