@@ -49,7 +49,9 @@
     "gen:image:bedrock": "tsx scripts/generate_image_bedrock.ts",
     "gen:video:bedrock": "tsx scripts/generate_video_bedrock.ts",
     "gen:music:suno": "tsx scripts/generate_music_suno.ts",
-    "gen:sprites:archetype": "tsx scripts/generate_archetype_sprites.ts"
+    "gen:sprites:archetype": "tsx scripts/generate_archetype_sprites.ts",
+    "audit:assets": "tsx scripts/audit-assets.ts",
+    "audit:assets:verbose": "tsx scripts/audit-assets.ts --verbose"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",
