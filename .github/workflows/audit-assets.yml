@@ -16,6 +16,12 @@ jobs:
   audit-assets:
     runs-on: ubuntu-latest
     
+    # Limit GITHUB_TOKEN permissions for security
+    permissions:
+      contents: read
+      issues: write  # For PR comments on failure
+      pull-requests: write  # For PR comments on failure
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
