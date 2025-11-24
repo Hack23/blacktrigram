@@ -5,6 +5,9 @@
  * Verifies all asset references in the codebase point to existing files.
  * Scans source code for asset paths and validates them against the filesystem.
  * 
+ * Note: This script uses tsx to run TypeScript directly. Ensure tsx is installed:
+ * npm install -D tsx
+ * 
  * @korean 에셋 감사 스크립트
  */
 
@@ -293,6 +296,10 @@ async function auditAssets(): Promise<void> {
 
 // Run audit
 auditAssets().catch((error) => {
-  console.error('💥 Fatal error during asset audit:', error);
+  console.error('💥 Fatal error during asset audit:');
+  console.error(`   Message: ${error instanceof Error ? error.message : String(error)}`);
+  if (error instanceof Error && error.stack) {
+    console.error(`   Stack: ${error.stack}`);
+  }
   process.exit(1);
 });
