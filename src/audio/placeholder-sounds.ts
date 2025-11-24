@@ -39,7 +39,7 @@ export const PLACEHOLDER_SOUND_EFFECTS: readonly SoundEffect[] = [
     url: "/assets/audio/sfx/combat/attack_heavy.mp3",
     formats: ["audio/mp3", "audio/webm"],
     loaded: false,
-    volume: 0.9,
+    volume: 0.7, // Standardized to match AudioAssetRegistry (70% per acceptance criteria)
     category: AudioCategory.SFX,
     pitch: 0.8,
   },
@@ -229,7 +229,7 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
     name: "Thunder Technique",
     type: "sound",
     url: "/assets/audio/sfx/combat/attack_heavy.webm", // Fallback: jin_thunder.mp3 does not exist
-    formats: ["audio/webm", "audio/mp3"],
+    formats: ["audio/mp3", "audio/webm"],
     loaded: false,
     volume: 0.9,
     category: AudioCategory.SFX,
