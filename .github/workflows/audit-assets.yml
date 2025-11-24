@@ -6,11 +6,13 @@ on:
     paths:
       - 'src/**'
       - 'public/assets/**'
+      - 'scripts/**'
   pull_request:
     branches: [ main, develop ]
     paths:
       - 'src/**'
       - 'public/assets/**'
+      - 'scripts/**'
 
 jobs:
   audit-assets:
