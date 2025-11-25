@@ -3,8 +3,7 @@ import React from 'react';
 /**
  * Props for the LoadingState component.
  *
- * @property progress Loading progress as a percentage (0-100).
- *   @default 0
+ * @property progress Loading progress as a percentage (0-100), or undefined for indeterminate.
  * @property message Custom loading message to display.
  *   @default '로드 중 | Loading...'
  * @property stage Current loading stage, determines the stage-specific message.
@@ -17,8 +16,7 @@ import React from 'react';
  */
 export interface LoadingStateProps {
   /**
-   * Loading progress as a percentage (0-100)
-   * @default 0
+   * Loading progress as a percentage (0-100), or undefined for indeterminate
    */
   readonly progress?: number;
 
@@ -75,7 +73,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
       role="status"
       aria-live="polite"
       aria-busy="true"
-      aria-label={`Loading progress: ${progressValue}%`}
+      aria-label={progressValue !== undefined ? `Loading progress: ${progressValue}%` : 'Loading...'}
       data-testid="loading-state"
     >
       <div className="loading-state__logo">
