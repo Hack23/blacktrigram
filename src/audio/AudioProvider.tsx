@@ -22,7 +22,9 @@ export interface AudioContextValue extends IAudioManager {
    */
   initializeAudio: () => Promise<void>;
   /**
-   * Whether audio has been initialized
+   * Whether audio system has been fully initialized and is ready for use.
+   * This includes both AudioContext creation (isInitialized) and asset preloading.
+   * Use this property to determine if audio methods can be safely called.
    */
   isAudioReady: boolean;
 }

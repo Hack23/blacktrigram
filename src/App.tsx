@@ -71,16 +71,30 @@ function App() {
 
   // Handle splash screen start - initialize audio on user gesture
   const handleSplashStart = useCallback(async () => {
+    // Ensure app is ready before proceeding
+    if (!appReady) {
+      console.warn("App not ready yet, please wait...");
+      return;
+    }
+
     try {
       await audio.initializeAudio();
       setShowSplash(false);
       console.log("🎵 Audio initialized after user gesture");
     } catch (error) {
       console.error("Failed to initialize audio:", error);
-      // Continue without audio
-      setShowSplash(false);
+      
+      // Show user-friendly message and allow continuation without sound
+      const continueWithoutSound = window.confirm(
+        "Audio initialization failed. Would you like to continue without sound?"
+      );
+      
+      if (continueWithoutSound) {
+        setShowSplash(false);
+      }
+      // If user declines, stay on splash screen (allows retry)
     }
-  }, [audio]);
+  }, [audio, appReady]);
 
   // ✅ SIMPLIFIED: Handle game mode selection directly
   const handleGameStart = useCallback(

@@ -115,7 +115,9 @@ const swPath = isDevelopment ? '/sw.js' : './sw.js';
 navigator.serviceWorker.register(swPath);
 ```
 
-**Note:** This checks for common development scenarios including localhost, 127.0.0.1, local network IPs (192.168.x.x and 10.x.x.x), and any non-standard ports. The `window.location.port` property returns an empty string for default HTTP (80) and HTTPS (443) ports, so checking `!== ''` correctly identifies development servers which typically use non-standard ports like 3000, 5173, etc.
+**Note:** This detection logic checks for common development scenarios including localhost, 127.0.0.1, local network IPs (192.168.x.x and 10.x.x.x), and any non-standard ports. The `window.location.port` property returns an empty string for default HTTP (80) and HTTPS (443) ports, so checking `!== ''` identifies development servers which typically use non-standard ports like 3000, 5173, etc.
+
+**Limitation:** This approach assumes production deployments always use standard ports (80 for HTTP, 443 for HTTPS). If your production site runs on a non-standard port (e.g., corporate deployments on 8443, 8080, or CDN configurations), it will be incorrectly classified as "development," and the service worker path may break. For robust environment detection in such cases, use environment variables or build-time configuration (e.g., `import.meta.env.MODE`) to distinguish environments. This port-based approach is only reliable if production always deploys to standard ports.
 
 ### 5. Improved Error Handling
 

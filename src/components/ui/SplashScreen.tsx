@@ -72,8 +72,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
       }}
       data-testid="splash-screen"
     >
-      {/* Animated background grid */}
+      {/* Animated background grid - decorative only */}
       <div
+        role="presentation"
+        aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
@@ -96,6 +98,21 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           opacity: 0.3,
         }}
       />
+
+      {/* Screen reader live region for loading state */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        style={{
+          position: "absolute",
+          left: "-10000px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+        }}
+      >
+        {isLoading ? "Initializing audio and loading game" : "Ready to start"}
+      </div>
 
       {/* Logo/Title */}
       <div
@@ -146,6 +163,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         disabled={isLoading}
         aria-label={isLoading ? "Starting game and initializing audio" : "Start game and initialize audio"}
         aria-busy={isLoading}
+        aria-describedby="splash-instructions"
         style={{
           padding: layoutCalculation.buttonPadding,
           fontSize: `${layoutCalculation.buttonFontSize}px`,
@@ -187,6 +205,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
       {/* Instructions */}
       <div
+        id="splash-instructions"
         style={{
           marginTop: "40px",
           textAlign: "center",

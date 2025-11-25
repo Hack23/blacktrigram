@@ -101,7 +101,7 @@ describe("SplashScreen", () => {
   it("should display version info", () => {
     render(<SplashScreen {...defaultProps} />);
 
-    // Check that version element exists
-    expect(screen.getByText(/v\d+\.\d+\.\d+|v0\.5\.3/)).toBeInTheDocument();
+    // Check that version element exists - match semantic version format
+    expect(screen.getByText(/^v\d+\.\d+\.\d+$/)).toBeInTheDocument();
   });
 });

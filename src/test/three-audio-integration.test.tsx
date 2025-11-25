@@ -25,8 +25,11 @@ const TestAudioComponent: React.FC<TestAudioComponentProps> = ({ onAudioReady })
   const handlePlaySFX = () => {
     // Only call if audio is initialized and method exists
     if (audio.isAudioReady && typeof audio.playSFX === 'function') {
-      audio.playSFX("menu_select").catch(() => {
-        // Silently handle errors in test environment
+      audio.playSFX("menu_select").catch((error) => {
+        // Log errors in development for debugging
+        if (process.env.NODE_ENV !== 'production') {
+          console.debug('SFX playback failed in test environment:', error);
+        }
       });
     }
   };
@@ -34,8 +37,11 @@ const TestAudioComponent: React.FC<TestAudioComponentProps> = ({ onAudioReady })
   const handlePlayMusic = () => {
     // Only call if audio is initialized and method exists
     if (audio.isAudioReady && typeof audio.playMusic === 'function') {
-      audio.playMusic("intro_theme").catch(() => {
-        // Silently handle errors in test environment
+      audio.playMusic("intro_theme").catch((error) => {
+        // Log errors in development for debugging
+        if (process.env.NODE_ENV !== 'production') {
+          console.debug('Music playback failed in test environment:', error);
+        }
       });
     }
   };
@@ -206,8 +212,11 @@ describe("Three.js Audio Integration", () => {
         const handleFadeIn = async () => {
           // Only call if audio is ready and method exists
           if (audio.isAudioReady && typeof audio.fadeIn === 'function') {
-            await audio.fadeIn("intro_theme", 1000).catch(() => {
-              // Silently handle errors in test environment
+            await audio.fadeIn("intro_theme", 1000).catch((error) => {
+              // Log errors in development for debugging
+              if (process.env.NODE_ENV !== 'production') {
+                console.debug('Fade in failed in test environment:', error);
+              }
             });
           }
         };
@@ -215,8 +224,11 @@ describe("Three.js Audio Integration", () => {
         const handleFadeOut = async () => {
           // Only call if audio is ready and method exists
           if (audio.isAudioReady && typeof audio.fadeOut === 'function') {
-            await audio.fadeOut(1000).catch(() => {
-              // Silently handle errors in test environment
+            await audio.fadeOut(1000).catch((error) => {
+              // Log errors in development for debugging
+              if (process.env.NODE_ENV !== 'production') {
+                console.debug('Fade out failed in test environment:', error);
+              }
             });
           }
         };

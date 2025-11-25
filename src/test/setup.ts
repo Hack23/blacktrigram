@@ -6,8 +6,9 @@ import { afterEach, beforeAll, expect, vi } from "vitest";
 expect.extend(matchers);
 
 beforeAll(() => {
-  // Mock APP_VERSION for tests (already declared in vite-env.d.ts)
-  // Using type assertion to set the const value in test environment
+  // Mock APP_VERSION for tests
+  // APP_VERSION is declared as a const in vite-env.d.ts but we need to set it in test environment
+  // Using type assertion is necessary here to override the const declaration
   (globalThis as any).APP_VERSION = "0.5.3";
 
   // Enhanced Audio mock with proper HTMLAudioElement that matches test expectations
