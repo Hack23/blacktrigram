@@ -8,6 +8,7 @@ import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/Co
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
 import { SplashScreen } from "./components/ui/SplashScreen";
 import { ErrorModal } from "./components/ui/ErrorModal";
+import { LoadingState } from "./components/ui/LoadingState";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
@@ -326,18 +327,11 @@ function App() {
   if (!appReady) {
     return (
       <div className="app loading" data-testid="app-container">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            color: "white",
-            backgroundColor: "#1a1a2e",
-          }}
-        >
-          흑괘 로딩 중... Loading Black Trigram...
-        </div>
+        <LoadingState
+          progress={50}
+          message="앱 초기화 중 | Initializing app..."
+          stage="initialization"
+        />
       </div>
     );
   }
