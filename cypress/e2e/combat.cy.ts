@@ -80,10 +80,10 @@ describe("Black Trigram - Combat (Consolidated)", () => {
     it("should support all 8 trigram stances and transitions", () => {
       cy.annotate("Testing all 8 trigram stances");
 
-      // Test each stance
+      // Test each stance with reduced waits
       for (let i = 1; i <= 8; i++) {
         cy.get("body").type(i.toString());
-        cy.wait(100);
+        cy.wait(50); // Reduced from 100ms
         
         if (i % 4 === 0) {
           cy.get('[data-testid="combat-screen"]').should("exist");
@@ -110,13 +110,13 @@ describe("Black Trigram - Combat (Consolidated)", () => {
 
       // Stance + Attack combinations
       cy.gameActions(["1", " "]);
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
       
       cy.gameActions(["3", " "]);
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
       
       cy.gameActions(["5", " "]);
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
 
       cy.get('[data-testid="combat-screen"]').should("exist");
       cy.log("✅ Combat action sequence completed");
@@ -137,7 +137,7 @@ describe("Black Trigram - Combat (Consolidated)", () => {
 
       // Movement keys
       cy.gameActions(["w", "a", "s", "d"]);
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
       
       // Arrow keys
       cy.gameActions(["{uparrow}", "{leftarrow}", "{downarrow}", "{rightarrow}"]);
@@ -151,7 +151,7 @@ describe("Black Trigram - Combat (Consolidated)", () => {
 
       // Guard/block
       cy.get("body").type("{shift}", { release: false });
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
       cy.get("body").type("{shift}", { release: true });
 
       cy.get('[data-testid="combat-screen"]').should("exist");

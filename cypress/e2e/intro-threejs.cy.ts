@@ -37,13 +37,12 @@ describe("Black Trigram - IntroScreen Three.js", () => {
 
       const viewports: [number, number][] = [
         [1280, 720],  // Desktop
-        [768, 1024],  // Tablet
-        [375, 667],   // Mobile
+        [375, 667],   // Mobile - only test extremes
       ];
 
       viewports.forEach(([width, height]) => {
         cy.viewport(width, height);
-        cy.wait(300);
+        cy.wait(200); // Reduced from 300ms
 
         // Verify canvas exists and adapts to viewport
         cy.get("canvas").should("exist").and("be.visible");

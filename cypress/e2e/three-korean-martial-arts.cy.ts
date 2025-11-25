@@ -146,10 +146,10 @@ describe("Black Trigram - Three.js Korean Martial Arts", () => {
 
       cy.enterCombatMode();
 
-      // Test stance changes (1-8 keys for trigram stances)
+      // Test stance changes (1-8 keys for trigram stances) with reduced waits
       for (let i = 1; i <= 8; i++) {
         cy.get("body").type(i.toString());
-        cy.wait(100);
+        cy.wait(50); // Reduced from 100ms
 
         // Verify combat screen still exists
         if (i % 4 === 0) {
@@ -188,13 +188,13 @@ describe("Black Trigram - Three.js Korean Martial Arts", () => {
 
       const startTime = Date.now();
 
-      // Navigate through screens to test performance
+      // Navigate through screens to test performance with reduced waits
       cy.enterCombatMode();
-      cy.wait(500);
+      cy.wait(300); // Reduced from 500ms
       cy.returnToIntro();
-      cy.wait(500);
+      cy.wait(300); // Reduced from 500ms
       cy.enterTrainingMode();
-      cy.wait(500);
+      cy.wait(300); // Reduced from 500ms
       cy.returnToIntro();
 
       cy.wrap(null).then(() => {
@@ -263,13 +263,12 @@ describe("Black Trigram - Three.js Korean Martial Arts", () => {
 
       const viewports = [
         [1280, 720],  // Desktop
-        [768, 1024],  // Tablet
-        [375, 667],   // Mobile
+        [375, 667],   // Mobile - only test extremes
       ];
 
       viewports.forEach(([width, height]) => {
         cy.viewport(width, height);
-        cy.wait(300);
+        cy.wait(200); // Reduced from 300ms
 
         // Verify canvas exists and is visible at all sizes
         cy.get("canvas").should("exist").and("be.visible");

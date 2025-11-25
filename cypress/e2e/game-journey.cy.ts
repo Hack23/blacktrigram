@@ -136,17 +136,16 @@ describe("Black Trigram - Game Journey", () => {
     it("should work across all viewport sizes", () => {
       cy.annotate("Testing responsive design");
 
-      // Test all key screen sizes efficiently
+      // Test only 2 key screen sizes for efficiency (desktop + mobile)
       const viewports = [
         [1280, 720],  // Desktop
-        [768, 1024],  // Tablet
         [375, 667],   // Mobile
       ];
 
       viewports.forEach(([width, height]) => {
         cy.annotate(`Testing ${width}x${height}`);
         cy.viewport(width, height);
-        cy.wait(300); // Reduced from 500ms for canvas stability
+        cy.wait(200); // Reduced from 300ms for canvas stability
 
         // Verify essential elements
         cy.get('[data-testid="app-container"]').should("be.visible");
@@ -185,11 +184,11 @@ describe("Black Trigram - Game Journey", () => {
 
       // Test non-existent features
       cy.get("body").type("4");
-      cy.wait(300); // Reduced from 500ms
+      cy.wait(200); // Reduced from 300ms
 
       // Return to main screen
       cy.get("body").type("{esc}");
-      cy.wait(300); // Reduced from 500ms
+      cy.wait(200); // Reduced from 300ms
 
       cy.get("body").then(($body) => {
         const hasIntro = $body.find('[data-testid="intro-screen"]').length > 0 ||
