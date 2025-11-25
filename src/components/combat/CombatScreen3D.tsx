@@ -112,12 +112,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
-    onContextLost: useCallback(() => {
+    onContextLost: () => {
       console.warn('⚠️ WebGL context lost in CombatScreen');
-    }, []),
-    onContextRestored: useCallback(() => {
+    },
+    onContextRestored: () => {
       console.log('✅ WebGL context restored in CombatScreen');
-    }, []),
+    },
     autoRestore: true,
   });
 

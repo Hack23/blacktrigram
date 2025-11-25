@@ -171,12 +171,12 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
 }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
-    onContextLost: useCallback(() => {
+    onContextLost: () => {
       console.warn('⚠️ WebGL context lost in EndScreen');
-    }, []),
-    onContextRestored: useCallback(() => {
+    },
+    onContextRestored: () => {
       console.log('✅ WebGL context restored in EndScreen');
-    }, []),
+    },
     autoRestore: true,
   });
 

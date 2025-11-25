@@ -84,12 +84,12 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
-    onContextLost: useCallback(() => {
+    onContextLost: () => {
       console.warn('⚠️ WebGL context lost in ControlsScreen');
-    }, []),
-    onContextRestored: useCallback(() => {
+    },
+    onContextRestored: () => {
       console.log('✅ WebGL context restored in ControlsScreen');
-    }, []),
+    },
     autoRestore: true,
   });
 

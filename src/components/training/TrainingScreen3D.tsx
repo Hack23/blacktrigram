@@ -63,12 +63,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
-    onContextLost: useCallback(() => {
+    onContextLost: () => {
       console.warn('⚠️ WebGL context lost in TrainingScreen');
-    }, []),
-    onContextRestored: useCallback(() => {
+    },
+    onContextRestored: () => {
       console.log('✅ WebGL context restored in TrainingScreen');
-    }, []),
+    },
     autoRestore: true,
   });
 
