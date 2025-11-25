@@ -3,22 +3,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
 
-:root {
-  /* Korean Cyberpunk Color Palette */
-  --korean-primary: #00d4ff;
-  --korean-secondary: #ff6b35;
-  --korean-accent: #ffb700;
-  --korean-bg-dark: #0a0a0f;
-  --korean-bg-medium: #1a1a2e;
-  --korean-text-primary: #ffffff;
-  --korean-text-secondary: #b3b3cc;
-  --korean-glow: #00ff88;
-  --korean-danger: #ff3366;
-
-  /* Typography */
-  --font-korean: "Noto Sans KR", sans-serif;
-  --font-cyber: "Orbitron", monospace;
-}
+/* Note: CSS variables are now centralized in index.css */
 
 * {
   margin: 0;
@@ -310,13 +295,30 @@ body {
   border: 0;
 }
 
-/* High contrast mode support */
+/* High contrast mode support - Comprehensive accessibility */
 @media (prefers-contrast: high) {
   :root {
-    --korean-primary: #ffffff;
-    --korean-secondary: #ffffff;
-    --korean-bg-dark: #000000;
-    --korean-text-primary: #ffffff;
+    /* High contrast colors for better visibility */
+    --color-primary-cyan: #ffffff;
+    --color-primary-gold: #ffffff;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #ffffff;
+    --color-text-tertiary: #cccccc;
+    --color-bg-dark: #000000;
+    --color-bg-medium: #000000;
+    --color-bg-light: #1a1a1a;
+    
+    /* Ensure sufficient contrast for UI elements */
+    --color-danger: #ff0000;
+    --color-success: #00ff00;
+    --color-warning: #ffff00;
+  }
+  
+  /* Increase border visibility in high contrast mode */
+  button,
+  .error-boundary__container,
+  .loading-state__progress {
+    border-width: 3px;
   }
 }
 
@@ -369,32 +371,6 @@ body {
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
-}
-
-/* Canvas styling for full-screen Korean martial arts experience */
-.app-container canvas {
-  display: block;
-  width: 100vw !important;
-  height: 100vh !important;
-  max-width: 100vw !important;
-  max-height: 100vh !important;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  background: #000000;
-  image-rendering: crisp-edges;
-  image-rendering: -webkit-crisp-edges;
-  image-rendering: pixelated;
-  position: relative !important; /* Fix: Ensure canvas is not fixed */
-  z-index: 1; /* Fix: Lower z-index for canvas */
-}
-
-/* Ensure canvas takes full space */
-.app-container canvas {
-  display: block;
-  max-width: 100vw;
-  max-height: 100vh;
-  object-fit: contain;
 }
 
 /* Hide any old game elements */
@@ -476,15 +452,7 @@ body {
   display: none !important;
 }
 
-/* Black Trigram theme variables - Updated from Dark Trigram */
-:root {
-  --trigram-red: #8b0000;
-  --trigram-gold: #ffd700;
-  --trigram-black: #000000;
-  --trigram-white: #ffffff;
-  --dojang-blue: #4a90e2;
-  --black-trigram-cyan: #00ffd0; /* Added for consistency */
-}
+/* Note: Theme variables are now centralized in index.css */
 
 /* Performance optimizations for mobile */
 @media (max-width: 768px) {
@@ -758,40 +726,6 @@ body {
   padding: 2rem;
   border: 1px solid #ff4136;
   background: rgba(255, 65, 54, 0.1);
-}
-
-/* Fix: Canvas positioning and visibility */
-.app-container canvas {
-  display: block;
-  width: 100vw !important;
-  height: 100vh !important;
-  max-width: 100vw !important;
-  max-height: 100vh !important;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  background: #000000;
-  image-rendering: crisp-edges;
-  image-rendering: -webkit-crisp-edges;
-  image-rendering: pixelated;
-  position: relative !important; /* Fix: Ensure canvas is not fixed */
-  z-index: 1; /* Fix: Lower z-index for canvas */
-}
-
-/* Fix canvas positioning and z-index issues */
-canvas {
-  display: block !important;
-  position: relative !important; /* Changed from fixed to relative */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 1 !important; /* Ensure canvas is visible but below UI */
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-  cursor: pointer;
-  outline: none;
 }
 
 /* Fix UI overlay positioning to not interfere with canvas visibility */
