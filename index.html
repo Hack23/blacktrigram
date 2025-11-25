@@ -129,16 +129,16 @@
     <link
       rel="preload"
       as="image"
-      href="/assets/visual/logo/black-trigram.png"
+      href="./assets/visual/logo/black-trigram.png"
     />
     <link
       rel="preload"
       as="image"
-      href="/assets/visual/bg/intro/intro_bg_loop.png"
+      href="./assets/visual/bg/intro/intro_bg_loop.png"
     />
 
     <!-- PWA Meta Tags -->
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0A0F12" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
@@ -146,14 +146,24 @@
       content="black-translucent"
     />
     <meta name="apple-mobile-web-app-title" content="Black Trigram" />
-    <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-152x152.png" />
 
     <!-- PWA Service Worker Registration -->
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
+          // Use relative path for GitHub Pages deployment
+          // Check for development environment more robustly
+          const isDevelopment =
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.startsWith('192.168.') ||
+            window.location.hostname.startsWith('10.') || // Also common for local networks
+            // window.location.port is '' for default ports (80 for HTTP, 443 for HTTPS)
+            window.location.port !== '';
+          const swPath = isDevelopment ? '/sw.js' : './sw.js';
           navigator.serviceWorker
-            .register("/sw.js")
+            .register(swPath)
             .then((registration) => {
               console.log(
                 "ServiceWorker registration successful:",

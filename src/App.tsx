@@ -1,11 +1,13 @@
 import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
-import { AudioProvider } from "./audio/AudioProvider";
+import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
 import { EndScreen3D } from "./components/endscreen";
 import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
 import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
+import { SplashScreen } from "./components/ui/SplashScreen";
+import { ErrorModal } from "./components/ui/ErrorModal";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
@@ -25,6 +27,10 @@ function App() {
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
   const [matchStats, setMatchStats] = useState<MatchStatistics | null>(null);
   const [appReady, setAppReady] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [showAudioError, setShowAudioError] = useState(false);
+
+  const audio = useAudio();
 
   // Add responsive screen size detection
   const [screenSize, setScreenSize] = useState({
@@ -63,6 +69,50 @@ function App() {
     };
 
     initializeApp();
+  }, []);
+
+  // Shared audio initialization logic for splash and retry
+  const initializeAudioWithRetry = useCallback(async () => {
+    if (!appReady) {
+      console.warn("App not ready yet, please wait...");
+      return false;
+    }
+    try {
+      await audio.initializeAudio();
+      console.log("🎵 Audio initialized");
+      return true;
+    } catch (error) {
+      console.error("Failed to initialize audio:", error);
+      return false;
+    }
+  }, [audio, appReady]);
+
+  // Handle splash screen start - initialize audio on user gesture
+  const handleSplashStart = useCallback(async () => {
+    setShowAudioError(false);
+    const success = await initializeAudioWithRetry();
+    if (success) {
+      setShowSplash(false);
+    } else {
+      setShowAudioError(true);
+    }
+  }, [initializeAudioWithRetry]);
+
+  const handleAudioErrorRetry = useCallback(async () => {
+    setShowAudioError(false);
+    const success = await initializeAudioWithRetry();
+    if (success) {
+      setShowSplash(false);
+    } else {
+      setShowAudioError(true);
+    }
+  }, [initializeAudioWithRetry]);
+
+  const handleAudioErrorContinue = useCallback(() => {
+    // Continue without sound
+    setShowAudioError(false);
+    setShowSplash(false);
+    console.log("Continuing without audio (silent mode)");
   }, []);
 
   // ✅ SIMPLIFIED: Handle game mode selection directly
@@ -292,24 +342,42 @@ function App() {
     );
   }
 
-  return (
-    <AudioProvider>
-      <div
-        className="app"
-        tabIndex={0}
-        ref={containerRef}
-        style={{
-          outline: "none",
-          width: "100vw",
-          height: "100vh",
-          overflow: "hidden",
-        }}
-        data-testid="app-container"
-      >
-        {/* All screens now use Three.js or pure React/HTML */}
-        {renderCurrentScreen()}
+  // Show splash screen first to get user gesture for audio
+  if (showSplash) {
+    return (
+      <div className="app" data-testid="app-container">
+        <SplashScreen
+          onStart={handleSplashStart}
+          width={screenSize.width}
+          height={screenSize.height}
+        />
+        {showAudioError && (
+          <ErrorModal
+            message="오디오 초기화에 실패했습니다. 재시도하거나 소리 없이 계속할 수 있습니다. | Audio initialization failed. You can retry or continue without sound."
+            onRetry={handleAudioErrorRetry}
+            onContinue={handleAudioErrorContinue}
+          />
+        )}
       </div>
-    </AudioProvider>
+    );
+  }
+
+  return (
+    <div
+      className="app"
+      tabIndex={0}
+      ref={containerRef}
+      style={{
+        outline: "none",
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+      data-testid="app-container"
+    >
+      {/* All screens now use Three.js or pure React/HTML */}
+      {renderCurrentScreen()}
+    </div>
   );
 }
 

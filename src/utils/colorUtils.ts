@@ -148,5 +148,17 @@ export function hexToRgbaString(hex: number, alpha: number = 1): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+/**
+ * Convert numeric color to hex string for CSS
+ * @param color - Numeric color value (e.g., 0x00ffff)
+ * @returns Hex color string without # prefix (e.g., "00ffff")
+ * @example
+ * toHex(0x00ffff) // "00ffff"
+ * toHex(KOREAN_COLORS.PRIMARY_CYAN) // "00ffff"
+ */
+export function toHex(color: number): string {
+  return color.toString(16).padStart(6, '0');
+}
+
 // DO NOT ADD ANY MORE FUNCTIONS BELOW THIS LINE
 // All functions are already exported above using individual export statements
