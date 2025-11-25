@@ -152,8 +152,18 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
+          // Use relative path for GitHub Pages deployment
+          // Check for development environment more robustly
+          const isDevelopment =
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.startsWith('192.168.') ||
+            window.location.hostname.startsWith('10.') || // Also common for local networks
+            // window.location.port is '' for default ports (80 for HTTP, 443 for HTTPS)
+            window.location.port !== '';
+          const swPath = isDevelopment ? '/sw.js' : './sw.js';
           navigator.serviceWorker
-            .register("/sw.js")
+            .register(swPath)
             .then((registration) => {
               console.log(
                 "ServiceWorker registration successful:",
@@ -166,7 +176,7 @@
         });
       }
     </script>
-    <script type="module" crossorigin src="./assets/index-DEKYXs.js"></script>
+    <script type="module" crossorigin src="./assets/index-BQJJCH.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/game-etAA_w.css">
   </head>
   <body>
