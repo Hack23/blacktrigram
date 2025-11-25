@@ -115,7 +115,7 @@
       }
     </style>
 
-    <!-- Font Loading Strategy: Asynchronously load fonts to not block rendering -->
+    <!-- Font Loading Strategy: Asynchronously load fonts with font-display swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -124,17 +124,25 @@
       media="print"
       onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Orbitron:wght@400;700;900&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
-    <!-- Asset Preloading for LCP -->
+    <!-- Asset Preloading for LCP - Only preload assets used in initial render -->
     <link
       rel="preload"
       as="image"
       href="./assets/visual/logo/black-trigram.png"
+      fetchpriority="high"
     />
     <link
       rel="preload"
       as="image"
-      href="./assets/visual/bg/intro/intro_bg_loop.png"
+      href="./assets/visual/bg/archetyples/PlayerArchetypesOverview.png"
+      fetchpriority="low"
     />
 
     <!-- PWA Meta Tags -->
