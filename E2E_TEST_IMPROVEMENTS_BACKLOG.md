@@ -31,18 +31,60 @@ it("should execute complete combat action sequence", () => {
 });
 ```
 
+**Recommended Fix (using correct test IDs):**
+```typescript
+// ✅ Verifies health changes using actual test IDs
+it("should execute combat and verify health changes", () => {
+  // NOTE: Requires adding data-health attributes to ProgressBar component first
+  // Current implementation: testIds are "player1-health" and "player2-health"
+  
+  // Capture initial health (Option 1: if data-health attribute added)
+  cy.get('[data-testid="player2-health"]')
+    .invoke('attr', 'data-health')
+    .then(parseFloat)
+    .as('player2HealthBefore');
+
+  // Execute attack
+  cy.gameActions(["1", " "]);
+  
+  // Wait for combat resolution
+  cy.get('[data-testid="combat-log"]', { timeout: 2000 })
+    .should('contain', '공격'); // Verify attack logged
+
+  // Verify damage was dealt
+  cy.get('@player2HealthBefore').then((initial) => {
+    cy.get('[data-testid="player2-health"]')
+      .invoke('attr', 'data-health')
+      .then(parseFloat)
+      .should('be.lessThan', initial as number);
+  });
+  
+  // Option 2: Parse text content (works without data attributes)
+  // cy.get('[data-testid="player2-health"]').invoke('text').then((text) => {
+  //   const health = parseFloat(text.match(/\d+/)[0]);
+  //   // Compare health values
+  // });
+});
+```
+
+**Prerequisites:**
+- [ ] Add `data-health`, `data-current`, and `data-max` attributes to ProgressBar component
+  - Modify `src/components/three/ProgressBar.tsx` line 204:
+  - `<div style={containerStyle} data-testid={testId} data-health={current} data-max={max}>`
+- [ ] Alternative: Use text parsing if data attributes not added (more brittle)
+
 **Required Changes:**
-- [ ] Add health tracking before/after attacks
+- [ ] Add health tracking before/after attacks (using player1-health, player2-health testIds)
 - [ ] Verify combat log shows attack results
-- [ ] Check damage calculation is correct
-- [ ] Verify enemy health decreases
+- [ ] Check damage calculation is correct  
+- [ ] Verify player health decreases (not "enemy" - both are players)
 - [ ] Test critical hits vs normal hits
 
 **Acceptance Criteria:**
-- ✅ Combat tests verify actual damage is dealt
+- ✅ Combat tests verify actual damage is dealt using correct test IDs
 - ✅ Tests fail if combat system is broken
-- ✅ Health/damage values are validated
-- ✅ At least 10 combat tests updated
+- ✅ Health/damage values are validated via data attributes or text parsing
+- ✅ At least 10 combat tests updated with correct selectors
 
 ---
 
@@ -64,33 +106,70 @@ cy.get("canvas").should("exist").and("be.visible");
 ```
 
 **Required Changes:**
-- [ ] Expose `__threeScene` in dev mode for testing
-- [ ] Add `cy.verifyThreeJSScene()` command
+- [ ] Expose `__threeScene` in dev mode for testing (1h)
+- [ ] Add `cy.verifyThreeJSScene()` command to cypress/support/commands.ts (1h)
+- [ ] Add scene verification to >12 existing tests (1h)
 - [ ] Verify scene contains camera, lights, objects
 - [ ] Check object count matches expected
 - [ ] Validate camera positioning
 
 **Implementation:**
 ```typescript
-// In src/App.tsx (dev mode only)
+// Step 1: In src/App.tsx (dev mode only) - Expose scene for testing
 if (import.meta.env.DEV) {
   (window as any).__threeScene = sceneRef.current;
 }
 
-// Add to cypress/support/commands.ts
-Cypress.Commands.add('verifyThreeJSScene', (options) => {
+// Step 2: Add to cypress/support/commands.ts - Custom command
+Cypress.Commands.add('verifyThreeJSScene', (options?: {
+  minChildren?: number;
+  requiredTypes?: string[];
+}) => {
+  const { minChildren = 1, requiredTypes = [] } = options || {};
+  
   cy.window().then((win) => {
     const scene = (win as any).__threeScene;
-    expect(scene.children.length).to.be.greaterThan(options.minObjects || 1);
+    
+    if (!scene) {
+      cy.log('⚠️ Three.js scene not exposed (production build?)');
+      return;
+    }
+
+    // Note: scene.children includes ALL objects (cameras, lights, meshes, groups)
+    expect(scene.children.length).to.be.greaterThan(minChildren,
+      `Scene should have at least ${minChildren} children (including cameras, lights, meshes)`);
+
+    // Verify specific object types if required
+    requiredTypes.forEach(type => {
+      const hasType = scene.children.some((obj: any) => obj.type === type);
+      expect(hasType).to.be.true(`Scene should contain ${type}`);
+    });
+
+    cy.log(`✅ Scene verified: ${scene.children.length} total children`);
   });
 });
+
+// Step 3: Add TypeScript declaration
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      verifyThreeJSScene(options?: {
+        minChildren?: number;
+        requiredTypes?: string[];
+      }): Chainable<void>;
+    }
+  }
+}
 ```
 
 **Acceptance Criteria:**
-- ✅ `verifyThreeJSScene()` command implemented
-- ✅ Scene object verification in >12 tests
-- ✅ Tests fail if scene is empty
-- ✅ Camera and light verification added
+- ✅ `verifyThreeJSScene()` command implemented in cypress/support/commands.ts
+- ✅ Scene exposure added to src/App.tsx (dev mode only)
+- ✅ Scene object verification added to >12 tests
+- ✅ Tests fail if scene is empty or missing required types
+- ✅ Camera and light verification included via requiredTypes parameter
+
+**Note:** The 3h effort includes implementing the command (2h) and adding it to tests (1h).
 
 ---
 

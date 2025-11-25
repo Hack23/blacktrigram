@@ -22,19 +22,27 @@ it("should call attackEnemy() function", () => {
 });
 
 // ✅ GOOD: Testing user-visible outcome
+// NOTE: Requires adding data-health attribute to ProgressBar component
 it("should deal damage when attacking", () => {
-  cy.get('[data-testid="enemy-health"]').invoke('attr', 'data-health')
+  // Use player2-health (opponent), not "enemy-health"
+  cy.get('[data-testid="player2-health"]').invoke('attr', 'data-health')
     .then(parseFloat).as('healthBefore');
   
   cy.gameActions(["1", " "]); // Attack
   
   cy.get('@healthBefore').then((initial) => {
-    cy.get('[data-testid="enemy-health"]')
+    cy.get('[data-testid="player2-health"]')
       .invoke('attr', 'data-health')
       .then(parseFloat)
       .should('be.lessThan', initial as number);
   });
 });
+```
+
+**Prerequisites:** Add `data-health` attribute to ProgressBar component:
+```typescript
+// In src/components/three/ProgressBar.tsx, line 204:
+<div style={containerStyle} data-testid={testId} data-health={current} data-max={max}>
 ```
 
 ### 2. Verify Game State, Not Just UI Presence
@@ -44,20 +52,45 @@ it("should deal damage when attacking", () => {
 ```typescript
 // ❌ BAD: Only checks UI exists
 it("should show health bar", () => {
-  cy.get('[data-testid="health-bar"]').should("exist");
+  cy.get('[data-testid="player1-health"]').should("exist");
 });
 
 // ✅ GOOD: Verifies health value is correct
+// NOTE: Requires adding data-health attribute to ProgressBar component
 it("should show correct health after damage", () => {
-  cy.get('[data-testid="health-bar"]')
+  cy.get('[data-testid="player1-health"]')
     .should('have.attr', 'data-health', '100');
   
   cy.gameActions(["1", " "]); // Take damage
   
-  cy.get('[data-testid="health-bar"]')
+  cy.get('[data-testid="player1-health"]')
     .should('have.attr', 'data-health')
     .then(health => {
       expect(parseFloat(health as string)).to.be.lessThan(100);
+    });
+});
+```
+
+**Alternative without data attributes** (works with current implementation):
+```typescript
+// Parse text content instead of data attribute
+it("should show correct health after damage (text parsing)", () => {
+  cy.get('[data-testid="player1-health"]')
+    .invoke('text')
+    .then(text => {
+      // Text format: "체력 | Health  75 / 100  75%"
+      const healthMatch = text.match(/(\d+)\s*\/\s*\d+/);
+      const initialHealth = parseInt(healthMatch[1]);
+      
+      cy.gameActions(["1", " "]); // Take damage
+      
+      cy.get('[data-testid="player1-health"]')
+        .invoke('text')
+        .then(newText => {
+          const newMatch = newText.match(/(\d+)\s*\/\s*\d+/);
+          const currentHealth = parseInt(newMatch[1]);
+          expect(currentHealth).to.be.lessThan(initialHealth);
+        });
     });
 });
 ```
@@ -157,8 +190,9 @@ describe("Combat Damage System", () => {
   it("should deal damage based on stance and vital point", () => {
     cy.annotate("Testing damage calculation");
 
-    // Record initial health
-    cy.get('[data-testid="enemy-health"]')
+    // Record initial health (player2 is opponent)
+    // NOTE: Requires data-health attribute on ProgressBar
+    cy.get('[data-testid="player2-health"]')
       .invoke('attr', 'data-health')
       .then(parseFloat)
       .as('healthBefore');
@@ -179,7 +213,7 @@ describe("Combat Damage System", () => {
 
     // Verify damage was dealt
     cy.get('@healthBefore').then((initial) => {
-      cy.get('[data-testid="enemy-health"]')
+      cy.get('[data-testid="player2-health"]')
         .invoke('attr', 'data-health')
         .then(parseFloat)
         .should('be.lessThan', initial as number)
@@ -207,7 +241,7 @@ describe("Combat Damage System", () => {
           .should('equal', '0');
 
         // Attempt attack with zero stamina
-        cy.get('[data-testid="enemy-health"]')
+        cy.get('[data-testid="player2-health"]')
           .invoke('attr', 'data-health')
           .as('healthBeforeZeroStamina');
 
@@ -216,7 +250,7 @@ describe("Combat Damage System", () => {
 
         // Verify no damage dealt (stamina requirement enforced)
         cy.get('@healthBeforeZeroStamina').then((before) => {
-          cy.get('[data-testid="enemy-health"]')
+          cy.get('[data-testid="player2-health"]')
             .invoke('attr', 'data-health')
             .should('equal', before); // Health unchanged
         });
@@ -500,15 +534,16 @@ it("should call damage calculation", () => {
 });
 
 // ✅ GOOD: Tests user-visible outcome
+// NOTE: Requires data-health attribute on ProgressBar
 it("should deal damage when attacking", () => {
-  cy.get('[data-testid="enemy-health"]')
+  cy.get('[data-testid="player2-health"]')
     .invoke('attr', 'data-health')
     .as('before');
   
   cy.get("body").type(" ");
   
   cy.get('@before').then(before => {
-    cy.get('[data-testid="enemy-health"]')
+    cy.get('[data-testid="player2-health"]')
       .invoke('attr', 'data-health')
       .then(after => {
         expect(parseFloat(after)).to.be.lessThan(parseFloat(before));
@@ -604,8 +639,12 @@ cy.assertSmoothFPS(2000); // Expect 60fps
 cy.assertCanvasRendering(1000); // Verify actively rendering
 cy.assertNoMemoryLeaks(3000); // Check memory usage
 
-// Three.js Verification (custom - needs implementation)
-cy.verifyThreeJSScene({ minObjects: 5 }); // Verify scene content
+// Three.js Verification ⚠️ NOT YET IMPLEMENTED
+// See E2E_TEST_IMPROVEMENTS_BACKLOG.md Issue #2
+// Requires: 1) Exposing scene via window.__threeScene in dev mode
+//           2) Adding custom Cypress command to cypress/support/commands.ts
+// Example usage (will NOT work until implemented):
+cy.verifyThreeJSScene({ minChildren: 5, requiredTypes: ['PerspectiveCamera'] });
 
 // Annotation
 cy.annotate("Testing combat mechanics"); // Add visible annotation

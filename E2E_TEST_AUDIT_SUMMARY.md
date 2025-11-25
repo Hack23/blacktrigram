@@ -55,15 +55,24 @@ cy.gameActions(["1", " "]); // Attack
 cy.get('[data-testid="combat-screen"]').should("exist");
 
 // ✅ Should: Verify actual damage dealt
-cy.get('[data-testid="enemy-health"]').as('healthBefore');
+// NOTE: Uses player2-health (opponent), requires data-health attribute
+cy.get('[data-testid="player2-health"]')
+  .invoke('attr', 'data-health')
+  .then(parseFloat)
+  .as('healthBefore');
+
 cy.gameActions(["1", " "]);
+
 cy.get('@healthBefore').then(before => {
-  cy.get('[data-testid="enemy-health"]')
-    .should('be.lessThan', before); // Verify damage dealt
+  cy.get('[data-testid="player2-health"]')
+    .invoke('attr', 'data-health')
+    .then(parseFloat)
+    .should('be.lessThan', before as number); // Verify damage dealt
 });
 ```
 
-**Files Affected:** `combat.cy.ts`, `game-journey.cy.ts`
+**Prerequisites:** Add `data-health` attribute to ProgressBar component  
+**Files Affected:** `combat.cy.ts`, `game-journey.cy.ts`, `src/components/three/ProgressBar.tsx`
 
 ---
 
@@ -76,11 +85,16 @@ cy.get('@healthBefore').then(before => {
 cy.get("canvas").should("exist").and("be.visible");
 
 // ✅ Should: Verify scene has content
+// ⚠️ NOT YET IMPLEMENTED - See Issue #2 in backlog
 cy.verifyThreeJSScene({ 
-  minObjects: 5, 
+  minChildren: 5, 
   requiredTypes: ['PerspectiveCamera', 'DirectionalLight'] 
 });
 ```
+
+**Prerequisites:** 
+1. Expose `__threeScene` in dev mode (`src/App.tsx`)
+2. Implement `cy.verifyThreeJSScene()` command (`cypress/support/commands.ts`)
 
 **Impact:** Canvas could show blank screen and tests pass.
 

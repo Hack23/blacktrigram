@@ -36,7 +36,8 @@ The E2E test suite has successfully migrated from PixiJS to Three.js patterns an
 1. **96 weak assertions** only check element existence, not actual values or behavior
 2. **Zero health/damage verification** - Combat doesn't verify actual damage dealt
 3. **Zero Three.js scene validation** - Tests don't verify 3D objects exist in scene
-4. **17 silent error continuations** - Tests may hide failures with "but continuing" patterns
+4. **17 silent error continuations** - Tests may hide failures with conditional check patterns
+   > **Methodology:** Counted all test cases with conditional checks (`.then(($body) => { if ($body.find(...).length > 0) ... }`) that allow tests to continue without strict assertions. This includes 4 explicit "but continuing" log statements and 13 silent conditional checks that don't log warnings but also don't fail tests when elements are missing.
 5. **15+ tests verify only UI presence** - Don't test actual game mechanics
 
 ⚠️ **High Priority Issues (P1 - Should Fix):**
@@ -127,8 +128,9 @@ it("should execute complete combat action sequence", () => {
 it("should execute combat and verify damage dealt", () => {
   cy.annotate("Testing combat with damage verification");
 
-  // Record initial enemy health
-  cy.get('[data-testid="enemy-health"]')
+  // Record initial player2 health (the opponent)
+  // NOTE: Requires adding data-health attribute to ProgressBar component
+  cy.get('[data-testid="player2-health"]')
     .invoke('attr', 'data-health')
     .then(parseFloat)
     .as('initialHealth');
@@ -142,7 +144,7 @@ it("should execute combat and verify damage dealt", () => {
 
   // Verify damage was dealt
   cy.get('@initialHealth').then((initial) => {
-    cy.get('[data-testid="enemy-health"]')
+    cy.get('[data-testid="player2-health"]')
       .invoke('attr', 'data-health')
       .then(parseFloat)
       .should('be.lessThan', initial as number);
@@ -151,6 +153,12 @@ it("should execute combat and verify damage dealt", () => {
   cy.log("✅ Combat action verified with damage calculation");
 });
 ```
+
+**Prerequisites for this test:**
+- Add `data-health` attribute to ProgressBar component in `src/components/three/ProgressBar.tsx`:
+  ```typescript
+  <div style={containerStyle} data-testid={testId} data-health={current} data-max={max}>
+  ```
 
 #### Issue 2: Training Tests Don't Verify Stance Changes
 
@@ -493,9 +501,10 @@ Cypress.Commands.add("waitForCanvasReady", () => {
 
 **Example Fix:**
 ```typescript
-// Add helper command
+// Add helper command (requires data-health attribute on ProgressBar)
 Cypress.Commands.add('verifyDamageDealt', (expectedMin: number) => {
-  cy.get('[data-testid="enemy-health"]')
+  // Note: Uses player2-health as the opponent (not "enemy-health")
+  cy.get('[data-testid="player2-health"]')
     .invoke('attr', 'data-health')
     .then(parseFloat)
     .as('healthAfter');
@@ -508,7 +517,20 @@ Cypress.Commands.add('verifyDamageDealt', (expectedMin: number) => {
     });
   });
 });
+
+// TypeScript declaration
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      verifyDamageDealt(expectedMin: number): Chainable<void>;
+    }
+  }
+}
 ```
+
+**Prerequisites:**
+- Add data attributes to ProgressBar component (`data-health`, `data-max`)
+- Use correct test IDs: `player1-health`, `player2-health` (not "enemy-health")
 
 #### 2. Add Three.js Scene Verification
 **Effort:** 3 hours  
@@ -530,10 +552,10 @@ if (import.meta.env.DEV) {
 
 // In cypress/support/commands.ts
 Cypress.Commands.add('verifyThreeJSScene', (options?: {
-  minObjects?: number;
+  minChildren?: number;
   requiredTypes?: string[];
 }) => {
-  const { minObjects = 1, requiredTypes = [] } = options || {};
+  const { minChildren = 1, requiredTypes = [] } = options || {};
   
   cy.window().then((win) => {
     const scene = (win as any).__threeScene;
@@ -543,18 +565,27 @@ Cypress.Commands.add('verifyThreeJSScene', (options?: {
       return;
     }
 
-    expect(scene.children.length).to.be.greaterThan(minObjects,
-      `Scene should have at least ${minObjects} objects`);
+    // Note: scene.children includes ALL objects (cameras, lights, meshes, groups)
+    expect(scene.children.length).to.be.greaterThan(minChildren,
+      `Scene should have at least ${minChildren} children (including cameras, lights, meshes)`);
 
     requiredTypes.forEach(type => {
       const hasType = scene.children.some((obj: any) => obj.type === type);
       expect(hasType).to.be.true(`Scene should contain ${type}`);
     });
 
-    cy.log(`✅ Scene verified: ${scene.children.length} objects`);
+    cy.log(`✅ Scene verified: ${scene.children.length} total children`);
   });
 });
+
+// Usage example:
+cy.verifyThreeJSScene({ 
+  minChildren: 5, 
+  requiredTypes: ['PerspectiveCamera', 'DirectionalLight', 'AmbientLight'] 
+});
 ```
+
+**Note:** Parameter renamed from `minObjects` to `minChildren` for accuracy, as `scene.children` includes all scene graph nodes (cameras, lights, meshes, groups, etc.).
 
 #### 3. Remove Silent Error Continuations
 **Effort:** 2 hours  
