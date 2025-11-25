@@ -7,6 +7,7 @@ import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScree
 import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
 import { SplashScreen } from "./components/ui/SplashScreen";
+import { ErrorModal } from "./components/ui/ErrorModal";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
@@ -27,6 +28,7 @@ function App() {
   const [matchStats, setMatchStats] = useState<MatchStatistics | null>(null);
   const [appReady, setAppReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [showAudioError, setShowAudioError] = useState(false);
 
   const audio = useAudio();
 
@@ -80,21 +82,27 @@ function App() {
     try {
       await audio.initializeAudio();
       setShowSplash(false);
+      setShowAudioError(false); // Clear any previous errors
       console.log("🎵 Audio initialized after user gesture");
     } catch (error) {
       console.error("Failed to initialize audio:", error);
-      
-      // Show user-friendly message and allow continuation without sound
-      const continueWithoutSound = window.confirm(
-        "Audio initialization failed. Would you like to continue without sound?"
-      );
-      
-      if (continueWithoutSound) {
-        setShowSplash(false);
-      }
-      // If user declines, stay on splash screen (allows retry)
+      // Show error modal instead of blocking confirm dialog
+      setShowAudioError(true);
     }
   }, [audio, appReady]);
+
+  const handleAudioErrorRetry = useCallback(() => {
+    // Hide error modal and retry initialization
+    setShowAudioError(false);
+    handleSplashStart();
+  }, [handleSplashStart]);
+
+  const handleAudioErrorContinue = useCallback(() => {
+    // Continue without sound
+    setShowAudioError(false);
+    setShowSplash(false);
+    console.log("Continuing without audio (silent mode)");
+  }, []);
 
   // ✅ SIMPLIFIED: Handle game mode selection directly
   const handleGameStart = useCallback(
@@ -332,6 +340,13 @@ function App() {
           width={screenSize.width}
           height={screenSize.height}
         />
+        {showAudioError && (
+          <ErrorModal
+            message="오디오 초기화에 실패했습니다. 재시도하거나 소리 없이 계속할 수 있습니다. | Audio initialization failed. You can retry or continue without sound."
+            onRetry={handleAudioErrorRetry}
+            onContinue={handleAudioErrorContinue}
+          />
+        )}
       </div>
     );
   }

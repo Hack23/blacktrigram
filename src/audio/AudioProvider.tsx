@@ -49,9 +49,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   const [isAudioReady, setIsAudioReady] = useState(false);
 
   const initializeAudio = React.useCallback(async () => {
-    if (isAudioReady) {
-      return; // Already initialized
-    }
+    // Note: We don't check isAudioReady here to allow retry attempts
+    // If initialization fails, users can retry by calling this again
 
     try {
       await audioManager.initialize(); // no args

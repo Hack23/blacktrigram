@@ -45,7 +45,7 @@ describe("AudioProvider - Deferred Initialization", () => {
       
       React.useEffect(() => {
         audio.initializeAudio();
-      }, [audio]);
+      }, [audio.initializeAudio]); // Use specific method instead of entire context
 
       return <div>{audio.isAudioReady ? "Ready" : "Not Ready"}</div>;
     };
