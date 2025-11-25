@@ -12,6 +12,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
 import { Position, TrigramStance } from "../../types/common";
@@ -60,6 +61,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  // Handle WebGL context loss and restoration
+  useWebGLContextLossHandler({
+    onContextLost: () => {
+      console.warn('⚠️ WebGL context lost in TrainingScreen');
+    },
+    onContextRestored: () => {
+      console.log('✅ WebGL context restored in TrainingScreen');
+    },
+    autoRestore: true,
+  });
+
   // Training state
   const [trainingMode, setTrainingMode] = useState<TrainingMode>("basics");
   const [isTraining, setIsTraining] = useState(false);

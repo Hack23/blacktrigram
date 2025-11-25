@@ -2,6 +2,7 @@ import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useAudio } from "../../audio/AudioProvider";
 import { COMBAT_CONTROLS } from "../../systems";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
@@ -81,6 +82,17 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   width: propWidth,
   height: propHeight,
 }) => {
+  // Handle WebGL context loss and restoration
+  useWebGLContextLossHandler({
+    onContextLost: () => {
+      console.warn('⚠️ WebGL context lost in ControlsScreen');
+    },
+    onContextRestored: () => {
+      console.log('✅ WebGL context restored in ControlsScreen');
+    },
+    autoRestore: true,
+  });
+
   const audio = useAudio();
   const { width, height } = useWindowSize();
 

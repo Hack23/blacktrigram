@@ -2,6 +2,7 @@ import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useAudio } from "../../audio/AudioProvider";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems";
 import { KoreanCulture } from "../../systems/trigram/KoreanCulture";
@@ -84,6 +85,17 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
   width: propWidth,
   height: propHeight,
 }) => {
+  // Handle WebGL context loss and restoration
+  useWebGLContextLossHandler({
+    onContextLost: () => {
+      console.warn('⚠️ WebGL context lost in PhilosophyScreen');
+    },
+    onContextRestored: () => {
+      console.log('✅ WebGL context restored in PhilosophyScreen');
+    },
+    autoRestore: true,
+  });
+
   const audio = useAudio();
   const { width, height } = useWindowSize();
 

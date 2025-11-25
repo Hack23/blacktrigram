@@ -14,6 +14,7 @@ import React, {
   useState,
 } from "react";
 import * as THREE from "three";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
@@ -109,6 +110,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  // Handle WebGL context loss and restoration
+  useWebGLContextLossHandler({
+    onContextLost: () => {
+      console.warn('⚠️ WebGL context lost in CombatScreen');
+    },
+    onContextRestored: () => {
+      console.log('✅ WebGL context restored in CombatScreen');
+    },
+    autoRestore: true,
+  });
+
   // Performance marks - only in dev mode and memoized
   useEffect(() => {
     if (import.meta.env.DEV) {

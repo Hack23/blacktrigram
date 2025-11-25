@@ -2,6 +2,7 @@ import { Html, PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useAudio } from "../../audio/AudioProvider";
 import { PlayerState } from "../../systems";
 import { MatchStatistics } from "../../systems/combat";
@@ -168,6 +169,17 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   width = 1920,
   height = 1080,
 }) => {
+  // Handle WebGL context loss and restoration
+  useWebGLContextLossHandler({
+    onContextLost: () => {
+      console.warn('⚠️ WebGL context lost in EndScreen');
+    },
+    onContextRestored: () => {
+      console.log('✅ WebGL context restored in EndScreen');
+    },
+    autoRestore: true,
+  });
+
   const audio = useAudio();
   const [showStats, setShowStats] = useState(false);
 
