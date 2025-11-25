@@ -34,13 +34,17 @@ function App() {
   const audio = useAudio();
 
   // Handle WebGL context loss and restoration
+  const handleContextLost = useCallback(() => {
+    console.warn('⚠️ WebGL context lost - This may affect 3D rendering');
+  }, []);
+
+  const handleContextRestored = useCallback(() => {
+    console.log('✅ WebGL context restored - 3D rendering should resume');
+  }, []);
+
   useWebGLContextLossHandler({
-    onContextLost: () => {
-      console.warn('⚠️ WebGL context lost - This may affect 3D rendering');
-    },
-    onContextRestored: () => {
-      console.log('✅ WebGL context restored - 3D rendering should resume');
-    },
+    onContextLost: handleContextLost,
+    onContextRestored: handleContextRestored,
     autoRestore: true,
   });
 

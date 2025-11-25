@@ -14,6 +14,7 @@
  */
 
 import { useEffect } from 'react';
+import type React from 'react';
 
 export interface WebGLContextLossOptions {
   /**
@@ -30,6 +31,12 @@ export interface WebGLContextLossOptions {
    * Whether to attempt automatic restoration (default: true)
    */
   readonly autoRestore?: boolean;
+  
+  /**
+   * Optional canvas ref to attach to a specific canvas element
+   * If not provided, will query for the first canvas in the document
+   */
+  readonly canvasRef?: React.RefObject<HTMLCanvasElement>;
 }
 
 /**
@@ -38,10 +45,10 @@ export interface WebGLContextLossOptions {
 export const useWebGLContextLossHandler = (
   options: WebGLContextLossOptions = {}
 ): void => {
-  const { onContextLost, onContextRestored, autoRestore = true } = options;
+  const { onContextLost, onContextRestored, autoRestore = true, canvasRef } = options;
 
   useEffect(() => {
-    const canvas = document.querySelector('canvas');
+    const canvas = canvasRef?.current ?? document.querySelector('canvas');
     if (!canvas) {
       console.warn('useWebGLContextLossHandler: No canvas element found');
       return;
@@ -72,7 +79,7 @@ export const useWebGLContextLossHandler = (
       canvas.removeEventListener('webglcontextlost', handleContextLost);
       canvas.removeEventListener('webglcontextrestored', handleContextRestored);
     };
-  }, [onContextLost, onContextRestored, autoRestore]);
+  }, [onContextLost, onContextRestored, autoRestore, canvasRef]);
 };
 
 /**

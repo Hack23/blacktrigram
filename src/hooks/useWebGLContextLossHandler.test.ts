@@ -66,7 +66,7 @@ describe('useWebGLContextLossHandler', () => {
     });
   });
 
-  it('should prevent default behavior when autoRestore is true', async () => {
+  it('should prevent default behavior when autoRestore is true', () => {
     renderHook(() => useWebGLContextLossHandler({ autoRestore: true }));
 
     // Simulate context loss with preventDefault spy
@@ -75,12 +75,10 @@ describe('useWebGLContextLossHandler', () => {
     
     canvas.dispatchEvent(event);
 
-    await waitFor(() => {
-      expect(preventDefaultSpy).toHaveBeenCalled();
-    });
+    expect(preventDefaultSpy).toHaveBeenCalled();
   });
 
-  it('should not prevent default behavior when autoRestore is false', async () => {
+  it('should not prevent default behavior when autoRestore is false', () => {
     renderHook(() => useWebGLContextLossHandler({ autoRestore: false }));
 
     // Simulate context loss with preventDefault spy
@@ -88,9 +86,6 @@ describe('useWebGLContextLossHandler', () => {
     const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
     
     canvas.dispatchEvent(event);
-
-    // Give time for any async operations
-    await new Promise(resolve => setTimeout(resolve, 100));
 
     expect(preventDefaultSpy).not.toHaveBeenCalled();
   });
