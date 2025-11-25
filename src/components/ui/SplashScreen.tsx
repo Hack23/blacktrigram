@@ -1,15 +1,12 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { toHex } from "../../utils/colorUtils";
 
 // Constants
-const LOADING_DELAY_MS = 100; // Delay to show loading state before starting
-
-/**
- * Convert numeric color to hex string
- * @param color - Numeric color value (e.g., 0x00ffff)
- * @returns Hex color string (e.g., "00ffff")
- */
-const toHex = (color: number): string => color.toString(16).padStart(6, '0');
+// Small delay to show loading state for visual feedback.
+// 100ms is sufficient for users to perceive the state change
+// without feeling sluggish. This value can be tuned for UX.
+const LOADING_DELAY_MS = 100;
 
 // Pre-compute hex colors from Korean color constants
 const HEX_COLORS = {

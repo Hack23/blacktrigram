@@ -4,8 +4,9 @@
  * Follows Korean cyberpunk aesthetic and accessibility best practices
  */
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { toHex } from "../../utils/colorUtils";
 
 interface ErrorModalProps {
   readonly message: string;
@@ -13,15 +14,26 @@ interface ErrorModalProps {
   readonly onContinue: () => void;
 }
 
+// Pre-compute hex colors from Korean color constants
+const HEX_COLORS = {
+  PRIMARY_CYAN: toHex(KOREAN_COLORS.PRIMARY_CYAN),
+  ACCENT_GOLD: toHex(KOREAN_COLORS.ACCENT_GOLD),
+  UI_BACKGROUND_DARK: toHex(KOREAN_COLORS.UI_BACKGROUND_DARK),
+  TEXT_ERROR: toHex(KOREAN_COLORS.TEXT_ERROR),
+} as const;
+
 /**
  * Error modal component with Korean cyberpunk styling
  * Provides retry and continue options for graceful error recovery
+ * Includes keyboard navigation and focus management
  */
 export const ErrorModal: React.FC<ErrorModalProps> = ({
   message,
   onRetry,
   onContinue,
 }) => {
+  const retryButtonRef = useRef<HTMLButtonElement>(null);
+
   const handleRetry = useCallback(() => {
     onRetry();
   }, [onRetry]);
@@ -30,15 +42,24 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
     onContinue();
   }, [onContinue]);
 
-  // Convert colors to hex for inline styles
-  const toHex = (num: number): string => num.toString(16).padStart(6, "0");
+  // Handle keyboard events (Escape key to close)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleContinue();
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleContinue]);
 
-  const HEX_COLORS = {
-    PRIMARY_CYAN: toHex(KOREAN_COLORS.PRIMARY_CYAN),
-    ACCENT_GOLD: toHex(KOREAN_COLORS.ACCENT_GOLD),
-    UI_BACKGROUND_DARK: toHex(KOREAN_COLORS.UI_BACKGROUND_DARK),
-    TEXT_ERROR: toHex(KOREAN_COLORS.TEXT_ERROR),
-  };
+  // Set focus to first interactive element when modal opens
+  useEffect(() => {
+    if (retryButtonRef.current) {
+      retryButtonRef.current.focus();
+    }
+  }, []);
 
   return (
     <div
@@ -119,6 +140,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
           }}
         >
           <button
+            ref={retryButtonRef}
             onClick={handleRetry}
             style={{
               backgroundColor: `#${HEX_COLORS.PRIMARY_CYAN}`,

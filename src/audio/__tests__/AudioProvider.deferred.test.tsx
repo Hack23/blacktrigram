@@ -112,7 +112,7 @@ describe("AudioProvider - Deferred Initialization", () => {
       
       React.useEffect(() => {
         audio.initializeAudio();
-      }, [audio]);
+      }, [audio.initializeAudio]);
 
       return <div>{audio.isAudioReady ? "Ready" : "Not Ready"}</div>;
     };

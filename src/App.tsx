@@ -91,11 +91,22 @@ function App() {
     }
   }, [audio, appReady]);
 
-  const handleAudioErrorRetry = useCallback(() => {
-    // Hide error modal and retry initialization
+  const handleAudioErrorRetry = useCallback(async () => {
     setShowAudioError(false);
-    handleSplashStart();
-  }, [handleSplashStart]);
+    // Directly retry audio initialization instead of calling handleSplashStart
+    if (!appReady) {
+      console.warn("App not ready yet, please wait...");
+      return;
+    }
+    try {
+      await audio.initializeAudio();
+      setShowSplash(false);
+      console.log("🎵 Audio initialized after retry");
+    } catch (error) {
+      console.error("Failed to initialize audio:", error);
+      setShowAudioError(true);
+    }
+  }, [audio, appReady]);
 
   const handleAudioErrorContinue = useCallback(() => {
     // Continue without sound

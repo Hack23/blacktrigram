@@ -132,4 +132,40 @@ describe("ErrorModal", () => {
     expect(screen.getByText("재시도 | Retry")).toBeInTheDocument();
     expect(screen.getByText("무음으로 계속 | Continue Without Sound")).toBeInTheDocument();
   });
+
+  it("should call onContinue when Escape key is pressed", async () => {
+    const user = userEvent.setup();
+    const mockRetry = vi.fn();
+    const mockContinue = vi.fn();
+
+    render(
+      <ErrorModal
+        message="Error message"
+        onRetry={mockRetry}
+        onContinue={mockContinue}
+      />
+    );
+
+    // Press Escape key
+    await user.keyboard("{Escape}");
+
+    expect(mockContinue).toHaveBeenCalledTimes(1);
+    expect(mockRetry).not.toHaveBeenCalled();
+  });
+
+  it("should focus retry button when modal opens", () => {
+    const mockRetry = vi.fn();
+    const mockContinue = vi.fn();
+
+    render(
+      <ErrorModal
+        message="Error message"
+        onRetry={mockRetry}
+        onContinue={mockContinue}
+      />
+    );
+
+    const retryButton = screen.getByTestId("error-modal-retry");
+    expect(retryButton).toHaveFocus();
+  });
 });
