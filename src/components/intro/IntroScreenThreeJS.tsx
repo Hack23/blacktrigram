@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import { ARCHETYPE_BACKGROUNDS, FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
@@ -133,6 +134,17 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
+
+  // Handle WebGL context loss and restoration
+  useWebGLContextLossHandler({
+    onContextLost: useCallback(() => {
+      console.warn('⚠️ WebGL context lost in IntroScreen');
+    }, []),
+    onContextRestored: useCallback(() => {
+      console.log('✅ WebGL context restored in IntroScreen');
+    }, []),
+    autoRestore: true,
+  });
 
   // Add local state for archetype management
   const [currentArchetype, setCurrentArchetype] =

@@ -8,7 +8,6 @@ import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/Co
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
 import { SplashScreen } from "./components/ui/SplashScreen";
 import { ErrorModal } from "./components/ui/ErrorModal";
-import { useWebGLContextLossHandler } from "./hooks/useWebGLContextLossHandler";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
@@ -32,21 +31,6 @@ function App() {
   const [showAudioError, setShowAudioError] = useState(false);
 
   const audio = useAudio();
-
-  // Handle WebGL context loss and restoration
-  const handleContextLost = useCallback(() => {
-    console.warn('⚠️ WebGL context lost - This may affect 3D rendering');
-  }, []);
-
-  const handleContextRestored = useCallback(() => {
-    console.log('✅ WebGL context restored - 3D rendering should resume');
-  }, []);
-
-  useWebGLContextLossHandler({
-    onContextLost: handleContextLost,
-    onContextRestored: handleContextRestored,
-    autoRestore: true,
-  });
 
   // Add responsive screen size detection
   const [screenSize, setScreenSize] = useState({
