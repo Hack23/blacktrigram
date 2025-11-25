@@ -144,6 +144,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
       <button
         onClick={handleStart}
         disabled={isLoading}
+        aria-label={isLoading ? "Starting game and initializing audio" : "Start game and initialize audio"}
+        aria-busy={isLoading}
         style={{
           padding: layoutCalculation.buttonPadding,
           fontSize: `${layoutCalculation.buttonFontSize}px`,

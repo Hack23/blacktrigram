@@ -159,9 +159,8 @@
             window.location.hostname === '127.0.0.1' ||
             window.location.hostname.startsWith('192.168.') ||
             window.location.hostname.startsWith('10.') || // Also common for local networks
-            (window.location.port !== '' &&
-             window.location.port !== '80' &&
-             window.location.port !== '443');
+            // window.location.port is '' for default ports (80 for HTTP, 443 for HTTPS)
+            window.location.port !== '';
           const swPath = isDevelopment ? '/sw.js' : './sw.js';
           navigator.serviceWorker
             .register(swPath)

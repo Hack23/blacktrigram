@@ -103,7 +103,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       // Continue without audio - silent mode fallback
       setIsAudioReady(true); // Mark as ready even in fallback mode
     }
-  }, [audioManager, isAudioReady]);
+  }, [audioManager]); // Removed isAudioReady to prevent unnecessary callback recreation
 
   // Auto-initialize if not deferred
   useEffect(() => {
