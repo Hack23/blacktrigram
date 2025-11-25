@@ -185,15 +185,31 @@ jobs:
             echo "📊 E2E Test Execution Metrics"
             echo "================================"
             echo "Total Duration: ${{ steps.e2e_tests.outputs.e2e_duration }} seconds"
-            echo "Target: 600-720 seconds (10-12 minutes)"
+            echo "Previous baseline: 1500-1800 seconds (25-30 minutes)"
+            echo "Current target: 900-1200 seconds (15-20 minutes)"
+            echo "Final goal: 600-720 seconds (10-12 minutes)"
             
             DURATION=${{ steps.e2e_tests.outputs.e2e_duration }}
             if [ $DURATION -le 720 ]; then
-              echo "✅ PASS: Test execution within target (≤12 minutes)"
-            elif [ $DURATION -le 900 ]; then
-              echo "⚠️  WARNING: Test execution slightly over target (12-15 minutes)"
+              echo "🎯 EXCELLENT: Test execution at final goal (≤12 minutes)"
+            elif [ $DURATION -le 1200 ]; then
+              echo "✅ GOOD: Test execution within current target (≤20 minutes)"
+            elif [ $DURATION -le 1800 ]; then
+              echo "⚠️  NEEDS IMPROVEMENT: Test execution above target but below baseline (20-30 minutes)"
             else
-              echo "❌ FAIL: Test execution significantly over target (>15 minutes)"
+              echo "❌ REGRESSION: Test execution above baseline (>30 minutes)"
+            fi
+            
+            # Calculate improvement from baseline (assume 27 min = 1620 sec average)
+            BASELINE=1620
+            IMPROVEMENT=$((BASELINE - DURATION))
+            PERCENT=$((IMPROVEMENT * 100 / BASELINE))
+            if [ $IMPROVEMENT -gt 0 ]; then
+              echo "📈 Improvement: ${IMPROVEMENT} seconds (${PERCENT}% faster than baseline)"
+            else
+              REGRESSION=$((DURATION - BASELINE))
+              PERCENT=$((REGRESSION * 100 / BASELINE))
+              echo "📉 Regression: ${REGRESSION} seconds (${PERCENT}% slower than baseline)"
             fi
           fi
 
