@@ -32,6 +32,8 @@ interface State {
  * ```
  */
 export class ErrorBoundary extends Component<Props, State> {
+  private didRecover = false;
+
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -47,15 +49,18 @@ export class ErrorBoundary extends Component<Props, State> {
 
   /**
    * Reset error state and attempt recovery without full page reload.
-   * Full reload is used as a last resort to ensure clean state.
+   * Full reload is used as a last resort if recovery fails.
    */
   private handleReset = () => {
+    // Mark as not recovered yet
+    this.didRecover = false;
+    
     // Try to recover by resetting error state
     this.setState({ hasError: false, error: null });
     
-    // Give React a chance to re-render, then reload if still in error state
+    // Give React a chance to re-render, then reload if recovery failed
     setTimeout(() => {
-      if (this.state.hasError) {
+      if (!this.didRecover) {
         window.location.reload();
       }
     }, 100);
@@ -118,6 +123,8 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
+    // Mark recovery as successful when rendering children
+    this.didRecover = true;
     return this.props.children;
   }
 }

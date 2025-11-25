@@ -53,7 +53,7 @@ export interface LoadingStateProps {
  * ```
  */
 export const LoadingState: React.FC<LoadingStateProps> = ({
-  progress = 0,
+  progress,
   message = '로드 중 | Loading...',
   stage = 'initialization',
 }) => {
@@ -64,7 +64,10 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
     complete: '완료 | Complete',
   };
 
-  const progressValue = Math.min(100, Math.max(0, progress));
+  // Calculate progress value, undefined means indeterminate
+  const progressValue = progress !== undefined 
+    ? Math.min(100, Math.max(0, progress))
+    : undefined;
 
   return (
     <div
@@ -100,11 +103,12 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
         aria-valuenow={progressValue}
         aria-valuemin={0}
         aria-valuemax={100}
+        aria-label={progressValue !== undefined ? `Loading progress: ${progressValue}%` : 'Loading...'}
         data-testid="loading-progress-bar"
       >
         <div
-          className="loading-state__progress-bar"
-          style={{ width: `${progressValue}%` }}
+          className={`loading-state__progress-bar${progressValue === undefined ? ' loading-state__progress-bar--indeterminate' : ''}`}
+          style={progressValue !== undefined ? { width: `${progressValue}%` } : undefined}
         />
       </div>
 
