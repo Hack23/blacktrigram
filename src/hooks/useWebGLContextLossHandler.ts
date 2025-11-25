@@ -13,7 +13,7 @@
  * ```
  */
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type React from 'react';
 
 export interface WebGLContextLossOptions {
@@ -47,6 +47,16 @@ export const useWebGLContextLossHandler = (
 ): void => {
   const { onContextLost, onContextRestored, autoRestore = true, canvasRef } = options;
 
+  // Use refs to store the latest callbacks to avoid re-registering event listeners
+  const onContextLostRef = useRef(onContextLost);
+  const onContextRestoredRef = useRef(onContextRestored);
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onContextLostRef.current = onContextLost;
+    onContextRestoredRef.current = onContextRestored;
+  });
+
   useEffect(() => {
     const canvas = canvasRef?.current ?? document.querySelector('canvas');
     if (!canvas) {
@@ -62,12 +72,12 @@ export const useWebGLContextLossHandler = (
         event.preventDefault();
       }
       
-      onContextLost?.();
+      onContextLostRef.current?.();
     };
 
     const handleContextRestored = () => {
       console.log('WebGL context restored successfully');
-      onContextRestored?.();
+      onContextRestoredRef.current?.();
     };
 
     // Add event listeners for context loss/restoration
@@ -79,7 +89,7 @@ export const useWebGLContextLossHandler = (
       canvas.removeEventListener('webglcontextlost', handleContextLost);
       canvas.removeEventListener('webglcontextrestored', handleContextRestored);
     };
-  }, [onContextLost, onContextRestored, autoRestore, canvasRef]);
+  }, [autoRestore, canvasRef]);
 };
 
 /**
@@ -89,7 +99,13 @@ export const isWebGLAvailable = (): boolean => {
   try {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    return gl !== null;
+    const available = gl !== null;
+    // Help GC by cleaning up WebGL context
+    if (gl && 'getExtension' in gl) {
+      const loseContext = gl.getExtension('WEBGL_lose_context');
+      loseContext?.loseContext();
+    }
+    return available;
   } catch (e) {
     return false;
   }
@@ -102,7 +118,13 @@ export const isWebGL2Available = (): boolean => {
   try {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2');
-    return gl !== null;
+    const available = gl !== null;
+    // Help GC by cleaning up WebGL context
+    if (gl && 'getExtension' in gl) {
+      const loseContext = gl.getExtension('WEBGL_lose_context');
+      loseContext?.loseContext();
+    }
+    return available;
   } catch (e) {
     return false;
   }

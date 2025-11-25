@@ -36,7 +36,7 @@ Successfully analyzed and fixed all reported audio and WebGL issues in the Black
 - **Files**: 
   - `src/hooks/useWebGLContextLossHandler.ts` (new)
   - `src/hooks/useWebGLContextLossHandler.test.ts` (new)
-  - `src/App.tsx` (integrated)
+  - Integrated into individual screen components (IntroScreen, CombatScreen, TrainingScreen, EndScreen, ControlsScreen, PhilosophyScreen)
 
 ## Testing Results
 
@@ -58,12 +58,18 @@ Successfully analyzed and fixed all reported audio and WebGL issues in the Black
 ## Files Changed
 
 1. **index.html** - Preload optimization, font loading
-2. **src/App.tsx** - WebGL context handler integration
+2. **src/App.tsx** - Removed global WebGL handler (moved to screen components)
 3. **src/audio/AudioAssetLoader.ts** - Silent placeholder fix
 4. **src/audio/AudioAssetRegistry.ts** - Audio variations fix
 5. **src/hooks/useWebGLContextLossHandler.ts** - New hook (created)
 6. **src/hooks/useWebGLContextLossHandler.test.ts** - Tests (created)
-7. **AUDIO_WEBGL_FIX_DOCUMENTATION.md** - Documentation (created)
+7. **src/components/intro/IntroScreenThreeJS.tsx** - WebGL handler integration
+8. **src/components/combat/CombatScreen3D.tsx** - WebGL handler integration
+9. **src/components/training/TrainingScreen3D.tsx** - WebGL handler integration
+10. **src/components/endscreen/EndScreen3D.tsx** - WebGL handler integration
+11. **src/components/screens/ControlsScreenThreeJS.tsx** - WebGL handler integration
+12. **src/components/screens/PhilosophyScreenThreeJS.tsx** - WebGL handler integration
+13. **AUDIO_WEBGL_FIX_DOCUMENTATION.md** - Documentation (created)
 
 ## Browser Compatibility
 
@@ -93,7 +99,7 @@ For production deployment:
 ## Maintenance Notes
 
 - Audio assets should always include webm+mp3 variations
-- WebGL context handler is globally applied in App.tsx
+- WebGL context handler is integrated into each screen component that renders a Canvas
 - Silent placeholder is valid and browser-compatible
 - Preload hints should only be used for immediately-needed assets
 

@@ -38,7 +38,7 @@ describe('useWebGLContextLossHandler', () => {
     );
   });
 
-  it('should call onContextLost callback when context is lost', async () => {
+  it('should call onContextLost callback when context is lost', () => {
     const onContextLost = vi.fn();
     
     renderHook(() => useWebGLContextLossHandler({ onContextLost }));
@@ -47,12 +47,10 @@ describe('useWebGLContextLossHandler', () => {
     const event = new Event('webglcontextlost');
     canvas.dispatchEvent(event);
 
-    await waitFor(() => {
-      expect(onContextLost).toHaveBeenCalledTimes(1);
-    });
+    expect(onContextLost).toHaveBeenCalledTimes(1);
   });
 
-  it('should call onContextRestored callback when context is restored', async () => {
+  it('should call onContextRestored callback when context is restored', () => {
     const onContextRestored = vi.fn();
     
     renderHook(() => useWebGLContextLossHandler({ onContextRestored }));
@@ -61,9 +59,7 @@ describe('useWebGLContextLossHandler', () => {
     const event = new Event('webglcontextrestored');
     canvas.dispatchEvent(event);
 
-    await waitFor(() => {
-      expect(onContextRestored).toHaveBeenCalledTimes(1);
-    });
+    expect(onContextRestored).toHaveBeenCalledTimes(1);
   });
 
   it('should prevent default behavior when autoRestore is true', () => {
