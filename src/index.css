@@ -1,19 +1,98 @@
 /* Global styles for Black Trigram Korean martial arts game */
 
 :root {
-  --primary-cyan: #00ffff;
-  --primary-blue: #0074d9;
-  --accent-magenta: #ff00ff;
-  --background-dark: #0a0a0a;
-  --text-primary: #ffffff;
-  --font-korean: "Noto Sans KR", "Malgun Gothic", sans-serif;
-
-  /* Korean martial arts theme colors */
-  --korean-red: #8a0000;
-  --korean-gold: #ffd700;
-  --korean-black: #000000;
-  --korean-white: #ffffff;
-  --dojang-blue: #4a89e2;
+  /* Primary Brand Colors */
+  --color-primary-cyan: #00ffff;
+  --color-primary-gold: #ffd700;
+  --color-primary-black: #000000;
+  
+  /* Korean Traditional Colors (오방색 - Five Cardinal Colors) */
+  --color-korean-east: #00ff88;      /* 동방 청색 - East/Blue/Green */
+  --color-korean-west: #ffffff;      /* 서방 백색 - West/White */
+  --color-korean-south: #ff4444;     /* 남방 적색 - South/Red */
+  --color-korean-north: #000000;     /* 북방 흑색 - North/Black */
+  --color-korean-center: #ffaa00;    /* 중앙 황색 - Center/Yellow */
+  
+  /* Cyberpunk Accents */
+  --color-accent-cyan: #00d4ff;
+  --color-accent-blue: #4a89e2;
+  --color-accent-magenta: #ff00ff;
+  --color-accent-orange: #ff6b35;
+  
+  /* UI Colors */
+  --color-bg-dark: #0a0a0f;
+  --color-bg-medium: #1a1a2e;
+  --color-bg-light: #2d2d2d;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e0e0e0;
+  --color-text-tertiary: #b3b3cc;
+  
+  /* Semantic Colors */
+  --color-success: #00ff88;
+  --color-warning: #ffb700;
+  --color-danger: #ff3366;
+  --color-info: #00d4ff;
+  
+  /* Typography */
+  --font-korean: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+  --font-cyber: "Orbitron", "SF Mono", "Monaco", "Consolas", monospace;
+  
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Deprecated - Kept for backward compatibility, will be removed in v2.0 */
+  /* @deprecated Use --color-accent-cyan instead */
+  --korean-primary: var(--color-accent-cyan);
+  /* @deprecated Use --color-accent-orange instead */
+  --korean-secondary: var(--color-accent-orange);
+  /* @deprecated Use --color-warning instead */
+  --korean-accent: var(--color-warning);
+  /* @deprecated Use --color-bg-dark instead */
+  --korean-bg-dark: var(--color-bg-dark);
+  /* @deprecated Use --color-bg-medium instead */
+  --korean-bg-medium: var(--color-bg-medium);
+  /* @deprecated Use --color-text-primary instead */
+  --korean-text-primary: var(--color-text-primary);
+  /* @deprecated Use --color-text-tertiary instead */
+  --korean-text-secondary: var(--color-text-tertiary);
+  /* @deprecated Use --color-korean-east instead */
+  --korean-glow: var(--color-korean-east);
+  /* @deprecated Use --color-danger instead */
+  --korean-danger: var(--color-danger);
+  /* @deprecated Use --color-korean-south instead */
+  --korean-red: var(--color-korean-south);
+  /* @deprecated Use --color-primary-gold instead */
+  --korean-gold: var(--color-primary-gold);
+  /* @deprecated Use --color-primary-black instead */
+  --korean-black: var(--color-primary-black);
+  /* @deprecated Use --color-korean-west instead */
+  --korean-white: var(--color-korean-west);
+  /* @deprecated Use --color-accent-blue instead */
+  --dojang-blue: var(--color-accent-blue);
+  /* @deprecated Use --color-primary-cyan instead */
+  --primary-cyan: var(--color-primary-cyan);
+  /* @deprecated Use --color-accent-blue instead. Will be removed in v2.0 */
+  --primary-blue: var(--color-accent-blue);
+  /* @deprecated Use --color-accent-magenta instead */
+  --accent-magenta: var(--color-accent-magenta);
+  /* @deprecated Use --color-bg-dark instead */
+  --background-dark: var(--color-bg-dark);
+  /* @deprecated Use --color-text-primary instead */
+  --text-primary: var(--color-text-primary);
+  /* @deprecated Use --color-korean-south instead. Will be removed in v2.0 */
+  --trigram-red: var(--color-korean-south);
+  /* @deprecated Use --color-primary-gold instead */
+  --trigram-gold: var(--color-primary-gold);
+  /* @deprecated Use --color-primary-black instead */
+  --trigram-black: var(--color-primary-black);
+  /* @deprecated Use --color-korean-west instead */
+  --trigram-white: var(--color-korean-west);
+  /* @deprecated Use --color-primary-cyan instead. Will be removed in v2.0 */
+  --black-trigram-cyan: var(--color-primary-cyan);
 }
 
 * {
@@ -100,20 +179,230 @@ button:focus-visible {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
 }
 
-/* Canvas styling for PixiJS */
+/* Canvas styling - Single authoritative source */
 canvas {
-  display: block !important;
-  position: relative !important; /* Change from fixed to relative */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 1 !important; /* Ensure canvas is visible but below UI */
-  image-rendering: pixelated;
+  display: block;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  border: none;
+  background: #000000;
+  /* Vendor prefixes first, standard property last */
   image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
   image-rendering: crisp-edges;
   cursor: pointer;
   outline: none;
+  z-index: 1;
+  /* Performance optimizations:
+     The canvas is constantly animating (Three.js game loop at 60fps),
+     so 'will-change: transform' is intentionally applied for smooth performance.
+     This is acceptable because the canvas is always rendering/animating.
+     See MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/will-change
+  */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Global animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+  }
+}
+
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+/* ErrorBoundary styles */
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-danger) 0%, #4b0000 100%);
+  color: var(--color-text-primary);
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--font-korean);
+}
+
+.error-boundary__container {
+  max-width: 600px;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--color-danger);
+  border-radius: 8px;
+}
+
+.error-boundary__title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-danger);
+}
+
+.error-boundary__message {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #ffcccc;
+}
+
+.error-boundary__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.error-boundary__button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.error-boundary__button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.error-boundary__button--primary {
+  background: var(--color-primary-gold);
+  color: var(--color-primary-black);
+}
+
+.error-boundary__button--secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-text-primary);
+}
+
+.error-boundary__details {
+  margin-top: 2rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+.error-boundary__details summary {
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.error-boundary__details pre {
+  background: var(--color-primary-black);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 200px;
+  font-size: 0.8rem;
+}
+
+/* LoadingState styles */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 100%);
+  color: var(--color-text-primary);
+  font-family: var(--font-korean);
+  padding: 2rem;
+}
+
+.loading-state__logo {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 2rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.loading-state__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary-gold);
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.loading-state__progress {
+  width: 300px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.loading-state__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-cyan), var(--color-primary-gold));
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--color-primary-cyan);
+}
+
+.loading-state__progress-bar--indeterminate {
+  width: 25%;
+  animation: indeterminate 1.5s ease-in-out infinite;
+}
+
+.loading-state__stage {
+  font-size: 1.2rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.loading-state__message {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+}
+
+.loading-state__spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 255, 255, 0.3);
+  border-top-color: var(--color-primary-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 2rem;
 }
 
 /* Combat UI styling */
@@ -267,22 +556,6 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Fix canvas visibility and z-index issues */
-canvas {
-  display: block !important;
-  position: relative !important; /* Change from fixed to relative */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 1 !important; /* Ensure canvas is visible but below UI */
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-  cursor: pointer;
-  outline: none;
 }
 
 /* Fix test overlay positioning to not interfere with canvas */
