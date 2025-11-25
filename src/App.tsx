@@ -328,7 +328,7 @@ function App() {
     return (
       <div className="app loading" data-testid="app-container">
         <LoadingState
-          progress={50}
+          progress={undefined}
           message="앱 초기화 중 | Initializing app..."
           stage="initialization"
         />

@@ -295,12 +295,30 @@ body {
   border: 0;
 }
 
-/* High contrast mode support */
+/* High contrast mode support - Comprehensive accessibility */
 @media (prefers-contrast: high) {
   :root {
+    /* High contrast colors for better visibility */
     --color-primary-cyan: #ffffff;
+    --color-primary-gold: #ffffff;
     --color-text-primary: #ffffff;
+    --color-text-secondary: #ffffff;
+    --color-text-tertiary: #cccccc;
     --color-bg-dark: #000000;
+    --color-bg-medium: #000000;
+    --color-bg-light: #1a1a1a;
+    
+    /* Ensure sufficient contrast for UI elements */
+    --color-danger: #ff0000;
+    --color-success: #00ff00;
+    --color-warning: #ffff00;
+  }
+  
+  /* Increase border visibility in high contrast mode */
+  button,
+  .error-boundary__container,
+  .loading-state__progress {
+    border-width: 3px;
   }
 }
 

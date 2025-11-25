@@ -44,32 +44,57 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   
-  /* Deprecated - Kept for backward compatibility, will be removed */
+  /* Deprecated - Kept for backward compatibility, will be removed in v2.0 */
+  /* @deprecated Use --color-accent-cyan instead */
   --korean-primary: var(--color-accent-cyan);
+  /* @deprecated Use --color-accent-orange instead */
   --korean-secondary: var(--color-accent-orange);
+  /* @deprecated Use --color-warning instead */
   --korean-accent: var(--color-warning);
+  /* @deprecated Use --color-bg-dark instead */
   --korean-bg-dark: var(--color-bg-dark);
+  /* @deprecated Use --color-bg-medium instead */
   --korean-bg-medium: var(--color-bg-medium);
+  /* @deprecated Use --color-text-primary instead */
   --korean-text-primary: var(--color-text-primary);
+  /* @deprecated Use --color-text-tertiary instead */
   --korean-text-secondary: var(--color-text-tertiary);
+  /* @deprecated Use --color-korean-east instead */
   --korean-glow: var(--color-korean-east);
+  /* @deprecated Use --color-danger instead */
   --korean-danger: var(--color-danger);
-  --korean-red: #8a0000;
+  /* @deprecated Use --color-korean-south instead */
+  --korean-red: var(--color-korean-south);
+  /* @deprecated Use --color-primary-gold instead */
   --korean-gold: var(--color-primary-gold);
+  /* @deprecated Use --color-primary-black instead */
   --korean-black: var(--color-primary-black);
+  /* @deprecated Use --color-korean-west instead */
   --korean-white: var(--color-korean-west);
+  /* @deprecated Use --color-accent-blue instead */
   --dojang-blue: var(--color-accent-blue);
+  /* @deprecated Use --color-primary-cyan instead */
   --primary-cyan: var(--color-primary-cyan);
-  --primary-blue: #0074d9;
+  /* @deprecated Use --color-accent-blue instead. Will be removed in v2.0 */
+  --primary-blue: var(--color-accent-blue);
+  /* @deprecated Use --color-accent-magenta instead */
   --accent-magenta: var(--color-accent-magenta);
+  /* @deprecated Use --color-bg-dark instead */
   --background-dark: var(--color-bg-dark);
+  /* @deprecated Use --color-text-primary instead */
   --text-primary: var(--color-text-primary);
+  /* @deprecated Duplicate - use --font-cyber instead */
   --font-cyber: var(--font-cyber);
-  --trigram-red: #8b0000;
+  /* @deprecated Use --color-korean-south instead. Will be removed in v2.0 */
+  --trigram-red: var(--color-korean-south);
+  /* @deprecated Use --color-primary-gold instead */
   --trigram-gold: var(--color-primary-gold);
+  /* @deprecated Use --color-primary-black instead */
   --trigram-black: var(--color-primary-black);
+  /* @deprecated Use --color-korean-west instead */
   --trigram-white: var(--color-korean-west);
-  --black-trigram-cyan: #00ffd0;
+  /* @deprecated Use --color-primary-cyan instead. Will be removed in v2.0 */
+  --black-trigram-cyan: var(--color-primary-cyan);
 }
 
 * {
@@ -168,17 +193,204 @@ canvas {
   max-height: 100vh;
   border: none;
   background: #000000;
-  image-rendering: pixelated;
+  /* Vendor prefixes first, standard property last */
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
   image-rendering: crisp-edges;
   cursor: pointer;
   outline: none;
   z-index: 1;
-  /* Performance optimizations */
+  /* Performance optimizations:
+     The canvas is constantly animating (Three.js game loop at 60fps),
+     so 'will-change: transform' is intentionally applied for smooth performance.
+     This is acceptable because the canvas is always rendering/animating.
+     See MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/will-change
+  */
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* Global animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* ErrorBoundary styles */
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-danger) 0%, #4b0000 100%);
+  color: var(--color-text-primary);
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--font-korean);
+}
+
+.error-boundary__container {
+  max-width: 600px;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--color-danger);
+  border-radius: 8px;
+}
+
+.error-boundary__title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-danger);
+}
+
+.error-boundary__message {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #ffcccc;
+}
+
+.error-boundary__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.error-boundary__button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.error-boundary__button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.error-boundary__button--primary {
+  background: var(--color-primary-gold);
+  color: var(--color-primary-black);
+}
+
+.error-boundary__button--secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-text-primary);
+}
+
+.error-boundary__details {
+  margin-top: 2rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+.error-boundary__details summary {
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.error-boundary__details pre {
+  background: var(--color-primary-black);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 200px;
+  font-size: 0.8rem;
+}
+
+/* LoadingState styles */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 100%);
+  color: var(--color-text-primary);
+  font-family: var(--font-korean);
+  padding: 2rem;
+}
+
+.loading-state__logo {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 2rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.loading-state__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary-gold);
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.loading-state__progress {
+  width: 300px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.loading-state__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-cyan), var(--color-primary-gold));
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--color-primary-cyan);
+}
+
+.loading-state__stage {
+  font-size: 1.2rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.loading-state__message {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+}
+
+.loading-state__spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 255, 255, 0.3);
+  border-top-color: var(--color-primary-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 2rem;
 }
 
 /* Combat UI styling */
