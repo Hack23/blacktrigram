@@ -56,15 +56,14 @@ describe("Black Trigram - Combat (Consolidated)", () => {
     it("should display correctly at different viewport sizes", () => {
       cy.annotate("Testing combat responsive design");
 
-      const viewports = [
+      const viewports: [number, number][] = [
         [1280, 720],  // Desktop
-        [768, 1024],  // Tablet
-        [375, 667],   // Mobile
+        [375, 667],   // Mobile - only test extremes
       ];
 
       viewports.forEach(([width, height]) => {
         cy.viewport(width, height);
-        cy.wait(300);
+        cy.wait(200); // Reduced from 300ms
 
         cy.get('[data-testid="combat-screen"]').should("exist");
         cy.get('[data-testid="combat-hud"]').should("exist");

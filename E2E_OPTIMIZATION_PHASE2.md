@@ -55,9 +55,10 @@ Cypress.Commands.add("waitForCanvasReady", () => {
 ```
 
 **Actual Savings:**
-- Canvas caching: ~10-15ms per call × 89 calls = ~1 second
+- Canvas caching: Minimal savings within test sessions (implementation now properly skips waits)
+- Timeout reduction: 7000ms per call (10s → 3s) when canvas not found (failure case)
 - Initialization wait reduction: 200ms × 89 calls = ~18 seconds
-- **Total: ~19 seconds**
+- **Total: ~18 seconds** (plus faster failures when canvas missing)
 
 ### 2. Command-Level Wait Reductions (Expected: 10-15 seconds savings)
 
@@ -146,28 +147,33 @@ Cypress.Commands.add("waitForCanvasReady", () => {
 
 | Optimization Category | Expected Savings |
 |----------------------|------------------|
-| waitForCanvasReady caching | ~19 seconds |
+| waitForCanvasReady optimization | ~18 seconds |
 | Command-level wait reductions | ~20.5 seconds |
 | Test-level wait reductions | ~7.3 seconds |
 | Viewport test optimization | ~6-8.5 seconds |
 | FPS monitoring optimization | ~3.5 seconds |
-| **TOTAL** | **~56-59 seconds** |
+| **TOTAL** | **~55-58 seconds** |
 
 ## 🎯 Projected Results
 
 **Current baseline:** 25-30 minutes (1500-1800 seconds average: 1650 seconds)
 
-**Expected after optimizations:** 1650s - 58s = **1592 seconds (~26.5 minutes)**
+**Expected after optimizations:** 1650s - 55s = **1595 seconds (~26.6 minutes)**
 
-**Note:** While we optimized ~58 seconds of direct wait times, the actual improvement may be less due to:
-- Network latency variations in CI
-- Canvas caching only applies to subsequent calls in same test
-- Some waits are necessary for UI stability
+**Reality Check:** This phase focuses on **direct wait time reduction** (~55 seconds). The optimizations provide incremental improvements but **do not achieve the 15-20 minute target** stated in the issue.
 
-**Next steps to reach 15-20 minute target:**
-1. Test consolidation (merge redundant test cases)
-2. Parallel test execution (split test suite across multiple workers)
-3. Further reduction of FPS monitoring durations
+**Why the modest improvement:**
+- Canvas caching only helps within a single test session (not across test files)
+- Network latency and CI environment variability aren't optimized
+- Test setup/teardown overhead remains unchanged
+- Three.js initialization times are hardware-dependent
+
+**To reach 15-20 minute target, additional strategies are required:**
+1. **Test consolidation** (merge redundant test cases) - Expected: 4-6 minutes savings
+2. **Parallel test execution** (split test suite across 2-3 workers) - Expected: 30-40% reduction (6-10 minutes)
+3. **Further optimization** of FPS monitoring and assertion-based waits - Expected: 2-3 minutes
+
+**Recommended next phase:** Implement parallel test execution (Option 2 below) as it provides the most significant improvement toward the 15-20 minute goal.
 4. Optimize beforeEach hooks to share state between tests
 
 ## 🔬 Validation Steps

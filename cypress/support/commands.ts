@@ -159,32 +159,29 @@ Cypress.Commands.add("dataCy", (value: string) => {
 
 // Enhanced wait for canvas to be fully rendered and ready with caching
 Cypress.Commands.add("waitForCanvasReady", () => {
-  // Check if canvas is already ready (cached state)
   cy.window().then((win) => {
     const winAny = win as any;
-    if (winAny.__canvasReady === true) {
+    if (winAny.__canvasReady !== true) {
+      // Optimized canvas check with reduced timeout
+      cy.get("canvas", { timeout: 3000 }).should(($canvas) => {
+        expect($canvas).to.have.length.greaterThan(0);
+        const canvas = $canvas[0];
+        const rect = canvas.getBoundingClientRect();
+        expect(rect.width).to.be.greaterThan(50);
+        expect(rect.height).to.be.greaterThan(50);
+      });
+
+      // Reduced wait for Three.js Canvas initialization
+      cy.wait(300);
+
+      // Mark canvas as ready for future calls
+      cy.window().then((w) => {
+        (w as any).__canvasReady = true;
+        cy.log('✅ Canvas ready (cached for future calls)');
+      });
+    } else {
       cy.log('⚡ Canvas already ready (cached), skipping wait');
-      return;
     }
-  });
-
-  // Optimized canvas check with reduced timeout
-  cy.get("canvas", { timeout: 3000 }).should(($canvas) => {
-    expect($canvas).to.have.length.greaterThan(0);
-    const canvas = $canvas[0];
-    const rect = canvas.getBoundingClientRect();
-    expect(rect.width).to.be.greaterThan(50);
-    expect(rect.height).to.be.greaterThan(50);
-  });
-
-  // Reduced wait for Three.js Canvas initialization
-  cy.wait(300);
-
-  // Mark canvas as ready for future calls
-  cy.window().then((win) => {
-    const winAny = win as any;
-    winAny.__canvasReady = true;
-    cy.log('✅ Canvas ready (cached for future calls)');
   });
 });
 
