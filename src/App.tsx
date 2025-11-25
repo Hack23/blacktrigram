@@ -71,42 +71,42 @@ function App() {
     initializeApp();
   }, []);
 
-  // Handle splash screen start - initialize audio on user gesture
-  const handleSplashStart = useCallback(async () => {
-    // Ensure app is ready before proceeding
+  // Shared audio initialization logic for splash and retry
+  const initializeAudioWithRetry = useCallback(async () => {
     if (!appReady) {
       console.warn("App not ready yet, please wait...");
-      return;
+      return false;
     }
-
     try {
       await audio.initializeAudio();
-      setShowSplash(false);
-      setShowAudioError(false); // Clear any previous errors
-      console.log("🎵 Audio initialized after user gesture");
+      console.log("🎵 Audio initialized");
+      return true;
     } catch (error) {
       console.error("Failed to initialize audio:", error);
-      // Show error modal instead of blocking confirm dialog
-      setShowAudioError(true);
+      return false;
     }
   }, [audio, appReady]);
+
+  // Handle splash screen start - initialize audio on user gesture
+  const handleSplashStart = useCallback(async () => {
+    setShowAudioError(false);
+    const success = await initializeAudioWithRetry();
+    if (success) {
+      setShowSplash(false);
+    } else {
+      setShowAudioError(true);
+    }
+  }, [initializeAudioWithRetry]);
 
   const handleAudioErrorRetry = useCallback(async () => {
     setShowAudioError(false);
-    // Directly retry audio initialization instead of calling handleSplashStart
-    if (!appReady) {
-      console.warn("App not ready yet, please wait...");
-      return;
-    }
-    try {
-      await audio.initializeAudio();
+    const success = await initializeAudioWithRetry();
+    if (success) {
       setShowSplash(false);
-      console.log("🎵 Audio initialized after retry");
-    } catch (error) {
-      console.error("Failed to initialize audio:", error);
+    } else {
       setShowAudioError(true);
     }
-  }, [audio, appReady]);
+  }, [initializeAudioWithRetry]);
 
   const handleAudioErrorContinue = useCallback(() => {
     // Continue without sound

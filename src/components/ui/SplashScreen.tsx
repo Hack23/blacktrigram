@@ -223,7 +223,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
       {/* Version info */}
       <div
-        aria-label="Application version"
+        role="contentinfo"
+        aria-label={`Application version ${typeof APP_VERSION !== "undefined" ? APP_VERSION : "0.5.3"}`}
         style={{
           position: "absolute",
           bottom: "20px",
