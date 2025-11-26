@@ -99,7 +99,7 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Waits/transitions: 25s
 - **Total: ~260s (4.3 minutes)**
 
-### CombatScreen Test (~4.5 minutes)
+### CombatScreen Test (~4 minutes)
 
 **Coverage:**
 - Combat screen rendering and HUD
@@ -116,22 +116,22 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Combat performance under load
 
 **Execution Breakdown:**
-- Combat screen rendering: 20s
-- Trigram stance system: 40s
-- Combat actions: 60s
-- Movement: 30s
-- Defense: 20s
-- HUD elements: 20s
-- Extended combat session: 40s
-- Controls panel: 15s
-- Korean text: 10s
-- Mouse/canvas interaction: 15s
-- AI movement and state: 20s
-- Combat performance: 20s
-- Waits/transitions: 20s
-- **Total: ~330s (5.5 minutes)**
+- Combat screen rendering: 15s
+- Trigram stance system: 25s
+- Combat actions: 40s
+- Movement: 20s
+- Defense: 15s
+- HUD elements: 15s
+- Extended combat session: 30s
+- Controls panel: 10s
+- Korean text: 8s
+- Mouse/canvas interaction: 10s
+- AI movement and state: 12s
+- Combat performance: 15s
+- Waits/transitions: 15s
+- **Total: ~240s (4 minutes)**
 
-### TrainingScreen Test (~3.5 minutes)
+### TrainingScreen Test (~3.8 minutes)
 
 **Coverage:**
 - Training screen rendering and UI
@@ -145,17 +145,17 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Vital point display
 
 **Execution Breakdown:**
-- Training screen rendering: 20s
-- Stance practice: 60s
-- Training dummy: 40s
-- All 8 stances: 60s
-- Extended training: 30s
-- Training controls: 20s
-- UI elements: 20s
+- Training screen rendering: 15s
+- Stance practice: 45s
+- Training dummy: 30s
+- All 8 stances: 45s
+- Extended training: 25s
+- Training controls: 15s
+- UI elements: 15s
 - Korean text: 10s
-- Vital point display: 15s
-- Waits/transitions: 15s
-- **Total: ~290s (4.8 minutes)**
+- Vital point display: 10s
+- Waits/transitions: 20s
+- **Total: ~230s (3.8 minutes)**
 
 ### ControlsScreen Test (~2 minutes)
 
@@ -249,7 +249,7 @@ The CI workflow includes detailed timing tracking for each screen:
 =================================================================
 
 📋 Testing intro-screen...
-⏱️  intro-screen: 220s
+⏱️  intro-screen: 260s
 ✅ intro-screen within 4-minute target
 
 📋 Testing combat-screen...
@@ -257,8 +257,8 @@ The CI workflow includes detailed timing tracking for each screen:
 ✅ combat-screen within 4-minute target
 
 📋 Testing training-screen...
-⏱️  training-screen: 250s
-⚠️  training-screen exceeded 4-minute target: 250s
+⏱️  training-screen: 230s
+✅ training-screen within 4-minute target
 
 📋 Testing controls-screen...
 ⏱️  controls-screen: 130s
@@ -270,13 +270,13 @@ The CI workflow includes detailed timing tracking for each screen:
 
 📊 Screen-Specific E2E Test Summary
 ====================================
-intro-screen: 220s
+intro-screen: 260s
 combat-screen: 240s
-training-screen: 250s
+training-screen: 230s
 controls-screen: 130s
 philosophy-screen: 150s
 
-Total Duration: 990s (16m 30s)
+Total Duration: 1010s (16m 50s)
 Target: 900-1200s (15-20 minutes)
 ✅ Within 20-minute target
 ```
