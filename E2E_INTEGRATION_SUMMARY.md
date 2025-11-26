@@ -53,9 +53,9 @@
 - ✅ Rapid canvas interactions
 - ✅ Scene transition smoothness
 
-### 3. Archived Redundant Test Files
+### 3. Removed Redundant Test Files
 
-**Archived to `cypress/e2e/archive/` (6 files):**
+**Removed (available in git history if needed):**
 
 | File | Lines | Coverage Now In |
 |------|-------|-----------------|
@@ -91,10 +91,11 @@
 **Performance Tests** (`cypress/e2e/`)
 - `performance-threejs.cy.ts` (13.6KB) - Dedicated performance testing
 
-### Archived Tests
+### Removed Tests
 
-**Reference Only** (`cypress/e2e/archive/`)
-- All 6 redundant test files moved here for historical reference
+**Removed** (available in git history)
+- All 6 redundant test files have been removed and their coverage integrated into screen-specific tests
+- Can be found in git history before commit 97a987f if reference is needed
 
 ---
 

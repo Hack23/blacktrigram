@@ -24,11 +24,9 @@ Located in: `cypress/e2e/screens/`
 | `controls-screen.cy.ts` | ControlsScreen | 2-3 min | Controls display, control categories, bilingual text, navigation |
 | `philosophy-screen.cy.ts` | PhilosophyScreen | 2-3 min | Philosophy content, trigram information, cultural context, navigation |
 
-### Archived Tests (Reference Only)
+### Archived Tests (Removed - Available in Git History)
 
-Located in: `cypress/e2e/archive/`
-
-These files have been archived as they contain overlapping coverage now consolidated in screen-specific tests:
+The following files have been removed as they contain overlapping coverage now consolidated in screen-specific tests. They can be found in git history if needed:
 
 - `intro-threejs.cy.ts` (559 lines) - Coverage now in `intro-screen.cy.ts`
 - `combat.cy.ts` (239 lines) - Coverage now in `combat-screen.cy.ts`
@@ -132,11 +130,6 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Combat performance: 20s
 - Waits/transitions: 20s
 - **Total: ~330s (5.5 minutes)**
-- Extended combat: 40s
-- Controls panel: 15s
-- Korean text: 10s
-- Waits/transitions: 15s
-- **Total: ~270s (4.5 minutes)**
 
 ### TrainingScreen Test (~3.5 minutes)
 

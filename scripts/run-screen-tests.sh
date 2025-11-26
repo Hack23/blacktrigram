@@ -45,7 +45,11 @@ for screen in "${SCREENS[@]}"; do
     START=$(date +%s)
     
     # Run the test and capture exit code
-    if npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" --browser "${BROWSER:-chrome}" ${HEADLESS:+--headless}; then
+    HEADLESS_FLAG=""
+    if [ "$HEADLESS" = "true" ]; then
+        HEADLESS_FLAG="--headless"
+    fi
+    if npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" --browser "${BROWSER:-chrome}" $HEADLESS_FLAG; then
         STATUS="${GREEN}✅ PASSED${NC}"
     else
         STATUS="${RED}❌ FAILED${NC}"

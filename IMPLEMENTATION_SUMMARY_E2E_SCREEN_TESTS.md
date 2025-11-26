@@ -129,14 +129,17 @@ Features:
 - Summary report with targets
 - Executable: `./scripts/run-screen-tests.sh [screen-name]`
 
-### 6. Archived Redundant Tests
+### 6. Removed Redundant Tests
 
-**Location**: `cypress/e2e/archive/`
+**Removed** (available in git history)
 
-Moved files (now replaced by screen-specific tests):
+Moved files (now removed, coverage integrated into screen-specific tests):
 - `intro-threejs.cy.ts` (559 lines) → `intro-screen.cy.ts`
 - `combat.cy.ts` (239 lines) → `combat-screen.cy.ts`
 - `training.cy.ts` (233 lines) → `training-screen.cy.ts`
+- `app.cy.ts` (99 lines) → `intro-screen.cy.ts`
+- `game-journey.cy.ts` (230 lines) → `intro-screen.cy.ts` and `combat-screen.cy.ts`
+- `three-korean-martial-arts.cy.ts` (314 lines) → All screen tests
 
 **Retained Files** (specific purposes):
 - `app.cy.ts` - Basic app smoke tests
