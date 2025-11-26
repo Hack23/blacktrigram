@@ -37,6 +37,87 @@ GitHub Copilot custom agents are AI assistants with specialized knowledge. When 
 
 **📊 New: [Agent Capabilities Matrix](./AGENT_CAPABILITIES.md)** - Comprehensive guide to all agents, their capabilities, and coordination patterns.
 
+## 🔧 Environment & Configuration
+
+All agents have access to essential project configuration files that define the development environment, available tools, and project context:
+
+### Essential Files
+
+| File | Purpose | What Agents Find Here |
+|------|---------|----------------------|
+| **[`README.md`](/README.md)** | Main Project Context | Project overview, tech stack, ISMS compliance framework, combat mechanics, Korean martial arts philosophy |
+| **[`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)** | Environment Setup | Node.js 24 configuration, npm dependencies, build/test commands, GitHub Actions permissions |
+| **[`.github/copilot-mcp.json`](/.github/copilot-mcp.json)** | MCP Server Configuration | Available MCP servers (filesystem, github, git, memory, sequential-thinking, playwright, brave-search, aws), tool capabilities, integration patterns |
+
+### MCP Servers Available
+
+```mermaid
+graph TB
+    subgraph "Core MCP Servers"
+        FS[📁 filesystem<br/>File Operations]
+        GH[🐙 github<br/>GitHub API]
+        GT[📊 git<br/>Git Operations]
+        MEM[🧠 memory<br/>Context Memory]
+        ST[🤔 sequential-thinking<br/>Problem Solving]
+    end
+    
+    subgraph "Testing & Automation"
+        PW[🎭 playwright<br/>Browser Automation]
+    end
+    
+    subgraph "Optional Servers"
+        BS[🔍 brave-search<br/>Web Search]
+        AWS[☁️ aws<br/>Cloud Infrastructure]
+    end
+    
+    Agents[GitHub Copilot Agents] --> FS
+    Agents --> GH
+    Agents --> GT
+    Agents --> MEM
+    Agents --> ST
+    Agents --> PW
+    Agents -.-> BS
+    Agents -.-> AWS
+    
+    style FS fill:#4CAF50,stroke:#2E7D32,color:#fff
+    style GH fill:#2196F3,stroke:#1565C0,color:#fff
+    style GT fill:#FF9800,stroke:#E65100,color:#fff
+    style MEM fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style ST fill:#00BCD4,stroke:#00838F,color:#fff
+    style PW fill:#E91E63,stroke:#AD1457,color:#fff
+    style BS fill:#FFC107,stroke:#F57F17,color:#000
+    style AWS fill:#FF5722,stroke:#BF360C,color:#fff
+    style Agents fill:#607D8B,stroke:#37474F,color:#fff
+```
+
+### Development Environment
+
+The setup workflow (`.github/workflows/copilot-setup-steps.yml`) defines:
+
+- **Node.js Version**: 24 (latest LTS)
+- **Package Manager**: npm with `npm ci` for reproducible builds
+- **Build Tool**: Vite for fast development and optimized production builds
+- **Test Frameworks**: Vitest (unit/integration), Cypress (E2E)
+- **TypeScript**: Strict mode enabled for type safety
+
+**Permissions Available in CI:**
+```yaml
+contents: read          # Read repository contents
+actions: read          # Read workflow runs
+attestations: read     # Read attestations
+checks: read           # Read check runs
+deployments: read      # Read deployment status
+issues: write          # Create and update issues
+models: read           # Read AI models (Copilot)
+discussions: read      # Read discussions
+pages: read            # Read GitHub Pages
+pull-requests: write   # Create and update PRs
+security-events: read  # Read security alerts
+statuses: read         # Read commit statuses
+```
+
+## 📋 Agent Overview
+
 ```mermaid
 graph LR
     A[Development Task] --> B{Task Type?}
