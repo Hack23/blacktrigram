@@ -2,11 +2,121 @@
 
 This directory contains specialized GitHub Copilot custom agent profiles for Black Trigram development. Each agent is an expert in a specific domain, providing focused assistance for particular development tasks.
 
+## 🔑 Essential Context Files
+
+All agents reference these key files to understand the project environment and configuration:
+
+### 1. 🔧 Setup & Environment
+**File**: `.github/workflows/copilot-setup-steps.yml`
+- Node.js 24, npm, TypeScript toolchain
+- Build and test environment setup
+- Cache configuration for dependencies
+- Workflow permissions (read/write access levels)
+
+### 2. 🔌 MCP Server Configuration
+**File**: `.github/copilot-mcp.json`
+- **GitHub MCP**: Repository operations, issues, PRs, releases
+- **Filesystem MCP**: Secure file access for the workspace
+- **Git MCP**: Git operations and repository history
+- **Memory MCP**: Conversation context between sessions
+- **Playwright MCP**: Browser automation for UI testing
+- **AWS MCP**: Cloud infrastructure operations (disabled by default)
+- **Brave Search MCP**: Web search for documentation (disabled by default)
+
+### 3. 📚 Project Context
+**File**: `README.md` (root)
+- Project overview and mission
+- Korean martial arts philosophy (八卦 - Eight Trigrams)
+- Technology stack (React 19, Three.js, TypeScript)
+- Combat mechanics and player archetypes
+- Development guidelines and documentation
+
 ## 📖 Quick Start
 
 GitHub Copilot custom agents are AI assistants with specialized knowledge. When working with Black Trigram, select the agent that matches your current task for context-aware assistance following project patterns.
 
 **📊 New: [Agent Capabilities Matrix](./AGENT_CAPABILITIES.md)** - Comprehensive guide to all agents, their capabilities, and coordination patterns.
+
+## 🔧 Environment & Configuration
+
+All agents have access to essential project configuration files that define the development environment, available tools, and project context:
+
+### Essential Files
+
+| File | Purpose | What Agents Find Here |
+|------|---------|----------------------|
+| **[`README.md`](/README.md)** | Main Project Context | Project overview, tech stack, ISMS compliance framework, combat mechanics, Korean martial arts philosophy |
+| **[`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)** | Environment Setup | Node.js 24 configuration, npm dependencies, build/test commands, GitHub Actions permissions |
+| **[`.github/copilot-mcp.json`](/.github/copilot-mcp.json)** | MCP Server Configuration | Available MCP servers (filesystem, github, git, memory, sequential-thinking, playwright, brave-search, aws), tool capabilities, integration patterns |
+
+### MCP Servers Available
+
+```mermaid
+graph TB
+    subgraph "Core MCP Servers"
+        FS[📁 filesystem<br/>File Operations]
+        GH[🐙 github<br/>GitHub API]
+        GT[📊 git<br/>Git Operations]
+        MEM[🧠 memory<br/>Context Memory]
+        ST[🤔 sequential-thinking<br/>Problem Solving]
+    end
+    
+    subgraph "Testing & Automation"
+        PW[🎭 playwright<br/>Browser Automation]
+    end
+    
+    subgraph "Optional Servers"
+        BS[🔍 brave-search<br/>Web Search]
+        AWS[☁️ aws<br/>Cloud Infrastructure]
+    end
+    
+    Agents[GitHub Copilot Agents] --> FS
+    Agents --> GH
+    Agents --> GT
+    Agents --> MEM
+    Agents --> ST
+    Agents --> PW
+    Agents -.-> BS
+    Agents -.-> AWS
+    
+    style FS fill:#4CAF50,stroke:#2E7D32,color:#fff
+    style GH fill:#2196F3,stroke:#1565C0,color:#fff
+    style GT fill:#FF9800,stroke:#E65100,color:#fff
+    style MEM fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style ST fill:#00BCD4,stroke:#00838F,color:#fff
+    style PW fill:#E91E63,stroke:#AD1457,color:#fff
+    style BS fill:#FFC107,stroke:#F57F17,color:#000
+    style AWS fill:#FF5722,stroke:#BF360C,color:#fff
+    style Agents fill:#607D8B,stroke:#37474F,color:#fff
+```
+
+### Development Environment
+
+The setup workflow (`.github/workflows/copilot-setup-steps.yml`) defines:
+
+- **Node.js Version**: 24 (latest LTS)
+- **Package Manager**: npm with `npm ci` for reproducible builds
+- **Build Tool**: Vite for fast development and optimized production builds
+- **Test Frameworks**: Vitest (unit/integration), Cypress (E2E)
+- **TypeScript**: Strict mode enabled for type safety
+
+**Permissions Available in CI:**
+```yaml
+contents: read          # Read repository contents
+actions: read          # Read workflow runs
+attestations: read     # Read attestations
+checks: read           # Read check runs
+deployments: read      # Read deployment status
+issues: write          # Create and update issues
+models: read           # Read AI models (Copilot)
+discussions: read      # Read discussions
+pages: read            # Read GitHub Pages
+pull-requests: write   # Create and update PRs
+security-events: read  # Read security alerts
+statuses: read         # Read commit statuses
+```
+
+## 📋 Agent Overview
 
 ```mermaid
 graph LR
@@ -31,15 +141,15 @@ graph LR
     K -.Delegates.-> H
     K -.Delegates.-> J
     
-    style K fill:#8BC34A
-    style C fill:#4CAF50
-    style D fill:#2196F3
-    style E fill:#FF9800
-    style F fill:#9C27B0
-    style G fill:#00BCD4
-    style H fill:#F44336
-    style I fill:#FFC107
-    style J fill:#E91E63
+    style K fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
+    style C fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
+    style D fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    style E fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style F fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style G fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
+    style H fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
+    style I fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
+    style J fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
 ```
 
 ## 🎯 Available Agents
@@ -282,16 +392,21 @@ flowchart TD
     Review --> Action
     Security --> Action
     
-    style TaskAgent fill:#8BC34A,color:#fff
-    style Frontend fill:#2196F3,color:#fff
-    style Game fill:#FF9800,color:#fff
-    style Coding fill:#4CAF50,color:#fff
-    style Testing fill:#9C27B0,color:#fff
-    style TestEng fill:#E91E63,color:#fff
-    style Docs fill:#00BCD4,color:#fff
-    style Review fill:#FFC107,color:#000
-    style Security fill:#F44336,color:#fff
-    style Action fill:#8BC34A,color:#fff
+    style Start fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
+    style Type fill:#FFEB3B,stroke:#F57F17,stroke-width:2px,color:#000
+    style Management fill:#FFEB3B,stroke:#F57F17,stroke-width:2px,color:#000
+    style Code fill:#FFEB3B,stroke:#F57F17,stroke-width:2px,color:#000
+    style TestType fill:#FFEB3B,stroke:#F57F17,stroke-width:2px,color:#000
+    style TaskAgent fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
+    style Frontend fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    style Game fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style Coding fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
+    style Testing fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    style Docs fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
+    style Review fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
+    style Security fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
+    style Action fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
 ```
 
 ## 🛠️ Tools Available to Agents
@@ -327,6 +442,101 @@ The Task Agent has access to specialized MCP servers for enhanced capabilities:
 - ☁️ Cloud infrastructure insights and deployment validation
 - 🔄 Seamless integration with existing workflows
 - 📊 Real-time quality metrics and analysis
+
+### 🏗️ Agent Architecture Overview
+
+This diagram shows how all agents interact with the essential context files:
+
+```mermaid
+graph TB
+    subgraph "Essential Context Files"
+        Setup[📄 copilot-setup-steps.yml<br/>Build Environment]
+        MCP[📄 copilot-mcp.json<br/>MCP Servers Config]
+        Main[📄 README.md<br/>Project Context]
+    end
+    
+    subgraph "Agent Layer"
+        Task[🎯 Task Agent]
+        Code[🛠️ Coding Agent]
+        Front[⚛️ Frontend Specialist]
+        GameDev[🎮 Game Developer]
+        Test[🧪 Testing Agent]
+        TestEng[🔬 Test Engineer]
+        Docs[📝 Documentation Writer]
+        Review[🔍 Code Review Agent]
+        Sec[🛡️ Security Specialist]
+    end
+    
+    subgraph "Operations"
+        Files[📁 File Operations]
+        GitHub[🐙 GitHub API]
+        Browser[🌐 Browser Automation]
+        Cloud[☁️ AWS Operations]
+    end
+    
+    Setup --> Task
+    Setup --> Code
+    Setup --> Front
+    Setup --> GameDev
+    Setup --> Test
+    Setup --> TestEng
+    Setup --> Docs
+    Setup --> Review
+    Setup --> Sec
+    
+    MCP --> Task
+    MCP --> Code
+    MCP --> Front
+    MCP --> GameDev
+    MCP --> Test
+    MCP --> TestEng
+    MCP --> Docs
+    MCP --> Review
+    MCP --> Sec
+    
+    Main --> Task
+    Main --> Code
+    Main --> Front
+    Main --> GameDev
+    Main --> Test
+    Main --> TestEng
+    Main --> Docs
+    Main --> Review
+    Main --> Sec
+    
+    Task --> Files
+    Task --> GitHub
+    Task --> Browser
+    Task --> Cloud
+    
+    Code --> Files
+    Front --> Files
+    GameDev --> Files
+    Test --> Files
+    TestEng --> Files
+    Docs --> Files
+    Review --> Files
+    Sec --> Files
+    
+    style Setup fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#000
+    style MCP fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#000
+    style Main fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#000
+    
+    style Task fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
+    style Code fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
+    style Front fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    style GameDev fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style Test fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    style Docs fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
+    style Review fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
+    style Sec fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
+    
+    style Files fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
+    style GitHub fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
+    style Browser fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
+    style Cloud fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
+```
 
 ### Tool Access by Agent
 
@@ -369,15 +579,19 @@ graph TD
     TestEng --> FullTools
     Security --> FullTools
     
-    style TaskAgent fill:#8BC34A,color:#fff
-    style Review fill:#FFC107,color:#000
-    style Docs fill:#00BCD4,color:#fff
-    style Coding fill:#4CAF50,color:#fff
-    style Frontend fill:#2196F3,color:#fff
-    style Game fill:#FF9800,color:#fff
-    style Testing fill:#9C27B0,color:#fff
-    style TestEng fill:#E91E63,color:#fff
-    style Security fill:#F44336,color:#fff
+    style TaskAgent fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
+    style Review fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
+    style Docs fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
+    style Coding fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
+    style Frontend fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    style Game fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style Testing fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    style Security fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
+    style MCPTools fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#000
+    style ViewSearch fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#000
+    style ViewEdit fill:#E0F7FA,stroke:#00838F,stroke-width:2px,color:#000
+    style FullTools fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#000
 ```
 
 ## 🎯 Agent Development Guidelines
