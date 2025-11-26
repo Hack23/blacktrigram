@@ -201,7 +201,14 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 
   return (
     <Html position={position} center>
-      <div style={containerStyle} data-testid={testId ?? `progress-bar-${type}`}>
+      <div 
+        style={containerStyle} 
+        data-testid={testId ?? `progress-bar-${type}`}
+        data-health={current}
+        data-current={current}
+        data-max={max}
+        data-percentage={Math.round(percentage * 100)}
+      >
         {/* Label */}
         {label && showText && (
           <div style={labelStyle}>
