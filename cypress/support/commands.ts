@@ -157,19 +157,32 @@ Cypress.Commands.add("dataCy", (value: string) => {
   return cy.get(`[data-testid="${value}"]`);
 });
 
-// Enhanced wait for canvas to be fully rendered and ready
+// Enhanced wait for canvas to be fully rendered and ready with caching
 Cypress.Commands.add("waitForCanvasReady", () => {
-  // Simplified canvas check
-  cy.get("canvas", { timeout: 10000 }).should(($canvas) => {
-    expect($canvas).to.have.length.greaterThan(0);
-    const canvas = $canvas[0];
-    const rect = canvas.getBoundingClientRect();
-    expect(rect.width).to.be.greaterThan(50);
-    expect(rect.height).to.be.greaterThan(50);
-  });
+  cy.window().then((win) => {
+    const winAny = win as any;
+    if (winAny.__canvasReady !== true) {
+      // Optimized canvas check with reduced timeout
+      cy.get("canvas", { timeout: 3000 }).should(($canvas) => {
+        expect($canvas).to.have.length.greaterThan(0);
+        const canvas = $canvas[0];
+        const rect = canvas.getBoundingClientRect();
+        expect(rect.width).to.be.greaterThan(50);
+        expect(rect.height).to.be.greaterThan(50);
+      });
 
-  // Shorter wait for Three.js Canvas initialization
-  cy.wait(500);
+      // Reduced wait for Three.js Canvas initialization
+      cy.wait(300);
+
+      // Mark canvas as ready for future calls
+      cy.window().then((w) => {
+        (w as any).__canvasReady = true;
+        cy.log('✅ Canvas ready (cached for future calls)');
+      });
+    } else {
+      cy.log('⚡ Canvas already ready (cached), skipping wait');
+    }
+  });
 });
 
 // Enhanced Training mode helpers with better waiting strategy
@@ -277,10 +290,10 @@ Cypress.Commands.add(
   "practiceStance",
   (stanceNumber: number, repetitions: number = 1) => {
     for (let i = 0; i < repetitions; i++) {
-      cy.get("body").type(stanceNumber.toString(), { delay: 50 }); // Reduced delay
-      cy.wait(200); // Reduced from 300ms
-      cy.get("body").type(" ", { delay: 50 }); // Execute technique, reduced delay
-      cy.wait(300); // Reduced from 500ms
+      cy.get("body").type(stanceNumber.toString(), { delay: 30 }); // Further reduced
+      cy.wait(100); // Reduced from 200ms
+      cy.get("body").type(" ", { delay: 30 }); // Execute technique, reduced delay
+      cy.wait(150); // Reduced from 300ms
     }
   }
 );
@@ -288,9 +301,9 @@ Cypress.Commands.add(
 // Execute a sequence of game actions with reliable typing
 Cypress.Commands.add("gameActions", (actions: string[]) => {
   actions.forEach((action, index) => {
-    cy.get("body").type(action, { delay: 50 }); // Reduced delay from 100ms
+    cy.get("body").type(action, { delay: 30 }); // Further reduced from 50ms
     if (index < actions.length - 1) {
-      cy.wait(150); // Reduced from 200ms
+      cy.wait(100); // Reduced from 150ms
     }
   });
 });
@@ -477,13 +490,13 @@ Cypress.Commands.add("checkCanvasVisibility", () => {
 
 // Wait for game to be ready with better error handling
 Cypress.Commands.add("waitForGameReady", () => {
-  cy.get('[data-testid="app-container"]', { timeout: 15000 }).should(
+  cy.get('[data-testid="app-container"]', { timeout: 10000 }).should(
     "be.visible"
   );
-  cy.get("canvas", { timeout: 15000 }).should("be.visible");
+  cy.get("canvas", { timeout: 10000 }).should("be.visible");
 
-  // Wait for Three.js to initialize with better timing
-  cy.wait(1500);
+  // Reduced wait for Three.js to initialize
+  cy.wait(800);
 
   // Verify the app is interactive
   cy.get("body").should("be.visible").focus();
@@ -496,7 +509,7 @@ Cypress.Commands.add("navigateToTraining", () => {
   // Try multiple ways to enter training mode
   cy.get("body").then(($body) => {
     if ($body.find('[data-testid="training-button"]').length > 0) {
-      cy.get('[data-testid="training-button"]', { timeout: 10000 })
+      cy.get('[data-testid="training-button"]', { timeout: 8000 })
         .should("be.visible")
         .click({ force: true });
     } else {
@@ -505,12 +518,12 @@ Cypress.Commands.add("navigateToTraining", () => {
     }
   });
 
-  // Allow more time for navigation
-  cy.wait(3000);
+  // Reduced wait for navigation
+  cy.wait(1500);
 
-  // Verify training screen exists with extended timeout
-  cy.get('[data-testid="training-screen"]', { timeout: 20000 }).should("exist");
-  cy.get('[data-testid="training-header"]', { timeout: 15000 }).should("exist");
+  // Verify training screen exists with optimized timeout
+  cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should("exist");
+  cy.get('[data-testid="training-header"]', { timeout: 8000 }).should("exist");
 
   cy.log("✅ Training screen loaded successfully");
 });

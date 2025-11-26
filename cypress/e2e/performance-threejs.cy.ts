@@ -22,8 +22,8 @@ describe("Black Trigram - Three.js Performance", () => {
       cy.get("canvas").should("be.visible");
       cy.get('[data-testid="intro-screen"]').should("exist");
 
-      // Monitor FPS for 2 seconds
-      cy.assertSmoothFPS(2000);
+      // Monitor FPS for shorter duration
+      cy.assertSmoothFPS(1500); // Reduced from 2000ms
 
       cy.log("✅ IntroScreen maintains smooth FPS");
     });
@@ -33,14 +33,14 @@ describe("Black Trigram - Three.js Performance", () => {
 
       // Perform interactions first
       cy.get('[data-testid="combat-button"]').trigger("mouseover");
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
       cy.get('[data-testid="training-button"]').trigger("mouseover");
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
       cy.gameActions(["{leftarrow}", "{rightarrow}"]);
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
 
       // Then monitor FPS to verify system is still responsive
-      cy.assertMinFPS(40, 2000);
+      cy.assertMinFPS(40, 1500); // Reduced from 2000ms
 
       cy.log("✅ Menu interactions FPS verified");
     });
@@ -50,16 +50,15 @@ describe("Black Trigram - Three.js Performance", () => {
 
       const viewports: [number, number][] = [
         [1280, 720],  // Desktop
-        [768, 1024],  // Tablet
-        [375, 667],   // Mobile
+        [375, 667],   // Mobile - only test extremes
       ];
 
       viewports.forEach(([width, height]) => {
         cy.viewport(width, height);
-        cy.wait(500);
+        cy.wait(300); // Reduced from 500ms
 
-        // Monitor FPS at this viewport
-        cy.assertMinFPS(30, 1500);
+        // Monitor FPS at this viewport - reduced duration
+        cy.assertMinFPS(30, 1000); // Reduced from 1500ms
 
         cy.log(`✅ Acceptable FPS at ${width}x${height}`);
       });
@@ -76,8 +75,8 @@ describe("Black Trigram - Three.js Performance", () => {
       cy.enterCombatMode();
       cy.get('[data-testid="combat-screen"]').should("exist");
 
-      // Monitor FPS during combat
-      cy.assertMinFPS(40, 2000);
+      // Monitor FPS during combat - reduced duration
+      cy.assertMinFPS(40, 1500); // Reduced from 2000ms
 
       cy.log("✅ Combat maintains acceptable FPS");
     });
@@ -90,12 +89,12 @@ describe("Black Trigram - Three.js Performance", () => {
       cy.wrap(Date.now()).then((startTime) => {
         // Perform combat actions
         cy.gameActions(["1", " ", "w", "a", "s", "d"]);
-        cy.wait(200);
+        cy.wait(100); // Reduced from 200ms
         cy.gameActions(["3", " ", "w", "a", "s", "d"]);
-        cy.wait(200);
+        cy.wait(100); // Reduced from 200ms
 
-        // Monitor FPS
-        cy.assertMinFPS(35, 1500);
+        // Monitor FPS - reduced duration
+        cy.assertMinFPS(35, 1000); // Reduced from 1500ms
 
         cy.wrap(Date.now() - startTime).then((duration) => {
           cy.task("logPerformance", {

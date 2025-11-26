@@ -70,12 +70,12 @@ describe("Black Trigram - Training (Consolidated)", () => {
     it("should practice all 8 trigram stances", () => {
       cy.annotate("Testing all 8 trigram stances in training");
 
-      // Practice each stance once
+      // Practice each stance once with reduced waits
       for (let i = 1; i <= 8; i++) {
         cy.get("body").type(i.toString());
-        cy.wait(200);
+        cy.wait(100); // Reduced from 200ms
         cy.get("body").type(" ");
-        cy.wait(200);
+        cy.wait(100); // Reduced from 200ms
       }
 
       cy.get('[data-testid="training-screen"]').should("exist");
@@ -183,7 +183,7 @@ describe("Black Trigram - Training (Consolidated)", () => {
 
       // Test various keyboard inputs
       cy.gameActions(["1", "2", "3", " "]);
-      cy.wait(200);
+      cy.wait(100); // Reduced from 200ms
 
       // Movement keys
       cy.gameActions(["w", "a", "s", "d"]);
@@ -214,12 +214,12 @@ describe("Black Trigram - Training (Consolidated)", () => {
 
       const startTime = Date.now();
 
-      // Intense training sequence
+      // Intense training sequence with reduced waits
       for (let i = 1; i <= 8; i++) {
         cy.get("body").type(i.toString());
-        cy.wait(100);
+        cy.wait(50); // Reduced from 100ms
         cy.get("body").type(" ");
-        cy.wait(100);
+        cy.wait(50); // Reduced from 100ms
       }
 
       cy.wrap(null).then(() => {
