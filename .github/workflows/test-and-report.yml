@@ -155,7 +155,7 @@ jobs:
         run: |
           echo "🚀 Starting E2E test execution at $(date +%T)"
           START_TIME=$(date +%s) || START_TIME=0
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
+          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
           END_TIME=$(date +%s) || END_TIME=$START_TIME
           if [ "$START_TIME" -ne 0 ]; then
             DURATION=$((END_TIME - START_TIME))

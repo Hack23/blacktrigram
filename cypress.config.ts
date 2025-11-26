@@ -23,7 +23,7 @@ export default defineConfig({
   numTestsKeptInMemory: 3, // Reduced from 5 for better memory management
   video: true, // Video recording enabled; videos are only saved for failed tests
   videoUploadOnPasses: false, // Only upload videos for failed tests
-  videoCompression: 25, // Increased from 15 for faster encoding (larger files, but faster CI)
+  videoCompression: 50, // Optimized for faster encoding (larger files, but faster CI) - increased from 25
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
   viewportWidth: 1280,
@@ -92,23 +92,34 @@ export default defineConfig({
         });
       });
 
-      // Browser launch configuration for PixiJS/WebGL optimization
+      // Browser launch configuration for Three.js/WebGL optimization
       on("before:browser:launch", (browser, launchOptions) => {
         if (browser.family === "chromium" && browser.name !== "electron") {
-          // Performance optimizations for PixiJS and WebGL
+          // Core WebGL rendering flags (software rendering via SwiftShader)
           launchOptions.args.push("--enable-unsafe-swiftshader");
           launchOptions.args.push("--disable-web-security");
           launchOptions.args.push("--disable-features=VizDisplayCompositor");
+          launchOptions.args.push("--disable-gpu-sandbox");
+          launchOptions.args.push("--disable-dev-shm-usage");
+          launchOptions.args.push("--no-sandbox");
+
+          // Three.js-specific optimizations
+          launchOptions.args.push("--enable-webgl-draft-extensions"); // Enable draft WebGL features
+          launchOptions.args.push("--max-gum-fps=60"); // Cap frame rate at 60fps for consistency
+          launchOptions.args.push("--disable-gpu-vsync"); // Disable vsync for more predictable frame timing
+          launchOptions.args.push("--enable-webgl2-compute-context"); // Enable WebGL2 compute features
+
+          // Memory optimization for Three.js scenes
+          launchOptions.args.push("--js-flags=--max-old-space-size=4096"); // 4GB heap for Node.js
+          launchOptions.args.push("--disable-software-rasterizer"); // Use hardware-accelerated rasterization when possible
 
           // Reduce logging noise
           launchOptions.args.push("--log-level=3");
           launchOptions.args.push("--disable-logging");
           launchOptions.args.push("--silent");
 
-          // Additional flags for better performance with audio/video content
-          launchOptions.args.push("--disable-gpu-sandbox");
-          launchOptions.args.push("--disable-dev-shm-usage");
-          launchOptions.args.push("--no-sandbox");
+          // Audio/video performance
+          launchOptions.args.push("--autoplay-policy=no-user-gesture-required");
         }
         return launchOptions;
       });
