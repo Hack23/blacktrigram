@@ -100,7 +100,7 @@
     "madge": "^8.0.0",
     "mocha-junit-reporter": "2.2.1",
     "mochawesome": "7.1.4",
-    "mochawesome-merge": "5.0.0",
+    "mochawesome-merge": "5.1.0",
     "mochawesome-report-generator": "6.3.2",
     "openai": "^6.9.1",
     "rollup-plugin-analyzer": "^4.0.0",
