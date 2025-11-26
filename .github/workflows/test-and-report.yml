@@ -268,15 +268,27 @@ jobs:
             echo "📋 Testing ${screen}-screen..."
             START=$(date +%s)
             
+            # Run the test and capture exit code
+            set +e
             xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" \
               npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" \
-              --browser chrome --headless || true
+              --browser chrome --headless
+            EXIT_CODE=$?
+            set -e
             
             END=$(date +%s)
             DURATION=$((END - START))
             screen_durations["$screen"]=$DURATION
             
             echo "⏱️  ${screen}-screen: ${DURATION}s"
+            
+            # Check test result
+            if [ $EXIT_CODE -eq 0 ]; then
+              echo "✅ ${screen}-screen tests PASSED"
+            else
+              echo "❌ ${screen}-screen tests FAILED (exit code: $EXIT_CODE)"
+              FAILED_SCREENS="${FAILED_SCREENS} ${screen}"
+            fi
             
             # Check against target (3-4 min = 180-240s)
             if [ $DURATION -le 240 ]; then
@@ -297,7 +309,8 @@ jobs:
           echo "📊 Screen-Specific E2E Test Summary"
           echo "===================================="
           for screen in "${screens[@]}"; do
-            echo "${screen}-screen: ${screen_durations[$screen]}s"
+            DURATION="${screen_durations[$screen]:-0}"
+            echo "${screen}-screen: ${DURATION}s"
           done
           echo ""
           echo "Total Duration: ${TOTAL_DURATION}s ($(($TOTAL_DURATION / 60))m $(($TOTAL_DURATION % 60))s)"
@@ -307,6 +320,13 @@ jobs:
             echo "✅ Within 20-minute target"
           else
             echo "⚠️  Exceeded 20-minute target"
+          fi
+          
+          # Fail the job if any screen tests failed
+          if [ -n "$FAILED_SCREENS" ]; then
+            echo ""
+            echo "❌ Failed screens:$FAILED_SCREENS"
+            exit 1
           fi
         env:
           CYPRESS_VIDEO: true

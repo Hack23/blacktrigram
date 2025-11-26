@@ -4,7 +4,7 @@
 # Usage: ./scripts/run-screen-tests.sh [screen-name]
 # If no screen name provided, runs all screens
 
-set -e
+# Note: Don't use set -e to ensure all screens are tested even if one fails
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -33,8 +33,9 @@ fi
 
 echo ""
 
-# Track timing
+# Track timing and failures
 declare -A screen_durations
+FAILED_SCREENS=""
 TOTAL_START=$(date +%s)
 
 # Run each screen test
@@ -43,11 +44,12 @@ for screen in "${SCREENS[@]}"; do
     echo -e "${BLUE}📋 Testing ${screen}-screen...${NC}"
     START=$(date +%s)
     
-    # Run the test
-    if npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" --browser chrome --headless; then
+    # Run the test and capture exit code
+    if npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" --browser "${BROWSER:-chrome}" ${HEADLESS:+--headless}; then
         STATUS="${GREEN}✅ PASSED${NC}"
     else
         STATUS="${RED}❌ FAILED${NC}"
+        FAILED_SCREENS="${FAILED_SCREENS} ${screen}"
     fi
     
     END=$(date +%s)
@@ -96,3 +98,10 @@ fi
 
 echo ""
 echo -e "${GREEN}✅ Screen test execution complete${NC}"
+
+# Exit with failure if any screen tests failed
+if [ -n "$FAILED_SCREENS" ]; then
+    echo ""
+    echo -e "${RED}❌ Failed screens:$FAILED_SCREENS${NC}"
+    exit 1
+fi
