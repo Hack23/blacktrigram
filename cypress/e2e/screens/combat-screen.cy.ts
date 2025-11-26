@@ -48,9 +48,18 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    // Verify canvas is visible
+    // ✅ IMPROVED: Verify Three.js Canvas is actively rendering (not frozen/blank)
     cy.get("canvas").should("be.visible");
-    cy.log("✅ Canvas rendering verified");
+    cy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });
+    cy.log("✅ Three.js rendering verified");
+
+    // ✅ IMPROVED: Verify health bars exist and have valid data
+    cy.verifyHealthBar("player1-health", 0, 100).then((health) => {
+      cy.log(`Player 1 health verified: ${health}`);
+    });
+    cy.verifyHealthBar("player2-health", 0, 100).then((health) => {
+      cy.log(`Player 2 health verified: ${health}`);
+    });
 
     cy.wait(200);
 

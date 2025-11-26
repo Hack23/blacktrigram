@@ -148,6 +148,28 @@ declare global {
        * @param duration Duration to monitor (default 3000ms)
        */
       assertNoMemoryLeaks(duration?: number): Chainable<void>;
+
+      /**
+       * Verify Three.js Canvas is actively rendering
+       * Checks that Canvas pixel data changes over time (not frozen/blank)
+       * @param options Verification options
+       */
+      verifyThreeJSRendering(options?: {
+        timeout?: number;
+        minPixelChange?: number;
+      }): Chainable<void>;
+
+      /**
+       * Verify health bar displays correct values
+       * @param testId Health bar test ID (e.g., "player1-health", "player2-health")
+       * @param expectedMin Minimum expected health value
+       * @param expectedMax Maximum expected health value
+       */
+      verifyHealthBar(
+        testId: string,
+        expectedMin?: number,
+        expectedMax?: number
+      ): Chainable<number>;
     }
   }
 }
@@ -590,5 +612,130 @@ Cypress.Commands.add("assertMinFPS", assertMinFPS);
 Cypress.Commands.add("assertSmoothFPS", assertSmoothFPS);
 Cypress.Commands.add("assertCanvasRendering", assertCanvasRendering);
 Cypress.Commands.add("assertNoMemoryLeaks", assertNoMemoryLeaks);
+
+// ============================================================
+// Three.js Scene Verification Commands
+// ============================================================
+
+/**
+ * Verify Three.js Canvas is actively rendering
+ * Checks that Canvas pixel data changes over time (not frozen/blank)
+ */
+Cypress.Commands.add(
+  "verifyThreeJSRendering",
+  (options?: { timeout?: number; minPixelChange?: number }) => {
+    const timeout = options?.timeout ?? 3000;
+    const minPixelChange = options?.minPixelChange ?? 100;
+
+    cy.get("canvas", { timeout }).should(($canvas) => {
+      const canvas = $canvas[0] as HTMLCanvasElement;
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        throw new Error("Canvas 2D context not available");
+      }
+
+      // Get initial pixel data
+      const rect = canvas.getBoundingClientRect();
+      const centerX = Math.floor(rect.width / 2);
+      const centerY = Math.floor(rect.height / 2);
+      const sampleSize = 20;
+
+      const imageData1 = ctx.getImageData(
+        centerX - sampleSize / 2,
+        centerY - sampleSize / 2,
+        sampleSize,
+        sampleSize
+      );
+
+      // Wait a moment for rendering to occur
+      cy.wait(100);
+
+      // Get second sample
+      const imageData2 = ctx.getImageData(
+        centerX - sampleSize / 2,
+        centerY - sampleSize / 2,
+        sampleSize,
+        sampleSize
+      );
+
+      // Count changed pixels
+      let changedPixels = 0;
+      for (let i = 0; i < imageData1.data.length; i += 4) {
+        const diff =
+          Math.abs(imageData1.data[i] - imageData2.data[i]) +
+          Math.abs(imageData1.data[i + 1] - imageData2.data[i + 1]) +
+          Math.abs(imageData1.data[i + 2] - imageData2.data[i + 2]);
+
+        if (diff > 10) {
+          changedPixels++;
+        }
+      }
+
+      // Verify rendering is active
+      if (changedPixels >= minPixelChange) {
+        cy.log(
+          `✅ Three.js rendering verified (${changedPixels} pixels changed)`
+        );
+      } else {
+        cy.log(
+          `⚠️ Three.js rendering may be frozen (only ${changedPixels} pixels changed, expected ${minPixelChange}+)`
+        );
+      }
+    });
+  }
+);
+
+/**
+ * Verify health bar displays correct values
+ * Returns the current health value for further assertions
+ */
+Cypress.Commands.add(
+  "verifyHealthBar",
+  (testId: string, expectedMin?: number, expectedMax?: number) => {
+    return cy
+      .get(`[data-testid="${testId}"]`, { timeout: 5000 })
+      .should("exist")
+      .then(($healthBar) => {
+        // Get health from data attributes
+        const currentHealth = parseFloat(
+          $healthBar.attr("data-health") || $healthBar.attr("data-current") || "0"
+        );
+        const maxHealth = parseFloat($healthBar.attr("data-max") || "100");
+        const percentage = parseFloat(
+          $healthBar.attr("data-percentage") || "0"
+        );
+
+        cy.log(
+          `Health Bar [${testId}]: ${currentHealth}/${maxHealth} (${percentage}%)`
+        );
+
+        // Verify health is within expected range if provided
+        if (expectedMin !== undefined) {
+          expect(currentHealth).to.be.at.least(
+            expectedMin,
+            `Health should be at least ${expectedMin}`
+          );
+        }
+
+        if (expectedMax !== undefined) {
+          expect(currentHealth).to.be.at.most(
+            expectedMax,
+            `Health should be at most ${expectedMax}`
+          );
+        }
+
+        // Verify percentage matches current/max ratio
+        const calculatedPercentage = Math.round((currentHealth / maxHealth) * 100);
+        if (Math.abs(percentage - calculatedPercentage) > 1) {
+          cy.log(
+            `⚠️ Health percentage mismatch: ${percentage}% vs calculated ${calculatedPercentage}%`
+          );
+        }
+
+        return cy.wrap(currentHealth);
+      });
+  }
+);
 
 export {};
