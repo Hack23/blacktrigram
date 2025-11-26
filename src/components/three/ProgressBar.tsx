@@ -204,7 +204,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       <div 
         style={containerStyle} 
         data-testid={testId ?? `progress-bar-${type}`}
-        data-health={current}
         data-current={current}
         data-max={max}
         data-percentage={Math.round(percentage * 100)}

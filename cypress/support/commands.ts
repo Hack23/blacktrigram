@@ -625,8 +625,9 @@ Cypress.Commands.add(
   "verifyThreeJSRendering",
   (options?: { timeout?: number; minPixelChange?: number }) => {
     const timeout = options?.timeout ?? 3000;
-    const minPixelChange = options?.minPixelChange ?? 100;
+    const minPixelChange = options?.minPixelChange ?? 50;
 
+    // Sample pixels once
     cy.get("canvas", { timeout }).should(($canvas) => {
       const canvas = $canvas[0] as HTMLCanvasElement;
       const ctx = canvas.getContext("2d");
@@ -648,8 +649,26 @@ Cypress.Commands.add(
         sampleSize
       );
 
-      // Wait a moment for rendering to occur
-      cy.wait(100);
+      // Store in window for second sample
+      (window as any).__pixelSample1 = imageData1;
+    });
+
+    // Wait for a frame
+    cy.wait(100);
+
+    // Sample pixels again and compare
+    cy.get("canvas").should(($canvas) => {
+      const canvas = $canvas[0] as HTMLCanvasElement;
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        throw new Error("Canvas 2D context not available");
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      const centerX = Math.floor(rect.width / 2);
+      const centerY = Math.floor(rect.height / 2);
+      const sampleSize = 20;
 
       // Get second sample
       const imageData2 = ctx.getImageData(
@@ -658,6 +677,9 @@ Cypress.Commands.add(
         sampleSize,
         sampleSize
       );
+
+      // Get first sample from window
+      const imageData1 = (window as any).__pixelSample1;
 
       // Count changed pixels
       let changedPixels = 0;
@@ -672,16 +694,18 @@ Cypress.Commands.add(
         }
       }
 
-      // Verify rendering is active
-      if (changedPixels >= minPixelChange) {
-        cy.log(
-          `✅ Three.js rendering verified (${changedPixels} pixels changed)`
-        );
-      } else {
-        cy.log(
-          `⚠️ Three.js rendering may be frozen (only ${changedPixels} pixels changed, expected ${minPixelChange}+)`
-        );
-      }
+      // Fail the test if rendering is frozen
+      expect(
+        changedPixels,
+        `Canvas should have at least ${minPixelChange} changed pixels (rendering active)`
+      ).to.be.at.least(minPixelChange);
+
+      cy.log(
+        `✅ Three.js rendering verified (${changedPixels} pixels changed)`
+      );
+
+      // Clean up
+      delete (window as any).__pixelSample1;
     });
   }
 );
@@ -699,7 +723,7 @@ Cypress.Commands.add(
       .then(($healthBar) => {
         // Get health from data attributes
         const currentHealth = parseFloat(
-          $healthBar.attr("data-health") || $healthBar.attr("data-current") || "0"
+          $healthBar.attr("data-current") || "0"
         );
         const maxHealth = parseFloat($healthBar.attr("data-max") || "100");
         const percentage = parseFloat(

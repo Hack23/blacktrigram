@@ -78,22 +78,10 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       cy.wait(100); // Allow time for stance change
       
       // Verify stance indicator updates if present
-      cy.get("body").then(($body) => {
-        if ($body.find('[data-testid="player1-stance-indicator"]').length > 0) {
-          cy.get('[data-testid="player1-stance-indicator"]')
-            .invoke('text')
-            .then((text) => {
-              cy.log(`Player 1 stance indicator text: ${text}`);
-              // Verify stance name appears in indicator
-              const stanceName = stanceNames[stance - 1];
-              if (text.toLowerCase().includes(stanceName)) {
-                cy.log(`✅ Stance ${stance} (${stanceName}) verified in indicator`);
-              } else {
-                cy.log(`⚠️ Stance ${stance} activated but not reflected in indicator text`);
-              }
-            });
-        }
-      });
+      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
+        .should('exist')
+        .invoke('text')
+        .should('include', stanceNames[stance - 1]);
       
       cy.log(`✅ Stance ${stance} input processed`);
     }
@@ -113,7 +101,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // Capture initial health of player 2 (opponent)
     cy.get('[data-testid="player2-health"]', { timeout: 5000 })
       .should('exist')
-      .invoke('attr', 'data-health')
+      .invoke('attr', 'data-current')
       .then((health) => {
         const initialHealth = parseFloat(health as string);
         cy.log(`Player 2 initial health: ${initialHealth}`);
@@ -124,23 +112,20 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         
         // Verify health decreased (damage was dealt)
         cy.get('[data-testid="player2-health"]')
-          .invoke('attr', 'data-health')
+          .invoke('attr', 'data-current')
           .then((newHealth) => {
             const currentHealth = parseFloat(newHealth as string);
             cy.log(`Player 2 current health: ${currentHealth}`);
             
             // Assert damage was dealt
-            if (currentHealth < initialHealth) {
-              cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);
-            } else {
-              cy.log(`⚠️ No damage detected (may have missed or blocked)`);
-            }
+            expect(currentHealth, "Attack should deal damage to opponent").to.be.lessThan(initialHealth);
+            cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);
           });
       });
 
     // Second attack with verification
     cy.get('[data-testid="player2-health"]')
-      .invoke('attr', 'data-health')
+      .invoke('attr', 'data-current')
       .then((health) => {
         const beforeAttack = parseFloat(health as string);
         
@@ -148,9 +133,10 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         cy.wait(300);
         
         cy.get('[data-testid="player2-health"]')
-          .invoke('attr', 'data-health')
+          .invoke('attr', 'data-current')
           .then((newHealth) => {
             const afterAttack = parseFloat(newHealth as string);
+            expect(afterAttack, "Second attack should deal damage").to.be.lessThan(beforeAttack);
             cy.log(`✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`);
           });
       });
@@ -159,7 +145,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="attack-button"]').length > 0) {
         cy.get('[data-testid="player2-health"]')
-          .invoke('attr', 'data-health')
+          .invoke('attr', 'data-current')
           .then((health) => {
             const before = parseFloat(health as string);
             
@@ -167,9 +153,11 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
             cy.wait(300);
             
             cy.get('[data-testid="player2-health"]')
-              .invoke('attr', 'data-health')
+              .invoke('attr', 'data-current')
               .then((after) => {
-                cy.log(`✅ Attack button verified (Health: ${before} → ${after})`);
+                const afterValue = parseFloat(after as string);
+                expect(afterValue, "Attack button should deal damage").to.be.lessThan(before);
+                cy.log(`✅ Attack button verified (Health: ${before} → ${afterValue})`);
               });
           });
       } else {
