@@ -24,6 +24,7 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 
 **📋 Test Documentation:**
 [![E2E Test Plan](https://img.shields.io/badge/E2E-Test_Plan-00D9FF?style=flat&logo=cypress)](E2ETestPlan.md)
+[![Screen-Specific E2E](https://img.shields.io/badge/E2E-Screen_Strategy-00CED1?style=flat&logo=cypress)](SCREEN_SPECIFIC_E2E_STRATEGY.md)
 [![Unit Test Plan](https://img.shields.io/badge/Unit-Test_Plan-4FC08D?style=flat&logo=vitest)](UnitTestPlan.md)
 
 [![Performance Testing](https://img.shields.io/badge/Performance-Documented-blue?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
@@ -658,6 +659,7 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 ### 📊 Testing & Quality
 - [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy
 - [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
+- [🎮 Screen-Specific E2E Strategy](./SCREEN_SPECIFIC_E2E_STRATEGY.md) - One test per screen (3-4 min each)
 - [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
 - [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
 
