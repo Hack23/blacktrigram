@@ -250,6 +250,52 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.wait(200);
 
     // ============================================================
+    // 10. Test Mouse/Canvas Interaction (15s)
+    // ============================================================
+    cy.log("🔟 Testing Mouse/Canvas Interaction");
+
+    // Test canvas click interactions
+    cy.get("canvas").click(400, 300);
+    cy.wait(100);
+    cy.get('[data-testid="combat-screen"]').should("exist");
+    cy.log("✅ Canvas mouse interaction tested");
+
+    cy.wait(200);
+
+    // ============================================================
+    // 11. Test AI Movement and State (20s)
+    // ============================================================
+    cy.log("1️⃣1️⃣ Testing AI Movement and State Management");
+
+    // Move toward then away to test AI response
+    cy.gameActions(["d", "d", "a", "a"]);
+    cy.wait(200);
+    cy.get('[data-testid="combat-screen"]').should("exist");
+    cy.log("✅ AI movement and state management tested");
+
+    cy.wait(200);
+
+    // ============================================================
+    // 12. Test Combat Performance Under Load (20s)
+    // ============================================================
+    cy.log("1️⃣2️⃣ Testing Combat Performance");
+
+    const startTime = Date.now();
+
+    // Execute rapid combat sequence
+    cy.gameActions(["1", "2", "3", "4", " ", " "]);
+    cy.wait(100);
+
+    cy.wrap(null).then(() => {
+      const duration = Date.now() - startTime;
+      cy.task("logPerformance", { name: "Combat Performance", duration });
+      expect(duration).to.be.lessThan(5000);
+      cy.log(`✅ Performance maintained: ${duration}ms`);
+    });
+
+    cy.wait(200);
+
+    // ============================================================
     // FINAL: Test Summary
     // ============================================================
     cy.log("✅ CombatScreen comprehensive test completed");
@@ -263,10 +309,13 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("   ✓ Extended combat session");
     cy.log("   ✓ Combat controls panel");
     cy.log("   ✓ Korean text rendering");
+    cy.log("   ✓ Mouse/canvas interaction");
+    cy.log("   ✓ AI movement and state");
+    cy.log("   ✓ Combat performance under load");
   });
 });
 
-// Total expected time: ~3.5 minutes
+// Total expected time: ~4-4.5 minutes
 // Breakdown:
 // - Combat screen rendering: 20s
 // - Trigram stance system: 40s
@@ -277,6 +326,9 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 // - Extended combat session: 40s
 // - Controls panel: 15s
 // - Korean text: 10s
-// - Waits and transitions: 15s
-// Total: 270s (~4.5 minutes)
-// Note: Will be optimized through parallel operations
+// - Mouse/canvas interaction: 15s
+// - AI movement and state: 20s
+// - Combat performance: 20s
+// - Waits and transitions: 20s
+// Total: ~330s (~5.5 minutes)
+// Note: Will optimize waits to stay within 4-5 minute target

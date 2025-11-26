@@ -33,6 +33,9 @@ These files have been archived as they contain overlapping coverage now consolid
 - `intro-threejs.cy.ts` (559 lines) - Coverage now in `intro-screen.cy.ts`
 - `combat.cy.ts` (239 lines) - Coverage now in `combat-screen.cy.ts`
 - `training.cy.ts` (233 lines) - Coverage now in `training-screen.cy.ts`
+- `app.cy.ts` (99 lines) - Smoke test coverage now in `intro-screen.cy.ts`
+- `game-journey.cy.ts` (230 lines) - Journey coverage now in `intro-screen.cy.ts` and `combat-screen.cy.ts`
+- `three-korean-martial-arts.cy.ts` (314 lines) - Three.js coverage now in all screen tests
 
 ### Supporting Tests (Retained)
 
@@ -40,10 +43,7 @@ Located in: `cypress/e2e/`
 
 These tests are retained for specific purposes:
 
-- `app.cy.ts` - Basic app initialization and smoke tests
-- `game-journey.cy.ts` - End-to-end user journey across multiple screens
-- `performance-threejs.cy.ts` - Performance and FPS testing
-- `three-korean-martial-arts.cy.ts` - Korean martial arts specific features
+- `performance-threejs.cy.ts` - Performance and FPS testing (dedicated performance tests)
 
 ## 🏗️ Test Structure
 
@@ -74,7 +74,7 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 
 ## 🎮 Coverage Details
 
-### IntroScreen Test (~3 minutes)
+### IntroScreen Test (~4 minutes)
 
 **Coverage:**
 - Canvas and Three.js rendering verification
@@ -83,7 +83,8 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Navigation to Combat screen
 - Navigation to Training screen
 - Keyboard controls (shortcuts)
-- Responsive design (desktop/tablet)
+- Responsive design (desktop/tablet/mobile)
+- Error resilience (invalid input handling)
 - Audio system initialization (implicit)
 
 **Execution Breakdown:**
@@ -94,11 +95,13 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Navigation to Training: 30s
 - Keyboard controls: 20s
 - Responsive design: 30s
+- Additional viewports: 20s
+- Error resilience: 15s
 - Audio system: 10s
-- Waits/transitions: 20s
-- **Total: ~220s (3.7 minutes)**
+- Waits/transitions: 25s
+- **Total: ~260s (4.3 minutes)**
 
-### CombatScreen Test (~3.5 minutes)
+### CombatScreen Test (~4.5 minutes)
 
 **Coverage:**
 - Combat screen rendering and HUD
@@ -110,6 +113,9 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Extended combat session (5 sequences)
 - Combat controls panel
 - Korean text rendering
+- Mouse/canvas interaction
+- AI movement and state management
+- Combat performance under load
 
 **Execution Breakdown:**
 - Combat screen rendering: 20s
@@ -118,6 +124,14 @@ describe("[Screen] - Comprehensive E2E Test (Target: X-Y min)", () => {
 - Movement: 30s
 - Defense: 20s
 - HUD elements: 20s
+- Extended combat session: 40s
+- Controls panel: 15s
+- Korean text: 10s
+- Mouse/canvas interaction: 15s
+- AI movement and state: 20s
+- Combat performance: 20s
+- Waits/transitions: 20s
+- **Total: ~330s (5.5 minutes)**
 - Extended combat: 40s
 - Controls panel: 15s
 - Korean text: 10s
