@@ -317,8 +317,8 @@ describe("AIDecisionTree", () => {
         comboSystem
       );
 
-      // At close range, should attack, defend, or use technique
-      expect(["attack", "technique", "defend", "combo"]).toContain(decision.action);
+      // At close range, should attack, defend, use technique, combo, or change stance
+      expect(["attack", "technique", "defend", "combo", "stance_change"]).toContain(decision.action);
     });
 
     it("should use mid-range tactics appropriately", () => {

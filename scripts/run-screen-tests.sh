@@ -49,7 +49,7 @@ for screen in "${SCREENS[@]}"; do
     if [ "$HEADLESS" = "true" ]; then
         HEADLESS_FLAG="--headless"
     fi
-    if npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" --browser "${BROWSER:-chrome}" $HEADLESS_FLAG; then
+    if npx cypress run --spec "cypress/e2e/screens/${screen}-screen.cy.ts" --browser "${BROWSER:-chrome}" "$HEADLESS_FLAG"; then
         STATUS="${GREEN}✅ PASSED${NC}"
     else
         STATUS="${RED}❌ FAILED${NC}"
