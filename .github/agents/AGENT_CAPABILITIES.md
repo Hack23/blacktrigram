@@ -2,6 +2,26 @@
 
 This document provides a comprehensive overview of all custom agents available for Black Trigram (흑괘) development, their capabilities, and when to use each agent.
 
+## 🔑 Essential Context for All Agents
+
+All agents should reference these key files to understand the project environment:
+
+1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
+   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
+   - Environment setup and cache configuration
+   - Workflow permissions and capabilities
+
+2. **MCP Configuration**: `.github/copilot-mcp.json`
+   - Available MCP servers (GitHub, Filesystem, Git, Memory, Playwright, AWS)
+   - Server capabilities and configurations
+   - Disabled/optional servers and their activation requirements
+
+3. **Project Context**: `README.md`
+   - Project overview and architecture
+   - Korean martial arts philosophy and theming
+   - Technology stack and combat mechanics
+   - Development guidelines and documentation links
+
 ## 📊 Quick Reference Matrix
 
 | Agent | Primary Role | Key Capabilities | MCP Servers | Best For |
