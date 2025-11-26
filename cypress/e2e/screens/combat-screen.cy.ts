@@ -315,20 +315,4 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   });
 });
 
-// Total expected time: ~4-4.5 minutes
-// Breakdown:
-// - Combat screen rendering: 20s
-// - Trigram stance system: 40s
-// - Combat actions: 60s
-// - Movement: 30s
-// - Defense: 20s
-// - HUD elements: 20s
-// - Extended combat session: 40s
-// - Controls panel: 15s
-// - Korean text: 10s
-// - Mouse/canvas interaction: 15s
-// - AI movement and state: 20s
-// - Combat performance: 20s
-// - Waits and transitions: 20s
-// Total: ~330s (~5.5 minutes)
-// Note: Will optimize waits to stay within 4-5 minute target
+// Target: ~4 minutes (optimized waits for consistency with 3-4 min target)

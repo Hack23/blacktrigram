@@ -250,17 +250,4 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   });
 });
 
-// Total expected time: ~3.5 minutes
-// Breakdown:
-// - Training screen rendering: 20s
-// - Stance practice: 60s
-// - Training dummy interaction: 40s
-// - All 8 stances: 60s
-// - Extended training session: 30s
-// - Training controls: 20s
-// - UI elements: 20s
-// - Korean text: 10s
-// - Vital point display: 15s
-// - Waits and transitions: 15s
-// Total: 290s (~4.8 minutes)
-// Note: Will be optimized through reduced waits
+// Target: ~3.8 minutes (optimized waits for 3-4 min target)
