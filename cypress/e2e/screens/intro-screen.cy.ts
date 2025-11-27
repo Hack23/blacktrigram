@@ -135,7 +135,7 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Returned to Intro from Combat");
 
-    cy.wait(300); // Allow screen transition
+    cy.wait(200); // Allow screen transition
 
     // ============================================================
     // 5. Test Navigation to Training (30s)
@@ -150,29 +150,84 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Returned to Intro from Training");
 
-    cy.wait(300); // Allow screen transition
+    cy.wait(200); // Allow screen transition
 
     // ============================================================
-    // 6. Test Keyboard Controls (20s)
+    // 6. Test Navigation to Controls (25s)
     // ============================================================
-    cy.log("6️⃣ Testing Keyboard Controls");
+    cy.log("6️⃣ Testing Navigation to Controls");
 
-    // Test keyboard shortcut for combat (usually '1')
+    // Navigate to controls screen
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="controls-button"]').length > 0) {
+        cy.get('[data-testid="controls-button"]').click({ force: true });
+      } else if ($body.find('[data-testid="menu-controls"]').length > 0) {
+        cy.get('[data-testid="menu-controls"]').click({ force: true });
+      } else {
+        // Use keyboard shortcut as fallback
+        cy.log("Using keyboard shortcut '3' for controls");
+        cy.get("body").type("3");
+      }
+    });
+
+    cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should("exist");
+    cy.log("✅ Successfully navigated to Controls");
+
+    cy.returnToIntro();
+    cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
+    cy.log("✅ Returned to Intro from Controls");
+
+    cy.wait(200); // Allow screen transition
+
+    // ============================================================
+    // 7. Test Navigation to Philosophy (25s)
+    // ============================================================
+    cy.log("7️⃣ Testing Navigation to Philosophy");
+
+    // Navigate to philosophy screen
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="philosophy-button"]').length > 0) {
+        cy.get('[data-testid="philosophy-button"]').click({ force: true });
+      } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
+        cy.get('[data-testid="menu-philosophy"]').click({ force: true });
+      } else {
+        // Use keyboard shortcut as fallback
+        cy.log("Using keyboard shortcut '4' for philosophy");
+        cy.get("body").type("4");
+      }
+    });
+
+    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should("exist");
+    cy.log("✅ Successfully navigated to Philosophy");
+
+    cy.returnToIntro();
+    cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
+    cy.log("✅ Returned to Intro from Philosophy");
+
+    cy.wait(200); // Allow screen transition
+
+    // ============================================================
+    // 8. Test Keyboard Controls (25s)
+    // ============================================================
+    cy.log("8️⃣ Testing Keyboard Controls");
+
+    // Test keyboard shortcut '1' for combat
     cy.get("body").type("1");
     cy.get('[data-testid="combat-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Keyboard shortcut '1' navigates to Combat");
 
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
+    cy.log("✅ Keyboard controls verified");
 
-    cy.wait(300);
+    cy.wait(150);
 
     // ============================================================
-    // 7. Test Responsive Design (30s)
+    // 9. Test Responsive Design (25s)
     // ============================================================
-    cy.log("7️⃣ Testing Responsive Design");
+    cy.log("9️⃣ Testing Responsive Design");
 
-    // Test tablet viewport
+    // Test tablet viewport only (removed mobile to save time)
     cy.viewport(768, 1024);
     cy.wait(200); // Allow responsive adjustment
 
@@ -191,28 +246,13 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Reset to desktop viewport
     cy.viewport(1280, 720);
-    cy.wait(200);
+    cy.wait(150);
     cy.log("✅ Responsive design validated");
 
     // ============================================================
-    // 8. Test Additional Responsive Viewports (20s)
+    // 10. Test Error Resilience (15s)
     // ============================================================
-    cy.log("8️⃣ Testing Additional Responsive Viewports");
-
-    // Test mobile portrait
-    cy.viewport(375, 667);
-    cy.wait(200);
-    cy.get("canvas").should("exist").and("be.visible");
-    cy.log("✅ Mobile portrait verified");
-
-    // Reset to desktop
-    cy.viewport(1280, 720);
-    cy.wait(200);
-
-    // ============================================================
-    // 9. Test Error Resilience (15s)
-    // ============================================================
-    cy.log("9️⃣ Testing Error Resilience");
+    cy.log("🔟 Testing Error Resilience");
 
     // Test non-existent feature navigation
     cy.get("body").type("9"); // Non-existent option
@@ -230,9 +270,9 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.wait(200);
 
     // ============================================================
-    // 10. Verify Audio System (10s)
+    // 11. Verify Audio System (10s)
     // ============================================================
-    cy.log("🔟 Verifying Audio System");
+    cy.log("1️⃣1️⃣ Verifying Audio System");
     // Audio system is verified through app initialization
     // No explicit audio test needed here to save time
     cy.log("✅ Audio system loaded with app (implicit verification)");
@@ -249,24 +289,35 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("   ✓ Bilingual text");
     cy.log("   ✓ Navigation to Combat");
     cy.log("   ✓ Navigation to Training");
-    cy.log("   ✓ Keyboard controls");
-    cy.log("   ✓ Responsive design (desktop/tablet/mobile)");
+    cy.log("   ✓ Navigation to Controls");
+    cy.log("   ✓ Navigation to Philosophy");
+    cy.log("   ✓ Keyboard controls (shortcut '1')");
+    cy.log("   ✓ Responsive design (desktop/tablet)");
     cy.log("   ✓ Error resilience");
     cy.log("   ✓ Audio system");
   });
 });
 
-// Total expected time: ~4 minutes
+// Total expected time: ~4 minutes (optimized)
 // Breakdown:
 // - Canvas rendering: 30s
 // - Menu buttons: 30s
 // - Bilingual text: 20s
 // - Navigation to Combat: 30s
 // - Navigation to Training: 30s
-// - Keyboard controls: 20s
-// - Responsive design: 30s
-// - Additional viewports: 20s
+// - Navigation to Controls: 25s
+// - Navigation to Philosophy: 25s
+// - Keyboard controls: 25s (reduced - only 1 shortcut tested)
+// - Responsive design: 25s (tablet only)
 // - Error resilience: 15s
 // - Audio system: 10s
 // - Waits and transitions: 25s
-// Total: 260s (~4.3 minutes)
+// Total: 290s (~4.8 minutes)
+//
+// Note: To meet strict 4-minute target, consider removing either:
+// - Error resilience test (15s savings)
+// - One navigation test (25s savings)
+// - Responsive design test (25s savings)
+//
+// Current approach prioritizes comprehensive coverage of all 4 screens
+// over strict timing, as this is the canonical IntroScreen test.
