@@ -157,21 +157,8 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // ============================================================
     cy.log("6️⃣ Testing Navigation to Controls");
 
-    // Navigate to controls screen
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="controls-button"]').length > 0) {
-        cy.get('[data-testid="controls-button"]').click({ force: true });
-      } else if ($body.find('[data-testid="menu-controls"]').length > 0) {
-        cy.get('[data-testid="menu-controls"]').click({ force: true });
-      } else {
-        // Use keyboard shortcut as fallback
-        cy.log("Using keyboard shortcut '3' for controls");
-        cy.get("body").type("3");
-      }
-    });
-
-    cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should("exist");
-    cy.log("✅ Successfully navigated to Controls");
+    // Navigate to controls screen using reusable command
+    cy.navigateToScreen("controls", "controls-button", "menu-controls", "3");
 
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
@@ -184,21 +171,8 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // ============================================================
     cy.log("7️⃣ Testing Navigation to Philosophy");
 
-    // Navigate to philosophy screen
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="philosophy-button"]').length > 0) {
-        cy.get('[data-testid="philosophy-button"]').click({ force: true });
-      } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
-        cy.get('[data-testid="menu-philosophy"]').click({ force: true });
-      } else {
-        // Use keyboard shortcut as fallback
-        cy.log("Using keyboard shortcut '4' for philosophy");
-        cy.get("body").type("4");
-      }
-    });
-
-    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should("exist");
-    cy.log("✅ Successfully navigated to Philosophy");
+    // Navigate to philosophy screen using reusable command
+    cy.navigateToScreen("philosophy", "philosophy-button", "menu-philosophy", "4");
 
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
@@ -298,7 +272,7 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   });
 });
 
-// Total expected time: ~4 minutes (optimized)
+// Total expected time: ~4.8 minutes (optimized for comprehensive coverage)
 // Breakdown:
 // - Canvas rendering: 30s
 // - Menu buttons: 30s

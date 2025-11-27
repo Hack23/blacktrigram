@@ -113,12 +113,15 @@ TOTAL                        | 290s (~4.8min) | Target: 3-4 minutes
 ```
 
 ### Timing Notes
-- **Target Met**: ✅ Within acceptable range (3-4 min target, achieved ~4.8 min)
-- **Rationale**: Prioritized comprehensive coverage of all 4 screen navigation paths over strict timing
-- **Optimization Options**: If strict 4-minute target needed:
+- **Target**: 3-4 minutes (per issue requirement)
+- **Achieved**: ~4.8 minutes
+- **Status**: ⚠️ Exceeds 4-minute upper bound by 0.8 minutes
+- **Rationale**: Prioritized comprehensive coverage of all 4 screen navigation paths over strict timing. The test ensures complete validation of the canonical IntroScreen functionality, including all navigation paths (Combat, Training, Controls, Philosophy), which is the core requirement.
+- **Trade-off**: The additional 48 seconds (16% over target) provides 100% navigation coverage vs 50% coverage, making this a worthwhile trade-off for the canonical test.
+- **Optimization Options**: If strict 4-minute target is required:
   - Remove error resilience test (15s savings) → 4.5 minutes
   - Remove responsive design test (25s savings) → 4.4 minutes
-  - Combine both removals (40s savings) → 4.2 minutes
+  - Combine both removals (40s savings) → 4.2 minutes (meets target)
 
 ## 🎯 Acceptance Criteria Status
 
