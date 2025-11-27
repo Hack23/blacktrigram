@@ -35,6 +35,14 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   const [sfxVolume, setSfxVolume] = useState(audio.sfxVolume ?? 0.8);
   const [isMuted, setIsMuted] = useState(audio.muted ?? false);
 
+  // Sync local state with audio manager state changes
+  React.useEffect(() => {
+    setMasterVolume(audio.masterVolume ?? 1.0);
+    setMusicVolume(audio.musicVolume ?? 0.7);
+    setSfxVolume(audio.sfxVolume ?? 0.8);
+    setIsMuted(audio.muted ?? false);
+  }, [audio.masterVolume, audio.musicVolume, audio.sfxVolume, audio.muted]);
+
   // Get position styles
   const getPositionStyle = (): React.CSSProperties => {
     if (position === "custom") return {};
@@ -176,6 +184,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           value={masterVolume}
           onChange={handleMasterVolumeChange}
           data-testid="master-volume-slider"
+          aria-label="마스터 볼륨 | Master Volume"
           style={sliderStyle}
           title="마스터 볼륨 | Master Volume"
         />

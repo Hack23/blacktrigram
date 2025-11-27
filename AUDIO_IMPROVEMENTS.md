@@ -88,8 +88,8 @@ useEffect(() => {
 ```
 
 #### Pattern Applied To
-- `src/components/intro/IntroScreenThreeJS.tsx`
-- All screen components that use audio
+- `src/components/intro/IntroScreenThreeJS.tsx` - Added isAudioReady checks for stopMusic and playMusic
+- Note: Other screens (PhilosophyScreenThreeJS, ControlsScreenThreeJS, TrainingScreen3D, etc.) still call audio methods directly without isAudioReady checks
 
 ### 3. CSS Color Handling
 
