@@ -7,6 +7,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { COMBAT_CONTROLS } from "../../systems";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
+import { VolumeControl } from "../ui/VolumeControl";
 
 export interface ControlsScreenThreeJSProps {
   readonly onReturnToMenu: () => void;
@@ -203,6 +204,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
+          {/* Volume Control */}
+          <VolumeControl position="top-right" compact={isMobile} />
+          
           <div
             style={{
               width: "100%",
