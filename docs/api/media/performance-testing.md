@@ -322,6 +322,7 @@ Real User Monitoring (RUM) tracks actual user experience in production. Black Tr
 #### **Phase 1: Browser Performance API (Current)**
 Use native [Performance API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) for zero-overhead monitoring:
 
+{% raw %}
 ```typescript
 // Performance tracking utility
 export function trackPagePerformance() {
@@ -350,6 +351,7 @@ export function trackPagePerformance() {
   });
 }
 ```
+{% endraw %}
 
 #### **Phase 2: Web Vitals Tracking (Future)**
 Integrate [Web Vitals](https://github.com/GoogleChrome/web-vitals) library:

@@ -125,19 +125,23 @@ This document describes the comprehensive caching strategy implemented across al
 ### Primary Cache Keys
 
 Cache keys use a combination of:
+{% raw %}
 1. **Runner OS**: `${{ runner.os }}` - Ensures OS-specific caches
 2. **Dependency Hash**: `${{ hashFiles('**/package-lock.json') }}` - Invalidates on dependency changes
 3. **Source Hash**: `${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}` - Invalidates on code changes (TypeScript only)
+{% endraw %}
 
 ### Restore Keys (Fallback Hierarchy)
 
 Restore keys provide a fallback mechanism when exact cache match isn't found:
 
+{% raw %}
 ```yaml
 key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 restore-keys: |
   ${{ runner.os }}-node-
 ```
+{% endraw %}
 
 **Fallback order**:
 1. Try exact match: `Linux-node-abc123def456`
