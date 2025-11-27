@@ -505,6 +505,7 @@ export function AnimatedCharacter({ stance, health }) {
 
 #### Pattern 3: Html Overlays for UI
 
+{% raw %}
 ```typescript
 import { Html } from "@react-three/drei";
 
@@ -527,6 +528,7 @@ export function PlayerNameplate3D({ name, nameKorean, health }) {
   );
 }
 ```
+{% endraw %}
 
 #### Pattern 4: Korean Materials and Lighting
 

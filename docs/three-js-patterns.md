@@ -121,6 +121,7 @@ export function StanceAura3D({ stance, intensity = 1.0 }: StanceAuraProps) {
 
 Visualize all 70 Korean vital points in 3D space.
 
+{% raw %}
 ```typescript
 import { Html } from '@react-three/drei';
 import { useMemo } from 'react';
@@ -201,6 +202,7 @@ export function VitalPointMarkers3D({
   );
 }
 ```
+{% endraw %}
 
 ### Pattern 4: Combat Hit Effects
 
@@ -561,6 +563,7 @@ function CombatFloor() {
 
 Combine 3D rendering with traditional UI elements.
 
+{% raw %}
 ```typescript
 import { Html } from '@react-three/drei';
 import { KOREAN_COLORS } from '../types/constants';
@@ -674,6 +677,7 @@ function PlayerNameplate({ name, nameKorean, health }) {
   );
 }
 ```
+{% endraw %}
 
 ---
 
