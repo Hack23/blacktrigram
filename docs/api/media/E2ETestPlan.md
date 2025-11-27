@@ -88,12 +88,18 @@ Per Hack23 AB's Secure Development Policy, this project maintains:
 ### 4. **📱 Responsive Design and Browser Compatibility**
 
 **Browser Testing Matrix:**
-| Browser | Version | Platform | Priority | Status |
-|---------|---------|----------|----------|--------|
-| **Chrome** | Latest Stable | Windows/Mac/Linux | ✅ High | Tested |
-| **Firefox** | Latest Stable | Windows/Mac/Linux | ✅ High | Tested |
-| **Edge** | Latest Stable | Windows | ✅ High | Tested |
-| **Safari** | Latest Stable | Mac | ⚠️ Medium | Planned |
+| Browser | Version | Platform | WebGL Support | Three.js Compatibility | Priority | Status |
+|---------|---------|----------|---------------|------------------------|----------|--------|
+| **Chrome** | Latest Stable | Windows/Mac/Linux | ✅ Excellent (SwiftShader) | ✅ Excellent | ✅ High | Tested |
+| **Firefox** | Latest Stable | Windows/Mac/Linux | ✅ Excellent | ✅ Excellent | ✅ High | Tested |
+| **Edge** | Latest Stable | Windows | ✅ Excellent (Chromium) | ✅ Excellent | ✅ High | Tested |
+| **Safari** | Latest Stable | Mac | ✅ Good | ✅ Good | ⚠️ Medium | Planned |
+
+**Chrome Configuration for Three.js** (See [CHROME_CYPRESS_THREEJS_CONFIG.md](CHROME_CYPRESS_THREEJS_CONFIG.md) for details):
+- SwiftShader software rendering for WebGL in headless mode
+- Optimized Chrome flags for Three.js performance
+- 60fps frame rate capping for consistency
+- 4GB Node.js heap for memory-intensive Three.js scenes
 
 **Viewport Testing Matrix:**
 | Device Type | Width x Height | Orientation | Priority |
@@ -127,7 +133,9 @@ cypress/
 │   ├── combat-screen-layout.cy.ts   # Combat UI validation
 │   ├── combat-mode.cy.ts            # Combat mode entry/exit
 │   ├── training-mode.cy.ts          # Training mode entry/exit
-│   ├── pixi-korean-martial-arts.cy.ts # PixiJS integration
+│   ├── pixi-korean-martial-arts.cy.ts # PixiJS integration (legacy)
+│   ├── performance-threejs.cy.ts    # Three.js FPS and performance
+│   ├── webgl-verification.cy.ts     # WebGL context and rendering verification ✨ NEW
 │   ├── app.cy.ts                    # Application smoke tests
 │   └── game-flow.cy.ts              # Navigation flows
 ├── fixtures/
@@ -135,8 +143,60 @@ cypress/
 ├── support/
 │   ├── e2e.ts                       # E2E support file
 │   ├── component.ts                 # Component support
-│   └── commands.ts                  # Custom Cypress commands
+│   ├── commands.ts                  # Custom Cypress commands
+│   ├── performance.ts               # Performance monitoring utilities
+│   ├── test-isolation.ts            # Test isolation utilities
+│   └── resource-monitoring.ts       # Resource leak detection
 ```
+
+### WebGL Verification Tests ✨ NEW
+
+**Test File**: `webgl-verification.cy.ts`
+
+Comprehensive WebGL and Three.js verification tests to ensure proper rendering in headless CI:
+
+**Coverage**:
+1. **WebGL Context Verification**
+   - Verify WebGL/WebGL2 context creation
+   - Check renderer, version, and capabilities
+   - Validate texture size and viewport limits
+   - Test WebGL extensions support
+
+2. **Frame Rate Performance**
+   - Measure average FPS (target: 30-60fps)
+   - Monitor frame timing consistency
+   - Detect frame drops or stuttering
+   - Validate software rendering performance
+
+3. **Rendering Quality**
+   - Verify active canvas rendering (pixel changes)
+   - Check for blank/black canvas issues
+   - Validate visual content is present
+   - Test canvas state changes
+
+4. **Memory and Resource Management**
+   - Detect WebGL context leaks
+   - Monitor GPU memory usage
+   - Track memory growth during gameplay
+   - Verify resource cleanup
+
+5. **Mode-Specific Testing**
+   - Combat mode WebGL performance
+   - Training mode WebGL performance
+   - Screen transition stability
+   - Context preservation across scenes
+
+**Running WebGL Tests**:
+```bash
+# Full WebGL verification
+npx cypress run --spec "cypress/e2e/webgl-verification.cy.ts"
+
+# With memory optimization
+NODE_OPTIONS="--max-old-space-size=4096" \
+  npx cypress run --spec "cypress/e2e/webgl-verification.cy.ts"
+```
+
+For detailed configuration and troubleshooting, see [CHROME_CYPRESS_THREEJS_CONFIG.md](CHROME_CYPRESS_THREEJS_CONFIG.md).
 
 ### Custom Cypress Commands
 
@@ -455,7 +515,9 @@ sudo apt-get install fonts-noto-cjk fonts-noto-cjk-extra
 ### Documentation
 - [Cypress Documentation](https://docs.cypress.io/)
 - [Mochawesome Reporter](https://github.com/adamgruber/mochawesome)
-- [PixiJS Testing Guide](https://pixijs.com/)
+- [Three.js Documentation](https://threejs.org/docs/) ✨ NEW
+- [WebGL Specification](https://www.khronos.org/webgl/) ✨ NEW
+- [Chrome + Cypress + Three.js Configuration](CHROME_CYPRESS_THREEJS_CONFIG.md) ✨ NEW
 - [Black Trigram Architecture](ARCHITECTURE.md)
 - [Unit Test Plan](UnitTestPlan.md)
 
