@@ -69,21 +69,20 @@ audio.playMusic("intro_theme");
 ```
 
 #### Solution
-Use optional chaining to safely call audio methods:
+Use semantic readiness checks to safely call audio methods:
 ```typescript
-// ✅ SAFE - Checks if method exists before calling
-if (audio?.stopMusic) {
+// ✅ SAFE - Check if audio system is ready
+if (audio.isAudioReady) {
   audio.stopMusic();
-}
-
-if (audio?.playMusic) {
   audio.playMusic("intro_theme");
 }
 
-// ✅ Also safe in cleanup functions
+// ✅ In cleanup functions, check isInitialized
 useEffect(() => {
   return () => {
-    audio?.stopMusic();  // Safe even if audio is undefined
+    if (audio.isInitialized) {
+      audio.stopMusic();
+    }
   };
 }, [audio]);
 ```
@@ -102,11 +101,13 @@ style={{ color: KOREAN_COLORS.PRIMARY_CYAN }}  // Type '65535' is not assignable
 ```
 
 #### Solution
-Convert numeric colors to hex strings:
+Convert numeric colors to hex strings using the `toHex` utility:
 ```typescript
+import { toHex } from "../../utils/colorUtils";
+
 // ✅ CORRECT
 style={{ 
-  color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}` 
+  color: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}` 
 }}
 // Result: "#00ffff"
 ```
@@ -208,7 +209,7 @@ This implementation was inspired by the template game repository:
 
 ### 2025-01-27
 - ✅ Created VolumeControl component
-- ✅ Fixed `stopMusic is not a function` error with optional chaining
+- ✅ Fixed `stopMusic is not a function` error with isAudioReady checks
 - ✅ Integrated volume controls into all 6 screens
 - ✅ Added comprehensive unit tests (10 tests)
 - ✅ Fixed CSS color type safety issues
@@ -219,10 +220,17 @@ This implementation was inspired by the template game repository:
 
 When adding new screens or modifying audio functionality:
 
-1. **Always use optional chaining** when calling audio methods:
+1. **Always check audio readiness** when calling audio methods:
    ```typescript
-   audio?.playMusic("track_id");
-   audio?.stopMusic();
+   if (audio.isAudioReady) {
+     audio.playMusic("track_id");
+     audio.stopMusic();
+   }
+   
+   // In cleanup, use isInitialized
+   if (audio.isInitialized) {
+     audio.stopMusic();
+   }
    ```
 
 2. **Add VolumeControl** to new screens:
@@ -234,8 +242,10 @@ When adding new screens or modifying audio functionality:
 
 3. **Convert KOREAN_COLORS** for CSS:
    ```typescript
+   import { toHex } from "../../utils/colorUtils";
+   
    style={{ 
-     color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}` 
+     color: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}` 
    }}
    ```
 

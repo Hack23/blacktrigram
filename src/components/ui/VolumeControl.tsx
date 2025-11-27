@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
-import { toHex } from "../../utils/colorUtils";
+import { toHex, hexToRgbaString } from "../../utils/colorUtils";
 
 export interface VolumeControlProps {
   readonly position?: "top-right" | "bottom-right" | "top-left" | "bottom-left" | "custom";
@@ -68,7 +68,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     background: "rgba(33, 38, 45, 0.85)",
     borderRadius: "12px",
     backdropFilter: "blur(10px)",
-    border: `1px solid ${KOREAN_COLORS.PRIMARY_CYAN}33`,
+    border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
     ...style,
   };
 
