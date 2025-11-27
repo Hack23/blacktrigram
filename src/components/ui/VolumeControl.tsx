@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
 import { toHex, hexToRgbaString } from "../../utils/colorUtils";
@@ -43,8 +43,8 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     setIsMuted(audio.muted ?? false);
   }, [audio.masterVolume, audio.musicVolume, audio.sfxVolume, audio.muted]);
 
-  // Get position styles
-  const getPositionStyle = (): React.CSSProperties => {
+  // Get position styles (memoized)
+  const getPositionStyle = useMemo((): React.CSSProperties => {
     if (position === "custom") return {};
     
     const baseStyle: React.CSSProperties = {
@@ -65,10 +65,10 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       default:
         return baseStyle;
     }
-  };
+  }, [position, compact]);
 
-  const containerStyle: React.CSSProperties = {
-    ...getPositionStyle(),
+  const containerStyle = useMemo((): React.CSSProperties => ({
+    ...getPositionStyle,
     display: "flex",
     flexDirection: compact ? "row" : "column",
     alignItems: "center",
@@ -78,7 +78,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     backdropFilter: "blur(10px)",
     border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
     ...style,
-  };
+  }), [getPositionStyle, compact, style]);
 
   const handleMasterVolumeChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,33 +127,33 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     });
   }, [audio]);
 
-  const sliderStyle: React.CSSProperties = {
+  const sliderStyle = useMemo((): React.CSSProperties => ({
     width: compact ? "60px" : "100px",
     cursor: "pointer",
     accentColor: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
-  };
+  }), [compact]);
 
-  const labelStyle: React.CSSProperties = {
+  const labelStyle = useMemo((): React.CSSProperties => ({
     color: "#ffffff",
     fontSize: compact ? "11px" : "12px",
     fontWeight: "bold",
     minWidth: compact ? "40px" : "50px",
     textAlign: "left",
-  };
+  }), [compact]);
 
-  const valueStyle: React.CSSProperties = {
+  const valueStyle = useMemo((): React.CSSProperties => ({
     color: `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}`,
     fontSize: compact ? "10px" : "11px",
     minWidth: "35px",
     textAlign: "right",
-  };
+  }), [compact]);
 
-  const controlRowStyle: React.CSSProperties = {
+  const controlRowStyle = useMemo((): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
     gap: "8px",
     width: "100%",
-  };
+  }), []);
 
   if (compact) {
     return (

@@ -343,6 +343,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
+          {/* Volume Control - placed first since it uses absolute positioning */}
+          <VolumeControl position="top-right" compact={isMobile} />
+          
           <div
             style={{
               width: "100vw",
@@ -483,9 +486,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 />
               </div>
             </div>
-
-            {/* Volume Control */}
-            <VolumeControl position="top-right" compact={isMobile} />
 
             {/* Footer */}
             <div
