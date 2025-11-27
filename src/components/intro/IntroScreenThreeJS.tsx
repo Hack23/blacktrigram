@@ -16,6 +16,7 @@ import { ARCHETYPE_BACKGROUNDS, FONT_FAMILY, KOREAN_COLORS } from "../../types/c
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { getArchetypeAssets } from "../../utils/playerUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
+import { VolumeControl } from "../ui/VolumeControl";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
 import { MenuSectionHTML } from "./components/MenuSectionHTML";
 
@@ -204,14 +205,18 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setSelectedArchetypeIndex(index);
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
-      audio.playSFX("menu_hover");
       
-      // Play archetype theme music preview when archetype changes
-      // Use getArchetypeAssets utility for proper error handling and fallback
-      const archetypeAssets = getArchetypeAssets(newArchetype);
-      // Stop intro music and play archetype theme
-      audio.stopMusic();
-      audio.playMusic(archetypeAssets.themeId);
+      // Check if audio system is ready, not individual methods
+      if (audio.isAudioReady) {
+        audio.playSFX("menu_hover");
+        
+        // Play archetype theme music preview when archetype changes
+        // Use getArchetypeAssets utility for proper error handling and fallback
+        const archetypeAssets = getArchetypeAssets(newArchetype);
+        // Stop intro music and play archetype theme
+        audio.stopMusic();
+        audio.playMusic(archetypeAssets.themeId);
+      }
     },
     [onArchetypeSelect, audio]
   );
@@ -219,7 +224,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Play intro music after first user interaction
   useEffect(() => {
     const startMusic = () => {
-      if (audio.isInitialized && !introMusicStarted.current) {
+      if (audio.isAudioReady && !introMusicStarted.current) {
         introMusicStarted.current = true;
         audio.playMusic("intro_theme");
       }
@@ -230,9 +235,12 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     window.addEventListener("touchstart", startMusic, { once: true });
     
     return () => {
-      audio.stopMusic();
+      // Safe cleanup - check if audio is initialized before stopping music
+      if (audio.isInitialized) {
+        audio.stopMusic();
+      }
     };
-  }, [audio.isInitialized, audio]);
+  }, [audio]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -335,6 +343,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
+          {/* Volume Control - placed first since it uses absolute positioning */}
+          <VolumeControl position="top-right" compact={isMobile} />
+          
           <div
             style={{
               width: "100vw",

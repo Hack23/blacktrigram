@@ -18,6 +18,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { Position, TrigramStance } from "../../types/common";
 import { KOREAN_COLORS } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
+import { VolumeControl } from "../ui/VolumeControl";
 import TrainingArena3D from "./components/TrainingArena3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
 import TrainingHitEffects3D from "./components/TrainingHitEffects3D";
@@ -477,8 +478,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 top: 20,
                 right: 20,
                 pointerEvents: "all",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                alignItems: "flex-end",
               }}
             >
+              <VolumeControl position="custom" compact={isMobile} />
               <TrainingStatsHTML
                 stats={stats}
                 isMobile={isMobile}

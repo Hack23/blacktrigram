@@ -8,6 +8,7 @@ import { PlayerState } from "../../systems";
 import { MatchStatistics } from "../../systems/combat";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
+import { VolumeControl } from "../ui/VolumeControl";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
 import { VictoryAnimation3D } from "./components/VictoryAnimation3D";
 
@@ -286,6 +287,9 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
 
         {/* UI Overlay */}
         <Html fullscreen>
+          {/* Volume Control */}
+          <VolumeControl position="top-right" compact={isMobile} />
+          
           <div
             data-testid="end-screen-overlay"
             style={{

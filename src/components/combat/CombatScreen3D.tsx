@@ -27,6 +27,7 @@ import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { PerformanceOverlay3D } from "../../utils/performance";
+import { VolumeControl } from "../ui/VolumeControl";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -730,6 +731,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         >
           전투 | Combat
         </div>
+
+        {/* Volume Control */}
+        <VolumeControl position="top-right" compact={isMobile} />
 
         {/* Combat HUD */}
         <div

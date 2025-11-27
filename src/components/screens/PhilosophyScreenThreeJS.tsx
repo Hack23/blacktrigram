@@ -10,6 +10,7 @@ import { TRIGRAM_DATA } from "../../systems/trigram/types";
 import { TrigramStance } from "../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
+import { VolumeControl } from "../ui/VolumeControl";
 
 export interface PhilosophyScreenThreeJSProps {
   readonly onReturnToMenu: () => void;
@@ -237,6 +238,9 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
+          {/* Volume Control */}
+          <VolumeControl position="top-right" compact={isMobile} />
+          
           <div
             style={{
               width: "100%",
