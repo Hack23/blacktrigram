@@ -43,7 +43,6 @@ This document tracks the improvements made to the E2E test suite based on the or
    <div 
      style={containerStyle} 
      data-testid={testId ?? `progress-bar-${type}`}
-     data-health={current}
      data-current={current}
      data-max={max}
      data-percentage={Math.round(percentage * 100)}
@@ -59,19 +58,19 @@ This document tracks the improvements made to the E2E test suite based on the or
    
    // After: Verifies damage is actually dealt
    cy.get('[data-testid="player2-health"]')
-     .invoke('attr', 'data-health')
+     .invoke('attr', 'data-current')
      .then((health) => {
        const initialHealth = parseFloat(health as string);
        cy.get("body").type(" "); // Attack
        cy.wait(300);
        
        cy.get('[data-testid="player2-health"]')
-         .invoke('attr', 'data-health')
+         .invoke('attr', 'data-current')
          .then((newHealth) => {
            const currentHealth = parseFloat(newHealth as string);
-           if (currentHealth < initialHealth) {
-             cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);
-           }
+           expect(currentHealth, "Attack should deal damage to opponent")
+             .to.be.lessThan(initialHealth);
+           cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);
          });
      });
    ```
@@ -80,7 +79,7 @@ This document tracks the improvements made to the E2E test suite based on the or
 - ✅ Tests now verify actual damage is dealt
 - ✅ Health changes are tracked and validated
 - ✅ Tests will fail if combat system is broken
-- ✅ All 4 test data attributes available for comprehensive validation
+- ✅ All 3 test data attributes available for comprehensive validation
 
 **Validation:**
 - TypeScript compilation: ✅ Passing
@@ -246,8 +245,7 @@ This document tracks the improvements made to the E2E test suite based on the or
 **Lines Changed:** 204-210
 
 **Data Attributes Added:**
-- `data-health`: Current health/ki/stamina value
-- `data-current`: Alias for current value
+- `data-current`: Current health/ki/stamina value
 - `data-max`: Maximum value
 - `data-percentage`: Calculated percentage (0-100)
 
@@ -255,14 +253,14 @@ This document tracks the improvements made to the E2E test suite based on the or
 ```typescript
 // Get current health
 cy.get('[data-testid="player1-health"]')
-  .invoke('attr', 'data-health')
+  .invoke('attr', 'data-current')
   .then(parseFloat)
   .should('be.greaterThan', 0);
 
 // Verify health decreased
 cy.get('@healthBefore').then((before) => {
   cy.get('[data-testid="player2-health"]')
-    .invoke('attr', 'data-health')
+    .invoke('attr', 'data-current')
     .then(parseFloat)
     .should('be.lessThan', before as number);
 });
@@ -371,7 +369,7 @@ cy.log("✅ First attack executed");
 ```typescript
 // Verifies health changes
 cy.get('[data-testid="player2-health"]')
-  .invoke('attr', 'data-health')
+  .invoke('attr', 'data-current')
   .then(parseFloat)
   .as('healthBefore');
 
@@ -380,7 +378,7 @@ cy.wait(300);
 
 cy.get('@healthBefore').then((before) => {
   cy.get('[data-testid="player2-health"]')
-    .invoke('attr', 'data-health')
+    .invoke('attr', 'data-current')
     .then(parseFloat)
     .should('be.lessThan', before as number);
 });

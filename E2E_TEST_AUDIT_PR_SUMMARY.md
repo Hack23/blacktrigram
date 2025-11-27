@@ -36,7 +36,6 @@ Based on the problem statement, this PR addresses:
 **Purpose:** Enable test verification of health/ki/stamina values
 
 **Changes:**
-- Added `data-health={current}` attribute
 - Added `data-current={current}` attribute  
 - Added `data-max={max}` attribute
 - Added `data-percentage={Math.round(percentage * 100)}` attribute
@@ -133,11 +132,12 @@ Based on the problem statement, this PR addresses:
 
 | Metric | Before | After | Change |
 |--------|--------|-------|--------|
-| **Strong Assertions** | 30% | 43% | +13% ✅ |
+| **Strong Assertions** | 30% (~42) | 43% (~60) | +13% (+18) ✅ |
+| **Silent Continuations** | 17 | 0 | -17 ✅ |
 | **Health Verification Tests** | 0 | 3 | +3 ✅ |
 | **Three.js Verification Tests** | 0 | 1 | +1 ✅ |
 | **Stance Verification Tests** | 0 | 8 | +8 ✅ |
-| **Data Attributes on Components** | 1 | 5 | +4 ✅ |
+| **Data Attributes on Components** | 1 | 4 | +3 ✅ |
 | **Custom Test Commands** | 16 | 18 | +2 ✅ |
 | **Overall Grade** | C+ | B+ | ↑ ✅ |
 

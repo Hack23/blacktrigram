@@ -657,56 +657,64 @@ Cypress.Commands.add(
     cy.wait(100);
 
     // Sample pixels again and compare
-    cy.get("canvas").should(($canvas) => {
-      const canvas = $canvas[0] as HTMLCanvasElement;
-      const ctx = canvas.getContext("2d");
+    cy.get("canvas")
+      .should(($canvas) => {
+        const canvas = $canvas[0] as HTMLCanvasElement;
+        const ctx = canvas.getContext("2d");
 
-      if (!ctx) {
-        throw new Error("Canvas 2D context not available");
-      }
-
-      const rect = canvas.getBoundingClientRect();
-      const centerX = Math.floor(rect.width / 2);
-      const centerY = Math.floor(rect.height / 2);
-      const sampleSize = 20;
-
-      // Get second sample
-      const imageData2 = ctx.getImageData(
-        centerX - sampleSize / 2,
-        centerY - sampleSize / 2,
-        sampleSize,
-        sampleSize
-      );
-
-      // Get first sample from window
-      const imageData1 = (window as any).__pixelSample1;
-
-      // Count changed pixels
-      let changedPixels = 0;
-      for (let i = 0; i < imageData1.data.length; i += 4) {
-        const diff =
-          Math.abs(imageData1.data[i] - imageData2.data[i]) +
-          Math.abs(imageData1.data[i + 1] - imageData2.data[i + 1]) +
-          Math.abs(imageData1.data[i + 2] - imageData2.data[i + 2]);
-
-        if (diff > 10) {
-          changedPixels++;
+        if (!ctx) {
+          throw new Error("Canvas 2D context not available");
         }
-      }
 
-      // Fail the test if rendering is frozen
-      expect(
-        changedPixels,
-        `Canvas should have at least ${minPixelChange} changed pixels (rendering active)`
-      ).to.be.at.least(minPixelChange);
+        const rect = canvas.getBoundingClientRect();
+        const centerX = Math.floor(rect.width / 2);
+        const centerY = Math.floor(rect.height / 2);
+        const sampleSize = 20;
 
-      cy.log(
-        `✅ Three.js rendering verified (${changedPixels} pixels changed)`
-      );
+        // Get second sample
+        const imageData2 = ctx.getImageData(
+          centerX - sampleSize / 2,
+          centerY - sampleSize / 2,
+          sampleSize,
+          sampleSize
+        );
 
-      // Clean up
-      delete (window as any).__pixelSample1;
-    });
+        // Get first sample from window
+        const imageData1 = (window as any).__pixelSample1;
+
+        // Count changed pixels
+        let changedPixels = 0;
+        for (let i = 0; i < imageData1.data.length; i += 4) {
+          const diff =
+            Math.abs(imageData1.data[i] - imageData2.data[i]) +
+            Math.abs(imageData1.data[i + 1] - imageData2.data[i + 1]) +
+            Math.abs(imageData1.data[i + 2] - imageData2.data[i + 2]);
+
+          if (diff > 10) {
+            changedPixels++;
+          }
+        }
+
+        // Fail the test if rendering is frozen
+        expect(
+          changedPixels,
+          `Canvas should have at least ${minPixelChange} changed pixels (rendering active)`
+        ).to.be.at.least(minPixelChange);
+
+        // Store for logging outside callback
+        (window as any).__changedPixels = changedPixels;
+
+        // Clean up
+        delete (window as any).__pixelSample1;
+      })
+      .then(() => {
+        // Log outside .should() callback
+        const changedPixels = (window as any).__changedPixels;
+        cy.log(
+          `✅ Three.js rendering verified (${changedPixels} pixels changed)`
+        );
+        delete (window as any).__changedPixels;
+      });
   }
 );
 
@@ -730,7 +738,8 @@ Cypress.Commands.add(
           $healthBar.attr("data-percentage") || "0"
         );
 
-        cy.log(
+        // Use console.log for immediate feedback within callback
+        console.log(
           `Health Bar [${testId}]: ${currentHealth}/${maxHealth} (${percentage}%)`
         );
 
@@ -751,11 +760,10 @@ Cypress.Commands.add(
 
         // Verify percentage matches current/max ratio
         const calculatedPercentage = Math.round((currentHealth / maxHealth) * 100);
-        if (Math.abs(percentage - calculatedPercentage) > 1) {
-          cy.log(
-            `⚠️ Health percentage mismatch: ${percentage}% vs calculated ${calculatedPercentage}%`
-          );
-        }
+        expect(
+          Math.abs(percentage - calculatedPercentage),
+          `Health percentage should match calculated value (displayed ${percentage}% vs calculated ${calculatedPercentage}%)`
+        ).to.be.at.most(1);
 
         return cy.wrap(currentHealth);
       });
