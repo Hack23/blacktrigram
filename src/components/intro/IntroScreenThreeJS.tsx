@@ -16,6 +16,7 @@ import { ARCHETYPE_BACKGROUNDS, FONT_FAMILY, KOREAN_COLORS } from "../../types/c
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { getArchetypeAssets } from "../../utils/playerUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
+import { VolumeControl } from "../ui/VolumeControl";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
 import { MenuSectionHTML } from "./components/MenuSectionHTML";
 
@@ -204,14 +205,22 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setSelectedArchetypeIndex(index);
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
-      audio.playSFX("menu_hover");
+      
+      // Safe audio calls - check if methods exist
+      if (audio?.playSFX) {
+        audio.playSFX("menu_hover");
+      }
       
       // Play archetype theme music preview when archetype changes
       // Use getArchetypeAssets utility for proper error handling and fallback
       const archetypeAssets = getArchetypeAssets(newArchetype);
       // Stop intro music and play archetype theme
-      audio.stopMusic();
-      audio.playMusic(archetypeAssets.themeId);
+      if (audio?.stopMusic) {
+        audio.stopMusic();
+      }
+      if (audio?.playMusic) {
+        audio.playMusic(archetypeAssets.themeId);
+      }
     },
     [onArchetypeSelect, audio]
   );
@@ -219,7 +228,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Play intro music after first user interaction
   useEffect(() => {
     const startMusic = () => {
-      if (audio.isInitialized && !introMusicStarted.current) {
+      if (audio.isInitialized && !introMusicStarted.current && audio?.playMusic) {
         introMusicStarted.current = true;
         audio.playMusic("intro_theme");
       }
@@ -230,7 +239,10 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     window.addEventListener("touchstart", startMusic, { once: true });
     
     return () => {
-      audio.stopMusic();
+      // Safe cleanup - check if method exists
+      if (audio?.stopMusic) {
+        audio.stopMusic();
+      }
     };
   }, [audio.isInitialized, audio]);
 
@@ -475,6 +487,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 />
               </div>
             </div>
+
+            {/* Volume Control */}
+            <VolumeControl position="top-right" compact={isMobile} />
 
             {/* Footer */}
             <div
