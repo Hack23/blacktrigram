@@ -26,6 +26,20 @@ declare global {
       enterCombatMode(): void;
 
       /**
+       * Navigate to a specific screen from intro
+       * @param screenName Name of the screen (controls, philosophy, combat, training)
+       * @param buttonTestId Primary button test ID
+       * @param menuTestId Secondary menu test ID
+       * @param fallbackKey Keyboard shortcut as fallback
+       */
+      navigateToScreen(
+        screenName: string,
+        buttonTestId: string,
+        menuTestId: string,
+        fallbackKey: string
+      ): void;
+
+      /**
        * Practice a specific stance in training mode
        * @param stanceNumber Stance number (1-8)
        * @param repetitions Number of practice repetitions
@@ -278,6 +292,27 @@ Cypress.Commands.add("enterCombatMode", () => {
     }
   });
 });
+
+// Navigate to a specific screen from intro (reusable pattern)
+Cypress.Commands.add(
+  "navigateToScreen",
+  (screenName: string, buttonTestId: string, menuTestId: string, fallbackKey: string) => {
+    cy.get("body").then(($body) => {
+      if ($body.find(`[data-testid="${buttonTestId}"]`).length > 0) {
+        cy.get(`[data-testid="${buttonTestId}"]`).click({ force: true });
+      } else if ($body.find(`[data-testid="${menuTestId}"]`).length > 0) {
+        cy.get(`[data-testid="${menuTestId}"]`).click({ force: true });
+      } else {
+        // Use keyboard shortcut as fallback
+        cy.log(`Using keyboard shortcut '${fallbackKey}' for ${screenName}`);
+        cy.get("body").type(fallbackKey);
+      }
+    });
+
+    cy.get(`[data-testid="${screenName}-screen"]`, { timeout: 5000 }).should("exist");
+    cy.log(`✅ Successfully navigated to ${screenName}`);
+  }
+);
 
 // Return to intro screen from anywhere
 Cypress.Commands.add("returnToIntro", () => {

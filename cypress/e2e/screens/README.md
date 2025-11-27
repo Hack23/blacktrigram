@@ -65,9 +65,10 @@ npx cypress open
 - Canvas and Three.js rendering
 - Menu button visibility and interaction
 - Korean/English bilingual text
-- Navigation to Combat and Training screens
-- Keyboard shortcuts
+- Navigation to all 4 screens (Combat, Training, Controls, Philosophy)
+- Keyboard shortcuts (shortcut '1' for combat)
 - Responsive design (desktop/tablet)
+- Error resilience testing
 - Audio system initialization
 
 ### CombatScreen (`combat-screen.cy.ts`)
@@ -192,8 +193,18 @@ These tests embody:
 - **Maintainability**: Easy to understand and modify
 - **Reliability**: Consistent execution times
 
+## 📝 Recent Updates
+
+### 2025-11-27: Enhanced IntroScreen Test
+- ✅ Added navigation to Controls screen
+- ✅ Added navigation to Philosophy screen
+- ✅ Now covers all 4 screen navigation paths from IntroScreen
+- ✅ Optimized waits and transitions for efficiency
+- ✅ Streamlined responsive design test (desktop/tablet)
+- ⏱️ Target execution time: ~4.8 minutes (prioritizes comprehensive coverage)
+
 ---
 
-**Last Updated**: 2025-11-26
-**Version**: 1.0.0
+**Last Updated**: 2025-11-27
+**Version**: 1.1.0
 **Status**: ✅ Active
