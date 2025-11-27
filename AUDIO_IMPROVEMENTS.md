@@ -143,17 +143,10 @@ style={{
 ### Unit Tests
 File: `src/components/ui/VolumeControl.test.tsx`
 
-#### Test Coverage (10 tests)
-1. ✅ Renders all sliders (master, music, SFX)
-2. ✅ Displays Korean and English labels
-3. ✅ Calls setVolume on master volume change
-4. ✅ Calls setVolume on music volume change
-5. ✅ Calls setVolume on SFX volume change
-6. ✅ Toggles mute/unmute on button click
-7. ✅ Renders compact mode correctly
-8. ✅ Displays audio ready status
-9. ✅ Supports custom positioning
-10. ✅ Displays volume percentage
+#### Test Coverage
+- 10 test cases for VolumeControl component
+- All VolumeControl tests passing
+- Full project test suite: 1189 tests passing
 
 ### Test Results
 - **Unit Tests**: 1189 passing, 2 skipped

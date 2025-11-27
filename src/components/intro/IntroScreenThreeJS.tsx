@@ -206,19 +206,15 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
       
-      // Safe audio calls - check if methods exist
-      if (audio?.playSFX) {
+      // Check if audio system is ready, not individual methods
+      if (audio.isAudioReady) {
         audio.playSFX("menu_hover");
-      }
-      
-      // Play archetype theme music preview when archetype changes
-      // Use getArchetypeAssets utility for proper error handling and fallback
-      const archetypeAssets = getArchetypeAssets(newArchetype);
-      // Stop intro music and play archetype theme
-      if (audio?.stopMusic) {
+        
+        // Play archetype theme music preview when archetype changes
+        // Use getArchetypeAssets utility for proper error handling and fallback
+        const archetypeAssets = getArchetypeAssets(newArchetype);
+        // Stop intro music and play archetype theme
         audio.stopMusic();
-      }
-      if (audio?.playMusic) {
         audio.playMusic(archetypeAssets.themeId);
       }
     },
@@ -228,7 +224,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Play intro music after first user interaction
   useEffect(() => {
     const startMusic = () => {
-      if (audio.isInitialized && !introMusicStarted.current && audio?.playMusic) {
+      if (audio.isAudioReady && !introMusicStarted.current) {
         introMusicStarted.current = true;
         audio.playMusic("intro_theme");
       }
@@ -239,12 +235,12 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     window.addEventListener("touchstart", startMusic, { once: true });
     
     return () => {
-      // Safe cleanup - check if method exists
-      if (audio?.stopMusic) {
+      // Safe cleanup - check if audio is initialized before stopping music
+      if (audio.isInitialized) {
         audio.stopMusic();
       }
     };
-  }, [audio.isInitialized, audio]);
+  }, [audio]);
 
   // Keyboard navigation
   useEffect(() => {

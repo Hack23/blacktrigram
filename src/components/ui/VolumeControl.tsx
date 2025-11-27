@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
+import { toHex } from "../../utils/colorUtils";
 
 export interface VolumeControlProps {
   readonly position?: "top-right" | "bottom-right" | "top-left" | "bottom-left" | "custom";
@@ -105,21 +106,23 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   );
 
   const handleMuteToggle = useCallback(() => {
-    const newMuted = !isMuted;
-    setIsMuted(newMuted);
-    if (audio.isAudioReady) {
-      if (newMuted) {
-        audio.mute();
-      } else {
-        audio.unmute();
+    setIsMuted((prevMuted) => {
+      const newMuted = !prevMuted;
+      if (audio.isAudioReady) {
+        if (newMuted) {
+          audio.mute();
+        } else {
+          audio.unmute();
+        }
       }
-    }
-  }, [isMuted, audio]);
+      return newMuted;
+    });
+  }, [audio]);
 
   const sliderStyle: React.CSSProperties = {
     width: compact ? "60px" : "100px",
     cursor: "pointer",
-    accentColor: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+    accentColor: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
   };
 
   const labelStyle: React.CSSProperties = {
@@ -131,7 +134,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   };
 
   const valueStyle: React.CSSProperties = {
-    color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    color: `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}`,
     fontSize: compact ? "10px" : "11px",
     minWidth: "35px",
     textAlign: "right",
@@ -150,8 +153,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         <button
           onClick={handleMuteToggle}
           data-testid="mute-toggle-button"
+          aria-label={isMuted ? "Unmute audio" : "Mute audio"}
           style={{
-            background: isMuted ? "#666666" : `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+            background: isMuted ? "#666666" : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
             color: "white",
             border: "none",
             padding: "6px 12px",
@@ -171,7 +175,6 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           step="0.01"
           value={masterVolume}
           onChange={handleMasterVolumeChange}
-          onInput={handleMasterVolumeChange}
           data-testid="master-volume-slider"
           style={sliderStyle}
           title="마스터 볼륨 | Master Volume"
@@ -186,7 +189,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       {showLabels && (
         <div
           style={{
-            color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+            color: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
             fontSize: "14px",
             fontWeight: "bold",
             marginBottom: "4px",
@@ -210,7 +213,6 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           step="0.01"
           value={masterVolume}
           onChange={handleMasterVolumeChange}
-          onInput={handleMasterVolumeChange}
           data-testid="master-volume-slider"
           style={sliderStyle}
         />
@@ -230,7 +232,6 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           step="0.01"
           value={musicVolume}
           onChange={handleMusicVolumeChange}
-          onInput={handleMusicVolumeChange}
           data-testid="music-volume-slider"
           style={sliderStyle}
         />
@@ -250,7 +251,6 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           step="0.01"
           value={sfxVolume}
           onChange={handleSfxVolumeChange}
-          onInput={handleSfxVolumeChange}
           data-testid="sfx-volume-slider"
           style={sliderStyle}
         />
@@ -261,8 +261,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       <button
         onClick={handleMuteToggle}
         data-testid="mute-toggle-button"
+        aria-label={isMuted ? "Unmute audio" : "Mute audio"}
         style={{
-          background: isMuted ? "#666666" : `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+          background: isMuted ? "#666666" : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
           color: "white",
           border: "none",
           padding: "8px 16px",
@@ -273,6 +274,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           marginTop: "4px",
           width: "100%",
         }}
+        title={isMuted ? "음소거 해제 | Unmute" : "음소거 | Mute"}
       >
         {isMuted ? "🔇 음소거 해제 | Unmute" : "🔊 음소거 | Mute"}
       </button>
@@ -280,7 +282,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       {/* Audio Status Indicator */}
       <div
         style={{
-          color: audio.isAudioReady ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}` : "#999",
+          color: audio.isAudioReady ? `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}` : "#999",
           fontSize: "10px",
           marginTop: "4px",
           textAlign: "center",

@@ -733,9 +733,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         </div>
 
         {/* Volume Control */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
-          <VolumeControl position="top-right" compact={isMobile} />
-        </div>
+        <VolumeControl position="top-right" compact={isMobile} />
 
         {/* Combat HUD */}
         <div
