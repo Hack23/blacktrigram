@@ -134,7 +134,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       playVitalPointHitSound: audioManager.playVitalPointHitSound.bind(audioManager),
       playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
       
-      // Getter properties - use Object.defineProperty to create forwarding getters
+      // Getter properties - forwarding getters using ES6 getter syntax
       // This ensures components always get current values from audioManager
       get isInitialized() { return audioManager.isInitialized; },
       get masterVolume() { return audioManager.masterVolume; },

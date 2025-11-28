@@ -76,8 +76,7 @@ Use getter syntax in the context object to forward property access:
 
 ### 3. Additional Fixes
 
-- Added `Suspense` boundary for lazy-loaded `TrainingScreen` component
-- Fixed `LoadingState` prop type (`"assets"` instead of `"loading"`)
+- Added `Suspense` boundary with proper LoadingState fallback for lazy-loaded `TrainingScreen` component
 - Added comprehensive tests to verify all methods and properties are available
 
 ## Files Changed
