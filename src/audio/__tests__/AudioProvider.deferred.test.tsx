@@ -133,4 +133,73 @@ describe("AudioProvider - Deferred Initialization", () => {
 
     consoleSpy.mockRestore();
   });
+
+  it("should provide all IAudioManager methods in context", () => {
+    const TestComponent = () => {
+      const audio = useAudio();
+      
+      // Check that all IAudioManager methods are available
+      const methods = [
+        'initialize',
+        'loadAsset',
+        'playSFX',
+        'playSoundEffect',
+        'playMusic',
+        'stopMusic',
+        'setVolume',
+        'mute',
+        'unmute',
+        'fadeIn',
+        'fadeOut',
+        'playKoreanTechniqueSound',
+        'playTrigramStanceSound',
+        'playVitalPointHitSound',
+        'playDojiangAmbience',
+      ];
+
+      const allMethodsPresent = methods.every(
+        method => typeof audio[method as keyof typeof audio] === 'function'
+      );
+
+      return <div>{allMethodsPresent ? "All Methods Present" : "Missing Methods"}</div>;
+    };
+
+    render(
+      <AudioProvider deferInitialization={true}>
+        <TestComponent />
+      </AudioProvider>
+    );
+
+    expect(screen.getByText("All Methods Present")).toBeInTheDocument();
+  });
+
+  it("should provide all IAudioManager properties in context", () => {
+    const TestComponent = () => {
+      const audio = useAudio();
+      
+      // Check that all IAudioManager properties are available
+      const properties = [
+        'isInitialized',
+        'masterVolume',
+        'sfxVolume',
+        'musicVolume',
+        'muted',
+        'isAudioReady',
+      ];
+
+      const allPropertiesPresent = properties.every(
+        prop => prop in audio && audio[prop as keyof typeof audio] !== undefined
+      );
+
+      return <div>{allPropertiesPresent ? "All Properties Present" : "Missing Properties"}</div>;
+    };
+
+    render(
+      <AudioProvider deferInitialization={true}>
+        <TestComponent />
+      </AudioProvider>
+    );
+
+    expect(screen.getByText("All Properties Present")).toBeInTheDocument();
+  });
 });
