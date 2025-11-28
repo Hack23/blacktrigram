@@ -133,4 +133,81 @@ describe("AudioProvider - Deferred Initialization", () => {
 
     consoleSpy.mockRestore();
   });
+
+  it("should provide all IAudioManager methods in context", () => {
+    const TestComponent = () => {
+      const audio = useAudio();
+      
+      // Check that all IAudioManager methods are available
+      type AudioMethod = 'initialize' | 'loadAsset' | 'playSFX' | 'playSoundEffect' | 
+        'playMusic' | 'stopMusic' | 'setVolume' | 'mute' | 'unmute' | 'fadeIn' | 'fadeOut' | 
+        'playKoreanTechniqueSound' | 'playTrigramStanceSound' | 'playVitalPointHitSound' | 
+        'playDojiangAmbience';
+      
+      const methods: AudioMethod[] = [
+        'initialize',
+        'loadAsset',
+        'playSFX',
+        'playSoundEffect',
+        'playMusic',
+        'stopMusic',
+        'setVolume',
+        'mute',
+        'unmute',
+        'fadeIn',
+        'fadeOut',
+        'playKoreanTechniqueSound',
+        'playTrigramStanceSound',
+        'playVitalPointHitSound',
+        'playDojiangAmbience',
+      ];
+
+      const allMethodsPresent = methods.every(
+        method => typeof audio[method] === 'function'
+      );
+
+      return <div>{allMethodsPresent ? "All Methods Present" : "Missing Methods"}</div>;
+    };
+
+    render(
+      <AudioProvider deferInitialization={true}>
+        <TestComponent />
+      </AudioProvider>
+    );
+
+    expect(screen.getByText("All Methods Present")).toBeInTheDocument();
+  });
+
+  it("should provide all IAudioManager properties in context", () => {
+    const TestComponent = () => {
+      const audio = useAudio();
+      
+      // Check that all IAudioManager properties are available
+      type AudioProperty = 'isInitialized' | 'masterVolume' | 'sfxVolume' | 
+        'musicVolume' | 'muted' | 'isAudioReady';
+      
+      const properties: AudioProperty[] = [
+        'isInitialized',
+        'masterVolume',
+        'sfxVolume',
+        'musicVolume',
+        'muted',
+        'isAudioReady',
+      ];
+
+      const allPropertiesPresent = properties.every(
+        prop => prop in audio && audio[prop] !== undefined
+      );
+
+      return <div>{allPropertiesPresent ? "All Properties Present" : "Missing Properties"}</div>;
+    };
+
+    render(
+      <AudioProvider deferInitialization={true}>
+        <TestComponent />
+      </AudioProvider>
+    );
+
+    expect(screen.getByText("All Properties Present")).toBeInTheDocument();
+  });
 });

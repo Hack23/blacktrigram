@@ -113,14 +113,40 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
     }
   }, [deferInitialization, initializeAudio]);
 
-  const contextValue = React.useMemo<AudioContextValue>(
-    () => ({
-      ...audioManager,
+  const contextValue = React.useMemo<AudioContextValue>(() => {
+    // Create a dynamic wrapper that accesses getter properties on-demand
+    // This ensures components always get current values
+    return {
+      // Explicitly bind all IAudioManager methods
+      initialize: audioManager.initialize.bind(audioManager),
+      loadAsset: audioManager.loadAsset.bind(audioManager),
+      playSFX: audioManager.playSFX.bind(audioManager),
+      playSoundEffect: audioManager.playSoundEffect.bind(audioManager),
+      playMusic: audioManager.playMusic.bind(audioManager),
+      stopMusic: audioManager.stopMusic.bind(audioManager),
+      setVolume: audioManager.setVolume.bind(audioManager),
+      mute: audioManager.mute.bind(audioManager),
+      unmute: audioManager.unmute.bind(audioManager),
+      fadeIn: audioManager.fadeIn.bind(audioManager),
+      fadeOut: audioManager.fadeOut.bind(audioManager),
+      playKoreanTechniqueSound: audioManager.playKoreanTechniqueSound.bind(audioManager),
+      playTrigramStanceSound: audioManager.playTrigramStanceSound.bind(audioManager),
+      playVitalPointHitSound: audioManager.playVitalPointHitSound.bind(audioManager),
+      playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
+      
+      // Getter properties - forwarding getters using ES6 getter syntax
+      // This ensures components always get current values from audioManager
+      get isInitialized() { return audioManager.isInitialized; },
+      get masterVolume() { return audioManager.masterVolume; },
+      get sfxVolume() { return audioManager.sfxVolume; },
+      get musicVolume() { return audioManager.musicVolume; },
+      get muted() { return audioManager.muted; },
+      
+      // AudioProvider-specific properties
       initializeAudio,
       isAudioReady,
-    }),
-    [audioManager, initializeAudio, isAudioReady]
-  );
+    };
+  }, [audioManager, initializeAudio, isAudioReady]);
 
   return (
     <AudioContext.Provider value={contextValue}>
