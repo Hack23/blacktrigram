@@ -113,9 +113,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
     }
   }, [deferInitialization, initializeAudio]);
 
-  const contextValue = React.useMemo<AudioContextValue>(
-    () => ({
-      // Spread all IAudioManager properties and methods
+  const contextValue = React.useMemo<AudioContextValue>(() => {
+    // Create a dynamic wrapper that accesses getter properties on-demand
+    // This ensures components always get current values
+    return {
+      // Explicitly bind all IAudioManager methods
       initialize: audioManager.initialize.bind(audioManager),
       loadAsset: audioManager.loadAsset.bind(audioManager),
       playSFX: audioManager.playSFX.bind(audioManager),
@@ -132,19 +134,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       playVitalPointHitSound: audioManager.playVitalPointHitSound.bind(audioManager),
       playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
       
-      // Getter properties that need to be accessed explicitly
-      isInitialized: audioManager.isInitialized,
-      masterVolume: audioManager.masterVolume,
-      sfxVolume: audioManager.sfxVolume,
-      musicVolume: audioManager.musicVolume,
-      muted: audioManager.muted,
+      // Getter properties - use Object.defineProperty to create forwarding getters
+      // This ensures components always get current values from audioManager
+      get isInitialized() { return audioManager.isInitialized; },
+      get masterVolume() { return audioManager.masterVolume; },
+      get sfxVolume() { return audioManager.sfxVolume; },
+      get musicVolume() { return audioManager.musicVolume; },
+      get muted() { return audioManager.muted; },
       
       // AudioProvider-specific properties
       initializeAudio,
       isAudioReady,
-    }),
-    [audioManager, initializeAudio, isAudioReady]
-  );
+    };
+  }, [audioManager, initializeAudio, isAudioReady]);
 
   return (
     <AudioContext.Provider value={contextValue}>
