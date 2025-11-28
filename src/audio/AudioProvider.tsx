@@ -115,7 +115,31 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 
   const contextValue = React.useMemo<AudioContextValue>(
     () => ({
-      ...audioManager,
+      // Spread all IAudioManager properties and methods
+      initialize: audioManager.initialize.bind(audioManager),
+      loadAsset: audioManager.loadAsset.bind(audioManager),
+      playSFX: audioManager.playSFX.bind(audioManager),
+      playSoundEffect: audioManager.playSoundEffect.bind(audioManager),
+      playMusic: audioManager.playMusic.bind(audioManager),
+      stopMusic: audioManager.stopMusic.bind(audioManager),
+      setVolume: audioManager.setVolume.bind(audioManager),
+      mute: audioManager.mute.bind(audioManager),
+      unmute: audioManager.unmute.bind(audioManager),
+      fadeIn: audioManager.fadeIn.bind(audioManager),
+      fadeOut: audioManager.fadeOut.bind(audioManager),
+      playKoreanTechniqueSound: audioManager.playKoreanTechniqueSound.bind(audioManager),
+      playTrigramStanceSound: audioManager.playTrigramStanceSound.bind(audioManager),
+      playVitalPointHitSound: audioManager.playVitalPointHitSound.bind(audioManager),
+      playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
+      
+      // Getter properties that need to be accessed explicitly
+      isInitialized: audioManager.isInitialized,
+      masterVolume: audioManager.masterVolume,
+      sfxVolume: audioManager.sfxVolume,
+      musicVolume: audioManager.musicVolume,
+      muted: audioManager.muted,
+      
+      // AudioProvider-specific properties
       initializeAudio,
       isAudioReady,
     }),

@@ -1,4 +1,4 @@
-import { lazy, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
@@ -246,14 +246,24 @@ function App() {
       switch (gameMode) {
         case GameMode.TRAINING:
           return (
-            <TrainingScreen
-              onPlayerUpdate={(updates) => {
-                console.log("Training player updated:", updates);
-              }}
-              onReturnToMenu={handleReturnToMenu}
-              width={screenSize.width}
-              height={screenSize.height}
-            />
+            <Suspense
+              fallback={
+                <LoadingState
+                  progress={undefined}
+                  message="훈련장 로딩 중... | Loading Training..."
+                  stage="assets"
+                />
+              }
+            >
+              <TrainingScreen
+                onPlayerUpdate={(updates) => {
+                  console.log("Training player updated:", updates);
+                }}
+                onReturnToMenu={handleReturnToMenu}
+                width={screenSize.width}
+                height={screenSize.height}
+              />
+            </Suspense>
           );
         case GameMode.VERSUS:
         case GameMode.PRACTICE:
