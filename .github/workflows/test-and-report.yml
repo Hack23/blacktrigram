@@ -27,11 +27,42 @@ jobs:
           node-version: "24"
           cache: "npm"
 
-      - name: Setup display and dependencies
+      - name: Setup Three.js Test Environment
         run: |
-          sudo apt-get update && sudo apt-get install -y graphviz libgtk2.0-0 libgtk-3-0 ffmpeg libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb dbus dbus-x11 fonts-noto fonts-noto-cjk fonts-noto-cjk-extra && sudo apt-get update && sudo apt-get install -y ca-certificates fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libxrender1 libxshmfence1 xdg-utils wget && wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && echo \"deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/google-chrome.list && sudo apt-get update && sudo apt-get install -y google-chrome-stable 
+          echo "🔧 Setting up Three.js test environment with optimized Chrome flags..."
+
+          # Install all required dependencies in single layer
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            xvfb dbus-x11 graphviz \
+            libgtk2.0-0 libgtk-3-0 libgbm-dev \
+            ffmpeg libnotify-dev libnss3 libxss1 \
+            libasound2 libxtst6 xauth \
+            fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
+            ca-certificates fonts-liberation \
+            libatk-bridge2.0-0 libatk1.0-0 \
+            libcups2 libdbus-1-3 libdrm2 libgbm1 \
+            libnspr4 libx11-xcb1 libxcomposite1 \
+            libxdamage1 libxfixes3 libxrandr2 \
+            libxrender1 libxshmfence1 xdg-utils wget
+
+          # Install Chrome for Three.js WebGL support
+          wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+          # Setup D-Bus
           sudo mkdir -p /var/run/dbus
           sudo dbus-daemon --system --fork
+
+          # Start Xvfb with GLX extension for WebGL
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render &
+          sleep 3
+
+          echo "✅ Three.js test environment ready"
+          google-chrome --version
 
       - name: Install dependencies
         run: npm install
@@ -118,7 +149,6 @@ jobs:
           JEST_JUNIT_OUTPUT_DIR: "build/coverage"
           JEST_JUNIT_OUTPUT_NAME: "junit.xml"
 
-
   e2e-tests:
     needs: [prepare, build-validation]
     runs-on: ubuntu-latest
@@ -151,11 +181,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Start app and run Cypress tests
+      - name: Start app and run Cypress tests with Three.js optimization
         run: |
-          echo "🚀 Starting E2E test execution at $(date +%T)"
+          echo "🚀 Starting Three.js E2E test execution at $(date +%T)"
+          echo "📊 Configuration:"
+          echo "  - Chrome: $(google-chrome --version)"
+          echo "  - Node memory: 4GB heap"
+          echo "  - Display: $DISPLAY"
+          echo "  - Target: 10-12 minute execution"
+          echo ""
           START_TIME=$(date +%s) || START_TIME=0
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
+          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render" npm run test:e2e
           END_TIME=$(date +%s) || END_TIME=$START_TIME
           if [ "$START_TIME" -ne 0 ]; then
             DURATION=$((END_TIME - START_TIME))
@@ -250,7 +286,7 @@ jobs:
             mkdir -p build/cypress/mochawesome
             find artifacts/cypress-results -name "*.json" -exec cp {} build/cypress/mochawesome/ \;
           fi
-          
+
           # Generate reliability report
           npm run test:reliability || echo "No test results to analyze"
 
