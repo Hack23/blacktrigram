@@ -1,9 +1,15 @@
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
-import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useAudio } from "../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { COMBAT_CONTROLS } from "../../systems";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
@@ -64,7 +70,12 @@ const BackgroundScene: React.FC = () => {
       {/* Cyberpunk grid plane */}
       <gridHelper
         ref={gridRef}
-        args={[100, 50, KOREAN_COLORS.PRIMARY_CYAN, KOREAN_COLORS.UI_BACKGROUND_MEDIUM]}
+        args={[
+          100,
+          50,
+          KOREAN_COLORS.PRIMARY_CYAN,
+          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        ]}
         position={[0, -5, 0]}
         rotation={[0, 0, 0]}
       />
@@ -86,10 +97,10 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
-      console.warn('⚠️ WebGL context lost in ControlsScreen');
+      console.warn("⚠️ WebGL context lost in ControlsScreen");
     },
     onContextRestored: () => {
-      console.log('✅ WebGL context restored in ControlsScreen');
+      console.log("✅ WebGL context restored in ControlsScreen");
     },
     autoRestore: true,
   });
@@ -125,10 +136,19 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
       borderGold: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6),
       borderCyan: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5),
       borderRed: hexToRgbaString(KOREAN_COLORS.KOREAN_RED, 0.8),
-      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
-      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
+        6,
+        "0"
+      )}`,
+      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
+        6,
+        "0"
+      )}`,
       accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
+        6,
+        "0"
+      )}`,
     }),
     []
   );
@@ -179,6 +199,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
       }}
       data-testid="controls-screen"
     >
+      {/* Volume Control - outside Canvas to maintain AudioProvider context */}
+      <VolumeControl position="top-right" compact={isMobile} />
+
       {/* Three.js Canvas for 3D background */}
       <Canvas
         style={{
@@ -204,9 +227,6 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
-          {/* Volume Control */}
-          <VolumeControl position="top-right" compact={isMobile} />
-          
           <div
             style={{
               width: "100%",
@@ -238,7 +258,10 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                   fontWeight: "bold",
                   color: colors.accentGold,
                   margin: 0,
-                  textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)}`,
+                  textShadow: `0 0 10px ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.5
+                  )}`,
                 }}
               >
                 조작법 안내 - Controls Guide
@@ -251,7 +274,8 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                   fontStyle: "italic",
                 }}
               >
-                ☯ 팔괘 철학과 급소술의 융합 | Eight Trigrams Philosophy & Vital Point Arts ☯
+                ☯ 팔괘 철학과 급소술의 융합 | Eight Trigrams Philosophy & Vital
+                Point Arts ☯
               </p>
             </div>
 
@@ -296,7 +320,8 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                     margin: "0 0 20px 0",
                   }}
                 >
-                  🗡️ 전통 한국 무예의 8가지 핵심 자세 | 8 Core Stances of Traditional Korean Martial Arts 🗡️
+                  🗡️ 전통 한국 무예의 8가지 핵심 자세 | 8 Core Stances of
+                  Traditional Korean Martial Arts 🗡️
                 </p>
 
                 {/* Stance Controls Grid */}
@@ -312,7 +337,13 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                     <div
                       key={key}
                       style={{
-                        background: `linear-gradient(135deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9)}, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.9)})`,
+                        background: `linear-gradient(135deg, ${hexToRgbaString(
+                          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                          0.9
+                        )}, ${hexToRgbaString(
+                          KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                          0.9
+                        )})`,
                         borderRadius: "10px",
                         border: `2px solid ${colors.borderGold}`,
                         padding: "12px",
@@ -406,7 +437,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                           style={{
                             fontSize: isMobile ? "8px" : "9px",
                             fontWeight: "bold",
-                            color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                            color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                              16
+                            ).padStart(6, "0")}`,
                           }}
                         >
                           ⚔️ {value.combatFocus.korean}
@@ -414,7 +447,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                         <div
                           style={{
                             fontSize: isMobile ? "7px" : "8px",
-                            color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                            color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                              16
+                            ).padStart(6, "0")}`,
                             fontStyle: "italic",
                           }}
                         >
@@ -428,7 +463,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                           marginTop: "6px",
                           fontSize: isMobile ? "7px" : "8px",
                           fontWeight: "bold",
-                          color: `#${KOREAN_COLORS.NEGATIVE_RED.toString(16).padStart(6, "0")}`,
+                          color: `#${KOREAN_COLORS.NEGATIVE_RED.toString(
+                            16
+                          ).padStart(6, "0")}`,
                         }}
                       >
                         💥 {value.combatEffects.korean}
@@ -442,7 +479,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                           right: "8px",
                           fontSize: isMobile ? "7px" : "8px",
                           fontWeight: "bold",
-                          color: `#${KOREAN_COLORS.KOREAN_RED.toString(16).padStart(6, "0")}`,
+                          color: `#${KOREAN_COLORS.KOREAN_RED.toString(
+                            16
+                          ).padStart(6, "0")}`,
                         }}
                       >
                         급소술
@@ -487,7 +526,13 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                     <div
                       key={key}
                       style={{
-                        background: `linear-gradient(90deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.9)}, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9)})`,
+                        background: `linear-gradient(90deg, ${hexToRgbaString(
+                          KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                          0.9
+                        )}, ${hexToRgbaString(
+                          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                          0.9
+                        )})`,
                         borderRadius: "8px",
                         border: `1px solid ${colors.borderCyan}`,
                         padding: "12px",
@@ -500,7 +545,10 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                       {/* Key Badge */}
                       <div
                         style={{
-                          background: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.3),
+                          background: hexToRgbaString(
+                            KOREAN_COLORS.ACCENT_CYAN,
+                            0.3
+                          ),
                           borderRadius: "6px",
                           padding: "4px 12px",
                           fontSize: isMobile ? "14px" : "16px",
@@ -568,7 +616,10 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
               <button
                 onClick={handleBackClick}
                 style={{
-                  background: `linear-gradient(135deg, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)})`,
+                  background: `linear-gradient(135deg, ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.8
+                  )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)})`,
                   border: `2px solid ${colors.borderGold}`,
                   borderRadius: "8px",
                   padding: "10px 20px",
@@ -580,7 +631,10 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "scale(1.05)";
-                  e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`;
+                  e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.6
+                  )}`;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "scale(1)";
@@ -594,12 +648,17 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
               {/* Keyboard Hint */}
               <div
                 style={{
-                  background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9),
+                  background: hexToRgbaString(
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                    0.9
+                  ),
                   borderRadius: "6px",
                   padding: "8px 12px",
                   fontSize: isMobile ? "11px" : "12px",
                   fontWeight: "bold",
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                    16
+                  ).padStart(6, "0")}`,
                   border: `1px solid ${colors.borderGold}`,
                 }}
                 data-testid="keyboard-shortcuts"
@@ -616,7 +675,10 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                 fontSize: isMobile ? "10px" : "12px",
                 color: colors.textSecondary,
                 fontStyle: "italic",
-                background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7),
+                background: hexToRgbaString(
+                  KOREAN_COLORS.UI_BACKGROUND_DARK,
+                  0.7
+                ),
               }}
             >
               ESC 또는 M 키로 메뉴로 돌아가기 - Press ESC or M to return to menu

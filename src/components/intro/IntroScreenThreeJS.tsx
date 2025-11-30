@@ -12,7 +12,11 @@ import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
-import { ARCHETYPE_BACKGROUNDS, FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import {
+  ARCHETYPE_BACKGROUNDS,
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { getArchetypeAssets } from "../../utils/playerUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
@@ -111,7 +115,12 @@ const BackgroundScene: React.FC = () => {
       {/* Cyberpunk grid plane */}
       <gridHelper
         ref={gridRef}
-        args={[100, 50, KOREAN_COLORS.PRIMARY_CYAN, KOREAN_COLORS.UI_BACKGROUND_MEDIUM]}
+        args={[
+          100,
+          50,
+          KOREAN_COLORS.PRIMARY_CYAN,
+          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        ]}
         position={[0, -5, 0]}
         rotation={[0, 0, 0]}
       />
@@ -139,10 +148,10 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
-      console.warn('⚠️ WebGL context lost in IntroScreen');
+      console.warn("⚠️ WebGL context lost in IntroScreen");
     },
     onContextRestored: () => {
-      console.log('✅ WebGL context restored in IntroScreen');
+      console.log("✅ WebGL context restored in IntroScreen");
     },
     autoRestore: true,
   });
@@ -161,11 +170,17 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const screenHeight = propHeight ?? height;
 
   // Memoize colors for performance
-  const colors = useMemo(() => ({
-    trigramTextShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
-    footerBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
-    footerBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
-  }), []);
+  const colors = useMemo(
+    () => ({
+      trigramTextShadow: `0 0 10px ${hexToRgbaString(
+        KOREAN_COLORS.PRIMARY_CYAN,
+        0.8
+      )}`,
+      footerBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
+      footerBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
+    }),
+    []
+  );
 
   // Create archetype data with texture keys from PLAYER_ARCHETYPES_DATA
   const archetypeData = useMemo(() => {
@@ -205,11 +220,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       setSelectedArchetypeIndex(index);
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
-      
+
       // Check if audio system is ready, not individual methods
       if (audio.isAudioReady) {
         audio.playSFX("menu_hover");
-        
+
         // Play archetype theme music preview when archetype changes
         // Use getArchetypeAssets utility for proper error handling and fallback
         const archetypeAssets = getArchetypeAssets(newArchetype);
@@ -233,7 +248,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     window.addEventListener("keydown", startMusic, { once: true });
     window.addEventListener("mousedown", startMusic, { once: true });
     window.addEventListener("touchstart", startMusic, { once: true });
-    
+
     return () => {
       // Safe cleanup - check if audio is initialized before stopping music
       if (audio.isInitialized) {
@@ -276,17 +291,28 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [audio, archetypeData.length, selectedArchetypeIndex, handleArchetypeIndexChange, handleMenuItemSelect]);
+  }, [
+    audio,
+    archetypeData.length,
+    selectedArchetypeIndex,
+    handleArchetypeIndexChange,
+    handleMenuItemSelect,
+  ]);
 
   // Responsive layout calculations
   const isMobile = screenWidth < 768;
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
 
+  // Optimized logo sizing - smaller to fit everything on screen
   const logoSize = isMobile
-    ? Math.min(screenWidth, screenHeight) * 0.3
+    ? Math.min(screenWidth, screenHeight) * 0.22 // Reduced from 0.3
     : isTablet
-    ? Math.min(screenWidth, screenHeight) * 0.24
-    : Math.min(screenWidth, screenHeight) * 0.2;
+    ? Math.min(screenWidth, screenHeight) * 0.18 // Reduced from 0.24
+    : Math.min(screenWidth, screenHeight) * 0.15; // Reduced from 0.2
+
+  // Optimized component heights
+  const menuHeight = isMobile ? 280 : isTablet ? 320 : 340; // Slightly reduced
+  const archetypeHeight = isMobile ? 260 : isTablet ? 300 : 320; // Slightly reduced
 
   return (
     <div
@@ -316,7 +342,10 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         }}
         data-testid="archetype-background"
       />
-      
+
+      {/* Volume Control - outside Canvas to maintain AudioProvider context */}
+      <VolumeControl position="top-right" compact={isMobile} />
+
       {/* Three.js Canvas for 3D background */}
       <Canvas
         style={{
@@ -343,9 +372,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
-          {/* Volume Control - placed first since it uses absolute positioning */}
-          <VolumeControl position="top-right" compact={isMobile} />
-          
           <div
             style={{
               width: "100vw",
@@ -362,7 +388,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
             {/* Main Title */}
             <div
               style={{
-                marginTop: isMobile ? "20px" : "40px",
+                marginTop: isMobile ? "15px" : "30px", // Reduced from 20px/40px
                 pointerEvents: "none",
               }}
               data-testid="main-title-container"
@@ -382,12 +408,13 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
             {/* Logo Section */}
             <div
               style={{
-                flex: 1,
+                flex: 0, // Changed from flex: 1 to not take up extra space
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                marginTop: isMobile ? "10px" : "20px",
+                marginTop: isMobile ? "5px" : "10px", // Reduced from 10px/20px
+                marginBottom: isMobile ? "5px" : "10px", // Added bottom margin
                 pointerEvents: "none",
               }}
               data-testid="logo-section"
@@ -411,11 +438,14 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Trigram Symbols */}
               <div
                 style={{
-                  fontSize: isMobile ? "20px" : "28px",
-                  color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
-                  letterSpacing: isMobile ? "8px" : "12px",
+                  fontSize: isMobile ? "18px" : "24px", // Reduced from 20px/28px
+                  color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
+                    6,
+                    "0"
+                  )}`,
+                  letterSpacing: isMobile ? "6px" : "10px", // Reduced from 8px/12px
                   textAlign: "center",
-                  marginTop: "20px",
+                  marginTop: isMobile ? "10px" : "15px", // Reduced from 20px
                   textShadow: colors.trigramTextShadow,
                 }}
                 data-testid="trigram-symbols"
@@ -432,10 +462,10 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                gap: isMobile ? "12px" : "20px",
-                paddingLeft: isMobile ? "20px" : "40px",
-                paddingRight: isMobile ? "20px" : "40px",
-                paddingBottom: "10px",
+                gap: isMobile ? "10px" : "16px", // Reduced from 12px/20px
+                paddingLeft: isMobile ? "15px" : "30px", // Reduced from 20px/40px
+                paddingRight: isMobile ? "15px" : "30px", // Reduced from 20px/40px
+                paddingBottom: "8px", // Reduced from 10px
                 pointerEvents: "auto",
               }}
               data-testid="main-content"
@@ -443,8 +473,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Menu Section */}
               <div
                 style={{
-                  width: isMobile ? "100%" : "70%",
-                  maxWidth: "800px",
+                  width: isMobile ? "100%" : "75%", // Increased from 70%
+                  maxWidth: "900px", // Increased from 800px
                 }}
                 data-testid="menu-section-container"
               >
@@ -457,17 +487,17 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   width={
                     isMobile
                       ? screenWidth * 0.9
-                      : Math.min(800, screenWidth * 0.7)
+                      : Math.min(900, screenWidth * 0.75)
                   }
-                  height={isMobile ? 300 : 350}
+                  height={menuHeight} // Use optimized height
                 />
               </div>
 
               {/* Archetype Selection */}
               <div
                 style={{
-                  width: isMobile ? "100%" : "70%",
-                  maxWidth: "800px",
+                  width: isMobile ? "100%" : "75%", // Increased from 70%
+                  maxWidth: "900px", // Increased from 800px
                 }}
                 data-testid="archetype-section-container"
               >
@@ -479,9 +509,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   width={
                     isMobile
                       ? screenWidth * 0.9
-                      : Math.min(800, screenWidth * 0.7)
+                      : Math.min(900, screenWidth * 0.75)
                   }
-                  height={isMobile ? 300 : 350}
+                  height={archetypeHeight} // Use optimized height
                   isMobile={isMobile}
                 />
               </div>
@@ -507,7 +537,10 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               <div
                 style={{
                   fontSize: isMobile ? "11px" : "14px",
-                  color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(6, "0")}`,
+                  color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
+                    6,
+                    "0"
+                  )}`,
                   fontFamily: FONT_FAMILY.KOREAN,
                   fontStyle: "italic",
                   fontWeight: "bold",
@@ -522,13 +555,18 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               <div
                 style={{
                   fontSize: isMobile ? "9px" : "12px",
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                    16
+                  ).padStart(6, "0")}`,
                   fontWeight: "bold",
                   textAlign: "center",
                   cursor: "pointer",
                 }}
                 onClick={() =>
-                  window.open("https://github.com/Hack23/blacktrigram", "_blank")
+                  window.open(
+                    "https://github.com/Hack23/blacktrigram",
+                    "_blank"
+                  )
                 }
                 data-testid="footer-link"
               >
@@ -539,7 +577,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               <div
                 style={{
                   fontSize: isMobile ? "9px" : "12px",
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                    16
+                  ).padStart(6, "0")}`,
                   fontWeight: "bold",
                   textAlign: "center",
                   cursor: "pointer",
