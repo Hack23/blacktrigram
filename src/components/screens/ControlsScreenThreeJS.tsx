@@ -112,19 +112,20 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   const screenWidth = propWidth ?? width;
   const screenHeight = propHeight ?? height;
 
-  // Responsive layout calculations
+  // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
+  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
   const layoutConstants = useMemo(
     () => ({
-      padding: isMobile ? 20 : 30,
-      headerHeight: isMobile ? 100 : 120,
-      footerHeight: isMobile ? 80 : 90,
-      sectionSpacing: isMobile ? 15 : 20,
-      buttonArea: isMobile ? 80 : 90,
+      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 18 : 25,
+      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
+      footerHeight: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 65 : 85,
+      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 12 : 18,
+      buttonArea: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 65 : 85,
     }),
-    [isMobile]
+    [isMobile, isTablet, isLargeDesktop]
   );
 
   // Memoize colors for performance

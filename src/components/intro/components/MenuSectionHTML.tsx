@@ -34,26 +34,35 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
   const [focused, setFocused] = useState<boolean>(false);
 
   // Memoize RGBA color calculations to avoid repeated bit-shift operations
-  const colors = useMemo(() => ({
-    background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.96),
-    border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8),
-    shadow: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.8),
-    titleColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-    // Button state colors
-    buttonSelectedBg: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.98),
-    buttonHoveredBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.92),
-    buttonDefaultBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.92),
-    buttonSelectedBorder: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1.0),
-    buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
-    buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
-    buttonTextShadow: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7),
-  }), []);
+  const colors = useMemo(
+    () => ({
+      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.96),
+      border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8),
+      shadow: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.8),
+      titleColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+      // Button state colors
+      buttonSelectedBg: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.98),
+      buttonHoveredBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.92),
+      buttonDefaultBg: hexToRgbaString(
+        KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        0.92
+      ),
+      buttonSelectedBorder: hexToRgbaString(
+        KOREAN_COLORS.UI_BACKGROUND_DARK,
+        1.0
+      ),
+      buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
+      buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
+      buttonTextShadow: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7),
+    }),
+    []
+  );
 
   // Keyboard navigation - stops propagation to prevent conflicts with parent
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!onSelectedIndexChange) return;
-      
+
       if (event.key === "ArrowUp") {
         event.preventDefault();
         event.stopPropagation();
@@ -107,8 +116,14 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
   }, []);
 
   const isMobile = width < 480;
-  const buttonHeight = isMobile ? 45 : 55;
-  const buttonFontSize = isMobile ? 14 : 16;
+  const isLargeDesktop = width >= 1100; // Scale down for large containers
+
+  const buttonHeight = isMobile ? 45 : isLargeDesktop ? 38 : 55;
+  const buttonFontSize = isMobile ? 14 : isLargeDesktop ? 12 : 16;
+  const containerPadding = isMobile ? 20 : isLargeDesktop ? 12 : 32;
+  const titleFontSize = isMobile ? 20 : isLargeDesktop ? 18 : 28;
+  const buttonGap = isMobile ? 8 : isLargeDesktop ? 4 : 12;
+  const sectionGap = isMobile ? 12 : isLargeDesktop ? 8 : 20;
 
   const handleButtonClick = useCallback(
     (mode: GameMode) => {
@@ -137,20 +152,21 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: isMobile ? "12px" : "20px",
-        padding: isMobile ? "20px" : "32px",
+        gap: `${sectionGap}px`,
+        padding: `${containerPadding}px`,
         background: colors.background,
         borderRadius: isMobile ? "6px" : "8px",
         border: `3px solid ${colors.border}`,
         boxShadow: focused ? `0 0 20px ${colors.shadow}` : "none",
         position: "relative",
+        overflow: "hidden",
       }}
       data-testid="main-menu-section"
     >
       {/* Menu Title */}
       <div
         style={{
-          fontSize: isMobile ? "20px" : "28px",
+          fontSize: `${titleFontSize}px`,
           color: colors.titleColor,
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
@@ -167,7 +183,7 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: isMobile ? "8px" : "12px",
+          gap: `${buttonGap}px`,
           width: "100%",
         }}
         data-testid="main-menu-buttons"
@@ -194,10 +210,19 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
                 fontWeight: isSelected ? "bold" : "normal",
                 letterSpacing: "1.2px",
                 color: isSelected
-                  ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`
+                  ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
+                      6,
+                      "0"
+                    )}`
                   : isHovered
-                  ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`
-                  : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+                  ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+                      6,
+                      "0"
+                    )}`
+                  : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
+                      6,
+                      "0"
+                    )}`,
                 background: isSelected
                   ? colors.buttonSelectedBg
                   : isHovered
@@ -219,7 +244,10 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
             >
               {/* Add test ID aliases for backward compatibility */}
               {item.mode === GameMode.TRAINING && (
-                <span data-testid="training-button" style={{ display: "none" }} />
+                <span
+                  data-testid="training-button"
+                  style={{ display: "none" }}
+                />
               )}
               {item.mode === GameMode.VERSUS && (
                 <span data-testid="combat-button" style={{ display: "none" }} />
@@ -238,7 +266,10 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
           gap: isMobile ? "4px" : "6px",
           textAlign: "center",
           fontSize: isMobile ? "10px" : "12px",
-          color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+          color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
+            6,
+            "0"
+          )}`,
           fontFamily: FONT_FAMILY.KOREAN,
           marginTop: "auto",
         }}
@@ -251,7 +282,8 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
           style={{ fontSize: isMobile ? "9px" : "10px" }}
           data-testid="menu-navigation-hint-english"
         >
-          Arrow keys/mouse to navigate • Enter/click to select • Number keys for shortcuts
+          Arrow keys/mouse to navigate • Enter/click to select • Number keys for
+          shortcuts
         </div>
       </div>
     </div>

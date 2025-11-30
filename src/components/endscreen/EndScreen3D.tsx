@@ -198,24 +198,33 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   const winnerId = winner.id;
   const isVictory = winnerId === "player-0" || winnerId.endsWith("-0");
 
-  // Responsive layout
+  // Responsive layout with large desktop support
   const isMobile = useMemo(() => width < 768, [width]);
   const isTablet = useMemo(() => width >= 768 && width < 1024, [width]);
+  const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
 
   const layoutConstants = useMemo(
     () => ({
-      titleFontSize: isMobile ? 36 : isTablet ? 48 : 64,
-      subtitleFontSize: isMobile ? 18 : isTablet ? 24 : 32,
-      buttonFontSize: isMobile ? 14 : isTablet ? 16 : 18,
-      padding: isMobile ? 15 : isTablet ? 20 : 30,
+      titleFontSize: isMobile ? 36 : isTablet ? 44 : isLargeDesktop ? 44 : 54,
+      subtitleFontSize: isMobile
+        ? 18
+        : isTablet
+        ? 22
+        : isLargeDesktop
+        ? 22
+        : 28,
+      buttonFontSize: isMobile ? 14 : isTablet ? 15 : isLargeDesktop ? 14 : 16,
+      padding: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 15 : 20,
       buttonPadding: isMobile
         ? "10px 20px"
         : isTablet
-        ? "12px 24px"
-        : "15px 30px",
-      spacing: isMobile ? 15 : isTablet ? 20 : 30,
+        ? "11px 22px"
+        : isLargeDesktop
+        ? "10px 20px"
+        : "12px 25px",
+      spacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 15 : 20,
     }),
-    [isMobile, isTablet]
+    [isMobile, isTablet, isLargeDesktop]
   );
 
   // Play victory/defeat audio on mount

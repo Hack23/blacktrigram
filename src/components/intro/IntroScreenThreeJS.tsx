@@ -299,21 +299,35 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     handleMenuItemSelect,
   ]);
 
-  // Responsive layout calculations
+  // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
+  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
-  // Optimized logo sizing - smaller to fit everything on screen
+  // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
   const logoSize = isMobile
-    ? Math.min(screenWidth, screenHeight) * 0.22 // Reduced from 0.3
+    ? Math.min(screenWidth, screenHeight) * 0.22 // Compact for mobile
     : isTablet
-    ? Math.min(screenWidth, screenHeight) * 0.18 // Reduced from 0.24
-    : Math.min(screenWidth, screenHeight) * 0.15; // Reduced from 0.2
+    ? Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet
+    : isLargeDesktop
+    ? Math.min(screenWidth, screenHeight) * 0.12 // Larger for 4K/2K (was 0.09)
+    : Math.min(screenWidth, screenHeight) * 0.14; // Standard desktop
 
-  // Optimized component heights
-  const menuHeight = isMobile ? 280 : isTablet ? 320 : 340; // Slightly reduced
-  const archetypeHeight = isMobile ? 260 : isTablet ? 300 : 320; // Slightly reduced
-
+  // Optimized component heights - scale for large displays
+  const menuHeight = isMobile
+    ? 280
+    : isTablet
+    ? 320
+    : isLargeDesktop
+    ? 220
+    : 320;
+  const archetypeHeight = isMobile
+    ? 260
+    : isTablet
+    ? 300
+    : isLargeDesktop
+    ? 220
+    : 300;
   return (
     <div
       style={{
@@ -324,7 +338,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
       }}
       data-testid="intro-screen"
     >
-      {/* Archetype background image (subtle, behind 3D scene) */}
+      {/* Archetype background image (very subtle, behind 3D scene) */}
       <div
         style={{
           position: "absolute",
@@ -336,8 +350,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          opacity: 0.15,
-          filter: "blur(2px)",
+          opacity: 0.08,
+          filter: "blur(4px)",
           zIndex: 0,
         }}
         data-testid="archetype-background"
@@ -388,7 +402,13 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
             {/* Main Title */}
             <div
               style={{
-                marginTop: isMobile ? "15px" : "30px", // Reduced from 20px/40px
+                marginTop: isMobile
+                  ? "15px"
+                  : isTablet
+                  ? "20px"
+                  : isLargeDesktop
+                  ? "8px"
+                  : "25px",
                 pointerEvents: "none",
               }}
               data-testid="main-title-container"
@@ -399,7 +419,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   korean: "한국 무술 시뮬레이터",
                   english: "Korean Martial Arts Simulator",
                 }}
-                size="large"
+                size={isLargeDesktop ? "medium" : "large"}
                 alignment="center"
                 animated={true}
               />
@@ -408,13 +428,25 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
             {/* Logo Section */}
             <div
               style={{
-                flex: 0, // Changed from flex: 1 to not take up extra space
+                flex: 0,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                marginTop: isMobile ? "5px" : "10px", // Reduced from 10px/20px
-                marginBottom: isMobile ? "5px" : "10px", // Added bottom margin
+                marginTop: isMobile
+                  ? "5px"
+                  : isTablet
+                  ? "6px"
+                  : isLargeDesktop
+                  ? "3px"
+                  : "8px",
+                marginBottom: isMobile
+                  ? "5px"
+                  : isTablet
+                  ? "6px"
+                  : isLargeDesktop
+                  ? "3px"
+                  : "8px",
                 pointerEvents: "none",
               }}
               data-testid="logo-section"
@@ -438,14 +470,32 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Trigram Symbols */}
               <div
                 style={{
-                  fontSize: isMobile ? "18px" : "24px", // Reduced from 20px/28px
+                  fontSize: isMobile
+                    ? "18px"
+                    : isTablet
+                    ? "20px"
+                    : isLargeDesktop
+                    ? "16px"
+                    : "22px",
                   color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
                     6,
                     "0"
                   )}`,
-                  letterSpacing: isMobile ? "6px" : "10px", // Reduced from 8px/12px
+                  letterSpacing: isMobile
+                    ? "6px"
+                    : isTablet
+                    ? "8px"
+                    : isLargeDesktop
+                    ? "5px"
+                    : "10px",
                   textAlign: "center",
-                  marginTop: isMobile ? "10px" : "15px", // Reduced from 20px
+                  marginTop: isMobile
+                    ? "10px"
+                    : isTablet
+                    ? "10px"
+                    : isLargeDesktop
+                    ? "5px"
+                    : "12px",
                   textShadow: colors.trigramTextShadow,
                 }}
                 data-testid="trigram-symbols"
@@ -462,10 +512,32 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                gap: isMobile ? "10px" : "16px", // Reduced from 12px/20px
-                paddingLeft: isMobile ? "15px" : "30px", // Reduced from 20px/40px
-                paddingRight: isMobile ? "15px" : "30px", // Reduced from 20px/40px
-                paddingBottom: "8px", // Reduced from 10px
+                gap: isMobile
+                  ? "10px"
+                  : isTablet
+                  ? "12px"
+                  : isLargeDesktop
+                  ? "6px"
+                  : "14px",
+                paddingLeft: isMobile
+                  ? "15px"
+                  : isTablet
+                  ? "25px"
+                  : isLargeDesktop
+                  ? "20px"
+                  : "30px",
+                paddingRight: isMobile
+                  ? "15px"
+                  : isTablet
+                  ? "25px"
+                  : isLargeDesktop
+                  ? "20px"
+                  : "30px",
+                paddingBottom: isMobile
+                  ? "8px"
+                  : isLargeDesktop
+                  ? "4px"
+                  : "10px",
                 pointerEvents: "auto",
               }}
               data-testid="main-content"
@@ -473,8 +545,20 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Menu Section */}
               <div
                 style={{
-                  width: isMobile ? "100%" : "75%", // Increased from 70%
-                  maxWidth: "900px", // Increased from 800px
+                  width: isMobile
+                    ? "100%"
+                    : isTablet
+                    ? "80%"
+                    : isLargeDesktop
+                    ? "55%"
+                    : "70%",
+                  maxWidth: isMobile
+                    ? "100%"
+                    : isTablet
+                    ? "850px"
+                    : isLargeDesktop
+                    ? "1100px"
+                    : "900px",
                 }}
                 data-testid="menu-section-container"
               >
@@ -487,17 +571,33 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   width={
                     isMobile
                       ? screenWidth * 0.9
-                      : Math.min(900, screenWidth * 0.75)
+                      : isTablet
+                      ? Math.min(850, screenWidth * 0.8)
+                      : isLargeDesktop
+                      ? Math.min(1100, screenWidth * 0.55)
+                      : Math.min(900, screenWidth * 0.7)
                   }
-                  height={menuHeight} // Use optimized height
+                  height={menuHeight}
                 />
               </div>
 
               {/* Archetype Selection */}
               <div
                 style={{
-                  width: isMobile ? "100%" : "75%", // Increased from 70%
-                  maxWidth: "900px", // Increased from 800px
+                  width: isMobile
+                    ? "100%"
+                    : isTablet
+                    ? "80%"
+                    : isLargeDesktop
+                    ? "55%"
+                    : "70%",
+                  maxWidth: isMobile
+                    ? "100%"
+                    : isTablet
+                    ? "850px"
+                    : isLargeDesktop
+                    ? "1100px"
+                    : "900px",
                 }}
                 data-testid="archetype-section-container"
               >
@@ -509,9 +609,13 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   width={
                     isMobile
                       ? screenWidth * 0.9
-                      : Math.min(900, screenWidth * 0.75)
+                      : isTablet
+                      ? Math.min(850, screenWidth * 0.8)
+                      : isLargeDesktop
+                      ? Math.min(1100, screenWidth * 0.55)
+                      : Math.min(900, screenWidth * 0.7)
                   }
-                  height={archetypeHeight} // Use optimized height
+                  height={archetypeHeight}
                   isMobile={isMobile}
                 />
               </div>

@@ -1,6 +1,6 @@
 /**
  * useCombatLayout Hook - Optimized Layout Calculations
- * 
+ *
  * Custom hook for managing responsive combat screen layout calculations.
  * Optimizes layout recalculations by minimizing dependencies and memoizing
  * complex calculations.
@@ -12,9 +12,9 @@
  *
  * @param width - Screen width
  * @param height - Screen height
- * 
+ *
  * @returns Layout constants and arena bounds
- * 
+ *
  * @example
  * ```typescript
  * const { layoutConstants, arenaBounds, isMobile } = useCombatLayout(1200, 800);
@@ -49,34 +49,38 @@ export interface CombatLayout {
  * Optimized to reduce recalculations and improve 60fps performance
  */
 export function useCombatLayout(width: number, height: number): CombatLayout {
-  // Performance: Only recalculate when crossing mobile breakpoint (768px)
+  // Performance: Only recalculate when crossing breakpoints
   // This prevents recalculation on every pixel change during resize
   const isMobile = useMemo(() => width < 768, [width]);
+  const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
 
   // Centralized layout constants for easier tweaking
-  // Optimized: Only depends on isMobile boolean, not exact width
-  const layoutConstants = useMemo<LayoutConstants>(() => ({
-    padding: 10,
-    hudHeight: isMobile ? 100 : 140,
-    controlsHeight: isMobile ? 140 : 180,
-    footerHeight: isMobile ? 25 : 30,
-    healthBarHeight: isMobile ? 50 : 60,
-  }), [isMobile]);
+  // Optimized: Depends on breakpoint booleans, not exact width
+  const layoutConstants = useMemo<LayoutConstants>(
+    () => ({
+      padding: 10,
+      hudHeight: isMobile ? 95 : isLargeDesktop ? 90 : 120,
+      controlsHeight: isMobile ? 130 : isLargeDesktop ? 120 : 160,
+      footerHeight: isMobile ? 22 : isLargeDesktop ? 20 : 28,
+      healthBarHeight: isMobile ? 48 : isLargeDesktop ? 45 : 55,
+    }),
+    [isMobile, isLargeDesktop]
+  );
 
   // Fixed player positions for 2-player combat with proper bounds
   // Arena bounds should account for HUD at top and controls at bottom
   // Optimized: Separate calculation dependencies to reduce recalculation frequency
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
-    
+
     // Break down complex calculation for clarity and maintainability
-    const totalReservedHeight = 
-      layoutConstants.hudHeight + 
-      layoutConstants.controlsHeight + 
+    const totalReservedHeight =
+      layoutConstants.hudHeight +
+      layoutConstants.controlsHeight +
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
     const arenaHeight = height - totalReservedHeight - totalPadding;
-    
+
     return {
       x: width * 0.1,
       y: arenaY,
