@@ -21,12 +21,17 @@ interface GitHubAPIConfig {
   prNumber: number;
 }
 
+interface GitHubConfigExtended extends GitHubAPIConfig {
+  branch: string;
+}
+
 /**
  * Get GitHub API configuration from environment
  */
-function getGitHubConfig(): GitHubAPIConfig {
+function getGitHubConfig(): GitHubConfigExtended {
   const token = process.env.GITHUB_TOKEN;
   const prNumber = process.env.PR_NUMBER || process.env.GITHUB_PR_NUMBER;
+  const branch = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || 'main';
   
   if (!token) {
     throw new Error('GITHUB_TOKEN environment variable is required');
@@ -45,46 +50,19 @@ function getGitHubConfig(): GitHubAPIConfig {
     owner: owner || 'Hack23',
     repo: repo || 'blacktrigram',
     prNumber: parseInt(prNumber, 10),
+    branch,
   };
-}
-
-/**
- * Upload screenshot to GitHub as a PR comment attachment
- */
-async function uploadScreenshot(
-  config: GitHubAPIConfig,
-  screenshotPath: string
-): Promise<string | null> {
-  try {
-    const screenshotName = path.basename(screenshotPath);
-    const screenshotData = fs.readFileSync(screenshotPath);
-    const base64Data = screenshotData.toString('base64');
-    
-    console.log(`  📤 Uploading ${screenshotName}...`);
-    
-    // Note: GitHub doesn't have a direct upload API for PR comments
-    // Instead, we'll embed images as base64 data URLs or reference them from the repo
-    // For production, consider using GitHub releases or external image hosting
-    
-    // For now, we'll assume screenshots are committed to the repo
-    const repoPath = `screenshots/${screenshotName}`;
-    return repoPath;
-    
-  } catch (error) {
-    console.error(`  ❌ Failed to process ${screenshotPath}:`, error);
-    return null;
-  }
 }
 
 /**
  * Create PR comment with screenshots and analysis
  */
 async function createPRComment(
-  config: GitHubAPIConfig,
+  config: GitHubConfigExtended,
   reportContent: string,
   screenshotPaths: string[]
 ): Promise<void> {
-  const { token, owner, repo, prNumber } = config;
+  const { token, owner, repo, prNumber, branch } = config;
   
   console.log('\n📝 Creating PR comment...');
   
@@ -102,7 +80,7 @@ async function createPRComment(
     for (let i = 0; i < screenshotNames.length; i += 4) {
       const row = screenshotNames.slice(i, i + 4);
       row.forEach(name => {
-        const url = `https://raw.githubusercontent.com/${owner}/${repo}/copilot/analyze-ui-ux-completeness/screenshots/${name}`;
+        const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/screenshots/${name}`;
         commentBody += `<td width="25%"><img src="${url}" width="100%" /></td>\n`;
       });
       commentBody += `</tr>\n<tr>\n`;

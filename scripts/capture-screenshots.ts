@@ -311,7 +311,6 @@ function generateReport(results: Array<{ config: ScreenshotConfig; result: any }
     report += `### ${index + 1}. ${config.description}\n\n`;
     
     if (result.success) {
-      const relativePath = path.relative(REPORT_DIR, result.path);
       report += `![${config.description}](../${config.name}.png)\n\n`;
       report += `**Status:** ✅ Captured successfully\n\n`;
       report += `**File:** \`${config.name}.png\`\n\n`;
@@ -381,19 +380,29 @@ async function main() {
   try {
     // Launch browser with WebGL support
     console.log('🚀 Launching Chromium browser...');
+    
+    // Use security-relaxed flags only in CI environment
+    const isCI = process.env.CI === 'true';
+    const browserArgs = [
+      '--enable-unsafe-swiftshader',
+      '--disable-features=VizDisplayCompositor',
+      '--disable-gpu-sandbox',
+      '--disable-dev-shm-usage',
+      '--enable-webgl-draft-extensions',
+      '--max-gum-fps=60',
+      '--autoplay-policy=no-user-gesture-required',
+    ];
+    
+    // Add security-relaxed flags only for CI environments
+    if (isCI) {
+      browserArgs.push('--disable-web-security');
+      browserArgs.push('--no-sandbox');
+      console.log('  ⚠️  Running in CI mode with relaxed security flags');
+    }
+    
     browser = await chromium.launch({
       headless: true,
-      args: [
-        '--enable-unsafe-swiftshader',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor',
-        '--disable-gpu-sandbox',
-        '--disable-dev-shm-usage',
-        '--no-sandbox',
-        '--enable-webgl-draft-extensions',
-        '--max-gum-fps=60',
-        '--autoplay-policy=no-user-gesture-required',
-      ],
+      args: browserArgs,
     });
     
     const context = await browser.newContext({
