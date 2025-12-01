@@ -66,6 +66,11 @@ import {
 import { getMeridiansForVitalPoint } from "./vitalpoint/MeridianVitalPointMapping";
 import { StatusEffect } from "./types";
 
+/**
+ * Amount of meridian disruption added per vital point hit (15%)
+ */
+const DISRUPTION_INCREMENT_PER_HIT = 0.15;
+
 export class VitalPointSystem {
   private vitalPoints: VitalPoint[] = [];
   private meridianStates: Map<string, number> = new Map(); // Tracks disruption level per meridian
@@ -212,10 +217,7 @@ export class VitalPointSystem {
     _hitBox: { width: number; height: number }, // Prefixed with underscore to indicate intentionally unused
     targetedVitalPointId?: string | null,
     hour?: number
-  ): VitalPointHitResult & { 
-    meridianMultiplier?: number; 
-    meridianEffects?: readonly StatusEffect[];
-  } {
+  ): VitalPointHitResult {
     // Use provided hour or current system hour
     const effectiveHour = hour ?? this.currentHour;
 
@@ -431,10 +433,7 @@ export class VitalPointSystem {
     vitalPoint: VitalPoint,
     hitPosition: Position,
     hour: number
-  ): VitalPointHitResult & { 
-    meridianMultiplier?: number; 
-    meridianEffects?: readonly StatusEffect[];
-  } {
+  ): VitalPointHitResult {
     const distance = this.calculateDistance(hitPosition, vitalPoint.position);
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
 
@@ -454,7 +453,7 @@ export class VitalPointSystem {
       // Generate meridian disruption effects for each affected meridian
       meridians.forEach(meridianId => {
         const currentDisruption = this.getMeridianDisruption(meridianId);
-        const newDisruption = Math.min(1.0, currentDisruption + 0.15); // Add 15% disruption per hit
+        const newDisruption = Math.min(1.0, currentDisruption + DISRUPTION_INCREMENT_PER_HIT);
         this.setMeridianDisruption(meridianId, newDisruption);
 
         // Generate effects if disruption is significant

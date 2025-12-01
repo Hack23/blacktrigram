@@ -406,6 +406,11 @@ export function getMeridiansByElement(
  * Traditional Korean medicine considers meridian peak hours
  */
 /**
+ * Default peak hour for meridians without a specific entry (午時 - noon)
+ */
+const DEFAULT_PEAK_HOUR = 12;
+
+/**
  * Calculate meridian flow effectiveness based on time of day (子午流注)
  * 
  * Traditional Korean medicine considers meridian peak hours based on
@@ -445,7 +450,7 @@ export function calculateMeridianFlow(
     liver: 2, // 1-3 AM (丑時)
   };
 
-  const peakHour = meridianPeakHours[meridianId] ?? 12;
+  const peakHour = meridianPeakHours[meridianId] ?? DEFAULT_PEAK_HOUR;
   
   // Calculate hour difference (handle wrapping around midnight)
   let hourDifference = Math.abs(hour - peakHour);

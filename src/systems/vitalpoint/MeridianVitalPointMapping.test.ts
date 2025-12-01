@@ -42,8 +42,6 @@ describe("MeridianVitalPointMapping", () => {
         "triple_burner",
         "gallbladder",
         "liver",
-        "governing_vessel",
-        "conception_vessel",
       ];
 
       Object.values(VITAL_POINT_MERIDIAN_MAP).forEach((meridians) => {
@@ -72,7 +70,7 @@ describe("MeridianVitalPointMapping", () => {
     it("should return meridians for solar_plexus", () => {
       const meridians = getMeridiansForVitalPoint("solar_plexus");
       expect(meridians.length).toBeGreaterThan(0);
-      expect(meridians).toContain("conception_vessel");
+      expect(meridians).toContain("stomach");
     });
 
     it("should return meridians for knee_outer_left (Yanglingquan GB-34)", () => {
@@ -202,13 +200,8 @@ describe("MeridianVitalPointMapping", () => {
       // Each meridian should have at least a few vital points
       Object.entries(stats.meridianCounts).forEach(([meridianId, count]) => {
         expect(count).toBeGreaterThan(0);
-        // Most meridians should have multiple points
-        if (
-          meridianId !== "governing_vessel" &&
-          meridianId !== "conception_vessel"
-        ) {
-          expect(count).toBeGreaterThanOrEqual(1);
-        }
+        // All 12 primary meridians should have multiple points
+        expect(count).toBeGreaterThanOrEqual(1);
       });
     });
 

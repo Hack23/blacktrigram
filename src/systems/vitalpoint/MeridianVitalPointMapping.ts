@@ -46,35 +46,35 @@ export const VITAL_POINT_MERIDIAN_MAP: Record<string, readonly string[]> = {
   head_eye: ["bladder", "gallbladder"], // BL-1, GB-1 area
   head_ear: ["triple_burner", "gallbladder"], // TB-17, GB-2 area
   head_back_skull: ["bladder"], // BL-10 area
-  head_crown: ["governing_vessel"], // GV-20 (Baihui - 백회)
+  head_crown: ["bladder"], // Related to bladder meridian pathway
   head_side_neck: ["gallbladder", "triple_burner"], // GB-20 (Fengchi - 풍지)
-  head_throat_front: ["conception_vessel", "stomach"], // CV-23, ST-9 area
-  head_chin: ["conception_vessel", "stomach"], // CV-24 area
+  head_throat_front: ["stomach", "kidney"], // ST-9, KI-27 area
+  head_chin: ["stomach"], // ST-4 area
   head_forehead: ["gallbladder", "bladder"], // GB-14, BL-2 area
   head_mastoid: ["triple_burner", "gallbladder"], // TB-17 area
 
   // ============= NECK REGION =============
-  neck_front: ["stomach", "conception_vessel"], // ST-9 area (Carotid)
+  neck_front: ["stomach", "kidney"], // ST-9 area (Carotid)
   neck_side: ["gallbladder", "triple_burner"], // GB-20 area
-  neck_back: ["bladder", "governing_vessel"], // BL-10, GV-14 area
-  throat: ["conception_vessel", "stomach"], // CV-22 area
+  neck_back: ["bladder"], // BL-10 area
+  throat: ["stomach", "lung"], // ST-9, LU-1 area
   neck_carotid_left: ["stomach"], // ST-9 (Renying - 인영)
   neck_carotid_right: ["stomach"], // ST-9 (Renying - 인영)
 
   // ============= TORSO REGION (24+ points) =============
   // Upper Chest
-  chest_center: ["conception_vessel", "pericardium"], // CV-17 (Danzhong - 단중)
+  chest_center: ["pericardium"], // PC-1 area (Danzhong)
   chest_upper_left: ["lung", "heart"], // LU-1 area
   chest_upper_right: ["lung"], // LU-1 area
   clavicle_left: ["lung", "stomach"], // LU-1, ST-12 area
   clavicle_right: ["lung", "stomach"], // LU-1, ST-12 area
   
   // Solar Plexus and Abdomen
-  solar_plexus: ["conception_vessel", "stomach"], // CV-12, CV-14 area
-  upper_abdomen_center: ["conception_vessel", "stomach"], // CV-12 (Zhongwan - 중완)
+  solar_plexus: ["stomach"], // ST-19 area
+  upper_abdomen_center: ["stomach"], // ST-21 area (Zhongwan)
   upper_abdomen_left: ["stomach", "spleen"], // ST-19 area
   upper_abdomen_right: ["stomach", "liver"], // ST-19, LV-13 area
-  lower_abdomen_center: ["conception_vessel", "stomach"], // CV-6, CV-4 area
+  lower_abdomen_center: ["stomach", "kidney"], // ST-25, KI-14 area
   lower_abdomen_left: ["spleen", "kidney"], // SP-15 area
   lower_abdomen_right: ["stomach", "kidney"], // ST-25 area
 
@@ -94,9 +94,9 @@ export const VITAL_POINT_MERIDIAN_MAP: Record<string, readonly string[]> = {
   stomach: ["stomach", "spleen"], // Direct organ
 
   // Back and Spine
-  spine_upper: ["bladder", "governing_vessel"], // BL-12, GV-12 area
-  spine_middle: ["bladder", "governing_vessel"], // BL-18, GV-6 area
-  spine_lower: ["bladder", "governing_vessel"], // BL-23, GV-4 area (Mingmen - 명문)
+  spine_upper: ["bladder"], // BL-12 area
+  spine_middle: ["bladder"], // BL-18 area
+  spine_lower: ["bladder"], // BL-23 area (Mingmen)
   lower_back: ["kidney", "bladder"], // KI-27, BL-23 area
   shoulder_blade_left: ["small_intestine", "triple_burner"], // SI-11 area
   shoulder_blade_right: ["small_intestine", "triple_burner"], // SI-11 area
