@@ -169,7 +169,7 @@ Target metrics:
 - **Quality**: Clear, fully-rendered screenshots
 - **Consistency**: Same viewport/browser settings
 
-Current status: **75% success rate** (6/8 screens)
+Current status: **88% success rate** (7/8 screens)
 
 ## 🤝 Contributing
 

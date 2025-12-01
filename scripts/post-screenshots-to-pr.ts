@@ -110,20 +110,24 @@ async function createPRComment(
     
     console.log(`  📍 Posting to: ${apiUrl}`);
     
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        body: commentBody,
-      }),
-    }).catch((error) => {
+    let response;
+    try {
+      response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          body: commentBody,
+        }),
+      });
+    } catch (error) {
+      // Handle network/connection errors separately
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to connect to GitHub API: ${errorMessage}`);
-    });
+    }
     
     if (!response.ok) {
       const errorText = await response.text();
