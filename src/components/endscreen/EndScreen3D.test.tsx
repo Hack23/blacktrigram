@@ -135,7 +135,7 @@ describe("EndScreen3D", () => {
     );
 
     const winnerName = getByTestId("winner-name");
-    const winnerArchetype = getByTestId("winner-archetype");
+    const winnerArchetype = getByTestId("archetype-code");
 
     expect(winnerName).toBeInTheDocument();
     expect(winnerArchetype).toBeInTheDocument();

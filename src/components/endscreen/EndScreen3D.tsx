@@ -16,7 +16,10 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { VolumeControl } from "../ui/VolumeControl";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
+import { NavigationButtons } from "./components/NavigationButtons";
+import { PerformanceRating } from "./components/PerformanceRating";
 import { VictoryAnimation3D } from "./components/VictoryAnimation3D";
+import { WinnerDisplay } from "./components/WinnerDisplay";
 
 export interface EndScreen3DProps {
   readonly winner: PlayerState;
@@ -249,37 +252,10 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
     }
   }, [audio, isVictory]);
 
-  const handleReturnToMenu = useCallback(() => {
-    audio.playSFX?.("menu_select");
-    onReturnToMenu();
-  }, [audio, onReturnToMenu]);
-
-  const handleRematch = useCallback(() => {
-    if (onRematch) {
-      audio.playSFX?.("menu_select");
-      onRematch();
-    }
-  }, [audio, onRematch]);
-
-  const handleViewReplay = useCallback(() => {
-    if (onViewReplay) {
-      audio.playSFX?.("menu_select");
-      onViewReplay();
-    }
-  }, [audio, onViewReplay]);
-
   const toggleStats = useCallback(() => {
     audio.playSFX?.("menu_hover");
     setShowStats((prev) => !prev);
   }, [audio]);
-
-  const resultText = isVictory
-    ? { korean: "승리!", english: "Victory!" }
-    : { korean: "패배", english: "Defeat" };
-
-  const primaryColor = isVictory
-    ? KOREAN_COLORS.ACCENT_GOLD
-    : KOREAN_COLORS.ACCENT_RED;
 
   return (
     <div
@@ -336,46 +312,20 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
               )} 100%)`,
             }}
           >
-            {/* Result Title */}
-            <div
-              style={{
-                fontSize: layoutConstants.titleFontSize,
-                fontWeight: "bold",
-                color: toCssColor(primaryColor),
-                textShadow: `0 0 20px ${hexToRgbaString(primaryColor, 0.8)}`,
-                marginBottom: layoutConstants.spacing,
-                textAlign: "center",
-              }}
-              data-testid="result-title"
-            >
-              {resultText.korean} | {resultText.english}
-            </div>
+            {/* Winner Display Component */}
+            <WinnerDisplay
+              winner={winner}
+              isVictory={isVictory}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
 
-            {/* Winner Name */}
-            <div
-              style={{
-                fontSize: layoutConstants.subtitleFontSize,
-                color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN),
-                marginBottom: layoutConstants.spacing * 1.5,
-                textAlign: "center",
-              }}
-              data-testid="winner-name"
-            >
-              {winner.name.korean} | {winner.name.english}
-            </div>
-
-            {/* Archetype Display */}
-            <div
-              style={{
-                fontSize: isMobile ? 14 : 16,
-                color: toCssColor(KOREAN_COLORS.TEXT_SECONDARY),
-                marginBottom: layoutConstants.spacing,
-                textAlign: "center",
-              }}
-              data-testid="winner-archetype"
-            >
-              {winner.archetype.toUpperCase()}
-            </div>
+            {/* Performance Rating Component */}
+            <PerformanceRating
+              matchStats={matchStats}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
 
             {/* Match Statistics Toggle */}
             <button
@@ -416,95 +366,14 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
               />
             )}
 
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                gap: layoutConstants.spacing / 2,
-                marginTop: layoutConstants.spacing,
-              }}
-              data-testid="action-buttons"
-            >
-              <button
-                onClick={handleReturnToMenu}
-                onMouseEnter={() => audio.playSFX?.("menu_hover")}
-                style={{
-                  background: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9),
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: layoutConstants.buttonPadding,
-                  fontSize: layoutConstants.buttonFontSize,
-                  color: toCssColor(KOREAN_COLORS.UI_BACKGROUND_DARK),
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  fontWeight: "bold",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  minWidth: isMobile ? "200px" : "150px",
-                }}
-                data-testid="return-to-menu-button"
-              >
-                메뉴로 | Return to Menu
-              </button>
-
-              {onRematch && (
-                <button
-                  onClick={handleRematch}
-                  onMouseEnter={() => audio.playSFX?.("menu_hover")}
-                  style={{
-                    background: hexToRgbaString(
-                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                      0.8
-                    ),
-                    border: `2px solid ${hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_GOLD,
-                      0.8
-                    )}`,
-                    borderRadius: "8px",
-                    padding: layoutConstants.buttonPadding,
-                    fontSize: layoutConstants.buttonFontSize,
-                    color: toCssColor(KOREAN_COLORS.ACCENT_GOLD),
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    minWidth: isMobile ? "200px" : "150px",
-                  }}
-                  data-testid="rematch-button"
-                >
-                  재대결 | Rematch
-                </button>
-              )}
-
-              {onViewReplay && (
-                <button
-                  onClick={handleViewReplay}
-                  onMouseEnter={() => audio.playSFX?.("menu_hover")}
-                  style={{
-                    background: hexToRgbaString(
-                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                      0.8
-                    ),
-                    border: `2px solid ${hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_BLUE,
-                      0.8
-                    )}`,
-                    borderRadius: "8px",
-                    padding: layoutConstants.buttonPadding,
-                    fontSize: layoutConstants.buttonFontSize,
-                    color: toCssColor(KOREAN_COLORS.ACCENT_BLUE),
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    minWidth: isMobile ? "200px" : "150px",
-                  }}
-                  data-testid="view-replay-button"
-                >
-                  리플레이 | View Replay
-                </button>
-              )}
-            </div>
+            {/* Navigation Buttons Component */}
+            <NavigationButtons
+              onReturnToMenu={onReturnToMenu}
+              onRematch={onRematch}
+              onViewReplay={onViewReplay}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
           </div>
         </Html>
       </Canvas>
