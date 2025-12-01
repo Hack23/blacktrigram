@@ -164,7 +164,7 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     effects: [
       {
         id: "unconsciousness",
-        type: VitalPointEffectType.STUN,
+        type: VitalPointEffectType.UNCONSCIOUSNESS,
         intensity: EffectIntensity.EXTREME,
         duration: 10000,
         description: { korean: "즉각적 무의식", english: "Instant unconsciousness" },

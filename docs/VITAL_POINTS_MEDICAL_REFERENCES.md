@@ -187,7 +187,7 @@ This document provides medical and anatomical validation for all 70 vital points
 - **Mechanism**: Direct trauma to medulla oblongata (controls heartbeat, breathing)
 - **Korean Martial Arts**: Recognized as forbidden target in sport; taught only for lethal force scenarios
 
-**Effects Validation**: ⚠️ No effects listed - should add unconsciousness effect
+**Effects Validation**: ✅ Effects added (UNCONSCIOUSNESS)
 **Romanization**: ✅ "dwi-tongsu" correct
 
 ---
@@ -246,7 +246,7 @@ This document provides medical and anatomical validation for all 70 vital points
 - **Korean Martial Arts**: Hapkido teaches chokes and compression; Taekwondo avoids in sport
 - **TCM**: 人迎 (Renying) point near carotid
 
-**Effects Validation**: ⚠️ No effects listed - should add unconsciousness/stun effect
+**Effects Validation**: ✅ Effects added (UNCONSCIOUSNESS)
 **Romanization**: ✅ "mog-yeop" correct
 
 ---
@@ -266,7 +266,7 @@ This document provides medical and anatomical validation for all 70 vital points
 - **Korean Martial Arts**: Forbidden in all sport contexts; taught only for lethal self-defense
 - **Legal**: Considered potentially lethal force
 
-**Effects Validation**: ⚠️ No effects listed - should add suffocation/breathing difficulty effect
+**Effects Validation**: ✅ Effects added (BREATHLESSNESS)
 **Romanization**: ✅ "mok" correct
 
 ---
