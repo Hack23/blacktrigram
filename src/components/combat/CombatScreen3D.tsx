@@ -14,6 +14,7 @@ import React, {
   useState,
 } from "react";
 import * as THREE from "three";
+import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
@@ -121,6 +122,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     },
     autoRestore: true,
   });
+
+  // Audio context for button interactions
+  const audio = useAudio();
 
   // Performance marks - only in dev mode and memoized
   useEffect(() => {
@@ -833,6 +837,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }}>
             <button 
               onClick={onReturnToMenu}
+              onMouseEnter={() => audio.playSFX?.("menu_hover")}
               style={{
                 background: "#00ffff",
                 color: "#0a0a0f",
@@ -842,7 +847,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
                 cursor: "pointer",
+                transition: "all 0.2s ease",
               }}
+              data-testid="return-to-menu-button"
             >
               메뉴로 | Return to Menu
             </button>

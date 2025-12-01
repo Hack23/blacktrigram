@@ -540,6 +540,46 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 />
               </div>
             )}
+
+            {/* Bottom Center - Return to Menu Button */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 20,
+                left: "50%",
+                transform: "translateX(-50%)",
+                pointerEvents: "all",
+              }}
+            >
+              <button
+                onClick={onReturnToMenu}
+                onMouseEnter={() => audio.playSFX("menu_hover")}
+                style={{
+                  background: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: isMobile ? "8px 16px" : "10px 20px",
+                  fontSize: isMobile ? "12px" : "14px",
+                  fontWeight: "bold",
+                  fontFamily: "Korean Font, sans-serif",
+                  color: "#000",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 0 10px rgba(255, 215, 0, 0.5)",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow = "0 0 20px rgba(255, 215, 0, 0.8)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 0 10px rgba(255, 215, 0, 0.5)";
+                }}
+                data-testid="return-to-menu-button"
+              >
+                메뉴로 | Return to Menu
+              </button>
+            </div>
           </div>
         </Html>
       </Canvas>
