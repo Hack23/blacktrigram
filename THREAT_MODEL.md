@@ -492,7 +492,7 @@ flowchart TB
 
     SRI -.-> INTEGRITY
     INPUT -.-> ERRORS
-    PIXI -.-> PERFORMANCE
+    THREE -.-> PERFORMANCE
 
     DEPS -.-> SLSA
     SAST -.-> SBOM

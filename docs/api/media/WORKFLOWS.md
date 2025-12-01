@@ -6,27 +6,27 @@ This document details the continuous integration and deployment workflows used i
 
 Black Trigram's CI/CD workflows implement security controls mandated by Hack23 AB's ISMS framework:
 
-| **ISMS Policy** | **Workflow Implementation** |
-|-----------------|----------------------------|
-| [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | SAST (CodeQL), SCA (Dependency Review), DAST (ZAP), performance testing |
-| [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) | Automated testing gates, security scanning, PR review requirements |
-| [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) | Dependabot, CodeQL, OSSF Scorecard, security advisories |
-| [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | SLSA attestations, SBOM generation, license compliance (FOSSA) |
+| **ISMS Policy**                                                                                                  | **Workflow Implementation**                                                |
+| ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)     | SAST (CodeQL), SCA (Dependency Review), DAST (ZAP), performance testing    |
+| [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md)                     | Automated testing gates, security scanning, PR review requirements         |
+| [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)       | Dependabot, CodeQL, OSSF Scorecard, security advisories                    |
+| [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)                   | SLSA attestations, SBOM generation, license compliance (FOSSA)             |
 | [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | Security-hardened runners, SHA-pinned actions, least privilege permissions |
 
 ## 📚 Related Architecture Documentation
 
 <div class="documentation-map">
 
-| Document                                          | Focus            | Description                                                                |
-| ------------------------------------------------- | ---------------- | -------------------------------------------------------------------------- |
-| **[System Architecture](ARCHITECTURE.md)**        | 🏛️ Architecture  | C4 model showing frontend-only PixiJS + React architecture                 |
-| **[Combat Architecture](COMBAT_ARCHITECTURE.md)** | ⚔️ Game Design   | Detailed combat system implementation with Korean martial arts integration |
-| **[Game Design](game-design.md)**                 | 🎮 Game Design   | Korean martial arts combat mechanics and player archetypes                 |
-| **[Audio Assets](AUDIO_ASSETS.md)**               | 🎵 Assets        | Korean traditional instrument integration and combat audio                 |
-| **[Art Assets](ART_ASSETS.md)**                   | 🎨 Assets        | Korean cyberpunk visual design and UI iconography                          |
-| **[Future Architecture](FUTURE_ARCHITECTURE.md)** | 🔮 Future Vision | Planned features and scalability considerations                            |
-| **[Development Guide](development.md)**           | 🔧 Development   | Security features, testing strategy, and development environment           |
+| Document                                          | Focus            | Description                                                                       |
+| ------------------------------------------------- | ---------------- | --------------------------------------------------------------------------------- |
+| **[System Architecture](ARCHITECTURE.md)**        | 🏛️ Architecture  | C4 model showing frontend-only Three.js (@react-three/fiber) + React architecture |
+| **[Combat Architecture](COMBAT_ARCHITECTURE.md)** | ⚔️ Game Design   | Detailed combat system implementation with Korean martial arts integration        |
+| **[Game Design](game-design.md)**                 | 🎮 Game Design   | Korean martial arts combat mechanics and player archetypes                        |
+| **[Audio Assets](AUDIO_ASSETS.md)**               | 🎵 Assets        | Korean traditional instrument integration and combat audio                        |
+| **[Art Assets](ART_ASSETS.md)**                   | 🎨 Assets        | Korean cyberpunk visual design and UI iconography                                 |
+| **[Future Architecture](FUTURE_ARCHITECTURE.md)** | 🔮 Future Vision | Planned features and scalability considerations                                   |
+| **[Development Guide](development.md)**           | 🔧 Development   | Security features, testing strategy, and development environment                  |
 
 </div>
 
@@ -436,6 +436,7 @@ The CI/CD workflows ensure that every aspect of the application meets the highes
 ## 📚 Related Documents
 
 ### 🔐 ISMS Policies
+
 - [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC standards
 - [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) - Risk-controlled change processes
 - [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
@@ -443,12 +444,14 @@ The CI/CD workflows ensure that every aspect of the application meets the highes
 - [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
 
 ### 🛡️ Black Trigram Security Documentation
+
 - [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Current security implementation
 - [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
 - [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting
 - [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
 
 ### 🔧 Development Documentation
+
 - [🔧 Development Guide](./development.md) - Security features and testing strategy
 - [📐 Architecture](./ARCHITECTURE.md) - Overall system design
 - [⚔️ Combat Architecture](./COMBAT_ARCHITECTURE.md) - Combat system implementation

@@ -300,7 +300,7 @@ mindmap
         Component Architecture
         Korean UI Components
         State Management
-      PixiJS 8
+      Three.js + @react-three/fiber
         WebGL Acceleration
         60fps Physics
         Combat Rendering

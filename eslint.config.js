@@ -1,7 +1,7 @@
 import js from "@eslint/js";
-import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -36,14 +36,14 @@ export default tseslint.config(
         "warn",
         { argsIgnorePattern: "^_" },
       ],
-      "@typescript-eslint/explicit-function-return-type": "off", // Too noisy
-      "@typescript-eslint/no-explicit-any": "warn", // Allow any for PixiJS integration
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-explicit-any": "warn", // Allow any for Three.js integration
       "@typescript-eslint/prefer-nullish-coalescing": "warn",
       "@typescript-eslint/prefer-optional-chain": "warn",
       "@typescript-eslint/no-non-null-assertion": "warn",
       "@typescript-eslint/no-extraneous-class": "off", // Allow utility classes
       "@typescript-eslint/no-empty-object-type": "off", // Allow empty interfaces
-      "@typescript-eslint/triple-slash-reference": "off", // Allow for PixiJS
+      "@typescript-eslint/triple-slash-reference": "off", // Allow for Three.js type definitions
       "prefer-const": "warn",
       "no-case-declarations": "off", // Allow declarations in case blocks
     },
