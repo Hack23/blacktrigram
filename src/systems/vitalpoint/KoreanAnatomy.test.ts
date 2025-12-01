@@ -79,6 +79,61 @@ describe("KoreanAnatomy", () => {
       expect(kidney).toBeDefined();
       expect(kidney?.element).toBe("water");
     });
+
+    it("should have all 12 primary meridians", () => {
+      expect(ENERGY_MERIDIANS_ARRAY.length).toBe(12);
+      const expectedMeridians = [
+        "lung",
+        "large_intestine",
+        "stomach",
+        "spleen",
+        "heart",
+        "small_intestine",
+        "bladder",
+        "kidney",
+        "pericardium",
+        "triple_burner",
+        "gallbladder",
+        "liver",
+      ];
+      expectedMeridians.forEach((id) => {
+        const meridian = ENERGY_MERIDIANS_ARRAY.find((m) => m.id === id);
+        expect(meridian).toBeDefined();
+        expect(meridian?.id).toBe(id);
+      });
+    });
+
+    it("should have pericardium meridian with fire element", () => {
+      const pericardium = ENERGY_MERIDIANS_ARRAY.find((m) => m.id === "pericardium");
+      expect(pericardium).toBeDefined();
+      expect(pericardium?.element).toBe("fire");
+      expect(pericardium?.koreanName).toBe("수궐음심포경");
+      expect(pericardium?.chineseName).toBe("手厥陰心包經");
+    });
+
+    it("should have triple_burner meridian with fire element", () => {
+      const tripleBurner = ENERGY_MERIDIANS_ARRAY.find((m) => m.id === "triple_burner");
+      expect(tripleBurner).toBeDefined();
+      expect(tripleBurner?.element).toBe("fire");
+      expect(tripleBurner?.koreanName).toBe("수소양삼초경");
+      expect(tripleBurner?.chineseName).toBe("手少陽三焦經");
+    });
+
+    it("should have gallbladder meridian with wood element", () => {
+      const gallbladder = ENERGY_MERIDIANS_ARRAY.find((m) => m.id === "gallbladder");
+      expect(gallbladder).toBeDefined();
+      expect(gallbladder?.element).toBe("wood");
+      expect(gallbladder?.koreanName).toBe("족소양담경");
+      expect(gallbladder?.chineseName).toBe("足少陽膽經");
+    });
+
+    it("should have liver meridian with wood element", () => {
+      const liver = ENERGY_MERIDIANS_ARRAY.find((m) => m.id === "liver");
+      expect(liver).toBeDefined();
+      expect(liver?.element).toBe("wood");
+      expect(liver?.koreanName).toBe("족궐음간경");
+      expect(liver?.chineseName).toBe("足厥陰肝經");
+    });
   });
 
   describe("ENERGY_MERIDIANS record", () => {
@@ -213,7 +268,8 @@ describe("KoreanAnatomy", () => {
     it("should filter meridians by wood element", () => {
       const wood = getMeridiansByElement("wood");
       
-      // Wood may or may not have meridians in the current dataset
+      // Wood element should now have 2 meridians: gallbladder and liver
+      expect(wood.length).toBe(2);
       wood.forEach((meridian) => {
         expect(meridian.element).toBe("wood");
       });
@@ -235,14 +291,14 @@ describe("KoreanAnatomy", () => {
   });
 
   describe("calculateMeridianFlow", () => {
-    it("should return 1.0 at peak hour for lung meridian", () => {
+    it("should return 1.3 (+30% bonus) at peak hour for lung meridian", () => {
       const flow = calculateMeridianFlow("lung", 4);
-      expect(flow).toBe(1.0);
+      expect(flow).toBe(1.3);
     });
 
-    it("should return 1.0 at peak hour for heart meridian", () => {
+    it("should return 1.3 (+30% bonus) at peak hour for heart meridian", () => {
       const flow = calculateMeridianFlow("heart", 12);
-      expect(flow).toBe(1.0);
+      expect(flow).toBe(1.3);
     });
 
     it("should return reduced flow away from peak hour", () => {
@@ -252,18 +308,18 @@ describe("KoreanAnatomy", () => {
       expect(offPeakFlow).toBeLessThan(peakFlow);
     });
 
-    it("should return value between 0.7 and 1.0", () => {
+    it("should return value between 0.7 and 1.3", () => {
       for (let hour = 0; hour < 24; hour++) {
         const flow = calculateMeridianFlow("lung", hour);
         expect(flow).toBeGreaterThanOrEqual(0.7);
-        expect(flow).toBeLessThanOrEqual(1.0);
+        expect(flow).toBeLessThanOrEqual(1.3);
       }
     });
 
     it("should handle non-existent meridian with default peak hour", () => {
       const flow = calculateMeridianFlow("invalid_meridian", 12);
       expect(flow).toBeGreaterThanOrEqual(0.7);
-      expect(flow).toBeLessThanOrEqual(1.0);
+      expect(flow).toBeLessThanOrEqual(1.3);
     });
 
     it("should be symmetric around peak hour", () => {
@@ -272,6 +328,36 @@ describe("KoreanAnatomy", () => {
       const flow2 = calculateMeridianFlow("lung", peakHour + 2);
       
       expect(Math.abs(flow1 - flow2)).toBeLessThan(0.01);
+    });
+
+    it("should return 1.3 for pericardium at 8PM (20:00)", () => {
+      const flow = calculateMeridianFlow("pericardium", 20);
+      expect(flow).toBe(1.3);
+    });
+
+    it("should return 1.3 for triple_burner at 10PM (22:00)", () => {
+      const flow = calculateMeridianFlow("triple_burner", 22);
+      expect(flow).toBe(1.3);
+    });
+
+    it("should return 1.3 for gallbladder at midnight (0:00)", () => {
+      const flow = calculateMeridianFlow("gallbladder", 0);
+      expect(flow).toBe(1.3);
+    });
+
+    it("should return 1.3 for liver at 2AM", () => {
+      const flow = calculateMeridianFlow("liver", 2);
+      expect(flow).toBe(1.3);
+    });
+
+    it("should handle midnight wraparound for gallbladder", () => {
+      const flow23 = calculateMeridianFlow("gallbladder", 23); // 11PM
+      const flow1 = calculateMeridianFlow("gallbladder", 1);   // 1AM
+      // Both should be relatively close to peak (midnight)
+      expect(flow23).toBeGreaterThan(1.0);
+      expect(flow1).toBeGreaterThan(1.0);
+      // And they should be symmetric
+      expect(Math.abs(flow23 - flow1)).toBeLessThan(0.01);
     });
   });
 

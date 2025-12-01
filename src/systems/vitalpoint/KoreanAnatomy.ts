@@ -261,6 +261,66 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
     },
     relatedVitalPoints: ["kidneys", "lower_back", "feet"], // Fix: Add missing property
   },
+  {
+    id: "pericardium",
+    koreanName: "수궐음심포경",
+    chineseName: "手厥陰心包經",
+    englishName: "Pericardium Meridian",
+    element: "fire",
+    direction: "descending",
+    points: ["PC1", "PC3", "PC6", "PC9"],
+    kiFlow: 90,
+    description: {
+      korean: "심장 보호와 정서 안정을 담당하는 경락",
+      english: "Meridian governing heart protection and emotional stability",
+    },
+    relatedVitalPoints: ["chest", "inner_elbow", "wrist_inner", "palm_center"],
+  },
+  {
+    id: "triple_burner",
+    koreanName: "수소양삼초경",
+    chineseName: "手少陽三焦經",
+    englishName: "Triple Burner Meridian",
+    element: "fire",
+    direction: "ascending",
+    points: ["TB1", "TB5", "TB10", "TB23"],
+    kiFlow: 75,
+    description: {
+      korean: "체온 조절과 에너지 분배를 담당하는 경락",
+      english: "Meridian governing temperature regulation and energy distribution",
+    },
+    relatedVitalPoints: ["outer_elbow", "shoulder_back", "temples", "ear_area"],
+  },
+  {
+    id: "gallbladder",
+    koreanName: "족소양담경",
+    chineseName: "足少陽膽經",
+    englishName: "Gallbladder Meridian",
+    element: "wood",
+    direction: "descending",
+    points: ["GB1", "GB20", "GB21", "GB34"],
+    kiFlow: 85,
+    description: {
+      korean: "결단력과 용기를 담당하는 경락",
+      english: "Meridian governing decisiveness and courage",
+    },
+    relatedVitalPoints: ["temples", "neck_side", "shoulder_top", "leg_side_knee"],
+  },
+  {
+    id: "liver",
+    koreanName: "족궐음간경",
+    chineseName: "足厥陰肝經",
+    englishName: "Liver Meridian",
+    element: "wood",
+    direction: "ascending",
+    points: ["LV1", "LV3", "LV8", "LV14"],
+    kiFlow: 95,
+    description: {
+      korean: "혈액 저장과 정서 조절을 담당하는 경락",
+      english: "Meridian governing blood storage and emotional regulation",
+    },
+    relatedVitalPoints: ["liver", "inner_thigh", "groin", "ribs_lower"],
+  },
 ];
 
 export const ENERGY_MERIDIANS: Record<string, EnergyMeridian> =
@@ -269,10 +329,32 @@ export const ENERGY_MERIDIANS: Record<string, EnergyMeridian> =
     return acc;
   }, {} as Record<string, EnergyMeridian>);
 
+/**
+ * Five Elements (五行 - Wu Xing) relationships for Korean martial arts
+ * 
+ * Traditional Korean medicine uses the Five Elements theory (오행) to
+ * understand energy relationships between meridians and vital points.
+ * 
+ * **Korean**: 오행 관계 (목화토금수)
+ * 
+ * Elements and their relationships:
+ * - 木 (Wood/목) → 火 (Fire/화): Wood feeds Fire (木生火)
+ * - 火 (Fire/화) → 土 (Earth/토): Fire creates Earth (火生土)
+ * - 土 (Earth/토) → 金 (Metal/금): Earth bears Metal (土生金)
+ * - 金 (Metal/금) → 水 (Water/수): Metal collects Water (金生水)
+ * - 水 (Water/수) → 木 (Wood/목): Water nourishes Wood (水生木)
+ * 
+ * Controlling cycle (상극):
+ * - 木 (Wood/목) → 土 (Earth/토): Wood penetrates Earth (木克土)
+ * - 土 (Earth/토) → 水 (Water/수): Earth dams Water (土克水)
+ * - 水 (Water/수) → 火 (Fire/화): Water extinguishes Fire (水克火)
+ * - 火 (Fire/화) → 金 (Metal/금): Fire melts Metal (火克金)
+ * - 金 (Metal/금) → 木 (Wood/목): Metal chops Wood (金克木)
+ */
 export const ELEMENTAL_RELATIONS: Record<string, ElementalRelations> = {
   wood: {
-    producing: { fire: "화생토 (Wood creates Fire)" }, // Example: Wood produces Fire
-    controlling: { earth: "목극토 (Wood controls Earth)" }, // Example: Wood controls Earth
+    producing: { fire: "목생화 (Wood creates Fire)" },
+    controlling: { earth: "목극토 (Wood controls Earth)" },
   },
   fire: {
     producing: { earth: "화생토 (Fire creates Earth/Ash)" },
@@ -314,26 +396,60 @@ export function getMeridiansByElement(
  * Calculate meridian flow effectiveness based on time of day
  * Traditional Korean medicine considers meridian peak hours
  */
+/**
+ * Calculate meridian flow effectiveness based on time of day (子午流注)
+ * 
+ * Traditional Korean medicine considers meridian peak hours based on
+ * the traditional Chinese Medicine (TCM) circadian clock. Each meridian
+ * has a 2-hour peak period during which strikes are most effective.
+ * 
+ * **Korean**: 자오유주 시간대별 경락 유효성 계산
+ * 
+ * @param meridianId - ID of the meridian to calculate flow for
+ * @param hour - Hour of day (0-23)
+ * @returns Flow effectiveness multiplier (0.7-1.3), with 1.3 at peak hours
+ * 
+ * @example
+ * ```typescript
+ * // Lung meridian is most effective at 3-5 AM
+ * const morningFlow = calculateMeridianFlow("lung", 4); // Returns ~1.3
+ * const eveningFlow = calculateMeridianFlow("lung", 18); // Returns ~0.7
+ * ```
+ */
 export function calculateMeridianFlow(
   meridianId: string,
   hour: number
 ): number {
+  // Traditional 12 meridian circadian clock (자오유주)
   const meridianPeakHours: Record<string, number> = {
-    lung: 4, // 3-5 AM
-    large_intestine: 6, // 5-7 AM
-    stomach: 8, // 7-9 AM
-    spleen: 10, // 9-11 AM
-    heart: 12, // 11 AM-1 PM
-    small_intestine: 14, // 1-3 PM
-    bladder: 16, // 3-5 PM
-    kidney: 18, // 5-7 PM
+    lung: 4, // 3-5 AM (寅時)
+    large_intestine: 6, // 5-7 AM (卯時)
+    stomach: 8, // 7-9 AM (辰時)
+    spleen: 10, // 9-11 AM (巳時)
+    heart: 12, // 11 AM-1 PM (午時)
+    small_intestine: 14, // 1-3 PM (未時)
+    bladder: 16, // 3-5 PM (申時)
+    kidney: 18, // 5-7 PM (酉時)
+    pericardium: 20, // 7-9 PM (戌時)
+    triple_burner: 22, // 9-11 PM (亥時)
+    gallbladder: 0, // 11 PM-1 AM (子時)
+    liver: 2, // 1-3 AM (丑時)
   };
 
-  const peakHour = meridianPeakHours[meridianId] || 12;
-  const hourDifference = Math.abs(hour - peakHour);
-  const effectivenessReduction = Math.min(hourDifference / 12, 0.3);
+  const peakHour = meridianPeakHours[meridianId] ?? 12;
+  
+  // Calculate hour difference (handle wrapping around midnight)
+  let hourDifference = Math.abs(hour - peakHour);
+  if (hourDifference > 12) {
+    hourDifference = 24 - hourDifference;
+  }
+  
+  // At peak hour (±1 hour): +30% effectiveness (1.3x multiplier)
+  // At 6 hours away: neutral (1.0x multiplier)
+  // At 12 hours away (opposite time): -30% effectiveness (0.7x multiplier)
+  const effectiveness = 1.3 - (hourDifference / 12) * 0.6;
 
-  return Math.max(0.7, 1.0 - effectivenessReduction);
+  return Math.max(0.7, Math.min(1.3, effectiveness));
 }
 
 /**
