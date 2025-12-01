@@ -96,6 +96,7 @@ export class VitalPointSystem {
    * **Korean**: 시간 설정
    * 
    * @param hour - Hour of day (0-23)
+   * @throws Error if hour is not a finite number
    * 
    * @example
    * ```typescript
@@ -106,6 +107,9 @@ export class VitalPointSystem {
    * @korean 시간설정
    */
   setCurrentHour(hour: number): void {
+    if (!Number.isFinite(hour)) {
+      throw new Error("Hour must be a finite number");
+    }
     this.currentHour = Math.max(0, Math.min(23, Math.floor(hour)));
   }
 
@@ -436,6 +440,7 @@ export class VitalPointSystem {
   ): VitalPointHitResult {
     const distance = this.calculateDistance(hitPosition, vitalPoint.position);
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
+    const now = Date.now(); // Single timestamp for all effects
 
     // Get meridians for this vital point
     const meridians = getMeridiansForVitalPoint(vitalPoint.id);
@@ -456,8 +461,8 @@ export class VitalPointSystem {
         const newDisruption = Math.min(1.0, currentDisruption + DISRUPTION_INCREMENT_PER_HIT);
         this.setMeridianDisruption(meridianId, newDisruption);
 
-        // Generate effects if disruption is significant
-        const effects = generateMeridianEffects(meridianId, newDisruption);
+        // Generate effects if disruption is significant (using shared timestamp)
+        const effects = generateMeridianEffects(meridianId, newDisruption, now);
         allMeridianEffects.push(...effects);
       });
     }
@@ -465,8 +470,7 @@ export class VitalPointSystem {
     // Apply meridian multiplier to damage
     const finalDamage = Math.floor(baseDamage * meridianMultiplier);
 
-    // Convert VitalPointEffect to StatusEffect
-    const now = Date.now();
+    // Convert VitalPointEffect to StatusEffect (using shared timestamp)
     const vitalPointStatusEffects: StatusEffect[] = vitalPoint.effects.map(effect => ({
       id: effect.id,
       type: effect.type,

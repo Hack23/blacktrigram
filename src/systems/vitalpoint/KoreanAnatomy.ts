@@ -544,13 +544,15 @@ function isPositionInZone(
  */
 export function generateMeridianEffects(
   meridianId: string,
-  disruptionLevel: number
+  disruptionLevel: number,
+  timestamp?: number
 ): readonly StatusEffect[] {
   const meridian = ENERGY_MERIDIANS[meridianId];
   if (!meridian) return [];
 
   const effects: StatusEffect[] = [];
   const intensityValue = Math.min(1.0, disruptionLevel);
+  const now = timestamp ?? Date.now(); // Use provided timestamp or current time
 
   // Fix: Use proper EffectIntensity enum values from types/enums.ts
   let effectIntensity: EffectIntensity = EffectIntensity.MINOR;
@@ -559,19 +561,20 @@ export function generateMeridianEffects(
   else effectIntensity = EffectIntensity.MINOR;
 
   if (disruptionLevel > 0.3) {
+    const duration = Math.floor(2000 + intensityValue * 3000);
     const effect: StatusEffect = {
-      id: `meridian_disruption_${meridianId}_${Date.now()}`,
+      id: `meridian_disruption_${meridianId}_${now}`,
       type: "weakened",
       intensity: effectIntensity, // Now uses proper enum
-      duration: Math.floor(2000 + intensityValue * 3000),
+      duration,
       description: {
         korean: "경락 차단 효과",
         english: "Meridian disruption effect",
       },
       stackable: false,
       source: meridianId,
-      startTime: Date.now(),
-      endTime: Date.now() + Math.floor(2000 + intensityValue * 3000),
+      startTime: now,
+      endTime: now + duration,
     };
 
     effects.push(effect);

@@ -63,7 +63,7 @@ export const VITAL_POINT_MERIDIAN_MAP: Record<string, readonly string[]> = {
 
   // ============= TORSO REGION (24+ points) =============
   // Upper Chest
-  chest_center: ["pericardium"], // PC-1 area (Danzhong)
+  chest_center: ["pericardium"], // Center chest area; anatomically near CV-17 (Danzhong/Tanzhong)
   chest_upper_left: ["lung", "heart"], // LU-1 area
   chest_upper_right: ["lung"], // LU-1 area
   clavicle_left: ["lung", "stomach"], // LU-1, ST-12 area
