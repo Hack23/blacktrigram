@@ -558,18 +558,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
                     border: none;
                     border-radius: 8px;
-                    padding: ${isMobile ? "8px 16px" : "10px 20px"};
+                    padding: 8px 16px;
                     font-size: ${isMobile ? "12px" : "14px"};
                     font-weight: bold;
                     font-family: ${FONT_FAMILY.KOREAN};
-                    color: ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 1)};
+                    color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+                    box-shadow: 0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)};
                   }
                   .training-return-menu-btn:hover {
                     transform: scale(1.05);
-                    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+                    box-shadow: 0 0 20px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)};
                   }
                 `}
               </style>
@@ -578,6 +578,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 onMouseEnter={() => audio.playSFX("menu_hover")}
                 className="training-return-menu-btn"
                 data-testid="return-to-menu-button"
+                aria-label="Return to main menu"
               >
                 메뉴로 | Return to Menu
               </button>

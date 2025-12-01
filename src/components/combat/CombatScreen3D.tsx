@@ -851,7 +851,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 }
                 .combat-return-menu-btn:hover {
                   transform: scale(1.05);
-                  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+                  box-shadow: 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)};
                 }
               `}
             </style>
@@ -860,6 +860,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               onMouseEnter={() => audio.playSFX("menu_hover")}
               className="combat-return-menu-btn"
               data-testid="return-to-menu-button"
+              aria-label="Return to main menu"
             >
               메뉴로 | Return to Menu
             </button>
