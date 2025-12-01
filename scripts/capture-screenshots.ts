@@ -185,7 +185,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
       
       // Click training mode
@@ -223,7 +223,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
       
       // Click versus mode
