@@ -562,7 +562,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     font-size: ${isMobile ? "12px" : "14px"};
                     font-weight: bold;
                     font-family: ${FONT_FAMILY.KOREAN};
-                    color: #000;
+                    color: ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
                     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);

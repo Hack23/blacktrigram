@@ -836,20 +836,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             padding: "8px",
             margin: "0 10px",
           }}>
+            <style>
+              {`
+                .combat-return-menu-btn {
+                  background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9)};
+                  color: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)};
+                  border: none;
+                  border-radius: 8px;
+                  padding: 8px 16px;
+                  font-family: ${FONT_FAMILY.KOREAN};
+                  font-weight: bold;
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+                }
+                .combat-return-menu-btn:hover {
+                  transform: scale(1.05);
+                  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+                }
+              `}
+            </style>
             <button 
               onClick={onReturnToMenu}
               onMouseEnter={() => audio.playSFX("menu_hover")}
-              style={{
-                background: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9),
-                color: "#0a0a0f",
-                border: "none",
-                borderRadius: "4px",
-                padding: "8px 16px",
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: "bold",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-              }}
+              className="combat-return-menu-btn"
               data-testid="return-to-menu-button"
             >
               메뉴로 | Return to Menu
