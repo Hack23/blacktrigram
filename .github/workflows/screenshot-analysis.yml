@@ -1,0 +1,107 @@
+name: Screenshot Analysis
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to comment on'
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  capture-screenshots:
+    name: Capture UI/UX Screenshots
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2.10.2
+        with:
+          disable-sudo: true
+          egress-policy: audit
+      
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '24'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright
+        run: npx playwright install chromium --with-deps
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Start Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          Xvfb :99 -ac -screen 0 1280x1024x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+      
+      - name: Capture screenshots
+        run: npm run screenshots:capture
+        env:
+          DISPLAY: :99
+      
+      - name: Upload screenshots as artifacts
+        uses: actions/upload-artifact@v4.5.0
+        if: always()
+        with:
+          name: ui-screenshots
+          path: screenshots/
+          retention-days: 30
+      
+      - name: Commit screenshots to branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add screenshots/
+          git diff --staged --quiet || git commit -m "📸 Add automated UI/UX screenshots"
+          git push origin HEAD:${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Post screenshots to PR
+        if: github.event_name == 'pull_request'
+        run: npm run screenshots:post
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+      
+      - name: Post screenshots to PR (manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: npm run screenshots:post
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+      
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## 📸 Screenshot Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "screenshots/reports/ui-ux-analysis.md" ]; then
+            cat screenshots/reports/ui-ux-analysis.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Screenshot analysis report not generated" >> $GITHUB_STEP_SUMMARY
+          fi
