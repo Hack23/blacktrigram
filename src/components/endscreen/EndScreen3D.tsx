@@ -1,9 +1,15 @@
 import { Html, PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
-import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useAudio } from "../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../systems";
 import { MatchStatistics } from "../../systems/combat";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
@@ -105,7 +111,9 @@ const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
 /**
  * Main Three.js background scene
  */
-const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({ isVictory }) => {
+const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({
+  isVictory,
+}) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
   useFrame(() => {
@@ -114,7 +122,9 @@ const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({ isVictory }) 
     }
   });
 
-  const primaryColor = isVictory ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.ACCENT_RED;
+  const primaryColor = isVictory
+    ? KOREAN_COLORS.ACCENT_GOLD
+    : KOREAN_COLORS.ACCENT_RED;
 
   return (
     <>
@@ -173,10 +183,10 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
-      console.warn('⚠️ WebGL context lost in EndScreen');
+      console.warn("⚠️ WebGL context lost in EndScreen");
     },
     onContextRestored: () => {
-      console.log('✅ WebGL context restored in EndScreen');
+      console.log("✅ WebGL context restored in EndScreen");
     },
     autoRestore: true,
   });
@@ -188,20 +198,33 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   const winnerId = winner.id;
   const isVictory = winnerId === "player-0" || winnerId.endsWith("-0");
 
-  // Responsive layout
+  // Responsive layout with large desktop support
   const isMobile = useMemo(() => width < 768, [width]);
   const isTablet = useMemo(() => width >= 768 && width < 1024, [width]);
+  const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
 
   const layoutConstants = useMemo(
     () => ({
-      titleFontSize: isMobile ? 36 : isTablet ? 48 : 64,
-      subtitleFontSize: isMobile ? 18 : isTablet ? 24 : 32,
-      buttonFontSize: isMobile ? 14 : isTablet ? 16 : 18,
-      padding: isMobile ? 15 : isTablet ? 20 : 30,
-      buttonPadding: isMobile ? "10px 20px" : isTablet ? "12px 24px" : "15px 30px",
-      spacing: isMobile ? 15 : isTablet ? 20 : 30,
+      titleFontSize: isMobile ? 36 : isTablet ? 44 : isLargeDesktop ? 44 : 54,
+      subtitleFontSize: isMobile
+        ? 18
+        : isTablet
+        ? 22
+        : isLargeDesktop
+        ? 22
+        : 28,
+      buttonFontSize: isMobile ? 14 : isTablet ? 15 : isLargeDesktop ? 14 : 16,
+      padding: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 15 : 20,
+      buttonPadding: isMobile
+        ? "10px 20px"
+        : isTablet
+        ? "11px 22px"
+        : isLargeDesktop
+        ? "10px 20px"
+        : "12px 25px",
+      spacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 15 : 20,
     }),
-    [isMobile, isTablet]
+    [isMobile, isTablet, isLargeDesktop]
   );
 
   // Play victory/defeat audio on mount
@@ -254,7 +277,9 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
     ? { korean: "승리!", english: "Victory!" }
     : { korean: "패배", english: "Defeat" };
 
-  const primaryColor = isVictory ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.ACCENT_RED;
+  const primaryColor = isVictory
+    ? KOREAN_COLORS.ACCENT_GOLD
+    : KOREAN_COLORS.ACCENT_RED;
 
   return (
     <div
@@ -266,6 +291,9 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
         overflow: "hidden",
       }}
     >
+      {/* Volume Control - outside Canvas to maintain AudioProvider context */}
+      <VolumeControl position="top-right" compact={isMobile} />
+
       <Canvas
         style={{ width, height }}
         dpr={[1, 2]}
@@ -287,9 +315,6 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
 
         {/* UI Overlay */}
         <Html fullscreen>
-          {/* Volume Control */}
-          <VolumeControl position="top-right" compact={isMobile} />
-          
           <div
             data-testid="end-screen-overlay"
             style={{
@@ -305,7 +330,10 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
               background: `linear-gradient(180deg, ${hexToRgbaString(
                 KOREAN_COLORS.UI_BACKGROUND_DARK,
                 0.3
-              )} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)} 100%)`,
+              )} 0%, ${hexToRgbaString(
+                KOREAN_COLORS.UI_BACKGROUND_DARK,
+                0.8
+              )} 100%)`,
             }}
           >
             {/* Result Title */}
@@ -354,8 +382,14 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
               onClick={toggleStats}
               onMouseEnter={() => audio.playSFX?.("menu_hover")}
               style={{
-                background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8),
-                border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
+                background: hexToRgbaString(
+                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  0.8
+                ),
+                border: `2px solid ${hexToRgbaString(
+                  KOREAN_COLORS.PRIMARY_CYAN,
+                  0.8
+                )}`,
                 borderRadius: "8px",
                 padding: layoutConstants.buttonPadding,
                 fontSize: layoutConstants.buttonFontSize,
@@ -368,7 +402,9 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
               }}
               data-testid="toggle-stats-button"
             >
-              {showStats ? "통계 숨기기 | Hide Stats" : "통계 보기 | View Stats"}
+              {showStats
+                ? "통계 숨기기 | Hide Stats"
+                : "통계 보기 | View Stats"}
             </button>
 
             {/* Match Statistics Display */}
@@ -416,8 +452,14 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
                   onClick={handleRematch}
                   onMouseEnter={() => audio.playSFX?.("menu_hover")}
                   style={{
-                    background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8),
-                    border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)}`,
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                      0.8
+                    ),
+                    border: `2px solid ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.8
+                    )}`,
                     borderRadius: "8px",
                     padding: layoutConstants.buttonPadding,
                     fontSize: layoutConstants.buttonFontSize,
@@ -439,8 +481,14 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
                   onClick={handleViewReplay}
                   onMouseEnter={() => audio.playSFX?.("menu_hover")}
                   style={{
-                    background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8),
-                    border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.8)}`,
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                      0.8
+                    ),
+                    border: `2px solid ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_BLUE,
+                      0.8
+                    )}`,
                     borderRadius: "8px",
                     padding: layoutConstants.buttonPadding,
                     fontSize: layoutConstants.buttonFontSize,

@@ -4,17 +4,14 @@
  * @category Game Components
  */
 
-// Three.js intro screen (primary)
+// Primary Three.js intro screen
 export { IntroScreenThreeJS } from "./IntroScreenThreeJS";
 
-// Three.js HTML-based components
+// Three.js HTML-based UI components
 export * from "./components";
 
 // Type exports
 export type { IntroScreenThreeJSProps } from "./IntroScreenThreeJS";
 
-// export { IntroScreen } from "./IntroScreen";
-// export { default as ArchetypeDisplay } from "./components/ArchetypeDisplay";
-// export { MenuSection } from "./components/MenuSection";
-// export { PhilosophySection } from "../screens/PhilosophySection";
-// export { default as Intro } from "./IntroScreen";
+// Default export for convenience
+export { IntroScreenThreeJS as default } from "./IntroScreenThreeJS";

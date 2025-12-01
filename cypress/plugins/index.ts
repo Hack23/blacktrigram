@@ -23,7 +23,6 @@ module.exports = (
   // Video recording optimization for Korean martial arts game
   on("before:browser:launch", (browser, launchOptions) => {
     if (browser.name === "chrome") {
-      // Optimize Chrome for PixiJS testing
       launchOptions.args.push("--disable-web-security");
       launchOptions.args.push("--disable-features=VizDisplayCompositor");
       launchOptions.args.push("--disable-background-timer-throttling");

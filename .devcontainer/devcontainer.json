@@ -49,13 +49,13 @@
   // Removed 'npm run build' and 'npx cypress verify' to speed up creation and reduce resource load.
   "postCreateCommand": "npm install -g npm@latest typescript@latest eslint@latest && npm ci",
 
-
-
-  // Enhanced environment for stability
+  // Enhanced environment for Three.js testing stability
   "containerEnv": {
     "DISPLAY": ":99",
     "NPM_CONFIG_UPDATE_NOTIFIER": "false",
-    "NPM_CONFIG_FUND": "false"
+    "NPM_CONFIG_FUND": "false",
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "CYPRESS_CACHE_FOLDER": "/home/node/.cache/Cypress"
   },
 
   "shutdownAction": "none",

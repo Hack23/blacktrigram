@@ -1,9 +1,15 @@
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
-import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useAudio } from "../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems";
 import { KoreanCulture } from "../../systems/trigram/KoreanCulture";
 import { TRIGRAM_DATA } from "../../systems/trigram/types";
@@ -67,7 +73,12 @@ const BackgroundScene: React.FC = () => {
       {/* Cyberpunk grid plane */}
       <gridHelper
         ref={gridRef}
-        args={[100, 50, KOREAN_COLORS.ACCENT_GOLD, KOREAN_COLORS.UI_BACKGROUND_MEDIUM]}
+        args={[
+          100,
+          50,
+          KOREAN_COLORS.ACCENT_GOLD,
+          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+        ]}
         position={[0, -5, 0]}
         rotation={[0, 0, 0]}
       />
@@ -81,18 +92,16 @@ const BackgroundScene: React.FC = () => {
 /**
  * Three.js-based PhilosophyScreen Component
  */
-export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = ({
-  onReturnToMenu,
-  width: propWidth,
-  height: propHeight,
-}) => {
+export const PhilosophyScreenThreeJS: React.FC<
+  PhilosophyScreenThreeJSProps
+> = ({ onReturnToMenu, width: propWidth, height: propHeight }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
-      console.warn('⚠️ WebGL context lost in PhilosophyScreen');
+      console.warn("⚠️ WebGL context lost in PhilosophyScreen");
     },
     onContextRestored: () => {
-      console.log('✅ WebGL context restored in PhilosophyScreen');
+      console.log("✅ WebGL context restored in PhilosophyScreen");
     },
     autoRestore: true,
   });
@@ -104,17 +113,19 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
   const screenWidth = propWidth ?? width;
   const screenHeight = propHeight ?? height;
 
-  // Responsive layout calculations
+  // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
+  const isTablet = screenWidth >= 768 && screenWidth < 1024;
+  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
   const layoutConstants = useMemo(
     () => ({
-      padding: isMobile ? 20 : 30,
-      headerHeight: isMobile ? 100 : 120,
-      footerHeight: isMobile ? 100 : 120,
-      sectionSpacing: isMobile ? 15 : 20,
+      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 18 : 25,
+      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
+      footerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
+      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 12 : 18,
     }),
-    [isMobile]
+    [isMobile, isTablet, isLargeDesktop]
   );
 
   // Memoize colors for performance
@@ -127,11 +138,23 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
       borderCyan: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6),
       borderMagenta: hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.6),
       borderRed: hexToRgbaString(KOREAN_COLORS.KOREAN_RED, 0.6),
-      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
-      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
-      textTertiary: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
+      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
+        6,
+        "0"
+      )}`,
+      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
+        6,
+        "0"
+      )}`,
+      textTertiary: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(
+        6,
+        "0"
+      )}`,
       accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
+        6,
+        "0"
+      )}`,
     }),
     []
   );
@@ -194,10 +217,7 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
     []
   );
 
-  const archetypes = useMemo(
-    () => Object.entries(PLAYER_ARCHETYPES_DATA),
-    []
-  );
+  const archetypes = useMemo(() => Object.entries(PLAYER_ARCHETYPES_DATA), []);
 
   // Grid layout calculations
   const valuesPerRow = isMobile ? 3 : 6;
@@ -213,6 +233,9 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
       }}
       data-testid="philosophy-screen"
     >
+      {/* Volume Control - outside Canvas to maintain AudioProvider context */}
+      <VolumeControl position="top-right" compact={isMobile} />
+
       {/* Three.js Canvas for 3D background */}
       <Canvas
         style={{
@@ -238,9 +261,6 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
-          {/* Volume Control */}
-          <VolumeControl position="top-right" compact={isMobile} />
-          
           <div
             style={{
               width: "100%",
@@ -273,7 +293,10 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                   fontWeight: "bold",
                   color: colors.accentGold,
                   margin: 0,
-                  textShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`,
+                  textShadow: `0 0 15px ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.6
+                  )}`,
                 }}
               >
                 흑괘 무도 철학
@@ -287,7 +310,7 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
               >
                 Black Trigram Martial Philosophy
               </p>
-              
+
               {/* Decorative line */}
               <div
                 style={{
@@ -345,7 +368,10 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                     <div
                       key={key}
                       style={{
-                        background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7),
+                        background: hexToRgbaString(
+                          KOREAN_COLORS.UI_BACKGROUND_DARK,
+                          0.7
+                        ),
                         borderRadius: "6px",
                         border: `1px solid ${colors.borderGold}`,
                         padding: "12px",
@@ -410,9 +436,14 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                     <div
                       key={trigram.stance}
                       style={{
-                        background: hexToRgbaString(trigram.theme.primary, 0.25),
+                        background: hexToRgbaString(
+                          trigram.theme.primary,
+                          0.25
+                        ),
                         borderRadius: "8px",
-                        border: `2px solid #${trigram.theme.primary.toString(16).padStart(6, "0")}`,
+                        border: `2px solid #${trigram.theme.primary
+                          .toString(16)
+                          .padStart(6, "0")}`,
                         padding: "15px",
                       }}
                       data-testid={`trigram-${trigram.stance}`}
@@ -421,7 +452,9 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                       <div
                         style={{
                           fontSize: isMobile ? "32px" : "40px",
-                          color: `#${trigram.theme.primary.toString(16).padStart(6, "0")}`,
+                          color: `#${trigram.theme.primary
+                            .toString(16)
+                            .padStart(6, "0")}`,
                           textAlign: "center",
                           marginBottom: "10px",
                         }}
@@ -452,7 +485,8 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                           fontWeight: "bold",
                         }}
                       >
-                        {trigram.chinese} - {trigram.attribute.chinese}, {trigram.attribute.korean}
+                        {trigram.chinese} - {trigram.attribute.chinese},{" "}
+                        {trigram.attribute.korean}
                       </div>
 
                       {/* Core meaning */}
@@ -531,7 +565,9 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                       style={{
                         background: hexToRgbaString(data.colors.primary, 0.2),
                         borderRadius: "6px",
-                        border: `1px solid #${data.colors.primary.toString(16).padStart(6, "0")}`,
+                        border: `1px solid #${data.colors.primary
+                          .toString(16)
+                          .padStart(6, "0")}`,
                         padding: "15px",
                       }}
                       data-testid={`archetype-${archetype}`}
@@ -541,7 +577,9 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                         style={{
                           fontSize: isMobile ? "16px" : "18px",
                           fontWeight: "bold",
-                          color: `#${data.colors.primary.toString(16).padStart(6, "0")}`,
+                          color: `#${data.colors.primary
+                            .toString(16)
+                            .padStart(6, "0")}`,
                           marginBottom: "8px",
                         }}
                       >
@@ -624,7 +662,8 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                     marginBottom: "4px",
                   }}
                 >
-                  무술은 단순한 격투가 아닌, 자신을 수양하고 상대를 존중하는 도(道)입니다
+                  무술은 단순한 격투가 아닌, 자신을 수양하고 상대를 존중하는
+                  도(道)입니다
                 </div>
                 <div
                   style={{
@@ -633,7 +672,8 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                     fontStyle: "italic",
                   }}
                 >
-                  Martial arts is not mere combat, but the Way (道) of self-cultivation and respect for others
+                  Martial arts is not mere combat, but the Way (道) of
+                  self-cultivation and respect for others
                 </div>
               </div>
 
@@ -652,7 +692,10 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                   transition: "all 0.3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.2);
+                  e.currentTarget.style.background = hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.2
+                  );
                   e.currentTarget.style.transform = "scale(1.05)";
                 }}
                 onMouseLeave={(e) => {
@@ -678,7 +721,10 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                 <button
                   onClick={handleBackClick}
                   style={{
-                    background: `linear-gradient(135deg, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)})`,
+                    background: `linear-gradient(135deg, ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.8
+                    )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)})`,
                     border: `2px solid ${colors.borderGold}`,
                     borderRadius: "8px",
                     padding: "10px 20px",
@@ -690,7 +736,10 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "scale(1.05)";
-                    e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`;
+                    e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.6
+                    )}`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "scale(1)";
@@ -704,12 +753,17 @@ export const PhilosophyScreenThreeJS: React.FC<PhilosophyScreenThreeJSProps> = (
                 {/* Keyboard Hint */}
                 <div
                   style={{
-                    background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9),
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                      0.9
+                    ),
                     borderRadius: "6px",
                     padding: "8px 12px",
                     fontSize: isMobile ? "11px" : "12px",
                     fontWeight: "bold",
-                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                      16
+                    ).padStart(6, "0")}`,
                     border: `1px solid ${colors.borderGold}`,
                     display: "flex",
                     flexDirection: "column",
