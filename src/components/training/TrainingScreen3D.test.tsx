@@ -95,4 +95,19 @@ describe("TrainingScreen3D", () => {
     );
     expect(container).toBeTruthy();
   });
+
+  it("should render return-to-menu button", () => {
+    const { getByTestId } = render(<TrainingScreen3D {...defaultProps} />);
+    expect(getByTestId("return-to-menu-button")).toBeInTheDocument();
+  });
+
+  it("should call onReturnToMenu when button clicked", () => {
+    const mockOnReturnToMenu = vi.fn();
+    const { getByTestId } = render(
+      <TrainingScreen3D {...defaultProps} onReturnToMenu={mockOnReturnToMenu} />
+    );
+    const button = getByTestId("return-to-menu-button");
+    button.click();
+    expect(mockOnReturnToMenu).toHaveBeenCalledTimes(1);
+  });
 });

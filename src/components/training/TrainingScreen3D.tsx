@@ -16,7 +16,8 @@ import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandl
 import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
 import { Position, TrigramStance } from "../../types/common";
-import { KOREAN_COLORS } from "../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { VolumeControl } from "../ui/VolumeControl";
 import TrainingArena3D from "./components/TrainingArena3D";
@@ -540,6 +541,48 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 />
               </div>
             )}
+
+            {/* Bottom Center - Return to Menu Button */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 20,
+                left: "50%",
+                transform: "translateX(-50%)",
+                pointerEvents: "all",
+              }}
+            >
+              <style>
+                {`
+                  .training-return-menu-btn {
+                    background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 16px;
+                    font-size: ${isMobile ? "12px" : "14px"};
+                    font-weight: bold;
+                    font-family: ${FONT_FAMILY.KOREAN};
+                    color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)};
+                  }
+                  .training-return-menu-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 0 20px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)};
+                  }
+                `}
+              </style>
+              <button
+                onClick={onReturnToMenu}
+                onMouseEnter={() => audio.playSFX("menu_hover")}
+                className="training-return-menu-btn"
+                data-testid="return-to-menu-button"
+                aria-label="Return to main menu"
+              >
+                메뉴로 | Return to Menu
+              </button>
+            </div>
           </div>
         </Html>
       </Canvas>
