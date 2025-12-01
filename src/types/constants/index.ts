@@ -14,9 +14,6 @@ export {
 } from "./typography";
 export { HEALTH_COLORS, UI_CONSTANTS } from "./ui";
 
-// Import for use in constants
-import { KOREAN_COLORS } from "./colors";
-
 // Fix: Provide default export
 export { KOREAN_COLORS as default } from "./colors";
 
@@ -54,7 +51,7 @@ export const PERFORMANCE_RATING_THRESHOLDS = {
       korean: "완벽한 전투",
       english: "Perfect Combat",
     },
-    color: KOREAN_COLORS.ACCENT_GOLD,
+    color: 0xffd700, // KOREAN_COLORS.ACCENT_GOLD
   },
   A: {
     minScore: 75,
@@ -64,7 +61,7 @@ export const PERFORMANCE_RATING_THRESHOLDS = {
       korean: "우수한 전투",
       english: "Excellent Combat",
     },
-    color: KOREAN_COLORS.PRIMARY_CYAN,
+    color: 0x00ffff, // KOREAN_COLORS.PRIMARY_CYAN
   },
   B: {
     minScore: 60,
@@ -74,7 +71,7 @@ export const PERFORMANCE_RATING_THRESHOLDS = {
       korean: "양호한 전투",
       english: "Good Combat",
     },
-    color: KOREAN_COLORS.ACCENT_BLUE,
+    color: 0x3399ff, // KOREAN_COLORS.ACCENT_BLUE
   },
   C: {
     minScore: 0,
@@ -84,7 +81,7 @@ export const PERFORMANCE_RATING_THRESHOLDS = {
       korean: "보통 전투",
       english: "Average Combat",
     },
-    color: KOREAN_COLORS.TEXT_SECONDARY,
+    color: 0xcccccc, // KOREAN_COLORS.TEXT_SECONDARY
   },
 } as const;
 

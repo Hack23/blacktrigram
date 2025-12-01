@@ -22,14 +22,15 @@ const toCssColor = (hex: number): string => hexToRgbaString(hex, 1);
 function calculatePerformanceScore(stats: MatchStatistics): number {
   const winnerStats = stats.winner === 0 ? stats.player1 : stats.player2;
   
-  // Calculate accuracy (hits landed / total attempts)
-  const totalAttempts = winnerStats.hitsLanded + (winnerStats.hitsTaken || 0);
-  const accuracy = totalAttempts > 0 ? (winnerStats.hitsLanded / totalAttempts) * 100 : 0;
+  // Calculate accuracy based on offensive performance only
+  // Use a normalized scale: higher hits landed = better accuracy
+  const accuracy = Math.min((winnerStats.hitsLanded / 10) * 100, 100);
   
   // Calculate damage efficiency (damage dealt / damage taken ratio)
+  // Perfect defense (no damage taken) gets bonus ratio
   const damageRatio = winnerStats.totalDamageReceived > 0
     ? (winnerStats.totalDamageDealt / winnerStats.totalDamageReceived)
-    : winnerStats.totalDamageDealt > 0 ? 1 : 0;
+    : winnerStats.totalDamageDealt > 0 ? 2 : 0;
   const damageScore = Math.min(damageRatio * 30, 30); // Max 30 points
   
   // Perfect strikes and vital point hits bonus
@@ -80,6 +81,12 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
   );
 
   const ratingInfo = PERFORMANCE_RATING_THRESHOLDS[rating];
+  
+  // Extract winner stats for clarity
+  const winnerStats = useMemo(
+    () => matchStats.winner === 0 ? matchStats.player1 : matchStats.player2,
+    [matchStats]
+  );
 
   return (
     <div
@@ -192,19 +199,19 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
         >
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.ACCENT_GOLD), fontWeight: "bold" }}>
-              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).perfectStrikes ?? 0}
+              {winnerStats.perfectStrikes ?? 0}
             </div>
             <div>완벽 | Perfect</div>
           </div>
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.VITAL_POINT_HIT), fontWeight: "bold" }}>
-              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).vitalPointHits ?? 0}
+              {winnerStats.vitalPointHits ?? 0}
             </div>
             <div>급소 | Vital Hits</div>
           </div>
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN), fontWeight: "bold" }}>
-              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).techniques?.length ?? 0}
+              {winnerStats.techniques?.length ?? 0}
             </div>
             <div>기술 | Techniques</div>
           </div>

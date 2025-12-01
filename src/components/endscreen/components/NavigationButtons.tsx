@@ -18,6 +18,95 @@ export interface NavigationButtonsProps {
 const toCssColor = (hex: number): string => hexToRgbaString(hex, 1);
 
 /**
+ * Configuration for a styled navigation button
+ */
+interface ButtonConfig {
+  readonly onClick: () => void;
+  readonly onMouseEnter: () => void;
+  readonly primaryColor: number;
+  readonly borderColor?: number;
+  readonly text: { readonly korean: string; readonly english: string };
+  readonly testId: string;
+  readonly isPrimary?: boolean;
+}
+
+/**
+ * Reusable styled button component for navigation
+ */
+const StyledButton: React.FC<ButtonConfig & { readonly buttonPadding: string; readonly buttonFontSize: number; readonly minWidth: string }> = ({
+  onClick,
+  onMouseEnter,
+  primaryColor,
+  borderColor,
+  text,
+  testId,
+  isPrimary = false,
+  buttonPadding,
+  buttonFontSize,
+  minWidth,
+}) => {
+  const baseBackground = isPrimary
+    ? hexToRgbaString(primaryColor, 0.9)
+    : hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
+  
+  const hoverBackground = isPrimary
+    ? hexToRgbaString(primaryColor, 1)
+    : hexToRgbaString(primaryColor, 0.2);
+  
+  const textColor = isPrimary
+    ? toCssColor(KOREAN_COLORS.UI_BACKGROUND_DARK)
+    : toCssColor(primaryColor);
+  
+  const border = isPrimary
+    ? "none"
+    : `2px solid ${hexToRgbaString(borderColor ?? primaryColor, 0.8)}`;
+  
+  const hoverBorderColor = isPrimary
+    ? "none"
+    : `2px solid ${hexToRgbaString(borderColor ?? primaryColor, 1)}`;
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      style={{
+        background: baseBackground,
+        border,
+        borderRadius: "8px",
+        padding: buttonPadding,
+        fontSize: buttonFontSize,
+        color: textColor,
+        fontFamily: FONT_FAMILY.KOREAN,
+        fontWeight: "bold",
+        cursor: "pointer",
+        transition: "all 0.2s ease",
+        minWidth,
+        boxShadow: `0 4px 12px ${hexToRgbaString(primaryColor, 0.3)}`,
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.background = hoverBackground;
+        e.currentTarget.style.transform = "translateY(-2px)";
+        e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(primaryColor, 0.4)}`;
+        if (!isPrimary) {
+          e.currentTarget.style.border = hoverBorderColor;
+        }
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.background = baseBackground;
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(primaryColor, 0.3)}`;
+        if (!isPrimary) {
+          e.currentTarget.style.border = border;
+        }
+      }}
+      data-testid={testId}
+    >
+      {text.korean} | {text.english}
+    </button>
+  );
+};
+
+/**
  * Navigation Buttons Component
  * Provides action buttons for replay and menu navigation
  */
@@ -37,6 +126,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
     ? "11px 22px"
     : "12px 25px";
   const spacing = isMobile ? 10 : isTablet ? 12 : 15;
+  const minWidth = isMobile ? "200px" : "150px";
 
   const handleReturnToMenu = useCallback(() => {
     audio.playSFX?.("menu_select");
@@ -73,110 +163,48 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
       }}
     >
       {/* Return to Menu Button - Primary Action */}
-      <button
+      <StyledButton
         onClick={handleReturnToMenu}
         onMouseEnter={handleHover}
-        style={{
-          background: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9),
-          border: "none",
-          borderRadius: "8px",
-          padding: buttonPadding,
-          fontSize: buttonFontSize,
-          color: toCssColor(KOREAN_COLORS.UI_BACKGROUND_DARK),
-          fontFamily: FONT_FAMILY.KOREAN,
-          fontWeight: "bold",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          minWidth: isMobile ? "200px" : "150px",
-          boxShadow: `0 4px 12px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
-        }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1);
-          e.currentTarget.style.transform = "translateY(-2px)";
-          e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`;
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9);
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`;
-        }}
-        data-testid="return-to-menu-button"
-      >
-        메뉴로 | Return to Menu
-      </button>
+        primaryColor={KOREAN_COLORS.PRIMARY_CYAN}
+        text={{ korean: "메뉴로", english: "Return to Menu" }}
+        testId="return-to-menu-button"
+        isPrimary={true}
+        buttonPadding={buttonPadding}
+        buttonFontSize={buttonFontSize}
+        minWidth={minWidth}
+      />
 
       {/* Rematch Button - Secondary Action */}
       {onRematch && (
-        <button
+        <StyledButton
           onClick={handleRematch}
           onMouseEnter={handleHover}
-          style={{
-            background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8),
-            border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)}`,
-            borderRadius: "8px",
-            padding: buttonPadding,
-            fontSize: buttonFontSize,
-            color: toCssColor(KOREAN_COLORS.ACCENT_GOLD),
-            fontFamily: FONT_FAMILY.KOREAN,
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            minWidth: isMobile ? "200px" : "150px",
-            boxShadow: `0 4px 12px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.2)}`,
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.2);
-            e.currentTarget.style.borderColor = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1);
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3)}`;
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
-            e.currentTarget.style.borderColor = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8);
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.2)}`;
-          }}
-          data-testid="rematch-button"
-        >
-          재대결 | Rematch
-        </button>
+          primaryColor={KOREAN_COLORS.ACCENT_GOLD}
+          borderColor={KOREAN_COLORS.ACCENT_GOLD}
+          text={{ korean: "재대결", english: "Rematch" }}
+          testId="rematch-button"
+          isPrimary={false}
+          buttonPadding={buttonPadding}
+          buttonFontSize={buttonFontSize}
+          minWidth={minWidth}
+        />
       )}
 
       {/* View Replay Button - Tertiary Action */}
       {onViewReplay && (
-        <button
+        <StyledButton
           onClick={handleViewReplay}
           onMouseEnter={handleHover}
-          style={{
-            background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8),
-            border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.8)}`,
-            borderRadius: "8px",
-            padding: buttonPadding,
-            fontSize: buttonFontSize,
-            color: toCssColor(KOREAN_COLORS.ACCENT_BLUE),
-            fontFamily: FONT_FAMILY.KOREAN,
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            minWidth: isMobile ? "200px" : "150px",
-            boxShadow: `0 4px 12px ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.2)}`,
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.2);
-            e.currentTarget.style.borderColor = hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 1);
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.3)}`;
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
-            e.currentTarget.style.borderColor = hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.8);
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.2)}`;
-          }}
-          data-testid="view-replay-button"
-        >
-          리플레이 | View Replay
-        </button>
+          primaryColor={KOREAN_COLORS.ACCENT_BLUE}
+          borderColor={KOREAN_COLORS.ACCENT_BLUE}
+          text={{ korean: "리플레이", english: "View Replay" }}
+          testId="view-replay-button"
+          isPrimary={false}
+          buttonPadding={buttonPadding}
+          buttonFontSize={buttonFontSize}
+          minWidth={minWidth}
+        />
       )}
 
       {/* CSS Animations */}
