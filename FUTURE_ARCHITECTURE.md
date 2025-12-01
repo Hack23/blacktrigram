@@ -10,22 +10,22 @@ This document outlines the evolutionary architecture roadmap for Black Trigram, 
 
 ### Current State Documentation
 
-| Document                                      | Status      | Description                               |
-| --------------------------------------------- | ----------- | ----------------------------------------- |
-| **[Current Architecture](ARCHITECTURE.md)**   | ✅ Complete | C4 model of existing system structure     |
-| **[Game Design](game-design.md)**            | ✅ Complete | Korean martial arts game mechanics vision |
-| **[README](README.md)**                      | ✅ Complete | Project overview and combat features      |
-| **[Mindmap](mindmap.md)**                    | ✅ Complete | Visual concept map of Korean martial arts |
+| Document                                    | Status      | Description                               |
+| ------------------------------------------- | ----------- | ----------------------------------------- |
+| **[Current Architecture](ARCHITECTURE.md)** | ✅ Complete | C4 model of existing system structure     |
+| **[Game Design](game-design.md)**           | ✅ Complete | Korean martial arts game mechanics vision |
+| **[README](README.md)**                     | ✅ Complete | Project overview and combat features      |
+| **[Mindmap](mindmap.md)**                   | ✅ Complete | Visual concept map of Korean martial arts |
 
 ### Future Architecture Phases
 
 | Document                     | Status         | Description                        |
 | ---------------------------- | -------------- | ---------------------------------- |
-| **FUTURE_ARCHITECTURE.md**  | 📋 This Doc   | Evolutionary roadmap and planning  |
-| **Phase 1: Foundation**     | 🔄 In Progress | Core combat and vital point system |
-| **Phase 2: Authenticity**   | 📋 Planned     | Korean cultural integration        |
+| **FUTURE_ARCHITECTURE.md**   | 📋 This Doc    | Evolutionary roadmap and planning  |
+| **Phase 1: Foundation**      | 🔄 In Progress | Core combat and vital point system |
+| **Phase 2: Authenticity**    | 📋 Planned     | Korean cultural integration        |
 | **Phase 3: Advanced Combat** | 📋 Planned     | Realistic physics and archetypes   |
-| **Phase 4: Mastery**        | 📋 Planned     | Training system and AI guidance    |
+| **Phase 4: Mastery**         | 📋 Planned     | Training system and AI guidance    |
 
 </div>
 
@@ -36,7 +36,8 @@ This document outlines the evolutionary architecture roadmap for Black Trigram, 
 The current codebase provides a solid foundation with:
 
 #### ✅ Strengths
-- **React 19 + PixiJS 8** integration with `@pixi/react`
+
+- **React 19 + Three.js** integration with `@react-three/fiber` and `@react-three/drei`
 - **TypeScript strict mode** for type safety
 - **Audio system** with Howler.js for damage-based feedback
 - **Component architecture** with Korean UI elements
@@ -44,6 +45,7 @@ The current codebase provides a solid foundation with:
 - **Korean font support** with Noto Sans KR
 
 #### 🔄 Current Limitations
+
 - **Empty components** - Most game components are placeholder files
 - **Basic audio system** - Limited to simple sound effects
 - **No combat mechanics** - Missing vital point targeting system
@@ -57,21 +59,21 @@ The current codebase provides a solid foundation with:
 graph TD
     A[Current Codebase] --> B[Strong Foundation]
     A --> C[Implementation Gaps]
-    
-    B --> B1[React + PixiJS Integration]
+
+    B --> B1[React + Three.js Integration]
     B --> B2[TypeScript Strict Mode]
     B --> B3[Audio Framework]
     B --> B4[Testing Setup]
-    
+
     C --> C1[Empty Game Components]
     C --> C2[Missing Combat Logic]
     C --> C3[No Vital Point System]
     C --> C4[Basic UI Components]
     C --> C5[Missing Training Mode]
-    
+
     classDef strength fill:#27ae60,stroke:#229954,color:white
     classDef gap fill:#e74c3c,stroke:#c0392b,color:white
-    
+
     class B1,B2,B3,B4 strength
     class C1,C2,C3,C4,C5 gap
 ```
@@ -79,15 +81,19 @@ graph TD
 ## 🗺️ Future Architecture Roadmap
 
 ### Phase 1: Combat Foundation (Months 1-3)
+
 **Core combat mechanics and vital point targeting**
 
 ### Phase 2: Korean Authenticity (Months 4-6)
+
 **Cultural integration and traditional elements**
 
 ### Phase 3: Advanced Combat (Months 7-9)
+
 **Realistic physics and player archetypes**
 
 ### Phase 4: Mastery System (Months 10-12)
+
 **Training, AI guidance, and educational content**
 
 ---
@@ -95,6 +101,7 @@ graph TD
 ## 🎯 Phase 1: Combat Foundation
 
 ### Architecture Goals
+
 - Implement core vital point targeting system
 - Develop realistic combat calculations
 - Create interactive combat interface
@@ -134,14 +141,14 @@ C4Component
     Container_Boundary(vitalPointEngine, "Vital Point Engine") {
         Component(vitalPointManager, "VitalPointManager", "TypeScript", "Manages 70 anatomical targets with Korean names")
         Component(strikeCalculator, "StrikeCalculator", "TypeScript", "Calculates combat effectiveness based on precision")
-        Component(anatomyRenderer, "AnatomyRenderer", "PixiJS", "Visual anatomy overlay with interactive targeting")
-        Component(combatFeedback, "CombatFeedback", "PixiJS + Audio", "Real-time damage and audio feedback")
+        Component(anatomyRenderer, "AnatomyRenderer", "Three.js", "Visual anatomy overlay with interactive targeting")
+        Component(combatFeedback, "CombatFeedback", "Three.js + Audio", "Real-time damage and audio feedback")
     }
 
     Container_Boundary(combatInterface, "Combat Interface") {
-        Component(targetingSystem, "TargetingSystem", "React + PixiJS", "Mouse/touch targeting for vital points")
-        Component(combatHUD, "CombatHUD", "React + PixiJS", "Korean-themed combat status display")
-        Component(techniqueSelector, "TechniqueSelector", "React + PixiJS", "8 trigram technique selection")
+        Component(targetingSystem, "TargetingSystem", "React + Three.js", "Mouse/touch targeting for vital points")
+        Component(combatHUD, "CombatHUD", "React + Three.js", "Korean-themed combat status display")
+        Component(techniqueSelector, "TechniqueSelector", "React + Three.js", "8 trigram technique selection")
     }
 
     Container_Boundary(dataLayer, "Data Layer") {
@@ -186,7 +193,7 @@ interface VitalPoint {
   };
   readonly techniques: readonly TrigramTechnique[];
   readonly anatomicalInfo: {
-    readonly type: 'nerve' | 'vessel' | 'joint' | 'pressure';
+    readonly type: "nerve" | "vessel" | "joint" | "pressure";
     readonly description: string;
     readonly medicalWarning: string;
   };
@@ -207,6 +214,7 @@ interface CombatCalculation {
 ## 🇰🇷 Phase 2: Korean Authenticity
 
 ### Architecture Goals
+
 - Integrate traditional Korean martial arts terminology
 - Implement I Ching trigram philosophy in combat
 - Create authentic Korean dojang environment
@@ -226,17 +234,17 @@ C4Component
     }
 
     Container_Boundary(dojanEnvironment, "Dojang Environment") {
-        Component(traditionalDojang, "TraditionalDojang", "PixiJS", "Authentic Korean training hall visualization")
-        Component(culturalSymbols, "CulturalSymbols", "PixiJS", "Traditional Korean symbols and decorations")
-        Component(seasonalElements, "SeasonalElements", "PixiJS", "Korean seasonal aesthetics and colors")
-        Component(meditationSpace, "MeditationSpace", "PixiJS", "Traditional meditation and philosophy area")
+        Component(traditionalDojang, "TraditionalDojang", "Three.js", "Authentic Korean training hall visualization")
+        Component(culturalSymbols, "CulturalSymbols", "Three.js", "Traditional Korean symbols and decorations")
+        Component(seasonalElements, "SeasonalElements", "Three.js", "Korean seasonal aesthetics and colors")
+        Component(meditationSpace, "MeditationSpace", "Three.js", "Traditional meditation and philosophy area")
     }
 
     Container_Boundary(educationalContent, "Educational Content") {
-        Component(martialArtsHistory, "MartialArtsHistory", "React + PixiJS", "Interactive Korean martial arts timeline")
-        Component(philosophyLessons, "PhilosophyLessons", "React + PixiJS", "I Ching trigram teachings")
-        Component(culturalContext, "CulturalContext", "React + PixiJS", "Korean martial arts in modern context")
-        Component(ethicsTraining, "EthicsTraining", "React + PixiJS", "Responsible martial arts practice")
+        Component(martialArtsHistory, "MartialArtsHistory", "React + Three.js", "Interactive Korean martial arts timeline")
+        Component(philosophyLessons, "PhilosophyLessons", "React + Three.js", "I Ching trigram teachings")
+        Component(culturalContext, "CulturalContext", "React + Three.js", "Korean martial arts in modern context")
+        Component(ethicsTraining, "EthicsTraining", "React + Three.js", "Responsible martial arts practice")
     }
 
     Rel(koreanTerminology, pronunciationGuide, "Provides audio pronunciation")
@@ -289,6 +297,7 @@ interface DojanEnvironment {
 ## ⚔️ Phase 3: Advanced Combat
 
 ### Architecture Goals
+
 - Implement 5 distinct player archetypes
 - Create realistic physics and body mechanics
 - Develop advanced combat AI
@@ -308,7 +317,7 @@ C4Component
     }
 
     Container_Boundary(realisticPhysics, "Realistic Physics") {
-        Component(bodyMechanics, "BodyMechanics", "PixiJS + Physics", "Realistic human body physics simulation")
+        Component(bodyMechanics, "BodyMechanics", "Three.js + Physics", "Realistic human body physics simulation")
         Component(injurySystem, "InjurySystem", "TypeScript", "Progressive damage and healing mechanics")
         Component(balanceEngine, "BalanceEngine", "Physics", "Realistic stance and momentum simulation")
         Component(painResponse, "PainResponse", "TypeScript", "Physiological pain affecting performance")
@@ -358,7 +367,7 @@ interface PlayerArchetype {
   readonly background: ArchetypeBackground;
 }
 
-type ArchetypeId = 'musa' | 'amsalja' | 'hacker' | 'jeongbo' | 'jojik';
+type ArchetypeId = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 
 interface RealisticInjury {
   readonly location: BodyPart;
@@ -376,6 +385,7 @@ interface RealisticInjury {
 ## 🎓 Phase 4: Mastery System
 
 ### Architecture Goals
+
 - Create comprehensive training and education system
 - Implement AI-guided instruction
 - Develop progress tracking and mastery validation
@@ -470,17 +480,17 @@ gantt
     Vital Point System       :p1-vital, 2024-01-01, 6w
     Combat Calculations      :p1-calc, after p1-vital, 4w
     Audio-Visual Feedback    :p1-av, after p1-calc, 2w
-    
+
     section Phase 2: Korean Authenticity
     Cultural Integration     :p2-culture, after p1-av, 8w
     Dojang Environment      :p2-dojang, after p2-culture, 4w
     Educational Content     :p2-edu, after p2-dojang, 4w
-    
+
     section Phase 3: Advanced Combat
     Player Archetypes       :p3-arch, after p2-edu, 6w
     Realistic Physics       :p3-physics, after p3-arch, 6w
     Advanced AI             :p3-ai, after p3-physics, 4w
-    
+
     section Phase 4: Mastery System
     Training Engine         :p4-train, after p3-ai, 8w
     AI Instructor           :p4-ai-inst, after p4-train, 6w
@@ -490,18 +500,21 @@ gantt
 ### Priority Implementation Order
 
 #### High Priority (Phase 1)
+
 1. **VitalPointManager** - Core targeting system
-2. **StrikeCalculator** - Combat effectiveness engine  
+2. **StrikeCalculator** - Combat effectiveness engine
 3. **AnatomyRenderer** - Visual targeting interface
 4. **CombatFeedback** - Audio-visual damage system
 
 #### Medium Priority (Phase 2)
+
 5. **KoreanTerminology** - Cultural authenticity
 6. **TrigramPhilosophy** - Traditional knowledge integration
 7. **TraditionalDojang** - Authentic environment
 8. **EducationalContent** - Cultural learning components
 
 #### Future Priority (Phase 3-4)
+
 9. **PlayerArchetypes** - 5 fighter specializations
 10. **RealisticPhysics** - Advanced body mechanics
 11. **AIInstructor** - Guided learning system
@@ -514,12 +527,12 @@ gantt
 interface ArchitectureMigration {
   readonly currentState: {
     readonly react: "19.x";
-    readonly pixijs: "8.x"; 
+    readonly threejs: "@react-three/fiber + @react-three/drei";
     readonly typescript: "strict";
     readonly audio: "howler.js";
     readonly testing: "vitest + cypress";
   };
-  
+
   readonly futureAdditions: {
     readonly vitalPointEngine: "custom TypeScript";
     readonly combatPhysics: "matter.js + custom";
@@ -527,7 +540,7 @@ interface ArchitectureMigration {
     readonly culturalData: "JSON + i18n";
     readonly communityBackend: "express + mongodb";
   };
-  
+
   readonly migrationSteps: readonly MigrationStep[];
 }
 ```
@@ -538,30 +551,30 @@ interface ArchitectureMigration {
 
 ### Technical Metrics
 
-| Metric | Current | Phase 1 Target | Phase 4 Target |
-|--------|---------|----------------|-----------------|
-| **Performance** | 60fps | 60fps steady | 60fps + physics |
-| **Code Coverage** | Basic | 90%+ | 95%+ |
-| **Load Time** | <3s | <3s | <5s |
-| **Memory Usage** | <100MB | <150MB | <200MB |
+| Metric            | Current | Phase 1 Target | Phase 4 Target  |
+| ----------------- | ------- | -------------- | --------------- |
+| **Performance**   | 60fps   | 60fps steady   | 60fps + physics |
+| **Code Coverage** | Basic   | 90%+           | 95%+            |
+| **Load Time**     | <3s     | <3s            | <5s             |
+| **Memory Usage**  | <100MB  | <150MB         | <200MB          |
 
 ### Educational Metrics
 
-| Learning Outcome | Phase 1 | Phase 2 | Phase 3 | Phase 4 |
-|------------------|---------|---------|---------|---------|
-| **Vital Point Knowledge** | 20 points | 70 points | Mastery | Teaching |
-| **Korean Terms** | Basic | 50 terms | 200 terms | Fluent |
-| **Combat Techniques** | 3 trigrams | 8 trigrams | All archetypes | Innovation |
-| **Cultural Understanding** | None | Basic | Intermediate | Advanced |
+| Learning Outcome           | Phase 1    | Phase 2    | Phase 3        | Phase 4    |
+| -------------------------- | ---------- | ---------- | -------------- | ---------- |
+| **Vital Point Knowledge**  | 20 points  | 70 points  | Mastery        | Teaching   |
+| **Korean Terms**           | Basic      | 50 terms   | 200 terms      | Fluent     |
+| **Combat Techniques**      | 3 trigrams | 8 trigrams | All archetypes | Innovation |
+| **Cultural Understanding** | None       | Basic      | Intermediate   | Advanced   |
 
 ### User Engagement Metrics
 
-| Feature | Phase 1 | Phase 2 | Phase 3 | Phase 4 |
-|---------|---------|---------|---------|---------|
-| **Session Length** | 10 min | 20 min | 45 min | 90 min |
-| **Return Rate** | 30% | 60% | 80% | 90% |
-| **Skill Progression** | Linear | Guided | Adaptive | Mastery |
-| **Community Engagement** | None | None | Basic | Active |
+| Feature                  | Phase 1 | Phase 2 | Phase 3  | Phase 4 |
+| ------------------------ | ------- | ------- | -------- | ------- |
+| **Session Length**       | 10 min  | 20 min  | 45 min   | 90 min  |
+| **Return Rate**          | 30%     | 60%     | 80%      | 90%     |
+| **Skill Progression**    | Linear  | Guided  | Adaptive | Mastery |
+| **Community Engagement** | None    | None    | Basic    | Active  |
 
 ---
 
@@ -569,20 +582,20 @@ interface ArchitectureMigration {
 
 ### Technical Risks
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|-------------------|
-| **Performance Degradation** | Medium | High | Incremental optimization, physics LOD |
-| **Cultural Inaccuracy** | High | Critical | Native Korean consultant validation |
-| **Complexity Overload** | High | Medium | Phased implementation, MVP approach |
-| **Browser Compatibility** | Low | Medium | Progressive enhancement, fallbacks |
+| Risk                        | Probability | Impact   | Mitigation Strategy                   |
+| --------------------------- | ----------- | -------- | ------------------------------------- |
+| **Performance Degradation** | Medium      | High     | Incremental optimization, physics LOD |
+| **Cultural Inaccuracy**     | High        | Critical | Native Korean consultant validation   |
+| **Complexity Overload**     | High        | Medium   | Phased implementation, MVP approach   |
+| **Browser Compatibility**   | Low         | Medium   | Progressive enhancement, fallbacks    |
 
 ### Cultural Risks
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|--------|-------------------|
-| **Misrepresentation** | Medium | Critical | Cultural advisory board |
-| **Inappropriate Content** | Low | Critical | Educational focus, warnings |
-| **Oversimplification** | High | Medium | Depth over breadth approach |
+| Risk                      | Probability | Impact   | Mitigation Strategy         |
+| ------------------------- | ----------- | -------- | --------------------------- |
+| **Misrepresentation**     | Medium      | Critical | Cultural advisory board     |
+| **Inappropriate Content** | Low         | Critical | Educational focus, warnings |
+| **Oversimplification**    | High        | Medium   | Depth over breadth approach |
 
 ---
 
@@ -591,27 +604,31 @@ interface ArchitectureMigration {
 ### Learning Objectives
 
 #### Phase 1: Foundation Knowledge
+
 - Identify 20 primary vital points with Korean names
 - Understand basic strike effectiveness calculations
 - Recognize audio-visual combat feedback cues
 - Practice precision targeting techniques
 
-#### Phase 2: Cultural Integration  
+#### Phase 2: Cultural Integration
+
 - Pronounce 50 Korean martial arts terms correctly
 - Understand I Ching trigram principles in combat
 - Recognize traditional Korean dojang elements
 - Appreciate Korean martial arts philosophy
 
 #### Phase 3: Advanced Application
+
 - Master all 5 player archetype specializations
 - Apply realistic physics in combat scenarios
 - Adapt to AI opponent behavioral patterns
 - Demonstrate ethical combat knowledge
 
 #### Phase 4: Teaching and Mastery
+
 - Teach vital point locations to other students
 - Guide cultural understanding and respect
-- Create personal training curricula  
+- Create personal training curricula
 - Contribute to martial arts knowledge community
 
 ---
@@ -626,23 +643,23 @@ graph TD
     P4 --> Multi[Multiplayer Dojang]
     P4 --> Mobile[Mobile Companion App]
     P4 --> AI[Advanced AI Sensei]
-    
+
     VR --> VR1[Immersive Training]
     VR --> VR2[3D Anatomy Visualization]
-    
+
     Multi --> Multi1[Global Dojang Network]
     Multi --> Multi2[Tournament System]
-    
+
     Mobile --> Mobile1[Practice Tracking]
     Mobile --> Mobile2[Cultural Lessons]
-    
+
     AI --> AI1[Personalized Mastery Path]
     AI --> AI2[Emotional Intelligence]
-    
+
     classDef current fill:#3498db,stroke:#2980b9,color:white
     classDef future fill:#9b59b6,stroke:#8e44ad,color:white
     classDef advanced fill:#e74c3c,stroke:#c0392b,color:white
-    
+
     class P4 current
     class VR,Multi,Mobile,AI future
     class VR1,VR2,Multi1,Multi2,Mobile1,Mobile2,AI1,AI2 advanced
@@ -651,7 +668,7 @@ graph TD
 ### Ultimate Goals
 
 - **Global Korean Martial Arts Education Platform**
-- **VR/AR Immersive Training Environments**  
+- **VR/AR Immersive Training Environments**
 - **AI-Powered Personal Martial Arts Masters**
 - **International Cultural Exchange Network**
 - **Advanced Biomechanical Research Integration**
@@ -662,6 +679,7 @@ graph TD
 ## 📋 Implementation Checklist
 
 ### Phase 1: Combat Foundation ✅
+
 - [ ] VitalPointManager implementation
 - [ ] StrikeCalculator combat engine
 - [ ] AnatomyRenderer visual system
@@ -672,6 +690,7 @@ graph TD
 - [ ] Performance optimization
 
 ### Phase 2: Korean Authenticity 📋
+
 - [ ] Cultural terminology system
 - [ ] I Ching trigram philosophy
 - [ ] Traditional dojang environment
@@ -682,6 +701,7 @@ graph TD
 - [ ] Meditation space integration
 
 ### Phase 3: Advanced Combat 📋
+
 - [ ] 5 player archetype system
 - [ ] Realistic body physics
 - [ ] Progressive injury system
@@ -692,6 +712,7 @@ graph TD
 - [ ] Combat ethics training
 
 ### Phase 4: Mastery System 📋
+
 - [ ] AI instructor implementation
 - [ ] Adaptive learning engine
 - [ ] Progress tracking system
@@ -709,16 +730,17 @@ graph TD
 
 **From Foundation to Mastery: Building the Ultimate Korean Martial Arts Experience**
 
-| Current State | → | Future Vision |
-|---------------|---|---------------|
-| Empty Components | → | Rich Interactive Systems |
-| Basic Audio | → | Immersive Combat Feedback |
-| Simple UI | → | Cultural Learning Platform |
-| No Combat Logic | → | Realistic Combat Simulation |
-| Testing Framework | → | Comprehensive Validation |
-| Korean Fonts | → | Complete Cultural Integration |
+| Current State     | →   | Future Vision                 |
+| ----------------- | --- | ----------------------------- |
+| Empty Components  | →   | Rich Interactive Systems      |
+| Basic Audio       | →   | Immersive Combat Feedback     |
+| Simple UI         | →   | Cultural Learning Platform    |
+| No Combat Logic   | →   | Realistic Combat Simulation   |
+| Testing Framework | →   | Comprehensive Validation      |
+| Korean Fonts      | →   | Complete Cultural Integration |
 
 ### 🎯 **"어둠에서 빛으로, 기초에서 완성으로"**
+
 ### _"From darkness to light, from foundation to mastery"_
 
 </div>

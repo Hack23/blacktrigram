@@ -44,11 +44,11 @@ _— Based on Hack23 AB's commitment to security through transparency and excell
 
 **Included Systems:**
 
-- 🌐 React + PixiJS frontend application
+- 🌐 React + Three.js frontend application
 - 🎨 Static asset delivery (CDN-based)
 - 🎵 Audio streaming and management
 - 🔐 Browser-based session management
-- 🏗️ CI/CD security pipeline (GitHub Actions)
+- 🏭️ CI/CD security pipeline (GitHub Actions)
 - 📦 Dependency management and supply chain
 
 **Out of Scope:**
@@ -199,7 +199,7 @@ flowchart TB
     subgraph TRUST_BOUNDARY_3["🖥️ Browser Trust Boundary"]
         BROWSER[🌐 Web Browser]
         REACT_APP[⚛️ React Application]
-        PIXI_RENDERER[🎨 PixiJS Renderer]
+        THREE_RENDERER[🎨 Three.js Renderer]
         AUDIO_ENGINE[🎵 Audio Engine]
         LOCAL_STORAGE[💾 Browser Storage]
     end
@@ -238,17 +238,17 @@ flowchart TB
 
 ### **🎭 STRIDE per Element Analysis**
 
-| Element                | S                  | T                   | R               | I                    | D                  | E                     | Notable Mitigations                         |
-| ---------------------- | ------------------ | ------------------- | --------------- | -------------------- | ------------------ | --------------------- | ------------------------------------------- |
-| **🌐 Web Browser**     | Content spoof      | DOM manipulation    | Limited         | Same-origin bypass   | Crash/hang         | CSP bypass            | CSP headers, SRI, HTTPS enforcement         |
-| **⚛️ React App**       | Component hijack   | State tampering     | Action denial   | Data leakage         | Component failure  | Virtual DOM escape    | Input sanitization, React security patterns |
-| **🎨 PixiJS Renderer** | Asset spoof        | Texture tampering   | Render denial   | GPU data leak        | WebGL crash        | Sandbox escape        | Asset validation, WebGL security context    |
-| **🎵 Audio Engine**    | Audio spoof        | Buffer overflow     | Playback denial | Audio fingerprinting | Audio system crash | Browser privilege esc | Audio validation, Howler.js security        |
-| **💾 Browser Storage** | Data substitution  | Storage tampering   | Access denial   | Data extraction      | Storage exhaustion | Storage pollution     | Session-only design, size limits            |
-| **📦 Static CDN**      | Asset substitution | Content injection   | CDN outage      | Metadata exposure    | DDoS               | Cache poisoning       | SRI, HTTPS, CDN security                    |
-| **🔧 CI/CD Pipeline**  | Workflow spoof     | Build tampering     | Deploy denial   | Secret exposure      | Pipeline DoS       | Runner compromise     | Hardened workflows, attestations            |
-| **🌍 DNS System**      | DNS response spoof | Record tampering    | Query denial    | Zone enumeration     | DNS flood          | Cache poisoning       | DNSSEC, monitoring                          |
-| **🏷️ Domain**          | Domain spoof       | Registration hijack | Transfer denial | WHOIS exposure       | Domain lock        | Registrar compromise  | Domain monitoring, locks                    |
+| Element                  | S                  | T                   | R               | I                    | D                  | E                     | Notable Mitigations                         |
+| ------------------------ | ------------------ | ------------------- | --------------- | -------------------- | ------------------ | --------------------- | ------------------------------------------- |
+| **🌐 Web Browser**       | Content spoof      | DOM manipulation    | Limited         | Same-origin bypass   | Crash/hang         | CSP bypass            | CSP headers, SRI, HTTPS enforcement         |
+| **⚛️ React App**         | Component hijack   | State tampering     | Action denial   | Data leakage         | Component failure  | Virtual DOM escape    | Input sanitization, React security patterns |
+| **🎨 Three.js Renderer** | Asset spoof        | Texture tampering   | Render denial   | GPU data leak        | WebGL crash        | Sandbox escape        | Asset validation, WebGL security context    |
+| **🎵 Audio Engine**      | Audio spoof        | Buffer overflow     | Playback denial | Audio fingerprinting | Audio system crash | Browser privilege esc | Audio validation, Howler.js security        |
+| **💾 Browser Storage**   | Data substitution  | Storage tampering   | Access denial   | Data extraction      | Storage exhaustion | Storage pollution     | Session-only design, size limits            |
+| **📦 Static CDN**        | Asset substitution | Content injection   | CDN outage      | Metadata exposure    | DDoS               | Cache poisoning       | SRI, HTTPS, CDN security                    |
+| **🔧 CI/CD Pipeline**    | Workflow spoof     | Build tampering     | Deploy denial   | Secret exposure      | Pipeline DoS       | Runner compromise     | Hardened workflows, attestations            |
+| **🌍 DNS System**        | DNS response spoof | Record tampering    | Query denial    | Zone enumeration     | DNS flood          | Cache poisoning       | DNSSEC, monitoring                          |
+| **🏷️ Domain**            | Domain spoof       | Registration hijack | Transfer denial | WHOIS exposure       | Domain lock        | Registrar compromise  | Domain monitoring, locks                    |
 
 ---
 
@@ -368,7 +368,7 @@ Following [Risk-Centric Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/b
 | **3** | **📦 Malicious Asset Injection**       | [Initial Access](https://attack.mitre.org/tactics/TA0001/) | User device security & game integrity  | Medium     | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | SRI, CSP headers, asset validation               | Implement runtime asset verification      |
 | **4** | **🌐 Domain Hijacking/DNS Attack**     | [Initial Access](https://attack.mitre.org/tactics/TA0001/) | Platform availability & user trust     | Low        | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | DNSSEC, domain monitoring, registrar locks       | Add domain monitoring automation          |
 | **5** | **🌐 Cross-Site Scripting (XSS)**      | [Execution](https://attack.mitre.org/tactics/TA0002/)      | User data & browser security           | Medium     | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | React security patterns, CSP, input sanitization | Add XSS testing to CI/CD                  |
-| **6** | **🎨 WebGL/Canvas Exploitation**       | [Execution](https://attack.mitre.org/tactics/TA0002/)      | Browser stability & user security      | Low        | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | PixiJS security practices, WebGL limits          | Monitor WebGL security advisories         |
+| **6** | **🎨 WebGL/Canvas Exploitation**       | [Execution](https://attack.mitre.org/tactics/TA0002/)      | Browser stability & user security      | Low        | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Three.js security practices, WebGL limits        | Monitor WebGL security advisories         |
 | **7** | **📱 Mobile Browser Exploitation**     | [Execution](https://attack.mitre.org/tactics/TA0002/)      | Mobile user security & performance     | Medium     | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Mobile-specific security headers, testing        | Enhance mobile security testing           |
 | **8** | **⚡ Denial of Service (Performance)** | [Impact](https://attack.mitre.org/tactics/TA0040/)         | User experience & accessibility        | Medium     | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    | Performance monitoring, resource limits          | Implement performance budgets             |
 
@@ -462,7 +462,7 @@ flowchart TB
         CSP[🛡️ Content Security Policy]
         REACT[⚛️ React Security Patterns]
         INPUT[✅ Input Validation]
-        PIXI[🎨 PixiJS Security Context]
+        THREE[🎨 Three.js Security Context]
     end
 
     subgraph BROWSER["🖥️ Browser Security"]
@@ -841,12 +841,14 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 ## 📚 Related Documents
 
 ### 🔐 ISMS Threat Modeling & Risk Management
+
 - [🎯 Threat Modeling Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) - STRIDE methodology and standards
 - [📉 Risk Assessment Methodology](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Assessment_Methodology.md) - Risk quantification framework
 - [📊 Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) - Enterprise risk tracking
 - [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact analysis
 
 ### 🔐 ISMS Security Policies
+
 - [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
 - [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
 - [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
@@ -854,6 +856,7 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 - [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
 
 ### 🛡️ Black Trigram Security Documentation
+
 - [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Current security implementation
 - [🔮 Future Security Architecture](./FUTURE_SECURITY_ARCHITECTURE.md) - Planned security enhancements
 - [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
@@ -861,6 +864,7 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 - [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
 
 ### 🔄 Development & Operations
+
 - [🔄 Workflows](./WORKFLOWS.md) - Security-hardened CI/CD pipelines
 - [🔧 Development Guide](./development.md) - Security features and testing
 - [📐 Architecture](./ARCHITECTURE.md) - Overall system design

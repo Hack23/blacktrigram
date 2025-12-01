@@ -40,9 +40,10 @@ This project is fully configured for GitHub Copilot with comprehensive instructi
 
 1. **Read the Instructions**: Start with [.github/copilot-instructions.md](.github/copilot-instructions.md) for coding patterns and best practices
 2. **Use Custom Agents**: Check [.github/agents/README.md](.github/agents/README.md) for specialized agents:
+
    - 🛠️ Coding Agent - Feature implementation and bug fixes
    - ⚛️ Frontend Specialist - React 19 and TypeScript
-   - 🎮 Game Developer - PixiJS game systems
+   - 🎮 Game Developer - Three.js game systems
    - 🧪 Testing Agent - Vitest and Cypress tests
    - 📝 Documentation Writer - Technical documentation
    - 🛡️ Security Specialist - Security and dependencies
@@ -71,7 +72,7 @@ npm test           # Unit tests
 - Use the appropriate custom agent for your task
 - Include Korean-English bilingual text for all user-facing strings
 - Add `data-testid` attributes for testable components
-- Follow the React + PixiJS integration patterns
+- Follow the React + Three.js (@react-three/fiber) integration patterns
 - Maintain 60fps performance targets
 
 ## 🔐 Security Contribution Guidelines
@@ -81,6 +82,7 @@ Black Trigram follows Hack23 AB's [Secure Development Policy](https://github.com
 ### Security Requirements
 
 - **🔍 Security Testing**: Run security checks before submitting PRs
+
   ```bash
   npm run check        # TypeScript validation
   npm run lint         # ESLint security rules
@@ -89,12 +91,14 @@ Black Trigram follows Hack23 AB's [Secure Development Policy](https://github.com
   ```
 
 - **📦 Dependency Security**: All new dependencies must:
+
   - Have no known high/critical vulnerabilities
   - Use exact version pinning (no `^` or `~`)
   - Include justification in PR description
   - Pass FOSSA license compliance check
 
 - **🛡️ Secure Coding**: Follow secure coding practices:
+
   - No hardcoded secrets or credentials
   - Input validation for all user inputs
   - Proper error handling (no sensitive data in errors)
@@ -126,6 +130,7 @@ Contributors should be familiar with:
 ## 📚 Related Documents
 
 ### 🔐 Security & Compliance
+
 - [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting process
 - [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Security implementation
 - [🎯 Threat Model](./THREAT_MODEL.md) - Security threat analysis
@@ -133,11 +138,13 @@ Contributors should be familiar with:
 - [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
 
 ### 🛠️ Development
+
 - [🔧 Development Guide](./development.md) - Security features and testing
 - [🔄 Workflows](./WORKFLOWS.md) - CI/CD security automation
 - [📐 Architecture](./ARCHITECTURE.md) - System design
 
 ### 🧪 Testing
+
 - [🧪 Unit Test Plan](./UnitTestPlan.md) - Unit testing strategy
 - [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing
 
