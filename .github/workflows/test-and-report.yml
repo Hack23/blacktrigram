@@ -56,11 +56,6 @@ jobs:
           sudo mkdir -p /var/run/dbus
           sudo dbus-daemon --system --fork
 
-          # Start Xvfb with GLX extension for WebGL
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render &
-          sleep 3
-
           echo "✅ Three.js test environment ready"
           google-chrome --version
 
