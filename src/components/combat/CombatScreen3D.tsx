@@ -14,6 +14,7 @@ import React, {
   useState,
 } from "react";
 import * as THREE from "three";
+import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
@@ -24,6 +25,7 @@ import {
 import { HitEffectType } from "../../systems/effects";
 import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity } from "../../types";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { PerformanceOverlay3D } from "../../utils/performance";
@@ -121,6 +123,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     },
     autoRestore: true,
   });
+
+  // Audio context for button interactions
+  const audio = useAudio();
 
   // Performance marks - only in dev mode and memoized
   useEffect(() => {
@@ -831,18 +836,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             padding: "8px",
             margin: "0 10px",
           }}>
+            <style>
+              {`
+                .combat-return-menu-btn {
+                  background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9)};
+                  color: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)};
+                  border: none;
+                  border-radius: 8px;
+                  padding: 8px 16px;
+                  font-family: ${FONT_FAMILY.KOREAN};
+                  font-weight: bold;
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+                }
+                .combat-return-menu-btn:hover {
+                  transform: scale(1.05);
+                  box-shadow: 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)};
+                }
+              `}
+            </style>
             <button 
               onClick={onReturnToMenu}
-              style={{
-                background: "#00ffff",
-                color: "#0a0a0f",
-                border: "none",
-                borderRadius: "4px",
-                padding: "8px 16px",
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
+              onMouseEnter={() => audio.playSFX("menu_hover")}
+              className="combat-return-menu-btn"
+              data-testid="return-to-menu-button"
+              aria-label="Return to main menu"
             >
               메뉴로 | Return to Menu
             </button>

@@ -393,4 +393,37 @@ describe("CombatScreen3D", () => {
 
     expect(container).toBeTruthy();
   });
+
+  it("should render return-to-menu button", () => {
+    render(
+      <CombatScreen3D
+        players={mockPlayers}
+        onPlayerUpdate={mockOnPlayerUpdate}
+        currentRound={1}
+        timeRemaining={120}
+        isPaused={false}
+        onReturnToMenu={mockOnReturnToMenu}
+        onGameEnd={mockOnGameEnd}
+      />
+    );
+    expect(screen.getByTestId("return-to-menu-button")).toBeInTheDocument();
+  });
+
+  it("should call onReturnToMenu when button clicked", () => {
+    const mockCallback = vi.fn();
+    render(
+      <CombatScreen3D
+        players={mockPlayers}
+        onPlayerUpdate={mockOnPlayerUpdate}
+        currentRound={1}
+        timeRemaining={120}
+        isPaused={false}
+        onReturnToMenu={mockCallback}
+        onGameEnd={mockOnGameEnd}
+      />
+    );
+    const button = screen.getByTestId("return-to-menu-button");
+    button.click();
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+  });
 });
