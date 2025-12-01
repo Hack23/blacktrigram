@@ -8,6 +8,7 @@ import type { KoreanText, Position } from "../../types/common";
 import { EffectIntensity } from "../effects";
 import { StatusEffect } from "../types";
 import { AnatomicalRegion, VitalPoint, VitalPointEffect } from "./types";
+import { getVitalPointsForMeridian } from "./MeridianVitalPointMapping";
 
 /**
  * Korean Martial Arts Anatomy System
@@ -139,6 +140,14 @@ export const KOREAN_ANATOMICAL_ZONES: Record<string, KoreanAnatomicalZone> =
     return acc;
   }, {} as Record<string, KoreanAnatomicalZone>);
 
+/**
+ * Get the list of vital points related to a meridian
+ * This function dynamically retrieves vital points from the mapping system
+ */
+function getRelatedVitalPoints(meridianId: string): readonly string[] {
+  return getVitalPointsForMeridian(meridianId);
+}
+
 export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
   // Renamed
   {
@@ -154,7 +163,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "호흡과 기 순환을 담당하는 경락",
       english: "Meridian governing breathing and Ki circulation",
     },
-    relatedVitalPoints: ["philtrum", "throat", "clavicle"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("lung"),
   },
   {
     id: "large_intestine",
@@ -169,7 +178,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "배설과 정화를 담당하는 경락",
       english: "Meridian governing elimination and purification",
     },
-    relatedVitalPoints: ["shoulder", "face_upper", "nose"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("large_intestine"),
   },
   {
     id: "stomach",
@@ -184,7 +193,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "소화와 영양 흡수를 담당하는 경락",
       english: "Meridian governing digestion and nutrient absorption",
     },
-    relatedVitalPoints: ["solar_plexus", "ribs", "floating_ribs"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("stomach"),
   },
   {
     id: "spleen",
@@ -199,7 +208,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "혈액 생성과 면역을 담당하는 경락",
       english: "Meridian governing blood formation and immunity",
     },
-    relatedVitalPoints: ["spleen", "upper_abdomen_center", "liver"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("spleen"),
   },
   {
     id: "heart",
@@ -214,7 +223,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "순환과 정신을 담당하는 경락",
       english: "Meridian governing circulation and mental activity",
     },
-    relatedVitalPoints: ["temples", "chest", "kidneys"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("heart"),
   },
   {
     id: "small_intestine",
@@ -229,7 +238,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "영양분 흡수와 분별을 담당하는 경락",
       english: "Meridian governing nutrient absorption and discernment",
     },
-    relatedVitalPoints: ["mastoid_process", "jaw", "occiput"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("small_intestine"),
   },
   {
     id: "bladder",
@@ -244,7 +253,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "배설과 정화를 담당하는 경락",
       english: "Meridian governing excretion and purification",
     },
-    relatedVitalPoints: ["eyes", "back", "leg_back_knee"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("bladder"),
   },
   {
     id: "kidney",
@@ -259,7 +268,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "생명력과 정기를 담당하는 경락",
       english: "Meridian governing vital essence and life force",
     },
-    relatedVitalPoints: ["kidneys", "lower_back", "feet"], // Fix: Add missing property
+    relatedVitalPoints: getRelatedVitalPoints("kidney"),
   },
   {
     id: "pericardium",
@@ -274,7 +283,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "심장 보호와 정서 안정을 담당하는 경락",
       english: "Meridian governing heart protection and emotional stability",
     },
-    relatedVitalPoints: ["chest", "inner_elbow", "wrist_inner", "palm_center"],
+    relatedVitalPoints: getRelatedVitalPoints("pericardium"),
   },
   {
     id: "triple_burner",
@@ -289,7 +298,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "체온 조절과 에너지 분배를 담당하는 경락",
       english: "Meridian governing temperature regulation and energy distribution",
     },
-    relatedVitalPoints: ["outer_elbow", "shoulder_back", "temples", "ear_area"],
+    relatedVitalPoints: getRelatedVitalPoints("triple_burner"),
   },
   {
     id: "gallbladder",
@@ -304,7 +313,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "결단력과 용기를 담당하는 경락",
       english: "Meridian governing decisiveness and courage",
     },
-    relatedVitalPoints: ["temples", "neck_side", "shoulder_top", "leg_side_knee"],
+    relatedVitalPoints: getRelatedVitalPoints("gallbladder"),
   },
   {
     id: "liver",
@@ -319,7 +328,7 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
       korean: "혈액 저장과 정서 조절을 담당하는 경락",
       english: "Meridian governing blood storage and emotional regulation",
     },
-    relatedVitalPoints: ["liver", "inner_thigh", "groin", "ribs_lower"],
+    relatedVitalPoints: getRelatedVitalPoints("liver"),
   },
 ];
 
