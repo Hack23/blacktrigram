@@ -462,7 +462,16 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.ORGAN,
     severity: VitalPointSeverity.MAJOR,
     baseDamage: 38,
-    effects: [],
+    effects: [
+      {
+        id: "kidney_pain",
+        type: VitalPointEffectType.PAIN,
+        intensity: EffectIntensity.HIGH,
+        duration: 4000,
+        description: { korean: "신장 타격 극심한 통증", english: "Severe kidney strike pain" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "신장 타격, 심한 통증",
       english: "Kidney strike, severe pain",
@@ -482,7 +491,16 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.ORGAN,
     severity: VitalPointSeverity.MAJOR,
     baseDamage: 38,
-    effects: [],
+    effects: [
+      {
+        id: "kidney_pain_right",
+        type: VitalPointEffectType.PAIN,
+        intensity: EffectIntensity.HIGH,
+        duration: 4000,
+        description: { korean: "신장 타격 극심한 통증", english: "Severe kidney strike pain" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "신장 타격, 심한 통증",
       english: "Kidney strike, severe pain",
@@ -542,7 +560,24 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.NEUROLOGICAL,
     severity: VitalPointSeverity.LETHAL,
     baseDamage: 55,
-    effects: [],
+    effects: [
+      {
+        id: "spinal_trauma",
+        type: VitalPointEffectType.PARALYSIS,
+        intensity: EffectIntensity.EXTREME,
+        duration: 15000,
+        description: { korean: "척추 손상으로 마비", english: "Spinal trauma paralysis" },
+        stackable: false,
+      },
+      {
+        id: "nerve_disruption_spine",
+        type: VitalPointEffectType.NERVE_DISRUPTION,
+        intensity: EffectIntensity.EXTREME,
+        duration: 12000,
+        description: { korean: "신경 차단", english: "Nerve pathway disruption" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "척추 손상, 마비 위험",
       english: "Spine damage, paralysis risk",
@@ -562,7 +597,24 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.NEUROLOGICAL,
     severity: VitalPointSeverity.CRITICAL,
     baseDamage: 42,
-    effects: [],
+    effects: [
+      {
+        id: "nerve_damage_mid_spine",
+        type: VitalPointEffectType.NERVE_DISRUPTION,
+        intensity: EffectIntensity.HIGH,
+        duration: 8000,
+        description: { korean: "신경 손상", english: "Nerve damage" },
+        stackable: false,
+      },
+      {
+        id: "spinal_pain",
+        type: VitalPointEffectType.PAIN,
+        intensity: EffectIntensity.HIGH,
+        duration: 6000,
+        description: { korean: "척추 통증", english: "Spinal pain" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "척추 타격, 신경 손상",
       english: "Spine strike, nerve damage",
@@ -1246,7 +1298,24 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.JOINT,
     severity: VitalPointSeverity.CRITICAL,
     baseDamage: 38,
-    effects: [],
+    effects: [
+      {
+        id: "knee_destruction",
+        type: VitalPointEffectType.WEAKNESS,
+        intensity: EffectIntensity.HIGH,
+        duration: 10000,
+        description: { korean: "무릎 파괴로 보행 불가", english: "Knee destruction, unable to walk" },
+        stackable: false,
+      },
+      {
+        id: "mobility_loss",
+        type: VitalPointEffectType.PARALYSIS,
+        intensity: EffectIntensity.MEDIUM,
+        duration: 8000,
+        description: { korean: "이동력 상실", english: "Mobility loss" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "무릎 관절 파괴, 보행 불가",
       english: "Knee joint destruction, unable to walk",
@@ -1346,7 +1415,24 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.MUSCULAR,
     severity: VitalPointSeverity.CRITICAL,
     baseDamage: 40,
-    effects: [],
+    effects: [
+      {
+        id: "achilles_rupture",
+        type: VitalPointEffectType.WEAKNESS,
+        intensity: EffectIntensity.EXTREME,
+        duration: 12000,
+        description: { korean: "아킬레스건 파열", english: "Achilles tendon rupture" },
+        stackable: false,
+      },
+      {
+        id: "movement_impossible",
+        type: VitalPointEffectType.PARALYSIS,
+        intensity: EffectIntensity.HIGH,
+        duration: 10000,
+        description: { korean: "이동 불가", english: "Cannot move" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "아킬레스건 파열, 이동 불가",
       english: "Achilles tendon rupture, cannot move",
@@ -1408,7 +1494,24 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.JOINT,
     severity: VitalPointSeverity.CRITICAL,
     baseDamage: 38,
-    effects: [],
+    effects: [
+      {
+        id: "knee_destruction_right",
+        type: VitalPointEffectType.WEAKNESS,
+        intensity: EffectIntensity.HIGH,
+        duration: 10000,
+        description: { korean: "무릎 파괴로 보행 불가", english: "Knee destruction, unable to walk" },
+        stackable: false,
+      },
+      {
+        id: "mobility_loss_right",
+        type: VitalPointEffectType.PARALYSIS,
+        intensity: EffectIntensity.MEDIUM,
+        duration: 8000,
+        description: { korean: "이동력 상실", english: "Mobility loss" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "무릎 관절 파괴, 보행 불가",
       english: "Knee joint destruction, unable to walk",
@@ -1508,7 +1611,24 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
     category: VitalPointCategory.MUSCULAR,
     severity: VitalPointSeverity.CRITICAL,
     baseDamage: 40,
-    effects: [],
+    effects: [
+      {
+        id: "achilles_rupture_right",
+        type: VitalPointEffectType.WEAKNESS,
+        intensity: EffectIntensity.EXTREME,
+        duration: 12000,
+        description: { korean: "아킬레스건 파열", english: "Achilles tendon rupture" },
+        stackable: false,
+      },
+      {
+        id: "movement_impossible_right",
+        type: VitalPointEffectType.PARALYSIS,
+        intensity: EffectIntensity.HIGH,
+        duration: 10000,
+        description: { korean: "이동 불가", english: "Cannot move" },
+        stackable: false,
+      },
+    ],
     description: {
       korean: "아킬레스건 파열, 이동 불가",
       english: "Achilles tendon rupture, cannot move",
