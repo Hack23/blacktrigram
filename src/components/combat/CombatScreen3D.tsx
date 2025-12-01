@@ -25,6 +25,7 @@ import {
 import { HitEffectType } from "../../systems/effects";
 import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity } from "../../types";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { PerformanceOverlay3D } from "../../utils/performance";
@@ -839,7 +840,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               onClick={onReturnToMenu}
               onMouseEnter={() => audio.playSFX?.("menu_hover")}
               style={{
-                background: "#00ffff",
+                background: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9),
                 color: "#0a0a0f",
                 border: "none",
                 borderRadius: "4px",
