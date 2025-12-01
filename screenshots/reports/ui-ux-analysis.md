@@ -1,7 +1,7 @@
 # Black Trigram - UI/UX Screenshot Analysis Report
 
-**Generated:** 2025-12-01T02:07:36.073Z
-**Success Rate:** 6/8 (75%)
+**Generated:** 2025-12-01T11:30:13.923Z
+**Success Rate:** 7/8 (88%)
 
 ---
 
@@ -18,7 +18,7 @@ This report contains automated screenshots of all major screens in the Black Tri
 - ✅ **05-philosophy-screen**: Philosophy Screen - Korean martial arts philosophy
 - ✅ **06-training-screen**: Training Screen - Training mode with vital points
 - ✅ **07-combat-screen-practice**: Combat Screen - Practice mode gameplay
-- ❌ **08-combat-screen-versus**: Combat Screen - Versus mode gameplay
+- ✅ **08-combat-screen-versus**: Combat Screen - Versus mode gameplay
 
 ---
 
@@ -111,35 +111,11 @@ Call log:
 
 ### 8. Combat Screen - Versus mode gameplay
 
-**Status:** ❌ Failed to capture
+![Combat Screen - Versus mode gameplay](../08-combat-screen-versus.png)
 
-**Error:** locator.click: Timeout 30000ms exceeded.
-Call log:
-  - waiting for locator('button:has-text("대전")').first()
-    - locator resolved to <button role="menuitem" class="menu-button" aria-selected="true" aria-label="대전 (Combat)" data-testid="menu-item-versus">…</button>
-  - attempting click action
-    2 × waiting for element to be visible, enabled and stable
-      - element is visible, enabled and stable
-      - scrolling into view if needed
-      - done scrolling
-      - <canvas width="1280" height="800" data-engine="three.js r181"></canvas> from <div>…</div> subtree intercepts pointer events
-    - retrying click action
-    - waiting 20ms
-    2 × waiting for element to be visible, enabled and stable
-      - element is visible, enabled and stable
-      - scrolling into view if needed
-      - done scrolling
-      - <canvas width="1280" height="800" data-engine="three.js r181"></canvas> from <div>…</div> subtree intercepts pointer events
-    - retrying click action
-      - waiting 100ms
-    56 × waiting for element to be visible, enabled and stable
-       - element is visible, enabled and stable
-       - scrolling into view if needed
-       - done scrolling
-       - <canvas width="1280" height="800" data-engine="three.js r181"></canvas> from <div>…</div> subtree intercepts pointer events
-     - retrying click action
-       - waiting 500ms
+**Status:** ✅ Captured successfully
 
+**File:** `08-combat-screen-versus.png`
 
 **Description:** Combat Screen - Versus mode gameplay
 

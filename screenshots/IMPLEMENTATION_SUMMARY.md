@@ -6,21 +6,30 @@ Successfully implemented automated screenshot capture system for Black Trigram U
 
 ## 📊 Results
 
-### Capture Success Rate: **75% (6/8 screens)**
+### Capture Success Rate: **88% (7/8 screens)** ✅ IMPROVED
 
 ### Screenshots Captured
 
-✅ **Successfully Captured (6 screens):**
-1. **Intro Screen - Menu** (33KB) - Main menu with game mode selection
+✅ **Successfully Captured (7 screens):**
+1. **Intro Screen - Menu** (110KB) - Main menu with game mode selection
 2. **Intro Screen - Archetypes** (112KB) - Player archetype selection UI
 3. **Controls Screen** (112KB) - Game controls and keybindings reference
-4. **Philosophy Screen** (121KB) - Korean martial arts philosophy and lore
+4. **Philosophy Screen** (34KB) - Korean martial arts philosophy and lore
 5. **Training Screen** (47KB) - Training mode with vital points interface
 6. **Combat Screen - Practice** (113KB) - Practice mode gameplay
+7. **Combat Screen - Versus** (83KB) - Versus mode gameplay ✨ **NEW - FIXED**
 
-❌ **Not Captured (2 screens):**
+❌ **Not Captured (1 screen):**
 1. **Splash Screen** - Technical limitation: Canvas not rendered before audio init
-2. **Combat Screen - Versus** - Canvas overlay intercepting button click
+
+**Total Size:** 611KB (7 files)  
+**Last Updated:** December 1, 2025
+
+## 🎉 Improvements from Previous Capture
+
+**Before (Initial):** 75% success rate (6/8 screens)  
+**After (Updated):** 88% success rate (7/8 screens)  
+**Status:** ✅ **Versus mode now capturing successfully!**
 
 ## 🔧 Technical Implementation
 
