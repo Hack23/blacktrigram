@@ -575,7 +575,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               </style>
               <button
                 onClick={onReturnToMenu}
-                onMouseEnter={() => audio.playSFX?.("menu_hover")}
+                onMouseEnter={() => audio.playSFX("menu_hover")}
                 className="training-return-menu-btn"
                 data-testid="return-to-menu-button"
               >

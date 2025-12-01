@@ -838,7 +838,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }}>
             <button 
               onClick={onReturnToMenu}
-              onMouseEnter={() => audio.playSFX?.("menu_hover")}
+              onMouseEnter={() => audio.playSFX("menu_hover")}
               style={{
                 background: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9),
                 color: "#0a0a0f",
