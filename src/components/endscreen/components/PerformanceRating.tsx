@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { MatchStatistics } from "../../../systems/combat";
 import { FONT_FAMILY, KOREAN_COLORS, PERFORMANCE_RATING_THRESHOLDS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { pulseAnimation } from "./animations";
 
 export interface PerformanceRatingProps {
   readonly matchStats: MatchStatistics;
@@ -28,7 +29,7 @@ function calculatePerformanceScore(stats: MatchStatistics): number {
   // Calculate damage efficiency (damage dealt / damage taken ratio)
   const damageRatio = winnerStats.totalDamageReceived > 0
     ? (winnerStats.totalDamageDealt / winnerStats.totalDamageReceived)
-    : 1;
+    : winnerStats.totalDamageDealt > 0 ? 1 : 0;
   const damageScore = Math.min(damageRatio * 30, 30); // Max 30 points
   
   // Perfect strikes and vital point hits bonus
@@ -191,19 +192,19 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
         >
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.ACCENT_GOLD), fontWeight: "bold" }}>
-              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).perfectStrikes || matchStats.perfectStrikes}
+              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).perfectStrikes ?? 0}
             </div>
             <div>완벽 | Perfect</div>
           </div>
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.VITAL_POINT_HIT), fontWeight: "bold" }}>
-              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).vitalPointHits || matchStats.vitalPointHits}
+              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).vitalPointHits ?? 0}
             </div>
             <div>급소 | Vital Hits</div>
           </div>
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN), fontWeight: "bold" }}>
-              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).techniques?.length || matchStats.techniquesUsed}
+              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).techniques?.length ?? 0}
             </div>
             <div>기술 | Techniques</div>
           </div>
@@ -218,14 +219,7 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
 
       {/* CSS Animations */}
       <style>{`
-        @keyframes ratingPulse {
-          0%, 100% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.02);
-          }
-        }
+        ${pulseAnimation}
 
         @keyframes ratingGlow {
           0%, 100% {

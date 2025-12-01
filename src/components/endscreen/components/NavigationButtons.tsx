@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { slideUpAnimation } from "./animations";
 
 export interface NavigationButtonsProps {
   readonly onReturnToMenu: () => void;
@@ -180,16 +181,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
 
       {/* CSS Animations */}
       <style>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+        ${slideUpAnimation}
       `}</style>
     </div>
   );

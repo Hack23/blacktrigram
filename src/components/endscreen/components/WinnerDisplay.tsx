@@ -2,6 +2,7 @@ import React from "react";
 import { PlayerState } from "../../../systems";
 import { ARCHETYPE_ASSETS, FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { fadeInAnimation, scaleInAnimation } from "./animations";
 
 export interface WinnerDisplayProps {
   readonly winner: PlayerState;
@@ -163,30 +164,8 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
 
       {/* CSS Animations */}
       <style>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes scaleIn {
-          0% {
-            transform: scale(0.8);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.05);
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
+        ${fadeInAnimation}
+        ${scaleInAnimation}
       `}</style>
     </div>
   );
