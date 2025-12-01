@@ -102,8 +102,6 @@ jobs:
         run: npm ci
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
-        env:
-          NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: Cache Cypress binary
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
