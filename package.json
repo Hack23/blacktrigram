@@ -73,7 +73,7 @@
     "@aws-sdk/client-bedrock-runtime": "^3.941.0",
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^5.2.1",
-    "@elevenlabs/elevenlabs-js": "^2.25.1",
+    "@elevenlabs/elevenlabs-js": "^2.26.0",
     "@eslint/js": "^9.39.1",
     "@size-limit/preset-app": "^12.0.0",
     "@testing-library/jest-dom": "^6.9.1",
