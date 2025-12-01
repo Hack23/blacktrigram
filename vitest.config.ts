@@ -45,7 +45,13 @@ export default defineConfig({
     },
     coverage: {
       provider: "v8",
-      reporter: ["text", "html", "lcov", "json"],
+      reporter: [
+        ["text", { maxCols: 120 }], // Wider columns for full filenames
+        ["html", { subdir: "html" }],
+        ["lcov", { file: "lcov.info" }],
+        ["json", { file: "coverage.json" }],
+        ["json-summary", { file: "coverage-summary.json" }],
+      ],
       reportsDirectory: "./build/coverage", // Output to build directory (not committed during PR)
       exclude: [
         // top-level helpers
@@ -75,7 +81,7 @@ export default defineConfig({
       // - Specific files improved in this PR must maintain their new coverage levels
       // Note: Global thresholds commented out to avoid breaking existing code.
       // These should be enforced via CI checks for new/changed files only.
-      // 
+      //
       // Recommended CI approach:
       // 1. Run coverage on base branch and PR branch
       // 2. Compare coverage deltas for changed files
@@ -91,7 +97,13 @@ export default defineConfig({
   },
   // Optimize deps for Korean martial arts components
   optimizeDeps: {
-    include: ["react", "react-dom", "three", "@react-three/fiber", "@react-three/drei"],
+    include: [
+      "react",
+      "react-dom",
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
+    ],
     exclude: ["vitest", "@vitest/ui"],
   },
 });

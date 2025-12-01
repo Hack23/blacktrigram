@@ -34,14 +34,15 @@ Per Hack23 AB's Secure Development Policy, this project maintains:
 
 ### 2.1 Core Testing Stack
 
-| **Component**         | **Technology**         | **Version** | **Purpose**                       |
-| --------------------- | ---------------------- | ----------- | --------------------------------- |
-| **Unit Testing**      | Vitest                 | 4.0.6       | Modern, fast unit test runner     |
-| **E2E Testing**       | Cypress                | 15.6.0      | End-to-end browser testing        |
-| **Component Testing** | @testing-library/react | 16.3.0      | React component testing utilities |
-| **Coverage Tool**     | @vitest/coverage-v8    | 4.0.8       | V8-based code coverage reporting  |
-| **Test Environment**  | jsdom                  | 27.2.0      | DOM simulation for Node.js        |
-| **UI Testing**        | @vitest/ui             | 4.0.6       | Visual test interface             |
+| **Component**         | **Technology**         | **Version** | **Purpose**                                     |
+| --------------------- | ---------------------- | ----------- | ----------------------------------------------- |
+| **Unit Testing**      | Vitest                 | 4.0.6       | Modern, fast unit test runner                   |
+| **E2E Testing**       | Cypress                | 15.6.0      | End-to-end browser testing                      |
+| **Component Testing** | @testing-library/react | 16.3.0      | React component testing utilities               |
+| **Coverage Tool**     | @vitest/coverage-v8    | 4.0.8       | V8-based code coverage reporting                |
+| **Test Environment**  | jsdom                  | 27.2.0      | DOM simulation for Node.js                      |
+| **UI Testing**        | @vitest/ui             | 4.0.6       | Visual test interface                           |
+| **Coverage Reports**  | text, html, lcov, json | -           | Multiple formats with full filenames (120 cols) |
 
 ### 2.2 Three.js Testing Configuration
 
@@ -310,9 +311,17 @@ Coverage thresholds are enforced in `vitest.config.ts`:
 ```typescript
 coverage: {
   provider: 'v8',
-  reporter: ['text', 'html', 'lcov', 'json'],
-  reportsDirectory: './docs/coverage',
-  // Note: Thresholds to be added when baseline improves
+  reporter: [
+    ['text', { maxCols: 120 }],        // Wide columns for full filenames
+    ['html', { subdir: 'html' }],       // HTML report in subdirectory
+    ['lcov', { file: 'lcov.info' }],    // LCOV format for CI integration
+    ['json', { file: 'coverage.json' }], // JSON format for tooling
+    ['json-summary', { file: 'coverage-summary.json' }], // Summary JSON
+  ],
+  reportsDirectory: './build/coverage',
+  skipFull: false, // Show files with 100% coverage
+  // Note: Global thresholds commented out to avoid breaking existing code
+  // These should be enforced via CI checks for new/changed files only
   // thresholds: {
   //   lines: 80,
   //   branches: 70,
@@ -342,22 +351,31 @@ coverage: {
 ### 6.2 Coverage Report Generation
 
 ```bash
-# Generate full coverage report
+# Generate full coverage report with enhanced formatting
 npm run coverage
 
-# View HTML coverage report
-open docs/coverage/index.html
+# View HTML coverage report (detailed, interactive)
+open build/coverage/html/index.html
 
 # Check specific system coverage
 npm run test:systems:coverage
 ```
 
+**Coverage Report Features:**
+
+- **Text Report**: 120-column width for full filenames (no truncation)
+- **HTML Report**: Interactive web interface with drill-down capabilities
+- **LCOV Report**: Standard format for CI/CD integration (e.g., Codecov, Coveralls)
+- **JSON Reports**: Machine-readable formats for custom tooling and analysis
+- **Summary JSON**: Quick overview of overall coverage metrics
+
 **Coverage Report Locations:**
 
-- **HTML Report**: `docs/coverage/index.html`
-- **LCOV Report**: `docs/coverage/lcov.info`
-- **JSON Summary**: `docs/coverage/coverage-final.json`
-- **Published**: https://hack23.github.io/blacktrigram/coverage
+- **HTML Report**: `build/coverage/html/index.html`
+- **LCOV Report**: `build/coverage/lcov.info`
+- **JSON Report**: `build/coverage/coverage.json`
+- **JSON Summary**: `build/coverage/coverage-summary.json`
+- **Note**: Coverage reports are in `build/` directory (excluded from git)
 
 ### 6.3 Test Debugging
 
