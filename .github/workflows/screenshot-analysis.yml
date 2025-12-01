@@ -3,14 +3,7 @@ name: Screenshot Analysis
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches:
-      - main
   workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'PR number to comment on'
-        required: true
-        type: number
 
 permissions:
   contents: write
@@ -44,20 +37,30 @@ jobs:
       - name: Install Playwright
         run: npx playwright install chromium --with-deps
       
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+      
       - name: Build application
         run: npm run build
       
       - name: Start Xvfb
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          Xvfb :99 -ac -screen 0 1280x1024x24 &
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb
+          Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
+          sleep 2  # Give Xvfb time to start
       
       - name: Capture screenshots
         run: npm run screenshots:capture
         env:
           DISPLAY: :99
+          CI: true
       
       - name: Upload screenshots as artifacts
         uses: actions/upload-artifact@v4.5.0
@@ -73,9 +76,13 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add screenshots/
-          git diff --staged --quiet || git commit -m "📸 Add automated UI/UX screenshots"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git push origin HEAD:${{ github.head_ref }}
+          if ! git diff --staged --quiet; then
+            git commit -m "📸 Add automated UI/UX screenshots"
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No screenshot changes to commit"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -85,13 +92,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-      
-      - name: Post screenshots to PR (manual)
-        if: github.event_name == 'workflow_dispatch'
-        run: npm run screenshots:post
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ inputs.pr_number }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
       
       - name: Generate summary
         if: always()
