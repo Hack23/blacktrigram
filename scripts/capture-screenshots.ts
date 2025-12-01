@@ -382,7 +382,9 @@ async function main() {
     console.log('🚀 Launching Chromium browser...');
     
     // Use security-relaxed flags only in CI environment
-    const isCI = process.env.CI === 'true';
+    const isCI =
+      (typeof process.env.CI !== 'undefined' && process.env.CI !== 'false') ||
+      process.env.GITHUB_ACTIONS === 'true';
     const browserArgs = [
       '--enable-unsafe-swiftshader',
       '--disable-features=VizDisplayCompositor',

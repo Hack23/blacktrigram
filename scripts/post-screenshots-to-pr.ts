@@ -120,6 +120,8 @@ async function createPRComment(
       body: JSON.stringify({
         body: commentBody,
       }),
+    }).catch((error) => {
+      throw new Error(`Failed to connect to GitHub API: ${error.message}`);
     });
     
     if (!response.ok) {

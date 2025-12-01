@@ -32,8 +32,6 @@ jobs:
       
       - name: Checkout code
         uses: actions/checkout@v4.2.2
-        with:
-          persist-credentials: false
       
       - name: Setup Node.js
         uses: actions/setup-node@v4.1.0
@@ -77,6 +75,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add screenshots/
           git diff --staged --quiet || git commit -m "📸 Add automated UI/UX screenshots"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git push origin HEAD:${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
