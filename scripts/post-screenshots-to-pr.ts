@@ -121,7 +121,8 @@ async function createPRComment(
         body: commentBody,
       }),
     }).catch((error) => {
-      throw new Error(`Failed to connect to GitHub API: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to connect to GitHub API: ${errorMessage}`);
     });
     
     if (!response.ok) {

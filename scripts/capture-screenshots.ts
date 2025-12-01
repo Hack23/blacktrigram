@@ -23,6 +23,14 @@ interface ScreenshotConfig {
   skipAudioInit?: boolean;
 }
 
+// Timing constants for Three.js rendering and animations
+const TIMING = {
+  CANVAS_TIMEOUT: 10000,           // Max wait for canvas element
+  INITIAL_RENDER_DELAY: 1500,      // Wait for initial Three.js render
+  ANIMATION_SETTLE_DELAY: 1000,    // Wait for animations to settle
+  BUTTON_CLICK_DELAY: 2000,        // Wait after button clicks
+} as const;
+
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'screenshots');
 const REPORT_DIR = path.join(process.cwd(), 'screenshots', 'reports');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
@@ -38,15 +46,15 @@ if (!fs.existsSync(REPORT_DIR)) {
 /**
  * Wait for Three.js canvas to be ready and rendered
  */
-async function waitForThreeJsReady(page: Page, timeout = 10000): Promise<void> {
+async function waitForThreeJsReady(page: Page, timeout = TIMING.CANVAS_TIMEOUT): Promise<void> {
   console.log('  ⏳ Waiting for Three.js canvas to render...');
   
   try {
     // Wait for canvas element
     await page.waitForSelector('canvas', { timeout });
     
-    // Wait a bit for initial render
-    await page.waitForTimeout(1500);
+    // Wait for initial render
+    await page.waitForTimeout(TIMING.INITIAL_RENDER_DELAY);
     
     // Check if WebGL context is available
     const hasWebGL = await page.evaluate(() => {
@@ -65,8 +73,8 @@ async function waitForThreeJsReady(page: Page, timeout = 10000): Promise<void> {
       console.warn('  ⚠️  WebGL context not available, using software rendering');
     }
     
-    // Additional wait for animations to settle
-    await page.waitForTimeout(1000);
+    // Wait for animations to settle
+    await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
     
     console.log('  ✅ Three.js canvas ready');
   } catch (error) {
@@ -90,7 +98,7 @@ async function initializeAudio(page: Page): Promise<void> {
       console.log('  ✅ Clicked start button');
       
       // Wait for splash screen to disappear
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
       
       // Check if there's an error modal
       const errorModal = await page.locator('[data-testid="error-modal"]').isVisible().catch(() => false);
@@ -99,7 +107,7 @@ async function initializeAudio(page: Page): Promise<void> {
         const continueButton = await page.locator('button:has-text("계속")').first();
         if (await continueButton.isVisible({ timeout: 2000 })) {
           await continueButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
         }
       }
     }
@@ -146,7 +154,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
       const controlsButton = await page.locator('button:has-text("조작법")').first();
       if (await controlsButton.isVisible({ timeout: 5000 })) {
         await controlsButton.click();
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
       }
     },
   },
@@ -158,14 +166,14 @@ const screenshotConfigs: ScreenshotConfig[] = [
     actions: async (page) => {
       // Return to menu first
       await page.goto(BASE_URL);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
       
       // Click philosophy button
       const philosophyButton = await page.locator('button:has-text("철학")').first();
       if (await philosophyButton.isVisible({ timeout: 5000 })) {
         await philosophyButton.click();
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
       }
     },
   },
