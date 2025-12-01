@@ -127,6 +127,7 @@ graph LR
     B -->|Feature/Bug| C[🛠️ Coding Agent]
     B -->|UI/React| D[⚛️ Frontend Specialist]
     B -->|Game Logic| E[🎮 Game Developer]
+    B -->|Combat/Martial Arts| L[🥋 Korean Martial Arts Expert]
     B -->|Testing| F[🧪 Testing Agent]
     B -->|Documentation| G[📝 Documentation Writer]
     B -->|Security| H[🛡️ Security Specialist]
@@ -136,6 +137,7 @@ graph LR
     K -.Delegates.-> C
     K -.Delegates.-> D
     K -.Delegates.-> E
+    K -.Delegates.-> L
     K -.Delegates.-> F
     K -.Delegates.-> G
     K -.Delegates.-> H
@@ -145,6 +147,7 @@ graph LR
     style C fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style D fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
     style E fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style L fill:#673AB7,stroke:#4527A0,stroke-width:2px,color:#fff
     style F fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
     style G fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
     style H fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
@@ -372,6 +375,7 @@ flowchart TD
     Type -->|Writing Code| Code{Code Type?}
     Code -->|UI Components| Frontend[⚛️ Frontend Specialist]
     Code -->|Game Logic| Game[🎮 Game Developer]
+    Code -->|Combat/Martial Arts| MartialArts[🥋 Korean Martial Arts Expert]
     Code -->|General Feature| Coding[🛠️ Coding Agent]
     
     Type -->|Writing Tests| TestType{Test Type?}
@@ -385,6 +389,7 @@ flowchart TD
     TaskAgent --> Action[Get Agent Help]
     Frontend --> Action
     Game --> Action
+    MartialArts --> Action
     Coding --> Action
     Testing --> Action
     TestEng --> Action
@@ -400,6 +405,7 @@ flowchart TD
     style TaskAgent fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
     style Frontend fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
     style Game fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style MartialArts fill:#673AB7,stroke:#4527A0,stroke-width:2px,color:#fff
     style Coding fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style Testing fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
     style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
@@ -460,6 +466,7 @@ graph TB
         Code[🛠️ Coding Agent]
         Front[⚛️ Frontend Specialist]
         GameDev[🎮 Game Developer]
+        MartialArts[🥋 Korean Martial Arts Expert]
         Test[🧪 Testing Agent]
         TestEng[🔬 Test Engineer]
         Docs[📝 Documentation Writer]
@@ -478,6 +485,7 @@ graph TB
     Setup --> Code
     Setup --> Front
     Setup --> GameDev
+    Setup --> MartialArts
     Setup --> Test
     Setup --> TestEng
     Setup --> Docs
@@ -488,6 +496,7 @@ graph TB
     MCP --> Code
     MCP --> Front
     MCP --> GameDev
+    MCP --> MartialArts
     MCP --> Test
     MCP --> TestEng
     MCP --> Docs
@@ -498,6 +507,7 @@ graph TB
     Main --> Code
     Main --> Front
     Main --> GameDev
+    Main --> MartialArts
     Main --> Test
     Main --> TestEng
     Main --> Docs
@@ -512,6 +522,7 @@ graph TB
     Code --> Files
     Front --> Files
     GameDev --> Files
+    MartialArts --> Files
     Test --> Files
     TestEng --> Files
     Docs --> Files
@@ -526,6 +537,7 @@ graph TB
     style Code fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style Front fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
     style GameDev fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style MartialArts fill:#673AB7,stroke:#4527A0,stroke-width:2px,color:#fff
     style Test fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
     style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
     style Docs fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
@@ -668,6 +680,44 @@ graph TD
 - License compatibility checking
 - Automated security workflows
 - Security policy enforcement
+
+---
+
+### 🥋 [Korean Martial Arts Expert](./korean-martial-arts-expert.md)
+**Specialization**: Korean Martial Arts Combat Systems & Vital Point Targeting
+
+**Use for:**
+- Extending the 70 vital point system
+- Implementing Hapkido, Taekwondo, Taekyon techniques
+- Anatomical targeting accuracy
+- Combat realism and applications
+- Eight Trigram stance integration
+- Player archetype combat specializations
+- Korean martial arts authenticity
+- Bilingual technique documentation
+
+**Key Responsibilities:**
+- Vital point system extension and maintenance
+- Korean martial arts technique design
+- Anatomical accuracy in targeting
+- Combat effectiveness calculations
+- Trigram stance technique mapping
+- Archetype combat specialization
+- Cultural authenticity and respect
+- Bilingual Korean-English documentation
+
+**Martial Arts Expertise:**
+- 합기도 (Hapkido) - Joint locks, pressure points, throws
+- 태권도 (Taekwondo) - High kicks, speed techniques, power strikes
+- 택견 (Taekyon) - Fluid movements, sweeping kicks, rhythmic footwork
+- 기타 한국 무술 - Ssireum, Kumdo, traditional Korean military arts
+
+**Combat System Integration:**
+- 70 anatomical target points across head, torso, and limbs
+- Eight Trigram stance system (팔괘)
+- Five player archetypes (무사, 암살자, 해커, 정보요원, 조직폭력배)
+- Real combat applications with anatomical precision
+- Realistic injury and incapacitation mechanics
 
 ## How to Use These Agents
 
