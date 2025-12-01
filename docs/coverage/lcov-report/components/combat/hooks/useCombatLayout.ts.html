@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -156,7 +156,11 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -209,11 +213,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -224,26 +230,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
+<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">48x</span>
+<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -251,7 +259,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * useCombatLayout Hook - Optimized Layout Calculations
- * 
+ *
  * Custom hook for managing responsive combat screen layout calculations.
  * Optimizes layout recalculations by minimizing dependencies and memoizing
  * complex calculations.
@@ -263,9 +271,9 @@
  *
  * @param width - Screen width
  * @param height - Screen height
- * 
+ *
  * @returns Layout constants and arena bounds
- * 
+ *
  * @example
  * ```typescript
  * const { layoutConstants, arenaBounds, isMobile } = useCombatLayout(1200, 800);
@@ -300,34 +308,38 @@ export interface CombatLayout {
  * Optimized to reduce recalculations and improve 60fps performance
  */
 export function useCombatLayout(width: number, height: number): CombatLayout {
-  // Performance: Only recalculate when crossing mobile breakpoint (768px)
+  // Performance: Only recalculate when crossing breakpoints
   // This prevents recalculation on every pixel change during resize
   const isMobile = useMemo(() =&gt; width &lt; 768, [width]);
+  const isLargeDesktop = useMemo(() =&gt; width &gt;= 1920, [width]); // 4K/2K displays
 &nbsp;
   // Centralized layout constants for easier tweaking
-  // Optimized: Only depends on isMobile boolean, not exact width
-  const layoutConstants = useMemo&lt;LayoutConstants&gt;(() =&gt; ({
-    padding: 10,
-    hudHeight: isMobile ? 100 : 140,
-    controlsHeight: isMobile ? 140 : 180,
-    footerHeight: isMobile ? 25 : 30,
-    healthBarHeight: isMobile ? 50 : 60,
-  }), [isMobile]);
+  // Optimized: Depends on breakpoint booleans, not exact width
+  const layoutConstants = useMemo&lt;LayoutConstants&gt;(
+    () =&gt; ({
+      padding: 10,
+      hudHeight: isMobile ? 95 : isLargeDesktop ? 90 : 120,
+      controlsHeight: isMobile ? 130 : isLargeDesktop ? 120 : 160,
+      footerHeight: isMobile ? 22 : isLargeDesktop ? 20 : 28,
+      healthBarHeight: isMobile ? 48 : isLargeDesktop ? 45 : 55,
+    }),
+    [isMobile, isLargeDesktop]
+  );
 &nbsp;
   // Fixed player positions for 2-player combat with proper bounds
   // Arena bounds should account for HUD at top and controls at bottom
   // Optimized: Separate calculation dependencies to reduce recalculation frequency
   const arenaBounds = useMemo&lt;ArenaBounds&gt;(() =&gt; {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
-    
+&nbsp;
     // Break down complex calculation for clarity and maintainability
-    const totalReservedHeight = 
-      layoutConstants.hudHeight + 
-      layoutConstants.controlsHeight + 
+    const totalReservedHeight =
+      layoutConstants.hudHeight +
+      layoutConstants.controlsHeight +
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
     const arenaHeight = height - totalReservedHeight - totalPadding;
-    
+&nbsp;
     return {
       x: width * 0.1,
       y: arenaY,
@@ -349,7 +361,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-28T01:31:34.651Z
+                at 2025-12-01T01:47:07.144Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

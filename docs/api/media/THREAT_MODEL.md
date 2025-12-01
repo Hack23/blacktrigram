@@ -48,7 +48,7 @@ _— Based on Hack23 AB's commitment to security through transparency and excell
 - 🎨 Static asset delivery (CDN-based)
 - 🎵 Audio streaming and management
 - 🔐 Browser-based session management
-- 🏗️ CI/CD security pipeline (GitHub Actions)
+- 🏭️ CI/CD security pipeline (GitHub Actions)
 - 📦 Dependency management and supply chain
 
 **Out of Scope:**
@@ -462,7 +462,7 @@ flowchart TB
         CSP[🛡️ Content Security Policy]
         REACT[⚛️ React Security Patterns]
         INPUT[✅ Input Validation]
-        PIXI[🎨 PixiJS Security Context]
+        THREE[🎨 Three.js Security Context]
     end
 
     subgraph BROWSER["🖥️ Browser Security"]
@@ -492,7 +492,7 @@ flowchart TB
 
     SRI -.-> INTEGRITY
     INPUT -.-> ERRORS
-    PIXI -.-> PERFORMANCE
+    THREE -.-> PERFORMANCE
 
     DEPS -.-> SLSA
     SAST -.-> SBOM
