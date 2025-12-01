@@ -243,6 +243,42 @@ describe("RoundAnnouncement", () => {
     expect(onSkipMock).toHaveBeenCalledTimes(1);
   });
 
+  it("should call onSkip when Enter key is pressed on skip button", () => {
+    render(
+      <RoundAnnouncement
+        roundNumber={1}
+        roundWinner={mockPlayer1}
+        currentScore={mockCurrentScore}
+        onCountdownComplete={onCountdownCompleteMock}
+        onSkip={onSkipMock}
+        isMobile={false}
+      />
+    );
+
+    const skipButton = screen.getByTestId("skip-countdown-button");
+    fireEvent.keyDown(skipButton, { key: 'Enter' });
+
+    expect(onSkipMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call onSkip when Space key is pressed on skip button", () => {
+    render(
+      <RoundAnnouncement
+        roundNumber={1}
+        roundWinner={mockPlayer1}
+        currentScore={mockCurrentScore}
+        onCountdownComplete={onCountdownCompleteMock}
+        onSkip={onSkipMock}
+        isMobile={false}
+      />
+    );
+
+    const skipButton = screen.getByTestId("skip-countdown-button");
+    fireEvent.keyDown(skipButton, { key: ' ' });
+
+    expect(onSkipMock).toHaveBeenCalledTimes(1);
+  });
+
   it("should show match point indicator when appropriate", () => {
     render(
       <RoundAnnouncement
