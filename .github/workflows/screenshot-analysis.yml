@@ -110,23 +110,6 @@ jobs:
           path: screenshots/
           retention-days: 30
       
-      - name: Commit screenshots to branch
-        if: github.event_name == 'pull_request'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add screenshots/
-          if ! git diff --staged --quiet; then
-            git commit -m "📸 Add automated UI/UX screenshots"
-            # Pull latest changes before pushing to handle concurrent updates
-            git pull --rebase origin ${{ github.head_ref }}
-            git push origin HEAD:${{ github.head_ref }}
-          else
-            echo "No screenshot changes to commit"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Post screenshots to PR
         if: github.event_name == 'pull_request'
         run: npm run screenshots:post
