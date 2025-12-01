@@ -71,30 +71,7 @@ jobs:
           # Setup D-Bus for Chrome
           sudo mkdir -p /var/run/dbus
           sudo dbus-daemon --system --fork || true
-          
-          # Start Xvfb for headless Three.js rendering
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render > /tmp/xvfb. log 2>&1 &
-          XVFB_PID=$!
-          
-          # Wait for Xvfb to be ready (with timeout)
-          for i in {1..10}; do
-            if xdpyinfo -display :99 >/dev/null 2>&1; then
-              echo "✅ Xvfb started successfully on :99 (attempt $i)"
-              break
-            fi
-            if [ $i -eq 10 ]; then
-              echo "❌ Failed to start Xvfb after 10 attempts"
-              echo "Xvfb logs:"
-              cat /tmp/xvfb.log
-              echo "Xvfb process status:"
-              ps aux | grep Xvfb || echo "Xvfb process not found"
-              exit 1
-            fi
-            echo "⏳ Waiting for Xvfb...  (attempt $i/10)"
-            sleep 1
-          done
-          
+                    
           # Verify Chrome installation
           google-chrome --version
           echo "✅ Three.js test environment setup complete"
