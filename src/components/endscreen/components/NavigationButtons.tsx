@@ -31,9 +31,18 @@ interface ButtonConfig {
 }
 
 /**
+ * Props for the reusable styled button component for navigation
+ */
+interface StyledButtonProps extends ButtonConfig {
+  readonly buttonPadding: string;
+  readonly buttonFontSize: number;
+  readonly minWidth: string;
+}
+
+/**
  * Reusable styled button component for navigation
  */
-const StyledButton: React.FC<ButtonConfig & { readonly buttonPadding: string; readonly buttonFontSize: number; readonly minWidth: string }> = ({
+const StyledButton: React.FC<StyledButtonProps> = ({
   onClick,
   onMouseEnter,
   primaryColor,
