@@ -37,7 +37,7 @@ jobs:
             xvfb dbus-x11 graphviz \
             libgtk2.0-0 libgtk-3-0 libgbm-dev \
             ffmpeg libnotify-dev libnss3 libxss1 \
-            libasound2 libxtst6 xauth \
+            libxtst6 xauth \
             fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
             ca-certificates fonts-liberation \
             libatk-bridge2.0-0 libatk1.0-0 \
