@@ -950,9 +950,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             damageDealt: roundWinner.totalDamageDealt ?? 0,
             hitsLanded: roundWinner.hitsLanded ?? 0,
             vitalPointsHit: roundWinner.vitalPointHits ?? 0,
-            accuracy: roundWinner.hitsLanded && (roundWinner.hitsLanded + (roundWinner.hitsTaken ?? 0)) > 0
-              ? (roundWinner.hitsLanded / (roundWinner.hitsLanded + (roundWinner.hitsTaken ?? 0))) * 100
-              : 0,
+            // Calculate accuracy: hits landed / (hits landed + misses)
+            // If misses not tracked, use a simpler ratio as fallback
+            accuracy: (() => {
+              const hits = roundWinner.hitsLanded ?? 0;
+              const misses = roundWinner.misses ?? 0;
+              const totalAttempts = hits + misses;
+              
+              // If we have miss tracking, use proper accuracy formula
+              if (totalAttempts > 0) {
+                return (hits / totalAttempts) * 100;
+              }
+              
+              // Fallback: if no miss tracking, estimate based on hits vs hits taken
+              // This is less accurate but better than showing 0%
+              const hitsTaken = roundWinner.hitsTaken ?? 0;
+              const totalCombatInteractions = hits + hitsTaken;
+              return totalCombatInteractions > 0
+                ? (hits / totalCombatInteractions) * 100
+                : 0;
+            })(),
           }}
           onCountdownComplete={() => {
             // Check if match is over (best of 3)
