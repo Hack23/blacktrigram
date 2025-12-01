@@ -89,7 +89,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
-  // Countdown logic
+  // Countdown logic with proper cleanup
   useEffect(() => {
     if (countdown <= 0) {
       onCountdownComplete();
@@ -97,7 +97,13 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     }
 
     const timer = setInterval(() => {
-      setCountdown((prev) => prev - 1);
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Countdown complete, callback will be handled by effect
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
@@ -110,29 +116,41 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     return maxScore === roundsToWin - 1;
   }, [currentScore, totalRounds]);
 
-  // Convert hex colors to CSS
-  const goldColor = `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`;
-  const cyanColor = `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`;
-  const darkBg = `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`;
+  // Convert hex colors to CSS - memoized for performance
+  const goldColor = useMemo(
+    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    []
+  );
+  const cyanColor = useMemo(
+    () => `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+    []
+  );
+  const darkBg = useMemo(
+    () => `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`,
+    []
+  );
+
+  // Memoize container style for performance
+  const containerStyle = useMemo(() => ({
+    position: "fixed" as const,
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: `${darkBg}dd`,
+    zIndex: 1000,
+    opacity: isVisible ? 1 : 0,
+    transition: "opacity 0.3s ease-in-out",
+  }), [darkBg, isVisible]);
 
   return (
     <div
       data-testid="round-announcement"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: `${darkBg}dd`,
-        zIndex: 1000,
-        opacity: isVisible ? 1 : 0,
-        transition: "opacity 0.3s ease-in-out",
-      }}
+      style={containerStyle}
     >
       {/* Match Point Indicator */}
       {isMatchPoint && (
@@ -263,6 +281,9 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
           textShadow: `0 0 40px ${goldColor}`,
         }}
         data-testid="countdown-display"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label={`Countdown: ${countdown} seconds remaining`}
       >
         {countdown}
       </div>
@@ -270,7 +291,14 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
       {/* Skip Button */}
       <button
         onClick={onSkip}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSkip();
+          }
+        }}
         data-testid="skip-countdown-button"
+        className="skip-countdown-button"
         style={{
           padding: isMobile ? "10px 24px" : "12px 32px",
           fontSize: isMobile ? "14px" : "16px",
@@ -281,21 +309,12 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
           fontFamily: FONT_FAMILY.KOREAN,
           fontWeight: "bold",
           cursor: "pointer",
-          transition: "all 0.2s ease",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "scale(1.05)";
-          e.currentTarget.style.boxShadow = `0 0 20px ${cyanColor}`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = "none";
         }}
       >
         건너뛰기 | Skip
       </button>
 
-      {/* CSS Animation for pulse effect */}
+      {/* CSS Animation for pulse effect and button hover */}
       <style>
         {`
           @keyframes pulse {
@@ -307,6 +326,20 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
               opacity: 0.7;
               transform: scale(1.05);
             }
+          }
+          
+          .skip-countdown-button {
+            transition: all 0.2s ease;
+          }
+          
+          .skip-countdown-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px ${cyanColor};
+          }
+          
+          .skip-countdown-button:focus {
+            outline: 2px solid ${cyanColor};
+            outline-offset: 2px;
           }
         `}
       </style>
