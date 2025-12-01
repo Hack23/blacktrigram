@@ -156,7 +156,7 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
             <div style={{ color: toCssColor(KOREAN_COLORS.STAMINA_FULL), fontWeight: "bold" }}>
               {Math.round(winner.stamina)}
             </div>
-            <div>체력 | Stamina</div>
+            <div>스태미나 | Stamina</div>
           </div>
         </div>
       </div>

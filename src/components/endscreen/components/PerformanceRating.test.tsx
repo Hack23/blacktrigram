@@ -241,9 +241,19 @@ describe("PerformanceRating", () => {
   it("should display score breakdown with combat stats", () => {
     const mockStats = createMockMatchStats({
       criticalHits: 5,
-      vitalPointHits: 3,
-      perfectStrikes: 2,
-      techniquesUsed: 10,
+      player1: {
+        wins: 1,
+        losses: 0,
+        hitsTaken: 5,
+        hitsLanded: 15,
+        totalDamageDealt: 150,
+        totalDamageReceived: 100,
+        techniques: ["천둥벽력", "유수연타", "화염지창"],
+        perfectStrikes: 2,
+        vitalPointHits: 3,
+        consecutiveWins: 1,
+        matchDuration: 120,
+      },
     });
 
     const { getByTestId } = render(
@@ -258,10 +268,10 @@ describe("PerformanceRating", () => {
 
     const scoreBreakdown = getByTestId("score-breakdown");
     expect(scoreBreakdown).toBeInTheDocument();
-    expect(scoreBreakdown).toHaveTextContent("5"); // critical hits
-    expect(scoreBreakdown).toHaveTextContent("3"); // vital point hits
-    expect(scoreBreakdown).toHaveTextContent("2"); // perfect strikes
-    expect(scoreBreakdown).toHaveTextContent("10"); // techniques used
+    expect(scoreBreakdown).toHaveTextContent("2"); // perfect strikes (player1)
+    expect(scoreBreakdown).toHaveTextContent("3"); // vital point hits (player1)
+    expect(scoreBreakdown).toHaveTextContent("3"); // techniques used (player1)
+    expect(scoreBreakdown).toHaveTextContent("5"); // critical hits (match-level)
   });
 
   it("should adapt layout for mobile", () => {

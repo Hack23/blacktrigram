@@ -191,27 +191,27 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
         >
           <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.ACCENT_GOLD), fontWeight: "bold" }}>
-              {matchStats.criticalHits}
-            </div>
-            <div>치명타 | Criticals</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.VITAL_POINT_HIT), fontWeight: "bold" }}>
-              {matchStats.vitalPointHits}
-            </div>
-            <div>급소 | Vital Hits</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.PERFECT_STRIKE), fontWeight: "bold" }}>
-              {matchStats.perfectStrikes}
+              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).perfectStrikes || matchStats.perfectStrikes}
             </div>
             <div>완벽 | Perfect</div>
           </div>
           <div style={{ textAlign: "center" }}>
+            <div style={{ color: toCssColor(KOREAN_COLORS.VITAL_POINT_HIT), fontWeight: "bold" }}>
+              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).vitalPointHits || matchStats.vitalPointHits}
+            </div>
+            <div>급소 | Vital Hits</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
             <div style={{ color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN), fontWeight: "bold" }}>
-              {matchStats.techniquesUsed}
+              {(matchStats.winner === 0 ? matchStats.player1 : matchStats.player2).techniques?.length || matchStats.techniquesUsed}
             </div>
             <div>기술 | Techniques</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ color: toCssColor(KOREAN_COLORS.CRITICAL_HIT), fontWeight: "bold" }}>
+              {matchStats.criticalHits}
+            </div>
+            <div>치명타 | Criticals</div>
           </div>
         </div>
       </div>
