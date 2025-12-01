@@ -8,7 +8,8 @@ This document provides practical examples of how to use the Korean Martial Arts 
 2. [Creating Korean Techniques](#creating-korean-techniques)
 3. [Integrating with Trigram Stances](#integrating-with-trigram-stances)
 4. [Archetype Specializations](#archetype-specializations)
-5. [Testing Combat Systems](#testing-combat-systems)
+5. [Dark Ops Special Operations Techniques](#dark-ops-special-operations-techniques)
+6. [Testing Combat Systems](#testing-combat-systems)
 
 ---
 
@@ -765,6 +766,445 @@ describe('Korean Techniques System', () => {
 
 ---
 
+## Dark Ops Special Operations Techniques
+
+### Example 1: Dark Operations Unit (암흑작전부대) Silent Infiltration Technique
+
+**Context**: Adding a technique used by the Dark Operations Unit for silent incapacitation during midnight infiltration missions.
+
+**File**: `src/systems/trigram/techniques.ts`
+
+```typescript
+{
+  id: "darkops_silent_carotid_strike",
+  names: {
+    korean: "암흑작전 경동맥 타격",
+    english: "Dark Ops Silent Carotid Strike",
+    romanized: "amheuk-jakjeon gyeongdongmaek tagyeok",
+  },
+  stance: TrigramStance.GAM, // Water - adaptive flow
+  martialArt: 'special_ops',
+  specialUnit: 'dark_operations', // 암흑작전부대
+  targetVitalPoints: [
+    "inmyeong",           // Carotid artery
+    "neck_pressure_point", // Additional nerve cluster
+  ],
+  kiCost: 20,
+  staminaCost: 15,
+  executionTime: 600, // Very fast - 0.6 seconds
+  damageMultiplier: 1.6,
+  description: {
+    korean: "암흑작전부대의 침투 전문 기술. 경동맥을 정확히 압박하여 소리 없이 상대를 무력화",
+    english: "Dark Operations Unit infiltration technique. Precise carotid compression for silent neutralization",
+  },
+  archetypeEffectiveness: {
+    amsalja: 1.35,      // Shadow assassin - perfect for stealth +35%
+    jeongbo: 1.25,      // Intelligence operative - precision timing +25%
+    hacker: 1.15,       // Cyber warrior - calculated approach +15%
+    musa: 0.85,         // Traditional warrior - unconventional -15%
+    jojik: 1.0,         // Neutral
+  },
+  requirements: {
+    minKi: 15,
+    minStamina: 12,
+    requiredStance: TrigramStance.GAM,
+  },
+  specialEffects: {
+    silentExecution: true,           // No audio cue for opponents
+    nightVisionBonus: 1.15,          // +15% accuracy with night vision
+    suppressedWeaponSynergy: true,   // Can combo with suppressed weapons
+  },
+  tacticalTags: ['infiltration', 'silent', 'midnight_ops', 'high_value_target'],
+}
+```
+
+### Example 2: Shadow Commando Brigade (암흑특공대) Explosive Breaching
+
+**Context**: Shadow Commando technique for combining demolition with vital point strikes.
+
+```typescript
+{
+  id: "shadow_commando_breach_strike",
+  names: {
+    korean: "암흑특공 폭파 타격",
+    english: "Shadow Commando Breach Strike",
+    romanized: "amheuk-teukgong pokpa tagyeok",
+  },
+  stance: TrigramStance.JIN, // Thunder - explosive power
+  martialArt: 'special_ops',
+  specialUnit: 'shadow_commando', // 암흑특공대
+  targetVitalPoints: [
+    "solar_plexus",
+    "floating_ribs",
+    "liver_point",
+  ],
+  kiCost: 30,
+  staminaCost: 35,
+  executionTime: 1000,
+  damageMultiplier: 2.2, // Very high damage
+  description: {
+    korean: "암흑특공대의 폭파 전문 기술. 시설 침투 후 폭발적인 타격으로 적을 제압",
+    english: "Shadow Commando explosive technique. Post-breach overwhelming strikes to neutralize threats",
+  },
+  archetypeEffectiveness: {
+    jojik: 1.3,         // Organized crime - ruthless approach +30%
+    musa: 1.25,         // Traditional warrior - powerful strikes +25%
+    hacker: 1.1,        // Cyber warrior - calculated timing +10%
+    amsalja: 0.9,       // Shadow assassin - too loud -10%
+    jeongbo: 1.0,       // Neutral
+  },
+  requirements: {
+    minKi: 25,
+    minStamina: 30,
+    requiredStance: TrigramStance.JIN,
+  },
+  specialEffects: {
+    adaptiveCamouflageBonus: 1.1,    // Works well with adaptive camo
+    explosiveKitSynergy: true,        // Combos with demolition equipment
+    breachingBonus: 1.25,             // +25% effectiveness post-breach
+  },
+  tacticalTags: ['demolition', 'sabotage', 'facility_breach', 'overwhelming_force'],
+}
+```
+
+### Example 3: Nightfall Infiltration Squadron (심야작전부대) Zero-Light CQB
+
+**Context**: Nightfall Squadron technique for close-quarters combat in complete darkness.
+
+```typescript
+{
+  id: "nightfall_zero_light_strike",
+  names: {
+    korean: "심야작전 무광 타격",
+    english: "Nightfall Zero-Light Strike",
+    romanized: "simya-jakjeon mugwang tagyeok",
+  },
+  stance: TrigramStance.SON, // Wind - continuous pressure in darkness
+  martialArt: 'special_ops',
+  specialUnit: 'nightfall_infiltration', // 심야작전부대
+  targetVitalPoints: [
+    "temple",
+    "throat_nerve",
+    "kidney_pressure",
+  ],
+  kiCost: 22,
+  staminaCost: 25,
+  executionTime: 700,
+  damageMultiplier: 1.7,
+  description: {
+    korean: "심야작전부대의 완전 암흑 전투 기술. 시각 없이 촉각과 소리로 급소를 타격",
+    english: "Nightfall Squadron complete darkness combat. Strike vital points using touch and sound without vision",
+  },
+  archetypeEffectiveness: {
+    amsalja: 1.4,       // Shadow assassin - darkness mastery +40%
+    jeongbo: 1.2,       // Intelligence operative - sensory adaptation +20%
+    hacker: 1.15,       // Cyber warrior - tech assistance +15%
+    musa: 0.95,         // Traditional warrior - prefers visibility -5%
+    jojik: 1.05,        // Slight advantage +5%
+  },
+  requirements: {
+    minKi: 18,
+    minStamina: 20,
+    requiredStance: TrigramStance.SON,
+  },
+  specialEffects: {
+    zeroLightBonus: 1.3,              // +30% effectiveness in darkness
+    nightVisionBonus: 1.2,            // +20% with night vision
+    irSuppressionBonus: 1.15,         // +15% with IR suppression
+    soundDampeningBonus: 1.1,         // +10% with sound-dampening gear
+  },
+  tacticalTags: ['night_ops', 'zero_light_cqb', 'sensory_combat', 'roof_entry'],
+}
+```
+
+### Example 4: Black Ops Task Force (블랙옵스부대) Cyber-Enhanced Strike
+
+**Context**: Black Ops technique combining cyber warfare with physical combat.
+
+```typescript
+{
+  id: "blackops_cyber_enhanced_strike",
+  names: {
+    korean: "블랙옵스 사이버 강화 타격",
+    english: "Black Ops Cyber-Enhanced Strike",
+    romanized: "beullaekopseu saibeo ganghwa tagyeok",
+  },
+  stance: TrigramStance.LI, // Fire - precision with technology
+  martialArt: 'special_ops',
+  specialUnit: 'black_ops_task_force', // 블랙옵스부대
+  targetVitalPoints: [
+    "neural_cluster",
+    "vascular_nexus",
+    "nerve_center",
+  ],
+  kiCost: 25,
+  staminaCost: 20,
+  executionTime: 800,
+  damageMultiplier: 1.9,
+  description: {
+    korean: "블랙옵스부대의 사이버 통합 전투 기술. 실시간 해부학적 오버레이로 정확한 급소 타격",
+    english: "Black Ops cyber-integrated combat. Real-time anatomical overlay for precise vital point targeting",
+  },
+  archetypeEffectiveness: {
+    hacker: 1.5,        // Cyber warrior - perfect synergy +50%
+    jeongbo: 1.3,       // Intelligence operative - data analysis +30%
+    amsalja: 1.15,      // Shadow assassin - precision tools +15%
+    musa: 0.8,          // Traditional warrior - tech dependency -20%
+    jojik: 0.9,         // Organized crime - unfamiliar tech -10%
+  },
+  requirements: {
+    minKi: 20,
+    minStamina: 18,
+    requiredStance: TrigramStance.LI,
+  },
+  specialEffects: {
+    smartWeaponBonus: 1.3,            // +30% with smart weapons
+    cyberOverlayBonus: 1.25,          // +25% with anatomical overlay
+    empSynergy: true,                  // Can combo with EMP tactics
+    hackingComboBonus: 1.2,           // +20% after successful hack
+  },
+  tacticalTags: ['cyber_warfare', 'tech_enhanced', 'c4isr', 'hybrid_ops'],
+}
+```
+
+### Example 5: Deep Sea Infiltration Unit (심해침투부대) Amphibious Combat
+
+**Context**: Deep Sea Unit technique adapted for underwater and shipboard combat.
+
+```typescript
+{
+  id: "deepsea_amphibious_strike",
+  names: {
+    korean: "심해침투 양용 타격",
+    english: "Deep Sea Amphibious Strike",
+    romanized: "simhae-chimtu yangyong tagyeok",
+  },
+  stance: TrigramStance.GON, // Earth - grounding on wet surfaces
+  martialArt: 'special_ops',
+  specialUnit: 'deep_sea_infiltration', // 심해침투부대
+  targetVitalPoints: [
+    "neck_arteries",
+    "spine_base",
+    "kidney_strike",
+  ],
+  kiCost: 28,
+  staminaCost: 32,
+  executionTime: 900,
+  damageMultiplier: 1.8,
+  description: {
+    korean: "심해침투부대의 수중/선박 전투 기술. 젖은 환경에서 적응된 합기도와 씨름 기법",
+    english: "Deep Sea Unit underwater/vessel combat. Adapted Hapkido and Ssireum for wet environments",
+  },
+  archetypeEffectiveness: {
+    musa: 1.25,         // Traditional warrior - adapted martial arts +25%
+    jojik: 1.3,         // Organized crime - wet environment brawling +30%
+    amsalja: 1.15,      // Shadow assassin - vessel boarding +15%
+    hacker: 0.9,        // Cyber warrior - electronics vulnerable -10%
+    jeongbo: 1.1,       // Intelligence operative - strategic approach +10%
+  },
+  requirements: {
+    minKi: 24,
+    minStamina: 28,
+    requiredStance: TrigramStance.GON,
+  },
+  specialEffects: {
+    underwaterBonus: 1.4,              // +40% effectiveness underwater
+    wetSurfaceBonus: 1.25,             // +25% on wet deck/surfaces
+    rebreatherCompatible: true,         // Can execute with rebreather
+    amphibiousExoskeletonBonus: 1.3,   // +30% with amphibious suit
+    submersibleInsertionBonus: 1.2,    // +20% post-submersible insertion
+  },
+  tacticalTags: ['maritime_ops', 'underwater_combat', 'vessel_boarding', 'coastal_sabotage'],
+  basedOn: 'ROK_Navy_UDT_SEAL', // 대한민국 해군 UDT/SEAL
+}
+```
+
+### Dark Ops Vital Point Additions
+
+When extending the vital point system for Dark Ops techniques, add these specialized properties:
+
+```typescript
+// Example: Tactical vital point for special operations
+{
+  id: "darkops_cardiovascular_disruption",
+  names: {
+    korean: "전술 심혈관 차단점",
+    english: "Tactical Cardiovascular Disruption Point",
+    romanized: "jeonsul simhyeolgwan chadan-jeom",
+  },
+  position: { x: 105, y: 180 },
+  category: VitalPointCategory.VASCULAR,
+  severity: VitalPointSeverity.CRITICAL,
+  baseDamage: 38,
+  effects: [
+    {
+      id: "rapid_incapacitation",
+      type: VitalPointEffectType.CARDIOVASCULAR_SHOCK,
+      intensity: EffectIntensity.HIGH,
+      duration: 4000,
+      description: {
+        korean: "신속 무력화",
+        english: "Rapid incapacitation",
+      },
+      stackable: false,
+      source: "dark_ops_system",
+    },
+  ],
+  description: {
+    korean: "특수부대 전술 타격점. 심혈관 충격으로 신속한 전투 무력화",
+    english: "Special operations tactical strike point. Cardiovascular shock for rapid combat neutralization",
+  },
+  targetingDifficulty: 0.75,
+  effectiveStances: [
+    TrigramStance.GAM,  // Water - adaptive
+    TrigramStance.LI,   // Fire - precision
+  ],
+  
+  // Dark Ops specific properties
+  martialArtOrigin: 'special_ops',
+  specialUnits: [
+    'dark_operations',
+    'nightfall_infiltration',
+    'black_ops_task_force',
+  ],
+  strikeType: 'pressure',
+  archetypeBonus: {
+    amsalja: 1.35,      // Shadow assassin - stealth ops +35%
+    hacker: 1.25,       // Cyber warrior - precision +25%
+    jeongbo: 1.3,       // Intelligence operative - tactical knowledge +30%
+    musa: 0.95,         // Traditional warrior - unconventional -5%
+    jojik: 1.15,        // Organized crime - practical application +15%
+  },
+  anatomicalDepth: 'shallow',
+  recoveryTime: 4000,
+  
+  // Tactical properties
+  silentIncapacitation: true,
+  nightVisionAccuracyBonus: 0.15,
+  cyberEnhancedBonus: 0.2,
+  
+  // Backwards compatibility
+  korean: { korean: "전술 심혈관 차단점", english: "Tactical Cardiovascular Disruption Point" },
+  english: "Tactical Cardiovascular Disruption Point",
+  anatomicalName: "Carotid-Subclavian Junction",
+  radius: 15,
+  damage: { min: 32, max: 45, average: 38 },
+  difficulty: 0.75,
+  requiredForce: 25,
+  safetyWarning: "CRITICAL - Can cause cardiovascular collapse. Special operations training required.",
+}
+```
+
+### Testing Dark Ops Techniques
+
+**File**: `src/systems/trigram/DarkOpsTechniques.test.ts`
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { KoreanTechniquesSystem } from './KoreanTechniques';
+import { TrigramStance, PlayerArchetype } from '@/types';
+import { createMockPlayer } from '@/test/test-utils';
+
+describe('Dark Ops Special Operations Techniques', () => {
+  describe('Dark Operations Unit Techniques', () => {
+    it('should favor amsalja archetype for silent carotid strike', () => {
+      const technique = KoreanTechniquesSystem.getTechniqueById(
+        'darkops_silent_carotid_strike'
+      );
+      
+      expect(technique?.specialUnit).toBe('dark_operations');
+      expect(technique?.archetypeEffectiveness?.amsalja).toBe(1.35);
+      expect(technique?.specialEffects?.silentExecution).toBe(true);
+    });
+
+    it('should apply night vision bonus correctly', () => {
+      const player = createMockPlayer({
+        currentStance: TrigramStance.GAM,
+        archetype: PlayerArchetype.AMSALJA,
+        equipment: ['night_vision_goggles'],
+        ki: 25,
+        stamina: 20,
+      });
+
+      const technique = KoreanTechniquesSystem.getTechniqueById(
+        'darkops_silent_carotid_strike'
+      );
+
+      const effectivenessWithNV = 
+        technique?.archetypeEffectiveness?.amsalja! * 
+        technique?.specialEffects?.nightVisionBonus!;
+
+      expect(effectivenessWithNV).toBeGreaterThan(1.5); // Base 1.35 * 1.15 = 1.5525
+    });
+  });
+
+  describe('Black Ops Task Force Cyber Techniques', () => {
+    it('should give massive bonus to hacker archetype', () => {
+      const technique = KoreanTechniquesSystem.getTechniqueById(
+        'blackops_cyber_enhanced_strike'
+      );
+
+      expect(technique?.specialUnit).toBe('black_ops_task_force');
+      expect(technique?.archetypeEffectiveness?.hacker).toBe(1.5); // +50%
+    });
+
+    it('should penalize musa archetype for tech dependency', () => {
+      const technique = KoreanTechniquesSystem.getTechniqueById(
+        'blackops_cyber_enhanced_strike'
+      );
+
+      expect(technique?.archetypeEffectiveness?.musa).toBeLessThan(1.0);
+    });
+  });
+
+  describe('Deep Sea Unit Amphibious Techniques', () => {
+    it('should apply underwater combat bonus', () => {
+      const technique = KoreanTechniquesSystem.getTechniqueById(
+        'deepsea_amphibious_strike'
+      );
+
+      expect(technique?.specialUnit).toBe('deep_sea_infiltration');
+      expect(technique?.specialEffects?.underwaterBonus).toBe(1.4);
+      expect(technique?.basedOn).toBe('ROK_Navy_UDT_SEAL');
+    });
+
+    it('should favor jojik and musa archetypes for adapted martial arts', () => {
+      const technique = KoreanTechniquesSystem.getTechniqueById(
+        'deepsea_amphibious_strike'
+      );
+
+      expect(technique?.archetypeEffectiveness?.jojik).toBeGreaterThan(1.2);
+      expect(technique?.archetypeEffectiveness?.musa).toBeGreaterThan(1.2);
+    });
+  });
+
+  describe('Special Operations Integration', () => {
+    it('should tag techniques with appropriate tactical tags', () => {
+      const darkOpsTechnique = KoreanTechniquesSystem.getTechniqueById(
+        'darkops_silent_carotid_strike'
+      );
+
+      expect(darkOpsTechnique?.tacticalTags).toContain('infiltration');
+      expect(darkOpsTechnique?.tacticalTags).toContain('silent');
+      expect(darkOpsTechnique?.tacticalTags).toContain('midnight_ops');
+    });
+
+    it('should identify special operations martial art origin', () => {
+      const techniques = KoreanTechniquesSystem.getAllTechniques().filter(
+        t => t.martialArt === 'special_ops'
+      );
+
+      expect(techniques.length).toBeGreaterThan(0);
+      techniques.forEach(technique => {
+        expect(technique.specialUnit).toBeDefined();
+      });
+    });
+  });
+});
+```
+
+---
+
 ## Best Practices Summary
 
 When using the Korean Martial Arts Expert agent:
@@ -779,6 +1219,36 @@ When using the Korean Martial Arts Expert agent:
 8. **Consider all five archetypes** when designing techniques
 9. **Apply Eight Trigram philosophy** to stance-technique relationships
 10. **Ensure realistic combat applications** based on actual martial arts
+11. **Integrate Dark Ops expertise** - special operations techniques should reflect tactical training
+12. **Tag special operations techniques** - use tactical tags for mission-specific techniques
+13. **Apply equipment bonuses** - Dark Ops techniques synergize with tactical gear
+14. **Respect special unit mottos** - incorporate Korean special forces philosophy
+
+### Dark Ops Specific Guidelines
+
+When adding special operations techniques:
+
+1. **Unit Authenticity**: Each technique should reflect the specific unit's specialization
+   - Dark Operations Unit (암흑작전부대): Infiltration and silent incapacitation
+   - Shadow Commando (암흑특공대): Demolition and overwhelming force
+   - Nightfall Squadron (심야작전부대): Night operations and zero-light combat
+   - Black Ops Task Force (블랙옵스부대): Cyber-warfare integration
+   - Deep Sea Unit (심해침투부대): Maritime and amphibious operations
+
+2. **Tactical Integration**: 
+   - Include `specialUnit` property to identify source unit
+   - Add `tacticalTags` for mission type categorization
+   - Specify equipment synergies (night vision, suppressors, cyber tools)
+
+3. **Archetype Bonuses**:
+   - Amsalja archetype excels at Dark Ops infiltration techniques
+   - Hacker archetype synergizes with Black Ops cyber techniques
+   - Jojik archetype adapts well to Shadow Commando ruthless tactics
+
+4. **Equipment Effects**:
+   - Night vision bonuses for Nightfall Squadron techniques
+   - Cyber overlay bonuses for Black Ops Task Force techniques
+   - Rebreather compatibility for Deep Sea Unit techniques
 
 ---
 
