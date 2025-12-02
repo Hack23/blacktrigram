@@ -495,7 +495,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: isMobile ? 70 : 85,
+                bottom: isMobile ? 100 : 110,
                 left: isMobile ? 10 : 20,
                 pointerEvents: "all",
               }}
@@ -511,7 +511,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: isMobile ? 70 : 85,
+                bottom: isMobile ? 100 : 110,
                 right: isMobile ? 10 : 20,
                 pointerEvents: "all",
               }}
@@ -545,11 +545,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: isMobile ? 15 : 25,
+                bottom: isMobile ? 25 : 35,
                 left: "50%",
                 transform: "translateX(-50%)",
                 pointerEvents: "all",
-                minHeight: "45px",
+                minHeight: "50px",
+                zIndex: 100,
               }}
             >
               <style>

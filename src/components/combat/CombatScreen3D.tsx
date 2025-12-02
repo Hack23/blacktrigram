@@ -967,7 +967,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <div
           style={{
             position: "absolute",
-            bottom: isMobile ? "70px" : "80px",
+            bottom: isMobile ? "90px" : "100px",
             left: isMobile ? "5px" : "15px",
             right: isMobile ? "5px" : "15px",
             display: "flex",
@@ -1005,24 +1005,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           </div>
         </div>
 
-        {/* Combat Footer */}
+        {/* Combat Footer - Back Button */}
         <div
           style={{
             position: "absolute",
-            bottom: isMobile ? "10px" : "15px",
-            left: isMobile ? "5px" : "15px",
-            right: isMobile ? "5px" : "15px",
-            minHeight: "45px",
+            bottom: isMobile ? "20px" : "30px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            minHeight: "50px",
             pointerEvents: "auto",
+            zIndex: 100,
           }}
         >
-          {/* TODO: Replace with CombatFooterHTML component */}
+          {/* Back button container */}
           <div style={{ 
             textAlign: "center",
-            background: "rgba(10, 10, 15, 0.9)",
-            border: "2px solid #00ffff",
-            borderRadius: "8px",
-            padding: isMobile ? "10px 8px" : "12px 16px",
           }}>
             <style>
               {`
