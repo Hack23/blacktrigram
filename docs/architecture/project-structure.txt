@@ -446,6 +446,8 @@ src/components/combat/components/HitEffects3D.test.tsx
 src/components/combat/components/HitEffects3D.tsx
 src/components/combat/components/Player3DModel.test.tsx
 src/components/combat/components/Player3DModel.tsx
+src/components/combat/components/RoundAnnouncement.test.tsx
+src/components/combat/components/RoundAnnouncement.tsx
 src/components/combat/components/VitalPointMarkers3D.test.tsx
 src/components/combat/components/VitalPointMarkers3D.tsx
 src/components/combat/components/index.ts
@@ -465,7 +467,14 @@ src/components/combat/index.ts
 src/components/endscreen/EndScreen3D.test.tsx
 src/components/endscreen/EndScreen3D.tsx
 src/components/endscreen/components/MatchStatisticsDisplay.tsx
+src/components/endscreen/components/NavigationButtons.test.tsx
+src/components/endscreen/components/NavigationButtons.tsx
+src/components/endscreen/components/PerformanceRating.test.tsx
+src/components/endscreen/components/PerformanceRating.tsx
 src/components/endscreen/components/VictoryAnimation3D.tsx
+src/components/endscreen/components/WinnerDisplay.test.tsx
+src/components/endscreen/components/WinnerDisplay.tsx
+src/components/endscreen/components/animations.ts
 src/components/endscreen/index.ts
 src/components/game/GameAudio.test.tsx
 src/components/game/index.ts
@@ -535,6 +544,8 @@ src/components/ui/__tests__/SplashScreen.test.tsx
 src/components/ui/base/index.ts
 src/components/ui/index.ts
 src/hooks/index.ts
+src/hooks/useRoundTransition.test.ts
+src/hooks/useRoundTransition.ts
 src/hooks/useWebGLContextLossHandler.test.ts
 src/hooks/useWebGLContextLossHandler.ts
 src/index.css
@@ -594,6 +605,8 @@ src/systems/vitalpoint/KoreanAnatomy.test.ts
 src/systems/vitalpoint/KoreanAnatomy.ts
 src/systems/vitalpoint/KoreanVitalPoints.test.ts
 src/systems/vitalpoint/KoreanVitalPoints.ts
+src/systems/vitalpoint/MeridianVitalPointMapping.test.ts
+src/systems/vitalpoint/MeridianVitalPointMapping.ts
 src/systems/vitalpoint/VitalPointsData.ts
 src/systems/vitalpoint/index.ts
 src/systems/vitalpoint/types.ts
