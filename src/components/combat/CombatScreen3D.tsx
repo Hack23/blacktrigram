@@ -1020,6 +1020,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {/* Back button container */}
           <div style={{ 
             textAlign: "center",
+            background: "rgba(10, 10, 15, 0.85)",
+            border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
+            borderRadius: "8px",
+            padding: isMobile ? "8px 12px" : "10px 16px",
           }}>
             <style>
               {`
