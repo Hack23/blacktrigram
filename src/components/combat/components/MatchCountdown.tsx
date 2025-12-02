@@ -122,11 +122,6 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
     ? state === "fight" ? "48px" : "40px"
     : state === "fight" ? "72px" : "56px";
 
-  // Don't render if countdown not active or complete
-  if (!isActive || !displayText) {
-    return null;
-  }
-
   // Convert hex colors to CSS - memoized for performance
   const goldColor = useMemo(
     () => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
@@ -140,6 +135,11 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
     () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
     []
   );
+
+  // Don't render if countdown not active or complete
+  if (!isActive || !displayText) {
+    return null;
+  }
 
   return (
     <Html fullscreen>
