@@ -62,7 +62,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     if (audio.isAudioReady) {
       audio.playSFX("attack_medium"); // Using placeholder - will be round_start
     }
-  }, [audio.isAudioReady, audio.playSFX]);
+  }, [audio.isAudioReady]);
 
   // Auto-dismiss after duration
   useEffect(() => {
