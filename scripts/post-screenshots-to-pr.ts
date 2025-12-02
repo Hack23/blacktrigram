@@ -90,8 +90,9 @@ async function uploadScreenshotToGitHub(
     
     const body = Buffer.concat(parts);
     
-    // Upload to GitHub
-    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/issues/${prNumber}/assets`;
+    // Upload to GitHub using the issue/PR upload endpoint
+    // This endpoint is used by the web UI when drag-dropping images
+    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/issues/uploads`;
     
     const response = await fetch(uploadUrl, {
       method: 'POST',
