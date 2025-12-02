@@ -1,0 +1,154 @@
+/**
+ * RoundStartAnnouncement Component - Displays "Round X Begin!" announcement
+ * 
+ * Korean: 라운드 시작 발표 (Round Start Announcement)
+ * 
+ * Shows "Round X Begin!" for subsequent rounds (not the first round).
+ * Implements Korean cyberpunk aesthetic with bilingual text support.
+ * 
+ * @module components/combat/RoundStartAnnouncement
+ * @category Combat UI
+ */
+
+import { Html } from "@react-three/drei";
+import React, { useEffect, useState, useMemo } from "react";
+import { useAudio } from "../../../audio/AudioProvider";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+
+/**
+ * Props for the RoundStartAnnouncement component
+ */
+export interface RoundStartAnnouncementProps {
+  /** Round number (1-based) */
+  readonly roundNumber: number;
+  /** Duration to display announcement in seconds */
+  readonly duration?: number;
+  /** Callback when announcement completes */
+  readonly onComplete: () => void;
+  /** Whether layout should adapt for mobile screens */
+  readonly isMobile: boolean;
+}
+
+/**
+ * RoundStartAnnouncement Component
+ * 
+ * Displays "Round X Begin!" announcement with:
+ * - Bilingual round number and "Begin!" text
+ * - Flash/pulse animation for impact
+ * - Auto-dismiss after configured duration
+ * - Audio cue for round start
+ * - Responsive sizing for mobile/tablet/desktop
+ * 
+ * Korean: 라운드 시작 발표 컴포넌트
+ */
+export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
+  roundNumber,
+  duration = 2,
+  onComplete,
+  isMobile,
+}) => {
+  const audio = useAudio();
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Fade in animation on mount
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Play audio cue on mount
+  useEffect(() => {
+    if (audio.isAudioReady) {
+      audio.playSFX("attack_medium"); // Using placeholder - will be round_start
+    }
+  }, [audio]);
+
+  // Auto-dismiss after duration
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+      setTimeout(onComplete, 300); // Wait for fade out
+    }, duration * 1000);
+
+    return () => clearTimeout(timer);
+  }, [duration, onComplete]);
+
+  // Convert hex colors to CSS - memoized for performance
+  const goldColor = useMemo(
+    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    []
+  );
+  const darkBg = useMemo(
+    () => `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`,
+    []
+  );
+
+  return (
+    <Html fullscreen>
+      <div
+        data-testid="round-start-announcement"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: `${darkBg}88`,
+          zIndex: 900,
+          opacity: isVisible ? 1 : 0,
+          transition: "opacity 0.3s ease-in-out",
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            fontSize: isMobile ? "56px" : "96px",
+            fontWeight: "bold",
+            color: goldColor,
+            fontFamily: FONT_FAMILY.KOREAN,
+            textShadow: `0 0 40px ${goldColor}`,
+            animation: "roundStartFlash 0.5s ease-out",
+            textAlign: "center",
+            userSelect: "none",
+          }}
+          data-testid="round-start-text"
+        >
+          라운드 {roundNumber} 시작!
+          <br />
+          <span
+            style={{
+              fontSize: isMobile ? "40px" : "64px",
+            }}
+          >
+            Round {roundNumber} Begin!
+          </span>
+        </div>
+      </div>
+
+      {/* CSS Animation */}
+      <style>
+        {`
+          @keyframes roundStartFlash {
+            0% {
+              opacity: 0;
+              transform: scale(1.5);
+            }
+            30% {
+              opacity: 1;
+              transform: scale(1.2);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+        `}
+      </style>
+    </Html>
+  );
+};
+
+export default RoundStartAnnouncement;

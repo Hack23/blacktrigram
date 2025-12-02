@@ -281,6 +281,46 @@ export const TECHNIQUE_SOUND_EFFECTS: readonly SoundEffect[] = [
   },
 ] as const;
 
+// Match countdown and round start sound effects
+export const MATCH_COUNTDOWN_SOUND_EFFECTS: readonly SoundEffect[] = [
+  {
+    id: "countdown_beep",
+    name: "Countdown Beep",
+    type: "sound",
+    // TODO: Create countdown beep asset - using attack light as placeholder
+    url: "/assets/audio/sfx/combat/attack_light.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    volume: 0.6,
+    category: AudioCategory.SFX,
+    pitch: 1.2,
+  },
+  {
+    id: "fight_start",
+    name: "Fight Start",
+    type: "sound",
+    // TODO: Create fight start voice/SFX asset - using attack heavy as placeholder
+    url: "/assets/audio/sfx/combat/attack_heavy.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    volume: 0.8,
+    category: AudioCategory.SFX,
+    pitch: 1.0,
+  },
+  {
+    id: "round_start",
+    name: "Round Start",
+    type: "sound",
+    // TODO: Create round start announcement asset - using attack medium as placeholder
+    url: "/assets/audio/sfx/combat/attack_medium.mp3",
+    formats: ["audio/mp3", "audio/webm"],
+    loaded: false,
+    volume: 0.7,
+    category: AudioCategory.SFX,
+    pitch: 1.1,
+  },
+] as const;
+
 // Victory and defeat sound effects
 export const END_SCREEN_SOUND_EFFECTS: readonly SoundEffect[] = [
   {
@@ -345,6 +385,7 @@ export const END_SCREEN_MUSIC_TRACKS: readonly MusicTrack[] = [
 export const ALL_PLACEHOLDER_SOUNDS = [
   ...PLACEHOLDER_SOUND_EFFECTS,
   ...TECHNIQUE_SOUND_EFFECTS,
+  ...MATCH_COUNTDOWN_SOUND_EFFECTS,
   ...END_SCREEN_SOUND_EFFECTS,
 ] as const;
 
@@ -360,6 +401,7 @@ export const PLACEHOLDER_AUDIO_ASSETS = {
   musicTracks: ALL_PLACEHOLDER_MUSIC,
   techniques: TECHNIQUE_SOUND_EFFECTS,
   archetypeThemes: ARCHETYPE_MUSIC_THEMES,
+  matchCountdown: MATCH_COUNTDOWN_SOUND_EFFECTS,
   endScreenSounds: END_SCREEN_SOUND_EFFECTS,
   endScreenMusic: END_SCREEN_MUSIC_TRACKS,
 };
@@ -370,6 +412,7 @@ export default {
   musicTracks: ALL_PLACEHOLDER_MUSIC,
   techniques: TECHNIQUE_SOUND_EFFECTS,
   archetypeThemes: ARCHETYPE_MUSIC_THEMES,
+  matchCountdown: MATCH_COUNTDOWN_SOUND_EFFECTS,
   endScreenSounds: END_SCREEN_SOUND_EFFECTS,
   endScreenMusic: END_SCREEN_MUSIC_TRACKS,
 };

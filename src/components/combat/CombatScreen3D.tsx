@@ -32,6 +32,8 @@ import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { PerformanceOverlay3D } from "../../utils/performance";
 import { VolumeControl } from "../ui/VolumeControl";
 import { RoundAnnouncement } from "./components/RoundAnnouncement";
+import { MatchCountdown } from "./components/MatchCountdown";
+import { RoundStartAnnouncement } from "./components/RoundStartAnnouncement";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -176,6 +178,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Match score tracking
   const [matchScore, setMatchScore] = useState({ player1: 0, player2: 0 });
 
+  // Match countdown state
+  const [showMatchCountdown, setShowMatchCountdown] = useState(true);
+  const [showRoundStart, setShowRoundStart] = useState(false);
+  const [matchCountdownComplete, setMatchCountdownComplete] = useState(false);
+
   // Round transition management
   const {
     showAnnouncement,
@@ -194,6 +201,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setRoundEnded(false);
       combatActions.setRoundStarted(false);
       combatActions.setRoundDisplayStatus(null);
+      
+      // Show round start announcement for rounds after the first
+      if (currentRound > 1) {
+        setShowRoundStart(true);
+      }
     }
   );
 
@@ -231,7 +243,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Player movement
   const { playerPosition, isMoving } = usePlayerMovement({
-    enabled: !isPaused && combatState.roundStarted && !combatState.roundEnded,
+    enabled: !isPaused && combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart,
     bounds: arenaBounds,
     onPositionChange: (newPosition: Position) => {
       setPlayerPositions((prev) => [newPosition, prev[1]]);
@@ -409,31 +421,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       setTimeout(() => {
         startTransition(roundWinner, currentRound);
       }, 1500);
-    } else if (
-      timeRemaining > 0 &&
-      !combatState.roundStarted &&
-      !combatState.roundEnded &&
-      currentRound > 0
-    ) {
-      combatActions.setRoundStarted(true);
-      addCombatMessage("라운드 시작!", "Round Start!");
-
-      const player = validPlayers[0];
-      if (player?.archetype) {
-        const playerArchetype = player.archetype.toLowerCase();
-        combatAudio.playArchetypeMusic(playerArchetype, 2000);
-      } else {
-        combatAudio.playCombatMusic(2000);
-      }
-
-      combatActions.setRoundDisplayStatus("start");
-      const fightTimer = setTimeout(
-        () => combatActions.setRoundDisplayStatus("fight"),
-        1500
-      );
-
-      return () => clearTimeout(fightTimer);
     }
+    // Note: Round start is now handled by MatchCountdown and RoundStartAnnouncement components
+    // The auto-start logic has been removed to prevent race conditions with countdown
   }, [
     timeRemaining,
     combatState.roundEnded,
@@ -615,6 +605,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Keyboard input handling
   useEffect(() => {
     const handleCombatInput = (event: KeyboardEvent) => {
+      // Block all combat inputs during countdown or round start announcement
+      if (!matchCountdownComplete || showRoundStart) {
+        if (event.key === "Escape") {
+          onReturnToMenu();
+          event.preventDefault();
+        }
+        return;
+      }
+
       if (
         !combatState.roundStarted ||
         combatState.roundEnded ||
@@ -667,6 +666,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatState.roundStarted,
     combatState.roundEnded,
     combatState.isExecutingTechnique,
+    matchCountdownComplete,
+    showRoundStart,
     handleStanceSwitch,
     handleAttack,
     handleDefend,
@@ -990,6 +991,56 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }}
           isMobile={isMobile}
           totalRounds={3}
+        />
+      )}
+
+      {/* Match Start Countdown Overlay */}
+      {showMatchCountdown && currentRound === 1 && (
+        <MatchCountdown
+          onComplete={() => {
+            setShowMatchCountdown(false);
+            setMatchCountdownComplete(true);
+            // Start the first round after countdown
+            if (!combatState.roundStarted && !combatState.roundEnded) {
+              combatActions.setRoundStarted(true);
+              addCombatMessage("라운드 시작!", "Round Start!");
+
+              const player = validPlayers[0];
+              if (player?.archetype) {
+                const playerArchetype = player.archetype.toLowerCase();
+                combatAudio.playArchetypeMusic(playerArchetype, 2000);
+              } else {
+                combatAudio.playCombatMusic(2000);
+              }
+            }
+          }}
+          isMobile={isMobile}
+          showSkip={false}
+        />
+      )}
+
+      {/* Round Start Announcement for subsequent rounds */}
+      {showRoundStart && currentRound > 1 && (
+        <RoundStartAnnouncement
+          roundNumber={currentRound}
+          duration={2}
+          onComplete={() => {
+            setShowRoundStart(false);
+            // Start combat for this round
+            if (!combatState.roundStarted && !combatState.roundEnded) {
+              combatActions.setRoundStarted(true);
+              addCombatMessage("라운드 시작!", "Round Start!");
+
+              const player = validPlayers[0];
+              if (player?.archetype) {
+                const playerArchetype = player.archetype.toLowerCase();
+                combatAudio.playArchetypeMusic(playerArchetype, 2000);
+              } else {
+                combatAudio.playCombatMusic(2000);
+              }
+            }
+          }}
+          isMobile={isMobile}
         />
       )}
     </div>
