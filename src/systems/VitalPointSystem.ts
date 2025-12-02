@@ -17,6 +17,13 @@
  * - **Severity**: Minor, moderate, major, critical, lethal
  * - **Effects**: Unconsciousness, paralysis, pain, stunning, etc.
  * 
+ * ## Meridian Integration (경락 통합)
+ * 
+ * The system integrates Traditional Korean Medicine (TKM) meridian theory:
+ * - **Time-of-Day Flow**: +30% effectiveness at meridian peak hours
+ * - **Meridian Disruption**: Status effects from energy flow blockage
+ * - **Elemental Relationships**: 五行 (Wu Xing) elemental advantages
+ * 
  * ## Key Features
  * 
  * - Distance-based hit detection with accuracy falloff
@@ -24,21 +31,24 @@
  * - Targeted vs. proximity-based strikes
  * - Bilingual Korean-English vital point names
  * - Realistic anatomical positioning
+ * - Meridian state tracking and flow calculation
  * 
  * @example
  * ```typescript
  * const vitalPointSystem = new VitalPointSystem();
  * 
- * // Process a strike at specific position
+ * // Process a strike at specific position with time-of-day
  * const result = vitalPointSystem.processHit(
  *   { x: 100, y: 50 }, // Target position
  *   { width: 10, height: 10 }, // Hit box
- *   "GB-20" // Optional: target specific vital point
+ *   "GB-20", // Optional: target specific vital point
+ *   14 // Optional: hour of day for meridian flow
  * );
  * 
  * if (result.hit && result.vitalPointHit) {
  *   console.log(`Hit ${result.vitalPointHit.names.english}!`);
  *   console.log(`Damage: ${result.damage}, Severity: ${result.severity}`);
+ *   console.log(`Meridian bonus: ${result.meridianMultiplier}x`);
  * }
  * ```
  * 
@@ -49,26 +59,122 @@
 import { Position, VitalPointSeverity } from "../types/common";
 import { VitalPoint, VitalPointHitResult } from "./vitalpoint/types";
 import { VITAL_POINTS_DATA } from "./vitalpoint/VitalPointsData";
+import { 
+  calculateMeridianFlow, 
+  generateMeridianEffects 
+} from "./vitalpoint/KoreanAnatomy";
+import { getMeridiansForVitalPoint } from "./vitalpoint/MeridianVitalPointMapping";
+import { StatusEffect } from "./types";
+
+/**
+ * Amount of meridian disruption added per vital point hit (15%)
+ */
+const DISRUPTION_INCREMENT_PER_HIT = 0.15;
 
 export class VitalPointSystem {
   private vitalPoints: VitalPoint[] = [];
+  private meridianStates: Map<string, number> = new Map(); // Tracks disruption level per meridian
+  private currentHour: number = 12; // Default to noon
 
   /**
    * Creates a new VitalPointSystem instance.
    * 
-   * Initializes the system with comprehensive Korean vital points database.
+   * Initializes the system with comprehensive Korean vital points database
+   * and meridian state tracking.
+   * 
+   * @param initialHour - Optional initial hour of day (0-23) for meridian flow calculations
    */
-  constructor() {
+  constructor(initialHour: number = 12) {
     // Initialize with comprehensive Korean vital points database
     this.initializeVitalPoints();
+    this.currentHour = initialHour;
+  }
+
+  /**
+   * Sets the current hour of day for meridian flow calculations.
+   * 
+   * **Korean**: 시간 설정
+   * 
+   * @param hour - Hour of day (0-23)
+   * @throws Error if hour is not a finite number
+   * 
+   * @example
+   * ```typescript
+   * vitalPointSystem.setCurrentHour(20); // 8 PM - Pericardium peak time
+   * ```
+   * 
+   * @public
+   * @korean 시간설정
+   */
+  setCurrentHour(hour: number): void {
+    if (!Number.isFinite(hour)) {
+      throw new Error("Hour must be a finite number");
+    }
+    this.currentHour = Math.max(0, Math.min(23, Math.floor(hour)));
+  }
+
+  /**
+   * Gets the current hour of day used for meridian calculations.
+   * 
+   * **Korean**: 현재 시간 조회
+   * 
+   * @returns Current hour (0-23)
+   * 
+   * @public
+   * @korean 시간조회
+   */
+  getCurrentHour(): number {
+    return this.currentHour;
+  }
+
+  /**
+   * Updates meridian disruption state for a specific meridian.
+   * 
+   * **Korean**: 경락 차단 상태 업데이트
+   * 
+   * @param meridianId - ID of the meridian
+   * @param disruptionLevel - Disruption level (0-1, where 1 is fully blocked)
+   * 
+   * @public
+   * @korean 경락차단업데이트
+   */
+  setMeridianDisruption(meridianId: string, disruptionLevel: number): void {
+    this.meridianStates.set(meridianId, Math.max(0, Math.min(1, disruptionLevel)));
+  }
+
+  /**
+   * Gets the current disruption level for a meridian.
+   * 
+   * **Korean**: 경락 차단 수준 조회
+   * 
+   * @param meridianId - ID of the meridian
+   * @returns Disruption level (0-1)
+   * 
+   * @public
+   * @korean 경락차단조회
+   */
+  getMeridianDisruption(meridianId: string): number {
+    return this.meridianStates.get(meridianId) ?? 0;
+  }
+
+  /**
+   * Clears all meridian disruption states (e.g., after rest or healing).
+   * 
+   * **Korean**: 경락 상태 초기화
+   * 
+   * @public
+   * @korean 경락초기화
+   */
+  clearMeridianDisruptions(): void {
+    this.meridianStates.clear();
   }
 
   /**
    * Processes a hit at a specific position to determine vital point impact.
    * 
    * Evaluates whether a strike lands on or near a vital point, calculating
-   * damage and effects based on accuracy and severity. Supports both targeted
-   * strikes (specific vital point ID) and proximity-based detection.
+   * damage and effects based on accuracy, severity, and meridian flow.
+   * Supports both targeted strikes (specific vital point ID) and proximity-based detection.
    * 
    * ## Hit Detection Algorithm
    * 
@@ -76,12 +182,15 @@ export class VitalPointSystem {
    * 2. Otherwise, find closest vital point to target position
    * 3. Calculate distance from strike to vital point
    * 4. Apply accuracy falloff based on distance (max 50px)
-   * 5. Return hit result with damage multipliers
+   * 5. Calculate meridian flow bonus based on time of day
+   * 6. Apply meridian disruption if applicable
+   * 7. Return hit result with damage multipliers and effects
    * 
    * @param targetPosition - Position where strike lands
    * @param _hitBox - Size of hit box (currently unused, reserved for future)
    * @param targetedVitalPointId - Optional specific vital point being targeted
-   * @returns Hit result with damage, effects, and severity
+   * @param hour - Optional hour of day (0-23) for meridian flow calculation
+   * @returns Hit result with damage, effects, severity, and meridian multiplier
    * 
    * @example
    * ```typescript
@@ -91,12 +200,17 @@ export class VitalPointSystem {
    *   { width: 10, height: 10 }
    * );
    * 
-   * // Targeted strike at temple (태양혈)
+   * // Targeted strike at temple (태양혈) at 2 AM (Liver peak time)
    * const result2 = vitalPointSystem.processHit(
    *   { x: 100, y: 50 },
    *   { width: 10, height: 10 },
-   *   "head_temple"
+   *   "head_temple",
+   *   2 // Liver meridian peak hour
    * );
+   * 
+   * if (result2.meridianMultiplier && result2.meridianMultiplier > 1.0) {
+   *   console.log("Peak meridian hour bonus applied!");
+   * }
    * ```
    * 
    * @public
@@ -105,13 +219,17 @@ export class VitalPointSystem {
   processHit(
     targetPosition: Position,
     _hitBox: { width: number; height: number }, // Prefixed with underscore to indicate intentionally unused
-    targetedVitalPointId?: string | null
+    targetedVitalPointId?: string | null,
+    hour?: number
   ): VitalPointHitResult {
+    // Use provided hour or current system hour
+    const effectiveHour = hour ?? this.currentHour;
+
     // If a specific vital point is targeted, check that one
     if (targetedVitalPointId) {
       const targetVitalPoint = this.getVitalPointById(targetedVitalPointId);
       if (targetVitalPoint) {
-        return this.calculateVitalPointHit(targetVitalPoint, targetPosition);
+        return this.calculateVitalPointHit(targetVitalPoint, targetPosition, effectiveHour);
       }
     }
 
@@ -134,14 +252,7 @@ export class VitalPointSystem {
     const maxHitDistance = 50; // pixels
 
     if (distance <= maxHitDistance) {
-      return {
-        hit: true,
-        vitalPointHit: closestVitalPoint,
-        damage: this.calculateBaseDamage(closestVitalPoint, distance),
-        effects: [],
-        severity: closestVitalPoint.severity,
-        accuracy: Math.max(0, 1 - distance / maxHitDistance),
-      };
+      return this.calculateVitalPointHit(closestVitalPoint, targetPosition, effectiveHour);
     }
 
     return {
@@ -310,29 +421,83 @@ export class VitalPointSystem {
   }
 
   /**
-   * Calculates vital point hit result with accuracy and damage.
+   * Calculates vital point hit result with accuracy, damage, and meridian effects.
+   * 
+   * **Korean**: 급소타격결과계산
    * 
    * @param vitalPoint - Vital point being struck
    * @param hitPosition - Exact position of strike
-   * @returns Hit result with calculated damage and accuracy
+   * @param hour - Hour of day for meridian flow calculation
+   * @returns Hit result with calculated damage, accuracy, and meridian bonuses
    * 
    * @private
    * @korean 급소타격결과계산
    */
   private calculateVitalPointHit(
     vitalPoint: VitalPoint,
-    hitPosition: Position
+    hitPosition: Position,
+    hour: number
   ): VitalPointHitResult {
     const distance = this.calculateDistance(hitPosition, vitalPoint.position);
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
+    const now = Date.now(); // Single timestamp for all effects
+
+    // Get meridians for this vital point
+    const meridians = getMeridiansForVitalPoint(vitalPoint.id);
+    
+    // Calculate meridian flow effectiveness (highest value if multiple meridians)
+    let meridianMultiplier = 1.0;
+    const allMeridianEffects: StatusEffect[] = [];
+    
+    if (meridians.length > 0) {
+      // Use the best meridian flow multiplier
+      meridianMultiplier = Math.max(
+        ...meridians.map(meridianId => calculateMeridianFlow(meridianId, hour))
+      );
+
+      // Generate meridian disruption effects for each affected meridian
+      meridians.forEach(meridianId => {
+        const currentDisruption = this.getMeridianDisruption(meridianId);
+        const newDisruption = Math.min(1.0, currentDisruption + DISRUPTION_INCREMENT_PER_HIT);
+        this.setMeridianDisruption(meridianId, newDisruption);
+
+        // Generate effects if disruption is significant (using shared timestamp)
+        const effects = generateMeridianEffects(meridianId, newDisruption, now);
+        allMeridianEffects.push(...effects);
+      });
+    }
+
+    // Apply meridian multiplier to damage
+    const finalDamage = Math.floor(baseDamage * meridianMultiplier);
+
+    // Convert VitalPointEffect to StatusEffect (using shared timestamp)
+    const vitalPointStatusEffects: StatusEffect[] = vitalPoint.effects.map(effect => ({
+      id: effect.id,
+      type: effect.type,
+      intensity: effect.intensity,
+      duration: effect.duration,
+      description: effect.description,
+      stackable: effect.stackable,
+      source: effect.source ?? "vital_point_system",
+      startTime: now,
+      endTime: now + effect.duration,
+    }));
+
+    // Combine vital point effects with meridian effects
+    const combinedEffects = [
+      ...vitalPointStatusEffects,
+      ...allMeridianEffects,
+    ];
 
     return {
       hit: true,
       vitalPointHit: vitalPoint,
-      damage: baseDamage,
-      effects: [],
+      damage: finalDamage,
+      effects: combinedEffects,
       severity: vitalPoint.severity,
       accuracy: Math.max(0, 1 - distance / 50),
+      meridianMultiplier,
+      meridianEffects: allMeridianEffects,
     };
   }
 

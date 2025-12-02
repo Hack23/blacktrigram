@@ -86,11 +86,21 @@ describe("VitalPointSystem", () => {
       const jawPosition = { x: 105, y: 80 }; // Jaw (MAJOR, 30 damage)
       const hitBox = { width: 10, height: 10 };
 
-      const templeResult = system.processHit(templePosition, hitBox);
-      const jawResult = system.processHit(jawPosition, hitBox);
+      // Use the same hour for both to ensure fair comparison
+      const templeResult = system.processHit(templePosition, hitBox, undefined, 12);
+      const jawResult = system.processHit(jawPosition, hitBox, undefined, 12);
 
-      // Temple (CRITICAL) should do more damage than jaw (MAJOR)
-      expect(templeResult.damage).toBeGreaterThan(jawResult.damage);
+      // Temple (CRITICAL) should have higher severity than jaw (MAJOR)
+      expect(templeResult.severity).toBe(VitalPointSeverity.CRITICAL);
+      expect(jawResult.severity).toBe(VitalPointSeverity.MAJOR);
+      
+      // To compare base damage independently of meridian multipliers,
+      // we need to account for the multiplier effect
+      const templeBaseDamage = templeResult.damage / (templeResult.meridianMultiplier ?? 1.0);
+      const jawBaseDamage = jawResult.damage / (jawResult.meridianMultiplier ?? 1.0);
+      
+      // Base damage should reflect severity (CRITICAL > MAJOR)
+      expect(templeBaseDamage).toBeGreaterThan(jawBaseDamage);
     });
   });
 
@@ -356,6 +366,176 @@ describe("VitalPointSystem", () => {
 
       vitalPoints.forEach((vp: VitalPoint) => {
         expect(Array.isArray(vp.effects)).toBe(true);
+      });
+    });
+  });
+
+  describe("meridian system integration", () => {
+    describe("setCurrentHour", () => {
+      it("should set hour within valid range", () => {
+        system.setCurrentHour(14);
+        expect(system.getCurrentHour()).toBe(14);
+      });
+
+      it("should clamp hour to minimum value (0)", () => {
+        system.setCurrentHour(-5);
+        expect(system.getCurrentHour()).toBe(0);
+      });
+
+      it("should clamp hour to maximum value (23)", () => {
+        system.setCurrentHour(30);
+        expect(system.getCurrentHour()).toBe(23);
+      });
+
+      it("should floor decimal hour values", () => {
+        system.setCurrentHour(14.7);
+        expect(system.getCurrentHour()).toBe(14);
+      });
+
+      it("should throw error for NaN", () => {
+        expect(() => system.setCurrentHour(NaN)).toThrow("Hour must be a finite number");
+      });
+
+      it("should throw error for Infinity", () => {
+        expect(() => system.setCurrentHour(Infinity)).toThrow("Hour must be a finite number");
+      });
+
+      it("should throw error for negative Infinity", () => {
+        expect(() => system.setCurrentHour(-Infinity)).toThrow("Hour must be a finite number");
+      });
+    });
+
+    describe("getCurrentHour", () => {
+      it("should return default hour (12)", () => {
+        expect(system.getCurrentHour()).toBe(12);
+      });
+
+      it("should return previously set hour", () => {
+        system.setCurrentHour(20);
+        expect(system.getCurrentHour()).toBe(20);
+      });
+    });
+
+    describe("setMeridianDisruption", () => {
+      it("should set disruption level for a meridian", () => {
+        system.setMeridianDisruption("pericardium", 0.5);
+        expect(system.getMeridianDisruption("pericardium")).toBe(0.5);
+      });
+
+      it("should clamp disruption to minimum value (0)", () => {
+        system.setMeridianDisruption("liver", -0.3);
+        expect(system.getMeridianDisruption("liver")).toBe(0);
+      });
+
+      it("should clamp disruption to maximum value (1)", () => {
+        system.setMeridianDisruption("kidney", 1.5);
+        expect(system.getMeridianDisruption("kidney")).toBe(1);
+      });
+
+      it("should handle multiple meridians independently", () => {
+        system.setMeridianDisruption("lung", 0.3);
+        system.setMeridianDisruption("stomach", 0.7);
+        
+        expect(system.getMeridianDisruption("lung")).toBe(0.3);
+        expect(system.getMeridianDisruption("stomach")).toBe(0.7);
+      });
+
+      it("should allow updating existing disruption level", () => {
+        system.setMeridianDisruption("heart", 0.2);
+        system.setMeridianDisruption("heart", 0.6);
+        
+        expect(system.getMeridianDisruption("heart")).toBe(0.6);
+      });
+    });
+
+    describe("getMeridianDisruption", () => {
+      it("should return 0 for non-existent meridian", () => {
+        expect(system.getMeridianDisruption("non_existent")).toBe(0);
+      });
+
+      it("should return 0 for meridian with no disruption", () => {
+        expect(system.getMeridianDisruption("bladder")).toBe(0);
+      });
+
+      it("should return correct disruption level", () => {
+        system.setMeridianDisruption("triple_burner", 0.45);
+        expect(system.getMeridianDisruption("triple_burner")).toBe(0.45);
+      });
+    });
+
+    describe("clearMeridianDisruptions", () => {
+      it("should clear all meridian disruptions", () => {
+        system.setMeridianDisruption("lung", 0.5);
+        system.setMeridianDisruption("stomach", 0.7);
+        system.setMeridianDisruption("liver", 0.3);
+        
+        system.clearMeridianDisruptions();
+        
+        expect(system.getMeridianDisruption("lung")).toBe(0);
+        expect(system.getMeridianDisruption("stomach")).toBe(0);
+        expect(system.getMeridianDisruption("liver")).toBe(0);
+      });
+
+      it("should work even when no disruptions exist", () => {
+        expect(() => system.clearMeridianDisruptions()).not.toThrow();
+      });
+    });
+
+    describe("meridian disruption accumulation", () => {
+      it("should accumulate disruption over multiple hits", () => {
+        const position = { x: 100, y: 50 }; // Temple position
+        const hitBox = { width: 10, height: 10 };
+        
+        // First hit
+        system.processHit(position, hitBox, "head_temple", 12);
+        const disruption1 = system.getMeridianDisruption("gallbladder");
+        expect(disruption1).toBeGreaterThan(0);
+        
+        // Second hit
+        system.processHit(position, hitBox, "head_temple", 12);
+        const disruption2 = system.getMeridianDisruption("gallbladder");
+        expect(disruption2).toBeGreaterThan(disruption1);
+        
+        // Third hit
+        system.processHit(position, hitBox, "head_temple", 12);
+        const disruption3 = system.getMeridianDisruption("gallbladder");
+        expect(disruption3).toBeGreaterThan(disruption2);
+      });
+
+      it("should cap disruption at 1.0", () => {
+        const position = { x: 100, y: 50 };
+        const hitBox = { width: 10, height: 10 };
+        
+        // Hit many times to exceed 1.0
+        for (let i = 0; i < 10; i++) {
+          system.processHit(position, hitBox, "head_temple", 12);
+        }
+        
+        const disruption = system.getMeridianDisruption("gallbladder");
+        expect(disruption).toBeLessThanOrEqual(1.0);
+      });
+    });
+
+    describe("time-of-day meridian flow", () => {
+      it("should apply bonus at peak hour (Gallbladder at midnight)", () => {
+        const position = { x: 100, y: 50 }; // Temple position (mapped to gallbladder)
+        const hitBox = { width: 10, height: 10 };
+        
+        const result = system.processHit(position, hitBox, "head_temple", 0);
+        
+        expect(result.meridianMultiplier).toBeDefined();
+        expect(result.meridianMultiplier).toBeGreaterThan(1.0);
+      });
+
+      it("should apply penalty at opposite hour", () => {
+        const position = { x: 100, y: 50 }; // Temple position (mapped to gallbladder)
+        const hitBox = { width: 10, height: 10 };
+        
+        // Gallbladder peak is 0 (midnight), opposite is 12 (noon)
+        const result = system.processHit(position, hitBox, "head_temple", 12);
+        
+        expect(result.meridianMultiplier).toBeDefined();
+        expect(result.meridianMultiplier).toBeLessThan(1.0);
       });
     });
   });
