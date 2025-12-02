@@ -113,9 +113,9 @@ export function useMatchCountdown(
   const [currentNumber, setCurrentNumber] = useState(mergedConfig.startNumber);
 
   // Use refs to track active timers
-  const readyTimer = useRef<NodeJS.Timeout | null>(null);
-  const countdownTimer = useRef<NodeJS.Timeout | null>(null);
-  const fightTimer = useRef<NodeJS.Timeout | null>(null);
+  const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countdownTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Clear all active timers

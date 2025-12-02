@@ -112,6 +112,15 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   // Get display text
   const displayText = getDisplayText(state, currentNumber);
 
+  // Calculate responsive font sizes
+  const mainFontSize = isMobile
+    ? state === "fight" ? "72px" : "64px"
+    : state === "fight" ? "120px" : "96px";
+  
+  const subFontSize = isMobile
+    ? state === "fight" ? "48px" : "40px"
+    : state === "fight" ? "72px" : "56px";
+
   // Don't render if countdown not active or complete
   if (!isActive || !displayText) {
     return null;
@@ -152,7 +161,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
       >
         <div
           style={{
-            fontSize: isMobile ? (state === "fight" ? "72px" : "64px") : (state === "fight" ? "120px" : "96px"),
+            fontSize: mainFontSize,
             fontWeight: "bold",
             color: state === "fight" ? goldColor : cyanColor,
             fontFamily: FONT_FAMILY.KOREAN,
@@ -176,7 +185,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
           <br />
           <span
             style={{
-              fontSize: isMobile ? (state === "fight" ? "48px" : "40px") : (state === "fight" ? "72px" : "56px"),
+              fontSize: subFontSize,
             }}
           >
             {displayText.en}
