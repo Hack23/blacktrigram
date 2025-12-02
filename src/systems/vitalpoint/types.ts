@@ -86,7 +86,7 @@ export interface VitalPoint {
 
 /**
  * Result of a vital point hit calculation
- * Unified to resolve property name conflicts
+ * Unified to resolve property name conflicts and includes meridian effects
  */
 export interface VitalPointHitResult {
   /** Whether the vital point was successfully hit */
@@ -112,6 +112,12 @@ export interface VitalPointHitResult {
 
   /** Additional multiplier applied to damage */
   readonly multiplier?: number;
+
+  /** Meridian flow multiplier based on time of day (0.7-1.3) */
+  readonly meridianMultiplier?: number;
+
+  /** Status effects from meridian disruption */
+  readonly meridianEffects?: readonly StatusEffect[];
 }
 
 export interface VitalPointEffect {

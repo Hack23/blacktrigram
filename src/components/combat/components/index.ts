@@ -9,7 +9,11 @@ export { default as VitalPointMarkers3D } from "./VitalPointMarkers3D";
 export { default as HitEffects3D } from "./HitEffects3D";
 export { default as Player3DModel } from "./Player3DModel";
 
+// UI components
+export { RoundAnnouncement } from "./RoundAnnouncement";
+
 // Re-export component prop types
 export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
 export type { HitEffects3DProps } from "./HitEffects3D";
 export type { Player3DModelProps } from "./Player3DModel";
+export type { RoundAnnouncementProps, RoundStats } from "./RoundAnnouncement";

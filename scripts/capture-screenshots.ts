@@ -150,11 +150,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
     path: '/',
     waitForTimeout: 3000,
     actions: async (page) => {
-      // Click controls button in menu
-      const controlsButton = await page.locator('button:has-text("조작법")').first();
+      // Click controls button in menu using data-testid
+      const controlsButton = await page.locator('[data-testid="menu-item-controls"]').first();
       if (await controlsButton.isVisible({ timeout: 5000 })) {
         await controlsButton.click();
         await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+      } else {
+        console.warn('  ⚠️  Controls button not found, trying text selector fallback');
+        const fallbackButton = await page.locator('button:has-text("조작")').first();
+        if (await fallbackButton.isVisible({ timeout: 2000 })) {
+          await fallbackButton.click();
+          await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+        }
       }
     },
   },
@@ -169,11 +176,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
       
-      // Click philosophy button
-      const philosophyButton = await page.locator('button:has-text("철학")').first();
+      // Click philosophy button using data-testid
+      const philosophyButton = await page.locator('[data-testid="menu-item-philosophy"]').first();
       if (await philosophyButton.isVisible({ timeout: 5000 })) {
         await philosophyButton.click();
         await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+      } else {
+        console.warn('  ⚠️  Philosophy button not found, trying text selector fallback');
+        const fallbackButton = await page.locator('button:has-text("철학")').first();
+        if (await fallbackButton.isVisible({ timeout: 2000 })) {
+          await fallbackButton.click();
+          await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+        }
       }
     },
   },
@@ -188,11 +202,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
       
-      // Click training mode
-      const trainingButton = await page.locator('button:has-text("훈련")').first();
+      // Click training mode using data-testid
+      const trainingButton = await page.locator('[data-testid="menu-item-training"]').first();
       if (await trainingButton.isVisible({ timeout: 5000 })) {
         await trainingButton.click();
         await page.waitForTimeout(3000); // Wait for lazy load
+      } else {
+        console.warn('  ⚠️  Training button not found, trying text selector fallback');
+        const fallbackButton = await page.locator('button:has-text("훈련")').first();
+        if (await fallbackButton.isVisible({ timeout: 2000 })) {
+          await fallbackButton.click();
+          await page.waitForTimeout(3000);
+        }
       }
     },
   },
@@ -207,11 +228,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(1000);
       await initializeAudio(page);
       
-      // Click practice mode
-      const practiceButton = await page.locator('button:has-text("연습")').first();
+      // Click practice mode using data-testid (practice mode uses versus in menu)
+      const practiceButton = await page.locator('[data-testid="menu-item-versus"]').first();
       if (await practiceButton.isVisible({ timeout: 5000 })) {
         await practiceButton.click();
         await page.waitForTimeout(3000);
+      } else {
+        console.warn('  ⚠️  Practice button not found, trying text selector fallback');
+        const fallbackButton = await page.locator('button:has-text("대전")').first();
+        if (await fallbackButton.isVisible({ timeout: 2000 })) {
+          await fallbackButton.click();
+          await page.waitForTimeout(3000);
+        }
       }
     },
   },
@@ -226,11 +254,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
       
-      // Click versus mode
-      const versusButton = await page.locator('button:has-text("대전")').first();
+      // Click versus mode using data-testid
+      const versusButton = await page.locator('[data-testid="menu-item-versus"]').first();
       if (await versusButton.isVisible({ timeout: 5000 })) {
         await versusButton.click();
         await page.waitForTimeout(3000);
+      } else {
+        console.warn('  ⚠️  Versus button not found, trying text selector fallback');
+        const fallbackButton = await page.locator('button:has-text("대전")').first();
+        if (await fallbackButton.isVisible({ timeout: 2000 })) {
+          await fallbackButton.click();
+          await page.waitForTimeout(3000);
+        }
       }
     },
   },
