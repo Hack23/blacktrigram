@@ -418,17 +418,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatAudio,
   });
 
-  // Track health changes for feedback system
-  const prevHealthRef = useRef({ player1: 0, player2: 0 });
-
-  // Sync health to ref on changes (for feedback calculation)
-  useEffect(() => {
-    prevHealthRef.current = {
-      player1: validPlayers[0].health,
-      player2: validPlayers[1].health,
-    };
-  }, [validPlayers[0].health, validPlayers[1].health]);
-
   // Watch for player 2 health decrease to trigger damage feedback
   const lastPlayer2HealthRef = useRef(validPlayers[1].health);
   useEffect(() => {
@@ -873,10 +862,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Performance Overlay (Development Only) */}
+        {/* Performance Overlay (Development Only) - positioned in bottom-left of 3D scene */}
         {import.meta.env.DEV && (
           <PerformanceOverlay3D
-            position={[-7, 4, 0]}
+            position={[-9, -2, 5]}
             visible={true}
           />
         )}

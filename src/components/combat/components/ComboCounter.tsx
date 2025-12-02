@@ -24,8 +24,6 @@ export interface ComboCounterProps {
   readonly combo: number;
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Position in screen space (x, y in pixels) */
-  readonly position?: { x: number; y: number };
   /** Minimum combo to display (default: 2) */
   readonly minDisplayCombo?: number;
 }
@@ -103,14 +101,12 @@ function getComboMilestone(combo: number): { korean: string; english: string } |
  * <ComboCounter
  *   combo={5}
  *   isMobile={isMobile}
- *   position={{ x: 600, y: 100 }}
  * />
  * ```
  */
 export const ComboCounter: React.FC<ComboCounterProps> = ({
   combo,
   isMobile = false,
-  position: _position = { x: 0, y: 0 },
   minDisplayCombo = 2,
 }) => {
   // Animation state

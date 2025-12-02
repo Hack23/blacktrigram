@@ -13,7 +13,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { ActionFeedback as ActionFeedbackData, ActionFeedbackType } from "../../../hooks/useActionFeedback";
 import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
@@ -117,15 +117,13 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(feedback.timestamp);
 
-  // Calculate 3D position from 2D screen coordinates
-  const position3D: [number, number, number] = useMemo(() => {
-    const relX = (feedback.position.x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (feedback.position.y - arenaBounds.y) / arenaBounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const y = 2.5 + progress * 1.5; // Float upward
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
-    return [x, y, z];
-  }, [feedback.position, arenaBounds, progress]);
+  // Calculate 3D position from 2D screen coordinates (direct calculation, not memoized)
+  const relX = (feedback.position.x - arenaBounds.x) / arenaBounds.width;
+  const relZ = (feedback.position.y - arenaBounds.y) / arenaBounds.height;
+  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  const y = 2.5 + progress * 1.5; // Float upward
+  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const position3D: [number, number, number] = [x, y, z];
 
   // Update progress using useFrame
   useFrame(() => {

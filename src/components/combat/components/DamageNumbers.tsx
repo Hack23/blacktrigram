@@ -13,7 +13,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { DamageNumber, DamageType } from "../../../hooks/useActionFeedback";
 import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
@@ -81,15 +81,13 @@ const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(damage.timestamp);
 
-  // Calculate 3D position from 2D screen coordinates
-  const position3D: [number, number, number] = useMemo(() => {
-    const relX = (damage.position.x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (damage.position.y - arenaBounds.y) / arenaBounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const y = 2 + progress * 2; // Float upward
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
-    return [x, y, z];
-  }, [damage.position, arenaBounds, progress]);
+  // Calculate 3D position from 2D screen coordinates (direct calculation, not memoized)
+  const relX = (damage.position.x - arenaBounds.x) / arenaBounds.width;
+  const relZ = (damage.position.y - arenaBounds.y) / arenaBounds.height;
+  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  const y = 2 + progress * 2; // Float upward
+  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const position3D: [number, number, number] = [x, y, z];
 
   // Update progress using useFrame
   useFrame(() => {
