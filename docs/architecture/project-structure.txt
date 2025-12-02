@@ -444,10 +444,14 @@ src/components/combat/components/CombatHUDThree.test.tsx
 src/components/combat/components/CombatHUDThree.tsx
 src/components/combat/components/HitEffects3D.test.tsx
 src/components/combat/components/HitEffects3D.tsx
+src/components/combat/components/MatchCountdown.test.tsx
+src/components/combat/components/MatchCountdown.tsx
 src/components/combat/components/Player3DModel.test.tsx
 src/components/combat/components/Player3DModel.tsx
 src/components/combat/components/RoundAnnouncement.test.tsx
 src/components/combat/components/RoundAnnouncement.tsx
+src/components/combat/components/RoundStartAnnouncement.test.tsx
+src/components/combat/components/RoundStartAnnouncement.tsx
 src/components/combat/components/VitalPointMarkers3D.test.tsx
 src/components/combat/components/VitalPointMarkers3D.tsx
 src/components/combat/components/index.ts
@@ -544,6 +548,8 @@ src/components/ui/__tests__/SplashScreen.test.tsx
 src/components/ui/base/index.ts
 src/components/ui/index.ts
 src/hooks/index.ts
+src/hooks/useMatchCountdown.test.ts
+src/hooks/useMatchCountdown.ts
 src/hooks/useRoundTransition.test.ts
 src/hooks/useRoundTransition.ts
 src/hooks/useWebGLContextLossHandler.test.ts
