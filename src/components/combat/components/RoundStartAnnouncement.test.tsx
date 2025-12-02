@@ -142,7 +142,7 @@ describe("RoundStartAnnouncement", () => {
 
   it("should fade in on mount", async () => {
     const onComplete = vi.fn();
-    const { container } = render(
+    render(
       <RoundStartAnnouncement
         roundNumber={2}
         onComplete={onComplete}

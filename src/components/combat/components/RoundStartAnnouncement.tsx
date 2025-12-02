@@ -65,12 +65,20 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
 
   // Auto-dismiss after duration
   useEffect(() => {
+    let isMounted = true;
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 300); // Wait for fade out
+      setTimeout(() => {
+        if (isMounted) {
+          onComplete();
+        }
+      }, 300); // Wait for fade out
     }, duration * 1000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, [duration, onComplete]);
 
   // Convert hex colors to CSS - memoized for performance
@@ -87,6 +95,9 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     <Html fullscreen>
       <div
         data-testid="round-start-announcement"
+        role="alert"
+        aria-live="assertive"
+        aria-label={`Round ${roundNumber} starting`}
         style={{
           position: "fixed",
           top: 0,

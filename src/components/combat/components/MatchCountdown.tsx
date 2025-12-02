@@ -144,6 +144,10 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
     <Html fullscreen>
       <div
         data-testid="match-countdown"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Match countdown in progress"
+        aria-live="assertive"
         style={{
           position: "fixed",
           top: 0,
@@ -218,6 +222,16 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "scale(1)";
               e.currentTarget.style.boxShadow = "none";
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = `0 0 20px ${cyanColor}`;
+              e.currentTarget.style.outline = `2px solid ${cyanColor}`;
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.outline = "none";
             }}
           >
             건너뛰기 | Skip

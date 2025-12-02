@@ -117,6 +117,12 @@ export function useMatchCountdown(
   const countdownTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const fightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Use ref to always call the latest callback
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
   /**
    * Clear all active timers
    */
@@ -165,12 +171,12 @@ export function useMatchCountdown(
 
           fightTimer.current = setTimeout(() => {
             setState("complete");
-            onComplete?.();
+            onCompleteRef.current?.();
           }, mergedConfig.fightDuration * 1000);
         }
       }, mergedConfig.countdownInterval * 1000);
     }, mergedConfig.readyDuration * 1000);
-  }, [clearTimers, mergedConfig, onComplete]);
+  }, [clearTimers, mergedConfig]);
 
   /**
    * Skip countdown and proceed immediately to fight state
@@ -178,8 +184,8 @@ export function useMatchCountdown(
   const skipCountdown = useCallback(() => {
     clearTimers();
     setState("complete");
-    onComplete?.();
-  }, [clearTimers, onComplete]);
+    onCompleteRef.current?.();
+  }, [clearTimers]);
 
   /**
    * Reset countdown to idle state

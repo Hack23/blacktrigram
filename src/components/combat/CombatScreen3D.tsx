@@ -284,6 +284,22 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [combatActions]
   );
 
+  // Shared round start logic
+  const startRound = useCallback(() => {
+    if (!combatState.roundStarted && !combatState.roundEnded) {
+      combatActions.setRoundStarted(true);
+      addCombatMessage("라운드 시작!", "Round Start!");
+
+      const player = validPlayers[0];
+      if (player?.archetype) {
+        const playerArchetype = player.archetype.toLowerCase();
+        combatAudio.playArchetypeMusic(playerArchetype, 2000);
+      } else {
+        combatAudio.playCombatMusic(2000);
+      }
+    }
+  }, [combatState.roundStarted, combatState.roundEnded, combatActions, addCombatMessage, validPlayers, combatAudio]);
+
   // AI systems
   const adaptiveDifficulty = useMemo(() => new AdaptiveDifficulty(), []);
 
@@ -1001,18 +1017,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             setShowMatchCountdown(false);
             setMatchCountdownComplete(true);
             // Start the first round after countdown
-            if (!combatState.roundStarted && !combatState.roundEnded) {
-              combatActions.setRoundStarted(true);
-              addCombatMessage("라운드 시작!", "Round Start!");
-
-              const player = validPlayers[0];
-              if (player?.archetype) {
-                const playerArchetype = player.archetype.toLowerCase();
-                combatAudio.playArchetypeMusic(playerArchetype, 2000);
-              } else {
-                combatAudio.playCombatMusic(2000);
-              }
-            }
+            startRound();
           }}
           isMobile={isMobile}
           showSkip={false}
@@ -1027,18 +1032,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           onComplete={() => {
             setShowRoundStart(false);
             // Start combat for this round
-            if (!combatState.roundStarted && !combatState.roundEnded) {
-              combatActions.setRoundStarted(true);
-              addCombatMessage("라운드 시작!", "Round Start!");
-
-              const player = validPlayers[0];
-              if (player?.archetype) {
-                const playerArchetype = player.archetype.toLowerCase();
-                combatAudio.playArchetypeMusic(playerArchetype, 2000);
-              } else {
-                combatAudio.playCombatMusic(2000);
-              }
-            }
+            startRound();
           }}
           isMobile={isMobile}
         />
