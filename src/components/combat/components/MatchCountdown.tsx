@@ -11,7 +11,6 @@
  * @category Combat UI
  */
 
-import { Html } from "@react-three/drei";
 import React, { useEffect, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
@@ -142,7 +141,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   }
 
   return (
-    <Html fullscreen>
+    <>
       <div
         data-testid="match-countdown"
         role="dialog"
@@ -299,7 +298,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
           }
         `}
       </style>
-    </Html>
+    </>
   );
 };
 
