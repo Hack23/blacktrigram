@@ -472,11 +472,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </div>
 
-            {/* Top Right - Training Stats */}
+            {/* Top Right - Training Stats (below VolumeControl) */}
             <div
               style={{
                 position: "absolute",
-                top: 20,
+                top: isMobile ? 90 : 120, // Leave room for VolumeControl above
                 right: 20,
                 pointerEvents: "all",
                 display: "flex",
