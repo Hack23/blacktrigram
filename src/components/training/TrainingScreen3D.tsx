@@ -472,11 +472,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </div>
 
-            {/* Top Right - Training Stats */}
+            {/* Top Right - Training Stats (below VolumeControl) */}
             <div
               style={{
                 position: "absolute",
-                top: 20,
+                top: isMobile ? 90 : 120, // Leave room for VolumeControl above
                 right: 20,
                 pointerEvents: "all",
                 display: "flex",
@@ -485,7 +485,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 alignItems: "flex-end",
               }}
             >
-              <VolumeControl position="custom" compact={isMobile} />
               <TrainingStatsHTML
                 stats={stats}
                 isMobile={isMobile}
@@ -496,8 +495,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: 20,
-                left: 20,
+                bottom: isMobile ? 100 : 110,
+                left: isMobile ? 10 : 20,
                 pointerEvents: "all",
               }}
             >
@@ -512,8 +511,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: 20,
-                right: 20,
+                bottom: isMobile ? 100 : 110,
+                right: isMobile ? 10 : 20,
                 pointerEvents: "all",
               }}
             >
@@ -546,10 +545,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: 20,
+                bottom: isMobile ? 25 : 35,
                 left: "50%",
                 transform: "translateX(-50%)",
                 pointerEvents: "all",
+                minHeight: "50px",
+                zIndex: 100,
               }}
             >
               <style>
@@ -558,14 +559,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
                     border: none;
                     border-radius: 8px;
-                    padding: 8px 16px;
-                    font-size: ${isMobile ? "12px" : "14px"};
+                    padding: ${isMobile ? "10px 16px" : "12px 24px"};
+                    font-size: ${isMobile ? "14px" : "16px"};
                     font-weight: bold;
                     font-family: ${FONT_FAMILY.KOREAN};
                     color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
                     box-shadow: 0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)};
+                    min-height: 40px;
                   }
                   .training-return-menu-btn:hover {
                     transform: scale(1.05);
@@ -586,6 +588,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           </div>
         </Html>
       </Canvas>
+
+      {/* Volume Control - positioned outside Canvas to maintain AudioProvider context */}
+      <VolumeControl position="top-right" compact={isMobile} />
     </div>
   );
 };
