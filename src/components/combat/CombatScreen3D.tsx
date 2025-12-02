@@ -967,9 +967,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <div
           style={{
             position: "absolute",
-            bottom: "60px",
-            left: "10px",
-            right: "10px",
+            bottom: isMobile ? "70px" : "80px",
+            left: isMobile ? "5px" : "15px",
+            right: isMobile ? "5px" : "15px",
             display: "flex",
             justifyContent: "space-between",
             pointerEvents: "auto",
@@ -1009,20 +1009,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <div
           style={{
             position: "absolute",
-            bottom: "10px",
-            left: 0,
-            right: 0,
+            bottom: isMobile ? "10px" : "15px",
+            left: isMobile ? "5px" : "15px",
+            right: isMobile ? "5px" : "15px",
+            minHeight: "45px",
             pointerEvents: "auto",
           }}
         >
           {/* TODO: Replace with CombatFooterHTML component */}
           <div style={{ 
             textAlign: "center",
-            background: "rgba(10, 10, 15, 0.8)",
+            background: "rgba(10, 10, 15, 0.9)",
             border: "2px solid #00ffff",
             borderRadius: "8px",
-            padding: "8px",
-            margin: "0 10px",
+            padding: isMobile ? "10px 8px" : "12px 16px",
           }}>
             <style>
               {`
@@ -1031,11 +1031,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                   color: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)};
                   border: none;
                   border-radius: 8px;
-                  padding: 8px 16px;
+                  padding: ${isMobile ? "10px 16px" : "12px 24px"};
+                  font-size: ${isMobile ? "14px" : "16px"};
                   font-family: ${FONT_FAMILY.KOREAN};
                   font-weight: bold;
                   cursor: pointer;
                   transition: all 0.2s ease;
+                  min-height: 40px;
                 }
                 .combat-return-menu-btn:hover {
                   transform: scale(1.05);
