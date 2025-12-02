@@ -20,3 +20,14 @@ export type {
 
 export { useWebGLContextLossHandler } from "./useWebGLContextLossHandler";
 
+export { useActionFeedback } from "./useActionFeedback";
+export type {
+  ActionFeedbackType,
+  DamageType,
+  DamageNumber,
+  ActionFeedback,
+  ActionFeedbackState,
+  ActionFeedbackActions,
+  UseActionFeedbackConfig,
+} from "./useActionFeedback";
+

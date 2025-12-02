@@ -47,6 +47,10 @@ import { useCombatState } from "./hooks/useCombatState";
 import CombatArena3D from "./components/CombatArena3D";
 import HitEffects3D from "./components/HitEffects3D";
 import Player3DModel from "./components/Player3DModel";
+import { DamageNumbers } from "./components/DamageNumbers";
+import { ComboCounter } from "./components/ComboCounter";
+import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
+import { useActionFeedback } from "../../hooks/useActionFeedback";
 
 /**
  * Calculate accuracy percentage for a player
@@ -171,6 +175,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
+
+  // Action feedback system for damage numbers, combo counter, and technique names
+  const { state: feedbackState, actions: feedbackActions } = useActionFeedback({
+    damageNumberDuration: 1500,
+    actionFeedbackDuration: 1200,
+    techniqueDuration: 2000,
+    comboResetTime: 2000,
+  });
 
   // Combat audio
   const combatAudio = useCombatAudio();
@@ -404,6 +416,51 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     arenaBounds,
     combatAudio,
   });
+
+  // Create enhanced attack handler with action feedback
+  const handleAttackWithFeedback = useCallback(() => {
+    // Store previous health to calculate damage dealt
+    const prevHealth = validPlayers[1].health;
+    const attackerPos = playerPositions[0];
+    
+    // Execute the attack
+    handleAttack();
+    
+    // Check result after a small delay to allow state to update
+    setTimeout(() => {
+      const newHealth = validPlayers[1].health;
+      const damageDone = prevHealth - newHealth;
+      
+      if (damageDone > 0) {
+        // Determine damage type
+        const damageType = 
+          damageDone >= 25 ? "critical" as const :
+          damageDone >= 20 ? "vital" as const :
+          "normal" as const;
+        
+        // Add damage number at opponent position
+        feedbackActions.addDamageNumber(Math.round(damageDone), playerPositions[1], damageType);
+        
+        // Increment combo
+        feedbackActions.incrementCombo();
+        
+        // Add action feedback for critical/perfect hits
+        if (damageType === "critical") {
+          feedbackActions.addActionFeedback("critical", "Critical!", "치명타!", attackerPos);
+        }
+      } else {
+        // Reset combo on miss (attack happened but no damage)
+        feedbackActions.resetCombo();
+      }
+    }, 100);
+  }, [handleAttack, validPlayers, playerPositions, feedbackActions]);
+
+  // Create enhanced defend handler with action feedback
+  const handleDefendWithFeedback = useCallback(() => {
+    const defenderPos = playerPositions[0];
+    handleDefend();
+    feedbackActions.addActionFeedback("blocked", "Blocked", "방어!", defenderPos);
+  }, [handleDefend, playerPositions, feedbackActions]);
 
   // Update player 1 position
   useEffect(() => {
@@ -661,12 +718,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
 
       if (key === " ") {
-        handleAttack();
+        handleAttackWithFeedback();
         event.preventDefault();
       }
 
       if (event.key === "Shift") {
-        handleDefend();
+        handleDefendWithFeedback();
         event.preventDefault();
       }
 
@@ -685,8 +742,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     matchCountdownComplete,
     showRoundStart,
     handleStanceSwitch,
-    handleAttack,
-    handleDefend,
+    handleAttackWithFeedback,
+    handleDefendWithFeedback,
     onReturnToMenu,
   ]);
 
@@ -760,6 +817,36 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           onEffectComplete={handleEffectComplete}
           arenaBounds={arenaBounds}
         />
+
+        {/* Action Feedback - Damage Numbers */}
+        <DamageNumbers
+          damages={feedbackState.damageNumbers}
+          isMobile={isMobile}
+          arenaBounds={arenaBounds}
+        />
+
+        {/* Action Feedback - Action Indicators */}
+        <ActionFeedback
+          feedbacks={feedbackState.actionFeedbacks}
+          isMobile={isMobile}
+          arenaBounds={arenaBounds}
+        />
+
+        {/* Combo Counter */}
+        <ComboCounter
+          combo={feedbackState.comboCount}
+          isMobile={isMobile}
+        />
+
+        {/* Technique Name Display */}
+        {feedbackState.currentTechnique && (
+          <TechniqueName
+            korean={feedbackState.currentTechnique.korean}
+            english={feedbackState.currentTechnique.english}
+            isMobile={isMobile}
+            onComplete={() => feedbackActions.hideTechnique()}
+          />
+        )}
 
         {/* Performance Overlay (Development Only) */}
         {import.meta.env.DEV && (
