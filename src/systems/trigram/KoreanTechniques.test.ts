@@ -117,3 +117,37 @@ describe("KoreanTechniques module", () => {
     expect(Object.keys(KT).length).toBeGreaterThan(0);
   });
 });
+
+describe("Technique Data Consistency", () => {
+  it("should have matching values between name object and separate name fields", () => {
+    const techniques = KoreanTechniquesSystem.getAllTechniques();
+
+    techniques.forEach((technique: KoreanTechnique) => {
+      // Validate korean name consistency
+      expect(technique.koreanName).toBe(technique.name.korean);
+      
+      // Validate english name consistency
+      expect(technique.englishName).toBe(technique.name.english);
+      
+      // Validate romanized name consistency
+      expect(technique.romanized).toBe(technique.name.romanized);
+    });
+  });
+
+  it("should have all 51 techniques with consistent name fields", () => {
+    const techniques = KoreanTechniquesSystem.getAllTechniques();
+    
+    // Verify we have all 51 techniques
+    expect(techniques.length).toBe(51);
+    
+    // Count techniques with consistent data
+    const consistentTechniques = techniques.filter((technique: KoreanTechnique) => 
+      technique.koreanName === technique.name.korean &&
+      technique.englishName === technique.name.english &&
+      technique.romanized === technique.name.romanized
+    );
+    
+    // All techniques should have consistent data
+    expect(consistentTechniques.length).toBe(51);
+  });
+});
