@@ -102,6 +102,14 @@ jobs:
           DISPLAY: :99
           CI: true
       
+      - name: Commit and push screenshots
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add screenshots/*.png
+          git commit -m "Add automated screenshots [skip ci]" || echo "No changes to commit"
+          git push
+      
       - name: Upload screenshots as artifacts
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
