@@ -16,6 +16,13 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { ActionFeedback as ActionFeedbackData, ActionFeedbackType } from "../../../hooks/useActionFeedback";
+import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
+
+// Animation phase thresholds (as percentage of total duration)
+/** Fade in completes at 20% of total duration */
+const FADE_IN_THRESHOLD = 0.2;
+/** Fade out begins at 80% of total duration */
+const FADE_OUT_THRESHOLD = 0.8;
 
 /**
  * Props for the ActionFeedback component
@@ -53,19 +60,19 @@ export interface TechniqueNameProps {
 function getFeedbackColor(type: ActionFeedbackType): string {
   switch (type) {
     case "perfect":
-      return `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
     case "critical":
-      return `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_RED);
     case "blocked":
-      return `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_CYAN);
     case "dodged":
-      return `#${KOREAN_COLORS.ACCENT_GREEN.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_GREEN);
     case "technique":
-      return `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.SECONDARY_MAGENTA);
     case "combo_milestone":
-      return `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
     default:
-      return `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY);
   }
 }
 
@@ -75,19 +82,19 @@ function getFeedbackColor(type: ActionFeedbackType): string {
 function getGlowColor(type: ActionFeedbackType): string {
   switch (type) {
     case "perfect":
-      return "rgba(255, 215, 0, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8);
     case "critical":
-      return "rgba(255, 51, 51, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_RED, 0.8);
     case "blocked":
-      return "rgba(0, 255, 255, 0.6)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.6);
     case "dodged":
-      return "rgba(0, 255, 51, 0.6)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_GREEN, 0.6);
     case "technique":
-      return "rgba(255, 0, 255, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.8);
     case "combo_milestone":
-      return "rgba(255, 215, 0, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8);
     default:
-      return "rgba(255, 255, 255, 0.4)";
+      return hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.4);
   }
 }
 
@@ -239,23 +246,23 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
   const [scale, setScale] = useState(0.5);
   const startTimeRef = useRef(Date.now());
 
-  // Animation phases: fade in (0-20%), hold (20-80%), fade out (80-100%)
+  // Animation phases: fade in (0-FADE_IN_THRESHOLD), hold (FADE_IN_THRESHOLD-FADE_OUT_THRESHOLD), fade out (FADE_OUT_THRESHOLD-1)
   useFrame(() => {
     const elapsed = Date.now() - startTimeRef.current;
     const progress = Math.min(elapsed / duration, 1);
 
-    if (progress < 0.2) {
-      // Fade in
-      const fadeInProgress = progress / 0.2;
+    if (progress < FADE_IN_THRESHOLD) {
+      // Fade in phase
+      const fadeInProgress = progress / FADE_IN_THRESHOLD;
       setOpacity(fadeInProgress);
       setScale(0.5 + fadeInProgress * 0.5);
-    } else if (progress < 0.8) {
-      // Hold
+    } else if (progress < FADE_OUT_THRESHOLD) {
+      // Hold phase
       setOpacity(1);
       setScale(1);
     } else {
-      // Fade out
-      const fadeOutProgress = (progress - 0.8) / 0.2;
+      // Fade out phase
+      const fadeOutProgress = (progress - FADE_OUT_THRESHOLD) / (1 - FADE_OUT_THRESHOLD);
       setOpacity(1 - fadeOutProgress);
       setScale(1 + fadeOutProgress * 0.2);
     }
@@ -270,8 +277,8 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
 
   const mainFontSize = isMobile ? 28 : 42;
   const subFontSize = isMobile ? 16 : 24;
-  const color = `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`;
-  const glowColor = "rgba(255, 0, 255, 0.8)";
+  const color = hexColorToCSS(KOREAN_COLORS.SECONDARY_MAGENTA);
+  const glowColor = hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.8);
 
   return (
     <Html
@@ -323,7 +330,7 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
             fontSize: `${subFontSize}px`,
             fontWeight: "bold",
             fontFamily: FONT_FAMILY.KOREAN,
-            color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
             textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
             letterSpacing: "2px",
             textTransform: "uppercase",

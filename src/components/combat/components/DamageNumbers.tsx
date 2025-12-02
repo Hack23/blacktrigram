@@ -16,6 +16,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { DamageNumber, DamageType } from "../../../hooks/useActionFeedback";
+import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
 
 /**
  * Props for the DamageNumbers component
@@ -37,12 +38,12 @@ export interface DamageNumbersProps {
 function getDamageColor(type: DamageType): string {
   switch (type) {
     case "critical":
-      return `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
     case "vital":
-      return `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.ACCENT_RED);
     case "normal":
     default:
-      return `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`;
+      return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
   }
 }
 
@@ -52,12 +53,12 @@ function getDamageColor(type: DamageType): string {
 function getGlowColor(type: DamageType): string {
   switch (type) {
     case "critical":
-      return "rgba(255, 215, 0, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8);
     case "vital":
-      return "rgba(255, 51, 51, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_RED, 0.8);
     case "normal":
     default:
-      return "rgba(0, 255, 255, 0.8)";
+      return hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8);
   }
 }
 

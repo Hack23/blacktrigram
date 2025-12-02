@@ -11,6 +11,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import * as THREE from "three";
@@ -417,43 +418,67 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatAudio,
   });
 
+  // Track health changes for feedback system
+  const prevHealthRef = useRef({ player1: 0, player2: 0 });
+
+  // Sync health to ref on changes (for feedback calculation)
+  useEffect(() => {
+    prevHealthRef.current = {
+      player1: validPlayers[0].health,
+      player2: validPlayers[1].health,
+    };
+  }, [validPlayers[0].health, validPlayers[1].health]);
+
+  // Watch for player 2 health decrease to trigger damage feedback
+  const lastPlayer2HealthRef = useRef(validPlayers[1].health);
+  useEffect(() => {
+    const currentHealth = validPlayers[1].health;
+    const previousHealth = lastPlayer2HealthRef.current;
+    const damageDone = previousHealth - currentHealth;
+    
+    if (damageDone > 0 && combatState.roundStarted && !combatState.roundEnded) {
+      // Determine damage type based on amount
+      const damageType = 
+        damageDone >= 25 ? "critical" as const :
+        damageDone >= 20 ? "vital" as const :
+        "normal" as const;
+      
+      // Add damage number at opponent position
+      feedbackActions.addDamageNumber(Math.round(damageDone), playerPositions[1], damageType);
+      
+      // Increment combo
+      feedbackActions.incrementCombo();
+      
+      // Add action feedback for critical hits
+      if (damageType === "critical") {
+        feedbackActions.addActionFeedback("critical", "Critical!", "치명타!", playerPositions[0]);
+      }
+    }
+    
+    lastPlayer2HealthRef.current = currentHealth;
+  }, [validPlayers[1].health, playerPositions, feedbackActions, combatState.roundStarted, combatState.roundEnded]);
+
+  // Watch for player 1 health decrease (AI attacks player)
+  const lastPlayer1HealthRef = useRef(validPlayers[0].health);
+  useEffect(() => {
+    const currentHealth = validPlayers[0].health;
+    const previousHealth = lastPlayer1HealthRef.current;
+    const damageDone = previousHealth - currentHealth;
+    
+    if (damageDone > 0 && combatState.roundStarted && !combatState.roundEnded) {
+      // Add damage number at player position for AI hits
+      const damageType = damageDone >= 20 ? "critical" as const : "normal" as const;
+      feedbackActions.addDamageNumber(Math.round(damageDone), playerPositions[0], damageType);
+    }
+    
+    lastPlayer1HealthRef.current = currentHealth;
+  }, [validPlayers[0].health, playerPositions, feedbackActions, combatState.roundStarted, combatState.roundEnded]);
+
   // Create enhanced attack handler with action feedback
   const handleAttackWithFeedback = useCallback(() => {
-    // Store previous health to calculate damage dealt
-    const prevHealth = validPlayers[1].health;
-    const attackerPos = playerPositions[0];
-    
-    // Execute the attack
+    // Execute the attack - health change will trigger useEffect above
     handleAttack();
-    
-    // Check result after a small delay to allow state to update
-    setTimeout(() => {
-      const newHealth = validPlayers[1].health;
-      const damageDone = prevHealth - newHealth;
-      
-      if (damageDone > 0) {
-        // Determine damage type
-        const damageType = 
-          damageDone >= 25 ? "critical" as const :
-          damageDone >= 20 ? "vital" as const :
-          "normal" as const;
-        
-        // Add damage number at opponent position
-        feedbackActions.addDamageNumber(Math.round(damageDone), playerPositions[1], damageType);
-        
-        // Increment combo
-        feedbackActions.incrementCombo();
-        
-        // Add action feedback for critical/perfect hits
-        if (damageType === "critical") {
-          feedbackActions.addActionFeedback("critical", "Critical!", "치명타!", attackerPos);
-        }
-      } else {
-        // Reset combo on miss (attack happened but no damage)
-        feedbackActions.resetCombo();
-      }
-    }, 100);
-  }, [handleAttack, validPlayers, playerPositions, feedbackActions]);
+  }, [handleAttack]);
 
   // Create enhanced defend handler with action feedback
   const handleDefendWithFeedback = useCallback(() => {

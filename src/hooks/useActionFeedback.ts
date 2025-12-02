@@ -150,10 +150,12 @@ export function useActionFeedback(config: UseActionFeedbackConfig = {}): {
   const comboResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const techniqueTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cleanupIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const idCounterRef = useRef(0);
 
-  // Generate unique ID
+  // Generate unique ID using counter and timestamp for guaranteed uniqueness
   const generateId = useCallback(() => {
-    return `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    idCounterRef.current += 1;
+    return `feedback_${Date.now()}_${idCounterRef.current}`;
   }, []);
 
   // Add damage number

@@ -14,6 +14,7 @@
 import { Html } from "@react-three/drei";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
 
 /**
  * Props for the ComboCounter component
@@ -35,22 +36,22 @@ export interface ComboCounterProps {
 function getComboColor(combo: number): string {
   if (combo >= 10) {
     // Rainbow effect for high combos - use magenta
-    return `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`;
+    return hexColorToCSS(KOREAN_COLORS.SECONDARY_MAGENTA);
   }
   if (combo >= 7) {
     // Critical tier - red
-    return `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`;
+    return hexColorToCSS(KOREAN_COLORS.ACCENT_RED);
   }
   if (combo >= 5) {
     // High tier - gold
-    return `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`;
+    return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
   }
   if (combo >= 3) {
     // Medium tier - cyan
-    return `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`;
+    return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
   }
   // Low tier - white
-  return `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`;
+  return hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY);
 }
 
 /**
@@ -58,18 +59,18 @@ function getComboColor(combo: number): string {
  */
 function getGlowColor(combo: number): string {
   if (combo >= 10) {
-    return "rgba(255, 0, 255, 0.8)";
+    return hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.8);
   }
   if (combo >= 7) {
-    return "rgba(255, 51, 51, 0.8)";
+    return hexToRgbaString(KOREAN_COLORS.ACCENT_RED, 0.8);
   }
   if (combo >= 5) {
-    return "rgba(255, 215, 0, 0.8)";
+    return hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8);
   }
   if (combo >= 3) {
-    return "rgba(0, 255, 255, 0.6)";
+    return hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6);
   }
-  return "rgba(255, 255, 255, 0.4)";
+  return hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.4);
 }
 
 /**
@@ -163,6 +164,22 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
   const milestone = getComboMilestone(combo);
   const comboColor = getComboColor(combo);
   const glowColor = getGlowColor(combo);
+  // Get background color with alpha for milestone box
+  const getMilestoneBackground = (comboVal: number): string => {
+    if (comboVal >= 10) {
+      return hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.3);
+    }
+    if (comboVal >= 7) {
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_RED, 0.3);
+    }
+    if (comboVal >= 5) {
+      return hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3);
+    }
+    if (comboVal >= 3) {
+      return hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3);
+    }
+    return hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.3);
+  };
 
   // Font sizes
   const mainFontSize = isMobile ? 32 : 48;
@@ -224,7 +241,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
             fontSize: `${subFontSize - 4}px`,
             fontWeight: "bold",
             fontFamily: FONT_FAMILY.KOREAN,
-            color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
             textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
           }}
         >
@@ -237,7 +254,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
             style={{
               marginTop: "8px",
               padding: "4px 16px",
-              background: `rgba(${parseInt(comboColor.slice(1, 3), 16)}, ${parseInt(comboColor.slice(3, 5), 16)}, ${parseInt(comboColor.slice(5, 7), 16)}, 0.3)`,
+              background: getMilestoneBackground(combo),
               borderRadius: "4px",
               border: `2px solid ${comboColor}`,
               animation: "pulse 0.5s ease-in-out infinite",
@@ -259,7 +276,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
                 fontSize: `${milestoneFontSize - 6}px`,
                 fontWeight: "bold",
                 fontFamily: FONT_FAMILY.KOREAN,
-                color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+                color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
               }}
             >
               {milestone.english}
