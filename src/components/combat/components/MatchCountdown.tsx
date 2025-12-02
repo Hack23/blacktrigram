@@ -102,7 +102,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
       // Play fight announcement
       audio.playSFX("attack_heavy"); // Using placeholder - will be fight_start
     }
-  }, [state, currentNumber, audio]);
+  }, [state, currentNumber, audio.isAudioReady, audio.playSFX]);
 
   // Handle skip
   const handleSkip = () => {
