@@ -10,7 +10,6 @@
  * @category Combat UI
  */
 
-import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
@@ -98,7 +97,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
   );
 
   return (
-    <Html fullscreen>
+    <>
       <div
         data-testid="round-start-announcement"
         role="alert"
@@ -164,7 +163,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
           }
         `}
       </style>
-    </Html>
+    </>
   );
 };
 

@@ -15,15 +15,6 @@ vi.mock("../../../audio/AudioProvider", () => ({
   }),
 }));
 
-// Mock @react-three/drei
-vi.mock("@react-three/drei", () => ({
-  Html: ({ children, fullscreen, ...props }: any) => (
-    <div data-testid="html-overlay" data-fullscreen={fullscreen} {...props}>
-      {children}
-    </div>
-  ),
-}));
-
 beforeEach(() => {
   vi.useFakeTimers();
 });
