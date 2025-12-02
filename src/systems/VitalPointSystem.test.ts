@@ -90,15 +90,17 @@ describe("VitalPointSystem", () => {
       const templeResult = system.processHit(templePosition, hitBox, undefined, 12);
       const jawResult = system.processHit(jawPosition, hitBox, undefined, 12);
 
-      // Temple (CRITICAL, 35 base) should have higher base damage than jaw (MAJOR, 30 base)
-      // But meridian multipliers might affect final damage, so check base severity instead
+      // Temple (CRITICAL) should have higher severity than jaw (MAJOR)
       expect(templeResult.severity).toBe(VitalPointSeverity.CRITICAL);
       expect(jawResult.severity).toBe(VitalPointSeverity.MAJOR);
       
-      // If both have similar meridian multipliers, temple should do more damage
-      if (Math.abs((templeResult.meridianMultiplier ?? 1.0) - (jawResult.meridianMultiplier ?? 1.0)) < 0.3) {
-        expect(templeResult.damage).toBeGreaterThan(jawResult.damage);
-      }
+      // To compare base damage independently of meridian multipliers,
+      // we need to account for the multiplier effect
+      const templeBaseDamage = templeResult.damage / (templeResult.meridianMultiplier ?? 1.0);
+      const jawBaseDamage = jawResult.damage / (jawResult.meridianMultiplier ?? 1.0);
+      
+      // Base damage should reflect severity (CRITICAL > MAJOR)
+      expect(templeBaseDamage).toBeGreaterThan(jawBaseDamage);
     });
   });
 
