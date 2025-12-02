@@ -90,24 +90,16 @@ describe("useRoundTransition", () => {
       { timeout: 1500 }
     );
 
-    // Countdown should start at configured duration
-    expect(result.current.countdownValue).toBe(2);
+    // Countdown state is now active (component will handle countdown display)
+    expect(result.current.transitionState).toBe("countdown");
 
-    // Wait for countdown to decrement
-    await waitFor(
-      () => {
-        expect(result.current.countdownValue).toBe(1);
-      },
-      { timeout: 1500 }
-    );
-
-    // Wait for complete countdown and transition
+    // Wait for complete countdown and transition (countdown: 2s + transition: 0.5s)
     await waitFor(
       () => {
         expect(result.current.transitionState).toBe("idle");
         expect(onComplete).toHaveBeenCalledTimes(1);
       },
-      { timeout: 2000 }
+      { timeout: 3000 }
     );
     
     vi.useFakeTimers();
@@ -177,8 +169,9 @@ describe("useRoundTransition", () => {
   it("should use default configuration values", () => {
     const { result } = renderHook(() => useRoundTransition());
 
-    // Default countdown duration is 3
-    expect(result.current.countdownValue).toBe(3);
+    // Hook should start in idle state
+    expect(result.current.transitionState).toBe("idle");
+    expect(result.current.showAnnouncement).toBe(false);
   });
 
   it("should use custom configuration values", () => {
@@ -186,7 +179,9 @@ describe("useRoundTransition", () => {
       useRoundTransition({ countdownDuration: 5 })
     );
 
-    expect(result.current.countdownValue).toBe(5);
+    // Hook should start in idle state regardless of config
+    expect(result.current.transitionState).toBe("idle");
+    expect(result.current.showAnnouncement).toBe(false);
   });
 
   it("should handle null winner", () => {
