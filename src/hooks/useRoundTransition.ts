@@ -47,8 +47,6 @@ export interface UseRoundTransitionResult {
   readonly transitionState: RoundTransitionState;
   /** Whether announcement should be visible */
   readonly showAnnouncement: boolean;
-  /** Current countdown value (in seconds) */
-  readonly countdownValue: number;
   /** Start round transition sequence */
   readonly startTransition: (winner: PlayerState | null, roundNumber: number) => void;
   /** Skip countdown and proceed immediately */
@@ -110,7 +108,6 @@ export function useRoundTransition(
   const mergedConfig = { ...DEFAULT_CONFIG, ...config };
 
   const [transitionState, setTransitionState] = useState<RoundTransitionState>("idle");
-  const [countdownValue, setCountdownValue] = useState(mergedConfig.countdownDuration);
   const [roundWinner, setRoundWinner] = useState<PlayerState | null>(null);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
 
@@ -146,32 +143,20 @@ export function useRoundTransition(
       // Move to countdown after announcement
       const announcementTimer = setTimeout(() => {
         setTransitionState("countdown");
-        setCountdownValue(mergedConfig.countdownDuration);
         countdownActive.current = true;
 
-        // Start countdown
-        countdownTimer.current = setInterval(() => {
-          setCountdownValue((prev) => {
-            const next = prev - 1;
-            if (next <= 0) {
-              countdownActive.current = false;
-              if (countdownTimer.current) {
-                clearInterval(countdownTimer.current);
-                countdownTimer.current = null;
-              }
-              
-              // Move to transitioning state
-              setTransitionState("transitioning");
-              
-              // Complete transition after brief delay
-              transitionTimer.current = setTimeout(() => {
-                setTransitionState("idle");
-                onTransitionComplete?.();
-              }, mergedConfig.transitionDuration);
-            }
-            return next;
-          });
-        }, 1000);
+        // Countdown will be managed by the RoundAnnouncement component
+        // After countdownDuration, move to transitioning state
+        countdownTimer.current = setTimeout(() => {
+          countdownActive.current = false;
+          setTransitionState("transitioning");
+          
+          // Complete transition after brief delay
+          transitionTimer.current = setTimeout(() => {
+            setTransitionState("idle");
+            onTransitionComplete?.();
+          }, mergedConfig.transitionDuration);
+        }, mergedConfig.countdownDuration * 1000);
       }, mergedConfig.announcementDuration * 1000);
 
       // Store timer ref for cleanup
@@ -206,8 +191,7 @@ export function useRoundTransition(
     setTransitionState("idle");
     setRoundWinner(null);
     setCurrentRoundNumber(0);
-    setCountdownValue(mergedConfig.countdownDuration);
-  }, [clearTimers, mergedConfig.countdownDuration]);
+  }, [clearTimers]);
 
   /**
    * Cleanup on unmount
@@ -222,7 +206,6 @@ export function useRoundTransition(
   return {
     transitionState,
     showAnnouncement: transitionState === "announcing" || transitionState === "countdown",
-    countdownValue,
     startTransition,
     skipCountdown,
     resetTransition,

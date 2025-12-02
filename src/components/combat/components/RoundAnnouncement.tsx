@@ -291,12 +291,6 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
       {/* Skip Button */}
       <button
         onClick={onSkip}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onSkip();
-          }
-        }}
         data-testid="skip-countdown-button"
         className="skip-countdown-button"
         style={{
