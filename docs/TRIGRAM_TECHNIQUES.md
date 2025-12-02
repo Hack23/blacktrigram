@@ -578,14 +578,25 @@ This document details the complete Korean martial arts technique system for the 
 ```typescript
 interface KoreanTechnique {
   id: string;
+  // Bilingual name structure (primary)
   name: {
     korean: string;
     english: string;
     romanized: string;
   };
+  // Separate name fields (backward compatibility)
+  koreanName: string;
+  englishName: string;
+  romanized: string;
+  // Description in both languages
+  description: {
+    korean: string;
+    english: string;
+  };
+  // Combat properties
   stance: TrigramStance;
-  type: CombatAttackType;
-  damageType: DamageType;
+  type: string;
+  damageType: string;
   damage: number;
   kiCost: number;
   staminaCost: number;
@@ -598,6 +609,8 @@ interface KoreanTechnique {
   effects: readonly StatusEffect[];
 }
 ```
+
+**Note**: The interface maintains both `name` object and separate name fields (`koreanName`, `englishName`, `romanized`) for backward compatibility with existing code and tests.
 
 ### Accessing Techniques
 ```typescript

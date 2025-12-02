@@ -18,6 +18,8 @@ export const TRIGRAM_TECHNIQUES: Record<
   [TrigramStance.GEON]: [
     {
       id: "geon_heaven_strike",
+      // Note: Both 'name' object and separate fields maintained for backward compatibility
+      // Tests and existing code may reference either format
       name: {
         korean: "천둥벽력",
         english: "Thunder Strike",
