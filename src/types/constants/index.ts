@@ -154,3 +154,23 @@ export const ARCHETYPE_BACKGROUNDS = {
   explained: "/assets/visual/bg/archetyples/PlayerArchetypesExplained.png",
   teamDynamics: "/assets/visual/bg/archetyples/CyberpunkTeamDynamics.png",
 } as const;
+
+/**
+ * Round announcement timing constants
+ * Controls the display duration and transitions for round announcements
+ * 
+ * @category Combat UI
+ * @korean 라운드 발표 타이밍
+ */
+export const ROUND_ANNOUNCEMENT_TIMINGS = {
+  /** Duration to display announcement before countdown (seconds) */
+  ANNOUNCEMENT_DURATION: 2,
+  /** Duration of countdown to next round (seconds) */
+  COUNTDOWN_DURATION: 3,
+  /** Brief transition duration before next round starts (milliseconds) */
+  TRANSITION_DURATION: 500,
+  /** Fade in animation duration (milliseconds) */
+  FADE_IN_DURATION: 300,
+  /** Fade out animation duration (milliseconds) */
+  FADE_OUT_DURATION: 300,
+} as const;

@@ -16,6 +16,7 @@ import React, {
 import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
+import { useRoundTransition } from "../../hooks/useRoundTransition";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
@@ -24,12 +25,13 @@ import {
 } from "../../systems/ai";
 import { HitEffectType } from "../../systems/effects";
 import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity } from "../../types";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY, ROUND_ANNOUNCEMENT_TIMINGS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { PerformanceOverlay3D } from "../../utils/performance";
 import { VolumeControl } from "../ui/VolumeControl";
+import { RoundAnnouncement } from "./components/RoundAnnouncement";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -43,6 +45,26 @@ import { useCombatState } from "./hooks/useCombatState";
 import CombatArena3D from "./components/CombatArena3D";
 import HitEffects3D from "./components/HitEffects3D";
 import Player3DModel from "./components/Player3DModel";
+
+/**
+ * Calculate accuracy percentage for a player
+ * Uses hits / (hits + misses) when miss tracking is available
+ * Falls back to 100% if hits exist but no miss tracking, or 0% if no combat activity
+ */
+const calculateAccuracy = (player: PlayerState): number => {
+  const hits = player.hitsLanded ?? 0;
+  const misses = player.misses ?? 0;
+  const totalAttempts = hits + misses;
+  
+  // If we have miss tracking, use proper accuracy formula
+  if (totalAttempts > 0) {
+    return (hits / totalAttempts) * 100;
+  }
+  
+  // Fallback: if no miss tracking and hits exist, show 100%
+  // Otherwise 0% (no combat activity)
+  return hits > 0 ? 100 : 0;
+};
 
 /**
  * Props for the CombatScreen3D component.
@@ -150,6 +172,30 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Combat audio
   const combatAudio = useCombatAudio();
+
+  // Match score tracking
+  const [matchScore, setMatchScore] = useState({ player1: 0, player2: 0 });
+
+  // Round transition management
+  const {
+    showAnnouncement,
+    roundWinner,
+    currentRoundNumber: transitionRoundNumber,
+    skipCountdown,
+    startTransition,
+  } = useRoundTransition(
+    {
+      announcementDuration: ROUND_ANNOUNCEMENT_TIMINGS.ANNOUNCEMENT_DURATION,
+      countdownDuration: ROUND_ANNOUNCEMENT_TIMINGS.COUNTDOWN_DURATION,
+      transitionDuration: ROUND_ANNOUNCEMENT_TIMINGS.TRANSITION_DURATION,
+    },
+    () => {
+      // Callback when transition completes - start next round
+      combatActions.setRoundEnded(false);
+      combatActions.setRoundStarted(false);
+      combatActions.setRoundDisplayStatus(null);
+    }
+  );
 
   // Player positions
   const [playerPositions, setPlayerPositions] = useState<Position[]>([
@@ -349,11 +395,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatAudio.stopCombatMusic(1000);
 
       const winner = validPlayers[0].health > validPlayers[1].health ? 0 : 1;
+      const roundWinner = validPlayers[winner];
+      
+      // Update match score
+      setMatchScore((prev) => ({
+        player1: winner === 0 ? prev.player1 + 1 : prev.player1,
+        player2: winner === 1 ? prev.player2 + 1 : prev.player2,
+      }));
+
       addCombatMessage("라운드 종료!", "Round Over!");
 
+      // Start round transition instead of immediately ending game
       setTimeout(() => {
-        onGameEnd(winner);
-      }, 2500);
+        startTransition(roundWinner, currentRound);
+      }, 1500);
     } else if (
       timeRemaining > 0 &&
       !combatState.roundStarted &&
@@ -390,6 +445,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     isPaused,
     combatActions,
     combatAudio,
+    startTransition,
   ]);
 
   // AI action execution
@@ -524,11 +580,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setRoundStarted(false);
       combatActions.setRoundDisplayStatus("ko");
       const winner = p1Defeated ? 1 : 0;
+      const roundWinner = validPlayers[winner];
+
+      // Update match score
+      setMatchScore((prev) => ({
+        player1: winner === 0 ? prev.player1 + 1 : prev.player1,
+        player2: winner === 1 ? prev.player2 + 1 : prev.player2,
+      }));
+
       addCombatMessage(
         p1Defeated ? "플레이어 1 패배" : "플레이어 1 승리!",
         p1Defeated ? "Player 1 Defeated" : "Player 1 Victory!"
       );
-      setTimeout(() => onGameEnd(winner), 2500);
+
+      // Start round transition
+      setTimeout(() => {
+        startTransition(roundWinner, currentRound);
+      }, 1500);
     }
   }, [
     validPlayers,
@@ -536,6 +604,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     addCombatMessage,
     combatState.roundEnded,
     combatActions,
+    currentRound,
+    startTransition,
   ]);
 
   useEffect(() => {
@@ -889,6 +959,39 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           </div>
         )}
       </div>
+
+      {/* Round Announcement Overlay */}
+      {showAnnouncement && roundWinner && (
+        <RoundAnnouncement
+          roundNumber={transitionRoundNumber}
+          roundWinner={roundWinner}
+          currentScore={matchScore}
+          roundStats={{
+            damageDealt: roundWinner.totalDamageDealt ?? 0,
+            hitsLanded: roundWinner.hitsLanded ?? 0,
+            vitalPointsHit: roundWinner.vitalPointHits ?? 0,
+            accuracy: calculateAccuracy(roundWinner),
+          }}
+          onCountdownComplete={() => {
+            // Check if match is over (best of 3)
+            if (matchScore.player1 >= 2 || matchScore.player2 >= 2) {
+              const winner = matchScore.player1 >= 2 ? 0 : 1;
+              onGameEnd(winner);
+            }
+          }}
+          onSkip={() => {
+            // Check if match is over (best of 3) before skipping
+            if (matchScore.player1 >= 2 || matchScore.player2 >= 2) {
+              const winner = matchScore.player1 >= 2 ? 0 : 1;
+              onGameEnd(winner);
+            } else {
+              skipCountdown();
+            }
+          }}
+          isMobile={isMobile}
+          totalRounds={3}
+        />
+      )}
     </div>
   );
 };
