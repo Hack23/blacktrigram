@@ -14,6 +14,7 @@ import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { hexColorToCSS } from "../../../utils/colorUtils";
 
 /**
  * Props for the RoundStartAnnouncement component
@@ -61,14 +62,16 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     if (audio.isAudioReady) {
       audio.playSFX("attack_medium"); // Using placeholder - will be round_start
     }
-  }, [audio]);
+  }, [audio.isAudioReady, audio.playSFX]);
 
   // Auto-dismiss after duration
   useEffect(() => {
     let isMounted = true;
-    const timer = setTimeout(() => {
+    let innerTimer: ReturnType<typeof setTimeout> | null = null;
+    
+    const outerTimer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => {
+      innerTimer = setTimeout(() => {
         if (isMounted) {
           onComplete();
         }
@@ -77,17 +80,20 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
 
     return () => {
       isMounted = false;
-      clearTimeout(timer);
+      clearTimeout(outerTimer);
+      if (innerTimer) {
+        clearTimeout(innerTimer);
+      }
     };
   }, [duration, onComplete]);
 
   // Convert hex colors to CSS - memoized for performance
   const goldColor = useMemo(
-    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
     []
   );
   const darkBg = useMemo(
-    () => `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
     []
   );
 

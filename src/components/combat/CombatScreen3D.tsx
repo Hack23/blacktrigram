@@ -438,8 +438,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         startTransition(roundWinner, currentRound);
       }, 1500);
     }
-    // Note: Round start is now handled by MatchCountdown and RoundStartAnnouncement components
-    // The auto-start logic has been removed to prevent race conditions with countdown
+    // Note: Round start is now triggered by MatchCountdown and RoundStartAnnouncement components
+    // via their onComplete callbacks to ensure proper sequencing with countdown animations
   }, [
     timeRemaining,
     combatState.roundEnded,

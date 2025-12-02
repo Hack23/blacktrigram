@@ -37,9 +37,12 @@ let mockHookState = {
   isActive: true,
 };
 
+// Helper to get a fresh copy of mock state
+const getMockHookState = () => ({ ...mockHookState });
+
 // Mock useMatchCountdown hook
 vi.mock("../../../hooks/useMatchCountdown", () => ({
-  useMatchCountdown: () => mockHookState,
+  useMatchCountdown: () => getMockHookState(),
 }));
 
 beforeEach(() => {

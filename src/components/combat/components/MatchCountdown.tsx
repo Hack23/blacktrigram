@@ -15,6 +15,7 @@ import { Html } from "@react-three/drei";
 import React, { useEffect, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { hexColorToCSS } from "../../../utils/colorUtils";
 import { useMatchCountdown, MatchCountdownState } from "../../../hooks/useMatchCountdown";
 
 /**
@@ -128,15 +129,15 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
 
   // Convert hex colors to CSS - memoized for performance
   const goldColor = useMemo(
-    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
     []
   );
   const cyanColor = useMemo(
-    () => `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
     []
   );
   const darkBg = useMemo(
-    () => `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
     []
   );
 
@@ -201,6 +202,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
           <button
             onClick={handleSkip}
             data-testid="skip-countdown-button"
+            aria-label="Skip countdown"
             style={{
               position: "absolute",
               bottom: isMobile ? "40px" : "60px",

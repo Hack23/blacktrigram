@@ -160,5 +160,17 @@ export function toHex(color: number): string {
   return color.toString(16).padStart(6, '0');
 }
 
+/**
+ * Convert numeric color to CSS hex string with # prefix
+ * @param color - Numeric color value (e.g., 0x00ffff)
+ * @returns CSS hex color string (e.g., "#00ffff")
+ * @example
+ * hexColorToCSS(0x00ffff) // "#00ffff"
+ * hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN) // "#00ffff"
+ */
+export function hexColorToCSS(color: number): string {
+  return `#${color.toString(16).padStart(6, '0')}`;
+}
+
 // DO NOT ADD ANY MORE FUNCTIONS BELOW THIS LINE
 // All functions are already exported above using individual export statements
