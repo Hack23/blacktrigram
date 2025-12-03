@@ -134,11 +134,11 @@ describe("Technique Data Consistency", () => {
     });
   });
 
-  it("should have all 51 techniques with consistent name fields", () => {
+  it("should have all 66 techniques with consistent name fields (51 standard + 15 Dark Ops)", () => {
     const techniques = KoreanTechniquesSystem.getAllTechniques();
     
-    // Verify we have all 51 techniques
-    expect(techniques.length).toBe(51);
+    // Verify we have all 66 techniques
+    expect(techniques.length).toBe(66);
     
     // Count techniques with consistent data
     const consistentTechniques = techniques.filter((technique: KoreanTechnique) => 
@@ -148,6 +148,6 @@ describe("Technique Data Consistency", () => {
     );
     
     // All techniques should have consistent data
-    expect(consistentTechniques.length).toBe(51);
+    expect(consistentTechniques.length).toBe(66);
   });
 });

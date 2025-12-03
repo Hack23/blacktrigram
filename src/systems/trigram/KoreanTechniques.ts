@@ -3,7 +3,7 @@ import { TrigramStance as TrigramStanceEnum } from "../../types/common";
 import { PlayerState } from "../player";
 import { PLAYER_ARCHETYPES_DATA } from "../types";
 import { KoreanTechnique } from "../vitalpoint";
-import { TRIGRAM_TECHNIQUES } from "./techniques";
+import { DARK_OPS_TECHNIQUES, TRIGRAM_TECHNIQUES } from "./techniques";
 
 /**
  * Korean martial arts techniques system
@@ -16,6 +16,34 @@ export class KoreanTechniquesSystem {
     stance: TrigramStance
   ): readonly KoreanTechnique[] {
     return (TRIGRAM_TECHNIQUES[stance] as readonly KoreanTechnique[]) || [];
+  }
+
+  /**
+   * Get Dark Ops techniques (암흑작전부대 기술)
+   * Specialized techniques for 암살자 (Amsalja) archetype
+   */
+  static getDarkOpsTechniques(): readonly KoreanTechnique[] {
+    return DARK_OPS_TECHNIQUES;
+  }
+
+  /**
+   * Get all available techniques including Dark Ops
+   */
+  static getAllAvailableTechniques(
+    stance: TrigramStance,
+    archetype?: PlayerArchetype
+  ): readonly KoreanTechnique[] {
+    const stanceTechniques = this.getAvailableTechniques(stance);
+    
+    // Add Dark Ops techniques for 암살자 (Amsalja) archetype
+    if (archetype === PlayerArchetype.AMSALJA) {
+      const darkOpsTechniques = DARK_OPS_TECHNIQUES.filter(
+        (tech) => tech.stance === stance
+      );
+      return [...stanceTechniques, ...darkOpsTechniques];
+    }
+    
+    return stanceTechniques;
   }
 
   /**
@@ -57,7 +85,9 @@ export class KoreanTechniquesSystem {
    */
   static getAllTechniques(): KoreanTechnique[] {
     // Fix: Convert readonly array to mutable array using spread operator
-    return [...Object.values(TRIGRAM_TECHNIQUES).flat()] as KoreanTechnique[];
+    const stanceTechniques = Object.values(TRIGRAM_TECHNIQUES).flat();
+    const darkOpsTechniques = [...DARK_OPS_TECHNIQUES];
+    return [...stanceTechniques, ...darkOpsTechniques] as KoreanTechnique[];
   }
 
   static getTechniquesByArchetype(
@@ -69,14 +99,63 @@ export class KoreanTechniquesSystem {
     const archetypeData = PLAYER_ARCHETYPES_DATA[archetype]; // Fix: Now properly imported
     const favoredStances = archetypeData.favoredStances || [];
 
-    return allTechniques.filter((technique) =>
-      favoredStances.includes(technique.stance)
-    );
+    // Filter by favored stances (excludes Dark Ops techniques initially)
+    const filteredTechniques = allTechniques.filter((technique) => {
+      // Exclude Dark Ops from initial filtering
+      if (technique.id.startsWith("darkops_")) {
+        return false;
+      }
+      return favoredStances.includes(technique.stance);
+    });
+
+    // Add Dark Ops techniques for 암살자 (Amsalja) only
+    if (archetype === PlayerArchetype.AMSALJA) {
+      return [...filteredTechniques, ...DARK_OPS_TECHNIQUES];
+    }
+
+    return filteredTechniques;
   }
 
   static getTechniqueById(id: string): KoreanTechnique | undefined {
     const allTechniques = this.getAllTechniques();
     return allTechniques.find((technique) => technique.id === id);
+  }
+
+  /**
+   * Check if technique is a Dark Ops technique
+   */
+  static isDarkOpsTechnique(techniqueId: string): boolean {
+    return DARK_OPS_TECHNIQUES.some((tech) => tech.id === techniqueId);
+  }
+
+  /**
+   * Get Dark Ops archetype effectiveness multiplier
+   */
+  static getDarkOpsArchetypeBonus(archetype: PlayerArchetype): number {
+    const bonusMap: Record<PlayerArchetype, number> = {
+      [PlayerArchetype.AMSALJA]: 1.3, // +30%
+      [PlayerArchetype.JEONGBO_YOWON]: 1.15, // +15%
+      [PlayerArchetype.HACKER]: 1.10, // +10%
+      [PlayerArchetype.MUSA]: 0.85, // -15%
+      [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1.05, // +5%
+    };
+    return bonusMap[archetype] || 1.0;
+  }
+
+  /**
+   * Get night operations bonus (simulated)
+   * In a full game, this would use actual game time
+   */
+  static getNightOperationsBonus(): number {
+    // Simulate night time for now (in real game, use game clock)
+    // Night: 00:00-06:00, 18:00-23:59 = 1.25x
+    // Day: 06:00-18:00 = 1.0x
+    const hour = new Date().getHours();
+    if (hour >= 0 && hour < 6) return 1.25; // Night
+    if (hour >= 18 && hour < 24) return 1.25; // Night
+    if (hour >= 5 && hour < 7) return 1.15; // Twilight
+    if (hour >= 17 && hour < 19) return 1.15; // Twilight
+    return 1.0; // Day
   }
 }
 
@@ -91,7 +170,15 @@ export function getTechniquesByStance(
 }
 
 // Export TRIGRAM_TECHNIQUES for tests
-export { TRIGRAM_TECHNIQUES } from "./techniques";
+export { DARK_OPS_TECHNIQUES, TRIGRAM_TECHNIQUES } from "./techniques";
+
+// Export Dark Ops constants
+export {
+  DARK_OPS_UNITS,
+  DARK_OPS_ARCHETYPE_BONUSES,
+  DARK_OPS_NIGHT_BONUS,
+  DARK_OPS_SPECIAL_EFFECTS,
+} from "./techniques";
 
 // Export technique effectiveness matrix
 export const TECHNIQUE_EFFECTIVENESS_MATRIX: Record<
