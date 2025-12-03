@@ -336,10 +336,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
   }, [combatState.roundEnded, combatActions, addCombatMessage]);
 
+  // Ref pattern to stabilize onTimeUp callback for timer
+  const handleTimeUpRef = useRef(handleTimeUp);
+  useEffect(() => {
+    handleTimeUpRef.current = handleTimeUp;
+  }, [handleTimeUp]);
+
   const timerState = useCombatTimer({
     initialTime: Math.max(0, timeRemaining), // Ensure non-negative
     isPaused: isPaused || !combatState.roundStarted || combatState.roundEnded || !matchCountdownComplete || showRoundStart,
-    onTimeUp: handleTimeUp,
+    onTimeUp: useCallback(() => handleTimeUpRef.current(), []),
     warningThreshold: 10,
     urgentThreshold: 5,
   });
