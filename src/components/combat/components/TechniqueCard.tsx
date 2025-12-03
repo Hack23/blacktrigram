@@ -212,7 +212,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
           style={{
             fontSize: `${cardSize.fontSize}px`,
             fontWeight: "bold",
-            color: isAvailable ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}` : "#888",
+            color: isAvailable ? accentGoldHex : "#888",
             textAlign: "center",
             marginTop: "20px",
             lineHeight: "1.2",

@@ -50,7 +50,7 @@ export interface UseTechniqueSelectionResult {
   readonly selectTechnique: (index: number) => void;
   
   /** Execute currently selected technique */
-  readonly executeTechnique: () => void;
+  readonly executeTechnique: (indexOverride?: number) => void;
   
   /** Check if technique can be executed */
   readonly validateTechnique: (technique: Technique) => TechniqueValidation;
