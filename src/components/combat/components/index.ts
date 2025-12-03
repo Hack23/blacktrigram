@@ -19,6 +19,8 @@ export { RoundAnnouncement } from "./RoundAnnouncement";
 export { MatchCountdown } from "./MatchCountdown";
 export { RoundStartAnnouncement } from "./RoundStartAnnouncement";
 export { CombatTimer } from "./CombatTimer";
+export { TechniqueCard } from "./TechniqueCard";
+export { TechniqueBar } from "./TechniqueBar";
 
 // Re-export component prop types
 export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
@@ -31,3 +33,5 @@ export type { ActionFeedbackProps, TechniqueNameProps } from "./ActionFeedback";
 export type { MatchCountdownProps } from "./MatchCountdown";
 export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { CombatTimerProps } from "./CombatTimer";
+export type { TechniqueCardProps } from "./TechniqueCard";
+export type { TechniqueBarProps } from "./TechniqueBar";
