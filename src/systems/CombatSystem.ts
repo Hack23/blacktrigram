@@ -1,12 +1,12 @@
-import { PlayerArchetype, VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { VitalPointSeverity } from "../types/common";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
-import { isValidArchetype, isVitalPoint } from "./combat/typeGuards";
 import { PlayerState } from "./player";
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
-import { KoreanTechnique, VitalPoint, VitalPointHitResult } from "./vitalpoint/types";
+import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
+import { addEffectsToPlayer, getEffectModifiers, removeExpiredEffects } from "./PlayerEffectManager";
 
 export class CombatSystem implements CombatSystemInterface {
   private vitalPointSystem: VitalPointSystem;
@@ -74,13 +74,14 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
-    // Process vital point hit if targeted
+    // Process vital point hit if targeted (with archetype parameters)
     let vitalPointResult: VitalPointHitResult | null = null;
     if (targetedVitalPointId) {
       vitalPointResult = this.processVitalPointHit(
         targetedVitalPointId,
         technique.damage || 15,
-        attacker
+        attacker,
+        defender
       );
     }
 
@@ -118,7 +119,7 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Fix: Make applyCombatResult non-static instance method
+   * Fix: Make applyCombatResult non-static instance method with effect application
    */
   applyCombatResult(
     result: CombatResult,
@@ -129,7 +130,7 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Static version for backwards compatibility
+   * Static version for backwards compatibility with comprehensive effect application
    */
   static applyCombatResult(
     result: CombatResult,
@@ -141,17 +142,39 @@ export class CombatSystem implements CombatSystemInterface {
     let updatedAttacker = attacker;
 
     if (result.hit) {
+      // Apply damage
       updatedDefender = {
         ...defender,
         health: Math.max(0, defender.health - result.damage),
         totalDamageReceived: defender.totalDamageReceived + result.damage,
         hitsTaken: defender.hitsTaken + 1,
       };
+
+      // Apply status effects from vital point hit
+      if (result.effects && result.effects.length > 0) {
+        updatedDefender = addEffectsToPlayer(updatedDefender, result.effects);
+      }
+
+      // Track vital point hits
+      if (result.vitalPointHit) {
+        updatedAttacker = {
+          ...updatedAttacker,
+          vitalPointHits: attacker.vitalPointHits + 1,
+        };
+      }
+
+      // Track perfect strikes (high accuracy)
+      if (result.isCritical) {
+        updatedAttacker = {
+          ...updatedAttacker,
+          perfectStrikes: attacker.perfectStrikes + 1,
+        };
+      }
     }
 
     // Apply technique costs to attacker
     updatedAttacker = {
-      ...attacker,
+      ...updatedAttacker,
       ki: Math.max(0, attacker.ki - 5),
       stamina: Math.max(0, attacker.stamina - 10),
       totalDamageDealt:
@@ -209,27 +232,33 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Update player state over time
+   * Update player state over time with effect management
    */
   updatePlayerState(player: PlayerState, deltaTime: number): PlayerState {
     let updatedPlayer = { ...player };
 
-    // Apply natural regeneration
+    // Remove expired effects first
+    updatedPlayer = removeExpiredEffects(updatedPlayer);
+
+    // Get effect modifiers for resource regeneration
+    const effectModifiers = getEffectModifiers(updatedPlayer);
+
+    // Apply natural regeneration with effect modifiers
     const regenRate = deltaTime / 1000; // Convert to seconds
 
-    // Ki regeneration (slower during combat)
+    // Ki regeneration (slower during combat) - affected by effects
     if (updatedPlayer.ki < updatedPlayer.maxKi) {
       updatedPlayer.ki = Math.min(
         updatedPlayer.maxKi,
-        updatedPlayer.ki + regenRate * 2
+        updatedPlayer.ki + regenRate * 2 * effectModifiers.kiRegen
       );
     }
 
-    // Stamina regeneration
+    // Stamina regeneration - affected by effects
     if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
       updatedPlayer.stamina = Math.min(
         updatedPlayer.maxStamina,
-        updatedPlayer.stamina + regenRate * 3
+        updatedPlayer.stamina + regenRate * 3 * effectModifiers.staminaRegen
       );
     }
 
@@ -244,13 +273,8 @@ export class CombatSystem implements CombatSystemInterface {
       );
     }
 
-    // Update status effects
-    const currentTime = Date.now();
-    updatedPlayer.statusEffects = updatedPlayer.statusEffects.filter(
-      (effect) => effect.endTime > currentTime
-    );
-
     // Clear temporary combat states
+    const currentTime = Date.now();
     if (
       updatedPlayer.lastActionTime &&
       currentTime - updatedPlayer.lastActionTime > updatedPlayer.recoveryTime
@@ -280,12 +304,13 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Fix: Integrate processVitalPointHit into the combat system
+   * Fix: Integrate processVitalPointHit into the combat system with archetype parameters
    */
   private processVitalPointHit(
     vitalPointId: string,
-    baseDamage: number,
-    attacker: PlayerState
+    _baseDamage: number, // Unused but kept for interface compatibility
+    attacker: PlayerState,
+    defender: PlayerState
   ): VitalPointHitResult {
     const vitalPoint = this.vitalPointSystem.getVitalPointById(vitalPointId);
 
@@ -298,71 +323,21 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
-    // Calculate damage based on vital point properties and attacker archetype
-    const archetypeModifier = this.getArchetypeVitalPointModifier(
-      attacker.archetype,
-      vitalPoint
+    // Use VitalPointSystem's processHit with full archetype support
+    return this.vitalPointSystem.processHit(
+      vitalPoint.position, // Use vital point position for hit calculation
+      { width: 10, height: 10 }, // Standard hit box
+      vitalPointId, // Targeted vital point
+      undefined, // Use current hour from system
+      attacker.archetype, // Attacker archetype for offensive modifiers
+      defender.archetype // Defender archetype for defensive modifiers
     );
-    const damage = Math.floor(baseDamage * archetypeModifier);
-
-    return {
-      hit: true,
-      vitalPointHit: vitalPoint, // Use the correct property name
-      damage,
-      effects: vitalPoint.effects.map((effect) => ({
-        id: `${effect.id}_${Date.now()}`,
-        type: effect.type,
-        intensity: effect.intensity,
-        duration: effect.duration,
-        description: effect.description,
-        stackable: effect.stackable,
-        source: vitalPointId,
-        startTime: Date.now(),
-        endTime: Date.now() + effect.duration,
-      })),
-      severity: vitalPoint.severity,
-    };
-  }
-
-  /**
-   * Helper method to get archetype-specific vital point damage modifier
-   * Uses type guards to ensure runtime type safety
-   */
-  private getArchetypeVitalPointModifier(
-    archetype: PlayerArchetype,
-    vitalPoint: VitalPoint
-  ): number {
-    // Validate inputs using type guards
-    if (!isValidArchetype(archetype)) {
-      console.warn(`Invalid archetype provided: ${archetype}, using base modifier`);
-      return 1.0;
-    }
-
-    if (!isVitalPoint(vitalPoint)) {
-      console.warn("Invalid vital point provided:", vitalPoint, "using base modifier");
-      return 1.0;
-    }
-
-    // Simple archetype-based modifiers
-    const baseModifier = 1.0;
-
-    // Different archetypes have different specializations
-    switch (archetype) {
-      case PlayerArchetype.AMSALJA: // Shadow Assassin - better at nerve strikes
-        return vitalPoint.category === VitalPointCategory.NEUROLOGICAL ? 1.3 : baseModifier;
-      case PlayerArchetype.MUSA: // Traditional Warrior - better at bone strikes
-        return vitalPoint.category === VitalPointCategory.SKELETAL ? 1.2 : baseModifier;
-      case PlayerArchetype.HACKER: // Cyber Warrior - better at nerve disruption
-        return vitalPoint.category === VitalPointCategory.NEUROLOGICAL ? 1.1 : baseModifier;
-      default:
-        return baseModifier;
-    }
   }
 
   /**
    * Execute attack with technique
    */
-  private executeAttack(
+  protected executeAttack(
     attacker: PlayerState,
     defender: PlayerState,
     technique: KoreanTechnique
