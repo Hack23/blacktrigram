@@ -54,6 +54,7 @@ import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import { useActionFeedback } from "../../hooks/useActionFeedback";
 import { CombatTimer } from "./components/CombatTimer";
 import { useCombatTimer } from "../../hooks/useCombatTimer";
+import { PlayerHUD } from "./components/PlayerHUD";
 
 /**
  * Calculate accuracy percentage for a player
@@ -991,40 +992,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Volume Control */}
         <VolumeControl position="top-right" compact={isMobile} />
 
-        {/* Combat HUD */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50px",
-            left: "10px",
-            right: "10px",
-          }}
-        >
-          {/* TODO: Replace with CombatHUDHTML component */}
-          <div style={{
-            background: "rgba(10, 10, 15, 0.9)",
-            border: "2px solid #00ffff",
-            borderRadius: "8px",
-            padding: "15px",
-            fontFamily: FONT_FAMILY.KOREAN,
-            color: "#00ffff",
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-              <div>
-                <div>{validPlayers[0].name.korean} | {validPlayers[0].name.english}</div>
-                <div>HP: {validPlayers[0].health}/{validPlayers[0].maxHealth}</div>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <div>Round {currentRound}/3</div>
-                <div>Time: {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, "0")}</div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div>{validPlayers[1].name.korean} | {validPlayers[1].name.english}</div>
-                <div>HP: {validPlayers[1].health}/{validPlayers[1].maxHealth}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Player 1 HUD - Top Left */}
+        <PlayerHUD
+          player={validPlayers[0]}
+          position="left"
+          isMobile={isMobile}
+        />
+
+        {/* Player 2 HUD - Top Right */}
+        <PlayerHUD
+          player={validPlayers[1]}
+          position="right"
+          isMobile={isMobile}
+        />
 
         {/* Combat Controls and Stats */}
         <div

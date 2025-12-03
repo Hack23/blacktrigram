@@ -615,3 +615,22 @@ html {
 }
 
 /* If you add custom @font-face, add font-display: swap; */
+
+/* Combat HUD Animations */
+@keyframes healthPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes staminaPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
