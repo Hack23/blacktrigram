@@ -304,7 +304,7 @@ describe("useCombatTimer", () => {
 
   describe("Audio Warnings", () => {
     it("should play 10s warning sound when crossing warning threshold", () => {
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useCombatTimer({
           initialTime: 11,
           isPaused: false,
@@ -327,7 +327,7 @@ describe("useCombatTimer", () => {
     });
 
     it("should play 5s urgent warning sound when crossing urgent threshold", () => {
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useCombatTimer({
           initialTime: 6,
           isPaused: false,
@@ -356,7 +356,7 @@ describe("useCombatTimer", () => {
       // Set audio to not ready
       mockIsAudioReady = false;
 
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useCombatTimer({
           initialTime: 6,
           isPaused: false,
@@ -379,7 +379,7 @@ describe("useCombatTimer", () => {
     });
 
     it("should not play audio when paused during threshold crossing", () => {
-      const { result, rerender } = renderHook(
+      const { rerender } = renderHook(
         ({ isPaused }) =>
           useCombatTimer({
             initialTime: 11,
@@ -408,7 +408,7 @@ describe("useCombatTimer", () => {
     });
 
     it("should play warning sound only once per threshold", () => {
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useCombatTimer({
           initialTime: 11,
           isPaused: false,

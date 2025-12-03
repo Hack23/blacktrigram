@@ -141,23 +141,26 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
       return;
     }
 
+    // Track start time for precise elapsed time calculation
+    const startTimeRef = Date.now();
+    const startingTimeRemaining = timeRemaining;
+
     // Start interval
     intervalRef.current = setInterval(() => {
-      setTimeRemaining((prev) => {
-        const next = Math.max(0, prev - 0.1); // Update every 100ms for smooth display
+      const elapsed = (Date.now() - startTimeRef) / 1000;
+      const next = Math.max(0, startingTimeRemaining - elapsed);
 
-        // Check if time just reached 0
-        if (next === 0 && prev > 0) {
-          setIsTimeUp(true);
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-          onTimeUp();
+      setTimeRemaining(next);
+
+      // Check if time just reached 0
+      if (next === 0 && !isTimeUp) {
+        setIsTimeUp(true);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
         }
-
-        return next;
-      });
+        onTimeUp();
+      }
     }, 100);
 
     return () => {
@@ -166,7 +169,7 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
         intervalRef.current = null;
       }
     };
-  }, [isPaused, isTimeUp, onTimeUp]);
+  }, [isPaused, isTimeUp, onTimeUp, timeRemaining]);
 
   // Warning level calculation
   const warningLevel = getWarningLevel(

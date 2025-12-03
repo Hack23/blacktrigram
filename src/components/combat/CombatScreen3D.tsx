@@ -329,7 +329,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [combatState.roundEnded, combatActions, startTransition, addCombatMessage, currentRound]);
 
   const timerState = useCombatTimer({
-    initialTime: timeRemaining,
+    initialTime: Math.max(0, timeRemaining), // Ensure non-negative
     isPaused: isPaused || !combatState.roundStarted || combatState.roundEnded || !matchCountdownComplete || showRoundStart,
     onTimeUp: handleTimeUp,
     warningThreshold: 10,
