@@ -296,6 +296,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRef.current = validPlayers;
   }, [validPlayers]);
 
+  // Use refs for stable access to startTransition and currentRound
+  const startTransitionRef = useRef(startTransition);
+  const currentRoundRef = useRef(currentRound);
+  useEffect(() => {
+    startTransitionRef.current = startTransition;
+    currentRoundRef.current = currentRound;
+  }, [startTransition, currentRound]);
+
   // Combat messages
   const addCombatMessage = useCallback(
     (korean: string, english: string) => {
@@ -312,21 +320,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setRoundEnded(true);
       addCombatMessage("시간 종료!", "Time's Up!");
       
-      // Use ref to get latest player health without dependency issues
+      // Use refs to get latest values without dependency issues
       const currentPlayers = validPlayersRef.current;
       const player1Health = currentPlayers[0].health;
       const player2Health = currentPlayers[1].health;
       
       if (player1Health > player2Health) {
-        startTransition(currentPlayers[0], currentRound); // Player 1 wins round
+        startTransitionRef.current(currentPlayers[0], currentRoundRef.current); // Player 1 wins round
       } else if (player2Health > player1Health) {
-        startTransition(currentPlayers[1], currentRound); // Player 2 wins round
+        startTransitionRef.current(currentPlayers[1], currentRoundRef.current); // Player 2 wins round
       } else {
         // Tie - no winner for this round
-        startTransition(null, currentRound);
+        startTransitionRef.current(null, currentRoundRef.current);
       }
     }
-  }, [combatState.roundEnded, combatActions, startTransition, addCombatMessage, currentRound]);
+  }, [combatState.roundEnded, combatActions, addCombatMessage]);
 
   const timerState = useCombatTimer({
     initialTime: Math.max(0, timeRemaining), // Ensure non-negative

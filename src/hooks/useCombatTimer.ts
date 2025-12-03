@@ -169,7 +169,7 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
         intervalRef.current = null;
       }
     };
-  }, [isPaused, isTimeUp, onTimeUp, timeRemaining]);
+  }, [isPaused, isTimeUp, onTimeUp]);
 
   // Warning level calculation
   const warningLevel = getWarningLevel(
@@ -204,15 +204,15 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
       audio.playSFX("attack_heavy"); // Placeholder - will be timer_warning_5s
       lastWarningRef.current = "urgent";
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     warningLevel,
     timeRemaining,
     audio.isAudioReady,
-    audio.playSFX,
     isPaused,
     warningThreshold,
     urgentThreshold,
-  ]);
+  ]); // audio.playSFX is stable after initialization, omitted to prevent unnecessary re-renders
 
   // Format time for display
   const formattedTime = formatTime(timeRemaining);
