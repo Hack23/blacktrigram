@@ -56,7 +56,7 @@
  * @category Vital Point System
  * @korean 급소시스템
  */
-import { Position, VitalPointSeverity } from "../types/common";
+import { PlayerArchetype, Position, VitalPointSeverity } from "../types/common";
 import { VitalPoint, VitalPointHitResult } from "./vitalpoint/types";
 import { VITAL_POINTS_DATA } from "./vitalpoint/VitalPointsData";
 import { 
@@ -65,6 +65,7 @@ import {
 } from "./vitalpoint/KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./vitalpoint/MeridianVitalPointMapping";
 import { StatusEffect } from "./types";
+import { convertToStatusEffect } from "./EffectCalculator";
 
 /**
  * Amount of meridian disruption added per vital point hit (15%)
@@ -176,6 +177,8 @@ export class VitalPointSystem {
    * damage and effects based on accuracy, severity, and meridian flow.
    * Supports both targeted strikes (specific vital point ID) and proximity-based detection.
    * 
+   * Enhanced with archetype-specific modifiers for realistic combat simulation.
+   * 
    * ## Hit Detection Algorithm
    * 
    * 1. If targetedVitalPointId provided, validate that specific point
@@ -184,12 +187,15 @@ export class VitalPointSystem {
    * 4. Apply accuracy falloff based on distance (max 50px)
    * 5. Calculate meridian flow bonus based on time of day
    * 6. Apply meridian disruption if applicable
-   * 7. Return hit result with damage multipliers and effects
+   * 7. Apply archetype offensive/defensive modifiers
+   * 8. Return hit result with damage multipliers and effects
    * 
    * @param targetPosition - Position where strike lands
    * @param _hitBox - Size of hit box (currently unused, reserved for future)
    * @param targetedVitalPointId - Optional specific vital point being targeted
    * @param hour - Optional hour of day (0-23) for meridian flow calculation
+   * @param attackerArchetype - Optional attacker's archetype (default: MUSA)
+   * @param defenderArchetype - Optional defender's archetype (default: MUSA)
    * @returns Hit result with damage, effects, severity, and meridian multiplier
    * 
    * @example
@@ -200,17 +206,15 @@ export class VitalPointSystem {
    *   { width: 10, height: 10 }
    * );
    * 
-   * // Targeted strike at temple (태양혈) at 2 AM (Liver peak time)
+   * // Targeted strike with archetype modifiers
    * const result2 = vitalPointSystem.processHit(
    *   { x: 100, y: 50 },
    *   { width: 10, height: 10 },
    *   "head_temple",
-   *   2 // Liver meridian peak hour
+   *   2, // Liver meridian peak hour
+   *   PlayerArchetype.AMSALJA, // Assassin attacker (+30% effect)
+   *   PlayerArchetype.MUSA // Warrior defender (+20% resistance)
    * );
-   * 
-   * if (result2.meridianMultiplier && result2.meridianMultiplier > 1.0) {
-   *   console.log("Peak meridian hour bonus applied!");
-   * }
    * ```
    * 
    * @public
@@ -220,16 +224,26 @@ export class VitalPointSystem {
     targetPosition: Position,
     _hitBox: { width: number; height: number }, // Prefixed with underscore to indicate intentionally unused
     targetedVitalPointId?: string | null,
-    hour?: number
+    hour?: number,
+    attackerArchetype?: PlayerArchetype,
+    defenderArchetype?: PlayerArchetype
   ): VitalPointHitResult {
     // Use provided hour or current system hour
     const effectiveHour = hour ?? this.currentHour;
+    const effectiveAttackerArchetype = attackerArchetype ?? PlayerArchetype.MUSA;
+    const effectiveDefenderArchetype = defenderArchetype ?? PlayerArchetype.MUSA;
 
     // If a specific vital point is targeted, check that one
     if (targetedVitalPointId) {
       const targetVitalPoint = this.getVitalPointById(targetedVitalPointId);
       if (targetVitalPoint) {
-        return this.calculateVitalPointHit(targetVitalPoint, targetPosition, effectiveHour);
+        return this.calculateVitalPointHit(
+          targetVitalPoint,
+          targetPosition,
+          effectiveHour,
+          effectiveAttackerArchetype,
+          effectiveDefenderArchetype
+        );
       }
     }
 
@@ -252,7 +266,13 @@ export class VitalPointSystem {
     const maxHitDistance = 50; // pixels
 
     if (distance <= maxHitDistance) {
-      return this.calculateVitalPointHit(closestVitalPoint, targetPosition, effectiveHour);
+      return this.calculateVitalPointHit(
+        closestVitalPoint,
+        targetPosition,
+        effectiveHour,
+        effectiveAttackerArchetype,
+        effectiveDefenderArchetype
+      );
     }
 
     return {
@@ -425,9 +445,17 @@ export class VitalPointSystem {
    * 
    * **Korean**: 급소타격결과계산
    * 
+   * Enhanced with comprehensive effect calculation including:
+   * - Duration based on accuracy, severity, and archetype modifiers
+   * - Intensity scaling with hit accuracy
+   * - Critical hit bonuses for accuracy >= 0.9
+   * - Archetype offensive/defensive modifiers
+   * 
    * @param vitalPoint - Vital point being struck
    * @param hitPosition - Exact position of strike
    * @param hour - Hour of day for meridian flow calculation
+   * @param attackerArchetype - Attacker's archetype (default: MUSA)
+   * @param defenderArchetype - Defender's archetype (default: MUSA)
    * @returns Hit result with calculated damage, accuracy, and meridian bonuses
    * 
    * @private
@@ -436,11 +464,16 @@ export class VitalPointSystem {
   private calculateVitalPointHit(
     vitalPoint: VitalPoint,
     hitPosition: Position,
-    hour: number
+    hour: number,
+    attackerArchetype: PlayerArchetype = PlayerArchetype.MUSA,
+    defenderArchetype: PlayerArchetype = PlayerArchetype.MUSA
   ): VitalPointHitResult {
     const distance = this.calculateDistance(hitPosition, vitalPoint.position);
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
     const now = Date.now(); // Single timestamp for all effects
+
+    // Calculate hit accuracy (0-1 scale based on distance)
+    const accuracy = Math.max(0, 1 - distance / 50);
 
     // Get meridians for this vital point
     const meridians = getMeridiansForVitalPoint(vitalPoint.id);
@@ -470,18 +503,18 @@ export class VitalPointSystem {
     // Apply meridian multiplier to damage
     const finalDamage = Math.floor(baseDamage * meridianMultiplier);
 
-    // Convert VitalPointEffect to StatusEffect (using shared timestamp)
-    const vitalPointStatusEffects: StatusEffect[] = vitalPoint.effects.map(effect => ({
-      id: effect.id,
-      type: effect.type,
-      intensity: effect.intensity,
-      duration: effect.duration,
-      description: effect.description,
-      stackable: effect.stackable,
-      source: effect.source ?? "vital_point_system",
-      startTime: now,
-      endTime: now + effect.duration,
-    }));
+    // Convert VitalPointEffect to StatusEffect with comprehensive calculations
+    const vitalPointStatusEffects: StatusEffect[] = vitalPoint.effects.map(effect => 
+      convertToStatusEffect(
+        effect,
+        accuracy,
+        vitalPoint.severity,
+        attackerArchetype,
+        defenderArchetype,
+        vitalPoint.id,
+        now
+      )
+    );
 
     // Combine vital point effects with meridian effects
     const combinedEffects = [
@@ -495,7 +528,7 @@ export class VitalPointSystem {
       damage: finalDamage,
       effects: combinedEffects,
       severity: vitalPoint.severity,
-      accuracy: Math.max(0, 1 - distance / 50),
+      accuracy,
       meridianMultiplier,
       meridianEffects: allMeridianEffects,
     };
