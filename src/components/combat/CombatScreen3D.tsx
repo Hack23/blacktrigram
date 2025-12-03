@@ -290,6 +290,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     ];
   }, [players, playerPositions]);
 
+  // Use ref to access latest player health without causing re-renders
+  const validPlayersRef = useRef<[PlayerState, PlayerState]>(validPlayers);
+  useEffect(() => {
+    validPlayersRef.current = validPlayers;
+  }, [validPlayers]);
+
   // Combat messages
   const addCombatMessage = useCallback(
     (korean: string, english: string) => {
@@ -306,20 +312,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setRoundEnded(true);
       addCombatMessage("시간 종료!", "Time's Up!");
       
-      // Determine winner based on remaining health
-      const player1Health = validPlayers[0].health;
-      const player2Health = validPlayers[1].health;
+      // Use ref to get latest player health without dependency issues
+      const currentPlayers = validPlayersRef.current;
+      const player1Health = currentPlayers[0].health;
+      const player2Health = currentPlayers[1].health;
       
       if (player1Health > player2Health) {
-        startTransition(validPlayers[0], currentRound); // Player 1 wins round
+        startTransition(currentPlayers[0], currentRound); // Player 1 wins round
       } else if (player2Health > player1Health) {
-        startTransition(validPlayers[1], currentRound); // Player 2 wins round
+        startTransition(currentPlayers[1], currentRound); // Player 2 wins round
       } else {
         // Tie - no winner for this round
         startTransition(null, currentRound);
       }
     }
-  }, [combatState.roundEnded, combatActions, validPlayers, startTransition, addCombatMessage, currentRound]);
+  }, [combatState.roundEnded, combatActions, startTransition, addCombatMessage, currentRound]);
 
   const timerState = useCombatTimer({
     initialTime: timeRemaining,

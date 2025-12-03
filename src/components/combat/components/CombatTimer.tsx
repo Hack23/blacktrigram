@@ -13,10 +13,39 @@
  * @category Combat UI
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
 import { TimerWarningLevel } from "../../../hooks/useCombatTimer";
+
+// Define CSS animation once at module level to avoid re-insertion
+const PULSE_ANIMATION_ID = "combat-timer-pulse-animation";
+let animationStyleInjected = false;
+
+const injectPulseAnimation = () => {
+  if (animationStyleInjected) return;
+  
+  const style = document.createElement("style");
+  style.id = PULSE_ANIMATION_ID;
+  style.textContent = `
+    @keyframes pulse {
+      0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(-50%) scale(1.05);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  animationStyleInjected = true;
+};
 
 /**
  * Props for the CombatTimer component
@@ -87,6 +116,11 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
   isMobile,
   style = {},
 }) => {
+  // Inject CSS animation once on mount
+  useEffect(() => {
+    injectPulseAnimation();
+  }, []);
+
   // Get timer color
   const timerColor = getTimerColor(warningLevel, isTimeUp);
   const timerColorCSS = useMemo(() => hexColorToCSS(timerColor), [timerColor]);
@@ -169,26 +203,6 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
         {/* Timer display */}
         <div>{displayText}</div>
       </div>
-
-      {/* CSS Animations */}
-      <style>
-        {`
-          @keyframes pulse {
-            0% {
-              transform: translateX(-50%) scale(1);
-              opacity: 1;
-            }
-            50% {
-              transform: translateX(-50%) scale(1.05);
-              opacity: 0.9;
-            }
-            100% {
-              transform: translateX(-50%) scale(1);
-              opacity: 1;
-            }
-          }
-        `}
-      </style>
     </>
   );
 };

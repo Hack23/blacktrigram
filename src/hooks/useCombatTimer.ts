@@ -177,7 +177,8 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
 
   // Audio warnings
   useEffect(() => {
-    if (!audio.isAudioReady || isPaused) return;
+    if (!audio.isAudioReady) return;
+    if (isPaused) return;
 
     // Play warning sound at threshold
     if (
@@ -203,7 +204,8 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
   }, [
     warningLevel,
     timeRemaining,
-    audio,
+    audio.isAudioReady,
+    audio.playSFX,
     isPaused,
     warningThreshold,
     urgentThreshold,

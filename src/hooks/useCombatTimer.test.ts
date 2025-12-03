@@ -6,17 +6,25 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useCombatTimer } from "./useCombatTimer";
 
-// Mock audio provider
+// Create a mock playSFX function that we can track
+const mockPlaySFX = vi.fn();
+let mockIsAudioReady = true;
+
+// Mock audio provider with controllable isAudioReady
 vi.mock("../audio/AudioProvider", () => ({
   useAudio: () => ({
-    isAudioReady: true,
-    playSFX: vi.fn(),
+    get isAudioReady() {
+      return mockIsAudioReady;
+    },
+    playSFX: mockPlaySFX,
   }),
 }));
 
 describe("useCombatTimer", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    mockPlaySFX.mockClear();
+    mockIsAudioReady = true; // Reset to true for each test
   });
 
   afterEach(() => {
@@ -292,5 +300,141 @@ describe("useCombatTimer", () => {
       })
     );
     expect(result4.current.formattedTime).toBe("09:59");
+  });
+
+  describe("Audio Warnings", () => {
+    it("should play 10s warning sound when crossing warning threshold", () => {
+      const { result } = renderHook(() =>
+        useCombatTimer({
+          initialTime: 11,
+          isPaused: false,
+          onTimeUp: vi.fn(),
+          warningThreshold: 10,
+          urgentThreshold: 5,
+        })
+      );
+
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+
+      // Advance time to cross warning threshold
+      act(() => {
+        vi.advanceTimersByTime(1500); // 1.5 seconds, should be at ~9.5s
+      });
+
+      // Should have played warning sound once
+      expect(mockPlaySFX).toHaveBeenCalledTimes(1);
+      expect(mockPlaySFX).toHaveBeenCalledWith("attack_light");
+    });
+
+    it("should play 5s urgent warning sound when crossing urgent threshold", () => {
+      const { result } = renderHook(() =>
+        useCombatTimer({
+          initialTime: 6,
+          isPaused: false,
+          onTimeUp: vi.fn(),
+          warningThreshold: 10,
+          urgentThreshold: 5,
+        })
+      );
+
+      // Should have played warning sound immediately (already below 10s)
+      expect(mockPlaySFX).toHaveBeenCalledTimes(1);
+      expect(mockPlaySFX).toHaveBeenCalledWith("attack_light");
+      mockPlaySFX.mockClear();
+
+      // Advance time to cross urgent threshold
+      act(() => {
+        vi.advanceTimersByTime(1500); // 1.5 seconds, should be at ~4.5s
+      });
+
+      // Should have played urgent sound once
+      expect(mockPlaySFX).toHaveBeenCalledTimes(1);
+      expect(mockPlaySFX).toHaveBeenCalledWith("attack_heavy");
+    });
+
+    it("should not play audio when isAudioReady is false", () => {
+      // Set audio to not ready
+      mockIsAudioReady = false;
+
+      const { result } = renderHook(() =>
+        useCombatTimer({
+          initialTime: 6,
+          isPaused: false,
+          onTimeUp: vi.fn(),
+          warningThreshold: 10,
+          urgentThreshold: 5,
+        })
+      );
+
+      // Should not play any audio when isAudioReady is false
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+
+      // Advance time to cross urgent threshold
+      act(() => {
+        vi.advanceTimersByTime(1500);
+      });
+
+      // Still should not play audio
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+    });
+
+    it("should not play audio when paused during threshold crossing", () => {
+      const { result, rerender } = renderHook(
+        ({ isPaused }) =>
+          useCombatTimer({
+            initialTime: 11,
+            isPaused,
+            onTimeUp: vi.fn(),
+            warningThreshold: 10,
+            urgentThreshold: 5,
+          }),
+        {
+          initialProps: { isPaused: false },
+        }
+      );
+
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+
+      // Pause before crossing threshold
+      rerender({ isPaused: true });
+
+      // Advance time while paused (should cross threshold)
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Should not play audio while paused
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+    });
+
+    it("should play warning sound only once per threshold", () => {
+      const { result } = renderHook(() =>
+        useCombatTimer({
+          initialTime: 11,
+          isPaused: false,
+          onTimeUp: vi.fn(),
+          warningThreshold: 10,
+          urgentThreshold: 5,
+        })
+      );
+
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+
+      // Cross warning threshold
+      act(() => {
+        vi.advanceTimersByTime(1500);
+      });
+
+      expect(mockPlaySFX).toHaveBeenCalledTimes(1);
+      mockPlaySFX.mockClear();
+
+      // Continue countdown but stay in warning range
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Should not play warning sound again while in same warning level
+      expect(mockPlaySFX).not.toHaveBeenCalled();
+    });
   });
 });
