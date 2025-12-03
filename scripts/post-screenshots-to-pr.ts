@@ -104,7 +104,9 @@ async function createPRComment(
     
     commentBody += `### 📊 Detailed Analysis\n\n`;
     commentBody += `<details>\n<summary>Click to expand full analysis report</summary>\n\n`;
-    commentBody += reportContent;
+    // Remove markdown image links from report content to avoid broken URLs in PR comments
+    const cleanedReport = reportContent.replace(/!\[([^\]]*)\]\([^)]+\)/g, '');
+    commentBody += cleanedReport;
     commentBody += `\n</details>\n\n`;
     
     // Add artifact download link
