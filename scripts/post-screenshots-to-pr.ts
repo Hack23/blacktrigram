@@ -13,7 +13,6 @@ import * as path from 'path';
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'screenshots');
 const REPORT_PATH = path.join(SCREENSHOTS_DIR, 'reports', 'ui-ux-analysis.md');
-const BOT_COMMENT_IDENTIFIER = '<!-- screenshot-analysis-bot-comment -->';
 const ARTIFACT_RETENTION_DAYS = 30;
 
 interface GitHubAPIConfig {
@@ -51,7 +50,7 @@ function getGitHubConfig(): GitHubAPIConfig {
   // Parse owner/repo from GITHUB_REPOSITORY or use defaults
   const repoEnv = process.env.GITHUB_REPOSITORY ?? 'Hack23/blacktrigram';
   const parts = repoEnv.split('/');
-  if (parts.length !== 2) {
+  if (parts.length !== 2 || !parts[0] || !parts[1]) {
     throw new Error(`Invalid GITHUB_REPOSITORY format: "${repoEnv}". Expected "owner/repo"`);
   }
   const [owner, repo] = parts;
@@ -85,8 +84,7 @@ async function createPRComment(
   
   try {
     // Build comment body with screenshot list and artifact links
-    let commentBody = `${BOT_COMMENT_IDENTIFIER}\n\n`;
-    commentBody += `## 📸 Automated UI/UX Screenshot Analysis\n\n`;
+    let commentBody = `## 📸 Automated UI/UX Screenshot Analysis\n\n`;
     commentBody += `This comment lists automated screenshots of all major screens in the application.\n\n`;
     
     if (screenshots.length > 0) {
@@ -105,16 +103,18 @@ async function createPRComment(
     commentBody += `### 📊 Detailed Analysis\n\n`;
     commentBody += `<details>\n<summary>Click to expand full analysis report</summary>\n\n`;
     // Remove markdown image links from report content to avoid broken URLs in PR comments
-    const cleanedReport = reportContent.replace(/!\[([^\]]*)\]\([^)]+\)/g, '');
+    const cleanedReport = reportContent.replace(/!\[(?:[^\]\\]|\\.)*\]\([^)]+\)/g, '');
     commentBody += cleanedReport;
     commentBody += `\n</details>\n\n`;
     
-    // Add artifact download link
+    // Add artifact download link or fallback message
     if (runId) {
       commentBody += `### 📦 Download Screenshots\n\n`;
       commentBody += `All screenshots are available as workflow artifacts. [Download screenshots from this workflow run](https://github.com/${owner}/${repo}/actions/runs/${runId})\n\n`;
       commentBody += `> **Note**: GitHub does not provide a public API for uploading images to PR comments. `;
       commentBody += `Screenshots are preserved as workflow artifacts for ${ARTIFACT_RETENTION_DAYS} days and can be downloaded from the link above.\n\n`;
+    } else {
+      commentBody += `> **Note**: No workflow run ID available. Screenshots are captured but download links cannot be generated. Run this script with GITHUB_RUN_ID environment variable to include download links.\n\n`;
     }
     
     commentBody += `---\n\n`;
@@ -125,17 +125,23 @@ async function createPRComment(
     
     console.log(`  📍 Creating new comment: ${createUrl}`);
     
-    const response = await fetch(createUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        body: commentBody,
-      }),
-    });
+    let response;
+    try {
+      response = await fetch(createUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          body: commentBody,
+        }),
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to connect to GitHub API: ${errorMessage}`);
+    }
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -191,7 +197,7 @@ async function main() {
     // We'll create a comment with artifact download links instead
     console.log('📦 Using artifact links for screenshots (GitHub does not provide upload API)\n');
     
-    const screenshotList: { filename: string }[] = screenshotPaths.map(p => ({
+    const screenshotList = screenshotPaths.map(p => ({
       filename: path.basename(p),
     }));
     
