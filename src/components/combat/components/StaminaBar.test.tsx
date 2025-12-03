@@ -37,6 +37,62 @@ describe("StaminaBar", () => {
     });
   });
 
+  describe("Accessibility", () => {
+    it("should have proper ARIA progressbar role", () => {
+      render(<StaminaBar {...defaultProps} current={45} max={50} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("role", "progressbar");
+    });
+
+    it("should have proper ARIA label with Korean and English text", () => {
+      render(<StaminaBar {...defaultProps} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-label", "기력 | Stamina");
+    });
+
+    it("should have correct aria-valuenow attribute", () => {
+      render(<StaminaBar {...defaultProps} current={45} max={50} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuenow", "45");
+    });
+
+    it("should have correct aria-valuemin attribute", () => {
+      render(<StaminaBar {...defaultProps} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuemin", "0");
+    });
+
+    it("should have correct aria-valuemax attribute", () => {
+      render(<StaminaBar {...defaultProps} current={45} max={50} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuemax", "50");
+    });
+
+    it("should have readable aria-valuetext", () => {
+      render(<StaminaBar {...defaultProps} current={45} max={50} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuetext", "45 out of 50");
+    });
+
+    it("should update ARIA attributes when stamina changes", () => {
+      const { rerender } = render(<StaminaBar {...defaultProps} current={45} max={50} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuenow", "45");
+      expect(bar).toHaveAttribute("aria-valuetext", "45 out of 50");
+
+      rerender(<StaminaBar {...defaultProps} current={25} max={50} />);
+      expect(bar).toHaveAttribute("aria-valuenow", "25");
+      expect(bar).toHaveAttribute("aria-valuetext", "25 out of 50");
+    });
+
+    it("should handle decimal stamina values in ARIA attributes", () => {
+      render(<StaminaBar {...defaultProps} current={45.3} max={50} />);
+      const bar = screen.getByTestId("stamina-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuenow", "46");
+      expect(bar).toHaveAttribute("aria-valuetext", "46 out of 50");
+    });
+  });
+
   describe("Segment Filling", () => {
     it("should fill all segments at 100% stamina", () => {
       const { container } = render(<StaminaBar {...defaultProps} current={50} max={50} />);

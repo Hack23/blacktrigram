@@ -37,6 +37,62 @@ describe("HealthBar", () => {
     });
   });
 
+  describe("Accessibility", () => {
+    it("should have proper ARIA progressbar role", () => {
+      render(<HealthBar {...defaultProps} current={85} max={100} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("role", "progressbar");
+    });
+
+    it("should have proper ARIA label with Korean and English text", () => {
+      render(<HealthBar {...defaultProps} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-label", "체력 | Health");
+    });
+
+    it("should have correct aria-valuenow attribute", () => {
+      render(<HealthBar {...defaultProps} current={85} max={100} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuenow", "85");
+    });
+
+    it("should have correct aria-valuemin attribute", () => {
+      render(<HealthBar {...defaultProps} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuemin", "0");
+    });
+
+    it("should have correct aria-valuemax attribute", () => {
+      render(<HealthBar {...defaultProps} current={85} max={100} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuemax", "100");
+    });
+
+    it("should have readable aria-valuetext", () => {
+      render(<HealthBar {...defaultProps} current={85} max={100} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuetext", "85 out of 100");
+    });
+
+    it("should update ARIA attributes when health changes", () => {
+      const { rerender } = render(<HealthBar {...defaultProps} current={85} max={100} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuenow", "85");
+      expect(bar).toHaveAttribute("aria-valuetext", "85 out of 100");
+
+      rerender(<HealthBar {...defaultProps} current={50} max={100} />);
+      expect(bar).toHaveAttribute("aria-valuenow", "50");
+      expect(bar).toHaveAttribute("aria-valuetext", "50 out of 100");
+    });
+
+    it("should handle decimal health values in ARIA attributes", () => {
+      render(<HealthBar {...defaultProps} current={85.7} max={100} />);
+      const bar = screen.getByTestId("health-bar-player-1");
+      expect(bar).toHaveAttribute("aria-valuenow", "86");
+      expect(bar).toHaveAttribute("aria-valuetext", "86 out of 100");
+    });
+  });
+
   describe("Health Percentage Colors", () => {
     it("should use green color for health >50%", () => {
       const { container } = render(<HealthBar {...defaultProps} current={60} max={100} />);
