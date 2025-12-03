@@ -28,6 +28,16 @@ interface UploadedImage {
   url: string;
 }
 
+interface GitHubUploadResponse {
+  url?: string;
+  browser_download_url?: string;
+}
+
+interface GitHubComment {
+  id: number;
+  body?: string;
+}
+
 /**
  * Get GitHub API configuration from environment
  */
@@ -65,7 +75,7 @@ async function uploadScreenshotToGitHub(
   config: GitHubAPIConfig,
   screenshotPath: string
 ): Promise<string> {
-  const { token, owner, repo, prNumber } = config;
+  const { token, owner, repo } = config;
   const filename = path.basename(screenshotPath);
   
   console.log(`  📤 Uploading ${filename}...`);
@@ -74,31 +84,33 @@ async function uploadScreenshotToGitHub(
     // Read file
     const fileBuffer = fs.readFileSync(screenshotPath);
     
-    // Create multipart form data boundary
+    // Sanitize filename to prevent header injection attacks
+    const safeFilename = filename.replace(/[^\w.-]/g, '_');
+    
+    // Create proper form data for GitHub's upload API
     const boundary = `----WebKitFormBoundary${Math.random().toString(36).substring(2)}`;
     
-    // Build multipart form data body
     const parts: Buffer[] = [];
-    
-    // Add file part
     parts.push(Buffer.from(`--${boundary}\r\n`));
-    parts.push(Buffer.from(`Content-Disposition: form-data; name="file"; filename="${filename}"\r\n`));
-    parts.push(Buffer.from('Content-Type: image/png\r\n\r\n'));
+    parts.push(Buffer.from(`Content-Disposition: form-data; name="file"; filename="${safeFilename}"\r\n`));
+    parts.push(Buffer.from(`Content-Type: image/png\r\n\r\n`));
     parts.push(fileBuffer);
-    parts.push(Buffer.from('\r\n'));
-    parts.push(Buffer.from(`--${boundary}--\r\n`));
+    parts.push(Buffer.from(`\r\n--${boundary}--\r\n`));
     
     const body = Buffer.concat(parts);
     
-    // Upload to GitHub using the issue/PR upload endpoint
-    // This endpoint is used by the web UI when drag-dropping images
-    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/issues/uploads`;
+    // GitHub's undocumented asset upload endpoint for issues/PRs
+    // This is the same endpoint used by the web UI when drag-dropping images
+    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/issues/assets`;
+    
+    console.log(`  📍 Uploading to: ${uploadUrl}`);
     
     const response = await fetch(uploadUrl, {
       method: 'POST',
       headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
         'Content-Type': `multipart/form-data; boundary=${boundary}`,
         'Content-Length': body.length.toString(),
       },
@@ -107,13 +119,20 @@ async function uploadScreenshotToGitHub(
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`  ❌ Upload API error: ${response.status} ${response.statusText}`);
+      console.error(`  Response: ${errorText}`);
       throw new Error(`Upload failed: ${response.status} ${response.statusText}\n${errorText}`);
     }
     
-    const result = await response.json();
+    const result = await response.json() as GitHubUploadResponse;
     console.log(`  ✅ Uploaded: ${filename}`);
+    console.log(`  📎 CDN URL: ${result.url ?? result.browser_download_url}`);
     
-    return result.url ?? result.browser_download_url;
+    const cdnUrl = result.url ?? result.browser_download_url;
+    if (!cdnUrl) {
+      throw new Error(`Upload succeeded but no URL returned for ${filename}`);
+    }
+    return cdnUrl;
     
   } catch (error) {
     console.warn(`  ⚠️ Failed to upload ${filename}:`, error);
@@ -147,10 +166,10 @@ async function findExistingBotComment(
       return null;
     }
     
-    const comments = await response.json();
+    const comments = await response.json() as GitHubComment[];
     
     // Find comment with our identifier
-    const botComment = comments.find((comment: { body: string }) => 
+    const botComment = comments.find((comment) => 
       comment.body?.includes(BOT_COMMENT_IDENTIFIER)
     );
     
@@ -196,6 +215,15 @@ async function createOrUpdatePRComment(
       for (let i = 0; i < uploadedImages.length; i += 4) {
         const row = uploadedImages.slice(i, i + 4);
         row.forEach(img => {
+          // Validate URL is from GitHub's CDN for security
+          const isValidGitHubUrl = img.url.startsWith('https://user-images.githubusercontent.com/') || 
+                                   img.url.startsWith('https://github.com/');
+          
+          if (!isValidGitHubUrl) {
+            console.warn(`Skipping potentially unsafe URL: ${img.url}`);
+            return;
+          }
+          
           commentBody += `<td width="25%"><img src="${img.url}" width="100%" /></td>\n`;
         });
         commentBody += `</tr>\n<tr>\n`;
@@ -341,7 +369,8 @@ async function main() {
             url,
           });
         } catch (error) {
-          console.error(`  ❌ Failed to upload ${path.basename(screenshotPath)}:`, error);
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          console.error(`  ❌ Failed to upload ${path.basename(screenshotPath)}: ${errorMessage}`);
           // Continue with other uploads
         }
       }
