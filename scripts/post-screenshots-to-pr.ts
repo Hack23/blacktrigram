@@ -14,6 +14,7 @@ import * as path from 'path';
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'screenshots');
 const REPORT_PATH = path.join(SCREENSHOTS_DIR, 'reports', 'ui-ux-analysis.md');
 const BOT_COMMENT_IDENTIFIER = '<!-- screenshot-analysis-bot-comment -->';
+const ARTIFACT_RETENTION_DAYS = 30;
 
 interface GitHubAPIConfig {
   readonly token: string;
@@ -25,11 +26,6 @@ interface GitHubAPIConfig {
 
 interface ScreenshotInfo {
   readonly filename: string;
-}
-
-interface GitHubComment {
-  readonly id: number;
-  readonly body?: string;
 }
 
 /**
@@ -46,6 +42,10 @@ function getGitHubConfig(): GitHubAPIConfig {
   
   if (!prNumber) {
     throw new Error('PR_NUMBER or GITHUB_PR_NUMBER environment variable is required');
+  }
+  
+  if (runId && !/^\d+$/.test(runId)) {
+    throw new Error(`Invalid GITHUB_RUN_ID format: "${runId}". Must be a numeric workflow run ID`);
   }
   
   // Parse owner/repo from GITHUB_REPOSITORY or use defaults
@@ -72,69 +72,22 @@ function getGitHubConfig(): GitHubAPIConfig {
 
 
 /**
- * Find existing bot comment on the PR
+ * Create PR comment with screenshot list and artifact links
  */
-async function findExistingBotComment(
-  config: GitHubAPIConfig
-): Promise<number | null> {
-  const { token, owner, repo, prNumber } = config;
-  
-  console.log('🔍 Checking for existing bot comment...');
-  
-  try {
-    const commentsUrl = `https://api.github.com/repos/${owner}/${repo}/issues/${prNumber}/comments`;
-    
-    const response = await fetch(commentsUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-      },
-    });
-    
-    if (!response.ok) {
-      console.warn('  ⚠️ Failed to fetch comments, will create new comment');
-      return null;
-    }
-    
-    const comments = await response.json() as GitHubComment[];
-    
-    // Find comment with our identifier
-    const botComment = comments.find((comment) => 
-      comment.body?.includes(BOT_COMMENT_IDENTIFIER)
-    );
-    
-    if (botComment) {
-      console.log(`  ✅ Found existing comment: #${botComment.id}`);
-      return botComment.id;
-    }
-    
-    console.log('  ℹ️ No existing comment found, will create new one');
-    return null;
-    
-  } catch (error) {
-    console.warn('  ⚠️ Error checking for existing comment:', error);
-    return null;
-  }
-}
-
-/**
- * Create or update PR comment with screenshot list and artifact links
- */
-async function createOrUpdatePRComment(
+async function createPRComment(
   config: GitHubAPIConfig,
   reportContent: string,
   screenshots: ScreenshotInfo[]
 ): Promise<void> {
   const { token, owner, repo, prNumber, runId } = config;
   
-  console.log('\n📝 Creating/updating PR comment...');
+  console.log('\n📝 Creating PR comment...');
   
   try {
     // Build comment body with screenshot list and artifact links
     let commentBody = `${BOT_COMMENT_IDENTIFIER}\n\n`;
     commentBody += `## 📸 Automated UI/UX Screenshot Analysis\n\n`;
-    commentBody += `This comment contains automated screenshots of all major screens in the application.\n\n`;
+    commentBody += `This comment lists automated screenshots of all major screens in the application.\n\n`;
     
     if (screenshots.length > 0) {
       commentBody += `### 📋 Screenshots Captured\n\n`;
@@ -159,70 +112,39 @@ async function createOrUpdatePRComment(
       commentBody += `### 📦 Download Screenshots\n\n`;
       commentBody += `All screenshots are available as workflow artifacts. [Download screenshots from this workflow run](https://github.com/${owner}/${repo}/actions/runs/${runId})\n\n`;
       commentBody += `> **Note**: GitHub does not provide a public API for uploading images to PR comments. `;
-      commentBody += `Screenshots are preserved as workflow artifacts for ${30} days and can be downloaded from the link above.\n\n`;
+      commentBody += `Screenshots are preserved as workflow artifacts for ${ARTIFACT_RETENTION_DAYS} days and can be downloaded from the link above.\n\n`;
     }
     
     commentBody += `---\n\n`;
     commentBody += `🤖 *This analysis was automatically generated using Playwright automation*\n`;
     
-    // Check for existing comment
-    const existingCommentId = await findExistingBotComment(config);
+    // Always create new comment
+    const createUrl = `https://api.github.com/repos/${owner}/${repo}/issues/${prNumber}/comments`;
     
-    if (existingCommentId) {
-      // Update existing comment
-      const updateUrl = `https://api.github.com/repos/${owner}/${repo}/issues/comments/${existingCommentId}`;
-      
-      console.log(`  📍 Updating comment: ${updateUrl}`);
-      
-      const response = await fetch(updateUrl, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `token ${token}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          body: commentBody,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update comment: ${response.status} ${response.statusText}\n${errorText}`);
-      }
-      
-      const result = await response.json();
-      console.log(`  ✅ Comment updated: ${result.html_url}`);
-      
-    } else {
-      // Create new comment
-      const createUrl = `https://api.github.com/repos/${owner}/${repo}/issues/${prNumber}/comments`;
-      
-      console.log(`  📍 Creating new comment: ${createUrl}`);
-      
-      const response = await fetch(createUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${token}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          body: commentBody,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to create comment: ${response.status} ${response.statusText}\n${errorText}`);
-      }
-      
-      const result = await response.json();
-      console.log(`  ✅ Comment created: ${result.html_url}`);
+    console.log(`  📍 Creating new comment: ${createUrl}`);
+    
+    const response = await fetch(createUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        body: commentBody,
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to create comment: ${response.status} ${response.statusText}\n${errorText}`);
     }
     
+    const result = await response.json();
+    console.log(`  ✅ Comment created: ${result.html_url}`);
+    
   } catch (error) {
-    console.error('  ❌ Failed to create/update PR comment:', error);
+    console.error('  ❌ Failed to create PR comment:', error);
     throw error;
   }
 }
@@ -271,8 +193,8 @@ async function main() {
       filename: path.basename(p),
     }));
     
-    // Create or update PR comment with artifact links
-    await createOrUpdatePRComment(config, reportContent, screenshotList);
+    // Create PR comment with artifact links
+    await createPRComment(config, reportContent, screenshotList);
     
     console.log('\n✅ Successfully posted screenshots to PR!');
     
