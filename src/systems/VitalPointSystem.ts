@@ -56,12 +56,13 @@
  * @category Vital Point System
  * @korean 급소시스템
  */
-import { PlayerArchetype, Position, VitalPointSeverity } from "../types/common";
+import { PlayerArchetype, Position, TrigramStance, VitalPointSeverity } from "../types/common";
 import { VitalPoint, VitalPointHitResult } from "./vitalpoint/types";
 import { VITAL_POINTS_DATA } from "./vitalpoint/VitalPointsData";
 import { 
   calculateMeridianFlow, 
-  generateMeridianEffects 
+  generateMeridianEffects,
+  calculateEnhancedVulnerability 
 } from "./vitalpoint/KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./vitalpoint/MeridianVitalPointMapping";
 import { StatusEffect } from "./types";
@@ -188,7 +189,8 @@ export class VitalPointSystem {
    * 5. Calculate meridian flow bonus based on time of day
    * 6. Apply meridian disruption if applicable
    * 7. Apply archetype offensive/defensive modifiers
-   * 8. Return hit result with damage multipliers and effects
+   * 8. Apply enhanced vulnerability with stance and anatomical zone
+   * 9. Return hit result with damage multipliers and effects
    * 
    * @param targetPosition - Position where strike lands
    * @param _hitBox - Size of hit box (currently unused, reserved for future)
@@ -196,6 +198,7 @@ export class VitalPointSystem {
    * @param hour - Optional hour of day (0-23) for meridian flow calculation
    * @param attackerArchetype - Optional attacker's archetype (default: MUSA)
    * @param defenderArchetype - Optional defender's archetype (default: MUSA)
+   * @param defenderStance - Optional defender's trigram stance (default: GEON)
    * @returns Hit result with damage, effects, severity, and meridian multiplier
    * 
    * @example
@@ -206,14 +209,15 @@ export class VitalPointSystem {
    *   { width: 10, height: 10 }
    * );
    * 
-   * // Targeted strike with archetype modifiers
+   * // Targeted strike with archetype modifiers and stance
    * const result2 = vitalPointSystem.processHit(
    *   { x: 100, y: 50 },
    *   { width: 10, height: 10 },
    *   "head_temple",
    *   2, // Liver meridian peak hour
    *   PlayerArchetype.AMSALJA, // Assassin attacker (+30% effect)
-   *   PlayerArchetype.MUSA // Warrior defender (+20% resistance)
+   *   PlayerArchetype.MUSA, // Warrior defender (+20% resistance)
+   *   TrigramStance.GEON // Heaven stance (exposes head +20%)
    * );
    * ```
    * 
@@ -226,12 +230,14 @@ export class VitalPointSystem {
     targetedVitalPointId?: string | null,
     hour?: number,
     attackerArchetype?: PlayerArchetype,
-    defenderArchetype?: PlayerArchetype
+    defenderArchetype?: PlayerArchetype,
+    defenderStance?: TrigramStance
   ): VitalPointHitResult {
     // Use provided hour or current system hour
     const effectiveHour = hour ?? this.currentHour;
     const effectiveAttackerArchetype = attackerArchetype ?? PlayerArchetype.MUSA;
     const effectiveDefenderArchetype = defenderArchetype ?? PlayerArchetype.MUSA;
+    const effectiveDefenderStance = defenderStance ?? TrigramStance.GEON;
 
     // If a specific vital point is targeted, check that one
     if (targetedVitalPointId) {
@@ -242,7 +248,8 @@ export class VitalPointSystem {
           targetPosition,
           effectiveHour,
           effectiveAttackerArchetype,
-          effectiveDefenderArchetype
+          effectiveDefenderArchetype,
+          effectiveDefenderStance
         );
       }
     }
@@ -271,7 +278,8 @@ export class VitalPointSystem {
         targetPosition,
         effectiveHour,
         effectiveAttackerArchetype,
-        effectiveDefenderArchetype
+        effectiveDefenderArchetype,
+        effectiveDefenderStance
       );
     }
 
@@ -466,7 +474,8 @@ export class VitalPointSystem {
     hitPosition: Position,
     hour: number,
     attackerArchetype: PlayerArchetype = PlayerArchetype.MUSA,
-    defenderArchetype: PlayerArchetype = PlayerArchetype.MUSA
+    defenderArchetype: PlayerArchetype = PlayerArchetype.MUSA,
+    defenderStance: TrigramStance = TrigramStance.GEON
   ): VitalPointHitResult {
     const distance = this.calculateDistance(hitPosition, vitalPoint.position);
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
@@ -500,8 +509,23 @@ export class VitalPointSystem {
       });
     }
 
-    // Apply meridian multiplier to damage
-    const finalDamage = Math.floor(baseDamage * meridianMultiplier);
+    // Calculate enhanced vulnerability based on anatomical zone, stance, meridian flow, and time
+    const meridianStates: Record<string, number> = {};
+    meridians.forEach(meridianId => {
+      // Convert disruption (0=normal, 1=blocked) to flow state (1=normal, 0=blocked)
+      const disruption = this.getMeridianDisruption(meridianId);
+      meridianStates[meridianId] = 1.0 - disruption;
+    });
+
+    const vulnerabilityMultiplier = calculateEnhancedVulnerability(
+      vitalPoint.position,
+      hour,
+      defenderStance,
+      meridianStates
+    );
+
+    // Apply all multipliers to damage: base × meridian flow × vulnerability
+    const finalDamage = Math.floor(baseDamage * meridianMultiplier * vulnerabilityMultiplier);
 
     // Convert VitalPointEffect to StatusEffect with comprehensive calculations
     const vitalPointStatusEffects: StatusEffect[] = vitalPoint.effects.map(effect => 
@@ -531,6 +555,7 @@ export class VitalPointSystem {
       accuracy,
       meridianMultiplier,
       meridianEffects: allMeridianEffects,
+      multiplier: vulnerabilityMultiplier,
     };
   }
 
