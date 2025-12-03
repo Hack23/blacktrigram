@@ -1,0 +1,322 @@
+/**
+ * Custom hook for managing technique selection and execution.
+ * 
+ * **Korean**: 기술 선택 관리 (Technique Selection Management)
+ * 
+ * Handles technique selection state, keyboard shortcuts, cooldown tracking,
+ * and validation of technique execution based on player resources and stance.
+ * 
+ * @module hooks/useTechniqueSelection
+ * @category Combat Hooks
+ * @korean 기술선택훅
+ */
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Technique, TechniqueKey, TechniqueCooldown, TechniqueValidation } from "../types";
+import { getTechniquesForArchetype } from "../data/techniques";
+import { PlayerState } from "../systems/player";
+
+/**
+ * Configuration for technique selection hook.
+ */
+export interface UseTechniqueSelectionConfig {
+  /** Player state with resources and stance */
+  readonly player: PlayerState;
+  
+  /** Whether technique selection is enabled */
+  readonly enabled?: boolean;
+  
+  /** Callback when technique is selected */
+  readonly onTechniqueSelected?: (technique: Technique) => void;
+  
+  /** Callback when technique execution is attempted */
+  readonly onTechniqueExecute?: (technique: Technique) => void;
+}
+
+/**
+ * Technique selection state and actions.
+ */
+export interface UseTechniqueSelectionResult {
+  /** Available techniques for player archetype */
+  readonly availableTechniques: readonly Technique[];
+  
+  /** Currently selected technique index */
+  readonly selectedIndex: number;
+  
+  /** Active cooldowns for techniques */
+  readonly activeCooldowns: readonly TechniqueCooldown[];
+  
+  /** Select technique by index */
+  readonly selectTechnique: (index: number) => void;
+  
+  /** Execute currently selected technique */
+  readonly executeTechnique: () => void;
+  
+  /** Check if technique can be executed */
+  readonly validateTechnique: (technique: Technique) => TechniqueValidation;
+  
+  /** Check if technique is on cooldown */
+  readonly isOnCooldown: (techniqueId: string) => boolean;
+  
+  /** Get remaining cooldown time in ms */
+  readonly getRemainingCooldown: (techniqueId: string) => number;
+  
+  /** Check if player has sufficient resources */
+  readonly hasResources: (technique: Technique) => boolean;
+}
+
+/**
+ * Custom hook for managing technique selection and execution.
+ * 
+ * @param config - Configuration options
+ * @returns Technique selection state and actions
+ * 
+ * @example
+ * ```typescript
+ * const techniqueSelection = useTechniqueSelection({
+ *   player: playerState,
+ *   enabled: !isPaused && combatActive,
+ *   onTechniqueExecute: (technique) => {
+ *     // Execute technique logic
+ *     executeCombatTechnique(playerState, opponent, technique);
+ *   }
+ * });
+ * ```
+ * 
+ * @public
+ */
+export function useTechniqueSelection(
+  config: UseTechniqueSelectionConfig
+): UseTechniqueSelectionResult {
+  const { player, enabled = true, onTechniqueSelected, onTechniqueExecute } = config;
+  
+  // Get available techniques for player archetype
+  const availableTechniques = useMemo(
+    () => getTechniquesForArchetype(player.archetype),
+    [player.archetype]
+  );
+  
+  // Selected technique state
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  
+  // Cooldown tracking
+  const [activeCooldowns, setActiveCooldowns] = useState<TechniqueCooldown[]>([]);
+  
+  // Ref for cleanup
+  const cooldownUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Update cooldowns every 100ms
+  useEffect(() => {
+    if (activeCooldowns.length === 0) return;
+    
+    cooldownUpdateIntervalRef.current = setInterval(() => {
+      const now = Date.now();
+      setActiveCooldowns((prev) => {
+        return prev
+          .map((cd) => ({
+            ...cd,
+            remaining: Math.max(0, cd.startTime + cd.duration - now),
+          }))
+          .filter((cd) => cd.remaining > 0);
+      });
+    }, 100);
+    
+    return () => {
+      if (cooldownUpdateIntervalRef.current) {
+        clearInterval(cooldownUpdateIntervalRef.current);
+      }
+    };
+  }, [activeCooldowns.length]);
+  
+  // Check if technique is on cooldown
+  const isOnCooldown = useCallback(
+    (techniqueId: string): boolean => {
+      return activeCooldowns.some(
+        (cd) => cd.techniqueId === techniqueId && cd.remaining > 0
+      );
+    },
+    [activeCooldowns]
+  );
+  
+  // Get remaining cooldown time
+  const getRemainingCooldown = useCallback(
+    (techniqueId: string): number => {
+      const cooldown = activeCooldowns.find((cd) => cd.techniqueId === techniqueId);
+      return cooldown?.remaining ?? 0;
+    },
+    [activeCooldowns]
+  );
+  
+  // Check if player has sufficient resources
+  const hasResources = useCallback(
+    (technique: Technique): boolean => {
+      return (
+        player.stamina >= technique.staminaCost &&
+        player.ki >= technique.kiCost
+      );
+    },
+    [player.stamina, player.ki]
+  );
+  
+  // Validate technique execution
+  const validateTechnique = useCallback(
+    (technique: Technique): TechniqueValidation => {
+      // Check stamina
+      if (player.stamina < technique.staminaCost) {
+        return {
+          canExecute: false,
+          reason: "Insufficient stamina",
+          insufficientStamina: true,
+        };
+      }
+      
+      // Check Ki
+      if (player.ki < technique.kiCost) {
+        return {
+          canExecute: false,
+          reason: "Insufficient Ki",
+          insufficientKi: true,
+        };
+      }
+      
+      // Check cooldown
+      if (isOnCooldown(technique.id)) {
+        return {
+          canExecute: false,
+          reason: "Technique on cooldown",
+          onCooldown: true,
+        };
+      }
+      
+      // Check required stance
+      if (
+        technique.requiredStance &&
+        player.currentStance !== technique.requiredStance
+      ) {
+        return {
+          canExecute: false,
+          reason: `Requires ${technique.requiredStance} stance`,
+          wrongStance: true,
+        };
+      }
+      
+      return {
+        canExecute: true,
+      };
+    },
+    [player.stamina, player.ki, player.currentStance, isOnCooldown]
+  );
+  
+  // Select technique by index
+  const selectTechnique = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= availableTechniques.length) return;
+      if (!enabled) return;
+      
+      setSelectedIndex(index);
+      const technique = availableTechniques[index];
+      onTechniqueSelected?.(technique);
+    },
+    [availableTechniques, enabled, onTechniqueSelected]
+  );
+  
+  // Execute currently selected technique
+  const executeTechnique = useCallback(() => {
+    if (!enabled) return;
+    
+    const technique = availableTechniques[selectedIndex];
+    if (!technique) return;
+    
+    // Validate technique execution
+    const validation = validateTechnique(technique);
+    if (!validation.canExecute) {
+      console.warn(`Cannot execute technique: ${validation.reason}`);
+      return;
+    }
+    
+    // Start cooldown
+    const now = Date.now();
+    const cooldown: TechniqueCooldown = {
+      techniqueId: technique.id,
+      startTime: now,
+      duration: technique.cooldown,
+      remaining: technique.cooldown,
+    };
+    setActiveCooldowns((prev) => [...prev, cooldown]);
+    
+    // Execute technique
+    onTechniqueExecute?.(technique);
+  }, [
+    enabled,
+    availableTechniques,
+    selectedIndex,
+    validateTechnique,
+    onTechniqueExecute,
+  ]);
+  
+  // Keyboard shortcut handler
+  useEffect(() => {
+    if (!enabled) return;
+    
+    const handleKeyPress = (event: KeyboardEvent) => {
+      const key = event.key.toUpperCase() as TechniqueKey;
+      
+      // Map keys to technique indices
+      const keyMap: Record<TechniqueKey, number> = {
+        Q: 0,
+        W: 1,
+        E: 2,
+        R: 3,
+      };
+      
+      const index = keyMap[key];
+      if (index !== undefined && index < availableTechniques.length) {
+        const technique = availableTechniques[index];
+        
+        // Execute technique directly on key press
+        const validation = validateTechnique(technique);
+        if (validation.canExecute) {
+          selectTechnique(index);
+          
+          // Start cooldown
+          const now = Date.now();
+          const cooldown: TechniqueCooldown = {
+            techniqueId: technique.id,
+            startTime: now,
+            duration: technique.cooldown,
+            remaining: technique.cooldown,
+          };
+          setActiveCooldowns((prev) => [...prev, cooldown]);
+          
+          // Execute technique
+          onTechniqueExecute?.(technique);
+        }
+        
+        event.preventDefault();
+      }
+    };
+    
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [
+    enabled,
+    availableTechniques,
+    validateTechnique,
+    selectTechnique,
+    onTechniqueExecute,
+  ]);
+  
+  return {
+    availableTechniques,
+    selectedIndex,
+    activeCooldowns,
+    selectTechnique,
+    executeTechnique,
+    validateTechnique,
+    isOnCooldown,
+    getRemainingCooldown,
+    hasResources,
+  };
+}
+
+export default useTechniqueSelection;
