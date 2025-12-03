@@ -238,15 +238,20 @@ export function getEffectModifiers(player: PlayerState): {
   let kiRegen = 1.0;
 
   for (const effect of player.statusEffects) {
-    switch (effect.type) {
-      case VitalPointEffectType.UNCONSCIOUSNESS:
-        // Cannot act at all
-        attackPower = 0;
-        defense = 0;
-        speed = 0;
-        technique = 0;
-        break;
+    // UNCONSCIOUSNESS takes precedence - early return with complete incapacitation
+    if (effect.type === VitalPointEffectType.UNCONSCIOUSNESS) {
+      return {
+        attackPower: 0,
+        defense: 0,
+        speed: 0,
+        technique: 0,
+        staminaRegen: 0,
+        kiRegen: 0,
+      };
+    }
 
+    // Apply other effect modifiers multiplicatively
+    switch (effect.type) {
       case VitalPointEffectType.PARALYSIS:
         // Severe movement and action impairment
         attackPower *= 0.3;

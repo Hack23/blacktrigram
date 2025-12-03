@@ -90,6 +90,13 @@ const ARCHETYPE_OFFENSIVE: Record<PlayerArchetype, number> = {
 };
 
 /**
+ * Default effect duration in milliseconds if not specified.
+ * 
+ * **Korean**: 기본 효과 지속시간 (Default Effect Duration)
+ */
+const DEFAULT_EFFECT_DURATION = 2000;
+
+/**
  * Calculates the duration of a status effect based on multiple factors.
  * 
  * **Korean**: 효과 지속시간 계산 (Calculate Effect Duration)
@@ -133,7 +140,7 @@ export function calculateEffectDuration(
   attackerArchetype: PlayerArchetype,
   defenderArchetype: PlayerArchetype
 ): number {
-  const baseDuration = effect.duration || 2000;
+  const baseDuration = effect.duration || DEFAULT_EFFECT_DURATION;
 
   // Accuracy bonus: 0.75x at 0 accuracy, 1.0x at 0.5, 1.25x at 1.0
   const accuracyBonus = 1 + (accuracy - 0.5) * 0.5;
