@@ -116,7 +116,9 @@ export function useTechniqueSelection(
       return;
     }
     
+    let isMounted = true;
     cooldownUpdateIntervalRef.current = setInterval(() => {
+      if (!isMounted) return;
       const now = Date.now();
       setActiveCooldowns((prev) => {
         return prev
@@ -129,6 +131,7 @@ export function useTechniqueSelection(
     }, 100);
     
     return () => {
+      isMounted = false;
       if (cooldownUpdateIntervalRef.current) {
         clearInterval(cooldownUpdateIntervalRef.current);
         cooldownUpdateIntervalRef.current = null;
@@ -268,7 +271,17 @@ export function useTechniqueSelection(
     if (!enabled) return;
     
     const handleKeyPress = (event: KeyboardEvent) => {
+      // Don't capture if user is typing in an input field
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
       const key = event.key.toUpperCase() as TechniqueKey;
+      
+      // Prevent default for all technique keys during combat
+      if (['Q', 'W', 'E', 'R'].includes(key)) {
+        event.preventDefault();
+      }
       
       // Map keys to technique indices
       const keyMap: Record<TechniqueKey, number> = {
@@ -282,7 +295,6 @@ export function useTechniqueSelection(
       if (index !== undefined && index < availableTechniques.length) {
         selectTechnique(index);
         executeTechnique(index);
-        event.preventDefault();
       }
     };
     

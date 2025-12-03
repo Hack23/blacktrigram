@@ -87,19 +87,15 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
   }, [techniques.length, isMobile, screenWidth, screenHeight]);
   
   // Check if player has sufficient resources for a technique
-  const hasResources = useMemo(() => {
-    return (tech: Technique): boolean => {
-      return player.stamina >= tech.staminaCost && player.ki >= tech.kiCost;
-    };
-  }, [player.stamina, player.ki]);
+  const hasResources = (tech: Technique): boolean => {
+    return player.stamina >= tech.staminaCost && player.ki >= tech.kiCost;
+  };
   
   // Check if technique is available (has resources and not on cooldown)
-  const isAvailable = useMemo(() => {
-    return (tech: Technique): boolean => {
-      const onCooldown = (cooldowns.get(tech.id) ?? 0) > 0;
-      return hasResources(tech) && !onCooldown;
-    };
-  }, [hasResources, cooldowns]);
+  const isAvailable = (tech: Technique): boolean => {
+    const onCooldown = (cooldowns.get(tech.id) ?? 0) > 0;
+    return hasResources(tech) && !onCooldown;
+  };
   
   return (
     <Html
