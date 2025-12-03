@@ -117,14 +117,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_RUN_ID: ${{ github.run_id }}
-      
-      - name: Generate summary
-        if: always()
-        run: |
-          echo "## 📸 Screenshot Analysis Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f "screenshots/reports/ui-ux-analysis.md" ]; then
-            cat screenshots/reports/ui-ux-analysis.md >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ Screenshot analysis report not generated" >> $GITHUB_STEP_SUMMARY
-          fi
