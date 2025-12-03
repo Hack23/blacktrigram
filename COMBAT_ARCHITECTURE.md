@@ -5,6 +5,9 @@
 - **Audio-Visual Feedback**: 국악 (traditional Korean instruments) blended with cyberpunk aesthetics for immersive combat cues.
 - **Anatomical Targeting**: 70 vital points with realistic damage calculation
 - **Cultural Authenticity**: Traditional Korean martial arts with modern implementation
+- **Dark Ops Integration**: 15 specialized techniques from Korean special operations units
+
+**Latest Update**: Added Dark Ops unit combat techniques (암흑작전부대 기술) for tactical assassination and silent incapacitation methods used by Korean special operations forces.
 
 Below, we define the Combat System's architecture in detail.
 
@@ -231,6 +234,165 @@ graph LR
     classDef tech fill:#32cd32,stroke:#333,color:#000
     classDef special fill:#ff1493,stroke:#333,color:#fff
 ```
+
+---
+
+## 🌑 Dark Ops Unit Combat Techniques (암흑작전부대 기술)
+
+**Added**: December 2024 - Specialized techniques from Korean special operations forces
+
+### Overview
+
+The Dark Ops technique system integrates authentic Korean special operations combat methods into the game, providing 15 specialized techniques focused on silent incapacitation, tactical assassination, and nerve strike warfare.
+
+```mermaid
+graph TB
+    subgraph "Dark Ops Units (암흑작전 부대)"
+        DO[암흑작전부대<br/>Dark Operations Unit]:::darkops
+        SC[암흑특공대<br/>Shadow Commando]:::darkops
+        NF[심야작전부대<br/>Nightfall Squadron]:::darkops
+        BO[블랙옵스부대<br/>Black Ops Task Force]:::darkops
+        DS[심해침투부대<br/>Deep Sea Unit]:::darkops
+    end
+    
+    subgraph "Technique Categories"
+        SI[Silent Incapacitation<br/>무음 제압]:::category
+        NS[Nerve Strikes<br/>신경타격]:::category
+        CV[Cardiovascular<br/>혈관 차단]:::category
+        RC[Respiratory Control<br/>호흡 제어]:::category
+    end
+    
+    subgraph "Special Mechanics"
+        AB[Archetype Bonus<br/>원형 보너스]:::mechanic
+        NB[Night Operations<br/>야간 작전]:::mechanic
+        SE[Special Effects<br/>특수 효과]:::mechanic
+    end
+    
+    DO --> SI
+    SC --> CV
+    NF --> RC
+    BO --> NS
+    DS --> SI
+    
+    SI --> AB
+    NS --> NB
+    CV --> SE
+    RC --> SE
+    
+    classDef darkops fill:#1a1a1a,stroke:#00ffff,color:#00ffff,stroke-width:2px
+    classDef category fill:#2d2d2d,stroke:#ffd700,color:#ffd700,stroke-width:2px
+    classDef mechanic fill:#404040,stroke:#ff6b6b,color:#ff6b6b,stroke-width:2px
+```
+
+### Technique Count: 15 Total
+
+| Dark Ops Unit | Techniques | Specialization |
+|--------------|------------|----------------|
+| 암흑작전부대 (Dark Operations) | 3 | Silent infiltration, carotid strikes |
+| 암흑특공대 (Shadow Commando) | 3 | Demolition tactics, internal trauma |
+| 심야작전부대 (Nightfall Squadron) | 3 | Night operations, breathing disruption |
+| 블랙옵스부대 (Black Ops Task Force) | 3 | Cyber-enhanced targeting, nerve strikes |
+| 심해침투부대 (Deep Sea Unit) | 3 | Amphibious combat, chokeholds |
+
+### Archetype Effectiveness
+
+| Archetype | Effectiveness | Rationale |
+|-----------|--------------|-----------|
+| 암살자 (Amsalja) | **+30%** | Shadow Assassin specialty - silent incapacitation |
+| 정보요원 (Jeongbo) | +15% | Intelligence operative espionage training |
+| 해커 (Hacker) | +10% | Cyber-enhanced targeting synergy |
+| 조직 (Jojik) | +5% | Ruthless pragmatism alignment |
+| 무사 (Musa) | **-15%** | Dishonorable tactics conflict with warrior code |
+
+### Night Operations Bonus
+
+Dark Ops techniques gain time-of-day effectiveness multipliers:
+
+- **Night** (00:00-06:00, 18:00-23:59): **+25%** effectiveness
+- **Twilight** (05:00-07:00, 17:00-19:00): **+15%** effectiveness
+- **Day** (06:00-18:00): Normal effectiveness
+
+### Special Effects System
+
+Dark Ops techniques apply unique status effects:
+
+#### 1. Silent Attack (무음 공격)
+- **Effect**: No combat alert triggered
+- **Duration**: Instant
+- **Usage**: Stealth infiltration scenarios
+
+#### 2. Paralysis (마비)
+- **Effect**: Temporary limb immobilization
+- **Duration**: 3 seconds
+- **Techniques**: Nerve strikes, brachial plexus attacks
+
+#### 3. Unconsciousness (의식 상실)
+- **Effect**: Complete incapacitation
+- **Duration**: 5 seconds
+- **Techniques**: Carotid strikes, temple knockouts
+
+#### 4. Breathing Difficulty (호흡 곤란)
+- **Effect**: -75% stamina regeneration
+- **Duration**: 5 seconds
+- **Techniques**: Throat strikes, solar plexus attacks
+
+#### 5. Disorientation (방향 감각 상실)
+- **Effect**: -50% accuracy penalty
+- **Duration**: 4 seconds
+- **Techniques**: Ear box strikes, jaw dislocations
+
+### Sample Dark Ops Techniques
+
+#### Silent Carotid Strike (은밀 경동맥 차단)
+- **Unit**: Dark Operations Unit
+- **Stance**: Water (감)
+- **Damage**: 28
+- **Accuracy**: 92%
+- **Effect**: Unconsciousness within 3 seconds
+- **Ki Cost**: 30 | **Stamina**: 25
+
+#### Nerve Paralysis Strike (신경마비타격)
+- **Unit**: Black Ops Task Force
+- **Stance**: Fire (리)
+- **Damage**: 26
+- **Accuracy**: 95%
+- **Effect**: Limb paralysis, 3s duration
+- **Ki Cost**: 25 | **Stamina**: 20
+
+#### Spinal Column Strike (척추타격)
+- **Unit**: Deep Sea Unit
+- **Stance**: Heaven (건)
+- **Damage**: 40 (highest in game)
+- **Accuracy**: 78%
+- **Effect**: Full-body paralysis + unconsciousness
+- **Ki Cost**: 35 | **Stamina**: 35
+
+### Integration with Vital Point System
+
+Dark Ops techniques target specific anatomical vulnerable points:
+
+| Technique Category | Vital Point Targets |
+|-------------------|---------------------|
+| Nerve Strikes | Brachial plexus, femoral nerve, radial nerve |
+| Cardiovascular | Carotid artery, liver, kidney |
+| Respiratory | Throat, solar plexus, diaphragm |
+| Neurological | Temple, spinal column, jaw |
+
+### Balance Considerations
+
+**Average Stats** (across 15 techniques):
+- **Ki Cost**: 26.4 (balanced resource drain)
+- **Stamina Cost**: 25.5 (moderate physical exertion)
+- **Accuracy**: 86.5% (high precision requirement)
+- **Damage**: 31.5 (above standard techniques)
+- **Execution Time**: 630ms (slightly slower for precision)
+- **Recovery Time**: 1025ms (longer due to complexity)
+
+**Design Philosophy**:
+- Higher resource costs than standard techniques
+- Increased accuracy to reward precision gameplay
+- Longer execution/recovery times for tactical balance
+- Powerful effects balanced by drawbacks for non-Amsalja archetypes
 
 ---
 
