@@ -31,3 +31,10 @@ export type {
   UseActionFeedbackConfig,
 } from "./useActionFeedback";
 
+export { useCombatTimer } from "./useCombatTimer";
+export type {
+  TimerWarningLevel,
+  UseCombatTimerConfig,
+  UseCombatTimerReturn,
+} from "./useCombatTimer";
+
