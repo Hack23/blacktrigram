@@ -59,6 +59,67 @@ interface KoreanAnatomicalZone {
   traditionalImportance: number; // Added
 }
 
+/**
+ * Enhanced anatomical zone with polygon boundaries and stance-based vulnerability
+ * 
+ * **Korean**: 향상된 해부학적 영역 (Enhanced Anatomical Zone)
+ * 
+ * Represents a body region with:
+ * - Polygon boundaries for accurate shape representation
+ * - Base vulnerability multiplier
+ * - Related meridians for energy flow integration
+ * - Stance-based vulnerability modifiers
+ * 
+ * @example
+ * ```typescript
+ * const headZone: EnhancedAnatomicalZone = {
+ *   id: "head_frontal",
+ *   koreanName: "두부 전면",
+ *   englishName: "Frontal Head",
+ *   boundaries: [
+ *     { x: 95, y: 30 },
+ *     { x: 105, y: 30 },
+ *     // ... more points forming polygon
+ *   ],
+ *   baseVulnerability: 2.0,
+ *   relatedMeridians: ["bladder", "gallbladder"],
+ *   vitalPoints: ["head_temple", "head_jaw"],
+ *   stanceModifiers: {
+ *     [TrigramStance.GAN]: 0.7, // Mountain stance protects head
+ *     [TrigramStance.GEON]: 1.2, // Heaven stance exposes head
+ *   }
+ * };
+ * ```
+ */
+export interface EnhancedAnatomicalZone {
+  /** Unique identifier for the zone */
+  readonly id: string;
+  
+  /** Korean name of the anatomical zone */
+  readonly koreanName: string;
+  
+  /** English name of the anatomical zone */
+  readonly englishName: string;
+  
+  /** Polygon boundaries defining the zone shape */
+  readonly boundaries: readonly Position[];
+  
+  /** Base vulnerability multiplier (0.5 to 2.0) */
+  readonly baseVulnerability: number;
+  
+  /** Related energy meridians passing through this zone */
+  readonly relatedMeridians: readonly string[];
+  
+  /** Vital point IDs located in this zone */
+  readonly vitalPoints: readonly string[];
+  
+  /** Stance-based vulnerability modifiers */
+  readonly stanceModifiers: Partial<Record<TrigramStance, number>>;
+  
+  /** Optional description */
+  readonly description?: KoreanText;
+}
+
 export const KOREAN_ANATOMICAL_ZONES_ARRAY: readonly KoreanAnatomicalZone[] = [
   // Renamed to avoid conflict if used as map key
   {
@@ -129,6 +190,345 @@ export const KOREAN_ANATOMICAL_ZONES_ARRAY: readonly KoreanAnatomicalZone[] = [
     description: {
       korean: "안정성과 이동성에 영향을 미치는 기초 혈자리입니다.",
       english: "Foundation points affecting stability and mobility",
+    },
+  },
+];
+
+/**
+ * Enhanced anatomical zones with realistic polygon boundaries and stance modifiers
+ * 
+ * **Korean**: 향상된 해부학적 영역 데이터 (Enhanced Anatomical Zone Data)
+ * 
+ * These zones use polygon boundaries to accurately represent human body proportions
+ * and include stance-based vulnerability modifiers for realistic combat mechanics.
+ */
+export const ENHANCED_ANATOMICAL_ZONES: readonly EnhancedAnatomicalZone[] = [
+  {
+    id: "head_frontal",
+    koreanName: "두부 전면",
+    englishName: "Frontal Head",
+    boundaries: [
+      { x: 45, y: 30 },
+      { x: 55, y: 30 },
+      { x: 58, y: 50 },
+      { x: 60, y: 70 },
+      { x: 52, y: 85 },
+      { x: 48, y: 85 },
+      { x: 40, y: 70 },
+      { x: 42, y: 50 },
+    ],
+    baseVulnerability: 2.0,
+    relatedMeridians: ["bladder", "gallbladder"],
+    vitalPoints: ["baihui", "yintang"],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.7, // Mountain (defensive) protects head
+      [TrigramStance.GEON]: 1.2, // Heaven (offensive) exposes head
+      [TrigramStance.JIN]: 1.1, // Thunder (explosive) slightly exposes
+    },
+    description: {
+      korean: "전면 두부는 의식과 감각을 제어하는 중요 혈자리가 있습니다.",
+      english: "Frontal head contains critical points controlling consciousness and senses",
+    },
+  },
+  {
+    id: "head_lateral",
+    koreanName: "두부 측면",
+    englishName: "Lateral Head",
+    boundaries: [
+      { x: 30, y: 40 },
+      { x: 42, y: 40 },
+      { x: 45, y: 70 },
+      { x: 40, y: 80 },
+      { x: 32, y: 75 },
+      { x: 28, y: 55 },
+    ],
+    baseVulnerability: 1.9,
+    relatedMeridians: ["gallbladder", "triple_burner"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.8,
+      [TrigramStance.TAE]: 1.0,
+      [TrigramStance.SON]: 1.1, // Wind stance increases lateral exposure
+    },
+    description: {
+      korean: "측두부는 뇌진탕에 취약한 부위입니다.",
+      english: "Temple region highly vulnerable to concussive impacts",
+    },
+  },
+  {
+    id: "neck_anterior",
+    koreanName: "경부 전면",
+    englishName: "Anterior Neck",
+    boundaries: [
+      { x: 42, y: 85 },
+      { x: 58, y: 85 },
+      { x: 56, y: 110 },
+      { x: 54, y: 120 },
+      { x: 46, y: 120 },
+      { x: 44, y: 110 },
+    ],
+    baseVulnerability: 1.8,
+    relatedMeridians: ["stomach", "large_intestine"],
+    vitalPoints: ["inmyeong"],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.6, // Mountain strongly protects neck
+      [TrigramStance.GEON]: 1.3, // Heaven significantly exposes neck
+      [TrigramStance.TAE]: 0.9,
+    },
+    description: {
+      korean: "전면 경부는 혈관과 기도가 있는 매우 취약한 부위입니다.",
+      english: "Anterior neck contains critical blood vessels and airways",
+    },
+  },
+  {
+    id: "neck_lateral",
+    koreanName: "경부 측면",
+    englishName: "Lateral Neck",
+    boundaries: [
+      { x: 28, y: 80 },
+      { x: 40, y: 85 },
+      { x: 42, y: 110 },
+      { x: 38, y: 120 },
+      { x: 30, y: 115 },
+      { x: 26, y: 95 },
+    ],
+    baseVulnerability: 1.9,
+    relatedMeridians: ["gallbladder", "triple_burner"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.7,
+      [TrigramStance.GAM]: 0.85, // Water stance provides some protection
+      [TrigramStance.SON]: 1.15,
+    },
+    description: {
+      korean: "측면 경부는 경동맥과 경정맥이 있습니다.",
+      english: "Lateral neck houses carotid and jugular vessels",
+    },
+  },
+  {
+    id: "upper_torso_chest",
+    koreanName: "상체 흉부",
+    englishName: "Upper Chest",
+    boundaries: [
+      { x: 35, y: 120 },
+      { x: 65, y: 120 },
+      { x: 68, y: 180 },
+      { x: 65, y: 220 },
+      { x: 35, y: 220 },
+      { x: 32, y: 180 },
+    ],
+    baseVulnerability: 1.6,
+    relatedMeridians: ["lung", "heart", "pericardium"],
+    vitalPoints: ["tanjoong", "jungwan"],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.7, // Mountain provides strong chest protection
+      [TrigramStance.GON]: 0.8, // Earth stance grounded defense
+      [TrigramStance.GEON]: 1.1,
+      [TrigramStance.JIN]: 1.05,
+    },
+    description: {
+      korean: "흉부는 심장과 폐를 보호하지만 타격 시 호흡에 영향을 줍니다.",
+      english: "Chest protects heart and lungs but affects breathing when struck",
+    },
+  },
+  {
+    id: "upper_torso_ribs",
+    koreanName: "상체 늑골",
+    englishName: "Rib Cage",
+    boundaries: [
+      { x: 25, y: 140 },
+      { x: 35, y: 130 },
+      { x: 38, y: 200 },
+      { x: 35, y: 240 },
+      { x: 28, y: 230 },
+      { x: 22, y: 170 },
+    ],
+    baseVulnerability: 1.4,
+    relatedMeridians: ["liver", "gallbladder"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.75,
+      [TrigramStance.TAE]: 0.95,
+      [TrigramStance.SON]: 1.0,
+    },
+    description: {
+      korean: "늑골은 내부 장기를 보호하지만 충격에 의해 골절될 수 있습니다.",
+      english: "Ribs protect internal organs but can fracture under impact",
+    },
+  },
+  {
+    id: "lower_torso_abdomen",
+    koreanName: "하체 복부",
+    englishName: "Abdomen",
+    boundaries: [
+      { x: 38, y: 220 },
+      { x: 62, y: 220 },
+      { x: 64, y: 280 },
+      { x: 60, y: 320 },
+      { x: 40, y: 320 },
+      { x: 36, y: 280 },
+    ],
+    baseVulnerability: 1.5,
+    relatedMeridians: ["stomach", "spleen", "kidney"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.7,
+      [TrigramStance.GON]: 0.75,
+      [TrigramStance.GEON]: 1.15,
+      [TrigramStance.LI]: 1.0,
+    },
+    description: {
+      korean: "복부는 소화기관과 단전이 위치한 에너지 중심입니다.",
+      english: "Abdomen houses digestive organs and dan tian energy center",
+    },
+  },
+  {
+    id: "lower_torso_groin",
+    koreanName: "하체 사타구니",
+    englishName: "Groin Region",
+    boundaries: [
+      { x: 42, y: 320 },
+      { x: 58, y: 320 },
+      { x: 56, y: 360 },
+      { x: 44, y: 360 },
+    ],
+    baseVulnerability: 1.8,
+    relatedMeridians: ["liver", "kidney"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GAN]: 0.6,
+      [TrigramStance.GON]: 0.7,
+      [TrigramStance.GEON]: 1.3,
+      [TrigramStance.JIN]: 1.2,
+    },
+    description: {
+      korean: "사타구니는 극도로 취약한 부위입니다.",
+      english: "Groin region is extremely vulnerable to strikes",
+    },
+  },
+  {
+    id: "arm_upper",
+    koreanName: "상완",
+    englishName: "Upper Arm",
+    boundaries: [
+      { x: 68, y: 130 },
+      { x: 85, y: 140 },
+      { x: 88, y: 200 },
+      { x: 82, y: 220 },
+      { x: 70, y: 210 },
+      { x: 66, y: 160 },
+    ],
+    baseVulnerability: 1.0,
+    relatedMeridians: ["lung", "large_intestine", "heart"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.TAE]: 1.1, // Lake stance exposes arms for locks
+      [TrigramStance.SON]: 1.05,
+      [TrigramStance.GAN]: 0.9,
+    },
+    description: {
+      korean: "상완은 신경과 혈관이 지나가는 부위입니다.",
+      english: "Upper arm contains nerves and blood vessels",
+    },
+  },
+  {
+    id: "arm_forearm",
+    koreanName: "전완",
+    englishName: "Forearm",
+    boundaries: [
+      { x: 82, y: 220 },
+      { x: 90, y: 230 },
+      { x: 92, y: 290 },
+      { x: 86, y: 310 },
+      { x: 76, y: 300 },
+      { x: 74, y: 240 },
+    ],
+    baseVulnerability: 0.9,
+    relatedMeridians: ["lung", "large_intestine", "pericardium"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.TAE]: 1.15, // Vulnerable to joint locks
+      [TrigramStance.SON]: 1.0,
+      [TrigramStance.GAN]: 0.85,
+    },
+    description: {
+      korean: "전완은 관절 잠금에 취약한 부위입니다.",
+      english: "Forearm is vulnerable to joint locks and nerve strikes",
+    },
+  },
+  {
+    id: "leg_thigh",
+    koreanName: "대퇴부",
+    englishName: "Thigh",
+    boundaries: [
+      { x: 38, y: 360 },
+      { x: 48, y: 360 },
+      { x: 52, y: 450 },
+      { x: 48, y: 480 },
+      { x: 42, y: 480 },
+      { x: 36, y: 450 },
+    ],
+    baseVulnerability: 0.9,
+    relatedMeridians: ["stomach", "spleen", "liver"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GON]: 1.1, // Earth stance may expose legs for sweeps
+      [TrigramStance.GAN]: 0.8,
+      [TrigramStance.SON]: 1.05,
+    },
+    description: {
+      korean: "대퇴부는 큰 근육과 신경이 있습니다.",
+      english: "Thigh contains large muscles and nerves",
+    },
+  },
+  {
+    id: "leg_knee",
+    koreanName: "슬부",
+    englishName: "Knee",
+    boundaries: [
+      { x: 40, y: 480 },
+      { x: 50, y: 480 },
+      { x: 52, y: 520 },
+      { x: 48, y: 540 },
+      { x: 42, y: 540 },
+      { x: 38, y: 520 },
+    ],
+    baseVulnerability: 1.3,
+    relatedMeridians: ["stomach", "spleen"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GON]: 1.2, // Earth stance exposes knees
+      [TrigramStance.GAN]: 0.7, // Mountain protects knees
+      [TrigramStance.SON]: 1.1,
+    },
+    description: {
+      korean: "슬부는 이동성에 중요한 관절입니다.",
+      english: "Knee joint is critical for mobility",
+    },
+  },
+  {
+    id: "leg_lower",
+    koreanName: "하퇴부",
+    englishName: "Lower Leg",
+    boundaries: [
+      { x: 42, y: 540 },
+      { x: 48, y: 540 },
+      { x: 50, y: 630 },
+      { x: 46, y: 650 },
+      { x: 44, y: 650 },
+      { x: 40, y: 630 },
+    ],
+    baseVulnerability: 0.8,
+    relatedMeridians: ["stomach", "bladder", "kidney"],
+    vitalPoints: [],
+    stanceModifiers: {
+      [TrigramStance.GON]: 1.05,
+      [TrigramStance.GAN]: 0.9,
+      [TrigramStance.SON]: 0.95,
+    },
+    description: {
+      korean: "하퇴부는 균형과 이동에 중요합니다.",
+      english: "Lower leg is important for balance and movement",
     },
   },
 ];
@@ -524,6 +924,155 @@ export function calculateAnatomicalVulnerability(
 }
 
 /**
+ * Calculate enhanced anatomical vulnerability with stance, meridian flow, and time-of-day
+ * 
+ * **Korean**: 향상된 해부학적 취약성 계산 (Enhanced Anatomical Vulnerability Calculation)
+ * 
+ * Calculates vulnerability multiplier for a specific position, considering:
+ * - Base zone vulnerability (0.5-2.0x)
+ * - Stance-based exposure modifiers (0.6-1.3x per zone)
+ * - Meridian flow state (blocked meridians +50% vulnerability)
+ * - Time-of-day meridian peak hours (+20% vulnerability at peak)
+ * 
+ * ## Calculation Formula
+ * 
+ * ```
+ * vulnerability = baseVulnerability 
+ *               × stanceModifier
+ *               × meridianFlowModifier
+ *               × timeOfDayModifier
+ * ```
+ * 
+ * Final result is capped between 0.5x and 3.0x.
+ * 
+ * @param position - Target position on body
+ * @param currentHour - Hour of day (0-23) for meridian flow calculation
+ * @param stance - Current trigram stance affecting zone exposure
+ * @param meridianStates - Meridian disruption states (0=blocked, 1=normal flow)
+ * @returns Vulnerability multiplier (0.5-3.0)
+ * 
+ * @example
+ * ```typescript
+ * // Calculate vulnerability for head strike at 2 AM in offensive stance
+ * const vulnerability = calculateEnhancedVulnerability(
+ *   { x: 50, y: 50 },           // Head position
+ *   2,                          // 2 AM (liver meridian peak)
+ *   TrigramStance.GEON,         // Heaven stance (offensive, exposes head)
+ *   {
+ *     bladder: 1.0,             // Normal flow
+ *     gallbladder: 0.5,         // Partially blocked
+ *     liver: 1.0                // Normal flow at peak hour
+ *   }
+ * );
+ * // Result: ~2.5x (high base × stance exposure × meridian effects × time bonus)
+ * ```
+ */
+export function calculateEnhancedVulnerability(
+  position: Position,
+  currentHour: number,
+  stance: TrigramStance,
+  meridianStates: Record<string, number>
+): number {
+  const zones = getEnhancedZonesByPosition(position);
+  
+  if (zones.length === 0) {
+    // Position not in any zone, return baseline vulnerability
+    return 1.0;
+  }
+
+  // If multiple zones (overlapping), use the highest vulnerability
+  let maxVulnerability = 0;
+
+  for (const zone of zones) {
+    let vulnerability = zone.baseVulnerability;
+
+    // Apply stance modifier
+    const stanceModifier = zone.stanceModifiers[stance] ?? 1.0;
+    vulnerability *= stanceModifier;
+
+    // Apply meridian flow effects
+    for (const meridianId of zone.relatedMeridians) {
+      const meridianState = meridianStates[meridianId] ?? 1.0;
+      const meridianFlow = calculateMeridianFlow(meridianId, currentHour);
+
+      // Blocked meridian increases vulnerability (state near 0)
+      // Lower state = higher vulnerability
+      // state 1.0 = normal, state 0.5 = +50% vulnerability, state 0 = +100% vulnerability
+      const blockageModifier = 1.0 + (1.0 - meridianState) * 0.5;
+      vulnerability *= blockageModifier;
+
+      // Peak meridian hour increases vulnerability (+20% at peak)
+      // meridianFlow ranges from 0.7 to 1.3
+      // At peak (1.3), we want +20% vulnerability
+      // At low (0.7), we want -10% vulnerability
+      const timeModifier = 0.9 + (meridianFlow - 0.7) * 0.5; // Maps 0.7->0.9, 1.3->1.2
+      vulnerability *= timeModifier;
+    }
+
+    maxVulnerability = Math.max(maxVulnerability, vulnerability);
+  }
+
+  // Cap between 0.5 and 3.0
+  return Math.max(0.5, Math.min(3.0, maxVulnerability));
+}
+
+/**
+ * Generate vulnerability heat map for entire body
+ * 
+ * **Korean**: 취약성 히트맵 생성 (Vulnerability Heat Map Generation)
+ * 
+ * Generates a 2D vulnerability map for visualization or analysis.
+ * Returns vulnerability scores (0-1 normalized) for a grid of positions.
+ * 
+ * @param width - Width of the heat map grid
+ * @param height - Height of the heat map grid
+ * @param currentHour - Hour of day for meridian calculations
+ * @param stance - Current trigram stance
+ * @param meridianStates - Meridian disruption states
+ * @returns 2D array of vulnerability scores (0-1 normalized)
+ * 
+ * @example
+ * ```typescript
+ * const heatMap = generateVulnerabilityHeatMap(
+ *   100, 700,                   // 100x700 body map
+ *   14,                         // 2 PM
+ *   TrigramStance.GAN,          // Mountain defensive stance
+ *   { lung: 1.0, heart: 1.0 }
+ * );
+ * 
+ * // Access vulnerability at position (50, 100)
+ * const vulnerability = heatMap[100][50]; // 0-1 normalized value
+ * ```
+ */
+export function generateVulnerabilityHeatMap(
+  width: number,
+  height: number,
+  currentHour: number,
+  stance: TrigramStance,
+  meridianStates: Record<string, number>
+): readonly (readonly number[])[] {
+  const heatMap: number[][] = [];
+
+  for (let y = 0; y < height; y++) {
+    const row: number[] = [];
+    for (let x = 0; x < width; x++) {
+      const vulnerability = calculateEnhancedVulnerability(
+        { x, y },
+        currentHour,
+        stance,
+        meridianStates
+      );
+      // Normalize from 0.5-3.0 range to 0-1 range
+      const normalized = (vulnerability - 0.5) / (3.0 - 0.5);
+      row.push(normalized);
+    }
+    heatMap.push(row);
+  }
+
+  return heatMap;
+}
+
+/**
  * Check if position is within anatomical zone
  */
 function isPositionInZone(
@@ -536,6 +1085,97 @@ function isPositionInZone(
     position.x <= boundaries.right &&
     position.y >= boundaries.top &&
     position.y <= boundaries.bottom
+  );
+}
+
+/**
+ * Check if a point is inside a polygon using ray-casting algorithm
+ * 
+ * **Korean**: 점-다각형 내부 확인 (Point-in-Polygon Test)
+ * 
+ * Uses the ray-casting algorithm to determine if a point is inside a polygon.
+ * Casts a ray from the point to infinity and counts boundary crossings.
+ * Odd number of crossings = inside, even number = outside.
+ * 
+ * @param point - Position to test
+ * @param polygon - Array of positions defining polygon vertices
+ * @returns true if point is inside polygon, false otherwise
+ * 
+ * @example
+ * ```typescript
+ * const polygon = [
+ *   { x: 0, y: 0 },
+ *   { x: 10, y: 0 },
+ *   { x: 10, y: 10 },
+ *   { x: 0, y: 10 }
+ * ];
+ * const inside = isPointInPolygon({ x: 5, y: 5 }, polygon); // true
+ * const outside = isPointInPolygon({ x: 15, y: 5 }, polygon); // false
+ * ```
+ */
+export function isPointInPolygon(
+  point: Position,
+  polygon: readonly Position[]
+): boolean {
+  if (polygon.length < 3) return false;
+
+  let inside = false;
+  const x = point.x;
+  const y = point.y;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].x;
+    const yi = polygon[i].y;
+    const xj = polygon[j].x;
+    const yj = polygon[j].y;
+
+    const intersect =
+      yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+    if (intersect) inside = !inside;
+  }
+
+  return inside;
+}
+
+/**
+ * Check if position is within enhanced anatomical zone with polygon boundaries
+ * 
+ * **Korean**: 향상된 영역 내부 확인 (Enhanced Zone Position Test)
+ * 
+ * @param position - Position to test
+ * @param zone - Enhanced anatomical zone with polygon boundaries
+ * @returns true if position is within zone, false otherwise
+ */
+export function isPositionInEnhancedZone(
+  position: Position,
+  zone: EnhancedAnatomicalZone
+): boolean {
+  return isPointInPolygon(position, zone.boundaries);
+}
+
+/**
+ * Get enhanced zone by position using polygon boundaries
+ * 
+ * **Korean**: 위치로 향상된 영역 찾기 (Find Enhanced Zone by Position)
+ * 
+ * Supports overlapping zones - returns array of all zones containing the position.
+ * 
+ * @param position - Position to check
+ * @returns Array of enhanced zones containing the position
+ * 
+ * @example
+ * ```typescript
+ * const zones = getEnhancedZonesByPosition({ x: 50, y: 100 });
+ * // May return multiple zones if position is in overlapping region
+ * // e.g., neck area might be in both head and torso zones
+ * ```
+ */
+export function getEnhancedZonesByPosition(
+  position: Position
+): readonly EnhancedAnatomicalZone[] {
+  return ENHANCED_ANATOMICAL_ZONES.filter((zone) =>
+    isPositionInEnhancedZone(position, zone)
   );
 }
 
