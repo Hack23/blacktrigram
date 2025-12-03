@@ -12,6 +12,7 @@
 import React from "react";
 import { PlayerState } from "../../../systems/player";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 import { HealthBar } from "./HealthBar";
 import { StaminaBar } from "./StaminaBar";
 
@@ -23,16 +24,6 @@ export interface PlayerHUDProps {
   /** Whether to use mobile-optimized sizing */
   readonly isMobile: boolean;
 }
-
-/**
- * Convert hex color to CSS RGB string
- */
-const hexToRgb = (hex: number): string => {
-  const r = (hex >> 16) & 255;
-  const g = (hex >> 8) & 255;
-  const b = hex & 255;
-  return `rgb(${r}, ${g}, ${b})`;
-};
 
 /**
  * PlayerHUD - Complete player status display with health and stamina bars
@@ -71,9 +62,9 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
           fontSize: `${fontSize}px`,
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
-          color: hexToRgb(KOREAN_COLORS.ACCENT_GOLD),
+          color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
           textAlign: isLeft ? "left" : "right",
-          textShadow: `0 0 8px ${hexToRgb(KOREAN_COLORS.ACCENT_GOLD)}66`,
+          textShadow: `0 0 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4)}`,
           marginBottom: "2px",
         }}
       >
@@ -102,7 +93,7 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
         style={{
           fontSize: isMobile ? "10px" : "11px",
           fontFamily: FONT_FAMILY.KOREAN,
-          color: hexToRgb(KOREAN_COLORS.TEXT_SECONDARY),
+          color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
           textAlign: isLeft ? "left" : "right",
           marginTop: "2px",
         }}

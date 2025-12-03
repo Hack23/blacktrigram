@@ -192,7 +192,7 @@ describe("PlayerHUD", () => {
 
       stances.forEach((stance) => {
         const playerWithStance = { ...mockPlayer, currentStance: stance };
-        const { rerender, unmount } = render(
+        const { unmount } = render(
           <PlayerHUD player={playerWithStance} position="left" isMobile={false} />
         );
         expect(screen.getByTestId("stance-indicator-player-1")).toHaveTextContent(`자세 | Stance: ${stance}`);

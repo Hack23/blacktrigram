@@ -12,6 +12,7 @@
 
 import React, { useMemo } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 
 export interface HealthBarProps {
   /** Current health value */
@@ -31,16 +32,6 @@ const getHealthColor = (percentage: number): number => {
   if (percentage > 50) return KOREAN_COLORS.HEALTH_FULL; // Green
   if (percentage > 25) return KOREAN_COLORS.HEALTH_MEDIUM; // Yellow
   return KOREAN_COLORS.HEALTH_CRITICAL; // Red
-};
-
-/**
- * Convert hex color to CSS RGB string
- */
-const hexToRgb = (hex: number): string => {
-  const r = (hex >> 16) & 255;
-  const g = (hex >> 8) & 255;
-  const b = hex & 255;
-  return `rgb(${r}, ${g}, ${b})`;
 };
 
 /**
@@ -72,20 +63,26 @@ export const HealthBar: React.FC<HealthBarProps> = ({
   return (
     <div
       data-testid={`health-bar-${playerId}`}
+      role="progressbar"
+      aria-label="체력 | Health"
+      aria-valuenow={Math.ceil(current)}
+      aria-valuemin={0}
+      aria-valuemax={max}
+      aria-valuetext={`${Math.ceil(current)} out of ${max}`}
       style={{
         width: `${barWidth}px`,
         padding,
-        backgroundColor: hexToRgb(KOREAN_COLORS.UI_BACKGROUND_DARK),
+        backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1),
         borderRadius: "8px",
-        border: `2px solid ${hexToRgb(KOREAN_COLORS.PRIMARY_CYAN)}`,
-        boxShadow: `0 0 10px ${hexToRgb(KOREAN_COLORS.PRIMARY_CYAN)}33`,
+        border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
+        boxShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
       }}
     >
       {/* Label and numeric display */}
       <div
         style={{
           fontSize: `${fontSize}px`,
-          color: hexToRgb(KOREAN_COLORS.PRIMARY_CYAN),
+          color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
           fontFamily: FONT_FAMILY.KOREAN,
           marginBottom: "4px",
           display: "flex",
@@ -116,32 +113,18 @@ export const HealthBar: React.FC<HealthBarProps> = ({
               flex: 1,
               backgroundColor:
                 index < filledSegments
-                  ? hexToRgb(healthColor)
-                  : hexToRgb(KOREAN_COLORS.UI_BACKGROUND_MEDIUM),
+                  ? hexToRgbaString(healthColor, 1)
+                  : hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 1),
               borderRadius: "2px",
               transition: "background-color 0.2s ease-in-out",
               boxShadow:
                 index < filledSegments
-                  ? `0 0 8px ${hexToRgb(healthColor)}66`
+                  ? `0 0 8px ${hexToRgbaString(healthColor, 0.4)}`
                   : "none",
             }}
           />
         ))}
       </div>
-
-      {/* CSS for pulse animation */}
-      <style>
-        {`
-          @keyframes healthPulse {
-            0%, 100% {
-              opacity: 1;
-            }
-            50% {
-              opacity: 0.6;
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };
