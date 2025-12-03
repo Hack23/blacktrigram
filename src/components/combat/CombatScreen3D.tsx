@@ -55,6 +55,9 @@ import { useActionFeedback } from "../../hooks/useActionFeedback";
 import { CombatTimer } from "./components/CombatTimer";
 import { useCombatTimer } from "../../hooks/useCombatTimer";
 import { PlayerHUD } from "./components/PlayerHUD";
+import { TechniqueBar } from "./components/TechniqueBar";
+import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
+import { Technique } from "../../types";
 
 /**
  * Calculate accuracy percentage for a player
@@ -471,6 +474,46 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     arenaBounds,
     combatAudio,
   });
+
+  // Technique selection and execution
+  const techniqueSelection = useTechniqueSelection({
+    player: validPlayers[0],
+    enabled: !isPaused && combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart,
+    onTechniqueExecute: useCallback((technique: Technique) => {
+      // Show technique name in action feedback
+      feedbackActions.showTechnique(
+        technique.name.korean,
+        technique.name.english
+      );
+      
+      // Deduct resources
+      onPlayerUpdate(0, {
+        stamina: Math.max(0, validPlayers[0].stamina - technique.staminaCost),
+        ki: Math.max(0, validPlayers[0].ki - technique.kiCost),
+      });
+      
+      // Execute attack with technique damage
+      handleAttack();
+      
+      // Play SFX
+      combatAudio.playAttackSound("heavy");
+      
+      // Add combat message
+      addCombatMessage(
+        `${technique.name.korean} 사용!`,
+        `Used ${technique.name.english}!`
+      );
+    }, [validPlayers, onPlayerUpdate, feedbackActions, handleAttack, combatAudio, addCombatMessage]),
+  });
+  
+  // Convert cooldowns to Map for TechniqueBar
+  const cooldownsMap = useMemo(() => {
+    const map = new Map<string, number>();
+    techniqueSelection.activeCooldowns.forEach((cd) => {
+      map.set(cd.techniqueId, cd.remaining);
+    });
+    return map;
+  }, [techniqueSelection.activeCooldowns]);
 
   // Watch for player 2 health decrease to trigger damage feedback
   const lastPlayer2HealthRef = useRef(validPlayers[1].health);
@@ -1005,6 +1048,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           position="right"
           isMobile={isMobile}
         />
+
+        {/* Technique Bar - Bottom Center */}
+        {combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart && (
+          <TechniqueBar
+            techniques={techniqueSelection.availableTechniques}
+            player={validPlayers[0]}
+            selectedIndex={techniqueSelection.selectedIndex}
+            cooldowns={cooldownsMap}
+            onTechniqueSelect={techniqueSelection.selectTechnique}
+            onTechniqueHover={(_tech) => {
+              // Could add additional hover effects here
+            }}
+            isMobile={isMobile}
+            screenWidth={width}
+            screenHeight={height}
+          />
+        )}
 
         {/* Combat Controls and Stats */}
         <div
