@@ -118,4 +118,82 @@ describe("TrigramSystem", () => {
       expect(result.reason).toBeDefined();
     });
   });
+
+  describe("getStanceCharacteristic", () => {
+    it("should identify GAN (Mountain) as defensive", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.GAN);
+      expect(characteristic).toBe("defensive");
+    });
+
+    it("should identify GON (Earth) as defensive", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.GON);
+      expect(characteristic).toBe("defensive");
+    });
+
+    it("should identify GEON (Heaven) as offensive", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.GEON);
+      expect(characteristic).toBe("offensive");
+    });
+
+    it("should identify JIN (Thunder) as offensive", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.JIN);
+      expect(characteristic).toBe("offensive");
+    });
+
+    it("should identify TAE (Lake) as balanced", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.TAE);
+      expect(characteristic).toBe("balanced");
+    });
+
+    it("should identify LI (Fire) as balanced", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.LI);
+      expect(characteristic).toBe("balanced");
+    });
+
+    it("should identify SON (Wind) as balanced", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.SON);
+      expect(characteristic).toBe("balanced");
+    });
+
+    it("should identify GAM (Water) as balanced", () => {
+      const characteristic = system.getStanceCharacteristic(TrigramStance.GAM);
+      expect(characteristic).toBe("balanced");
+    });
+  });
+
+  describe("isDefensiveStance", () => {
+    it("should return true for GAN (Mountain)", () => {
+      expect(system.isDefensiveStance(TrigramStance.GAN)).toBe(true);
+    });
+
+    it("should return true for GON (Earth)", () => {
+      expect(system.isDefensiveStance(TrigramStance.GON)).toBe(true);
+    });
+
+    it("should return false for GEON (Heaven)", () => {
+      expect(system.isDefensiveStance(TrigramStance.GEON)).toBe(false);
+    });
+
+    it("should return false for TAE (Lake)", () => {
+      expect(system.isDefensiveStance(TrigramStance.TAE)).toBe(false);
+    });
+  });
+
+  describe("isOffensiveStance", () => {
+    it("should return true for GEON (Heaven)", () => {
+      expect(system.isOffensiveStance(TrigramStance.GEON)).toBe(true);
+    });
+
+    it("should return true for JIN (Thunder)", () => {
+      expect(system.isOffensiveStance(TrigramStance.JIN)).toBe(true);
+    });
+
+    it("should return false for GAN (Mountain)", () => {
+      expect(system.isOffensiveStance(TrigramStance.GAN)).toBe(false);
+    });
+
+    it("should return false for TAE (Lake)", () => {
+      expect(system.isOffensiveStance(TrigramStance.TAE)).toBe(false);
+    });
+  });
 });
