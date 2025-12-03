@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  EnhancedAnatomicalZone,
   ENHANCED_ANATOMICAL_ZONES,
   isPointInPolygon,
   isPositionInEnhancedZone,
@@ -297,7 +296,7 @@ describe("Enhanced Anatomical Zones", () => {
       expect(vulnerability).toBe(1.0);
     });
 
-    it("should increase vulnerability with defensive stance (GAN)", () => {
+    it("should reduce vulnerability with defensive stance (GAN)", () => {
       const position = { x: 50, y: 50 }; // Head area
       const hour = 12;
       const meridianStates = {
@@ -319,10 +318,8 @@ describe("Enhanced Anatomical Zones", () => {
         meridianStates
       );
       
-      // Defensive stance should generally reduce vulnerability
-      // (exact result depends on zone definitions)
-      expect(typeof offensiveVulnerability).toBe("number");
-      expect(typeof defensiveVulnerability).toBe("number");
+      // Defensive stance should reduce vulnerability compared to offensive stance
+      expect(defensiveVulnerability).toBeLessThan(offensiveVulnerability);
     });
 
     it("should increase vulnerability with blocked meridians", () => {

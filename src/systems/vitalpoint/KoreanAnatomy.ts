@@ -991,6 +991,10 @@ export function calculateEnhancedVulnerability(
     vulnerability *= stanceModifier;
 
     // Apply meridian flow effects
+    // Use maximum modifier to avoid exponential compounding with multiple meridians
+    let maxBlockageModifier = 1.0;
+    let maxTimeModifier = 1.0;
+    
     for (const meridianId of zone.relatedMeridians) {
       const meridianState = meridianStates[meridianId] ?? 1.0;
       const meridianFlow = calculateMeridianFlow(meridianId, currentHour);
@@ -999,15 +1003,19 @@ export function calculateEnhancedVulnerability(
       // Lower state = higher vulnerability
       // state 1.0 = normal, state 0.5 = +50% vulnerability, state 0 = +100% vulnerability
       const blockageModifier = 1.0 + (1.0 - meridianState) * 0.5;
-      vulnerability *= blockageModifier;
+      maxBlockageModifier = Math.max(maxBlockageModifier, blockageModifier);
 
       // Peak meridian hour increases vulnerability (+20% at peak)
       // meridianFlow ranges from 0.7 to 1.3
       // At peak (1.3), we want +20% vulnerability
       // At low (0.7), we want -10% vulnerability
       const timeModifier = 0.9 + (meridianFlow - 0.7) * 0.5; // Maps 0.7->0.9, 1.3->1.2
-      vulnerability *= timeModifier;
+      maxTimeModifier = Math.max(maxTimeModifier, timeModifier);
     }
+    
+    // Apply the maximum modifiers once (not compounded)
+    vulnerability *= maxBlockageModifier;
+    vulnerability *= maxTimeModifier;
 
     maxVulnerability = Math.max(maxVulnerability, vulnerability);
   }
