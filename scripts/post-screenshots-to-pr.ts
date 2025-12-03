@@ -102,7 +102,7 @@ async function createPRComment(
     // Add artifact download link
     if (runId) {
       commentBody += `### 📦 Download Screenshots\n\n`;
-      commentBody += `📥 **[Download all screenshots from workflow artifacts](https://github. com/${owner}/${repo}/actions/runs/${runId})**\n\n`;
+      commentBody += `📥 **[Download all screenshots from workflow artifacts](https://github.com/${owner}/${repo}/actions/runs/${runId})**\n\n`;
       commentBody += `> Screenshots are preserved as workflow artifacts for ${ARTIFACT_RETENTION_DAYS} days.\n\n`;
     } else {
       commentBody += `> ⚠️ No workflow run ID available. Set \`GITHUB_RUN_ID\` to include artifact download links.\n\n`;
