@@ -104,7 +104,11 @@ export interface Technique {
   /** Special effect type (stun, bleed, etc.) */
   readonly specialEffect?: string;
   
-  /** Icon identifier for UI */
+  /** 
+   * Icon identifier for UI display.
+   * Can be an emoji character (e.g., "⚔️"), icon font class name, or icon identifier.
+   * Defaults to "⚔️" if not specified in the UI.
+   */
   readonly icon?: string;
 }
 

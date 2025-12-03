@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { useTechniqueSelection } from "./useTechniqueSelection";
 import { PlayerState } from "../systems/player";
 import { PlayerArchetype, TrigramStance, CombatState } from "../types";

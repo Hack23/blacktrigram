@@ -128,20 +128,24 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
           const available = isAvailable(technique);
           
           return (
-            <TechniqueCard
+            <div
               key={technique.id}
-              technique={technique}
-              isSelected={selectedIndex === index}
-              isAvailable={available}
-              staminaCost={technique.staminaCost}
-              kiCost={technique.kiCost}
-              remainingCooldown={cooldownRemaining}
-              keyboardShortcut={technique.keyboardShortcut}
-              onClick={() => onTechniqueSelect(index)}
-              onHover={onTechniqueHover}
-              isMobile={isMobile}
-              position={{ x: cardX, y: 0 }}
-            />
+              data-testid={`technique-slot-${index}`}
+            >
+              <TechniqueCard
+                technique={technique}
+                isSelected={selectedIndex === index}
+                isAvailable={available}
+                staminaCost={technique.staminaCost}
+                kiCost={technique.kiCost}
+                remainingCooldown={cooldownRemaining}
+                keyboardShortcut={technique.keyboardShortcut}
+                onClick={() => onTechniqueSelect(index)}
+                onHover={onTechniqueHover}
+                isMobile={isMobile}
+                position={{ x: cardX, y: 0 }}
+              />
+            </div>
           );
         })}
       </div>

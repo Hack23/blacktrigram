@@ -107,7 +107,14 @@ export function useTechniqueSelection(
   
   // Update cooldowns every 100ms
   useEffect(() => {
-    if (activeCooldowns.length === 0) return;
+    if (activeCooldowns.length === 0) {
+      // Clear any existing interval when no cooldowns
+      if (cooldownUpdateIntervalRef.current) {
+        clearInterval(cooldownUpdateIntervalRef.current);
+        cooldownUpdateIntervalRef.current = null;
+      }
+      return;
+    }
     
     cooldownUpdateIntervalRef.current = setInterval(() => {
       const now = Date.now();
@@ -124,6 +131,7 @@ export function useTechniqueSelection(
     return () => {
       if (cooldownUpdateIntervalRef.current) {
         clearInterval(cooldownUpdateIntervalRef.current);
+        cooldownUpdateIntervalRef.current = null;
       }
     };
   }, [activeCooldowns.length]);
@@ -221,10 +229,11 @@ export function useTechniqueSelection(
   );
   
   // Execute currently selected technique
-  const executeTechnique = useCallback(() => {
+  const executeTechnique = useCallback((indexOverride?: number) => {
     if (!enabled) return;
     
-    const technique = availableTechniques[selectedIndex];
+    const index = indexOverride ?? selectedIndex;
+    const technique = availableTechniques[index];
     if (!technique) return;
     
     // Validate technique execution
@@ -271,27 +280,8 @@ export function useTechniqueSelection(
       
       const index = keyMap[key];
       if (index !== undefined && index < availableTechniques.length) {
-        const technique = availableTechniques[index];
-        
-        // Execute technique directly on key press
-        const validation = validateTechnique(technique);
-        if (validation.canExecute) {
-          selectTechnique(index);
-          
-          // Start cooldown
-          const now = Date.now();
-          const cooldown: TechniqueCooldown = {
-            techniqueId: technique.id,
-            startTime: now,
-            duration: technique.cooldown,
-            remaining: technique.cooldown,
-          };
-          setActiveCooldowns((prev) => [...prev, cooldown]);
-          
-          // Execute technique
-          onTechniqueExecute?.(technique);
-        }
-        
+        selectTechnique(index);
+        executeTechnique(index);
         event.preventDefault();
       }
     };
@@ -301,9 +291,8 @@ export function useTechniqueSelection(
   }, [
     enabled,
     availableTechniques,
-    validateTechnique,
     selectTechnique,
-    onTechniqueExecute,
+    executeTechnique,
   ]);
   
   return {

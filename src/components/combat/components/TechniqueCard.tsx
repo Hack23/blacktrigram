@@ -109,6 +109,20 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     return KOREAN_COLORS.ACCENT_GOLD;
   }, [isAvailable, isSelected]);
   
+  // Convert color to hex string helper
+  const borderColorHex = useMemo(() => {
+    if (typeof borderColor === 'number') {
+      return `#${borderColor.toString(16).padStart(6, '0')}`;
+    }
+    return borderColor;
+  }, [borderColor]);
+  
+  // Helper for converting KOREAN_COLORS to hex
+  const primaryCyanHex = useMemo(() => 
+    `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0')}`, []);
+  const accentGoldHex = useMemo(() => 
+    `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, '0')}`, []);
+  
   // Border glow effect for selected card
   const boxShadow = useMemo(() => {
     if (isSelected && isAvailable) {
@@ -129,12 +143,17 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
       }}
     >
       <div
+        role="button"
+        tabIndex={isAvailable ? 0 : -1}
+        aria-label={`${technique.name.korean} (${technique.name.english}). Stamina: ${staminaCost}, Ki: ${kiCost}`}
+        aria-disabled={!isAvailable}
+        aria-describedby={showTooltip ? `tooltip-${technique.id}` : undefined}
         style={{
           position: "relative",
           width: `${cardSize.width}px`,
           height: `${cardSize.height}px`,
           backgroundColor,
-          border: `2px solid ${typeof borderColor === "number" ? `#${borderColor.toString(16).padStart(6, "0")}` : borderColor}`,
+          border: `2px solid ${borderColorHex}`,
           borderRadius: "8px",
           boxShadow,
           cursor: isAvailable ? "pointer" : "not-allowed",
@@ -153,6 +172,14 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
           onHover(technique);
         }}
         onMouseLeave={() => {
+          setShowTooltip(false);
+          onHover(null);
+        }}
+        onFocus={() => {
+          setShowTooltip(true);
+          onHover(technique);
+        }}
+        onBlur={() => {
           setShowTooltip(false);
           onHover(null);
         }}
@@ -269,6 +296,8 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         {/* Tooltip */}
         {showTooltip && isAvailable && (
           <div
+            id={`tooltip-${technique.id}`}
+            role="tooltip"
             style={{
               position: "absolute",
               bottom: `${cardSize.height + 10}px`,
@@ -278,7 +307,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
               maxWidth: "300px",
               padding: "10px",
               backgroundColor: "rgba(10, 10, 15, 0.95)",
-              border: `2px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+              border: `2px solid ${primaryCyanHex}`,
               borderRadius: "8px",
               fontSize: "12px",
               color: "#fff",
@@ -287,7 +316,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
-            <div style={{ fontWeight: "bold", marginBottom: "6px", color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}` }}>
+            <div style={{ fontWeight: "bold", marginBottom: "6px", color: accentGoldHex }}>
               {technique.name.korean} | {technique.name.english}
             </div>
             <div style={{ fontSize: "11px", lineHeight: "1.4", marginBottom: "8px" }}>

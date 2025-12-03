@@ -485,7 +485,9 @@ export function getTechniquesForArchetype(
     case PlayerArchetype.JOJIK_POKRYEOKBAE:
       return JOJIK_POKRYEOKBAE_TECHNIQUES;
     default:
-      return MUSA_TECHNIQUES;
+      // Exhaustive check: if a new archetype is added, TypeScript will error here
+      const _exhaustiveCheck: never = archetype;
+      throw new Error(`Unknown archetype: ${_exhaustiveCheck}`);
   }
 }
 
