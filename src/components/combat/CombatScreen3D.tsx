@@ -52,6 +52,8 @@ import { DamageNumbers } from "./components/DamageNumbers";
 import { ComboCounter } from "./components/ComboCounter";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import { useActionFeedback } from "../../hooks/useActionFeedback";
+import { CombatTimer } from "./components/CombatTimer";
+import { useCombatTimer } from "../../hooks/useCombatTimer";
 
 /**
  * Calculate accuracy percentage for a player
@@ -296,6 +298,36 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     },
     [combatActions]
   );
+
+  // Combat timer with warnings and time up handler
+  const handleTimeUp = useCallback(() => {
+    // End round when time runs out
+    if (!combatState.roundEnded) {
+      combatActions.setRoundEnded(true);
+      addCombatMessage("시간 종료!", "Time's Up!");
+      
+      // Determine winner based on remaining health
+      const player1Health = validPlayers[0].health;
+      const player2Health = validPlayers[1].health;
+      
+      if (player1Health > player2Health) {
+        startTransition(validPlayers[0], currentRound); // Player 1 wins round
+      } else if (player2Health > player1Health) {
+        startTransition(validPlayers[1], currentRound); // Player 2 wins round
+      } else {
+        // Tie - no winner for this round
+        startTransition(null, currentRound);
+      }
+    }
+  }, [combatState.roundEnded, combatActions, validPlayers, startTransition, addCombatMessage, currentRound]);
+
+  const timerState = useCombatTimer({
+    initialTime: timeRemaining,
+    isPaused: isPaused || !combatState.roundStarted || combatState.roundEnded || !matchCountdownComplete || showRoundStart,
+    onTimeUp: handleTimeUp,
+    warningThreshold: 10,
+    urgentThreshold: 5,
+  });
 
   // Shared round start logic
   const startRound = useCallback(() => {
@@ -908,6 +940,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           pointerEvents: "none",
         }}
       >
+        {/* Combat Timer - Top Center */}
+        {combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart && (
+          <CombatTimer
+            formattedTime={timerState.formattedTime}
+            warningLevel={timerState.warningLevel}
+            isTimeUp={timerState.isTimeUp}
+            isMobile={isMobile}
+          />
+        )}
+
         {/* Combat Title */}
         <div
           style={{

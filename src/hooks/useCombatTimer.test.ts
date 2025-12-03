@@ -1,0 +1,296 @@
+/**
+ * Tests for useCombatTimer hook
+ */
+
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useCombatTimer } from "./useCombatTimer";
+
+// Mock audio provider
+vi.mock("../audio/AudioProvider", () => ({
+  useAudio: () => ({
+    isAudioReady: true,
+    playSFX: vi.fn(),
+  }),
+}));
+
+describe("useCombatTimer", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it("should initialize with initial time", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 180,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+
+    expect(result.current.timeRemaining).toBe(180);
+    expect(result.current.formattedTime).toBe("03:00");
+    expect(result.current.warningLevel).toBe("none");
+    expect(result.current.isTimeUp).toBe(false);
+  });
+
+  it("should format time correctly", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 65,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+
+    expect(result.current.formattedTime).toBe("01:05");
+  });
+
+  it("should countdown when not paused", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 10,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+
+    expect(result.current.timeRemaining).toBe(10);
+
+    // Advance time by 1 second (10 ticks of 100ms)
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    // Should have decreased
+    expect(result.current.timeRemaining).toBeLessThan(10);
+    expect(result.current.timeRemaining).toBeGreaterThan(8.5);
+  });
+
+  it("should pause countdown when isPaused is true", () => {
+    const { result, rerender } = renderHook(
+      ({ isPaused }) =>
+        useCombatTimer({
+          initialTime: 10,
+          isPaused,
+          onTimeUp: vi.fn(),
+        }),
+      {
+        initialProps: { isPaused: false },
+      }
+    );
+
+    // Let it countdown a bit
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    const timeBefore = result.current.timeRemaining;
+
+    // Pause
+    rerender({ isPaused: true });
+
+    // Advance time while paused
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    // Time should not change while paused
+    expect(result.current.timeRemaining).toBe(timeBefore);
+  });
+
+  it("should show warning level at 10 seconds", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 11,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+        warningThreshold: 10,
+        urgentThreshold: 5,
+      })
+    );
+
+    expect(result.current.warningLevel).toBe("none");
+
+    // Advance time to reach warning threshold
+    act(() => {
+      vi.advanceTimersByTime(1500); // 1.5 seconds
+    });
+
+    expect(result.current.warningLevel).toBe("warning");
+  });
+
+  it("should show urgent level at 5 seconds", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 6,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+        warningThreshold: 10,
+        urgentThreshold: 5,
+      })
+    );
+
+    expect(result.current.warningLevel).toBe("warning");
+
+    // Advance time to reach urgent threshold
+    act(() => {
+      vi.advanceTimersByTime(1500); // 1.5 seconds
+    });
+
+    expect(result.current.warningLevel).toBe("urgent");
+  });
+
+  it("should call onTimeUp when timer reaches 0", () => {
+    const onTimeUp = vi.fn();
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 1,
+        isPaused: false,
+        onTimeUp,
+      })
+    );
+
+    expect(onTimeUp).not.toHaveBeenCalled();
+
+    // Advance time to reach 0
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
+
+    expect(result.current.isTimeUp).toBe(true);
+    expect(result.current.timeRemaining).toBe(0);
+    expect(onTimeUp).toHaveBeenCalledTimes(1);
+  });
+
+  it("should reset when initialTime changes", () => {
+    const { result, rerender } = renderHook(
+      ({ initialTime }) =>
+        useCombatTimer({
+          initialTime,
+          isPaused: false,
+          onTimeUp: vi.fn(),
+        }),
+      {
+        initialProps: { initialTime: 10 },
+      }
+    );
+
+    // Let timer run
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    // Change initial time (new round)
+    rerender({ initialTime: 180 });
+
+    expect(result.current.timeRemaining).toBe(180);
+    expect(result.current.isTimeUp).toBe(false);
+    expect(result.current.formattedTime).toBe("03:00");
+  });
+
+  it("should handle custom warning thresholds", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 30,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+        warningThreshold: 20,
+        urgentThreshold: 10,
+      })
+    );
+
+    expect(result.current.warningLevel).toBe("none");
+
+    // At 19 seconds, should show warning
+    const { result: result2 } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 19,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+        warningThreshold: 20,
+        urgentThreshold: 10,
+      })
+    );
+
+    expect(result2.current.warningLevel).toBe("warning");
+
+    // At 9 seconds, should show urgent
+    const { result: result3 } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 9,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+        warningThreshold: 20,
+        urgentThreshold: 10,
+      })
+    );
+
+    expect(result3.current.warningLevel).toBe("urgent");
+  });
+
+  it("should not go below 0", () => {
+    const { result } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 0.5,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+
+    // Advance time beyond initial time
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(result.current.timeRemaining).toBeGreaterThanOrEqual(0);
+    expect(result.current.timeRemaining).toBeLessThanOrEqual(0.5);
+  });
+
+  it("should format time correctly for edge cases", () => {
+    // Test 0 seconds
+    const { result: result1 } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 0,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+    expect(result1.current.formattedTime).toBe("00:00");
+
+    // Test 59 seconds
+    const { result: result2 } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 59,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+    expect(result2.current.formattedTime).toBe("00:59");
+
+    // Test 60 seconds
+    const { result: result3 } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 60,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+    expect(result3.current.formattedTime).toBe("01:00");
+
+    // Test 599 seconds (9:59)
+    const { result: result4 } = renderHook(() =>
+      useCombatTimer({
+        initialTime: 599,
+        isPaused: false,
+        onTimeUp: vi.fn(),
+      })
+    );
+    expect(result4.current.formattedTime).toBe("09:59");
+  });
+});
