@@ -16,26 +16,20 @@ const REPORT_PATH = path.join(SCREENSHOTS_DIR, 'reports', 'ui-ux-analysis.md');
 const BOT_COMMENT_IDENTIFIER = '<!-- screenshot-analysis-bot-comment -->';
 
 interface GitHubAPIConfig {
-  token: string;
-  owner: string;
-  repo: string;
-  prNumber: number;
-  runId?: string;
+  readonly token: string;
+  readonly owner: string;
+  readonly repo: string;
+  readonly prNumber: number;
+  readonly runId?: string;
 }
 
-interface UploadedImage {
-  filename: string;
-  url: string;
-}
-
-interface GitHubUploadResponse {
-  url?: string;
-  browser_download_url?: string;
+interface ScreenshotInfo {
+  readonly filename: string;
 }
 
 interface GitHubComment {
-  id: number;
-  body?: string;
+  readonly id: number;
+  readonly body?: string;
 }
 
 /**
@@ -56,89 +50,26 @@ function getGitHubConfig(): GitHubAPIConfig {
   
   // Parse owner/repo from GITHUB_REPOSITORY or use defaults
   const repoEnv = process.env.GITHUB_REPOSITORY ?? 'Hack23/blacktrigram';
-  const [owner, repo] = repoEnv.split('/');
+  const parts = repoEnv.split('/');
+  if (parts.length !== 2) {
+    throw new Error(`Invalid GITHUB_REPOSITORY format: "${repoEnv}". Expected "owner/repo"`);
+  }
+  const [owner, repo] = parts;
+  
+  const parsedPrNumber = parseInt(prNumber, 10);
+  if (isNaN(parsedPrNumber) || parsedPrNumber <= 0) {
+    throw new Error(`Invalid PR number: "${prNumber}". Must be a positive integer`);
+  }
   
   return {
     token,
-    owner: owner ?? 'Hack23',
-    repo: repo ?? 'blacktrigram',
-    prNumber: parseInt(prNumber, 10),
+    owner,
+    repo,
+    prNumber: parsedPrNumber,
     runId,
   };
 }
 
-
-/**
- * Upload a screenshot to GitHub's CDN
- */
-async function uploadScreenshotToGitHub(
-  config: GitHubAPIConfig,
-  screenshotPath: string
-): Promise<string> {
-  const { token, owner, repo } = config;
-  const filename = path.basename(screenshotPath);
-  
-  console.log(`  📤 Uploading ${filename}...`);
-  
-  try {
-    // Read file
-    const fileBuffer = fs.readFileSync(screenshotPath);
-    
-    // Sanitize filename to prevent header injection attacks
-    const safeFilename = filename.replace(/[^\w.-]/g, '_');
-    
-    // Create proper form data for GitHub's upload API
-    const boundary = `----WebKitFormBoundary${Math.random().toString(36).substring(2)}`;
-    
-    const parts: Buffer[] = [];
-    parts.push(Buffer.from(`--${boundary}\r\n`));
-    parts.push(Buffer.from(`Content-Disposition: form-data; name="file"; filename="${safeFilename}"\r\n`));
-    parts.push(Buffer.from(`Content-Type: image/png\r\n\r\n`));
-    parts.push(fileBuffer);
-    parts.push(Buffer.from(`\r\n--${boundary}--\r\n`));
-    
-    const body = Buffer.concat(parts);
-    
-    // GitHub's undocumented asset upload endpoint for issues/PRs
-    // This is the same endpoint used by the web UI when drag-dropping images
-    const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/issues/assets`;
-    
-    console.log(`  📍 Uploading to: ${uploadUrl}`);
-    
-    const response = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Content-Type': `multipart/form-data; boundary=${boundary}`,
-        'Content-Length': body.length.toString(),
-      },
-      body: body,
-    });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`  ❌ Upload API error: ${response.status} ${response.statusText}`);
-      console.error(`  Response: ${errorText}`);
-      throw new Error(`Upload failed: ${response.status} ${response.statusText}\n${errorText}`);
-    }
-    
-    const result = await response.json() as GitHubUploadResponse;
-    console.log(`  ✅ Uploaded: ${filename}`);
-    console.log(`  📎 CDN URL: ${result.url ?? result.browser_download_url}`);
-    
-    const cdnUrl = result.url ?? result.browser_download_url;
-    if (!cdnUrl) {
-      throw new Error(`Upload succeeded but no URL returned for ${filename}`);
-    }
-    return cdnUrl;
-    
-  } catch (error) {
-    console.warn(`  ⚠️ Failed to upload ${filename}:`, error);
-    throw error;
-  }
-}
 
 /**
  * Find existing bot comment on the PR
@@ -188,59 +119,34 @@ async function findExistingBotComment(
 }
 
 /**
- * Create or update PR comment with uploaded screenshots
+ * Create or update PR comment with screenshot list and artifact links
  */
 async function createOrUpdatePRComment(
   config: GitHubAPIConfig,
   reportContent: string,
-  uploadedImages: UploadedImage[]
+  screenshots: ScreenshotInfo[]
 ): Promise<void> {
   const { token, owner, repo, prNumber, runId } = config;
   
   console.log('\n📝 Creating/updating PR comment...');
   
   try {
-    // Build comment body with embedded uploaded screenshots
+    // Build comment body with screenshot list and artifact links
     let commentBody = `${BOT_COMMENT_IDENTIFIER}\n\n`;
     commentBody += `## 📸 Automated UI/UX Screenshot Analysis\n\n`;
     commentBody += `This comment contains automated screenshots of all major screens in the application.\n\n`;
     
-    if (uploadedImages.length > 0) {
-      commentBody += `### 🎯 Quick Preview\n\n`;
+    if (screenshots.length > 0) {
+      commentBody += `### 📋 Screenshots Captured\n\n`;
       
-      // Add thumbnail grid
-      commentBody += `<table>\n`;
-      commentBody += `<tr>\n`;
+      screenshots.forEach(screenshot => {
+        const displayName = screenshot.filename.replace('.png', '').replace(/-/g, ' ');
+        commentBody += `- **${displayName}** (${screenshot.filename})\n`;
+      });
       
-      for (let i = 0; i < uploadedImages.length; i += 4) {
-        const row = uploadedImages.slice(i, i + 4);
-        row.forEach(img => {
-          // Validate URL is from GitHub's CDN for security
-          const isValidGitHubUrl = img.url.startsWith('https://user-images.githubusercontent.com/') || 
-                                   img.url.startsWith('https://github.com/');
-          
-          if (!isValidGitHubUrl) {
-            console.warn(`Skipping potentially unsafe URL: ${img.url}`);
-            return;
-          }
-          
-          commentBody += `<td width="25%"><img src="${img.url}" width="100%" /></td>\n`;
-        });
-        commentBody += `</tr>\n<tr>\n`;
-        row.forEach(img => {
-          const displayName = img.filename.replace('.png', '').replace(/-/g, ' ');
-          commentBody += `<td align="center"><small>${displayName}</small></td>\n`;
-        });
-        commentBody += `</tr>\n`;
-        
-        if (i + 4 < uploadedImages.length) {
-          commentBody += `<tr>\n`;
-        }
-      }
-      
-      commentBody += `</table>\n\n`;
+      commentBody += `\n`;
     } else {
-      commentBody += `⚠️ No screenshots were uploaded. Check the workflow logs.\n\n`;
+      commentBody += `⚠️ No screenshots were captured. Check the workflow logs.\n\n`;
     }
     
     commentBody += `### 📊 Detailed Analysis\n\n`;
@@ -251,7 +157,9 @@ async function createOrUpdatePRComment(
     // Add artifact download link
     if (runId) {
       commentBody += `### 📦 Download Screenshots\n\n`;
-      commentBody += `[Download all screenshots as artifacts](https://github.com/${owner}/${repo}/actions/runs/${runId})\n\n`;
+      commentBody += `All screenshots are available as workflow artifacts. [Download screenshots from this workflow run](https://github.com/${owner}/${repo}/actions/runs/${runId})\n\n`;
+      commentBody += `> **Note**: GitHub does not provide a public API for uploading images to PR comments. `;
+      commentBody += `Screenshots are preserved as workflow artifacts for ${30} days and can be downloaded from the link above.\n\n`;
     }
     
     commentBody += `---\n\n`;
@@ -355,35 +263,16 @@ async function main() {
     
     console.log(`  ✅ Found ${screenshotPaths.length} screenshots\n`);
     
-    // Upload screenshots to GitHub CDN
-    const uploadedImages: UploadedImage[] = [];
+    // Note: GitHub does not provide a public API for uploading issue/PR attachments
+    // We'll create a comment with artifact download links instead
+    console.log('📦 Using artifact links for screenshots (GitHub does not provide upload API)\n');
     
-    if (screenshotPaths.length > 0) {
-      console.log('📤 Uploading screenshots to GitHub CDN...');
-      
-      for (const screenshotPath of screenshotPaths) {
-        try {
-          const url = await uploadScreenshotToGitHub(config, screenshotPath);
-          uploadedImages.push({
-            filename: path.basename(screenshotPath),
-            url,
-          });
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
-          console.error(`  ❌ Failed to upload ${path.basename(screenshotPath)}: ${errorMessage}`);
-          // Continue with other uploads
-        }
-      }
-      
-      console.log(`\n  ✅ Successfully uploaded ${uploadedImages.length}/${screenshotPaths.length} screenshots\n`);
-      
-      if (uploadedImages.length === 0) {
-        console.warn('  ⚠️ No screenshots were uploaded successfully. Will still post comment with artifact link.\n');
-      }
-    }
+    const screenshotList: { filename: string }[] = screenshotPaths.map(p => ({
+      filename: path.basename(p),
+    }));
     
-    // Create or update PR comment
-    await createOrUpdatePRComment(config, reportContent, uploadedImages);
+    // Create or update PR comment with artifact links
+    await createOrUpdatePRComment(config, reportContent, screenshotList);
     
     console.log('\n✅ Successfully posted screenshots to PR!');
     
