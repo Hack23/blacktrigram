@@ -112,6 +112,52 @@ describe("useCombatTimer", () => {
     expect(result.current.timeRemaining).toBe(timeBefore);
   });
 
+  it("should resume countdown after being paused", () => {
+    const { result, rerender } = renderHook(
+      ({ isPaused }) =>
+        useCombatTimer({
+          initialTime: 10,
+          isPaused,
+          onTimeUp: vi.fn(),
+        }),
+      {
+        initialProps: { isPaused: false },
+      }
+    );
+
+    // Let it countdown a bit (should be around 9.5s)
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    const timeAfterFirstCountdown = result.current.timeRemaining;
+    expect(timeAfterFirstCountdown).toBeLessThan(10);
+    expect(timeAfterFirstCountdown).toBeGreaterThan(9);
+
+    // Pause
+    rerender({ isPaused: true });
+
+    // Advance time while paused (time shouldn't change)
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    const timeDuringPause = result.current.timeRemaining;
+    expect(timeDuringPause).toBe(timeAfterFirstCountdown);
+
+    // Resume
+    rerender({ isPaused: false });
+
+    // Advance time after resuming (should continue from paused time)
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    const timeAfterResume = result.current.timeRemaining;
+    expect(timeAfterResume).toBeLessThan(timeDuringPause);
+    expect(timeAfterResume).toBeGreaterThan(timeDuringPause - 1.5);
+  });
+
   it("should show warning level at 10 seconds", () => {
     const { result } = renderHook(() =>
       useCombatTimer({

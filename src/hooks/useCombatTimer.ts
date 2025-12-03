@@ -153,7 +153,7 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
       setTimeRemaining(next);
 
       // Check if time just reached 0
-      if (next === 0 && !isTimeUp) {
+      if (next <= 0 && !isTimeUp) {
         setIsTimeUp(true);
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
