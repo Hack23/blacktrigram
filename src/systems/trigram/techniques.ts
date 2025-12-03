@@ -6,6 +6,7 @@ import { KoreanTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
+  PlayerArchetype,
   TrigramStance,
 } from "../../types/common";
 
@@ -1782,6 +1783,534 @@ export const TECHNIQUE_DIFFICULTY_LEVELS = {
   },
 } as const;
 
+// ============= 🌑 DARK OPS UNIT TECHNIQUES (암흑작전부대 기술) =============
+// Korean Special Operations Dark Ops techniques for 암살자 (Amsalja) archetype
+// Based on 5 specialized Korean Dark Ops units with silent incapacitation focus
+
+/**
+ * Dark Ops unit specializations (암흑작전 부대 특화)
+ */
+export const DARK_OPS_UNITS = {
+  DARK_OPERATIONS: "암흑작전부대", // Dark Operations Unit
+  SHADOW_COMMANDO: "암흑특공대", // Shadow Commando Brigade
+  NIGHTFALL_SQUADRON: "심야작전부대", // Nightfall Infiltration Squadron
+  BLACK_OPS_TASK_FORCE: "블랙옵스부대", // Black Ops Task Force
+  DEEP_SEA_UNIT: "심해침투부대", // Deep Sea Infiltration Unit
+} as const;
+
+/**
+ * Dark Ops techniques array - Silent incapacitation and tactical assassination
+ * Designed for 암살자 (Amsalja) archetype with +30% effectiveness bonus
+ */
+export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
+  // ===== 암흑작전부대 (Dark Operations Unit) - Silent Infiltration =====
+  {
+    id: "darkops_silent_carotid",
+    name: {
+      korean: "은밀 경동맥 차단",
+      english: "Silent Carotid Strike",
+      romanized: "Eunmil Gyeongdongmaek Chadan",
+    },
+    koreanName: "은밀 경동맥 차단",
+    englishName: "Silent Carotid Strike",
+    romanized: "Eunmil Gyeongdongmaek Chadan",
+    description: {
+      korean: "경동맥을 압박하여 소리 없이 실신시킴. 3초 내 무의식 유발. 암흑작전부대의 침투 기술.",
+      english: "Silent carotid compression causing unconsciousness within 3 seconds. Dark Operations Unit infiltration technique.",
+    },
+    stance: TrigramStance.GAM, // Water (adaptive)
+    type: CombatAttackType.PRESSURE_POINT,
+    damageType: DamageType.PRESSURE,
+    damage: 28,
+    kiCost: 30,
+    staminaCost: 25,
+    accuracy: 0.92,
+    range: 0.8,
+    executionTime: 600,
+    recoveryTime: 1000,
+    critChance: 0.25,
+    critMultiplier: 2.0,
+    effects: [],
+  },
+  {
+    id: "darkops_nerve_paralysis",
+    name: {
+      korean: "신경마비타격",
+      english: "Nerve Paralysis Strike",
+      romanized: "Singyeong Mabi Tagyeok",
+    },
+    koreanName: "신경마비타격",
+    englishName: "Nerve Paralysis Strike",
+    romanized: "Singyeong Mabi Tagyeok",
+    description: {
+      korean: "신경총을 정밀 타격하여 사지 마비 유발. 블랙옵스 기술 강화.",
+      english: "Precise nerve cluster strike causing limb paralysis. Black Ops tech-enhanced technique.",
+    },
+    stance: TrigramStance.LI, // Fire (precision)
+    type: CombatAttackType.NERVE_STRIKE,
+    damageType: DamageType.NERVE,
+    damage: 26,
+    kiCost: 25,
+    staminaCost: 20,
+    accuracy: 0.95,
+    range: 1.0,
+    executionTime: 500,
+    recoveryTime: 900,
+    critChance: 0.30,
+    critMultiplier: 2.2,
+    effects: [],
+  },
+  
+  // ===== 암흑특공대 (Shadow Commando Brigade) - Demolition Tactics =====
+  {
+    id: "darkops_liver_disruption",
+    name: {
+      korean: "간장타격",
+      english: "Liver Disruption Strike",
+      romanized: "Ganjang Tagyeok",
+    },
+    koreanName: "간장타격",
+    englishName: "Liver Disruption Strike",
+    romanized: "Ganjang Tagyeok",
+    description: {
+      korean: "간을 강타하여 내부 출혈과 급격한 체력 소진 유발. 암흑특공대 폭파 전술.",
+      english: "Powerful liver strike causing internal trauma and rapid stamina drain. Shadow Commando explosive tactic.",
+    },
+    stance: TrigramStance.JIN, // Thunder (explosive power)
+    type: CombatAttackType.STRIKE,
+    damageType: DamageType.INTERNAL,
+    damage: 35,
+    kiCost: 28,
+    staminaCost: 30,
+    accuracy: 0.85,
+    range: 1.2,
+    executionTime: 700,
+    recoveryTime: 1100,
+    critChance: 0.22,
+    critMultiplier: 2.1,
+    effects: [],
+  },
+  {
+    id: "darkops_kidney_strike",
+    name: {
+      korean: "신장충격",
+      english: "Kidney Shock",
+      romanized: "Sinjang Chunggyeok",
+    },
+    koreanName: "신장충격",
+    englishName: "Kidney Shock",
+    romanized: "Sinjang Chunggyeok",
+    description: {
+      korean: "신장을 타격하여 극심한 고통과 일시적 마비 유발. 폭발적 힘의 암흑특공대 기술.",
+      english: "Kidney strike causing severe pain and temporary paralysis. Shadow Commando explosive force technique.",
+    },
+    stance: TrigramStance.JIN, // Thunder (explosive)
+    type: CombatAttackType.STRIKE,
+    damageType: DamageType.INTERNAL,
+    damage: 33,
+    kiCost: 26,
+    staminaCost: 28,
+    accuracy: 0.82,
+    range: 1.1,
+    executionTime: 650,
+    recoveryTime: 1050,
+    critChance: 0.20,
+    critMultiplier: 2.0,
+    effects: [],
+  },
+  
+  // ===== 심야작전부대 (Nightfall Squadron) - Night Operations =====
+  {
+    id: "darkops_throat_strike",
+    name: {
+      korean: "후두차단",
+      english: "Throat Disruption",
+      romanized: "Hudu Chadan",
+    },
+    koreanName: "후두차단",
+    englishName: "Throat Disruption",
+    romanized: "Hudu Chadan",
+    description: {
+      korean: "후두를 타격하여 호흡 곤란과 발성 불가 유발. 심야작전부대의 무음 제압술.",
+      english: "Throat strike causing breathing difficulty and voice loss. Nightfall Squadron silent suppression technique.",
+    },
+    stance: TrigramStance.SON, // Wind (continuous pressure)
+    type: CombatAttackType.STRIKE,
+    damageType: DamageType.PRESSURE,
+    damage: 30,
+    kiCost: 24,
+    staminaCost: 22,
+    accuracy: 0.88,
+    range: 0.9,
+    executionTime: 550,
+    recoveryTime: 950,
+    critChance: 0.24,
+    critMultiplier: 2.1,
+    effects: [],
+  },
+  {
+    id: "darkops_solar_plexus_paralyze",
+    name: {
+      korean: "명치마비",
+      english: "Solar Plexus Paralysis",
+      romanized: "Myeongchi Mabi",
+    },
+    koreanName: "명치마비",
+    englishName: "Solar Plexus Paralysis",
+    romanized: "Myeongchi Mabi",
+    description: {
+      korean: "명치를 정밀 타격하여 횡격막 마비와 호흡 정지. 심야작전부대 야간 전술.",
+      english: "Precise solar plexus strike causing diaphragm paralysis and breath cessation. Nightfall Squadron night tactic.",
+    },
+    stance: TrigramStance.LI, // Fire (precision)
+    type: CombatAttackType.THRUST,
+    damageType: DamageType.NERVE,
+    damage: 32,
+    kiCost: 28,
+    staminaCost: 24,
+    accuracy: 0.90,
+    range: 1.0,
+    executionTime: 600,
+    recoveryTime: 1000,
+    critChance: 0.26,
+    critMultiplier: 2.2,
+    effects: [],
+  },
+  
+  // ===== 블랙옵스부대 (Black Ops Task Force) - Cyber-Enhanced Combat =====
+  {
+    id: "darkops_brachial_plexus_strike",
+    name: {
+      korean: "상완신경타격",
+      english: "Brachial Plexus Strike",
+      romanized: "Sangwan Singyeong Tagyeok",
+    },
+    koreanName: "상완신경타격",
+    englishName: "Brachial Plexus Strike",
+    romanized: "Sangwan Singyeong Tagyeok",
+    description: {
+      korean: "상완 신경총을 타격하여 팔 전체 마비. 블랙옵스 사이버 분석 기반 정밀 타격.",
+      english: "Brachial plexus strike causing complete arm paralysis. Black Ops cyber-analysis precision targeting.",
+    },
+    stance: TrigramStance.LI, // Fire (precision)
+    type: CombatAttackType.NERVE_STRIKE,
+    damageType: DamageType.NERVE,
+    damage: 28,
+    kiCost: 26,
+    staminaCost: 20,
+    accuracy: 0.94,
+    range: 1.1,
+    executionTime: 550,
+    recoveryTime: 900,
+    critChance: 0.28,
+    critMultiplier: 2.3,
+    effects: [],
+  },
+  {
+    id: "darkops_femoral_nerve_strike",
+    name: {
+      korean: "대퇴신경타격",
+      english: "Femoral Nerve Strike",
+      romanized: "Daetoe Singyeong Tagyeok",
+    },
+    koreanName: "대퇴신경타격",
+    englishName: "Femoral Nerve Strike",
+    romanized: "Daetoe Singyeong Tagyeok",
+    description: {
+      korean: "대퇴 신경을 타격하여 다리 이동 불가. 블랙옵스 디지털 표적 지정.",
+      english: "Femoral nerve strike disabling leg mobility. Black Ops digital targeting system.",
+    },
+    stance: TrigramStance.LI, // Fire (precision)
+    type: CombatAttackType.KICK,
+    damageType: DamageType.NERVE,
+    damage: 30,
+    kiCost: 24,
+    staminaCost: 26,
+    accuracy: 0.90,
+    range: 1.4,
+    executionTime: 600,
+    recoveryTime: 1000,
+    critChance: 0.24,
+    critMultiplier: 2.1,
+    effects: [],
+  },
+  
+  // ===== 심해침투부대 (Deep Sea Unit) - Amphibious Combat =====
+  {
+    id: "darkops_rear_choke",
+    name: {
+      korean: "후방목졸임",
+      english: "Rear Naked Choke",
+      romanized: "Hubang Mokjorim",
+    },
+    koreanName: "후방목졸임",
+    englishName: "Rear Naked Choke",
+    romanized: "Hubang Mokjorim",
+    description: {
+      korean: "후방에서 목을 조여 혈류 차단과 의식 상실. 심해침투부대 수중 전투 기술.",
+      english: "Rear choke cutting blood flow and causing unconsciousness. Deep Sea Unit underwater combat technique.",
+    },
+    stance: TrigramStance.GAM, // Water (adaptive)
+    type: CombatAttackType.GRAPPLE,
+    damageType: DamageType.PRESSURE,
+    damage: 34,
+    kiCost: 30,
+    staminaCost: 32,
+    accuracy: 0.86,
+    range: 0.7,
+    executionTime: 800,
+    recoveryTime: 1200,
+    critChance: 0.22,
+    critMultiplier: 2.0,
+    effects: [],
+  },
+  {
+    id: "darkops_spinal_strike",
+    name: {
+      korean: "척추타격",
+      english: "Spinal Column Strike",
+      romanized: "Cheokchu Tagyeok",
+    },
+    koreanName: "척추타격",
+    englishName: "Spinal Column Strike",
+    romanized: "Cheokchu Tagyeok",
+    description: {
+      korean: "척추를 타격하여 전신 마비와 의식 상실. 심해침투부대 치명적 기술.",
+      english: "Spinal column strike causing full-body paralysis and unconsciousness. Deep Sea Unit lethal technique.",
+    },
+    stance: TrigramStance.GEON, // Heaven (direct force)
+    type: CombatAttackType.STRIKE,
+    damageType: DamageType.NERVE,
+    damage: 40,
+    kiCost: 35,
+    staminaCost: 35,
+    accuracy: 0.78,
+    range: 1.0,
+    executionTime: 750,
+    recoveryTime: 1150,
+    critChance: 0.30,
+    critMultiplier: 2.5,
+    effects: [],
+  },
+  
+  // ===== Additional Dark Ops Techniques - Mixed Units =====
+  {
+    id: "darkops_jaw_dislocation",
+    name: {
+      korean: "턱탈구",
+      english: "Jaw Dislocation",
+      romanized: "Teok Talgu",
+    },
+    koreanName: "턱탈구",
+    englishName: "Jaw Dislocation",
+    romanized: "Teok Talgu",
+    description: {
+      korean: "턱을 비틀어 탈구시키고 의식 혼미. 암흑작전부대 신속 무력화.",
+      english: "Twisting jaw causing dislocation and disorientation. Dark Operations rapid incapacitation.",
+    },
+    stance: TrigramStance.TAE, // Lake (joint manipulation)
+    type: CombatAttackType.GRAPPLE,
+    damageType: DamageType.JOINT,
+    damage: 30,
+    kiCost: 22,
+    staminaCost: 24,
+    accuracy: 0.88,
+    range: 0.8,
+    executionTime: 600,
+    recoveryTime: 1000,
+    critChance: 0.24,
+    critMultiplier: 2.0,
+    effects: [],
+  },
+  {
+    id: "darkops_temple_strike",
+    name: {
+      korean: "관자놀이급타",
+      english: "Temple Knockout Strike",
+      romanized: "Gwanja-nori Geubta",
+    },
+    koreanName: "관자놀이급타",
+    englishName: "Temple Knockout Strike",
+    romanized: "Gwanja-nori Geubta",
+    description: {
+      korean: "관자놀이를 정확히 타격하여 즉시 의식 상실. 블랙옵스 치명 타격.",
+      english: "Precise temple strike causing immediate unconsciousness. Black Ops lethal targeting.",
+    },
+    stance: TrigramStance.LI, // Fire (precision)
+    type: CombatAttackType.STRIKE,
+    damageType: DamageType.BLUNT,
+    damage: 38,
+    kiCost: 32,
+    staminaCost: 28,
+    accuracy: 0.92,
+    range: 1.1,
+    executionTime: 550,
+    recoveryTime: 950,
+    critChance: 0.32,
+    critMultiplier: 2.4,
+    effects: [],
+  },
+  {
+    id: "darkops_achilles_sever",
+    name: {
+      korean: "아킬레스절단",
+      english: "Achilles Tendon Sever",
+      romanized: "Akilles Jeoldan",
+    },
+    koreanName: "아킬레스절단",
+    englishName: "Achilles Tendon Sever",
+    romanized: "Akilles Jeoldan",
+    description: {
+      korean: "아킬레스건을 공격하여 이동 불가. 암흑특공대 무력화 기술.",
+      english: "Achilles tendon strike disabling mobility. Shadow Commando incapacitation technique.",
+    },
+    stance: TrigramStance.GON, // Earth (ground techniques)
+    type: CombatAttackType.KICK,
+    damageType: DamageType.SLASHING,
+    damage: 32,
+    kiCost: 26,
+    staminaCost: 28,
+    accuracy: 0.84,
+    range: 1.3,
+    executionTime: 650,
+    recoveryTime: 1050,
+    critChance: 0.26,
+    critMultiplier: 2.2,
+    effects: [],
+  },
+  {
+    id: "darkops_ear_strike",
+    name: {
+      korean: "귓바퀴타격",
+      english: "Ear Box Strike",
+      romanized: "Gwitbakwi Tagyeok",
+    },
+    koreanName: "귓바퀴타격",
+    englishName: "Ear Box Strike",
+    romanized: "Gwitbakwi Tagyeok",
+    description: {
+      korean: "양쪽 귀를 동시 타격하여 고막 파열과 평형 상실. 심야작전부대 방향 감각 교란.",
+      english: "Simultaneous ear strikes rupturing eardrums and disrupting balance. Nightfall Squadron disorientation tactic.",
+    },
+    stance: TrigramStance.SON, // Wind (continuous pressure)
+    type: CombatAttackType.STRIKE,
+    damageType: DamageType.BLUNT,
+    damage: 28,
+    kiCost: 24,
+    staminaCost: 22,
+    accuracy: 0.86,
+    range: 0.9,
+    executionTime: 500,
+    recoveryTime: 900,
+    critChance: 0.22,
+    critMultiplier: 2.0,
+    effects: [],
+  },
+  {
+    id: "darkops_eye_gouge",
+    name: {
+      korean: "안구공격",
+      english: "Eye Strike",
+      romanized: "Angu Gonggyeok",
+    },
+    koreanName: "안구공격",
+    englishName: "Eye Strike",
+    romanized: "Angu Gonggyeok",
+    description: {
+      korean: "눈을 정밀 공격하여 시각 상실과 전투 무력화. 암살자 특화 치명 기술.",
+      english: "Precise eye strike causing vision loss and combat incapacitation. Assassin specialty lethal technique.",
+    },
+    stance: TrigramStance.LI, // Fire (precision)
+    type: CombatAttackType.THRUST,
+    damageType: DamageType.PIERCING,
+    damage: 36,
+    kiCost: 30,
+    staminaCost: 26,
+    accuracy: 0.90,
+    range: 1.0,
+    executionTime: 500,
+    recoveryTime: 900,
+    critChance: 0.30,
+    critMultiplier: 2.4,
+    effects: [],
+  },
+] as const;
+
+/**
+ * Dark Ops archetype bonus configuration
+ * 암살자 (Amsalja) gets +30% effectiveness with all Dark Ops techniques
+ */
+export const DARK_OPS_ARCHETYPE_BONUSES: Record<PlayerArchetype, number> = {
+  [PlayerArchetype.AMSALJA]: 1.3, // +30% for Shadow Assassin archetype
+  [PlayerArchetype.JEONGBO_YOWON]: 1.15, // +15% for Intelligence Operative
+  [PlayerArchetype.HACKER]: 1.10, // +10% for Cyber Warrior (tech synergy)
+  [PlayerArchetype.MUSA]: 0.85, // -15% for Traditional Warrior (dishonorable)
+  [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1.05, // +5% for Organized Crime (ruthless)
+} as const;
+
+/**
+ * Dark Ops night operations bonus
+ * Time-of-day effectiveness multiplier (simulated)
+ */
+export const DARK_OPS_NIGHT_BONUS = {
+  night: 1.25, // +25% at night (00:00 - 06:00, 18:00 - 23:59)
+  day: 1.0, // Normal during day (06:00 - 18:00)
+  twilight: 1.15, // +15% during twilight (05:00 - 07:00, 17:00 - 19:00)
+} as const;
+
+/**
+ * Dark Ops special effects configuration
+ */
+export const DARK_OPS_SPECIAL_EFFECTS = {
+  silent: {
+    korean: "무음 공격",
+    english: "Silent Attack",
+    description: {
+      korean: "적에게 경보를 발생시키지 않음",
+      english: "Does not alert enemies",
+    },
+    noAlert: true,
+  },
+  paralysis: {
+    korean: "마비",
+    english: "Paralysis",
+    description: {
+      korean: "일시적 또는 영구적 사지 마비",
+      english: "Temporary or permanent limb paralysis",
+    },
+    duration: 3000, // 3 seconds
+  },
+  unconsciousness: {
+    korean: "의식 상실",
+    english: "Unconsciousness",
+    description: {
+      korean: "즉시 의식을 잃음",
+      english: "Immediate loss of consciousness",
+    },
+    duration: 5000, // 5 seconds
+  },
+  breathingDifficulty: {
+    korean: "호흡 곤란",
+    english: "Breathing Difficulty",
+    description: {
+      korean: "호흡 재생 -75%",
+      english: "Breathing regen -75%",
+    },
+    staminaRegenPenalty: -0.75,
+    duration: 5000, // 5 seconds
+  },
+  disorientation: {
+    korean: "방향 감각 상실",
+    english: "Disorientation",
+    description: {
+      korean: "정확도 -50%",
+      english: "Accuracy -50%",
+    },
+    accuracyPenalty: -0.5,
+    duration: 4000, // 4 seconds
+  },
+} as const;
+
 // Korean trigram technique properties (팔괘 기법 특성)
 export const TRIGRAM_TECHNIQUE_PROPERTIES = {
   geon: {
@@ -1875,6 +2404,7 @@ export const ARCHETYPE_TECHNIQUE_BONUSES = {
       damageResistance: 1.2,
       jointTechniques: 1.5,
       militaryDiscipline: 1.3,
+      darkOpsEffectiveness: 0.85, // -15% for dishonorable techniques
       // Retaining original fields for compatibility, adjust as needed
       damageBonus: 1.2,
       accuracyBonus: 1.1,
@@ -1888,23 +2418,26 @@ export const ARCHETYPE_TECHNIQUE_BONUSES = {
     english: "Shadow Assassin",
     philosophy: "Efficiency through invisibility, one perfect strike",
     combatStyle: "Stealth approaches, instant takedowns",
-    preferredTrigrams: ["son", "gam"],
+    preferredTrigrams: ["son", "gam", "li"], // Added 'li' for precision
     techniques: {
       무성제압: "Silent takedowns preventing vocal response",
       신경파괴: "Precise neural disruption for stealth",
       호흡차단: "Silent breathing and consciousness targeting",
+      암흑작전: "Dark Ops techniques for silent incapacitation",
     },
     bonuses: {
       stealthMultiplier: 1.8,
       oneStrikeKill: 2.0,
       silentMovement: 1.5,
+      darkOpsEffectiveness: 1.3, // +30% for Dark Ops techniques
+      nightOperationsBonus: 1.25, // +25% at night
       // Retaining original fields for compatibility, adjust as needed
       damageBonus: 1.5,
       accuracyBonus: 1.3,
       kiEfficiency: 1.2,
       staminaEfficiency: 0.9,
     },
-    preferredTechniques: ["nerve_strike", "pressure_point", "thrust"], // Kept for potential compatibility
+    preferredTechniques: ["nerve_strike", "pressure_point", "thrust", "darkops"], // Added 'darkops'
   },
   hacker: {
     korean: "해커",
@@ -1916,11 +2449,13 @@ export const ARCHETYPE_TECHNIQUE_BONUSES = {
       해부학적분석: "Data-driven approach to vital points",
       생체역학파괴: "Tech-enhanced body mechanics understanding",
       체계적제압: "Algorithm-based damage accumulation",
+      디지털타격: "Digital targeting systems for Dark Ops",
     },
     bonuses: {
       precisionAnalysis: 1.6,
       environmentalControl: 1.4,
       dataOptimization: 1.3,
+      darkOpsEffectiveness: 1.10, // +10% for tech-enhanced Dark Ops
       // Retaining original fields for compatibility, adjust as needed
       damageBonus: 1.1,
       accuracyBonus: 1.4,
@@ -1939,11 +2474,13 @@ export const ARCHETYPE_TECHNIQUE_BONUSES = {
       고통순응: "Intelligence-based submission through pain",
       심리적압박: "Mental intimidation through technique",
       정보추출: "Combat methods from interrogation training",
+      첩보전술: "Espionage tactics and Dark Ops methods",
     },
     bonuses: {
       psychologicalWarfare: 1.5,
       strategicAnalysis: 1.4,
       painCompliance: 1.7,
+      darkOpsEffectiveness: 1.15, // +15% for espionage Dark Ops
       // Retaining original fields for compatibility, adjust as needed
       damageBonus: 1.1,
       accuracyBonus: 1.2,
@@ -1962,11 +2499,13 @@ export const ARCHETYPE_TECHNIQUE_BONUSES = {
       환경활용: "Street-smart use of surroundings as weapons",
       더러운기법: "Brutal eye attacks, groin strikes, hair pulling",
       생존격투: "Underground whatever-it-takes combat",
+      무자비술: "Ruthless Dark Ops adaptations",
     },
     bonuses: {
       dirtyFighting: 1.8,
       survivalInstinct: 1.6,
       streetSmart: 1.5,
+      darkOpsEffectiveness: 1.05, // +5% for ruthless Dark Ops
       // Retaining original fields for compatibility, adjust as needed
       damageBonus: 1.3,
       accuracyBonus: 0.9,

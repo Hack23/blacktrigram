@@ -1,9 +1,13 @@
-import { PlayerArchetype, TrigramStance } from "../../types";
-import { TrigramStance as TrigramStanceEnum } from "../../types/common";
+import { PlayerArchetype } from "../../types";
+import { TrigramStance } from "../../types/common";
 import { PlayerState } from "../player";
 import { PLAYER_ARCHETYPES_DATA } from "../types";
 import { KoreanTechnique } from "../vitalpoint";
-import { TRIGRAM_TECHNIQUES } from "./techniques";
+import {
+  DARK_OPS_ARCHETYPE_BONUSES,
+  DARK_OPS_TECHNIQUES,
+  TRIGRAM_TECHNIQUES,
+} from "./techniques";
 
 /**
  * Korean martial arts techniques system
@@ -16,6 +20,34 @@ export class KoreanTechniquesSystem {
     stance: TrigramStance
   ): readonly KoreanTechnique[] {
     return (TRIGRAM_TECHNIQUES[stance] as readonly KoreanTechnique[]) || [];
+  }
+
+  /**
+   * Get Dark Ops techniques (암흑작전부대 기술)
+   * Specialized techniques for 암살자 (Amsalja) archetype
+   */
+  static getDarkOpsTechniques(): readonly KoreanTechnique[] {
+    return DARK_OPS_TECHNIQUES;
+  }
+
+  /**
+   * Get all available techniques including Dark Ops
+   */
+  static getAllAvailableTechniques(
+    stance: TrigramStance,
+    archetype?: PlayerArchetype
+  ): readonly KoreanTechnique[] {
+    const stanceTechniques = this.getAvailableTechniques(stance);
+    
+    // Add Dark Ops techniques for 암살자 (Amsalja) archetype
+    if (archetype === PlayerArchetype.AMSALJA) {
+      const darkOpsTechniques = DARK_OPS_TECHNIQUES.filter(
+        (tech) => tech.stance === stance
+      );
+      return [...stanceTechniques, ...darkOpsTechniques];
+    }
+    
+    return stanceTechniques;
   }
 
   /**
@@ -57,7 +89,9 @@ export class KoreanTechniquesSystem {
    */
   static getAllTechniques(): KoreanTechnique[] {
     // Fix: Convert readonly array to mutable array using spread operator
-    return [...Object.values(TRIGRAM_TECHNIQUES).flat()] as KoreanTechnique[];
+    const stanceTechniques = Object.values(TRIGRAM_TECHNIQUES).flat();
+    const darkOpsTechniques = [...DARK_OPS_TECHNIQUES];
+    return [...stanceTechniques, ...darkOpsTechniques] as KoreanTechnique[];
   }
 
   static getTechniquesByArchetype(
@@ -69,14 +103,57 @@ export class KoreanTechniquesSystem {
     const archetypeData = PLAYER_ARCHETYPES_DATA[archetype]; // Fix: Now properly imported
     const favoredStances = archetypeData.favoredStances || [];
 
-    return allTechniques.filter((technique) =>
-      favoredStances.includes(technique.stance)
-    );
+    // Filter by favored stances (excludes Dark Ops techniques initially)
+    const filteredTechniques = allTechniques.filter((technique) => {
+      // Exclude Dark Ops from initial filtering
+      if (technique.id.startsWith("darkops_")) {
+        return false;
+      }
+      return favoredStances.includes(technique.stance);
+    });
+
+    // Add Dark Ops techniques for 암살자 (Amsalja) only
+    if (archetype === PlayerArchetype.AMSALJA) {
+      return [...filteredTechniques, ...DARK_OPS_TECHNIQUES];
+    }
+
+    return filteredTechniques;
   }
 
   static getTechniqueById(id: string): KoreanTechnique | undefined {
     const allTechniques = this.getAllTechniques();
     return allTechniques.find((technique) => technique.id === id);
+  }
+
+  /**
+   * Check if technique is a Dark Ops technique
+   */
+  static isDarkOpsTechnique(techniqueId: string): boolean {
+    return DARK_OPS_TECHNIQUES.some((tech) => tech.id === techniqueId);
+  }
+
+  /**
+   * Get Dark Ops archetype effectiveness multiplier
+   * Uses DARK_OPS_ARCHETYPE_BONUSES from techniques.ts
+   */
+  static getDarkOpsArchetypeBonus(archetype: PlayerArchetype): number {
+    return DARK_OPS_ARCHETYPE_BONUSES[archetype] || 1.0;
+  }
+
+  /**
+   * Get night operations bonus (simulated)
+   * In a full game, this would use actual game time
+   */
+  static getNightOperationsBonus(): number {
+    // Simulate night time for now (in real game, use game clock)
+    // Night: 00:00-06:00, 18:00-23:59 = 1.25x
+    // Day: 06:00-18:00 = 1.0x
+    const hour = new Date().getHours();
+    if (hour >= 0 && hour < 6) return 1.25; // Night
+    if (hour >= 18 && hour < 24) return 1.25; // Night
+    if (hour >= 5 && hour < 7) return 1.15; // Twilight
+    if (hour >= 17 && hour < 19) return 1.15; // Twilight
+    return 1.0; // Day
   }
 }
 
@@ -91,43 +168,51 @@ export function getTechniquesByStance(
 }
 
 // Export TRIGRAM_TECHNIQUES for tests
-export { TRIGRAM_TECHNIQUES } from "./techniques";
+export { DARK_OPS_TECHNIQUES, TRIGRAM_TECHNIQUES } from "./techniques";
+
+// Export Dark Ops constants
+export {
+  DARK_OPS_UNITS,
+  DARK_OPS_ARCHETYPE_BONUSES,
+  DARK_OPS_NIGHT_BONUS,
+  DARK_OPS_SPECIAL_EFFECTS,
+} from "./techniques";
 
 // Export technique effectiveness matrix
 export const TECHNIQUE_EFFECTIVENESS_MATRIX: Record<
   TrigramStance,
   Partial<Record<TrigramStance, number>>
 > = {
-  [TrigramStanceEnum.GEON]: {
-    [TrigramStanceEnum.GON]: 1.2,
-    [TrigramStanceEnum.SON]: 0.8,
+  [TrigramStance.GEON]: {
+    [TrigramStance.GON]: 1.2,
+    [TrigramStance.SON]: 0.8,
   },
-  [TrigramStanceEnum.TAE]: {
-    [TrigramStanceEnum.JIN]: 1.2,
-    [TrigramStanceEnum.GAN]: 0.8,
+  [TrigramStance.TAE]: {
+    [TrigramStance.JIN]: 1.2,
+    [TrigramStance.GAN]: 0.8,
   },
-  [TrigramStanceEnum.LI]: {
-    [TrigramStanceEnum.GAM]: 1.2,
-    [TrigramStanceEnum.TAE]: 0.8,
+  [TrigramStance.LI]: {
+    [TrigramStance.GAM]: 1.2,
+    [TrigramStance.TAE]: 0.8,
   },
-  [TrigramStanceEnum.JIN]: {
-    [TrigramStanceEnum.SON]: 1.2,
-    [TrigramStanceEnum.GEON]: 0.8,
+  [TrigramStance.JIN]: {
+    [TrigramStance.SON]: 1.2,
+    [TrigramStance.GEON]: 0.8,
   },
-  [TrigramStanceEnum.SON]: {
-    [TrigramStanceEnum.GON]: 1.2,
-    [TrigramStanceEnum.LI]: 0.8,
+  [TrigramStance.SON]: {
+    [TrigramStance.GON]: 1.2,
+    [TrigramStance.LI]: 0.8,
   },
-  [TrigramStanceEnum.GAM]: {
-    [TrigramStanceEnum.LI]: 1.2,
-    [TrigramStanceEnum.JIN]: 0.8,
+  [TrigramStance.GAM]: {
+    [TrigramStance.LI]: 1.2,
+    [TrigramStance.JIN]: 0.8,
   },
-  [TrigramStanceEnum.GAN]: {
-    [TrigramStanceEnum.TAE]: 1.2,
-    [TrigramStanceEnum.GAM]: 0.8,
+  [TrigramStance.GAN]: {
+    [TrigramStance.TAE]: 1.2,
+    [TrigramStance.GAM]: 0.8,
   },
-  [TrigramStanceEnum.GON]: {
-    [TrigramStanceEnum.GEON]: 1.2,
-    [TrigramStanceEnum.SON]: 0.8,
+  [TrigramStance.GON]: {
+    [TrigramStance.GEON]: 1.2,
+    [TrigramStance.SON]: 0.8,
   },
 };
