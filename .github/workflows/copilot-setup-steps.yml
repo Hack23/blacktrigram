@@ -39,7 +39,7 @@ jobs:
     # Steps run before the agent starts working
     steps:
       - name: Checkout
-        uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5 # v4.3.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4.3.1
 
       # Setup complete Three.js test environment
       - name: Setup Three.js Test Environment (Chrome + Xvfb + Dependencies)
