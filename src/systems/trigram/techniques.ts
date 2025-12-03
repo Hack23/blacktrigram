@@ -6,6 +6,7 @@ import { KoreanTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
+  PlayerArchetype,
   TrigramStance,
 } from "../../types/common";
 
@@ -2239,12 +2240,12 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
  * Dark Ops archetype bonus configuration
  * 암살자 (Amsalja) gets +30% effectiveness with all Dark Ops techniques
  */
-export const DARK_OPS_ARCHETYPE_BONUSES = {
-  amsalja: 1.3, // +30% for Shadow Assassin archetype
-  jeongbo_yowon: 1.15, // +15% for Intelligence Operative
-  hacker: 1.10, // +10% for Cyber Warrior (tech synergy)
-  musa: 0.85, // -15% for Traditional Warrior (dishonorable)
-  jojik_pokryeokbae: 1.05, // +5% for Organized Crime (ruthless)
+export const DARK_OPS_ARCHETYPE_BONUSES: Record<PlayerArchetype, number> = {
+  [PlayerArchetype.AMSALJA]: 1.3, // +30% for Shadow Assassin archetype
+  [PlayerArchetype.JEONGBO_YOWON]: 1.15, // +15% for Intelligence Operative
+  [PlayerArchetype.HACKER]: 1.10, // +10% for Cyber Warrior (tech synergy)
+  [PlayerArchetype.MUSA]: 0.85, // -15% for Traditional Warrior (dishonorable)
+  [PlayerArchetype.JOJIK_POKRYEOKBAE]: 1.05, // +5% for Organized Crime (ruthless)
 } as const;
 
 /**
