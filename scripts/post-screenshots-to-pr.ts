@@ -1,8 +1,8 @@
 /**
  * Post Screenshots to GitHub PR
  * 
- * This script uploads screenshots directly to GitHub's CDN and posts them
- * in the PR comment using the uploaded image URLs.
+ * This script posts screenshot information to PR comments with links to
+ * workflow artifacts. Screenshots are preserved as artifacts for 30 days.
  * 
  * Usage:
  *   GITHUB_TOKEN=xxx PR_NUMBER=123 GITHUB_RUN_ID=456 npx tsx scripts/post-screenshots-to-pr.ts
