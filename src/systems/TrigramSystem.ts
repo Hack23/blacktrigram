@@ -54,6 +54,94 @@ export class TrigramSystem {
   }
 
   /**
+   * Gets the defensive/offensive characteristic of a stance.
+   * 
+   * **Korean**: 자세 특성 조회 (Stance Characteristic Query)
+   * 
+   * Returns whether a stance is primarily defensive, offensive, or balanced.
+   * This information is useful for UI display and tactical decision-making.
+   * 
+   * ## Stance Classifications
+   * 
+   * - **Defensive**: 간 (GAN/Mountain), 곤 (GON/Earth) - Protect vital areas
+   * - **Offensive**: 건 (GEON/Heaven), 진 (JIN/Thunder) - Expose for power
+   * - **Balanced**: 태 (TAE/Lake), 리 (LI/Fire), 손 (SON/Wind), 감 (GAM/Water)
+   * 
+   * @param stance - Trigram stance to query
+   * @returns "defensive", "offensive", or "balanced"
+   * 
+   * @example
+   * ```typescript
+   * const characteristic = trigramSystem.getStanceCharacteristic(TrigramStance.GAN);
+   * console.log(characteristic); // "defensive"
+   * 
+   * const offensive = trigramSystem.getStanceCharacteristic(TrigramStance.GEON);
+   * console.log(offensive); // "offensive"
+   * ```
+   * 
+   * @public
+   * @korean 자세특성조회
+   */
+  getStanceCharacteristic(stance: TrigramStance): "defensive" | "offensive" | "balanced" {
+    switch (stance) {
+      case TrigramStance.GAN:  // Mountain - Immovable defense
+      case TrigramStance.GON:  // Earth - Grounding and stability
+        return "defensive";
+      
+      case TrigramStance.GEON: // Heaven - Direct force and aggression
+      case TrigramStance.JIN:  // Thunder - Explosive power
+        return "offensive";
+      
+      default:
+        return "balanced";
+    }
+  }
+
+  /**
+   * Checks if a stance provides defensive advantages.
+   * 
+   * **Korean**: 방어 자세 확인 (Check Defensive Stance)
+   * 
+   * @param stance - Trigram stance to check
+   * @returns true if stance is defensive, false otherwise
+   * 
+   * @example
+   * ```typescript
+   * if (trigramSystem.isDefensiveStance(player.currentStance)) {
+   *   console.log("Player is in defensive posture");
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 방어자세확인
+   */
+  isDefensiveStance(stance: TrigramStance): boolean {
+    return this.getStanceCharacteristic(stance) === "defensive";
+  }
+
+  /**
+   * Checks if a stance provides offensive advantages.
+   * 
+   * **Korean**: 공격 자세 확인 (Check Offensive Stance)
+   * 
+   * @param stance - Trigram stance to check
+   * @returns true if stance is offensive, false otherwise
+   * 
+   * @example
+   * ```typescript
+   * if (trigramSystem.isOffensiveStance(player.currentStance)) {
+   *   console.log("Player is in offensive posture");
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 공격자세확인
+   */
+  isOffensiveStance(stance: TrigramStance): boolean {
+    return this.getStanceCharacteristic(stance) === "offensive";
+  }
+
+  /**
    * Checks if a player can transition from one stance to another.
    * 
    * Validates that the player has sufficient Ki (氣) and Stamina resources
