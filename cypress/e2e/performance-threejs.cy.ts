@@ -1,12 +1,10 @@
 /**
  * Three.js Performance Tests
  * Comprehensive FPS and performance monitoring for Three.js components
- * 
+ *
  * ✅ Verifies 60fps target for smooth gameplay
  * Tests Canvas rendering performance across all screens
  */
-
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("Black Trigram - Three.js Performance", () => {
   beforeEach(() => {
@@ -49,8 +47,8 @@ describe("Black Trigram - Three.js Performance", () => {
       cy.annotate("Testing FPS at different viewports");
 
       const viewports: [number, number][] = [
-        [1280, 720],  // Desktop
-        [375, 667],   // Mobile - only test extremes
+        [1280, 720], // Desktop
+        [375, 667], // Mobile - only test extremes
       ];
 
       viewports.forEach(([width, height]) => {
@@ -144,7 +142,7 @@ describe("Black Trigram - Three.js Performance", () => {
         cy.wrap(Date.now() - startTime).then((duration) => {
           // Should complete quickly
           expect(duration).to.be.lessThan(3000);
-          
+
           cy.task("logPerformance", {
             name: "Rapid Stance Transitions",
             duration,
@@ -239,7 +237,7 @@ describe("Black Trigram - Three.js Performance", () => {
         cy.wrap(Date.now() - startTime).then((duration) => {
           // Should handle rapid transitions
           expect(duration).to.be.lessThan(6000);
-          
+
           cy.task("logPerformance", {
             name: "Rapid Screen Transitions",
             duration,
@@ -414,7 +412,7 @@ describe("Black Trigram - Three.js Performance", () => {
 
           // Should load within 5 seconds
           expect(loadTime).to.be.lessThan(5000);
-          
+
           cy.log(`✅ Intro loaded in ${loadTime}ms`);
         });
       });
@@ -424,7 +422,6 @@ describe("Black Trigram - Three.js Performance", () => {
       cy.annotate("Benchmarking combat transition");
 
       cy.wrap(Date.now()).then((startTime) => {
-
         cy.enterCombatMode();
         cy.get('[data-testid="combat-screen"]').should("exist");
 
@@ -436,7 +433,7 @@ describe("Black Trigram - Three.js Performance", () => {
 
           // Should transition within 3 seconds
           expect(transitionTime).to.be.lessThan(3000);
-          
+
           cy.log(`✅ Combat transition in ${transitionTime}ms`);
         });
       });
@@ -459,7 +456,7 @@ describe("Black Trigram - Three.js Performance", () => {
 
           // Should transition within 3 seconds
           expect(transitionTime).to.be.lessThan(3000);
-          
+
           cy.log(`✅ Training transition in ${transitionTime}ms`);
         });
       });

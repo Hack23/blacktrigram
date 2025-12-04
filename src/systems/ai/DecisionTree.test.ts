@@ -3,11 +3,11 @@
  * Verifies vital point targeting and TrigramSystem integration
  */
 
-import { describe, expect, it, beforeEach } from "vitest";
-import { AIDecisionTree, CombatContext } from "./DecisionTree";
+import { TrigramStance } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
-import { TrigramStance, PlayerArchetype } from "@/types";
+import { AIDecisionTree, CombatContext } from "./DecisionTree";
 
 /**
  * Mock combat context factory
@@ -58,7 +58,7 @@ describe("AIDecisionTree", () => {
 
     it("should accept difficulty level updates", () => {
       decisionTree.setDifficultyLevel(0.8);
-      
+
       const context = createMockContext({ distanceToOpponent: 100 });
       const decision = decisionTree.makeDecision(
         context,
@@ -72,7 +72,7 @@ describe("AIDecisionTree", () => {
     it("should clamp difficulty level between 0 and 1", () => {
       decisionTree.setDifficultyLevel(-0.5);
       decisionTree.setDifficultyLevel(1.5);
-      
+
       // Should not throw and should work normally
       const context = createMockContext({ distanceToOpponent: 100 });
       const decision = decisionTree.makeDecision(
@@ -88,7 +88,7 @@ describe("AIDecisionTree", () => {
   describe("Vital Point Targeting", () => {
     it("should make decisions at close range", () => {
       decisionTree.setDifficultyLevel(0.5);
-      
+
       const context = createMockContext({
         distanceToOpponent: 100,
         playerStance: TrigramStance.GEON,
@@ -114,7 +114,7 @@ describe("AIDecisionTree", () => {
       let hasVitalPointTargets = false;
       let totalDecisions = 0;
       let vitalPointCount = 0;
-      
+
       // Run multiple decisions to check for vital point targeting
       for (let i = 0; i < 100; i++) {
         decisionTree.reset(); // Reset to avoid cooldowns
@@ -137,8 +137,10 @@ describe("AIDecisionTree", () => {
       // At master level with aggressive personality at close range, should sometimes target vital points
       // This is probabilistic based on aggression (0.85) * difficulty (0.9) = 0.765 chance per attack decision
       // With 100 decisions and ~76.5% chance per attack, expect at least 30 vital point targets
-      console.log(`Vital point targeting: ${vitalPointCount}/${totalDecisions} decisions`);
-      
+      console.log(
+        `Vital point targeting: ${vitalPointCount}/${totalDecisions} decisions`
+      );
+
       // Should have at least one vital point target
       expect(hasVitalPointTargets).toBe(true);
       // With high difficulty and aggression, expect reasonable vital point targeting frequency
@@ -147,7 +149,7 @@ describe("AIDecisionTree", () => {
 
     it("should make valid decisions at beginner difficulty", () => {
       decisionTree.setDifficultyLevel(0.1);
-      
+
       const context = createMockContext({
         distanceToOpponent: 100,
         playerStance: TrigramStance.GEON,
@@ -217,7 +219,9 @@ describe("AIDecisionTree", () => {
       }
 
       // At least some decisions should not be stance changes due to low resources
-      const nonStanceChanges = decisions.filter(d => d.action !== "stance_change");
+      const nonStanceChanges = decisions.filter(
+        (d) => d.action !== "stance_change"
+      );
       expect(nonStanceChanges.length).toBeGreaterThan(0);
     });
   });
@@ -260,8 +264,8 @@ describe("AIDecisionTree", () => {
         decisions.push(decision);
       }
 
-      const defensiveActions = decisions.filter(d => d.action === "defend");
-      
+      const defensiveActions = decisions.filter((d) => d.action === "defend");
+
       // Defensive specialist should show some defensive behavior when taking damage
       expect(defensiveActions.length).toBeGreaterThan(0);
     });
@@ -279,14 +283,16 @@ describe("AIDecisionTree", () => {
       );
 
       // Should respond to opponent attacking (counter, defend, or combo as counterattack)
-      expect(["counter", "defend", "combo", "attack"]).toContain(decision.action);
+      expect(["counter", "defend", "combo", "attack"]).toContain(
+        decision.action
+      );
     });
   });
 
   describe("Distance-Based Tactics", () => {
     it("should approach when far away", () => {
       decisionTree.reset(); // Reset to avoid cooldowns and state from previous tests
-      
+
       const context = createMockContext({
         distanceToOpponent: 300, // Far away
       });
@@ -318,7 +324,13 @@ describe("AIDecisionTree", () => {
       );
 
       // At close range, should attack, defend, use technique, combo, or change stance
-      expect(["attack", "technique", "defend", "combo", "stance_change"]).toContain(decision.action);
+      expect([
+        "attack",
+        "technique",
+        "defend",
+        "combo",
+        "stance_change",
+      ]).toContain(decision.action);
     });
 
     it("should use mid-range tactics appropriately", () => {
@@ -334,7 +346,15 @@ describe("AIDecisionTree", () => {
 
       // Mid range should have various tactical options including stance changes
       expect(decision.action).toBeDefined();
-      expect(["technique", "circle", "approach", "attack", "stance_change", "defend", "wait"]).toContain(decision.action);
+      expect([
+        "technique",
+        "circle",
+        "approach",
+        "attack",
+        "stance_change",
+        "defend",
+        "wait",
+      ]).toContain(decision.action);
     });
   });
 
@@ -348,8 +368,8 @@ describe("AIDecisionTree", () => {
 
       // Make multiple decisions to check for combo initiation
       let foundCombo = false;
-      let decisionTypes: string[] = [];
-      
+      const decisionTypes: string[] = [];
+
       for (let i = 0; i < 100; i++) {
         decisionTree.reset(); // Reset to avoid cooldowns and consecutive attack tracking
         const decision = decisionTree.makeDecision(
@@ -359,7 +379,7 @@ describe("AIDecisionTree", () => {
         );
 
         decisionTypes.push(decision.action);
-        
+
         if (decision.action === "combo") {
           foundCombo = true;
           expect(decision.reason).toContain("combo");
@@ -422,7 +442,7 @@ describe("AIDecisionTree", () => {
       const context = createMockContext();
 
       const startTime = performance.now();
-      
+
       for (let i = 0; i < 100; i++) {
         decisionTree.makeDecision(
           context,
@@ -456,7 +476,7 @@ describe("AIDecisionTree", () => {
         decisions.push(decision);
       }
 
-      const aggressiveActions = decisions.filter(d =>
+      const aggressiveActions = decisions.filter((d) =>
         ["attack", "technique", "combo"].includes(d.action)
       );
 
@@ -492,7 +512,7 @@ describe("AIDecisionTree", () => {
       // Defensive personality should make reasonable decisions
       // They may use various tactics including stance changes, defense, etc.
       expect(decisions.length).toBe(50);
-      expect(decisions.every(d => d.action)).toBe(true);
+      expect(decisions.every((d) => d.action)).toBe(true);
     });
   });
 

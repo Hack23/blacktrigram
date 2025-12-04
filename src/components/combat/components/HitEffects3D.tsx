@@ -1,6 +1,6 @@
 /**
  * HitEffects3D - Three.js particle effects for combat
- * 
+ *
  * Maintains Korean theming and visual feedback for combat actions
  */
 
@@ -21,7 +21,12 @@ export interface HitEffects3DProps {
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
   /** Arena bounds for accurate coordinate conversion */
-  readonly arenaBounds?: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
 }
 
 interface ActiveEffect extends HitEffect {
@@ -38,11 +43,13 @@ const HitEffectVisual: React.FC<{
   arenaBounds?: { x: number; y: number; width: number; height: number };
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
+  // Use state for alpha to avoid accessing ref during render
+  const [alpha, setAlpha] = useState(1);
 
   // Position in 3D space - convert 2D position to 3D
   const position3D: [number, number, number] = useMemo(() => {
     if (!effect.position) return [0, 1, 0];
-    
+
     // Convert from screen coordinates to 3D world coordinates
     // Use arena bounds if available, otherwise use default normalization
     const bounds = arenaBounds || { x: 0, y: 0, width: 1200, height: 800 };
@@ -50,8 +57,8 @@ const HitEffectVisual: React.FC<{
     const relZ = (effect.position.y - bounds.y) / bounds.height;
     const x = relX * 16 - 8; // Map 0-1 to -8 to 8
     const y = 1.5; // Mid-height for effects
-    const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
-    
+    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+
     return [x, y, z];
   }, [effect.position, arenaBounds]);
 
@@ -59,23 +66,25 @@ const HitEffectVisual: React.FC<{
   useFrame(() => {
     if (!groupRef.current || !effectRef.current) return;
 
-    // Access fresh progress value from ref
+    // Access fresh progress value from ref and update alpha state
     const progress = effectRef.current.progress;
-    
+    setAlpha(1 - progress);
+
     // Rotate for some effects
-    if (effect.type === HitEffectType.COUNTER || effect.type === HitEffectType.VITAL_POINT_STRIKE) {
+    if (
+      effect.type === HitEffectType.COUNTER ||
+      effect.type === HitEffectType.VITAL_POINT_STRIKE
+    ) {
       groupRef.current.rotation.y += 0.1;
     }
 
     // Scale pulse for critical hits
     if (effect.type === HitEffectType.CRITICAL_HIT) {
-      const pulse = 1 + Math.sin(progress * Math.PI * 4) * 0.2;
+      const pulse =
+        1 + Math.sin(effectRef.current.progress * Math.PI * 4) * 0.2;
       groupRef.current.scale.set(pulse, pulse, pulse);
     }
   });
-
-  // Get alpha from effect ref for current frame
-  const alpha = effectRef.current ? 1 - effectRef.current.progress : 1;
 
   // Render based on effect type
   switch (effect.type) {
@@ -124,11 +133,7 @@ const HitEffectVisual: React.FC<{
             return (
               <mesh
                 key={i}
-                position={[
-                  Math.cos(angle) * 0.3,
-                  0,
-                  Math.sin(angle) * 0.3,
-                ]}
+                position={[Math.cos(angle) * 0.3, 0, Math.sin(angle) * 0.3]}
                 rotation={[0, angle, 0]}
               >
                 <boxGeometry args={[0.6, 0.05, 0.05]} />
@@ -149,13 +154,7 @@ const HitEffectVisual: React.FC<{
           {/* Shield arc */}
           <mesh rotation={[0, 0, Math.PI / 2]}>
             <torusGeometry
-              args={[
-                0.4 * effect.intensity,
-                0.05,
-                8,
-                16,
-                Math.PI,
-              ]}
+              args={[0.4 * effect.intensity, 0.05, 8, 16, Math.PI]}
             />
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_CYAN}
@@ -255,13 +254,7 @@ const HitEffectVisual: React.FC<{
           {/* Deflection arc */}
           <mesh>
             <torusGeometry
-              args={[
-                0.35 * effect.intensity,
-                0.05,
-                8,
-                16,
-                Math.PI / 2,
-              ]}
+              args={[0.35 * effect.intensity, 0.05, 8, 16, Math.PI / 2]}
             />
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_GOLD}
@@ -275,11 +268,7 @@ const HitEffectVisual: React.FC<{
             return (
               <mesh
                 key={i}
-                position={[
-                  Math.cos(angle) * 0.4,
-                  Math.sin(angle) * 0.4,
-                  0,
-                ]}
+                position={[Math.cos(angle) * 0.4, Math.sin(angle) * 0.4, 0]}
               >
                 <sphereGeometry args={[0.04, 8, 8]} />
                 <meshBasicMaterial
@@ -343,15 +332,17 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   arenaBounds,
 }) => {
   // Use refs to track effects without causing re-renders
-  const effectRefsMap = useRef<Map<string, React.MutableRefObject<ActiveEffect | null>>>(new Map());
+  const effectRefsMap = useRef<
+    Map<string, React.MutableRefObject<ActiveEffect | null>>
+  >(new Map());
   const completedEffectsRef = useRef<Set<string>>(new Set());
   const [effectIds, setEffectIds] = useState<string[]>([]);
 
   // Update effect IDs when effects change (minimal state updates)
   useEffect(() => {
-    const newIds = effects.map(e => e.id);
+    const newIds = effects.map((e) => e.id);
     setEffectIds(newIds);
-    
+
     // Clean up refs for removed effects
     const currentIdSet = new Set(newIds);
     effectRefsMap.current.forEach((_ref, id) => {
@@ -362,9 +353,11 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
     });
 
     // Initialize refs for new effects
-    effects.forEach(effect => {
+    effects.forEach((effect) => {
       if (!effectRefsMap.current.has(effect.id)) {
-        effectRefsMap.current.set(effect.id, { current: { ...effect, progress: 0 } });
+        effectRefsMap.current.set(effect.id, {
+          current: { ...effect, progress: 0 },
+        });
       }
     });
   }, [effects]);
@@ -372,19 +365,23 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   // Update progress using refs (no setState in useFrame)
   useFrame(() => {
     const now = Date.now();
-    
+
     effectRefsMap.current.forEach((ref, id) => {
       if (!ref.current) return;
-      
+
       const progress = Math.min(
         (now - ref.current.startTime) / ref.current.duration,
         1
       );
       ref.current.progress = progress;
-      
+
       // Handle completion
       const isExpired = progress >= 1;
-      if (isExpired && onEffectComplete && !completedEffectsRef.current.has(id)) {
+      if (
+        isExpired &&
+        onEffectComplete &&
+        !completedEffectsRef.current.has(id)
+      ) {
         completedEffectsRef.current.add(id);
         onEffectComplete(id);
       }
@@ -394,14 +391,21 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   return (
     <group>
       {effectIds.map((id) => {
-        const effect = effects.find(e => e.id === id);
-        const effectRef = effectRefsMap.current.get(id);
-        if (!effect || !effectRef) return null;
-        
+        const effect = effects.find((e) => e.id === id);
+        if (!effect) return null;
+
+        // Create or get the effect ref - this is safe because we sync effectRefsMap in useEffect
+        let effectRef = effectRefsMap.current.get(id);
+        if (!effectRef) {
+          // Initialize if missing (shouldn't happen in normal flow but adds safety)
+          effectRef = { current: { ...effect, progress: 0 } };
+          effectRefsMap.current.set(id, effectRef);
+        }
+
         return (
-          <HitEffectVisual 
-            key={id} 
-            effect={effect} 
+          <HitEffectVisual
+            key={id}
+            effect={effect}
             effectRef={effectRef}
             arenaBounds={arenaBounds}
           />

@@ -170,7 +170,7 @@ export default defineConfig({
             return fs
               .readdirSync(REPORTS.junit)
               .filter((file) => file.endsWith(".xml"));
-          } catch (err) {
+          } catch (_err) {
             return [];
           }
         },
@@ -183,7 +183,10 @@ export default defineConfig({
             }
             return null;
           } catch (err) {
-            console.error("Error resetting JUnit results:", err);
+            console.error(
+              "Error resetting JUnit results:",
+              err instanceof Error ? err.message : String(err)
+            );
             return null;
           }
         },

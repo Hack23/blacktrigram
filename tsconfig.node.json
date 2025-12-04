@@ -21,6 +21,9 @@
     "vitest.config.ts",
     "cypress.config.ts",
     "scripts/**/*.ts",
+    "fixprops.ts",
+    "test/**/*.ts",
+    "test/**/*.tsx",
     "./package.json"
   ]
 }

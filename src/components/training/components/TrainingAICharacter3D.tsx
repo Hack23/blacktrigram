@@ -1,11 +1,11 @@
 /**
  * TrainingAICharacter3D - 3D character model for AI opponent in training
- * 
+ *
  * Displays the AI opponent with stance-based materials and animations
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
@@ -54,7 +54,8 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const stanceAuraRef = useRef<THREE.Mesh>(null);
-  const attackOffsetRef = useRef(0);
+  // Use state for attack offset since it's used in render
+  const [attackOffset, setAttackOffset] = useState(0);
 
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
@@ -80,16 +81,16 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
 
     // Attack animation with offset
     if (isAttacking) {
-      attackOffsetRef.current = Math.sin(time * 10) * 0.1;
+      setAttackOffset(Math.sin(time * 10) * 0.1);
     } else {
-      attackOffsetRef.current = 0;
+      setAttackOffset(0);
     }
   });
 
   return (
-    <group 
-      ref={groupRef} 
-      position={[position[0], position[1], position[2] + attackOffsetRef.current]}
+    <group
+      ref={groupRef}
+      position={[position[0], position[1], position[2] + attackOffset]}
       data-testid="training-ai-character-3d"
     >
       {/* Main body - capsule representing the AI fighter */}
@@ -128,7 +129,9 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
       {/* Health indicator (rings around character) */}
       {healthPercent < 1.0 && (
         <mesh position={[0, 2, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.4, 0.5, 32, 1, 0, Math.PI * 2 * healthPercent]} />
+          <ringGeometry
+            args={[0.4, 0.5, 32, 1, 0, Math.PI * 2 * healthPercent]}
+          />
           <meshBasicMaterial
             color={
               healthPercent > 0.6

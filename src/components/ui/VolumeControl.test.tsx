@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { VolumeControl } from "./VolumeControl";
-import { AudioContext, AudioProvider } from "../../audio/AudioProvider";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { AudioManager } from "../../audio/AudioManager";
+import { AudioContext } from "../../audio/AudioProvider";
+import { VolumeControl } from "./VolumeControl";
 
 // Mock audio manager
 class MockAudioManager {
@@ -57,7 +57,7 @@ describe("VolumeControl", () => {
 
   it("should render volume control with all sliders", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     expect(screen.getByTestId("volume-control")).toBeInTheDocument();
     expect(screen.getByTestId("master-volume-slider")).toBeInTheDocument();
     expect(screen.getByTestId("music-volume-slider")).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe("VolumeControl", () => {
 
   it("should display Korean and English labels", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     // Check for Korean text
     expect(screen.getByText(/음량/)).toBeInTheDocument();
     expect(screen.getByText(/Volume/)).toBeInTheDocument();
@@ -77,40 +77,40 @@ describe("VolumeControl", () => {
 
   it("should call setVolume when master volume changes", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     const masterSlider = screen.getByTestId("master-volume-slider");
     fireEvent.change(masterSlider, { target: { value: "0.5" } });
-    
+
     expect(mockManager.setVolume).toHaveBeenCalledWith("master", 0.5);
   });
 
   it("should call setVolume when music volume changes", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     const musicSlider = screen.getByTestId("music-volume-slider");
     fireEvent.change(musicSlider, { target: { value: "0.3" } });
-    
+
     expect(mockManager.setVolume).toHaveBeenCalledWith("music", 0.3);
   });
 
   it("should call setVolume when SFX volume changes", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     const sfxSlider = screen.getByTestId("sfx-volume-slider");
     fireEvent.change(sfxSlider, { target: { value: "0.9" } });
-    
+
     expect(mockManager.setVolume).toHaveBeenCalledWith("sfx", 0.9);
   });
 
   it("should toggle mute when button is clicked", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     const muteButton = screen.getByTestId("mute-toggle-button");
-    
+
     // First click should mute
     fireEvent.click(muteButton);
     expect(mockManager.mute).toHaveBeenCalled();
-    
+
     // Second click should unmute
     fireEvent.click(muteButton);
     expect(mockManager.unmute).toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe("VolumeControl", () => {
 
   it("should render in compact mode", () => {
     renderWithAudio(<VolumeControl compact={true} />);
-    
+
     // In compact mode, only master volume slider is shown
     expect(screen.getByTestId("master-volume-slider")).toBeInTheDocument();
     expect(screen.queryByTestId("music-volume-slider")).not.toBeInTheDocument();
@@ -127,21 +127,25 @@ describe("VolumeControl", () => {
 
   it("should display audio ready status", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     // In test, isAudioReady is true, so should show ready status
     expect(screen.getByText(/Audio Ready/)).toBeInTheDocument();
   });
 
   it("should support custom positioning", () => {
-    const { container } = renderWithAudio(<VolumeControl position="bottom-right" />);
-    
-    const volumeControl = container.querySelector('[data-testid="volume-control"]');
+    const { container } = renderWithAudio(
+      <VolumeControl position="bottom-right" />
+    );
+
+    const volumeControl = container.querySelector(
+      '[data-testid="volume-control"]'
+    );
     expect(volumeControl).toHaveStyle({ position: "absolute" });
   });
 
   it("should display volume percentage", () => {
     renderWithAudio(<VolumeControl />);
-    
+
     // Master volume at 100%
     expect(screen.getByText("100%")).toBeInTheDocument();
   });

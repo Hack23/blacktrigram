@@ -21,7 +21,7 @@ export interface MovementState {
   readonly down: boolean;
   readonly left: boolean;
   readonly right: boolean;
-  readonly position: Position; 
+  readonly position: Position;
   readonly isMoving: boolean; // Add isMoving to movement state
 }
 
@@ -62,7 +62,7 @@ export function usePlayerMovement(
     bounds,
     onPositionChange,
     initialPosition = { x: 0, y: 0 },
-    moveSpeed = 300, 
+    moveSpeed = 300,
   } = config;
 
   const [playerPosition, setPlayerPosition] =
@@ -76,7 +76,11 @@ export function usePlayerMovement(
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
-  const lastUpdateTime = useRef<number>(performance.now());
+  // Use lazy initialization for performance.now() to avoid impure function during render
+  const lastUpdateTime = useRef<number | null>(null);
+  if (lastUpdateTime.current === null) {
+    lastUpdateTime.current = performance.now();
+  }
   const animationFrameId = useRef<number | null>(null);
 
   // Calculate if currently moving
@@ -161,6 +165,9 @@ export function usePlayerMovement(
   );
 
   // ✅ FIXED: Proper movement calculation with correct bounds
+  // Use a ref to store the callback to avoid reference before declaration issue
+  const updatePositionRef = useRef<(() => void) | null>(null);
+
   const updatePosition = useCallback(() => {
     if (!enabled || !isMoving) {
       animationFrameId.current = null;
@@ -168,11 +175,13 @@ export function usePlayerMovement(
     }
 
     const now = performance.now();
-    const deltaTime = Math.min(now - lastUpdateTime.current, 50);
+    const deltaTime = Math.min(now - (lastUpdateTime.current ?? now), 50);
     lastUpdateTime.current = now;
 
     if (deltaTime <= 0) {
-      animationFrameId.current = requestAnimationFrame(updatePosition);
+      animationFrameId.current = requestAnimationFrame(() =>
+        updatePositionRef.current?.()
+      );
       return;
     }
 
@@ -210,7 +219,9 @@ export function usePlayerMovement(
 
     // Continue animation if still moving
     if (isMoving) {
-      animationFrameId.current = requestAnimationFrame(updatePosition);
+      animationFrameId.current = requestAnimationFrame(() =>
+        updatePositionRef.current?.()
+      );
     } else {
       animationFrameId.current = null;
     }
@@ -223,6 +234,9 @@ export function usePlayerMovement(
     moveSpeed,
     isMoving,
   ]);
+
+  // Keep updatePositionRef in sync
+  updatePositionRef.current = updatePosition;
 
   // Handle keyboard input
   useEffect(() => {

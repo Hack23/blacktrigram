@@ -2,11 +2,11 @@
  * Tests for TrainingAI system
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { TrainingAI, AITrainingDifficulty } from "./TrainingAI";
-import { PlayerState } from "../player";
 import { TrigramStance } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createMockPlayerState } from "../../test/test-utils";
+import { PlayerState } from "../player";
+import { TrainingAI } from "./TrainingAI";
 
 describe("TrainingAI", () => {
   let trainingAI: TrainingAI;
@@ -97,7 +97,11 @@ describe("TrainingAI", () => {
     });
 
     it("should not update when inactive", () => {
-      const decision = trainingAI.update(0.016, mockPlayerState, mockAIPlayerState);
+      const decision = trainingAI.update(
+        0.016,
+        mockPlayerState,
+        mockAIPlayerState
+      );
       expect(decision).toBeNull();
     });
   });
@@ -108,7 +112,11 @@ describe("TrainingAI", () => {
     });
 
     it("should make decisions when active", () => {
-      const decision = trainingAI.update(0.016, mockPlayerState, mockAIPlayerState);
+      const decision = trainingAI.update(
+        0.016,
+        mockPlayerState,
+        mockAIPlayerState
+      );
 
       expect(decision).toBeTruthy();
       expect(decision?.action).toBeDefined();
@@ -175,9 +183,9 @@ describe("TrainingAI", () => {
     it("should block with probability based on difficulty", () => {
       const easyAI = new TrainingAI("easy");
       // Use 500 samples for more stable statistical results
-      const blocks = Array.from({ length: 500 }, () => easyAI.shouldBlock()).filter(
-        Boolean
-      ).length;
+      const blocks = Array.from({ length: 500 }, () =>
+        easyAI.shouldBlock()
+      ).filter(Boolean).length;
 
       // Should block around 30% of the time (150 expected)
       // Wider range: 10%-50% (50-250) to account for statistical variance

@@ -3,7 +3,11 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { PlayerArchetype, VitalPointCategory, VitalPointSeverity } from "../../types/common";
+import {
+  PlayerArchetype,
+  VitalPointCategory,
+  VitalPointSeverity,
+} from "../../types/common";
 import { VitalPoint } from "../vitalpoint/types";
 import {
   isValidArchetype,
@@ -80,22 +84,24 @@ describe("Combat Type Guards", () => {
       effectiveStances: [],
     };
 
+    // Helper to create object with property omitted
+    const omit = <T extends Record<string, unknown>, K extends keyof T>(
+      obj: T,
+      key: K
+    ): Omit<T, K> => {
+      const { [key]: _, ...rest } = obj;
+      return rest as Omit<T, K>;
+    };
+
     it("should return true for valid VitalPoint objects", () => {
       expect(isVitalPoint(validVitalPoint)).toBe(true);
     });
 
     it("should return false for objects missing required properties", () => {
-      const { id, ...missingId } = validVitalPoint;
-      expect(isVitalPoint(missingId)).toBe(false);
-
-      const { category, ...missingCategory } = validVitalPoint;
-      expect(isVitalPoint(missingCategory)).toBe(false);
-
-      const { position, ...missingPosition } = validVitalPoint;
-      expect(isVitalPoint(missingPosition)).toBe(false);
-
-      const { effects, ...missingEffects } = validVitalPoint;
-      expect(isVitalPoint(missingEffects)).toBe(false);
+      expect(isVitalPoint(omit(validVitalPoint, "id"))).toBe(false);
+      expect(isVitalPoint(omit(validVitalPoint, "category"))).toBe(false);
+      expect(isVitalPoint(omit(validVitalPoint, "position"))).toBe(false);
+      expect(isVitalPoint(omit(validVitalPoint, "effects"))).toBe(false);
     });
 
     it("should return false for objects with invalid property types", () => {

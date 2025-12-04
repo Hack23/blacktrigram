@@ -1,11 +1,11 @@
 /**
  * ComboCounter - Combo counter display component
- * 
+ *
  * Displays the current combo count with Korean-English bilingual text.
  * Animates on combo increment and shows milestone indicators.
- * 
+ *
  * Uses Html overlay from @react-three/drei for rendering within 3D scenes.
- * 
+ *
  * @module components/combat/components/ComboCounter
  * @category Combat UI
  * @korean 콤보카운터
@@ -13,7 +13,7 @@
 
 import { Html } from "@react-three/drei";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
 
 /**
@@ -74,7 +74,9 @@ function getGlowColor(combo: number): string {
 /**
  * Get combo milestone text
  */
-function getComboMilestone(combo: number): { korean: string; english: string } | null {
+function getComboMilestone(
+  combo: number
+): { korean: string; english: string } | null {
   if (combo === 5) {
     return { korean: "훌륭합니다!", english: "Great!" };
   }
@@ -92,10 +94,10 @@ function getComboMilestone(combo: number): { korean: string; english: string } |
 
 /**
  * ComboCounter Component
- * 
+ *
  * Displays the current combo count with animations and milestone indicators.
  * Only visible when combo >= minDisplayCombo (default: 2).
- * 
+ *
  * @example
  * ```tsx
  * <ComboCounter
@@ -109,11 +111,14 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
   isMobile = false,
   minDisplayCombo = 2,
 }) => {
-  // Animation state
+  // Animation state - use state instead of refs for values read during render
   const [scale, setScale] = useState(1);
   const [showMilestone, setShowMilestone] = useState(false);
   const prevComboRef = useRef(combo);
-  const milestoneTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const milestoneTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+  const scaleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Calculate 3D position - center top of screen
   const position3D: [number, number, number] = useMemo(() => {
@@ -121,12 +126,19 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     return [0, 4.5, 0];
   }, []);
 
-  // Animate on combo change
+  // Handle combo changes with useEffect
   useEffect(() => {
     if (combo > prevComboRef.current) {
       // Scale up on combo increment
       setScale(1.3);
-      setTimeout(() => setScale(1), 150);
+
+      // Clear previous scale timeout
+      if (scaleTimeoutRef.current) {
+        clearTimeout(scaleTimeoutRef.current);
+      }
+      scaleTimeoutRef.current = setTimeout(() => {
+        setScale(1);
+      }, 150);
 
       // Check for milestone
       const milestone = getComboMilestone(combo);
@@ -148,6 +160,9 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     return () => {
       if (milestoneTimeoutRef.current) {
         clearTimeout(milestoneTimeoutRef.current);
+      }
+      if (scaleTimeoutRef.current) {
+        clearTimeout(scaleTimeoutRef.current);
       }
     };
   }, []);
@@ -195,7 +210,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          transform: `scale(${scale})`,
+          transform: `scale(${scaleRef.current})`,
           transition: "transform 0.15s ease-out",
         }}
       >
@@ -245,7 +260,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         </div>
 
         {/* Milestone indicator */}
-        {showMilestone && milestone && (
+        {showMilestoneRef.current && milestone && (
           <div
             style={{
               marginTop: "8px",
