@@ -20,7 +20,6 @@
     "test:systems:watch": "vitest src/systems",
     "test:systems:ui": "vitest --ui src/systems",
     "test:systems:coverage": "vitest run --coverage src/systems",
-    "pretest:e2e": "bash .devcontainer/init-xvfb.sh",
     "cypress:install": "cypress install",
     "cypress:verify": "cypress verify",
     "coverage": "vitest run --coverage --coverage.reportOnFailure ",

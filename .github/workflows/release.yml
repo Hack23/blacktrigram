@@ -141,9 +141,11 @@ jobs:
           XKB_DEFAULT_RULES: evdev
           XKB_DEFAULT_MODEL: pc105
           XKB_DEFAULT_LAYOUT: us
+          TERM: dumb
         run: |
           echo "🚀 Running Three.js E2E tests for release validation..."
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp" npm run test:e2e
+          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp" npm run test:e2e || TEST_EXIT_CODE=$?
+          exit ${TEST_EXIT_CODE:-0}
 
       # Run tests with coverage
       - name: Run tests with coverage
