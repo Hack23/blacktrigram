@@ -22,6 +22,7 @@ import { getArchetypeAssets } from "../../utils/playerUtils";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
 import { VolumeControl } from "../ui/VolumeControl";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
+import { EnhancedArchetypeDisplay } from "./components/EnhancedArchetypeDisplay";
 import { MenuSectionHTML } from "./components/MenuSectionHTML";
 
 const APP_VERSION = import.meta.env.APP_VERSION;
@@ -47,6 +48,7 @@ export interface IntroScreenThreeJSProps {
   readonly selectedArchetype?: PlayerArchetype;
   readonly width?: number;
   readonly height?: number;
+  readonly useEnhancedArchetypeDisplay?: boolean; // Use enhanced card display
 }
 
 const MENU_ITEMS: { mode: GameMode; korean: string; english: string }[] = [
@@ -140,6 +142,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   selectedArchetype = PlayerArchetype.MUSA,
   width: propWidth,
   height: propHeight,
+  useEnhancedArchetypeDisplay = true, // Default to enhanced display
 }) => {
   const audio = useAudio();
   const introMusicStarted = useRef(false);
@@ -601,23 +604,44 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 }}
                 data-testid="archetype-section-container"
               >
-                <ArchetypeDisplayHTML
-                  archetypes={archetypeData}
-                  selectedIndex={selectedArchetypeIndex}
-                  onArchetypeChange={handleArchetypeIndexChange}
-                  onPlaySFX={audio.playSFX}
-                  width={
-                    isMobile
-                      ? screenWidth * 0.9
-                      : isTablet
-                      ? Math.min(850, screenWidth * 0.8)
-                      : isLargeDesktop
-                      ? Math.min(1100, screenWidth * 0.55)
-                      : Math.min(900, screenWidth * 0.7)
-                  }
-                  height={archetypeHeight}
-                  isMobile={isMobile}
-                />
+                {useEnhancedArchetypeDisplay ? (
+                  <EnhancedArchetypeDisplay
+                    archetypes={archetypeData}
+                    selectedIndex={selectedArchetypeIndex}
+                    onArchetypeChange={handleArchetypeIndexChange}
+                    onPlaySFX={audio.playSFX}
+                    width={
+                      isMobile
+                        ? screenWidth * 0.9
+                        : isTablet
+                        ? Math.min(850, screenWidth * 0.8)
+                        : isLargeDesktop
+                        ? Math.min(1100, screenWidth * 0.55)
+                        : Math.min(900, screenWidth * 0.7)
+                    }
+                    height={archetypeHeight}
+                    isMobile={isMobile}
+                    allowDetailedView={!isMobile}
+                  />
+                ) : (
+                  <ArchetypeDisplayHTML
+                    archetypes={archetypeData}
+                    selectedIndex={selectedArchetypeIndex}
+                    onArchetypeChange={handleArchetypeIndexChange}
+                    onPlaySFX={audio.playSFX}
+                    width={
+                      isMobile
+                        ? screenWidth * 0.9
+                        : isTablet
+                        ? Math.min(850, screenWidth * 0.8)
+                        : isLargeDesktop
+                        ? Math.min(1100, screenWidth * 0.55)
+                        : Math.min(900, screenWidth * 0.7)
+                    }
+                    height={archetypeHeight}
+                    isMobile={isMobile}
+                  />
+                )}
               </div>
             </div>
 
