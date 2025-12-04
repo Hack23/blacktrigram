@@ -131,7 +131,7 @@ jobs:
       - name: Start app and run Cypress tests with Three.js optimization
         run: |
           echo "🚀 Running Three.js E2E tests for release validation..."
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac -kbd +extension GLX +extension RANDR +render" npm run test:e2e
+          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render" npm run test:e2e
         env:
           CYPRESS_VIDEO: false
           NODE_OPTIONS: "--max-old-space-size=4096"
