@@ -1,3 +1,12 @@
+import { AudioAssetLoader, LoadOptions } from "./AudioAssetLoader";
+import {
+  AudioFPSImpact,
+  AudioMemoryStats,
+  AudioMonitor,
+  AudioPerformanceStats,
+  MemoryWarning,
+} from "./AudioMonitor";
+import { AudioElementPool, PoolStatistics } from "./AudioPool";
 import {
   AudioAsset,
   AudioConfig,
@@ -5,15 +14,6 @@ import {
   MusicTrackId,
   SoundEffectId,
 } from "./types";
-import { AudioAssetLoader, LoadOptions } from "./AudioAssetLoader";
-import { AudioElementPool, PoolStatistics } from "./AudioPool";
-import {
-  AudioMonitor,
-  AudioMemoryStats,
-  AudioPerformanceStats,
-  AudioFPSImpact,
-  MemoryWarning,
-} from "./AudioMonitor";
 
 // Estimated average size per audio asset in MB (based on typical compressed audio file sizes)
 const ESTIMATED_ASSET_SIZE_MB = 0.5;
@@ -102,8 +102,12 @@ export class AudioManager implements IAudioManager {
 
   async initialize(config?: AudioConfig): Promise<void> {
     try {
-      // Remove unused audioContext variable
-      new (window.AudioContext || (window as any).webkitAudioContext)();
+      // Create AudioContext using globalThis for cross-platform compatibility
+      const AudioContextClass =
+        globalThis.AudioContext ||
+        (globalThis as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
+      new AudioContextClass();
       this._isInitialized = true;
       this._fallbackMode = false;
 
@@ -115,7 +119,8 @@ export class AudioManager implements IAudioManager {
 
       // Set memory threshold if configured
       if (config?.maxSimultaneousSounds) {
-        const estimatedMemoryMB = config.maxSimultaneousSounds * ESTIMATED_ASSET_SIZE_MB;
+        const estimatedMemoryMB =
+          config.maxSimultaneousSounds * ESTIMATED_ASSET_SIZE_MB;
         this.monitor.setMemoryThreshold(estimatedMemoryMB);
       }
     } catch (error) {
@@ -135,8 +140,7 @@ export class AudioManager implements IAudioManager {
       // Use faster timeouts for testing environment
       // Safely check for Node.js environment to avoid runtime errors in browsers
       const isTest =
-        typeof process !== "undefined" &&
-        process?.env?.NODE_ENV === "test";
+        typeof process !== "undefined" && process?.env?.NODE_ENV === "test";
       const loadOptions: LoadOptions = {
         timeout: isTest ? 100 : 10000,
         maxRetries: isTest ? 1 : 3,
@@ -333,8 +337,9 @@ export class AudioManager implements IAudioManager {
   async fadeOut(duration: number = 1000): Promise<void> {
     if (!this.currentMusic) return;
 
+    const musicElement = this.currentMusic;
     return new Promise((resolve) => {
-      const startVolume = this.currentMusic!.volume;
+      const startVolume = musicElement.volume;
       const fadeStep = startVolume / (duration / 50);
 
       const fadeInterval = setInterval(() => {
@@ -449,9 +454,13 @@ export class AudioManager implements IAudioManager {
     options?: LoadOptions,
     onProgress?: (loaded: number, total: number) => void
   ): Promise<void> {
-    const results = await this.assetLoader.batchLoad(assets, options, (progress) => {
-      onProgress?.(progress.loaded, progress.total);
-    });
+    const results = await this.assetLoader.batchLoad(
+      assets,
+      options,
+      (progress) => {
+        onProgress?.(progress.loaded, progress.total);
+      }
+    );
 
     // Process results
     for (let i = 0; i < results.length; i++) {
@@ -567,7 +576,9 @@ export class AudioManager implements IAudioManager {
    * @param assetId - Optional asset ID to get specific pool stats
    * @returns Pool statistics for the specified asset or all pools
    */
-  getPoolStatistics(assetId?: string): PoolStatistics | Map<string, PoolStatistics> | undefined {
+  getPoolStatistics(
+    assetId?: string
+  ): PoolStatistics | Map<string, PoolStatistics> | undefined {
     if (assetId) {
       return this.audioPool.getPoolStatistics(assetId);
     }

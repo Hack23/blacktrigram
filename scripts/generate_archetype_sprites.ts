@@ -143,15 +143,17 @@ function parseCLI(): CLIOptions {
   }
   const archetype = args[0].toLowerCase();
   const provider =
-    (args[1]?.startsWith("--") ? "openai" : (args[1] as any)) || "openai";
+    (args[1]?.startsWith("--")
+      ? "openai"
+      : (args[1] as "openai" | "bedrock")) ?? "openai";
   const opts: Record<string, string | boolean> = {};
   for (const raw of args.slice(provider === args[1] ? 2 : 1)) {
     if (!raw.startsWith("--")) continue;
     const [k, v] = raw.replace(/^--/, "").split("=");
-    opts[k] = v === undefined ? true : v;
+    opts[k] = v ?? true;
   }
   // size validation
-  const requestedSize = (opts.size as string | undefined) || "1024x1024";
+  const requestedSize = (opts.size as string | undefined) ?? "1024x1024";
   const validatedSize = ALLOWED_SIZES.has(requestedSize as AllowedImageSize)
     ? (requestedSize as AllowedImageSize)
     : "1024x1024";
@@ -174,7 +176,7 @@ function parseCLI(): CLIOptions {
         )
       : undefined,
     outDir:
-      (opts.out as string) || `src/assets/spritesheets/generated/${archetype}`,
+      (opts.out as string) ?? `src/assets/spritesheets/generated/${archetype}`,
     size: validatedSize,
     concurrency: Math.max(
       1,
@@ -182,11 +184,11 @@ function parseCLI(): CLIOptions {
     ),
     dryRun: Boolean(opts["dry-run"]),
     rawNames: Boolean(opts["raw-names"]),
-    csvPath: (opts["csv"] as string | undefined) || undefined,
-    model: (opts["model"] as string) || "gpt-image-1",
-    quality: (opts["quality"] as string) || "standard",
-    style: (opts["style"] as string) || undefined,
-    background: (opts["background"] as string) || "transparent",
+    csvPath: (opts["csv"] as string | undefined) ?? undefined,
+    model: (opts["model"] as string) ?? "gpt-image-1",
+    quality: (opts["quality"] as string) ?? "standard",
+    style: (opts["style"] as string) ?? undefined,
+    background: (opts["background"] as string) ?? "transparent",
     n: opts["n"]
       ? Math.max(1, Math.min(4, parseInt(opts["n"] as string, 10)))
       : 1,
@@ -217,9 +219,7 @@ function extractTemplate(
   const candidates: Array<{ idx: number; txt: string; heading: string }> = [];
   // Capture headings for context
   const lines = markdown.split(/\r?\n/);
-  let currentHeading = "";
-  lines.forEach((line, i) => {
-    if (/^#{1,6}\s/.test(line)) currentHeading = line.trim();
+  lines.forEach((line, _i) => {
     const fenceMatch = line.match(/^```/);
     if (fenceMatch) {
       // naive capture: reconstruct block
@@ -264,7 +264,7 @@ function extractTemplate(
       (c) =>
         c.txt.includes("{ACTION_LINE}") ||
         c.txt.includes("{ACTION_DESCRIPTION}")
-    ) || candidates[0];
+    ) ?? candidates[0];
 
   return {
     id: "default_template",
@@ -335,7 +335,7 @@ async function loadCsvFrames(
   pathHint?: string
 ): Promise<FrameDef[] | null> {
   const autoPath = join(GUIDE_DIR, "csv", `${archetype}_sprites.csv`); // e.g. src/assets/spritesheets/ai-guides/csv/musa_sprites.csv
-  const target = pathHint || autoPath;
+  const target = pathHint ?? autoPath;
   try {
     const raw = await readFile(target, "utf8");
     const lines = raw.split(/\r?\n/);
@@ -505,7 +505,7 @@ function hashPrompt(p: string): string {
 }
 
 // Has its OWN OpenAI implementation
-async function generateOpenAI(
+async function _generateOpenAI(
   size: AllowedImageSize,
   items: FrameDef[],
   outRoot: string,
@@ -536,13 +536,13 @@ async function generateOpenAI(
           const frame = queue.shift();
           if (!frame) break;
           try {
-            const opt = frame.options || {};
-            const model = opt.model || defaults.model;
-            const quality = opt.quality || defaults.quality;
-            const style = opt.style || defaults.style;
-            const background = opt.background || defaults.background;
-            const n = opt.n || defaults.n || 1;
-            const perSize = (opt.size as AllowedImageSize) || size;
+            const opt = frame.options ?? {};
+            const model = opt.model ?? defaults.model;
+            const quality = opt.quality ?? defaults.quality;
+            const style = opt.style ?? defaults.style;
+            const background = opt.background ?? defaults.background;
+            const n = opt.n ?? defaults.n ?? 1;
+            const perSize = (opt.size as AllowedImageSize) ?? size;
             const promptWithSeed =
               frame.seed !== undefined
                 ? `${frame.prompt}\nSeed:${frame.seed}`
@@ -609,7 +609,7 @@ async function generateWithExternalScript(
               scriptPath,
               frame.prompt,
               join(outRoot, frame.file),
-              defaults.size || "1024x1024",
+              defaults.size ?? "1024x1024",
               defaults.model,
             ]
           : [
@@ -839,9 +839,7 @@ async function run() {
   const guide = await loadGuide(opts.archetype);
   // Prefer CSV frames if available / requested
   let frames = await loadCsvFrames(opts.archetype, opts.csvPath);
-  if (!frames) {
-    frames = extractActionLines(guide);
-  }
+  frames ??= extractActionLines(guide);
   const { id: templateId, template } = extractTemplate(guide, opts.provider);
   const allFrames = buildPrompts(frames, template, opts.archetype).filter(
     (f) =>
@@ -894,7 +892,7 @@ async function run() {
         quality: opts.quality,
         style: opts.style,
         background: opts.background,
-        n: opts.n || 1,
+        n: opts.n ?? 1,
       }
     );
   } else if (opts.provider === "bedrock") {
@@ -925,8 +923,8 @@ async function run() {
       file: f.file,
       description: f.description,
       promptHash: hashPrompt(f.prompt),
-      finalFrameName: (f as any).finalFrameName || null,
-      seed: f.seed || undefined,
+      finalFrameName: (f as Record<string, unknown>).finalFrameName ?? null,
+      seed: f.seed ?? undefined,
     })),
   };
   await writeFile(

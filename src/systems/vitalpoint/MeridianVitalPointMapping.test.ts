@@ -5,10 +5,10 @@
 import { describe, expect, it } from "vitest";
 import {
   VITAL_POINT_MERIDIAN_MAP,
+  getMeridianMappingStatistics,
   getMeridiansForVitalPoint,
   getVitalPointsForMeridian,
   isVitalPointOnMeridian,
-  getMeridianMappingStatistics,
 } from "./MeridianVitalPointMapping";
 
 describe("MeridianVitalPointMapping", () => {
@@ -20,7 +20,7 @@ describe("MeridianVitalPointMapping", () => {
 
     it("should map each vital point to at least one meridian", () => {
       Object.entries(VITAL_POINT_MERIDIAN_MAP).forEach(
-        ([vitalPointId, meridians]) => {
+        ([_vitalPointId, meridians]) => {
           expect(Array.isArray(meridians)).toBe(true);
           expect(meridians.length).toBeGreaterThan(0);
           expect(meridians.length).toBeLessThanOrEqual(2); // Max 2 meridians per point
@@ -161,7 +161,7 @@ describe("MeridianVitalPointMapping", () => {
   describe("getMeridianMappingStatistics", () => {
     it("should return statistics about mappings", () => {
       const stats = getMeridianMappingStatistics();
-      
+
       expect(stats.totalVitalPoints).toBeGreaterThan(0);
       expect(stats.totalMappings).toBeGreaterThanOrEqual(
         stats.totalVitalPoints
@@ -198,7 +198,7 @@ describe("MeridianVitalPointMapping", () => {
       const stats = getMeridianMappingStatistics();
 
       // Each meridian should have at least a few vital points
-      Object.entries(stats.meridianCounts).forEach(([meridianId, count]) => {
+      Object.entries(stats.meridianCounts).forEach(([_meridianId, count]) => {
         expect(count).toBeGreaterThan(0);
         // All 12 primary meridians should have multiple points
         expect(count).toBeGreaterThanOrEqual(1);
@@ -256,7 +256,7 @@ describe("MeridianVitalPointMapping", () => {
   describe("Coverage", () => {
     it("should cover all major body regions", () => {
       const vitalPoints = Object.keys(VITAL_POINT_MERIDIAN_MAP);
-      
+
       // Check for head region coverage
       const headPoints = vitalPoints.filter((vp) => vp.startsWith("head_"));
       expect(headPoints.length).toBeGreaterThan(0);
@@ -271,13 +271,15 @@ describe("MeridianVitalPointMapping", () => {
 
       // Check for arm coverage
       const armPoints = vitalPoints.filter(
-        (vp) => vp.includes("arm_") || vp.includes("elbow_") || vp.includes("wrist_")
+        (vp) =>
+          vp.includes("arm_") || vp.includes("elbow_") || vp.includes("wrist_")
       );
       expect(armPoints.length).toBeGreaterThan(0);
 
       // Check for leg coverage
       const legPoints = vitalPoints.filter(
-        (vp) => vp.includes("thigh_") || vp.includes("knee_") || vp.includes("shin_")
+        (vp) =>
+          vp.includes("thigh_") || vp.includes("knee_") || vp.includes("shin_")
       );
       expect(legPoints.length).toBeGreaterThan(0);
 
@@ -288,7 +290,7 @@ describe("MeridianVitalPointMapping", () => {
 
     it("should have bilateral symmetry for limbs", () => {
       const vitalPoints = Object.keys(VITAL_POINT_MERIDIAN_MAP);
-      
+
       // Check left/right pairs
       const leftPoints = vitalPoints.filter((vp) => vp.includes("_left"));
       const rightPoints = vitalPoints.filter((vp) => vp.includes("_right"));

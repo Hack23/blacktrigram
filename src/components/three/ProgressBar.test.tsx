@@ -6,8 +6,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { KOREAN_COLORS } from "../../types/constants";
-import { ProgressBar } from "./ProgressBar";
 import type { ProgressBarType } from "./ProgressBar";
+import { ProgressBar } from "./ProgressBar";
 
 // Mock @react-three/drei Html component
 vi.mock("@react-three/drei", () => ({
@@ -27,37 +27,19 @@ describe("ProgressBar", () => {
   });
 
   it("should render health bar", () => {
-    render(
-      <ProgressBar
-        type="health"
-        current={75}
-        max={100}
-      />
-    );
+    render(<ProgressBar type="health" current={75} max={100} />);
 
     expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
   });
 
   it("should render ki bar", () => {
-    render(
-      <ProgressBar
-        type="ki"
-        current={60}
-        max={100}
-      />
-    );
+    render(<ProgressBar type="ki" current={60} max={100} />);
 
     expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
   });
 
   it("should render stamina bar", () => {
-    render(
-      <ProgressBar
-        type="stamina"
-        current={50}
-        max={100}
-      />
-    );
+    render(<ProgressBar type="stamina" current={50} max={100} />);
 
     expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
   });
@@ -104,12 +86,7 @@ describe("ProgressBar", () => {
 
   it("should display percentage", () => {
     render(
-      <ProgressBar
-        type="health"
-        current={75}
-        max={100}
-        showText={true}
-      />
+      <ProgressBar type="health" current={75} max={100} showText={true} />
     );
 
     expect(screen.getByText("75%")).toBeInTheDocument();
@@ -150,15 +127,29 @@ describe("ProgressBar", () => {
 
   it("should handle edge cases for percentage calculation", () => {
     // Zero max
-    const percentage1 = Math.max(0, Math.min(1, 0 > 0 ? 50 / 0 : 0));
+    const zeroMax = 0;
+    const percentage1 = Math.max(
+      0,
+      Math.min(1, zeroMax > 0 ? 50 / zeroMax : 0)
+    );
     expect(percentage1).toBe(0);
 
     // Negative current
-    const percentage2 = Math.max(0, Math.min(1, 100 > 0 ? -10 / 100 : 0));
+    const negativeCurrent = -10;
+    const normalMax = 100;
+    const percentage2 = Math.max(
+      0,
+      Math.min(1, normalMax > 0 ? negativeCurrent / normalMax : 0)
+    );
     expect(percentage2).toBe(0);
 
     // Over max
-    const percentage3 = Math.max(0, Math.min(1, 100 > 0 ? 150 / 100 : 0));
+    const overMax = 150;
+    const maxValue = 100;
+    const percentage3 = Math.max(
+      0,
+      Math.min(1, maxValue > 0 ? overMax / maxValue : 0)
+    );
     expect(percentage3).toBe(1);
   });
 
@@ -179,12 +170,7 @@ describe("ProgressBar", () => {
   it("should render with custom position", () => {
     const position: [number, number, number] = [5, 10, 0];
     render(
-      <ProgressBar
-        type="ki"
-        current={60}
-        max={100}
-        position={position}
-      />
+      <ProgressBar type="ki" current={60} max={100} position={position} />
     );
 
     expect(screen.getByTestId("html-overlay")).toBeInTheDocument();
@@ -192,23 +178,13 @@ describe("ProgressBar", () => {
 
   it("should support showing/hiding text", () => {
     const { container: withText } = render(
-      <ProgressBar
-        type="health"
-        current={85}
-        max={100}
-        showText={true}
-      />
+      <ProgressBar type="health" current={85} max={100} showText={true} />
     );
 
     expect(withText).toBeTruthy();
 
     const { container: withoutText } = render(
-      <ProgressBar
-        type="health"
-        current={85}
-        max={100}
-        showText={false}
-      />
+      <ProgressBar type="health" current={85} max={100} showText={false} />
     );
 
     expect(withoutText).toBeTruthy();
@@ -216,23 +192,13 @@ describe("ProgressBar", () => {
 
   it("should support animation toggle", () => {
     const { container: animated } = render(
-      <ProgressBar
-        type="stamina"
-        current={55}
-        max={100}
-        animated={true}
-      />
+      <ProgressBar type="stamina" current={55} max={100} animated={true} />
     );
 
     expect(animated).toBeTruthy();
 
     const { container: staticBar } = render(
-      <ProgressBar
-        type="stamina"
-        current={55}
-        max={100}
-        animated={false}
-      />
+      <ProgressBar type="stamina" current={55} max={100} animated={false} />
     );
 
     expect(staticBar).toBeTruthy();
@@ -278,11 +244,7 @@ describe("ProgressBar", () => {
 
     scenarios.forEach(({ current, max }) => {
       const { unmount } = render(
-        <ProgressBar
-          type="health"
-          current={current}
-          max={max}
-        />
+        <ProgressBar type="health" current={current} max={max} />
       );
 
       const percentage = max > 0 ? current / max : 0;
@@ -296,7 +258,11 @@ describe("ProgressBar", () => {
     const labels = [
       { type: "health" as ProgressBarType, korean: "체력", english: "Health" },
       { type: "ki" as ProgressBarType, korean: "기력", english: "Ki" },
-      { type: "stamina" as ProgressBarType, korean: "지구력", english: "Stamina" },
+      {
+        type: "stamina" as ProgressBarType,
+        korean: "지구력",
+        english: "Stamina",
+      },
     ];
 
     labels.forEach(({ type, korean, english }) => {

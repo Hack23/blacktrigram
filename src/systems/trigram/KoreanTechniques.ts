@@ -38,7 +38,7 @@ export class KoreanTechniquesSystem {
     archetype?: PlayerArchetype
   ): readonly KoreanTechnique[] {
     const stanceTechniques = this.getAvailableTechniques(stance);
-    
+
     // Add Dark Ops techniques for 암살자 (Amsalja) archetype
     if (archetype === PlayerArchetype.AMSALJA) {
       const darkOpsTechniques = DARK_OPS_TECHNIQUES.filter(
@@ -46,7 +46,7 @@ export class KoreanTechniquesSystem {
       );
       return [...stanceTechniques, ...darkOpsTechniques];
     }
-    
+
     return stanceTechniques;
   }
 
@@ -55,7 +55,7 @@ export class KoreanTechniquesSystem {
    */
   static getPrimaryTechnique(stance: TrigramStance): KoreanTechnique | null {
     const techniques = this.getAvailableTechniques(stance);
-    return techniques[0] || null;
+    return techniques[0] ?? null;
   }
 
   /**
@@ -80,7 +80,7 @@ export class KoreanTechniquesSystem {
     defenderStance: TrigramStance
   ): number {
     return (
-      TECHNIQUE_EFFECTIVENESS_MATRIX[attackerStance]?.[defenderStance] || 1.0
+      TECHNIQUE_EFFECTIVENESS_MATRIX[attackerStance]?.[defenderStance] ?? 1.0
     );
   }
 
@@ -172,10 +172,10 @@ export { DARK_OPS_TECHNIQUES, TRIGRAM_TECHNIQUES } from "./techniques";
 
 // Export Dark Ops constants
 export {
-  DARK_OPS_UNITS,
   DARK_OPS_ARCHETYPE_BONUSES,
   DARK_OPS_NIGHT_BONUS,
   DARK_OPS_SPECIAL_EFFECTS,
+  DARK_OPS_UNITS,
 } from "./techniques";
 
 // Export technique effectiveness matrix

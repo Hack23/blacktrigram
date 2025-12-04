@@ -161,7 +161,7 @@ export function getVitalPointByOnPlayerId(
   readonly damage: number;
   readonly lastHitTime: number;
 } | null {
-  return player.vitalPoints.find((vp) => vp.id === vitalPointId) || null;
+  return player.vitalPoints.find((vp) => vp.id === vitalPointId) ?? null;
 }
 
 /**
@@ -258,7 +258,7 @@ export function resetPlayerState(
 
 /**
  * Get archetype asset paths (image, theme music, etc.)
- * 
+ *
  * Note: PlayerArchetype enum values are already lowercase (e.g., MUSA = "musa"),
  * so the toLowerCase() call is defensive programming for type safety.
  */
@@ -273,7 +273,7 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
 } {
   const archetypeId = archetype.toLowerCase();
   const asset = ARCHETYPE_ASSETS[archetypeId as keyof typeof ARCHETYPE_ASSETS];
-  
+
   if (!asset) {
     console.warn(`No assets found for archetype: ${archetype}`);
     return {
@@ -286,6 +286,6 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
       textureKey: archetype,
     };
   }
-  
+
   return asset;
 }

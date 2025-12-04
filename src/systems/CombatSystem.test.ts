@@ -5,8 +5,8 @@ import {
   DamageType,
   PlayerArchetype,
   TrigramStance,
-  VitalPointSeverity,
   VitalPointCategory,
+  VitalPointSeverity,
 } from "../types/common";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
 import CombatSystem, { createCombatResult } from "./CombatSystem";
@@ -103,7 +103,8 @@ describe("CombatSystem", () => {
 
       if (result.hit) {
         expect(result.damage).toBeGreaterThan(0);
-        expect(result.damage).toBeLessThanOrEqual(mockTechnique.damage! * 2);
+        const maxDamage = mockTechnique.damage ?? 15;
+        expect(result.damage).toBeLessThanOrEqual(maxDamage * 2);
       }
     });
 
@@ -371,7 +372,11 @@ describe("CombatSystem", () => {
 
   describe("static resolveAttack", () => {
     it("should work as a static method", () => {
-      const result = CombatSystem.resolveAttack(player1, player2, mockTechnique);
+      const result = CombatSystem.resolveAttack(
+        player1,
+        player2,
+        mockTechnique
+      );
 
       expect(result).toBeDefined();
       expect(result.hit).toBeDefined();
@@ -388,7 +393,11 @@ describe("CombatSystem", () => {
       // Run multiple times to ensure we get at least one miss
       let missFound = false;
       for (let i = 0; i < 50; i++) {
-        const result = CombatSystem.resolveAttack(player1, player2, lowAccuracyTechnique);
+        const result = CombatSystem.resolveAttack(
+          player1,
+          player2,
+          lowAccuracyTechnique
+        );
         if (!result.hit) {
           missFound = true;
           // Verify the miss result structure (covers line 375)
@@ -556,11 +565,14 @@ describe("CombatSystem", () => {
     });
   });
 
-  // NOTE: getArchetypeVitalPointModifier tests are obsolete. Method has been replaced by 
+  // NOTE: getArchetypeVitalPointModifier tests are obsolete. Method has been replaced by
   // VitalPointSystem + EffectCalculator for comprehensive effect calculation.
   describe.skip("getArchetypeVitalPointModifier (type safety validation) - OBSOLETE", () => {
     it("should apply correct modifiers for AMSALJA archetype on neurological vital points", () => {
-      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      const amsaljaPlayer = createPlayerFromArchetype(
+        PlayerArchetype.AMSALJA,
+        0
+      );
       const result = combatSystem.resolveAttack(
         amsaljaPlayer,
         player2,
@@ -621,7 +633,10 @@ describe("CombatSystem", () => {
     });
 
     it("should apply 1.3x modifier for AMSALJA on neurological vital point hit (line 352 - true branch)", () => {
-      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      const amsaljaPlayer = createPlayerFromArchetype(
+        PlayerArchetype.AMSALJA,
+        0
+      );
       // Use head_temple which is a neurological vital point
       const result = combatSystem.resolveAttack(
         amsaljaPlayer,
@@ -629,7 +644,7 @@ describe("CombatSystem", () => {
         mockTechnique,
         "head_temple" // Temple is neurological category
       );
-      
+
       // When the attack hits a neurological point with AMSALJA, line 352 executes
       expect(result).toBeDefined();
       if (result.hit && result.vitalPointHit) {
@@ -639,16 +654,19 @@ describe("CombatSystem", () => {
     });
 
     it("should apply base modifier (1.0) for AMSALJA on NON-neurological vital point (line 352 - false branch)", () => {
-      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      const amsaljaPlayer = createPlayerFromArchetype(
+        PlayerArchetype.AMSALJA,
+        0
+      );
       // Ensure player is in correct stance and has resources
       amsaljaPlayer.currentStance = TrigramStance.GEON;
       amsaljaPlayer.ki = 100;
       amsaljaPlayer.stamina = 100;
       amsaljaPlayer.isStunned = false;
-      
+
       // Mock Math.random to ensure hit (need >0 but <accuracy to hit)
-      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5); // 50% will hit with 85% accuracy
-      
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5); // 50% will hit with 85% accuracy
+
       try {
         // Use neck_carotid which is a vascular (not neurological) vital point
         const result = combatSystem.resolveAttack(
@@ -657,7 +675,7 @@ describe("CombatSystem", () => {
           mockTechnique,
           "neck_carotid" // Carotid is vascular category, not neurological
         );
-        
+
         // When AMSALJA hits a non-neurological point, should use baseModifier (line 352 false branch)
         expect(result).toBeDefined();
         expect(result.hit).toBe(true); // Should hit with mocked random
@@ -676,7 +694,7 @@ describe("CombatSystem", () => {
         mockTechnique,
         "head_temple" // Temple is neurological category
       );
-      
+
       // When the attack hits a neurological point with HACKER, line 356 executes
       expect(result).toBeDefined();
       if (result.hit && result.vitalPointHit) {
@@ -692,10 +710,10 @@ describe("CombatSystem", () => {
       hackerPlayer.ki = 100;
       hackerPlayer.stamina = 100;
       hackerPlayer.isStunned = false;
-      
+
       // Mock Math.random to ensure hit
-      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5); // 50% will hit with 85% accuracy
-      
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5); // 50% will hit with 85% accuracy
+
       try {
         // Use neck_carotid which is a vascular (not neurological) vital point
         const result = combatSystem.resolveAttack(
@@ -704,7 +722,7 @@ describe("CombatSystem", () => {
           mockTechnique,
           "neck_carotid" // Carotid is vascular category, not neurological
         );
-        
+
         // When HACKER hits a non-neurological point, should use baseModifier (line 356 false branch)
         expect(result).toBeDefined();
         expect(result.hit).toBe(true); // Should hit with mocked random
@@ -715,16 +733,19 @@ describe("CombatSystem", () => {
     });
 
     it("should use base modifier (1.0) for JEONGBO_YOWON archetype (lines 357-358)", () => {
-      const jeongboPlayer = createPlayerFromArchetype(PlayerArchetype.JEONGBO_YOWON, 0);
+      const jeongboPlayer = createPlayerFromArchetype(
+        PlayerArchetype.JEONGBO_YOWON,
+        0
+      );
       // Ensure player is in correct stance and has resources
       jeongboPlayer.currentStance = TrigramStance.GEON;
       jeongboPlayer.ki = 100;
       jeongboPlayer.stamina = 100;
       jeongboPlayer.isStunned = false;
-      
+
       // Mock Math.random to ensure hit
-      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
+
       try {
         // Test with a vital point hit to trigger modifier calculation
         const result = combatSystem.resolveAttack(
@@ -733,7 +754,7 @@ describe("CombatSystem", () => {
           mockTechnique,
           "head_temple"
         );
-        
+
         // JEONGBO_YOWON doesn't have special modifiers, so default case applies (lines 357-358)
         expect(result).toBeDefined();
         expect(result.hit).toBe(true);
@@ -744,16 +765,19 @@ describe("CombatSystem", () => {
     });
 
     it("should use base modifier (1.0) for JOJIK_POKRYEOKBAE archetype (lines 357-358)", () => {
-      const jojikPlayer = createPlayerFromArchetype(PlayerArchetype.JOJIK_POKRYEOKBAE, 0);
+      const jojikPlayer = createPlayerFromArchetype(
+        PlayerArchetype.JOJIK_POKRYEOKBAE,
+        0
+      );
       // Ensure player is in correct stance and has resources
       jojikPlayer.currentStance = TrigramStance.GEON;
       jojikPlayer.ki = 100;
       jojikPlayer.stamina = 100;
       jojikPlayer.isStunned = false;
-      
+
       // Mock Math.random to ensure hit
-      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
+
       try {
         // Test with a vital point hit to trigger modifier calculation
         const result = combatSystem.resolveAttack(
@@ -762,7 +786,7 @@ describe("CombatSystem", () => {
           mockTechnique,
           "head_temple"
         );
-        
+
         // JOJIK_POKRYEOKBAE doesn't have special modifiers, so default case applies (lines 357-358)
         expect(result).toBeDefined();
         expect(result.hit).toBe(true);
@@ -773,17 +797,23 @@ describe("CombatSystem", () => {
     });
 
     it("should handle invalid archetype gracefully (lines 337-338)", () => {
-      const playerWithInvalidArchetype = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+      const playerWithInvalidArchetype = createPlayerFromArchetype(
+        PlayerArchetype.MUSA,
+        0
+      );
       // Force an invalid archetype value for testing error handling
-      (playerWithInvalidArchetype as any).archetype = "INVALID_ARCHETYPE" as any;
+      (playerWithInvalidArchetype as any).archetype =
+        "INVALID_ARCHETYPE" as any;
       playerWithInvalidArchetype.currentStance = TrigramStance.GEON;
       playerWithInvalidArchetype.ki = 100;
       playerWithInvalidArchetype.stamina = 100;
       playerWithInvalidArchetype.isStunned = false;
-      
-      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      
+
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {});
+
       try {
         const result = combatSystem.resolveAttack(
           playerWithInvalidArchetype,
@@ -791,7 +821,7 @@ describe("CombatSystem", () => {
           mockTechnique,
           "head_temple"
         );
-        
+
         // Should still execute attack but with base modifier
         expect(result).toBeDefined();
         // Verify warning was logged (lines 337-338 executed)
@@ -805,25 +835,35 @@ describe("CombatSystem", () => {
     });
 
     it("should handle invalid vital point gracefully (lines 342-343)", () => {
-      const amsaljaPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 0);
+      const amsaljaPlayer = createPlayerFromArchetype(
+        PlayerArchetype.AMSALJA,
+        0
+      );
       amsaljaPlayer.currentStance = TrigramStance.GEON;
       amsaljaPlayer.ki = 100;
       amsaljaPlayer.stamina = 100;
       amsaljaPlayer.isStunned = false;
-      
-      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      
+
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {});
+
       // Mock getVitalPointById to return an invalid vital point structure (missing required fields)
-      const getByIdSpy = vi.spyOn(combatSystem['vitalPointSystem'], 'getVitalPointById')
+      const getByIdSpy = vi
+        .spyOn(combatSystem["vitalPointSystem"], "getVitalPointById")
         .mockReturnValue({
           id: "invalid",
-          names: { korean: "invalid", english: "invalid", romanized: "invalid" },
+          names: {
+            korean: "invalid",
+            english: "invalid",
+            romanized: "invalid",
+          },
           position: { x: 0, y: 0 },
           effects: [], // Include effects to avoid crash, but structure is still invalid for isVitalPoint check
           // Missing severity, baseDamage, category, etc. to make it invalid
         } as any);
-      
+
       try {
         const result = combatSystem.resolveAttack(
           amsaljaPlayer,
@@ -831,7 +871,7 @@ describe("CombatSystem", () => {
           mockTechnique,
           "invalid_vital_point"
         );
-        
+
         // Should still execute attack but with warning
         expect(result).toBeDefined();
         // Verify warning was logged (lines 342-343 executed)
@@ -1006,9 +1046,12 @@ describe("CombatSystem", () => {
       // Calculate expected modifier damage with 1.1x multiplier
       const expectedAttackerBonus = player1.attackPower * 0.1;
       const expectedModifierWithMultiplier = expectedAttackerBonus * 1.1;
-      
+
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
-      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
+      expect(damageResult.modifierDamage).toBeCloseTo(
+        expectedModifierWithMultiplier,
+        1
+      );
     });
 
     it("should apply MODERATE severity multiplier (1.3x)", () => {
@@ -1031,9 +1074,12 @@ describe("CombatSystem", () => {
       // Calculate expected modifier damage with 1.3x multiplier
       const expectedAttackerBonus = player1.attackPower * 0.1;
       const expectedModifierWithMultiplier = expectedAttackerBonus * 1.3;
-      
+
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
-      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
+      expect(damageResult.modifierDamage).toBeCloseTo(
+        expectedModifierWithMultiplier,
+        1
+      );
     });
 
     it("should apply MAJOR severity multiplier (1.6x)", () => {
@@ -1056,9 +1102,12 @@ describe("CombatSystem", () => {
       // Calculate expected modifier damage with 1.6x multiplier
       const expectedAttackerBonus = player1.attackPower * 0.1;
       const expectedModifierWithMultiplier = expectedAttackerBonus * 1.6;
-      
+
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
-      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
+      expect(damageResult.modifierDamage).toBeCloseTo(
+        expectedModifierWithMultiplier,
+        1
+      );
     });
 
     it("should apply CRITICAL severity multiplier (2.0x)", () => {
@@ -1081,9 +1130,12 @@ describe("CombatSystem", () => {
       // Calculate expected modifier damage with 2.0x multiplier
       const expectedAttackerBonus = player1.attackPower * 0.1;
       const expectedModifierWithMultiplier = expectedAttackerBonus * 2.0;
-      
+
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
-      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
+      expect(damageResult.modifierDamage).toBeCloseTo(
+        expectedModifierWithMultiplier,
+        1
+      );
     });
 
     it("should apply LETHAL severity multiplier (3.0x)", () => {
@@ -1106,9 +1158,12 @@ describe("CombatSystem", () => {
       // Calculate expected modifier damage with 3.0x multiplier
       const expectedAttackerBonus = player1.attackPower * 0.1;
       const expectedModifierWithMultiplier = expectedAttackerBonus * 3.0;
-      
+
       expect(damageResult.totalDamage).toBeGreaterThan(damageResult.baseDamage);
-      expect(damageResult.modifierDamage).toBeCloseTo(expectedModifierWithMultiplier, 1);
+      expect(damageResult.modifierDamage).toBeCloseTo(
+        expectedModifierWithMultiplier,
+        1
+      );
     });
 
     it("should apply defense reduction correctly", () => {
@@ -1141,7 +1196,9 @@ describe("CombatSystem", () => {
       );
 
       // High defense should result in lower damage
-      expect(highDefenseResult.totalDamage).toBeLessThan(normalDefenseResult.totalDamage);
+      expect(highDefenseResult.totalDamage).toBeLessThan(
+        normalDefenseResult.totalDamage
+      );
       expect(highDefenseResult.totalDamage).toBeGreaterThan(0);
     });
 
@@ -1235,7 +1292,9 @@ describe("CombatSystem", () => {
 
       expect(damageResult.finalDefenderState).toBeDefined();
       expect(damageResult.finalDefenderState?.health).toBeDefined();
-      expect(damageResult.finalDefenderState?.health).toBeLessThanOrEqual(player2.health);
+      expect(damageResult.finalDefenderState?.health).toBeLessThanOrEqual(
+        player2.health
+      );
       expect(damageResult.finalDefenderState?.health).toBeGreaterThanOrEqual(0);
     });
   });

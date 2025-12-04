@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ARCHETYPE_ASSETS } from "../types/constants";
-import AudioManager from "./AudioManager";
 import { audioAssetRegistry } from "./AudioAssetRegistry";
+import AudioManager from "./AudioManager";
 import placeholderAssets from "./placeholder-sounds";
 import { AudioAsset, AudioConfig, IAudioManager } from "./types";
 
@@ -44,7 +44,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   deferInitialization = false,
 }) => {
   const [audioManager] = useState<IAudioManager>(
-    () => manager || new AudioManager(config)
+    () => manager ?? new AudioManager(config)
   );
   const [isAudioReady, setIsAudioReady] = useState(false);
 
@@ -54,49 +54,67 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
 
     try {
       await audioManager.initialize(); // no args
-        
-        // Preload all placeholder assets
-        const list = Object.values(placeholderAssets).flat() as AudioAsset[];
-        await Promise.all(list.map((a) => audioManager.loadAsset(a).catch(err => {
-          console.warn(`Failed to load placeholder asset: ${a.id}`, err);
-        })));
 
-        // Preload menu UI sounds from registry (critical for intro screen)
-        const menuSounds = [
-          audioAssetRegistry.getSFX("menu_hover"),
-          audioAssetRegistry.getSFX("menu_select"),
-          audioAssetRegistry.getSFX("menu_click"),
-          audioAssetRegistry.getSFX("menu_navigate"),
-          audioAssetRegistry.getSFX("menu_back"),
-        ];
+      // Preload all placeholder assets
+      const list = Object.values(placeholderAssets).flat() as AudioAsset[];
+      await Promise.all(
+        list.map((a) =>
+          audioManager.loadAsset(a).catch((err) => {
+            console.warn(`Failed to load placeholder asset: ${a.id}`, err);
+          })
+        )
+      );
 
-        const menuAssets = menuSounds.filter((asset) => asset !== undefined) as AudioAsset[];
-        await Promise.all(menuAssets.map((a) => audioManager.loadAsset(a).catch(err => {
-          console.warn(`Failed to load menu asset: ${a.id}`, err);
-        })));
+      // Preload menu UI sounds from registry (critical for intro screen)
+      const menuSounds = [
+        audioAssetRegistry.getSFX("menu_hover"),
+        audioAssetRegistry.getSFX("menu_select"),
+        audioAssetRegistry.getSFX("menu_click"),
+        audioAssetRegistry.getSFX("menu_navigate"),
+        audioAssetRegistry.getSFX("menu_back"),
+      ];
 
-        // Preload intro music
-        const introMusic = audioAssetRegistry.getMusic("intro_theme");
-        if (introMusic) {
-          await audioManager.loadAsset(introMusic as AudioAsset).catch(err => {
-            console.warn("Failed to load intro theme music", err);
-          });
-        }
+      const menuAssets = menuSounds.filter(
+        (asset) => asset !== undefined
+      ) as AudioAsset[];
+      await Promise.all(
+        menuAssets.map((a) =>
+          audioManager.loadAsset(a).catch((err) => {
+            console.warn(`Failed to load menu asset: ${a.id}`, err);
+          })
+        )
+      );
 
-        // Preload archetype theme music for character selection
-        const archetypeThemeIds = Object.values(ARCHETYPE_ASSETS).map(a => a.themeId);
-        const archetypeThemes = archetypeThemeIds.map(id => {
-          const track = audioAssetRegistry.getMusic(id);
-          if (!track) {
-            console.warn(`Archetype theme not registered: ${id}`);
-          }
-          return track;
+      // Preload intro music
+      const introMusic = audioAssetRegistry.getMusic("intro_theme");
+      if (introMusic) {
+        await audioManager.loadAsset(introMusic as AudioAsset).catch((err) => {
+          console.warn("Failed to load intro theme music", err);
         });
+      }
 
-      const archetypeAssets = archetypeThemes.filter((asset) => asset !== undefined) as AudioAsset[];
-      await Promise.all(archetypeAssets.map((a) => audioManager.loadAsset(a).catch(err => {
-        console.warn(`Failed to load archetype theme: ${a.id}`, err);
-      })));
+      // Preload archetype theme music for character selection
+      const archetypeThemeIds = Object.values(ARCHETYPE_ASSETS).map(
+        (a) => a.themeId
+      );
+      const archetypeThemes = archetypeThemeIds.map((id) => {
+        const track = audioAssetRegistry.getMusic(id);
+        if (!track) {
+          console.warn(`Archetype theme not registered: ${id}`);
+        }
+        return track;
+      });
+
+      const archetypeAssets = archetypeThemes.filter(
+        (asset) => asset !== undefined
+      ) as AudioAsset[];
+      await Promise.all(
+        archetypeAssets.map((a) =>
+          audioManager.loadAsset(a).catch((err) => {
+            console.warn(`Failed to load archetype theme: ${a.id}`, err);
+          })
+        )
+      );
 
       setIsAudioReady(true);
     } catch (error) {
@@ -129,19 +147,32 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       unmute: audioManager.unmute.bind(audioManager),
       fadeIn: audioManager.fadeIn.bind(audioManager),
       fadeOut: audioManager.fadeOut.bind(audioManager),
-      playKoreanTechniqueSound: audioManager.playKoreanTechniqueSound.bind(audioManager),
-      playTrigramStanceSound: audioManager.playTrigramStanceSound.bind(audioManager),
-      playVitalPointHitSound: audioManager.playVitalPointHitSound.bind(audioManager),
+      playKoreanTechniqueSound:
+        audioManager.playKoreanTechniqueSound.bind(audioManager),
+      playTrigramStanceSound:
+        audioManager.playTrigramStanceSound.bind(audioManager),
+      playVitalPointHitSound:
+        audioManager.playVitalPointHitSound.bind(audioManager),
       playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
-      
+
       // Getter properties - forwarding getters using ES6 getter syntax
       // This ensures components always get current values from audioManager
-      get isInitialized() { return audioManager.isInitialized; },
-      get masterVolume() { return audioManager.masterVolume; },
-      get sfxVolume() { return audioManager.sfxVolume; },
-      get musicVolume() { return audioManager.musicVolume; },
-      get muted() { return audioManager.muted; },
-      
+      get isInitialized() {
+        return audioManager.isInitialized;
+      },
+      get masterVolume() {
+        return audioManager.masterVolume;
+      },
+      get sfxVolume() {
+        return audioManager.sfxVolume;
+      },
+      get musicVolume() {
+        return audioManager.musicVolume;
+      },
+      get muted() {
+        return audioManager.muted;
+      },
+
       // AudioProvider-specific properties
       initializeAudio,
       isAudioReady,

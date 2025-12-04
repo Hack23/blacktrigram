@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../types/constants";
 
@@ -12,8 +12,8 @@ export const VictoryAnimation3D: React.FC = () => {
   const particlesRef = useRef<THREE.Points>(null);
   const ringsRef = useRef<THREE.Group>(null);
 
-  // Create victory particles
-  const particlePositions = useMemo(() => {
+  // Create victory particles - use useState with lazy initializer
+  const [particlePositions] = useState(() => {
     const count = 150;
     const positions = new Float32Array(count * 3);
 
@@ -29,7 +29,7 @@ export const VictoryAnimation3D: React.FC = () => {
     }
 
     return positions;
-  }, []);
+  });
 
   // Animate victory effects
   useFrame((state) => {
@@ -54,7 +54,11 @@ export const VictoryAnimation3D: React.FC = () => {
   });
 
   return (
-    <group ref={groupRef} position={[0, 2, 0]} data-testid="victory-animation-3d">
+    <group
+      ref={groupRef}
+      position={[0, 2, 0]}
+      data-testid="victory-animation-3d"
+    >
       {/* Victory particles */}
       <points ref={particlesRef}>
         <bufferGeometry>

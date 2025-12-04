@@ -1,18 +1,18 @@
 /**
  * RoundStartAnnouncement Component - Displays "Round X Begin!" announcement
- * 
+ *
  * Korean: 라운드 시작 발표 (Round Start Announcement)
- * 
+ *
  * Shows "Round X Begin!" for subsequent rounds (not the first round).
  * Implements Korean cyberpunk aesthetic with bilingual text support.
- * 
+ *
  * @module components/combat/RoundStartAnnouncement
  * @category Combat UI
  */
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
 
 /**
@@ -31,14 +31,14 @@ export interface RoundStartAnnouncementProps {
 
 /**
  * RoundStartAnnouncement Component
- * 
+ *
  * Displays "Round X Begin!" announcement with:
  * - Bilingual round number and "Begin!" text
  * - Flash/pulse animation for impact
  * - Auto-dismiss after configured duration
  * - Audio cue for round start
  * - Responsive sizing for mobile/tablet/desktop
- * 
+ *
  * Korean: 라운드 시작 발표 컴포넌트
  */
 export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
@@ -61,13 +61,13 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     if (audio.isAudioReady) {
       audio.playSFX("attack_medium"); // Using placeholder - will be round_start
     }
-  }, [audio.isAudioReady]);
+  }, [audio]);
 
   // Auto-dismiss after duration
   useEffect(() => {
     let isMounted = true;
     let innerTimer: ReturnType<typeof setTimeout> | null = null;
-    
+
     const outerTimer = setTimeout(() => {
       setIsVisible(false);
       innerTimer = setTimeout(() => {
@@ -87,10 +87,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
   }, [duration, onComplete]);
 
   // Convert hex colors to CSS - memoized for performance
-  const goldColor = useMemo(
-    () => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
-    []
-  );
+  const goldColor = useMemo(() => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);
   const darkBg = useMemo(
     () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
     []

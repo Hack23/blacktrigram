@@ -1,11 +1,11 @@
 /**
  * ActionFeedback - Combat action feedback display component
- * 
+ *
  * Displays action indicators like "Perfect!", "Critical!", "Blocked", "Dodged",
  * and technique names with Korean-English bilingual text.
- * 
+ *
  * Uses Html overlay from @react-three/drei for rendering within 3D scenes.
- * 
+ *
  * @module components/combat/components/ActionFeedback
  * @category Combat UI
  * @korean 액션피드백
@@ -13,9 +13,12 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useRef, useState } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
-import { ActionFeedback as ActionFeedbackData, ActionFeedbackType } from "../../../hooks/useActionFeedback";
+import React, { useMemo, useRef, useState } from "react";
+import {
+  ActionFeedback as ActionFeedbackData,
+  ActionFeedbackType,
+} from "../../../hooks/useActionFeedback";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
 
 // Animation phase thresholds (as percentage of total duration)
@@ -33,7 +36,12 @@ export interface ActionFeedbackProps {
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
   /** Arena bounds for 3D positioning */
-  readonly arenaBounds?: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
   /** Duration of animation in ms (default: 1200) */
   readonly animationDuration?: number;
 }
@@ -175,10 +183,10 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
 
 /**
  * ActionFeedback Component
- * 
+ *
  * Renders multiple action feedback indicators in the 3D scene.
  * Each indicator floats upward and fades out over time.
- * 
+ *
  * @example
  * ```tsx
  * <ActionFeedback
@@ -194,13 +202,8 @@ export const ActionFeedback: React.FC<ActionFeedbackProps> = ({
   arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
   animationDuration = 1200,
 }) => {
-  // Track currently visible feedbacks
-  const [visibleFeedbacks, setVisibleFeedbacks] = useState<ActionFeedbackData[]>([]);
-
-  // Update visible feedbacks when feedbacks prop changes
-  useEffect(() => {
-    setVisibleFeedbacks([...feedbacks]);
-  }, [feedbacks]);
+  // Derive visible feedbacks from props - no need for state sync
+  const visibleFeedbacks = useMemo(() => [...feedbacks], [feedbacks]);
 
   return (
     <group data-testid="action-feedback-container">
@@ -219,10 +222,10 @@ export const ActionFeedback: React.FC<ActionFeedbackProps> = ({
 
 /**
  * TechniqueName Component
- * 
+ *
  * Displays the current technique name in Korean and English.
  * Appears at the center of the screen with a dramatic animation.
- * 
+ *
  * @example
  * ```tsx
  * <TechniqueName
@@ -242,7 +245,9 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
 }) => {
   const [opacity, setOpacity] = useState(0);
   const [scale, setScale] = useState(0.5);
-  const startTimeRef = useRef(Date.now());
+  // Use useState lazy initializer for Date.now() to avoid impure function during render
+  const [startTime] = useState(() => Date.now());
+  const startTimeRef = useRef(startTime);
 
   // Animation phases: fade in (0-FADE_IN_THRESHOLD), hold (FADE_IN_THRESHOLD-FADE_OUT_THRESHOLD), fade out (FADE_OUT_THRESHOLD-1)
   useFrame(() => {
@@ -260,7 +265,8 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
       setScale(1);
     } else {
       // Fade out phase
-      const fadeOutProgress = (progress - FADE_OUT_THRESHOLD) / (1 - FADE_OUT_THRESHOLD);
+      const fadeOutProgress =
+        (progress - FADE_OUT_THRESHOLD) / (1 - FADE_OUT_THRESHOLD);
       setOpacity(1 - fadeOutProgress);
       setScale(1 + fadeOutProgress * 0.2);
     }

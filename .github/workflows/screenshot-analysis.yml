@@ -15,68 +15,55 @@ jobs:
     name: Capture UI/UX Screenshots
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+    env:
+      # Suppress X11 keyboard configuration warnings
+      XKB_DEFAULT_RULES: evdev
+      XKB_DEFAULT_MODEL: pc105
+      XKB_DEFAULT_LAYOUT: us
+
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit
-      
+
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4.3.1
       - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version: "24"
           cache: "npm"
 
-      - name: Setup Three.js Test Environment
+      - name: Setup Screenshot Environment
         run: |
-          echo "🔧 Setting up Three.js test environment with optimized Chrome flags..."
+          echo "🔧 Setting up screenshot capture environment..."
 
-          # Install all required dependencies in single layer
+          # Install dependencies for Playwright screenshot capture
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            xvfb dbus-x11 graphviz \
-            libgtk2.0-0 libgtk-3-0 libgbm-dev \
-            ffmpeg libnotify-dev libnss3 libxss1 \
+            xvfb dbus-x11 \
+            libgtk2.0-0 libgtk-3-0 libgbm-dev libgbm1 \
+            libnotify-dev libnss3 libxss1 \
             libxtst6 xauth \
             fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
             ca-certificates fonts-liberation \
             libatk-bridge2.0-0 libatk1.0-0 \
-            libcups2 libdbus-1-3 libdrm2 libgbm1 \
+            libcups2 libdbus-1-3 libdrm2 \
             libnspr4 libx11-xcb1 libxcomposite1 \
             libxdamage1 libxfixes3 libxrandr2 \
-            libxrender1 libxshmfence1 xdg-utils wget
-
-          # Install Chrome for Three.js WebGL support
-          wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+            libxrender1 libxshmfence1 xdg-utils libxkbcommon0 xkb-data
 
           # Setup D-Bus
           sudo mkdir -p /var/run/dbus
           sudo dbus-daemon --system --fork
 
-          echo "✅ Three.js test environment ready"
-          google-chrome --version
+          echo "✅ Screenshot environment ready"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Cache Cypress binary
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
-      - name: Verify Cypress
-        run: npx cypress verify
-        
       - name: Install Playwright
         run: npx playwright install chromium --with-deps
-      
+
       - name: Cache Playwright browsers
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
@@ -84,24 +71,22 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             playwright-${{ runner.os }}-
-      
+
       - name: Build application
         run: npm run build
-      
+
       - name: Start Xvfb
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb
-          Xvfb :99 -ac -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          Xvfb :99 -ac -screen 0 1280x1024x24 +extension GLX +extension RANDR +render -nolisten tcp > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
           sleep 2  # Give Xvfb time to start
-      
+
       - name: Capture screenshots
         run: npm run screenshots:capture
         env:
           DISPLAY: :99
           CI: true
-      
+
       - name: Upload screenshots as artifacts
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
@@ -109,7 +94,7 @@ jobs:
           name: ui-screenshots
           path: screenshots/
           retention-days: 30
-      
+
       - name: Post screenshots to PR
         if: github.event_name == 'pull_request'
         run: npm run screenshots:post

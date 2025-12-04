@@ -348,7 +348,10 @@ export function combineEffects(effects: StatusEffect[]): StatusEffect[] {
     if (!effectsByType.has(effect.type)) {
       effectsByType.set(effect.type, []);
     }
-    effectsByType.get(effect.type)!.push(effect);
+    const typeEffects = effectsByType.get(effect.type);
+    if (typeEffects) {
+      typeEffects.push(effect);
+    }
   });
 
   // Combine stackable effects, keep latest non-stackable
@@ -455,7 +458,10 @@ export function groupEffectsByTypeEnum(
     if (!effectsByType.has(effectType)) {
       effectsByType.set(effectType, []);
     }
-    effectsByType.get(effectType)!.push(effect);
+    const typeEffects = effectsByType.get(effectType);
+    if (typeEffects) {
+      typeEffects.push(effect);
+    }
   }
 
   return effectsByType;
@@ -474,7 +480,10 @@ export function groupEffectsByType(
     if (!effectsByType.has(effect.type)) {
       effectsByType.set(effect.type, []);
     }
-    effectsByType.get(effect.type)!.push(effect);
+    const typeEffects = effectsByType.get(effect.type);
+    if (typeEffects) {
+      typeEffects.push(effect);
+    }
   }
 
   return effectsByType;

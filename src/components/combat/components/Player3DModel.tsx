@@ -1,6 +1,6 @@
 /**
  * Player3DModel - 3D character representation for combat
- * 
+ *
  * Uses simple geometries for performance while maintaining Korean aesthetic
  */
 
@@ -131,9 +131,7 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
       isLowHealth: healthPercent < 0.3,
       isHighKi: kiPercent > 0.8,
       shouldGlow:
-        playerState.isBlocking ||
-        playerState.isCountering ||
-        kiPercent > 0.7,
+        playerState.isBlocking || playerState.isCountering || kiPercent > 0.7,
     };
   }, [
     playerState.health,
@@ -146,9 +144,10 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
 
   // Cache material reference on mount
   useEffect(() => {
-    if (bodyRef.current && bodyRef.current.material) {
+    if (bodyRef.current?.material) {
       if ("emissiveIntensity" in bodyRef.current.material) {
-        bodyMaterialRef.current = bodyRef.current.material as THREE.MeshStandardMaterial;
+        bodyMaterialRef.current = bodyRef.current
+          .material as THREE.MeshStandardMaterial;
       }
     }
   }, []);
@@ -159,7 +158,12 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
     if (visualStates.isLowHealth) return KOREAN_COLORS.ACCENT_RED;
     if (visualStates.isHighKi) return KOREAN_COLORS.PRIMARY_CYAN;
     return archetypeColors.primary;
-  }, [playerState.isStunned, visualStates.isLowHealth, visualStates.isHighKi, archetypeColors.primary]);
+  }, [
+    playerState.isStunned,
+    visualStates.isLowHealth,
+    visualStates.isHighKi,
+    archetypeColors.primary,
+  ]);
 
   // Stance color
   const stanceColor = useMemo(
@@ -224,8 +228,10 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
     }
 
     // Ki aura rotation - use fresh state values to avoid stale closure
-    const shouldGlow = playerState.isBlocking || playerState.isCountering || 
-                       (playerState.ki / playerState.maxKi) > 0.7;
+    const shouldGlow =
+      playerState.isBlocking ||
+      playerState.isCountering ||
+      playerState.ki / playerState.maxKi > 0.7;
     if (shouldGlow) {
       groupRef.current.rotation.y = state.clock.elapsedTime * 0.5;
     } else {
@@ -339,9 +345,7 @@ export const Player3DModel: React.FC<Player3DModelProps> = ({
       {playerState.isCountering && (
         <mesh position={[0, 1.5, 0]}>
           <torusGeometry args={[0.4, 0.05, 8, 32]} />
-          <meshBasicMaterial
-            color={KOREAN_COLORS.ACCENT_PURPLE}
-          />
+          <meshBasicMaterial color={KOREAN_COLORS.ACCENT_PURPLE} />
         </mesh>
       )}
 

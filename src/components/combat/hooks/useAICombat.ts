@@ -1,6 +1,6 @@
 /**
  * useAICombat Hook - AI Combat System Integration
- * 
+ *
  * Custom hook for AI combat behavior with strategic decision-making.
  *
  * Manages AI opponent behavior including:
@@ -25,9 +25,9 @@
  * @param config.isPaused Whether the game is paused.
  * @param config.onExecuteAction Callback to execute AI actions.
  * @param config.onStanceChange Callback to handle stance changes.
- * 
+ *
  * @returns AI combat state and control functions
- * 
+ *
  * @example
  * ```typescript
  * const { aiState } = useAICombat({
@@ -45,17 +45,17 @@
  * ```
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { PlayerState } from "@/systems/player";
-import { Position, TrigramStance } from "@/types";
 import {
-  AIPersonality,
-  AIComboSystem,
   AdaptiveDifficulty,
-  AIDecisionTree,
   AIActionType,
+  AIComboSystem,
+  AIDecisionTree,
+  AIPersonality,
   CombatContext,
 } from "@/systems/ai";
+import { PlayerState } from "@/systems/player";
+import { Position, TrigramStance } from "@/types";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -143,21 +143,26 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [adaptiveDifficulty, decisionTree]);
 
-  // AI state
-  const [aiState, setAiState] = useState<AIState>({
-    nextAction: Date.now(),
-    targetPosition: player.position,
-    lastActionType: "idle",
-    consecutiveAttacks: 0,
-    actionCooldown: 500,
-    aggressionLevel: adjustedPersonality.aggressionLevel,
+  // AI state - use useState lazy initializer for Date.now()
+  const [aiState, setAiState] = useState<AIState>(() => {
+    const now = Date.now();
+    return {
+      nextAction: now,
+      targetPosition: player.position,
+      lastActionType: "idle",
+      consecutiveAttacks: 0,
+      actionCooldown: 500,
+      aggressionLevel: adjustedPersonality.aggressionLevel,
+    };
   });
 
-  // Performance tracking
+  // Performance tracking - use useState lazy initializer for refs that need Date.now()
   const lastDecisionTimeRef = useRef(0);
-  const matchStartTimeRef = useRef(Date.now());
+  const [initialMatchTime] = useState(() => Date.now());
+  const matchStartTimeRef = useRef(initialMatchTime);
   const previousDamageRef = useRef(0);
-  const nextActionRef = useRef(Date.now());
+  const [initialActionTime] = useState(() => Date.now());
+  const nextActionRef = useRef(initialActionTime);
   const lastWarningTimeRef = useRef(0);
 
   // Initialize previousDamageRef when round starts (issue #2529728007)
@@ -250,7 +255,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         const now = Date.now();
         if (now - lastWarningTimeRef.current > WARNING_THROTTLE_MS) {
           // Only warn every 5 seconds
-          console.warn(`AI decisions running slow: ${decisionTime.toFixed(2)}ms`);
+          console.warn(
+            `AI decisions running slow: ${decisionTime.toFixed(2)}ms`
+          );
           lastWarningTimeRef.current = now;
         }
       }
@@ -277,8 +284,14 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
           if (!comboSystem.isComboActive()) {
             comboSystem.startCombo(player, opponent, adjustedPersonality);
           }
-          
-          if (comboSystem.shouldContinueCombo(player, opponent, adjustedPersonality)) {
+
+          if (
+            comboSystem.shouldContinueCombo(
+              player,
+              opponent,
+              adjustedPersonality
+            )
+          ) {
             const technique = comboSystem.getNextComboTechnique();
             actionType = technique ? "technique" : "attack";
             newConsecutiveAttacks++;

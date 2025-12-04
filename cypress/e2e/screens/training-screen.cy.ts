@@ -1,7 +1,7 @@
 /**
  * TrainingScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
- * 
+ *
  * This test covers the complete TrainingScreen user journey including:
  * - Training screen rendering and UI elements
  * - Training dummy interaction
@@ -9,12 +9,10 @@
  * - Training session mechanics
  * - Extended practice sequences
  * - Return to intro navigation
- * 
+ *
  * ✅ Three.js Compatible - Tests TrainingScreen3D with TrainingDummy3D
  * ⏱️ Optimized for 3-4 minute execution time
  */
-
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
@@ -35,7 +33,9 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying Training Screen Rendering");
 
-    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should("exist");
+    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should(
+      "exist"
+    );
     cy.log("✅ Training screen exists");
 
     // Verify canvas is visible
@@ -204,7 +204,11 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     cy.get("body").then(($body) => {
       const bodyText = $body.text();
-      if (bodyText.includes("훈련") || bodyText.includes("연습") || bodyText.includes("팔괘")) {
+      if (
+        bodyText.includes("훈련") ||
+        bodyText.includes("연습") ||
+        bodyText.includes("팔괘")
+      ) {
         cy.log("✅ Korean text found in training UI");
       } else {
         cy.log("⚠️ Korean text may be rendered in canvas");

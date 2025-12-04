@@ -7,8 +7,8 @@ import {
 import type { KoreanText, Position } from "../../types/common";
 import { EffectIntensity } from "../effects";
 import { StatusEffect } from "../types";
-import { AnatomicalRegion, VitalPoint, VitalPointEffect } from "./types";
 import { getVitalPointsForMeridian } from "./MeridianVitalPointMapping";
+import { AnatomicalRegion, VitalPoint, VitalPointEffect } from "./types";
 
 /**
  * Korean Martial Arts Anatomy System
@@ -61,15 +61,15 @@ interface KoreanAnatomicalZone {
 
 /**
  * Enhanced anatomical zone with polygon boundaries and stance-based vulnerability
- * 
+ *
  * **Korean**: 향상된 해부학적 영역 (Enhanced Anatomical Zone)
- * 
+ *
  * Represents a body region with:
  * - Polygon boundaries for accurate shape representation
  * - Base vulnerability multiplier
  * - Related meridians for energy flow integration
  * - Stance-based vulnerability modifiers
- * 
+ *
  * @example
  * ```typescript
  * const headZone: EnhancedAnatomicalZone = {
@@ -94,28 +94,28 @@ interface KoreanAnatomicalZone {
 export interface EnhancedAnatomicalZone {
   /** Unique identifier for the zone */
   readonly id: string;
-  
+
   /** Korean name of the anatomical zone */
   readonly koreanName: string;
-  
+
   /** English name of the anatomical zone */
   readonly englishName: string;
-  
+
   /** Polygon boundaries defining the zone shape */
   readonly boundaries: readonly Position[];
-  
+
   /** Base vulnerability multiplier (0.5 to 2.0) */
   readonly baseVulnerability: number;
-  
+
   /** Related energy meridians passing through this zone */
   readonly relatedMeridians: readonly string[];
-  
+
   /** Vital point IDs located in this zone */
   readonly vitalPoints: readonly string[];
-  
+
   /** Stance-based vulnerability modifiers */
   readonly stanceModifiers: Partial<Record<TrigramStance, number>>;
-  
+
   /** Optional description */
   readonly description?: KoreanText;
 }
@@ -196,9 +196,9 @@ export const KOREAN_ANATOMICAL_ZONES_ARRAY: readonly KoreanAnatomicalZone[] = [
 
 /**
  * Enhanced anatomical zones with realistic polygon boundaries and stance modifiers
- * 
+ *
  * **Korean**: 향상된 해부학적 영역 데이터 (Enhanced Anatomical Zone Data)
- * 
+ *
  * These zones use polygon boundaries to accurately represent human body proportions
  * and include stance-based vulnerability modifiers for realistic combat mechanics.
  */
@@ -227,7 +227,8 @@ export const ENHANCED_ANATOMICAL_ZONES: readonly EnhancedAnatomicalZone[] = [
     },
     description: {
       korean: "전면 두부는 의식과 감각을 제어하는 중요 혈자리가 있습니다.",
-      english: "Frontal head contains critical points controlling consciousness and senses",
+      english:
+        "Frontal head contains critical points controlling consciousness and senses",
     },
   },
   {
@@ -328,7 +329,8 @@ export const ENHANCED_ANATOMICAL_ZONES: readonly EnhancedAnatomicalZone[] = [
     },
     description: {
       korean: "흉부는 심장과 폐를 보호하지만 타격 시 호흡에 영향을 줍니다.",
-      english: "Chest protects heart and lungs but affects breathing when struck",
+      english:
+        "Chest protects heart and lungs but affects breathing when struck",
     },
   },
   {
@@ -696,7 +698,8 @@ export const ENERGY_MERIDIANS_ARRAY: readonly EnergyMeridian[] = [
     kiFlow: 75,
     description: {
       korean: "체온 조절과 에너지 분배를 담당하는 경락",
-      english: "Meridian governing temperature regulation and energy distribution",
+      english:
+        "Meridian governing temperature regulation and energy distribution",
     },
     relatedVitalPoints: getRelatedVitalPoints("triple_burner"),
   },
@@ -740,19 +743,19 @@ export const ENERGY_MERIDIANS: Record<string, EnergyMeridian> =
 
 /**
  * Five Elements (五行 - Wu Xing) relationships for Korean martial arts
- * 
+ *
  * Traditional Korean medicine uses the Five Elements theory (오행) to
  * understand energy relationships between meridians and vital points.
- * 
+ *
  * **Korean**: 오행 관계 (목화토금수)
- * 
+ *
  * Elements and their relationships:
  * - 木 (Wood/목) → 火 (Fire/화): Wood feeds Fire (木生火)
  * - 火 (Fire/화) → 土 (Earth/토): Fire creates Earth (火生土)
  * - 土 (Earth/토) → 金 (Metal/금): Earth bears Metal (土生金)
  * - 金 (Metal/금) → 水 (Water/수): Metal collects Water (金生水)
  * - 水 (Water/수) → 木 (Wood/목): Water nourishes Wood (水生木)
- * 
+ *
  * Controlling cycle (상극):
  * - 木 (Wood/목) → 土 (Earth/토): Wood penetrates Earth (木克土)
  * - 土 (Earth/토) → 水 (Water/수): Earth dams Water (土克水)
@@ -787,7 +790,7 @@ export const ELEMENTAL_RELATIONS: Record<string, ElementalRelations> = {
  * Get meridian information by ID
  */
 export function getMeridian(meridianId: string): EnergyMeridian | null {
-  return ENERGY_MERIDIANS[meridianId] || null;
+  return ENERGY_MERIDIANS[meridianId] ?? null;
 }
 
 /**
@@ -812,17 +815,17 @@ const DEFAULT_PEAK_HOUR = 12;
 
 /**
  * Calculate meridian flow effectiveness based on time of day (子午流注)
- * 
+ *
  * Traditional Korean medicine considers meridian peak hours based on
  * the traditional Chinese Medicine (TCM) circadian clock. Each meridian
  * has a 2-hour peak period during which strikes are most effective.
- * 
+ *
  * **Korean**: 자오유주 시간대별 경락 유효성 계산
- * 
+ *
  * @param meridianId - ID of the meridian to calculate flow for
  * @param hour - Hour of day (0-23)
  * @returns Flow effectiveness multiplier (0.7-1.3), with 1.3 at peak hours
- * 
+ *
  * @example
  * ```typescript
  * // Lung meridian is most effective at 3-5 AM
@@ -851,13 +854,13 @@ export function calculateMeridianFlow(
   };
 
   const peakHour = meridianPeakHours[meridianId] ?? DEFAULT_PEAK_HOUR;
-  
+
   // Calculate hour difference (handle wrapping around midnight)
   let hourDifference = Math.abs(hour - peakHour);
   if (hourDifference > 12) {
     hourDifference = 24 - hourDifference;
   }
-  
+
   // At peak hour (±1 hour): +30% effectiveness (1.3x multiplier)
   // At 6 hours away: neutral (1.0x multiplier)
   // At 12 hours away (opposite time): -30% effectiveness (0.7x multiplier)
@@ -901,14 +904,14 @@ export function calculateAnatomicalVulnerability(
   position: { x: number; y: number },
   meridianStates: Record<string, number> // flow effectiveness (0-1)
 ): number {
-  let totalVulnerability = 1.0;
+  let totalVulnerability = 1;
 
   const zone = getZoneByPosition(position);
   if (zone) {
     totalVulnerability *= zone.vulnerability;
 
     zone.meridians.forEach((meridianId) => {
-      const meridianFlowEffectiveness = meridianStates[meridianId] || 1.0; // Default to 1.0 if not specified
+      const meridianFlowEffectiveness = meridianStates[meridianId] ?? 1.0; // Default to 1.0 if not specified
       // Vulnerability increases if meridian flow is weak (e.g., 1 / flow_effectiveness)
       // Or some other logic, e.g. if flow is high, it's more sensitive.
       // Let's assume higher flow (closer to 1.0) means normal, lower flow means more vulnerable.
@@ -925,32 +928,32 @@ export function calculateAnatomicalVulnerability(
 
 /**
  * Calculate enhanced anatomical vulnerability with stance, meridian flow, and time-of-day
- * 
+ *
  * **Korean**: 향상된 해부학적 취약성 계산 (Enhanced Anatomical Vulnerability Calculation)
- * 
+ *
  * Calculates vulnerability multiplier for a specific position, considering:
  * - Base zone vulnerability (0.5-2.0x)
  * - Stance-based exposure modifiers (0.6-1.3x per zone)
  * - Meridian flow state (blocked meridians +50% vulnerability)
  * - Time-of-day meridian peak hours (+20% vulnerability at peak)
- * 
+ *
  * ## Calculation Formula
- * 
+ *
  * ```
- * vulnerability = baseVulnerability 
+ * vulnerability = baseVulnerability
  *               × stanceModifier
  *               × meridianFlowModifier
  *               × timeOfDayModifier
  * ```
- * 
+ *
  * Final result is capped between 0.5x and 3.0x.
- * 
+ *
  * @param position - Target position on body
  * @param currentHour - Hour of day (0-23) for meridian flow calculation
  * @param stance - Current trigram stance affecting zone exposure
  * @param meridianStates - Meridian disruption states (0=blocked, 1=normal flow)
  * @returns Vulnerability multiplier (0.5-3.0)
- * 
+ *
  * @example
  * ```typescript
  * // Calculate vulnerability for head strike at 2 AM in offensive stance
@@ -974,7 +977,7 @@ export function calculateEnhancedVulnerability(
   meridianStates: Record<string, number>
 ): number {
   const zones = getEnhancedZonesByPosition(position);
-  
+
   if (zones.length === 0) {
     // Position not in any zone, return baseline vulnerability
     return 1.0;
@@ -994,7 +997,7 @@ export function calculateEnhancedVulnerability(
     // Use maximum modifier to avoid exponential compounding with multiple meridians
     let maxBlockageModifier = 1.0;
     let maxTimeModifier = 1.0;
-    
+
     for (const meridianId of zone.relatedMeridians) {
       const meridianState = meridianStates[meridianId] ?? 1.0;
       const meridianFlow = calculateMeridianFlow(meridianId, currentHour);
@@ -1012,7 +1015,7 @@ export function calculateEnhancedVulnerability(
       const timeModifier = 0.9 + (meridianFlow - 0.7) * 0.5; // Maps 0.7->0.9, 1.3->1.2
       maxTimeModifier = Math.max(maxTimeModifier, timeModifier);
     }
-    
+
     // Apply the maximum modifiers once (not compounded)
     vulnerability *= maxBlockageModifier;
     vulnerability *= maxTimeModifier;
@@ -1026,19 +1029,19 @@ export function calculateEnhancedVulnerability(
 
 /**
  * Generate vulnerability heat map for entire body
- * 
+ *
  * **Korean**: 취약성 히트맵 생성 (Vulnerability Heat Map Generation)
- * 
+ *
  * Generates a 2D vulnerability map for visualization or analysis.
  * Returns vulnerability scores (0-1 normalized) for a grid of positions.
- * 
+ *
  * @param width - Width of the heat map grid
  * @param height - Height of the heat map grid
  * @param currentHour - Hour of day for meridian calculations
  * @param stance - Current trigram stance
  * @param meridianStates - Meridian disruption states
  * @returns 2D array of vulnerability scores (0-1 normalized)
- * 
+ *
  * @example
  * ```typescript
  * const heatMap = generateVulnerabilityHeatMap(
@@ -1047,7 +1050,7 @@ export function calculateEnhancedVulnerability(
  *   TrigramStance.GAN,          // Mountain defensive stance
  *   { lung: 1.0, heart: 1.0 }
  * );
- * 
+ *
  * // Access vulnerability at position (50, 100)
  * const vulnerability = heatMap[100][50]; // 0-1 normalized value
  * ```
@@ -1098,17 +1101,17 @@ function isPositionInZone(
 
 /**
  * Check if a point is inside a polygon using ray-casting algorithm
- * 
+ *
  * **Korean**: 점-다각형 내부 확인 (Point-in-Polygon Test)
- * 
+ *
  * Uses the ray-casting algorithm to determine if a point is inside a polygon.
  * Casts a ray from the point to infinity and counts boundary crossings.
  * Odd number of crossings = inside, even number = outside.
- * 
+ *
  * @param point - Position to test
  * @param polygon - Array of positions defining polygon vertices
  * @returns true if point is inside polygon, false otherwise
- * 
+ *
  * @example
  * ```typescript
  * const polygon = [
@@ -1148,9 +1151,9 @@ export function isPointInPolygon(
 
 /**
  * Check if position is within enhanced anatomical zone with polygon boundaries
- * 
+ *
  * **Korean**: 향상된 영역 내부 확인 (Enhanced Zone Position Test)
- * 
+ *
  * @param position - Position to test
  * @param zone - Enhanced anatomical zone with polygon boundaries
  * @returns true if position is within zone, false otherwise
@@ -1164,14 +1167,14 @@ export function isPositionInEnhancedZone(
 
 /**
  * Get enhanced zone by position using polygon boundaries
- * 
+ *
  * **Korean**: 위치로 향상된 영역 찾기 (Find Enhanced Zone by Position)
- * 
+ *
  * Supports overlapping zones - returns array of all zones containing the position.
- * 
+ *
  * @param position - Position to check
  * @returns Array of enhanced zones containing the position
- * 
+ *
  * @example
  * ```typescript
  * const zones = getEnhancedZonesByPosition({ x: 50, y: 100 });
@@ -1533,11 +1536,11 @@ export const ANATOMICAL_REGIONS_DATA: Record<string, AnatomicalRegion> = {
 export function getVitalPointsInRegion(
   regionId: string
 ): readonly VitalPoint[] {
-  return ANATOMICAL_REGIONS_DATA[regionId]?.vitalPoints || [];
+  return ANATOMICAL_REGIONS_DATA[regionId]?.vitalPoints ?? [];
 }
 
 export function getRegionBoundaries(regionId: string): readonly Position[] {
-  return ANATOMICAL_REGIONS_DATA[regionId]?.boundaries || [];
+  return ANATOMICAL_REGIONS_DATA[regionId]?.boundaries ?? [];
 }
 
 export function isPositionInRegion(

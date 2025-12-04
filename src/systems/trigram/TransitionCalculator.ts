@@ -154,7 +154,7 @@ export class TransitionCalculator {
       return { ki: 0, stamina: 0, timeMilliseconds: 0 }; // Fix: Use timeMilliseconds
     }
 
-    let totalCost = { ki: 0, stamina: 0, timeMilliseconds: 0 };
+    const totalCost = { ki: 0, stamina: 0, timeMilliseconds: 0 };
 
     for (let i = 0; i < path.length - 1; i++) {
       const stepCost = this.calculateCost(path[i], path[i + 1]);

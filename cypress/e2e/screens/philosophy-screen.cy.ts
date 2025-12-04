@@ -1,19 +1,17 @@
 /**
  * PhilosophyScreen Comprehensive E2E Test
  * Target Execution Time: 2-3 minutes
- * 
+ *
  * This test covers the complete PhilosophyScreen user journey including:
  * - Philosophy screen rendering and UI
  * - Korean martial arts philosophy content
  * - Eight trigrams (팔괘) information display
  * - Korean/English bilingual text
  * - Navigation back to intro
- * 
+ *
  * ✅ Three.js Compatible - Tests PhilosophyScreen with Canvas and Html overlays
  * ⏱️ Optimized for 2-3 minute execution time
  */
-
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
@@ -46,7 +44,9 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying Philosophy Screen Rendering");
 
-    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should("exist");
+    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should(
+      "exist"
+    );
     cy.log("✅ Philosophy screen exists");
 
     // Verify canvas is visible
@@ -78,7 +78,11 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
 
       // Check for martial arts philosophy
-      if (bodyText.includes("martial arts") || bodyText.includes("무술") || bodyText.includes("무예")) {
+      if (
+        bodyText.includes("martial arts") ||
+        bodyText.includes("무술") ||
+        bodyText.includes("무예")
+      ) {
         cy.log("✅ Martial arts philosophy content found");
       } else {
         cy.log("⚠️ Philosophy content may be in canvas");
@@ -96,30 +100,46 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       const bodyText = $body.text();
 
       // Check for Geon (Heaven - 건)
-      if (bodyText.includes("건") || bodyText.includes("Geon") || bodyText.includes("Heaven")) {
+      if (
+        bodyText.includes("건") ||
+        bodyText.includes("Geon") ||
+        bodyText.includes("Heaven")
+      ) {
         cy.log("✅ Geon (건) trigram information found");
       }
 
       // Check for Gon (Earth - 곤)
-      if (bodyText.includes("곤") || bodyText.includes("Gon") || bodyText.includes("Earth")) {
+      if (
+        bodyText.includes("곤") ||
+        bodyText.includes("Gon") ||
+        bodyText.includes("Earth")
+      ) {
         cy.log("✅ Gon (곤) trigram information found");
       }
 
       // Check for Tae (Lake - 태)
-      if (bodyText.includes("태") || bodyText.includes("Tae") || bodyText.includes("Lake")) {
+      if (
+        bodyText.includes("태") ||
+        bodyText.includes("Tae") ||
+        bodyText.includes("Lake")
+      ) {
         cy.log("✅ Tae (태) trigram information found");
       }
 
       // Check for Li (Fire - 리)
-      if (bodyText.includes("리") || bodyText.includes("Li") || bodyText.includes("Fire")) {
+      if (
+        bodyText.includes("리") ||
+        bodyText.includes("Li") ||
+        bodyText.includes("Fire")
+      ) {
         cy.log("✅ Li (리) trigram information found");
       }
 
       // General check for any trigram names
-      const hasTrigramContent = 
-        bodyText.includes("건") || 
-        bodyText.includes("곤") || 
-        bodyText.includes("태") || 
+      const hasTrigramContent =
+        bodyText.includes("건") ||
+        bodyText.includes("곤") ||
+        bodyText.includes("태") ||
         bodyText.includes("리") ||
         bodyText.includes("Heaven") ||
         bodyText.includes("Earth");
@@ -142,14 +162,22 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       const bodyText = $body.text();
 
       // Check for Korean text
-      if (bodyText.includes("철학") || bodyText.includes("팔괘") || bodyText.includes("무술")) {
+      if (
+        bodyText.includes("철학") ||
+        bodyText.includes("팔괘") ||
+        bodyText.includes("무술")
+      ) {
         cy.log("✅ Korean text found in philosophy screen");
       } else {
         cy.log("⚠️ Korean text may be rendered in canvas");
       }
 
       // Check for English text
-      if (bodyText.includes("Philosophy") || bodyText.includes("Trigram") || bodyText.includes("martial")) {
+      if (
+        bodyText.includes("Philosophy") ||
+        bodyText.includes("Trigram") ||
+        bodyText.includes("martial")
+      ) {
         cy.log("✅ English text found in philosophy screen");
       }
     });
@@ -215,17 +243,31 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       const bodyText = $body.text();
 
       // Check for I Ching / Yi Jing reference
-      if (bodyText.includes("I Ching") || bodyText.includes("Yi Jing") || bodyText.includes("역경")) {
+      if (
+        bodyText.includes("I Ching") ||
+        bodyText.includes("Yi Jing") ||
+        bodyText.includes("역경")
+      ) {
         cy.log("✅ I Ching reference found");
       }
 
       // Check for balance/harmony concepts
-      if (bodyText.includes("balance") || bodyText.includes("harmony") || bodyText.includes("균형") || bodyText.includes("조화")) {
+      if (
+        bodyText.includes("balance") ||
+        bodyText.includes("harmony") ||
+        bodyText.includes("균형") ||
+        bodyText.includes("조화")
+      ) {
         cy.log("✅ Balance/harmony concepts found");
       }
 
       // Check for yin-yang concepts
-      if (bodyText.includes("yin") || bodyText.includes("yang") || bodyText.includes("음") || bodyText.includes("양")) {
+      if (
+        bodyText.includes("yin") ||
+        bodyText.includes("yang") ||
+        bodyText.includes("음") ||
+        bodyText.includes("양")
+      ) {
         cy.log("✅ Yin-yang concepts found");
       }
     });
@@ -247,7 +289,9 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
         cy.get('[data-testid="intro-screen"]').should("exist");
         cy.log("✅ ESC key navigation works");
       } else {
-        cy.log("⚠️ May still be on philosophy screen or transition in progress");
+        cy.log(
+          "⚠️ May still be on philosophy screen or transition in progress"
+        );
       }
     });
 

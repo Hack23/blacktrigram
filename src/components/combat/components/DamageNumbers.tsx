@@ -1,11 +1,11 @@
 /**
  * DamageNumbers - Floating damage number display component
- * 
+ *
  * Displays floating damage numbers that animate upward and fade out.
  * Color-coded based on damage type: normal (cyan), critical (gold), vital (red).
- * 
+ *
  * Uses Html overlays from @react-three/drei for rendering within 3D scenes.
- * 
+ *
  * @module components/combat/components/DamageNumbers
  * @category Combat UI
  * @korean 피해숫자
@@ -13,9 +13,9 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useRef, useState } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import React, { useMemo, useRef, useState } from "react";
 import { DamageNumber, DamageType } from "../../../hooks/useActionFeedback";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
 
 /**
@@ -27,7 +27,12 @@ export interface DamageNumbersProps {
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
   /** Arena bounds for 3D positioning */
-  readonly arenaBounds?: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
   /** Duration of animation in ms (default: 1500) */
   readonly animationDuration?: number;
 }
@@ -102,7 +107,13 @@ const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
   const opacity = 1 - progress;
   const scale = 1 + progress * 0.3; // Slight scale up during animation
   const fontSize = isMobile ? 20 : 28;
-  const criticalBonus = damage.type === "critical" ? 8 : damage.type === "vital" ? 4 : 0;
+  // Calculate critical bonus based on damage type
+  const getCriticalBonus = (): number => {
+    if (damage.type === "critical") return 8;
+    if (damage.type === "vital") return 4;
+    return 0;
+  };
+  const criticalBonus = getCriticalBonus();
 
   return (
     <Html
@@ -139,10 +150,10 @@ const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
 
 /**
  * DamageNumbers Component
- * 
+ *
  * Renders multiple floating damage numbers in the 3D scene.
  * Each number floats upward and fades out over time.
- * 
+ *
  * @example
  * ```tsx
  * <DamageNumbers
@@ -158,13 +169,8 @@ export const DamageNumbers: React.FC<DamageNumbersProps> = ({
   arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
   animationDuration = 1500,
 }) => {
-  // Track currently visible damage numbers
-  const [visibleDamages, setVisibleDamages] = useState<DamageNumber[]>([]);
-
-  // Update visible damages when damages prop changes
-  useEffect(() => {
-    setVisibleDamages([...damages]);
-  }, [damages]);
+  // Derive visible damages from props - no need for state sync
+  const visibleDamages = useMemo(() => [...damages], [damages]);
 
   return (
     <group data-testid="damage-numbers-container">

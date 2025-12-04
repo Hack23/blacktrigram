@@ -1,7 +1,7 @@
 /**
  * CombatScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
- * 
+ *
  * This test covers the complete CombatScreen user journey including:
  * - Combat screen rendering and HUD elements
  * - Trigram stance system (all 8 stances)
@@ -9,12 +9,10 @@
  * - Combat UI and player indicators
  * - Extended combat session testing
  * - Return to intro navigation
- * 
+ *
  * ✅ Three.js Compatible - Tests CombatScreen3D with 3D models and Html overlays
  * ⏱️ Optimized for 3-4 minute execution time
  */
-
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
@@ -70,19 +68,28 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // ✅ IMPROVED: Verify stance changes are reflected in UI
     // Test all 8 trigram stances with verification
-    const stanceNames = ['geon', 'tae', 'li', 'jin', 'son', 'gam', 'gan', 'gon'];
-    
+    const stanceNames = [
+      "geon",
+      "tae",
+      "li",
+      "jin",
+      "son",
+      "gam",
+      "gan",
+      "gon",
+    ];
+
     for (let stance = 1; stance <= 8; stance++) {
       cy.log(`Testing stance ${stance} (${stanceNames[stance - 1]})...`);
       cy.get("body").type(stance.toString());
       cy.wait(100); // Allow time for stance change
-      
+
       // Verify stance indicator updates if present
       cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
-        .should('exist')
-        .invoke('text')
-        .should('include', stanceNames[stance - 1]);
-      
+        .should("exist")
+        .invoke("text")
+        .should("include", stanceNames[stance - 1]);
+
       cy.log(`✅ Stance ${stance} input processed`);
     }
 
@@ -97,47 +104,57 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // ✅ IMPROVED: Verify health changes when attacking
     cy.log("Testing attack action with health tracking...");
-    
+
     // Capture initial health of player 2 (opponent)
     cy.get('[data-testid="player2-health"]', { timeout: 5000 })
-      .should('exist')
-      .invoke('attr', 'data-current')
+      .should("exist")
+      .invoke("attr", "data-current")
       .then((health) => {
         const initialHealth = parseFloat(health as string);
         cy.log(`Player 2 initial health: ${initialHealth}`);
-        
+
         // Execute attack
         cy.get("body").type(" ");
         cy.wait(300); // Allow time for combat resolution
-        
+
         // Verify health decreased (damage was dealt)
         cy.get('[data-testid="player2-health"]')
-          .invoke('attr', 'data-current')
+          .invoke("attr", "data-current")
           .then((newHealth) => {
             const currentHealth = parseFloat(newHealth as string);
             cy.log(`Player 2 current health: ${currentHealth}`);
-            
+
             // Assert damage was dealt
-            expect(currentHealth, "Attack should deal damage to opponent").to.be.lessThan(initialHealth);
-            cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);
+            expect(
+              currentHealth,
+              "Attack should deal damage to opponent"
+            ).to.be.lessThan(initialHealth);
+            cy.log(
+              `✅ Damage verified: ${initialHealth - currentHealth} HP lost`
+            );
           });
       });
 
     // Second attack with verification
     cy.get('[data-testid="player2-health"]')
-      .invoke('attr', 'data-current')
+      .invoke("attr", "data-current")
       .then((health) => {
         const beforeAttack = parseFloat(health as string);
-        
+
         cy.get("body").type(" ");
         cy.wait(300);
-        
+
         cy.get('[data-testid="player2-health"]')
-          .invoke('attr', 'data-current')
+          .invoke("attr", "data-current")
           .then((newHealth) => {
             const afterAttack = parseFloat(newHealth as string);
-            expect(afterAttack, "Second attack should deal damage").to.be.lessThan(beforeAttack);
-            cy.log(`✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`);
+            expect(
+              afterAttack,
+              "Second attack should deal damage"
+            ).to.be.lessThan(beforeAttack);
+            cy.log(
+              `✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`
+            );
           });
       });
 
@@ -145,19 +162,24 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="attack-button"]').length > 0) {
         cy.get('[data-testid="player2-health"]')
-          .invoke('attr', 'data-current')
+          .invoke("attr", "data-current")
           .then((health) => {
             const before = parseFloat(health as string);
-            
+
             cy.get('[data-testid="attack-button"]').click({ force: true });
             cy.wait(300);
-            
+
             cy.get('[data-testid="player2-health"]')
-              .invoke('attr', 'data-current')
+              .invoke("attr", "data-current")
               .then((after) => {
                 const afterValue = parseFloat(after as string);
-                expect(afterValue, "Attack button should deal damage").to.be.lessThan(before);
-                cy.log(`✅ Attack button verified (Health: ${before} → ${afterValue})`);
+                expect(
+                  afterValue,
+                  "Attack button should deal damage"
+                ).to.be.lessThan(before);
+                cy.log(
+                  `✅ Attack button verified (Health: ${before} → ${afterValue})`
+                );
               });
           });
       } else {
@@ -309,7 +331,11 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     cy.get("body").then(($body) => {
       const bodyText = $body.text();
-      if (bodyText.includes("전투") || bodyText.includes("공격") || bodyText.includes("방어")) {
+      if (
+        bodyText.includes("전투") ||
+        bodyText.includes("공격") ||
+        bodyText.includes("방어")
+      ) {
         cy.log("✅ Korean text found in combat UI");
       } else {
         cy.log("⚠️ Korean text may be rendered in canvas");

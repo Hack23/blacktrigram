@@ -1,10 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { PlayerArchetype, TrigramStance } from "../types";
+import {
+  createPlayerFromArchetype,
+  updatePlayerState,
+} from "../utils/playerUtils";
 import CombatSystem from "./CombatSystem";
+import type { PlayerState } from "./player";
 import { TrigramSystem } from "./TrigramSystem";
 import { VitalPointSystem } from "./VitalPointSystem";
-import { createPlayerFromArchetype, updatePlayerState } from "../utils/playerUtils";
-import type { PlayerState } from "./player";
 
 describe("Game Systems Integration", () => {
   let combatSystem: CombatSystem;
@@ -24,8 +27,12 @@ describe("Game Systems Integration", () => {
   describe("Combat System + Trigram System Integration", () => {
     it("should integrate stance effectiveness in combat", () => {
       // Get stance data
-      const player1Stance = trigramSystem.getCurrentStanceData(player1.currentStance);
-      const player2Stance = trigramSystem.getCurrentStanceData(player2.currentStance);
+      const player1Stance = trigramSystem.getCurrentStanceData(
+        player1.currentStance
+      );
+      const player2Stance = trigramSystem.getCurrentStanceData(
+        player2.currentStance
+      );
 
       expect(player1Stance).toBeDefined();
       expect(player2Stance).toBeDefined();
@@ -42,7 +49,7 @@ describe("Game Systems Integration", () => {
 
     it("should validate stance transitions during combat", () => {
       const targetStance = TrigramStance.TAE;
-      
+
       const canTransition = trigramSystem.canTransitionTo(
         player1.currentStance,
         targetStance,
@@ -88,14 +95,14 @@ describe("Game Systems Integration", () => {
   describe("Combat System + Vital Point System Integration", () => {
     it("should integrate vital point hits in combat resolution", () => {
       const techniques = combatSystem.getAvailableTechniques(player1);
-      
+
       if (techniques.length > 0) {
         const technique = techniques[0];
         const result = combatSystem.resolveAttack(player1, player2, technique);
 
         // Check if vital point hit occurred
         expect(result.vitalPointHit).toBeDefined();
-        
+
         if (result.vitalPointHit) {
           expect(result.damage).toBeGreaterThan(0);
         }
@@ -115,7 +122,7 @@ describe("Game Systems Integration", () => {
 
     it("should calculate damage with vital point multipliers", () => {
       const vitalPoints = vitalPointSystem.getVitalPoints();
-      
+
       if (vitalPoints.length > 0) {
         const vitalPoint = vitalPoints[0];
         expect(vitalPoint.baseDamage).toBeDefined();
@@ -132,18 +139,19 @@ describe("Game Systems Integration", () => {
 
       // Execute attack
       const technique = techniques[0];
-      const attackResult = combatSystem.resolveAttack(player1, player2, technique);
+      const attackResult = combatSystem.resolveAttack(
+        player1,
+        player2,
+        technique
+      );
 
       expect(attackResult).toBeDefined();
       expect(attackResult.hit).toBeDefined();
       expect(attackResult.damage).toBeGreaterThanOrEqual(0);
 
       // Apply combat result
-      const { updatedAttacker, updatedDefender } = combatSystem.applyCombatResult(
-        attackResult,
-        player1,
-        player2
-      );
+      const { updatedAttacker, updatedDefender } =
+        combatSystem.applyCombatResult(attackResult, player1, player2);
 
       expect(updatedAttacker).toBeDefined();
       expect(updatedDefender).toBeDefined();
@@ -211,11 +219,12 @@ describe("Game Systems Integration", () => {
           techniques[0]
         );
 
-        const { updatedAttacker, updatedDefender } = combatSystem.applyCombatResult(
-          result,
-          currentPlayer1,
-          currentPlayer2
-        );
+        const { updatedAttacker, updatedDefender } =
+          combatSystem.applyCombatResult(
+            result,
+            currentPlayer1,
+            currentPlayer2
+          );
 
         currentPlayer1 = updatedAttacker;
         currentPlayer2 = updatedDefender;
@@ -265,7 +274,9 @@ describe("Game Systems Integration", () => {
 
       archetypes.forEach((archetype) => {
         const player = createPlayerFromArchetype(archetype, 0);
-        const stanceData = trigramSystem.getCurrentStanceData(player.currentStance);
+        const stanceData = trigramSystem.getCurrentStanceData(
+          player.currentStance
+        );
 
         expect(stanceData).toBeDefined();
         expect(stanceData?.id).toBe(player.currentStance);
@@ -281,7 +292,11 @@ describe("Game Systems Integration", () => {
       const initialKi = player1.ki;
       const initialStamina = player1.stamina;
 
-      const result = combatSystem.resolveAttack(player1, player2, techniques[0]);
+      const result = combatSystem.resolveAttack(
+        player1,
+        player2,
+        techniques[0]
+      );
       const { updatedAttacker } = combatSystem.applyCombatResult(
         result,
         player1,
@@ -300,7 +315,9 @@ describe("Game Systems Integration", () => {
       // Should have no available techniques or only very low-cost ones
       techniques.forEach((technique) => {
         expect(technique.kiCost).toBeLessThanOrEqual(exhaustedPlayer.ki);
-        expect(technique.staminaCost).toBeLessThanOrEqual(exhaustedPlayer.stamina);
+        expect(technique.staminaCost).toBeLessThanOrEqual(
+          exhaustedPlayer.stamina
+        );
       });
     });
 
@@ -327,8 +344,8 @@ describe("Game Systems Integration", () => {
 
   describe("Combat State Progression", () => {
     it("should track combat statistics", () => {
-      let currentPlayer1 = player1;
-      let currentPlayer2 = player2;
+      const currentPlayer1 = player1;
+      const currentPlayer2 = player2;
 
       const techniques = combatSystem.getAvailableTechniques(currentPlayer1);
       if (techniques.length > 0) {
@@ -338,15 +355,20 @@ describe("Game Systems Integration", () => {
           techniques[0]
         );
 
-        const { updatedAttacker, updatedDefender } = combatSystem.applyCombatResult(
-          result,
-          currentPlayer1,
-          currentPlayer2
-        );
+        const { updatedAttacker, updatedDefender } =
+          combatSystem.applyCombatResult(
+            result,
+            currentPlayer1,
+            currentPlayer2
+          );
 
         if (result.hit) {
-          expect(updatedAttacker.hitsLanded).toBeGreaterThan(currentPlayer1.hitsLanded);
-          expect(updatedDefender.hitsTaken).toBeGreaterThan(currentPlayer2.hitsTaken);
+          expect(updatedAttacker.hitsLanded).toBeGreaterThan(
+            currentPlayer1.hitsLanded
+          );
+          expect(updatedDefender.hitsTaken).toBeGreaterThan(
+            currentPlayer2.hitsTaken
+          );
         }
       }
     });
@@ -381,24 +403,31 @@ describe("Game Systems Integration", () => {
       const techniques = combatSystem.getAvailableTechniques(player1);
       if (techniques.length === 0) return;
 
-      const result = combatSystem.resolveAttack(player1, player2, techniques[0]);
-      const { updatedAttacker, updatedDefender } = combatSystem.applyCombatResult(
-        result,
+      const result = combatSystem.resolveAttack(
         player1,
-        player2
+        player2,
+        techniques[0]
       );
+      const { updatedAttacker, updatedDefender } =
+        combatSystem.applyCombatResult(result, player1, player2);
 
       // Verify trigram system consistency
-      const stanceData = trigramSystem.getCurrentStanceData(updatedAttacker.currentStance);
+      const stanceData = trigramSystem.getCurrentStanceData(
+        updatedAttacker.currentStance
+      );
       expect(stanceData?.id).toBe(updatedAttacker.currentStance);
 
       // Verify player state consistency
       expect(updatedAttacker.health).toBeGreaterThanOrEqual(0);
-      expect(updatedAttacker.health).toBeLessThanOrEqual(updatedAttacker.maxHealth);
+      expect(updatedAttacker.health).toBeLessThanOrEqual(
+        updatedAttacker.maxHealth
+      );
       expect(updatedAttacker.ki).toBeGreaterThanOrEqual(0);
       expect(updatedAttacker.ki).toBeLessThanOrEqual(updatedAttacker.maxKi);
       expect(updatedDefender.health).toBeGreaterThanOrEqual(0);
-      expect(updatedDefender.health).toBeLessThanOrEqual(updatedDefender.maxHealth);
+      expect(updatedDefender.health).toBeLessThanOrEqual(
+        updatedDefender.maxHealth
+      );
     });
 
     it("should maintain Korean text consistency", () => {

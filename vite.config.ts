@@ -9,14 +9,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 interface PackageJson {
   version: string;
   name: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const packageJson: PackageJson = JSON.parse(
   readFileSync(path.resolve("./package.json"), "utf8")
 );
 
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig(({ command, mode: _mode }) => ({
   plugins: [
     // Enable React features
     react(),
@@ -103,7 +103,7 @@ export default defineConfig(({ command, mode }) => ({
         // Three.js tree shaking optimization
         manualChunks: undefined, // Disable manual chunking for single bundle
       },
-      
+
       // Tree shaking optimization for Three.js
       treeshake: {
         moduleSideEffects: false,

@@ -118,7 +118,7 @@ describe("AudioAssetLoader", () => {
     });
 
     it("should try format fallback (webm → mp3)", async () => {
-      let attemptedUrls: string[] = [];
+      const attemptedUrls: string[] = [];
 
       global.Audio = class {
         src = "";
@@ -144,7 +144,7 @@ describe("AudioAssetLoader", () => {
         loaded: false,
       };
 
-      const result = await loader.loadAsset(asset, { timeout: 200 });
+      await loader.loadAsset(asset, { timeout: 200 });
 
       // Should have tried webm then mp3
       expect(attemptedUrls.length).toBeGreaterThan(0);
@@ -180,7 +180,7 @@ describe("AudioAssetLoader", () => {
         loaded: false,
       };
 
-      const result = await loader.loadAsset(asset, {
+      await loader.loadAsset(asset, {
         maxRetries: 3,
         retryDelay: 50,
         timeout: 100,
@@ -205,7 +205,9 @@ describe("AudioAssetLoader", () => {
       const criticalResult = await loader.loadAsset(asset, {
         priority: "critical",
       });
-      const normalResult = await loader.loadAsset(asset, { priority: "normal" });
+      const normalResult = await loader.loadAsset(asset, {
+        priority: "normal",
+      });
 
       expect(criticalResult.success).toBe(true);
       expect(normalResult.success).toBe(true);

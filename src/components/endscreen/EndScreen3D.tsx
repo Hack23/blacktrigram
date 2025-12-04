@@ -43,7 +43,8 @@ const toCssColor = (hex: number): string => hexToRgbaString(hex, 1);
 const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  const { positions, velocities } = useMemo(() => {
+  // Use useState with lazy initializer for random values - this is only called once
+  const [particleData] = useState(() => {
     const count = 100;
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count * 3);
@@ -59,7 +60,9 @@ const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
       vel[i3 + 2] = (Math.random() - 0.5) * 0.5;
     }
     return { positions: pos, velocities: vel };
-  }, []);
+  });
+
+  const { positions, velocities } = particleData;
 
   useFrame((_state, delta) => {
     if (!pointsRef.current) return;

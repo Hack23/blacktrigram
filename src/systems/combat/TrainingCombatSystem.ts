@@ -160,7 +160,7 @@ export class TrainingCombatSystem extends CombatSystem {
     _player: PlayerState,
     _technique: KoreanTechnique
   ): number {
-    let score = 0.5; // Base form
+    const score = 0.5; // Base form
 
     // For now, return base form score
     return Math.min(1.0, Math.max(0.0, score));

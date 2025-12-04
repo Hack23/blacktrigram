@@ -1,18 +1,16 @@
 /**
  * ControlsScreen Comprehensive E2E Test
  * Target Execution Time: 2-3 minutes
- * 
+ *
  * This test covers the complete ControlsScreen user journey including:
  * - Controls screen rendering and UI
  * - Control categories and information display
  * - Korean/English bilingual text
  * - Navigation back to intro
- * 
+ *
  * ✅ Three.js Compatible - Tests ControlsScreen with Canvas and Html overlays
  * ⏱️ Optimized for 2-3 minute execution time
  */
-
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
@@ -45,7 +43,9 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying Controls Screen Rendering");
 
-    cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should("exist");
+    cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should(
+      "exist"
+    );
     cy.log("✅ Controls screen exists");
 
     // Verify canvas is visible
@@ -62,7 +62,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     // Check for Movement controls
     cy.get("body").then(($body) => {
       const bodyText = $body.text();
-      
+
       if (bodyText.includes("Movement") || bodyText.includes("이동")) {
         cy.log("✅ Movement controls section found");
       } else {
@@ -75,7 +75,11 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
         cy.log("⚠️ Combat controls may be in canvas");
       }
 
-      if (bodyText.includes("Stance") || bodyText.includes("자세") || bodyText.includes("팔괘")) {
+      if (
+        bodyText.includes("Stance") ||
+        bodyText.includes("자세") ||
+        bodyText.includes("팔괘")
+      ) {
         cy.log("✅ Stance controls section found");
       } else {
         cy.log("⚠️ Stance controls may be in canvas");
@@ -94,7 +98,11 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       const bodyText = $body.text();
 
       // WASD movement
-      if (bodyText.includes("WASD") || bodyText.includes("W") || bodyText.includes("A")) {
+      if (
+        bodyText.includes("WASD") ||
+        bodyText.includes("W") ||
+        bodyText.includes("A")
+      ) {
         cy.log("✅ WASD movement controls displayed");
       }
 
@@ -104,7 +112,11 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
 
       // Number keys for stances
-      if (bodyText.includes("1-8") || bodyText.includes("1") || bodyText.includes("숫자")) {
+      if (
+        bodyText.includes("1-8") ||
+        bodyText.includes("1") ||
+        bodyText.includes("숫자")
+      ) {
         cy.log("✅ Stance number keys displayed");
       }
 
@@ -125,14 +137,22 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       const bodyText = $body.text();
 
       // Check for Korean text
-      if (bodyText.includes("조작") || bodyText.includes("이동") || bodyText.includes("전투")) {
+      if (
+        bodyText.includes("조작") ||
+        bodyText.includes("이동") ||
+        bodyText.includes("전투")
+      ) {
         cy.log("✅ Korean text found in controls screen");
       } else {
         cy.log("⚠️ Korean text may be rendered in canvas");
       }
 
       // Check for English text
-      if (bodyText.includes("Controls") || bodyText.includes("Movement") || bodyText.includes("Combat")) {
+      if (
+        bodyText.includes("Controls") ||
+        bodyText.includes("Movement") ||
+        bodyText.includes("Combat")
+      ) {
         cy.log("✅ English text found in controls screen");
       }
     });

@@ -3,15 +3,13 @@
  * Verifies AI combat behavior and decision-making
  */
 
-import { renderHook, act } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { useAICombat } from "./useAICombat";
-import { PlayerState } from "@/systems/player";
-import { TrigramStance, PlayerArchetype, Position } from "@/types";
-import { 
-  AdaptiveDifficulty,
-} from "@/systems/ai";
+import { AdaptiveDifficulty } from "@/systems/ai";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
+import { PlayerState } from "@/systems/player";
+import { PlayerArchetype, Position, TrigramStance } from "@/types";
+import { act, renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useAICombat } from "./useAICombat";
 
 // Mock player state factory
 function createMockPlayer(overrides?: Partial<PlayerState>): PlayerState {
@@ -147,7 +145,9 @@ describe("useAICombat", () => {
       );
 
       expect(result.current.adjustedPersonality).toBeDefined();
-      expect(result.current.adjustedPersonality.aggressionLevel).toBeGreaterThanOrEqual(0);
+      expect(
+        result.current.adjustedPersonality.aggressionLevel
+      ).toBeGreaterThanOrEqual(0);
     });
 
     it("should update aggression level in AI state", () => {
@@ -423,7 +423,10 @@ describe("useAICombat", () => {
         result.current.executeAIAction("approach", targetPosition);
       });
 
-      expect(mockOnExecuteAction).toHaveBeenCalledWith("approach", targetPosition);
+      expect(mockOnExecuteAction).toHaveBeenCalledWith(
+        "approach",
+        targetPosition
+      );
     });
   });
 
@@ -578,7 +581,7 @@ describe("useAICombat", () => {
 
     it("should update consecutive attacks counter", async () => {
       const player = createMockPlayer();
-      const opponent = createMockPlayer({ 
+      const opponent = createMockPlayer({
         position: { x: 450, y: 300 }, // Close distance to encourage attacks
         health: 100,
       });
@@ -598,16 +601,19 @@ describe("useAICombat", () => {
         })
       );
 
-      const initialAttacks = result.current.aiState.consecutiveAttacks;
+      // Initial attacks tracked for reference - verify it's a number
+      expect(typeof result.current.aiState.consecutiveAttacks).toBe("number");
 
       act(() => {
         vi.advanceTimersByTime(2000);
       });
 
       // Consecutive attacks should be tracked (value may stay 0 or increase)
-      expect(result.current.aiState.consecutiveAttacks).toBeGreaterThanOrEqual(0);
+      expect(result.current.aiState.consecutiveAttacks).toBeGreaterThanOrEqual(
+        0
+      );
       // Verify state is being tracked
-      expect(typeof result.current.aiState.consecutiveAttacks).toBe('number');
+      expect(typeof result.current.aiState.consecutiveAttacks).toBe("number");
     });
   });
 
@@ -636,7 +642,9 @@ describe("useAICombat", () => {
       });
 
       expect(mockOnExecuteAction).toHaveBeenCalled();
-      expect(result.current.adjustedPersonality.aggressionLevel).toBeGreaterThan(0.5);
+      expect(
+        result.current.adjustedPersonality.aggressionLevel
+      ).toBeGreaterThan(0.5);
     });
 
     it("should work with DEFENSIVE_SPECIALIST personality", async () => {
@@ -663,14 +671,16 @@ describe("useAICombat", () => {
       });
 
       expect(mockOnExecuteAction).toHaveBeenCalled();
-      expect(result.current.adjustedPersonality.defensePreference).toBeGreaterThan(0.5);
+      expect(
+        result.current.adjustedPersonality.defensePreference
+      ).toBeGreaterThan(0.5);
     });
 
     it("should work with BALANCED_FIGHTER personality", async () => {
       const player = createMockPlayer();
       const opponent = createMockPlayer({ position: { x: 800, y: 300 } });
 
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useAICombat({
           player,
           opponent,
@@ -696,7 +706,7 @@ describe("useAICombat", () => {
       const player = createMockPlayer();
       const opponent = createMockPlayer({ position: { x: 800, y: 300 } });
 
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useAICombat({
           player,
           opponent,

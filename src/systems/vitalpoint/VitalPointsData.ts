@@ -1,32 +1,38 @@
 /**
  * Comprehensive Korean Vital Points Database (급소 데이터베이스)
- * 
+ *
  * **Korean**: 한국 무술 급소 시스템
- * 
+ *
  * Contains all 70 Korean martial arts vital points (급소) based on traditional
  * martial arts knowledge and anatomical targeting. Points are organized by
  * body region and categorized by physiological system affected.
- * 
+ *
  * @module systems/vitalpoint/VitalPointsData
  * @category Vital Point System
  * @korean 급소데이터
  */
 
-import { VitalPointCategory, VitalPointSeverity, BodyRegion, TrigramStance, VitalPointEffectType } from "@/types";
+import {
+  BodyRegion,
+  TrigramStance,
+  VitalPointCategory,
+  VitalPointEffectType,
+  VitalPointSeverity,
+} from "@/types";
 import { EffectIntensity } from "../effects";
 import { VitalPoint } from "./types";
 
 /**
  * Complete database of 70 Korean vital points organized by body region.
- * 
+ *
  * **Korean**: 70개 급소 데이터베이스
- * 
+ *
  * Distribution:
  * - Head: 12 points
  * - Torso: 24 points
  * - Arms: 17 points (각 8-9 per arm)
  * - Legs: 17 points (각 8-9 per leg)
- * 
+ *
  * @public
  * @korean 급소데이터베이스
  */
@@ -138,7 +144,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.DISORIENTATION,
         intensity: EffectIntensity.MEDIUM,
         duration: 2500,
-        description: { korean: "평형 감각 상실 및 청력 손상", english: "Balance and hearing impairment" },
+        description: {
+          korean: "평형 감각 상실 및 청력 손상",
+          english: "Balance and hearing impairment",
+        },
         stackable: false,
       },
     ],
@@ -167,7 +176,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.UNCONSCIOUSNESS,
         intensity: EffectIntensity.EXTREME,
         duration: 10000,
-        description: { korean: "즉각적 무의식", english: "Instant unconsciousness" },
+        description: {
+          korean: "즉각적 무의식",
+          english: "Instant unconsciousness",
+        },
         stackable: false,
       },
     ],
@@ -236,7 +248,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.UNCONSCIOUSNESS,
         intensity: EffectIntensity.HIGH,
         duration: 8000,
-        description: { korean: "경동맥 압박으로 실신", english: "Carotid compression unconsciousness" },
+        description: {
+          korean: "경동맥 압박으로 실신",
+          english: "Carotid compression unconsciousness",
+        },
         stackable: false,
       },
     ],
@@ -265,7 +280,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.BREATHLESSNESS,
         intensity: EffectIntensity.EXTREME,
         duration: 5000,
-        description: { korean: "호흡 곤란", english: "Severe breathing difficulty" },
+        description: {
+          korean: "호흡 곤란",
+          english: "Severe breathing difficulty",
+        },
         stackable: false,
       },
     ],
@@ -336,7 +354,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.BREATHLESSNESS,
         intensity: EffectIntensity.HIGH,
         duration: 3000,
-        description: { korean: "호흡 곤란 및 신경 충격", english: "Breathing difficulty and nerve shock" },
+        description: {
+          korean: "호흡 곤란 및 신경 충격",
+          english: "Breathing difficulty and nerve shock",
+        },
         stackable: false,
       },
     ],
@@ -394,7 +415,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.ORGAN_DISRUPTION,
         intensity: EffectIntensity.HIGH,
         duration: 8000,
-        description: { korean: "내출혈 및 극심한 통증", english: "Internal bleeding and severe pain" },
+        description: {
+          korean: "내출혈 및 극심한 통증",
+          english: "Internal bleeding and severe pain",
+        },
         stackable: false,
       },
       {
@@ -431,7 +455,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.ORGAN_DISRUPTION,
         intensity: EffectIntensity.HIGH,
         duration: 8000,
-        description: { korean: "비장 파열 위험", english: "Spleen rupture risk" },
+        description: {
+          korean: "비장 파열 위험",
+          english: "Spleen rupture risk",
+        },
         stackable: false,
       },
       {
@@ -439,7 +466,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.WEAKNESS,
         intensity: EffectIntensity.HIGH,
         duration: 10000,
-        description: { korean: "내출혈로 인한 약화", english: "Weakness from internal bleeding" },
+        description: {
+          korean: "내출혈로 인한 약화",
+          english: "Weakness from internal bleeding",
+        },
         stackable: false,
       },
     ],
@@ -468,7 +498,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.PAIN,
         intensity: EffectIntensity.HIGH,
         duration: 4000,
-        description: { korean: "신장 타격 극심한 통증", english: "Severe kidney strike pain" },
+        description: {
+          korean: "신장 타격 극심한 통증",
+          english: "Severe kidney strike pain",
+        },
         stackable: false,
       },
     ],
@@ -497,7 +530,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.PAIN,
         intensity: EffectIntensity.HIGH,
         duration: 4000,
-        description: { korean: "신장 타격 극심한 통증", english: "Severe kidney strike pain" },
+        description: {
+          korean: "신장 타격 극심한 통증",
+          english: "Severe kidney strike pain",
+        },
         stackable: false,
       },
     ],
@@ -566,7 +602,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.PARALYSIS,
         intensity: EffectIntensity.EXTREME,
         duration: 15000,
-        description: { korean: "척추 손상으로 마비", english: "Spinal trauma paralysis" },
+        description: {
+          korean: "척추 손상으로 마비",
+          english: "Spinal trauma paralysis",
+        },
         stackable: false,
       },
       {
@@ -574,7 +613,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.NERVE_DISRUPTION,
         intensity: EffectIntensity.EXTREME,
         duration: 12000,
-        description: { korean: "신경 차단", english: "Nerve pathway disruption" },
+        description: {
+          korean: "신경 차단",
+          english: "Nerve pathway disruption",
+        },
         stackable: false,
       },
     ],
@@ -648,7 +690,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.STUN,
         intensity: EffectIntensity.HIGH,
         duration: 3000,
-        description: { korean: "충격으로 인한 기절", english: "Shock-induced incapacitation" },
+        description: {
+          korean: "충격으로 인한 기절",
+          english: "Shock-induced incapacitation",
+        },
         stackable: false,
       },
     ],
@@ -1304,7 +1349,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.WEAKNESS,
         intensity: EffectIntensity.HIGH,
         duration: 10000,
-        description: { korean: "무릎 파괴로 보행 불가", english: "Knee destruction, unable to walk" },
+        description: {
+          korean: "무릎 파괴로 보행 불가",
+          english: "Knee destruction, unable to walk",
+        },
         stackable: false,
       },
       {
@@ -1421,7 +1469,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.WEAKNESS,
         intensity: EffectIntensity.EXTREME,
         duration: 12000,
-        description: { korean: "아킬레스건 파열", english: "Achilles tendon rupture" },
+        description: {
+          korean: "아킬레스건 파열",
+          english: "Achilles tendon rupture",
+        },
         stackable: false,
       },
       {
@@ -1500,7 +1551,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.WEAKNESS,
         intensity: EffectIntensity.HIGH,
         duration: 10000,
-        description: { korean: "무릎 파괴로 보행 불가", english: "Knee destruction, unable to walk" },
+        description: {
+          korean: "무릎 파괴로 보행 불가",
+          english: "Knee destruction, unable to walk",
+        },
         stackable: false,
       },
       {
@@ -1617,7 +1671,10 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
         type: VitalPointEffectType.WEAKNESS,
         intensity: EffectIntensity.EXTREME,
         duration: 12000,
-        description: { korean: "아킬레스건 파열", english: "Achilles tendon rupture" },
+        description: {
+          korean: "아킬레스건 파열",
+          english: "Achilles tendon rupture",
+        },
         stackable: false,
       },
       {
@@ -1681,14 +1738,16 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
 
 /**
  * Gets vital points by body region.
- * 
+ *
  * @param region - Body region to filter by
  * @returns Array of vital points in that region
- * 
+ *
  * @public
  * @korean 부위별급소
  */
-export function getVitalPointsByRegion(region: BodyRegion): readonly VitalPoint[] {
+export function getVitalPointsByRegion(
+  region: BodyRegion
+): readonly VitalPoint[] {
   // This is a simplified implementation - in production you'd map IDs to regions properly
   const regionPrefixes: Record<BodyRegion, string[]> = {
     [BodyRegion.HEAD]: ["head_"],
@@ -1698,10 +1757,14 @@ export function getVitalPointsByRegion(region: BodyRegion): readonly VitalPoint[
     [BodyRegion.RIGHT_ARM]: ["arm_right_"],
     [BodyRegion.LEFT_LEG]: ["leg_left_"],
     [BodyRegion.RIGHT_LEG]: ["leg_right_"],
-    [BodyRegion.CORE]: ["torso_solar_plexus", "torso_diaphragm", "torso_abs_center"],
+    [BodyRegion.CORE]: [
+      "torso_solar_plexus",
+      "torso_diaphragm",
+      "torso_abs_center",
+    ],
   };
 
-  const prefixes = regionPrefixes[region] || [];
+  const prefixes = regionPrefixes[region] ?? [];
   return VITAL_POINTS_DATA.filter((vp) =>
     prefixes.some((prefix) => vp.id.startsWith(prefix))
   );
@@ -1709,9 +1772,9 @@ export function getVitalPointsByRegion(region: BodyRegion): readonly VitalPoint[
 
 /**
  * Gets total count of vital points.
- * 
+ *
  * @returns Total number of vital points
- * 
+ *
  * @public
  * @korean 급소총개수
  */

@@ -56,7 +56,7 @@ export class DefaultSoundGenerator {
       jojik_pokryeokbae: 165.0, // Crime fighter - aggressive
     };
 
-    const baseFreq = archetypeFrequencies[archetype] || 440;
+    const baseFreq = archetypeFrequencies[archetype] ?? 440;
     const samples = this.generateTechniqueBuffer(baseFreq, 0.6);
     const base64 = this.convertSamplesToBase64(samples, 44100);
 
@@ -88,7 +88,7 @@ export class DefaultSoundGenerator {
       gon: 1046.5, // C6 - Earth's foundation
     };
 
-    const frequency = stanceFrequencies[stance] || 440;
+    const frequency = stanceFrequencies[stance] ?? 440;
     const samples = this.generateBaseToneBuffer(frequency, 0.8);
     // Remove unused base64 variable
     this.convertSamplesToBase64(samples, 44100);
@@ -108,7 +108,7 @@ export class DefaultSoundGenerator {
       lethal: 220.0, // Very low, ominous
     };
 
-    const frequency = severityFrequencies[severity] || 440;
+    const frequency = severityFrequencies[severity] ?? 440;
     const duration =
       severity === "critical" || severity === "lethal" ? 1.2 : 0.4;
 

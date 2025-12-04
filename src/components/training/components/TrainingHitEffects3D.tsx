@@ -1,6 +1,6 @@
 /**
  * TrainingHitEffects3D - Optimized particle effects using InstancedMesh
- * 
+ *
  * Provides visual feedback for successful and missed strikes
  * Uses InstancedMesh for better performance with many particles
  */
@@ -81,7 +81,11 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
   const particlesRef = useRef<Particle[]>([]);
   const [isActive, setIsActive] = useState(false);
-  
+  // Track particle count in state for render access
+  const [hasParticles, setHasParticles] = useState(false);
+  // Track if we've initialized for this visibility cycle
+  const initializedRef = useRef(false);
+
   // Reusable objects to avoid allocations in animation loop
   const tempMatrix = useMemo(() => new THREE.Matrix4(), []);
   const tempVelocity = useMemo(() => new THREE.Vector3(), []);
@@ -91,17 +95,18 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   const particleCount = useMemo(() => getParticleCount(type), [type]);
   const color = useMemo(() => new THREE.Color(getEffectColor(type)), [type]);
 
-  // Initialize particles when effect becomes visible
+  // Initialize particles when effect becomes visible - use ref to track initialization
+  // and avoid setState during effect
   useEffect(() => {
-    if (visible && !isActive) {
-      setIsActive(true);
-      
+    if (visible && !initializedRef.current) {
+      initializedRef.current = true;
+
       particlesRef.current = Array.from({ length: particleCount }, () => {
         // Random direction in sphere
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(2 * Math.random() - 1);
         const speed = type === "perfect" ? 5 : type === "success" ? 3 : 2;
-        
+
         return {
           position: new THREE.Vector3(0, 0, 0),
           velocity: new THREE.Vector3(
@@ -114,8 +119,13 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
           size: type === "perfect" ? 0.15 : 0.1,
         };
       });
+      setHasParticles(particlesRef.current.length > 0);
     }
-  }, [visible, type, isActive, particleCount]);
+    // Reset initialization tracking when visibility changes to false
+    if (!visible) {
+      initializedRef.current = false;
+    }
+  }, [visible, type, particleCount]);
 
   // Animate particles
   useFrame((_, delta) => {
@@ -127,27 +137,27 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
     particlesRef.current.forEach((particle, index) => {
       if (particle.life > 0) {
         allDead = false;
-        
+
         // Update position using temp vector to avoid allocation
         tempVelocity.copy(particle.velocity).multiplyScalar(delta);
         particle.position.add(tempVelocity);
-        
+
         // Apply gravity
         particle.velocity.y -= 9.8 * delta;
-        
+
         // Decay life
         particle.life -= delta * 1.5;
-        
+
         // Update instance matrix
         const opacity = Math.max(0, particle.life / particle.maxLife);
         const scale = particle.size * (0.5 + opacity * 0.5);
-        
+
         tempMatrix.identity();
         tempMatrix.setPosition(particle.position);
         tempScaleVector.set(scale, scale, scale);
         tempMatrix.scale(tempScaleVector);
         mesh.setMatrixAt(index, tempMatrix);
-        
+
         // Update color with opacity
         tempColor.copy(color);
         mesh.setColorAt(index, tempColor);
@@ -171,6 +181,7 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
     if (allDead) {
       setIsActive(false);
       particlesRef.current = [];
+      setHasParticles(false);
       onComplete?.();
     }
   });
@@ -195,7 +206,7 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
     };
   }, [geometry, material]);
 
-  if (!isActive || particlesRef.current.length === 0) {
+  if (!isActive || !hasParticles) {
     return null;
   }
 
@@ -207,7 +218,7 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
         args={[geometry, material, particleCount]}
         frustumCulled={false}
       />
-      
+
       {/* Central flash for perfect hits */}
       {type === "perfect" && (
         <mesh scale={2}>

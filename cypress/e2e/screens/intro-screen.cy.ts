@@ -1,7 +1,7 @@
 /**
  * IntroScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
- * 
+ *
  * This test covers the complete IntroScreen user journey including:
  * - Canvas and Three.js rendering verification
  * - Menu button interactions and navigation
@@ -9,12 +9,10 @@
  * - Keyboard controls and shortcuts
  * - Responsive design across viewports
  * - Navigation to all other screens and back
- * 
+ *
  * ✅ Three.js Compatible - Tests IntroScreenThreeJS with Canvas and Html overlays
  * ⏱️ Optimized for 3-4 minute execution time
  */
-
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
@@ -143,7 +141,9 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("5️⃣ Testing Navigation to Training");
 
     cy.enterTrainingMode();
-    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should("exist");
+    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should(
+      "exist"
+    );
     cy.log("✅ Successfully navigated to Training");
 
     cy.returnToIntro();
@@ -172,7 +172,12 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("7️⃣ Testing Navigation to Philosophy");
 
     // Navigate to philosophy screen using reusable command
-    cy.navigateToScreen("philosophy", "philosophy-button", "menu-philosophy", "4");
+    cy.navigateToScreen(
+      "philosophy",
+      "philosophy-button",
+      "menu-philosophy",
+      "4"
+    );
 
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
@@ -234,10 +239,13 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Should still be at intro or handle gracefully
     cy.get("body").then(($body) => {
-      const hasIntro = $body.find('[data-testid="intro-screen"]').length > 0 ||
-                      $body.find('[data-testid="app-container"]').length > 0;
+      const hasIntro =
+        $body.find('[data-testid="intro-screen"]').length > 0 ||
+        $body.find('[data-testid="app-container"]').length > 0;
       if (hasIntro) {
-        cy.log("✅ Error resilience verified - gracefully handled invalid input");
+        cy.log(
+          "✅ Error resilience verified - gracefully handled invalid input"
+        );
       }
     });
 

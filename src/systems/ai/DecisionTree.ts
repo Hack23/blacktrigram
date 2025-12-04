@@ -1,19 +1,22 @@
 /**
  * AI Decision Tree for Korean Martial Arts Combat
  * Strategic decision-making system with multiple tactical options
- * 
+ *
  * **Korean Philosophy Integration (한국 무술 철학)**:
  * - 지피지기백전불태 (知彼知己百戰不殆) - Know the enemy, know yourself, and victory is certain
  * - 이순응변 (以柔應變) - Adapt with flexibility and flow like water
  * - 급소공격 (急所攻擊) - Strike vital points with precision and timing
  */
 
+import { PlayerState } from "@/systems/player";
+import { TrigramSystem } from "@/systems/TrigramSystem";
+import {
+  KOREAN_VITAL_POINTS,
+  getVitalPointById,
+} from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance } from "@/types";
 import { AIPersonality } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
-import { TrigramSystem } from "@/systems/TrigramSystem";
-import { KOREAN_VITAL_POINTS, getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
-import { PlayerState } from "@/systems/player";
 
 /**
  * AI action types
@@ -73,10 +76,10 @@ export interface CombatContext {
 
 /**
  * AI Decision Tree System
- * 
+ *
  * **Korean Combat Philosophy (한국 무술 철학)**:
  * This system embodies traditional Korean martial arts principles:
- * 
+ *
  * - **팔괘 응용** (Trigram Application): Uses Eight Trigram system for stance transitions
  * - **급소 타격** (Vital Point Strikes): Targets anatomical weak points with precision
  * - **상황 판단** (Situational Awareness): Adapts tactics based on combat context
@@ -89,7 +92,7 @@ export class AIDecisionTree {
   private consecutiveAttacks = 0;
   private lastStanceChange = 0;
   private readonly stanceChangeCooldown = 3000; // 3 seconds
-  
+
   // Systems for advanced decision-making
   private trigramSystem: TrigramSystem;
   private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
@@ -249,7 +252,11 @@ export class AIDecisionTree {
 
     // Don't start combo if already in consecutive attacks
     if (this.consecutiveAttacks > 0) {
-      return { action: AIActionType.WAIT, priority: 0, reason: "Combo cooldown" };
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: "Combo cooldown",
+      };
     }
 
     const hasResources =
@@ -276,8 +283,8 @@ export class AIDecisionTree {
 
   /**
    * Evaluate stance change using TrigramSystem
-   * 
-   * **Korean Philosophy (자세 전환)**: 
+   *
+   * **Korean Philosophy (자세 전환)**:
    * Uses I Ching-based trigram system to find optimal stance transitions.
    * Considers resource costs and counter-stance effectiveness.
    */
@@ -314,7 +321,7 @@ export class AIDecisionTree {
     } as unknown as PlayerState;
 
     const recommendedStance = this.trigramSystem.recommendStance(playerState);
-    
+
     // Check if we can afford the transition
     const canTransition = this.trigramSystem.canTransitionTo(
       context.playerStance,
@@ -328,7 +335,7 @@ export class AIDecisionTree {
         context.opponentStance,
         personality
       );
-      
+
       this.lastStanceChange = now;
       return {
         action: AIActionType.STANCE_CHANGE,
@@ -376,7 +383,7 @@ export class AIDecisionTree {
 
   /**
    * Evaluate close range tactics with vital point targeting
-   * 
+   *
    * **Korean Philosophy (급소 공격)**:
    * At close range, AI targets specific vital points based on difficulty level.
    * Higher difficulty = more precise targeting of critical points.
@@ -385,16 +392,15 @@ export class AIDecisionTree {
     context: CombatContext,
     personality: AIPersonality
   ): AIDecision {
-    const hasResources =
-      context.playerKi > 10 && context.playerStamina > 15;
+    const hasResources = context.playerKi > 10 && context.playerStamina > 15;
     const aggression = personality.aggressionLevel;
 
     // Select vital point target based on difficulty
     const targetVitalPoint = this.selectVitalPointTarget(context, personality);
-    
+
     // Get Korean name for logging if vital point is selected
-    const vitalPointName = targetVitalPoint 
-      ? (getVitalPointById(targetVitalPoint)?.names.korean ?? targetVitalPoint)
+    const vitalPointName = targetVitalPoint
+      ? getVitalPointById(targetVitalPoint)?.names.korean ?? targetVitalPoint
       : undefined;
 
     if (Math.random() < aggression * 0.8) {
@@ -402,7 +408,7 @@ export class AIDecisionTree {
         action: AIActionType.ATTACK,
         targetVitalPoint,
         priority: targetVitalPoint ? 7 : 6,
-        reason: targetVitalPoint 
+        reason: targetVitalPoint
           ? `Close range - vital point attack (급소 타격: ${vitalPointName})`
           : "Close range - aggressive strike",
       };
@@ -426,7 +432,7 @@ export class AIDecisionTree {
 
   /**
    * Select vital point to target based on difficulty and stance
-   * 
+   *
    * **Korean Philosophy (급소 선택)**:
    * - Beginner AI: Random targeting or no specific target
    * - Intermediate AI: Favors easier vital points
@@ -449,13 +455,15 @@ export class AIDecisionTree {
     }
 
     // Filter vital points by effective stance
-    const effectivePoints = KOREAN_VITAL_POINTS.filter(point =>
+    const effectivePoints = KOREAN_VITAL_POINTS.filter((point) =>
       point.effectiveStances?.includes(context.playerStance)
     );
 
     if (effectivePoints.length === 0) {
       // Fallback to any vital point
-      const randomIndex = Math.floor(Math.random() * KOREAN_VITAL_POINTS.length);
+      const randomIndex = Math.floor(
+        Math.random() * KOREAN_VITAL_POINTS.length
+      );
       return KOREAN_VITAL_POINTS[randomIndex].id;
     }
 
@@ -470,27 +478,36 @@ export class AIDecisionTree {
       return effectivePoints[randomIndex].id;
     } else if (this.difficultyLevel < 0.6) {
       // Intermediate: Prefer easier targets (lower difficulty)
-      const easierPoints = effectivePoints.filter(p => p.targetingDifficulty < 0.7);
-      
+      const easierPoints = effectivePoints.filter(
+        (p) => p.targetingDifficulty < 0.7
+      );
+
       if (easierPoints.length > 0) {
         // Sort without mutating original array
-        const sortedEasierPoints = [...easierPoints].sort((a, b) => a.targetingDifficulty - b.targetingDifficulty);
+        const sortedEasierPoints = [...easierPoints].sort(
+          (a, b) => a.targetingDifficulty - b.targetingDifficulty
+        );
         return sortedEasierPoints[0].id;
       }
       return effectivePoints[0].id;
     } else {
       // Advanced/Master: Target high-value critical points
-      const criticalPoints = effectivePoints
-        .filter(p => p.severity === "critical" || p.severity === "major");
+      const criticalPoints = effectivePoints.filter(
+        (p) => p.severity === "critical" || p.severity === "major"
+      );
 
       if (criticalPoints.length > 0) {
         // Sort without mutating original array
-        const sortedCritical = [...criticalPoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+        const sortedCritical = [...criticalPoints].sort(
+          (a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0)
+        );
         return sortedCritical[0].id;
       }
-      
+
       // Fallback to highest damage point (guaranteed to exist due to check at line 456)
-      const sortedByDamage = [...effectivePoints].sort((a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0));
+      const sortedByDamage = [...effectivePoints].sort(
+        (a, b) => (b.baseDamage ?? 0) - (a.baseDamage ?? 0)
+      );
       return sortedByDamage[0]?.id ?? effectivePoints[0].id;
     }
   }
@@ -508,7 +525,9 @@ export class AIDecisionTree {
       action: AIActionType.APPROACH,
       targetPosition: approachPos,
       priority: 5,
-      reason: `Moving closer (distance: ${Math.round(context.distanceToOpponent)})`,
+      reason: `Moving closer (distance: ${Math.round(
+        context.distanceToOpponent
+      )})`,
     };
   }
 
@@ -658,14 +677,16 @@ export class AIDecisionTree {
         context.arenaBounds.x,
         Math.min(
           context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.opponentPosition.x + Math.cos(angle + Math.PI / 2) * circleRadius
+          context.opponentPosition.x +
+            Math.cos(angle + Math.PI / 2) * circleRadius
         )
       ),
       y: Math.max(
         context.arenaBounds.y,
         Math.min(
           context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.opponentPosition.y + Math.sin(angle + Math.PI / 2) * circleRadius
+          context.opponentPosition.y +
+            Math.sin(angle + Math.PI / 2) * circleRadius
         )
       ),
     };
@@ -691,22 +712,24 @@ export class AIDecisionTree {
       [TrigramStance.GON]: [TrigramStance.SON, TrigramStance.LI], // Earth countered by Wind, Fire
     };
 
-    const counters = stanceCounters[opponentStance] || [];
-    
+    const counters = stanceCounters[opponentStance] ?? [];
+
     // Try to find a counter that's also in favored stances
     const favoredCounters = counters.filter((s) =>
       personality.favoredStances.includes(s)
     );
-    
+
     if (favoredCounters.length > 0) {
-      return favoredCounters[Math.floor(Math.random() * favoredCounters.length)];
+      return favoredCounters[
+        Math.floor(Math.random() * favoredCounters.length)
+      ];
     }
-    
+
     // Fallback to any counter stance
     if (counters.length > 0) {
       return counters[Math.floor(Math.random() * counters.length)];
     }
-    
+
     // Last resort: use favored stance
     if (personality.favoredStances.length > 0) {
       return personality.favoredStances[

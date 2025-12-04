@@ -27,57 +27,14 @@ jobs:
           node-version: "24"
           cache: "npm"
 
-      - name: Setup Three.js Test Environment
-        env:
-          CYPRESS_VIDEO: true
-          # Suppress X11 keyboard configuration warnings
-          XKB_DEFAULT_RULES: evdev
-          XKB_DEFAULT_MODEL: pc105
-          XKB_DEFAULT_LAYOUT: us
-        run: |
-          echo "🔧 Setting up Three.js test environment with optimized Chrome flags..."
-
-          # Install all required dependencies in single layer
-          sudo apt-get update
-          sudo apt-get install -y \
-            xvfb dbus-x11 graphviz \
-            libgtk2.0-0 libgtk-3-0 libgbm-dev \
-            ffmpeg libnotify-dev libnss3 libxss1 \
-            libxtst6 xauth \
-            fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
-            ca-certificates fonts-liberation \
-            libatk-bridge2.0-0 libatk1.0-0 \
-            libcups2 libdbus-1-3 libdrm2 libgbm1 \
-            libnspr4 libx11-xcb1 libxcomposite1 \
-            libxdamage1 libxfixes3 libxrandr2 \
-            libxrender1 libxshmfence1 xdg-utils wget libxkbcommon0 xkb-data
-
-          # Install Chrome for Three.js WebGL support
-          wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
-          # Setup D-Bus
-          sudo mkdir -p /var/run/dbus
-          sudo dbus-daemon --system --fork
-
-          echo "✅ Three.js test environment ready"
-          google-chrome --version
-
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Cache Cypress binary
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
+      - name: Run TypeScript check
+        run: npm run check
 
-      - name: Verify Cypress
-        run: npx cypress verify
+      - name: Run ESLint
+        run: npm run lint
 
   build-validation:
     needs: prepare
@@ -177,6 +134,38 @@ jobs:
           node-version: "24"
           cache: "npm"
 
+      - name: Setup Three.js Test Environment
+        run: |
+          echo "🔧 Setting up Three.js test environment with optimized Chrome flags..."
+
+          # Install all required dependencies for E2E testing
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            xvfb dbus-x11 graphviz \
+            libgtk2.0-0 libgtk-3-0 libgbm-dev libgbm1 \
+            libnotify-dev libnss3 libxss1 \
+            libxtst6 xauth \
+            fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
+            ca-certificates fonts-liberation \
+            libatk-bridge2.0-0 libatk1.0-0 \
+            libcups2 libdbus-1-3 libdrm2 \
+            libnspr4 libx11-xcb1 libxcomposite1 \
+            libxdamage1 libxfixes3 libxrandr2 \
+            libxrender1 libxshmfence1 xdg-utils wget libxkbcommon0 xkb-data
+
+          # Install Chrome for Three.js WebGL support
+          wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+          # Setup D-Bus
+          sudo mkdir -p /var/run/dbus
+          sudo dbus-daemon --system --fork
+
+          echo "✅ Three.js test environment ready"
+          google-chrome --version
+
       - name: Cache Cypress binary
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
@@ -186,7 +175,10 @@ jobs:
             cypress-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Verify Cypress
+        run: npx cypress verify
 
       - name: Start app and run Cypress tests with Three.js optimization
         run: |
@@ -198,17 +190,21 @@ jobs:
           echo "  - Target: 10-12 minute execution"
           echo ""
           START_TIME=$(date +%s) || START_TIME=0
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render" npm run test:e2e
+          # Run tests - xvfb-run handles display setup
+          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp" npm run test:e2e || TEST_EXIT_CODE=$?
           END_TIME=$(date +%s) || END_TIME=$START_TIME
           if [ "$START_TIME" -ne 0 ]; then
             DURATION=$((END_TIME - START_TIME))
-            echo "✅ E2E tests completed in ${DURATION} seconds ($(date -u -d @${DURATION} +%T))"
+            echo "✅ E2E tests completed in ${DURATION} seconds"
             echo "e2e_duration=${DURATION}" >> $GITHUB_OUTPUT
           else
             echo "⚠️ Could not measure test duration"
           fi
+          # Exit with test exit code (0 if tests passed)
+          exit ${TEST_EXIT_CODE:-0}
         env:
           CYPRESS_VIDEO: true
+          TERM: dumb
         id: e2e_tests
 
       - name: Upload Cypress results
@@ -276,6 +272,9 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
+
+      - name: Install graphviz for reports
+        run: sudo apt-get update && sudo apt-get install -y graphviz
 
       - name: Install dependencies
         run: npm install

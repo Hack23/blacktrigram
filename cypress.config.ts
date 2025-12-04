@@ -22,7 +22,6 @@ export default defineConfig({
   experimentalMemoryManagement: true,
   numTestsKeptInMemory: 3, // Reduced from 5 for better memory management
   video: true, // Video recording enabled; videos are only saved for failed tests
-  videoUploadOnPasses: false, // Only upload videos for failed tests
   videoCompression: 50, // Optimized for faster encoding (larger files, but faster CI) - increased from 25
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
@@ -170,7 +169,7 @@ export default defineConfig({
             return fs
               .readdirSync(REPORTS.junit)
               .filter((file) => file.endsWith(".xml"));
-          } catch (err) {
+          } catch {
             return [];
           }
         },
@@ -183,7 +182,10 @@ export default defineConfig({
             }
             return null;
           } catch (err) {
-            console.error("Error resetting JUnit results:", err);
+            console.error(
+              "Error resetting JUnit results:",
+              err instanceof Error ? err.message : String(err)
+            );
             return null;
           }
         },

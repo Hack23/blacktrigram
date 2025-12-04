@@ -1,7 +1,7 @@
 /**
  * WebGL Rendering Verification Tests
  * Comprehensive tests to ensure Three.js WebGL context is active and rendering correctly
- * 
+ *
  * ✅ Verifies WebGL context creation
  * ✅ Tests Three.js renderer initialization
  * ✅ Monitors frame rate performance
@@ -85,7 +85,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
         if (winWithThree.__threeScene) {
           expect(winWithThree.__threeScene).to.exist;
-          
+
           // Verify scene has objects
           if (winWithThree.__threeScene.children) {
             const objectCount = winWithThree.__threeScene.children.length;
@@ -105,8 +105,9 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
         const canvas = document.querySelector("canvas");
         expect(canvas).to.exist;
 
-        const gl = (canvas as HTMLCanvasElement).getContext("webgl2") ||
-                   (canvas as HTMLCanvasElement).getContext("webgl");
+        const gl =
+          (canvas as HTMLCanvasElement).getContext("webgl2") ||
+          (canvas as HTMLCanvasElement).getContext("webgl");
 
         if (gl) {
           // Check for important extensions
@@ -131,7 +132,9 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
           cy.log(`Supported extensions: ${supportedExtensions.join(", ")}`);
           if (unsupportedExtensions.length > 0) {
-            cy.log(`Unsupported extensions: ${unsupportedExtensions.join(", ")}`);
+            cy.log(
+              `Unsupported extensions: ${unsupportedExtensions.join(", ")}`
+            );
           }
 
           // At least one extension should be supported
@@ -163,11 +166,11 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
             const elapsed = performance.now() - startTime;
             const fps = (frameCount / elapsed) * 1000;
             cy.log(`Average FPS: ${fps.toFixed(2)}`);
-            
+
             // Target 60fps, allow some tolerance for software rendering
             // Minimum 30fps acceptable, optimal 55-60fps
             expect(fps).to.be.greaterThan(30);
-            
+
             if (fps >= 55) {
               cy.log("✅ Excellent framerate (≥55fps)");
             } else if (fps >= 45) {
@@ -217,13 +220,17 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
             const stdDev = Math.sqrt(variance);
 
             cy.log(`Average frame time: ${avgFrameTime.toFixed(2)}ms`);
-            cy.log(`Min/Max frame time: ${minFrameTime.toFixed(2)}ms / ${maxFrameTime.toFixed(2)}ms`);
+            cy.log(
+              `Min/Max frame time: ${minFrameTime.toFixed(
+                2
+              )}ms / ${maxFrameTime.toFixed(2)}ms`
+            );
             cy.log(`Frame time std dev: ${stdDev.toFixed(2)}ms`);
 
             // Frame times should be relatively consistent
             // Target: 16.67ms (60fps), acceptable up to 33.33ms (30fps)
             expect(avgFrameTime).to.be.lessThan(50); // Allow for software rendering
-            
+
             // Variance should be reasonable (not too inconsistent)
             expect(stdDev).to.be.lessThan(20);
 
@@ -252,7 +259,12 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
         // Capture initial canvas state
         const ctx = canvas.getContext("2d");
         if (ctx) {
-          const initialData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const initialData = ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
 
           // Wait for a few frames
           cy.wait(500);
@@ -297,18 +309,15 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
           let nonZeroPixels = 0;
           for (let i = 0; i < pixels.length; i += 4) {
             // Check RGBA values
-            if (
-              pixels[i] !== 0 ||
-              pixels[i + 1] !== 0 ||
-              pixels[i + 2] !== 0
-            ) {
+            if (pixels[i] !== 0 || pixels[i + 1] !== 0 || pixels[i + 2] !== 0) {
               nonZeroPixels++;
             }
           }
 
-          const contentPercentage =
-            (nonZeroPixels / (pixels.length / 4)) * 100;
-          cy.log(`Canvas content: ${contentPercentage.toFixed(2)}% non-black pixels`);
+          const contentPercentage = (nonZeroPixels / (pixels.length / 4)) * 100;
+          cy.log(
+            `Canvas content: ${contentPercentage.toFixed(2)}% non-black pixels`
+          );
 
           // Canvas should have visible content (not all black)
           expect(contentPercentage).to.be.greaterThan(5);
@@ -324,7 +333,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       let initialContexts = 0;
 
-      cy.window().then((win) => {
+      cy.window().then((_win) => {
         // Count initial WebGL contexts
         const canvases = document.querySelectorAll("canvas");
         canvases.forEach((canvas) => {
@@ -342,7 +351,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
       cy.get('[data-testid="training-button"]').trigger("mouseover");
       cy.wait(500);
 
-      cy.window().then(() => {
+      cy.window().then((_win) => {
         // Count final WebGL contexts
         let finalContexts = 0;
         const canvases = document.querySelectorAll("canvas");
@@ -377,7 +386,9 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
           if (perfWithMemory.memory) {
             const initialMemory = perfWithMemory.memory.usedJSHeapSize;
-            cy.log(`Initial memory: ${(initialMemory / 1024 / 1024).toFixed(2)}MB`);
+            cy.log(
+              `Initial memory: ${(initialMemory / 1024 / 1024).toFixed(2)}MB`
+            );
 
             // Perform some rendering operations
             cy.gameActions(["1", "2", "3"]);
@@ -387,7 +398,9 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
             cy.log(`Final memory: ${(finalMemory / 1024 / 1024).toFixed(2)}MB`);
 
             const memoryGrowth = finalMemory - initialMemory;
-            cy.log(`Memory growth: ${(memoryGrowth / 1024 / 1024).toFixed(2)}MB`);
+            cy.log(
+              `Memory growth: ${(memoryGrowth / 1024 / 1024).toFixed(2)}MB`
+            );
 
             // Memory growth should be reasonable (<100MB for this test)
             expect(memoryGrowth).to.be.lessThan(100 * 1024 * 1024);

@@ -42,10 +42,11 @@ describe("AudioProvider - Deferred Initialization", () => {
   it("should initialize audio when initializeAudio is called", async () => {
     const TestComponent = () => {
       const audio = useAudio();
-      
+      const initializeAudio = audio.initializeAudio;
+
       React.useEffect(() => {
-        audio.initializeAudio();
-      }, [audio.initializeAudio]); // Use specific method instead of entire context
+        initializeAudio();
+      }, [initializeAudio]); // Use specific method instead of entire context
 
       return <div>{audio.isAudioReady ? "Ready" : "Not Ready"}</div>;
     };
@@ -69,7 +70,9 @@ describe("AudioProvider - Deferred Initialization", () => {
       const audio = useAudio();
       return (
         <div>
-          {typeof audio.initializeAudio === "function" ? "Has Function" : "No Function"}
+          {typeof audio.initializeAudio === "function"
+            ? "Has Function"
+            : "No Function"}
         </div>
       );
     };
@@ -109,10 +112,11 @@ describe("AudioProvider - Deferred Initialization", () => {
 
     const TestComponent = () => {
       const audio = useAudio();
-      
+      const initializeAudio = audio.initializeAudio;
+
       React.useEffect(() => {
-        audio.initializeAudio();
-      }, [audio.initializeAudio]);
+        initializeAudio();
+      }, [initializeAudio]);
 
       return <div>{audio.isAudioReady ? "Ready" : "Not Ready"}</div>;
     };
@@ -137,36 +141,52 @@ describe("AudioProvider - Deferred Initialization", () => {
   it("should provide all IAudioManager methods in context", () => {
     const TestComponent = () => {
       const audio = useAudio();
-      
+
       // Check that all IAudioManager methods are available
-      type AudioMethod = 'initialize' | 'loadAsset' | 'playSFX' | 'playSoundEffect' | 
-        'playMusic' | 'stopMusic' | 'setVolume' | 'mute' | 'unmute' | 'fadeIn' | 'fadeOut' | 
-        'playKoreanTechniqueSound' | 'playTrigramStanceSound' | 'playVitalPointHitSound' | 
-        'playDojiangAmbience';
-      
+      type AudioMethod =
+        | "initialize"
+        | "loadAsset"
+        | "playSFX"
+        | "playSoundEffect"
+        | "playMusic"
+        | "stopMusic"
+        | "setVolume"
+        | "mute"
+        | "unmute"
+        | "fadeIn"
+        | "fadeOut"
+        | "playKoreanTechniqueSound"
+        | "playTrigramStanceSound"
+        | "playVitalPointHitSound"
+        | "playDojiangAmbience";
+
       const methods: AudioMethod[] = [
-        'initialize',
-        'loadAsset',
-        'playSFX',
-        'playSoundEffect',
-        'playMusic',
-        'stopMusic',
-        'setVolume',
-        'mute',
-        'unmute',
-        'fadeIn',
-        'fadeOut',
-        'playKoreanTechniqueSound',
-        'playTrigramStanceSound',
-        'playVitalPointHitSound',
-        'playDojiangAmbience',
+        "initialize",
+        "loadAsset",
+        "playSFX",
+        "playSoundEffect",
+        "playMusic",
+        "stopMusic",
+        "setVolume",
+        "mute",
+        "unmute",
+        "fadeIn",
+        "fadeOut",
+        "playKoreanTechniqueSound",
+        "playTrigramStanceSound",
+        "playVitalPointHitSound",
+        "playDojiangAmbience",
       ];
 
       const allMethodsPresent = methods.every(
-        method => typeof audio[method] === 'function'
+        (method) => typeof audio[method] === "function"
       );
 
-      return <div>{allMethodsPresent ? "All Methods Present" : "Missing Methods"}</div>;
+      return (
+        <div>
+          {allMethodsPresent ? "All Methods Present" : "Missing Methods"}
+        </div>
+      );
     };
 
     render(
@@ -181,25 +201,36 @@ describe("AudioProvider - Deferred Initialization", () => {
   it("should provide all IAudioManager properties in context", () => {
     const TestComponent = () => {
       const audio = useAudio();
-      
+
       // Check that all IAudioManager properties are available
-      type AudioProperty = 'isInitialized' | 'masterVolume' | 'sfxVolume' | 
-        'musicVolume' | 'muted' | 'isAudioReady';
-      
+      type AudioProperty =
+        | "isInitialized"
+        | "masterVolume"
+        | "sfxVolume"
+        | "musicVolume"
+        | "muted"
+        | "isAudioReady";
+
       const properties: AudioProperty[] = [
-        'isInitialized',
-        'masterVolume',
-        'sfxVolume',
-        'musicVolume',
-        'muted',
-        'isAudioReady',
+        "isInitialized",
+        "masterVolume",
+        "sfxVolume",
+        "musicVolume",
+        "muted",
+        "isAudioReady",
       ];
 
       const allPropertiesPresent = properties.every(
-        prop => prop in audio && audio[prop] !== undefined
+        (prop) => prop in audio && audio[prop] !== undefined
       );
 
-      return <div>{allPropertiesPresent ? "All Properties Present" : "Missing Properties"}</div>;
+      return (
+        <div>
+          {allPropertiesPresent
+            ? "All Properties Present"
+            : "Missing Properties"}
+        </div>
+      );
     };
 
     render(

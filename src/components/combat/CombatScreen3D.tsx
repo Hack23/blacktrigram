@@ -1,6 +1,6 @@
 /**
  * CombatScreen3D - Three.js-based combat screen
- * 
+ *
  * Maintains all existing combat logic and state management
  * Uses Html overlays for UI and 3D meshes for game objects
  */
@@ -16,8 +16,8 @@ import React, {
 } from "react";
 import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
-import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useRoundTransition } from "../../hooks/useRoundTransition";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
@@ -25,39 +25,49 @@ import {
   getPersonalityByArchetype,
 } from "../../systems/ai";
 import { HitEffectType } from "../../systems/effects";
-import { GameMode, PlayerArchetype, Position, TrigramStance, VitalPointSeverity } from "../../types";
-import { KOREAN_COLORS, FONT_FAMILY, ROUND_ANNOUNCEMENT_TIMINGS } from "../../types/constants";
+import {
+  GameMode,
+  PlayerArchetype,
+  Position,
+  TrigramStance,
+  VitalPointSeverity,
+} from "../../types";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+  ROUND_ANNOUNCEMENT_TIMINGS,
+} from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
-import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { PerformanceOverlay3D } from "../../utils/performance";
+import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { VolumeControl } from "../ui/VolumeControl";
-import { RoundAnnouncement } from "./components/RoundAnnouncement";
 import { MatchCountdown } from "./components/MatchCountdown";
+import { RoundAnnouncement } from "./components/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/RoundStartAnnouncement";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
 // import { CombatHUD } from "./components/CombatHUD";
 // import { CombatStatsPanel } from "./components/CombatStatsPanel";
+import { useActionFeedback } from "../../hooks/useActionFeedback";
+import { useCombatTimer } from "../../hooks/useCombatTimer";
+import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
+import { Technique } from "../../types";
+import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
+import CombatArena3D from "./components/CombatArena3D";
+import { CombatTimer } from "./components/CombatTimer";
+import { ComboCounter } from "./components/ComboCounter";
+import { DamageNumbers } from "./components/DamageNumbers";
+import HitEffects3D from "./components/HitEffects3D";
+import Player3DModel from "./components/Player3DModel";
+import { PlayerHUD } from "./components/PlayerHUD";
+import { TechniqueBar } from "./components/TechniqueBar";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-import CombatArena3D from "./components/CombatArena3D";
-import HitEffects3D from "./components/HitEffects3D";
-import Player3DModel from "./components/Player3DModel";
-import { DamageNumbers } from "./components/DamageNumbers";
-import { ComboCounter } from "./components/ComboCounter";
-import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
-import { useActionFeedback } from "../../hooks/useActionFeedback";
-import { CombatTimer } from "./components/CombatTimer";
-import { useCombatTimer } from "../../hooks/useCombatTimer";
-import { PlayerHUD } from "./components/PlayerHUD";
-import { TechniqueBar } from "./components/TechniqueBar";
-import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
-import { Technique } from "../../types";
 
 /**
  * Calculate accuracy percentage for a player
@@ -68,12 +78,12 @@ const calculateAccuracy = (player: PlayerState): number => {
   const hits = player.hitsLanded ?? 0;
   const misses = player.misses ?? 0;
   const totalAttempts = hits + misses;
-  
+
   // If we have miss tracking, use proper accuracy formula
   if (totalAttempts > 0) {
     return (hits / totalAttempts) * 100;
   }
-  
+
   // Fallback: if no miss tracking and hits exist, show 100%
   // Otherwise 0% (no combat activity)
   return hits > 0 ? 100 : 0;
@@ -151,10 +161,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
-      console.warn('⚠️ WebGL context lost in CombatScreen');
+      console.warn("⚠️ WebGL context lost in CombatScreen");
     },
     onContextRestored: () => {
-      console.log('✅ WebGL context restored in CombatScreen');
+      console.log("✅ WebGL context restored in CombatScreen");
     },
     autoRestore: true,
   });
@@ -178,7 +188,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Layout calculations
-  const { layoutConstants: _layoutConstants, arenaBounds, isMobile } = useCombatLayout(width, height);
+  const { arenaBounds, isMobile } = useCombatLayout(width, height);
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -194,8 +204,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Combat audio
   const combatAudio = useCombatAudio();
 
-  // Match score tracking
+  // Match score tracking - use ref for internal updates, state for rendering
   const [matchScore, setMatchScore] = useState({ player1: 0, player2: 0 });
+  const matchScoreRef = useRef(matchScore);
+
+  // Helper to update match score without triggering setState in effects
+  const updateMatchScore = useCallback((winner: 0 | 1) => {
+    const newScore = {
+      player1:
+        winner === 0
+          ? matchScoreRef.current.player1 + 1
+          : matchScoreRef.current.player1,
+      player2:
+        winner === 1
+          ? matchScoreRef.current.player2 + 1
+          : matchScoreRef.current.player2,
+    };
+    matchScoreRef.current = newScore;
+    // Use setTimeout to defer the setState call outside the effect
+    setTimeout(() => setMatchScore(newScore), 0);
+  }, []);
 
   // Match countdown state
   const [showMatchCountdown, setShowMatchCountdown] = useState(true);
@@ -220,7 +248,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setRoundEnded(false);
       combatActions.setRoundStarted(false);
       combatActions.setRoundDisplayStatus(null);
-      
+
       // Show round start announcement for rounds after the first
       if (currentRound > 1) {
         setShowRoundStart(true);
@@ -245,7 +273,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
     const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
+    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
@@ -253,7 +281,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
     const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const z = relZ * 8 - 4;  // Map 0-1 to -4 to 4
+    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
@@ -261,8 +289,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
   // Player movement
-  const { playerPosition, isMoving } = usePlayerMovement({
-    enabled: !isPaused && combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart,
+  const { isMoving } = usePlayerMovement({
+    enabled:
+      !isPaused &&
+      combatState.roundStarted &&
+      !combatState.roundEnded &&
+      matchCountdownComplete &&
+      !showRoundStart,
     bounds: arenaBounds,
     onPositionChange: (newPosition: Position) => {
       setPlayerPositions((prev) => [newPosition, prev[1]]);
@@ -286,7 +319,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     const player1 = players[0];
     const player2 =
-      players[1] || createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+      players[1] ?? createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
 
     return [
       { ...player1, position: playerPositions[0] },
@@ -323,12 +356,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     if (!combatState.roundEnded) {
       combatActions.setRoundEnded(true);
       addCombatMessage("시간 종료!", "Time's Up!");
-      
+
       // Use refs to get latest values without dependency issues
       const currentPlayers = validPlayersRef.current;
       const player1Health = currentPlayers[0].health;
       const player2Health = currentPlayers[1].health;
-      
+
       if (player1Health > player2Health) {
         startTransitionRef.current(currentPlayers[0], currentRoundRef.current); // Player 1 wins round
       } else if (player2Health > player1Health) {
@@ -348,7 +381,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   const timerState = useCombatTimer({
     initialTime: Math.max(0, timeRemaining), // Ensure non-negative
-    isPaused: isPaused || !combatState.roundStarted || combatState.roundEnded || !matchCountdownComplete || showRoundStart,
+    isPaused:
+      isPaused ||
+      !combatState.roundStarted ||
+      combatState.roundEnded ||
+      !matchCountdownComplete ||
+      showRoundStart,
     onTimeUp: useCallback(() => handleTimeUpRef.current(), []),
     warningThreshold: 10,
     urgentThreshold: 5,
@@ -368,7 +406,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         combatAudio.playCombatMusic(2000);
       }
     }
-  }, [combatState.roundStarted, combatState.roundEnded, combatActions, addCombatMessage, validPlayers, combatAudio]);
+  }, [
+    combatState.roundStarted,
+    combatState.roundEnded,
+    combatActions,
+    addCombatMessage,
+    validPlayers,
+    combatAudio,
+  ]);
 
   // AI systems
   const adaptiveDifficulty = useMemo(() => new AdaptiveDifficulty(), []);
@@ -456,7 +501,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const {
     handleAttack,
     handleDefend,
-    handleTechniqueExecute: _handleTechniqueExecute,
     handleStanceSwitch,
     handleAIAttack,
     handleAIDefend,
@@ -478,34 +522,49 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Technique selection and execution
   const techniqueSelection = useTechniqueSelection({
     player: validPlayers[0],
-    enabled: !isPaused && combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart,
-    onTechniqueExecute: useCallback((technique: Technique) => {
-      // Show technique name in action feedback
-      feedbackActions.showTechnique(
-        technique.name.korean,
-        technique.name.english
-      );
-      
-      // Deduct resources
-      onPlayerUpdate(0, {
-        stamina: Math.max(0, validPlayers[0].stamina - technique.staminaCost),
-        ki: Math.max(0, validPlayers[0].ki - technique.kiCost),
-      });
-      
-      // Execute attack with technique damage
-      handleAttack();
-      
-      // Play SFX
-      combatAudio.playAttackSound("heavy");
-      
-      // Add combat message
-      addCombatMessage(
-        `${technique.name.korean} 사용!`,
-        `Used ${technique.name.english}!`
-      );
-    }, [validPlayers, onPlayerUpdate, feedbackActions, handleAttack, combatAudio, addCombatMessage]),
+    enabled:
+      !isPaused &&
+      combatState.roundStarted &&
+      !combatState.roundEnded &&
+      matchCountdownComplete &&
+      !showRoundStart,
+    onTechniqueExecute: useCallback(
+      (technique: Technique) => {
+        // Show technique name in action feedback
+        feedbackActions.showTechnique(
+          technique.name.korean,
+          technique.name.english
+        );
+
+        // Deduct resources
+        onPlayerUpdate(0, {
+          stamina: Math.max(0, validPlayers[0].stamina - technique.staminaCost),
+          ki: Math.max(0, validPlayers[0].ki - technique.kiCost),
+        });
+
+        // Execute attack with technique damage
+        handleAttack();
+
+        // Play SFX
+        combatAudio.playAttackSound("heavy");
+
+        // Add combat message
+        addCombatMessage(
+          `${technique.name.korean} 사용!`,
+          `Used ${technique.name.english}!`
+        );
+      },
+      [
+        validPlayers,
+        onPlayerUpdate,
+        feedbackActions,
+        handleAttack,
+        combatAudio,
+        addCombatMessage,
+      ]
+    ),
   });
-  
+
   // Convert cooldowns to Map for TechniqueBar
   const cooldownsMap = useMemo(() => {
     const map = new Map<string, number>();
@@ -515,50 +574,84 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return map;
   }, [techniqueSelection.activeCooldowns]);
 
+  // Extract player health values for dependency arrays
+  const player1Health = validPlayers[0].health;
+  const player2Health = validPlayers[1].health;
+
   // Watch for player 2 health decrease to trigger damage feedback
-  const lastPlayer2HealthRef = useRef(validPlayers[1].health);
+  const lastPlayer2HealthRef = useRef(player2Health);
   useEffect(() => {
-    const currentHealth = validPlayers[1].health;
+    const currentHealth = player2Health;
     const previousHealth = lastPlayer2HealthRef.current;
     const damageDone = previousHealth - currentHealth;
-    
+
     if (damageDone > 0 && combatState.roundStarted && !combatState.roundEnded) {
       // Determine damage type based on amount
-      const damageType = 
-        damageDone >= 25 ? "critical" as const :
-        damageDone >= 20 ? "vital" as const :
-        "normal" as const;
-      
+      const getDamageType = (): "critical" | "vital" | "normal" => {
+        if (damageDone >= 25) return "critical";
+        if (damageDone >= 20) return "vital";
+        return "normal";
+      };
+      const damageType = getDamageType();
+
       // Add damage number at opponent position
-      feedbackActions.addDamageNumber(Math.round(damageDone), playerPositions[1], damageType);
-      
+      feedbackActions.addDamageNumber(
+        Math.round(damageDone),
+        playerPositions[1],
+        damageType
+      );
+
       // Increment combo
       feedbackActions.incrementCombo();
-      
+
       // Add action feedback for critical hits
       if (damageType === "critical") {
-        feedbackActions.addActionFeedback("critical", "Critical!", "치명타!", playerPositions[0]);
+        feedbackActions.addActionFeedback(
+          "critical",
+          "Critical!",
+          "치명타!",
+          playerPositions[0]
+        );
       }
     }
-    
+
     lastPlayer2HealthRef.current = currentHealth;
-  }, [validPlayers[1].health, playerPositions, feedbackActions, combatState.roundStarted, combatState.roundEnded]);
+  }, [
+    player2Health,
+    validPlayers,
+    playerPositions,
+    feedbackActions,
+    combatState.roundStarted,
+    combatState.roundEnded,
+  ]);
 
   // Watch for player 1 health decrease (AI attacks player)
-  const lastPlayer1HealthRef = useRef(validPlayers[0].health);
+  const lastPlayer1HealthRef = useRef(player1Health);
   useEffect(() => {
-    const currentHealth = validPlayers[0].health;
+    const currentHealth = player1Health;
     const previousHealth = lastPlayer1HealthRef.current;
     const damageDone = previousHealth - currentHealth;
-    
+
     if (damageDone > 0 && combatState.roundStarted && !combatState.roundEnded) {
       // Add damage number at player position for AI hits
-      const damageType = damageDone >= 20 ? "critical" as const : "normal" as const;
-      feedbackActions.addDamageNumber(Math.round(damageDone), playerPositions[0], damageType);
+      const damageType =
+        damageDone >= 20 ? ("critical" as const) : ("normal" as const);
+      feedbackActions.addDamageNumber(
+        Math.round(damageDone),
+        playerPositions[0],
+        damageType
+      );
     }
-    
+
     lastPlayer1HealthRef.current = currentHealth;
-  }, [validPlayers[0].health, playerPositions, feedbackActions, combatState.roundStarted, combatState.roundEnded]);
+  }, [
+    player1Health,
+    validPlayers,
+    playerPositions,
+    feedbackActions,
+    combatState.roundStarted,
+    combatState.roundEnded,
+  ]);
 
   // Create enhanced attack handler with action feedback
   const handleAttackWithFeedback = useCallback(() => {
@@ -570,14 +663,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const handleDefendWithFeedback = useCallback(() => {
     const defenderPos = playerPositions[0];
     handleDefend();
-    feedbackActions.addActionFeedback("blocked", "Blocked", "방어!", defenderPos);
+    feedbackActions.addActionFeedback(
+      "blocked",
+      "Blocked",
+      "방어!",
+      defenderPos
+    );
   }, [handleDefend, playerPositions, feedbackActions]);
 
-  // Update player 1 position
-  useEffect(() => {
-    setPlayerPositions((prev) => [playerPosition, prev[1]]);
-    onPlayerUpdate(0, { position: playerPosition });
-  }, [playerPosition, onPlayerUpdate]);
+  // Note: Player 1 position is updated via the onPositionChange callback
+  // in usePlayerMovement config above, not via useEffect
 
   // Round management
   useEffect(() => {
@@ -592,12 +687,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
       const winner = validPlayers[0].health > validPlayers[1].health ? 0 : 1;
       const roundWinner = validPlayers[winner];
-      
-      // Update match score
-      setMatchScore((prev) => ({
-        player1: winner === 0 ? prev.player1 + 1 : prev.player1,
-        player2: winner === 1 ? prev.player2 + 1 : prev.player2,
-      }));
+
+      // Update match score using deferred callback
+      updateMatchScore(winner);
 
       addCombatMessage("라운드 종료!", "Round Over!");
 
@@ -620,6 +712,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions,
     combatAudio,
     startTransition,
+    updateMatchScore,
   ]);
 
   // AI action execution
@@ -756,11 +849,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const winner = p1Defeated ? 1 : 0;
       const roundWinner = validPlayers[winner];
 
-      // Update match score
-      setMatchScore((prev) => ({
-        player1: winner === 0 ? prev.player1 + 1 : prev.player1,
-        player2: winner === 1 ? prev.player2 + 1 : prev.player2,
-      }));
+      // Update match score using deferred callback
+      updateMatchScore(winner);
 
       addCombatMessage(
         p1Defeated ? "플레이어 1 패배" : "플레이어 1 승리!",
@@ -774,17 +864,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
   }, [
     validPlayers,
-    onGameEnd,
     addCombatMessage,
     combatState.roundEnded,
     combatActions,
     currentRound,
     startTransition,
+    updateMatchScore,
   ]);
 
   useEffect(() => {
     checkGameEnd();
-  }, [validPlayers[0].health, validPlayers[1].health, checkGameEnd]);
+  }, [player1Health, player2Health, checkGameEnd]);
 
   // Keyboard input handling
   useEffect(() => {
@@ -880,11 +970,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         shadows
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
-          scene.fog = new THREE.Fog(
-            KOREAN_COLORS.UI_BACKGROUND_DARK,
-            15,
-            35
-          );
+          scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
         }}
       >
         {/* 3D Combat Arena */}
@@ -944,10 +1030,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Combo Counter */}
-        <ComboCounter
-          combo={feedbackState.comboCount}
-          isMobile={isMobile}
-        />
+        <ComboCounter combo={feedbackState.comboCount} isMobile={isMobile} />
 
         {/* Technique Name Display */}
         {feedbackState.currentTechnique && (
@@ -961,37 +1044,38 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Performance Overlay (Development Only) - positioned in bottom-left of 3D scene */}
         {import.meta.env.DEV && (
-          <PerformanceOverlay3D
-            position={[-9, -2, 5]}
-            visible={true}
-          />
+          <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
         )}
 
         {/* Round display status overlay */}
-        {combatState.roundDisplayStatus && combatState.roundDisplayStatus !== null && (
-          <Html fullscreen>
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                fontSize: "72px",
-                fontWeight: "bold",
-                fontFamily: FONT_FAMILY.KOREAN,
-                color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-                textShadow: "0 0 20px rgba(255, 215, 0, 0.8)",
-                pointerEvents: "none",
-                zIndex: 1000,
-              }}
-            >
-              {combatState.roundDisplayStatus === "start" && "라운드 시작!"}
-              {combatState.roundDisplayStatus === "fight" && "전투!"}
-              {combatState.roundDisplayStatus === "end" && "라운드 종료"}
-              {combatState.roundDisplayStatus === "ko" && "K.O.!"}
-            </div>
-          </Html>
-        )}
+        {combatState.roundDisplayStatus &&
+          combatState.roundDisplayStatus !== null && (
+            <Html fullscreen>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  fontSize: "72px",
+                  fontWeight: "bold",
+                  fontFamily: FONT_FAMILY.KOREAN,
+                  color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+                    6,
+                    "0"
+                  )}`,
+                  textShadow: "0 0 20px rgba(255, 215, 0, 0.8)",
+                  pointerEvents: "none",
+                  zIndex: 1000,
+                }}
+              >
+                {combatState.roundDisplayStatus === "start" && "라운드 시작!"}
+                {combatState.roundDisplayStatus === "fight" && "전투!"}
+                {combatState.roundDisplayStatus === "end" && "라운드 종료"}
+                {combatState.roundDisplayStatus === "ko" && "K.O.!"}
+              </div>
+            </Html>
+          )}
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}
@@ -1006,14 +1090,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         }}
       >
         {/* Combat Timer - Top Center */}
-        {combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart && (
-          <CombatTimer
-            formattedTime={timerState.formattedTime}
-            warningLevel={timerState.warningLevel}
-            isTimeUp={timerState.isTimeUp}
-            isMobile={isMobile}
-          />
-        )}
+        {combatState.roundStarted &&
+          !combatState.roundEnded &&
+          matchCountdownComplete &&
+          !showRoundStart && (
+            <CombatTimer
+              formattedTime={timerState.formattedTime}
+              warningLevel={timerState.warningLevel}
+              isTimeUp={timerState.isTimeUp}
+              isMobile={isMobile}
+            />
+          )}
 
         {/* Combat Title */}
         <div
@@ -1025,7 +1112,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             fontSize: isMobile ? "18px" : "24px",
             fontWeight: "bold",
             fontFamily: FONT_FAMILY.KOREAN,
-            color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+            color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+              6,
+              "0"
+            )}`,
             textShadow: "0 0 4px rgba(0,0,0,0.8)",
           }}
         >
@@ -1050,21 +1140,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Technique Bar - Bottom Center */}
-        {combatState.roundStarted && !combatState.roundEnded && matchCountdownComplete && !showRoundStart && (
-          <TechniqueBar
-            techniques={techniqueSelection.availableTechniques}
-            player={validPlayers[0]}
-            selectedIndex={techniqueSelection.selectedIndex}
-            cooldowns={cooldownsMap}
-            onTechniqueSelect={techniqueSelection.selectTechnique}
-            onTechniqueHover={(_tech) => {
-              // Could add additional hover effects here
-            }}
-            isMobile={isMobile}
-            screenWidth={width}
-            screenHeight={height}
-          />
-        )}
+        {combatState.roundStarted &&
+          !combatState.roundEnded &&
+          matchCountdownComplete &&
+          !showRoundStart && (
+            <TechniqueBar
+              techniques={techniqueSelection.availableTechniques}
+              player={validPlayers[0]}
+              selectedIndex={techniqueSelection.selectedIndex}
+              cooldowns={cooldownsMap}
+              onTechniqueSelect={techniqueSelection.selectTechnique}
+              onTechniqueHover={(_tech) => {
+                // Could add additional hover effects here
+              }}
+              isMobile={isMobile}
+              screenWidth={width}
+              screenHeight={height}
+            />
+          )}
 
         {/* Combat Controls and Stats */}
         <div
@@ -1079,31 +1172,40 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }}
         >
           {/* TODO: Replace with CombatControlsHTML component */}
-          <div style={{ 
-            width: isMobile ? "45%" : "400px",
-            background: "rgba(10, 10, 15, 0.8)",
-            border: "2px solid #00ffff",
-            borderRadius: "8px",
-            padding: "10px",
-            color: "#00ffff",
-            fontFamily: FONT_FAMILY.KOREAN,
-          }}>
+          <div
+            style={{
+              width: isMobile ? "45%" : "400px",
+              background: "rgba(10, 10, 15, 0.8)",
+              border: "2px solid #00ffff",
+              borderRadius: "8px",
+              padding: "10px",
+              color: "#00ffff",
+              fontFamily: FONT_FAMILY.KOREAN,
+            }}
+          >
             <div>Controls: A/D - Attack/Defend | 1-8 - Stances</div>
           </div>
           {/* TODO: Replace with CombatStatsPanelHTML component */}
-          <div style={{ 
-            width: isMobile ? "45%" : "400px",
-            background: "rgba(10, 10, 15, 0.8)",
-            border: "2px solid #00ffff",
-            borderRadius: "8px",
-            padding: "10px",
-            color: "#00ffff",
-            fontFamily: FONT_FAMILY.KOREAN,
-            maxHeight: "140px",
-            overflow: "auto",
-          }}>
-            {combatState.combatMessages.slice(-5).map((msg, i) => (
-              <div key={i} style={{ fontSize: "12px", marginBottom: "4px" }}>{msg}</div>
+          <div
+            style={{
+              width: isMobile ? "45%" : "400px",
+              background: "rgba(10, 10, 15, 0.8)",
+              border: "2px solid #00ffff",
+              borderRadius: "8px",
+              padding: "10px",
+              color: "#00ffff",
+              fontFamily: FONT_FAMILY.KOREAN,
+              maxHeight: "140px",
+              overflow: "auto",
+            }}
+          >
+            {combatState.combatMessages.slice(-5).map((msg, idx) => (
+              <div
+                key={`msg-${idx}-${msg.slice(0, 20)}`}
+                style={{ fontSize: "12px", marginBottom: "4px" }}
+              >
+                {msg}
+              </div>
             ))}
           </div>
         </div>
@@ -1121,18 +1223,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }}
         >
           {/* Back button container */}
-          <div style={{ 
-            textAlign: "center",
-            background: "rgba(10, 10, 15, 0.85)",
-            border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
-            borderRadius: "8px",
-            padding: isMobile ? "8px 12px" : "10px 16px",
-          }}>
+          <div
+            style={{
+              textAlign: "center",
+              background: "rgba(10, 10, 15, 0.85)",
+              border: `2px solid ${hexToRgbaString(
+                KOREAN_COLORS.PRIMARY_CYAN,
+                0.8
+              )}`,
+              borderRadius: "8px",
+              padding: isMobile ? "8px 12px" : "10px 16px",
+            }}
+          >
             <style>
               {`
                 .combat-return-menu-btn {
-                  background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.9)};
-                  color: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)};
+                  background: ${hexToRgbaString(
+                    KOREAN_COLORS.PRIMARY_CYAN,
+                    0.9
+                  )};
+                  color: ${hexToRgbaString(
+                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    1
+                  )};
                   border: none;
                   border-radius: 8px;
                   padding: ${isMobile ? "10px 16px" : "12px 24px"};
@@ -1145,11 +1258,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 }
                 .combat-return-menu-btn:hover {
                   transform: scale(1.05);
-                  box-shadow: 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)};
+                  box-shadow: 0 0 20px ${hexToRgbaString(
+                    KOREAN_COLORS.PRIMARY_CYAN,
+                    0.8
+                  )};
                 }
               `}
             </style>
-            <button 
+            <button
               onClick={onReturnToMenu}
               onMouseEnter={() => audio.playSFX("menu_hover")}
               className="combat-return-menu-btn"
@@ -1172,7 +1288,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               fontSize: "48px",
               fontWeight: "bold",
               fontFamily: FONT_FAMILY.KOREAN,
-              color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+              color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
+                6,
+                "0"
+              )}`,
               textShadow: "0 0 10px rgba(0,0,0,0.8)",
               backgroundColor: "rgba(0,0,0,0.7)",
               padding: "20px 40px",
