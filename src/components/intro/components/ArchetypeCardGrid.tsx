@@ -73,9 +73,9 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       [onArchetypeConfirm, onPlaySFX]
     );
 
-    // Handle keyboard navigation
+    // Handle keyboard navigation (scoped to container)
     const handleKeyDown = useCallback(
-      (event: KeyboardEvent) => {
+      (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
           event.preventDefault();
           const newIndex =
@@ -104,18 +104,14 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       ]
     );
 
-    // Set up keyboard listener
-    React.useEffect(() => {
-      window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [handleKeyDown]);
-
     // Calculate grid layout
     const columnsCount = isMobile ? 1 : width >= 1400 ? 3 : 2;
     const gap = isMobile ? 16 : 20;
 
     return (
       <div
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
         style={{
           width: `${width}px`,
           minHeight: `${height}px`,
@@ -129,8 +125,11 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
           padding: isMobile ? "16px" : "24px",
           overflow: "auto",
           maxHeight: `${height}px`,
+          outline: "none",
         }}
         data-testid="archetype-card-grid"
+        role="region"
+        aria-label="Archetype selection grid"
       >
         {/* Header */}
         <div
