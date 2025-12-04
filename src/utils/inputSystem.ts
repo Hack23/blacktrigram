@@ -331,17 +331,22 @@ export class InputSystem {
     if (!this.actionCallbacks.has(action)) {
       this.actionCallbacks.set(action, []);
     }
-    this.actionCallbacks.get(action)!.push(callback);
+    const callbacks = this.actionCallbacks.get(action);
+    if (callbacks) {
+      callbacks.push(callback);
+    }
   }
 
   unregisterAction(action: string, callback?: () => void) {
     if (!this.actionCallbacks.has(action)) return;
 
     if (callback) {
-      const callbacks = this.actionCallbacks.get(action)!;
-      const index = callbacks.indexOf(callback);
-      if (index > -1) {
-        callbacks.splice(index, 1);
+      const callbacks = this.actionCallbacks.get(action);
+      if (callbacks) {
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+          callbacks.splice(index, 1);
+        }
       }
     } else {
       this.actionCallbacks.delete(action);

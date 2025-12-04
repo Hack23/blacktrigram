@@ -1,13 +1,13 @@
+import { TrigramStance } from "@/types";
 import { describe, expect, it } from "vitest";
 import {
+  calculateEnhancedVulnerability,
   ENHANCED_ANATOMICAL_ZONES,
+  generateVulnerabilityHeatMap,
+  getEnhancedZonesByPosition,
   isPointInPolygon,
   isPositionInEnhancedZone,
-  getEnhancedZonesByPosition,
-  calculateEnhancedVulnerability,
-  generateVulnerabilityHeatMap,
 } from "./KoreanAnatomy";
-import { TrigramStance } from "@/types";
 
 describe("Enhanced Anatomical Zones", () => {
   describe("ENHANCED_ANATOMICAL_ZONES", () => {
@@ -94,9 +94,9 @@ describe("Enhanced Anatomical Zones", () => {
         (z) => z.stanceModifiers[TrigramStance.GEON]
       );
       expect(zonesWithGeonStance.length).toBeGreaterThan(0);
-      
+
       const exposingZones = zonesWithGeonStance.filter(
-        (z) => z.stanceModifiers[TrigramStance.GEON]! > 1.0
+        (z) => (z.stanceModifiers[TrigramStance.GEON] ?? 0) > 1.0
       );
       expect(exposingZones.length).toBeGreaterThan(0); // At least some zones exposed
     });
@@ -110,7 +110,7 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 10, y: 10 },
         { x: 0, y: 10 },
       ];
-      
+
       expect(isPointInPolygon({ x: 5, y: 5 }, square)).toBe(true);
     });
 
@@ -121,7 +121,7 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 10, y: 10 },
         { x: 0, y: 10 },
       ];
-      
+
       expect(isPointInPolygon({ x: 15, y: 5 }, square)).toBe(false);
       expect(isPointInPolygon({ x: -5, y: 5 }, square)).toBe(false);
     });
@@ -132,7 +132,7 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 10, y: 0 },
         { x: 5, y: 10 },
       ];
-      
+
       expect(isPointInPolygon({ x: 5, y: 3 }, triangle)).toBe(true);
     });
 
@@ -142,7 +142,7 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 10, y: 0 },
         { x: 5, y: 10 },
       ];
-      
+
       expect(isPointInPolygon({ x: 5, y: 15 }, triangle)).toBe(false);
     });
 
@@ -157,7 +157,7 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 35, y: 70 },
         { x: 35, y: 50 },
       ];
-      
+
       expect(isPointInPolygon({ x: 60, y: 60 }, octagon)).toBe(true);
       expect(isPointInPolygon({ x: 30, y: 30 }, octagon)).toBe(false);
     });
@@ -169,12 +169,12 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 10, y: 10 },
         { x: 0, y: 10 },
       ];
-      
+
       // Points exactly on boundary (behavior depends on algorithm)
       const onEdge1 = isPointInPolygon({ x: 0, y: 5 }, square);
       const onEdge2 = isPointInPolygon({ x: 10, y: 5 }, square);
       const onCorner = isPointInPolygon({ x: 0, y: 0 }, square);
-      
+
       // Just verify they return boolean (exact behavior may vary)
       expect(typeof onEdge1).toBe("boolean");
       expect(typeof onEdge2).toBe("boolean");
@@ -184,10 +184,12 @@ describe("Enhanced Anatomical Zones", () => {
     it("should return false for polygons with less than 3 vertices", () => {
       expect(isPointInPolygon({ x: 5, y: 5 }, [])).toBe(false);
       expect(isPointInPolygon({ x: 5, y: 5 }, [{ x: 0, y: 0 }])).toBe(false);
-      expect(isPointInPolygon({ x: 5, y: 5 }, [
-        { x: 0, y: 0 },
-        { x: 10, y: 0 },
-      ])).toBe(false);
+      expect(
+        isPointInPolygon({ x: 5, y: 5 }, [
+          { x: 0, y: 0 },
+          { x: 10, y: 0 },
+        ])
+      ).toBe(false);
     });
   });
 
@@ -196,14 +198,14 @@ describe("Enhanced Anatomical Zones", () => {
       const headZone = ENHANCED_ANATOMICAL_ZONES.find(
         (z) => z.id === "head_frontal"
       );
-      
+
       if (headZone) {
         // Find a point inside the zone (use first vertex + small offset)
         const testPoint = {
           x: headZone.boundaries[0].x + 2,
           y: headZone.boundaries[0].y + 10,
         };
-        
+
         expect(isPositionInEnhancedZone(testPoint, headZone)).toBe(true);
       }
     });
@@ -212,7 +214,7 @@ describe("Enhanced Anatomical Zones", () => {
       const headZone = ENHANCED_ANATOMICAL_ZONES.find(
         (z) => z.id === "head_frontal"
       );
-      
+
       if (headZone) {
         const testPoint = { x: 0, y: 0 };
         expect(isPositionInEnhancedZone(testPoint, headZone)).toBe(false);
@@ -225,14 +227,14 @@ describe("Enhanced Anatomical Zones", () => {
       // Test position in head area
       const headPosition = { x: 50, y: 50 };
       const zones = getEnhancedZonesByPosition(headPosition);
-      
+
       expect(Array.isArray(zones)).toBe(true);
     });
 
     it("should return empty array for position outside all zones", () => {
       const outsidePosition = { x: 10000, y: 10000 };
       const zones = getEnhancedZonesByPosition(outsidePosition);
-      
+
       expect(zones).toEqual([]);
     });
 
@@ -241,7 +243,7 @@ describe("Enhanced Anatomical Zones", () => {
       // This depends on zone definitions, but the function should handle it
       const position = { x: 50, y: 110 };
       const zones = getEnhancedZonesByPosition(position);
-      
+
       expect(Array.isArray(zones)).toBe(true);
       // Could be 0, 1, or more zones depending on definitions
     });
@@ -249,10 +251,10 @@ describe("Enhanced Anatomical Zones", () => {
     it("should find torso zones for chest positions", () => {
       const chestPosition = { x: 50, y: 160 };
       const zones = getEnhancedZonesByPosition(chestPosition);
-      
+
       // Should find at least one torso-related zone
-      const torsoZones = zones.filter((z) =>
-        z.id.includes("torso") || z.id.includes("chest")
+      const torsoZones = zones.filter(
+        (z) => z.id.includes("torso") || z.id.includes("chest")
       );
       expect(torsoZones.length).toBeGreaterThan(0);
     });
@@ -267,14 +269,14 @@ describe("Enhanced Anatomical Zones", () => {
         bladder: 1.0,
         gallbladder: 1.0,
       };
-      
+
       const vulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         stance,
         meridianStates
       );
-      
+
       expect(vulnerability).toBeGreaterThan(0);
       expect(vulnerability).toBeGreaterThanOrEqual(0.5);
       expect(vulnerability).toBeLessThanOrEqual(3.0);
@@ -285,14 +287,14 @@ describe("Enhanced Anatomical Zones", () => {
       const hour = 12;
       const stance = TrigramStance.GEON;
       const meridianStates = {};
-      
+
       const vulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         stance,
         meridianStates
       );
-      
+
       expect(vulnerability).toBe(1.0);
     });
 
@@ -303,21 +305,21 @@ describe("Enhanced Anatomical Zones", () => {
         bladder: 1.0,
         gallbladder: 1.0,
       };
-      
+
       const offensiveVulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         TrigramStance.GEON, // Offensive stance
         meridianStates
       );
-      
+
       const defensiveVulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         TrigramStance.GAN, // Defensive stance
         meridianStates
       );
-      
+
       // Defensive stance should reduce vulnerability compared to offensive stance
       expect(defensiveVulnerability).toBeLessThan(offensiveVulnerability);
     });
@@ -326,21 +328,21 @@ describe("Enhanced Anatomical Zones", () => {
       const position = { x: 50, y: 50 };
       const hour = 12;
       const stance = TrigramStance.GEON;
-      
+
       const normalVulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         stance,
         { bladder: 1.0, gallbladder: 1.0 }
       );
-      
+
       const blockedVulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         stance,
         { bladder: 0.3, gallbladder: 0.3 } // Heavily blocked
       );
-      
+
       expect(blockedVulnerability).toBeGreaterThan(normalVulnerability);
     });
 
@@ -348,7 +350,7 @@ describe("Enhanced Anatomical Zones", () => {
       const position = { x: 50, y: 160 }; // Chest area
       const stance = TrigramStance.GEON;
       const meridianStates = { lung: 1.0 };
-      
+
       // Lung meridian peaks at 4 AM
       const peakVulnerability = calculateEnhancedVulnerability(
         position,
@@ -356,7 +358,7 @@ describe("Enhanced Anatomical Zones", () => {
         stance,
         meridianStates
       );
-      
+
       // Off-peak hour (16:00 / 4 PM - opposite of peak)
       const offPeakVulnerability = calculateEnhancedVulnerability(
         position,
@@ -364,7 +366,7 @@ describe("Enhanced Anatomical Zones", () => {
         stance,
         meridianStates
       );
-      
+
       // Peak hour should have higher vulnerability
       expect(peakVulnerability).toBeGreaterThanOrEqual(offPeakVulnerability);
     });
@@ -373,7 +375,7 @@ describe("Enhanced Anatomical Zones", () => {
       const position = { x: 50, y: 50 };
       const hour = 12;
       const stance = TrigramStance.GEON;
-      
+
       // Test with extreme meridian blockage
       const vulnerability = calculateEnhancedVulnerability(
         position,
@@ -384,7 +386,7 @@ describe("Enhanced Anatomical Zones", () => {
           gallbladder: 0.01,
         }
       );
-      
+
       expect(vulnerability).toBeGreaterThanOrEqual(0.5);
       expect(vulnerability).toBeLessThanOrEqual(3.0);
     });
@@ -393,14 +395,14 @@ describe("Enhanced Anatomical Zones", () => {
       const position = { x: 50, y: 160 };
       const hour = 12;
       const stance = TrigramStance.GEON;
-      
+
       const vulnerability = calculateEnhancedVulnerability(
         position,
         hour,
         stance,
         {}
       );
-      
+
       expect(vulnerability).toBeGreaterThanOrEqual(0.5);
       expect(vulnerability).toBeLessThanOrEqual(3.0);
     });
@@ -409,7 +411,7 @@ describe("Enhanced Anatomical Zones", () => {
       const position = { x: 50, y: 160 };
       const stance = TrigramStance.GEON;
       const meridianStates = { lung: 1.0 };
-      
+
       for (let hour = 0; hour < 24; hour++) {
         const vulnerability = calculateEnhancedVulnerability(
           position,
@@ -417,7 +419,7 @@ describe("Enhanced Anatomical Zones", () => {
           stance,
           meridianStates
         );
-        
+
         expect(vulnerability).toBeGreaterThanOrEqual(0.5);
         expect(vulnerability).toBeLessThanOrEqual(3.0);
       }
@@ -427,7 +429,7 @@ describe("Enhanced Anatomical Zones", () => {
       const position = { x: 50, y: 160 };
       const hour = 12;
       const meridianStates = { lung: 1.0 };
-      
+
       const stances = Object.values(TrigramStance);
       stances.forEach((stance) => {
         const vulnerability = calculateEnhancedVulnerability(
@@ -436,7 +438,7 @@ describe("Enhanced Anatomical Zones", () => {
           stance,
           meridianStates
         );
-        
+
         expect(vulnerability).toBeGreaterThanOrEqual(0.5);
         expect(vulnerability).toBeLessThanOrEqual(3.0);
       });
@@ -450,7 +452,7 @@ describe("Enhanced Anatomical Zones", () => {
       const hour = 12;
       const stance = TrigramStance.GEON;
       const meridianStates = { lung: 1.0 };
-      
+
       const heatMap = generateVulnerabilityHeatMap(
         width,
         height,
@@ -458,7 +460,7 @@ describe("Enhanced Anatomical Zones", () => {
         stance,
         meridianStates
       );
-      
+
       expect(heatMap.length).toBe(height);
       expect(heatMap[0].length).toBe(width);
     });
@@ -469,7 +471,7 @@ describe("Enhanced Anatomical Zones", () => {
       const hour = 12;
       const stance = TrigramStance.GEON;
       const meridianStates = { lung: 1.0 };
-      
+
       const heatMap = generateVulnerabilityHeatMap(
         width,
         height,
@@ -477,7 +479,7 @@ describe("Enhanced Anatomical Zones", () => {
         stance,
         meridianStates
       );
-      
+
       heatMap.forEach((row) => {
         row.forEach((value) => {
           expect(value).toBeGreaterThanOrEqual(0);
@@ -496,7 +498,7 @@ describe("Enhanced Anatomical Zones", () => {
         gallbladder: 1.0,
         lung: 1.0,
       };
-      
+
       const heatMap = generateVulnerabilityHeatMap(
         width,
         height,
@@ -504,13 +506,13 @@ describe("Enhanced Anatomical Zones", () => {
         stance,
         meridianStates
       );
-      
+
       // Head area (around y=50) should have higher vulnerability
       const headValue = heatMap[50]?.[50] ?? 0;
-      
+
       // Leg area (around y=600) should have lower vulnerability
       const legValue = heatMap[600]?.[50] ?? 0;
-      
+
       // Head should generally be more vulnerable than legs
       expect(typeof headValue).toBe("number");
       expect(typeof legValue).toBe("number");
@@ -524,7 +526,7 @@ describe("Enhanced Anatomical Zones", () => {
         TrigramStance.GEON,
         {}
       );
-      
+
       expect(heatMap.length).toBe(2);
       expect(heatMap[0].length).toBe(2);
     });
@@ -534,7 +536,7 @@ describe("Enhanced Anatomical Zones", () => {
       const height = 100;
       const hour = 12;
       const meridianStates = { bladder: 1.0 };
-      
+
       const offensiveMap = generateVulnerabilityHeatMap(
         width,
         height,
@@ -542,7 +544,7 @@ describe("Enhanced Anatomical Zones", () => {
         TrigramStance.GEON, // Offensive
         meridianStates
       );
-      
+
       const defensiveMap = generateVulnerabilityHeatMap(
         width,
         height,
@@ -550,7 +552,7 @@ describe("Enhanced Anatomical Zones", () => {
         TrigramStance.GAN, // Defensive
         meridianStates
       );
-      
+
       // Maps should be different
       expect(offensiveMap).not.toEqual(defensiveMap);
     });
@@ -566,16 +568,16 @@ describe("Enhanced Anatomical Zones", () => {
         heart: 1.0,
         stomach: 1.0,
       };
-      
+
       const start = performance.now();
-      
+
       for (let i = 0; i < 1000; i++) {
         calculateEnhancedVulnerability(position, hour, stance, meridianStates);
       }
-      
+
       const end = performance.now();
       const avgTime = (end - start) / 1000;
-      
+
       expect(avgTime).toBeLessThan(1); // Average time per calculation < 1ms
     });
 
@@ -587,16 +589,16 @@ describe("Enhanced Anatomical Zones", () => {
         { x: 0, y: 10 },
       ];
       const point = { x: 5, y: 5 };
-      
+
       const start = performance.now();
-      
+
       for (let i = 0; i < 10000; i++) {
         isPointInPolygon(point, polygon);
       }
-      
+
       const end = performance.now();
       const avgTime = (end - start) / 10000;
-      
+
       expect(avgTime).toBeLessThan(0.01); // Average time < 0.01ms per check
     });
   });
