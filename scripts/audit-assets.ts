@@ -1,20 +1,20 @@
 #!/usr/bin/env tsx
 /**
  * Asset Audit Script for Black Trigram (흑괘)
- * 
+ *
  * Verifies all asset references in the codebase point to existing files.
  * Scans source code for asset paths and validates them against the filesystem.
- * 
+ *
  * Note: This script uses tsx to run TypeScript directly. Ensure tsx is installed:
  * npm install -D tsx
- * 
+ *
  * @korean 에셋 감사 스크립트
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import * as fs from "fs";
+import * as path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,7 +26,7 @@ interface AssetReference {
   readonly assetPath: string;
   readonly exists: boolean;
   readonly actualPath: string;
-  readonly type: 'visual' | 'audio' | 'other';
+  readonly type: "visual" | "audio" | "other";
 }
 
 interface AuditReport {
@@ -57,7 +57,16 @@ function findSourceFiles(dir: string, extensions: string[]): string[] {
 
         // Skip node_modules, dist, build, etc.
         if (entry.isDirectory()) {
-          if (!['node_modules', 'dist', 'build', '.git', 'coverage', 'cypress'].includes(entry.name)) {
+          if (
+            ![
+              "node_modules",
+              "dist",
+              "build",
+              ".git",
+              "coverage",
+              "cypress",
+            ].includes(entry.name)
+          ) {
             scanDir(fullPath);
           }
         } else if (entry.isFile()) {
@@ -79,12 +88,15 @@ function findSourceFiles(dir: string, extensions: string[]): string[] {
 /**
  * Extract asset references from source code
  */
-function extractAssetReferences(filePath: string, projectRoot: string): AssetReference[] {
+function extractAssetReferences(
+  filePath: string,
+  projectRoot: string
+): AssetReference[] {
   const references: AssetReference[] = [];
-  
+
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
 
     // Regex patterns to match asset paths
     const patterns = [
@@ -101,40 +113,46 @@ function extractAssetReferences(filePath: string, projectRoot: string): AssetRef
       for (const pattern of patterns) {
         let match: RegExpExecArray | null;
         const regex = new RegExp(pattern.source, pattern.flags);
-        
+
         while ((match = regex.exec(line)) !== null) {
           const assetPath = match[1];
           const column = match.index;
 
           // Skip template strings with variables (${...})
-          if (assetPath.includes('${')) {
+          if (assetPath.includes("${")) {
             continue;
           }
 
           // Skip test file paths that are intentionally non-existent
-          if (filePath.includes('.test.') || filePath.includes('.spec.')) {
+          if (filePath.includes(".test.") || filePath.includes(".spec.")) {
             // Skip paths that look like test fixtures (e.g., "/test", "/test.mp3", "/assets/audio/sfx/test")
-            if (assetPath.includes('/test') && !assetPath.includes('/tests/')) {
+            if (assetPath.includes("/test") && !assetPath.includes("/tests/")) {
               continue;
             }
           }
 
           // Normalize the path to check existence
           let checkPath = assetPath;
-          
+
           // Remove leading slash and 'public/' prefix
-          checkPath = checkPath.replace(/^\//, '');
-          checkPath = checkPath.replace(/^public\//, '');
-          
-          const fullPath = path.join(projectRoot, 'public', checkPath);
+          checkPath = checkPath.replace(/^\//, "");
+          checkPath = checkPath.replace(/^public\//, "");
+
+          const fullPath = path.join(projectRoot, "public", checkPath);
           const exists = fs.existsSync(fullPath);
 
           // Determine asset type
-          let type: 'visual' | 'audio' | 'other' = 'other';
-          if (assetPath.includes('/visual/') || /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(assetPath)) {
-            type = 'visual';
-          } else if (assetPath.includes('/audio/') || /\.(mp3|webm|ogg|wav|m4a)$/i.test(assetPath)) {
-            type = 'audio';
+          let type: "visual" | "audio" | "other" = "other";
+          if (
+            assetPath.includes("/visual/") ||
+            /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(assetPath)
+          ) {
+            type = "visual";
+          } else if (
+            assetPath.includes("/audio/") ||
+            /\.(mp3|webm|ogg|wav|m4a)$/i.test(assetPath)
+          ) {
+            type = "audio";
           }
 
           references.push({
@@ -160,13 +178,13 @@ function extractAssetReferences(filePath: string, projectRoot: string): AssetRef
  * Generate audit report
  */
 function generateAuditReport(references: AssetReference[]): AuditReport {
-  const missingAssets = references.filter(ref => !ref.exists);
-  const validReferences = references.filter(ref => ref.exists);
+  const missingAssets = references.filter((ref) => !ref.exists);
+  const validReferences = references.filter((ref) => ref.exists);
 
   const assetTypes = {
-    visual: references.filter(ref => ref.type === 'visual').length,
-    audio: references.filter(ref => ref.type === 'audio').length,
-    other: references.filter(ref => ref.type === 'other').length,
+    visual: references.filter((ref) => ref.type === "visual").length,
+    audio: references.filter((ref) => ref.type === "audio").length,
+    other: references.filter((ref) => ref.type === "other").length,
   };
 
   return {
@@ -183,30 +201,30 @@ function generateAuditReport(references: AssetReference[]): AuditReport {
  * Print audit report
  */
 function printReport(report: AuditReport, verbose: boolean = false): void {
-  console.log('\n' + '='.repeat(80));
-  console.log('🎮 BLACK TRIGRAM ASSET AUDIT REPORT (흑괘 에셋 감사 보고서)');
-  console.log('='.repeat(80) + '\n');
+  console.log("\n" + "=".repeat(80));
+  console.log("🎮 BLACK TRIGRAM ASSET AUDIT REPORT (흑괘 에셋 감사 보고서)");
+  console.log("=".repeat(80) + "\n");
 
-  console.log('📊 Summary:');
+  console.log("📊 Summary:");
   console.log(`  Total asset references: ${report.totalReferences}`);
   console.log(`  Valid references: ${report.validReferences} ✅`);
   console.log(`  Missing references: ${report.missingReferences} ❌`);
-  console.log('');
-  
-  console.log('📦 Asset Types:');
+  console.log("");
+
+  console.log("📦 Asset Types:");
   console.log(`  Visual assets: ${report.assetTypes.visual}`);
   console.log(`  Audio assets: ${report.assetTypes.audio}`);
   console.log(`  Other assets: ${report.assetTypes.other}`);
-  console.log('');
+  console.log("");
 
   if (report.missingReferences > 0) {
-    console.log('❌ MISSING ASSETS:');
-    console.log('─'.repeat(80));
+    console.log("❌ MISSING ASSETS:");
+    console.log("─".repeat(80));
 
     // Group by asset path
     const grouped = new Map<string, AssetReference[]>();
     for (const ref of report.missingAssets) {
-      const existing = grouped.get(ref.assetPath) || [];
+      const existing = grouped.get(ref.assetPath) ?? [];
       existing.push(ref);
       grouped.set(ref.assetPath, existing);
     }
@@ -219,19 +237,19 @@ function printReport(report: AuditReport, verbose: boolean = false): void {
       }
     }
 
-    console.log('\n' + '─'.repeat(80));
+    console.log("\n" + "─".repeat(80));
   } else {
-    console.log('✅ All asset references are valid!\n');
+    console.log("✅ All asset references are valid!\n");
   }
 
   if (verbose && report.validReferences > 0) {
-    console.log('\n✅ VALID ASSET REFERENCES:');
-    console.log('─'.repeat(80));
+    console.log("\n✅ VALID ASSET REFERENCES:");
+    console.log("─".repeat(80));
 
     // Group valid references by asset path
     const validGrouped = new Map<string, AssetReference[]>();
-    for (const ref of report.references.filter(r => r.exists)) {
-      const existing = validGrouped.get(ref.assetPath) || [];
+    for (const ref of report.references.filter((r) => r.exists)) {
+      const existing = validGrouped.get(ref.assetPath) ?? [];
       existing.push(ref);
       validGrouped.set(ref.assetPath, existing);
     }
@@ -241,27 +259,38 @@ function printReport(report: AuditReport, verbose: boolean = false): void {
       console.log(`     Referenced in ${refs.length} location(s)`);
     }
 
-    console.log('\n' + '─'.repeat(80));
+    console.log("\n" + "─".repeat(80));
   }
 
-  console.log('');
+  console.log("");
 }
 
 /**
  * Main audit function
  */
 async function auditAssets(): Promise<void> {
-  const projectRoot = path.resolve(__dirname, '..');
-  const verbose = process.argv.includes('--verbose') || process.argv.includes('-v');
+  const projectRoot = path.resolve(__dirname, "..");
+  const verbose =
+    process.argv.includes("--verbose") || process.argv.includes("-v");
 
-  console.log('🔍 Starting asset audit...\n');
+  console.log("🔍 Starting asset audit...\n");
   console.log(`📂 Project root: ${projectRoot}`);
   console.log(`📄 Scanning source files...\n`);
 
   // Find all source files
   const sourceFiles = [
-    ...findSourceFiles(path.join(projectRoot, 'src'), ['.ts', '.tsx', '.js', '.jsx']),
-    ...findSourceFiles(path.join(projectRoot, 'cypress'), ['.ts', '.tsx', '.js', '.jsx']),
+    ...findSourceFiles(path.join(projectRoot, "src"), [
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+    ]),
+    ...findSourceFiles(path.join(projectRoot, "cypress"), [
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+    ]),
   ];
 
   console.log(`   Found ${sourceFiles.length} source files to scan\n`);
@@ -281,23 +310,29 @@ async function auditAssets(): Promise<void> {
 
   // Exit with error if missing assets found
   if (report.missingReferences > 0) {
-    console.error('❌ Asset audit failed: Missing asset references found!\n');
-    console.error('💡 Actions to take:');
-    console.error('   1. Check if the asset file exists but is in a different location');
-    console.error('   2. Update the asset path in the source code');
-    console.error('   3. Remove the reference if the asset is no longer needed');
-    console.error('   4. Add the missing asset file to public/assets/\n');
+    console.error("❌ Asset audit failed: Missing asset references found!\n");
+    console.error("💡 Actions to take:");
+    console.error(
+      "   1. Check if the asset file exists but is in a different location"
+    );
+    console.error("   2. Update the asset path in the source code");
+    console.error(
+      "   3. Remove the reference if the asset is no longer needed"
+    );
+    console.error("   4. Add the missing asset file to public/assets/\n");
     process.exit(1);
   } else {
-    console.log('✅ Asset audit passed successfully!\n');
+    console.log("✅ Asset audit passed successfully!\n");
     process.exit(0);
   }
 }
 
 // Run audit
 auditAssets().catch((error) => {
-  console.error('💥 Fatal error during asset audit:');
-  console.error(`   Message: ${error instanceof Error ? error.message : String(error)}`);
+  console.error("💥 Fatal error during asset audit:");
+  console.error(
+    `   Message: ${error instanceof Error ? error.message : String(error)}`
+  );
   if (error instanceof Error && error.stack) {
     console.error(`   Stack: ${error.stack}`);
   }

@@ -143,7 +143,9 @@ function parseCLI(): CLIOptions {
   }
   const archetype = args[0].toLowerCase();
   const provider =
-    (args[1]?.startsWith("--") ? "openai" : (args[1] as any)) || "openai";
+    (args[1]?.startsWith("--")
+      ? "openai"
+      : (args[1] as "openai" | "bedrock")) ?? "openai";
   const opts: Record<string, string | boolean> = {};
   for (const raw of args.slice(provider === args[1] ? 2 : 1)) {
     if (!raw.startsWith("--")) continue;
@@ -151,7 +153,7 @@ function parseCLI(): CLIOptions {
     opts[k] = v === undefined ? true : v;
   }
   // size validation
-  const requestedSize = (opts.size as string | undefined) || "1024x1024";
+  const requestedSize = (opts.size as string | undefined) ?? "1024x1024";
   const validatedSize = ALLOWED_SIZES.has(requestedSize as AllowedImageSize)
     ? (requestedSize as AllowedImageSize)
     : "1024x1024";
@@ -174,7 +176,7 @@ function parseCLI(): CLIOptions {
         )
       : undefined,
     outDir:
-      (opts.out as string) || `src/assets/spritesheets/generated/${archetype}`,
+      (opts.out as string) ?? `src/assets/spritesheets/generated/${archetype}`,
     size: validatedSize,
     concurrency: Math.max(
       1,
@@ -217,9 +219,9 @@ function extractTemplate(
   const candidates: Array<{ idx: number; txt: string; heading: string }> = [];
   // Capture headings for context
   const lines = markdown.split(/\r?\n/);
-  let currentHeading = "";
-  lines.forEach((line, i) => {
-    if (/^#{1,6}\s/.test(line)) currentHeading = line.trim();
+  let _currentHeading = "";
+  lines.forEach((line, _i) => {
+    if (/^#{1,6}\s/.test(line)) _currentHeading = line.trim();
     const fenceMatch = line.match(/^```/);
     if (fenceMatch) {
       // naive capture: reconstruct block
