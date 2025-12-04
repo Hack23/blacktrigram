@@ -1,7 +1,10 @@
-import { PlayerArchetype } from "../../types/common";
+import { PlayerArchetype, TrigramStance, VitalPointSeverity } from "../../types/common";
 import { PlayerState } from "../player";
 import { StatusEffect } from "../types";
-import { DamageResult, KoreanTechnique, VitalPoint } from "./types";
+import { DamageResult, KoreanTechnique, VitalPoint, VitalPointHitResult } from "./types";
+import { calculateMeridianFlow } from "./KoreanAnatomy";
+import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
+import { TrigramCalculator } from "../trigram/TrigramCalculator";
 
 export class DamageCalculator {
   /**
@@ -149,6 +152,306 @@ export class DamageCalculator {
     const techniqueBonus = (technique.critChance || 0.1) * 0.5;
 
     return Math.min(0.95, baseCritChance + archetypeBonus + techniqueBonus);
+  }
+
+  /**
+   * Calculate comprehensive vital point damage with all modifiers.
+   * 
+   * **Korean**: 종합 급소 피해 계산 (Comprehensive Vital Point Damage Calculation)
+   * 
+   * Integrates all damage modifiers including:
+   * - Base damage from attacker strength and technique power
+   * - Stance effectiveness (攻克关系)
+   * - Vital point severity multipliers (1.5x-3.0x)
+   * - Accuracy bonus (0.8x-1.2x)
+   * - Meridian flow bonus (1.0x-1.3x at peak hours)
+   * - Time-of-day bonus (+20% for Dark Ops techniques at night)
+   * - Archetype-specific bonuses
+   * - Critical hit multiplier (2x when accuracy > 0.9)
+   * - Damage variance (±10% randomness)
+   * - Defense reduction
+   * 
+   * ## Damage Formula
+   * 
+   * ```typescript
+   * finalDamage = 
+   *   baseDamage × 
+   *   stanceEffectiveness × 
+   *   vitalPointMultiplier × 
+   *   accuracyBonus × 
+   *   meridianBonus × 
+   *   timeBonus × 
+   *   archetypeBonus × 
+   *   criticalMultiplier × 
+   *   variance × 
+   *   defenseReduction
+   * ```
+   * 
+   * @param attacker - Attacking player state
+   * @param defender - Defending player state
+   * @param technique - Korean martial arts technique being used
+   * @param vitalPointHit - Result of vital point hit detection
+   * @param currentHour - Current hour of day (0-23) for meridian flow
+   * @param meridianStates - Current meridian disruption states (0=blocked, 1=normal)
+   * @returns Comprehensive damage result with all modifiers applied
+   * 
+   * @example
+   * ```typescript
+   * const result = DamageCalculator.calculateEnhancedVitalPointDamage(
+   *   attackerState,
+   *   defenderState,
+   *   technique,
+   *   vitalPointHitResult,
+   *   2, // 2 AM - liver meridian peak
+   *   { liver: 1.0, gallbladder: 0.8 }
+   * );
+   * console.log(`Final damage: ${result.damage}`);
+   * console.log(`Critical hit: ${result.isCritical}`);
+   * ```
+   * 
+   * @public
+   * @korean 종합급소피해계산
+   */
+  static calculateEnhancedVitalPointDamage(
+    attacker: PlayerState,
+    defender: PlayerState,
+    technique: KoreanTechnique,
+    vitalPointHit: VitalPointHitResult,
+    currentHour: number,
+    meridianStates: Record<string, number>
+  ): DamageResult {
+    // 1. Base damage from technique
+    const attackerStrength = attacker.attackPower || 50;
+    const techniquePower = technique.damage || 15;
+    const baseDamage = attackerStrength * (techniquePower / 10);
+
+    // 2. Stance effectiveness (攻克关系)
+    const trigramCalculator = new TrigramCalculator();
+    const stanceEffectiveness = trigramCalculator.calculateStanceEffectiveness(
+      attacker.currentStance,
+      defender.currentStance
+    );
+
+    // 3. Vital point severity multiplier
+    const severityMultipliers: Record<VitalPointSeverity, number> = {
+      [VitalPointSeverity.MINOR]: 1.2,
+      [VitalPointSeverity.MODERATE]: 1.5,
+      [VitalPointSeverity.MAJOR]: 2.0,
+      [VitalPointSeverity.CRITICAL]: 2.5,
+      [VitalPointSeverity.LETHAL]: 3.0,
+    };
+    const vitalPointMultiplier = vitalPointHit.vitalPointHit
+      ? severityMultipliers[vitalPointHit.severity] || 1.0
+      : 1.0;
+
+    // 4. Accuracy bonus (better aim = more damage)
+    // Maps 0.0-1.0 accuracy to 0.8x-1.2x multiplier
+    const accuracy = vitalPointHit.accuracy || 0.5;
+    const accuracyBonus = 0.8 + (accuracy * 0.4); // 0.8 at 0%, 1.2 at 100%
+
+    // 5. Meridian flow bonus
+    const meridianBonus = this.calculateMeridianDamageBonus(
+      vitalPointHit.vitalPointHit?.id || "",
+      currentHour,
+      meridianStates
+    );
+
+    // 6. Time-of-day bonus (Dark Ops techniques at night)
+    const timeBonus = this.calculateTimeBonus(technique, currentHour);
+
+    // 7. Archetype-specific bonus
+    const archetypeBonus = this.getArchetypeDamageBonus(
+      attacker.archetype,
+      technique,
+      vitalPointHit.vitalPointHit
+    );
+
+    // 8. Critical hit (accuracy > 0.9)
+    const criticalMultiplier = accuracy > 0.9 ? 2.0 : 1.0;
+    const isCritical = accuracy > 0.9;
+
+    // 9. Calculate total damage before defense
+    let totalDamage =
+      baseDamage *
+      stanceEffectiveness *
+      vitalPointMultiplier *
+      accuracyBonus *
+      meridianBonus *
+      timeBonus *
+      archetypeBonus *
+      criticalMultiplier;
+
+    // 10. Add damage variance (±10%)
+    const variance = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
+    totalDamage *= variance;
+
+    // 11. Apply defense reduction
+    const defenderDefense = defender.defense || 0;
+    const defenseReduction = Math.max(0, 1 - (defenderDefense * 0.01));
+    const finalDamage = Math.floor(totalDamage * defenseReduction);
+
+    // 12. Combine effects from vital point hit
+    const effects = vitalPointHit.effects || [];
+
+    return {
+      damage: Math.max(1, finalDamage), // Minimum 1 damage
+      effects,
+      isCritical,
+      isVitalPoint: !!vitalPointHit.vitalPointHit,
+    };
+  }
+
+  /**
+   * Calculate meridian flow damage bonus based on time of day.
+   * 
+   * **Korean**: 경락 유효성 피해 보너스 계산
+   * 
+   * Calculates bonus damage when striking vital points during their peak
+   * meridian flow hours. Peak flow provides +30% damage bonus.
+   * 
+   * @param vitalPointId - ID of the vital point being struck
+   * @param currentHour - Current hour of day (0-23)
+   * @param meridianStates - Current meridian disruption states
+   * @returns Damage multiplier (1.0-1.3)
+   * 
+   * @private
+   * @korean 경락유효성피해보너스계산
+   */
+  private static calculateMeridianDamageBonus(
+    vitalPointId: string,
+    currentHour: number,
+    meridianStates: Record<string, number>
+  ): number {
+    if (!vitalPointId) return 1.0;
+
+    const relatedMeridians = getMeridiansForVitalPoint(vitalPointId);
+    let maxBonus = 1.0;
+
+    for (const meridianId of relatedMeridians) {
+      const flow = calculateMeridianFlow(meridianId, currentHour);
+      const state = meridianStates[meridianId] || 1.0;
+
+      // Peak flow (>0.9) with normal state gives +30% bonus
+      // flow ranges from 0.7 to 1.3, state from 0 (blocked) to 1 (normal)
+      const effectiveFlow = flow * state;
+      if (effectiveFlow > 0.9) {
+        const bonus = 1.0 + ((effectiveFlow - 0.9) / 0.4) * 0.3;
+        maxBonus = Math.max(maxBonus, Math.min(1.3, bonus));
+      }
+    }
+
+    return maxBonus;
+  }
+
+  /**
+   * Calculate time-of-day bonus for Dark Ops techniques.
+   * 
+   * **Korean**: 시간대 보너스 계산
+   * 
+   * Dark Ops techniques gain +20% damage at night (20:00-06:00)
+   * to reflect tactical advantage of darkness.
+   * 
+   * @param technique - Technique being used
+   * @param currentHour - Current hour of day (0-23)
+   * @returns Time bonus multiplier (1.0 or 1.2)
+   * 
+   * @private
+   * @korean 시간대보너스계산
+   */
+  private static calculateTimeBonus(
+    technique: KoreanTechnique,
+    currentHour: number
+  ): number {
+    // Dark Ops techniques get +20% at night (20:00-06:00)
+    // Check if technique has dark_ops or stealth in its ID or type
+    const isDarkOpsTechnique = 
+      technique.id.includes("dark_ops") || 
+      technique.id.includes("stealth") ||
+      technique.id.includes("shadow") ||
+      technique.id.includes("night");
+
+    if (isDarkOpsTechnique) {
+      // Night hours: 20:00 to 06:00
+      if (currentHour >= 20 || currentHour <= 6) {
+        return 1.2;
+      }
+    }
+    return 1.0;
+  }
+
+  /**
+   * Get archetype-specific damage bonus for technique and vital point.
+   * 
+   * **Korean**: 원형 특화 피해 보너스
+   * 
+   * Each archetype has specialized bonuses for different techniques
+   * and vital point categories:
+   * 
+   * - **무사 (Musa)**: +20% with 건 (Geon) stance techniques
+   * - **암살자 (Amsalja)**: +30% on neurological vital points
+   * - **해커 (Hacker)**: +15% baseline precision bonus
+   * - **정보요원 (Jeongbo)**: +25% on vascular vital points
+   * - **조직폭력배 (Jojik)**: +20% on dirty/ruthless techniques
+   * 
+   * @param archetype - Attacker's archetype
+   * @param technique - Technique being used
+   * @param vitalPoint - Vital point being struck (optional)
+   * @returns Archetype damage multiplier (1.0-1.5)
+   * 
+   * @private
+   * @korean 원형특화피해보너스
+   */
+  private static getArchetypeDamageBonus(
+    archetype: PlayerArchetype,
+    technique: KoreanTechnique,
+    vitalPoint?: VitalPoint
+  ): number {
+    // Base archetype modifier
+    let bonus = this.getArchetypeModifier(archetype);
+
+    // Additional bonuses based on technique-archetype synergy
+    switch (archetype) {
+      case PlayerArchetype.MUSA:
+        // Musa gets bonus with Geon (Heaven) stance techniques
+        if (technique.stance === TrigramStance.GEON) {
+          bonus *= 1.2;
+        }
+        break;
+
+      case PlayerArchetype.AMSALJA:
+        // Assassin gets bonus on neurological vital points
+        if (vitalPoint?.category === "neurological") {
+          bonus *= 1.3;
+        }
+        break;
+
+      case PlayerArchetype.HACKER:
+        // Hacker gets consistent precision bonus
+        bonus *= 1.15;
+        break;
+
+      case PlayerArchetype.JEONGBO_YOWON:
+        // Intelligence operative gets bonus on vascular targets
+        if (vitalPoint?.category === "vascular") {
+          bonus *= 1.25;
+        }
+        break;
+
+      case PlayerArchetype.JOJIK_POKRYEOKBAE:
+        // Organized crime gets bonus on ruthless techniques
+        // Check for keywords in technique ID
+        if (
+          technique.id.includes("ruthless") ||
+          technique.id.includes("brutal") ||
+          technique.id.includes("dirty")
+        ) {
+          bonus *= 1.2;
+        }
+        break;
+    }
+
+    // Cap maximum bonus at 1.5x
+    return Math.min(1.5, bonus);
   }
 }
 
