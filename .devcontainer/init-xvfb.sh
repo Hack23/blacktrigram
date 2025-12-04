@@ -21,7 +21,7 @@ if ! dpkg -s xvfb >/dev/null 2>&1; then
         libnspr4 libx11-xcb1 \
         libxcomposite1 libxdamage1 libxfixes3 \
         libxrandr2 libxrender1 libxshmfence1 \
-        xdg-utils wget gnupg
+        xdg-utils wget gnupg libxkbcommon0 xkb-data
     
     echo "✅ Dependencies installed successfully"
 fi
@@ -83,7 +83,7 @@ else
     
     # Start Xvfb with explicit screen configuration
     # Run in background and capture output for debugging
-    Xvfb $DISPLAY -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp &
+    Xvfb $DISPLAY -screen 0 1280x720x24 -ac -kbd +extension GLX +extension RANDR +render -nolisten tcp &
     XVFB_PID=$!
     
     # Give Xvfb time to initialize
