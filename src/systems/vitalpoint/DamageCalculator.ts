@@ -275,7 +275,7 @@ export class DamageCalculator {
 
     // 5. Meridian flow bonus
     const meridianBonus = DamageCalculator.calculateMeridianDamageBonus(
-      vitalPointHit.vitalPointHit?.id || "",
+      vitalPointHit.vitalPointHit?.id ?? "",
       currentHour,
       meridianStates
     );

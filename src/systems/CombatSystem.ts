@@ -83,7 +83,7 @@ export class CombatSystem implements CombatSystemInterface {
     if (targetedVitalPointId) {
       vitalPointResult = this.processVitalPointHit(
         targetedVitalPointId,
-        technique.damage || 15,
+        technique.damage ?? 15,
         attacker,
         defender
       );

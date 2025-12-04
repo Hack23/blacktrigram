@@ -170,7 +170,7 @@ export default defineConfig({
             return fs
               .readdirSync(REPORTS.junit)
               .filter((file) => file.endsWith(".xml"));
-          } catch (_err) {
+          } catch {
             return [];
           }
         },

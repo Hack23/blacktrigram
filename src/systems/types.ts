@@ -49,7 +49,7 @@ export interface VitalPointSystemConfig {
 
 // Deprecated placeholder types for backward compatibility
 // @deprecated These types will be removed in a future version
-type Texture = any;
+type Texture = unknown;
 
 // Vital point effect
 // Player archetype data
@@ -1194,7 +1194,7 @@ export function getStanceFromKey(key: string): TrigramStance | null {
     "7": TrigramStance.GAN,
     "8": TrigramStance.GON,
   };
-  return stanceMap[key] || null;
+  return stanceMap[key] ?? null;
 }
 
 export interface CombatControlsConfig {

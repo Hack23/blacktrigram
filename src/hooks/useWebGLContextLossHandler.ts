@@ -108,7 +108,7 @@ export const isWebGLAvailable = (): boolean => {
   try {
     const canvas = document.createElement("canvas");
     const gl =
-      canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      canvas.getContext("webgl") ?? canvas.getContext("experimental-webgl");
     const available = gl !== null;
     // Help GC by cleaning up WebGL context
     if (gl && "getExtension" in gl) {
@@ -116,7 +116,7 @@ export const isWebGLAvailable = (): boolean => {
       loseContext?.loseContext();
     }
     return available;
-  } catch (_e) {
+  } catch {
     return false;
   }
 };
@@ -135,7 +135,7 @@ export const isWebGL2Available = (): boolean => {
       loseContext?.loseContext();
     }
     return available;
-  } catch (_e) {
+  } catch {
     return false;
   }
 };

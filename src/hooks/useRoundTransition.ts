@@ -110,12 +110,7 @@ export function useRoundTransition(
 ): UseRoundTransitionResult {
   const mergedConfig = useMemo(
     () => ({ ...DEFAULT_CONFIG, ...config }),
-    [
-      config.roundEndDuration,
-      config.countdownDuration,
-      config.countdownStartNumber,
-      config.transitionDuration,
-    ]
+    [config]
   );
 
   const [transitionState, setTransitionState] =

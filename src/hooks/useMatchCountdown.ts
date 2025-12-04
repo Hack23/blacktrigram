@@ -109,12 +109,7 @@ export function useMatchCountdown(
 ): UseMatchCountdownResult {
   const mergedConfig = useMemo(
     () => ({ ...DEFAULT_CONFIG, ...config }),
-    [
-      config.startNumber,
-      config.countdownInterval,
-      config.readyDuration,
-      config.fightDuration,
-    ]
+    [config]
   );
 
   const [state, setState] = useState<MatchCountdownState>("idle");
