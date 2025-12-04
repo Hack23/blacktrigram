@@ -108,10 +108,15 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
     const columnsCount = isMobile ? 1 : width >= 1400 ? 3 : 2;
     const gap = isMobile ? 16 : 20;
 
+    // Custom focus style for keyboard navigation
+    const [isFocused, setIsFocused] = React.useState(false);
+
     return (
       <div
         tabIndex={0}
         onKeyDown={handleKeyDown}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         style={{
           width: `${width}px`,
           minHeight: `${height}px`,
@@ -125,7 +130,8 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
           padding: isMobile ? "16px" : "24px",
           overflow: "auto",
           maxHeight: `${height}px`,
-          outline: "none",
+          outline: isFocused ? `3px solid ${colors.headerColor}` : "none",
+          outlineOffset: "2px",
         }}
         data-testid="archetype-card-grid"
         role="region"
