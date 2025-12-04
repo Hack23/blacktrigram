@@ -4,7 +4,7 @@ import { render } from "@testing-library/react";
 import React from "react";
 import { CombatState, PlayerArchetype, TrigramStance } from "../types/common";
 
-export function createMockPlayerState(): PlayerState {
+export function createMockPlayerState(overrides?: Partial<PlayerState>): PlayerState {
   return {
     id: "test",
     name: { korean: "테스트", english: "Test" },
@@ -44,6 +44,7 @@ export function createMockPlayerState(): PlayerState {
     perfectStrikes: 0,
     vitalPointHits: 0,
     experiencePoints: 0,
+    ...overrides,
   };
 }
 

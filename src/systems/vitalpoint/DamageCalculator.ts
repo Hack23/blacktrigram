@@ -261,17 +261,17 @@ export class DamageCalculator {
                           (accuracy * DamageCalculator.ACCURACY_RANGE);
 
     // 5. Meridian flow bonus
-    const meridianBonus = this.calculateMeridianDamageBonus(
+    const meridianBonus = DamageCalculator.calculateMeridianDamageBonus(
       vitalPointHit.vitalPointHit?.id || "",
       currentHour,
       meridianStates
     );
 
     // 6. Time-of-day bonus (Dark Ops techniques at night)
-    const timeBonus = this.calculateTimeBonus(technique, currentHour);
+    const timeBonus = DamageCalculator.calculateTimeBonus(technique, currentHour);
 
     // 7. Archetype-specific bonus
-    const archetypeBonus = this.getArchetypeDamageBonus(
+    const archetypeBonus = DamageCalculator.getArchetypeDamageBonus(
       attacker.archetype,
       technique,
       vitalPointHit.vitalPointHit
@@ -296,10 +296,13 @@ export class DamageCalculator {
     const variance = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
     totalDamage *= variance;
 
-    // 11. Apply defense reduction (capped at 80% reduction, minimum 20% damage)
+    // 11. Apply defense reduction using existing method for consistency
     const defenderDefense = defender.defense || 0;
-    const defenseReduction = Math.max(0.2, Math.min(1.0, 1 - (defenderDefense * 0.01)));
-    const finalDamage = Math.floor(totalDamage * defenseReduction);
+    const finalDamage = DamageCalculator.calculateDamageReduction(
+      totalDamage,
+      defenderDefense,
+      false
+    );
 
     // 12. Combine effects from vital point hit
     const effects = vitalPointHit.effects || [];

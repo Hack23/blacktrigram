@@ -811,33 +811,81 @@ describe("DamageCalculator", () => {
     });
 
     it("should apply defense reduction correctly", () => {
-      // Test the defense calculation formula directly
-      const noDamageReduction = DamageCalculator.calculateDamageReduction(100, 0, false);
-      const withDefenseReduction = DamageCalculator.calculateDamageReduction(100, 50, false);
+      // Test that defense reduction is applied using the existing method
+      // We need to use the same base damage to compare, so we test with different defenders
+      // in the same calculation run
       
-      expect(noDamageReduction).toBe(100);
-      expect(withDefenseReduction).toBeLessThan(100);
-      expect(withDefenseReduction).toBeGreaterThan(0);
+      let zeroDefTotal = 0;
+      let midDefTotal = 0;
+      let highDefTotal = 0;
+      const iterations = 50;
 
-      // Now test in full damage calculation
-      const zeroDefenseDefender = createMockPlayerState({
-        archetype: PlayerArchetype.MUSA,
-        defense: 0,
-        attackPower: 50,
-        currentStance: TrigramStance.TAE,
-      });
+      for (let i = 0; i < iterations; i++) {
+        const zeroDefenseDefender = createMockPlayerState({
+          archetype: PlayerArchetype.MUSA,
+          defense: 0,
+          attackPower: 50,
+          currentStance: TrigramStance.TAE,
+        });
 
-      const result = DamageCalculator.calculateEnhancedVitalPointDamage(
-        attacker,
-        zeroDefenseDefender,
-        mockTechnique,
-        vitalPointHitResult,
-        12,
-        meridianStates
-      );
+        const midDefenseDefender = createMockPlayerState({
+          archetype: PlayerArchetype.MUSA,
+          defense: 100, // 50% reduction (100/200 = 0.5)
+          attackPower: 50,
+          currentStance: TrigramStance.TAE,
+        });
 
-      // Verify damage is calculated
-      expect(result.damage).toBeGreaterThan(0);
+        const highDefenseDefender = createMockPlayerState({
+          archetype: PlayerArchetype.MUSA,
+          defense: 200, // 80% reduction (max)
+          attackPower: 50,
+          currentStance: TrigramStance.TAE,
+        });
+
+        const zeroResult = DamageCalculator.calculateEnhancedVitalPointDamage(
+          attacker,
+          zeroDefenseDefender,
+          mockTechnique,
+          vitalPointHitResult,
+          12,
+          meridianStates
+        );
+
+        const midResult = DamageCalculator.calculateEnhancedVitalPointDamage(
+          attacker,
+          midDefenseDefender,
+          mockTechnique,
+          vitalPointHitResult,
+          12,
+          meridianStates
+        );
+
+        const highResult = DamageCalculator.calculateEnhancedVitalPointDamage(
+          attacker,
+          highDefenseDefender,
+          mockTechnique,
+          vitalPointHitResult,
+          12,
+          meridianStates
+        );
+
+        zeroDefTotal += zeroResult.damage;
+        midDefTotal += midResult.damage;
+        highDefTotal += highResult.damage;
+      }
+
+      const zeroDefAvg = zeroDefTotal / iterations;
+      const midDefAvg = midDefTotal / iterations;
+      const highDefAvg = highDefTotal / iterations;
+
+      // Verify defense reduces damage
+      // Mid defense (50% reduction) should leave ~50% damage
+      expect(midDefAvg).toBeLessThan(zeroDefAvg * 0.6); // Allow some margin
+      expect(midDefAvg).toBeGreaterThan(zeroDefAvg * 0.4);
+      
+      // High defense (80% reduction) should leave ~20% damage
+      expect(highDefAvg).toBeLessThan(zeroDefAvg * 0.3);
+      expect(highDefAvg).toBeGreaterThan(0); // But still some damage
     });
 
     it("should apply critical hit multiplier for high accuracy", () => {
