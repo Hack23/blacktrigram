@@ -1,15 +1,22 @@
 /**
  * useTrainingAI Hook
- * 
+ *
  * Manages AI opponent state and behavior in training mode
  */
 
-import { useState, useCallback, useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { TrainingAI, AITrainingDifficulty } from "../../../systems/ai/TrainingAI";
-import { PlayerState } from "../../../systems/player";
-import { Position, TrigramStance, PlayerArchetype } from "../../../types/common";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AIActionType } from "../../../systems/ai/DecisionTree";
+import {
+  AITrainingDifficulty,
+  TrainingAI,
+} from "../../../systems/ai/TrainingAI";
+import { PlayerState } from "../../../systems/player";
+import {
+  PlayerArchetype,
+  Position,
+  TrigramStance,
+} from "../../../types/common";
 
 /**
  * AI state for UI display
@@ -112,10 +119,8 @@ export function useTrainingAI(
 
   // Initialize AI on mount
   useEffect(() => {
-    if (!aiRef.current) {
-      aiRef.current = new TrainingAI(difficulty, { x: 5, y: 0 });
-    }
-  }, []);
+    aiRef.current ??= new TrainingAI(difficulty, { x: 5, y: 0 });
+  }, [difficulty]);
 
   // Update AI difficulty when it changes
   useEffect(() => {
@@ -177,8 +182,12 @@ export function useTrainingAI(
           if (decision.targetPosition) {
             // Smoothly interpolate to target position
             const newPosition = {
-              x: aiPosition.x + (decision.targetPosition.x - aiPosition.x) * delta * 2,
-              y: aiPosition.y + (decision.targetPosition.y - aiPosition.y) * delta * 2,
+              x:
+                aiPosition.x +
+                (decision.targetPosition.x - aiPosition.x) * delta * 2,
+              y:
+                aiPosition.y +
+                (decision.targetPosition.y - aiPosition.y) * delta * 2,
             };
             setAIPosition(() => newPosition);
             aiRef.current.updatePosition(newPosition);

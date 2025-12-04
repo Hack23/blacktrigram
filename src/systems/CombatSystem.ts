@@ -1,12 +1,16 @@
 import { VitalPointSeverity } from "../types/common";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
 import { PlayerState } from "./player";
+import {
+  addEffectsToPlayer,
+  getEffectModifiers,
+  removeExpiredEffects,
+} from "./PlayerEffectManager";
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
-import { addEffectsToPlayer, getEffectModifiers, removeExpiredEffects } from "./PlayerEffectManager";
 
 export class CombatSystem implements CombatSystemInterface {
   private vitalPointSystem: VitalPointSystem;
@@ -100,20 +104,20 @@ export class CombatSystem implements CombatSystemInterface {
 
     // Check for critical hit
     const critRoll = Math.random();
-    const isCritical = critRoll <= (technique.critChance || 0.1);
+    const isCritical = critRoll <= (technique.critChance ?? 0.1);
 
     return {
       hit: true,
       damage: damageResult.totalDamage,
       criticalHit: isCritical,
-      vitalPointHit: vitalPointResult?.hit || false,
+      vitalPointHit: vitalPointResult?.hit ?? false,
       effects: damageResult.effectsApplied,
       timestamp,
       technique,
       attacker,
       defender,
       success: true,
-      isCritical: vitalPointResult?.hit || false,
+      isCritical: vitalPointResult?.hit ?? false,
       isBlocked: false,
     };
   }
@@ -189,7 +193,7 @@ export class CombatSystem implements CombatSystemInterface {
    * Fix: Add missing getAvailableTechniques method required by interface
    */
   getAvailableTechniques(player: PlayerState): readonly KoreanTechnique[] {
-    const allTechniques = TRIGRAM_TECHNIQUES[player.currentStance] || [];
+    const allTechniques = TRIGRAM_TECHNIQUES[player.currentStance] ?? [];
 
     // Filter techniques based on available resources using canExecuteTechnique
     return allTechniques.filter((technique) =>

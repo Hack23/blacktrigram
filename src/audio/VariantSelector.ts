@@ -63,7 +63,7 @@ export class VariantSelector {
     return {
       ...baseSound,
       url: selectedVariant,
-      id: `${baseSound.id}_${archetype}_${stance || "default"}`,
+      id: `${baseSound.id}_${archetype}_${stance ?? "default"}`,
     };
   }
 

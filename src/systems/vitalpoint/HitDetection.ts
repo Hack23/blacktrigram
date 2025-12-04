@@ -83,7 +83,7 @@ export class HitDetection {
     }
 
     // Calculate damage
-    const baseDamage = vitalPoint.baseDamage || 15;
+    const baseDamage = vitalPoint.baseDamage ?? 15;
     const forceMultiplier = Math.min(force / requiredForce, 2.0);
     const damage = Math.floor(baseDamage * forceMultiplier);
 

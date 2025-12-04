@@ -188,11 +188,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Layout calculations
-  const {
-    layoutConstants: _layoutConstants,
-    arenaBounds,
-    isMobile,
-  } = useCombatLayout(width, height);
+  const { arenaBounds, isMobile } = useCombatLayout(width, height);
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -293,7 +289,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
   // Player movement
-  const { playerPosition, isMoving } = usePlayerMovement({
+  const { isMoving } = usePlayerMovement({
     enabled:
       !isPaused &&
       combatState.roundStarted &&
@@ -323,7 +319,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     const player1 = players[0];
     const player2 =
-      players[1] || createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+      players[1] ?? createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
 
     return [
       { ...player1, position: playerPositions[0] },
@@ -505,7 +501,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const {
     handleAttack,
     handleDefend,
-    handleTechniqueExecute: _handleTechniqueExecute,
     handleStanceSwitch,
     handleAIAttack,
     handleAIDefend,

@@ -52,7 +52,7 @@ const HitEffectVisual: React.FC<{
 
     // Convert from screen coordinates to 3D world coordinates
     // Use arena bounds if available, otherwise use default normalization
-    const bounds = arenaBounds || { x: 0, y: 0, width: 1200, height: 800 };
+    const bounds = arenaBounds ?? { x: 0, y: 0, width: 1200, height: 800 };
     const relX = (effect.position.x - bounds.x) / bounds.width;
     const relZ = (effect.position.y - bounds.y) / bounds.height;
     const x = relX * 16 - 8; // Map 0-1 to -8 to 8

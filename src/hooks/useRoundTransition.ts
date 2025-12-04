@@ -1,24 +1,24 @@
 /**
  * useRoundTransition Hook - Manages round transition state and timing
- * 
+ *
  * Korean: 라운드 전환 훅 (Round Transition Hook)
- * 
+ *
  * Handles the state machine for round transitions:
  * - idle: Normal combat state
  * - announcing: Showing round announcement
  * - countdown: Counting down to next round
  * - transitioning: Brief transition to next round
- * 
+ *
  * @module hooks/useRoundTransition
  * @category Combat Hooks
  */
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlayerState } from "../systems";
 
 /**
  * Round transition states
- * 
+ *
  * Korean: 라운드 전환 상태
  */
 export type RoundTransitionState =
@@ -48,7 +48,10 @@ export interface UseRoundTransitionResult {
   /** Whether announcement should be visible */
   readonly showAnnouncement: boolean;
   /** Start round transition sequence */
-  readonly startTransition: (winner: PlayerState | null, roundNumber: number) => void;
+  readonly startTransition: (
+    winner: PlayerState | null,
+    roundNumber: number
+  ) => void;
   /** Skip countdown and proceed immediately */
   readonly skipCountdown: () => void;
   /** Reset transition state to idle */
@@ -70,18 +73,18 @@ const DEFAULT_CONFIG: Required<RoundTransitionConfig> = {
 
 /**
  * useRoundTransition Hook
- * 
+ *
  * Manages the complete round transition flow:
  * 1. Idle state during normal combat
  * 2. Announcing state shows round results
  * 3. Countdown state counts down to next round
  * 4. Transitioning state briefly transitions to next round
  * 5. Returns to idle for next round
- * 
+ *
  * @param config - Configuration for transition timings
  * @param onTransitionComplete - Callback when transition completes
  * @returns Round transition state and control functions
- * 
+ *
  * @example
  * ```typescript
  * const {
@@ -96,7 +99,7 @@ const DEFAULT_CONFIG: Required<RoundTransitionConfig> = {
  *     initializeNextRound();
  *   }
  * );
- * 
+ *
  * // When round ends
  * startTransition(winner, roundNumber);
  * ```
@@ -105,9 +108,18 @@ export function useRoundTransition(
   config: RoundTransitionConfig = {},
   onTransitionComplete?: () => void
 ): UseRoundTransitionResult {
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config };
+  const mergedConfig = useMemo(
+    () => ({ ...DEFAULT_CONFIG, ...config }),
+    [
+      config.roundEndDuration,
+      config.countdownDuration,
+      config.countdownStartNumber,
+      config.transitionDuration,
+    ]
+  );
 
-  const [transitionState, setTransitionState] = useState<RoundTransitionState>("idle");
+  const [transitionState, setTransitionState] =
+    useState<RoundTransitionState>("idle");
   const [roundWinner, setRoundWinner] = useState<PlayerState | null>(null);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
 
@@ -150,7 +162,7 @@ export function useRoundTransition(
         countdownTimer.current = setTimeout(() => {
           countdownActive.current = false;
           setTransitionState("transitioning");
-          
+
           // Complete transition after brief delay
           transitionTimer.current = setTimeout(() => {
             setTransitionState("idle");
@@ -173,14 +185,19 @@ export function useRoundTransition(
       clearTimers();
       countdownActive.current = false;
       setTransitionState("transitioning");
-      
+
       // Complete transition after brief delay
       transitionTimer.current = setTimeout(() => {
         setTransitionState("idle");
         onTransitionComplete?.();
       }, mergedConfig.transitionDuration);
     }
-  }, [transitionState, clearTimers, mergedConfig.transitionDuration, onTransitionComplete]);
+  }, [
+    transitionState,
+    clearTimers,
+    mergedConfig.transitionDuration,
+    onTransitionComplete,
+  ]);
 
   /**
    * Reset transition to idle state
@@ -205,7 +222,8 @@ export function useRoundTransition(
 
   return {
     transitionState,
-    showAnnouncement: transitionState === "announcing" || transitionState === "countdown",
+    showAnnouncement:
+      transitionState === "announcing" || transitionState === "countdown",
     startTransition,
     skipCountdown,
     resetTransition,

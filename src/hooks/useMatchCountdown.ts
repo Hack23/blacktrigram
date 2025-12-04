@@ -1,24 +1,24 @@
 /**
  * useMatchCountdown Hook - Manages match start countdown sequence
- * 
+ *
  * Korean: 매치 시작 카운트다운 훅 (Match Start Countdown Hook)
- * 
+ *
  * Handles the state machine for match start countdown:
  * - idle: Waiting to start
  * - ready: Showing "Ready?" message
  * - counting: Counting down "3... 2... 1..."
  * - fight: Showing "Fight!" announcement
  * - complete: Countdown finished, combat can begin
- * 
+ *
  * @module hooks/useMatchCountdown
  * @category Combat Hooks
  */
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * Match countdown states
- * 
+ *
  * Korean: 매치 카운트다운 상태
  */
 export type MatchCountdownState =
@@ -72,18 +72,18 @@ const DEFAULT_CONFIG: Required<MatchCountdownConfig> = {
 
 /**
  * useMatchCountdown Hook
- * 
+ *
  * Manages the complete match start countdown flow:
  * 1. Idle state waiting for match start
  * 2. Ready state shows "Ready?" message (1s)
  * 3. Counting state counts down from 3 to 1 (1s intervals)
  * 4. Fight state shows "Fight!" message (1s)
  * 5. Complete state signals combat can begin
- * 
+ *
  * @param config - Configuration for countdown timings
  * @param onComplete - Callback when countdown completes
  * @returns Match countdown state and control functions
- * 
+ *
  * @example
  * ```typescript
  * const {
@@ -98,7 +98,7 @@ const DEFAULT_CONFIG: Required<MatchCountdownConfig> = {
  *     enableCombatControls();
  *   }
  * );
- * 
+ *
  * // When match initializes
  * startCountdown();
  * ```
@@ -107,7 +107,15 @@ export function useMatchCountdown(
   config: MatchCountdownConfig = {},
   onComplete?: () => void
 ): UseMatchCountdownResult {
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config };
+  const mergedConfig = useMemo(
+    () => ({ ...DEFAULT_CONFIG, ...config }),
+    [
+      config.startNumber,
+      config.countdownInterval,
+      config.readyDuration,
+      config.fightDuration,
+    ]
+  );
 
   const [state, setState] = useState<MatchCountdownState>("idle");
   const [currentNumber, setCurrentNumber] = useState(mergedConfig.startNumber);

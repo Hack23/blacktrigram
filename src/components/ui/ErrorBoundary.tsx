@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactNode } from "react";
 
 /**
  * Props for the ErrorBoundary component
@@ -23,7 +23,7 @@ interface State {
 /**
  * ErrorBoundary component to catch and display errors gracefully.
  * Prevents black screen errors and provides user-friendly error UI with Korean/English bilingual support.
- * 
+ *
  * @example
  * ```tsx
  * <ErrorBoundary>
@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught error:', error, errorInfo);
+    console.error("ErrorBoundary caught error:", error, errorInfo);
   }
 
   /**
@@ -54,10 +54,10 @@ export class ErrorBoundary extends Component<Props, State> {
   private handleReset = () => {
     // Mark as not recovered yet
     this.didRecover = false;
-    
+
     // Try to recover by resetting error state
     this.setState({ hasError: false, error: null });
-    
+
     // Give React a chance to re-render, then reload if recovery failed
     setTimeout(() => {
       if (!this.didRecover) {
@@ -83,9 +83,9 @@ export class ErrorBoundary extends Component<Props, State> {
             <h1 className="error-boundary__title">
               오류 발생 | Error Occurred
             </h1>
-            
+
             <p className="error-boundary__message">
-              {this.state.error?.message || 'Unknown error occurred'}
+              {this.state.error?.message ?? "Unknown error occurred"}
             </p>
 
             <div className="error-boundary__actions">
@@ -108,14 +108,10 @@ export class ErrorBoundary extends Component<Props, State> {
               </button>
             </div>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === "development" && this.state.error && (
               <details className="error-boundary__details">
-                <summary>
-                  기술 정보 | Technical Details
-                </summary>
-                <pre>
-                  {this.state.error.stack}
-                </pre>
+                <summary>기술 정보 | Technical Details</summary>
+                <pre>{this.state.error.stack}</pre>
               </details>
             )}
           </div>
