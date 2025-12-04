@@ -682,7 +682,7 @@ describe("DamageCalculator", () => {
 
       // Lethal should deal significantly more damage than minor
       // LETHAL is 3.0x vs MINOR 1.2x = 2.5x difference
-      expect(lethalAvg).toBeGreaterThan(minorAvg * 2.0);
+      expect(lethalAvg).toBeGreaterThan(minorAvg * 2.3);
     });
 
     it("should apply accuracy bonus correctly", () => {
@@ -879,7 +879,7 @@ describe("DamageCalculator", () => {
       const normalAvg = normalTotal / iterations;
 
       // Critical should deal significantly more damage (2x multiplier)
-      expect(critAvg).toBeGreaterThan(normalAvg * 1.7);
+      expect(critAvg).toBeGreaterThan(normalAvg * 1.9);
     });
 
     it("should ensure minimum damage of 1", () => {
@@ -993,8 +993,8 @@ describe("DamageCalculator", () => {
       const endTime = performance.now();
       const averageTime = (endTime - startTime) / 1000;
 
-      // Should be under 0.5ms per calculation
-      expect(averageTime).toBeLessThan(0.5);
+      // Should be under 0.02ms per calculation (matches PR claim)
+      expect(averageTime).toBeLessThan(0.02);
     });
 
     it("should combine all modifiers correctly in comprehensive scenario", () => {

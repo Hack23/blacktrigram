@@ -8,6 +8,24 @@ import { TrigramCalculator } from "../trigram/TrigramCalculator";
 
 export class DamageCalculator {
   /**
+   * Vital point severity damage multipliers
+   */
+  private static readonly SEVERITY_MULTIPLIERS: Record<VitalPointSeverity, number> = {
+    [VitalPointSeverity.MINOR]: 1.2,
+    [VitalPointSeverity.MODERATE]: 1.5,
+    [VitalPointSeverity.MAJOR]: 2.0,
+    [VitalPointSeverity.CRITICAL]: 2.5,
+    [VitalPointSeverity.LETHAL]: 3.0,
+  };
+
+  /**
+   * Accuracy bonus scaling constants
+   * Maps 0.0-1.0 accuracy to 0.8x-1.2x multiplier
+   */
+  private static readonly ACCURACY_MIN_MULTIPLIER = 0.8;
+  private static readonly ACCURACY_RANGE = 0.4; // Range from min to max (1.2 - 0.8)
+
+  /**
    * Calculate vital point damage with proper archetype bonuses
    */
   static calculateVitalPointDamage(
@@ -226,28 +244,21 @@ export class DamageCalculator {
     const baseDamage = attackerStrength * (techniquePower / 10);
 
     // 2. Stance effectiveness (攻克关系)
-    const trigramCalculator = new TrigramCalculator();
-    const stanceEffectiveness = trigramCalculator.calculateStanceEffectiveness(
+    const stanceEffectiveness = TrigramCalculator.calculateStanceEffectiveness(
       attacker.currentStance,
       defender.currentStance
     );
 
     // 3. Vital point severity multiplier
-    const severityMultipliers: Record<VitalPointSeverity, number> = {
-      [VitalPointSeverity.MINOR]: 1.2,
-      [VitalPointSeverity.MODERATE]: 1.5,
-      [VitalPointSeverity.MAJOR]: 2.0,
-      [VitalPointSeverity.CRITICAL]: 2.5,
-      [VitalPointSeverity.LETHAL]: 3.0,
-    };
     const vitalPointMultiplier = vitalPointHit.vitalPointHit
-      ? severityMultipliers[vitalPointHit.severity] || 1.0
+      ? DamageCalculator.SEVERITY_MULTIPLIERS[vitalPointHit.severity] || 1.0
       : 1.0;
 
     // 4. Accuracy bonus (better aim = more damage)
     // Maps 0.0-1.0 accuracy to 0.8x-1.2x multiplier
     const accuracy = vitalPointHit.accuracy || 0.5;
-    const accuracyBonus = 0.8 + (accuracy * 0.4); // 0.8 at 0%, 1.2 at 100%
+    const accuracyBonus = DamageCalculator.ACCURACY_MIN_MULTIPLIER + 
+                          (accuracy * DamageCalculator.ACCURACY_RANGE);
 
     // 5. Meridian flow bonus
     const meridianBonus = this.calculateMeridianDamageBonus(
@@ -285,9 +296,9 @@ export class DamageCalculator {
     const variance = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
     totalDamage *= variance;
 
-    // 11. Apply defense reduction
+    // 11. Apply defense reduction (capped at 80% reduction, minimum 20% damage)
     const defenderDefense = defender.defense || 0;
-    const defenseReduction = Math.max(0, 1 - (defenderDefense * 0.01));
+    const defenseReduction = Math.max(0.2, Math.min(1.0, 1 - (defenderDefense * 0.01)));
     const finalDamage = Math.floor(totalDamage * defenseReduction);
 
     // 12. Combine effects from vital point hit
@@ -335,6 +346,9 @@ export class DamageCalculator {
       // flow ranges from 0.7 to 1.3, state from 0 (blocked) to 1 (normal)
       const effectiveFlow = flow * state;
       if (effectiveFlow > 0.9) {
+        // Bonus scales linearly from 1.0 (no bonus) at effectiveFlow = 0.9
+        // to 1.3 (maximum 30% bonus) at effectiveFlow = 1.3:
+        //   bonus = 1.0 + ((effectiveFlow - 0.9) / 0.4) * 0.3
         const bonus = 1.0 + ((effectiveFlow - 0.9) / 0.4) * 0.3;
         maxBonus = Math.max(maxBonus, Math.min(1.3, bonus));
       }
@@ -348,7 +362,7 @@ export class DamageCalculator {
    * 
    * **Korean**: 시간대 보너스 계산
    * 
-   * Dark Ops techniques gain +20% damage at night (20:00-06:00)
+   * Dark Ops techniques gain +20% damage at night (20:00-05:59)
    * to reflect tactical advantage of darkness.
    * 
    * @param technique - Technique being used
@@ -362,7 +376,7 @@ export class DamageCalculator {
     technique: KoreanTechnique,
     currentHour: number
   ): number {
-    // Dark Ops techniques get +20% at night (20:00-06:00)
+    // Dark Ops techniques get +20% at night (20:00-05:59)
     // Check if technique has dark_ops or stealth in its ID or type
     const isDarkOpsTechnique = 
       technique.id.includes("dark_ops") || 
@@ -371,8 +385,8 @@ export class DamageCalculator {
       technique.id.includes("night");
 
     if (isDarkOpsTechnique) {
-      // Night hours: 20:00 to 06:00
-      if (currentHour >= 20 || currentHour <= 6) {
+      // Night hours: 20:00 through 05:59 (6 AM is considered daylight)
+      if (currentHour >= 20 || currentHour < 6) {
         return 1.2;
       }
     }
@@ -407,7 +421,7 @@ export class DamageCalculator {
     vitalPoint?: VitalPoint
   ): number {
     // Base archetype modifier
-    let bonus = this.getArchetypeModifier(archetype);
+    let bonus = DamageCalculator.getArchetypeModifier(archetype);
 
     // Additional bonuses based on technique-archetype synergy
     switch (archetype) {
