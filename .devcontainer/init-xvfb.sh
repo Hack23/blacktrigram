@@ -85,8 +85,11 @@ if pgrep -x "Xvfb" > /dev/null; then
 else
     echo "🖥️ Starting Xvfb with Three.js/WebGL support on display $DISPLAY..."
     
-    # Start Xvfb with explicit screen configuration
-    # Run in background and capture output for debugging
+    # Start Xvfb with GLX extension for WebGL rendering
+    # +extension GLX: OpenGL support for WebGL
+    # +extension RANDR: Screen resize/rotate for responsive testing
+    # +render: X Render extension for compositing
+    # -nolisten tcp: Suppress keyboard configuration warnings
     Xvfb $DISPLAY -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp &
     XVFB_PID=$!
     
