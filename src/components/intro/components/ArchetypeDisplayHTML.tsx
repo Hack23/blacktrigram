@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import "./MenuSection.css";
 
@@ -21,6 +21,7 @@ export interface ArchetypeDataShape {
     readonly korean: string;
     readonly english: string;
   };
+  readonly specialAbilities?: readonly string[]; // Optional special abilities
 }
 
 export interface ArchetypeDisplayHTMLProps {
@@ -206,12 +207,8 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> =
                 onError={(e) => {
                   // Fallback if image doesn't load: use Black Trigram logo, prevent infinite loop
                   const target = e.currentTarget as HTMLImageElement;
-                  if (
-                    !target.src.endsWith(
-                      "/assets/visual/logo/black-trigram-256.png"
-                    )
-                  ) {
-                    target.src = "/assets/visual/logo/black-trigram-256.png";
+                  if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {
+                    target.src = FALLBACK_ARCHETYPE_IMAGE;
                     target.alt = `${selectedArchetype.korean} (image unavailable)`;
                   }
                 }}

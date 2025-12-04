@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { AbilityList } from "./AbilityList";
 import { StatBar } from "./StatBar";
@@ -225,10 +225,8 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
               data-testid="archetype-image"
               onError={(e) => {
                 const target = e.currentTarget as HTMLImageElement;
-                if (
-                  !target.src.endsWith("/assets/visual/logo/black-trigram-256.png")
-                ) {
-                  target.src = "/assets/visual/logo/black-trigram-256.png";
+                if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {
+                  target.src = FALLBACK_ARCHETYPE_IMAGE;
                 }
               }}
             />

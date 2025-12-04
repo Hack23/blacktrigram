@@ -156,6 +156,14 @@ export const ARCHETYPE_BACKGROUNDS = {
 } as const;
 
 /**
+ * Fallback image path for when archetype images fail to load
+ * 
+ * @category Visual Assets
+ * @korean 대체 이미지 경로
+ */
+export const FALLBACK_ARCHETYPE_IMAGE = "/assets/visual/logo/black-trigram-256.png" as const;
+
+/**
  * Round announcement timing constants
  * Controls the display duration and transitions for round announcements
  * 

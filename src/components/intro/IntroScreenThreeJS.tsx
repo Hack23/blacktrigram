@@ -198,6 +198,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         textureKey: ARCHETYPE_TEXTURE_MAPPING[archetypeEnum],
         stats: data.stats,
         philosophy: data.philosophy,
+        specialAbilities: data.specialAbilities, // Include special abilities
       };
     });
   }, []);

@@ -49,7 +49,7 @@ export const EnhancedArchetypeDisplay: React.FC<
         textureKey: archetype.textureKey,
         stats: archetype.stats,
         philosophy: archetype.philosophy,
-        specialAbilities: ["Honor Strike", "Defensive Mastery"], // Placeholder - would come from data
+        specialAbilities: archetype.specialAbilities ?? [], // Use actual data or empty array
       }));
     }, [archetypes]);
 
