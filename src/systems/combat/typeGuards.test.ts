@@ -89,8 +89,8 @@ describe("Combat Type Guards", () => {
       obj: T,
       key: K
     ): Omit<T, K> => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [key]: _omitted, ...rest } = obj;
-      void _omitted; // Suppress unused variable warning
       return rest as Omit<T, K>;
     };
 

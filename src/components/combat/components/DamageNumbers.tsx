@@ -107,8 +107,13 @@ const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
   const opacity = 1 - progress;
   const scale = 1 + progress * 0.3; // Slight scale up during animation
   const fontSize = isMobile ? 20 : 28;
-  const criticalBonus =
-    damage.type === "critical" ? 8 : damage.type === "vital" ? 4 : 0;
+  // Calculate critical bonus based on damage type
+  const getCriticalBonus = (): number => {
+    if (damage.type === "critical") return 8;
+    if (damage.type === "vital") return 4;
+    return 0;
+  };
+  const criticalBonus = getCriticalBonus();
 
   return (
     <Html

@@ -263,8 +263,8 @@ export class DamageCalculator {
 
     // 3. Vital point severity multiplier
     const vitalPointMultiplier = vitalPointHit.vitalPointHit
-      ? DamageCalculator.SEVERITY_MULTIPLIERS[vitalPointHit.severity] ?? 1.0
-      : 1.0;
+      ? DamageCalculator.SEVERITY_MULTIPLIERS[vitalPointHit.severity] ?? 1
+      : 1;
 
     // 4. Accuracy bonus (better aim = more damage)
     // Maps 0.0-1.0 accuracy to 0.8x-1.2x multiplier
@@ -352,7 +352,7 @@ export class DamageCalculator {
     currentHour: number,
     meridianStates: Record<string, number>
   ): number {
-    if (!vitalPointId) return 1.0;
+    if (!vitalPointId) return 1;
 
     const relatedMeridians = getMeridiansForVitalPoint(vitalPointId);
     let maxBonus = 1.0;

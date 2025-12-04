@@ -47,8 +47,8 @@ export interface VitalPointSystemConfig {
   readonly effectDurations: Record<string, number>;
 }
 
-// Deprecated placeholder types for backward compatibility
-// @deprecated These types will be removed in a future version
+// Deprecated placeholder type - use unknown for generic texture representation
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type Texture = unknown;
 
 // Vital point effect

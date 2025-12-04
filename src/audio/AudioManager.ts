@@ -102,10 +102,12 @@ export class AudioManager implements IAudioManager {
 
   async initialize(config?: AudioConfig): Promise<void> {
     try {
-      // Remove unused audioContext variable
-      new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext)();
+      // Create AudioContext using globalThis for cross-platform compatibility
+      const AudioContextClass =
+        globalThis.AudioContext ||
+        (globalThis as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
+      new AudioContextClass();
       this._isInitialized = true;
       this._fallbackMode = false;
 

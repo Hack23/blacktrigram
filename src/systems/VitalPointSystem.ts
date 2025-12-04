@@ -513,7 +513,7 @@ export class VitalPointSystem {
       meridians.forEach((meridianId) => {
         const currentDisruption = this.getMeridianDisruption(meridianId);
         const newDisruption = Math.min(
-          1.0,
+          1,
           currentDisruption + DISRUPTION_INCREMENT_PER_HIT
         );
         this.setMeridianDisruption(meridianId, newDisruption);

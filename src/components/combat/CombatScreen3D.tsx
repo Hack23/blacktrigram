@@ -587,12 +587,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     if (damageDone > 0 && combatState.roundStarted && !combatState.roundEnded) {
       // Determine damage type based on amount
-      const damageType =
-        damageDone >= 25
-          ? ("critical" as const)
-          : damageDone >= 20
-          ? ("vital" as const)
-          : ("normal" as const);
+      const getDamageType = (): "critical" | "vital" | "normal" => {
+        if (damageDone >= 25) return "critical";
+        if (damageDone >= 20) return "vital";
+        return "normal";
+      };
+      const damageType = getDamageType();
 
       // Add damage number at opponent position
       feedbackActions.addDamageNumber(
@@ -689,7 +689,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const roundWinner = validPlayers[winner];
 
       // Update match score using deferred callback
-      updateMatchScore(winner as 0 | 1);
+      updateMatchScore(winner);
 
       addCombatMessage("라운드 종료!", "Round Over!");
 
@@ -850,7 +850,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const roundWinner = validPlayers[winner];
 
       // Update match score using deferred callback
-      updateMatchScore(winner as 0 | 1);
+      updateMatchScore(winner);
 
       addCombatMessage(
         p1Defeated ? "플레이어 1 패배" : "플레이어 1 승리!",
@@ -1199,8 +1199,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               overflow: "auto",
             }}
           >
-            {combatState.combatMessages.slice(-5).map((msg, i) => (
-              <div key={i} style={{ fontSize: "12px", marginBottom: "4px" }}>
+            {combatState.combatMessages.slice(-5).map((msg, idx) => (
+              <div
+                key={`msg-${idx}-${msg.slice(0, 20)}`}
+                style={{ fontSize: "12px", marginBottom: "4px" }}
+              >
                 {msg}
               </div>
             ))}

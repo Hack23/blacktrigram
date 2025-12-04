@@ -904,7 +904,7 @@ export function calculateAnatomicalVulnerability(
   position: { x: number; y: number },
   meridianStates: Record<string, number> // flow effectiveness (0-1)
 ): number {
-  let totalVulnerability = 1.0;
+  let totalVulnerability = 1;
 
   const zone = getZoneByPosition(position);
   if (zone) {
