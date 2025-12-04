@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../types/constants";
 

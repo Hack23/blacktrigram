@@ -536,13 +536,13 @@ async function _generateOpenAI(
           const frame = queue.shift();
           if (!frame) break;
           try {
-            const opt = frame.options || {};
-            const model = opt.model || defaults.model;
-            const quality = opt.quality || defaults.quality;
-            const style = opt.style || defaults.style;
-            const background = opt.background || defaults.background;
-            const n = opt.n || defaults.n || 1;
-            const perSize = (opt.size as AllowedImageSize) || size;
+            const opt = frame.options ?? {};
+            const model = opt.model ?? defaults.model;
+            const quality = opt.quality ?? defaults.quality;
+            const style = opt.style ?? defaults.style;
+            const background = opt.background ?? defaults.background;
+            const n = opt.n ?? defaults.n ?? 1;
+            const perSize = (opt.size as AllowedImageSize) ?? size;
             const promptWithSeed =
               frame.seed !== undefined
                 ? `${frame.prompt}\nSeed:${frame.seed}`
@@ -609,7 +609,7 @@ async function generateWithExternalScript(
               scriptPath,
               frame.prompt,
               join(outRoot, frame.file),
-              defaults.size || "1024x1024",
+              defaults.size ?? "1024x1024",
               defaults.model,
             ]
           : [
@@ -839,9 +839,7 @@ async function run() {
   const guide = await loadGuide(opts.archetype);
   // Prefer CSV frames if available / requested
   let frames = await loadCsvFrames(opts.archetype, opts.csvPath);
-  if (!frames) {
-    frames = extractActionLines(guide);
-  }
+  frames ??= extractActionLines(guide);
   const { id: templateId, template } = extractTemplate(guide, opts.provider);
   const allFrames = buildPrompts(frames, template, opts.archetype).filter(
     (f) =>
@@ -894,7 +892,7 @@ async function run() {
         quality: opts.quality,
         style: opts.style,
         background: opts.background,
-        n: opts.n || 1,
+        n: opts.n ?? 1,
       }
     );
   } else if (opts.provider === "bedrock") {
@@ -925,8 +923,8 @@ async function run() {
       file: f.file,
       description: f.description,
       promptHash: hashPrompt(f.prompt),
-      finalFrameName: (f as any).finalFrameName || null,
-      seed: f.seed || undefined,
+      finalFrameName: (f as Record<string, unknown>).finalFrameName ?? null,
+      seed: f.seed ?? undefined,
     })),
   };
   await writeFile(

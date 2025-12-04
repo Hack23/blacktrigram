@@ -5,7 +5,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";

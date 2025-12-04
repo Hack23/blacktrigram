@@ -1,5 +1,6 @@
 import React from "react";
-import { MatchStatistics, PlayerMatchStats } from "../../../systems/combat";
+import { MatchStatistics } from "../../../systems/combat";
+import { PlayerMatchStats } from "../../../systems/player";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 
