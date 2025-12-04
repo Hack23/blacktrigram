@@ -22,7 +22,6 @@ export default defineConfig({
   experimentalMemoryManagement: true,
   numTestsKeptInMemory: 3, // Reduced from 5 for better memory management
   video: true, // Video recording enabled; videos are only saved for failed tests
-  videoUploadOnPasses: false, // Only upload videos for failed tests
   videoCompression: 50, // Optimized for faster encoding (larger files, but faster CI) - increased from 25
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
