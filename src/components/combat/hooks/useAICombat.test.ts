@@ -601,8 +601,8 @@ describe("useAICombat", () => {
         })
       );
 
-      // Initial attacks tracked for reference
-      result.current.aiState.consecutiveAttacks;
+      // Initial attacks tracked for reference - verify it's a number
+      expect(typeof result.current.aiState.consecutiveAttacks).toBe("number");
 
       act(() => {
         vi.advanceTimersByTime(2000);

@@ -111,10 +111,10 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
   isMobile = false,
   minDisplayCombo = 2,
 }) => {
-  // Animation state - use state instead of refs for values read during render
+  // Animation state - all values that affect render must be in state
   const [scale, setScale] = useState(1);
   const [showMilestone, setShowMilestone] = useState(false);
-  const prevComboRef = useRef(combo);
+  const [prevCombo, setPrevCombo] = useState(combo);
   const milestoneTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
@@ -126,11 +126,11 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     return [0, 4.5, 0];
   }, []);
 
-  // Handle combo changes with useEffect
+  // Handle combo changes via useEffect - this is the proper React pattern
   useEffect(() => {
-    if (combo > prevComboRef.current) {
-      // Scale up on combo increment
-      setScale(1.3);
+    if (combo > prevCombo) {
+      // Scale up on combo increment - defer to avoid cascading renders
+      setTimeout(() => setScale(1.3), 0);
 
       // Clear previous scale timeout
       if (scaleTimeoutRef.current) {
@@ -143,7 +143,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
       // Check for milestone
       const milestone = getComboMilestone(combo);
       if (milestone) {
-        setShowMilestone(true);
+        setTimeout(() => setShowMilestone(true), 0);
         if (milestoneTimeoutRef.current) {
           clearTimeout(milestoneTimeoutRef.current);
         }
@@ -152,8 +152,9 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         }, 1500);
       }
     }
-    prevComboRef.current = combo;
-  }, [combo]);
+    // Defer prevCombo update to avoid cascading renders
+    setTimeout(() => setPrevCombo(combo), 0);
+  }, [combo, prevCombo]);
 
   // Cleanup
   useEffect(() => {
@@ -210,7 +211,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          transform: `scale(${scaleRef.current})`,
+          transform: `scale(${scale})`,
           transition: "transform 0.15s ease-out",
         }}
       >
@@ -260,7 +261,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         </div>
 
         {/* Milestone indicator */}
-        {showMilestoneRef.current && milestone && (
+        {showMilestone && milestone && (
           <div
             style={{
               marginTop: "8px",

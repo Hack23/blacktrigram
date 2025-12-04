@@ -76,11 +76,9 @@ export function usePlayerMovement(
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
-  // Use lazy initialization for performance.now() to avoid impure function during render
-  const lastUpdateTime = useRef<number | null>(null);
-  if (lastUpdateTime.current === null) {
-    lastUpdateTime.current = performance.now();
-  }
+  // Use useState lazy initializer for performance.now() to avoid impure function during render
+  const [initialTime] = useState(() => performance.now());
+  const lastUpdateTime = useRef(initialTime);
   const animationFrameId = useRef<number | null>(null);
 
   // Calculate if currently moving
@@ -235,8 +233,10 @@ export function usePlayerMovement(
     isMoving,
   ]);
 
-  // Keep updatePositionRef in sync
-  updatePositionRef.current = updatePosition;
+  // Keep updatePositionRef in sync via useEffect (not during render)
+  useEffect(() => {
+    updatePositionRef.current = updatePosition;
+  }, [updatePosition]);
 
   // Handle keyboard input
   useEffect(() => {

@@ -143,32 +143,26 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [adaptiveDifficulty, decisionTree]);
 
-  // AI state - use lazy initialization for Date.now()
-  const initialTimeRef = useRef<number | null>(null);
-  if (initialTimeRef.current === null) {
-    initialTimeRef.current = Date.now();
-  }
+  // AI state - use useState lazy initializer for Date.now()
+  const [aiState, setAiState] = useState<AIState>(() => {
+    const now = Date.now();
+    return {
+      nextAction: now,
+      targetPosition: player.position,
+      lastActionType: "idle",
+      consecutiveAttacks: 0,
+      actionCooldown: 500,
+      aggressionLevel: adjustedPersonality.aggressionLevel,
+    };
+  });
 
-  const [aiState, setAiState] = useState<AIState>(() => ({
-    nextAction: initialTimeRef.current!,
-    targetPosition: player.position,
-    lastActionType: "idle",
-    consecutiveAttacks: 0,
-    actionCooldown: 500,
-    aggressionLevel: adjustedPersonality.aggressionLevel,
-  }));
-
-  // Performance tracking - use lazy initialization pattern
+  // Performance tracking - use useState lazy initializer for refs that need Date.now()
   const lastDecisionTimeRef = useRef(0);
-  const matchStartTimeRef = useRef<number | null>(null);
-  if (matchStartTimeRef.current === null) {
-    matchStartTimeRef.current = Date.now();
-  }
+  const [initialMatchTime] = useState(() => Date.now());
+  const matchStartTimeRef = useRef(initialMatchTime);
   const previousDamageRef = useRef(0);
-  const nextActionRef = useRef<number | null>(null);
-  if (nextActionRef.current === null) {
-    nextActionRef.current = Date.now();
-  }
+  const [initialActionTime] = useState(() => Date.now());
+  const nextActionRef = useRef(initialActionTime);
   const lastWarningTimeRef = useRef(0);
 
   // Initialize previousDamageRef when round starts (issue #2529728007)

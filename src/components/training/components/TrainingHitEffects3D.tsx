@@ -83,6 +83,8 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   const [isActive, setIsActive] = useState(false);
   // Track particle count in state for render access
   const [hasParticles, setHasParticles] = useState(false);
+  // Track if we've initialized for this visibility cycle
+  const initializedRef = useRef(false);
 
   // Reusable objects to avoid allocations in animation loop
   const tempMatrix = useMemo(() => new THREE.Matrix4(), []);
@@ -93,10 +95,11 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   const particleCount = useMemo(() => getParticleCount(type), [type]);
   const color = useMemo(() => new THREE.Color(getEffectColor(type)), [type]);
 
-  // Initialize particles when effect becomes visible
+  // Initialize particles when effect becomes visible - use ref to track initialization
+  // and avoid setState during effect
   useEffect(() => {
-    if (visible && !isActive) {
-      setIsActive(true);
+    if (visible && !initializedRef.current) {
+      initializedRef.current = true;
 
       particlesRef.current = Array.from({ length: particleCount }, () => {
         // Random direction in sphere
@@ -118,7 +121,11 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
       });
       setHasParticles(particlesRef.current.length > 0);
     }
-  }, [visible, type, isActive, particleCount]);
+    // Reset initialization tracking when visibility changes to false
+    if (!visible) {
+      initializedRef.current = false;
+    }
+  }, [visible, type, particleCount]);
 
   // Animate particles
   useFrame((_, delta) => {

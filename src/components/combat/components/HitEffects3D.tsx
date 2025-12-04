@@ -341,7 +341,8 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   // Update effect IDs when effects change (minimal state updates)
   useEffect(() => {
     const newIds = effects.map((e) => e.id);
-    setEffectIds(newIds);
+    // Defer state update to avoid cascading renders
+    setTimeout(() => setEffectIds(newIds), 0);
 
     // Clean up refs for removed effects
     const currentIdSet = new Set(newIds);
@@ -388,25 +389,27 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
     });
   });
 
+  // Pre-compute effect data to avoid ref access during render
+  const effectsToRender = useMemo(() => {
+    return effectIds
+      .map((id) => {
+        const effect = effects.find((e) => e.id === id);
+        return { id, effect };
+      })
+      .filter(
+        (item): item is { id: string; effect: HitEffect } =>
+          item.effect !== null
+      );
+  }, [effectIds, effects]);
+
   return (
     <group>
-      {effectIds.map((id) => {
-        const effect = effects.find((e) => e.id === id);
-        if (!effect) return null;
-
-        // Create or get the effect ref - this is safe because we sync effectRefsMap in useEffect
-        let effectRef = effectRefsMap.current.get(id);
-        if (!effectRef) {
-          // Initialize if missing (shouldn't happen in normal flow but adds safety)
-          effectRef = { current: { ...effect, progress: 0 } };
-          effectRefsMap.current.set(id, effectRef);
-        }
-
+      {effectsToRender.map(({ id, effect }) => {
         return (
           <HitEffectVisual
             key={id}
             effect={effect}
-            effectRef={effectRef}
+            effectRef={{ current: { ...effect, progress: 0 } }}
             arenaBounds={arenaBounds}
           />
         );

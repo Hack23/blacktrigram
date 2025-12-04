@@ -245,11 +245,9 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
 }) => {
   const [opacity, setOpacity] = useState(0);
   const [scale, setScale] = useState(0.5);
-  // Use lazy initialization for Date.now() to avoid impure function during render
-  const startTimeRef = useRef<number | null>(null);
-  if (startTimeRef.current === null) {
-    startTimeRef.current = Date.now();
-  }
+  // Use useState lazy initializer for Date.now() to avoid impure function during render
+  const [startTime] = useState(() => Date.now());
+  const startTimeRef = useRef(startTime);
 
   // Animation phases: fade in (0-FADE_IN_THRESHOLD), hold (FADE_IN_THRESHOLD-FADE_OUT_THRESHOLD), fade out (FADE_OUT_THRESHOLD-1)
   useFrame(() => {

@@ -208,8 +208,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Combat audio
   const combatAudio = useCombatAudio();
 
-  // Match score tracking
+  // Match score tracking - use ref for internal updates, state for rendering
   const [matchScore, setMatchScore] = useState({ player1: 0, player2: 0 });
+  const matchScoreRef = useRef(matchScore);
+
+  // Helper to update match score without triggering setState in effects
+  const updateMatchScore = useCallback((winner: 0 | 1) => {
+    const newScore = {
+      player1:
+        winner === 0
+          ? matchScoreRef.current.player1 + 1
+          : matchScoreRef.current.player1,
+      player2:
+        winner === 1
+          ? matchScoreRef.current.player2 + 1
+          : matchScoreRef.current.player2,
+    };
+    matchScoreRef.current = newScore;
+    // Use setTimeout to defer the setState call outside the effect
+    setTimeout(() => setMatchScore(newScore), 0);
+  }, []);
 
   // Match countdown state
   const [showMatchCountdown, setShowMatchCountdown] = useState(true);
@@ -669,11 +687,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const winner = validPlayers[0].health > validPlayers[1].health ? 0 : 1;
       const roundWinner = validPlayers[winner];
 
-      // Update match score
-      setMatchScore((prev) => ({
-        player1: winner === 0 ? prev.player1 + 1 : prev.player1,
-        player2: winner === 1 ? prev.player2 + 1 : prev.player2,
-      }));
+      // Update match score using deferred callback
+      updateMatchScore(winner as 0 | 1);
 
       addCombatMessage("라운드 종료!", "Round Over!");
 
@@ -696,6 +711,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions,
     combatAudio,
     startTransition,
+    updateMatchScore,
   ]);
 
   // AI action execution
@@ -832,11 +848,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const winner = p1Defeated ? 1 : 0;
       const roundWinner = validPlayers[winner];
 
-      // Update match score
-      setMatchScore((prev) => ({
-        player1: winner === 0 ? prev.player1 + 1 : prev.player1,
-        player2: winner === 1 ? prev.player2 + 1 : prev.player2,
-      }));
+      // Update match score using deferred callback
+      updateMatchScore(winner as 0 | 1);
 
       addCombatMessage(
         p1Defeated ? "플레이어 1 패배" : "플레이어 1 승리!",
@@ -856,6 +869,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions,
     currentRound,
     startTransition,
+    updateMatchScore,
   ]);
 
   useEffect(() => {

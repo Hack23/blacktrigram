@@ -89,7 +89,8 @@ describe("Combat Type Guards", () => {
       obj: T,
       key: K
     ): Omit<T, K> => {
-      const { [key]: _, ...rest } = obj;
+      const { [key]: _omitted, ...rest } = obj;
+      void _omitted; // Suppress unused variable warning
       return rest as Omit<T, K>;
     };
 

@@ -12,10 +12,8 @@ export const VictoryAnimation3D: React.FC = () => {
   const particlesRef = useRef<THREE.Points>(null);
   const ringsRef = useRef<THREE.Group>(null);
 
-  // Create victory particles - use lazy initialization for random values
-  const particleDataRef = useRef<Float32Array | null>(null);
-
-  if (!particleDataRef.current) {
+  // Create victory particles - use useState with lazy initializer
+  const [particlePositions] = useState(() => {
     const count = 150;
     const positions = new Float32Array(count * 3);
 
@@ -30,10 +28,8 @@ export const VictoryAnimation3D: React.FC = () => {
       positions[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
     }
 
-    particleDataRef.current = positions;
-  }
-
-  const particlePositions = particleDataRef.current;
+    return positions;
+  });
 
   // Animate victory effects
   useFrame((state) => {
