@@ -51,6 +51,12 @@ jobs:
           echo "Version: ${VERSION}"
 
       - name: Setup Three.js Test Environment
+        env:
+          CYPRESS_VIDEO: true
+          # Suppress X11 keyboard configuration warnings
+          XKB_DEFAULT_RULES: evdev
+          XKB_DEFAULT_MODEL: pc105
+          XKB_DEFAULT_LAYOUT: us
         run: |
           echo "🔧 Setting up Three.js test environment for release validation..."
 
@@ -129,12 +135,15 @@ jobs:
         run: npx cypress verify
 
       - name: Start app and run Cypress tests with Three.js optimization
-        run: |
-          echo "🚀 Running Three.js E2E tests for release validation..."
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render" npm run test:e2e
         env:
           CYPRESS_VIDEO: false
           NODE_OPTIONS: "--max-old-space-size=4096"
+          XKB_DEFAULT_RULES: evdev
+          XKB_DEFAULT_MODEL: pc105
+          XKB_DEFAULT_LAYOUT: us
+        run: |
+          echo "🚀 Running Three.js E2E tests for release validation..."
+          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render" npm run test:e2e
 
       # Run tests with coverage
       - name: Run tests with coverage

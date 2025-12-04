@@ -28,6 +28,12 @@ jobs:
           cache: "npm"
 
       - name: Setup Three.js Test Environment
+        env:
+          CYPRESS_VIDEO: true
+          # Suppress X11 keyboard configuration warnings
+          XKB_DEFAULT_RULES: evdev
+          XKB_DEFAULT_MODEL: pc105
+          XKB_DEFAULT_LAYOUT: us
         run: |
           echo "🔧 Setting up Three.js test environment with optimized Chrome flags..."
 
@@ -153,6 +159,12 @@ jobs:
       actions: read # Required to use GitHub actions
       checks: write # Required to upload artifacts (implicit permission)
       pull-requests: write
+    env:
+      CYPRESS_VIDEO: true
+      # Suppress X11 keyboard configuration warnings
+      XKB_DEFAULT_RULES: evdev
+      XKB_DEFAULT_MODEL: pc105
+      XKB_DEFAULT_LAYOUT: us
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
