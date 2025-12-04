@@ -3,6 +3,10 @@
 set -e
 
 export DISPLAY=:99
+# Suppress xkbcomp warnings
+export XKB_DEFAULT_RULES=evdev
+export XKB_DEFAULT_MODEL=pc105  
+export XKB_DEFAULT_LAYOUT=us
 
 # Install necessary packages if they are not present
 if ! dpkg -s xvfb >/dev/null 2>&1; then
