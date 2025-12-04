@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../types/common";
 import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { hexToRgbaString, hexColorToCSS } from "../../../utils/colorUtils";
 import { AbilityList } from "./AbilityList";
 import { StatBar } from "./StatBar";
 
@@ -75,19 +75,13 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
           isSelected ? KOREAN_COLORS.ACCENT_GOLD : color,
           isSelected ? 1 : 0.7
         ),
-        cardColor: `#${color.toString(16).padStart(6, "0")}`,
+        cardColor: hexColorToCSS(color),
         titleColor: isSelected
-          ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`
-          : `#${color.toString(16).padStart(6, "0")}`,
-        philosophyColor: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-          6,
-          "0"
-        )}`,
+          ? hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD)
+          : hexColorToCSS(color),
+        philosophyColor: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
         buttonBackground: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.9),
-        buttonText: `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
-          6,
-          "0"
-        )}`,
+        buttonText: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
         imageGlow: hexToRgbaString(color, 0.3),
       }),
       [color, isSelected]

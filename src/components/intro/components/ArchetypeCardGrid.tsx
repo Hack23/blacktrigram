@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { hexToRgbaString, hexColorToCSS } from "../../../utils/colorUtils";
 import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
 
 export interface ArchetypeCardGridProps {
@@ -47,10 +47,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       () => ({
         background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
         border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
-        headerColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
-          6,
-          "0"
-        )}`,
+        headerColor: hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
       }),
       []
     );
@@ -166,10 +163,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
             style={{
               fontSize: isMobile ? "12px" : "14px",
               fontFamily: FONT_FAMILY.KOREAN,
-              color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-                6,
-                "0"
-              )}`,
+              color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
               textAlign: "center",
               fontStyle: "italic",
             }}
@@ -217,10 +211,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
               marginTop: `${gap}px`,
               fontSize: "12px",
               fontFamily: FONT_FAMILY.KOREAN,
-              color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-                6,
-                "0"
-              )}`,
+              color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
               textAlign: "center",
               fontStyle: "italic",
             }}

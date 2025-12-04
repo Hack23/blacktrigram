@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { PlayerArchetype } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { EnhancedArchetypeDisplay, EnhancedArchetypeDisplayProps } from "./EnhancedArchetypeDisplay";
 import { ArchetypeDataShape } from "./ArchetypeDisplayHTML";
@@ -232,7 +231,7 @@ describe("EnhancedArchetypeDisplay", () => {
   });
 
   it("should use custom width and height for compact view", () => {
-    const { container } = render(
+    render(
       <EnhancedArchetypeDisplay {...defaultProps} width={1000} height={400} />
     );
 

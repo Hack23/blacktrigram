@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { hexToRgbaString, hexColorToCSS } from "../../../utils/colorUtils";
 
 export interface StatBarProps {
   readonly label: string; // Format: "Korean | English"
@@ -38,11 +38,8 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
         barBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 1),
         barFill: hexToRgbaString(color, 0.9),
         barBorder: hexToRgbaString(color, 0.7),
-        labelColor: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-          6,
-          "0"
-        )}`,
-        valueColor: `#${color.toString(16).padStart(6, "0")}`,
+        labelColor: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
+        valueColor: hexColorToCSS(color),
       }),
       [color]
     );

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { PlayerArchetype } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { hexToRgbaString, hexColorToCSS } from "../../../utils/colorUtils";
 import { ArchetypeCardGrid } from "./ArchetypeCardGrid";
 import { ArchetypeDisplayHTML, ArchetypeDataShape } from "./ArchetypeDisplayHTML";
 
@@ -82,10 +82,7 @@ export const EnhancedArchetypeDisplay: React.FC<
     const colors = useMemo(
       () => ({
         toggleButton: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.9),
-        toggleText: `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
-          6,
-          "0"
-        )}`,
+        toggleText: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
       }),
       []
     );

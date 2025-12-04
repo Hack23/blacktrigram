@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { hexToRgbaString, hexColorToCSS } from "../../../utils/colorUtils";
 
 export interface Ability {
   readonly korean: string;
@@ -28,11 +28,14 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
     const normalizedAbilities = useMemo(() => {
       return abilities.slice(0, maxAbilities).map((ability, index) => {
         if (typeof ability === "string") {
-          // Simple string format - no Korean translation
+          // TEMPORARY: This fallback violates PRIO 2 bilingual support guidelines.
+          // All abilities should use the object format with Korean/English fields.
+          // See: src/systems/types.ts PLAYER_ARCHETYPES_DATA for correct format.
+          // Replace with proper bilingual objects as soon as translations are available.
           return {
             id: `ability-${index}`,
             english: ability,
-            korean: ability, // Use English as fallback
+            korean: ability, // TEMPORARY: English used as Korean fallback
           };
         } else {
           // Object format with Korean/English
@@ -54,11 +57,8 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
           KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
           0.7
         ),
-        abilityText: `#${color.toString(16).padStart(6, "0")}`,
-        descriptionText: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-          6,
-          "0"
-        )}`,
+        abilityText: hexColorToCSS(color),
+        descriptionText: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
       }),
       [color]
     );
