@@ -8,7 +8,7 @@ export DISPLAY=:99
 if ! dpkg -s xvfb >/dev/null 2>&1; then
     echo "🔧 Installing Three.js test environment dependencies..."
     sudo apt-get update
-    sudo apt-get install -y --no-install-recommends \
+    sudo apt-get install -y \
         xvfb dbus dbus-x11 x11-utils \
         libgtk-3-0 libgtk2.0-0 \
         libnotify-dev libnss3 libxss1 \
@@ -83,7 +83,7 @@ else
     
     # Start Xvfb with explicit screen configuration
     # Run in background and capture output for debugging
-    Xvfb $DISPLAY -screen 0 1280x720x24 -ac -kbd +extension GLX +extension RANDR +render -nolisten tcp &
+    Xvfb $DISPLAY -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp &
     XVFB_PID=$!
     
     # Give Xvfb time to initialize
