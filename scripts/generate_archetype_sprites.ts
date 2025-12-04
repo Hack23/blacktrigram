@@ -150,7 +150,7 @@ function parseCLI(): CLIOptions {
   for (const raw of args.slice(provider === args[1] ? 2 : 1)) {
     if (!raw.startsWith("--")) continue;
     const [k, v] = raw.replace(/^--/, "").split("=");
-    opts[k] = v === undefined ? true : v;
+    opts[k] = v ?? true;
   }
   // size validation
   const requestedSize = (opts.size as string | undefined) ?? "1024x1024";
@@ -184,11 +184,11 @@ function parseCLI(): CLIOptions {
     ),
     dryRun: Boolean(opts["dry-run"]),
     rawNames: Boolean(opts["raw-names"]),
-    csvPath: (opts["csv"] as string | undefined) || undefined,
-    model: (opts["model"] as string) || "gpt-image-1",
-    quality: (opts["quality"] as string) || "standard",
-    style: (opts["style"] as string) || undefined,
-    background: (opts["background"] as string) || "transparent",
+    csvPath: (opts["csv"] as string | undefined) ?? undefined,
+    model: (opts["model"] as string) ?? "gpt-image-1",
+    quality: (opts["quality"] as string) ?? "standard",
+    style: (opts["style"] as string) ?? undefined,
+    background: (opts["background"] as string) ?? "transparent",
     n: opts["n"]
       ? Math.max(1, Math.min(4, parseInt(opts["n"] as string, 10)))
       : 1,
@@ -219,9 +219,7 @@ function extractTemplate(
   const candidates: Array<{ idx: number; txt: string; heading: string }> = [];
   // Capture headings for context
   const lines = markdown.split(/\r?\n/);
-  let _currentHeading = "";
   lines.forEach((line, _i) => {
-    if (/^#{1,6}\s/.test(line)) _currentHeading = line.trim();
     const fenceMatch = line.match(/^```/);
     if (fenceMatch) {
       // naive capture: reconstruct block
@@ -266,7 +264,7 @@ function extractTemplate(
       (c) =>
         c.txt.includes("{ACTION_LINE}") ||
         c.txt.includes("{ACTION_DESCRIPTION}")
-    ) || candidates[0];
+    ) ?? candidates[0];
 
   return {
     id: "default_template",
@@ -337,7 +335,7 @@ async function loadCsvFrames(
   pathHint?: string
 ): Promise<FrameDef[] | null> {
   const autoPath = join(GUIDE_DIR, "csv", `${archetype}_sprites.csv`); // e.g. src/assets/spritesheets/ai-guides/csv/musa_sprites.csv
-  const target = pathHint || autoPath;
+  const target = pathHint ?? autoPath;
   try {
     const raw = await readFile(target, "utf8");
     const lines = raw.split(/\r?\n/);
@@ -507,7 +505,7 @@ function hashPrompt(p: string): string {
 }
 
 // Has its OWN OpenAI implementation
-async function generateOpenAI(
+async function _generateOpenAI(
   size: AllowedImageSize,
   items: FrameDef[],
   outRoot: string,
