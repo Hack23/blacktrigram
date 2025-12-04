@@ -28,9 +28,11 @@ export const useCombatAudio = () => {
 
   // Cleanup all timeouts on unmount
   useEffect(() => {
+    // Copy ref value to local variable for cleanup
+    const timeoutIdsSet = timeoutIds.current;
     return () => {
-      timeoutIds.current.forEach(clearTimeout);
-      timeoutIds.current.clear();
+      timeoutIdsSet.forEach(clearTimeout);
+      timeoutIdsSet.clear();
     };
   }, []);
 

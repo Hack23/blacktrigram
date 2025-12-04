@@ -278,11 +278,13 @@ export class VariantSelector {
       return baseAsset.url;
     }
 
-    // Fix: Now TypeScript knows baseAsset.variations exists and is not empty
-    const randomIndex = Math.floor(
-      Math.random() * baseAsset.variations!.length
-    );
-    const selectedVariant = baseAsset.variations![randomIndex];
+    // TypeScript knows baseAsset.variations exists due to earlier check
+    const variations = baseAsset.variations;
+    if (!variations || variations.length === 0) {
+      return baseAsset.url;
+    }
+    const randomIndex = Math.floor(Math.random() * variations.length);
+    const selectedVariant = variations[randomIndex];
 
     console.log(`Random variant selected: ${selectedVariant}`);
     return selectedVariant;

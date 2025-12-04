@@ -1,21 +1,24 @@
 /**
  * MatchCountdown Component - Displays match start countdown sequence
- * 
+ *
  * Korean: 매치 시작 카운트다운 (Match Start Countdown)
- * 
+ *
  * Shows "Ready?" → "3... 2... 1..." → "Fight!" sequence with animations.
  * Implements Korean cyberpunk aesthetic with bilingual text support.
  * Plays audio cues for countdown and fight announcement.
- * 
+ *
  * @module components/combat/MatchCountdown
  * @category Combat UI
  */
 
 import React, { useEffect, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import {
+  MatchCountdownState,
+  useMatchCountdown,
+} from "../../../hooks/useMatchCountdown";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
-import { useMatchCountdown, MatchCountdownState } from "../../../hooks/useMatchCountdown";
 
 /**
  * Props for the MatchCountdown component
@@ -34,7 +37,10 @@ export interface MatchCountdownProps {
 /**
  * Get display text for current countdown state
  */
-function getDisplayText(state: MatchCountdownState, currentNumber: number): {
+function getDisplayText(
+  state: MatchCountdownState,
+  currentNumber: number
+): {
   ko: string;
   en: string;
 } | null {
@@ -52,7 +58,7 @@ function getDisplayText(state: MatchCountdownState, currentNumber: number): {
 
 /**
  * MatchCountdown Component
- * 
+ *
  * Displays match start countdown with:
  * - "Ready?" announcement (1 second)
  * - Countdown from 3 to 1 (1 second intervals)
@@ -62,7 +68,7 @@ function getDisplayText(state: MatchCountdownState, currentNumber: number): {
  * - Audio cues for countdown and fight
  * - Optional skip button
  * - Responsive sizing for mobile/tablet/desktop
- * 
+ *
  * Korean: 매치 시작 카운트다운 컴포넌트
  */
 export const MatchCountdown: React.FC<MatchCountdownProps> = ({
@@ -101,7 +107,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
       // Play fight announcement
       audio.playSFX("attack_heavy"); // Using placeholder - will be fight_start
     }
-  }, [state, currentNumber, audio.isAudioReady]);
+  }, [state, currentNumber, audio]);
 
   // Handle skip
   const handleSkip = () => {
@@ -114,18 +120,23 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
 
   // Calculate responsive font sizes
   const mainFontSize = isMobile
-    ? state === "fight" ? "72px" : "64px"
-    : state === "fight" ? "120px" : "96px";
-  
+    ? state === "fight"
+      ? "72px"
+      : "64px"
+    : state === "fight"
+    ? "120px"
+    : "96px";
+
   const subFontSize = isMobile
-    ? state === "fight" ? "48px" : "40px"
-    : state === "fight" ? "72px" : "56px";
+    ? state === "fight"
+      ? "48px"
+      : "40px"
+    : state === "fight"
+    ? "72px"
+    : "56px";
 
   // Convert hex colors to CSS - memoized for performance
-  const goldColor = useMemo(
-    () => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
-    []
-  );
+  const goldColor = useMemo(() => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);
   const cyanColor = useMemo(
     () => hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
     []
@@ -157,8 +168,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor:
-            state === "fight" ? `${darkBg}cc` : `${darkBg}ee`,
+          backgroundColor: state === "fight" ? `${darkBg}cc` : `${darkBg}ee`,
           zIndex: 1000,
           animation: state === "ready" ? "fadeIn 0.3s ease-in" : "none",
         }}

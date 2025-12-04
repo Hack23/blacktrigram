@@ -13,6 +13,7 @@ import {
 } from "../../../systems/ai/TrainingAI";
 import { PlayerState } from "../../../systems/player";
 import {
+  CombatState,
   PlayerArchetype,
   Position,
   TrigramStance,
@@ -78,7 +79,7 @@ function createAIPlayerState(
     balance: 100,
     momentum: 0,
     currentStance: stance,
-    combatState: "idle" as any,
+    combatState: CombatState.IDLE,
     position,
     isBlocking: false,
     isStunned: false,

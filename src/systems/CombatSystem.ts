@@ -94,7 +94,7 @@ export class CombatSystem implements CombatSystemInterface {
       technique,
       attacker,
       defender,
-      vitalPointResult || {
+      vitalPointResult ?? {
         hit: false,
         damage: 0,
         effects: [],

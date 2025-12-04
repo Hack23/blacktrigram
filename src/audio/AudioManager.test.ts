@@ -282,7 +282,8 @@ describe("AudioManager", () => {
 
       const loadedAssets = audioManager.getLoadedAssets();
       const testAudio = loadedAssets.get("test_sfx");
-      const playSpy = vi.spyOn(testAudio!, 'play');
+      expect(testAudio).toBeDefined();
+      const playSpy = vi.spyOn(testAudio as HTMLAudioElement, "play");
 
       audioManager.mute();
       await audioManager.playSoundEffect("test_sfx" as SoundEffectId);
@@ -406,9 +407,7 @@ describe("AudioManager", () => {
       const audioManager = new AudioManager();
       await audioManager.initialize(mockAudioConfig);
 
-      await expect(
-        audioManager.playDojiangAmbience()
-      ).resolves.not.toThrow();
+      await expect(audioManager.playDojiangAmbience()).resolves.not.toThrow();
     });
   });
 
@@ -468,9 +467,7 @@ describe("AudioManager", () => {
         volume: 1.0,
       });
 
-      await expect(
-        audioManager.playVoice("test_voice")
-      ).resolves.not.toThrow();
+      await expect(audioManager.playVoice("test_voice")).resolves.not.toThrow();
     });
 
     it("should stop all sounds", async () => {
@@ -512,10 +509,10 @@ describe("AudioManager", () => {
       });
 
       await audioManager.playMusic("test_music" as MusicTrackId);
-      
+
       // Use a short fade duration for testing
       await audioManager.fadeOut(100);
-      
+
       expect(audioManager.currentMusicTrack).toBeNull();
     });
 
@@ -535,7 +532,7 @@ describe("AudioManager", () => {
       });
 
       await audioManager.fadeIn("test_music" as MusicTrackId, 100);
-      
+
       expect(audioManager.currentMusicTrack).toBe("test_music");
     });
 
@@ -566,8 +563,12 @@ describe("AudioManager", () => {
       });
 
       await audioManager.playMusic("music1" as MusicTrackId);
-      await audioManager.crossfade("music1" as MusicTrackId, "music2" as MusicTrackId, 100);
-      
+      await audioManager.crossfade(
+        "music1" as MusicTrackId,
+        "music2" as MusicTrackId,
+        100
+      );
+
       expect(audioManager.currentMusicTrack).toBe("music2");
     });
 
@@ -583,7 +584,7 @@ describe("AudioManager", () => {
       await audioManager.initialize(mockAudioConfig);
 
       await audioManager.fadeIn("nonexistent_music" as MusicTrackId, 100);
-      
+
       expect(audioManager.currentMusicTrack).toBeNull();
     });
   });
@@ -593,7 +594,7 @@ describe("AudioManager", () => {
       // Temporarily break AudioContext
       const originalAudioContext = global.AudioContext;
       const originalWebkitAudioContext = (global as any).webkitAudioContext;
-      
+
       delete (global as any).AudioContext;
       delete (global as any).webkitAudioContext;
 
@@ -702,7 +703,7 @@ describe("AudioManager", () => {
 
     it("should have initialized getter as alias", () => {
       const audioManager = new AudioManager();
-      
+
       expect(audioManager.initialized).toBe(false);
       expect(audioManager.isInitialized).toBe(false);
     });
@@ -733,7 +734,9 @@ describe("AudioManager", () => {
 
       // Create an asset but make play fail
       const mockFailingAudio = new MockAudioElement();
-      mockFailingAudio.play = vi.fn(() => Promise.reject(new Error("Play failed")));
+      mockFailingAudio.play = vi.fn(() =>
+        Promise.reject(new Error("Play failed"))
+      );
 
       await audioManager.loadAsset({
         id: "failing_sfx" as SoundEffectId,
@@ -748,7 +751,10 @@ describe("AudioManager", () => {
 
       // UNSAFE: Cast readonly to mutable for test injection
       // This is acceptable in tests but should never be done in production code
-      const loadedAssets = audioManager.getLoadedAssets() as Map<string, HTMLAudioElement>;
+      const loadedAssets = audioManager.getLoadedAssets() as Map<
+        string,
+        HTMLAudioElement
+      >;
       loadedAssets.set("failing_sfx", mockFailingAudio as any);
 
       // Should not throw despite play failing

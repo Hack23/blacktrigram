@@ -251,7 +251,7 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
 
   // Animation phases: fade in (0-FADE_IN_THRESHOLD), hold (FADE_IN_THRESHOLD-FADE_OUT_THRESHOLD), fade out (FADE_OUT_THRESHOLD-1)
   useFrame(() => {
-    const elapsed = Date.now() - startTimeRef.current!;
+    const elapsed = Date.now() - startTimeRef.current;
     const progress = Math.min(elapsed / duration, 1);
 
     if (progress < FADE_IN_THRESHOLD) {

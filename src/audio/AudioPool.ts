@@ -145,8 +145,9 @@ export class AudioElementPool {
     audioSrc: string,
     config?: PoolConfig
   ): ObjectPool<HTMLAudioElement> {
-    if (this.pools.has(assetId)) {
-      return this.pools.get(assetId)!;
+    const existingPool = this.pools.get(assetId);
+    if (existingPool) {
+      return existingPool;
     }
 
     const poolConfig = { ...this.defaultConfig, ...config };

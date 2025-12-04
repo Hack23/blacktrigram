@@ -574,10 +574,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return map;
   }, [techniqueSelection.activeCooldowns]);
 
+  // Extract player health values for dependency arrays
+  const player1Health = validPlayers[0].health;
+  const player2Health = validPlayers[1].health;
+
   // Watch for player 2 health decrease to trigger damage feedback
-  const lastPlayer2HealthRef = useRef(validPlayers[1].health);
+  const lastPlayer2HealthRef = useRef(player2Health);
   useEffect(() => {
-    const currentHealth = validPlayers[1].health;
+    const currentHealth = player2Health;
     const previousHealth = lastPlayer2HealthRef.current;
     const damageDone = previousHealth - currentHealth;
 
@@ -613,7 +617,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     lastPlayer2HealthRef.current = currentHealth;
   }, [
-    validPlayers[1].health,
+    player2Health,
+    validPlayers,
     playerPositions,
     feedbackActions,
     combatState.roundStarted,
@@ -621,9 +626,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   ]);
 
   // Watch for player 1 health decrease (AI attacks player)
-  const lastPlayer1HealthRef = useRef(validPlayers[0].health);
+  const lastPlayer1HealthRef = useRef(player1Health);
   useEffect(() => {
-    const currentHealth = validPlayers[0].health;
+    const currentHealth = player1Health;
     const previousHealth = lastPlayer1HealthRef.current;
     const damageDone = previousHealth - currentHealth;
 
@@ -640,7 +645,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     lastPlayer1HealthRef.current = currentHealth;
   }, [
-    validPlayers[0].health,
+    player1Health,
+    validPlayers,
     playerPositions,
     feedbackActions,
     combatState.roundStarted,
@@ -858,7 +864,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
   }, [
     validPlayers,
-    onGameEnd,
     addCombatMessage,
     combatState.roundEnded,
     combatActions,
@@ -869,7 +874,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   useEffect(() => {
     checkGameEnd();
-  }, [validPlayers[0].health, validPlayers[1].health, checkGameEnd]);
+  }, [player1Health, player2Health, checkGameEnd]);
 
   // Keyboard input handling
   useEffect(() => {
