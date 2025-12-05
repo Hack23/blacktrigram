@@ -102,6 +102,8 @@ export const useWebGLContextLossHandler = (
       cleanupFn = attachListeners(canvas);
     } else {
       // Canvas not yet mounted, use MutationObserver to wait for it
+      console.warn("useWebGLContextLossHandler: No canvas element found");
+      
       const observer = new MutationObserver(() => {
         canvas = document.querySelector("canvas");
         if (canvas) {
