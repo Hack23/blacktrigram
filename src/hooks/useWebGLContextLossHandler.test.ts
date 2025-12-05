@@ -109,7 +109,7 @@ describe('useWebGLContextLossHandler', () => {
     
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     
-    renderHook(() => useWebGLContextLossHandler());
+    const { unmount } = renderHook(() => useWebGLContextLossHandler());
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'useWebGLContextLossHandler: No canvas element found'
@@ -117,7 +117,10 @@ describe('useWebGLContextLossHandler', () => {
 
     consoleWarnSpy.mockRestore();
     
-    // Re-add canvas for cleanup
+    // Unmount before re-adding canvas to avoid cleanup issues
+    unmount();
+    
+    // Re-add canvas for cleanup in afterEach
     canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
   });
