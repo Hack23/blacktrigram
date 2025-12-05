@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.58% </span>
+                <span class="strong">43.75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/34</span>
+                <span class='fraction'>21/48</span>
             </div>
         
             
@@ -656,7 +656,12 @@
 <a name='L591'></a><a href='#L591'>591</a>
 <a name='L592'></a><a href='#L592'>592</a>
 <a name='L593'></a><a href='#L593'>593</a>
-<a name='L594'></a><a href='#L594'>594</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L594'></a><a href='#L594'>594</a>
+<a name='L595'></a><a href='#L595'>595</a>
+<a name='L596'></a><a href='#L596'>596</a>
+<a name='L597'></a><a href='#L597'>597</a>
+<a name='L598'></a><a href='#L598'>598</a>
+<a name='L599'></a><a href='#L599'>599</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1233,7 +1238,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1723,11 +1733,11 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
               /&gt;
             &lt;/div&gt;
 &nbsp;
-            {/* Top Right - Training Stats */}
+            {/* Top Right - Training Stats (below VolumeControl) */}
             &lt;div
               style={{
                 position: "absolute",
-                top: 20,
+                top: isMobile ? 90 : 120, // Leave room for VolumeControl above
                 right: 20,
                 pointerEvents: "all",
                 display: "flex",
@@ -1736,7 +1746,6 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                 alignItems: "flex-end",
               }}
             &gt;
-              &lt;VolumeControl position="custom" compact={isMobile} /&gt;
               &lt;TrainingStatsHTML
                 stats={stats}
                 isMobile={isMobile}
@@ -1747,8 +1756,8 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
             &lt;div
               style={{
                 position: "absolute",
-                bottom: 20,
-                left: 20,
+                bottom: isMobile ? 100 : 110,
+                left: isMobile ? 10 : 20,
                 pointerEvents: "all",
               }}
             &gt;
@@ -1763,8 +1772,8 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
             &lt;div
               style={{
                 position: "absolute",
-                bottom: 20,
-                right: 20,
+                bottom: isMobile ? 100 : 110,
+                right: isMobile ? 10 : 20,
                 pointerEvents: "all",
               }}
             &gt;
@@ -1797,10 +1806,12 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
             &lt;div
               style={{
                 position: "absolute",
-                bottom: 20,
+                bottom: isMobile ? 25 : 35,
                 left: "50%",
                 transform: "translateX(-50%)",
                 pointerEvents: "all",
+                minHeight: "50px",
+                zIndex: 100,
               }}
             &gt;
               &lt;style&gt;
@@ -1809,14 +1820,15 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                     background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
                     border: none;
                     border-radius: 8px;
-                    padding: 8px 16px;
-                    font-size: ${isMobile ? "12px" : "14px"};
+                    padding: ${isMobile ? "10px 16px" : "12px 24px"};
+                    font-size: ${isMobile ? "14px" : "16px"};
                     font-weight: bold;
                     font-family: ${FONT_FAMILY.KOREAN};
                     color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
                     box-shadow: 0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)};
+                    min-height: 40px;
                   }
                   .training-return-menu-btn:hover {
                     transform: scale(1.05);
@@ -1837,6 +1849,9 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
           &lt;/div&gt;
         &lt;/Html&gt;
       &lt;/Canvas&gt;
+&nbsp;
+      {/* Volume Control - positioned outside Canvas to maintain AudioProvider context */}
+      &lt;VolumeControl position="top-right" compact={isMobile} /&gt;
     &lt;/div&gt;
   );
 };
@@ -1849,7 +1864,7 @@ export default TrainingScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T06:22:00.848Z
+                at 2025-12-05T01:28:04.797Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>49/49</span>
+                <span class='fraction'>50/50</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>49/49</span>
+                <span class='fraction'>50/50</span>
             </div>
         
             
@@ -280,7 +280,23 @@
 <a name='L215'></a><a href='#L215'>215</a>
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -388,8 +404,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -467,6 +487,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -486,6 +511,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -499,25 +525,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * useRoundTransition Hook - Manages round transition state and timing
- * 
+ *
  * Korean: 라운드 전환 훅 (Round Transition Hook)
- * 
+ *
  * Handles the state machine for round transitions:
  * - idle: Normal combat state
  * - announcing: Showing round announcement
  * - countdown: Counting down to next round
  * - transitioning: Brief transition to next round
- * 
+ *
  * @module hooks/useRoundTransition
  * @category Combat Hooks
  */
 &nbsp;
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlayerState } from "../systems";
 &nbsp;
 /**
  * Round transition states
- * 
+ *
  * Korean: 라운드 전환 상태
  */
 export type RoundTransitionState =
@@ -547,7 +573,10 @@ export interface UseRoundTransitionResult {
   /** Whether announcement should be visible */
   readonly showAnnouncement: boolean;
   /** Start round transition sequence */
-  readonly startTransition: (winner: PlayerState | null, roundNumber: number) =&gt; void;
+  readonly startTransition: (
+    winner: PlayerState | null,
+    roundNumber: number
+  ) =&gt; void;
   /** Skip countdown and proceed immediately */
   readonly skipCountdown: () =&gt; void;
   /** Reset transition state to idle */
@@ -569,18 +598,18 @@ const DEFAULT_CONFIG: Required&lt;RoundTransitionConfig&gt; = {
 &nbsp;
 /**
  * useRoundTransition Hook
- * 
+ *
  * Manages the complete round transition flow:
  * 1. Idle state during normal combat
  * 2. Announcing state shows round results
  * 3. Countdown state counts down to next round
  * 4. Transitioning state briefly transitions to next round
  * 5. Returns to idle for next round
- * 
+ *
  * @param config - Configuration for transition timings
  * @param onTransitionComplete - Callback when transition completes
  * @returns Round transition state and control functions
- * 
+ *
  * @example
  * ```typescript
  * const {
@@ -595,7 +624,7 @@ const DEFAULT_CONFIG: Required&lt;RoundTransitionConfig&gt; = {
  *     initializeNextRound();
  *   }
  * );
- * 
+ *
  * // When round ends
  * startTransition(winner, roundNumber);
  * ```
@@ -604,9 +633,13 @@ export function useRoundTransition(
   config: RoundTransitionConfig = {},
   onTransitionComplete?: () =&gt; void
 ): UseRoundTransitionResult {
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config };
+  const mergedConfig = useMemo(
+    () =&gt; ({ ...DEFAULT_CONFIG, ...config }),
+    [config]
+  );
 &nbsp;
-  const [transitionState, setTransitionState] = useState&lt;RoundTransitionState&gt;("idle");
+  const [transitionState, setTransitionState] =
+    useState&lt;RoundTransitionState&gt;("idle");
   const [roundWinner, setRoundWinner] = useState&lt;PlayerState | null&gt;(null);
   const [currentRoundNumber, setCurrentRoundNumber] = useState(0);
 &nbsp;
@@ -649,7 +682,7 @@ export function useRoundTransition(
         countdownTimer.current = setTimeout(() =&gt; {
           countdownActive.current = false;
           setTransitionState("transitioning");
-          
+&nbsp;
           // Complete transition after brief delay
           transitionTimer.current = setTimeout(() =&gt; {
             setTransitionState("idle");
@@ -672,14 +705,19 @@ export function useRoundTransition(
       clearTimers();
       countdownActive.current = false;
       setTransitionState("transitioning");
-      
+&nbsp;
       // Complete transition after brief delay
       transitionTimer.current = setTimeout(() =&gt; {
         setTransitionState("idle");
         onTransitionComplete?.();
       }, mergedConfig.transitionDuration);
     }
-  }, [transitionState, clearTimers, mergedConfig.transitionDuration, onTransitionComplete]);
+  }, [
+    transitionState,
+    clearTimers,
+    mergedConfig.transitionDuration,
+    onTransitionComplete,
+  ]);
 &nbsp;
   /**
    * Reset transition to idle state
@@ -704,7 +742,8 @@ export function useRoundTransition(
 &nbsp;
   return {
     transitionState,
-    showAnnouncement: transitionState === "announcing" || transitionState === "countdown",
+    showAnnouncement:
+      transitionState === "announcing" || transitionState === "countdown",
     startTransition,
     skipCountdown,
     resetTransition,
@@ -721,7 +760,7 @@ export default useRoundTransition;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T06:22:00.727Z
+                at 2025-12-05T01:28:04.662Z
             </div>
         <script src="../prettify.js"></script>
         <script>

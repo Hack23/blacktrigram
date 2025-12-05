@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.33% </span>
+                <span class="strong">65.65% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>67/101</span>
+                <span class='fraction'>65/99</span>
             </div>
         
             
@@ -533,7 +533,11 @@
 <a name='L468'></a><a href='#L468'>468</a>
 <a name='L469'></a><a href='#L469'>469</a>
 <a name='L470'></a><a href='#L470'>470</a>
-<a name='L471'></a><a href='#L471'>471</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -678,12 +682,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">148x</span>
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -694,6 +697,11 @@
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -759,7 +767,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -769,8 +779,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">148x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1005,7 +1013,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Player3DModel - 3D character representation for combat
- * 
+ *
  * Uses simple geometries for performance while maintaining Korean aesthetic
  */
 &nbsp;
@@ -1136,9 +1144,7 @@ export const Player3DModel: React.FC&lt;Player3DModelProps&gt; = ({
       isLowHealth: healthPercent &lt; 0.3,
       isHighKi: kiPercent &gt; 0.8,
       shouldGlow:
-        playerState.isBlocking ||
-        playerState.isCountering ||
-        kiPercent &gt; 0.7,
+        playerState.isBlocking || playerState.isCountering || kiPercent &gt; 0.7,
     };
   }, [
     playerState.health,
@@ -1151,9 +1157,10 @@ export const Player3DModel: React.FC&lt;Player3DModelProps&gt; = ({
 &nbsp;
   // Cache material reference on mount
   useEffect(() =&gt; {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (bodyRef.current &amp;&amp; bodyRef.current.material) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (bodyRef.current?.material) {
 <span class="cstat-no" title="statement not covered" >      if ("emissiveIntensity" in bodyRef.current.material) {</span>
-<span class="cstat-no" title="statement not covered" >        bodyMaterialRef.current = bodyRef.current.material as THREE.MeshStandardMaterial;</span>
+<span class="cstat-no" title="statement not covered" >        bodyMaterialRef.current = bodyRef.current</span>
+          .material as THREE.MeshStandardMaterial;
       }
     }
   }, []);
@@ -1164,7 +1171,12 @@ export const Player3DModel: React.FC&lt;Player3DModelProps&gt; = ({
     if (visualStates.isLowHealth) return KOREAN_COLORS.ACCENT_RED;
     <span class="missing-if-branch" title="else path not taken" >E</span>if (visualStates.isHighKi) return KOREAN_COLORS.PRIMARY_CYAN;
 <span class="cstat-no" title="statement not covered" >    return archetypeColors.primary;</span>
-  }, [playerState.isStunned, visualStates.isLowHealth, visualStates.isHighKi, archetypeColors.primary]);
+  }, [
+    playerState.isStunned,
+    visualStates.isLowHealth,
+    visualStates.isHighKi,
+    archetypeColors.primary,
+  ]);
 &nbsp;
   // Stance color
   const stanceColor = useMemo(
@@ -1229,8 +1241,10 @@ export const Player3DModel: React.FC&lt;Player3DModelProps&gt; = ({
     }
 &nbsp;
     // Ki aura rotation - use fresh state values to avoid stale closure
-    const shouldGlow = <span class="cstat-no" title="statement not covered" >playerState.isBlocking || playerState.isCountering || </span>
-                       (playerState.ki / playerState.maxKi) &gt; 0.7;
+    const shouldGlow =
+<span class="cstat-no" title="statement not covered" >      playerState.isBlocking ||</span>
+      playerState.isCountering ||
+      playerState.ki / playerState.maxKi &gt; 0.7;
 <span class="cstat-no" title="statement not covered" >    if (shouldGlow) {</span>
 <span class="cstat-no" title="statement not covered" >      groupRef.current.rotation.y = state.clock.elapsedTime * 0.5;</span>
     } else {
@@ -1344,9 +1358,7 @@ export const Player3DModel: React.FC&lt;Player3DModelProps&gt; = ({
       {playerState.isCountering &amp;&amp; (
         &lt;mesh position={[0, 1.5, 0]}&gt;
           &lt;torusGeometry args={[0.4, 0.05, 8, 32]} /&gt;
-          &lt;meshBasicMaterial
-            color={KOREAN_COLORS.ACCENT_PURPLE}
-          /&gt;
+          &lt;meshBasicMaterial color={KOREAN_COLORS.ACCENT_PURPLE} /&gt;
         &lt;/mesh&gt;
       )}
 &nbsp;
@@ -1480,7 +1492,7 @@ export default Player3DModel;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T06:22:00.727Z
+                at 2025-12-05T01:28:04.662Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -229,7 +229,9 @@
 <a name='L164'></a><a href='#L164'>164</a>
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -359,6 +361,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">112x</span>
 <span class="cline-any cline-yes">112x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">112x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">112x</span>
@@ -397,23 +401,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * usePreloadCombatAudio Hook - Preload Critical Combat Audio Assets
- * 
+ *
  * Preloads essential combat audio assets when CombatScreen3D mounts
  * to ensure audio plays without delay during combat.
- * 
+ *
  * This hook loads:
  * - Attack sounds (light, medium, heavy, critical)
  * - Hit reaction sounds (all intensities)
  * - Block and dodge sounds
  * - Stance change sounds
  * - Combat theme music
- * 
+ *
  * @returns Loading state and error information
  */
 &nbsp;
-import { useEffect, useState, useCallback } from "react";
-import { useAudio } from "../../../audio/AudioProvider";
+import { useCallback, useEffect, useState } from "react";
 import { audioAssetRegistry } from "../../../audio/AudioAssetRegistry";
+import { useAudio } from "../../../audio/AudioProvider";
 import type { AudioAsset } from "../../../audio/types";
 &nbsp;
 export interface PreloadCombatAudioState {
@@ -421,17 +425,17 @@ export interface PreloadCombatAudioState {
    * Whether audio assets are currently loading
    */
   readonly isLoading: boolean;
-  
+&nbsp;
   /**
    * Whether all critical assets have been loaded
    */
   readonly isLoaded: boolean;
-  
+&nbsp;
   /**
    * Any errors that occurred during loading
    */
   readonly errors: readonly string[];
-  
+&nbsp;
   /**
    * Progress percentage (0-100)
    */
@@ -451,48 +455,48 @@ const CRITICAL_COMBAT_ASSETS = [
   "attack_light",
   "attack_medium",
   "attack_heavy",
-  
+&nbsp;
   // Hit reactions (essential feedback)
   "hit_light_1",
   "hit_medium_1",
   "hit_heavy_1",
   "hit_critical_1",
-  
+&nbsp;
   // Defense sounds
   "block_success_1",
   "block_break_1",
   "dodge_1",
-  
+&nbsp;
   // Movement
   "stance_change_1",
-  
+&nbsp;
   // Music
   "combat_theme",
 ] as const;
 &nbsp;
 /**
  * Hook to preload critical combat audio assets
- * 
+ *
  * This hook preloads essential combat sounds when the component mounts,
  * ensuring audio plays without delay during combat. It loads assets
  * sequentially to avoid overwhelming the browser and provides progress
  * tracking for loading indicators.
- * 
+ *
  * @returns Preload state with loading status, progress, and errors
- * 
+ *
  * @example
  * ```tsx
  * const CombatScreen3D = () =&gt; {
  *   const { isLoading, isLoaded, progress, errors } = usePreloadCombatAudio();
- *   
+ *
  *   if (isLoading) {
  *     return &lt;LoadingScreen progress={progress} /&gt;;
  *   }
- *   
+ *
  *   if (errors.length &gt; 0) {
  *     console.warn('Some audio failed to load:', errors);
  *   }
- *   
+ *
  *   return &lt;CombatScene /&gt;;
  * };
  * ```
@@ -524,8 +528,10 @@ export function usePreloadCombatAudio(): PreloadCombatAudioState {
         // Get asset from registry (try SFX first, then Music)
         // Need to use type union since getSFX returns SoundEffect and getMusic returns MusicTrack
         const sfxAsset = audioAssetRegistry.getSFX(assetId);
-        const musicAsset = sfxAsset ? undefined : audioAssetRegistry.getMusic(assetId);
-        const asset = sfxAsset || musicAsset;
+        const musicAsset = sfxAsset
+          ? undefined
+          : audioAssetRegistry.getMusic(assetId);
+        const asset = sfxAsset ?? musicAsset;
 &nbsp;
         if (asset) {
           await audio.loadAsset(asset as AudioAsset);
@@ -539,7 +545,7 @@ export function usePreloadCombatAudio(): PreloadCombatAudioState {
       }
 &nbsp;
       loadedCount++;
-      setState(prev =&gt; ({
+      setState((prev) =&gt; ({
         ...prev,
         progress: Math.round((loadedCount / totalCount) * 100),
       }));
@@ -568,7 +574,7 @@ export default usePreloadCombatAudio;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-02T06:22:00.848Z
+                at 2025-12-05T01:28:04.797Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
