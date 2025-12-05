@@ -37,27 +37,31 @@ self.addEventListener("activate", (event) => {
 // Fetch event - NETWORK FIRST for JS/HTML, cache fallback for assets
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
-  
+
   // Skip caching for development servers and WebSocket
-  if (url.hostname.includes('.app.github.dev') ||
-      url.hostname.includes('gitpod.io') ||
-      url.protocol === 'ws:' ||
-      url.protocol === 'wss:') {
+  if (
+    url.hostname.includes(".app.github.dev") ||
+    url.hostname.includes("gitpod.io") ||
+    url.protocol === "ws:" ||
+    url.protocol === "wss:"
+  ) {
     return; // Let browser handle it normally
   }
-  
+
   // Network-first for HTML and JS (always get fresh)
-  if (event.request.destination === 'document' ||
-      event.request.destination === 'script' ||
-      url.pathname.endsWith('.js') ||
-      url.pathname.endsWith('.html')) {
+  if (
+    event.request.destination === "document" ||
+    event.request.destination === "script" ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".html")
+  ) {
     event.respondWith(
       fetch(event.request)
-        .then(response => {
+        .then((response) => {
           // Cache the fresh response
           if (response.ok) {
             const responseClone = response.clone();
-            caches.open(CACHE_NAME).then(cache => {
+            caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseClone);
             });
           }
@@ -67,7 +71,7 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
-  
+
   // Cache-first for static assets (images, fonts, audio)
   event.respondWith(
     caches
