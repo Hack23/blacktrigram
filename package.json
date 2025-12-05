@@ -107,7 +107,7 @@
     "mochawesome": "7.1.4",
     "mochawesome-merge": "5.1.0",
     "mochawesome-report-generator": "6.3.2",
-    "openai": "^6.9.1",
+    "openai": "^6.10.0",
     "playwright": "1.57.0",
     "rollup-plugin-analyzer": "^4.0.0",
     "start-server-and-test": "^2.1.3",
