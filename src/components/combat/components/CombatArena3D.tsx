@@ -1,6 +1,6 @@
 /**
  * CombatArena3D - Three.js 3D arena environment
- * 
+ *
  * Renders the 3D combat arena with Korean dojang aesthetic
  * Includes floor, lighting, and atmospheric effects
  */
@@ -40,23 +40,16 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
-          <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
+          <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
           <directionalLight
             position={[10, 10, 5]}
             intensity={1}
-            castShadow
-            shadow-mapSize={[2048, 2048]}
             color={KOREAN_COLORS.ACCENT_GOLD}
           />
           <pointLight
             position={[-10, 5, -5]}
-            intensity={0.5}
+            intensity={0.4}
             color={KOREAN_COLORS.ACCENT_BLUE}
-          />
-          <pointLight
-            position={[10, 5, 5]}
-            intensity={0.5}
-            color={KOREAN_COLORS.SECONDARY_MAGENTA}
           />
         </>
       )}
@@ -81,11 +74,7 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       )}
 
       {/* Arena floor - dojang mat */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0, 0]}
-        receiveShadow
-      >
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[20, 10]} />
         <meshStandardMaterial
           color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}

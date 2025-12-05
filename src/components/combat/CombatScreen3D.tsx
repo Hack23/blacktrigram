@@ -158,10 +158,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  // Track context loss count for debugging
+  const contextLossCountRef = useRef(0);
+
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in CombatScreen");
+      contextLossCountRef.current += 1;
     },
     onContextRestored: () => {
       console.log("✅ WebGL context restored in CombatScreen");
@@ -225,10 +229,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     setTimeout(() => setMatchScore(newScore), 0);
   }, []);
 
-  // Match countdown state
-  const [showMatchCountdown, setShowMatchCountdown] = useState(true);
+  // Internal round tracking (since parent may always pass currentRound=1)
+  const [internalRound, setInternalRound] = useState(currentRound);
+
+  // Match countdown state - DISABLED: skip countdown and start combat immediately
+  // Using state for hasShownMatchCountdown to avoid ref access during render
+  const [hasShownMatchCountdown, setHasShownMatchCountdown] = useState(true); // Already shown (skipped)
+  const [showMatchCountdown, setShowMatchCountdown] = useState(false); // Don't show
   const [showRoundStart, setShowRoundStart] = useState(false);
-  const [matchCountdownComplete, setMatchCountdownComplete] = useState(false);
+  const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
   // Round transition management
   const {
@@ -249,10 +258,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setRoundStarted(false);
       combatActions.setRoundDisplayStatus(null);
 
+      // Increment internal round counter for next round
+      setInternalRound((prev) => prev + 1);
+
       // Show round start announcement for rounds after the first
-      if (currentRound > 1) {
-        setShowRoundStart(true);
-      }
+      // (always true here since this callback runs after a round ends)
+      setShowRoundStart(true);
     }
   );
 
@@ -333,13 +344,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRef.current = validPlayers;
   }, [validPlayers]);
 
-  // Use refs for stable access to startTransition and currentRound
+  // Use refs for stable access to startTransition and internalRound
   const startTransitionRef = useRef(startTransition);
-  const currentRoundRef = useRef(currentRound);
+  const internalRoundRef = useRef(internalRound);
   useEffect(() => {
     startTransitionRef.current = startTransition;
-    currentRoundRef.current = currentRound;
-  }, [startTransition, currentRound]);
+    internalRoundRef.current = internalRound;
+  }, [startTransition, internalRound]);
 
   // Combat messages
   const addCombatMessage = useCallback(
@@ -363,12 +374,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const player2Health = currentPlayers[1].health;
 
       if (player1Health > player2Health) {
-        startTransitionRef.current(currentPlayers[0], currentRoundRef.current); // Player 1 wins round
+        startTransitionRef.current(currentPlayers[0], internalRoundRef.current); // Player 1 wins round
       } else if (player2Health > player1Health) {
-        startTransitionRef.current(currentPlayers[1], currentRoundRef.current); // Player 2 wins round
+        startTransitionRef.current(currentPlayers[1], internalRoundRef.current); // Player 2 wins round
       } else {
         // Tie - no winner for this round
-        startTransitionRef.current(null, currentRoundRef.current);
+        startTransitionRef.current(null, internalRoundRef.current);
       }
     }
   }, [combatState.roundEnded, combatActions, addCombatMessage]);
@@ -394,7 +405,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Shared round start logic
   const startRound = useCallback(() => {
+    console.log("[CombatScreen3D] startRound called", {
+      roundStarted: combatState.roundStarted,
+      roundEnded: combatState.roundEnded,
+    });
     if (!combatState.roundStarted && !combatState.roundEnded) {
+      console.log(
+        "[CombatScreen3D] Starting round - setting roundStarted=true"
+      );
       combatActions.setRoundStarted(true);
       addCombatMessage("라운드 시작!", "Round Start!");
 
@@ -405,10 +423,44 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       } else {
         combatAudio.playCombatMusic(2000);
       }
+    } else {
+      console.log(
+        "[CombatScreen3D] startRound skipped - already started or ended"
+      );
     }
   }, [
     combatState.roundStarted,
     combatState.roundEnded,
+    combatActions,
+    addCombatMessage,
+    validPlayers,
+    combatAudio,
+  ]);
+
+  // Auto-start first round since countdown is disabled
+  // Use a separate ref for the timer to avoid cleanup canceling the start
+  const hasAutoStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (matchCountdownComplete && !hasAutoStartedRef.current) {
+      hasAutoStartedRef.current = true;
+      console.log("[CombatScreen3D] Auto-starting combat round...");
+      // Directly set roundStarted=true without going through startRound callback
+      // This avoids dependency issues with the callback reference
+      combatActions.setRoundStarted(true);
+      addCombatMessage("라운드 시작!", "Round Start!");
+
+      // Start music
+      const player = validPlayers[0];
+      if (player?.archetype) {
+        const playerArchetype = player.archetype.toLowerCase();
+        combatAudio.playArchetypeMusic(playerArchetype, 2000);
+      } else {
+        combatAudio.playCombatMusic(2000);
+      }
+    }
+  }, [
+    matchCountdownComplete,
     combatActions,
     addCombatMessage,
     validPlayers,
@@ -695,7 +747,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
       // Start round transition instead of immediately ending game
       setTimeout(() => {
-        startTransition(roundWinner, currentRound);
+        startTransition(roundWinner, internalRound);
       }, 1500);
     }
     // Note: Round start is now triggered by MatchCountdown and RoundStartAnnouncement components
@@ -707,7 +759,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayers,
     onGameEnd,
     addCombatMessage,
-    currentRound,
+    internalRound,
     isPaused,
     combatActions,
     combatAudio,
@@ -859,7 +911,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
       // Start round transition
       setTimeout(() => {
-        startTransition(roundWinner, currentRound);
+        startTransition(roundWinner, internalRound);
       }, 1500);
     }
   }, [
@@ -867,7 +919,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     addCombatMessage,
     combatState.roundEnded,
     combatActions,
-    currentRound,
+    internalRound,
     startTransition,
     updateMatchScore,
   ]);
@@ -967,7 +1019,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={[1, 2]}
-        shadows
+        shadows={false}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
           scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
@@ -1089,20 +1141,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           pointerEvents: "none",
         }}
       >
-        {/* Combat Timer - Top Center */}
-        {combatState.roundStarted &&
-          !combatState.roundEnded &&
-          matchCountdownComplete &&
-          !showRoundStart && (
-            <CombatTimer
-              formattedTime={timerState.formattedTime}
-              warningLevel={timerState.warningLevel}
-              isTimeUp={timerState.isTimeUp}
-              isMobile={isMobile}
-            />
-          )}
-
-        {/* Combat Title */}
+        {/* Combat Title - Top Center */}
         <div
           style={{
             position: "absolute",
@@ -1117,10 +1156,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               "0"
             )}`,
             textShadow: "0 0 4px rgba(0,0,0,0.8)",
+            zIndex: 200,
           }}
         >
           전투 | Combat
         </div>
+
+        {/* Combat Timer - Below Title */}
+        {combatState.roundStarted &&
+          !combatState.roundEnded &&
+          matchCountdownComplete &&
+          !showRoundStart && (
+            <CombatTimer
+              formattedTime={timerState.formattedTime}
+              warningLevel={timerState.warningLevel}
+              isTimeUp={timerState.isTimeUp}
+              isMobile={isMobile}
+              style={{ top: isMobile ? "45px" : "50px" }}
+            />
+          )}
 
         {/* Volume Control */}
         <VolumeControl position="top-right" compact={isMobile} />
@@ -1336,10 +1390,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
       )}
 
-      {/* Match Start Countdown Overlay */}
-      {showMatchCountdown && currentRound === 1 && (
+      {/* Match Start Countdown Overlay - only shows once at match start */}
+      {showMatchCountdown && !hasShownMatchCountdown && (
         <MatchCountdown
           onComplete={() => {
+            setHasShownMatchCountdown(true);
             setShowMatchCountdown(false);
             setMatchCountdownComplete(true);
             // Start the first round after countdown
@@ -1351,9 +1406,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       )}
 
       {/* Round Start Announcement for subsequent rounds */}
-      {showRoundStart && currentRound > 1 && (
+      {showRoundStart && internalRound > 1 && (
         <RoundStartAnnouncement
-          roundNumber={currentRound}
+          roundNumber={internalRound}
           duration={2}
           onComplete={() => {
             setShowRoundStart(false);

@@ -148,16 +148,32 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          // Use relative path for GitHub Pages deployment
-          // Check for development environment more robustly
+          // Check for development environment
           const isDevelopment =
-            window.location.hostname === 'localhost' ||
-            window.location.hostname === '127.0.0.1' ||
-            window.location.hostname.startsWith('192.168.') ||
-            window.location.hostname.startsWith('10.') || // Also common for local networks
-            // window.location.port is '' for default ports (80 for HTTP, 443 for HTTPS)
-            window.location.port !== '';
-          const swPath = isDevelopment ? '/sw.js' : './sw.js';
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1" ||
+            window.location.hostname.startsWith("192.168.") ||
+            window.location.hostname.startsWith("10.") ||
+            window.location.hostname.includes(".app.github.dev") || // GitHub Codespaces
+            window.location.hostname.includes("gitpod.io") || // Gitpod
+            window.location.port !== "";
+
+          // Skip SW in development to avoid caching issues
+          if (isDevelopment) {
+            console.log(
+              "Development environment detected - skipping ServiceWorker registration"
+            );
+            // Unregister any existing SW
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+              registrations.forEach((registration) => {
+                registration.unregister();
+                console.log("ServiceWorker unregistered for development");
+              });
+            });
+            return;
+          }
+
+          const swPath = "./sw.js";
           navigator.serviceWorker
             .register(swPath)
             .then((registration) => {

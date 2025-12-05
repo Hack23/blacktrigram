@@ -1,4 +1,11 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./App.css";
 import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
@@ -6,17 +13,19 @@ import { EndScreen3D } from "./components/endscreen";
 import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
 import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
-import { SplashScreen } from "./components/ui/SplashScreen";
 import { ErrorModal } from "./components/ui/ErrorModal";
 import { LoadingState } from "./components/ui/LoadingState";
+import { SplashScreen } from "./components/ui/SplashScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
-const TrainingScreen = lazy(
-  () => import("./components/training/TrainingScreen3D").then(m => ({ default: m.TrainingScreen3D }))
+const TrainingScreen = lazy(() =>
+  import("./components/training/TrainingScreen3D").then((m) => ({
+    default: m.TrainingScreen3D,
+  }))
 );
 
 function App() {
@@ -30,6 +39,12 @@ function App() {
   const [appReady, setAppReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [showAudioError, setShowAudioError] = useState(false);
+  // Transition state to allow WebGL cleanup between screens
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const pendingModeRef = useRef<{
+    mode: GameMode;
+    archetype?: PlayerArchetype;
+  } | null>(null);
 
   const audio = useAudio();
 
@@ -121,20 +136,40 @@ function App() {
     (mode: GameMode, archetype?: PlayerArchetype) => {
       console.log("🎮 Starting game mode:", mode, "with archetype:", archetype);
 
-      // ✅ NEW: Handle controls and philosophy as separate modes
-      if (mode === GameMode.CONTROLS || mode === GameMode.PHILOSOPHY) {
-        setGameMode(mode);
-        setIsGameActive(false); // These are not game modes, just screens
-      } else {
-        setGameMode(mode);
-        setIsGameActive(true);
-      }
+      // Store pending mode and start transition to allow WebGL cleanup
+      pendingModeRef.current = { mode, archetype };
+      setIsTransitioning(true);
 
-      setGameWinner(null);
-      setMatchStats(null);
-      if (archetype) {
-        setSelectedArchetype(archetype);
-      }
+      // Clear current mode first (unmounts Canvas)
+      setGameMode(null);
+      setIsGameActive(false);
+
+      // After brief delay, mount new screen
+      setTimeout(() => {
+        const pending = pendingModeRef.current;
+        if (!pending) return;
+
+        // ✅ NEW: Handle controls and philosophy as separate modes
+        if (
+          pending.mode === GameMode.CONTROLS ||
+          pending.mode === GameMode.PHILOSOPHY
+        ) {
+          setGameMode(pending.mode);
+          setIsGameActive(false); // These are not game modes, just screens
+        } else {
+          setGameMode(pending.mode);
+          setIsGameActive(true);
+        }
+
+        setGameWinner(null);
+        setMatchStats(null);
+        if (pending.archetype) {
+          setSelectedArchetype(pending.archetype);
+        }
+
+        setIsTransitioning(false);
+        pendingModeRef.current = null;
+      }, 100); // Small delay for WebGL cleanup
     },
     []
   );
@@ -200,13 +235,27 @@ function App() {
   );
 
   const handleReturnToMenu = useCallback(() => {
+    // Use same transition logic for return to menu
+    setIsTransitioning(true);
     setGameMode(null);
     setIsGameActive(false);
     setGameWinner(null);
     setMatchStats(null);
+    setTimeout(() => setIsTransitioning(false), 100);
   }, []);
 
   const renderCurrentScreen = () => {
+    // Show loading during screen transitions
+    if (isTransitioning) {
+      return (
+        <LoadingState
+          progress={undefined}
+          message="전환 중... | Transitioning..."
+          stage="assets"
+        />
+      );
+    }
+
     if (gameWinner && matchStats) {
       // ✅ NEW: Use EndScreen3D component
       return (

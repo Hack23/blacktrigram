@@ -63,11 +63,8 @@ export const useWebGLContextLossHandler = (
   });
 
   useEffect(() => {
-    const canvas = canvasRef?.current ?? document.querySelector("canvas");
-    if (!canvas) {
-      console.warn("useWebGLContextLossHandler: No canvas element found");
-      return;
-    }
+    let canvas = canvasRef?.current ?? document.querySelector("canvas");
+    let cleanupFn: (() => void) | undefined;
 
     const handleContextLost = (event: Event) => {
       console.warn("WebGL context lost - attempting to restore");
@@ -85,18 +82,49 @@ export const useWebGLContextLossHandler = (
       onContextRestoredRef.current?.();
     };
 
-    // Add event listeners for context loss/restoration
-    canvas.addEventListener("webglcontextlost", handleContextLost, false);
-    canvas.addEventListener(
-      "webglcontextrestored",
-      handleContextRestored,
-      false
-    );
+    const attachListeners = (canvasEl: HTMLCanvasElement) => {
+      canvasEl.addEventListener("webglcontextlost", handleContextLost, false);
+      canvasEl.addEventListener(
+        "webglcontextrestored",
+        handleContextRestored,
+        false
+      );
+      return () => {
+        canvasEl.removeEventListener("webglcontextlost", handleContextLost);
+        canvasEl.removeEventListener(
+          "webglcontextrestored",
+          handleContextRestored
+        );
+      };
+    };
+
+    if (canvas) {
+      cleanupFn = attachListeners(canvas);
+    } else {
+      // Canvas not yet mounted, use MutationObserver to wait for it
+      const observer = new MutationObserver(() => {
+        canvas = document.querySelector("canvas");
+        if (canvas) {
+          observer.disconnect();
+          cleanupFn = attachListeners(canvas);
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+
+      // Cleanup observer if component unmounts before canvas is found
+      return () => {
+        observer.disconnect();
+        cleanupFn?.();
+      };
+    }
 
     // Cleanup
     return () => {
-      canvas.removeEventListener("webglcontextlost", handleContextLost);
-      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
+      cleanupFn?.();
     };
   }, [autoRestore, canvasRef]);
 };

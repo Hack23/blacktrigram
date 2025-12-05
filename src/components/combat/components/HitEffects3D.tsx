@@ -336,16 +336,17 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
     Map<string, React.MutableRefObject<ActiveEffect | null>>
   >(new Map());
   const completedEffectsRef = useRef<Set<string>>(new Set());
-  const [effectIds, setEffectIds] = useState<string[]>([]);
 
-  // Update effect IDs when effects change (minimal state updates)
+  // Store effectRefs as state to avoid ref access during render
+  // This is updated in useEffect, not during render
+  const [effectRefsSnapshot, setEffectRefsSnapshot] = useState<
+    Map<string, React.MutableRefObject<ActiveEffect | null>>
+  >(new Map());
+
+  // Update effect refs when effects change (minimal state updates)
   useEffect(() => {
-    const newIds = effects.map((e) => e.id);
-    // Defer state update to avoid cascading renders
-    setTimeout(() => setEffectIds(newIds), 0);
-
     // Clean up refs for removed effects
-    const currentIdSet = new Set(newIds);
+    const currentIdSet = new Set(effects.map((e) => e.id));
     effectRefsMap.current.forEach((_ref, id) => {
       if (!currentIdSet.has(id)) {
         effectRefsMap.current.delete(id);
@@ -361,6 +362,10 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
         });
       }
     });
+
+    // Create a snapshot of the refs for use in render
+    // This is a new Map with the same refs (not a deep copy)
+    setEffectRefsSnapshot(new Map(effectRefsMap.current));
   }, [effects]);
 
   // Update progress using refs (no setState in useFrame)
@@ -391,25 +396,29 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
 
   // Pre-compute effect data to avoid ref access during render
   const effectsToRender = useMemo(() => {
-    return effectIds
-      .map((id) => {
-        const effect = effects.find((e) => e.id === id);
-        return { id, effect };
+    return effects
+      .map((effect) => {
+        const effectRef = effectRefsSnapshot.get(effect.id);
+        return { effect, effectRef };
       })
       .filter(
-        (item): item is { id: string; effect: HitEffect } =>
-          item.effect !== null
+        (
+          item
+        ): item is {
+          effect: HitEffect;
+          effectRef: React.MutableRefObject<ActiveEffect | null>;
+        } => item.effectRef !== undefined
       );
-  }, [effectIds, effects]);
+  }, [effects, effectRefsSnapshot]);
 
   return (
     <group>
-      {effectsToRender.map(({ id, effect }) => {
+      {effectsToRender.map(({ effect, effectRef }) => {
         return (
           <HitEffectVisual
-            key={id}
+            key={effect.id}
             effect={effect}
-            effectRef={{ current: { ...effect, progress: 0 } }}
+            effectRef={effectRef}
             arenaBounds={arenaBounds}
           />
         );

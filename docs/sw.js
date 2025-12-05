@@ -1,4 +1,4 @@
-const CACHE_NAME = "black-trigram-v1";
+const CACHE_NAME = "black-trigram-v2"; // Bump version to invalidate old cache
 const urlsToCache = [
   "/",
   "/index.html",
@@ -34,22 +34,52 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - NETWORK FIRST for JS/HTML, cache fallback for assets
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  
+  // Skip caching for development servers and WebSocket
+  if (url.hostname.includes('.app.github.dev') ||
+      url.hostname.includes('gitpod.io') ||
+      url.protocol === 'ws:' ||
+      url.protocol === 'wss:') {
+    return; // Let browser handle it normally
+  }
+  
+  // Network-first for HTML and JS (always get fresh)
+  if (event.request.destination === 'document' ||
+      event.request.destination === 'script' ||
+      url.pathname.endsWith('.js') ||
+      url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cache the fresh response
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+  
+  // Cache-first for static assets (images, fonts, audio)
   event.respondWith(
     caches
       .match(event.request)
       .then((response) => {
-        // Cache hit - return response
         if (response) {
           return response;
         }
 
-        // Clone the request
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest).then((response) => {
-          // Check if valid response
           if (
             !response ||
             response.status !== 200 ||
@@ -58,7 +88,6 @@ self.addEventListener("fetch", (event) => {
             return response;
           }
 
-          // Clone the response
           const responseToCache = response.clone();
 
           caches.open(CACHE_NAME).then((cache) => {
@@ -69,7 +98,6 @@ self.addEventListener("fetch", (event) => {
         });
       })
       .catch(() => {
-        // Offline fallback
         if (event.request.destination === "document") {
           return caches.match("/index.html");
         }

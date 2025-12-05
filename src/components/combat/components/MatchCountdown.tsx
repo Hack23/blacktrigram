@@ -11,7 +11,7 @@
  * @category Combat UI
  */
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import {
   MatchCountdownState,
@@ -71,6 +71,14 @@ function getDisplayText(
  *
  * Korean: 매치 시작 카운트다운 컴포넌트
  */
+// Static config outside component to prevent re-creation on each render
+const COUNTDOWN_CONFIG = {
+  readyDuration: 1,
+  countdownInterval: 1,
+  fightDuration: 1,
+  startNumber: 3,
+} as const;
+
 export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   onComplete,
   isMobile,
@@ -79,21 +87,19 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
 }) => {
   const audio = useAudio();
 
-  // Use match countdown hook
+  // Use match countdown hook with stable config reference
   const { state, currentNumber, startCountdown, skipCountdown, isActive } =
-    useMatchCountdown(
-      {
-        readyDuration: 1,
-        countdownInterval: 1,
-        fightDuration: 1,
-        startNumber: 3,
-      },
-      onComplete
-    );
+    useMatchCountdown(COUNTDOWN_CONFIG, onComplete);
 
-  // Auto-start countdown on mount
+  // Track if we've started to avoid double-start in Strict Mode
+  const hasStartedRef = useRef(false);
+
+  // Auto-start countdown on mount (only once)
   useEffect(() => {
-    startCountdown();
+    if (!hasStartedRef.current) {
+      hasStartedRef.current = true;
+      startCountdown();
+    }
   }, [startCountdown]);
 
   // Play audio cues based on state transitions
