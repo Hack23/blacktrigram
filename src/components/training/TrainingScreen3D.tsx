@@ -196,6 +196,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const handleStopTraining = useCallback(() => {
     setIsTraining(false);
     setSessionStartTime(null);
+    setSessionDuration(0);
     setFeedback("훈련 종료 | Training End");
     setShowFeedback(true);
     audio.playSFX("menu_back");
@@ -242,12 +243,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           const totalAttempts = newHits + prev.misses;
           const newCombo = prev.combo + 1;
           
-          // Update best combo directly here to avoid cascading setState in effect
-          if (newCombo > bestComboRef.current) {
-            bestComboRef.current = newCombo;
-            setBestCombo(newCombo);
-          }
-          
           return {
             score: prev.score + points,
             combo: newCombo,
@@ -255,6 +250,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             misses: prev.misses,
             accuracy: totalAttempts > 0 ? (newHits / totalAttempts) * 100 : 0,
           };
+        });
+        
+        // Update best combo after stats update to avoid cascading setState
+        setStats((prev) => {
+          if (prev.combo > bestComboRef.current) {
+            bestComboRef.current = prev.combo;
+            setBestCombo(prev.combo);
+          }
+          return prev;
         });
 
         // Reduce dummy health
@@ -404,17 +408,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     };
   }, []);
 
-  // Reset session state when training ends - use callback pattern to avoid cascading setState
-  useEffect(() => {
-    if (!isTraining && sessionStartTime) {
-      // Use queueMicrotask to defer setState and avoid cascading renders
-      queueMicrotask(() => {
-        setSessionStartTime(null);
-        setSessionDuration(0);
-      });
-    }
-  }, [isTraining, sessionStartTime]);
-
   // Handle hit effect completion
   const handleEffectComplete = useCallback((effectId: number) => {
     setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
@@ -534,7 +527,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 position={[effect.position[0], effect.position[1] + 0.3, effect.position[2]]}
                 damage={effect.damage}
                 type={effect.type === "perfect" ? "perfect" : "normal"}
-                onComplete={() => handleEffectComplete(effect.id)}
+                onComplete={() => {}} // Empty - TrainingHitEffects3D handles cleanup
               />
             )}
           </React.Fragment>

@@ -232,14 +232,20 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
   // Track previous health to detect defeat
   const prevHealthRef = useRef(health);
+  
+  // Store latest onDefeated callback in a ref to avoid stale closure
+  const onDefeatedRef = useRef(onDefeated);
+  useEffect(() => {
+    onDefeatedRef.current = onDefeated;
+  }, [onDefeated]);
 
   // Check for defeat
   React.useEffect(() => {
     if (prevHealthRef.current > 0 && health <= 0) {
-      onDefeated?.();
+      onDefeatedRef.current?.();
     }
     prevHealthRef.current = health;
-  }, [health]); // onDefeated not in deps - parent should memoize if needed
+  }, [health]);
 
   // Breathing animation (slower when health is low)
   useFrame((state) => {
