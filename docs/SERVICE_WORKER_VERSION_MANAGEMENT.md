@@ -62,7 +62,7 @@ function injectVersionPlugin(): Plugin {
   return {
     name: 'inject-version-to-sw',
     apply: 'build',
-    closeBundle() {
+    writeBundle() {
       const swContent = readFileSync('./public/sw.js', 'utf8');
       const updatedContent = swContent.replace(
         /__APP_VERSION__/g,
@@ -90,14 +90,13 @@ This ensures:
 ### 3. Minimal Caching Strategy
 
 **What gets cached:**
-- `/manifest.json` (on install)
+- `/`, `/index.html`, and `/manifest.json` (pre-cached on install)
 - All successfully fetched resources (on demand)
 
 **What doesn't get cached initially:**
-- `/` and `/index.html` (fetched on first use)
-- JavaScript bundles (network-first)
-- CSS files (network-first)
-- Assets (network-first)
+- JavaScript bundles (cached on first use via network-first)
+- CSS files (cached on first use via network-first)
+- Assets (cached on first use via network-first)
 
 This minimizes:
 - Initial cache size

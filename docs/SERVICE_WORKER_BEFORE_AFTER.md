@@ -49,10 +49,11 @@ const urlsToCache = [
 const APP_VERSION = "0.5.13"; // Injected at build time
 const CACHE_NAME = `black-trigram-v${APP_VERSION}`;
 
-// Minimal caching - only essentials
+// Minimal caching - essential assets for reliable offline support
 const urlsToCache = [
+  "/",
+  "/index.html",
   "/manifest.json",
-  // Note: / and /index.html cached on demand via network-first
 ];
 ```
 
@@ -174,7 +175,7 @@ registration.addEventListener('updatefound', () => {
 |---------|--------|-------|
 | **Cache Name** | Hardcoded `v2` | Dynamic `v${VERSION}` |
 | **Version Source** | Manual update needed | Automatic from `package.json` |
-| **Initial Cache** | 3 resources | 1 resource (minimal) |
+| **Initial Cache** | 3 resources | 3 resources |
 | **Cache Strategy** | Cache-first for assets | Network-first for all |
 | **Update Detection** | None | Every 60 seconds |
 | **Update Notification** | None | Bright banner with emoji |
