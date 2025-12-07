@@ -223,7 +223,7 @@ Strikes to 뒤통수 disrupt governing vessel yang qi ascending to brain. TCM th
   - Location: 7 cun superior to posterior hairline, 5 cun posterior to anterior hairline
   - Functions: Raises yang qi, benefits brain, calms mind
   - Indications: Headache, dizziness, prolapse, poor memory
-  - Point Type**: "Hundred Meetings" - all yang meridians converge
+  - Point Type: "Hundred Meetings" - all yang meridians converge
 
 **Secondary Meridians**:
 - All Yang Meridians converge at GV20
@@ -253,7 +253,7 @@ Crown strikes (정수리타격) catastrophically disrupt yang qi convergence. TC
   - Location: Below nose, junction of upper 1/3 and middle 1/3 of philtrum
   - Functions: Restores consciousness, clears mind, benefits spine
   - Indications: Loss of consciousness, coma, shock, facial paralysis
-  - Point Type**: First-aid point for revival
+  - Point Type: First-aid point for revival
 
 **Secondary Meridians**:
 - Influences Conception Vessel (CV) via proximity
