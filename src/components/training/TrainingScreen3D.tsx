@@ -239,11 +239,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           const totalAttempts = newHits + prev.misses;
           const newCombo = prev.combo + 1;
           
-          // Track best combo
-          if (newCombo > bestCombo) {
-            setBestCombo(newCombo);
-          }
-          
           return {
             score: prev.score + points,
             combo: newCombo,
@@ -399,6 +394,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
     };
   }, []);
+
+  // Track best combo from stats.combo to avoid race condition
+  useEffect(() => {
+    if (stats.combo > bestCombo) {
+      setBestCombo(stats.combo);
+    }
+  }, [stats.combo, bestCombo]);
+
+  // Reset sessionStartTime when training ends
+  useEffect(() => {
+    if (!isTraining && sessionStartTime) {
+      setSessionStartTime(null);
+      setSessionDuration(0);
+    }
+  }, [isTraining, sessionStartTime]);
 
   // Handle hit effect completion
   const handleEffectComplete = useCallback((effectId: number) => {

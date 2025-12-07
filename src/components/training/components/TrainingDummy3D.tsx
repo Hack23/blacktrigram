@@ -138,7 +138,8 @@ const VitalPointMarker: React.FC<{
 const DummyHealthBar: React.FC<{
   health: number;
   position: [number, number, number];
-}> = ({ health, position }) => {
+  'data-testid'?: string;
+}> = ({ health, position, 'data-testid': testId }) => {
   const barWidth = 1.2;
   const barHeight = 0.1;
 
@@ -172,7 +173,7 @@ const DummyHealthBar: React.FC<{
   }, [bgGeometry, healthGeometry, borderGeometry]);
 
   return (
-    <group position={position}>
+    <group position={position} data-testid={testId}>
       {/* Background bar */}
       <mesh>
         <primitive object={bgGeometry} />
@@ -192,14 +193,13 @@ const DummyHealthBar: React.FC<{
         <meshBasicMaterial color={healthColor} transparent opacity={0.9} />
       </mesh>
 
-      {/* Border frame */}
+      {/* Border frame - solid border instead of wireframe for consistent styling */}
       <mesh>
         <primitive object={borderGeometry} />
         <meshBasicMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           transparent
-          opacity={0.5}
-          wireframe
+          opacity={0.8}
         />
       </mesh>
     </group>
@@ -238,7 +238,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
       onDefeated?.();
     }
     prevHealthRef.current = health;
-  }, [health, onDefeated]);
+  }, [health]); // onDefeated not in deps - parent should memoize if needed
 
   // Breathing animation (slower when health is low)
   useFrame((state) => {
@@ -344,7 +344,11 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
       {/* Health bar above dummy */}
       {isTraining && (
-        <DummyHealthBar health={health} position={[0, 2.2, 0]} />
+        <DummyHealthBar 
+          health={health} 
+          position={[0, 2.2, 0]} 
+          data-testid="training-dummy-health-bar"
+        />
       )}
     </group>
   );
