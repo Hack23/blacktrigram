@@ -21,7 +21,7 @@ function injectVersionPlugin(): Plugin {
   return {
     name: 'inject-version-to-sw',
     apply: 'build',
-    closeBundle() {
+    writeBundle() {
       // Copy service worker from public to dist and inject version
       const publicSwPath = path.resolve('./public/sw.js');
       const distSwPath = path.resolve('./dist/sw.js');

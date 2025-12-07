@@ -5,8 +5,8 @@
  * Ensures service worker properly manages cache across versions
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { readFileSync } from 'fs';
+import { describe, it, expect } from 'vitest';
+import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 
 describe('Service Worker Version Management', () => {
@@ -26,18 +26,21 @@ describe('Service Worker Version Management', () => {
 
     it('should have version injected in built service worker', () => {
       const packageJson = JSON.parse(readFileSync(resolve('./package.json'), 'utf8'));
+      const distSwPath = resolve('./dist/sw.js');
       
-      try {
-        const swBuilt = readFileSync(resolve('./dist/sw.js'), 'utf8');
-        
-        // Should have actual version, not placeholder
-        expect(swBuilt).not.toContain('__APP_VERSION__');
-        expect(swBuilt).toContain(`const APP_VERSION = "${packageJson.version}"`);
-        expect(swBuilt).toContain(`black-trigram-v${packageJson.version}`);
-      } catch (error) {
-        // dist/sw.js may not exist if build hasn't run yet - this is expected in dev
-        console.log('Note: dist/sw.js not found - build may not have run yet');
+      // Skip test if dist doesn't exist (e.g., tests run before build)
+      if (!existsSync(distSwPath)) {
+        console.log('Skipping test: dist/sw.js not found - run build first');
+        return;
       }
+
+      const swBuilt = readFileSync(distSwPath, 'utf8');
+      
+      // Should have actual version, not placeholder
+      expect(swBuilt).not.toContain('__APP_VERSION__');
+      expect(swBuilt).toContain(`const APP_VERSION = "${packageJson.version}"`);
+      // Cache name uses template literal, so check for the pattern
+      expect(swBuilt).toContain('const CACHE_NAME = `black-trigram-v${APP_VERSION}`;');
     });
   });
 
@@ -45,18 +48,14 @@ describe('Service Worker Version Management', () => {
     it('should use minimal caching approach', () => {
       const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
       
-      // Should only cache manifest.json initially
+      // Should cache essential resources for reliable offline support
       expect(swSource).toContain('"/manifest.json"');
+      expect(swSource).toContain('"/index.html"');
+      expect(swSource).toContain('"/"');
       
-      // Should NOT cache index.html and root in initial cache
+      // Should be minimal - not caching heavy assets
       const urlsToCacheMatch = swSource.match(/const urlsToCache = \[([\s\S]*?)\];/);
       expect(urlsToCacheMatch).toBeTruthy();
-      
-      if (urlsToCacheMatch) {
-        const urlsToCacheContent = urlsToCacheMatch[1];
-        expect(urlsToCacheContent).not.toContain('"/index.html"');
-        expect(urlsToCacheContent).not.toContain('"/"');
-      }
     });
 
     it('should implement network-first strategy', () => {
@@ -199,7 +198,7 @@ describe('Vite Configuration', () => {
   it('should copy and inject version on build', () => {
     const viteConfig = readFileSync(resolve('./vite.config.ts'), 'utf8');
     
-    expect(viteConfig).toContain('closeBundle');
+    expect(viteConfig).toContain('writeBundle');
     expect(viteConfig).toContain('./public/sw.js');
     expect(viteConfig).toContain('./dist/sw.js');
     expect(viteConfig).toContain('replace');

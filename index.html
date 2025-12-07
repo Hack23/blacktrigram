@@ -183,9 +183,14 @@
               );
 
               // Check for updates every 60 seconds
-              setInterval(() => {
+              const updateCheckInterval = setInterval(() => {
                 registration.update();
               }, 60000);
+
+              // Clean up interval on page unload to prevent memory leaks
+              window.addEventListener("beforeunload", () => {
+                clearInterval(updateCheckInterval);
+              });
 
               // Listen for new service worker waiting to activate
               registration.addEventListener("updatefound", () => {
@@ -201,9 +206,12 @@
                         "New version available! Reloading to update..."
                       );
                       
-                      // Create update banner
+                      // Create update banner with accessibility support
                       const updateBanner = document.createElement("div");
                       updateBanner.id = "update-banner";
+                      updateBanner.setAttribute("role", "alert");
+                      updateBanner.setAttribute("aria-live", "assertive");
+                      updateBanner.setAttribute("tabindex", "0");
                       updateBanner.style.cssText = `
                         position: fixed;
                         top: 0;
@@ -224,26 +232,47 @@
                         🎮 New version available! Tap to reload and get the latest features 🚀
                       `;
                       
-                      // Add animation
-                      const style = document.createElement("style");
-                      style.textContent = `
-                        @keyframes slideDown {
-                          from { transform: translateY(-100%); }
-                          to { transform: translateY(0); }
-                        }
-                      `;
-                      document.head.appendChild(style);
+                      // Add animation (only if not already present)
+                      if (!document.getElementById("slideDown-animation-style")) {
+                        const style = document.createElement("style");
+                        style.id = "slideDown-animation-style";
+                        style.textContent = `
+                          @keyframes slideDown {
+                            from { transform: translateY(-100%); }
+                            to { transform: translateY(0); }
+                          }
+                        `;
+                        document.head.appendChild(style);
+                      }
                       
+                      // Guard to prevent double reload
+                      let hasReloaded = false;
+
                       // Reload on click
                       updateBanner.addEventListener("click", () => {
-                        window.location.reload();
+                        if (!hasReloaded) {
+                          hasReloaded = true;
+                          window.location.reload();
+                        }
+                      });
+
+                      // Reload on keyboard interaction (Enter or Space)
+                      updateBanner.addEventListener("keydown", (e) => {
+                        if ((e.key === "Enter" || e.key === " ") && !hasReloaded) {
+                          e.preventDefault();
+                          hasReloaded = true;
+                          window.location.reload();
+                        }
                       });
                       
                       document.body.appendChild(updateBanner);
                       
                       // Auto-reload after 5 seconds if user doesn't click
                       setTimeout(() => {
-                        window.location.reload();
+                        if (!hasReloaded) {
+                          hasReloaded = true;
+                          window.location.reload();
+                        }
                       }, 5000);
                     }
                   });

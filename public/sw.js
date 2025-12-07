@@ -2,11 +2,12 @@
 const APP_VERSION = "__APP_VERSION__"; // Placeholder replaced by build process
 const CACHE_NAME = `black-trigram-v${APP_VERSION}`;
 
-// Minimal caching - only essential assets for offline fallback
+// Minimal caching - essential assets for reliable offline support
 // All other resources use network-first strategy
 const urlsToCache = [
+  "/",
+  "/index.html",
   "/manifest.json",
-  // Note: / and /index.html are cached via network-first strategy
 ];
 
 // Install event - cache minimal resources and skip waiting for immediate activation
@@ -71,8 +72,8 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Only cache successful responses
-        if (response.ok && response.status === 200) {
+        // Only cache successful, non-opaque responses
+        if (response.ok && response.type !== "opaque") {
           // Clone response for caching (responses can only be used once)
           const responseClone = response.clone();
           
