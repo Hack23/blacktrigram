@@ -197,6 +197,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     setIsTraining(false);
     setSessionStartTime(null);
     setSessionDuration(0);
+    setBestCombo(0);
+    bestComboRef.current = 0;
+    setPerfectStrikes(0);
+    
+    // Clear any pending dummy reset timeout
+    if (dummyResetTimeoutRef.current) {
+      clearTimeout(dummyResetTimeoutRef.current);
+      dummyResetTimeoutRef.current = null;
+    }
+    
     setFeedback("훈련 종료 | Training End");
     setShowFeedback(true);
     audio.playSFX("menu_back");
