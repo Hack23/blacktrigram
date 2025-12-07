@@ -448,6 +448,10 @@ src/components/combat/components/CombatTimer.test.tsx
 src/components/combat/components/CombatTimer.tsx
 src/components/combat/components/ComboCounter.test.tsx
 src/components/combat/components/ComboCounter.tsx
+src/components/combat/components/ConfirmDialog.test.tsx
+src/components/combat/components/ConfirmDialog.tsx
+src/components/combat/components/ControlsGuide.test.tsx
+src/components/combat/components/ControlsGuide.tsx
 src/components/combat/components/DamageNumbers.test.tsx
 src/components/combat/components/DamageNumbers.tsx
 src/components/combat/components/HealthBar.test.tsx
@@ -456,10 +460,14 @@ src/components/combat/components/HitEffects3D.test.tsx
 src/components/combat/components/HitEffects3D.tsx
 src/components/combat/components/MatchCountdown.test.tsx
 src/components/combat/components/MatchCountdown.tsx
+src/components/combat/components/PauseMenu.test.tsx
+src/components/combat/components/PauseMenu.tsx
 src/components/combat/components/Player3DModel.test.tsx
 src/components/combat/components/Player3DModel.tsx
 src/components/combat/components/PlayerHUD.test.tsx
 src/components/combat/components/PlayerHUD.tsx
+src/components/combat/components/QuickSettings.test.tsx
+src/components/combat/components/QuickSettings.tsx
 src/components/combat/components/RoundAnnouncement.test.tsx
 src/components/combat/components/RoundAnnouncement.tsx
 src/components/combat/components/RoundStartAnnouncement.test.tsx
@@ -545,6 +553,7 @@ src/components/three/README.md
 src/components/three/index.ts
 src/components/training/TrainingScreen3D.test.tsx
 src/components/training/TrainingScreen3D.tsx
+src/components/training/components/DamageNumber3D.tsx
 src/components/training/components/TrainingAICharacter3D.test.tsx
 src/components/training/components/TrainingAICharacter3D.tsx
 src/components/training/components/TrainingArena3D.tsx
@@ -581,6 +590,8 @@ src/hooks/useCombatTimer.test.ts
 src/hooks/useCombatTimer.ts
 src/hooks/useMatchCountdown.test.ts
 src/hooks/useMatchCountdown.ts
+src/hooks/usePauseMenu.test.ts
+src/hooks/usePauseMenu.ts
 src/hooks/useRoundTransition.test.ts
 src/hooks/useRoundTransition.ts
 src/hooks/useTechniqueSelection.test.ts
@@ -656,6 +667,7 @@ src/systems/vitalpoint/VitalPointsData.ts
 src/systems/vitalpoint/index.ts
 src/systems/vitalpoint/types.ts
 src/test-types.ts
+src/test/service-worker.test.ts
 src/test/setup.ts
 src/test/test-setup.ts
 src/test/test-utils.ts
