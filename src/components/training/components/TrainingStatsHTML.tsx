@@ -18,6 +18,7 @@ export interface TrainingStats {
   readonly accuracy: number;
   readonly sessionDuration?: number;
   readonly bestCombo?: number;
+  readonly perfectStrikes?: number;
 }
 
 /**
@@ -57,10 +58,9 @@ export const TrainingStatsHTML: React.FC<TrainingStatsHTMLProps> = ({
   // Calculate perfect strike rate
   const perfectRate = useMemo(() => {
     const totalAttempts = stats.hits + stats.misses;
-    if (totalAttempts === 0) return "0";
-    // Assuming perfect strikes are combo > 5 (simplified)
-    return ((stats.combo > 5 ? 1 : 0) / totalAttempts * 100).toFixed(1);
-  }, [stats.hits, stats.misses, stats.combo]);
+    if (totalAttempts === 0 || !stats.perfectStrikes) return "0";
+    return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);
+  }, [stats.hits, stats.misses, stats.perfectStrikes]);
 
   return (
     <div

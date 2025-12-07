@@ -10,6 +10,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
@@ -88,6 +89,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [sessionDuration, setSessionDuration] = useState(0);
   const [bestCombo, setBestCombo] = useState(0);
+  const [perfectStrikes, setPerfectStrikes] = useState(0);
   
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
@@ -97,6 +99,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     misses: 0,
     accuracy: 0,
   });
+
+  // Ref to store timeout for dummy reset
+  const dummyResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Responsive detection
   const isMobile = useMemo(() => width < 768, [width]);
@@ -198,8 +203,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     setShowFeedback(true);
     audio.playSFX("ki_release");
     
+    // Clear any existing timeout
+    if (dummyResetTimeoutRef.current) {
+      clearTimeout(dummyResetTimeoutRef.current);
+    }
+    
     // Reset dummy health after delay
-    setTimeout(() => {
+    dummyResetTimeoutRef.current = setTimeout(() => {
       setDummyHealth(100);
       setFeedback("더미 재설정 | Dummy Reset");
       setShowFeedback(true);
@@ -217,7 +227,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
       if (accuracy > 0.5) {
         const points = Math.round(accuracy * 100);
-        const damage = Math.round(accuracy * 15); // 15 damage on perfect hit
+        const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
+        
+        // Track perfect strikes
+        if (accuracy > 0.9) {
+          setPerfectStrikes((prev) => prev + 1);
+        }
         
         setStats((prev) => {
           const newHits = prev.hits + 1;
@@ -376,6 +391,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return () => clearInterval(interval);
   }, [isTraining, sessionStartTime]);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (dummyResetTimeoutRef.current) {
+        clearTimeout(dummyResetTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Handle hit effect completion
   const handleEffectComplete = useCallback((effectId: number) => {
     setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
@@ -495,7 +519,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 position={[effect.position[0], effect.position[1] + 0.3, effect.position[2]]}
                 damage={effect.damage}
                 type={effect.type === "perfect" ? "perfect" : "normal"}
-                onComplete={() => {}}
+                onComplete={() => handleEffectComplete(effect.id)}
               />
             )}
           </React.Fragment>
@@ -546,6 +570,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   ...stats,
                   sessionDuration,
                   bestCombo,
+                  perfectStrikes,
                 }}
                 isMobile={isMobile}
               />

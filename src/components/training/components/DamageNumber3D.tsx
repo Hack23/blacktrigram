@@ -6,7 +6,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { FONT_FAMILY } from "../../../types/constants";
 
 /**
@@ -36,9 +36,10 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
   onComplete,
   duration = 1.5,
 }) => {
-  const [currentPosition, setCurrentPosition] = useState<[number, number, number]>(position);
   const startTimeRef = useRef(performance.now());
-  const [opacity, setOpacity] = useState(1);
+  const divRef = useRef<HTMLDivElement>(null);
+  const positionRef = useRef(position);
+  const opacityRef = useRef(1);
 
   // Get color based on type
   const color =
@@ -48,7 +49,7 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
       ? "#ffd700"
       : "#ffffff";
 
-  // Animate floating and fading
+  // Animate floating and fading using refs to avoid unnecessary re-renders
   useFrame(() => {
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
     const progress = Math.min(elapsed / duration, 1);
@@ -61,15 +62,18 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
     // Float upward with easing
     const floatDistance = 1.5;
     const yOffset = floatDistance * progress;
-    setCurrentPosition([position[0], position[1] + yOffset, position[2]]);
-
-    // Fade out
-    setOpacity(1 - progress);
+    positionRef.current = [position[0], position[1] + yOffset, position[2]];
+    opacityRef.current = 1 - progress;
+    
+    // Update DOM directly to avoid React re-renders
+    if (divRef.current) {
+      divRef.current.style.opacity = String(opacityRef.current);
+    }
   });
 
   return (
     <Html
-      position={currentPosition}
+      position={positionRef.current}
       center
       style={{
         pointerEvents: "none",
@@ -77,13 +81,15 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
       }}
     >
       <div
+        ref={divRef}
+        data-testid="damage-number-3d"
         style={{
           fontSize: type === "critical" ? "32px" : type === "perfect" ? "28px" : "24px",
           fontWeight: "bold",
           color,
           fontFamily: FONT_FAMILY.KOREAN,
           textShadow: `0 0 10px ${color}, 0 0 20px ${color}`,
-          opacity,
+          opacity: 1,
           transform: type === "critical" ? "scale(1.2)" : "scale(1)",
         }}
       >

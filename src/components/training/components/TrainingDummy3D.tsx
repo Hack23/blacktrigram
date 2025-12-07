@@ -6,7 +6,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
@@ -139,6 +139,14 @@ const DummyHealthBar: React.FC<{
   health: number;
   position: [number, number, number];
 }> = ({ health, position }) => {
+  const barWidth = 1.2;
+  const barHeight = 0.1;
+
+  // Memoize geometries to avoid recreating on every render
+  const bgGeometry = useMemo(() => new THREE.BoxGeometry(barWidth, barHeight, 0.02), []);
+  const healthGeometry = useMemo(() => new THREE.BoxGeometry(barWidth, barHeight, 0.02), []);
+  const borderGeometry = useMemo(() => new THREE.BoxGeometry(barWidth + 0.04, barHeight + 0.04, 0.01), []);
+
   // Determine health bar color based on health percentage
   const healthColor = useMemo(() => {
     if (health > 70) return KOREAN_COLORS.HEALTH_FULL;
@@ -147,16 +155,27 @@ const DummyHealthBar: React.FC<{
     return KOREAN_COLORS.HEALTH_CRITICAL;
   }, [health]);
 
-  // Health bar background (full length)
-  const barWidth = 1.2;
-  const barHeight = 0.1;
+  // Use scale instead of recreating geometry
+  const healthScale: [number, number, number] = useMemo(
+    () => [health / 100, 1, 1],
+    [health]
+  );
   const healthBarWidth = barWidth * (health / 100);
+
+  // Cleanup geometries on unmount
+  useEffect(() => {
+    return () => {
+      bgGeometry.dispose();
+      healthGeometry.dispose();
+      borderGeometry.dispose();
+    };
+  }, [bgGeometry, healthGeometry, borderGeometry]);
 
   return (
     <group position={position}>
       {/* Background bar */}
       <mesh>
-        <boxGeometry args={[barWidth, barHeight, 0.02]} />
+        <primitive object={bgGeometry} />
         <meshBasicMaterial
           color={KOREAN_COLORS.UI_BACKGROUND_DARK}
           transparent
@@ -165,14 +184,17 @@ const DummyHealthBar: React.FC<{
       </mesh>
 
       {/* Health bar (scaled based on health) */}
-      <mesh position={[-(barWidth - healthBarWidth) / 2, 0, 0.01]}>
-        <boxGeometry args={[healthBarWidth, barHeight, 0.02]} />
+      <mesh 
+        position={[-(barWidth - healthBarWidth) / 2, 0, 0.01]}
+        scale={healthScale}
+      >
+        <primitive object={healthGeometry} />
         <meshBasicMaterial color={healthColor} transparent opacity={0.9} />
       </mesh>
 
       {/* Border frame */}
       <mesh>
-        <boxGeometry args={[barWidth + 0.04, barHeight + 0.04, 0.01]} />
+        <primitive object={borderGeometry} />
         <meshBasicMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           transparent
