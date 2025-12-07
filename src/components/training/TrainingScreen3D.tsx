@@ -311,7 +311,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         return false;
       }
     },
-    [isTraining, audio, nextEffectId, bestCombo]
+    [isTraining, audio, nextEffectId]
   );
 
   // Consolidated keyboard input handling

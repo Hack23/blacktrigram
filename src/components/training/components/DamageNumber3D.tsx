@@ -38,8 +38,7 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
 }) => {
   const startTimeRef = useRef(performance.now());
   const divRef = useRef<HTMLDivElement>(null);
-  const positionRef = useRef(position);
-  const opacityRef = useRef(1);
+  const completedRef = useRef(false);
 
   // Get color based on type
   const color =
@@ -54,26 +53,28 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
     const progress = Math.min(elapsed / duration, 1);
 
-    if (progress >= 1) {
+    if (progress >= 1 && !completedRef.current) {
+      completedRef.current = true;
       onComplete();
       return;
     }
+    
+    if (completedRef.current) return; // Stop processing after completion
 
-    // Float upward with easing
+    // Float upward with easing - use CSS transform for position animation
     const floatDistance = 1.5;
     const yOffset = floatDistance * progress;
-    positionRef.current = [position[0], position[1] + yOffset, position[2]];
-    opacityRef.current = 1 - progress;
     
     // Update DOM directly to avoid React re-renders
     if (divRef.current) {
-      divRef.current.style.opacity = String(opacityRef.current);
+      divRef.current.style.transform = `translateY(-${yOffset * 30}px)`; // Scale to pixels
+      divRef.current.style.opacity = String(1 - progress);
     }
   });
 
   return (
     <Html
-      position={positionRef.current}
+      position={position}
       center
       style={{
         pointerEvents: "none",

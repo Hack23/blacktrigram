@@ -135,18 +135,20 @@ const VitalPointMarker: React.FC<{
 /**
  * Health bar component for training dummy
  */
+
+// Constants defined outside component to avoid recreation
+const HEALTH_BAR_WIDTH = 1.2;
+const HEALTH_BAR_HEIGHT = 0.1;
+
 const DummyHealthBar: React.FC<{
   health: number;
   position: [number, number, number];
   'data-testid'?: string;
 }> = ({ health, position, 'data-testid': testId }) => {
-  const barWidth = 1.2;
-  const barHeight = 0.1;
-
   // Memoize geometries to avoid recreating on every render
-  const bgGeometry = useMemo(() => new THREE.BoxGeometry(barWidth, barHeight, 0.02), []);
-  const healthGeometry = useMemo(() => new THREE.BoxGeometry(barWidth, barHeight, 0.02), []);
-  const borderGeometry = useMemo(() => new THREE.BoxGeometry(barWidth + 0.04, barHeight + 0.04, 0.01), []);
+  const bgGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02), []);
+  const healthGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02), []);
+  const borderGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH + 0.04, HEALTH_BAR_HEIGHT + 0.04, 0.01), []);
 
   // Determine health bar color based on health percentage
   const healthColor = useMemo(() => {
@@ -161,7 +163,6 @@ const DummyHealthBar: React.FC<{
     () => [health / 100, 1, 1],
     [health]
   );
-  const healthBarWidth = barWidth * (health / 100);
 
   // Cleanup geometries on unmount
   useEffect(() => {
@@ -184,24 +185,24 @@ const DummyHealthBar: React.FC<{
         />
       </mesh>
 
-      {/* Health bar (scaled based on health) */}
+      {/* Health bar (scaled based on health, anchored to left edge) */}
       <mesh 
-        position={[-(barWidth - healthBarWidth) / 2, 0, 0.01]}
+        position={[-(HEALTH_BAR_WIDTH * (1 - health / 100)) / 2, 0, 0.01]}
         scale={healthScale}
       >
         <primitive object={healthGeometry} />
         <meshBasicMaterial color={healthColor} transparent opacity={0.9} />
       </mesh>
 
-      {/* Border frame - solid border instead of wireframe for consistent styling */}
-      <mesh>
-        <primitive object={borderGeometry} />
-        <meshBasicMaterial
+      {/* Border frame - outline using EdgesGeometry for crisp border */}
+      <lineSegments>
+        <edgesGeometry args={[borderGeometry]} />
+        <lineBasicMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           transparent
           opacity={0.8}
         />
-      </mesh>
+      </lineSegments>
     </group>
   );
 };
