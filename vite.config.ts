@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
-import { readFileSync, writeFileSync, copyFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import { defineConfig, Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
