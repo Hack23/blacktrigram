@@ -91,7 +91,6 @@ export const QuickSettings: React.FC<QuickSettingsProps> = ({
               const value = parseInt(e.target.value) / 100;
               audio.setVolume("sfx", value);
             }}
-            onInput={() => audio.playSFX("menu_hover")}
             data-testid="sfx-volume-slider"
             style={{
               width: "100%",

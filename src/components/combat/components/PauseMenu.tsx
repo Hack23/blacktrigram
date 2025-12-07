@@ -49,7 +49,8 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
   const [activeSubmenu, setActiveSubmenu] = React.useState<"controls" | "settings" | null>(null);
   const [showConfirm, setShowConfirm] = React.useState<"restart" | "menu" | null>(null);
 
-  const menuItems: MenuItem[] = [
+  // Memoize menuItems to prevent recreation on every render
+  const menuItems: MenuItem[] = React.useMemo(() => [
     {
       key: "resume",
       labelKorean: "계속",
@@ -105,26 +106,9 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
       },
       icon: "🏠",
     },
-  ];
+  ], [audio, onResume]);
 
-  // Handle ESC key to close submenus or resume
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        if (activeSubmenu) {
-          setActiveSubmenu(null);
-        } else if (showConfirm) {
-          setShowConfirm(null);
-        } else {
-          onResume();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeSubmenu, showConfirm, onResume]);
+  // ESC key handling is now managed by the parent (CombatScreen3D) to avoid conflicts
 
   return (
     <>

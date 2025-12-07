@@ -208,51 +208,6 @@ describe("PauseMenu", () => {
     });
   });
 
-  describe("Keyboard Navigation", () => {
-    it("should close submenu on ESC key when submenu is open", async () => {
-      const user = userEvent.setup();
-      renderWithAudio(
-        <PauseMenu
-          onResume={mockOnResume}
-          onRestart={mockOnRestart}
-          onReturnToMenu={mockOnReturnToMenu}
-          isMobile={false}
-        />
-      );
-
-      // Open controls
-      const controlsButton = screen.getByTestId("pause-controls-button");
-      await user.click(controlsButton);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("controls-guide")).toBeInTheDocument();
-      });
-
-      // Press ESC
-      await user.keyboard("{Escape}");
-
-      await waitFor(() => {
-        expect(screen.queryByTestId("controls-guide")).not.toBeInTheDocument();
-      });
-    });
-
-    it("should call onResume when ESC pressed with no submenus open", async () => {
-      const user = userEvent.setup();
-      renderWithAudio(
-        <PauseMenu
-          onResume={mockOnResume}
-          onRestart={mockOnRestart}
-          onReturnToMenu={mockOnReturnToMenu}
-          isMobile={false}
-        />
-      );
-
-      await user.keyboard("{Escape}");
-
-      expect(mockOnResume).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe("Accessibility", () => {
     it("should have proper test IDs for all interactive elements", () => {
       renderWithAudio(
