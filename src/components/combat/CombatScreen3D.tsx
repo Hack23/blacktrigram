@@ -60,6 +60,7 @@ import { CombatTimer } from "./components/CombatTimer";
 import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
 import HitEffects3D from "./components/HitEffects3D";
+import { PauseMenu } from "./components/PauseMenu";
 import Player3DModel from "./components/Player3DModel";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { TechniqueBar } from "./components/TechniqueBar";
@@ -238,6 +239,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showMatchCountdown, setShowMatchCountdown] = useState(false); // Don't show
   const [showRoundStart, setShowRoundStart] = useState(false);
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
+
+  // Pause menu state - local state for pause menu visibility
+  const [showPauseMenu, setShowPauseMenu] = useState(false);
+
+  // Pause menu handlers
+  const handlePause = useCallback(() => {
+    setShowPauseMenu(true);
+    audio.playSFX("menu_select");
+  }, [audio]);
+
+  const handleResume = useCallback(() => {
+    setShowPauseMenu(false);
+    audio.playSFX("menu_select");
+  }, [audio]);
+
+  const handleRestart = useCallback(() => {
+    // Reset to first round
+    setInternalRound(1);
+    setMatchScore({ player1: 0, player2: 0 });
+    matchScoreRef.current = { player1: 0, player2: 0 };
+    
+    // Reset combat state
+    combatActions.setRoundEnded(false);
+    combatActions.setRoundStarted(false);
+    combatActions.setRoundDisplayStatus(null);
+    
+    // Reset player health
+    onPlayerUpdate(0, { health: 100 });
+    onPlayerUpdate(1, { health: 100 });
+    
+    // Close pause menu and start first round
+    setShowPauseMenu(false);
+    setShowRoundStart(true);
+    
+    audio.playSFX("menu_select");
+  }, [audio, combatActions, onPlayerUpdate]);
 
   // Round transition management
   const {
@@ -931,12 +968,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Keyboard input handling
   useEffect(() => {
     const handleCombatInput = (event: KeyboardEvent) => {
+      // ESC key toggles pause menu (unless pause menu is already open)
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (showPauseMenu) {
+          handleResume();
+        } else {
+          handlePause();
+        }
+        return;
+      }
+
+      // Block all other combat inputs when paused or during pause menu
+      if (isPaused || showPauseMenu) {
+        return;
+      }
+
       // Block all combat inputs during countdown or round start announcement
       if (!matchCountdownComplete || showRoundStart) {
-        if (event.key === "Escape") {
-          onReturnToMenu();
-          event.preventDefault();
-        }
         return;
       }
 
@@ -945,10 +994,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         combatState.roundEnded ||
         combatState.isExecutingTechnique
       ) {
-        if (event.key === "Escape") {
-          onReturnToMenu();
-          event.preventDefault();
-        }
         return;
       }
 
@@ -979,11 +1024,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleDefendWithFeedback();
         event.preventDefault();
       }
-
-      if (event.key === "Escape") {
-        onReturnToMenu();
-        event.preventDefault();
-      }
     };
 
     window.addEventListener("keydown", handleCombatInput);
@@ -994,10 +1034,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatState.isExecutingTechnique,
     matchCountdownComplete,
     showRoundStart,
+    isPaused,
+    showPauseMenu,
     handleStanceSwitch,
     handleAttackWithFeedback,
     handleDefendWithFeedback,
-    onReturnToMenu,
+    handlePause,
+    handleResume,
   ]);
 
   return (
@@ -1331,29 +1374,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           </div>
         </div>
 
-        {/* Pause Overlay */}
-        {isPaused && (
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontSize: "48px",
-              fontWeight: "bold",
-              fontFamily: FONT_FAMILY.KOREAN,
-              color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
-                6,
-                "0"
-              )}`,
-              textShadow: "0 0 10px rgba(0,0,0,0.8)",
-              backgroundColor: "rgba(0,0,0,0.7)",
-              padding: "20px 40px",
-              borderRadius: "10px",
-            }}
-          >
-            일시정지 | Paused
-          </div>
+        {/* Pause Menu Overlay */}
+        {(isPaused || showPauseMenu) && (
+          <PauseMenu
+            onResume={handleResume}
+            onRestart={handleRestart}
+            onReturnToMenu={onReturnToMenu}
+            isMobile={isMobile}
+          />
         )}
       </div>
 

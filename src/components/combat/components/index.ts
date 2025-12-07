@@ -21,6 +21,10 @@ export { RoundStartAnnouncement } from "./RoundStartAnnouncement";
 export { CombatTimer } from "./CombatTimer";
 export { TechniqueCard } from "./TechniqueCard";
 export { TechniqueBar } from "./TechniqueBar";
+export { PauseMenu } from "./PauseMenu";
+export { default as ConfirmDialog } from "./ConfirmDialog";
+export { default as QuickSettings } from "./QuickSettings";
+export { default as ControlsGuide } from "./ControlsGuide";
 
 // Re-export component prop types
 export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
@@ -35,3 +39,7 @@ export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { CombatTimerProps } from "./CombatTimer";
 export type { TechniqueCardProps } from "./TechniqueCard";
 export type { TechniqueBarProps } from "./TechniqueBar";
+export type { PauseMenuProps } from "./PauseMenu";
+export type { ConfirmDialogProps } from "./ConfirmDialog";
+export type { QuickSettingsProps } from "./QuickSettings";
+export type { ControlsGuideProps } from "./ControlsGuide";

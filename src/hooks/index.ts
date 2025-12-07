@@ -38,3 +38,10 @@ export type {
   UseCombatTimerReturn,
 } from "./useCombatTimer";
 
+export { usePauseMenu } from "./usePauseMenu";
+export type {
+  PauseSubmenu,
+  ConfirmDialogState,
+  UsePauseMenuResult,
+} from "./usePauseMenu";
+
