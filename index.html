@@ -144,7 +144,7 @@
     <meta name="apple-mobile-web-app-title" content="Black Trigram" />
     <link rel="apple-touch-icon" href="./icons/icon-152x152.png" />
 
-    <!-- PWA Service Worker Registration -->
+    <!-- PWA Service Worker Registration with Version Checking -->
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
@@ -181,6 +181,74 @@
                 "ServiceWorker registration successful:",
                 registration
               );
+
+              // Check for updates every 60 seconds
+              setInterval(() => {
+                registration.update();
+              }, 60000);
+
+              // Listen for new service worker waiting to activate
+              registration.addEventListener("updatefound", () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener("statechange", () => {
+                    if (
+                      newWorker.state === "installed" &&
+                      navigator.serviceWorker.controller
+                    ) {
+                      // New version available - show update notification
+                      console.log(
+                        "New version available! Reloading to update..."
+                      );
+                      
+                      // Create update banner
+                      const updateBanner = document.createElement("div");
+                      updateBanner.id = "update-banner";
+                      updateBanner.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        background: linear-gradient(135deg, #00ffd0 0%, #00aa88 100%);
+                        color: #000;
+                        padding: 16px;
+                        text-align: center;
+                        font-family: 'Orbitron', sans-serif;
+                        font-weight: bold;
+                        z-index: 10000;
+                        box-shadow: 0 2px 10px rgba(0,255,208,0.3);
+                        cursor: pointer;
+                        animation: slideDown 0.3s ease-out;
+                      `;
+                      updateBanner.innerHTML = `
+                        🎮 New version available! Tap to reload and get the latest features 🚀
+                      `;
+                      
+                      // Add animation
+                      const style = document.createElement("style");
+                      style.textContent = `
+                        @keyframes slideDown {
+                          from { transform: translateY(-100%); }
+                          to { transform: translateY(0); }
+                        }
+                      `;
+                      document.head.appendChild(style);
+                      
+                      // Reload on click
+                      updateBanner.addEventListener("click", () => {
+                        window.location.reload();
+                      });
+                      
+                      document.body.appendChild(updateBanner);
+                      
+                      // Auto-reload after 5 seconds if user doesn't click
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 5000);
+                    }
+                  });
+                }
+              });
             })
             .catch((err) => {
               console.log("ServiceWorker registration failed:", err);

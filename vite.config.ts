@@ -1,8 +1,8 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync, copyFileSync, existsSync } from "fs";
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // Read version from package.json
@@ -16,12 +16,46 @@ const packageJson: PackageJson = JSON.parse(
   readFileSync(path.resolve("./package.json"), "utf8")
 );
 
+// Custom plugin to inject version into service worker
+function injectVersionPlugin(): Plugin {
+  return {
+    name: 'inject-version-to-sw',
+    apply: 'build',
+    closeBundle() {
+      // Copy service worker from public to dist and inject version
+      const publicSwPath = path.resolve('./public/sw.js');
+      const distSwPath = path.resolve('./dist/sw.js');
+      
+      try {
+        // Ensure public/sw.js exists
+        if (!existsSync(publicSwPath)) {
+          console.warn('⚠ Service worker not found in public directory');
+          return;
+        }
+
+        // Copy and inject version
+        const swContent = readFileSync(publicSwPath, 'utf8');
+        const updatedContent = swContent.replace(
+          /__APP_VERSION__/g,
+          packageJson.version
+        );
+        writeFileSync(distSwPath, updatedContent, 'utf8');
+        console.log(`✓ Service worker updated with version: ${packageJson.version}`);
+      } catch (error) {
+        console.warn('⚠ Could not update service worker version:', error);
+      }
+    }
+  };
+}
+
 export default defineConfig(({ command, mode: _mode }) => ({
   plugins: [
     // Enable React features
     react(),
     // Support for TypeScript paths
     tsconfigPaths(),
+    // Inject version into service worker during build
+    injectVersionPlugin(),
   ],
   define: {
     APP_VERSION: JSON.stringify(packageJson.version),
