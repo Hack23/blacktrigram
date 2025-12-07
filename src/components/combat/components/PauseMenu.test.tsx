@@ -33,8 +33,6 @@ const mockAudioManager = {
   playDojiangAmbience: vi.fn().mockResolvedValue(undefined),
 };
 
-const mockInitializeAudio = vi.fn().mockResolvedValue(undefined);
-
 const renderWithAudio = (component: React.ReactElement) => {
   return render(
     <AudioProvider manager={mockAudioManager} deferInitialization={false}>
