@@ -88,7 +88,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [dummyHealth, setDummyHealth] = useState(100);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [sessionDuration, setSessionDuration] = useState(0);
-  const [bestCombo, setBestCombo] = useState(0);
   const [perfectStrikes, setPerfectStrikes] = useState(0);
   
   // Training statistics
@@ -99,6 +98,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     misses: 0,
     accuracy: 0,
   });
+
+  // Best combo tracked via ref to avoid cascading setState in effect
+  const [bestCombo, setBestCombo] = useState(0);
+  const bestComboRef = useRef(0);
 
   // Ref to store timeout for dummy reset
   const dummyResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -238,6 +241,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           const newHits = prev.hits + 1;
           const totalAttempts = newHits + prev.misses;
           const newCombo = prev.combo + 1;
+          
+          // Update best combo directly here to avoid cascading setState in effect
+          if (newCombo > bestComboRef.current) {
+            bestComboRef.current = newCombo;
+            setBestCombo(newCombo);
+          }
           
           return {
             score: prev.score + points,
@@ -395,18 +404,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     };
   }, []);
 
-  // Track best combo from stats.combo to avoid race condition
-  useEffect(() => {
-    if (stats.combo > bestCombo) {
-      setBestCombo(stats.combo);
-    }
-  }, [stats.combo, bestCombo]);
-
-  // Reset sessionStartTime when training ends
+  // Reset session state when training ends - use callback pattern to avoid cascading setState
   useEffect(() => {
     if (!isTraining && sessionStartTime) {
-      setSessionStartTime(null);
-      setSessionDuration(0);
+      // Use queueMicrotask to defer setState and avoid cascading renders
+      queueMicrotask(() => {
+        setSessionStartTime(null);
+        setSessionDuration(0);
+      });
     }
   }, [isTraining, sessionStartTime]);
 

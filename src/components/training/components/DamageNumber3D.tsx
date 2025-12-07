@@ -36,7 +36,7 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
   onComplete,
   duration = 1.5,
 }) => {
-  const startTimeRef = useRef(performance.now());
+  const startTimeRef = useRef<number | null>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const completedRef = useRef(false);
 
@@ -50,6 +50,11 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
 
   // Animate floating and fading using refs to avoid unnecessary re-renders
   useFrame(() => {
+    // Lazy initialize start time on first frame
+    if (startTimeRef.current === null) {
+      startTimeRef.current = performance.now();
+    }
+    
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
     const progress = Math.min(elapsed / duration, 1);
 
