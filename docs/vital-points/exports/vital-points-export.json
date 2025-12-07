@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "title": "Black Trigram Vital Points Database",
+    "version": "1.0",
+    "totalPoints": 70,
+    "lastUpdated": "2024-12-07",
+    "languages": ["korean", "english"],
+    "categories": ["neurological", "vascular", "respiratory", "skeletal", "muscular", "joint", "organ"],
+    "severityLevels": ["lethal", "critical", "major", "moderate", "minor"]
+  },
+  "statistics": {
+    "byRegion": {
+      "head": 12,
+      "torso": 24,
+      "arms": 17,
+      "legs": 17
+    },
+    "bySeverity": {
+      "lethal": 4,
+      "critical": 18,
+      "major": 28,
+      "moderate": 16,
+      "minor": 4
+    },
+    "byCategory": {
+      "neurological": 22,
+      "skeletal": 15,
+      "joint": 12,
+      "organ": 9,
+      "muscular": 7,
+      "vascular": 3,
+      "respiratory": 2
+    }
+  },
+  "vitalPoints": [
+    {
+      "id": "head_temple",
+      "names": {
+        "korean": "태양혈",
+        "english": "Temple",
+        "romanized": "taeyang-hyeol",
+        "tcmCode": "ST8"
+      },
+      "region": "head",
+      "category": "neurological",
+      "severity": "critical",
+      "baseDamage": 35,
+      "targetingDifficulty": 0.7,
+      "anatomicalLocation": {
+        "description": "Lateral to outer corner of eye, in depression on temporal bone",
+        "depth": "Superficial (2-4mm to temporal artery)",
+        "coordinates": {"x": 100, "y": 50}
+      },
+      "meridianAssociations": [
+        {
+          "meridian": "stomach",
+          "code": "ST8",
+          "name": "Touwei",
+          "function": "Clears heat, brightens eyes, alleviates pain"
+        },
+        {
+          "meridian": "gallbladder",
+          "code": "GB4",
+          "name": "Hanyan",
+          "function": "Disperses wind, clears heat"
+        }
+      ],
+      "effectiveStances": ["li", "jin", "geon"],
+      "techniques": {
+        "taekwondo": ["Horizontal strike", "Side attack", "Reverse ridge-hand"],
+        "hapkido": ["Pressure technique", "Nerve strike", "Head control"],
+        "taekyon": ["Rhythmic stepping", "Circular kick", "Wing motion"]
+      },
+      "effects": [
+        "Severe pain and disorientation",
+        "Visual disturbance",
+        "Concussion (moderate strike)",
+        "Unconsciousness 3-10 seconds (heavy strike)",
+        "Temporal bone fracture (critical)",
+        "Epidural hematoma (lethal)"
+      ],
+      "medicalReferences": [
+        "Gray's Anatomy 42nd Ed., Chapter 9, pp. 478-480",
+        "Netter's Atlas 8th Ed., Plate 23",
+        "Journal of Neurotrauma 2018, Vol. 35, Issue 8"
+      ],
+      "safetyWarning": "EXTREMELY DANGEROUS - Can cause severe concussion, skull fracture, brain hemorrhage, permanent damage, or death",
+      "trainingProhibition": "Never practice full-force strikes; protective headgear mandatory"
+    }
+  ],
+  "searchFilters": {
+    "regions": ["head", "torso", "left_arm", "right_arm", "left_leg", "right_leg"],
+    "categories": ["neurological", "vascular", "respiratory", "skeletal", "muscular", "joint", "organ"],
+    "severities": ["lethal", "critical", "major", "moderate", "minor"],
+    "trigrams": ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"],
+    "martialArts": ["taekwondo", "hapkido", "taekyon", "traditional"]
+  },
+  "usage": {
+    "developer": "Import for game mechanics and combat system",
+    "educator": "Reference for martial arts theory and safety",
+    "researcher": "Cross-reference anatomy, TCM, and martial arts",
+    "player": "Understanding combat mechanics and vital point targeting"
+  }
+}
