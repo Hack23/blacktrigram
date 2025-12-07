@@ -253,6 +253,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           const totalAttempts = newHits + prev.misses;
           const newCombo = prev.combo + 1;
           
+          // Update best combo ref in same state update
+          if (newCombo > bestComboRef.current) {
+            bestComboRef.current = newCombo;
+            setBestCombo(newCombo);
+          }
+          
           return {
             score: prev.score + points,
             combo: newCombo,
@@ -260,15 +266,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             misses: prev.misses,
             accuracy: totalAttempts > 0 ? (newHits / totalAttempts) * 100 : 0,
           };
-        });
-        
-        // Update best combo after stats update to avoid cascading setState
-        setStats((prev) => {
-          if (prev.combo > bestComboRef.current) {
-            bestComboRef.current = prev.combo;
-            setBestCombo(prev.combo);
-          }
-          return prev;
         });
 
         // Reduce dummy health
@@ -537,7 +534,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 position={[effect.position[0], effect.position[1] + 0.3, effect.position[2]]}
                 damage={effect.damage}
                 type={effect.type === "perfect" ? "perfect" : "normal"}
-                onComplete={() => {}} // Empty - TrainingHitEffects3D handles cleanup
+                onComplete={() => handleEffectComplete(effect.id)}
               />
             )}
           </React.Fragment>

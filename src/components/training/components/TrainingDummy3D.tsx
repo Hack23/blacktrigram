@@ -247,11 +247,17 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     prevHealthRef.current = health;
   }, [health]);
 
+  // Store health in ref for useFrame to avoid stale closure
+  const healthRef = useRef(health);
+  useEffect(() => {
+    healthRef.current = health;
+  }, [health]);
+
   // Breathing animation (slower when health is low)
   useFrame((state) => {
     if (!groupRef.current) return;
     
-    const breathSpeed = health > 50 ? 2 : 1;
+    const breathSpeed = healthRef.current > 50 ? 2 : 1;
     const breathScale = Math.sin(state.clock.elapsedTime * breathSpeed) * 0.02 + 1;
     scaleVector.set(1, breathScale, 1);
     groupRef.current.scale.copy(scaleVector);
