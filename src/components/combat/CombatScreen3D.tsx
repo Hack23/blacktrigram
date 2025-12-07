@@ -241,6 +241,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
   // Pause menu state - local state for pause menu visibility
+  // Local state for pause menu UI visibility
+  // Note: isPaused (prop) controls game pause from parent, showPauseMenu (state) controls menu UI
+  // Both need to be checked because:
+  // - isPaused: External pause state (e.g., from parent component or global game state)
+  // - showPauseMenu: Local UI state for pause menu overlay
+  // They can be out of sync intentionally (e.g., parent pauses game but menu not shown)
   const [showPauseMenu, setShowPauseMenu] = useState(false);
 
   // Pause menu handlers
@@ -255,6 +261,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [audio]);
 
   const handleRestart = useCallback(() => {
+    // Note: React 19 automatically batches all these state updates into a single render
+    // This ensures atomic state transitions without race conditions
+    
     // Reset to first round
     setInternalRound(1);
     setMatchScore({ player1: 0, player2: 0 });
@@ -270,6 +279,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onPlayerUpdate(1, { health: 100 });
     
     // Close pause menu and start first round
+    // The timer will reset automatically via the initialTime prop when round starts
     setShowPauseMenu(false);
     setShowRoundStart(true);
     
@@ -980,6 +990,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
 
       // Block all other combat inputs when paused or during pause menu
+      // isPaused: External pause state from parent component
+      // showPauseMenu: Local pause menu UI is visible
+      // Both conditions block input to prevent combat actions while game is paused
       if (isPaused || showPauseMenu) {
         return;
       }

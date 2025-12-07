@@ -184,15 +184,19 @@ All components include:
 ## Testing
 
 Comprehensive test coverage:
-- **PauseMenu.test.tsx**: 12 tests (rendering, interactions, keyboard nav)
+- **PauseMenu.test.tsx**: 10 tests (rendering, interactions, accessibility)
 - **ConfirmDialog.test.tsx**: 12 tests (rendering, interactions, keyboard shortcuts)
 - **usePauseMenu.test.ts**: 13 tests (state management, navigation, dialogs)
+- **QuickSettings.test.tsx**: 21 tests (settings toggles, audio controls, accessibility, responsive layout)
+- **ControlsGuide.test.tsx**: 23 tests (controls rendering, keyboard mapping, Korean/English text, accessibility)
 
 Run tests:
 ```bash
 npm test -- PauseMenu.test
 npm test -- ConfirmDialog.test
 npm test -- usePauseMenu.test
+npm test -- QuickSettings.test
+npm test -- ControlsGuide.test
 ```
 
 ## Styling
