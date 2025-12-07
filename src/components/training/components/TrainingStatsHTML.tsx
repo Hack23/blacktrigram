@@ -16,6 +16,9 @@ export interface TrainingStats {
   readonly hits: number;
   readonly misses: number;
   readonly accuracy: number;
+  readonly sessionDuration?: number;
+  readonly bestCombo?: number;
+  readonly perfectStrikes?: number;
 }
 
 /**
@@ -43,6 +46,21 @@ export const TrainingStatsHTML: React.FC<TrainingStatsHTMLProps> = ({
     () => stats.accuracy.toFixed(1),
     [stats.accuracy]
   );
+
+  // Format session duration
+  const formattedDuration = useMemo(() => {
+    if (!stats.sessionDuration) return "00:00";
+    const minutes = Math.floor(stats.sessionDuration / 60);
+    const seconds = stats.sessionDuration % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }, [stats.sessionDuration]);
+
+  // Calculate perfect strike rate
+  const perfectRate = useMemo(() => {
+    const totalAttempts = stats.hits + stats.misses;
+    if (totalAttempts === 0 || !stats.perfectStrikes) return "0";
+    return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);
+  }, [stats.hits, stats.misses, stats.perfectStrikes]);
 
   return (
     <div
@@ -132,6 +150,45 @@ export const TrainingStatsHTML: React.FC<TrainingStatsHTMLProps> = ({
           }
           isMobile={isMobile}
         />
+
+        {/* Session Duration */}
+        {stats.sessionDuration !== undefined && (
+          <StatRow
+            korean="시간"
+            english="Duration"
+            value={formattedDuration}
+            color="#00ffff"
+            isMobile={isMobile}
+          />
+        )}
+
+        {/* Best Combo */}
+        {stats.bestCombo !== undefined && stats.bestCombo > 0 && (
+          <StatRow
+            korean="최고 콤보"
+            english="Best Combo"
+            value={`${stats.bestCombo}x`}
+            color="#ffd700"
+            isMobile={isMobile}
+          />
+        )}
+
+        {/* Perfect Rate */}
+        {stats.hits + stats.misses > 0 && (
+          <StatRow
+            korean="완벽률"
+            english="Perfect Rate"
+            value={`${perfectRate}%`}
+            color={
+              parseFloat(perfectRate) >= 30
+                ? "#ffd700"
+                : parseFloat(perfectRate) >= 10
+                ? "#00ffff"
+                : "#888888"
+            }
+            isMobile={isMobile}
+          />
+        )}
       </div>
     </div>
   );

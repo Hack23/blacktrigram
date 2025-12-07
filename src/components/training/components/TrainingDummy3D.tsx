@@ -6,7 +6,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
@@ -23,6 +23,12 @@ export interface TrainingDummy3DProps {
   readonly selectedVitalPoint: string | null;
   /** Whether training is active */
   readonly isTraining: boolean;
+  /** Current health of dummy (0-100) */
+  readonly health?: number;
+  /** Callback when dummy is hit */
+  readonly onHit?: () => void;
+  /** Callback when dummy is defeated */
+  readonly onDefeated?: () => void;
 }
 
 /**
@@ -127,6 +133,81 @@ const VitalPointMarker: React.FC<{
 };
 
 /**
+ * Health bar component for training dummy
+ */
+
+// Constants defined outside component to avoid recreation
+const HEALTH_BAR_WIDTH = 1.2;
+const HEALTH_BAR_HEIGHT = 0.1;
+
+const DummyHealthBar: React.FC<{
+  health: number;
+  position: [number, number, number];
+  'data-testid'?: string;
+}> = ({ health, position, 'data-testid': testId }) => {
+  // Memoize geometries to avoid recreating on every render
+  const bgGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02), []);
+  const healthGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02), []);
+  const borderGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH + 0.04, HEALTH_BAR_HEIGHT + 0.04, 0.01), []);
+
+  // Determine health bar color based on health percentage
+  const healthColor = useMemo(() => {
+    if (health > 70) return KOREAN_COLORS.HEALTH_FULL;
+    if (health > 40) return KOREAN_COLORS.HEALTH_MEDIUM;
+    if (health > 20) return KOREAN_COLORS.HEALTH_LOW;
+    return KOREAN_COLORS.HEALTH_CRITICAL;
+  }, [health]);
+
+  // Use scale instead of recreating geometry
+  const healthScale: [number, number, number] = useMemo(
+    () => [health / 100, 1, 1],
+    [health]
+  );
+
+  // Cleanup geometries on unmount
+  useEffect(() => {
+    return () => {
+      bgGeometry.dispose();
+      healthGeometry.dispose();
+      borderGeometry.dispose();
+    };
+  }, [bgGeometry, healthGeometry, borderGeometry]);
+
+  return (
+    <group position={position} data-testid={testId}>
+      {/* Background bar */}
+      <mesh>
+        <primitive object={bgGeometry} />
+        <meshBasicMaterial
+          color={KOREAN_COLORS.UI_BACKGROUND_DARK}
+          transparent
+          opacity={0.7}
+        />
+      </mesh>
+
+      {/* Health bar (scaled based on health, anchored to left edge) */}
+      <mesh 
+        position={[-(HEALTH_BAR_WIDTH * (1 - health / 100)) / 2, 0, 0.01]}
+        scale={healthScale}
+      >
+        <primitive object={healthGeometry} />
+        <meshBasicMaterial color={healthColor} transparent opacity={0.9} />
+      </mesh>
+
+      {/* Border frame - outline using EdgesGeometry for crisp border */}
+      <lineSegments>
+        <edgesGeometry args={[borderGeometry]} />
+        <lineBasicMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          transparent
+          opacity={0.8}
+        />
+      </lineSegments>
+    </group>
+  );
+};
+
+/**
  * TrainingDummy3D Component
  * Main training dummy with body and vital points
  */
@@ -134,6 +215,9 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   position,
   selectedVitalPoint,
   isTraining,
+  health = 100,
+  onHit,
+  onDefeated,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   
@@ -146,11 +230,35 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     []
   );
 
-  // Breathing animation
+  // Track previous health to detect defeat
+  const prevHealthRef = useRef(health);
+  
+  // Store latest onDefeated callback in a ref to avoid stale closure
+  const onDefeatedRef = useRef(onDefeated);
+  useEffect(() => {
+    onDefeatedRef.current = onDefeated;
+  }, [onDefeated]);
+
+  // Check for defeat
+  React.useEffect(() => {
+    if (prevHealthRef.current > 0 && health <= 0) {
+      onDefeatedRef.current?.();
+    }
+    prevHealthRef.current = health;
+  }, [health]);
+
+  // Store health in ref for useFrame to avoid stale closure
+  const healthRef = useRef(health);
+  useEffect(() => {
+    healthRef.current = health;
+  }, [health]);
+
+  // Breathing animation (slower when health is low)
   useFrame((state) => {
     if (!groupRef.current) return;
     
-    const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
+    const breathSpeed = healthRef.current > 50 ? 2 : 1;
+    const breathScale = Math.sin(state.clock.elapsedTime * breathSpeed) * 0.02 + 1;
     scaleVector.set(1, breathScale, 1);
     groupRef.current.scale.copy(scaleVector);
   });
@@ -158,11 +266,9 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   // Handle vital point selection
   const handlePointClick = useCallback(
     (_pointId: string) => {
-      // TODO: Implement vital point selection feedback
-      // This will be used to highlight the selected vital point
-      // and provide targeting assistance to the player
+      onHit?.();
     },
-    []
+    [onHit]
   );
 
   return (
@@ -248,6 +354,15 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
           onClick={handlePointClick}
         />
       ))}
+
+      {/* Health bar above dummy */}
+      {isTraining && (
+        <DummyHealthBar 
+          health={health} 
+          position={[0, 2.2, 0]} 
+          data-testid="training-dummy-health-bar"
+        />
+      )}
     </group>
   );
 };

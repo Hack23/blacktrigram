@@ -10,6 +10,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
@@ -28,6 +29,7 @@ import TrainingStatsHTML, { type TrainingStats } from "./components/TrainingStat
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
 import TrainingModeSelectorHTML, { type TrainingMode } from "./components/TrainingModeSelectorHTML";
 import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
+import DamageNumber3D from "./components/DamageNumber3D";
 
 /**
  * Props for the TrainingScreen3D component
@@ -51,6 +53,7 @@ interface HitEffect {
   readonly position: [number, number, number];
   readonly type: "success" | "perfect" | "miss";
   readonly visible: boolean;
+  readonly damage?: number;
 }
 
 /**
@@ -82,6 +85,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [showFeedback, setShowFeedback] = useState(false);
   const [hitEffects, setHitEffects] = useState<HitEffect[]>([]);
   const [nextEffectId, setNextEffectId] = useState(0);
+  const [dummyHealth, setDummyHealth] = useState(100);
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const [sessionDuration, setSessionDuration] = useState(0);
+  const [perfectStrikes, setPerfectStrikes] = useState(0);
   
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
@@ -91,6 +98,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     misses: 0,
     accuracy: 0,
   });
+
+  // Best combo tracked via ref to avoid cascading setState in effect
+  const [bestCombo, setBestCombo] = useState(0);
+  const bestComboRef = useRef(0);
+
+  // Ref to store timeout for dummy reset
+  const dummyResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Responsive detection
   const isMobile = useMemo(() => width < 768, [width]);
@@ -165,6 +179,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Training handlers
   const handleStartTraining = useCallback(() => {
     setIsTraining(true);
+    setSessionStartTime(Date.now());
+    setDummyHealth(100);
     setStats({
       score: 0,
       combo: 0,
@@ -179,9 +195,39 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   const handleStopTraining = useCallback(() => {
     setIsTraining(false);
+    setSessionStartTime(null);
+    setSessionDuration(0);
+    setBestCombo(0);
+    bestComboRef.current = 0;
+    setPerfectStrikes(0);
+    
+    // Clear any pending dummy reset timeout
+    if (dummyResetTimeoutRef.current) {
+      clearTimeout(dummyResetTimeoutRef.current);
+      dummyResetTimeoutRef.current = null;
+    }
+    
     setFeedback("훈련 종료 | Training End");
     setShowFeedback(true);
     audio.playSFX("menu_back");
+  }, [audio]);
+
+  const handleDummyDefeated = useCallback(() => {
+    setFeedback("훈련 더미 무력화! | Dummy Defeated!");
+    setShowFeedback(true);
+    audio.playSFX("ki_release");
+    
+    // Clear any existing timeout
+    if (dummyResetTimeoutRef.current) {
+      clearTimeout(dummyResetTimeoutRef.current);
+    }
+    
+    // Reset dummy health after delay
+    dummyResetTimeoutRef.current = setTimeout(() => {
+      setDummyHealth(100);
+      setFeedback("더미 재설정 | Dummy Reset");
+      setShowFeedback(true);
+    }, 2000);
   }, [audio]);
 
   const handleDummyHit = useCallback(
@@ -195,18 +241,35 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
       if (accuracy > 0.5) {
         const points = Math.round(accuracy * 100);
+        const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
+        
+        // Track perfect strikes
+        if (accuracy > 0.9) {
+          setPerfectStrikes((prev) => prev + 1);
+        }
         
         setStats((prev) => {
           const newHits = prev.hits + 1;
           const totalAttempts = newHits + prev.misses;
+          const newCombo = prev.combo + 1;
+          
+          // Update best combo ref in same state update
+          if (newCombo > bestComboRef.current) {
+            bestComboRef.current = newCombo;
+            setBestCombo(newCombo);
+          }
+          
           return {
             score: prev.score + points,
-            combo: prev.combo + 1,
+            combo: newCombo,
             hits: newHits,
             misses: prev.misses,
             accuracy: totalAttempts > 0 ? (newHits / totalAttempts) * 100 : 0,
           };
         });
+
+        // Reduce dummy health
+        setDummyHealth((prev) => Math.max(0, prev - damage));
 
         if (accuracy > 0.9) {
           setFeedback("완벽한 타격! | Perfect Strike!");
@@ -232,6 +295,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             position: hitPosition,
             type: effectType,
             visible: true,
+            damage,
           },
         ]);
         setNextEffectId((prev) => prev + 1);
@@ -331,6 +395,26 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     }
   }, [showFeedback]);
 
+  // Update session duration
+  useEffect(() => {
+    if (!isTraining || !sessionStartTime) return;
+
+    const interval = setInterval(() => {
+      setSessionDuration(Math.floor((Date.now() - sessionStartTime) / 1000));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isTraining, sessionStartTime]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (dummyResetTimeoutRef.current) {
+        clearTimeout(dummyResetTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Handle hit effect completion
   const handleEffectComplete = useCallback((effectId: number) => {
     setHitEffects((prev) => prev.filter((effect) => effect.id !== effectId));
@@ -420,6 +504,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           position={[5, 0, 0]}
           selectedVitalPoint={selectedVitalPoint}
           isTraining={isTraining}
+          health={dummyHealth}
+          onDefeated={handleDummyDefeated}
         />
 
         {/* Player model (simplified for now) */}
@@ -436,13 +522,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
         {/* Hit effects */}
         {hitEffects.map((effect) => (
-          <TrainingHitEffects3D
-            key={effect.id}
-            position={effect.position}
-            type={effect.type}
-            visible={effect.visible}
-            onComplete={() => handleEffectComplete(effect.id)}
-          />
+          <React.Fragment key={effect.id}>
+            <TrainingHitEffects3D
+              position={effect.position}
+              type={effect.type}
+              visible={effect.visible}
+              onComplete={() => handleEffectComplete(effect.id)}
+            />
+            {effect.damage && effect.type !== "miss" && (
+              <DamageNumber3D
+                position={[effect.position[0], effect.position[1] + 0.3, effect.position[2]]}
+                damage={effect.damage}
+                type={effect.type === "perfect" ? "perfect" : "normal"}
+                onComplete={() => handleEffectComplete(effect.id)}
+              />
+            )}
+          </React.Fragment>
         ))}
 
         {/* Html UI Overlays */}
@@ -486,7 +581,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               }}
             >
               <TrainingStatsHTML
-                stats={stats}
+                stats={{
+                  ...stats,
+                  sessionDuration,
+                  bestCombo,
+                  perfectStrikes,
+                }}
                 isMobile={isMobile}
               />
             </div>
