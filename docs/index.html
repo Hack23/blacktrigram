@@ -144,7 +144,7 @@
     <meta name="apple-mobile-web-app-title" content="Black Trigram" />
     <link rel="apple-touch-icon" href="./icons/icon-152x152.png" />
 
-    <!-- PWA Service Worker Registration -->
+    <!-- PWA Service Worker Registration with Version Checking -->
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
@@ -181,6 +181,103 @@
                 "ServiceWorker registration successful:",
                 registration
               );
+
+              // Check for updates every 60 seconds
+              const updateCheckInterval = setInterval(() => {
+                registration.update();
+              }, 60000);
+
+              // Clean up interval on page unload to prevent memory leaks
+              window.addEventListener("beforeunload", () => {
+                clearInterval(updateCheckInterval);
+              });
+
+              // Listen for new service worker waiting to activate
+              registration.addEventListener("updatefound", () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener("statechange", () => {
+                    if (
+                      newWorker.state === "installed" &&
+                      navigator.serviceWorker.controller
+                    ) {
+                      // New version available - show update notification
+                      console.log(
+                        "New version available! Reloading to update..."
+                      );
+                      
+                      // Create update banner with accessibility support
+                      const updateBanner = document.createElement("div");
+                      updateBanner.id = "update-banner";
+                      updateBanner.setAttribute("role", "alert");
+                      updateBanner.setAttribute("aria-live", "assertive");
+                      updateBanner.setAttribute("tabindex", "0");
+                      updateBanner.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        background: linear-gradient(135deg, #00ffd0 0%, #00aa88 100%);
+                        color: #000;
+                        padding: 16px;
+                        text-align: center;
+                        font-family: 'Orbitron', sans-serif;
+                        font-weight: bold;
+                        z-index: 10000;
+                        box-shadow: 0 2px 10px rgba(0,255,208,0.3);
+                        cursor: pointer;
+                        animation: slideDown 0.3s ease-out;
+                      `;
+                      updateBanner.innerHTML = `
+                        🎮 New version available! Tap to reload and get the latest features 🚀
+                      `;
+                      
+                      // Add animation (only if not already present)
+                      if (!document.getElementById("slideDown-animation-style")) {
+                        const style = document.createElement("style");
+                        style.id = "slideDown-animation-style";
+                        style.textContent = `
+                          @keyframes slideDown {
+                            from { transform: translateY(-100%); }
+                            to { transform: translateY(0); }
+                          }
+                        `;
+                        document.head.appendChild(style);
+                      }
+                      
+                      // Guard to prevent double reload
+                      let hasReloaded = false;
+
+                      // Reload on click
+                      updateBanner.addEventListener("click", () => {
+                        if (!hasReloaded) {
+                          hasReloaded = true;
+                          window.location.reload();
+                        }
+                      });
+
+                      // Reload on keyboard interaction (Enter or Space)
+                      updateBanner.addEventListener("keydown", (e) => {
+                        if ((e.key === "Enter" || e.key === " ") && !hasReloaded) {
+                          e.preventDefault();
+                          hasReloaded = true;
+                          window.location.reload();
+                        }
+                      });
+                      
+                      document.body.appendChild(updateBanner);
+                      
+                      // Auto-reload after 5 seconds if user doesn't click
+                      setTimeout(() => {
+                        if (!hasReloaded) {
+                          hasReloaded = true;
+                          window.location.reload();
+                        }
+                      }, 5000);
+                    }
+                  });
+                }
+              });
             })
             .catch((err) => {
               console.log("ServiceWorker registration failed:", err);
@@ -188,7 +285,7 @@
         });
       }
     </script>
-    <script type="module" crossorigin src="./assets/index-B0oxEs.js"></script>
+    <script type="module" crossorigin src="./assets/index-Bkr7OV.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/game-BJdTxn.css">
   </head>
   <body>

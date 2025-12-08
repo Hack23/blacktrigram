@@ -1,44 +1,63 @@
-const CACHE_NAME = "black-trigram-v2"; // Bump version to invalidate old cache
+// Version will be injected at build time from package.json
+const APP_VERSION = "0.5.15"; // Placeholder replaced by build process
+const CACHE_NAME = `black-trigram-v${APP_VERSION}`;
+
+// Minimal caching - essential assets for reliable offline support
+// All other resources use network-first strategy
 const urlsToCache = [
   "/",
   "/index.html",
   "/manifest.json",
-  // Add your static assets here
 ];
 
-// Install event - cache resources
+// Install event - cache minimal resources and skip waiting for immediate activation
 self.addEventListener("install", (event) => {
+  console.log(`[SW v${APP_VERSION}] Installing...`);
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("Opened cache");
-      return cache.addAll(urlsToCache);
-    })
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => {
+        console.log(`[SW v${APP_VERSION}] Caching essential assets`);
+        return cache.addAll(urlsToCache);
+      })
+      .then(() => {
+        console.log(`[SW v${APP_VERSION}] Installation complete`);
+      })
   );
+  // Force immediate activation - don't wait for old service worker to finish
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event - aggressively clean up old caches and take control immediately
 self.addEventListener("activate", (event) => {
+  console.log(`[SW v${APP_VERSION}] Activating...`);
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log("Deleting old cache:", cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            // Delete all caches that don't match current version
+            if (cacheName.startsWith("black-trigram-") && cacheName !== CACHE_NAME) {
+              console.log(`[SW v${APP_VERSION}] Deleting old cache: ${cacheName}`);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log(`[SW v${APP_VERSION}] Activation complete - now controlling all pages`);
+      })
   );
+  // Take control of all pages immediately, even if they were loaded with old SW
   self.clients.claim();
 });
 
-// Fetch event - NETWORK FIRST for JS/HTML, cache fallback for assets
+// Fetch event - NETWORK FIRST for all resources to ensure fresh content
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // Skip caching for development servers and WebSocket
+  // Skip caching for development servers and WebSocket connections
   if (
     url.hostname.includes(".app.github.dev") ||
     url.hostname.includes("gitpod.io") ||
@@ -48,63 +67,40 @@ self.addEventListener("fetch", (event) => {
     return; // Let browser handle it normally
   }
 
-  // Network-first for HTML and JS (always get fresh)
-  if (
-    event.request.destination === "document" ||
-    event.request.destination === "script" ||
-    url.pathname.endsWith(".js") ||
-    url.pathname.endsWith(".html")
-  ) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Cache the fresh response
-          if (response.ok) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return response;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Cache-first for static assets (images, fonts, audio)
+  // Network-first strategy for ALL resources - always get fresh content
+  // This ensures users always get the latest version when online
   event.respondWith(
-    caches
-      .match(event.request)
+    fetch(event.request)
       .then((response) => {
-        if (response) {
-          return response;
-        }
-
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then((response) => {
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
-            return response;
-          }
-
-          const responseToCache = response.clone();
-
+        // Only cache successful, non-opaque responses
+        if (response.ok && response.type !== "opaque") {
+          // Clone response for caching (responses can only be used once)
+          const responseClone = response.clone();
+          
+          // Cache for offline fallback only
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+            cache.put(event.request, responseClone);
           });
-
-          return response;
-        });
+        }
+        return response;
       })
       .catch(() => {
-        if (event.request.destination === "document") {
-          return caches.match("/index.html");
-        }
+        // Only use cache as fallback when network fails (offline)
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            console.log(`[SW v${APP_VERSION}] Serving from cache (offline): ${url.pathname}`);
+            return cachedResponse;
+          }
+          // If requesting document and no cache, serve cached index.html
+          if (event.request.destination === "document") {
+            return caches.match("/index.html");
+          }
+          // Otherwise, fail gracefully
+          return new Response("Offline and no cached content available", {
+            status: 503,
+            statusText: "Service Unavailable"
+          });
+        });
       })
   );
 });
