@@ -47,8 +47,6 @@ export interface UseKeyboardControlsReturn {
   readonly showHints: boolean;
   /** Toggle hints visibility */
   readonly toggleHints: () => void;
-  /** Control mapper instance */
-  readonly controlMapper: ControlMapper;
 }
 
 /**
@@ -268,6 +266,5 @@ export function useKeyboardControls({
     queuedInputs,
     showHints,
     toggleHints,
-    controlMapper: controlMapperRef.current,
   };
 }

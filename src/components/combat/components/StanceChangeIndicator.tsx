@@ -76,7 +76,10 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   // Detect stance change
   useEffect(() => {
     if (currentStance !== previousStance) {
-      setShowIndicator(true);
+      // Use a microtask to avoid synchronous setState
+      Promise.resolve().then(() => {
+        setShowIndicator(true);
+      });
 
       const timer = setTimeout(() => {
         setShowIndicator(false);
