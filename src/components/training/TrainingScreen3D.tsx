@@ -16,7 +16,7 @@ import React, {
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
-import { Position, TrigramStance } from "../../types/common";
+import { Position, TrigramStance, CombatState } from "../../types/common";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
@@ -30,6 +30,9 @@ import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
 import TrainingModeSelectorHTML, { type TrainingMode } from "./components/TrainingModeSelectorHTML";
 import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
 import DamageNumber3D from "./components/DamageNumber3D";
+import { Player3DUnified } from "../three/Player3DUnified";
+import { convertPlayerStateToProps } from "../../utils/player3DHelpers";
+import { PlayerArchetype } from "../../types/common";
 
 /**
  * Props for the TrainingScreen3D component
@@ -175,6 +178,52 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     () => [playerPosition.x, 0, playerPosition.y],
     [playerPosition]
   );
+
+  // Create a training player state for visualization
+  const trainingPlayerState = useMemo<PlayerState>(() => {
+    return {
+      id: "training-player",
+      name: { korean: "훈련생", english: "Trainee" },
+      archetype: PlayerArchetype.MUSA, // Default archetype for training
+      health: 100,
+      maxHealth: 100,
+      ki: 100,
+      maxKi: 100,
+      stamina: 100,
+      maxStamina: 100,
+      energy: 100,
+      maxEnergy: 100,
+      attackPower: 10,
+      defense: 10,
+      speed: 10,
+      technique: 10,
+      pain: 0,
+      consciousness: 100,
+      balance: 100,
+      momentum: 0,
+      currentStance: TrigramStance.GEON,
+      combatState: CombatState.IDLE,
+      position: playerPosition,
+      isBlocking: false,
+      isStunned: false,
+      isCountering: false,
+      lastActionTime: 0,
+      recoveryTime: 0,
+      lastStanceChangeTime: 0,
+      statusEffects: [],
+      activeEffects: [],
+      vitalPoints: [],
+      totalDamageReceived: 0,
+      totalDamageDealt: 0,
+      hitsTaken: 0,
+      hitsLanded: stats.hits,
+      perfectStrikes,
+      vitalPointHits: 0,
+      misses: stats.misses,
+      accuracy: stats.accuracy,
+      comboCount: stats.combo,
+    };
+  }, [playerPosition, stats.hits, stats.misses, stats.accuracy, stats.combo, perfectStrikes]);
 
   // Training handlers
   const handleStartTraining = useCallback(() => {
@@ -508,17 +557,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onDefeated={handleDummyDefeated}
         />
 
-        {/* Player model (simplified for now) */}
-        <group position={player3DPosition}>
-          <mesh castShadow receiveShadow>
-            <capsuleGeometry args={[0.4, 1.2, 16, 32]} />
-            <meshStandardMaterial
-              color={KOREAN_COLORS.ACCENT_GOLD}
-              metalness={0.3}
-              roughness={0.7}
-            />
-          </mesh>
-        </group>
+        {/* Player model */}
+        <Player3DUnified
+          {...convertPlayerStateToProps(
+            trainingPlayerState,
+            player3DPosition,
+            0, // rotation - facing right towards dummy
+            {
+              isMobile,
+              facing: "right",
+              showVitalPoints: false,
+            }
+          )}
+        />
 
         {/* Hit effects */}
         {hitEffects.map((effect) => (
