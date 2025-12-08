@@ -85,10 +85,6 @@ export function convertPlayerStateToProps(
   rotation: number,
   options: {
     readonly isMobile?: boolean;
-    readonly showDetails?: boolean;
-    readonly showHealthBar?: boolean;
-    readonly showStanceIndicator?: boolean;
-    readonly showVitalPoints?: boolean;
     readonly facing?: "left" | "right";
     readonly scale?: number;
     readonly onAnimationComplete?: () => void;
@@ -123,8 +119,6 @@ export function convertPlayerStateToProps(
     // Display options
     name: player.name,
     isMobile: options.isMobile ?? false,
-    showDetails: options.showDetails ?? true,
-    showStanceIndicator: options.showStanceIndicator ?? true,
     facing: options.facing ?? "right",
     scale: options.scale ?? 1,
     onAnimationComplete: options.onAnimationComplete,

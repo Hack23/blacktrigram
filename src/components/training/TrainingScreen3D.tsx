@@ -570,7 +570,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             {
               isMobile,
               facing: "right",
-              showVitalPoints: false,
             }
           )}
         />

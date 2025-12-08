@@ -38,7 +38,8 @@ export type PlayerAnimation =
   | "technique_execute"
   | "walk"
   | "block"
-  | "counter";
+  | "counter"
+  | "death";
 
 /**
  * Unified props for Player3D visual component.
