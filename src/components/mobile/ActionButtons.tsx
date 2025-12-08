@@ -13,6 +13,7 @@ import { Html } from '@react-three/drei';
 import React, { useCallback, useState } from 'react';
 import { KOREAN_COLORS } from '../../types/constants';
 import { triggerHaptic } from '../../utils/haptics';
+import { getColorRGB } from '../../utils/colorHelpers';
 
 /**
  * Event type for button interactions
@@ -145,31 +146,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
     [disabled, onBlock]
   );
 
-  // RGB extraction helper for inline styles
-  const getPrimaryColor = () => {
-    const r = (KOREAN_COLORS.PRIMARY_CYAN >> 16) & 0xff;
-    const g = (KOREAN_COLORS.PRIMARY_CYAN >> 8) & 0xff;
-    const b = KOREAN_COLORS.PRIMARY_CYAN & 0xff;
-    return { r, g, b };
-  };
-
-  const getGoldColor = () => {
-    const r = (KOREAN_COLORS.ACCENT_GOLD >> 16) & 0xff;
-    const g = (KOREAN_COLORS.ACCENT_GOLD >> 8) & 0xff;
-    const b = KOREAN_COLORS.ACCENT_GOLD & 0xff;
-    return { r, g, b };
-  };
-
-  const getBlueColor = () => {
-    const r = (KOREAN_COLORS.ACCENT_BLUE >> 16) & 0xff;
-    const g = (KOREAN_COLORS.ACCENT_BLUE >> 8) & 0xff;
-    const b = KOREAN_COLORS.ACCENT_BLUE & 0xff;
-    return { r, g, b };
-  };
-
-  const primaryColor = getPrimaryColor();
-  const goldColor = getGoldColor();
-  const blueColor = getBlueColor();
+  // Extract RGB colors using shared utility
+  const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
+  const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
+  const blueColor = getColorRGB(KOREAN_COLORS.ACCENT_BLUE);
 
   return (
     <Html fullscreen>

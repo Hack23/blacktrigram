@@ -31,55 +31,50 @@ describe('ActionButtons', () => {
   describe('Component props', () => {
     it('should accept onAttack callback', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onAttack: onAttackMock,
           onBlock: onBlockMock,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept onBlock callback', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onAttack: onAttackMock,
           onBlock: onBlockMock,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept disabled prop', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onAttack: onAttackMock,
           onBlock: onBlockMock,
           disabled: true,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept custom position', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onAttack: onAttackMock,
           onBlock: onBlockMock,
           bottom: 30,
           right: 40,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept custom opacity', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onAttack: onAttackMock,
           onBlock: onBlockMock,
           opacity: 0.6,
-        };
+        });
       }).not.toThrow();
     });
   });

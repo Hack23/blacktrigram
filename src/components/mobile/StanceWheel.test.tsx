@@ -30,64 +30,59 @@ describe('StanceWheel', () => {
   describe('Component props', () => {
     it('should accept currentStance prop', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           currentStance: 0,
           onStanceChange: onStanceChangeMock,
           expanded: false,
           onToggle: onToggleMock,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept expanded state', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           currentStance: 0,
           onStanceChange: onStanceChangeMock,
           expanded: true,
           onToggle: onToggleMock,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept disabled prop', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           currentStance: 0,
           onStanceChange: onStanceChangeMock,
           expanded: false,
           onToggle: onToggleMock,
           disabled: true,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept custom position', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           currentStance: 0,
           onStanceChange: onStanceChangeMock,
           expanded: false,
           onToggle: onToggleMock,
           bottom: 40,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept custom opacity', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           currentStance: 0,
           onStanceChange: onStanceChangeMock,
           expanded: false,
           onToggle: onToggleMock,
           opacity: 0.7,
-        };
+        });
       }).not.toThrow();
     });
   });

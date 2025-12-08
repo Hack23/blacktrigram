@@ -7,7 +7,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useTouchControls, GestureEvent } from './useTouchControls';
+import { useTouchControls, type GestureEvent } from './useTouchControls';
 
 describe('useTouchControls', () => {
   let onGestureMock: ReturnType<typeof vi.fn<[GestureEvent], void>>;

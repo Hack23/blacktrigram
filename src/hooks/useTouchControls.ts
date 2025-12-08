@@ -9,7 +9,7 @@
  * @korean 터치 컨트롤 훅
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Gesture types supported by the touch control system
@@ -107,7 +107,7 @@ export function useTouchControls({
 }: UseTouchControlsProps): UseTouchControlsReturn {
   const touchStartRef = useRef<Touch | null>(null);
   const touchStartTimeRef = useRef<number>(0);
-  const isTouchingRef = useRef<boolean>(false);
+  const [isTouching, setIsTouching] = useState<boolean>(false);
 
   /**
    * Handle touch start event
@@ -118,7 +118,7 @@ export function useTouchControls({
     const touch = e.touches[0];
     touchStartRef.current = touch;
     touchStartTimeRef.current = Date.now();
-    isTouchingRef.current = true;
+    setIsTouching(true);
 
     // Check for two-finger tap immediately
     if (e.touches.length === 2) {
@@ -147,7 +147,7 @@ export function useTouchControls({
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
     // Reset touch state
-    isTouchingRef.current = false;
+    setIsTouching(false);
 
     // Detect gesture type
     if (distance >= minSwipeDistance) {
@@ -219,7 +219,7 @@ export function useTouchControls({
   const handleTouchCancel = useCallback(() => {
     touchStartRef.current = null;
     touchStartTimeRef.current = 0;
-    isTouchingRef.current = false;
+    setIsTouching(false);
   }, []);
 
   /**
@@ -244,6 +244,6 @@ export function useTouchControls({
   }, [enabled, handleTouchStart, handleTouchEnd, handleTouchCancel]);
 
   return {
-    isTouching: isTouchingRef.current,
+    isTouching,
   };
 }

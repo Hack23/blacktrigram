@@ -29,51 +29,31 @@ describe('VirtualDPad', () => {
   describe('Component props', () => {
     it('should accept onMove callback', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
-          onMove: onMoveMock,
-        };
+        ({ onMove: onMoveMock });
       }).not.toThrow();
     });
 
     it('should accept disabled prop', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
-          onMove: onMoveMock,
-          disabled: true,
-        };
+        ({ onMove: onMoveMock, disabled: true });
       }).not.toThrow();
     });
 
     it('should accept custom size', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
-          onMove: onMoveMock,
-          size: 150,
-        };
+        ({ onMove: onMoveMock, size: 150 });
       }).not.toThrow();
     });
 
     it('should accept custom position', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
-          onMove: onMoveMock,
-          bottom: 30,
-          left: 40,
-        };
+        ({ onMove: onMoveMock, bottom: 30, left: 40 });
       }).not.toThrow();
     });
 
     it('should accept custom opacity', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
-          onMove: onMoveMock,
-          opacity: 0.5,
-        };
+        ({ onMove: onMoveMock, opacity: 0.5 });
       }).not.toThrow();
     });
   });

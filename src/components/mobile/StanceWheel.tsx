@@ -15,6 +15,7 @@ import { KOREAN_COLORS } from '../../types/constants';
 import { TRIGRAM_STANCES_ORDER } from '../../systems/trigram/types';
 import { TrigramStance } from '../../types/common';
 import { triggerHaptic } from '../../utils/haptics';
+import { getColorRGB } from '../../utils/colorHelpers';
 
 /**
  * Props for StanceWheel component
@@ -160,14 +161,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
   // Dynamic bottom position
   const dynamicBottom = bottom ?? (expanded ? 80 : 20);
 
-  // Get RGB values for colors
-  const getColorRGB = (color: number) => {
-    const r = (color >> 16) & 0xff;
-    const g = (color >> 8) & 0xff;
-    const b = color & 0xff;
-    return { r, g, b };
-  };
-
+  // Get RGB values for colors using shared utility
   const currentStanceColor = getColorRGB(getStanceColor(TRIGRAM_STANCES_ORDER[currentStance]));
   const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
   const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);

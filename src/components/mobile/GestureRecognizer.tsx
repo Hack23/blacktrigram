@@ -13,6 +13,7 @@ import { Html } from '@react-three/drei';
 import React, { useCallback, useEffect, useState } from 'react';
 import { KOREAN_COLORS } from '../../types/constants';
 import { GestureEvent, useTouchControls } from '../../hooks/useTouchControls';
+import { getColorRGB } from '../../utils/colorHelpers';
 
 /**
  * Props for GestureRecognizer component
@@ -133,14 +134,7 @@ export const GestureRecognizer: React.FC<GestureRecognizerProps> = ({
     return null;
   }
 
-  // Get RGB for colors
-  const getColorRGB = (color: number) => {
-    const r = (color >> 16) & 0xff;
-    const g = (color >> 8) & 0xff;
-    const b = color & 0xff;
-    return { r, g, b };
-  };
-
+  // Get RGB colors using shared utility
   const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
   const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
 

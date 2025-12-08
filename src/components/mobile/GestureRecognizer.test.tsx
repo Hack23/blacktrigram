@@ -21,43 +21,39 @@ describe('GestureRecognizer', () => {
   describe('Component props', () => {
     it('should accept onGesture callback', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onGesture: onGestureMock,
           enabled: true,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept enabled flag', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onGesture: onGestureMock,
           enabled: false,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept showFeedback flag', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onGesture: onGestureMock,
           enabled: true,
           showFeedback: true,
-        };
+        });
       }).not.toThrow();
     });
 
     it('should accept custom minSwipeDistance', () => {
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const props = {
+        ({
           onGesture: onGestureMock,
           enabled: true,
           minSwipeDistance: 75,
-        };
+        });
       }).not.toThrow();
     });
   });

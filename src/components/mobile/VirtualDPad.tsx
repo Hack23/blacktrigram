@@ -13,6 +13,7 @@ import { Html } from '@react-three/drei';
 import React, { useCallback, useState } from 'react';
 import { KOREAN_COLORS } from '../../types/constants';
 import { triggerHaptic } from '../../utils/haptics';
+import { getColorRGB } from '../../utils/colorHelpers';
 
 /**
  * 8 directions for movement control
@@ -102,6 +103,10 @@ const DPadButton: React.FC<DPadButtonProps> = ({
   const x = Math.cos(radian) * radius;
   const y = Math.sin(radian) * radius;
 
+  // Extract RGB colors using shared utility
+  const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
+  const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
+
   return (
     <button
       onTouchStart={onTouchStart}
@@ -114,9 +119,9 @@ const DPadButton: React.FC<DPadButtonProps> = ({
         height: `${buttonSize}px`,
         borderRadius: '50%',
         background: active
-          ? `rgba(${KOREAN_COLORS.ACCENT_GOLD >> 16}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 0xff}, ${KOREAN_COLORS.ACCENT_GOLD & 0xff}, 0.9)`
+          ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`
           : 'rgba(0, 0, 0, 0.5)',
-        border: `2px solid rgba(${KOREAN_COLORS.PRIMARY_CYAN >> 16}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 0xff}, ${KOREAN_COLORS.PRIMARY_CYAN & 0xff}, ${active ? 1 : 0.6})`,
+        border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${active ? 1 : 0.6})`,
         fontSize: '20px',
         color: '#fff',
         display: 'flex',
@@ -128,7 +133,7 @@ const DPadButton: React.FC<DPadButtonProps> = ({
         transition: 'all 0.1s ease',
         transform: active ? 'scale(1.1)' : 'scale(1)',
         boxShadow: active
-          ? `0 0 15px rgba(${KOREAN_COLORS.ACCENT_GOLD >> 16}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 0xff}, ${KOREAN_COLORS.ACCENT_GOLD & 0xff}, 0.8)`
+          ? `0 0 15px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.8)`
           : 'none',
       }}
       data-testid={`dpad-button-${config.direction}`}

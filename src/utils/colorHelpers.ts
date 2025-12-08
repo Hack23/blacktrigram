@@ -5,6 +5,8 @@
  * @category Utilities
  */
 
+import { colorUtils } from '../types/constants/colors';
+
 /**
  * Convert a numeric color value to a hex string with # prefix
  * 
@@ -21,3 +23,22 @@
 export function toHexColor(color: number): string {
   return `#${color.toString(16).padStart(6, "0")}`;
 }
+
+/**
+ * Extract RGB components from hex color value
+ * Re-export of colorUtils.hexToRgb for mobile component convenience
+ * 
+ * @param color - Hex color value (e.g., 0x00ffff)
+ * @returns RGB components as object with r, g, b properties (0-255)
+ * @korean RGB추출
+ * 
+ * @example
+ * ```typescript
+ * const { r, g, b } = getColorRGB(0x00ffff);
+ * // { r: 0, g: 255, b: 255 }
+ * 
+ * // Use in CSS rgba
+ * const cssColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+ * ```
+ */
+export const getColorRGB = colorUtils.hexToRgb;
