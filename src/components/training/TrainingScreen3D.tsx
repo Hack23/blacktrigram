@@ -33,6 +33,11 @@ import DamageNumber3D from "./components/DamageNumber3D";
 import { Player3DUnified } from "../three/Player3DUnified";
 import { convertPlayerStateToProps } from "../../utils/player3DHelpers";
 import { PlayerArchetype } from "../../types/common";
+import { VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer } from "../mobile";
+import { Direction, DPadEventType } from "../mobile/VirtualDPad";
+import { ButtonEventType } from "../mobile/ActionButtons";
+import { GestureEvent } from "../../hooks/useTouchControls";
+import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 
 /**
  * Props for the TrainingScreen3D component
@@ -114,6 +119,89 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Audio context
   const audio = useAudio();
+
+  // Mobile touch control state
+  const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
+  const [currentStanceIndex, setCurrentStanceIndex] = useState(0);
+
+  // Mobile touch control handlers
+  const handleMobileMove = useCallback((direction: Direction | null, eventType: DPadEventType) => {
+    if (!direction || eventType !== 'start') return;
+
+    // Map D-pad directions to movement
+    const directionMap: Record<Direction, string> = {
+      'up': 'w',
+      'up-right': 'd', 
+      'right': 'd',
+      'down-right': 'd',
+      'down': 's',
+      'down-left': 'a',
+      'left': 'a',
+      'up-left': 'w',
+    };
+
+    const key = directionMap[direction];
+    if (key) {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+    }
+  }, []);
+
+  const handleMobileAttack = useCallback(() => {
+    if (isTraining) {
+      // Simulate spacebar press to trigger attack
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+    }
+  }, [isTraining]);
+
+  const handleMobileBlock = useCallback((eventType: ButtonEventType) => {
+    // Training mode doesn't have blocking, but could add defensive practice
+    if (eventType === 'start') {
+      audio.playSFX("block");
+    }
+  }, [audio]);
+
+  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
+    setCurrentStanceIndex(stanceIndex);
+    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+    if (stance) {
+      // Update player stance
+      onPlayerUpdate({ currentStance: stance });
+      audio.playSFX("stance_change");
+    }
+  }, [onPlayerUpdate, audio]);
+
+  const handleMobileGesture = useCallback((gesture: GestureEvent) => {
+    switch (gesture.type) {
+      case 'swipe-right':
+        // Move forward
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'd' }));
+        break;
+      case 'swipe-left':
+        // Move backward
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+        break;
+      case 'swipe-up':
+        // Quick strike
+        if (isTraining) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+        }
+        break;
+      case 'swipe-down':
+        // Reset dummy health
+        setDummyHealth(100);
+        setFeedback("더미 재설정 | Dummy Reset");
+        setShowFeedback(true);
+        break;
+      case 'two-finger-tap':
+        // Toggle between basic and vital point training
+        setTrainingMode(trainingMode === "vital_point" ? "basics" : "vital_point");
+        audio.playSFX("menu_select");
+        break;
+    }
+  }, [isTraining, trainingMode, audio]);
+
+  // Check if mobile controls should be enabled
+  const mobileControlsEnabled = isMobile && isTraining;
 
   // Audio lifecycle management
   useEffect(() => {
@@ -741,6 +829,45 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             </div>
           </div>
         </Html>
+
+        {/* Mobile Touch Controls - Only shown on mobile devices */}
+        {isMobile && (
+          <>
+            <VirtualDPad
+              onMove={handleMobileMove}
+              disabled={!mobileControlsEnabled}
+              size={120}
+              bottom={20}
+              left={20}
+              opacity={0.8}
+            />
+
+            <ActionButtons
+              onAttack={handleMobileAttack}
+              onBlock={handleMobileBlock}
+              disabled={!mobileControlsEnabled}
+              bottom={20}
+              right={20}
+              opacity={0.8}
+            />
+
+            <StanceWheel
+              currentStance={currentStanceIndex}
+              onStanceChange={handleMobileStanceChange}
+              expanded={stanceWheelExpanded}
+              onToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
+              disabled={!mobileControlsEnabled}
+              opacity={0.8}
+            />
+
+            <GestureRecognizer
+              onGesture={handleMobileGesture}
+              enabled={mobileControlsEnabled}
+              showFeedback={true}
+              minSwipeDistance={50}
+            />
+          </>
+        )}
       </Canvas>
 
       {/* Volume Control - positioned outside Canvas to maintain AudioProvider context */}
