@@ -54,14 +54,16 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
 }
 
 /**
- * Convert PlayerState to Player3DUnifiedProps
+ * Converts PlayerState to Player3DUnifiedProps for visual rendering.
  * 
- * Maps complete combat system state to unified 3D visual component props.
+ * Note: This function converts base PlayerState properties used in combat.
+ * Training-specific stats (misses, accuracy, comboCount) are optional in PlayerState
+ * and handled separately in training contexts.
  * 
- * @param player - Player state from combat system
- * @param position - 3D world position [x, y, z]
- * @param rotation - Y-axis rotation in radians
- * @param options - Optional display and behavior options
+ * @param player - The player state to convert
+ * @param position - 3D position [x, y, z]
+ * @param rotation - Rotation in radians
+ * @param options - Display and behavior options
  * @returns Props for Player3DUnified component
  * @korean 플레이어상태변환
  * 
@@ -76,19 +78,6 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
  * 
  * <Player3DUnified {...playerProps} />
  * ```
- */
-/**
- * Converts PlayerState to Player3DUnifiedProps for visual rendering.
- * 
- * Note: This function converts base PlayerState properties used in combat.
- * Training-specific stats (misses, accuracy, comboCount) are optional in PlayerState
- * and handled separately in training contexts.
- * 
- * @param player - The player state to convert
- * @param position - 3D position [x, y, z]
- * @param rotation - Rotation in radians
- * @param options - Display and behavior options
- * @returns Props for Player3DUnified component
  */
 export function convertPlayerStateToProps(
   player: PlayerState,

@@ -176,7 +176,7 @@ export interface Player3DUnifiedProps {
   };
 
   /**
-   * Scale multiplier for the model (default: 1.0)
+   * Scale multiplier for the model (default: 1)
    * @korean 크기
    */
   readonly scale?: number;
