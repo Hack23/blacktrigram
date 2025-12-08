@@ -149,7 +149,6 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
       isLowHealth: healthPercent < 0.3,
       isHighKi: kiPercent > 0.8,
       shouldGlow: isBlocking || isCountering || kiPercent > 0.7,
-      isDazed: consciousnessPercent < 0.7,
     };
   }, [health, maxHealth, ki, consciousness, isBlocking, isCountering]);
 
@@ -204,13 +203,26 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   useFrame((state, delta) => {
     if (!groupRef.current || !bodyRef.current) return;
 
-    // Breathing animation
-    const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
-    groupRef.current.scale.y = breathScale * scale;
+    // --- Consolidated scale accumulator pattern ---
+    // Start with base scale
+    let accumulatedScaleX = (facing === "left" ? -1 : 1) * scale;
+    let accumulatedScaleY = scale;
+    let accumulatedScaleZ = scale;
 
-    // Facing direction
-    groupRef.current.scale.x = facing === "left" ? -scale : scale;
-    groupRef.current.scale.z = scale;
+    // Breathing animation
+    const breath = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02;
+    accumulatedScaleY *= breath;
+
+    // Stance change animation - rotation pulse
+    if (currentAnimation === "stance_change") {
+      const pulseScale = 1 + Math.sin(state.clock.elapsedTime * 10) * 0.1;
+      accumulatedScaleX *= pulseScale;
+      accumulatedScaleY *= pulseScale;
+      accumulatedScaleZ *= pulseScale;
+    }
+
+    // Set the final scale once
+    groupRef.current.scale.set(accumulatedScaleX, accumulatedScaleY, accumulatedScaleZ);
 
     // Attack animation
     if (currentAnimation === "attack") {
@@ -243,34 +255,26 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
       }
     }
 
-    // Stance change animation - rotation pulse
-    if (currentAnimation === "stance_change") {
-      const pulseScale = 1 + Math.sin(state.clock.elapsedTime * 10) * 0.1;
-      groupRef.current.scale.set(
-        (facing === "left" ? -1 : 1) * pulseScale * scale,
-        pulseScale * scale,
-        pulseScale * scale
-      );
-    }
+    // --- Consolidated rotation (Ki aura + balance wobble) ---
+    let rotationY = 0;
+    let rotationZ = 0;
 
     // Ki aura rotation
     if (visualStates.shouldGlow) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
-    } else {
-      groupRef.current.rotation.y = 0;
+      rotationY = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
     }
 
     // Balance state wobble
     if (balance === "SHAKEN" || balance === "VULNERABLE") {
-      const wobble = Math.sin(state.clock.elapsedTime * 5) * 0.05;
-      groupRef.current.rotation.z = wobble;
+      rotationZ = Math.sin(state.clock.elapsedTime * 5) * 0.05;
     } else if (balance === "HELPLESS") {
       // Extreme wobble when helpless
-      const extremeWobble = Math.sin(state.clock.elapsedTime * 8) * 0.15;
-      groupRef.current.rotation.z = extremeWobble;
-    } else {
-      groupRef.current.rotation.z = 0;
+      rotationZ = Math.sin(state.clock.elapsedTime * 8) * 0.15;
     }
+
+    // Apply combined rotations
+    groupRef.current.rotation.y = rotationY;
+    groupRef.current.rotation.z = rotationZ;
   });
 
   return (

@@ -13,6 +13,7 @@ import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { PlayerStateIndicatorsProps, BalanceState } from "../../types/player-visual";
+import { toHexColor } from "../../utils/colorHelpers";
 
 /**
  * Get color for balance state
@@ -156,7 +157,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
             background: "rgba(0,0,0,0.6)",
             borderRadius: "2px",
             overflow: "hidden",
-            border: `1px solid ${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+            border: `1px solid ${toHexColor(KOREAN_COLORS.PRIMARY_CYAN)}`,
           }}
           data-testid="health-bar"
           title={`Health: ${health}/${maxHealth}`}
@@ -178,7 +179,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
             background: "rgba(0,0,0,0.6)",
             borderRadius: "2px",
             overflow: "hidden",
-            border: `1px solid ${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+            border: `1px solid ${toHexColor(KOREAN_COLORS.ACCENT_GOLD)}`,
           }}
           data-testid="stamina-bar"
           title={`Stamina: ${stamina}%`}
@@ -187,7 +188,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
             style={{
               width: `${staminaPercent}%`,
               height: "100%",
-              background: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+              background: toHexColor(KOREAN_COLORS.ACCENT_GOLD),
               transition: "width 0.3s ease",
             }}
           />
@@ -200,7 +201,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
             background: "rgba(0,0,0,0.6)",
             borderRadius: "2px",
             overflow: "hidden",
-            border: `1px solid ${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+            border: `1px solid ${toHexColor(KOREAN_COLORS.PRIMARY_CYAN)}`,
           }}
           data-testid="ki-bar"
           title={`Ki: ${ki}%`}
@@ -209,11 +210,11 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
             style={{
               width: `${kiPercent}%`,
               height: "100%",
-              background: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+              background: toHexColor(KOREAN_COLORS.PRIMARY_CYAN),
               transition: "width 0.3s ease",
               boxShadow:
                 kiPercent > 80
-                  ? `0 0 ${isMobile ? "4px" : "6px"} #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`
+                  ? `0 0 ${isMobile ? "4px" : "6px"} ${toHexColor(KOREAN_COLORS.PRIMARY_CYAN)}`
                   : "none",
             }}
           />
@@ -245,7 +246,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
               background: "rgba(0,0,0,0.6)",
               borderRadius: "2px",
               overflow: "hidden",
-              border: "1px solid #9370db",
+              border: `1px solid ${toHexColor(KOREAN_COLORS.CONSCIOUSNESS_PURPLE)}`,
             }}
             data-testid="consciousness-bar"
             title={`Consciousness: ${consciousness}%`}
@@ -254,7 +255,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
               style={{
                 width: `${consciousnessPercent}%`,
                 height: "100%",
-                background: "#9370db",
+                background: toHexColor(KOREAN_COLORS.CONSCIOUSNESS_PURPLE),
                 transition: "width 0.3s ease",
               }}
             />
@@ -266,7 +267,7 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
           <div
             style={{
               fontSize: sizing.fontSize,
-              color: "#ff6b6b",
+              color: toHexColor(KOREAN_COLORS.PAIN_INDICATOR),
               textAlign: "center",
               fontWeight: "bold",
               textShadow: "0 0 4px rgba(0,0,0,0.8)",
@@ -279,11 +280,11 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
         )}
 
         {/* Blood loss indicator (if above 10%) */}
-        {bloodLoss > 10 && (
+        {bloodLoss && bloodLoss > 10 && (
           <div
             style={{
               fontSize: sizing.fontSize,
-              color: "#cc0000",
+              color: toHexColor(KOREAN_COLORS.BLOODLOSS_INDICATOR),
               textAlign: "center",
               fontWeight: "bold",
               textShadow: "0 0 4px rgba(0,0,0,0.8)",

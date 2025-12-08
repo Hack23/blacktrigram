@@ -125,9 +125,10 @@ export interface Player3DUnifiedProps {
 
   /**
    * Blood loss amount (0-100)
+   * Optional since not all game modes track blood loss
    * @korean 출혈
    */
-  readonly bloodLoss: number;
+  readonly bloodLoss?: number;
 
   /**
    * Whether player is currently blocking
@@ -307,42 +308,4 @@ export interface StanceAuraProps {
   readonly animated?: boolean;
 }
 
-/**
- * Visual configuration for player archetype.
- * Defines colors and styling specific to each fighter type.
- * 
- * @public
- * @category Visual Config
- * @korean 원형시각설정
- */
-export interface ArchetypeVisualConfig {
-  /**
-   * Primary color for body/main elements
-   * @korean 기본색상
-   */
-  readonly primaryColor: number;
 
-  /**
-   * Secondary color for accents
-   * @korean 보조색상
-   */
-  readonly secondaryColor: number;
-
-  /**
-   * Emissive intensity for glowing effects
-   * @korean 발광강도
-   */
-  readonly emissiveIntensity: number;
-
-  /**
-   * Metalness material property
-   * @korean 금속성
-   */
-  readonly metalness: number;
-
-  /**
-   * Roughness material property
-   * @korean 거칠기
-   */
-  readonly roughness: number;
-}

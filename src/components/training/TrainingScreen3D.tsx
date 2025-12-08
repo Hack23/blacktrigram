@@ -180,6 +180,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Create a training player state for visualization
+  // Note: This is intentionally static for training mode. In training, the player's
+  // health/stamina/Ki don't change - the focus is on targeting accuracy and technique.
+  // The stats (hits, misses, accuracy, combo) are updated to reflect training performance.
   const trainingPlayerState = useMemo<PlayerState>(() => {
     return {
       id: "training-player",
