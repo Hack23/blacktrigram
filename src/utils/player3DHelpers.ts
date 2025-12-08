@@ -77,6 +77,19 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
  * <Player3DUnified {...playerProps} />
  * ```
  */
+/**
+ * Converts PlayerState to Player3DUnifiedProps for visual rendering.
+ * 
+ * Note: This function converts base PlayerState properties used in combat.
+ * Training-specific stats (misses, accuracy, comboCount) are optional in PlayerState
+ * and handled separately in training contexts.
+ * 
+ * @param player - The player state to convert
+ * @param position - 3D position [x, y, z]
+ * @param rotation - Rotation in radians
+ * @param options - Display and behavior options
+ * @returns Props for Player3DUnified component
+ */
 export function convertPlayerStateToProps(
   player: PlayerState,
   position: [number, number, number],
@@ -117,7 +130,7 @@ export function convertPlayerStateToProps(
     isStunned: player.isStunned,
     isCountering: player.isCountering,
     
-    // Animation
+    // Animation (derived from combat state)
     currentAnimation: getPlayerAnimation(player),
     
     // Display options

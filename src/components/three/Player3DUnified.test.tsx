@@ -230,7 +230,7 @@ describe("Player3DUnified", () => {
     });
 
     it("should handle animation complete callback", () => {
-      const callback = () => console.log("complete");
+      const callback = vi.fn();
       const props = { ...defaultProps, onAnimationComplete: callback };
       expect(props.onAnimationComplete).toBe(callback);
     });

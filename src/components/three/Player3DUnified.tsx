@@ -17,6 +17,7 @@ import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
+import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import PlayerStateIndicators from "./PlayerStateIndicators";
 import StanceAura from "./StanceAura";
@@ -115,6 +116,8 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   isBlocking,
   isStunned = false,
   isCountering = false,
+  // Note: isAttacking prop exists for backwards compatibility but is not used.
+  // Attack state is determined by currentAnimation === "attack"
   currentAnimation,
   isMobile,
   name,
@@ -422,7 +425,7 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
               <div
                 style={{
                   fontSize: isMobile ? "14px" : "16px",
-                  color: `#${stanceColor.toString(16).padStart(6, "0")}`,
+                  color: toHexColor(stanceColor),
                 }}
                 data-testid="trigram-symbol"
               >
