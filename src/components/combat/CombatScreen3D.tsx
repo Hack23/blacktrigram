@@ -56,14 +56,14 @@ import { InputBufferDisplay } from "./components/InputBufferDisplay";
 // import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { useActionFeedback } from "../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../hooks/useCombatTimer";
+import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
+import { Technique } from "../../types";
 
 // Create stance index lookup map once
 const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
 TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
   STANCE_INDEX_MAP.set(stance, index);
 });
-import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
-import { Technique } from "../../types";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";

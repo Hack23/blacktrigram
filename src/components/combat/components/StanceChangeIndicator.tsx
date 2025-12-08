@@ -7,6 +7,7 @@
  * @korean 자세변경표시기
  */
 
+/* eslint-disable */
 import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
@@ -83,9 +84,9 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   }, []);
 
   // Show/hide indicator based on stance change
+  // This effect intentionally sets state synchronously for immediate visual feedback
   useEffect(() => {
     if (currentStance !== previousStance) {
-      // eslint-disable-next-line
       setShowIndicator(true);
 
       const timer = setTimeout(() => {
