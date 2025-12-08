@@ -289,7 +289,7 @@ describe("Player3DUnified", () => {
         [TrigramStance.GON]: 0xffff44, // Yellow
       };
 
-      Object.entries(stanceColors).forEach(([stance, expectedColor]) => {
+      Object.entries(stanceColors).forEach(([_stance, expectedColor]) => {
         expect(expectedColor).toBeGreaterThan(0);
         expect(expectedColor).toBeLessThanOrEqual(0xffffff);
       });
@@ -310,7 +310,7 @@ describe("Player3DUnified", () => {
         [TrigramStance.GON]: "☷", // Earth
       };
 
-      Object.entries(trigramSymbols).forEach(([stance, expectedSymbol]) => {
+      Object.entries(trigramSymbols).forEach(([_stance, expectedSymbol]) => {
         expect(expectedSymbol).toMatch(/^[☰-☷]$/);
       });
     });
