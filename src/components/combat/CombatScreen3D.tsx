@@ -18,6 +18,7 @@ import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { useRoundTransition } from "../../hooks/useRoundTransition";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
+import { useKeyboardControls } from "../../hooks/useKeyboardControls";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
@@ -36,6 +37,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../types/constants";
+import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../utils/performance";
@@ -44,6 +46,9 @@ import { VolumeControl } from "../ui/VolumeControl";
 import { MatchCountdown } from "./components/MatchCountdown";
 import { RoundAnnouncement } from "./components/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/RoundStartAnnouncement";
+import { StanceChangeIndicator } from "./components/StanceChangeIndicator";
+import { KeyboardHints } from "./components/KeyboardHints";
+import { InputBufferDisplay } from "./components/InputBufferDisplay";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -53,6 +58,12 @@ import { useActionFeedback } from "../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
 import { Technique } from "../../types";
+
+// Create stance index lookup map once
+const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
+TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
+  STANCE_INDEX_MAP.set(stance, index);
+});
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
@@ -673,6 +684,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return map;
   }, [techniqueSelection.activeCooldowns]);
 
+  // Track previous stance for visual feedback
+  const [previousStance, setPreviousStance] = useState<number>(0);
+  
+  // Get current stance index for visual feedback using optimized lookup
+  const currentPlayerStance = validPlayers[0].currentStance;
+  const currentStanceIndex = useMemo(() => {
+    return STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
+  }, [currentPlayerStance]);
+
   // Extract player health values for dependency arrays
   const player1Health = validPlayers[0].health;
   const player2Health = validPlayers[1].health;
@@ -769,6 +789,39 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       defenderPos
     );
   }, [handleDefend, playerPositions, feedbackActions]);
+
+  // Use keyboard controls hook for enhanced input handling with visual feedback
+  const { queuedInputs, showHints } = useKeyboardControls({
+    onStanceChange: useCallback((stanceIndex: number) => {
+      const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+      if (stance) {
+        // Capture previous stance BEFORE changing
+        const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
+        setPreviousStance(prevStance);
+        handleStanceSwitch(stance);
+      }
+    }, [handleStanceSwitch, currentPlayerStance]),
+    onAction: useCallback((action: string) => {
+      switch (action) {
+        case "attack":
+          handleAttackWithFeedback();
+          break;
+        case "block":
+          handleDefendWithFeedback();
+          break;
+        // Movement and other actions handled by existing system
+      }
+    }, [handleAttackWithFeedback, handleDefendWithFeedback]),
+    enabled: !isPaused && 
+             !showPauseMenu && 
+             combatState.roundStarted && 
+             !combatState.roundEnded && 
+             matchCountdownComplete && 
+             !showRoundStart &&
+             !combatState.isExecutingTechnique,
+    currentStance: currentStanceIndex,
+    playSFX: audio.playSFX,
+  });
 
   // Note: Player 1 position is updated via the onPositionChange callback
   // in usePlayerMovement config above, not via useEffect
@@ -1178,6 +1231,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               </div>
             </Html>
           )}
+
+        {/* Visual Feedback Components for Keyboard Controls */}
+        <StanceChangeIndicator
+          currentStance={currentStanceIndex}
+          previousStance={previousStance}
+          isMobile={isMobile}
+        />
+
+        <KeyboardHints
+          visible={showHints}
+          currentStance={currentStanceIndex}
+          isMobile={isMobile}
+        />
+
+        <InputBufferDisplay
+          queuedInputs={queuedInputs}
+          isMobile={isMobile}
+        />
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}

@@ -48,7 +48,7 @@ export interface VitalPointSystemConfig {
 }
 
 // Deprecated placeholder type - use unknown for generic texture representation
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+ 
 type Texture = unknown;
 
 // Vital point effect
