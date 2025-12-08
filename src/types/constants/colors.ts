@@ -115,6 +115,15 @@ export const KOREAN_COLORS = {
   STAMINA_LOW: 0xff9900,
   STAMINA_EMPTY: 0xff6600,
 
+  // Consciousness colors
+  CONSCIOUSNESS_PURPLE: 0x9370db,
+  
+  // Pain indicator colors
+  PAIN_INDICATOR: 0xff6b6b,
+  
+  // Blood loss colors
+  BLOODLOSS_INDICATOR: 0xcc0000,
+
   // Fix: Add missing color constants for game components
   ARENA_BACKGROUND: 0x1a1a2e,
   PLAYER_1_COLOR: 0x00ccff, // Cyan for player 1

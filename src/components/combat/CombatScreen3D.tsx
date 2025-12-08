@@ -30,7 +30,6 @@ import {
   PlayerArchetype,
   Position,
   TrigramStance,
-  VitalPointSeverity,
 } from "../../types";
 import {
   FONT_FAMILY,
@@ -61,9 +60,10 @@ import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
 import HitEffects3D from "./components/HitEffects3D";
 import { PauseMenu } from "./components/PauseMenu";
-import Player3DModel from "./components/Player3DModel";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { TechniqueBar } from "./components/TechniqueBar";
+import { Player3DUnified } from "../three/Player3DUnified";
+import { convertPlayerStateToProps } from "../../utils/player3DHelpers";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -347,7 +347,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
   // Player movement
-  const { isMoving } = usePlayerMovement({
+  usePlayerMovement({
     enabled:
       !isPaused &&
       combatState.roundStarted &&
@@ -1085,35 +1085,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <CombatArena3D lighting="cyberpunk" />
 
         {/* Player 1 */}
-        <Player3DModel
-          playerState={validPlayers[0]}
-          position={player1Position3D}
-          animationState={
-            combatState.isExecutingTechnique
-              ? "technique_execute"
-              : isMoving
-              ? "walk"
-              : "idle"
-          }
-          facing="right"
-          showVitalPoints={true}
-          vitalPointSeverityFilter={[
-            VitalPointSeverity.CRITICAL,
-            VitalPointSeverity.MAJOR,
-          ]}
+        <Player3DUnified
+          {...convertPlayerStateToProps(
+            validPlayers[0],
+            player1Position3D,
+            0, // rotation - facing right
+            {
+              isMobile,
+              facing: "right",
+            }
+          )}
         />
 
         {/* Player 2 (AI) */}
-        <Player3DModel
-          playerState={validPlayers[1]}
-          position={player2Position3D}
-          animationState="idle"
-          facing="left"
-          showVitalPoints={true}
-          vitalPointSeverityFilter={[
-            VitalPointSeverity.CRITICAL,
-            VitalPointSeverity.MAJOR,
-          ]}
+        <Player3DUnified
+          {...convertPlayerStateToProps(
+            validPlayers[1],
+            player2Position3D,
+            Math.PI, // rotation - facing left (180 degrees)
+            {
+              isMobile,
+              facing: "left",
+            }
+          )}
         />
 
         {/* Hit Effects */}

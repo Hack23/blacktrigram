@@ -616,11 +616,44 @@ const particlePool = new ParticlePool(createParticle, resetParticle, 100);
 - [ ] Implement impact sparks with lighting
 - [ ] Performance validation (1000+ particles at 60fps)
 
-#### Phase 3: Character Models (Planned)
-- [ ] Create 3D character base model
-- [ ] Implement 70 vital point markers in 3D space
-- [ ] Add stance-based animations (Eight Trigrams)
-- [ ] Integrate damage visualization
+#### Phase 3: Character Models ✅ COMPLETE
+- [x] Create unified Player3D component (`Player3DUnified.tsx`)
+- [x] Implement stance-based visual system (8 trigrams with color-coded auras)
+- [x] Add health/stamina/Ki state indicators with Html overlays
+- [x] Support all 5 player archetypes with visual differentiation
+- [x] Integrate pain/balance/consciousness visualization
+- [x] Add responsive scaling for mobile/desktop
+- [x] Create conversion utilities for PlayerState integration
+- [x] Integrate into CombatScreen3D (both players)
+- [x] Integrate into TrainingScreen3D (trainee player)
+- [x] Comprehensive test coverage (61 component + 29 integration tests)
+
+**Key Components:**
+- `src/components/three/Player3DUnified.tsx` - Main unified player visualization
+- `src/components/three/PlayerStateIndicators.tsx` - Html overlay for stats
+- `src/components/three/StanceAura.tsx` - Animated stance aura effects
+- `src/utils/player3DHelpers.ts` - PlayerState conversion utilities
+- `src/types/player-visual.ts` - TypeScript interfaces for player visuals
+
+**Usage Example:**
+```typescript
+import { Player3DUnified } from '@/components/three';
+import { convertPlayerStateToProps } from '@/utils/player3DHelpers';
+
+// In CombatScreen3D or TrainingScreen3D:
+<Player3DUnified
+  {...convertPlayerStateToProps(
+    playerState,
+    [x, y, z],      // 3D position
+    rotation,       // Y-axis rotation in radians
+    {
+      isMobile,
+      facing: "right",
+      showVitalPoints: true,
+    }
+  )}
+/>
+```
 
 #### Phase 4: Combat Arena (Planned)
 - [ ] Build 3D dojang environment
