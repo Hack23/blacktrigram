@@ -118,6 +118,7 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   isCountering = false,
   // Note: isAttacking prop exists for backwards compatibility but is not used.
   // Attack state is determined by currentAnimation === "attack"
+  isAttacking,
   currentAnimation,
   isMobile,
   name,
@@ -125,6 +126,8 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   showDetails = true,
   facing = "right",
   showStanceIndicator = true,
+  // Note: showVitalPoints is for future vital point interaction feature (see CombatScreen3D comment)
+  showVitalPoints,
   onAnimationComplete,
 }) => {
   const groupRef = useRef<THREE.Group>(null);

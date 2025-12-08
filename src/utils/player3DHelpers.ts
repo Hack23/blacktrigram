@@ -140,7 +140,7 @@ export function convertPlayerStateToProps(
     showStanceIndicator: options.showStanceIndicator ?? true,
     showVitalPoints: options.showVitalPoints ?? false,
     facing: options.facing ?? "right",
-    scale: options.scale ?? 1.0,
+    scale: options.scale ?? 1,
     onAnimationComplete: options.onAnimationComplete,
   };
 }
