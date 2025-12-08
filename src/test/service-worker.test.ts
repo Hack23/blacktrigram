@@ -25,7 +25,7 @@ describe('Service Worker Version Management', () => {
     });
 
     it('should have version injected in built service worker', () => {
-      const packageJson = JSON.parse(readFileSync(resolve('./package.json'), 'utf8'));
+      // const packageJson = JSON.parse(readFileSync(resolve('./package.json'), 'utf8'));
       const distSwPath = resolve('./dist/sw.js');
       
       // Skip test if dist doesn't exist (e.g., tests run before build)
