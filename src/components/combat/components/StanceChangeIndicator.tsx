@@ -7,7 +7,6 @@
  * @korean 자세변경표시기
  */
 
-/* eslint-disable */
 import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
@@ -86,6 +85,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   // Show/hide indicator based on stance change
   useEffect(() => {
     if (currentStance !== previousStance) {
+      // eslint-disable-next-line
       setShowIndicator(true);
 
       const timer = setTimeout(() => {
@@ -105,6 +105,32 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     () => getTrigramForStance(currentStance),
     [currentStance]
   );
+
+  // Memoize animation styles to prevent redefinition on every render
+  const animationStyles = useMemo(() => (
+    <style>
+      {`
+        @keyframes fadeInOut {
+          0% {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          10% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          90% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+        }
+      `}
+    </style>
+  ), []);
 
   if (!showIndicator) return null;
 
@@ -157,29 +183,8 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
           {data.name.english}
         </div>
 
-        {/* CSS Animation */}
-        <style>
-          {`
-            @keyframes fadeInOut {
-              0% {
-                opacity: 0;
-                transform: translateY(-20px);
-              }
-              10% {
-                opacity: 1;
-                transform: translateY(0);
-              }
-              90% {
-                opacity: 1;
-                transform: translateY(0);
-              }
-              100% {
-                opacity: 0;
-                transform: translateY(-10px);
-              }
-            }
-          `}
-        </style>
+        {/* CSS Animation - Memoized to prevent redefinition */}
+        {animationStyles}
       </div>
     </Html>
   );

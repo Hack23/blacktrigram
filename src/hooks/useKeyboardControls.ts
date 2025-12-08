@@ -72,7 +72,7 @@ const QUEUE_RETENTION_TIME = 2000;
  * 
  * @example
  * ```typescript
- * const { queuedInputs, showHints, toggleHints, controlMapper } = useKeyboardControls({
+ * const { queuedInputs, showHints, toggleHints } = useKeyboardControls({
  *   onStanceChange: (stance) => handleStanceChange(stance),
  *   onAction: (action) => handleAction(action),
  *   enabled: !isPaused,

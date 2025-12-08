@@ -8,7 +8,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import React from "react";
+import React, { useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { QueuedInput } from "../../../hooks/useKeyboardControls";
@@ -52,6 +52,24 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
   queuedInputs,
   isMobile = false,
 }) => {
+  // Memoize animation styles to prevent redefinition on every render
+  const animationStyles = useMemo(() => (
+    <style>
+      {`
+        @keyframes slideIn {
+          0% {
+            opacity: 0;
+            transform: translateX(10px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}
+    </style>
+  ), []);
+
   if (queuedInputs.length === 0) return null;
 
   const fontSize = isMobile ? 10 : 12;
@@ -150,21 +168,8 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
           })}
         </div>
 
-        {/* CSS Animation */}
-        <style>
-          {`
-            @keyframes slideIn {
-              0% {
-                opacity: 0;
-                transform: translateX(10px);
-              }
-              100% {
-                opacity: 1;
-                transform: translateX(0);
-              }
-            }
-          `}
-        </style>
+        {/* CSS Animation - Memoized to prevent redefinition */}
+        {animationStyles}
       </div>
     </Html>
   );

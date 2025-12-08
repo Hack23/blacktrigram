@@ -38,13 +38,6 @@ import {
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../types/constants";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
-
-// Create stance index lookup map once
-const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
-TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
-  STANCE_INDEX_MAP.set(stance, index);
-});
-
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../utils/performance";
@@ -63,6 +56,12 @@ import { InputBufferDisplay } from "./components/InputBufferDisplay";
 // import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { useActionFeedback } from "../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../hooks/useCombatTimer";
+
+// Create stance index lookup map once
+const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
+TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
+  STANCE_INDEX_MAP.set(stance, index);
+});
 import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
 import { Technique } from "../../types";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
@@ -689,10 +688,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [previousStance, setPreviousStance] = useState<number>(0);
   
   // Get current stance index for visual feedback using optimized lookup
+  const currentPlayerStance = validPlayers[0].currentStance;
   const currentStanceIndex = useMemo(() => {
-    const currentStance = validPlayers[0].currentStance;
-    return STANCE_INDEX_MAP.get(currentStance) ?? 0;
-  }, [validPlayers]);
+    return STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
+  }, [currentPlayerStance]);
 
   // Extract player health values for dependency arrays
   const player1Health = validPlayers[0].health;
@@ -797,11 +796,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
       if (stance) {
         // Capture previous stance BEFORE changing
-        const prevStance = STANCE_INDEX_MAP.get(validPlayers[0].currentStance) ?? 0;
+        const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
         setPreviousStance(prevStance);
         handleStanceSwitch(stance);
       }
-    }, [handleStanceSwitch, validPlayers]),
+    }, [handleStanceSwitch, currentPlayerStance]),
     onAction: useCallback((action: string) => {
       switch (action) {
         case "attack":
