@@ -121,7 +121,7 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   currentAnimation,
   isMobile,
   name,
-  scale = 1.0,
+  scale = 1,
   showDetails = true,
   facing = "right",
   showStanceIndicator = true,
@@ -252,10 +252,8 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
       }
       // Recoil backward
       bodyRef.current.position.z = Math.sin(state.clock.elapsedTime * 20) * -0.1;
-    } else {
-      if (bodyMaterialRef.current) {
-        bodyMaterialRef.current.emissiveIntensity = visualStates.shouldGlow ? 0.3 : 0.1;
-      }
+    } else if (bodyMaterialRef.current) {
+      bodyMaterialRef.current.emissiveIntensity = visualStates.shouldGlow ? 0.3 : 0.1;
     }
 
     // --- Consolidated rotation (Ki aura + balance wobble) ---
