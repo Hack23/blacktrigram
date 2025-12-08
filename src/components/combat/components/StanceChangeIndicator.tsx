@@ -8,7 +8,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
@@ -72,17 +72,27 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   duration = 1000,
 }) => {
   const [showIndicator, setShowIndicator] = useState(false);
+  const isMountedRef = useRef(true);
+
+  // Track component mount state
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Detect stance change
   useEffect(() => {
     if (currentStance !== previousStance) {
-      // Use a microtask to avoid synchronous setState
-      Promise.resolve().then(() => {
-        setShowIndicator(true);
-      });
+      // eslint-disable-next-line react-compiler/react-compiler
+      // Intentional synchronous setState for immediate visual feedback
+      setShowIndicator(true);
 
       const timer = setTimeout(() => {
-        setShowIndicator(false);
+        if (isMountedRef.current) {
+          setShowIndicator(false);
+        }
       }, duration);
 
       return () => clearTimeout(timer);
@@ -105,6 +115,9 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     <Html fullscreen>
       <div
         data-testid="stance-change-indicator"
+        role="status"
+        aria-live="polite"
+        aria-label={`Stance changed to ${data.name.english}`}
         style={{
           position: "absolute",
           top,

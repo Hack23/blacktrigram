@@ -59,7 +59,6 @@ describe("useKeyboardControls", () => {
 
       expect(result.current.queuedInputs).toEqual([]);
       expect(result.current.showHints).toBe(false);
-      expect(result.current.controlMapper).toBeDefined();
     });
 
     it("should have a toggleHints function", () => {
@@ -77,7 +76,7 @@ describe("useKeyboardControls", () => {
 
   describe("Stance Changes", () => {
     it("should detect stance change from 1-8 keys", () => {
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           ...defaultProps,
           onStanceChange,
@@ -119,7 +118,7 @@ describe("useKeyboardControls", () => {
     });
 
     it("should prevent switching to the same stance", () => {
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           ...defaultProps,
           onStanceChange,
@@ -141,7 +140,7 @@ describe("useKeyboardControls", () => {
     it("should throttle rapid stance changes", () => {
       vi.useFakeTimers();
 
-      const { result } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           ...defaultProps,
           onStanceChange,

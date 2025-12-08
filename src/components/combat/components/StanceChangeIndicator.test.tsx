@@ -55,8 +55,8 @@ describe("StanceChangeIndicator", () => {
     expect(indicator.textContent).toContain("Lake");
   });
 
-  it.todo("should hide after duration expires", async () => {
-    // TODO: Fix timer-based test
+  it.skip("should hide after duration expires", async () => {
+    // FIXME: Timer-based test incompatible with Promise.resolve microtask
     const duration = 1000;
     render(
       <StanceChangeIndicator
@@ -129,8 +129,8 @@ describe("StanceChangeIndicator", () => {
     expect(indicator.textContent).toContain("☰");
   });
 
-  it.todo("should reset timer on rapid stance changes", async () => {
-    // TODO: Fix timer-based test
+  it.skip("should reset timer on rapid stance changes", async () => {
+    // FIXME: Timer-based test incompatible with Promise.resolve microtask
     const duration = 1000;
     const { rerender } = render(
       <StanceChangeIndicator

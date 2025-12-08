@@ -132,19 +132,19 @@ export function useKeyboardControls({
 
   /**
    * Clean up old queued inputs
+   * Single interval for component lifetime to avoid recreating on every input
    */
   useEffect(() => {
-    if (queuedInputs.length === 0) return;
-
     const interval = setInterval(() => {
       const now = Date.now();
-      setQueuedInputs((prev) =>
-        prev.filter((input) => now - input.timestamp < QUEUE_RETENTION_TIME)
-      );
+      setQueuedInputs((prev) => {
+        if (prev.length === 0) return prev;
+        return prev.filter((input) => now - input.timestamp < QUEUE_RETENTION_TIME);
+      });
     }, 500);
 
     return () => clearInterval(interval);
-  }, [queuedInputs.length]);
+  }, []); // Empty deps - single interval for component lifetime
 
   /**
    * Handle keyboard input

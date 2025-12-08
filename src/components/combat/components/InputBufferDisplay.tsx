@@ -63,6 +63,9 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
     <Html fullscreen>
       <div
         data-testid="input-buffer-display"
+        role="log"
+        aria-live="polite"
+        aria-label="Input queue"
         style={{
           position: "absolute",
           top,

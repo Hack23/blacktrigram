@@ -85,6 +85,9 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
     <Html fullscreen>
       <div
         data-testid="keyboard-hints"
+        role="dialog"
+        aria-label="Keyboard control hints"
+        aria-describedby="hints-description"
         style={{
           position: "absolute",
           bottom: isMobile ? "20px" : "40px",
@@ -94,6 +97,20 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
           zIndex: 999,
         }}
       >
+        {/* Hidden description for screen readers */}
+        <div
+          id="hints-description"
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            width: "1px",
+            height: "1px",
+            overflow: "hidden",
+          }}
+        >
+          Keyboard controls for combat. Press F1 to toggle this overlay.
+        </div>
+
         {/* Main hints container */}
         <div
           style={{

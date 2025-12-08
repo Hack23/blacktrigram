@@ -38,6 +38,13 @@ import {
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../types/constants";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
+
+// Create stance index lookup map once
+const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
+TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
+  STANCE_INDEX_MAP.set(stance, index);
+});
+
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../utils/performance";
@@ -681,11 +688,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Track previous stance for visual feedback
   const [previousStance, setPreviousStance] = useState<number>(0);
   
-  // Get current stance index for visual feedback
+  // Get current stance index for visual feedback using optimized lookup
   const currentStanceIndex = useMemo(() => {
     const currentStance = validPlayers[0].currentStance;
-    const index = TRIGRAM_STANCES_ORDER.findIndex(s => s === currentStance);
-    return index >= 0 ? index : 0;
+    return STANCE_INDEX_MAP.get(currentStance) ?? 0;
   }, [validPlayers]);
 
   // Extract player health values for dependency arrays
@@ -790,11 +796,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onStanceChange: useCallback((stanceIndex: number) => {
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
       if (stance) {
-        // Track previous stance for visual feedback
-        setPreviousStance(currentStanceIndex);
+        // Capture previous stance BEFORE changing
+        const prevStance = STANCE_INDEX_MAP.get(validPlayers[0].currentStance) ?? 0;
+        setPreviousStance(prevStance);
         handleStanceSwitch(stance);
       }
-    }, [handleStanceSwitch, currentStanceIndex]),
+    }, [handleStanceSwitch, validPlayers]),
     onAction: useCallback((action: string) => {
       switch (action) {
         case "attack":
