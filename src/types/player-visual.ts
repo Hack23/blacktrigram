@@ -137,12 +137,6 @@ export interface Player3DUnifiedProps {
   readonly isBlocking: boolean;
 
   /**
-   * Whether player is currently attacking
-   * @korean 공격중
-   */
-  readonly isAttacking: boolean;
-
-  /**
    * Whether player is stunned
    * @korean 기절
    */
@@ -204,12 +198,6 @@ export interface Player3DUnifiedProps {
    * @korean 자세표시기표시
    */
   readonly showStanceIndicator?: boolean;
-
-  /**
-   * Whether to show vital point markers
-   * @korean 급소표시
-   */
-  readonly showVitalPoints?: boolean;
 
   /**
    * Callback when animation completes

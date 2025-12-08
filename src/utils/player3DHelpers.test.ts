@@ -186,14 +186,12 @@ describe("player3DHelpers", () => {
         0,
         {
           isMobile: true,
-          showVitalPoints: true,
           facing: "left",
           scale: 1.5,
         }
       );
 
       expect(props.isMobile).toBe(true);
-      expect(props.showVitalPoints).toBe(true);
       expect(props.facing).toBe("left");
       expect(props.scale).toBe(1.5);
     });
@@ -205,7 +203,7 @@ describe("player3DHelpers", () => {
       };
       const props = convertPlayerStateToProps(attackingPlayer, [0, 0, 0], 0);
 
-      expect(props.isAttacking).toBe(true);
+      // Attack state is reflected in currentAnimation, not isAttacking prop
       expect(props.currentAnimation).toBe("attack");
     });
 

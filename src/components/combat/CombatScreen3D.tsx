@@ -1085,8 +1085,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <CombatArena3D lighting="cyberpunk" />
 
         {/* Player 1 */}
-        {/* Note: showVitalPoints is passed but not yet implemented in Player3DUnified.
-             Future enhancement: Add vital point visualization and interaction similar to old Player3DModel. */}
         <Player3DUnified
           {...convertPlayerStateToProps(
             validPlayers[0],
@@ -1095,7 +1093,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             {
               isMobile,
               facing: "right",
-              showVitalPoints: true,
             }
           )}
         />
@@ -1109,7 +1106,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             {
               isMobile,
               facing: "left",
-              showVitalPoints: true,
             }
           )}
         />

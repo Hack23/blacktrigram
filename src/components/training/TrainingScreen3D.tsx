@@ -180,9 +180,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Training player state for visualization:
-  // In training mode, health, stamina, and Ki are static (do not change).
-  // The PlayerState includes additional training-specific statistics (hits, misses, accuracy, comboCount)
-  // to track targeting accuracy and technique performance.
+  // The visual display shows full health, stamina, and Ki (static at 100).
+  // Training statistics (hits, misses, accuracy, combo) track targeting performance.
+  // Actual training mechanics (e.g., stamina reduction per strike) would be handled elsewhere if implemented.
   const trainingPlayerState = useMemo<PlayerState>(() => {
     return {
       id: "training-player",

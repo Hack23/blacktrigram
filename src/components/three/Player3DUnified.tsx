@@ -116,9 +116,6 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   isBlocking,
   isStunned = false,
   isCountering = false,
-  // Note: isAttacking prop exists for backwards compatibility but is not used.
-  // Attack state is determined by currentAnimation === "attack"
-  isAttacking: _isAttacking,
   currentAnimation,
   isMobile,
   name,
@@ -126,8 +123,6 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
   showDetails = true,
   facing = "right",
   showStanceIndicator = true,
-  // Note: showVitalPoints is for future vital point interaction feature (see CombatScreen3D comment)
-  showVitalPoints: _showVitalPoints,
   onAnimationComplete,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -219,11 +214,11 @@ export const Player3DUnified: React.FC<Player3DUnifiedProps> = ({
     const breath = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02;
     accumulatedScaleY *= breath;
 
-    // Stance change animation - rotation pulse
+    // Stance change animation - pulse multiplied with breathing
     if (currentAnimation === "stance_change") {
       const pulseScale = 1 + Math.sin(state.clock.elapsedTime * 10) * 0.1;
       accumulatedScaleX *= pulseScale;
-      accumulatedScaleY *= pulseScale;
+      accumulatedScaleY *= pulseScale; // Multiplies with breathing animation
       accumulatedScaleZ *= pulseScale;
     }
 

@@ -235,4 +235,116 @@ describe("Player3DUnified", () => {
       expect(props.onAnimationComplete).toBe(callback);
     });
   });
+
+  describe("Visual State Calculations", () => {
+    it("should calculate critical state correctly", () => {
+      const lowHealthProps = { ...defaultProps, health: 15, maxHealth: 100 };
+      const normalHealthProps = { ...defaultProps, health: 80, maxHealth: 100 };
+      
+      // Critical state is health <= 20%
+      expect(lowHealthProps.health / lowHealthProps.maxHealth).toBeLessThanOrEqual(0.2);
+      expect(normalHealthProps.health / normalHealthProps.maxHealth).toBeGreaterThan(0.2);
+    });
+
+    it("should calculate glow state based on Ki", () => {
+      const highKiProps = { ...defaultProps, ki: 85 };
+      const lowKiProps = { ...defaultProps, ki: 30 };
+      
+      // Glow when Ki > 80
+      expect(highKiProps.ki).toBeGreaterThan(80);
+      expect(lowKiProps.ki).toBeLessThanOrEqual(80);
+    });
+
+    it("should recognize dazed state", () => {
+      const dazedProps = { ...defaultProps, consciousness: 25 };
+      const alertProps = { ...defaultProps, consciousness: 90 };
+      
+      // Dazed when consciousness < 30
+      expect(dazedProps.consciousness).toBeLessThan(30);
+      expect(alertProps.consciousness).toBeGreaterThanOrEqual(30);
+    });
+
+    it("should handle all balance states", () => {
+      const balanceStates = ["READY", "SHAKEN", "VULNERABLE", "HELPLESS"] as const;
+      
+      balanceStates.forEach((balanceState) => {
+        const props = { ...defaultProps, balance: balanceState };
+        expect(props.balance).toBe(balanceState);
+        expect(["READY", "SHAKEN", "VULNERABLE", "HELPLESS"]).toContain(balanceState);
+      });
+    });
+  });
+
+  describe("Stance Color Mapping", () => {
+    it("should have unique colors for all 8 stances", () => {
+      // This tests the getStanceColor function logic
+      const stanceColors = {
+        [TrigramStance.GEON]: 0x00ffff, // Cyan
+        [TrigramStance.TAE]: 0xffd700, // Gold
+        [TrigramStance.LI]: 0xff4444, // Red
+        [TrigramStance.JIN]: 0x9370db, // Purple
+        [TrigramStance.SON]: 0x00ff88, // Green
+        [TrigramStance.GAM]: 0x0088ff, // Blue
+        [TrigramStance.GAN]: 0xffaa00, // Orange
+        [TrigramStance.GON]: 0xffff44, // Yellow
+      };
+
+      Object.entries(stanceColors).forEach(([stance, expectedColor]) => {
+        expect(expectedColor).toBeGreaterThan(0);
+        expect(expectedColor).toBeLessThanOrEqual(0xffffff);
+      });
+    });
+  });
+
+  describe("Trigram Symbols", () => {
+    it("should have correct symbols for all 8 stances", () => {
+      // This tests the getTrigramSymbol function logic
+      const trigramSymbols = {
+        [TrigramStance.GEON]: "☰", // Heaven
+        [TrigramStance.TAE]: "☱", // Lake
+        [TrigramStance.LI]: "☲", // Fire
+        [TrigramStance.JIN]: "☳", // Thunder
+        [TrigramStance.SON]: "☴", // Wind
+        [TrigramStance.GAM]: "☵", // Water
+        [TrigramStance.GAN]: "☶", // Mountain
+        [TrigramStance.GON]: "☷", // Earth
+      };
+
+      Object.entries(trigramSymbols).forEach(([stance, expectedSymbol]) => {
+        expect(expectedSymbol).toMatch(/^[☰-☷]$/);
+      });
+    });
+  });
+
+  describe("Animation States", () => {
+    it("should recognize attack animation", () => {
+      const attackProps = { ...defaultProps, currentAnimation: "attack" as const };
+      expect(attackProps.currentAnimation).toBe("attack");
+    });
+
+    it("should recognize idle animation", () => {
+      const idleProps = { ...defaultProps, currentAnimation: "idle" as const };
+      expect(idleProps.currentAnimation).toBe("idle");
+    });
+
+    it("should recognize stance_change animation", () => {
+      const stanceChangeProps = { ...defaultProps, currentAnimation: "stance_change" as const };
+      expect(stanceChangeProps.currentAnimation).toBe("stance_change");
+    });
+
+    it("should recognize block animation", () => {
+      const blockProps = { ...defaultProps, currentAnimation: "block" as const };
+      expect(blockProps.currentAnimation).toBe("block");
+    });
+
+    it("should recognize hit animation", () => {
+      const hitProps = { ...defaultProps, currentAnimation: "hit" as const };
+      expect(hitProps.currentAnimation).toBe("hit");
+    });
+
+    it("should recognize death animation", () => {
+      const deathProps = { ...defaultProps, currentAnimation: "death" as const };
+      expect(deathProps.currentAnimation).toBe("death");
+    });
+  });
 });

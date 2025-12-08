@@ -111,11 +111,9 @@ export function convertPlayerStateToProps(
     pain: player.pain,
     balance: getBalanceState(player.balance),
     consciousness: player.consciousness,
-    bloodLoss: undefined, // Note: bloodLoss not in base PlayerState, would need to be tracked separately
     
     // Combat flags
     isBlocking: player.isBlocking,
-    isAttacking: player.combatState === "attacking",
     isStunned: player.isStunned,
     isCountering: player.isCountering,
     
@@ -127,7 +125,6 @@ export function convertPlayerStateToProps(
     isMobile: options.isMobile ?? false,
     showDetails: options.showDetails ?? true,
     showStanceIndicator: options.showStanceIndicator ?? true,
-    showVitalPoints: options.showVitalPoints ?? false,
     facing: options.facing ?? "right",
     scale: options.scale ?? 1,
     onAnimationComplete: options.onAnimationComplete,
