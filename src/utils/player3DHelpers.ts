@@ -87,6 +87,9 @@ export function convertPlayerStateToProps(
     readonly isMobile?: boolean;
     readonly facing?: "left" | "right";
     readonly scale?: number;
+    readonly showDetails?: boolean;
+    readonly showHealthBar?: boolean;
+    readonly showStanceIndicator?: boolean;
     readonly onAnimationComplete?: () => void;
   } = {}
 ): Player3DUnifiedProps {
@@ -121,6 +124,9 @@ export function convertPlayerStateToProps(
     isMobile: options.isMobile ?? false,
     facing: options.facing ?? "right",
     scale: options.scale ?? 1,
+    showDetails: options.showDetails,
+    showHealthBar: options.showHealthBar,
+    showStanceIndicator: options.showStanceIndicator,
     onAnimationComplete: options.onAnimationComplete,
   };
 }
