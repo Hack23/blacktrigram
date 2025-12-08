@@ -1,6 +1,10 @@
 /**
  * Player3DModel - 3D character representation for combat
  *
+ * @deprecated Use Player3DUnified from '@/components/three' instead.
+ * This component is kept for backwards compatibility but will be removed in a future version.
+ * See Player3DUnified for the unified player visualization with improved features.
+ *
  * Uses simple geometries for performance while maintaining Korean aesthetic
  */
 
@@ -17,6 +21,8 @@ import VitalPointMarkers3D from "./VitalPointMarkers3D";
 /**
  * Props for the Player3DModel component.
  * Configures the 3D character model appearance and behavior.
+ * 
+ * @deprecated Use Player3DUnifiedProps from '@/types/player-visual' instead.
  */
 export interface Player3DModelProps {
   /** The current state of the player including health, stance, and combat status */
