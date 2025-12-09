@@ -212,13 +212,44 @@ Built for **combat realism** and **authentic simulation**:
 
 ## 🎮 Combat Controls
 
-### ⌨️ Combat Input System
+### ⌨️ Desktop Input System
 
 - **🏃 Movement**: `WASD` or `Arrow Keys` – Tactical positioning and footwork
 - **⚔️ Techniques**: `1–8` (Trigram-based combat techniques)
 - **🛡️ Guard**: `Spacebar` – Defensive positioning and blocks
 - **🎯 Vital Strike**: `Mouse` – Targeted vital-point attacks
 - **🔄 Archetype Switch**: `Tab` – Change between 5 fighter types
+
+### 📱 Mobile Touch Controls (375x667+ screens)
+
+**Virtual Controls** (Auto-displayed on screens < 768px width):
+
+- **🕹️ Virtual D-Pad** (Bottom-Left) – 8-directional movement control
+  - Tap directional buttons for tactical positioning
+  - Korean arrow indicators (↑ ↗ → ↘ ↓ ↙ ← ↖)
+  - 44px+ touch targets for accessibility
+  
+- **⚡ Action Buttons** (Bottom-Right)
+  - **Attack Button** (60x60px, Gold ⚡) – Execute current stance technique
+  - **Block Button** (50x50px, Blue 🛡️) – Activate defensive guard
+  
+- **☯️ Stance Wheel** (Bottom-Center)
+  - Tap to expand circular selector (200px diameter)
+  - 8 trigram stances (☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷)
+  - Korean names: 건 태 리 진 손 감 간 곤
+
+**Gesture Controls**:
+
+- **Swipe Right →** – Advance toward opponent
+- **Swipe Left ←** – Retreat from opponent
+- **Swipe Up ↑** – High attack execution
+- **Swipe Down ↓** – Low attack execution
+- **Two-Finger Tap 🤞** – Toggle vital point targeting mode
+
+**Haptic Feedback**:
+- Light vibration (10ms) on D-pad movement and stance selection
+- Medium vibration (50ms) on attack execution
+- Heavy vibration (100ms) on critical hits and vital point strikes
 
 ### 🩸 Combat Feedback
 

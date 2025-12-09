@@ -80,6 +80,10 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
+import { VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer } from "../mobile";
+import { Direction, DPadEventType } from "../mobile/VirtualDPad";
+import { ButtonEventType } from "../mobile/ActionButtons";
+import { GestureEvent } from "../../hooks/useTouchControls";
 
 /**
  * Calculate accuracy percentage for a player
@@ -823,6 +827,96 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     playSFX: audio.playSFX,
   });
 
+  // Mobile touch control state
+  const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
+
+  // Mobile touch control handlers
+  const handleMobileMove = useCallback((direction: Direction | null, eventType: DPadEventType) => {
+    if (!direction || eventType !== 'start') return;
+
+    // Map D-pad directions to movement
+    const directionMap: Record<Direction, string> = {
+      'up': 'move_up',
+      'up-right': 'move_up', // Diagonal simplified to primary direction
+      'right': 'move_right',
+      'down-right': 'move_down',
+      'down': 'move_down',
+      'down-left': 'move_down',
+      'left': 'move_left',
+      'up-left': 'move_up',
+    };
+
+    const action = directionMap[direction];
+    if (action) {
+      // Trigger movement via keyboard action system
+      const keyMap: Record<string, string> = {
+        'move_up': 'w',
+        'move_down': 's',
+        'move_left': 'a',
+        'move_right': 'd',
+      };
+      const key = keyMap[action];
+      if (key) {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+      }
+    }
+  }, []);
+
+  const handleMobileAttack = useCallback(() => {
+    handleAttackWithFeedback();
+  }, [handleAttackWithFeedback]);
+
+  const handleMobileBlock = useCallback((eventType: ButtonEventType) => {
+    if (eventType === 'start') {
+      handleDefendWithFeedback();
+    }
+  }, [handleDefendWithFeedback]);
+
+  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
+    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+    if (stance) {
+      const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
+      setPreviousStance(prevStance);
+      handleStanceSwitch(stance);
+    }
+  }, [handleStanceSwitch, currentPlayerStance]);
+
+  const handleMobileGesture = useCallback((gesture: GestureEvent) => {
+    switch (gesture.type) {
+      case 'swipe-right':
+        // Advance toward opponent
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'd' }));
+        break;
+      case 'swipe-left':
+        // Retreat from opponent
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
+        break;
+      case 'swipe-up':
+        // High attack mode - could trigger special technique
+        handleAttackWithFeedback();
+        break;
+      case 'swipe-down':
+        // Low attack mode - could trigger different technique
+        handleAttackWithFeedback();
+        break;
+      case 'two-finger-tap':
+        // Activate vital point targeting mode
+        // TODO: Implement vital point mode toggle
+        audio.playSFX("menu_select");
+        break;
+    }
+  }, [handleAttackWithFeedback, audio]);
+
+  // Check if mobile controls should be enabled
+  const mobileControlsEnabled = isMobile && 
+                                 !isPaused && 
+                                 !showPauseMenu && 
+                                 combatState.roundStarted && 
+                                 !combatState.roundEnded && 
+                                 matchCountdownComplete && 
+                                 !showRoundStart &&
+                                 !combatState.isExecutingTechnique;
+
   // Note: Player 1 position is updated via the onPositionChange callback
   // in usePlayerMovement config above, not via useEffect
 
@@ -1249,6 +1343,45 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           queuedInputs={queuedInputs}
           isMobile={isMobile}
         />
+
+        {/* Mobile Touch Controls - Only shown on mobile devices */}
+        {isMobile && (
+          <>
+            <VirtualDPad
+              onMove={handleMobileMove}
+              disabled={!mobileControlsEnabled}
+              size={120}
+              bottom={20}
+              left={20}
+              opacity={0.8}
+            />
+
+            <ActionButtons
+              onAttack={handleMobileAttack}
+              onBlock={handleMobileBlock}
+              disabled={!mobileControlsEnabled}
+              bottom={20}
+              right={20}
+              opacity={0.8}
+            />
+
+            <StanceWheel
+              currentStance={currentStanceIndex}
+              onStanceChange={handleMobileStanceChange}
+              expanded={stanceWheelExpanded}
+              onToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
+              disabled={!mobileControlsEnabled}
+              opacity={0.8}
+            />
+
+            <GestureRecognizer
+              onGesture={handleMobileGesture}
+              enabled={mobileControlsEnabled}
+              showFeedback={true}
+              minSwipeDistance={50}
+            />
+          </>
+        )}
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}
