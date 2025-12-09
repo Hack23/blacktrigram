@@ -15,7 +15,8 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { FONT_FAMILY } from "../../types/constants";
+import { getTrigramSymbol, getStanceKoreanName, getStanceColorHex } from "../../utils/stanceHelpers";
 
 /**
  * Props for StanceSymbol3D component
@@ -32,67 +33,6 @@ export interface StanceSymbol3DProps {
   /** Show Korean name below symbol */
   readonly showName?: boolean;
 }
-
-/**
- * Get trigram Unicode symbol for each stance
- * 
- * @param stance - Current trigram stance
- * @returns Unicode trigram symbol
- */
-const getTrigramSymbol = (stance: TrigramStance): string => {
-  const symbols = {
-    [TrigramStance.GEON]: "☰", // Heaven
-    [TrigramStance.TAE]: "☱",  // Lake
-    [TrigramStance.LI]: "☲",   // Fire
-    [TrigramStance.JIN]: "☳",  // Thunder
-    [TrigramStance.SON]: "☴",  // Wind
-    [TrigramStance.GAM]: "☵",  // Water
-    [TrigramStance.GAN]: "☶",  // Mountain
-    [TrigramStance.GON]: "☷",  // Earth
-  };
-  return symbols[stance] ?? "☰";
-};
-
-/**
- * Get Korean name for each stance
- * 
- * @param stance - Current trigram stance
- * @returns Korean name (Hangul)
- */
-const getStanceKoreanName = (stance: TrigramStance): string => {
-  const names = {
-    [TrigramStance.GEON]: "건", // Geon
-    [TrigramStance.TAE]: "태",  // Tae
-    [TrigramStance.LI]: "리",   // Li
-    [TrigramStance.JIN]: "진",  // Jin
-    [TrigramStance.SON]: "손",  // Son
-    [TrigramStance.GAM]: "감",  // Gam
-    [TrigramStance.GAN]: "간",  // Gan
-    [TrigramStance.GON]: "곤",  // Gon
-  };
-  return names[stance] ?? "건";
-};
-
-/**
- * Get color for each trigram stance
- * 
- * @param stance - Current trigram stance
- * @returns Hex color string for CSS
- */
-const getStanceColorHex = (stance: TrigramStance): string => {
-  const stanceColors = {
-    [TrigramStance.GEON]: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
-    [TrigramStance.TAE]: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
-    [TrigramStance.LI]: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
-    [TrigramStance.JIN]: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
-    [TrigramStance.SON]: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
-    [TrigramStance.GAM]: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,
-    [TrigramStance.GAN]: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,
-    [TrigramStance.GON]: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
-  };
-  const color = stanceColors[stance] ?? KOREAN_COLORS.PRIMARY_CYAN;
-  return `#${color.toString(16).padStart(6, '0')}`;
-};
 
 /**
  * Animation constants for stance symbol
@@ -147,8 +87,9 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
     // Rotate symbol slowly
     groupRef.current.rotation.y = time * ANIMATION_CONSTANTS.ROTATION_SPEED;
 
-    // Gentle vertical bob
-    groupRef.current.position.y = heightOffset + Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;
+    // Gentle vertical bob - always relative to heightOffset prop
+    const baseY = heightOffset;
+    groupRef.current.position.y = baseY + Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;
   });
 
   return (

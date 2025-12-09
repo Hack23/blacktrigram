@@ -126,7 +126,7 @@ export const Player3DWithTransitions: React.FC<Player3DWithTransitionsProps> = (
       onStanceTransitionStart?.(previousStance, stance);
 
       // Play stance change SFX if enabled
-      if (enableStanceAudio && audio.isAudioReady) {
+      if (enableStanceAudio) {
         audio.playSFX(AUDIO_ASSETS.STANCE_CHANGE);
       }
 

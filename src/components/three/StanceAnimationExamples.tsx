@@ -8,7 +8,7 @@
  * @korean 자세애니메이션예제
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 import { TrigramStance, PlayerArchetype } from "../../types/common";
@@ -242,7 +242,7 @@ export const CustomTransitionExample: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Example usage (in real app, would be triggered by UI)
-  React.useEffect(() => {
+  useEffect(() => {
     // Demonstrate transition after 2 seconds
     const timer = setTimeout(() => {
       if (!isTransitioning) {
@@ -319,12 +319,13 @@ export const useStanceKeyboardControls = (
 
       const stance = stanceMap[event.key];
       if (stance) {
+        event.preventDefault();
         onStanceChange(stance);
       }
     };
 
-    window.addEventListener("keypress", handleKeyPress);
-    return () => window.removeEventListener("keypress", handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [onStanceChange]);
 };
 

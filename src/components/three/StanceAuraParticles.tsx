@@ -16,7 +16,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
-import { KOREAN_COLORS } from "../../types/constants";
+import { getStanceColor } from "../../utils/stanceHelpers";
 
 /**
  * Props for StanceAuraParticles component
@@ -41,27 +41,6 @@ const PERFORMANCE_CONSTANTS = {
   /** Maximum delta time to prevent spiral of death (33.33ms) */
   MAX_DELTA_TIME: 1 / 30,
 } as const;
-
-/**
- * Get color for each trigram stance
- * Maps 8 trigrams to Korean cyberpunk color palette
- * 
- * @param stance - Current trigram stance
- * @returns Hex color number
- */
-const getStanceColor = (stance: TrigramStance): number => {
-  const stanceColors = {
-    [TrigramStance.GEON]: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold
-    [TrigramStance.TAE]: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,   // Lake - Sky Blue
-    [TrigramStance.LI]: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,     // Fire - Orange Red
-    [TrigramStance.JIN]: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,   // Thunder - Purple
-    [TrigramStance.SON]: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,   // Wind - Light Green
-    [TrigramStance.GAM]: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,   // Water - Blue
-    [TrigramStance.GAN]: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,   // Mountain - Brown
-    [TrigramStance.GON]: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,   // Earth - Dark Khaki
-  };
-  return stanceColors[stance] ?? KOREAN_COLORS.PRIMARY_CYAN;
-};
 
 /**
  * Get animation pattern based on stance philosophy
@@ -89,6 +68,22 @@ const getStancePattern = (stance: TrigramStance) => {
       return { speed: 1.0, rotationSpeed: 0.5, verticalBias: 0.0 };
   }
 };
+
+/**
+ * Props for StanceAuraParticles component
+ */
+export interface StanceAuraParticlesProps {
+  /** Current trigram stance affecting particle color and behavior */
+  readonly stance: TrigramStance;
+  /** Intensity of particle effect (0.0 to 1.0) */
+  readonly intensity?: number;
+  /** Number of particles to render */
+  readonly count?: number;
+  /** Whether particles should animate */
+  readonly animated?: boolean;
+  /** Spread radius of particles */
+  readonly spread?: number;
+}
 
 /**
  * StanceAuraParticles Component
@@ -172,9 +167,10 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
       const targetY = 1.0 + Math.sin(time * pattern.speed + phase) * pattern.verticalBias;
 
       // Smoothly interpolate towards target (gives flowing motion)
-      array[i3] += (targetX - array[i3]) * safeDelta * pattern.speed;
-      array[i3 + 1] += (targetY - array[i3 + 1]) * safeDelta * pattern.speed;
-      array[i3 + 2] += (targetZ - array[i3 + 2]) * safeDelta * pattern.speed;
+      const lerpFactor = Math.min(safeDelta * pattern.speed, 1.0);
+      array[i3] += (targetX - array[i3]) * lerpFactor;
+      array[i3 + 1] += (targetY - array[i3 + 1]) * lerpFactor;
+      array[i3 + 2] += (targetZ - array[i3 + 2]) * lerpFactor;
 
       // Reset particles that drift too far
       const distSq = array[i3] * array[i3] + array[i3 + 2] * array[i3 + 2];

@@ -17,8 +17,9 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { FONT_FAMILY } from "../../types/constants";
 import { colorUtils } from "../../types/constants/colors";
+import { getStanceColor, getStanceNames } from "../../utils/stanceHelpers";
 
 /**
  * Props for StanceTransitionEffect component
@@ -35,40 +36,6 @@ export interface StanceTransitionEffectProps {
   /** Show stance name overlay (default: true) */
   readonly showNameOverlay?: boolean;
 }
-
-/**
- * Get color for each trigram stance
- */
-const getStanceColor = (stance: TrigramStance): number => {
-  const stanceColors = {
-    [TrigramStance.GEON]: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
-    [TrigramStance.TAE]: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
-    [TrigramStance.LI]: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
-    [TrigramStance.JIN]: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
-    [TrigramStance.SON]: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
-    [TrigramStance.GAM]: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,
-    [TrigramStance.GAN]: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,
-    [TrigramStance.GON]: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
-  };
-  return stanceColors[stance] ?? KOREAN_COLORS.PRIMARY_CYAN;
-};
-
-/**
- * Get stance display names (Korean + English)
- */
-const getStanceNames = (stance: TrigramStance) => {
-  const names = {
-    [TrigramStance.GEON]: { korean: "건", english: "Heaven", romanized: "Geon" },
-    [TrigramStance.TAE]: { korean: "태", english: "Lake", romanized: "Tae" },
-    [TrigramStance.LI]: { korean: "리", english: "Fire", romanized: "Li" },
-    [TrigramStance.JIN]: { korean: "진", english: "Thunder", romanized: "Jin" },
-    [TrigramStance.SON]: { korean: "손", english: "Wind", romanized: "Son" },
-    [TrigramStance.GAM]: { korean: "감", english: "Water", romanized: "Gam" },
-    [TrigramStance.GAN]: { korean: "간", english: "Mountain", romanized: "Gan" },
-    [TrigramStance.GON]: { korean: "곤", english: "Earth", romanized: "Gon" },
-  };
-  return names[stance] ?? { korean: "건", english: "Heaven", romanized: "Geon" };
-};
 
 /**
  * StanceTransitionEffect Component
@@ -114,9 +81,10 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const toColor = useMemo(() => getStanceColor(toStance), [toStance]);
   const stanceNames = useMemo(() => getStanceNames(toStance), [toStance]);
 
-  // Initialize start time using clock for consistency with useFrame
+  // Initialize and reset on stance change
   useEffect(() => {
-    // Note: We initialize with 0 and calculate elapsed time relative to clock in useFrame
+    // Reset initialization flag for new transition
+    isInitializedRef.current = false;
     startTimeRef.current = 0;
     setIsTransitioning(true);
     setShowName(showNameOverlay);
