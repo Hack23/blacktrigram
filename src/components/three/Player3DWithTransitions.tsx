@@ -104,36 +104,31 @@ export const Player3DWithTransitions: React.FC<Player3DWithTransitionsProps> = (
   ...playerProps
 }) => {
   const audio = useAudio();
-  const [previousStance, setPreviousStance] = useState<TrigramStance | null>(null);
+  const prevStanceRef = useRef<TrigramStance>(stance);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const isFirstRenderRef = useRef(true);
+  const [fromStance, setFromStance] = useState<TrigramStance>(stance);
 
-  // Detect stance changes
+  // Detect stance changes - external effect (audio) justifies useEffect
   useEffect(() => {
-    // Skip transition effect on first render
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false;
-      setPreviousStance(stance);
-      return;
-    }
-
-    // Check if stance actually changed
-    if (previousStance !== null && previousStance !== stance) {
-      // Trigger transition
-      setIsTransitioning(true);
+    const previousStance = prevStanceRef.current;
+    
+    // Only trigger if stance actually changed
+    if (previousStance !== stance) {
+      prevStanceRef.current = stance;
       
-      // Callback for transition start
+      // External effects: audio playback (external system) and callbacks
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsTransitioning(true);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFromStance(previousStance);
       onStanceTransitionStart?.(previousStance, stance);
 
-      // Play stance change SFX if enabled
+      // External system: audio playback
       if (enableStanceAudio) {
         audio.playSFX(AUDIO_ASSETS.STANCE_CHANGE);
       }
-
-      // Update previous stance
-      setPreviousStance(stance);
     }
-  }, [stance, previousStance, audio, enableStanceAudio, onStanceTransitionStart]);
+  }, [stance, audio, enableStanceAudio, onStanceTransitionStart]);
 
   // Handle transition completion
   const handleTransitionComplete = useCallback(() => {
@@ -179,7 +174,7 @@ export const Player3DWithTransitions: React.FC<Player3DWithTransitionsProps> = (
       {/* Stance transition effect */}
       {enableTransitionEffects && isTransitioning && (
         <StanceTransitionEffect
-          fromStance={previousStance}
+          fromStance={fromStance}
           toStance={stance}
           onTransitionComplete={handleTransitionComplete}
           duration={transitionDuration}

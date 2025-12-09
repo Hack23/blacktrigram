@@ -106,5 +106,5 @@ export const getStanceKoreanName = (stance: TrigramStance): string => {
  */
 export const getStanceColorHex = (stance: TrigramStance): string => {
   const color = getStanceColor(stance);
-  return `#${color.toString(16).padStart(6, '0')}`;
+  return `#${color.toString(16).padStart(6, '0').toLowerCase()}`;
 };

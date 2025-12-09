@@ -81,15 +81,17 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const toColor = useMemo(() => getStanceColor(toStance), [toStance]);
   const stanceNames = useMemo(() => getStanceNames(toStance), [toStance]);
 
-  // Initialize and reset on stance change
+  // Handle transitions - external timer effect justifies useEffect
   useEffect(() => {
-    // Reset initialization flag for new transition
+    // Reset for new transition
     isInitializedRef.current = false;
     startTimeRef.current = 0;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTransitioning(true);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowName(showNameOverlay);
 
-    // Hide name after 1 second
+    // External system: timer for name overlay
     if (showNameOverlay) {
       const nameTimer = setTimeout(() => {
         setShowName(false);

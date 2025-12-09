@@ -160,6 +160,7 @@ function CombatScene() {
         consciousness={100}
         bloodLoss={0}
         currentAnimation="idle"
+        isBlocking={false}
         isMobile={false}
       />
     </Canvas>
@@ -188,8 +189,8 @@ useEffect(() => {
     if (newStance) setStance(newStance);
   };
   
-  window.addEventListener('keypress', handleKeyPress);
-  return () => window.removeEventListener('keypress', handleKeyPress);
+  window.addEventListener('keydown', handleKeyPress);
+  return () => window.removeEventListener('keydown', handleKeyPress);
 }, []);
 ```
 

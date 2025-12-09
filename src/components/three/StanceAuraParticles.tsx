@@ -70,22 +70,6 @@ const getStancePattern = (stance: TrigramStance) => {
 };
 
 /**
- * Props for StanceAuraParticles component
- */
-export interface StanceAuraParticlesProps {
-  /** Current trigram stance affecting particle color and behavior */
-  readonly stance: TrigramStance;
-  /** Intensity of particle effect (0.0 to 1.0) */
-  readonly intensity?: number;
-  /** Number of particles to render */
-  readonly count?: number;
-  /** Whether particles should animate */
-  readonly animated?: boolean;
-  /** Spread radius of particles */
-  readonly spread?: number;
-}
-
-/**
  * StanceAuraParticles Component
  * 
  * Renders an animated particle system that visualizes the player's stance
@@ -119,24 +103,26 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
   const pattern = useMemo(() => getStancePattern(stance), [stance]);
 
-  // Initialize particle positions and phases
-  const { positions, phases } = useMemo(() => {
+  // Initialize particle positions and phases (stable - no random on rerender)
+  const particleData = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const phase = new Float32Array(count);
     
+    // Use deterministic initialization based on index
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       const angle = (i / count) * Math.PI * 2;
-      const radius = 0.5 + Math.random() * spread;
-      const height = (Math.random() - 0.5) * 2;
+      const normalizedI = i / count; // Use as deterministic "random" value
+      const radius = 0.5 + normalizedI * spread;
+      const height = (normalizedI - 0.5) * 2;
       
       // Spherical distribution around player
       pos[i3] = Math.cos(angle) * radius;
       pos[i3 + 1] = height + 1.0; // Centered at player height
       pos[i3 + 2] = Math.sin(angle) * radius;
       
-      // Phase offset for wave patterns
-      phase[i] = Math.random() * Math.PI * 2;
+      // Phase offset for wave patterns (deterministic)
+      phase[i] = normalizedI * Math.PI * 2;
     }
     
     return { positions: pos, phases: phase };
@@ -149,6 +135,9 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
     // Clamp delta to prevent instability
     const safeDelta = Math.min(delta, PERFORMANCE_CONSTANTS.MAX_DELTA_TIME);
     const time = state.clock.elapsedTime;
+
+    // Access particle data
+    const { phases } = particleData;
 
     const attr = pointsRef.current.geometry.attributes.position;
     const array = attr.array as Float32Array;
@@ -191,7 +180,7 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
   return (
     <Points 
       ref={pointsRef} 
-      positions={positions}
+      positions={particleData.positions}
       data-testid="stance-aura-particles"
     >
       <PointMaterial
