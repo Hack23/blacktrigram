@@ -49,26 +49,17 @@ export const getResponsiveSizes = (
   isMobile: boolean,
   screenWidth: number
 ): CalculatedSizes => {
+  const getValue = (size: ResponsiveSize) => 
+    isMobile ? size.mobile : getResponsiveValue(size, screenWidth);
+
   const base = {
-    width: isMobile
-      ? sizes.width.mobile
-      : getResponsiveValue(sizes.width, screenWidth),
-    height: isMobile
-      ? sizes.height.mobile
-      : getResponsiveValue(sizes.height, screenWidth),
-    fontSize: isMobile
-      ? sizes.fontSize.mobile
-      : getResponsiveValue(sizes.fontSize, screenWidth),
+    width: getValue(sizes.width),
+    height: getValue(sizes.height),
+    fontSize: getValue(sizes.fontSize),
   };
 
-  // Only include padding if it's provided
   if (sizes.padding) {
-    return {
-      ...base,
-      padding: isMobile
-        ? sizes.padding.mobile
-        : getResponsiveValue(sizes.padding, screenWidth),
-    };
+    return { ...base, padding: getValue(sizes.padding) };
   }
 
   return base;

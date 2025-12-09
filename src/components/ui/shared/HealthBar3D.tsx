@@ -98,10 +98,10 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
       data-testid={`health-bar-3d-${playerId}`}
       role="progressbar"
       aria-label="체력 | Health"
-      aria-valuenow={Math.ceil(current)}
+      aria-valuenow={Math.max(0, Math.ceil(current))}
       aria-valuemin={0}
       aria-valuemax={max}
-      aria-valuetext={`${Math.ceil(current)} out of ${max}`}
+      aria-valuetext={`${Math.max(0, Math.ceil(current))} out of ${max}`}
       style={{
         width: `${sizes.width}px`,
         padding: `${sizes.padding ?? 12}px`,
@@ -126,7 +126,7 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
         >
           <span>체력 | Health</span>
           <span data-testid={`health-value-3d-${playerId}`}>
-            {Math.ceil(current)}/{max}
+            {Math.max(0, Math.ceil(current))}/{max}
           </span>
         </div>
       )}

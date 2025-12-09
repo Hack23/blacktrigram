@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Html, PerspectiveCamera } from "@react-three/drei";
 import { HealthBar3D, StaminaBar3D, StatusIndicator3D } from "./index";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 
 /**
@@ -130,7 +130,7 @@ export const Example3DScene: React.FC = () => {
               border: "none",
               borderRadius: "4px",
               cursor: "pointer",
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
             -10 Health
@@ -144,7 +144,7 @@ export const Example3DScene: React.FC = () => {
               border: "none",
               borderRadius: "4px",
               cursor: "pointer",
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
             -5 Stamina
@@ -158,7 +158,7 @@ export const Example3DScene: React.FC = () => {
               border: "none",
               borderRadius: "4px",
               cursor: "pointer",
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
             -10 Ki
@@ -176,7 +176,7 @@ export const Example3DScene: React.FC = () => {
               border: "none",
               borderRadius: "4px",
               cursor: "pointer",
-              fontFamily: "Noto Sans KR",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
             Reset All

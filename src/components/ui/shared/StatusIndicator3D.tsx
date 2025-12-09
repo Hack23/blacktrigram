@@ -32,6 +32,14 @@ import { getResponsiveSizes } from "./responsiveHelpers";
 import "./hudAnimations.css";
 
 /**
+ * Label font size ratios for Korean and English text
+ */
+const LABEL_FONT_RATIO = {
+  korean: 0.7,
+  english: 0.6,
+} as const;
+
+/**
  * Status indicator types
  */
 export type StatusType =
@@ -189,7 +197,7 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
       {/* Labels */}
       <div
         style={{
-          fontSize: `${sizes.fontSize * 0.7}px`,
+          fontSize: `${sizes.fontSize * LABEL_FONT_RATIO.korean}px`,
           color: hexToRgbaString(statusColor, 1),
           fontFamily: HUD_TYPOGRAPHY.fontFamily,
           fontWeight: HUD_TYPOGRAPHY.fontWeights.bold,
@@ -199,7 +207,7 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
         <div>{labelKorean}</div>
         <div
           style={{
-            fontSize: `${sizes.fontSize * 0.6}px`,
+            fontSize: `${sizes.fontSize * LABEL_FONT_RATIO.english}px`,
             color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
             fontWeight: HUD_TYPOGRAPHY.fontWeights.normal,
           }}

@@ -74,8 +74,8 @@ export const HEALTH_GRADIENTS = {
 export const getHealthGradient = (
   percentage: number
 ): { start: number; end: number } => {
-  if (percentage > 50) return HEALTH_GRADIENTS.full;
-  if (percentage > 25) return HEALTH_GRADIENTS.medium;
+  if (percentage > HEALTH_GRADIENTS.full.threshold) return HEALTH_GRADIENTS.full;
+  if (percentage > HEALTH_GRADIENTS.medium.threshold) return HEALTH_GRADIENTS.medium;
   return HEALTH_GRADIENTS.critical;
 };
 
@@ -89,6 +89,7 @@ export const STAMINA_GRADIENT = {
 
 /**
  * Technique bar variant colors
+ * @note Reserved for future TechniqueBar3D component implementation
  */
 export const TECHNIQUE_VARIANT_COLORS = {
   player: {
@@ -160,6 +161,7 @@ export const STAMINA_BAR_SIZES = {
 
 /**
  * Technique bar sizing configuration
+ * @note Reserved for future TechniqueBar3D component implementation
  */
 export const TECHNIQUE_BAR_SIZES = {
   cardWidth: { mobile: 70, tablet: 80, desktop: 90 } as ResponsiveSize,
@@ -191,6 +193,8 @@ export const ANIMATION_DURATIONS = {
 
 /**
  * CSS animations for HUD components
+ * @note These keyframes are defined in hudAnimations.css
+ * This constant serves as documentation/reference only
  */
 export const CSS_ANIMATIONS = {
   healthPulse: `
