@@ -164,7 +164,8 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
       // Reset particles that drift too far
       const distSq = array[i3] * array[i3] + array[i3 + 2] * array[i3 + 2];
       if (distSq > spread * spread * 4) {
-        const angle = Math.random() * Math.PI * 2;
+        // Deterministic angle based on particle index and time
+        const angle = (phase + time) % (Math.PI * 2);
         array[i3] = Math.cos(angle) * spread * 0.5;
         array[i3 + 1] = 1.0;
         array[i3 + 2] = Math.sin(angle) * spread * 0.5;
