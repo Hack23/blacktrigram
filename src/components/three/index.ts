@@ -44,3 +44,6 @@ export type { StanceSymbol3DProps } from "./StanceSymbol3D";
 
 export { StanceTransitionEffect } from "./StanceTransitionEffect";
 export type { StanceTransitionEffectProps } from "./StanceTransitionEffect";
+
+export { Player3DWithTransitions } from "./Player3DWithTransitions";
+export type { Player3DWithTransitionsProps } from "./Player3DWithTransitions";
