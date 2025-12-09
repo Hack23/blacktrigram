@@ -12,13 +12,13 @@
     "hasOther": false,
     "skipped": 0,
     "hasSkipped": false,
-    "start": "2025-12-07T23:50:57.676Z",
-    "end": "2025-12-07T23:56:33.634Z",
-    "duration": 335958
+    "start": "2025-12-09T02:34:53.327Z",
+    "end": "2025-12-09T02:40:28.060Z",
+    "duration": 334733
   },
   "results": [
     {
-      "uuid": "c60e8851-f3b2-4fd7-8168-a9f13f862376",
+      "uuid": "88c1273d-a374-4f76-8671-05ba651aa7d6",
       "title": "",
       "fullFile": "cypress/e2e/performance-threejs.cy.ts",
       "file": "cypress/e2e/performance-threejs.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "2b0d5833-3714-4319-8294-e2ddb5f24261",
+          "uuid": "8621e041-f76f-43eb-a4a3-3351d1f0f408",
           "title": "Black Trigram - Three.js Performance",
           "fullFile": "",
           "file": "",
@@ -36,7 +36,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "ef6a3f44-5077-4dd7-9e1e-31dcaeb6d0da",
+              "uuid": "e4460a9d-8fbe-487b-9e3a-b52173984c92",
               "title": "IntroScreen FPS Performance",
               "fullFile": "",
               "file": "",
@@ -47,7 +47,7 @@
                   "title": "should maintain smooth FPS on intro screen",
                   "fullTitle": "Black Trigram - Three.js Performance IntroScreen FPS Performance should maintain smooth FPS on intro screen",
                   "timedOut": null,
-                  "duration": 10357,
+                  "duration": 10203,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -56,8 +56,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing IntroScreen FPS performance\");\n// Verify canvas is rendering\ncy.get(\"canvas\").should(\"be.visible\");\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n// Monitor FPS for shorter duration\ncy.assertSmoothFPS(1500); // Reduced from 2000ms\ncy.log(\"✅ IntroScreen maintains smooth FPS\");",
                   "err": {},
-                  "uuid": "9dae0261-d398-4d4e-aab4-0b8262ef559c",
-                  "parentUUID": "ef6a3f44-5077-4dd7-9e1e-31dcaeb6d0da",
+                  "uuid": "38cc5668-2db6-497a-8e27-5c7cdb669b46",
+                  "parentUUID": "e4460a9d-8fbe-487b-9e3a-b52173984c92",
                   "isHook": false,
                   "skipped": false
                 },
@@ -65,7 +65,7 @@
                   "title": "should maintain FPS during menu interactions",
                   "fullTitle": "Black Trigram - Three.js Performance IntroScreen FPS Performance should maintain FPS during menu interactions",
                   "timedOut": null,
-                  "duration": 8620,
+                  "duration": 8610,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -74,8 +74,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS during menu interactions\");\n// Perform interactions first\ncy.get('[data-testid=\"combat-button\"]').trigger(\"mouseover\");\ncy.wait(100); // Reduced from 200ms\ncy.get('[data-testid=\"training-button\"]').trigger(\"mouseover\");\ncy.wait(100); // Reduced from 200ms\ncy.gameActions([\"{leftarrow}\", \"{rightarrow}\"]);\ncy.wait(100); // Reduced from 200ms\n// Then monitor FPS to verify system is still responsive\ncy.assertMinFPS(40, 1500); // Reduced from 2000ms\ncy.log(\"✅ Menu interactions FPS verified\");",
                   "err": {},
-                  "uuid": "8f52c1bd-df22-4a53-bade-1a1e8828cc33",
-                  "parentUUID": "ef6a3f44-5077-4dd7-9e1e-31dcaeb6d0da",
+                  "uuid": "bf770016-aa41-4333-b01b-d6b8dfcb899e",
+                  "parentUUID": "e4460a9d-8fbe-487b-9e3a-b52173984c92",
                   "isHook": false,
                   "skipped": false
                 },
@@ -83,7 +83,7 @@
                   "title": "should handle canvas rendering at different viewport sizes",
                   "fullTitle": "Black Trigram - Three.js Performance IntroScreen FPS Performance should handle canvas rendering at different viewport sizes",
                   "timedOut": null,
-                  "duration": 6324,
+                  "duration": 6252,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -92,28 +92,28 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS at different viewports\");\nconst viewports = [\n    [1280, 720], // Desktop\n    [375, 667], // Mobile - only test extremes\n];\nviewports.forEach(([width, height]) => {\n    cy.viewport(width, height);\n    cy.wait(300); // Reduced from 500ms\n    // Monitor FPS at this viewport - reduced duration\n    cy.assertMinFPS(30, 1000); // Reduced from 1500ms\n    cy.log(`✅ Acceptable FPS at ${width}x${height}`);\n});\n// Reset viewport\ncy.viewport(1280, 720);",
                   "err": {},
-                  "uuid": "dc460ced-07b1-4084-8c15-449ec32c950c",
-                  "parentUUID": "ef6a3f44-5077-4dd7-9e1e-31dcaeb6d0da",
+                  "uuid": "0d1f67f9-c410-46cb-9451-b5093793ed21",
+                  "parentUUID": "e4460a9d-8fbe-487b-9e3a-b52173984c92",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "9dae0261-d398-4d4e-aab4-0b8262ef559c",
-                "8f52c1bd-df22-4a53-bade-1a1e8828cc33",
-                "dc460ced-07b1-4084-8c15-449ec32c950c"
+                "38cc5668-2db6-497a-8e27-5c7cdb669b46",
+                "bf770016-aa41-4333-b01b-d6b8dfcb899e",
+                "0d1f67f9-c410-46cb-9451-b5093793ed21"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 25301,
+              "duration": 25065,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "d7cfbeaf-aaea-40b4-abe3-939af37e6843",
+              "uuid": "f3740280-3849-456a-9586-fed74e69ab3a",
               "title": "CombatScreen FPS Performance",
               "fullFile": "",
               "file": "",
@@ -124,7 +124,7 @@
                   "title": "should maintain smooth FPS in combat mode",
                   "fullTitle": "Black Trigram - Three.js Performance CombatScreen FPS Performance should maintain smooth FPS in combat mode",
                   "timedOut": null,
-                  "duration": 5633,
+                  "duration": 5603,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -133,8 +133,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing CombatScreen FPS performance\");\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n// Monitor FPS during combat - reduced duration\ncy.assertMinFPS(40, 1500); // Reduced from 2000ms\ncy.log(\"✅ Combat maintains acceptable FPS\");",
                   "err": {},
-                  "uuid": "4f36b391-ace7-4913-8fa7-7a1b25f008bd",
-                  "parentUUID": "d7cfbeaf-aaea-40b4-abe3-939af37e6843",
+                  "uuid": "3b7c8fa5-e2fc-466a-b1ac-188b302fa492",
+                  "parentUUID": "f3740280-3849-456a-9586-fed74e69ab3a",
                   "isHook": false,
                   "skipped": false
                 },
@@ -142,7 +142,7 @@
                   "title": "should maintain FPS during combat actions",
                   "fullTitle": "Black Trigram - Three.js Performance CombatScreen FPS Performance should maintain FPS during combat actions",
                   "timedOut": null,
-                  "duration": 5570,
+                  "duration": 5550,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -151,8 +151,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS during combat actions\");\ncy.enterCombatMode();\ncy.wrap(Date.now()).then((startTime) => {\n    // Perform combat actions\n    cy.gameActions([\"1\", \" \", \"w\", \"a\", \"s\", \"d\"]);\n    cy.wait(100); // Reduced from 200ms\n    cy.gameActions([\"3\", \" \", \"w\", \"a\", \"s\", \"d\"]);\n    cy.wait(100); // Reduced from 200ms\n    // Monitor FPS - reduced duration\n    cy.assertMinFPS(35, 1000); // Reduced from 1500ms\n    cy.wrap(Date.now() - startTime).then((duration) => {\n        cy.task(\"logPerformance\", {\n            name: \"Combat Actions Performance\",\n            duration,\n        });\n        expect(duration).to.be.lessThan(5000);\n        cy.log(`✅ Combat actions completed in ${duration}ms`);\n    });\n});\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "6a76ca4b-db54-4c21-ae35-514d7fe66cc3",
-                  "parentUUID": "d7cfbeaf-aaea-40b4-abe3-939af37e6843",
+                  "uuid": "76e0dd0e-acf9-4338-847b-1881784d46aa",
+                  "parentUUID": "f3740280-3849-456a-9586-fed74e69ab3a",
                   "isHook": false,
                   "skipped": false
                 },
@@ -160,7 +160,7 @@
                   "title": "should maintain FPS during intense combat",
                   "fullTitle": "Black Trigram - Three.js Performance CombatScreen FPS Performance should maintain FPS during intense combat",
                   "timedOut": null,
-                  "duration": 5558,
+                  "duration": 5506,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -169,8 +169,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS during intense combat\");\ncy.enterCombatMode();\n// Rapid stance changes and attacks\nfor (let i = 1; i <= 4; i++) {\n    cy.get(\"body\").type(i.toString());\n    cy.wait(100);\n    cy.get(\"body\").type(\" \");\n    cy.wait(100);\n}\n// Monitor FPS\ncy.assertMinFPS(30, 1500);\ncy.log(\"✅ Maintains FPS during intense combat\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "ebd78951-886b-4f2e-9634-ae590f961ba7",
-                  "parentUUID": "d7cfbeaf-aaea-40b4-abe3-939af37e6843",
+                  "uuid": "27330b67-324a-49dd-9db8-a13d5527e595",
+                  "parentUUID": "f3740280-3849-456a-9586-fed74e69ab3a",
                   "isHook": false,
                   "skipped": false
                 },
@@ -178,7 +178,7 @@
                   "title": "should handle rapid stance transitions without FPS drops",
                   "fullTitle": "Black Trigram - Three.js Performance CombatScreen FPS Performance should handle rapid stance transitions without FPS drops",
                   "timedOut": null,
-                  "duration": 5604,
+                  "duration": 5613,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -187,29 +187,29 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS during rapid stance changes\");\ncy.enterCombatMode();\ncy.wrap(Date.now()).then((startTime) => {\n    // Rapid stance cycling\n    cy.gameActions([\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\"]);\n    cy.gameActions([\"8\", \"7\", \"6\", \"5\", \"4\", \"3\", \"2\", \"1\"]);\n    cy.wrap(Date.now() - startTime).then((duration) => {\n        // Should complete quickly\n        expect(duration).to.be.lessThan(3000);\n        cy.task(\"logPerformance\", {\n            name: \"Rapid Stance Transitions\",\n            duration,\n        });\n    });\n});\n// Monitor FPS after rapid changes\ncy.assertMinFPS(35, 1000);\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "87981da9-893e-4fb4-b9de-bfe8b58f29ac",
-                  "parentUUID": "d7cfbeaf-aaea-40b4-abe3-939af37e6843",
+                  "uuid": "76f81c09-dda7-4723-8b9f-f6227b4f55cd",
+                  "parentUUID": "f3740280-3849-456a-9586-fed74e69ab3a",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "4f36b391-ace7-4913-8fa7-7a1b25f008bd",
-                "6a76ca4b-db54-4c21-ae35-514d7fe66cc3",
-                "ebd78951-886b-4f2e-9634-ae590f961ba7",
-                "87981da9-893e-4fb4-b9de-bfe8b58f29ac"
+                "3b7c8fa5-e2fc-466a-b1ac-188b302fa492",
+                "76e0dd0e-acf9-4338-847b-1881784d46aa",
+                "27330b67-324a-49dd-9db8-a13d5527e595",
+                "76f81c09-dda7-4723-8b9f-f6227b4f55cd"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 22365,
+              "duration": 22272,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "8c90a4fd-f7ca-4ad2-96c7-0bc2944eeab8",
+              "uuid": "2cc862e0-e9e3-4c86-9cad-51a9f76303f2",
               "title": "TrainingScreen FPS Performance",
               "fullFile": "",
               "file": "",
@@ -220,7 +220,7 @@
                   "title": "should maintain smooth FPS in training mode",
                   "fullTitle": "Black Trigram - Three.js Performance TrainingScreen FPS Performance should maintain smooth FPS in training mode",
                   "timedOut": null,
-                  "duration": 13621,
+                  "duration": 13575,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -229,8 +229,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing TrainingScreen FPS performance\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n// Monitor FPS during training\ncy.assertMinFPS(40, 2000);\ncy.log(\"✅ Training maintains acceptable FPS\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "825d9140-6d70-47e1-93c4-a7aba5508723",
-                  "parentUUID": "8c90a4fd-f7ca-4ad2-96c7-0bc2944eeab8",
+                  "uuid": "6c5b5881-6f45-4557-b963-8766c9b9619b",
+                  "parentUUID": "2cc862e0-e9e3-4c86-9cad-51a9f76303f2",
                   "isHook": false,
                   "skipped": false
                 },
@@ -238,7 +238,7 @@
                   "title": "should maintain FPS during training exercises",
                   "fullTitle": "Black Trigram - Three.js Performance TrainingScreen FPS Performance should maintain FPS during training exercises",
                   "timedOut": null,
-                  "duration": 13569,
+                  "duration": 13586,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -247,27 +247,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS during training exercises\");\ncy.enterTrainingMode();\n// Practice multiple stances\ncy.practiceStance(1, 2);\ncy.practiceStance(3, 2);\ncy.practiceStance(5, 2);\n// Monitor FPS\ncy.assertMinFPS(35, 1500);\ncy.log(\"✅ Training exercises maintain FPS\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "d50a20d4-7dc9-45f0-8258-f4af3a933c8e",
-                  "parentUUID": "8c90a4fd-f7ca-4ad2-96c7-0bc2944eeab8",
+                  "uuid": "c4952b0a-b281-4cb8-b011-71d5052a2c23",
+                  "parentUUID": "2cc862e0-e9e3-4c86-9cad-51a9f76303f2",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "825d9140-6d70-47e1-93c4-a7aba5508723",
-                "d50a20d4-7dc9-45f0-8258-f4af3a933c8e"
+                "6c5b5881-6f45-4557-b963-8766c9b9619b",
+                "c4952b0a-b281-4cb8-b011-71d5052a2c23"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 27190,
+              "duration": 27161,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "dd38db44-5f8d-4899-8f14-93b000810350",
+              "uuid": "0e4d3126-bb16-4654-a6f6-ac34e09adc0c",
               "title": "Scene Transition Performance",
               "fullFile": "",
               "file": "",
@@ -278,7 +278,7 @@
                   "title": "should maintain FPS during screen transitions",
                   "fullTitle": "Black Trigram - Three.js Performance Scene Transition Performance should maintain FPS during screen transitions",
                   "timedOut": null,
-                  "duration": 5588,
+                  "duration": 5582,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -287,8 +287,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing FPS during scene transitions\");\ncy.wrap(Date.now()).then((startTime) => {\n    // Multiple transitions\n    cy.enterCombatMode();\n    cy.wait(500);\n    cy.returnToIntro();\n    cy.wait(500);\n    cy.enterTrainingMode();\n    cy.wait(500);\n    cy.returnToIntro();\n    cy.wait(500);\n    cy.wrap(Date.now() - startTime).then((duration) => {\n        cy.task(\"logPerformance\", {\n            name: \"Scene Transitions\",\n            duration,\n        });\n        // Should complete in reasonable time\n        expect(duration).to.be.lessThan(8000);\n        cy.log(`✅ Scene transitions completed in ${duration}ms`);\n    });\n});\n// Verify FPS is stable after transitions\ncy.assertMinFPS(40, 1500);",
                   "err": {},
-                  "uuid": "faafb42b-0be3-4b52-ab93-9db5fca1c4c9",
-                  "parentUUID": "dd38db44-5f8d-4899-8f14-93b000810350",
+                  "uuid": "3e982bce-7ca3-4213-b9e0-6cbfab066a8d",
+                  "parentUUID": "0e4d3126-bb16-4654-a6f6-ac34e09adc0c",
                   "isHook": false,
                   "skipped": false
                 },
@@ -296,7 +296,7 @@
                   "title": "should handle rapid screen transitions",
                   "fullTitle": "Black Trigram - Three.js Performance Scene Transition Performance should handle rapid screen transitions",
                   "timedOut": null,
-                  "duration": 6905,
+                  "duration": 6900,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -305,27 +305,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing rapid screen transitions\");\ncy.wrap(Date.now()).then((startTime) => {\n    // Rapid navigation\n    for (let i = 0; i < 3; i++) {\n        cy.gameActions([\"1\"]); // Combat\n        cy.wait(300);\n        cy.gameActions([\"{esc}\"]); // Back\n        cy.wait(300);\n    }\n    cy.wrap(Date.now() - startTime).then((duration) => {\n        // Should handle rapid transitions\n        expect(duration).to.be.lessThan(6000);\n        cy.task(\"logPerformance\", {\n            name: \"Rapid Screen Transitions\",\n            duration,\n        });\n    });\n});\n// Verify no performance degradation\ncy.assertMinFPS(35, 1000);",
                   "err": {},
-                  "uuid": "99960c8f-4e9a-4f76-97d6-079ccd8d768b",
-                  "parentUUID": "dd38db44-5f8d-4899-8f14-93b000810350",
+                  "uuid": "ceeae2b5-6813-4bc1-a88b-d795f1f41bb2",
+                  "parentUUID": "0e4d3126-bb16-4654-a6f6-ac34e09adc0c",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "faafb42b-0be3-4b52-ab93-9db5fca1c4c9",
-                "99960c8f-4e9a-4f76-97d6-079ccd8d768b"
+                "3e982bce-7ca3-4213-b9e0-6cbfab066a8d",
+                "ceeae2b5-6813-4bc1-a88b-d795f1f41bb2"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 12493,
+              "duration": 12482,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "4b56c8cf-f38a-46a6-8806-5fe13596fb84",
+              "uuid": "a68b5a41-d21a-4350-b6d5-28c8a545b5f4",
               "title": "Canvas Rendering Verification",
               "fullFile": "",
               "file": "",
@@ -336,7 +336,7 @@
                   "title": "should verify canvas is actively rendering on intro",
                   "fullTitle": "Black Trigram - Three.js Performance Canvas Rendering Verification should verify canvas is actively rendering on intro",
                   "timedOut": null,
-                  "duration": 8461,
+                  "duration": 8448,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -345,8 +345,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing canvas rendering on intro\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.assertCanvasRendering(1000);\ncy.log(\"✅ Canvas is actively rendering\");",
                   "err": {},
-                  "uuid": "ac66ddf4-083c-417d-8f66-68cb6c1558fa",
-                  "parentUUID": "4b56c8cf-f38a-46a6-8806-5fe13596fb84",
+                  "uuid": "00c1f81d-b46c-465f-84f7-e222cc0d4e28",
+                  "parentUUID": "a68b5a41-d21a-4350-b6d5-28c8a545b5f4",
                   "isHook": false,
                   "skipped": false
                 },
@@ -354,7 +354,7 @@
                   "title": "should verify canvas renders in combat mode",
                   "fullTitle": "Black Trigram - Three.js Performance Canvas Rendering Verification should verify canvas renders in combat mode",
                   "timedOut": null,
-                  "duration": 5597,
+                  "duration": 5624,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -363,8 +363,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing canvas rendering in combat\");\ncy.enterCombatMode();\ncy.get(\"canvas\").should(\"be.visible\");\ncy.assertCanvasRendering(1000);\ncy.log(\"✅ Combat canvas is rendering\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "a0331c0c-b2f0-4cbc-83c6-9d7258c8a711",
-                  "parentUUID": "4b56c8cf-f38a-46a6-8806-5fe13596fb84",
+                  "uuid": "5a3debec-0a42-4d76-b902-d62066a39253",
+                  "parentUUID": "a68b5a41-d21a-4350-b6d5-28c8a545b5f4",
                   "isHook": false,
                   "skipped": false
                 },
@@ -372,7 +372,7 @@
                   "title": "should verify canvas renders in training mode",
                   "fullTitle": "Black Trigram - Three.js Performance Canvas Rendering Verification should verify canvas renders in training mode",
                   "timedOut": null,
-                  "duration": 13505,
+                  "duration": 13518,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -381,28 +381,28 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing canvas rendering in training\");\ncy.enterTrainingMode();\ncy.get(\"canvas\").should(\"be.visible\");\ncy.assertCanvasRendering(1000);\ncy.log(\"✅ Training canvas is rendering\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "c4076db9-f192-4c01-9f3b-849bc9b98828",
-                  "parentUUID": "4b56c8cf-f38a-46a6-8806-5fe13596fb84",
+                  "uuid": "4d8c6087-9b6f-4c88-9a7b-b6c4e112cc55",
+                  "parentUUID": "a68b5a41-d21a-4350-b6d5-28c8a545b5f4",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "ac66ddf4-083c-417d-8f66-68cb6c1558fa",
-                "a0331c0c-b2f0-4cbc-83c6-9d7258c8a711",
-                "c4076db9-f192-4c01-9f3b-849bc9b98828"
+                "00c1f81d-b46c-465f-84f7-e222cc0d4e28",
+                "5a3debec-0a42-4d76-b902-d62066a39253",
+                "4d8c6087-9b6f-4c88-9a7b-b6c4e112cc55"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 27563,
+              "duration": 27590,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "3cda0022-4c84-408f-ba21-1c3a1aa10f91",
+              "uuid": "2db9fade-5243-4442-9301-ef9bd30c75bc",
               "title": "Memory Management",
               "fullFile": "",
               "file": "",
@@ -413,7 +413,7 @@
                   "title": "should not have significant memory leaks on intro screen",
                   "fullTitle": "Black Trigram - Three.js Performance Memory Management should not have significant memory leaks on intro screen",
                   "timedOut": null,
-                  "duration": 6544,
+                  "duration": 6572,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -422,8 +422,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing memory management on intro\");\ncy.assertNoMemoryLeaks(3000);\ncy.log(\"✅ No significant memory leaks detected\");",
                   "err": {},
-                  "uuid": "9357edaa-37f3-4882-b61f-e9948331f0b4",
-                  "parentUUID": "3cda0022-4c84-408f-ba21-1c3a1aa10f91",
+                  "uuid": "817d8262-f650-4753-88b1-6a526bfa205b",
+                  "parentUUID": "2db9fade-5243-4442-9301-ef9bd30c75bc",
                   "isHook": false,
                   "skipped": false
                 },
@@ -431,7 +431,7 @@
                   "title": "should manage memory during screen transitions",
                   "fullTitle": "Black Trigram - Three.js Performance Memory Management should manage memory during screen transitions",
                   "timedOut": null,
-                  "duration": 5589,
+                  "duration": 5605,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -440,8 +440,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing memory during transitions\");\n// Multiple transitions to check for leaks\ncy.enterCombatMode();\ncy.wait(500);\ncy.returnToIntro();\ncy.wait(500);\ncy.enterTrainingMode();\ncy.wait(500);\ncy.returnToIntro();\ncy.wait(500);\ncy.assertNoMemoryLeaks(2000);\ncy.log(\"✅ Memory managed correctly during transitions\");",
                   "err": {},
-                  "uuid": "69ca3c3c-30f9-4463-8237-f627b94256ac",
-                  "parentUUID": "3cda0022-4c84-408f-ba21-1c3a1aa10f91",
+                  "uuid": "d87fd043-bfc5-479c-ad04-562a89aad45e",
+                  "parentUUID": "2db9fade-5243-4442-9301-ef9bd30c75bc",
                   "isHook": false,
                   "skipped": false
                 },
@@ -449,7 +449,7 @@
                   "title": "should manage memory during extended gameplay",
                   "fullTitle": "Black Trigram - Three.js Performance Memory Management should manage memory during extended gameplay",
                   "timedOut": null,
-                  "duration": 5507,
+                  "duration": 5568,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -458,28 +458,28 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing memory during extended gameplay\");\ncy.enterCombatMode();\n// Extended combat simulation\nfor (let i = 0; i < 3; i++) {\n    cy.gameActions([\"1\", \" \", \"w\", \"a\", \"s\", \"d\"]);\n    cy.wait(300);\n}\ncy.assertNoMemoryLeaks(2000);\ncy.returnToIntro();\ncy.log(\"✅ Memory managed during extended gameplay\");",
                   "err": {},
-                  "uuid": "b8a543db-0f03-418b-a48c-6927144413a0",
-                  "parentUUID": "3cda0022-4c84-408f-ba21-1c3a1aa10f91",
+                  "uuid": "0ac1b867-ae75-42c6-8340-fe4fe85d89e2",
+                  "parentUUID": "2db9fade-5243-4442-9301-ef9bd30c75bc",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "9357edaa-37f3-4882-b61f-e9948331f0b4",
-                "69ca3c3c-30f9-4463-8237-f627b94256ac",
-                "b8a543db-0f03-418b-a48c-6927144413a0"
+                "817d8262-f650-4753-88b1-6a526bfa205b",
+                "d87fd043-bfc5-479c-ad04-562a89aad45e",
+                "0ac1b867-ae75-42c6-8340-fe4fe85d89e2"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 17640,
+              "duration": 17745,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "e3057ba7-80cf-473a-ab9d-10c7f0a0f6d5",
+              "uuid": "3a899c29-9faf-41f2-832d-d83b4fa01ed5",
               "title": "Performance Under Load",
               "fullFile": "",
               "file": "",
@@ -490,7 +490,7 @@
                   "title": "should handle multiple rapid inputs without degradation",
                   "fullTitle": "Black Trigram - Three.js Performance Performance Under Load should handle multiple rapid inputs without degradation",
                   "timedOut": null,
-                  "duration": 5637,
+                  "duration": 5536,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -499,8 +499,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing performance under input load\");\ncy.enterCombatMode();\ncy.wrap(Date.now()).then((startTime) => {\n    // Simulate rapid player inputs\n    for (let i = 0; i < 5; i++) {\n        cy.gameActions([\"w\", \"a\", \"s\", \"d\", \"1\", \"2\", \"3\", \" \"]);\n    }\n    cy.wrap(Date.now() - startTime).then((duration) => {\n        cy.task(\"logPerformance\", {\n            name: \"Rapid Input Load\",\n            duration,\n        });\n        expect(duration).to.be.lessThan(10000);\n    });\n});\n// Verify FPS is still acceptable\ncy.assertMinFPS(30, 1500);\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "40ec124e-522c-41c4-a219-282797d36794",
-                  "parentUUID": "e3057ba7-80cf-473a-ab9d-10c7f0a0f6d5",
+                  "uuid": "7add4a43-81c6-4ad6-84b7-5aac5b2602f3",
+                  "parentUUID": "3a899c29-9faf-41f2-832d-d83b4fa01ed5",
                   "isHook": false,
                   "skipped": false
                 },
@@ -508,7 +508,7 @@
                   "title": "should maintain performance during extended session",
                   "fullTitle": "Black Trigram - Three.js Performance Performance Under Load should maintain performance during extended session",
                   "timedOut": null,
-                  "duration": 5580,
+                  "duration": 5574,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -517,27 +517,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing extended session performance\");\ncy.wrap(Date.now()).then((startTime) => {\n    // Enter combat and perform extended actions\n    cy.enterCombatMode();\n    for (let round = 0; round < 2; round++) {\n        // Stance practice\n        for (let stance = 1; stance <= 4; stance++) {\n            cy.get(\"body\").type(stance.toString());\n            cy.wait(100);\n            cy.get(\"body\").type(\" \");\n            cy.wait(100);\n        }\n        // Movement\n        cy.gameActions([\"w\", \"w\", \"s\", \"s\", \"a\", \"a\", \"d\", \"d\"]);\n        cy.wait(300);\n    }\n    cy.wrap(Date.now() - startTime).then((sessionDuration) => {\n        cy.task(\"logPerformance\", {\n            name: \"Extended Session\",\n            duration: sessionDuration,\n        });\n    });\n});\n// Performance should still be acceptable\ncy.assertMinFPS(30, 1500);\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "25be74a4-e71c-4912-b70b-54ee3cbe6f70",
-                  "parentUUID": "e3057ba7-80cf-473a-ab9d-10c7f0a0f6d5",
+                  "uuid": "31d8c738-dcb2-459a-bcb4-78cf9f02d20b",
+                  "parentUUID": "3a899c29-9faf-41f2-832d-d83b4fa01ed5",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "40ec124e-522c-41c4-a219-282797d36794",
-                "25be74a4-e71c-4912-b70b-54ee3cbe6f70"
+                "7add4a43-81c6-4ad6-84b7-5aac5b2602f3",
+                "31d8c738-dcb2-459a-bcb4-78cf9f02d20b"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 11217,
+              "duration": 11110,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "2a5b218b-acfa-41c1-8604-98aba6b553dd",
+              "uuid": "057c2885-baad-4be0-a183-e45272782572",
               "title": "Performance Benchmarks",
               "fullFile": "",
               "file": "",
@@ -548,7 +548,7 @@
                   "title": "should benchmark intro screen load time",
                   "fullTitle": "Black Trigram - Three.js Performance Performance Benchmarks should benchmark intro screen load time",
                   "timedOut": null,
-                  "duration": 7043,
+                  "duration": 6992,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -557,8 +557,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Benchmarking intro screen load\");\ncy.wrap(Date.now()).then((startTime) => {\n    cy.visitWithWebGLMock(\"/\", { timeout: 12000 });\n    cy.waitForCanvasReady();\n    cy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n    cy.wrap(Date.now() - startTime).then((loadTime) => {\n        cy.task(\"logPerformance\", {\n            name: \"Intro Screen Load Benchmark\",\n            duration: loadTime,\n        });\n        // Should load within 5 seconds\n        expect(loadTime).to.be.lessThan(5000);\n        cy.log(`✅ Intro loaded in ${loadTime}ms`);\n    });\n});",
                   "err": {},
-                  "uuid": "267b7acc-36a2-48e3-9df5-78c08d1acc30",
-                  "parentUUID": "2a5b218b-acfa-41c1-8604-98aba6b553dd",
+                  "uuid": "9804606e-7f28-4822-a0c2-9485cbd6043c",
+                  "parentUUID": "057c2885-baad-4be0-a183-e45272782572",
                   "isHook": false,
                   "skipped": false
                 },
@@ -566,7 +566,7 @@
                   "title": "should benchmark combat screen transition time",
                   "fullTitle": "Black Trigram - Three.js Performance Performance Benchmarks should benchmark combat screen transition time",
                   "timedOut": null,
-                  "duration": 5545,
+                  "duration": 5586,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -575,8 +575,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Benchmarking combat transition\");\ncy.wrap(Date.now()).then((startTime) => {\n    cy.enterCombatMode();\n    cy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n    cy.wrap(Date.now() - startTime).then((transitionTime) => {\n        cy.task(\"logPerformance\", {\n            name: \"Combat Transition Benchmark\",\n            duration: transitionTime,\n        });\n        // Should transition within 3 seconds\n        expect(transitionTime).to.be.lessThan(3000);\n        cy.log(`✅ Combat transition in ${transitionTime}ms`);\n    });\n});\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "4382e5b7-25bc-4040-a3bd-747b65ce692d",
-                  "parentUUID": "2a5b218b-acfa-41c1-8604-98aba6b553dd",
+                  "uuid": "947db98d-b467-4fd3-b553-f2bd1d403183",
+                  "parentUUID": "057c2885-baad-4be0-a183-e45272782572",
                   "isHook": false,
                   "skipped": false
                 },
@@ -584,7 +584,7 @@
                   "title": "should benchmark training screen transition time",
                   "fullTitle": "Black Trigram - Three.js Performance Performance Benchmarks should benchmark training screen transition time",
                   "timedOut": null,
-                  "duration": 13534,
+                  "duration": 13552,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -593,22 +593,22 @@
                   "context": null,
                   "code": "cy.annotate(\"Benchmarking training transition\");\ncy.wrap(Date.now()).then((startTime) => {\n    cy.enterTrainingMode();\n    cy.get('[data-testid=\"training-screen\"]').should(\"exist\");\n    cy.wrap(Date.now() - startTime).then((transitionTime) => {\n        cy.task(\"logPerformance\", {\n            name: \"Training Transition Benchmark\",\n            duration: transitionTime,\n        });\n        // Should transition within 3 seconds\n        expect(transitionTime).to.be.lessThan(3000);\n        cy.log(`✅ Training transition in ${transitionTime}ms`);\n    });\n});\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "f174419a-1f6f-4775-bd11-e4bd87c671a7",
-                  "parentUUID": "2a5b218b-acfa-41c1-8604-98aba6b553dd",
+                  "uuid": "071817e1-1d58-4ba5-82e9-5fb4a67b579d",
+                  "parentUUID": "057c2885-baad-4be0-a183-e45272782572",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "267b7acc-36a2-48e3-9df5-78c08d1acc30",
-                "4382e5b7-25bc-4040-a3bd-747b65ce692d",
-                "f174419a-1f6f-4775-bd11-e4bd87c671a7"
+                "9804606e-7f28-4822-a0c2-9485cbd6043c",
+                "947db98d-b467-4fd3-b553-f2bd1d403183",
+                "071817e1-1d58-4ba5-82e9-5fb4a67b579d"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 26122,
+              "duration": 26130,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
@@ -634,7 +634,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "72f4d3a6-b0d9-4f2b-b7a8-9a1ca694a1d6",
+      "uuid": "6faade45-f925-482c-b6dd-ab2322e75d77",
       "title": "",
       "fullFile": "cypress/e2e/webgl-verification.cy.ts",
       "file": "cypress/e2e/webgl-verification.cy.ts",
@@ -643,7 +643,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "86b7ed2c-4382-42b7-9af9-c6a651c30142",
+          "uuid": "907e28fa-fbfd-4faf-8570-37140c1f6e55",
           "title": "Black Trigram - WebGL Rendering Verification",
           "fullFile": "",
           "file": "",
@@ -652,7 +652,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "8a330ed7-7bc6-4e7e-b9bf-58f2eecec9a0",
+              "uuid": "ceb5c2ae-ac3b-4e84-965a-00ed887af52d",
               "title": "WebGL Context Verification",
               "fullFile": "",
               "file": "",
@@ -663,7 +663,7 @@
                   "title": "should verify Three.js WebGL context is active",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification WebGL Context Verification should verify Three.js WebGL context is active",
                   "timedOut": null,
-                  "duration": 9567,
+                  "duration": 9561,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -672,8 +672,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing WebGL context initialization\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    // Verify WebGL context (try WebGL2 first, fallback to WebGL1)\n    const gl = canvas.getContext(\"webgl2\") ||\n        canvas.getContext(\"webgl\") ||\n        canvas.getContext(\"experimental-webgl\");\n    expect(gl).to.not.be.null;\n    if (gl) {\n        // Verify WebGL version\n        const version = gl.getParameter(gl.VERSION);\n        cy.log(`WebGL Version: ${version}`);\n        expect(version).to.be.a(\"string\");\n        expect(version.length).to.be.greaterThan(0);\n        // Verify renderer\n        const renderer = gl.getParameter(gl.RENDERER);\n        cy.log(`WebGL Renderer: ${renderer}`);\n        expect(renderer).to.be.a(\"string\");\n        // Verify maximum texture size\n        const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);\n        cy.log(`Max Texture Size: ${maxTextureSize}`);\n        expect(maxTextureSize).to.be.greaterThan(0);\n        // Verify maximum viewport dimensions\n        const maxViewport = gl.getParameter(gl.MAX_VIEWPORT_DIMS);\n        cy.log(`Max Viewport: ${maxViewport[0]}x${maxViewport[1]}`);\n        expect(maxViewport[0]).to.be.greaterThan(0);\n        expect(maxViewport[1]).to.be.greaterThan(0);\n    }\n    cy.log(\"✅ WebGL context verified and active\");\n});",
                   "err": {},
-                  "uuid": "705c74d3-f424-4d56-b6cd-349c441019a8",
-                  "parentUUID": "8a330ed7-7bc6-4e7e-b9bf-58f2eecec9a0",
+                  "uuid": "6895f6b2-8ecf-49e5-b67e-fbad8e8d2a73",
+                  "parentUUID": "ceb5c2ae-ac3b-4e84-965a-00ed887af52d",
                   "isHook": false,
                   "skipped": false
                 },
@@ -681,7 +681,7 @@
                   "title": "should verify Three.js renderer is initialized",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification WebGL Context Verification should verify Three.js renderer is initialized",
                   "timedOut": null,
-                  "duration": 3661,
+                  "duration": 3603,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
@@ -690,8 +690,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing Three.js renderer initialization\");\ncy.window().then(() => {\n    // Check for Three.js in window (may be exposed for testing)\n    const winWithThree = window;\n    // Verify canvas exists\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    // If Three.js exposes renderer/scene for testing, verify them\n    if (winWithThree.__threeRenderer) {\n        expect(winWithThree.__threeRenderer).to.exist;\n        cy.log(\"✅ Three.js renderer found\");\n    }\n    if (winWithThree.__threeScene) {\n        expect(winWithThree.__threeScene).to.exist;\n        // Verify scene has objects\n        if (winWithThree.__threeScene.children) {\n            const objectCount = winWithThree.__threeScene.children.length;\n            expect(objectCount).to.be.greaterThan(0);\n            cy.log(`Three.js scene has ${objectCount} objects`);\n        }\n    }\n    cy.log(\"✅ Three.js renderer verified\");\n});",
                   "err": {},
-                  "uuid": "69ea946b-04af-4082-b328-f5dbc1d3a85c",
-                  "parentUUID": "8a330ed7-7bc6-4e7e-b9bf-58f2eecec9a0",
+                  "uuid": "bd3348ea-ea19-424c-acdd-a37321de482d",
+                  "parentUUID": "ceb5c2ae-ac3b-4e84-965a-00ed887af52d",
                   "isHook": false,
                   "skipped": false
                 },
@@ -699,7 +699,7 @@
                   "title": "should verify WebGL extensions support",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification WebGL Context Verification should verify WebGL extensions support",
                   "timedOut": null,
-                  "duration": 3578,
+                  "duration": 3518,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
@@ -708,28 +708,28 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing WebGL extensions\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    const gl = canvas.getContext(\"webgl2\") ||\n        canvas.getContext(\"webgl\");\n    if (gl) {\n        // Check for important extensions\n        const extensions = [\n            \"OES_texture_float\",\n            \"OES_texture_float_linear\",\n            \"WEBGL_depth_texture\",\n            \"OES_element_index_uint\",\n        ];\n        const supportedExtensions = [];\n        const unsupportedExtensions = [];\n        extensions.forEach((ext) => {\n            const supported = gl.getExtension(ext);\n            if (supported) {\n                supportedExtensions.push(ext);\n            }\n            else {\n                unsupportedExtensions.push(ext);\n            }\n        });\n        cy.log(`Supported extensions: ${supportedExtensions.join(\", \")}`);\n        if (unsupportedExtensions.length > 0) {\n            cy.log(`Unsupported extensions: ${unsupportedExtensions.join(\", \")}`);\n        }\n        // At least one extension should be supported\n        expect(supportedExtensions.length).to.be.greaterThan(0);\n    }\n    cy.log(\"✅ WebGL extensions verified\");\n});",
                   "err": {},
-                  "uuid": "096212ce-1dc0-46bf-954e-92aa73c9c0d3",
-                  "parentUUID": "8a330ed7-7bc6-4e7e-b9bf-58f2eecec9a0",
+                  "uuid": "f39014dd-fd6a-4c98-ab2b-1d01974ae846",
+                  "parentUUID": "ceb5c2ae-ac3b-4e84-965a-00ed887af52d",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "705c74d3-f424-4d56-b6cd-349c441019a8",
-                "69ea946b-04af-4082-b328-f5dbc1d3a85c",
-                "096212ce-1dc0-46bf-954e-92aa73c9c0d3"
+                "6895f6b2-8ecf-49e5-b67e-fbad8e8d2a73",
+                "bd3348ea-ea19-424c-acdd-a37321de482d",
+                "f39014dd-fd6a-4c98-ab2b-1d01974ae846"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 16806,
+              "duration": 16682,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "869e9806-51a1-4546-b2af-d3fca4baa397",
+              "uuid": "0909addb-8721-403f-9852-c7d3d1cb0b44",
               "title": "Frame Rate Performance",
               "fullFile": "",
               "file": "",
@@ -740,7 +740,7 @@
                   "title": "should verify Three.js scene renders at stable framerate",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Frame Rate Performance should verify Three.js scene renders at stable framerate",
                   "timedOut": null,
-                  "duration": 8519,
+                  "duration": 8456,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -749,8 +749,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing framerate stability\");\ncy.get(\"canvas\").should(\"be.visible\");\nlet frameCount = 0;\nlet startTime = 0;\ncy.window().then((win) => {\n    startTime = performance.now();\n    const measureFPS = () => {\n        frameCount++;\n        if (frameCount < 60) {\n            win.requestAnimationFrame(measureFPS);\n        }\n        else {\n            const elapsed = performance.now() - startTime;\n            const fps = (frameCount / elapsed) * 1000;\n            cy.log(`Average FPS: ${fps.toFixed(2)}`);\n            // Target 60fps, allow some tolerance for software rendering\n            // Minimum 30fps acceptable, optimal 55-60fps\n            expect(fps).to.be.greaterThan(30);\n            if (fps >= 55) {\n                cy.log(\"✅ Excellent framerate (≥55fps)\");\n            }\n            else if (fps >= 45) {\n                cy.log(\"✅ Good framerate (45-55fps)\");\n            }\n            else {\n                cy.log(\"⚠️ Acceptable framerate (30-45fps) - software rendering\");\n            }\n        }\n    };\n    win.requestAnimationFrame(measureFPS);\n});\n// Wait for measurement to complete\ncy.wait(2000);",
                   "err": {},
-                  "uuid": "4e03a8a9-f9d9-4988-81ee-d8dbae602bfb",
-                  "parentUUID": "869e9806-51a1-4546-b2af-d3fca4baa397",
+                  "uuid": "aefcfdf1-9c2c-4447-a088-cddbb9e50bee",
+                  "parentUUID": "0909addb-8721-403f-9852-c7d3d1cb0b44",
                   "isHook": false,
                   "skipped": false
                 },
@@ -758,7 +758,7 @@
                   "title": "should maintain consistent frame timing",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Frame Rate Performance should maintain consistent frame timing",
                   "timedOut": null,
-                  "duration": 4953,
+                  "duration": 4946,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
@@ -767,27 +767,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing frame timing consistency\");\nconst frameTimes = [];\nlet lastTime = 0;\nlet measurementCount = 0;\nconst targetMeasurements = 30;\ncy.window().then((win) => {\n    const measureFrameTime = (timestamp) => {\n        if (lastTime > 0) {\n            const deltaTime = timestamp - lastTime;\n            frameTimes.push(deltaTime);\n            measurementCount++;\n        }\n        lastTime = timestamp;\n        if (measurementCount < targetMeasurements) {\n            win.requestAnimationFrame(measureFrameTime);\n        }\n        else {\n            // Calculate frame time statistics\n            const avgFrameTime = frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length;\n            const maxFrameTime = Math.max(...frameTimes);\n            const minFrameTime = Math.min(...frameTimes);\n            const variance = frameTimes.reduce((sum, time) => {\n                return sum + Math.pow(time - avgFrameTime, 2);\n            }, 0) / frameTimes.length;\n            const stdDev = Math.sqrt(variance);\n            cy.log(`Average frame time: ${avgFrameTime.toFixed(2)}ms`);\n            cy.log(`Min/Max frame time: ${minFrameTime.toFixed(2)}ms / ${maxFrameTime.toFixed(2)}ms`);\n            cy.log(`Frame time std dev: ${stdDev.toFixed(2)}ms`);\n            // Frame times should be relatively consistent\n            // Target: 16.67ms (60fps), acceptable up to 33.33ms (30fps)\n            expect(avgFrameTime).to.be.lessThan(50); // Allow for software rendering\n            // Variance should be reasonable (not too inconsistent)\n            expect(stdDev).to.be.lessThan(20);\n            cy.log(\"✅ Frame timing is consistent\");\n        }\n    };\n    win.requestAnimationFrame(measureFrameTime);\n});\n// Wait for measurements to complete\ncy.wait(1500);",
                   "err": {},
-                  "uuid": "45344a42-5b03-4a27-91a0-c008e83dc970",
-                  "parentUUID": "869e9806-51a1-4546-b2af-d3fca4baa397",
+                  "uuid": "8082f43d-23e8-4078-9113-755e4f767c18",
+                  "parentUUID": "0909addb-8721-403f-9852-c7d3d1cb0b44",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "4e03a8a9-f9d9-4988-81ee-d8dbae602bfb",
-                "45344a42-5b03-4a27-91a0-c008e83dc970"
+                "aefcfdf1-9c2c-4447-a088-cddbb9e50bee",
+                "8082f43d-23e8-4078-9113-755e4f767c18"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 13472,
+              "duration": 13402,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "4df060bf-bdbf-4cb8-bf85-cb681ba15928",
+              "uuid": "4d8099e3-bafd-457c-a67e-1be808d98fce",
               "title": "Rendering Quality",
               "fullFile": "",
               "file": "",
@@ -798,7 +798,7 @@
                   "title": "should verify canvas is actively rendering (pixel changes)",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Rendering Quality should verify canvas is actively rendering (pixel changes)",
                   "timedOut": null,
-                  "duration": 8434,
+                  "duration": 8516,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -807,8 +807,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing active canvas rendering\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    // Capture initial canvas state\n    const ctx = canvas.getContext(\"2d\");\n    if (ctx) {\n        const initialData = ctx.getImageData(0, 0, canvas.width, canvas.height);\n        // Wait for a few frames\n        cy.wait(500);\n        // Capture new canvas state\n        const newData = ctx.getImageData(0, 0, canvas.width, canvas.height);\n        // Compare pixel data to ensure rendering is happening\n        let differentPixels = 0;\n        for (let i = 0; i < initialData.data.length; i++) {\n            if (initialData.data[i] !== newData.data[i]) {\n                differentPixels++;\n            }\n        }\n        const changePercentage = (differentPixels / initialData.data.length) * 100;\n        cy.log(`Pixel change: ${changePercentage.toFixed(2)}%`);\n        // Canvas should be actively rendering (some pixels changed)\n        expect(differentPixels).to.be.greaterThan(0);\n        cy.log(\"✅ Canvas is actively rendering\");\n    }\n});",
                   "err": {},
-                  "uuid": "7ead689b-4b91-4896-a8be-fd13a2a633c4",
-                  "parentUUID": "4df060bf-bdbf-4cb8-bf85-cb681ba15928",
+                  "uuid": "8c2f6e6a-fd66-49c2-9622-2281300179d0",
+                  "parentUUID": "4d8099e3-bafd-457c-a67e-1be808d98fce",
                   "isHook": false,
                   "skipped": false
                 },
@@ -816,7 +816,7 @@
                   "title": "should verify no blank/black canvas rendering",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Rendering Quality should verify no blank/black canvas rendering",
                   "timedOut": null,
-                  "duration": 8471,
+                  "duration": 8546,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -825,27 +825,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing canvas content rendering\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    const ctx = canvas.getContext(\"2d\");\n    if (ctx) {\n        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);\n        const pixels = imageData.data;\n        // Count non-zero pixels\n        let nonZeroPixels = 0;\n        for (let i = 0; i < pixels.length; i += 4) {\n            // Check RGBA values\n            if (pixels[i] !== 0 || pixels[i + 1] !== 0 || pixels[i + 2] !== 0) {\n                nonZeroPixels++;\n            }\n        }\n        const contentPercentage = (nonZeroPixels / (pixels.length / 4)) * 100;\n        cy.log(`Canvas content: ${contentPercentage.toFixed(2)}% non-black pixels`);\n        // Canvas should have visible content (not all black)\n        expect(contentPercentage).to.be.greaterThan(5);\n        cy.log(\"✅ Canvas has visible content\");\n    }\n});",
                   "err": {},
-                  "uuid": "92961a5d-859a-43d4-8bfd-8b53bc2514aa",
-                  "parentUUID": "4df060bf-bdbf-4cb8-bf85-cb681ba15928",
+                  "uuid": "d8ebbef6-7d78-49ea-9c2b-bd153547501a",
+                  "parentUUID": "4d8099e3-bafd-457c-a67e-1be808d98fce",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "7ead689b-4b91-4896-a8be-fd13a2a633c4",
-                "92961a5d-859a-43d4-8bfd-8b53bc2514aa"
+                "8c2f6e6a-fd66-49c2-9622-2281300179d0",
+                "d8ebbef6-7d78-49ea-9c2b-bd153547501a"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 16905,
+              "duration": 17062,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "9a4e299b-8c39-440c-94c7-1f2b17af2284",
+              "uuid": "c3cd1f68-37c7-4d1b-b29e-65aa482be691",
               "title": "Memory and Resource Management",
               "fullFile": "",
               "file": "",
@@ -856,7 +856,7 @@
                   "title": "should not leak WebGL contexts",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Memory and Resource Management should not leak WebGL contexts",
                   "timedOut": null,
-                  "duration": 3481,
+                  "duration": 3480,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
@@ -865,8 +865,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing WebGL context leak detection\");\nlet initialContexts = 0;\ncy.window().then((_win) => {\n    // Count initial WebGL contexts\n    const canvases = document.querySelectorAll(\"canvas\");\n    canvases.forEach((canvas) => {\n        const gl = canvas.getContext(\"webgl\");\n        if (gl)\n            initialContexts++;\n    });\n    cy.log(`Initial WebGL contexts: ${initialContexts}`);\n    expect(initialContexts).to.be.greaterThan(0);\n});\n// Perform some actions\ncy.get('[data-testid=\"combat-button\"]').trigger(\"mouseover\");\ncy.wait(500);\ncy.get('[data-testid=\"training-button\"]').trigger(\"mouseover\");\ncy.wait(500);\ncy.window().then((_win) => {\n    // Count final WebGL contexts\n    let finalContexts = 0;\n    const canvases = document.querySelectorAll(\"canvas\");\n    canvases.forEach((canvas) => {\n        const gl = canvas.getContext(\"webgl\");\n        if (gl)\n            finalContexts++;\n    });\n    cy.log(`Final WebGL contexts: ${finalContexts}`);\n    // Should not create new contexts\n    expect(finalContexts).to.equal(initialContexts);\n    cy.log(\"✅ No WebGL context leaks detected\");\n});",
                   "err": {},
-                  "uuid": "0f18b00a-c92a-40c9-af5c-85db92e78059",
-                  "parentUUID": "9a4e299b-8c39-440c-94c7-1f2b17af2284",
+                  "uuid": "27992c03-59d3-42c1-9aa8-d16e33f373c0",
+                  "parentUUID": "c3cd1f68-37c7-4d1b-b29e-65aa482be691",
                   "isHook": false,
                   "skipped": false
                 },
@@ -874,7 +874,7 @@
                   "title": "should manage GPU memory efficiently",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Memory and Resource Management should manage GPU memory efficiently",
                   "timedOut": null,
-                  "duration": 3575,
+                  "duration": 3522,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
@@ -883,27 +883,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing GPU memory management\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    const gl = canvas.getContext(\"webgl\") || canvas.getContext(\"webgl2\");\n    if (gl && \"memory\" in performance) {\n        const perfWithMemory = performance;\n        if (perfWithMemory.memory) {\n            const initialMemory = perfWithMemory.memory.usedJSHeapSize;\n            cy.log(`Initial memory: ${(initialMemory / 1024 / 1024).toFixed(2)}MB`);\n            // Perform some rendering operations\n            cy.gameActions([\"1\", \"2\", \"3\"]);\n            cy.wait(1000);\n            const finalMemory = perfWithMemory.memory.usedJSHeapSize;\n            cy.log(`Final memory: ${(finalMemory / 1024 / 1024).toFixed(2)}MB`);\n            const memoryGrowth = finalMemory - initialMemory;\n            cy.log(`Memory growth: ${(memoryGrowth / 1024 / 1024).toFixed(2)}MB`);\n            // Memory growth should be reasonable (<100MB for this test)\n            expect(memoryGrowth).to.be.lessThan(100 * 1024 * 1024);\n            cy.log(\"✅ GPU memory managed efficiently\");\n        }\n    }\n});",
                   "err": {},
-                  "uuid": "036a2c4b-8e3b-4f4d-a0b8-5d391683a4a0",
-                  "parentUUID": "9a4e299b-8c39-440c-94c7-1f2b17af2284",
+                  "uuid": "2fc40928-2dcc-47cd-b106-1548f3729fc6",
+                  "parentUUID": "c3cd1f68-37c7-4d1b-b29e-65aa482be691",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "0f18b00a-c92a-40c9-af5c-85db92e78059",
-                "036a2c4b-8e3b-4f4d-a0b8-5d391683a4a0"
+                "27992c03-59d3-42c1-9aa8-d16e33f373c0",
+                "2fc40928-2dcc-47cd-b106-1548f3729fc6"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 7056,
+              "duration": 7002,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "972d842f-f1a0-4c01-b23e-d7ccee1c7c8c",
+              "uuid": "33c4138e-6451-4cc9-a41b-1f525cdaffc7",
               "title": "Combat Mode WebGL Performance",
               "fullFile": "",
               "file": "",
@@ -914,7 +914,7 @@
                   "title": "should maintain WebGL context in combat mode",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Combat Mode WebGL Performance should maintain WebGL context in combat mode",
                   "timedOut": null,
-                  "duration": 5710,
+                  "duration": 5571,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -923,8 +923,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing WebGL in combat mode\");\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    const gl = canvas.getContext(\"webgl2\") ||\n        canvas.getContext(\"webgl\");\n    expect(gl).to.not.be.null;\n    cy.log(\"✅ WebGL context active in combat mode\");\n});\n// Verify rendering continues\ncy.assertCanvasRendering(1000);\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "2be3d909-5ab2-40ee-b1b7-2c319b8aa9f9",
-                  "parentUUID": "972d842f-f1a0-4c01-b23e-d7ccee1c7c8c",
+                  "uuid": "51f64448-8acc-46bb-a419-6b23dcc25296",
+                  "parentUUID": "33c4138e-6451-4cc9-a41b-1f525cdaffc7",
                   "isHook": false,
                   "skipped": false
                 },
@@ -932,7 +932,7 @@
                   "title": "should handle combat actions with stable framerate",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Combat Mode WebGL Performance should handle combat actions with stable framerate",
                   "timedOut": null,
-                  "duration": 5554,
+                  "duration": 5580,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -941,27 +941,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing framerate during combat actions\");\ncy.enterCombatMode();\n// Perform combat actions\ncy.gameActions([\"1\", \" \", \"w\", \"a\", \"s\", \"d\"]);\ncy.wait(500);\n// Verify framerate is still good\ncy.assertMinFPS(30, 1500);\ncy.log(\"✅ Combat actions maintain framerate\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "527c04b8-b3c5-4a09-9383-eae22c0e9f62",
-                  "parentUUID": "972d842f-f1a0-4c01-b23e-d7ccee1c7c8c",
+                  "uuid": "1f0603fe-0d2a-4404-bb1a-8813b923a73c",
+                  "parentUUID": "33c4138e-6451-4cc9-a41b-1f525cdaffc7",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "2be3d909-5ab2-40ee-b1b7-2c319b8aa9f9",
-                "527c04b8-b3c5-4a09-9383-eae22c0e9f62"
+                "51f64448-8acc-46bb-a419-6b23dcc25296",
+                "1f0603fe-0d2a-4404-bb1a-8813b923a73c"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 11264,
+              "duration": 11151,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "a3e67853-d41c-447d-9d14-3d778dd1efac",
+              "uuid": "5045e7fe-078f-4797-9966-3605ae6fd5c8",
               "title": "Training Mode WebGL Performance",
               "fullFile": "",
               "file": "",
@@ -972,7 +972,7 @@
                   "title": "should maintain WebGL context in training mode",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Training Mode WebGL Performance should maintain WebGL context in training mode",
                   "timedOut": null,
-                  "duration": 13595,
+                  "duration": 13627,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -981,8 +981,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing WebGL in training mode\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]').should(\"exist\");\ncy.window().then(() => {\n    const canvas = document.querySelector(\"canvas\");\n    expect(canvas).to.exist;\n    const gl = canvas.getContext(\"webgl2\") ||\n        canvas.getContext(\"webgl\");\n    expect(gl).to.not.be.null;\n    cy.log(\"✅ WebGL context active in training mode\");\n});\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "25d118ff-59e3-4cbe-89e0-485d08f27a03",
-                  "parentUUID": "a3e67853-d41c-447d-9d14-3d778dd1efac",
+                  "uuid": "bc9ac51b-3f5f-41fa-80a0-aaa5471af03d",
+                  "parentUUID": "5045e7fe-078f-4797-9966-3605ae6fd5c8",
                   "isHook": false,
                   "skipped": false
                 },
@@ -990,7 +990,7 @@
                   "title": "should handle training exercises with stable framerate",
                   "fullTitle": "Black Trigram - WebGL Rendering Verification Training Mode WebGL Performance should handle training exercises with stable framerate",
                   "timedOut": null,
-                  "duration": 13580,
+                  "duration": 13565,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -999,21 +999,21 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing framerate during training\");\ncy.enterTrainingMode();\n// Practice a stance\ncy.practiceStance(1, 3);\ncy.wait(500);\n// Verify framerate is still good\ncy.assertMinFPS(30, 1500);\ncy.log(\"✅ Training maintains framerate\");\ncy.returnToIntro();",
                   "err": {},
-                  "uuid": "a5ee46ac-40ce-461d-80f8-edd8617d1c7f",
-                  "parentUUID": "a3e67853-d41c-447d-9d14-3d778dd1efac",
+                  "uuid": "0ba37535-4d20-4a5c-aaed-89e5af90eb3e",
+                  "parentUUID": "5045e7fe-078f-4797-9966-3605ae6fd5c8",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "25d118ff-59e3-4cbe-89e0-485d08f27a03",
-                "a5ee46ac-40ce-461d-80f8-edd8617d1c7f"
+                "bc9ac51b-3f5f-41fa-80a0-aaa5471af03d",
+                "0ba37535-4d20-4a5c-aaed-89e5af90eb3e"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 27175,
+              "duration": 27192,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
@@ -1039,7 +1039,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "3953cb7f-aa0d-4778-bda9-24d93a984b90",
+      "uuid": "6f1e0806-8ba5-4710-ba79-4a69bfce9be2",
       "title": "",
       "fullFile": "cypress/e2e/screens/combat-screen.cy.ts",
       "file": "cypress/e2e/screens/combat-screen.cy.ts",
@@ -1048,7 +1048,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "4416fcd0-5949-4133-839e-e7ef9b7c3f5b",
+          "uuid": "57dd36ed-a3d8-41ac-9327-50d752a8f7a6",
           "title": "CombatScreen - Comprehensive E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -1059,7 +1059,7 @@
               "title": "should render CombatScreen with all combat mechanics and UI",
               "fullTitle": "CombatScreen - Comprehensive E2E Test (Target: 3-4 min) should render CombatScreen with all combat mechanics and UI",
               "timedOut": null,
-              "duration": 9611,
+              "duration": 9637,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1068,20 +1068,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing CombatScreen - Full Combat Journey\");\n// ============================================================\n// 1. Verify Combat Screen Rendering (20s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen Rendering\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Combat screen exists\");\n// Check for HUD\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-hud\"]').length > 0) {\n        cy.get('[data-testid=\"combat-hud\"]').should(\"exist\");\n        cy.log(\"✅ Combat HUD found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat HUD not found, may be embedded in canvas\");\n    }\n});\n// ✅ IMPROVED: Verify Three.js Canvas is actively rendering (not frozen/blank)\ncy.get(\"canvas\").should(\"be.visible\");\ncy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });\ncy.log(\"✅ Three.js rendering verified\");\n// ✅ IMPROVED: Verify health bars exist and have valid data\ncy.verifyHealthBar(\"player1-health\", 0, 100).then((health) => {\n    cy.log(`Player 1 health verified: ${health}`);\n});\ncy.verifyHealthBar(\"player2-health\", 0, 100).then((health) => {\n    cy.log(`Player 2 health verified: ${health}`);\n});\ncy.wait(200);\n// ============================================================\n// 2. Test Trigram Stance System with Verification (40s)\n// ============================================================\ncy.log(\"2️⃣ Testing Trigram Stance System (8 stances)\");\n// ✅ IMPROVED: Verify stance changes are reflected in UI\n// Test all 8 trigram stances with verification\nconst stanceNames = [\n    \"geon\",\n    \"tae\",\n    \"li\",\n    \"jin\",\n    \"son\",\n    \"gam\",\n    \"gan\",\n    \"gon\",\n];\nfor (let stance = 1; stance <= 8; stance++) {\n    cy.log(`Testing stance ${stance} (${stanceNames[stance - 1]})...`);\n    cy.get(\"body\").type(stance.toString());\n    cy.wait(100); // Allow time for stance change\n    // Verify stance indicator updates if present\n    cy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n        .should(\"exist\")\n        .invoke(\"text\")\n        .should(\"include\", stanceNames[stance - 1]);\n    cy.log(`✅ Stance ${stance} input processed`);\n}\ncy.log(\"✅ All 8 trigram stances tested\");\ncy.wait(200);\n// ============================================================\n// 3. Test Combat Actions with Health Verification (60s)\n// ============================================================\ncy.log(\"3️⃣ Testing Combat Actions with Health Verification\");\n// ✅ IMPROVED: Verify health changes when attacking\ncy.log(\"Testing attack action with health tracking...\");\n// Capture initial health of player 2 (opponent)\ncy.get('[data-testid=\"player2-health\"]', { timeout: 5000 })\n    .should(\"exist\")\n    .invoke(\"attr\", \"data-current\")\n    .then((health) => {\n    const initialHealth = parseFloat(health);\n    cy.log(`Player 2 initial health: ${initialHealth}`);\n    // Execute attack\n    cy.get(\"body\").type(\" \");\n    cy.wait(300); // Allow time for combat resolution\n    // Verify health decreased (damage was dealt)\n    cy.get('[data-testid=\"player2-health\"]')\n        .invoke(\"attr\", \"data-current\")\n        .then((newHealth) => {\n        const currentHealth = parseFloat(newHealth);\n        cy.log(`Player 2 current health: ${currentHealth}`);\n        // Assert damage was dealt\n        expect(currentHealth, \"Attack should deal damage to opponent\").to.be.lessThan(initialHealth);\n        cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);\n    });\n});\n// Second attack with verification\ncy.get('[data-testid=\"player2-health\"]')\n    .invoke(\"attr\", \"data-current\")\n    .then((health) => {\n    const beforeAttack = parseFloat(health);\n    cy.get(\"body\").type(\" \");\n    cy.wait(300);\n    cy.get('[data-testid=\"player2-health\"]')\n        .invoke(\"attr\", \"data-current\")\n        .then((newHealth) => {\n        const afterAttack = parseFloat(newHealth);\n        expect(afterAttack, \"Second attack should deal damage\").to.be.lessThan(beforeAttack);\n        cy.log(`✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`);\n    });\n});\n// Try using attack button if it exists with health verification\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"attack-button\"]').length > 0) {\n        cy.get('[data-testid=\"player2-health\"]')\n            .invoke(\"attr\", \"data-current\")\n            .then((health) => {\n            const before = parseFloat(health);\n            cy.get('[data-testid=\"attack-button\"]').click({ force: true });\n            cy.wait(300);\n            cy.get('[data-testid=\"player2-health\"]')\n                .invoke(\"attr\", \"data-current\")\n                .then((after) => {\n                const afterValue = parseFloat(after);\n                expect(afterValue, \"Attack button should deal damage\").to.be.lessThan(before);\n                cy.log(`✅ Attack button verified (Health: ${before} → ${afterValue})`);\n            });\n        });\n    }\n    else {\n        cy.log(\"⚠️ Attack button not found, using keyboard only\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 4. Test Movement (30s)\n// ============================================================\ncy.log(\"4️⃣ Testing Movement System\");\n// Test WASD movement\ncy.gameActions([\"w\", \"a\", \"s\", \"d\"]);\ncy.log(\"✅ WASD movement tested\");\ncy.wait(200);\n// Test arrow key movement\ncy.get(\"body\").type(\"{uparrow}\");\ncy.wait(50);\ncy.get(\"body\").type(\"{leftarrow}\");\ncy.wait(50);\ncy.get(\"body\").type(\"{downarrow}\");\ncy.wait(50);\ncy.get(\"body\").type(\"{rightarrow}\");\ncy.wait(50);\ncy.log(\"✅ Arrow key movement tested\");\ncy.wait(200);\n// ============================================================\n// 5. Test Defense (20s)\n// ============================================================\ncy.log(\"5️⃣ Testing Defense Mechanics\");\n// Test guard/block with Shift key\ncy.get(\"body\").type(\"{shift}\", { release: false });\ncy.wait(100);\ncy.get(\"body\").type(\"{shift}\", { release: true });\ncy.log(\"✅ Guard/block tested\");\n// Test defend button if it exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"defend-button\"]').length > 0) {\n        cy.get('[data-testid=\"defend-button\"]').click({ force: true });\n        cy.wait(100);\n        cy.log(\"✅ Defend button clicked\");\n    }\n    else {\n        cy.log(\"⚠️ Defend button not found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 6. Verify Combat HUD Elements (20s)\n// ============================================================\ncy.log(\"6️⃣ Verifying Combat HUD Elements\");\n// Check for player stance indicators\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"player1-stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"player1-stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Player 1 stance indicator found\");\n    }\n    if ($body.find('[data-testid=\"player2-stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"player2-stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Player 2 stance indicator found\");\n    }\n});\n// Check for combat stats\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-stats\"]').length > 0) {\n        cy.get('[data-testid=\"combat-stats\"]').should(\"exist\");\n        cy.log(\"✅ Combat stats found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat stats not found, may be in canvas\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 7. Test Extended Combat Session (40s)\n// ============================================================\ncy.log(\"7️⃣ Testing Extended Combat Session\");\n// Perform a series of combat actions\nfor (let i = 0; i < 5; i++) {\n    cy.log(`Combat sequence ${i + 1}/5`);\n    // Change stance\n    cy.get(\"body\").type(\"1\");\n    cy.wait(50);\n    // Attack\n    cy.get(\"body\").type(\" \");\n    cy.wait(100);\n    // Change stance again\n    cy.get(\"body\").type(\"3\");\n    cy.wait(50);\n    // Attack\n    cy.get(\"body\").type(\" \");\n    cy.wait(100);\n}\ncy.log(\"✅ Extended combat session completed\");\ncy.wait(300);\n// ============================================================\n// 8. Test Combat Controls Panel (15s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Combat Controls Panel\");\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-controls\"]').length > 0) {\n        cy.get('[data-testid=\"combat-controls\"]').should(\"exist\");\n        cy.log(\"✅ Combat controls panel found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat controls panel not found\");\n    }\n    // Check for technique button\n    if ($body.find('[data-testid=\"technique-button\"]').length > 0) {\n        cy.get('[data-testid=\"technique-button\"]').should(\"exist\");\n        cy.log(\"✅ Technique button found\");\n    }\n    // Check for stance button\n    if ($body.find('[data-testid=\"stance-button\"]').length > 0) {\n        cy.get('[data-testid=\"stance-button\"]').should(\"exist\");\n        cy.log(\"✅ Stance button found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 9. Verify Korean Text in Combat (10s)\n// ============================================================\ncy.log(\"9️⃣ Verifying Korean Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"전투\") ||\n        bodyText.includes(\"공격\") ||\n        bodyText.includes(\"방어\")) {\n        cy.log(\"✅ Korean text found in combat UI\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 10. Test Mouse/Canvas Interaction (15s)\n// ============================================================\ncy.log(\"🔟 Testing Mouse/Canvas Interaction\");\n// Test canvas click interactions\ncy.get(\"canvas\").click(400, 300);\ncy.wait(100);\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Canvas mouse interaction tested\");\ncy.wait(200);\n// ============================================================\n// 11. Test AI Movement and State (20s)\n// ============================================================\ncy.log(\"1️⃣1️⃣ Testing AI Movement and State Management\");\n// Move toward then away to test AI response\ncy.gameActions([\"d\", \"d\", \"a\", \"a\"]);\ncy.wait(200);\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ AI movement and state management tested\");\ncy.wait(200);\n// ============================================================\n// 12. Test Combat Performance Under Load (20s)\n// ============================================================\ncy.log(\"1️⃣2️⃣ Testing Combat Performance\");\nconst startTime = Date.now();\n// Execute rapid combat sequence\ncy.gameActions([\"1\", \"2\", \"3\", \"4\", \" \", \" \"]);\ncy.wait(100);\ncy.wrap(null).then(() => {\n    const duration = Date.now() - startTime;\n    cy.task(\"logPerformance\", { name: \"Combat Performance\", duration });\n    expect(duration).to.be.lessThan(5000);\n    cy.log(`✅ Performance maintained: ${duration}ms`);\n});\ncy.wait(200);\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ CombatScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Combat screen rendering\");\ncy.log(\"   ✓ Trigram stance system (8 stances)\");\ncy.log(\"   ✓ Combat actions (attack)\");\ncy.log(\"   ✓ Movement system (WASD + arrows)\");\ncy.log(\"   ✓ Defense mechanics\");\ncy.log(\"   ✓ Combat HUD elements\");\ncy.log(\"   ✓ Extended combat session\");\ncy.log(\"   ✓ Combat controls panel\");\ncy.log(\"   ✓ Korean text rendering\");\ncy.log(\"   ✓ Mouse/canvas interaction\");\ncy.log(\"   ✓ AI movement and state\");\ncy.log(\"   ✓ Combat performance under load\");",
               "err": {},
-              "uuid": "c153cd9c-9928-4577-9794-f4d364b55e82",
-              "parentUUID": "4416fcd0-5949-4133-839e-e7ef9b7c3f5b",
+              "uuid": "8d4680ce-5e5c-4c27-9541-08263615f000",
+              "parentUUID": "57dd36ed-a3d8-41ac-9327-50d752a8f7a6",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "c153cd9c-9928-4577-9794-f4d364b55e82"
+            "8d4680ce-5e5c-4c27-9541-08263615f000"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 9611,
+          "duration": 9637,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1097,7 +1097,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "65ec5f4f-572f-4aeb-8913-c3ed45bc805c",
+      "uuid": "4d80cc4e-d608-4860-8ee0-2ae125e9fc41",
       "title": "",
       "fullFile": "cypress/e2e/screens/controls-screen.cy.ts",
       "file": "cypress/e2e/screens/controls-screen.cy.ts",
@@ -1106,7 +1106,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "c0e9f2fd-5749-4b0c-82ce-b32778e34609",
+          "uuid": "07dc6a0a-1d78-4873-b16e-6d78cfe797d1",
           "title": "ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -1117,7 +1117,7 @@
               "title": "should render ControlsScreen with all control information",
               "fullTitle": "ControlsScreen - Comprehensive E2E Test (Target: 2-3 min) should render ControlsScreen with all control information",
               "timedOut": null,
-              "duration": 9524,
+              "duration": 9463,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1126,20 +1126,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing ControlsScreen - Full Controls Guide\");\n// ============================================================\n// 1. Verify Controls Screen Rendering (15s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Controls Screen Rendering\");\ncy.get('[data-testid=\"controls-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Controls screen exists\");\n// Verify canvas is visible\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas rendering verified\");\ncy.wait(200);\n// ============================================================\n// 2. Verify Control Categories (30s)\n// ============================================================\ncy.log(\"2️⃣ Verifying Control Categories\");\n// Check for Movement controls\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"Movement\") || bodyText.includes(\"이동\")) {\n        cy.log(\"✅ Movement controls section found\");\n    }\n    else {\n        cy.log(\"⚠️ Movement controls may be in canvas\");\n    }\n    if (bodyText.includes(\"Combat\") || bodyText.includes(\"전투\")) {\n        cy.log(\"✅ Combat controls section found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat controls may be in canvas\");\n    }\n    if (bodyText.includes(\"Stance\") ||\n        bodyText.includes(\"자세\") ||\n        bodyText.includes(\"팔괘\")) {\n        cy.log(\"✅ Stance controls section found\");\n    }\n    else {\n        cy.log(\"⚠️ Stance controls may be in canvas\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 3. Verify Specific Control Bindings (20s)\n// ============================================================\ncy.log(\"3️⃣ Verifying Specific Control Bindings\");\n// Check for common control bindings\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // WASD movement\n    if (bodyText.includes(\"WASD\") ||\n        bodyText.includes(\"W\") ||\n        bodyText.includes(\"A\")) {\n        cy.log(\"✅ WASD movement controls displayed\");\n    }\n    // Space for attack\n    if (bodyText.includes(\"Space\") || bodyText.includes(\"스페이스\")) {\n        cy.log(\"✅ Attack control (Space) displayed\");\n    }\n    // Number keys for stances\n    if (bodyText.includes(\"1-8\") ||\n        bodyText.includes(\"1\") ||\n        bodyText.includes(\"숫자\")) {\n        cy.log(\"✅ Stance number keys displayed\");\n    }\n    // ESC for menu\n    if (bodyText.includes(\"ESC\") || bodyText.includes(\"Esc\")) {\n        cy.log(\"✅ ESC key control displayed\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 4. Verify Korean/English Text (20s)\n// ============================================================\ncy.log(\"4️⃣ Verifying Korean/English Bilingual Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Korean text\n    if (bodyText.includes(\"조작\") ||\n        bodyText.includes(\"이동\") ||\n        bodyText.includes(\"전투\")) {\n        cy.log(\"✅ Korean text found in controls screen\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n    // Check for English text\n    if (bodyText.includes(\"Controls\") ||\n        bodyText.includes(\"Movement\") ||\n        bodyText.includes(\"Combat\")) {\n        cy.log(\"✅ English text found in controls screen\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 5. Test Controls Screen UI Elements (15s)\n// ============================================================\ncy.log(\"5️⃣ Testing Controls Screen UI Elements\");\n// Check for controls header\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-header\"]').length > 0) {\n        cy.get('[data-testid=\"controls-header\"]').should(\"exist\");\n        cy.log(\"✅ Controls header found\");\n    }\n});\n// Check for controls content\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-content\"]').length > 0) {\n        cy.get('[data-testid=\"controls-content\"]').should(\"exist\");\n        cy.log(\"✅ Controls content found\");\n    }\n});\n// Check for back button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"back-button\"]').length > 0) {\n        cy.get('[data-testid=\"back-button\"]').should(\"exist\");\n        cy.log(\"✅ Back button found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 6. Test Scrolling or Navigation (10s)\n// ============================================================\ncy.log(\"6️⃣ Testing Scrolling/Navigation\");\n// Test scrolling if content is scrollable\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-content\"]').length > 0) {\n        cy.get('[data-testid=\"controls-content\"]').scrollTo(\"bottom\");\n        cy.wait(100);\n        cy.get('[data-testid=\"controls-content\"]').scrollTo(\"top\");\n        cy.log(\"✅ Scrolling tested\");\n    }\n    else {\n        cy.log(\"⚠️ No scrollable content found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 7. Test Navigation Back (10s)\n// ============================================================\ncy.log(\"7️⃣ Testing Navigation Back to Intro\");\n// Try ESC key first\ncy.get(\"body\").type(\"{esc}\");\ncy.wait(500);\n// Verify we're back at intro screen\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"intro-screen\"]').length > 0) {\n        cy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n        cy.log(\"✅ ESC key navigation works\");\n    }\n    else {\n        cy.log(\"⚠️ May still be on controls screen or transition in progress\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ ControlsScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Controls screen rendering\");\ncy.log(\"   ✓ Control categories display\");\ncy.log(\"   ✓ Specific control bindings\");\ncy.log(\"   ✓ Korean/English bilingual text\");\ncy.log(\"   ✓ UI elements\");\ncy.log(\"   ✓ Scrolling/navigation\");\ncy.log(\"   ✓ Return to intro\");",
               "err": {},
-              "uuid": "9f210b1c-4f7e-46c5-a3db-b5df7d802a5f",
-              "parentUUID": "c0e9f2fd-5749-4b0c-82ce-b32778e34609",
+              "uuid": "dd008090-bddc-4748-9dcc-77fb2a414235",
+              "parentUUID": "07dc6a0a-1d78-4873-b16e-6d78cfe797d1",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "9f210b1c-4f7e-46c5-a3db-b5df7d802a5f"
+            "dd008090-bddc-4748-9dcc-77fb2a414235"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 9524,
+          "duration": 9463,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1155,7 +1155,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "1589592a-0980-425e-a9e7-f58da9ce5302",
+      "uuid": "b25602f7-5bea-4c0c-b77e-aea426063056",
       "title": "",
       "fullFile": "cypress/e2e/screens/intro-screen.cy.ts",
       "file": "cypress/e2e/screens/intro-screen.cy.ts",
@@ -1164,7 +1164,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "ac99f475-61e5-499f-95da-43179f884055",
+          "uuid": "364503be-8dda-4321-b920-b30c178fb46f",
           "title": "IntroScreen - Comprehensive E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -1175,7 +1175,7 @@
               "title": "should render IntroScreen with all UI elements and navigation",
               "fullTitle": "IntroScreen - Comprehensive E2E Test (Target: 3-4 min) should render IntroScreen with all UI elements and navigation",
               "timedOut": null,
-              "duration": 9574,
+              "duration": 9566,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1184,20 +1184,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing IntroScreen - Full User Journey\");\n// ============================================================\n// 1. Verify Canvas Rendering (30s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Canvas Rendering\");\ncy.get(\"canvas\").should(\"exist\").and(\"be.visible\");\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n// Verify canvas dimensions are reasonable\ncy.get(\"canvas\").should(($canvas) => {\n    const canvas = $canvas[0];\n    const rect = canvas.getBoundingClientRect();\n    expect(rect.width).to.be.greaterThan(100);\n    expect(rect.height).to.be.greaterThan(100);\n});\ncy.wait(300); // Allow rendering to stabilize\n// ============================================================\n// 2. Verify Menu Buttons (30s)\n// ============================================================\ncy.log(\"2️⃣ Verifying Menu Buttons\");\n// Check for combat button (using multiple possible test IDs)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-button\"]').length > 0) {\n        cy.get('[data-testid=\"combat-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Combat button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-combat\"]').length > 0) {\n        cy.get('[data-testid=\"menu-combat\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu combat found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat button not found with standard test IDs\");\n    }\n});\n// Check for training button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-button\"]').length > 0) {\n        cy.get('[data-testid=\"training-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Training button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-training\"]').length > 0) {\n        cy.get('[data-testid=\"menu-training\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu training found\");\n    }\n    else {\n        cy.log(\"⚠️ Training button not found with standard test IDs\");\n    }\n});\n// Check for controls button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-button\"]').length > 0) {\n        cy.get('[data-testid=\"controls-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Controls button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-controls\"]').length > 0) {\n        cy.get('[data-testid=\"menu-controls\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu controls found\");\n    }\n    else {\n        cy.log(\"⚠️ Controls button not found with standard test IDs\");\n    }\n});\n// Check for philosophy button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-button\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Philosophy button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-philosophy\"]').length > 0) {\n        cy.get('[data-testid=\"menu-philosophy\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu philosophy found\");\n    }\n    else {\n        cy.log(\"⚠️ Philosophy button not found with standard test IDs\");\n    }\n});\ncy.wait(200); // Brief stabilization\n// ============================================================\n// 3. Verify Korean/English Bilingual Text (20s)\n// ============================================================\ncy.log(\"3️⃣ Verifying Bilingual Text\");\n// Check for Korean text\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"전투\") || bodyText.includes(\"훈련\")) {\n        cy.log(\"✅ Korean text found in page\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text not found, may be in canvas\");\n    }\n});\n// Check for English text\ncy.contains(/Combat|Training/i).should(\"exist\");\ncy.log(\"✅ English text verified\");\ncy.wait(200);\n// ============================================================\n// 4. Test Navigation to Combat (30s)\n// ============================================================\ncy.log(\"4️⃣ Testing Navigation to Combat\");\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Successfully navigated to Combat\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Combat\");\ncy.wait(200); // Allow screen transition\n// ============================================================\n// 5. Test Navigation to Training (30s)\n// ============================================================\ncy.log(\"5️⃣ Testing Navigation to Training\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Successfully navigated to Training\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Training\");\ncy.wait(200); // Allow screen transition\n// ============================================================\n// 6. Test Navigation to Controls (25s)\n// ============================================================\ncy.log(\"6️⃣ Testing Navigation to Controls\");\n// Navigate to controls screen using reusable command\ncy.navigateToScreen(\"controls\", \"controls-button\", \"menu-controls\", \"3\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Controls\");\ncy.wait(200); // Allow screen transition\n// ============================================================\n// 7. Test Navigation to Philosophy (25s)\n// ============================================================\ncy.log(\"7️⃣ Testing Navigation to Philosophy\");\n// Navigate to philosophy screen using reusable command\ncy.navigateToScreen(\"philosophy\", \"philosophy-button\", \"menu-philosophy\", \"4\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Philosophy\");\ncy.wait(200); // Allow screen transition\n// ============================================================\n// 8. Test Keyboard Controls (25s)\n// ============================================================\ncy.log(\"8️⃣ Testing Keyboard Controls\");\n// Test keyboard shortcut '1' for combat\ncy.get(\"body\").type(\"1\");\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Keyboard shortcut '1' navigates to Combat\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Keyboard controls verified\");\ncy.wait(150);\n// ============================================================\n// 9. Test Responsive Design (25s)\n// ============================================================\ncy.log(\"9️⃣ Testing Responsive Design\");\n// Test tablet viewport only (removed mobile to save time)\ncy.viewport(768, 1024);\ncy.wait(200); // Allow responsive adjustment\ncy.get(\"canvas\").should(\"exist\").and(\"be.visible\");\ncy.log(\"✅ Canvas visible on tablet viewport\");\n// Check menu buttons still accessible\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-button\"]').length > 0 ||\n        $body.find('[data-testid=\"menu-combat\"]').length > 0) {\n        cy.log(\"✅ Menu buttons accessible on tablet\");\n    }\n});\n// Reset to desktop viewport\ncy.viewport(1280, 720);\ncy.wait(150);\ncy.log(\"✅ Responsive design validated\");\n// ============================================================\n// 10. Test Error Resilience (15s)\n// ============================================================\ncy.log(\"🔟 Testing Error Resilience\");\n// Test non-existent feature navigation\ncy.get(\"body\").type(\"9\"); // Non-existent option\ncy.wait(200);\n// Should still be at intro or handle gracefully\ncy.get(\"body\").then(($body) => {\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0 ||\n        $body.find('[data-testid=\"app-container\"]').length > 0;\n    if (hasIntro) {\n        cy.log(\"✅ Error resilience verified - gracefully handled invalid input\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 11. Verify Audio System (10s)\n// ============================================================\ncy.log(\"1️⃣1️⃣ Verifying Audio System\");\n// Audio system is verified through app initialization\n// No explicit audio test needed here to save time\ncy.log(\"✅ Audio system loaded with app (implicit verification)\");\ncy.wait(200);\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ IntroScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Canvas rendering\");\ncy.log(\"   ✓ Menu buttons\");\ncy.log(\"   ✓ Bilingual text\");\ncy.log(\"   ✓ Navigation to Combat\");\ncy.log(\"   ✓ Navigation to Training\");\ncy.log(\"   ✓ Navigation to Controls\");\ncy.log(\"   ✓ Navigation to Philosophy\");\ncy.log(\"   ✓ Keyboard controls (shortcut '1')\");\ncy.log(\"   ✓ Responsive design (desktop/tablet)\");\ncy.log(\"   ✓ Error resilience\");\ncy.log(\"   ✓ Audio system\");",
               "err": {},
-              "uuid": "c1d14c94-fce2-45e3-9ef5-d2326e828806",
-              "parentUUID": "ac99f475-61e5-499f-95da-43179f884055",
+              "uuid": "a2de196c-1283-4cbe-b036-319345a48ab4",
+              "parentUUID": "364503be-8dda-4321-b920-b30c178fb46f",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "c1d14c94-fce2-45e3-9ef5-d2326e828806"
+            "a2de196c-1283-4cbe-b036-319345a48ab4"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 9574,
+          "duration": 9566,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1213,7 +1213,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "3088102c-fc90-45b0-8cc7-0d151b01c04c",
+      "uuid": "7c9422cd-f110-4ec6-b1e8-7aef42830903",
       "title": "",
       "fullFile": "cypress/e2e/screens/philosophy-screen.cy.ts",
       "file": "cypress/e2e/screens/philosophy-screen.cy.ts",
@@ -1222,7 +1222,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "dd3c962c-2040-4e62-a324-dd779135bd46",
+          "uuid": "f224c95d-7330-48ac-85cc-f227afe74694",
           "title": "PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -1233,7 +1233,7 @@
               "title": "should render PhilosophyScreen with Korean martial arts philosophy",
               "fullTitle": "PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min) should render PhilosophyScreen with Korean martial arts philosophy",
               "timedOut": null,
-              "duration": 9576,
+              "duration": 9526,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1242,20 +1242,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing PhilosophyScreen - Full Philosophy Content\");\n// ============================================================\n// 1. Verify Philosophy Screen Rendering (15s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Philosophy Screen Rendering\");\ncy.get('[data-testid=\"philosophy-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Philosophy screen exists\");\n// Verify canvas is visible\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas rendering verified\");\ncy.wait(200);\n// ============================================================\n// 2. Verify Philosophy Content (30s)\n// ============================================================\ncy.log(\"2️⃣ Verifying Philosophy Content\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Eight Trigrams reference\n    if (bodyText.includes(\"팔괘\") || bodyText.includes(\"八卦\")) {\n        cy.log(\"✅ Eight Trigrams (팔괘) reference found\");\n    }\n    else {\n        cy.log(\"⚠️ Eight Trigrams content may be in canvas\");\n    }\n    // Check for Black Trigram reference\n    if (bodyText.includes(\"Black Trigram\") || bodyText.includes(\"흑괘\")) {\n        cy.log(\"✅ Black Trigram title found\");\n    }\n    else {\n        cy.log(\"⚠️ Black Trigram title may be in canvas\");\n    }\n    // Check for martial arts philosophy\n    if (bodyText.includes(\"martial arts\") ||\n        bodyText.includes(\"무술\") ||\n        bodyText.includes(\"무예\")) {\n        cy.log(\"✅ Martial arts philosophy content found\");\n    }\n    else {\n        cy.log(\"⚠️ Philosophy content may be in canvas\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 3. Verify Trigram Information (30s)\n// ============================================================\ncy.log(\"3️⃣ Verifying Trigram Information\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Geon (Heaven - 건)\n    if (bodyText.includes(\"건\") ||\n        bodyText.includes(\"Geon\") ||\n        bodyText.includes(\"Heaven\")) {\n        cy.log(\"✅ Geon (건) trigram information found\");\n    }\n    // Check for Gon (Earth - 곤)\n    if (bodyText.includes(\"곤\") ||\n        bodyText.includes(\"Gon\") ||\n        bodyText.includes(\"Earth\")) {\n        cy.log(\"✅ Gon (곤) trigram information found\");\n    }\n    // Check for Tae (Lake - 태)\n    if (bodyText.includes(\"태\") ||\n        bodyText.includes(\"Tae\") ||\n        bodyText.includes(\"Lake\")) {\n        cy.log(\"✅ Tae (태) trigram information found\");\n    }\n    // Check for Li (Fire - 리)\n    if (bodyText.includes(\"리\") ||\n        bodyText.includes(\"Li\") ||\n        bodyText.includes(\"Fire\")) {\n        cy.log(\"✅ Li (리) trigram information found\");\n    }\n    // General check for any trigram names\n    const hasTrigramContent = bodyText.includes(\"건\") ||\n        bodyText.includes(\"곤\") ||\n        bodyText.includes(\"태\") ||\n        bodyText.includes(\"리\") ||\n        bodyText.includes(\"Heaven\") ||\n        bodyText.includes(\"Earth\");\n    if (hasTrigramContent) {\n        cy.log(\"✅ Trigram information present\");\n    }\n    else {\n        cy.log(\"⚠️ Trigram information may be in canvas\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 4. Verify Korean/English Text (15s)\n// ============================================================\ncy.log(\"4️⃣ Verifying Korean/English Bilingual Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Korean text\n    if (bodyText.includes(\"철학\") ||\n        bodyText.includes(\"팔괘\") ||\n        bodyText.includes(\"무술\")) {\n        cy.log(\"✅ Korean text found in philosophy screen\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n    // Check for English text\n    if (bodyText.includes(\"Philosophy\") ||\n        bodyText.includes(\"Trigram\") ||\n        bodyText.includes(\"martial\")) {\n        cy.log(\"✅ English text found in philosophy screen\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 5. Test Philosophy Screen UI Elements (15s)\n// ============================================================\ncy.log(\"5️⃣ Testing Philosophy Screen UI Elements\");\n// Check for philosophy header\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-header\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-header\"]').should(\"exist\");\n        cy.log(\"✅ Philosophy header found\");\n    }\n});\n// Check for philosophy content\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-content\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-content\"]').should(\"exist\");\n        cy.log(\"✅ Philosophy content found\");\n    }\n});\n// Check for trigram display\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"trigram-display\"]').length > 0) {\n        cy.get('[data-testid=\"trigram-display\"]').should(\"exist\");\n        cy.log(\"✅ Trigram display found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 6. Test Scrolling or Content Navigation (10s)\n// ============================================================\ncy.log(\"6️⃣ Testing Scrolling/Content Navigation\");\n// Test scrolling if content is scrollable\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-content\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-content\"]').scrollTo(\"bottom\");\n        cy.wait(100);\n        cy.get('[data-testid=\"philosophy-content\"]').scrollTo(\"top\");\n        cy.log(\"✅ Scrolling tested\");\n    }\n    else {\n        cy.log(\"⚠️ No scrollable content found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 7. Verify Cultural Context (15s)\n// ============================================================\ncy.log(\"7️⃣ Verifying Cultural Context\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for I Ching / Yi Jing reference\n    if (bodyText.includes(\"I Ching\") ||\n        bodyText.includes(\"Yi Jing\") ||\n        bodyText.includes(\"역경\")) {\n        cy.log(\"✅ I Ching reference found\");\n    }\n    // Check for balance/harmony concepts\n    if (bodyText.includes(\"balance\") ||\n        bodyText.includes(\"harmony\") ||\n        bodyText.includes(\"균형\") ||\n        bodyText.includes(\"조화\")) {\n        cy.log(\"✅ Balance/harmony concepts found\");\n    }\n    // Check for yin-yang concepts\n    if (bodyText.includes(\"yin\") ||\n        bodyText.includes(\"yang\") ||\n        bodyText.includes(\"음\") ||\n        bodyText.includes(\"양\")) {\n        cy.log(\"✅ Yin-yang concepts found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 8. Test Navigation Back (10s)\n// ============================================================\ncy.log(\"8️⃣ Testing Navigation Back to Intro\");\n// Try ESC key first\ncy.get(\"body\").type(\"{esc}\");\ncy.wait(500);\n// Verify we're back at intro screen\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"intro-screen\"]').length > 0) {\n        cy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n        cy.log(\"✅ ESC key navigation works\");\n    }\n    else {\n        cy.log(\"⚠️ May still be on philosophy screen or transition in progress\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ PhilosophyScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Philosophy screen rendering\");\ncy.log(\"   ✓ Philosophy content display\");\ncy.log(\"   ✓ Trigram information\");\ncy.log(\"   ✓ Korean/English bilingual text\");\ncy.log(\"   ✓ UI elements\");\ncy.log(\"   ✓ Scrolling/content navigation\");\ncy.log(\"   ✓ Cultural context\");\ncy.log(\"   ✓ Return to intro\");",
               "err": {},
-              "uuid": "2bfa12fd-82c1-4efb-b395-d7aba132c9d7",
-              "parentUUID": "dd3c962c-2040-4e62-a324-dd779135bd46",
+              "uuid": "45e860d0-133e-4b0c-933a-36b4995520eb",
+              "parentUUID": "f224c95d-7330-48ac-85cc-f227afe74694",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "2bfa12fd-82c1-4efb-b395-d7aba132c9d7"
+            "45e860d0-133e-4b0c-933a-36b4995520eb"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 9576,
+          "duration": 9526,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1271,7 +1271,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "dafbe354-2ef1-432a-bacb-a27a7e50e59b",
+      "uuid": "7c5f8ba1-4645-4367-8005-90cd45f3e5e7",
       "title": "",
       "fullFile": "cypress/e2e/screens/training-screen.cy.ts",
       "file": "cypress/e2e/screens/training-screen.cy.ts",
@@ -1280,7 +1280,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "a0cd3958-016e-4f1b-be13-24dd122dd9e8",
+          "uuid": "cff8f724-c2ad-4863-a186-32e5bf83f20e",
           "title": "TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -1291,7 +1291,7 @@
               "title": "should render TrainingScreen with training mechanics and vital points",
               "fullTitle": "TrainingScreen - Comprehensive E2E Test (Target: 3-4 min) should render TrainingScreen with training mechanics and vital points",
               "timedOut": null,
-              "duration": 14566,
+              "duration": 14486,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1300,20 +1300,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing TrainingScreen - Full Training Journey\");\n// ============================================================\n// 1. Verify Training Screen Rendering (20s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Training Screen Rendering\");\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Training screen exists\");\n// Verify canvas is visible\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas rendering verified\");\n// Check for training header\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-header\"]').length > 0) {\n        cy.get('[data-testid=\"training-header\"]').should(\"exist\");\n        cy.log(\"✅ Training header found\");\n    }\n    else {\n        cy.log(\"⚠️ Training header not found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 2. Test Stance Practice (60s)\n// ============================================================\ncy.log(\"2️⃣ Testing Stance Practice System\");\n// Practice stance 1 (Geon) twice\ncy.log(\"Practicing Stance 1 (Geon)...\");\ncy.practiceStance(1, 2);\ncy.log(\"✅ Stance 1 practiced\");\ncy.wait(100);\n// Practice stance 3 (Li) twice\ncy.log(\"Practicing Stance 3 (Li)...\");\ncy.practiceStance(3, 2);\ncy.log(\"✅ Stance 3 practiced\");\ncy.wait(100);\n// Practice stance 5 (Son) twice\ncy.log(\"Practicing Stance 5 (Son)...\");\ncy.practiceStance(5, 2);\ncy.log(\"✅ Stance 5 practiced\");\ncy.wait(200);\n// ============================================================\n// 3. Test Training Dummy Interaction (40s)\n// ============================================================\ncy.log(\"3️⃣ Testing Training Dummy Interaction\");\n// Verify training dummy container exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-dummy-container\"]').length > 0) {\n        cy.get('[data-testid=\"training-dummy-container\"]').should(\"exist\");\n        cy.log(\"✅ Training dummy container found\");\n    }\n    else {\n        cy.log(\"⚠️ Training dummy container not found, may be in 3D scene\");\n    }\n});\n// Check for training area\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-area\"]').length > 0) {\n        cy.get('[data-testid=\"training-area\"]').should(\"exist\");\n        cy.log(\"✅ Training area found\");\n    }\n});\n// Check for training player\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-player\"]').length > 0) {\n        cy.get('[data-testid=\"training-player\"]').should(\"exist\");\n        cy.log(\"✅ Training player found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 4. Test All 8 Stances (60s)\n// ============================================================\ncy.log(\"4️⃣ Testing All 8 Trigram Stances\");\nfor (let stance = 1; stance <= 8; stance++) {\n    cy.log(`Testing stance ${stance}/8...`);\n    // Change to stance\n    cy.get(\"body\").type(stance.toString());\n    cy.wait(100);\n    // Execute technique with space bar\n    cy.get(\"body\").type(\" \");\n    cy.wait(100);\n    cy.log(`✅ Stance ${stance} tested`);\n}\ncy.log(\"✅ All 8 stances tested in training\");\ncy.wait(200);\n// ============================================================\n// 5. Test Extended Training Session (30s)\n// ============================================================\ncy.log(\"5️⃣ Testing Extended Training Session\");\n// Practice multiple repetitions of stance 2\nfor (let i = 0; i < 3; i++) {\n    cy.log(`Training repetition ${i + 1}/3`);\n    cy.practiceStance(2, 2);\n    cy.wait(100);\n}\ncy.log(\"✅ Extended training session completed\");\ncy.wait(200);\n// ============================================================\n// 6. Test Training Controls (20s)\n// ============================================================\ncy.log(\"6️⃣ Testing Training Controls\");\n// Test movement in training mode\ncy.get(\"body\").type(\"w\");\ncy.wait(50);\ncy.get(\"body\").type(\"a\");\ncy.wait(50);\ncy.get(\"body\").type(\"s\");\ncy.wait(50);\ncy.get(\"body\").type(\"d\");\ncy.wait(50);\ncy.log(\"✅ Movement controls tested\");\ncy.wait(200);\n// ============================================================\n// 7. Verify Training UI Elements (20s)\n// ============================================================\ncy.log(\"7️⃣ Verifying Training UI Elements\");\n// Check for stance indicator\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Stance indicator found\");\n    }\n    else {\n        cy.log(\"⚠️ Stance indicator not found\");\n    }\n});\n// Check for training stats\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-stats\"]').length > 0) {\n        cy.get('[data-testid=\"training-stats\"]').should(\"exist\");\n        cy.log(\"✅ Training stats found\");\n    }\n    else {\n        cy.log(\"⚠️ Training stats not found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 8. Verify Korean Text in Training (10s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Korean Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"훈련\") ||\n        bodyText.includes(\"연습\") ||\n        bodyText.includes(\"팔괘\")) {\n        cy.log(\"✅ Korean text found in training UI\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// 9. Test Vital Point Display (15s)\n// ============================================================\ncy.log(\"9️⃣ Testing Vital Point Display\");\n// Check for vital point overlay or information\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"vital-points\"]').length > 0) {\n        cy.get('[data-testid=\"vital-points\"]').should(\"exist\");\n        cy.log(\"✅ Vital points display found\");\n    }\n    else if ($body.find('[data-testid=\"training-info\"]').length > 0) {\n        cy.get('[data-testid=\"training-info\"]').should(\"exist\");\n        cy.log(\"✅ Training info panel found\");\n    }\n    else {\n        cy.log(\"⚠️ Vital points display not found\");\n    }\n});\ncy.wait(200);\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ TrainingScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Training screen rendering\");\ncy.log(\"   ✓ Stance practice system\");\ncy.log(\"   ✓ Training dummy interaction\");\ncy.log(\"   ✓ All 8 trigram stances\");\ncy.log(\"   ✓ Extended training session\");\ncy.log(\"   ✓ Training controls\");\ncy.log(\"   ✓ Training UI elements\");\ncy.log(\"   ✓ Korean text rendering\");\ncy.log(\"   ✓ Vital point display\");",
               "err": {},
-              "uuid": "da55ddf3-2a6a-40a5-b5de-8463ef0890bf",
-              "parentUUID": "a0cd3958-016e-4f1b-be13-24dd122dd9e8",
+              "uuid": "e1a5a534-f5a2-4756-9e4f-a49929806925",
+              "parentUUID": "cff8f724-c2ad-4863-a186-32e5bf83f20e",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "da55ddf3-2a6a-40a5-b5de-8463ef0890bf"
+            "e1a5a534-f5a2-4756-9e4f-a49929806925"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 14566,
+          "duration": 14486,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
