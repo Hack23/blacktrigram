@@ -21,6 +21,7 @@ import {
   HUDVariant,
   getVariantColors,
   STATUS_INDICATOR_SIZES,
+  getResponsiveValue,
   HUD_TYPOGRAPHY,
   BORDER_RADIUS,
   SHADOWS,
@@ -144,10 +145,10 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
     screenWidth
   );
 
-  // Icon size uses width for consistency
+  // Icon size uses responsive value for consistency
   const iconSize = isMobile
     ? STATUS_INDICATOR_SIZES.iconSize.mobile
-    : STATUS_INDICATOR_SIZES.iconSize.desktop;
+    : getResponsiveValue(STATUS_INDICATOR_SIZES.iconSize, screenWidth);
 
   // Format display value
   const displayValue =
