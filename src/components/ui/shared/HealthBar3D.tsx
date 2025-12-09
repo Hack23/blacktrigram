@@ -21,7 +21,6 @@ import {
   HUDVariant,
   getVariantColors,
   HEALTH_BAR_SIZES,
-  getResponsiveValue,
   HUD_TYPOGRAPHY,
   ANIMATION_DURATIONS,
   BORDER_RADIUS,
@@ -29,6 +28,8 @@ import {
   OPACITY,
 } from "../../../theme/korean-cyberpunk";
 import { KOREAN_COLORS } from "../../../types/constants";
+import { getResponsiveSizes } from "./responsiveHelpers";
+import "./hudAnimations.css";
 
 /**
  * Props for HealthBar3D component
@@ -85,19 +86,12 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
   const shouldPulse = healthPercent < 20;
   const variantColors = getVariantColors(variant);
 
-  // Responsive sizing based on screen width
-  const barWidth = isMobile
-    ? HEALTH_BAR_SIZES.width.mobile
-    : getResponsiveValue(HEALTH_BAR_SIZES.width, screenWidth);
-  const barHeight = isMobile
-    ? HEALTH_BAR_SIZES.height.mobile
-    : getResponsiveValue(HEALTH_BAR_SIZES.height, screenWidth);
-  const fontSize = isMobile
-    ? HEALTH_BAR_SIZES.fontSize.mobile
-    : getResponsiveValue(HEALTH_BAR_SIZES.fontSize, screenWidth);
-  const padding = isMobile
-    ? HEALTH_BAR_SIZES.padding.mobile
-    : getResponsiveValue(HEALTH_BAR_SIZES.padding, screenWidth);
+  // Responsive sizing using helper
+  const sizes = getResponsiveSizes(
+    HEALTH_BAR_SIZES,
+    isMobile,
+    screenWidth
+  );
 
   return (
     <div
@@ -109,8 +103,8 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
       aria-valuemax={max}
       aria-valuetext={`${Math.ceil(current)} out of ${max}`}
       style={{
-        width: `${barWidth}px`,
-        padding: `${padding}px`,
+        width: `${sizes.width}px`,
+        padding: `${sizes.padding ?? 12}px`,
         backgroundColor: hexToRgbaString(variantColors.background, OPACITY.normal),
         borderRadius: BORDER_RADIUS.medium,
         border: `2px solid ${hexToRgbaString(variantColors.border, 1)}`,
@@ -121,7 +115,7 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
       {showText && (
         <div
           style={{
-            fontSize: `${fontSize}px`,
+            fontSize: `${sizes.fontSize}px`,
             color: hexToRgbaString(variantColors.border, 1),
             fontFamily: HUD_TYPOGRAPHY.fontFamily,
             marginBottom: "4px",
@@ -142,7 +136,7 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
         style={{
           display: "flex",
           gap: "3px",
-          height: `${barHeight}px`,
+          height: `${sizes.height}px`,
           animation: shouldPulse
             ? `healthPulse ${ANIMATION_DURATIONS.pulseSpeed}ms infinite`
             : "none",
@@ -168,16 +162,6 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
           />
         ))}
       </div>
-
-      {/* Inject pulse animation keyframes */}
-      <style>
-        {`
-          @keyframes healthPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-          }
-        `}
-      </style>
     </div>
   );
 };

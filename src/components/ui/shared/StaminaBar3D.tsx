@@ -21,7 +21,6 @@ import {
   HUDVariant,
   getVariantColors,
   STAMINA_BAR_SIZES,
-  getResponsiveValue,
   HUD_TYPOGRAPHY,
   ANIMATION_DURATIONS,
   BORDER_RADIUS,
@@ -29,6 +28,8 @@ import {
   OPACITY,
 } from "../../../theme/korean-cyberpunk";
 import { KOREAN_COLORS } from "../../../types/constants";
+import { getResponsiveSizes } from "./responsiveHelpers";
+import "./hudAnimations.css";
 
 /**
  * Props for StaminaBar3D component
@@ -75,19 +76,12 @@ export const StaminaBar3D: React.FC<StaminaBar3DProps> = ({
   const shouldPulse = staminaPercent < 20;
   const variantColors = getVariantColors(variant);
 
-  // Responsive sizing based on screen width
-  const barWidth = isMobile
-    ? STAMINA_BAR_SIZES.width.mobile
-    : getResponsiveValue(STAMINA_BAR_SIZES.width, screenWidth);
-  const barHeight = isMobile
-    ? STAMINA_BAR_SIZES.height.mobile
-    : getResponsiveValue(STAMINA_BAR_SIZES.height, screenWidth);
-  const fontSize = isMobile
-    ? STAMINA_BAR_SIZES.fontSize.mobile
-    : getResponsiveValue(STAMINA_BAR_SIZES.fontSize, screenWidth);
-  const padding = isMobile
-    ? STAMINA_BAR_SIZES.padding.mobile
-    : getResponsiveValue(STAMINA_BAR_SIZES.padding, screenWidth);
+  // Responsive sizing using helper
+  const sizes = getResponsiveSizes(
+    STAMINA_BAR_SIZES,
+    isMobile,
+    screenWidth
+  );
 
   // Stamina uses consistent blue gradient
   const staminaColor = KOREAN_COLORS.ACCENT_BLUE;
@@ -102,8 +96,8 @@ export const StaminaBar3D: React.FC<StaminaBar3DProps> = ({
       aria-valuemax={max}
       aria-valuetext={`${Math.ceil(current)} out of ${max}`}
       style={{
-        width: `${barWidth}px`,
-        padding: `${padding}px`,
+        width: `${sizes.width}px`,
+        padding: `${sizes.padding ?? 8}px`,
         backgroundColor: hexToRgbaString(variantColors.background, OPACITY.normal),
         borderRadius: BORDER_RADIUS.medium,
         border: `2px solid ${hexToRgbaString(staminaColor, 1)}`,
@@ -114,7 +108,7 @@ export const StaminaBar3D: React.FC<StaminaBar3DProps> = ({
       {showText && (
         <div
           style={{
-            fontSize: `${fontSize}px`,
+            fontSize: `${sizes.fontSize}px`,
             color: hexToRgbaString(staminaColor, 1),
             fontFamily: HUD_TYPOGRAPHY.fontFamily,
             marginBottom: "3px",
@@ -135,7 +129,7 @@ export const StaminaBar3D: React.FC<StaminaBar3DProps> = ({
         style={{
           display: "flex",
           gap: "4px",
-          height: `${barHeight}px`,
+          height: `${sizes.height}px`,
           animation: shouldPulse
             ? `staminaPulse ${ANIMATION_DURATIONS.pulseSpeed}ms infinite`
             : "none",
@@ -161,16 +155,6 @@ export const StaminaBar3D: React.FC<StaminaBar3DProps> = ({
           />
         ))}
       </div>
-
-      {/* Inject pulse animation keyframes */}
-      <style>
-        {`
-          @keyframes staminaPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-          }
-        `}
-      </style>
     </div>
   );
 };

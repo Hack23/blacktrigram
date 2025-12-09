@@ -21,13 +21,14 @@ import {
   HUDVariant,
   getVariantColors,
   STATUS_INDICATOR_SIZES,
-  getResponsiveValue,
   HUD_TYPOGRAPHY,
   BORDER_RADIUS,
   SHADOWS,
   OPACITY,
 } from "../../../theme/korean-cyberpunk";
 import { KOREAN_COLORS } from "../../../types/constants";
+import { getResponsiveSizes } from "./responsiveHelpers";
+import "./hudAnimations.css";
 
 /**
  * Status indicator types
@@ -136,19 +137,17 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
   const statusColor = getStatusColor(type, customColor);
   const displayIcon = icon ?? getDefaultIcon(type);
 
-  // Responsive sizing
-  const width = isMobile
-    ? STATUS_INDICATOR_SIZES.width.mobile
-    : getResponsiveValue(STATUS_INDICATOR_SIZES.width, screenWidth);
-  const height = isMobile
-    ? STATUS_INDICATOR_SIZES.height.mobile
-    : getResponsiveValue(STATUS_INDICATOR_SIZES.height, screenWidth);
-  const fontSize = isMobile
-    ? STATUS_INDICATOR_SIZES.fontSize.mobile
-    : getResponsiveValue(STATUS_INDICATOR_SIZES.fontSize, screenWidth);
+  // Responsive sizing using helper
+  const sizes = getResponsiveSizes(
+    STATUS_INDICATOR_SIZES,
+    isMobile,
+    screenWidth
+  );
+
+  // Icon size uses width for consistency
   const iconSize = isMobile
     ? STATUS_INDICATOR_SIZES.iconSize.mobile
-    : getResponsiveValue(STATUS_INDICATOR_SIZES.iconSize, screenWidth);
+    : STATUS_INDICATOR_SIZES.iconSize.desktop;
 
   // Format display value
   const displayValue =
@@ -162,8 +161,8 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
     <div
       data-testid={testId ?? `status-indicator-3d-${type}`}
       style={{
-        width: `${width}px`,
-        minHeight: `${height}px`,
+        width: `${sizes.width}px`,
+        minHeight: `${sizes.height}px`,
         padding: "8px",
         backgroundColor: hexToRgbaString(variantColors.background, OPACITY.normal),
         borderRadius: BORDER_RADIUS.medium,
@@ -189,7 +188,7 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
       {/* Labels */}
       <div
         style={{
-          fontSize: `${fontSize * 0.7}px`,
+          fontSize: `${sizes.fontSize * 0.7}px`,
           color: hexToRgbaString(statusColor, 1),
           fontFamily: HUD_TYPOGRAPHY.fontFamily,
           fontWeight: HUD_TYPOGRAPHY.fontWeights.bold,
@@ -199,7 +198,7 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
         <div>{labelKorean}</div>
         <div
           style={{
-            fontSize: `${fontSize * 0.6}px`,
+            fontSize: `${sizes.fontSize * 0.6}px`,
             color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
             fontWeight: HUD_TYPOGRAPHY.fontWeights.normal,
           }}
@@ -211,7 +210,7 @@ export const StatusIndicator3D: React.FC<StatusIndicator3DProps> = ({
       {/* Value */}
       <div
         style={{
-          fontSize: `${fontSize}px`,
+          fontSize: `${sizes.fontSize}px`,
           color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
           fontFamily: HUD_TYPOGRAPHY.fontFamily,
           fontWeight: HUD_TYPOGRAPHY.fontWeights.bold,

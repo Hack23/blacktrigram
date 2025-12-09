@@ -19,6 +19,10 @@ export type { StaminaBar3DProps } from "./StaminaBar3D";
 export { StatusIndicator3D } from "./StatusIndicator3D";
 export type { StatusIndicator3DProps, StatusType } from "./StatusIndicator3D";
 
+// Export responsive helpers
+export { getResponsiveSizes } from "./responsiveHelpers";
+export type { ComponentSizes, CalculatedSizes } from "./responsiveHelpers";
+
 // Re-export theme utilities for convenience
 export {
   type HUDVariant,
