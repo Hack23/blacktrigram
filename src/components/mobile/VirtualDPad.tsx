@@ -222,6 +222,10 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
   const buttonSize = Math.max(44, size * 0.3); // Minimum 44px for touch target
   const radius = (size - buttonSize) / 2;
 
+  // Extract RGB values for consistent color usage
+  const primaryColorRgb = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
+  const goldColorRgb = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
+
   return (
     <Html fullscreen>
       <div
@@ -244,8 +248,8 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
             height: '100%',
             background: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '50%',
-            border: `2px solid rgba(${KOREAN_COLORS.PRIMARY_CYAN >> 16}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 0xff}, ${KOREAN_COLORS.PRIMARY_CYAN & 0xff}, 0.8)`,
-            boxShadow: `0 0 20px rgba(${KOREAN_COLORS.PRIMARY_CYAN >> 16}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 0xff}, ${KOREAN_COLORS.PRIMARY_CYAN & 0xff}, 0.3)`,
+            border: `2px solid rgba(${primaryColorRgb.r}, ${primaryColorRgb.g}, ${primaryColorRgb.b}, 0.8)`,
+            boxShadow: `0 0 20px rgba(${primaryColorRgb.r}, ${primaryColorRgb.g}, ${primaryColorRgb.b}, 0.3)`,
           }}
         >
           {/* Directional Buttons */}
@@ -272,12 +276,12 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
               height: '20px',
               borderRadius: '50%',
               background: activeDirection
-                ? `rgba(${KOREAN_COLORS.ACCENT_GOLD >> 16}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 0xff}, ${KOREAN_COLORS.ACCENT_GOLD & 0xff}, 0.9)`
-                : `rgba(${KOREAN_COLORS.PRIMARY_CYAN >> 16}, ${(KOREAN_COLORS.PRIMARY_CYAN >> 8) & 0xff}, ${KOREAN_COLORS.PRIMARY_CYAN & 0xff}, 0.7)`,
+                ? `rgba(${goldColorRgb.r}, ${goldColorRgb.g}, ${goldColorRgb.b}, 0.9)`
+                : `rgba(${primaryColorRgb.r}, ${primaryColorRgb.g}, ${primaryColorRgb.b}, 0.7)`,
               border: '2px solid #fff',
               transition: 'all 0.15s ease',
               boxShadow: activeDirection
-                ? `0 0 15px rgba(${KOREAN_COLORS.ACCENT_GOLD >> 16}, ${(KOREAN_COLORS.ACCENT_GOLD >> 8) & 0xff}, ${KOREAN_COLORS.ACCENT_GOLD & 0xff}, 0.8)`
+                ? `0 0 15px rgba(${goldColorRgb.r}, ${goldColorRgb.g}, ${goldColorRgb.b}, 0.8)`
                 : 'none',
             }}
             data-testid="dpad-center"

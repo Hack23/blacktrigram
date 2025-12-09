@@ -849,8 +849,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const action = directionMap[direction];
     if (action) {
       // Trigger movement via keyboard action system
-      const event = new KeyboardEvent('keydown', { key: action === 'move_up' ? 'w' : action === 'move_down' ? 's' : action === 'move_left' ? 'a' : 'd' });
-      window.dispatchEvent(event);
+      const keyMap: Record<string, string> = {
+        'move_up': 'w',
+        'move_down': 's',
+        'move_left': 'a',
+        'move_right': 'd',
+      };
+      const key = keyMap[action];
+      if (key) {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+      }
     }
   }, []);
 
