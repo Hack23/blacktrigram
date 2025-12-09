@@ -87,9 +87,8 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
     // Rotate symbol slowly
     groupRef.current.rotation.y = time * ANIMATION_CONSTANTS.ROTATION_SPEED;
 
-    // Gentle vertical bob - always relative to heightOffset prop
-    const baseY = heightOffset;
-    groupRef.current.position.y = baseY + Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;
+    // Gentle vertical bob - oscillate around 0 (group is already positioned at heightOffset)
+    groupRef.current.position.y = Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;
   });
 
   return (

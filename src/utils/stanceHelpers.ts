@@ -84,17 +84,7 @@ export const getTrigramSymbol = (stance: TrigramStance): string => {
  * @korean 자세한글이름가져오기
  */
 export const getStanceKoreanName = (stance: TrigramStance): string => {
-  const names = {
-    [TrigramStance.GEON]: "건", // Geon
-    [TrigramStance.TAE]: "태",  // Tae
-    [TrigramStance.LI]: "리",   // Li
-    [TrigramStance.JIN]: "진",  // Jin
-    [TrigramStance.SON]: "손",  // Son
-    [TrigramStance.GAM]: "감",  // Gam
-    [TrigramStance.GAN]: "간",  // Gan
-    [TrigramStance.GON]: "곤",  // Gon
-  };
-  return names[stance] ?? "건";
+  return getStanceNames(stance).korean;
 };
 
 /**

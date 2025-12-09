@@ -170,7 +170,7 @@ describe("stanceHelpers", () => {
     it("should be consistent with getStanceColor", () => {
       const color = getStanceColor(TrigramStance.GEON);
       const hex = getStanceColorHex(TrigramStance.GEON);
-      const expectedHex = `#${color.toString(16).padStart(6, '0')}`;
+      const expectedHex = `#${color.toString(16).padStart(6, '0').toLowerCase()}`;
       expect(hex).toBe(expectedHex);
     });
   });

@@ -104,9 +104,9 @@ export const BasicStanceTransitionExample: React.FC = () => {
  * Useful when you want more control over the visual effects.
  */
 export const IndividualComponentsExample: React.FC = () => {
-  const [stance] = useState(TrigramStance.GEON);
-  const [prevStance] = useState<TrigramStance | null>(null);
-  const [showTransition] = useState(false);
+  const stance = TrigramStance.GEON;
+  const prevStance: TrigramStance | null = null;
+  const showTransition = false;
 
   return (
     <Canvas gl={{ antialias: true, alpha: true }}>
@@ -155,7 +155,7 @@ export const IndividualComponentsExample: React.FC = () => {
  * Reduces particle count and disables some effects.
  */
 export const MobileOptimizedExample: React.FC = () => {
-  const [stance] = useState(TrigramStance.GEON);
+  const stance = TrigramStance.GEON;
   const isMobile = true; // Detect based on screen width in real app
 
   return (
@@ -197,7 +197,7 @@ export const MobileOptimizedExample: React.FC = () => {
  * Useful for low-end devices or when many players are on screen.
  */
 export const PerformanceModeExample: React.FC = () => {
-  const [stance] = useState(TrigramStance.GEON);
+  const stance = TrigramStance.GEON;
 
   return (
     <Canvas gl={{ antialias: true, alpha: true }}>
