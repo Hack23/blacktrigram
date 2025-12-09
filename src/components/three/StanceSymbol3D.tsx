@@ -95,6 +95,15 @@ const getStanceColorHex = (stance: TrigramStance): string => {
 };
 
 /**
+ * Animation constants for stance symbol
+ */
+const ANIMATION_CONSTANTS = {
+  ROTATION_SPEED: 0.5,
+  BOB_AMPLITUDE: 0.1,
+  BOB_FREQUENCY: 2,
+} as const;
+
+/**
  * StanceSymbol3D Component
  * 
  * Renders a floating trigram symbol above the player with:
@@ -136,10 +145,10 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
     const time = state.clock.elapsedTime;
 
     // Rotate symbol slowly
-    groupRef.current.rotation.y = time * 0.5;
+    groupRef.current.rotation.y = time * ANIMATION_CONSTANTS.ROTATION_SPEED;
 
     // Gentle vertical bob
-    groupRef.current.position.y = heightOffset + Math.sin(time * 2) * 0.1;
+    groupRef.current.position.y = heightOffset + Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;
   });
 
   return (

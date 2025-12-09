@@ -44,6 +44,13 @@ export interface Player3DWithTransitionsProps extends Player3DUnifiedProps {
 }
 
 /**
+ * Audio asset IDs for stance transitions
+ */
+const AUDIO_ASSETS = {
+  STANCE_CHANGE: 'stance_change',
+} as const;
+
+/**
  * Player3DWithTransitions Component
  * 
  * Enhanced player component with automatic stance change detection and visual effects.
@@ -120,7 +127,7 @@ export const Player3DWithTransitions: React.FC<Player3DWithTransitionsProps> = (
 
       // Play stance change SFX if enabled
       if (enableStanceAudio && audio.isAudioReady) {
-        audio.playSFX("stance_change");
+        audio.playSFX(AUDIO_ASSETS.STANCE_CHANGE);
       }
 
       // Update previous stance

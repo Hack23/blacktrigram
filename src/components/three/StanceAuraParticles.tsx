@@ -35,6 +35,14 @@ export interface StanceAuraParticlesProps {
 }
 
 /**
+ * Performance constants for particle animation
+ */
+const PERFORMANCE_CONSTANTS = {
+  /** Maximum delta time to prevent spiral of death (33.33ms) */
+  MAX_DELTA_TIME: 1 / 30,
+} as const;
+
+/**
  * Get color for each trigram stance
  * Maps 8 trigrams to Korean cyberpunk color palette
  * 
@@ -144,7 +152,7 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
     if (!animated || !pointsRef.current) return;
 
     // Clamp delta to prevent instability
-    const safeDelta = Math.min(delta, 1 / 30);
+    const safeDelta = Math.min(delta, PERFORMANCE_CONSTANTS.MAX_DELTA_TIME);
     const time = state.clock.elapsedTime;
 
     const attr = pointsRef.current.geometry.attributes.position;

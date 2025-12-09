@@ -102,6 +102,7 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
 }) => {
   const ringRef = useRef<THREE.Mesh>(null);
   const startTimeRef = useRef<number>(0);
+  const isInitializedRef = useRef(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [showName, setShowName] = useState(showNameOverlay);
 
@@ -113,9 +114,10 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const toColor = useMemo(() => getStanceColor(toStance), [toStance]);
   const stanceNames = useMemo(() => getStanceNames(toStance), [toStance]);
 
-  // Initialize start time
+  // Initialize start time using clock for consistency with useFrame
   useEffect(() => {
-    startTimeRef.current = performance.now() / 1000;
+    // Note: We initialize with 0 and calculate elapsed time relative to clock in useFrame
+    startTimeRef.current = 0;
     setIsTransitioning(true);
     setShowName(showNameOverlay);
 
@@ -132,6 +134,12 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   // Animation loop
   useFrame((state) => {
     if (!isTransitioning || !ringRef.current) return;
+
+    // Initialize start time on first frame for consistency with clock
+    if (!isInitializedRef.current) {
+      startTimeRef.current = state.clock.elapsedTime;
+      isInitializedRef.current = true;
+    }
 
     const elapsed = state.clock.elapsedTime - startTimeRef.current;
     const progress = Math.min(elapsed / duration, 1.0);
