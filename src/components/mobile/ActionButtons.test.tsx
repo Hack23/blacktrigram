@@ -30,52 +30,48 @@ describe('ActionButtons', () => {
 
   describe('Component props', () => {
     it('should accept onAttack callback', () => {
-      expect(() => {
-        ({
-          onAttack: onAttackMock,
-          onBlock: onBlockMock,
-        });
-      }).not.toThrow();
+      const props: ActionButtonsProps = {
+        onAttack: onAttackMock,
+        onBlock: onBlockMock,
+      };
+      expect(props.onAttack).toBeDefined();
     });
 
     it('should accept onBlock callback', () => {
-      expect(() => {
-        ({
-          onAttack: onAttackMock,
-          onBlock: onBlockMock,
-        });
-      }).not.toThrow();
+      const props: ActionButtonsProps = {
+        onAttack: onAttackMock,
+        onBlock: onBlockMock,
+      };
+      expect(props.onBlock).toBeDefined();
     });
 
     it('should accept disabled prop', () => {
-      expect(() => {
-        ({
-          onAttack: onAttackMock,
-          onBlock: onBlockMock,
-          disabled: true,
-        });
-      }).not.toThrow();
+      const props: ActionButtonsProps = {
+        onAttack: onAttackMock,
+        onBlock: onBlockMock,
+        disabled: true,
+      };
+      expect(props.disabled).toBe(true);
     });
 
     it('should accept custom position', () => {
-      expect(() => {
-        ({
-          onAttack: onAttackMock,
-          onBlock: onBlockMock,
-          bottom: 30,
-          right: 40,
-        });
-      }).not.toThrow();
+      const props: ActionButtonsProps = {
+        onAttack: onAttackMock,
+        onBlock: onBlockMock,
+        bottom: 30,
+        right: 40,
+      };
+      expect(props.bottom).toBe(30);
+      expect(props.right).toBe(40);
     });
 
     it('should accept custom opacity', () => {
-      expect(() => {
-        ({
-          onAttack: onAttackMock,
-          onBlock: onBlockMock,
-          opacity: 0.6,
-        });
-      }).not.toThrow();
+      const props: ActionButtonsProps = {
+        onAttack: onAttackMock,
+        onBlock: onBlockMock,
+        opacity: 0.6,
+      };
+      expect(props.opacity).toBe(0.6);
     });
   });
 

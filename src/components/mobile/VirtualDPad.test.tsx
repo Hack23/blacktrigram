@@ -28,33 +28,29 @@ describe('VirtualDPad', () => {
 
   describe('Component props', () => {
     it('should accept onMove callback', () => {
-      expect(() => {
-        ({ onMove: onMoveMock });
-      }).not.toThrow();
+      const props: VirtualDPadProps = { onMove: onMoveMock };
+      expect(props.onMove).toBeDefined();
     });
 
     it('should accept disabled prop', () => {
-      expect(() => {
-        ({ onMove: onMoveMock, disabled: true });
-      }).not.toThrow();
+      const props: VirtualDPadProps = { onMove: onMoveMock, disabled: true };
+      expect(props.disabled).toBe(true);
     });
 
     it('should accept custom size', () => {
-      expect(() => {
-        ({ onMove: onMoveMock, size: 150 });
-      }).not.toThrow();
+      const props: VirtualDPadProps = { onMove: onMoveMock, size: 150 };
+      expect(props.size).toBe(150);
     });
 
     it('should accept custom position', () => {
-      expect(() => {
-        ({ onMove: onMoveMock, bottom: 30, left: 40 });
-      }).not.toThrow();
+      const props: VirtualDPadProps = { onMove: onMoveMock, bottom: 30, left: 40 };
+      expect(props.bottom).toBe(30);
+      expect(props.left).toBe(40);
     });
 
     it('should accept custom opacity', () => {
-      expect(() => {
-        ({ onMove: onMoveMock, opacity: 0.5 });
-      }).not.toThrow();
+      const props: VirtualDPadProps = { onMove: onMoveMock, opacity: 0.5 };
+      expect(props.opacity).toBe(0.5);
     });
   });
 

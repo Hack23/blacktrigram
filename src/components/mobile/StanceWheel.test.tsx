@@ -29,61 +29,56 @@ describe('StanceWheel', () => {
 
   describe('Component props', () => {
     it('should accept currentStance prop', () => {
-      expect(() => {
-        ({
-          currentStance: 0,
-          onStanceChange: onStanceChangeMock,
-          expanded: false,
-          onToggle: onToggleMock,
-        });
-      }).not.toThrow();
+      const props: StanceWheelProps = {
+        currentStance: 0,
+        onStanceChange: onStanceChangeMock,
+        expanded: false,
+        onToggle: onToggleMock,
+      };
+      expect(props.currentStance).toBe(0);
     });
 
     it('should accept expanded state', () => {
-      expect(() => {
-        ({
-          currentStance: 0,
-          onStanceChange: onStanceChangeMock,
-          expanded: true,
-          onToggle: onToggleMock,
-        });
-      }).not.toThrow();
+      const props: StanceWheelProps = {
+        currentStance: 0,
+        onStanceChange: onStanceChangeMock,
+        expanded: true,
+        onToggle: onToggleMock,
+      };
+      expect(props.expanded).toBe(true);
     });
 
     it('should accept disabled prop', () => {
-      expect(() => {
-        ({
-          currentStance: 0,
-          onStanceChange: onStanceChangeMock,
-          expanded: false,
-          onToggle: onToggleMock,
-          disabled: true,
-        });
-      }).not.toThrow();
+      const props: StanceWheelProps = {
+        currentStance: 0,
+        onStanceChange: onStanceChangeMock,
+        expanded: false,
+        onToggle: onToggleMock,
+        disabled: true,
+      };
+      expect(props.disabled).toBe(true);
     });
 
     it('should accept custom position', () => {
-      expect(() => {
-        ({
-          currentStance: 0,
-          onStanceChange: onStanceChangeMock,
-          expanded: false,
-          onToggle: onToggleMock,
-          bottom: 40,
-        });
-      }).not.toThrow();
+      const props: StanceWheelProps = {
+        currentStance: 0,
+        onStanceChange: onStanceChangeMock,
+        expanded: false,
+        onToggle: onToggleMock,
+        bottom: 40,
+      };
+      expect(props.bottom).toBe(40);
     });
 
     it('should accept custom opacity', () => {
-      expect(() => {
-        ({
-          currentStance: 0,
-          onStanceChange: onStanceChangeMock,
-          expanded: false,
-          onToggle: onToggleMock,
-          opacity: 0.7,
-        });
-      }).not.toThrow();
+      const props: StanceWheelProps = {
+        currentStance: 0,
+        onStanceChange: onStanceChangeMock,
+        expanded: false,
+        onToggle: onToggleMock,
+        opacity: 0.7,
+      };
+      expect(props.opacity).toBe(0.7);
     });
   });
 

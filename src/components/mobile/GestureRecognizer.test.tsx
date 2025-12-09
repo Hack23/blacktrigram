@@ -20,41 +20,37 @@ describe('GestureRecognizer', () => {
 
   describe('Component props', () => {
     it('should accept onGesture callback', () => {
-      expect(() => {
-        ({
-          onGesture: onGestureMock,
-          enabled: true,
-        });
-      }).not.toThrow();
+      const props: GestureRecognizerProps = {
+        onGesture: onGestureMock,
+        enabled: true,
+      };
+      expect(props.onGesture).toBeDefined();
     });
 
     it('should accept enabled flag', () => {
-      expect(() => {
-        ({
-          onGesture: onGestureMock,
-          enabled: false,
-        });
-      }).not.toThrow();
+      const props: GestureRecognizerProps = {
+        onGesture: onGestureMock,
+        enabled: false,
+      };
+      expect(props.enabled).toBe(false);
     });
 
     it('should accept showFeedback flag', () => {
-      expect(() => {
-        ({
-          onGesture: onGestureMock,
-          enabled: true,
-          showFeedback: true,
-        });
-      }).not.toThrow();
+      const props: GestureRecognizerProps = {
+        onGesture: onGestureMock,
+        enabled: true,
+        showFeedback: true,
+      };
+      expect(props.showFeedback).toBe(true);
     });
 
     it('should accept custom minSwipeDistance', () => {
-      expect(() => {
-        ({
-          onGesture: onGestureMock,
-          enabled: true,
-          minSwipeDistance: 75,
-        });
-      }).not.toThrow();
+      const props: GestureRecognizerProps = {
+        onGesture: onGestureMock,
+        enabled: true,
+        minSwipeDistance: 75,
+      };
+      expect(props.minSwipeDistance).toBe(75);
     });
   });
 

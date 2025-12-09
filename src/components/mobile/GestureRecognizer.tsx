@@ -38,6 +38,7 @@ interface GestureFeedback {
   readonly timestamp: number;
   readonly x: number;
   readonly y: number;
+  readonly age?: number; // Cached age to avoid impure function calls during render
 }
 
 /**
@@ -117,14 +118,18 @@ export const GestureRecognizer: React.FC<GestureRecognizerProps> = ({
   });
 
   /**
-   * Clean up old feedback indicators
+   * Clean up old feedback indicators and update ages
    */
   useEffect(() => {
     if (!showFeedback) return;
 
     const interval = setInterval(() => {
       const now = Date.now();
-      setFeedbacks((prev) => prev.filter((fb) => now - fb.timestamp < 1000));
+      setFeedbacks((prev) =>
+        prev
+          .filter((fb) => now - fb.timestamp < 1000)
+          .map((fb) => ({ ...fb, age: now - fb.timestamp }))
+      );
     }, 100);
 
     return () => clearInterval(interval);
@@ -169,7 +174,7 @@ export const GestureRecognizer: React.FC<GestureRecognizerProps> = ({
       >
         {/* Gesture feedback indicators */}
         {feedbacks.map((feedback) => {
-          const age = Date.now() - feedback.timestamp;
+          const age = feedback.age ?? 0;
           const opacity = Math.max(0, 1 - age / 1000);
           const scale = 1 + age / 500;
           const display = getGestureDisplay(feedback.type);
