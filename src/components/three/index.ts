@@ -35,3 +35,15 @@ export type { PlayerStateIndicatorsProps } from "../../types/player-visual";
 
 export { StanceAura } from "./StanceAura";
 export type { StanceAuraProps } from "../../types/player-visual";
+
+export { StanceAuraParticles } from "./StanceAuraParticles";
+export type { StanceAuraParticlesProps } from "./StanceAuraParticles";
+
+export { StanceSymbol3D } from "./StanceSymbol3D";
+export type { StanceSymbol3DProps } from "./StanceSymbol3D";
+
+export { StanceTransitionEffect } from "./StanceTransitionEffect";
+export type { StanceTransitionEffectProps } from "./StanceTransitionEffect";
+
+export { Player3DWithTransitions } from "./Player3DWithTransitions";
+export type { Player3DWithTransitionsProps } from "./Player3DWithTransitions";
