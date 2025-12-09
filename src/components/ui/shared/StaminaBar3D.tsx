@@ -21,7 +21,6 @@ import {
   HUDVariant,
   getVariantColors,
   STAMINA_BAR_SIZES,
-  STAMINA_GRADIENT,
   getResponsiveValue,
   HUD_TYPOGRAPHY,
   ANIMATION_DURATIONS,

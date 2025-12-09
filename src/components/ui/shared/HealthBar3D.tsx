@@ -20,7 +20,6 @@ import { hexToRgbaString } from "../../../utils/colorUtils";
 import {
   HUDVariant,
   getVariantColors,
-  getHealthGradient,
   HEALTH_BAR_SIZES,
   getResponsiveValue,
   HUD_TYPOGRAPHY,
@@ -99,9 +98,6 @@ export const HealthBar3D: React.FC<HealthBar3DProps> = ({
   const padding = isMobile
     ? HEALTH_BAR_SIZES.padding.mobile
     : getResponsiveValue(HEALTH_BAR_SIZES.padding, screenWidth);
-
-  // Get health gradient for visual feedback
-  const gradient = getHealthGradient(healthPercent);
 
   return (
     <div
