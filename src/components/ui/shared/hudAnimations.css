@@ -1,0 +1,56 @@
+/**
+ * Korean Cyberpunk HUD Animations
+ * 
+ * CSS animations for shared HUD components.
+ * Provides pulse animations for critical health/stamina states.
+ */
+
+/* Health bar pulse animation for critical state (<20%) */
+@keyframes healthPulse {
+  0%, 100% { 
+    opacity: 1; 
+  }
+  50% { 
+    opacity: 0.6; 
+  }
+}
+
+/* Stamina bar pulse animation for low state (<20%) */
+@keyframes staminaPulse {
+  0%, 100% { 
+    opacity: 1; 
+  }
+  50% { 
+    opacity: 0.7; 
+  }
+}
+
+/* Glow animation for emphasis */
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 8px currentColor; 
+  }
+  50% { 
+    box-shadow: 0 0 16px currentColor; 
+  }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+  }
+  to { 
+    opacity: 1; 
+  }
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+  from { 
+    opacity: 1; 
+  }
+  to { 
+    opacity: 0; 
+  }
+}
