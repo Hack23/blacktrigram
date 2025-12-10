@@ -1,26 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AudioElementPool, ObjectPool } from "./AudioPool";
 
-// Mock Audio element
-class MockAudioElement {
-  src = "";
-  preload = "auto";
-  currentTime = 0;
-  paused = true;
-  play = vi.fn(() => Promise.resolve());
-  pause = vi.fn();
-  load = vi.fn();
-  addEventListener = vi.fn();
-  removeEventListener = vi.fn();
-
-  constructor(src?: string) {
-    if (src) {
-      this.src = src;
-    }
-  }
-}
-
-global.Audio = MockAudioElement as any;
+// Note: Audio mock is provided by src/test/setup.ts (MockHTMLAudioElement)
+// Tests should use the global mock instead of redefining locally
 
 describe("ObjectPool", () => {
   it("should create pool with initial size", () => {
@@ -292,7 +274,8 @@ describe("AudioElementPool", () => {
       const audio = audioPool.acquire("test_sound");
 
       expect(audio).not.toBeNull();
-      expect(audio).toBeInstanceOf(MockAudioElement);
+      // Check that audio is an instance of the global Audio constructor (from setup.ts)
+      expect(audio).toBeInstanceOf(global.Audio);
     });
 
     it("should release audio element back to pool", () => {
@@ -339,7 +322,8 @@ describe("AudioElementPool", () => {
     it("should warn when releasing to non-existent pool", () => {
       const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const audio = new MockAudioElement();
+      // Use the global Audio constructor from setup.ts
+      const audio = new (global.Audio as any)();
       audioPool.release("nonexistent", audio as any);
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(

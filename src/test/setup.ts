@@ -13,6 +13,7 @@ beforeAll(() => {
 
   // Enhanced Audio mock with proper HTMLAudioElement that matches test expectations
   // Vitest 4.0 requires proper function/class constructors, not arrow functions
+  // This mock simulates proper audio loading events for AudioAssetLoader tests
   class MockHTMLAudioElement {
     canPlayType: ReturnType<typeof vi.fn>;
     play: ReturnType<typeof vi.fn>;
@@ -28,6 +29,7 @@ beforeAll(() => {
     src = "";
     crossOrigin = null;
     preload = "auto";
+    private eventListeners: Map<string, Set<(...args: any[]) => void>> = new Map();
 
     constructor(src?: string) {
       if (src) {
@@ -43,8 +45,25 @@ beforeAll(() => {
       this.play = vi.fn(() => Promise.resolve());
       this.pause = vi.fn();
       this.load = vi.fn();
-      this.addEventListener = vi.fn();
-      this.removeEventListener = vi.fn();
+      
+      // Track event listeners and trigger load events automatically
+      this.addEventListener = vi.fn((event: string, handler: (...args: any[]) => void) => {
+        if (!this.eventListeners.has(event)) {
+          this.eventListeners.set(event, new Set());
+        }
+        this.eventListeners.get(event)!.add(handler);
+        
+        // Automatically trigger canplaythrough event after a microtask
+        if (event === "canplaythrough" || event === "loadeddata" || event === "load") {
+          queueMicrotask(() => {
+            handler();
+          });
+        }
+      });
+      
+      this.removeEventListener = vi.fn((event: string, handler: (...args: any[]) => void) => {
+        this.eventListeners.get(event)?.delete(handler);
+      });
     }
   }
 
