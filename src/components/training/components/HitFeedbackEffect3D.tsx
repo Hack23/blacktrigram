@@ -40,12 +40,23 @@ const ImpactParticles: React.FC<{
   count: number;
 }> = ({ position, color, count }) => {
   const pointsRef = useRef<THREE.Points>(null);
-  const velocitiesRef = useRef<Float32Array>(new Float32Array(count * 3));
+  
+  // Store velocities in a ref that persists across renders
+  const velocitiesRef = useRef<Float32Array | null>(null);
 
-  // Initialize particle positions and velocities
-  const positions = useMemo(() => {
+  // Initialize particle positions and velocities - use seed based on position for determinism
+  const { positions, velocities } = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const vel = velocitiesRef.current;
+    const vel = new Float32Array(count * 3);
+
+    // Use position as seed for deterministic but varying particles
+    const seed = position[0] + position[1] * 10 + position[2] * 100;
+    
+    // Simple seeded random using position
+    function seededRandom(index: number): number {
+      const x = Math.sin(seed + index) * 10000;
+      return x - Math.floor(x);
+    }
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
@@ -54,22 +65,27 @@ const ImpactParticles: React.FC<{
       pos[i3 + 1] = 0;
       pos[i3 + 2] = 0;
 
-      // Random outward velocities
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      const speed = 0.5 + Math.random() * 1.5;
+      // Random outward velocities using seeded random
+      const theta = seededRandom(i * 3) * Math.PI * 2;
+      const phi = seededRandom(i * 3 + 1) * Math.PI;
+      const speed = 0.5 + seededRandom(i * 3 + 2) * 1.5;
 
       vel[i3] = Math.sin(phi) * Math.cos(theta) * speed;
       vel[i3 + 1] = Math.cos(phi) * speed + 1; // Upward bias
       vel[i3 + 2] = Math.sin(phi) * Math.sin(theta) * speed;
     }
 
-    return pos;
-  }, [count]);
+    return { positions: pos, velocities: vel };
+  }, [count, position]);
+  
+  // Update velocities ref
+  if (velocitiesRef.current === null) {
+    velocitiesRef.current = velocities;
+  }
 
   // Animate particles
   useFrame((_, delta) => {
-    if (!pointsRef.current) return;
+    if (!pointsRef.current || !velocitiesRef.current) return;
 
     const attr = pointsRef.current.geometry.attributes.position;
     const array = attr.array as Float32Array;
@@ -124,7 +140,12 @@ const RingEffect: React.FC<{
   maxRadius: number;
 }> = ({ position, color, maxRadius }) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const startTime = useRef(Date.now());
+  const startTime = useRef<number>(0);
+  
+  // Initialize start time on mount
+  if (startTime.current === 0) {
+    startTime.current = Date.now();
+  }
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -166,7 +187,12 @@ const DamageNumber: React.FC<{
 }> = ({ position, damage, type, isMobile, onComplete }) => {
   const [offset, setOffset] = useState(0);
   const [opacity, setOpacity] = useState(1);
-  const startTime = useRef(Date.now());
+  const startTime = useRef<number>(0);
+  
+  // Initialize start time on mount
+  if (startTime.current === 0) {
+    startTime.current = Date.now();
+  }
 
   useFrame(() => {
     const elapsed = (Date.now() - startTime.current) / 1000;

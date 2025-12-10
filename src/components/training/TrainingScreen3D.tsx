@@ -23,13 +23,16 @@ import { usePlayerMovement } from "../../utils/inputSystem";
 import { VolumeControl } from "../ui/VolumeControl";
 import TrainingArena3D from "./components/TrainingArena3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
-import TrainingHitEffects3D from "./components/TrainingHitEffects3D";
+import type { DifficultyMode } from "./components/TrainingDummy3D";
 import TrainingControlsHTML from "./components/TrainingControlsHTML";
 import TrainingStatsHTML, { type TrainingStats } from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
 import TrainingModeSelectorHTML, { type TrainingMode } from "./components/TrainingModeSelectorHTML";
 import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
-import DamageNumber3D from "./components/DamageNumber3D";
+import AnatomyOverlay3D from "./components/AnatomyOverlay3D";
+import type { AnatomyLayer } from "./components/AnatomyOverlay3D";
+import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
+import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
 import { Player3DUnified } from "../three/Player3DUnified";
 import { convertPlayerStateToProps } from "../../utils/player3DHelpers";
 import { PlayerArchetype } from "../../types/common";
@@ -97,6 +100,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [sessionDuration, setSessionDuration] = useState(0);
   const [perfectStrikes, setPerfectStrikes] = useState(0);
+
+  // New: Anatomy visualization and difficulty state
+  const [visibleAnatomyLayers, setVisibleAnatomyLayers] = useState<AnatomyLayer[]>([]);
+  const [difficulty] = useState<DifficultyMode>("normal");
+  const [vitalPointCount] = useState(12); // Can be expanded to 70
   
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
@@ -199,6 +207,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         break;
     }
   }, [isTraining, trainingMode, audio]);
+
+  // New: Handle anatomy layer toggle
+  const handleAnatomyLayerToggle = useCallback((layer: AnatomyLayer) => {
+    setVisibleAnatomyLayers((prev) => {
+      if (prev.includes(layer)) {
+        return prev.filter((l) => l !== layer);
+      } else {
+        return [...prev, layer];
+      }
+    });
+    audio.playSFX("menu_click");
+  }, [audio]);
 
   // Check if mobile controls should be enabled
   const mobileControlsEnabled = isMobile && isTraining;
@@ -372,8 +392,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   }, [audio]);
 
   const handleDummyHit = useCallback(
-    (_vitalPointId: string, accuracy: number): boolean => {
+    (_vitalPointId: string): boolean => {
       if (!isTraining) return false;
+
+      // Calculate distance from player to dummy (at position [5, 0, 0])
+      // Use squared distance to avoid expensive Math.sqrt
+      const dx = player3DPosition[0] - 5;
+      const dz = player3DPosition[2] - 0;
+      const squaredDistance = dx * dx + dz * dz;
+      const accuracy = Math.max(0, 1 - squaredDistance / 64);
 
       // Determine hit position (dummy is at [5, 0, 0])
       const hitPosition: [number, number, number] = [5, 1.5, 0];
@@ -472,7 +499,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         return false;
       }
     },
-    [isTraining, audio, nextEffectId]
+    [isTraining, player3DPosition, audio, nextEffectId]
   );
 
   // Consolidated keyboard input handling
@@ -512,14 +539,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
       // Handle attacks (Space key)
       if (key === " ") {
-        // Calculate distance to dummy (at position [5, 0, 0])
-        // Use squared distance to avoid expensive Math.sqrt
-        const dx = player3DPosition[0] - 5;
-        const dz = player3DPosition[2] - 0;
-        const squaredDistance = dx * dx + dz * dz;
-        const accuracy = Math.max(0, 1 - squaredDistance / 64);
-        
-        handleDummyHit(selectedVitalPoint ?? "generic", accuracy);
+        // Hit the selected vital point or generic point
+        handleDummyHit(selectedVitalPoint ?? "generic");
         event.preventDefault();
       }
     };
@@ -646,8 +667,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           selectedVitalPoint={selectedVitalPoint}
           isTraining={isTraining}
           health={dummyHealth}
+          onVitalPointHit={handleDummyHit}
           onDefeated={handleDummyDefeated}
+          difficulty={difficulty}
+          vitalPointCount={vitalPointCount}
+          isMobile={isMobile}
         />
+
+        {/* Anatomy overlay for educational visualization */}
+        {visibleAnatomyLayers.length > 0 && (
+          <AnatomyOverlay3D
+            position={[5, 0, 0]}
+            visibleLayers={visibleAnatomyLayers}
+            opacity={0.6}
+            isMobile={isMobile}
+          />
+        )}
 
         {/* Player model */}
         <Player3DUnified
@@ -664,22 +699,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
         {/* Hit effects */}
         {hitEffects.map((effect) => (
-          <React.Fragment key={effect.id}>
-            <TrainingHitEffects3D
-              position={effect.position}
-              type={effect.type}
-              visible={effect.visible}
-              onComplete={() => handleEffectComplete(effect.id)}
-            />
-            {effect.damage && effect.type !== "miss" && (
-              <DamageNumber3D
-                position={[effect.position[0], effect.position[1] + 0.3, effect.position[2]]}
-                damage={effect.damage}
-                type={effect.type === "perfect" ? "perfect" : "normal"}
-                onComplete={() => handleEffectComplete(effect.id)}
-              />
-            )}
-          </React.Fragment>
+          <HitFeedbackEffect3D
+            key={effect.id}
+            position={effect.position}
+            type={effect.type}
+            damage={effect.damage}
+            visible={effect.visible}
+            onComplete={() => handleEffectComplete(effect.id)}
+            isMobile={isMobile}
+          />
         ))}
 
         {/* Html UI Overlays */}
@@ -733,18 +761,27 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </div>
 
-            {/* Bottom Left - Mode Selector */}
+            {/* Bottom Left - Mode Selector and Anatomy Controls */}
             <div
               style={{
                 position: "absolute",
                 bottom: isMobile ? 100 : 110,
                 left: isMobile ? 10 : 20,
                 pointerEvents: "all",
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
               }}
             >
               <TrainingModeSelectorHTML
                 currentMode={trainingMode}
                 onModeChange={setTrainingMode}
+                isMobile={isMobile}
+              />
+              
+              <AnatomyControlsHTML
+                visibleLayers={visibleAnatomyLayers}
+                onLayerToggle={handleAnatomyLayerToggle}
                 isMobile={isMobile}
               />
             </div>
