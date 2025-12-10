@@ -5,7 +5,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -14,6 +14,7 @@ import React, {
   useState,
 } from "react";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
+import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
 import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
 import { Position, TrigramStance, CombatState } from "../../types/common";
@@ -38,6 +39,23 @@ import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { GestureEvent } from "../../hooks/useTouchControls";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
+
+/**
+ * AnimationUpdater - Component that updates player animation at 60fps
+ */
+interface TrainingAnimationUpdaterProps {
+  readonly playerAnimation: ReturnType<typeof usePlayerAnimation>;
+}
+
+const TrainingAnimationUpdater: React.FC<TrainingAnimationUpdaterProps> = ({
+  playerAnimation,
+}) => {
+  useFrame((_state, delta) => {
+    playerAnimation.update(delta);
+  });
+
+  return null;
+};
 
 /**
  * Props for the TrainingScreen3D component
@@ -124,7 +142,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
   const [currentStanceIndex, setCurrentStanceIndex] = useState(0);
 
-  // Mobile touch control handlers
+  // Mobile touch control handlers - non-animation dependent
   const handleMobileMove = useCallback((direction: Direction | null, eventType: DPadEventType) => {
     if (!direction || eventType !== 'start') return;
 
@@ -146,29 +164,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     }
   }, []);
 
-  const handleMobileAttack = useCallback(() => {
-    if (isTraining) {
-      // Simulate spacebar press to trigger attack
-      window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
-    }
-  }, [isTraining]);
-
   const handleMobileBlock = useCallback((eventType: ButtonEventType) => {
     // Training mode doesn't have blocking, but could add defensive practice
     if (eventType === 'start') {
       audio.playSFX("block");
     }
   }, [audio]);
-
-  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
-    setCurrentStanceIndex(stanceIndex);
-    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
-    if (stance) {
-      // Update player stance
-      onPlayerUpdate({ currentStance: stance });
-      audio.playSFX("stance_change");
-    }
-  }, [onPlayerUpdate, audio]);
 
   const handleMobileGesture = useCallback((gesture: GestureEvent) => {
     switch (gesture.type) {
@@ -251,7 +252,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Player movement with input system
-  const { playerPosition } = usePlayerMovement({
+  const { playerPosition, isMoving } = usePlayerMovement({
     enabled: isTraining,
     bounds: arenaBounds,
     onPositionChange: (newPosition: Position) => {
@@ -260,6 +261,54 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     initialPosition,
     moveSpeed: 300,
   });
+
+  // Player animation state machine - manages animation transitions at 60fps
+  const playerAnimation = usePlayerAnimation({
+    events: {
+      onFrame: (frame, state) => {
+        // Execute attack at midpoint of animation (frame 6 of 12)
+        if (state === "attack" && frame === 6) {
+          // Attack connects here - already handled by handleDummyHit
+        }
+      },
+      onAnimationComplete: (state) => {
+        if (state === "stance_change") {
+          audio.playSFX("menu_select");
+        }
+      },
+    },
+  });
+
+  // Sync movement with animation
+  useEffect(() => {
+    if (isMoving) {
+      playerAnimation.transitionTo("walk");
+    } else if (playerAnimation.currentState === "walk") {
+      playerAnimation.transitionTo("idle");
+    }
+  }, [isMoving, playerAnimation]);
+
+  // Mobile handlers that depend on playerAnimation
+  const handleMobileAttack = useCallback(() => {
+    if (isTraining) {
+      // Trigger attack animation
+      playerAnimation.transitionTo("attack");
+      // Simulate spacebar press to trigger attack
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+    }
+  }, [isTraining, playerAnimation]);
+
+  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
+    setCurrentStanceIndex(stanceIndex);
+    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+    if (stance) {
+      // Trigger stance change animation
+      playerAnimation.transitionTo("stance_change");
+      // Update player stance
+      onPlayerUpdate({ currentStance: stance });
+      audio.playSFX("stance_change");
+    }
+  }, [onPlayerUpdate, audio, playerAnimation]);
 
   // Convert 2D position to 3D
   const player3DPosition = useMemo<[number, number, number]>(
@@ -502,6 +551,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           TrigramStance.GAN,
           TrigramStance.GON,
         ];
+        // Trigger stance change animation
+        playerAnimation.transitionTo("stance_change");
         onPlayerUpdate({
           currentStance: stances[stanceIndex],
           lastActionTime: Date.now(),
@@ -512,21 +563,25 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
       // Handle attacks (Space key)
       if (key === " ") {
-        // Calculate distance to dummy (at position [5, 0, 0])
-        // Use squared distance to avoid expensive Math.sqrt
-        const dx = player3DPosition[0] - 5;
-        const dz = player3DPosition[2] - 0;
-        const squaredDistance = dx * dx + dz * dz;
-        const accuracy = Math.max(0, 1 - squaredDistance / 64);
-        
-        handleDummyHit(selectedVitalPoint ?? "generic", accuracy);
+        // Trigger attack animation
+        const success = playerAnimation.transitionTo("attack");
+        if (success) {
+          // Calculate distance to dummy (at position [5, 0, 0])
+          // Use squared distance to avoid expensive Math.sqrt
+          const dx = player3DPosition[0] - 5;
+          const dz = player3DPosition[2] - 0;
+          const squaredDistance = dx * dx + dz * dz;
+          const accuracy = Math.max(0, 1 - squaredDistance / 64);
+          
+          handleDummyHit(selectedVitalPoint ?? "generic", accuracy);
+        }
         event.preventDefault();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isTraining, player3DPosition, selectedVitalPoint, onPlayerUpdate, handleDummyHit, audio, onReturnToMenu]);
+  }, [isTraining, player3DPosition, selectedVitalPoint, onPlayerUpdate, handleDummyHit, audio, onReturnToMenu, playerAnimation]);
 
   // Hide feedback after delay
   useEffect(() => {
@@ -636,6 +691,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
           distance={20}
         />
+        
+        {/* Animation updater - updates player animation at 60fps */}
+        <TrainingAnimationUpdater playerAnimation={playerAnimation} />
 
         {/* Training arena ground */}
         <TrainingArena3D />
@@ -660,6 +718,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               facing: "right",
             }
           )}
+          currentAnimation={playerAnimation.currentState as any}
         />
 
         {/* Hit effects */}

@@ -6,7 +6,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -19,6 +19,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { useRoundTransition } from "../../hooks/useRoundTransition";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useKeyboardControls } from "../../hooks/useKeyboardControls";
+import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
@@ -85,6 +86,28 @@ import { VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer } from "../m
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { GestureEvent } from "../../hooks/useTouchControls";
+
+/**
+ * AnimationUpdater - Component that updates player animations at 60fps
+ * Uses useFrame to call update() on both animation state machines
+ */
+interface AnimationUpdaterProps {
+  readonly player1Animation: ReturnType<typeof usePlayerAnimation>;
+  readonly player2Animation: ReturnType<typeof usePlayerAnimation>;
+}
+
+const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
+  player1Animation,
+  player2Animation,
+}) => {
+  useFrame((_state, delta) => {
+    // Update both player animations at 60fps
+    player1Animation.update(delta);
+    player2Animation.update(delta);
+  });
+
+  return null; // This component doesn't render anything
+};
 
 /**
  * Calculate accuracy percentage for a player
@@ -363,7 +386,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
   // Player movement
-  usePlayerMovement({
+  const { isMoving: player1IsMoving } = usePlayerMovement({
     enabled:
       !isPaused &&
       combatState.roundStarted &&
@@ -378,6 +401,48 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     initialPosition: playerPositions[0],
     moveSpeed: 300,
   });
+
+  // Player animation state machines - manages animation transitions at 60fps
+  const player1Animation = usePlayerAnimation({
+    events: {
+      onFrame: (frame, state) => {
+        // Execute attack at midpoint of animation (frame 6 of 12)
+        if (state === "attack" && frame === 6) {
+          // Attack hit detection logic would go here
+          // This is the exact moment the attack connects
+        }
+      },
+      onAnimationComplete: (state) => {
+        // Handle animation completion
+        if (state === "attack" || state === "defend") {
+          combatActions.setExecutingTechnique(false);
+        } else if (state === "stance_change") {
+          // Stance change animation completed
+          audio.playSFX("menu_select");
+        }
+      },
+    },
+  });
+
+  const player2Animation = usePlayerAnimation({
+    events: {
+      onFrame: (frame, state) => {
+        if (state === "attack" && frame === 6) {
+          // AI attack hit detection
+        }
+      },
+    },
+  });
+
+  // Sync movement with player 1 animation
+  useEffect(() => {
+    if (player1IsMoving) {
+      player1Animation.transitionTo("walk");
+    } else if (player1Animation.currentState === "walk") {
+      player1Animation.transitionTo("idle");
+    }
+  }, [player1IsMoving, player1Animation]);
+
 
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
@@ -777,23 +842,32 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatState.roundEnded,
   ]);
 
-  // Create enhanced attack handler with action feedback
+  // Create enhanced attack handler with action feedback and animation
   const handleAttackWithFeedback = useCallback(() => {
-    // Execute the attack - health change will trigger useEffect above
-    handleAttack();
-  }, [handleAttack]);
+    // Try to transition to attack animation
+    const success = player1Animation.transitionTo("attack");
+    if (success) {
+      // Execute the attack - health change will trigger useEffect above
+      handleAttack();
+      combatActions.setExecutingTechnique(true);
+    }
+  }, [handleAttack, player1Animation, combatActions]);
 
-  // Create enhanced defend handler with action feedback
+  // Create enhanced defend handler with action feedback and animation
   const handleDefendWithFeedback = useCallback(() => {
     const defenderPos = playerPositions[0];
-    handleDefend();
-    feedbackActions.addActionFeedback(
-      "blocked",
-      "Blocked",
-      "방어!",
-      defenderPos
-    );
-  }, [handleDefend, playerPositions, feedbackActions]);
+    // Try to transition to defend animation
+    const success = player1Animation.transitionTo("defend");
+    if (success) {
+      handleDefend();
+      feedbackActions.addActionFeedback(
+        "blocked",
+        "Blocked",
+        "방어!",
+        defenderPos
+      );
+    }
+  }, [handleDefend, playerPositions, feedbackActions, player1Animation]);
 
   // Use keyboard controls hook for enhanced input handling with visual feedback
   const { queuedInputs, showHints } = useKeyboardControls({
@@ -803,9 +877,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         // Capture previous stance BEFORE changing
         const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
         setPreviousStance(prevStance);
+        // Trigger stance change animation
+        player1Animation.transitionTo("stance_change");
         handleStanceSwitch(stance);
       }
-    }, [handleStanceSwitch, currentPlayerStance]),
+    }, [handleStanceSwitch, currentPlayerStance, player1Animation]),
     onAction: useCallback((action: string) => {
       switch (action) {
         case "attack":
@@ -1229,6 +1305,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
         }}
       >
+        {/* Animation updater - updates both player animations at 60fps */}
+        <AnimationUpdater
+          player1Animation={player1Animation}
+          player2Animation={player2Animation}
+        />
+
         {/* 3D Combat Arena */}
         <CombatArena3D lighting="cyberpunk" />
 
@@ -1243,6 +1325,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               facing: "right",
             }
           )}
+          currentAnimation={player1Animation.currentState as any}
         />
 
         {/* Player 2 (AI) */}
@@ -1256,6 +1339,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               facing: "left",
             }
           )}
+          currentAnimation={player2Animation.currentState as any}
         />
 
         {/* Hit Effects */}
