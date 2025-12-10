@@ -20,6 +20,7 @@ import { useRoundTransition } from "../../hooks/useRoundTransition";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useKeyboardControls } from "../../hooks/useKeyboardControls";
 import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
+import { AnimationEvents } from "../../systems/animation";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
@@ -404,14 +405,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     moveSpeed: 300,
   });
 
+  // Use ref to store attack handler to avoid circular dependencies
+  const handleAttackRef = useRef<(() => void) | null>(null);
+
   // Player animation state machines - manages animation transitions at 60fps
-  const player1Animation = usePlayerAnimation({
-    events: {
+  // Memoize events object to maintain stability (required by usePlayerAnimation)
+  const player1AnimationEvents = useMemo<AnimationEvents>(
+    () => ({
       onFrame: (frame, state) => {
         // Execute attack at midpoint of animation (frame 6 of 12)
         if (state === "attack" && frame === 6) {
           // Attack connects at the midpoint - execute combat logic here
-          handleAttack();
+          handleAttackRef.current?.();
         }
       },
       onAnimationComplete: (state) => {
@@ -423,7 +428,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           audio.playSFX("menu_select");
         }
       },
-    },
+    }),
+    [combatActions, audio]
+  );
+
+  const player1Animation = usePlayerAnimation({
+    events: player1AnimationEvents,
   });
 
   const player2Animation = usePlayerAnimation({
@@ -448,8 +458,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player1IsMoving]);
+  }, [player1IsMoving, player1Animation]);
 
 
   // Valid players with complete state
@@ -707,6 +716,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatAudio,
   });
 
+  // Store handleAttack in ref for animation callback (avoid circular dependency)
+  useEffect(() => {
+    handleAttackRef.current = handleAttack;
+  }, [handleAttack]);
+
   // Technique selection and execution
   const techniqueSelection = useTechniqueSelection({
     player: validPlayers[0],
@@ -860,9 +874,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     } else {
       // Fallback: animation transition failed, execute attack logic immediately
       console.warn("Attack animation transition failed; executing attack logic directly.");
-      if (typeof handleAttack === "function") {
-        handleAttack();
-      }
+      handleAttack();
     }
   }, [player1Animation, combatActions, handleAttack]);
 

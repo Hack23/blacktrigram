@@ -15,6 +15,7 @@ import React, {
 } from "react";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
+import { AnimationEvents } from "../../systems/animation";
 import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
 import { Position, TrigramStance, CombatState } from "../../types/common";
@@ -373,8 +374,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Player animation state machine - manages animation transitions at 60fps
-  const playerAnimation = usePlayerAnimation({
-    events: {
+  // Memoize events object to maintain stability (required by usePlayerAnimation)
+  const playerAnimationEvents = useMemo<AnimationEvents>(
+    () => ({
       onFrame: (frame, state) => {
         // Execute attack at midpoint of animation (frame 6 of 12)
         if (state === "attack" && frame === 6 && pendingAttackRef.current) {
@@ -389,7 +391,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           audio.playSFX("menu_select");
         }
       },
-    },
+    }),
+    [handleDummyHit, audio]
+  );
+
+  const playerAnimation = usePlayerAnimation({
+    events: playerAnimationEvents,
   });
 
   // Sync movement with animation (avoid circular dependency)
@@ -404,8 +411,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
       prevIsMovingRef.current = isMoving;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMoving]);
+  }, [isMoving, playerAnimation]);
 
   // Mobile handlers that depend on playerAnimation
   const handleMobileAttack = useCallback(() => {

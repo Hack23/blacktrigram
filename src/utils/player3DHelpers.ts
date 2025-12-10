@@ -13,6 +13,21 @@ import type { Player3DUnifiedProps, BalanceState, PlayerAnimation } from "../typ
 import type { AnimationState } from "../systems/animation/types";
 
 /**
+ * Static mapping from AnimationState to PlayerAnimation
+ * @korean 애니메이션상태맵
+ */
+const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
+  idle: "idle",
+  walk: "walk",
+  run: "walk", // Map run to walk for now (Player3DUnified doesn't have run)
+  attack: "attack",
+  defend: "defend",
+  hit: "hit",
+  stance_change: "stance_change",
+  ko: "death", // Map ko to death
+};
+
+/**
  * Convert AnimationState to PlayerAnimation
  * 
  * Maps the animation system's state types to Player3DUnified's animation types.
@@ -22,19 +37,7 @@ import type { AnimationState } from "../systems/animation/types";
  * @korean 애니메이션상태변환
  */
 export function animationStateToPlayerAnimation(animState: AnimationState): PlayerAnimation {
-  // Direct mappings
-  const stateMap: Record<AnimationState, PlayerAnimation> = {
-    idle: "idle",
-    walk: "walk",
-    run: "walk", // Map run to walk for now (Player3DUnified doesn't have run)
-    attack: "attack",
-    defend: "defend",
-    hit: "hit",
-    stance_change: "stance_change",
-    ko: "death", // Map ko to death
-  };
-  
-  return stateMap[animState];
+  return ANIMATION_STATE_MAP[animState];
 }
 
 /**

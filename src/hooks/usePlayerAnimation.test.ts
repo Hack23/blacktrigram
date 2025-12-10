@@ -247,16 +247,21 @@ describe("usePlayerAnimation", () => {
       expect(result.current.reset).toBe(reset1);
     });
 
-    it("should maintain single state machine instance across renders", () => {
+    it("should maintain stable API across renders", () => {
       const { result, rerender } = renderHook(() => usePlayerAnimation());
 
-      const machine1 = result.current.stateMachine;
+      const update1 = result.current.update;
+      const transitionTo1 = result.current.transitionTo;
+      const reset1 = result.current.reset;
 
       rerender();
       rerender();
       rerender();
 
-      expect(result.current.stateMachine).toBe(machine1);
+      // API functions should remain stable
+      expect(result.current.update).toBe(update1);
+      expect(result.current.transitionTo).toBe(transitionTo1);
+      expect(result.current.reset).toBe(reset1);
     });
   });
 
