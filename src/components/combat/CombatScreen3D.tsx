@@ -458,7 +458,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-  }, [player1IsMoving, player1Animation]);
+  }, [player1IsMoving, player1Animation.transitionTo, player1Animation.currentState]);
 
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {

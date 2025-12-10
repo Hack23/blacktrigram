@@ -213,11 +213,15 @@ export function usePlayerAnimation(
     forceUpdate((n) => n + 1);
   }, [stateMachine]);
 
-  return {
-    currentState: stateMachine.getCurrentState(),
-    currentFrame: stateMachine.getCurrentFrame(),
-    update,
-    transitionTo,
-    reset,
-  };
+  // Memoize the return value to ensure stable reference unless state/frame changes
+  return useMemo(
+    () => ({
+      currentState: prevStateRef.current,
+      currentFrame: prevFrameRef.current,
+      update,
+      transitionTo,
+      reset,
+    }),
+    [prevStateRef.current, prevFrameRef.current, update, transitionTo, reset]
+  );
 }

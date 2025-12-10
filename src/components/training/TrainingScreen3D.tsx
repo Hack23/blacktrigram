@@ -411,7 +411,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
       prevIsMovingRef.current = isMoving;
     }
-  }, [isMoving, playerAnimation]);
+  }, [isMoving, playerAnimation.transitionTo, playerAnimation.currentState]);
 
   // Mobile handlers that depend on playerAnimation
   const handleMobileAttack = useCallback(() => {
