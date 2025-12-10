@@ -74,7 +74,7 @@ export const BloodLossOverlay: React.FC<BloodLossOverlayProps> = ({
       pointerEvents: "none" as const,
       backgroundColor: bloodColor,
       // Use CSS variable for dynamic animation
-      ['--base-opacity' as string]: baseOpacity.toString(),
+      ['--base-opacity']: baseOpacity.toString(),
       animation: "bloodLossPulse 1.5s ease-in-out infinite",
       transition: "opacity 0.5s ease-out",
       zIndex: 55, // Between pain vignette and consciousness blur

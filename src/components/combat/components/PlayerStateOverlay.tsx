@@ -96,23 +96,23 @@ export const PlayerStateOverlay: React.FC<PlayerStateOverlayProps> = ({
 }) => {
   return (
     <>
-      {/* Pain vignette - shows when pain >= 5 */}
+      {/* Pain vignette - shows when pain >= 5 (see PainVignette.tsx) */}
       <PainVignette pain={pain} isMobile={isMobile} />
 
-      {/* Balance indicator - color-coded border */}
+      {/* Balance indicator - always visible, color-coded by state (see BalanceIndicator.tsx) */}
       <BalanceIndicator
         balanceState={balanceState}
         position={position}
         isMobile={isMobile}
       />
 
-      {/* Consciousness blur - shows when consciousness <= 90 */}
+      {/* Consciousness blur - shows when consciousness <= 90 (see ConsciousnessBlur.tsx) */}
       <ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} />
 
-      {/* Blood loss warning - pulses when bloodLoss >= 50 */}
+      {/* Blood loss warning - pulses when bloodLoss >= 50 (see BloodLossOverlay.tsx) */}
       <BloodLossOverlay bloodLoss={bloodLoss} isMobile={isMobile} />
 
-      {/* Stamina warning - flashes when stamina < 20 */}
+      {/* Stamina warning - flashes when stamina < 20 (see StaminaWarning.tsx) */}
       <StaminaWarning stamina={stamina} isMobile={isMobile} />
     </>
   );
