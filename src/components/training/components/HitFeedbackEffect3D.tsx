@@ -81,10 +81,8 @@ const ImpactParticles: React.FC<{
     return { positions: pos, velocities: vel };
   }, [count, position]);
   
-  // Update velocities ref
-  if (velocitiesRef.current === null) {
-    velocitiesRef.current = velocities;
-  }
+  // Update velocities ref using nullish coalescing
+  velocitiesRef.current ??= velocities;
 
   // Animate particles
   useFrame((_, delta) => {
@@ -145,10 +143,12 @@ const RingEffect: React.FC<{
   const meshRef = useRef<THREE.Mesh>(null);
   const startTime = useRef<number>(0);
   
-  // Initialize start time on mount
-  if (startTime.current === 0) {
-    startTime.current = Date.now();
-  }
+  // Initialize start time on mount using useEffect
+  React.useEffect(() => {
+    if (startTime.current === 0) {
+      startTime.current = Date.now();
+    }
+  }, []);
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -192,10 +192,12 @@ const DamageNumber: React.FC<{
   const [opacity, setOpacity] = useState(1);
   const startTime = useRef<number>(0);
   
-  // Initialize start time on mount
-  if (startTime.current === 0) {
-    startTime.current = Date.now();
-  }
+  // Initialize start time on mount using useEffect
+  React.useEffect(() => {
+    if (startTime.current === 0) {
+      startTime.current = Date.now();
+    }
+  }, []);
 
   useFrame(() => {
     const elapsed = (Date.now() - startTime.current) / 1000;
