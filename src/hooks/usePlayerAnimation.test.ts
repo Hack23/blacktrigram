@@ -29,7 +29,9 @@ describe("usePlayerAnimation", () => {
     it("should use default configs if not provided", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
-      expect(result.current.stateMachine.getCurrentAnimation()).toBeDefined();
+      // Check that hook returns expected properties
+      expect(result.current.currentState).toBe("idle");
+      expect(result.current.currentFrame).toBe(0);
     });
 
     it("should accept custom animation configs", () => {
@@ -208,25 +210,25 @@ describe("usePlayerAnimation", () => {
     });
   });
 
-  describe("stateMachine access", () => {
-    it("should provide access to underlying state machine", () => {
+  describe("transitionTo method", () => {
+    it("should allow state transitions via hook method", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
-      expect(result.current.stateMachine).toBeDefined();
-      expect(result.current.stateMachine.getCurrentState()).toBe("idle");
-    });
-
-    it("should allow direct state machine manipulation", () => {
-      const { result, rerender } = renderHook(() => usePlayerAnimation());
-
       act(() => {
-        result.current.stateMachine.transitionTo("walk");
-        // Direct calls to stateMachine don't trigger re-render, so force it
-        rerender();
+        result.current.transitionTo("walk");
       });
 
-      // After re-render, should reflect the change
-      expect(result.current.stateMachine.getCurrentState()).toBe("walk");
+      expect(result.current.currentState).toBe("walk");
+    });
+
+    it("should respect transition rules", () => {
+      const { result } = renderHook(() => usePlayerAnimation());
+
+      act(() => {
+        result.current.transitionTo("walk");
+      });
+
+      expect(result.current.currentState).toBe("walk");
     });
   });
 

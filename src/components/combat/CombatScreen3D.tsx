@@ -448,7 +448,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-  }, [player1IsMoving, player1Animation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player1IsMoving]);
 
 
   // Valid players with complete state

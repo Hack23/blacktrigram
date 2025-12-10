@@ -404,7 +404,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
       prevIsMovingRef.current = isMoving;
     }
-  }, [isMoving, playerAnimation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMoving]);
 
   // Mobile handlers that depend on playerAnimation
   const handleMobileAttack = useCallback(() => {
@@ -601,7 +602,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isTraining, playerPosition, selectedVitalPoint, onPlayerUpdate, audio, onReturnToMenu, playerAnimation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTraining, playerPosition, selectedVitalPoint, onPlayerUpdate, audio, onReturnToMenu]);
 
   // Hide feedback after delay
   useEffect(() => {

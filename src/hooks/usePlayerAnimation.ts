@@ -99,13 +99,6 @@ export interface UsePlayerAnimationReturn {
    * @korean 초기화
    */
   readonly reset: () => void;
-
-  /**
-   * Get animation state machine instance (for advanced use)
-   * 
-   * @korean 상태머신가져오기
-   */
-  readonly stateMachine: PlayerAnimationStateMachine;
 }
 
 /**
@@ -166,18 +159,16 @@ export function usePlayerAnimation(
     [customConfigs]
   );
 
-  // Create animation state machine (persistent across renders)
-  const stateMachineRef = useRef<PlayerAnimationStateMachine | null>(null);
-
-  if (!stateMachineRef.current) {
-    stateMachineRef.current = new PlayerAnimationStateMachine(configs, events);
+  // Create animation state machine (persistent across renders via useMemo)
+  const stateMachine = useMemo(() => {
+    const machine = new PlayerAnimationStateMachine(configs, events);
     // Set initial state if not "idle"
     if (initialState !== "idle") {
-      stateMachineRef.current.transitionTo(initialState);
+      machine.transitionTo(initialState);
     }
-  }
-
-  const stateMachine = stateMachineRef.current;
+    return machine;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - only create once
 
   // Track previous state to only update on actual changes
   const prevStateRef = useRef<AnimationState>(stateMachine.getCurrentState());
@@ -228,6 +219,5 @@ export function usePlayerAnimation(
     update,
     transitionTo,
     reset,
-    stateMachine,
   };
 }
