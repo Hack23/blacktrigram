@@ -43,8 +43,11 @@ const ImpactParticles: React.FC<{
   
   // Store velocities in a ref that persists across renders
   const velocitiesRef = useRef<Float32Array | null>(null);
+  
+  // Store initial position for seeded random - use useState to capture at mount
+  const [initialPosition] = React.useState(position);
 
-  // Initialize particle positions and velocities - use seed based on position for determinism
+  // Initialize particle positions and velocities - use seed based on initial position
   const { positions, velocities } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count * 3);
@@ -52,8 +55,8 @@ const ImpactParticles: React.FC<{
     // Constants for seeded random generation
     const SEED_MULTIPLIER = 10000; // Large multiplier for better randomness
     
-    // Use position as seed for deterministic but varying particles
-    const seed = position[0] + position[1] * 10 + position[2] * 100;
+    // Use initial position as seed for deterministic but varying particles
+    const seed = initialPosition[0] + initialPosition[1] * 10 + initialPosition[2] * 100;
     
     // Simple seeded random using position
     function seededRandom(index: number): number {
@@ -79,10 +82,12 @@ const ImpactParticles: React.FC<{
     }
 
     return { positions: pos, velocities: vel };
-  }, [count, position]);
+  }, [count, initialPosition]); // initialPosition is captured at mount and won't change
   
-  // Update velocities ref using nullish coalescing
-  velocitiesRef.current ??= velocities;
+  // Update velocities ref in useEffect to avoid ref access during render
+  React.useEffect(() => {
+    velocitiesRef.current = velocities;
+  }, [velocities]);
 
   // Animate particles
   useFrame((_, delta) => {
@@ -191,6 +196,7 @@ const DamageNumber: React.FC<{
   const [offset, setOffset] = useState(0);
   const [opacity, setOpacity] = useState(1);
   const startTime = useRef<number>(0);
+  const completedRef = useRef(false);
   
   // Initialize start time on mount using useEffect
   React.useEffect(() => {
@@ -209,8 +215,9 @@ const DamageNumber: React.FC<{
     // Fade out
     setOpacity(1 - progress);
 
-    // Complete when done
-    if (progress >= 1 && onComplete) {
+    // Complete when done (only once)
+    if (progress >= 1 && !completedRef.current && onComplete) {
+      completedRef.current = true;
       onComplete();
     }
   });
@@ -275,8 +282,13 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
   const particleCount = type === "perfect" ? 30 : type === "success" ? 20 : 10;
   const ringRadius = type === "perfect" ? 1.5 : 1.0;
 
-  // Handle effect completion
+  // Track completion to prevent multiple calls
+  const completedRef = useRef(false);
+
+  // Handle effect completion (only once)
   const handleComplete = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
     setShowEffect(false);
     onComplete?.();
   }, [onComplete]);

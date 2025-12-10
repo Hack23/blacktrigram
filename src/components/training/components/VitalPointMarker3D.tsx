@@ -189,7 +189,7 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
             <div
               style={{
                 fontSize: isMobile ? "9px" : "10px",
-                color: `#${color.toString(16).padStart(6, "0")}`,
+                color: `#${new THREE.Color(color).getHexString()}`,
                 marginTop: "6px",
                 borderTop: "1px solid rgba(255, 255, 255, 0.2)",
                 paddingTop: "4px",
