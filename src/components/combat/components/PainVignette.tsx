@@ -11,7 +11,6 @@
 
 import React, { useMemo } from "react";
 import { Html } from "@react-three/drei";
-import { KOREAN_COLORS } from "../../../types/constants";
 
 export interface PainVignetteProps {
   /**
