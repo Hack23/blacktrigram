@@ -1,6 +1,6 @@
 /**
  * PauseMenu Component - Main pause menu overlay
- * 
+ *
  * Features:
  * - Resume combat
  * - Restart match
@@ -14,9 +14,9 @@
 
 import React from "react";
 import { useAudio } from "../../../audio/AudioProvider";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
-import ConfirmDialog from "./ConfirmDialog";
+import ConfirmDialog from "../../ui/shared/ConfirmDialog";
 import ControlsGuide from "./ControlsGuide";
 import QuickSettings from "./QuickSettings";
 
@@ -46,67 +46,74 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
   isMobile,
 }) => {
   const audio = useAudio();
-  const [activeSubmenu, setActiveSubmenu] = React.useState<"controls" | "settings" | null>(null);
-  const [showConfirm, setShowConfirm] = React.useState<"restart" | "menu" | null>(null);
+  const [activeSubmenu, setActiveSubmenu] = React.useState<
+    "controls" | "settings" | null
+  >(null);
+  const [showConfirm, setShowConfirm] = React.useState<
+    "restart" | "menu" | null
+  >(null);
 
   // Memoize menuItems to prevent recreation on every render
-  const menuItems: MenuItem[] = React.useMemo(() => [
-    {
-      key: "resume",
-      labelKorean: "계속",
-      labelEnglish: "Resume",
-      testId: "pause-resume-button",
-      onClick: () => {
-        audio.playSFX("menu_select");
-        onResume();
+  const menuItems: MenuItem[] = React.useMemo(
+    () => [
+      {
+        key: "resume",
+        labelKorean: "계속",
+        labelEnglish: "Resume",
+        testId: "pause-resume-button",
+        onClick: () => {
+          audio.playSFX("menu_select");
+          onResume();
+        },
+        icon: "▶️",
       },
-      icon: "▶️",
-    },
-    {
-      key: "restart",
-      labelKorean: "재시작",
-      labelEnglish: "Restart Match",
-      testId: "pause-restart-button",
-      onClick: () => {
-        audio.playSFX("menu_select");
-        setShowConfirm("restart");
+      {
+        key: "restart",
+        labelKorean: "재시작",
+        labelEnglish: "Restart Match",
+        testId: "pause-restart-button",
+        onClick: () => {
+          audio.playSFX("menu_select");
+          setShowConfirm("restart");
+        },
+        icon: "🔄",
       },
-      icon: "🔄",
-    },
-    {
-      key: "controls",
-      labelKorean: "조작법",
-      labelEnglish: "Controls",
-      testId: "pause-controls-button",
-      onClick: () => {
-        audio.playSFX("menu_select");
-        setActiveSubmenu("controls");
+      {
+        key: "controls",
+        labelKorean: "조작법",
+        labelEnglish: "Controls",
+        testId: "pause-controls-button",
+        onClick: () => {
+          audio.playSFX("menu_select");
+          setActiveSubmenu("controls");
+        },
+        icon: "🎮",
       },
-      icon: "🎮",
-    },
-    {
-      key: "settings",
-      labelKorean: "설정",
-      labelEnglish: "Settings",
-      testId: "pause-settings-button",
-      onClick: () => {
-        audio.playSFX("menu_select");
-        setActiveSubmenu("settings");
+      {
+        key: "settings",
+        labelKorean: "설정",
+        labelEnglish: "Settings",
+        testId: "pause-settings-button",
+        onClick: () => {
+          audio.playSFX("menu_select");
+          setActiveSubmenu("settings");
+        },
+        icon: "⚙️",
       },
-      icon: "⚙️",
-    },
-    {
-      key: "menu",
-      labelKorean: "메인 메뉴",
-      labelEnglish: "Return to Menu",
-      testId: "pause-menu-button",
-      onClick: () => {
-        audio.playSFX("menu_select");
-        setShowConfirm("menu");
+      {
+        key: "menu",
+        labelKorean: "메인 메뉴",
+        labelEnglish: "Return to Menu",
+        testId: "pause-menu-button",
+        onClick: () => {
+          audio.playSFX("menu_select");
+          setShowConfirm("menu");
+        },
+        icon: "🏠",
       },
-      icon: "🏠",
-    },
-  ], [audio, onResume]);
+    ],
+    [audio, onResume]
+  );
 
   // ESC key handling is now managed by the parent (CombatScreen3D) to avoid conflicts
 
@@ -140,7 +147,10 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
             fontFamily: FONT_FAMILY.KOREAN,
             fontWeight: "bold",
             margin: `0 0 ${isMobile ? "40px" : "60px"} 0`,
-            textShadow: `0 0 30px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`,
+            textShadow: `0 0 30px ${hexToRgbaString(
+              KOREAN_COLORS.ACCENT_GOLD,
+              0.6
+            )}`,
             textAlign: "center",
           }}
         >
@@ -165,9 +175,15 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
               style={{
                 padding: isMobile ? "12px 24px" : "16px 32px",
                 fontSize: isMobile ? "16px" : "20px",
-                backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9),
+                backgroundColor: hexToRgbaString(
+                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  0.9
+                ),
                 color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+                border: `2px solid ${hexToRgbaString(
+                  KOREAN_COLORS.PRIMARY_CYAN,
+                  0.6
+                )}`,
                 borderRadius: "8px",
                 fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
@@ -207,7 +223,9 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              {item.icon && <span style={{ fontSize: "24px" }}>{item.icon}</span>}
+              {item.icon && (
+                <span style={{ fontSize: "24px" }}>{item.icon}</span>
+              )}
               <span>
                 {item.labelKorean} | {item.labelEnglish}
               </span>

@@ -1,5 +1,5 @@
 import { Html } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -7,9 +7,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
+import { useWindowSize } from "../../hooks/useWindowSize";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems/types";
 import { GameMode, PlayerArchetype } from "../../types/common";
 import {
@@ -19,6 +19,7 @@ import {
 } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { getArchetypeAssets } from "../../utils/playerUtils";
+import { BackgroundScene3D } from "../three/BackgroundScene3D";
 import { KoreanHeaderHTML } from "../ui/KoreanHeaderHTML";
 import { VolumeControl } from "../ui/VolumeControl";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
@@ -26,21 +27,6 @@ import { EnhancedArchetypeDisplay } from "./components/EnhancedArchetypeDisplay"
 import { MenuSectionHTML } from "./components/MenuSectionHTML";
 
 const APP_VERSION = import.meta.env.APP_VERSION;
-
-// Responsive dimensions hook
-function useWindowSize() {
-  const [size, setSize] = useState<{ width: number; height: number }>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-  useEffect(() => {
-    const onResize = () =>
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return size;
-}
 
 export interface IntroScreenThreeJSProps {
   readonly onMenuSelect: (mode: GameMode, archetype?: PlayerArchetype) => void;
@@ -81,56 +67,6 @@ const getArchetypeFromIndex = (index: number): PlayerArchetype => {
     PLAYER_ARCHETYPES_DATA
   ) as PlayerArchetype[];
   return archetypeKeys[index] ?? PlayerArchetype.MUSA;
-};
-
-/**
- * Three.js-based Background Scene Component
- * Renders cyberpunk Korean-themed 3D background
- */
-const BackgroundScene: React.FC = () => {
-  const gridRef = useRef<THREE.GridHelper>(null);
-
-  // Animate grid using useFrame for proper sync with render loop
-  useFrame(() => {
-    if (gridRef.current) {
-      gridRef.current.rotation.y += 0.0005;
-    }
-  });
-
-  return (
-    <>
-      {/* Ambient lighting */}
-      <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
-
-      {/* Directional lights for Korean aesthetic */}
-      <directionalLight
-        position={[10, 10, 5]}
-        intensity={1}
-        color={KOREAN_COLORS.ACCENT_GOLD}
-      />
-      <pointLight
-        position={[-10, 5, -5]}
-        intensity={0.5}
-        color={KOREAN_COLORS.ACCENT_BLUE}
-      />
-
-      {/* Cyberpunk grid plane - positioned lower and with fog to hide edges */}
-      <gridHelper
-        ref={gridRef}
-        args={[
-          80, // Smaller size to avoid edge visibility
-          40, // Fewer divisions for cleaner look
-          KOREAN_COLORS.PRIMARY_CYAN,
-          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-        ]}
-        position={[0, -8, 0]} // Lower position to hide grid lines from camera view
-        rotation={[0, 0, 0]}
-      />
-
-      {/* Fog for depth - starts closer to hide grid edges */}
-      <fog attach="fog" args={[KOREAN_COLORS.UI_BACKGROUND_DARK, 5, 40]} />
-    </>
-  );
 };
 
 /**
@@ -386,7 +322,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         }}
       >
         {/* 3D Background Scene */}
-        <BackgroundScene />
+        <BackgroundScene3D theme="intro" />
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>
