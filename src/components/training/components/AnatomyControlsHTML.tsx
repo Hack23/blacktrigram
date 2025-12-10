@@ -4,7 +4,7 @@
  * Provides buttons to toggle skeleton, nerves, vascular, and surface layers
  */
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import type { AnatomyLayer } from "./AnatomyOverlay3D";
 import { FONT_FAMILY } from "../../../types/constants";
 import "../training.css";
@@ -72,6 +72,9 @@ export const AnatomyControlsHTML: React.FC<AnatomyControlsHTMLProps> = ({
   onLayerToggle,
   isMobile = false,
 }) => {
+  // State for hover effects
+  const [hoveredLayer, setHoveredLayer] = useState<AnatomyLayer | null>(null);
+
   const handleToggle = useCallback(
     (layer: AnatomyLayer) => {
       onLayerToggle(layer);
@@ -144,18 +147,12 @@ export const AnatomyControlsHTML: React.FC<AnatomyControlsHTMLProps> = ({
                 fontFamily: FONT_FAMILY.KOREAN,
                 color: "#ffffff",
                 width: "100%",
+                // Hover effects managed by React state for better maintainability
+                transform: hoveredLayer === config.id ? "scale(1.02)" : "scale(1)",
+                boxShadow: hoveredLayer === config.id ? `0 0 15px ${config.color}50` : "none",
               }}
-              // Note: Direct DOM manipulation for hover effects is used here for immediate
-              // visual feedback without React re-renders. For better maintainability in
-              // future iterations, consider migrating to CSS hover pseudo-classes.
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.02)";
-                e.currentTarget.style.boxShadow = `0 0 15px ${config.color}50`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
+              onMouseEnter={() => setHoveredLayer(config.id)}
+              onMouseLeave={() => setHoveredLayer(null)}
               data-testid={`anatomy-layer-${config.id}`}
               aria-label={`Toggle ${config.english} layer`}
               aria-pressed={isActive}

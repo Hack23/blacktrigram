@@ -512,7 +512,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         return false;
       }
     },
-    [isTraining, player3DPosition, audio, nextEffectId]
+    [
+      isTraining,
+      player3DPosition,
+      audio,
+      nextEffectId,
+      setStats,
+      setDummyHealth,
+      setFeedback,
+      setShowFeedback,
+      setHitEffects,
+      setNextEffectId,
+      setPerfectStrikes,
+      setBestCombo,
+    ]
   );
 
   // Consolidated keyboard input handling
