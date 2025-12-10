@@ -11,6 +11,7 @@
 
 import React, { useMemo } from "react";
 import { Html } from "@react-three/drei";
+import { KOREAN_COLORS } from "../../../types/constants";
 
 export interface StaminaWarningProps {
   /**
@@ -30,11 +31,13 @@ export interface StaminaWarningProps {
  * StaminaWarning - Yellow flash warning for critical stamina depletion
  * 
  * Renders a fullscreen flashing yellow border when stamina drops below 20%.
+ * Only visible when stamina is below 20. If stamina is 20 or higher, the component does not render.
  * Uses CSS keyframe animation for fast attention-grabbing flash at 60fps.
  * 
  * @example
  * ```tsx
- * <StaminaWarning stamina={15} isMobile={false} />
+ * <StaminaWarning stamina={15} isMobile={false} /> // Renders warning
+ * <StaminaWarning stamina={25} isMobile={false} /> // Does not render
  * ```
  */
 export const StaminaWarning: React.FC<StaminaWarningProps> = ({
@@ -57,8 +60,9 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
     // Mobile uses thinner border
     const borderWidth = isMobile ? "4px" : "6px";
     
-    // Use WARNING_YELLOW color (0xffff00) = rgb(255, 255, 0)
-    const warningColor = `rgb(255, 255, 0)`;
+    // Use KOREAN_COLORS.WARNING_YELLOW constant
+    const rgb = KOREAN_COLORS.WARNING_YELLOW;
+    const warningColor = `rgb(${(rgb >> 16) & 255}, ${(rgb >> 8) & 255}, ${rgb & 255})`;
     
     // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);

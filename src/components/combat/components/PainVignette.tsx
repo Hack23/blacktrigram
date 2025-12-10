@@ -11,6 +11,7 @@
 
 import React, { useMemo } from "react";
 import { Html } from "@react-three/drei";
+import { KOREAN_COLORS } from "../../../types/constants";
 
 export interface PainVignetteProps {
   /**
@@ -30,11 +31,14 @@ export interface PainVignetteProps {
  * PainVignette - Red edge vignette overlay for pain visualization
  * 
  * Renders a fullscreen overlay with red vignette effect that intensifies
- * as pain increases. Optimized for 60fps with CSS transitions.
+ * as pain increases. Only visible when pain is 5 or higher. Optimized 
+ * for 60fps with CSS transitions.
  * 
  * @example
  * ```tsx
  * <PainVignette pain={65} isMobile={false} />
+ * // No render if pain < 5
+ * <PainVignette pain={2} isMobile={false} />
  * ```
  */
 export const PainVignette: React.FC<PainVignetteProps> = ({ 
@@ -56,8 +60,9 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
     const maxOpacity = isMobile ? 0.5 : 0.7;
     const opacity = intensity * maxOpacity;
     
-    // Use KOREAN_COLORS.PAIN_INDICATOR (0xff6b6b) = rgb(255, 107, 107)
-    const painColor = `rgba(255, 107, 107, ${opacity})`;
+    // Use KOREAN_COLORS.PAIN_INDICATOR constant
+    const rgb = KOREAN_COLORS.PAIN_INDICATOR;
+    const painColor = `rgba(${(rgb >> 16) & 255}, ${(rgb >> 8) & 255}, ${rgb & 255}, ${opacity})`;
     
     return {
       position: "fixed" as const,

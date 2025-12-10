@@ -31,11 +31,14 @@ export interface ConsciousnessBlurProps {
  * ConsciousnessBlur - Screen blur effect based on consciousness level
  * 
  * Renders a fullscreen overlay with blur effect that intensifies as
- * consciousness decreases. Optimized for 60fps with CSS backdrop-filter.
+ * consciousness decreases. Only visible when consciousness is 90 or below.
+ * Optimized for 60fps with CSS backdrop-filter.
  * 
  * @example
  * ```tsx
  * <ConsciousnessBlur consciousness={45} isMobile={false} />
+ * // No render if consciousness > 90
+ * <ConsciousnessBlur consciousness={95} isMobile={false} />
  * ```
  */
 export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({

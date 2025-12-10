@@ -1455,7 +1455,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           balanceState={getBalanceState(validPlayers[0].balance)}
           position="left"
           consciousness={validPlayers[0].consciousness}
-          bloodLoss={0} // TODO: Add bloodLoss tracking to PlayerState
+          bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
           stamina={validPlayers[0].stamina}
           isMobile={isMobile}
         />
@@ -1466,7 +1466,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           balanceState={getBalanceState(validPlayers[1].balance)}
           position="right"
           consciousness={validPlayers[1].consciousness}
-          bloodLoss={0} // TODO: Add bloodLoss tracking to PlayerState
+          bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
           stamina={validPlayers[1].stamina}
           isMobile={isMobile}
         />
