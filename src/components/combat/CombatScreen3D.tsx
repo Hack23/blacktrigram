@@ -76,7 +76,7 @@ import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
 import { Player3DUnified } from "../three/Player3DUnified";
-import { convertPlayerStateToProps, getBalanceState } from "../../utils/player3DHelpers";
+import { convertPlayerStateToProps, getBalanceState, animationStateToPlayerAnimation } from "../../utils/player3DHelpers";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -1325,7 +1325,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               facing: "right",
             }
           )}
-          currentAnimation={player1Animation.currentState as any}
+          currentAnimation={animationStateToPlayerAnimation(player1Animation.currentState)}
         />
 
         {/* Player 2 (AI) */}
@@ -1339,7 +1339,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               facing: "left",
             }
           )}
-          currentAnimation={player2Animation.currentState as any}
+          currentAnimation={animationStateToPlayerAnimation(player2Animation.currentState)}
         />
 
         {/* Hit Effects */}

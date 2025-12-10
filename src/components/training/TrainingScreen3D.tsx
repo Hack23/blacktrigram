@@ -32,7 +32,7 @@ import TrainingModeSelectorHTML, { type TrainingMode } from "./components/Traini
 import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
 import DamageNumber3D from "./components/DamageNumber3D";
 import { Player3DUnified } from "../three/Player3DUnified";
-import { convertPlayerStateToProps } from "../../utils/player3DHelpers";
+import { convertPlayerStateToProps, animationStateToPlayerAnimation } from "../../utils/player3DHelpers";
 import { PlayerArchetype } from "../../types/common";
 import { VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer } from "../mobile";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
@@ -718,7 +718,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               facing: "right",
             }
           )}
-          currentAnimation={playerAnimation.currentState as any}
+          currentAnimation={animationStateToPlayerAnimation(playerAnimation.currentState)}
         />
 
         {/* Hit effects */}
