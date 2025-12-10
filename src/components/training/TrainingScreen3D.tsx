@@ -291,179 +291,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     moveSpeed: 300,
   });
 
-  // Handle dummy hit - must be defined before playerAnimation initialization
-  const handleDummyHit = useCallback(
-    (_vitalPointId: string, accuracy: number): boolean => {
-      if (!isTraining) return false;
 
-      // Determine hit position (dummy is at [5, 0, 0])
-      const hitPosition: [number, number, number] = [5, 1.5, 0];
-      
-      let effectType: "success" | "perfect" | "miss";
 
-      if (accuracy > 0.5) {
-        const points = Math.round(accuracy * 100);
-        const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
-        
-        // Track perfect strikes
-        if (accuracy > 0.9) {
-          setPerfectStrikes((prev) => prev + 1);
-        }
-        
-        setStats((prev) => {
-          const newHits = prev.hits + 1;
-          const totalAttempts = newHits + prev.misses;
-          const newCombo = prev.combo + 1;
-          
-          // Update best combo ref in same state update
-          if (newCombo > bestComboRef.current) {
-            bestComboRef.current = newCombo;
-            setBestCombo(newCombo);
-          }
-          
-          return {
-            score: prev.score + points,
-            combo: newCombo,
-            hits: newHits,
-            misses: prev.misses,
-            accuracy: totalAttempts > 0 ? (newHits / totalAttempts) * 100 : 0,
-          };
-        });
-
-        // Reduce dummy health
-        setDummyHealth((prev) => Math.max(0, prev - damage));
-
-        if (accuracy > 0.9) {
-          setFeedback("완벽한 타격! | Perfect Strike!");
-          audio.playSFX("ki_release");
-          effectType = "perfect";
-        } else if (accuracy > 0.7) {
-          setFeedback("좋은 타격! | Good Strike!");
-          audio.playSFX("ki_charge");
-          effectType = "success";
-        } else {
-          setFeedback("타격 성공 | Strike Success");
-          audio.playSFX("menu_click");
-          effectType = "success";
-        }
-        
-        setShowFeedback(true);
-        
-        // Add hit effect
-        setHitEffects((prev) => [
-          ...prev,
-          {
-            id: nextEffectId,
-            position: hitPosition,
-            type: effectType,
-            visible: true,
-            damage,
-          },
-        ]);
-        setNextEffectId((prev) => prev + 1);
-        
-        return true;
-      } else {
-        setStats((prev) => {
-          const newMisses = prev.misses + 1;
-          const totalAttempts = prev.hits + newMisses;
-          return {
-            ...prev,
-            combo: 0,
-            misses: newMisses,
-            accuracy: totalAttempts > 0 ? (prev.hits / totalAttempts) * 100 : 0,
-          };
-        });
-        setFeedback("빗나감 | Miss");
-        setShowFeedback(true);
-        audio.playSFX("menu_navigate");
-        
-        // Add miss effect
-        setHitEffects((prev) => [
-          ...prev,
-          {
-            id: nextEffectId,
-            position: hitPosition,
-            type: "miss",
-            visible: true,
-          },
-        ]);
-        setNextEffectId((prev) => prev + 1);
-        
-        return false;
-      }
-    },
-    [isTraining, audio, nextEffectId]
-  );
-
-  // Player animation state machine - manages animation transitions at 60fps
-  // Memoize events object to maintain stability (required by usePlayerAnimation)
-  const playerAnimationEvents = useMemo<AnimationEvents>(
-    () => ({
-      onFrame: (frame, state) => {
-        // Execute attack at midpoint of animation (frame 6 of 12)
-        if (state === "attack" && frame === 6 && pendingAttackRef.current) {
-          const attackData = pendingAttackRef.current;
-          pendingAttackRef.current = null;
-          // Execute the stored attack
-          handleDummyHit(attackData.vitalPoint, attackData.accuracy);
-        }
-      },
-      onAnimationComplete: (state) => {
-        if (state === "stance_change") {
-          audio.playSFX("menu_select");
-        }
-      },
-    }),
-    [handleDummyHit, audio]
-  );
-
-  const playerAnimation = usePlayerAnimation({
-    events: playerAnimationEvents,
-  });
-
-  // Sync movement with animation (avoid circular dependency)
-  const prevIsMovingRef = useRef<boolean>(isMoving);
-  useEffect(() => {
-    // Only trigger transition when isMoving changes
-    if (prevIsMovingRef.current !== isMoving) {
-      if (isMoving) {
-        playerAnimation.transitionTo("walk");
-      } else if (playerAnimation.currentState === "walk") {
-        playerAnimation.transitionTo("idle");
-      }
-      prevIsMovingRef.current = isMoving;
-    }
-  }, [isMoving, playerAnimation.transitionTo, playerAnimation.currentState]);
-
-  // Mobile handlers that depend on playerAnimation
-  const handleMobileAttack = useCallback(() => {
-    if (isTraining) {
-      // Calculate attack accuracy and store it using playerPosition (2D)
-      const dx = playerPosition.x - 5; // Dummy is at x=5
-      const dz = playerPosition.y - 0; // Dummy is at y=0
-      const squaredDistance = dx * dx + dz * dz;
-      const accuracy = Math.max(0, 1 - squaredDistance / 64);
-      pendingAttackRef.current = {
-        accuracy,
-        vitalPoint: selectedVitalPoint ?? "generic"
-      };
-      // Trigger attack animation
-      playerAnimation.transitionTo("attack");
-    }
-  }, [isTraining, playerAnimation, playerPosition, selectedVitalPoint]);
-
-  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
-    setCurrentStanceIndex(stanceIndex);
-    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
-    if (stance) {
-      // Trigger stance change animation
-      playerAnimation.transitionTo("stance_change");
-      // Update player stance
-      onPlayerUpdate({ currentStance: stance });
-      audio.playSFX("stance_change");
-    }
-  }, [onPlayerUpdate, audio, playerAnimation]);
 
   // Convert 2D position to 3D
   const player3DPosition = useMemo<[number, number, number]>(
@@ -693,21 +522,77 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         return false;
       }
     },
-    [
-      isTraining,
-      player3DPosition,
-      audio,
-      nextEffectId,
-      setStats,
-      setDummyHealth,
-      setFeedback,
-      setShowFeedback,
-      setHitEffects,
-      setNextEffectId,
-      setPerfectStrikes,
-      setBestCombo,
-    ]
+    [isTraining, player3DPosition, audio, nextEffectId]
   );
+
+  // Player animation state machine - manages animation transitions at 60fps
+  // Memoize events object to maintain stability (required by usePlayerAnimation)
+  const playerAnimationEvents = useMemo<AnimationEvents>(
+    () => ({
+      onFrame: (frame, state) => {
+        // Execute attack at midpoint of animation (frame 6 of 12)
+        if (state === "attack" && frame === 6 && pendingAttackRef.current) {
+          const attackData = pendingAttackRef.current;
+          pendingAttackRef.current = null;
+          // Execute the stored attack (accuracy calculation is now done inside handleDummyHit)
+          handleDummyHit(attackData.vitalPoint);
+        }
+      },
+      onAnimationComplete: (state) => {
+        if (state === "stance_change") {
+          audio.playSFX("menu_select");
+        }
+      },
+    }),
+    [handleDummyHit, audio]
+  );
+
+  const playerAnimation = usePlayerAnimation({
+    events: playerAnimationEvents,
+  });
+
+  // Sync movement with animation (avoid circular dependency)
+  const prevIsMovingRef = useRef<boolean>(isMoving);
+  useEffect(() => {
+    // Only trigger transition when isMoving changes
+    if (prevIsMovingRef.current !== isMoving) {
+      if (isMoving) {
+        playerAnimation.transitionTo("walk");
+      } else if (playerAnimation.currentState === "walk") {
+        playerAnimation.transitionTo("idle");
+      }
+      prevIsMovingRef.current = isMoving;
+    }
+  }, [isMoving, playerAnimation.transitionTo, playerAnimation.currentState]);
+
+  // Mobile handlers that depend on playerAnimation
+  const handleMobileAttack = useCallback(() => {
+    if (isTraining) {
+      // Calculate attack accuracy and store it using playerPosition (2D)
+      const dx = playerPosition.x - 5; // Dummy is at x=5
+      const dz = playerPosition.y - 0; // Dummy is at y=0
+      const squaredDistance = dx * dx + dz * dz;
+      const accuracy = Math.max(0, 1 - squaredDistance / 64);
+      pendingAttackRef.current = {
+        accuracy,
+        vitalPoint: selectedVitalPoint ?? "generic"
+      };
+      // Trigger attack animation
+      playerAnimation.transitionTo("attack");
+    }
+  }, [isTraining, playerAnimation, playerPosition, selectedVitalPoint]);
+
+  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
+    setCurrentStanceIndex(stanceIndex);
+    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+    if (stance) {
+      // Trigger stance change animation
+      playerAnimation.transitionTo("stance_change");
+      // Update player stance
+      onPlayerUpdate({ currentStance: stance });
+      audio.playSFX("stance_change");
+    }
+  }, [onPlayerUpdate, audio, playerAnimation]);
 
   // Consolidated keyboard input handling
   useEffect(() => {
