@@ -11,7 +11,6 @@ import * as THREE from "three";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { KOREAN_COLORS } from "../../../types/constants";
 import VitalPointMarker3D from "./VitalPointMarker3D";
-import type { AnatomyLayer } from "./AnatomyOverlay3D";
 
 /**
  * Difficulty mode for training
@@ -38,8 +37,6 @@ export interface TrainingDummy3DProps {
   readonly difficulty?: DifficultyMode;
   /** Number of vital points to display (3-70) */
   readonly vitalPointCount?: number;
-  /** Visible anatomy layers */
-  readonly visibleAnatomyLayers?: readonly AnatomyLayer[];
   /** Whether on mobile device */
   readonly isMobile?: boolean;
 }

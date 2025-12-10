@@ -103,8 +103,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // New: Anatomy visualization and difficulty state
   const [visibleAnatomyLayers, setVisibleAnatomyLayers] = useState<AnatomyLayer[]>([]);
-  const [difficulty] = useState<DifficultyMode>("normal");
-  const [vitalPointCount] = useState(12); // Can be expanded to 70
+  const difficulty: DifficultyMode = "normal";
+  const vitalPointCount = 12; // Can be expanded to 70
   
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
