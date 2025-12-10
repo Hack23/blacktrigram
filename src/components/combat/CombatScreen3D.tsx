@@ -91,7 +91,7 @@ import { GestureEvent } from "../../hooks/useTouchControls";
  * AnimationUpdater - Component that updates player animations at 60fps
  * Uses useFrame to call update() on both animation state machines
  * 
- * @korean 애니메이션업데이터속성
+ * @korean 애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
  */
 interface AnimationUpdaterProps {
   readonly player1Animation: ReturnType<typeof usePlayerAnimation>;
@@ -436,14 +436,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     },
   });
 
-  // Sync movement with player 1 animation
+  // Sync movement with player 1 animation (avoid circular dependency)
+  const prevPlayer1IsMovingRef = useRef<boolean>(player1IsMoving);
   useEffect(() => {
-    if (player1IsMoving) {
-      player1Animation.transitionTo("walk");
-    } else if (player1Animation.currentState === "walk") {
-      player1Animation.transitionTo("idle");
+    // Only trigger transition when isMoving changes
+    if (prevPlayer1IsMovingRef.current !== player1IsMoving) {
+      if (player1IsMoving) {
+        player1Animation.transitionTo("walk");
+      } else if (player1Animation.currentState === "walk") {
+        player1Animation.transitionTo("idle");
+      }
+      prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-  }, [player1IsMoving, player1Animation.transitionTo, player1Animation.currentState]);
+  }, [player1IsMoving, player1Animation]);
 
 
   // Valid players with complete state
@@ -851,8 +856,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     if (success) {
       // Attack execution will happen at frame 6 in onFrame callback
       combatActions.setExecutingTechnique(true);
+    } else {
+      // Fallback: animation transition failed, execute attack logic immediately
+      console.warn("Attack animation transition failed; executing attack logic directly.");
+      if (typeof handleAttack === "function") {
+        handleAttack();
+      }
     }
-  }, [player1Animation, combatActions]);
+  }, [player1Animation, combatActions, handleAttack]);
 
   // Create enhanced defend handler with action feedback and animation
   const handleDefendWithFeedback = useCallback(() => {

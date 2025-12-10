@@ -35,6 +35,12 @@ export interface UsePlayerAnimationOptions {
   /**
    * Animation event callbacks
    * 
+   * **IMPORTANT**: The events object should be stable (memoized) to prevent
+   * unnecessary re-initialization of the animation system. Changes to event
+   * callbacks after the hook is initialized will NOT be reflected in the
+   * animation system. Use `useMemo` or define events outside the component
+   * to ensure stability.
+   * 
    * @korean 이벤트콜백
    */
   readonly events?: AnimationEvents;

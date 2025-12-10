@@ -43,7 +43,7 @@ import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 /**
  * AnimationUpdater - Component that updates player animation at 60fps
  * 
- * @korean 훈련애니메이션업데이터속성
+ * @korean 훈련애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
  */
 interface TrainingAnimationUpdaterProps {
   readonly playerAnimation: ReturnType<typeof usePlayerAnimation>;
@@ -267,6 +267,111 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     moveSpeed: 300,
   });
 
+  // Handle dummy hit - must be defined before playerAnimation initialization
+  const handleDummyHit = useCallback(
+    (_vitalPointId: string, accuracy: number): boolean => {
+      if (!isTraining) return false;
+
+      // Determine hit position (dummy is at [5, 0, 0])
+      const hitPosition: [number, number, number] = [5, 1.5, 0];
+      
+      let effectType: "success" | "perfect" | "miss";
+
+      if (accuracy > 0.5) {
+        const points = Math.round(accuracy * 100);
+        const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
+        
+        // Track perfect strikes
+        if (accuracy > 0.9) {
+          setPerfectStrikes((prev) => prev + 1);
+        }
+        
+        setStats((prev) => {
+          const newHits = prev.hits + 1;
+          const totalAttempts = newHits + prev.misses;
+          const newCombo = prev.combo + 1;
+          
+          // Update best combo ref in same state update
+          if (newCombo > bestComboRef.current) {
+            bestComboRef.current = newCombo;
+            setBestCombo(newCombo);
+          }
+          
+          return {
+            score: prev.score + points,
+            combo: newCombo,
+            hits: newHits,
+            misses: prev.misses,
+            accuracy: totalAttempts > 0 ? (newHits / totalAttempts) * 100 : 0,
+          };
+        });
+
+        // Reduce dummy health
+        setDummyHealth((prev) => Math.max(0, prev - damage));
+
+        if (accuracy > 0.9) {
+          setFeedback("완벽한 타격! | Perfect Strike!");
+          audio.playSFX("ki_release");
+          effectType = "perfect";
+        } else if (accuracy > 0.7) {
+          setFeedback("좋은 타격! | Good Strike!");
+          audio.playSFX("ki_charge");
+          effectType = "success";
+        } else {
+          setFeedback("타격 성공 | Strike Success");
+          audio.playSFX("menu_click");
+          effectType = "success";
+        }
+        
+        setShowFeedback(true);
+        
+        // Add hit effect
+        setHitEffects((prev) => [
+          ...prev,
+          {
+            id: nextEffectId,
+            position: hitPosition,
+            type: effectType,
+            visible: true,
+            damage,
+          },
+        ]);
+        setNextEffectId((prev) => prev + 1);
+        
+        return true;
+      } else {
+        setStats((prev) => {
+          const newMisses = prev.misses + 1;
+          const totalAttempts = prev.hits + newMisses;
+          return {
+            ...prev,
+            combo: 0,
+            misses: newMisses,
+            accuracy: totalAttempts > 0 ? (prev.hits / totalAttempts) * 100 : 0,
+          };
+        });
+        setFeedback("빗나감 | Miss");
+        setShowFeedback(true);
+        audio.playSFX("menu_navigate");
+        
+        // Add miss effect
+        setHitEffects((prev) => [
+          ...prev,
+          {
+            id: nextEffectId,
+            position: hitPosition,
+            type: "miss",
+            visible: true,
+          },
+        ]);
+        setNextEffectId((prev) => prev + 1);
+        
+        return false;
+      }
+    },
+    [isTraining, audio, nextEffectId]
+  );
+
   // Player animation state machine - manages animation transitions at 60fps
   const playerAnimation = usePlayerAnimation({
     events: {
@@ -287,14 +392,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     },
   });
 
-  // Sync movement with animation
+  // Sync movement with animation (avoid circular dependency)
+  const prevIsMovingRef = useRef<boolean>(isMoving);
   useEffect(() => {
-    if (isMoving) {
-      playerAnimation.transitionTo("walk");
-    } else if (playerAnimation.currentState === "walk") {
-      playerAnimation.transitionTo("idle");
+    // Only trigger transition when isMoving changes
+    if (prevIsMovingRef.current !== isMoving) {
+      if (isMoving) {
+        playerAnimation.transitionTo("walk");
+      } else if (playerAnimation.currentState === "walk") {
+        playerAnimation.transitionTo("idle");
+      }
+      prevIsMovingRef.current = isMoving;
     }
-  }, [isMoving, playerAnimation.transitionTo, playerAnimation.currentState]);
+  }, [isMoving, playerAnimation]);
 
   // Mobile handlers that depend on playerAnimation
   const handleMobileAttack = useCallback(() => {
@@ -435,110 +545,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     }, 2000);
   }, [audio]);
 
-  const handleDummyHit = useCallback(
-    (_vitalPointId: string, accuracy: number): boolean => {
-      if (!isTraining) return false;
-
-      // Determine hit position (dummy is at [5, 0, 0])
-      const hitPosition: [number, number, number] = [5, 1.5, 0];
-      
-      let effectType: "success" | "perfect" | "miss";
-
-      if (accuracy > 0.5) {
-        const points = Math.round(accuracy * 100);
-        const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
-        
-        // Track perfect strikes
-        if (accuracy > 0.9) {
-          setPerfectStrikes((prev) => prev + 1);
-        }
-        
-        setStats((prev) => {
-          const newHits = prev.hits + 1;
-          const totalAttempts = newHits + prev.misses;
-          const newCombo = prev.combo + 1;
-          
-          // Update best combo ref in same state update
-          if (newCombo > bestComboRef.current) {
-            bestComboRef.current = newCombo;
-            setBestCombo(newCombo);
-          }
-          
-          return {
-            score: prev.score + points,
-            combo: newCombo,
-            hits: newHits,
-            misses: prev.misses,
-            accuracy: totalAttempts > 0 ? (newHits / totalAttempts) * 100 : 0,
-          };
-        });
-
-        // Reduce dummy health
-        setDummyHealth((prev) => Math.max(0, prev - damage));
-
-        if (accuracy > 0.9) {
-          setFeedback("완벽한 타격! | Perfect Strike!");
-          audio.playSFX("ki_release");
-          effectType = "perfect";
-        } else if (accuracy > 0.7) {
-          setFeedback("좋은 타격! | Good Strike!");
-          audio.playSFX("ki_charge");
-          effectType = "success";
-        } else {
-          setFeedback("타격 성공 | Strike Success");
-          audio.playSFX("menu_click");
-          effectType = "success";
-        }
-        
-        setShowFeedback(true);
-        
-        // Add hit effect
-        setHitEffects((prev) => [
-          ...prev,
-          {
-            id: nextEffectId,
-            position: hitPosition,
-            type: effectType,
-            visible: true,
-            damage,
-          },
-        ]);
-        setNextEffectId((prev) => prev + 1);
-        
-        return true;
-      } else {
-        setStats((prev) => {
-          const newMisses = prev.misses + 1;
-          const totalAttempts = prev.hits + newMisses;
-          return {
-            ...prev,
-            combo: 0,
-            misses: newMisses,
-            accuracy: totalAttempts > 0 ? (prev.hits / totalAttempts) * 100 : 0,
-          };
-        });
-        setFeedback("빗나감 | Miss");
-        setShowFeedback(true);
-        audio.playSFX("menu_navigate");
-        
-        // Add miss effect
-        setHitEffects((prev) => [
-          ...prev,
-          {
-            id: nextEffectId,
-            position: hitPosition,
-            type: "miss",
-            visible: true,
-          },
-        ]);
-        setNextEffectId((prev) => prev + 1);
-        
-        return false;
-      }
-    },
-    [isTraining, audio, nextEffectId]
-  );
-
   // Consolidated keyboard input handling
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -595,7 +601,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isTraining, playerPosition, selectedVitalPoint, onPlayerUpdate, audio, onReturnToMenu, playerAnimation.transitionTo, handleDummyHit]);
+  }, [isTraining, playerPosition, selectedVitalPoint, onPlayerUpdate, audio, onReturnToMenu, playerAnimation]);
 
   // Hide feedback after delay
   useEffect(() => {
