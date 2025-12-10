@@ -78,7 +78,7 @@ describe("PainVignette", () => {
     });
 
     it("should handle maximum pain (100%)", () => {
-      const props = { pain: 100, isMobile={false} };
+      const props = { pain: 100, isMobile: false };
       expect(props.pain).toBe(100);
     });
   });

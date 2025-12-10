@@ -13,6 +13,14 @@ export { DamageNumbers } from "./DamageNumbers";
 export { ComboCounter } from "./ComboCounter";
 export { ActionFeedback, TechniqueName } from "./ActionFeedback";
 
+// Player State Visual Indicators
+export { PainVignette } from "./PainVignette";
+export { BalanceIndicator } from "./BalanceIndicator";
+export { ConsciousnessBlur } from "./ConsciousnessBlur";
+export { BloodLossOverlay } from "./BloodLossOverlay";
+export { StaminaWarning } from "./StaminaWarning";
+export { PlayerStateOverlay } from "./PlayerStateOverlay";
+
 // UI components
 export { RoundAnnouncement } from "./RoundAnnouncement";
 export { MatchCountdown } from "./MatchCountdown";
@@ -41,3 +49,11 @@ export type { PauseMenuProps } from "./PauseMenu";
 export type { ConfirmDialogProps } from "./ConfirmDialog";
 export type { QuickSettingsProps } from "./QuickSettings";
 export type { ControlsGuideProps } from "./ControlsGuide";
+
+// Player State Indicator prop types
+export type { PainVignetteProps } from "./PainVignette";
+export type { BalanceIndicatorProps } from "./BalanceIndicator";
+export type { ConsciousnessBlurProps } from "./ConsciousnessBlur";
+export type { BloodLossOverlayProps } from "./BloodLossOverlay";
+export type { StaminaWarningProps } from "./StaminaWarning";
+export type { PlayerStateOverlayProps } from "./PlayerStateOverlay";
