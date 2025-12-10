@@ -460,7 +460,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
   }, [player1IsMoving, player1Animation]);
 
-
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
     if (players.length === 0) {
@@ -884,6 +883,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Try to transition to defend animation
     const success = player1Animation.transitionTo("defend");
     if (success) {
+      handleDefend();
+      feedbackActions.addActionFeedback(
+        "blocked",
+        "Blocked",
+        "방어!",
+        defenderPos
+      );
+    } else {
+      // Fallback: animation transition failed, execute defend logic immediately
+      console.warn("Defend animation transition failed; executing defend logic directly.");
       handleDefend();
       feedbackActions.addActionFeedback(
         "blocked",
