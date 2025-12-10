@@ -72,9 +72,10 @@ import { DamageNumbers } from "./components/DamageNumbers";
 import HitEffects3D from "./components/HitEffects3D";
 import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
+import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
 import { Player3DUnified } from "../three/Player3DUnified";
-import { convertPlayerStateToProps } from "../../utils/player3DHelpers";
+import { convertPlayerStateToProps, getBalanceState } from "../../utils/player3DHelpers";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -1444,6 +1445,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <PlayerHUD
           player={validPlayers[1]}
           position="right"
+          isMobile={isMobile}
+        />
+
+        {/* Player State Visual Indicators */}
+        {/* Player 1 State Overlay */}
+        <PlayerStateOverlay
+          pain={validPlayers[0].pain}
+          balanceState={getBalanceState(validPlayers[0].balance)}
+          position="left"
+          consciousness={validPlayers[0].consciousness}
+          bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
+          stamina={validPlayers[0].stamina}
+          isMobile={isMobile}
+        />
+
+        {/* Player 2 State Overlay */}
+        <PlayerStateOverlay
+          pain={validPlayers[1].pain}
+          balanceState={getBalanceState(validPlayers[1].balance)}
+          position="right"
+          consciousness={validPlayers[1].consciousness}
+          bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
+          stamina={validPlayers[1].stamina}
           isMobile={isMobile}
         />
 
