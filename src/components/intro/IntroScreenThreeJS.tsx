@@ -114,21 +114,21 @@ const BackgroundScene: React.FC = () => {
         color={KOREAN_COLORS.ACCENT_BLUE}
       />
 
-      {/* Cyberpunk grid plane */}
+      {/* Cyberpunk grid plane - positioned lower and with fog to hide edges */}
       <gridHelper
         ref={gridRef}
         args={[
-          100,
-          50,
+          80, // Smaller size to avoid edge visibility
+          40, // Fewer divisions for cleaner look
           KOREAN_COLORS.PRIMARY_CYAN,
           KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
         ]}
-        position={[0, -5, 0]}
+        position={[0, -8, 0]} // Lower position to hide grid lines from camera view
         rotation={[0, 0, 0]}
       />
 
-      {/* Fog for depth */}
-      <fog attach="fog" args={[KOREAN_COLORS.UI_BACKGROUND_DARK, 10, 50]} />
+      {/* Fog for depth - starts closer to hide grid edges */}
+      <fog attach="fog" args={[KOREAN_COLORS.UI_BACKGROUND_DARK, 5, 40]} />
     </>
   );
 };

@@ -1,6 +1,6 @@
 /**
  * TrainingScreen3D - Three.js-based training screen
- * 
+ *
  * Provides 3D training dummy with vital point targeting and Html UI overlays
  */
 
@@ -13,40 +13,56 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
-import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
-import { AnimationEvents } from "../../systems/animation";
-import { PlayerState } from "../../systems";
 import { useAudio } from "../../audio/AudioProvider";
-import { Position, TrigramStance, CombatState } from "../../types/common";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
+import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
+import { GestureEvent } from "../../hooks/useTouchControls";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
+import { PlayerState } from "../../systems";
+import { AnimationEvents } from "../../systems/animation";
+import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
+import {
+  CombatState,
+  PlayerArchetype,
+  Position,
+  TrigramStance,
+} from "../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
-import { VolumeControl } from "../ui/VolumeControl";
-import TrainingArena3D from "./components/TrainingArena3D";
-import TrainingDummy3D from "./components/TrainingDummy3D";
-import type { DifficultyMode } from "./components/TrainingDummy3D";
-import TrainingControlsHTML from "./components/TrainingControlsHTML";
-import TrainingStatsHTML, { type TrainingStats } from "./components/TrainingStatsHTML";
-import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
-import TrainingModeSelectorHTML, { type TrainingMode } from "./components/TrainingModeSelectorHTML";
-import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
-import AnatomyOverlay3D from "./components/AnatomyOverlay3D";
-import type { AnatomyLayer } from "./components/AnatomyOverlay3D";
-import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
-import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
-import { Player3DUnified } from "../three/Player3DUnified";
-import { convertPlayerStateToProps, animationStateToPlayerAnimation } from "../../utils/player3DHelpers";
-import { PlayerArchetype } from "../../types/common";
-import { VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer } from "../mobile";
-import { Direction, DPadEventType } from "../mobile/VirtualDPad";
+import {
+  animationStateToPlayerAnimation,
+  convertPlayerStateToProps,
+} from "../../utils/player3DHelpers";
+import {
+  ActionButtons,
+  GestureRecognizer,
+  StanceWheel,
+  VirtualDPad,
+} from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
-import { GestureEvent } from "../../hooks/useTouchControls";
-import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
+import { Direction, DPadEventType } from "../mobile/VirtualDPad";
+import { Player3DUnified } from "../three/Player3DUnified";
+import { VolumeControl } from "../ui/VolumeControl";
+import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
+import type { AnatomyLayer } from "./components/AnatomyOverlay3D";
+import AnatomyOverlay3D from "./components/AnatomyOverlay3D";
+import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
+import TrainingArena3D from "./components/TrainingArena3D";
+import TrainingControlsHTML from "./components/TrainingControlsHTML";
+import type { DifficultyMode } from "./components/TrainingDummy3D";
+import TrainingDummy3D from "./components/TrainingDummy3D";
+import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
+import TrainingModeSelectorHTML, {
+  type TrainingMode,
+} from "./components/TrainingModeSelectorHTML";
+import TrainingStatsHTML, {
+  type TrainingStats,
+} from "./components/TrainingStatsHTML";
+import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
 
 /**
  * AnimationUpdater - Component that updates player animation at 60fps
- * 
+ *
  * @korean 훈련애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
  */
 interface TrainingAnimationUpdaterProps {
@@ -101,10 +117,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
-      console.warn('⚠️ WebGL context lost in TrainingScreen');
+      console.warn("⚠️ WebGL context lost in TrainingScreen");
     },
     onContextRestored: () => {
-      console.log('✅ WebGL context restored in TrainingScreen');
+      console.log("✅ WebGL context restored in TrainingScreen");
     },
     autoRestore: true,
   });
@@ -112,7 +128,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Training state
   const [trainingMode, setTrainingMode] = useState<TrainingMode>("basics");
   const [isTraining, setIsTraining] = useState(false);
-  const [selectedVitalPoint, setSelectedVitalPoint] = useState<string | null>(null);
+  const [selectedVitalPoint, setSelectedVitalPoint] = useState<string | null>(
+    null
+  );
   const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const [hitEffects, setHitEffects] = useState<HitEffect[]>([]);
@@ -123,13 +141,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [perfectStrikes, setPerfectStrikes] = useState(0);
 
   // New: Anatomy visualization and difficulty state
-  const [visibleAnatomyLayers, setVisibleAnatomyLayers] = useState<AnatomyLayer[]>([]);
-  
+  const [visibleAnatomyLayers, setVisibleAnatomyLayers] = useState<
+    AnatomyLayer[]
+  >([]);
+
   // Training difficulty and vital point configuration
   // TODO: Make these configurable via props or settings UI in future iteration
   const difficulty: DifficultyMode = "normal"; // Controls marker size multipliers (easy: 1.5x, normal: 1x, hard: 0.7x)
   const vitalPointCount = 12; // Currently 12 visible points, expandable to full 70 point system
-  
+
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
     score: 0,
@@ -145,9 +165,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Ref to store timeout for dummy reset
   const dummyResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Ref to store pending attack data (for frame 6 execution)
-  const pendingAttackRef = useRef<{ accuracy: number; vitalPoint: string } | null>(null);
+  const pendingAttackRef = useRef<{
+    accuracy: number;
+    vitalPoint: string;
+  } | null>(null);
 
   // Responsive detection
   const isMobile = useMemo(() => width < 768, [width]);
@@ -160,75 +183,89 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [currentStanceIndex, setCurrentStanceIndex] = useState(0);
 
   // Mobile touch control handlers (non-animation dependent)
-  const handleMobileMove = useCallback((direction: Direction | null, eventType: DPadEventType) => {
-    if (!direction || eventType !== 'start') return;
+  const handleMobileMove = useCallback(
+    (direction: Direction | null, eventType: DPadEventType) => {
+      if (!direction || eventType !== "start") return;
 
-    // Map D-pad directions to movement
-    const directionMap: Record<Direction, string> = {
-      'up': 'w',
-      'up-right': 'd', 
-      'right': 'd',
-      'down-right': 'd',
-      'down': 's',
-      'down-left': 'a',
-      'left': 'a',
-      'up-left': 'w',
-    };
+      // Map D-pad directions to movement
+      const directionMap: Record<Direction, string> = {
+        up: "w",
+        "up-right": "d",
+        right: "d",
+        "down-right": "d",
+        down: "s",
+        "down-left": "a",
+        left: "a",
+        "up-left": "w",
+      };
 
-    const key = directionMap[direction];
-    if (key) {
-      window.dispatchEvent(new KeyboardEvent('keydown', { key }));
-    }
-  }, []);
+      const key = directionMap[direction];
+      if (key) {
+        window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+      }
+    },
+    []
+  );
 
-  const handleMobileBlock = useCallback((eventType: ButtonEventType) => {
-    // Training mode doesn't have blocking, but could add defensive practice
-    if (eventType === 'start') {
-      audio.playSFX("block");
-    }
-  }, [audio]);
+  const handleMobileBlock = useCallback(
+    (eventType: ButtonEventType) => {
+      // Training mode doesn't have blocking, but could add defensive practice
+      if (eventType === "start") {
+        audio.playSFX("block");
+      }
+    },
+    [audio]
+  );
 
-  const handleMobileGesture = useCallback((gesture: GestureEvent) => {
-    switch (gesture.type) {
-      case 'swipe-right':
-        // Move forward
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'd' }));
-        break;
-      case 'swipe-left':
-        // Move backward
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
-        break;
-      case 'swipe-up':
-        // Quick strike
-        if (isTraining) {
-          window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
-        }
-        break;
-      case 'swipe-down':
-        // Reset dummy health
-        setDummyHealth(100);
-        setFeedback("더미 재설정 | Dummy Reset");
-        setShowFeedback(true);
-        break;
-      case 'two-finger-tap':
-        // Toggle between basic and vital point training
-        setTrainingMode(trainingMode === "vital_point" ? "basics" : "vital_point");
-        audio.playSFX("menu_select");
-        break;
-    }
-  }, [isTraining, trainingMode, audio]);
+  const handleMobileGesture = useCallback(
+    (gesture: GestureEvent) => {
+      switch (gesture.type) {
+        case "swipe-right":
+          // Move forward
+          window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }));
+          break;
+        case "swipe-left":
+          // Move backward
+          window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+          break;
+        case "swipe-up":
+          // Quick strike
+          if (isTraining) {
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
+          }
+          break;
+        case "swipe-down":
+          // Reset dummy health
+          setDummyHealth(100);
+          setFeedback("더미 재설정 | Dummy Reset");
+          setShowFeedback(true);
+          break;
+        case "two-finger-tap":
+          // Toggle between basic and vital point training
+          setTrainingMode(
+            trainingMode === "vital_point" ? "basics" : "vital_point"
+          );
+          audio.playSFX("menu_select");
+          break;
+      }
+    },
+    [isTraining, trainingMode, audio]
+  );
 
   // New: Handle anatomy layer toggle
-  const handleAnatomyLayerToggle = useCallback((layer: AnatomyLayer) => {
-    setVisibleAnatomyLayers((prev) => {
-      if (prev.includes(layer)) {
-        return prev.filter((l) => l !== layer);
-      } else {
-        return [...prev, layer];
-      }
-    });
-    audio.playSFX("menu_click");
-  }, [audio]);
+  const handleAnatomyLayerToggle = useCallback(
+    (layer: AnatomyLayer) => {
+      setVisibleAnatomyLayers((prev) => {
+        if (prev.includes(layer)) {
+          return prev.filter((l) => l !== layer);
+        } else {
+          return [...prev, layer];
+        }
+      });
+      audio.playSFX("menu_click");
+    },
+    [audio]
+  );
 
   // Check if mobile controls should be enabled
   const mobileControlsEnabled = isMobile && isTraining;
@@ -236,7 +273,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Audio lifecycle management
   useEffect(() => {
     let audioStarted = false;
-    
+
     const startMusic = async () => {
       try {
         await audio.fadeIn("cyberpunk_fusion", 2000);
@@ -248,14 +285,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         setShowFeedback(true);
       }
     };
-    
+
     void startMusic();
 
     return () => {
       if (audioStarted) {
-        void audio.fadeOut(2000).then(() => audio.stopMusic()).catch((err) => 
-          console.warn("Failed to stop training music:", err)
-        );
+        void audio
+          .fadeOut(2000)
+          .then(() => audio.stopMusic())
+          .catch((err) => console.warn("Failed to stop training music:", err));
       }
     };
   }, [audio]);
@@ -281,8 +319,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Player movement with input system
+  // Movement is always enabled so users can move around the training arena immediately
+  // Only vital point strikes and scoring require training to be started
   const { playerPosition, isMoving } = usePlayerMovement({
-    enabled: isTraining,
+    enabled: true, // Always allow movement in training screen
     bounds: arenaBounds,
     onPositionChange: (newPosition: Position) => {
       onPlayerUpdate({ position: newPosition });
@@ -290,9 +330,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     initialPosition,
     moveSpeed: 300,
   });
-
-
-
 
   // Convert 2D position to 3D
   const player3DPosition = useMemo<[number, number, number]>(
@@ -348,7 +385,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       accuracy: stats.accuracy,
       comboCount: stats.combo,
     };
-  }, [playerPosition, stats.hits, stats.misses, stats.accuracy, stats.combo, perfectStrikes]);
+  }, [
+    playerPosition,
+    stats.hits,
+    stats.misses,
+    stats.accuracy,
+    stats.combo,
+    perfectStrikes,
+  ]);
 
   // Training handlers
   const handleStartTraining = useCallback(() => {
@@ -374,13 +418,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     setBestCombo(0);
     bestComboRef.current = 0;
     setPerfectStrikes(0);
-    
+
     // Clear any pending dummy reset timeout
     if (dummyResetTimeoutRef.current) {
       clearTimeout(dummyResetTimeoutRef.current);
       dummyResetTimeoutRef.current = null;
     }
-    
+
     setFeedback("훈련 종료 | Training End");
     setShowFeedback(true);
     audio.playSFX("menu_back");
@@ -390,12 +434,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     setFeedback("훈련 더미 무력화! | Dummy Defeated!");
     setShowFeedback(true);
     audio.playSFX("ki_release");
-    
+
     // Clear any existing timeout
     if (dummyResetTimeoutRef.current) {
       clearTimeout(dummyResetTimeoutRef.current);
     }
-    
+
     // Reset dummy health after delay
     dummyResetTimeoutRef.current = setTimeout(() => {
       setDummyHealth(100);
@@ -406,10 +450,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   /**
    * handleDummyHit - Handles a hit attempt on the training dummy
-   * 
+   *
    * @param _vitalPointId - The ID of the vital point hit (currently unused, reserved for future vital-point-specific logic)
    * @returns true if hit was registered, false otherwise
-   * 
+   *
    * Note: The vitalPointId parameter is included for future enhancements where different
    * vital points may have different hit detection rules or feedback. Currently, all hits
    * use distance-based accuracy calculation regardless of which point was targeted.
@@ -427,29 +471,29 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
       // Determine hit position (dummy is at [5, 0, 0])
       const hitPosition: [number, number, number] = [5, 1.5, 0];
-      
+
       let effectType: "success" | "perfect" | "miss";
 
       if (accuracy > 0.5) {
         const points = Math.round(accuracy * 100);
         const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
-        
+
         // Track perfect strikes
         if (accuracy > 0.9) {
           setPerfectStrikes((prev) => prev + 1);
         }
-        
+
         setStats((prev) => {
           const newHits = prev.hits + 1;
           const totalAttempts = newHits + prev.misses;
           const newCombo = prev.combo + 1;
-          
+
           // Update best combo ref in same state update
           if (newCombo > bestComboRef.current) {
             bestComboRef.current = newCombo;
             setBestCombo(newCombo);
           }
-          
+
           return {
             score: prev.score + points,
             combo: newCombo,
@@ -475,9 +519,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           audio.playSFX("menu_click");
           effectType = "success";
         }
-        
+
         setShowFeedback(true);
-        
+
         // Add hit effect
         setHitEffects((prev) => [
           ...prev,
@@ -490,7 +534,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           },
         ]);
         setNextEffectId((prev) => prev + 1);
-        
+
         return true;
       } else {
         setStats((prev) => {
@@ -506,7 +550,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         setFeedback("빗나감 | Miss");
         setShowFeedback(true);
         audio.playSFX("menu_navigate");
-        
+
         // Add miss effect
         setHitEffects((prev) => [
           ...prev,
@@ -518,7 +562,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           },
         ]);
         setNextEffectId((prev) => prev + 1);
-        
+
         return false;
       }
     },
@@ -575,24 +619,27 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       const accuracy = Math.max(0, 1 - squaredDistance / 64);
       pendingAttackRef.current = {
         accuracy,
-        vitalPoint: selectedVitalPoint ?? "generic"
+        vitalPoint: selectedVitalPoint ?? "generic",
       };
       // Trigger attack animation
       playerAnimation.transitionTo("attack");
     }
   }, [isTraining, playerAnimation, playerPosition, selectedVitalPoint]);
 
-  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
-    setCurrentStanceIndex(stanceIndex);
-    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
-    if (stance) {
-      // Trigger stance change animation
-      playerAnimation.transitionTo("stance_change");
-      // Update player stance
-      onPlayerUpdate({ currentStance: stance });
-      audio.playSFX("stance_change");
-    }
-  }, [onPlayerUpdate, audio, playerAnimation]);
+  const handleMobileStanceChange = useCallback(
+    (stanceIndex: number) => {
+      setCurrentStanceIndex(stanceIndex);
+      const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+      if (stance) {
+        // Trigger stance change animation
+        playerAnimation.transitionTo("stance_change");
+        // Update player stance
+        onPlayerUpdate({ currentStance: stance });
+        audio.playSFX("stance_change");
+      }
+    },
+    [onPlayerUpdate, audio, playerAnimation]
+  );
 
   // Consolidated keyboard input handling
   useEffect(() => {
@@ -642,7 +689,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         const accuracy = Math.max(0, 1 - squaredDistance / 64);
         pendingAttackRef.current = {
           accuracy,
-          vitalPoint: selectedVitalPoint ?? "generic"
+          vitalPoint: selectedVitalPoint ?? "generic",
         };
         // Trigger attack animation - execution will happen at frame 6
         playerAnimation.transitionTo("attack");
@@ -653,7 +700,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTraining, playerPosition, selectedVitalPoint, onPlayerUpdate, audio, onReturnToMenu]);
+  }, [
+    isTraining,
+    playerPosition,
+    selectedVitalPoint,
+    onPlayerUpdate,
+    audio,
+    onReturnToMenu,
+  ]);
 
   // Hide feedback after delay
   useEffect(() => {
@@ -722,7 +776,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       >
         {/* Korean-themed lighting (오방색 - Five Cardinal Colors) */}
         <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
-        
+
         {/* Main directional light - Center (황색/Yellow) */}
         <directionalLight
           position={[0, 10, 5]}
@@ -731,7 +785,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           castShadow
           shadow-mapSize={[2048, 2048]}
         />
-        
+
         {/* East (청색/Blue-Green) */}
         <pointLight
           position={[10, 5, 0]}
@@ -739,7 +793,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           color={KOREAN_COLORS.ACCENT_GREEN}
           distance={20}
         />
-        
+
         {/* West (백색/White) */}
         <pointLight
           position={[-10, 5, 0]}
@@ -747,7 +801,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           color={KOREAN_COLORS.WHITE_SOLID}
           distance={20}
         />
-        
+
         {/* South (적색/Red) */}
         <pointLight
           position={[0, 5, 10]}
@@ -755,7 +809,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           color={KOREAN_COLORS.ACCENT_RED}
           distance={20}
         />
-        
+
         {/* North (흑색/Black) - dim for depth */}
         <pointLight
           position={[0, 5, -10]}
@@ -763,7 +817,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
           distance={20}
         />
-        
+
         {/* Animation updater - updates player animation at 60fps */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />
 
@@ -804,7 +858,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               facing: "right",
             }
           )}
-          currentAnimation={animationStateToPlayerAnimation(playerAnimation.currentState)}
+          currentAnimation={animationStateToPlayerAnimation(
+            playerAnimation.currentState
+          )}
         />
 
         {/* Hit effects */}
@@ -888,7 +944,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 onModeChange={setTrainingMode}
                 isMobile={isMobile}
               />
-              
+
               <AnatomyControlsHTML
                 visibleLayers={visibleAnatomyLayers}
                 onLayerToggle={handleAnatomyLayerToggle}
@@ -923,10 +979,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   pointerEvents: "none",
                 }}
               >
-                <TrainingFeedbackHTML
-                  message={feedback}
-                  isMobile={isMobile}
-                />
+                <TrainingFeedbackHTML message={feedback} isMobile={isMobile} />
               </div>
             )}
 
@@ -945,7 +998,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               <style>
                 {`
                   .training-return-menu-btn {
-                    background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+                    background: ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      1
+                    )};
                     border: none;
                     border-radius: 8px;
                     padding: ${isMobile ? "10px 16px" : "12px 24px"};
@@ -955,12 +1011,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    box-shadow: 0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)};
+                    box-shadow: 0 0 10px ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.5
+                    )};
                     min-height: 40px;
                   }
                   .training-return-menu-btn:hover {
                     transform: scale(1.05);
-                    box-shadow: 0 0 20px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)};
+                    box-shadow: 0 0 20px ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.8
+                    )};
                   }
                 `}
               </style>
