@@ -25,7 +25,7 @@ export interface AnatomyOverlay3DProps {
   readonly visibleLayers: readonly AnatomyLayer[];
   /** Opacity of the overlay (0-1) */
   readonly opacity?: number;
-  /** Whether on mobile device */
+  /** Whether on mobile device (reserved for future mobile-specific optimizations) */
   readonly isMobile?: boolean;
 }
 
@@ -153,6 +153,11 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
         }
       });
     }
+    
+    // Cleanup: reset mesh cache on unmount to avoid stale references
+    return () => {
+      meshesRef.current = [];
+    };
   }, []);
 
   // Pulsing animation for nerve pathways
@@ -247,6 +252,11 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
         }
       });
     }
+    
+    // Cleanup: reset mesh cache on unmount to avoid stale references
+    return () => {
+      meshesRef.current = [];
+    };
   }, []);
 
   // Pulsing animation simulating blood flow

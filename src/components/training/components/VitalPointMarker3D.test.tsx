@@ -1,5 +1,13 @@
 /**
  * Tests for VitalPointMarker3D component
+ * 
+ * Note: These tests are primarily smoke tests that verify rendering without crashes.
+ * Testing 3D interactions (hover states, click handlers, animations) would require
+ * @react-three/test-renderer which adds significant complexity. For detailed behavior
+ * verification, see:
+ * - Integration tests in TrainingScreen3D.test.tsx
+ * - Manual QA testing scenarios in the issue documentation
+ * - AnatomyControlsHTML.test.tsx for behavioral test examples
  */
 
 import { render } from "@testing-library/react";

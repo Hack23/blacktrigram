@@ -43,6 +43,10 @@ export interface TrainingDummy3DProps {
 
 /**
  * Map body region to 3D position on dummy
+ * 
+ * @param pointId - Unique identifier for the vital point
+ * @param category - Anatomical category (head, neck, torso, etc.) - used for position lookup
+ * @returns 3D coordinates [x, y, z] relative to dummy center
  */
 const getVitalPointPosition = (pointId: string, category: string): [number, number, number] => {
   // Base positions (relative to dummy center) based on category

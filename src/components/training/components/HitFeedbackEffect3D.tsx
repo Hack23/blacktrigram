@@ -7,7 +7,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 
@@ -45,22 +45,23 @@ const ImpactParticles: React.FC<{
   const velocitiesRef = useRef<Float32Array | null>(null);
   
   // Store initial position for seeded random - use useState to capture at mount
-  const [initialPosition] = React.useState(position);
+  // Note: This intentionally ignores position prop changes to maintain consistent
+  // particle behavior throughout the effect's lifetime. To update particles when
+  // position changes, add a key prop to the parent component to force remount.
+  const [initialPosition] = useState(position);
 
   // Initialize particle positions and velocities - use seed based on initial position
   const { positions, velocities } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count * 3);
 
-    // Constants for seeded random generation
-    const SEED_MULTIPLIER = 10000; // Large multiplier for better randomness
-    
     // Use initial position as seed for deterministic but varying particles
     const seed = initialPosition[0] + initialPosition[1] * 10 + initialPosition[2] * 100;
     
     // Simple seeded random using position
+    // Large multiplier (10000) ensures sufficient entropy for randomness while keeping values deterministic
     function seededRandom(index: number): number {
-      const x = Math.sin(seed + index) * SEED_MULTIPLIER;
+      const x = Math.sin(seed + index) * 10000;
       return x - Math.floor(x);
     }
 
@@ -85,7 +86,7 @@ const ImpactParticles: React.FC<{
   }, [count, initialPosition]); // initialPosition is captured at mount and won't change
   
   // Update velocities ref in useEffect to avoid ref access during render
-  React.useEffect(() => {
+  useEffect(() => {
     velocitiesRef.current = velocities;
   }, [velocities]);
 
@@ -106,6 +107,8 @@ const ImpactParticles: React.FC<{
       array[i3 + 2] += vel[i3 + 2] * delta * 10;
 
       // Apply gravity
+      // Note: Intentionally mutating velocitiesRef.current (Float32Array) for performance.
+      // This is safe and won't trigger React re-renders since it's a ref.
       vel[i3 + 1] -= 9.8 * delta;
 
       // Fade out particles that go too far
@@ -149,7 +152,7 @@ const RingEffect: React.FC<{
   const startTime = useRef<number>(0);
   
   // Initialize start time on mount using useEffect
-  React.useEffect(() => {
+  useEffect(() => {
     if (startTime.current === 0) {
       startTime.current = Date.now();
     }
@@ -199,7 +202,7 @@ const DamageNumber: React.FC<{
   const completedRef = useRef(false);
   
   // Initialize start time on mount using useEffect
-  React.useEffect(() => {
+  useEffect(() => {
     if (startTime.current === 0) {
       startTime.current = Date.now();
     }

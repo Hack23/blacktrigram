@@ -145,6 +145,9 @@ export const AnatomyControlsHTML: React.FC<AnatomyControlsHTMLProps> = ({
                 color: "#ffffff",
                 width: "100%",
               }}
+              // Note: Direct DOM manipulation for hover effects is used here for immediate
+              // visual feedback without React re-renders. For better maintainability in
+              // future iterations, consider migrating to CSS hover pseudo-classes.
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "scale(1.02)";
                 e.currentTarget.style.boxShadow = `0 0 15px ${config.color}50`;

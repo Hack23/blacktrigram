@@ -103,8 +103,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // New: Anatomy visualization and difficulty state
   const [visibleAnatomyLayers, setVisibleAnatomyLayers] = useState<AnatomyLayer[]>([]);
-  const difficulty: DifficultyMode = "normal";
-  const vitalPointCount = 12; // Can be expanded to 70
+  
+  // Training difficulty and vital point configuration
+  // TODO: Make these configurable via props or settings UI in future iteration
+  const difficulty: DifficultyMode = "normal"; // Controls marker size multipliers (easy: 1.5x, normal: 1x, hard: 0.7x)
+  const vitalPointCount = 12; // Currently 12 visible points, expandable to full 70 point system
   
   // Training statistics
   const [stats, setStats] = useState<TrainingStats>({
@@ -391,6 +394,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     }, 2000);
   }, [audio]);
 
+  /**
+   * handleDummyHit - Handles a hit attempt on the training dummy
+   * 
+   * @param _vitalPointId - The ID of the vital point hit (currently unused, reserved for future vital-point-specific logic)
+   * @returns true if hit was registered, false otherwise
+   * 
+   * Note: The vitalPointId parameter is included for future enhancements where different
+   * vital points may have different hit detection rules or feedback. Currently, all hits
+   * use distance-based accuracy calculation regardless of which point was targeted.
+   */
   const handleDummyHit = useCallback(
     (_vitalPointId: string): boolean => {
       if (!isTraining) return false;

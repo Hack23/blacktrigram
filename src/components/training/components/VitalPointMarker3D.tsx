@@ -97,7 +97,10 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
 
   return (
     <group>
-      {/* Hit target sphere */}
+      {/* Hit target sphere
+          Note: Three.js 3D objects lack standard DOM accessibility (aria-label, role, etc.).
+          For accessible alternatives, see keyboard shortcuts documented in the UI and
+          consider future enhancements for screen reader support via Html overlays. */}
       <mesh
         ref={meshRef}
         onClick={handleClick}
