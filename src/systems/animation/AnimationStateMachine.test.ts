@@ -97,14 +97,13 @@ describe("PlayerAnimationStateMachine", () => {
       const config = DEFAULT_ANIMATION_CONFIGS.get("attack")!;
       const frameDuration = 1 / config.fps;
 
-      let result;
       // Advance to completion
       for (let i = 0; i < config.frames; i++) {
-        result = machine.update(frameDuration);
+        machine.update(frameDuration);
       }
 
       // Complete the animation
-      result = machine.update(frameDuration);
+      const result = machine.update(frameDuration);
       expect(result?.justCompleted).toBe(true);
     });
   });

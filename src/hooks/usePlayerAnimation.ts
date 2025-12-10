@@ -173,11 +173,24 @@ export function usePlayerAnimation(
 
   const stateMachine = stateMachineRef.current;
 
-  // Memoized callbacks with state updates
+  // Track previous state to only update on actual changes
+  const prevStateRef = useRef<AnimationState>(stateMachine.getCurrentState());
+  const prevFrameRef = useRef<number>(stateMachine.getCurrentFrame());
+
+  // Memoized callbacks with selective state updates
   const update = useCallback(
     (deltaTime: number) => {
       const result = stateMachine.update(deltaTime);
-      forceUpdate((n) => n + 1);
+      const currentState = stateMachine.getCurrentState();
+      const currentFrame = stateMachine.getCurrentFrame();
+      
+      // Only trigger re-render if state or frame changed
+      if (currentState !== prevStateRef.current || currentFrame !== prevFrameRef.current) {
+        prevStateRef.current = currentState;
+        prevFrameRef.current = currentFrame;
+        forceUpdate((n) => n + 1);
+      }
+      
       return result;
     },
     [stateMachine]
@@ -187,6 +200,8 @@ export function usePlayerAnimation(
     (newState: AnimationState) => {
       const success = stateMachine.transitionTo(newState);
       if (success) {
+        prevStateRef.current = stateMachine.getCurrentState();
+        prevFrameRef.current = stateMachine.getCurrentFrame();
         forceUpdate((n) => n + 1);
       }
       return success;
@@ -196,6 +211,8 @@ export function usePlayerAnimation(
 
   const reset = useCallback(() => {
     stateMachine.reset();
+    prevStateRef.current = stateMachine.getCurrentState();
+    prevFrameRef.current = stateMachine.getCurrentFrame();
     forceUpdate((n) => n + 1);
   }, [stateMachine]);
 

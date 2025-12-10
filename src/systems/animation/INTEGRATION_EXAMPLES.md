@@ -147,7 +147,7 @@ export function CombatScreen3DIntegrationExample() {
         isBlocking={player1State.isBlocking}
         isStunned={player1State.isStunned}
         // Use animation state from hook
-        currentAnimation={player1Animation.currentState as any}
+        currentAnimation={animationStateToPlayerAnimation(player1Animation.currentState)}
         isMobile={isMobile}
         facing="right"
       />
