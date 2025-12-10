@@ -2,51 +2,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AudioAssetLoader } from "./AudioAssetLoader";
 import type { AudioAsset } from "./types";
 
-// Mock Audio element
-class MockAudioElement {
-  canPlayType: ReturnType<typeof vi.fn>;
-  play: ReturnType<typeof vi.fn>;
-  pause: ReturnType<typeof vi.fn>;
-  load: ReturnType<typeof vi.fn>;
-  addEventListener: ReturnType<typeof vi.fn>;
-  removeEventListener: ReturnType<typeof vi.fn>;
-  volume = 1;
-  currentTime = 0;
-  duration = 0;
-  paused = true;
-  ended = false;
-  src = "";
-  preload = "auto";
-
-  constructor(src?: string) {
-    if (src) {
-      this.src = src;
-    }
-    this.canPlayType = vi.fn((type: string) => {
-      if (type === "audio/mp3" || type === "audio/mpeg") return "probably";
-      if (type === "audio/wav") return "maybe";
-      return "";
-    });
-    this.play = vi.fn(() => Promise.resolve());
-    this.pause = vi.fn();
-    this.load = vi.fn();
-    this.addEventListener = vi.fn((event: string, handler: () => void) => {
-      // Simulate successful load after short delay
-      if (event === "canplaythrough") {
-        setTimeout(() => handler(), 10);
-      }
-    });
-    this.removeEventListener = vi.fn();
-  }
-}
-
-global.Audio = MockAudioElement as any;
+// Note: Audio mock is provided by src/test/setup.ts
+// The global mock automatically triggers load events for proper async testing
 
 describe("AudioAssetLoader", () => {
   let loader: AudioAssetLoader;
+  let originalAudio: any;
 
   beforeEach(() => {
     loader = new AudioAssetLoader();
+    // Save the original Audio constructor from setup.ts
+    originalAudio = global.Audio;
     vi.clearAllMocks();
   });
 
@@ -114,7 +80,7 @@ describe("AudioAssetLoader", () => {
       expect(result.formatUsed).toBe("placeholder");
 
       // Restore mock
-      global.Audio = MockAudioElement as any;
+      global.Audio = originalAudio;
     });
 
     it("should try format fallback (webm → mp3)", async () => {
@@ -150,7 +116,7 @@ describe("AudioAssetLoader", () => {
       expect(attemptedUrls.length).toBeGreaterThan(0);
 
       // Restore mock
-      global.Audio = MockAudioElement as any;
+      global.Audio = originalAudio;
     });
 
     it("should retry with exponential backoff", async () => {
@@ -189,7 +155,7 @@ describe("AudioAssetLoader", () => {
       expect(attempts).toBeGreaterThanOrEqual(3);
 
       // Restore mock
-      global.Audio = MockAudioElement as any;
+      global.Audio = originalAudio;
     });
 
     it("should respect priority levels", async () => {
@@ -320,7 +286,7 @@ describe("AudioAssetLoader", () => {
       expect(results).toHaveLength(2);
 
       // Restore mock
-      global.Audio = MockAudioElement as any;
+      global.Audio = originalAudio;
     });
   });
 
@@ -535,7 +501,7 @@ describe("AudioAssetLoader", () => {
       expect(result.formatUsed).toBe("placeholder");
 
       // Restore mock
-      global.Audio = MockAudioElement as any;
+      global.Audio = originalAudio;
     });
   });
 });
