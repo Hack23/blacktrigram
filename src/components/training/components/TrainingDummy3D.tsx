@@ -1,17 +1,22 @@
 /**
  * TrainingDummy3D - 3D training dummy with vital points
  * 
- * Provides anatomically accurate training dummy with 12 vital points
- * for Korean martial arts practice
+ * Provides anatomically accurate training dummy with vital points
+ * for Korean martial arts practice. Supports anatomy overlays and difficulty modes.
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
-import { VitalPoint } from "../../../systems/vitalpoint/types";
-import { VitalPointSeverity } from "../../../types/common";
 import { KOREAN_COLORS } from "../../../types/constants";
+import VitalPointMarker3D from "./VitalPointMarker3D";
+import type { AnatomyLayer } from "./AnatomyOverlay3D";
+
+/**
+ * Difficulty mode for training
+ */
+export type DifficultyMode = "easy" | "normal" | "hard";
 
 /**
  * Props for TrainingDummy3D component
@@ -25,36 +30,24 @@ export interface TrainingDummy3DProps {
   readonly isTraining: boolean;
   /** Current health of dummy (0-100) */
   readonly health?: number;
-  /** Callback when dummy is hit */
-  readonly onHit?: () => void;
+  /** Callback when vital point is hit */
+  readonly onVitalPointHit?: (vitalPointId: string) => void;
   /** Callback when dummy is defeated */
   readonly onDefeated?: () => void;
+  /** Difficulty mode (affects marker sizes) */
+  readonly difficulty?: DifficultyMode;
+  /** Number of vital points to display (3-70) */
+  readonly vitalPointCount?: number;
+  /** Visible anatomy layers */
+  readonly visibleAnatomyLayers?: readonly AnatomyLayer[];
+  /** Whether on mobile device */
+  readonly isMobile?: boolean;
 }
-
-/**
- * Get color based on vital point severity
- */
-const getSeverityColor = (severity: VitalPointSeverity): number => {
-  switch (severity) {
-    case VitalPointSeverity.MINOR:
-      return KOREAN_COLORS.POSITIVE_GREEN;
-    case VitalPointSeverity.MODERATE:
-      return KOREAN_COLORS.WARNING_YELLOW;
-    case VitalPointSeverity.MAJOR:
-      return KOREAN_COLORS.ACCENT_GOLD;
-    case VitalPointSeverity.CRITICAL:
-      return KOREAN_COLORS.ACCENT_RED;
-    default:
-      return KOREAN_COLORS.TEXT_SECONDARY;
-  }
-};
 
 /**
  * Map body region to 3D position on dummy
  */
-const getVitalPointPosition = (point: VitalPoint): [number, number, number] => {
-  const category = point.category;
-  
+const getVitalPointPosition = (pointId: string, category: string): [number, number, number] => {
   // Base positions (relative to dummy center) based on category
   const positions: Record<string, [number, number, number]> = {
     head: [0, 1.6, 0],
@@ -65,71 +58,22 @@ const getVitalPointPosition = (point: VitalPoint): [number, number, number] => {
     back: [0, 1.0, -0.15],
     arm: [-0.35, 1.0, 0],
     leg: [-0.2, 0.3, 0],
+    neurological: [0, 1.6, 0],
+    vascular: [0, 1.4, 0.1],
+    muscular: [0, 1.0, 0.15],
+    skeletal: [0, 0.8, 0.15],
   };
 
   // Get base position or default to center
-  const basePos = positions[category] ?? [0, 1.0, 0];
+  const basePos = positions[category.toLowerCase()] ?? [0, 1.0, 0];
   
   // Add some randomization for multiple points in same region
-  const offset = point.id.charCodeAt(0) * 0.001;
+  const offset = pointId.charCodeAt(0) * 0.001;
   return [
     basePos[0] + Math.sin(offset) * 0.1,
     basePos[1] + Math.cos(offset) * 0.1,
     basePos[2],
   ];
-};
-
-/**
- * Single vital point marker component
- */
-const VitalPointMarker: React.FC<{
-  point: VitalPoint;
-  isSelected: boolean;
-  isTraining: boolean;
-  onClick: (pointId: string) => void;
-}> = ({ point, isSelected, isTraining, onClick }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [hovered, setHovered] = useState(false);
-  
-  // Reusable vector for scale lerp
-  const targetScale = useMemo(() => new THREE.Vector3(1, 1, 1), []);
-
-  // Animate selected and hovered markers
-  useFrame((state) => {
-    if (!meshRef.current) return;
-
-    if (isSelected || hovered) {
-      const pulse = Math.sin(state.clock.elapsedTime * 4) * 0.1 + 1;
-      meshRef.current.scale.setScalar(pulse);
-    } else {
-      targetScale.set(1, 1, 1);
-      meshRef.current.scale.lerp(targetScale, 0.1);
-    }
-  });
-
-  const position = useMemo(() => getVitalPointPosition(point), [point]);
-  const color = useMemo(() => getSeverityColor(point.severity), [point.severity]);
-
-  return (
-    <mesh
-      ref={meshRef}
-      position={position}
-      onClick={() => isTraining && onClick(point.id)}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <sphereGeometry args={[0.08, 16, 16]} />
-      <meshStandardMaterial
-        color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-        emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-        emissiveIntensity={isSelected ? 0.6 : hovered ? 0.4 : 0.2}
-        metalness={0.5}
-        roughness={0.3}
-        transparent
-        opacity={isTraining ? 0.9 : 0.5}
-      />
-    </mesh>
-  );
 };
 
 /**
@@ -216,19 +160,36 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   selectedVitalPoint,
   isTraining,
   health = 100,
-  onHit,
+  onVitalPointHit,
   onDefeated,
+  difficulty = "normal",
+  vitalPointCount = 12,
+  isMobile = false,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   
   // Reusable vector for scale manipulation
   const scaleVector = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
-  // Use first 12 vital points for training (full 70 would be overwhelming)
+  // Select vital points to display based on count (expandable to 70)
   const vitalPoints = useMemo(
-    () => KOREAN_VITAL_POINTS.slice(0, 12),
-    []
+    () => KOREAN_VITAL_POINTS.slice(0, Math.min(vitalPointCount, KOREAN_VITAL_POINTS.length)),
+    [vitalPointCount]
   );
+
+  // Calculate size multiplier based on difficulty
+  const sizeMultiplier = useMemo(() => {
+    switch (difficulty) {
+      case "easy":
+        return 1.5; // Larger targets
+      case "normal":
+        return 1.0; // Standard size
+      case "hard":
+        return 0.7; // Smaller targets
+      default:
+        return 1.0;
+    }
+  }, [difficulty]);
 
   // Track previous health to detect defeat
   const prevHealthRef = useRef(health);
@@ -263,12 +224,12 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     groupRef.current.scale.copy(scaleVector);
   });
 
-  // Handle vital point selection
-  const handlePointClick = useCallback(
-    (_pointId: string) => {
-      onHit?.();
+  // Handle vital point hit
+  const handlePointHit = useCallback(
+    (pointId: string) => {
+      onVitalPointHit?.(pointId);
     },
-    [onHit]
+    [onVitalPointHit]
   );
 
   return (
@@ -346,13 +307,19 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
       {/* Vital point markers */}
       {vitalPoints.map((point) => (
-        <VitalPointMarker
+        <group
           key={point.id}
-          point={point}
-          isSelected={point.id === selectedVitalPoint}
-          isTraining={isTraining}
-          onClick={handlePointClick}
-        />
+          position={getVitalPointPosition(point.id, point.category)}
+        >
+          <VitalPointMarker3D
+            vitalPoint={point}
+            isSelected={point.id === selectedVitalPoint}
+            isTraining={isTraining}
+            isMobile={isMobile}
+            onHit={handlePointHit}
+            sizeMultiplier={sizeMultiplier}
+          />
+        </group>
       ))}
 
       {/* Health bar above dummy */}
