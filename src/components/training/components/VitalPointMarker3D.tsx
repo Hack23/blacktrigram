@@ -44,7 +44,7 @@ const getSeverityColor = (severity: VitalPointSeverity): number => {
     case VitalPointSeverity.CRITICAL:
       return KOREAN_COLORS.ACCENT_RED;
     case VitalPointSeverity.LETHAL:
-      return KOREAN_COLORS.NEGATIVE_RED; // Use NEGATIVE_RED instead of CARDINAL_SOUTH
+      return KOREAN_COLORS.NEGATIVE_RED; // Most severe - red for lethal vital points
     default:
       return KOREAN_COLORS.TEXT_SECONDARY;
   }

@@ -49,12 +49,15 @@ const ImpactParticles: React.FC<{
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count * 3);
 
+    // Constants for seeded random generation
+    const SEED_MULTIPLIER = 10000; // Large multiplier for better randomness
+    
     // Use position as seed for deterministic but varying particles
     const seed = position[0] + position[1] * 10 + position[2] * 100;
     
     // Simple seeded random using position
     function seededRandom(index: number): number {
-      const x = Math.sin(seed + index) * 10000;
+      const x = Math.sin(seed + index) * SEED_MULTIPLIER;
       return x - Math.floor(x);
     }
 
@@ -211,7 +214,7 @@ const DamageNumber: React.FC<{
   });
 
   const color = type === "perfect" ? "#ffd700" : type === "normal" ? "#00ffff" : "#ff4444";
-  const text = type === "miss" ? "빗나감 | MISS" : `${damage}`;
+  const text = type === "miss" ? "빗나감 | MISS" : `${damage}`; // Korean: 빗나감 = miss/deflected
 
   return (
     <Html

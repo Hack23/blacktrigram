@@ -140,14 +140,30 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
  */
 const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
+  
+  // Cache mesh references for efficient updates
+  const meshesRef = useRef<THREE.Mesh[]>([]);
+
+  // Initialize mesh cache on first render
+  React.useEffect(() => {
+    if (groupRef.current && meshesRef.current.length === 0) {
+      groupRef.current.traverse((child) => {
+        if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+          meshesRef.current.push(child);
+        }
+      });
+    }
+  }, []);
 
   // Pulsing animation for nerve pathways
   useFrame((state) => {
-    if (!groupRef.current) return;
     const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.5 + 0.5;
-    groupRef.current.children.forEach((child) => {
-      if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-        child.material.emissiveIntensity = 0.4 + pulse * 0.3;
+    const targetIntensity = 0.4 + pulse * 0.3;
+    
+    // Update cached meshes efficiently
+    meshesRef.current.forEach((mesh) => {
+      if (mesh.material instanceof THREE.MeshStandardMaterial) {
+        mesh.material.emissiveIntensity = targetIntensity;
       }
     });
   });
@@ -218,14 +234,30 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
  */
 const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
+  
+  // Cache mesh references for efficient updates
+  const meshesRef = useRef<THREE.Mesh[]>([]);
+
+  // Initialize mesh cache on first render
+  React.useEffect(() => {
+    if (groupRef.current && meshesRef.current.length === 0) {
+      groupRef.current.traverse((child) => {
+        if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+          meshesRef.current.push(child);
+        }
+      });
+    }
+  }, []);
 
   // Pulsing animation simulating blood flow
   useFrame((state) => {
-    if (!groupRef.current) return;
     const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.5 + 0.5;
-    groupRef.current.children.forEach((child) => {
-      if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-        child.material.emissiveIntensity = 0.3 + pulse * 0.4;
+    const targetIntensity = 0.3 + pulse * 0.4;
+    
+    // Update cached meshes efficiently
+    meshesRef.current.forEach((mesh) => {
+      if (mesh.material instanceof THREE.MeshStandardMaterial) {
+        mesh.material.emissiveIntensity = targetIntensity;
       }
     });
   });
