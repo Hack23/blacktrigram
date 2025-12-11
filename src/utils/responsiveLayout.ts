@@ -70,7 +70,7 @@ export function calculateFontSize(
  * Calculate element position within safe area
  * Ensures elements don't overlap notch or home indicator
  * 
- * @param position - Desired position (top, bottom, left, right)
+ * @param _position - Desired position (top, bottom, left, right) - currently unused
  * @param value - Position value in pixels
  * @param safeAreaInset - Safe area inset for that edge
  * @returns Adjusted position value
@@ -82,7 +82,7 @@ export function calculateFontSize(
  * ```
  */
 export function calculateSafePosition(
-  position: 'top' | 'bottom' | 'left' | 'right',
+  _position: 'top' | 'bottom' | 'left' | 'right',
   value: number,
   safeAreaInset: number
 ): number {
@@ -94,7 +94,7 @@ export function calculateSafePosition(
  * Scales based on device type and orientation
  * 
  * @param viewportWidth - Viewport width in pixels
- * @param viewportHeight - Viewport height in pixels
+ * @param _viewportHeight - Viewport height in pixels - currently unused but reserved for future enhancements
  * @param isLandscape - Whether in landscape orientation
  * @returns HUD height in pixels
  * 
@@ -106,7 +106,7 @@ export function calculateSafePosition(
  */
 export function calculateHUDHeight(
   viewportWidth: number,
-  viewportHeight: number,
+  _viewportHeight: number,
   isLandscape: boolean
 ): number {
   const isMobile = viewportWidth < 768;
