@@ -1610,8 +1610,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             />
           )}
 
-        {/* Volume Control */}
-        <VolumeControl position="top-right" compact={isMobile} />
+        {/* Volume Control - consistent with other screens */}
+        <VolumeControl position="bottom-right" compact={isMobile} />
 
         {/* Player 1 HUD - Top Left */}
         <PlayerHUD

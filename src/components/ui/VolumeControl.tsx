@@ -1,10 +1,15 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { KOREAN_COLORS } from "../../types/constants";
-import { toHex, hexToRgbaString } from "../../utils/colorUtils";
+import { hexToRgbaString, toHex } from "../../utils/colorUtils";
 
 export interface VolumeControlProps {
-  readonly position?: "top-right" | "bottom-right" | "top-left" | "bottom-left" | "custom";
+  readonly position?:
+    | "top-right"
+    | "bottom-right"
+    | "top-left"
+    | "bottom-left"
+    | "custom";
   readonly style?: React.CSSProperties;
   readonly showLabels?: boolean;
   readonly compact?: boolean;
@@ -12,13 +17,13 @@ export interface VolumeControlProps {
 
 /**
  * Volume Control Component
- * 
+ *
  * Provides controls for:
  * - Master volume
  * - Music volume
  * - SFX volume
  * - Mute/unmute toggle
- * 
+ *
  * Inspired by template game (https://github.com/Hack23/game)
  */
 export const VolumeControl: React.FC<VolumeControlProps> = ({
@@ -28,7 +33,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   compact = false,
 }) => {
   const audio = useAudio();
-  
+
   // Local state to track values for UI (prevents issues if audio not ready)
   const [masterVolume, setMasterVolume] = useState(audio.masterVolume ?? 1.0);
   const [musicVolume, setMusicVolume] = useState(audio.musicVolume ?? 0.7);
@@ -46,7 +51,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   // Get position styles (memoized)
   const getPositionStyle = useMemo((): React.CSSProperties => {
     if (position === "custom") return {};
-    
+
     const baseStyle: React.CSSProperties = {
       position: "absolute",
       zIndex: 1000,
@@ -67,18 +72,22 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     }
   }, [position, compact]);
 
-  const containerStyle = useMemo((): React.CSSProperties => ({
-    ...getPositionStyle,
-    display: "flex",
-    flexDirection: compact ? "row" : "column",
-    alignItems: "center",
-    gap: compact ? "12px" : "8px",
-    background: "rgba(33, 38, 45, 0.85)",
-    borderRadius: "12px",
-    backdropFilter: "blur(10px)",
-    border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
-    ...style,
-  }), [getPositionStyle, compact, style]);
+  const containerStyle = useMemo(
+    (): React.CSSProperties => ({
+      ...getPositionStyle,
+      display: "flex",
+      flexDirection: compact ? "row" : "column",
+      alignItems: "center",
+      gap: compact ? "12px" : "8px",
+      background: "rgba(33, 38, 45, 0.85)",
+      borderRadius: "12px",
+      backdropFilter: "blur(10px)",
+      border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
+      pointerEvents: "auto", // Enable interaction even when parent has pointerEvents: none
+      ...style,
+    }),
+    [getPositionStyle, compact, style]
+  );
 
   const handleMasterVolumeChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,33 +136,45 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     });
   }, [audio]);
 
-  const sliderStyle = useMemo((): React.CSSProperties => ({
-    width: compact ? "60px" : "100px",
-    cursor: "pointer",
-    accentColor: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
-  }), [compact]);
+  const sliderStyle = useMemo(
+    (): React.CSSProperties => ({
+      width: compact ? "60px" : "100px",
+      cursor: "pointer",
+      accentColor: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
+    }),
+    [compact]
+  );
 
-  const labelStyle = useMemo((): React.CSSProperties => ({
-    color: "#ffffff",
-    fontSize: compact ? "11px" : "12px",
-    fontWeight: "bold",
-    minWidth: compact ? "40px" : "50px",
-    textAlign: "left",
-  }), [compact]);
+  const labelStyle = useMemo(
+    (): React.CSSProperties => ({
+      color: "#ffffff",
+      fontSize: compact ? "11px" : "12px",
+      fontWeight: "bold",
+      minWidth: compact ? "40px" : "50px",
+      textAlign: "left",
+    }),
+    [compact]
+  );
 
-  const valueStyle = useMemo((): React.CSSProperties => ({
-    color: `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}`,
-    fontSize: compact ? "10px" : "11px",
-    minWidth: "35px",
-    textAlign: "right",
-  }), [compact]);
+  const valueStyle = useMemo(
+    (): React.CSSProperties => ({
+      color: `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}`,
+      fontSize: compact ? "10px" : "11px",
+      minWidth: "35px",
+      textAlign: "right",
+    }),
+    [compact]
+  );
 
-  const controlRowStyle = useMemo((): React.CSSProperties => ({
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    width: "100%",
-  }), []);
+  const controlRowStyle = useMemo(
+    (): React.CSSProperties => ({
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      width: "100%",
+    }),
+    []
+  );
 
   if (compact) {
     return (
@@ -163,7 +184,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           data-testid="mute-toggle-button"
           aria-label={isMuted ? "Unmute audio" : "Mute audio"}
           style={{
-            background: isMuted ? "#666666" : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
+            background: isMuted
+              ? "#666666"
+              : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
             color: "white",
             border: "none",
             padding: "6px 12px",
@@ -272,7 +295,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         data-testid="mute-toggle-button"
         aria-label={isMuted ? "Unmute audio" : "Mute audio"}
         style={{
-          background: isMuted ? "#666666" : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
+          background: isMuted
+            ? "#666666"
+            : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
           color: "white",
           border: "none",
           padding: "8px 16px",
@@ -291,13 +316,17 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       {/* Audio Status Indicator */}
       <div
         style={{
-          color: audio.isAudioReady ? `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}` : "#999",
+          color: audio.isAudioReady
+            ? `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}`
+            : "#999",
           fontSize: "10px",
           marginTop: "4px",
           textAlign: "center",
         }}
       >
-        {audio.isAudioReady ? "✓ 오디오 준비됨 | Audio Ready" : "⏳ 초기화 중... | Initializing..."}
+        {audio.isAudioReady
+          ? "✓ 오디오 준비됨 | Audio Ready"
+          : "⏳ 초기화 중... | Initializing..."}
       </div>
     </div>
   );
