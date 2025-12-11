@@ -363,6 +363,113 @@ describe("Combat Feedback Integration", () => {
       // Performance is validated at 60fps via useFrame optimization in components
       // Actual FPS measurement requires running environment
     });
+
+    it("✓ Extended: Stress test with 20 simultaneous effects", () => {
+      // Given: Extreme load scenario - 20 simultaneous effects
+      const stressEffects = Array.from({ length: 20 }, (_, i) => ({
+        id: `stress-effect-${i}`,
+        type: i % 2 === 0 ? HitEffectType.CRITICAL_HIT : HitEffectType.HIT,
+        position: { x: (i % 5) * 100, y: Math.floor(i / 5) * 100 },
+        duration: 1000,
+        intensity: 1 + (i % 3) * 0.5,
+        startTime: Date.now(),
+      }));
+
+      // When: Rendering stress load
+      const { container } = render(
+        <HitEffects3D effects={stressEffects} arenaBounds={mockArenaBounds} />
+      );
+
+      // Then: System handles extreme load gracefully
+      expect(container).toBeTruthy();
+      expect(stressEffects.length).toBe(20);
+    });
+
+    it("✓ Extended: Rapid combo accumulation (1-20 hits)", () => {
+      // Test combo counter at various thresholds
+      const comboTests = [1, 2, 5, 7, 10, 15, 20];
+      
+      comboTests.forEach(combo => {
+        const { container } = render(
+          <ComboCounter combo={combo} minDisplayCombo={2} />
+        );
+        
+        if (combo >= 2) {
+          const element = container.querySelector('[data-testid="combo-counter"]');
+          expect(element).not.toBeNull();
+          expect(element?.textContent).toContain(combo.toString());
+        } else {
+          expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
+        }
+      });
+    });
+  });
+
+  describe("Edge Cases & Resilience", () => {
+    it("✓ Handles empty damage array gracefully", () => {
+      const { container } = render(
+        <DamageNumbers damages={[]} arenaBounds={mockArenaBounds} />
+      );
+      expect(container).toBeTruthy();
+    });
+
+    it("✓ Handles missing arena bounds with defaults", () => {
+      const damages = [{
+        id: "dmg-1",
+        damage: 25,
+        position: { x: 100, y: 200 },
+        type: "normal" as const,
+        timestamp: Date.now(),
+      }];
+
+      const { container } = render(
+        <DamageNumbers damages={damages} />
+      );
+      expect(container).toBeTruthy();
+    });
+
+    it("✓ Handles zero combo count", () => {
+      const { container } = render(
+        <ComboCounter combo={0} />
+      );
+      expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
+    });
+
+    it("✓ Handles negative combo count gracefully", () => {
+      const { container } = render(
+        <ComboCounter combo={-1} />
+      );
+      expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
+    });
+
+    it("✓ Handles all HitEffectType variants", () => {
+      const allEffectTypes = [
+        HitEffectType.HIT,
+        HitEffectType.CRITICAL_HIT,
+        HitEffectType.BLOCK,
+        HitEffectType.MISS,
+        HitEffectType.VITAL_POINT_STRIKE,
+        HitEffectType.PARRY,
+        HitEffectType.COUNTER,
+      ];
+
+      allEffectTypes.forEach((type, index) => {
+        const effect = {
+          id: `effect-${type}-${index}`,
+          type,
+          position: { x: 100 + index * 50, y: 200 },
+          duration: 1000,
+          intensity: 1,
+          startTime: Date.now(),
+        };
+
+        const { container } = render(
+          <HitEffects3D effects={[effect]} arenaBounds={mockArenaBounds} />
+        );
+        
+        expect(container).toBeTruthy();
+      });
+    });
   });
 
   // Note: useActionFeedback hook interface is thoroughly tested in useActionFeedback.test.ts
