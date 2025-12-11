@@ -8,6 +8,7 @@ import { PlayerState } from "../../../systems";
 import { PLAYER_ARCHETYPES_DATA } from "../../../systems/types";
 import { KOREAN_COLORS } from "../../../types/constants";
 import { ProgressBar, KoreanText as KoreanText3D } from "../../three";
+import { calculateProgressBarSize } from "../../../utils/responsiveLayout";
 
 export interface CombatHUDThreeProps {
   readonly player1: PlayerState;
@@ -60,7 +61,23 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
     [player2.archetype]
   );
 
-  const barWidth = isMobile ? 180 : 220;
+  // Use responsive layout utilities for bar sizing
+  const healthBarSize = useMemo(
+    () => calculateProgressBarSize(isMobile, 'health'),
+    [isMobile]
+  );
+  
+  const kiBarSize = useMemo(
+    () => calculateProgressBarSize(isMobile, 'ki'),
+    [isMobile]
+  );
+  
+  const staminaBarSize = useMemo(
+    () => calculateProgressBarSize(isMobile, 'stamina'),
+    [isMobile]
+  );
+
+  const barWidth = healthBarSize.width;
 
   return (
     <>
@@ -109,7 +126,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           label={{ korean: "체력", english: "Health" }}
           position={[position[0] - 5, position[1] - 0.3, position[2]]}
           width={barWidth}
-          height={24}
+          height={healthBarSize.height}
           showText={true}
           animated={true}
           testId="player1-health"
@@ -123,7 +140,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           label={{ korean: "기력", english: "Ki" }}
           position={[position[0] - 5, position[1] - 0.8, position[2]]}
           width={barWidth}
-          height={20}
+          height={kiBarSize.height}
           showText={true}
           animated={true}
           testId="player1-ki"
@@ -137,7 +154,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           label={{ korean: "지구력", english: "Stamina" }}
           position={[position[0] - 5, position[1] - 1.3, position[2]]}
           width={barWidth}
-          height={20}
+          height={staminaBarSize.height}
           showText={true}
           animated={true}
           testId="player1-stamina"
@@ -175,7 +192,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           label={{ korean: "체력", english: "Health" }}
           position={[position[0] + 5, position[1] - 0.3, position[2]]}
           width={barWidth}
-          height={24}
+          height={healthBarSize.height}
           showText={true}
           animated={true}
           testId="player2-health"
@@ -189,7 +206,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           label={{ korean: "기력", english: "Ki" }}
           position={[position[0] + 5, position[1] - 0.8, position[2]]}
           width={barWidth}
-          height={20}
+          height={kiBarSize.height}
           showText={true}
           animated={true}
           testId="player2-ki"
@@ -203,7 +220,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           label={{ korean: "지구력", english: "Stamina" }}
           position={[position[0] + 5, position[1] - 1.3, position[2]]}
           width={barWidth}
-          height={20}
+          height={staminaBarSize.height}
           showText={true}
           animated={true}
           testId="player2-stamina"

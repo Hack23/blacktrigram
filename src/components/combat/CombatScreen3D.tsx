@@ -976,36 +976,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Mobile touch control state
   const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
+  const activeMobileKeyRef = useRef<string | null>(null);
 
-  // Mobile touch control handlers
+  // Mobile touch control handlers with proper key state management
   const handleMobileMove = useCallback(
     (direction: Direction | null, eventType: DPadEventType) => {
-      if (!direction || eventType !== "start") return;
-
-      // Map D-pad directions to movement
+      // Map D-pad directions to movement keys
       const directionMap: Record<Direction, string> = {
-        up: "move_up",
-        "up-right": "move_up", // Diagonal simplified to primary direction
-        right: "move_right",
-        "down-right": "move_down",
-        down: "move_down",
-        "down-left": "move_down",
-        left: "move_left",
-        "up-left": "move_up",
+        up: "w",
+        "up-right": "w", // Diagonal simplified to primary direction
+        right: "d",
+        "down-right": "s",
+        down: "s",
+        "down-left": "s",
+        left: "a",
+        "up-left": "w",
       };
 
-      const action = directionMap[direction];
-      if (action) {
-        // Trigger movement via keyboard action system
-        const keyMap: Record<string, string> = {
-          move_up: "w",
-          move_down: "s",
-          move_left: "a",
-          move_right: "d",
-        };
-        const key = keyMap[action];
-        if (key) {
-          window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+      if (eventType === "start" && direction) {
+        // Release previous key if different
+        if (activeMobileKeyRef.current && activeMobileKeyRef.current !== directionMap[direction]) {
+          window.dispatchEvent(
+            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+          );
+        }
+
+        // Press new key
+        const key = directionMap[direction];
+        activeMobileKeyRef.current = key;
+        window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+      } else if (eventType === "end") {
+        // Release active key
+        if (activeMobileKeyRef.current) {
+          window.dispatchEvent(
+            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+          );
+          activeMobileKeyRef.current = null;
         }
       }
     },
