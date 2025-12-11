@@ -89,9 +89,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in IntroScreen");
     },
-    onContextRestored: () => {
-      console.log("✅ WebGL context restored in IntroScreen");
-    },
     autoRestore: true,
   });
 

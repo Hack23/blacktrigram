@@ -1,6 +1,6 @@
 /**
  * TrainingDummy3D - 3D training dummy with vital points
- * 
+ *
  * Provides anatomically accurate training dummy with vital points
  * for Korean martial arts practice. Supports anatomy overlays and difficulty modes.
  */
@@ -43,12 +43,15 @@ export interface TrainingDummy3DProps {
 
 /**
  * Map body region to 3D position on dummy
- * 
+ *
  * @param pointId - Unique identifier for the vital point
  * @param category - Anatomical category (head, neck, torso, etc.) - used for position lookup
  * @returns 3D coordinates [x, y, z] relative to dummy center
  */
-const getVitalPointPosition = (pointId: string, category: string): [number, number, number] => {
+const getVitalPointPosition = (
+  pointId: string,
+  category: string
+): [number, number, number] => {
   // Base positions (relative to dummy center) based on category
   const positions: Record<string, [number, number, number]> = {
     head: [0, 1.6, 0],
@@ -67,7 +70,7 @@ const getVitalPointPosition = (pointId: string, category: string): [number, numb
 
   // Get base position or default to center
   const basePos = positions[category.toLowerCase()] ?? [0, 1.0, 0];
-  
+
   // Add some randomization for multiple points in same region
   const offset = pointId.charCodeAt(0) * 0.001;
   return [
@@ -88,12 +91,26 @@ const HEALTH_BAR_HEIGHT = 0.1;
 const DummyHealthBar: React.FC<{
   health: number;
   position: [number, number, number];
-  'data-testid'?: string;
-}> = ({ health, position, 'data-testid': testId }) => {
+  "data-testid"?: string;
+}> = ({ health, position, "data-testid": testId }) => {
   // Memoize geometries to avoid recreating on every render
-  const bgGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02), []);
-  const healthGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02), []);
-  const borderGeometry = useMemo(() => new THREE.BoxGeometry(HEALTH_BAR_WIDTH + 0.04, HEALTH_BAR_HEIGHT + 0.04, 0.01), []);
+  const bgGeometry = useMemo(
+    () => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02),
+    []
+  );
+  const healthGeometry = useMemo(
+    () => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02),
+    []
+  );
+  const borderGeometry = useMemo(
+    () =>
+      new THREE.BoxGeometry(
+        HEALTH_BAR_WIDTH + 0.04,
+        HEALTH_BAR_HEIGHT + 0.04,
+        0.01
+      ),
+    []
+  );
 
   // Determine health bar color based on health percentage
   const healthColor = useMemo(() => {
@@ -131,7 +148,7 @@ const DummyHealthBar: React.FC<{
       </mesh>
 
       {/* Health bar (scaled based on health, anchored to left edge) */}
-      <mesh 
+      <mesh
         position={[-(HEALTH_BAR_WIDTH * (1 - health / 100)) / 2, 0, 0.01]}
         scale={healthScale}
       >
@@ -168,13 +185,61 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   isMobile = false,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
-  
+
   // Reusable vector for scale manipulation
   const scaleVector = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
+  // Memoize shared geometries to prevent WebGL context exhaustion
+  const geometries = useMemo(
+    () => ({
+      head: new THREE.SphereGeometry(0.25, 16, 16), // Reduced segments for performance
+      torso: new THREE.CapsuleGeometry(0.3, 0.8, 8, 16),
+      arm: new THREE.CapsuleGeometry(0.1, 0.6, 4, 8),
+      leg: new THREE.CapsuleGeometry(0.12, 0.5, 4, 8),
+      ring: new THREE.RingGeometry(0.7, 0.8, 16),
+    }),
+    []
+  );
+
+  // Memoize shared material for dummy body
+  const bodyMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: KOREAN_COLORS.UI_STEEL_GRAY,
+        metalness: 0.3,
+        roughness: 0.7,
+      }),
+    []
+  );
+
+  // Memoize ring material
+  const ringMaterial = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: KOREAN_COLORS.PRIMARY_CYAN,
+        transparent: true,
+        opacity: 0.3,
+        side: THREE.DoubleSide,
+      }),
+    []
+  );
+
+  // Cleanup geometries and materials on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(geometries).forEach((geom) => geom.dispose());
+      bodyMaterial.dispose();
+      ringMaterial.dispose();
+    };
+  }, [geometries, bodyMaterial, ringMaterial]);
+
   // Select vital points to display based on count (expandable to 70)
   const vitalPoints = useMemo(
-    () => KOREAN_VITAL_POINTS.slice(0, Math.min(vitalPointCount, KOREAN_VITAL_POINTS.length)),
+    () =>
+      KOREAN_VITAL_POINTS.slice(
+        0,
+        Math.min(vitalPointCount, KOREAN_VITAL_POINTS.length)
+      ),
     [vitalPointCount]
   );
 
@@ -194,7 +259,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
   // Track previous health to detect defeat
   const prevHealthRef = useRef(health);
-  
+
   // Store latest onDefeated callback in a ref to avoid stale closure
   const onDefeatedRef = useRef(onDefeated);
   useEffect(() => {
@@ -218,9 +283,10 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   // Breathing animation (slower when health is low)
   useFrame((state) => {
     if (!groupRef.current) return;
-    
+
     const breathSpeed = healthRef.current > 50 ? 2 : 1;
-    const breathScale = Math.sin(state.clock.elapsedTime * breathSpeed) * 0.02 + 1;
+    const breathScale =
+      Math.sin(state.clock.elapsedTime * breathSpeed) * 0.02 + 1;
     scaleVector.set(1, breathScale, 1);
     groupRef.current.scale.copy(scaleVector);
   });
@@ -235,76 +301,63 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
   return (
     <group ref={groupRef} position={position}>
-      {/* Head */}
-      <mesh position={[0, 1.6, 0]} castShadow>
-        <sphereGeometry args={[0.25, 32, 32]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_LIGHT}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* Head - uses shared geometry and material */}
+      <mesh
+        position={[0, 1.6, 0]}
+        castShadow
+        geometry={geometries.head}
+        material={bodyMaterial}
+      />
 
-      {/* Torso */}
-      <mesh position={[0, 1.0, 0]} castShadow>
-        <capsuleGeometry args={[0.3, 0.8, 16, 32]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_LIGHT}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* Torso - uses shared geometry and material */}
+      <mesh
+        position={[0, 1.0, 0]}
+        castShadow
+        geometry={geometries.torso}
+        material={bodyMaterial}
+      />
 
-      {/* Left Arm */}
-      <mesh position={[-0.4, 1.0, 0]} rotation={[0, 0, Math.PI / 6]} castShadow>
-        <capsuleGeometry args={[0.1, 0.6, 8, 16]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_LIGHT}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* Left Arm - uses shared geometry and material */}
+      <mesh
+        position={[-0.4, 1.0, 0]}
+        rotation={[0, 0, Math.PI / 6]}
+        castShadow
+        geometry={geometries.arm}
+        material={bodyMaterial}
+      />
 
-      {/* Right Arm */}
-      <mesh position={[0.4, 1.0, 0]} rotation={[0, 0, -Math.PI / 6]} castShadow>
-        <capsuleGeometry args={[0.1, 0.6, 8, 16]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_LIGHT}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* Right Arm - uses shared geometry and material */}
+      <mesh
+        position={[0.4, 1.0, 0]}
+        rotation={[0, 0, -Math.PI / 6]}
+        castShadow
+        geometry={geometries.arm}
+        material={bodyMaterial}
+      />
 
-      {/* Left Leg */}
-      <mesh position={[-0.2, 0.3, 0]} castShadow>
-        <capsuleGeometry args={[0.12, 0.5, 8, 16]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_LIGHT}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* Left Leg - uses shared geometry and material */}
+      <mesh
+        position={[-0.2, 0.3, 0]}
+        castShadow
+        geometry={geometries.leg}
+        material={bodyMaterial}
+      />
 
-      {/* Right Leg */}
-      <mesh position={[0.2, 0.3, 0]} castShadow>
-        <capsuleGeometry args={[0.12, 0.5, 8, 16]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_LIGHT}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      {/* Right Leg - uses shared geometry and material */}
+      <mesh
+        position={[0.2, 0.3, 0]}
+        castShadow
+        geometry={geometries.leg}
+        material={bodyMaterial}
+      />
 
-      {/* Stance indicator ring */}
-      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.7, 0.8, 32]} />
-        <meshBasicMaterial
-          color={KOREAN_COLORS.PRIMARY_CYAN}
-          transparent
-          opacity={0.3}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {/* Stance indicator ring - uses shared geometry and material */}
+      <mesh
+        position={[0, 0.01, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        geometry={geometries.ring}
+        material={ringMaterial}
+      />
 
       {/* Vital point markers */}
       {vitalPoints.map((point) => (
@@ -325,9 +378,9 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
       {/* Health bar above dummy */}
       {isTraining && (
-        <DummyHealthBar 
-          health={health} 
-          position={[0, 2.2, 0]} 
+        <DummyHealthBar
+          health={health}
+          position={[0, 2.2, 0]}
           data-testid="training-dummy-health-bar"
         />
       )}

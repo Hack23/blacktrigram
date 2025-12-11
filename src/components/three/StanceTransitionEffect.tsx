@@ -1,12 +1,12 @@
 /**
  * StanceTransitionEffect - Smooth visual transition between trigram stances
- * 
+ *
  * Manages the visual transition when a player changes stance, providing:
  * - 0.5s smooth color fade between old and new stance colors
  * - Expanding energy ring effect
  * - Bilingual stance name display (Korean + English) for 1s
  * - Audio synchronization for stance change SFX
- * 
+ *
  * @module components/three/StanceTransitionEffect
  * @category 3D Components
  * @korean 자세전환효과
@@ -14,7 +14,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
 import { FONT_FAMILY } from "../../types/constants";
@@ -39,17 +39,17 @@ export interface StanceTransitionEffectProps {
 
 /**
  * StanceTransitionEffect Component
- * 
+ *
  * Provides smooth visual feedback during stance changes:
  * 1. Expanding energy ring effect from player center
  * 2. Color interpolation from old to new stance
  * 3. Bilingual stance name overlay (1 second display)
- * 
+ *
  * Performance optimized:
  * - Single animation frame callback
  * - Auto-cleanup after transition completes
  * - Reuses Three.js materials and geometries
- * 
+ *
  * @example
  * ```tsx
  * <StanceTransitionEffect
@@ -86,6 +86,7 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
     // Reset for new transition
     isInitializedRef.current = false;
     startTimeRef.current = 0;
+    // These setState calls are intentional - triggered by prop change, not creating infinite loops
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTransitioning(true);
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -116,7 +117,9 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
 
     // Interpolate color
     const currentColor = colorUtils.blend(fromColor, toColor, progress);
-    (ringRef.current.material as THREE.MeshBasicMaterial).color.setHex(currentColor);
+    (ringRef.current.material as THREE.MeshBasicMaterial).color.setHex(
+      currentColor
+    );
 
     // Expand ring outward
     const scale = 0.5 + progress * 2.5; // From 0.5 to 3.0
@@ -134,14 +137,14 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   });
 
   // Convert color to hex string for CSS
-  const toColorHex = `#${toColor.toString(16).padStart(6, '0')}`;
+  const toColorHex = `#${toColor.toString(16).padStart(6, "0")}`;
 
   return (
     <group data-testid="stance-transition-effect">
       {/* Expanding energy ring */}
-      <mesh 
-        ref={ringRef} 
-        position={[0, 0.05, 0]} 
+      <mesh
+        ref={ringRef}
+        position={[0, 0.05, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         data-testid="transition-ring"
       >
@@ -163,45 +166,45 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
           center
           distanceFactor={10}
           style={{
-            pointerEvents: 'none',
-            userSelect: 'none',
+            pointerEvents: "none",
+            userSelect: "none",
           }}
           data-testid="stance-name-overlay"
         >
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '8px 16px',
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              borderRadius: '8px',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "4px",
+              padding: "8px 16px",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              borderRadius: "8px",
               border: `2px solid ${toColorHex}`,
               boxShadow: `0 0 20px ${toColorHex}`,
-              animation: 'fadeInOut 1s ease-in-out',
+              animation: "fadeInOut 1s ease-in-out",
             }}
           >
             {/* Korean name */}
             <div
               style={{
-                fontSize: '24px',
+                fontSize: "24px",
                 fontFamily: FONT_FAMILY.KOREAN,
                 color: toColorHex,
-                fontWeight: 'bold',
+                fontWeight: "bold",
                 textShadow: `0 0 10px ${toColorHex}`,
               }}
             >
               {stanceNames.korean}
             </div>
-            
+
             {/* English name */}
             <div
               style={{
-                fontSize: '14px',
+                fontSize: "14px",
                 fontFamily: FONT_FAMILY.KOREAN,
                 color: toColorHex,
-                fontWeight: 'normal',
+                fontWeight: "normal",
                 opacity: 0.8,
               }}
             >

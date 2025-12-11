@@ -114,16 +114,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  // Track context loss for recovery
+  const [contextLost, setContextLost] = useState(false);
+
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in TrainingScreen");
+      setContextLost(true);
     },
     onContextRestored: () => {
-      console.log("✅ WebGL context restored in TrainingScreen");
+      setContextLost(false);
     },
     autoRestore: true,
   });
+
+  // Force remount Canvas when context is restored
+  const canvasKey = contextLost ? "lost" : "active";
 
   // Training state
   const [trainingMode, setTrainingMode] = useState<TrainingMode>("basics");
@@ -607,7 +614,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
       prevIsMovingRef.current = isMoving;
     }
-  }, [isMoving, playerAnimation.transitionTo, playerAnimation.currentState]);
+  }, [isMoving, playerAnimation]);
 
   // Mobile handlers that depend on playerAnimation
   const handleMobileAttack = useCallback(() => {
@@ -699,7 +706,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isTraining,
     playerPosition,
@@ -707,6 +713,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     onPlayerUpdate,
     audio,
     onReturnToMenu,
+    playerAnimation,
+    handleDummyHit,
   ]);
 
   // Hide feedback after delay
@@ -761,6 +769,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       data-testid="training-screen-3d"
     >
       <Canvas
+        key={canvasKey}
         style={{ width, height }}
         gl={{
           antialias: true,

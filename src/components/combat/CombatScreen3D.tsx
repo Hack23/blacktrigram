@@ -220,7 +220,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       contextLossCountRef.current += 1;
     },
     onContextRestored: () => {
-      console.log("✅ WebGL context restored in CombatScreen");
+      // Context restored successfully
     },
     autoRestore: true,
   });
@@ -487,11 +487,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-  }, [
-    player1IsMoving,
-    player1Animation.transitionTo,
-    player1Animation.currentState,
-  ]);
+  }, [player1IsMoving, player1Animation]);
 
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
@@ -589,14 +585,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Shared round start logic - forces round to start regardless of current state
   // This is called after state has been reset, so we trust the caller
   const startRound = useCallback(() => {
-    console.log("[CombatScreen3D] startRound called", {
-      roundStarted: combatState.roundStarted,
-      roundEnded: combatState.roundEnded,
-    });
-
     // Always start the round when this is called - the caller is responsible
     // for ensuring this is the right time to start
-    console.log("[CombatScreen3D] Starting round - setting roundStarted=true");
     combatActions.setRoundStarted(true);
     combatActions.setRoundEnded(false); // Ensure roundEnded is false
     addCombatMessage("라운드 시작!", "Round Start!");
@@ -624,7 +614,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   useEffect(() => {
     if (matchCountdownComplete && !hasAutoStartedRef.current) {
       hasAutoStartedRef.current = true;
-      console.log("[CombatScreen3D] Auto-starting combat round...");
       // Directly set roundStarted=true without going through startRound callback
       // This avoids dependency issues with the callback reference
       combatActions.setRoundStarted(true);

@@ -30,9 +30,6 @@ export const PhilosophyScreenThreeJS: React.FC<
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in PhilosophyScreen");
     },
-    onContextRestored: () => {
-      console.log("✅ WebGL context restored in PhilosophyScreen");
-    },
     autoRestore: true,
   });
 
