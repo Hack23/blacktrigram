@@ -65,8 +65,9 @@ describe("Combat Feedback Integration", () => {
     });
 
     it("✓ AC2: Color-coded damage - Normal (cyan), Critical (gold), Vital (red)", () => {
-      // Note: Implementation uses "vital" type instead of "blocked" from original AC
-      // for better combat clarity (vital points vs blocked attacks are different mechanics)
+      // Note: This test validates color-coding for damage numbers ("normal", "critical", "vital").
+      // Blocked attacks do not show damage numbers (since they deal no damage), but instead show text feedback via ActionFeedback.
+      // "Vital" is a distinct damage type for anatomical strikes, not a replacement for "blocked".
       
       // Given: Three damage types
       const damages = [
@@ -330,7 +331,7 @@ describe("Combat Feedback Integration", () => {
   });
 
   describe("Performance Validation", () => {
-    it("✓ AC10: 60fps maintained with max effects (2 players, 10 hits/sec)", () => {
+    it("✓ AC10: Handles maximum load without errors (60fps validated in architecture)", () => {
       // Given: Maximum load scenario - 10 simultaneous effects
       const maxEffects = Array.from({ length: 10 }, (_, i) => ({
         id: `effect-${i}`,
@@ -360,8 +361,8 @@ describe("Combat Feedback Integration", () => {
       // Then: Rendering succeeds without errors
       expect(effectsContainer).toBeTruthy();
       expect(damagesContainer).toBeTruthy();
-      // Performance is validated at 60fps via useFrame optimization in components
-      // Actual FPS measurement requires running environment
+      // Note: 60fps performance is validated through useFrame optimization in components.
+      // Actual FPS measurement requires E2E/performance testing, not unit tests.
     });
 
     it("✓ Extended: Stress test with 20 simultaneous effects", () => {
@@ -442,8 +443,13 @@ describe("Combat Feedback Integration", () => {
       expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
     });
 
-    it("✓ Handles all HitEffectType variants", () => {
-      const allEffectTypes = [
+    it("✓ Handles primary HitEffectType variants (7 of 9 enum types)", () => {
+      // HitEffectType enum has 9 types total: GENERAL_DAMAGE, CRITICAL_HIT, VITAL_POINT_STRIKE,
+      // STATUS_EFFECT, MISS, BLOCK, PARRY, COUNTER, HIT
+      // This test validates the 7 primary types used in current combat implementation.
+      // GENERAL_DAMAGE and STATUS_EFFECT are not currently used in the visual feedback system.
+      
+      const primaryEffectTypes = [
         HitEffectType.HIT,
         HitEffectType.CRITICAL_HIT,
         HitEffectType.BLOCK,
@@ -453,7 +459,7 @@ describe("Combat Feedback Integration", () => {
         HitEffectType.COUNTER,
       ];
 
-      allEffectTypes.forEach((type, index) => {
+      primaryEffectTypes.forEach((type, index) => {
         const effect = {
           id: `effect-${type}-${index}`,
           type,
