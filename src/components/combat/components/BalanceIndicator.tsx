@@ -1,16 +1,18 @@
 /**
  * BalanceIndicator Component - Visual indicator for player balance state
- * 
+ *
  * Displays a color-coded border around the player representing their
  * combat balance state: READY (green), SHAKEN (yellow), VULNERABLE (orange), HELPLESS (red).
- * 
+ *
+ * NOTE: This component is rendered OUTSIDE the Canvas as part of the HTML overlay.
+ * It does NOT use Html from drei - it's a standard React component.
+ *
  * @module components/combat/BalanceIndicator
  * @category Combat UI
  * @korean 균형표시기
  */
 
 import React, { useMemo } from "react";
-import { Html } from "@react-three/drei";
 import { KOREAN_COLORS } from "../../../types/constants";
 import type { BalanceState } from "../../../types/player-visual";
 
@@ -53,7 +55,10 @@ function getBalanceColor(state: BalanceState): number {
 /**
  * Get Korean label for balance state
  */
-function getBalanceLabel(state: BalanceState): { korean: string; english: string } {
+function getBalanceLabel(state: BalanceState): {
+  korean: string;
+  english: string;
+} {
   switch (state) {
     case "READY":
       return { korean: "준비완료", english: "READY" };
@@ -68,16 +73,16 @@ function getBalanceLabel(state: BalanceState): { korean: string; english: string
 
 /**
  * BalanceIndicator - Color-coded border indicator for player balance state
- * 
+ *
  * Renders a border around the player HUD area with color matching the
  * current balance state. Uses smooth transitions for state changes.
- * 
+ *
  * @example
  * ```tsx
- * <BalanceIndicator 
- *   balanceState="SHAKEN" 
- *   position="left" 
- *   isMobile={false} 
+ * <BalanceIndicator
+ *   balanceState="SHAKEN"
+ *   position="left"
+ *   isMobile={false}
  * />
  * ```
  */
@@ -89,18 +94,18 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
   const indicatorStyle = useMemo(() => {
     const color = getBalanceColor(balanceState);
     const colorHex = `#${color.toString(16).padStart(6, "0")}`;
-    
+
     // Mobile uses thinner border
     const borderWidth = isMobile ? "3px" : "4px";
-    
+
     // Position based on player side
     const isLeft = position === "left";
-    
+
     return {
       position: "absolute" as const,
       top: isMobile ? "8px" : "12px",
       left: isLeft ? (isMobile ? "8px" : "12px") : "auto",
-      right: isLeft ? "auto" : (isMobile ? "8px" : "12px"),
+      right: isLeft ? "auto" : isMobile ? "8px" : "12px",
       width: isMobile ? "180px" : "220px",
       height: isMobile ? "80px" : "100px",
       border: `${borderWidth} solid ${colorHex}`,
@@ -115,15 +120,13 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
   const label = useMemo(() => getBalanceLabel(balanceState), [balanceState]);
 
   return (
-    <Html fullscreen>
-      <div
-        data-testid={`balance-indicator-${position}`}
-        style={indicatorStyle}
-        aria-label={`${label.korean} | ${label.english}`}
-        role="status"
-        aria-live="polite"
-      />
-    </Html>
+    <div
+      data-testid={`balance-indicator-${position}`}
+      style={indicatorStyle}
+      aria-label={`${label.korean} | ${label.english}`}
+      role="status"
+      aria-live="polite"
+    />
   );
 };
 

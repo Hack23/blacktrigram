@@ -1,21 +1,16 @@
 import { Html } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
+import { useWindowSize } from "../../hooks/useWindowSize";
 import { PLAYER_ARCHETYPES_DATA } from "../../systems";
 import { KoreanCulture } from "../../systems/trigram/KoreanCulture";
 import { TRIGRAM_DATA } from "../../systems/trigram/types";
 import { TrigramStance } from "../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
+import { BackgroundScene3D } from "../three/BackgroundScene3D";
 import { VolumeControl } from "../ui/VolumeControl";
 
 export interface PhilosophyScreenThreeJSProps {
@@ -23,71 +18,6 @@ export interface PhilosophyScreenThreeJSProps {
   readonly width?: number;
   readonly height?: number;
 }
-
-// Responsive dimensions hook
-function useWindowSize() {
-  const [size, setSize] = useState<{ width: number; height: number }>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-  useEffect(() => {
-    const onResize = () =>
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return size;
-}
-
-/**
- * Three.js-based Background Scene Component
- * Renders cyberpunk Korean-themed 3D background
- */
-const BackgroundScene: React.FC = () => {
-  const gridRef = useRef<THREE.GridHelper>(null);
-
-  // Animate grid using useFrame for proper sync with render loop
-  useFrame(() => {
-    if (gridRef.current) {
-      gridRef.current.rotation.y += 0.0005;
-    }
-  });
-
-  return (
-    <>
-      {/* Ambient lighting */}
-      <ambientLight intensity={0.3} color={KOREAN_COLORS.ACCENT_GOLD} />
-
-      {/* Directional lights for Korean aesthetic */}
-      <directionalLight
-        position={[10, 10, 5]}
-        intensity={0.8}
-        color={KOREAN_COLORS.ACCENT_GOLD}
-      />
-      <pointLight
-        position={[-10, 5, -5]}
-        intensity={0.4}
-        color={KOREAN_COLORS.PRIMARY_CYAN}
-      />
-
-      {/* Cyberpunk grid plane */}
-      <gridHelper
-        ref={gridRef}
-        args={[
-          100,
-          50,
-          KOREAN_COLORS.ACCENT_GOLD,
-          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-        ]}
-        position={[0, -5, 0]}
-        rotation={[0, 0, 0]}
-      />
-
-      {/* Fog for depth */}
-      <fog attach="fog" args={[KOREAN_COLORS.UI_BACKGROUND_DARK, 10, 50]} />
-    </>
-  );
-};
 
 /**
  * Three.js-based PhilosophyScreen Component
@@ -99,9 +29,6 @@ export const PhilosophyScreenThreeJS: React.FC<
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in PhilosophyScreen");
-    },
-    onContextRestored: () => {
-      console.log("✅ WebGL context restored in PhilosophyScreen");
     },
     autoRestore: true,
   });
@@ -257,7 +184,7 @@ export const PhilosophyScreenThreeJS: React.FC<
         }}
       >
         {/* 3D Background Scene */}
-        <BackgroundScene />
+        <BackgroundScene3D theme="philosophy" />
 
         {/* HTML Overlay for UI */}
         <Html fullscreen>

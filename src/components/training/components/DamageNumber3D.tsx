@@ -1,6 +1,6 @@
 /**
  * DamageNumber3D - Floating damage number effect in 3D space
- * 
+ *
  * Shows damage numbers that float up and fade out
  */
 
@@ -51,10 +51,8 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
   // Animate floating and fading using refs to avoid unnecessary re-renders
   useFrame(() => {
     // Lazy initialize start time on first frame
-    if (startTimeRef.current === null) {
-      startTimeRef.current = performance.now();
-    }
-    
+    startTimeRef.current ??= performance.now();
+
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
     const progress = Math.min(elapsed / duration, 1);
 
@@ -63,13 +61,13 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
       onComplete();
       return;
     }
-    
+
     if (completedRef.current) return; // Stop processing after completion
 
     // Float upward with easing - use CSS transform for position animation
     const floatDistance = 1.5;
     const yOffset = floatDistance * progress;
-    
+
     // Update DOM directly to avoid React re-renders
     if (divRef.current) {
       divRef.current.style.transform = `translateY(-${yOffset * 30}px)`; // Scale to pixels
@@ -90,7 +88,8 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
         ref={divRef}
         data-testid="damage-number-3d"
         style={{
-          fontSize: type === "critical" ? "32px" : type === "perfect" ? "28px" : "24px",
+          fontSize:
+            type === "critical" ? "32px" : type === "perfect" ? "28px" : "24px",
           fontWeight: "bold",
           color,
           fontFamily: FONT_FAMILY.KOREAN,

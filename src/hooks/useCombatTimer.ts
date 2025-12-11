@@ -1,14 +1,14 @@
 /**
  * useCombatTimer - Hook for managing combat round timer
- * 
+ *
  * Korean: 전투 라운드 타이머 훅 (Combat Round Timer Hook)
- * 
+ *
  * Manages countdown timer for combat rounds with:
  * - Pause/resume support
  * - Warning thresholds at 10s and 5s
  * - Audio alerts for warnings
  * - Time's up callback
- * 
+ *
  * @module hooks/useCombatTimer
  * @category Combat Hooks
  */
@@ -35,6 +35,8 @@ export interface UseCombatTimerConfig {
   readonly warningThreshold?: number;
   /** Urgent warning threshold in seconds (default: 5) */
   readonly urgentThreshold?: number;
+  /** Optional key to force timer reset (e.g., round number) */
+  readonly resetKey?: string;
 }
 
 /**
@@ -83,9 +85,9 @@ function getWarningLevel(
 
 /**
  * useCombatTimer Hook
- * 
+ *
  * Manages combat round countdown timer with pause support and audio warnings.
- * 
+ *
  * Features:
  * - Counts down from initial time to 0
  * - Pauses/resumes based on isPaused prop
@@ -94,9 +96,9 @@ function getWarningLevel(
  * - Calls onTimeUp when timer reaches 0
  * - Provides formatted time string (MM:SS)
  * - Returns current warning level for UI styling
- * 
+ *
  * Korean: 전투 라운드 타이머 관리 훅
- * 
+ *
  * @example
  * ```tsx
  * const { timeRemaining, warningLevel, formattedTime } = useCombatTimer({
@@ -108,13 +110,16 @@ function getWarningLevel(
  * });
  * ```
  */
-export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerReturn {
+export function useCombatTimer(
+  config: UseCombatTimerConfig
+): UseCombatTimerReturn {
   const {
     initialTime,
     isPaused,
     onTimeUp,
     warningThreshold = 10,
     urgentThreshold = 5,
+    resetKey,
   } = config;
 
   const audio = useAudio();
@@ -123,12 +128,12 @@ export function useCombatTimer(config: UseCombatTimerConfig): UseCombatTimerRetu
   const lastWarningRef = useRef<TimerWarningLevel>("none");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Reset timer when initialTime changes (new round)
+  // Reset timer when initialTime or resetKey changes (new round)
   useEffect(() => {
     setTimeRemaining(initialTime);
     setIsTimeUp(false);
     lastWarningRef.current = "none";
-  }, [initialTime]);
+  }, [initialTime, resetKey]);
 
   // Timer countdown logic
   useEffect(() => {

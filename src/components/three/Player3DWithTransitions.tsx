@@ -1,23 +1,23 @@
 /**
  * Enhanced Player3D component with stance transition animations
- * 
+ *
  * Demonstrates integration of stance change visual effects:
  * - StanceAuraParticles for particle system
  * - StanceSymbol3D for floating trigram symbol
  * - StanceTransitionEffect for smooth transitions
- * 
+ *
  * This wrapper can be used to enhance Player3DUnified with automatic
  * stance change detection and visual effects.
- * 
+ *
  * @module components/three/Player3DWithTransitions
  * @category 3D Components
  * @korean 자세전환플레이어3D
  */
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
-import { useAudio } from "../../audio/AudioProvider";
 import Player3DUnified from "./Player3DUnified";
 import StanceAuraParticles from "./StanceAuraParticles";
 import StanceSymbol3D from "./StanceSymbol3D";
@@ -38,7 +38,10 @@ export interface Player3DWithTransitionsProps extends Player3DUnifiedProps {
   /** Transition duration in seconds (default: 0.5) */
   readonly transitionDuration?: number;
   /** Callback when stance transition starts */
-  readonly onStanceTransitionStart?: (fromStance: TrigramStance, toStance: TrigramStance) => void;
+  readonly onStanceTransitionStart?: (
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ) => void;
   /** Callback when stance transition completes */
   readonly onStanceTransitionComplete?: (stance: TrigramStance) => void;
 }
@@ -47,24 +50,24 @@ export interface Player3DWithTransitionsProps extends Player3DUnifiedProps {
  * Audio asset IDs for stance transitions
  */
 const AUDIO_ASSETS = {
-  STANCE_CHANGE: 'stance_change',
+  STANCE_CHANGE: "stance_change",
 } as const;
 
 /**
  * Player3DWithTransitions Component
- * 
+ *
  * Enhanced player component with automatic stance change detection and visual effects.
  * Wraps Player3DUnified and adds:
  * - Particle system for stance aura
  * - Floating trigram symbol
  * - Smooth transition effects
  * - Audio synchronization
- * 
+ *
  * Performance optimized:
  * - Effects can be individually disabled for mobile
  * - Uses stance change detection to minimize updates
  * - Reuses components efficiently
- * 
+ *
  * @example
  * ```tsx
  * <Player3DWithTransitions
@@ -90,7 +93,9 @@ const AUDIO_ASSETS = {
  * />
  * ```
  */
-export const Player3DWithTransitions: React.FC<Player3DWithTransitionsProps> = ({
+export const Player3DWithTransitions: React.FC<
+  Player3DWithTransitionsProps
+> = ({
   stance,
   ki,
   isMobile = false,
@@ -111,12 +116,13 @@ export const Player3DWithTransitions: React.FC<Player3DWithTransitionsProps> = (
   // Detect stance changes - external effect (audio) justifies useEffect
   useEffect(() => {
     const previousStance = prevStanceRef.current;
-    
+
     // Only trigger if stance actually changed
     if (previousStance !== stance) {
       prevStanceRef.current = stance;
-      
+
       // External effects: audio playback (external system) and callbacks
+      // These setState calls are intentional - triggered by prop change, not creating infinite loops
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsTransitioning(true);
       // eslint-disable-next-line react-hooks/set-state-in-effect

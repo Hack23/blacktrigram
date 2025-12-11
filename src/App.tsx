@@ -46,6 +46,9 @@ function App() {
     archetype?: PlayerArchetype;
   } | null>(null);
 
+  // Combat players state - managed here so updates persist
+  const [combatPlayers, setCombatPlayers] = useState<PlayerState[]>([]);
+
   const audio = useAudio();
 
   // Add responsive screen size detection
@@ -178,6 +181,8 @@ function App() {
     (winner: number) => {
       setIsGameActive(false);
       setGameWinner(createPlayerFromArchetype(selectedArchetype, winner));
+      // Reset combat players for next match
+      setCombatPlayers([]);
 
       setMatchStats({
         totalDamageDealt: 150,
@@ -241,6 +246,8 @@ function App() {
     setIsGameActive(false);
     setGameWinner(null);
     setMatchStats(null);
+    // Reset combat players so they reinitialize next combat
+    setCombatPlayers([]);
     setTimeout(() => setIsTransitioning(false), 100);
   }, []);
 
@@ -316,17 +323,43 @@ function App() {
           );
         case GameMode.VERSUS:
         case GameMode.PRACTICE:
-          const player1 = createPlayerFromArchetype(selectedArchetype, 0);
-          const player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+          // Initialize players if not already set
+          if (combatPlayers.length === 0) {
+            const player1 = createPlayerFromArchetype(selectedArchetype, 0);
+            const player2 = createPlayerFromArchetype(
+              PlayerArchetype.AMSALJA,
+              1
+            );
+            // Use setTimeout to defer state update and avoid render-during-render
+            setTimeout(() => setCombatPlayers([player1, player2]), 0);
+            // Return loading state while players initialize
+            return (
+              <LoadingState
+                progress={undefined}
+                message="전투 준비 중... | Preparing Combat..."
+                stage="assets"
+              />
+            );
+          }
 
           return (
             <CombatScreen
-              players={[player1, player2]}
+              players={combatPlayers}
               currentRound={1}
               timeRemaining={180}
               isPaused={false}
               onPlayerUpdate={(playerIndex, updates) => {
-                console.log(`Player ${playerIndex} updated:`, updates);
+                // Actually update the player state so damage persists!
+                setCombatPlayers((prevPlayers) => {
+                  const newPlayers = [...prevPlayers];
+                  if (newPlayers[playerIndex]) {
+                    newPlayers[playerIndex] = {
+                      ...newPlayers[playerIndex],
+                      ...updates,
+                    };
+                  }
+                  return newPlayers;
+                });
               }}
               onReturnToMenu={handleReturnToMenu}
               onGameEnd={handleGameEnd}

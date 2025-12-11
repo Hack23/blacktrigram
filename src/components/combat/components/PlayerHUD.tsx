@@ -1,6 +1,6 @@
 /**
  * PlayerHUD Component - Combined health and stamina display
- * 
+ *
  * Displays a complete player HUD with:
  * - Player name (Korean/English)
  * - Health bar (segmented, color-coded)
@@ -11,7 +11,7 @@
 
 import React from "react";
 import { PlayerState } from "../../../systems/player";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { HealthBar } from "./HealthBar";
 import { StaminaBar } from "./StaminaBar";
@@ -37,17 +37,17 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
   const isLeft = position === "left";
 
   // Responsive sizing
-  const fontSize = isMobile ? 12 : 14;
-  const gap = isMobile ? "6px" : "8px";
+  const fontSize = isMobile ? 11 : 13;
+  const gap = isMobile ? "4px" : "6px";
 
   return (
     <div
       data-testid={`player-hud-${playerId}`}
       style={{
         position: "absolute",
-        top: isMobile ? "10px" : "15px",
-        left: isLeft ? (isMobile ? "10px" : "15px") : "auto",
-        right: isLeft ? "auto" : (isMobile ? "10px" : "15px"),
+        top: isMobile ? "8px" : "10px",
+        left: isLeft ? (isMobile ? "8px" : "12px") : "auto",
+        right: isLeft ? "auto" : isMobile ? "8px" : "12px",
         display: "flex",
         flexDirection: "column",
         gap,
@@ -55,7 +55,7 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
         zIndex: 100,
       }}
     >
-      {/* Player Name */}
+      {/* Player Name - clearly above the bars with background */}
       <div
         data-testid={`player-name-${playerId}`}
         style={{
@@ -64,8 +64,10 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
           fontFamily: FONT_FAMILY.KOREAN,
           color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
           textAlign: isLeft ? "left" : "right",
-          textShadow: `0 0 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4)}`,
-          marginBottom: "2px",
+          textShadow: "0 0 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)",
+          padding: "2px 6px",
+          background: "transparent",
+          whiteSpace: "nowrap",
         }}
       >
         {player.name.korean} | {player.name.english}
@@ -91,11 +93,11 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
       <div
         data-testid={`stance-indicator-${playerId}`}
         style={{
-          fontSize: isMobile ? "10px" : "11px",
+          fontSize: isMobile ? "9px" : "10px",
           fontFamily: FONT_FAMILY.KOREAN,
           color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
           textAlign: isLeft ? "left" : "right",
-          marginTop: "2px",
+          textShadow: "0 0 4px rgba(0,0,0,0.8)",
         }}
       >
         자세 | Stance: {player.currentStance}

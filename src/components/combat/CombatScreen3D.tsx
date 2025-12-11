@@ -16,18 +16,19 @@ import React, {
 } from "react";
 import * as THREE from "three";
 import { useAudio } from "../../audio/AudioProvider";
-import { useRoundTransition } from "../../hooks/useRoundTransition";
-import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useKeyboardControls } from "../../hooks/useKeyboardControls";
 import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
-import { AnimationEvents } from "../../systems/animation";
+import { useRoundTransition } from "../../hooks/useRoundTransition";
+import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
 import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
 } from "../../systems/ai";
+import { AnimationEvents } from "../../systems/animation";
 import { HitEffectType } from "../../systems/effects";
+import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 import {
   GameMode,
   PlayerArchetype,
@@ -39,18 +40,17 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../types/constants";
-import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../utils/performance";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { VolumeControl } from "../ui/VolumeControl";
+import { InputBufferDisplay } from "./components/InputBufferDisplay";
+import { KeyboardHints } from "./components/KeyboardHints";
 import { MatchCountdown } from "./components/MatchCountdown";
 import { RoundAnnouncement } from "./components/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/RoundStartAnnouncement";
 import { StanceChangeIndicator } from "./components/StanceChangeIndicator";
-import { KeyboardHints } from "./components/KeyboardHints";
-import { InputBufferDisplay } from "./components/InputBufferDisplay";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -59,13 +59,22 @@ import { InputBufferDisplay } from "./components/InputBufferDisplay";
 import { useActionFeedback } from "../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
+import { GestureEvent } from "../../hooks/useTouchControls";
 import { Technique } from "../../types";
-
-// Create stance index lookup map once
-const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
-TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
-  STANCE_INDEX_MAP.set(stance, index);
-});
+import {
+  animationStateToPlayerAnimation,
+  convertPlayerStateToProps,
+  getBalanceState,
+} from "../../utils/player3DHelpers";
+import {
+  ActionButtons,
+  GestureRecognizer,
+  StanceWheel,
+  VirtualDPad,
+} from "../mobile";
+import { ButtonEventType } from "../mobile/ActionButtons";
+import { Direction, DPadEventType } from "../mobile/VirtualDPad";
+import { Player3DUnified } from "../three/Player3DUnified";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
@@ -76,22 +85,22 @@ import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
-import { Player3DUnified } from "../three/Player3DUnified";
-import { convertPlayerStateToProps, getBalanceState, animationStateToPlayerAnimation } from "../../utils/player3DHelpers";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-import { VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer } from "../mobile";
-import { Direction, DPadEventType } from "../mobile/VirtualDPad";
-import { ButtonEventType } from "../mobile/ActionButtons";
-import { GestureEvent } from "../../hooks/useTouchControls";
+
+// Create stance index lookup map once
+const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
+TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
+  STANCE_INDEX_MAP.set(stance, index);
+});
 
 /**
  * AnimationUpdater - Component that updates player animations at 60fps
  * Uses useFrame to call update() on both animation state machines
- * 
+ *
  * @korean 애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
  */
 interface AnimationUpdaterProps {
@@ -211,7 +220,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       contextLossCountRef.current += 1;
     },
     onContextRestored: () => {
-      console.log("✅ WebGL context restored in CombatScreen");
+      // Context restored successfully
     },
     autoRestore: true,
   });
@@ -305,28 +314,60 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const handleRestart = useCallback(() => {
     // Note: React 19 automatically batches all these state updates into a single render
     // This ensures atomic state transitions without race conditions
-    
+
     // Reset to first round
     setInternalRound(1);
     setMatchScore({ player1: 0, player2: 0 });
     matchScoreRef.current = { player1: 0, player2: 0 };
-    
+
     // Reset combat state
     combatActions.setRoundEnded(false);
     combatActions.setRoundStarted(false);
     combatActions.setRoundDisplayStatus(null);
-    
+
     // Reset player health
     onPlayerUpdate(0, { health: 100 });
     onPlayerUpdate(1, { health: 100 });
-    
+
     // Close pause menu and start first round
     // The timer will reset automatically via the initialTime prop when round starts
     setShowPauseMenu(false);
     setShowRoundStart(true);
-    
+
     audio.playSFX("menu_select");
   }, [audio, combatActions, onPlayerUpdate]);
+
+  // Round transition complete handler - checks for match end or starts next round
+  const handleRoundTransitionComplete = useCallback(() => {
+    // Check if match is over (best of 3 - first to 2 wins)
+    const currentScore = matchScoreRef.current;
+    if (currentScore.player1 >= 2 || currentScore.player2 >= 2) {
+      // Match is over - call onGameEnd instead of starting next round
+      const matchWinner = currentScore.player1 >= 2 ? 0 : 1;
+      onGameEnd(matchWinner);
+      return; // Don't start next round
+    }
+
+    // Transition complete - start next round
+    combatActions.setRoundEnded(false);
+    combatActions.setRoundStarted(false);
+    combatActions.setRoundDisplayStatus(null);
+
+    // Increment internal round counter for next round
+    // Use the updater function to get the new value and trigger announcement
+    setInternalRound((prev) => {
+      const nextRound = prev + 1;
+      // Use setTimeout to ensure state update completes before showing announcement
+      setTimeout(() => {
+        setShowRoundStart(true);
+      }, 0);
+      return nextRound;
+    });
+
+    // Reset player health for next round
+    onPlayerUpdate(0, { health: 100 });
+    onPlayerUpdate(1, { health: 100 });
+  }, [combatActions, onGameEnd, onPlayerUpdate]);
 
   // Round transition management
   const {
@@ -341,19 +382,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       countdownDuration: ROUND_ANNOUNCEMENT_TIMINGS.COUNTDOWN_DURATION,
       transitionDuration: ROUND_ANNOUNCEMENT_TIMINGS.TRANSITION_DURATION,
     },
-    () => {
-      // Callback when transition completes - start next round
-      combatActions.setRoundEnded(false);
-      combatActions.setRoundStarted(false);
-      combatActions.setRoundDisplayStatus(null);
-
-      // Increment internal round counter for next round
-      setInternalRound((prev) => prev + 1);
-
-      // Show round start announcement for rounds after the first
-      // (always true here since this callback runs after a round ends)
-      setShowRoundStart(true);
-    }
+    handleRoundTransitionComplete
   );
 
   // Player positions
@@ -458,7 +487,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-  }, [player1IsMoving, player1Animation.transitionTo, player1Animation.currentState]);
+  }, [player1IsMoving, player1Animation]);
 
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
@@ -534,8 +563,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleTimeUpRef.current = handleTimeUp;
   }, [handleTimeUp]);
 
+  // Create a unique key for timer reset based on round number
+  // This forces the timer to reset when a new round starts
+  const timerResetKey = `round-${internalRound}`;
+
   const timerState = useCombatTimer({
-    initialTime: Math.max(0, timeRemaining), // Ensure non-negative
+    initialTime: Math.max(0, timeRemaining),
     isPaused:
       isPaused ||
       !combatState.roundStarted ||
@@ -545,32 +578,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onTimeUp: useCallback(() => handleTimeUpRef.current(), []),
     warningThreshold: 10,
     urgentThreshold: 5,
+    // Pass round number to force timer reset on new rounds
+    resetKey: timerResetKey,
   });
 
-  // Shared round start logic
+  // Shared round start logic - forces round to start regardless of current state
+  // This is called after state has been reset, so we trust the caller
   const startRound = useCallback(() => {
-    console.log("[CombatScreen3D] startRound called", {
-      roundStarted: combatState.roundStarted,
-      roundEnded: combatState.roundEnded,
-    });
-    if (!combatState.roundStarted && !combatState.roundEnded) {
-      console.log(
-        "[CombatScreen3D] Starting round - setting roundStarted=true"
-      );
-      combatActions.setRoundStarted(true);
-      addCombatMessage("라운드 시작!", "Round Start!");
+    // Always start the round when this is called - the caller is responsible
+    // for ensuring this is the right time to start
+    combatActions.setRoundStarted(true);
+    combatActions.setRoundEnded(false); // Ensure roundEnded is false
+    addCombatMessage("라운드 시작!", "Round Start!");
 
-      const player = validPlayers[0];
-      if (player?.archetype) {
-        const playerArchetype = player.archetype.toLowerCase();
-        combatAudio.playArchetypeMusic(playerArchetype, 2000);
-      } else {
-        combatAudio.playCombatMusic(2000);
-      }
+    const player = validPlayers[0];
+    if (player?.archetype) {
+      const playerArchetype = player.archetype.toLowerCase();
+      combatAudio.playArchetypeMusic(playerArchetype, 2000);
     } else {
-      console.log(
-        "[CombatScreen3D] startRound skipped - already started or ended"
-      );
+      combatAudio.playCombatMusic(2000);
     }
   }, [
     combatState.roundStarted,
@@ -588,7 +614,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   useEffect(() => {
     if (matchCountdownComplete && !hasAutoStartedRef.current) {
       hasAutoStartedRef.current = true;
-      console.log("[CombatScreen3D] Auto-starting combat round...");
       // Directly set roundStarted=true without going through startRound callback
       // This avoids dependency issues with the callback reference
       combatActions.setRoundStarted(true);
@@ -777,7 +802,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Track previous stance for visual feedback
   const [previousStance, setPreviousStance] = useState<number>(0);
-  
+
   // Get current stance index for visual feedback using optimized lookup
   const currentPlayerStance = validPlayers[0].currentStance;
   const currentStanceIndex = useMemo(() => {
@@ -872,7 +897,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatActions.setExecutingTechnique(true);
     } else {
       // Fallback: animation transition failed, execute attack logic immediately
-      console.warn("Attack animation transition failed; executing attack logic directly.");
+      console.warn(
+        "Attack animation transition failed; executing attack logic directly."
+      );
       handleAttack();
     }
   }, [player1Animation, combatActions, handleAttack]);
@@ -892,7 +919,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       );
     } else {
       // Fallback: animation transition failed, execute defend logic immediately
-      console.warn("Defend animation transition failed; executing defend logic directly.");
+      console.warn(
+        "Defend animation transition failed; executing defend logic directly."
+      );
       handleDefend();
       feedbackActions.addActionFeedback(
         "blocked",
@@ -905,35 +934,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Use keyboard controls hook for enhanced input handling with visual feedback
   const { queuedInputs, showHints } = useKeyboardControls({
-    onStanceChange: useCallback((stanceIndex: number) => {
-      const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
-      if (stance) {
-        // Capture previous stance BEFORE changing
-        const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
-        setPreviousStance(prevStance);
-        // Trigger stance change animation
-        player1Animation.transitionTo("stance_change");
-        handleStanceSwitch(stance);
-      }
-    }, [handleStanceSwitch, currentPlayerStance, player1Animation]),
-    onAction: useCallback((action: string) => {
-      switch (action) {
-        case "attack":
-          handleAttackWithFeedback();
-          break;
-        case "block":
-          handleDefendWithFeedback();
-          break;
-        // Movement and other actions handled by existing system
-      }
-    }, [handleAttackWithFeedback, handleDefendWithFeedback]),
-    enabled: !isPaused && 
-             !showPauseMenu && 
-             combatState.roundStarted && 
-             !combatState.roundEnded && 
-             matchCountdownComplete && 
-             !showRoundStart &&
-             !combatState.isExecutingTechnique,
+    onStanceChange: useCallback(
+      (stanceIndex: number) => {
+        const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+        if (stance) {
+          // Capture previous stance BEFORE changing
+          const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
+          setPreviousStance(prevStance);
+          // Trigger stance change animation
+          player1Animation.transitionTo("stance_change");
+          handleStanceSwitch(stance);
+        }
+      },
+      [handleStanceSwitch, currentPlayerStance, player1Animation]
+    ),
+    onAction: useCallback(
+      (action: string) => {
+        switch (action) {
+          case "attack":
+            handleAttackWithFeedback();
+            break;
+          case "block":
+            handleDefendWithFeedback();
+            break;
+          // Movement and other actions handled by existing system
+        }
+      },
+      [handleAttackWithFeedback, handleDefendWithFeedback]
+    ),
+    enabled:
+      !isPaused &&
+      !showPauseMenu &&
+      combatState.roundStarted &&
+      !combatState.roundEnded &&
+      matchCountdownComplete &&
+      !showRoundStart &&
+      !combatState.isExecutingTechnique,
     currentStance: currentStanceIndex,
     playSFX: audio.playSFX,
   });
@@ -942,91 +978,104 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
 
   // Mobile touch control handlers
-  const handleMobileMove = useCallback((direction: Direction | null, eventType: DPadEventType) => {
-    if (!direction || eventType !== 'start') return;
+  const handleMobileMove = useCallback(
+    (direction: Direction | null, eventType: DPadEventType) => {
+      if (!direction || eventType !== "start") return;
 
-    // Map D-pad directions to movement
-    const directionMap: Record<Direction, string> = {
-      'up': 'move_up',
-      'up-right': 'move_up', // Diagonal simplified to primary direction
-      'right': 'move_right',
-      'down-right': 'move_down',
-      'down': 'move_down',
-      'down-left': 'move_down',
-      'left': 'move_left',
-      'up-left': 'move_up',
-    };
-
-    const action = directionMap[direction];
-    if (action) {
-      // Trigger movement via keyboard action system
-      const keyMap: Record<string, string> = {
-        'move_up': 'w',
-        'move_down': 's',
-        'move_left': 'a',
-        'move_right': 'd',
+      // Map D-pad directions to movement
+      const directionMap: Record<Direction, string> = {
+        up: "move_up",
+        "up-right": "move_up", // Diagonal simplified to primary direction
+        right: "move_right",
+        "down-right": "move_down",
+        down: "move_down",
+        "down-left": "move_down",
+        left: "move_left",
+        "up-left": "move_up",
       };
-      const key = keyMap[action];
-      if (key) {
-        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+
+      const action = directionMap[direction];
+      if (action) {
+        // Trigger movement via keyboard action system
+        const keyMap: Record<string, string> = {
+          move_up: "w",
+          move_down: "s",
+          move_left: "a",
+          move_right: "d",
+        };
+        const key = keyMap[action];
+        if (key) {
+          window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+        }
       }
-    }
-  }, []);
+    },
+    []
+  );
 
   const handleMobileAttack = useCallback(() => {
     handleAttackWithFeedback();
   }, [handleAttackWithFeedback]);
 
-  const handleMobileBlock = useCallback((eventType: ButtonEventType) => {
-    if (eventType === 'start') {
-      handleDefendWithFeedback();
-    }
-  }, [handleDefendWithFeedback]);
+  const handleMobileBlock = useCallback(
+    (eventType: ButtonEventType) => {
+      if (eventType === "start") {
+        handleDefendWithFeedback();
+      }
+    },
+    [handleDefendWithFeedback]
+  );
 
-  const handleMobileStanceChange = useCallback((stanceIndex: number) => {
-    const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
-    if (stance) {
-      const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
-      setPreviousStance(prevStance);
-      handleStanceSwitch(stance);
-    }
-  }, [handleStanceSwitch, currentPlayerStance]);
+  const handleMobileStanceChange = useCallback(
+    (stanceIndex: number) => {
+      const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
+      if (stance) {
+        const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
+        setPreviousStance(prevStance);
+        handleStanceSwitch(stance);
+      }
+    },
+    [handleStanceSwitch, currentPlayerStance]
+  );
 
-  const handleMobileGesture = useCallback((gesture: GestureEvent) => {
-    switch (gesture.type) {
-      case 'swipe-right':
-        // Advance toward opponent
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'd' }));
-        break;
-      case 'swipe-left':
-        // Retreat from opponent
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'a' }));
-        break;
-      case 'swipe-up':
-        // High attack mode - could trigger special technique
-        handleAttackWithFeedback();
-        break;
-      case 'swipe-down':
-        // Low attack mode - could trigger different technique
-        handleAttackWithFeedback();
-        break;
-      case 'two-finger-tap':
-        // Activate vital point targeting mode
-        // TODO: Implement vital point mode toggle
-        audio.playSFX("menu_select");
-        break;
-    }
-  }, [handleAttackWithFeedback, audio]);
+  const handleMobileGesture = useCallback(
+    (gesture: GestureEvent) => {
+      switch (gesture.type) {
+        case "swipe-right":
+          // Advance toward opponent
+          window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }));
+          break;
+        case "swipe-left":
+          // Retreat from opponent
+          window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+          break;
+        case "swipe-up":
+          // High attack mode - could trigger special technique
+          handleAttackWithFeedback();
+          break;
+        case "swipe-down":
+          // Low attack mode - could trigger different technique
+          handleAttackWithFeedback();
+          break;
+        case "two-finger-tap":
+          // Activate vital point targeting mode
+          // TODO: Implement vital point mode toggle
+          audio.playSFX("menu_select");
+          break;
+      }
+    },
+    [handleAttackWithFeedback, audio]
+  );
 
   // Check if mobile controls should be enabled
-  const mobileControlsEnabled = isMobile && 
-                                 !isPaused && 
-                                 !showPauseMenu && 
-                                 combatState.roundStarted && 
-                                 !combatState.roundEnded && 
-                                 matchCountdownComplete && 
-                                 !showRoundStart &&
-                                 !combatState.isExecutingTechnique;
+  const mobileControlsEnabled =
+    isMobile &&
+    !isPaused &&
+    !showPauseMenu &&
+    combatState.roundStarted &&
+    !combatState.roundEnded &&
+    matchCountdownComplete &&
+    !showRoundStart &&
+    !combatState.isExecutingTechnique;
 
   // Note: Player 1 position is updated via the onPositionChange callback
   // in usePlayerMovement config above, not via useEffect
@@ -1359,7 +1408,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               facing: "right",
             }
           )}
-          currentAnimation={animationStateToPlayerAnimation(player1Animation.currentState)}
+          currentAnimation={animationStateToPlayerAnimation(
+            player1Animation.currentState
+          )}
         />
 
         {/* Player 2 (AI) */}
@@ -1373,7 +1424,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               facing: "left",
             }
           )}
-          currentAnimation={animationStateToPlayerAnimation(player2Animation.currentState)}
+          currentAnimation={animationStateToPlayerAnimation(
+            player2Animation.currentState
+          )}
         />
 
         {/* Hit Effects */}
@@ -1458,10 +1511,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
-        <InputBufferDisplay
-          queuedInputs={queuedInputs}
-          isMobile={isMobile}
-        />
+        <InputBufferDisplay queuedInputs={queuedInputs} isMobile={isMobile} />
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
         {isMobile && (
@@ -1549,8 +1599,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             />
           )}
 
-        {/* Volume Control */}
-        <VolumeControl position="top-right" compact={isMobile} />
+        {/* Volume Control - consistent with other screens */}
+        <VolumeControl position="bottom-right" compact={isMobile} />
 
         {/* Player 1 HUD - Top Left */}
         <PlayerHUD
@@ -1787,7 +1837,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       )}
 
       {/* Round Start Announcement for subsequent rounds */}
-      {showRoundStart && internalRound > 1 && (
+      {/* Note: showRoundStart is only set to true after round 1 ends, so no need for internalRound > 1 check */}
+      {showRoundStart && (
         <RoundStartAnnouncement
           roundNumber={internalRound}
           duration={2}
