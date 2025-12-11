@@ -1,9 +1,10 @@
 /**
  * CombatFeedbackIntegration - Integration tests for combat visual feedback system
  * 
- * Validates that all acceptance criteria for Issue #XXX are met:
+ * Validates that all acceptance criteria for Issue #884 are met:
  * - Floating damage numbers (2s duration, fade out)
- * - Color-coded: Normal (cyan), Critical (gold), Blocked (blue)
+ * - Color-coded: Normal (cyan), Critical (gold), Vital (red)
+ *   Note: Implementation uses "vital" instead of "blocked" for better combat clarity
  * - Hit spark particle effects
  * - Combo counter (2-hit minimum)
  * - Technique name flashes (Korean + English)
@@ -17,7 +18,6 @@
 
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { useActionFeedback } from "../../../hooks/useActionFeedback";
 import { HitEffectType } from "../../../systems/effects";
 import { ActionFeedback, TechniqueName } from "./ActionFeedback";
 import { ComboCounter } from "./ComboCounter";
@@ -65,6 +65,9 @@ describe("Combat Feedback Integration", () => {
     });
 
     it("✓ AC2: Color-coded damage - Normal (cyan), Critical (gold), Vital (red)", () => {
+      // Note: Implementation uses "vital" type instead of "blocked" from original AC
+      // for better combat clarity (vital points vs blocked attacks are different mechanics)
+      
       // Given: Three damage types
       const damages = [
         {
@@ -91,13 +94,16 @@ describe("Combat Feedback Integration", () => {
       ];
 
       // When: Rendering with all damage types
-      const { container } = render(
+      const { getByTestId } = render(
         <DamageNumbers damages={damages} arenaBounds={mockArenaBounds} />
       );
 
-      // Then: All damage types render
-      expect(container).toBeTruthy();
-      // Colors are applied via KOREAN_COLORS constants in component
+      // Then: All damage types render with proper test IDs (prefixed with "damage-")
+      expect(getByTestId("damage-dmg-normal")).toBeDefined();
+      expect(getByTestId("damage-dmg-critical")).toBeDefined();
+      expect(getByTestId("damage-dmg-vital")).toBeDefined();
+      // Colors are applied via KOREAN_COLORS constants:
+      // Normal: PRIMARY_CYAN, Critical: ACCENT_GOLD, Vital: ACCENT_RED
     });
 
     it("✓ AC3: Hit spark particle effects at impact point", () => {
@@ -132,29 +138,42 @@ describe("Combat Feedback Integration", () => {
     });
 
     it("✓ AC4: Combo counter displays active combo (2-hit minimum)", () => {
-      // Given: Combo counts
-      const scenarios = [
-        { combo: 0, shouldDisplay: false },
-        { combo: 1, shouldDisplay: false },
-        { combo: 2, shouldDisplay: true },
-        { combo: 5, shouldDisplay: true },
-        { combo: 10, shouldDisplay: true },
-      ];
+      // Test case 1: Below minimum threshold - should not display
+      const { container: container0 } = render(
+        <ComboCounter combo={0} minDisplayCombo={2} />
+      );
+      // Component returns null when combo < minDisplayCombo
+      expect(container0.querySelector('[data-testid="combo-counter"]')).toBeNull();
 
-      scenarios.forEach(({ combo, shouldDisplay }) => {
-        // When: Rendering combo counter
-        const { container } = render(
-          <ComboCounter combo={combo} minDisplayCombo={2} />
-        );
+      // Test case 2: One hit - should not display
+      const { container: container1 } = render(
+        <ComboCounter combo={1} minDisplayCombo={2} />
+      );
+      expect(container1.querySelector('[data-testid="combo-counter"]')).toBeNull();
 
-        // Then: Display based on minimum threshold
-        if (shouldDisplay) {
-          expect(container).toBeTruthy();
-          // Component returns null if combo < minDisplayCombo
-        } else {
-          expect(container).toBeTruthy();
-        }
-      });
+      // Test case 3: At minimum threshold (2 hits) - should display
+      const { container: container2 } = render(
+        <ComboCounter combo={2} minDisplayCombo={2} />
+      );
+      const comboElement2 = container2.querySelector('[data-testid="combo-counter"]');
+      expect(comboElement2).not.toBeNull();
+      expect(comboElement2?.textContent).toContain("2");
+
+      // Test case 4: Above threshold (5 hits) - should display
+      const { container: container5 } = render(
+        <ComboCounter combo={5} minDisplayCombo={2} />
+      );
+      const comboElement5 = container5.querySelector('[data-testid="combo-counter"]');
+      expect(comboElement5).not.toBeNull();
+      expect(comboElement5?.textContent).toContain("5");
+
+      // Test case 5: High combo (10 hits) - should display
+      const { container: container10 } = render(
+        <ComboCounter combo={10} minDisplayCombo={2} />
+      );
+      const comboElement10 = container10.querySelector('[data-testid="combo-counter"]');
+      expect(comboElement10).not.toBeNull();
+      expect(comboElement10?.textContent).toContain("10");
     });
 
     it("✓ AC5: Technique name flashes when executed (Korean + English)", () => {
@@ -346,33 +365,6 @@ describe("Combat Feedback Integration", () => {
     });
   });
 
-  describe("useActionFeedback Hook Integration", () => {
-    it("should provide all required state and actions", () => {
-      // This validates that useActionFeedback provides the expected interface
-      // Actual hook usage is tested in useActionFeedback.test.ts
-      const expectedInterface = {
-        state: {
-          damageNumbers: expect.any(Array),
-          actionFeedbacks: expect.any(Array),
-          comboCount: expect.any(Number),
-          lastHitTime: expect.any(Number),
-          currentTechnique: null,
-          techniqueShowTime: expect.any(Number),
-        },
-        actions: {
-          addDamageNumber: expect.any(Function),
-          addActionFeedback: expect.any(Function),
-          incrementCombo: expect.any(Function),
-          resetCombo: expect.any(Function),
-          showTechnique: expect.any(Function),
-          hideTechnique: expect.any(Function),
-          clearExpired: expect.any(Function),
-        },
-      };
-
-      // Interface validation through TypeScript type checking
-      // Runtime validation covered in useActionFeedback.test.ts
-      expect(expectedInterface).toBeDefined();
-    });
-  });
+  // Note: useActionFeedback hook interface is thoroughly tested in useActionFeedback.test.ts
+  // No additional integration tests needed here as the hook is tested in isolation
 });

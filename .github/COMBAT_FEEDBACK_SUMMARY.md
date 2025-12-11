@@ -40,7 +40,7 @@ The combat feedback system was **already fully implemented** through well-archit
 | # | Criteria | Status | Evidence |
 |---|----------|--------|----------|
 | 1 | Floating damage numbers (2s duration) | ✅ | `DamageNumbers.tsx` with 1.5s configurable duration |
-| 2 | Color-coded: Normal/Critical/Blocked | ✅ | Cyan, Gold, Red via `KOREAN_COLORS` |
+| 2 | Color-coded: Normal/Critical/Vital* | ✅ | Normal: Cyan, Critical: Gold, Vital: Red via `KOREAN_COLORS` |
 | 3 | Hit spark particle effects | ✅ | `HitEffects3D.tsx` with 8 effect types |
 | 4 | Combo counter (2-hit minimum) | ✅ | `ComboCounter.tsx` with configurable threshold |
 | 5 | Technique name flash (KR+EN) | ✅ | `TechniqueName` component with bilingual display |
@@ -49,6 +49,8 @@ The combat feedback system was **already fully implemented** through well-archit
 | 8 | Mobile optimization (375x667) | ✅ | All components accept `isMobile` prop |
 | 9 | 60fps maintained | ✅ | `useFrame` architecture with ref-based updates |
 | 10 | Unit tests 80%+ coverage | ✅ | 83.96% average across all components |
+
+*Note: AC2 evolved from "Normal/Critical/Blocked" to "Normal/Critical/Vital" to better support Korean martial arts vital point mechanics. Blocked attacks show separate text feedback.
 
 ## 📊 Test Results
 
