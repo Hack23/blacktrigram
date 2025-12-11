@@ -8,6 +8,12 @@
  */
 
 import { useCallback, useReducer } from "react";
+// Re-export types from components for consistency
+import type { AnatomyLayer } from "../components/AnatomyOverlay3D";
+import type { TrainingMode } from "../components/TrainingModeSelectorHTML";
+
+// Re-export for convenience
+export type { AnatomyLayer, TrainingMode };
 
 /**
  * Training statistics
@@ -33,21 +39,6 @@ export interface TrainingHitEffect {
   readonly visible: boolean;
   readonly damage?: number;
 }
-
-/**
- * Training mode options
- */
-export type TrainingMode = "basics" | "vital_point" | "combo" | "defense";
-
-/**
- * Anatomy layer types for educational visualization
- */
-export type AnatomyLayer =
-  | "skeleton"
-  | "muscles"
-  | "nerves"
-  | "blood_vessels"
-  | "organs";
 
 /**
  * Training screen state managed by the reducer

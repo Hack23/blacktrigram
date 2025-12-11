@@ -8,6 +8,7 @@
  */
 
 import { useCallback, useRef } from "react";
+import { AnimationState } from "../../../systems/animation/types";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import { Position, TrigramStance } from "../../../types/common";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
@@ -27,7 +28,7 @@ export interface UseTrainingActionsConfig {
     position?: Position;
   }) => void;
   readonly playerAnimation: {
-    readonly transitionTo: (state: string) => void;
+    readonly transitionTo: (state: AnimationState) => boolean;
     readonly currentState: string;
   };
 }

@@ -211,12 +211,12 @@ describe("useTrainingState", () => {
     expect(result.current.state.visibleAnatomyLayers).toEqual(["skeleton"]);
 
     act(() => {
-      result.current.actions.toggleAnatomyLayer("muscles");
+      result.current.actions.toggleAnatomyLayer("nerves");
     });
 
     expect(result.current.state.visibleAnatomyLayers).toEqual([
       "skeleton",
-      "muscles",
+      "nerves",
     ]);
 
     // Toggle off
@@ -224,19 +224,19 @@ describe("useTrainingState", () => {
       result.current.actions.toggleAnatomyLayer("skeleton");
     });
 
-    expect(result.current.state.visibleAnatomyLayers).toEqual(["muscles"]);
+    expect(result.current.state.visibleAnatomyLayers).toEqual(["nerves"]);
   });
 
   it("should set anatomy layers directly", () => {
     const { result } = renderHook(() => useTrainingState());
 
     act(() => {
-      result.current.actions.setAnatomyLayers(["nerves", "blood_vessels"]);
+      result.current.actions.setAnatomyLayers(["nerves", "vascular"]);
     });
 
     expect(result.current.state.visibleAnatomyLayers).toEqual([
       "nerves",
-      "blood_vessels",
+      "vascular",
     ]);
   });
 });
