@@ -68,51 +68,51 @@ describe('responsiveLayout utilities', () => {
 
   describe('calculateSafePosition', () => {
     it('should add safe area inset to position', () => {
-      expect(calculateSafePosition('top', 10, 44)).toBe(54);
-      expect(calculateSafePosition('bottom', 20, 34)).toBe(54);
-      expect(calculateSafePosition('left', 15, 44)).toBe(59);
-      expect(calculateSafePosition('right', 25, 44)).toBe(69);
+      expect(calculateSafePosition(10, 44)).toBe(54);
+      expect(calculateSafePosition(20, 34)).toBe(54);
+      expect(calculateSafePosition(15, 44)).toBe(59);
+      expect(calculateSafePosition(25, 44)).toBe(69);
     });
 
     it('should handle zero inset', () => {
-      expect(calculateSafePosition('top', 10, 0)).toBe(10);
-      expect(calculateSafePosition('bottom', 20, 0)).toBe(20);
+      expect(calculateSafePosition(10, 0)).toBe(10);
+      expect(calculateSafePosition(20, 0)).toBe(20);
     });
 
     it('should handle zero position', () => {
-      expect(calculateSafePosition('top', 0, 44)).toBe(44);
-      expect(calculateSafePosition('bottom', 0, 34)).toBe(34);
+      expect(calculateSafePosition(0, 44)).toBe(44);
+      expect(calculateSafePosition(0, 34)).toBe(34);
     });
   });
 
   describe('calculateHUDHeight', () => {
     it('should return compact height for small mobile portrait', () => {
-      const height = calculateHUDHeight(350, 600, false);
+      const height = calculateHUDHeight(350, false);
       expect(height).toBe(80);
     });
 
     it('should return standard mobile height for portrait', () => {
       // 375px is <= 375, so isSmallMobile = true, returns 80
-      const height = calculateHUDHeight(375, 667, false);
+      const height = calculateHUDHeight(375, false);
       expect(height).toBe(80);
     });
 
     it('should return minimized height for mobile landscape', () => {
-      const heightSmall = calculateHUDHeight(350, 600, true);
-      const heightStandard = calculateHUDHeight(667, 375, true);
+      const heightSmall = calculateHUDHeight(350, true);
+      const heightStandard = calculateHUDHeight(667, true);
 
       expect(heightSmall).toBe(60);
       expect(heightStandard).toBe(70);
     });
 
     it('should return larger height for desktop', () => {
-      const height = calculateHUDHeight(1920, 1080, false);
+      const height = calculateHUDHeight(1920, false);
       expect(height).toBe(120);
     });
 
     it('should minimize HUD in landscape to maximize gameplay', () => {
-      const portrait = calculateHUDHeight(375, 667, false);
-      const landscape = calculateHUDHeight(667, 375, true);
+      const portrait = calculateHUDHeight(375, false);
+      const landscape = calculateHUDHeight(667, true);
 
       expect(landscape).toBeLessThan(portrait);
     });

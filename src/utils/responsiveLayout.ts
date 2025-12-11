@@ -70,19 +70,17 @@ export function calculateFontSize(
  * Calculate element position within safe area
  * Ensures elements don't overlap notch or home indicator
  * 
- * @param _position - Desired position (top, bottom, left, right) - currently unused
  * @param value - Position value in pixels
  * @param safeAreaInset - Safe area inset for that edge
  * @returns Adjusted position value
  * 
  * @example
  * ```typescript
- * const top = calculateSafePosition('top', 10, 44); // 54px (10 + 44)
- * const bottom = calculateSafePosition('bottom', 20, 34); // 54px (20 + 34)
+ * const top = calculateSafePosition(10, 44); // 54px (10 + 44)
+ * const bottom = calculateSafePosition(20, 34); // 54px (20 + 34)
  * ```
  */
 export function calculateSafePosition(
-  _position: 'top' | 'bottom' | 'left' | 'right',
   value: number,
   safeAreaInset: number
 ): number {
@@ -94,19 +92,17 @@ export function calculateSafePosition(
  * Scales based on device type and orientation
  * 
  * @param viewportWidth - Viewport width in pixels
- * @param _viewportHeight - Viewport height in pixels - currently unused but reserved for future enhancements
  * @param isLandscape - Whether in landscape orientation
  * @returns HUD height in pixels
  * 
  * @example
  * ```typescript
- * const hudHeight = calculateHUDHeight(375, 667, false); // ~80px for mobile portrait
- * const hudHeight = calculateHUDHeight(667, 375, true); // ~60px for mobile landscape
+ * const hudHeight = calculateHUDHeight(375, false); // ~80px for mobile portrait
+ * const hudHeight = calculateHUDHeight(667, true); // ~60px for mobile landscape
  * ```
  */
 export function calculateHUDHeight(
   viewportWidth: number,
-  _viewportHeight: number,
   isLandscape: boolean
 ): number {
   const isMobile = viewportWidth < 768;

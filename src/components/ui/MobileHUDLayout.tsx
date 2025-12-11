@@ -42,8 +42,6 @@ export interface MobileHUDLayoutProps {
   readonly currentRound: number;
   /** Maximum rounds */
   readonly maxRounds: number;
-  /** Rounds won by each player */
-  readonly roundsWon?: { player1: number; player2: number };
   /** Whether game is paused */
   readonly isPaused?: boolean;
   /** Test ID for testing */
@@ -292,8 +290,8 @@ export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
 
   // Calculate optimal HUD dimensions
   const hudHeight = useMemo(
-    () => calculateHUDHeight(width, height, layout.isLandscape),
-    [width, height, layout.isLandscape]
+    () => calculateHUDHeight(width, layout.isLandscape),
+    [width, layout.isLandscape]
   );
 
   // Calculate progress bar sizes

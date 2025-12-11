@@ -50,7 +50,6 @@ describe('ResponsiveContainer', () => {
     );
 
     const container = screen.getByTestId('responsive-container');
-    const style = window.getComputedStyle(container);
 
     // Safe area should be applied (44px top, 34px bottom for mobile)
     expect(container.style.paddingTop).toBeTruthy();
