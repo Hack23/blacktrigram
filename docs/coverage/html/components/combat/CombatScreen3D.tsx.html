@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.57% </span>
+                <span class="strong">39.53% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>169/427</span>
+                <span class='fraction'>170/430</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.66% </span>
+                <span class="strong">33.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>102/303</span>
+                <span class='fraction'>102/307</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.66% </span>
+                <span class="strong">39.52% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>165/416</span>
+                <span class='fraction'>166/420</span>
             </div>
         
             
@@ -1920,7 +1920,13 @@
 <a name='L1855'></a><a href='#L1855'>1855</a>
 <a name='L1856'></a><a href='#L1856'>1856</a>
 <a name='L1857'></a><a href='#L1857'>1857</a>
-<a name='L1858'></a><a href='#L1858'>1858</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1858'></a><a href='#L1858'>1858</a>
+<a name='L1859'></a><a href='#L1859'>1859</a>
+<a name='L1860'></a><a href='#L1860'>1860</a>
+<a name='L1861'></a><a href='#L1861'>1861</a>
+<a name='L1862'></a><a href='#L1862'>1862</a>
+<a name='L1863'></a><a href='#L1863'>1863</a>
+<a name='L1864'></a><a href='#L1864'>1864</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2898,12 +2904,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2917,16 +2922,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -4755,36 +4767,42 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 &nbsp;
   // Mobile touch control state
   const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
+  const activeMobileKeyRef = useRef&lt;string | null&gt;(null);
 &nbsp;
-  // Mobile touch control handlers
+  // Mobile touch control handlers with proper key state management
   const handleMobileMove = useCallback(
 <span class="fstat-no" title="function not covered" >    (d</span>irection: Direction | null, eventType: DPadEventType) =&gt; {
-<span class="cstat-no" title="statement not covered" >      if (!direction || eventType !== "start") <span class="cstat-no" title="statement not covered" >return;</span></span>
-&nbsp;
-      // Map D-pad directions to movement
+      // Map D-pad directions to movement keys
       const directionMap: Record&lt;Direction, string&gt; = <span class="cstat-no" title="statement not covered" >{</span>
-        up: "move_up",
-        "up-right": "move_up", // Diagonal simplified to primary direction
-        right: "move_right",
-        "down-right": "move_down",
-        down: "move_down",
-        "down-left": "move_down",
-        left: "move_left",
-        "up-left": "move_up",
+        up: "w",
+        "up-right": "w", // Diagonal simplified to primary direction
+        right: "d",
+        "down-right": "s",
+        down: "s",
+        "down-left": "s",
+        left: "a",
+        "up-left": "w",
       };
 &nbsp;
-      const action = <span class="cstat-no" title="statement not covered" >directionMap[direction];</span>
-<span class="cstat-no" title="statement not covered" >      if (action) {</span>
-        // Trigger movement via keyboard action system
-        const keyMap: Record&lt;string, string&gt; = <span class="cstat-no" title="statement not covered" >{</span>
-          move_up: "w",
-          move_down: "s",
-          move_left: "a",
-          move_right: "d",
-        };
-        const key = <span class="cstat-no" title="statement not covered" >keyMap[action];</span>
-<span class="cstat-no" title="statement not covered" >        if (key) {</span>
-<span class="cstat-no" title="statement not covered" >          window.dispatchEvent(new KeyboardEvent("keydown", { key }));</span>
+<span class="cstat-no" title="statement not covered" >      if (eventType === "start" &amp;&amp; direction) {</span>
+        // Release previous key if different
+<span class="cstat-no" title="statement not covered" >        if (activeMobileKeyRef.current &amp;&amp; activeMobileKeyRef.current !== directionMap[direction]) {</span>
+<span class="cstat-no" title="statement not covered" >          window.dispatchEvent(</span>
+            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+          );
+        }
+&nbsp;
+        // Press new key
+        const key = <span class="cstat-no" title="statement not covered" >directionMap[direction];</span>
+<span class="cstat-no" title="statement not covered" >        activeMobileKeyRef.current = key;</span>
+<span class="cstat-no" title="statement not covered" >        window.dispatchEvent(new KeyboardEvent("keydown", { key }));</span>
+<span class="cstat-no" title="statement not covered" >      } else if (eventType === "end") {</span>
+        // Release active key
+<span class="cstat-no" title="statement not covered" >        if (activeMobileKeyRef.current) {</span>
+<span class="cstat-no" title="statement not covered" >          window.dispatchEvent(</span>
+            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+          );
+<span class="cstat-no" title="statement not covered" >          activeMobileKeyRef.current = null;</span>
         }
       }
     },
@@ -5641,7 +5659,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-11T01:50:38.606Z
+                at 2025-12-12T00:07:43.056Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

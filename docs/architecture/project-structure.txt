@@ -446,6 +446,7 @@ src/components/combat/components/BloodLossOverlay.test.tsx
 src/components/combat/components/BloodLossOverlay.tsx
 src/components/combat/components/CombatArena3D.test.tsx
 src/components/combat/components/CombatArena3D.tsx
+src/components/combat/components/CombatFeedbackIntegration.test.tsx
 src/components/combat/components/CombatHUDThree.test.tsx
 src/components/combat/components/CombatHUDThree.tsx
 src/components/combat/components/CombatTimer.test.tsx
@@ -618,11 +619,16 @@ src/components/ui/KoreanHeader.test.tsx
 src/components/ui/KoreanHeaderHTML.css
 src/components/ui/KoreanHeaderHTML.tsx
 src/components/ui/LoadingState.tsx
+src/components/ui/MobileHUDLayout.test.tsx
+src/components/ui/MobileHUDLayout.tsx
+src/components/ui/ResponsiveContainer.test.tsx
+src/components/ui/ResponsiveContainer.tsx
 src/components/ui/SplashScreen.tsx
 src/components/ui/VolumeControl.test.tsx
 src/components/ui/VolumeControl.tsx
 src/components/ui/__tests__/ErrorModal.test.tsx
 src/components/ui/__tests__/SplashScreen.test.tsx
+src/components/ui/index.ts
 src/components/ui/shared/ConfirmDialog.test.tsx
 src/components/ui/shared/ConfirmDialog.tsx
 src/data/techniques.ts
@@ -638,6 +644,8 @@ src/hooks/usePauseMenu.test.ts
 src/hooks/usePauseMenu.ts
 src/hooks/usePlayerAnimation.test.ts
 src/hooks/usePlayerAnimation.ts
+src/hooks/useResponsiveLayout.test.ts
+src/hooks/useResponsiveLayout.ts
 src/hooks/useRoundTransition.test.ts
 src/hooks/useRoundTransition.ts
 src/hooks/useTechniqueSelection.test.ts
@@ -761,6 +769,8 @@ src/utils/player3DHelpers.test.ts
 src/utils/player3DHelpers.ts
 src/utils/playerUtils.test.ts
 src/utils/playerUtils.ts
+src/utils/responsiveLayout.test.ts
+src/utils/responsiveLayout.ts
 src/utils/stanceHelpers.test.ts
 src/utils/stanceHelpers.ts
 src/vite-env.d.ts
