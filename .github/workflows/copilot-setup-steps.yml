@@ -95,7 +95,7 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: Cache Cypress binary
-        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v5.0.0
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
@@ -133,7 +133,7 @@ jobs:
           DISPLAY: ":99"
 
       - name: Cache build artifacts
-        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v5.0.0
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           path: .tsbuildinfo
           key: ${{ runner.os }}-tsbuild-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
