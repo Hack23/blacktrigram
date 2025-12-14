@@ -568,7 +568,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const timerResetKey = `round-${internalRound}`;
 
   const timerState = useCombatTimer({
-    initialTime: Math.max(0, timeRemaining),
+    initialTime: 60, // Always start each round with 60 seconds
     isPaused:
       isPaused ||
       !combatState.roundStarted ||
@@ -1151,6 +1151,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // AI action execution
   const executeAIActionCallback = useCallback(
     (action: string, targetPos?: Position) => {
+      if (import.meta.env.DEV) {
+        console.log(`[AI] Executing action: ${action}`, targetPos);
+      }
+      
       switch (action) {
         case "attack":
           handleAIAttack();
