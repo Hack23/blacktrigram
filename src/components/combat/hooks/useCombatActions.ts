@@ -44,6 +44,7 @@ import { HitEffectType } from "@/systems/effects";
 import { useCallback } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
+import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -104,8 +105,18 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     combatActions.setExecutingTechnique(true);
 
-    // Create basic attack technique
-    const basicAttack = {
+    // Get available techniques for current stance and archetype
+    const availableTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
+      validPlayers[0].currentStance,
+      validPlayers[0].archetype
+    );
+
+    // Use the primary technique for the stance (first available technique)
+    const stanceTechnique = availableTechniques[0];
+
+    // Create technique object compatible with combat system
+    // If no stance technique is available, fall back to basic attack
+    const basicAttack = stanceTechnique ?? {
       id: "basic_attack",
       name: {
         korean: "기본공격",
@@ -321,6 +332,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
   // AI attack handler
   const handleAIAttack = useCallback(() => {
+    // Get AI's basic attack technique
+    const availableTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
+      validPlayers[1].currentStance,
+      validPlayers[1].archetype
+    );
+
+    // Use first technique if available, otherwise use basic stats
+    const technique = availableTechniques[0];
+
     addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
 
     const distance = Math.sqrt(
@@ -328,13 +348,26 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
         Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
     );
 
-    if (distance < 120) {
-      const damage = 10 + Math.random() * 15;
+    // Use technique range if available, otherwise default to 120
+    const maxRange = technique ? (technique.range ?? 1.0) * 100 : 120;
+
+    if (distance < maxRange) {
+      // Calculate damage based on technique or default
+      let damage = 10 + Math.random() * 15;
+      if (technique) {
+        // Damage is always a number in KoreanTechnique
+        const techDamage = technique.damage ?? 15;
+        damage = techDamage * 0.7; // Scale down for basic attack (not full technique)
+      }
+
       onPlayerUpdate(0, {
         health: Math.max(0, validPlayers[0].health - damage),
         hitsTaken: validPlayers[0].hitsTaken + 1,
       });
       addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
+      
+      // Play attack sound
+      combatAudio?.playAttackSound("light");
     } else {
       addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
     }
@@ -344,6 +377,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
+    combatAudio,
   ]);
 
   // AI defend handler
@@ -364,7 +398,22 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
   // AI technique handler
   const handleAITechnique = useCallback(() => {
-    if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
+    // Get AI's available techniques
+    const availableTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
+      validPlayers[1].currentStance,
+      validPlayers[1].archetype
+    );
+
+    // Use the primary technique for the stance
+    const technique = availableTechniques[0];
+
+    if (!technique) {
+      handleAIAttack(); // Fallback to basic attack if no technique available
+      return;
+    }
+
+    // Check if AI has enough resources
+    if (validPlayers[1].ki < technique.kiCost || validPlayers[1].stamina < technique.staminaCost) {
       handleAIAttack(); // Fallback to basic attack
       return;
     }
@@ -376,19 +425,27 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
         Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
     );
 
-    if (distance < 150) {
-      const damage = 20 + Math.random() * 20;
+    // Check if AI is in range (use technique range or default 150)
+    const maxRange = (technique.range ?? 1.0) * 100; // Convert range multiplier to pixels
+    if (distance < maxRange) {
+      // Use technique damage (damage is always a number in KoreanTechnique)
+      const damage = technique.damage ?? 25;
+
       onPlayerUpdate(0, {
         health: Math.max(0, validPlayers[0].health - damage),
         hitsTaken: validPlayers[0].hitsTaken + 1,
       });
-      addCombatMessage("AI 특수 기술!", "AI Special Technique!");
+      
+      // Use technique name in message
+      const techName = technique.name?.korean ?? technique.koreanName ?? "특수 기술";
+      const techNameEn = technique.name?.english ?? technique.englishName ?? "Special Technique";
+      addCombatMessage(`AI ${techName}`, `AI ${techNameEn}`);
     }
 
-    // Consume AI resources
+    // Consume AI resources based on technique costs
     onPlayerUpdate(1, {
-      ki: Math.max(0, validPlayers[1].ki - 10),
-      stamina: Math.max(0, validPlayers[1].stamina - 15),
+      ki: Math.max(0, validPlayers[1].ki - technique.kiCost),
+      stamina: Math.max(0, validPlayers[1].stamina - technique.staminaCost),
     });
   }, [
     validPlayers,
