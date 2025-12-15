@@ -39,11 +39,12 @@
 
 import { PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
-import { Position, TrigramStance } from "@/types";
+import { Position, TrigramStance, Technique } from "@/types";
 import { HitEffectType } from "@/systems/effects";
 import { useCallback } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
+import { KoreanTechnique } from "@/systems/vitalpoint/types";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -71,7 +72,7 @@ export interface UseCombatActionsConfig {
 }
 
 export interface UseCombatActionsReturn {
-  readonly handleAttack: () => void;
+  readonly handleAttack: (technique?: Technique) => void;
   readonly handleDefend: () => void;
   readonly handleTechniqueExecute: () => void;
   readonly handleStanceSwitch: (stance: TrigramStance) => void;
@@ -79,6 +80,43 @@ export interface UseCombatActionsReturn {
   readonly handleAIDefend: () => void;
   readonly handleAITechnique: () => void;
   readonly moveAIPlayer: (targetPos: Position) => void;
+}
+
+/**
+ * Helper function to convert Technique to KoreanTechnique format
+ * @param technique - The technique to convert
+ * @param stance - Current player stance
+ * @returns KoreanTechnique compatible with CombatSystem
+ */
+function convertTechniqueToKorean(technique: Technique, stance: TrigramStance): KoreanTechnique {
+  return {
+    id: technique.id,
+    name: {
+      korean: technique.name.korean,
+      english: technique.name.english,
+      romanized: technique.name.korean, // Use Korean as romanized fallback
+    },
+    koreanName: technique.name.korean,
+    englishName: technique.name.english,
+    romanized: technique.name.korean,
+    description: {
+      korean: technique.description.korean,
+      english: technique.description.english,
+    },
+    stance: technique.requiredStance ?? stance,
+    type: "attack",
+    damageType: technique.damageType,
+    damage: (technique.damage.min + technique.damage.max) / 2, // Use average damage
+    kiCost: technique.kiCost,
+    staminaCost: technique.staminaCost,
+    accuracy: 0.85, // Default accuracy
+    range: 1.0,
+    executionTime: technique.animationDuration ?? 400,
+    recoveryTime: 300,
+    critChance: technique.criticalChance ?? 0.1,
+    critMultiplier: 1.5,
+    effects: [],
+  };
 }
 
 /**
@@ -99,40 +137,48 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
   } = config;
 
   // Player attack handler
-  const handleAttack = useCallback(() => {
+  const handleAttack = useCallback((technique?: Technique) => {
     if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
 
     combatActions.setExecutingTechnique(true);
 
-    // Create basic attack technique
-    const basicAttack = {
-      id: "basic_attack",
-      name: {
-        korean: "기본공격",
-        english: "Basic Attack",
+    // Use provided technique or create basic attack
+    let attackTechnique: KoreanTechnique;
+    
+    if (technique) {
+      // Convert selected technique to KoreanTechnique format
+      attackTechnique = convertTechniqueToKorean(technique, validPlayers[0].currentStance);
+    } else {
+      // Create basic attack technique
+      attackTechnique = {
+        id: "basic_attack",
+        name: {
+          korean: "기본공격",
+          english: "Basic Attack",
+          romanized: "gibon_gonggyeok",
+        },
+        koreanName: "기본공격",
+        englishName: "Basic Attack",
         romanized: "gibon_gonggyeok",
-      },
-      koreanName: "기본공격",
-      englishName: "Basic Attack",
-      romanized: "gibon_gonggyeok",
-      description: { korean: "기본 공격", english: "Basic attack" },
-      stance: validPlayers[0].currentStance,
-      type: "attack" as const,
-      damageType: "physical" as const,
-      damage: 15,
-      kiCost: 5,
-      staminaCost: 8,
-      accuracy: 0.8,
-      range: 1.0,
-      executionTime: 400,
-      recoveryTime: 300,
-      critChance: 0.1,
-      critMultiplier: 1.5,
-      effects: [],
-    };
+        description: { korean: "기본 공격", english: "Basic attack" },
+        stance: validPlayers[0].currentStance,
+        type: "attack" as const,
+        damageType: "physical" as const,
+        damage: 15,
+        kiCost: 5,
+        staminaCost: 8,
+        accuracy: 0.8,
+        range: 1.0,
+        executionTime: 400,
+        recoveryTime: 300,
+        critChance: 0.1,
+        critMultiplier: 1.5,
+        effects: [],
+      };
+    }
 
     // Play attack sound based on technique damage/intensity
-    const damage = basicAttack.damage ?? 10;
+    const damage = attackTechnique.damage ?? 10;
     const intensity: AttackIntensity = 
       damage >= 40 ? "critical" : 
       damage >= 25 ? "heavy" : 
@@ -143,7 +189,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     const result = combatSystem.resolveAttack(
       validPlayers[0],
       validPlayers[1],
-      basicAttack
+      attackTechnique
     );
 
     const effectType = result.hit

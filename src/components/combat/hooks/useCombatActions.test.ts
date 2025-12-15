@@ -148,6 +148,50 @@ describe("useCombatActions", () => {
 
       expect(mockConfig.addHitEffect).toHaveBeenCalled();
     });
+
+    it("should execute with custom technique", () => {
+      const mockTechnique = {
+        id: "test_technique",
+        name: {
+          korean: "테스트 기술",
+          english: "Test Technique",
+        },
+        description: {
+          korean: "테스트용 기술",
+          english: "Test technique",
+        },
+        staminaCost: 20,
+        kiCost: 15,
+        damage: { min: 25, max: 35 },
+        damageType: "blunt" as const,
+        cooldown: 5000,
+        keyboardShortcut: "Q" as const,
+        criticalChance: 0.3,
+        animationDuration: 800,
+      };
+
+      const { result } = renderHook(() => useCombatActions(mockConfig));
+
+      act(() => {
+        result.current.handleAttack(mockTechnique);
+      });
+
+      // Should execute attack with custom technique
+      expect(mockConfig.addHitEffect).toHaveBeenCalled();
+      expect(mockConfig.addCombatMessage).toHaveBeenCalled();
+    });
+
+    it("should use basic attack when no technique provided", () => {
+      const { result } = renderHook(() => useCombatActions(mockConfig));
+
+      act(() => {
+        result.current.handleAttack();
+      });
+
+      // Should execute attack with basic attack
+      expect(mockConfig.addHitEffect).toHaveBeenCalled();
+      expect(mockConfig.addCombatMessage).toHaveBeenCalled();
+    });
   });
 
   describe("handleDefend", () => {
