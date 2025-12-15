@@ -11,7 +11,7 @@
  * @korean 기술데이터
  */
 
-import { PlayerArchetype, TrigramStance, DamageType, Technique } from "../types";
+import { PlayerArchetype, TrigramStance, DamageType, Technique, TechniqueKey } from "../types";
 import { KoreanTechniquesSystem } from "../systems/trigram/KoreanTechniques";
 import { KoreanTechnique } from "../systems/vitalpoint/types";
 
@@ -543,7 +543,7 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
  * 
  * @param stance - Current player stance
  * @param archetype - Player archetype
- * @returns Array of available techniques
+ * @returns Array of available techniques with proper keyboard shortcuts assigned
  * 
  * @public
  */
@@ -569,7 +569,14 @@ export function getTechniquesForStanceAndArchetype(
   );
 
   // Combine both sets, prioritizing stance techniques
-  return [...convertedTechniques, ...filteredArchetypeTechniques];
+  const allTechniques = [...convertedTechniques, ...filteredArchetypeTechniques];
+  
+  // Assign proper keyboard shortcuts (Q, W, E, R) based on position
+  const keyboardShortcuts = ['Q', 'W', 'E', 'R'] as const;
+  return allTechniques.map((tech, index) => ({
+    ...tech,
+    keyboardShortcut: keyboardShortcuts[index % keyboardShortcuts.length] as TechniqueKey,
+  }));
 }
 
 /**
