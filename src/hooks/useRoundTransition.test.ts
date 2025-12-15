@@ -268,10 +268,7 @@ describe("useRoundTransition", () => {
     it("should handle transition from round 1 to round 2", async () => {
       vi.useRealTimers();
       
-      let transitionCount = 0;
-      const onComplete = vi.fn(() => {
-        transitionCount++;
-      });
+      const onComplete = vi.fn();
       
       const { result } = renderHook(() =>
         useRoundTransition(
