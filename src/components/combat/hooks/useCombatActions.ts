@@ -428,6 +428,18 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     []
   );
 
+  /**
+   * Helper function to determine hit effect type based on combat result
+   * Reduces duplication between attack and technique handlers
+   */
+  const getHitEffectType = useCallback(
+    (result: { hit: boolean; isCritical?: boolean }): HitEffectType => {
+      if (!result.hit) return HitEffectType.MISS;
+      return result.isCritical ? HitEffectType.CRITICAL_HIT : HitEffectType.HIT;
+    },
+    []
+  );
+
   // AI attack handler
   const handleAIAttack = useCallback(() => {
     const aiPlayer = validPlayers[1];
@@ -451,12 +463,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       basicAttack
     );
 
-    const effectType = result.hit
-      ? result.isCritical
-        ? HitEffectType.CRITICAL_HIT
-        : HitEffectType.HIT
-      : HitEffectType.MISS;
-
+    const effectType = getHitEffectType(result);
     addHitEffect(effectType, playerPositions[1], result.hit ? 1 : 0.5);
 
     if (result.hit) {
@@ -496,6 +503,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect,
     combatAudio,
     createAITechnique,
+    getHitEffectType,
   ]);
 
   // AI defend handler

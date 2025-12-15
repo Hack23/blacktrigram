@@ -369,7 +369,7 @@ describe("useCombatActions", () => {
           result.current.handleAIAttack();
         });
 
-        // Should update both players through combat system
+        // should update both players through combat system
         expect(mockConfig.onPlayerUpdate).toHaveBeenCalled();
       });
 
@@ -449,7 +449,7 @@ describe("useCombatActions", () => {
           result.current.handleAITechnique();
         });
 
-        // Should update players through combat system
+        // should update players through combat system
         expect(mockConfig.onPlayerUpdate).toHaveBeenCalled();
       });
 

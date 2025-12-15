@@ -141,10 +141,10 @@
 
 ### Files Modified
 1. `src/components/combat/hooks/useCombatActions.ts`
-   - Lines 326-383: `createAITechnique` helper function
-   - Lines 386-453: `handleAIAttack` implementation
-   - Lines 456-473: `handleAIDefend` implementation
-   - Lines 476-539: `handleAITechnique` implementation
+   - Lines 368-429: `createAITechnique` helper function
+   - Lines 432-499: `handleAIAttack` implementation
+   - Lines 502-519: `handleAIDefend` implementation
+   - Lines 522-585: `handleAITechnique` implementation
 
 2. `src/components/combat/hooks/useAICombat.test.ts`
    - Lines 732-930: New comprehensive AI attack tests
