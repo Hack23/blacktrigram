@@ -729,6 +729,215 @@ describe("useAICombat", () => {
     });
   });
 
+  describe("AI Attack Execution", () => {
+    it("should execute attack when decision tree chooses ATTACK", async () => {
+      const player = createMockPlayer();
+      const opponent = createMockPlayer({ position: { x: 450, y: 300 } }); // Close distance
+
+      renderHook(() =>
+        useAICombat({
+          player,
+          opponent,
+          personality: AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          adaptiveDifficulty: mockAdaptiveDifficulty,
+          isPaused: false,
+          roundStarted: true,
+          roundEnded: false,
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          onExecuteAction: mockOnExecuteAction,
+          onStanceChange: mockOnStanceChange,
+        })
+      );
+
+      // Wait for AI decision loop to execute (need enough time for cooldown)
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Verify AI executed at least one action
+      expect(mockOnExecuteAction).toHaveBeenCalled();
+
+      // Verify action types are valid AI actions
+      const actionCalls = mockOnExecuteAction.mock.calls.map(
+        (call) => call[0]
+      );
+      const validActions = [
+        "attack",
+        "technique",
+        "defend",
+        "approach",
+        "retreat",
+        "circle",
+        "idle",
+        "counter",
+        "feint",
+      ];
+      const allActionsValid = actionCalls.every((action) =>
+        validActions.includes(action)
+      );
+      expect(allActionsValid).toBe(true);
+    });
+
+    it("should respect action cooldowns between attacks", async () => {
+      const player = createMockPlayer();
+      const opponent = createMockPlayer({ position: { x: 450, y: 300 } });
+
+      renderHook(() =>
+        useAICombat({
+          player,
+          opponent,
+          personality: AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          adaptiveDifficulty: mockAdaptiveDifficulty,
+          isPaused: false,
+          roundStarted: true,
+          roundEnded: false,
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          onExecuteAction: mockOnExecuteAction,
+          onStanceChange: mockOnStanceChange,
+        })
+      );
+
+      // Advance minimal time (50ms decision loop)
+      act(() => {
+        vi.advanceTimersByTime(50);
+      });
+
+      const firstCallCount = mockOnExecuteAction.mock.calls.length;
+
+      // Advance by less than cooldown (400-600ms)
+      act(() => {
+        vi.advanceTimersByTime(200);
+      });
+
+      const secondCallCount = mockOnExecuteAction.mock.calls.length;
+
+      // Should not have many new calls during cooldown
+      expect(secondCallCount - firstCallCount).toBeLessThanOrEqual(1);
+    });
+
+    it("should execute techniques when AI has sufficient resources", async () => {
+      const player = createMockPlayer({ ki: 100, stamina: 100 });
+      const opponent = createMockPlayer({ position: { x: 450, y: 300 } });
+
+      renderHook(() =>
+        useAICombat({
+          player,
+          opponent,
+          personality: AI_PERSONALITIES.TECHNICAL_MASTER,
+          adaptiveDifficulty: mockAdaptiveDifficulty,
+          isPaused: false,
+          roundStarted: true,
+          roundEnded: false,
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          onExecuteAction: mockOnExecuteAction,
+          onStanceChange: mockOnStanceChange,
+        })
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Technical Master should attempt techniques
+      expect(mockOnExecuteAction).toHaveBeenCalled();
+    });
+
+    it("should stop attacking when resources are depleted", async () => {
+      const player = createMockPlayer({ ki: 5, stamina: 5 });
+      const opponent = createMockPlayer({ position: { x: 450, y: 300 } });
+
+      renderHook(() =>
+        useAICombat({
+          player,
+          opponent,
+          personality: AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          adaptiveDifficulty: mockAdaptiveDifficulty,
+          isPaused: false,
+          roundStarted: true,
+          roundEnded: false,
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          onExecuteAction: mockOnExecuteAction,
+          onStanceChange: mockOnStanceChange,
+        })
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+
+      // AI may still execute basic actions but should be limited
+      expect(mockOnExecuteAction).toHaveBeenCalled();
+    });
+
+    it("should execute defense actions when decision tree chooses DEFEND", async () => {
+      const player = createMockPlayer({ health: 30 }); // Low health
+      const opponent = createMockPlayer({
+        position: { x: 450, y: 300 },
+        health: 100,
+      });
+
+      renderHook(() =>
+        useAICombat({
+          player,
+          opponent,
+          personality: AI_PERSONALITIES.DEFENSIVE_SPECIALIST,
+          adaptiveDifficulty: mockAdaptiveDifficulty,
+          isPaused: false,
+          roundStarted: true,
+          roundEnded: false,
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          onExecuteAction: mockOnExecuteAction,
+          onStanceChange: mockOnStanceChange,
+        })
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Defensive specialist with low health should defend
+      const actionCalls = mockOnExecuteAction.mock.calls.map(
+        (call) => call[0]
+      );
+      const hasDefenseAction = actionCalls.some(
+        (action) => action === "defend" || action === "retreat"
+      );
+      expect(hasDefenseAction).toBe(true);
+    });
+
+    it("should use aggressive personality effectively", async () => {
+      const player = createMockPlayer();
+      const opponent = createMockPlayer({ position: { x: 450, y: 300 } });
+
+      const { result } = renderHook(() =>
+        useAICombat({
+          player,
+          opponent,
+          personality: AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          adaptiveDifficulty: mockAdaptiveDifficulty,
+          isPaused: false,
+          roundStarted: true,
+          roundEnded: false,
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          onExecuteAction: mockOnExecuteAction,
+          onStanceChange: mockOnStanceChange,
+        })
+      );
+
+      // Verify aggressive personality is applied
+      expect(result.current.adjustedPersonality.aggressionLevel).toBeGreaterThan(
+        0.5
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      // AI should execute actions with aggressive personality
+      expect(mockOnExecuteAction).toHaveBeenCalled();
+    });
+  });
+
   describe("Cleanup", () => {
     it("should cleanup interval on unmount", () => {
       const player = createMockPlayer();

@@ -321,33 +321,93 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
   // AI attack handler
   const handleAIAttack = useCallback(() => {
-    addHitEffect(HitEffectType.HIT, playerPositions[1], 1);
+    const aiPlayer = validPlayers[1];
+    const targetPlayer = validPlayers[0];
 
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
+    // Create basic attack technique for AI
+    const basicAttack = {
+      id: "ai_basic_attack",
+      name: {
+        korean: "AI 기본공격",
+        english: "AI Basic Attack",
+        romanized: "ai_gibon_gonggyeok",
+      },
+      koreanName: "AI 기본공격",
+      englishName: "AI Basic Attack",
+      romanized: "ai_gibon_gonggyeok",
+      description: { korean: "AI 기본 공격", english: "AI basic attack" },
+      stance: aiPlayer.currentStance,
+      type: "attack" as const,
+      damageType: "physical" as const,
+      damage: 15,
+      kiCost: 5,
+      staminaCost: 8,
+      accuracy: 0.8,
+      range: 1.2,
+      executionTime: 400,
+      recoveryTime: 300,
+      critChance: 0.1,
+      critMultiplier: 1.5,
+      effects: [],
+    };
+
+    // Play attack sound
+    const intensity = basicAttack.damage >= 25 ? "heavy" : basicAttack.damage >= 10 ? "medium" : "light";
+    combatAudio?.playAttackSound(intensity);
+
+    // Use combat system for proper calculation
+    const result = combatSystem.resolveAttack(
+      aiPlayer,
+      targetPlayer,
+      basicAttack
     );
 
-    if (distance < 120) {
-      const damage = 10 + Math.random() * 15;
-      onPlayerUpdate(0, {
-        health: Math.max(0, validPlayers[0].health - damage),
-        hitsTaken: validPlayers[0].hitsTaken + 1,
-      });
-      addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
+    const effectType = result.hit
+      ? result.isCritical
+        ? HitEffectType.CRITICAL_HIT
+        : HitEffectType.HIT
+      : HitEffectType.MISS;
+
+    addHitEffect(effectType, playerPositions[1], result.hit ? 1 : 0.5);
+
+    if (result.hit) {
+      // Play hit sound based on damage
+      combatAudio?.playHitSound(result.damage);
+
+      // Apply damage through combat system
+      const { updatedAttacker, updatedDefender } =
+        combatSystem.applyCombatResult(
+          result,
+          aiPlayer,
+          targetPlayer
+        );
+
+      onPlayerUpdate(1, updatedAttacker);
+      onPlayerUpdate(0, updatedDefender);
+
+      if (result.isCritical) {
+        addCombatMessage("AI 치명타!", "AI Critical Hit!");
+      } else {
+        addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
+      }
     } else {
       addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
     }
   }, [
     validPlayers,
     playerPositions,
+    combatSystem,
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
+    combatAudio,
   ]);
 
   // AI defend handler
   const handleAIDefend = useCallback(() => {
+    // Play block sound
+    combatAudio?.playBlockSound(false);
+
     onPlayerUpdate(1, { isBlocking: true });
     addCombatMessage("AI 방어 자세", "AI Defensive Stance");
     addHitEffect(HitEffectType.BLOCK, playerPositions[1], 0.8);
@@ -360,43 +420,96 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     playerPositions,
+    combatAudio,
   ]);
 
   // AI technique handler
   const handleAITechnique = useCallback(() => {
-    if (validPlayers[1].ki < 10 || validPlayers[1].stamina < 15) {
+    const aiPlayer = validPlayers[1];
+    const targetPlayer = validPlayers[0];
+
+    // Check if AI has sufficient resources
+    if (aiPlayer.ki < 10 || aiPlayer.stamina < 15) {
       handleAIAttack(); // Fallback to basic attack
       return;
     }
 
-    addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[1], 1.5);
+    // Create special technique for AI
+    const specialTechnique = {
+      id: "ai_special_technique",
+      name: {
+        korean: "AI 특수기술",
+        english: "AI Special Technique",
+        romanized: "ai_teuksu_gisul",
+      },
+      koreanName: "AI 특수기술",
+      englishName: "AI Special Technique",
+      romanized: "ai_teuksu_gisul",
+      description: { korean: "AI 특수 기술", english: "AI special technique" },
+      stance: aiPlayer.currentStance,
+      type: "technique" as const,
+      damageType: "physical" as const,
+      damage: 25,
+      kiCost: 10,
+      staminaCost: 15,
+      accuracy: 0.85,
+      range: 1.5,
+      executionTime: 600,
+      recoveryTime: 800,
+      critChance: 0.15,
+      critMultiplier: 1.8,
+      effects: [],
+    };
 
-    const distance = Math.sqrt(
-      Math.pow(playerPositions[0].x - playerPositions[1].x, 2) +
-        Math.pow(playerPositions[0].y - playerPositions[1].y, 2)
+    // Play special technique sound
+    combatAudio?.playSpecialTechniqueSound();
+
+    // Use combat system for proper calculation
+    const result = combatSystem.resolveAttack(
+      aiPlayer,
+      targetPlayer,
+      specialTechnique
     );
 
-    if (distance < 150) {
-      const damage = 20 + Math.random() * 20;
-      onPlayerUpdate(0, {
-        health: Math.max(0, validPlayers[0].health - damage),
-        hitsTaken: validPlayers[0].hitsTaken + 1,
-      });
-      addCombatMessage("AI 특수 기술!", "AI Special Technique!");
-    }
+    const effectType = result.hit
+      ? HitEffectType.CRITICAL_HIT
+      : HitEffectType.MISS;
 
-    // Consume AI resources
-    onPlayerUpdate(1, {
-      ki: Math.max(0, validPlayers[1].ki - 10),
-      stamina: Math.max(0, validPlayers[1].stamina - 15),
-    });
+    addHitEffect(effectType, playerPositions[1], result.hit ? 1.5 : 0.5);
+
+    if (result.hit) {
+      // Play heavy hit sound for technique
+      combatAudio?.playHitSound(result.damage);
+
+      // Apply damage through combat system (already deducts resources)
+      const { updatedAttacker, updatedDefender } =
+        combatSystem.applyCombatResult(
+          result,
+          aiPlayer,
+          targetPlayer
+        );
+
+      onPlayerUpdate(1, updatedAttacker);
+      onPlayerUpdate(0, updatedDefender);
+
+      addCombatMessage("AI 특수 기술!", "AI Special Technique!");
+    } else {
+      // Still consume resources on miss (technique was attempted)
+      onPlayerUpdate(1, {
+        ki: Math.max(0, aiPlayer.ki - specialTechnique.kiCost),
+        stamina: Math.max(0, aiPlayer.stamina - specialTechnique.staminaCost),
+      });
+      addCombatMessage("AI 기술 빗나감", "AI Technique Missed");
+    }
   }, [
     validPlayers,
     playerPositions,
+    combatSystem,
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
     handleAIAttack,
+    combatAudio,
   ]);
 
   // AI movement handler
