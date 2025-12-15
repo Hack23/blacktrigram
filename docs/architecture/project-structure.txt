@@ -543,6 +543,7 @@ src/components/mobile/GestureRecognizer.test.tsx
 src/components/mobile/GestureRecognizer.tsx
 src/components/mobile/StanceWheel.test.tsx
 src/components/mobile/StanceWheel.tsx
+src/components/mobile/VirtualDPad.integration.test.tsx
 src/components/mobile/VirtualDPad.test.tsx
 src/components/mobile/VirtualDPad.tsx
 src/components/mobile/index.ts

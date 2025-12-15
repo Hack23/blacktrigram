@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.09% </span>
+                <span class="strong">79.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/43</span>
+                <span class='fraction'>34/43</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.43% </span>
+                <span class="strong">51.35% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/37</span>
+                <span class='fraction'>19/37</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.67% </span>
+                <span class="strong">83.78% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/37</span>
+                <span class='fraction'>31/37</span>
             </div>
         
             
@@ -302,7 +302,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -320,28 +320,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">58x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">56x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -349,6 +338,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -433,7 +433,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -465,7 +465,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -541,14 +541,14 @@ export class KoreanTechniquesSystem {
     const stanceTechniques = this.getAvailableTechniques(stance);
 &nbsp;
     // Add Dark Ops techniques for 암살자 (Amsalja) archetype
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (archetype === PlayerArchetype.AMSALJA) {
+    if (archetype === PlayerArchetype.AMSALJA) {
       const darkOpsTechniques = DARK_OPS_TECHNIQUES.filter(
         (tech) =&gt; tech.stance === stance
       );
       return [...stanceTechniques, ...darkOpsTechniques];
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return stanceTechniques;</span>
+    return stanceTechniques;
   }
 &nbsp;
   /**
@@ -566,7 +566,7 @@ export class KoreanTechniquesSystem {
     player: PlayerState,
     technique: KoreanTechnique
   ): boolean {
-<span class="cstat-no" title="statement not covered" >    return (</span>
+    return (
       player.ki &gt;= technique.kiCost &amp;&amp;
       player.stamina &gt;= technique.staminaCost &amp;&amp;
       player.currentStance === technique.stance
@@ -650,8 +650,8 @@ export class KoreanTechniquesSystem {
     // Night: 00:00-06:00, 18:00-23:59 = 1.25x
     // Day: 06:00-18:00 = 1.0x
     const hour = new Date().getHours();
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (hour &gt;= 0 &amp;&amp; hour &lt; 6) return 1.25; // Night
-<span class="cstat-no" title="statement not covered" >    if (hour &gt;= 18 &amp;&amp; hour &lt; 24) <span class="cstat-no" title="statement not covered" >return 1.25; // Night</span></span>
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (hour &gt;= 0 &amp;&amp; hour &lt; 6) <span class="cstat-no" title="statement not covered" >return 1.25; // Night</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (hour &gt;= 18 &amp;&amp; hour &lt; 24) return 1.25; // Night
 <span class="cstat-no" title="statement not covered" >    if (hour &gt;= 5 &amp;&amp; hour &lt; 7) <span class="cstat-no" title="statement not covered" >return 1.15; // Twilight</span></span>
 <span class="cstat-no" title="statement not covered" >    if (hour &gt;= 17 &amp;&amp; hour &lt; 19) <span class="cstat-no" title="statement not covered" >return 1.15; // Twilight</span></span>
 <span class="cstat-no" title="statement not covered" >    return 1.0; // Day</span>
@@ -724,7 +724,7 @@ export const TECHNIQUE_EFFECTIVENESS_MATRIX: Record&lt;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-12T00:07:43.056Z
+                at 2025-12-15T20:07:45.872Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
