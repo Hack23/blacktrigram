@@ -768,11 +768,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           ki: Math.max(0, validPlayers[0].ki - technique.kiCost),
         });
 
-        // Execute attack with technique damage
-        handleAttack();
-
-        // Play SFX
-        combatAudio.playAttackSound("heavy");
+        // Execute attack WITH the selected technique (not basic attack)
+        handleAttack(technique);
 
         // Add combat message
         addCombatMessage(
@@ -952,7 +949,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       (action: string) => {
         switch (action) {
           case "attack":
-            handleAttackWithFeedback();
+            // Execute currently selected technique via technique selection system
+            techniqueSelection.executeTechnique();
             break;
           case "block":
             handleDefendWithFeedback();
@@ -960,7 +958,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Movement and other actions handled by existing system
         }
       },
-      [handleAttackWithFeedback, handleDefendWithFeedback]
+      [techniqueSelection, handleDefendWithFeedback]
     ),
     enabled:
       !isPaused &&
@@ -1054,8 +1052,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   );
 
   const handleMobileAttack = useCallback(() => {
-    handleAttackWithFeedback();
-  }, [handleAttackWithFeedback]);
+    // Execute currently selected technique via technique selection system
+    techniqueSelection.executeTechnique();
+  }, [techniqueSelection]);
 
   const handleMobileBlock = useCallback(
     (eventType: ButtonEventType) => {
@@ -1090,12 +1089,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
           break;
         case "swipe-up":
-          // High attack mode - could trigger special technique
-          handleAttackWithFeedback();
+          // High attack mode - execute selected technique
+          techniqueSelection.executeTechnique();
           break;
         case "swipe-down":
-          // Low attack mode - could trigger different technique
-          handleAttackWithFeedback();
+          // Low attack mode - execute selected technique
+          techniqueSelection.executeTechnique();
           break;
         case "two-finger-tap":
           // Activate vital point targeting mode
@@ -1104,7 +1103,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           break;
       }
     },
-    [handleAttackWithFeedback, audio]
+    [techniqueSelection, audio]
   );
 
   // Check if mobile controls should be enabled
