@@ -971,10 +971,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
   const activeMobileKeyRef = useRef<string | null>(null);
 
-  // Mobile touch control handlers with proper key state management
+  /**
+   * Mobile touch control handler - Converts VirtualDPad touch inputs to keyboard events
+   * 
+   * Dispatches synthetic KeyboardEvents with proper properties to ensure compatibility
+   * with usePlayerMovement hook. The synthetic events include:
+   * - key: The character key (w/a/s/d)
+   * - code: The physical key code (KeyW/KeyA/KeyS/KeyD)
+   * - bubbles: true - Allows event to propagate through DOM
+   * - cancelable: true - Allows event to be prevented
+   * 
+   * These properties are essential for the keyboard event listeners in inputSystem.ts
+   * to properly recognize and process the movement commands.
+   * 
+   * @param direction - The D-pad direction or null
+   * @param eventType - 'start' for press, 'end' for release
+   */
   const handleMobileMove = useCallback(
     (direction: Direction | null, eventType: DPadEventType) => {
-      // Map D-pad directions to movement keys
+      // Map D-pad directions to movement keys (WASD)
       const directionMap: Record<Direction, string> = {
         up: "w",
         "up-right": "w", // Diagonal simplified to primary direction
@@ -987,22 +1002,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       };
 
       if (eventType === "start" && direction) {
-        // Release previous key if different
+        // Release previous key if different (prevents stuck keys)
         if (activeMobileKeyRef.current && activeMobileKeyRef.current !== directionMap[direction]) {
+          const prevKey = activeMobileKeyRef.current;
           window.dispatchEvent(
-            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+            new KeyboardEvent("keyup", {
+              key: prevKey,
+              code: `Key${prevKey.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
           );
         }
 
-        // Press new key
+        // Press new key with proper keyboard event properties
+        // These properties ensure usePlayerMovement recognizes the synthetic event
         const key = directionMap[direction];
         activeMobileKeyRef.current = key;
-        window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+        window.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key,
+            code: `Key${key.toUpperCase()}`,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
       } else if (eventType === "end") {
-        // Release active key
+        // Release active key when D-pad released
         if (activeMobileKeyRef.current) {
+          const key = activeMobileKeyRef.current;
           window.dispatchEvent(
-            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+            new KeyboardEvent("keyup", {
+              key,
+              code: `Key${key.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
           );
           activeMobileKeyRef.current = null;
         }
