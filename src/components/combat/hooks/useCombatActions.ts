@@ -45,6 +45,7 @@ import { useCallback } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
+import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -140,42 +141,42 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
   const handleAttack = useCallback((technique?: Technique) => {
     if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
 
-    combatActions.setExecutingTechnique(true);
+    const player = validPlayers[0];
+    const currentStance = player.currentStance;
+    const archetype = player.archetype;
 
-    // Use provided technique or create basic attack
+    // Use provided technique or select from stance techniques
     let attackTechnique: KoreanTechnique;
     
     if (technique) {
       // Convert selected technique to KoreanTechnique format
-      attackTechnique = convertTechniqueToKorean(technique, validPlayers[0].currentStance);
+      attackTechnique = convertTechniqueToKorean(technique, currentStance);
     } else {
-      // Create basic attack technique
-      attackTechnique = {
-        id: "basic_attack",
-        name: {
-          korean: "기본공격",
-          english: "Basic Attack",
-          romanized: "gibon_gonggyeok",
-        },
-        koreanName: "기본공격",
-        englishName: "Basic Attack",
-        romanized: "gibon_gonggyeok",
-        description: { korean: "기본 공격", english: "Basic attack" },
-        stance: validPlayers[0].currentStance,
-        type: "attack" as const,
-        damageType: "physical" as const,
-        damage: 15,
-        kiCost: 5,
-        staminaCost: 8,
-        accuracy: 0.8,
-        range: 1.0,
-        executionTime: 400,
-        recoveryTime: 300,
-        critChance: 0.1,
-        critMultiplier: 1.5,
-        effects: [],
-      };
+      // Get techniques for current stance and archetype
+      const availableTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
+        currentStance,
+        archetype
+      );
+
+      if (availableTechniques.length === 0) {
+        console.warn(`No techniques found for stance: ${currentStance}, archetype: ${archetype}`);
+        addCombatMessage("기술 없음", "No techniques available");
+        return;
+      }
+
+      // Select primary technique (first in list)
+      const selectedTechnique = availableTechniques[0];
+
+      // Check if player has sufficient resources
+      if (!KoreanTechniquesSystem.canExecuteTechnique(player, selectedTechnique)) {
+        addCombatMessage("기력/체력 부족", "Insufficient Ki/Stamina");
+        return;
+      }
+
+      attackTechnique = selectedTechnique;
     }
+
+    combatActions.setExecutingTechnique(true);
 
     // Play attack sound based on technique damage/intensity
     const damage = attackTechnique.damage ?? 10;
@@ -222,16 +223,34 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(0, updatedAttacker);
       onPlayerUpdate(1, updatedDefender);
 
+      // Display technique name in combat log
+      const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
+      const techniqueNameEnglish = attackTechnique.englishName || attackTechnique.name.english;
+
       if (result.isCritical) {
-        addCombatMessage("치명타 공격!", "Critical Hit!");
+        addCombatMessage(
+          `치명타! ${techniqueNameKorean}`,
+          `Critical Hit! ${techniqueNameEnglish}`
+        );
       } else if (newCombo > 2) {
-        addCombatMessage(`${newCombo} 연속 공격!`, `${newCombo} Hit Combo!`);
+        addCombatMessage(
+          `${newCombo} 연속! ${techniqueNameKorean}`,
+          `${newCombo} Combo! ${techniqueNameEnglish}`
+        );
       } else {
-        addCombatMessage("공격 성공!", "Attack Hit!");
+        addCombatMessage(
+          `${techniqueNameKorean} 성공!`,
+          `${techniqueNameEnglish} Hit!`
+        );
       }
     } else {
       combatActions.resetCombo();
-      addCombatMessage("공격 빗나감", "Attack Missed");
+      const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
+      const techniqueNameEnglish = attackTechnique.englishName || attackTechnique.name.english;
+      addCombatMessage(
+        `${techniqueNameKorean} 빗나감`,
+        `${techniqueNameEnglish} Missed`
+      );
     }
 
     setTimeout(() => combatActions.setExecutingTechnique(false), 500);

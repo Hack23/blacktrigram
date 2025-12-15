@@ -12,6 +12,8 @@
  */
 
 import { PlayerArchetype, TrigramStance, DamageType, Technique } from "../types";
+import { KoreanTechniquesSystem } from "../systems/trigram/KoreanTechniques";
+import { KoreanTechnique } from "../systems/vitalpoint/types";
 
 /**
  * Technique definitions for 무사 (Musa) - Traditional Warrior.
@@ -492,6 +494,85 @@ export function getTechniquesForArchetype(
 }
 
 /**
+ * Convert KoreanTechnique to Technique format for UI compatibility
+ */
+function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
+  // Convert string damageType to DamageType enum
+  const getDamageType = (type: string): DamageType => {
+    // Map common string values to DamageType enum
+    const typeMap: Record<string, DamageType> = {
+      'blunt': DamageType.BLUNT,
+      'physical': DamageType.BLUNT,
+      'piercing': DamageType.PIERCING,
+      'slashing': DamageType.SLASHING,
+      'crushing': DamageType.CRUSHING,
+      'impact': DamageType.IMPACT,
+      'joint': DamageType.JOINT,
+      'electric': DamageType.ELECTRIC,
+      'psychic': DamageType.PSYCHIC,
+    };
+    return typeMap[type.toLowerCase()] || DamageType.BLUNT;
+  };
+
+  return {
+    id: koreanTech.id,
+    name: {
+      korean: koreanTech.koreanName || koreanTech.name.korean,
+      english: koreanTech.englishName || koreanTech.name.english,
+      romanized: koreanTech.romanized || koreanTech.name.romanized,
+    },
+    description: koreanTech.description,
+    staminaCost: koreanTech.staminaCost,
+    kiCost: koreanTech.kiCost,
+    damage: {
+      min: Math.floor(koreanTech.damage * 0.8),
+      max: Math.ceil(koreanTech.damage * 1.2),
+    },
+    damageType: getDamageType(koreanTech.damageType),
+    cooldown: koreanTech.recoveryTime + koreanTech.executionTime,
+    requiredStance: koreanTech.stance,
+    keyboardShortcut: "Q", // Default, will be overridden by UI
+    criticalChance: koreanTech.critChance,
+    animationDuration: koreanTech.executionTime,
+  };
+}
+
+/**
+ * Get techniques for a player based on their current stance and archetype.
+ * Combines trigram stance techniques with archetype-specific bonuses.
+ * 
+ * @param stance - Current player stance
+ * @param archetype - Player archetype
+ * @returns Array of available techniques
+ * 
+ * @public
+ */
+export function getTechniquesForStanceAndArchetype(
+  stance: TrigramStance,
+  archetype: PlayerArchetype
+): readonly Technique[] {
+  // Get stance-based techniques from Korean martial arts system
+  const koreanTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
+    stance,
+    archetype
+  );
+
+  // Convert to Technique format
+  const convertedTechniques = koreanTechniques.map(convertKoreanToTechnique);
+
+  // Also include archetype-specific special techniques
+  const archetypeTechniques = getTechniquesForArchetype(archetype);
+  
+  // Filter archetype techniques to only include those matching current stance or no stance requirement
+  const filteredArchetypeTechniques = archetypeTechniques.filter(
+    (tech) => !tech.requiredStance || tech.requiredStance === stance
+  );
+
+  // Combine both sets, prioritizing stance techniques
+  return [...convertedTechniques, ...filteredArchetypeTechniques];
+}
+
+/**
  * Get a specific technique by ID.
  * 
  * @param techniqueId - Unique technique identifier
@@ -513,5 +594,6 @@ export function getTechniqueById(techniqueId: string): Technique | undefined {
 
 export default {
   getTechniquesForArchetype,
+  getTechniquesForStanceAndArchetype,
   getTechniqueById,
 };

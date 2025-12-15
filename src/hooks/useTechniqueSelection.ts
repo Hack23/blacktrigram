@@ -13,7 +13,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Technique, TechniqueKey, TechniqueCooldown, TechniqueValidation } from "../types";
-import { getTechniquesForArchetype } from "../data/techniques";
+import { getTechniquesForStanceAndArchetype } from "../data/techniques";
 import { PlayerState } from "../systems/player";
 
 /**
@@ -90,10 +90,10 @@ export function useTechniqueSelection(
 ): UseTechniqueSelectionResult {
   const { player, enabled = true, onTechniqueSelected, onTechniqueExecute } = config;
   
-  // Get available techniques for player archetype
+  // Get available techniques based on player's current stance and archetype
   const availableTechniques = useMemo(
-    () => getTechniquesForArchetype(player.archetype),
-    [player.archetype]
+    () => getTechniquesForStanceAndArchetype(player.currentStance, player.archetype),
+    [player.currentStance, player.archetype]
   );
   
   // Selected technique state
