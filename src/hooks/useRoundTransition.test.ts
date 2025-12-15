@@ -263,4 +263,206 @@ describe("useRoundTransition", () => {
     
     vi.useFakeTimers();
   });
+
+  describe("Multiple Round Transitions", () => {
+    it("should handle transition from round 1 to round 2", async () => {
+      vi.useRealTimers();
+      
+      let transitionCount = 0;
+      const onComplete = vi.fn(() => {
+        transitionCount++;
+      });
+      
+      const { result } = renderHook(() =>
+        useRoundTransition(
+          { announcementDuration: 0.5, countdownDuration: 0.5 },
+          onComplete
+        )
+      );
+
+      // Start round 1 end transition
+      act(() => {
+        result.current.startTransition(mockWinner, 1);
+      });
+
+      expect(result.current.currentRoundNumber).toBe(1);
+      expect(result.current.roundWinner).toBe(mockWinner);
+
+      // Wait for transition to complete
+      await waitFor(
+        () => {
+          expect(result.current.transitionState).toBe("idle");
+          expect(onComplete).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 2000 }
+      );
+
+      // Start round 2 end transition
+      act(() => {
+        result.current.startTransition(mockWinner, 2);
+      });
+
+      expect(result.current.currentRoundNumber).toBe(2);
+      expect(result.current.roundWinner).toBe(mockWinner);
+
+      // Wait for second transition to complete
+      await waitFor(
+        () => {
+          expect(result.current.transitionState).toBe("idle");
+          expect(onComplete).toHaveBeenCalledTimes(2);
+        },
+        { timeout: 2000 }
+      );
+      
+      vi.useFakeTimers();
+    });
+
+    it("should handle consecutive transitions with different winners", async () => {
+      vi.useRealTimers();
+      
+      const mockPlayer2: PlayerState = {
+        ...mockWinner,
+        id: "player2",
+        name: { korean: "암살자", english: "Assassin" },
+      };
+      
+      const onComplete = vi.fn();
+      const { result } = renderHook(() =>
+        useRoundTransition(
+          { announcementDuration: 0.5, countdownDuration: 0.5 },
+          onComplete
+        )
+      );
+
+      // Player 1 wins round 1
+      act(() => {
+        result.current.startTransition(mockWinner, 1);
+      });
+
+      expect(result.current.roundWinner).toBe(mockWinner);
+
+      await waitFor(
+        () => expect(result.current.transitionState).toBe("idle"),
+        { timeout: 2000 }
+      );
+
+      // Player 2 wins round 2
+      act(() => {
+        result.current.startTransition(mockPlayer2, 2);
+      });
+
+      expect(result.current.roundWinner).toBe(mockPlayer2);
+
+      await waitFor(
+        () => expect(result.current.transitionState).toBe("idle"),
+        { timeout: 2000 }
+      );
+
+      expect(onComplete).toHaveBeenCalledTimes(2);
+      
+      vi.useFakeTimers();
+    });
+
+    it("should handle tie round followed by normal round", async () => {
+      vi.useRealTimers();
+      
+      const onComplete = vi.fn();
+      const { result } = renderHook(() =>
+        useRoundTransition(
+          { announcementDuration: 0.5, countdownDuration: 0.5 },
+          onComplete
+        )
+      );
+
+      // Round 1 ends in tie
+      act(() => {
+        result.current.startTransition(null, 1);
+      });
+
+      expect(result.current.roundWinner).toBeNull();
+
+      await waitFor(
+        () => expect(result.current.transitionState).toBe("idle"),
+        { timeout: 2000 }
+      );
+
+      // Player 1 wins round 2
+      act(() => {
+        result.current.startTransition(mockWinner, 2);
+      });
+
+      expect(result.current.roundWinner).toBe(mockWinner);
+
+      await waitFor(
+        () => expect(result.current.transitionState).toBe("idle"),
+        { timeout: 2000 }
+      );
+
+      expect(onComplete).toHaveBeenCalledTimes(2);
+      
+      vi.useFakeTimers();
+    });
+  });
+
+  describe("State Consistency", () => {
+    it("should maintain consistent state during rapid transitions", async () => {
+      vi.useRealTimers();
+      
+      const onComplete = vi.fn();
+      const { result } = renderHook(() =>
+        useRoundTransition(
+          { announcementDuration: 0.3, countdownDuration: 0.3 },
+          onComplete
+        )
+      );
+
+      // Start first transition
+      act(() => {
+        result.current.startTransition(mockWinner, 1);
+      });
+
+      expect(result.current.transitionState).toBe("announcing");
+
+      // Try to start another transition while first is in progress
+      // This should not break the state machine
+      act(() => {
+        result.current.startTransition(mockWinner, 2);
+      });
+
+      // Should use the new round number
+      expect(result.current.currentRoundNumber).toBe(2);
+
+      await waitFor(
+        () => expect(result.current.transitionState).toBe("idle"),
+        { timeout: 2000 }
+      );
+
+      expect(onComplete).toHaveBeenCalled();
+      
+      vi.useFakeTimers();
+    });
+
+    it("should properly reset state after reset is called", () => {
+      const { result } = renderHook(() => useRoundTransition());
+
+      // Start transition
+      act(() => {
+        result.current.startTransition(mockWinner, 3);
+      });
+
+      expect(result.current.transitionState).toBe("announcing");
+      expect(result.current.roundWinner).toBe(mockWinner);
+      expect(result.current.currentRoundNumber).toBe(3);
+
+      // Reset
+      act(() => {
+        result.current.resetTransition();
+      });
+
+      expect(result.current.transitionState).toBe("idle");
+      expect(result.current.roundWinner).toBeNull();
+      expect(result.current.currentRoundNumber).toBe(0);
+      expect(result.current.showAnnouncement).toBe(false);
+    });
+  });
 });
