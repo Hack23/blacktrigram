@@ -12,12 +12,13 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
+import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
 import { GestureEvent } from "../../hooks/useTouchControls";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../systems";
 import { AnimationEvents } from "../../systems/animation";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
-import { CombatState, PlayerArchetype, Position } from "../../types/common";
+import { CombatState, PlayerArchetype, Position, Technique } from "../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
@@ -33,6 +34,7 @@ import {
 } from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
+import { TechniqueBar } from "../combat/components/TechniqueBar";
 import { Player3DUnified } from "../three/Player3DUnified";
 import { VolumeControl } from "../ui/VolumeControl";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
@@ -315,6 +317,40 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       comboCount: trainingState.stats.combo,
     };
   }, [playerPosition, trainingState]);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 7B: Technique Selection System
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Technique selection and execution for training
+  const techniqueSelection = useTechniqueSelection({
+    player: trainingPlayerState,
+    enabled: trainingState.isTraining,
+    onTechniqueExecute: useCallback(
+      (technique: Technique) => {
+        // Show technique usage feedback
+        trainingActions.setFeedback(
+          `${technique.name.korean} 사용! | Used ${technique.name.english}!`
+        );
+        
+        // In training mode, do not deduct resources to allow continuous practice
+        // Resources are displayed for educational purposes only
+
+        // Execute attack with technique (visual feedback)
+        handleAttack();
+      },
+      [handleAttack, trainingActions]
+    ),
+  });
+
+  // Convert cooldowns to Map for TechniqueBar
+  const cooldownsMap = useMemo(() => {
+    const map = new Map<string, number>();
+    techniqueSelection.activeCooldowns.forEach((cd) => {
+      map.set(cd.techniqueId, cd.remaining);
+    });
+    return map;
+  }, [techniqueSelection.activeCooldowns]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 8: Mobile Touch Controls
@@ -791,6 +827,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   isMobile={isMobile}
                 />
               </div>
+            )}
+
+            {/* Technique Bar - Bottom Center (above menu button) */}
+            {trainingState.isTraining && (
+              <TechniqueBar
+                techniques={techniqueSelection.availableTechniques}
+                player={trainingPlayerState}
+                selectedIndex={techniqueSelection.selectedIndex}
+                cooldowns={cooldownsMap}
+                onTechniqueSelect={techniqueSelection.selectTechnique}
+                onTechniqueHover={(_tech) => {
+                  // Could add additional hover effects here
+                }}
+                isMobile={isMobile}
+                screenWidth={width}
+                screenHeight={height}
+              />
             )}
 
             {/* Bottom Center - Return to Menu Button */}
