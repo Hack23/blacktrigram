@@ -348,10 +348,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       return; // Don't start next round
     }
 
-    // Transition complete - start next round
-    combatActions.setRoundEnded(false);
-    combatActions.setRoundStarted(false);
-    combatActions.setRoundDisplayStatus(null);
+    // Reset all combat state for next round (combos, hit effects, messages cleared)
+    combatActions.resetRoundState();
 
     // Increment internal round counter for next round
     // Use the updater function to get the new value and trigger announcement
@@ -364,9 +362,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       return nextRound;
     });
 
-    // Reset player health for next round
-    onPlayerUpdate(0, { health: 100 });
-    onPlayerUpdate(1, { health: 100 });
+    // Reset player health and resources for next round
+    onPlayerUpdate(0, { health: 100, stamina: 100, ki: 100 });
+    onPlayerUpdate(1, { health: 100, stamina: 100, ki: 100 });
   }, [combatActions, onGameEnd, onPlayerUpdate]);
 
   // Round transition management
@@ -547,15 +545,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const player2Health = currentPlayers[1].health;
 
       if (player1Health > player2Health) {
+        // Player 1 wins - update match score
+        updateMatchScore(0);
         startTransitionRef.current(currentPlayers[0], internalRoundRef.current); // Player 1 wins round
       } else if (player2Health > player1Health) {
+        // Player 2 wins - update match score
+        updateMatchScore(1);
         startTransitionRef.current(currentPlayers[1], internalRoundRef.current); // Player 2 wins round
       } else {
-        // Tie - no winner for this round
+        // Tie - no winner for this round, no score update
         startTransitionRef.current(null, internalRoundRef.current);
       }
     }
-  }, [combatState.roundEnded, combatActions, addCombatMessage]);
+  }, [combatState.roundEnded, combatActions, addCombatMessage, updateMatchScore]);
 
   // Ref pattern to stabilize onTimeUp callback for timer
   const handleTimeUpRef = useRef(handleTimeUp);
@@ -598,14 +600,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     } else {
       combatAudio.playCombatMusic(2000);
     }
-  }, [
-    combatState.roundStarted,
-    combatState.roundEnded,
-    combatActions,
-    addCombatMessage,
-    validPlayers,
-    combatAudio,
-  ]);
+  }, [combatActions, addCombatMessage, validPlayers, combatAudio]);
 
   // Auto-start first round since countdown is disabled
   // Use a separate ref for the timer to avoid cleanup canceling the start
@@ -768,11 +763,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           ki: Math.max(0, validPlayers[0].ki - technique.kiCost),
         });
 
-        // Execute attack with technique damage
-        handleAttack();
-
-        // Play SFX
-        combatAudio.playAttackSound("heavy");
+        // Execute attack WITH the selected technique (not basic attack)
+        handleAttack(technique);
 
         // Add combat message
         addCombatMessage(
@@ -952,7 +944,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       (action: string) => {
         switch (action) {
           case "attack":
-            handleAttackWithFeedback();
+            // Execute currently selected technique via technique selection system
+            techniqueSelection.executeTechnique();
             break;
           case "block":
             handleDefendWithFeedback();
@@ -960,7 +953,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Movement and other actions handled by existing system
         }
       },
-      [handleAttackWithFeedback, handleDefendWithFeedback]
+      [techniqueSelection, handleDefendWithFeedback]
     ),
     enabled:
       !isPaused &&
@@ -1019,8 +1012,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   );
 
   const handleMobileAttack = useCallback(() => {
-    handleAttackWithFeedback();
-  }, [handleAttackWithFeedback]);
+    // Execute currently selected technique via technique selection system
+    techniqueSelection.executeTechnique();
+  }, [techniqueSelection]);
 
   const handleMobileBlock = useCallback(
     (eventType: ButtonEventType) => {
@@ -1055,12 +1049,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
           break;
         case "swipe-up":
-          // High attack mode - could trigger special technique
-          handleAttackWithFeedback();
+          // High attack mode - execute selected technique
+          techniqueSelection.executeTechnique();
           break;
         case "swipe-down":
-          // Low attack mode - could trigger different technique
-          handleAttackWithFeedback();
+          // Low attack mode - execute selected technique
+          techniqueSelection.executeTechnique();
           break;
         case "two-finger-tap":
           // Activate vital point targeting mode
@@ -1069,7 +1063,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           break;
       }
     },
-    [handleAttackWithFeedback, audio]
+    [techniqueSelection, audio]
   );
 
   // Check if mobile controls should be enabled

@@ -85,6 +85,9 @@ export interface UseCombatActionsReturn {
 
 /**
  * Helper function to convert Technique to KoreanTechnique format
+ * @param technique - The technique to convert
+ * @param stance - Current player stance
+ * @returns KoreanTechnique compatible with CombatSystem
  */
 function convertTechniqueToKorean(technique: Technique, stance: TrigramStance): KoreanTechnique {
   return {

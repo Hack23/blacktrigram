@@ -149,6 +149,69 @@ describe("useCombatActions", () => {
 
       expect(mockConfig.addHitEffect).toHaveBeenCalled();
     });
+
+    it("should execute with custom technique", () => {
+      const mockTechnique = {
+        id: "test_technique",
+        name: {
+          korean: "테스트 기술",
+          english: "Test Technique",
+          romanized: "teseuteu gisul",
+        },
+        description: {
+          korean: "테스트용 기술",
+          english: "Test technique",
+        },
+        staminaCost: 20,
+        kiCost: 15,
+        damage: { min: 25, max: 35 },
+        damageType: "blunt" as const,
+        cooldown: 5000,
+        keyboardShortcut: "Q" as const,
+        criticalChance: 0.3,
+        animationDuration: 800,
+      };
+
+      // Spy on the combat system to verify technique conversion
+      const resolveAttackSpy = vi.spyOn(mockCombatSystem, 'resolveAttack');
+
+      const { result } = renderHook(() => useCombatActions(mockConfig));
+
+      act(() => {
+        result.current.handleAttack(mockTechnique);
+      });
+
+      // Should execute attack with custom technique
+      expect(mockConfig.addHitEffect).toHaveBeenCalled();
+      expect(mockConfig.addCombatMessage).toHaveBeenCalled();
+
+      // Verify technique was correctly converted and passed to combat system
+      expect(resolveAttackSpy).toHaveBeenCalledWith(
+        mockConfig.validPlayers[0],
+        mockConfig.validPlayers[1],
+        expect.objectContaining({
+          id: "test_technique",
+          damage: 30, // Average of min (25) and max (35)
+          kiCost: 15,
+          staminaCost: 20,
+          critChance: 0.3,
+          executionTime: 800,
+          romanized: "teseuteu gisul",
+        })
+      );
+    });
+
+    it("should use basic attack when no technique provided", () => {
+      const { result } = renderHook(() => useCombatActions(mockConfig));
+
+      act(() => {
+        result.current.handleAttack();
+      });
+
+      // Should execute attack with basic attack
+      expect(mockConfig.addHitEffect).toHaveBeenCalled();
+      expect(mockConfig.addCombatMessage).toHaveBeenCalled();
+    });
   });
 
   describe("handleDefend", () => {
