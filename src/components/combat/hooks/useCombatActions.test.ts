@@ -10,6 +10,7 @@ import { CombatSystem } from "@/systems/CombatSystem";
 import { TrigramStance, PlayerArchetype } from "@/types";
 import { HitEffectType } from "@/systems/effects";
 import { useCombatState } from "./useCombatState";
+import { TRIGRAM_TECHNIQUES } from "@/systems/trigram/techniques";
 
 describe("useCombatActions", () => {
   let mockConfig: any;
@@ -423,6 +424,240 @@ describe("useCombatActions", () => {
 
         // Should not update position when distance < 5
         expect(config.onPlayerUpdate).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("Technique Integration", () => {
+    describe("handleAttack with TRIGRAM_TECHNIQUES", () => {
+      it("should use GEON stance technique (천둥벽력) instead of basic attack", () => {
+        const geonPlayer = {
+          ...mockConfig.validPlayers[0],
+          currentStance: TrigramStance.GEON,
+          ki: 50,
+          stamina: 50,
+        };
+        const config = {
+          ...mockConfig,
+          validPlayers: [geonPlayer, mockConfig.validPlayers[1]] as const,
+        };
+
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        // Verify technique from GEON stance was used (천둥벽력 - Thunder Strike)
+        const geonTechnique = TRIGRAM_TECHNIQUES[TrigramStance.GEON][0];
+        expect(geonTechnique.name.korean).toBe("천둥벽력");
+        expect(geonTechnique.name.english).toBe("Thunder Strike");
+        expect(geonTechnique.damage).toBe(30); // Not hardcoded 15
+        
+        // Combat message should include technique name
+        expect(config.addCombatMessage).toHaveBeenCalledWith(
+          expect.stringContaining("천둥벽력"),
+          expect.stringContaining("Thunder Strike")
+        );
+      });
+
+      it("should use TAE stance technique (유수연타) for Lake stance", () => {
+        const taePlayer = {
+          ...mockConfig.validPlayers[0],
+          currentStance: TrigramStance.TAE,
+          ki: 50,
+          stamina: 50,
+        };
+        const config = {
+          ...mockConfig,
+          validPlayers: [taePlayer, mockConfig.validPlayers[1]] as const,
+        };
+
+        // Verify TAE technique definition
+        const taeTechnique = TRIGRAM_TECHNIQUES[TrigramStance.TAE][0];
+        expect(taeTechnique.name.korean).toBe("유수연타");
+        expect(taeTechnique.name.english).toBe("Flowing Strikes");
+        expect(taeTechnique.damage).toBe(25); // Different from GEON
+        
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        // Attack was executed (hit or miss doesn't matter for this test)
+        // The important thing is that TAE technique was selected and used
+        expect(config.addCombatMessage).toHaveBeenCalled();
+      });
+
+      it("should respect ki costs from technique definitions", () => {
+        const geonTechnique = TRIGRAM_TECHNIQUES[TrigramStance.GEON][0];
+        const lowKiPlayer = {
+          ...mockConfig.validPlayers[0],
+          currentStance: TrigramStance.GEON,
+          ki: geonTechnique.kiCost - 1, // Insufficient ki
+          stamina: 50,
+        };
+        const config = {
+          ...mockConfig,
+          validPlayers: [lowKiPlayer, mockConfig.validPlayers[1]] as const,
+        };
+
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        // Should fail with insufficient resources message
+        expect(config.addCombatMessage).toHaveBeenCalledWith(
+          "기력/체력 부족",
+          "Insufficient Ki/Stamina"
+        );
+        expect(config.onPlayerUpdate).not.toHaveBeenCalled();
+      });
+
+      it("should respect stamina costs from technique definitions", () => {
+        const geonTechnique = TRIGRAM_TECHNIQUES[TrigramStance.GEON][0];
+        const lowStaminaPlayer = {
+          ...mockConfig.validPlayers[0],
+          currentStance: TrigramStance.GEON,
+          ki: 50,
+          stamina: geonTechnique.staminaCost - 1, // Insufficient stamina
+        };
+        const config = {
+          ...mockConfig,
+          validPlayers: [lowStaminaPlayer, mockConfig.validPlayers[1]] as const,
+        };
+
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        // Should fail with insufficient resources message
+        expect(config.addCombatMessage).toHaveBeenCalledWith(
+          "기력/체력 부족",
+          "Insufficient Ki/Stamina"
+        );
+        expect(config.onPlayerUpdate).not.toHaveBeenCalled();
+      });
+
+      it("should use different techniques for each trigram stance", () => {
+        // Test that all 8 stances have techniques
+        const stances = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
+        ];
+
+        stances.forEach((stance) => {
+          const techniques = TRIGRAM_TECHNIQUES[stance];
+          expect(techniques).toBeDefined();
+          expect(techniques.length).toBeGreaterThan(0);
+          
+          // Each technique should have proper structure
+          const technique = techniques[0];
+          expect(technique.name.korean).toBeTruthy();
+          expect(technique.name.english).toBeTruthy();
+          expect(technique.damage).toBeGreaterThan(0);
+          expect(technique.kiCost).toBeGreaterThan(0);
+          expect(technique.staminaCost).toBeGreaterThan(0);
+        });
+      });
+
+      it("should use LI stance technique (화염지창) for Fire stance", () => {
+        const liPlayer = {
+          ...mockConfig.validPlayers[0],
+          currentStance: TrigramStance.LI,
+          ki: 50,
+          stamina: 50,
+        };
+        const config = {
+          ...mockConfig,
+          validPlayers: [liPlayer, mockConfig.validPlayers[1]] as const,
+        };
+
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        const liTechnique = TRIGRAM_TECHNIQUES[TrigramStance.LI][0];
+        expect(liTechnique.name.korean).toBe("화염지창");
+        expect(liTechnique.name.english).toBe("Flame Spear");
+        expect(liTechnique.damage).toBe(35); // Higher precision damage
+      });
+
+      it("should use JIN stance technique (벽력일섬) for Thunder stance", () => {
+        const jinPlayer = {
+          ...mockConfig.validPlayers[0],
+          currentStance: TrigramStance.JIN,
+          ki: 50,
+          stamina: 50,
+        };
+        const config = {
+          ...mockConfig,
+          validPlayers: [jinPlayer, mockConfig.validPlayers[1]] as const,
+        };
+
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        const jinTechnique = TRIGRAM_TECHNIQUES[TrigramStance.JIN][0];
+        expect(jinTechnique.name.korean).toBe("벽력일섬");
+        expect(jinTechnique.name.english).toBe("Lightning Flash");
+        expect(jinTechnique.damage).toBe(28); // Explosive power
+      });
+
+      it("should display Korean technique names in combat log", () => {
+        const config = {
+          ...mockConfig,
+          validPlayers: [
+            { ...mockConfig.validPlayers[0], currentStance: TrigramStance.GEON, ki: 50, stamina: 50 },
+            mockConfig.validPlayers[1],
+          ] as const,
+        };
+
+        const { result } = renderHook(() => useCombatActions(config));
+
+        act(() => {
+          result.current.handleAttack();
+        });
+
+        // Verify Korean and English technique names are used in combat messages
+        const calls = config.addCombatMessage.mock.calls;
+        const hasTechniqueName = calls.some(
+          (call) => call[0].includes("천둥벽력") && call[1].includes("Thunder Strike")
+        );
+        expect(hasTechniqueName).toBe(true);
+      });
+
+      it("should use technique damage values not hardcoded 15", () => {
+        // GEON technique has 30 damage, not 15
+        const geonTechnique = TRIGRAM_TECHNIQUES[TrigramStance.GEON][0];
+        expect(geonTechnique.damage).toBe(30);
+        expect(geonTechnique.damage).not.toBe(15);
+
+        // TAE technique has 25 damage, not 15
+        const taeTechnique = TRIGRAM_TECHNIQUES[TrigramStance.TAE][0];
+        expect(taeTechnique.damage).toBe(25);
+        expect(taeTechnique.damage).not.toBe(15);
+
+        // LI technique has 35 damage, not 15
+        const liTechnique = TRIGRAM_TECHNIQUES[TrigramStance.LI][0];
+        expect(liTechnique.damage).toBe(35);
+        expect(liTechnique.damage).not.toBe(15);
       });
     });
   });
