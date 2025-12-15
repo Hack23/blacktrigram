@@ -1,7 +1,7 @@
 # AI Attack Execution Fix - Manual Verification Guide
 
 ## Issue Fixed
-**Issue #937**: AI opponent not executing attacks during combat rounds
+**Issue #938**: AI opponent not executing attacks during combat rounds
 
 ## Changes Made
 
@@ -133,7 +133,7 @@
 - AI action frequency varies by personality type (by design)
 
 ### Not Part of This Fix
-- AI stance-specific techniques (Issue #937)
+- AI stance-specific techniques (future enhancement)
 - AI combo system refinement
 - Advanced AI tactics
 

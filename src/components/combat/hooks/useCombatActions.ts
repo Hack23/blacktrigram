@@ -319,40 +319,83 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     ]
   );
 
+  /**
+   * Helper function to create AI technique objects
+   * Reduces code duplication between basic attacks and special techniques
+   */
+  const createAITechnique = useCallback(
+    (type: 'basic' | 'special', aiPlayer: PlayerState) => {
+      if (type === 'basic') {
+        return {
+          id: "ai_basic_attack",
+          name: {
+            korean: "AI 기본공격",
+            english: "AI Basic Attack",
+            romanized: "ai_gibon_gonggyeok",
+          },
+          koreanName: "AI 기본공격",
+          englishName: "AI Basic Attack",
+          romanized: "ai_gibon_gonggyeok",
+          description: { korean: "AI 기본 공격", english: "AI basic attack" },
+          stance: aiPlayer.currentStance,
+          type: "attack" as const,
+          damageType: "physical" as const,
+          damage: 15,
+          kiCost: 5,
+          staminaCost: 8,
+          accuracy: 0.8,
+          range: 1.2,
+          executionTime: 400,
+          recoveryTime: 300,
+          critChance: 0.1,
+          critMultiplier: 1.5,
+          effects: [],
+        };
+      } else {
+        return {
+          id: "ai_special_technique",
+          name: {
+            korean: "AI 특수기술",
+            english: "AI Special Technique",
+            romanized: "ai_teuksu_gisul",
+          },
+          koreanName: "AI 특수기술",
+          englishName: "AI Special Technique",
+          romanized: "ai_teuksu_gisul",
+          description: { korean: "AI 특수 기술", english: "AI special technique" },
+          stance: aiPlayer.currentStance,
+          type: "technique" as const,
+          damageType: "physical" as const,
+          damage: 25,
+          kiCost: 10,
+          staminaCost: 15,
+          accuracy: 0.85,
+          range: 1.5,
+          executionTime: 600,
+          recoveryTime: 800,
+          critChance: 0.15,
+          critMultiplier: 1.8,
+          effects: [],
+        };
+      }
+    },
+    []
+  );
+
   // AI attack handler
   const handleAIAttack = useCallback(() => {
     const aiPlayer = validPlayers[1];
     const targetPlayer = validPlayers[0];
 
-    // Create basic attack technique for AI
-    const basicAttack = {
-      id: "ai_basic_attack",
-      name: {
-        korean: "AI 기본공격",
-        english: "AI Basic Attack",
-        romanized: "ai_gibon_gonggyeok",
-      },
-      koreanName: "AI 기본공격",
-      englishName: "AI Basic Attack",
-      romanized: "ai_gibon_gonggyeok",
-      description: { korean: "AI 기본 공격", english: "AI basic attack" },
-      stance: aiPlayer.currentStance,
-      type: "attack" as const,
-      damageType: "physical" as const,
-      damage: 15,
-      kiCost: 5,
-      staminaCost: 8,
-      accuracy: 0.8,
-      range: 1.2,
-      executionTime: 400,
-      recoveryTime: 300,
-      critChance: 0.1,
-      critMultiplier: 1.5,
-      effects: [],
-    };
+    // Create basic attack technique for AI using helper
+    const basicAttack = createAITechnique('basic', aiPlayer);
 
-    // Play attack sound
-    const intensity = basicAttack.damage >= 25 ? "heavy" : basicAttack.damage >= 10 ? "medium" : "light";
+    // Play attack sound based on technique damage/intensity (consistent with player)
+    const damage = basicAttack.damage ?? 10;
+    const intensity: AttackIntensity = 
+      damage >= 40 ? "critical" : 
+      damage >= 25 ? "heavy" : 
+      damage >= 10 ? "medium" : "light";
     combatAudio?.playAttackSound(intensity);
 
     // Use combat system for proper calculation
@@ -374,7 +417,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       // Play hit sound based on damage
       combatAudio?.playHitSound(result.damage);
 
-      // Apply damage through combat system
+      // Apply damage through combat system (deducts resources)
       const { updatedAttacker, updatedDefender } =
         combatSystem.applyCombatResult(
           result,
@@ -391,6 +434,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
         addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
       }
     } else {
+      // Consume resources on miss for consistency with technique behavior
+      onPlayerUpdate(1, {
+        ki: Math.max(0, aiPlayer.ki - basicAttack.kiCost),
+        stamina: Math.max(0, aiPlayer.stamina - basicAttack.staminaCost),
+      });
       addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
     }
   }, [
@@ -401,6 +449,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     combatAudio,
+    createAITechnique,
   ]);
 
   // AI defend handler
@@ -434,32 +483,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       return;
     }
 
-    // Create special technique for AI
-    const specialTechnique = {
-      id: "ai_special_technique",
-      name: {
-        korean: "AI 특수기술",
-        english: "AI Special Technique",
-        romanized: "ai_teuksu_gisul",
-      },
-      koreanName: "AI 특수기술",
-      englishName: "AI Special Technique",
-      romanized: "ai_teuksu_gisul",
-      description: { korean: "AI 특수 기술", english: "AI special technique" },
-      stance: aiPlayer.currentStance,
-      type: "technique" as const,
-      damageType: "physical" as const,
-      damage: 25,
-      kiCost: 10,
-      staminaCost: 15,
-      accuracy: 0.85,
-      range: 1.5,
-      executionTime: 600,
-      recoveryTime: 800,
-      critChance: 0.15,
-      critMultiplier: 1.8,
-      effects: [],
-    };
+    // Create special technique for AI using helper
+    const specialTechnique = createAITechnique('special', aiPlayer);
 
     // Play special technique sound
     combatAudio?.playSpecialTechniqueSound();
@@ -481,7 +506,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       // Play heavy hit sound for technique
       combatAudio?.playHitSound(result.damage);
 
-      // Apply damage through combat system (already deducts resources)
+      // Apply damage through combat system (deducts resources)
       const { updatedAttacker, updatedDefender } =
         combatSystem.applyCombatResult(
           result,
@@ -494,7 +519,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
       addCombatMessage("AI 특수 기술!", "AI Special Technique!");
     } else {
-      // Still consume resources on miss (technique was attempted)
+      // Consume resources on miss (technique was attempted)
       onPlayerUpdate(1, {
         ki: Math.max(0, aiPlayer.ki - specialTechnique.kiCost),
         stamina: Math.max(0, aiPlayer.stamina - specialTechnique.staminaCost),
@@ -510,6 +535,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect,
     handleAIAttack,
     combatAudio,
+    createAITechnique,
   ]);
 
   // AI movement handler
