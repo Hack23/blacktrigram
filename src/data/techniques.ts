@@ -531,7 +531,7 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
     damageType: getDamageType(koreanTech.damageType),
     cooldown: koreanTech.recoveryTime + koreanTech.executionTime,
     requiredStance: koreanTech.stance,
-    keyboardShortcut: "Q", // Default, will be overridden by UI
+    keyboardShortcut: "Q", // Placeholder; immediately overridden by getTechniquesForStanceAndArchetype()
     criticalChance: koreanTech.critChance,
     animationDuration: koreanTech.executionTime,
   };
@@ -572,6 +572,9 @@ export function getTechniquesForStanceAndArchetype(
   const allTechniques = [...convertedTechniques, ...filteredArchetypeTechniques];
   
   // Assign proper keyboard shortcuts (Q, W, E, R) based on position
+  // Note: Only first 4 techniques are keyboard-accessible in combat.
+  // Additional techniques beyond index 3 will have repeated shortcuts but are
+  // displayed in TechniqueBar for information - use Q/W/E/R to execute first 4.
   const keyboardShortcuts = ['Q', 'W', 'E', 'R'] as const;
   return allTechniques.map((tech, index) => ({
     ...tech,

@@ -333,16 +333,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           `${technique.name.korean} 사용! | Used ${technique.name.english}!`
         );
         
-        // Deduct resources (visual only in training)
-        onPlayerUpdate({
-          stamina: Math.max(0, trainingPlayerState.stamina - technique.staminaCost),
-          ki: Math.max(0, trainingPlayerState.ki - technique.kiCost),
-        });
+        // In training mode, do not deduct resources to allow continuous practice
+        // Resources are displayed for educational purposes only
 
         // Execute attack with technique (visual feedback)
         handleAttack();
       },
-      [trainingPlayerState, onPlayerUpdate, handleAttack, trainingActions]
+      [handleAttack, trainingActions]
     ),
   });
 

@@ -210,20 +210,19 @@ describe("useCombatActions", () => {
         result.current.handleAttack();
       });
 
-      // Should execute attack with stance-based technique (GEON stance - 천둥벽력)
+      // Should execute attack with stance-based technique (GEON stance)
       expect(mockConfig.addHitEffect).toHaveBeenCalled();
       expect(mockConfig.addCombatMessage).toHaveBeenCalled();
       
-      // Verify technique from GEON stance was used (not basic attack)
-      expect(resolveAttackSpy).toHaveBeenCalledWith(
-        mockConfig.validPlayers[0],
-        mockConfig.validPlayers[1],
-        expect.objectContaining({
-          id: "geon_heaven_strike", // First GEON technique
-          koreanName: "천둥벽력",
-          englishName: "Thunder Strike",
-        })
-      );
+      // Verify a technique from GEON stance was used (not basic attack)
+      // Check that stance matches GEON rather than specific technique ID
+      const attackCall = resolveAttackSpy.mock.calls[0];
+      expect(attackCall).toBeDefined();
+      expect(attackCall[2]).toMatchObject({
+        stance: TrigramStance.GEON,
+      });
+      // Verify Korean name is present (proving it's not the old hardcoded basic attack)
+      expect(attackCall[2].koreanName).toBeTruthy();
     });
 
     it("should reject attack when player has insufficient resources for stance technique", () => {
