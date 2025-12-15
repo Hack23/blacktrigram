@@ -45,7 +45,6 @@ import { useCallback } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
-import { TRIGRAM_TECHNIQUES } from "@/systems/trigram/techniques";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -85,6 +84,9 @@ export interface UseCombatActionsReturn {
 
 /**
  * Helper function to convert Technique to KoreanTechnique format
+ * @param technique - The technique to convert
+ * @param stance - Current player stance
+ * @returns KoreanTechnique compatible with CombatSystem
  */
 function convertTechniqueToKorean(technique: Technique, stance: TrigramStance): KoreanTechnique {
   return {
@@ -138,34 +140,42 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
   const handleAttack = useCallback((technique?: Technique) => {
     if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
 
-    const player = validPlayers[0];
-    const currentStance = player.currentStance;
+    combatActions.setExecutingTechnique(true);
 
-    // Use provided technique or select from TRIGRAM_TECHNIQUES
+    // Use provided technique or create basic attack
     let attackTechnique: KoreanTechnique;
     
     if (technique) {
       // Convert selected technique to KoreanTechnique format
-      attackTechnique = convertTechniqueToKorean(technique, currentStance);
+      attackTechnique = convertTechniqueToKorean(technique, validPlayers[0].currentStance);
     } else {
-      // Get techniques for current stance
-      const stanceTechniques = TRIGRAM_TECHNIQUES[currentStance];
-      if (!stanceTechniques || stanceTechniques.length === 0) {
-        console.warn(`No techniques found for stance: ${currentStance}`);
-        return;
-      }
-
-      // Select first technique from current stance (can be enhanced with UI selection later)
-      attackTechnique = stanceTechniques[0];
-
-      // Check resource availability for trigram techniques
-      if (player.ki < attackTechnique.kiCost || player.stamina < attackTechnique.staminaCost) {
-        addCombatMessage("기력/체력 부족", "Insufficient Ki/Stamina");
-        return;
-      }
+      // Create basic attack technique
+      attackTechnique = {
+        id: "basic_attack",
+        name: {
+          korean: "기본공격",
+          english: "Basic Attack",
+          romanized: "gibon_gonggyeok",
+        },
+        koreanName: "기본공격",
+        englishName: "Basic Attack",
+        romanized: "gibon_gonggyeok",
+        description: { korean: "기본 공격", english: "Basic attack" },
+        stance: validPlayers[0].currentStance,
+        type: "attack" as const,
+        damageType: "physical" as const,
+        damage: 15,
+        kiCost: 5,
+        staminaCost: 8,
+        accuracy: 0.8,
+        range: 1.0,
+        executionTime: 400,
+        recoveryTime: 300,
+        critChance: 0.1,
+        critMultiplier: 1.5,
+        effects: [],
+      };
     }
-
-    combatActions.setExecutingTechnique(true);
 
     // Play attack sound based on technique damage/intensity
     const damage = attackTechnique.damage ?? 10;
@@ -213,11 +223,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedDefender);
 
       if (result.isCritical) {
-        addCombatMessage(`${attackTechnique.name.korean} 치명타!`, `${attackTechnique.name.english} Critical Hit!`);
+        addCombatMessage("치명타 공격!", "Critical Hit!");
       } else if (newCombo > 2) {
-        addCombatMessage(`${attackTechnique.name.korean} ${newCombo}연속!`, `${attackTechnique.name.english} ${newCombo} Combo!`);
+        addCombatMessage(`${newCombo} 연속 공격!`, `${newCombo} Hit Combo!`);
       } else {
-        addCombatMessage(`${attackTechnique.name.korean} 성공!`, `${attackTechnique.name.english} Hit!`);
+        addCombatMessage("공격 성공!", "Attack Hit!");
       }
     } else {
       combatActions.resetCombo();
