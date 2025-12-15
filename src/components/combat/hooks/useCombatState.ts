@@ -136,6 +136,7 @@ function combatReducer(state: CombatScreenState, action: CombatAction): CombatSc
         roundDisplayStatus: null,
         comboCount: 0,
         hitEffects: [],
+        combatMessages: [],
       };
 
     default:
