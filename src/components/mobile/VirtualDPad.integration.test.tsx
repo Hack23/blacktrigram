@@ -1,6 +1,23 @@
 /**
  * Integration tests for VirtualDPad and Player Movement
- * Tests that mobile D-Pad controls properly trigger player movement
+ * 
+ * Tests that mobile D-Pad controls properly trigger player movement via synthetic
+ * keyboard events. This test suite verifies the fix for issue where VirtualDPad
+ * touch inputs were not moving Player 1 in CombatScreen3D.
+ * 
+ * The root cause was that synthetic KeyboardEvents lacked proper properties
+ * (bubbles, cancelable, code) required by usePlayerMovement hook in inputSystem.ts.
+ * 
+ * This test suite validates:
+ * - Synthetic keyboard events are dispatched with all required properties
+ * - All 8 D-pad directions map to correct WASD keys
+ * - Key press and release events work correctly
+ * - State management handles direction changes properly
+ * - Multiple press-release cycles work as expected
+ * 
+ * @see CombatScreen3D.tsx - handleMobileMove function
+ * @see inputSystem.ts - usePlayerMovement hook
+ * @see VirtualDPad.tsx - Mobile touch control component
  * 
  * @category Testing - Integration
  */
