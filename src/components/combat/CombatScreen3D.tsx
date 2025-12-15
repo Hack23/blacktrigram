@@ -996,20 +996,39 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       if (eventType === "start" && direction) {
         // Release previous key if different
         if (activeMobileKeyRef.current && activeMobileKeyRef.current !== directionMap[direction]) {
+          const prevKey = activeMobileKeyRef.current;
           window.dispatchEvent(
-            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+            new KeyboardEvent("keyup", {
+              key: prevKey,
+              code: `Key${prevKey.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
           );
         }
 
-        // Press new key
+        // Press new key with proper keyboard event properties
         const key = directionMap[direction];
         activeMobileKeyRef.current = key;
-        window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+        window.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key,
+            code: `Key${key.toUpperCase()}`,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
       } else if (eventType === "end") {
         // Release active key
         if (activeMobileKeyRef.current) {
+          const key = activeMobileKeyRef.current;
           window.dispatchEvent(
-            new KeyboardEvent("keyup", { key: activeMobileKeyRef.current })
+            new KeyboardEvent("keyup", {
+              key,
+              code: `Key${key.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
           );
           activeMobileKeyRef.current = null;
         }
