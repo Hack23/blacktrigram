@@ -94,11 +94,11 @@ function convertTechniqueToKorean(technique: Technique, stance: TrigramStance): 
     name: {
       korean: technique.name.korean,
       english: technique.name.english,
-      romanized: technique.name.korean, // Use Korean as romanized fallback
+      romanized: technique.name.romanized ?? "",
     },
     koreanName: technique.name.korean,
     englishName: technique.name.english,
-    romanized: technique.name.korean,
+    romanized: technique.name.romanized ?? "",
     description: {
       korean: technique.description.korean,
       english: technique.description.english,
