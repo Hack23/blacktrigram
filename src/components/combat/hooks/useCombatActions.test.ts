@@ -200,16 +200,55 @@ describe("useCombatActions", () => {
       );
     });
 
-    it("should use basic attack when no technique provided", () => {
+    it("should use stance-based technique when no technique provided", () => {
+      // Spy on combat system to verify technique is being used
+      const resolveAttackSpy = vi.spyOn(mockCombatSystem, 'resolveAttack');
+
       const { result } = renderHook(() => useCombatActions(mockConfig));
 
       act(() => {
         result.current.handleAttack();
       });
 
-      // Should execute attack with basic attack
+      // Should execute attack with stance-based technique (GEON stance - 천둥벽력)
       expect(mockConfig.addHitEffect).toHaveBeenCalled();
       expect(mockConfig.addCombatMessage).toHaveBeenCalled();
+      
+      // Verify technique from GEON stance was used (not basic attack)
+      expect(resolveAttackSpy).toHaveBeenCalledWith(
+        mockConfig.validPlayers[0],
+        mockConfig.validPlayers[1],
+        expect.objectContaining({
+          id: "geon_heaven_strike", // First GEON technique
+          koreanName: "천둥벽력",
+          englishName: "Thunder Strike",
+        })
+      );
+    });
+
+    it("should reject attack when player has insufficient resources for stance technique", () => {
+      const lowResourcePlayer = { 
+        ...mockConfig.validPlayers[0], 
+        ki: 5, // GEON techniques require more ki
+        stamina: 10 
+      };
+      const config = {
+        ...mockConfig,
+        validPlayers: [lowResourcePlayer, mockConfig.validPlayers[1]] as const,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleAttack();
+      });
+
+      // Should show insufficient resources message
+      expect(config.addCombatMessage).toHaveBeenCalledWith(
+        "기력/체력 부족",
+        "Insufficient Ki/Stamina"
+      );
+      expect(config.onPlayerUpdate).not.toHaveBeenCalled();
     });
   });
 
