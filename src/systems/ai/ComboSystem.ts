@@ -261,8 +261,8 @@ export class AIComboSystem {
     // Higher chance to continue if opponent is vulnerable
     const baseChance = personality.comboTendency;
     const vulnerabilityBonus = opponentVulnerable ? 0.3 : 0;
-    const continueChance = Math.min(0.95, baseChance + vulnerabilityBonus);
-    const randomChance = Math.random() < continueChance;
+    const finalContinueChance = Math.min(0.95, baseChance + vulnerabilityBonus);
+    const randomChance = Math.random() < finalContinueChance;
 
     return distanceOk && hasResources && randomChance;
   }

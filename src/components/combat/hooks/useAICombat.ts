@@ -70,13 +70,11 @@ const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 se
  * Technique range constants (pixels)
  * Based on game design: 1 cell = ~40px, 2 cells = ~80px, 3 cells = ~120px
  * 
+ * Each technique has a range property in cell units (e.g., 1.0 = 1 cell = 40px)
+ * 
  * @korean 기술 범위 상수
  */
-const TECHNIQUE_RANGE = {
-  CLOSE: 40, // 1 cell - punches, elbow strikes
-  MID: 80, // 2 cells - kicks, knee strikes
-  FAR: 120, // 3 cells - throws, special techniques
-} as const;
+const CELL_SIZE = 40; // Size of one grid cell in pixels
 
 /**
  * Get viable techniques based on distance, stance, and stamina
@@ -107,11 +105,17 @@ function getViableTechniques(
   const stanceTechniques =
     KoreanTechniquesSystem.getAllAvailableTechniques(stance, archetype);
 
+  // Early return if no techniques available
+  if (stanceTechniques.length === 0) {
+    return [];
+  }
+
   // Filter techniques that are viable for current situation
   const viableTechniques = stanceTechniques.filter((tech) => {
-    // Calculate technique effective range (range property is in multiplier units, convert to pixels)
+    // Calculate technique effective range
+    // tech.range is in cell units (e.g., 1.0 = 1 cell = 40px, 2.0 = 2 cells = 80px)
     const minRange = 0; // All techniques can be used at close range
-    const maxRange = tech.range * TECHNIQUE_RANGE.CLOSE; // Range multiplier * base close range
+    const maxRange = tech.range * CELL_SIZE; // Convert cell units to pixels
 
     // Check if opponent is within technique range
     const inRange = distance >= minRange && distance <= maxRange;
@@ -122,6 +126,15 @@ function getViableTechniques(
     return inRange && hasStamina;
   });
 
+  // Pre-compute recent use counts for efficiency (avoid O(n²×m) in sort)
+  const recentUseCounts = new Map<string, number>();
+  for (const tech of viableTechniques) {
+    recentUseCounts.set(
+      tech.id,
+      recentTechniques.filter((id) => id === tech.id).length
+    );
+  }
+
   // Sort by effectiveness with variation bias
   return viableTechniques.sort((a, b) => {
     // Base effectiveness: damage × accuracy
@@ -129,8 +142,8 @@ function getViableTechniques(
     const baseEffectivenessB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
 
     // Apply penalty for recently used techniques (avoid repetition)
-    const recentUsesA = recentTechniques.filter((id) => id === a.id).length;
-    const recentUsesB = recentTechniques.filter((id) => id === b.id).length;
+    const recentUsesA = recentUseCounts.get(a.id) ?? 0;
+    const recentUsesB = recentUseCounts.get(b.id) ?? 0;
     
     // Penalty: 20% reduction per recent use (max 60% penalty for 3+ uses)
     const penaltyA = Math.min(0.6, recentUsesA * 0.2);
@@ -144,11 +157,11 @@ function getViableTechniques(
 }
 
 /**
- * Select optimal vital point for attack based on stance effectiveness
+ * Select optimal vital point for attack based on stance compatibility
  * 
  * Prioritizes vital points by:
- * 1. Effectiveness rating for current stance (>50% threshold)
- * 2. Base damage potential
+ * 1. Stance compatibility (must be in effectiveStances array)
+ * 2. Base damage threshold (>25 damage preferred)
  * 3. Targeting difficulty vs AI skill level
  * 
  * @korean 자세 효과에 따른 최적 급소 선택
@@ -180,14 +193,17 @@ function selectOptimalVitalPoint(
     return fallbackPoint?.id ?? null;
   }
 
-  // Filter by effectiveness threshold (>0.5 = 50% effectiveness)
-  const highEffectivenessPoints = effectivePoints.filter(
-    (point) => (point.baseDamage ?? 0) / 50 > 0.5 // Normalize damage to 0-1 scale
+  // Damage threshold for high-priority targets
+  const HIGH_DAMAGE_THRESHOLD = 25;
+  
+  // Filter by damage threshold (prefer high-damage vital points)
+  const highDamagePoints = effectivePoints.filter(
+    (point) => (point.baseDamage ?? 0) > HIGH_DAMAGE_THRESHOLD
   );
 
   const targetPoints =
-    highEffectivenessPoints.length > 0
-      ? highEffectivenessPoints
+    highDamagePoints.length > 0
+      ? highDamagePoints
       : effectivePoints;
 
   // Sort by targeting suitability based on AI difficulty
@@ -202,6 +218,57 @@ function selectOptimalVitalPoint(
 
   // Select top-rated target
   return sortedPoints[0]?.id ?? null;
+}
+
+/**
+ * Helper to select technique for AI action with reduced duplication
+ * 
+ * @param isSpecialTechnique - Whether to filter for high-cost special techniques
+ * @param context - Current combat context
+ * @param player - AI player state
+ * @param adaptiveDifficulty - Adaptive difficulty system
+ * @param recentTechniques - Recently used technique IDs for variation
+ * @returns Selected technique, vital point, and action type
+ */
+function selectTechniqueForAction(
+  isSpecialTechnique: boolean,
+  context: CombatContext,
+  player: PlayerState,
+  adaptiveDifficulty: AdaptiveDifficulty,
+  recentTechniques: string[]
+): { technique?: KoreanTechnique; vitalPoint?: string; actionType: string } {
+  const viableTechniques = getViableTechniques(
+    context.distanceToOpponent,
+    player.currentStance,
+    player.stamina,
+    player.archetype,
+    recentTechniques
+  );
+
+  const candidates = isSpecialTechnique
+    ? viableTechniques.filter((tech) => tech.kiCost >= 10 || tech.staminaCost >= 15)
+    : viableTechniques;
+
+  if (candidates.length > 0) {
+    const technique = candidates[0] as KoreanTechnique;
+    const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
+    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
+    return { 
+      technique, 
+      vitalPoint, 
+      actionType: isSpecialTechnique ? "technique" : "attack" 
+    };
+  }
+
+  // Fallback logic for special techniques
+  if (isSpecialTechnique && viableTechniques.length > 0) {
+    return { 
+      technique: viableTechniques[0] as KoreanTechnique, 
+      actionType: "attack" 
+    };
+  }
+
+  return { actionType: "idle" };
 }
 
 /**
@@ -248,7 +315,7 @@ interface UseAICombatReturn {
   readonly comboSystem: AIComboSystem;
   readonly decisionTree: AIDecisionTree;
   readonly adjustedPersonality: AIPersonality;
-  readonly executeAIAction: (action: string, targetPosition?: Position, selectedTechnique?: KoreanTechnique, targetVitalPoint?: string) => void;
+  readonly executeAIAction: (action: string, targetPosition?: Position) => void;
 }
 
 /**
@@ -427,70 +494,36 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       switch (decision.action) {
         case AIActionType.ATTACK:
           {
-            // Select viable technique based on distance with variation bias
-            const viableTechniques = getViableTechniques(
-              context.distanceToOpponent,
-              player.currentStance,
-              player.stamina,
-              player.archetype,
+            const result = selectTechniqueForAction(
+              false,
+              context,
+              player,
+              adaptiveDifficulty,
               aiState.recentTechniques
             );
-
-            if (viableTechniques.length > 0) {
-              // Select best technique (already sorted by effectiveness with variation)
-              selectedTechnique = viableTechniques[0] as KoreanTechnique;
-
-              // Select optimal vital point for this stance
-              const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-              targetVitalPoint = selectOptimalVitalPoint(
-                player.currentStance,
-                difficultyLevel
-              ) ?? undefined;
-
-              actionType = "attack";
+            selectedTechnique = result.technique;
+            targetVitalPoint = result.vitalPoint;
+            actionType = result.actionType;
+            if (actionType === "attack") {
               newConsecutiveAttacks++;
-            } else {
-              // No viable techniques - wait for better positioning
-              actionType = "idle";
             }
           }
           break;
 
         case AIActionType.TECHNIQUE:
           {
-            // Select special technique with higher ki/stamina cost
-            const viableTechniques = getViableTechniques(
-              context.distanceToOpponent,
-              player.currentStance,
-              player.stamina,
-              player.archetype,
+            const result = selectTechniqueForAction(
+              true,
+              context,
+              player,
+              adaptiveDifficulty,
               aiState.recentTechniques
             );
-
-            // Filter for techniques with higher resource costs (special techniques)
-            const specialTechniques = viableTechniques.filter(
-              (tech) => tech.kiCost >= 10 || tech.staminaCost >= 15
-            );
-
-            if (specialTechniques.length > 0) {
-              selectedTechnique = specialTechniques[0] as KoreanTechnique;
-
-              // Select optimal vital point
-              const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-              targetVitalPoint = selectOptimalVitalPoint(
-                player.currentStance,
-                difficultyLevel
-              ) ?? undefined;
-
-              actionType = "technique";
+            selectedTechnique = result.technique;
+            targetVitalPoint = result.vitalPoint;
+            actionType = result.actionType;
+            if (actionType === "attack" || actionType === "technique") {
               newConsecutiveAttacks++;
-            } else if (viableTechniques.length > 0) {
-              // Fallback to basic attack if no special techniques available
-              selectedTechnique = viableTechniques[0] as KoreanTechnique;
-              actionType = "attack";
-              newConsecutiveAttacks++;
-            } else {
-              actionType = "idle";
             }
           }
           break;
