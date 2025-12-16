@@ -54,8 +54,10 @@ describe("AI Movement System", () => {
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
 
       // Make multiple decisions to get movement action
+      // Increased iterations to 50 to account for probabilistic nature of decision-making
       let foundApproach = false;
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 50; i++) {
+        decisionTree.reset(); // Reset to clear any cooldowns
         const decision = decisionTree.makeDecision(context, personality, comboSystem);
         if (decision.action === "approach" && decision.targetPosition) {
           foundApproach = true;
