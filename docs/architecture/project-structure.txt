@@ -671,6 +671,7 @@ src/systems/TrigramSystem.test.ts
 src/systems/TrigramSystem.ts
 src/systems/VitalPointSystem.test.ts
 src/systems/VitalPointSystem.ts
+src/systems/ai/AIMovement.test.ts
 src/systems/ai/AIPersonality.test.ts
 src/systems/ai/AIPersonality.ts
 src/systems/ai/AdaptiveDifficulty.test.ts
