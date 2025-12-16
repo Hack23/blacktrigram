@@ -339,30 +339,37 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Round transition complete handler - checks for match end or starts next round
   const handleRoundTransitionComplete = useCallback(() => {
+    console.log('[Round Transition] Transition complete, checking match status');
     // Check if match is over (best of 3 - first to 2 wins)
     const currentScore = matchScoreRef.current;
+    console.log('[Round Transition] Current score:', currentScore);
     if (currentScore.player1 >= 2 || currentScore.player2 >= 2) {
       // Match is over - call onGameEnd instead of starting next round
       const matchWinner = currentScore.player1 >= 2 ? 0 : 1;
+      console.log('[Round Transition] Match over, winner:', matchWinner);
       onGameEnd(matchWinner);
       return; // Don't start next round
     }
 
     // Reset all combat state for next round (combos, hit effects, messages cleared)
+    console.log('[Round Transition] Resetting round state');
     combatActions.resetRoundState();
 
     // Increment internal round counter for next round
     // Use the updater function to get the new value and trigger announcement
     setInternalRound((prev) => {
       const nextRound = prev + 1;
+      console.log('[Round Transition] Incrementing round from', prev, 'to', nextRound);
       // Use setTimeout to ensure state update completes before showing announcement
       setTimeout(() => {
+        console.log('[Round Transition] Showing round start announcement for round', nextRound);
         setShowRoundStart(true);
       }, 0);
       return nextRound;
     });
 
     // Reset player health and resources for next round
+    console.log('[Round Transition] Resetting player health and resources');
     onPlayerUpdate(0, { health: 100, stamina: 100, ki: 100 });
     onPlayerUpdate(1, { health: 100, stamina: 100, ki: 100 });
   }, [combatActions, onGameEnd, onPlayerUpdate]);
@@ -628,9 +635,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Shared round start logic - forces round to start regardless of current state
   // This is called after state has been reset, so we trust the caller
+  // Note: Using useCallback with complete dependencies to ensure closure has latest state
   const startRound = useCallback(() => {
     // Always start the round when this is called - the caller is responsible
     // for ensuring this is the right time to start
+    console.log('[Round Start] Starting round, setting roundStarted=true');
     combatActions.setRoundStarted(true);
     combatActions.setRoundEnded(false); // Ensure roundEnded is false
     addCombatMessage("라운드 시작!", "Round Start!");
@@ -1930,8 +1939,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           roundNumber={internalRound}
           duration={2}
           onComplete={() => {
+            console.log('[Round Start Announcement] Complete callback triggered for round', internalRound);
             setShowRoundStart(false);
             // Start combat for this round
+            console.log('[Round Start Announcement] Calling startRound()');
             startRound();
           }}
           isMobile={isMobile}
