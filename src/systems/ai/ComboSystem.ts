@@ -252,9 +252,14 @@ export class AIComboSystem {
     // Stamina threshold for combo continuation (>20)
     const hasResources = player.ki >= 10 && player.stamina > 20;
     
+    // Balance thresholds for vulnerability detection
+    // Balance is a numeric value (0-100) representing stability
+    // Values below 30 indicate SHAKEN/VULNERABLE states in combat
+    const VULNERABLE_BALANCE_THRESHOLD = 30;
+    
     // Check opponent balance state - continue combo if opponent is vulnerable
     const opponentVulnerable = 
-      opponent.balance < 30 || // Low balance (SHAKEN/VULNERABLE)
+      opponent.balance < VULNERABLE_BALANCE_THRESHOLD || // Low balance (SHAKEN/VULNERABLE state)
       opponent.isStunned || // Stunned state
       opponent.health < opponent.maxHealth * 0.3; // Low health (<30%)
     

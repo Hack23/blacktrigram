@@ -460,7 +460,12 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     []
   );
 
-  // AI attack handler with technique and vital point targeting
+  /**
+   * AI attack handler with technique and vital point targeting
+   * 
+   * @param technique - Optional Korean martial arts technique to execute. If not provided, creates a basic attack.
+   * @param targetVitalPoint - Optional vital point ID to target for increased damage effectiveness.
+   */
   const handleAIAttack = useCallback((technique?: KoreanTechnique, targetVitalPoint?: string) => {
     const aiPlayer = validPlayers[1];
     const targetPlayer = validPlayers[0];
@@ -555,7 +560,12 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
   ]);
 
-  // AI technique handler with technique and vital point targeting
+  /**
+   * AI technique handler with technique and vital point targeting
+   * 
+   * @param technique - Optional special Korean martial arts technique to execute. If not provided, creates a special technique.
+   * @param targetVitalPoint - Optional vital point ID to target for increased damage effectiveness.
+   */
   const handleAITechnique = useCallback((technique?: KoreanTechnique, targetVitalPoint?: string) => {
     const aiPlayer = validPlayers[1];
     const targetPlayer = validPlayers[0];
@@ -565,7 +575,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     // Check if AI has sufficient resources for the technique
     if (aiPlayer.ki < specialTechnique.kiCost || aiPlayer.stamina < specialTechnique.staminaCost) {
-      handleAIAttack(technique, targetVitalPoint); // Fallback to basic attack with same targeting
+      handleAIAttack(undefined, targetVitalPoint); // Fallback to basic attack with same targeting
       return;
     }
 

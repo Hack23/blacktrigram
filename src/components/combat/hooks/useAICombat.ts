@@ -250,7 +250,7 @@ function selectTechniqueForAction(
     : viableTechniques;
 
   if (candidates.length > 0) {
-    const technique = candidates[0] as KoreanTechnique;
+    const technique = candidates[0];
     const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
     const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
     return { 
@@ -262,8 +262,12 @@ function selectTechniqueForAction(
 
   // Fallback logic for special techniques
   if (isSpecialTechnique && viableTechniques.length > 0) {
+    const technique = viableTechniques[0];
+    const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
+    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
     return { 
-      technique: viableTechniques[0] as KoreanTechnique, 
+      technique, 
+      vitalPoint, 
       actionType: "attack" 
     };
   }
