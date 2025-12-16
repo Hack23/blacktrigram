@@ -646,7 +646,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
-      const speed = 4;
+      // Increased speed from 4 to 12 for faster AI movement (3x speed)
+      const speed = 12;
 
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
