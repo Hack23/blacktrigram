@@ -15,7 +15,7 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance, PlayerArchetype } from "@/types";
-import { AIPersonality } from "./AIPersonality";
+import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
 /**
@@ -213,6 +213,7 @@ export class AIDecisionTree {
    * **Korean Philosophy (생존 전략)**:
    * - Consider both health and pain levels
    * - Archetype affects retreat threshold and behavior
+   * - Honor code (Musa) prevents retreat above threshold
    */
   private evaluateSurvival(
     context: CombatContext,
@@ -220,12 +221,24 @@ export class AIDecisionTree {
   ): AIDecision {
     const healthPercent = context.playerHealth / context.playerMaxHealth;
     const painLevel = context.recentDamageTaken;
+    
+    // Get archetype behavior profile
+    const behavior = getArchetypeBehavior(personality.archetype);
 
     // Check critical survival condition: low health OR (moderate health + high pain)
     const isCritical = healthPercent < personality.tacticalRetreatThreshold;
     const isHighPain = healthPercent < 0.5 && painLevel > 50;
 
     if (isCritical || isHighPain) {
+      // Honor code: Musa never retreats above their threshold (30%)
+      if (behavior.honorCode && healthPercent > behavior.retreatThreshold / 100) {
+        return {
+          action: AIActionType.WAIT,
+          priority: 0,
+          reason: `Honor code prevents retreat: ${(healthPercent * 100).toFixed(1)}% (명예 규범)`,
+        };
+      }
+      
       const retreatVector = this.calculateRetreatPosition(context);
       
       return {
@@ -320,7 +333,8 @@ export class AIDecisionTree {
    *
    * **Korean Philosophy (자세 전환)**:
    * Uses I Ching-based trigram system to find optimal stance transitions.
-   * Considers resource costs and counter-stance effectiveness.
+   * Considers resource costs, counter-stance effectiveness, and archetype preferences.
+   * Each archetype has favored stances that they switch to more frequently.
    */
   private evaluateStanceChange(
     context: CombatContext,
@@ -345,6 +359,20 @@ export class AIDecisionTree {
       };
     }
 
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Check if already in a preferred stance - if so, reduce change chance (but not completely)
+    // This check only applies outside combat to avoid stance lock during active fighting
+    const inPreferredStance = behavior.preferredStances.includes(context.playerStance);
+    if (inPreferredStance && !context.isOpponentAttacking && Math.random() < 0.6) {
+      // 60% chance to stay in preferred stance when not under immediate pressure
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: "Already in preferred stance (선호 자세 유지)",
+      };
+    }
+
     // Use TrigramSystem to recommend optimal stance
     // Create a minimal PlayerState object with only the properties actually used by recommendStance
     const playerState = {
@@ -364,7 +392,22 @@ export class AIDecisionTree {
     );
 
     if (!canTransition) {
-      // Try counter-stance instead
+      // Try archetype-preferred stance or counter-stance
+      const preferredAvailable = behavior.preferredStances.find(
+        (stance) => this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
+      );
+      
+      if (preferredAvailable) {
+        this.lastStanceChange = now;
+        return {
+          action: AIActionType.STANCE_CHANGE,
+          targetStance: preferredAvailable,
+          priority: 6,
+          reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
+        };
+      }
+      
+      // Fallback to counter-stance
       const counterStance = this.selectCounterStance(
         context.opponentStance,
         personality
@@ -549,24 +592,19 @@ export class AIDecisionTree {
   /**
    * Get optimal combat range based on AI personality archetype
    * 
+   * Uses archetype behavior profiles to determine preferred combat distance.
+   * Range is converted from cell units to pixels (1 cell = ~40px).
+   * 
    * @korean 최적 전투 거리 - 원형별 선호 거리
    */
   private getOptimalRange(personality: AIPersonality): number {
-    // Archetype-specific preferred combat ranges (in pixels)
-    switch (personality.archetype) {
-      case PlayerArchetype.AMSALJA: // Shadow Assassin - prefers close range (1-2 cells)
-        return 80;
-      case PlayerArchetype.HACKER: // Cyber Warrior - prefers mid-range (3-4 cells)
-        return 200;
-      case PlayerArchetype.MUSA: // Traditional Warrior - comfortable at medium-close (2-3 cells)
-        return 120;
-      case PlayerArchetype.JEONGBO_YOWON: // Intelligence Operative - adaptable mid-range (2-3 cells)
-        return 150;
-      case PlayerArchetype.JOJIK_POKRYEOKBAE: // Organized Crime - unpredictable, close-mid (1-3 cells)
-        return 100;
-      default:
-        return 120; // Default medium-close range
-    }
+    const CELL_SIZE = 40; // Size of one grid cell in pixels
+    
+    // Get archetype behavior profile
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Convert cell units to pixels
+    return behavior.optimalRange * CELL_SIZE;
   }
 
   /**
@@ -629,19 +667,25 @@ export class AIDecisionTree {
   /**
    * Get archetype-specific movement bias multipliers
    * 
+   * Applies movement pattern modifiers based on archetype behavior profiles:
+   * - Aggressive: High forward pressure (2.0x)
+   * - Evasive: Moderate mobility (1.5x)
+   * - Analytical: Conservative approach (0.8x-1.0x)
+   * - Unpredictable: Variable movement (1.3x)
+   * 
    * @korean 원형별 이동 성향
    */
   private getArchetypeMovementBias(archetype: PlayerArchetype): number {
-    switch (archetype) {
-      case PlayerArchetype.MUSA: // Traditional Warrior - aggressive forward movement
+    const behavior = getArchetypeBehavior(archetype);
+    
+    switch (behavior.movementPattern) {
+      case "aggressive": // Musa - aggressive forward movement
         return 2.0;
-      case PlayerArchetype.AMSALJA: // Shadow Assassin - high mobility, flanking preference
+      case "evasive": // Amsalja - high mobility, flanking preference
         return 1.5;
-      case PlayerArchetype.HACKER: // Cyber Warrior - prefers maintaining distance
-        return 0.8;
-      case PlayerArchetype.JEONGBO_YOWON: // Intelligence Operative - balanced approach
-        return 1.0;
-      case PlayerArchetype.JOJIK_POKRYEOKBAE: // Organized Crime - unpredictable
+      case "analytical": // Hacker, Jeongbo - calculated approach
+        return archetype === PlayerArchetype.HACKER ? 0.8 : 1.0;
+      case "unpredictable": // Jojik - variable patterns
         return 1.3;
       default:
         return 1.0;
@@ -733,7 +777,8 @@ export class AIDecisionTree {
    * 
    * **Korean Philosophy (중거리 전술)**:
    * - Considers optimal range for archetype
-   * - Hacker prefers to maintain this range
+   * - Hacker prefers to maintain this range (analytical pattern)
+   * - Jeongbo uses strategic timing and analysis
    * - Others may close or open distance based on situation
    */
   private evaluateMidRange(
@@ -744,16 +789,19 @@ export class AIDecisionTree {
     const optimalRange = this.getOptimalRange(personality);
     const distance = context.distanceToOpponent;
     const tacticRoll = Math.random();
+    const behavior = getArchetypeBehavior(personality.archetype);
 
-    // Archetype-specific mid-range behavior
-    if (personality.archetype === PlayerArchetype.HACKER && Math.abs(distance - optimalRange) < 50) {
-      // Hacker at ideal range - prefer to maintain position with circling
+    // Archetype-specific mid-range behavior based on movement pattern
+    if (behavior.movementPattern === "analytical" && Math.abs(distance - optimalRange) < 50) {
+      // Analytical archetypes (Hacker, Jeongbo) at ideal range - maintain position
       const circlePos = this.calculateCirclePosition(context);
+      const archetypeName = personality.archetype === PlayerArchetype.HACKER 
+        ? "사이버" : "정보";
       return {
         action: AIActionType.CIRCLE,
         targetPosition: circlePos,
         priority: 6,
-        reason: "Hacker maintaining optimal mid-range (사이버 위치 유지)",
+        reason: `${archetypeName} maintaining optimal mid-range (${archetypeName} 위치 유지)`,
       };
     }
 
@@ -768,15 +816,35 @@ export class AIDecisionTree {
       };
     }
 
-    // Too close to optimal range - consider retreat or technique
-    if (distance < optimalRange * 0.7 && personality.archetype === PlayerArchetype.HACKER) {
+    // Too close to optimal range - analytical archetypes create space
+    if (distance < optimalRange * 0.7 && behavior.movementPattern === "analytical") {
       const retreatPos = this.calculateRetreatPosition(context);
       return {
         action: AIActionType.RETREAT,
         targetPosition: retreatPos,
         priority: 5,
-        reason: "Hacker creating space (거리 확보)",
+        reason: "Creating tactical space (거리 확보)",
       };
+    }
+
+    // Unpredictable archetype (Jojik) - randomize tactics
+    if (behavior.movementPattern === "unpredictable") {
+      const randomAction = tacticRoll < 0.33 ? "attack" : tacticRoll < 0.66 ? "circle" : "approach";
+      if (randomAction === "attack" && hasResources) {
+        return {
+          action: AIActionType.TECHNIQUE,
+          priority: 5,
+          reason: "Unpredictable attack (예측불가 공격)",
+        };
+      } else if (randomAction === "circle") {
+        const circlePos = this.calculateCirclePosition(context);
+        return {
+          action: AIActionType.CIRCLE,
+          targetPosition: circlePos,
+          priority: 4,
+          reason: "Unpredictable movement (예측불가 이동)",
+        };
+      }
     }
 
     // At good range - mix of techniques and repositioning

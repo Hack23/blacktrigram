@@ -52,9 +52,10 @@ import {
   AIDecisionTree,
   AIPersonality,
   CombatContext,
+  getArchetypeBehavior,
 } from "@/systems/ai";
 import { PlayerState } from "@/systems/player";
-import { Position, TrigramStance } from "@/types";
+import { Position, TrigramStance, DamageType, CombatAttackType, PlayerArchetype } from "@/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
@@ -157,27 +158,33 @@ function getViableTechniques(
 }
 
 /**
- * Select optimal vital point for attack based on stance compatibility
+ * Select optimal vital point for attack based on stance compatibility and archetype priority
  * 
  * Prioritizes vital points by:
- * 1. Stance compatibility (must be in effectiveStances array)
- * 2. Base damage threshold (>25 damage preferred)
- * 3. Targeting difficulty vs AI skill level
+ * 1. Archetype vital target priority (health/pain/consciousness/balanced)
+ * 2. Stance compatibility (must be in effectiveStances array)
+ * 3. Base damage threshold (>25 damage preferred)
+ * 4. Targeting difficulty vs AI skill level
  * 
- * @korean 자세 효과에 따른 최적 급소 선택
+ * @korean 자세 효과 및 원형 우선순위에 따른 최적 급소 선택
  * 
  * @param stance - Current trigram stance
  * @param difficultyLevel - AI difficulty level (0.0-1.0)
+ * @param archetype - Player archetype for priority targeting
  * @returns Vital point ID or null if no suitable target
  */
 function selectOptimalVitalPoint(
   stance: TrigramStance,
-  difficultyLevel: number
+  difficultyLevel: number,
+  archetype: PlayerState["archetype"]
 ): string | null {
   // Guard: Ensure vital points are available
   if (KOREAN_VITAL_POINTS.length === 0) {
     return null;
   }
+
+  // Get archetype behavior for vital point priority
+  const behavior = getArchetypeBehavior(archetype);
 
   // Filter vital points effective for current stance
   const effectivePoints = KOREAN_VITAL_POINTS.filter((point) =>
@@ -206,14 +213,22 @@ function selectOptimalVitalPoint(
       ? highDamagePoints
       : effectivePoints;
 
-  // Sort by targeting suitability based on AI difficulty
+  // Sort by targeting suitability based on AI difficulty AND archetype priority
   const sortedPoints = [...targetPoints].sort((a, b) => {
-    // Calculate suitability score
-    const suitabilityA =
+    // Calculate base suitability score
+    const baseSuitabilityA =
       (a.baseDamage ?? 0) * (1 - Math.abs(difficultyLevel - a.targetingDifficulty));
-    const suitabilityB =
+    const baseSuitabilityB =
       (b.baseDamage ?? 0) * (1 - Math.abs(difficultyLevel - b.targetingDifficulty));
-    return suitabilityB - suitabilityA;
+    
+    // Apply archetype priority multiplier
+    const priorityMultiplierA = getVitalPointPriorityScore(a, behavior.vitalTargetPriority);
+    const priorityMultiplierB = getVitalPointPriorityScore(b, behavior.vitalTargetPriority);
+    
+    const finalSuitabilityA = baseSuitabilityA * priorityMultiplierA;
+    const finalSuitabilityB = baseSuitabilityB * priorityMultiplierB;
+    
+    return finalSuitabilityB - finalSuitabilityA;
   });
 
   // Select top-rated target
@@ -221,7 +236,130 @@ function selectOptimalVitalPoint(
 }
 
 /**
- * Helper to select technique for AI action with reduced duplication
+ * Calculate priority score for vital point based on archetype targeting preference
+ * 
+ * @korean 원형 타격 우선순위 점수 계산
+ * 
+ * @param vitalPoint - Vital point to score
+ * @param priority - Archetype vital target priority
+ * @returns Priority multiplier (1.0 = neutral, >1.0 = preferred, <1.0 = deprioritized)
+ */
+function getVitalPointPriorityScore(
+  vitalPoint: typeof KOREAN_VITAL_POINTS[0],
+  priority: import("@/systems/ai/AIPersonality").VitalTargetPriority
+): number {
+  // Import effect types to check vital point effects
+  const effects = vitalPoint.effects || [];
+  
+  switch (priority) {
+    case "health":
+      // Jojik - prioritize high base damage
+      return (vitalPoint.baseDamage ?? 0) > 30 ? 1.5 : 1.0;
+      
+    case "pain":
+      // Jeongbo - prioritize pain-inducing effects
+      // Check if effects include pain or disorientation
+      const hasPainEffect = effects.some(e => 
+        String(e).toLowerCase().includes("pain") || 
+        String(e).toLowerCase().includes("disorientation")
+      );
+      return hasPainEffect ? 1.5 : 1.0;
+      
+    case "consciousness":
+      // Amsalja - prioritize consciousness-affecting strikes
+      // Check if effects include unconsciousness, stun, or breathlessness
+      const hasConsciousnessEffect = effects.some(e => 
+        String(e).toLowerCase().includes("unconscious") || 
+        String(e).toLowerCase().includes("stun") ||
+        String(e).toLowerCase().includes("breathless")
+      );
+      return hasConsciousnessEffect ? 1.5 : 1.0;
+      
+    case "balanced":
+    default:
+      // Musa, Hacker - balanced approach
+      return 1.0;
+  }
+}
+
+/**
+ * Check if a technique is a signature move for the given archetype
+ * 
+ * Signature techniques are identified by:
+ * - Damage type and attack type matching archetype preferences
+ * - Ki/Stamina costs indicating advanced techniques
+ * - Specific technique characteristics (e.g., nerve strikes for Amsalja)
+ * 
+ * @korean 원형 대표 기술 확인
+ * 
+ * @param technique - Technique to check
+ * @param archetype - Player archetype
+ * @returns True if technique is signature for the archetype
+ */
+function isSignatureTechnique(
+  technique: KoreanTechnique,
+  archetype: PlayerState["archetype"]
+): boolean {
+  const damageType = technique.damageType;
+  const attackType = technique.type;
+  const isAdvanced = (technique.kiCost || 0) >= 10 || (technique.staminaCost || 0) >= 15;
+  
+  switch (archetype) {
+    case PlayerArchetype.MUSA:
+      // Musa: Joint manipulation (JOINT damage) and bone strikes (CRUSHING/BLUNT)
+      return (
+        damageType === DamageType.JOINT ||
+        damageType === DamageType.CRUSHING ||
+        (damageType === DamageType.BLUNT && isAdvanced)
+      );
+      
+    case PlayerArchetype.AMSALJA:
+      // Amsalja: Nerve strikes (NERVE damage) and silent takedowns (pressure points)
+      return (
+        damageType === DamageType.NERVE ||
+        damageType === DamageType.PRESSURE ||
+        attackType === CombatAttackType.NERVE_STRIKE ||
+        attackType === CombatAttackType.PRESSURE_POINT
+      );
+      
+    case PlayerArchetype.HACKER:
+      // Hacker: Anatomical analysis (INTERNAL/NERVE) and calculated strikes
+      return (
+        damageType === DamageType.INTERNAL ||
+        damageType === DamageType.NERVE ||
+        (isAdvanced && (technique.accuracy || 0) >= 0.8) // High accuracy represents calculation
+      );
+      
+    case PlayerArchetype.JEONGBO_YOWON:
+      // Jeongbo: Psychological pressure (PRESSURE) and submission techniques (JOINT)
+      return (
+        damageType === DamageType.PRESSURE ||
+        damageType === DamageType.JOINT ||
+        attackType === CombatAttackType.GRAPPLE
+      );
+      
+    case PlayerArchetype.JOJIK_POKRYEOKBAE:
+      // Jojik: Dirty techniques (any high-damage strike) and environmental usage
+      return (
+        (technique.damage || 0) >= 30 || // High raw damage
+        damageType === DamageType.SLASHING || // Brutal cutting
+        damageType === DamageType.PIERCING // Dirty stabbing techniques
+      );
+      
+    default:
+      return false;
+  }
+}
+
+/**
+ * Helper to select technique for AI action with archetype signature bias
+ * 
+ * Implements 40%+ signature technique usage requirement:
+ * - Identifies signature techniques for archetype
+ * - Applies 60% selection bias toward signature moves
+ * - Falls back to best available technique if no signatures available
+ * 
+ * @korean 원형별 대표 기술 선호도를 적용한 기술 선택
  * 
  * @param isSpecialTechnique - Whether to filter for high-cost special techniques
  * @param context - Current combat context
@@ -250,9 +388,20 @@ function selectTechniqueForAction(
     : viableTechniques;
 
   if (candidates.length > 0) {
-    const technique = candidates[0];
+    // Identify signature techniques for this archetype
+    const signatureTechniques = candidates.filter((tech) =>
+      isSignatureTechnique(tech, player.archetype)
+    );
+    
+    // Apply 60% bias toward signature techniques (ensures >40% usage over time)
+    const useSignature = signatureTechniques.length > 0 && Math.random() < 0.6;
+    
+    const technique = useSignature
+      ? signatureTechniques[0]
+      : candidates[0];
+    
     const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
+    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel, player.archetype) ?? undefined;
     return { 
       technique, 
       vitalPoint, 
@@ -264,7 +413,7 @@ function selectTechniqueForAction(
   if (isSpecialTechnique && viableTechniques.length > 0) {
     const technique = viableTechniques[0];
     const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
+    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel, player.archetype) ?? undefined;
     return { 
       technique, 
       vitalPoint, 

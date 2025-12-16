@@ -107,7 +107,7 @@ describe("AIDecisionTree", () => {
 
     it("should target vital points more often at higher difficulty", () => {
       const context = createMockContext({
-        distanceToOpponent: 100,
+        distanceToOpponent: 40, // Within close range for Musa (1 cell = 40px, close range = 48px)
         playerStance: TrigramStance.LI, // Fire stance
       });
 
@@ -121,7 +121,7 @@ describe("AIDecisionTree", () => {
         decisionTree.setDifficultyLevel(0.9); // Master level
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER, // Musa archetype, optimal range 40px
           comboSystem
         );
 
@@ -170,21 +170,26 @@ describe("AIDecisionTree", () => {
   describe("TrigramSystem Integration", () => {
     it("should make stance change decisions", () => {
       const context = createMockContext({
-        playerStance: TrigramStance.GEON,
+        playerStance: TrigramStance.GEON, // Not a preferred stance for Jojik (JIN, GAM)
         opponentStance: TrigramStance.GON,
         playerKi: 100,
         playerStamina: 100,
+        distanceToOpponent: 100, // Mid-range to avoid triggering combo/close-range actions for Jojik (optimal 40px)
+        isOpponentAttacking: false, // No opponent attack to avoid counter taking priority
       });
 
       // Make multiple decisions to check for stance changes
       let foundStanceChange = false;
+      const decisionTypes: string[] = [];
       for (let i = 0; i < 100; i++) {
         decisionTree.reset(); // Reset to clear cooldowns
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.CHAOS_WARRIOR, // High stance switch frequency (0.8)
+          AI_PERSONALITIES.CHAOS_WARRIOR, // Jojik archetype: High stance switch frequency (0.8), unpredictable
           comboSystem
         );
+
+        decisionTypes.push(decision.action);
 
         if (decision.action === "stance_change") {
           foundStanceChange = true;
@@ -193,6 +198,16 @@ describe("AIDecisionTree", () => {
           expect(decision.reason).toContain("stance");
           break;
         }
+      }
+
+      // Log what decisions were made if stance change not found
+      if (!foundStanceChange) {
+        const uniqueDecisions = [...new Set(decisionTypes)];
+        console.log("Decision types seen:", uniqueDecisions);
+        console.log("Decision counts:", decisionTypes.reduce((acc, d) => {
+          acc[d] = (acc[d] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>));
       }
 
       // With chaos warrior's high stance switch frequency (0.8), should find stance changes
@@ -249,7 +264,7 @@ describe("AIDecisionTree", () => {
     it("should defend when taking recent damage", () => {
       const context = createMockContext({
         recentDamageTaken: 30,
-        distanceToOpponent: 150,
+        distanceToOpponent: 100, // Closer range to trigger defensive evaluation (Hacker optimal: 120px)
       });
 
       // Make multiple decisions to check for defensive response
@@ -258,7 +273,7 @@ describe("AIDecisionTree", () => {
         decisionTree.reset(); // Reset to avoid cooldowns
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.DEFENSIVE_SPECIALIST,
+          AI_PERSONALITIES.DEFENSIVE_SPECIALIST, // Hacker archetype, optimal range 120px
           comboSystem
         );
         decisions.push(decision);
@@ -273,12 +288,12 @@ describe("AIDecisionTree", () => {
     it("should counter when opponent is attacking", () => {
       const context = createMockContext({
         isOpponentAttacking: true,
-        distanceToOpponent: 120,
+        distanceToOpponent: 40, // Within counter range for Amsalja (optimal 40px)
       });
 
       const decision = decisionTree.makeDecision(
         context,
-        AI_PERSONALITIES.TECHNICAL_MASTER,
+        AI_PERSONALITIES.TECHNICAL_MASTER, // Amsalja archetype, optimal range 40px
         comboSystem
       );
 
@@ -314,12 +329,12 @@ describe("AIDecisionTree", () => {
 
     it("should make close-range decisions when near", () => {
       const context = createMockContext({
-        distanceToOpponent: 80, // Very close
+        distanceToOpponent: 40, // Within close range for Musa (optimal 40px)
       });
 
       const decision = decisionTree.makeDecision(
         context,
-        AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+        AI_PERSONALITIES.AGGRESSIVE_STRIKER, // Musa archetype, optimal range 40px
         comboSystem
       );
 
@@ -361,7 +376,7 @@ describe("AIDecisionTree", () => {
   describe("Combo System Integration", () => {
     it("should start combos when conditions are met", () => {
       const context = createMockContext({
-        distanceToOpponent: 110,
+        distanceToOpponent: 45, // Within combo range for Musa (optimal 40px * 1.5 = 60px)
         playerKi: 80,
         playerStamina: 80,
       });
@@ -374,7 +389,7 @@ describe("AIDecisionTree", () => {
         decisionTree.reset(); // Reset to avoid cooldowns and consecutive attack tracking
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.AGGRESSIVE_STRIKER, // High combo tendency (0.7)
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER, // Musa: High combo tendency (0.7), optimal range 40px
           comboSystem
         );
 
@@ -462,7 +477,7 @@ describe("AIDecisionTree", () => {
   describe("Personality Integration", () => {
     it("should respect aggressive personality traits", () => {
       const context = createMockContext({
-        distanceToOpponent: 100,
+        distanceToOpponent: 40, // At optimal range for Musa (1 cell = 40px)
       });
 
       const decisions = [];
@@ -470,7 +485,7 @@ describe("AIDecisionTree", () => {
         decisionTree.reset(); // Reset to avoid cooldowns
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER, // Musa: High aggression (0.85), optimal range 40px
           comboSystem
         );
         decisions.push(decision);
