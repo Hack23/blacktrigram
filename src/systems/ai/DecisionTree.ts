@@ -333,7 +333,8 @@ export class AIDecisionTree {
    *
    * **Korean Philosophy (자세 전환)**:
    * Uses I Ching-based trigram system to find optimal stance transitions.
-   * Considers resource costs and counter-stance effectiveness.
+   * Considers resource costs, counter-stance effectiveness, and archetype preferences.
+   * Each archetype has favored stances that they switch to more frequently.
    */
   private evaluateStanceChange(
     context: CombatContext,
@@ -358,6 +359,20 @@ export class AIDecisionTree {
       };
     }
 
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Check if already in a preferred stance - if so, reduce change chance (but not completely)
+    // This check only applies outside combat to avoid stance lock during active fighting
+    const inPreferredStance = behavior.preferredStances.includes(context.playerStance);
+    if (inPreferredStance && !context.isOpponentAttacking && Math.random() < 0.6) {
+      // 60% chance to stay in preferred stance when not under immediate pressure
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: "Already in preferred stance (선호 자세 유지)",
+      };
+    }
+
     // Use TrigramSystem to recommend optimal stance
     // Create a minimal PlayerState object with only the properties actually used by recommendStance
     const playerState = {
@@ -377,7 +392,22 @@ export class AIDecisionTree {
     );
 
     if (!canTransition) {
-      // Try counter-stance instead
+      // Try archetype-preferred stance or counter-stance
+      const preferredAvailable = behavior.preferredStances.find(
+        (stance) => this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
+      );
+      
+      if (preferredAvailable) {
+        this.lastStanceChange = now;
+        return {
+          action: AIActionType.STANCE_CHANGE,
+          targetStance: preferredAvailable,
+          priority: 6,
+          reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
+        };
+      }
+      
+      // Fallback to counter-stance
       const counterStance = this.selectCounterStance(
         context.opponentStance,
         personality
@@ -747,7 +777,8 @@ export class AIDecisionTree {
    * 
    * **Korean Philosophy (중거리 전술)**:
    * - Considers optimal range for archetype
-   * - Hacker prefers to maintain this range
+   * - Hacker prefers to maintain this range (analytical pattern)
+   * - Jeongbo uses strategic timing and analysis
    * - Others may close or open distance based on situation
    */
   private evaluateMidRange(
@@ -758,16 +789,19 @@ export class AIDecisionTree {
     const optimalRange = this.getOptimalRange(personality);
     const distance = context.distanceToOpponent;
     const tacticRoll = Math.random();
+    const behavior = getArchetypeBehavior(personality.archetype);
 
-    // Archetype-specific mid-range behavior
-    if (personality.archetype === PlayerArchetype.HACKER && Math.abs(distance - optimalRange) < 50) {
-      // Hacker at ideal range - prefer to maintain position with circling
+    // Archetype-specific mid-range behavior based on movement pattern
+    if (behavior.movementPattern === "analytical" && Math.abs(distance - optimalRange) < 50) {
+      // Analytical archetypes (Hacker, Jeongbo) at ideal range - maintain position
       const circlePos = this.calculateCirclePosition(context);
+      const archetypeName = personality.archetype === PlayerArchetype.HACKER 
+        ? "사이버" : "정보";
       return {
         action: AIActionType.CIRCLE,
         targetPosition: circlePos,
         priority: 6,
-        reason: "Hacker maintaining optimal mid-range (사이버 위치 유지)",
+        reason: `${archetypeName} maintaining optimal mid-range (${archetypeName} 위치 유지)`,
       };
     }
 
@@ -782,15 +816,35 @@ export class AIDecisionTree {
       };
     }
 
-    // Too close to optimal range - consider retreat or technique
-    if (distance < optimalRange * 0.7 && personality.archetype === PlayerArchetype.HACKER) {
+    // Too close to optimal range - analytical archetypes create space
+    if (distance < optimalRange * 0.7 && behavior.movementPattern === "analytical") {
       const retreatPos = this.calculateRetreatPosition(context);
       return {
         action: AIActionType.RETREAT,
         targetPosition: retreatPos,
         priority: 5,
-        reason: "Hacker creating space (거리 확보)",
+        reason: "Creating tactical space (거리 확보)",
       };
+    }
+
+    // Unpredictable archetype (Jojik) - randomize tactics
+    if (behavior.movementPattern === "unpredictable") {
+      const randomAction = tacticRoll < 0.33 ? "attack" : tacticRoll < 0.66 ? "circle" : "approach";
+      if (randomAction === "attack" && hasResources) {
+        return {
+          action: AIActionType.TECHNIQUE,
+          priority: 5,
+          reason: "Unpredictable attack (예측불가 공격)",
+        };
+      } else if (randomAction === "circle") {
+        const circlePos = this.calculateCirclePosition(context);
+        return {
+          action: AIActionType.CIRCLE,
+          targetPosition: circlePos,
+          priority: 4,
+          reason: "Unpredictable movement (예측불가 이동)",
+        };
+      }
     }
 
     // At good range - mix of techniques and repositioning
