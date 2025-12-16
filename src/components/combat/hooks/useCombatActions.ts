@@ -46,6 +46,7 @@ import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
+import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -77,9 +78,9 @@ export interface UseCombatActionsReturn {
   readonly handleDefend: () => void;
   readonly handleTechniqueExecute: () => void;
   readonly handleStanceSwitch: (stance: TrigramStance) => void;
-  readonly handleAIAttack: () => void;
+  readonly handleAIAttack: (technique?: KoreanTechnique, targetVitalPoint?: string) => void;
   readonly handleAIDefend: () => void;
-  readonly handleAITechnique: () => void;
+  readonly handleAITechnique: (technique?: KoreanTechnique, targetVitalPoint?: string) => void;
   readonly moveAIPlayer: (targetPos: Position) => void;
 }
 
@@ -459,27 +460,28 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     []
   );
 
-  // AI attack handler
-  const handleAIAttack = useCallback(() => {
+  // AI attack handler with technique and vital point targeting
+  const handleAIAttack = useCallback((technique?: KoreanTechnique, targetVitalPoint?: string) => {
     const aiPlayer = validPlayers[1];
     const targetPlayer = validPlayers[0];
 
-    // Create basic attack technique for AI using helper
-    const basicAttack = createAITechnique('basic', aiPlayer);
+    // Use provided technique or create basic attack technique
+    const attackTechnique = technique ?? createAITechnique('basic', aiPlayer);
 
     // Play attack sound based on technique damage/intensity (consistent with player)
-    const damage = basicAttack.damage ?? 10;
+    const damage = attackTechnique.damage ?? 10;
     const intensity: AttackIntensity = 
       damage >= 40 ? "critical" : 
       damage >= 25 ? "heavy" : 
       damage >= 10 ? "medium" : "light";
     combatAudio?.playAttackSound(intensity);
 
-    // Use combat system for proper calculation
+    // Use combat system for proper calculation with vital point targeting
     const result = combatSystem.resolveAttack(
       aiPlayer,
       targetPlayer,
-      basicAttack
+      attackTechnique,
+      targetVitalPoint // Pass vital point ID for targeting
     );
 
     const effectType = getHitEffectType(result);
@@ -500,7 +502,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
 
-      if (result.isCritical) {
+      // Enhanced combat message with vital point info
+      if (result.vitalPointHit && targetVitalPoint) {
+        const vitalPoint = getVitalPointById(targetVitalPoint);
+        const vpName = vitalPoint ? vitalPoint.names.korean : targetVitalPoint;
+        addCombatMessage(
+          `AI 급소 타격! ${vpName}`,
+          `AI Vital Point Hit! ${vitalPoint?.names.english ?? targetVitalPoint}`
+        );
+      } else if (result.isCritical) {
         addCombatMessage("AI 치명타!", "AI Critical Hit!");
       } else {
         addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
@@ -508,8 +518,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     } else {
       // Consume resources on miss for consistency with technique behavior
       onPlayerUpdate(1, {
-        ki: Math.max(0, aiPlayer.ki - basicAttack.kiCost),
-        stamina: Math.max(0, aiPlayer.stamina - basicAttack.staminaCost),
+        ki: Math.max(0, aiPlayer.ki - attackTechnique.kiCost),
+        stamina: Math.max(0, aiPlayer.stamina - attackTechnique.staminaCost),
       });
       addCombatMessage("AI 공격 빗나감", "AI Attack Missed");
     }
@@ -545,28 +555,29 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
   ]);
 
-  // AI technique handler
-  const handleAITechnique = useCallback(() => {
+  // AI technique handler with technique and vital point targeting
+  const handleAITechnique = useCallback((technique?: KoreanTechnique, targetVitalPoint?: string) => {
     const aiPlayer = validPlayers[1];
     const targetPlayer = validPlayers[0];
 
-    // Check if AI has sufficient resources
-    if (aiPlayer.ki < 10 || aiPlayer.stamina < 15) {
-      handleAIAttack(); // Fallback to basic attack
+    // Use provided technique or create special technique
+    const specialTechnique = technique ?? createAITechnique('special', aiPlayer);
+
+    // Check if AI has sufficient resources for the technique
+    if (aiPlayer.ki < specialTechnique.kiCost || aiPlayer.stamina < specialTechnique.staminaCost) {
+      handleAIAttack(technique, targetVitalPoint); // Fallback to basic attack with same targeting
       return;
     }
-
-    // Create special technique for AI using helper
-    const specialTechnique = createAITechnique('special', aiPlayer);
 
     // Play special technique sound
     combatAudio?.playSpecialTechniqueSound();
 
-    // Use combat system for proper calculation
+    // Use combat system for proper calculation with vital point targeting
     const result = combatSystem.resolveAttack(
       aiPlayer,
       targetPlayer,
-      specialTechnique
+      specialTechnique,
+      targetVitalPoint // Pass vital point ID for targeting
     );
 
     const effectType = result.hit
@@ -590,7 +601,17 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
 
-      addCombatMessage("AI 특수 기술!", "AI Special Technique!");
+      // Enhanced combat message with vital point info
+      if (result.vitalPointHit && targetVitalPoint) {
+        const vitalPoint = getVitalPointById(targetVitalPoint);
+        const vpName = vitalPoint ? vitalPoint.names.korean : targetVitalPoint;
+        addCombatMessage(
+          `AI 특수 급소 기술! ${vpName}`,
+          `AI Special Vital Point Technique! ${vitalPoint?.names.english ?? targetVitalPoint}`
+        );
+      } else {
+        addCombatMessage("AI 특수 기술!", "AI Special Technique!");
+      }
     } else {
       // Consume resources on miss (technique was attempted)
       onPlayerUpdate(1, {
