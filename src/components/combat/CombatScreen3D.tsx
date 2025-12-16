@@ -1156,19 +1156,36 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     updateMatchScore,
   ]);
 
-  // AI action execution
+  // Create a ref for the callback to avoid circular dependency
+  const executeAIActionCallbackRef = useRef<((action: string, targetPos?: Position) => void) | undefined>(undefined);
+
+  // AI Combat System - must be before executeAIActionCallback to provide aiState
+  const { aiState } = useAICombat({
+    player: validPlayers[1],
+    opponent: validPlayers[0],
+    personality: aiPersonality,
+    adaptiveDifficulty,
+    isPaused,
+    roundStarted: combatState.roundStarted,
+    roundEnded: combatState.roundEnded,
+    arenaBounds,
+    onExecuteAction: (action, targetPos) => executeAIActionCallbackRef.current?.(action, targetPos),
+    onStanceChange: handleAIStanceChange,
+  });
+
+  // AI action execution - uses aiState from useAICombat
   const executeAIActionCallback = useCallback(
     (action: string, targetPos?: Position) => {
       switch (action) {
         case "attack":
-          handleAIAttack();
+          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           break;
         case "defend":
           handleAIDefend();
           break;
         case "technique":
         case "combo":
-          handleAITechnique();
+          handleAITechnique(aiState.selectedTechnique, aiState.targetVitalPoint);
           break;
         case "approach":
         case "retreat":
@@ -1222,7 +1239,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }
           break;
         case "counter":
-          handleAIAttack();
+          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");
           break;
       }
@@ -1237,22 +1254,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       arenaBounds,
       combatState.roundEnded,
       combatState.roundStarted,
+      aiState.selectedTechnique,
+      aiState.targetVitalPoint,
     ]
   );
 
-  // AI Combat System
-  useAICombat({
-    player: validPlayers[1],
-    opponent: validPlayers[0],
-    personality: aiPersonality,
-    adaptiveDifficulty,
-    isPaused,
-    roundStarted: combatState.roundStarted,
-    roundEnded: combatState.roundEnded,
-    arenaBounds,
-    onExecuteAction: executeAIActionCallback,
-    onStanceChange: handleAIStanceChange,
-  });
+  // Update the ref
+  useEffect(() => {
+    executeAIActionCallbackRef.current = executeAIActionCallback;
+  }, [executeAIActionCallback]);
 
   // Update adaptive difficulty metrics
   useEffect(() => {

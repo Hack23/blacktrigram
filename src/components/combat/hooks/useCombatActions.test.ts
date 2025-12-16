@@ -434,6 +434,80 @@ describe("useCombatActions", () => {
           expect.stringContaining("AI")
         );
       });
+
+      it("should use provided technique when passed as parameter", () => {
+        const mockTechnique = {
+          id: "test_technique",
+          name: { korean: "테스트", english: "Test Tech", romanized: "test" },
+          koreanName: "테스트",
+          englishName: "Test Tech",
+          romanized: "test",
+          description: { korean: "테스트", english: "Test" },
+          stance: TrigramStance.GEON,
+          type: "attack",
+          damageType: "physical",
+          damage: 20,
+          kiCost: 10,
+          staminaCost: 12,
+          accuracy: 0.9,
+          range: 1.5,
+          executionTime: 500,
+          recoveryTime: 400,
+          critChance: 0.15,
+          critMultiplier: 1.6,
+          effects: [],
+        };
+
+        const { result } = renderHook(() => useCombatActions(mockConfig));
+
+        act(() => {
+          result.current.handleAIAttack(mockTechnique, undefined);
+        });
+
+        // Combat system should be called with the provided technique
+        expect(mockConfig.onPlayerUpdate).toHaveBeenCalled();
+        expect(mockConfig.addHitEffect).toHaveBeenCalled();
+      });
+
+      it("should pass vital point ID to combat system when provided", () => {
+        const mockTechnique = {
+          id: "test_technique",
+          name: { korean: "테스트", english: "Test Tech", romanized: "test" },
+          koreanName: "테스트",
+          englishName: "Test Tech",
+          romanized: "test",
+          description: { korean: "테스트", english: "Test" },
+          stance: TrigramStance.GEON,
+          type: "attack",
+          damageType: "physical",
+          damage: 20,
+          kiCost: 10,
+          staminaCost: 12,
+          accuracy: 0.9,
+          range: 1.5,
+          executionTime: 500,
+          recoveryTime: 400,
+          critChance: 0.15,
+          critMultiplier: 1.6,
+          effects: [],
+        };
+        const mockVitalPoint = "baekhoehoel";
+
+        const resolveSpy = vi.spyOn(mockConfig.combatSystem, 'resolveAttack');
+        const { result } = renderHook(() => useCombatActions(mockConfig));
+
+        act(() => {
+          result.current.handleAIAttack(mockTechnique, mockVitalPoint);
+        });
+
+        // Verify resolveAttack was called with vital point parameter
+        expect(resolveSpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          mockVitalPoint
+        );
+      });
     });
 
     describe("handleAIDefend", () => {
@@ -500,6 +574,79 @@ describe("useCombatActions", () => {
 
         // Either updates through combat system or manually deducts resources
         expect(mockConfig.onPlayerUpdate).toHaveBeenCalled();
+      });
+
+      it("should use provided technique and vital point when passed", () => {
+        const mockTechnique = {
+          id: "special_technique",
+          name: { korean: "특수기술", english: "Special Tech", romanized: "special" },
+          koreanName: "특수기술",
+          englishName: "Special Tech",
+          romanized: "special",
+          description: { korean: "특수", english: "Special" },
+          stance: TrigramStance.GEON,
+          type: "technique",
+          damageType: "physical",
+          damage: 30,
+          kiCost: 15,
+          staminaCost: 18,
+          accuracy: 0.85,
+          range: 2.0,
+          executionTime: 700,
+          recoveryTime: 600,
+          critChance: 0.2,
+          critMultiplier: 1.8,
+          effects: [],
+        };
+        const mockVitalPoint = "myeongchi";
+
+        const resolveSpy = vi.spyOn(mockConfig.combatSystem, 'resolveAttack');
+        const { result } = renderHook(() => useCombatActions(mockConfig));
+
+        act(() => {
+          result.current.handleAITechnique(mockTechnique, mockVitalPoint);
+        });
+
+        // Verify technique and vital point passed to combat system
+        expect(resolveSpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          mockTechnique,
+          mockVitalPoint
+        );
+      });
+
+      it("should fall back to basic attack if technique requires too much resources", () => {
+        const expensiveTechnique = {
+          id: "expensive_technique",
+          name: { korean: "고비용", english: "Expensive", romanized: "expensive" },
+          koreanName: "고비용",
+          englishName: "Expensive",
+          romanized: "expensive",
+          description: { korean: "비용", english: "Cost" },
+          stance: TrigramStance.GEON,
+          type: "technique",
+          damageType: "physical",
+          damage: 50,
+          kiCost: 100, // More than available
+          staminaCost: 100, // More than available
+          accuracy: 0.9,
+          range: 2.0,
+          executionTime: 1000,
+          recoveryTime: 800,
+          critChance: 0.25,
+          critMultiplier: 2.0,
+          effects: [],
+        };
+
+        const { result } = renderHook(() => useCombatActions(mockConfig));
+
+        act(() => {
+          result.current.handleAITechnique(expensiveTechnique, "test_vital_point");
+        });
+
+        // Should still call combat actions (falls back to basic attack)
+        expect(mockConfig.addHitEffect).toHaveBeenCalled();
       });
     });
 

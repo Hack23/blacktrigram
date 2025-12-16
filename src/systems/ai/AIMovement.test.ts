@@ -167,8 +167,10 @@ describe("AI Movement System", () => {
 
       let approachCount = 0;
 
-      // Sample 50 decisions
-      for (let i = 0; i < 50; i++) {
+      // Sample 100 decisions with reset to clear cooldowns
+      // With AGGRESSIVE_STRIKER's aggressive movement tendency, should see approach actions
+      for (let i = 0; i < 100; i++) {
+        decisionTree.reset(); // Clear cooldowns between iterations
         const decision = decisionTree.makeDecision(context, personality, comboSystem);
 
         if (decision.action === "approach") {
@@ -176,8 +178,10 @@ describe("AI Movement System", () => {
         }
       }
 
-      // Musa should approach frequently due to high aggression
-      expect(approachCount).toBeGreaterThan(0);
+      // Musa should approach when far from opponent (distance 250px > optimal 120px * 1.8 = 216px)
+      // With resets clearing stance change cooldown, expect reasonable approach frequency
+      // Note: Some iterations may choose stance_change (30% probability) or wait
+      expect(approachCount).toBeGreaterThan(20);
     });
 
     it("Hacker should maintain mid-range (3-4 cells / 200px)", () => {
