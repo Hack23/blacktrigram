@@ -33,6 +33,22 @@ jobs:
           node-version: "24"
           cache: "npm"
 
+      - name: Cache dependencies
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache APT packages
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/screenshot-analysis.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Setup Screenshot Environment
         run: |
           echo "🔧 Setting up screenshot capture environment..."
