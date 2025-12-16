@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.44% </span>
+                <span class="strong">39.77% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>170/431</span>
+                <span class='fraction'>173/435</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.02% </span>
+                <span class="strong">39.28% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>32/82</span>
+                <span class='fraction'>33/84</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.42% </span>
+                <span class="strong">39.76% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>166/421</span>
+                <span class='fraction'>169/425</span>
             </div>
         
             
@@ -1955,7 +1955,17 @@
 <a name='L1890'></a><a href='#L1890'>1890</a>
 <a name='L1891'></a><a href='#L1891'>1891</a>
 <a name='L1892'></a><a href='#L1892'>1892</a>
-<a name='L1893'></a><a href='#L1893'>1893</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1893'></a><a href='#L1893'>1893</a>
+<a name='L1894'></a><a href='#L1894'>1894</a>
+<a name='L1895'></a><a href='#L1895'>1895</a>
+<a name='L1896'></a><a href='#L1896'>1896</a>
+<a name='L1897'></a><a href='#L1897'>1897</a>
+<a name='L1898'></a><a href='#L1898'>1898</a>
+<a name='L1899'></a><a href='#L1899'>1899</a>
+<a name='L1900'></a><a href='#L1900'>1900</a>
+<a name='L1901'></a><a href='#L1901'>1901</a>
+<a name='L1902'></a><a href='#L1902'>1902</a>
+<a name='L1903'></a><a href='#L1903'>1903</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3116,6 +3126,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -3182,6 +3209,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3199,16 +3228,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5005,19 +5025,36 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     updateMatchScore,
   ]);
 &nbsp;
-  // AI action execution
+  // Create a ref for the callback to avoid circular dependency
+  const executeAIActionCallbackRef = useRef&lt;((action: string, targetPos?: Position) =&gt; void) | undefined&gt;(undefined);
+&nbsp;
+  // AI Combat System - must be before executeAIActionCallback to provide aiState
+  const { aiState } = useAICombat({
+    player: validPlayers[1],
+    opponent: validPlayers[0],
+    personality: aiPersonality,
+    adaptiveDifficulty,
+    isPaused,
+    roundStarted: combatState.roundStarted,
+    roundEnded: combatState.roundEnded,
+    arenaBounds,
+    onExecuteAction: <span class="fstat-no" title="function not covered" >(a</span>ction, targetPos) =&gt; <span class="cstat-no" title="statement not covered" >executeAIActionCallbackRef.current?.(action, targetPos),</span>
+    onStanceChange: handleAIStanceChange,
+  });
+&nbsp;
+  // AI action execution - uses aiState from useAICombat
   const executeAIActionCallback = useCallback(
 <span class="fstat-no" title="function not covered" >    (a</span>ction: string, targetPos?: Position) =&gt; {
 <span class="cstat-no" title="statement not covered" >      switch (action) {</span>
         case "attack":
-<span class="cstat-no" title="statement not covered" >          handleAIAttack();</span>
+<span class="cstat-no" title="statement not covered" >          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         case "defend":
 <span class="cstat-no" title="statement not covered" >          handleAIDefend();</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         case "technique":
         case "combo":
-<span class="cstat-no" title="statement not covered" >          handleAITechnique();</span>
+<span class="cstat-no" title="statement not covered" >          handleAITechnique(aiState.selectedTechnique, aiState.targetVitalPoint);</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         case "approach":
         case "retreat":
@@ -5071,7 +5108,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           }
 <span class="cstat-no" title="statement not covered" >          break;</span>
         case "counter":
-<span class="cstat-no" title="statement not covered" >          handleAIAttack();</span>
+<span class="cstat-no" title="statement not covered" >          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);</span>
 <span class="cstat-no" title="statement not covered" >          addCombatMessage("AI 반격!", "AI Counter!");</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
       }
@@ -5086,22 +5123,15 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
       arenaBounds,
       combatState.roundEnded,
       combatState.roundStarted,
+      aiState.selectedTechnique,
+      aiState.targetVitalPoint,
     ]
   );
 &nbsp;
-  // AI Combat System
-  useAICombat({
-    player: validPlayers[1],
-    opponent: validPlayers[0],
-    personality: aiPersonality,
-    adaptiveDifficulty,
-    isPaused,
-    roundStarted: combatState.roundStarted,
-    roundEnded: combatState.roundEnded,
-    arenaBounds,
-    onExecuteAction: executeAIActionCallback,
-    onStanceChange: handleAIStanceChange,
-  });
+  // Update the ref
+  useEffect(() =&gt; {
+    executeAIActionCallbackRef.current = executeAIActionCallback;
+  }, [executeAIActionCallback]);
 &nbsp;
   // Update adaptive difficulty metrics
   useEffect(() =&gt; {
@@ -5746,7 +5776,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-15T20:07:45.872Z
+                at 2025-12-16T16:51:37.786Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

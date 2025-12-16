@@ -6,6 +6,62 @@
 import { PlayerArchetype, TrigramStance } from "@/types";
 
 /**
+ * Movement pattern types for archetype behavior
+ * 
+ * @korean 이동 패턴 타입
+ */
+export type MovementPattern = "aggressive" | "evasive" | "analytical" | "unpredictable";
+
+/**
+ * Vital target priority for archetype-specific combat strategies
+ * 
+ * @korean 급소 우선순위
+ */
+export type VitalTargetPriority = "health" | "pain" | "consciousness" | "balanced";
+
+/**
+ * Technique category types for archetype preferences
+ * 
+ * @korean 기술 범주
+ */
+export type TechniqueCategory = 
+  | "joint_manipulation" 
+  | "bone_strikes" 
+  | "nerve_strikes"
+  | "silent_takedowns"
+  | "anatomical_analysis"
+  | "calculated_strikes"
+  | "psychological_pressure"
+  | "submission_induction"
+  | "dirty_techniques"
+  | "environmental_usage";
+
+/**
+ * Archetype-specific behavior profile
+ * 
+ * Defines combat preferences, movement patterns, and tactical decision-making
+ * unique to each of the 5 player archetypes.
+ * 
+ * @korean 원형별 행동 프로필
+ */
+export interface ArchetypeBehavior {
+  /** Preferred trigram stances for this archetype */
+  readonly preferredStances: readonly TrigramStance[];
+  /** Optimal combat range in grid cells (1 cell = ~40px) */
+  readonly optimalRange: number;
+  /** Health percentage threshold to trigger retreat behavior */
+  readonly retreatThreshold: number;
+  /** Technique categories this archetype favors */
+  readonly techniqueSelectionBias: readonly TechniqueCategory[];
+  /** Movement pattern characteristic of this archetype */
+  readonly movementPattern: MovementPattern;
+  /** Whether archetype follows honor code (affects retreat behavior) */
+  readonly honorCode: boolean;
+  /** Priority system for vital point targeting */
+  readonly vitalTargetPriority: VitalTargetPriority;
+}
+
+/**
  * AI personality profile defining combat behavior
  */
 export interface AIPersonality {
@@ -24,6 +80,63 @@ export interface AIPersonality {
     readonly english: string;
   };
 }
+
+/**
+ * Archetype-specific behavior profiles
+ * 
+ * Maps each of the 5 player archetypes to their unique combat behaviors,
+ * movement patterns, and tactical preferences based on Korean martial arts
+ * traditions and game design philosophy.
+ * 
+ * @korean 원형별 행동 프로필
+ */
+export const ARCHETYPE_BEHAVIORS: Record<PlayerArchetype, ArchetypeBehavior> = {
+  [PlayerArchetype.MUSA]: {
+    preferredStances: [TrigramStance.GEON, TrigramStance.JIN, TrigramStance.GAN], // Heaven, Thunder, Mountain
+    optimalRange: 1, // Close quarters (1 cell = ~40px)
+    retreatThreshold: 30, // Only retreats at very low health
+    techniqueSelectionBias: ["joint_manipulation", "bone_strikes"],
+    movementPattern: "aggressive",
+    honorCode: true, // Never retreats above threshold
+    vitalTargetPriority: "balanced",
+  },
+  [PlayerArchetype.AMSALJA]: {
+    preferredStances: [TrigramStance.SON, TrigramStance.GAM], // Wind, Water
+    optimalRange: 1, // Stealth melee (1 cell)
+    retreatThreshold: 60, // Retreats early if detected
+    techniqueSelectionBias: ["nerve_strikes", "silent_takedowns"],
+    movementPattern: "evasive",
+    honorCode: false,
+    vitalTargetPriority: "consciousness",
+  },
+  [PlayerArchetype.HACKER]: {
+    preferredStances: [TrigramStance.LI, TrigramStance.TAE], // Fire, Lake
+    optimalRange: 3, // Mid-range analysis (3 cells = ~120px)
+    retreatThreshold: 50,
+    techniqueSelectionBias: ["anatomical_analysis", "calculated_strikes"],
+    movementPattern: "analytical",
+    honorCode: false,
+    vitalTargetPriority: "balanced",
+  },
+  [PlayerArchetype.JEONGBO_YOWON]: {
+    preferredStances: [TrigramStance.GAN, TrigramStance.GON], // Mountain, Earth
+    optimalRange: 2, // Tactical mid-range (2 cells = ~80px)
+    retreatThreshold: 40,
+    techniqueSelectionBias: ["psychological_pressure", "submission_induction"],
+    movementPattern: "analytical",
+    honorCode: false,
+    vitalTargetPriority: "pain",
+  },
+  [PlayerArchetype.JOJIK_POKRYEOKBAE]: {
+    preferredStances: [TrigramStance.JIN, TrigramStance.GAM], // Thunder, Water (adaptable)
+    optimalRange: 1, // Close brutal combat (1 cell)
+    retreatThreshold: 70, // Retreats pragmatically
+    techniqueSelectionBias: ["dirty_techniques", "environmental_usage"],
+    movementPattern: "unpredictable",
+    honorCode: false,
+    vitalTargetPriority: "health",
+  },
+};
 
 /**
  * Five AI personality archetypes inspired by Korean martial arts philosophy
@@ -189,4 +302,49 @@ export function getPersonalityByName(name: string): AIPersonality {
  */
 export function getAllPersonalities(): readonly AIPersonality[] {
   return Object.values(AI_PERSONALITIES);
+}
+
+/**
+ * Get archetype-specific behavior profile
+ * 
+ * Retrieves the unique combat behavior configuration for a given archetype,
+ * including movement patterns, optimal ranges, and tactical preferences.
+ * 
+ * @param archetype - Player archetype to get behavior for
+ * @returns Archetype behavior profile
+ * 
+ * @korean 원형별 행동 프로필 가져오기
+ */
+export function getArchetypeBehavior(archetype: PlayerArchetype): ArchetypeBehavior {
+  return ARCHETYPE_BEHAVIORS[archetype];
+}
+
+/**
+ * Check if archetype follows honor code
+ * 
+ * Honor code affects retreat behavior - honor-bound archetypes like Musa
+ * will not retreat above their health threshold.
+ * 
+ * @param archetype - Player archetype to check
+ * @returns True if archetype follows honor code
+ * 
+ * @korean 명예 규범 확인
+ */
+export function followsHonorCode(archetype: PlayerArchetype): boolean {
+  return ARCHETYPE_BEHAVIORS[archetype].honorCode;
+}
+
+/**
+ * Get optimal combat range for archetype
+ * 
+ * Returns the preferred distance in grid cells (1 cell = ~40px) where
+ * the archetype is most effective in combat.
+ * 
+ * @param archetype - Player archetype
+ * @returns Optimal range in grid cells
+ * 
+ * @korean 최적 전투 거리 가져오기
+ */
+export function getOptimalRange(archetype: PlayerArchetype): number {
+  return ARCHETYPE_BEHAVIORS[archetype].optimalRange;
 }

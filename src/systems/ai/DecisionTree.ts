@@ -14,8 +14,8 @@ import {
   KOREAN_VITAL_POINTS,
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
-import { Position, TrigramStance } from "@/types";
-import { AIPersonality } from "./AIPersonality";
+import { Position, TrigramStance, PlayerArchetype } from "@/types";
+import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
 /**
@@ -97,6 +97,17 @@ export class AIDecisionTree {
   private trigramSystem: TrigramSystem;
   private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
 
+  // Movement constants
+  private static readonly MOVE_STEP_SIZE = 50; // Fixed movement step size in pixels
+  private static readonly MIN_DISTANCE_THRESHOLD = 5; // Minimum distance to avoid division by zero
+  
+  /**
+   * Arena boundary margins - exported for test validation
+   * These values represent the player character size/collision margins
+   */
+  public static readonly ARENA_MARGIN_X = 60; // Horizontal boundary margin
+  public static readonly ARENA_MARGIN_Y = 180; // Vertical boundary margin
+
   constructor() {
     this.trigramSystem = new TrigramSystem();
   }
@@ -138,6 +149,10 @@ export class AIDecisionTree {
     // Evaluate tactical options in priority order
     const decisions: AIDecision[] = [];
 
+    // Get optimal range for this archetype
+    const optimalRange = this.getOptimalRange(personality);
+    const distance = context.distanceToOpponent;
+
     // 1. Critical health - survival priority
     decisions.push(this.evaluateSurvival(context, personality));
 
@@ -146,21 +161,28 @@ export class AIDecisionTree {
       decisions.push(this.evaluateCounter(context, personality));
     }
 
-    // 3. Combo initiation
-    decisions.push(this.evaluateComboStart(context, personality, comboSystem));
+    // 3. Combo initiation (only if at reasonable distance)
+    if (distance < optimalRange * 1.5) {
+      decisions.push(this.evaluateComboStart(context, personality, comboSystem));
+    }
 
     // 4. Stance transition
     decisions.push(this.evaluateStanceChange(context, personality, now));
 
-    // 5. Feint attack
-    decisions.push(this.evaluateFeint(context, personality));
+    // 5. Feint attack (only at mid-close range)
+    if (distance < optimalRange * 1.8) {
+      decisions.push(this.evaluateFeint(context, personality));
+    }
 
-    // 6. Distance-based tactics
-    if (context.distanceToOpponent < 120) {
+    // 6. Distance-based tactics (archetype-aware ranges)
+    if (distance < optimalRange * 1.2) {
+      // Close to optimal range - use close-range tactics including vital point targeting
       decisions.push(this.evaluateCloseRange(context, personality));
-    } else if (context.distanceToOpponent > 250) {
+    } else if (distance > optimalRange * 1.8) {
+      // Too far - need to approach
       decisions.push(this.evaluateApproach(context, personality));
     } else {
+      // Mid-range - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
@@ -187,20 +209,45 @@ export class AIDecisionTree {
 
   /**
    * Evaluate survival tactics when critically low health
+   * 
+   * **Korean Philosophy (생존 전략)**:
+   * - Consider both health and pain levels
+   * - Archetype affects retreat threshold and behavior
+   * - Honor code (Musa) prevents retreat above threshold
    */
   private evaluateSurvival(
     context: CombatContext,
     personality: AIPersonality
   ): AIDecision {
     const healthPercent = context.playerHealth / context.playerMaxHealth;
+    const painLevel = context.recentDamageTaken;
+    
+    // Get archetype behavior profile
+    const behavior = getArchetypeBehavior(personality.archetype);
 
-    if (healthPercent < personality.tacticalRetreatThreshold) {
+    // Check critical survival condition: low health OR (moderate health + high pain)
+    const isCritical = healthPercent < personality.tacticalRetreatThreshold;
+    const isHighPain = healthPercent < 0.5 && painLevel > 50;
+
+    if (isCritical || isHighPain) {
+      // Honor code: Musa never retreats above their threshold (30%)
+      if (behavior.honorCode && healthPercent > behavior.retreatThreshold / 100) {
+        return {
+          action: AIActionType.WAIT,
+          priority: 0,
+          reason: `Honor code prevents retreat: ${(healthPercent * 100).toFixed(1)}% (명예 규범)`,
+        };
+      }
+      
       const retreatVector = this.calculateRetreatPosition(context);
+      
       return {
         action: AIActionType.RETREAT,
         targetPosition: retreatVector,
         priority: 10, // Highest priority
-        reason: `Critical health: ${(healthPercent * 100).toFixed(1)}%`,
+        reason: isCritical 
+          ? `Critical health: ${(healthPercent * 100).toFixed(1)}% (위급 상황)`
+          : `High pain: ${painLevel.toFixed(0)} (고통 회피)`,
       };
     }
 
@@ -286,7 +333,8 @@ export class AIDecisionTree {
    *
    * **Korean Philosophy (자세 전환)**:
    * Uses I Ching-based trigram system to find optimal stance transitions.
-   * Considers resource costs and counter-stance effectiveness.
+   * Considers resource costs, counter-stance effectiveness, and archetype preferences.
+   * Each archetype has favored stances that they switch to more frequently.
    */
   private evaluateStanceChange(
     context: CombatContext,
@@ -311,6 +359,20 @@ export class AIDecisionTree {
       };
     }
 
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Check if already in a preferred stance - if so, reduce change chance (but not completely)
+    // This check only applies outside combat to avoid stance lock during active fighting
+    const inPreferredStance = behavior.preferredStances.includes(context.playerStance);
+    if (inPreferredStance && !context.isOpponentAttacking && Math.random() < 0.6) {
+      // 60% chance to stay in preferred stance when not under immediate pressure
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: "Already in preferred stance (선호 자세 유지)",
+      };
+    }
+
     // Use TrigramSystem to recommend optimal stance
     // Create a minimal PlayerState object with only the properties actually used by recommendStance
     const playerState = {
@@ -330,7 +392,22 @@ export class AIDecisionTree {
     );
 
     if (!canTransition) {
-      // Try counter-stance instead
+      // Try archetype-preferred stance or counter-stance
+      const preferredAvailable = behavior.preferredStances.find(
+        (stance) => this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
+      );
+      
+      if (preferredAvailable) {
+        this.lastStanceChange = now;
+        return {
+          action: AIActionType.STANCE_CHANGE,
+          targetStance: preferredAvailable,
+          priority: 6,
+          reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
+        };
+      }
+      
+      // Fallback to counter-stance
       const counterStance = this.selectCounterStance(
         context.opponentStance,
         personality
@@ -513,39 +590,269 @@ export class AIDecisionTree {
   }
 
   /**
-   * Evaluate approach tactics
+   * Get optimal combat range based on AI personality archetype
+   * 
+   * Uses archetype behavior profiles to determine preferred combat distance.
+   * Range is converted from cell units to pixels (1 cell = ~40px).
+   * 
+   * @korean 최적 전투 거리 - 원형별 선호 거리
+   */
+  private getOptimalRange(personality: AIPersonality): number {
+    const CELL_SIZE = 40; // Size of one grid cell in pixels
+    
+    // Get archetype behavior profile
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Convert cell units to pixels
+    return behavior.optimalRange * CELL_SIZE;
+  }
+
+  /**
+   * Evaluate approach tactics with archetype-specific behavior
+   * 
+   * **Korean Philosophy (접근 전략)**:
+   * - Musa charges directly (70% direct path)
+   * - Amsalja uses flanking movements (40% diagonal approach)
+   * - Hacker maintains optimal distance (prefers not to close too much)
    */
   private evaluateApproach(
     context: CombatContext,
-    _personality: AIPersonality
+    personality: AIPersonality
   ): AIDecision {
-    const approachPos = this.calculateApproachPosition(context);
+    const optimalRange = this.getOptimalRange(personality);
+    const distance = context.distanceToOpponent;
+
+    // If already at optimal range or closer, lower priority
+    if (distance <= optimalRange * 1.2) {
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: "Already at optimal range",
+      };
+    }
+
+    // Apply archetype-specific movement bias
+    const movementBias = this.getArchetypeMovementBias(personality.archetype);
+    let approachPos: Position;
+
+    // Archetype-specific approach patterns
+    if (personality.archetype === PlayerArchetype.MUSA && Math.random() < 0.7) {
+      // Musa: Direct charge 70% of the time
+      approachPos = this.calculateDirectApproach(context);
+    } else if (personality.archetype === PlayerArchetype.AMSALJA && Math.random() < 0.4) {
+      // Amsalja: Flanking approach 40% of the time
+      approachPos = this.calculateFlankingApproach(context);
+    } else {
+      // Default approach with slight randomization
+      approachPos = this.calculateApproachPosition(context);
+    }
+
+    // Calculate priority based on distance from optimal range
+    // Very far: priority ~6-7, moderate distance: priority ~5
+    const basePriority = 4;
+    const distanceRatio = Math.min(2, (distance - optimalRange) / optimalRange);
+    const priorityBoost = distanceRatio * movementBias * 0.8;
+    const finalPriority = basePriority + priorityBoost;
 
     return {
       action: AIActionType.APPROACH,
       targetPosition: approachPos,
-      priority: 5,
+      priority: Math.min(8, finalPriority), // Cap at 8 to allow survival/critical actions to override
       reason: `Moving closer (distance: ${Math.round(
-        context.distanceToOpponent
-      )})`,
+        distance
+      )}, optimal: ${optimalRange})`,
     };
   }
 
   /**
-   * Evaluate mid-range tactics
+   * Get archetype-specific movement bias multipliers
+   * 
+   * Applies movement pattern modifiers based on archetype behavior profiles:
+   * - Aggressive: High forward pressure (2.0x)
+   * - Evasive: Moderate mobility (1.5x)
+   * - Analytical: Conservative approach (0.8x-1.0x)
+   * - Unpredictable: Variable movement (1.3x)
+   * 
+   * @korean 원형별 이동 성향
+   */
+  private getArchetypeMovementBias(archetype: PlayerArchetype): number {
+    const behavior = getArchetypeBehavior(archetype);
+    
+    switch (behavior.movementPattern) {
+      case "aggressive": // Musa - aggressive forward movement
+        return 2.0;
+      case "evasive": // Amsalja - high mobility, flanking preference
+        return 1.5;
+      case "analytical": // Hacker, Jeongbo - calculated approach
+        return archetype === PlayerArchetype.HACKER ? 0.8 : 1.0;
+      case "unpredictable": // Jojik - variable patterns
+        return 1.3;
+      default:
+        return 1.0;
+    }
+  }
+
+  /**
+   * Calculate direct approach position (straight line to opponent)
+   * Used primarily by Musa archetype for charging attacks
+   */
+  private calculateDirectApproach(context: CombatContext): Position {
+    const dx = context.opponentPosition.x - context.playerPosition.x;
+    const dy = context.opponentPosition.y - context.playerPosition.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // If already very close to the opponent, hold position (avoid erratic movement)
+    if (distance < AIDecisionTree.MIN_DISTANCE_THRESHOLD) {
+      return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
+    }
+
+    // Move straight toward opponent with fixed step size for consistent movement speed
+    const step = Math.min(AIDecisionTree.MOVE_STEP_SIZE, distance);
+    return this.clampToArenaBounds(
+      {
+        x: context.playerPosition.x + (dx / distance) * step,
+        y: context.playerPosition.y + (dy / distance) * step,
+      },
+      context.arenaBounds
+    );
+  }
+
+  /**
+   * Calculate flanking approach position (diagonal/side approach)
+   * Used primarily by Amsalja archetype for stealth positioning
+   */
+  private calculateFlankingApproach(context: CombatContext): Position {
+    const dx = context.opponentPosition.x - context.playerPosition.x;
+    const dy = context.opponentPosition.y - context.playerPosition.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // If distance is too small, return player's current position (avoid erratic movement)
+    if (distance < AIDecisionTree.MIN_DISTANCE_THRESHOLD) {
+      return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
+    }
+
+    // Add perpendicular offset for flanking (40-60 pixels to the side)
+    const flankOffset = 40 + Math.random() * 20;
+    const perpX = -dy / distance; // Perpendicular vector
+    const perpY = dx / distance;
+    const flankSide = Math.random() < 0.5 ? 1 : -1; // Random side
+
+    return this.clampToArenaBounds(
+      {
+        x: context.opponentPosition.x + perpX * flankOffset * flankSide,
+        y: context.opponentPosition.y + perpY * flankOffset * flankSide,
+      },
+      context.arenaBounds
+    );
+  }
+
+  /**
+   * Clamp position to arena boundaries with proper margins
+   * Centralizes boundary validation logic for all movement calculations
+   */
+  private clampToArenaBounds(
+    position: Position,
+    arenaBounds: { readonly x: number; readonly y: number; readonly width: number; readonly height: number }
+  ): Position {
+    return {
+      x: Math.max(
+        arenaBounds.x,
+        Math.min(
+          arenaBounds.x + arenaBounds.width - AIDecisionTree.ARENA_MARGIN_X,
+          position.x
+        )
+      ),
+      y: Math.max(
+        arenaBounds.y,
+        Math.min(
+          arenaBounds.y + arenaBounds.height - AIDecisionTree.ARENA_MARGIN_Y,
+          position.y
+        )
+      ),
+    };
+  }
+
+  /**
+   * Evaluate mid-range tactics with distance awareness
+   * 
+   * **Korean Philosophy (중거리 전술)**:
+   * - Considers optimal range for archetype
+   * - Hacker prefers to maintain this range (analytical pattern)
+   * - Jeongbo uses strategic timing and analysis
+   * - Others may close or open distance based on situation
    */
   private evaluateMidRange(
     context: CombatContext,
-    _personality: AIPersonality
+    personality: AIPersonality
   ): AIDecision {
     const hasResources = context.playerKi > context.playerMaxKi * 0.3;
+    const optimalRange = this.getOptimalRange(personality);
+    const distance = context.distanceToOpponent;
     const tacticRoll = Math.random();
+    const behavior = getArchetypeBehavior(personality.archetype);
 
+    // Archetype-specific mid-range behavior based on movement pattern
+    if (behavior.movementPattern === "analytical" && Math.abs(distance - optimalRange) < 50) {
+      // Analytical archetypes (Hacker, Jeongbo) at ideal range - maintain position
+      const circlePos = this.calculateCirclePosition(context);
+      const archetypeName = personality.archetype === PlayerArchetype.HACKER 
+        ? "사이버" : "정보";
+      return {
+        action: AIActionType.CIRCLE,
+        targetPosition: circlePos,
+        priority: 6,
+        reason: `${archetypeName} maintaining optimal mid-range (${archetypeName} 위치 유지)`,
+      };
+    }
+
+    // Too far from optimal range - approach
+    if (distance > optimalRange * 1.5) {
+      const approachPos = this.calculateApproachPosition(context);
+      return {
+        action: AIActionType.APPROACH,
+        targetPosition: approachPos,
+        priority: 5,
+        reason: "Moving to optimal range (최적 거리로 이동)",
+      };
+    }
+
+    // Too close to optimal range - analytical archetypes create space
+    if (distance < optimalRange * 0.7 && behavior.movementPattern === "analytical") {
+      const retreatPos = this.calculateRetreatPosition(context);
+      return {
+        action: AIActionType.RETREAT,
+        targetPosition: retreatPos,
+        priority: 5,
+        reason: "Creating tactical space (거리 확보)",
+      };
+    }
+
+    // Unpredictable archetype (Jojik) - randomize tactics
+    if (behavior.movementPattern === "unpredictable") {
+      const randomAction = tacticRoll < 0.33 ? "attack" : tacticRoll < 0.66 ? "circle" : "approach";
+      if (randomAction === "attack" && hasResources) {
+        return {
+          action: AIActionType.TECHNIQUE,
+          priority: 5,
+          reason: "Unpredictable attack (예측불가 공격)",
+        };
+      } else if (randomAction === "circle") {
+        const circlePos = this.calculateCirclePosition(context);
+        return {
+          action: AIActionType.CIRCLE,
+          targetPosition: circlePos,
+          priority: 4,
+          reason: "Unpredictable movement (예측불가 이동)",
+        };
+      }
+    }
+
+    // At good range - mix of techniques and repositioning
     if (tacticRoll < 0.3 && hasResources) {
       return {
         action: AIActionType.TECHNIQUE,
         priority: 5,
-        reason: "Mid-range technique",
+        reason: "Mid-range technique (중거리 기술)",
       };
     } else if (tacticRoll < 0.6) {
       const circlePos = this.calculateCirclePosition(context);
@@ -553,7 +860,7 @@ export class AIDecisionTree {
         action: AIActionType.CIRCLE,
         targetPosition: circlePos,
         priority: 4,
-        reason: "Tactical repositioning",
+        reason: "Tactical repositioning (전술적 이동)",
       };
     } else {
       const approachPos = this.calculateApproachPosition(context);
@@ -561,7 +868,7 @@ export class AIDecisionTree {
         action: AIActionType.APPROACH,
         targetPosition: approachPos,
         priority: 4,
-        reason: "Moving to optimal range",
+        reason: "Moving to optimal range (최적 거리로 이동)",
       };
     }
   }
@@ -614,27 +921,30 @@ export class AIDecisionTree {
     const dy = context.playerPosition.y - context.opponentPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
+    // If distance is too small, retreat in a default direction (away from center)
+    if (distance < AIDecisionTree.MIN_DISTANCE_THRESHOLD) {
+      const retreatDistance = 150;
+      return this.clampToArenaBounds(
+        {
+          x: context.playerPosition.x + retreatDistance,
+          y: context.playerPosition.y,
+        },
+        context.arenaBounds
+      );
+    }
+
     // Normalize and retreat
     const retreatDistance = 150;
     const nx = dx / distance;
     const ny = dy / distance;
 
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.playerPosition.x + nx * retreatDistance
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.playerPosition.y + ny * retreatDistance
-        )
-      ),
-    };
+    return this.clampToArenaBounds(
+      {
+        x: context.playerPosition.x + nx * retreatDistance,
+        y: context.playerPosition.y + ny * retreatDistance,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
@@ -644,22 +954,13 @@ export class AIDecisionTree {
     const offsetX = (Math.random() - 0.5) * 80;
     const offsetY = (Math.random() - 0.5) * 60;
 
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.opponentPosition.x + offsetX
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.opponentPosition.y + offsetY
-        )
-      ),
-    };
+    return this.clampToArenaBounds(
+      {
+        x: context.opponentPosition.x + offsetX,
+        y: context.opponentPosition.y + offsetY,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
@@ -672,24 +973,13 @@ export class AIDecisionTree {
     );
     const circleRadius = 150 + Math.random() * 50;
 
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.opponentPosition.x +
-            Math.cos(angle + Math.PI / 2) * circleRadius
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.opponentPosition.y +
-            Math.sin(angle + Math.PI / 2) * circleRadius
-        )
-      ),
-    };
+    return this.clampToArenaBounds(
+      {
+        x: context.opponentPosition.x + Math.cos(angle + Math.PI / 2) * circleRadius,
+        y: context.opponentPosition.y + Math.sin(angle + Math.PI / 2) * circleRadius,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
