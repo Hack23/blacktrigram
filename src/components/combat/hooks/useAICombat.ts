@@ -157,27 +157,34 @@ function getViableTechniques(
 }
 
 /**
- * Select optimal vital point for attack based on stance compatibility
+ * Select optimal vital point for attack based on stance compatibility and archetype priority
  * 
  * Prioritizes vital points by:
- * 1. Stance compatibility (must be in effectiveStances array)
- * 2. Base damage threshold (>25 damage preferred)
- * 3. Targeting difficulty vs AI skill level
+ * 1. Archetype vital target priority (health/pain/consciousness/balanced)
+ * 2. Stance compatibility (must be in effectiveStances array)
+ * 3. Base damage threshold (>25 damage preferred)
+ * 4. Targeting difficulty vs AI skill level
  * 
- * @korean 자세 효과에 따른 최적 급소 선택
+ * @korean 자세 효과 및 원형 우선순위에 따른 최적 급소 선택
  * 
  * @param stance - Current trigram stance
  * @param difficultyLevel - AI difficulty level (0.0-1.0)
+ * @param archetype - Player archetype for priority targeting
  * @returns Vital point ID or null if no suitable target
  */
 function selectOptimalVitalPoint(
   stance: TrigramStance,
-  difficultyLevel: number
+  difficultyLevel: number,
+  archetype: PlayerState["archetype"]
 ): string | null {
   // Guard: Ensure vital points are available
   if (KOREAN_VITAL_POINTS.length === 0) {
     return null;
   }
+
+  // Get archetype behavior for vital point priority
+  const { getArchetypeBehavior } = require("@/systems/ai/AIPersonality");
+  const behavior = getArchetypeBehavior(archetype);
 
   // Filter vital points effective for current stance
   const effectivePoints = KOREAN_VITAL_POINTS.filter((point) =>
@@ -206,18 +213,73 @@ function selectOptimalVitalPoint(
       ? highDamagePoints
       : effectivePoints;
 
-  // Sort by targeting suitability based on AI difficulty
+  // Sort by targeting suitability based on AI difficulty AND archetype priority
   const sortedPoints = [...targetPoints].sort((a, b) => {
-    // Calculate suitability score
-    const suitabilityA =
+    // Calculate base suitability score
+    const baseSuitabilityA =
       (a.baseDamage ?? 0) * (1 - Math.abs(difficultyLevel - a.targetingDifficulty));
-    const suitabilityB =
+    const baseSuitabilityB =
       (b.baseDamage ?? 0) * (1 - Math.abs(difficultyLevel - b.targetingDifficulty));
-    return suitabilityB - suitabilityA;
+    
+    // Apply archetype priority multiplier
+    const priorityMultiplierA = getVitalPointPriorityScore(a, behavior.vitalTargetPriority);
+    const priorityMultiplierB = getVitalPointPriorityScore(b, behavior.vitalTargetPriority);
+    
+    const finalSuitabilityA = baseSuitabilityA * priorityMultiplierA;
+    const finalSuitabilityB = baseSuitabilityB * priorityMultiplierB;
+    
+    return finalSuitabilityB - finalSuitabilityA;
   });
 
   // Select top-rated target
   return sortedPoints[0]?.id ?? null;
+}
+
+/**
+ * Calculate priority score for vital point based on archetype targeting preference
+ * 
+ * @korean 원형 타격 우선순위 점수 계산
+ * 
+ * @param vitalPoint - Vital point to score
+ * @param priority - Archetype vital target priority
+ * @returns Priority multiplier (1.0 = neutral, >1.0 = preferred, <1.0 = deprioritized)
+ */
+function getVitalPointPriorityScore(
+  vitalPoint: typeof KOREAN_VITAL_POINTS[0],
+  priority: import("@/systems/ai/AIPersonality").VitalTargetPriority
+): number {
+  // Import effect types to check vital point effects
+  const effects = vitalPoint.effects || [];
+  
+  switch (priority) {
+    case "health":
+      // Jojik - prioritize high base damage
+      return (vitalPoint.baseDamage ?? 0) > 30 ? 1.5 : 1.0;
+      
+    case "pain":
+      // Jeongbo - prioritize pain-inducing effects
+      // Check if effects include pain or disorientation
+      const hasPainEffect = effects.some(e => 
+        String(e).toLowerCase().includes("pain") || 
+        String(e).toLowerCase().includes("disorientation")
+      );
+      return hasPainEffect ? 1.5 : 1.0;
+      
+    case "consciousness":
+      // Amsalja - prioritize consciousness-affecting strikes
+      // Check if effects include unconsciousness, stun, or breathlessness
+      const hasConsciousnessEffect = effects.some(e => 
+        String(e).toLowerCase().includes("unconscious") || 
+        String(e).toLowerCase().includes("stun") ||
+        String(e).toLowerCase().includes("breathless")
+      );
+      return hasConsciousnessEffect ? 1.5 : 1.0;
+      
+    case "balanced":
+    default:
+      // Musa, Hacker - balanced approach
+      return 1.0;
+  }
 }
 
 /**
@@ -252,7 +314,7 @@ function selectTechniqueForAction(
   if (candidates.length > 0) {
     const technique = candidates[0];
     const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
+    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel, player.archetype) ?? undefined;
     return { 
       technique, 
       vitalPoint, 
@@ -264,7 +326,7 @@ function selectTechniqueForAction(
   if (isSpecialTechnique && viableTechniques.length > 0) {
     const technique = viableTechniques[0];
     const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel) ?? undefined;
+    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel, player.archetype) ?? undefined;
     return { 
       technique, 
       vitalPoint, 
