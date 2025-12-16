@@ -207,6 +207,13 @@ export class AIComboSystem {
 
   /**
    * Check if AI should continue current combo
+   * 
+   * Enhanced with:
+   * - Opponent balance state checking (SHAKEN/VULNERABLE)
+   * - Combo length limit (max 3 techniques)
+   * - Stamina threshold (>20 for combo continuation)
+   * 
+   * @korean 연계 기술 계속 여부 판단
    */
   shouldContinueCombo(
     player: PlayerState,
@@ -232,11 +239,30 @@ export class AIComboSystem {
       return false;
     }
 
+    // Combo length limit: max 3 techniques
+    if (this.comboProgress >= 3) {
+      this.resetCombo();
+      return false;
+    }
+
     // Korean martial arts philosophy: flow like water
     const distance = this.getDistance(player, opponent);
     const distanceOk = distance < 120;
-    const hasResources = player.ki >= 10 && player.stamina >= 15;
-    const randomChance = Math.random() < personality.comboTendency;
+    
+    // Stamina threshold for combo continuation (>20)
+    const hasResources = player.ki >= 10 && player.stamina > 20;
+    
+    // Check opponent balance state - continue combo if opponent is vulnerable
+    const opponentVulnerable = 
+      opponent.balance < 30 || // Low balance (SHAKEN/VULNERABLE)
+      opponent.isStunned || // Stunned state
+      opponent.health < opponent.maxHealth * 0.3; // Low health (<30%)
+    
+    // Higher chance to continue if opponent is vulnerable
+    const baseChance = personality.comboTendency;
+    const vulnerabilityBonus = opponentVulnerable ? 0.3 : 0;
+    const continueChance = Math.min(0.95, baseChance + vulnerabilityBonus);
+    const randomChance = Math.random() < continueChance;
 
     return distanceOk && hasResources && randomChance;
   }

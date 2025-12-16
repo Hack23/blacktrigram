@@ -85,6 +85,7 @@ const TECHNIQUE_RANGE = {
  * - Match current stance
  * - Are within effective range of opponent
  * - Have sufficient stamina to execute
+ * - Applies selection bias against recently used techniques (avoid >70% repetition)
  * 
  * @korean 거리, 자세, 체력에 따른 실행 가능한 기술 선택
  * 
@@ -92,13 +93,15 @@ const TECHNIQUE_RANGE = {
  * @param stance - Current trigram stance
  * @param stamina - Available stamina
  * @param archetype - Player archetype for specialized techniques
- * @returns Array of viable techniques sorted by effectiveness
+ * @param recentTechniques - Array of recently used technique IDs (for variation)
+ * @returns Array of viable techniques sorted by effectiveness with variation bias
  */
 function getViableTechniques(
   distance: number,
   stance: TrigramStance,
   stamina: number,
-  archetype: PlayerState["archetype"]
+  archetype: PlayerState["archetype"],
+  recentTechniques: string[] = []
 ): readonly KoreanTechnique[] {
   // Get all available techniques for stance and archetype
   const stanceTechniques =
@@ -119,11 +122,24 @@ function getViableTechniques(
     return inRange && hasStamina;
   });
 
-  // Sort by effectiveness: prioritize higher damage and accuracy
+  // Sort by effectiveness with variation bias
   return viableTechniques.sort((a, b) => {
-    const effectivenessA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
-    const effectivenessB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
-    return effectivenessB - effectivenessA;
+    // Base effectiveness: damage × accuracy
+    const baseEffectivenessA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
+    const baseEffectivenessB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
+
+    // Apply penalty for recently used techniques (avoid repetition)
+    const recentUsesA = recentTechniques.filter((id) => id === a.id).length;
+    const recentUsesB = recentTechniques.filter((id) => id === b.id).length;
+    
+    // Penalty: 20% reduction per recent use (max 60% penalty for 3+ uses)
+    const penaltyA = Math.min(0.6, recentUsesA * 0.2);
+    const penaltyB = Math.min(0.6, recentUsesB * 0.2);
+    
+    const finalEffectivenessA = baseEffectivenessA * (1 - penaltyA);
+    const finalEffectivenessB = baseEffectivenessB * (1 - penaltyB);
+
+    return finalEffectivenessB - finalEffectivenessA;
   });
 }
 
@@ -200,6 +216,7 @@ interface AIState {
   aggressionLevel: number;
   selectedTechnique?: KoreanTechnique;
   targetVitalPoint?: string;
+  recentTechniques: string[]; // Track last 5 techniques for variation
 }
 
 /**
@@ -284,6 +301,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       aggressionLevel: adjustedPersonality.aggressionLevel,
       selectedTechnique: undefined,
       targetVitalPoint: undefined,
+      recentTechniques: [],
     };
   });
 
@@ -409,16 +427,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       switch (decision.action) {
         case AIActionType.ATTACK:
           {
-            // Select viable technique based on distance
+            // Select viable technique based on distance with variation bias
             const viableTechniques = getViableTechniques(
               context.distanceToOpponent,
               player.currentStance,
               player.stamina,
-              player.archetype
+              player.archetype,
+              aiState.recentTechniques
             );
 
             if (viableTechniques.length > 0) {
-              // Select best technique (already sorted by effectiveness)
+              // Select best technique (already sorted by effectiveness with variation)
               selectedTechnique = viableTechniques[0] as KoreanTechnique;
 
               // Select optimal vital point for this stance
@@ -444,7 +463,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               context.distanceToOpponent,
               player.currentStance,
               player.stamina,
-              player.archetype
+              player.archetype,
+              aiState.recentTechniques
             );
 
             // Filter for techniques with higher resource costs (special techniques)
@@ -555,6 +575,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Update next action time using ref (prevents stale closure)
       nextActionRef.current = now + actionCooldown + Math.random() * 200;
 
+      // Track recent techniques for variation (keep last 5)
+      let updatedRecentTechniques = [...aiState.recentTechniques];
+      if (selectedTechnique) {
+        updatedRecentTechniques.push(selectedTechnique.id);
+        // Keep only last 5 techniques
+        if (updatedRecentTechniques.length > 5) {
+          updatedRecentTechniques = updatedRecentTechniques.slice(-5);
+        }
+      }
+
       // Update AI state with selected technique and vital point
       setAiState({
         nextAction: nextActionRef.current,
@@ -565,6 +595,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         aggressionLevel: adjustedPersonality.aggressionLevel,
         selectedTechnique,
         targetVitalPoint,
+        recentTechniques: updatedRecentTechniques,
       });
     }, 50); // 50ms loop for responsive AI
 
