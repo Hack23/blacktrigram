@@ -14,7 +14,7 @@ import {
   KOREAN_VITAL_POINTS,
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
-import { Position, TrigramStance } from "@/types";
+import { Position, TrigramStance, PlayerArchetype } from "@/types";
 import { AIPersonality } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
@@ -100,8 +100,13 @@ export class AIDecisionTree {
   // Movement constants
   private static readonly MOVE_STEP_SIZE = 50; // Fixed movement step size in pixels
   private static readonly MIN_DISTANCE_THRESHOLD = 5; // Minimum distance to avoid division by zero
-  private static readonly ARENA_MARGIN_X = 60; // Horizontal boundary margin
-  private static readonly ARENA_MARGIN_Y = 180; // Vertical boundary margin
+  
+  /**
+   * Arena boundary margins - exported for test validation
+   * These values represent the player character size/collision margins
+   */
+  public static readonly ARENA_MARGIN_X = 60; // Horizontal boundary margin
+  public static readonly ARENA_MARGIN_Y = 180; // Vertical boundary margin
 
   constructor() {
     this.trigramSystem = new TrigramSystem();
@@ -549,15 +554,15 @@ export class AIDecisionTree {
   private getOptimalRange(personality: AIPersonality): number {
     // Archetype-specific preferred combat ranges (in pixels)
     switch (personality.archetype) {
-      case "amsalja": // Shadow Assassin - prefers close range (1-2 cells)
+      case PlayerArchetype.AMSALJA: // Shadow Assassin - prefers close range (1-2 cells)
         return 80;
-      case "hacker": // Cyber Warrior - prefers mid-range (3-4 cells)
+      case PlayerArchetype.HACKER: // Cyber Warrior - prefers mid-range (3-4 cells)
         return 200;
-      case "musa": // Traditional Warrior - comfortable at medium-close (2-3 cells)
+      case PlayerArchetype.MUSA: // Traditional Warrior - comfortable at medium-close (2-3 cells)
         return 120;
-      case "jeongbo_yowon": // Intelligence Operative - adaptable mid-range (2-3 cells)
+      case PlayerArchetype.JEONGBO_YOWON: // Intelligence Operative - adaptable mid-range (2-3 cells)
         return 150;
-      case "jojik_pokryeokbae": // Organized Crime - unpredictable, close-mid (1-3 cells)
+      case PlayerArchetype.JOJIK_POKRYEOKBAE: // Organized Crime - unpredictable, close-mid (1-3 cells)
         return 100;
       default:
         return 120; // Default medium-close range
@@ -593,10 +598,10 @@ export class AIDecisionTree {
     let approachPos: Position;
 
     // Archetype-specific approach patterns
-    if (personality.archetype === "musa" && Math.random() < 0.7) {
+    if (personality.archetype === PlayerArchetype.MUSA && Math.random() < 0.7) {
       // Musa: Direct charge 70% of the time
       approachPos = this.calculateDirectApproach(context);
-    } else if (personality.archetype === "amsalja" && Math.random() < 0.4) {
+    } else if (personality.archetype === PlayerArchetype.AMSALJA && Math.random() < 0.4) {
       // Amsalja: Flanking approach 40% of the time
       approachPos = this.calculateFlankingApproach(context);
     } else {
@@ -623,17 +628,17 @@ export class AIDecisionTree {
    * 
    * @korean 원형별 이동 성향
    */
-  private getArchetypeMovementBias(archetype: string): number {
+  private getArchetypeMovementBias(archetype: PlayerArchetype): number {
     switch (archetype) {
-      case "musa": // Traditional Warrior - aggressive forward movement
+      case PlayerArchetype.MUSA: // Traditional Warrior - aggressive forward movement
         return 2.0;
-      case "amsalja": // Shadow Assassin - high mobility, flanking preference
+      case PlayerArchetype.AMSALJA: // Shadow Assassin - high mobility, flanking preference
         return 1.5;
-      case "hacker": // Cyber Warrior - prefers maintaining distance
+      case PlayerArchetype.HACKER: // Cyber Warrior - prefers maintaining distance
         return 0.8;
-      case "jeongbo_yowon": // Intelligence Operative - balanced approach
+      case PlayerArchetype.JEONGBO_YOWON: // Intelligence Operative - balanced approach
         return 1.0;
-      case "jojik_pokryeokbae": // Organized Crime - unpredictable
+      case PlayerArchetype.JOJIK_POKRYEOKBAE: // Organized Crime - unpredictable
         return 1.3;
       default:
         return 1.0;
@@ -738,7 +743,7 @@ export class AIDecisionTree {
     const tacticRoll = Math.random();
 
     // Archetype-specific mid-range behavior
-    if (personality.archetype === "hacker" && Math.abs(distance - optimalRange) < 50) {
+    if (personality.archetype === PlayerArchetype.HACKER && Math.abs(distance - optimalRange) < 50) {
       // Hacker at ideal range - prefer to maintain position with circling
       const circlePos = this.calculateCirclePosition(context);
       return {
@@ -761,7 +766,7 @@ export class AIDecisionTree {
     }
 
     // Too close to optimal range - consider retreat or technique
-    if (distance < optimalRange * 0.7 && personality.archetype === "hacker") {
+    if (distance < optimalRange * 0.7 && personality.archetype === PlayerArchetype.HACKER) {
       const retreatPos = this.calculateRetreatPosition(context);
       return {
         action: AIActionType.RETREAT,

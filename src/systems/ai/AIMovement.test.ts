@@ -10,6 +10,10 @@ import { AIComboSystem } from "./ComboSystem";
 import { AI_PERSONALITIES } from "./AIPersonality";
 import { TrigramStance } from "@/types";
 
+// Import arena boundary constants from DecisionTree for test validation
+const ARENA_MARGIN_X = AIDecisionTree.ARENA_MARGIN_X;
+const ARENA_MARGIN_Y = AIDecisionTree.ARENA_MARGIN_Y;
+
 describe("AI Movement System", () => {
   let decisionTree: AIDecisionTree;
   let comboSystem: AIComboSystem;
@@ -223,14 +227,14 @@ describe("AI Movement System", () => {
       const decision = decisionTree.makeDecision(context, personality, comboSystem);
 
       if (decision.targetPosition) {
-        // Target position should be within bounds
+        // Target position should be within bounds (using DecisionTree's arena margin constants)
         expect(decision.targetPosition.x).toBeGreaterThanOrEqual(context.arenaBounds.x);
         expect(decision.targetPosition.x).toBeLessThanOrEqual(
-          context.arenaBounds.x + context.arenaBounds.width - 60
+          context.arenaBounds.x + context.arenaBounds.width - ARENA_MARGIN_X
         );
         expect(decision.targetPosition.y).toBeGreaterThanOrEqual(context.arenaBounds.y);
         expect(decision.targetPosition.y).toBeLessThanOrEqual(
-          context.arenaBounds.y + context.arenaBounds.height - 180
+          context.arenaBounds.y + context.arenaBounds.height - ARENA_MARGIN_Y
         );
       }
     });
