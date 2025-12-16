@@ -158,7 +158,6 @@ describe("AI Movement System", () => {
       // Amsalja should have some flanking behavior
       // Note: Due to randomness, we check for reasonable flanking attempts
       expect(approachCount).toBeGreaterThan(0);
-      console.log(`Amsalja movement: ${flankingCount} flanking / ${approachCount} total approaches`);
     });
 
     it("Musa should charge directly frequently", () => {
@@ -183,7 +182,6 @@ describe("AI Movement System", () => {
 
       // Musa should approach frequently due to high aggression
       expect(approachCount).toBeGreaterThan(0);
-      console.log(`Musa movement: ${chargeCount} charges / ${approachCount} total approaches`);
     });
 
     it("Hacker should maintain mid-range (3-4 cells / 200px)", () => {
@@ -196,22 +194,20 @@ describe("AI Movement System", () => {
         { distance: 350, expectedBehavior: "approach" }, // Too far
       ];
 
-      testCases.forEach(({ distance, expectedBehavior }) => {
+      testCases.forEach(({ distance }) => {
         const context = createContext(distance);
         const decision = decisionTree.makeDecision(context, personality, comboSystem);
 
-        console.log(`Hacker at ${distance}px: ${decision.action} (expected: ${expectedBehavior})`);
+        // Verify that decisions are made at all distances
+        expect(decision).toBeDefined();
+        expect(decision.action).toBeTruthy();
 
-        if (distance < 150) {
-          // Too close - should prefer retreat, circle, defend, or any tactical repositioning
-          // Allow all tactical actions since AI can choose stance changes, combos, etc.
-          expect(decision.action).toBeTruthy();
-          // Not charging forward at close range would be ideal, but AI may choose various tactics
-        } else if (distance > 300) {
-          // Too far - should approach or wait
+        if (distance > 300) {
+          // Too far - should approach or wait (but not retreat away)
           expect(["approach", "wait"]).toContain(decision.action);
         }
-        // At optimal range (150-250), any tactical action is valid
+        // At close and optimal ranges, AI may choose various tactical actions
+        // including combos, stance changes, defensive moves, etc.
       });
     });
   });
@@ -256,8 +252,6 @@ describe("AI Movement System", () => {
       expect(decision).toBeDefined();
       expect(decision.action).toBeTruthy();
       expect(decision.priority).toBeGreaterThanOrEqual(0);
-      
-      console.log(`Low stamina decision: ${decision.action} (priority: ${decision.priority})`);
     });
   });
 
@@ -271,7 +265,6 @@ describe("AI Movement System", () => {
       const endTime = performance.now();
 
       const duration = endTime - startTime;
-      console.log(`AI decision time: ${duration.toFixed(2)}ms`);
 
       expect(duration).toBeLessThan(10);
       expect(decision).toBeDefined();
@@ -292,8 +285,6 @@ describe("AI Movement System", () => {
 
       const avgDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
       const maxDuration = Math.max(...durations);
-
-      console.log(`Average decision time: ${avgDuration.toFixed(2)}ms, Max: ${maxDuration.toFixed(2)}ms`);
 
       expect(avgDuration).toBeLessThan(10);
       expect(maxDuration).toBeLessThan(20); // Allow some outliers but not too slow

@@ -97,6 +97,12 @@ export class AIDecisionTree {
   private trigramSystem: TrigramSystem;
   private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
 
+  // Movement constants
+  private static readonly MOVE_STEP_SIZE = 50; // Fixed movement step size in pixels
+  private static readonly MIN_DISTANCE_THRESHOLD = 5; // Minimum distance to avoid division by zero
+  private static readonly ARENA_MARGIN_X = 60; // Horizontal boundary margin
+  private static readonly ARENA_MARGIN_Y = 180; // Vertical boundary margin
+
   constructor() {
     this.trigramSystem = new TrigramSystem();
   }
@@ -641,25 +647,22 @@ export class AIDecisionTree {
   private calculateDirectApproach(context: CombatContext): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
-    const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Move straight toward opponent (70% of the way)
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.playerPosition.x + (dx / distance) * distance * 0.7
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.playerPosition.y + (dy / distance) * distance * 0.7
-        )
-      ),
-    };
+    // If already very close to the opponent, hold position (avoid erratic movement)
+    if (distance < AIDecisionTree.MIN_DISTANCE_THRESHOLD) {
+      return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
+    }
+
+    // Move straight toward opponent with fixed step size for consistent movement speed
+    const step = Math.min(AIDecisionTree.MOVE_STEP_SIZE, distance);
+    return this.clampToArenaBounds(
+      {
+        x: context.playerPosition.x + (dx / distance) * step,
+        y: context.playerPosition.y + (dy / distance) * step,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
@@ -669,7 +672,12 @@ export class AIDecisionTree {
   private calculateFlankingApproach(context: CombatContext): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
-    const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // If distance is too small, return player's current position (avoid erratic movement)
+    if (distance < AIDecisionTree.MIN_DISTANCE_THRESHOLD) {
+      return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
+    }
 
     // Add perpendicular offset for flanking (40-60 pixels to the side)
     const flankOffset = 40 + Math.random() * 20;
@@ -677,19 +685,36 @@ export class AIDecisionTree {
     const perpY = dx / distance;
     const flankSide = Math.random() < 0.5 ? 1 : -1; // Random side
 
+    return this.clampToArenaBounds(
+      {
+        x: context.opponentPosition.x + perpX * flankOffset * flankSide,
+        y: context.opponentPosition.y + perpY * flankOffset * flankSide,
+      },
+      context.arenaBounds
+    );
+  }
+
+  /**
+   * Clamp position to arena boundaries with proper margins
+   * Centralizes boundary validation logic for all movement calculations
+   */
+  private clampToArenaBounds(
+    position: Position,
+    arenaBounds: { readonly x: number; readonly y: number; readonly width: number; readonly height: number }
+  ): Position {
     return {
       x: Math.max(
-        context.arenaBounds.x,
+        arenaBounds.x,
         Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.opponentPosition.x + perpX * flankOffset * flankSide
+          arenaBounds.x + arenaBounds.width - AIDecisionTree.ARENA_MARGIN_X,
+          position.x
         )
       ),
       y: Math.max(
-        context.arenaBounds.y,
+        arenaBounds.y,
         Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.opponentPosition.y + perpY * flankOffset * flankSide
+          arenaBounds.y + arenaBounds.height - AIDecisionTree.ARENA_MARGIN_Y,
+          position.y
         )
       ),
     };
@@ -820,27 +845,30 @@ export class AIDecisionTree {
     const dy = context.playerPosition.y - context.opponentPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
+    // If distance is too small, retreat in a default direction (away from center)
+    if (distance < AIDecisionTree.MIN_DISTANCE_THRESHOLD) {
+      const retreatDistance = 150;
+      return this.clampToArenaBounds(
+        {
+          x: context.playerPosition.x + retreatDistance,
+          y: context.playerPosition.y,
+        },
+        context.arenaBounds
+      );
+    }
+
     // Normalize and retreat
     const retreatDistance = 150;
     const nx = dx / distance;
     const ny = dy / distance;
 
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.playerPosition.x + nx * retreatDistance
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.playerPosition.y + ny * retreatDistance
-        )
-      ),
-    };
+    return this.clampToArenaBounds(
+      {
+        x: context.playerPosition.x + nx * retreatDistance,
+        y: context.playerPosition.y + ny * retreatDistance,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
@@ -850,22 +878,13 @@ export class AIDecisionTree {
     const offsetX = (Math.random() - 0.5) * 80;
     const offsetY = (Math.random() - 0.5) * 60;
 
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.opponentPosition.x + offsetX
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.opponentPosition.y + offsetY
-        )
-      ),
-    };
+    return this.clampToArenaBounds(
+      {
+        x: context.opponentPosition.x + offsetX,
+        y: context.opponentPosition.y + offsetY,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
@@ -878,24 +897,13 @@ export class AIDecisionTree {
     );
     const circleRadius = 150 + Math.random() * 50;
 
-    return {
-      x: Math.max(
-        context.arenaBounds.x,
-        Math.min(
-          context.arenaBounds.x + context.arenaBounds.width - 60,
-          context.opponentPosition.x +
-            Math.cos(angle + Math.PI / 2) * circleRadius
-        )
-      ),
-      y: Math.max(
-        context.arenaBounds.y,
-        Math.min(
-          context.arenaBounds.y + context.arenaBounds.height - 180,
-          context.opponentPosition.y +
-            Math.sin(angle + Math.PI / 2) * circleRadius
-        )
-      ),
-    };
+    return this.clampToArenaBounds(
+      {
+        x: context.opponentPosition.x + Math.cos(angle + Math.PI / 2) * circleRadius,
+        y: context.opponentPosition.y + Math.sin(angle + Math.PI / 2) * circleRadius,
+      },
+      context.arenaBounds
+    );
   }
 
   /**
