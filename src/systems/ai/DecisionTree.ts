@@ -175,10 +175,10 @@ export class AIDecisionTree {
     }
 
     // 6. Distance-based tactics (archetype-aware ranges)
-    if (distance < optimalRange * 0.8) {
-      // Too close for comfort
+    if (distance < optimalRange * 1.2) {
+      // Close to optimal range - use close-range tactics including vital point targeting
       decisions.push(this.evaluateCloseRange(context, personality));
-    } else if (distance > optimalRange * 1.5) {
+    } else if (distance > optimalRange * 1.8) {
       // Too far - need to approach
       decisions.push(this.evaluateApproach(context, personality));
     } else {
@@ -609,14 +609,17 @@ export class AIDecisionTree {
       approachPos = this.calculateApproachPosition(context);
     }
 
-    const basePriority = 5;
-    const distanceMultiplier = Math.min(2, (distance - optimalRange) / 100);
-    const finalPriority = basePriority * (1 + distanceMultiplier * movementBias);
+    // Calculate priority based on distance from optimal range
+    // Very far: priority ~6-7, moderate distance: priority ~5
+    const basePriority = 4;
+    const distanceRatio = Math.min(2, (distance - optimalRange) / optimalRange);
+    const priorityBoost = distanceRatio * movementBias * 0.8;
+    const finalPriority = basePriority + priorityBoost;
 
     return {
       action: AIActionType.APPROACH,
       targetPosition: approachPos,
-      priority: Math.min(9, finalPriority), // Cap at 9 to not override critical actions
+      priority: Math.min(8, finalPriority), // Cap at 8 to allow survival/critical actions to override
       reason: `Moving closer (distance: ${Math.round(
         distance
       )}, optimal: ${optimalRange})`,
