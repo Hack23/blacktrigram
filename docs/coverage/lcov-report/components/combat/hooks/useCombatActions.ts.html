@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.73% </span>
+                <span class="strong">85.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>143/163</span>
+                <span class='fraction'>139/163</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.85% </span>
+                <span class="strong">64.75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>84/122</span>
+                <span class='fraction'>79/122</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.03% </span>
+                <span class="strong">86.45% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>138/155</span>
+                <span class='fraction'>134/155</span>
             </div>
         
             
@@ -957,51 +957,51 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1639,9 +1639,9 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       ? result.isCritical
         ? <span class="branch-0 cbranch-no" title="branch not covered" >HitEffectType.CRITICAL_HIT</span>
         : HitEffectType.HIT
-      : HitEffectType.MISS;
+      : <span class="branch-1 cbranch-no" title="branch not covered" >HitEffectType.MISS;</span>
 &nbsp;
-    addHitEffect(effectType, playerPositions[0], result.hit ? 1 : 0.5);
+    addHitEffect(effectType, playerPositions[0], result.hit ? 1 : <span class="branch-1 cbranch-no" title="branch not covered" >0.5)</span>;
 &nbsp;
     if (result.hit) {
       // Play hit sound based on damage
@@ -1685,11 +1685,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           `${techniqueNameEnglish} Hit!`
         );
       }
-    } else {
-      combatActions.resetCombo();
-      const techniqueNameKorean = attackTechnique.koreanName || <span class="branch-1 cbranch-no" title="branch not covered" >attackTechnique.name.korean;</span>
-      const techniqueNameEnglish = attackTechnique.englishName || <span class="branch-1 cbranch-no" title="branch not covered" >attackTechnique.name.english;</span>
-      addCombatMessage(
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>{
+<span class="cstat-no" title="statement not covered" >      combatActions.resetCombo();</span>
+      const techniqueNameKorean = <span class="cstat-no" title="statement not covered" >attackTechnique.koreanName || attackTechnique.name.korean;</span>
+      const techniqueNameEnglish = <span class="cstat-no" title="statement not covered" >attackTechnique.englishName || attackTechnique.name.english;</span>
+<span class="cstat-no" title="statement not covered" >      addCombatMessage(</span>
         `${techniqueNameKorean} 빗나감`,
         `${techniqueNameEnglish} Missed`
       );
@@ -2134,7 +2134,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-16T16:51:37.949Z
+                at 2025-12-16T21:08:55.966Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
