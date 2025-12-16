@@ -646,13 +646,13 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
-      // Movement speed calibrated for 3m×3m arena with realistic combat movement
-      // Arena: 960px width = 3m → 320 px/m
-      // Realistic combat movement: ~0.5-0.7 m/s (cautious tactical positioning)
-      // Target: 3-4 seconds to close initial distance (~40% arena width = 384px)
-      // Calculation: 384px / 3.5s / 20 calls/s = 5.5 px/call
-      // Using 6 pixels/call for smooth movement while maintaining realism
-      const speed = 6;
+      // Movement speed calibrated for 8m×8m arena with realistic combat movement
+      // Arena: 960px width = 8m → 120 px/m
+      // Realistic combat movement: ~0.6-0.8 m/s (cautious tactical positioning)
+      // Target: 4-5 seconds to close initial distance (~40% arena width = 384px)
+      // Calculation: 0.7 m/s × 120 px/m / 20 calls/s = 4.2 px/call
+      // Using 4 pixels/call for smooth movement while maintaining realism
+      const speed = 4;
 
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
