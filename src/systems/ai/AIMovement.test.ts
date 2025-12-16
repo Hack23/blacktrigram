@@ -143,7 +143,6 @@ describe("AI Movement System", () => {
       const personality = AI_PERSONALITIES.TECHNICAL_MASTER; // Amsalja archetype
       const context = createContext(250); // Far enough to trigger approach
 
-      let flankingCount = 0;
       let approachCount = 0;
 
       // Sample 50 decisions
@@ -152,10 +151,6 @@ describe("AI Movement System", () => {
 
         if (decision.action === "approach") {
           approachCount++;
-          // Check if decision uses flanking logic (look for Korean text or flanking behavior)
-          if (decision.reason.includes("flanking") || decision.reason.includes("측면")) {
-            flankingCount++;
-          }
         }
       }
 
@@ -168,7 +163,6 @@ describe("AI Movement System", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER; // Musa archetype
       const context = createContext(250); // Far enough to trigger approach
 
-      let chargeCount = 0;
       let approachCount = 0;
 
       // Sample 50 decisions
@@ -177,10 +171,6 @@ describe("AI Movement System", () => {
 
         if (decision.action === "approach") {
           approachCount++;
-          // Check if decision uses charging logic (look for direct approach)
-          if (decision.reason.includes("charge") || decision.reason.includes("직진")) {
-            chargeCount++;
-          }
         }
       }
 
