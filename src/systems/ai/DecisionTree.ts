@@ -15,7 +15,7 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance, PlayerArchetype } from "@/types";
-import { AIPersonality } from "./AIPersonality";
+import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
 /**
@@ -213,6 +213,7 @@ export class AIDecisionTree {
    * **Korean Philosophy (생존 전략)**:
    * - Consider both health and pain levels
    * - Archetype affects retreat threshold and behavior
+   * - Honor code (Musa) prevents retreat above threshold
    */
   private evaluateSurvival(
     context: CombatContext,
@@ -220,12 +221,24 @@ export class AIDecisionTree {
   ): AIDecision {
     const healthPercent = context.playerHealth / context.playerMaxHealth;
     const painLevel = context.recentDamageTaken;
+    
+    // Get archetype behavior profile
+    const behavior = getArchetypeBehavior(personality.archetype);
 
     // Check critical survival condition: low health OR (moderate health + high pain)
     const isCritical = healthPercent < personality.tacticalRetreatThreshold;
     const isHighPain = healthPercent < 0.5 && painLevel > 50;
 
     if (isCritical || isHighPain) {
+      // Honor code: Musa never retreats above their threshold (30%)
+      if (behavior.honorCode && healthPercent > behavior.retreatThreshold / 100) {
+        return {
+          action: AIActionType.WAIT,
+          priority: 0,
+          reason: `Honor code prevents retreat: ${(healthPercent * 100).toFixed(1)}% (명예 규범)`,
+        };
+      }
+      
       const retreatVector = this.calculateRetreatPosition(context);
       
       return {
@@ -549,24 +562,19 @@ export class AIDecisionTree {
   /**
    * Get optimal combat range based on AI personality archetype
    * 
+   * Uses archetype behavior profiles to determine preferred combat distance.
+   * Range is converted from cell units to pixels (1 cell = ~40px).
+   * 
    * @korean 최적 전투 거리 - 원형별 선호 거리
    */
   private getOptimalRange(personality: AIPersonality): number {
-    // Archetype-specific preferred combat ranges (in pixels)
-    switch (personality.archetype) {
-      case PlayerArchetype.AMSALJA: // Shadow Assassin - prefers close range (1-2 cells)
-        return 80;
-      case PlayerArchetype.HACKER: // Cyber Warrior - prefers mid-range (3-4 cells)
-        return 200;
-      case PlayerArchetype.MUSA: // Traditional Warrior - comfortable at medium-close (2-3 cells)
-        return 120;
-      case PlayerArchetype.JEONGBO_YOWON: // Intelligence Operative - adaptable mid-range (2-3 cells)
-        return 150;
-      case PlayerArchetype.JOJIK_POKRYEOKBAE: // Organized Crime - unpredictable, close-mid (1-3 cells)
-        return 100;
-      default:
-        return 120; // Default medium-close range
-    }
+    const CELL_SIZE = 40; // Size of one grid cell in pixels
+    
+    // Get archetype behavior profile
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Convert cell units to pixels
+    return behavior.optimalRange * CELL_SIZE;
   }
 
   /**
@@ -629,19 +637,25 @@ export class AIDecisionTree {
   /**
    * Get archetype-specific movement bias multipliers
    * 
+   * Applies movement pattern modifiers based on archetype behavior profiles:
+   * - Aggressive: High forward pressure (2.0x)
+   * - Evasive: Moderate mobility (1.5x)
+   * - Analytical: Conservative approach (0.8x-1.0x)
+   * - Unpredictable: Variable movement (1.3x)
+   * 
    * @korean 원형별 이동 성향
    */
   private getArchetypeMovementBias(archetype: PlayerArchetype): number {
-    switch (archetype) {
-      case PlayerArchetype.MUSA: // Traditional Warrior - aggressive forward movement
+    const behavior = getArchetypeBehavior(archetype);
+    
+    switch (behavior.movementPattern) {
+      case "aggressive": // Musa - aggressive forward movement
         return 2.0;
-      case PlayerArchetype.AMSALJA: // Shadow Assassin - high mobility, flanking preference
+      case "evasive": // Amsalja - high mobility, flanking preference
         return 1.5;
-      case PlayerArchetype.HACKER: // Cyber Warrior - prefers maintaining distance
-        return 0.8;
-      case PlayerArchetype.JEONGBO_YOWON: // Intelligence Operative - balanced approach
-        return 1.0;
-      case PlayerArchetype.JOJIK_POKRYEOKBAE: // Organized Crime - unpredictable
+      case "analytical": // Hacker, Jeongbo - calculated approach
+        return archetype === PlayerArchetype.HACKER ? 0.8 : 1.0;
+      case "unpredictable": // Jojik - variable patterns
         return 1.3;
       default:
         return 1.0;
