@@ -395,7 +395,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleRoundTransitionComplete
   );
 
-  // Player 1 position (controlled by player movement) - start at left side
+  // Player 1 position (controlled by player movement)
+  // Player 1 starts at the left quarter of the arena (25% from left edge, vertically centered)
   const [player1Position, setPlayer1Position] = useState<Position>({
     x: arenaBounds.x + arenaBounds.width * 0.25,
     y: arenaBounds.y + arenaBounds.height * 0.5,
@@ -403,7 +404,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Player 2 position - derived from players prop (AI-controlled)
   // Default position is used when players prop is empty or player2 has no position
-  // Start at right side with better spacing from Player 1
+  // Player 2 (AI) starts at right side of arena (65% from left edge, vertically centered) with reduced initial gap for faster engagement
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
