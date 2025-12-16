@@ -646,7 +646,13 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
-      const speed = 4;
+      // Movement speed calibrated for 8m×8m arena with realistic combat closing speed
+      // Arena width is dynamic: arenaBounds.width is in pixels and represents an 8m-wide arena, so pixelsPerMeter = arenaBounds.width / 8
+      // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
+      // Real fights are over in 4-5 seconds - AI must close distance quickly
+      // Calculation: 2.5 m/s × pixelsPerMeter / 20 calls/s = px/call
+      const pixelsPerMeter = arenaBounds.width / 8;
+      const speed = (2.5 * pixelsPerMeter) / 20;
 
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;

@@ -339,11 +339,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Round transition complete handler - checks for match end or starts next round
   const handleRoundTransitionComplete = useCallback(() => {
+    if (import.meta.env.DEV) {
+      console.log('[DEV] Round transition complete, checking match status');
+    }
     // Check if match is over (best of 3 - first to 2 wins)
     const currentScore = matchScoreRef.current;
     if (currentScore.player1 >= 2 || currentScore.player2 >= 2) {
       // Match is over - call onGameEnd instead of starting next round
       const matchWinner = currentScore.player1 >= 2 ? 0 : 1;
+      if (import.meta.env.DEV) {
+        console.log('[DEV] Match over, winner:', matchWinner);
+      }
       onGameEnd(matchWinner);
       return; // Don't start next round
     }
@@ -355,8 +361,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Use the updater function to get the new value and trigger announcement
     setInternalRound((prev) => {
       const nextRound = prev + 1;
+      if (import.meta.env.DEV) {
+        console.log('[DEV] Incrementing round from', prev, 'to', nextRound);
+      }
       // Use setTimeout to ensure state update completes before showing announcement
       setTimeout(() => {
+        if (import.meta.env.DEV) {
+          console.log('[DEV] Showing round start announcement for round', nextRound);
+        }
         setShowRoundStart(true);
       }, 0);
       return nextRound;
@@ -384,20 +396,22 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   );
 
   // Player 1 position (controlled by player movement)
+  // Player 1 starts at the left quarter of the arena (25% from left edge, vertically centered)
   const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.x + arenaBounds.width * 0.3,
-    y: arenaBounds.y + arenaBounds.height * 0.6,
+    x: arenaBounds.x + arenaBounds.width * 0.25,
+    y: arenaBounds.y + arenaBounds.height * 0.5,
   });
 
   // Player 2 position - derived from players prop (AI-controlled)
   // Default position is used when players prop is empty or player2 has no position
+  // Player 2 (AI) starts at right side of arena (65% from left edge, vertically centered) with reduced initial gap for faster engagement
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
     }
     return {
-      x: arenaBounds.x + arenaBounds.width * 0.7,
-      y: arenaBounds.y + arenaBounds.height * 0.6,
+      x: arenaBounds.x + arenaBounds.width * 0.65,
+      y: arenaBounds.y + arenaBounds.height * 0.5,
     };
   }, [players, arenaBounds]);
 
@@ -627,9 +641,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Shared round start logic - forces round to start regardless of current state
   // This is called after state has been reset, so we trust the caller
+  // Note: Using useCallback with complete dependencies to ensure closure has latest state
   const startRound = useCallback(() => {
     // Always start the round when this is called - the caller is responsible
     // for ensuring this is the right time to start
+    if (import.meta.env.DEV) {
+      console.log('[DEV] Starting round, setting roundStarted=true');
+    }
     combatActions.setRoundStarted(true);
     combatActions.setRoundEnded(false); // Ensure roundEnded is false
     addCombatMessage("라운드 시작!", "Round Start!");
@@ -1929,6 +1947,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           roundNumber={internalRound}
           duration={2}
           onComplete={() => {
+            if (import.meta.env.DEV) {
+              console.log('[DEV] Round start announcement complete for round', internalRound);
+            }
             setShowRoundStart(false);
             // Start combat for this round
             startRound();
