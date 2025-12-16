@@ -498,16 +498,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
   }, [player1IsMoving, player1Animation]);
 
+  // Movement detection threshold for AI animation sync (in pixels)
+  // Lower values = more sensitive to small movements, higher values = smoother transitions
+  const MOVEMENT_DETECTION_THRESHOLD = 0.5;
+
   // Sync movement with player 2 animation (AI movement detection)
-  const prevPlayer2PositionRef = useRef(playerPositions[1]);
+  const prevPlayer2PositionRef = useRef(player2Position);
   useEffect(() => {
     const currentPos = playerPositions[1];
     const prevPos = prevPlayer2PositionRef.current;
     
     // Detect if Player2 (AI) is moving by comparing positions
     const isMoving =
-      Math.abs(currentPos.x - prevPos.x) > 0.5 ||
-      Math.abs(currentPos.y - prevPos.y) > 0.5;
+      Math.abs(currentPos.x - prevPos.x) > MOVEMENT_DETECTION_THRESHOLD ||
+      Math.abs(currentPos.y - prevPos.y) > MOVEMENT_DETECTION_THRESHOLD;
     
     if (isMoving) {
       // AI is moving - transition to walk animation

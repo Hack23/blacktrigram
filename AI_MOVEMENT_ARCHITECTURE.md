@@ -291,7 +291,7 @@ clampToArenaBounds(position, arenaBounds) {
 - **Movement Step Size**: 4 pixels per update
 - **Target Decision Time**: <10ms (measured via performance.now())
 - **Animation Frame Rate**: 60fps (via useFrame hook)
-- **Position Update Threshold**: 0.5px (prevents micro-movements)
+- **Position Update Threshold**: `MOVEMENT_DETECTION_THRESHOLD` (= 0.5px, prevents micro-movements)
 
 ## Testing
 
