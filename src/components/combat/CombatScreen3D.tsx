@@ -383,17 +383,28 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleRoundTransitionComplete
   );
 
-  // Player positions
-  const [playerPositions, setPlayerPositions] = useState<Position[]>([
-    {
-      x: arenaBounds.x + arenaBounds.width * 0.3,
-      y: arenaBounds.y + arenaBounds.height * 0.6,
-    },
-    {
+  // Player 1 position (controlled by player movement)
+  const [player1Position, setPlayer1Position] = useState<Position>({
+    x: arenaBounds.x + arenaBounds.width * 0.3,
+    y: arenaBounds.y + arenaBounds.height * 0.6,
+  });
+
+  // Player 2 position - derived from players prop (AI-controlled)
+  // Default position is used when players prop is empty or player2 has no position
+  const player2Position = useMemo<Position>(() => {
+    if (players.length >= 2 && players[1].position) {
+      return players[1].position;
+    }
+    return {
       x: arenaBounds.x + arenaBounds.width * 0.7,
       y: arenaBounds.y + arenaBounds.height * 0.6,
-    },
-  ]);
+    };
+  }, [players, arenaBounds]);
+
+  // Combined positions for backward compatibility with existing code
+  const playerPositions = useMemo<Position[]>(() => {
+    return [player1Position, player2Position];
+  }, [player1Position, player2Position]);
 
   // Convert 2D positions to 3D world coordinates
   const player1Position3D: [number, number, number] = useMemo(() => {
@@ -425,10 +436,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       !showRoundStart,
     bounds: arenaBounds,
     onPositionChange: (newPosition: Position) => {
-      setPlayerPositions((prev) => [newPosition, prev[1]]);
+      setPlayer1Position(newPosition);
       onPlayerUpdate(0, { position: newPosition });
     },
-    initialPosition: playerPositions[0],
+    initialPosition: player1Position,
     moveSpeed: 300,
   });
 
@@ -486,6 +497,32 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
   }, [player1IsMoving, player1Animation]);
+
+  // Sync movement with player 2 animation (AI movement detection)
+  const prevPlayer2PositionRef = useRef(playerPositions[1]);
+  useEffect(() => {
+    const currentPos = playerPositions[1];
+    const prevPos = prevPlayer2PositionRef.current;
+    
+    // Detect if Player2 (AI) is moving by comparing positions
+    const isMoving =
+      Math.abs(currentPos.x - prevPos.x) > 0.5 ||
+      Math.abs(currentPos.y - prevPos.y) > 0.5;
+    
+    if (isMoving) {
+      // AI is moving - transition to walk animation
+      if (player2Animation.currentState !== "walk" && player2Animation.currentState !== "attack") {
+        player2Animation.transitionTo("walk");
+      }
+    } else {
+      // AI stopped - transition back to idle if currently walking
+      if (player2Animation.currentState === "walk") {
+        player2Animation.transitionTo("idle");
+      }
+    }
+    
+    prevPlayer2PositionRef.current = currentPos;
+  }, [playerPositions, player2Animation]);
 
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
