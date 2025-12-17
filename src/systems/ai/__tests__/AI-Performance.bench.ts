@@ -20,7 +20,7 @@ import { bench, describe } from "vitest";
 import { AIDecisionTree, CombatContext } from "@/systems/ai/DecisionTree";
 import { AdaptiveDifficulty } from "@/systems/ai/AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
-import { PlayerArchetype } from "@/types";
+import { PlayerArchetype, TrigramStance } from "@/types";
 import { createMockPlayerState } from "@/test/test-utils";
 
 /**
@@ -37,8 +37,8 @@ function createBenchmarkContext(): CombatContext {
     playerStamina: 70,
     playerMaxStamina: 100,
     opponentHealth: 75,
-    opponentStance: "geon" as const,
-    playerStance: "gon" as const,
+    opponentStance: TrigramStance.GEON,
+    playerStance: TrigramStance.GON,
     distanceToOpponent: 200,
     timeInMatch: 30000, // 30 seconds into match
     isOpponentAttacking: false,
@@ -233,10 +233,10 @@ describe("AI Decision Performance", () => {
         combosExecuted: 3,
         perfectBlockCount: 5,
         avgReactionTimeMs: 250,
-        vitalPointHitsLanded: 8,
+        vitalPointsHit: 8,
         effectiveStanceChanges: 4,
-        damageTakenThisMatch: 200,
-        damageDealtThisMatch: 500,
+        damageTaken: 200,
+        damageDealt: 500,
       });
 
       const tier = difficulty.getDifficultyTier();
@@ -277,8 +277,8 @@ describe("AI Decision Performance", () => {
         playerStamina: player.stamina,
         playerMaxStamina: player.maxStamina,
         opponentHealth: opponent.health,
-        opponentStance: opponent.stance,
-        playerStance: player.stance,
+        opponentStance: player.currentStance,
+        playerStance: player.currentStance,
         distanceToOpponent: calculateDistance(player.position, opponent.position),
         timeInMatch: 30000,
         isOpponentAttacking: false,
@@ -355,7 +355,7 @@ describe("AI Decision Performance", () => {
         AI_PERSONALITIES.AGGRESSIVE_STRIKER,
       ];
 
-      archetypes.forEach((archetype, index) => {
+      archetypes.forEach((_archetype, index) => {
         const tree = new AIDecisionTree();
         tree.setDifficultyParameters(new AdaptiveDifficulty().getDifficultyParameters());
         const context = createBenchmarkContext();
@@ -459,8 +459,8 @@ describe("Real-Time Performance Validation", () => {
         playerStamina: player.stamina,
         playerMaxStamina: player.maxStamina,
         opponentHealth: opponent.health,
-        opponentStance: opponent.stance,
-        playerStance: player.stance,
+        opponentStance: player.currentStance,
+        playerStance: player.currentStance,
         distanceToOpponent: calculateDistance(player.position, opponent.position),
         timeInMatch: 30000,
         isOpponentAttacking: false,
