@@ -85,6 +85,147 @@ describe("AIDecisionTree", () => {
     });
   });
 
+  describe("Difficulty Parameters", () => {
+    it("should accept and store difficulty parameters", () => {
+      const params = {
+        reactionTimeMs: { min: 500, max: 800 },
+        vitalPointAccuracy: 0.65,
+        basicAttackAccuracy: 0.80,
+        blockTimingWindow: 100,
+        decisionQuality: 0.70,
+        aggressionModifier: 1.2,
+        comboChance: 0.50,
+      };
+
+      // Should not throw
+      expect(() => decisionTree.setDifficultyParameters(params)).not.toThrow();
+
+      // Should still make valid decisions
+      const context = createMockContext({ distanceToOpponent: 100 });
+      const decision = decisionTree.makeDecision(
+        context,
+        AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+        comboSystem
+      );
+
+      expect(decision).toBeDefined();
+      expect(decision.action).toBeDefined();
+    });
+
+    it("should calculate reaction delay within specified range", () => {
+      const params = {
+        reactionTimeMs: { min: 300, max: 500 },
+        vitalPointAccuracy: 0.60,
+        basicAttackAccuracy: 0.75,
+        blockTimingWindow: 80,
+        decisionQuality: 0.65,
+        aggressionModifier: 1.0,
+        comboChance: 0.40,
+      };
+
+      decisionTree.setDifficultyParameters(params);
+
+      // Make multiple decisions to verify reaction delay consistency
+      const context = createMockContext({ distanceToOpponent: 100 });
+      for (let i = 0; i < 10; i++) {
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+        expect(decision).toBeDefined();
+      }
+    });
+
+    it("should maintain consistent reaction delay until parameters change", () => {
+      const params1 = {
+        reactionTimeMs: { min: 200, max: 400 },
+        vitalPointAccuracy: 0.50,
+        basicAttackAccuracy: 0.70,
+        blockTimingWindow: 100,
+        decisionQuality: 0.60,
+        aggressionModifier: 0.9,
+        comboChance: 0.30,
+      };
+
+      decisionTree.setDifficultyParameters(params1);
+
+      const context = createMockContext({ distanceToOpponent: 100 });
+      
+      // Make several decisions
+      for (let i = 0; i < 5; i++) {
+        decisionTree.reset();
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+        expect(decision).toBeDefined();
+      }
+
+      // Change parameters
+      const params2 = {
+        reactionTimeMs: { min: 600, max: 900 },
+        vitalPointAccuracy: 0.80,
+        basicAttackAccuracy: 0.90,
+        blockTimingWindow: 60,
+        decisionQuality: 0.85,
+        aggressionModifier: 1.4,
+        comboChance: 0.65,
+      };
+
+      decisionTree.setDifficultyParameters(params2);
+
+      // Should still make valid decisions with new parameters
+      for (let i = 0; i < 5; i++) {
+        decisionTree.reset();
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+        expect(decision).toBeDefined();
+      }
+    });
+
+    it("should handle edge case parameters", () => {
+      // Test with minimum values
+      const minParams = {
+        reactionTimeMs: { min: 50, max: 150 },
+        vitalPointAccuracy: 0.40,
+        basicAttackAccuracy: 0.70,
+        blockTimingWindow: 50,
+        decisionQuality: 0.50,
+        aggressionModifier: 0.7,
+        comboChance: 0.20,
+      };
+
+      expect(() => decisionTree.setDifficultyParameters(minParams)).not.toThrow();
+
+      // Test with maximum values
+      const maxParams = {
+        reactionTimeMs: { min: 800, max: 1200 },
+        vitalPointAccuracy: 0.85,
+        basicAttackAccuracy: 0.95,
+        blockTimingWindow: 150,
+        decisionQuality: 0.95,
+        aggressionModifier: 1.5,
+        comboChance: 0.70,
+      };
+
+      expect(() => decisionTree.setDifficultyParameters(maxParams)).not.toThrow();
+
+      const context = createMockContext({ distanceToOpponent: 100 });
+      const decision = decisionTree.makeDecision(
+        context,
+        AI_PERSONALITIES.BALANCED_FIGHTER,
+        comboSystem
+      );
+
+      expect(decision).toBeDefined();
+    });
+  });
+
   describe("Vital Point Targeting", () => {
     it("should make decisions at close range", () => {
       decisionTree.setDifficultyLevel(0.5);

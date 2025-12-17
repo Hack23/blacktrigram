@@ -1233,12 +1233,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   });
 
   // Calculate current difficulty tier for display
-  // This updates automatically when round ends since it's a direct calculation
+  // Force recalculation when round ends or when the adaptive difficulty system changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentDifficultyTier = useMemo(
     () => adaptiveDifficulty.getDifficultyTier(),
-    // Force recalculation when round ends to show tier changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [combatState.roundEnded, internalRound]
+    [adaptiveDifficulty, combatState.roundEnded, internalRound]
   );
 
   // Adaptive difficulty adjustment every 2-3 rounds after round ends

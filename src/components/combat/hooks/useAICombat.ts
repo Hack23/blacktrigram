@@ -522,8 +522,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     adaptiveDifficulty.getDifficultyParameters()
   );
   const startParamsRef = useRef<DifficultyParameters>(currentParams);
-  const [initialTransitionTime] = useState(() => Date.now());
-  const transitionStartTimeRef = useRef(initialTransitionTime);
+  const transitionStartTimeRef = useRef<number>(Date.now());
   const transitionDurationMs = 10000; // 10 seconds for smooth transition
 
   // AI state - use useState lazy initializer for Date.now()
@@ -567,10 +566,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       return;
     }
 
-    // Capture start params when target changes for smooth interpolation
-    startParamsRef.current = currentParams;
-    transitionStartTimeRef.current = Date.now();
-
     let animationFrameId: number;
     let isComplete = false;
 
@@ -604,8 +599,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         cancelAnimationFrame(animationFrameId);
       }
     };
-    // Note: currentParams not in deps to avoid restart on every frame update
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPaused, roundStarted, roundEnded, targetParams, transitionDurationMs]);
 
   // Pass current difficulty parameters to DecisionTree
@@ -635,9 +628,11 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
    * @korean 난이도 목표 매개변수 업데이트
    */
   const updateDifficultyTarget = useCallback((newParams: DifficultyParameters) => {
-    setTargetParams(newParams);
+    // Capture current params as start point for smooth transition
+    startParamsRef.current = currentParams;
     transitionStartTimeRef.current = Date.now();
-  }, []);
+    setTargetParams(newParams);
+  }, [currentParams]);
 
   /**
    * Build combat context for decision-making
