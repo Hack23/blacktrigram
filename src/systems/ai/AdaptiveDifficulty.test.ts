@@ -6,6 +6,9 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   AdaptiveDifficulty,
   DifficultyTier,
+  DIFFICULTY_PARAMETERS,
+  interpolateDifficultyParameters,
+  skillScoreToTier,
 } from "./AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "./AIPersonality";
 
@@ -364,5 +367,138 @@ describe("AdaptiveDifficulty", () => {
       const imported = difficulty.importMetrics("invalid json");
       expect(imported).toBe(false);
     });
+  });
+
+  describe("getDifficultyParameters", () => {
+    it("should return parameters for current skill tier", () => {
+      const params = difficulty.getDifficultyParameters();
+      
+      expect(params).toHaveProperty("reactionTimeMs");
+      expect(params).toHaveProperty("vitalPointAccuracy");
+      expect(params).toHaveProperty("basicAttackAccuracy");
+      expect(params).toHaveProperty("blockTimingWindow");
+      expect(params).toHaveProperty("decisionQuality");
+      expect(params).toHaveProperty("aggressionModifier");
+      expect(params).toHaveProperty("comboChance");
+    });
+
+    it("should return beginner parameters for low skill", () => {
+      const params = difficulty.getDifficultyParameters();
+      
+      // Default skill is low (beginner tier)
+      expect(params.reactionTimeMs.min).toBe(800);
+      expect(params.reactionTimeMs.max).toBe(1200);
+      expect(params.vitalPointAccuracy).toBe(0.40);
+      expect(params.basicAttackAccuracy).toBe(0.70);
+    });
+
+    it("should return expert parameters for high skill", () => {
+      // Train to expert level
+      for (let i = 0; i < 15; i++) {
+        difficulty.updateSkillMetrics({
+          hitsLanded: 10,
+          totalAttacks: 10,
+          combosExecuted: 8,
+          perfectBlockCount: 8,
+          avgReactionTimeMs: 250,
+          vitalPointsHit: 7,
+          effectiveStanceChanges: 9,
+          damageDealt: 250,
+          damageTaken: 40,
+        });
+      }
+
+      const params = difficulty.getDifficultyParameters();
+      
+      // Expert tier parameters
+      expect(params.reactionTimeMs.min).toBe(50);
+      expect(params.reactionTimeMs.max).toBe(150);
+      expect(params.vitalPointAccuracy).toBe(0.85);
+      expect(params.basicAttackAccuracy).toBe(0.95);
+    });
+  });
+});
+
+describe("skillScoreToTier", () => {
+  it("should map score 0.0-0.2 to BEGINNER", () => {
+    expect(skillScoreToTier(0.0)).toBe(DifficultyTier.BEGINNER);
+    expect(skillScoreToTier(0.1)).toBe(DifficultyTier.BEGINNER);
+    expect(skillScoreToTier(0.19)).toBe(DifficultyTier.BEGINNER);
+  });
+
+  it("should map score 0.2-0.4 to NOVICE", () => {
+    expect(skillScoreToTier(0.2)).toBe(DifficultyTier.NOVICE);
+    expect(skillScoreToTier(0.3)).toBe(DifficultyTier.NOVICE);
+    expect(skillScoreToTier(0.39)).toBe(DifficultyTier.NOVICE);
+  });
+
+  it("should map score 0.4-0.6 to INTERMEDIATE", () => {
+    expect(skillScoreToTier(0.4)).toBe(DifficultyTier.INTERMEDIATE);
+    expect(skillScoreToTier(0.5)).toBe(DifficultyTier.INTERMEDIATE);
+    expect(skillScoreToTier(0.59)).toBe(DifficultyTier.INTERMEDIATE);
+  });
+
+  it("should map score 0.6-0.8 to ADVANCED", () => {
+    expect(skillScoreToTier(0.6)).toBe(DifficultyTier.ADVANCED);
+    expect(skillScoreToTier(0.7)).toBe(DifficultyTier.ADVANCED);
+    expect(skillScoreToTier(0.79)).toBe(DifficultyTier.ADVANCED);
+  });
+
+  it("should map score 0.8-1.0 to EXPERT", () => {
+    expect(skillScoreToTier(0.8)).toBe(DifficultyTier.EXPERT);
+    expect(skillScoreToTier(0.9)).toBe(DifficultyTier.EXPERT);
+    expect(skillScoreToTier(1.0)).toBe(DifficultyTier.EXPERT);
+  });
+});
+
+describe("interpolateDifficultyParameters", () => {
+  it("should interpolate at progress 0.0 to return 'from' params", () => {
+    const from = DIFFICULTY_PARAMETERS[DifficultyTier.BEGINNER];
+    const to = DIFFICULTY_PARAMETERS[DifficultyTier.EXPERT];
+    
+    const result = interpolateDifficultyParameters(from, to, 0.0);
+    
+    expect(result.reactionTimeMs.min).toBeCloseTo(from.reactionTimeMs.min);
+    expect(result.vitalPointAccuracy).toBeCloseTo(from.vitalPointAccuracy);
+  });
+
+  it("should interpolate at progress 1.0 to return 'to' params", () => {
+    const from = DIFFICULTY_PARAMETERS[DifficultyTier.BEGINNER];
+    const to = DIFFICULTY_PARAMETERS[DifficultyTier.EXPERT];
+    
+    const result = interpolateDifficultyParameters(from, to, 1.0);
+    
+    expect(result.reactionTimeMs.min).toBeCloseTo(to.reactionTimeMs.min);
+    expect(result.vitalPointAccuracy).toBeCloseTo(to.vitalPointAccuracy);
+  });
+
+  it("should interpolate at progress 0.5 to return midpoint", () => {
+    const from = DIFFICULTY_PARAMETERS[DifficultyTier.BEGINNER];
+    const to = DIFFICULTY_PARAMETERS[DifficultyTier.EXPERT];
+    
+    const result = interpolateDifficultyParameters(from, to, 0.5);
+    
+    // Midpoint of 800 and 50 is 425
+    expect(result.reactionTimeMs.min).toBeCloseTo(425, 0);
+    // Midpoint of 0.40 and 0.85 is 0.625
+    expect(result.vitalPointAccuracy).toBeCloseTo(0.625, 2);
+  });
+
+  it("should clamp progress below 0.0", () => {
+    const from = DIFFICULTY_PARAMETERS[DifficultyTier.BEGINNER];
+    const to = DIFFICULTY_PARAMETERS[DifficultyTier.EXPERT];
+    
+    const result = interpolateDifficultyParameters(from, to, -0.5);
+    
+    expect(result.reactionTimeMs.min).toBeCloseTo(from.reactionTimeMs.min);
+  });
+
+  it("should clamp progress above 1.0", () => {
+    const from = DIFFICULTY_PARAMETERS[DifficultyTier.BEGINNER];
+    const to = DIFFICULTY_PARAMETERS[DifficultyTier.EXPERT];
+    
+    const result = interpolateDifficultyParameters(from, to, 1.5);
+    
+    expect(result.reactionTimeMs.min).toBeCloseTo(to.reactionTimeMs.min);
   });
 });

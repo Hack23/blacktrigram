@@ -80,6 +80,7 @@ import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
 import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
+import { DifficultyIndicator } from "./components/DifficultyIndicator";
 import HitEffects3D from "./components/HitEffects3D";
 import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
@@ -836,7 +837,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         onPlayerUpdate,
         feedbackActions,
         handleAttack,
-        combatAudio,
         addCombatMessage,
       ]
     ),
@@ -1219,7 +1219,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const executeAIActionCallbackRef = useRef<((action: string, targetPos?: Position) => void) | undefined>(undefined);
 
   // AI Combat System - must be before executeAIActionCallback to provide aiState
-  const { aiState } = useAICombat({
+  const { aiState, updateDifficultyTarget } = useAICombat({
     player: validPlayers[1],
     opponent: validPlayers[0],
     personality: aiPersonality,
@@ -1231,6 +1231,56 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onExecuteAction: (action, targetPos) => executeAIActionCallbackRef.current?.(action, targetPos),
     onStanceChange: handleAIStanceChange,
   });
+
+  // Calculate current difficulty tier for display
+  // Force recalculation when the adaptive difficulty system changes
+  const currentDifficultyTier = useMemo(
+    () => adaptiveDifficulty.getDifficultyTier(),
+    [adaptiveDifficulty]
+  );
+
+  // Adaptive difficulty adjustment every 2-3 rounds after round ends
+  useEffect(() => {
+    // Only adjust after round ends (not during round or at start)
+    if (!combatState.roundEnded || internalRound < 1) {
+      return;
+    }
+
+    // Adjust every 2 rounds (after rounds 2, 4, 6, etc.)
+    // This ensures at least 2 rounds between adjustments for smooth progression
+    const roundsCompleted = internalRound;
+    if (roundsCompleted % 2 === 0) {
+      // Update AI skill metrics based on player performance.
+      // NOTE (Phase 1 adaptive difficulty):
+      // - Only hits/attacks/damage metrics are currently sourced from PlayerState.
+      // - Combo, block, reaction-time, vital-point, and stance-change metrics are
+      //   intentionally stubbed here (0 or constant) until PlayerState and telemetry
+      //   are extended in a follow-up phase.
+      //   This keeps the system functional while we iterate on richer skill tracking.
+      const player1 = validPlayersRef.current[0];
+      
+      adaptiveDifficulty.updateSkillMetrics({
+        hitsLanded: player1.hitsLanded ?? 0,
+        totalAttacks: (player1.hitsLanded ?? 0) + (player1.misses ?? 0),
+        combosExecuted: 0, // TODO (Phase 2): Track combo count in PlayerState
+        perfectBlockCount: 0, // TODO (Phase 2): Track perfect blocks in PlayerState
+        avgReactionTimeMs: 600, // TODO (Phase 2): Track player reaction time
+        vitalPointsHit: 0, // TODO (Phase 2): Track vital point hits
+        effectiveStanceChanges: 0, // TODO (Phase 2): Track stance changes
+        damageDealt: player1.totalDamageDealt ?? 0,
+        damageTaken: player1.totalDamageReceived ?? 0,
+      });
+
+      // Get new difficulty parameters and update AI
+      const newParams = adaptiveDifficulty.getDifficultyParameters();
+      updateDifficultyTarget(newParams);
+
+      if (import.meta.env.DEV) {
+        const tier = adaptiveDifficulty.getDifficultyTier();
+        console.log(`[DEV] Difficulty adjusted after round ${roundsCompleted}, new tier: ${tier}`);
+      }
+    }
+  }, [combatState.roundEnded, internalRound, adaptiveDifficulty, updateDifficultyTarget]);
 
   // AI action execution - uses aiState from useAICombat
   const executeAIActionCallback = useCallback(
@@ -1717,6 +1767,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <PlayerHUD
           player={validPlayers[1]}
           position="right"
+          isMobile={isMobile}
+        />
+
+        {/* AI Difficulty Indicator - Shows current adaptive difficulty tier */}
+        <DifficultyIndicator
+          tier={currentDifficultyTier}
           isMobile={isMobile}
         />
 

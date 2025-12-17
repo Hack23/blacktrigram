@@ -52,7 +52,9 @@ import {
   AIDecisionTree,
   AIPersonality,
   CombatContext,
+  DifficultyParameters,
   getArchetypeBehavior,
+  interpolateDifficultyParameters,
 } from "@/systems/ai";
 import { PlayerState } from "@/systems/player";
 import { Position, TrigramStance, DamageType, CombatAttackType, PlayerArchetype } from "@/types";
@@ -469,6 +471,8 @@ interface UseAICombatReturn {
   readonly decisionTree: AIDecisionTree;
   readonly adjustedPersonality: AIPersonality;
   readonly executeAIAction: (action: string, targetPosition?: Position) => void;
+  readonly currentDifficultyParams: DifficultyParameters;
+  readonly updateDifficultyTarget: (newParams: DifficultyParameters) => void;
 }
 
 /**
@@ -509,6 +513,18 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [adaptiveDifficulty, decisionTree]);
 
+  // Difficulty parameters with smooth interpolation
+  // Using useState with lazy initializer instead of useMemo since it only runs once
+  const [currentParams, setCurrentParams] = useState<DifficultyParameters>(() =>
+    adaptiveDifficulty.getDifficultyParameters()
+  );
+  const [targetParams, setTargetParams] = useState<DifficultyParameters>(() =>
+    adaptiveDifficulty.getDifficultyParameters()
+  );
+  const startParamsRef = useRef<DifficultyParameters>(currentParams);
+  const transitionStartTimeRef = useRef<number>(0);
+  const transitionDurationMs = 10000; // 10 seconds for smooth transition
+
   // AI state - use useState lazy initializer for Date.now()
   const [aiState, setAiState] = useState<AIState>(() => {
     const now = Date.now();
@@ -544,6 +560,52 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived]);
 
+  // Smooth interpolation of difficulty parameters using requestAnimationFrame
+  useEffect(() => {
+    if (isPaused || !roundStarted || roundEnded) {
+      return;
+    }
+
+    let animationFrameId: number;
+    let isComplete = false;
+
+    const animate = () => {
+      if (isComplete) return;
+
+      const now = Date.now();
+      const elapsed = now - transitionStartTimeRef.current;
+      const progress = Math.min(1.0, elapsed / transitionDurationMs);
+
+      if (progress < 1.0) {
+        // Still interpolating from captured start params to target
+        const interpolated = interpolateDifficultyParameters(
+          startParamsRef.current,
+          targetParams,
+          progress
+        );
+        setCurrentParams(interpolated);
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // Transition complete - snap to target and stop
+        setCurrentParams(targetParams);
+        isComplete = true;
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isPaused, roundStarted, roundEnded, targetParams, transitionDurationMs]);
+
+  // Pass current difficulty parameters to DecisionTree
+  useEffect(() => {
+    decisionTree.setDifficultyParameters(currentParams);
+  }, [decisionTree, currentParams]);
+
   /**
    * Execute AI action callback
    * 
@@ -558,6 +620,19 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     },
     [onExecuteAction]
   );
+
+  /**
+   * Update difficulty target parameters
+   * Triggers smooth interpolation to new difficulty level
+   * 
+   * @korean 난이도 목표 매개변수 업데이트
+   */
+  const updateDifficultyTarget = useCallback((newParams: DifficultyParameters) => {
+    // Capture current params as start point for smooth transition
+    startParamsRef.current = currentParams;
+    transitionStartTimeRef.current = Date.now();
+    setTargetParams(newParams);
+  }, [currentParams]);
 
   /**
    * Build combat context for decision-making
@@ -807,5 +882,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     decisionTree,
     adjustedPersonality,
     executeAIAction,
+    currentDifficultyParams: currentParams,
+    updateDifficultyTarget,
   };
 }

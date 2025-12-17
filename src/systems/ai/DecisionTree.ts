@@ -15,6 +15,7 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance, PlayerArchetype } from "@/types";
+import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
@@ -96,6 +97,8 @@ export class AIDecisionTree {
   // Systems for advanced decision-making
   private trigramSystem: TrigramSystem;
   private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
+  private difficultyParams?: DifficultyParameters; // Difficulty parameters for AI behavior
+  private currentReactionDelay: number = 50; // Current reaction delay (calculated once per param change)
 
   // Movement constants
   private static readonly MOVE_STEP_SIZE = 50; // Fixed movement step size in pixels
@@ -121,7 +124,31 @@ export class AIDecisionTree {
   }
 
   /**
+   * Set difficulty parameters for AI behavior
+   * Affects reaction time, accuracy, decision quality, etc.
+   * 
+   * Calculates a randomized reaction delay (within parameter range) once when 
+   * parameters change. This provides varied AI timing while maintaining consistent
+   * behavior throughout the current parameter set.
+   * 
+   * @korean 난이도 매개변수 설정
+   * @param params - Difficulty parameters to apply
+   */
+  setDifficultyParameters(params: DifficultyParameters): void {
+    this.difficultyParams = params;
+    // Calculate randomized reaction delay once when params change
+    // This provides variety while ensuring consistent timing until next param update
+    if (params) {
+      this.currentReactionDelay = 
+        params.reactionTimeMs.min +
+        Math.random() * (params.reactionTimeMs.max - params.reactionTimeMs.min);
+    }
+  }
+
+  /**
    * Make strategic decision based on combat context
+   * 
+   * Applies difficulty-based reaction time delays if difficulty parameters are set
    */
   makeDecision(
     context: CombatContext,
@@ -130,12 +157,20 @@ export class AIDecisionTree {
   ): AIDecision {
     const now = Date.now();
 
-    // Respect decision cooldown for performance
-    if (now - this.lastDecisionTime < this.decisionCooldown) {
+    // Apply difficulty-based reaction time delay (calculated once per param change)
+    const reactionDelay = this.difficultyParams
+      ? this.currentReactionDelay
+      : this.decisionCooldown;
+
+    // Respect decision cooldown (use reaction delay if difficulty params available)
+    const effectiveCooldown = Math.max(this.decisionCooldown, reactionDelay);
+    if (now - this.lastDecisionTime < effectiveCooldown) {
       return {
         action: AIActionType.WAIT,
         priority: 0,
-        reason: "Decision cooldown active",
+        reason: this.difficultyParams
+          ? `Reaction time delay: ${effectiveCooldown.toFixed(0)}ms`
+          : "Decision cooldown active",
       };
     }
 
