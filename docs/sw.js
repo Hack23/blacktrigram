@@ -1,5 +1,5 @@
 // Version will be injected at build time from package.json
-const APP_VERSION = "0.5.23"; // Placeholder replaced by build process
+const APP_VERSION = "0.5.24"; // Placeholder replaced by build process
 const CACHE_NAME = `black-trigram-v${APP_VERSION}`;
 
 // Minimal caching - essential assets for reliable offline support
