@@ -459,6 +459,8 @@ src/components/combat/components/ControlsGuide.test.tsx
 src/components/combat/components/ControlsGuide.tsx
 src/components/combat/components/DamageNumbers.test.tsx
 src/components/combat/components/DamageNumbers.tsx
+src/components/combat/components/DifficultyIndicator.test.tsx
+src/components/combat/components/DifficultyIndicator.tsx
 src/components/combat/components/HealthBar.test.tsx
 src/components/combat/components/HealthBar.tsx
 src/components/combat/components/HitEffects3D.test.tsx
