@@ -24,30 +24,45 @@ import { PlayerArchetype } from "@/types";
 import { createMockPlayerState } from "@/test/test-utils";
 
 /**
- * Create benchmark combat context
+ * Create benchmark combat context matching current CombatContext interface
  */
 function createBenchmarkContext(): CombatContext {
-  const player = createMockPlayerState({ position: { x: 600, y: 400 } });
-  const opponent = createMockPlayerState({ position: { x: 400, y: 400 } });
-  
   return {
-    player,
-    opponent,
+    playerPosition: { x: 600, y: 400 },
+    opponentPosition: { x: 400, y: 400 },
+    playerHealth: 80,
+    playerMaxHealth: 100,
+    playerKi: 60,
+    playerMaxKi: 100,
+    playerStamina: 70,
+    playerMaxStamina: 100,
+    opponentHealth: 75,
+    opponentStance: "geon" as const,
+    playerStance: "gon" as const,
     distanceToOpponent: 200,
-    isOpponentVulnerable: false,
-    isPlayerHealthLow: false,
-    isPlayerStaminaLow: false,
-    opponentRecentActions: [],
-    playerRecentActions: [],
-    timeInRound: 30000, // 30 seconds into round
-    comboSystem: {
-      isComboActive: () => false,
-      getNextTechniqueInCombo: () => null,
-      shouldStartCombo: () => false,
-      recordTechnique: () => {},
-      reset: () => {},
+    timeInMatch: 30000, // 30 seconds into match
+    isOpponentAttacking: false,
+    recentDamageTaken: 0,
+    arenaBounds: {
+      x: 0,
+      y: 0,
+      width: 1200,
+      height: 800,
     },
   };
+}
+
+/**
+ * Create mock combo system for benchmarks
+ */
+function createMockComboSystem() {
+  return {
+    isComboActive: () => false,
+    getNextTechniqueInCombo: () => null,
+    shouldStartCombo: () => false,
+    recordTechnique: () => {},
+    reset: () => {},
+  } as any; // Type assertion for benchmark purposes
 }
 
 /**
@@ -69,10 +84,10 @@ describe("AI Decision Performance", () => {
   
   // Pre-create instances outside benchmarks to measure only decision-making performance
   const balancedDifficulty = new AdaptiveDifficulty();
-  const balancedTree = new AIDecisionTree(
-    AI_PERSONALITIES.BALANCED_FIGHTER,
-    balancedDifficulty
-  );
+  const balancedTree = new AIDecisionTree();
+  balancedTree.setDifficultyParameters(balancedDifficulty.getDifficultyParameters());
+  
+  const mockComboSystem = createMockComboSystem();
 
   bench(
     "AI decision making (single iteration - target <10ms)",
@@ -80,7 +95,11 @@ describe("AI Decision Performance", () => {
       const context = createBenchmarkContext();
 
       // Critical: Decision must complete quickly
-      const decision = balancedTree.decide(context);
+      const decision = balancedTree.makeDecision(
+        context,
+        AI_PERSONALITIES.BALANCED_FIGHTER,
+        mockComboSystem
+      );
 
       // Validate decision is valid
       if (!decision) {
@@ -90,30 +109,34 @@ describe("AI Decision Performance", () => {
   );
 
   const aggressiveDifficulty = new AdaptiveDifficulty();
-  const aggressiveTree = new AIDecisionTree(
-    AI_PERSONALITIES.AGGRESSIVE_STRIKER,
-    aggressiveDifficulty
-  );
+  const aggressiveTree = new AIDecisionTree();
+  aggressiveTree.setDifficultyParameters(aggressiveDifficulty.getDifficultyParameters());
 
   bench(
     "AI decision making - aggressive personality",
     () => {
       const context = createBenchmarkContext();
-      aggressiveTree.decide(context);
+      aggressiveTree.makeDecision(
+        context,
+        AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+        mockComboSystem
+      );
     }
   );
 
   const defensiveDifficulty = new AdaptiveDifficulty();
-  const defensiveTree = new AIDecisionTree(
-    AI_PERSONALITIES.DEFENSIVE_SPECIALIST,
-    defensiveDifficulty
-  );
+  const defensiveTree = new AIDecisionTree();
+  defensiveTree.setDifficultyParameters(defensiveDifficulty.getDifficultyParameters());
 
   bench(
     "AI decision making - defensive personality",
     () => {
       const context = createBenchmarkContext();
-      defensiveTree.decide(context);
+      defensiveTree.makeDecision(
+        context,
+        AI_PERSONALITIES.DEFENSIVE_SPECIALIST,
+        mockComboSystem
+      );
     }
   );
 
@@ -125,17 +148,19 @@ describe("AI Decision Performance", () => {
   );
 
   const loadTestDifficulty = new AdaptiveDifficulty();
-  const loadTestTree = new AIDecisionTree(
-    AI_PERSONALITIES.BALANCED_FIGHTER,
-    loadTestDifficulty
-  );
+  const loadTestTree = new AIDecisionTree();
+  loadTestTree.setDifficultyParameters(loadTestDifficulty.getDifficultyParameters());
 
   bench(
     "AI decision making under load (60fps - 60 decisions in <1000ms)",
     () => {
       // Simulate 60 decisions (1 second at 60fps)
       batchContexts60.forEach((context) => {
-        loadTestTree.decide(context);
+        loadTestTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          mockComboSystem
+        );
       });
     }
   );
@@ -146,17 +171,19 @@ describe("AI Decision Performance", () => {
   );
 
   const sustainedDifficulty = new AdaptiveDifficulty();
-  const sustainedTree = new AIDecisionTree(
-    AI_PERSONALITIES.AGGRESSIVE_STRIKER,
-    sustainedDifficulty
-  );
+  const sustainedTree = new AIDecisionTree();
+  sustainedTree.setDifficultyParameters(sustainedDifficulty.getDifficultyParameters());
 
   bench(
     "AI decision making - sustained load (10 seconds at 60fps)",
     () => {
       // 600 decisions (10 seconds at 60fps)
       batchContexts600.forEach((context) => {
-        sustainedTree.decide(context);
+        sustainedTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          mockComboSystem
+        );
       });
     }
   );
@@ -241,25 +268,30 @@ describe("AI Decision Performance", () => {
       const opponent = createMockPlayerState({ position: { x: 400, y: 400 } });
       
       const context: CombatContext = {
-        player,
-        opponent,
+        playerPosition: player.position,
+        opponentPosition: opponent.position,
+        playerHealth: player.health,
+        playerMaxHealth: player.maxHealth,
+        playerKi: player.ki,
+        playerMaxKi: player.maxKi,
+        playerStamina: player.stamina,
+        playerMaxStamina: player.maxStamina,
+        opponentHealth: opponent.health,
+        opponentStance: opponent.stance,
+        playerStance: player.stance,
         distanceToOpponent: calculateDistance(player.position, opponent.position),
-        isOpponentVulnerable: opponent.balance < 50,
-        isPlayerHealthLow: player.health < 30,
-        isPlayerStaminaLow: player.stamina < 20,
-        opponentRecentActions: [],
-        playerRecentActions: [],
-        timeInRound: 30000,
-        comboSystem: {
-          isComboActive: () => false,
-          getNextTechniqueInCombo: () => null,
-          shouldStartCombo: () => false,
-          recordTechnique: () => {},
-          reset: () => {},
+        timeInMatch: 30000,
+        isOpponentAttacking: false,
+        recentDamageTaken: 0,
+        arenaBounds: {
+          x: 0,
+          y: 0,
+          width: 1200,
+          height: 800,
         },
       };
 
-      if (!context.player || !context.opponent) {
+      if (!context.playerPosition || !context.opponentPosition) {
         throw new Error("Invalid context");
       }
     }
@@ -324,15 +356,15 @@ describe("AI Decision Performance", () => {
       ];
 
       archetypes.forEach((archetype, index) => {
-        const player = createMockPlayerState({ archetype });
-        const tree = new AIDecisionTree(
-          personalities[index],
-          new AdaptiveDifficulty()
-        );
+        const tree = new AIDecisionTree();
+        tree.setDifficultyParameters(new AdaptiveDifficulty().getDifficultyParameters());
         const context = createBenchmarkContext();
-        context.player = player;
 
-        tree.decide(context);
+        tree.makeDecision(
+          context,
+          personalities[index],
+          mockComboSystem
+        );
       });
     }
   );
@@ -345,10 +377,8 @@ describe("AI Decision Performance", () => {
   );
 
   const memoryPressureDifficulty = new AdaptiveDifficulty();
-  const memoryPressureTree = new AIDecisionTree(
-    AI_PERSONALITIES.AGGRESSIVE_STRIKER,
-    memoryPressureDifficulty
-  );
+  const memoryPressureTree = new AIDecisionTree();
+  memoryPressureTree.setDifficultyParameters(memoryPressureDifficulty.getDifficultyParameters());
 
   bench(
     "AI decisions under memory pressure (1000 iterations)",
@@ -356,7 +386,11 @@ describe("AI Decision Performance", () => {
       const decisions = [];
 
       for (let i = 0; i < 1000; i++) {
-        const decision = memoryPressureTree.decide(memoryPressureContexts[i]);
+        const decision = memoryPressureTree.makeDecision(
+          memoryPressureContexts[i],
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          mockComboSystem
+        );
         decisions.push(decision);
       }
 
@@ -373,11 +407,11 @@ describe("AI Decision Performance", () => {
       // Simulate 4 AI opponents making decisions simultaneously
       const trees = Array.from(
         { length: 4 },
-        () =>
-          new AIDecisionTree(
-            AI_PERSONALITIES.BALANCED_FIGHTER,
-            new AdaptiveDifficulty()
-          )
+        () => {
+          const tree = new AIDecisionTree();
+          tree.setDifficultyParameters(new AdaptiveDifficulty().getDifficultyParameters());
+          return tree;
+        }
       );
 
       const contexts = Array.from({ length: 4 }, () =>
@@ -386,7 +420,11 @@ describe("AI Decision Performance", () => {
 
       // All AIs make decisions
       trees.forEach((tree, index) => {
-        tree.decide(contexts[index]);
+        tree.makeDecision(
+          contexts[index],
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          mockComboSystem
+        );
       });
     }
   );
@@ -395,6 +433,10 @@ describe("AI Decision Performance", () => {
 // ==================== Real-Time Performance Validation ====================
 
 describe("Real-Time Performance Validation", () => {
+  const frameBudgetTree = new AIDecisionTree();
+  frameBudgetTree.setDifficultyParameters(new AdaptiveDifficulty().getDifficultyParameters());
+  const frameBudgetCombo = createMockComboSystem();
+
   bench(
     "Frame budget validation (16.67ms for 60fps)",
     () => {
@@ -408,30 +450,35 @@ describe("Real-Time Performance Validation", () => {
       
       // Context creation (~0.5ms)
       const context: CombatContext = {
-        player,
-        opponent,
+        playerPosition: player.position,
+        opponentPosition: opponent.position,
+        playerHealth: player.health,
+        playerMaxHealth: player.maxHealth,
+        playerKi: player.ki,
+        playerMaxKi: player.maxKi,
+        playerStamina: player.stamina,
+        playerMaxStamina: player.maxStamina,
+        opponentHealth: opponent.health,
+        opponentStance: opponent.stance,
+        playerStance: player.stance,
         distanceToOpponent: calculateDistance(player.position, opponent.position),
-        isOpponentVulnerable: opponent.balance < 50,
-        isPlayerHealthLow: player.health < 30,
-        isPlayerStaminaLow: player.stamina < 20,
-        opponentRecentActions: [],
-        playerRecentActions: [],
-        timeInRound: 30000,
-        comboSystem: {
-          isComboActive: () => false,
-          getNextTechniqueInCombo: () => null,
-          shouldStartCombo: () => false,
-          recordTechnique: () => {},
-          reset: () => {},
+        timeInMatch: 30000,
+        isOpponentAttacking: false,
+        recentDamageTaken: 0,
+        arenaBounds: {
+          x: 0,
+          y: 0,
+          width: 1200,
+          height: 800,
         },
       };
 
       // Decision making (~5ms target)
-      const tree = new AIDecisionTree(
+      const decision = frameBudgetTree.makeDecision(
+        context,
         AI_PERSONALITIES.AGGRESSIVE_STRIKER,
-        new AdaptiveDifficulty()
+        frameBudgetCombo
       );
-      const decision = tree.decide(context);
 
       // Action execution (simulated, ~1ms)
       if (decision) {
@@ -446,17 +493,20 @@ describe("Real-Time Performance Validation", () => {
     }
   );
 
+  const minFrameTree = new AIDecisionTree();
+  minFrameTree.setDifficultyParameters(new AdaptiveDifficulty().getDifficultyParameters());
+
   bench(
     "Minimum frame time (target 58fps = 17.24ms per frame)",
     () => {
-      const tree = new AIDecisionTree(
-        AI_PERSONALITIES.BALANCED_FIGHTER,
-        new AdaptiveDifficulty()
-      );
       const context = createBenchmarkContext();
 
       // Complete AI cycle
-      tree.decide(context);
+      minFrameTree.makeDecision(
+        context,
+        AI_PERSONALITIES.BALANCED_FIGHTER,
+        frameBudgetCombo
+      );
     }
   );
 });
