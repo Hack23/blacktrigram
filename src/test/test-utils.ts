@@ -4,6 +4,28 @@ import { render } from "@testing-library/react";
 import React from "react";
 import { CombatState, PlayerArchetype, TrigramStance } from "../types/common";
 
+/**
+ * Arena bounds for combat testing
+ */
+export interface ArenaBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Create mock arena bounds
+ */
+export function createMockArena(): ArenaBounds {
+  return {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+  };
+}
+
 export function createMockPlayerState(overrides?: Partial<PlayerState>): PlayerState {
   return {
     id: "test",

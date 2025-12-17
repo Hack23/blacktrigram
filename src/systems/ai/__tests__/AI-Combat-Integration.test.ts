@@ -17,83 +17,13 @@
 import { AdaptiveDifficulty } from "@/systems/ai/AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
 import { PlayerState } from "@/systems/player";
-import { PlayerArchetype, TrigramStance } from "@/types";
+import { PlayerArchetype } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAICombat } from "@/components/combat/hooks/useAICombat";
+import { createMockPlayerState, createMockArena, type ArenaBounds } from "@/test/test-utils";
 
 // ==================== Test Utilities ====================
-
-/**
- * Arena bounds for combat testing
- */
-interface ArenaBounds {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-/**
- * Create mock arena bounds
- */
-function createMockArena(): ArenaBounds {
-  return {
-    x: 0,
-    y: 0,
-    width: 1200,
-    height: 800,
-  };
-}
-
-/**
- * Create mock player state with reasonable defaults
- */
-function createMockPlayer(overrides?: Partial<PlayerState>): PlayerState {
-  return {
-    id: overrides?.id || "player",
-    name: { korean: "플레이어", english: "Player" },
-    health: 100,
-    maxHealth: 100,
-    ki: 100,
-    maxKi: 100,
-    stamina: 100,
-    maxStamina: 100,
-    energy: 100,
-    maxEnergy: 100,
-    position: { x: 400, y: 300 },
-    currentStance: TrigramStance.GEON,
-    archetype: PlayerArchetype.MUSA,
-    attackPower: 75,
-    defense: 75,
-    speed: 75,
-    technique: 75,
-    pain: 0,
-    consciousness: 100,
-    balance: 100,
-    momentum: 0,
-    combatState: "idle" as const,
-    isBlocking: false,
-    isStunned: false,
-    isCountering: false,
-    totalDamageDealt: 0,
-    totalDamageReceived: 0,
-    hitsTaken: 0,
-    hitsLanded: 0,
-    perfectStrikes: 0,
-    vitalPointHits: 0,
-    comboCount: 0,
-    lastAttackTime: 0,
-    lastActionTime: 0,
-    recoveryTime: 0,
-    lastStanceChangeTime: 0,
-    statusEffects: [],
-    activeEffects: [],
-    vitalPoints: [],
-    experiencePoints: 0,
-    ...overrides,
-  } as PlayerState;
-}
 
 /**
  * Reset player stats for round transition (preserving difficulty)
@@ -143,12 +73,12 @@ describe("AI Combat Integration", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    player1 = createMockPlayer({
+    player1 = createMockPlayerState({
       id: "player1",
       archetype: PlayerArchetype.MUSA,
       position: { x: 200, y: 400 },
     });
-    player2 = createMockPlayer({
+    player2 = createMockPlayerState({
       id: "player2",
       archetype: PlayerArchetype.AMSALJA,
       position: { x: 1000, y: 400 },
@@ -333,7 +263,7 @@ describe("AI Combat Integration", () => {
     });
 
     it("should reset combat stats but preserve difficulty", () => {
-      const player = createMockPlayer({
+      const player = createMockPlayerState({
         health: 50,
         stamina: 30,
         pain: 60,
@@ -353,7 +283,7 @@ describe("AI Combat Integration", () => {
     });
 
     it("should optionally preserve health across rounds", () => {
-      const player = createMockPlayer({
+      const player = createMockPlayerState({
         health: 75,
         stamina: 40,
       });
@@ -414,11 +344,11 @@ describe("AI Combat Integration", () => {
 
     archetypes.forEach((archetype) => {
       it(`should exhibit ${archetype}-specific combat behavior`, async () => {
-        const aiPlayer = createMockPlayer({
+        const aiPlayer = createMockPlayerState({
           archetype,
           position: { x: 600, y: 400 },
         });
-        const humanPlayer = createMockPlayer({ position: { x: 400, y: 400 } });
+        const humanPlayer = createMockPlayerState({ position: { x: 400, y: 400 } });
 
         const onExecuteAction = vi.fn();
         const personality = getPersonalityByArchetype(archetype);
@@ -447,23 +377,9 @@ describe("AI Combat Integration", () => {
         const actions = onExecuteAction.mock.calls.map((call) => call[0]);
         expect(actions.length).toBeGreaterThan(0);
 
-        // Archetype-specific validation
-        // Note: AI behavior is influenced by personality, not strictly archetype
-        // All archetypes should perform some actions, regardless of specific type
-        const hasAnyActions = actions.length > 0;
-        expect(hasAnyActions).toBe(true);
-        
-        // Verify action variety based on personality traits
-        if (archetype === PlayerArchetype.MUSA || archetype === PlayerArchetype.JOJIK_POKRYEOKBAE) {
-          // Aggressive archetypes should have some actions
-          expect(actions.length).toBeGreaterThan(0);
-        } else if (archetype === PlayerArchetype.AMSALJA) {
-          // Amsalja should have varied technical actions
-          expect(actions.length).toBeGreaterThan(0);
-        } else if (archetype === PlayerArchetype.JEONGBO_YOWON) {
-          // Jeongbo should show tactical behavior
-          expect(actions.length).toBeGreaterThan(0);
-        }
+        // Verify AI executes actions during combat
+        // Note: Specific behavior patterns are validated in the separate
+        // "demonstrate distinct behavior patterns" test
       });
     });
 
@@ -474,11 +390,11 @@ describe("AI Combat Integration", () => {
       > = {};
 
       for (const archetype of archetypes) {
-        const aiPlayer = createMockPlayer({
+        const aiPlayer = createMockPlayerState({
           archetype,
           position: { x: 600, y: 400 },
         });
-        const humanPlayer = createMockPlayer({ position: { x: 400, y: 400 } });
+        const humanPlayer = createMockPlayerState({ position: { x: 400, y: 400 } });
         const onExecuteAction = vi.fn();
         const personality = getPersonalityByArchetype(archetype);
 
@@ -521,7 +437,7 @@ describe("AI Combat Integration", () => {
 
   describe("Edge Cases", () => {
     it("should handle AI at 0 stamina gracefully", async () => {
-      const aiPlayer = createMockPlayer({ stamina: 0 });
+      const aiPlayer = createMockPlayerState({ stamina: 0 });
       const onExecuteAction = vi.fn();
 
       renderHook(() =>
@@ -577,7 +493,7 @@ describe("AI Combat Integration", () => {
     });
 
     it("should recover from low health situation", async () => {
-      const aiPlayer = createMockPlayer({
+      const aiPlayer = createMockPlayerState({
         health: 20,
         stamina: 50,
       });
@@ -612,7 +528,7 @@ describe("AI Combat Integration", () => {
     });
 
     it("should handle opponent KO situation", async () => {
-      const opponentKO = createMockPlayer({
+      const opponentKO = createMockPlayerState({
         health: 0,
         consciousness: 0,
       });
@@ -668,7 +584,7 @@ describe("AI Combat Integration", () => {
       const actionsBeforeSwitch = onExecuteAction.mock.calls.length;
 
       // Switch opponent archetype
-      const switchedOpponent = createMockPlayer({
+      const switchedOpponent = createMockPlayerState({
         ...player1,
         archetype: PlayerArchetype.HACKER,
       });
@@ -686,8 +602,8 @@ describe("AI Combat Integration", () => {
     });
 
     it("should handle extreme distance scenarios", async () => {
-      const farPlayer = createMockPlayer({ position: { x: 50, y: 50 } });
-      const farOpponent = createMockPlayer({ position: { x: 1150, y: 750 } });
+      const farPlayer = createMockPlayerState({ position: { x: 50, y: 50 } });
+      const farOpponent = createMockPlayerState({ position: { x: 1150, y: 750 } });
       const onExecuteAction = vi.fn();
 
       renderHook(() =>
@@ -718,7 +634,7 @@ describe("AI Combat Integration", () => {
     });
 
     it("should handle arena boundary constraints", async () => {
-      const edgePlayer = createMockPlayer({ position: { x: 10, y: 10 } });
+      const edgePlayer = createMockPlayerState({ position: { x: 10, y: 10 } });
       const onExecuteAction = vi.fn();
 
       renderHook(() =>
@@ -784,8 +700,8 @@ describe("AI Combat Integration", () => {
       const adaptiveDifficulty1 = new AdaptiveDifficulty();
       const adaptiveDifficulty2 = new AdaptiveDifficulty();
 
-      const ai1 = createMockPlayer({ position: { x: 200, y: 400 } });
-      const ai2 = createMockPlayer({ position: { x: 1000, y: 400 } });
+      const ai1 = createMockPlayerState({ position: { x: 200, y: 400 } });
+      const ai2 = createMockPlayerState({ position: { x: 1000, y: 400 } });
 
       // Two AI opponents
       renderHook(() =>

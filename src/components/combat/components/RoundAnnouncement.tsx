@@ -92,13 +92,11 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
 
   // Countdown logic with proper cleanup
   useEffect(() => {
-    if (countdown <= 0 && !hasCompletedRef.current) {
-      hasCompletedRef.current = true;
-      onCountdownComplete();
-      return;
-    }
-
     if (countdown <= 0) {
+      if (!hasCompletedRef.current) {
+        hasCompletedRef.current = true;
+        onCountdownComplete();
+      }
       return;
     }
 
