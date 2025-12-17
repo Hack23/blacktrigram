@@ -62,6 +62,9 @@ function getTierColor(tier: DifficultyTier): string {
 
 /**
  * DifficultyIndicator - Visual feedback for current AI difficulty tier
+ * 
+ * Positioned below Player 2 HUD to avoid overlap
+ * Calculates vertical offset based on HUD height (name + health + stamina + stance)
  */
 export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   tier,
@@ -73,13 +76,17 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   // Responsive sizing
   const fontSize = isMobile ? 11 : 13;
   const padding = isMobile ? "6px 10px" : "8px 12px";
+  
+  // Position below Player 2 HUD to avoid overlap
+  // Player HUD consists of: name (20px) + health bar (20px) + stamina bar (20px) + stance (15px) + gaps (18px) ≈ 93px
+  const topOffset = isMobile ? 100 : 110;
 
   return (
     <div
       data-testid="difficulty-indicator"
       style={{
         position: "absolute",
-        top: isMobile ? "8px" : "10px",
+        top: `${topOffset}px`,
         right: isMobile ? "8px" : "12px",
         padding,
         background: `${tierColor}22`, // 13% opacity
@@ -95,6 +102,8 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         flexDirection: "column",
         alignItems: "center",
         gap: "2px",
+        transition: "all 0.3s ease-in-out", // Smooth color/border transitions
+        boxShadow: `0 0 8px ${tierColor}44`, // Subtle glow effect
       }}
     >
       <div
@@ -102,6 +111,7 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         style={{
           fontSize: isMobile ? "9px" : "10px",
           opacity: 0.8,
+          letterSpacing: "0.5px",
         }}
       >
         AI Difficulty
@@ -111,6 +121,7 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         style={{
           fontWeight: "bold",
           whiteSpace: "nowrap",
+          letterSpacing: "0.5px",
         }}
       >
         {tierName.korean} | {tierName.english}
