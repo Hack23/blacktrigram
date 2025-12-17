@@ -81,7 +81,10 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   const padding = isMobile ? "6px 10px" : "8px 12px";
   
   // Position below Player 2 HUD to avoid overlap
-  // Player HUD consists of: name (20px) + health bar (20px) + stamina bar (20px) + stance (15px) + gaps (18px) ≈ 93px
+  // NOTE: This uses a calculated offset based on typical HUD height.
+  // If Player HUD layout changes, this may need adjustment.
+  // Consider using CSS Grid or exported HUD constants for better maintainability.
+  // Current estimate: name (20px) + health bar (20px) + stamina bar (20px) + stance (15px) + gaps (18px) ≈ 93px
   const topOffset = isMobile ? 100 : 110;
 
   return (

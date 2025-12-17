@@ -522,7 +522,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     adaptiveDifficulty.getDifficultyParameters()
   );
   const startParamsRef = useRef<DifficultyParameters>(currentParams);
-  const transitionStartTimeRef = useRef<number>(Date.now());
+  const transitionStartTimeRef = useRef<number>(0);
   const transitionDurationMs = 10000; // 10 seconds for smooth transition
 
   // AI state - use useState lazy initializer for Date.now()

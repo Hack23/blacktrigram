@@ -1233,11 +1233,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   });
 
   // Calculate current difficulty tier for display
-  // Force recalculation when round ends or when the adaptive difficulty system changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Force recalculation when the adaptive difficulty system changes
   const currentDifficultyTier = useMemo(
     () => adaptiveDifficulty.getDifficultyTier(),
-    [adaptiveDifficulty, combatState.roundEnded, internalRound]
+    [adaptiveDifficulty]
   );
 
   // Adaptive difficulty adjustment every 2-3 rounds after round ends
@@ -1251,17 +1250,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // This ensures at least 2 rounds between adjustments for smooth progression
     const roundsCompleted = internalRound;
     if (roundsCompleted % 2 === 0) {
-      // Update AI skill metrics based on player performance
+      // Update AI skill metrics based on player performance.
+      // NOTE (Phase 1 adaptive difficulty):
+      // - Only hits/attacks/damage metrics are currently sourced from PlayerState.
+      // - Combo, block, reaction-time, vital-point, and stance-change metrics are
+      //   intentionally stubbed here (0 or constant) until PlayerState and telemetry
+      //   are extended in a follow-up phase.
+      //   This keeps the system functional while we iterate on richer skill tracking.
       const player1 = validPlayersRef.current[0];
       
       adaptiveDifficulty.updateSkillMetrics({
         hitsLanded: player1.hitsLanded ?? 0,
         totalAttacks: (player1.hitsLanded ?? 0) + (player1.misses ?? 0),
-        combosExecuted: 0, // TODO: Track combo count in PlayerState
-        perfectBlockCount: 0, // TODO: Track perfect blocks in PlayerState
-        avgReactionTimeMs: 600, // TODO: Track player reaction time
-        vitalPointsHit: 0, // TODO: Track vital point hits
-        effectiveStanceChanges: 0, // TODO: Track stance changes
+        combosExecuted: 0, // TODO (Phase 2): Track combo count in PlayerState
+        perfectBlockCount: 0, // TODO (Phase 2): Track perfect blocks in PlayerState
+        avgReactionTimeMs: 600, // TODO (Phase 2): Track player reaction time
+        vitalPointsHit: 0, // TODO (Phase 2): Track vital point hits
+        effectiveStanceChanges: 0, // TODO (Phase 2): Track stance changes
         damageDealt: player1.totalDamageDealt ?? 0,
         damageTaken: player1.totalDamageReceived ?? 0,
       });
