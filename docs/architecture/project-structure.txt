@@ -684,6 +684,8 @@ src/systems/ai/DecisionTree.test.ts
 src/systems/ai/DecisionTree.ts
 src/systems/ai/TrainingAI.test.ts
 src/systems/ai/TrainingAI.ts
+src/systems/ai/__tests__/AI-Combat-Integration.test.ts
+src/systems/ai/__tests__/AI-Performance.bench.ts
 src/systems/ai/index.ts
 src/systems/animation/AnimationPriority.test.ts
 src/systems/animation/AnimationPriority.ts
