@@ -10,7 +10,7 @@
  * @category Combat UI
  */
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { PlayerState } from "../../../systems";
 
@@ -81,6 +81,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
 }) => {
   const [countdown, setCountdown] = useState(countdownDuration);
   const [isVisible, setIsVisible] = useState(false);
+  const hasCompletedRef = useRef(false);
 
   // Fade in animation on mount
   useEffect(() => {
@@ -91,8 +92,13 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
 
   // Countdown logic with proper cleanup
   useEffect(() => {
-    if (countdown <= 0) {
+    if (countdown <= 0 && !hasCompletedRef.current) {
+      hasCompletedRef.current = true;
       onCountdownComplete();
+      return;
+    }
+
+    if (countdown <= 0) {
       return;
     }
 

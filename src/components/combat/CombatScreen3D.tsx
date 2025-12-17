@@ -365,13 +365,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       if (import.meta.env.DEV) {
         console.log('[DEV] Incrementing round from', prev, 'to', nextRound);
       }
-      // Use setTimeout to ensure state update completes before showing announcement
+      // Wait for transition duration plus fade-out to complete before showing next round announcement
       setTimeout(() => {
         if (import.meta.env.DEV) {
           console.log('[DEV] Showing round start announcement for round', nextRound);
         }
         setShowRoundStart(true);
-      }, 0);
+      }, 300); // Wait 300ms to ensure previous announcement has fully faded out
       return nextRound;
     });
 
