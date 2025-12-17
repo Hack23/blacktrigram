@@ -1965,6 +1965,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             if (matchScore.player1 >= 2 || matchScore.player2 >= 2) {
               const winner = matchScore.player1 >= 2 ? 0 : 1;
               onGameEnd(winner);
+            } else {
+              // Match continues - trigger transition to next round
+              skipCountdown();
             }
           }}
           onSkip={() => {
