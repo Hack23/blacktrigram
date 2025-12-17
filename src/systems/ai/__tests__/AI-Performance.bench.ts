@@ -20,6 +20,7 @@ import { bench, describe } from "vitest";
 import { AIDecisionTree, CombatContext } from "@/systems/ai/DecisionTree";
 import { AdaptiveDifficulty } from "@/systems/ai/AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
+import { PlayerArchetype } from "@/types";
 import { createMockPlayerState } from "@/test/test-utils";
 
 /**
