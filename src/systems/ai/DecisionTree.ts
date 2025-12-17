@@ -98,6 +98,7 @@ export class AIDecisionTree {
   private trigramSystem: TrigramSystem;
   private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
   private difficultyParams?: DifficultyParameters; // Difficulty parameters for AI behavior
+  private currentReactionDelay: number = 50; // Current reaction delay (calculated once per param change)
 
   // Movement constants
   private static readonly MOVE_STEP_SIZE = 50; // Fixed movement step size in pixels
@@ -125,12 +126,19 @@ export class AIDecisionTree {
   /**
    * Set difficulty parameters for AI behavior
    * Affects reaction time, accuracy, decision quality, etc.
+   * Calculates reaction delay once when parameters change for consistent behavior
    * 
    * @korean 난이도 매개변수 설정
    * @param params - Difficulty parameters to apply
    */
   setDifficultyParameters(params: DifficultyParameters): void {
     this.difficultyParams = params;
+    // Calculate reaction delay once when params change for consistent AI timing
+    if (params) {
+      this.currentReactionDelay = 
+        params.reactionTimeMs.min +
+        Math.random() * (params.reactionTimeMs.max - params.reactionTimeMs.min);
+    }
   }
 
   /**
@@ -145,12 +153,9 @@ export class AIDecisionTree {
   ): AIDecision {
     const now = Date.now();
 
-    // Apply difficulty-based reaction time delay
+    // Apply difficulty-based reaction time delay (calculated once per param change)
     const reactionDelay = this.difficultyParams
-      ? this.difficultyParams.reactionTimeMs.min +
-        Math.random() *
-          (this.difficultyParams.reactionTimeMs.max -
-            this.difficultyParams.reactionTimeMs.min)
+      ? this.currentReactionDelay
       : this.decisionCooldown;
 
     // Respect decision cooldown (use reaction delay if difficulty params available)

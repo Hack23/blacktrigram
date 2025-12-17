@@ -1233,11 +1233,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onStanceChange: handleAIStanceChange,
   });
 
-  // Get current difficulty tier for display
-  const currentDifficultyTier = useMemo(
-    () => adaptiveDifficulty.getDifficultyTier(),
-    [adaptiveDifficulty]
+  // Track current difficulty tier for display (updates when difficulty changes)
+  const [currentDifficultyTier, setCurrentDifficultyTier] = useState(
+    () => adaptiveDifficulty.getDifficultyTier()
   );
+  
+  // Update difficulty tier display when metrics change
+  useEffect(() => {
+    setCurrentDifficultyTier(adaptiveDifficulty.getDifficultyTier());
+  }, [adaptiveDifficulty, combatState.roundEnded]);
 
   // Adaptive difficulty adjustment every 2-3 rounds after round ends
   useEffect(() => {

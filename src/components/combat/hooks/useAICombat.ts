@@ -558,13 +558,18 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived]);
 
-  // Smooth interpolation of difficulty parameters
+  // Smooth interpolation of difficulty parameters using requestAnimationFrame
   useEffect(() => {
     if (isPaused || !roundStarted || roundEnded) {
       return;
     }
 
-    const interpolationInterval = setInterval(() => {
+    let animationFrameId: number;
+    let isComplete = false;
+
+    const animate = () => {
+      if (isComplete) return;
+
       const now = Date.now();
       const elapsed = now - transitionStartTimeRef.current;
       const progress = Math.min(1.0, elapsed / transitionDurationMs);
@@ -577,14 +582,22 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
           progress
         );
         setCurrentParams(interpolated);
-      } else if (progress >= 1.0 && currentParams !== targetParams) {
-        // Transition complete - snap to target
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // Transition complete - snap to target and stop
         setCurrentParams(targetParams);
+        isComplete = true;
       }
-    }, 16); // ~60fps update rate
+    };
 
-    return () => clearInterval(interpolationInterval);
-  }, [isPaused, roundStarted, roundEnded, currentParams, targetParams]);
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isPaused, roundStarted, roundEnded, targetParams, transitionDurationMs]);
 
   // Pass current difficulty parameters to DecisionTree
   useEffect(() => {

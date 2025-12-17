@@ -11,7 +11,7 @@
 
 import React from "react";
 import { DifficultyTier } from "../../../systems/ai";
-import { FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 
 export interface DifficultyIndicatorProps {
   /** Current difficulty tier (1-5) */
@@ -41,23 +41,38 @@ function getTierName(tier: DifficultyTier): { korean: string; english: string } 
 }
 
 /**
- * Get color for difficulty tier
+ * Get color for difficulty tier using KOREAN_COLORS constants
+ * Maps tiers to existing color scheme for consistency
  */
 function getTierColor(tier: DifficultyTier): string {
   switch (tier) {
     case DifficultyTier.BEGINNER:
-      return "#4CAF50"; // Green - Easy
+      return `#${KOREAN_COLORS.POSITIVE_GREEN.toString(16).padStart(6, '0')}`; // Green - Easy
     case DifficultyTier.NOVICE:
-      return "#8BC34A"; // Light Green
+      return `#${KOREAN_COLORS.ACCENT_GREEN.toString(16).padStart(6, '0')}`; // Light Green
     case DifficultyTier.INTERMEDIATE:
-      return "#FFC107"; // Yellow/Gold - Medium
+      return `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, '0')}`; // Gold - Medium
     case DifficultyTier.ADVANCED:
-      return "#FF9800"; // Orange
+      return `#${KOREAN_COLORS.SECONDARY_ORANGE.toString(16).padStart(6, '0')}`; // Orange
     case DifficultyTier.EXPERT:
-      return "#F44336"; // Red - Hard
+      return `#${KOREAN_COLORS.NEGATIVE_RED.toString(16).padStart(6, '0')}`; // Red - Hard
     default:
-      return "#FFC107"; // Default to medium
+      return `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, '0')}`; // Default to medium
   }
+}
+
+/**
+ * Convert hex color to rgba with opacity
+ * @param hexColor - Hex color string (e.g., "#ff0000")
+ * @param opacity - Opacity value (0.0-1.0)
+ * @returns rgba string (e.g., "rgba(255, 0, 0, 0.13)")
+ */
+function hexToRgba(hexColor: string, opacity: number): string {
+  const hex = hexColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
 /**
@@ -89,7 +104,7 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         top: `${topOffset}px`,
         right: isMobile ? "8px" : "12px",
         padding,
-        background: `${tierColor}22`, // 13% opacity
+        background: hexToRgba(tierColor, 0.13), // 13% opacity background
         border: `2px solid ${tierColor}`,
         borderRadius: "4px",
         fontFamily: FONT_FAMILY.KOREAN,
@@ -103,7 +118,7 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         alignItems: "center",
         gap: "2px",
         transition: "all 0.3s ease-in-out", // Smooth color/border transitions
-        boxShadow: `0 0 8px ${tierColor}44`, // Subtle glow effect
+        boxShadow: `0 0 8px ${hexToRgba(tierColor, 0.27)}`, // Subtle glow effect (27% opacity)
       }}
     >
       <div
