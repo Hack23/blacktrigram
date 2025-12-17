@@ -20,6 +20,7 @@ import { bench, describe } from "vitest";
 import { AIDecisionTree, CombatContext } from "@/systems/ai/DecisionTree";
 import { AdaptiveDifficulty } from "@/systems/ai/AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
+import { AIComboSystem } from "@/systems/ai/ComboSystem";
 import { PlayerArchetype, TrigramStance } from "@/types";
 import { createMockPlayerState } from "@/test/test-utils";
 
@@ -55,6 +56,11 @@ function createBenchmarkContext(): CombatContext {
 /**
  * Create mock combo system for benchmarks
  */
+/**
+ * Create minimal mock combo system for benchmarks
+ * Type assertion is used to avoid unnecessary complexity in performance tests
+ * The mock only implements the methods actually called during benchmarking
+ */
 function createMockComboSystem() {
   return {
     isComboActive: () => false,
@@ -62,7 +68,7 @@ function createMockComboSystem() {
     shouldStartCombo: () => false,
     recordTechnique: () => {},
     reset: () => {},
-  } as any; // Type assertion for benchmark purposes
+  } as unknown as AIComboSystem; // Type assertion for benchmark simplicity
 }
 
 /**

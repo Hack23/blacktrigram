@@ -231,10 +231,10 @@ describe("AI Combat Integration", () => {
         combosExecuted: 5,
         perfectBlockCount: 8,
         avgReactionTimeMs: 200,
-        vitalPointHitsLanded: 10,
+        vitalPointsHit: 10,
         effectiveStanceChanges: 6,
-        damageTakenThisMatch: 100,
-        damageDealtThisMatch: 600,
+        damageTaken: 100,
+        damageDealt: 600,
       });
 
       const initialDifficulty = adaptiveDifficulty.getDifficultyTier();

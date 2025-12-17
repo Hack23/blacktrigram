@@ -98,6 +98,10 @@ TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
   STANCE_INDEX_MAP.set(stance, index);
 });
 
+// Round announcement fade-out delay (in milliseconds)
+// Wait for previous announcement to fully fade out before showing next one
+const ANNOUNCEMENT_FADE_OUT_DELAY = 300;
+
 /**
  * AnimationUpdater - Component that updates player animations at 60fps
  * Uses useFrame to call update() on both animation state machines
@@ -371,7 +375,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           console.log('[DEV] Showing round start announcement for round', nextRound);
         }
         setShowRoundStart(true);
-      }, 300); // Wait 300ms to ensure previous announcement has fully faded out
+      }, ANNOUNCEMENT_FADE_OUT_DELAY);
       return nextRound;
     });
 
