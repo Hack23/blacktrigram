@@ -98,6 +98,10 @@ TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
   STANCE_INDEX_MAP.set(stance, index);
 });
 
+// Round announcement fade-out delay (in milliseconds)
+// Wait for previous announcement to fully fade out before showing next one
+const ANNOUNCEMENT_FADE_OUT_DELAY = 300;
+
 /**
  * AnimationUpdater - Component that updates player animations at 60fps
  * Uses useFrame to call update() on both animation state machines
@@ -365,13 +369,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       if (import.meta.env.DEV) {
         console.log('[DEV] Incrementing round from', prev, 'to', nextRound);
       }
-      // Use setTimeout to ensure state update completes before showing announcement
+      // Wait for transition duration plus fade-out to complete before showing next round announcement
       setTimeout(() => {
         if (import.meta.env.DEV) {
           console.log('[DEV] Showing round start announcement for round', nextRound);
         }
         setShowRoundStart(true);
-      }, 0);
+      }, ANNOUNCEMENT_FADE_OUT_DELAY);
       return nextRound;
     });
 
@@ -1965,6 +1969,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             if (matchScore.player1 >= 2 || matchScore.player2 >= 2) {
               const winner = matchScore.player1 >= 2 ? 0 : 1;
               onGameEnd(winner);
+            } else {
+              // Match continues - trigger transition to next round
+              skipCountdown();
             }
           }}
           onSkip={() => {

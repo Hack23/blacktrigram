@@ -36,7 +36,15 @@ export default defineConfig({
       "src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
       "src/**/__tests__/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
     ],
-    exclude: ["node_modules", "dist", ".idea", ".git", ".cache"],
+    exclude: [
+      "node_modules",
+      "dist",
+      ".idea",
+      ".git",
+      ".cache",
+      "**/*.bench.ts", // Exclude benchmark files from regular tests
+      "**/*.bench.js",
+    ],
     // Mock specific modules for Korean martial arts testing
     server: {
       deps: {
