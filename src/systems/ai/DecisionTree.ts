@@ -126,14 +126,18 @@ export class AIDecisionTree {
   /**
    * Set difficulty parameters for AI behavior
    * Affects reaction time, accuracy, decision quality, etc.
-   * Calculates reaction delay once when parameters change for consistent behavior
+   * 
+   * Calculates a randomized reaction delay (within parameter range) once when 
+   * parameters change. This provides varied AI timing while maintaining consistent
+   * behavior throughout the current parameter set.
    * 
    * @korean 난이도 매개변수 설정
    * @param params - Difficulty parameters to apply
    */
   setDifficultyParameters(params: DifficultyParameters): void {
     this.difficultyParams = params;
-    // Calculate reaction delay once when params change for consistent AI timing
+    // Calculate randomized reaction delay once when params change
+    // This provides variety while ensuring consistent timing until next param update
     if (params) {
       this.currentReactionDelay = 
         params.reactionTimeMs.min +

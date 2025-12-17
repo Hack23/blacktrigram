@@ -68,15 +68,17 @@ describe("DifficultyIndicator", () => {
     render(<DifficultyIndicator tier={DifficultyTier.BEGINNER} isMobile={false} />);
     
     const indicator = screen.getByTestId("difficulty-indicator");
-    // Check that border color contains green (#4CAF50)
-    expect(indicator).toHaveStyle({ borderColor: expect.stringContaining("#4CAF50") });
+    // Browser converts hex to rgb format (POSITIVE_GREEN = 0x00ff00 → rgb(0, 255, 0))
+    expect(indicator.style.color).toBe("rgb(0, 255, 0)");
+    expect(indicator.style.border).toContain("rgb(0, 255, 0)");
   });
 
   it("should have correct color for expert tier", () => {
     render(<DifficultyIndicator tier={DifficultyTier.EXPERT} isMobile={false} />);
     
     const indicator = screen.getByTestId("difficulty-indicator");
-    // Check that border color contains red (#F44336)
-    expect(indicator).toHaveStyle({ borderColor: expect.stringContaining("#F44336") });
+    // Browser converts hex to rgb format (NEGATIVE_RED = 0xff0000 → rgb(255, 0, 0))
+    expect(indicator.style.color).toBe("rgb(255, 0, 0)");
+    expect(indicator.style.border).toContain("rgb(255, 0, 0)");
   });
 });

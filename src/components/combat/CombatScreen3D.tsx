@@ -837,7 +837,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         onPlayerUpdate,
         feedbackActions,
         handleAttack,
-        combatAudio,
         addCombatMessage,
       ]
     ),
@@ -1233,15 +1232,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onStanceChange: handleAIStanceChange,
   });
 
-  // Track current difficulty tier for display (updates when difficulty changes)
-  const [currentDifficultyTier, setCurrentDifficultyTier] = useState(
-    () => adaptiveDifficulty.getDifficultyTier()
+  // Calculate current difficulty tier for display
+  // This updates automatically when round ends since it's a direct calculation
+  const currentDifficultyTier = useMemo(
+    () => adaptiveDifficulty.getDifficultyTier(),
+    // Force recalculation when round ends to show tier changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [combatState.roundEnded, internalRound]
   );
-  
-  // Update difficulty tier display when metrics change
-  useEffect(() => {
-    setCurrentDifficultyTier(adaptiveDifficulty.getDifficultyTier());
-  }, [adaptiveDifficulty, combatState.roundEnded]);
 
   // Adaptive difficulty adjustment every 2-3 rounds after round ends
   useEffect(() => {
@@ -1250,9 +1248,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       return;
     }
 
-    // Adjust on rounds 2, 4, 6, etc. (after rounds 1, 3, 5 complete)
+    // Adjust every 2 rounds (after rounds 2, 4, 6, etc.)
+    // This ensures at least 2 rounds between adjustments for smooth progression
     const roundsCompleted = internalRound;
-    if (roundsCompleted % 2 === 0 || roundsCompleted % 3 === 0) {
+    if (roundsCompleted % 2 === 0) {
       // Update AI skill metrics based on player performance
       const player1 = validPlayersRef.current[0];
       

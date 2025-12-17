@@ -514,13 +514,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   }, [adaptiveDifficulty, decisionTree]);
 
   // Difficulty parameters with smooth interpolation
-  const initialParams = useMemo(
-    () => adaptiveDifficulty.getDifficultyParameters(),
-    [] // Only get initial params once
+  // Using useState with lazy initializer instead of useMemo since it only runs once
+  const [currentParams, setCurrentParams] = useState<DifficultyParameters>(() =>
+    adaptiveDifficulty.getDifficultyParameters()
   );
-  const [currentParams, setCurrentParams] = useState<DifficultyParameters>(initialParams);
-  const [targetParams, setTargetParams] = useState<DifficultyParameters>(initialParams);
-  const transitionStartTimeRef = useRef(Date.now());
+  const [targetParams, setTargetParams] = useState<DifficultyParameters>(() =>
+    adaptiveDifficulty.getDifficultyParameters()
+  );
+  const startParamsRef = useRef<DifficultyParameters>(currentParams);
+  const [initialTransitionTime] = useState(() => Date.now());
+  const transitionStartTimeRef = useRef(initialTransitionTime);
   const transitionDurationMs = 10000; // 10 seconds for smooth transition
 
   // AI state - use useState lazy initializer for Date.now()
@@ -564,6 +567,10 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       return;
     }
 
+    // Capture start params when target changes for smooth interpolation
+    startParamsRef.current = currentParams;
+    transitionStartTimeRef.current = Date.now();
+
     let animationFrameId: number;
     let isComplete = false;
 
@@ -575,9 +582,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       const progress = Math.min(1.0, elapsed / transitionDurationMs);
 
       if (progress < 1.0) {
-        // Still interpolating
+        // Still interpolating from captured start params to target
         const interpolated = interpolateDifficultyParameters(
-          currentParams,
+          startParamsRef.current,
           targetParams,
           progress
         );
@@ -597,6 +604,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         cancelAnimationFrame(animationFrameId);
       }
     };
+    // Note: currentParams not in deps to avoid restart on every frame update
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPaused, roundStarted, roundEnded, targetParams, transitionDurationMs]);
 
   // Pass current difficulty parameters to DecisionTree
