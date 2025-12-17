@@ -24,6 +24,7 @@ export { StaminaWarning } from "./StaminaWarning";
 // UI components
 export { CombatTimer } from "./CombatTimer";
 export { default as ControlsGuide } from "./ControlsGuide";
+export { DifficultyIndicator } from "./DifficultyIndicator";
 export { MatchCountdown } from "./MatchCountdown";
 export { PauseMenu } from "./PauseMenu";
 export { default as QuickSettings } from "./QuickSettings";
@@ -42,6 +43,7 @@ export type { CombatTimerProps } from "./CombatTimer";
 export type { ComboCounterProps } from "./ComboCounter";
 export type { ControlsGuideProps } from "./ControlsGuide";
 export type { DamageNumbersProps } from "./DamageNumbers";
+export type { DifficultyIndicatorProps } from "./DifficultyIndicator";
 export type { HitEffects3DProps } from "./HitEffects3D";
 export type { MatchCountdownProps } from "./MatchCountdown";
 export type { PauseMenuProps } from "./PauseMenu";

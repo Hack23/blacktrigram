@@ -52,7 +52,9 @@ import {
   AIDecisionTree,
   AIPersonality,
   CombatContext,
+  DifficultyParameters,
   getArchetypeBehavior,
+  interpolateDifficultyParameters,
 } from "@/systems/ai";
 import { PlayerState } from "@/systems/player";
 import { Position, TrigramStance, DamageType, CombatAttackType, PlayerArchetype } from "@/types";
@@ -469,6 +471,8 @@ interface UseAICombatReturn {
   readonly decisionTree: AIDecisionTree;
   readonly adjustedPersonality: AIPersonality;
   readonly executeAIAction: (action: string, targetPosition?: Position) => void;
+  readonly currentDifficultyParams: DifficultyParameters;
+  readonly updateDifficultyTarget: (newParams: DifficultyParameters) => void;
 }
 
 /**
@@ -509,6 +513,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [adaptiveDifficulty, decisionTree]);
 
+  // Difficulty parameters with smooth interpolation
+  const initialParams = useMemo(
+    () => adaptiveDifficulty.getDifficultyParameters(),
+    [] // Only get initial params once
+  );
+  const [currentParams, setCurrentParams] = useState<DifficultyParameters>(initialParams);
+  const [targetParams, setTargetParams] = useState<DifficultyParameters>(initialParams);
+  const transitionStartTimeRef = useRef(Date.now());
+  const transitionDurationMs = 10000; // 10 seconds for smooth transition
+
   // AI state - use useState lazy initializer for Date.now()
   const [aiState, setAiState] = useState<AIState>(() => {
     const now = Date.now();
@@ -544,6 +558,34 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived]);
 
+  // Smooth interpolation of difficulty parameters
+  useEffect(() => {
+    if (isPaused || !roundStarted || roundEnded) {
+      return;
+    }
+
+    const interpolationInterval = setInterval(() => {
+      const now = Date.now();
+      const elapsed = now - transitionStartTimeRef.current;
+      const progress = Math.min(1.0, elapsed / transitionDurationMs);
+
+      if (progress < 1.0) {
+        // Still interpolating
+        const interpolated = interpolateDifficultyParameters(
+          currentParams,
+          targetParams,
+          progress
+        );
+        setCurrentParams(interpolated);
+      } else if (progress >= 1.0 && currentParams !== targetParams) {
+        // Transition complete - snap to target
+        setCurrentParams(targetParams);
+      }
+    }, 16); // ~60fps update rate
+
+    return () => clearInterval(interpolationInterval);
+  }, [isPaused, roundStarted, roundEnded, currentParams, targetParams]);
+
   /**
    * Execute AI action callback
    * 
@@ -558,6 +600,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     },
     [onExecuteAction]
   );
+
+  /**
+   * Update difficulty target parameters
+   * Triggers smooth interpolation to new difficulty level
+   * 
+   * @korean 난이도 목표 매개변수 업데이트
+   */
+  const updateDifficultyTarget = useCallback((newParams: DifficultyParameters) => {
+    setTargetParams(newParams);
+    transitionStartTimeRef.current = Date.now();
+  }, []);
 
   /**
    * Build combat context for decision-making
@@ -807,5 +860,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     decisionTree,
     adjustedPersonality,
     executeAIAction,
+    currentDifficultyParams: currentParams,
+    updateDifficultyTarget,
   };
 }
