@@ -17,7 +17,7 @@
 import { AdaptiveDifficulty } from "@/systems/ai/AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
 import { PlayerState } from "@/systems/player";
-import { PlayerArchetype, Position, TrigramStance } from "@/types";
+import { PlayerArchetype, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAICombat } from "@/components/combat/hooks/useAICombat";
@@ -455,11 +455,7 @@ describe("AI Combat Integration", () => {
         
         // Verify action variety based on personality traits
         if (archetype === PlayerArchetype.MUSA || archetype === PlayerArchetype.JOJIK_POKRYEOKBAE) {
-          // Aggressive archetypes should have aggressive actions
-          const aggressiveActions = actions.filter((a) =>
-            ["attack", "technique", "approach"].includes(a)
-          );
-          // Should have at least some aggressive actions or any actions
+          // Aggressive archetypes should have some actions
           expect(actions.length).toBeGreaterThan(0);
         } else if (archetype === PlayerArchetype.AMSALJA) {
           // Amsalja should have varied technical actions

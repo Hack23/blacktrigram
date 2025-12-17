@@ -265,7 +265,7 @@ describe("AI Decision Performance", () => {
 
       const params = difficulty.getDifficultyParameters();
 
-      if (!params || !params.reactionTimeMs) {
+      if (!params?.reactionTimeMs) {
         throw new Error("Invalid difficulty parameters");
       }
     }
