@@ -20,6 +20,8 @@
     "test:systems:watch": "vitest src/systems",
     "test:systems:ui": "vitest --ui src/systems",
     "test:systems:coverage": "vitest run --coverage src/systems",
+    "test:ai-integration": "vitest run src/systems/ai/__tests__/AI-Combat-Integration.test.ts",
+    "test:ai-performance": "vitest bench src/systems/ai/__tests__/AI-Performance.bench.ts --run",
     "cypress:install": "cypress install",
     "cypress:verify": "cypress verify",
     "coverage": "vitest run --coverage --coverage.reportOnFailure ",
