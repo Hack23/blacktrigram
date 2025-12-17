@@ -586,6 +586,11 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     return () => clearInterval(interpolationInterval);
   }, [isPaused, roundStarted, roundEnded, currentParams, targetParams]);
 
+  // Pass current difficulty parameters to DecisionTree
+  useEffect(() => {
+    decisionTree.setDifficultyParameters(currentParams);
+  }, [decisionTree, currentParams]);
+
   /**
    * Execute AI action callback
    * 
