@@ -1,0 +1,421 @@
+/**
+ * Skeletal rigging types for articulated body model
+ * 
+ * Defines bone hierarchy, skeletal rig structure, and animation keyframes
+ * for realistic human-like fighter animations with independent limb movement.
+ * 
+ * @module types/skeletal
+ * @category Type Definitions
+ * @korean 골격타입
+ */
+
+import * as THREE from "three";
+
+/**
+ * Bone in skeletal rig hierarchy
+ * 
+ * Represents a single bone with position, rotation, scale, and parent-child relationships.
+ * Bones form a tree structure for realistic articulated body movement.
+ * 
+ * @public
+ * @category Skeletal System
+ * @korean 뼈
+ */
+export interface Bone {
+  /**
+   * Unique identifier for the bone
+   * @korean 이름
+   */
+  readonly name: string;
+
+  /**
+   * Parent bone (null for root bone)
+   * @korean 부모뼈
+   */
+  parent: Bone | null;
+
+  /**
+   * Local position relative to parent
+   * @korean 위치
+   */
+  position: THREE.Vector3;
+
+  /**
+   * Local rotation in Euler angles
+   * @korean 회전
+   */
+  rotation: THREE.Euler;
+
+  /**
+   * Local scale
+   * @korean 크기
+   */
+  scale: THREE.Vector3;
+
+  /**
+   * Child bones
+   * @korean 자식뼈들
+   */
+  children: Bone[];
+
+  /**
+   * Length of the bone (for rendering)
+   * @korean 길이
+   */
+  readonly length: number;
+
+  /**
+   * Rest pose position (default pose)
+   * @korean 기본위치
+   */
+  readonly restPosition: THREE.Vector3;
+
+  /**
+   * Rest pose rotation (default pose)
+   * @korean 기본회전
+   */
+  readonly restRotation: THREE.Euler;
+}
+
+/**
+ * Skeletal rig with complete bone hierarchy
+ * 
+ * Contains root bone and map of all bones for efficient lookup.
+ * Maximum 30 bones for 60fps performance.
+ * 
+ * @public
+ * @category Skeletal System
+ * @korean 골격
+ */
+export interface SkeletalRig {
+  /**
+   * Root bone (pelvis/center)
+   * @korean 뿌리뼈
+   */
+  readonly root: Bone;
+
+  /**
+   * Map of bone name to bone for fast lookup
+   * @korean 뼈맵
+   */
+  readonly bones: Map<string, Bone>;
+
+  /**
+   * Total number of bones in rig
+   * @korean 뼈개수
+   */
+  readonly boneCount: number;
+}
+
+/**
+ * Animation keyframe for skeletal animation
+ * 
+ * Defines bone transformations at a specific time in the animation.
+ * Keyframes are interpolated for smooth animation between poses.
+ * 
+ * @public
+ * @category Animation
+ * @korean 애니메이션키프레임
+ */
+export interface AnimationKeyframe {
+  /**
+   * Time in seconds from animation start
+   * @korean 시간
+   */
+  readonly time: number;
+
+  /**
+   * Bone rotations at this keyframe
+   * Map of bone name to rotation
+   * @korean 뼈회전들
+   */
+  readonly boneRotations: Map<string, THREE.Euler>;
+
+  /**
+   * Bone positions at this keyframe (optional, for IK or special moves)
+   * Map of bone name to position offset from rest pose
+   * @korean 뼈위치들
+   */
+  readonly bonePositions: Map<string, THREE.Vector3>;
+
+  /**
+   * Optional easing function name for interpolation
+   * @korean 이징함수
+   */
+  readonly easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out";
+}
+
+/**
+ * Complete skeletal animation sequence
+ * 
+ * Sequence of keyframes defining a complete animation
+ * (e.g., jab, cross, roundhouse kick).
+ * 
+ * @public
+ * @category Animation
+ * @korean 골격애니메이션
+ */
+export interface SkeletalAnimation {
+  /**
+   * Animation identifier
+   * @korean 이름
+   */
+  readonly name: string;
+
+  /**
+   * Korean name for animation
+   * @korean 한글이름
+   */
+  readonly koreanName: string;
+
+  /**
+   * Animation keyframes in chronological order
+   * @korean 키프레임들
+   */
+  readonly keyframes: AnimationKeyframe[];
+
+  /**
+   * Total duration in seconds
+   * @korean 지속시간
+   */
+  readonly duration: number;
+
+  /**
+   * Whether animation loops
+   * @korean 반복여부
+   */
+  readonly loop: boolean;
+
+  /**
+   * Animation type (attack, defense, stance change, etc.)
+   * @korean 애니메이션타입
+   */
+  readonly type: "attack" | "defense" | "stance" | "walk" | "idle";
+}
+
+/**
+ * Bone chain definition for IK (Inverse Kinematics)
+ * 
+ * Defines a chain of bones for IK solving (e.g., arm chain, leg chain).
+ * Used for realistic limb positioning and movement.
+ * 
+ * @public
+ * @category Skeletal System
+ * @korean 뼈체인
+ */
+export interface BoneChain {
+  /**
+   * Chain identifier
+   * @korean 이름
+   */
+  readonly name: string;
+
+  /**
+   * Start bone (e.g., shoulder for arm chain)
+   * @korean 시작뼈
+   */
+  readonly startBone: string;
+
+  /**
+   * End bone (e.g., hand for arm chain)
+   * @korean 끝뼈
+   */
+  readonly endBone: string;
+
+  /**
+   * Bones in chain from start to end
+   * @korean 뼈들
+   */
+  readonly bones: string[];
+
+  /**
+   * IK target position (for end effector)
+   * @korean IK목표
+   */
+  ikTarget?: THREE.Vector3;
+}
+
+/**
+ * Hand bone structure with 5 fingers
+ * 
+ * Simplified hand model with palm and 5 fingers.
+ * Each finger has 3 segments (proximal, middle, distal).
+ * 
+ * @public
+ * @category Skeletal System
+ * @korean 손뼈
+ */
+export interface HandBones {
+  /**
+   * Palm bone
+   * @korean 손바닥
+   */
+  readonly palm: Bone;
+
+  /**
+   * Thumb bones (3 segments)
+   * @korean 엄지손가락
+   */
+  readonly thumb: [Bone, Bone, Bone];
+
+  /**
+   * Index finger bones (3 segments)
+   * @korean 검지손가락
+   */
+  readonly index: [Bone, Bone, Bone];
+
+  /**
+   * Middle finger bones (3 segments)
+   * @korean 중지손가락
+   */
+  readonly middle: [Bone, Bone, Bone];
+
+  /**
+   * Ring finger bones (3 segments)
+   * @korean 약지손가락
+   */
+  readonly ring: [Bone, Bone, Bone];
+
+  /**
+   * Pinky finger bones (3 segments)
+   * @korean 새끼손가락
+   */
+  readonly pinky: [Bone, Bone, Bone];
+}
+
+/**
+ * Joint constraint for realistic movement
+ * 
+ * Defines rotation limits for joints (e.g., elbow can't bend backward).
+ * Ensures anatomically correct movement.
+ * 
+ * @public
+ * @category Skeletal System
+ * @korean 관절제약
+ */
+export interface JointConstraint {
+  /**
+   * Bone name this constraint applies to
+   * @korean 뼈이름
+   */
+  readonly boneName: string;
+
+  /**
+   * Minimum rotation angles (X, Y, Z) in radians
+   * @korean 최소회전
+   */
+  readonly minRotation: THREE.Vector3;
+
+  /**
+   * Maximum rotation angles (X, Y, Z) in radians
+   * @korean 최대회전
+   */
+  readonly maxRotation: THREE.Vector3;
+
+  /**
+   * Whether this joint can twist (rotate around its length)
+   * @korean 비틀기가능
+   */
+  readonly canTwist: boolean;
+}
+
+/**
+ * Bone names for humanoid rig
+ * 
+ * Standard bone naming convention for humanoid skeleton.
+ * Total: 28 bones (under 30 bone limit for performance).
+ * 
+ * @public
+ * @category Skeletal System
+ * @korean 뼈이름들
+ */
+export enum BoneName {
+  // Core (1 bone)
+  PELVIS = "pelvis",
+
+  // Spine (3 bones)
+  SPINE_LOWER = "spine_lower",
+  SPINE_MIDDLE = "spine_middle",
+  SPINE_UPPER = "spine_upper",
+
+  // Head (2 bones)
+  NECK = "neck",
+  HEAD = "head",
+
+  // Left Arm (6 bones)
+  SHOULDER_L = "shoulder_L",
+  UPPER_ARM_L = "upper_arm_L",
+  ELBOW_L = "elbow_L",
+  FOREARM_L = "forearm_L",
+  WRIST_L = "wrist_L",
+  HAND_L = "hand_L",
+
+  // Right Arm (6 bones)
+  SHOULDER_R = "shoulder_R",
+  UPPER_ARM_R = "upper_arm_R",
+  ELBOW_R = "elbow_R",
+  FOREARM_R = "forearm_R",
+  WRIST_R = "wrist_R",
+  HAND_R = "hand_R",
+
+  // Left Leg (5 bones)
+  HIP_L = "hip_L",
+  THIGH_L = "thigh_L",
+  KNEE_L = "knee_L",
+  SHIN_L = "shin_L",
+  FOOT_L = "foot_L",
+
+  // Right Leg (5 bones)
+  HIP_R = "hip_R",
+  THIGH_R = "thigh_R",
+  KNEE_R = "knee_R",
+  SHIN_R = "shin_R",
+  FOOT_R = "foot_R",
+}
+
+/**
+ * Animation state for skeletal player
+ * 
+ * Tracks current animation playback state for skeletal animations.
+ * 
+ * @public
+ * @category Animation
+ * @korean 애니메이션상태
+ */
+export interface SkeletalAnimationState {
+  /**
+   * Current animation being played
+   * @korean 현재애니메이션
+   */
+  currentAnimation: SkeletalAnimation | null;
+
+  /**
+   * Current time in animation (seconds)
+   * @korean 현재시간
+   */
+  currentTime: number;
+
+  /**
+   * Whether animation is playing
+   * @korean 재생중
+   */
+  isPlaying: boolean;
+
+  /**
+   * Animation playback speed multiplier
+   * @korean 재생속도
+   */
+  playbackSpeed: number;
+
+  /**
+   * Previous keyframe index
+   * @korean 이전키프레임
+   */
+  previousKeyframeIndex: number;
+
+  /**
+   * Next keyframe index
+   * @korean 다음키프레임
+   */
+  nextKeyframeIndex: number;
+}
