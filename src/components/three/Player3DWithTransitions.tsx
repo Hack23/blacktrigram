@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
-import Player3DUnified from "./Player3DUnified";
+import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
 import StanceAuraParticles from "./StanceAuraParticles";
 import StanceSymbol3D from "./StanceSymbol3D";
 import StanceTransitionEffect from "./StanceTransitionEffect";
@@ -148,7 +148,7 @@ export const Player3DWithTransitions: React.FC<
   return (
     <group data-testid="player3d-with-transitions">
       {/* Base player model */}
-      <Player3DUnified
+      <SkeletalPlayer3D
         stance={stance}
         ki={ki}
         isMobile={isMobile}

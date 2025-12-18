@@ -35,7 +35,7 @@ import {
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
-import { Player3DUnified } from "../three/Player3DUnified";
+import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { VolumeControl } from "../ui/VolumeControl";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
@@ -691,7 +691,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         )}
 
         {/* Player model */}
-        <Player3DUnified
+        <SkeletalPlayer3D
           {...convertPlayerStateToProps(
             trainingPlayerState,
             player3DPosition,

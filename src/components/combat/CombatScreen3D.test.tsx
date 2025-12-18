@@ -58,6 +58,16 @@ vi.mock("three", () => ({
     toArray() {
       return [this.x, this.y, this.z];
     }
+    length() {
+      return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+    normalize() {
+      const len = this.length();
+      if (len > 0) {
+        return new MockVector3(this.x / len, this.y / len, this.z / len);
+      }
+      return new MockVector3(0, 0, 0);
+    }
   },
   Euler: class MockEuler {
     constructor(public x = 0, public y = 0, public z = 0, public order = "XYZ") {}
@@ -84,6 +94,9 @@ vi.mock("three", () => ({
       return this;
     }
     slerpQuaternions(_qa: any, _qb: any, _t: number) {
+      return this;
+    }
+    setFromUnitVectors(_vFrom: any, _vTo: any) {
       return this;
     }
   },
