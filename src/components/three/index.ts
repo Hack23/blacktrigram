@@ -47,3 +47,10 @@ export type { StanceTransitionEffectProps } from "./StanceTransitionEffect";
 
 export { Player3DWithTransitions } from "./Player3DWithTransitions";
 export type { Player3DWithTransitionsProps } from "./Player3DWithTransitions";
+
+// Skeletal Animation Components
+export { SkeletalPlayer3D } from "./SkeletalPlayer3D";
+export { BoneRenderer } from "./BoneRenderer";
+export type { BoneRendererProps } from "./BoneRenderer";
+export { Hand3D } from "./Hand3D";
+export type { Hand3DProps } from "./Hand3D";
