@@ -175,7 +175,14 @@ const BoneMesh: React.FC<{
     ? bone.children[0].position.length()
     : 0.1;
 
-  const radius = 0.05;
+  // Bone thickness varies by bone type for realistic proportions
+  const radius = bone.name.includes("spine") || bone.name === "pelvis" 
+    ? 0.15  // Thicker torso/pelvis
+    : bone.name.includes("thigh") || bone.name.includes("upper_arm")
+    ? 0.10  // Medium limbs
+    : bone.name.includes("shin") || bone.name.includes("forearm")
+    ? 0.08  // Thinner lower limbs
+    : 0.05; // Thin extremities (hands, feet, neck)
 
   // Memoize geometry and material to avoid recreating them
   const geometry = useMemo(
@@ -419,6 +426,7 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
       ref={groupRef}
       position={position}
       rotation={[0, rotation, 0]}
+      scale={[2, 2, 2]}  // Scale up 2x to match Player3DUnified size
       data-testid={`skeletal-player3d-${playerId}`}
     >
       {/* Render bone hierarchy */}
