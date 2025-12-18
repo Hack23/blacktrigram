@@ -117,16 +117,22 @@ describe("SkeletalPlayer3D", () => {
   });
 
   describe("Default Values", () => {
-    it("should use default position if not provided", () => {
-      const { position: _position, ...propsWithoutPosition } = defaultProps;
+    it("should allow position to be optional", () => {
+      const { position, ...propsWithoutPosition } = defaultProps;
       const props = { ...propsWithoutPosition };
+      // Position is optional, so undefined is valid
       expect(props.position).toBeUndefined();
+      // Verify the destructured position exists in original
+      expect(position).toBeDefined();
     });
 
-    it("should use default animation if not provided", () => {
-      const { currentAnimation: _currentAnimation, ...propsWithoutAnimation } = defaultProps;
+    it("should allow animation to be optional", () => {
+      const { currentAnimation, ...propsWithoutAnimation } = defaultProps;
       const props = { ...propsWithoutAnimation };
+      // Animation is optional, so undefined is valid
       expect(props.currentAnimation).toBeUndefined();
+      // Verify the destructured animation exists in original
+      expect(currentAnimation).toBeDefined();
     });
   });
 
