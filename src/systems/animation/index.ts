@@ -52,6 +52,7 @@ export {
   FRONT_KICK_ANIMATION,
   ROUNDHOUSE_KICK_ANIMATION,
   BLOCK_ANIMATION,
+  WALK_ANIMATION,
   ATTACK_ANIMATIONS,
   getAnimation,
 } from "./AttackAnimations";

@@ -12,6 +12,7 @@ import {
   FRONT_KICK_ANIMATION,
   ROUNDHOUSE_KICK_ANIMATION,
   BLOCK_ANIMATION,
+  WALK_ANIMATION,
   ATTACK_ANIMATIONS,
   getAnimation,
 } from "./AttackAnimations";
@@ -247,8 +248,8 @@ describe("AttackAnimations", () => {
   });
 
   describe("ATTACK_ANIMATIONS map", () => {
-    it("should contain all 5 animations", () => {
-      expect(ATTACK_ANIMATIONS.size).toBe(5);
+    it("should contain all 6 animations", () => {
+      expect(ATTACK_ANIMATIONS.size).toBe(6);
     });
 
     it("should have jab animation", () => {
@@ -277,6 +278,11 @@ describe("AttackAnimations", () => {
       expect(ATTACK_ANIMATIONS.has("block")).toBe(true);
       expect(ATTACK_ANIMATIONS.get("block")).toBe(BLOCK_ANIMATION);
     });
+
+    it("should have walk animation", () => {
+      expect(ATTACK_ANIMATIONS.has("walk")).toBe(true);
+      expect(ATTACK_ANIMATIONS.get("walk")).toBe(WALK_ANIMATION);
+    });
   });
 
   describe("getAnimation", () => {
@@ -302,6 +308,7 @@ describe("AttackAnimations", () => {
         FRONT_KICK_ANIMATION,
         ROUNDHOUSE_KICK_ANIMATION,
         BLOCK_ANIMATION,
+        WALK_ANIMATION,
       ];
 
       allAnimations.forEach((anim) => {
@@ -317,6 +324,7 @@ describe("AttackAnimations", () => {
         FRONT_KICK_ANIMATION,
         ROUNDHOUSE_KICK_ANIMATION,
         BLOCK_ANIMATION,
+        WALK_ANIMATION,
       ];
 
       allAnimations.forEach((anim) => {
@@ -331,6 +339,7 @@ describe("AttackAnimations", () => {
         FRONT_KICK_ANIMATION,
         ROUNDHOUSE_KICK_ANIMATION,
         BLOCK_ANIMATION,
+        WALK_ANIMATION,
       ];
 
       allAnimations.forEach((anim) => {
@@ -351,6 +360,7 @@ describe("AttackAnimations", () => {
         FRONT_KICK_ANIMATION,
         ROUNDHOUSE_KICK_ANIMATION,
         BLOCK_ANIMATION,
+        WALK_ANIMATION,
       ];
 
       allAnimations.forEach((anim) => {
@@ -368,6 +378,91 @@ describe("AttackAnimations", () => {
 
     it("block animation should be marked as defense type", () => {
       expect(BLOCK_ANIMATION.type).toBe("defense");
+    });
+
+    it("walk animation should be marked as movement type", () => {
+      expect(WALK_ANIMATION.type).toBe("movement");
+    });
+  });
+
+  describe("WALK_ANIMATION", () => {
+    it("should have correct metadata", () => {
+      expect(WALK_ANIMATION.name).toBe("walk");
+      expect(WALK_ANIMATION.koreanName).toBe("걷기");
+      expect(WALK_ANIMATION.duration).toBe(0.8);
+      expect(WALK_ANIMATION.loop).toBe(true);
+      expect(WALK_ANIMATION.type).toBe("movement");
+    });
+
+    it("should have 5 keyframes for complete cycle", () => {
+      expect(WALK_ANIMATION.keyframes).toHaveLength(5);
+    });
+
+    it("should have keyframes in chronological order", () => {
+      for (let i = 1; i < WALK_ANIMATION.keyframes.length; i++) {
+        expect(WALK_ANIMATION.keyframes[i].time).toBeGreaterThan(
+          WALK_ANIMATION.keyframes[i - 1].time
+        );
+      }
+    });
+
+    it("should start at time 0", () => {
+      expect(WALK_ANIMATION.keyframes[0].time).toBe(0);
+    });
+
+    it("should end at duration time", () => {
+      const lastKeyframe =
+        WALK_ANIMATION.keyframes[WALK_ANIMATION.keyframes.length - 1];
+      expect(lastKeyframe.time).toBe(WALK_ANIMATION.duration);
+    });
+
+    it("should animate both legs", () => {
+      const firstKeyframe = WALK_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.HIP_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.HIP_R)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.KNEE_R)).toBe(true);
+    });
+
+    it("should have alternating leg movement", () => {
+      // Frame 1: Left foot forward
+      const frame1 = WALK_ANIMATION.keyframes[0];
+      const leftHipFrame1 = frame1.boneRotations.get(BoneName.HIP_L);
+      const rightHipFrame1 = frame1.boneRotations.get(BoneName.HIP_R);
+      
+      // Frame 3: Right foot forward (should be opposite)
+      const frame3 = WALK_ANIMATION.keyframes[2];
+      const leftHipFrame3 = frame3.boneRotations.get(BoneName.HIP_L);
+      const rightHipFrame3 = frame3.boneRotations.get(BoneName.HIP_R);
+
+      // Left hip should move from forward to back
+      expect(leftHipFrame1?.x).toBeLessThan(leftHipFrame3!.x);
+      // Right hip should move from back to forward
+      expect(rightHipFrame1?.x).toBeGreaterThan(rightHipFrame3!.x);
+    });
+
+    it("should animate arms opposite to legs", () => {
+      const firstKeyframe = WALK_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.SHOULDER_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.SHOULDER_R)).toBe(true);
+    });
+
+    it("should include pelvis movement for natural gait", () => {
+      const firstKeyframe = WALK_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.PELVIS)).toBe(true);
+      expect(firstKeyframe.bonePositions?.has(BoneName.PELVIS)).toBe(true);
+    });
+
+    it("should loop seamlessly", () => {
+      const firstFrame = WALK_ANIMATION.keyframes[0];
+      const lastFrame =
+        WALK_ANIMATION.keyframes[WALK_ANIMATION.keyframes.length - 1];
+      
+      // First and last frames should have similar rotations for smooth looping
+      const firstLeftHip = firstFrame.boneRotations.get(BoneName.HIP_L);
+      const lastLeftHip = lastFrame.boneRotations.get(BoneName.HIP_L);
+      
+      expect(firstLeftHip?.x).toBeCloseTo(lastLeftHip!.x, 1);
     });
   });
 });

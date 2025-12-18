@@ -187,10 +187,10 @@ export interface SkeletalAnimation {
   readonly loop: boolean;
 
   /**
-   * Animation type (attack, defense, stance change, etc.)
+   * Animation type (attack, defense, stance change, movement, etc.)
    * @korean 애니메이션타입
    */
-  readonly type: "attack" | "defense" | "stance" | "walk" | "idle";
+  readonly type: "attack" | "defense" | "stance" | "walk" | "idle" | "movement";
 }
 
 /**

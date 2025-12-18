@@ -478,9 +478,172 @@ export const BLOCK_ANIMATION: SkeletalAnimation = {
 };
 
 /**
- * All attack animations mapped by name
+ * Walking cycle animation (앞으로 걷기 - 보행 사이클)
  * 
- * @korean 모든공격애니메이션
+ * Natural walking gait with alternating leg movement. Includes hip swing,
+ * knee bend during swing phase, foot placement, and pelvis tilt.
+ * 
+ * Animation phases:
+ * 1. Left foot forward (0.0s): Left leg extends, right leg pushes off
+ * 2. Left mid-stance (0.2s): Left foot plants, right leg swings forward
+ * 3. Right foot forward (0.4s): Right leg extends, left leg pushes off
+ * 4. Right mid-stance (0.6s): Right foot plants, left leg swings forward
+ * 
+ * Duration: 800ms (complete left-right step cycle)
+ * 
+ * @korean 걷기애니메이션
+ */
+export const WALK_ANIMATION: SkeletalAnimation = {
+  name: "walk",
+  koreanName: "걷기",
+  duration: 0.8,
+  loop: true,
+  type: "movement",
+  keyframes: [
+    // Frame 1: Left foot forward contact (0.0s)
+    {
+      time: 0.0,
+      easing: "ease-out",
+      boneRotations: new Map([
+        // Pelvis tilt forward slightly
+        [BoneName.PELVIS, new THREE.Euler(0.1, 0.05, 0, "XYZ")],
+        // Left leg extended forward
+        [BoneName.HIP_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0.1, 0, 0, "XYZ")],
+        // Right leg pushing back
+        [BoneName.HIP_R, new THREE.Euler(0.4, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        // Arms swing opposite to legs
+        [BoneName.SHOULDER_L, new THREE.Euler(0.3, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.3, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.4, 0, 0, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.4, "XYZ")],
+        // Spine rotation for natural movement
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.05, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0.02, 0)],
+      ]),
+    },
+
+    // Frame 2: Left mid-stance, right leg swing (0.2s)
+    {
+      time: 0.2,
+      easing: "linear",
+      boneRotations: new Map([
+        // Pelvis level
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Left leg support (slightly bent)
+        [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Right leg swinging forward (knee bent)
+        [BoneName.HIP_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.8, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(0.2, 0, 0, "XYZ")],
+        // Arms swing
+        [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.2, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
+        // Spine neutral
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+
+    // Frame 3: Right foot forward contact (0.4s)
+    {
+      time: 0.4,
+      easing: "ease-out",
+      boneRotations: new Map([
+        // Pelvis tilt forward slightly
+        [BoneName.PELVIS, new THREE.Euler(0.1, -0.05, 0, "XYZ")],
+        // Right leg extended forward
+        [BoneName.HIP_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(0.1, 0, 0, "XYZ")],
+        // Left leg pushing back
+        [BoneName.HIP_L, new THREE.Euler(0.4, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        // Arms swing opposite to legs
+        [BoneName.SHOULDER_R, new THREE.Euler(0.3, 0, 0, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(-0.4, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.4, "XYZ")],
+        // Spine rotation for natural movement
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.05, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0.02, 0)],
+      ]),
+    },
+
+    // Frame 4: Right mid-stance, left leg swing (0.6s)
+    {
+      time: 0.6,
+      easing: "linear",
+      boneRotations: new Map([
+        // Pelvis level
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Right leg support (slightly bent)
+        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Left leg swinging forward (knee bent)
+        [BoneName.HIP_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.8, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0.2, 0, 0, "XYZ")],
+        // Arms swing
+        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.2, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.3, "XYZ")],
+        // Spine neutral
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+
+    // Frame 5: Return to start position (0.8s) - loops to frame 1
+    {
+      time: 0.8,
+      easing: "ease-in",
+      boneRotations: new Map([
+        // Return to left foot forward position
+        [BoneName.PELVIS, new THREE.Euler(0.1, 0.05, 0, "XYZ")],
+        [BoneName.HIP_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0.1, 0, 0, "XYZ")],
+        [BoneName.HIP_R, new THREE.Euler(0.4, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.3, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.3, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.4, 0, 0, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.4, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.05, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0.02, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * All skeletal animations mapped by name
+ * 
+ * Includes attack animations and movement animations.
+ * 
+ * @korean 모든골격애니메이션
  */
 export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   ["jab", JAB_ANIMATION],
@@ -488,6 +651,7 @@ export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   ["front_kick", FRONT_KICK_ANIMATION],
   ["roundhouse_kick", ROUNDHOUSE_KICK_ANIMATION],
   ["block", BLOCK_ANIMATION],
+  ["walk", WALK_ANIMATION],
 ]);
 
 /**
