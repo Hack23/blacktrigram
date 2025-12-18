@@ -32,3 +32,26 @@ export {
   buildTransitionMap,
   DEFAULT_TRANSITIONS,
 } from "./AnimationTransitions";
+
+// Skeletal animation system
+export {
+  createBone,
+  createHumanoidRig,
+  updateBoneWorldMatrices,
+  getBoneWorldPosition,
+  getBoneWorldRotation,
+  resetBone,
+  resetRigToBind,
+  cloneRig,
+} from "./SkeletonRig";
+
+export {
+  JAB_ANIMATION,
+  CROSS_ANIMATION,
+  FRONT_KICK_ANIMATION,
+  ROUNDHOUSE_KICK_ANIMATION,
+  BLOCK_ANIMATION,
+  FIGHTING_STANCE_ANIMATION,
+  IDLE_ANIMATION,
+  ANIMATION_CLIPS,
+} from "./AttackAnimations";

@@ -257,12 +257,12 @@ export interface AnimationClip {
 }
 
 /**
- * Animation playback state
+ * Skeletal animation playback state
  * 
  * @public
- * @korean 애니메이션재생상태
+ * @korean 골격애니메이션재생상태
  */
-export interface AnimationState {
+export interface SkeletalAnimationState {
   /**
    * Current animation clip
    * @korean 현재클립

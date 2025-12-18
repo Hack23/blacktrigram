@@ -47,3 +47,8 @@ export type { StanceTransitionEffectProps } from "./StanceTransitionEffect";
 
 export { Player3DWithTransitions } from "./Player3DWithTransitions";
 export type { Player3DWithTransitionsProps } from "./Player3DWithTransitions";
+
+export { SkeletalPlayer3D } from "./SkeletalPlayer3D";
+export type { SkeletalPlayer3DProps } from "./SkeletalPlayer3D";
+
+export { BackgroundScene3D } from "./BackgroundScene3D";
