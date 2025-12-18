@@ -170,10 +170,9 @@ const BoneMesh: React.FC<{
 }> = React.memo(({ bone, color, showDebug }) => {
   const worldPos = getBoneWorldPosition(bone);
 
-  // Calculate bone length (distance to first child in local space)
-  const length = bone.children.length > 0
-    ? bone.children[0].position.length()
-    : 0.1;
+  // Calculate bone length and direction to first child
+  const hasChild = bone.children.length > 0;
+  const length = hasChild ? bone.children[0].position.length() : 0.1;
 
   // Bone thickness varies by bone type for realistic proportions
   const radius = bone.name.includes("spine") || bone.name === "pelvis" 
@@ -183,6 +182,22 @@ const BoneMesh: React.FC<{
     : bone.name.includes("shin") || bone.name.includes("forearm")
     ? 0.08  // Thinner lower limbs
     : 0.05; // Thin extremities (hands, feet, neck)
+
+  // Calculate rotation to point toward child bone
+  const rotation = useMemo<[number, number, number]>(() => {
+    if (!hasChild) return [0, 0, 0];
+    
+    const childPos = bone.children[0].position;
+    // Create direction vector pointing to child
+    const direction = new THREE.Vector3(childPos.x, childPos.y, childPos.z).normalize();
+    
+    // Default capsule points along Y axis, rotate to align with direction
+    const defaultDirection = new THREE.Vector3(0, 1, 0);
+    const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultDirection, direction);
+    const euler = new THREE.Euler().setFromQuaternion(quaternion);
+    
+    return [euler.x, euler.y, euler.z];
+  }, [bone, hasChild]);
 
   // Memoize geometry and material to avoid recreating them
   const geometry = useMemo(
@@ -209,7 +224,7 @@ const BoneMesh: React.FC<{
   }, [geometry, material]);
 
   return (
-    <group position={worldPos.toArray()}>
+    <group position={worldPos.toArray()} rotation={rotation}>
       <mesh castShadow receiveShadow geometry={geometry} material={material} />
 
       {showDebug && (
