@@ -49,6 +49,43 @@ vi.mock("three", () => ({
   Mesh: class MockMesh {},
   Vector3: class MockVector3 {
     constructor(public x = 0, public y = 0, public z = 0) {}
+    clone() {
+      return new MockVector3(this.x, this.y, this.z);
+    }
+    add(v: MockVector3) {
+      return new MockVector3(this.x + v.x, this.y + v.y, this.z + v.z);
+    }
+    toArray() {
+      return [this.x, this.y, this.z];
+    }
+  },
+  Euler: class MockEuler {
+    constructor(public x = 0, public y = 0, public z = 0, public order = "XYZ") {}
+    clone() {
+      return new MockEuler(this.x, this.y, this.z, this.order);
+    }
+    copy(e: MockEuler) {
+      this.x = e.x;
+      this.y = e.y;
+      this.z = e.z;
+      this.order = e.order;
+      return this;
+    }
+    toArray() {
+      return [this.x, this.y, this.z, this.order];
+    }
+    setFromQuaternion(q: any) {
+      return this;
+    }
+  },
+  Quaternion: class MockQuaternion {
+    constructor(public x = 0, public y = 0, public z = 0, public w = 1) {}
+    setFromEuler(e: any) {
+      return this;
+    }
+    slerpQuaternions(qa: any, qb: any, t: number) {
+      return this;
+    }
   },
   MeshStandardMaterial: class MockMeshStandardMaterial {},
   DoubleSide: 2,

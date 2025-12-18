@@ -232,9 +232,9 @@ export const getInterpolatedKeyframe = (
 
   allBoneNames.forEach((boneName) => {
     const prevRotation =
-      prevKeyframe.boneRotations.get(boneName) || new THREE.Euler();
+      prevKeyframe.boneRotations.get(boneName) ?? new THREE.Euler();
     const nextRotation =
-      nextKeyframe.boneRotations.get(boneName) || new THREE.Euler();
+      nextKeyframe.boneRotations.get(boneName) ?? new THREE.Euler();
 
     const interpolated = interpolateRotation(
       prevRotation,
@@ -254,9 +254,9 @@ export const getInterpolatedKeyframe = (
 
   allPositionBones.forEach((boneName) => {
     const prevPosition =
-      prevKeyframe.bonePositions.get(boneName) || new THREE.Vector3();
+      prevKeyframe.bonePositions.get(boneName) ?? new THREE.Vector3();
     const nextPosition =
-      nextKeyframe.bonePositions.get(boneName) || new THREE.Vector3();
+      nextKeyframe.bonePositions.get(boneName) ?? new THREE.Vector3();
 
     const interpolated = interpolatePosition(
       prevPosition,
@@ -335,8 +335,8 @@ export const blendKeyframes = (
   ]);
 
   allBones.forEach((boneName) => {
-    const rot1 = keyframe1.boneRotations.get(boneName) || new THREE.Euler();
-    const rot2 = keyframe2.boneRotations.get(boneName) || new THREE.Euler();
+    const rot1 = keyframe1.boneRotations.get(boneName) ?? new THREE.Euler();
+    const rot2 = keyframe2.boneRotations.get(boneName) ?? new THREE.Euler();
     const blended = interpolateRotation(rot1, rot2, clampedBlend);
     boneRotations.set(boneName, blended);
   });
@@ -349,8 +349,8 @@ export const blendKeyframes = (
   ]);
 
   allPositionBones.forEach((boneName) => {
-    const pos1 = keyframe1.bonePositions.get(boneName) || new THREE.Vector3();
-    const pos2 = keyframe2.bonePositions.get(boneName) || new THREE.Vector3();
+    const pos1 = keyframe1.bonePositions.get(boneName) ?? new THREE.Vector3();
+    const pos2 = keyframe2.bonePositions.get(boneName) ?? new THREE.Vector3();
     const blended = interpolatePosition(pos1, pos2, clampedBlend);
     bonePositions.set(boneName, blended);
   });

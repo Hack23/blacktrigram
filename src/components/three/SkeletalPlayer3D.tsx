@@ -167,38 +167,43 @@ export const SkeletalPlayer3D: React.FC<
 
   // Load attack animation when currentAnimation changes
   useEffect(() => {
-    if (currentAnimation === "attack" && attackAnimation) {
-      const anim = getAnimation(attackAnimation);
-      if (anim) {
-        setAnimState({
-          currentAnimation: anim,
+    // Use setTimeout to avoid cascading renders
+    const timeoutId = setTimeout(() => {
+      if (currentAnimation === "attack" && attackAnimation) {
+        const anim = getAnimation(attackAnimation);
+        if (anim) {
+          setAnimState({
+            currentAnimation: anim,
+            currentTime: 0,
+            isPlaying: true,
+            playbackSpeed: 1.0,
+            previousKeyframeIndex: 0,
+            nextKeyframeIndex: 1,
+          });
+        }
+      } else if (currentAnimation === "defend" || isBlocking) {
+        const blockAnim = getAnimation("block");
+        if (blockAnim) {
+          setAnimState({
+            currentAnimation: blockAnim,
+            currentTime: 0,
+            isPlaying: true,
+            playbackSpeed: 1.0,
+            previousKeyframeIndex: 0,
+            nextKeyframeIndex: 1,
+          });
+        }
+      } else {
+        // Reset to idle
+        setAnimState((prev) => ({
+          ...prev,
+          isPlaying: false,
           currentTime: 0,
-          isPlaying: true,
-          playbackSpeed: 1.0,
-          previousKeyframeIndex: 0,
-          nextKeyframeIndex: 1,
-        });
+        }));
       }
-    } else if (currentAnimation === "defend" || isBlocking) {
-      const blockAnim = getAnimation("block");
-      if (blockAnim) {
-        setAnimState({
-          currentAnimation: blockAnim,
-          currentTime: 0,
-          isPlaying: true,
-          playbackSpeed: 1.0,
-          previousKeyframeIndex: 0,
-          nextKeyframeIndex: 1,
-        });
-      }
-    } else {
-      // Reset to idle
-      setAnimState((prev) => ({
-        ...prev,
-        isPlaying: false,
-        currentTime: 0,
-      }));
-    }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [currentAnimation, attackAnimation, isBlocking]);
 
   // Animation loop using useFrame (60fps)
