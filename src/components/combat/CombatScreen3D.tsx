@@ -63,7 +63,7 @@ import { GestureEvent } from "../../hooks/useTouchControls";
 import { Technique } from "../../types";
 import {
   animationStateToPlayerAnimation,
-  convertPlayerStateToProps,
+  playerAnimationToSkeletalClip,
   getBalanceState,
 } from "../../utils/player3DHelpers";
 import {
@@ -74,7 +74,7 @@ import {
 } from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
-import { Player3DUnified } from "../three/Player3DUnified";
+import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
@@ -1556,35 +1556,27 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <CombatArena3D lighting="cyberpunk" />
 
         {/* Player 1 */}
-        <Player3DUnified
-          {...convertPlayerStateToProps(
-            validPlayers[0],
-            player1Position3D,
-            0, // rotation - facing right
-            {
-              isMobile,
-              facing: "right",
-            }
+        <SkeletalPlayer3D
+          playerId={validPlayers[0].id}
+          position={player1Position3D}
+          rotation={0} // facing right
+          currentAnimation={playerAnimationToSkeletalClip(
+            animationStateToPlayerAnimation(player1Animation.currentState)
           )}
-          currentAnimation={animationStateToPlayerAnimation(
-            player1Animation.currentState
-          )}
+          bodyColor={KOREAN_COLORS.PRIMARY_CYAN}
+          showHands={true}
         />
 
         {/* Player 2 (AI) */}
-        <Player3DUnified
-          {...convertPlayerStateToProps(
-            validPlayers[1],
-            player2Position3D,
-            Math.PI, // rotation - facing left (180 degrees)
-            {
-              isMobile,
-              facing: "left",
-            }
+        <SkeletalPlayer3D
+          playerId={validPlayers[1].id}
+          position={player2Position3D}
+          rotation={Math.PI} // facing left (180 degrees)
+          currentAnimation={playerAnimationToSkeletalClip(
+            animationStateToPlayerAnimation(player2Animation.currentState)
           )}
-          currentAnimation={animationStateToPlayerAnimation(
-            player2Animation.currentState
-          )}
+          bodyColor={KOREAN_COLORS.ACCENT_GOLD}
+          showHands={true}
         />
 
         {/* Hit Effects */}

@@ -44,18 +44,13 @@ vi.mock("@react-three/drei", () => ({
 }));
 
 // Mock Three.js
-vi.mock("three", () => ({
-  Group: class MockGroup {},
-  Mesh: class MockMesh {},
-  Vector3: class MockVector3 {
-    constructor(public x = 0, public y = 0, public z = 0) {}
-  },
-  MeshStandardMaterial: class MockMeshStandardMaterial {},
-  DoubleSide: 2,
-  Color: class MockColor {},
-  BoxGeometry: class MockBoxGeometry {},
-  SphereGeometry: class MockSphereGeometry {},
-}));
+vi.mock("three", async () => {
+  const actual = await vi.importActual("three");
+  return {
+    ...actual,
+    // Keep actual Three.js exports for skeletal system
+  };
+});
 
 describe("CombatScreen3D", () => {
   let mockPlayers: PlayerState[];

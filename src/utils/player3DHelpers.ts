@@ -41,6 +41,38 @@ export function animationStateToPlayerAnimation(animState: AnimationState): Play
 }
 
 /**
+ * Convert PlayerAnimation to skeletal animation clip name
+ * 
+ * Maps Player3DUnified animation types to SkeletalPlayer3D clip names.
+ * 
+ * @param playerAnim - Animation type from Player3DUnified
+ * @returns Skeletal animation clip name
+ * @korean 골격애니메이션변환
+ */
+export function playerAnimationToSkeletalClip(playerAnim: PlayerAnimation): string {
+  switch (playerAnim) {
+    case "idle":
+      return "idle";
+    case "walk":
+      return "fighting_stance"; // Walking uses fighting stance animation
+    case "attack":
+      return "jab"; // Default attack uses jab
+    case "defend":
+      return "block";
+    case "hit":
+      return "idle"; // Hit reaction uses idle (can be extended later)
+    case "stance_change":
+      return "fighting_stance";
+    case "counter":
+      return "cross"; // Counter uses cross punch
+    case "death":
+      return "idle"; // Death uses idle (can be extended later)
+    default:
+      return "idle";
+  }
+}
+
+/**
  * Convert balance number (0-100) to BalanceState enum
  * 
  * @param balance - Balance value from PlayerState (0-100)

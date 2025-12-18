@@ -7,6 +7,14 @@ import { describe, it, expect, vi } from "vitest";
 import TrainingScreen3D from "./TrainingScreen3D";
 
 // Mock Three.js and React Three Fiber
+vi.mock("three", async () => {
+  const actual = await vi.importActual("three");
+  return {
+    ...actual,
+    // Keep actual Three.js exports for skeletal system
+  };
+});
+
 vi.mock("@react-three/fiber", () => ({
   Canvas: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="three-canvas">{children}</div>

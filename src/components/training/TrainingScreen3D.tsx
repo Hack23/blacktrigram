@@ -24,7 +24,7 @@ import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import {
   animationStateToPlayerAnimation,
-  convertPlayerStateToProps,
+  playerAnimationToSkeletalClip,
 } from "../../utils/player3DHelpers";
 import {
   ActionButtons,
@@ -35,7 +35,7 @@ import {
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
-import { Player3DUnified } from "../three/Player3DUnified";
+import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { VolumeControl } from "../ui/VolumeControl";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
@@ -691,19 +691,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         )}
 
         {/* Player model */}
-        <Player3DUnified
-          {...convertPlayerStateToProps(
-            trainingPlayerState,
-            player3DPosition,
-            0, // rotation - facing right towards dummy
-            {
-              isMobile,
-              facing: "right",
-            }
+        <SkeletalPlayer3D
+          playerId={trainingPlayerState.id}
+          position={player3DPosition}
+          rotation={0} // facing right towards dummy
+          currentAnimation={playerAnimationToSkeletalClip(
+            animationStateToPlayerAnimation(playerAnimation.currentState)
           )}
-          currentAnimation={animationStateToPlayerAnimation(
-            playerAnimation.currentState
-          )}
+          bodyColor={KOREAN_COLORS.PRIMARY_CYAN}
+          showHands={true}
         />
 
         {/* Hit effects */}

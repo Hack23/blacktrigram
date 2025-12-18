@@ -146,9 +146,9 @@ export const createHumanoidRig = (): SkeletalRig => {
   };
 };
 
-// Reusable objects to avoid allocations in hot path
-const _quaternion = new THREE.Quaternion();
-const _localMatrix = new THREE.Matrix4();
+// Reusable objects to avoid allocations in hot path (lazy initialization)
+let _quaternion: THREE.Quaternion | null = null;
+let _localMatrix: THREE.Matrix4 | null = null;
 
 /**
  * Update world matrices for entire bone hierarchy
@@ -164,6 +164,10 @@ export const updateBoneWorldMatrices = (
   bone: Bone,
   parentWorldMatrix: THREE.Matrix4 = new THREE.Matrix4()
 ): void => {
+  // Lazy initialize reusable objects
+  if (!_quaternion) _quaternion = new THREE.Quaternion();
+  if (!_localMatrix) _localMatrix = new THREE.Matrix4();
+
   // Compute local transform matrix (reuse objects to avoid allocations)
   _quaternion.setFromEuler(bone.rotation);
   _localMatrix.compose(bone.position, _quaternion, bone.scale);
@@ -194,10 +198,10 @@ export const getBoneWorldPosition = (
   return position;
 };
 
-// Reusable objects for getBoneWorldRotation
-const _rotQuaternion = new THREE.Quaternion();
-const _rotScale = new THREE.Vector3();
-const _rotPosition = new THREE.Vector3();
+// Reusable objects for getBoneWorldRotation (lazy initialization)
+let _rotQuaternion: THREE.Quaternion | null = null;
+let _rotScale: THREE.Vector3 | null = null;
+let _rotPosition: THREE.Vector3 | null = null;
 
 /**
  * Get world rotation of a bone
@@ -210,6 +214,11 @@ const _rotPosition = new THREE.Vector3();
  * @korean 뼈월드회전
  */
 export const getBoneWorldRotation = (bone: Bone): THREE.Euler => {
+  // Lazy initialize reusable objects
+  if (!_rotQuaternion) _rotQuaternion = new THREE.Quaternion();
+  if (!_rotScale) _rotScale = new THREE.Vector3();
+  if (!_rotPosition) _rotPosition = new THREE.Vector3();
+
   bone.worldMatrix.decompose(_rotPosition, _rotQuaternion, _rotScale);
   return new THREE.Euler().setFromQuaternion(_rotQuaternion);
 };
