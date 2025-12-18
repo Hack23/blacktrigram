@@ -74,16 +74,16 @@ vi.mock("three", () => ({
     toArray() {
       return [this.x, this.y, this.z, this.order];
     }
-    setFromQuaternion(q: any) {
+    setFromQuaternion(_q: any) {
       return this;
     }
   },
   Quaternion: class MockQuaternion {
     constructor(public x = 0, public y = 0, public z = 0, public w = 1) {}
-    setFromEuler(e: any) {
+    setFromEuler(_e: any) {
       return this;
     }
-    slerpQuaternions(qa: any, qb: any, t: number) {
+    slerpQuaternions(_qa: any, _qb: any, _t: number) {
       return this;
     }
   },
