@@ -68,10 +68,12 @@ export function playerAnimationToSkeletalClip(playerAnim: PlayerAnimation): stri
     case "death":
       return "idle"; // Death uses idle (can be extended later)
     default:
-      console.warn(
-        "[playerAnimationToSkeletalClip] Unknown PlayerAnimation value received:",
-        playerAnim
-      );
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          "[playerAnimationToSkeletalClip] Unknown PlayerAnimation value received:",
+          playerAnim
+        );
+      }
       return "idle";
   }
 }

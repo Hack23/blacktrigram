@@ -109,23 +109,18 @@ const interpolateKeyframes = (
   const duration = nextKeyframe.time - prevKeyframe.time;
   const t = duration > 0 ? (time - prevKeyframe.time) / duration : 0;
 
-  // Collect bone names (reuse array iteration instead of Set)
-  const boneNames: string[] = [];
+  // Collect unique bone names from both keyframes
   const seenBones = new Set<string>();
-  
+
   for (const transform of prevKeyframe.transforms) {
-    if (!seenBones.has(transform.boneName)) {
-      boneNames.push(transform.boneName);
-      seenBones.add(transform.boneName);
-    }
+    seenBones.add(transform.boneName);
   }
-  
+
   for (const transform of nextKeyframe.transforms) {
-    if (!seenBones.has(transform.boneName)) {
-      boneNames.push(transform.boneName);
-      seenBones.add(transform.boneName);
-    }
+    seenBones.add(transform.boneName);
   }
+
+  const boneNames = Array.from(seenBones);
 
   // Interpolate each bone
   for (const boneName of boneNames) {
@@ -172,6 +167,11 @@ const BoneMesh: React.FC<{
   const hasChild = bone.children.length > 0;
   const childOffset = hasChild ? bone.children[0].position : new THREE.Vector3(0, 0.1, 0);
   const boneLength = childOffset.length();
+  
+  // Extract child offset components for stable useMemo dependencies
+  const childX = childOffset.x;
+  const childY = childOffset.y;
+  const childZ = childOffset.z;
 
   // Bone thickness varies by bone type for realistic proportions
   const radius = bone.name.includes("spine") || bone.name === "pelvis" 
@@ -188,7 +188,7 @@ const BoneMesh: React.FC<{
     if (!hasChild || boneLength < 0.001) return [0, 0, 0];
     
     // Direction from this bone to child (in local space)
-    const direction = childOffset.clone().normalize();
+    const direction = new THREE.Vector3(childX, childY, childZ).normalize();
     
     // Rotate Y axis to align with child direction
     const yAxis = new THREE.Vector3(0, 1, 0);
@@ -196,13 +196,13 @@ const BoneMesh: React.FC<{
     const euler = new THREE.Euler().setFromQuaternion(quaternion);
     
     return [euler.x, euler.y, euler.z];
-  }, [hasChild, boneLength, childOffset.x, childOffset.y, childOffset.z]);
+  }, [hasChild, boneLength, childX, childY, childZ]);
 
   // Position capsule halfway between this bone and child (capsule center point)
   const capsulePosition = useMemo<[number, number, number]>(() => {
     if (!hasChild) return [0, 0, 0];
-    return [childOffset.x / 2, childOffset.y / 2, childOffset.z / 2];
-  }, [hasChild, childOffset.x, childOffset.y, childOffset.z]);
+    return [childX / 2, childY / 2, childZ / 2];
+  }, [hasChild, childX, childY, childZ]);
 
   // Memoize geometry and material to avoid recreating them
   const geometry = useMemo(
@@ -433,11 +433,15 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
       const bone = rig.bones.get(boneName as BoneName);
       if (bone) {
         bone.rotation.copy(transform.rotation);
-        // Position offsets: apply relative to bind pose, not accumulate
-        if (transform.position.lengthSq() > 0.0001) {
-          const bindPos = bindPose.get(boneName);
-          if (bindPos) {
-            bone.position.copy(bindPos).add(transform.position);
+        
+        // Position offsets: always reset to bind pose, then apply offset (do not accumulate)
+        const bindPos = bindPose.get(boneName);
+        if (bindPos) {
+          // Start from bind pose every frame
+          bone.position.copy(bindPos);
+          // Then apply any non-trivial positional offset
+          if (transform.position.lengthSq() > 0.0001) {
+            bone.position.add(transform.position);
           }
         }
       }
@@ -464,12 +468,14 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
       {showHands && (() => {
         const handL = rig.bones.get("hand_L");
         const handR = rig.bones.get("hand_R");
-        return handL && handR ? (
+        if (!handL || !handR) return null;
+        
+        return (
           <>
             <HandGeometry side="L" color={bodyColor} bone={handL} />
             <HandGeometry side="R" color={bodyColor} bone={handR} />
           </>
-        ) : null;
+        );
       })()}
     </group>
   );
