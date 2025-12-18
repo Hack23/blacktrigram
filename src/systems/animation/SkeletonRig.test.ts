@@ -16,7 +16,6 @@ import {
   resetRigToBind,
   cloneRig,
 } from "./SkeletonRig";
-import type { Bone } from "../../types/skeletal";
 
 describe("SkeletonRig", () => {
   describe("createBone", () => {

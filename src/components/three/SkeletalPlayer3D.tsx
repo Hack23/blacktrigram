@@ -14,7 +14,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
-import type { AnimationClip, SkeletalAnimationState, Bone } from "../../types/skeletal";
+import type { AnimationClip, SkeletalAnimationState, Bone, BoneName } from "../../types/skeletal";
 import {
   createHumanoidRig,
   updateBoneWorldMatrices,
@@ -72,12 +72,15 @@ export interface SkeletalPlayer3DProps {
   readonly showHands?: boolean;
 }
 
-// Reusable objects for interpolation to avoid allocations
-const _defaultEuler = new THREE.Euler(0, 0, 0);
-const _defaultVector = new THREE.Vector3(0, 0, 0);
+// Reusable objects for interpolation to avoid allocations (frozen to prevent mutations)
+const _defaultEuler: Readonly<THREE.Euler> = Object.freeze(new THREE.Euler(0, 0, 0));
+const _defaultVector: Readonly<THREE.Vector3> = Object.freeze(new THREE.Vector3(0, 0, 0));
 
 /**
  * Interpolate between two keyframes
+ * 
+ * Performance note: Creates new Euler/Vector3 for Map storage (required).
+ * Optimized by avoiding unnecessary intermediate allocations.
  * 
  * @param clip - Animation clip with keyframes
  * @param time - Current time in animation
@@ -106,12 +109,26 @@ const interpolateKeyframes = (
   const duration = nextKeyframe.time - prevKeyframe.time;
   const t = duration > 0 ? (time - prevKeyframe.time) / duration : 0;
 
-  // Interpolate each bone
-  const allBoneNames = new Set<string>();
-  prevKeyframe.transforms.forEach((t) => allBoneNames.add(t.boneName));
-  nextKeyframe.transforms.forEach((t) => allBoneNames.add(t.boneName));
+  // Collect bone names (reuse array iteration instead of Set)
+  const boneNames: string[] = [];
+  const seenBones = new Set<string>();
+  
+  for (const transform of prevKeyframe.transforms) {
+    if (!seenBones.has(transform.boneName)) {
+      boneNames.push(transform.boneName);
+      seenBones.add(transform.boneName);
+    }
+  }
+  
+  for (const transform of nextKeyframe.transforms) {
+    if (!seenBones.has(transform.boneName)) {
+      boneNames.push(transform.boneName);
+      seenBones.add(transform.boneName);
+    }
+  }
 
-  allBoneNames.forEach((boneName) => {
+  // Interpolate each bone
+  for (const boneName of boneNames) {
     const prevTransform = prevKeyframe.transforms.find((t) => t.boneName === boneName);
     const nextTransform = nextKeyframe.transforms.find((t) => t.boneName === boneName);
 
@@ -119,20 +136,20 @@ const interpolateKeyframes = (
     const prevRot = prevTransform?.rotation ?? _defaultEuler;
     const nextRot = nextTransform?.rotation ?? _defaultEuler;
 
+    // Create new Euler for this bone (required for Map storage)
     const rotation = new THREE.Euler(
       THREE.MathUtils.lerp(prevRot.x, nextRot.x, t),
       THREE.MathUtils.lerp(prevRot.y, nextRot.y, t),
       THREE.MathUtils.lerp(prevRot.z, nextRot.z, t)
     );
 
-    // Interpolate position (optional, reuse defaults)
+    // Interpolate position (create new Vector3 for Map storage)
     const prevPos = prevTransform?.position ?? _defaultVector;
     const nextPos = nextTransform?.position ?? _defaultVector;
-
     const position = new THREE.Vector3().lerpVectors(prevPos, nextPos, t);
 
     transforms.set(boneName, { rotation, position });
-  });
+  }
 
   return transforms;
 };
@@ -251,13 +268,34 @@ const HandGeometry: React.FC<{
   const worldPos = getBoneWorldPosition(bone);
   const xOffset = side === "L" ? -0.08 : 0.08;
 
+  // Memoize palm geometry and material to avoid recreating every frame
+  const palmGeometry = useMemo(() => new THREE.BoxGeometry(0.06, 0.1, 0.02), []);
+  const palmMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color }), [color]);
+
+  // Memoize finger geometry and material to avoid recreating every frame
+  const fingerGeometry = useMemo(() => new THREE.CapsuleGeometry(0.005, 0.04, 4, 8), []);
+  const fingerMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color }), [color]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      palmGeometry.dispose();
+      palmMaterial.dispose();
+      fingerGeometry.dispose();
+      fingerMaterial.dispose();
+    };
+  }, [palmGeometry, palmMaterial, fingerGeometry, fingerMaterial]);
+
   return (
     <group position={worldPos.toArray()}>
       {/* Palm */}
-      <mesh castShadow receiveShadow position={[xOffset, 0, 0]}>
-        <boxGeometry args={[0.06, 0.1, 0.02]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
+      <mesh 
+        castShadow 
+        receiveShadow 
+        position={[xOffset, 0, 0]}
+        geometry={palmGeometry}
+        material={palmMaterial}
+      />
 
       {/* Five fingers */}
       {[0, 1, 2, 3, 4].map((fingerIndex) => {
@@ -269,10 +307,9 @@ const HandGeometry: React.FC<{
             castShadow
             receiveShadow
             position={[fingerX, 0.06, fingerOffset]}
-          >
-            <capsuleGeometry args={[0.005, 0.04, 4, 8]} />
-            <meshStandardMaterial color={color} />
-          </mesh>
+            geometry={fingerGeometry}
+            material={fingerMaterial}
+          />
         );
       })}
     </group>
@@ -358,7 +395,7 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
 
     // Apply transforms to bones
     transforms.forEach((transform, boneName) => {
-      const bone = rig.bones.get(boneName as any);
+      const bone = rig.bones.get(boneName as BoneName);
       if (bone) {
         bone.rotation.copy(transform.rotation);
         // Position offsets: apply relative to bind pose, not accumulate

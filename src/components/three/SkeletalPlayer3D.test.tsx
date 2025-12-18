@@ -118,13 +118,13 @@ describe("SkeletalPlayer3D", () => {
 
   describe("Default Values", () => {
     it("should use default position if not provided", () => {
-      const { position, ...propsWithoutPosition } = defaultProps;
+      const { position: _position, ...propsWithoutPosition } = defaultProps;
       const props = { ...propsWithoutPosition };
       expect(props.position).toBeUndefined();
     });
 
     it("should use default animation if not provided", () => {
-      const { currentAnimation, ...propsWithoutAnimation } = defaultProps;
+      const { currentAnimation: _currentAnimation, ...propsWithoutAnimation } = defaultProps;
       const props = { ...propsWithoutAnimation };
       expect(props.currentAnimation).toBeUndefined();
     });
