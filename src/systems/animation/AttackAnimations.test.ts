@@ -13,6 +13,10 @@ import {
   ROUNDHOUSE_KICK_ANIMATION,
   BLOCK_ANIMATION,
   WALK_ANIMATION,
+  IDLE_STANCE_ANIMATION,
+  FORWARD_DASH_ANIMATION,
+  BACKWARD_RETREAT_ANIMATION,
+  SIDE_STEP_ANIMATION,
   ATTACK_ANIMATIONS,
   getAnimation,
 } from "./AttackAnimations";
@@ -125,13 +129,13 @@ describe("AttackAnimations", () => {
     it("should have correct metadata", () => {
       expect(FRONT_KICK_ANIMATION.name).toBe("front_kick");
       expect(FRONT_KICK_ANIMATION.koreanName).toBe("앞차기");
-      expect(FRONT_KICK_ANIMATION.duration).toBe(0.45);
+      expect(FRONT_KICK_ANIMATION.duration).toBe(0.55); // Enhanced with recovery
       expect(FRONT_KICK_ANIMATION.loop).toBe(false);
       expect(FRONT_KICK_ANIMATION.type).toBe("attack");
     });
 
-    it("should have 4 keyframes", () => {
-      expect(FRONT_KICK_ANIMATION.keyframes).toHaveLength(4);
+    it("should have 5 keyframes (enhanced with recovery)", () => {
+      expect(FRONT_KICK_ANIMATION.keyframes).toHaveLength(5);
     });
 
     it("should animate right leg bones", () => {
@@ -169,13 +173,13 @@ describe("AttackAnimations", () => {
     it("should have correct metadata", () => {
       expect(ROUNDHOUSE_KICK_ANIMATION.name).toBe("roundhouse_kick");
       expect(ROUNDHOUSE_KICK_ANIMATION.koreanName).toBe("돌려차기");
-      expect(ROUNDHOUSE_KICK_ANIMATION.duration).toBe(0.5);
+      expect(ROUNDHOUSE_KICK_ANIMATION.duration).toBe(0.6); // Enhanced with recovery
       expect(ROUNDHOUSE_KICK_ANIMATION.loop).toBe(false);
       expect(ROUNDHOUSE_KICK_ANIMATION.type).toBe("attack");
     });
 
-    it("should have 5 keyframes", () => {
-      expect(ROUNDHOUSE_KICK_ANIMATION.keyframes).toHaveLength(5);
+    it("should have 6 keyframes (enhanced with recovery)", () => {
+      expect(ROUNDHOUSE_KICK_ANIMATION.keyframes).toHaveLength(6);
     });
 
     it("should have hip rotation for circular motion", () => {
@@ -248,8 +252,8 @@ describe("AttackAnimations", () => {
   });
 
   describe("ATTACK_ANIMATIONS map", () => {
-    it("should contain all 6 animations", () => {
-      expect(ATTACK_ANIMATIONS.size).toBe(6);
+    it("should contain all 10 animations", () => {
+      expect(ATTACK_ANIMATIONS.size).toBe(10); // 5 attacks + 1 walk + 4 new animations
     });
 
     it("should have jab animation", () => {
@@ -463,6 +467,210 @@ describe("AttackAnimations", () => {
       const lastLeftHip = lastFrame.boneRotations.get(BoneName.HIP_L);
       
       expect(firstLeftHip?.x).toBeCloseTo(lastLeftHip!.x, 1);
+    });
+  });
+
+  describe("IDLE_STANCE_ANIMATION", () => {
+    it("should have correct metadata", () => {
+      expect(IDLE_STANCE_ANIMATION.name).toBe("idle_stance");
+      expect(IDLE_STANCE_ANIMATION.koreanName).toBe("대기 자세");
+      expect(IDLE_STANCE_ANIMATION.duration).toBe(3.0);
+      expect(IDLE_STANCE_ANIMATION.loop).toBe(true);
+      expect(IDLE_STANCE_ANIMATION.type).toBe("idle");
+    });
+
+    it("should have 5 keyframes", () => {
+      expect(IDLE_STANCE_ANIMATION.keyframes).toHaveLength(5);
+    });
+
+    it("should have slight knee bend for fighting stance", () => {
+      const firstKeyframe = IDLE_STANCE_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.KNEE_R)).toBe(true);
+    });
+
+    it("should include breathing motion through spine", () => {
+      const breathingKeyframe = IDLE_STANCE_ANIMATION.keyframes[1];
+      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
+      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
+      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
+    });
+
+    it("should have weight shift in pelvis", () => {
+      const shiftKeyframe = IDLE_STANCE_ANIMATION.keyframes[1];
+      expect(shiftKeyframe.boneRotations.has(BoneName.PELVIS)).toBe(true);
+      expect(shiftKeyframe.bonePositions?.has(BoneName.PELVIS)).toBe(true);
+    });
+
+    it("should maintain guard position", () => {
+      const firstKeyframe = IDLE_STANCE_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.SHOULDER_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.SHOULDER_R)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.ELBOW_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.ELBOW_R)).toBe(true);
+    });
+  });
+
+  describe("FORWARD_DASH_ANIMATION", () => {
+    it("should have correct metadata", () => {
+      expect(FORWARD_DASH_ANIMATION.name).toBe("forward_dash");
+      expect(FORWARD_DASH_ANIMATION.koreanName).toBe("앞으로 돌진");
+      expect(FORWARD_DASH_ANIMATION.duration).toBe(0.4);
+      expect(FORWARD_DASH_ANIMATION.loop).toBe(false);
+      expect(FORWARD_DASH_ANIMATION.type).toBe("movement");
+    });
+
+    it("should have 4 keyframes", () => {
+      expect(FORWARD_DASH_ANIMATION.keyframes).toHaveLength(4);
+    });
+
+    it("should start with deep crouch", () => {
+      const firstKeyframe = FORWARD_DASH_ANIMATION.keyframes[0];
+      const leftKnee = firstKeyframe.boneRotations.get(BoneName.KNEE_L);
+      const rightKnee = firstKeyframe.boneRotations.get(BoneName.KNEE_R);
+      
+      // Both knees should be significantly bent (negative rotation)
+      expect(leftKnee).toBeDefined();
+      expect(rightKnee).toBeDefined();
+      expect(leftKnee!.x).toBeLessThan(-0.5);
+      expect(rightKnee!.x).toBeLessThan(-0.5);
+    });
+
+    it("should have explosive knee extension", () => {
+      const driveKeyframe = FORWARD_DASH_ANIMATION.keyframes[1];
+      expect(driveKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(driveKeyframe.boneRotations.has(BoneName.KNEE_R)).toBe(true);
+      expect(driveKeyframe.bonePositions?.has(BoneName.PELVIS)).toBe(true);
+    });
+
+    it("should move pelvis forward", () => {
+      const driveKeyframe = FORWARD_DASH_ANIMATION.keyframes[1];
+      const pelvisPos = driveKeyframe.bonePositions?.get(BoneName.PELVIS);
+      
+      expect(pelvisPos).toBeDefined();
+      expect(pelvisPos!.z).toBeGreaterThan(0.5); // Significant forward movement
+    });
+  });
+
+  describe("BACKWARD_RETREAT_ANIMATION", () => {
+    it("should have correct metadata", () => {
+      expect(BACKWARD_RETREAT_ANIMATION.name).toBe("backward_retreat");
+      expect(BACKWARD_RETREAT_ANIMATION.koreanName).toBe("뒤로 물러서기");
+      expect(BACKWARD_RETREAT_ANIMATION.duration).toBe(0.45);
+      expect(BACKWARD_RETREAT_ANIMATION.loop).toBe(false);
+      expect(BACKWARD_RETREAT_ANIMATION.type).toBe("movement");
+    });
+
+    it("should have 4 keyframes", () => {
+      expect(BACKWARD_RETREAT_ANIMATION.keyframes).toHaveLength(4);
+    });
+
+    it("should move pelvis backward", () => {
+      const slideKeyframe = BACKWARD_RETREAT_ANIMATION.keyframes[1];
+      const pelvisPos = slideKeyframe.bonePositions?.get(BoneName.PELVIS);
+      
+      expect(pelvisPos).toBeDefined();
+      expect(pelvisPos!.z).toBeLessThan(0); // Negative z = backward
+    });
+
+    it("should maintain defensive guard", () => {
+      const firstKeyframe = BACKWARD_RETREAT_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.SHOULDER_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.SHOULDER_R)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.ELBOW_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.ELBOW_R)).toBe(true);
+    });
+
+    it("should have coordinated leg movement", () => {
+      const firstKeyframe = BACKWARD_RETREAT_ANIMATION.keyframes[0];
+      expect(firstKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(firstKeyframe.boneRotations.has(BoneName.KNEE_R)).toBe(true);
+    });
+  });
+
+  describe("SIDE_STEP_ANIMATION", () => {
+    it("should have correct metadata", () => {
+      expect(SIDE_STEP_ANIMATION.name).toBe("side_step");
+      expect(SIDE_STEP_ANIMATION.koreanName).toBe("옆으로 스텝");
+      expect(SIDE_STEP_ANIMATION.duration).toBe(0.3);
+      expect(SIDE_STEP_ANIMATION.loop).toBe(false);
+      expect(SIDE_STEP_ANIMATION.type).toBe("movement");
+    });
+
+    it("should have 4 keyframes", () => {
+      expect(SIDE_STEP_ANIMATION.keyframes).toHaveLength(4);
+    });
+
+    it("should shift pelvis laterally", () => {
+      const shiftKeyframe = SIDE_STEP_ANIMATION.keyframes[0];
+      const pelvisPos = shiftKeyframe.bonePositions?.get(BoneName.PELVIS);
+      const pelvisRot = shiftKeyframe.boneRotations.get(BoneName.PELVIS);
+      
+      expect(pelvisPos).toBeDefined();
+      expect(pelvisRot).toBeDefined();
+      expect(Math.abs(pelvisPos!.x)).toBeGreaterThan(0.2); // Lateral movement
+    });
+
+    it("should have asymmetric knee bend for weight shift", () => {
+      const shiftKeyframe = SIDE_STEP_ANIMATION.keyframes[0];
+      const leftKnee = shiftKeyframe.boneRotations.get(BoneName.KNEE_L);
+      const rightKnee = shiftKeyframe.boneRotations.get(BoneName.KNEE_R);
+      
+      expect(leftKnee).toBeDefined();
+      expect(rightKnee).toBeDefined();
+      // One knee should bend more than the other
+      expect(Math.abs(leftKnee!.x - rightKnee!.x)).toBeGreaterThan(0.1);
+    });
+
+    it("should compensate with spine rotation", () => {
+      const shiftKeyframe = SIDE_STEP_ANIMATION.keyframes[0];
+      expect(shiftKeyframe.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
+      expect(shiftKeyframe.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
+    });
+  });
+
+  describe("Enhanced kick animations", () => {
+    it("FRONT_KICK should have ankle dorsiflexion", () => {
+      const extensionKeyframe = FRONT_KICK_ANIMATION.keyframes[1];
+      const foot = extensionKeyframe.boneRotations.get(BoneName.FOOT_R);
+      
+      expect(foot).toBeDefined();
+      expect(foot!.x).toBeCloseTo(0.5, 1); // Dorsiflexion 0.5 rad
+    });
+
+    it("FRONT_KICK should have support leg micro-adjustments", () => {
+      const extensionKeyframe = FRONT_KICK_ANIMATION.keyframes[1];
+      expect(extensionKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(extensionKeyframe.boneRotations.has(BoneName.FOOT_L)).toBe(true);
+    });
+
+    it("FRONT_KICK should have balance recovery", () => {
+      const recoveryKeyframe = FRONT_KICK_ANIMATION.keyframes[4];
+      const pelvisPos = recoveryKeyframe.bonePositions?.get(BoneName.PELVIS);
+      
+      expect(pelvisPos).toBeDefined();
+      expect(pelvisPos!.y).toBe(0); // Returns to stable height
+    });
+
+    it("ROUNDHOUSE_KICK should have ankle flexion on impact", () => {
+      const impactKeyframe = ROUNDHOUSE_KICK_ANIMATION.keyframes[2];
+      const foot = impactKeyframe.boneRotations.get(BoneName.FOOT_R);
+      
+      expect(foot).toBeDefined();
+      expect(foot!.x).toBeGreaterThan(0.3); // Plantar flexion
+    });
+
+    it("ROUNDHOUSE_KICK should have support leg pivot", () => {
+      const impactKeyframe = ROUNDHOUSE_KICK_ANIMATION.keyframes[2];
+      expect(impactKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(impactKeyframe.boneRotations.has(BoneName.FOOT_L)).toBe(true);
+    });
+
+    it("ROUNDHOUSE_KICK should have balance recovery shuffle", () => {
+      const recoveryKeyframe = ROUNDHOUSE_KICK_ANIMATION.keyframes[5];
+      expect(recoveryKeyframe.boneRotations.has(BoneName.KNEE_R)).toBe(true);
+      expect(recoveryKeyframe.boneRotations.has(BoneName.KNEE_L)).toBe(true);
+      expect(recoveryKeyframe.bonePositions?.has(BoneName.PELVIS)).toBe(true);
     });
   });
 });

@@ -214,29 +214,31 @@ export const CROSS_ANIMATION: SkeletalAnimation = {
 };
 
 /**
- * Front kick animation (앞차기)
+ * Front kick animation (앞차기) - ENHANCED
  * 
- * Traditional Taekwondo front kick with knee lift and leg extension.
+ * Traditional Taekwondo front kick with knee lift, leg extension,
+ * ankle dorsiflexion, support leg adjustments, and balance recovery.
  * 
  * Animation phases:
- * 1. Chamber (0.0s-0.1s): Knee lifts to waist height
- * 2. Extension (0.1s-0.2s): Lower leg extends forward
- * 3. Impact (0.2s): Maximum extension point
+ * 1. Chamber (0.0s-0.1s): Knee lifts to waist height, support leg micro-adjust
+ * 2. Extension (0.1s-0.2s): Lower leg extends forward with ankle flexion
+ * 3. Impact (0.2s): Maximum extension point with dorsiflexion
  * 4. Retraction (0.2s-0.35s): Leg returns to chamber
- * 5. Set down (0.35s-0.45s): Foot returns to ground
+ * 5. Set down (0.35s-0.45s): Foot returns to ground with balance recovery
+ * 6. Recovery shuffle (0.45s-0.55s): Support leg adjustment for balance
  * 
- * Duration: 450ms
+ * Duration: 550ms (enhanced with recovery)
  * 
- * @korean 앞차기애니메이션
+ * @korean 앞차기애니메이션향상
  */
 export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
   name: "front_kick",
   koreanName: "앞차기",
-  duration: 0.45,
+  duration: 0.55,
   loop: false,
   type: "attack",
   keyframes: [
-    // Frame 1: Chamber - knee lifts
+    // Frame 1: Chamber - knee lifts with support leg adjustment
     {
       time: 0.1,
       easing: "ease-out",
@@ -244,16 +246,21 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
         // Right leg lifts
         [BoneName.HIP_R, new THREE.Euler(1.5, 0, 0, "XYZ")], // 90 degrees up
         [BoneName.KNEE_R, new THREE.Euler(-1.8, 0, 0, "XYZ")], // Bent
-        // Left leg supports (slight bend)
-        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        // Left leg supports (micro-adjustment for balance)
+        [BoneName.KNEE_L, new THREE.Euler(-0.25, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0.05, "XYZ")], // Slight outward pivot
+        // Pelvis tilts slightly back for balance
+        [BoneName.PELVIS, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         // Arms for balance
         [BoneName.SHOULDER_L, new THREE.Euler(0, 0, -0.5, "XYZ")],
         [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
       ]),
-      bonePositions: new Map(),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)], // Slight drop for stability
+      ]),
     },
 
-    // Frame 2: Extension
+    // Frame 2: Extension with ankle dorsiflexion
     {
       time: 0.2,
       easing: "ease-out",
@@ -262,11 +269,17 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
         [BoneName.HIP_R, new THREE.Euler(1.5, 0, 0, "XYZ")],
         // Knee extends
         [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-        // Foot flexes
-        [BoneName.FOOT_R, new THREE.Euler(0.3, 0, 0, "XYZ")],
+        // Foot dorsiflexion (0.5 rad) for striking with ball of foot
+        [BoneName.FOOT_R, new THREE.Euler(0.5, 0, 0, "XYZ")],
+        // Support leg adjusts
+        [BoneName.KNEE_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0.08, "XYZ")],
+        // Pelvis drives forward
+        [BoneName.PELVIS, new THREE.Euler(0.05, 0, 0, "XYZ")],
       ]),
       bonePositions: new Map([
         [BoneName.FOOT_R, new THREE.Vector3(0, 0, 0.7)],
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0.1)],
       ]),
     },
 
@@ -277,50 +290,82 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
       boneRotations: new Map([
         [BoneName.HIP_R, new THREE.Euler(1.5, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-1.8, 0, 0, "XYZ")],
+        // Foot relaxes
         [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Support leg maintains
+        [BoneName.KNEE_L, new THREE.Euler(-0.25, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0.05, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
       bonePositions: new Map([
         [BoneName.FOOT_R, new THREE.Vector3(0, 0, 0)],
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
       ]),
     },
 
-    // Frame 4: Set down
+    // Frame 4: Set down with balance recovery start
     {
       time: 0.45,
       easing: "ease-in",
       boneRotations: new Map([
         [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")], // Slight bend on landing
+        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Support leg adjusts
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0.03, "XYZ")],
         [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
-      bonePositions: new Map(),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.02, 0)], // Slight drop on landing
+      ]),
+    },
+
+    // Frame 5: Balance recovery shuffle
+    {
+      time: 0.55,
+      easing: "ease-in",
+      boneRotations: new Map([
+        // Both legs return to neutral guard
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)], // Return to stable height
+      ]),
     },
   ],
 };
 
 /**
- * Roundhouse kick animation (돌려차기)
+ * Roundhouse kick animation (돌려차기) - ENHANCED
  * 
- * Traditional Taekwondo roundhouse kick with hip rotation.
+ * Traditional Taekwondo roundhouse kick with hip rotation,
+ * ankle flexion, support leg adjustments, and balance recovery.
  * 
  * Animation phases:
  * 1. Chamber (0.0s-0.1s): Knee lifts, hip begins rotation
  * 2. Rotation (0.1s-0.2s): Hip rotates 90 degrees
- * 3. Extension (0.2s-0.25s): Leg extends in arc
- * 4. Impact (0.25s): Maximum extension
+ * 3. Extension (0.2s-0.25s): Leg extends in arc with ankle flexion
+ * 4. Impact (0.25s): Maximum extension with support leg adjustment
  * 5. Retraction (0.25s-0.4s): Return to chamber
- * 6. Set down (0.4s-0.5s): Foot to ground
+ * 6. Set down (0.4s-0.5s): Foot to ground with balance recovery
+ * 7. Recovery shuffle (0.5s-0.6s): Support leg adjustment for balance
  * 
- * Duration: 500ms
+ * Duration: 600ms (enhanced with recovery)
  * 
- * @korean 돌려차기애니메이션
+ * @korean 돌려차기애니메이션향상
  */
 export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation = {
   name: "roundhouse_kick",
   koreanName: "돌려차기",
-  duration: 0.5,
+  duration: 0.6,
   loop: false,
   type: "attack",
   keyframes: [
@@ -356,7 +401,7 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation = {
       bonePositions: new Map(),
     },
 
-    // Frame 3: Extension and impact
+    // Frame 3: Extension and impact with ankle flexion
     {
       time: 0.25,
       easing: "linear",
@@ -366,11 +411,15 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, -1.5, 0, "XYZ")],
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.8, 0, "XYZ")],
-        // Foot position for strike
-        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
+        // Foot position for strike with plantar flexion (point toes)
+        [BoneName.FOOT_R, new THREE.Euler(0.4, 0, 0.3, "XYZ")],
+        // Support leg micro-adjustment
+        [BoneName.KNEE_L, new THREE.Euler(-0.35, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, -0.1, "XYZ")], // Pivot for power
       ]),
       bonePositions: new Map([
         [BoneName.FOOT_R, new THREE.Vector3(0.8, 0, 0)], // Side strike
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.02, 0)], // Slight drop for power
       ]),
     },
 
@@ -381,27 +430,58 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation = {
       boneRotations: new Map([
         [BoneName.HIP_R, new THREE.Euler(1.2, 0, 0.8, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-1.5, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, -0.3, 0, "XYZ")],
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.2, 0, "XYZ")],
+        // Support leg returns
+        [BoneName.KNEE_L, new THREE.Euler(-0.25, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
       bonePositions: new Map([
         [BoneName.FOOT_R, new THREE.Vector3(0, 0, 0)],
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
       ]),
     },
 
-    // Frame 5: Set down
+    // Frame 5: Set down with balance recovery
     {
       time: 0.5,
       easing: "ease-in",
       boneRotations: new Map([
         [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")], // Slight bend on landing
+        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Support leg adjusts
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)], // Slight drop on landing
+      ]),
+    },
+
+    // Frame 6: Balance recovery shuffle
+    {
+      time: 0.6,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
-      bonePositions: new Map(),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)], // Return to stable height
+      ]),
     },
   ],
 };
@@ -639,9 +719,458 @@ export const WALK_ANIMATION: SkeletalAnimation = {
 };
 
 /**
+ * Idle stance animation (대기 자세)
+ * 
+ * Fighting stance with slight weight shift and breathing motion.
+ * 
+ * Animation phases:
+ * 1. Center (0.0s): Neutral fighting stance
+ * 2. Weight left (0.8s): Shift weight to left leg
+ * 3. Center (1.6s): Return to neutral
+ * 4. Weight right (2.4s): Shift weight to right leg
+ * 5. Center (3.0s): Return to neutral (loops)
+ * 
+ * Duration: 3000ms (looping)
+ * 
+ * @korean 대기자세애니메이션
+ */
+export const IDLE_STANCE_ANIMATION: SkeletalAnimation = {
+  name: "idle_stance",
+  koreanName: "대기 자세",
+  duration: 3.0,
+  loop: true,
+  type: "idle",
+  keyframes: [
+    // Frame 1: Center stance (0.0s)
+    {
+      time: 0.0,
+      easing: "ease-in-out",
+      boneRotations: new Map([
+        // Slight knee bend (fighting stance)
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        // Arms in guard position
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+
+    // Frame 2: Weight shift left (0.8s)
+    {
+      time: 0.8,
+      easing: "ease-in-out",
+      boneRotations: new Map([
+        // Left knee bends more
+        [BoneName.KNEE_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        // Pelvis tilts slightly left
+        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.05, "XYZ")],
+        // Spine breathing expansion
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.02, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.03, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(-0.02, 0, 0, "XYZ")],
+        // Arms maintain guard
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.02, 0, 0)],
+      ]),
+    },
+
+    // Frame 3: Return to center (1.6s)
+    {
+      time: 1.6,
+      easing: "ease-in-out",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Breathing contraction
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.02, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.03, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0.02, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+
+    // Frame 4: Weight shift right (2.4s)
+    {
+      time: 2.4,
+      easing: "ease-in-out",
+      boneRotations: new Map([
+        // Right knee bends more
+        [BoneName.KNEE_L, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        // Pelvis tilts slightly right
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0.05, "XYZ")],
+        // Spine breathing expansion
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.02, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.03, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(-0.02, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0.02, 0, 0)],
+      ]),
+    },
+
+    // Frame 5: Return to center (3.0s) - loop
+    {
+      time: 3.0,
+      easing: "ease-in-out",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * Forward dash animation (앞으로 돌진)
+ * 
+ * Explosive forward movement with rapid knee extension and hip drive.
+ * 
+ * Animation phases:
+ * 1. Crouch (0.0s): Deep knee bend, ready to explode
+ * 2. Drive (0.15s): Rapid knee extension, forward momentum
+ * 3. Glide (0.3s): Extended stride position
+ * 4. Recovery (0.4s): Return to stance
+ * 
+ * Duration: 400ms
+ * 
+ * @korean 앞으로돌진애니메이션
+ */
+export const FORWARD_DASH_ANIMATION: SkeletalAnimation = {
+  name: "forward_dash",
+  koreanName: "앞으로 돌진",
+  duration: 0.4,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    // Frame 1: Crouch (0.0s)
+    {
+      time: 0.0,
+      easing: "ease-in",
+      boneRotations: new Map([
+        // Deep knee bend
+        [BoneName.KNEE_L, new THREE.Euler(-0.8, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.8, 0, 0, "XYZ")],
+        // Lean forward
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.3, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.25, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0.2, 0, 0, "XYZ")],
+        // Arms back for momentum
+        [BoneName.SHOULDER_L, new THREE.Euler(-0.5, 0, -0.3, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.5, 0, 0.3, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.15, 0)],
+      ]),
+    },
+
+    // Frame 2: Explosive drive (0.15s)
+    {
+      time: 0.15,
+      easing: "ease-out",
+      boneRotations: new Map([
+        // Rapid knee extension
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        // Hip drive forward
+        [BoneName.PELVIS, new THREE.Euler(0.2, 0, 0, "XYZ")],
+        // Torso drives forward
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.15, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.1, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0.05, 0, 0, "XYZ")],
+        // Arms swing forward
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.5, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.5, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0.05, 0.8)],
+      ]),
+    },
+
+    // Frame 3: Glide (0.3s)
+    {
+      time: 0.3,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.3, 0, -0.6, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.3, 0, 0.6, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 1.2)],
+      ]),
+    },
+
+    // Frame 4: Recovery (0.4s)
+    {
+      time: 0.4,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * Backward retreat animation (뒤로 물러서기)
+ * 
+ * Coordinated leg backpedaling with defensive posture.
+ * 
+ * Animation phases:
+ * 1. Push back (0.0s): Back foot plants, front foot lifts
+ * 2. Slide (0.2s): Smooth backward movement
+ * 3. Plant (0.35s): Front foot plants
+ * 4. Reset (0.45s): Return to guard stance
+ * 
+ * Duration: 450ms
+ * 
+ * @korean 뒤로물러서기애니메이션
+ */
+export const BACKWARD_RETREAT_ANIMATION: SkeletalAnimation = {
+  name: "backward_retreat",
+  koreanName: "뒤로 물러서기",
+  duration: 0.45,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    // Frame 1: Push back (0.0s)
+    {
+      time: 0.0,
+      easing: "ease-out",
+      boneRotations: new Map([
+        // Right leg (back) plants firm
+        [BoneName.KNEE_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        // Left leg (front) begins to lift
+        [BoneName.HIP_L, new THREE.Euler(0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.4, 0, 0, "XYZ")],
+        // Lean back slightly
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        // Arms stay in defensive guard
+        [BoneName.SHOULDER_L, new THREE.Euler(0.6, 0, -0.9, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.6, 0, 0.9, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+
+    // Frame 2: Slide back (0.2s)
+    {
+      time: 0.2,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.KNEE_R, new THREE.Euler(-0.25, 0, 0, "XYZ")],
+        [BoneName.HIP_L, new THREE.Euler(0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(-0.04, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.6, 0, -0.9, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.6, 0, 0.9, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, -0.6)],
+      ]),
+    },
+
+    // Frame 3: Plant front foot (0.35s)
+    {
+      time: 0.35,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, -0.8)],
+      ]),
+    },
+
+    // Frame 4: Reset to guard (0.45s)
+    {
+      time: 0.45,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * Side step animation (옆으로 스텝)
+ * 
+ * Lateral hip shift with trailing leg for quick evasion.
+ * 
+ * Animation phases:
+ * 1. Shift left (0.0s): Weight to left leg
+ * 2. Slide (0.15s): Right leg follows
+ * 3. Plant (0.25s): Both feet grounded
+ * 4. Reset (0.3s): Return to center
+ * 
+ * Duration: 300ms
+ * 
+ * @korean 옆으로스텝애니메이션
+ */
+export const SIDE_STEP_ANIMATION: SkeletalAnimation = {
+  name: "side_step",
+  koreanName: "옆으로 스텝",
+  duration: 0.3,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    // Frame 1: Shift left (0.0s)
+    {
+      time: 0.0,
+      easing: "ease-out",
+      boneRotations: new Map([
+        // Left leg bends to absorb weight
+        [BoneName.KNEE_L, new THREE.Euler(-0.4, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        // Pelvis tilts left
+        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.15, "XYZ")],
+        // Spine compensates
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0.05, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0.08, "XYZ")],
+        // Arms maintain guard
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.3, -0.05, 0)],
+      ]),
+    },
+
+    // Frame 2: Slide right leg (0.15s)
+    {
+      time: 0.15,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.25, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.25, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.08, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0.03, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0.04, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.5, 0, 0)],
+      ]),
+    },
+
+    // Frame 3: Plant both feet (0.25s)
+    {
+      time: 0.25,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.5, 0, 0)],
+      ]),
+    },
+
+    // Frame 4: Reset to center (0.3s)
+    {
+      time: 0.3,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
  * All skeletal animations mapped by name
  * 
- * Includes attack animations and movement animations.
+ * Includes attack, defense, movement, and idle animations.
  * 
  * @korean 모든골격애니메이션
  */
@@ -652,6 +1181,10 @@ export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   ["roundhouse_kick", ROUNDHOUSE_KICK_ANIMATION],
   ["block", BLOCK_ANIMATION],
   ["walk", WALK_ANIMATION],
+  ["idle_stance", IDLE_STANCE_ANIMATION],
+  ["forward_dash", FORWARD_DASH_ANIMATION],
+  ["backward_retreat", BACKWARD_RETREAT_ANIMATION],
+  ["side_step", SIDE_STEP_ANIMATION],
 ]);
 
 /**
