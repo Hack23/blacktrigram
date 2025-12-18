@@ -155,7 +155,7 @@ const interpolateKeyframes = (
 };
 
 /**
- * Render a single bone as a capsule mesh
+ * Render a single bone as a capsule mesh in local space relative to parent
  * 
  * @param bone - Bone to render
  * @param color - Bone color
@@ -168,11 +168,10 @@ const BoneMesh: React.FC<{
   readonly color: number;
   readonly showDebug: boolean;
 }> = React.memo(({ bone, color, showDebug }) => {
-  const worldPos = getBoneWorldPosition(bone);
-
-  // Calculate bone length and direction to first child
+  // Calculate bone length to first child
   const hasChild = bone.children.length > 0;
-  const length = hasChild ? bone.children[0].position.length() : 0.1;
+  const childOffset = hasChild ? bone.children[0].position : new THREE.Vector3(0, 0.1, 0);
+  const boneLength = childOffset.length();
 
   // Bone thickness varies by bone type for realistic proportions
   const radius = bone.name.includes("spine") || bone.name === "pelvis" 
@@ -183,26 +182,32 @@ const BoneMesh: React.FC<{
     ? 0.08  // Thinner lower limbs
     : 0.05; // Thin extremities (hands, feet, neck)
 
-  // Calculate rotation to point toward child bone
-  const rotation = useMemo<[number, number, number]>(() => {
-    if (!hasChild) return [0, 0, 0];
+  // Calculate rotation to point capsule toward child
+  // Capsule geometry points along Y axis (0,1,0) by default
+  const capsuleRotation = useMemo<[number, number, number]>(() => {
+    if (!hasChild || boneLength < 0.001) return [0, 0, 0];
     
-    const childPos = bone.children[0].position;
-    // Create direction vector pointing to child
-    const direction = new THREE.Vector3(childPos.x, childPos.y, childPos.z).normalize();
+    // Direction from this bone to child (in local space)
+    const direction = childOffset.clone().normalize();
     
-    // Default capsule points along Y axis, rotate to align with direction
-    const defaultDirection = new THREE.Vector3(0, 1, 0);
-    const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultDirection, direction);
+    // Rotate Y axis to align with child direction
+    const yAxis = new THREE.Vector3(0, 1, 0);
+    const quaternion = new THREE.Quaternion().setFromUnitVectors(yAxis, direction);
     const euler = new THREE.Euler().setFromQuaternion(quaternion);
     
     return [euler.x, euler.y, euler.z];
-  }, [bone, hasChild]);
+  }, [hasChild, boneLength, childOffset.x, childOffset.y, childOffset.z]);
+
+  // Position capsule halfway between this bone and child (capsule center point)
+  const capsulePosition = useMemo<[number, number, number]>(() => {
+    if (!hasChild) return [0, 0, 0];
+    return [childOffset.x / 2, childOffset.y / 2, childOffset.z / 2];
+  }, [hasChild, childOffset.x, childOffset.y, childOffset.z]);
 
   // Memoize geometry and material to avoid recreating them
   const geometry = useMemo(
-    () => new THREE.CapsuleGeometry(radius, length, 4, 8),
-    [radius, length]
+    () => new THREE.CapsuleGeometry(radius, boneLength, 4, 8),
+    [radius, boneLength]
   );
 
   const material = useMemo(
@@ -224,7 +229,7 @@ const BoneMesh: React.FC<{
   }, [geometry, material]);
 
   return (
-    <group position={worldPos.toArray()} rotation={rotation}>
+    <group position={capsulePosition} rotation={capsuleRotation}>
       <mesh castShadow receiveShadow geometry={geometry} material={material} />
 
       {showDebug && (
@@ -246,7 +251,7 @@ const BoneMesh: React.FC<{
 });
 
 /**
- * Render bone hierarchy recursively
+ * Render bone hierarchy recursively with proper parent-child transforms
  * 
  * @param bone - Root bone to render
  * @param color - Bone color
@@ -259,9 +264,17 @@ const BoneHierarchy: React.FC<{
   readonly color: number;
   readonly showDebug: boolean;
 }> = ({ bone, color, showDebug }) => {
+  // Each bone is a group positioned/rotated in local space relative to parent
   return (
-    <>
+    <group
+      position={[bone.position.x, bone.position.y, bone.position.z]}
+      rotation={[bone.rotation.x, bone.rotation.y, bone.rotation.z]}
+      scale={[bone.scale.x, bone.scale.y, bone.scale.z]}
+    >
+      {/* Render capsule connecting this bone to child */}
       <BoneMesh bone={bone} color={color} showDebug={showDebug} />
+      
+      {/* Recursively render child bones */}
       {bone.children.map((child) => (
         <BoneHierarchy
           key={child.name}
@@ -270,7 +283,7 @@ const BoneHierarchy: React.FC<{
           showDebug={showDebug}
         />
       ))}
-    </>
+    </group>
   );
 };
 
