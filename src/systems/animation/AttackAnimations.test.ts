@@ -87,7 +87,6 @@ describe("AttackAnimations", () => {
     });
 
     it("should rotate pelvis during cross", () => {
-      const windUp = CROSS_ANIMATION.keyframes[0];
       const impact = CROSS_ANIMATION.keyframes[2];
 
       const pelvisRotation = impact.transforms.find(

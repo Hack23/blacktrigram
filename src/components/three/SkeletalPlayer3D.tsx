@@ -72,6 +72,10 @@ export interface SkeletalPlayer3DProps {
   readonly showHands?: boolean;
 }
 
+// Reusable objects for interpolation to avoid allocations
+const _defaultEuler = new THREE.Euler(0, 0, 0);
+const _defaultVector = new THREE.Vector3(0, 0, 0);
+
 /**
  * Interpolate between two keyframes
  * 
@@ -111,9 +115,9 @@ const interpolateKeyframes = (
     const prevTransform = prevKeyframe.transforms.find((t) => t.boneName === boneName);
     const nextTransform = nextKeyframe.transforms.find((t) => t.boneName === boneName);
 
-    // Interpolate rotation
-    const prevRot = prevTransform?.rotation ?? new THREE.Euler(0, 0, 0);
-    const nextRot = nextTransform?.rotation ?? new THREE.Euler(0, 0, 0);
+    // Interpolate rotation (reuse defaults to avoid allocations)
+    const prevRot = prevTransform?.rotation ?? _defaultEuler;
+    const nextRot = nextTransform?.rotation ?? _defaultEuler;
 
     const rotation = new THREE.Euler(
       THREE.MathUtils.lerp(prevRot.x, nextRot.x, t),
@@ -121,9 +125,9 @@ const interpolateKeyframes = (
       THREE.MathUtils.lerp(prevRot.z, nextRot.z, t)
     );
 
-    // Interpolate position (optional)
-    const prevPos = prevTransform?.position ?? new THREE.Vector3(0, 0, 0);
-    const nextPos = nextTransform?.position ?? new THREE.Vector3(0, 0, 0);
+    // Interpolate position (optional, reuse defaults)
+    const prevPos = prevTransform?.position ?? _defaultVector;
+    const nextPos = nextTransform?.position ?? _defaultVector;
 
     const position = new THREE.Vector3().lerpVectors(prevPos, nextPos, t);
 
@@ -146,26 +150,43 @@ const BoneMesh: React.FC<{
   readonly bone: Bone;
   readonly color: number;
   readonly showDebug: boolean;
-}> = ({ bone, color, showDebug }) => {
+}> = React.memo(({ bone, color, showDebug }) => {
   const worldPos = getBoneWorldPosition(bone);
 
-  // Calculate bone length (distance to first child)
+  // Calculate bone length (distance to first child in local space)
   const length = bone.children.length > 0
-    ? bone.position.length()
+    ? bone.children[0].position.length()
     : 0.1;
 
   const radius = 0.05;
 
+  // Memoize geometry and material to avoid recreating them
+  const geometry = useMemo(
+    () => new THREE.CapsuleGeometry(radius, length, 4, 8),
+    [radius, length]
+  );
+
+  const material = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color,
+        metalness: 0.3,
+        roughness: 0.7,
+      }),
+    [color]
+  );
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
+
   return (
     <group position={worldPos.toArray()}>
-      <mesh castShadow receiveShadow>
-        <capsuleGeometry args={[radius, length, 4, 8]} />
-        <meshStandardMaterial
-          color={color}
-          metalness={0.3}
-          roughness={0.7}
-        />
-      </mesh>
+      <mesh castShadow receiveShadow geometry={geometry} material={material} />
 
       {showDebug && (
         <Html center>
@@ -183,7 +204,7 @@ const BoneMesh: React.FC<{
       )}
     </group>
   );
-};
+});
 
 /**
  * Render bone hierarchy recursively
@@ -285,8 +306,16 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
   showDebug = false,
   showHands = true,
 }) => {
-  // Create skeletal rig (memoized)
-  const rig = useMemo(() => createHumanoidRig(), []);
+  // Create skeletal rig (memoized) - we need both the rig and bind pose
+  const { rig, bindPose } = useMemo(() => {
+    const baseRig = createHumanoidRig();
+    // Store bind pose positions for each bone
+    const pose = new Map<string, THREE.Vector3>();
+    baseRig.bones.forEach((bone, name) => {
+      pose.set(name, bone.position.clone());
+    });
+    return { rig: baseRig, bindPose: pose };
+  }, []);
 
   // Animation state
   const animationStateRef = useRef<SkeletalAnimationState>({
@@ -332,9 +361,12 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
       const bone = rig.bones.get(boneName as any);
       if (bone) {
         bone.rotation.copy(transform.rotation);
-        // Position offsets are typically not used, but can be applied if needed
+        // Position offsets: apply relative to bind pose, not accumulate
         if (transform.position.lengthSq() > 0.0001) {
-          bone.position.add(transform.position);
+          const bindPos = bindPose.get(boneName);
+          if (bindPos) {
+            bone.position.copy(bindPos).add(transform.position);
+          }
         }
       }
     });
@@ -356,20 +388,16 @@ export const SkeletalPlayer3D: React.FC<SkeletalPlayer3DProps> = ({
       <BoneHierarchy bone={rig.root} color={bodyColor} showDebug={showDebug} />
 
       {/* Render hands if enabled */}
-      {showHands && (
-        <>
-          <HandGeometry
-            side="L"
-            color={bodyColor}
-            bone={rig.bones.get("hand_L")!}
-          />
-          <HandGeometry
-            side="R"
-            color={bodyColor}
-            bone={rig.bones.get("hand_R")!}
-          />
-        </>
-      )}
+      {showHands && (() => {
+        const handL = rig.bones.get("hand_L");
+        const handR = rig.bones.get("hand_R");
+        return handL && handR ? (
+          <>
+            <HandGeometry side="L" color={bodyColor} bone={handL} />
+            <HandGeometry side="R" color={bodyColor} bone={handR} />
+          </>
+        ) : null;
+      })()}
     </group>
   );
 };

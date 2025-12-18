@@ -146,6 +146,10 @@ export const createHumanoidRig = (): SkeletalRig => {
   };
 };
 
+// Reusable objects to avoid allocations in hot path
+const _quaternion = new THREE.Quaternion();
+const _localMatrix = new THREE.Matrix4();
+
 /**
  * Update world matrices for entire bone hierarchy
  * 
@@ -160,12 +164,12 @@ export const updateBoneWorldMatrices = (
   bone: Bone,
   parentWorldMatrix: THREE.Matrix4 = new THREE.Matrix4()
 ): void => {
-  // Compute local transform matrix
-  const localMatrix = new THREE.Matrix4();
-  localMatrix.compose(bone.position, new THREE.Quaternion().setFromEuler(bone.rotation), bone.scale);
+  // Compute local transform matrix (reuse objects to avoid allocations)
+  _quaternion.setFromEuler(bone.rotation);
+  _localMatrix.compose(bone.position, _quaternion, bone.scale);
 
   // Compute world matrix: parent * local
-  bone.worldMatrix.multiplyMatrices(parentWorldMatrix, localMatrix);
+  bone.worldMatrix.multiplyMatrices(parentWorldMatrix, _localMatrix);
 
   // Recursively update children
   for (const child of bone.children) {
@@ -177,28 +181,37 @@ export const updateBoneWorldMatrices = (
  * Get world position of a bone
  * 
  * @param bone - Target bone
+ * @param target - Optional target vector to write into (reuse for performance)
  * @returns World-space position
  * @korean 뼈월드위치
  */
-export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
-  const position = new THREE.Vector3();
+export const getBoneWorldPosition = (
+  bone: Bone,
+  target?: THREE.Vector3
+): THREE.Vector3 => {
+  const position = target ?? new THREE.Vector3();
   position.setFromMatrixPosition(bone.worldMatrix);
   return position;
 };
 
+// Reusable objects for getBoneWorldRotation
+const _rotQuaternion = new THREE.Quaternion();
+const _rotScale = new THREE.Vector3();
+const _rotPosition = new THREE.Vector3();
+
 /**
  * Get world rotation of a bone
+ * 
+ * Note: Allocates new objects. For frequent calls, consider caching the result
+ * or using world matrices directly.
  * 
  * @param bone - Target bone
  * @returns World-space rotation as Euler angles
  * @korean 뼈월드회전
  */
 export const getBoneWorldRotation = (bone: Bone): THREE.Euler => {
-  const quaternion = new THREE.Quaternion();
-  const scale = new THREE.Vector3();
-  const position = new THREE.Vector3();
-  bone.worldMatrix.decompose(position, quaternion, scale);
-  return new THREE.Euler().setFromQuaternion(quaternion);
+  bone.worldMatrix.decompose(_rotPosition, _rotQuaternion, _rotScale);
+  return new THREE.Euler().setFromQuaternion(_rotQuaternion);
 };
 
 /**
