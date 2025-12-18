@@ -6,7 +6,7 @@
  * - StanceSymbol3D for floating trigram symbol
  * - StanceTransitionEffect for smooth transitions
  *
- * This wrapper can be used to enhance Player3DUnified with automatic
+ * This wrapper can be used to enhance SkeletalPlayer3D with automatic
  * stance change detection and visual effects.
  *
  * @module components/three/Player3DWithTransitions
@@ -57,7 +57,7 @@ const AUDIO_ASSETS = {
  * Player3DWithTransitions Component
  *
  * Enhanced player component with automatic stance change detection and visual effects.
- * Wraps Player3DUnified and adds:
+ * Wraps SkeletalPlayer3D and adds:
  * - Particle system for stance aura
  * - Floating trigram symbol
  * - Smooth transition effects
