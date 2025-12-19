@@ -574,3 +574,230 @@ export const resetRigToRestPose = (rig: SkeletalRig): void => {
     resetBoneToRestPose(bone);
   });
 };
+
+/**
+ * Create hand bones with 5 fingers
+ * 
+ * Creates detailed hand structure with palm and 5 fingers (thumb, index, middle, ring, pinky).
+ * Each finger has 3-4 bones for realistic animation.
+ * 
+ * Finger bone structure:
+ * - Thumb: 3 bones (metacarpal, proximal, distal) - no intermediate
+ * - Other fingers: 4 bones (metacarpal, proximal, intermediate, distal)
+ * 
+ * Total: 19 bones per hand (1 palm + 3 thumb + 4*4 other fingers)
+ * 
+ * @param handBone - Parent hand bone
+ * @param side - Hand side ("left" or "right")
+ * @returns Map of finger bones added to the rig
+ * 
+ * @korean 손뼈생성
+ */
+export const createHandBones = (
+  handBone: Bone,
+  side: "left" | "right"
+): Map<string, Bone> => {
+  const fingerBones = new Map<string, Bone>();
+  
+  // Hand orientation: left hand extends to -X, right hand extends to +X
+  const sideMultiplier = side === "left" ? -1 : 1;
+  
+  // Thumb (3 bones) - offset slightly toward palm center and forward
+  const thumbMeta = createBone(
+    `${BoneName[`THUMB_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    handBone,
+    [0.015 * sideMultiplier, 0.02, 0.01],
+    0.025
+  );
+  const thumbProx = createBone(
+    `${BoneName[`THUMB_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    thumbMeta,
+    [0.015 * sideMultiplier, 0.015, 0.01],
+    0.02
+  );
+  const thumbDist = createBone(
+    `${BoneName[`THUMB_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    thumbProx,
+    [0.01 * sideMultiplier, 0.01, 0],
+    0.015
+  );
+  
+  fingerBones.set(thumbMeta.name, thumbMeta);
+  fingerBones.set(thumbProx.name, thumbProx);
+  fingerBones.set(thumbDist.name, thumbDist);
+  
+  // Index finger (4 bones)
+  const indexMeta = createBone(
+    `${BoneName[`INDEX_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    handBone,
+    [0.015 * sideMultiplier, 0.06, 0],
+    0.03
+  );
+  const indexProx = createBone(
+    `${BoneName[`INDEX_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    indexMeta,
+    [0, 0.025, 0],
+    0.025
+  );
+  const indexInter = createBone(
+    `${BoneName[`INDEX_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    indexProx,
+    [0, 0.02, 0],
+    0.02
+  );
+  const indexDist = createBone(
+    `${BoneName[`INDEX_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    indexInter,
+    [0, 0.015, 0],
+    0.015
+  );
+  
+  fingerBones.set(indexMeta.name, indexMeta);
+  fingerBones.set(indexProx.name, indexProx);
+  fingerBones.set(indexInter.name, indexInter);
+  fingerBones.set(indexDist.name, indexDist);
+  
+  // Middle finger (4 bones) - longest finger
+  const middleMeta = createBone(
+    `${BoneName[`MIDDLE_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    handBone,
+    [0.005 * sideMultiplier, 0.065, 0],
+    0.035
+  );
+  const middleProx = createBone(
+    `${BoneName[`MIDDLE_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    middleMeta,
+    [0, 0.03, 0],
+    0.03
+  );
+  const middleInter = createBone(
+    `${BoneName[`MIDDLE_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    middleProx,
+    [0, 0.025, 0],
+    0.025
+  );
+  const middleDist = createBone(
+    `${BoneName[`MIDDLE_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    middleInter,
+    [0, 0.02, 0],
+    0.02
+  );
+  
+  fingerBones.set(middleMeta.name, middleMeta);
+  fingerBones.set(middleProx.name, middleProx);
+  fingerBones.set(middleInter.name, middleInter);
+  fingerBones.set(middleDist.name, middleDist);
+  
+  // Ring finger (4 bones)
+  const ringMeta = createBone(
+    `${BoneName[`RING_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    handBone,
+    [-0.005 * sideMultiplier, 0.06, 0],
+    0.03
+  );
+  const ringProx = createBone(
+    `${BoneName[`RING_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    ringMeta,
+    [0, 0.025, 0],
+    0.025
+  );
+  const ringInter = createBone(
+    `${BoneName[`RING_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    ringProx,
+    [0, 0.02, 0],
+    0.02
+  );
+  const ringDist = createBone(
+    `${BoneName[`RING_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    ringInter,
+    [0, 0.015, 0],
+    0.015
+  );
+  
+  fingerBones.set(ringMeta.name, ringMeta);
+  fingerBones.set(ringProx.name, ringProx);
+  fingerBones.set(ringInter.name, ringInter);
+  fingerBones.set(ringDist.name, ringDist);
+  
+  // Pinky finger (4 bones) - shortest finger
+  const pinkyMeta = createBone(
+    `${BoneName[`PINKY_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    handBone,
+    [-0.015 * sideMultiplier, 0.05, 0],
+    0.025
+  );
+  const pinkyProx = createBone(
+    `${BoneName[`PINKY_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    pinkyMeta,
+    [0, 0.02, 0],
+    0.02
+  );
+  const pinkyInter = createBone(
+    `${BoneName[`PINKY_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    pinkyProx,
+    [0, 0.015, 0],
+    0.015
+  );
+  const pinkyDist = createBone(
+    `${BoneName[`PINKY_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    pinkyInter,
+    [0, 0.01, 0],
+    0.01
+  );
+  
+  fingerBones.set(pinkyMeta.name, pinkyMeta);
+  fingerBones.set(pinkyProx.name, pinkyProx);
+  fingerBones.set(pinkyInter.name, pinkyInter);
+  fingerBones.set(pinkyDist.name, pinkyDist);
+  
+  return fingerBones;
+};
+
+/**
+ * Create humanoid rig with optional hand bones
+ * 
+ * Creates complete skeletal rig with optional detailed hand bones.
+ * Hand bones can be excluded for performance (LOD system).
+ * 
+ * @param includeHandBones - Whether to include detailed hand bones (default: false)
+ * @returns Complete skeletal rig with or without hand bones
+ * 
+ * @korean 손뼈포함골격생성
+ */
+export const createHumanoidRigWithHands = (
+  includeHandBones: boolean = false
+): SkeletalRig => {
+  // Create base rig
+  const baseRig = createHumanoidRig();
+  
+  // If hand bones not requested, return base rig
+  if (!includeHandBones) {
+    return baseRig;
+  }
+  
+  // Get hand bones from base rig
+  const leftHand = baseRig.bones.get(BoneName.HAND_L);
+  const rightHand = baseRig.bones.get(BoneName.HAND_R);
+  
+  if (!leftHand || !rightHand) {
+    console.warn("Hand bones not found in base rig");
+    return baseRig;
+  }
+  
+  // Create finger bones
+  const leftFingerBones = createHandBones(leftHand, "left");
+  const rightFingerBones = createHandBones(rightHand, "right");
+  
+  // Add finger bones to rig bone map
+  leftFingerBones.forEach((bone, name) => {
+    baseRig.bones.set(name, bone);
+  });
+  rightFingerBones.forEach((bone, name) => {
+    baseRig.bones.set(name, bone);
+  });
+  
+  return {
+    ...baseRig,
+    boneCount: baseRig.bones.size,
+  };
+};

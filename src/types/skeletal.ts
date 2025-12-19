@@ -323,7 +323,9 @@ export interface JointConstraint {
  * Bone names for humanoid rig
  * 
  * Standard bone naming convention for humanoid skeleton.
- * Total: 28 bones (under 30 bone limit for performance).
+ * Total: 28 bones base + optional 30 hand bones (15 per hand) = 58 bones max.
+ * 
+ * Hand bones are optional and can be excluded for performance (LOD system).
  * 
  * @public
  * @category Skeletal System
@@ -371,6 +373,48 @@ export enum BoneName {
   KNEE_R = "knee_R",
   SHIN_R = "shin_R",
   FOOT_R = "foot_R",
+
+  // Left Hand Fingers (15 bones - optional for LOD)
+  THUMB_META_L = "thumb_meta_L",
+  THUMB_PROX_L = "thumb_prox_L",
+  THUMB_DIST_L = "thumb_dist_L",
+  INDEX_META_L = "index_meta_L",
+  INDEX_PROX_L = "index_prox_L",
+  INDEX_INTER_L = "index_inter_L",
+  INDEX_DIST_L = "index_dist_L",
+  MIDDLE_META_L = "middle_meta_L",
+  MIDDLE_PROX_L = "middle_prox_L",
+  MIDDLE_INTER_L = "middle_inter_L",
+  MIDDLE_DIST_L = "middle_dist_L",
+  RING_META_L = "ring_meta_L",
+  RING_PROX_L = "ring_prox_L",
+  RING_INTER_L = "ring_inter_L",
+  RING_DIST_L = "ring_dist_L",
+  PINKY_META_L = "pinky_meta_L",
+  PINKY_PROX_L = "pinky_prox_L",
+  PINKY_INTER_L = "pinky_inter_L",
+  PINKY_DIST_L = "pinky_dist_L",
+
+  // Right Hand Fingers (15 bones - optional for LOD)
+  THUMB_META_R = "thumb_meta_R",
+  THUMB_PROX_R = "thumb_prox_R",
+  THUMB_DIST_R = "thumb_dist_R",
+  INDEX_META_R = "index_meta_R",
+  INDEX_PROX_R = "index_prox_R",
+  INDEX_INTER_R = "index_inter_R",
+  INDEX_DIST_R = "index_dist_R",
+  MIDDLE_META_R = "middle_meta_R",
+  MIDDLE_PROX_R = "middle_prox_R",
+  MIDDLE_INTER_R = "middle_inter_R",
+  MIDDLE_DIST_R = "middle_dist_R",
+  RING_META_R = "ring_meta_R",
+  RING_PROX_R = "ring_prox_R",
+  RING_INTER_R = "ring_inter_R",
+  RING_DIST_R = "ring_dist_R",
+  PINKY_META_R = "pinky_meta_R",
+  PINKY_PROX_R = "pinky_prox_R",
+  PINKY_INTER_R = "pinky_inter_R",
+  PINKY_DIST_R = "pinky_dist_R",
 }
 
 /**
