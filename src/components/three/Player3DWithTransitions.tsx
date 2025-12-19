@@ -114,7 +114,7 @@ export const Player3DWithTransitions: React.FC<
   const [fromStance, setFromStance] = useState<TrigramStance>(stance);
 
   // Detect stance changes - external effect (audio) justifies useEffect
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     const previousStance = prevStanceRef.current;
 
