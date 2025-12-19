@@ -560,6 +560,8 @@ src/components/three/ArchetypeCard.test.tsx
 src/components/three/ArchetypeCard.tsx
 src/components/three/BackgroundScene3D.test.tsx
 src/components/three/BackgroundScene3D.tsx
+src/components/three/BoneRenderer.tsx
+src/components/three/Hand3D.tsx
 src/components/three/KoreanButton.test.tsx
 src/components/three/KoreanButton.tsx
 src/components/three/KoreanPanel.test.tsx
@@ -569,8 +571,6 @@ src/components/three/KoreanText.tsx
 src/components/three/KoreanUIDemo.tsx
 src/components/three/MenuList.test.tsx
 src/components/three/MenuList.tsx
-src/components/three/Player3DUnified.test.tsx
-src/components/three/Player3DUnified.tsx
 src/components/three/Player3DWithTransitions.test.tsx
 src/components/three/Player3DWithTransitions.tsx
 src/components/three/PlayerStateIndicators.test.tsx
@@ -579,6 +579,7 @@ src/components/three/ProgressBar.test.tsx
 src/components/three/ProgressBar.tsx
 src/components/three/README.md
 src/components/three/README_STANCE_ANIMATIONS.md
+src/components/three/SkeletalPlayer3D.tsx
 src/components/three/StanceAura.test.tsx
 src/components/three/StanceAura.tsx
 src/components/three/StanceAuraParticles.test.tsx
@@ -693,8 +694,13 @@ src/systems/animation/AnimationStateMachine.test.ts
 src/systems/animation/AnimationStateMachine.ts
 src/systems/animation/AnimationTransitions.test.ts
 src/systems/animation/AnimationTransitions.ts
+src/systems/animation/AttackAnimations.test.ts
+src/systems/animation/AttackAnimations.ts
 src/systems/animation/INTEGRATION_EXAMPLES.md
+src/systems/animation/KeyframeInterpolation.ts
 src/systems/animation/README.md
+src/systems/animation/SkeletonRig.test.ts
+src/systems/animation/SkeletonRig.ts
 src/systems/animation/index.ts
 src/systems/animation/types.ts
 src/systems/combat/BalanceSystem.ts
@@ -754,6 +760,7 @@ src/types/constants/typography.ts
 src/types/constants/ui.ts
 src/types/index.ts
 src/types/player-visual.ts
+src/types/skeletal.ts
 src/types/technique.ts
 src/utils/archetypeAssets.test.ts
 src/utils/colorHelpers.test.ts
