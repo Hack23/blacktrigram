@@ -578,16 +578,18 @@ export const resetRigToRestPose = (rig: SkeletalRig): void => {
 /**
  * Create hand bones with 5 fingers
  * 
- * Creates detailed hand structure with palm and 5 fingers (thumb, index, middle, ring, pinky).
+ * Creates detailed hand structure with 5 fingers (thumb, index, middle, ring, pinky),
+ * attached to an existing hand/palm bone.
  * Each finger has 3-4 bones for realistic animation.
  * 
  * Finger bone structure:
  * - Thumb: 3 bones (metacarpal, proximal, distal) - no intermediate
  * - Other fingers: 4 bones (metacarpal, proximal, intermediate, distal)
  * 
- * Total: 19 bones per hand (1 palm + 3 thumb + 4*4 other fingers)
+ * Total created by this function: 19 finger bones per hand (3 thumb + 4*4 other fingers),
+ * all attached to the provided hand bone.
  * 
- * @param handBone - Parent hand bone
+ * @param handBone - Parent hand bone (acts as the palm/root for finger bones)
  * @param side - Hand side ("left" or "right")
  * @returns Map of finger bones added to the rig
  * 

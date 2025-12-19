@@ -201,9 +201,14 @@ const Finger: React.FC<FingerProps> = ({
 
   // Calculate curl rotations for each segment
   // Curl value 0-1 maps to rotation angles
-  const proximalCurl = curl * 0.5 * Math.PI; // 0-90 degrees
-  const intermediateCurl = curl * 0.7 * Math.PI; // 0-126 degrees
-  const distalCurl = curl * 1.0 * Math.PI; // 0-180 degrees
+  // These factors represent biomechanical constraints of human finger joints
+  const PROXIMAL_CURL_FACTOR = 0.5; // Proximal joint bends less (0-90 degrees)
+  const INTERMEDIATE_CURL_FACTOR = 0.7; // Middle joint bends moderately (0-126 degrees)
+  const DISTAL_CURL_FACTOR = 1.0; // Distal joint bends most (0-180 degrees)
+  
+  const proximalCurl = curl * PROXIMAL_CURL_FACTOR * Math.PI;
+  const intermediateCurl = curl * INTERMEDIATE_CURL_FACTOR * Math.PI;
+  const distalCurl = curl * DISTAL_CURL_FACTOR * Math.PI;
 
   // Highlight settings
   const emissive = isHighlighted ? KOREAN_COLORS.ACCENT_RED : 0x000000;
@@ -290,7 +295,7 @@ const Finger: React.FC<FingerProps> = ({
  */
 export const Hand3D: React.FC<Hand3DProps> = ({
   side,
-  // pose, // For future use with pose-specific adjustments
+  // pose, // TODO: Reserved for future pose-specific hand adjustments (e.g., different palm sizes per pose)
   fingerCurl,
   distanceFromCamera,
   wristRotation,

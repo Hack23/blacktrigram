@@ -461,14 +461,10 @@ export const updateHandAnimationState = (
     const initialProgress = Math.min(1.0, deltaTime / transitionDuration);
 
     // Use the current interpolated state as the "from" pose for smoother continuity.
-    // Fallback to the canonical currentPose definition if current* values are not set.
-    const currentPoseDefinition = getHandPose(state.currentPose);
-    const fromFingerCurl =
-      state.currentFingerCurl ?? currentPoseDefinition.fingerCurl;
-    const fromFingerSpread =
-      state.currentFingerSpread ?? currentPoseDefinition.fingerSpread;
-    const fromWristRotation =
-      state.currentWristRotation ?? currentPoseDefinition.wristRotation;
+    // Use the current interpolated state as the starting point for smoother continuity
+    const fromFingerCurl = state.currentFingerCurl;
+    const fromFingerSpread = state.currentFingerSpread;
+    const fromWristRotation = state.currentWristRotation;
 
     const toPose = getHandPose(targetPose);
 

@@ -323,7 +323,7 @@ export interface JointConstraint {
  * Bone names for humanoid rig
  * 
  * Standard bone naming convention for humanoid skeleton.
- * Total: 28 bones base + optional 30 hand bones (15 per hand) = 58 bones max.
+ * Total: 28 bones base + optional 38 hand bones (19 per hand) = 66 bones max.
  * 
  * Hand bones are optional and can be excluded for performance (LOD system).
  * 
@@ -374,7 +374,7 @@ export enum BoneName {
   SHIN_R = "shin_R",
   FOOT_R = "foot_R",
 
-  // Left Hand Fingers (15 bones - optional for LOD)
+  // Left Hand Fingers (19 bones - optional for LOD)
   THUMB_META_L = "thumb_meta_L",
   THUMB_PROX_L = "thumb_prox_L",
   THUMB_DIST_L = "thumb_dist_L",
@@ -395,7 +395,7 @@ export enum BoneName {
   PINKY_INTER_L = "pinky_inter_L",
   PINKY_DIST_L = "pinky_dist_L",
 
-  // Right Hand Fingers (15 bones - optional for LOD)
+  // Right Hand Fingers (19 bones - optional for LOD)
   THUMB_META_R = "thumb_meta_R",
   THUMB_PROX_R = "thumb_prox_R",
   THUMB_DIST_R = "thumb_dist_R",

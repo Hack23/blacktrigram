@@ -275,11 +275,15 @@ export const SkeletalPlayer3D: React.FC<
 
       leftHandStateRef.current = updatedState;
 
-      // Sync to React state every 3 frames to balance smoothness and performance
-      // or immediately when transition completes
+      // Sync to React state periodically (approximately every 3 frames at 60fps)
+      // to balance animation smoothness with React render performance.
+      // HAND_STATE_SYNC_FREQUENCY=20 means we sync every 5% progress (~3 frames)
+      const HAND_STATE_SYNC_FREQUENCY = 20;
+      
       if (
         updatedState.targetPose === null ||
-        Math.floor(updatedState.transitionProgress * 20) !== Math.floor(previousState.transitionProgress * 20)
+        Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
+        Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
       ) {
         setLeftHandState(updatedState);
       }
@@ -297,11 +301,15 @@ export const SkeletalPlayer3D: React.FC<
 
       rightHandStateRef.current = updatedState;
 
-      // Sync to React state every 3 frames to balance smoothness and performance
-      // or immediately when transition completes
+      // Sync to React state periodically (approximately every 3 frames at 60fps)
+      // to balance animation smoothness with React render performance.
+      // HAND_STATE_SYNC_FREQUENCY=20 means we sync every 5% progress (~3 frames)
+      const HAND_STATE_SYNC_FREQUENCY = 20;
+      
       if (
         updatedState.targetPose === null ||
-        Math.floor(updatedState.transitionProgress * 20) !== Math.floor(previousState.transitionProgress * 20)
+        Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
+        Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
       ) {
         setRightHandState(updatedState);
       }
