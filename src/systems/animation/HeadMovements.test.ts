@@ -20,7 +20,6 @@ import {
 } from "./HeadMovements";
 import {
   HeadMovementType,
-  type HeadMovementKeyframes,
 } from "../../types/facial";
 
 describe("HeadMovements", () => {
