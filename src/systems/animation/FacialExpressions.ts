@@ -90,7 +90,7 @@ export const getExpressionFromCombatState = (
   health: number,
   maxHealth: number,
   stamina: number,
-  pain: number,
+  _pain: number, // Reserved for future intensity calculation
   consciousness: number,
   justHit: boolean,
   justLanded: boolean
@@ -100,8 +100,8 @@ export const getExpressionFromCombatState = (
     return FacialExpression.DEFEATED;
   }
 
-  // Just got hit (priority if pain is significant)
-  if (justHit && pain > 50) {
+  // Just got hit (always show immediate reaction; pain level can control intensity)
+  if (justHit) {
     return FacialExpression.PAINED;
   }
 

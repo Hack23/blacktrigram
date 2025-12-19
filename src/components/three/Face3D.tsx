@@ -15,6 +15,7 @@
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
+import { mixColors } from "../../utils/colorHelpers";
 import {
   EYE_OPENNESS,
   MOUTH_OPENNESS,
@@ -232,32 +233,24 @@ export const Face3D: React.FC<Face3DProps> = ({
       return new THREE.Vector3(0, 0, 1); // Look forward
     }
 
-    try {
-      // Calculate direction from head to opponent
-      const headPos = new THREE.Vector3(0, 1.9, 0);
-      const dir = new THREE.Vector3();
-      
-      // subVectors expects two THREE.Vector3 instances
-      dir.subVectors(opponentPosition, headPos);
-      dir.normalize();
-
-      return dir;
-    } catch {
-      // Fallback if THREE.Vector3 isn't available (e.g., in tests)
+    // Validate opponent position to avoid runtime errors
+    if (!(opponentPosition instanceof THREE.Vector3)) {
+      console.warn(
+        "Face3D: opponentPosition is not a THREE.Vector3; defaulting eye direction forward."
+      );
       return new THREE.Vector3(0, 0, 1);
     }
+
+    // Calculate direction from head to opponent
+    const headPos = new THREE.Vector3(0, 1.9, 0);
+    const dir = new THREE.Vector3();
+
+    // subVectors expects two THREE.Vector3 instances
+    dir.subVectors(opponentPosition, headPos);
+    dir.normalize();
+
+    return dir;
   }, [opponentPosition, enableEyeTracking]);
-
-  // Create damage texture (bruising overlay)
-  const damageTexture = useMemo(() => {
-    if (!enableDamageVisuals || damage.totalFacialDamage === 0) {
-      return null;
-    }
-
-    // In production, this would be a canvas-based texture
-    // For now, we'll use material properties to show damage
-    return null;
-  }, [damage, enableDamageVisuals]);
 
   // Calculate overall bruise color intensity
   const bruiseIntensity = useMemo(() => {
@@ -272,25 +265,18 @@ export const Face3D: React.FC<Face3DProps> = ({
     return avgBruise;
   }, [damage, enableDamageVisuals]);
 
-  // Adjust head color for bruising
+  // Adjust head color for bruising using helper function
   const headColor = useMemo(() => {
     if (bruiseIntensity === 0) return skinColor;
 
     // Mix skin color with purple bruise color
     const bruiseColor = 0x663366;
-    const skinR = (skinColor >> 16) & 0xff;
-    const skinG = (skinColor >> 8) & 0xff;
-    const skinB = skinColor & 0xff;
-    const bruiseR = (bruiseColor >> 16) & 0xff;
-    const bruiseG = (bruiseColor >> 8) & 0xff;
-    const bruiseB = bruiseColor & 0xff;
-
-    const r = Math.floor(skinR * (1 - bruiseIntensity * 0.3) + bruiseR * bruiseIntensity * 0.3);
-    const g = Math.floor(skinG * (1 - bruiseIntensity * 0.3) + bruiseG * bruiseIntensity * 0.3);
-    const b = Math.floor(skinB * (1 - bruiseIntensity * 0.3) + bruiseB * bruiseIntensity * 0.3);
-
-    return (r << 16) | (g << 8) | b;
+    return mixColors(skinColor, bruiseColor, bruiseIntensity * 0.3);
   }, [skinColor, bruiseIntensity]);
+
+  // NOTE: Damage visuals are currently handled via headColor bruise interpolation.
+  // In a future implementation, this could be replaced with a canvas-based texture.
+  const damageTexture = null;
 
   return (
     <group

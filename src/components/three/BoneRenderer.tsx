@@ -88,10 +88,10 @@ export interface BoneRendererProps {
   readonly opponentPosition?: THREE.Vector3;
 
   /**
-   * Enable facial features rendering
-   * @korean 얼굴특징렌더링
+   * Enable facial expressions rendering
+   * @korean 얼굴표정렌더링
    */
-  readonly enableFacialFeatures?: boolean;
+  readonly enableFacialExpressions?: boolean;
 
   /**
    * Enable eye tracking
@@ -123,7 +123,7 @@ const SingleBone: React.FC<{
   readonly facialExpression?: FacialExpression;
   readonly facialDamage?: FacialDamageState;
   readonly opponentPosition?: THREE.Vector3;
-  readonly enableFacialFeatures?: boolean;
+  readonly enableFacialExpressions?: boolean;
   readonly enableEyeTracking?: boolean;
 }> = ({ 
   bone, 
@@ -135,7 +135,7 @@ const SingleBone: React.FC<{
   facialExpression,
   facialDamage,
   opponentPosition,
-  enableFacialFeatures = true,
+  enableFacialExpressions = false,
   enableEyeTracking = true,
 }) => {
   // Calculate bone direction and length
@@ -228,7 +228,7 @@ const SingleBone: React.FC<{
           facialExpression={facialExpression}
           facialDamage={facialDamage}
           opponentPosition={opponentPosition}
-          enableFacialFeatures={enableFacialFeatures}
+          enableFacialExpressions={enableFacialExpressions}
           enableEyeTracking={enableEyeTracking}
         />
       ))}
@@ -262,7 +262,7 @@ const SingleBone: React.FC<{
       )}
 
       {/* Add facial features at head bone */}
-      {bone.name === "head" && enableFacialFeatures && facialExpression && (
+      {bone.name === "head" && enableFacialExpressions && facialExpression && (
         <Face3D
           expression={facialExpression}
           damage={facialDamage ?? DEFAULT_FACIAL_DAMAGE}
@@ -302,7 +302,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   facialExpression,
   facialDamage,
   opponentPosition,
-  enableFacialFeatures = false, // Default false to avoid breaking existing tests
+  enableFacialExpressions = false, // Default false to avoid breaking existing tests
   enableEyeTracking = true,
 }) => {
   if (!showBones) {
@@ -321,7 +321,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
         facialExpression={facialExpression}
         facialDamage={facialDamage}
         opponentPosition={opponentPosition}
-        enableFacialFeatures={enableFacialFeatures}
+        enableFacialExpressions={enableFacialExpressions}
         enableEyeTracking={enableEyeTracking}
       />
     </group>

@@ -247,7 +247,8 @@ export const createHeadDropAnimation = (): HeadMovementKeyframes => {
 /**
  * Calculate smooth head rotation toward target
  * 
- * Uses spherical linear interpolation (slerp) for smooth head turning.
+ * Uses linear interpolation (lerp) for smooth head turning.
+ * Each Euler angle component is interpolated independently.
  * 
  * @param currentRotation - Current head rotation
  * @param targetPosition - Position to look at

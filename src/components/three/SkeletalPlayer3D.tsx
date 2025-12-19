@@ -190,7 +190,7 @@ export const SkeletalPlayer3D: React.FC<
   showSkeleton = false,
   facialExpression,
   facialDamage,
-  enableFacialExpressions = true,
+  enableFacialExpressions = false,
   enableEyeTracking = true,
   opponentPosition,
 }) => {
@@ -262,19 +262,36 @@ export const SkeletalPlayer3D: React.FC<
 
   // Detect hit events (health decreased)
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
     if (health < lastHealthRef.current) {
       setJustHit(true);
-      setTimeout(() => setJustHit(false), 1000); // Clear after 1 second
+      timeoutId = setTimeout(() => setJustHit(false), 1000); // Clear after 1 second
     }
+
     lastHealthRef.current = health;
+
+    return () => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [health]);
 
   // Detect successful attacks (currentAnimation changed to attack)
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
     if (currentAnimation === "attack") {
       setJustLanded(true);
-      setTimeout(() => setJustLanded(false), 500); // Clear after 0.5 seconds
+      timeoutId = setTimeout(() => setJustLanded(false), 500); // Clear after 0.5 seconds
     }
+
+    return () => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [currentAnimation]);
 
   // Calculate facial expression from combat state (or use provided one)
@@ -460,7 +477,7 @@ export const SkeletalPlayer3D: React.FC<
         facialExpression={calculatedExpression}
         facialDamage={calculatedFacialDamage}
         opponentPosition={opponentPos}
-        enableFacialFeatures={enableFacialExpressions}
+        enableFacialExpressions={enableFacialExpressions}
         enableEyeTracking={enableEyeTracking}
       />
 

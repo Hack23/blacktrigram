@@ -220,13 +220,13 @@ export interface Player3DUnifiedProps {
   readonly facialDamage?: FacialDamageState;
 
   /**
-   * Whether to enable facial expressions (default: true)
+   * Whether to enable facial expressions (opt-in, default: false)
    * @korean 표정사용
    */
   readonly enableFacialExpressions?: boolean;
 
   /**
-   * Whether to enable eye tracking (default: true)
+   * Whether to enable eye tracking (opt-in, default: false)
    * @korean 눈추적사용
    */
   readonly enableEyeTracking?: boolean;
