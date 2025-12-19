@@ -11,7 +11,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   createHumanoidRig,
   getAnimation,
@@ -165,45 +165,47 @@ export const SkeletalPlayer3D: React.FC<
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
   const trigramSymbol = useMemo(() => getTrigramSymbol(stance), [stance]);
 
-  // Load attack animation when currentAnimation changes
-  useEffect(() => {
-    // Use setTimeout to avoid cascading renders
-    const timeoutId = setTimeout(() => {
-      if (currentAnimation === "attack" && attackAnimation) {
-        const anim = getAnimation(attackAnimation);
-        if (anim) {
-          setAnimState({
-            currentAnimation: anim,
-            currentTime: 0,
-            isPlaying: true,
-            playbackSpeed: 1.0,
-            previousKeyframeIndex: 0,
-            nextKeyframeIndex: 1,
-          });
-        }
-      } else if (currentAnimation === "defend" || isBlocking) {
-        const blockAnim = getAnimation("block");
-        if (blockAnim) {
-          setAnimState({
-            currentAnimation: blockAnim,
-            currentTime: 0,
-            isPlaying: true,
-            playbackSpeed: 1.0,
-            previousKeyframeIndex: 0,
-            nextKeyframeIndex: 1,
-          });
-        }
-      } else {
-        // Reset to idle
-        setAnimState((prev) => ({
-          ...prev,
-          isPlaying: false,
-          currentTime: 0,
-        }));
-      }
-    }, 0);
+  // Animation time ref - use ref to avoid state updates during render
+  const animTimeRef = useRef(0);
 
-    return () => clearTimeout(timeoutId);
+  // Load attack/defend/idle animation when currentAnimation or blocking state changes
+  useEffect(() => {
+    // Reset animation time ref whenever animation changes
+    animTimeRef.current = 0;
+
+    if (currentAnimation === "attack" && attackAnimation) {
+      const anim = getAnimation(attackAnimation);
+      if (anim) {
+        // Update animation state based on prop changes - this is intentional and safe
+        setAnimState({
+          currentAnimation: anim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0,
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+      }
+    } else if (currentAnimation === "defend" || isBlocking) {
+      const blockAnim = getAnimation("block");
+      if (blockAnim) {
+        setAnimState({
+          currentAnimation: blockAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0,
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+      }
+    } else {
+      // Reset to idle
+      setAnimState((prev) => ({
+        ...prev,
+        isPlaying: false,
+        currentTime: 0,
+      }));
+    }
   }, [currentAnimation, attackAnimation, isBlocking]);
 
   // Animation loop using useFrame (60fps)
@@ -215,7 +217,7 @@ export const SkeletalPlayer3D: React.FC<
     // Update animation time and get interpolated keyframe
     const result = updateAnimation(
       animState.currentAnimation,
-      animState.currentTime,
+      animTimeRef.current,
       delta,
       animState.playbackSpeed
     );
@@ -223,14 +225,12 @@ export const SkeletalPlayer3D: React.FC<
     // Apply keyframe to rig
     applyKeyframeToRig(rig, result.keyframe);
 
-    // Update animation state
-    setAnimState((prev) => ({
-      ...prev,
-      currentTime: result.time,
-    }));
+    // Update time ref
+    animTimeRef.current = result.time;
 
-    // Handle animation completion
+    // Handle animation completion - only update state when animation completes
     if (result.completed) {
+      animTimeRef.current = 0;
       setAnimState((prev) => ({
         ...prev,
         isPlaying: false,

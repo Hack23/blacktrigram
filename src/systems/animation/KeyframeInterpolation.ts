@@ -230,7 +230,7 @@ export const getInterpolatedKeyframe = (
     ...nextKeyframe.boneRotations.keys(),
   ]);
 
-  allBoneNames.forEach((boneName) => {
+  for (const boneName of allBoneNames) {
     const prevRotation =
       prevKeyframe.boneRotations.get(boneName) ?? new THREE.Euler();
     const nextRotation =
@@ -243,7 +243,7 @@ export const getInterpolatedKeyframe = (
       easingFn
     );
     boneRotations.set(boneName, interpolated);
-  });
+  }
 
   // Interpolate bone positions
   const bonePositions = new Map<string, THREE.Vector3>();
@@ -252,7 +252,7 @@ export const getInterpolatedKeyframe = (
     ...nextKeyframe.bonePositions.keys(),
   ]);
 
-  allPositionBones.forEach((boneName) => {
+  for (const boneName of allPositionBones) {
     const prevPosition =
       prevKeyframe.bonePositions.get(boneName) ?? new THREE.Vector3();
     const nextPosition =
@@ -265,7 +265,7 @@ export const getInterpolatedKeyframe = (
       easingFn
     );
     bonePositions.set(boneName, interpolated);
-  });
+  }
 
   return {
     time: currentTime,
