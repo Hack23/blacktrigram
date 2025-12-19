@@ -12,6 +12,7 @@
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
+import { HandPoseType } from "../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../types/skeletal";
 import Hand3D from "./Hand3D";
 
@@ -152,10 +153,26 @@ const SingleBone: React.FC<{
 
       {/* Add hands at hand bones */}
       {bone.name === "hand_L" && (
-        <Hand3D side="left" color={color} scale={1.0} />
+        <Hand3D 
+          side="left" 
+          pose={HandPoseType.OPEN}
+          fingerCurl={{ thumb: 0.2, index: 0.2, middle: 0.2, ring: 0.2, pinky: 0.2 }}
+          distanceFromCamera={10}
+          wristRotation={new THREE.Euler(0, 0, 0)}
+          skinColor={color}
+          scale={1.0} 
+        />
       )}
       {bone.name === "hand_R" && (
-        <Hand3D side="right" color={color} scale={1.0} />
+        <Hand3D 
+          side="right" 
+          pose={HandPoseType.OPEN}
+          fingerCurl={{ thumb: 0.2, index: 0.2, middle: 0.2, ring: 0.2, pinky: 0.2 }}
+          distanceFromCamera={10}
+          wristRotation={new THREE.Euler(0, 0, 0)}
+          skinColor={color}
+          scale={1.0} 
+        />
       )}
     </group>
   );
