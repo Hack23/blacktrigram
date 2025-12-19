@@ -99,3 +99,31 @@ export {
   createHandBones,
   createHumanoidRigWithHands,
 } from "./SkeletonRig";
+
+// Facial expression system
+export {
+  getExpressionFromCombatState,
+  createExpressionTransition,
+  updateExpressionState,
+  calculateFacialDamage,
+  resetFacialDamage,
+  getExpressionIntensity,
+  createDefaultExpressionState,
+  createDefaultFacialDamage,
+  DEFAULT_TRANSITION_CONFIG,
+  type ExpressionTransitionConfig,
+} from "./FacialExpressions";
+
+// Head movement animations
+export {
+  createHeadRecoilAnimation,
+  createHeadNodAnimation,
+  createHeadShakeAnimation,
+  createHeadTiltAnimation,
+  createHeadTurnAnimation,
+  createHeadDropAnimation,
+  calculateSmoothHeadRotation,
+  applyHeadMovementKeyframe,
+  isHeadMovementComplete,
+  getHeadMovementByType,
+} from "./HeadMovements";
