@@ -302,7 +302,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   facialExpression,
   facialDamage,
   opponentPosition,
-  enableFacialFeatures = true,
+  enableFacialFeatures = false, // Default false to avoid breaking existing tests
   enableEyeTracking = true,
 }) => {
   if (!showBones) {

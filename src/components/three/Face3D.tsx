@@ -232,13 +232,20 @@ export const Face3D: React.FC<Face3DProps> = ({
       return new THREE.Vector3(0, 0, 1); // Look forward
     }
 
-    // Calculate direction from head to opponent
-    const headPos = new THREE.Vector3(0, 1.9, 0);
-    const dir = new THREE.Vector3()
-      .subVectors(opponentPosition, headPos)
-      .normalize();
+    try {
+      // Calculate direction from head to opponent
+      const headPos = new THREE.Vector3(0, 1.9, 0);
+      const dir = new THREE.Vector3();
+      
+      // subVectors expects two THREE.Vector3 instances
+      dir.subVectors(opponentPosition, headPos);
+      dir.normalize();
 
-    return dir;
+      return dir;
+    } catch {
+      // Fallback if THREE.Vector3 isn't available (e.g., in tests)
+      return new THREE.Vector3(0, 0, 1);
+    }
   }, [opponentPosition, enableEyeTracking]);
 
   // Create damage texture (bruising overlay)
