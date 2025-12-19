@@ -328,7 +328,7 @@ export interface Face3DProps {
   /** Mobile mode (simplified rendering) */
   readonly isMobile?: boolean;
   
-  /** Skin tone color (default: KOREAN_COLORS.SKIN_TONE) */
+  /** Skin tone color (default: 0xffdbac) */
   readonly skinColor?: number;
 }
 
