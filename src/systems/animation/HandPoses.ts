@@ -460,7 +460,6 @@ export const updateHandAnimationState = (
     // Compute initial progress so we begin interpolating immediately
     const initialProgress = Math.min(1.0, deltaTime / transitionDuration);
 
-    // Use the current interpolated state as the "from" pose for smoother continuity.
     // Use the current interpolated state as the starting point for smoother continuity
     const fromFingerCurl = state.currentFingerCurl;
     const fromFingerSpread = state.currentFingerSpread;
