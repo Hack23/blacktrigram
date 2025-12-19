@@ -12,6 +12,7 @@
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
 import {
   createHumanoidRig,
   getAnimation,
@@ -20,12 +21,15 @@ import {
   getTechniqueHandPose,
   createInitialHandAnimationState,
   updateHandAnimationState,
+  getExpressionFromCombatState,
+  createDefaultFacialDamage,
 } from "../../systems/animation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { SkeletalRig, SkeletalAnimationState } from "../../types/skeletal";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
 import type { HandAnimationState } from "../../types/hand-animation";
 import { HandPoseType } from "../../types/hand-animation";
+import { FacialExpression } from "../../types/facial";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
@@ -184,6 +188,11 @@ export const SkeletalPlayer3D: React.FC<
   onAnimationComplete,
   attackAnimation,
   showSkeleton = false,
+  facialExpression,
+  facialDamage,
+  enableFacialExpressions = true,
+  enableEyeTracking = true,
+  opponentPosition,
 }) => {
   // Create skeletal rig
   const rig = useMemo<SkeletalRig>(() => createHumanoidRig(), []);
@@ -245,6 +254,73 @@ export const SkeletalPlayer3D: React.FC<
 
   // Animation time ref - use ref to avoid state updates during render
   const animTimeRef = useRef(0);
+
+  // Track recent combat events for expression calculation
+  const [justHit, setJustHit] = useState(false);
+  const [justLanded, setJustLanded] = useState(false);
+  const lastHealthRef = useRef(health);
+
+  // Detect hit events (health decreased)
+  useEffect(() => {
+    if (health < lastHealthRef.current) {
+      setJustHit(true);
+      setTimeout(() => setJustHit(false), 1000); // Clear after 1 second
+    }
+    lastHealthRef.current = health;
+  }, [health]);
+
+  // Detect successful attacks (currentAnimation changed to attack)
+  useEffect(() => {
+    if (currentAnimation === "attack") {
+      setJustLanded(true);
+      setTimeout(() => setJustLanded(false), 500); // Clear after 0.5 seconds
+    }
+  }, [currentAnimation]);
+
+  // Calculate facial expression from combat state (or use provided one)
+  const calculatedExpression = useMemo(() => {
+    if (!enableFacialExpressions) {
+      return FacialExpression.NEUTRAL;
+    }
+
+    if (facialExpression) {
+      return facialExpression;
+    }
+
+    return getExpressionFromCombatState(
+      health,
+      maxHealth,
+      stamina,
+      pain,
+      consciousness,
+      justHit,
+      justLanded
+    );
+  }, [
+    enableFacialExpressions,
+    facialExpression,
+    health,
+    maxHealth,
+    stamina,
+    pain,
+    consciousness,
+    justHit,
+    justLanded,
+  ]);
+
+  // Facial damage state
+  const calculatedFacialDamage = useMemo(() => {
+    return facialDamage ?? createDefaultFacialDamage();
+  }, [facialDamage]);
+
+  // Opponent position for eye tracking
+  const opponentPos = useMemo(() => {
+    if (opponentPosition) {
+      return new THREE.Vector3(...opponentPosition);
+    }
+    // Default: opponent in front
+    return new THREE.Vector3(facing === "right" ? 5 : -5, 2, 0);
+  }, [opponentPosition, facing]);
 
   // Load attack/defend/idle animation when currentAnimation or blocking state changes
    
@@ -381,6 +457,11 @@ export const SkeletalPlayer3D: React.FC<
         leftHandState={leftHandState}
         rightHandState={rightHandState}
         cameraDistance={10}
+        facialExpression={calculatedExpression}
+        facialDamage={calculatedFacialDamage}
+        opponentPosition={opponentPos}
+        enableFacialFeatures={enableFacialExpressions}
+        enableEyeTracking={enableEyeTracking}
       />
 
       {/* Blocking shield effect */}
