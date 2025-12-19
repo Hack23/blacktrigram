@@ -75,6 +75,58 @@ const getTrigramSymbol = (stance: string): string => {
 };
 
 /**
+ * Default transition duration for hand pose changes (in seconds)
+ * @korean 손자세전환기본지속시간
+ */
+const DEFAULT_HAND_TRANSITION_DURATION = 0.2;
+
+/**
+ * Frequency of React state syncs during hand animations.
+ * Value of 20 means sync every 5% progress (~every 3 frames at 60fps).
+ * This reduces React re-renders from 60/sec to ~20/sec during transitions.
+ * @korean 손상태동기화빈도
+ */
+const HAND_STATE_SYNC_FREQUENCY = 20;
+
+/**
+ * Updates hand animation state for a single hand at 60fps.
+ * Uses refs to avoid triggering React re-renders on every frame.
+ * Only syncs to React state periodically or when transition completes.
+ * 
+ * @param handStateRef - Ref storing current hand animation state
+ * @param setHandState - React setState function to update hand state
+ * @param delta - Time elapsed since last frame (in seconds)
+ * @korean 손애니메이션프레임업데이트
+ */
+const updateHandAnimationFrame = (
+  handStateRef: React.MutableRefObject<HandAnimationState>,
+  setHandState: React.Dispatch<React.SetStateAction<HandAnimationState>>,
+  delta: number
+): void => {
+  if (handStateRef.current && handStateRef.current.targetPose !== null) {
+    const previousState = handStateRef.current;
+    const updatedState = updateHandAnimationState(
+      previousState,
+      previousState.targetPose,
+      delta,
+      DEFAULT_HAND_TRANSITION_DURATION
+    );
+
+    handStateRef.current = updatedState;
+
+    // Sync to React state periodically (approximately every 3 frames at 60fps)
+    // to balance animation smoothness with React render performance.
+    if (
+      updatedState.targetPose === null ||
+      Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
+      Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
+    ) {
+      setHandState(updatedState);
+    }
+  }
+};
+
+/**
  * SkeletalPlayer3D Component
  * 
  * Complete skeletal player with 28-bone rig and realistic animations.
@@ -263,57 +315,17 @@ export const SkeletalPlayer3D: React.FC<
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
     // Update hand animation state at 60fps using refs to reduce React re-render frequency
-    if (leftHandStateRef.current && leftHandStateRef.current.targetPose !== null) {
-      const previousState = leftHandStateRef.current;
-      const transitionDuration = 0.2; // Default transition
-      const updatedState = updateHandAnimationState(
-        previousState,
-        previousState.targetPose,
-        delta,
-        transitionDuration
-      );
+    updateHandAnimationFrame(
+      leftHandStateRef,
+      setLeftHandState,
+      delta
+    );
 
-      leftHandStateRef.current = updatedState;
-
-      // Sync to React state periodically (approximately every 3 frames at 60fps)
-      // to balance animation smoothness with React render performance.
-      // HAND_STATE_SYNC_FREQUENCY=20 means we sync every 5% progress (~3 frames)
-      const HAND_STATE_SYNC_FREQUENCY = 20;
-      
-      if (
-        updatedState.targetPose === null ||
-        Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
-        Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
-      ) {
-        setLeftHandState(updatedState);
-      }
-    }
-
-    if (rightHandStateRef.current && rightHandStateRef.current.targetPose !== null) {
-      const previousState = rightHandStateRef.current;
-      const transitionDuration = 0.2; // Default transition
-      const updatedState = updateHandAnimationState(
-        previousState,
-        previousState.targetPose,
-        delta,
-        transitionDuration
-      );
-
-      rightHandStateRef.current = updatedState;
-
-      // Sync to React state periodically (approximately every 3 frames at 60fps)
-      // to balance animation smoothness with React render performance.
-      // HAND_STATE_SYNC_FREQUENCY=20 means we sync every 5% progress (~3 frames)
-      const HAND_STATE_SYNC_FREQUENCY = 20;
-      
-      if (
-        updatedState.targetPose === null ||
-        Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
-        Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
-      ) {
-        setRightHandState(updatedState);
-      }
-    }
+    updateHandAnimationFrame(
+      rightHandStateRef,
+      setRightHandState,
+      delta
+    );
 
     // Update skeletal animation
     if (!animState.isPlaying || !animState.currentAnimation) {
