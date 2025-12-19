@@ -1,7 +1,8 @@
 /**
  * Utility functions for Player3D component integration
  * 
- * Converts PlayerState from combat system to Player3DUnifiedProps for rendering.
+ * Converts PlayerState from combat system to Player3DUnifiedProps for rendering
+ * with SkeletalPlayer3D (28-bone articulated body model).
  * 
  * @module utils/player3DHelpers
  * @category Utilities
@@ -19,7 +20,7 @@ import type { AnimationState } from "../systems/animation/types";
 const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   idle: "idle",
   walk: "walk",
-  run: "walk", // Map run to walk for now (Player3DUnified doesn't have run)
+  run: "walk", // Map run to walk for now (SkeletalPlayer3D doesn't have run animation yet)
   attack: "attack",
   defend: "defend",
   hit: "hit",
@@ -30,7 +31,7 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
 /**
  * Convert AnimationState to PlayerAnimation
  * 
- * Maps the animation system's state types to Player3DUnified's animation types.
+ * Maps the animation system's state types to SkeletalPlayer3D's animation types.
  * 
  * @param animState - Animation state from the animation system
  * @returns Corresponding PlayerAnimation type
@@ -93,7 +94,7 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
  * @param position - 3D position [x, y, z]
  * @param rotation - Rotation in radians
  * @param options - Display and behavior options
- * @returns Props for Player3DUnified component
+ * @returns Props for SkeletalPlayer3D component (28-bone articulated body model)
  * @korean 플레이어상태변환
  * 
  * @example
@@ -105,7 +106,7 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
  *   { isMobile: false, showVitalPoints: false }
  * );
  * 
- * <Player3DUnified {...playerProps} />
+ * <SkeletalPlayer3D {...playerProps} />
  * ```
  */
 export function convertPlayerStateToProps(

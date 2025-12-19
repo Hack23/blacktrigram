@@ -74,7 +74,7 @@ import {
 } from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
-import { Player3DUnified } from "../three/Player3DUnified";
+import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
@@ -1556,7 +1556,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <CombatArena3D lighting="cyberpunk" />
 
         {/* Player 1 */}
-        <Player3DUnified
+        <SkeletalPlayer3D
           {...convertPlayerStateToProps(
             validPlayers[0],
             player1Position3D,
@@ -1572,7 +1572,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Player 2 (AI) */}
-        <Player3DUnified
+        <SkeletalPlayer3D
           {...convertPlayerStateToProps(
             validPlayers[1],
             player2Position3D,

@@ -2,7 +2,7 @@
  * Animation system exports for Black Trigram
  * 
  * Unified exports for the animation state machine, priority system,
- * and transition rules.
+ * transition rules, and skeletal animation system.
  * 
  * @module systems/animation
  * @category Animation
@@ -32,3 +32,46 @@ export {
   buildTransitionMap,
   DEFAULT_TRANSITIONS,
 } from "./AnimationTransitions";
+
+// Skeletal animation system
+export {
+  createBone,
+  createHumanoidRig,
+  applyJointConstraint,
+  getBoneWorldPosition,
+  getBoneWorldRotation,
+  resetBoneToRestPose,
+  resetRigToRestPose,
+  JOINT_CONSTRAINTS,
+  BONE_CHAINS,
+} from "./SkeletonRig";
+
+export {
+  JAB_ANIMATION,
+  CROSS_ANIMATION,
+  FRONT_KICK_ANIMATION,
+  ROUNDHOUSE_KICK_ANIMATION,
+  BLOCK_ANIMATION,
+  WALK_ANIMATION,
+  IDLE_STANCE_ANIMATION,
+  FORWARD_DASH_ANIMATION,
+  BACKWARD_RETREAT_ANIMATION,
+  SIDE_STEP_ANIMATION,
+  ATTACK_ANIMATIONS,
+  getAnimation,
+} from "./AttackAnimations";
+
+export {
+  easeLinear,
+  easeIn,
+  easeOut,
+  easeInOut,
+  getEasingFunction,
+  findSurroundingKeyframes,
+  interpolateRotation,
+  interpolatePosition,
+  getInterpolatedKeyframe,
+  applyKeyframeToRig,
+  blendKeyframes,
+  updateAnimation,
+} from "./KeyframeInterpolation";

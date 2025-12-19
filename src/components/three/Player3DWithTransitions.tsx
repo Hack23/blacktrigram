@@ -6,7 +6,7 @@
  * - StanceSymbol3D for floating trigram symbol
  * - StanceTransitionEffect for smooth transitions
  *
- * This wrapper can be used to enhance Player3DUnified with automatic
+ * This wrapper can be used to enhance SkeletalPlayer3D with automatic
  * stance change detection and visual effects.
  *
  * @module components/three/Player3DWithTransitions
@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
-import Player3DUnified from "./Player3DUnified";
+import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
 import StanceAuraParticles from "./StanceAuraParticles";
 import StanceSymbol3D from "./StanceSymbol3D";
 import StanceTransitionEffect from "./StanceTransitionEffect";
@@ -57,7 +57,7 @@ const AUDIO_ASSETS = {
  * Player3DWithTransitions Component
  *
  * Enhanced player component with automatic stance change detection and visual effects.
- * Wraps Player3DUnified and adds:
+ * Wraps SkeletalPlayer3D and adds:
  * - Particle system for stance aura
  * - Floating trigram symbol
  * - Smooth transition effects
@@ -114,6 +114,7 @@ export const Player3DWithTransitions: React.FC<
   const [fromStance, setFromStance] = useState<TrigramStance>(stance);
 
   // Detect stance changes - external effect (audio) justifies useEffect
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     const previousStance = prevStanceRef.current;
 
@@ -123,9 +124,7 @@ export const Player3DWithTransitions: React.FC<
 
       // External effects: audio playback (external system) and callbacks
       // These setState calls are intentional - triggered by prop change, not creating infinite loops
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsTransitioning(true);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFromStance(previousStance);
       onStanceTransitionStart?.(previousStance, stance);
 
@@ -148,7 +147,7 @@ export const Player3DWithTransitions: React.FC<
   return (
     <group data-testid="player3d-with-transitions">
       {/* Base player model */}
-      <Player3DUnified
+      <SkeletalPlayer3D
         stance={stance}
         ki={ki}
         isMobile={isMobile}
