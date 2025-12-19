@@ -114,6 +114,7 @@ export const Player3DWithTransitions: React.FC<
   const [fromStance, setFromStance] = useState<TrigramStance>(stance);
 
   // Detect stance changes - external effect (audio) justifies useEffect
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     const previousStance = prevStanceRef.current;
 
@@ -123,9 +124,7 @@ export const Player3DWithTransitions: React.FC<
 
       // External effects: audio playback (external system) and callbacks
       // These setState calls are intentional - triggered by prop change, not creating infinite loops
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsTransitioning(true);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFromStance(previousStance);
       onStanceTransitionStart?.(previousStance, stance);
 

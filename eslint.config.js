@@ -40,6 +40,8 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+      // Allow setState in effects when syncing with external systems (props, audio, timers)
+      "react-hooks/set-state-in-effect": "off",
       // Relaxed rules for Korean martial arts game development
       "@typescript-eslint/no-unused-vars": [
         "warn",

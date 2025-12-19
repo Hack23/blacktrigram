@@ -169,6 +169,7 @@ export const SkeletalPlayer3D: React.FC<
   const animTimeRef = useRef(0);
 
   // Load attack/defend/idle animation when currentAnimation or blocking state changes
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     // Reset animation time ref whenever animation changes
     animTimeRef.current = 0;
