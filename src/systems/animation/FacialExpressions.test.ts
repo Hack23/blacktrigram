@@ -39,12 +39,12 @@ describe("FacialExpressions", () => {
       expect(expression).toBe(FacialExpression.DEFEATED);
     });
 
-    it("should return PAINED when just hit and pain > 50", () => {
+    it("should return PAINED when just hit", () => {
       const expression = getExpressionFromCombatState(
         70, // health
         100, // maxHealth
         60, // stamina
-        60, // pain (high)
+        60, // pain (ignored - reserved for future intensity calculation)
         100, // consciousness
         true, // justHit
         false // justLanded

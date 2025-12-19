@@ -25,6 +25,12 @@ import {
 } from "../../types/facial";
 
 /**
+ * Head bone Y position in skeletal rig
+ * @korean 머리뼈Y위치
+ */
+const HEAD_HEIGHT_POSITION = 1.9;
+
+/**
  * Eye component with pupil tracking and swelling
  * 
  * Renders eye with adjustable openness, pupil tracking, and swelling effects.
@@ -235,14 +241,16 @@ export const Face3D: React.FC<Face3DProps> = ({
 
     // Validate opponent position to avoid runtime errors
     if (!(opponentPosition instanceof THREE.Vector3)) {
-      console.warn(
-        "Face3D: opponentPosition is not a THREE.Vector3; defaulting eye direction forward."
-      );
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "Face3D: opponentPosition is not a THREE.Vector3; defaulting eye direction forward."
+        );
+      }
       return new THREE.Vector3(0, 0, 1);
     }
 
     // Calculate direction from head to opponent
-    const headPos = new THREE.Vector3(0, 1.9, 0);
+    const headPos = new THREE.Vector3(0, HEAD_HEIGHT_POSITION, 0);
     const dir = new THREE.Vector3();
 
     // subVectors expects two THREE.Vector3 instances
@@ -280,7 +288,7 @@ export const Face3D: React.FC<Face3DProps> = ({
 
   return (
     <group
-      position={[0, 1.9, 0]}
+      position={[0, HEAD_HEIGHT_POSITION, 0]}
       rotation={headRotation}
       data-testid="face3d"
     >
