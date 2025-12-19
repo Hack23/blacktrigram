@@ -17,10 +17,15 @@ import {
   getAnimation,
   applyKeyframeToRig,
   updateAnimation,
+  getTechniqueHandPose,
+  createInitialHandAnimationState,
+  updateHandAnimationState,
 } from "../../systems/animation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { SkeletalRig, SkeletalAnimationState } from "../../types/skeletal";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
+import type { HandAnimationState } from "../../types/hand-animation";
+import { HandPoseType } from "../../types/hand-animation";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
@@ -141,6 +146,14 @@ export const SkeletalPlayer3D: React.FC<
     nextKeyframeIndex: 1,
   });
 
+  // Hand animation state for both hands
+  const [leftHandState, setLeftHandState] = useState<HandAnimationState>(
+    createInitialHandAnimationState(HandPoseType.OPEN)
+  );
+  const [rightHandState, setRightHandState] = useState<HandAnimationState>(
+    createInitialHandAnimationState(HandPoseType.OPEN)
+  );
+
   // Get archetype colors
   const archetypeColors = useMemo(
     () => getArchetypeColors(archetype),
@@ -186,6 +199,15 @@ export const SkeletalPlayer3D: React.FC<
           previousKeyframeIndex: 0,
           nextKeyframeIndex: 1,
         });
+
+        // Update hand poses based on attack technique
+        const handPose = getTechniqueHandPose(attackAnimation);
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, handPose.leftHandPose, 0, handPose.transitionDuration)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, handPose.rightHandPose, 0, handPose.transitionDuration)
+        );
       }
     } else if (currentAnimation === "defend" || isBlocking) {
       const blockAnim = getAnimation("block");
@@ -198,6 +220,14 @@ export const SkeletalPlayer3D: React.FC<
           previousKeyframeIndex: 0,
           nextKeyframeIndex: 1,
         });
+
+        // Open hands for blocking
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
       }
     } else {
       // Reset to idle
@@ -206,11 +236,34 @@ export const SkeletalPlayer3D: React.FC<
         isPlaying: false,
         currentTime: 0,
       }));
+
+      // Return to open hand pose when idle
+      setLeftHandState((prev) =>
+        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.3)
+      );
+      setRightHandState((prev) =>
+        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.3)
+      );
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
 
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
+    // Update hand animation state at 60fps
+    if (leftHandState.targetPose !== null) {
+      setLeftHandState((prev) => {
+        const transitionDuration = 0.2; // Default transition
+        return updateHandAnimationState(prev, prev.targetPose, delta, transitionDuration);
+      });
+    }
+    if (rightHandState.targetPose !== null) {
+      setRightHandState((prev) => {
+        const transitionDuration = 0.2; // Default transition
+        return updateHandAnimationState(prev, prev.targetPose, delta, transitionDuration);
+      });
+    }
+
+    // Update skeletal animation
     if (!animState.isPlaying || !animState.currentAnimation) {
       return;
     }
@@ -261,6 +314,9 @@ export const SkeletalPlayer3D: React.FC<
         color={bodyColor}
         showBones={true}
         renderMode={showSkeleton ? "debug" : "solid"}
+        leftHandState={leftHandState}
+        rightHandState={rightHandState}
+        cameraDistance={10}
       />
 
       {/* Blocking shield effect */}

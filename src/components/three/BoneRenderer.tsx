@@ -12,7 +12,7 @@
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
-import { HandPoseType } from "../../types/hand-animation";
+import type { HandAnimationState } from "../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../types/skeletal";
 import Hand3D from "./Hand3D";
 
@@ -47,6 +47,24 @@ export interface BoneRendererProps {
    * @korean 렌더모드
    */
   readonly renderMode?: "solid" | "debug";
+
+  /**
+   * Left hand animation state
+   * @korean 왼손애니메이션상태
+   */
+  readonly leftHandState?: HandAnimationState;
+
+  /**
+   * Right hand animation state
+   * @korean 오른손애니메이션상태
+   */
+  readonly rightHandState?: HandAnimationState;
+
+  /**
+   * Distance from camera for LOD
+   * @korean 카메라거리
+   */
+  readonly cameraDistance?: number;
 }
 
 /**
@@ -57,13 +75,19 @@ export interface BoneRendererProps {
  * @param bone - Bone to render
  * @param color - Bone color
  * @param renderMode - Render mode
+ * @param leftHandState - Left hand animation state
+ * @param rightHandState - Right hand animation state
+ * @param cameraDistance - Distance from camera
  * @korean 단일뼈렌더러
  */
 const SingleBone: React.FC<{
   readonly bone: Bone;
   readonly color: number;
   readonly renderMode: "solid" | "debug";
-}> = ({ bone, color, renderMode }) => {
+  readonly leftHandState?: HandAnimationState;
+  readonly rightHandState?: HandAnimationState;
+  readonly cameraDistance?: number;
+}> = ({ bone, color, renderMode, leftHandState, rightHandState, cameraDistance = 10 }) => {
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
     const length = bone.length;
@@ -148,28 +172,35 @@ const SingleBone: React.FC<{
           bone={childBone}
           color={color}
           renderMode={renderMode}
+          leftHandState={leftHandState}
+          rightHandState={rightHandState}
+          cameraDistance={cameraDistance}
         />
       ))}
 
-      {/* Add hands at hand bones */}
-      {bone.name === "hand_L" && (
+      {/* Add hands at hand bones with animation state */}
+      {bone.name === "hand_L" && leftHandState && (
         <Hand3D 
           side="left" 
-          pose={HandPoseType.OPEN}
-          fingerCurl={{ thumb: 0.2, index: 0.2, middle: 0.2, ring: 0.2, pinky: 0.2 }}
-          distanceFromCamera={10}
-          wristRotation={new THREE.Euler(0, 0, 0)}
+          pose={leftHandState.currentPose}
+          fingerCurl={leftHandState.currentFingerCurl}
+          distanceFromCamera={cameraDistance}
+          wristRotation={leftHandState.currentWristRotation}
+          isHighlighted={leftHandState.isHighlighted}
+          highlightMode={leftHandState.highlightMode}
           skinColor={color}
           scale={1.0} 
         />
       )}
-      {bone.name === "hand_R" && (
+      {bone.name === "hand_R" && rightHandState && (
         <Hand3D 
           side="right" 
-          pose={HandPoseType.OPEN}
-          fingerCurl={{ thumb: 0.2, index: 0.2, middle: 0.2, ring: 0.2, pinky: 0.2 }}
-          distanceFromCamera={10}
-          wristRotation={new THREE.Euler(0, 0, 0)}
+          pose={rightHandState.currentPose}
+          fingerCurl={rightHandState.currentFingerCurl}
+          distanceFromCamera={cameraDistance}
+          wristRotation={rightHandState.currentWristRotation}
+          isHighlighted={rightHandState.isHighlighted}
+          highlightMode={rightHandState.highlightMode}
           skinColor={color}
           scale={1.0} 
         />
@@ -196,6 +227,9 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   color = KOREAN_COLORS.ACCENT_RED,
   showBones = true,
   renderMode = "solid",
+  leftHandState,
+  rightHandState,
+  cameraDistance = 10,
 }) => {
   if (!showBones) {
     return null;
@@ -203,7 +237,14 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
 
   return (
     <group data-testid="bone-renderer">
-      <SingleBone bone={rig.root} color={color} renderMode={renderMode} />
+      <SingleBone 
+        bone={rig.root} 
+        color={color} 
+        renderMode={renderMode}
+        leftHandState={leftHandState}
+        rightHandState={rightHandState}
+        cameraDistance={cameraDistance}
+      />
     </group>
   );
 };
