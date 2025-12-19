@@ -17,10 +17,15 @@ import {
   getAnimation,
   applyKeyframeToRig,
   updateAnimation,
+  getTechniqueHandPose,
+  createInitialHandAnimationState,
+  updateHandAnimationState,
 } from "../../systems/animation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { SkeletalRig, SkeletalAnimationState } from "../../types/skeletal";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
+import type { HandAnimationState } from "../../types/hand-animation";
+import { HandPoseType } from "../../types/hand-animation";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
@@ -67,6 +72,58 @@ const getTrigramSymbol = (stance: string): string => {
     gon: "☷",
   };
   return symbols[stance] ?? "☰";
+};
+
+/**
+ * Default transition duration for hand pose changes (in seconds)
+ * @korean 손자세전환기본지속시간
+ */
+const DEFAULT_HAND_TRANSITION_DURATION = 0.2;
+
+/**
+ * Frequency of React state syncs during hand animations.
+ * Value of 20 means sync every 5% progress (~every 3 frames at 60fps).
+ * This reduces React re-renders from 60/sec to ~20/sec during transitions.
+ * @korean 손상태동기화빈도
+ */
+const HAND_STATE_SYNC_FREQUENCY = 20;
+
+/**
+ * Updates hand animation state for a single hand at 60fps.
+ * Uses refs to avoid triggering React re-renders on every frame.
+ * Only syncs to React state periodically or when transition completes.
+ * 
+ * @param handStateRef - Ref storing current hand animation state
+ * @param setHandState - React setState function to update hand state
+ * @param delta - Time elapsed since last frame (in seconds)
+ * @korean 손애니메이션프레임업데이트
+ */
+const updateHandAnimationFrame = (
+  handStateRef: React.MutableRefObject<HandAnimationState>,
+  setHandState: React.Dispatch<React.SetStateAction<HandAnimationState>>,
+  delta: number
+): void => {
+  if (handStateRef.current && handStateRef.current.targetPose !== null) {
+    const previousState = handStateRef.current;
+    const updatedState = updateHandAnimationState(
+      previousState,
+      previousState.targetPose,
+      delta,
+      DEFAULT_HAND_TRANSITION_DURATION
+    );
+
+    handStateRef.current = updatedState;
+
+    // Sync to React state periodically (approximately every 3 frames at 60fps)
+    // to balance animation smoothness with React render performance.
+    if (
+      updatedState.targetPose === null ||
+      Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
+      Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
+    ) {
+      setHandState(updatedState);
+    }
+  }
 };
 
 /**
@@ -141,6 +198,27 @@ export const SkeletalPlayer3D: React.FC<
     nextKeyframeIndex: 1,
   });
 
+  // Hand animation state for both hands
+  const [leftHandState, setLeftHandState] = useState<HandAnimationState>(
+    createInitialHandAnimationState(HandPoseType.OPEN)
+  );
+  const [rightHandState, setRightHandState] = useState<HandAnimationState>(
+    createInitialHandAnimationState(HandPoseType.OPEN)
+  );
+
+  // Refs for 60fps animation updates without triggering React re-renders
+  const leftHandStateRef = useRef<HandAnimationState>(leftHandState);
+  const rightHandStateRef = useRef<HandAnimationState>(rightHandState);
+
+  // Sync refs with state
+  useEffect(() => {
+    leftHandStateRef.current = leftHandState;
+  }, [leftHandState]);
+
+  useEffect(() => {
+    rightHandStateRef.current = rightHandState;
+  }, [rightHandState]);
+
   // Get archetype colors
   const archetypeColors = useMemo(
     () => getArchetypeColors(archetype),
@@ -169,7 +247,7 @@ export const SkeletalPlayer3D: React.FC<
   const animTimeRef = useRef(0);
 
   // Load attack/defend/idle animation when currentAnimation or blocking state changes
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     // Reset animation time ref whenever animation changes
     animTimeRef.current = 0;
@@ -186,6 +264,15 @@ export const SkeletalPlayer3D: React.FC<
           previousKeyframeIndex: 0,
           nextKeyframeIndex: 1,
         });
+
+        // Update hand poses based on attack technique
+        const handPose = getTechniqueHandPose(attackAnimation);
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, handPose.leftHandPose, 0, handPose.transitionDuration)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, handPose.rightHandPose, 0, handPose.transitionDuration)
+        );
       }
     } else if (currentAnimation === "defend" || isBlocking) {
       const blockAnim = getAnimation("block");
@@ -198,6 +285,14 @@ export const SkeletalPlayer3D: React.FC<
           previousKeyframeIndex: 0,
           nextKeyframeIndex: 1,
         });
+
+        // Open hands for blocking
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
       }
     } else {
       // Reset to idle
@@ -206,11 +301,33 @@ export const SkeletalPlayer3D: React.FC<
         isPlaying: false,
         currentTime: 0,
       }));
+
+      // Return to open hand pose when idle
+      setLeftHandState((prev) =>
+        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.3)
+      );
+      setRightHandState((prev) =>
+        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.3)
+      );
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
 
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
+    // Update hand animation state at 60fps using refs to reduce React re-render frequency
+    updateHandAnimationFrame(
+      leftHandStateRef,
+      setLeftHandState,
+      delta
+    );
+
+    updateHandAnimationFrame(
+      rightHandStateRef,
+      setRightHandState,
+      delta
+    );
+
+    // Update skeletal animation
     if (!animState.isPlaying || !animState.currentAnimation) {
       return;
     }
@@ -261,6 +378,9 @@ export const SkeletalPlayer3D: React.FC<
         color={bodyColor}
         showBones={true}
         renderMode={showSkeleton ? "debug" : "solid"}
+        leftHandState={leftHandState}
+        rightHandState={rightHandState}
+        cameraDistance={10}
       />
 
       {/* Blocking shield effect */}

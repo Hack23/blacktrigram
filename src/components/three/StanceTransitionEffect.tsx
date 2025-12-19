@@ -82,7 +82,7 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const stanceNames = useMemo(() => getStanceNames(toStance), [toStance]);
 
   // Handle transitions - external timer effect justifies useEffect
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     // Reset for new transition
     isInitializedRef.current = false;

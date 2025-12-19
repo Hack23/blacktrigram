@@ -9,3 +9,4 @@ export * from "./constants";
 export * from "./technique";
 export * from "./player-visual";
 export * from "./skeletal";
+export * from "./hand-animation";
