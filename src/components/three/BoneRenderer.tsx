@@ -14,7 +14,10 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
 import type { HandAnimationState } from "../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../types/skeletal";
+import type { FacialExpression, FacialDamageState } from "../../types/facial";
+import { DEFAULT_FACIAL_DAMAGE } from "../../types/facial";
 import Hand3D from "./Hand3D";
+import Face3D from "./Face3D";
 
 /**
  * Props for BoneRenderer component
@@ -65,6 +68,36 @@ export interface BoneRendererProps {
    * @korean 카메라거리
    */
   readonly cameraDistance?: number;
+
+  /**
+   * Current facial expression
+   * @korean 얼굴표정
+   */
+  readonly facialExpression?: FacialExpression;
+
+  /**
+   * Facial damage state
+   * @korean 얼굴손상
+   */
+  readonly facialDamage?: FacialDamageState;
+
+  /**
+   * Opponent position for eye tracking
+   * @korean 상대위치
+   */
+  readonly opponentPosition?: THREE.Vector3;
+
+  /**
+   * Enable facial expressions rendering
+   * @korean 얼굴표정렌더링
+   */
+  readonly enableFacialExpressions?: boolean;
+
+  /**
+   * Enable eye tracking
+   * @korean 눈추적활성화
+   */
+  readonly enableEyeTracking?: boolean;
 }
 
 /**
@@ -87,7 +120,24 @@ const SingleBone: React.FC<{
   readonly leftHandState?: HandAnimationState;
   readonly rightHandState?: HandAnimationState;
   readonly cameraDistance?: number;
-}> = ({ bone, color, renderMode, leftHandState, rightHandState, cameraDistance = 10 }) => {
+  readonly facialExpression?: FacialExpression;
+  readonly facialDamage?: FacialDamageState;
+  readonly opponentPosition?: THREE.Vector3;
+  readonly enableFacialExpressions?: boolean;
+  readonly enableEyeTracking?: boolean;
+}> = ({ 
+  bone, 
+  color, 
+  renderMode, 
+  leftHandState, 
+  rightHandState, 
+  cameraDistance = 10,
+  facialExpression,
+  facialDamage,
+  opponentPosition,
+  enableFacialExpressions = false,
+  enableEyeTracking = true,
+}) => {
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
     const length = bone.length;
@@ -175,6 +225,11 @@ const SingleBone: React.FC<{
           leftHandState={leftHandState}
           rightHandState={rightHandState}
           cameraDistance={cameraDistance}
+          facialExpression={facialExpression}
+          facialDamage={facialDamage}
+          opponentPosition={opponentPosition}
+          enableFacialExpressions={enableFacialExpressions}
+          enableEyeTracking={enableEyeTracking}
         />
       ))}
 
@@ -205,6 +260,20 @@ const SingleBone: React.FC<{
           scale={1.0} 
         />
       )}
+
+      {/* Add facial features at head bone */}
+      {bone.name === "head" && enableFacialExpressions && facialExpression && (
+        <Face3D
+          expression={facialExpression}
+          damage={facialDamage ?? DEFAULT_FACIAL_DAMAGE}
+          opponentPosition={opponentPosition ?? new THREE.Vector3(5, 2, 0)}
+          headRotation={bone.rotation.clone()}
+          enableEyeTracking={enableEyeTracking}
+          enableDamageVisuals={true}
+          isMobile={cameraDistance > 15}
+          skinColor={color}
+        />
+      )}
     </group>
   );
 };
@@ -230,6 +299,11 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   leftHandState,
   rightHandState,
   cameraDistance = 10,
+  facialExpression,
+  facialDamage,
+  opponentPosition,
+  enableFacialExpressions = false, // Default false to avoid breaking existing tests
+  enableEyeTracking = true,
 }) => {
   if (!showBones) {
     return null;
@@ -244,6 +318,11 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
         leftHandState={leftHandState}
         rightHandState={rightHandState}
         cameraDistance={cameraDistance}
+        facialExpression={facialExpression}
+        facialDamage={facialDamage}
+        opponentPosition={opponentPosition}
+        enableFacialExpressions={enableFacialExpressions}
+        enableEyeTracking={enableEyeTracking}
       />
     </group>
   );

@@ -11,6 +11,7 @@
  */
 
 import type { PlayerArchetype, TrigramStance } from "./common";
+import type { FacialExpression, FacialDamageState } from "./facial";
 
 /**
  * Balance state representing player stability in combat.
@@ -205,6 +206,36 @@ export interface Player3DUnifiedProps {
    * @korean 애니메이션완료콜백
    */
   readonly onAnimationComplete?: () => void;
+
+  /**
+   * Current facial expression (optional, auto-calculated if not provided)
+   * @korean 얼굴표정
+   */
+  readonly facialExpression?: FacialExpression;
+
+  /**
+   * Facial damage state (optional, defaults to no damage)
+   * @korean 얼굴손상
+   */
+  readonly facialDamage?: FacialDamageState;
+
+  /**
+   * Whether to enable facial expressions (opt-in, default: false)
+   * @korean 표정사용
+   */
+  readonly enableFacialExpressions?: boolean;
+
+  /**
+   * Whether to enable eye tracking (opt-in, default: false)
+   * @korean 눈추적사용
+   */
+  readonly enableEyeTracking?: boolean;
+
+  /**
+   * Opponent position for eye tracking (optional)
+   * @korean 상대위치
+   */
+  readonly opponentPosition?: [number, number, number];
 }
 
 /**
