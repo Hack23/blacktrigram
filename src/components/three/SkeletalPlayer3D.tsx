@@ -154,6 +154,19 @@ export const SkeletalPlayer3D: React.FC<
     createInitialHandAnimationState(HandPoseType.OPEN)
   );
 
+  // Refs for 60fps animation updates without triggering React re-renders
+  const leftHandStateRef = useRef<HandAnimationState>(leftHandState);
+  const rightHandStateRef = useRef<HandAnimationState>(rightHandState);
+
+  // Sync refs with state
+  useEffect(() => {
+    leftHandStateRef.current = leftHandState;
+  }, [leftHandState]);
+
+  useEffect(() => {
+    rightHandStateRef.current = rightHandState;
+  }, [rightHandState]);
+
   // Get archetype colors
   const archetypeColors = useMemo(
     () => getArchetypeColors(archetype),
@@ -249,18 +262,49 @@ export const SkeletalPlayer3D: React.FC<
 
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
-    // Update hand animation state at 60fps
-    if (leftHandState.targetPose !== null) {
-      setLeftHandState((prev) => {
-        const transitionDuration = 0.2; // Default transition
-        return updateHandAnimationState(prev, prev.targetPose, delta, transitionDuration);
-      });
+    // Update hand animation state at 60fps using refs to reduce React re-render frequency
+    if (leftHandStateRef.current && leftHandStateRef.current.targetPose !== null) {
+      const previousState = leftHandStateRef.current;
+      const transitionDuration = 0.2; // Default transition
+      const updatedState = updateHandAnimationState(
+        previousState,
+        previousState.targetPose,
+        delta,
+        transitionDuration
+      );
+
+      leftHandStateRef.current = updatedState;
+
+      // Sync to React state every 3 frames to balance smoothness and performance
+      // or immediately when transition completes
+      if (
+        updatedState.targetPose === null ||
+        Math.floor(updatedState.transitionProgress * 20) !== Math.floor(previousState.transitionProgress * 20)
+      ) {
+        setLeftHandState(updatedState);
+      }
     }
-    if (rightHandState.targetPose !== null) {
-      setRightHandState((prev) => {
-        const transitionDuration = 0.2; // Default transition
-        return updateHandAnimationState(prev, prev.targetPose, delta, transitionDuration);
-      });
+
+    if (rightHandStateRef.current && rightHandStateRef.current.targetPose !== null) {
+      const previousState = rightHandStateRef.current;
+      const transitionDuration = 0.2; // Default transition
+      const updatedState = updateHandAnimationState(
+        previousState,
+        previousState.targetPose,
+        delta,
+        transitionDuration
+      );
+
+      rightHandStateRef.current = updatedState;
+
+      // Sync to React state every 3 frames to balance smoothness and performance
+      // or immediately when transition completes
+      if (
+        updatedState.targetPose === null ||
+        Math.floor(updatedState.transitionProgress * 20) !== Math.floor(previousState.transitionProgress * 20)
+      ) {
+        setRightHandState(updatedState);
+      }
     }
 
     // Update skeletal animation

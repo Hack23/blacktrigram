@@ -455,12 +455,46 @@ export const updateHandAnimationState = (
     };
   }
 
-  // Start new transition
+  // Start new transition when target pose changes
   if (state.targetPose !== targetPose) {
+    // Compute initial progress so we begin interpolating immediately
+    const initialProgress = Math.min(1.0, deltaTime / transitionDuration);
+
+    // Use the current interpolated state as the "from" pose for smoother continuity.
+    // Fallback to the canonical currentPose definition if current* values are not set.
+    const currentPoseDefinition = getHandPose(state.currentPose);
+    const fromFingerCurl =
+      state.currentFingerCurl ?? currentPoseDefinition.fingerCurl;
+    const fromFingerSpread =
+      state.currentFingerSpread ?? currentPoseDefinition.fingerSpread;
+    const fromWristRotation =
+      state.currentWristRotation ?? currentPoseDefinition.wristRotation;
+
+    const toPose = getHandPose(targetPose);
+
+    const newFingerCurl = interpolateFingerCurl(
+      fromFingerCurl,
+      toPose.fingerCurl,
+      initialProgress
+    );
+    const newFingerSpread = interpolateFingerSpread(
+      fromFingerSpread,
+      toPose.fingerSpread,
+      initialProgress
+    );
+    const newWristRotation = interpolateWristRotation(
+      fromWristRotation,
+      toPose.wristRotation,
+      initialProgress
+    );
+
     return {
       ...state,
       targetPose,
-      transitionProgress: 0.0,
+      transitionProgress: initialProgress,
+      currentFingerCurl: newFingerCurl,
+      currentFingerSpread: newFingerSpread,
+      currentWristRotation: newWristRotation,
     };
   }
 
