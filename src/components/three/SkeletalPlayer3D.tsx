@@ -24,6 +24,7 @@ import {
   getExpressionFromCombatState,
   createDefaultFacialDamage,
 } from "../../systems/animation";
+import { MuscleActivationManager } from "../../systems/animation/MuscleActivation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { SkeletalRig, SkeletalAnimationState } from "../../types/skeletal";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
@@ -33,6 +34,7 @@ import { FacialExpression } from "../../types/facial";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
+import MuscleSystem from "./MuscleSystem";
 import PlayerStateIndicators from "./PlayerStateIndicators";
 import StanceAura from "./StanceAura";
 
@@ -196,6 +198,10 @@ export const SkeletalPlayer3D: React.FC<
 }) => {
   // Create skeletal rig
   const rig = useMemo<SkeletalRig>(() => createHumanoidRig(), []);
+
+  // Muscle activation manager
+  const muscleManager = useRef(new MuscleActivationManager());
+  const [muscleStates, setMuscleStates] = useState<Map<string, number>>(new Map());
 
   // Animation state
   const [animState, setAnimState] = useState<SkeletalAnimationState>({
@@ -420,6 +426,26 @@ export const SkeletalPlayer3D: React.FC<
       delta
     );
 
+    // Update muscle system at 60fps
+    if (currentAnimation === "attack" && attackAnimation) {
+      muscleManager.current.update(attackAnimation, stamina, delta);
+    } else if (currentAnimation === "defend" || isBlocking) {
+      muscleManager.current.update("block", stamina, delta);
+    } else {
+      muscleManager.current.relaxAllMuscles(delta);
+    }
+
+    // Sync muscle states to React state periodically (every ~5 frames at 60fps)
+    // to balance animation smoothness with performance
+    const shouldSyncMuscles = Math.random() < 0.2; // ~20% chance = ~12 times/sec
+    if (shouldSyncMuscles) {
+      const newStates = new Map<string, number>();
+      muscleManager.current.getAllActivations().forEach((state, name) => {
+        newStates.set(name, state.tension);
+      });
+      setMuscleStates(newStates);
+    }
+
     // Update skeletal animation
     if (!animState.isPlaying || !animState.currentAnimation) {
       return;
@@ -464,6 +490,12 @@ export const SkeletalPlayer3D: React.FC<
     >
       {/* Stance aura effect */}
       <StanceAura stance={stance} intensity={ki / 100} animated />
+
+      {/* Muscle system rendering */}
+      <MuscleSystem
+        muscleStates={muscleStates}
+        isExhausted={stamina < 20}
+      />
 
       {/* Skeletal rig rendering */}
       <BoneRenderer

@@ -15,7 +15,6 @@ import type {
   MuscleActivationMap,
   MuscleActivationState,
   MuscleSystemConfig,
-  DEFAULT_MUSCLE_CONFIG,
 } from "../../types/muscle";
 
 /**
@@ -218,7 +217,6 @@ export const getMuscleActivationForTechnique = (
 export class MuscleActivationManager {
   private activations: Map<MuscleGroupName, MuscleActivationState>;
   private config: MuscleSystemConfig;
-  private lastUpdateTime: number = 0;
 
   /**
    * Create a new muscle activation manager
@@ -310,8 +308,6 @@ export class MuscleActivationManager {
       (state as { targetTension: number }).targetTension = adjustedTarget;
       state.isShaking = isShaking;
     });
-
-    this.lastUpdateTime = Date.now();
   }
 
   /**

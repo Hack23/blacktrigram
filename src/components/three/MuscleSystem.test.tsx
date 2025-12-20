@@ -15,7 +15,6 @@ import { describe, it, expect } from "vitest";
 import React, { Suspense } from "react";
 import { MUSCLE_GROUPS, MuscleMesh, MuscleSystem } from "./MuscleSystem";
 import { KOREAN_COLORS } from "../../types/constants";
-import type { MuscleGroupName } from "../../types/muscle";
 
 // Helper to render Three.js components
 function render3D(component: React.ReactElement) {
