@@ -233,6 +233,9 @@ export class MuscleActivationManager {
       exhaustionThreshold: 20,
       shakeFrequency: 20,
       shakeAmplitude: 0.02,
+      activationSpeed: 5.0,
+      relaxationSpeed: 3.0,
+      shakingTensionThreshold: 0.3,
       ...config,
     };
 
@@ -266,7 +269,6 @@ export class MuscleActivationManager {
         muscleGroup: muscle,
         tension: 0,
         targetTension: 0,
-        transitionSpeed: 5.0, // Fast transitions for responsive gameplay
         isShaking: false,
       });
     });
@@ -297,15 +299,15 @@ export class MuscleActivationManager {
       const newTension = THREE.MathUtils.lerp(
         state.tension,
         adjustedTarget,
-        state.transitionSpeed * delta
+        this.config.activationSpeed * delta
       );
 
       // Update shaking state for exhaustion
-      const isShaking = isExhausted && state.tension > 0.3;
+      const isShaking = isExhausted && state.tension > this.config.shakingTensionThreshold;
 
-      // Update state (mutate for performance)
+      // Update state directly for performance
       state.tension = newTension;
-      (state as { targetTension: number }).targetTension = adjustedTarget;
+      state.targetTension = adjustedTarget;
       state.isShaking = isShaking;
     });
   }
@@ -321,12 +323,15 @@ export class MuscleActivationManager {
    */
   relaxAllMuscles(delta: number): void {
     this.activations.forEach((state) => {
-      // Slower relaxation than activation for realistic muscle behavior
-      const relaxationSpeed = 3.0; // Slower than activation (5.0)
-      const newTension = THREE.MathUtils.lerp(state.tension, 0, relaxationSpeed * delta);
+      // Use configured relaxation speed (slower than activation for realism)
+      const newTension = THREE.MathUtils.lerp(
+        state.tension, 
+        0, 
+        this.config.relaxationSpeed * delta
+      );
 
       state.tension = newTension;
-      (state as { targetTension: number }).targetTension = 0;
+      state.targetTension = 0;
       state.isShaking = false;
     });
   }
@@ -374,7 +379,7 @@ export class MuscleActivationManager {
   reset(): void {
     this.activations.forEach((state) => {
       state.tension = 0;
-      (state as { targetTension: number }).targetTension = 0;
+      state.targetTension = 0;
       state.isShaking = false;
     });
   }

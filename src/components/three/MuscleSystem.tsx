@@ -14,6 +14,7 @@ import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
 import type { MuscleGroup, MuscleMeshProps } from "../../types/muscle";
+import { DEFAULT_MUSCLE_CONFIG } from "../../types/muscle";
 
 /**
  * Comprehensive muscle group definitions for humanoid character
@@ -312,7 +313,9 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
     <group data-testid="muscle-system">
       {Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => {
         const tension = muscleStates.get(name) ?? 0;
-        const isShaking = isExhausted && tension > 0.3;
+        const isShaking = 
+          isExhausted && 
+          tension > DEFAULT_MUSCLE_CONFIG.shakingTensionThreshold;
 
         return (
           <MuscleMesh

@@ -96,11 +96,8 @@ export interface MuscleActivationState {
   /** Current tension level (0.0 = relaxed, 1.0 = maximum flex) */
   tension: number;
   
-  /** Target tension level for smooth transitions */
-  readonly targetTension: number;
-  
-  /** Speed of tension changes (how fast muscle flexes/relaxes) */
-  readonly transitionSpeed: number;
+  /** Target tension level for smooth transitions (mutable for performance) */
+  targetTension: number;
   
   /** Whether this muscle is currently shaking due to exhaustion */
   isShaking: boolean;
@@ -176,6 +173,15 @@ export interface MuscleSystemConfig {
   
   /** Shake amplitude when exhausted (default: 0.02 radians) */
   readonly shakeAmplitude: number;
+  
+  /** Speed of muscle activation transitions (default: 5.0) */
+  readonly activationSpeed: number;
+  
+  /** Speed of muscle relaxation transitions (default: 3.0) */
+  readonly relaxationSpeed: number;
+  
+  /** Tension threshold for shaking effect (default: 0.3) */
+  readonly shakingTensionThreshold: number;
 }
 
 /**
@@ -191,6 +197,9 @@ export const DEFAULT_MUSCLE_CONFIG: MuscleSystemConfig = {
   exhaustionThreshold: 20, // 20% stamina
   shakeFrequency: 20, // 20Hz
   shakeAmplitude: 0.02, // 0.02 radians
+  activationSpeed: 5.0, // Fast activation
+  relaxationSpeed: 3.0, // Slower relaxation for realism
+  shakingTensionThreshold: 0.3, // 30% tension minimum for shaking
 } as const;
 
 /**
