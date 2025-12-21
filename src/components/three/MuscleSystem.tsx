@@ -260,12 +260,13 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
     );
   }, [muscleGroup, roundedTension]);
 
-  // Muscle color based on tension (use rounded tension for stability)
+  // Muscle color based on tension and exhaustion (use rounded tension for stability)
   const muscleColor = useMemo(() => {
-    if (roundedTension > 0.7) {
-      return KOREAN_COLORS.MUSCLE_FLEXED; // Lighter when flexed
-    } else if (isShaking) {
+    if (isShaking) {
+      // Exhausted state visually overrides flexed state when both are true
       return KOREAN_COLORS.MUSCLE_EXHAUSTED; // Darker when exhausted
+    } else if (roundedTension > 0.7) {
+      return KOREAN_COLORS.MUSCLE_FLEXED; // Lighter when flexed
     }
     return color;
   }, [roundedTension, isShaking, color]);

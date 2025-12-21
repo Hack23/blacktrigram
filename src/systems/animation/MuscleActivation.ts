@@ -299,7 +299,8 @@ export class MuscleActivationManager {
       const adjustedTarget = targetTension * staminaFactor;
 
       // Smooth transition to target tension using lerp
-      const newTension = THREE.MathUtils.lerp(
+      const lerp = (start: number, end: number, t: number) => start + (end - start) * t;
+      const newTension = lerp(
         state.tension,
         adjustedTarget,
         this.config.activationSpeed * delta
@@ -327,7 +328,8 @@ export class MuscleActivationManager {
   relaxAllMuscles(delta: number): void {
     this.activations.forEach((state) => {
       // Use configured relaxation speed (slower than activation for realism)
-      const newTension = THREE.MathUtils.lerp(
+      const lerp = (start: number, end: number, t: number) => start + (end - start) * t;
+      const newTension = lerp(
         state.tension, 
         0, 
         this.config.relaxationSpeed * delta
