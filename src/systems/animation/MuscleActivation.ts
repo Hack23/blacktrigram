@@ -217,6 +217,7 @@ export const getMuscleActivationForTechnique = (
 export class MuscleActivationManager {
   private activations: Map<MuscleGroupName, MuscleActivationState>;
   private config: MuscleSystemConfig;
+  private scratchMap: Map<string, number>; // Reusable map for state sync to avoid allocations
 
   /**
    * Create a new muscle activation manager
@@ -241,6 +242,8 @@ export class MuscleActivationManager {
 
     // Initialize all muscle groups to relaxed state
     this.activations = new Map();
+    // Initialize reusable scratch map for state sync
+    this.scratchMap = new Map();
     const allMuscles: MuscleGroupName[] = [
       "SHOULDER_L",
       "SHOULDER_R",
@@ -372,6 +375,24 @@ export class MuscleActivationManager {
   }
 
   /**
+   * Get reusable scratch map with current tension values for state sync
+   * 
+   * Populates and returns a reusable Map to avoid allocations during state sync.
+   * This map is cleared and repopulated on each call.
+   * 
+   * @returns Reusable Map with current tension values
+   * 
+   * @korean 상태동기화맵가져오기
+   */
+  getScratchMapForSync(): Map<string, number> {
+    this.scratchMap.clear();
+    this.activations.forEach((state, name) => {
+      this.scratchMap.set(name, state.tension);
+    });
+    return this.scratchMap;
+  }
+
+  /**
    * Reset all muscles to relaxed state immediately
    * 
    * @korean 즉시이완
@@ -382,5 +403,6 @@ export class MuscleActivationManager {
       state.targetTension = 0;
       state.isShaking = false;
     });
+    this.scratchMap.clear();
   }
 }

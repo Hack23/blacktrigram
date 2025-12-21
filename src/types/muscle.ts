@@ -12,22 +12,6 @@
 import type * as THREE from "three";
 
 /**
- * Muscle tension states for realistic combat physiology
- * 
- * @korean 근육긴장상태
- */
-export enum MuscleTensionState {
-  /** Relaxed: Normal size, idle stance (0% tension) */
-  RELAXED = "relaxed",
-  
-  /** Tensed: +15% size during active technique execution */
-  TENSED = "tensed",
-  
-  /** Maximum Flex: +30% size during power techniques and max exertion */
-  MAXIMUM_FLEX = "maximum_flex",
-}
-
-/**
  * Muscle group names for anatomical targeting
  * 
  * @korean 근육그룹이름

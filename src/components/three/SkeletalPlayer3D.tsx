@@ -457,11 +457,9 @@ export const SkeletalPlayer3D: React.FC<
     // to balance animation smoothness with performance and reduce GC pressure
     frameCounter.current = (frameCounter.current + 1) % 10;
     if (frameCounter.current === 0) {
-      const newStates = new Map<string, number>();
-      muscleManager.current.getAllActivations().forEach((state, name) => {
-        newStates.set(name, state.tension);
-      });
-      setMuscleStates(newStates);
+      // Reuse scratch map from manager to avoid repeated allocations
+      const scratchMap = muscleManager.current.getScratchMapForSync();
+      setMuscleStates(scratchMap);
     }
 
     // Update skeletal animation
