@@ -24,6 +24,7 @@ import {
   getExpressionFromCombatState,
   createDefaultFacialDamage,
 } from "../../systems/animation";
+import { MuscleActivationManager } from "../../systems/animation/MuscleActivation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import type { SkeletalRig, SkeletalAnimationState } from "../../types/skeletal";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
@@ -33,6 +34,7 @@ import { FacialExpression } from "../../types/facial";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
+import MuscleSystem from "./MuscleSystem";
 import PlayerStateIndicators from "./PlayerStateIndicators";
 import StanceAura from "./StanceAura";
 
@@ -196,6 +198,22 @@ export const SkeletalPlayer3D: React.FC<
 }) => {
   // Create skeletal rig
   const rig = useMemo<SkeletalRig>(() => createHumanoidRig(), []);
+
+  // Muscle activation manager
+  const muscleManager = useRef(new MuscleActivationManager());
+  const [muscleStates, setMuscleStates] = useState<Map<string, number>>(new Map());
+  const frameCounter = useRef(0);
+
+  // Cleanup muscle manager on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        muscleManager.current.reset();
+      } catch (error) {
+        console.warn("MuscleActivationManager reset failed:", error);
+      }
+    };
+  }, []);
 
   // Animation state
   const [animState, setAnimState] = useState<SkeletalAnimationState>({
@@ -420,6 +438,30 @@ export const SkeletalPlayer3D: React.FC<
       delta
     );
 
+    // Update muscle system at 60fps
+    if (currentAnimation === "attack" && attackAnimation) {
+      muscleManager.current.update(attackAnimation, stamina, delta);
+    } else if (currentAnimation === "defend" || isBlocking) {
+      muscleManager.current.update("block", stamina, delta);
+    } else if (
+      currentAnimation === "walk" ||
+      currentAnimation === "stance_change"
+    ) {
+      // Engage stance/leg/core muscles during movement and stance changes
+      muscleManager.current.update("stance_change", stamina, delta);
+    } else {
+      muscleManager.current.relaxAllMuscles(delta);
+    }
+
+    // Sync muscle states to React state deterministically (every 10 frames at 60fps = ~6 times/sec)
+    // to balance animation smoothness with performance and reduce GC pressure
+    frameCounter.current = (frameCounter.current + 1) % 10;
+    if (frameCounter.current === 0) {
+      // Reuse scratch map from manager to avoid repeated allocations
+      const scratchMap = muscleManager.current.getScratchMapForSync();
+      setMuscleStates(scratchMap);
+    }
+
     // Update skeletal animation
     if (!animState.isPlaying || !animState.currentAnimation) {
       return;
@@ -464,6 +506,12 @@ export const SkeletalPlayer3D: React.FC<
     >
       {/* Stance aura effect */}
       <StanceAura stance={stance} intensity={ki / 100} animated />
+
+      {/* Muscle system rendering */}
+      <MuscleSystem
+        muscleStates={muscleStates}
+        isExhausted={stamina < 20}
+      />
 
       {/* Skeletal rig rendering */}
       <BoneRenderer

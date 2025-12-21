@@ -124,6 +124,11 @@ export const KOREAN_COLORS = {
   // Blood loss colors
   BLOODLOSS_INDICATOR: 0xcc0000,
 
+  // Muscle system colors (근육 시스템 색상)
+  MUSCLE_TONE: 0xd4a373, // Base muscle tone - tan/brown
+  MUSCLE_FLEXED: 0xe8b896, // Flexed muscle - lighter tan
+  MUSCLE_EXHAUSTED: 0xa67856, // Exhausted muscle - darker brown
+
   // Fix: Add missing color constants for game components
   ARENA_BACKGROUND: 0x1a1a2e,
   PLAYER_1_COLOR: 0x00ccff, // Cyan for player 1
