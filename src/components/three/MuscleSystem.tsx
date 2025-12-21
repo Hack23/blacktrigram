@@ -33,7 +33,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.15, 0.1, 0.1),
     maxFlexScale: new THREE.Vector3(0.20, 0.13, 0.13), // +33% size
     position: new THREE.Vector3(-0.35, 1.5, 0),
-    geometry: new THREE.CapsuleGeometry(0.1, 0.1, 8, 16),
     geometryParams: { radius: 0.1, length: 0.1, capSegments: 8, radialSegments: 16 },
   },
   SHOULDER_R: {
@@ -43,7 +42,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.15, 0.1, 0.1),
     maxFlexScale: new THREE.Vector3(0.20, 0.13, 0.13),
     position: new THREE.Vector3(0.35, 1.5, 0),
-    geometry: new THREE.CapsuleGeometry(0.1, 0.1, 8, 16),
     geometryParams: { radius: 0.1, length: 0.1, capSegments: 8, radialSegments: 16 },
   },
 
@@ -55,7 +53,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.09, 0.25, 0.09),
     maxFlexScale: new THREE.Vector3(0.12, 0.25, 0.12), // +33% width
     position: new THREE.Vector3(-0.3, 1.1, 0),
-    geometry: new THREE.CapsuleGeometry(0.09, 0.25, 8, 16),
     geometryParams: { radius: 0.09, length: 0.25, capSegments: 8, radialSegments: 16 },
   },
   BICEP_R: {
@@ -65,7 +62,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.09, 0.25, 0.09),
     maxFlexScale: new THREE.Vector3(0.12, 0.25, 0.12),
     position: new THREE.Vector3(0.3, 1.1, 0),
-    geometry: new THREE.CapsuleGeometry(0.09, 0.25, 8, 16),
     geometryParams: { radius: 0.09, length: 0.25, capSegments: 8, radialSegments: 16 },
   },
 
@@ -77,7 +73,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.08, 0.22, 0.08),
     maxFlexScale: new THREE.Vector3(0.10, 0.22, 0.10),
     position: new THREE.Vector3(-0.3, 1.1, -0.05),
-    geometry: new THREE.CapsuleGeometry(0.08, 0.22, 8, 16),
     geometryParams: { radius: 0.08, length: 0.22, capSegments: 8, radialSegments: 16 },
   },
   TRICEP_R: {
@@ -87,7 +82,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.08, 0.22, 0.08),
     maxFlexScale: new THREE.Vector3(0.10, 0.22, 0.10),
     position: new THREE.Vector3(0.3, 1.1, -0.05),
-    geometry: new THREE.CapsuleGeometry(0.08, 0.22, 8, 16),
     geometryParams: { radius: 0.08, length: 0.22, capSegments: 8, radialSegments: 16 },
   },
 
@@ -99,7 +93,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.07, 0.20, 0.07),
     maxFlexScale: new THREE.Vector3(0.09, 0.20, 0.09),
     position: new THREE.Vector3(-0.28, 0.7, 0),
-    geometry: new THREE.CapsuleGeometry(0.07, 0.20, 8, 16),
     geometryParams: { radius: 0.07, length: 0.20, capSegments: 8, radialSegments: 16 },
   },
   FOREARM_R: {
@@ -109,7 +102,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.07, 0.20, 0.07),
     maxFlexScale: new THREE.Vector3(0.09, 0.20, 0.09),
     position: new THREE.Vector3(0.28, 0.7, 0),
-    geometry: new THREE.CapsuleGeometry(0.07, 0.20, 8, 16),
     geometryParams: { radius: 0.07, length: 0.20, capSegments: 8, radialSegments: 16 },
   },
 
@@ -121,7 +113,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.25, 0.15, 0.10),
     maxFlexScale: new THREE.Vector3(0.33, 0.18, 0.13),
     position: new THREE.Vector3(0, 1.4, 0.08),
-    geometry: new THREE.CapsuleGeometry(0.12, 0.15, 8, 16),
     geometryParams: { radius: 0.12, length: 0.15, capSegments: 8, radialSegments: 16 },
   },
 
@@ -133,7 +124,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.20, 0.25, 0.12),
     maxFlexScale: new THREE.Vector3(0.24, 0.30, 0.14),
     position: new THREE.Vector3(0, 1.0, 0.05),
-    geometry: new THREE.CapsuleGeometry(0.10, 0.25, 8, 16),
     geometryParams: { radius: 0.10, length: 0.25, capSegments: 8, radialSegments: 16 },
   },
 
@@ -144,7 +134,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.18, 0.20, 0.10),
     maxFlexScale: new THREE.Vector3(0.22, 0.24, 0.12),
     position: new THREE.Vector3(0, 0.9, 0.08),
-    geometry: new THREE.CapsuleGeometry(0.09, 0.20, 8, 16),
     geometryParams: { radius: 0.09, length: 0.20, capSegments: 8, radialSegments: 16 },
   },
 
@@ -155,7 +144,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.15, 0.18, 0.08),
     maxFlexScale: new THREE.Vector3(0.18, 0.22, 0.10),
     position: new THREE.Vector3(0, 0.95, 0.12),
-    geometry: new THREE.CapsuleGeometry(0.08, 0.18, 8, 16),
     geometryParams: { radius: 0.08, length: 0.18, capSegments: 8, radialSegments: 16 },
   },
 
@@ -167,7 +155,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.11, 0.35, 0.11),
     maxFlexScale: new THREE.Vector3(0.15, 0.35, 0.15), // +36% width
     position: new THREE.Vector3(-0.15, 0.6, 0),
-    geometry: new THREE.CapsuleGeometry(0.11, 0.35, 8, 16),
     geometryParams: { radius: 0.11, length: 0.35, capSegments: 8, radialSegments: 16 },
   },
   QUAD_R: {
@@ -177,7 +164,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.11, 0.35, 0.11),
     maxFlexScale: new THREE.Vector3(0.15, 0.35, 0.15),
     position: new THREE.Vector3(0.15, 0.6, 0),
-    geometry: new THREE.CapsuleGeometry(0.11, 0.35, 8, 16),
     geometryParams: { radius: 0.11, length: 0.35, capSegments: 8, radialSegments: 16 },
   },
 
@@ -188,7 +174,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.10, 0.32, 0.10),
     maxFlexScale: new THREE.Vector3(0.13, 0.32, 0.13),
     position: new THREE.Vector3(-0.15, 0.6, -0.05),
-    geometry: new THREE.CapsuleGeometry(0.10, 0.32, 8, 16),
     geometryParams: { radius: 0.10, length: 0.32, capSegments: 8, radialSegments: 16 },
   },
   HAMSTRING_R: {
@@ -198,7 +183,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.10, 0.32, 0.10),
     maxFlexScale: new THREE.Vector3(0.13, 0.32, 0.13),
     position: new THREE.Vector3(0.15, 0.6, -0.05),
-    geometry: new THREE.CapsuleGeometry(0.10, 0.32, 8, 16),
     geometryParams: { radius: 0.10, length: 0.32, capSegments: 8, radialSegments: 16 },
   },
 
@@ -209,7 +193,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.08, 0.28, 0.08),
     maxFlexScale: new THREE.Vector3(0.10, 0.28, 0.10),
     position: new THREE.Vector3(-0.15, 0.25, -0.02),
-    geometry: new THREE.CapsuleGeometry(0.08, 0.28, 8, 16),
     geometryParams: { radius: 0.08, length: 0.28, capSegments: 8, radialSegments: 16 },
   },
   CALF_R: {
@@ -219,7 +202,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.08, 0.28, 0.08),
     maxFlexScale: new THREE.Vector3(0.10, 0.28, 0.10),
     position: new THREE.Vector3(0.15, 0.25, -0.02),
-    geometry: new THREE.CapsuleGeometry(0.08, 0.28, 8, 16),
     geometryParams: { radius: 0.08, length: 0.28, capSegments: 8, radialSegments: 16 },
   },
 
@@ -230,7 +212,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.12, 0.12, 0.10),
     maxFlexScale: new THREE.Vector3(0.16, 0.14, 0.13),
     position: new THREE.Vector3(-0.12, 0.85, -0.08),
-    geometry: new THREE.CapsuleGeometry(0.10, 0.10, 8, 16),
     geometryParams: { radius: 0.10, length: 0.10, capSegments: 8, radialSegments: 16 },
   },
   GLUTE_R: {
@@ -240,7 +221,6 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     baseScale: new THREE.Vector3(0.12, 0.12, 0.10),
     maxFlexScale: new THREE.Vector3(0.16, 0.14, 0.13),
     position: new THREE.Vector3(0.12, 0.85, -0.08),
-    geometry: new THREE.CapsuleGeometry(0.10, 0.10, 8, 16),
     geometryParams: { radius: 0.10, length: 0.10, capSegments: 8, radialSegments: 16 },
   },
 } as const;

@@ -38,7 +38,7 @@ describe("MUSCLE_GROUPS", () => {
       expect(group.baseScale).toBeDefined();
       expect(group.maxFlexScale).toBeDefined();
       expect(group.position).toBeDefined();
-      expect(group.geometry).toBeDefined();
+      expect(group.geometryParams).toBeDefined();
     });
   });
 

@@ -72,9 +72,6 @@ export interface MuscleGroup {
   /** Position relative to character center */
   readonly position: THREE.Vector3;
   
-  /** Geometry for muscle rendering */
-  readonly geometry: THREE.CapsuleGeometry;
-  
   /** Geometry parameters for creating instances */
   readonly geometryParams: {
     readonly radius: number;
