@@ -9,7 +9,6 @@
  * @korean 근육활성화시스템
  */
 
-import * as THREE from "three";
 import type {
   MuscleGroupName,
   MuscleActivationMap,
