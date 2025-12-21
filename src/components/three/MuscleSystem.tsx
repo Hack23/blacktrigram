@@ -248,11 +248,15 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
 
   // Interpolate between base and flexed scale based on tension (0-1)
   const currentScale = useMemo(() => {
-    const t = THREE.MathUtils.clamp(roundedTension, 0, 1);
+    // Clamp tension to 0-1 range
+    const t = Math.max(0, Math.min(1, roundedTension));
+    // Linear interpolation: start + (end - start) * t
+    const lerp = (start: number, end: number, t: number) => start + (end - start) * t;
+    
     return new THREE.Vector3(
-      THREE.MathUtils.lerp(muscleGroup.baseScale.x, muscleGroup.maxFlexScale.x, t),
-      THREE.MathUtils.lerp(muscleGroup.baseScale.y, muscleGroup.maxFlexScale.y, t),
-      THREE.MathUtils.lerp(muscleGroup.baseScale.z, muscleGroup.maxFlexScale.z, t)
+      lerp(muscleGroup.baseScale.x, muscleGroup.maxFlexScale.x, t),
+      lerp(muscleGroup.baseScale.y, muscleGroup.maxFlexScale.y, t),
+      lerp(muscleGroup.baseScale.z, muscleGroup.maxFlexScale.z, t)
     );
   }, [muscleGroup, roundedTension]);
 
