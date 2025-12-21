@@ -10,7 +10,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
 import type { MuscleGroup, MuscleMeshProps } from "../../types/muscle";
@@ -284,36 +284,6 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
     meshRef.current.rotation.z = shake;
   });
 
-  // Memoize geometry to prevent recreation on every render
-  const geometry = useMemo(
-    () => new THREE.CapsuleGeometry(
-      muscleGroup.geometryParams.radius,
-      muscleGroup.geometryParams.length,
-      muscleGroup.geometryParams.capSegments,
-      muscleGroup.geometryParams.radialSegments
-    ),
-    [muscleGroup.geometryParams]
-  );
-
-  // Memoize material to prevent recreation on every render
-  const material = useMemo(
-    () => new THREE.MeshStandardMaterial({
-      color: muscleColor,
-      metalness,
-      roughness,
-      transparent: false,
-    }),
-    [muscleColor, metalness, roughness]
-  );
-
-  // Cleanup geometry and material on unmount
-  useEffect(() => {
-    return () => {
-      geometry.dispose();
-      material.dispose();
-    };
-  }, [geometry, material]);
-
   return (
     <mesh
       ref={meshRef}
@@ -322,9 +292,22 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
       castShadow
       receiveShadow
       data-testid={`muscle-${muscleGroup.name}`}
-      geometry={geometry}
-      material={material}
-    />
+    >
+      <capsuleGeometry
+        args={[
+          muscleGroup.geometryParams.radius,
+          muscleGroup.geometryParams.length,
+          muscleGroup.geometryParams.capSegments,
+          muscleGroup.geometryParams.radialSegments,
+        ]}
+      />
+      <meshStandardMaterial
+        color={muscleColor}
+        metalness={metalness}
+        roughness={roughness}
+        transparent={false}
+      />
+    </mesh>
   );
 };
 
