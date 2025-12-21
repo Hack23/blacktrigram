@@ -330,6 +330,107 @@ describe("MuscleActivationManager", () => {
         expect(state.isShaking).toBe(false);
       });
     });
+
+    it("should clear scratch map after reset", () => {
+      // Activate muscles
+      for (let i = 0; i < 10; i++) {
+        manager.update("jab", 100, 0.016);
+      }
+
+      // Get scratch map before reset
+      const scratchMapBefore = manager.getScratchMapForSync();
+      expect(scratchMapBefore.size).toBeGreaterThan(0);
+
+      // Reset
+      manager.reset();
+
+      // Get scratch map after reset - should be empty after next sync
+      const scratchMapAfter = manager.getScratchMapForSync();
+      scratchMapAfter.forEach((tension) => {
+        expect(tension).toBe(0);
+      });
+    });
+  });
+
+  describe("getScratchMapForSync()", () => {
+    it("should return a map with current tension values", () => {
+      // Activate muscles
+      for (let i = 0; i < 10; i++) {
+        manager.update("jab", 100, 0.016);
+      }
+
+      const scratchMap = manager.getScratchMapForSync();
+
+      expect(scratchMap).toBeInstanceOf(Map);
+      expect(scratchMap.size).toBeGreaterThan(0);
+      
+      // Verify some muscles have tension
+      const bicepTension = scratchMap.get("BICEP_R");
+      expect(bicepTension).toBeDefined();
+      expect(bicepTension).toBeGreaterThan(0);
+    });
+
+    it("should clear and repopulate on each call", () => {
+      // First activation
+      for (let i = 0; i < 10; i++) {
+        manager.update("jab", 100, 0.016);
+      }
+
+      const firstMap = manager.getScratchMapForSync();
+      const firstBicepTension = firstMap.get("BICEP_R");
+
+      // Relax muscles
+      for (let i = 0; i < 20; i++) {
+        manager.relaxAllMuscles(0.016);
+      }
+
+      const secondMap = manager.getScratchMapForSync();
+      const secondBicepTension = secondMap.get("BICEP_R");
+
+      // Should be same map instance (reused)
+      expect(firstMap).toBe(secondMap);
+      
+      // But values should be different
+      expect(secondBicepTension).toBeLessThan(firstBicepTension!);
+    });
+
+    it("should be safe to call multiple times", () => {
+      for (let i = 0; i < 10; i++) {
+        manager.update("jab", 100, 0.016);
+      }
+
+      // Call multiple times
+      const map1 = manager.getScratchMapForSync();
+      const map2 = manager.getScratchMapForSync();
+      const map3 = manager.getScratchMapForSync();
+
+      // All should be the same instance
+      expect(map1).toBe(map2);
+      expect(map2).toBe(map3);
+
+      // All should have the same values
+      expect(map1.get("BICEP_R")).toBe(map2.get("BICEP_R"));
+      expect(map2.get("BICEP_R")).toBe(map3.get("BICEP_R"));
+    });
+
+    it("should have correct tension values after updates", () => {
+      // Activate with specific technique
+      for (let i = 0; i < 10; i++) {
+        manager.update("front_kick", 100, 0.016);
+      }
+
+      const scratchMap = manager.getScratchMapForSync();
+
+      // Front kick should activate leg muscles
+      const quadTension = scratchMap.get("QUAD_R");
+      expect(quadTension).toBeDefined();
+      expect(quadTension).toBeGreaterThan(0);
+
+      // Arms should have minimal activation
+      const bicepTension = scratchMap.get("BICEP_R");
+      expect(bicepTension).toBeDefined();
+      expect(bicepTension).toBeLessThan(quadTension!);
+    });
   });
 
   describe("Performance", () => {

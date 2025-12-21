@@ -10,7 +10,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
 import type { MuscleGroup, MuscleMeshProps } from "../../types/muscle";
@@ -243,25 +243,31 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
+  // Reduce sensitivity to tiny floating-point changes in tension
+  const roundedTension = useMemo(
+    () => Number(tension.toFixed(2)),
+    [tension]
+  );
+
   // Interpolate between base and flexed scale based on tension (0-1)
   const currentScale = useMemo(() => {
-    const t = THREE.MathUtils.clamp(tension, 0, 1);
+    const t = THREE.MathUtils.clamp(roundedTension, 0, 1);
     return new THREE.Vector3(
       THREE.MathUtils.lerp(muscleGroup.baseScale.x, muscleGroup.maxFlexScale.x, t),
       THREE.MathUtils.lerp(muscleGroup.baseScale.y, muscleGroup.maxFlexScale.y, t),
       THREE.MathUtils.lerp(muscleGroup.baseScale.z, muscleGroup.maxFlexScale.z, t)
     );
-  }, [muscleGroup, tension]);
+  }, [muscleGroup, roundedTension]);
 
-  // Muscle color based on tension
+  // Muscle color based on tension (use rounded tension for stability)
   const muscleColor = useMemo(() => {
-    if (tension > 0.7) {
+    if (roundedTension > 0.7) {
       return KOREAN_COLORS.MUSCLE_FLEXED; // Lighter when flexed
     } else if (isShaking) {
       return KOREAN_COLORS.MUSCLE_EXHAUSTED; // Darker when exhausted
     }
     return color;
-  }, [tension, isShaking, color]);
+  }, [roundedTension, isShaking, color]);
 
   // Shaking effect animation at 60fps
   useFrame((state) => {
@@ -278,6 +284,36 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
     meshRef.current.rotation.z = shake;
   });
 
+  // Memoize geometry to prevent recreation on every render
+  const geometry = useMemo(
+    () => new THREE.CapsuleGeometry(
+      muscleGroup.geometryParams.radius,
+      muscleGroup.geometryParams.length,
+      muscleGroup.geometryParams.capSegments,
+      muscleGroup.geometryParams.radialSegments
+    ),
+    [muscleGroup.geometryParams]
+  );
+
+  // Memoize material to prevent recreation on every render
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({
+      color: muscleColor,
+      metalness,
+      roughness,
+      transparent: false,
+    }),
+    [muscleColor, metalness, roughness]
+  );
+
+  // Cleanup geometry and material on unmount
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
+
   return (
     <mesh
       ref={meshRef}
@@ -286,20 +322,9 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
       castShadow
       receiveShadow
       data-testid={`muscle-${muscleGroup.name}`}
-    >
-      <capsuleGeometry args={[
-        muscleGroup.geometryParams.radius,
-        muscleGroup.geometryParams.length,
-        muscleGroup.geometryParams.capSegments,
-        muscleGroup.geometryParams.radialSegments,
-      ]} />
-      <meshStandardMaterial
-        color={muscleColor}
-        metalness={metalness}
-        roughness={roughness}
-        transparent={false}
-      />
-    </mesh>
+      geometry={geometry}
+      material={material}
+    />
   );
 };
 

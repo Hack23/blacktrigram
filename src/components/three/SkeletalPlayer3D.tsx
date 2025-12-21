@@ -208,7 +208,7 @@ export const SkeletalPlayer3D: React.FC<
   useEffect(() => {
     return () => {
       try {
-        muscleManager.current?.reset();
+        muscleManager.current.reset();
       } catch (error) {
         console.warn("MuscleActivationManager reset failed:", error);
       }
