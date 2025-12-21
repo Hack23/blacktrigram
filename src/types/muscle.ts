@@ -75,6 +75,14 @@ export interface MuscleGroup {
   /** Geometry for muscle rendering */
   readonly geometry: THREE.CapsuleGeometry;
   
+  /** Geometry parameters for creating instances */
+  readonly geometryParams: {
+    readonly radius: number;
+    readonly length: number;
+    readonly capSegments: number;
+    readonly radialSegments: number;
+  };
+  
   /** Korean name for bilingual support */
   readonly korean: string;
   

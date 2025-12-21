@@ -202,6 +202,18 @@ export const SkeletalPlayer3D: React.FC<
   // Muscle activation manager
   const muscleManager = useRef(new MuscleActivationManager());
   const [muscleStates, setMuscleStates] = useState<Map<string, number>>(new Map());
+  const frameCounter = useRef(0);
+
+  // Cleanup muscle manager on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        muscleManager.current?.reset();
+      } catch (error) {
+        console.warn("MuscleActivationManager reset failed:", error);
+      }
+    };
+  }, []);
 
   // Animation state
   const [animState, setAnimState] = useState<SkeletalAnimationState>({
@@ -431,14 +443,20 @@ export const SkeletalPlayer3D: React.FC<
       muscleManager.current.update(attackAnimation, stamina, delta);
     } else if (currentAnimation === "defend" || isBlocking) {
       muscleManager.current.update("block", stamina, delta);
+    } else if (
+      currentAnimation === "walk" ||
+      currentAnimation === "stance_change"
+    ) {
+      // Engage stance/leg/core muscles during movement and stance changes
+      muscleManager.current.update("stance_change", stamina, delta);
     } else {
       muscleManager.current.relaxAllMuscles(delta);
     }
 
-    // Sync muscle states to React state periodically (every ~5 frames at 60fps)
-    // to balance animation smoothness with performance
-    const shouldSyncMuscles = Math.random() < 0.2; // ~20% chance = ~12 times/sec
-    if (shouldSyncMuscles) {
+    // Sync muscle states to React state deterministically (every 10 frames at 60fps = ~6 times/sec)
+    // to balance animation smoothness with performance and reduce GC pressure
+    frameCounter.current = (frameCounter.current + 1) % 10;
+    if (frameCounter.current === 0) {
       const newStates = new Map<string, number>();
       muscleManager.current.getAllActivations().forEach((state, name) => {
         newStates.set(name, state.tension);

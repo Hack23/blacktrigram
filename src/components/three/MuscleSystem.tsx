@@ -34,6 +34,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.20, 0.13, 0.13), // +33% size
     position: new THREE.Vector3(-0.35, 1.5, 0),
     geometry: new THREE.CapsuleGeometry(0.1, 0.1, 8, 16),
+    geometryParams: { radius: 0.1, length: 0.1, capSegments: 8, radialSegments: 16 },
   },
   SHOULDER_R: {
     name: "SHOULDER_R",
@@ -43,6 +44,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.20, 0.13, 0.13),
     position: new THREE.Vector3(0.35, 1.5, 0),
     geometry: new THREE.CapsuleGeometry(0.1, 0.1, 8, 16),
+    geometryParams: { radius: 0.1, length: 0.1, capSegments: 8, radialSegments: 16 },
   },
 
   // Biceps - 이두근
@@ -54,6 +56,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.12, 0.25, 0.12), // +33% width
     position: new THREE.Vector3(-0.3, 1.1, 0),
     geometry: new THREE.CapsuleGeometry(0.09, 0.25, 8, 16),
+    geometryParams: { radius: 0.09, length: 0.25, capSegments: 8, radialSegments: 16 },
   },
   BICEP_R: {
     name: "BICEP_R",
@@ -63,6 +66,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.12, 0.25, 0.12),
     position: new THREE.Vector3(0.3, 1.1, 0),
     geometry: new THREE.CapsuleGeometry(0.09, 0.25, 8, 16),
+    geometryParams: { radius: 0.09, length: 0.25, capSegments: 8, radialSegments: 16 },
   },
 
   // Triceps - 삼두근
@@ -74,6 +78,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.10, 0.22, 0.10),
     position: new THREE.Vector3(-0.3, 1.1, -0.05),
     geometry: new THREE.CapsuleGeometry(0.08, 0.22, 8, 16),
+    geometryParams: { radius: 0.08, length: 0.22, capSegments: 8, radialSegments: 16 },
   },
   TRICEP_R: {
     name: "TRICEP_R",
@@ -83,6 +88,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.10, 0.22, 0.10),
     position: new THREE.Vector3(0.3, 1.1, -0.05),
     geometry: new THREE.CapsuleGeometry(0.08, 0.22, 8, 16),
+    geometryParams: { radius: 0.08, length: 0.22, capSegments: 8, radialSegments: 16 },
   },
 
   // Forearms - 전완근
@@ -94,6 +100,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.09, 0.20, 0.09),
     position: new THREE.Vector3(-0.28, 0.7, 0),
     geometry: new THREE.CapsuleGeometry(0.07, 0.20, 8, 16),
+    geometryParams: { radius: 0.07, length: 0.20, capSegments: 8, radialSegments: 16 },
   },
   FOREARM_R: {
     name: "FOREARM_R",
@@ -103,6 +110,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.09, 0.20, 0.09),
     position: new THREE.Vector3(0.28, 0.7, 0),
     geometry: new THREE.CapsuleGeometry(0.07, 0.20, 8, 16),
+    geometryParams: { radius: 0.07, length: 0.20, capSegments: 8, radialSegments: 16 },
   },
 
   // Chest - 가슴
@@ -114,6 +122,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.33, 0.18, 0.13),
     position: new THREE.Vector3(0, 1.4, 0.08),
     geometry: new THREE.CapsuleGeometry(0.12, 0.15, 8, 16),
+    geometryParams: { radius: 0.12, length: 0.15, capSegments: 8, radialSegments: 16 },
   },
 
   // Core muscles - 복근
@@ -125,6 +134,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.24, 0.30, 0.14),
     position: new THREE.Vector3(0, 1.0, 0.05),
     geometry: new THREE.CapsuleGeometry(0.10, 0.25, 8, 16),
+    geometryParams: { radius: 0.10, length: 0.25, capSegments: 8, radialSegments: 16 },
   },
 
   ABS: {
@@ -135,6 +145,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.22, 0.24, 0.12),
     position: new THREE.Vector3(0, 0.9, 0.08),
     geometry: new THREE.CapsuleGeometry(0.09, 0.20, 8, 16),
+    geometryParams: { radius: 0.09, length: 0.20, capSegments: 8, radialSegments: 16 },
   },
 
   OBLIQUES: {
@@ -145,6 +156,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.18, 0.22, 0.10),
     position: new THREE.Vector3(0, 0.95, 0.12),
     geometry: new THREE.CapsuleGeometry(0.08, 0.18, 8, 16),
+    geometryParams: { radius: 0.08, length: 0.18, capSegments: 8, radialSegments: 16 },
   },
 
   // Legs - 다리
@@ -156,6 +168,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.15, 0.35, 0.15), // +36% width
     position: new THREE.Vector3(-0.15, 0.6, 0),
     geometry: new THREE.CapsuleGeometry(0.11, 0.35, 8, 16),
+    geometryParams: { radius: 0.11, length: 0.35, capSegments: 8, radialSegments: 16 },
   },
   QUAD_R: {
     name: "QUAD_R",
@@ -165,6 +178,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.15, 0.35, 0.15),
     position: new THREE.Vector3(0.15, 0.6, 0),
     geometry: new THREE.CapsuleGeometry(0.11, 0.35, 8, 16),
+    geometryParams: { radius: 0.11, length: 0.35, capSegments: 8, radialSegments: 16 },
   },
 
   HAMSTRING_L: {
@@ -175,6 +189,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.13, 0.32, 0.13),
     position: new THREE.Vector3(-0.15, 0.6, -0.05),
     geometry: new THREE.CapsuleGeometry(0.10, 0.32, 8, 16),
+    geometryParams: { radius: 0.10, length: 0.32, capSegments: 8, radialSegments: 16 },
   },
   HAMSTRING_R: {
     name: "HAMSTRING_R",
@@ -184,6 +199,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.13, 0.32, 0.13),
     position: new THREE.Vector3(0.15, 0.6, -0.05),
     geometry: new THREE.CapsuleGeometry(0.10, 0.32, 8, 16),
+    geometryParams: { radius: 0.10, length: 0.32, capSegments: 8, radialSegments: 16 },
   },
 
   CALF_L: {
@@ -194,6 +210,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.10, 0.28, 0.10),
     position: new THREE.Vector3(-0.15, 0.25, -0.02),
     geometry: new THREE.CapsuleGeometry(0.08, 0.28, 8, 16),
+    geometryParams: { radius: 0.08, length: 0.28, capSegments: 8, radialSegments: 16 },
   },
   CALF_R: {
     name: "CALF_R",
@@ -203,6 +220,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.10, 0.28, 0.10),
     position: new THREE.Vector3(0.15, 0.25, -0.02),
     geometry: new THREE.CapsuleGeometry(0.08, 0.28, 8, 16),
+    geometryParams: { radius: 0.08, length: 0.28, capSegments: 8, radialSegments: 16 },
   },
 
   GLUTE_L: {
@@ -213,6 +231,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.16, 0.14, 0.13),
     position: new THREE.Vector3(-0.12, 0.85, -0.08),
     geometry: new THREE.CapsuleGeometry(0.10, 0.10, 8, 16),
+    geometryParams: { radius: 0.10, length: 0.10, capSegments: 8, radialSegments: 16 },
   },
   GLUTE_R: {
     name: "GLUTE_R",
@@ -222,6 +241,7 @@ export const MUSCLE_GROUPS: Record<string, MuscleGroup> = {
     maxFlexScale: new THREE.Vector3(0.16, 0.14, 0.13),
     position: new THREE.Vector3(0.12, 0.85, -0.08),
     geometry: new THREE.CapsuleGeometry(0.10, 0.10, 8, 16),
+    geometryParams: { radius: 0.10, length: 0.10, capSegments: 8, radialSegments: 16 },
   },
 } as const;
 
@@ -265,7 +285,13 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
 
   // Shaking effect animation at 60fps
   useFrame((state) => {
-    if (!meshRef.current || !isShaking) return;
+    if (!meshRef.current) return;
+    
+    if (!isShaking) {
+      // Reset rotation when not shaking
+      meshRef.current.rotation.z = 0;
+      return;
+    }
 
     // Shaking frequency: 20Hz (as per spec)
     const shake = Math.sin(state.clock.elapsedTime * 20 * Math.PI * 2) * 0.02;
@@ -281,7 +307,12 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
       receiveShadow
       data-testid={`muscle-${muscleGroup.name}`}
     >
-      <primitive object={muscleGroup.geometry} attach="geometry" />
+      <capsuleGeometry args={[
+        muscleGroup.geometryParams.radius,
+        muscleGroup.geometryParams.length,
+        muscleGroup.geometryParams.capSegments,
+        muscleGroup.geometryParams.radialSegments,
+      ]} />
       <meshStandardMaterial
         color={muscleColor}
         metalness={metalness}
