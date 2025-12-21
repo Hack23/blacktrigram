@@ -244,10 +244,7 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
   const meshRef = useRef<THREE.Mesh>(null);
 
   // Reduce sensitivity to tiny floating-point changes in tension
-  const roundedTension = useMemo(
-    () => Number(tension.toFixed(2)),
-    [tension]
-  );
+  const roundedTension = Math.round(tension * 100) / 100;
 
   // Interpolate between base and flexed scale based on tension (0-1)
   const currentScale = useMemo(() => {
