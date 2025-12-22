@@ -5,7 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
-import { PlayerArchetype, TrigramStance, VitalPointCategory, VitalPointSeverity } from "@/types";
+import { PlayerArchetype } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
 import CombatSystem from "./CombatSystem";
