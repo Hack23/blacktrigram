@@ -13,6 +13,7 @@ import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
 import PainResponseSystem, { ShockPainEffect } from "./combat/PainResponseSystem";
 import ConsciousnessSystem from "./combat/ConsciousnessSystem";
+import { extractVitalPointCategory, isHeadTraumaHit } from "./combat/painConsciousnessUtils";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -31,6 +32,10 @@ export class CombatSystem implements CombatSystemInterface {
   // Track last head trauma time per player for consciousness recovery
   private lastHeadTraumaTime: Map<string, number>;
 
+  // Vital point severity thresholds
+  private readonly SEVERITY_MAJOR_THRESHOLD = 30;
+  private readonly SEVERITY_MODERATE_THRESHOLD = 20;
+
   constructor() {
     this.vitalPointSystem = new VitalPointSystem();
     this.trigramSystem = new TrigramSystem();
@@ -38,6 +43,22 @@ export class CombatSystem implements CombatSystemInterface {
     this.consciousnessSystem = new ConsciousnessSystem();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
+  }
+
+  /**
+   * Cleanup per-player combat state.
+   * 
+   * Call this when a player permanently leaves the match or when
+   * match-level cleanup is performed to avoid unbounded Map growth.
+   * 
+   * @param playerId - ID of the player to cleanup
+   * 
+   * @public
+   * @korean 플레이어데이터정리
+   */
+  public cleanupPlayerData(playerId: string): void {
+    this.shockPainEffects.delete(playerId);
+    this.lastHeadTraumaTime.delete(playerId);
   }
 
   /**
@@ -225,15 +246,7 @@ export class CombatSystem implements CombatSystemInterface {
     result: CombatResult,
     category?: VitalPointCategory
   ): boolean {
-    // Head trauma occurs for:
-    // 1. Neurological hits (nerve strikes often target head)
-    // 2. Vascular hits to head region
-    // 3. High damage hits (>25) that could concuss
-    return (
-      category === VitalPointCategory.NEUROLOGICAL ||
-      category === VitalPointCategory.VASCULAR ||
-      result.damage > 25
-    );
+    return isHeadTraumaHit(result, category);
   }
 
   /**
@@ -243,25 +256,7 @@ export class CombatSystem implements CombatSystemInterface {
    * @returns Vital point category if available
    */
   private getVitalPointCategory(result: CombatResult): VitalPointCategory | undefined {
-    // Try to extract from effects or other result data
-    if (result.vitalPointHit && result.effects && result.effects.length > 0) {
-      // Effects from vital points typically indicate the category
-      const effect = result.effects[0];
-      if (effect.source) {
-        // Try to infer category from source (this is a heuristic)
-        if (effect.source.includes('neuro') || effect.source.includes('nerve')) {
-          return VitalPointCategory.NEUROLOGICAL;
-        }
-        if (effect.source.includes('vascular') || effect.source.includes('blood')) {
-          return VitalPointCategory.VASCULAR;
-        }
-        if (effect.source.includes('respiratory') || effect.source.includes('breath')) {
-          return VitalPointCategory.RESPIRATORY;
-        }
-      }
-    }
-    // Default: treat as general damage
-    return undefined;
+    return extractVitalPointCategory(result);
   }
 
   /**
@@ -275,10 +270,10 @@ export class CombatSystem implements CombatSystemInterface {
       if (result.isCritical) {
         return VitalPointSeverity.CRITICAL;
       }
-      if (result.damage > 30) {
+      if (result.damage > this.SEVERITY_MAJOR_THRESHOLD) {
         return VitalPointSeverity.MAJOR;
       }
-      if (result.damage > 20) {
+      if (result.damage > this.SEVERITY_MODERATE_THRESHOLD) {
         return VitalPointSeverity.MODERATE;
       }
       return VitalPointSeverity.MINOR;

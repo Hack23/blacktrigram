@@ -203,6 +203,19 @@ export class PainResponseSystem {
   private readonly painOverloadThreshold = 80;
 
   /**
+   * Shock pain intensity constants.
+   */
+  private readonly MAX_SHOCK_INTENSITY = 0.3; // 30% max reduction
+  private readonly MIN_SHOCK_INTENSITY = 0.1; // 10% min reduction
+  private readonly DAMAGE_SCALE_FACTOR = 100; // for normalizing damage to 0-1 range
+  private readonly INTENSITY_RANGE = 0.2; // 20% variable range
+
+  /**
+   * Pain to damage ratio for cumulative trauma calculation.
+   */
+  private readonly PAIN_TO_DAMAGE_RATIO = 0.5;
+
+  /**
    * Applies pain from combat damage with shock pain effects.
    * 
    * Calculates pain increase based on damage amount, vital point severity,
@@ -254,7 +267,7 @@ export class PainResponseSystem {
       : this.categoryMultipliers.default;
 
     // Calculate pain increase (cumulative trauma)
-    const painIncrease = damage * severityMultiplier * categoryMultiplier * 0.5;
+    const painIncrease = damage * severityMultiplier * categoryMultiplier * this.PAIN_TO_DAMAGE_RATIO;
 
     // Apply pain, clamped to 0-100
     const newPain = Math.max(0, Math.min(100, player.pain + painIncrease));
@@ -265,8 +278,8 @@ export class PainResponseSystem {
     if (damage >= this.shockPainThreshold) {
       // Calculate shock intensity: 10-30% reduction based on damage
       const shockIntensity = Math.min(
-        0.3,
-        0.1 + (damage / 100) * 0.2
+        this.MAX_SHOCK_INTENSITY,
+        this.MIN_SHOCK_INTENSITY + (damage / this.DAMAGE_SCALE_FACTOR) * this.INTENSITY_RANGE
       );
       
       // Random duration between 2-3 seconds

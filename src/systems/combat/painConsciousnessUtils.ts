@@ -238,7 +238,7 @@ export function getRecommendedRecoveryTime(
     }
     
     const consciousnessRecoveryTime = 5 + (consciousnessToRecover / recoveryRate);
-    recoveryTime = Math.max(recoveryTime, consciousnessRecoveryTime);
+    recoveryTime += consciousnessRecoveryTime;
   }
   
   return Math.ceil(recoveryTime);
