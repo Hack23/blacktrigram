@@ -3,7 +3,7 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
-import { PlayerArchetype, TrigramStance, VitalPointCategory } from "@/types";
+import { PlayerArchetype, VitalPointCategory } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "../player";
 import PainResponseSystem, { PainLevel, ShockPainEffect } from "./PainResponseSystem";

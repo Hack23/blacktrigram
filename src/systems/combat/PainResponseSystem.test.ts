@@ -5,8 +5,8 @@
  * and pain recovery mechanisms.
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { PlayerArchetype, TrigramStance, VitalPointCategory, VitalPointSeverity, CombatState } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
+import { PlayerArchetype, VitalPointCategory, VitalPointSeverity } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "../player";
 import PainResponseSystem, { PainLevel, ShockPainEffect } from "./PainResponseSystem";
@@ -114,26 +114,26 @@ describe("PainResponseSystem", () => {
 
   describe("Shock Pain Effects", () => {
     it("should trigger shock pain on significant damage (>=10)", () => {
-      const { player: newPlayer, shockEffect } = painSystem.applyPain(
+      const result = painSystem.applyPain(
         player,
         15
       );
 
-      expect(shockEffect).toBeDefined();
-      expect(shockEffect?.intensity).toBeGreaterThanOrEqual(0.1);
-      expect(shockEffect?.intensity).toBeLessThanOrEqual(0.3);
-      expect(shockEffect?.duration).toBeGreaterThanOrEqual(2000);
-      expect(shockEffect?.duration).toBeLessThanOrEqual(3000);
-      expect(shockEffect?.causedByDamage).toBe(15);
+      expect(result.shockEffect).toBeDefined();
+      expect(result.shockEffect?.intensity).toBeGreaterThanOrEqual(0.1);
+      expect(result.shockEffect?.intensity).toBeLessThanOrEqual(0.3);
+      expect(result.shockEffect?.duration).toBeGreaterThanOrEqual(2000);
+      expect(result.shockEffect?.duration).toBeLessThanOrEqual(3000);
+      expect(result.shockEffect?.causedByDamage).toBe(15);
     });
 
     it("should NOT trigger shock pain on minor damage (<10)", () => {
-      const { player: newPlayer, shockEffect } = painSystem.applyPain(
+      const result = painSystem.applyPain(
         player,
         5
       );
 
-      expect(shockEffect).toBeUndefined();
+      expect(result.shockEffect).toBeUndefined();
     });
 
     it("should scale shock intensity with damage", () => {
@@ -195,7 +195,6 @@ describe("PainResponseSystem", () => {
 
   describe("Pain Effects on Performance", () => {
     it("should not affect performance at minimal pain", () => {
-      const minimalPain = { ...player, pain: 10 };
       const effects = painSystem.getEffects(PainLevel.MINIMAL);
       
       expect(effects.performancePenalty).toBe(0);
@@ -291,7 +290,6 @@ describe("PainResponseSystem", () => {
     });
 
     it("should have 30% stun chance at pain overload", () => {
-      const overloadPlayer = { ...player, pain: 85 };
       const effects = painSystem.getEffects(PainLevel.OVERLOAD);
       
       expect(effects.stunChance).toBe(0.3);
