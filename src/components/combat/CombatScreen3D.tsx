@@ -89,6 +89,7 @@ import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
+import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -256,6 +257,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Vital Point Overlay Controls State
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Vital point overlay state (for both players)
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [severityFilters, setSeverityFilters] = useState<import("../../types/common").VitalPointSeverity[]>([]);
+  const [regionFilter, setRegionFilter] = useState<import("./components").BodyRegionFilter>("all");
+  const [showLabels, setShowLabels] = useState(true);
+  const [animated, setAnimated] = useState(true);
+  const [scale, setScale] = useState(0.8); // Slightly smaller for combat (2 characters)
+
+  // Keyboard shortcut for toggling overlay (V key)
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "v" || e.key === "V") {
+        setOverlayVisible((prev) => !prev);
+        audio.playSFX("menu_select");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [audio]);
 
   // Action feedback system for damage numbers, combo counter, and technique names
   const { state: feedbackState, actions: feedbackActions } = useActionFeedback({
@@ -1727,6 +1753,55 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           effects={combatState.hitEffects}
           onEffectComplete={handleEffectComplete}
           arenaBounds={arenaBounds}
+        />
+
+        {/* Vital Point Overlay - Show on both players */}
+        {overlayVisible && (
+          <>
+            {/* Player 1 Vital Points */}
+            <VitalPointMarkers3D
+              position={player1Position3D}
+              visible={overlayVisible}
+              severityFilter={severityFilters}
+              showLabels={showLabels}
+              scale={scale}
+              animated={animated}
+              onPointClick={() => {
+                // Optional: Add point targeting in combat
+              }}
+            />
+
+            {/* Player 2 Vital Points */}
+            <VitalPointMarkers3D
+              position={player2Position3D}
+              visible={overlayVisible}
+              severityFilter={severityFilters}
+              showLabels={showLabels}
+              scale={scale}
+              animated={animated}
+              onPointClick={() => {
+                // Optional: Add point targeting in combat
+              }}
+            />
+          </>
+        )}
+
+        {/* Vital Point Overlay Controls */}
+        <VitalPointOverlayControls
+          position={[-9, 3, 0]}
+          visible={overlayVisible}
+          onVisibleChange={setOverlayVisible}
+          severityFilters={severityFilters}
+          onSeverityFiltersChange={setSeverityFilters}
+          regionFilter={regionFilter}
+          onRegionFilterChange={setRegionFilter}
+          showLabels={showLabels}
+          onShowLabelsChange={setShowLabels}
+          animated={animated}
+          onAnimatedChange={setAnimated}
+          scale={scale}
+          onScaleChange={setScale}
+          isMobile={isMobile}
         />
 
         {/* Action Feedback - Damage Numbers */}
