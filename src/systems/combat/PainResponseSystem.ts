@@ -182,12 +182,12 @@ export class PainResponseSystem {
   /**
    * Base pain dissipation rate per second (requirement: -5 pain/second).
    */
-  private readonly baseDissipationRate = 5.0; // -5 pain per second
+  private readonly BASE_DISSIPATION_RATE = 5.0; // -5 pain per second
 
   /**
    * Shock pain duration range in milliseconds (requirement: 2-3 seconds).
    */
-  private readonly shockPainDuration = {
+  private readonly SHOCK_PAIN_DURATION = {
     min: 2000, // 2 seconds
     max: 3000, // 3 seconds
   };
@@ -195,12 +195,12 @@ export class PainResponseSystem {
   /**
    * Minimum damage to trigger shock pain.
    */
-  private readonly shockPainThreshold = 10;
+  private readonly SHOCK_PAIN_THRESHOLD = 10;
 
   /**
    * Pain overload threshold for stun chance (requirement: >80).
    */
-  private readonly painOverloadThreshold = 80;
+  private readonly PAIN_OVERLOAD_THRESHOLD = 80;
 
   /**
    * Shock pain intensity constants.
@@ -275,7 +275,7 @@ export class PainResponseSystem {
     let shockEffect: ShockPainEffect | undefined;
 
     // Trigger shock pain for significant hits (>=10 damage)
-    if (damage >= this.shockPainThreshold) {
+    if (damage >= this.SHOCK_PAIN_THRESHOLD) {
       // Calculate shock intensity: 10-30% reduction based on damage
       const shockIntensity = Math.min(
         this.MAX_SHOCK_INTENSITY,
@@ -284,9 +284,9 @@ export class PainResponseSystem {
       
       // Random duration between 2-3 seconds
       const shockDuration =
-        this.shockPainDuration.min +
+        this.SHOCK_PAIN_DURATION.min +
         Math.random() *
-          (this.shockPainDuration.max - this.shockPainDuration.min);
+          (this.SHOCK_PAIN_DURATION.max - this.SHOCK_PAIN_DURATION.min);
 
       shockEffect = {
         intensity: shockIntensity,
@@ -332,7 +332,7 @@ export class PainResponseSystem {
     const deltaSeconds = deltaTime / 1000;
     
     // Constant dissipation rate of -5 pain/second
-    const dissipation = this.baseDissipationRate * deltaSeconds;
+    const dissipation = this.BASE_DISSIPATION_RATE * deltaSeconds;
     const newPain = Math.max(0, player.pain - dissipation);
 
     return {
@@ -441,7 +441,7 @@ export class PainResponseSystem {
    * @korean 고통기절확인
    */
   shouldTriggerStun(player: PlayerState): boolean {
-    if (player.pain < this.painOverloadThreshold) {
+    if (player.pain < this.PAIN_OVERLOAD_THRESHOLD) {
       return false;
     }
 
@@ -462,7 +462,7 @@ export class PainResponseSystem {
    * @korean 고통과부하확인
    */
   isInPainOverload(player: PlayerState): boolean {
-    return player.pain >= this.painOverloadThreshold;
+    return player.pain >= this.PAIN_OVERLOAD_THRESHOLD;
   }
 
   /**

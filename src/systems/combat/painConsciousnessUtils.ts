@@ -217,11 +217,12 @@ export function getRecommendedRecoveryTime(
   player: PlayerState,
   consciousnessSystem: ConsciousnessSystem
 ): number {
-  let recoveryTime = 0;
+  let painRecoveryTime = 0;
+  let consciousnessRecoveryTime = 0;
   
   // Pain recovery time (-5 pain/second)
   if (player.pain > 0) {
-    recoveryTime += player.pain / 5;
+    painRecoveryTime = player.pain / 5;
   }
   
   // Consciousness recovery time (5 points/second after 5s delay)
@@ -237,11 +238,12 @@ export function getRecommendedRecoveryTime(
       recoveryRate = 1; // 20% of base
     }
     
-    const consciousnessRecoveryTime = 5 + (consciousnessToRecover / recoveryRate);
-    recoveryTime += consciousnessRecoveryTime;
+    consciousnessRecoveryTime = 5 + (consciousnessToRecover / recoveryRate);
   }
   
-  return Math.ceil(recoveryTime);
+  // Since pain and consciousness recover in parallel (concurrently in game loop),
+  // return the maximum of the two recovery times, not the sum
+  return Math.ceil(Math.max(painRecoveryTime, consciousnessRecoveryTime));
 }
 
 /**
