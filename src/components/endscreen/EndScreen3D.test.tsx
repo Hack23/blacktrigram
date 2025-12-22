@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { EndScreen3D } from "./EndScreen3D";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../audio/AudioProvider";
+import { MatchStatistics } from "../../systems/combat";
 import { PlayerArchetype } from "../../types/common";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
-import { MatchStatistics } from "../../systems/combat";
+import { EndScreen3D } from "./EndScreen3D";
 
 // Mock AudioProvider
 vi.mock("../../audio/AudioProvider", () => ({
@@ -117,7 +117,7 @@ describe("EndScreen3D", () => {
 
     expect(getByTestId("end-screen-3d")).toBeInTheDocument();
     expect(getByTestId("three-canvas")).toBeInTheDocument();
-    expect(getByTestId("html-overlay")).toBeInTheDocument();
+    expect(getByTestId("end-screen-overlay")).toBeInTheDocument();
   });
 
   it("should display winner name and archetype", () => {
@@ -139,7 +139,9 @@ describe("EndScreen3D", () => {
 
     expect(winnerName).toBeInTheDocument();
     expect(winnerArchetype).toBeInTheDocument();
-    expect(winnerArchetype).toHaveTextContent(PlayerArchetype.MUSA.toUpperCase());
+    expect(winnerArchetype).toHaveTextContent(
+      PlayerArchetype.MUSA.toUpperCase()
+    );
   });
 
   it("should render action buttons", () => {
@@ -213,7 +215,9 @@ describe("EndScreen3D", () => {
       </AudioProvider>
     );
 
-    expect(document.querySelector('[data-testid="end-screen-3d"]')).toBeInTheDocument();
+    expect(
+      document.querySelector('[data-testid="end-screen-3d"]')
+    ).toBeInTheDocument();
 
     // Desktop width
     rerender(
@@ -228,7 +232,9 @@ describe("EndScreen3D", () => {
       </AudioProvider>
     );
 
-    expect(document.querySelector('[data-testid="end-screen-3d"]')).toBeInTheDocument();
+    expect(
+      document.querySelector('[data-testid="end-screen-3d"]')
+    ).toBeInTheDocument();
   });
 
   it("should render optional rematch button when provided", () => {

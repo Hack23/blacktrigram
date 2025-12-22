@@ -1,7 +1,7 @@
-import { render, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { NavigationButtons } from "./NavigationButtons";
+import { fireEvent, render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
+import { NavigationButtons } from "./NavigationButtons";
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({

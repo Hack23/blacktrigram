@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { slideUpAnimation } from "./animations";
@@ -10,6 +9,10 @@ export interface NavigationButtonsProps {
   readonly onViewReplay?: () => void;
   readonly isMobile: boolean;
   readonly isTablet: boolean;
+  /** Optional audio callback for click sounds - passed from parent to avoid Html portal context issues */
+  readonly onPlaySelectSound?: () => void;
+  /** Optional audio callback for hover sounds - passed from parent to avoid Html portal context issues */
+  readonly onPlayHoverSound?: () => void;
 }
 
 /**
@@ -57,19 +60,19 @@ const StyledButton: React.FC<StyledButtonProps> = ({
   const baseBackground = isPrimary
     ? hexToRgbaString(primaryColor, 0.9)
     : hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
-  
+
   const hoverBackground = isPrimary
     ? hexToRgbaString(primaryColor, 1)
     : hexToRgbaString(primaryColor, 0.2);
-  
+
   const textColor = isPrimary
     ? toCssColor(KOREAN_COLORS.UI_BACKGROUND_DARK)
     : toCssColor(primaryColor);
-  
+
   const border = isPrimary
     ? "none"
     : `2px solid ${hexToRgbaString(borderColor ?? primaryColor, 0.8)}`;
-  
+
   const hoverBorderColor = isPrimary
     ? "none"
     : `2px solid ${hexToRgbaString(borderColor ?? primaryColor, 1)}`;
@@ -95,7 +98,10 @@ const StyledButton: React.FC<StyledButtonProps> = ({
       onMouseOver={(e) => {
         e.currentTarget.style.background = hoverBackground;
         e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(primaryColor, 0.4)}`;
+        e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(
+          primaryColor,
+          0.4
+        )}`;
         if (!isPrimary) {
           e.currentTarget.style.border = hoverBorderColor;
         }
@@ -103,7 +109,10 @@ const StyledButton: React.FC<StyledButtonProps> = ({
       onMouseOut={(e) => {
         e.currentTarget.style.background = baseBackground;
         e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(primaryColor, 0.3)}`;
+        e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(
+          primaryColor,
+          0.3
+        )}`;
         if (!isPrimary) {
           e.currentTarget.style.border = border;
         }
@@ -118,6 +127,8 @@ const StyledButton: React.FC<StyledButtonProps> = ({
 /**
  * Navigation Buttons Component
  * Provides action buttons for replay and menu navigation
+ * Note: Audio callbacks are passed as props since this component is rendered
+ * inside a Canvas Html portal which doesn't have access to AudioProvider context
  */
 export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onReturnToMenu,
@@ -125,9 +136,9 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onViewReplay,
   isMobile,
   isTablet,
+  onPlaySelectSound,
+  onPlayHoverSound,
 }) => {
-  const audio = useAudio();
-
   const buttonFontSize = isMobile ? 14 : isTablet ? 15 : 16;
   const buttonPadding = isMobile
     ? "10px 20px"
@@ -138,27 +149,27 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   const minWidth = isMobile ? "200px" : "150px";
 
   const handleReturnToMenu = useCallback(() => {
-    audio.playSFX?.("menu_select");
+    onPlaySelectSound?.();
     onReturnToMenu();
-  }, [audio, onReturnToMenu]);
+  }, [onPlaySelectSound, onReturnToMenu]);
 
   const handleRematch = useCallback(() => {
     if (onRematch) {
-      audio.playSFX?.("menu_select");
+      onPlaySelectSound?.();
       onRematch();
     }
-  }, [audio, onRematch]);
+  }, [onPlaySelectSound, onRematch]);
 
   const handleViewReplay = useCallback(() => {
     if (onViewReplay) {
-      audio.playSFX?.("menu_select");
+      onPlaySelectSound?.();
       onViewReplay();
     }
-  }, [audio, onViewReplay]);
+  }, [onPlaySelectSound, onViewReplay]);
 
   const handleHover = useCallback(() => {
-    audio.playSFX?.("menu_hover");
-  }, [audio]);
+    onPlayHoverSound?.();
+  }, [onPlayHoverSound]);
 
   return (
     <div

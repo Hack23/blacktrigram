@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import { MatchStatistics } from "../../../systems/combat";
-import { FONT_FAMILY, KOREAN_COLORS, PERFORMANCE_RATING_THRESHOLDS } from "../../../types/constants";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+  PERFORMANCE_RATING_THRESHOLDS,
+} from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { pulseAnimation } from "./animations";
 
@@ -21,35 +25,42 @@ const toCssColor = (hex: number): string => hexToRgbaString(hex, 1);
  */
 function calculatePerformanceScore(stats: MatchStatistics): number {
   const winnerStats = stats.winner === 0 ? stats.player1 : stats.player2;
-  
+
   // Calculate accuracy based on offensive performance only
   // Use a normalized scale: higher hits landed = better accuracy
   const accuracy = Math.min((winnerStats.hitsLanded / 10) * 100, 100);
-  
+
   // Calculate damage efficiency (damage dealt / damage taken ratio)
   // Perfect defense (no damage taken) gets bonus ratio
-  const damageRatio = winnerStats.totalDamageReceived > 0
-    ? (winnerStats.totalDamageDealt / winnerStats.totalDamageReceived)
-    : winnerStats.totalDamageDealt > 0 ? 2 : 0;
+  const damageRatio =
+    winnerStats.totalDamageReceived > 0
+      ? winnerStats.totalDamageDealt / winnerStats.totalDamageReceived
+      : winnerStats.totalDamageDealt > 0
+      ? 2
+      : 0;
   const damageScore = Math.min(damageRatio * 30, 30); // Max 30 points
-  
+
   // Perfect strikes and vital point hits bonus
-  const precisionBonus = (winnerStats.perfectStrikes * 5) + (winnerStats.vitalPointHits * 3);
+  const precisionBonus =
+    winnerStats.perfectStrikes * 5 + winnerStats.vitalPointHits * 3;
   const precisionScore = Math.min(precisionBonus, 25); // Max 25 points
-  
+
   // Speed bonus (shorter match duration is better)
-  const speedScore = stats.matchDuration < 60 ? 15 : stats.matchDuration < 120 ? 10 : 5;
-  
+  const speedScore =
+    stats.matchDuration < 60 ? 15 : stats.matchDuration < 120 ? 10 : 5;
+
   // Combine scores
-  const totalScore = (accuracy * 0.3) + damageScore + precisionScore + speedScore;
-  
+  const totalScore = accuracy * 0.3 + damageScore + precisionScore + speedScore;
+
   return Math.min(Math.round(totalScore), 100);
 }
 
 /**
  * Get performance rating based on score
  */
-function getPerformanceRating(score: number): keyof typeof PERFORMANCE_RATING_THRESHOLDS {
+function getPerformanceRating(
+  score: number
+): keyof typeof PERFORMANCE_RATING_THRESHOLDS {
   if (score >= PERFORMANCE_RATING_THRESHOLDS.S.minScore) return "S";
   if (score >= PERFORMANCE_RATING_THRESHOLDS.A.minScore) return "A";
   if (score >= PERFORMANCE_RATING_THRESHOLDS.B.minScore) return "B";
@@ -65,10 +76,10 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
   isMobile,
   isTablet,
 }) => {
-  const ratingFontSize = isMobile ? 48 : isTablet ? 60 : 72;
-  const labelFontSize = isMobile ? 14 : isTablet ? 16 : 18;
-  const scoreFontSize = isMobile ? 20 : isTablet ? 24 : 28;
-  const padding = isMobile ? 15 : isTablet ? 18 : 20;
+  const ratingFontSize = isMobile ? 36 : isTablet ? 48 : 56;
+  const labelFontSize = isMobile ? 12 : isTablet ? 14 : 15;
+  const scoreFontSize = isMobile ? 18 : isTablet ? 20 : 24;
+  const padding = isMobile ? 10 : isTablet ? 12 : 15;
 
   const performanceScore = useMemo(
     () => calculatePerformanceScore(matchStats),
@@ -81,10 +92,10 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
   );
 
   const ratingInfo = PERFORMANCE_RATING_THRESHOLDS[rating];
-  
+
   // Extract winner stats for clarity
   const winnerStats = useMemo(
-    () => matchStats.winner === 0 ? matchStats.player1 : matchStats.player2,
+    () => (matchStats.winner === 0 ? matchStats.player1 : matchStats.player2),
     [matchStats]
   );
 
@@ -98,9 +109,9 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
         background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
         border: `3px solid ${hexToRgbaString(ratingInfo.color, 0.8)}`,
         borderRadius: "16px",
-        padding: padding * 1.5,
-        marginBottom: padding,
-        minWidth: isMobile ? "280px" : "320px",
+        padding: padding,
+        marginBottom: padding / 2,
+        minWidth: isMobile ? "260px" : "300px",
         boxShadow: `0 0 30px ${hexToRgbaString(ratingInfo.color, 0.3)}`,
         animation: "ratingPulse 2s ease-in-out infinite",
       }}
@@ -198,25 +209,45 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
           data-testid="score-breakdown"
         >
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.ACCENT_GOLD), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.ACCENT_GOLD),
+                fontWeight: "bold",
+              }}
+            >
               {winnerStats.perfectStrikes ?? 0}
             </div>
             <div>완벽 | Perfect</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.VITAL_POINT_HIT), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.VITAL_POINT_HIT),
+                fontWeight: "bold",
+              }}
+            >
               {winnerStats.vitalPointHits ?? 0}
             </div>
             <div>급소 | Vital Hits</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN),
+                fontWeight: "bold",
+              }}
+            >
               {winnerStats.techniques?.length ?? 0}
             </div>
             <div>기술 | Techniques</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.CRITICAL_HIT), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.CRITICAL_HIT),
+                fontWeight: "bold",
+              }}
+            >
               {matchStats.criticalHits}
             </div>
             <div>치명타 | Criticals</div>
@@ -233,7 +264,10 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
             text-shadow: 0 0 20px ${hexToRgbaString(ratingInfo.color, 0.6)};
           }
           50% {
-            text-shadow: 0 0 30px ${hexToRgbaString(ratingInfo.color, 0.9)}, 0 0 50px ${hexToRgbaString(ratingInfo.color, 0.5)};
+            text-shadow: 0 0 30px ${hexToRgbaString(
+              ratingInfo.color,
+              0.9
+            )}, 0 0 50px ${hexToRgbaString(ratingInfo.color, 0.5)};
           }
         }
       `}</style>
