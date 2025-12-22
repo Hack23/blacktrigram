@@ -10,3 +10,4 @@ export * from "./CombatStateSystem";
 export * from "./ConsciousnessSystem";
 export * from "./PainResponseSystem";
 export * from "./BalanceSystem";
+export * from "./painConsciousnessUtils";
