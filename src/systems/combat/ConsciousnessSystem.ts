@@ -111,7 +111,7 @@ export class ConsciousnessSystem {
       visionClarity: 0.7,
     },
     [ConsciousnessLevel.STUNNED]: {
-      range: [10, 49],
+      range: [20, 49], // Updated: Changed from [10, 49] to [20, 49]
       reactionTimeMultiplier: 2.0, // 2x slower reactions
       accuracyPenalty: 0.5, // -50% accuracy
       defensePenalty: 0.4, // -40% defense
@@ -119,7 +119,7 @@ export class ConsciousnessSystem {
       visionClarity: 0.4,
     },
     [ConsciousnessLevel.UNCONSCIOUS]: {
-      range: [0, 9],
+      range: [0, 19], // Updated: Changed from [0, 9] to [0, 19] - incapacitation threshold <20%
       reactionTimeMultiplier: Infinity,
       accuracyPenalty: 1.0, // Complete inability
       defensePenalty: 1.0, // No defense
@@ -142,6 +142,26 @@ export class ConsciousnessSystem {
    * Base recovery rate per second.
    */
   private readonly baseRecoveryRate = 5.0; // 5 points per second
+
+  /**
+   * Incapacitation threshold - consciousness <20% renders player helpless.
+   * 
+   * **Korean**: 무력화한계 (Incapacitation Threshold)
+   */
+  private readonly incapacitationThreshold = 20;
+
+  /**
+   * Duration of helplessness when consciousness drops below threshold (3-5 seconds).
+   */
+  private readonly helplessDuration = {
+    min: 3000, // 3 seconds
+    max: 5000, // 5 seconds
+  };
+
+  /**
+   * Time without head trauma required for consciousness recovery (5 seconds).
+   */
+  private readonly noTraumaRecoveryTime = 5000; // 5 seconds
 
   /**
    * Applies consciousness damage from combat.
@@ -201,22 +221,39 @@ export class ConsciousnessSystem {
    * Recovery rate depends on current level - severely stunned
    * players recover more slowly.
    * 
+   * **Note**: Full recovery only occurs after 5 seconds without head trauma.
+   * 
    * @param player - Current player state
    * @param deltaTime - Time elapsed in milliseconds
+   * @param lastHeadTraumaTime - Timestamp of last head trauma (optional)
    * @returns Updated player state with recovered consciousness
    * 
    * @example
    * ```typescript
    * // In game loop (60fps, ~16ms per frame)
-   * player = system.applyRecovery(player, 16);
+   * player = system.applyRecovery(player, 16, player.lastActionTime);
    * ```
    * 
    * @public
    * @korean 의식회복
    */
-  applyRecovery(player: PlayerState, deltaTime: number): PlayerState {
+  applyRecovery(
+    player: PlayerState, 
+    deltaTime: number,
+    lastHeadTraumaTime?: number
+  ): PlayerState {
     // Already at full consciousness
     if (player.consciousness >= 100) {
+      return player;
+    }
+
+    // Check if enough time has passed since last head trauma
+    const timeSinceTrauma = lastHeadTraumaTime 
+      ? Date.now() - lastHeadTraumaTime 
+      : Infinity;
+    
+    // Don't recover if head trauma is recent (within 5 seconds)
+    if (timeSinceTrauma < this.noTraumaRecoveryTime) {
       return player;
     }
 
@@ -244,6 +281,12 @@ export class ConsciousnessSystem {
   /**
    * Determines consciousness level from consciousness value.
    * 
+   * Updated thresholds:
+   * - 90-100: Combat Alert
+   * - 50-89: Disoriented
+   * - 20-49: Stunned
+   * - 0-19: Unconscious (incapacitation threshold <20%)
+   * 
    * @param consciousness - Consciousness value (0-100)
    * @returns Current consciousness level
    * 
@@ -251,6 +294,9 @@ export class ConsciousnessSystem {
    * ```typescript
    * const level = system.getLevel(75);
    * console.log(level); // DISORIENTED
+   * 
+   * const level2 = system.getLevel(15);
+   * console.log(level2); // UNCONSCIOUS (below incapacitation threshold)
    * ```
    * 
    * @public
@@ -259,7 +305,7 @@ export class ConsciousnessSystem {
   getLevel(consciousness: number): ConsciousnessLevel {
     if (consciousness >= 90) return ConsciousnessLevel.COMBAT_ALERT;
     if (consciousness >= 50) return ConsciousnessLevel.DISORIENTED;
-    if (consciousness >= 10) return ConsciousnessLevel.STUNNED;
+    if (consciousness >= 20) return ConsciousnessLevel.STUNNED;
     return ConsciousnessLevel.UNCONSCIOUS;
   }
 
@@ -305,6 +351,65 @@ export class ConsciousnessSystem {
         level === ConsciousnessLevel.UNCONSCIOUS ||
         level === ConsciousnessLevel.STUNNED,
     };
+  }
+
+  /**
+   * Checks if player is at incapacitation threshold.
+   * 
+   * **Korean**: 무력화한계 (Incapacitation Threshold)
+   * 
+   * When consciousness drops below 20%, player becomes helpless for 3-5 seconds.
+   * 
+   * @param player - Current player state
+   * @returns True if consciousness is below incapacitation threshold (<20%)
+   * 
+   * @example
+   * ```typescript
+   * if (system.isAtIncapacitationThreshold(player)) {
+   *   // Player is helpless, trigger helpless state
+   *   const helplessDuration = system.getHelplessDuration();
+   *   console.log(`Player helpless for ${helplessDuration}ms`);
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 무력화한계확인
+   */
+  isAtIncapacitationThreshold(player: PlayerState): boolean {
+    return player.consciousness < this.incapacitationThreshold;
+  }
+
+  /**
+   * Gets random helpless duration when consciousness drops below threshold.
+   * 
+   * Returns a random duration between 3-5 seconds (3000-5000ms).
+   * 
+   * @returns Helpless duration in milliseconds
+   * 
+   * @public
+   * @korean 무력화지속시간
+   */
+  getHelplessDuration(): number {
+    return (
+      this.helplessDuration.min +
+      Math.random() * (this.helplessDuration.max - this.helplessDuration.min)
+    );
+  }
+
+  /**
+   * Checks if enough time has passed for consciousness recovery.
+   * 
+   * Consciousness only recovers after 5 seconds without head trauma.
+   * 
+   * @param lastHeadTraumaTime - Timestamp of last head trauma
+   * @returns True if recovery is allowed
+   * 
+   * @public
+   * @korean 회복가능확인
+   */
+  canRecover(lastHeadTraumaTime: number): boolean {
+    const timeSinceTrauma = Date.now() - lastHeadTraumaTime;
+    return timeSinceTrauma >= this.noTraumaRecoveryTime;
   }
 
   /**
