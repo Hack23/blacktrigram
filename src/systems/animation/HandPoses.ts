@@ -1,25 +1,23 @@
 /**
  * Hand pose definitions for Korean martial arts techniques
- * 
+ *
  * Defines authentic hand poses from Taekwondo, Hapkido, and Taekyon
  * including finger positions, wrist rotations, and striking surfaces.
- * 
+ *
  * @module systems/animation/HandPoses
  * @category Animation System
  * @korean 손자세시스템
  */
 
 import * as THREE from "three";
-import {
-  HandPoseType,
-} from "../../types/hand-animation";
 import type {
-  HandPose,
   FingerCurl,
   FingerSpread,
   HandAnimationState,
+  HandPose,
   TechniqueHandPose,
 } from "../../types/hand-animation";
+import { HandPoseType } from "../../types/hand-animation";
 
 /**
  * Standard finger curl values for common poses
@@ -42,22 +40,32 @@ const FINGER_CURL = {
  */
 const FINGER_SPREAD = {
   /** Fingers together */
-  TOGETHER: { thumbIndex: 0.0, indexMiddle: 0.0, middleRing: 0.0, ringPinky: 0.0 },
+  TOGETHER: {
+    thumbIndex: 0.0,
+    indexMiddle: 0.0,
+    middleRing: 0.0,
+    ringPinky: 0.0,
+  },
   /** Fingers naturally spread */
-  NATURAL: { thumbIndex: 0.3, indexMiddle: 0.1, middleRing: 0.1, ringPinky: 0.1 },
+  NATURAL: {
+    thumbIndex: 0.3,
+    indexMiddle: 0.1,
+    middleRing: 0.1,
+    ringPinky: 0.1,
+  },
   /** Fingers wide spread */
   WIDE: { thumbIndex: 0.8, indexMiddle: 0.4, middleRing: 0.4, ringPinky: 0.4 },
 } as const;
 
 /**
  * 주먹 (Fist) - Closed fist for punching
- * 
+ *
  * Traditional Taekwondo fist formation:
  * - All fingers tightly curled
  * - Thumb wrapped over index/middle fingers
  * - Knuckles aligned for impact
  * - Wrist straight for power transfer
- * 
+ *
  * @korean 주먹자세
  */
 export const FIST_POSE: HandPose = {
@@ -69,8 +77,10 @@ export const FIST_POSE: HandPose = {
   fingerSpread: FINGER_SPREAD.TOGETHER,
   wristRotation: new THREE.Euler(0, 0, 0),
   description: {
-    korean: "태권도 기본 주먹. 손가락을 단단히 말아 쥐고 엄지는 검지와 중지 위에 감싼다.",
-    english: "Traditional Taekwondo fist. Fingers tightly curled with thumb wrapped over index and middle fingers.",
+    korean:
+      "태권도 기본 주먹. 손가락을 단단히 말아 쥐고 엄지는 검지와 중지 위에 감싼다.",
+    english:
+      "Traditional Taekwondo fist. Fingers tightly curled with thumb wrapped over index and middle fingers.",
   },
   martialArtOrigin: "taekwondo",
   strikingSurface: "knuckles",
@@ -78,13 +88,13 @@ export const FIST_POSE: HandPose = {
 
 /**
  * 수도 (Knife-Hand) - Rigid hand edge strike
- * 
+ *
  * Hapkido/Taekwondo knife-hand technique:
  * - Fingers fully extended and together
  * - Thumb tucked against palm
  * - Hand rotated edge-down (90 degrees)
  * - Rigid for chopping strikes to neck/collar
- * 
+ *
  * @korean 수도자세
  */
 export const KNIFE_HAND_POSE: HandPose = {
@@ -102,8 +112,10 @@ export const KNIFE_HAND_POSE: HandPose = {
   fingerSpread: FINGER_SPREAD.TOGETHER,
   wristRotation: new THREE.Euler(0, 0, -Math.PI / 2), // Edge-down rotation
   description: {
-    korean: "합기도/태권도 수도치기. 손가락을 펴서 모으고 손날로 목이나 쇄골을 가격한다.",
-    english: "Hapkido/Taekwondo knife-hand strike. Fingers extended together, striking with hand edge to neck or collar.",
+    korean:
+      "합기도/태권도 수도치기. 손가락을 펴서 모으고 손날로 목이나 쇄골을 가격한다.",
+    english:
+      "Hapkido/Taekwondo knife-hand strike. Fingers extended together, striking with hand edge to neck or collar.",
   },
   martialArtOrigin: "hapkido",
   strikingSurface: "knife_edge",
@@ -111,13 +123,13 @@ export const KNIFE_HAND_POSE: HandPose = {
 
 /**
  * 관수 (Spear-Hand) - Pointed finger thrust
- * 
+ *
  * Traditional Korean spear-hand thrust:
  * - All fingers extended and pressed together
  * - Thumb extended alongside
  * - Fingertips form a point
  * - For precise strikes to soft targets (throat, eyes, solar plexus)
- * 
+ *
  * @korean 관수자세
  */
 export const SPEAR_HAND_POSE: HandPose = {
@@ -129,8 +141,10 @@ export const SPEAR_HAND_POSE: HandPose = {
   fingerSpread: FINGER_SPREAD.TOGETHER,
   wristRotation: new THREE.Euler(0, 0, 0),
   description: {
-    korean: "전통 한국 무술 관수. 손가락을 펴서 모아 뾰족하게 만들어 목구멍, 눈, 명치 등을 찌른다.",
-    english: "Traditional Korean spear-hand. Fingers extended together forming a point for precise strikes to throat, eyes, solar plexus.",
+    korean:
+      "전통 한국 무술 관수. 손가락을 펴서 모아 뾰족하게 만들어 목구멍, 눈, 명치 등을 찌른다.",
+    english:
+      "Traditional Korean spear-hand. Fingers extended together forming a point for precise strikes to throat, eyes, solar plexus.",
   },
   martialArtOrigin: "traditional",
   strikingSurface: "fingertips",
@@ -138,13 +152,13 @@ export const SPEAR_HAND_POSE: HandPose = {
 
 /**
  * 장력 (Palm-Heel) - Palm-heel strike
- * 
+ *
  * Taekwondo palm-heel strike:
  * - Fingers curled back (not tightly)
  * - Wrist extended back
  * - Palm heel exposed for striking
  * - For powerful upward strikes to chin/jaw
- * 
+ *
  * @korean 장력자세
  */
 export const PALM_HEEL_POSE: HandPose = {
@@ -156,8 +170,10 @@ export const PALM_HEEL_POSE: HandPose = {
   fingerSpread: FINGER_SPREAD.NATURAL,
   wristRotation: new THREE.Euler(-0.3, 0, 0), // Wrist extended back
   description: {
-    korean: "태권도 장력치기. 손가락을 약간 구부리고 손목을 꺾어 손바닥 아래쪽으로 턱이나 명치를 가격한다.",
-    english: "Taekwondo palm-heel strike. Fingers slightly curled, wrist extended back, striking with palm heel to chin or solar plexus.",
+    korean:
+      "태권도 장력치기. 손가락을 약간 구부리고 손목을 꺾어 손바닥 아래쪽으로 턱이나 명치를 가격한다.",
+    english:
+      "Taekwondo palm-heel strike. Fingers slightly curled, wrist extended back, striking with palm heel to chin or solar plexus.",
   },
   martialArtOrigin: "taekwondo",
   strikingSurface: "palm_heel",
@@ -165,13 +181,13 @@ export const PALM_HEEL_POSE: HandPose = {
 
 /**
  * 잡기 (Grappling) - Grasping hand
- * 
+ *
  * Hapkido grappling hand position:
  * - Fingers curved for gripping
  * - Thumb opposed for control
  * - Natural spread for maximum grip
  * - For joint locks and throws
- * 
+ *
  * @korean 잡기자세
  */
 export const GRAPPLING_POSE: HandPose = {
@@ -189,8 +205,10 @@ export const GRAPPLING_POSE: HandPose = {
   fingerSpread: FINGER_SPREAD.NATURAL,
   wristRotation: new THREE.Euler(0, 0, 0),
   description: {
-    korean: "합기도 잡기 자세. 손가락을 자연스럽게 구부려 상대를 잡거나 관절기를 건다.",
-    english: "Hapkido grappling position. Fingers naturally curved for gripping opponent or applying joint locks.",
+    korean:
+      "합기도 잡기 자세. 손가락을 자연스럽게 구부려 상대를 잡거나 관절기를 건다.",
+    english:
+      "Hapkido grappling position. Fingers naturally curved for gripping opponent or applying joint locks.",
   },
   martialArtOrigin: "hapkido",
   strikingSurface: "whole_hand",
@@ -198,13 +216,13 @@ export const GRAPPLING_POSE: HandPose = {
 
 /**
  * 펴기 (Open) - Neutral open hand
- * 
+ *
  * Relaxed open hand position:
  * - Fingers slightly curled (natural relaxation)
  * - Natural spread
  * - Neutral wrist
  * - Default/idle position
- * 
+ *
  * @korean 펴기자세
  */
 export const OPEN_POSE: HandPose = {
@@ -224,6 +242,33 @@ export const OPEN_POSE: HandPose = {
 };
 
 /**
+ * 휴식 (Relaxed) - Natural relaxed hand for walking/idle
+ *
+ * Very relaxed hand position:
+ * - Fingers slightly more curled than open
+ * - Natural spread
+ * - Slightly angled wrist
+ * - Used during walking and natural movements
+ *
+ * @korean 휴식자세
+ */
+export const RELAXED_POSE: HandPose = {
+  type: HandPoseType.RELAXED,
+  nameKorean: "휴식",
+  nameEnglish: "Relaxed",
+  romanized: "Hyusik",
+  fingerCurl: { thumb: 0.3, index: 0.35, middle: 0.35, ring: 0.4, pinky: 0.45 },
+  fingerSpread: FINGER_SPREAD.NATURAL,
+  wristRotation: new THREE.Euler(0.1, 0, 0), // Slight downward angle
+  description: {
+    korean: "자연스럽게 힘을 뺀 손. 걸을 때나 휴식 시 사용한다.",
+    english: "Naturally relaxed hand. Used while walking or at rest.",
+  },
+  martialArtOrigin: "traditional",
+  strikingSurface: "whole_hand",
+};
+
+/**
  * All hand poses indexed by type
  * @korean 모든손자세맵
  */
@@ -234,11 +279,12 @@ export const HAND_POSES: Record<HandPoseType, HandPose> = {
   [HandPoseType.PALM_HEEL]: PALM_HEEL_POSE,
   [HandPoseType.GRAPPLING]: GRAPPLING_POSE,
   [HandPoseType.OPEN]: OPEN_POSE,
+  [HandPoseType.RELAXED]: RELAXED_POSE,
 };
 
 /**
  * Get hand pose by type
- * 
+ *
  * @param poseType - Hand pose type
  * @returns Hand pose configuration
  * @korean 손자세가져오기
@@ -249,9 +295,9 @@ export const getHandPose = (poseType: HandPoseType): HandPose => {
 
 /**
  * Technique to hand pose mappings
- * 
+ *
  * Maps attack technique names to appropriate hand poses for both hands.
- * 
+ *
  * @korean 기술손자세매핑
  */
 export const TECHNIQUE_HAND_POSES: Record<string, TechniqueHandPose> = {
@@ -319,7 +365,7 @@ export const TECHNIQUE_HAND_POSES: Record<string, TechniqueHandPose> = {
 
 /**
  * Get hand pose configuration for a technique
- * 
+ *
  * @param techniqueName - Technique identifier
  * @returns Hand pose configuration for both hands, or default open pose
  * @korean 기술손자세가져오기
@@ -339,7 +385,7 @@ export const getTechniqueHandPose = (
 
 /**
  * Interpolate between two finger curl configurations
- * 
+ *
  * @param from - Starting finger curl
  * @param to - Target finger curl
  * @param progress - Interpolation progress (0-1)
@@ -363,7 +409,7 @@ export const interpolateFingerCurl = (
 
 /**
  * Interpolate between two finger spread configurations
- * 
+ *
  * @param from - Starting finger spread
  * @param to - Target finger spread
  * @param progress - Interpolation progress (0-1)
@@ -386,7 +432,7 @@ export const interpolateFingerSpread = (
 
 /**
  * Interpolate between two wrist rotations
- * 
+ *
  * @param from - Starting wrist rotation
  * @param to - Target wrist rotation
  * @param progress - Interpolation progress (0-1)
@@ -409,7 +455,7 @@ export const interpolateWristRotation = (
 
 /**
  * Create initial hand animation state
- * 
+ *
  * @param initialPose - Starting hand pose
  * @returns Initial hand animation state
  * @korean 손애니메이션상태초기화
@@ -432,7 +478,7 @@ export const createInitialHandAnimationState = (
 
 /**
  * Update hand animation state with transition
- * 
+ *
  * @param state - Current hand animation state
  * @param targetPose - Target hand pose to transition to
  * @param deltaTime - Time since last update (seconds)
@@ -544,7 +590,7 @@ export const updateHandAnimationState = (
 
 /**
  * Set hand highlight mode for vital point targeting
- * 
+ *
  * @param state - Current hand animation state
  * @param isHighlighted - Whether hand is highlighted
  * @param mode - Highlight mode for striking surface

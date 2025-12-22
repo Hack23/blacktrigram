@@ -1,33 +1,31 @@
 /**
  * Korean martial arts attack animations with skeletal keyframes
- * 
+ *
  * Defines realistic attack animation sequences for Taekwondo, Hapkido,
  * and Taekyon techniques using skeletal keyframes.
- * 
+ *
  * @module systems/animation/AttackAnimations
  * @category Animation System
  * @korean 공격애니메이션
  */
 
 import * as THREE from "three";
+import type { SkeletalAnimation } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
-import type {
-  SkeletalAnimation,
-} from "../../types/skeletal";
 
 /**
  * Jab animation (빠른 직권 - 정권지르기)
- * 
+ *
  * Fast straight punch with right arm. Traditional Taekwondo technique.
- * 
+ *
  * Animation phases:
  * 1. Wind-up (0.0s): Right arm bent at elbow, ready position
  * 2. Extension (0.1s): Right arm extends, elbow straightens
  * 3. Full extension (0.15s): Maximum reach, fist forward
  * 4. Retraction (0.25s): Return to guard position
- * 
+ *
  * Duration: 300ms
- * 
+ *
  * @korean 잽애니메이션
  */
 export const JAB_ANIMATION: SkeletalAnimation = {
@@ -107,27 +105,25 @@ export const JAB_ANIMATION: SkeletalAnimation = {
         [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.HAND_R, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
 
 /**
  * Cross punch animation (교차 직권 - 반대손 지르기)
- * 
+ *
  * Left arm punch with full body rotation. Power technique from Taekwondo.
- * 
+ *
  * Animation phases:
  * 1. Wind-up (0.0s): Left arm bent, weight on right side
  * 2. Hip rotation (0.08s): Hips begin rotating left
  * 3. Extension (0.15s): Left arm extends with torso rotation
  * 4. Full extension (0.2s): Maximum reach and power
  * 5. Recovery (0.35s): Return to guard
- * 
+ *
  * Duration: 350ms
- * 
+ *
  * @korean 크로스펀치애니메이션
  */
 export const CROSS_ANIMATION: SkeletalAnimation = {
@@ -172,9 +168,7 @@ export const CROSS_ANIMATION: SkeletalAnimation = {
         [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0.25, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0.2, 0, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.HAND_L, new THREE.Vector3(0, 0, 0.6)],
-      ]),
+      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0.6)]]),
     },
 
     // Frame 4: Full extension
@@ -206,19 +200,17 @@ export const CROSS_ANIMATION: SkeletalAnimation = {
         [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.HAND_L, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
 
 /**
  * Front kick animation (앞차기) - ENHANCED
- * 
+ *
  * Traditional Taekwondo front kick with knee lift, leg extension,
  * ankle dorsiflexion, support leg adjustments, and balance recovery.
- * 
+ *
  * Animation phases:
  * 1. Chamber (0.0s-0.1s): Knee lifts to waist height, support leg micro-adjust
  * 2. Extension (0.1s-0.2s): Lower leg extends forward with ankle flexion
@@ -226,9 +218,9 @@ export const CROSS_ANIMATION: SkeletalAnimation = {
  * 4. Retraction (0.2s-0.35s): Leg returns to chamber
  * 5. Set down (0.35s-0.45s): Foot returns to ground with balance recovery
  * 6. Recovery shuffle (0.45s-0.55s): Support leg adjustment for balance
- * 
+ *
  * Duration: 550ms (enhanced with recovery)
- * 
+ *
  * @korean 앞차기애니메이션향상
  */
 export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
@@ -345,10 +337,10 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
 
 /**
  * Roundhouse kick animation (돌려차기) - ENHANCED
- * 
+ *
  * Traditional Taekwondo roundhouse kick with hip rotation,
  * ankle flexion, support leg adjustments, and balance recovery.
- * 
+ *
  * Animation phases:
  * 1. Chamber (0.0s-0.1s): Knee lifts, hip begins rotation
  * 2. Rotation (0.1s-0.2s): Hip rotates 90 degrees
@@ -357,9 +349,9 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation = {
  * 5. Retraction (0.25s-0.4s): Return to chamber
  * 6. Set down (0.4s-0.5s): Foot to ground with balance recovery
  * 7. Recovery shuffle (0.5s-0.6s): Support leg adjustment for balance
- * 
+ *
  * Duration: 600ms (enhanced with recovery)
- * 
+ *
  * @korean 돌려차기애니메이션향상
  */
 export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation = {
@@ -488,16 +480,16 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation = {
 
 /**
  * Block animation (막기)
- * 
+ *
  * Traditional Taekwondo block with both arms raised.
- * 
+ *
  * Animation phases:
  * 1. Raise (0.0s-0.1s): Both arms lift to blocking position
  * 2. Hold (0.1s-0.3s): Maintain block
  * 3. Lower (0.3s-0.4s): Return to guard
- * 
+ *
  * Duration: 400ms
- * 
+ *
  * @korean 막기애니메이션
  */
 export const BLOCK_ANIMATION: SkeletalAnimation = {
@@ -559,18 +551,18 @@ export const BLOCK_ANIMATION: SkeletalAnimation = {
 
 /**
  * Walking cycle animation (앞으로 걷기 - 보행 사이클)
- * 
+ *
  * Natural walking gait with alternating leg movement. Includes hip swing,
  * knee bend during swing phase, foot placement, and pelvis tilt.
- * 
+ *
  * Animation phases:
  * 1. Left foot forward (0.0s): Left leg extends, right leg pushes off
  * 2. Left mid-stance (0.2s): Left foot plants, right leg swings forward
  * 3. Right foot forward (0.4s): Right leg extends, left leg pushes off
  * 4. Right mid-stance (0.6s): Right foot plants, left leg swings forward
- * 
+ *
  * Duration: 800ms (complete left-right step cycle)
- * 
+ *
  * @korean 걷기애니메이션
  */
 export const WALK_ANIMATION: SkeletalAnimation = {
@@ -720,18 +712,18 @@ export const WALK_ANIMATION: SkeletalAnimation = {
 
 /**
  * Idle stance animation (대기 자세)
- * 
+ *
  * Fighting stance with slight weight shift and breathing motion.
- * 
+ *
  * Animation phases:
  * 1. Center (0.0s): Neutral fighting stance
  * 2. Weight left (0.8s): Shift weight to left leg
  * 3. Center (1.6s): Return to neutral
  * 4. Weight right (2.4s): Shift weight to right leg
  * 5. Center (3.0s): Return to neutral (loops)
- * 
+ *
  * Duration: 3000ms (looping)
- * 
+ *
  * @korean 대기자세애니메이션
  */
 export const IDLE_STANCE_ANIMATION: SkeletalAnimation = {
@@ -755,9 +747,7 @@ export const IDLE_STANCE_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
 
     // Frame 2: Weight shift left (0.8s)
@@ -802,9 +792,7 @@ export const IDLE_STANCE_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
 
     // Frame 4: Weight shift right (2.4s)
@@ -847,26 +835,24 @@ export const IDLE_STANCE_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
 
 /**
  * Forward dash animation (앞으로 돌진)
- * 
+ *
  * Explosive forward movement with rapid knee extension and hip drive.
- * 
+ *
  * Animation phases:
  * 1. Crouch (0.0s): Deep knee bend, ready to explode
  * 2. Drive (0.15s): Rapid knee extension, forward momentum
  * 3. Glide (0.3s): Extended stride position
  * 4. Recovery (0.4s): Return to stance
- * 
+ *
  * Duration: 400ms
- * 
+ *
  * @korean 앞으로돌진애니메이션
  */
 export const FORWARD_DASH_ANIMATION: SkeletalAnimation = {
@@ -934,9 +920,7 @@ export const FORWARD_DASH_ANIMATION: SkeletalAnimation = {
         [BoneName.SHOULDER_L, new THREE.Euler(0.3, 0, -0.6, "XYZ")],
         [BoneName.SHOULDER_R, new THREE.Euler(0.3, 0, 0.6, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 1.2)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 1.2)]]),
     },
 
     // Frame 4: Recovery (0.4s)
@@ -953,26 +937,24 @@ export const FORWARD_DASH_ANIMATION: SkeletalAnimation = {
         [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
         [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
 
 /**
  * Backward retreat animation (뒤로 물러서기)
- * 
+ *
  * Coordinated leg backpedaling with defensive posture.
- * 
+ *
  * Animation phases:
  * 1. Push back (0.0s): Back foot plants, front foot lifts
  * 2. Slide (0.2s): Smooth backward movement
  * 3. Plant (0.35s): Front foot plants
  * 4. Reset (0.45s): Return to guard stance
- * 
+ *
  * Duration: 450ms
- * 
+ *
  * @korean 뒤로물러서기애니메이션
  */
 export const BACKWARD_RETREAT_ANIMATION: SkeletalAnimation = {
@@ -1001,9 +983,7 @@ export const BACKWARD_RETREAT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
 
     // Frame 2: Slide back (0.2s)
@@ -1060,26 +1040,24 @@ export const BACKWARD_RETREAT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
 
 /**
  * Side step animation (옆으로 스텝)
- * 
+ *
  * Lateral hip shift with trailing leg for quick evasion.
- * 
+ *
  * Animation phases:
  * 1. Shift left (0.0s): Weight to left leg
  * 2. Slide (0.15s): Right leg follows
  * 3. Plant (0.25s): Both feet grounded
  * 4. Reset (0.3s): Return to center
- * 
+ *
  * Duration: 300ms
- * 
+ *
  * @korean 옆으로스텝애니메이션
  */
 export const SIDE_STEP_ANIMATION: SkeletalAnimation = {
@@ -1160,18 +1138,16 @@ export const SIDE_STEP_ANIMATION: SkeletalAnimation = {
         [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.8, "XYZ")],
         [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.8, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
 
 /**
  * All skeletal animations mapped by name
- * 
+ *
  * Includes attack, defense, movement, and idle animations.
- * 
+ *
  * @korean 모든골격애니메이션
  */
 export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
@@ -1189,12 +1165,60 @@ export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
 
 /**
  * Get animation by name
- * 
+ *
  * @param name - Animation name
  * @returns Skeletal animation or undefined
- * 
+ *
  * @korean 애니메이션가져오기
  */
 export const getAnimation = (name: string): SkeletalAnimation | undefined => {
   return ATTACK_ANIMATIONS.get(name);
+};
+
+/**
+ * Maps technique keywords to animation names
+ *
+ * Used to determine which skeletal animation to play based on
+ * technique name, ID, or description keywords.
+ *
+ * NOTE: Order matters! More specific patterns must come first.
+ *
+ * @korean 기술애니메이션매핑
+ */
+const TECHNIQUE_ANIMATION_MAP: ReadonlyArray<readonly [RegExp, string]> = [
+  // Kicks (차기) - more specific patterns first
+  [/front.?kick|앞차기|snap.?kick/i, "front_kick"],
+  [/kick|차기|roundhouse|돌려차기/i, "roundhouse_kick"],
+  // Punches (주먹)
+  [/cross|십자|교차/i, "cross"],
+  [/jab|잽|직권|찌르기|punch|주먹|권|strike|격/i, "jab"],
+  // Default to jab for any other attack
+] as const;
+
+/**
+ * Get animation name for a technique
+ *
+ * Analyzes technique name/ID to determine the appropriate skeletal animation.
+ * Falls back to "jab" for unmatched techniques.
+ *
+ * @param techniqueNameOrId - Technique name, ID, or Korean name
+ * @returns Animation name from ATTACK_ANIMATIONS map
+ *
+ * @example
+ * ```typescript
+ * getAnimationForTechnique("thunder_strike") // "jab"
+ * getAnimationForTechnique("roundhouse_kick") // "roundhouse_kick"
+ * getAnimationForTechnique("앞차기") // "front_kick"
+ * ```
+ *
+ * @korean 기술에맞는애니메이션가져오기
+ */
+export const getAnimationForTechnique = (techniqueNameOrId: string): string => {
+  for (const [pattern, animationName] of TECHNIQUE_ANIMATION_MAP) {
+    if (pattern.test(techniqueNameOrId)) {
+      return animationName;
+    }
+  }
+  // Default to jab for any unmatched technique
+  return "jab";
 };

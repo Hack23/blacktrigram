@@ -26,7 +26,10 @@ import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
 } from "../../systems/ai";
-import { AnimationEvents } from "../../systems/animation";
+import {
+  AnimationEvents,
+  getAnimationForTechnique,
+} from "../../systems/animation";
 import { HitEffectType } from "../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 import {
@@ -448,6 +451,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
+  // Track current attack animation for each player
+  // Used to determine which skeletal animation to play during attacks
+  // 각 플레이어의 현재 공격 애니메이션 추적
+  const [player1AttackAnimation, setPlayer1AttackAnimation] = useState<
+    string | undefined
+  >(undefined);
+  const [player2AttackAnimation, setPlayer2AttackAnimation] = useState<
+    string | undefined
+  >(undefined);
+
   // Player movement
   const { isMoving: player1IsMoving } = usePlayerMovement({
     enabled:
@@ -468,6 +481,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Use ref to store attack handler to avoid circular dependencies
   const handleAttackRef = useRef<(() => void) | null>(null);
 
+  // Refs to clear attack animations after completion
+  const clearPlayer1AttackAnimation = useRef<() => void>(() => {
+    setPlayer1AttackAnimation(undefined);
+  });
+  const clearPlayer2AttackAnimation = useRef<() => void>(() => {
+    setPlayer2AttackAnimation(undefined);
+  });
+
   // Player animation state machines - manages animation transitions at 60fps
   // Memoize events object to maintain stability (required by usePlayerAnimation)
   const player1AnimationEvents = useMemo<AnimationEvents>(
@@ -483,6 +504,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         // Handle animation completion
         if (state === "attack" || state === "defend") {
           combatActions.setExecutingTechnique(false);
+          // Clear attack animation when attack completes
+          // 공격 완료 시 공격 애니메이션 초기화
+          if (state === "attack") {
+            clearPlayer1AttackAnimation.current();
+          }
         } else if (state === "stance_change") {
           // Stance change animation completed
           audio.playSFX("menu_select");
@@ -501,6 +527,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       onFrame: (frame, state) => {
         if (state === "attack" && frame === 6) {
           // AI attack hit detection
+        }
+      },
+      onAnimationComplete: (state) => {
+        // Clear AI attack animation when attack completes
+        // AI 공격 완료 시 공격 애니메이션 초기화
+        if (state === "attack") {
+          clearPlayer2AttackAnimation.current();
         }
       },
     },
@@ -832,6 +865,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           technique.name.english
         );
 
+        // Set attack animation based on technique
+        // 기술에 따른 공격 애니메이션 설정
+        const animationName = getAnimationForTechnique(
+          technique.name.english || technique.id
+        );
+        setPlayer1AttackAnimation(animationName);
+
         // Deduct resources
         onPlayerUpdate(0, {
           stamina: Math.max(0, validPlayers[0].stamina - technique.staminaCost),
@@ -956,6 +996,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Create enhanced attack handler with action feedback and animation
   const handleAttackWithFeedback = useCallback(() => {
+    // Set default attack animation for basic attacks (without specific technique)
+    // 기본 공격 애니메이션 설정 (잽)
+    setPlayer1AttackAnimation("jab");
+
     // Try to transition to attack animation
     const success = player1Animation.transitionTo("attack");
     if (success) {
@@ -1315,13 +1359,44 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (action: string, targetPos?: Position) => {
       switch (action) {
         case "attack":
+          // Set AI attack animation based on technique
+          // AI 공격 애니메이션 설정
+          if (
+            aiState.selectedTechnique?.name?.english ||
+            aiState.selectedTechnique?.englishName
+          ) {
+            const techName =
+              aiState.selectedTechnique.name?.english ||
+              aiState.selectedTechnique.englishName ||
+              "jab";
+            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+          } else {
+            setPlayer2AttackAnimation("jab");
+          }
+          player2Animation.transitionTo("attack");
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           break;
         case "defend":
+          player2Animation.transitionTo("defend");
           handleAIDefend();
           break;
         case "technique":
         case "combo":
+          // Set AI attack animation based on technique
+          // AI 기술 애니메이션 설정
+          if (
+            aiState.selectedTechnique?.name?.english ||
+            aiState.selectedTechnique?.englishName
+          ) {
+            const techName =
+              aiState.selectedTechnique.name?.english ||
+              aiState.selectedTechnique.englishName ||
+              "cross";
+            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+          } else {
+            setPlayer2AttackAnimation("cross");
+          }
+          player2Animation.transitionTo("attack");
           handleAITechnique(
             aiState.selectedTechnique,
             aiState.targetVitalPoint
@@ -1379,6 +1454,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }
           break;
         case "counter":
+          // Set AI attack animation for counter attack
+          // AI 반격 애니메이션 설정
+          if (
+            aiState.selectedTechnique?.name?.english ||
+            aiState.selectedTechnique?.englishName
+          ) {
+            const techName =
+              aiState.selectedTechnique.name?.english ||
+              aiState.selectedTechnique.englishName ||
+              "cross";
+            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+          } else {
+            setPlayer2AttackAnimation("cross");
+          }
+          player2Animation.transitionTo("attack");
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");
           break;
@@ -1396,6 +1486,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatState.roundStarted,
       aiState.selectedTechnique,
       aiState.targetVitalPoint,
+      player2Animation,
     ]
   );
 
@@ -1600,6 +1691,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           currentAnimation={animationStateToPlayerAnimation(
             player1Animation.currentState
           )}
+          attackAnimation={player1AttackAnimation}
         />
 
         {/* Player 2 (AI) */}
@@ -1620,6 +1712,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           currentAnimation={animationStateToPlayerAnimation(
             player2Animation.currentState
           )}
+          attackAnimation={player2AttackAnimation}
         />
 
         {/* Hit Effects */}

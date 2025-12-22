@@ -1,26 +1,27 @@
 /**
  * Unit tests for AttackAnimations
- * 
+ *
  * Tests Korean martial arts attack animation definitions, keyframes,
  * and animation data integrity.
  */
 
-import { describe, it, expect } from "vitest";
-import {
-  JAB_ANIMATION,
-  CROSS_ANIMATION,
-  FRONT_KICK_ANIMATION,
-  ROUNDHOUSE_KICK_ANIMATION,
-  BLOCK_ANIMATION,
-  WALK_ANIMATION,
-  IDLE_STANCE_ANIMATION,
-  FORWARD_DASH_ANIMATION,
-  BACKWARD_RETREAT_ANIMATION,
-  SIDE_STEP_ANIMATION,
-  ATTACK_ANIMATIONS,
-  getAnimation,
-} from "./AttackAnimations";
+import { describe, expect, it } from "vitest";
 import { BoneName } from "../../types/skeletal";
+import {
+  ATTACK_ANIMATIONS,
+  BACKWARD_RETREAT_ANIMATION,
+  BLOCK_ANIMATION,
+  CROSS_ANIMATION,
+  FORWARD_DASH_ANIMATION,
+  FRONT_KICK_ANIMATION,
+  getAnimation,
+  getAnimationForTechnique,
+  IDLE_STANCE_ANIMATION,
+  JAB_ANIMATION,
+  ROUNDHOUSE_KICK_ANIMATION,
+  SIDE_STEP_ANIMATION,
+  WALK_ANIMATION,
+} from "./AttackAnimations";
 
 describe("AttackAnimations", () => {
   describe("JAB_ANIMATION", () => {
@@ -304,6 +305,47 @@ describe("AttackAnimations", () => {
     });
   });
 
+  describe("getAnimationForTechnique", () => {
+    it("should return roundhouse_kick for kick techniques", () => {
+      expect(getAnimationForTechnique("roundhouse_kick")).toBe(
+        "roundhouse_kick"
+      );
+      expect(getAnimationForTechnique("돌려차기")).toBe("roundhouse_kick");
+      expect(getAnimationForTechnique("Side Kick")).toBe("roundhouse_kick");
+    });
+
+    it("should return front_kick for front kick techniques", () => {
+      expect(getAnimationForTechnique("front_kick")).toBe("front_kick");
+      expect(getAnimationForTechnique("앞차기")).toBe("front_kick");
+      expect(getAnimationForTechnique("Snap Kick")).toBe("front_kick");
+    });
+
+    it("should return cross for cross punch techniques", () => {
+      expect(getAnimationForTechnique("cross")).toBe("cross");
+      expect(getAnimationForTechnique("십자")).toBe("cross");
+      expect(getAnimationForTechnique("교차 펀치")).toBe("cross");
+    });
+
+    it("should return jab for punch/strike techniques", () => {
+      expect(getAnimationForTechnique("jab")).toBe("jab");
+      expect(getAnimationForTechnique("Thunder Strike")).toBe("jab");
+      expect(getAnimationForTechnique("직권")).toBe("jab");
+      expect(getAnimationForTechnique("주먹")).toBe("jab");
+    });
+
+    it("should default to jab for unrecognized techniques", () => {
+      expect(getAnimationForTechnique("unknown_technique")).toBe("jab");
+      expect(getAnimationForTechnique("")).toBe("jab");
+      expect(getAnimationForTechnique("some_random_move")).toBe("jab");
+    });
+
+    it("should be case-insensitive", () => {
+      expect(getAnimationForTechnique("KICK")).toBe("roundhouse_kick");
+      expect(getAnimationForTechnique("Cross")).toBe("cross");
+      expect(getAnimationForTechnique("JAB")).toBe("jab");
+    });
+  });
+
   describe("Animation timing validation", () => {
     it("all animations should have reasonable durations", () => {
       const allAnimations = [
@@ -433,7 +475,7 @@ describe("AttackAnimations", () => {
       const frame1 = WALK_ANIMATION.keyframes[0];
       const leftHipFrame1 = frame1.boneRotations.get(BoneName.HIP_L);
       const rightHipFrame1 = frame1.boneRotations.get(BoneName.HIP_R);
-      
+
       // Frame 3: Right foot forward (should be opposite)
       const frame3 = WALK_ANIMATION.keyframes[2];
       const leftHipFrame3 = frame3.boneRotations.get(BoneName.HIP_L);
@@ -461,11 +503,11 @@ describe("AttackAnimations", () => {
       const firstFrame = WALK_ANIMATION.keyframes[0];
       const lastFrame =
         WALK_ANIMATION.keyframes[WALK_ANIMATION.keyframes.length - 1];
-      
+
       // First and last frames should have similar rotations for smooth looping
       const firstLeftHip = firstFrame.boneRotations.get(BoneName.HIP_L);
       const lastLeftHip = lastFrame.boneRotations.get(BoneName.HIP_L);
-      
+
       expect(firstLeftHip?.x).toBeCloseTo(lastLeftHip!.x, 1);
     });
   });
@@ -491,9 +533,15 @@ describe("AttackAnimations", () => {
 
     it("should include breathing motion through spine", () => {
       const breathingKeyframe = IDLE_STANCE_ANIMATION.keyframes[1];
-      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
-      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
-      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
+      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_LOWER)).toBe(
+        true
+      );
+      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(
+        true
+      );
+      expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_UPPER)).toBe(
+        true
+      );
     });
 
     it("should have weight shift in pelvis", () => {
@@ -528,7 +576,7 @@ describe("AttackAnimations", () => {
       const firstKeyframe = FORWARD_DASH_ANIMATION.keyframes[0];
       const leftKnee = firstKeyframe.boneRotations.get(BoneName.KNEE_L);
       const rightKnee = firstKeyframe.boneRotations.get(BoneName.KNEE_R);
-      
+
       // Both knees should be significantly bent (negative rotation)
       expect(leftKnee).toBeDefined();
       expect(rightKnee).toBeDefined();
@@ -546,7 +594,7 @@ describe("AttackAnimations", () => {
     it("should move pelvis forward", () => {
       const driveKeyframe = FORWARD_DASH_ANIMATION.keyframes[1];
       const pelvisPos = driveKeyframe.bonePositions?.get(BoneName.PELVIS);
-      
+
       expect(pelvisPos).toBeDefined();
       expect(pelvisPos!.z).toBeGreaterThan(0.5); // Significant forward movement
     });
@@ -568,7 +616,7 @@ describe("AttackAnimations", () => {
     it("should move pelvis backward", () => {
       const slideKeyframe = BACKWARD_RETREAT_ANIMATION.keyframes[1];
       const pelvisPos = slideKeyframe.bonePositions?.get(BoneName.PELVIS);
-      
+
       expect(pelvisPos).toBeDefined();
       expect(pelvisPos!.z).toBeLessThan(0); // Negative z = backward
     });
@@ -605,7 +653,7 @@ describe("AttackAnimations", () => {
       const shiftKeyframe = SIDE_STEP_ANIMATION.keyframes[0];
       const pelvisPos = shiftKeyframe.bonePositions?.get(BoneName.PELVIS);
       const pelvisRot = shiftKeyframe.boneRotations.get(BoneName.PELVIS);
-      
+
       expect(pelvisPos).toBeDefined();
       expect(pelvisRot).toBeDefined();
       expect(Math.abs(pelvisPos!.x)).toBeGreaterThan(0.2); // Lateral movement
@@ -615,7 +663,7 @@ describe("AttackAnimations", () => {
       const shiftKeyframe = SIDE_STEP_ANIMATION.keyframes[0];
       const leftKnee = shiftKeyframe.boneRotations.get(BoneName.KNEE_L);
       const rightKnee = shiftKeyframe.boneRotations.get(BoneName.KNEE_R);
-      
+
       expect(leftKnee).toBeDefined();
       expect(rightKnee).toBeDefined();
       // One knee should bend more than the other
@@ -633,7 +681,7 @@ describe("AttackAnimations", () => {
     it("FRONT_KICK should have ankle dorsiflexion", () => {
       const extensionKeyframe = FRONT_KICK_ANIMATION.keyframes[1];
       const foot = extensionKeyframe.boneRotations.get(BoneName.FOOT_R);
-      
+
       expect(foot).toBeDefined();
       expect(foot!.x).toBeCloseTo(0.5, 1); // Dorsiflexion 0.5 rad
     });
@@ -647,7 +695,7 @@ describe("AttackAnimations", () => {
     it("FRONT_KICK should have balance recovery", () => {
       const recoveryKeyframe = FRONT_KICK_ANIMATION.keyframes[4];
       const pelvisPos = recoveryKeyframe.bonePositions?.get(BoneName.PELVIS);
-      
+
       expect(pelvisPos).toBeDefined();
       expect(pelvisPos!.y).toBe(0); // Returns to stable height
     });
@@ -655,7 +703,7 @@ describe("AttackAnimations", () => {
     it("ROUNDHOUSE_KICK should have ankle flexion on impact", () => {
       const impactKeyframe = ROUNDHOUSE_KICK_ANIMATION.keyframes[2];
       const foot = impactKeyframe.boneRotations.get(BoneName.FOOT_R);
-      
+
       expect(foot).toBeDefined();
       expect(foot!.x).toBeGreaterThan(0.3); // Plantar flexion
     });

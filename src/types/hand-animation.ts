@@ -1,10 +1,10 @@
 /**
  * Hand animation types for Korean martial arts techniques
- * 
+ *
  * Defines hand poses, finger positions, and animation states for realistic
  * martial arts hand techniques including strikes, grappling, and precise
  * vital point targeting.
- * 
+ *
  * @module types/hand-animation
  * @category Type Definitions
  * @korean 손애니메이션타입
@@ -14,7 +14,7 @@ import * as THREE from "three";
 
 /**
  * Martial arts hand pose types
- * 
+ *
  * Traditional Korean martial arts hand formations:
  * - FIST (주먹): Closed fist for punching
  * - KNIFE_HAND (수도): Extended fingers, rigid hand edge for strikes
@@ -22,7 +22,7 @@ import * as THREE from "three";
  * - PALM_HEEL (장력): Palm-heel strike position with curled fingers
  * - GRAPPLING (잡기): Fingers curved for grabs and control
  * - OPEN (펴기): Neutral open hand position
- * 
+ *
  * @public
  * @korean 손자세타입
  */
@@ -39,11 +39,13 @@ export enum HandPoseType {
   GRAPPLING = "grappling",
   /** 펴기 - Open hand neutral position */
   OPEN = "open",
+  /** 휴식 - Relaxed natural hand position for walking/idle */
+  RELAXED = "relaxed",
 }
 
 /**
  * Finger identification
- * 
+ *
  * @public
  * @korean 손가락
  */
@@ -62,12 +64,12 @@ export enum FingerType {
 
 /**
  * Finger curl amount (0 = fully extended, 1 = fully curled)
- * 
+ *
  * Normalized values for finger joint angles:
  * - 0.0: Fully extended (straight)
  * - 0.5: Half curled (slightly bent)
  * - 1.0: Fully curled (tight fist)
- * 
+ *
  * @public
  * @korean 손가락구부림량
  */
@@ -86,9 +88,9 @@ export interface FingerCurl {
 
 /**
  * Finger spread amount (0 = together, 1 = spread apart)
- * 
+ *
  * Controls the lateral spacing between fingers.
- * 
+ *
  * @public
  * @korean 손가락벌림량
  */
@@ -105,10 +107,10 @@ export interface FingerSpread {
 
 /**
  * Hand pose definition for martial arts techniques
- * 
+ *
  * Complete hand configuration including finger positions and wrist rotation
  * for authentic Korean martial arts hand techniques.
- * 
+ *
  * @public
  * @korean 손자세정의
  */
@@ -168,7 +170,11 @@ export interface HandPose {
    * Which martial art this pose comes from
    * @korean 무술출처
    */
-  readonly martialArtOrigin: "taekwondo" | "hapkido" | "taekyon" | "traditional";
+  readonly martialArtOrigin:
+    | "taekwondo"
+    | "hapkido"
+    | "taekyon"
+    | "traditional";
 
   /**
    * Primary striking surface
@@ -184,9 +190,9 @@ export interface HandPose {
 
 /**
  * Hand animation state
- * 
+ *
  * Current state of hand animation including pose transition progress.
- * 
+ *
  * @public
  * @korean 손애니메이션상태
  */
@@ -248,7 +254,7 @@ export interface HandAnimationState {
 
 /**
  * Hand side identification
- * 
+ *
  * @public
  * @korean 손쪽
  */
@@ -256,9 +262,9 @@ export type HandSide = "left" | "right";
 
 /**
  * Hand pose configuration for attack techniques
- * 
+ *
  * Maps attack technique names to appropriate hand poses.
- * 
+ *
  * @public
  * @korean 공격기술손자세
  */
@@ -290,9 +296,9 @@ export interface TechniqueHandPose {
 
 /**
  * Hand level of detail (LOD) settings
- * 
+ *
  * Performance optimization by adjusting hand detail based on camera distance.
- * 
+ *
  * @public
  * @korean 손상세도설정
  */
@@ -331,15 +337,15 @@ export interface HandLODConfig {
 
 /**
  * Finger bone segments
- * 
+ *
  * Anatomically correct finger bone structure:
  * - Metacarpal: Knuckle base (hand to finger connection)
  * - Proximal: First joint (knuckle joint)
  * - Intermediate: Middle joint
  * - Distal: Fingertip
- * 
+ *
  * Note: Thumb has no intermediate phalanx (2 bones instead of 3)
- * 
+ *
  * @public
  * @korean 손가락뼈세그먼트
  */
@@ -372,7 +378,7 @@ export interface FingerSegments {
 
 /**
  * Complete hand structure with all finger bones
- * 
+ *
  * @public
  * @korean 손뼈구조
  */
