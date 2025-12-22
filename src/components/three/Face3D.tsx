@@ -1,12 +1,12 @@
 /**
  * Face3D component with realistic facial features
- * 
+ *
  * Renders facial features with expressions, eye tracking, and damage visualization:
  * - Eyes with pupils that track opponent
  * - Mouth that opens/closes based on expression
  * - Nose geometry
  * - Damage effects (bruises, swelling, bleeding)
- * 
+ *
  * @module components/three/Face3D
  * @category 3D Components
  * @korean 얼굴3D컴포넌트
@@ -15,14 +15,14 @@
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants";
-import { mixColors } from "../../utils/colorHelpers";
 import {
   EYE_OPENNESS,
   MOUTH_OPENNESS,
-  type Face3DProps,
   type EyeProps,
+  type Face3DProps,
   type MouthProps,
 } from "../../types/facial";
+import { mixColors } from "../../utils/colorHelpers";
 
 /**
  * Head bone Y position in skeletal rig
@@ -32,12 +32,12 @@ const HEAD_HEIGHT_POSITION = 1.9;
 
 /**
  * Eye component with pupil tracking and swelling
- * 
+ *
  * Renders eye with adjustable openness, pupil tracking, and swelling effects.
- * 
+ *
  * @param props - Eye component props
  * @returns Eye 3D mesh group
- * 
+ *
  * @korean 눈컴포넌트
  */
 const Eye: React.FC<EyeProps> = ({
@@ -56,13 +56,13 @@ const Eye: React.FC<EyeProps> = ({
   const pupilOffset = useMemo(() => {
     // Normalize look direction
     const normalized = lookDirection.clone().normalize();
-    
+
     // Convert to 2D offset (x, y in eye space)
     // Limit pupil movement to realistic range
     const maxOffset = 0.015;
     const x = normalized.x * maxOffset;
     const y = -normalized.y * maxOffset * 0.5; // Less vertical movement
-    
+
     return new THREE.Vector3(x, y, 0.03);
   }, [lookDirection]);
 
@@ -104,12 +104,12 @@ const Eye: React.FC<EyeProps> = ({
 
 /**
  * Mouth component with expression-based openness and bleeding
- * 
+ *
  * Renders mouth that opens/closes based on expression.
- * 
+ *
  * @param props - Mouth component props
  * @returns Mouth 3D mesh group
- * 
+ *
  * @korean 입컴포넌트
  */
 const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
@@ -161,14 +161,14 @@ const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
 
 /**
  * Nose component
- * 
+ *
  * Simple geometric nose.
- * 
+ *
  * @param position - Nose position
  * @param skinColor - Skin tone color
  * @param bleeding - Bleeding intensity (0-1)
  * @returns Nose 3D mesh
- * 
+ *
  * @korean 코컴포넌트
  */
 const Nose: React.FC<{
@@ -203,13 +203,13 @@ const Nose: React.FC<{
 
 /**
  * Face3D component
- * 
+ *
  * Main facial features component with head sphere, eyes, mouth, nose,
  * and damage visualization.
- * 
+ *
  * @param props - Face3D props
  * @returns Face 3D mesh group
- * 
+ *
  * @example
  * ```tsx
  * <Face3D
@@ -220,7 +220,7 @@ const Nose: React.FC<{
  *   enableEyeTracking={true}
  * />
  * ```
- * 
+ *
  * @korean 얼굴3D
  */
 export const Face3D: React.FC<Face3DProps> = ({
@@ -239,22 +239,30 @@ export const Face3D: React.FC<Face3DProps> = ({
       return new THREE.Vector3(0, 0, 1); // Look forward
     }
 
-    // Validate opponent position to avoid runtime errors
-    if (!(opponentPosition instanceof THREE.Vector3)) {
+    // Validate opponent position - check for required THREE.Vector3 methods
+    // This is more robust than instanceof check in test environments
+    if (
+      !opponentPosition ||
+      typeof opponentPosition.x !== "number" ||
+      typeof opponentPosition.y !== "number" ||
+      typeof opponentPosition.z !== "number"
+    ) {
       if (process.env.NODE_ENV !== "production") {
         console.warn(
-          "Face3D: opponentPosition is not a THREE.Vector3; defaulting eye direction forward."
+          "Face3D: opponentPosition is not a valid THREE.Vector3; defaulting eye direction forward."
         );
       }
       return new THREE.Vector3(0, 0, 1);
     }
 
-    // Calculate direction from head to opponent
+    // Calculate direction from head to opponent using component subtraction
+    // to avoid prototype chain issues in test environments
     const headPos = new THREE.Vector3(0, HEAD_HEIGHT_POSITION, 0);
-    const dir = new THREE.Vector3();
-
-    // subVectors expects two THREE.Vector3 instances
-    dir.subVectors(opponentPosition, headPos);
+    const dir = new THREE.Vector3(
+      opponentPosition.x - headPos.x,
+      opponentPosition.y - headPos.y,
+      opponentPosition.z - headPos.z
+    );
     dir.normalize();
 
     return dir;

@@ -1,17 +1,21 @@
 /**
  * Utility functions for Player3D component integration
- * 
+ *
  * Converts PlayerState from combat system to Player3DUnifiedProps for rendering
  * with SkeletalPlayer3D (28-bone articulated body model).
- * 
+ *
  * @module utils/player3DHelpers
  * @category Utilities
  * @korean 플레이어3D도우미
  */
 
 import type { PlayerState } from "../systems";
-import type { Player3DUnifiedProps, BalanceState, PlayerAnimation } from "../types/player-visual";
 import type { AnimationState } from "../systems/animation/types";
+import type {
+  BalanceState,
+  Player3DUnifiedProps,
+  PlayerAnimation,
+} from "../types/player-visual";
 
 /**
  * Static mapping from AnimationState to PlayerAnimation
@@ -30,20 +34,22 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
 
 /**
  * Convert AnimationState to PlayerAnimation
- * 
+ *
  * Maps the animation system's state types to SkeletalPlayer3D's animation types.
- * 
+ *
  * @param animState - Animation state from the animation system
  * @returns Corresponding PlayerAnimation type
  * @korean 애니메이션상태변환
  */
-export function animationStateToPlayerAnimation(animState: AnimationState): PlayerAnimation {
+export function animationStateToPlayerAnimation(
+  animState: AnimationState
+): PlayerAnimation {
   return ANIMATION_STATE_MAP[animState];
 }
 
 /**
  * Convert balance number (0-100) to BalanceState enum
- * 
+ *
  * @param balance - Balance value from PlayerState (0-100)
  * @returns BalanceState enum value
  * @korean 균형상태변환
@@ -57,7 +63,7 @@ export function getBalanceState(balance: number): BalanceState {
 
 /**
  * Get current animation state from PlayerState
- * 
+ *
  * @param player - Current player state
  * @returns PlayerAnimation enum value
  * @korean 애니메이션상태가져오기
@@ -66,7 +72,7 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
   if (player.isStunned) return "hit";
   if (player.isBlocking) return "defend";
   if (player.isCountering) return "counter";
-  
+
   // Check combat state (CombatState enum values are lowercase strings)
   switch (player.combatState) {
     case "attacking":
@@ -85,18 +91,18 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
 
 /**
  * Converts PlayerState to Player3DUnifiedProps for visual rendering.
- * 
+ *
  * Note: This function converts base PlayerState properties used in combat.
  * Training-specific stats (misses, accuracy, comboCount) are optional in PlayerState
  * and handled separately in training contexts.
- * 
+ *
  * @param player - The player state to convert
  * @param position - 3D position [x, y, z]
  * @param rotation - Rotation in radians
  * @param options - Display and behavior options
  * @returns Props for SkeletalPlayer3D component (28-bone articulated body model)
  * @korean 플레이어상태변환
- * 
+ *
  * @example
  * ```tsx
  * const playerProps = convertPlayerStateToProps(
@@ -105,7 +111,7 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
  *   0,
  *   { isMobile: false, showVitalPoints: false }
  * );
- * 
+ *
  * <SkeletalPlayer3D {...playerProps} />
  * ```
  */
@@ -121,6 +127,10 @@ export function convertPlayerStateToProps(
     readonly showHealthBar?: boolean;
     readonly showStanceIndicator?: boolean;
     readonly onAnimationComplete?: () => void;
+    // Facial expression options - 얼굴 표정 옵션
+    readonly enableFacialExpressions?: boolean;
+    readonly enableEyeTracking?: boolean;
+    readonly opponentPosition?: [number, number, number];
   } = {}
 ): Player3DUnifiedProps {
   return {
@@ -129,26 +139,26 @@ export function convertPlayerStateToProps(
     stance: player.currentStance,
     position,
     rotation,
-    
+
     // Health and resources
     health: player.health,
     maxHealth: player.maxHealth,
     stamina: player.stamina,
     ki: player.ki,
-    
+
     // Combat states
     pain: player.pain,
     balance: getBalanceState(player.balance),
     consciousness: player.consciousness,
-    
+
     // Combat flags
     isBlocking: player.isBlocking,
     isStunned: player.isStunned,
     isCountering: player.isCountering,
-    
+
     // Animation (derived from combat state)
     currentAnimation: getPlayerAnimation(player),
-    
+
     // Display options
     name: player.name,
     isMobile: options.isMobile ?? false,
@@ -158,5 +168,10 @@ export function convertPlayerStateToProps(
     showHealthBar: options.showHealthBar,
     showStanceIndicator: options.showStanceIndicator,
     onAnimationComplete: options.onAnimationComplete,
+
+    // Facial expression options - 얼굴 표정 옵션
+    enableFacialExpressions: options.enableFacialExpressions ?? false,
+    enableEyeTracking: options.enableEyeTracking ?? true,
+    opponentPosition: options.opponentPosition,
   };
 }

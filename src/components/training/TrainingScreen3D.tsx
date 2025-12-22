@@ -26,6 +26,7 @@ import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
 } from "../../utils/player3DHelpers";
+import { TechniqueBar } from "../combat/components/TechniqueBar";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -34,7 +35,6 @@ import {
 } from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
-import { TechniqueBar } from "../combat/components/TechniqueBar";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { VolumeControl } from "../ui/VolumeControl";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
@@ -332,7 +332,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         trainingActions.setFeedback(
           `${technique.name.korean} 사용! | Used ${technique.name.english}!`
         );
-        
+
         // In training mode, do not deduct resources to allow continuous practice
         // Resources are displayed for educational purposes only
 
@@ -699,6 +699,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             {
               isMobile,
               facing: "right",
+              // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
+              enableFacialExpressions: true,
+              enableEyeTracking: true,
+              opponentPosition: dummyPosition,
             }
           )}
           currentAnimation={animationStateToPlayerAnimation(
