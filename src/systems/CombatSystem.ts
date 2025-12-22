@@ -1,4 +1,4 @@
-import { VitalPointSeverity } from "../types/common";
+import { VitalPointSeverity, VitalPointCategory } from "../types/common";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
 import { PlayerState } from "./player";
 import {
@@ -11,14 +11,54 @@ import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
+import PainResponseSystem, { ShockPainEffect } from "./combat/PainResponseSystem";
+import ConsciousnessSystem from "./combat/ConsciousnessSystem";
+import { extractVitalPointCategory, isHeadTraumaHit } from "./combat/painConsciousnessUtils";
 
+/**
+ * Enhanced Combat System with Pain Response and Consciousness integration.
+ * 
+ * Integrates realistic pain accumulation and consciousness tracking for
+ * progressive combat impairment.
+ */
 export class CombatSystem implements CombatSystemInterface {
   private vitalPointSystem: VitalPointSystem;
   protected trigramSystem: TrigramSystem;
+  private painSystem: PainResponseSystem;
+  private consciousnessSystem: ConsciousnessSystem;
+  
+  // Track shock pain effects per player
+  private shockPainEffects: Map<string, ShockPainEffect>;
+  // Track last head trauma time per player for consciousness recovery
+  private lastHeadTraumaTime: Map<string, number>;
+
+  // Vital point severity thresholds
+  private readonly SEVERITY_MAJOR_THRESHOLD = 30;
+  private readonly SEVERITY_MODERATE_THRESHOLD = 20;
 
   constructor() {
     this.vitalPointSystem = new VitalPointSystem();
     this.trigramSystem = new TrigramSystem();
+    this.painSystem = new PainResponseSystem();
+    this.consciousnessSystem = new ConsciousnessSystem();
+    this.shockPainEffects = new Map();
+    this.lastHeadTraumaTime = new Map();
+  }
+
+  /**
+   * Cleanup per-player combat state.
+   * 
+   * Call this when a player permanently leaves the match or when
+   * match-level cleanup is performed to avoid unbounded Map growth.
+   * 
+   * @param playerId - ID of the player to cleanup
+   * 
+   * @public
+   * @korean 플레이어데이터정리
+   */
+  public cleanupPlayerData(playerId: string): void {
+    this.shockPainEffects.delete(playerId);
+    this.lastHeadTraumaTime.delete(playerId);
   }
 
   /**
@@ -124,17 +164,160 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Fix: Make applyCombatResult non-static instance method with effect application
+   * Enhanced with Pain Response and Consciousness System integration
    */
   applyCombatResult(
     result: CombatResult,
     attacker: PlayerState,
     defender: PlayerState
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
-    return CombatSystem.applyCombatResult(result, attacker, defender);
+    // Start with base result
+    let { updatedAttacker, updatedDefender } = CombatSystem.applyCombatResult(
+      result,
+      attacker,
+      defender
+    );
+
+    if (result.hit && result.damage > 0) {
+      // Determine vital point category and severity from hit result
+      const category = this.getVitalPointCategory(result);
+      const severity = this.getVitalPointSeverity(result);
+
+      // Apply pain from damage
+      const { player: defenderWithPain, shockEffect: newShockEffect } = this.painSystem.applyPain(
+        updatedDefender,
+        result.damage,
+        severity,
+        category
+      );
+      updatedDefender = defenderWithPain;
+
+      // Store shock pain effect if triggered
+      if (newShockEffect) {
+        this.shockPainEffects.set(updatedDefender.id, newShockEffect);
+      }
+
+      // Check for pain overload stun
+      if (this.painSystem.shouldTriggerStun(updatedDefender)) {
+        updatedDefender = {
+          ...updatedDefender,
+          isStunned: true,
+        };
+      }
+
+      // Apply consciousness damage for head/neurological hits
+      if (this.isHeadTrauma(result, category)) {
+        updatedDefender = this.consciousnessSystem.applyDamage(
+          updatedDefender,
+          result.damage,
+          category
+        );
+        
+        // Track head trauma time for recovery gating
+        this.lastHeadTraumaTime.set(updatedDefender.id, Date.now());
+
+        // Check incapacitation threshold
+        if (this.consciousnessSystem.isAtIncapacitationThreshold(updatedDefender)) {
+          updatedDefender = {
+            ...updatedDefender,
+            isStunned: true,
+            // Could add helpless duration tracking here if needed
+          };
+        }
+      }
+
+      // Apply pain and consciousness effects to stats
+      const currentShockEffect = this.shockPainEffects.get(updatedDefender.id);
+      updatedDefender = this.painSystem.applyEffects(updatedDefender, currentShockEffect);
+      updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
+    }
+
+    return { updatedAttacker, updatedDefender };
+  }
+
+  /**
+   * Determines if a hit caused head trauma (affects consciousness).
+   * 
+   * @param result - Combat result
+   * @param category - Vital point category
+   * @returns True if hit should affect consciousness
+   */
+  private isHeadTrauma(
+    result: CombatResult,
+    category?: VitalPointCategory
+  ): boolean {
+    return isHeadTraumaHit(result, category);
+  }
+
+  /**
+   * Extracts vital point category from combat result.
+   * 
+   * @param result - Combat result
+   * @returns Vital point category if available
+   */
+  private getVitalPointCategory(result: CombatResult): VitalPointCategory | undefined {
+    return extractVitalPointCategory(result);
+  }
+
+  /**
+   * Extracts vital point severity from combat result.
+   * 
+   * @param result - Combat result
+   * @returns Vital point severity if critical hit
+   */
+  private getVitalPointSeverity(result: CombatResult): VitalPointSeverity | undefined {
+    if (result.vitalPointHit) {
+      if (result.isCritical) {
+        return VitalPointSeverity.CRITICAL;
+      }
+      if (result.damage > this.SEVERITY_MAJOR_THRESHOLD) {
+        return VitalPointSeverity.MAJOR;
+      }
+      if (result.damage > this.SEVERITY_MODERATE_THRESHOLD) {
+        return VitalPointSeverity.MODERATE;
+      }
+      return VitalPointSeverity.MINOR;
+    }
+    return undefined;
+  }
+
+  /**
+   * Updates player states for recovery (pain dissipation, consciousness recovery).
+   * Call this regularly in game loop.
+   * 
+   * @param player - Player to update
+   * @param deltaTime - Time elapsed since last update (ms)
+   * @returns Updated player state
+   */
+  applyRecovery(player: PlayerState, deltaTime: number): PlayerState {
+    let updatedPlayer = player;
+
+    // Apply pain recovery
+    updatedPlayer = this.painSystem.applyDissipation(updatedPlayer, deltaTime);
+
+    // Apply consciousness recovery (only if enough time since head trauma)
+    const lastTrauma = this.lastHeadTraumaTime.get(player.id);
+    updatedPlayer = this.consciousnessSystem.applyRecovery(
+      updatedPlayer,
+      deltaTime,
+      lastTrauma
+    );
+
+    // Clean up expired shock pain effects
+    const shockEffect = this.shockPainEffects.get(player.id);
+    if (shockEffect) {
+      const elapsed = Date.now() - shockEffect.startTime;
+      if (elapsed >= shockEffect.duration) {
+        this.shockPainEffects.delete(player.id);
+      }
+    }
+
+    return updatedPlayer;
   }
 
   /**
    * Static version for backwards compatibility with comprehensive effect application
+   * Enhanced with Pain Response and Consciousness System integration
    */
   static applyCombatResult(
     result: CombatResult,
