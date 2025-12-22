@@ -102,10 +102,14 @@ export interface PlayerState {
   readonly archetype: PlayerArchetype;
 
   // Combat stats
-  /** Current health points (0 = defeated) */
+  /** Current health points (0 = defeated) - aggregate of body part health */
   readonly health: number;
   /** Maximum health capacity */
   readonly maxHealth: number;
+  /** Body part-specific health tracking (신체부위 체력) */
+  readonly bodyPartHealth?: import("@/systems/bodypart").BodyPartHealth;
+  /** Maximum health for each body part */
+  readonly bodyPartMaxHealth?: import("@/systems/bodypart").BodyPartMaxHealth;
   /** Current Ki (氣) spiritual energy */
   readonly ki: number;
   /** Maximum Ki capacity */
