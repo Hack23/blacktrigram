@@ -1,23 +1,29 @@
 /**
  * Technique definitions for all player archetypes.
- * 
+ *
  * **Korean**: 기술 정의 (Technique Definitions)
- * 
+ *
  * Each archetype has 3-5 unique techniques that reflect their combat philosophy
  * and specialization. Techniques are mapped to keyboard shortcuts Q, W, E, R.
- * 
+ *
  * @module data/techniques
  * @category Combat System
  * @korean 기술데이터
  */
 
-import { PlayerArchetype, TrigramStance, DamageType, Technique, TechniqueKey } from "../types";
 import { KoreanTechniquesSystem } from "../systems/trigram/KoreanTechniques";
 import { KoreanTechnique } from "../systems/vitalpoint/types";
+import {
+  DamageType,
+  PlayerArchetype,
+  Technique,
+  TechniqueKey,
+  TrigramStance,
+} from "../types";
 
 /**
  * Technique definitions for 무사 (Musa) - Traditional Warrior.
- * 
+ *
  * Philosophy: Honor through disciplined strength and overwhelming force.
  * Favored Stance: ☰ 건 (Geon) - Heaven
  */
@@ -107,7 +113,7 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
 
 /**
  * Technique definitions for 암살자 (Amsalja) - Shadow Assassin.
- * 
+ *
  * Philosophy: Precision through stealth and vital point mastery.
  * Favored Stance: ☲ 리 (Li) - Fire
  */
@@ -199,7 +205,7 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
 
 /**
  * Technique definitions for 해커 (Hacker) - Cyber Warrior.
- * 
+ *
  * Philosophy: Technology-enhanced combat with data-driven precision.
  * Favored Stance: ☳ 진 (Jin) - Thunder
  */
@@ -288,7 +294,7 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
 
 /**
  * Technique definitions for 정보요원 (Jeongbo Yowon) - Intelligence Operative.
- * 
+ *
  * Philosophy: Strategic analysis and exploiting weaknesses.
  * Favored Stance: ☵ 감 (Gam) - Water
  */
@@ -377,7 +383,7 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
 
 /**
  * Technique definitions for 조직폭력배 (Jojik Pokryeokbae) - Organized Crime.
- * 
+ *
  * Philosophy: Ruthless pragmatism and brutal efficiency.
  * Favored Stance: ☷ 곤 (Gon) - Earth
  */
@@ -466,10 +472,10 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
 
 /**
  * Get techniques for a specific player archetype.
- * 
+ *
  * @param archetype - Player archetype
  * @returns Array of techniques for the archetype
- * 
+ *
  * @public
  */
 export function getTechniquesForArchetype(
@@ -501,15 +507,15 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
   const getDamageType = (type: string): DamageType => {
     // Map common string values to DamageType enum
     const typeMap: Record<string, DamageType> = {
-      'blunt': DamageType.BLUNT,
-      'physical': DamageType.BLUNT,
-      'piercing': DamageType.PIERCING,
-      'slashing': DamageType.SLASHING,
-      'crushing': DamageType.CRUSHING,
-      'impact': DamageType.IMPACT,
-      'joint': DamageType.JOINT,
-      'electric': DamageType.ELECTRIC,
-      'psychic': DamageType.PSYCHIC,
+      blunt: DamageType.BLUNT,
+      physical: DamageType.BLUNT,
+      piercing: DamageType.PIERCING,
+      slashing: DamageType.SLASHING,
+      crushing: DamageType.CRUSHING,
+      impact: DamageType.IMPACT,
+      joint: DamageType.JOINT,
+      electric: DamageType.ELECTRIC,
+      psychic: DamageType.PSYCHIC,
     };
     return typeMap[type.toLowerCase()] || DamageType.BLUNT;
   };
@@ -540,11 +546,11 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
 /**
  * Get techniques for a player based on their current stance and archetype.
  * Combines trigram stance techniques with archetype-specific bonuses.
- * 
+ *
  * @param stance - Current player stance
  * @param archetype - Player archetype
  * @returns Array of available techniques with proper keyboard shortcuts assigned
- * 
+ *
  * @public
  */
 export function getTechniquesForStanceAndArchetype(
@@ -562,32 +568,46 @@ export function getTechniquesForStanceAndArchetype(
 
   // Also include archetype-specific special techniques
   const archetypeTechniques = getTechniquesForArchetype(archetype);
-  
+
   // Filter archetype techniques to only include those matching current stance or no stance requirement
   const filteredArchetypeTechniques = archetypeTechniques.filter(
     (tech) => !tech.requiredStance || tech.requiredStance === stance
   );
 
   // Combine both sets, prioritizing stance techniques
-  const allTechniques = [...convertedTechniques, ...filteredArchetypeTechniques];
-  
-  // Assign proper keyboard shortcuts (Q, W, E, R) based on position
-  // Note: Only first 4 techniques are keyboard-accessible in combat.
-  // Additional techniques beyond index 3 will have repeated shortcuts but are
-  // displayed in TechniqueBar for information - use Q/W/E/R to execute first 4.
-  const keyboardShortcuts = ['Q', 'W', 'E', 'R'] as const;
-  return allTechniques.map((tech, index) => ({
+  const allTechniques = [
+    ...convertedTechniques,
+    ...filteredArchetypeTechniques,
+  ];
+
+  // Limit to maximum 10 techniques (keyboard shortcuts Q-P)
+  const limitedTechniques = allTechniques.slice(0, 10);
+
+  // Assign keyboard shortcuts using top row keys Q through P
+  const keyboardShortcuts = [
+    "Q",
+    "W",
+    "E",
+    "R",
+    "T",
+    "Y",
+    "U",
+    "I",
+    "O",
+    "P",
+  ] as const;
+  return limitedTechniques.map((tech, index) => ({
     ...tech,
-    keyboardShortcut: keyboardShortcuts[index % keyboardShortcuts.length] as TechniqueKey,
+    keyboardShortcut: keyboardShortcuts[index] as TechniqueKey,
   }));
 }
 
 /**
  * Get a specific technique by ID.
- * 
+ *
  * @param techniqueId - Unique technique identifier
  * @returns Technique if found, undefined otherwise
- * 
+ *
  * @public
  */
 export function getTechniqueById(techniqueId: string): Technique | undefined {
@@ -598,7 +618,7 @@ export function getTechniqueById(techniqueId: string): Technique | undefined {
     ...JEONGBO_YOWON_TECHNIQUES,
     ...JOJIK_POKRYEOKBAE_TECHNIQUES,
   ];
-  
+
   return allTechniques.find((tech) => tech.id === techniqueId);
 }
 
