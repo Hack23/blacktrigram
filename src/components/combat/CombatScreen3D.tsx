@@ -872,6 +872,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         );
         setPlayer1AttackAnimation(animationName);
 
+        // Trigger attack animation transition
+        // 공격 애니메이션 전환 트리거
+        player1Animation.transitionTo("attack");
+        combatActions.setExecutingTechnique(true);
+
         // Deduct resources
         onPlayerUpdate(0, {
           stamina: Math.max(0, validPlayers[0].stamina - technique.staminaCost),
@@ -893,6 +898,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         feedbackActions,
         handleAttack,
         addCombatMessage,
+        player1Animation,
+        combatActions,
       ]
     ),
   });

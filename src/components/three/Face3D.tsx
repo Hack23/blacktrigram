@@ -25,10 +25,12 @@ import {
 import { mixColors } from "../../utils/colorHelpers";
 
 /**
- * Head bone Y position in skeletal rig
- * @korean 머리뼈Y위치
+ * Head position offset from bone center
+ * Since Face3D is rendered inside the head bone group,
+ * this is a small offset to position the face correctly
+ * @korean 머리위치오프셋
  */
-const HEAD_HEIGHT_POSITION = 1.9;
+const HEAD_POSITION_OFFSET = 0.1;
 
 /**
  * Eye component with pupil tracking and swelling
@@ -257,7 +259,8 @@ export const Face3D: React.FC<Face3DProps> = ({
 
     // Calculate direction from head to opponent using component subtraction
     // to avoid prototype chain issues in test environments
-    const headPos = new THREE.Vector3(0, HEAD_HEIGHT_POSITION, 0);
+    // Use the same offset as the face position
+    const headPos = new THREE.Vector3(0, HEAD_POSITION_OFFSET, 0);
     const dir = new THREE.Vector3(
       opponentPosition.x - headPos.x,
       opponentPosition.y - headPos.y,
@@ -296,7 +299,7 @@ export const Face3D: React.FC<Face3DProps> = ({
 
   return (
     <group
-      position={[0, HEAD_HEIGHT_POSITION, 0]}
+      position={[0, HEAD_POSITION_OFFSET, 0]}
       rotation={headRotation}
       data-testid="face3d"
     >
