@@ -21,7 +21,7 @@ import {
   initializeBodyPartHealthForPlayer,
   isPlayerIncapacitatedByBodyDamage,
 } from "../BodyPartDamageIntegration";
-import { BodyPart, BODY_PART_EFFECT_CONSTANTS } from "../types";
+import { BODY_PART_EFFECT_CONSTANTS } from "../types";
 
 // Helper to create a test player
 function createTestPlayer(): PlayerState {
@@ -236,12 +236,14 @@ describe("BodyPartDamageIntegration", () => {
       const player = createTestPlayer();
       const initialized = initializeBodyPartHealthForPlayer(player);
 
+      expect(initialized.bodyPartHealth).toBeDefined();
+      
       const damaged = {
         ...initialized,
-        bodyPartHealth: {
-          ...initialized.bodyPartHealth!,
+        bodyPartHealth: initialized.bodyPartHealth ? {
+          ...initialized.bodyPartHealth,
           head: 40, // Below 50% threshold
-        },
+        } : undefined,
       };
 
       const effects = getBodyPartCombatEffects(damaged);
@@ -255,13 +257,15 @@ describe("BodyPartDamageIntegration", () => {
       const player = createTestPlayer();
       const initialized = initializeBodyPartHealthForPlayer(player);
 
+      expect(initialized.bodyPartHealth).toBeDefined();
+
       const damaged = {
         ...initialized,
-        bodyPartHealth: {
-          ...initialized.bodyPartHealth!,
+        bodyPartHealth: initialized.bodyPartHealth ? {
+          ...initialized.bodyPartHealth,
           torsoUpper: 40,
           torsoLower: 40,
-        },
+        } : undefined,
       };
 
       const effects = getBodyPartCombatEffects(damaged);
@@ -286,12 +290,14 @@ describe("BodyPartDamageIntegration", () => {
       const player = createTestPlayer();
       const initialized = initializeBodyPartHealthForPlayer(player);
 
+      expect(initialized.bodyPartHealth).toBeDefined();
+
       const damaged = {
         ...initialized,
-        bodyPartHealth: {
-          ...initialized.bodyPartHealth!,
+        bodyPartHealth: initialized.bodyPartHealth ? {
+          ...initialized.bodyPartHealth,
           head: 0,
-        },
+        } : undefined,
       };
 
       const incapacitated = isPlayerIncapacitatedByBodyDamage(damaged);
@@ -303,13 +309,15 @@ describe("BodyPartDamageIntegration", () => {
       const player = createTestPlayer();
       const initialized = initializeBodyPartHealthForPlayer(player);
 
+      expect(initialized.bodyPartHealth).toBeDefined();
+
       const damaged = {
         ...initialized,
-        bodyPartHealth: {
-          ...initialized.bodyPartHealth!,
+        bodyPartHealth: initialized.bodyPartHealth ? {
+          ...initialized.bodyPartHealth,
           legLeft: 0,
           legRight: 0,
-        },
+        } : undefined,
       };
 
       const incapacitated = isPlayerIncapacitatedByBodyDamage(damaged);
@@ -331,15 +339,17 @@ describe("BodyPartDamageIntegration", () => {
       const player = createTestPlayer();
       const initialized = initializeBodyPartHealthForPlayer(player);
 
+      expect(initialized.bodyPartHealth).toBeDefined();
+
       // Damage different parts by different amounts
       const damaged = {
         ...initialized,
-        bodyPartHealth: {
-          ...initialized.bodyPartHealth!,
+        bodyPartHealth: initialized.bodyPartHealth ? {
+          ...initialized.bodyPartHealth,
           head: 50, // 50 missing
           armLeft: 70, // 30 missing
           legRight: 90, // 10 missing
-        },
+        } : undefined,
       };
 
       const healed = healBodyPartsProportionally(damaged, 45);
