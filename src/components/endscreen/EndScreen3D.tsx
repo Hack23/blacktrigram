@@ -1,4 +1,4 @@
-import { Html, PerspectiveCamera } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, {
   useCallback,
@@ -184,7 +184,6 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   onRematch,
   onViewReplay,
   width = 1920,
-  height = 1080,
 }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
@@ -257,6 +256,15 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
     setShowStats((prev) => !prev);
   }, [audio]);
 
+  // Audio callbacks for NavigationButtons (inside Html portal which doesn't have AudioProvider context)
+  const handlePlaySelectSound = useCallback(() => {
+    audio.playSFX?.("menu_select");
+  }, [audio]);
+
+  const handlePlayHoverSound = useCallback(() => {
+    audio.playSFX?.("menu_hover");
+  }, [audio]);
+
   return (
     <div
       data-testid="end-screen-3d"
@@ -270,8 +278,16 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
       {/* Volume Control - outside Canvas to maintain AudioProvider context */}
       <VolumeControl position="top-right" compact={isMobile} />
 
+      {/* 3D Background Canvas */}
       <Canvas
-        style={{ width, height }}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 0,
+        }}
         dpr={[1, 2]}
         gl={{
           antialias: true,
@@ -288,95 +304,103 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
 
         {/* Background scene */}
         <EndScreenBackground3D isVictory={isVictory} />
+      </Canvas>
 
-        {/* UI Overlay */}
-        <Html fullscreen>
-          <div
-            data-testid="end-screen-overlay"
+      {/* UI Overlay - outside Canvas for proper layout and AudioProvider context */}
+      <div
+        data-testid="end-screen-overlay"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: FONT_FAMILY.KOREAN,
+          color: toCssColor(KOREAN_COLORS.TEXT_PRIMARY),
+          padding: layoutConstants.padding,
+          boxSizing: "border-box",
+          overflowY: "auto",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            maxHeight: "100%",
+            pointerEvents: "auto",
+          }}
+        >
+          {/* Winner Display Component */}
+          <WinnerDisplay
+            winner={winner}
+            isVictory={isVictory}
+            isMobile={isMobile}
+            isTablet={isTablet}
+          />
+
+          {/* Performance Rating Component */}
+          <PerformanceRating
+            matchStats={matchStats}
+            isMobile={isMobile}
+            isTablet={isTablet}
+          />
+
+          {/* Match Statistics Toggle */}
+          <button
+            onClick={toggleStats}
+            onMouseEnter={() => audio.playSFX?.("menu_hover")}
             style={{
-              width: "100vw",
-              height: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: FONT_FAMILY.KOREAN,
-              color: toCssColor(KOREAN_COLORS.TEXT_PRIMARY),
-              padding: layoutConstants.padding,
-              background: `linear-gradient(180deg, ${hexToRgbaString(
-                KOREAN_COLORS.UI_BACKGROUND_DARK,
-                0.3
-              )} 0%, ${hexToRgbaString(
-                KOREAN_COLORS.UI_BACKGROUND_DARK,
+              background: hexToRgbaString(
+                KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                 0.8
-              )} 100%)`,
+              ),
+              border: `2px solid ${hexToRgbaString(
+                KOREAN_COLORS.PRIMARY_CYAN,
+                0.8
+              )}`,
+              borderRadius: "8px",
+              padding: layoutConstants.buttonPadding,
+              fontSize: layoutConstants.buttonFontSize,
+              color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN),
+              fontFamily: FONT_FAMILY.KOREAN,
+              fontWeight: "bold",
+              cursor: "pointer",
+              marginBottom: layoutConstants.spacing,
+              transition: "all 0.2s ease",
             }}
+            data-testid="toggle-stats-button"
           >
-            {/* Winner Display Component */}
-            <WinnerDisplay
-              winner={winner}
-              isVictory={isVictory}
-              isMobile={isMobile}
-              isTablet={isTablet}
-            />
+            {showStats ? "통계 숨기기 | Hide Stats" : "통계 보기 | View Stats"}
+          </button>
 
-            {/* Performance Rating Component */}
-            <PerformanceRating
+          {/* Match Statistics Display */}
+          {showStats && (
+            <MatchStatisticsDisplay
               matchStats={matchStats}
               isMobile={isMobile}
               isTablet={isTablet}
             />
+          )}
 
-            {/* Match Statistics Toggle */}
-            <button
-              onClick={toggleStats}
-              onMouseEnter={() => audio.playSFX?.("menu_hover")}
-              style={{
-                background: hexToRgbaString(
-                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                  0.8
-                ),
-                border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
-                  0.8
-                )}`,
-                borderRadius: "8px",
-                padding: layoutConstants.buttonPadding,
-                fontSize: layoutConstants.buttonFontSize,
-                color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN),
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: "bold",
-                cursor: "pointer",
-                marginBottom: layoutConstants.spacing,
-                transition: "all 0.2s ease",
-              }}
-              data-testid="toggle-stats-button"
-            >
-              {showStats
-                ? "통계 숨기기 | Hide Stats"
-                : "통계 보기 | View Stats"}
-            </button>
-
-            {/* Match Statistics Display */}
-            {showStats && (
-              <MatchStatisticsDisplay
-                matchStats={matchStats}
-                isMobile={isMobile}
-                isTablet={isTablet}
-              />
-            )}
-
-            {/* Navigation Buttons Component */}
-            <NavigationButtons
-              onReturnToMenu={onReturnToMenu}
-              onRematch={onRematch}
-              onViewReplay={onViewReplay}
-              isMobile={isMobile}
-              isTablet={isTablet}
-            />
-          </div>
-        </Html>
-      </Canvas>
+          {/* Navigation Buttons Component */}
+          <NavigationButtons
+            onReturnToMenu={onReturnToMenu}
+            onRematch={onRematch}
+            onViewReplay={onViewReplay}
+            isMobile={isMobile}
+            isTablet={isTablet}
+            onPlaySelectSound={handlePlaySelectSound}
+            onPlayHoverSound={handlePlayHoverSound}
+          />
+        </div>
+      </div>
     </div>
   );
 };

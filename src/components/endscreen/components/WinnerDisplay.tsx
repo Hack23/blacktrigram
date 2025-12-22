@@ -1,6 +1,10 @@
 import React from "react";
 import { PlayerState } from "../../../systems";
-import { ARCHETYPE_ASSETS, FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import {
+  ARCHETYPE_ASSETS,
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { fadeInAnimation, scaleInAnimation } from "./animations";
 
@@ -26,10 +30,10 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
   isMobile,
   isTablet,
 }) => {
-  const titleFontSize = isMobile ? 36 : isTablet ? 44 : 54;
-  const subtitleFontSize = isMobile ? 18 : isTablet ? 22 : 28;
-  const detailFontSize = isMobile ? 14 : 16;
-  const spacing = isMobile ? 15 : isTablet ? 18 : 20;
+  const titleFontSize = isMobile ? 28 : isTablet ? 36 : 44;
+  const subtitleFontSize = isMobile ? 16 : isTablet ? 18 : 22;
+  const detailFontSize = isMobile ? 12 : 14;
+  const spacing = isMobile ? 10 : isTablet ? 12 : 15;
 
   const primaryColor = isVictory
     ? KOREAN_COLORS.ACCENT_GOLD
@@ -40,8 +44,10 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
     : { korean: "패배", english: "Defeat" };
 
   // Get archetype asset info
-  const archetypeKey = winner.archetype.toLowerCase() as keyof typeof ARCHETYPE_ASSETS;
-  const archetypeAsset = ARCHETYPE_ASSETS[archetypeKey] || ARCHETYPE_ASSETS.musa;
+  const archetypeKey =
+    winner.archetype.toLowerCase() as keyof typeof ARCHETYPE_ASSETS;
+  const archetypeAsset =
+    ARCHETYPE_ASSETS[archetypeKey] || ARCHETYPE_ASSETS.musa;
 
   return (
     <div
@@ -50,7 +56,7 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        marginBottom: spacing * 2,
+        marginBottom: spacing,
         animation: "fadeIn 0.8s ease-in",
       }}
     >
@@ -60,7 +66,10 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
           fontSize: titleFontSize,
           fontWeight: "bold",
           color: toCssColor(primaryColor),
-          textShadow: `0 0 20px ${hexToRgbaString(primaryColor, 0.8)}, 0 0 40px ${hexToRgbaString(primaryColor, 0.4)}`,
+          textShadow: `0 0 20px ${hexToRgbaString(
+            primaryColor,
+            0.8
+          )}, 0 0 40px ${hexToRgbaString(primaryColor, 0.4)}`,
           marginBottom: spacing,
           textAlign: "center",
           fontFamily: FONT_FAMILY.KOREAN,
@@ -142,19 +151,34 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
           data-testid="combat-stats-summary"
         >
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.HEALTH_FULL), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.HEALTH_FULL),
+                fontWeight: "bold",
+              }}
+            >
               {Math.round(winner.health)}
             </div>
             <div>체력 | HP</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.KI_FULL), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.KI_FULL),
+                fontWeight: "bold",
+              }}
+            >
               {Math.round(winner.ki)}
             </div>
             <div>기력 | Ki</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ color: toCssColor(KOREAN_COLORS.STAMINA_FULL), fontWeight: "bold" }}>
+            <div
+              style={{
+                color: toCssColor(KOREAN_COLORS.STAMINA_FULL),
+                fontWeight: "bold",
+              }}
+            >
               {Math.round(winner.stamina)}
             </div>
             <div>스태미나 | Stamina</div>

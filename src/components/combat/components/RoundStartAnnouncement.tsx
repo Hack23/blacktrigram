@@ -10,7 +10,13 @@
  * @category Combat UI
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
@@ -50,6 +56,18 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
   const audio = useAudio();
   const [isVisible, setIsVisible] = useState(false);
 
+  // Use ref to stabilize onComplete callback - prevents timer reset on re-renders
+  // This is critical because parent component may recreate onComplete due to state changes
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  // Stable callback that reads from ref
+  const handleComplete = useCallback(() => {
+    onCompleteRef.current();
+  }, []);
+
   // Fade in animation on mount
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -63,7 +81,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     }
   }, [audio]);
 
-  // Auto-dismiss after duration
+  // Auto-dismiss after duration - uses stable handleComplete to prevent timer resets
   useEffect(() => {
     let isMounted = true;
     let innerTimer: ReturnType<typeof setTimeout> | null = null;
@@ -72,7 +90,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
       setIsVisible(false);
       innerTimer = setTimeout(() => {
         if (isMounted) {
-          onComplete();
+          handleComplete();
         }
       }, 300); // Wait for fade out
     }, duration * 1000);
@@ -84,7 +102,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
         clearTimeout(innerTimer);
       }
     };
-  }, [duration, onComplete]);
+  }, [duration, handleComplete]);
 
   // Convert hex colors to CSS - memoized for performance
   const goldColor = useMemo(() => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);

@@ -159,7 +159,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             pointerEvents: "none",
           }}
         >
-          Press Q/W/E/R to use techniques
+          Press Q-P to use techniques
         </div>
       )}
     </>

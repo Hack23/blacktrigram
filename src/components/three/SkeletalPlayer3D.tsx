@@ -1,9 +1,9 @@
 /**
  * SkeletalPlayer3D component with articulated body model
- * 
+ *
  * Implements full skeletal rigging system for realistic fighter animations
  * with independent limb movement, elbow/knee joints, and attack animations.
- * 
+ *
  * @module components/three/SkeletalPlayer3D
  * @category 3D Components
  * @korean 골격플레이어3D컴포넌트
@@ -14,23 +14,23 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
-  createHumanoidRig,
-  getAnimation,
   applyKeyframeToRig,
-  updateAnimation,
-  getTechniqueHandPose,
-  createInitialHandAnimationState,
-  updateHandAnimationState,
-  getExpressionFromCombatState,
   createDefaultFacialDamage,
+  createHumanoidRig,
+  createInitialHandAnimationState,
+  getAnimation,
+  getExpressionFromCombatState,
+  getTechniqueHandPose,
+  updateAnimation,
+  updateHandAnimationState,
 } from "../../systems/animation";
 import { MuscleActivationManager } from "../../systems/animation/MuscleActivation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
-import type { SkeletalRig, SkeletalAnimationState } from "../../types/skeletal";
-import type { Player3DUnifiedProps } from "../../types/player-visual";
+import { FacialExpression } from "../../types/facial";
 import type { HandAnimationState } from "../../types/hand-animation";
 import { HandPoseType } from "../../types/hand-animation";
-import { FacialExpression } from "../../types/facial";
+import type { Player3DUnifiedProps } from "../../types/player-visual";
+import type { SkeletalAnimationState, SkeletalRig } from "../../types/skeletal";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
@@ -40,7 +40,7 @@ import StanceAura from "./StanceAura";
 
 /**
  * Get stance-specific color from Korean theming
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Hex color number
  * @korean 자세색상가져오기
@@ -61,7 +61,7 @@ const getStanceColor = (stance: string): number => {
 
 /**
  * Get trigram symbol for stance
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Unicode trigram symbol
  * @korean 팔괘기호가져오기
@@ -98,7 +98,7 @@ const HAND_STATE_SYNC_FREQUENCY = 20;
  * Updates hand animation state for a single hand at 60fps.
  * Uses refs to avoid triggering React re-renders on every frame.
  * Only syncs to React state periodically or when transition completes.
- * 
+ *
  * @param handStateRef - Ref storing current hand animation state
  * @param setHandState - React setState function to update hand state
  * @param delta - Time elapsed since last frame (in seconds)
@@ -124,8 +124,10 @@ const updateHandAnimationFrame = (
     // to balance animation smoothness with React render performance.
     if (
       updatedState.targetPose === null ||
-      Math.floor(updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY) !== 
-      Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
+      Math.floor(
+        updatedState.transitionProgress * HAND_STATE_SYNC_FREQUENCY
+      ) !==
+        Math.floor(previousState.transitionProgress * HAND_STATE_SYNC_FREQUENCY)
     ) {
       setHandState(updatedState);
     }
@@ -134,10 +136,10 @@ const updateHandAnimationFrame = (
 
 /**
  * SkeletalPlayer3D Component
- * 
+ *
  * Complete skeletal player with 28-bone rig and realistic animations.
  * Supports all Korean martial arts attack animations (jab, cross, kicks, block).
- * 
+ *
  * @example
  * ```tsx
  * <SkeletalPlayer3D
@@ -155,7 +157,7 @@ const updateHandAnimationFrame = (
  *   showDetails={true}
  * />
  * ```
- * 
+ *
  * @korean 골격플레이어3D컴포넌트
  */
 export const SkeletalPlayer3D: React.FC<
@@ -201,7 +203,9 @@ export const SkeletalPlayer3D: React.FC<
 
   // Muscle activation manager
   const muscleManager = useRef(new MuscleActivationManager());
-  const [muscleStates, setMuscleStates] = useState<Map<string, number>>(new Map());
+  const [muscleStates, setMuscleStates] = useState<Map<string, number>>(
+    new Map()
+  );
   const frameCounter = useRef(0);
 
   // Cleanup muscle manager on unmount
@@ -258,13 +262,7 @@ export const SkeletalPlayer3D: React.FC<
     if (health / maxHealth < 0.3) return KOREAN_COLORS.ACCENT_RED;
     if (ki / 100 > 0.8) return KOREAN_COLORS.PRIMARY_CYAN;
     return archetypeColors.primary;
-  }, [
-    isStunned,
-    health,
-    maxHealth,
-    ki,
-    archetypeColors.primary,
-  ]);
+  }, [isStunned, health, maxHealth, ki, archetypeColors.primary]);
 
   // Stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
@@ -357,8 +355,8 @@ export const SkeletalPlayer3D: React.FC<
     return new THREE.Vector3(facing === "right" ? 5 : -5, 2, 0);
   }, [opponentPosition, facing]);
 
-  // Load attack/defend/idle animation when currentAnimation or blocking state changes
-   
+  // Load attack/defend/idle/walk animation when currentAnimation or blocking state changes
+
   useEffect(() => {
     // Reset animation time ref whenever animation changes
     animTimeRef.current = 0;
@@ -379,10 +377,20 @@ export const SkeletalPlayer3D: React.FC<
         // Update hand poses based on attack technique
         const handPose = getTechniqueHandPose(attackAnimation);
         setLeftHandState((prev) =>
-          updateHandAnimationState(prev, handPose.leftHandPose, 0, handPose.transitionDuration)
+          updateHandAnimationState(
+            prev,
+            handPose.leftHandPose,
+            0,
+            handPose.transitionDuration
+          )
         );
         setRightHandState((prev) =>
-          updateHandAnimationState(prev, handPose.rightHandPose, 0, handPose.transitionDuration)
+          updateHandAnimationState(
+            prev,
+            handPose.rightHandPose,
+            0,
+            handPose.transitionDuration
+          )
         );
       }
     } else if (currentAnimation === "defend" || isBlocking) {
@@ -405,20 +413,82 @@ export const SkeletalPlayer3D: React.FC<
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
         );
       }
-    } else {
-      // Reset to idle
+    } else if (currentAnimation === "walk") {
+      // Walking animation - 걷기 애니메이션
+      const walkAnim = getAnimation("walk");
+      if (walkAnim) {
+        setAnimState({
+          currentAnimation: walkAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0, // Normal walking speed
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+
+        // Relaxed hands while walking
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.2)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.2)
+        );
+      }
+    } else if (currentAnimation === "stance_change") {
+      // Stance change animation - 자세 변경 애니메이션
+      const idleAnim = getAnimation("idle_stance");
+      if (idleAnim) {
+        setAnimState({
+          currentAnimation: idleAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.2, // Slightly faster for responsiveness
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+
+        // Guard hands during stance change
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.15)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.15)
+        );
+      }
+    } else if (currentAnimation === "hit") {
+      // Hit reaction - keep current pose but stop animation
       setAnimState((prev) => ({
         ...prev,
         isPlaying: false,
         currentTime: 0,
       }));
+    } else {
+      // Idle animation - 대기 애니메이션
+      const idleAnim = getAnimation("idle_stance");
+      if (idleAnim) {
+        setAnimState({
+          currentAnimation: idleAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 0.5, // Slow breathing animation
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+      } else {
+        // Fallback: stop animation if idle_stance not found
+        setAnimState((prev) => ({
+          ...prev,
+          isPlaying: false,
+          currentTime: 0,
+        }));
+      }
 
-      // Return to open hand pose when idle
+      // Return to relaxed hand pose when idle
       setLeftHandState((prev) =>
-        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.3)
+        updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.3)
       );
       setRightHandState((prev) =>
-        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.3)
+        updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.3)
       );
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
@@ -426,17 +496,9 @@ export const SkeletalPlayer3D: React.FC<
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
     // Update hand animation state at 60fps using refs to reduce React re-render frequency
-    updateHandAnimationFrame(
-      leftHandStateRef,
-      setLeftHandState,
-      delta
-    );
+    updateHandAnimationFrame(leftHandStateRef, setLeftHandState, delta);
 
-    updateHandAnimationFrame(
-      rightHandStateRef,
-      setRightHandState,
-      delta
-    );
+    updateHandAnimationFrame(rightHandStateRef, setRightHandState, delta);
 
     // Update muscle system at 60fps
     if (currentAnimation === "attack" && attackAnimation) {
@@ -508,10 +570,7 @@ export const SkeletalPlayer3D: React.FC<
       <StanceAura stance={stance} intensity={ki / 100} animated />
 
       {/* Muscle system rendering */}
-      <MuscleSystem
-        muscleStates={muscleStates}
-        isExhausted={stamina < 20}
-      />
+      <MuscleSystem muscleStates={muscleStates} isExhausted={stamina < 20} />
 
       {/* Skeletal rig rendering */}
       <BoneRenderer

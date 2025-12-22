@@ -26,7 +26,10 @@ import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
 } from "../../systems/ai";
-import { AnimationEvents } from "../../systems/animation";
+import {
+  AnimationEvents,
+  getAnimationForTechnique,
+} from "../../systems/animation";
 import { HitEffectType } from "../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 import {
@@ -345,7 +348,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Round transition complete handler - checks for match end or starts next round
   const handleRoundTransitionComplete = useCallback(() => {
     if (import.meta.env.DEV) {
-      console.log('[DEV] Round transition complete, checking match status');
+      console.log("[DEV] Round transition complete, checking match status");
     }
     // Check if match is over (best of 3 - first to 2 wins)
     const currentScore = matchScoreRef.current;
@@ -353,7 +356,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // Match is over - call onGameEnd instead of starting next round
       const matchWinner = currentScore.player1 >= 2 ? 0 : 1;
       if (import.meta.env.DEV) {
-        console.log('[DEV] Match over, winner:', matchWinner);
+        console.log("[DEV] Match over, winner:", matchWinner);
       }
       onGameEnd(matchWinner);
       return; // Don't start next round
@@ -367,12 +370,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     setInternalRound((prev) => {
       const nextRound = prev + 1;
       if (import.meta.env.DEV) {
-        console.log('[DEV] Incrementing round from', prev, 'to', nextRound);
+        console.log("[DEV] Incrementing round from", prev, "to", nextRound);
       }
       // Wait for transition duration plus fade-out to complete before showing next round announcement
       setTimeout(() => {
         if (import.meta.env.DEV) {
-          console.log('[DEV] Showing round start announcement for round', nextRound);
+          console.log(
+            "[DEV] Showing round start announcement for round",
+            nextRound
+          );
         }
         setShowRoundStart(true);
       }, ANNOUNCEMENT_FADE_OUT_DELAY);
@@ -445,6 +451,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
 
+  // Track current attack animation for each player
+  // Used to determine which skeletal animation to play during attacks
+  // 각 플레이어의 현재 공격 애니메이션 추적
+  const [player1AttackAnimation, setPlayer1AttackAnimation] = useState<
+    string | undefined
+  >(undefined);
+  const [player2AttackAnimation, setPlayer2AttackAnimation] = useState<
+    string | undefined
+  >(undefined);
+
   // Player movement
   const { isMoving: player1IsMoving } = usePlayerMovement({
     enabled:
@@ -465,6 +481,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Use ref to store attack handler to avoid circular dependencies
   const handleAttackRef = useRef<(() => void) | null>(null);
 
+  // Refs to clear attack animations after completion
+  const clearPlayer1AttackAnimation = useRef<() => void>(() => {
+    setPlayer1AttackAnimation(undefined);
+  });
+  const clearPlayer2AttackAnimation = useRef<() => void>(() => {
+    setPlayer2AttackAnimation(undefined);
+  });
+
   // Player animation state machines - manages animation transitions at 60fps
   // Memoize events object to maintain stability (required by usePlayerAnimation)
   const player1AnimationEvents = useMemo<AnimationEvents>(
@@ -480,6 +504,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         // Handle animation completion
         if (state === "attack" || state === "defend") {
           combatActions.setExecutingTechnique(false);
+          // Clear attack animation when attack completes
+          // 공격 완료 시 공격 애니메이션 초기화
+          if (state === "attack") {
+            clearPlayer1AttackAnimation.current();
+          }
         } else if (state === "stance_change") {
           // Stance change animation completed
           audio.playSFX("menu_select");
@@ -498,6 +527,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       onFrame: (frame, state) => {
         if (state === "attack" && frame === 6) {
           // AI attack hit detection
+        }
+      },
+      onAnimationComplete: (state) => {
+        // Clear AI attack animation when attack completes
+        // AI 공격 완료 시 공격 애니메이션 초기화
+        if (state === "attack") {
+          clearPlayer2AttackAnimation.current();
         }
       },
     },
@@ -526,15 +562,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   useEffect(() => {
     const currentPos = playerPositions[1];
     const prevPos = prevPlayer2PositionRef.current;
-    
+
     // Detect if Player2 (AI) is moving by comparing positions
     const isMoving =
       Math.abs(currentPos.x - prevPos.x) > MOVEMENT_DETECTION_THRESHOLD ||
       Math.abs(currentPos.y - prevPos.y) > MOVEMENT_DETECTION_THRESHOLD;
-    
+
     if (isMoving) {
       // AI is moving - transition to walk animation
-      if (player2Animation.currentState !== "walk" && player2Animation.currentState !== "attack") {
+      if (
+        player2Animation.currentState !== "walk" &&
+        player2Animation.currentState !== "attack"
+      ) {
         player2Animation.transitionTo("walk");
       }
     } else {
@@ -543,7 +582,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         player2Animation.transitionTo("idle");
       }
     }
-    
+
     prevPlayer2PositionRef.current = currentPos;
   }, [playerPositions, player2Animation]);
 
@@ -617,7 +656,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         startTransitionRef.current(null, internalRoundRef.current);
       }
     }
-  }, [combatState.roundEnded, combatActions, addCombatMessage, updateMatchScore]);
+  }, [
+    combatState.roundEnded,
+    combatActions,
+    addCombatMessage,
+    updateMatchScore,
+  ]);
 
   // Ref pattern to stabilize onTimeUp callback for timer
   const handleTimeUpRef = useRef(handleTimeUp);
@@ -651,7 +695,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Always start the round when this is called - the caller is responsible
     // for ensuring this is the right time to start
     if (import.meta.env.DEV) {
-      console.log('[DEV] Starting round, setting roundStarted=true');
+      console.log("[DEV] Starting round, setting roundStarted=true");
     }
     combatActions.setRoundStarted(true);
     combatActions.setRoundEnded(false); // Ensure roundEnded is false
@@ -821,6 +865,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           technique.name.english
         );
 
+        // Set attack animation based on technique
+        // 기술에 따른 공격 애니메이션 설정
+        const animationName = getAnimationForTechnique(
+          technique.name.english || technique.id
+        );
+        setPlayer1AttackAnimation(animationName);
+
+        // Trigger attack animation transition
+        // 공격 애니메이션 전환 트리거
+        player1Animation.transitionTo("attack");
+        combatActions.setExecutingTechnique(true);
+
         // Deduct resources
         onPlayerUpdate(0, {
           stamina: Math.max(0, validPlayers[0].stamina - technique.staminaCost),
@@ -842,6 +898,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         feedbackActions,
         handleAttack,
         addCombatMessage,
+        player1Animation,
+        combatActions,
       ]
     ),
   });
@@ -945,6 +1003,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Create enhanced attack handler with action feedback and animation
   const handleAttackWithFeedback = useCallback(() => {
+    // Set default attack animation for basic attacks (without specific technique)
+    // 기본 공격 애니메이션 설정 (잽)
+    setPlayer1AttackAnimation("jab");
+
     // Try to transition to attack animation
     const success = player1Animation.transitionTo("attack");
     if (success) {
@@ -1036,17 +1098,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   /**
    * Mobile touch control handler - Converts VirtualDPad touch inputs to keyboard events
-   * 
+   *
    * Dispatches synthetic KeyboardEvents with proper properties to ensure compatibility
    * with usePlayerMovement hook. The synthetic events include:
    * - key: The character key (w/a/s/d)
    * - code: The physical key code (KeyW/KeyA/KeyS/KeyD)
    * - bubbles: true - Allows event to propagate through DOM
    * - cancelable: true - Allows event to be prevented
-   * 
+   *
    * These properties are essential for the keyboard event listeners in inputSystem.ts
    * to properly recognize and process the movement commands.
-   * 
+   *
    * @param direction - The D-pad direction or null
    * @param eventType - 'start' for press, 'end' for release
    */
@@ -1066,7 +1128,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
       if (eventType === "start" && direction) {
         // Release previous key if different (prevents stuck keys)
-        if (activeMobileKeyRef.current && activeMobileKeyRef.current !== directionMap[direction]) {
+        if (
+          activeMobileKeyRef.current &&
+          activeMobileKeyRef.current !== directionMap[direction]
+        ) {
           const prevKey = activeMobileKeyRef.current;
           window.dispatchEvent(
             new KeyboardEvent("keyup", {
@@ -1220,7 +1285,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   ]);
 
   // Create a ref for the callback to avoid circular dependency
-  const executeAIActionCallbackRef = useRef<((action: string, targetPos?: Position) => void) | undefined>(undefined);
+  const executeAIActionCallbackRef = useRef<
+    ((action: string, targetPos?: Position) => void) | undefined
+  >(undefined);
 
   // AI Combat System - must be before executeAIActionCallback to provide aiState
   const { aiState, updateDifficultyTarget } = useAICombat({
@@ -1232,7 +1299,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     roundStarted: combatState.roundStarted,
     roundEnded: combatState.roundEnded,
     arenaBounds,
-    onExecuteAction: (action, targetPos) => executeAIActionCallbackRef.current?.(action, targetPos),
+    onExecuteAction: (action, targetPos) =>
+      executeAIActionCallbackRef.current?.(action, targetPos),
     onStanceChange: handleAIStanceChange,
   });
 
@@ -1262,7 +1330,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       //   are extended in a follow-up phase.
       //   This keeps the system functional while we iterate on richer skill tracking.
       const player1 = validPlayersRef.current[0];
-      
+
       adaptiveDifficulty.updateSkillMetrics({
         hitsLanded: player1.hitsLanded ?? 0,
         totalAttacks: (player1.hitsLanded ?? 0) + (player1.misses ?? 0),
@@ -1281,24 +1349,65 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
       if (import.meta.env.DEV) {
         const tier = adaptiveDifficulty.getDifficultyTier();
-        console.log(`[DEV] Difficulty adjusted after round ${roundsCompleted}, new tier: ${tier}`);
+        console.log(
+          `[DEV] Difficulty adjusted after round ${roundsCompleted}, new tier: ${tier}`
+        );
       }
     }
-  }, [combatState.roundEnded, internalRound, adaptiveDifficulty, updateDifficultyTarget]);
+  }, [
+    combatState.roundEnded,
+    internalRound,
+    adaptiveDifficulty,
+    updateDifficultyTarget,
+  ]);
 
   // AI action execution - uses aiState from useAICombat
   const executeAIActionCallback = useCallback(
     (action: string, targetPos?: Position) => {
       switch (action) {
         case "attack":
+          // Set AI attack animation based on technique
+          // AI 공격 애니메이션 설정
+          if (
+            aiState.selectedTechnique?.name?.english ||
+            aiState.selectedTechnique?.englishName
+          ) {
+            const techName =
+              aiState.selectedTechnique.name?.english ||
+              aiState.selectedTechnique.englishName ||
+              "jab";
+            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+          } else {
+            setPlayer2AttackAnimation("jab");
+          }
+          player2Animation.transitionTo("attack");
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           break;
         case "defend":
+          player2Animation.transitionTo("defend");
           handleAIDefend();
           break;
         case "technique":
         case "combo":
-          handleAITechnique(aiState.selectedTechnique, aiState.targetVitalPoint);
+          // Set AI attack animation based on technique
+          // AI 기술 애니메이션 설정
+          if (
+            aiState.selectedTechnique?.name?.english ||
+            aiState.selectedTechnique?.englishName
+          ) {
+            const techName =
+              aiState.selectedTechnique.name?.english ||
+              aiState.selectedTechnique.englishName ||
+              "cross";
+            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+          } else {
+            setPlayer2AttackAnimation("cross");
+          }
+          player2Animation.transitionTo("attack");
+          handleAITechnique(
+            aiState.selectedTechnique,
+            aiState.targetVitalPoint
+          );
           break;
         case "approach":
         case "retreat":
@@ -1352,6 +1461,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }
           break;
         case "counter":
+          // Set AI attack animation for counter attack
+          // AI 반격 애니메이션 설정
+          if (
+            aiState.selectedTechnique?.name?.english ||
+            aiState.selectedTechnique?.englishName
+          ) {
+            const techName =
+              aiState.selectedTechnique.name?.english ||
+              aiState.selectedTechnique.englishName ||
+              "cross";
+            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+          } else {
+            setPlayer2AttackAnimation("cross");
+          }
+          player2Animation.transitionTo("attack");
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");
           break;
@@ -1369,6 +1493,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       combatState.roundStarted,
       aiState.selectedTechnique,
       aiState.targetVitalPoint,
+      player2Animation,
     ]
   );
 
@@ -1564,11 +1689,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             {
               isMobile,
               facing: "right",
+              // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
+              enableFacialExpressions: true,
+              enableEyeTracking: true,
+              opponentPosition: player2Position3D,
             }
           )}
           currentAnimation={animationStateToPlayerAnimation(
             player1Animation.currentState
           )}
+          attackAnimation={player1AttackAnimation}
         />
 
         {/* Player 2 (AI) */}
@@ -1580,11 +1710,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             {
               isMobile,
               facing: "left",
+              // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
+              enableFacialExpressions: true,
+              enableEyeTracking: true,
+              opponentPosition: player1Position3D,
             }
           )}
           currentAnimation={animationStateToPlayerAnimation(
             player2Animation.currentState
           )}
+          attackAnimation={player2AttackAnimation}
         />
 
         {/* Hit Effects */}
@@ -1775,10 +1910,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* AI Difficulty Indicator - Shows current adaptive difficulty tier */}
-        <DifficultyIndicator
-          tier={currentDifficultyTier}
-          isMobile={isMobile}
-        />
+        <DifficultyIndicator tier={currentDifficultyTier} isMobile={isMobile} />
 
         {/* Player State Visual Indicators */}
         {/* Player 1 State Overlay */}
@@ -2011,7 +2143,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           duration={2}
           onComplete={() => {
             if (import.meta.env.DEV) {
-              console.log('[DEV] Round start announcement complete for round', internalRound);
+              console.log(
+                "[DEV] Round start announcement complete for round",
+                internalRound
+              );
             }
             setShowRoundStart(false);
             // Start combat for this round

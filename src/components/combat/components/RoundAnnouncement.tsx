@@ -1,22 +1,28 @@
 /**
  * RoundAnnouncement Component - Displays round completion and transition UI
- * 
+ *
  * Korean: 라운드 발표 (Round Announcement)
- * 
+ *
  * Shows round winner, current score, statistics, and countdown to next round.
  * Implements Korean cyberpunk aesthetic with bilingual text support.
- * 
+ *
  * @module components/combat/RoundAnnouncement
  * @category Combat UI
  */
 
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { PlayerState } from "../../../systems";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 
 /**
  * Round statistics displayed between rounds
- * 
+ *
  * Korean: 라운드 통계 (Round Statistics)
  */
 export interface RoundStats {
@@ -56,7 +62,7 @@ export interface RoundAnnouncementProps {
 
 /**
  * RoundAnnouncement Component
- * 
+ *
  * Displays round completion announcement with:
  * - Bilingual round completion title
  * - Round winner display
@@ -65,7 +71,7 @@ export interface RoundAnnouncementProps {
  * - Countdown to next round
  * - Skip button for quick play
  * - Match point indicator for final rounds
- * 
+ *
  * Korean: 라운드 종료 발표 컴포넌트
  */
 export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
@@ -83,6 +89,17 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const hasCompletedRef = useRef(false);
 
+  // Use ref to stabilize callback - prevents timer reset on re-renders
+  const onCountdownCompleteRef = useRef(onCountdownComplete);
+  useEffect(() => {
+    onCountdownCompleteRef.current = onCountdownComplete;
+  }, [onCountdownComplete]);
+
+  // Stable callback that reads from ref
+  const handleCountdownComplete = useCallback(() => {
+    onCountdownCompleteRef.current();
+  }, []);
+
   // Fade in animation on mount
   useEffect(() => {
     // Trigger fade in after a small delay
@@ -90,12 +107,12 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
-  // Countdown logic with proper cleanup
+  // Countdown logic with proper cleanup - uses stable callback
   useEffect(() => {
     if (countdown <= 0) {
       if (!hasCompletedRef.current) {
         hasCompletedRef.current = true;
-        onCountdownComplete();
+        handleCountdownComplete();
       }
       return;
     }
@@ -111,7 +128,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [countdown, onCountdownComplete]);
+  }, [countdown, handleCountdownComplete]);
 
   // Determine if this is match point
   const isMatchPoint = useMemo(() => {
@@ -135,27 +152,27 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
   );
 
   // Memoize container style for performance
-  const containerStyle = useMemo(() => ({
-    position: "fixed" as const,
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column" as const,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: `${darkBg}dd`,
-    zIndex: 1000,
-    opacity: isVisible ? 1 : 0,
-    transition: "opacity 0.3s ease-in-out",
-  }), [darkBg, isVisible]);
+  const containerStyle = useMemo(
+    () => ({
+      position: "fixed" as const,
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      flexDirection: "column" as const,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: `${darkBg}dd`,
+      zIndex: 1000,
+      opacity: isVisible ? 1 : 0,
+      transition: "opacity 0.3s ease-in-out",
+    }),
+    [darkBg, isVisible]
+  );
 
   return (
-    <div
-      data-testid="round-announcement"
-      style={containerStyle}
-    >
+    <div data-testid="round-announcement" style={containerStyle}>
       {/* Match Point Indicator */}
       {isMatchPoint && (
         <div
@@ -255,23 +272,18 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
             gap: isMobile ? "12px" : "24px",
             marginBottom: isMobile ? "20px" : "30px",
             fontSize: isMobile ? "14px" : "16px",
-            color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+            color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
+              6,
+              "0"
+            )}`,
             fontFamily: FONT_FAMILY.KOREAN,
           }}
           data-testid="round-stats"
         >
-          <div>
-            피해량 | Damage: {roundStats.damageDealt.toFixed(0)}
-          </div>
-          <div>
-            명중 | Hits: {roundStats.hitsLanded}
-          </div>
-          <div>
-            급소타격 | Vital Points: {roundStats.vitalPointsHit}
-          </div>
-          <div>
-            정확도 | Accuracy: {roundStats.accuracy.toFixed(1)}%
-          </div>
+          <div>피해량 | Damage: {roundStats.damageDealt.toFixed(0)}</div>
+          <div>명중 | Hits: {roundStats.hitsLanded}</div>
+          <div>급소타격 | Vital Points: {roundStats.vitalPointsHit}</div>
+          <div>정확도 | Accuracy: {roundStats.accuracy.toFixed(1)}%</div>
         </div>
       )}
 

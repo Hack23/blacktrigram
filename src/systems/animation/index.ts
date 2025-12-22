@@ -1,129 +1,128 @@
 /**
  * Animation system exports for Black Trigram
- * 
+ *
  * Unified exports for the animation state machine, priority system,
  * transition rules, and skeletal animation system.
- * 
+ *
  * @module systems/animation
  * @category Animation
  * @korean 애니메이션시스템
  */
 
-export * from "./types";
-export * from "./AnimationStateMachine";
 export * from "./AnimationPriority";
+export * from "./AnimationStateMachine";
 export * from "./AnimationTransitions";
+export * from "./types";
 
 export {
-  PlayerAnimationStateMachine,
   DEFAULT_ANIMATION_CONFIGS,
+  PlayerAnimationStateMachine,
 } from "./AnimationStateMachine";
 
 export {
-  canInterrupt,
-  getPriority,
-  comparePriority,
   ANIMATION_PRIORITY_MAP,
+  canInterrupt,
+  comparePriority,
+  getPriority,
 } from "./AnimationPriority";
 
 export {
-  isTransitionAllowed,
-  getValidTransitions,
-  buildTransitionMap,
   DEFAULT_TRANSITIONS,
+  buildTransitionMap,
+  getValidTransitions,
+  isTransitionAllowed,
 } from "./AnimationTransitions";
 
 // Skeletal animation system
 export {
+  BONE_CHAINS,
+  JOINT_CONSTRAINTS,
+  applyJointConstraint,
   createBone,
   createHumanoidRig,
-  applyJointConstraint,
   getBoneWorldPosition,
   getBoneWorldRotation,
   resetBoneToRestPose,
   resetRigToRestPose,
-  JOINT_CONSTRAINTS,
-  BONE_CHAINS,
 } from "./SkeletonRig";
 
 export {
-  JAB_ANIMATION,
-  CROSS_ANIMATION,
-  FRONT_KICK_ANIMATION,
-  ROUNDHOUSE_KICK_ANIMATION,
-  BLOCK_ANIMATION,
-  WALK_ANIMATION,
-  IDLE_STANCE_ANIMATION,
-  FORWARD_DASH_ANIMATION,
-  BACKWARD_RETREAT_ANIMATION,
-  SIDE_STEP_ANIMATION,
   ATTACK_ANIMATIONS,
+  BACKWARD_RETREAT_ANIMATION,
+  BLOCK_ANIMATION,
+  CROSS_ANIMATION,
+  FORWARD_DASH_ANIMATION,
+  FRONT_KICK_ANIMATION,
+  IDLE_STANCE_ANIMATION,
+  JAB_ANIMATION,
+  ROUNDHOUSE_KICK_ANIMATION,
+  SIDE_STEP_ANIMATION,
+  WALK_ANIMATION,
   getAnimation,
+  getAnimationForTechnique,
 } from "./AttackAnimations";
 
 export {
-  easeLinear,
-  easeIn,
-  easeOut,
-  easeInOut,
-  getEasingFunction,
-  findSurroundingKeyframes,
-  interpolateRotation,
-  interpolatePosition,
-  getInterpolatedKeyframe,
   applyKeyframeToRig,
   blendKeyframes,
+  easeIn,
+  easeInOut,
+  easeLinear,
+  easeOut,
+  findSurroundingKeyframes,
+  getEasingFunction,
+  getInterpolatedKeyframe,
+  interpolatePosition,
+  interpolateRotation,
   updateAnimation,
 } from "./KeyframeInterpolation";
 
 export {
   FIST_POSE,
-  KNIFE_HAND_POSE,
-  SPEAR_HAND_POSE,
-  PALM_HEEL_POSE,
   GRAPPLING_POSE,
-  OPEN_POSE,
   HAND_POSES,
+  KNIFE_HAND_POSE,
+  OPEN_POSE,
+  PALM_HEEL_POSE,
+  RELAXED_POSE,
+  SPEAR_HAND_POSE,
   TECHNIQUE_HAND_POSES,
+  createInitialHandAnimationState,
   getHandPose,
   getTechniqueHandPose,
   interpolateFingerCurl,
   interpolateFingerSpread,
   interpolateWristRotation,
-  createInitialHandAnimationState,
-  updateHandAnimationState,
   setHandHighlight,
+  updateHandAnimationState,
 } from "./HandPoses";
 
-export {
-  createHandBones,
-  createHumanoidRigWithHands,
-} from "./SkeletonRig";
+export { createHandBones, createHumanoidRigWithHands } from "./SkeletonRig";
 
 // Facial expression system
 export {
-  getExpressionFromCombatState,
-  createExpressionTransition,
-  updateExpressionState,
+  DEFAULT_TRANSITION_CONFIG,
   calculateFacialDamage,
-  resetFacialDamage,
-  getExpressionIntensity,
   createDefaultExpressionState,
   createDefaultFacialDamage,
-  DEFAULT_TRANSITION_CONFIG,
+  createExpressionTransition,
+  getExpressionFromCombatState,
+  getExpressionIntensity,
+  resetFacialDamage,
+  updateExpressionState,
   type ExpressionTransitionConfig,
 } from "./FacialExpressions";
 
 // Head movement animations
 export {
-  createHeadRecoilAnimation,
+  applyHeadMovementKeyframe,
+  calculateSmoothHeadRotation,
+  createHeadDropAnimation,
   createHeadNodAnimation,
+  createHeadRecoilAnimation,
   createHeadShakeAnimation,
   createHeadTiltAnimation,
   createHeadTurnAnimation,
-  createHeadDropAnimation,
-  calculateSmoothHeadRotation,
-  applyHeadMovementKeyframe,
-  isHeadMovementComplete,
   getHeadMovementByType,
+  isHeadMovementComplete,
 } from "./HeadMovements";
