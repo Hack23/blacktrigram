@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.79% </span>
+                <span class="strong">71.05% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/39</span>
+                <span class='fraction'>27/38</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.05% </span>
+                <span class="strong">70.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/38</span>
+                <span class='fraction'>26/37</span>
             </div>
         
             
@@ -288,7 +288,21 @@
 <a name='L223'></a><a href='#L223'>223</a>
 <a name='L224'></a><a href='#L224'>224</a>
 <a name='L225'></a><a href='#L225'>225</a>
-<a name='L226'></a><a href='#L226'>226</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -386,6 +400,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -394,8 +411,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -416,7 +438,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
@@ -514,7 +536,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useCallback } from "react";
-import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { slideUpAnimation } from "./animations";
@@ -525,6 +546,10 @@ export interface NavigationButtonsProps {
   readonly onViewReplay?: () =&gt; void;
   readonly isMobile: boolean;
   readonly isTablet: boolean;
+  /** Optional audio callback for click sounds - passed from parent to avoid Html portal context issues */
+  readonly onPlaySelectSound?: () =&gt; void;
+  /** Optional audio callback for hover sounds - passed from parent to avoid Html portal context issues */
+  readonly onPlayHoverSound?: () =&gt; void;
 }
 &nbsp;
 /**
@@ -572,19 +597,19 @@ const StyledButton: React.FC&lt;StyledButtonProps&gt; = ({
   const baseBackground = isPrimary
     ? hexToRgbaString(primaryColor, 0.9)
     : hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.8);
-  
+&nbsp;
   const hoverBackground = isPrimary
     ? hexToRgbaString(primaryColor, 1)
     : hexToRgbaString(primaryColor, 0.2);
-  
+&nbsp;
   const textColor = isPrimary
     ? toCssColor(KOREAN_COLORS.UI_BACKGROUND_DARK)
     : toCssColor(primaryColor);
-  
+&nbsp;
   const border = isPrimary
     ? "none"
     : `2px solid ${hexToRgbaString(borderColor ?? <span class="branch-1 cbranch-no" title="branch not covered" >primaryColor, 0</span>.8)}`;
-  
+&nbsp;
   const hoverBorderColor = isPrimary
     ? "none"
     : `2px solid ${hexToRgbaString(borderColor ?? <span class="branch-1 cbranch-no" title="branch not covered" >primaryColor, 1</span>)}`;
@@ -610,7 +635,10 @@ const StyledButton: React.FC&lt;StyledButtonProps&gt; = ({
       onMouseOver={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >        e.currentTarget.style.background = hoverBackground;</span>
 <span class="cstat-no" title="statement not covered" >        e.currentTarget.style.transform = "translateY(-2px)";</span>
-<span class="cstat-no" title="statement not covered" >        e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(primaryColor, 0.4)}`;</span>
+<span class="cstat-no" title="statement not covered" >        e.currentTarget.style.boxShadow = `0 6px 16px ${hexToRgbaString(</span>
+          primaryColor,
+          0.4
+        )}`;
 <span class="cstat-no" title="statement not covered" >        if (!isPrimary) {</span>
 <span class="cstat-no" title="statement not covered" >          e.currentTarget.style.border = hoverBorderColor;</span>
         }
@@ -618,7 +646,10 @@ const StyledButton: React.FC&lt;StyledButtonProps&gt; = ({
       onMouseOut={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >        e.currentTarget.style.background = baseBackground;</span>
 <span class="cstat-no" title="statement not covered" >        e.currentTarget.style.transform = "translateY(0)";</span>
-<span class="cstat-no" title="statement not covered" >        e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(primaryColor, 0.3)}`;</span>
+<span class="cstat-no" title="statement not covered" >        e.currentTarget.style.boxShadow = `0 4px 12px ${hexToRgbaString(</span>
+          primaryColor,
+          0.3
+        )}`;
 <span class="cstat-no" title="statement not covered" >        if (!isPrimary) {</span>
 <span class="cstat-no" title="statement not covered" >          e.currentTarget.style.border = border;</span>
         }
@@ -633,6 +664,8 @@ const StyledButton: React.FC&lt;StyledButtonProps&gt; = ({
 /**
  * Navigation Buttons Component
  * Provides action buttons for replay and menu navigation
+ * Note: Audio callbacks are passed as props since this component is rendered
+ * inside a Canvas Html portal which doesn't have access to AudioProvider context
  */
 export const NavigationButtons: React.FC&lt;NavigationButtonsProps&gt; = ({
   onReturnToMenu,
@@ -640,9 +673,9 @@ export const NavigationButtons: React.FC&lt;NavigationButtonsProps&gt; = ({
   onViewReplay,
   isMobile,
   isTablet,
+  onPlaySelectSound,
+  onPlayHoverSound,
 }) =&gt; {
-  const audio = useAudio();
-&nbsp;
   const buttonFontSize = isMobile ? 14 : isTablet ? 15 : 16;
   const buttonPadding = isMobile
     ? "10px 20px"
@@ -653,27 +686,27 @@ export const NavigationButtons: React.FC&lt;NavigationButtonsProps&gt; = ({
   const minWidth = isMobile ? "200px" : "150px";
 &nbsp;
   const handleReturnToMenu = useCallback(() =&gt; {
-    audio.playSFX?.("menu_select");
+    onPlaySelectSound?.();
     onReturnToMenu();
-  }, [audio, onReturnToMenu]);
+  }, [onPlaySelectSound, onReturnToMenu]);
 &nbsp;
   const handleRematch = useCallback(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (onRematch) {
-      audio.playSFX?.("menu_select");
+      onPlaySelectSound?.();
       onRematch();
     }
-  }, [audio, onRematch]);
+  }, [onPlaySelectSound, onRematch]);
 &nbsp;
   const handleViewReplay = useCallback(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (onViewReplay) {
-      audio.playSFX?.("menu_select");
+      onPlaySelectSound?.();
       onViewReplay();
     }
-  }, [audio, onViewReplay]);
+  }, [onPlaySelectSound, onViewReplay]);
 &nbsp;
   const handleHover = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    audio.playSFX?.("menu_hover");</span>
-  }, [audio]);
+<span class="cstat-no" title="statement not covered" >    onPlayHoverSound?.();</span>
+  }, [onPlayHoverSound]);
 &nbsp;
   return (
     &lt;div
@@ -745,7 +778,7 @@ export const NavigationButtons: React.FC&lt;NavigationButtonsProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-19T08:26:54.922Z
+                at 2025-12-22T17:21:57.515Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

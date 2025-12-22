@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/29</span>
+                <span class='fraction'>34/34</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/26</span>
+                <span class='fraction'>31/31</span>
             </div>
         
             
@@ -230,7 +230,31 @@
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -281,6 +305,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
@@ -409,7 +445,13 @@
  * @category Combat UI
  */
 &nbsp;
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
@@ -449,6 +491,18 @@ export const RoundStartAnnouncement: React.FC&lt;RoundStartAnnouncementProps&gt;
   const audio = useAudio();
   const [isVisible, setIsVisible] = useState(false);
 &nbsp;
+  // Use ref to stabilize onComplete callback - prevents timer reset on re-renders
+  // This is critical because parent component may recreate onComplete due to state changes
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() =&gt; {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+&nbsp;
+  // Stable callback that reads from ref
+  const handleComplete = useCallback(() =&gt; {
+    onCompleteRef.current();
+  }, []);
+&nbsp;
   // Fade in animation on mount
   useEffect(() =&gt; {
     const timer = setTimeout(() =&gt; setIsVisible(true), 50);
@@ -462,7 +516,7 @@ export const RoundStartAnnouncement: React.FC&lt;RoundStartAnnouncementProps&gt;
     }
   }, [audio]);
 &nbsp;
-  // Auto-dismiss after duration
+  // Auto-dismiss after duration - uses stable handleComplete to prevent timer resets
   useEffect(() =&gt; {
     let isMounted = true;
     let innerTimer: ReturnType&lt;typeof setTimeout&gt; | null = null;
@@ -471,7 +525,7 @@ export const RoundStartAnnouncement: React.FC&lt;RoundStartAnnouncementProps&gt;
       setIsVisible(false);
       innerTimer = setTimeout(() =&gt; {
         <span class="missing-if-branch" title="else path not taken" >E</span>if (isMounted) {
-          onComplete();
+          handleComplete();
         }
       }, 300); // Wait for fade out
     }, duration * 1000);
@@ -483,7 +537,7 @@ export const RoundStartAnnouncement: React.FC&lt;RoundStartAnnouncementProps&gt;
         clearTimeout(innerTimer);
       }
     };
-  }, [duration, onComplete]);
+  }, [duration, handleComplete]);
 &nbsp;
   // Convert hex colors to CSS - memoized for performance
   const goldColor = useMemo(() =&gt; hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);
@@ -571,7 +625,7 @@ export default RoundStartAnnouncement;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-19T08:26:54.922Z
+                at 2025-12-22T17:21:57.515Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

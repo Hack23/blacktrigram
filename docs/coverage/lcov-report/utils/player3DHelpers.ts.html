@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96% </span>
+                <span class="strong">96.55% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>24/25</span>
+                <span class='fraction'>28/29</span>
             </div>
         
             
@@ -225,7 +225,26 @@
 <a name='L160'></a><a href='#L160'>160</a>
 <a name='L161'></a><a href='#L161'>161</a>
 <a name='L162'></a><a href='#L162'>162</a>
-<a name='L163'></a><a href='#L163'>163</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -245,6 +264,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -350,7 +371,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">136x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -389,18 +419,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Utility functions for Player3D component integration
- * 
+ *
  * Converts PlayerState from combat system to Player3DUnifiedProps for rendering
  * with SkeletalPlayer3D (28-bone articulated body model).
- * 
+ *
  * @module utils/player3DHelpers
  * @category Utilities
  * @korean 플레이어3D도우미
  */
 &nbsp;
 import type { PlayerState } from "../systems";
-import type { Player3DUnifiedProps, BalanceState, PlayerAnimation } from "../types/player-visual";
 import type { AnimationState } from "../systems/animation/types";
+import type {
+  BalanceState,
+  Player3DUnifiedProps,
+  PlayerAnimation,
+} from "../types/player-visual";
 &nbsp;
 /**
  * Static mapping from AnimationState to PlayerAnimation
@@ -419,20 +453,22 @@ const ANIMATION_STATE_MAP: Record&lt;AnimationState, PlayerAnimation&gt; = {
 &nbsp;
 /**
  * Convert AnimationState to PlayerAnimation
- * 
+ *
  * Maps the animation system's state types to SkeletalPlayer3D's animation types.
- * 
+ *
  * @param animState - Animation state from the animation system
  * @returns Corresponding PlayerAnimation type
  * @korean 애니메이션상태변환
  */
-export function animationStateToPlayerAnimation(animState: AnimationState): PlayerAnimation {
+export function animationStateToPlayerAnimation(
+  animState: AnimationState
+): PlayerAnimation {
   return ANIMATION_STATE_MAP[animState];
 }
 &nbsp;
 /**
  * Convert balance number (0-100) to BalanceState enum
- * 
+ *
  * @param balance - Balance value from PlayerState (0-100)
  * @returns BalanceState enum value
  * @korean 균형상태변환
@@ -446,7 +482,7 @@ export function getBalanceState(balance: number): BalanceState {
 &nbsp;
 /**
  * Get current animation state from PlayerState
- * 
+ *
  * @param player - Current player state
  * @returns PlayerAnimation enum value
  * @korean 애니메이션상태가져오기
@@ -455,7 +491,7 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
   if (player.isStunned) return "hit";
   if (player.isBlocking) return "defend";
   if (player.isCountering) return "counter";
-  
+&nbsp;
   // Check combat state (CombatState enum values are lowercase strings)
   switch (player.combatState) {
     case "attacking":
@@ -474,18 +510,18 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
 &nbsp;
 /**
  * Converts PlayerState to Player3DUnifiedProps for visual rendering.
- * 
+ *
  * Note: This function converts base PlayerState properties used in combat.
  * Training-specific stats (misses, accuracy, comboCount) are optional in PlayerState
  * and handled separately in training contexts.
- * 
+ *
  * @param player - The player state to convert
  * @param position - 3D position [x, y, z]
  * @param rotation - Rotation in radians
  * @param options - Display and behavior options
  * @returns Props for SkeletalPlayer3D component (28-bone articulated body model)
  * @korean 플레이어상태변환
- * 
+ *
  * @example
  * ```tsx
  * const playerProps = convertPlayerStateToProps(
@@ -494,7 +530,7 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
  *   0,
  *   { isMobile: false, showVitalPoints: false }
  * );
- * 
+ *
  * &lt;SkeletalPlayer3D {...playerProps} /&gt;
  * ```
  */
@@ -510,6 +546,10 @@ export function convertPlayerStateToProps(
     readonly showHealthBar?: boolean;
     readonly showStanceIndicator?: boolean;
     readonly onAnimationComplete?: () =&gt; void;
+    // Facial expression options - 얼굴 표정 옵션
+    readonly enableFacialExpressions?: boolean;
+    readonly enableEyeTracking?: boolean;
+    readonly opponentPosition?: [number, number, number];
   } = {}
 ): Player3DUnifiedProps {
   return {
@@ -518,26 +558,26 @@ export function convertPlayerStateToProps(
     stance: player.currentStance,
     position,
     rotation,
-    
+&nbsp;
     // Health and resources
     health: player.health,
     maxHealth: player.maxHealth,
     stamina: player.stamina,
     ki: player.ki,
-    
+&nbsp;
     // Combat states
     pain: player.pain,
     balance: getBalanceState(player.balance),
     consciousness: player.consciousness,
-    
+&nbsp;
     // Combat flags
     isBlocking: player.isBlocking,
     isStunned: player.isStunned,
     isCountering: player.isCountering,
-    
+&nbsp;
     // Animation (derived from combat state)
     currentAnimation: getPlayerAnimation(player),
-    
+&nbsp;
     // Display options
     name: player.name,
     isMobile: options.isMobile ?? false,
@@ -547,6 +587,11 @@ export function convertPlayerStateToProps(
     showHealthBar: options.showHealthBar,
     showStanceIndicator: options.showStanceIndicator,
     onAnimationComplete: options.onAnimationComplete,
+&nbsp;
+    // Facial expression options - 얼굴 표정 옵션
+    enableFacialExpressions: options.enableFacialExpressions ?? false,
+    enableEyeTracking: options.enableEyeTracking ?? true,
+    opponentPosition: options.opponentPosition,
   };
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -556,7 +601,7 @@ export function convertPlayerStateToProps(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-19T08:26:55.084Z
+                at 2025-12-22T17:21:57.696Z
             </div>
         <script src="../prettify.js"></script>
         <script>

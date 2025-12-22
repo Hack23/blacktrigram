@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.41% </span>
+                <span class="strong">73.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/29</span>
+                <span class='fraction'>22/30</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.07% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/27</span>
+                <span class='fraction'>21/28</span>
             </div>
         
             
@@ -672,7 +672,33 @@
 <a name='L607'></a><a href='#L607'>607</a>
 <a name='L608'></a><a href='#L608'>608</a>
 <a name='L609'></a><a href='#L609'>609</a>
-<a name='L610'></a><a href='#L610'>610</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L610'></a><a href='#L610'>610</a>
+<a name='L611'></a><a href='#L611'>611</a>
+<a name='L612'></a><a href='#L612'>612</a>
+<a name='L613'></a><a href='#L613'>613</a>
+<a name='L614'></a><a href='#L614'>614</a>
+<a name='L615'></a><a href='#L615'>615</a>
+<a name='L616'></a><a href='#L616'>616</a>
+<a name='L617'></a><a href='#L617'>617</a>
+<a name='L618'></a><a href='#L618'>618</a>
+<a name='L619'></a><a href='#L619'>619</a>
+<a name='L620'></a><a href='#L620'>620</a>
+<a name='L621'></a><a href='#L621'>621</a>
+<a name='L622'></a><a href='#L622'>622</a>
+<a name='L623'></a><a href='#L623'>623</a>
+<a name='L624'></a><a href='#L624'>624</a>
+<a name='L625'></a><a href='#L625'>625</a>
+<a name='L626'></a><a href='#L626'>626</a>
+<a name='L627'></a><a href='#L627'>627</a>
+<a name='L628'></a><a href='#L628'>628</a>
+<a name='L629'></a><a href='#L629'>629</a>
+<a name='L630'></a><a href='#L630'>630</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1250,6 +1276,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">522x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1283,24 +1323,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Technique definitions for all player archetypes.
- * 
+ *
  * **Korean**: 기술 정의 (Technique Definitions)
- * 
+ *
  * Each archetype has 3-5 unique techniques that reflect their combat philosophy
  * and specialization. Techniques are mapped to keyboard shortcuts Q, W, E, R.
- * 
+ *
  * @module data/techniques
  * @category Combat System
  * @korean 기술데이터
  */
 &nbsp;
-import { PlayerArchetype, TrigramStance, DamageType, Technique, TechniqueKey } from "../types";
 import { KoreanTechniquesSystem } from "../systems/trigram/KoreanTechniques";
 import { KoreanTechnique } from "../systems/vitalpoint/types";
+import {
+  DamageType,
+  PlayerArchetype,
+  Technique,
+  TechniqueKey,
+  TrigramStance,
+} from "../types";
 &nbsp;
 /**
  * Technique definitions for 무사 (Musa) - Traditional Warrior.
- * 
+ *
  * Philosophy: Honor through disciplined strength and overwhelming force.
  * Favored Stance: ☰ 건 (Geon) - Heaven
  */
@@ -1390,7 +1436,7 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
 &nbsp;
 /**
  * Technique definitions for 암살자 (Amsalja) - Shadow Assassin.
- * 
+ *
  * Philosophy: Precision through stealth and vital point mastery.
  * Favored Stance: ☲ 리 (Li) - Fire
  */
@@ -1482,7 +1528,7 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
 &nbsp;
 /**
  * Technique definitions for 해커 (Hacker) - Cyber Warrior.
- * 
+ *
  * Philosophy: Technology-enhanced combat with data-driven precision.
  * Favored Stance: ☳ 진 (Jin) - Thunder
  */
@@ -1571,7 +1617,7 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
 &nbsp;
 /**
  * Technique definitions for 정보요원 (Jeongbo Yowon) - Intelligence Operative.
- * 
+ *
  * Philosophy: Strategic analysis and exploiting weaknesses.
  * Favored Stance: ☵ 감 (Gam) - Water
  */
@@ -1660,7 +1706,7 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
 &nbsp;
 /**
  * Technique definitions for 조직폭력배 (Jojik Pokryeokbae) - Organized Crime.
- * 
+ *
  * Philosophy: Ruthless pragmatism and brutal efficiency.
  * Favored Stance: ☷ 곤 (Gon) - Earth
  */
@@ -1749,10 +1795,10 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
 &nbsp;
 /**
  * Get techniques for a specific player archetype.
- * 
+ *
  * @param archetype - Player archetype
  * @returns Array of techniques for the archetype
- * 
+ *
  * @public
  */
 export function getTechniquesForArchetype(
@@ -1784,15 +1830,15 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
   const getDamageType = (type: string): DamageType =&gt; {
     // Map common string values to DamageType enum
     const typeMap: Record&lt;string, DamageType&gt; = {
-      'blunt': DamageType.BLUNT,
-      'physical': DamageType.BLUNT,
-      'piercing': DamageType.PIERCING,
-      'slashing': DamageType.SLASHING,
-      'crushing': DamageType.CRUSHING,
-      'impact': DamageType.IMPACT,
-      'joint': DamageType.JOINT,
-      'electric': DamageType.ELECTRIC,
-      'psychic': DamageType.PSYCHIC,
+      blunt: DamageType.BLUNT,
+      physical: DamageType.BLUNT,
+      piercing: DamageType.PIERCING,
+      slashing: DamageType.SLASHING,
+      crushing: DamageType.CRUSHING,
+      impact: DamageType.IMPACT,
+      joint: DamageType.JOINT,
+      electric: DamageType.ELECTRIC,
+      psychic: DamageType.PSYCHIC,
     };
     return typeMap[type.toLowerCase()] || DamageType.BLUNT;
   };
@@ -1823,11 +1869,11 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
 /**
  * Get techniques for a player based on their current stance and archetype.
  * Combines trigram stance techniques with archetype-specific bonuses.
- * 
+ *
  * @param stance - Current player stance
  * @param archetype - Player archetype
  * @returns Array of available techniques with proper keyboard shortcuts assigned
- * 
+ *
  * @public
  */
 export function getTechniquesForStanceAndArchetype(
@@ -1845,32 +1891,46 @@ export function getTechniquesForStanceAndArchetype(
 &nbsp;
   // Also include archetype-specific special techniques
   const archetypeTechniques = getTechniquesForArchetype(archetype);
-  
+&nbsp;
   // Filter archetype techniques to only include those matching current stance or no stance requirement
   const filteredArchetypeTechniques = archetypeTechniques.filter(
     (tech) =&gt; !tech.requiredStance || tech.requiredStance === stance
   );
 &nbsp;
   // Combine both sets, prioritizing stance techniques
-  const allTechniques = [...convertedTechniques, ...filteredArchetypeTechniques];
-  
-  // Assign proper keyboard shortcuts (Q, W, E, R) based on position
-  // Note: Only first 4 techniques are keyboard-accessible in combat.
-  // Additional techniques beyond index 3 will have repeated shortcuts but are
-  // displayed in TechniqueBar for information - use Q/W/E/R to execute first 4.
-  const keyboardShortcuts = ['Q', 'W', 'E', 'R'] as const;
-  return allTechniques.map((tech, index) =&gt; ({
+  const allTechniques = [
+    ...convertedTechniques,
+    ...filteredArchetypeTechniques,
+  ];
+&nbsp;
+  // Limit to maximum 10 techniques (keyboard shortcuts Q-P)
+  const limitedTechniques = allTechniques.slice(0, 10);
+&nbsp;
+  // Assign keyboard shortcuts using top row keys Q through P
+  const keyboardShortcuts = [
+    "Q",
+    "W",
+    "E",
+    "R",
+    "T",
+    "Y",
+    "U",
+    "I",
+    "O",
+    "P",
+  ] as const;
+  return limitedTechniques.map((tech, index) =&gt; ({
     ...tech,
-    keyboardShortcut: keyboardShortcuts[index % keyboardShortcuts.length] as TechniqueKey,
+    keyboardShortcut: keyboardShortcuts[index] as TechniqueKey,
   }));
 }
 &nbsp;
 /**
  * Get a specific technique by ID.
- * 
+ *
  * @param techniqueId - Unique technique identifier
  * @returns Technique if found, undefined otherwise
- * 
+ *
  * @public
  */
 export function <span class="fstat-no" title="function not covered" >getTechniqueById(t</span>echniqueId: string): Technique | undefined {
@@ -1881,7 +1941,7 @@ export function <span class="fstat-no" title="function not covered" >getTechniqu
     ...JEONGBO_YOWON_TECHNIQUES,
     ...JOJIK_POKRYEOKBAE_TECHNIQUES,
   ];
-  
+&nbsp;
 <span class="cstat-no" title="statement not covered" >  return allTechniques.find(<span class="fstat-no" title="function not covered" >(t</span>ech) =&gt; <span class="cstat-no" title="statement not covered" >tech.id === techniqueId)</span>;</span>
 }
 &nbsp;
@@ -1897,7 +1957,7 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-19T08:26:55.084Z
+                at 2025-12-22T17:21:57.696Z
             </div>
         <script src="../prettify.js"></script>
         <script>
