@@ -213,29 +213,13 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
     });
   }, [effects, enabled, maxParticles]);
 
-  // Calculate total particle count for rendering
-  // Note: This recomputes when effects change to ensure fresh particle data
-  const particlePositions = useMemo(() => {
-    const allParticles: BloodParticle[] = [];
-    
-    // Active splatter particles
-    particlesRef.current.forEach((particles) => {
-      allParticles.push(...particles);
-    });
-    
-    // Blood pool particles
-    allParticles.push(...poolParticlesRef.current);
-
-    // Convert to Float32Array for Three.js
-    const positions = new Float32Array(allParticles.length * 3);
-    allParticles.forEach((p, i) => {
-      positions[i * 3] = p.position.x;
-      positions[i * 3 + 1] = p.position.y;
-      positions[i * 3 + 2] = p.position.z;
-    });
-
+  // Initial particle positions for first render
+  // Actual positions are updated in useFrame
+  const initialPositions = useMemo(() => {
+    const positions = new Float32Array(maxParticles * 3);
+    // Initialize with zeros - actual positions set in useFrame
     return positions;
-  }, [effects]); // Effects trigger re-computation of positions
+  }, [maxParticles]);
 
   // Physics update loop
   useFrame((_, delta) => {
@@ -319,7 +303,7 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
   return (
     <Points
       ref={pointsRef}
-      positions={particlePositions}
+      positions={initialPositions}
       data-testid="blood-particles-3d"
     >
       <PointMaterial

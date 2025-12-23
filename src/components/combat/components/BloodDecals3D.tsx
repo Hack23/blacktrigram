@@ -158,12 +158,11 @@ const DecalMesh: React.FC<{
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshBasicMaterial | null>(null);
 
-  // Calculate current opacity based on age
-  const currentOpacity = useMemo(() => {
-    const age = (Date.now() - decal.timestamp) / 1000;
-    const fadeProgress = Math.min(age / fadeDuration, 1);
-    return decal.opacity * (1 - fadeProgress);
-  }, [decal.timestamp, decal.opacity, fadeDuration]);
+  // Calculate current opacity based on age (for initial render)
+  // Note: Animation updates happen in useFrame
+  const initialOpacity = useMemo(() => {
+    return decal.opacity;
+  }, [decal.opacity]);
 
   // Create decal geometry
   useEffect(() => {
@@ -189,7 +188,7 @@ const DecalMesh: React.FC<{
       
       // Apply rotation to the mesh itself
       meshRef.current.rotation.set(0, 0, decal.rotation);
-    } catch (error) {
+    } catch {
       // Silently handle decal projection failures
       // This can occur when target mesh geometry is complex or decal position is invalid
       // Decal will simply not render in this case
@@ -205,7 +204,11 @@ const DecalMesh: React.FC<{
     materialRef.current.opacity = decal.opacity * (1 - fadeProgress);
   });
 
-  // Don't render if fully faded
+  // Don't render if fully faded (check in render, not useMemo)
+  const age = (Date.now() - decal.timestamp) / 1000;
+  const fadeProgress = Math.min(age / fadeDuration, 1);
+  const currentOpacity = decal.opacity * (1 - fadeProgress);
+  
   if (currentOpacity <= 0.01) return null;
 
   return (
@@ -214,7 +217,7 @@ const DecalMesh: React.FC<{
         ref={materialRef}
         map={texture}
         transparent
-        opacity={currentOpacity}
+        opacity={initialOpacity}
         depthTest={true}
         depthWrite={false}
         polygonOffset
