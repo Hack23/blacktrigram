@@ -7,6 +7,7 @@
 export { default as BloodParticles3D } from "./BloodParticles3D";
 export { default as CombatArena3D } from "./CombatArena3D";
 export { default as HitEffects3D } from "./HitEffects3D";
+export { default as TraumaOverlay3D } from "./TraumaOverlay3D";
 export { default as VitalPointMarkers3D } from "./VitalPointMarkers3D";
 export type { BodyRegionFilter } from "./VitalPointMarkers3D";
 export { default as VitalPointOverlayControls } from "./VitalPointOverlayControls";
@@ -56,6 +57,11 @@ export type { RoundAnnouncementProps, RoundStats } from "./RoundAnnouncement";
 export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { TechniqueBarProps } from "./TechniqueBar";
 export type { TechniqueCardProps } from "./TechniqueCard";
+export type {
+  TraumaOverlay3DProps,
+  Injury,
+  InjuryType,
+} from "./TraumaOverlay3D";
 export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
 export type { VitalPointOverlayControlsProps } from "./VitalPointOverlayControls";
 
