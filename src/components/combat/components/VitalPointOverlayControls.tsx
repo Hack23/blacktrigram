@@ -443,7 +443,7 @@ export const VitalPointOverlayControls: React.FC<
               </div>
             </div>
 
-            {/* Search box */}
+            {/* Search box with clear button */}
             <div style={{ marginBottom: "14px" }}>
               <div
                 style={{
@@ -457,43 +457,83 @@ export const VitalPointOverlayControls: React.FC<
               >
                 검색 | Search
               </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="급소 이름... | Point name..."
-                style={{
-                  width: "100%",
-                  height: buttonHeight,
-                  background: `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
-                  border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`,
-                  borderRadius: "8px",
-                  padding: "0 14px",
-                  color: "#ffffff",
-                  fontSize,
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  transition: "all 0.2s ease",
-                  outline: "none",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = colorToHex(KOREAN_COLORS.PRIMARY_CYAN);
-                  e.currentTarget.style.boxShadow = `0 0 12px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = `${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`;
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-                data-testid="search-input"
-              />
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="급소 이름... | Point name..."
+                  style={{
+                    width: "100%",
+                    height: buttonHeight,
+                    background: `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
+                    border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`,
+                    borderRadius: "8px",
+                    padding: "0 40px 0 14px", // Add right padding for clear button
+                    color: "#ffffff",
+                    fontSize,
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    transition: "all 0.2s ease",
+                    outline: "none",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = colorToHex(KOREAN_COLORS.PRIMARY_CYAN);
+                    e.currentTarget.style.boxShadow = `0 0 12px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`;
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = `${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`;
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                  data-testid="search-input"
+                />
+                {/* Clear button */}
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    style={{
+                      position: "absolute",
+                      right: "8px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "transparent",
+                      border: "none",
+                      color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),
+                      cursor: "pointer",
+                      fontSize: "16px",
+                      padding: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "4px",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = colorToHex(KOREAN_COLORS.ACCENT_RED);
+                      e.currentTarget.style.background = `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = colorToHex(KOREAN_COLORS.TEXT_SECONDARY);
+                      e.currentTarget.style.background = "transparent";
+                    }}
+                    data-testid="search-clear-button"
+                    title="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Display options */}
-            <div style={{ marginBottom: "12px" }}>
+            <div style={{ marginBottom: "14px" }}>
               <div
                 style={{
                   fontSize,
-                  marginBottom: "6px",
+                  marginBottom: "8px",
                   color: colorToHex(KOREAN_COLORS.ACCENT_CYAN),
+                  fontWeight: "600",
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
                 }}
               >
                 표시 옵션 | Display Options
@@ -511,6 +551,11 @@ export const VitalPointOverlayControls: React.FC<
                     type="checkbox"
                     checked={showLabels}
                     onChange={(e) => onShowLabelsChange(e.target.checked)}
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      accentColor: colorToHex(KOREAN_COLORS.PRIMARY_CYAN),
+                    }}
                     data-testid="show-labels-checkbox"
                   />
                   <span style={{ fontSize }}>라벨 표시 | Show Labels</span>
@@ -527,12 +572,53 @@ export const VitalPointOverlayControls: React.FC<
                     type="checkbox"
                     checked={animated}
                     onChange={(e) => onAnimatedChange(e.target.checked)}
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      accentColor: colorToHex(KOREAN_COLORS.PRIMARY_CYAN),
+                    }}
                     data-testid="animated-checkbox"
                   />
                   <span style={{ fontSize }}>애니메이션 | Animations</span>
                 </label>
               </div>
             </div>
+
+            {/* Reset filters button */}
+            {(severityFilters.length > 0 || regionFilter !== "all" || searchQuery !== "") && (
+              <div style={{ marginBottom: "14px" }}>
+                <button
+                  onClick={() => {
+                    onSeverityFiltersChange([]);
+                    onRegionFilterChange("all");
+                    setSearchQuery("");
+                  }}
+                  style={{
+                    width: "100%",
+                    height: buttonHeight - 4,
+                    background: `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
+                    border: `2px solid ${colorToHex(KOREAN_COLORS.ACCENT_ORANGE)}`,
+                    borderRadius: "6px",
+                    color: colorToHex(KOREAN_COLORS.ACCENT_ORANGE),
+                    fontSize: smallFontSize,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontWeight: "bold",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${colorToHex(KOREAN_COLORS.ACCENT_ORANGE)}20`;
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`;
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                  data-testid="reset-filters-button"
+                >
+                  🔄 필터 초기화 | Reset Filters
+                </button>
+              </div>
+            )}
 
             {/* Scale slider */}
             <div>
