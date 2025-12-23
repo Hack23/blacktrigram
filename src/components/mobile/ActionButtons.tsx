@@ -86,10 +86,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   const [blockPressed, setBlockPressed] = useState(false);
 
   /**
-   * Handle attack button press
+   * Handle attack button press (touch or mouse)
    */
-  const handleAttackTouchStart = useCallback(
-    (e: React.TouchEvent) => {
+  const handleAttackStart = useCallback(
+    (e: React.TouchEvent | React.MouseEvent) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -102,10 +102,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 
   /**
-   * Handle attack button release
+   * Handle attack button release (touch or mouse)
    */
-  const handleAttackTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
+  const handleAttackEnd = useCallback(
+    (e: React.TouchEvent | React.MouseEvent) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -116,10 +116,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 
   /**
-   * Handle block button press
+   * Handle block button press (touch or mouse)
    */
-  const handleBlockTouchStart = useCallback(
-    (e: React.TouchEvent) => {
+  const handleBlockStart = useCallback(
+    (e: React.TouchEvent | React.MouseEvent) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -132,10 +132,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 
   /**
-   * Handle block button release
+   * Handle block button release (touch or mouse)
    */
-  const handleBlockTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
+  const handleBlockEnd = useCallback(
+    (e: React.TouchEvent | React.MouseEvent) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -168,8 +168,11 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       >
         {/* Primary Attack Button */}
         <button
-          onTouchStart={handleAttackTouchStart}
-          onTouchEnd={handleAttackTouchEnd}
+          onTouchStart={handleAttackStart}
+          onTouchEnd={handleAttackEnd}
+          onMouseDown={handleAttackStart}
+          onMouseUp={handleAttackEnd}
+          onMouseLeave={handleAttackEnd}
           style={{
             width: '60px',
             height: '60px',
@@ -201,8 +204,11 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
 
         {/* Block Button */}
         <button
-          onTouchStart={handleBlockTouchStart}
-          onTouchEnd={handleBlockTouchEnd}
+          onTouchStart={handleBlockStart}
+          onTouchEnd={handleBlockEnd}
+          onMouseDown={handleBlockStart}
+          onMouseUp={handleBlockEnd}
+          onMouseLeave={handleBlockEnd}
           style={{
             width: '50px',
             height: '50px',

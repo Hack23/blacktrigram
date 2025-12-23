@@ -5,6 +5,9 @@
  * Optimizes layout recalculations by minimizing dependencies and memoizing
  * complex calculations.
  *
+ * Uses robust device detection combining user-agent and screen size to ensure
+ * mobile controls are shown on all mobile devices, including high-resolution phones.
+ *
  * Performance:
  * - Reduces recalculations by checking only breakpoint changes, not exact dimensions
  * - Memoizes arena bounds to prevent cascading re-renders
@@ -22,6 +25,7 @@
  */
 
 import { useMemo } from "react";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
 export interface LayoutConstants {
   readonly padding: number;
@@ -49,9 +53,9 @@ export interface CombatLayout {
  * Optimized to reduce recalculations and improve 60fps performance
  */
 export function useCombatLayout(width: number, height: number): CombatLayout {
-  // Performance: Only recalculate when crossing breakpoints
-  // This prevents recalculation on every pixel change during resize
-  const isMobile = useMemo(() => width < 768, [width]);
+  // Performance: Use robust device detection combining user-agent and screen size
+  // This ensures mobile controls show on all mobile devices, including high-res phones
+  const isMobile = useMemo(() => shouldUseMobileControls(), []);
   const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
 
   // Centralized layout constants for easier tweaking
