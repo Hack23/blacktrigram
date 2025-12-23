@@ -120,7 +120,8 @@ describe("PlayerHUD", () => {
       const nameElement = container.querySelector(
         '[data-testid="player-name-player-1"]'
       ) as HTMLElement;
-      expect(nameElement.style.textAlign).toBe("left");
+      // Left position uses row flex direction (icon then name)
+      expect(nameElement.style.flexDirection).toBe("row");
     });
 
     it("should align text right for right position", () => {
@@ -130,7 +131,8 @@ describe("PlayerHUD", () => {
       const nameElement = container.querySelector(
         '[data-testid="player-name-player-1"]'
       ) as HTMLElement;
-      expect(nameElement.style.textAlign).toBe("right");
+      // Right position uses row-reverse flex direction (name then icon)
+      expect(nameElement.style.flexDirection).toBe("row-reverse");
     });
   });
 

@@ -26,6 +26,11 @@ import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
 } from "../../utils/player3DHelpers";
+import {
+  VitalPointMarkers3D,
+  VitalPointOverlayControls,
+  type BodyRegionFilter,
+} from "../combat/components";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
 import {
   ActionButtons,
@@ -113,7 +118,32 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
-  const vitalPointCount = 12;
+  const vitalPointCount = 70; // Show all 70 vital points
+
+  // Vital point overlay state
+  const [overlayVisible, setOverlayVisible] = React.useState(false);
+  const [severityFilters, setSeverityFilters] = React.useState<
+    import("../../types/common").VitalPointSeverity[]
+  >([]);
+  const [regionFilter, setRegionFilter] =
+    React.useState<BodyRegionFilter>("all");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [showLabels, setShowLabels] = React.useState(true);
+  const [animated, setAnimated] = React.useState(true);
+  const [scale, setScale] = React.useState(1.0);
+
+  // Keyboard shortcut for toggling overlay (V key)
+  React.useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "v" || e.key === "V") {
+        setOverlayVisible((prev) => !prev);
+        audio.playSFX("menu_select");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [audio]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 2: WebGL Context Management
@@ -690,6 +720,47 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
+        {/* Vital Point Overlay - Show all 70 points on dummy */}
+        {overlayVisible && (
+          <VitalPointMarkers3D
+            position={dummyPosition}
+            visible={overlayVisible}
+            severityFilter={severityFilters}
+            regionFilter={regionFilter}
+            searchQuery={searchQuery}
+            showLabels={showLabels}
+            scale={scale}
+            animated={animated}
+            selectedPoint={trainingState.selectedVitalPoint}
+            onPointClick={(pointId) => {
+              trainingActions.setSelectedVitalPoint(pointId);
+              audio.playSFX("menu_select");
+            }}
+          />
+        )}
+
+        {/* VitalPointOverlayControls - fixed screen position */}
+        {overlayVisible && (
+          <VitalPointOverlayControls
+            visible={overlayVisible}
+            onVisibleChange={setOverlayVisible}
+            severityFilters={severityFilters}
+            onSeverityFiltersChange={setSeverityFilters}
+            regionFilter={regionFilter}
+            onRegionFilterChange={setRegionFilter}
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            showLabels={showLabels}
+            onShowLabelsChange={setShowLabels}
+            animated={animated}
+            onAnimatedChange={setAnimated}
+            scale={scale}
+            onScaleChange={setScale}
+            screenPosition={{ top: "180px", left: "20px" }}
+            isMobile={isMobile}
+          />
+        )}
+
         {/* Player model */}
         <SkeletalPlayer3D
           {...convertPlayerStateToProps(
@@ -814,6 +885,45 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 isMobile={isMobile}
               />
             </div>
+
+            {/* Vital Point Overlay Hint - Top Center */}
+            {!overlayVisible && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: isMobile ? 20 : 30,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  pointerEvents: "none",
+                  padding: isMobile ? "8px 12px" : "10px 16px",
+                  background: hexToRgbaString(
+                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    0.9
+                  ),
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.PRIMARY_CYAN,
+                    0.6
+                  )}`,
+                  borderRadius: "8px",
+                  fontSize: isMobile ? "12px" : "14px",
+                  fontFamily: FONT_FAMILY.KOREAN,
+                  color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                <div>
+                  💡 급소 오버레이 | Vital Point Overlay: Press{" "}
+                  <span
+                    style={{
+                      color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    }}
+                  >
+                    V
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Center - Feedback Message */}
             {trainingState.showFeedback && (

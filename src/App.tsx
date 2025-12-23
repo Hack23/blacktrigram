@@ -148,6 +148,7 @@ function App() {
       setIsGameActive(false);
 
       // After brief delay, mount new screen
+      // Increased delay to allow proper WebGL context cleanup
       setTimeout(() => {
         const pending = pendingModeRef.current;
         if (!pending) return;
@@ -172,7 +173,7 @@ function App() {
 
         setIsTransitioning(false);
         pendingModeRef.current = null;
-      }, 100); // Small delay for WebGL cleanup
+      }, 150); // Increased delay for WebGL cleanup (was 100ms)
     },
     []
   );

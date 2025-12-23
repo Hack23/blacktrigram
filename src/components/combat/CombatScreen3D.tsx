@@ -78,6 +78,7 @@ import {
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
+import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
@@ -257,6 +258,35 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Vital Point Overlay Controls State
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Vital point overlay state (for both players)
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [severityFilters, setSeverityFilters] = useState<
+    import("../../types/common").VitalPointSeverity[]
+  >([]);
+  const [regionFilter, setRegionFilter] =
+    useState<import("./components").BodyRegionFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showLabels, setShowLabels] = useState(true);
+  const [animated, setAnimated] = useState(true);
+  const [scale, setScale] = useState(1.2); // Larger scale for better visibility in combat
+
+  // Keyboard shortcut for toggling overlay (V key)
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "v" || e.key === "V") {
+        setOverlayVisible((prev) => !prev);
+        audio.playSFX("menu_select");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [audio]);
+
   // Action feedback system for damage numbers, combo counter, and technique names
   const { state: feedbackState, actions: feedbackActions } = useActionFeedback({
     damageNumberDuration: 1500,
@@ -299,6 +329,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showRoundStart, setShowRoundStart] = useState(false);
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
+  // Player 1 position (controlled by player movement)
+  // Player 1 starts closer to center (35%) for better combat engagement
+  const [player1Position, setPlayer1Position] = useState<Position>({
+    x: arenaBounds.x + arenaBounds.width * 0.35,
+    y: arenaBounds.y + arenaBounds.height * 0.5,
+  });
+
   // Pause menu state - local state for pause menu visibility
   // Local state for pause menu UI visibility
   // Note: isPaused (prop) controls game pause from parent, showPauseMenu (state) controls menu UI
@@ -333,9 +370,36 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions.setRoundStarted(false);
     combatActions.setRoundDisplayStatus(null);
 
-    // Reset player health
-    onPlayerUpdate(0, { health: 100 });
-    onPlayerUpdate(1, { health: 100 });
+    // Reset player health, resources, and visual state
+    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    onPlayerUpdate(0, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
+    onPlayerUpdate(1, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
+
+    // Reset player positions to starting positions for rematch
+    setPlayer1Position({
+      x: arenaBounds.x + arenaBounds.width * 0.35,
+      y: arenaBounds.y + arenaBounds.height * 0.5,
+    });
+    onPlayerUpdate(1, {
+      position: {
+        x: arenaBounds.x + arenaBounds.width * 0.65,
+        y: arenaBounds.y + arenaBounds.height * 0.5,
+      },
+    });
 
     // Close pause menu and start first round
     // The timer will reset automatically via the initialTime prop when round starts
@@ -343,7 +407,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     setShowRoundStart(true);
 
     audio.playSFX("menu_select");
-  }, [audio, combatActions, onPlayerUpdate]);
+  }, [audio, combatActions, onPlayerUpdate, arenaBounds, setPlayer1Position]);
 
   // Round transition complete handler - checks for match end or starts next round
   const handleRoundTransitionComplete = useCallback(() => {
@@ -385,10 +449,45 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       return nextRound;
     });
 
-    // Reset player health and resources for next round
-    onPlayerUpdate(0, { health: 100, stamina: 100, ki: 100 });
-    onPlayerUpdate(1, { health: 100, stamina: 100, ki: 100 });
-  }, [combatActions, onGameEnd, onPlayerUpdate]);
+    // Reset player health, resources, and visual state for next round
+    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    onPlayerUpdate(0, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
+    onPlayerUpdate(1, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
+
+    // Reset player positions to starting positions for new round
+    setPlayer1Position({
+      x: arenaBounds.x + arenaBounds.width * 0.35,
+      y: arenaBounds.y + arenaBounds.height * 0.5,
+    });
+    // Player 2 position is reset via onPlayerUpdate
+    onPlayerUpdate(1, {
+      position: {
+        x: arenaBounds.x + arenaBounds.width * 0.65,
+        y: arenaBounds.y + arenaBounds.height * 0.5,
+      },
+    });
+  }, [
+    combatActions,
+    onGameEnd,
+    onPlayerUpdate,
+    arenaBounds,
+    // Note: setPlayer1Position is a stable React setState function and won't cause unnecessary re-renders
+    setPlayer1Position,
+  ]);
 
   // Round transition management
   const {
@@ -406,16 +505,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleRoundTransitionComplete
   );
 
-  // Player 1 position (controlled by player movement)
-  // Player 1 starts at the left quarter of the arena (25% from left edge, vertically centered)
-  const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.x + arenaBounds.width * 0.25,
-    y: arenaBounds.y + arenaBounds.height * 0.5,
-  });
-
   // Player 2 position - derived from players prop (AI-controlled)
   // Default position is used when players prop is empty or player2 has no position
-  // Player 2 (AI) starts at right side of arena (65% from left edge, vertically centered) with reduced initial gap for faster engagement
+  // Player 2 (AI) starts at right side of arena (65%), closer to center for faster engagement
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
@@ -447,6 +539,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
+
+  // Calculate dynamic rotations so players always face each other
+  // atan2(dx, dz) gives the Y-axis rotation needed to face direction (dx, dz)
+  // This is the standard formula for rotating around Y to point at a target
+  const player1Rotation = useMemo(() => {
+    const dx = player2Position3D[0] - player1Position3D[0];
+    const dz = player2Position3D[2] - player1Position3D[2];
+    return Math.atan2(dx, dz);
+  }, [player1Position3D, player2Position3D]);
+
+  const player2Rotation = useMemo(() => {
+    const dx = player1Position3D[0] - player2Position3D[0];
+    const dz = player1Position3D[2] - player2Position3D[2];
+    return Math.atan2(dx, dz);
+  }, [player1Position3D, player2Position3D]);
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
@@ -1685,10 +1792,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {...convertPlayerStateToProps(
             validPlayers[0],
             player1Position3D,
-            0, // rotation - facing right
+            player1Rotation, // Dynamic rotation - always faces opponent
             {
               isMobile,
-              facing: "right",
+              facing: "right", // No flip - rotation handles facing direction
               // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
               enableFacialExpressions: true,
               enableEyeTracking: true,
@@ -1706,10 +1813,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {...convertPlayerStateToProps(
             validPlayers[1],
             player2Position3D,
-            Math.PI, // rotation - facing left (180 degrees)
+            player2Rotation, // Dynamic rotation - always faces opponent
             {
               isMobile,
-              facing: "left",
+              facing: "right", // No flip - rotation handles facing direction
               // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
               enableFacialExpressions: true,
               enableEyeTracking: true,
@@ -1727,6 +1834,61 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           effects={combatState.hitEffects}
           onEffectComplete={handleEffectComplete}
           arenaBounds={arenaBounds}
+        />
+
+        {/* Vital Point Overlay - Show on both players */}
+        {overlayVisible && (
+          <>
+            {/* Player 1 Vital Points */}
+            <VitalPointMarkers3D
+              position={player1Position3D}
+              visible={overlayVisible}
+              severityFilter={severityFilters}
+              regionFilter={regionFilter}
+              searchQuery={searchQuery}
+              showLabels={showLabels}
+              scale={scale}
+              animated={animated}
+              onPointClick={() => {
+                // Optional: Add point targeting in combat
+              }}
+            />
+
+            {/* Player 2 Vital Points */}
+            <VitalPointMarkers3D
+              position={player2Position3D}
+              visible={overlayVisible}
+              severityFilter={severityFilters}
+              regionFilter={regionFilter}
+              searchQuery={searchQuery}
+              showLabels={showLabels}
+              scale={scale}
+              animated={animated}
+              onPointClick={() => {
+                // Optional: Add point targeting in combat
+              }}
+            />
+          </>
+        )}
+
+        {/* Vital Point Overlay Controls - fixed screen position, left side below player status */}
+        <VitalPointOverlayControls
+          screenPosition={{ top: "200px", left: "20px" }}
+          visible={overlayVisible}
+          onVisibleChange={setOverlayVisible}
+          severityFilters={severityFilters}
+          onSeverityFiltersChange={setSeverityFilters}
+          regionFilter={regionFilter}
+          onRegionFilterChange={setRegionFilter}
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
+          showLabels={showLabels}
+          onShowLabelsChange={setShowLabels}
+          animated={animated}
+          onAnimatedChange={setAnimated}
+          scale={scale}
+          onScaleChange={setScale}
+          isMobile={isMobile}
         />
 
         {/* Action Feedback - Damage Numbers */}
@@ -1913,7 +2075,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <DifficultyIndicator tier={currentDifficultyTier} isMobile={isMobile} />
 
         {/* Player State Visual Indicators */}
-        {/* Player 1 State Overlay */}
+        {/* Player 1 State Overlay - includes consciousness blur, pain vignette, etc. */}
         <PlayerStateOverlay
           pain={validPlayers[0].pain}
           balanceState={getBalanceState(validPlayers[0].balance)}
@@ -1924,16 +2086,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
-        {/* Player 2 State Overlay */}
-        <PlayerStateOverlay
-          pain={validPlayers[1].pain}
-          balanceState={getBalanceState(validPlayers[1].balance)}
-          position="right"
-          consciousness={validPlayers[1].consciousness}
-          bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
-          stamina={validPlayers[1].stamina}
-          isMobile={isMobile}
-        />
+        {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
+        {/* as those effects would incorrectly affect the player's view */}
 
         {/* Technique Bar - Bottom Center */}
         {combatState.roundStarted &&

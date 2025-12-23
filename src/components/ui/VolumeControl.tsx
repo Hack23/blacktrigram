@@ -79,9 +79,8 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       flexDirection: compact ? "row" : "column",
       alignItems: "center",
       gap: compact ? "12px" : "8px",
-      background: "rgba(33, 38, 45, 0.85)",
+      background: "rgba(33, 38, 45, 0.95)",
       borderRadius: "12px",
-      backdropFilter: "blur(10px)",
       border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
       pointerEvents: "auto", // Enable interaction even when parent has pointerEvents: none
       ...style,
