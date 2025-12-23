@@ -1998,7 +1998,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <DifficultyIndicator tier={currentDifficultyTier} isMobile={isMobile} />
 
         {/* Player State Visual Indicators */}
-        {/* Player 1 State Overlay */}
+        {/* Player 1 State Overlay - includes consciousness blur, pain vignette, etc. */}
         <PlayerStateOverlay
           pain={validPlayers[0].pain}
           balanceState={getBalanceState(validPlayers[0].balance)}
@@ -2009,16 +2009,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
-        {/* Player 2 State Overlay */}
-        <PlayerStateOverlay
-          pain={validPlayers[1].pain}
-          balanceState={getBalanceState(validPlayers[1].balance)}
-          position="right"
-          consciousness={validPlayers[1].consciousness}
-          bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
-          stamina={validPlayers[1].stamina}
-          isMobile={isMobile}
-        />
+        {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
+        {/* as those effects would incorrectly affect the player's view */}
 
         {/* Technique Bar - Bottom Center */}
         {combatState.roundStarted &&

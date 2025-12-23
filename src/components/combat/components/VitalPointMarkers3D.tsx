@@ -1,6 +1,6 @@
 /**
  * VitalPointMarkers3D - 3D vital point visualization
- * 
+ *
  * Renders anatomical vital points (급소) in 3D space around character models
  * Provides Korean martial arts targeting system visualization
  * Note: Currently displays points from KOREAN_VITAL_POINTS data (expandable to 70 points)
@@ -12,11 +12,8 @@ import React, { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
-import {
-  Position,
-  VitalPointSeverity,
-} from "../../../types/common";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { Position, VitalPointSeverity } from "../../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 
 /**
  * Body region filter options
@@ -73,9 +70,17 @@ const getSeverityColor = (severity: VitalPointSeverity): number => {
 };
 
 // Coordinate conversion constants
-const PIXEL_TO_WORLD_SCALE = 100;
-const CHARACTER_HEIGHT = 2;
-const X_SCALE_FACTOR = 0.5;
+// The vital point data uses pixel coordinates where:
+// - X: ~50-150 range, centered around 100 (character center)
+// - Y: 0 at top of head, ~200 at feet
+// The 3D character is:
+// - X: centered at 0, width ~0.8 units
+// - Y: 0 at feet, ~2.8 at top of head
+const CHARACTER_CENTER_X = 100; // Pixel center of character sprite
+const CHARACTER_SPRITE_HEIGHT = 200; // Pixel height of character sprite
+const CHARACTER_3D_HEIGHT = 2.8; // 3D model height in world units
+const CHARACTER_3D_WIDTH = 0.8; // Approximate 3D model width
+const SPRITE_WIDTH = 100; // Half-width of sprite (total ~200 pixels)
 
 // Label styling constants
 const LABEL_STYLES = {
@@ -98,26 +103,36 @@ const colorToRgbaHex = (color: number, alpha: string = "ff"): string => {
 };
 
 /**
- * Convert 2D screen position to 3D body position
- * Maps training dummy 2D coordinates to 3D character model space
+ * Convert 2D sprite coordinates to 3D body position
+ * Maps vital point pixel coordinates to 3D character model space
+ *
+ * Input: 2D pixel coordinates where:
+ *   - X: ~50-150 (100 = center), positive = right side of character
+ *   - Y: 0 = top of head, 200 = feet (y increases downward)
+ *
+ * Output: 3D world coordinates relative to character position where:
+ *   - X: horizontal offset from character center
+ *   - Y: height from ground (0 = feet, 2.8 = top)
+ *   - Z: depth offset (positive = in front of character)
  */
 const convert2DTo3D = (
   pos2D: Position,
   basePosition: [number, number, number]
 ): [number, number, number] => {
-  // Normalize from pixel coordinates to character-relative coordinates
-  const normalizedX = pos2D.x / PIXEL_TO_WORLD_SCALE;
-  
-  // Add PIXEL_TO_WORLD_SCALE to y to offset the origin from top-left to model base (centered at character feet)
-  const offsetY = pos2D.y + PIXEL_TO_WORLD_SCALE;
-  const normalizedY = CHARACTER_HEIGHT - offsetY / PIXEL_TO_WORLD_SCALE;
-  const normalizedZ = 0; // Keep depth neutral for now
+  // Convert X from pixel (100=center) to 3D offset
+  // Map from [50, 150] to [-0.4, 0.4] approximately
+  const normalizedX = (pos2D.x - CHARACTER_CENTER_X) / SPRITE_WIDTH;
+  const x3D = normalizedX * CHARACTER_3D_WIDTH;
 
-  return [
-    basePosition[0] + normalizedX * X_SCALE_FACTOR,
-    basePosition[1] + normalizedY,
-    basePosition[2] + normalizedZ,
-  ];
+  // Convert Y from pixel (0=top, 200=bottom) to 3D height (0=feet, 2.8=head)
+  // Invert Y axis and scale to 3D height
+  const normalizedY = 1 - pos2D.y / CHARACTER_SPRITE_HEIGHT;
+  const y3D = normalizedY * CHARACTER_3D_HEIGHT;
+
+  // Z offset - slight forward position for visibility
+  const z3D = 0.15;
+
+  return [basePosition[0] + x3D, basePosition[1] + y3D, basePosition[2] + z3D];
 };
 
 /**
@@ -171,18 +186,19 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
 
   const markerSize = useMemo(() => {
     // Base marker size and severity multipliers
-    const DEFAULT_MARKER_SIZE = 0.05;
-    
+    // Increased base size for better visibility in combat
+    const DEFAULT_MARKER_SIZE = 0.08;
+
     switch (vitalPoint.severity) {
       case VitalPointSeverity.LETHAL:
       case VitalPointSeverity.CRITICAL:
-        return DEFAULT_MARKER_SIZE * 1.6 * scale; // 0.08
+        return DEFAULT_MARKER_SIZE * 1.6 * scale; // 0.128
       case VitalPointSeverity.MAJOR:
-        return DEFAULT_MARKER_SIZE * 1.2 * scale; // 0.06
+        return DEFAULT_MARKER_SIZE * 1.3 * scale; // 0.104
       case VitalPointSeverity.MODERATE:
-        return DEFAULT_MARKER_SIZE * 1.0 * scale; // 0.05
+        return DEFAULT_MARKER_SIZE * 1.0 * scale; // 0.08
       case VitalPointSeverity.MINOR:
-        return DEFAULT_MARKER_SIZE * 0.8 * scale; // 0.04
+        return DEFAULT_MARKER_SIZE * 0.8 * scale; // 0.064
       default:
         return DEFAULT_MARKER_SIZE * scale;
     }
@@ -201,20 +217,18 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
         }}
       >
         <sphereGeometry args={[markerSize, 16, 16]} />
-        <meshBasicMaterial
+        <meshStandardMaterial
           color={color}
+          emissive={color}
+          emissiveIntensity={hovered || selected ? 0.8 : 0.4}
           transparent
-          opacity={hovered || selected ? 0.9 : 0.6}
+          opacity={hovered || selected ? 1.0 : 0.85}
         />
       </mesh>
 
       {/* Outer ring for selected/hovered */}
       {(selected || hovered) && (
-        <mesh
-          ref={ringRef}
-          rotation={[Math.PI / 2, 0, 0]}
-          position={[0, 0, 0]}
-        >
+        <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
           <ringGeometry args={[markerSize * 1.5, markerSize * 1.8, 32]} />
           <meshBasicMaterial
             color={color}
@@ -246,11 +260,18 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
               whiteSpace: "nowrap",
               textAlign: "center",
-              border: `${LABEL_STYLES.borderWidth} solid ${colorToRgbaHex(color)}`,
+              border: `${LABEL_STYLES.borderWidth} solid ${colorToRgbaHex(
+                color
+              )}`,
             }}
           >
             <div>{vitalPoint.names.korean}</div>
-            <div style={{ fontSize: LABEL_STYLES.subtextSize, opacity: LABEL_STYLES.subtextOpacity }}>
+            <div
+              style={{
+                fontSize: LABEL_STYLES.subtextSize,
+                opacity: LABEL_STYLES.subtextOpacity,
+              }}
+            >
               {vitalPoint.names.english}
             </div>
           </div>

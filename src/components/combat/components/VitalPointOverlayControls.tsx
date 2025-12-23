@@ -251,7 +251,6 @@ export const VitalPointOverlayControls: React.FC<
           )}40, inset 0 0 20px ${colorToHex(
             KOREAN_COLORS.UI_BACKGROUND_DARK
           )}80`,
-          backdropFilter: "blur(8px)",
           transition: "all 0.3s ease",
           pointerEvents: "all",
           zIndex: 100,
