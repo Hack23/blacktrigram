@@ -71,7 +71,7 @@
     "three": "0.182.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.956.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.957.0",
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^5.4.1",
     "@elevenlabs/elevenlabs-js": "^2.28.0",
