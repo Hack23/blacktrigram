@@ -2,6 +2,7 @@
  * PlayerHUD Component - Combined health and stamina display
  *
  * Displays a complete player HUD with:
+ * - Archetype icon/image
  * - Player name (Korean/English)
  * - Health bar (segmented, color-coded)
  * - Stamina bar (segmented, cyan-themed)
@@ -9,9 +10,14 @@
  * - Responsive positioning (top-left for player 1, top-right for player 2)
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { PlayerState } from "../../../systems/player";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import {
+  ARCHETYPE_ASSETS,
+  FALLBACK_ARCHETYPE_IMAGE,
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { HealthBar } from "./HealthBar";
 import { StaminaBar } from "./StaminaBar";
@@ -38,7 +44,16 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
 
   // Responsive sizing
   const fontSize = isMobile ? 11 : 13;
-  const gap = isMobile ? "4px" : "6px";
+  const gap = isMobile ? "6px" : "8px";
+  const iconSize = isMobile ? 40 : 50;
+
+  // Get archetype image path
+  const archetypeImagePath = useMemo(() => {
+    const archetypeKey = player.archetype.toLowerCase();
+    const assets =
+      ARCHETYPE_ASSETS[archetypeKey as keyof typeof ARCHETYPE_ASSETS];
+    return assets?.image ?? FALLBACK_ARCHETYPE_IMAGE;
+  }, [player.archetype]);
 
   return (
     <div
@@ -53,24 +68,71 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
         gap,
         pointerEvents: "none",
         zIndex: 100,
+        maxWidth: isMobile ? "220px" : "300px",
       }}
     >
-      {/* Player Name - clearly above the bars with background */}
+      {/* Player Name with Archetype Icon */}
       <div
         data-testid={`player-name-${playerId}`}
         style={{
-          fontSize: `${fontSize}px`,
-          fontWeight: "bold",
-          fontFamily: FONT_FAMILY.KOREAN,
-          color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-          textAlign: isLeft ? "left" : "right",
-          textShadow: "0 0 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)",
-          padding: "2px 6px",
-          background: "transparent",
-          whiteSpace: "nowrap",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          flexDirection: isLeft ? "row" : "row-reverse",
         }}
       >
-        {player.name.korean} | {player.name.english}
+        {/* Archetype Icon */}
+        <div
+          data-testid={`archetype-icon-${playerId}`}
+          style={{
+            width: `${iconSize}px`,
+            height: `${iconSize}px`,
+            borderRadius: "8px",
+            overflow: "hidden",
+            border: `2px solid ${hexToRgbaString(
+              KOREAN_COLORS.ACCENT_GOLD,
+              1
+            )}`,
+            boxShadow: `0 0 10px ${hexToRgbaString(
+              KOREAN_COLORS.ACCENT_GOLD,
+              0.5
+            )}`,
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src={archetypeImagePath}
+            alt={`${player.name.english} archetype`}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {
+                target.src = FALLBACK_ARCHETYPE_IMAGE;
+              }
+            }}
+          />
+        </div>
+        {/* Player Name */}
+        <div
+          style={{
+            fontSize: `${fontSize}px`,
+            fontWeight: "bold",
+            fontFamily: FONT_FAMILY.KOREAN,
+            color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+            textAlign: isLeft ? "left" : "right",
+            textShadow: "0 0 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)",
+            padding: "2px 6px",
+            background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7),
+            borderRadius: "4px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {player.name.korean} | {player.name.english}
+        </div>
       </div>
 
       {/* Health Bar */}
@@ -93,11 +155,18 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
       <div
         data-testid={`stance-indicator-${playerId}`}
         style={{
-          fontSize: isMobile ? "9px" : "10px",
+          fontSize: isMobile ? "10px" : "12px",
           fontFamily: FONT_FAMILY.KOREAN,
-          color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
+          color: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 1),
           textAlign: isLeft ? "left" : "right",
           textShadow: "0 0 4px rgba(0,0,0,0.8)",
+          padding: "4px 8px",
+          backgroundColor: hexToRgbaString(
+            KOREAN_COLORS.UI_BACKGROUND_DARK,
+            0.8
+          ),
+          borderRadius: "4px",
+          marginTop: "2px",
         }}
       >
         자세 | Stance: {player.currentStance}

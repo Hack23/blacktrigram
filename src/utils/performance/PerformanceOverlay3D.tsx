@@ -1,15 +1,16 @@
 /**
  * PerformanceOverlay3D - Development-only performance stats overlay for Three.js
- * 
+ *
  * Displays real-time FPS, memory, and draw call statistics
  * Only visible in development mode
  */
 
-import { Html } from '@react-three/drei';
-import React from 'react';
-import { usePerformanceMonitor } from './usePerformanceMonitor';
+import { Html } from "@react-three/drei";
+import React from "react";
+import { usePerformanceMonitor } from "./usePerformanceMonitor";
 
 export interface PerformanceOverlay3DProps {
+  /** @deprecated Position prop is no longer used - overlay now uses screen-space positioning */
   readonly position?: [number, number, number];
   readonly visible?: boolean;
 }
@@ -17,9 +18,11 @@ export interface PerformanceOverlay3DProps {
 /**
  * 3D Performance overlay component for development
  * Shows FPS, memory, draw calls, and warnings
+ * Uses screen-space positioning (bottom-left corner)
  */
 export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
-  position = [0, 0, 0],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  position: _position = [0, 0, 0],
   visible = import.meta.env.DEV,
 }) => {
   const { metrics, isGood, warnings } = usePerformanceMonitor({
@@ -31,111 +34,167 @@ export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
     return null;
   }
 
-  const fpsColor = isGood ? '#00ff88' : metrics.avgFps < 30 ? '#ff4444' : '#ffaa00';
+  const fpsColor = isGood
+    ? "#00ff88"
+    : metrics.avgFps < 30
+    ? "#ff4444"
+    : "#ffaa00";
 
   return (
-    <Html position={position} style={{ pointerEvents: 'none' }}>
+    <Html fullscreen style={{ pointerEvents: "none" }}>
       <div
         style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          border: '2px solid #00ffff',
-          borderRadius: '8px',
-          padding: '12px 16px',
-          fontFamily: 'monospace',
-          fontSize: '12px',
-          color: '#00ffff',
-          minWidth: '280px',
-          userSelect: 'none',
+          position: "absolute",
+          bottom: "20px",
+          left: "20px",
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
+          border: "2px solid #00ffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+          fontFamily: "monospace",
+          fontSize: "12px",
+          color: "#00ffff",
+          minWidth: "220px",
+          maxWidth: "280px",
+          userSelect: "none",
+          pointerEvents: "none",
+          zIndex: 200,
         }}
         data-testid="performance-overlay"
       >
         {/* Title */}
         <div
           style={{
-            fontSize: '14px',
-            fontWeight: 'bold',
-            marginBottom: '8px',
-            borderBottom: '1px solid #00ffff',
-            paddingBottom: '4px',
+            fontSize: "14px",
+            fontWeight: "bold",
+            marginBottom: "8px",
+            borderBottom: "1px solid #00ffff",
+            paddingBottom: "4px",
           }}
         >
           ⚡ Performance Monitor
         </div>
 
         {/* FPS Stats */}
-        <div style={{ marginBottom: '8px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+        <div style={{ marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "2px",
+            }}
+          >
             <span>FPS:</span>
-            <span style={{ color: fpsColor, fontWeight: 'bold' }}>
+            <span style={{ color: fpsColor, fontWeight: "bold" }}>
               {metrics.fps.toFixed(1)}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "2px",
+            }}
+          >
             <span>Avg FPS:</span>
-            <span style={{ color: fpsColor }}>
-              {metrics.avgFps.toFixed(1)}
-            </span>
+            <span style={{ color: fpsColor }}>{metrics.avgFps.toFixed(1)}</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "2px",
+            }}
+          >
             <span>Min/Max:</span>
             <span>
               {metrics.minFps.toFixed(1)} / {metrics.maxFps.toFixed(1)}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Frame Time:</span>
             <span>{metrics.frameTime.toFixed(2)}ms</span>
           </div>
         </div>
 
         {/* System Stats */}
-        <div style={{ marginBottom: '8px', borderTop: '1px solid #444', paddingTop: '8px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+        <div
+          style={{
+            marginBottom: "8px",
+            borderTop: "1px solid #444",
+            paddingTop: "8px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "2px",
+            }}
+          >
             <span>Memory:</span>
             <span
               style={{
-                color: metrics.memoryMB > 300 ? '#ff4444' : metrics.memoryMB > 250 ? '#ffaa00' : '#00ffff',
+                color:
+                  metrics.memoryMB > 300
+                    ? "#ff4444"
+                    : metrics.memoryMB > 250
+                    ? "#ffaa00"
+                    : "#00ffff",
               }}
             >
-              {metrics.memoryMB > 0 ? `${metrics.memoryMB.toFixed(1)}MB` : 'N/A'}
+              {metrics.memoryMB > 0
+                ? `${metrics.memoryMB.toFixed(1)}MB`
+                : "N/A"}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "2px",
+            }}
+          >
             <span>Draw Calls:</span>
             <span
               style={{
-                color: metrics.drawCalls > 150 ? '#ff4444' : metrics.drawCalls > 100 ? '#ffaa00' : '#00ffff',
+                color:
+                  metrics.drawCalls > 150
+                    ? "#ff4444"
+                    : metrics.drawCalls > 100
+                    ? "#ffaa00"
+                    : "#00ffff",
               }}
             >
               {metrics.drawCalls}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Triangles:</span>
             <span>{(metrics.triangles / 1000).toFixed(1)}k</span>
           </div>
         </div>
 
         {/* Performance Status */}
-        <div style={{ borderTop: '1px solid #444', paddingTop: '8px' }}>
+        <div style={{ borderTop: "1px solid #444", paddingTop: "8px" }}>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
             }}
           >
             <span
               style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                backgroundColor: isGood ? '#00ff88' : '#ff4444',
-                display: 'inline-block',
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                backgroundColor: isGood ? "#00ff88" : "#ff4444",
+                display: "inline-block",
               }}
             />
-            <span style={{ fontWeight: 'bold' }}>
-              {isGood ? 'Performance Good' : 'Performance Degraded'}
+            <span style={{ fontWeight: "bold" }}>
+              {isGood ? "Performance Good" : "Performance Degraded"}
             </span>
           </div>
         </div>
@@ -144,16 +203,29 @@ export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
         {warnings.length > 0 && (
           <div
             style={{
-              marginTop: '8px',
-              borderTop: '1px solid #ff4444',
-              paddingTop: '8px',
+              marginTop: "8px",
+              borderTop: "1px solid #ff4444",
+              paddingTop: "8px",
             }}
           >
-            <div style={{ color: '#ff4444', fontWeight: 'bold', marginBottom: '4px' }}>
+            <div
+              style={{
+                color: "#ff4444",
+                fontWeight: "bold",
+                marginBottom: "4px",
+              }}
+            >
               ⚠️ Warnings:
             </div>
             {warnings.map((warning, index) => (
-              <div key={index} style={{ fontSize: '11px', color: '#ffaa00', marginBottom: '2px' }}>
+              <div
+                key={index}
+                style={{
+                  fontSize: "11px",
+                  color: "#ffaa00",
+                  marginBottom: "2px",
+                }}
+              >
                 {warning}
               </div>
             ))}

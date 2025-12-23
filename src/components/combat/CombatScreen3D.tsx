@@ -272,7 +272,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
-  const [scale, setScale] = useState(0.8); // Slightly smaller for combat (2 characters)
+  const [scale, setScale] = useState(1.2); // Larger scale for better visibility in combat
 
   // Keyboard shortcut for toggling overlay (V key)
   useEffect(() => {
@@ -1796,7 +1796,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Vital Point Overlay Controls - fixed screen position, left side below player status */}
         <VitalPointOverlayControls
-          screenPosition={{ top: "180px", left: "20px" }}
+          screenPosition={{ top: "200px", left: "20px" }}
           visible={overlayVisible}
           onVisibleChange={setOverlayVisible}
           severityFilters={severityFilters}

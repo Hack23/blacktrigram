@@ -130,7 +130,7 @@ export const VitalPointOverlayControls: React.FC<
   // Get system statistics
   const stats = useMemo(() => getVitalPointsStats(), []);
 
-  // Default screen position - left side, below player 1 status
+  // Default screen position - left side, below player 1 status (accounting for stance indicator)
   const defaultPosition: {
     top?: string;
     left?: string;
@@ -138,7 +138,7 @@ export const VitalPointOverlayControls: React.FC<
     bottom?: string;
   } = useMemo(
     () => ({
-      top: isMobile ? "140px" : "180px",
+      top: isMobile ? "180px" : "220px",
       left: isMobile ? "10px" : "20px",
     }),
     [isMobile]
@@ -253,7 +253,7 @@ export const VitalPointOverlayControls: React.FC<
           )}80`,
           transition: "all 0.3s ease",
           pointerEvents: "all",
-          zIndex: 100,
+          zIndex: 200,
         }}
         data-testid="vital-point-overlay-controls"
       >
