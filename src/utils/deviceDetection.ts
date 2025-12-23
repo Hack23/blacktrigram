@@ -60,7 +60,7 @@ function isMobileUserAgent(userAgent: string): boolean {
     'Android',
     'webOS',
     'iPhone',
-    'iPad',
+    // 'iPad' is handled separately in isTabletUserAgent
     'iPod',
     'BlackBerry',
     'IEMobile',
@@ -412,18 +412,32 @@ export function getSafeAreaInsets() {
       };
     }
     
+    // Detect orientation
+    const isLandscape = platform.screenWidth > platform.screenHeight;
+    
     // Heuristic: iPhone X and later have notches and specific screen dimensions
     // iPhone X/XS/11 Pro: 375x812, iPhone XR/11: 414x896, iPhone 12/13/14: 390x844, etc.
-    // Only devices with height >= 812 have notches
-    const hasNotch = platform.screenHeight >= 812;
+    // Only devices with height >= 812 (portrait) or width >= 812 (landscape) have notches
+    const hasNotch = platform.screenHeight >= 812 || platform.screenWidth >= 812;
     
     if (hasNotch) {
-      return {
-        top: 44,
-        bottom: 34,
-        left: 0,
-        right: 0,
-      };
+      if (isLandscape) {
+        // In landscape, notch is on the side
+        return {
+          top: 0,
+          bottom: 21, // Home indicator
+          left: 44, // Notch side
+          right: 44, // Opposite side for symmetry
+        };
+      } else {
+        // In portrait, notch is at top
+        return {
+          top: 44,
+          bottom: 34,
+          left: 0,
+          right: 0,
+        };
+      }
     } else {
       // Older iPhones without notch (iPhone 8, SE, etc.)
       return {

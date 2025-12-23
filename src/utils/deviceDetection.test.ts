@@ -476,6 +476,23 @@ describe('deviceDetection', () => {
       expect(insets.left).toBe(0);
       expect(insets.right).toBe(0);
     });
+    
+    it('should return horizontal insets for iPhone X in landscape', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        width: 812, // iPhone X landscape
+        height: 375,
+        hasTouch: true,
+      });
+
+      const insets = getSafeAreaInsets();
+
+      // In landscape, notch is on the side
+      expect(insets.top).toBe(0);
+      expect(insets.bottom).toBe(21); // Home indicator
+      expect(insets.left).toBe(44); // Notch side
+      expect(insets.right).toBe(44); // Opposite side
+    });
 
     it('should return Android status bar insets for Android mobile', () => {
       mockEnvironment({

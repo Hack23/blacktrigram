@@ -113,18 +113,19 @@ describe('useResponsiveLayout', () => {
       // Mock iOS mobile device in landscape
       vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
       vi.spyOn(deviceDetection, 'getSafeAreaInsets').mockReturnValue({
-        top: 44,
-        bottom: 34,
-        left: 0,
-        right: 0,
+        top: 0,
+        bottom: 21,
+        left: 44,
+        right: 44,
       });
 
       const { result } = renderHook(() => useResponsiveLayout(667, 375));
 
-      expect(result.current.safeArea.top).toBe(44);
-      expect(result.current.safeArea.bottom).toBe(34);
-      expect(result.current.safeArea.left).toBe(0); // No horizontal insets in portrait on new implementation
-      expect(result.current.safeArea.right).toBe(0);
+      // Landscape mode (width > height) with notch gets horizontal insets
+      expect(result.current.safeArea.top).toBe(0);
+      expect(result.current.safeArea.bottom).toBe(21);
+      expect(result.current.safeArea.left).toBe(44);
+      expect(result.current.safeArea.right).toBe(44);
     });
 
     it('should not provide safe area insets for desktop', () => {
