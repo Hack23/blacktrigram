@@ -772,9 +772,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
-        {/* Vital Point Overlay Controls */}
+        {/* Vital Point Overlay Controls - Positioned for visibility from camera at [0,8,12] */}
         <VitalPointOverlayControls
-          position={[8, 3, 0]}
+          position={[-8, 2, 3]}
           visible={overlayVisible}
           onVisibleChange={setOverlayVisible}
           severityFilters={severityFilters}
