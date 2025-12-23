@@ -442,8 +442,12 @@ src/components/combat/components/ActionFeedback.test.tsx
 src/components/combat/components/ActionFeedback.tsx
 src/components/combat/components/BalanceIndicator.test.tsx
 src/components/combat/components/BalanceIndicator.tsx
+src/components/combat/components/BloodDecals3D.test.tsx
+src/components/combat/components/BloodDecals3D.tsx
 src/components/combat/components/BloodLossOverlay.test.tsx
 src/components/combat/components/BloodLossOverlay.tsx
+src/components/combat/components/BloodParticles3D.test.tsx
+src/components/combat/components/BloodParticles3D.tsx
 src/components/combat/components/CombatArena3D.test.tsx
 src/components/combat/components/CombatArena3D.tsx
 src/components/combat/components/CombatFeedbackIntegration.test.tsx
@@ -493,6 +497,8 @@ src/components/combat/components/StanceChangeIndicator.test.tsx
 src/components/combat/components/StanceChangeIndicator.tsx
 src/components/combat/components/TechniqueBar.tsx
 src/components/combat/components/TechniqueCard.tsx
+src/components/combat/components/TraumaOverlay3D.test.tsx
+src/components/combat/components/TraumaOverlay3D.tsx
 src/components/combat/components/VitalPointMarkers3D.test.tsx
 src/components/combat/components/VitalPointMarkers3D.tsx
 src/components/combat/components/VitalPointOverlayControls.test.tsx
@@ -797,6 +803,8 @@ src/utils/colorHelpers.ts
 src/utils/colorUtils.ts
 src/utils/controlMapping.test.ts
 src/utils/controlMapping.ts
+src/utils/deviceDetection.test.ts
+src/utils/deviceDetection.ts
 src/utils/effectUtils.ts
 src/utils/haptics.test.ts
 src/utils/haptics.ts
