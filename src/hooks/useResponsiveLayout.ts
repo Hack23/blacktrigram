@@ -4,6 +4,9 @@
  * Provides responsive layout values optimized for mobile screens with touch-friendly
  * element sizing and strategic positioning following iOS Human Interface Guidelines.
  * 
+ * Uses robust device detection combining user-agent and screen size to ensure
+ * mobile controls are shown on all mobile devices, including high-resolution phones.
+ * 
  * Features:
  * - Touch target minimum: 44x44px (iOS guideline)
  * - Safe area insets for notch and home indicator
@@ -17,6 +20,7 @@
  */
 
 import { useMemo } from 'react';
+import { shouldUseMobileControls, getSafeAreaInsets as getDeviceSafeAreaInsets } from '../utils/deviceDetection';
 
 /**
  * Breakpoints for responsive design
@@ -153,20 +157,20 @@ export function useResponsiveLayout(
   height: number
 ): ResponsiveLayout {
   return useMemo(() => {
-    // Device type detection
-    const isMobile = width < BREAKPOINTS.MOBILE;
+    // Device type detection using robust device detection utility
+    // Combines user-agent and screen size for reliable mobile detection
+    const isMobile = shouldUseMobileControls();
     const isSmallMobile = width <= BREAKPOINTS.MOBILE_SMALL; // Changed to <= to include 375
-    const isTablet = width >= BREAKPOINTS.MOBILE && width < BREAKPOINTS.TABLET;
+    const isTablet = width >= BREAKPOINTS.MOBILE && width < BREAKPOINTS.TABLET && !isMobile;
     const isLandscape = width > height;
 
-    // Safe area insets
-    // iPhone X+ notch: 44px top, 34px bottom
-    // Landscape: Add horizontal insets
+    // Safe area insets from device detection utility
+    const deviceInsets = getDeviceSafeAreaInsets();
     const safeArea: SafeAreaInsets = {
-      top: isMobile ? 44 : 0,
-      bottom: isMobile ? 34 : 0,
-      left: isLandscape && isMobile ? 44 : 0,
-      right: isLandscape && isMobile ? 44 : 0,
+      top: deviceInsets.top,
+      bottom: deviceInsets.bottom,
+      left: isLandscape ? deviceInsets.left : 0,
+      right: isLandscape ? deviceInsets.right : 0,
     };
 
     // Touch target sizes (iOS Human Interface Guidelines: 44x44px minimum)

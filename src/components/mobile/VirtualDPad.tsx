@@ -81,8 +81,8 @@ const DIRECTIONS: readonly DirectionConfig[] = [
 interface DPadButtonProps {
   readonly config: DirectionConfig;
   readonly active: boolean;
-  readonly onTouchStart: (e: React.TouchEvent) => void;
-  readonly onTouchEnd: (e: React.TouchEvent) => void;
+  readonly onStart: (e: React.TouchEvent | React.MouseEvent) => void;
+  readonly onEnd: (e: React.TouchEvent | React.MouseEvent) => void;
   readonly radius: number; // Radius for button positioning
   readonly buttonSize: number;
 }
@@ -93,8 +93,8 @@ interface DPadButtonProps {
 const DPadButton: React.FC<DPadButtonProps> = ({
   config,
   active,
-  onTouchStart,
-  onTouchEnd,
+  onStart,
+  onEnd,
   radius,
   buttonSize,
 }) => {
@@ -109,8 +109,11 @@ const DPadButton: React.FC<DPadButtonProps> = ({
 
   return (
     <button
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      onTouchStart={onStart}
+      onTouchEnd={onEnd}
+      onMouseDown={onStart}
+      onMouseUp={onEnd}
+      onMouseLeave={onEnd}
       style={{
         position: 'absolute',
         left: `calc(50% + ${x}px - ${buttonSize / 2}px)`,
@@ -188,10 +191,10 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
   const [activeDirection, setActiveDirection] = useState<Direction | null>(null);
 
   /**
-   * Handle touch start on a direction button
+   * Handle touch or mouse start on a direction button
    */
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent, direction: Direction) => {
+  const handleStart = useCallback(
+    (e: React.TouchEvent | React.MouseEvent, direction: Direction) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -204,10 +207,10 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
   );
 
   /**
-   * Handle touch end
+   * Handle touch or mouse end
    */
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
+  const handleEnd = useCallback(
+    (e: React.TouchEvent | React.MouseEvent) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -258,8 +261,8 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
               key={config.direction}
               config={config}
               active={activeDirection === config.direction}
-              onTouchStart={(e) => handleTouchStart(e, config.direction)}
-              onTouchEnd={handleTouchEnd}
+              onStart={(e) => handleStart(e, config.direction)}
+              onEnd={handleEnd}
               radius={radius}
               buttonSize={buttonSize}
             />

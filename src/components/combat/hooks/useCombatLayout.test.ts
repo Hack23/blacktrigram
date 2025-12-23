@@ -4,12 +4,25 @@
  */
 
 import { renderHook } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useCombatLayout } from "./useCombatLayout";
+import * as deviceDetection from "../../../utils/deviceDetection";
 
 describe("useCombatLayout", () => {
+  beforeEach(() => {
+    // Mock device detection to return desktop by default
+    vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(false);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe("mobile breakpoint detection", () => {
     it("should detect mobile at 767px", () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
       const { result } = renderHook(() => useCombatLayout(767, 800));
       expect(result.current.isMobile).toBe(true);
     });
@@ -20,6 +33,9 @@ describe("useCombatLayout", () => {
     });
 
     it("should detect mobile at 320px", () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
       const { result } = renderHook(() => useCombatLayout(320, 568));
       expect(result.current.isMobile).toBe(true);
     });
@@ -32,6 +48,9 @@ describe("useCombatLayout", () => {
 
   describe("layout constants", () => {
     it("should return mobile layout constants for small screens", () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
       const { result } = renderHook(() => useCombatLayout(480, 800));
 
       expect(result.current.layoutConstants.padding).toBe(10);
@@ -81,6 +100,9 @@ describe("useCombatLayout", () => {
     });
 
     it("should calculate correct arena bounds for mobile", () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
       const { result } = renderHook(() => useCombatLayout(480, 800));
       const { arenaBounds } = result.current;
 
@@ -97,6 +119,9 @@ describe("useCombatLayout", () => {
     });
 
     it("should handle very small screens", () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
       const { result } = renderHook(() => useCombatLayout(320, 568));
       const { arenaBounds } = result.current;
 
@@ -124,19 +149,21 @@ describe("useCombatLayout", () => {
     });
 
     it("should recalculate when crossing mobile breakpoint", () => {
-      const { result, rerender } = renderHook(
-        ({ w, h }) => useCombatLayout(w, h),
-        { initialProps: { w: 800, h: 800 } }
-      );
+      // Create first hook instance with desktop
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(false);
+      
+      const { result: desktopResult } = renderHook(() => useCombatLayout(800, 800));
+      
+      expect(desktopResult.current.isMobile).toBe(false);
+      expect(desktopResult.current.layoutConstants.hudHeight).toBe(120);
 
-      expect(result.current.isMobile).toBe(false);
-      expect(result.current.layoutConstants.hudHeight).toBe(120);
+      // Create new hook instance with mobile (device detection returns different value)
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+      
+      const { result: mobileResult } = renderHook(() => useCombatLayout(700, 800));
 
-      // Cross the mobile breakpoint
-      rerender({ w: 700, h: 800 });
-
-      expect(result.current.isMobile).toBe(true);
-      expect(result.current.layoutConstants.hudHeight).toBe(95);
+      expect(mobileResult.current.isMobile).toBe(true);
+      expect(mobileResult.current.layoutConstants.hudHeight).toBe(95);
     });
 
     it("should recalculate arena bounds when dimensions change", () => {
