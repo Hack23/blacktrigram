@@ -8,10 +8,6 @@ import { useResponsiveLayout, useContentArea, BREAKPOINTS } from './useResponsiv
 import * as deviceDetection from '../utils/deviceDetection';
 
 describe('useResponsiveLayout', () => {
-  // Store original functions
-  const originalShouldUseMobileControls = deviceDetection.shouldUseMobileControls;
-  const originalGetSafeAreaInsets = deviceDetection.getSafeAreaInsets;
-
   beforeEach(() => {
     // Mock device detection to return desktop by default
     vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(false);

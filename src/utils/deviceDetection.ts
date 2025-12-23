@@ -109,6 +109,17 @@ function detectOS(userAgent: string): PlatformInfo['os'] {
     return 'windows';
   }
   if (userAgent.includes('Mac')) {
+    // Handle iPadOS 13+ in desktop mode, which reports a Mac-like user agent
+    // e.g. "Macintosh; Intel Mac OS X" but still has touch support
+    const isLikelyIPadOSDesktop =
+      typeof navigator !== 'undefined' &&
+      typeof navigator.maxTouchPoints === 'number' &&
+      navigator.maxTouchPoints > 1 &&
+      userAgent.includes('Macintosh');
+
+    if (isLikelyIPadOSDesktop) {
+      return 'ios';
+    }
     return 'macos';
   }
   if (userAgent.includes('Linux')) {
@@ -159,6 +170,25 @@ export const MOBILE_BREAKPOINT = 768;
 export const TABLET_BREAKPOINT = 1024;
 
 /**
+ * Cached platform information to avoid re-parsing user-agent on every call
+ */
+let cachedPlatform: PlatformInfo | null = null;
+let cachedScreenWidth = 0;
+let cachedScreenHeight = 0;
+
+/**
+ * Clear the cached platform information
+ * Useful when window is resized or device emulation changes
+ * 
+ * @public
+ */
+export function clearPlatformCache(): void {
+  cachedPlatform = null;
+  cachedScreenWidth = 0;
+  cachedScreenHeight = 0;
+}
+
+/**
  * Detect device type and platform information
  * 
  * Combines multiple detection methods for reliability:
@@ -170,6 +200,9 @@ export const TABLET_BREAKPOINT = 1024;
  * - Standard mobile phones (< 768px width)
  * - High-resolution phones (>= 768px width but mobile user-agent)
  * - Tablets (user preference via touch support)
+ * 
+ * Results are cached to avoid re-parsing user-agent on every call.
+ * Cache is invalidated when screen dimensions change.
  * 
  * @returns Complete platform information
  * 
@@ -190,6 +223,13 @@ export function detectPlatform(): PlatformInfo {
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
+  
+  // Return cached result if screen dimensions haven't changed
+  if (cachedPlatform !== null && 
+      cachedScreenWidth === screenWidth && 
+      cachedScreenHeight === screenHeight) {
+    return cachedPlatform;
+  }
   
   // Detect OS
   const os = detectOS(userAgent);
@@ -242,7 +282,7 @@ export function detectPlatform(): PlatformInfo {
   
   const isDesktop = deviceType === DeviceType.DESKTOP;
   
-  return {
+  const result: PlatformInfo = {
     os,
     deviceType,
     hasTouch,
@@ -252,6 +292,13 @@ export function detectPlatform(): PlatformInfo {
     screenWidth,
     screenHeight,
   };
+  
+  // Cache the result along with screen dimensions
+  cachedPlatform = result;
+  cachedScreenWidth = screenWidth;
+  cachedScreenHeight = screenHeight;
+  
+  return result;
 }
 
 /**
@@ -302,6 +349,9 @@ export function shouldUseMobileControls(): boolean {
  * Get safe area insets for device
  * Returns appropriate values based on device type and OS
  * 
+ * For iOS devices, attempts to detect if device has a notch by checking
+ * screen dimensions. Falls back to CSS environment variables if available.
+ * 
  * @returns Safe area insets in pixels
  * 
  * @public
@@ -310,14 +360,50 @@ export function shouldUseMobileControls(): boolean {
 export function getSafeAreaInsets() {
   const platform = detectPlatform();
   
-  // iOS devices with notch (iPhone X and later)
+  // iOS devices - distinguish between notched and non-notched
   if (platform.os === 'ios' && platform.isMobile) {
-    return {
-      top: 44,
-      bottom: 34,
-      left: 0,
-      right: 0,
-    };
+    // Try to read CSS environment variables first (most accurate)
+    if (typeof window !== 'undefined' && typeof getComputedStyle === 'function') {
+      try {
+        const root = document.documentElement;
+        const style = getComputedStyle(root);
+        const topEnv = style.getPropertyValue('env(safe-area-inset-top)');
+        const bottomEnv = style.getPropertyValue('env(safe-area-inset-bottom)');
+        
+        if (topEnv || bottomEnv) {
+          return {
+            top: parseInt(topEnv || '0', 10) || 0,
+            bottom: parseInt(bottomEnv || '0', 10) || 0,
+            left: 0,
+            right: 0,
+          };
+        }
+      } catch (error) {
+        // Fall through to heuristic detection
+      }
+    }
+    
+    // Heuristic: iPhone X and later have notches and specific screen dimensions
+    // iPhone X/XS/11 Pro: 375x812, iPhone XR/11: 414x896, iPhone 12/13/14: 390x844, etc.
+    const hasNotch = platform.screenHeight >= 812 || 
+                     (platform.screenWidth >= 375 && platform.screenHeight >= 667);
+    
+    if (hasNotch) {
+      return {
+        top: 44,
+        bottom: 34,
+        left: 0,
+        right: 0,
+      };
+    } else {
+      // Older iPhones without notch (iPhone 8, SE, etc.)
+      return {
+        top: 20, // Status bar height
+        bottom: 0,
+        left: 0,
+        right: 0,
+      };
+    }
   }
   
   // Android devices (standard status bar)

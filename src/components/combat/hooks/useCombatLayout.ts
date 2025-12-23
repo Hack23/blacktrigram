@@ -55,7 +55,8 @@ export interface CombatLayout {
 export function useCombatLayout(width: number, height: number): CombatLayout {
   // Performance: Use robust device detection combining user-agent and screen size
   // This ensures mobile controls show on all mobile devices, including high-res phones
-  const isMobile = useMemo(() => shouldUseMobileControls(), []);
+  // Width is included in dependencies to handle responsive changes and device rotation
+  const isMobile = useMemo(() => shouldUseMobileControls(), [width]);
   const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
 
   // Centralized layout constants for easier tweaking

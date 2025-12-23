@@ -4,7 +4,7 @@
  * Comprehensive test coverage for mobile/tablet/desktop detection
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import {
   detectPlatform,
   isMobileDevice,
