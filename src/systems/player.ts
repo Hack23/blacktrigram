@@ -160,6 +160,10 @@ export interface PlayerState {
   readonly recoveryTime: number;
   /** Timestamp of last stance transition */
   readonly lastStanceChangeTime: number;
+  /** Timestamps of recent hits for balance state tracking (last 10 hits) */
+  readonly recentHitTimestamps?: readonly number[];
+  /** Timestamp when player last entered HELPLESS state */
+  readonly lastHelplessStateTime?: number;
 
   // Status and effects
   /** Active status effects (poison, stun, etc.) */
