@@ -228,10 +228,7 @@ const FractureWarning: React.FC<{
         style={{
           padding: isMobile ? "8px 12px" : "10px 16px",
           backgroundColor: `rgba(255, 200, 0, ${warningOpacity * 0.3})`,
-          border: `2px solid ${THREE.ColorManagement.toWorkingColorSpace(
-            new THREE.Color(INJURY_COLORS.FRACTURE_INDICATOR),
-            THREE.SRGBColorSpace
-          ).getHexString()}`,
+          border: `2px solid #FFD700`,
           borderRadius: "6px",
           fontSize: isMobile ? "12px" : "14px",
           color: "#FFD700",

@@ -214,6 +214,7 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
   }, [effects, enabled, maxParticles]);
 
   // Calculate total particle count for rendering
+  // Note: This recomputes when effects change to ensure fresh particle data
   const particlePositions = useMemo(() => {
     const allParticles: BloodParticle[] = [];
     
@@ -234,7 +235,7 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
     });
 
     return positions;
-  }, [effects]); // Re-compute when effects change
+  }, [effects]); // Effects trigger re-computation of positions
 
   // Physics update loop
   useFrame((_, delta) => {

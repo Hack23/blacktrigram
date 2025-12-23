@@ -89,7 +89,12 @@ const createBloodTexture = (): THREE.Texture => {
   const ctx = canvas.getContext("2d");
   
   if (!ctx) {
-    throw new Error("Failed to get 2D context for blood texture");
+    // Fallback: Return a basic transparent texture
+    console.warn("Blood decal texture generation failed: Could not get 2D context");
+    const fallbackCanvas = document.createElement("canvas");
+    fallbackCanvas.width = 64;
+    fallbackCanvas.height = 64;
+    return new THREE.CanvasTexture(fallbackCanvas);
   }
 
   // Background (transparent)
@@ -185,7 +190,9 @@ const DecalMesh: React.FC<{
       // Apply rotation to the mesh itself
       meshRef.current.rotation.set(0, 0, decal.rotation);
     } catch (error) {
-      console.warn("Failed to create decal geometry:", error);
+      // Silently handle decal projection failures
+      // This can occur when target mesh geometry is complex or decal position is invalid
+      // Decal will simply not render in this case
     }
   }, [decal, targetMesh]);
 
