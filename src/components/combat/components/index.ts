@@ -4,8 +4,11 @@
  */
 
 // Three.js 3D components
+export { default as BloodDecals3D } from "./BloodDecals3D";
+export { default as BloodParticles3D } from "./BloodParticles3D";
 export { default as CombatArena3D } from "./CombatArena3D";
 export { default as HitEffects3D } from "./HitEffects3D";
+export { default as TraumaOverlay3D } from "./TraumaOverlay3D";
 export { default as VitalPointMarkers3D } from "./VitalPointMarkers3D";
 export type { BodyRegionFilter } from "./VitalPointMarkers3D";
 export { default as VitalPointOverlayControls } from "./VitalPointOverlayControls";
@@ -41,6 +44,8 @@ export type { ConfirmDialogProps } from "../../ui/shared/ConfirmDialog";
 
 // Re-export component prop types
 export type { ActionFeedbackProps, TechniqueNameProps } from "./ActionFeedback";
+export type { BloodDecals3DProps, BloodDecal } from "./BloodDecals3D";
+export type { BloodParticles3DProps, BloodSplatterEffect } from "./BloodParticles3D";
 export type { CombatTimerProps } from "./CombatTimer";
 export type { ComboCounterProps } from "./ComboCounter";
 export type { ControlsGuideProps } from "./ControlsGuide";
@@ -54,6 +59,11 @@ export type { RoundAnnouncementProps, RoundStats } from "./RoundAnnouncement";
 export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { TechniqueBarProps } from "./TechniqueBar";
 export type { TechniqueCardProps } from "./TechniqueCard";
+export type {
+  TraumaOverlay3DProps,
+  Injury,
+  InjuryType,
+} from "./TraumaOverlay3D";
 export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
 export type { VitalPointOverlayControlsProps } from "./VitalPointOverlayControls";
 
