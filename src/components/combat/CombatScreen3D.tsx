@@ -329,6 +329,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showRoundStart, setShowRoundStart] = useState(false);
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
+  // Player 1 position (controlled by player movement)
+  // Player 1 starts closer to center (35%) for better combat engagement
+  const [player1Position, setPlayer1Position] = useState<Position>({
+    x: arenaBounds.x + arenaBounds.width * 0.35,
+    y: arenaBounds.y + arenaBounds.height * 0.5,
+  });
+
   // Pause menu state - local state for pause menu visibility
   // Local state for pause menu UI visibility
   // Note: isPaused (prop) controls game pause from parent, showPauseMenu (state) controls menu UI
@@ -400,7 +407,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     setShowRoundStart(true);
 
     audio.playSFX("menu_select");
-  }, [audio, combatActions, onPlayerUpdate, arenaBounds]);
+  }, [audio, combatActions, onPlayerUpdate, arenaBounds, setPlayer1Position]);
 
   // Round transition complete handler - checks for match end or starts next round
   const handleRoundTransitionComplete = useCallback(() => {
@@ -473,7 +480,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         y: arenaBounds.y + arenaBounds.height * 0.5,
       },
     });
-  }, [combatActions, onGameEnd, onPlayerUpdate, arenaBounds]);
+  }, [combatActions, onGameEnd, onPlayerUpdate, arenaBounds, setPlayer1Position]);
 
   // Round transition management
   const {
@@ -490,13 +497,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     },
     handleRoundTransitionComplete
   );
-
-  // Player 1 position (controlled by player movement)
-  // Player 1 starts closer to center (35%) for better combat engagement
-  const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.x + arenaBounds.width * 0.35,
-    y: arenaBounds.y + arenaBounds.height * 0.5,
-  });
 
   // Player 2 position - derived from players prop (AI-controlled)
   // Default position is used when players prop is empty or player2 has no position
