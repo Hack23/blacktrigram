@@ -799,7 +799,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               width: "100%",
               height: "100%",
               pointerEvents: "none",
-              position: "relative",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              zIndex: 1,
             }}
           >
             {/* Top Left - Training Controls */}
