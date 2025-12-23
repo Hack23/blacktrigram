@@ -480,7 +480,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         y: arenaBounds.y + arenaBounds.height * 0.5,
       },
     });
-  }, [combatActions, onGameEnd, onPlayerUpdate, arenaBounds, setPlayer1Position]);
+  }, [
+    combatActions,
+    onGameEnd,
+    onPlayerUpdate,
+    arenaBounds,
+    // Note: setPlayer1Position is a stable React setState function and won't cause unnecessary re-renders
+    setPlayer1Position,
+  ]);
 
   // Round transition management
   const {

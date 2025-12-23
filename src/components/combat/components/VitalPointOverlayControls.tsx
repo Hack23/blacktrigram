@@ -60,11 +60,20 @@ export interface VitalPointOverlayControlsProps {
   readonly onScaleChange: (scale: number) => void;
   /** Whether on mobile device */
   readonly isMobile?: boolean;
-  /** Screen position for the control panel (CSS values) */
+  /**
+   * Screen position for the control panel.
+   *
+   * All values must be valid CSS position values, such as `"20px"`, `"10%"`, `"1rem"`, or `"auto"`.
+   * These are applied directly to the `style` of the Html overlay container.
+   */
   readonly screenPosition?: {
+    /** CSS `top` position (e.g., "20px", "10%", "1rem", "auto") */
     top?: string;
+    /** CSS `left` position (e.g., "20px", "10%", "1rem", "auto") */
     left?: string;
+    /** CSS `right` position (e.g., "20px", "10%", "1rem", "auto") */
     right?: string;
+    /** CSS `bottom` position (e.g., "20px", "10%", "1rem", "auto") */
     bottom?: string;
   };
 }
