@@ -382,13 +382,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       balance: 100,
     });
 
+    // Reset player positions to starting positions for rematch
+    setPlayer1Position({
+      x: arenaBounds.x + arenaBounds.width * 0.35,
+      y: arenaBounds.y + arenaBounds.height * 0.5,
+    });
+    onPlayerUpdate(1, {
+      position: {
+        x: arenaBounds.x + arenaBounds.width * 0.65,
+        y: arenaBounds.y + arenaBounds.height * 0.5,
+      },
+    });
+
     // Close pause menu and start first round
     // The timer will reset automatically via the initialTime prop when round starts
     setShowPauseMenu(false);
     setShowRoundStart(true);
 
     audio.playSFX("menu_select");
-  }, [audio, combatActions, onPlayerUpdate]);
+  }, [audio, combatActions, onPlayerUpdate, arenaBounds]);
 
   // Round transition complete handler - checks for match end or starts next round
   const handleRoundTransitionComplete = useCallback(() => {
@@ -448,7 +460,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       pain: 0,
       balance: 100,
     });
-  }, [combatActions, onGameEnd, onPlayerUpdate]);
+
+    // Reset player positions to starting positions for new round
+    setPlayer1Position({
+      x: arenaBounds.x + arenaBounds.width * 0.35,
+      y: arenaBounds.y + arenaBounds.height * 0.5,
+    });
+    // Player 2 position is reset via onPlayerUpdate
+    onPlayerUpdate(1, {
+      position: {
+        x: arenaBounds.x + arenaBounds.width * 0.65,
+        y: arenaBounds.y + arenaBounds.height * 0.5,
+      },
+    });
+  }, [combatActions, onGameEnd, onPlayerUpdate, arenaBounds]);
 
   // Round transition management
   const {
@@ -467,15 +492,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   );
 
   // Player 1 position (controlled by player movement)
-  // Player 1 starts at the left quarter of the arena (25% from left edge, vertically centered)
+  // Player 1 starts closer to center (35%) for better combat engagement
   const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.x + arenaBounds.width * 0.25,
+    x: arenaBounds.x + arenaBounds.width * 0.35,
     y: arenaBounds.y + arenaBounds.height * 0.5,
   });
 
   // Player 2 position - derived from players prop (AI-controlled)
   // Default position is used when players prop is empty or player2 has no position
-  // Player 2 (AI) starts at right side of arena (65% from left edge, vertically centered) with reduced initial gap for faster engagement
+  // Player 2 (AI) starts at right side of arena (65%), closer to center for faster engagement
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
@@ -507,6 +532,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
+
+  // Calculate dynamic rotations so players always face each other
+  // atan2(dx, dz) gives the Y-axis rotation needed to face direction (dx, dz)
+  // This is the standard formula for rotating around Y to point at a target
+  const player1Rotation = useMemo(() => {
+    const dx = player2Position3D[0] - player1Position3D[0];
+    const dz = player2Position3D[2] - player1Position3D[2];
+    return Math.atan2(dx, dz);
+  }, [player1Position3D, player2Position3D]);
+
+  const player2Rotation = useMemo(() => {
+    const dx = player1Position3D[0] - player2Position3D[0];
+    const dz = player1Position3D[2] - player2Position3D[2];
+    return Math.atan2(dx, dz);
+  }, [player1Position3D, player2Position3D]);
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
@@ -1745,10 +1785,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {...convertPlayerStateToProps(
             validPlayers[0],
             player1Position3D,
-            0, // rotation - facing right
+            player1Rotation, // Dynamic rotation - always faces opponent
             {
               isMobile,
-              facing: "right",
+              facing: "right", // No flip - rotation handles facing direction
               // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
               enableFacialExpressions: true,
               enableEyeTracking: true,
@@ -1766,10 +1806,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {...convertPlayerStateToProps(
             validPlayers[1],
             player2Position3D,
-            Math.PI, // rotation - facing left (180 degrees)
+            player2Rotation, // Dynamic rotation - always faces opponent
             {
               isMobile,
-              facing: "left",
+              facing: "right", // No flip - rotation handles facing direction
               // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
               enableFacialExpressions: true,
               enableEyeTracking: true,
