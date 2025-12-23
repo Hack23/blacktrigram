@@ -363,9 +363,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions.setRoundStarted(false);
     combatActions.setRoundDisplayStatus(null);
 
-    // Reset player health
-    onPlayerUpdate(0, { health: 100 });
-    onPlayerUpdate(1, { health: 100 });
+    // Reset player health, resources, and visual state
+    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    onPlayerUpdate(0, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
+    onPlayerUpdate(1, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
 
     // Close pause menu and start first round
     // The timer will reset automatically via the initialTime prop when round starts
@@ -415,9 +430,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       return nextRound;
     });
 
-    // Reset player health and resources for next round
-    onPlayerUpdate(0, { health: 100, stamina: 100, ki: 100 });
-    onPlayerUpdate(1, { health: 100, stamina: 100, ki: 100 });
+    // Reset player health, resources, and visual state for next round
+    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    onPlayerUpdate(0, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
+    onPlayerUpdate(1, {
+      health: 100,
+      stamina: 100,
+      ki: 100,
+      consciousness: 100,
+      pain: 0,
+      balance: 100,
+    });
   }, [combatActions, onGameEnd, onPlayerUpdate]);
 
   // Round transition management
