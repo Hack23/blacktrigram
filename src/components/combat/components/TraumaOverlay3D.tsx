@@ -51,6 +51,8 @@ export interface Injury {
   readonly hitCount: number;
   /** Timestamp when injury was created */
   readonly timestamp: number;
+  /** Optional player ID for multi-player scenarios */
+  readonly playerId?: string | number;
 }
 
 /**
@@ -315,7 +317,7 @@ export const TraumaOverlay3D: React.FC<TraumaOverlay3DProps> = ({
   // Filter injuries for this player
   const playerInjuries = useMemo(() => {
     // In multi-player scenarios, filter by player when available
-    if (playerId == null) {
+    if (playerId === null || playerId === undefined) {
       // Single-player or unspecified player: show all injuries
       return injuries;
     }
@@ -324,11 +326,10 @@ export const TraumaOverlay3D: React.FC<TraumaOverlay3DProps> = ({
     // - If an injury has a playerId, it must match the current playerId.
     // - If an injury has no playerId, include it (legacy/global injuries).
     return injuries.filter((injury) => {
-      const injuryWithPlayer = injury as { playerId?: string | number };
-      if (injuryWithPlayer.playerId == null) {
+      if (injury.playerId === null || injury.playerId === undefined) {
         return true;
       }
-      return injuryWithPlayer.playerId === playerId;
+      return injury.playerId === playerId;
     });
   }, [injuries, playerId]);
 

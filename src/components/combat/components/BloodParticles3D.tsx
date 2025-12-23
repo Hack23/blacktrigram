@@ -90,7 +90,17 @@ const BLOOD_CONSTANTS = {
   FLOOR_Y: 0.0,
   /** Particle size */
   PARTICLE_SIZE: 0.05,
-  /** Maximum delta time to prevent spiral of death */
+  /**
+   * Maximum per-frame delta time (seconds) used to clamp the blood physics update.
+   * 
+   * We cap the simulation step at ~33ms (1/30) to avoid the classic
+   * "spiral of death" when the frame rate drops: very large timesteps can
+   * cause unstable motion, particles tunneling through the floor, or
+   * visually exaggerated splatter. Treating anything below 30fps as
+   * "slow motion" for this effect keeps the blood behavior stable even
+   * on slower devices. If the engine's minimum target frame rate changes,
+   * adjust this threshold accordingly.
+   */
   MAX_DELTA: 1 / 30,
 } as const;
 
@@ -267,6 +277,13 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
           posArray[totalParticleIndex * 3 + 1] = p.position.y;
           posArray[totalParticleIndex * 3 + 2] = p.position.z;
           totalParticleIndex++;
+        } else if (process.env.NODE_ENV === "development") {
+          // Warn in development when particles are being dropped due to buffer overflow
+          console.warn(
+            `BloodParticles3D: Particle buffer full (${posArray.length / 3} particles). ` +
+            `Additional particles are not rendered. Consider reducing particle counts or ` +
+            `increasing maxParticles if this happens frequently.`
+          );
         }
       }
 
