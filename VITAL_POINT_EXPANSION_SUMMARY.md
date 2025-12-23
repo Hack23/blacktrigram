@@ -27,7 +27,7 @@ Successfully expanded the Black Trigram vital point visualization system from **
 
 ### Phase 2: Visual Overlay System ✅ COMPLETE
 **Files Created:**
-- `src/components/combat/components/VitalPointOverlayControls.tsx` - Comprehensive UI controls (497 lines)
+- `src/components/combat/components/VitalPointOverlayControls.tsx` - Comprehensive UI controls (673 lines)
 
 **Files Modified:**
 - `src/components/combat/components/index.ts` - Added exports for new component
