@@ -10,6 +10,7 @@ import {
   isMobileDevice,
   shouldUseMobileControls,
   getSafeAreaInsets,
+  clearPlatformCache,
   DeviceType,
   MOBILE_BREAKPOINT,
   TABLET_BREAKPOINT,
@@ -172,6 +173,23 @@ describe('deviceDetection', () => {
 
         const result = detectPlatform();
 
+        expect(result.os).toBe('ios');
+        expect(result.deviceType).toBe(DeviceType.TABLET);
+        expect(result.isTablet).toBe(true);
+      });
+      
+      it('should detect iPad in desktop mode (iPadOS 13+)', () => {
+        mockEnvironment({
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15',
+          width: 1024,
+          height: 1366,
+          hasTouch: true,
+          maxTouchPoints: 5,
+        });
+
+        const result = detectPlatform();
+
+        // iPadOS in desktop mode should be detected as iOS, not macOS
         expect(result.os).toBe('ios');
         expect(result.deviceType).toBe(DeviceType.TABLET);
         expect(result.isTablet).toBe(true);
@@ -426,11 +444,28 @@ describe('deviceDetection', () => {
   });
 
   describe('getSafeAreaInsets', () => {
-    it('should return iPhone notch insets for iOS mobile', () => {
+    it('should return status bar insets for older iPhones without notch', () => {
       mockEnvironment({
         userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
         width: 375,
         height: 667,
+        hasTouch: true,
+      });
+
+      const insets = getSafeAreaInsets();
+
+      // iPhone SE/6/7/8 (375x667) don't have notches, only status bar
+      expect(insets.top).toBe(20);
+      expect(insets.bottom).toBe(0);
+      expect(insets.left).toBe(0);
+      expect(insets.right).toBe(0);
+    });
+    
+    it('should return notch insets for iPhone X and later', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        width: 375,
+        height: 812, // iPhone X dimensions
         hasTouch: true,
       });
 
@@ -488,6 +523,71 @@ describe('deviceDetection', () => {
       expect(insets.bottom).toBe(0);
       expect(insets.left).toBe(0);
       expect(insets.right).toBe(0);
+    });
+  });
+
+  describe('Platform Detection Caching', () => {
+    it('should cache platform detection results', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        width: 375,
+        height: 667,
+        hasTouch: true,
+      });
+
+      const first = detectPlatform();
+      const second = detectPlatform();
+
+      // Should return the same cached object reference
+      expect(first).toBe(second);
+    });
+
+    it('should invalidate cache when screen dimensions change', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        width: 375,
+        height: 667,
+        hasTouch: true,
+      });
+
+      const first = detectPlatform();
+
+      // Change window dimensions
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        width: 667,
+        height: 375, // Rotated
+        hasTouch: true,
+      });
+
+      const second = detectPlatform();
+
+      // Should be different objects (cache invalidated)
+      expect(first).not.toBe(second);
+      expect(first.screenWidth).toBe(375);
+      expect(second.screenWidth).toBe(667);
+    });
+
+    it('should clear cache with clearPlatformCache()', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)',
+        width: 375,
+        height: 667,
+        hasTouch: true,
+      });
+
+      const first = detectPlatform();
+      
+      // Clear the cache
+      clearPlatformCache();
+      
+      const second = detectPlatform();
+
+      // Should be different objects (cache was cleared)
+      expect(first).not.toBe(second);
+      // But should have same values
+      expect(first.screenWidth).toBe(second.screenWidth);
+      expect(first.isMobile).toBe(second.isMobile);
     });
   });
 

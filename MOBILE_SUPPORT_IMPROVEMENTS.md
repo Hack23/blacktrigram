@@ -48,6 +48,9 @@ export function isMobileDevice(): boolean;
 export function shouldUseMobileControls(): boolean;
 export function getSafeAreaInsets(): SafeAreaInsets;
 
+// Cache management
+export function clearPlatformCache(): void;
+
 // Constants
 export const MOBILE_BREAKPOINT = 768;
 export const TABLET_BREAKPOINT = 1024;

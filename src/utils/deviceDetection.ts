@@ -170,6 +170,43 @@ export const MOBILE_BREAKPOINT = 768;
 export const TABLET_BREAKPOINT = 1024;
 
 /**
+ * Cached CSS environment variable insets
+ */
+let cachedCSSEnvInsets: { top: number; bottom: number } | null = null;
+
+/**
+ * Read CSS environment variables for safe area insets
+ * Results are cached as they don't change during a session
+ */
+function readCSSEnvInsets(): { top: number; bottom: number } | null {
+  if (cachedCSSEnvInsets !== null) {
+    return cachedCSSEnvInsets;
+  }
+
+  if (typeof window !== 'undefined' && typeof getComputedStyle === 'function') {
+    try {
+      const root = document.documentElement;
+      const style = getComputedStyle(root);
+      const topEnv = style.getPropertyValue('env(safe-area-inset-top)');
+      const bottomEnv = style.getPropertyValue('env(safe-area-inset-bottom)');
+      
+      if (topEnv || bottomEnv) {
+        const result = {
+          top: parseInt(topEnv || '0', 10) || 0,
+          bottom: parseInt(bottomEnv || '0', 10) || 0,
+        };
+        cachedCSSEnvInsets = result;
+        return result;
+      }
+    } catch (error) {
+      // Fall through to null
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Cached platform information to avoid re-parsing user-agent on every call
  */
 let cachedPlatform: PlatformInfo | null = null;
@@ -179,6 +216,7 @@ let cachedScreenHeight = 0;
 /**
  * Clear the cached platform information
  * Useful when window is resized or device emulation changes
+ * Also clears CSS environment variable cache
  * 
  * @public
  */
@@ -186,6 +224,7 @@ export function clearPlatformCache(): void {
   cachedPlatform = null;
   cachedScreenWidth = 0;
   cachedScreenHeight = 0;
+  cachedCSSEnvInsets = null;
 }
 
 /**
@@ -363,30 +402,20 @@ export function getSafeAreaInsets() {
   // iOS devices - distinguish between notched and non-notched
   if (platform.os === 'ios' && platform.isMobile) {
     // Try to read CSS environment variables first (most accurate)
-    if (typeof window !== 'undefined' && typeof getComputedStyle === 'function') {
-      try {
-        const root = document.documentElement;
-        const style = getComputedStyle(root);
-        const topEnv = style.getPropertyValue('env(safe-area-inset-top)');
-        const bottomEnv = style.getPropertyValue('env(safe-area-inset-bottom)');
-        
-        if (topEnv || bottomEnv) {
-          return {
-            top: parseInt(topEnv || '0', 10) || 0,
-            bottom: parseInt(bottomEnv || '0', 10) || 0,
-            left: 0,
-            right: 0,
-          };
-        }
-      } catch (error) {
-        // Fall through to heuristic detection
-      }
+    const cssEnvInsets = readCSSEnvInsets();
+    if (cssEnvInsets) {
+      return {
+        top: cssEnvInsets.top,
+        bottom: cssEnvInsets.bottom,
+        left: 0,
+        right: 0,
+      };
     }
     
     // Heuristic: iPhone X and later have notches and specific screen dimensions
     // iPhone X/XS/11 Pro: 375x812, iPhone XR/11: 414x896, iPhone 12/13/14: 390x844, etc.
-    const hasNotch = platform.screenHeight >= 812 || 
-                     (platform.screenWidth >= 375 && platform.screenHeight >= 667);
+    // Only devices with height >= 812 have notches
+    const hasNotch = platform.screenHeight >= 812;
     
     if (hasNotch) {
       return {
