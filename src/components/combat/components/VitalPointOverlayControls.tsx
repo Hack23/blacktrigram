@@ -21,11 +21,10 @@ import {
   KOREAN_VITAL_POINTS,
   getVitalPointsStats,
 } from "../../../systems/vitalpoint/KoreanVitalPoints";
+import type { BodyRegionFilter } from "./VitalPointMarkers3D";
 
-/**
- * Body region filter options
- */
-export type BodyRegionFilter = "all" | "head" | "torso" | "arms" | "legs";
+// Re-export BodyRegionFilter for convenience
+export type { BodyRegionFilter } from "./VitalPointMarkers3D";
 
 /**
  * Props for VitalPointOverlayControls component
@@ -43,6 +42,10 @@ export interface VitalPointOverlayControlsProps {
   readonly regionFilter: BodyRegionFilter;
   /** Callback when region filter changes */
   readonly onRegionFilterChange: (filter: BodyRegionFilter) => void;
+  /** Current search query */
+  readonly searchQuery?: string;
+  /** Callback when search query changes */
+  readonly onSearchQueryChange?: (query: string) => void;
   /** Whether labels are shown */
   readonly showLabels: boolean;
   /** Callback when label visibility changes */
@@ -101,6 +104,8 @@ export const VitalPointOverlayControls: React.FC<
   onSeverityFiltersChange,
   regionFilter,
   onRegionFilterChange,
+  searchQuery: externalSearchQuery,
+  onSearchQueryChange,
   showLabels,
   onShowLabelsChange,
   animated,
@@ -111,7 +116,11 @@ export const VitalPointOverlayControls: React.FC<
   position,
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Use internal state if no external control provided
+  const [internalSearchQuery, setInternalSearchQuery] = useState("");
+  const searchQuery = externalSearchQuery ?? internalSearchQuery;
+  const setSearchQuery = onSearchQueryChange ?? setInternalSearchQuery;
 
   // Get system statistics
   const stats = useMemo(() => getVitalPointsStats(), []);
@@ -127,10 +136,23 @@ export const VitalPointOverlayControls: React.FC<
 
     // Filter by region
     if (regionFilter !== "all") {
-      const prefix = regionFilter === "arms" || regionFilter === "legs" 
-        ? `${regionFilter.slice(0, -1)}_` // arm_ or leg_
-        : `${regionFilter}_`; // head_ or torso_
-      points = points.filter((vp) => vp.id.startsWith(prefix));
+      if (regionFilter === "arms") {
+        // Match both left and right arm vital points
+        points = points.filter(
+          (vp) =>
+            vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")
+        );
+      } else if (regionFilter === "legs") {
+        // Match both left and right leg vital points
+        points = points.filter(
+          (vp) =>
+            vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")
+        );
+      } else {
+        // Simple prefix match for head_ or torso_
+        const prefix = `${regionFilter}_`;
+        points = points.filter((vp) => vp.id.startsWith(prefix));
+      }
     }
 
     // Filter by search query
@@ -543,7 +565,7 @@ export const VitalPointOverlayControls: React.FC<
               style={{
                 marginTop: "12px",
                 paddingTop: "12px",
-                borderTop: `1px solid ${KOREAN_COLORS.PRIMARY_CYAN}44`,
+                borderTop: `1px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}44`,
                 fontSize: smallFontSize,
                 color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),
               }}

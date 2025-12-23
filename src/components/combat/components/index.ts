@@ -7,6 +7,7 @@
 export { default as CombatArena3D } from "./CombatArena3D";
 export { default as HitEffects3D } from "./HitEffects3D";
 export { default as VitalPointMarkers3D } from "./VitalPointMarkers3D";
+export type { BodyRegionFilter } from "./VitalPointMarkers3D";
 export { default as VitalPointOverlayControls } from "./VitalPointOverlayControls";
 
 // Action Feedback components
@@ -54,7 +55,7 @@ export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { TechniqueBarProps } from "./TechniqueBar";
 export type { TechniqueCardProps } from "./TechniqueCard";
 export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
-export type { VitalPointOverlayControlsProps, BodyRegionFilter } from "./VitalPointOverlayControls";
+export type { VitalPointOverlayControlsProps } from "./VitalPointOverlayControls";
 
 // Player State Indicator prop types
 export type { BalanceIndicatorProps } from "./BalanceIndicator";

@@ -19,6 +19,11 @@ import {
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 
 /**
+ * Body region filter options
+ */
+export type BodyRegionFilter = "all" | "head" | "torso" | "arms" | "legs";
+
+/**
  * Props for the VitalPointMarkers3D component.
  * Controls visibility and interaction with anatomical targeting points.
  */
@@ -35,6 +40,10 @@ export interface VitalPointMarkers3DProps {
   readonly onPointHover?: (vitalPointId: string | null) => void;
   /** Filter points by severity level */
   readonly severityFilter?: VitalPointSeverity[];
+  /** Filter points by body region */
+  readonly regionFilter?: BodyRegionFilter;
+  /** Search query to filter points by name */
+  readonly searchQuery?: string;
   /** Whether to show point labels with Korean names */
   readonly showLabels?: boolean;
   /** Scale multiplier for marker size. Defaults to 1.0 */
@@ -262,22 +271,58 @@ export const VitalPointMarkers3D: React.FC<VitalPointMarkers3DProps> = ({
   onPointClick,
   onPointHover,
   severityFilter,
+  regionFilter = "all",
+  searchQuery = "",
   showLabels = true,
   scale = 1.0,
   animated = true,
 }) => {
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
 
-  // Filter vital points based on severity
+  // Filter vital points based on severity, region, and search
   const visiblePoints = useMemo(() => {
     let points = [...KOREAN_VITAL_POINTS];
 
+    // Filter by severity
     if (severityFilter && severityFilter.length > 0) {
       points = points.filter((vp) => severityFilter.includes(vp.severity));
     }
 
+    // Filter by region
+    if (regionFilter !== "all") {
+      if (regionFilter === "arms") {
+        // Match both left and right arm vital points
+        points = points.filter(
+          (vp) =>
+            vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")
+        );
+      } else if (regionFilter === "legs") {
+        // Match both left and right leg vital points
+        points = points.filter(
+          (vp) =>
+            vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")
+        );
+      } else {
+        // Simple prefix match for head_ or torso_
+        const prefix = `${regionFilter}_`;
+        points = points.filter((vp) => vp.id.startsWith(prefix));
+      }
+    }
+
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      points = points.filter(
+        (vp) =>
+          vp.names.korean.toLowerCase().includes(query) ||
+          vp.names.english.toLowerCase().includes(query) ||
+          vp.names.romanized.toLowerCase().includes(query) ||
+          vp.id.toLowerCase().includes(query)
+      );
+    }
+
     return points;
-  }, [severityFilter]);
+  }, [severityFilter, regionFilter, searchQuery]);
 
   // Handle point hover
   const handlePointHover = (vitalPointId: string, hovered: boolean) => {
