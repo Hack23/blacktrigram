@@ -118,10 +118,10 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
   const [hoveredStance, setHoveredStance] = useState<number | null>(null);
 
   /**
-   * Handle stance selection
+   * Handle stance selection (touch or mouse)
    */
   const handleStanceSelect = useCallback(
-    (e: React.TouchEvent, stanceIndex: number) => {
+    (e: React.TouchEvent | React.MouseEvent, stanceIndex: number) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -144,10 +144,10 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
   );
 
   /**
-   * Handle wheel toggle
+   * Handle wheel toggle (touch or mouse)
    */
   const handleToggle = useCallback(
-    (e: React.TouchEvent) => {
+    (e: React.TouchEvent | React.MouseEvent) => {
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
@@ -211,6 +211,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
                     e.stopPropagation();
                     setHoveredStance(null);
                   }}
+                  onMouseDown={(e) => handleStanceSelect(e, index)}
                   onMouseEnter={() => setHoveredStance(index)}
                   onMouseLeave={() => setHoveredStance(null)}
                   style={{
@@ -292,6 +293,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
       >
         <button
           onTouchStart={handleToggle}
+          onMouseDown={handleToggle}
           style={{
             width: '60px',
             height: '60px',

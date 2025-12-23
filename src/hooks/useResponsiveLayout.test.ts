@@ -3,12 +3,37 @@
  */
 
 import { renderHook } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { useResponsiveLayout, useContentArea, BREAKPOINTS } from './useResponsiveLayout';
+import * as deviceDetection from '../utils/deviceDetection';
 
 describe('useResponsiveLayout', () => {
+  beforeEach(() => {
+    // Mock device detection to return desktop by default
+    vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(false);
+    vi.spyOn(deviceDetection, 'getSafeAreaInsets').mockReturnValue({
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('Device Detection', () => {
     it('should detect iPhone SE as small mobile', () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+      vi.spyOn(deviceDetection, 'getSafeAreaInsets').mockReturnValue({
+        top: 44,
+        bottom: 34,
+        left: 0,
+        right: 0,
+      });
+
       const { result } = renderHook(() => useResponsiveLayout(375, 667));
 
       expect(result.current.isMobile).toBe(true);
@@ -18,6 +43,15 @@ describe('useResponsiveLayout', () => {
     });
 
     it('should detect iPhone 11 as mobile', () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+      vi.spyOn(deviceDetection, 'getSafeAreaInsets').mockReturnValue({
+        top: 44,
+        bottom: 34,
+        left: 0,
+        right: 0,
+      });
+
       const { result } = renderHook(() => useResponsiveLayout(414, 896));
 
       expect(result.current.isMobile).toBe(true);
@@ -27,6 +61,9 @@ describe('useResponsiveLayout', () => {
     });
 
     it('should detect tablet dimensions', () => {
+      // Mock as desktop (tablets not using mobile controls in test)
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(false);
+
       const { result } = renderHook(() => useResponsiveLayout(768, 1024));
 
       expect(result.current.isMobile).toBe(false);
@@ -43,6 +80,9 @@ describe('useResponsiveLayout', () => {
     });
 
     it('should detect landscape orientation', () => {
+      // Mock as mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
       const { result } = renderHook(() => useResponsiveLayout(667, 375));
 
       expect(result.current.isLandscape).toBe(true);
@@ -52,6 +92,15 @@ describe('useResponsiveLayout', () => {
 
   describe('Safe Area Insets', () => {
     it('should provide safe area insets for mobile portrait', () => {
+      // Mock iOS mobile device
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+      vi.spyOn(deviceDetection, 'getSafeAreaInsets').mockReturnValue({
+        top: 44,
+        bottom: 34,
+        left: 0,
+        right: 0,
+      });
+
       const { result } = renderHook(() => useResponsiveLayout(375, 667));
 
       expect(result.current.safeArea.top).toBe(44);
@@ -61,10 +110,20 @@ describe('useResponsiveLayout', () => {
     });
 
     it('should provide safe area insets for mobile landscape', () => {
+      // Mock iOS mobile device in landscape
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+      vi.spyOn(deviceDetection, 'getSafeAreaInsets').mockReturnValue({
+        top: 0,
+        bottom: 21,
+        left: 44,
+        right: 44,
+      });
+
       const { result } = renderHook(() => useResponsiveLayout(667, 375));
 
-      expect(result.current.safeArea.top).toBe(44);
-      expect(result.current.safeArea.bottom).toBe(34);
+      // Landscape mode (width > height) with notch gets horizontal insets
+      expect(result.current.safeArea.top).toBe(0);
+      expect(result.current.safeArea.bottom).toBe(21);
       expect(result.current.safeArea.left).toBe(44);
       expect(result.current.safeArea.right).toBe(44);
     });
