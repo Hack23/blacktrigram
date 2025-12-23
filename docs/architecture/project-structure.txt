@@ -495,6 +495,8 @@ src/components/combat/components/TechniqueBar.tsx
 src/components/combat/components/TechniqueCard.tsx
 src/components/combat/components/VitalPointMarkers3D.test.tsx
 src/components/combat/components/VitalPointMarkers3D.tsx
+src/components/combat/components/VitalPointOverlayControls.test.tsx
+src/components/combat/components/VitalPointOverlayControls.tsx
 src/components/combat/components/index.ts
 src/components/combat/hooks/useAICombat.test.ts
 src/components/combat/hooks/useAICombat.ts
@@ -670,6 +672,7 @@ src/index.ts
 src/main.tsx
 src/systems/CombatSystem.test.ts
 src/systems/CombatSystem.ts
+src/systems/CombatSystemIntegration.test.ts
 src/systems/EffectCalculator.test.ts
 src/systems/EffectCalculator.ts
 src/systems/GameIntegration.test.ts
@@ -725,10 +728,14 @@ src/systems/bodypart/types.ts
 src/systems/combat/BalanceSystem.ts
 src/systems/combat/CombatStateSystem.test.ts
 src/systems/combat/CombatStateSystem.ts
+src/systems/combat/ConsciousnessSystem.test.ts
 src/systems/combat/ConsciousnessSystem.ts
+src/systems/combat/PainResponseSystem.test.ts
 src/systems/combat/PainResponseSystem.ts
 src/systems/combat/TrainingCombatSystem.ts
 src/systems/combat/index.ts
+src/systems/combat/painConsciousnessUtils.test.ts
+src/systems/combat/painConsciousnessUtils.ts
 src/systems/combat/typeGuards.test.ts
 src/systems/combat/typeGuards.ts
 src/systems/combat/types.ts

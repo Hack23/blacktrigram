@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.61% </span>
+                <span class="strong">61.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/31</span>
+                <span class='fraction'>19/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.43% </span>
+                <span class="strong">36.95% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/46</span>
+                <span class='fraction'>17/46</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">60.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/28</span>
+                <span class='fraction'>17/28</span>
             </div>
         
             
@@ -309,17 +309,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">77x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">272x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">247x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">170x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,18 +337,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -362,15 +362,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">818x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -520,16 +520,16 @@ export interface VitalPointMarker3DProps {
  */
 const getSeverityColor = (severity: VitalPointSeverity): number =&gt; {
   switch (severity) {
-<span class="branch-0 cbranch-no" title="branch not covered" >    case VitalPointSeverity.MINOR:</span>
-<span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.POSITIVE_GREEN;</span>
-<span class="branch-1 cbranch-no" title="branch not covered" >    case VitalPointSeverity.MODERATE:</span>
-<span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.WARNING_YELLOW;</span>
+    case VitalPointSeverity.MINOR:
+      return KOREAN_COLORS.POSITIVE_GREEN;
+    case VitalPointSeverity.MODERATE:
+      return KOREAN_COLORS.WARNING_YELLOW;
     case VitalPointSeverity.MAJOR:
       return KOREAN_COLORS.ACCENT_GOLD;
     case VitalPointSeverity.CRITICAL:
       return KOREAN_COLORS.ACCENT_RED;
-<span class="branch-4 cbranch-no" title="branch not covered" >    case VitalPointSeverity.LETHAL:</span>
-<span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.NEGATIVE_RED; // Most severe - red for lethal vital points</span>
+    case VitalPointSeverity.LETHAL:
+      return KOREAN_COLORS.NEGATIVE_RED; // Most severe - red for lethal vital points
 <span class="branch-5 cbranch-no" title="branch not covered" >    default:</span>
 <span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.TEXT_SECONDARY;</span>
   }
@@ -700,7 +700,7 @@ export default VitalPointMarker3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-22T17:21:57.515Z
+                at 2025-12-23T15:30:45.154Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
