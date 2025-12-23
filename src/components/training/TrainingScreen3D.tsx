@@ -7,6 +7,7 @@
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
+import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useAudio } from "../../audio/AudioProvider";
@@ -26,7 +27,11 @@ import {
   convertPlayerStateToProps,
 } from "../../utils/player3DHelpers";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
-import { VitalPointMarkers3D, VitalPointOverlayControls } from "../combat/components";
+import {
+  VitalPointMarkers3D,
+  VitalPointOverlayControls,
+  type BodyRegionFilter,
+} from "../combat/components";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -113,16 +118,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
-  const vitalPointCount = 70; // ✅ Show all 70 vital points
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 1.5: Vital Point Overlay Controls State
-  // ═══════════════════════════════════════════════════════════════════════════
+  const vitalPointCount = 70; // Show all 70 vital points
 
   // Vital point overlay state
   const [overlayVisible, setOverlayVisible] = React.useState(false);
-  const [severityFilters, setSeverityFilters] = React.useState<import("../../types/common").VitalPointSeverity[]>([]);
-  const [regionFilter, setRegionFilter] = React.useState<import("../../components/combat/components").BodyRegionFilter>("all");
+  const [severityFilters, setSeverityFilters] = React.useState<
+    import("../../types/common").VitalPointSeverity[]
+  >([]);
+  const [regionFilter, setRegionFilter] =
+    React.useState<BodyRegionFilter>("all");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [showLabels, setShowLabels] = React.useState(true);
   const [animated, setAnimated] = React.useState(true);
@@ -716,6 +720,47 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
+        {/* Vital Point Overlay - Show all 70 points on dummy */}
+        {overlayVisible && (
+          <VitalPointMarkers3D
+            position={dummyPosition}
+            visible={overlayVisible}
+            severityFilter={severityFilters}
+            regionFilter={regionFilter}
+            searchQuery={searchQuery}
+            showLabels={showLabels}
+            scale={scale}
+            animated={animated}
+            selectedPoint={trainingState.selectedVitalPoint}
+            onPointClick={(pointId) => {
+              trainingActions.setSelectedVitalPoint(pointId);
+              audio.playSFX("menu_select");
+            }}
+          />
+        )}
+
+        {/* VitalPointOverlayControls in 3D space */}
+        {overlayVisible && (
+          <VitalPointOverlayControls
+            visible={overlayVisible}
+            onVisibleChange={setOverlayVisible}
+            severityFilters={severityFilters}
+            onSeverityFiltersChange={setSeverityFilters}
+            regionFilter={regionFilter}
+            onRegionFilterChange={setRegionFilter}
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            showLabels={showLabels}
+            onShowLabelsChange={setShowLabels}
+            animated={animated}
+            onAnimatedChange={setAnimated}
+            scale={scale}
+            onScaleChange={setScale}
+            position={[-8, 2, 3]}
+            isMobile={isMobile}
+          />
+        )}
+
         {/* Player model */}
         <SkeletalPlayer3D
           {...convertPlayerStateToProps(
@@ -749,47 +794,224 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         ))}
 
-        {/* Vital Point Overlay - Show all 70 points on dummy */}
-        {overlayVisible && (
-          <VitalPointMarkers3D
-            position={dummyPosition}
-            visible={overlayVisible}
-            severityFilter={severityFilters}
-            regionFilter={regionFilter}
-            searchQuery={searchQuery}
-            showLabels={showLabels}
-            scale={scale}
-            animated={animated}
-            selectedPoint={trainingState.selectedVitalPoint}
-            onPointClick={(pointId) => {
-              trainingActions.setSelectedVitalPoint(pointId);
-              audio.playSFX("menu_select");
+        {/* Html UI Overlays */}
+        <Html fullscreen>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              position: "relative",
             }}
-            onPointHover={() => {
-              // Optional: Add hover feedback in the future
-            }}
-          />
-        )}
+          >
+            {/* Top Left - Training Controls */}
+            <div
+              style={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                pointerEvents: "all",
+              }}
+            >
+              <TrainingControlsHTML
+                isTraining={trainingState.isTraining}
+                onStartTraining={handleStartTraining}
+                onStopTraining={handleStopTraining}
+                isMobile={isMobile}
+              />
+            </div>
 
-        {/* Vital Point Overlay Controls - Positioned for visibility from camera at [0,8,12] */}
-        <VitalPointOverlayControls
-          position={[-8, 2, 3]}
-          visible={overlayVisible}
-          onVisibleChange={setOverlayVisible}
-          severityFilters={severityFilters}
-          onSeverityFiltersChange={setSeverityFilters}
-          regionFilter={regionFilter}
-          onRegionFilterChange={setRegionFilter}
-          searchQuery={searchQuery}
-          onSearchQueryChange={setSearchQuery}
-          showLabels={showLabels}
-          onShowLabelsChange={setShowLabels}
-          animated={animated}
-          onAnimatedChange={setAnimated}
-          scale={scale}
-          onScaleChange={setScale}
-          isMobile={isMobile}
-        />
+            {/* Top Right - Training Stats (below VolumeControl) */}
+            <div
+              style={{
+                position: "absolute",
+                top: isMobile ? 90 : 120,
+                right: 20,
+                pointerEvents: "all",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                alignItems: "flex-end",
+              }}
+            >
+              <TrainingStatsHTML
+                stats={{
+                  ...trainingState.stats,
+                  sessionDuration: trainingState.sessionDuration,
+                  bestCombo: trainingState.bestCombo,
+                  perfectStrikes: trainingState.perfectStrikes,
+                }}
+                isMobile={isMobile}
+              />
+            </div>
+
+            {/* Bottom Left - Mode Selector and Anatomy Controls */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: isMobile ? 100 : 110,
+                left: isMobile ? 10 : 20,
+                pointerEvents: "all",
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+              }}
+            >
+              <TrainingModeSelectorHTML
+                currentMode={trainingState.trainingMode}
+                onModeChange={trainingActions.setTrainingMode}
+                isMobile={isMobile}
+              />
+
+              <AnatomyControlsHTML
+                visibleLayers={trainingState.visibleAnatomyLayers}
+                onLayerToggle={handleAnatomyLayerToggle}
+                isMobile={isMobile}
+              />
+            </div>
+
+            {/* Bottom Right - Vital Point Panel */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: isMobile ? 100 : 110,
+                right: isMobile ? 10 : 20,
+                pointerEvents: "all",
+              }}
+            >
+              <VitalPointTrainingHTML
+                selectedVitalPoint={trainingState.selectedVitalPoint}
+                onVitalPointSelect={trainingActions.setSelectedVitalPoint}
+                isMobile={isMobile}
+              />
+            </div>
+
+            {/* Vital Point Overlay Hint - Top Center */}
+            {!overlayVisible && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: isMobile ? 20 : 30,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  pointerEvents: "none",
+                  padding: isMobile ? "8px 12px" : "10px 16px",
+                  background: hexToRgbaString(
+                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    0.9
+                  ),
+                  border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+                  borderRadius: "8px",
+                  fontSize: isMobile ? "12px" : "14px",
+                  fontFamily: FONT_FAMILY.KOREAN,
+                  color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                <div>
+                  💡 급소 오버레이 | Vital Point Overlay: Press{" "}
+                  <span
+                    style={{
+                      color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    }}
+                  >
+                    V
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Center - Feedback Message */}
+            {trainingState.showFeedback && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  pointerEvents: "none",
+                }}
+              >
+                <TrainingFeedbackHTML
+                  message={trainingState.feedback}
+                  isMobile={isMobile}
+                />
+              </div>
+            )}
+
+            {/* Technique Bar - Bottom Center (above menu button) */}
+            {trainingState.isTraining && (
+              <TechniqueBar
+                techniques={techniqueSelection.availableTechniques}
+                player={trainingPlayerState}
+                selectedIndex={techniqueSelection.selectedIndex}
+                cooldowns={cooldownsMap}
+                onTechniqueSelect={techniqueSelection.selectTechnique}
+                onTechniqueHover={(_tech) => {
+                  // Could add additional hover effects here
+                }}
+                isMobile={isMobile}
+                screenWidth={width}
+                screenHeight={height}
+              />
+            )}
+
+            {/* Bottom Center - Return to Menu Button */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: isMobile ? 25 : 35,
+                left: "50%",
+                transform: "translateX(-50%)",
+                pointerEvents: "all",
+                minHeight: "50px",
+                zIndex: 100,
+              }}
+            >
+              <style>
+                {`
+                  .training-return-menu-btn {
+                    background: ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      1
+                    )};
+                    border: none;
+                    border-radius: 8px;
+                    padding: ${isMobile ? "10px 16px" : "12px 24px"};
+                    font-size: ${isMobile ? "14px" : "16px"};
+                    font-weight: bold;
+                    font-family: ${FONT_FAMILY.KOREAN};
+                    color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 0 10px ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.5
+                    )};
+                    min-height: 40px;
+                  }
+                  .training-return-menu-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 0 20px ${hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.8
+                    )};
+                  }
+                `}
+              </style>
+              <button
+                onClick={onReturnToMenu}
+                onMouseEnter={() => audio.playSFX("menu_hover")}
+                className="training-return-menu-btn"
+                data-testid="return-to-menu-button"
+                aria-label="Return to main menu"
+              >
+                메뉴로 | Return to Menu
+              </button>
+            </div>
+          </div>
+        </Html>
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
         {isMobile && (
@@ -830,220 +1052,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           </>
         )}
       </Canvas>
-
-      {/* HTML UI Overlays (positioned absolutely over Canvas) */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-        }}
-      >
-        {/* Top Left - Training Controls */}
-        <div
-          style={{
-            position: "absolute",
-            top: 20,
-            left: 20,
-            pointerEvents: "auto",
-          }}
-        >
-          <TrainingControlsHTML
-            isTraining={trainingState.isTraining}
-            onStartTraining={handleStartTraining}
-            onStopTraining={handleStopTraining}
-            isMobile={isMobile}
-          />
-        </div>
-
-        {/* Top Right - Training Stats (below VolumeControl) */}
-        <div
-          style={{
-            position: "absolute",
-            top: isMobile ? 90 : 120,
-            right: 20,
-            pointerEvents: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            alignItems: "flex-end",
-          }}
-        >
-          <TrainingStatsHTML
-            stats={{
-              ...trainingState.stats,
-              sessionDuration: trainingState.sessionDuration,
-              bestCombo: trainingState.bestCombo,
-              perfectStrikes: trainingState.perfectStrikes,
-            }}
-            isMobile={isMobile}
-          />
-        </div>
-
-        {/* Bottom Left - Mode Selector and Anatomy Controls */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: isMobile ? 100 : 110,
-            left: isMobile ? 10 : 20,
-            pointerEvents: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: "15px",
-          }}
-        >
-          <TrainingModeSelectorHTML
-            currentMode={trainingState.trainingMode}
-            onModeChange={trainingActions.setTrainingMode}
-            isMobile={isMobile}
-          />
-
-          <AnatomyControlsHTML
-            visibleLayers={trainingState.visibleAnatomyLayers}
-            onLayerToggle={handleAnatomyLayerToggle}
-            isMobile={isMobile}
-          />
-
-          {/* Vital Point Overlay Hint */}
-          <div
-            style={{
-              background: `${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9)}`,
-              border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
-              borderRadius: "8px",
-              padding: isMobile ? "8px 12px" : "10px 16px",
-              fontSize: isMobile ? 10 : 12,
-              fontFamily: FONT_FAMILY.KOREAN,
-              color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
-              maxWidth: isMobile ? 180 : 220,
-              boxShadow: `0 2px 12px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
-            }}
-          >
-            <div style={{ fontWeight: "bold", marginBottom: "4px", color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1) }}>
-              💡 TIP
-            </div>
-            <div>
-              Press <kbd style={{ 
-                background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 1),
-                padding: "2px 6px",
-                borderRadius: "4px",
-                border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
-                fontFamily: "monospace",
-              }}>V</kbd> to toggle vital point overlay
-            </div>
-            <div style={{ fontSize: isMobile ? 9 : 10, marginTop: "4px", opacity: 0.8 }}>
-              급소 오버레이 토글
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Right - Vital Point Panel */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: isMobile ? 100 : 110,
-            right: isMobile ? 10 : 20,
-            pointerEvents: "auto",
-          }}
-        >
-          <VitalPointTrainingHTML
-            selectedVitalPoint={trainingState.selectedVitalPoint}
-            onVitalPointSelect={trainingActions.setSelectedVitalPoint}
-            isMobile={isMobile}
-          />
-        </div>
-
-        {/* Center - Feedback Message */}
-        {trainingState.showFeedback && (
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              pointerEvents: "none",
-            }}
-          >
-            <TrainingFeedbackHTML
-              message={trainingState.feedback}
-              isMobile={isMobile}
-            />
-          </div>
-        )}
-
-        {/* Technique Bar - Bottom Center (above menu button) */}
-        {trainingState.isTraining && (
-          <TechniqueBar
-            techniques={techniqueSelection.availableTechniques}
-            player={trainingPlayerState}
-            selectedIndex={techniqueSelection.selectedIndex}
-            cooldowns={cooldownsMap}
-            onTechniqueSelect={techniqueSelection.selectTechnique}
-            onTechniqueHover={(_tech) => {
-              // Could add additional hover effects here
-            }}
-            isMobile={isMobile}
-            screenWidth={width}
-            screenHeight={height}
-          />
-        )}
-
-        {/* Bottom Center - Return to Menu Button */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: isMobile ? 25 : 35,
-            left: "50%",
-            transform: "translateX(-50%)",
-            pointerEvents: "auto",
-            minHeight: "50px",
-            zIndex: 100,
-          }}
-        >
-          <style>
-            {`
-              .training-return-menu-btn {
-                background: ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
-                  1
-                )};
-                border: none;
-                border-radius: 8px;
-                padding: ${isMobile ? "10px 16px" : "12px 24px"};
-                font-size: ${isMobile ? "14px" : "16px"};
-                font-weight: bold;
-                font-family: ${FONT_FAMILY.KOREAN};
-                color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
-                cursor: pointer;
-                transition: all 0.2s ease;
-                box-shadow: 0 0 10px ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
-                  0.5
-                )};
-                min-height: 40px;
-              }
-              .training-return-menu-btn:hover {
-                transform: scale(1.05);
-                box-shadow: 0 0 20px ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
-                  0.8
-                )};
-              }
-            `}
-          </style>
-          <button
-            onClick={onReturnToMenu}
-            onMouseEnter={() => audio.playSFX("menu_hover")}
-            className="training-return-menu-btn"
-            data-testid="return-to-menu-button"
-            aria-label="Return to main menu"
-          >
-            메뉴로 | Return to Menu
-          </button>
-        </div>
-      </div>
 
       {/* Volume Control - positioned outside Canvas to maintain AudioProvider context */}
       <VolumeControl position="top-right" compact={isMobile} />
