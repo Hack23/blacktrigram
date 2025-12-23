@@ -271,6 +271,9 @@ export const SkeletalPlayer3D: React.FC<
   // Animation time ref - use ref to avoid state updates during render
   const animTimeRef = useRef(0);
 
+  // Ref for character sway based on balance state
+  const swayTimeRef = useRef(0);
+
   // Track recent combat events for expression calculation
   const [justHit, setJustHit] = useState(false);
   const [justLanded, setJustLanded] = useState(false);
@@ -493,8 +496,37 @@ export const SkeletalPlayer3D: React.FC<
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
 
+  // Calculate sway position based on balance state
+  const [swayPosition, setSwayPosition] = useState<[number, number, number]>([0, 0, 0]);
+
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
+    // Calculate sway based on balance state (for SHAKEN and VULNERABLE)
+    if (balance === "SHAKEN" || balance === "VULNERABLE") {
+      swayTimeRef.current += delta;
+      
+      const swayIntensity = balance === "SHAKEN" ? 0.02 : 0.04;
+      const swaySpeed = balance === "SHAKEN" ? 2 : 3;
+      
+      const swayX = Math.sin(swayTimeRef.current * swaySpeed) * swayIntensity;
+      const swayY = Math.cos(swayTimeRef.current * swaySpeed * 0.8) * swayIntensity * 0.5;
+      
+      // Update sway position periodically to reduce re-renders
+      if (frameCounter.current % 2 === 0) {
+        setSwayPosition([swayX, swayY, 0]);
+      }
+    } else {
+      // Smoothly return to neutral position
+      if (frameCounter.current % 2 === 0 && (Math.abs(swayPosition[0]) > 0.001 || Math.abs(swayPosition[1]) > 0.001)) {
+        setSwayPosition([swayPosition[0] * 0.95, swayPosition[1] * 0.95, 0]);
+      }
+      
+      // Reset sway time when not swaying
+      if (Math.abs(swayPosition[0]) < 0.001 && Math.abs(swayPosition[1]) < 0.001) {
+        swayTimeRef.current = 0;
+      }
+    }
+
     // Update hand animation state at 60fps using refs to reduce React re-render frequency
     updateHandAnimationFrame(leftHandStateRef, setLeftHandState, delta);
 
@@ -566,6 +598,8 @@ export const SkeletalPlayer3D: React.FC<
       scale={[facing === "left" ? -scale : scale, scale, scale]}
       data-testid={`skeletal-player3d-${playerId}`}
     >
+      {/* Inner group for sway animation */}
+      <group position={swayPosition}>
       {/* Stance aura effect */}
       <StanceAura stance={stance} intensity={ki / 100} animated />
 
@@ -683,6 +717,7 @@ export const SkeletalPlayer3D: React.FC<
           isMobile={isMobile}
         />
       )}
+      </group> {/* Close inner sway group */}
     </group>
   );
 };
