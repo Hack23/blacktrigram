@@ -26,12 +26,12 @@ import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
 } from "../../utils/player3DHelpers";
-import { TechniqueBar } from "../combat/components/TechniqueBar";
 import {
   VitalPointMarkers3D,
   VitalPointOverlayControls,
   type BodyRegionFilter,
 } from "../combat/components";
+import { TechniqueBar } from "../combat/components/TechniqueBar";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -739,7 +739,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
-        {/* VitalPointOverlayControls in 3D space */}
+        {/* VitalPointOverlayControls - fixed screen position */}
         {overlayVisible && (
           <VitalPointOverlayControls
             visible={overlayVisible}
@@ -756,7 +756,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             onAnimatedChange={setAnimated}
             scale={scale}
             onScaleChange={setScale}
-            position={[-8, 2, 3]}
+            screenPosition={{ top: "180px", left: "20px" }}
             isMobile={isMobile}
           />
         )}
@@ -900,7 +900,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     KOREAN_COLORS.UI_BACKGROUND_DARK,
                     0.9
                   ),
-                  border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.PRIMARY_CYAN,
+                    0.6
+                  )}`,
                   borderRadius: "8px",
                   fontSize: isMobile ? "12px" : "14px",
                   fontFamily: FONT_FAMILY.KOREAN,

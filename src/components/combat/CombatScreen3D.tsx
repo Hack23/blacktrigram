@@ -78,6 +78,7 @@ import {
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
+import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
@@ -89,7 +90,6 @@ import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
-import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -264,8 +264,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Vital point overlay state (for both players)
   const [overlayVisible, setOverlayVisible] = useState(false);
-  const [severityFilters, setSeverityFilters] = useState<import("../../types/common").VitalPointSeverity[]>([]);
-  const [regionFilter, setRegionFilter] = useState<import("./components").BodyRegionFilter>("all");
+  const [severityFilters, setSeverityFilters] = useState<
+    import("../../types/common").VitalPointSeverity[]
+  >([]);
+  const [regionFilter, setRegionFilter] =
+    useState<import("./components").BodyRegionFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
@@ -1791,9 +1794,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           </>
         )}
 
-        {/* Vital Point Overlay Controls */}
+        {/* Vital Point Overlay Controls - fixed screen position, left side below player status */}
         <VitalPointOverlayControls
-          position={[-9, 3, 0]}
+          screenPosition={{ top: "180px", left: "20px" }}
           visible={overlayVisible}
           onVisibleChange={setOverlayVisible}
           severityFilters={severityFilters}
