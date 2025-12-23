@@ -277,20 +277,33 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
       }
     });
 
+    // Determine the maximum number of particles we can safely render this frame.
+    // This explicitly ties the visible particle cap to both the buffer size and maxParticles.
+    const maxVisibleParticles = Math.min(maxParticles, posArray.length / 3);
+
     // Update blood pool particles (fade out)
-    poolParticlesRef.current = poolParticlesRef.current.filter((p) => {
-      p.age += safeDelta;
-      const isAlive = p.age < p.lifetime;
+    if (totalParticleIndex >= maxVisibleParticles) {
+      // Buffer is full: continue aging and culling pool particles, but do not write positions.
+      poolParticlesRef.current = poolParticlesRef.current.filter((p) => {
+        p.age += safeDelta;
+        return p.age < p.lifetime;
+      });
+    } else {
+      // There is still room in the buffer: write pool particle positions up to the cap.
+      poolParticlesRef.current = poolParticlesRef.current.filter((p) => {
+        p.age += safeDelta;
+        const isAlive = p.age < p.lifetime;
 
-      if (isAlive && totalParticleIndex < posArray.length / 3) {
-        posArray[totalParticleIndex * 3] = p.position.x;
-        posArray[totalParticleIndex * 3 + 1] = p.position.y;
-        posArray[totalParticleIndex * 3 + 2] = p.position.z;
-        totalParticleIndex++;
-      }
+        if (isAlive && totalParticleIndex < maxVisibleParticles) {
+          posArray[totalParticleIndex * 3] = p.position.x;
+          posArray[totalParticleIndex * 3 + 1] = p.position.y;
+          posArray[totalParticleIndex * 3 + 2] = p.position.z;
+          totalParticleIndex++;
+        }
 
-      return isAlive;
-    });
+        return isAlive;
+      });
+    }
 
     attr.needsUpdate = true;
   });

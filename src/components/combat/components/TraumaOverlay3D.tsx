@@ -219,7 +219,9 @@ const FractureWarning: React.FC<{
 
   const warningOpacity = useMemo(() => {
     // Pulse more intensely as health drops
-    return 0.5 + (30 - health) / 60; // 0.5 at 30% health, 1.0 at 0% health
+    const rawOpacity = 0.5 + (30 - health) / 60; // 0.5 at 30% health, 1.0 at 0% health
+    // Clamp to valid CSS opacity range [0, 1] in case health falls outside [0, 30]
+    return Math.min(1, Math.max(0, rawOpacity));
   }, [health]);
 
   return (
@@ -311,10 +313,23 @@ export const TraumaOverlay3D: React.FC<TraumaOverlay3DProps> = ({
 }) => {
   // Filter injuries for this player
   const playerInjuries = useMemo(() => {
-    // In multi-player scenarios, filter by player
-    // For now, show all injuries on the character
-    return injuries;
-  }, [injuries]);
+    // In multi-player scenarios, filter by player when available
+    if (playerId == null) {
+      // Single-player or unspecified player: show all injuries
+      return injuries;
+    }
+
+    // Backward-compatible filtering:
+    // - If an injury has a playerId, it must match the current playerId.
+    // - If an injury has no playerId, include it (legacy/global injuries).
+    return injuries.filter((injury) => {
+      const injuryWithPlayer = injury as { playerId?: string | number };
+      if (injuryWithPlayer.playerId == null) {
+        return true;
+      }
+      return injuryWithPlayer.playerId === playerId;
+    });
+  }, [injuries, playerId]);
 
   // Separate fractures from other injuries
   const { fractures, otherInjuries } = useMemo(() => {

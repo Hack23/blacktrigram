@@ -89,11 +89,11 @@ const createBloodTexture = (): THREE.Texture => {
   const ctx = canvas.getContext("2d");
   
   if (!ctx) {
-    // Fallback: Return a basic transparent texture
+    // Fallback: Return a basic transparent texture with matching dimensions
     console.warn("Blood decal texture generation failed: Could not get 2D context");
     const fallbackCanvas = document.createElement("canvas");
-    fallbackCanvas.width = 64;
-    fallbackCanvas.height = 64;
+    fallbackCanvas.width = 256;
+    fallbackCanvas.height = 256;
     return new THREE.CanvasTexture(fallbackCanvas);
   }
 
@@ -158,12 +158,6 @@ const DecalMesh: React.FC<{
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshBasicMaterial | null>(null);
 
-  // Calculate current opacity based on age (for initial render)
-  // Note: Animation updates happen in useFrame
-  const initialOpacity = useMemo(() => {
-    return decal.opacity;
-  }, [decal.opacity]);
-
   // Create decal geometry
   useEffect(() => {
     if (!meshRef.current || !targetMesh) return;
@@ -188,14 +182,23 @@ const DecalMesh: React.FC<{
       
       // Apply rotation to the mesh itself
       meshRef.current.rotation.set(0, 0, decal.rotation);
-    } catch {
-      // Silently handle decal projection failures
+    } catch (error) {
+      // Handle decal projection failures
       // This can occur when target mesh geometry is complex or decal position is invalid
       // Decal will simply not render in this case
+      if (process.env.NODE_ENV === "development") {
+        // In development, log a diagnostic warning to help debug decal issues
+        console.warn("BloodDecals3D: Failed to project blood decal onto target mesh.", {
+          decalId: decal.id,
+          position: decal.position,
+          size: decal.size,
+          error,
+        });
+      }
     }
   }, [decal, targetMesh]);
 
-  // Fade animation
+  // Fade animation - update material opacity in animation loop
   useFrame(() => {
     if (!materialRef.current) return;
 
@@ -204,11 +207,12 @@ const DecalMesh: React.FC<{
     materialRef.current.opacity = decal.opacity * (1 - fadeProgress);
   });
 
-  // Don't render if fully faded (check in render, not useMemo)
+  // Calculate current opacity for render check (outside useMemo to avoid impure function issue)
   const age = (Date.now() - decal.timestamp) / 1000;
   const fadeProgress = Math.min(age / fadeDuration, 1);
   const currentOpacity = decal.opacity * (1 - fadeProgress);
-  
+
+  // Don't render if fully faded
   if (currentOpacity <= 0.01) return null;
 
   return (
@@ -217,7 +221,7 @@ const DecalMesh: React.FC<{
         ref={materialRef}
         map={texture}
         transparent
-        opacity={initialOpacity}
+        opacity={currentOpacity}
         depthTest={true}
         depthWrite={false}
         polygonOffset
@@ -327,7 +331,7 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
   }, [bloodTexture]);
 
   // Don't render if disabled or no decals
-  if (!enabled || activeDecals.length === 0 || !targetMeshRef?.current) {
+  if (!enabled || activeDecals.length === 0) {
     return null;
   }
 
@@ -338,7 +342,7 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
           key={decal.id}
           decal={decal}
           texture={bloodTexture}
-          targetMesh={targetMeshRef.current ?? undefined}
+          targetMesh={targetMeshRef?.current ?? undefined}
           fadeDuration={fadeDuration}
         />
       ))}
