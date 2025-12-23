@@ -207,21 +207,13 @@ const DecalMesh: React.FC<{
     materialRef.current.opacity = decal.opacity * (1 - fadeProgress);
   });
 
-  // Calculate current opacity for render check (outside useMemo to avoid impure function issue)
-  const age = (Date.now() - decal.timestamp) / 1000;
-  const fadeProgress = Math.min(age / fadeDuration, 1);
-  const currentOpacity = decal.opacity * (1 - fadeProgress);
-
-  // Don't render if fully faded
-  if (currentOpacity <= 0.01) return null;
-
   return (
     <mesh ref={meshRef} data-testid={`blood-decal-${decal.id}`}>
       <meshBasicMaterial
         ref={materialRef}
         map={texture}
         transparent
-        opacity={currentOpacity}
+        opacity={decal.opacity}
         depthTest={true}
         depthWrite={false}
         polygonOffset
@@ -330,6 +322,13 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
     };
   }, [bloodTexture]);
 
+  // Use state to track target mesh to avoid ref access during render
+  const [targetMesh, setTargetMesh] = React.useState<THREE.Mesh | undefined>();
+
+  React.useEffect(() => {
+    setTargetMesh(targetMeshRef?.current ?? undefined);
+  }, [targetMeshRef]);
+
   // Don't render if disabled or no decals
   if (!enabled || activeDecals.length === 0) {
     return null;
@@ -342,7 +341,7 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
           key={decal.id}
           decal={decal}
           texture={bloodTexture}
-          targetMesh={targetMeshRef?.current ?? undefined}
+          targetMesh={targetMesh}
           fadeDuration={fadeDuration}
         />
       ))}

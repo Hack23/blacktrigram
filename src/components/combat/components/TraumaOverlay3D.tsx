@@ -215,14 +215,15 @@ const FractureWarning: React.FC<{
   health: number;
   isMobile: boolean;
 }> = ({ health, isMobile }) => {
-  if (health >= 30) return null;
-
+  // Calculate opacity before early return to avoid conditional hook call
   const warningOpacity = useMemo(() => {
     // Pulse more intensely as health drops
     const rawOpacity = 0.5 + (30 - health) / 60; // 0.5 at 30% health, 1.0 at 0% health
     // Clamp to valid CSS opacity range [0, 1] in case health falls outside [0, 30]
     return Math.min(1, Math.max(0, rawOpacity));
   }, [health]);
+
+  if (health >= 30) return null;
 
   return (
     <Html center position={[0, 2.5, 0]}>
