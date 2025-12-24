@@ -133,8 +133,15 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
       </div>
 
       {/* Body part groups */}
-      {bodyPartGroups.map((group, groupIndex) => (
-        <div key={groupIndex} style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+      {bodyPartGroups.map((group) => (
+        <div
+          key={group.label}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "3px",
+          }}
+        >
           {/* Group label - optional, can be hidden for compact display */}
           <div
             style={{
@@ -142,7 +149,7 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
               color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.8),
               textAlign: isLeft ? "left" : "right",
-              marginTop: groupIndex > 0 ? "4px" : "0",
+              marginTop: group.label === bodyPartGroups[0].label ? "0" : "4px",
             }}
           >
             {group.label}
