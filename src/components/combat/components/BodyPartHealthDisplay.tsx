@@ -17,9 +17,9 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
 import { BodyPart, BodyPartHealth } from "../../../systems/bodypart/types";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 
 export interface BodyPartHealthDisplayProps {
   /** Body part health data */
@@ -35,10 +35,7 @@ export interface BodyPartHealthDisplayProps {
 /**
  * Body part names in Korean and English
  */
-const BODY_PART_NAMES: Record<
-  BodyPart,
-  { korean: string; english: string }
-> = {
+const BODY_PART_NAMES: Record<BodyPart, { korean: string; english: string }> = {
   [BodyPart.HEAD]: { korean: "두부", english: "Head" },
   [BodyPart.NECK]: { korean: "경부", english: "Neck" },
   [BodyPart.TORSO_UPPER]: { korean: "상부", english: "Upper" },
@@ -90,7 +87,15 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
   // Group body parts for display
   const bodyPartGroups = useMemo(
     () => [
-      { label: "상체 | Upper", parts: [BodyPart.HEAD, BodyPart.NECK, BodyPart.TORSO_UPPER, BodyPart.TORSO_LOWER] },
+      {
+        label: "상체 | Upper",
+        parts: [
+          BodyPart.HEAD,
+          BodyPart.NECK,
+          BodyPart.TORSO_UPPER,
+          BodyPart.TORSO_LOWER,
+        ],
+      },
       { label: "팔 | Arms", parts: [BodyPart.ARM_LEFT, BodyPart.ARM_RIGHT] },
       { label: "다리 | Legs", parts: [BodyPart.LEG_LEFT, BodyPart.LEG_RIGHT] },
     ],
@@ -102,20 +107,26 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
       data-testid={`body-part-health-${playerId}`}
       style={{
         position: "absolute",
-        top: isMobile ? "120px" : "160px",
+        // Position below PlayerHUD (which is ~140px tall on desktop, ~100px on mobile)
+        // Account for VitalPoints controls which may be showing on left side
+        top: isMobile ? "180px" : "240px",
         left: isLeft ? (isMobile ? "8px" : "12px") : "auto",
-        right: isLeft ? "auto" : (isMobile ? "8px" : "12px"),
+        right: isLeft ? "auto" : isMobile ? "8px" : "12px",
         display: "flex",
         flexDirection: "column",
         gap,
-        backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85),
+        backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
         borderRadius: "8px",
-        padding: isMobile ? "8px" : "10px",
-        border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
-        boxShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
+        padding: isMobile ? "6px" : "8px",
+        border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7)}`,
+        boxShadow: `0 0 12px ${hexToRgbaString(
+          KOREAN_COLORS.PRIMARY_CYAN,
+          0.3
+        )}`,
         pointerEvents: "none",
-        zIndex: 90,
-        maxWidth: isMobile ? "140px" : "180px",
+        zIndex: 100,
+        maxWidth: isMobile ? "130px" : "160px",
+        fontSize: isMobile ? "9px" : "10px",
       }}
     >
       {/* Title */}
@@ -154,7 +165,7 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
           >
             {group.label}
           </div>
-          
+
           {/* Body parts in group */}
           {group.parts.map((part) => {
             const health = bodyPartHealth[part];
@@ -184,9 +195,13 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
                   }}
                 >
                   <span style={{ fontWeight: health < 40 ? "bold" : "normal" }}>
-                    {isMobile ? names.korean : `${names.korean} | ${names.english}`}
+                    {isMobile
+                      ? names.korean
+                      : `${names.korean} | ${names.english}`}
                   </span>
-                  <span style={{ fontSize: `${fontSize - 1}px` }}>{Math.round(health)}%</span>
+                  <span style={{ fontSize: `${fontSize - 1}px` }}>
+                    {Math.round(health)}%
+                  </span>
                 </div>
 
                 {/* Health bar */}
@@ -200,7 +215,9 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
                     ),
                     borderRadius: "2px",
                     overflow: "hidden",
-                    animation: shouldPulse ? "healthPulse 0.8s infinite" : "none",
+                    animation: shouldPulse
+                      ? "healthPulse 0.8s infinite"
+                      : "none",
                   }}
                 >
                   <div
@@ -208,7 +225,8 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
                       width: `${health}%`,
                       height: "100%",
                       backgroundColor: hexToRgbaString(healthColor, 1),
-                      transition: "width 0.3s ease-in-out, background-color 0.3s ease-in-out",
+                      transition:
+                        "width 0.3s ease-in-out, background-color 0.3s ease-in-out",
                       boxShadow: `0 0 8px ${hexToRgbaString(healthColor, 0.4)}`,
                     }}
                   />
@@ -218,7 +236,6 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
           })}
         </div>
       ))}
-
     </div>
   );
 };

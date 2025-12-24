@@ -3,9 +3,44 @@
  */
 
 import { PLAYER_ARCHETYPES_DATA, PlayerState, StatusEffect } from "../systems";
+import {
+  BodyPart,
+  BodyPartHealth,
+  BodyPartMaxHealth,
+} from "../systems/bodypart/types";
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
 import { ARCHETYPE_ASSETS } from "../types/constants";
+
+/**
+ * Default body part health values (100 HP each)
+ * @korean 기본 신체부위 체력
+ */
+const DEFAULT_BODY_PART_HEALTH: BodyPartHealth = {
+  [BodyPart.HEAD]: 100,
+  [BodyPart.NECK]: 100,
+  [BodyPart.TORSO_UPPER]: 100,
+  [BodyPart.TORSO_LOWER]: 100,
+  [BodyPart.ARM_LEFT]: 100,
+  [BodyPart.ARM_RIGHT]: 100,
+  [BodyPart.LEG_LEFT]: 100,
+  [BodyPart.LEG_RIGHT]: 100,
+};
+
+/**
+ * Default body part max health values
+ * @korean 기본 신체부위 최대체력
+ */
+const DEFAULT_BODY_PART_MAX_HEALTH: BodyPartMaxHealth = {
+  [BodyPart.HEAD]: 100,
+  [BodyPart.NECK]: 100,
+  [BodyPart.TORSO_UPPER]: 100,
+  [BodyPart.TORSO_LOWER]: 100,
+  [BodyPart.ARM_LEFT]: 100,
+  [BodyPart.ARM_RIGHT]: 100,
+  [BodyPart.LEG_LEFT]: 100,
+  [BodyPart.LEG_RIGHT]: 100,
+};
 
 /**
  * Create a complete PlayerState from archetype and player index
@@ -29,6 +64,8 @@ export function createPlayerFromArchetype(
     // Combat stats
     health: archetypeData.baseHealth,
     maxHealth: archetypeData.baseHealth,
+    bodyPartHealth: { ...DEFAULT_BODY_PART_HEALTH },
+    bodyPartMaxHealth: { ...DEFAULT_BODY_PART_MAX_HEALTH },
     ki: archetypeData.baseKi,
     maxKi: archetypeData.baseKi,
     stamina: archetypeData.baseStamina,
