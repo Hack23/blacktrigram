@@ -39,6 +39,8 @@ interface ScreenshotConfig {
   waitForTimeout?: number;
   actions?: (page: Page) => Promise<void>;
   skipAudioInit?: boolean;
+  /** Skip waiting for Three.js canvas (for non-3D screens like splash) */
+  skipCanvasWait?: boolean;
   /** Content that must be present for a valid screenshot */
   requiredContent?: ContentValidation[];
   /** Maximum retries if content validation fails */
@@ -248,10 +250,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
     path: "/",
     waitForTimeout: 2000,
     skipAudioInit: true,
+    skipCanvasWait: true, // Splash screen is pure HTML, no canvas
     requiredContent: [
-      { selector: "canvas", description: "3D canvas", required: true },
       {
-        selector: 'button:has-text("시작")',
+        selector: '[data-testid="splash-screen"]',
+        description: "Splash screen container",
+        required: true,
+      },
+      {
+        selector: '[data-testid="splash-start-button"]',
         description: "Start button (시작)",
         required: true,
       },
@@ -296,12 +303,12 @@ const screenshotConfigs: ScreenshotConfig[] = [
     path: "/",
     waitForTimeout: 3000,
     actions: async (page) => {
-      // Click controls button in menu using data-testid
+      // Click controls button in menu using data-testid with force to bypass canvas interception
       const controlsButton = await page
         .locator('[data-testid="menu-item-controls"]')
         .first();
       if (await controlsButton.isVisible({ timeout: 5000 })) {
-        await controlsButton.click();
+        await controlsButton.click({ force: true });
         await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
       } else {
         console.warn(
@@ -311,7 +318,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .locator('button:has-text("조작")')
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
+          await fallbackButton.click({ force: true });
           await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
         }
       }
@@ -331,12 +338,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click philosophy button using data-testid
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Click philosophy button using data-testid with force to bypass canvas interception
       const philosophyButton = await page
         .locator('[data-testid="menu-item-philosophy"]')
         .first();
       if (await philosophyButton.isVisible({ timeout: 5000 })) {
-        await philosophyButton.click();
+        await philosophyButton.click({ force: true });
         await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
       } else {
         console.warn(
@@ -346,7 +356,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .locator('button:has-text("철학")')
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
+          await fallbackButton.click({ force: true });
           await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
         }
       }
@@ -366,12 +376,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click training mode using data-testid
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Click training mode using data-testid with force to bypass canvas interception
       const trainingButton = await page
         .locator('[data-testid="menu-item-training"]')
         .first();
       if (await trainingButton.isVisible({ timeout: 5000 })) {
-        await trainingButton.click();
+        await trainingButton.click({ force: true });
         await page.waitForTimeout(3000); // Wait for lazy load
       } else {
         console.warn(
@@ -381,7 +394,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .locator('button:has-text("훈련")')
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
+          await fallbackButton.click({ force: true });
           await page.waitForTimeout(3000);
         }
       }
@@ -403,15 +416,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click practice mode using data-testid (practice mode uses versus in menu)
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Click practice mode using data-testid with force to bypass canvas interception
       const practiceButton = await page
         .locator('[data-testid="menu-item-versus"]')
         .first();
       if (await practiceButton.isVisible({ timeout: 5000 })) {
-        await practiceButton.click();
+        await practiceButton.click({ force: true });
         await page.waitForTimeout(3000);
       } else {
         console.warn(
@@ -421,7 +437,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .locator('button:has-text("대전")')
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
+          await fallbackButton.click({ force: true });
           await page.waitForTimeout(3000);
         }
       }
@@ -446,12 +462,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click versus mode using data-testid
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Click versus mode using data-testid with force to bypass canvas interception
       const versusButton = await page
         .locator('[data-testid="menu-item-versus"]')
         .first();
       if (await versusButton.isVisible({ timeout: 5000 })) {
-        await versusButton.click();
+        await versusButton.click({ force: true });
         await page.waitForTimeout(3000);
       } else {
         console.warn(
@@ -461,7 +480,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .locator('button:has-text("대전")')
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
+          await fallbackButton.click({ force: true });
           await page.waitForTimeout(3000);
         }
       }
@@ -509,8 +528,10 @@ async function captureScreenshot(
       await config.actions(page);
     }
 
-    // Wait for Three.js canvas
-    await waitForThreeJsReady(page);
+    // Wait for Three.js canvas unless skipped (e.g., splash screen is pure HTML)
+    if (!config.skipCanvasWait) {
+      await waitForThreeJsReady(page);
+    }
 
     // Additional timeout if specified
     if (config.waitForTimeout) {
