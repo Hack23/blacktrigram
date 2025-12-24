@@ -39,6 +39,7 @@
     "test:licenses": "license-compliance --direct --allow 'MIT;ISC;0BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Unlicense;CC0-1.0'",
     "validate:mcp": "bash scripts/validate-mcp-config.sh",
     "docs": "typedoc --options typedoc.json",
+    "docs:sitemap": "node generate-sitemaps.js",
     "build:test-reports": "node scripts/copy-test-reports.js",
     "test:reliability": "node scripts/generate-reliability-report.cjs",
     "test:e2ereportmerge": "npx mochawesome-merge build/cypress/mochawesome/*.json > build/cypress/mochawesome-all.json",
