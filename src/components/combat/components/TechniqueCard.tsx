@@ -13,9 +13,10 @@
  * @korean 기술카드
  */
 
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Technique } from "../../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { triggerHaptic } from "../../../utils/haptics";
 
 /**
  * Props for TechniqueCard component.
@@ -137,6 +138,17 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     return "0 2px 8px rgba(0, 0, 0, 0.5)";
   }, [isSelected, isAvailable]);
 
+  // Touch handler for mobile - provides immediate response without 300ms delay
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (!isAvailable) return;
+      e.preventDefault(); // Prevent ghost clicks
+      triggerHaptic("light");
+      onClick();
+    },
+    [isAvailable, onClick]
+  );
+
   return (
     <div
       role="button"
@@ -161,8 +173,11 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         padding: "6px",
         fontFamily: FONT_FAMILY.KOREAN,
         opacity: isAvailable ? 1 : 0.5,
+        touchAction: "manipulation", // Disable double-tap zoom
+        userSelect: "none", // Prevent text selection on touch
       }}
       onClick={isAvailable ? onClick : undefined}
+      onTouchStart={handleTouchStart}
       onMouseEnter={() => {
         setShowTooltip(true);
         onHover(technique);
