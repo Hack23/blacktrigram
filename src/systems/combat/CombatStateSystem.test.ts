@@ -264,6 +264,34 @@ describe("CombatStateSystem", () => {
       const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.VULNERABLE);
     });
+
+    it("should not return VULNERABLE when body part health loss is below 30%", () => {
+      const player = {
+        ...basePlayer,
+        bodyPartHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 80, // Only 20% health loss
+          legRight: 100,
+        },
+        bodyPartMaxHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 100,
+          legRight: 100,
+        },
+      };
+      const state = system.determineState(player, Date.now());
+      expect(state).toBe(CombatReadinessState.READY);
+    });
   });
 
   describe("Capability Modifiers", () => {
@@ -441,7 +469,7 @@ describe("CombatStateSystem", () => {
 
     it("should maintain only last 10 hit timestamps", () => {
       const currentTime = Date.now();
-      let player = {
+      const player = {
         ...basePlayer,
         recentHitTimestamps: [
           currentTime - 10000,
@@ -517,6 +545,22 @@ describe("CombatStateSystem", () => {
 
       const canRecover = system.canRecoverFromHelpless(player, currentTime);
       expect(canRecover).toBe(false);
+    });
+
+    it("should recover from HELPLESS to READY after 5 seconds with no hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        health: 100, // Restored health
+        pain: 0, // No pain
+        consciousness: 100, // Full consciousness
+        balance: 100, // Restored balance
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [], // No recent hits
+      };
+
+      const state = system.determineState(player, currentTime);
+      expect(state).toBe(CombatReadinessState.READY);
     });
   });
 
