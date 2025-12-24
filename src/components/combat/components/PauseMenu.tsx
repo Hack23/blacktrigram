@@ -16,9 +16,9 @@ import React from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
-import ConfirmDialog from "../../ui/shared/ConfirmDialog";
-import ControlsGuide from "./ControlsGuide";
-import QuickSettings from "./QuickSettings";
+import { ConfirmDialog } from "../../ui/shared/ConfirmDialog";
+import { ControlsGuide } from "./ControlsGuide";
+import { QuickSettings } from "./QuickSettings";
 
 export interface PauseMenuProps {
   readonly onResume: () => void;

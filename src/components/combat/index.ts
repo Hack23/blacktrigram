@@ -1,23 +1,19 @@
 /**
- * Combat system components for Korean martial arts
+ * Combat Module Index
+ *
+ * Exports all combat-related components, hooks, and helpers.
  */
 
-/**
- * @module components/combat
- * @category Combat System
- */
+// Main combat screen
+export { CombatScreen3D } from "./CombatScreen3D";
+export type { CombatScreen3DProps } from "./CombatScreen3D";
 
-// Main combat screens (Three.js)
-export { CombatScreen3D, default as CombatScreen3DDefault } from "./CombatScreen3D";
-
-// Combat sub-components
+// Components
 export * from "./components";
 
-// Three.js 3D components (re-exports from components)
-export { default as HitEffects3D } from "./components/HitEffects3D";
-export { default as CombatArena3D } from "./components/CombatArena3D";
+// Hooks
+export { useCombatAudio } from "./hooks/useCombatAudio";
+export { usePreloadCombatAudio } from "./hooks/usePreloadCombatAudio";
 
-// Re-export component prop types
-export type { CombatScreen3DProps } from "./CombatScreen3D";
-export type { HitEffects3DProps } from "./components/HitEffects3D";
-export type { CombatArena3DProps } from "./components/CombatArena3D";
+// Helpers
+export { AnimationUpdater } from "./helpers/AnimationUpdater";

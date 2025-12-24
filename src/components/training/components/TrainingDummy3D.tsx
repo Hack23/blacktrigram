@@ -10,7 +10,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_VITAL_POINTS } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { KOREAN_COLORS } from "../../../types/constants";
-import VitalPointMarker3D from "./VitalPointMarker3D";
+import { VitalPointMarker3D } from "./VitalPointMarker3D";
 
 /**
  * Difficulty mode for training

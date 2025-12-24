@@ -14,8 +14,8 @@
 import { PlayerState } from "../player";
 import { VitalPointCategory } from "@/types";
 import { CombatResult } from "./types";
-import PainResponseSystem, { PainLevel, ShockPainEffect } from "./PainResponseSystem";
-import ConsciousnessSystem, { ConsciousnessLevel } from "./ConsciousnessSystem";
+import { PainResponseSystem, PainLevel, ShockPainEffect } from "./PainResponseSystem";
+import { ConsciousnessSystem, ConsciousnessLevel } from "./ConsciousnessSystem";
 
 /**
  * Pain and consciousness status information.

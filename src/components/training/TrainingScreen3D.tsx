@@ -43,21 +43,19 @@ import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { VolumeControl } from "../ui/VolumeControl";
-import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
-import AnatomyOverlay3D, {
-  type AnatomyLayer,
-} from "./components/AnatomyOverlay3D";
-import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
-import TrainingArena3D from "./components/TrainingArena3D";
-import TrainingControlsHTML from "./components/TrainingControlsHTML";
+import { AnatomyControlsHTML } from "./components/AnatomyControlsHTML";
+import { AnatomyOverlay3D, type AnatomyLayer } from "./components/AnatomyOverlay3D";
+import { HitFeedbackEffect3D } from "./components/HitFeedbackEffect3D";
+import { TrainingArena3D } from "./components/TrainingArena3D";
+import { TrainingControlsHTML } from "./components/TrainingControlsHTML";
 import type { DifficultyMode } from "./components/TrainingDummy3D";
-import TrainingDummy3D from "./components/TrainingDummy3D";
-import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
-import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
-import TrainingStatsHTML from "./components/TrainingStatsHTML";
-import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
-import useTrainingActions from "./hooks/useTrainingActions";
-import useTrainingState from "./hooks/useTrainingState";
+import { TrainingDummy3D } from "./components/TrainingDummy3D";
+import { TrainingFeedbackHTML } from "./components/TrainingFeedbackHTML";
+import { TrainingModeSelectorHTML } from "./components/TrainingModeSelectorHTML";
+import { TrainingStatsHTML } from "./components/TrainingStatsHTML";
+import { VitalPointTrainingHTML } from "./components/VitalPointTrainingHTML";
+import { useTrainingActions } from "./hooks/useTrainingActions";
+import { useTrainingState } from "./hooks/useTrainingState";
 
 /**
  * AnimationUpdater - Component that updates player animation at 60fps

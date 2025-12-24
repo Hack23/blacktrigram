@@ -19,9 +19,9 @@ import { useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
 import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
-import StanceAuraParticles from "./StanceAuraParticles";
-import StanceSymbol3D from "./StanceSymbol3D";
-import StanceTransitionEffect from "./StanceTransitionEffect";
+import { StanceAuraParticles } from "./StanceAuraParticles";
+import { StanceSymbol3D } from "./StanceSymbol3D";
+import { StanceTransitionEffect } from "./StanceTransitionEffect";
 
 /**
  * Props for Player3DWithTransitions component

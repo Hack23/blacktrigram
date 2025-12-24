@@ -1,14 +1,12 @@
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
-import ConsciousnessSystem from "./combat/ConsciousnessSystem";
+import { ConsciousnessSystem } from "./combat/ConsciousnessSystem";
 import {
   extractVitalPointCategory,
   isHeadTraumaHit,
 } from "./combat/painConsciousnessUtils";
-import PainResponseSystem, {
-  ShockPainEffect,
-} from "./combat/PainResponseSystem";
+import { PainResponseSystem, ShockPainEffect } from "./combat/PainResponseSystem";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
 import { PlayerState } from "./player";
 import {

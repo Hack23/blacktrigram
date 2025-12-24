@@ -10,5 +10,4 @@ export { PerformanceOverlay3D } from './PerformanceOverlay3D';
 export type {
   PerformanceMetrics,
   PerformanceThresholds,
-  PerformanceState,
 } from './PerformanceMonitor';

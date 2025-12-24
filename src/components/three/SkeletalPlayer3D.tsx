@@ -33,10 +33,10 @@ import type { Player3DUnifiedProps } from "../../types/player-visual";
 import type { SkeletalAnimationState, SkeletalRig } from "../../types/skeletal";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
-import BoneRenderer from "./BoneRenderer";
-import MuscleSystem from "./MuscleSystem";
-import PlayerStateIndicators from "./PlayerStateIndicators";
-import StanceAura from "./StanceAura";
+import { BoneRenderer } from "./BoneRenderer";
+import { MuscleSystem } from "./MuscleSystem";
+import { PlayerStateIndicators } from "./PlayerStateIndicators";
+import { StanceAura } from "./StanceAura";
 
 /**
  * Get stance-specific color from Korean theming

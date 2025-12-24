@@ -16,8 +16,8 @@ import type { HandAnimationState } from "../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../types/skeletal";
 import type { FacialExpression, FacialDamageState } from "../../types/facial";
 import { DEFAULT_FACIAL_DAMAGE } from "../../types/facial";
-import Hand3D from "./Hand3D";
-import Face3D from "./Face3D";
+import { Hand3D } from "./Hand3D";
+import { Face3D } from "./Face3D";
 
 /**
  * Props for BoneRenderer component
