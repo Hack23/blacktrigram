@@ -11,9 +11,9 @@ export { CombatArena3D } from "./CombatArena3D";
 export { HitEffects3D } from "./HitEffects3D";
 export { TraumaOverlay3D } from "./TraumaOverlay3D";
 export { VitalPointMarkers3D } from "./VitalPointMarkers3D";
+export type { BodyRegionFilter } from "./VitalPointMarkers3D";
 // Vital Point overlay controls
 export { VitalPointOverlayControls } from "./VitalPointOverlayControls";
-export type { BodyRegionFilter } from "./VitalPointOverlayControls";
 
 // HUD Components
 export { ActionFeedback } from "./ActionFeedback";
