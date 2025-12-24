@@ -4,6 +4,12 @@
  * This script uses Playwright to systematically navigate through all screens
  * and capture high-quality screenshots for UI/UX analysis.
  *
+ * Features:
+ * - Waits for vital content to load before capturing
+ * - Validates required elements are present
+ * - Fails with clear errors if content is missing
+ * - Retries on transient failures
+ *
  * Usage:
  *   npm run dev (in one terminal)
  *   npx tsx scripts/capture-screenshots.ts (in another terminal)
@@ -13,6 +19,18 @@ import * as fs from "fs";
 import * as path from "path";
 import { Browser, chromium, Page } from "playwright";
 
+/** Content validation rule - what elements must be present */
+interface ContentValidation {
+  /** CSS selector to check */
+  selector: string;
+  /** Human-readable description of what we're checking */
+  description: string;
+  /** Whether this is a required element (fail if missing) */
+  required: boolean;
+  /** Optional: minimum count of elements expected */
+  minCount?: number;
+}
+
 interface ScreenshotConfig {
   name: string;
   description: string;
@@ -21,14 +39,26 @@ interface ScreenshotConfig {
   waitForTimeout?: number;
   actions?: (page: Page) => Promise<void>;
   skipAudioInit?: boolean;
+  /** Content that must be present for a valid screenshot */
+  requiredContent?: ContentValidation[];
+  /** Maximum retries if content validation fails */
+  maxRetries?: number;
+}
+
+interface ValidationResult {
+  passed: boolean;
+  failures: string[];
+  warnings: string[];
 }
 
 // Timing constants for Three.js rendering and animations
 const TIMING = {
-  CANVAS_TIMEOUT: 10000, // Max wait for canvas element
-  INITIAL_RENDER_DELAY: 1500, // Wait for initial Three.js render
-  ANIMATION_SETTLE_DELAY: 1000, // Wait for animations to settle
-  BUTTON_CLICK_DELAY: 2000, // Wait after button clicks
+  CANVAS_TIMEOUT: 15000, // Max wait for canvas element (increased)
+  INITIAL_RENDER_DELAY: 2000, // Wait for initial Three.js render (increased)
+  ANIMATION_SETTLE_DELAY: 1500, // Wait for animations to settle (increased)
+  BUTTON_CLICK_DELAY: 2500, // Wait after button clicks (increased)
+  CONTENT_LOAD_DELAY: 3000, // Wait for dynamic content to load
+  RETRY_DELAY: 2000, // Delay between retries
 } as const;
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
@@ -89,6 +119,88 @@ async function waitForThreeJsReady(
 }
 
 /**
+ * Validate that required content is present on the page
+ */
+async function validateContent(
+  page: Page,
+  validations: ContentValidation[]
+): Promise<ValidationResult> {
+  const result: ValidationResult = {
+    passed: true,
+    failures: [],
+    warnings: [],
+  };
+
+  for (const validation of validations) {
+    try {
+      const elements = await page.$$(validation.selector);
+      const count = elements.length;
+      const minCount = validation.minCount ?? 1;
+
+      if (count < minCount) {
+        const message = `${validation.description}: expected at least ${minCount}, found ${count}`;
+        if (validation.required) {
+          result.failures.push(message);
+          result.passed = false;
+        } else {
+          result.warnings.push(message);
+        }
+      }
+    } catch (error) {
+      const message = `${validation.description}: error checking - ${error}`;
+      if (validation.required) {
+        result.failures.push(message);
+        result.passed = false;
+      } else {
+        result.warnings.push(message);
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Wait for content with retries
+ */
+async function waitForContentWithRetry(
+  page: Page,
+  config: ScreenshotConfig,
+  maxRetries: number = 3
+): Promise<ValidationResult> {
+  let lastResult: ValidationResult = {
+    passed: true,
+    failures: [],
+    warnings: [],
+  };
+
+  if (!config.requiredContent || config.requiredContent.length === 0) {
+    return lastResult; // No validation needed
+  }
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    console.log(`  🔍 Content validation attempt ${attempt}/${maxRetries}...`);
+
+    // Wait for content to load
+    await page.waitForTimeout(TIMING.CONTENT_LOAD_DELAY);
+
+    lastResult = await validateContent(page, config.requiredContent);
+
+    if (lastResult.passed) {
+      console.log("  ✅ All required content present");
+      break;
+    }
+
+    if (attempt < maxRetries) {
+      console.log(`  ⏳ Retrying in ${TIMING.RETRY_DELAY}ms...`);
+      await page.waitForTimeout(TIMING.RETRY_DELAY);
+    }
+  }
+
+  return lastResult;
+}
+
+/**
  * Initialize audio to get past the splash screen
  */
 async function initializeAudio(page: Page): Promise<void> {
@@ -136,12 +248,33 @@ const screenshotConfigs: ScreenshotConfig[] = [
     path: "/",
     waitForTimeout: 2000,
     skipAudioInit: true,
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: 'button:has-text("시작")',
+        description: "Start button (시작)",
+        required: true,
+      },
+    ],
   },
   {
     name: "02-intro-screen-menu",
     description: "Intro Screen - Main menu with game modes",
     path: "/",
     waitForTimeout: 2000,
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="menu-item-training"]',
+        description: "Training menu item",
+        required: false,
+      },
+      {
+        selector: '[data-testid="menu-item-versus"]',
+        description: "Versus menu item",
+        required: false,
+      },
+    ],
   },
   {
     name: "03-intro-screen-archetype-selector",
@@ -153,6 +286,9 @@ const screenshotConfigs: ScreenshotConfig[] = [
       await page.waitForTimeout(1000);
       // The archetype selector should be visible on intro screen
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+    ],
   },
   {
     name: "04-controls-screen",
@@ -180,6 +316,9 @@ const screenshotConfigs: ScreenshotConfig[] = [
         }
       }
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+    ],
   },
   {
     name: "05-philosophy-screen",
@@ -212,6 +351,9 @@ const screenshotConfigs: ScreenshotConfig[] = [
         }
       }
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+    ],
   },
   {
     name: "06-training-screen",
@@ -244,6 +386,14 @@ const screenshotConfigs: ScreenshotConfig[] = [
         }
       }
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="training-hud"], [data-testid="combat-hud"]',
+        description: "Training/Combat HUD",
+        required: false,
+      },
+    ],
   },
   {
     name: "07-combat-screen-practice",
@@ -276,6 +426,14 @@ const screenshotConfigs: ScreenshotConfig[] = [
         }
       }
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="combat-hud"], [data-testid="player-hud"]',
+        description: "Combat HUD",
+        required: false,
+      },
+    ],
   },
   {
     name: "08-combat-screen-versus",
@@ -308,16 +466,29 @@ const screenshotConfigs: ScreenshotConfig[] = [
         }
       }
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="combat-hud"], [data-testid="player-hud"]',
+        description: "Combat HUD",
+        required: false,
+      },
+    ],
   },
 ];
 
 /**
- * Capture a single screenshot
+ * Capture a single screenshot with content validation
  */
 async function captureScreenshot(
   page: Page,
   config: ScreenshotConfig
-): Promise<{ success: boolean; path?: string; error?: string }> {
+): Promise<{
+  success: boolean;
+  path?: string;
+  error?: string;
+  validationResult?: ValidationResult;
+}> {
   console.log(`\n📸 Capturing: ${config.name}`);
   console.log(`   ${config.description}`);
 
@@ -346,6 +517,32 @@ async function captureScreenshot(
       await page.waitForTimeout(config.waitForTimeout);
     }
 
+    // Validate required content
+    const maxRetries = config.maxRetries ?? 3;
+    const validationResult = await waitForContentWithRetry(
+      page,
+      config,
+      maxRetries
+    );
+
+    // Log validation results
+    if (validationResult.warnings.length > 0) {
+      console.log("  ⚠️ Content warnings:");
+      validationResult.warnings.forEach((w) => console.log(`     - ${w}`));
+    }
+
+    if (!validationResult.passed) {
+      console.error("  ❌ Required content validation FAILED:");
+      validationResult.failures.forEach((f) => console.error(`     - ${f}`));
+      return {
+        success: false,
+        error: `Required content missing: ${validationResult.failures.join(
+          "; "
+        )}`,
+        validationResult,
+      };
+    }
+
     // Capture screenshot
     const screenshotPath = path.join(SCREENSHOTS_DIR, `${config.name}.png`);
     await page.screenshot({
@@ -356,7 +553,7 @@ async function captureScreenshot(
 
     console.log(`   ✅ Saved: ${screenshotPath}`);
 
-    return { success: true, path: screenshotPath };
+    return { success: true, path: screenshotPath, validationResult };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`   ❌ Failed: ${errorMessage}`);
@@ -365,30 +562,48 @@ async function captureScreenshot(
 }
 
 /**
- * Generate UI/UX analysis report
+ * Generate UI/UX analysis report with validation details
  */
 function generateReport(
-  results: Array<{ config: ScreenshotConfig; result: any }>
+  results: Array<{
+    config: ScreenshotConfig;
+    result: {
+      success: boolean;
+      path?: string;
+      error?: string;
+      validationResult?: ValidationResult;
+    };
+  }>
 ): string {
   const timestamp = new Date().toISOString();
   const successCount = results.filter((r) => r.result.success).length;
   const totalCount = results.length;
+  const failedValidations = results.filter(
+    (r) => r.result.validationResult && !r.result.validationResult.passed
+  ).length;
 
   let report = `# Black Trigram - UI/UX Screenshot Analysis Report\n\n`;
   report += `**Generated:** ${timestamp}\n`;
   report += `**Success Rate:** ${successCount}/${totalCount} (${Math.round(
     (successCount / totalCount) * 100
-  )}%)\n\n`;
-  report += `---\n\n`;
+  )}%)\n`;
+  if (failedValidations > 0) {
+    report += `**⚠️ Content Validation Failures:** ${failedValidations}\n`;
+  }
+  report += `\n---\n\n`;
 
   report += `## Executive Summary\n\n`;
   report += `This report contains automated screenshots of all major screens in the Black Trigram application. `;
   report += `The screenshots were captured using Playwright automation to ensure consistency and completeness.\n\n`;
+  report += `**Content Validation:** Each screenshot includes validation of required UI elements.\n\n`;
 
   report += `### Screens Captured\n\n`;
   results.forEach(({ config, result }) => {
     const status = result.success ? "✅" : "❌";
-    report += `- ${status} **${config.name}**: ${config.description}\n`;
+    const validationNote = result.validationResult?.warnings?.length
+      ? " (⚠️ warnings)"
+      : "";
+    report += `- ${status} **${config.name}**: ${config.description}${validationNote}\n`;
   });
 
   report += `\n---\n\n`;
@@ -401,9 +616,39 @@ function generateReport(
       report += `![${config.description}](../${config.name}.png)\n\n`;
       report += `**Status:** ✅ Captured successfully\n\n`;
       report += `**File:** \`${config.name}.png\`\n\n`;
+
+      // Add validation details
+      if (result.validationResult) {
+        if (result.validationResult.warnings.length > 0) {
+          report += `**⚠️ Warnings:**\n`;
+          result.validationResult.warnings.forEach((w) => {
+            report += `- ${w}\n`;
+          });
+          report += `\n`;
+        }
+      }
     } else {
       report += `**Status:** ❌ Failed to capture\n\n`;
       report += `**Error:** ${result.error}\n\n`;
+
+      // Add validation failures
+      if (result.validationResult && !result.validationResult.passed) {
+        report += `**🚫 Validation Failures:**\n`;
+        result.validationResult.failures.forEach((f) => {
+          report += `- ${f}\n`;
+        });
+        report += `\n`;
+      }
+    }
+
+    // Show required content expectations
+    if (config.requiredContent && config.requiredContent.length > 0) {
+      report += `**Required Content:**\n`;
+      config.requiredContent.forEach((rc) => {
+        const reqStr = rc.required ? "🔴 required" : "🟡 optional";
+        report += `- ${rc.description} (${reqStr})\n`;
+      });
+      report += `\n`;
     }
 
     report += `**Description:** ${config.description}\n\n`;
