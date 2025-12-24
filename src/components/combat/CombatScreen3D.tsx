@@ -80,6 +80,7 @@ import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
+import { BodyPartHealthDisplay } from "./components/BodyPartHealthDisplay";
 import CombatArena3D from "./components/CombatArena3D";
 import { CombatTimer } from "./components/CombatTimer";
 import { ComboCounter } from "./components/ComboCounter";
@@ -2070,6 +2071,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           position="right"
           isMobile={isMobile}
         />
+
+        {/* Body Part Health Displays - show individual body part health bars */}
+        {validPlayers[0].bodyPartHealth && (
+          <BodyPartHealthDisplay
+            bodyPartHealth={validPlayers[0].bodyPartHealth}
+            playerId={validPlayers[0].id}
+            position="left"
+            isMobile={isMobile}
+          />
+        )}
+
+        {validPlayers[1].bodyPartHealth && (
+          <BodyPartHealthDisplay
+            bodyPartHealth={validPlayers[1].bodyPartHealth}
+            playerId={validPlayers[1].id}
+            position="right"
+            isMobile={isMobile}
+          />
+        )}
 
         {/* AI Difficulty Indicator - Shows current adaptive difficulty tier */}
         <DifficultyIndicator tier={currentDifficultyTier} isMobile={isMobile} />
