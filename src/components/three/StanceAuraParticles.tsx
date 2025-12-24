@@ -197,4 +197,3 @@ export const StanceAuraParticles: React.FC<StanceAuraParticlesProps> = ({
   );
 };
 
-export default StanceAuraParticles;

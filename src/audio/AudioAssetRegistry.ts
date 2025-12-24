@@ -1069,4 +1069,3 @@ export class AudioAssetRegistry {
 export const audioAssetRegistry = new AudioAssetRegistry();
 
 // Default export
-export default audioAssetRegistry;

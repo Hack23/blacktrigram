@@ -236,4 +236,3 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
   );
 };
 
-export default TrainingHitEffects3D;

@@ -291,7 +291,6 @@ export class VariantSelector {
   }
 }
 
-export default VariantSelector;
 
 // Export convenience functions
 export function selectCombatSound(context: AudioVariantContext): SoundEffectId {

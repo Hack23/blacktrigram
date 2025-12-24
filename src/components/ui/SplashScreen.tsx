@@ -240,4 +240,3 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   );
 };
 
-export default SplashScreen;

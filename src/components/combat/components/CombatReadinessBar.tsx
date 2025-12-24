@@ -161,5 +161,3 @@ export const CombatReadinessBar: React.FC<CombatReadinessBarProps> = ({
     </div>
   );
 };
-
-export default CombatReadinessBar;

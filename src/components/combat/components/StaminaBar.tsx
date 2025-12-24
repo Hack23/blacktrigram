@@ -118,5 +118,3 @@ export const StaminaBar: React.FC<StaminaBarProps> = ({
     </div>
   );
 };
-
-export default StaminaBar;

@@ -775,4 +775,3 @@ export const VitalPointOverlayControls: React.FC<
   );
 };
 
-export default VitalPointOverlayControls;

@@ -123,5 +123,3 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
     </>
   );
 };
-
-export default MobileControlsWrapper;

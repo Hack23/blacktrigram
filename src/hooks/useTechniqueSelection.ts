@@ -347,4 +347,3 @@ export function useTechniqueSelection(
   };
 }
 
-export default useTechniqueSelection;

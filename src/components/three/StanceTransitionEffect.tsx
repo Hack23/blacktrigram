@@ -228,4 +228,3 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   );
 };
 
-export default StanceTransitionEffect;

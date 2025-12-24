@@ -358,5 +358,3 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     </div>
   );
 };
-
-export default TechniqueCard;

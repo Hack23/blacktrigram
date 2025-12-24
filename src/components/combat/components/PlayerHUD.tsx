@@ -183,5 +183,3 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
     </div>
   );
 };
-
-export default PlayerHUD;

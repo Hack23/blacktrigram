@@ -49,5 +49,3 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
 
   return null; // Component only updates animation state, renders no visual elements
 };
-
-export default AnimationUpdater;

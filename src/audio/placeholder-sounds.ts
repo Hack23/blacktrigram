@@ -406,8 +406,8 @@ export const PLACEHOLDER_AUDIO_ASSETS = {
   endScreenMusic: END_SCREEN_MUSIC_TRACKS,
 };
 
-// Default export for convenience
-export default {
+// Export all collections for convenience
+export const PlaceholderSoundCollections = {
   soundEffects: ALL_PLACEHOLDER_SOUNDS,
   musicTracks: ALL_PLACEHOLDER_MUSIC,
   techniques: TECHNIQUE_SOUND_EFFECTS,

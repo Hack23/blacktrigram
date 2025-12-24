@@ -105,4 +105,3 @@ const CornerMarkers: React.FC<{ size: number }> = ({ size }) => {
   );
 };
 
-export default TrainingArena3D;

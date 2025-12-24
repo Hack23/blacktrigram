@@ -128,5 +128,3 @@ export const HealthBar: React.FC<HealthBarProps> = ({
     </div>
   );
 };
-
-export default HealthBar;

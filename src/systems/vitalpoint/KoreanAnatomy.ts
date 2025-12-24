@@ -1569,4 +1569,3 @@ export function getRegionForPosition(position: Position): string | null {
   return null;
 }
 
-export default SAMPLE_VITAL_POINTS;

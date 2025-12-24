@@ -161,4 +161,3 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
 
 AbilityList.displayName = "AbilityList";
 
-export default AbilityList;

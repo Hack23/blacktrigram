@@ -356,5 +356,3 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     </div>
   );
 };
-
-export default RoundAnnouncement;

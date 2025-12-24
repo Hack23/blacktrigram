@@ -349,4 +349,3 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
   );
 };
 
-export default BloodParticles3D;

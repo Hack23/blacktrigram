@@ -246,4 +246,3 @@ const StatRow: React.FC<{
   );
 };
 
-export default TrainingStatsHTML;

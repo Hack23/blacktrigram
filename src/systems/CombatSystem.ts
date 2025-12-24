@@ -799,4 +799,3 @@ export function createCombatResult(
   return result;
 }
 
-export default CombatSystem;

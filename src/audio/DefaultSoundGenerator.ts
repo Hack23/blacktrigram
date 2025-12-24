@@ -250,4 +250,3 @@ export class DefaultSoundGenerator {
   }
 }
 
-export default DefaultSoundGenerator;

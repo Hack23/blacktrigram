@@ -225,4 +225,3 @@ export function useTrainingActions(
   };
 }
 
-export default useTrainingActions;

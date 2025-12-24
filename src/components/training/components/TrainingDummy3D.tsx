@@ -388,4 +388,3 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   );
 };
 
-export default TrainingDummy3D;

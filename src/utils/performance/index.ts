@@ -1,12 +1,14 @@
 /**
- * Performance utilities for Three.js optimization
- * 
- * Exports performance monitoring and optimization tools
+ * Performance monitoring utilities for Black Trigram
  */
 
-export * from './PerformanceMonitor';
-export { default as PerformanceMonitor } from './PerformanceMonitor';
-export * from './usePerformanceMonitor';
-export { default as usePerformanceMonitor } from './usePerformanceMonitor';
-export * from './PerformanceOverlay3D';
-export { default as PerformanceOverlay3D } from './PerformanceOverlay3D';
+export { PerformanceMonitor } from './PerformanceMonitor';
+export { usePerformanceMonitor } from './usePerformanceMonitor';
+export { PerformanceOverlay3D } from './PerformanceOverlay3D';
+
+// Types
+export type {
+  PerformanceMetrics,
+  PerformanceThresholds,
+  PerformanceState,
+} from './PerformanceMonitor';

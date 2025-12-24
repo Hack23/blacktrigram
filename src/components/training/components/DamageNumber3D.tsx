@@ -104,4 +104,3 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
   );
 };
 
-export default DamageNumber3D;

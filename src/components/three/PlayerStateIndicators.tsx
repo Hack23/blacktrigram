@@ -300,4 +300,3 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
   );
 };
 
-export default PlayerStateIndicators;

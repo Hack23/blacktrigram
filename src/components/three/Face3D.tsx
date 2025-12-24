@@ -366,4 +366,3 @@ export const Face3D: React.FC<Face3DProps> = ({
   );
 };
 
-export default Face3D;

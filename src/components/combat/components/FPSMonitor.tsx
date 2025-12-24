@@ -160,5 +160,3 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
     </Html>
   );
 };
-
-export default FPSMonitor;

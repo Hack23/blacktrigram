@@ -190,4 +190,3 @@ export const Player3DWithTransitions: React.FC<
   );
 };
 
-export default Player3DWithTransitions;

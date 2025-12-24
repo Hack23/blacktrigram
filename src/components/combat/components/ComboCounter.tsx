@@ -307,5 +307,3 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     </Html>
   );
 };
-
-export default ComboCounter;

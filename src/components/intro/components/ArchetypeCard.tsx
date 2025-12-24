@@ -356,4 +356,3 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
 
 ArchetypeCard.displayName = "ArchetypeCard";
 
-export default ArchetypeCard;

@@ -1,19 +1,21 @@
 /**
- * @packageDocumentation
- * Black Trigram (흑괘) - Korean Martial Arts Combat Simulator
+ * Main export file for Black Trigram game
  *
- * An immersive 3D combat simulator deeply rooted in Korean martial arts
- * and the I Ching trigram philosophy.
- *
- * @module blacktrigram
+ * This file provides public API exports for external consumers.
+ * Internal usage should import directly from specific files.
  */
 
-// Re-export all public APIs
-export * from "./types";
-export * from "./utils";
-export * from "./audio";
-export * from "./systems";
-export * from "./components";
+// Main app component
+export { App } from "./App";
 
-// Export main application components
-export { default as App } from "./App";
+// Game modes and types
+export { GameMode } from "./types";
+
+// Audio system
+export { AudioProvider, useAudio } from "./audio/AudioProvider";
+export type { AudioProviderProps, AudioContextValue } from "./audio/AudioProvider";
+
+// Screens (lazy loaded)
+export { IntroScreenThreeJS } from "./components/intro/IntroScreenThreeJS";
+export { CombatScreen3D } from "./components/combat/CombatScreen3D";
+export { TrainingScreen3D } from "./components/training/TrainingScreen3D";

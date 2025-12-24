@@ -385,4 +385,3 @@ export const AnatomyOverlay3D: React.FC<AnatomyOverlay3DProps> = ({
   );
 };
 
-export default AnatomyOverlay3D;

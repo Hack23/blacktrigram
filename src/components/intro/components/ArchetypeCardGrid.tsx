@@ -228,4 +228,3 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
 
 ArchetypeCardGrid.displayName = "ArchetypeCardGrid";
 
-export default ArchetypeCardGrid;

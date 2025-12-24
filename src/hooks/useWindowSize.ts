@@ -116,4 +116,3 @@ export function useIsMobile(breakpoint = 768): boolean {
   return width < breakpoint;
 }
 
-export default useWindowSize;

@@ -557,4 +557,3 @@ export class PainResponseSystem {
   }
 }
 
-export default PainResponseSystem;

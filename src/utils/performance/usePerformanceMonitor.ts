@@ -102,4 +102,3 @@ export function usePerformanceMonitor(
   return state;
 }
 
-export default usePerformanceMonitor;

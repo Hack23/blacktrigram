@@ -167,4 +167,3 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
   );
 };
 
-export default TrainingModeSelectorHTML;

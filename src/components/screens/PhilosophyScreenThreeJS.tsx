@@ -711,4 +711,3 @@ export const PhilosophyScreenThreeJS: React.FC<
   );
 };
 
-export default PhilosophyScreenThreeJS;

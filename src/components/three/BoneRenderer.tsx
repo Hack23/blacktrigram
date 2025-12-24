@@ -328,4 +328,3 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   );
 };
 
-export default BoneRenderer;

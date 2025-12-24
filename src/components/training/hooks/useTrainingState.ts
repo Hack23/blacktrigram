@@ -388,4 +388,3 @@ export function useTrainingState(): UseTrainingStateReturn {
   return { state, actions };
 }
 
-export default useTrainingState;

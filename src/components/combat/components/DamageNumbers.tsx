@@ -186,5 +186,3 @@ export const DamageNumbers: React.FC<DamageNumbersProps> = ({
     </group>
   );
 };
-
-export default DamageNumbers;

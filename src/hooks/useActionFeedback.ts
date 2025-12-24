@@ -293,4 +293,3 @@ export function useActionFeedback(config: UseActionFeedbackConfig = {}): {
   };
 }
 
-export default useActionFeedback;

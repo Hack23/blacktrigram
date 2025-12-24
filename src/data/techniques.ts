@@ -622,7 +622,8 @@ export function getTechniqueById(techniqueId: string): Technique | undefined {
   return allTechniques.find((tech) => tech.id === techniqueId);
 }
 
-export default {
+// Export technique utilities
+export const TechniqueUtils = {
   getTechniquesForArchetype,
   getTechniquesForStanceAndArchetype,
   getTechniqueById,

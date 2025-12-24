@@ -372,4 +372,3 @@ export const TraumaOverlay3D: React.FC<TraumaOverlay3DProps> = ({
   );
 };
 
-export default TraumaOverlay3D;

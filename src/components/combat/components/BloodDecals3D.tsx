@@ -373,4 +373,3 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
   );
 };
 
-export default BloodDecals3D;

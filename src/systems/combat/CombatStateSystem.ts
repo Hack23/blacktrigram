@@ -510,4 +510,3 @@ export class CombatStateSystem {
   }
 }
 
-export default CombatStateSystem;

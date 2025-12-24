@@ -434,4 +434,3 @@ export class TrigramSystem {
   }
 }
 
-export default TrigramSystem;

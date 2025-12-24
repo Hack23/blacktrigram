@@ -86,4 +86,3 @@ export const KOREAN_MARTIAL_ANIMATIONS = {
   },
 } as const;
 
-export default ANIMATION_DURATIONS;

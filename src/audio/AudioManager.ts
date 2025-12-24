@@ -598,4 +598,3 @@ export class AudioManager implements IAudioManager {
   }
 }
 
-export default AudioManager;

@@ -351,4 +351,3 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
   );
 };
 
-export default MuscleSystem;

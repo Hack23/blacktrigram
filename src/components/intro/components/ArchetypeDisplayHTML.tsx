@@ -442,4 +442,3 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> =
 
 ArchetypeDisplayHTML.displayName = "ArchetypeDisplayHTML";
 
-export default ArchetypeDisplayHTML;

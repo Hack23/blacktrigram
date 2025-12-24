@@ -346,5 +346,3 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
     </Html>
   );
 };
-
-export default ActionFeedback;

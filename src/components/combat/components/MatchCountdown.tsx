@@ -318,5 +318,3 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
     </>
   );
 };
-
-export default MatchCountdown;

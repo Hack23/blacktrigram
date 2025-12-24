@@ -94,5 +94,3 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
     </div>
   );
 };
-
-export default CombatControlsPanel;

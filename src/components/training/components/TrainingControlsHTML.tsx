@@ -119,4 +119,3 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
   );
 };
 
-export default TrainingControlsHTML;

@@ -618,4 +618,3 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   );
 };
 
-export default ControlsScreenThreeJS;

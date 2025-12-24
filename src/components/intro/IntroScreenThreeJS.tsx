@@ -664,4 +664,3 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   );
 };
 
-export default IntroScreenThreeJS;

@@ -973,4 +973,3 @@ export enum BodyRegion {
   CORE = "core",
 }
 
-export default {};

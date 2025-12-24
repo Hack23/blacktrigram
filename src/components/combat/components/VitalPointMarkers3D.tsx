@@ -383,4 +383,3 @@ export const VitalPointMarkers3D: React.FC<VitalPointMarkers3DProps> = ({
   );
 };
 
-export default VitalPointMarkers3D;

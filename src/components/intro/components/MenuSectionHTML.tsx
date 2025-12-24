@@ -290,4 +290,3 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
   );
 };
 
-export default MenuSectionHTML;

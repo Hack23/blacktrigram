@@ -1503,4 +1503,3 @@ export const MARTIAL_ARTS_CONFIG = {
   VITAL_POINT_MULTIPLIER: 2.0,
 } as const;
 
-export default GAME_CONFIG;

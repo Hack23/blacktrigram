@@ -165,5 +165,3 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     </>
   );
 };
-
-export default TechniqueBar;

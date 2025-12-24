@@ -227,4 +227,3 @@ export function useRoundTransition(
   };
 }
 
-export default useRoundTransition;

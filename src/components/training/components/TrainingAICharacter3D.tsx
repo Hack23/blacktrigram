@@ -161,4 +161,3 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
   );
 };
 
-export default TrainingAICharacter3D;

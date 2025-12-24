@@ -225,4 +225,3 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
   );
 };
 
-export default ControlsGuide;

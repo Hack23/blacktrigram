@@ -164,5 +164,3 @@ export function usePreloadCombatAudio(): PreloadCombatAudioState {
 
   return state;
 }
-
-export default usePreloadCombatAudio;

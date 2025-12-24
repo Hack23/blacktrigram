@@ -129,4 +129,3 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   );
 };
 
-export default CombatArena3D;

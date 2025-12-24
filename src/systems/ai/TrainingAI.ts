@@ -379,4 +379,3 @@ export class TrainingAI {
   }
 }
 
-export default TrainingAI;

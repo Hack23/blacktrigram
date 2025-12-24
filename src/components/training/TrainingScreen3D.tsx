@@ -1097,4 +1097,3 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 };
 
-export default TrainingScreen3D;

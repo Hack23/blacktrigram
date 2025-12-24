@@ -362,5 +362,3 @@ export const useCombatAudio = () => {
     getActiveSoundCount,
   };
 };
-
-export default useCombatAudio;

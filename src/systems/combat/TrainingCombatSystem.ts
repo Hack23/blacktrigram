@@ -334,4 +334,3 @@ export class TrainingCombatSystem extends CombatSystem {
   }
 }
 
-export default TrainingCombatSystem;

@@ -203,5 +203,3 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
     </div>
   );
 };
-
-export default CombatTimer;

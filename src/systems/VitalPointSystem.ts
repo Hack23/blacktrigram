@@ -611,4 +611,3 @@ export class VitalPointSystem {
   }
 }
 
-export default VitalPointSystem;

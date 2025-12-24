@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ARCHETYPE_ASSETS } from "../types/constants";
 import { audioAssetRegistry } from "./AudioAssetRegistry";
-import AudioManager from "./AudioManager";
-import placeholderAssets from "./placeholder-sounds";
+import { AudioManager } from "./AudioManager";
+import { PlaceholderSoundCollections } from "./placeholder-sounds";
 import { AudioAsset, AudioConfig, IAudioManager } from "./types";
 
 export interface AudioProviderProps {
@@ -56,7 +56,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       await audioManager.initialize(); // no args
 
       // Preload all placeholder assets
-      const list = Object.values(placeholderAssets).flat() as AudioAsset[];
+      const list = Object.values(PlaceholderSoundCollections).flat() as AudioAsset[];
       await Promise.all(
         list.map((a) =>
           audioManager.loadAsset(a).catch((err) => {

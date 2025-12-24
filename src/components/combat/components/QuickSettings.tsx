@@ -257,4 +257,3 @@ export const QuickSettings: React.FC<QuickSettingsProps> = ({
   );
 };
 
-export default QuickSettings;

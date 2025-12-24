@@ -208,4 +208,3 @@ export const BackgroundScene3D: React.FC<BackgroundScene3DProps> = ({
   );
 };
 
-export default BackgroundScene3D;

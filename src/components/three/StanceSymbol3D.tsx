@@ -163,4 +163,3 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
   );
 };
 
-export default StanceSymbol3D;

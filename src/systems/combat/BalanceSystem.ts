@@ -404,4 +404,3 @@ export class BalanceSystem {
   }
 }
 
-export default BalanceSystem;

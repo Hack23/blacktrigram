@@ -239,5 +239,3 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
     </div>
   );
 };
-
-export default BodyPartHealthDisplay;

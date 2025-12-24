@@ -2216,4 +2216,3 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   );
 };
 
-export default CombatScreen3D;

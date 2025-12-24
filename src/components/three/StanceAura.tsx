@@ -128,4 +128,3 @@ export const StanceAura: React.FC<StanceAuraProps> = ({
   );
 };
 
-export default StanceAura;

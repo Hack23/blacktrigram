@@ -308,5 +308,3 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
     </>
   );
 };
-
-export default PauseMenu;

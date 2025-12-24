@@ -427,4 +427,3 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   );
 };
 
-export default HitEffects3D;

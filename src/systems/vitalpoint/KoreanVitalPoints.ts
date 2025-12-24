@@ -173,4 +173,3 @@ export const getVitalPointsStats = () => {
   return stats;
 };
 
-export default KOREAN_VITAL_POINTS;

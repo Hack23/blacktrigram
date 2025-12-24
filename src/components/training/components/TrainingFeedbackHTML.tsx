@@ -40,4 +40,3 @@ export const TrainingFeedbackHTML: React.FC<TrainingFeedbackHTMLProps> = ({
   );
 };
 
-export default TrainingFeedbackHTML;

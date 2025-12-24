@@ -450,4 +450,3 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   );
 };
 
-export default Hand3D;

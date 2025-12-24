@@ -102,4 +102,3 @@ export class HitDetection {
   }
 }
 
-export default HitDetection;

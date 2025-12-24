@@ -191,4 +191,3 @@ export interface TechniqueValidation {
   readonly wrongStance?: boolean;
 }
 
-export default {};

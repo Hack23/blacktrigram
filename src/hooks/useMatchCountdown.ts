@@ -230,4 +230,3 @@ export function useMatchCountdown(
   };
 }
 
-export default useMatchCountdown;

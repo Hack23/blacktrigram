@@ -128,4 +128,3 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
 
 StatBar.displayName = "StatBar";
 
-export default StatBar;

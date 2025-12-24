@@ -229,4 +229,3 @@ export const AnatomyControlsHTML: React.FC<AnatomyControlsHTMLProps> = ({
   );
 };
 
-export default AnatomyControlsHTML;

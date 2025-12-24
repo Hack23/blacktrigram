@@ -201,4 +201,3 @@ export const VitalPointTrainingHTML: React.FC<VitalPointTrainingHTMLProps> = ({
   );
 };
 
-export default VitalPointTrainingHTML;

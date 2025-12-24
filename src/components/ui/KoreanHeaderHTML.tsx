@@ -265,4 +265,3 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
   );
 };
 
-export default KoreanHeaderHTML;

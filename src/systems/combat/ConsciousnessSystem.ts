@@ -496,4 +496,3 @@ export class ConsciousnessSystem {
   }
 }
 
-export default ConsciousnessSystem;

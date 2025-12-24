@@ -28,7 +28,7 @@ const TrainingScreen = lazy(() =>
   }))
 );
 
-function App() {
+export function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
     PlayerArchetype.MUSA
@@ -468,4 +468,3 @@ function App() {
   );
 }
 
-export default App;

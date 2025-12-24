@@ -190,4 +190,3 @@ export const KOREAN_UI_LAYOUTS = {
   CAPTION_SCALE: 0.8,
 } as const;
 
-export default UI_CONSTANTS;

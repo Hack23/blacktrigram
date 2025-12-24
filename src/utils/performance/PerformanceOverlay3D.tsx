@@ -236,4 +236,3 @@ export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
   );
 };
 
-export default PerformanceOverlay3D;

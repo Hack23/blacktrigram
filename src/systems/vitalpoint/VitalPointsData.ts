@@ -1782,4 +1782,3 @@ export function getTotalVitalPointsCount(): number {
   return VITAL_POINTS_DATA.length;
 }
 
-export default VITAL_POINTS_DATA;

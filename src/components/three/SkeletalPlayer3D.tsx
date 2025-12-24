@@ -785,4 +785,3 @@ export const SkeletalPlayer3D: React.FC<
   );
 };
 
-export default SkeletalPlayer3D;

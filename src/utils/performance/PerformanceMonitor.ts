@@ -231,4 +231,3 @@ export function createPerformanceMonitor(
   return new PerformanceMonitor(thresholds);
 }
 
-export default PerformanceMonitor;

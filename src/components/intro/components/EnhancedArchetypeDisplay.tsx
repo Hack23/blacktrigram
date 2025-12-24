@@ -167,4 +167,3 @@ export const EnhancedArchetypeDisplay: React.FC<
 
 EnhancedArchetypeDisplay.displayName = "EnhancedArchetypeDisplay";
 
-export default EnhancedArchetypeDisplay;
