@@ -464,7 +464,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
 
       // Wait for screen transition
       await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-      
+
       // Wait for philosophy screen content to appear
       await waitForHtmlOverlayContent(
         page,
@@ -511,7 +511,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
 
       // Wait for screen transition
       await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-      
+
       // Wait for training screen content to appear
       await waitForHtmlOverlayContent(
         page,
@@ -553,7 +553,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
 
       // Wait for screen transition
       await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-      
+
       // Wait for combat screen content to appear
       await waitForHtmlOverlayContent(
         page,
@@ -586,37 +586,24 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Wait for canvas to be ready first
       await waitForThreeJsReady(page);
 
-      // Wait for menu to be fully rendered before clicking
+      // Wait for menu to be fully rendered before triggering
       await waitForMenuReady(page);
 
-      // Click versus mode using data-testid with force to bypass canvas interception
-      const versusButton = await page
-        .locator('[data-testid="menu-item-versus"]')
-        .first();
-      if (await versusButton.isVisible({ timeout: 5000 })) {
-        await versusButton.click({ force: true });
-        // Wait for screen transition and Html overlay to render
-        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        // Wait for combat screen content to appear
-        await waitForHtmlOverlayContent(
-          page,
-          '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
-          "Combat screen content",
-          10000
-        );
-        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Versus button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("대전")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        }
-      }
+      // Use keyboard shortcut 'V' to navigate to versus/combat screen
+      console.log("  🎯 Using keyboard shortcut 'V' for versus screen...");
+      await page.keyboard.press("v");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for combat screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
+        "Combat screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
