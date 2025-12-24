@@ -21,6 +21,7 @@ export { DamageNumbers } from "./DamageNumbers";
 // Player State Visual Indicators
 export { BalanceIndicator } from "./BalanceIndicator";
 export { BloodLossOverlay } from "./BloodLossOverlay";
+export { BodyPartHealthDisplay } from "./BodyPartHealthDisplay";
 export { ConsciousnessBlur } from "./ConsciousnessBlur";
 export { PainVignette } from "./PainVignette";
 export { PlayerStateOverlay } from "./PlayerStateOverlay";
@@ -70,6 +71,7 @@ export type { VitalPointOverlayControlsProps } from "./VitalPointOverlayControls
 // Player State Indicator prop types
 export type { BalanceIndicatorProps } from "./BalanceIndicator";
 export type { BloodLossOverlayProps } from "./BloodLossOverlay";
+export type { BodyPartHealthDisplayProps } from "./BodyPartHealthDisplay";
 export type { ConsciousnessBlurProps } from "./ConsciousnessBlur";
 export type { PainVignetteProps } from "./PainVignette";
 export type { PlayerStateOverlayProps } from "./PlayerStateOverlay";
