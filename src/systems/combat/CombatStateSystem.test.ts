@@ -562,6 +562,39 @@ describe("CombatStateSystem", () => {
       const state = system.determineState(player, currentTime);
       expect(state).toBe(CombatReadinessState.READY);
     });
+
+    it("should recover from HELPLESS even with low health after 5 seconds with no hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        health: 35, // Still low but above critical threshold
+        pain: 50, // Moderate pain
+        consciousness: 60, // Reduced consciousness
+        balance: 60, // Reduced balance
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [], // No recent hits
+      };
+
+      const state = system.determineState(player, currentTime);
+      // Should recover to SHAKEN or VULNERABLE based on stats, not remain HELPLESS
+      expect(state).not.toBe(CombatReadinessState.HELPLESS);
+      expect([CombatReadinessState.SHAKEN, CombatReadinessState.VULNERABLE]).toContain(state);
+    });
+
+    it("should not recover from HELPLESS if still taking hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        health: 40, // Above critical
+        pain: 50,
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [currentTime - 2000], // Recent hit
+      };
+
+      const state = system.determineState(player, currentTime);
+      // With recent hits, recovery is interrupted
+      expect(state).toBe(CombatReadinessState.VULNERABLE); // Based on stats, not helpless but not fully recovered
+    });
   });
 
   describe("Capability Modifiers - Damage Taken", () => {

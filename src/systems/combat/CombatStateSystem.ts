@@ -177,29 +177,44 @@ export class CombatStateSystem {
     const recentHits = this.countRecentHits(player, currentTime, 10000);
     
     // Check for recovery from HELPLESS state
+    // If player was helpless and recovery conditions are met, allow normal state determination
+    // Recovery overrides low stats if enough time has passed without hits
     if (player.lastHelplessStateTime && currentTime) {
       const timeSinceHelpless = currentTime - player.lastHelplessStateTime;
       const noRecentHits = this.countRecentHits(player, currentTime, 5000) === 0;
       
-      // Recovery: HELPLESS → READY over 5 seconds if no additional hits
+      // Recovery: HELPLESS → normal state after 5 seconds if no additional hits
       if (timeSinceHelpless >= 5000 && noRecentHits) {
-        // Player has recovered, check normal state determination
+        // Player has recovered - skip HELPLESS check and determine state normally
+        // This allows recovery even if stats are still low
+        // Continue to normal state determination below
+      } else if (timeSinceHelpless < 5000) {
+        // Still in recovery period, check if should remain HELPLESS
+        const stillCritical = healthPercent <= 0.3 || pain > 80 || consciousness <= 20 || balance <= 20;
+        if (stillCritical) {
+          return CombatReadinessState.HELPLESS;
+        }
       }
     }
 
-    // Check for HELPLESS state (worst condition)
+    // Check for HELPLESS state (worst condition) - only if not in recovery
     // Triggers: health <= 30%, pain > 80, consciousness <= 20, balance <= 20, or head trauma
     const hasHeadTrauma = player.bodyPartHealth 
       ? (player.bodyPartHealth.head / (player.bodyPartMaxHealth?.head ?? 100)) < 0.5
       : false;
     
-    if (
+    // Only enter HELPLESS if not already recovering
+    const isRecovering = player.lastHelplessStateTime && currentTime 
+      && (currentTime - player.lastHelplessStateTime) >= 5000
+      && this.countRecentHits(player, currentTime, 5000) === 0;
+    
+    if (!isRecovering && (
       healthPercent <= 0.3 ||
       pain > 80 ||
       consciousness <= 20 ||
       balance <= 20 ||
       hasHeadTrauma
-    ) {
+    )) {
       return CombatReadinessState.HELPLESS;
     }
 

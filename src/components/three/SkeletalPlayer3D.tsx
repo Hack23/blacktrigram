@@ -95,6 +95,29 @@ const DEFAULT_HAND_TRANSITION_DURATION = 0.2;
 const HAND_STATE_SYNC_FREQUENCY = 20;
 
 /**
+ * Animation constants for balance state sway effects.
+ * Defines intensity, speed, and lean parameters for visual feedback.
+ * @korean 균형상태애니메이션상수
+ */
+const BALANCE_STATE_ANIMATION_CONSTANTS = {
+  SHAKEN: {
+    swayIntensity: 0.02, // 2% subtle sway
+    swaySpeed: 2, // Hz frequency
+  },
+  VULNERABLE: {
+    swayIntensity: 0.04, // 4% moderate sway
+    swaySpeed: 3, // Hz frequency
+  },
+  HELPLESS: {
+    stumbleIntensity: 0.08, // 8% pronounced stumble
+    stumbleSpeed: 1.5, // Hz frequency (slower, more dramatic)
+    leanIntensity: 0.15, // 15° forward lean angle
+    lowerStance: -0.15, // Lower Y position for stumbling effect
+  },
+  SWAY_THRESHOLD: 0.001, // Minimum sway to consider significant
+} as const;
+
+/**
  * Updates hand animation state for a single hand at 60fps.
  * Uses refs to avoid triggering React re-renders on every frame.
  * Only syncs to React state periodically or when transition completes.
@@ -132,6 +155,25 @@ const updateHandAnimationFrame = (
       setHandState(updatedState);
     }
   }
+};
+
+/**
+ * Checks if there is significant sway that requires animation updates.
+ * 
+ * @param swayPosition - Current sway position [x, y, z]
+ * @param helplessRotation - Current helpless rotation angle
+ * @returns True if sway is above threshold
+ * @korean 의미있는흔들림확인
+ */
+const hasSignificantSway = (
+  swayPosition: [number, number, number],
+  helplessRotation: number
+): boolean => {
+  return (
+    Math.abs(swayPosition[0]) > BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD ||
+    Math.abs(swayPosition[1]) > BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD ||
+    Math.abs(helplessRotation) > BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD
+  );
 };
 
 /**
@@ -507,26 +549,28 @@ export const SkeletalPlayer3D: React.FC<
       // Helpless state: pronounced stumbling motion
       swayTimeRef.current += delta;
       
-      const stumbleIntensity = 0.08; // Much more pronounced
-      const stumbleSpeed = 1.5; // Slower, more dramatic
-      const leanIntensity = 0.15; // Forward lean angle
+      const { stumbleIntensity, stumbleSpeed, leanIntensity, lowerStance } =
+        BALANCE_STATE_ANIMATION_CONSTANTS.HELPLESS;
       
       const swayX = Math.sin(swayTimeRef.current * stumbleSpeed) * stumbleIntensity;
-      const swayY = Math.cos(swayTimeRef.current * stumbleSpeed * 0.5) * stumbleIntensity * 0.3 - 0.15; // Lower stance
+      const swayY = Math.cos(swayTimeRef.current * stumbleSpeed * 0.5) * stumbleIntensity * 0.3 + lowerStance;
       const leanAngle = Math.sin(swayTimeRef.current * stumbleSpeed * 0.7) * leanIntensity;
       
-      // Update every frame for dramatic helpless animation
-      setSwayPosition([swayX, swayY, 0]);
-      setHelplessRotation(leanAngle);
+      // Update periodically to reduce React re-renders while keeping helpless animation dramatic
+      if (frameCounter.current % 2 === 0) {
+        setSwayPosition([swayX, swayY, 0]);
+        setHelplessRotation(leanAngle);
+      }
     } else if (balance === "SHAKEN" || balance === "VULNERABLE") {
       // Shaken/Vulnerable state: subtle sway
       swayTimeRef.current += delta;
       
-      const swayIntensity = balance === "SHAKEN" ? 0.02 : 0.04;
-      const swaySpeed = balance === "SHAKEN" ? 2 : 3;
+      const animConfig = balance === "SHAKEN"
+        ? BALANCE_STATE_ANIMATION_CONSTANTS.SHAKEN
+        : BALANCE_STATE_ANIMATION_CONSTANTS.VULNERABLE;
       
-      const swayX = Math.sin(swayTimeRef.current * swaySpeed) * swayIntensity;
-      const swayY = Math.cos(swayTimeRef.current * swaySpeed * 0.8) * swayIntensity * 0.5;
+      const swayX = Math.sin(swayTimeRef.current * animConfig.swaySpeed) * animConfig.swayIntensity;
+      const swayY = Math.cos(swayTimeRef.current * animConfig.swaySpeed * 0.8) * animConfig.swayIntensity * 0.5;
       
       // Update sway position periodically to reduce re-renders
       if (frameCounter.current % 2 === 0) {
@@ -535,13 +579,13 @@ export const SkeletalPlayer3D: React.FC<
       }
     } else {
       // Smoothly return to neutral position
-      if (frameCounter.current % 2 === 0 && (Math.abs(swayPosition[0]) > 0.001 || Math.abs(swayPosition[1]) > 0.001 || Math.abs(helplessRotation) > 0.001)) {
+      if (frameCounter.current % 2 === 0 && hasSignificantSway(swayPosition, helplessRotation)) {
         setSwayPosition([swayPosition[0] * 0.95, swayPosition[1] * 0.95, 0]);
         setHelplessRotation(helplessRotation * 0.95);
       }
       
       // Reset sway time when not swaying
-      if (Math.abs(swayPosition[0]) < 0.001 && Math.abs(swayPosition[1]) < 0.001 && Math.abs(helplessRotation) < 0.001) {
+      if (!hasSignificantSway(swayPosition, helplessRotation)) {
         swayTimeRef.current = 0;
       }
     }
