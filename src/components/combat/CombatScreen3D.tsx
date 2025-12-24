@@ -69,12 +69,6 @@ import {
   convertPlayerStateToProps,
   getBalanceState,
 } from "../../utils/player3DHelpers";
-import {
-  ActionButtons,
-  GestureRecognizer,
-  StanceWheel,
-  VirtualDPad,
-} from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
@@ -88,6 +82,7 @@ import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
 import { DifficultyIndicator } from "./components/DifficultyIndicator";
 import HitEffects3D from "./components/HitEffects3D";
+import { MobileControlsWrapper } from "./components/MobileControlsWrapper";
 import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
@@ -1924,41 +1919,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
         {isMobile && (
-          <>
-            <VirtualDPad
-              onMove={handleMobileMove}
-              disabled={!mobileControlsEnabled}
-              size={120}
-              bottom={20}
-              left={20}
-              opacity={0.8}
-            />
-
-            <ActionButtons
-              onAttack={handleMobileAttack}
-              onBlock={handleMobileBlock}
-              disabled={!mobileControlsEnabled}
-              bottom={20}
-              right={20}
-              opacity={0.8}
-            />
-
-            <StanceWheel
-              currentStance={currentStanceIndex}
-              onStanceChange={handleMobileStanceChange}
-              expanded={stanceWheelExpanded}
-              onToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
-              disabled={!mobileControlsEnabled}
-              opacity={0.8}
-            />
-
-            <GestureRecognizer
-              onGesture={handleMobileGesture}
-              enabled={mobileControlsEnabled}
-              showFeedback={true}
-              minSwipeDistance={50}
-            />
-          </>
+          <MobileControlsWrapper
+            enabled={mobileControlsEnabled}
+            currentStanceIndex={currentStanceIndex}
+            stanceWheelExpanded={stanceWheelExpanded}
+            onMove={handleMobileMove}
+            onAttack={handleMobileAttack}
+            onBlock={handleMobileBlock}
+            onStanceChange={handleMobileStanceChange}
+            onStanceWheelToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
+            onGesture={handleMobileGesture}
+          />
         )}
       </Canvas>
 
