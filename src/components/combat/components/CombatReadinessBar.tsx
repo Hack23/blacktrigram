@@ -17,7 +17,8 @@ import { hexToRgbaString } from "../../../utils/colorUtils";
 import { 
   calculateCombatReadiness, 
   getCombatReadinessColor, 
-  getCombatReadinessLabel 
+  getCombatReadinessLabel,
+  getCombatReadinessBars
 } from "../../../utils/combatReadiness";
 import type { PlayerState } from "../../../systems/player";
 
@@ -60,7 +61,7 @@ export const CombatReadinessBar: React.FC<CombatReadinessBarProps> = ({
   );
 
   const segments = 10;
-  const filledSegments = Math.ceil((readiness / 100) * segments);
+  const filledSegments = getCombatReadinessBars(readiness, segments);
   const readinessColor = getCombatReadinessColor(readiness);
   const readinessLabel = getCombatReadinessLabel(readiness);
   const shouldPulse = readiness < 20;
@@ -72,9 +73,7 @@ export const CombatReadinessBar: React.FC<CombatReadinessBarProps> = ({
   const padding = isMobile ? "8px 12px" : "12px 16px";
 
   // Status text based on readiness level
-  const statusText = useMemo(() => {
-    return `${readiness}% ${readinessLabel.korean}`;
-  }, [readiness, readinessLabel]);
+  const statusText = `${readiness}% ${readinessLabel.korean}`;
 
   return (
     <div
