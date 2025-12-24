@@ -1,6 +1,6 @@
 import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useWindowSize } from "../../hooks/useWindowSize";
@@ -24,8 +24,8 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   width: propWidth,
   height: propHeight,
 }) => {
-  // Track mounted state for CSS animation (content always renders)
-  const [isMounted, setIsMounted] = useState(false);
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
 
   // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
@@ -37,14 +37,6 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
     },
     autoRestore: true,
   });
-
-  // Trigger fade-in animation after mount
-  useEffect(() => {
-    const frameId = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-    return () => cancelAnimationFrame(frameId);
-  }, []);
 
   const audio = useAudio();
   const { width, height } = useWindowSize();

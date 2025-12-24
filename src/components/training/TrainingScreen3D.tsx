@@ -9,13 +9,7 @@
 
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
@@ -114,8 +108,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 1: Core State Management (Hooks)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Track mounted state for CSS animation (content always renders)
-  const [isMounted, setIsMounted] = useState(false);
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
 
   // Consolidated training state management (matches useCombatState pattern)
   const { state: trainingState, actions: trainingActions } = useTrainingState();
@@ -173,14 +167,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     },
     autoRestore: true,
   });
-
-  // Trigger fade-in animation after mount
-  useEffect(() => {
-    const frameId = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-    return () => cancelAnimationFrame(frameId);
-  }, []);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 3: Movement & Position Management

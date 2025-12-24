@@ -83,8 +83,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
-  // Track mounted state for CSS animation (content always renders)
-  const [isMounted, setIsMounted] = useState(false);
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
 
   // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
@@ -96,15 +96,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     },
     autoRestore: true,
   });
-
-  // Trigger fade-in animation after mount
-  useEffect(() => {
-    // Use requestAnimationFrame for smoother initial render
-    const frameId = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-    return () => cancelAnimationFrame(frameId);
-  }, []);
 
   // Add local state for archetype management
   const [currentArchetype, setCurrentArchetype] =
