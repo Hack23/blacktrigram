@@ -153,11 +153,27 @@ export function getCombatReadinessLabel(readiness: number): { korean: string; en
 /**
  * Get number of filled bars for combat readiness
  * 
+ * Uses ceiling behavior: any non-zero readiness shows at least 1 bar.
+ * This provides visual feedback even for minimal combat capability.
+ * 
  * @param readiness - Combat readiness percentage (0-100)
  * @param totalBars - Total number of bars (default: 10)
  * @returns Number of filled bars (0-totalBars)
+ * 
+ * @example
+ * ```typescript
+ * getCombatReadinessBars(0, 10);   // Returns 0 bars
+ * getCombatReadinessBars(5, 10);   // Returns 1 bar (ceil behavior)
+ * getCombatReadinessBars(50, 10);  // Returns 5 bars
+ * getCombatReadinessBars(100, 10); // Returns 10 bars
+ * ```
  */
 export function getCombatReadinessBars(readiness: number, totalBars: number = 10): number {
   const percentage = Math.max(0, Math.min(100, readiness));
+  
+  // Return 0 bars only for exactly 0% readiness
+  if (percentage === 0) return 0;
+  
+  // Use ceiling for any non-zero value to provide visual feedback
   return Math.ceil((percentage / 100) * totalBars);
 }

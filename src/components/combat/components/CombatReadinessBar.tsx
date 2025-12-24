@@ -73,7 +73,6 @@ export const CombatReadinessBar: React.FC<CombatReadinessBarProps> = ({
 
   // Status text based on readiness level
   const statusText = useMemo(() => {
-    if (readiness >= 80) return `${readiness}% ${readinessLabel.korean}`;
     return `${readiness}% ${readinessLabel.korean}`;
   }, [readiness, readinessLabel]);
 
