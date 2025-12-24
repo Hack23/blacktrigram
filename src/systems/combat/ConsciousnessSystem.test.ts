@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { PlayerArchetype, VitalPointCategory } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "../player";
-import ConsciousnessSystem, { ConsciousnessLevel } from "./ConsciousnessSystem";
+import { ConsciousnessSystem, ConsciousnessLevel } from "./ConsciousnessSystem";
 
 describe("ConsciousnessSystem", () => {
   let consciousnessSystem: ConsciousnessSystem;

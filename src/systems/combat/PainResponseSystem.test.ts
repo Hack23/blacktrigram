@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { PlayerArchetype, VitalPointCategory, VitalPointSeverity } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "../player";
-import PainResponseSystem, { PainLevel, ShockPainEffect } from "./PainResponseSystem";
+import { PainResponseSystem, PainLevel, ShockPainEffect } from "./PainResponseSystem";
 
 describe("PainResponseSystem", () => {
   let painSystem: PainResponseSystem;
