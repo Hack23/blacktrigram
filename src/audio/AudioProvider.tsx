@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { ARCHETYPE_ASSETS } from "../types/constants";
 import { audioAssetRegistry } from "./AudioAssetRegistry";
 import AudioManager from "./AudioManager";
@@ -48,7 +54,28 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   );
   const [isAudioReady, setIsAudioReady] = useState(false);
 
-  const initializeAudio = React.useCallback(async () => {
+  // Track volume states explicitly to trigger re-renders when they change
+  // Initialize with audioManager values to sync with any custom manager
+  const [volumeState, setVolumeState] = useState(() => ({
+    masterVolume: audioManager.masterVolume,
+    sfxVolume: audioManager.sfxVolume,
+    musicVolume: audioManager.musicVolume,
+    muted: audioManager.muted,
+    isInitialized: audioManager.isInitialized,
+  }));
+
+  // Update volume state whenever audioManager values change
+  const syncVolumeState = useCallback(() => {
+    setVolumeState({
+      masterVolume: audioManager.masterVolume,
+      sfxVolume: audioManager.sfxVolume,
+      musicVolume: audioManager.musicVolume,
+      muted: audioManager.muted,
+      isInitialized: audioManager.isInitialized,
+    });
+  }, [audioManager]);
+
+  const initializeAudio = useCallback(async () => {
     // Note: We don't check isAudioReady here to allow retry attempts
     // If initialization fails, users can retry by calling this again
 
@@ -132,6 +159,25 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   }, [deferInitialization, initializeAudio]);
 
   const contextValue = React.useMemo<AudioContextValue>(() => {
+    // Wrap methods that change volume state to also sync React state
+    const wrappedSetVolume = (
+      type: "master" | "sfx" | "music" | "voice",
+      volume: number
+    ) => {
+      audioManager.setVolume(type, volume);
+      syncVolumeState();
+    };
+
+    const wrappedMute = () => {
+      audioManager.mute();
+      syncVolumeState();
+    };
+
+    const wrappedUnmute = () => {
+      audioManager.unmute();
+      syncVolumeState();
+    };
+
     // Create a dynamic wrapper that accesses getter properties on-demand
     // This ensures components always get current values
     return {
@@ -142,9 +188,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       playSoundEffect: audioManager.playSoundEffect.bind(audioManager),
       playMusic: audioManager.playMusic.bind(audioManager),
       stopMusic: audioManager.stopMusic.bind(audioManager),
-      setVolume: audioManager.setVolume.bind(audioManager),
-      mute: audioManager.mute.bind(audioManager),
-      unmute: audioManager.unmute.bind(audioManager),
+      setVolume: wrappedSetVolume,
+      mute: wrappedMute,
+      unmute: wrappedUnmute,
       fadeIn: audioManager.fadeIn.bind(audioManager),
       fadeOut: audioManager.fadeOut.bind(audioManager),
       playKoreanTechniqueSound:
@@ -155,29 +201,34 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
         audioManager.playVitalPointHitSound.bind(audioManager),
       playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
 
-      // Getter properties - forwarding getters using ES6 getter syntax
-      // This ensures components always get current values from audioManager
+      // Use tracked state values for reactivity (triggers re-renders)
       get isInitialized() {
-        return audioManager.isInitialized;
+        return volumeState.isInitialized;
       },
       get masterVolume() {
-        return audioManager.masterVolume;
+        return volumeState.masterVolume;
       },
       get sfxVolume() {
-        return audioManager.sfxVolume;
+        return volumeState.sfxVolume;
       },
       get musicVolume() {
-        return audioManager.musicVolume;
+        return volumeState.musicVolume;
       },
       get muted() {
-        return audioManager.muted;
+        return volumeState.muted;
       },
 
       // AudioProvider-specific properties
       initializeAudio,
       isAudioReady,
     };
-  }, [audioManager, initializeAudio, isAudioReady]);
+  }, [
+    audioManager,
+    initializeAudio,
+    isAudioReady,
+    syncVolumeState,
+    volumeState,
+  ]);
 
   return (
     <AudioContext.Provider value={contextValue}>

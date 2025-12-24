@@ -25,25 +25,26 @@ export interface PhilosophyScreenThreeJSProps {
 export const PhilosophyScreenThreeJS: React.FC<
   PhilosophyScreenThreeJSProps
 > = ({ onReturnToMenu, width: propWidth, height: propHeight }) => {
-  // Track when content is ready to render (prevents flash of empty content)
-  const [contentReady, setContentReady] = useState(false);
+  // Track mounted state for CSS animation (content always renders)
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Handle WebGL context loss and restoration
+  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in PhilosophyScreen");
-      setContentReady(false);
     },
     onContextRestored: () => {
-      setTimeout(() => setContentReady(true), 100);
+      console.log("✓ WebGL context restored in PhilosophyScreen");
     },
     autoRestore: true,
   });
 
-  // Ensure content renders after component is mounted and stable
+  // Trigger fade-in animation after mount
   useEffect(() => {
-    const timer = setTimeout(() => setContentReady(true), 50);
-    return () => clearTimeout(timer);
+    const frameId = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const audio = useAudio();
@@ -210,8 +211,8 @@ export const PhilosophyScreenThreeJS: React.FC<
               color: colors.textPrimary,
               fontFamily: FONT_FAMILY.KOREAN,
               pointerEvents: "auto",
-              opacity: contentReady ? 1 : 0,
-              transition: "opacity 0.15s ease-in-out",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Header */}

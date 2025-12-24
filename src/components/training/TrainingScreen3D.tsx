@@ -114,8 +114,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 1: Core State Management (Hooks)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Track when content is ready to render (prevents flash of empty content)
-  const [contentReady, setContentReady] = useState(false);
+  // Track mounted state for CSS animation (content always renders)
+  const [isMounted, setIsMounted] = useState(false);
 
   // Consolidated training state management (matches useCombatState pattern)
   const { state: trainingState, actions: trainingActions } = useTrainingState();
@@ -162,24 +162,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Track context loss for recovery
   const contextLossCountRef = useRef(0);
 
-  // Handle WebGL context loss and restoration
+  // Handle WebGL context loss and restoration (for 3D scene only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in TrainingScreen");
       contextLossCountRef.current += 1;
-      setContentReady(false);
     },
     onContextRestored: () => {
-      // Context restored - re-enable content after short delay
-      setTimeout(() => setContentReady(true), 100);
+      console.log("✓ WebGL context restored in TrainingScreen");
     },
     autoRestore: true,
   });
 
-  // Ensure content renders after component is mounted and stable
+  // Trigger fade-in animation after mount
   useEffect(() => {
-    const timer = setTimeout(() => setContentReady(true), 50);
-    return () => clearTimeout(timer);
+    const frameId = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -831,8 +831,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               height: "100%",
               pointerEvents: "none",
               position: "relative",
-              opacity: contentReady ? 1 : 0,
-              transition: "opacity 0.15s ease-in-out",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Top Left - Training Controls */}

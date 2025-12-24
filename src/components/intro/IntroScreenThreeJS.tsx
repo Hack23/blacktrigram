@@ -83,29 +83,27 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
-  // Track when content is ready to render (prevents flash of empty content)
-  const [contentReady, setContentReady] = useState(false);
+  // Track mounted state for CSS animation (content always renders)
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Handle WebGL context loss and restoration
+  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in IntroScreen");
-      setContentReady(false);
     },
     onContextRestored: () => {
-      // Re-enable content after context restored
-      setTimeout(() => setContentReady(true), 100);
+      console.log("✓ WebGL context restored in IntroScreen");
     },
     autoRestore: true,
   });
 
-  // Ensure content renders after component is mounted and stable
+  // Trigger fade-in animation after mount
   useEffect(() => {
-    // Small delay to ensure WebGL context is ready
-    const timer = setTimeout(() => {
-      setContentReady(true);
-    }, 50);
-    return () => clearTimeout(timer);
+    // Use requestAnimationFrame for smoother initial render
+    const frameId = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   // Add local state for archetype management
@@ -350,8 +348,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               padding: 0,
               gap: isMobile ? "8px" : "16px",
               pointerEvents: "none",
-              opacity: contentReady ? 1 : 0,
-              transition: "opacity 0.15s ease-in-out",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Main Title */}
