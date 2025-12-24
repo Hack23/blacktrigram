@@ -75,79 +75,79 @@ describe("CombatStateSystem", () => {
 
   describe("State Determination", () => {
     it("should return READY state for healthy player", () => {
-      const state = system.determineState(basePlayer);
+      const state = system.determineState(basePlayer, Date.now());
       expect(state).toBe(CombatReadinessState.READY);
     });
 
     it("should return SHAKEN state when health drops to 70%", () => {
       const player = { ...basePlayer, health: 70 };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.SHAKEN);
     });
 
     it("should return VULNERABLE state when health drops to 50%", () => {
       const player = { ...basePlayer, health: 50 };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.VULNERABLE);
     });
 
     it("should return HELPLESS state when health drops to 30%", () => {
       const player = { ...basePlayer, health: 30 };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.HELPLESS);
     });
 
     it("should return SHAKEN state when pain reaches 30", () => {
-      const player = { ...basePlayer, pain: 30 };
-      const state = system.determineState(player);
+      const player = { ...basePlayer, pain: 35 }; // Above 30 threshold
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.SHAKEN);
     });
 
-    it("should return VULNERABLE state when pain reaches 50", () => {
-      const player = { ...basePlayer, pain: 50 };
-      const state = system.determineState(player);
+    it("should return VULNERABLE state when pain reaches 60", () => {
+      const player = { ...basePlayer, pain: 65 }; // Above 60 threshold
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.VULNERABLE);
     });
 
     it("should return HELPLESS state when pain reaches 80", () => {
-      const player = { ...basePlayer, pain: 80 };
-      const state = system.determineState(player);
+      const player = { ...basePlayer, pain: 85 }; // Above 80 threshold
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.HELPLESS);
     });
 
-    it("should return SHAKEN state when consciousness drops to 70", () => {
-      const player = { ...basePlayer, consciousness: 70 };
-      const state = system.determineState(player);
+    it("should return SHAKEN state when consciousness drops to 60", () => {
+      const player = { ...basePlayer, consciousness: 60 };
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.SHAKEN);
     });
 
-    it("should return VULNERABLE state when consciousness drops to 50", () => {
-      const player = { ...basePlayer, consciousness: 50 };
-      const state = system.determineState(player);
+    it("should return VULNERABLE state when consciousness drops to 40", () => {
+      const player = { ...basePlayer, consciousness: 40 };
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.VULNERABLE);
     });
 
     it("should return HELPLESS state when consciousness drops to 15", () => {
       const player = { ...basePlayer, consciousness: 15 };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.HELPLESS);
     });
 
-    it("should return SHAKEN state when balance drops to 70", () => {
-      const player = { ...basePlayer, balance: 70 };
-      const state = system.determineState(player);
+    it("should return SHAKEN state when balance drops to 60", () => {
+      const player = { ...basePlayer, balance: 60 };
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.SHAKEN);
     });
 
-    it("should return VULNERABLE state when balance drops to 50", () => {
-      const player = { ...basePlayer, balance: 50 };
-      const state = system.determineState(player);
+    it("should return VULNERABLE state when balance drops to 40", () => {
+      const player = { ...basePlayer, balance: 40 };
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.VULNERABLE);
     });
 
     it("should return HELPLESS state when balance drops to 15", () => {
       const player = { ...basePlayer, balance: 15 };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.HELPLESS);
     });
 
@@ -155,9 +155,9 @@ describe("CombatStateSystem", () => {
       const player = {
         ...basePlayer,
         health: 70, // SHAKEN
-        pain: 50, // VULNERABLE
+        pain: 65, // VULNERABLE
       };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.VULNERABLE);
     });
 
@@ -167,8 +167,130 @@ describe("CombatStateSystem", () => {
         health: 90, // READY
         pain: 85, // HELPLESS
       };
-      const state = system.determineState(player);
+      const state = system.determineState(player, Date.now());
       expect(state).toBe(CombatReadinessState.HELPLESS);
+    });
+
+    it("should return SHAKEN state after taking 2 hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        recentHitTimestamps: [currentTime - 2000, currentTime - 1000],
+      };
+      const state = system.determineState(player, currentTime);
+      expect(state).toBe(CombatReadinessState.SHAKEN);
+    });
+
+    it("should return VULNERABLE state after taking 4 hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        recentHitTimestamps: [
+          currentTime - 5000,
+          currentTime - 3000,
+          currentTime - 2000,
+          currentTime - 1000,
+        ],
+      };
+      const state = system.determineState(player, currentTime);
+      expect(state).toBe(CombatReadinessState.VULNERABLE);
+    });
+
+    it("should not count hits older than 10 seconds", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        recentHitTimestamps: [
+          currentTime - 15000, // Too old
+          currentTime - 12000, // Too old
+        ],
+      };
+      const state = system.determineState(player, currentTime);
+      expect(state).toBe(CombatReadinessState.READY);
+    });
+
+    it("should return HELPLESS when head health drops below 50%", () => {
+      const player = {
+        ...basePlayer,
+        bodyPartHealth: {
+          head: 40,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 100,
+          legRight: 100,
+        },
+        bodyPartMaxHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 100,
+          legRight: 100,
+        },
+      };
+      const state = system.determineState(player, Date.now());
+      expect(state).toBe(CombatReadinessState.HELPLESS);
+    });
+
+    it("should return VULNERABLE when any body part loses 30% health", () => {
+      const player = {
+        ...basePlayer,
+        bodyPartHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 60, // 40% health loss
+          legRight: 100,
+        },
+        bodyPartMaxHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 100,
+          legRight: 100,
+        },
+      };
+      const state = system.determineState(player, Date.now());
+      expect(state).toBe(CombatReadinessState.VULNERABLE);
+    });
+
+    it("should not return VULNERABLE when body part health loss is below 30%", () => {
+      const player = {
+        ...basePlayer,
+        bodyPartHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 80, // Only 20% health loss
+          legRight: 100,
+        },
+        bodyPartMaxHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 100,
+          legRight: 100,
+        },
+      };
+      const state = system.determineState(player, Date.now());
+      expect(state).toBe(CombatReadinessState.READY);
     });
   });
 
@@ -183,25 +305,25 @@ describe("CombatStateSystem", () => {
       expect(capability.canExecuteTechniques).toBe(true);
     });
 
-    it("should return 80% capability for SHAKEN state", () => {
+    it("should return 85% capability for SHAKEN state", () => {
       const capability = system.getCapability(CombatReadinessState.SHAKEN);
-      expect(capability.capability).toBe(0.8);
-      expect(capability.accuracyModifier).toBe(0.8);
+      expect(capability.capability).toBe(0.85);
+      expect(capability.accuracyModifier).toBe(0.85);
       expect(capability.canBlock).toBe(true);
       expect(capability.canExecuteTechniques).toBe(true);
     });
 
-    it("should return 60% capability for VULNERABLE state", () => {
+    it("should return 70% capability for VULNERABLE state", () => {
       const capability = system.getCapability(CombatReadinessState.VULNERABLE);
-      expect(capability.capability).toBe(0.6);
-      expect(capability.defenseModifier).toBe(0.6);
+      expect(capability.capability).toBe(0.7);
+      expect(capability.defenseModifier).toBe(0.75);
       expect(capability.canBlock).toBe(true);
       expect(capability.canExecuteTechniques).toBe(true);
     });
 
-    it("should return 20% capability for HELPLESS state", () => {
+    it("should return 0% capability for HELPLESS state", () => {
       const capability = system.getCapability(CombatReadinessState.HELPLESS);
-      expect(capability.capability).toBe(0.2);
+      expect(capability.capability).toBe(0.0);
       expect(capability.canBlock).toBe(false);
       expect(capability.canExecuteTechniques).toBe(false);
     });
@@ -218,20 +340,20 @@ describe("CombatStateSystem", () => {
       expect(modified.speed).toBe(basePlayer.speed);
     });
 
-    it("should reduce attack power by 20% in SHAKEN state", () => {
+    it("should reduce attack power by 10% in SHAKEN state", () => {
       const modified = system.applyStateModifiers(
         basePlayer,
         CombatReadinessState.SHAKEN
       );
-      expect(modified.attackPower).toBe(Math.floor(15 * 0.8)); // 12
+      expect(modified.attackPower).toBe(Math.floor(15 * 0.9)); // 13 (-10% from damageModifier)
     });
 
-    it("should reduce defense by 40% in VULNERABLE state", () => {
+    it("should reduce defense by 25% in VULNERABLE state", () => {
       const modified = system.applyStateModifiers(
         basePlayer,
         CombatReadinessState.VULNERABLE
       );
-      expect(modified.defense).toBe(Math.floor(12 * 0.6)); // 7
+      expect(modified.defense).toBe(Math.floor(12 * 0.75)); // 9 (75% of 12)
     });
 
     it("should disable blocking in HELPLESS state", () => {
@@ -309,19 +431,19 @@ describe("CombatStateSystem", () => {
       let player = { ...basePlayer };
       
       // No pain - READY
-      expect(system.determineState(player)).toBe(CombatReadinessState.READY);
+      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.READY);
       
       // Light pain - SHAKEN
-      player = { ...player, pain: 30 };
-      expect(system.determineState(player)).toBe(CombatReadinessState.SHAKEN);
+      player = { ...player, pain: 35 };
+      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.SHAKEN);
       
       // Moderate pain - VULNERABLE
-      player = { ...player, pain: 50 };
-      expect(system.determineState(player)).toBe(CombatReadinessState.VULNERABLE);
+      player = { ...player, pain: 65 };
+      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.VULNERABLE);
       
       // Severe pain - HELPLESS
       player = { ...player, pain: 85 };
-      expect(system.determineState(player)).toBe(CombatReadinessState.HELPLESS);
+      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.HELPLESS);
     });
 
     it("should apply cascading modifiers correctly", () => {
@@ -333,6 +455,205 @@ describe("CombatStateSystem", () => {
       expect(modified.attackPower).toBeLessThan(basePlayer.attackPower);
       expect(modified.defense).toBeLessThan(basePlayer.defense);
       expect(modified.speed).toBeLessThan(basePlayer.speed);
+    });
+  });
+
+  describe("Hit Tracking", () => {
+    it("should record hit with timestamp", () => {
+      const currentTime = Date.now();
+      const updated = system.recordHit(basePlayer, currentTime);
+      
+      expect(updated.recentHitTimestamps).toContain(currentTime);
+      expect(updated.hitsTaken).toBe(basePlayer.hitsTaken + 1);
+    });
+
+    it("should maintain only last 10 hit timestamps", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        recentHitTimestamps: [
+          currentTime - 10000,
+          currentTime - 9000,
+          currentTime - 8000,
+          currentTime - 7000,
+          currentTime - 6000,
+          currentTime - 5000,
+          currentTime - 4000,
+          currentTime - 3000,
+          currentTime - 2000,
+          currentTime - 1000,
+        ],
+      };
+
+      const updated = system.recordHit(player, currentTime);
+      expect(updated.recentHitTimestamps?.length).toBe(10);
+      expect(updated.recentHitTimestamps?.[0]).toBe(currentTime - 9000);
+      expect(updated.recentHitTimestamps?.[9]).toBe(currentTime);
+    });
+  });
+
+  describe("Helpless State Recovery", () => {
+    it("should record timestamp when entering helpless state", () => {
+      const currentTime = Date.now();
+      const updated = system.enterHelplessState(basePlayer, currentTime);
+      
+      expect(updated.lastHelplessStateTime).toBe(currentTime);
+    });
+
+    it("should allow recovery after 5 seconds with no hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [],
+      };
+
+      const canRecover = system.canRecoverFromHelpless(player, currentTime);
+      expect(canRecover).toBe(true);
+    });
+
+    it("should not allow recovery if less than 5 seconds passed", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        lastHelplessStateTime: currentTime - 3000, // 3 seconds ago
+        recentHitTimestamps: [],
+      };
+
+      const canRecover = system.canRecoverFromHelpless(player, currentTime);
+      expect(canRecover).toBe(false);
+    });
+
+    it("should not allow recovery if player took recent hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [currentTime - 2000], // Hit 2 seconds ago
+      };
+
+      const canRecover = system.canRecoverFromHelpless(player, currentTime);
+      expect(canRecover).toBe(false);
+    });
+
+    it("should not allow recovery if never entered helpless state", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        lastHelplessStateTime: undefined,
+      };
+
+      const canRecover = system.canRecoverFromHelpless(player, currentTime);
+      expect(canRecover).toBe(false);
+    });
+
+    it("should recover from HELPLESS to READY after 5 seconds with no hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        health: 100, // Restored health
+        pain: 0, // No pain
+        consciousness: 100, // Full consciousness
+        balance: 100, // Restored balance
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [], // No recent hits
+      };
+
+      const state = system.determineState(player, currentTime);
+      expect(state).toBe(CombatReadinessState.READY);
+    });
+
+    it("should recover from HELPLESS even with low health after 5 seconds with no hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        health: 35, // Still low but above critical threshold
+        pain: 50, // Moderate pain
+        consciousness: 60, // Reduced consciousness
+        balance: 60, // Reduced balance
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [], // No recent hits
+      };
+
+      const state = system.determineState(player, currentTime);
+      // Should recover to SHAKEN or VULNERABLE based on stats, not remain HELPLESS
+      expect(state).not.toBe(CombatReadinessState.HELPLESS);
+      expect([CombatReadinessState.SHAKEN, CombatReadinessState.VULNERABLE]).toContain(state);
+    });
+
+    it("should not recover from HELPLESS if still taking hits", () => {
+      const currentTime = Date.now();
+      const player = {
+        ...basePlayer,
+        health: 40, // Above critical
+        pain: 50,
+        lastHelplessStateTime: currentTime - 6000, // 6 seconds ago
+        recentHitTimestamps: [currentTime - 2000], // Recent hit
+      };
+
+      const state = system.determineState(player, currentTime);
+      // With recent hits, recovery is interrupted
+      expect(state).toBe(CombatReadinessState.VULNERABLE); // Based on stats, not helpless but not fully recovered
+    });
+  });
+
+  describe("Capability Modifiers - Damage Taken", () => {
+    it("should have 1.0x damage taken multiplier in READY state", () => {
+      const capability = system.getCapability(CombatReadinessState.READY);
+      expect(capability.damageTakenMultiplier).toBe(1.0);
+    });
+
+    it("should have 1.0x damage taken multiplier in SHAKEN state", () => {
+      const capability = system.getCapability(CombatReadinessState.SHAKEN);
+      expect(capability.damageTakenMultiplier).toBe(1.0);
+    });
+
+    it("should have 1.5x damage taken multiplier in VULNERABLE state", () => {
+      const capability = system.getCapability(CombatReadinessState.VULNERABLE);
+      expect(capability.damageTakenMultiplier).toBe(1.5);
+    });
+
+    it("should have 2.0x damage taken multiplier in HELPLESS state", () => {
+      const capability = system.getCapability(CombatReadinessState.HELPLESS);
+      expect(capability.damageTakenMultiplier).toBe(2.0);
+    });
+  });
+
+  describe("Accuracy and Damage Modifiers", () => {
+    it("should apply -15% accuracy and -10% damage in SHAKEN state", () => {
+      const capability = system.getCapability(CombatReadinessState.SHAKEN);
+      expect(capability.accuracyModifier).toBe(0.85);
+      expect(capability.damageModifier).toBe(0.9);
+    });
+
+    it("should apply -30% accuracy and -25% damage in VULNERABLE state", () => {
+      const capability = system.getCapability(CombatReadinessState.VULNERABLE);
+      expect(capability.accuracyModifier).toBe(0.7);
+      expect(capability.damageModifier).toBe(0.75);
+    });
+
+    it("should apply 0% damage in HELPLESS state (cannot attack)", () => {
+      const capability = system.getCapability(CombatReadinessState.HELPLESS);
+      expect(capability.accuracyModifier).toBe(0.0);
+      expect(capability.damageModifier).toBe(0.0);
+      expect(capability.canExecuteTechniques).toBe(false);
+      expect(capability.canBlock).toBe(false);
+    });
+  });
+
+  describe("Performance", () => {
+    it("should determine state in under 2ms", () => {
+      const iterations = 1000;
+      const currentTime = Date.now();
+      
+      const start = performance.now();
+      for (let i = 0; i < iterations; i++) {
+        system.determineState(basePlayer, currentTime);
+      }
+      const end = performance.now();
+      
+      const avgTime = (end - start) / iterations;
+      expect(avgTime).toBeLessThan(2);
     });
   });
 });

@@ -45,30 +45,20 @@ export enum CombatReadinessState {
 interface StateCapability {
   /** Overall capability percentage */
   readonly capability: number;
-  /** Accuracy modifier */
+  /** Accuracy modifier (affects hit chance and damage output) */
   readonly accuracyModifier: number;
-  /** Defense modifier */
+  /** Defense modifier (affects damage reduction) */
   readonly defenseModifier: number;
+  /** Damage modifier (affects outgoing damage) */
+  readonly damageModifier: number;
+  /** Damage taken multiplier (affects incoming damage) */
+  readonly damageTakenMultiplier: number;
   /** Movement speed modifier */
   readonly speedModifier: number;
   /** Can perform blocking actions */
   readonly canBlock: boolean;
   /** Can execute techniques */
   readonly canExecuteTechniques: boolean;
-}
-
-/**
- * State transition thresholds based on various factors.
- */
-interface StateThresholds {
-  /** Health percentage threshold */
-  readonly healthThreshold: number;
-  /** Pain level threshold */
-  readonly painThreshold: number;
-  /** Consciousness threshold */
-  readonly consciousnessThreshold: number;
-  /** Balance threshold */
-  readonly balanceThreshold: number;
 }
 
 /**
@@ -102,87 +92,73 @@ interface StateThresholds {
 export class CombatStateSystem {
   /**
    * State capability definitions with modifiers per state.
+   * 
+   * Based on acceptance criteria:
+   * - READY: 100% capability (baseline)
+   * - SHAKEN: -15% accuracy, -10% damage
+   * - VULNERABLE: -30% accuracy, -25% damage, +50% damage taken
+   * - HELPLESS: Cannot attack, cannot block, +100% damage taken
    */
   private readonly stateCapabilities: Record<CombatReadinessState, StateCapability> = {
     [CombatReadinessState.READY]: {
       capability: 1.0, // 100%
       accuracyModifier: 1.0,
       defenseModifier: 1.0,
+      damageModifier: 1.0,
+      damageTakenMultiplier: 1.0, // Normal damage taken
       speedModifier: 1.0,
       canBlock: true,
       canExecuteTechniques: true,
     },
     [CombatReadinessState.SHAKEN]: {
-      capability: 0.8, // 80%
-      accuracyModifier: 0.8, // -20% accuracy
-      defenseModifier: 0.9,
-      speedModifier: 0.9,
+      capability: 0.85, // 85%
+      accuracyModifier: 0.85, // -15% accuracy
+      defenseModifier: 1.0,
+      damageModifier: 0.9, // -10% damage
+      damageTakenMultiplier: 1.0, // Normal damage taken
+      speedModifier: 0.95,
       canBlock: true,
       canExecuteTechniques: true,
     },
     [CombatReadinessState.VULNERABLE]: {
-      capability: 0.6, // 60%
-      accuracyModifier: 0.7,
-      defenseModifier: 0.6, // -40% defense
-      speedModifier: 0.7,
+      capability: 0.7, // 70%
+      accuracyModifier: 0.7, // -30% accuracy
+      defenseModifier: 0.75,
+      damageModifier: 0.75, // -25% damage
+      damageTakenMultiplier: 1.5, // +50% damage taken
+      speedModifier: 0.8,
       canBlock: true,
       canExecuteTechniques: true,
     },
     [CombatReadinessState.HELPLESS]: {
-      capability: 0.2, // 20%
-      accuracyModifier: 0.5,
-      defenseModifier: 0.3,
-      speedModifier: 0.4,
+      capability: 0.0, // 0%
+      accuracyModifier: 0.0, // Cannot attack
+      defenseModifier: 0.0,
+      damageModifier: 0.0, // Cannot attack
+      damageTakenMultiplier: 2.0, // +100% damage taken (2x)
+      speedModifier: 0.3,
       canBlock: false, // Cannot block
       canExecuteTechniques: false,
     },
   };
 
   /**
-   * State transition thresholds for each combat state.
-   * 
-   * If ANY threshold is crossed, player degrades to that state.
-   */
-  private readonly stateThresholds: Record<CombatReadinessState, StateThresholds> = {
-    [CombatReadinessState.READY]: {
-      healthThreshold: 0.81, // Above 80% health
-      painThreshold: 19, // Below 20 pain
-      consciousnessThreshold: 80, // Above 80 consciousness
-      balanceThreshold: 80, // Above 80 balance
-    },
-    [CombatReadinessState.SHAKEN]: {
-      healthThreshold: 0.61, // 60-80% health
-      painThreshold: 39, // 20-40 pain
-      consciousnessThreshold: 60, // 60-80 consciousness
-      balanceThreshold: 60, // 60-80 balance
-    },
-    [CombatReadinessState.VULNERABLE]: {
-      healthThreshold: 0.41, // 40-60% health
-      painThreshold: 59, // 40-60 pain
-      consciousnessThreshold: 40, // 40-60 consciousness
-      balanceThreshold: 40, // 40-60 balance
-    },
-    [CombatReadinessState.HELPLESS]: {
-      healthThreshold: 0.21, // Below 40% health
-      painThreshold: 79, // Above 60 pain
-      consciousnessThreshold: 20, // Below 40 consciousness
-      balanceThreshold: 20, // Below 40 balance
-    },
-  };
-
-  /**
    * Determines the current combat readiness state based on player condition.
    * 
-   * Evaluates health, pain, consciousness, and balance to determine
-   * the most appropriate combat state. Uses worst-case evaluation:
-   * if ANY factor is in a degraded state, player is in that state.
+   * Evaluates health, pain, consciousness, balance, and recent hits to determine
+   * the most appropriate combat state. State transitions follow acceptance criteria:
+   * - READY → SHAKEN: After taking 2-3 hits or significant vital point strike
+   * - SHAKEN → VULNERABLE: After additional 2 hits or loss of 30% body part health
+   * - VULNERABLE → HELPLESS: After head trauma, pain >80, or knock-down
+   * - Recovery: HELPLESS → READY over 5 seconds if no additional hits
    * 
    * @param player - Current player state
+   * @param currentTime - Current timestamp in milliseconds
    * @returns Current combat readiness state
    * 
    * @example
    * ```typescript
-   * const state = combatStateSystem.determineState(player);
+   * const state = combatStateSystem.determineState(player, Date.now());
    * if (state === CombatReadinessState.HELPLESS) {
    *   console.log("Player is near incapacitation!");
    * }
@@ -191,41 +167,82 @@ export class CombatStateSystem {
    * @public
    * @korean 상태결정
    */
-  determineState(player: PlayerState): CombatReadinessState {
+  determineState(player: PlayerState, currentTime?: number): CombatReadinessState {
     const healthPercent = player.health / player.maxHealth;
     const pain = player.pain;
     const consciousness = player.consciousness;
     const balance = player.balance;
+    
+    // Count recent hits (within last 10 seconds)
+    const recentHits = this.countRecentHits(player, currentTime, 10000);
+    
+    // Check for recovery from HELPLESS state
+    // If player was helpless and recovery conditions are met, allow normal state determination
+    // Recovery overrides low stats if enough time has passed without hits
+    if (player.lastHelplessStateTime && currentTime) {
+      const timeSinceHelpless = currentTime - player.lastHelplessStateTime;
+      const noRecentHits = this.countRecentHits(player, currentTime, 5000) === 0;
+      
+      // Recovery: HELPLESS → normal state after 5 seconds if no additional hits
+      if (timeSinceHelpless >= 5000 && noRecentHits) {
+        // Player has recovered - skip HELPLESS check and determine state normally
+        // This allows recovery even if stats are still low
+        // Continue to normal state determination below
+      } else if (timeSinceHelpless < 5000) {
+        // Still in recovery period, check if should remain HELPLESS
+        const stillCritical = healthPercent <= 0.3 || pain > 80 || consciousness <= 20 || balance <= 20;
+        if (stillCritical) {
+          return CombatReadinessState.HELPLESS;
+        }
+      }
+    }
 
-    // Check for HELPLESS state (worst condition)
-    // Health <= 40%, pain >= 60, consciousness <= 40, or balance <= 40
-    if (
-      healthPercent < this.stateThresholds[CombatReadinessState.VULNERABLE].healthThreshold ||
-      pain > this.stateThresholds[CombatReadinessState.VULNERABLE].painThreshold ||
-      consciousness < this.stateThresholds[CombatReadinessState.VULNERABLE].consciousnessThreshold ||
-      balance < this.stateThresholds[CombatReadinessState.VULNERABLE].balanceThreshold
-    ) {
+    // Check for HELPLESS state (worst condition) - only if not in recovery
+    // Triggers: health <= 30%, pain > 80, consciousness <= 20, balance <= 20, or head trauma
+    const hasHeadTrauma = player.bodyPartHealth 
+      ? (player.bodyPartHealth.head / (player.bodyPartMaxHealth?.head ?? 100)) < 0.5
+      : false;
+    
+    // Only enter HELPLESS if not already recovering
+    const isRecovering = player.lastHelplessStateTime && currentTime 
+      && (currentTime - player.lastHelplessStateTime) >= 5000
+      && this.countRecentHits(player, currentTime, 5000) === 0;
+    
+    if (!isRecovering && (
+      healthPercent <= 0.3 ||
+      pain > 80 ||
+      consciousness <= 20 ||
+      balance <= 20 ||
+      hasHeadTrauma
+    )) {
       return CombatReadinessState.HELPLESS;
     }
 
     // Check for VULNERABLE state
-    // Health <= 60%, pain >= 40, consciousness <= 60, or balance <= 60
+    // Triggers: health <= 50%, pain > 60, consciousness <= 40, balance <= 40,
+    // or 30% body part health loss
+    const hasBodyPartDamage = this.checkBodyPartHealthLoss(player, 0.3);
+    
     if (
-      healthPercent < this.stateThresholds[CombatReadinessState.SHAKEN].healthThreshold ||
-      pain > this.stateThresholds[CombatReadinessState.SHAKEN].painThreshold ||
-      consciousness < this.stateThresholds[CombatReadinessState.SHAKEN].consciousnessThreshold ||
-      balance < this.stateThresholds[CombatReadinessState.SHAKEN].balanceThreshold
+      healthPercent <= 0.5 ||
+      pain > 60 ||
+      consciousness <= 40 ||
+      balance <= 40 ||
+      hasBodyPartDamage ||
+      recentHits >= 4 // Additional 2 hits from SHAKEN (total 4-5 hits)
     ) {
       return CombatReadinessState.VULNERABLE;
     }
 
     // Check for SHAKEN state
-    // Health <= 80%, pain >= 20, consciousness <= 80, or balance <= 80
+    // Triggers: health <= 70%, pain > 30, consciousness <= 60, balance <= 60,
+    // or 2-3 recent hits
     if (
-      healthPercent < this.stateThresholds[CombatReadinessState.READY].healthThreshold ||
-      pain > this.stateThresholds[CombatReadinessState.READY].painThreshold ||
-      consciousness < this.stateThresholds[CombatReadinessState.READY].consciousnessThreshold ||
-      balance < this.stateThresholds[CombatReadinessState.READY].balanceThreshold
+      healthPercent <= 0.7 ||
+      pain > 30 ||
+      consciousness <= 60 ||
+      balance <= 60 ||
+      recentHits >= 2 // 2-3 hits triggers SHAKEN
     ) {
       return CombatReadinessState.SHAKEN;
     }
@@ -295,7 +312,7 @@ export class CombatStateSystem {
 
     return {
       ...player,
-      attackPower: Math.floor(player.attackPower * capability.accuracyModifier),
+      attackPower: Math.floor(player.attackPower * capability.damageModifier),
       defense: Math.floor(player.defense * capability.defenseModifier),
       speed: Math.floor(player.speed * capability.speedModifier),
       isBlocking: player.isBlocking && capability.canBlock,
@@ -353,6 +370,143 @@ export class CombatStateSystem {
     };
 
     return emojis[state];
+  }
+
+  /**
+   * Counts recent hits within a time window.
+   * 
+   * @param player - Current player state
+   * @param currentTime - Current timestamp (milliseconds)
+   * @param timeWindow - Time window to check in milliseconds
+   * @returns Number of hits within the time window
+   * 
+   * @private
+   * @korean 최근타격횟수
+   */
+  private countRecentHits(
+    player: PlayerState,
+    currentTime: number | undefined,
+    timeWindow: number
+  ): number {
+    if (!currentTime || !player.recentHitTimestamps) {
+      return 0;
+    }
+
+    const cutoffTime = currentTime - timeWindow;
+    return player.recentHitTimestamps.filter(
+      (timestamp) => timestamp >= cutoffTime
+    ).length;
+  }
+
+  /**
+   * Checks if any body part has lost more than the specified percentage of health.
+   * 
+   * @param player - Current player state
+   * @param lossThreshold - Health loss threshold (0.0 to 1.0)
+   * @returns True if any body part has lost more than the threshold
+   * 
+   * @private
+   * @korean 신체부위손상확인
+   */
+  private checkBodyPartHealthLoss(
+    player: PlayerState,
+    lossThreshold: number
+  ): boolean {
+    if (!player.bodyPartHealth || !player.bodyPartMaxHealth) {
+      return false;
+    }
+
+    const bodyParts: Array<keyof typeof player.bodyPartHealth> = [
+      "head",
+      "neck",
+      "torsoUpper",
+      "torsoLower",
+      "armLeft",
+      "armRight",
+      "legLeft",
+      "legRight",
+    ];
+
+    for (const part of bodyParts) {
+      const current = player.bodyPartHealth[part];
+      const max = player.bodyPartMaxHealth[part];
+      const healthPercent = current / max;
+      const lossPercent = 1 - healthPercent;
+
+      if (lossPercent >= lossThreshold) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Records a hit on the player and updates recent hit tracking.
+   * 
+   * Should be called by combat system when player takes a hit.
+   * Maintains a rolling window of the last 10 hit timestamps.
+   * 
+   * @param player - Current player state
+   * @param currentTime - Timestamp of the hit
+   * @returns Updated player state with recorded hit
+   * 
+   * @public
+   * @korean 타격기록
+   */
+  recordHit(player: PlayerState, currentTime: number): PlayerState {
+    const recentHits = player.recentHitTimestamps ?? [];
+    
+    // Add new hit timestamp and keep only last 10
+    const updatedHits = [...recentHits, currentTime].slice(-10);
+
+    return {
+      ...player,
+      recentHitTimestamps: updatedHits,
+      hitsTaken: player.hitsTaken + 1,
+    };
+  }
+
+  /**
+   * Updates player when entering HELPLESS state.
+   * 
+   * Records the timestamp for recovery tracking.
+   * 
+   * @param player - Current player state
+   * @param currentTime - Timestamp when entering helpless state
+   * @returns Updated player state
+   * 
+   * @public
+   * @korean 무력상태기록
+   */
+  enterHelplessState(player: PlayerState, currentTime: number): PlayerState {
+    return {
+      ...player,
+      lastHelplessStateTime: currentTime,
+    };
+  }
+
+  /**
+   * Checks if player can recover from HELPLESS state.
+   * 
+   * Recovery occurs after 5 seconds with no additional hits.
+   * 
+   * @param player - Current player state
+   * @param currentTime - Current timestamp
+   * @returns True if recovery is possible
+   * 
+   * @public
+   * @korean 회복가능확인
+   */
+  canRecoverFromHelpless(player: PlayerState, currentTime: number): boolean {
+    if (!player.lastHelplessStateTime) {
+      return false;
+    }
+
+    const timeSinceHelpless = currentTime - player.lastHelplessStateTime;
+    const noRecentHits = this.countRecentHits(player, currentTime, 5000) === 0;
+
+    return timeSinceHelpless >= 5000 && noRecentHits;
   }
 }
 
