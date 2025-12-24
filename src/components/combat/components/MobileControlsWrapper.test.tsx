@@ -6,12 +6,16 @@ import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { MobileControlsWrapper } from "./MobileControlsWrapper";
 
-// Mock the mobile components
+// Mock the mobile components with proper types
+interface MockComponentProps {
+  readonly [key: string]: unknown;
+}
+
 vi.mock("../../mobile", () => ({
-  VirtualDPad: ({ onMove: _onMove, disabled: _disabled }: any) => <div data-testid="virtual-dpad">DPad</div>,
-  ActionButtons: ({ onAttack: _onAttack, onBlock: _onBlock, disabled: _disabled }: any) => <div data-testid="action-buttons">Buttons</div>,
-  StanceWheel: ({ currentStance: _currentStance, onStanceChange: _onStanceChange }: any) => <div data-testid="stance-wheel">Wheel</div>,
-  GestureRecognizer: ({ onGesture: _onGesture, enabled: _enabled }: any) => <div data-testid="gesture-recognizer">Gestures</div>,
+  VirtualDPad: (_props: MockComponentProps) => <div data-testid="virtual-dpad">DPad</div>,
+  ActionButtons: (_props: MockComponentProps) => <div data-testid="action-buttons">Buttons</div>,
+  StanceWheel: (_props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,
+  GestureRecognizer: (_props: MockComponentProps) => <div data-testid="gesture-recognizer">Gestures</div>,
 }));
 
 describe("MobileControlsWrapper", () => {

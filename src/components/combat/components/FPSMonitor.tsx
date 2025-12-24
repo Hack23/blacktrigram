@@ -61,13 +61,18 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(0);
   const lastWarningTimeRef = useRef(0);
+  const initializedRef = useRef(false);
   
   // Initialize performance.now() after mount to avoid impure function call during render
   useEffect(() => {
     lastTimeRef.current = performance.now();
+    initializedRef.current = true;
   }, []);
 
   const updateFPS = useCallback(() => {
+    // Skip FPS calculation until properly initialized
+    if (!initializedRef.current) return;
+    
     frameCountRef.current++;
     const currentTime = performance.now();
     const deltaTime = currentTime - lastTimeRef.current;
@@ -97,17 +102,23 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
     }
   });
 
-  if (!enabled) {
-    return null;
-  }
-
-  // Determine color based on FPS
-  const getColor = () => {
-    if (fps >= 60) return KOREAN_COLORS.ACCENT_GOLD; // Excellent
-    if (fps >= warningThreshold) return 0xffff00; // Warning (yellow)
-    if (fps >= criticalThreshold) return 0xff8800; // Poor (orange)
-    return KOREAN_COLORS.PRIMARY_RED; // Critical (red)
-  };
+  // Calculate color as hex string based on FPS (memoized to avoid repeated conversions)
+  // Note: Returns a 24-bit RGB hex color with no alpha channel.
+  // The conversion below is intentionally hex-only; if alpha support is added
+  // in the future, this logic will need to be updated accordingly.
+  const colorHex = useMemo(() => {
+    let color: number;
+    if (fps >= 60) {
+      color = KOREAN_COLORS.ACCENT_GOLD; // Excellent
+    } else if (fps >= warningThreshold) {
+      color = 0xffff00; // Warning (yellow)
+    } else if (fps >= criticalThreshold) {
+      color = 0xff8800; // Poor (orange)
+    } else {
+      color = KOREAN_COLORS.PRIMARY_RED; // Critical (red)
+    }
+    return `#${color.toString(16).padStart(6, "0")}`;
+  }, [fps, warningThreshold, criticalThreshold]);
 
   const getStatus = () => {
     if (fps >= 60) return "우수 | Excellent";
@@ -115,6 +126,10 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
     if (fps >= criticalThreshold) return "저하 | Poor";
     return "심각 | Critical";
   };
+
+  if (!enabled) {
+    return null;
+  }
 
   return (
     <Html fullscreen>
@@ -126,11 +141,11 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
           right: `${right}px`,
           padding: "8px 12px",
           background: "rgba(0, 0, 0, 0.8)",
-          border: `2px solid #${getColor().toString(16).padStart(6, "0")}`,
+          border: `2px solid ${colorHex}`,
           borderRadius: "4px",
           fontFamily: FONT_FAMILY.KOREAN,
           fontSize: "12px",
-          color: `#${getColor().toString(16).padStart(6, "0")}`,
+          color: colorHex,
           pointerEvents: "none",
           zIndex: 9999,
         }}

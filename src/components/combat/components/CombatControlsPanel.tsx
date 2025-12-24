@@ -84,7 +84,7 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
       >
         {combatMessages.slice(-5).map((msg, idx) => (
           <div
-            key={`msg-${idx}-${msg}`}
+            key={`msg-${idx}`}
             style={{ fontSize: "12px", marginBottom: "4px" }}
           >
             {msg}

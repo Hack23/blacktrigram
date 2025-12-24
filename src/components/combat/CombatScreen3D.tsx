@@ -1933,17 +1933,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Performance Monitoring - FPS display (dev mode) */}
-        {process.env.NODE_ENV === 'development' && (
-          <FPSMonitor
-            enabled={true}
-            warningThreshold={50}
-            criticalThreshold={30}
-            onFPSDrop={(fps) => {
-              console.warn(`Combat performance drop: ${fps} fps`);
-            }}
-          />
-        )}
+        {/* Performance Monitoring - FPS display (dev mode only) */}
+        {process.env.NODE_ENV === 'development' && <FPSMonitor enabled={true} warningThreshold={50} criticalThreshold={30} />}
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}
