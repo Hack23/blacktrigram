@@ -1,9 +1,10 @@
 /**
- * PlayerHUD Component - Combined health and stamina display
+ * PlayerHUD Component - Combined combat readiness, health and stamina display
  *
  * Displays a complete player HUD with:
  * - Archetype icon/image
  * - Player name (Korean/English)
+ * - Combat Readiness bar (10-segment, multi-factor)
  * - Health bar (segmented, color-coded)
  * - Stamina bar (segmented, cyan-themed)
  * - Current stance indicator
@@ -21,6 +22,7 @@ import {
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { HealthBar } from "./HealthBar";
 import { StaminaBar } from "./StaminaBar";
+import { CombatReadinessBar } from "./CombatReadinessBar";
 
 export interface PlayerHUDProps {
   /** Player state with health, stamina, and other data */
@@ -135,7 +137,14 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
         </div>
       </div>
 
-      {/* Health Bar */}
+      {/* Combat Readiness Bar - shows overall combat capability */}
+      <CombatReadinessBar
+        player={player}
+        playerId={playerId}
+        isMobile={isMobile}
+      />
+
+      {/* Health Bar - shows aggregate body health */}
       <HealthBar
         current={player.health}
         max={player.maxHealth}
