@@ -6,7 +6,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -96,60 +96,12 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-
-// Create stance index lookup map once
-const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
-TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
-  STANCE_INDEX_MAP.set(stance, index);
-});
-
-// Round announcement fade-out delay (in milliseconds)
-// Wait for previous announcement to fully fade out before showing next one
-const ANNOUNCEMENT_FADE_OUT_DELAY = 300;
-
-/**
- * AnimationUpdater - Component that updates player animations at 60fps
- * Uses useFrame to call update() on both animation state machines
- *
- * @korean 애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
- */
-interface AnimationUpdaterProps {
-  readonly player1Animation: ReturnType<typeof usePlayerAnimation>;
-  readonly player2Animation: ReturnType<typeof usePlayerAnimation>;
-}
-
-const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
-  player1Animation,
-  player2Animation,
-}) => {
-  useFrame((_state, delta) => {
-    // Update both player animations at 60fps
-    player1Animation.update(delta);
-    player2Animation.update(delta);
-  });
-
-  return null; // Component only updates animation state, renders no visual elements
-};
-
-/**
- * Calculate accuracy percentage for a player
- * Uses hits / (hits + misses) when miss tracking is available
- * Falls back to 100% if hits exist but no miss tracking, or 0% if no combat activity
- */
-const calculateAccuracy = (player: PlayerState): number => {
-  const hits = player.hitsLanded ?? 0;
-  const misses = player.misses ?? 0;
-  const totalAttempts = hits + misses;
-
-  // If we have miss tracking, use proper accuracy formula
-  if (totalAttempts > 0) {
-    return (hits / totalAttempts) * 100;
-  }
-
-  // Fallback: if no miss tracking and hits exist, show 100%
-  // Otherwise 0% (no combat activity)
-  return hits > 0 ? 100 : 0;
-};
+import {
+  AnimationUpdater,
+  STANCE_INDEX_MAP,
+  ANNOUNCEMENT_FADE_OUT_DELAY,
+  calculateAccuracy,
+} from "./helpers";
 
 /**
  * Props for the CombatScreen3D component.
