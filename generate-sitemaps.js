@@ -15,6 +15,10 @@ const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://blacktrigram.com';
 const DOCS_DIR = path.join(__dirname, 'docs');
+// NOTE: CURRENT_DATE is evaluated once at module load time.
+// This is acceptable for short-lived, single-run sitemap generation.
+// If this script is ever used as a long-running process or daemon, consider
+// computing the date at the time of use instead of relying on this constant.
 const CURRENT_DATE = new Date().toISOString().split('T')[0];
 
 // Priority and change frequency configuration
@@ -65,11 +69,24 @@ function findFiles(dir, fileList = []) {
 
   files.forEach(file => {
     const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
+    
+    // Use lstat to detect symbolic links and avoid following them
+    let stat;
+    try {
+      stat = fs.lstatSync(filePath);
+    } catch (error) {
+      console.warn(`⚠️  Unable to read file stats: ${filePath}`);
+      return;
+    }
+
+    // Skip symbolic links to avoid potential circular references
+    if (stat.isSymbolicLink()) {
+      return;
+    }
 
     if (stat.isDirectory()) {
       findFiles(filePath, fileList);
-    } else {
+    } else if (stat.isFile()) {
       fileList.push(filePath);
     }
   });
@@ -122,12 +139,45 @@ function pathToURL(relativePath) {
   // Remove leading ./
   let urlPath = relativePath.replace(/^\.\//, '');
   
+  // Normalize Windows-style path separators to URL-style
+  urlPath = urlPath.replace(/\\/g, '/');
+  
   // For index.html at root, use root URL
   if (urlPath === 'index.html') {
     return BASE_URL;
   }
+
+  // Encode each path segment to produce a valid URL path
+  const encodedPath = urlPath
+    .split('/')
+    .map(segment => encodeURIComponent(segment))
+    .join('/');
   
-  return `${BASE_URL}/${urlPath}`;
+  return `${BASE_URL}/${encodedPath}`;
+}
+
+/**
+ * Escape special XML characters
+ */
+function escapeXML(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
+ * Escape special HTML characters
+ */
+function escapeHTML(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 /**
@@ -168,7 +218,7 @@ function generateSitemapXML(entries) {
       
       grouped[category].forEach(entry => {
         xml += '  <url>\n';
-        xml += `    <loc>${entry.url}</loc>\n`;
+        xml += `    <loc>${escapeXML(entry.url)}</loc>\n`;
         xml += `    <lastmod>${entry.lastmod}</lastmod>\n`;
         xml += `    <changefreq>${entry.changefreq}</changefreq>\n`;
         xml += `    <priority>${entry.priority}</priority>\n`;
@@ -237,7 +287,9 @@ function generateSitemapHTML(entries) {
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* Korean-first font stack, aligned with FONT_FAMILY.KOREAN usage in app UI */
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic',
+        system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
       color: var(--text-primary);
       line-height: 1.6;
@@ -493,7 +545,7 @@ function generateSitemapHTML(entries) {
 
         html += `
             <li class="url-item">
-              <a href="${item.url}" class="url-link">${displayName || 'Home'}</a>
+              <a href="${escapeHTML(item.url)}" class="url-link">${escapeHTML(displayName || 'Home')}</a>
               <div class="url-meta">
                 <span class="${priorityClass}">Priority: ${item.priority}</span>
                 <span>Updated: ${item.changefreq}</span>
@@ -525,6 +577,9 @@ function generateSitemapHTML(entries) {
     </footer>
   </div>
 
+  <!-- Note: Inline script is intentional for this standalone sitemap page.
+       This keeps the sitemap self-contained and avoids external dependencies.
+       The script is minimal and only handles category toggling. -->
   <script>
     function toggleCategory(header) {
       const content = header.nextElementSibling;
@@ -553,63 +608,91 @@ function generateSitemapHTML(entries) {
  */
 function main() {
   console.log('🚀 Black Trigram Sitemap Generator');
+
+  // Validate docs directory before proceeding
+  if (!fs.existsSync(DOCS_DIR)) {
+    console.error(`❌ Docs directory does not exist: ${DOCS_DIR}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  try {
+    const stats = fs.statSync(DOCS_DIR);
+    if (!stats.isDirectory()) {
+      console.error(`❌ Docs path is not a directory: ${DOCS_DIR}`);
+      process.exitCode = 1;
+      return;
+    }
+  } catch (error) {
+    console.error(`❌ Unable to access docs directory: ${DOCS_DIR}`);
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+    return;
+  }
+
   console.log('📁 Scanning docs directory...\n');
 
-  // Find all files
-  const allFiles = findFiles(DOCS_DIR);
-  console.log(`Found ${allFiles.length} total files`);
+  try {
+    // Find all files
+    const allFiles = findFiles(DOCS_DIR);
+    console.log(`Found ${allFiles.length} total files`);
 
-  // Filter and process files
-  const entries = [];
-  allFiles.forEach(filePath => {
-    const relativePath = getRelativePath(filePath);
-    
-    if (shouldInclude(relativePath)) {
-      const { category, config } = getCategoryConfig(relativePath);
-      const url = pathToURL(relativePath);
+    // Filter and process files
+    const entries = [];
+    allFiles.forEach(filePath => {
+      const relativePath = getRelativePath(filePath);
+      
+      if (shouldInclude(relativePath)) {
+        const { category, config } = getCategoryConfig(relativePath);
+        const url = pathToURL(relativePath);
 
-      entries.push({
-        url,
-        lastmod: CURRENT_DATE,
-        changefreq: config.changefreq,
-        priority: config.priority,
-        category,
-        relativePath,
-      });
-    }
-  });
-
-  console.log(`✅ Processed ${entries.length} pages for sitemap\n`);
-
-  // Show category breakdown
-  const categoryCount = {};
-  entries.forEach(entry => {
-    categoryCount[entry.category] = (categoryCount[entry.category] || 0) + 1;
-  });
-
-  console.log('📊 Category Breakdown:');
-  Object.entries(categoryCount)
-    .sort((a, b) => b[1] - a[1])
-    .forEach(([cat, count]) => {
-      console.log(`   ${cat}: ${count} pages`);
+        entries.push({
+          url,
+          lastmod: CURRENT_DATE,
+          changefreq: config.changefreq,
+          priority: config.priority,
+          category,
+          relativePath,
+        });
+      }
     });
-  console.log('');
 
-  // Generate sitemap.xml
-  const sitemapXML = generateSitemapXML(entries);
-  const xmlPath = path.join(DOCS_DIR, 'sitemap.xml');
-  fs.writeFileSync(xmlPath, sitemapXML, 'utf8');
-  console.log(`✅ Generated sitemap.xml (${entries.length} URLs)`);
+    console.log(`✅ Processed ${entries.length} pages for sitemap\n`);
 
-  // Generate sitemap.html
-  const sitemapHTML = generateSitemapHTML(entries);
-  const htmlPath = path.join(DOCS_DIR, 'sitemap.html');
-  fs.writeFileSync(htmlPath, sitemapHTML, 'utf8');
-  console.log(`✅ Generated sitemap.html (human-friendly version)`);
+    // Show category breakdown
+    const categoryCount = {};
+    entries.forEach(entry => {
+      categoryCount[entry.category] = (categoryCount[entry.category] || 0) + 1;
+    });
 
-  console.log('\n🎉 Sitemap generation complete!');
-  console.log(`   XML: ${xmlPath}`);
-  console.log(`   HTML: ${htmlPath}`);
+    console.log('📊 Category Breakdown:');
+    Object.entries(categoryCount)
+      .sort((a, b) => b[1] - a[1])
+      .forEach(([cat, count]) => {
+        console.log(`   ${cat}: ${count} pages`);
+      });
+    console.log('');
+
+    // Generate sitemap.xml
+    const sitemapXML = generateSitemapXML(entries);
+    const xmlPath = path.join(DOCS_DIR, 'sitemap.xml');
+    fs.writeFileSync(xmlPath, sitemapXML, 'utf8');
+    console.log(`✅ Generated sitemap.xml (${entries.length} URLs)`);
+
+    // Generate sitemap.html
+    const sitemapHTML = generateSitemapHTML(entries);
+    const htmlPath = path.join(DOCS_DIR, 'sitemap.html');
+    fs.writeFileSync(htmlPath, sitemapHTML, 'utf8');
+    console.log(`✅ Generated sitemap.html (human-friendly version)`);
+
+    console.log('\n🎉 Sitemap generation complete!');
+    console.log(`   XML: ${xmlPath}`);
+    console.log(`   HTML: ${htmlPath}`);
+  } catch (error) {
+    console.error('❌ Sitemap generation failed due to a filesystem error.');
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  }
 }
 
 // Run the generator

@@ -28,7 +28,9 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* Korean-first font stack, aligned with FONT_FAMILY.KOREAN usage in app UI */
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic',
+        system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
       color: var(--text-primary);
       line-height: 1.6;
@@ -12748,6 +12750,9 @@
     </footer>
   </div>
 
+  <!-- Note: Inline script is intentional for this standalone sitemap page.
+       This keeps the sitemap self-contained and avoids external dependencies.
+       The script is minimal and only handles category toggling. -->
   <script>
     function toggleCategory(header) {
       const content = header.nextElementSibling;

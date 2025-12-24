@@ -6,7 +6,7 @@ The Black Trigram project includes automated sitemap generation for SEO optimiza
 
 ## Generated Files
 
-- **docs/sitemap.xml** - XML sitemap for search engines (1548+ URLs)
+- **docs/sitemap.xml** - XML sitemap for search engines (typically 1500+ URLs)
 - **docs/sitemap.html** - Human-friendly HTML sitemap with Korean cyberpunk theme
 
 ## Usage
@@ -41,17 +41,19 @@ npm run docs:sitemap      # Generate sitemaps
 
 ## What's Included
 
-The sitemaps include:
+The sitemaps automatically include all HTML and Markdown files from the docs directory. Typical category breakdown (approximate counts as of December 2024):
 
-| Category | Count | Priority | Change Frequency |
-|----------|-------|----------|------------------|
-| **Main Pages** | 2 | 1.0 | daily |
-| **API Documentation** | 637+ | 0.8 | weekly |
-| **Test Results** | 671+ | 0.6 | weekly |
-| **E2E Test Reports** | 219+ | 0.6 | weekly |
-| **Documentation** | 11+ | 0.7 | weekly |
-| **Vital Points** | 6 | 0.7 | weekly |
-| **Architecture** | 1 | 0.7 | weekly |
+| Category | Approximate Count | Priority | Change Frequency |
+|----------|-------------------|----------|------------------|
+| **Main Pages** | ~2 | 1.0 | daily |
+| **API Documentation** | ~600+ | 0.8 | weekly |
+| **Test Results** | ~600+ | 0.6 | weekly |
+| **E2E Test Reports** | ~200+ | 0.6 | weekly |
+| **Documentation** | ~10+ | 0.7 | weekly |
+| **Vital Points** | ~5+ | 0.7 | weekly |
+| **Architecture** | ~1+ | 0.7 | weekly |
+
+*Note: Actual counts vary based on your latest documentation build. Run `npm run docs:sitemap` to see current statistics.*
 
 ## SEO Configuration
 
