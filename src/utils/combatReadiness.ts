@@ -39,8 +39,13 @@ const READINESS_WEIGHTS = {
  * 
  * @param bodyHealth - Body part health state
  * @returns Average health percentage (0-100)
+ * @throws {Error} If bodyHealth is null or undefined
  */
 export function calculateBodyHealthPercentage(bodyHealth: BodyPartHealth): number {
+  if (!bodyHealth) {
+    throw new Error("bodyHealth cannot be null or undefined");
+  }
+
   const parts = [
     bodyHealth.head,
     bodyHealth.torsoUpper,
@@ -68,6 +73,7 @@ export function calculateBodyHealthPercentage(bodyHealth: BodyPartHealth): numbe
  * 
  * @param player - Current player state
  * @returns Combat readiness percentage (0-100)
+ * @throws {Error} If player is null or undefined
  * 
  * @example
  * ```typescript
@@ -77,6 +83,10 @@ export function calculateBodyHealthPercentage(bodyHealth: BodyPartHealth): numbe
  * ```
  */
 export function calculateCombatReadiness(player: PlayerState): number {
+  if (!player) {
+    throw new Error("player cannot be null or undefined");
+  }
+
   // 1. Body health contribution (40%)
   // Use bodyPartHealth if available, otherwise use aggregate health
   let bodyHealthPercent: number;
@@ -84,7 +94,8 @@ export function calculateCombatReadiness(player: PlayerState): number {
     bodyHealthPercent = calculateBodyHealthPercentage(player.bodyPartHealth);
   } else {
     // Fall back to aggregate health percentage
-    bodyHealthPercent = (player.health / player.maxHealth) * 100;
+    const maxHealth = player.maxHealth || 100; // Prevent division by zero
+    bodyHealthPercent = maxHealth > 0 ? (player.health / maxHealth) * 100 : 0;
   }
   const bodyHealthScore = bodyHealthPercent * READINESS_WEIGHTS.BODY_HEALTH;
   
@@ -111,8 +122,13 @@ export function calculateCombatReadiness(player: PlayerState): number {
  * 
  * @param readiness - Combat readiness percentage (0-100)
  * @returns Hex color code
+ * @throws {Error} If readiness is NaN
  */
 export function getCombatReadinessColor(readiness: number): number {
+  if (Number.isNaN(readiness)) {
+    throw new Error("readiness cannot be NaN");
+  }
+
   if (readiness >= COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.min) {
     return COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color;
   }
@@ -133,8 +149,13 @@ export function getCombatReadinessColor(readiness: number): number {
  * 
  * @param readiness - Combat readiness percentage (0-100)
  * @returns Korean and English labels
+ * @throws {Error} If readiness is NaN
  */
 export function getCombatReadinessLabel(readiness: number): { korean: string; english: string } {
+  if (Number.isNaN(readiness)) {
+    throw new Error("readiness cannot be NaN");
+  }
+
   if (readiness >= COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.min) {
     return COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.label;
   }
@@ -159,6 +180,7 @@ export function getCombatReadinessLabel(readiness: number): { korean: string; en
  * @param readiness - Combat readiness percentage (0-100)
  * @param totalBars - Total number of bars (default: 10)
  * @returns Number of filled bars (0-totalBars)
+ * @throws {Error} If readiness is NaN or totalBars is not positive
  * 
  * @example
  * ```typescript
@@ -169,6 +191,13 @@ export function getCombatReadinessLabel(readiness: number): { korean: string; en
  * ```
  */
 export function getCombatReadinessBars(readiness: number, totalBars: number = 10): number {
+  if (Number.isNaN(readiness)) {
+    throw new Error("readiness cannot be NaN");
+  }
+  if (totalBars <= 0 || !Number.isInteger(totalBars)) {
+    throw new Error("totalBars must be a positive integer");
+  }
+
   const percentage = Math.max(0, Math.min(100, readiness));
   
   // Return 0 bars only for exactly 0% readiness

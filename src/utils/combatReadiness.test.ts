@@ -11,7 +11,6 @@ import {
   getCombatReadinessBars,
   COMBAT_READINESS_THRESHOLDS,
 } from "./combatReadiness";
-import type { PlayerState } from "../systems/player";
 import { createMockPlayerState } from "../test/test-utils";
 
 describe("calculateBodyHealthPercentage", () => {
@@ -73,6 +72,18 @@ describe("calculateBodyHealthPercentage", () => {
     const result = calculateBodyHealthPercentage(bodyHealth);
     expect(result).toBeGreaterThanOrEqual(88);
     expect(result).toBeLessThanOrEqual(89);
+  });
+
+  it("should throw error for null bodyHealth", () => {
+    expect(() => calculateBodyHealthPercentage(null as any)).toThrow(
+      "bodyHealth cannot be null or undefined"
+    );
+  });
+
+  it("should throw error for undefined bodyHealth", () => {
+    expect(() => calculateBodyHealthPercentage(undefined as any)).toThrow(
+      "bodyHealth cannot be null or undefined"
+    );
   });
 });
 
@@ -310,6 +321,34 @@ describe("calculateCombatReadiness", () => {
     const avgTime = (endTime - startTime) / iterations;
     expect(avgTime).toBeLessThan(1);
   });
+
+  it("should throw error for null player", () => {
+    expect(() => calculateCombatReadiness(null as any)).toThrow(
+      "player cannot be null or undefined"
+    );
+  });
+
+  it("should throw error for undefined player", () => {
+    expect(() => calculateCombatReadiness(undefined as any)).toThrow(
+      "player cannot be null or undefined"
+    );
+  });
+
+  it("should handle player with maxHealth of 0 safely", () => {
+    const player = createMockPlayerState({
+      health: 50,
+      maxHealth: 0, // Edge case: prevent division by zero
+      pain: 0,
+      consciousness: 100,
+      balance: 100,
+    });
+
+    const readiness = calculateCombatReadiness(player);
+    // Should not crash and should return a valid number
+    expect(typeof readiness).toBe("number");
+    expect(readiness).toBeGreaterThanOrEqual(0);
+    expect(readiness).toBeLessThanOrEqual(100);
+  });
 });
 
 describe("getCombatReadinessColor", () => {
@@ -342,6 +381,10 @@ describe("getCombatReadinessColor", () => {
     expect(getCombatReadinessColor(10)).toBe(COMBAT_READINESS_THRESHOLDS.CRITICAL.color);
     expect(getCombatReadinessColor(0)).toBe(COMBAT_READINESS_THRESHOLDS.CRITICAL.color);
   });
+
+  it("should throw error for NaN readiness", () => {
+    expect(() => getCombatReadinessColor(NaN)).toThrow("readiness cannot be NaN");
+  });
 });
 
 describe("getCombatReadinessLabel", () => {
@@ -366,6 +409,10 @@ describe("getCombatReadinessLabel", () => {
     expect(critical.korean).toBe("위급 상태");
     expect(critical.english).toBe("Critical");
   });
+
+  it("should throw error for NaN readiness", () => {
+    expect(() => getCombatReadinessLabel(NaN)).toThrow("readiness cannot be NaN");
+  });
 });
 
 describe("getCombatReadinessBars", () => {
@@ -389,6 +436,14 @@ describe("getCombatReadinessBars", () => {
     expect(getCombatReadinessBars(5, 10)).toBe(1);
   });
 
+  it("should return 1 bar for 1% readiness (minimal feedback)", () => {
+    expect(getCombatReadinessBars(1, 10)).toBe(1);
+  });
+
+  it("should return 1 bar for 0.1% readiness (ceil behavior)", () => {
+    expect(getCombatReadinessBars(0.1, 10)).toBe(1);
+  });
+
   it("should handle custom bar counts", () => {
     expect(getCombatReadinessBars(100, 20)).toBe(20);
     expect(getCombatReadinessBars(50, 20)).toBe(10);
@@ -398,5 +453,27 @@ describe("getCombatReadinessBars", () => {
   it("should clamp to valid range", () => {
     expect(getCombatReadinessBars(-10, 10)).toBe(0);
     expect(getCombatReadinessBars(150, 10)).toBe(10);
+  });
+
+  it("should handle boundary values correctly", () => {
+    expect(getCombatReadinessBars(10, 10)).toBe(1); // Exactly 10%
+    expect(getCombatReadinessBars(99, 10)).toBe(10); // Just below 100%
+    expect(getCombatReadinessBars(91, 10)).toBe(10); // 91% should show 10 bars
+  });
+
+  it("should throw error for NaN readiness", () => {
+    expect(() => getCombatReadinessBars(NaN, 10)).toThrow("readiness cannot be NaN");
+  });
+
+  it("should throw error for invalid totalBars", () => {
+    expect(() => getCombatReadinessBars(50, 0)).toThrow(
+      "totalBars must be a positive integer"
+    );
+    expect(() => getCombatReadinessBars(50, -5)).toThrow(
+      "totalBars must be a positive integer"
+    );
+    expect(() => getCombatReadinessBars(50, 5.5)).toThrow(
+      "totalBars must be a positive integer"
+    );
   });
 });

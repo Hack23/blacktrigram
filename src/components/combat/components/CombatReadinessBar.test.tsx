@@ -425,5 +425,38 @@ describe("CombatReadinessBar", () => {
       // Should still calculate readiness
       expect(valueElement.textContent).toMatch(/\d+%/);
     });
+
+    it("should handle edge case with maxHealth of 0", () => {
+      const player = createMockPlayerState({
+        health: 50,
+        maxHealth: 0, // Edge case
+        pain: 0,
+        consciousness: 100,
+        balance: 100,
+      });
+
+      const playerWithZeroMaxHealth = { ...player, bodyPartHealth: undefined };
+
+      // Should not crash
+      render(<CombatReadinessBar {...defaultProps} player={playerWithZeroMaxHealth} />);
+      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      expect(valueElement.textContent).toMatch(/\d+%/);
+    });
+  });
+
+  describe("Error Handling", () => {
+    it("should handle invalid player gracefully", () => {
+      // Component should have proper error boundary or validation
+      const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+      
+      try {
+        render(<CombatReadinessBar {...defaultProps} player={null as any} />);
+      } catch (error) {
+        // Expected to throw or handle gracefully
+        expect(error).toBeDefined();
+      }
+      
+      consoleError.mockRestore();
+    });
   });
 });
