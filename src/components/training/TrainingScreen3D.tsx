@@ -32,6 +32,7 @@ import {
   type BodyRegionFilter,
 } from "../combat/components";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
+import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -113,8 +114,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Audio context
   const audio = useAudio();
 
-  // Responsive detection
-  const isMobile = useMemo(() => width < 768, [width]);
+  // Responsive detection and layout (matching CombatScreen pattern)
+  const { arenaBounds, isMobile } = useCombatLayout(width, height);
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
@@ -168,27 +169,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 3: Movement & Position Management
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Arena bounds for player movement
-  const arenaBounds = useMemo(
-    () => ({
-      x: -8,
-      y: -6,
-      width: 16,
-      height: 12,
-    }),
-    []
-  );
-
-  // Initial player position in 3D space
+  // Initial player position in pixel space (left side of arena, centered vertically)
+  // Matches CombatScreen pattern: positions are pixel-based, converted to 3D for rendering
   const initialPosition = useMemo<Position>(
     () => ({
-      x: -5,
-      y: 0,
+      x: arenaBounds.x + arenaBounds.width * 0.25, // 25% from left
+      y: arenaBounds.y + arenaBounds.height * 0.5, // Centered vertically
     }),
-    []
+    [arenaBounds]
   );
 
-  // Player movement with input system
+  // Player movement with input system (using pixel-based bounds like CombatScreen)
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: arenaBounds,
@@ -199,13 +190,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     moveSpeed: 300,
   });
 
-  // Convert 2D position to 3D coordinates
-  const player3DPosition = useMemo<[number, number, number]>(
-    () => [playerPosition.x, 0, playerPosition.y],
-    [playerPosition]
-  );
+  // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
+  const player3DPosition = useMemo<[number, number, number]>(() => {
+    const relX = (playerPosition.x - arenaBounds.x) / arenaBounds.width;
+    const relZ = (playerPosition.y - arenaBounds.y) / arenaBounds.height;
+    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    return [x, 0, z];
+  }, [playerPosition, arenaBounds]);
 
-  // Dummy position (fixed)
+  // Dummy position (fixed in 3D space, right side of arena)
   const dummyPosition = useMemo<[number, number, number]>(() => [5, 0, 0], []);
 
   // ═══════════════════════════════════════════════════════════════════════════
