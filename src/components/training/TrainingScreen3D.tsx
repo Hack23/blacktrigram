@@ -386,27 +386,69 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 8: Mobile Touch Controls
   // ═══════════════════════════════════════════════════════════════════════════
 
-  const mobileControlsEnabled = isMobile && trainingState.isTraining;
+  // Reference for tracking active mobile movement key (prevents stuck keys)
+  const activeMobileKeyRef = useRef<string | null>(null);
 
-  // Mobile D-pad movement handler
+  // Enable mobile controls always in training (allow movement even before starting training)
+  const mobileControlsEnabled = isMobile;
+
+  // Mobile D-pad movement handler (matches CombatScreen implementation)
   const handleMobileMove = useCallback(
     (direction: Direction | null, eventType: DPadEventType) => {
-      if (!direction || eventType !== "start") return;
-
+      // Map D-pad directions to movement keys (WASD)
       const directionMap: Record<Direction, string> = {
         up: "w",
-        "up-right": "d",
+        "up-right": "w",
         right: "d",
-        "down-right": "d",
+        "down-right": "s",
         down: "s",
-        "down-left": "a",
+        "down-left": "s",
         left: "a",
         "up-left": "w",
       };
 
-      const key = directionMap[direction];
-      if (key) {
-        window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+      if (eventType === "start" && direction) {
+        // Release previous key if different (prevents stuck keys)
+        if (
+          activeMobileKeyRef.current &&
+          activeMobileKeyRef.current !== directionMap[direction]
+        ) {
+          const prevKey = activeMobileKeyRef.current;
+          window.dispatchEvent(
+            new KeyboardEvent("keyup", {
+              key: prevKey,
+              code: `Key${prevKey.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
+          );
+        }
+
+        // Press new key with proper keyboard event properties
+        const key = directionMap[direction];
+        activeMobileKeyRef.current = key;
+        window.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key,
+            code: `Key${key.toUpperCase()}`,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+      } else if (eventType === "end") {
+        // Release active key when D-pad released
+        if (activeMobileKeyRef.current) {
+          const key = activeMobileKeyRef.current;
+          window.dispatchEvent(
+            new KeyboardEvent("keyup", {
+              key,
+              code: `Key${key.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
+          );
+          activeMobileKeyRef.current = null;
+        }
       }
     },
     []
@@ -414,19 +456,25 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Mobile attack handler
   const handleMobileAttack = useCallback(() => {
-    if (trainingState.isTraining) {
-      // Calculate attack accuracy
-      const dx = playerPosition.x - dummyPosition[0];
-      const dz = playerPosition.y - dummyPosition[2];
-      const squaredDistance = dx * dx + dz * dz;
-      const accuracy = Math.max(0, 1 - squaredDistance / 64);
+    // Allow attacks even before training starts for exploration
+    // Calculate attack accuracy
+    const dx = playerPosition.x - dummyPosition[0];
+    const dz = playerPosition.y - dummyPosition[2];
+    const squaredDistance = dx * dx + dz * dz;
+    const accuracy = Math.max(0, 1 - squaredDistance / 64);
 
-      pendingAttackRef.current = {
-        accuracy,
-        vitalPoint: trainingState.selectedVitalPoint ?? "generic",
-      };
+    pendingAttackRef.current = {
+      accuracy,
+      vitalPoint: trainingState.selectedVitalPoint ?? "generic",
+    };
 
-      playerAnimation.transitionTo("attack");
+    playerAnimation.transitionTo("attack");
+
+    // Suggest starting training if not already active
+    if (!trainingState.isTraining) {
+      trainingActions.setFeedback(
+        "훈련 시작하기 | Press Start Training for full feedback!"
+      );
     }
   }, [
     trainingState.isTraining,
@@ -434,6 +482,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     playerPosition,
     dummyPosition,
     playerAnimation,
+    trainingActions,
   ]);
 
   // Mobile block handler
@@ -499,31 +548,25 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         return;
       }
 
-      // Training mode controls only work when training is active
-      if (!trainingState.isTraining) return;
-
-      // Handle stance changes (1-8)
+      // Handle stance changes (1-8) - always available for exploration
       if (key >= "1" && key <= "8") {
         const stanceIndex = parseInt(key) - 1;
         handleStanceChange(stanceIndex);
         event.preventDefault();
+        return;
       }
 
-      // Handle attacks (Space key)
+      // Handle attacks (Space key) - always available for exploration
       if (key === " ") {
         handleAttack();
         event.preventDefault();
+        return;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    trainingState.isTraining,
-    onReturnToMenu,
-    handleStanceChange,
-    handleAttack,
-  ]);
+  }, [onReturnToMenu, handleStanceChange, handleAttack]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 10: Audio Lifecycle Management
@@ -943,22 +986,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               </div>
             )}
 
-            {/* Technique Bar - Bottom Center (above menu button) */}
-            {trainingState.isTraining && (
-              <TechniqueBar
-                techniques={techniqueSelection.availableTechniques}
-                player={trainingPlayerState}
-                selectedIndex={techniqueSelection.selectedIndex}
-                cooldowns={cooldownsMap}
-                onTechniqueSelect={techniqueSelection.selectTechnique}
-                onTechniqueHover={(_tech) => {
-                  // Could add additional hover effects here
-                }}
-                isMobile={isMobile}
-                screenWidth={width}
-                screenHeight={height}
-              />
-            )}
+            {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
+            <TechniqueBar
+              techniques={techniqueSelection.availableTechniques}
+              player={trainingPlayerState}
+              selectedIndex={techniqueSelection.selectedIndex}
+              cooldowns={cooldownsMap}
+              onTechniqueSelect={techniqueSelection.selectTechnique}
+              onTechniqueHover={(_tech) => {
+                // Could add additional hover effects here
+              }}
+              isMobile={isMobile}
+              screenWidth={width}
+              screenHeight={height}
+            />
 
             {/* Bottom Center - Return to Menu Button */}
             <div
