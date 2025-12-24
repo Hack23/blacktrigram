@@ -32,6 +32,7 @@ import {
   type BodyRegionFilter,
 } from "../combat/components";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
+import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -107,14 +108,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 1: Core State Management (Hooks)
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
+
   // Consolidated training state management (matches useCombatState pattern)
   const { state: trainingState, actions: trainingActions } = useTrainingState();
 
   // Audio context
   const audio = useAudio();
 
-  // Responsive detection
-  const isMobile = useMemo(() => width < 768, [width]);
+  // Responsive detection and layout (matching CombatScreen pattern)
+  const { arenaBounds, isMobile } = useCombatLayout(width, height);
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
@@ -152,14 +156,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Track context loss for recovery
   const contextLossCountRef = useRef(0);
 
-  // Handle WebGL context loss and restoration
+  // Handle WebGL context loss and restoration (for 3D scene only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in TrainingScreen");
       contextLossCountRef.current += 1;
     },
     onContextRestored: () => {
-      // Context restored - component will re-render automatically
+      console.log("✓ WebGL context restored in TrainingScreen");
     },
     autoRestore: true,
   });
@@ -168,27 +172,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 3: Movement & Position Management
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Arena bounds for player movement
-  const arenaBounds = useMemo(
-    () => ({
-      x: -8,
-      y: -6,
-      width: 16,
-      height: 12,
-    }),
-    []
-  );
-
-  // Initial player position in 3D space
+  // Initial player position in pixel space (left side of arena, centered vertically)
+  // Matches CombatScreen pattern: positions are pixel-based, converted to 3D for rendering
   const initialPosition = useMemo<Position>(
     () => ({
-      x: -5,
-      y: 0,
+      x: arenaBounds.x + arenaBounds.width * 0.25, // 25% from left
+      y: arenaBounds.y + arenaBounds.height * 0.5, // Centered vertically
     }),
-    []
+    [arenaBounds]
   );
 
-  // Player movement with input system
+  // Player movement with input system (using pixel-based bounds like CombatScreen)
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: arenaBounds,
@@ -199,13 +193,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     moveSpeed: 300,
   });
 
-  // Convert 2D position to 3D coordinates
-  const player3DPosition = useMemo<[number, number, number]>(
-    () => [playerPosition.x, 0, playerPosition.y],
-    [playerPosition]
-  );
+  // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
+  const player3DPosition = useMemo<[number, number, number]>(() => {
+    const relX = (playerPosition.x - arenaBounds.x) / arenaBounds.width;
+    const relZ = (playerPosition.y - arenaBounds.y) / arenaBounds.height;
+    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    return [x, 0, z];
+  }, [playerPosition, arenaBounds]);
 
-  // Dummy position (fixed)
+  // Dummy position (fixed in 3D space, right side of arena)
   const dummyPosition = useMemo<[number, number, number]>(() => [5, 0, 0], []);
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -274,6 +271,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       transitionTo: playerAnimation.transitionTo,
       currentState: playerAnimation.currentState,
     },
+    pendingAttackRef, // Share the ref with animation events
   });
 
   // Update the ref so animation events can call handleDummyHit
@@ -386,55 +384,78 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 8: Mobile Touch Controls
   // ═══════════════════════════════════════════════════════════════════════════
 
-  const mobileControlsEnabled = isMobile && trainingState.isTraining;
+  // Reference for tracking active mobile movement key (prevents stuck keys)
+  const activeMobileKeyRef = useRef<string | null>(null);
 
-  // Mobile D-pad movement handler
+  // Enable mobile controls always in training (allow movement even before starting training)
+  const mobileControlsEnabled = isMobile;
+
+  // Mobile D-pad movement handler (matches CombatScreen implementation)
   const handleMobileMove = useCallback(
     (direction: Direction | null, eventType: DPadEventType) => {
-      if (!direction || eventType !== "start") return;
-
+      // Map D-pad directions to movement keys (WASD)
       const directionMap: Record<Direction, string> = {
         up: "w",
-        "up-right": "d",
+        "up-right": "w",
         right: "d",
-        "down-right": "d",
+        "down-right": "s",
         down: "s",
-        "down-left": "a",
+        "down-left": "s",
         left: "a",
         "up-left": "w",
       };
 
-      const key = directionMap[direction];
-      if (key) {
-        window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+      if (eventType === "start" && direction) {
+        // Release previous key if different (prevents stuck keys)
+        if (
+          activeMobileKeyRef.current &&
+          activeMobileKeyRef.current !== directionMap[direction]
+        ) {
+          const prevKey = activeMobileKeyRef.current;
+          window.dispatchEvent(
+            new KeyboardEvent("keyup", {
+              key: prevKey,
+              code: `Key${prevKey.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
+          );
+        }
+
+        // Press new key with proper keyboard event properties
+        const key = directionMap[direction];
+        activeMobileKeyRef.current = key;
+        window.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key,
+            code: `Key${key.toUpperCase()}`,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+      } else if (eventType === "end") {
+        // Release active key when D-pad released
+        if (activeMobileKeyRef.current) {
+          const key = activeMobileKeyRef.current;
+          window.dispatchEvent(
+            new KeyboardEvent("keyup", {
+              key,
+              code: `Key${key.toUpperCase()}`,
+              bubbles: true,
+              cancelable: true,
+            })
+          );
+          activeMobileKeyRef.current = null;
+        }
       }
     },
     []
   );
 
-  // Mobile attack handler
+  // Mobile attack handler - uses the same handleAttack from training actions
   const handleMobileAttack = useCallback(() => {
-    if (trainingState.isTraining) {
-      // Calculate attack accuracy
-      const dx = playerPosition.x - dummyPosition[0];
-      const dz = playerPosition.y - dummyPosition[2];
-      const squaredDistance = dx * dx + dz * dz;
-      const accuracy = Math.max(0, 1 - squaredDistance / 64);
-
-      pendingAttackRef.current = {
-        accuracy,
-        vitalPoint: trainingState.selectedVitalPoint ?? "generic",
-      };
-
-      playerAnimation.transitionTo("attack");
-    }
-  }, [
-    trainingState.isTraining,
-    trainingState.selectedVitalPoint,
-    playerPosition,
-    dummyPosition,
-    playerAnimation,
-  ]);
+    handleAttack();
+  }, [handleAttack]);
 
   // Mobile block handler
   const handleMobileBlock = useCallback(
@@ -499,31 +520,25 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         return;
       }
 
-      // Training mode controls only work when training is active
-      if (!trainingState.isTraining) return;
-
-      // Handle stance changes (1-8)
+      // Handle stance changes (1-8) - always available for exploration
       if (key >= "1" && key <= "8") {
         const stanceIndex = parseInt(key) - 1;
         handleStanceChange(stanceIndex);
         event.preventDefault();
+        return;
       }
 
-      // Handle attacks (Space key)
+      // Handle attacks (Space key) - always available for exploration
       if (key === " ") {
         handleAttack();
         event.preventDefault();
+        return;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    trainingState.isTraining,
-    onReturnToMenu,
-    handleStanceChange,
-    handleAttack,
-  ]);
+  }, [onReturnToMenu, handleStanceChange, handleAttack]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 10: Audio Lifecycle Management
@@ -794,7 +809,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         ))}
 
-        {/* Html UI Overlays */}
+        {/* Html UI Overlays - only render when content is ready */}
         <Html fullscreen>
           <div
             style={{
@@ -802,6 +817,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               height: "100%",
               pointerEvents: "none",
               position: "relative",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Top Left - Training Controls */}
@@ -943,22 +960,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               </div>
             )}
 
-            {/* Technique Bar - Bottom Center (above menu button) */}
-            {trainingState.isTraining && (
-              <TechniqueBar
-                techniques={techniqueSelection.availableTechniques}
-                player={trainingPlayerState}
-                selectedIndex={techniqueSelection.selectedIndex}
-                cooldowns={cooldownsMap}
-                onTechniqueSelect={techniqueSelection.selectTechnique}
-                onTechniqueHover={(_tech) => {
-                  // Could add additional hover effects here
-                }}
-                isMobile={isMobile}
-                screenWidth={width}
-                screenHeight={height}
-              />
-            )}
+            {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
+            <TechniqueBar
+              techniques={techniqueSelection.availableTechniques}
+              player={trainingPlayerState}
+              selectedIndex={techniqueSelection.selectedIndex}
+              cooldowns={cooldownsMap}
+              onTechniqueSelect={techniqueSelection.selectTechnique}
+              onTechniqueHover={(_tech) => {
+                // Could add additional hover effects here
+              }}
+              isMobile={isMobile}
+              screenWidth={width}
+              screenHeight={height}
+            />
 
             {/* Bottom Center - Return to Menu Button */}
             <div

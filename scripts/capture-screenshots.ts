@@ -4,6 +4,12 @@
  * This script uses Playwright to systematically navigate through all screens
  * and capture high-quality screenshots for UI/UX analysis.
  *
+ * Features:
+ * - Waits for vital content to load before capturing
+ * - Validates required elements are present
+ * - Fails with clear errors if content is missing
+ * - Retries on transient failures
+ *
  * Usage:
  *   npm run dev (in one terminal)
  *   npx tsx scripts/capture-screenshots.ts (in another terminal)
@@ -13,6 +19,18 @@ import * as fs from "fs";
 import * as path from "path";
 import { Browser, chromium, Page } from "playwright";
 
+/** Content validation rule - what elements must be present */
+interface ContentValidation {
+  /** CSS selector to check */
+  selector: string;
+  /** Human-readable description of what we're checking */
+  description: string;
+  /** Whether this is a required element (fail if missing) */
+  required: boolean;
+  /** Optional: minimum count of elements expected */
+  minCount?: number;
+}
+
 interface ScreenshotConfig {
   name: string;
   description: string;
@@ -21,14 +39,30 @@ interface ScreenshotConfig {
   waitForTimeout?: number;
   actions?: (page: Page) => Promise<void>;
   skipAudioInit?: boolean;
+  /** Skip waiting for Three.js canvas (for non-3D screens like splash) */
+  skipCanvasWait?: boolean;
+  /** Content that must be present for a valid screenshot */
+  requiredContent?: ContentValidation[];
+  /** Maximum retries if content validation fails */
+  maxRetries?: number;
+}
+
+interface ValidationResult {
+  passed: boolean;
+  failures: string[];
+  warnings: string[];
 }
 
 // Timing constants for Three.js rendering and animations
 const TIMING = {
-  CANVAS_TIMEOUT: 10000, // Max wait for canvas element
-  INITIAL_RENDER_DELAY: 1500, // Wait for initial Three.js render
-  ANIMATION_SETTLE_DELAY: 1000, // Wait for animations to settle
-  BUTTON_CLICK_DELAY: 2000, // Wait after button clicks
+  CANVAS_TIMEOUT: 15000, // Max wait for canvas element (increased)
+  INITIAL_RENDER_DELAY: 2000, // Wait for initial Three.js render (increased)
+  ANIMATION_SETTLE_DELAY: 1500, // Wait for animations to settle (increased)
+  BUTTON_CLICK_DELAY: 2500, // Wait after button clicks (increased)
+  CONTENT_LOAD_DELAY: 3000, // Wait for dynamic content to load
+  RETRY_DELAY: 2000, // Delay between retries
+  HTML_OVERLAY_DELAY: 3000, // Wait for Html overlays in Three.js to render
+  SCREEN_TRANSITION_DELAY: 4000, // Wait for screen transitions with lazy loading
 } as const;
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
@@ -89,6 +123,146 @@ async function waitForThreeJsReady(
 }
 
 /**
+ * Wait for HTML overlay content to be visible in the Three.js scene
+ * This is critical because Html overlays from @react-three/drei render after the canvas
+ */
+async function waitForHtmlOverlayContent(
+  page: Page,
+  selector: string,
+  description: string,
+  timeout = 15000
+): Promise<boolean> {
+  console.log(`  ⏳ Waiting for ${description}...`);
+
+  try {
+    // Try to wait for the element to be visible
+    await page.waitForSelector(selector, { state: "visible", timeout });
+
+    // Additional delay for React to finish rendering
+    await page.waitForTimeout(500);
+
+    console.log(`  ✅ ${description} is visible`);
+    return true;
+  } catch {
+    console.warn(
+      `  ⚠️  ${description} not found within timeout, continuing...`
+    );
+    return false;
+  }
+}
+
+/**
+ * Wait for main menu to be fully rendered
+ * This handles the specific case where the menu sometimes appears as just lines
+ */
+async function waitForMenuReady(page: Page): Promise<void> {
+  console.log("  ⏳ Waiting for menu to be fully rendered...");
+
+  // Wait for main menu section
+  const menuFound = await waitForHtmlOverlayContent(
+    page,
+    '[data-testid="main-menu-section"], [data-testid="main-menu-buttons"]',
+    "Main menu",
+    10000
+  );
+
+  if (menuFound) {
+    // Wait for at least one menu button to be visible
+    await waitForHtmlOverlayContent(
+      page,
+      '.menu-button, [data-testid="menu-item-versus"], [data-testid="menu-item-training"]',
+      "Menu buttons",
+      5000
+    );
+  }
+
+  // Additional delay for any CSS transitions/animations
+  await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
+}
+
+/**
+ * Validate that required content is present on the page
+ */
+async function validateContent(
+  page: Page,
+  validations: ContentValidation[]
+): Promise<ValidationResult> {
+  const result: ValidationResult = {
+    passed: true,
+    failures: [],
+    warnings: [],
+  };
+
+  for (const validation of validations) {
+    try {
+      const elements = await page.$$(validation.selector);
+      const count = elements.length;
+      const minCount = validation.minCount ?? 1;
+
+      if (count < minCount) {
+        const message = `${validation.description}: expected at least ${minCount}, found ${count}`;
+        if (validation.required) {
+          result.failures.push(message);
+          result.passed = false;
+        } else {
+          result.warnings.push(message);
+        }
+      }
+    } catch (error) {
+      const message = `${validation.description}: error checking - ${error}`;
+      if (validation.required) {
+        result.failures.push(message);
+        result.passed = false;
+      } else {
+        result.warnings.push(message);
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Wait for content with retries
+ */
+async function waitForContentWithRetry(
+  page: Page,
+  config: ScreenshotConfig,
+  maxRetries: number = 3
+): Promise<ValidationResult> {
+  let lastResult: ValidationResult = {
+    passed: true,
+    failures: [],
+    warnings: [],
+  };
+
+  if (!config.requiredContent || config.requiredContent.length === 0) {
+    return lastResult; // No validation needed
+  }
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    console.log(`  🔍 Content validation attempt ${attempt}/${maxRetries}...`);
+
+    // Wait for content to load
+    await page.waitForTimeout(TIMING.CONTENT_LOAD_DELAY);
+
+    lastResult = await validateContent(page, config.requiredContent);
+
+    if (lastResult.passed) {
+      console.log("  ✅ All required content present");
+      break;
+    }
+
+    if (attempt < maxRetries) {
+      console.log(`  ⏳ Retrying in ${TIMING.RETRY_DELAY}ms...`);
+      await page.waitForTimeout(TIMING.RETRY_DELAY);
+    }
+  }
+
+  return lastResult;
+}
+
+/**
  * Initialize audio to get past the splash screen
  */
 async function initializeAudio(page: Page): Promise<void> {
@@ -136,188 +310,324 @@ const screenshotConfigs: ScreenshotConfig[] = [
     path: "/",
     waitForTimeout: 2000,
     skipAudioInit: true,
+    skipCanvasWait: true, // Splash screen is pure HTML, no canvas
+    requiredContent: [
+      {
+        selector: '[data-testid="splash-screen"]',
+        description: "Splash screen container",
+        required: true,
+      },
+      {
+        selector: '[data-testid="splash-start-button"]',
+        description: "Start button (시작)",
+        required: true,
+      },
+    ],
   },
   {
     name: "02-intro-screen-menu",
     description: "Intro Screen - Main menu with game modes",
     path: "/",
-    waitForTimeout: 2000,
+    waitForTimeout: 3000,
+    actions: async (page) => {
+      // Wait for menu to be fully rendered (handles the "just lines" issue)
+      await waitForMenuReady(page);
+    },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector:
+          '[data-testid="main-menu-section"], [data-testid="main-menu-buttons"]',
+        description: "Main menu section",
+        required: true,
+      },
+      {
+        selector: '[data-testid="menu-item-training"]',
+        description: "Training menu item",
+        required: false,
+      },
+      {
+        selector: '[data-testid="menu-item-versus"]',
+        description: "Versus menu item",
+        required: false,
+      },
+    ],
   },
   {
     name: "03-intro-screen-archetype-selector",
     description: "Intro Screen - Player archetype selection",
     path: "/",
-    waitForTimeout: 2000,
+    waitForTimeout: 3000,
     actions: async (page) => {
-      // Wait for archetypes section to be visible
-      await page.waitForTimeout(1000);
-      // The archetype selector should be visible on intro screen
+      // Wait for menu to be fully rendered first
+      await waitForMenuReady(page);
+      // Wait for archetypes section to be visible - scroll down or wait for it
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
+      // The archetype selector should be visible on intro screen - wait for main menu
+      await page
+        .waitForSelector('[data-testid="main-menu-section"]', {
+          timeout: 10000,
+        })
+        .catch(() => {
+          console.log("  ⚠️  Main menu section not found, continuing...");
+        });
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="main-menu-section"]',
+        description: "Main menu section",
+        required: false,
+      },
+    ],
   },
   {
     name: "04-controls-screen",
     description: "Controls Screen - Game controls and keybindings",
     path: "/",
-    waitForTimeout: 3000,
+    waitForTimeout: 5000, // Increased for Html overlay rendering
     actions: async (page) => {
-      // Click controls button in menu using data-testid
-      const controlsButton = await page
-        .locator('[data-testid="menu-item-controls"]')
-        .first();
-      if (await controlsButton.isVisible({ timeout: 5000 })) {
-        await controlsButton.click();
-        await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Controls button not found, trying text selector fallback"
+      // Return to menu first for a clean state
+      await page.goto(BASE_URL);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
+      await initializeAudio(page);
+
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'C' to navigate to controls screen
+      // This is more reliable than clicking through the canvas overlay
+      console.log("  🎯 Using keyboard shortcut 'C' for controls screen...");
+      await page.keyboard.press("c");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for controls screen to appear with extended timeout
+      const controlsFound = await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="controls-screen"]',
+        "Controls screen",
+        15000
+      );
+
+      if (!controlsFound) {
+        // Try waiting for any controls-related content
+        await waitForHtmlOverlayContent(
+          page,
+          '[data-testid="controls-header"], [data-testid="controls-content"]',
+          "Controls content",
+          5000
         );
-        const fallbackButton = await page
-          .locator('button:has-text("조작")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
-          await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
-        }
       }
+
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="controls-screen"]',
+        description: "Controls screen container",
+        required: false,
+      },
+      {
+        selector: '[data-testid="controls-header"]',
+        description: "Controls header",
+        required: false,
+      },
+    ],
   },
   {
     name: "05-philosophy-screen",
     description: "Philosophy Screen - Korean martial arts philosophy",
     path: "/",
-    waitForTimeout: 3000,
+    waitForTimeout: 4000, // Increased for Html overlay rendering
     actions: async (page) => {
       // Return to menu first
       await page.goto(BASE_URL);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click philosophy button using data-testid
-      const philosophyButton = await page
-        .locator('[data-testid="menu-item-philosophy"]')
-        .first();
-      if (await philosophyButton.isVisible({ timeout: 5000 })) {
-        await philosophyButton.click();
-        await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Philosophy button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("철학")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
-          await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
-        }
-      }
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'P' to navigate to philosophy screen
+      console.log("  🎯 Using keyboard shortcut 'P' for philosophy screen...");
+      await page.keyboard.press("p");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for philosophy screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="philosophy-screen"], [data-testid="philosophy-header"]',
+        "Philosophy screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="philosophy-screen"]',
+        description: "Philosophy screen container",
+        required: false,
+      },
+      {
+        selector: '[data-testid="philosophy-header"]',
+        description: "Philosophy header",
+        required: false,
+      },
+    ],
   },
   {
     name: "06-training-screen",
     description: "Training Screen - Training mode with vital points",
     path: "/",
-    waitForTimeout: 4000,
+    waitForTimeout: 5000, // Increased for full UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click training mode using data-testid
-      const trainingButton = await page
-        .locator('[data-testid="menu-item-training"]')
-        .first();
-      if (await trainingButton.isVisible({ timeout: 5000 })) {
-        await trainingButton.click();
-        await page.waitForTimeout(3000); // Wait for lazy load
-      } else {
-        console.warn(
-          "  ⚠️  Training button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("훈련")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
-          await page.waitForTimeout(3000);
-        }
-      }
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'T' to navigate to training screen
+      console.log("  🎯 Using keyboard shortcut 'T' for training screen...");
+      await page.keyboard.press("t");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for training screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="training-screen-3d"], [data-testid="return-to-menu-button"]',
+        "Training screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="training-screen-3d"]',
+        description: "Training screen container",
+        required: false,
+      },
+    ],
   },
   {
     name: "07-combat-screen-practice",
     description: "Combat Screen - Practice mode gameplay",
     path: "/",
-    waitForTimeout: 4000,
-    actions: async (page) => {
-      // Return to menu
-      await page.goto(BASE_URL);
-      await page.waitForTimeout(1000);
-      await initializeAudio(page);
-
-      // Click practice mode using data-testid (practice mode uses versus in menu)
-      const practiceButton = await page
-        .locator('[data-testid="menu-item-versus"]')
-        .first();
-      if (await practiceButton.isVisible({ timeout: 5000 })) {
-        await practiceButton.click();
-        await page.waitForTimeout(3000);
-      } else {
-        console.warn(
-          "  ⚠️  Practice button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("대전")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
-          await page.waitForTimeout(3000);
-        }
-      }
-    },
-  },
-  {
-    name: "08-combat-screen-versus",
-    description: "Combat Screen - Versus mode gameplay",
-    path: "/",
-    waitForTimeout: 4000,
+    waitForTimeout: 5000, // Increased for full combat UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
-      // Click versus mode using data-testid
-      const versusButton = await page
-        .locator('[data-testid="menu-item-versus"]')
-        .first();
-      if (await versusButton.isVisible({ timeout: 5000 })) {
-        await versusButton.click();
-        await page.waitForTimeout(3000);
-      } else {
-        console.warn(
-          "  ⚠️  Versus button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("대전")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click();
-          await page.waitForTimeout(3000);
-        }
-      }
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'V' to navigate to versus/combat screen
+      console.log("  🎯 Using keyboard shortcut 'V' for combat screen...");
+      await page.keyboard.press("v");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for combat screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
+        "Combat screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="combat-screen"]',
+        description: "Combat screen container",
+        required: false,
+      },
+    ],
+  },
+  {
+    name: "08-combat-screen-versus",
+    description: "Combat Screen - Versus mode gameplay",
+    path: "/",
+    waitForTimeout: 5000, // Increased for full combat UI load
+    actions: async (page) => {
+      // Return to menu
+      await page.goto(BASE_URL);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
+      await initializeAudio(page);
+
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'V' to navigate to versus/combat screen
+      console.log("  🎯 Using keyboard shortcut 'V' for versus screen...");
+      await page.keyboard.press("v");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for combat screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
+        "Combat screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
+    },
+    requiredContent: [
+      { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="combat-screen"]',
+        description: "Combat screen container",
+        required: false,
+      },
+    ],
   },
 ];
 
 /**
- * Capture a single screenshot
+ * Capture a single screenshot with content validation
  */
 async function captureScreenshot(
   page: Page,
   config: ScreenshotConfig
-): Promise<{ success: boolean; path?: string; error?: string }> {
+): Promise<{
+  success: boolean;
+  path?: string;
+  error?: string;
+  validationResult?: ValidationResult;
+}> {
   console.log(`\n📸 Capturing: ${config.name}`);
   console.log(`   ${config.description}`);
 
@@ -338,12 +648,40 @@ async function captureScreenshot(
       await config.actions(page);
     }
 
-    // Wait for Three.js canvas
-    await waitForThreeJsReady(page);
+    // Wait for Three.js canvas unless skipped (e.g., splash screen is pure HTML)
+    if (!config.skipCanvasWait) {
+      await waitForThreeJsReady(page);
+    }
 
     // Additional timeout if specified
     if (config.waitForTimeout) {
       await page.waitForTimeout(config.waitForTimeout);
+    }
+
+    // Validate required content
+    const maxRetries = config.maxRetries ?? 3;
+    const validationResult = await waitForContentWithRetry(
+      page,
+      config,
+      maxRetries
+    );
+
+    // Log validation results
+    if (validationResult.warnings.length > 0) {
+      console.log("  ⚠️ Content warnings:");
+      validationResult.warnings.forEach((w) => console.log(`     - ${w}`));
+    }
+
+    if (!validationResult.passed) {
+      console.error("  ❌ Required content validation FAILED:");
+      validationResult.failures.forEach((f) => console.error(`     - ${f}`));
+      return {
+        success: false,
+        error: `Required content missing: ${validationResult.failures.join(
+          "; "
+        )}`,
+        validationResult,
+      };
     }
 
     // Capture screenshot
@@ -356,7 +694,7 @@ async function captureScreenshot(
 
     console.log(`   ✅ Saved: ${screenshotPath}`);
 
-    return { success: true, path: screenshotPath };
+    return { success: true, path: screenshotPath, validationResult };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`   ❌ Failed: ${errorMessage}`);
@@ -365,30 +703,48 @@ async function captureScreenshot(
 }
 
 /**
- * Generate UI/UX analysis report
+ * Generate UI/UX analysis report with validation details
  */
 function generateReport(
-  results: Array<{ config: ScreenshotConfig; result: any }>
+  results: Array<{
+    config: ScreenshotConfig;
+    result: {
+      success: boolean;
+      path?: string;
+      error?: string;
+      validationResult?: ValidationResult;
+    };
+  }>
 ): string {
   const timestamp = new Date().toISOString();
   const successCount = results.filter((r) => r.result.success).length;
   const totalCount = results.length;
+  const failedValidations = results.filter(
+    (r) => r.result.validationResult && !r.result.validationResult.passed
+  ).length;
 
   let report = `# Black Trigram - UI/UX Screenshot Analysis Report\n\n`;
   report += `**Generated:** ${timestamp}\n`;
   report += `**Success Rate:** ${successCount}/${totalCount} (${Math.round(
     (successCount / totalCount) * 100
-  )}%)\n\n`;
-  report += `---\n\n`;
+  )}%)\n`;
+  if (failedValidations > 0) {
+    report += `**⚠️ Content Validation Failures:** ${failedValidations}\n`;
+  }
+  report += `\n---\n\n`;
 
   report += `## Executive Summary\n\n`;
   report += `This report contains automated screenshots of all major screens in the Black Trigram application. `;
   report += `The screenshots were captured using Playwright automation to ensure consistency and completeness.\n\n`;
+  report += `**Content Validation:** Each screenshot includes validation of required UI elements.\n\n`;
 
   report += `### Screens Captured\n\n`;
   results.forEach(({ config, result }) => {
     const status = result.success ? "✅" : "❌";
-    report += `- ${status} **${config.name}**: ${config.description}\n`;
+    const validationNote = result.validationResult?.warnings?.length
+      ? " (⚠️ warnings)"
+      : "";
+    report += `- ${status} **${config.name}**: ${config.description}${validationNote}\n`;
   });
 
   report += `\n---\n\n`;
@@ -401,9 +757,39 @@ function generateReport(
       report += `![${config.description}](../${config.name}.png)\n\n`;
       report += `**Status:** ✅ Captured successfully\n\n`;
       report += `**File:** \`${config.name}.png\`\n\n`;
+
+      // Add validation details
+      if (result.validationResult) {
+        if (result.validationResult.warnings.length > 0) {
+          report += `**⚠️ Warnings:**\n`;
+          result.validationResult.warnings.forEach((w) => {
+            report += `- ${w}\n`;
+          });
+          report += `\n`;
+        }
+      }
     } else {
       report += `**Status:** ❌ Failed to capture\n\n`;
       report += `**Error:** ${result.error}\n\n`;
+
+      // Add validation failures
+      if (result.validationResult && !result.validationResult.passed) {
+        report += `**🚫 Validation Failures:**\n`;
+        result.validationResult.failures.forEach((f) => {
+          report += `- ${f}\n`;
+        });
+        report += `\n`;
+      }
+    }
+
+    // Show required content expectations
+    if (config.requiredContent && config.requiredContent.length > 0) {
+      report += `**Required Content:**\n`;
+      config.requiredContent.forEach((rc) => {
+        const reqStr = rc.required ? "🔴 required" : "🟡 optional";
+        report += `- ${rc.description} (${reqStr})\n`;
+      });
+      report += `\n`;
     }
 
     report += `**Description:** ${config.description}\n\n`;

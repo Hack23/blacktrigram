@@ -1,12 +1,12 @@
 /**
  * Body Part Damage Integration for Combat System
- * 
+ *
  * **Korean**: 신체부위 피해 통합
- * 
+ *
  * Extends the damage calculation system to apply damage to specific body parts
  * based on vital point hits and attack locations. Integrates with the existing
  * VitalPointSystem and DamageCalculator.
- * 
+ *
  * @module systems/bodypart/BodyPartDamageIntegration
  * @category Body Part System
  * @korean 신체부위피해통합
@@ -20,15 +20,15 @@ import { BodyPart } from "./types";
 
 /**
  * Map vital point to its corresponding body region.
- * 
+ *
  * **Korean**: 급소에서 신체 영역 매핑
- * 
+ *
  * Analyzes a vital point's location and category to determine which
  * BodyRegion it belongs to, enabling proper damage distribution.
- * 
+ *
  * @param vitalPoint - Vital point that was struck
  * @returns Corresponding body region
- * 
+ *
  * @public
  */
 export function getBodyRegionFromVitalPoint(
@@ -137,17 +137,21 @@ export function getBodyRegionFromVitalPoint(
 
 /**
  * Apply damage to player's body parts based on hit location.
- * 
+ *
  * **Korean**: 타격 위치 기반 신체부위 피해 적용
- * 
+ *
  * Takes total damage and distributes it across body parts according to
  * the hit location. Updates both aggregate health and body part health.
- * 
+ *
+ * For combat compatibility, the aggregate health is directly reduced by
+ * the damage amount (traditional behavior), while body part health is
+ * updated proportionally for visualization purposes.
+ *
  * @param player - Player receiving damage
  * @param totalDamage - Total damage amount
  * @param bodyRegion - Body region that was hit
  * @returns Updated player state with body part damage applied
- * 
+ *
  * @public
  */
 export function applyDamageToBodyParts(
@@ -159,10 +163,9 @@ export function applyDamageToBodyParts(
   const bodyPartHealth =
     player.bodyPartHealth ?? bodyPartHealthSystem.createDefaultBodyPartHealth();
   const bodyPartMaxHealth =
-    player.bodyPartMaxHealth ??
-    bodyPartHealthSystem.createDefaultMaxHealth();
+    player.bodyPartMaxHealth ?? bodyPartHealthSystem.createDefaultMaxHealth();
 
-  // Apply distributed damage to body parts
+  // Apply distributed damage to body parts for visualization
   const updatedBodyPartHealth = bodyPartHealthSystem.applyDistributedDamage(
     bodyPartHealth,
     bodyRegion,
@@ -170,9 +173,9 @@ export function applyDamageToBodyParts(
     bodyPartMaxHealth
   );
 
-  // Calculate new aggregate health
-  const newAggregateHealth =
-    bodyPartHealthSystem.calculateAggregateHealth(updatedBodyPartHealth);
+  // Calculate new aggregate health directly: traditional damage reduction
+  // This ensures combat damage calculations remain consistent
+  const newAggregateHealth = Math.max(0, player.health - totalDamage);
 
   // Update player state with new body part health and aggregate health
   return {
@@ -185,17 +188,17 @@ export function applyDamageToBodyParts(
 
 /**
  * Apply damage from a vital point hit to appropriate body parts.
- * 
+ *
  * **Korean**: 급소 타격 신체부위 피해 적용
- * 
+ *
  * Specialized damage application for vital point strikes. Maps the vital
  * point to its body region and applies damage with appropriate distribution.
- * 
+ *
  * @param player - Player receiving damage
  * @param totalDamage - Total damage amount
  * @param vitalPoint - Vital point that was struck
  * @returns Updated player state with vital point damage applied
- * 
+ *
  * @public
  */
 export function applyVitalPointDamageToBodyParts(
@@ -209,9 +212,9 @@ export function applyVitalPointDamageToBodyParts(
 
 /**
  * Get combat capability modifiers from body part health.
- * 
+ *
  * **Korean**: 신체부위 전투 능력 수정치 조회
- * 
+ *
  * Calculates how body part damage affects combat capabilities.
  * Returns modifiers that should be applied to:
  * - Consciousness (awareness, reaction time)
@@ -220,17 +223,17 @@ export function applyVitalPointDamageToBodyParts(
  * - Movement speed
  * - Balance and stability
  * - Technique accuracy
- * 
+ *
  * @param player - Player state to analyze
  * @returns Combat capability effect multipliers (0.0-1.0)
- * 
+ *
  * @example
  * ```typescript
  * const effects = getBodyPartCombatEffects(player);
  * const actualDamage = baseDamage * effects.attackDamageModifier;
  * const actualSpeed = baseSpeed * effects.movementSpeedModifier;
  * ```
- * 
+ *
  * @public
  */
 export function getBodyPartCombatEffects(player: PlayerState) {
@@ -254,18 +257,18 @@ export function getBodyPartCombatEffects(player: PlayerState) {
 
 /**
  * Check if player is incapacitated by body part damage.
- * 
+ *
  * **Korean**: 신체부위 무력화 확인
- * 
+ *
  * Determines if the player can continue fighting based on body part health.
  * Player is incapacitated if:
  * - Head is at 0 HP (unconscious)
  * - Both legs are at 0 HP (cannot stand)
  * - Aggregate health is below 10%
- * 
+ *
  * @param player - Player state to check
  * @returns Whether player is incapacitated
- * 
+ *
  * @public
  */
 export function isPlayerIncapacitatedByBodyDamage(
@@ -280,16 +283,16 @@ export function isPlayerIncapacitatedByBodyDamage(
 
 /**
  * Initialize body part health for a player.
- * 
+ *
  * **Korean**: 플레이어 신체부위 체력 초기화
- * 
+ *
  * Sets up body part health and max health for a player if not already present.
  * Uses the provided max health or defaults to 100 per part.
- * 
+ *
  * @param player - Player state to initialize
  * @param maxHealthPerPart - Optional custom max health per part
  * @returns Player state with body part health initialized
- * 
+ *
  * @public
  */
 export function initializeBodyPartHealthForPlayer(
@@ -316,16 +319,16 @@ export function initializeBodyPartHealthForPlayer(
 
 /**
  * Heal body parts proportionally based on total healing amount.
- * 
+ *
  * **Korean**: 신체부위 비례 치유
- * 
+ *
  * Distributes healing across all damaged body parts proportionally to
  * their damage level. Most damaged parts receive more healing.
- * 
+ *
  * @param player - Player state to heal
  * @param totalHealAmount - Total healing to distribute
  * @returns Updated player state with healing applied
- * 
+ *
  * @public
  */
 export function healBodyPartsProportionally(

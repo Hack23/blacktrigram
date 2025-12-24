@@ -1,4 +1,14 @@
-import { VitalPointSeverity, VitalPointCategory } from "../types/common";
+import { BodyRegion } from "../types";
+import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
+import ConsciousnessSystem from "./combat/ConsciousnessSystem";
+import {
+  extractVitalPointCategory,
+  isHeadTraumaHit,
+} from "./combat/painConsciousnessUtils";
+import PainResponseSystem, {
+  ShockPainEffect,
+} from "./combat/PainResponseSystem";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
 import { PlayerState } from "./player";
 import {
@@ -11,13 +21,10 @@ import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
-import PainResponseSystem, { ShockPainEffect } from "./combat/PainResponseSystem";
-import ConsciousnessSystem from "./combat/ConsciousnessSystem";
-import { extractVitalPointCategory, isHeadTraumaHit } from "./combat/painConsciousnessUtils";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
- * 
+ *
  * Integrates realistic pain accumulation and consciousness tracking for
  * progressive combat impairment.
  */
@@ -26,7 +33,7 @@ export class CombatSystem implements CombatSystemInterface {
   protected trigramSystem: TrigramSystem;
   private painSystem: PainResponseSystem;
   private consciousnessSystem: ConsciousnessSystem;
-  
+
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
   // Track last head trauma time per player for consciousness recovery
@@ -47,12 +54,12 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Cleanup per-player combat state.
-   * 
+   *
    * Call this when a player permanently leaves the match or when
    * match-level cleanup is performed to avoid unbounded Map growth.
-   * 
+   *
    * @param playerId - ID of the player to cleanup
-   * 
+   *
    * @public
    * @korean 플레이어데이터정리
    */
@@ -184,12 +191,13 @@ export class CombatSystem implements CombatSystemInterface {
       const severity = this.getVitalPointSeverity(result);
 
       // Apply pain from damage
-      const { player: defenderWithPain, shockEffect: newShockEffect } = this.painSystem.applyPain(
-        updatedDefender,
-        result.damage,
-        severity,
-        category
-      );
+      const { player: defenderWithPain, shockEffect: newShockEffect } =
+        this.painSystem.applyPain(
+          updatedDefender,
+          result.damage,
+          severity,
+          category
+        );
       updatedDefender = defenderWithPain;
 
       // Store shock pain effect if triggered
@@ -212,12 +220,14 @@ export class CombatSystem implements CombatSystemInterface {
           result.damage,
           category
         );
-        
+
         // Track head trauma time for recovery gating
         this.lastHeadTraumaTime.set(updatedDefender.id, Date.now());
 
         // Check incapacitation threshold
-        if (this.consciousnessSystem.isAtIncapacitationThreshold(updatedDefender)) {
+        if (
+          this.consciousnessSystem.isAtIncapacitationThreshold(updatedDefender)
+        ) {
           updatedDefender = {
             ...updatedDefender,
             isStunned: true,
@@ -228,7 +238,10 @@ export class CombatSystem implements CombatSystemInterface {
 
       // Apply pain and consciousness effects to stats
       const currentShockEffect = this.shockPainEffects.get(updatedDefender.id);
-      updatedDefender = this.painSystem.applyEffects(updatedDefender, currentShockEffect);
+      updatedDefender = this.painSystem.applyEffects(
+        updatedDefender,
+        currentShockEffect
+      );
       updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
     }
 
@@ -237,7 +250,7 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Determines if a hit caused head trauma (affects consciousness).
-   * 
+   *
    * @param result - Combat result
    * @param category - Vital point category
    * @returns True if hit should affect consciousness
@@ -251,21 +264,25 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Extracts vital point category from combat result.
-   * 
+   *
    * @param result - Combat result
    * @returns Vital point category if available
    */
-  private getVitalPointCategory(result: CombatResult): VitalPointCategory | undefined {
+  private getVitalPointCategory(
+    result: CombatResult
+  ): VitalPointCategory | undefined {
     return extractVitalPointCategory(result);
   }
 
   /**
    * Extracts vital point severity from combat result.
-   * 
+   *
    * @param result - Combat result
    * @returns Vital point severity if critical hit
    */
-  private getVitalPointSeverity(result: CombatResult): VitalPointSeverity | undefined {
+  private getVitalPointSeverity(
+    result: CombatResult
+  ): VitalPointSeverity | undefined {
     if (result.vitalPointHit) {
       if (result.isCritical) {
         return VitalPointSeverity.CRITICAL;
@@ -284,7 +301,7 @@ export class CombatSystem implements CombatSystemInterface {
   /**
    * Updates player states for recovery (pain dissipation, consciousness recovery).
    * Call this regularly in game loop.
-   * 
+   *
    * @param player - Player to update
    * @param deltaTime - Time elapsed since last update (ms)
    * @returns Updated player state
@@ -318,6 +335,7 @@ export class CombatSystem implements CombatSystemInterface {
   /**
    * Static version for backwards compatibility with comprehensive effect application
    * Enhanced with Pain Response and Consciousness System integration
+   * Updated to apply damage to body parts for 8-body-part health visualization
    */
   static applyCombatResult(
     result: CombatResult,
@@ -329,12 +347,24 @@ export class CombatSystem implements CombatSystemInterface {
     let updatedAttacker = attacker;
 
     if (result.hit) {
-      // Apply damage
+      // Determine body region from technique or use random distribution
+      const bodyRegion = CombatSystem.getBodyRegionFromTechnique(
+        result.technique
+      );
+
+      // Apply damage to body parts (this also updates aggregate health)
+      updatedDefender = applyDamageToBodyParts(
+        defender,
+        result.damage,
+        bodyRegion
+      );
+
+      // Update tracking stats (applyDamageToBodyParts already sets health)
       updatedDefender = {
-        ...defender,
-        health: Math.max(0, defender.health - result.damage),
-        totalDamageReceived: defender.totalDamageReceived + result.damage,
-        hitsTaken: defender.hitsTaken + 1,
+        ...updatedDefender,
+        totalDamageReceived:
+          updatedDefender.totalDamageReceived + result.damage,
+        hitsTaken: updatedDefender.hitsTaken + 1,
       };
 
       // Apply status effects from vital point hit
@@ -370,6 +400,105 @@ export class CombatSystem implements CombatSystemInterface {
     };
 
     return { updatedAttacker, updatedDefender };
+  }
+
+  /**
+   * Determine body region from technique name or type
+   *
+   * **Korean**: 기술에서 신체 영역 결정
+   *
+   * @param technique - The technique used in the attack
+   * @returns Body region to apply damage to
+   */
+  private static getBodyRegionFromTechnique(
+    technique?: KoreanTechnique
+  ): BodyRegion {
+    if (!technique) {
+      // Default to torso if no technique specified
+      return BodyRegion.TORSO;
+    }
+
+    const techniqueName = (
+      technique.name?.english ||
+      technique.englishName ||
+      ""
+    ).toLowerCase();
+    const techniqueId = technique.id?.toLowerCase() || "";
+
+    // Head/face targeting techniques
+    if (
+      techniqueName.includes("head") ||
+      techniqueName.includes("temple") ||
+      techniqueName.includes("jaw") ||
+      techniqueName.includes("face") ||
+      techniqueId.includes("head") ||
+      techniqueId.includes("skull")
+    ) {
+      return BodyRegion.HEAD;
+    }
+
+    // Neck targeting techniques
+    if (
+      techniqueName.includes("neck") ||
+      techniqueName.includes("throat") ||
+      techniqueName.includes("choke") ||
+      techniqueId.includes("neck")
+    ) {
+      return BodyRegion.NECK;
+    }
+
+    // Leg targeting techniques
+    if (
+      techniqueName.includes("kick") ||
+      techniqueName.includes("sweep") ||
+      techniqueName.includes("leg") ||
+      techniqueName.includes("knee") ||
+      techniqueId.includes("kick") ||
+      techniqueId.includes("leg")
+    ) {
+      // Randomly choose left or right leg
+      return Math.random() < 0.5 ? BodyRegion.LEFT_LEG : BodyRegion.RIGHT_LEG;
+    }
+
+    // Arm targeting techniques
+    if (
+      techniqueName.includes("arm") ||
+      techniqueName.includes("shoulder") ||
+      techniqueName.includes("elbow") ||
+      techniqueId.includes("arm")
+    ) {
+      // Randomly choose left or right arm
+      return Math.random() < 0.5 ? BodyRegion.LEFT_ARM : BodyRegion.RIGHT_ARM;
+    }
+
+    // Punch/strike techniques typically target torso
+    if (
+      techniqueName.includes("punch") ||
+      techniqueName.includes("strike") ||
+      techniqueName.includes("jab") ||
+      techniqueName.includes("cross") ||
+      techniqueName.includes("hook") ||
+      techniqueName.includes("uppercut")
+    ) {
+      // Mix of torso and head for punches
+      return Math.random() < 0.7 ? BodyRegion.TORSO : BodyRegion.HEAD;
+    }
+
+    // Body/core targeting techniques
+    if (
+      techniqueName.includes("body") ||
+      techniqueName.includes("solar") ||
+      techniqueName.includes("liver") ||
+      techniqueName.includes("ribs") ||
+      techniqueName.includes("abdomen") ||
+      techniqueId.includes("torso") ||
+      techniqueId.includes("core")
+    ) {
+      return BodyRegion.TORSO;
+    }
+
+    // Default to torso for unmatched techniques
+    return BodyRegion.TORSO;
   }
 
   /**
