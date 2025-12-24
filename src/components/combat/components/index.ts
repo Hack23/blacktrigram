@@ -28,6 +28,7 @@ export { PlayerStateOverlay } from "./PlayerStateOverlay";
 export { StaminaWarning } from "./StaminaWarning";
 
 // UI components
+export { CombatControlsPanel } from "./CombatControlsPanel";
 export { CombatTimer } from "./CombatTimer";
 export { default as ControlsGuide } from "./ControlsGuide";
 export { DifficultyIndicator } from "./DifficultyIndicator";
@@ -47,6 +48,7 @@ export type { ConfirmDialogProps } from "../../ui/shared/ConfirmDialog";
 export type { ActionFeedbackProps, TechniqueNameProps } from "./ActionFeedback";
 export type { BloodDecals3DProps, BloodDecal } from "./BloodDecals3D";
 export type { BloodParticles3DProps, BloodSplatterEffect } from "./BloodParticles3D";
+export type { CombatControlsPanelProps } from "./CombatControlsPanel";
 export type { CombatTimerProps } from "./CombatTimer";
 export type { ComboCounterProps } from "./ComboCounter";
 export type { ControlsGuideProps } from "./ControlsGuide";

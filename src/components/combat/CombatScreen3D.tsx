@@ -82,6 +82,7 @@ import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
 import { BodyPartHealthDisplay } from "./components/BodyPartHealthDisplay";
 import CombatArena3D from "./components/CombatArena3D";
+import { CombatControlsPanel } from "./components/CombatControlsPanel";
 import { CombatTimer } from "./components/CombatTimer";
 import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
@@ -2082,55 +2083,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           )}
 
         {/* Combat Controls and Stats */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: isMobile ? "90px" : "100px",
-            left: isMobile ? "5px" : "15px",
-            right: isMobile ? "5px" : "15px",
-            display: "flex",
-            justifyContent: "space-between",
-            pointerEvents: "auto",
-          }}
-        >
-          {/* TODO: Replace with CombatControlsHTML component */}
-          <div
-            style={{
-              width: isMobile ? "45%" : "400px",
-              background: "rgba(10, 10, 15, 0.8)",
-              border: "2px solid #00ffff",
-              borderRadius: "8px",
-              padding: "10px",
-              color: "#00ffff",
-              fontFamily: FONT_FAMILY.KOREAN,
-            }}
-          >
-            <div>Controls: A/D - Attack/Defend | 1-8 - Stances</div>
-          </div>
-          {/* TODO: Replace with CombatStatsPanelHTML component */}
-          <div
-            style={{
-              width: isMobile ? "45%" : "400px",
-              background: "rgba(10, 10, 15, 0.8)",
-              border: "2px solid #00ffff",
-              borderRadius: "8px",
-              padding: "10px",
-              color: "#00ffff",
-              fontFamily: FONT_FAMILY.KOREAN,
-              maxHeight: "140px",
-              overflow: "auto",
-            }}
-          >
-            {combatState.combatMessages.slice(-5).map((msg, idx) => (
-              <div
-                key={`msg-${idx}-${msg.slice(0, 20)}`}
-                style={{ fontSize: "12px", marginBottom: "4px" }}
-              >
-                {msg}
-              </div>
-            ))}
-          </div>
-        </div>
+        <CombatControlsPanel
+          combatMessages={combatState.combatMessages}
+          isMobile={isMobile}
+        />
 
         {/* Combat Footer - Back Button */}
         <div
