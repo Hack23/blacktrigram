@@ -81,6 +81,7 @@ import { CombatTimer } from "./components/CombatTimer";
 import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
 import { DifficultyIndicator } from "./components/DifficultyIndicator";
+import { FPSMonitor } from "./components/FPSMonitor";
 import HitEffects3D from "./components/HitEffects3D";
 import { MobileControlsWrapper } from "./components/MobileControlsWrapper";
 import { PauseMenu } from "./components/PauseMenu";
@@ -1929,6 +1930,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             onStanceChange={handleMobileStanceChange}
             onStanceWheelToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
             onGesture={handleMobileGesture}
+          />
+        )}
+
+        {/* Performance Monitoring - FPS display (dev mode) */}
+        {process.env.NODE_ENV === 'development' && (
+          <FPSMonitor
+            enabled={true}
+            warningThreshold={50}
+            criticalThreshold={30}
+            onFPSDrop={(fps) => {
+              console.warn(`Combat performance drop: ${fps} fps`);
+            }}
           />
         )}
       </Canvas>
