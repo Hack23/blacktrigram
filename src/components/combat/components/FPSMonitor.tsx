@@ -12,7 +12,7 @@
 
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 
 export interface FPSMonitorProps {
@@ -59,8 +59,13 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
 }) => {
   const [fps, setFps] = useState(60);
   const frameCountRef = useRef(0);
-  const lastTimeRef = useRef(performance.now());
+  const lastTimeRef = useRef(0);
   const lastWarningTimeRef = useRef(0);
+  
+  // Initialize performance.now() after mount to avoid impure function call during render
+  useEffect(() => {
+    lastTimeRef.current = performance.now();
+  }, []);
 
   const updateFPS = useCallback(() => {
     frameCountRef.current++;

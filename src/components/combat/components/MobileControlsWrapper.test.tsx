@@ -8,10 +8,10 @@ import { MobileControlsWrapper } from "./MobileControlsWrapper";
 
 // Mock the mobile components
 vi.mock("../../mobile", () => ({
-  VirtualDPad: ({ onMove, disabled }: any) => <div data-testid="virtual-dpad">DPad</div>,
-  ActionButtons: ({ onAttack, onBlock, disabled }: any) => <div data-testid="action-buttons">Buttons</div>,
-  StanceWheel: ({ currentStance, onStanceChange }: any) => <div data-testid="stance-wheel">Wheel</div>,
-  GestureRecognizer: ({ onGesture, enabled }: any) => <div data-testid="gesture-recognizer">Gestures</div>,
+  VirtualDPad: ({ onMove: _onMove, disabled: _disabled }: any) => <div data-testid="virtual-dpad">DPad</div>,
+  ActionButtons: ({ onAttack: _onAttack, onBlock: _onBlock, disabled: _disabled }: any) => <div data-testid="action-buttons">Buttons</div>,
+  StanceWheel: ({ currentStance: _currentStance, onStanceChange: _onStanceChange }: any) => <div data-testid="stance-wheel">Wheel</div>,
+  GestureRecognizer: ({ onGesture: _onGesture, enabled: _enabled }: any) => <div data-testid="gesture-recognizer">Gestures</div>,
 }));
 
 describe("MobileControlsWrapper", () => {
