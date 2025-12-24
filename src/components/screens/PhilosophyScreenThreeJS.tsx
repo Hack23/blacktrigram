@@ -1,6 +1,6 @@
 import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useWindowSize } from "../../hooks/useWindowSize";
@@ -25,13 +25,26 @@ export interface PhilosophyScreenThreeJSProps {
 export const PhilosophyScreenThreeJS: React.FC<
   PhilosophyScreenThreeJSProps
 > = ({ onReturnToMenu, width: propWidth, height: propHeight }) => {
+  // Track when content is ready to render (prevents flash of empty content)
+  const [contentReady, setContentReady] = useState(false);
+
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in PhilosophyScreen");
+      setContentReady(false);
+    },
+    onContextRestored: () => {
+      setTimeout(() => setContentReady(true), 100);
     },
     autoRestore: true,
   });
+
+  // Ensure content renders after component is mounted and stable
+  useEffect(() => {
+    const timer = setTimeout(() => setContentReady(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const audio = useAudio();
   const { width, height } = useWindowSize();
@@ -186,7 +199,7 @@ export const PhilosophyScreenThreeJS: React.FC<
         {/* 3D Background Scene */}
         <BackgroundScene3D theme="philosophy" />
 
-        {/* HTML Overlay for UI */}
+        {/* HTML Overlay for UI - only render when content is ready */}
         <Html fullscreen>
           <div
             style={{
@@ -197,6 +210,8 @@ export const PhilosophyScreenThreeJS: React.FC<
               color: colors.textPrimary,
               fontFamily: FONT_FAMILY.KOREAN,
               pointerEvents: "auto",
+              opacity: contentReady ? 1 : 0,
+              transition: "opacity 0.15s ease-in-out",
             }}
           >
             {/* Header */}

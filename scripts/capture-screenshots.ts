@@ -123,6 +123,64 @@ async function waitForThreeJsReady(
 }
 
 /**
+ * Wait for HTML overlay content to be visible in the Three.js scene
+ * This is critical because Html overlays from @react-three/drei render after the canvas
+ */
+async function waitForHtmlOverlayContent(
+  page: Page,
+  selector: string,
+  description: string,
+  timeout = 15000
+): Promise<boolean> {
+  console.log(`  ⏳ Waiting for ${description}...`);
+
+  try {
+    // Try to wait for the element to be visible
+    await page.waitForSelector(selector, { state: "visible", timeout });
+
+    // Additional delay for React to finish rendering
+    await page.waitForTimeout(500);
+
+    console.log(`  ✅ ${description} is visible`);
+    return true;
+  } catch {
+    console.warn(
+      `  ⚠️  ${description} not found within timeout, continuing...`
+    );
+    return false;
+  }
+}
+
+/**
+ * Wait for main menu to be fully rendered
+ * This handles the specific case where the menu sometimes appears as just lines
+ */
+async function waitForMenuReady(page: Page): Promise<void> {
+  console.log("  ⏳ Waiting for menu to be fully rendered...");
+
+  // Wait for main menu section
+  const menuFound = await waitForHtmlOverlayContent(
+    page,
+    '[data-testid="main-menu-section"], [data-testid="main-menu-buttons"]',
+    "Main menu",
+    10000
+  );
+
+  if (menuFound) {
+    // Wait for at least one menu button to be visible
+    await waitForHtmlOverlayContent(
+      page,
+      '.menu-button, [data-testid="menu-item-versus"], [data-testid="menu-item-training"]',
+      "Menu buttons",
+      5000
+    );
+  }
+
+  // Additional delay for any CSS transitions/animations
+  await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
+}
+
+/**
  * Validate that required content is present on the page
  */
 async function validateContent(
@@ -270,9 +328,19 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "02-intro-screen-menu",
     description: "Intro Screen - Main menu with game modes",
     path: "/",
-    waitForTimeout: 2000,
+    waitForTimeout: 3000,
+    actions: async (page) => {
+      // Wait for menu to be fully rendered (handles the "just lines" issue)
+      await waitForMenuReady(page);
+    },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector:
+          '[data-testid="main-menu-section"], [data-testid="main-menu-buttons"]',
+        description: "Main menu section",
+        required: true,
+      },
       {
         selector: '[data-testid="menu-item-training"]',
         description: "Training menu item",
@@ -291,6 +359,8 @@ const screenshotConfigs: ScreenshotConfig[] = [
     path: "/",
     waitForTimeout: 3000,
     actions: async (page) => {
+      // Wait for menu to be fully rendered first
+      await waitForMenuReady(page);
       // Wait for archetypes section to be visible - scroll down or wait for it
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       // The archetype selector should be visible on intro screen - wait for main menu
@@ -316,7 +386,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "04-controls-screen",
     description: "Controls Screen - Game controls and keybindings",
     path: "/",
-    waitForTimeout: 4000, // Increased for Html overlay rendering
+    waitForTimeout: 5000, // Increased for Html overlay rendering
     actions: async (page) => {
       // Return to menu first for a clean state
       await page.goto(BASE_URL);
@@ -326,37 +396,36 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Wait for canvas to be ready first
       await waitForThreeJsReady(page);
 
-      // Click controls button in menu using data-testid with force to bypass canvas interception
-      const controlsButton = await page
-        .locator('[data-testid="menu-item-controls"]')
-        .first();
-      if (await controlsButton.isVisible({ timeout: 5000 })) {
-        await controlsButton.click({ force: true });
-        // Wait longer for screen transition and Html overlay to render
-        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        // Wait for controls screen content to appear
-        await page
-          .waitForSelector('[data-testid="controls-screen"]', {
-            timeout: 10000,
-          })
-          .catch(() => {
-            console.log(
-              "  ⚠️  Controls screen element not found, continuing..."
-            );
-          });
-        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Controls button not found, trying text selector fallback"
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'C' to navigate to controls screen
+      // This is more reliable than clicking through the canvas overlay
+      console.log("  🎯 Using keyboard shortcut 'C' for controls screen...");
+      await page.keyboard.press("c");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+
+      // Wait for controls screen to appear with extended timeout
+      const controlsFound = await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="controls-screen"]',
+        "Controls screen",
+        15000
+      );
+
+      if (!controlsFound) {
+        // Try waiting for any controls-related content
+        await waitForHtmlOverlayContent(
+          page,
+          '[data-testid="controls-header"], [data-testid="controls-content"]',
+          "Controls content",
+          5000
         );
-        const fallbackButton = await page
-          .locator('button:has-text("조작")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        }
       }
+
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
@@ -386,37 +455,24 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Wait for canvas to be ready first
       await waitForThreeJsReady(page);
 
-      // Click philosophy button using data-testid with force to bypass canvas interception
-      const philosophyButton = await page
-        .locator('[data-testid="menu-item-philosophy"]')
-        .first();
-      if (await philosophyButton.isVisible({ timeout: 5000 })) {
-        await philosophyButton.click({ force: true });
-        // Wait longer for screen transition and Html overlay to render
-        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        // Wait for philosophy screen content to appear
-        await page
-          .waitForSelector('[data-testid="philosophy-screen"]', {
-            timeout: 10000,
-          })
-          .catch(() => {
-            console.log(
-              "  ⚠️  Philosophy screen element not found, continuing..."
-            );
-          });
-        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Philosophy button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("철학")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        }
-      }
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'P' to navigate to philosophy screen
+      console.log("  🎯 Using keyboard shortcut 'P' for philosophy screen...");
+      await page.keyboard.press("p");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+      
+      // Wait for philosophy screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="philosophy-screen"], [data-testid="philosophy-header"]',
+        "Philosophy screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
@@ -446,37 +502,24 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Wait for canvas to be ready first
       await waitForThreeJsReady(page);
 
-      // Click training mode using data-testid with force to bypass canvas interception
-      const trainingButton = await page
-        .locator('[data-testid="menu-item-training"]')
-        .first();
-      if (await trainingButton.isVisible({ timeout: 5000 })) {
-        await trainingButton.click({ force: true });
-        // Wait for screen transition and Html overlay to render
-        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        // Wait for training screen content to appear
-        await page
-          .waitForSelector('[data-testid="training-screen-3d"]', {
-            timeout: 10000,
-          })
-          .catch(() => {
-            console.log(
-              "  ⚠️  Training screen element not found, continuing..."
-            );
-          });
-        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Training button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("훈련")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        }
-      }
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'T' to navigate to training screen
+      console.log("  🎯 Using keyboard shortcut 'T' for training screen...");
+      await page.keyboard.press("t");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+      
+      // Wait for training screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="training-screen-3d"], [data-testid="return-to-menu-button"]',
+        "Training screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
@@ -501,33 +544,24 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Wait for canvas to be ready first
       await waitForThreeJsReady(page);
 
-      // Click practice mode using data-testid with force to bypass canvas interception
-      const practiceButton = await page
-        .locator('[data-testid="menu-item-versus"]')
-        .first();
-      if (await practiceButton.isVisible({ timeout: 5000 })) {
-        await practiceButton.click({ force: true });
-        // Wait for screen transition and Html overlay to render
-        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        // Wait for combat screen content to appear
-        await page
-          .waitForSelector('[data-testid="combat-screen"]', { timeout: 10000 })
-          .catch(() => {
-            console.log("  ⚠️  Combat screen element not found, continuing...");
-          });
-        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
-      } else {
-        console.warn(
-          "  ⚠️  Practice button not found, trying text selector fallback"
-        );
-        const fallbackButton = await page
-          .locator('button:has-text("대전")')
-          .first();
-        if (await fallbackButton.isVisible({ timeout: 2000 })) {
-          await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
-        }
-      }
+      // Wait for menu to be fully rendered before triggering
+      await waitForMenuReady(page);
+
+      // Use keyboard shortcut 'V' to navigate to versus/combat screen
+      console.log("  🎯 Using keyboard shortcut 'V' for combat screen...");
+      await page.keyboard.press("v");
+
+      // Wait for screen transition
+      await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+      
+      // Wait for combat screen content to appear
+      await waitForHtmlOverlayContent(
+        page,
+        '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
+        "Combat screen content",
+        10000
+      );
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
@@ -552,6 +586,9 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Wait for canvas to be ready first
       await waitForThreeJsReady(page);
 
+      // Wait for menu to be fully rendered before clicking
+      await waitForMenuReady(page);
+
       // Click versus mode using data-testid with force to bypass canvas interception
       const versusButton = await page
         .locator('[data-testid="menu-item-versus"]')
@@ -561,11 +598,12 @@ const screenshotConfigs: ScreenshotConfig[] = [
         // Wait for screen transition and Html overlay to render
         await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
         // Wait for combat screen content to appear
-        await page
-          .waitForSelector('[data-testid="combat-screen"]', { timeout: 10000 })
-          .catch(() => {
-            console.log("  ⚠️  Combat screen element not found, continuing...");
-          });
+        await waitForHtmlOverlayContent(
+          page,
+          '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
+          "Combat screen content",
+          10000
+        );
         await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
       } else {
         console.warn(

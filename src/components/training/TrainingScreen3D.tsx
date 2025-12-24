@@ -9,7 +9,13 @@
 
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAudio } from "../../audio/AudioProvider";
 import { usePlayerAnimation } from "../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../hooks/useTechniqueSelection";
@@ -108,6 +114,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 1: Core State Management (Hooks)
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Track when content is ready to render (prevents flash of empty content)
+  const [contentReady, setContentReady] = useState(false);
+
   // Consolidated training state management (matches useCombatState pattern)
   const { state: trainingState, actions: trainingActions } = useTrainingState();
 
@@ -158,12 +167,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in TrainingScreen");
       contextLossCountRef.current += 1;
+      setContentReady(false);
     },
     onContextRestored: () => {
-      // Context restored - component will re-render automatically
+      // Context restored - re-enable content after short delay
+      setTimeout(() => setContentReady(true), 100);
     },
     autoRestore: true,
   });
+
+  // Ensure content renders after component is mounted and stable
+  useEffect(() => {
+    const timer = setTimeout(() => setContentReady(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 3: Movement & Position Management
@@ -806,7 +823,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         ))}
 
-        {/* Html UI Overlays */}
+        {/* Html UI Overlays - only render when content is ready */}
         <Html fullscreen>
           <div
             style={{
@@ -814,6 +831,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               height: "100%",
               pointerEvents: "none",
               position: "relative",
+              opacity: contentReady ? 1 : 0,
+              transition: "opacity 0.15s ease-in-out",
             }}
           >
             {/* Top Left - Training Controls */}

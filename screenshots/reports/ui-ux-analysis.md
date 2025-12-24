@@ -1,7 +1,7 @@
 # Black Trigram - UI/UX Screenshot Analysis Report
 
-**Generated:** 2025-12-23T01:00:56.675Z
-**Success Rate:** 6/8 (75%)
+**Generated:** 2025-12-24T18:29:07.503Z
+**Success Rate:** 8/8 (100%)
 
 ---
 
@@ -9,15 +9,17 @@
 
 This report contains automated screenshots of all major screens in the Black Trigram application. The screenshots were captured using Playwright automation to ensure consistency and completeness.
 
+**Content Validation:** Each screenshot includes validation of required UI elements.
+
 ### Screens Captured
 
-- ❌ **01-splash-screen**: Splash Screen - Initial app loading screen
+- ✅ **01-splash-screen**: Splash Screen - Initial app loading screen
 - ✅ **02-intro-screen-menu**: Intro Screen - Main menu with game modes
 - ✅ **03-intro-screen-archetype-selector**: Intro Screen - Player archetype selection
-- ✅ **04-controls-screen**: Controls Screen - Game controls and keybindings
+- ✅ **04-controls-screen**: Controls Screen - Game controls and keybindings (⚠️ warnings)
 - ✅ **05-philosophy-screen**: Philosophy Screen - Korean martial arts philosophy
 - ✅ **06-training-screen**: Training Screen - Training mode with vital points
-- ❌ **07-combat-screen-practice**: Combat Screen - Practice mode gameplay
+- ✅ **07-combat-screen-practice**: Combat Screen - Practice mode gameplay
 - ✅ **08-combat-screen-versus**: Combat Screen - Versus mode gameplay
 
 ---
@@ -26,12 +28,15 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 1. Splash Screen - Initial app loading screen
 
-**Status:** ❌ Failed to capture
+![Splash Screen - Initial app loading screen](../01-splash-screen.png)
 
-**Error:** page.waitForSelector: Timeout 10000ms exceeded.
-Call log:
-  - waiting for locator('canvas') to be visible
+**Status:** ✅ Captured successfully
 
+**File:** `01-splash-screen.png`
+
+**Required Content:**
+- Splash screen container (🔴 required)
+- Start button (시작) (🔴 required)
 
 **Description:** Splash Screen - Initial app loading screen
 
@@ -45,6 +50,12 @@ Call log:
 
 **File:** `02-intro-screen-menu.png`
 
+**Required Content:**
+- 3D canvas (🔴 required)
+- Main menu section (🔴 required)
+- Training menu item (🟡 optional)
+- Versus menu item (🟡 optional)
+
 **Description:** Intro Screen - Main menu with game modes
 
 ---
@@ -56,6 +67,10 @@ Call log:
 **Status:** ✅ Captured successfully
 
 **File:** `03-intro-screen-archetype-selector.png`
+
+**Required Content:**
+- 3D canvas (🔴 required)
+- Main menu section (🟡 optional)
 
 **Description:** Intro Screen - Player archetype selection
 
@@ -69,6 +84,15 @@ Call log:
 
 **File:** `04-controls-screen.png`
 
+**⚠️ Warnings:**
+- Controls screen container: expected at least 1, found 0
+- Controls header: expected at least 1, found 0
+
+**Required Content:**
+- 3D canvas (🔴 required)
+- Controls screen container (🟡 optional)
+- Controls header (🟡 optional)
+
 **Description:** Controls Screen - Game controls and keybindings
 
 ---
@@ -80,6 +104,11 @@ Call log:
 **Status:** ✅ Captured successfully
 
 **File:** `05-philosophy-screen.png`
+
+**Required Content:**
+- 3D canvas (🔴 required)
+- Philosophy screen container (🟡 optional)
+- Philosophy header (🟡 optional)
 
 **Description:** Philosophy Screen - Korean martial arts philosophy
 
@@ -93,41 +122,25 @@ Call log:
 
 **File:** `06-training-screen.png`
 
+**Required Content:**
+- 3D canvas (🔴 required)
+- Training screen container (🟡 optional)
+
 **Description:** Training Screen - Training mode with vital points
 
 ---
 
 ### 7. Combat Screen - Practice mode gameplay
 
-**Status:** ❌ Failed to capture
+![Combat Screen - Practice mode gameplay](../07-combat-screen-practice.png)
 
-**Error:** locator.click: Timeout 30000ms exceeded.
-Call log:
-  - waiting for locator('[data-testid="menu-item-versus"]').first()
-    - locator resolved to <button role="menuitem" class="menu-button" aria-selected="true" aria-label="대전 (Combat)" data-testid="menu-item-versus">…</button>
-  - attempting click action
-    2 × waiting for element to be visible, enabled and stable
-      - element is visible, enabled and stable
-      - scrolling into view if needed
-      - done scrolling
-      - <canvas width="1280" height="800" data-engine="three.js r182"></canvas> from <div>…</div> subtree intercepts pointer events
-    - retrying click action
-    - waiting 20ms
-    2 × waiting for element to be visible, enabled and stable
-      - element is visible, enabled and stable
-      - scrolling into view if needed
-      - done scrolling
-      - <canvas width="1280" height="800" data-engine="three.js r182"></canvas> from <div>…</div> subtree intercepts pointer events
-    - retrying click action
-      - waiting 100ms
-    56 × waiting for element to be visible, enabled and stable
-       - element is visible, enabled and stable
-       - scrolling into view if needed
-       - done scrolling
-       - <canvas width="1280" height="800" data-engine="three.js r182"></canvas> from <div>…</div> subtree intercepts pointer events
-     - retrying click action
-       - waiting 500ms
+**Status:** ✅ Captured successfully
 
+**File:** `07-combat-screen-practice.png`
+
+**Required Content:**
+- 3D canvas (🔴 required)
+- Combat screen container (🟡 optional)
 
 **Description:** Combat Screen - Practice mode gameplay
 
@@ -140,6 +153,10 @@ Call log:
 **Status:** ✅ Captured successfully
 
 **File:** `08-combat-screen-versus.png`
+
+**Required Content:**
+- 3D canvas (🔴 required)
+- Combat screen container (🟡 optional)
 
 **Description:** Combat Screen - Versus mode gameplay
 
