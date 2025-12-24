@@ -25,10 +25,16 @@ export interface PhilosophyScreenThreeJSProps {
 export const PhilosophyScreenThreeJS: React.FC<
   PhilosophyScreenThreeJSProps
 > = ({ onReturnToMenu, width: propWidth, height: propHeight }) => {
-  // Handle WebGL context loss and restoration
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
+
+  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in PhilosophyScreen");
+    },
+    onContextRestored: () => {
+      console.log("✓ WebGL context restored in PhilosophyScreen");
     },
     autoRestore: true,
   });
@@ -186,7 +192,7 @@ export const PhilosophyScreenThreeJS: React.FC<
         {/* 3D Background Scene */}
         <BackgroundScene3D theme="philosophy" />
 
-        {/* HTML Overlay for UI */}
+        {/* HTML Overlay for UI - only render when content is ready */}
         <Html fullscreen>
           <div
             style={{
@@ -197,6 +203,8 @@ export const PhilosophyScreenThreeJS: React.FC<
               color: colors.textPrimary,
               fontFamily: FONT_FAMILY.KOREAN,
               pointerEvents: "auto",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Header */}

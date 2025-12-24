@@ -88,17 +88,17 @@ import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
+import {
+  AnimationUpdater,
+  ANNOUNCEMENT_FADE_OUT_DELAY,
+  calculateAccuracy,
+  STANCE_INDEX_MAP,
+} from "./helpers";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-import {
-  AnimationUpdater,
-  STANCE_INDEX_MAP,
-  ANNOUNCEMENT_FADE_OUT_DELAY,
-  calculateAccuracy,
-} from "./helpers";
 
 /**
  * Props for the CombatScreen3D component.
@@ -169,6 +169,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   width = 1200,
   height = 800,
 }) => {
+  // Track when content is ready to render (prevents flash of empty content)
+  const [contentReady, setContentReady] = useState(false);
+
   // Track context loss count for debugging
   const contextLossCountRef = useRef(0);
 
@@ -177,12 +180,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in CombatScreen");
       contextLossCountRef.current += 1;
+      setContentReady(false);
     },
     onContextRestored: () => {
-      // Context restored successfully
+      // Context restored - re-enable content after short delay
+      setTimeout(() => setContentReady(true), 100);
     },
     autoRestore: true,
   });
+
+  // Ensure content renders after component is mounted and stable
+  useEffect(() => {
+    const timer = setTimeout(() => setContentReady(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Audio context for button interactions
   const audio = useAudio();
@@ -1873,8 +1884,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
         )}
 
-        {/* Round display status overlay */}
-        {combatState.roundDisplayStatus &&
+        {/* Round display status overlay - only show when content is ready */}
+        {contentReady &&
+          combatState.roundDisplayStatus &&
           combatState.roundDisplayStatus !== null && (
             <Html fullscreen>
               <div
@@ -1928,13 +1940,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             onAttack={handleMobileAttack}
             onBlock={handleMobileBlock}
             onStanceChange={handleMobileStanceChange}
-            onStanceWheelToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
+            onStanceWheelToggle={() =>
+              setStanceWheelExpanded(!stanceWheelExpanded)
+            }
             onGesture={handleMobileGesture}
           />
         )}
 
         {/* Performance Monitoring - FPS display (dev mode only) */}
-        {process.env.NODE_ENV === 'development' && <FPSMonitor enabled={true} warningThreshold={50} criticalThreshold={30} />}
+        {process.env.NODE_ENV === "development" && (
+          <FPSMonitor
+            enabled={true}
+            warningThreshold={50}
+            criticalThreshold={30}
+          />
+        )}
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}

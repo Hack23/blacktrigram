@@ -106,6 +106,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 1: Core State Management (Hooks)
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
+
   // Consolidated training state management (matches useCombatState pattern)
   const { state: trainingState, actions: trainingActions } = useTrainingState();
 
@@ -151,14 +154,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Track context loss for recovery
   const contextLossCountRef = useRef(0);
 
-  // Handle WebGL context loss and restoration
+  // Handle WebGL context loss and restoration (for 3D scene only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in TrainingScreen");
       contextLossCountRef.current += 1;
     },
     onContextRestored: () => {
-      // Context restored - component will re-render automatically
+      console.log("✓ WebGL context restored in TrainingScreen");
     },
     autoRestore: true,
   });
@@ -266,6 +269,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       transitionTo: playerAnimation.transitionTo,
       currentState: playerAnimation.currentState,
     },
+    pendingAttackRef, // Share the ref with animation events
   });
 
   // Update the ref so animation events can call handleDummyHit
@@ -446,36 +450,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     []
   );
 
-  // Mobile attack handler
+  // Mobile attack handler - uses the same handleAttack from training actions
   const handleMobileAttack = useCallback(() => {
-    // Allow attacks even before training starts for exploration
-    // Calculate attack accuracy
-    const dx = playerPosition.x - dummyPosition[0];
-    const dz = playerPosition.y - dummyPosition[2];
-    const squaredDistance = dx * dx + dz * dz;
-    const accuracy = Math.max(0, 1 - squaredDistance / 64);
-
-    pendingAttackRef.current = {
-      accuracy,
-      vitalPoint: trainingState.selectedVitalPoint ?? "generic",
-    };
-
-    playerAnimation.transitionTo("attack");
-
-    // Suggest starting training if not already active
-    if (!trainingState.isTraining) {
-      trainingActions.setFeedback(
-        "훈련 시작하기 | Press Start Training for full feedback!"
-      );
-    }
-  }, [
-    trainingState.isTraining,
-    trainingState.selectedVitalPoint,
-    playerPosition,
-    dummyPosition,
-    playerAnimation,
-    trainingActions,
-  ]);
+    handleAttack();
+  }, [handleAttack]);
 
   // Mobile block handler
   const handleMobileBlock = useCallback(
@@ -829,7 +807,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         ))}
 
-        {/* Html UI Overlays */}
+        {/* Html UI Overlays - only render when content is ready */}
         <Html fullscreen>
           <div
             style={{
@@ -837,6 +815,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               height: "100%",
               pointerEvents: "none",
               position: "relative",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Top Left - Training Controls */}

@@ -31,6 +31,11 @@ export interface UseTrainingActionsConfig {
     readonly transitionTo: (state: AnimationState) => boolean;
     readonly currentState: string;
   };
+  /** External ref to store pending attack data - shared with animation events */
+  readonly pendingAttackRef: React.MutableRefObject<{
+    accuracy: number;
+    vitalPoint: string;
+  } | null>;
 }
 
 export interface UseTrainingActionsReturn {
@@ -40,10 +45,6 @@ export interface UseTrainingActionsReturn {
   readonly handleDummyDefeated: () => void;
   readonly handleStanceChange: (stanceIndex: number) => void;
   readonly handleAttack: () => void;
-  readonly pendingAttackRef: React.MutableRefObject<{
-    accuracy: number;
-    vitalPoint: string;
-  } | null>;
 }
 
 /**
@@ -76,13 +77,8 @@ export function useTrainingActions(
     audio,
     onPlayerUpdate,
     playerAnimation,
+    pendingAttackRef,
   } = config;
-
-  // Ref to store pending attack data (for frame 6 execution)
-  const pendingAttackRef = useRef<{
-    accuracy: number;
-    vitalPoint: string;
-  } | null>(null);
 
   // Ref to store timeout for dummy reset
   const dummyResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -119,8 +115,6 @@ export function useTrainingActions(
 
   const handleDummyHit = useCallback(
     (_vitalPointId: string): boolean => {
-      if (!state.isTraining) return false;
-
       const accuracy = calculateHitAccuracy(player3DPosition, dummyPosition);
 
       // Determine hit position (dummy center)
@@ -135,8 +129,10 @@ export function useTrainingActions(
         const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
         const isPerfect = accuracy > 0.9;
 
-        // Register hit with state
-        actions.registerHit(points, damage, isPerfect);
+        // Register hit with state (only counts if training)
+        if (state.isTraining) {
+          actions.registerHit(points, damage, isPerfect);
+        }
 
         // Determine feedback and sound
         let effectType: "success" | "perfect";
@@ -164,9 +160,11 @@ export function useTrainingActions(
 
         return true;
       } else {
-        // Register miss
-        actions.registerMiss();
-        actions.setFeedback("빗나감 | Miss");
+        // Register miss (only counts if training)
+        if (state.isTraining) {
+          actions.registerMiss();
+        }
+        actions.setFeedback("빗나감 | Miss - Get closer!");
         audio.playSFX("menu_navigate");
 
         // Add miss effect
@@ -196,22 +194,24 @@ export function useTrainingActions(
   );
 
   const handleAttack = useCallback(() => {
-    if (state.isTraining) {
-      // Calculate attack accuracy and store it
-      const accuracy = calculateHitAccuracy(player3DPosition, dummyPosition);
-      pendingAttackRef.current = {
-        accuracy,
-        vitalPoint: state.selectedVitalPoint ?? "generic",
-      };
-      // Trigger attack animation
-      playerAnimation.transitionTo("attack");
-    }
+    // Calculate attack accuracy and store it (allow attacks even when not training for exploration)
+    const accuracy = calculateHitAccuracy(player3DPosition, dummyPosition);
+    pendingAttackRef.current = {
+      accuracy,
+      vitalPoint: state.selectedVitalPoint ?? "generic",
+    };
+    // Trigger attack animation - this will fire onFrame event at frame 6
+    playerAnimation.transitionTo("attack");
+
+    // Play attack sound
+    audio.playSFX("whoosh");
   }, [
-    state.isTraining,
     state.selectedVitalPoint,
     player3DPosition,
     dummyPosition,
     playerAnimation,
+    audio,
+    pendingAttackRef,
   ]);
 
   return {
@@ -221,7 +221,6 @@ export function useTrainingActions(
     handleDummyDefeated,
     handleStanceChange,
     handleAttack,
-    pendingAttackRef,
   };
 }
 

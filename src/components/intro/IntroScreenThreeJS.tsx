@@ -83,11 +83,16 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
 
-  // Handle WebGL context loss and restoration
+  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in IntroScreen");
+    },
+    onContextRestored: () => {
+      console.log("✓ WebGL context restored in IntroScreen");
     },
     autoRestore: true,
   });
@@ -321,7 +326,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         {/* 3D Background Scene */}
         <BackgroundScene3D theme="intro" />
 
-        {/* HTML Overlay for UI */}
+        {/* HTML Overlay for UI - only render when content is ready */}
         <Html fullscreen>
           <div
             style={{
@@ -334,6 +339,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               padding: 0,
               gap: isMobile ? "8px" : "16px",
               pointerEvents: "none",
+              opacity: isMounted ? 1 : 0,
+              transition: "opacity 0.2s ease-out",
             }}
           >
             {/* Main Title */}

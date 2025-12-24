@@ -448,11 +448,17 @@ src/components/combat/components/BloodLossOverlay.test.tsx
 src/components/combat/components/BloodLossOverlay.tsx
 src/components/combat/components/BloodParticles3D.test.tsx
 src/components/combat/components/BloodParticles3D.tsx
+src/components/combat/components/BodyPartHealthDisplay.test.tsx
+src/components/combat/components/BodyPartHealthDisplay.tsx
 src/components/combat/components/CombatArena3D.test.tsx
 src/components/combat/components/CombatArena3D.tsx
+src/components/combat/components/CombatControlsPanel.test.tsx
+src/components/combat/components/CombatControlsPanel.tsx
 src/components/combat/components/CombatFeedbackIntegration.test.tsx
 src/components/combat/components/CombatHUDThree.test.tsx
 src/components/combat/components/CombatHUDThree.tsx
+src/components/combat/components/CombatReadinessBar.test.tsx
+src/components/combat/components/CombatReadinessBar.tsx
 src/components/combat/components/CombatTimer.test.tsx
 src/components/combat/components/CombatTimer.tsx
 src/components/combat/components/ComboCounter.test.tsx
@@ -465,6 +471,8 @@ src/components/combat/components/DamageNumbers.test.tsx
 src/components/combat/components/DamageNumbers.tsx
 src/components/combat/components/DifficultyIndicator.test.tsx
 src/components/combat/components/DifficultyIndicator.tsx
+src/components/combat/components/FPSMonitor.test.tsx
+src/components/combat/components/FPSMonitor.tsx
 src/components/combat/components/HealthBar.test.tsx
 src/components/combat/components/HealthBar.tsx
 src/components/combat/components/HitEffects3D.test.tsx
@@ -475,6 +483,8 @@ src/components/combat/components/KeyboardHints.test.tsx
 src/components/combat/components/KeyboardHints.tsx
 src/components/combat/components/MatchCountdown.test.tsx
 src/components/combat/components/MatchCountdown.tsx
+src/components/combat/components/MobileControlsWrapper.test.tsx
+src/components/combat/components/MobileControlsWrapper.tsx
 src/components/combat/components/PainVignette.test.tsx
 src/components/combat/components/PainVignette.tsx
 src/components/combat/components/PauseMenu.test.tsx
@@ -504,6 +514,9 @@ src/components/combat/components/VitalPointMarkers3D.tsx
 src/components/combat/components/VitalPointOverlayControls.test.tsx
 src/components/combat/components/VitalPointOverlayControls.tsx
 src/components/combat/components/index.ts
+src/components/combat/helpers/AnimationUpdater.tsx
+src/components/combat/helpers/combatHelpers.ts
+src/components/combat/helpers/index.ts
 src/components/combat/hooks/useAICombat.test.ts
 src/components/combat/hooks/useAICombat.ts
 src/components/combat/hooks/useCombatActions.test.ts
@@ -801,6 +814,8 @@ src/utils/archetypeAssets.test.ts
 src/utils/colorHelpers.test.ts
 src/utils/colorHelpers.ts
 src/utils/colorUtils.ts
+src/utils/combatReadiness.test.ts
+src/utils/combatReadiness.ts
 src/utils/controlMapping.test.ts
 src/utils/controlMapping.ts
 src/utils/deviceDetection.test.ts
