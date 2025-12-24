@@ -61,6 +61,8 @@ const TIMING = {
   BUTTON_CLICK_DELAY: 2500, // Wait after button clicks (increased)
   CONTENT_LOAD_DELAY: 3000, // Wait for dynamic content to load
   RETRY_DELAY: 2000, // Delay between retries
+  HTML_OVERLAY_DELAY: 3000, // Wait for Html overlays in Three.js to render
+  SCREEN_TRANSITION_DELAY: 4000, // Wait for screen transitions with lazy loading
 } as const;
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
@@ -287,29 +289,62 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "03-intro-screen-archetype-selector",
     description: "Intro Screen - Player archetype selection",
     path: "/",
-    waitForTimeout: 2000,
+    waitForTimeout: 3000,
     actions: async (page) => {
-      // Wait for archetypes section to be visible
-      await page.waitForTimeout(1000);
-      // The archetype selector should be visible on intro screen
+      // Wait for archetypes section to be visible - scroll down or wait for it
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
+      // The archetype selector should be visible on intro screen - wait for main menu
+      await page
+        .waitForSelector('[data-testid="main-menu-section"]', {
+          timeout: 10000,
+        })
+        .catch(() => {
+          console.log("  ⚠️  Main menu section not found, continuing...");
+        });
+      await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="main-menu-section"]',
+        description: "Main menu section",
+        required: false,
+      },
     ],
   },
   {
     name: "04-controls-screen",
     description: "Controls Screen - Game controls and keybindings",
     path: "/",
-    waitForTimeout: 3000,
+    waitForTimeout: 4000, // Increased for Html overlay rendering
     actions: async (page) => {
+      // Return to menu first for a clean state
+      await page.goto(BASE_URL);
+      await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
+      await initializeAudio(page);
+
+      // Wait for canvas to be ready first
+      await waitForThreeJsReady(page);
+
       // Click controls button in menu using data-testid with force to bypass canvas interception
       const controlsButton = await page
         .locator('[data-testid="menu-item-controls"]')
         .first();
       if (await controlsButton.isVisible({ timeout: 5000 })) {
         await controlsButton.click({ force: true });
-        await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+        // Wait longer for screen transition and Html overlay to render
+        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+        // Wait for controls screen content to appear
+        await page
+          .waitForSelector('[data-testid="controls-screen"]', {
+            timeout: 10000,
+          })
+          .catch(() => {
+            console.log(
+              "  ⚠️  Controls screen element not found, continuing..."
+            );
+          });
+        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
       } else {
         console.warn(
           "  ⚠️  Controls button not found, trying text selector fallback"
@@ -319,19 +354,29 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
           await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
         }
       }
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="controls-screen"]',
+        description: "Controls screen container",
+        required: false,
+      },
+      {
+        selector: '[data-testid="controls-header"]',
+        description: "Controls header",
+        required: false,
+      },
     ],
   },
   {
     name: "05-philosophy-screen",
     description: "Philosophy Screen - Korean martial arts philosophy",
     path: "/",
-    waitForTimeout: 3000,
+    waitForTimeout: 4000, // Increased for Html overlay rendering
     actions: async (page) => {
       // Return to menu first
       await page.goto(BASE_URL);
@@ -347,7 +392,19 @@ const screenshotConfigs: ScreenshotConfig[] = [
         .first();
       if (await philosophyButton.isVisible({ timeout: 5000 })) {
         await philosophyButton.click({ force: true });
-        await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+        // Wait longer for screen transition and Html overlay to render
+        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+        // Wait for philosophy screen content to appear
+        await page
+          .waitForSelector('[data-testid="philosophy-screen"]', {
+            timeout: 10000,
+          })
+          .catch(() => {
+            console.log(
+              "  ⚠️  Philosophy screen element not found, continuing..."
+            );
+          });
+        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
       } else {
         console.warn(
           "  ⚠️  Philosophy button not found, trying text selector fallback"
@@ -357,19 +414,29 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
           await fallbackButton.click({ force: true });
-          await page.waitForTimeout(TIMING.BUTTON_CLICK_DELAY);
+          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
         }
       }
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
+      {
+        selector: '[data-testid="philosophy-screen"]',
+        description: "Philosophy screen container",
+        required: false,
+      },
+      {
+        selector: '[data-testid="philosophy-header"]',
+        description: "Philosophy header",
+        required: false,
+      },
     ],
   },
   {
     name: "06-training-screen",
     description: "Training Screen - Training mode with vital points",
     path: "/",
-    waitForTimeout: 4000,
+    waitForTimeout: 5000, // Increased for full UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
@@ -385,7 +452,19 @@ const screenshotConfigs: ScreenshotConfig[] = [
         .first();
       if (await trainingButton.isVisible({ timeout: 5000 })) {
         await trainingButton.click({ force: true });
-        await page.waitForTimeout(3000); // Wait for lazy load
+        // Wait for screen transition and Html overlay to render
+        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+        // Wait for training screen content to appear
+        await page
+          .waitForSelector('[data-testid="training-screen-3d"]', {
+            timeout: 10000,
+          })
+          .catch(() => {
+            console.log(
+              "  ⚠️  Training screen element not found, continuing..."
+            );
+          });
+        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
       } else {
         console.warn(
           "  ⚠️  Training button not found, trying text selector fallback"
@@ -395,15 +474,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
           await fallbackButton.click({ force: true });
-          await page.waitForTimeout(3000);
+          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
         }
       }
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
       {
-        selector: '[data-testid="training-hud"], [data-testid="combat-hud"]',
-        description: "Training/Combat HUD",
+        selector: '[data-testid="training-screen-3d"]',
+        description: "Training screen container",
         required: false,
       },
     ],
@@ -412,7 +491,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "07-combat-screen-practice",
     description: "Combat Screen - Practice mode gameplay",
     path: "/",
-    waitForTimeout: 4000,
+    waitForTimeout: 5000, // Increased for full combat UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
@@ -428,7 +507,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
         .first();
       if (await practiceButton.isVisible({ timeout: 5000 })) {
         await practiceButton.click({ force: true });
-        await page.waitForTimeout(3000);
+        // Wait for screen transition and Html overlay to render
+        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+        // Wait for combat screen content to appear
+        await page
+          .waitForSelector('[data-testid="combat-screen"]', { timeout: 10000 })
+          .catch(() => {
+            console.log("  ⚠️  Combat screen element not found, continuing...");
+          });
+        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
       } else {
         console.warn(
           "  ⚠️  Practice button not found, trying text selector fallback"
@@ -438,15 +525,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
           await fallbackButton.click({ force: true });
-          await page.waitForTimeout(3000);
+          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
         }
       }
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
       {
-        selector: '[data-testid="combat-hud"], [data-testid="player-hud"]',
-        description: "Combat HUD",
+        selector: '[data-testid="combat-screen"]',
+        description: "Combat screen container",
         required: false,
       },
     ],
@@ -455,7 +542,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "08-combat-screen-versus",
     description: "Combat Screen - Versus mode gameplay",
     path: "/",
-    waitForTimeout: 4000,
+    waitForTimeout: 5000, // Increased for full combat UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
@@ -471,7 +558,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
         .first();
       if (await versusButton.isVisible({ timeout: 5000 })) {
         await versusButton.click({ force: true });
-        await page.waitForTimeout(3000);
+        // Wait for screen transition and Html overlay to render
+        await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
+        // Wait for combat screen content to appear
+        await page
+          .waitForSelector('[data-testid="combat-screen"]', { timeout: 10000 })
+          .catch(() => {
+            console.log("  ⚠️  Combat screen element not found, continuing...");
+          });
+        await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
       } else {
         console.warn(
           "  ⚠️  Versus button not found, trying text selector fallback"
@@ -481,15 +576,15 @@ const screenshotConfigs: ScreenshotConfig[] = [
           .first();
         if (await fallbackButton.isVisible({ timeout: 2000 })) {
           await fallbackButton.click({ force: true });
-          await page.waitForTimeout(3000);
+          await page.waitForTimeout(TIMING.SCREEN_TRANSITION_DELAY);
         }
       }
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
       {
-        selector: '[data-testid="combat-hud"], [data-testid="player-hud"]',
-        description: "Combat HUD",
+        selector: '[data-testid="combat-screen"]',
+        description: "Combat screen container",
         required: false,
       },
     ],
