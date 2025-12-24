@@ -268,6 +268,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       transitionTo: playerAnimation.transitionTo,
       currentState: playerAnimation.currentState,
     },
+    pendingAttackRef, // Share the ref with animation events
   });
 
   // Update the ref so animation events can call handleDummyHit
@@ -448,36 +449,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     []
   );
 
-  // Mobile attack handler
+  // Mobile attack handler - uses the same handleAttack from training actions
   const handleMobileAttack = useCallback(() => {
-    // Allow attacks even before training starts for exploration
-    // Calculate attack accuracy
-    const dx = playerPosition.x - dummyPosition[0];
-    const dz = playerPosition.y - dummyPosition[2];
-    const squaredDistance = dx * dx + dz * dz;
-    const accuracy = Math.max(0, 1 - squaredDistance / 64);
-
-    pendingAttackRef.current = {
-      accuracy,
-      vitalPoint: trainingState.selectedVitalPoint ?? "generic",
-    };
-
-    playerAnimation.transitionTo("attack");
-
-    // Suggest starting training if not already active
-    if (!trainingState.isTraining) {
-      trainingActions.setFeedback(
-        "훈련 시작하기 | Press Start Training for full feedback!"
-      );
-    }
-  }, [
-    trainingState.isTraining,
-    trainingState.selectedVitalPoint,
-    playerPosition,
-    dummyPosition,
-    playerAnimation,
-    trainingActions,
-  ]);
+    handleAttack();
+  }, [handleAttack]);
 
   // Mobile block handler
   const handleMobileBlock = useCallback(
