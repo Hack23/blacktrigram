@@ -21,16 +21,20 @@ export { DamageNumbers } from "./DamageNumbers";
 // Player State Visual Indicators
 export { BalanceIndicator } from "./BalanceIndicator";
 export { BloodLossOverlay } from "./BloodLossOverlay";
+export { BodyPartHealthDisplay } from "./BodyPartHealthDisplay";
 export { ConsciousnessBlur } from "./ConsciousnessBlur";
 export { PainVignette } from "./PainVignette";
 export { PlayerStateOverlay } from "./PlayerStateOverlay";
 export { StaminaWarning } from "./StaminaWarning";
 
 // UI components
+export { CombatControlsPanel } from "./CombatControlsPanel";
 export { CombatTimer } from "./CombatTimer";
 export { default as ControlsGuide } from "./ControlsGuide";
 export { DifficultyIndicator } from "./DifficultyIndicator";
+export { FPSMonitor } from "./FPSMonitor";
 export { MatchCountdown } from "./MatchCountdown";
+export { MobileControlsWrapper } from "./MobileControlsWrapper";
 export { PauseMenu } from "./PauseMenu";
 export { default as QuickSettings } from "./QuickSettings";
 export { RoundAnnouncement } from "./RoundAnnouncement";
@@ -46,13 +50,16 @@ export type { ConfirmDialogProps } from "../../ui/shared/ConfirmDialog";
 export type { ActionFeedbackProps, TechniqueNameProps } from "./ActionFeedback";
 export type { BloodDecals3DProps, BloodDecal } from "./BloodDecals3D";
 export type { BloodParticles3DProps, BloodSplatterEffect } from "./BloodParticles3D";
+export type { CombatControlsPanelProps } from "./CombatControlsPanel";
 export type { CombatTimerProps } from "./CombatTimer";
 export type { ComboCounterProps } from "./ComboCounter";
 export type { ControlsGuideProps } from "./ControlsGuide";
 export type { DamageNumbersProps } from "./DamageNumbers";
 export type { DifficultyIndicatorProps } from "./DifficultyIndicator";
+export type { FPSMonitorProps } from "./FPSMonitor";
 export type { HitEffects3DProps } from "./HitEffects3D";
 export type { MatchCountdownProps } from "./MatchCountdown";
+export type { MobileControlsWrapperProps } from "./MobileControlsWrapper";
 export type { PauseMenuProps } from "./PauseMenu";
 export type { QuickSettingsProps } from "./QuickSettings";
 export type { RoundAnnouncementProps, RoundStats } from "./RoundAnnouncement";
@@ -70,6 +77,7 @@ export type { VitalPointOverlayControlsProps } from "./VitalPointOverlayControls
 // Player State Indicator prop types
 export type { BalanceIndicatorProps } from "./BalanceIndicator";
 export type { BloodLossOverlayProps } from "./BloodLossOverlay";
+export type { BodyPartHealthDisplayProps } from "./BodyPartHealthDisplay";
 export type { ConsciousnessBlurProps } from "./ConsciousnessBlur";
 export type { PainVignetteProps } from "./PainVignette";
 export type { PlayerStateOverlayProps } from "./PlayerStateOverlay";

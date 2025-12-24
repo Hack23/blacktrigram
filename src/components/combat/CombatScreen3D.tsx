@@ -6,7 +6,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -69,23 +69,21 @@ import {
   convertPlayerStateToProps,
   getBalanceState,
 } from "../../utils/player3DHelpers";
-import {
-  ActionButtons,
-  GestureRecognizer,
-  StanceWheel,
-  VirtualDPad,
-} from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
 import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { ActionFeedback, TechniqueName } from "./components/ActionFeedback";
+import { BodyPartHealthDisplay } from "./components/BodyPartHealthDisplay";
 import CombatArena3D from "./components/CombatArena3D";
+import { CombatControlsPanel } from "./components/CombatControlsPanel";
 import { CombatTimer } from "./components/CombatTimer";
 import { ComboCounter } from "./components/ComboCounter";
 import { DamageNumbers } from "./components/DamageNumbers";
 import { DifficultyIndicator } from "./components/DifficultyIndicator";
+import { FPSMonitor } from "./components/FPSMonitor";
 import HitEffects3D from "./components/HitEffects3D";
+import { MobileControlsWrapper } from "./components/MobileControlsWrapper";
 import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
@@ -95,60 +93,12 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-
-// Create stance index lookup map once
-const STANCE_INDEX_MAP = new Map<TrigramStance, number>();
-TRIGRAM_STANCES_ORDER.forEach((stance, index) => {
-  STANCE_INDEX_MAP.set(stance, index);
-});
-
-// Round announcement fade-out delay (in milliseconds)
-// Wait for previous announcement to fully fade out before showing next one
-const ANNOUNCEMENT_FADE_OUT_DELAY = 300;
-
-/**
- * AnimationUpdater - Component that updates player animations at 60fps
- * Uses useFrame to call update() on both animation state machines
- *
- * @korean 애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
- */
-interface AnimationUpdaterProps {
-  readonly player1Animation: ReturnType<typeof usePlayerAnimation>;
-  readonly player2Animation: ReturnType<typeof usePlayerAnimation>;
-}
-
-const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
-  player1Animation,
-  player2Animation,
-}) => {
-  useFrame((_state, delta) => {
-    // Update both player animations at 60fps
-    player1Animation.update(delta);
-    player2Animation.update(delta);
-  });
-
-  return null; // Component only updates animation state, renders no visual elements
-};
-
-/**
- * Calculate accuracy percentage for a player
- * Uses hits / (hits + misses) when miss tracking is available
- * Falls back to 100% if hits exist but no miss tracking, or 0% if no combat activity
- */
-const calculateAccuracy = (player: PlayerState): number => {
-  const hits = player.hitsLanded ?? 0;
-  const misses = player.misses ?? 0;
-  const totalAttempts = hits + misses;
-
-  // If we have miss tracking, use proper accuracy formula
-  if (totalAttempts > 0) {
-    return (hits / totalAttempts) * 100;
-  }
-
-  // Fallback: if no miss tracking and hits exist, show 100%
-  // Otherwise 0% (no combat activity)
-  return hits > 0 ? 100 : 0;
-};
+import {
+  AnimationUpdater,
+  STANCE_INDEX_MAP,
+  ANNOUNCEMENT_FADE_OUT_DELAY,
+  calculateAccuracy,
+} from "./helpers";
 
 /**
  * Props for the CombatScreen3D component.
@@ -1970,42 +1920,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
         {isMobile && (
-          <>
-            <VirtualDPad
-              onMove={handleMobileMove}
-              disabled={!mobileControlsEnabled}
-              size={120}
-              bottom={20}
-              left={20}
-              opacity={0.8}
-            />
-
-            <ActionButtons
-              onAttack={handleMobileAttack}
-              onBlock={handleMobileBlock}
-              disabled={!mobileControlsEnabled}
-              bottom={20}
-              right={20}
-              opacity={0.8}
-            />
-
-            <StanceWheel
-              currentStance={currentStanceIndex}
-              onStanceChange={handleMobileStanceChange}
-              expanded={stanceWheelExpanded}
-              onToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
-              disabled={!mobileControlsEnabled}
-              opacity={0.8}
-            />
-
-            <GestureRecognizer
-              onGesture={handleMobileGesture}
-              enabled={mobileControlsEnabled}
-              showFeedback={true}
-              minSwipeDistance={50}
-            />
-          </>
+          <MobileControlsWrapper
+            enabled={mobileControlsEnabled}
+            currentStanceIndex={currentStanceIndex}
+            stanceWheelExpanded={stanceWheelExpanded}
+            onMove={handleMobileMove}
+            onAttack={handleMobileAttack}
+            onBlock={handleMobileBlock}
+            onStanceChange={handleMobileStanceChange}
+            onStanceWheelToggle={() => setStanceWheelExpanded(!stanceWheelExpanded)}
+            onGesture={handleMobileGesture}
+          />
         )}
+
+        {/* Performance Monitoring - FPS display (dev mode only) */}
+        {process.env.NODE_ENV === 'development' && <FPSMonitor enabled={true} warningThreshold={50} criticalThreshold={30} />}
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}
@@ -2071,6 +2000,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
+        {/* Body Part Health Displays - show individual body part health bars */}
+        {validPlayers[0].bodyPartHealth && (
+          <BodyPartHealthDisplay
+            bodyPartHealth={validPlayers[0].bodyPartHealth}
+            playerId={validPlayers[0].id}
+            position="left"
+            isMobile={isMobile}
+          />
+        )}
+
+        {validPlayers[1].bodyPartHealth && (
+          <BodyPartHealthDisplay
+            bodyPartHealth={validPlayers[1].bodyPartHealth}
+            playerId={validPlayers[1].id}
+            position="right"
+            isMobile={isMobile}
+          />
+        )}
+
         {/* AI Difficulty Indicator - Shows current adaptive difficulty tier */}
         <DifficultyIndicator tier={currentDifficultyTier} isMobile={isMobile} />
 
@@ -2110,55 +2058,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           )}
 
         {/* Combat Controls and Stats */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: isMobile ? "90px" : "100px",
-            left: isMobile ? "5px" : "15px",
-            right: isMobile ? "5px" : "15px",
-            display: "flex",
-            justifyContent: "space-between",
-            pointerEvents: "auto",
-          }}
-        >
-          {/* TODO: Replace with CombatControlsHTML component */}
-          <div
-            style={{
-              width: isMobile ? "45%" : "400px",
-              background: "rgba(10, 10, 15, 0.8)",
-              border: "2px solid #00ffff",
-              borderRadius: "8px",
-              padding: "10px",
-              color: "#00ffff",
-              fontFamily: FONT_FAMILY.KOREAN,
-            }}
-          >
-            <div>Controls: A/D - Attack/Defend | 1-8 - Stances</div>
-          </div>
-          {/* TODO: Replace with CombatStatsPanelHTML component */}
-          <div
-            style={{
-              width: isMobile ? "45%" : "400px",
-              background: "rgba(10, 10, 15, 0.8)",
-              border: "2px solid #00ffff",
-              borderRadius: "8px",
-              padding: "10px",
-              color: "#00ffff",
-              fontFamily: FONT_FAMILY.KOREAN,
-              maxHeight: "140px",
-              overflow: "auto",
-            }}
-          >
-            {combatState.combatMessages.slice(-5).map((msg, idx) => (
-              <div
-                key={`msg-${idx}-${msg.slice(0, 20)}`}
-                style={{ fontSize: "12px", marginBottom: "4px" }}
-              >
-                {msg}
-              </div>
-            ))}
-          </div>
-        </div>
+        <CombatControlsPanel
+          combatMessages={combatState.combatMessages}
+          isMobile={isMobile}
+        />
 
         {/* Combat Footer - Back Button */}
         <div
