@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">69.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/40</span>
+                <span class='fraction'>29/42</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.66% </span>
+                <span class="strong">56.52% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>51/90</span>
+                <span class='fraction'>52/92</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">56.25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/15</span>
+                <span class='fraction'>9/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.23% </span>
+                <span class="strong">68.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/39</span>
+                <span class='fraction'>28/41</span>
             </div>
         
             
@@ -684,7 +684,15 @@
 <a name='L619'></a><a href='#L619'>619</a>
 <a name='L620'></a><a href='#L620'>620</a>
 <a name='L621'></a><a href='#L621'>621</a>
-<a name='L622'></a><a href='#L622'>622</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L622'></a><a href='#L622'>622</a>
+<a name='L623'></a><a href='#L623'>623</a>
+<a name='L624'></a><a href='#L624'>624</a>
+<a name='L625'></a><a href='#L625'>625</a>
+<a name='L626'></a><a href='#L626'>626</a>
+<a name='L627'></a><a href='#L627'>627</a>
+<a name='L628'></a><a href='#L628'>628</a>
+<a name='L629'></a><a href='#L629'>629</a>
+<a name='L630'></a><a href='#L630'>630</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -713,6 +721,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -834,6 +848,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1331,10 +1347,16 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
   width: propWidth,
   height: propHeight,
 }) =&gt; {
-  // Handle WebGL context loss and restoration
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
+&nbsp;
+  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      console.warn("⚠️ WebGL context lost in ControlsScreen");</span>
+    },
+    onContextRestored: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      console.log("✓ WebGL context restored in ControlsScreen");</span>
     },
     autoRestore: true,
   });
@@ -1460,7 +1482,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
         {/* 3D Background Scene */}
         &lt;BackgroundScene3D theme="controls" /&gt;
 &nbsp;
-        {/* HTML Overlay for UI */}
+        {/* HTML Overlay for UI - only render when content is ready */}
         &lt;Html fullscreen&gt;
           &lt;div
             style={{
@@ -1471,6 +1493,8 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               color: colors.textPrimary,
               fontFamily: FONT_FAMILY.KOREAN,
               pointerEvents: "auto",
+              opacity: isMounted ? 1 : <span class="branch-1 cbranch-no" title="branch not covered" >0,</span>
+              transition: "opacity 0.2s ease-out",
             }}
           &gt;
             {/* Header */}
@@ -1933,7 +1957,7 @@ export default ControlsScreenThreeJS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-23T22:59:01.577Z
+                at 2025-12-24T21:21:36.048Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

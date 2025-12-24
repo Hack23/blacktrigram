@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">66.12% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/60</span>
+                <span class='fraction'>41/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.95% </span>
+                <span class="strong">55.81% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>47/84</span>
+                <span class='fraction'>48/86</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.25% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/27</span>
+                <span class='fraction'>16/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.91% </span>
+                <span class="strong">64.4% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/57</span>
+                <span class='fraction'>38/59</span>
             </div>
         
             
@@ -777,7 +777,15 @@
 <a name='L712'></a><a href='#L712'>712</a>
 <a name='L713'></a><a href='#L713'>713</a>
 <a name='L714'></a><a href='#L714'>714</a>
-<a name='L715'></a><a href='#L715'>715</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L715'></a><a href='#L715'>715</a>
+<a name='L716'></a><a href='#L716'>716</a>
+<a name='L717'></a><a href='#L717'>717</a>
+<a name='L718'></a><a href='#L718'>718</a>
+<a name='L719'></a><a href='#L719'>719</a>
+<a name='L720'></a><a href='#L720'>720</a>
+<a name='L721'></a><a href='#L721'>721</a>
+<a name='L722'></a><a href='#L722'>722</a>
+<a name='L723'></a><a href='#L723'>723</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -806,6 +814,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -960,6 +974,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1518,10 +1534,16 @@ export interface PhilosophyScreenThreeJSProps {
 export const PhilosophyScreenThreeJS: React.FC&lt;
   PhilosophyScreenThreeJSProps
 &gt; = ({ onReturnToMenu, width: propWidth, height: propHeight }) =&gt; {
-  // Handle WebGL context loss and restoration
+  // Content is always mounted/visible (no loading gate)
+  const isMounted = true;
+&nbsp;
+  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      console.warn("⚠️ WebGL context lost in PhilosophyScreen");</span>
+    },
+    onContextRestored: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      console.log("✓ WebGL context restored in PhilosophyScreen");</span>
     },
     autoRestore: true,
   });
@@ -1679,7 +1701,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
         {/* 3D Background Scene */}
         &lt;BackgroundScene3D theme="philosophy" /&gt;
 &nbsp;
-        {/* HTML Overlay for UI */}
+        {/* HTML Overlay for UI - only render when content is ready */}
         &lt;Html fullscreen&gt;
           &lt;div
             style={{
@@ -1690,6 +1712,8 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
               color: colors.textPrimary,
               fontFamily: FONT_FAMILY.KOREAN,
               pointerEvents: "auto",
+              opacity: isMounted ? 1 : <span class="branch-1 cbranch-no" title="branch not covered" >0,</span>
+              transition: "opacity 0.2s ease-out",
             }}
           &gt;
             {/* Header */}
@@ -2212,7 +2236,7 @@ export default PhilosophyScreenThreeJS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-23T22:59:01.765Z
+                at 2025-12-24T21:21:36.233Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
