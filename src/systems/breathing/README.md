@@ -30,7 +30,6 @@ import {
 let player = applyBreathingDisruptionFromVitalPoint(
   player,
   solarPlexusVitalPoint,
-  damage,
   timestamp
 );
 
