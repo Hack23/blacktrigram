@@ -21,3 +21,15 @@ export {
   updateBreathingDisruption,
   upgradeLegacyBreathlessness,
 } from "./integration";
+
+export {
+  type BreathingIndicatorConfig,
+  type BreathingPostureState,
+  type BreathingAudioEffect,
+  BREATHING_INDICATOR_CONFIGS,
+  BREATHING_POSTURE_STATES,
+  BREATHING_AUDIO_EFFECTS,
+  createBreathingIndicator,
+  getBreathingPosture,
+  getBreathingAudio,
+} from "./feedback";
