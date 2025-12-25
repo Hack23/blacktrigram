@@ -26,14 +26,6 @@ export interface BreathingIndicatorProps {
   readonly isMobile?: boolean;
 }
 
-// CSS keyframes defined at module level to avoid recreation on each render
-const breathingPulseKeyframes = `
-  @keyframes breathing-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-`;
-
 /**
  * BreathingIndicator - Shows breathing disruption status with Korean-English labels
  */
@@ -79,75 +71,85 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
   const secondsRemaining = Math.ceil(breathingState.timeRemaining / 1000);
 
   return (
-    <div
-      data-testid="breathing-indicator"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: isMobile ? "6px" : "8px",
-        padding,
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        borderRadius: "8px",
-        border: `2px solid ${hexToRgbaString(breathingState.color, breathingState.opacity)}`,
-        boxShadow: `0 0 10px ${hexToRgbaString(breathingState.color, 0.5)}`,
-        animation: "breathing-pulse 1s ease-in-out infinite",
-        pointerEvents: "none",
-      }}
-    >
-      {/* Lungs icon */}
+    <>
+      {/* CSS keyframe animation for pulsing */}
+      <style>
+        {`
+          @keyframes breathing-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+        `}
+      </style>
       <div
-        data-testid="breathing-icon"
-        style={{
-          fontSize: `${iconSize}px`,
-          lineHeight: 1,
-          transform: `scale(${breathingState.scale})`,
-          filter: `drop-shadow(0 0 6px ${hexToRgbaString(breathingState.color, 0.6)})`,
-        }}
-      >
-        {breathingState.icon}
-      </div>
-
-      {/* Label and time */}
-      <div
+        data-testid="breathing-indicator"
         style={{
           display: "flex",
-          flexDirection: "column",
-          gap: "2px",
+          alignItems: "center",
+          gap: isMobile ? "6px" : "8px",
+          padding,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          borderRadius: "8px",
+          border: `2px solid ${hexToRgbaString(breathingState.color, breathingState.opacity)}`,
+          boxShadow: `0 0 10px ${hexToRgbaString(breathingState.color, 0.5)}`,
+          animation: "breathing-pulse 1s ease-in-out infinite",
+          pointerEvents: "none",
         }}
       >
-        {/* Bilingual label */}
+        {/* Lungs icon */}
         <div
-          data-testid="breathing-label"
+          data-testid="breathing-icon"
           style={{
-            fontSize: `${fontSize}px`,
-            fontFamily: FONT_FAMILY.KOREAN,
-            fontWeight: "bold",
-            color: hexToRgbaString(breathingState.color, 1),
-            textShadow: `0 0 4px ${hexToRgbaString(breathingState.color, 0.8)}`,
-            whiteSpace: "nowrap",
+            fontSize: `${iconSize}px`,
+            lineHeight: 1,
+            transform: `scale(${breathingState.scale})`,
+            filter: `drop-shadow(0 0 6px ${hexToRgbaString(breathingState.color, 0.6)})`,
           }}
         >
-          {breathingState.label.korean} | {breathingState.label.english}
+          {breathingState.icon}
         </div>
 
-        {/* Time remaining */}
+        {/* Label and time */}
         <div
-          data-testid="breathing-timer"
           style={{
-            fontSize: `${fontSize - 2}px`,
-            fontFamily: FONT_FAMILY.KOREAN,
-            color: breathingState.isRecovering
-              ? hexToRgbaString(0x00ff00, 0.8)
-              : hexToRgbaString(0xffffff, 0.6),
-            whiteSpace: "nowrap",
+            display: "flex",
+            flexDirection: "column",
+            gap: "2px",
           }}
         >
-          {breathingState.isRecovering ? "회복중 | Recovering" : `${secondsRemaining}s`}
+          {/* Bilingual label */}
+          <div
+            data-testid="breathing-label"
+            style={{
+              fontSize: `${fontSize}px`,
+              fontFamily: FONT_FAMILY.KOREAN,
+              fontWeight: "bold",
+              color: hexToRgbaString(breathingState.color, 1),
+              textShadow: `0 0 4px ${hexToRgbaString(breathingState.color, 0.8)}`,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {breathingState.label.korean} | {breathingState.label.english}
+          </div>
+
+          {/* Time remaining */}
+          <div
+            data-testid="breathing-timer"
+            style={{
+              fontSize: `${fontSize - 2}px`,
+              fontFamily: FONT_FAMILY.KOREAN,
+              color: breathingState.isRecovering
+                ? hexToRgbaString(0x00ff00, 0.8)
+                : hexToRgbaString(0xffffff, 0.6),
+              whiteSpace: "nowrap",
+            }}
+          >
+            {breathingState.isRecovering ? "회복중 | Recovering" : `${secondsRemaining}s`}
+          </div>
         </div>
       </div>
-
-      {/* Inject keyframes once at module level */}
-      <style dangerouslySetInnerHTML={{ __html: breathingPulseKeyframes }} />
-    </div>
+    </>
   );
 };
+
+BreathingIndicator.displayName = "BreathingIndicator";
