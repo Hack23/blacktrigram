@@ -20,6 +20,7 @@ import {
   KOREAN_COLORS,
 } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { BreathingIndicator } from "./BreathingIndicator";
 import { HealthBar } from "./HealthBar";
 import { StaminaBar } from "./StaminaBar";
 import { CombatReadinessBar } from "./CombatReadinessBar";
@@ -159,6 +160,9 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
         playerId={playerId}
         isMobile={isMobile}
       />
+
+      {/* Breathing Disruption Indicator */}
+      <BreathingIndicator player={player} isMobile={isMobile} />
 
       {/* Current Stance Indicator */}
       <div

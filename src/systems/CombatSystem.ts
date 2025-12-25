@@ -1,6 +1,12 @@
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
+import {
+  applyBreathingDisruptionFromVitalPoint,
+  BreathingDisruptionSystem,
+  causesBreathingDisruption,
+  updateBreathingDisruption,
+} from "./breathing";
 import ConsciousnessSystem from "./combat/ConsciousnessSystem";
 import {
   extractVitalPointCategory,
@@ -76,7 +82,7 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState,
     technique: KoreanTechnique,
     targetedVitalPointId?: string
-  ): CombatResult {
+  ): CombatResult & { targetedVitalPointId?: string } {
     const timestamp = Date.now();
 
     // Check if attacker can execute the technique
@@ -166,6 +172,7 @@ export class CombatSystem implements CombatSystemInterface {
       success: true,
       isCritical: vitalPointResult?.hit ?? false,
       isBlocked: false,
+      targetedVitalPointId, // Pass through the targeted vital point ID
     };
   }
 
@@ -243,6 +250,22 @@ export class CombatSystem implements CombatSystemInterface {
         currentShockEffect
       );
       updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
+
+      // Apply breathing disruption for torso vital point strikes
+      const resultWithVitalPointId = result as CombatResult & { targetedVitalPointId?: string };
+      if (result.vitalPointHit && resultWithVitalPointId.targetedVitalPointId) {
+        const vitalPoint = this.vitalPointSystem.getVitalPointById(
+          resultWithVitalPointId.targetedVitalPointId
+        );
+        if (vitalPoint && causesBreathingDisruption(vitalPoint.id)) {
+          updatedDefender = applyBreathingDisruptionFromVitalPoint(
+            updatedDefender,
+            vitalPoint,
+            result.damage,
+            Date.now()
+          );
+        }
+      }
     }
 
     return { updatedAttacker, updatedDefender };
@@ -570,11 +593,17 @@ export class CombatSystem implements CombatSystemInterface {
       );
     }
 
-    // Stamina regeneration - affected by effects
+    // Stamina regeneration - affected by effects and breathing disruption
     if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
+      const baseStaminaRegen = regenRate * 3 * effectModifiers.staminaRegen;
+      // Apply breathing disruption system's stamina regen modifier
+      const modifiedStaminaRegen = BreathingDisruptionSystem.calculateStaminaRegen(
+        updatedPlayer,
+        baseStaminaRegen
+      );
       updatedPlayer.stamina = Math.min(
         updatedPlayer.maxStamina,
-        updatedPlayer.stamina + regenRate * 3 * effectModifiers.staminaRegen
+        updatedPlayer.stamina + modifiedStaminaRegen
       );
     }
 
@@ -588,6 +617,13 @@ export class CombatSystem implements CombatSystemInterface {
         updatedPlayer.health + regenRate * 0.5
       );
     }
+
+    // Update breathing disruption effects (gradual recovery if torso health > 50%)
+    updatedPlayer = updateBreathingDisruption(
+      updatedPlayer,
+      deltaTime,
+      Date.now()
+    );
 
     // Clear temporary combat states
     const currentTime = Date.now();
