@@ -23,6 +23,8 @@ export interface CombatResult {
   readonly technique?: KoreanTechnique;
   readonly criticalHit: boolean;
   readonly timestamp: number;
+  /** Optional vital point ID that was targeted in this attack */
+  readonly targetedVitalPointId?: string;
 }
 
 // Round result information
