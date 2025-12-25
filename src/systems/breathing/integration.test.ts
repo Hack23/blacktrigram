@@ -349,7 +349,9 @@ describe("Breathing Disruption Integration", () => {
       const effect = BreathingDisruptionSystem.getActiveEffect(player);
       expect(effect).toBeDefined();
       // End time should be unchanged (no recovery)
-      expect(Math.abs(effect!.endTime - initialEndTime)).toBeLessThan(1);
+      if (effect) {
+        expect(Math.abs(effect.endTime - initialEndTime)).toBeLessThan(1);
+      }
     });
   });
 
@@ -378,7 +380,9 @@ describe("Breathing Disruption Integration", () => {
       const activeEffect = BreathingDisruptionSystem.getActiveEffect(upgraded);
       expect(activeEffect).toBeDefined();
       expect(activeEffect?.level).toBe(BreathingDisruptionLevel.SEVERELY_WINDED);
-      expect("staminaRegenMultiplier" in activeEffect!).toBe(true);
+      if (activeEffect) {
+        expect("staminaRegenMultiplier" in activeEffect).toBe(true);
+      }
     });
 
     it("should map legacy intensity to appropriate disruption level", () => {
