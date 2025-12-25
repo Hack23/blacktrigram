@@ -82,7 +82,7 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState,
     technique: KoreanTechnique,
     targetedVitalPointId?: string
-  ): CombatResult & { targetedVitalPointId?: string } {
+  ): CombatResult {
     const timestamp = Date.now();
 
     // Check if attacker can execute the technique
@@ -252,10 +252,9 @@ export class CombatSystem implements CombatSystemInterface {
       updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
 
       // Apply breathing disruption for torso vital point strikes
-      const resultWithVitalPointId = result as CombatResult & { targetedVitalPointId?: string };
-      if (result.vitalPointHit && resultWithVitalPointId.targetedVitalPointId) {
+      if (result.vitalPointHit && result.targetedVitalPointId) {
         const vitalPoint = this.vitalPointSystem.getVitalPointById(
-          resultWithVitalPointId.targetedVitalPointId
+          result.targetedVitalPointId
         );
         if (vitalPoint && causesBreathingDisruption(vitalPoint.id)) {
           updatedDefender = applyBreathingDisruptionFromVitalPoint(

@@ -10,7 +10,7 @@
  * - Pulsing animation based on severity
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   BreathingDisruptionSystem,
   createBreathingIndicator,
@@ -26,6 +26,14 @@ export interface BreathingIndicatorProps {
   readonly isMobile?: boolean;
 }
 
+// CSS keyframes defined at module level to avoid recreation on each render
+const breathingPulseKeyframes = `
+  @keyframes breathing-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+`;
+
 /**
  * BreathingIndicator - Shows breathing disruption status with Korean-English labels
  */
@@ -33,8 +41,17 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
   player,
   isMobile = false,
 }) => {
-  // Get current timestamp outside useMemo
-  const currentTime = Date.now();
+  // Use state to trigger re-renders for timer updates
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
+
+  // Update current time every 100ms to keep the timer accurate
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Get current breathing disruption state
   const breathingState = useMemo(() => {
@@ -129,14 +146,8 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
         </div>
       </div>
 
-      <style>
-        {`
-          @keyframes breathing-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: ${breathingState.opacity * 0.7}; }
-          }
-        `}
-      </style>
+      {/* Inject keyframes once at module level */}
+      <style dangerouslySetInnerHTML={{ __html: breathingPulseKeyframes }} />
     </div>
   );
 };
