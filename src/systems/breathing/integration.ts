@@ -78,7 +78,7 @@ export function getBreathingDisruptionLevel(
   vitalPointId: string
 ): BreathingDisruptionLevel {
   return (
-    BREATHING_DISRUPTION_VITAL_POINTS[vitalPointId] ||
+    BREATHING_DISRUPTION_VITAL_POINTS[vitalPointId] ??
     BreathingDisruptionLevel.NONE
   );
 }

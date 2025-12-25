@@ -291,14 +291,17 @@ describe("Breathing Disruption Integration", () => {
       };
 
       const initialEffect = BreathingDisruptionSystem.getActiveEffect(player);
-      const initialEndTime = initialEffect!.endTime;
+      expect(initialEffect).toBeDefined();
+      const initialEndTime = initialEffect?.endTime ?? 0;
 
       // Update with recovery
       player = updateBreathingDisruption(player, 16.67, timestamp + 16.67);
 
       const recoveredEffect = BreathingDisruptionSystem.getActiveEffect(player);
       expect(recoveredEffect).toBeDefined();
-      expect(recoveredEffect!.endTime).toBeLessThan(initialEndTime);
+      if (recoveredEffect) {
+        expect(recoveredEffect.endTime).toBeLessThan(initialEndTime);
+      }
     });
 
     it("should not apply recovery when torso health ≤ 50%", () => {
@@ -337,7 +340,8 @@ describe("Breathing Disruption Integration", () => {
       };
 
       const initialEffect = BreathingDisruptionSystem.getActiveEffect(player);
-      const initialEndTime = initialEffect!.endTime;
+      expect(initialEffect).toBeDefined();
+      const initialEndTime = initialEffect?.endTime ?? 0;
 
       // Update (should not recover)
       player = updateBreathingDisruption(player, 16.67, timestamp + 16.67);

@@ -443,12 +443,12 @@ export class BreathingDisruptionSystem {
     }
 
     // Calculate torso health percentage (using upper torso as primary)
-    const upperTorsoHealth = player.bodyPartHealth.torsoUpper || 0;
-    const lowerTorsoHealth = player.bodyPartHealth.torsoLower || 0;
+    const upperTorsoHealth = player.bodyPartHealth.torsoUpper ?? 0;
+    const lowerTorsoHealth = player.bodyPartHealth.torsoLower ?? 0;
     const avgTorsoHealth = (upperTorsoHealth + lowerTorsoHealth) / 2;
     
-    const maxUpperTorsoHealth = player.bodyPartMaxHealth?.torsoUpper || 100;
-    const maxLowerTorsoHealth = player.bodyPartMaxHealth?.torsoLower || 100;
+    const maxUpperTorsoHealth = player.bodyPartMaxHealth?.torsoUpper ?? 100;
+    const maxLowerTorsoHealth = player.bodyPartMaxHealth?.torsoLower ?? 100;
     const avgMaxTorsoHealth = (maxUpperTorsoHealth + maxLowerTorsoHealth) / 2;
     
     const torsoHealthPercent = avgTorsoHealth / avgMaxTorsoHealth;

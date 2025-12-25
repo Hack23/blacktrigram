@@ -15,7 +15,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   BreathingDisruptionSystem,
   BreathingDisruptionLevel,
-  BreathingDisruptionEffect,
 } from "./BreathingDisruptionSystem";
 import { createMockPlayerState } from "../../test/test-utils";
 import { VitalPointEffectType } from "../../types";
@@ -431,7 +430,9 @@ describe("BreathingDisruptionSystem", () => {
 
       // Recovery is 2x faster, so should reduce duration more than normal
       expect(recovered).toBeDefined();
-      expect(recovered!.endTime).toBeLessThan(effect.endTime);
+      if (recovered) {
+        expect(recovered.endTime).toBeLessThan(effect.endTime);
+      }
     });
 
     it("should return undefined when recovery is complete", () => {
