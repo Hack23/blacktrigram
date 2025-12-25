@@ -117,14 +117,12 @@ export function getBreathingDisruptionLevel(
  * 
  * @param player - Player state to modify
  * @param vitalPoint - Vital point that was struck
- * @param _damage - Damage amount (currently unused but kept for future use in severity calculation)
  * @param timestamp - Current game timestamp in milliseconds
  * @returns Updated player state with breathing disruption effect applied
  */
 export function applyBreathingDisruptionFromVitalPoint(
   player: PlayerState,
   vitalPoint: VitalPoint,
-  _damage: number,
   timestamp: number
 ): PlayerState {
   // Check if this vital point causes breathing disruption

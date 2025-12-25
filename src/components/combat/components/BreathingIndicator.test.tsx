@@ -6,7 +6,8 @@
  * and mobile responsive behavior.
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { render } from "@testing-library/react";
 import { BreathingIndicator } from "./BreathingIndicator";
 import { BreathingDisruptionLevel } from "../../../systems/breathing/BreathingDisruptionSystem";
 import { PlayerState } from "../../../systems/player";
@@ -336,6 +337,108 @@ describe("BreathingIndicator", () => {
     it("should use appropriate z-index for overlay", () => {
       const zIndex = 90; // Between HUD elements
       expect(zIndex).toBeGreaterThan(0);
+    });
+  });
+
+  describe("Component Rendering", () => {
+    it("should render without crashing when not visible", () => {
+      const playerWithoutBreathing = {
+        ...mockPlayer,
+        statusEffects: [],
+      };
+      const { container } = render(
+        <BreathingIndicator player={playerWithoutBreathing} />
+      );
+      expect(container).toBeTruthy();
+      // Component returns null when not visible
+      expect(container.firstChild).toBeNull();
+    });
+
+    it("should render breathing indicator when disruption is active", () => {
+      // mockPlayer already has breathing disruption effect from beforeEach
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const indicator = getByTestId("breathing-indicator");
+      expect(indicator).toBeTruthy();
+    });
+
+    it("should display lungs icon", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const icon = getByTestId("breathing-icon");
+      expect(icon.textContent).toBe("🫁");
+    });
+
+    it("should display Korean-English bilingual label for WINDED", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const label = getByTestId("breathing-label");
+      expect(label.textContent).toContain("바람맞음");
+      expect(label.textContent).toContain("Winded");
+    });
+
+    it("should display time remaining", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const time = getByTestId("breathing-time");
+      expect(time.textContent).toMatch(/\d+s/); // Should show seconds like "5s"
+    });
+
+    it("should show recovery status when recovering", () => {
+      const recoveringPlayer = {
+        ...mockPlayer,
+        bodyPartHealth: {
+          ...mockPlayer.bodyPartHealth,
+          torsoUpper: 75, // Good health for recovery
+          torsoLower: 75,
+        },
+      };
+      const { getByTestId } = render(
+        <BreathingIndicator player={recoveringPlayer} />
+      );
+      const time = getByTestId("breathing-time");
+      expect(time.textContent).toContain("회복중");
+      expect(time.textContent).toContain("Recovering");
+    });
+
+    it("should use mobile-optimized sizing when isMobile prop is true", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} isMobile={true} />
+      );
+      const indicator = getByTestId("breathing-indicator");
+      const styles = indicator.style;
+      // Mobile uses smaller gap
+      expect(styles.gap).toBe("6px");
+    });
+
+    it("should apply pulsing animation", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const indicator = getByTestId("breathing-indicator");
+      expect(indicator.style.animation).toContain("breathing-pulse");
+      expect(indicator.style.animation).toContain("1s");
+    });
+
+    it("should apply severity-based color for WINDED", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const indicator = getByTestId("breathing-indicator");
+      // Should have gold color (FFD700 in RGBA format)
+      expect(indicator.style.border).toContain("rgba(255, 215, 0");
+    });
+
+    it("should have pointer events disabled", () => {
+      const { getByTestId } = render(
+        <BreathingIndicator player={mockPlayer} />
+      );
+      const indicator = getByTestId("breathing-indicator");
+      expect(indicator.style.pointerEvents).toBe("none");
     });
   });
 

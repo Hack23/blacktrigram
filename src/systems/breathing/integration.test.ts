@@ -109,7 +109,6 @@ describe("Breathing Disruption Integration", () => {
       const updatedPlayer = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         solarPlexusVitalPoint,
-        40,
         timestamp
       );
 
@@ -124,7 +123,6 @@ describe("Breathing Disruption Integration", () => {
       const updatedPlayer = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         ribVitalPoint,
-        25,
         timestamp
       );
 
@@ -151,7 +149,6 @@ describe("Breathing Disruption Integration", () => {
       const updatedPlayer = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         headVitalPoint,
-        35,
         timestamp
       );
 
@@ -164,7 +161,6 @@ describe("Breathing Disruption Integration", () => {
       let player = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         ribVitalPoint,
-        25,
         timestamp
       );
 
@@ -172,7 +168,6 @@ describe("Breathing Disruption Integration", () => {
       player = applyBreathingDisruptionFromVitalPoint(
         player,
         solarPlexusVitalPoint,
-        40,
         timestamp + 2000
       );
 
@@ -243,7 +238,6 @@ describe("Breathing Disruption Integration", () => {
       let player = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         ribVitalPoint,
-        25,
         timestamp
       );
 
@@ -260,7 +254,6 @@ describe("Breathing Disruption Integration", () => {
       let player = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         ribVitalPoint,
-        25,
         timestamp
       );
 
@@ -309,7 +302,6 @@ describe("Breathing Disruption Integration", () => {
       let player = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         ribVitalPoint,
-        25,
         timestamp
       );
 
@@ -429,7 +421,6 @@ describe("Breathing Disruption Integration", () => {
       let player = applyBreathingDisruptionFromVitalPoint(
         mockPlayer,
         ribVitalPoint,
-        25,
         timestamp
       );
 

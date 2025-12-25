@@ -260,7 +260,6 @@ export class CombatSystem implements CombatSystemInterface {
           updatedDefender = applyBreathingDisruptionFromVitalPoint(
             updatedDefender,
             vitalPoint,
-            result.damage,
             Date.now()
           );
         }

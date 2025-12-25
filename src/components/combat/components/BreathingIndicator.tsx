@@ -18,6 +18,7 @@ import {
 import { PlayerState } from "../../../systems/player";
 import { FONT_FAMILY } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import "./BreathingIndicator.css";
 
 export interface BreathingIndicatorProps {
   /** Player state to check for breathing disruption */
@@ -71,31 +72,21 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
   const secondsRemaining = Math.ceil(breathingState.timeRemaining / 1000);
 
   return (
-    <>
-      {/* CSS keyframe animation for pulsing */}
-      <style>
-        {`
-          @keyframes breathing-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-          }
-        `}
-      </style>
-      <div
-        data-testid="breathing-indicator"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: isMobile ? "6px" : "8px",
-          padding,
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          borderRadius: "8px",
-          border: `2px solid ${hexToRgbaString(breathingState.color, breathingState.opacity)}`,
-          boxShadow: `0 0 10px ${hexToRgbaString(breathingState.color, 0.5)}`,
-          animation: "breathing-pulse 1s ease-in-out infinite",
-          pointerEvents: "none",
-        }}
-      >
+    <div
+      data-testid="breathing-indicator"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: isMobile ? "6px" : "8px",
+        padding,
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        borderRadius: "8px",
+        border: `2px solid ${hexToRgbaString(breathingState.color, breathingState.opacity)}`,
+        boxShadow: `0 0 10px ${hexToRgbaString(breathingState.color, 0.5)}`,
+        animation: "breathing-pulse 1s ease-in-out infinite",
+        pointerEvents: "none",
+      }}
+    >
         {/* Lungs icon */}
         <div
           data-testid="breathing-icon"
@@ -148,7 +139,6 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
           </div>
         </div>
       </div>
-    </>
   );
 };
 
