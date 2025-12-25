@@ -12,3 +12,12 @@ export {
   BreathingDisruptionLevel,
   type BreathingDisruptionEffect,
 } from "./BreathingDisruptionSystem";
+
+export {
+  causesBreathingDisruption,
+  getBreathingDisruptionLevel,
+  applyBreathingDisruptionFromVitalPoint,
+  applyBreathingDisruptionFromTorsoDamage,
+  updateBreathingDisruption,
+  upgradeLegacyBreathlessness,
+} from "./integration";
