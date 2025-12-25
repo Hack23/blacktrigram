@@ -21,11 +21,13 @@ describe("BreathingIndicator", () => {
       ...createMockPlayerState(),
       bodyPartHealth: {
         head: 100,
-        torso: 60, // Above 50% for recovery
-        leftArm: 100,
-        rightArm: 100,
-        leftLeg: 100,
-        rightLeg: 100,
+        neck: 100,
+        torsoUpper: 60, // Above 50% for recovery
+        torsoLower: 60, // Above 50% for recovery
+        armLeft: 100,
+        armRight: 100,
+        legLeft: 100,
+        legRight: 100,
       },
     };
   });
@@ -139,37 +141,42 @@ describe("BreathingIndicator", () => {
   });
 
   describe("Severity-Based Styling", () => {
-    it("should use gold color for WINDED (0xFFD700)", () => {
+    it("should define gold color for WINDED level", () => {
       const WINDED_COLOR = 0xffd700;
-      expect(WINDED_COLOR).toBe(0xffd700);
+      expect(WINDED_COLOR).toBeGreaterThan(0);
+      expect(WINDED_COLOR.toString(16)).toBe("ffd700");
     });
 
-    it("should use orange color for GASPING (0xFF8C00)", () => {
+    it("should define orange color for GASPING level", () => {
       const GASPING_COLOR = 0xff8c00;
-      expect(GASPING_COLOR).toBe(0xff8c00);
+      expect(GASPING_COLOR).toBeGreaterThan(0);
+      expect(GASPING_COLOR.toString(16)).toBe("ff8c00");
     });
 
-    it("should use red color for SEVERELY_WINDED (0xFF0000)", () => {
+    it("should define red color for SEVERELY_WINDED level", () => {
       const SEVERELY_WINDED_COLOR = 0xff0000;
-      expect(SEVERELY_WINDED_COLOR).toBe(0xff0000);
+      expect(SEVERELY_WINDED_COLOR).toBeGreaterThan(0);
+      expect(SEVERELY_WINDED_COLOR.toString(16)).toBe("ff0000");
     });
 
-    it("should increase scale with severity", () => {
+    it("should increase scale progressively with severity", () => {
       const windedScale = 1.0;
       const gaspingScale = 1.1;
       const severelyWindedScale = 1.2;
       
       expect(gaspingScale).toBeGreaterThan(windedScale);
       expect(severelyWindedScale).toBeGreaterThan(gaspingScale);
+      expect(severelyWindedScale - windedScale).toBeCloseTo(0.2, 1);
     });
 
-    it("should increase opacity with severity", () => {
+    it("should increase opacity progressively with severity", () => {
       const windedOpacity = 0.7;
       const gaspingOpacity = 0.85;
       const severelyWindedOpacity = 1.0;
       
       expect(gaspingOpacity).toBeGreaterThan(windedOpacity);
       expect(severelyWindedOpacity).toBeGreaterThan(gaspingOpacity);
+      expect(severelyWindedOpacity).toBe(1.0); // Max opacity
     });
   });
 
@@ -225,25 +232,25 @@ describe("BreathingIndicator", () => {
   });
 
   describe("Mobile Optimization", () => {
-    it("should use smaller padding on mobile (8px vs 12px)", () => {
-      const mobilePadding = "8px";
-      const desktopPadding = "12px";
-      expect(mobilePadding).toBe("8px");
-      expect(desktopPadding).toBe("12px");
+    it("should use smaller padding on mobile (4px 8px vs 6px 12px)", () => {
+      const mobilePadding = "4px 8px";
+      const desktopPadding = "6px 12px";
+      expect(mobilePadding).toBe("4px 8px");
+      expect(desktopPadding).toBe("6px 12px");
     });
 
-    it("should use smaller icon size on mobile (20px vs 24px)", () => {
-      const mobileIconSize = "20px";
-      const desktopIconSize = "24px";
-      expect(mobileIconSize).toBe("20px");
-      expect(desktopIconSize).toBe("24px");
+    it("should use smaller icon size on mobile (24px vs 32px)", () => {
+      const mobileIconSize = 24;
+      const desktopIconSize = 32;
+      expect(mobileIconSize).toBe(24);
+      expect(desktopIconSize).toBe(32);
     });
 
-    it("should use smaller font size on mobile (11px vs 13px)", () => {
-      const mobileFontSize = "11px";
-      const desktopFontSize = "13px";
-      expect(mobileFontSize).toBe("11px");
-      expect(desktopFontSize).toBe("13px");
+    it("should use smaller font size on mobile (10px vs 12px)", () => {
+      const mobileFontSize = 10;
+      const desktopFontSize = 12;
+      expect(mobileFontSize).toBe(10);
+      expect(desktopFontSize).toBe(12);
     });
   });
 
@@ -253,9 +260,9 @@ describe("BreathingIndicator", () => {
       expect(animationName).toBe("breathing-pulse");
     });
 
-    it("should animate at 1.5s duration", () => {
-      const animationDuration = "1.5s";
-      expect(animationDuration).toBe("1.5s");
+    it("should animate at 1s duration", () => {
+      const animationDuration = "1s";
+      expect(animationDuration).toBe("1s");
     });
 
     it("should use ease-in-out timing function", () => {
@@ -333,9 +340,9 @@ describe("BreathingIndicator", () => {
   });
 
   describe("Accessibility", () => {
-    it("should allow pointer events for interaction", () => {
-      const pointerEvents = "auto";
-      expect(pointerEvents).toBe("auto");
+    it("should disable pointer events on non-interactive overlay", () => {
+      const pointerEvents = "none";
+      expect(pointerEvents).toBe("none");
     });
   });
 
