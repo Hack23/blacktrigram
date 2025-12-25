@@ -47,6 +47,7 @@ import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
+import { movementPenaltySystem } from "@/systems/bodypart";
 
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
@@ -642,26 +643,47 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     createAITechnique,
   ]);
 
-  // AI movement handler
+  // AI movement handler with injury-based movement penalties
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
+      const aiPlayer = validPlayers[1];
+      
       // Movement speed calibrated for 8m×8m arena with realistic combat closing speed
       // Arena width is dynamic: arenaBounds.width is in pixels and represents an 8m-wide arena, so pixelsPerMeter = arenaBounds.width / 8
       // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
       // Real fights are over in 4-5 seconds - AI must close distance quickly
       // Calculation: 2.5 m/s × pixelsPerMeter / 20 calls/s = px/call
       const pixelsPerMeter = arenaBounds.width / 8;
-      const speed = (2.5 * pixelsPerMeter) / 20;
+      const baseSpeed = (2.5 * pixelsPerMeter) / 20;
 
+      // Calculate movement direction vector
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
+      // Apply movement penalties from leg injuries if body part health exists
+      let finalSpeed = baseSpeed;
+      if (aiPlayer.bodyPartHealth && aiPlayer.bodyPartMaxHealth) {
+        // Normalize movement direction
+        const movementDirection = {
+          x: distance > 0 ? dx / distance : 0,
+          y: distance > 0 ? dy / distance : 0,
+        };
+
+        // Calculate modified speed with all penalties applied
+        finalSpeed = movementPenaltySystem.calculateModifiedSpeed(
+          baseSpeed,
+          aiPlayer.bodyPartHealth,
+          aiPlayer.bodyPartMaxHealth,
+          movementDirection
+        );
+      }
+
       if (distance > 5) {
         const newPos = {
-          x: currentPos.x + (dx / distance) * speed,
-          y: currentPos.y + (dy / distance) * speed,
+          x: currentPos.x + (dx / distance) * finalSpeed,
+          y: currentPos.y + (dy / distance) * finalSpeed,
         };
 
         // Keep AI within bounds
@@ -678,7 +700,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
         onPlayerUpdate(1, { position: newPos });
       }
     },
-    [playerPositions, arenaBounds, onPlayerUpdate]
+    [playerPositions, validPlayers, arenaBounds, onPlayerUpdate]
   );
 
   return {
