@@ -12,12 +12,14 @@ import { BreathingIndicator } from "./BreathingIndicator";
 import { BreathingDisruptionLevel } from "../../../systems/breathing/BreathingDisruptionSystem";
 import { PlayerState } from "../../../systems/player";
 import { createMockPlayerState } from "../../../test/test-utils";
+import { VitalPointEffectType } from "../../../types/common";
 
 describe("BreathingIndicator", () => {
   let mockPlayer: PlayerState;
+  let mockPlayerWithBreathing: PlayerState;
 
   beforeEach(() => {
-    // Create base mock player with no breathing disruption
+    // Create base mock player WITHOUT breathing disruption for most tests
     mockPlayer = {
       ...createMockPlayerState(),
       bodyPartHealth: {
@@ -30,6 +32,35 @@ describe("BreathingIndicator", () => {
         legLeft: 100,
         legRight: 100,
       },
+    };
+
+    // Create mock player WITH breathing disruption for rendering tests
+    const now = Date.now();
+    mockPlayerWithBreathing = {
+      ...mockPlayer,
+      bodyPartHealth: {
+        ...mockPlayer.bodyPartHealth,
+        torsoUpper: 40, // Below 50% to prevent recovery display in time test
+        torsoLower: 40,
+      },
+      statusEffects: [
+        {
+          id: `breathing_disruption_${BreathingDisruptionLevel.WINDED}_${now}`,
+          type: VitalPointEffectType.BREATHLESSNESS,
+          level: BreathingDisruptionLevel.WINDED,
+          intensity: BreathingDisruptionLevel.WINDED,
+          duration: 5000,
+          staminaRegenMultiplier: 0.75, // 25% penalty
+          startTime: now,
+          endTime: now + 5000,
+          description: {
+            korean: "바람맞음",
+            english: "Winded",
+          },
+          stackable: true,
+          source: "vital_point_system",
+        },
+      ],
     };
   });
 
@@ -149,15 +180,15 @@ describe("BreathingIndicator", () => {
     });
 
     it("should define orange color for GASPING level", () => {
-      const GASPING_COLOR = 0xff8c00;
+      const GASPING_COLOR = 0xffa500;
       expect(GASPING_COLOR).toBeGreaterThan(0);
-      expect(GASPING_COLOR.toString(16)).toBe("ff8c00");
+      expect(GASPING_COLOR.toString(16)).toBe("ffa500");
     });
 
     it("should define red color for SEVERELY_WINDED level", () => {
-      const SEVERELY_WINDED_COLOR = 0xff0000;
+      const SEVERELY_WINDED_COLOR = 0xff4444;
       expect(SEVERELY_WINDED_COLOR).toBeGreaterThan(0);
-      expect(SEVERELY_WINDED_COLOR.toString(16)).toBe("ff0000");
+      expect(SEVERELY_WINDED_COLOR.toString(16)).toBe("ff4444");
     });
 
     it("should increase scale progressively with severity", () => {
@@ -355,9 +386,9 @@ describe("BreathingIndicator", () => {
     });
 
     it("should render breathing indicator when disruption is active", () => {
-      // mockPlayer already has breathing disruption effect from beforeEach
+      // Use mockPlayerWithBreathing that has WINDED breathing disruption effect
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
       const indicator = getByTestId("breathing-indicator");
       expect(indicator).toBeTruthy();
@@ -365,7 +396,7 @@ describe("BreathingIndicator", () => {
 
     it("should display lungs icon", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
       const icon = getByTestId("breathing-icon");
       expect(icon.textContent).toBe("🫁");
@@ -373,7 +404,7 @@ describe("BreathingIndicator", () => {
 
     it("should display Korean-English bilingual label for WINDED", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
       const label = getByTestId("breathing-label");
       expect(label.textContent).toContain("바람맞음");
@@ -382,17 +413,17 @@ describe("BreathingIndicator", () => {
 
     it("should display time remaining", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
-      const time = getByTestId("breathing-time");
+      const time = getByTestId("breathing-timer");
       expect(time.textContent).toMatch(/\d+s/); // Should show seconds like "5s"
     });
 
     it("should show recovery status when recovering", () => {
       const recoveringPlayer = {
-        ...mockPlayer,
+        ...mockPlayerWithBreathing,
         bodyPartHealth: {
-          ...mockPlayer.bodyPartHealth,
+          ...mockPlayerWithBreathing.bodyPartHealth,
           torsoUpper: 75, // Good health for recovery
           torsoLower: 75,
         },
@@ -400,14 +431,14 @@ describe("BreathingIndicator", () => {
       const { getByTestId } = render(
         <BreathingIndicator player={recoveringPlayer} />
       );
-      const time = getByTestId("breathing-time");
+      const time = getByTestId("breathing-timer");
       expect(time.textContent).toContain("회복중");
       expect(time.textContent).toContain("Recovering");
     });
 
     it("should use mobile-optimized sizing when isMobile prop is true", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} isMobile={true} />
+        <BreathingIndicator player={mockPlayerWithBreathing} isMobile={true} />
       );
       const indicator = getByTestId("breathing-indicator");
       const styles = indicator.style;
@@ -417,7 +448,7 @@ describe("BreathingIndicator", () => {
 
     it("should apply pulsing animation", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
       const indicator = getByTestId("breathing-indicator");
       expect(indicator.style.animation).toContain("breathing-pulse");
@@ -426,7 +457,7 @@ describe("BreathingIndicator", () => {
 
     it("should apply severity-based color for WINDED", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
       const indicator = getByTestId("breathing-indicator");
       // Should have gold color (FFD700 in RGBA format)
@@ -435,7 +466,7 @@ describe("BreathingIndicator", () => {
 
     it("should have pointer events disabled", () => {
       const { getByTestId } = render(
-        <BreathingIndicator player={mockPlayer} />
+        <BreathingIndicator player={mockPlayerWithBreathing} />
       );
       const indicator = getByTestId("breathing-indicator");
       expect(indicator.style.pointerEvents).toBe("none");

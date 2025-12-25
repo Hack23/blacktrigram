@@ -148,7 +148,6 @@ Apply breathing disruption when a vital point is struck:
 const updatedPlayer = applyBreathingDisruptionFromVitalPoint(
   player,
   vitalPoint,
-  damage,
   timestamp
 );
 ```
@@ -156,7 +155,6 @@ const updatedPlayer = applyBreathingDisruptionFromVitalPoint(
 **Parameters**:
 - `player: PlayerState` - Current player state
 - `vitalPoint: VitalPoint` - Vital point that was struck
-- `damage: number` - Base damage dealt
 - `timestamp: number` - Current game time (milliseconds)
 
 **Returns**: `PlayerState` with breathing disruption effect applied

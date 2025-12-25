@@ -91,11 +91,10 @@ export function getBreathingDisruptionLevel(
  * Creates a breathing disruption effect when a torso vital point is struck.
  * If player already has breathing disruption, stacks the effects.
  * 
- * @param player - Current player state
+ * @param player - Player state to modify
  * @param vitalPoint - Vital point that was struck
- * @param damage - Base damage dealt
- * @param timestamp - Current game time
- * @returns Updated player state with breathing disruption effect
+ * @param timestamp - Current game timestamp in milliseconds
+ * @returns Updated player state with breathing disruption effect applied
  * 
  * @example
  * ```typescript
@@ -103,7 +102,6 @@ export function getBreathingDisruptionLevel(
  * const updatedPlayer = applyBreathingDisruptionFromVitalPoint(
  *   player,
  *   solarPlexusVitalPoint,
- *   40,
  *   Date.now()
  * );
  * 
@@ -114,11 +112,6 @@ export function getBreathingDisruptionLevel(
  * );
  * // penalty === 2.5 (25% of normal regen)
  * ```
- * 
- * @param player - Player state to modify
- * @param vitalPoint - Vital point that was struck
- * @param timestamp - Current game timestamp in milliseconds
- * @returns Updated player state with breathing disruption effect applied
  */
 export function applyBreathingDisruptionFromVitalPoint(
   player: PlayerState,
