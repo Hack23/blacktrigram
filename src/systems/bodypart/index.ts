@@ -14,3 +14,4 @@
 export * from "./types";
 export * from "./BodyPartHealthSystem";
 export * from "./BodyPartDamageIntegration";
+export * from "./MovementPenaltySystem";
