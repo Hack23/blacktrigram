@@ -6,8 +6,11 @@
 - **Anatomical Targeting**: 70 vital points with realistic damage calculation
 - **Cultural Authenticity**: Traditional Korean martial arts with modern implementation
 - **Dark Ops Integration**: 15 specialized techniques from Korean special operations units
+- **Injury-Based Movement Penalties**: Realistic leg/body damage affects movement speed and stance changes
 
-**Latest Update**: Added Dark Ops unit combat techniques (암흑작전부대 기술) for tactical assassination and silent incapacitation methods used by Korean special operations forces.
+**Latest Update**: 
+- **December 2024**: Added Dark Ops unit combat techniques (암흑작전부대 기술) for tactical assassination and silent incapacitation methods used by Korean special operations forces.
+- **December 2024**: Implemented Injury-Based Movement Penalty System (이동 패널티 시스템) for realistic leg damage affecting mobility, stance changes, and balance.
 
 Below, we define the Combat System's architecture in detail.
 
@@ -393,6 +396,184 @@ Dark Ops techniques target specific anatomical vulnerable points:
 - Increased accuracy to reward precision gameplay
 - Longer execution/recovery times for tactical balance
 - Powerful effects balanced by drawbacks for non-Amsalja archetypes
+
+---
+
+## 🦵 Injury-Based Movement Penalty System (이동 패널티 시스템)
+
+**Added**: December 2024 - Realistic leg and body damage affecting movement, stance changes, and combat mobility
+
+### Overview
+
+The Movement Penalty System implements realistic injury-based movement penalties where leg and body damage reduces movement speed, restricts stance changes, and affects balance. This system creates authentic combat trauma effects based on Korean martial arts principles where targeting legs (다리) is a fundamental combat strategy.
+
+```mermaid
+graph TB
+    subgraph "Movement Penalty System (src/systems/bodypart/MovementPenaltySystem.ts)"
+        MPS[MovementPenaltySystem]:::movement
+        MPS --> SM[Speed Multiplier]:::calc
+        MPS --> AD[Asymmetric Damage]:::calc
+        MPS --> IP[Instant Penalties]:::calc
+        MPS --> SC[Stance Change]:::calc
+        MPS --> BS[Balance States]:::calc
+    end
+    
+    subgraph "Body Part Health"
+        BPH[BodyPartHealth]:::bodypart
+        BPH --> LL[Left Leg]:::leg
+        BPH --> RL[Right Leg]:::leg
+        LL --> LH[Health %]:::health
+        RL --> RH[Health %]:::health
+    end
+    
+    subgraph "Movement Effects"
+        ME[Movement Effects]:::effect
+        ME --> NS[Normal 100%]:::normal
+        ME --> LM[Limping 80%]:::limp
+        ME --> SL[Severe Limp 60%]:::severe
+        ME --> HB[Hobbled 40%]:::hobbled
+    end
+    
+    BPH --> MPS
+    MPS --> ME
+    
+    classDef movement fill:#00ff88,stroke:#333,color:#000,stroke-width:3px
+    classDef calc fill:#ffd700,stroke:#333,color:#000,stroke-width:2px
+    classDef bodypart fill:#ff6b6b,stroke:#333,color:#fff,stroke-width:2px
+    classDef leg fill:#ff8c00,stroke:#333,color:#000,stroke-width:2px
+    classDef health fill:#87ceeb,stroke:#333,color:#000
+    classDef effect fill:#9370db,stroke:#333,color:#fff,stroke-width:2px
+    classDef normal fill:#00ff00,stroke:#333,color:#000
+    classDef limp fill:#ffff00,stroke:#333,color:#000
+    classDef severe fill:#ffa500,stroke:#333,color:#000
+    classDef hobbled fill:#ff0000,stroke:#333,color:#fff
+```
+
+### Movement Speed Penalties
+
+Progressive speed reduction based on average leg health:
+
+| Leg Health | Injury State | Speed Multiplier | Can Run | Korean Term |
+|------------|--------------|------------------|---------|-------------|
+| 100-70% | Normal | 1.0x (100%) | ✅ Yes | 정상 (Jeongsang) |
+| 69-50% | Limping | 0.8x (80%) | ✅ Yes | 절름 (Jeolreum) |
+| 49-30% | Severe Limp | 0.6x (60%) | ✅ Yes | 심한 절름 (Simhan Jeolreum) |
+| <30% | Hobbled | 0.4x (40%) | ❌ No | 절뚝거림 (Jeolttukgeorim) |
+
+**Korean Martial Arts Context**: Traditional Korean martial arts emphasize 하단 공격 (hadan gonggyeok - low attacks) targeting legs to disable opponent mobility. This system reflects authentic combat where leg damage is decisive.
+
+### Stance Change Penalties
+
+Damaged legs affect ability to transition between the Eight Trigram stances:
+
+- **Legs ≥50% health**: Normal stance change speed (1.0x)
+- **Legs <50% health**: Stance change takes 2x longer
+- **Legs <30% health**: Cannot access advanced stances (restricted to basic stances only)
+
+**Korean Philosophy**: The Eight Trigrams (팔괘) require solid footing and leg strength. Injured legs prevent proper stance transitions, limiting tactical options.
+
+### Instant Penalties from Knee/Ankle Strikes
+
+Striking specific leg vital points causes immediate severe movement impairment:
+
+**Target Zones**:
+- **무릎 (Mureup)** - Knee joint
+- **발목 (Balmok)** - Ankle joint
+- **아킬레스건 (Akilles-geon)** - Achilles tendon
+
+**Effect**:
+- **Speed**: 30% movement speed (0.3x multiplier)
+- **Duration**: 5 seconds
+- **Overrides**: Takes precedence over regular injury penalties
+
+### Asymmetric Damage Effects
+
+Left and right leg damage affects directional movement asymmetrically:
+
+**Movement Penalties**:
+- **Left leg injured + moving left**: 20% additional penalty (0.8x)
+- **Left leg injured + moving right**: 10% additional penalty (0.9x)
+- **Right leg injured + moving right**: 20% additional penalty (0.8x)
+- **Right leg injured + moving left**: 10% additional penalty (0.9x)
+
+**Combat Realism**: This creates authentic limping behavior where movement toward the injured side is more impaired, forcing tactical positioning adjustments.
+
+### Balance State Integration
+
+Low leg health increases vulnerability to balance-disrupting attacks:
+
+**Balance State Transitions**:
+- **Legs <30% health**: Enter VULNERABLE state (more susceptible to knockdowns)
+- **Both legs <30% health**: Enter HELPLESS state (cannot maintain combat stance)
+
+**Korean Combat Theory**: The concept of 중심 (jungsim - center/balance) is fundamental. Damaged legs compromise 하단 안정성 (hadan anjeongseon - lower body stability), increasing vulnerability.
+
+### Performance Characteristics
+
+**Calculation Speed**:
+- **Single calculation**: <1ms
+- **Average over 1000 calculations**: <1ms
+- **60 FPS compatible**: ✅ Yes
+
+**Integration Points**:
+- **AI Movement**: `useCombatActions.ts` - `moveAIPlayer()` function
+- **Player Movement**: Ready for integration (hook system in place)
+- **Combat System**: Prepared for instant penalty triggers on vital point hits
+
+### Implementation Status
+
+| Feature | Status | Coverage |
+|---------|--------|----------|
+| Core Movement Penalty System | ✅ Complete | 38 tests |
+| Speed Multiplier Calculation | ✅ Complete | 8 tests |
+| Asymmetric Damage | ✅ Complete | 5 tests |
+| Instant Penalties | ✅ Complete | 4 tests |
+| Stance Change Penalties | ✅ Complete | 4 tests |
+| Balance State Integration | ✅ Complete | 5 tests |
+| AI Movement Integration | ✅ Complete | Tested |
+| Player Movement Integration | 🔄 Pending | - |
+| Visual Effects (Limping) | 📋 Planned | - |
+
+### Code Example
+
+```typescript
+import { movementPenaltySystem } from "@/systems/bodypart";
+
+// Calculate current movement penalty
+const penalty = movementPenaltySystem.calculateMovementPenalty(
+  bodyPartHealth,
+  maxHealth,
+  activeInstantPenalty
+);
+
+// Apply to movement speed
+const actualSpeed = baseSpeed * penalty.speedMultiplier;
+
+// Check if advanced stances are restricted
+if (penalty.advancedStancesRestricted) {
+  // Only allow basic stances
+  allowedStances = BASIC_STANCES_ONLY;
+}
+
+// Check for balance state transitions
+if (movementPenaltySystem.shouldEnterHelplessState(health, maxHealth)) {
+  enterCombatState(CombatState.HELPLESS);
+}
+```
+
+### Future Enhancements
+
+**Visual Feedback** (Planned):
+- Limping animation states favoring injured leg
+- Reduced stride length based on injury severity
+- Balance wobbling when turning with damaged legs
+- Leg injury indicators in combat HUD
+
+**Combat Integration** (Planned):
+- Automatic instant penalty application on knee/ankle hits
+- Recovery system for gradual penalty reduction
+- Archetype-specific resistance (e.g., 무사 has higher leg resilience)
+- Training modules for leg conditioning
 
 ---
 
