@@ -19,7 +19,6 @@ import {
   BodyPartMaxHealth,
   LegInjuryState,
   InstantMovementPenalty,
-  MOVEMENT_PENALTY_CONSTANTS,
 } from "../types";
 
 describe("MovementPenaltySystem", () => {

@@ -108,8 +108,8 @@ export class MovementPenaltySystem {
       instantPenalty.appliedAt + instantPenalty.duration > currentTime;
 
     // Apply instant penalty if active, otherwise use base multiplier
-    const finalSpeedMultiplier = hasActiveInstantPenalty
-      ? Math.min(speedMultiplier, instantPenalty!.speedMultiplier)
+    const finalSpeedMultiplier = hasActiveInstantPenalty && instantPenalty
+      ? Math.min(speedMultiplier, instantPenalty.speedMultiplier)
       : speedMultiplier;
 
     // Calculate stance change penalty
@@ -136,8 +136,8 @@ export class MovementPenaltySystem {
       advancedStancesRestricted,
       balanceModifier,
       hasInstantPenalty: hasActiveInstantPenalty,
-      instantPenaltyExpiry: hasActiveInstantPenalty
-        ? instantPenalty!.appliedAt + instantPenalty!.duration
+      instantPenaltyExpiry: hasActiveInstantPenalty && instantPenalty
+        ? instantPenalty.appliedAt + instantPenalty.duration
         : 0,
     };
   }
