@@ -350,3 +350,133 @@ export const BODY_PART_EFFECT_CONSTANTS = {
     CRITICAL_THRESHOLD: 0.50,
   },
 } as const;
+
+/**
+ * Leg injury severity levels for movement penalties.
+ * 
+ * **Korean**: 다리 부상 정도 (Leg Injury Severity)
+ * 
+ * Defines movement impairment states based on leg health percentage.
+ * 
+ * @public
+ * @category Body Part System
+ * @korean 다리부상정도
+ */
+export enum LegInjuryState {
+  /** Normal movement - Leg health 100-70% */
+  NORMAL = "normal",
+  /** Limping - Leg health 69-50% */
+  LIMPING = "limping",
+  /** Severe limp - Leg health 49-30% */
+  SEVERE_LIMP = "severe_limp",
+  /** Hobbled - Leg health <30%, cannot run */
+  HOBBLED = "hobbled",
+}
+
+/**
+ * Movement penalty applied from leg damage.
+ * 
+ * **Korean**: 이동 패널티 (Movement Penalty)
+ * 
+ * Describes the current movement impairment including speed reduction,
+ * stance change penalties, and balance effects.
+ * 
+ * @public
+ * @category Body Part System
+ * @korean 이동패널티
+ */
+export interface MovementPenalty {
+  /** Movement speed multiplier (0.0-1.0) */
+  readonly speedMultiplier: number;
+  /** Whether player can run (false when hobbled) */
+  readonly canRun: boolean;
+  /** Current injury state */
+  readonly injuryState: LegInjuryState;
+  /** Stance change duration multiplier (1.0 = normal, 2.0 = 2x slower) */
+  readonly stanceChangePenalty: number;
+  /** Whether advanced stances are restricted */
+  readonly advancedStancesRestricted: boolean;
+  /** Balance modifier from leg damage (0.0-1.0) */
+  readonly balanceModifier: number;
+  /** Whether instant penalty is active (from knee/ankle strike) */
+  readonly hasInstantPenalty: boolean;
+  /** Timestamp when instant penalty expires (0 if not active) */
+  readonly instantPenaltyExpiry: number;
+}
+
+/**
+ * Instant movement penalty from knee/ankle strikes.
+ * 
+ * **Korean**: 순간 이동 패널티 (Instant Movement Penalty)
+ * 
+ * Applied immediately upon striking knee or ankle vital points,
+ * causing temporary severe movement impairment.
+ * 
+ * @public
+ * @category Body Part System
+ * @korean 순간이동패널티
+ */
+export interface InstantMovementPenalty {
+  /** Speed multiplier during instant penalty */
+  readonly speedMultiplier: number;
+  /** Duration in milliseconds */
+  readonly duration: number;
+  /** Timestamp when penalty was applied */
+  readonly appliedAt: number;
+  /** Body part that was struck */
+  readonly affectedPart: BodyPart;
+}
+
+/**
+ * Movement penalty constants matching acceptance criteria.
+ * 
+ * **Korean**: 이동 패널티 상수
+ * 
+ * Defines thresholds and multipliers for injury-based movement penalties:
+ * - 100-70%: Normal speed (100%)
+ * - 69-50%: Limping (-20% speed)
+ * - 49-30%: Severe limp (-40% speed)
+ * - <30%: Hobbled (-60% speed, cannot run)
+ * 
+ * @public
+ * @category Body Part System
+ */
+export const MOVEMENT_PENALTY_CONSTANTS = {
+  /** Health percentage thresholds for injury states */
+  THRESHOLDS: {
+    NORMAL: 0.70,        // 70% and above
+    LIMPING: 0.50,       // 50-69%
+    SEVERE_LIMP: 0.30,   // 30-49%
+    HOBBLED: 0.0,        // Below 30%
+  },
+  
+  /** Speed multipliers for each injury state */
+  SPEED_MULTIPLIERS: {
+    NORMAL: 1.0,         // 100% speed
+    LIMPING: 0.8,        // 80% speed (-20%)
+    SEVERE_LIMP: 0.6,    // 60% speed (-40%)
+    HOBBLED: 0.4,        // 40% speed (-60%)
+  },
+  
+  /** Stance change penalty multipliers */
+  STANCE_CHANGE: {
+    NORMAL: 1.0,         // Normal duration
+    INJURED: 2.0,        // 2x duration when legs <50%
+    CRITICAL_THRESHOLD: 0.50,  // Threshold for stance penalties
+    RESTRICTION_THRESHOLD: 0.30, // Threshold for advanced stance restriction
+  },
+  
+  /** Instant penalty from knee/ankle strikes */
+  INSTANT_PENALTY: {
+    SPEED_MULTIPLIER: 0.3,  // 30% speed for 5 seconds
+    DURATION: 5000,         // 5 seconds in milliseconds
+  },
+  
+  /** Asymmetric damage effects */
+  ASYMMETRIC: {
+    /** Penalty when moving toward injured side */
+    SAME_SIDE_PENALTY: 0.8,    // Additional 20% penalty
+    /** Penalty when moving away from injured side */
+    OPPOSITE_SIDE_PENALTY: 0.9, // Additional 10% penalty
+  },
+} as const;
