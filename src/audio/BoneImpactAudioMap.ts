@@ -152,6 +152,16 @@ export function calculateImpactIntensity(
 }
 
 /**
+ * Body region detection thresholds
+ * Y-axis thresholds for vertical body regions
+ */
+const REGION_DETECTION_THRESHOLDS = {
+  HEAD_MIN: 0.75,    // Top 25% of body is head
+  TORSO_MIN: 0.25,   // Middle 50% is torso (or arms)
+  ARMS_X_MIN: 0.3,   // Side hits (X > 0.3) in torso range are arms
+} as const;
+
+/**
  * Detect body region from 3D hit coordinates
  * Uses Y-axis (vertical) and X-axis (horizontal) to determine region
  *
@@ -166,23 +176,23 @@ export function detectAudioBodyRegion(
   const { x, y } = hitPosition;
   const normalizedY = y / characterHeight; // Normalize to 0-1 range
 
-  // Head region: top 25% of body (0.75 - 1.0)
-  if (normalizedY >= 0.75) {
+  // Head region: top 25% of body (HEAD_MIN - 1.0)
+  if (normalizedY >= REGION_DETECTION_THRESHOLDS.HEAD_MIN) {
     return "head";
   }
 
-  // Torso region: middle 50% of body (0.25 - 0.75)
-  if (normalizedY >= 0.25) {
+  // Torso region: middle 50% of body (TORSO_MIN - HEAD_MIN)
+  if (normalizedY >= REGION_DETECTION_THRESHOLDS.TORSO_MIN) {
     // Check horizontal position for arms
     const absX = Math.abs(x);
-    if (absX > 0.3) {
+    if (absX > REGION_DETECTION_THRESHOLDS.ARMS_X_MIN) {
       // Hits on the sides are likely arms
       return "arms";
     }
     return "torso";
   }
 
-  // Legs region: bottom 25% of body (0 - 0.25)
+  // Legs region: bottom 25% of body (0 - TORSO_MIN)
   return "legs";
 }
 

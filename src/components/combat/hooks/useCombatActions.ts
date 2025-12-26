@@ -68,8 +68,8 @@ export interface UseCombatActionsConfig {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
     readonly playHitSound: (damage: number) => Promise<void>;
     readonly playBoneImpactSound: (options: {
-      region?: "head" | "torso" | "arms" | "legs" | "soft_tissue";
-      intensity?: "light" | "medium" | "heavy" | "critical" | "fracture";
+      region?: import("../../../audio/types").AudioBodyRegion;
+      intensity?: import("../../../audio/types").ImpactIntensity;
       damage?: number;
       remainingHealth?: number;
       vitalPoint?: boolean;
@@ -218,7 +218,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       
       // Estimate hit position based on defender position
       // Y-coordinate: add randomness to simulate different strike heights
-      const hitYVariation = (Math.random() - 0.5) * 0.4; // ±20% variation
+      // ±0.2 units variation (±20% of a 1.0 normalized range, or ±10% of 2.0 character height)
+      const hitYVariation = (Math.random() - 0.5) * 0.4;
       const hitPosition = {
         x: defenderPos.x,
         y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
