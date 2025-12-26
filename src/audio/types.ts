@@ -211,6 +211,39 @@ export interface CombatAudioEvent {
   readonly critical?: boolean;
 }
 
+/**
+ * Body regions for anatomically accurate impact sounds
+ * Maps to Korean martial arts vital point locations
+ */
+export type BodyRegion =
+  | "head" // 두부 (Head/Skull): temple, jaw, neck
+  | "torso" // 몸통 (Torso): ribs, sternum, solar plexus, organs
+  | "arms" // 팔 (Arms): shoulder, elbow, forearm, wrist
+  | "legs" // 다리 (Legs): hip, knee, shin, ankle
+  | "soft_tissue"; // 연조직 (Soft tissue): muscle, flesh, non-bone areas
+
+/**
+ * Impact intensity levels for bone/flesh contact
+ * Determines audio selection and volume variation
+ */
+export type ImpactIntensity =
+  | "light" // 경타 (Light): Glancing blows, minimal damage
+  | "medium" // 중타 (Medium): Solid contact, moderate damage
+  | "heavy" // 강타 (Heavy): Devastating strikes, severe damage
+  | "critical" // 급소타 (Critical): Vital point precision strikes
+  | "fracture"; // 골절 (Fracture): Bone-breaking force, <30% health
+
+/**
+ * Bone impact audio event with body region and intensity
+ * Used for anatomically accurate combat sound feedback
+ */
+export interface BoneImpactEvent {
+  readonly region: BodyRegion;
+  readonly intensity: ImpactIntensity;
+  readonly vitalPoint?: boolean; // True if hitting a vital point
+  readonly remainingHealth?: number; // For fracture detection (<30%)
+}
+
 export interface AudioLoadingState {
   readonly total: number;
   readonly loaded: number;
