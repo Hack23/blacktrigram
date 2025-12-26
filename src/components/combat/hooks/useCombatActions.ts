@@ -49,6 +49,27 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
 
+/**
+ * Hit position variation range for randomizing strike heights
+ * Produces ±0.2 absolute units (±10% of 2.0 character height)
+ */
+const HIT_Y_VARIATION_RANGE = 0.4;
+
+/**
+ * Calculate randomized hit position based on defender position
+ * Adds vertical variation to simulate different strike heights
+ * 
+ * @param defenderPos - Position of the defender being struck
+ * @returns Hit position with randomized Y coordinate
+ */
+function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
+  const hitYVariation = (Math.random() - 0.5) * HIT_Y_VARIATION_RANGE; // ±0.2 units
+  return {
+    x: defenderPos.x,
+    y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+  };
+}
+
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
   readonly playerPositions: readonly [Position, Position];
@@ -67,6 +88,14 @@ export interface UseCombatActionsConfig {
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
     readonly playHitSound: (damage: number) => Promise<void>;
+    readonly playBoneImpactSound: (options: {
+      region?: import("../../../audio/types").AudioBodyRegion;
+      intensity?: import("../../../audio/types").ImpactIntensity;
+      damage?: number;
+      remainingHealth?: number;
+      vitalPoint?: boolean;
+      hitPosition?: { x: number; y: number; z?: number };
+    }) => Promise<void>;
     readonly playBlockSound: (guardBroken?: boolean) => Promise<void>;
     readonly playDodgeSound: () => Promise<void>;
     readonly playStanceChangeSound: () => Promise<void>;
@@ -204,8 +233,16 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[0], result.hit ? 1 : 0.5);
 
     if (result.hit) {
-      // Play hit sound based on damage
-      combatAudio?.playHitSound(result.damage);
+      // Play bone impact sound with body region and damage context
+      const hitPosition = calculateHitPosition(playerPositions[1]);
+
+      // Use bone impact audio instead of generic hit sound
+      combatAudio?.playBoneImpactSound({
+        damage: result.damage,
+        remainingHealth: validPlayers[1].health - result.damage,
+        vitalPoint: result.isCritical, // Critical hits are often vital points
+        hitPosition,
+      });
 
       // Combo tracking: reset combo if too much time passed
       const now = Date.now();
@@ -331,8 +368,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     );
 
     if (distance < 150) {
-      // Play heavy hit sound for technique
-      combatAudio?.playHitSound(30);
+      // Play bone impact sound for special technique hit
+      const hitPosition = calculateHitPosition(playerPositions[1]);
+
+      combatAudio?.playBoneImpactSound({
+        damage: 25,
+        remainingHealth: validPlayers[1].health - 25,
+        vitalPoint: false,
+        hitPosition,
+      });
 
       onPlayerUpdate(1, {
         health: Math.max(0, validPlayers[1].health - 25),
@@ -494,8 +538,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[1], result.hit ? 1 : 0.5);
 
     if (result.hit) {
-      // Play hit sound based on damage
-      combatAudio?.playHitSound(result.damage);
+      // Play bone impact sound for AI hits on player
+      const hitPosition = calculateHitPosition(playerPositions[0]);
+
+      combatAudio?.playBoneImpactSound({
+        damage: result.damage,
+        remainingHealth: validPlayers[0].health - result.damage,
+        vitalPoint: result.isCritical,
+        hitPosition,
+      });
 
       // Apply damage through combat system (deducts resources)
       const { updatedAttacker, updatedDefender } =
@@ -598,8 +649,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[1], result.hit ? 1.5 : 0.5);
 
     if (result.hit) {
-      // Play heavy hit sound for technique
-      combatAudio?.playHitSound(result.damage);
+      // Play bone impact sound for AI technique hits
+      const hitPosition = calculateHitPosition(playerPositions[0]);
+
+      combatAudio?.playBoneImpactSound({
+        damage: result.damage,
+        remainingHealth: validPlayers[0].health - result.damage,
+        vitalPoint: result.isCritical || !!targetVitalPoint, // Special techniques often target vital points
+        hitPosition,
+      });
 
       // Apply damage through combat system (deducts resources)
       const { updatedAttacker, updatedDefender } =

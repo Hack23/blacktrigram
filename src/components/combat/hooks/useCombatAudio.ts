@@ -1,10 +1,21 @@
 /**
  * Combat Audio Hook for Black Trigram
- * Provides comprehensive audio feedback for combat actions
+ * Provides comprehensive audio feedback for combat actions including
+ * bone impact sounds, fracture audio, and body-region-specific hit sounds
  */
 
 import { useCallback, useEffect, useRef } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
+import {
+  AudioBodyRegion,
+  ImpactIntensity,
+} from "../../../audio/types";
+import {
+  getBoneImpactSoundId,
+  calculateImpactIntensity,
+  detectAudioBodyRegion,
+  getImpactVolumeMultiplier,
+} from "../../../audio/BoneImpactAudioMap";
 
 /**
  * Attack intensity levels for sound selection
@@ -349,6 +360,104 @@ export const useCombatAudio = () => {
     return activeSounds.current.size;
   }, []);
 
+  /**
+   * Play bone impact sound with body region and intensity awareness
+   * Implements realistic bone/flesh audio with fracture detection
+   *
+   * @param options - Bone impact event parameters
+   * @param options.region - Body region struck (head, torso, arms, legs, soft_tissue)
+   * @param options.intensity - Impact intensity (auto-calculated if omitted)
+   * @param options.damage - Damage amount (for intensity calculation)
+   * @param options.remainingHealth - Target's remaining health (for fracture detection)
+   * @param options.vitalPoint - Whether strike hit a vital point
+   * @param options.hitPosition - 3D position of strike (for auto region detection)
+   *
+   * @example
+   * // Explicit region and intensity
+   * playBoneImpactSound({ region: 'head', intensity: 'heavy' });
+   *
+   * @example
+   * // Auto-calculate intensity from damage and health
+   * playBoneImpactSound({
+   *   region: 'torso',
+   *   damage: 35,
+   *   remainingHealth: 25,
+   *   vitalPoint: false
+   * });
+   *
+   * @example
+   * // Auto-detect region from 3D hit position
+   * playBoneImpactSound({
+   *   damage: 40,
+   *   remainingHealth: 60,
+   *   hitPosition: { x: 0.1, y: 1.8, z: 0 }
+   * });
+   */
+  const playBoneImpactSound = useCallback(
+    async (options: {
+      region?: AudioBodyRegion;
+      intensity?: ImpactIntensity;
+      damage?: number;
+      remainingHealth?: number;
+      vitalPoint?: boolean;
+      hitPosition?: { x: number; y: number; z?: number };
+    }) => {
+      const soundType = "bone_impact";
+
+      if (!canPlaySound(soundType, 100)) {
+        return;
+      }
+
+      // Auto-detect region from hit position if not provided
+      let region = options.region;
+      if (!region && options.hitPosition) {
+        region = detectAudioBodyRegion(options.hitPosition);
+      }
+
+      // Default to torso if region still undefined
+      if (!region) {
+        region = "torso";
+      }
+
+      // Auto-calculate intensity if not provided
+      let intensity = options.intensity;
+      if (!intensity && options.damage !== undefined) {
+        intensity = calculateImpactIntensity(
+          options.damage,
+          options.remainingHealth,
+          options.vitalPoint
+        );
+      }
+
+      // Default to medium intensity if still undefined
+      if (!intensity) {
+        intensity = "medium";
+      }
+
+      // Get appropriate sound ID with random variant
+      const soundId = getBoneImpactSoundId(region, intensity, true);
+
+      // Get volume multiplier based on intensity
+      const volumeMultiplier = getImpactVolumeMultiplier(intensity);
+      const finalVolume = Math.min(1.0, 0.8 * volumeMultiplier);
+
+      try {
+        await audio.playSFX(soundId, finalVolume);
+        lastPlayTime.current[soundType] = Date.now();
+
+        // Longer active duration for fracture sounds (more impactful)
+        const duration = intensity === "fracture" ? 800 : 500;
+        registerActiveSound(soundId, duration);
+      } catch (error) {
+        console.warn(
+          `Failed to play bone impact sound: ${soundId} (region: ${region}, intensity: ${intensity})`,
+          error
+        );
+      }
+    },
+    [audio, canPlaySound, registerActiveSound]
+  );
+
   return {
     playAttackSound,
     playHitSound,
@@ -360,6 +469,7 @@ export const useCombatAudio = () => {
     playArchetypeMusic,
     stopCombatMusic,
     getActiveSoundCount,
+    playBoneImpactSound, // NEW: Body-region-specific bone/flesh impact sounds
   };
 };
 
