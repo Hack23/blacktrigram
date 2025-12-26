@@ -79,7 +79,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 ### Detailed System Status
 
 #### ✅ Body Part Health System (100% Complete)
-**Implementation**: December 2024
+**Implementation**: December 2024 (Related to Issue #981)
 - **Component**: `BodyPartHealthDisplay.tsx` (228 lines)
 - **Features**:
   - 8 individual health bars: Head, Torso, Arms (L/R), Legs (L/R)
@@ -91,7 +91,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Part of CombatScreen3D refactoring
 
 #### ✅ Vital Point Targeting System (100% Complete)
-**Implementation**: December 2024
+**Implementation**: December 2024 (Issues #989-#990 - Vital Point Expansion)
 - **Data**: `VITAL_POINTS_DATA` (70 points documented)
 - **Components**: 
   - `VitalPointMarkers3D.tsx` - 3D visualization
@@ -124,7 +124,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Integration**: Fully integrated with combat system
 
 #### ⚠️ Pain Response System (40% Complete)
-**Current Status**: Basic Implementation
+**Current Status**: Basic Implementation (Issue #982 - Needs Expansion)
 - **Implemented**:
   - Pain accumulation tracking
   - Pain decay (−5/sec when no hits for ≥1 sec)
@@ -138,7 +138,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Pain/consciousness system expansion needed
 
 #### ⚠️ Consciousness Levels (35% Complete)
-**Current Status**: Basic State Machine
+**Current Status**: Basic State Machine (Issue #982 - Needs 4-Level Gradation)
 - **Implemented**:
   - Basic consciousness tracking (0-100)
   - Head/nerve strikes subtract consciousness
@@ -152,7 +152,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Consciousness level gradation needed
 
 #### ⚠️ Balance & Vulnerability (60% Complete)
-**Current Status**: Partially Implemented
+**Current Status**: Partially Implemented (Issue #984 - Needs Refinement)
 - **Implemented** (from game-design.md lines 62-70):
   - 4 balance states: READY (🟢), SHAKEN (🟡), VULNERABLE (🟠), HELPLESS (🔴)
   - State transitions based on pain, health, consciousness, bloodLoss
@@ -165,7 +165,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Priority**: 🟡 High
 
 #### ⚠️ Trauma Visualization (30% Complete)
-**Current Status**: Component Exists, Needs Injury Tracking
+**Current Status**: Component Exists, Needs Injury Tracking (Issue #983)
 - **Component**: `TraumaOverlay3D.tsx` (exists but needs injury tracking system)
 - **Missing** (from game-design.md lines 277-283):
   - 경상출혈 (Minor Bleeding) - Small cuts, facial bleeding
@@ -176,7 +176,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Combat trauma visualization system needed
 
 #### ⚠️ Combat Readiness HUD (50% Complete)
-**Current Status**: Display Exists, Needs Full Integration
+**Current Status**: Display Exists, Needs Full Integration (Issue #985)
 - **Implemented**:
   - 10-bar display component
   - Visual readiness indicators
@@ -188,7 +188,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Combat readiness HUD integration
 
 #### ❌ Breathing Disruption System (0% Complete)
-**Status**: Not Started
+**Status**: Not Started (Issue #986)
 - **Planned Features** (from game-design.md):
   - Respiratory system targeting
   - Breathing rate affects stamina regeneration
@@ -198,7 +198,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Breathing disruption system planned
 
 #### ❌ Injury-Based Movement System (0% Complete)
-**Status**: Not Started
+**Status**: Not Started (Issue #987)
 - **Planned Features** (from game-design.md lines 296-298):
   - 손상적응 (Injury Adaptation) - Movement changes based on damage
   - Leg damage affects movement speed and stance stability
@@ -208,7 +208,7 @@ Black Trigram's **combat realism systems** distinguish it from traditional fight
 - **Related Issue**: Injury-based movement penalties planned
 
 #### ❌ Bone Impact Audio (0% Complete)
-**Status**: Not Started
+**Status**: Not Started (Issue #988)
 - **Planned Features** (from game-design.md lines 284-291):
   - 골절음 (Bone Breaking) - Authentic bone fracture sounds
   - 타격음 (Flesh Impact) - Body contact sounds with appropriate intensity
