@@ -136,6 +136,7 @@ export function calculateImpactIntensity(
   }
 
   // Fracture detection: health below 30% + high damage
+  // Note: Assumes maxHealth = 100 (standard across codebase)
   if (
     remainingHealth !== undefined &&
     remainingHealth < 30 &&

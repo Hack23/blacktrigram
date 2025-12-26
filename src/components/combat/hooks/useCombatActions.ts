@@ -49,6 +49,27 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
 
+/**
+ * Hit position variation range for randomizing strike heights
+ * Produces ±0.2 absolute units (±10% of 2.0 character height)
+ */
+const HIT_Y_VARIATION_RANGE = 0.4;
+
+/**
+ * Calculate randomized hit position based on defender position
+ * Adds vertical variation to simulate different strike heights
+ * 
+ * @param defenderPos - Position of the defender being struck
+ * @returns Hit position with randomized Y coordinate
+ */
+function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
+  const hitYVariation = (Math.random() - 0.5) * HIT_Y_VARIATION_RANGE; // ±0.2 units
+  return {
+    x: defenderPos.x,
+    y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+  };
+}
+
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
   readonly playerPositions: readonly [Position, Position];
@@ -213,17 +234,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     if (result.hit) {
       // Play bone impact sound with body region and damage context
-      // Use attacker's position to determine hit location relative to defender
-      const defenderPos = playerPositions[1];
-      
-      // Estimate hit position based on defender position
-      // Y-coordinate: add randomness to simulate different strike heights
-      // ±0.2 units variation (±20% of a 1.0 normalized range, or ±10% of 2.0 character height)
-      const hitYVariation = (Math.random() - 0.5) * 0.4;
-      const hitPosition = {
-        x: defenderPos.x,
-        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
-      };
+      const hitPosition = calculateHitPosition(playerPositions[1]);
 
       // Use bone impact audio instead of generic hit sound
       combatAudio?.playBoneImpactSound({
@@ -358,12 +369,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     if (distance < 150) {
       // Play bone impact sound for special technique hit
-      const defenderPos = playerPositions[1]; // AI position
-      const hitYVariation = (Math.random() - 0.5) * 0.4;
-      const hitPosition = {
-        x: defenderPos.x,
-        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
-      };
+      const hitPosition = calculateHitPosition(playerPositions[1]);
 
       combatAudio?.playBoneImpactSound({
         damage: 25,
@@ -533,14 +539,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     if (result.hit) {
       // Play bone impact sound for AI hits on player
-      const defenderPos = playerPositions[0]; // Player position
-      
-      // Estimate hit position with randomness for variety
-      const hitYVariation = (Math.random() - 0.5) * 0.4; // ±20% variation
-      const hitPosition = {
-        x: defenderPos.x,
-        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
-      };
+      const hitPosition = calculateHitPosition(playerPositions[0]);
 
       combatAudio?.playBoneImpactSound({
         damage: result.damage,
@@ -651,14 +650,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     if (result.hit) {
       // Play bone impact sound for AI technique hits
-      const defenderPos = playerPositions[0]; // Player position
-      
-      // Estimate hit position with randomness
-      const hitYVariation = (Math.random() - 0.5) * 0.4;
-      const hitPosition = {
-        x: defenderPos.x,
-        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
-      };
+      const hitPosition = calculateHitPosition(playerPositions[0]);
 
       combatAudio?.playBoneImpactSound({
         damage: result.damage,

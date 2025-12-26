@@ -481,6 +481,32 @@ export class AudioAssetRegistry {
       });
     }
 
+    // Hit Reaction Sounds - Flesh (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`hit_flesh_${i}`, {
+        id: `hit_flesh_${i}`,
+        type: "sound",
+        name: `Flesh Hit ${i}`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/hit_flesh_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.7,
+      });
+    }
+
+    // Body realistic sound (1 variation)
+    this.registerSFX("body_realistic_sound", {
+      id: "body_realistic_sound",
+      type: "sound",
+      name: "Body Impact",
+      category: "sfx",
+      url: "/assets/audio/sfx/misc/body_realistic_sound.webm",
+      formats: ["audio/mp3", "audio/webm"],
+      loaded: false,
+      volume: 0.7,
+    });
+
     // Block Sounds - Success (4 variations)
     for (let i = 1; i <= 4; i++) {
       this.registerSFX(`block_success_${i}`, {
