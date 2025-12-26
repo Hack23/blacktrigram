@@ -7,14 +7,13 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import {
-  BodyRegion,
+  AudioBodyRegion,
   ImpactIntensity,
-  BoneImpactEvent,
 } from "../../../audio/types";
 import {
   getBoneImpactSoundId,
   calculateImpactIntensity,
-  detectBodyRegion,
+  detectAudioBodyRegion,
   getImpactVolumeMultiplier,
 } from "../../../audio/BoneImpactAudioMap";
 
@@ -396,7 +395,7 @@ export const useCombatAudio = () => {
    */
   const playBoneImpactSound = useCallback(
     async (options: {
-      region?: BodyRegion;
+      region?: AudioBodyRegion;
       intensity?: ImpactIntensity;
       damage?: number;
       remainingHealth?: number;
@@ -412,7 +411,7 @@ export const useCombatAudio = () => {
       // Auto-detect region from hit position if not provided
       let region = options.region;
       if (!region && options.hitPosition) {
-        region = detectBodyRegion(options.hitPosition);
+        region = detectAudioBodyRegion(options.hitPosition);
       }
 
       // Default to torso if region still undefined

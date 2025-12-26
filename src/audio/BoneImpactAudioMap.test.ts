@@ -10,15 +10,15 @@ import {
   IMPACT_VOLUME_MULTIPLIERS,
   getBoneImpactSoundId,
   calculateImpactIntensity,
-  detectBodyRegion,
+  detectAudioBodyRegion,
   getImpactVolumeMultiplier,
 } from "./BoneImpactAudioMap";
-import { BodyRegion, ImpactIntensity } from "./types";
+import { AudioBodyRegion, ImpactIntensity } from "./types";
 
 describe("BoneImpactAudioMap", () => {
   describe("BODY_REGION_SOUND_MAP", () => {
     it("should have mappings for all body regions", () => {
-      const expectedRegions: BodyRegion[] = [
+      const expectedRegions: AudioBodyRegion[] = [
         "head",
         "torso",
         "arms",
@@ -155,7 +155,7 @@ describe("BoneImpactAudioMap", () => {
     });
 
     it("should work for all body regions and intensities", () => {
-      const regions: BodyRegion[] = [
+      const regions: AudioBodyRegion[] = [
         "head",
         "torso",
         "arms",
@@ -241,58 +241,58 @@ describe("BoneImpactAudioMap", () => {
     });
   });
 
-  describe("detectBodyRegion", () => {
+  describe("detectAudioBodyRegion", () => {
     const defaultHeight = 2.0;
 
     it("should detect head region (top 25%)", () => {
-      expect(detectBodyRegion({ x: 0, y: 1.8 }, defaultHeight)).toBe("head");
-      expect(detectBodyRegion({ x: 0, y: 1.5 }, defaultHeight)).toBe("head"); // 75%
-      expect(detectBodyRegion({ x: 0, y: 2.0 }, defaultHeight)).toBe("head"); // 100%
+      expect(detectAudioBodyRegion({ x: 0, y: 1.8 }, defaultHeight)).toBe("head");
+      expect(detectAudioBodyRegion({ x: 0, y: 1.5 }, defaultHeight)).toBe("head"); // 75%
+      expect(detectAudioBodyRegion({ x: 0, y: 2.0 }, defaultHeight)).toBe("head"); // 100%
     });
 
     it("should detect torso region (center)", () => {
-      expect(detectBodyRegion({ x: 0, y: 1.2 }, defaultHeight)).toBe("torso");
-      expect(detectBodyRegion({ x: 0, y: 1.0 }, defaultHeight)).toBe("torso"); // 50%
-      expect(detectBodyRegion({ x: 0.1, y: 0.8 }, defaultHeight)).toBe(
+      expect(detectAudioBodyRegion({ x: 0, y: 1.2 }, defaultHeight)).toBe("torso");
+      expect(detectAudioBodyRegion({ x: 0, y: 1.0 }, defaultHeight)).toBe("torso"); // 50%
+      expect(detectAudioBodyRegion({ x: 0.1, y: 0.8 }, defaultHeight)).toBe(
         "torso"
       );
     });
 
     it("should detect arms region (sides of torso)", () => {
-      expect(detectBodyRegion({ x: 0.4, y: 1.2 }, defaultHeight)).toBe("arms");
-      expect(detectBodyRegion({ x: -0.5, y: 1.0 }, defaultHeight)).toBe(
+      expect(detectAudioBodyRegion({ x: 0.4, y: 1.2 }, defaultHeight)).toBe("arms");
+      expect(detectAudioBodyRegion({ x: -0.5, y: 1.0 }, defaultHeight)).toBe(
         "arms"
       );
-      expect(detectBodyRegion({ x: 0.31, y: 0.6 }, defaultHeight)).toBe(
+      expect(detectAudioBodyRegion({ x: 0.31, y: 0.6 }, defaultHeight)).toBe(
         "arms"
       );
     });
 
     it("should detect legs region (bottom 25%)", () => {
-      expect(detectBodyRegion({ x: 0, y: 0.4 }, defaultHeight)).toBe("legs");
-      expect(detectBodyRegion({ x: 0, y: 0.1 }, defaultHeight)).toBe("legs");
-      expect(detectBodyRegion({ x: 0, y: 0.0 }, defaultHeight)).toBe("legs"); // 0%
+      expect(detectAudioBodyRegion({ x: 0, y: 0.4 }, defaultHeight)).toBe("legs");
+      expect(detectAudioBodyRegion({ x: 0, y: 0.1 }, defaultHeight)).toBe("legs");
+      expect(detectAudioBodyRegion({ x: 0, y: 0.0 }, defaultHeight)).toBe("legs"); // 0%
     });
 
     it("should handle different character heights", () => {
       const tallHeight = 3.0;
-      expect(detectBodyRegion({ x: 0, y: 2.5 }, tallHeight)).toBe("head"); // 83%
-      expect(detectBodyRegion({ x: 0, y: 1.5 }, tallHeight)).toBe("torso"); // 50%
-      expect(detectBodyRegion({ x: 0, y: 0.3 }, tallHeight)).toBe("legs"); // 10%
+      expect(detectAudioBodyRegion({ x: 0, y: 2.5 }, tallHeight)).toBe("head"); // 83%
+      expect(detectAudioBodyRegion({ x: 0, y: 1.5 }, tallHeight)).toBe("torso"); // 50%
+      expect(detectAudioBodyRegion({ x: 0, y: 0.3 }, tallHeight)).toBe("legs"); // 10%
     });
 
     it("should prioritize arms over torso for side hits", () => {
       // Torso height (0.5) but horizontal position outside core (0.35)
-      expect(detectBodyRegion({ x: 0.35, y: 1.0 }, defaultHeight)).toBe(
+      expect(detectAudioBodyRegion({ x: 0.35, y: 1.0 }, defaultHeight)).toBe(
         "arms"
       );
     });
 
     it("should handle edge cases", () => {
       // Exactly on boundaries
-      expect(detectBodyRegion({ x: 0, y: 1.5 }, defaultHeight)).toBe("head"); // 75%
-      expect(detectBodyRegion({ x: 0, y: 0.5 }, defaultHeight)).toBe("torso"); // 25%
-      expect(detectBodyRegion({ x: 0.3, y: 1.0 }, defaultHeight)).toBe(
+      expect(detectAudioBodyRegion({ x: 0, y: 1.5 }, defaultHeight)).toBe("head"); // 75%
+      expect(detectAudioBodyRegion({ x: 0, y: 0.5 }, defaultHeight)).toBe("torso"); // 25%
+      expect(detectAudioBodyRegion({ x: 0.3, y: 1.0 }, defaultHeight)).toBe(
         "torso"
       ); // Exactly on arm threshold
     });
@@ -327,7 +327,7 @@ describe("BoneImpactAudioMap", () => {
   describe("Integration Scenarios", () => {
     it("should handle complete head strike workflow", () => {
       const hitPosition = { x: 0, y: 1.8, z: 0 };
-      const region = detectBodyRegion(hitPosition);
+      const region = detectAudioBodyRegion(hitPosition);
       expect(region).toBe("head");
 
       const intensity = calculateImpactIntensity(35, 50, false);
@@ -342,7 +342,7 @@ describe("BoneImpactAudioMap", () => {
 
     it("should handle vital point leg strike", () => {
       const hitPosition = { x: 0, y: 0.3, z: 0 };
-      const region = detectBodyRegion(hitPosition);
+      const region = detectAudioBodyRegion(hitPosition);
       expect(region).toBe("legs");
 
       const intensity = calculateImpactIntensity(20, 80, true);
@@ -357,7 +357,7 @@ describe("BoneImpactAudioMap", () => {
 
     it("should handle fracture scenario", () => {
       const hitPosition = { x: 0, y: 1.0, z: 0 };
-      const region = detectBodyRegion(hitPosition);
+      const region = detectAudioBodyRegion(hitPosition);
       expect(region).toBe("torso");
 
       const intensity = calculateImpactIntensity(30, 25, false);
@@ -372,7 +372,7 @@ describe("BoneImpactAudioMap", () => {
 
     it("should handle soft tissue arm strike", () => {
       const hitPosition = { x: 0.4, y: 1.2, z: 0 };
-      const region = detectBodyRegion(hitPosition);
+      const region = detectAudioBodyRegion(hitPosition);
       expect(region).toBe("arms");
 
       const intensity = calculateImpactIntensity(8, 70, false);

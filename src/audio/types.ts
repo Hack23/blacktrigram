@@ -212,10 +212,10 @@ export interface CombatAudioEvent {
 }
 
 /**
- * Body regions for anatomically accurate impact sounds
+ * Audio-specific body regions for impact sound mapping
  * Maps to Korean martial arts vital point locations
  */
-export type BodyRegion =
+export type AudioBodyRegion =
   | "head" // 두부 (Head/Skull): temple, jaw, neck
   | "torso" // 몸통 (Torso): ribs, sternum, solar plexus, organs
   | "arms" // 팔 (Arms): shoulder, elbow, forearm, wrist
@@ -238,7 +238,7 @@ export type ImpactIntensity =
  * Used for anatomically accurate combat sound feedback
  */
 export interface BoneImpactEvent {
-  readonly region: BodyRegion;
+  readonly region: AudioBodyRegion;
   readonly intensity: ImpactIntensity;
   readonly vitalPoint?: boolean; // True if hitting a vital point
   readonly remainingHealth?: number; // For fracture detection (<30%)

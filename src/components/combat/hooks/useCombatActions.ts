@@ -67,6 +67,14 @@ export interface UseCombatActionsConfig {
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
     readonly playHitSound: (damage: number) => Promise<void>;
+    readonly playBoneImpactSound: (options: {
+      region?: "head" | "torso" | "arms" | "legs" | "soft_tissue";
+      intensity?: "light" | "medium" | "heavy" | "critical" | "fracture";
+      damage?: number;
+      remainingHealth?: number;
+      vitalPoint?: boolean;
+      hitPosition?: { x: number; y: number; z?: number };
+    }) => Promise<void>;
     readonly playBlockSound: (guardBroken?: boolean) => Promise<void>;
     readonly playDodgeSound: () => Promise<void>;
     readonly playStanceChangeSound: () => Promise<void>;
@@ -204,8 +212,25 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[0], result.hit ? 1 : 0.5);
 
     if (result.hit) {
-      // Play hit sound based on damage
-      combatAudio?.playHitSound(result.damage);
+      // Play bone impact sound with body region and damage context
+      // Use attacker's position to determine hit location relative to defender
+      const defenderPos = playerPositions[1];
+      
+      // Estimate hit position based on defender position
+      // Y-coordinate: add randomness to simulate different strike heights
+      const hitYVariation = (Math.random() - 0.5) * 0.4; // ±20% variation
+      const hitPosition = {
+        x: defenderPos.x,
+        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+      };
+
+      // Use bone impact audio instead of generic hit sound
+      combatAudio?.playBoneImpactSound({
+        damage: result.damage,
+        remainingHealth: validPlayers[1].health - result.damage,
+        vitalPoint: result.isCritical, // Critical hits are often vital points
+        hitPosition,
+      });
 
       // Combo tracking: reset combo if too much time passed
       const now = Date.now();
@@ -331,8 +356,20 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     );
 
     if (distance < 150) {
-      // Play heavy hit sound for technique
-      combatAudio?.playHitSound(30);
+      // Play bone impact sound for special technique hit
+      const defenderPos = playerPositions[1]; // AI position
+      const hitYVariation = (Math.random() - 0.5) * 0.4;
+      const hitPosition = {
+        x: defenderPos.x,
+        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+      };
+
+      combatAudio?.playBoneImpactSound({
+        damage: 25,
+        remainingHealth: validPlayers[1].health - 25,
+        vitalPoint: false,
+        hitPosition,
+      });
 
       onPlayerUpdate(1, {
         health: Math.max(0, validPlayers[1].health - 25),
@@ -494,8 +531,22 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[1], result.hit ? 1 : 0.5);
 
     if (result.hit) {
-      // Play hit sound based on damage
-      combatAudio?.playHitSound(result.damage);
+      // Play bone impact sound for AI hits on player
+      const defenderPos = playerPositions[0]; // Player position
+      
+      // Estimate hit position with randomness for variety
+      const hitYVariation = (Math.random() - 0.5) * 0.4; // ±20% variation
+      const hitPosition = {
+        x: defenderPos.x,
+        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+      };
+
+      combatAudio?.playBoneImpactSound({
+        damage: result.damage,
+        remainingHealth: validPlayers[0].health - result.damage,
+        vitalPoint: result.isCritical,
+        hitPosition,
+      });
 
       // Apply damage through combat system (deducts resources)
       const { updatedAttacker, updatedDefender } =
@@ -598,8 +649,22 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addHitEffect(effectType, playerPositions[1], result.hit ? 1.5 : 0.5);
 
     if (result.hit) {
-      // Play heavy hit sound for technique
-      combatAudio?.playHitSound(result.damage);
+      // Play bone impact sound for AI technique hits
+      const defenderPos = playerPositions[0]; // Player position
+      
+      // Estimate hit position with randomness
+      const hitYVariation = (Math.random() - 0.5) * 0.4;
+      const hitPosition = {
+        x: defenderPos.x,
+        y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+      };
+
+      combatAudio?.playBoneImpactSound({
+        damage: result.damage,
+        remainingHealth: validPlayers[0].health - result.damage,
+        vitalPoint: result.isCritical || !!targetVitalPoint, // Special techniques often target vital points
+        hitPosition,
+      });
 
       // Apply damage through combat system (deducts resources)
       const { updatedAttacker, updatedDefender } =

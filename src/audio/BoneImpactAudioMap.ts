@@ -11,14 +11,14 @@
  * - body_realistic_sound_* as ambient bone/flesh mixing
  */
 
-import { BodyRegion, ImpactIntensity } from "./types";
+import { AudioBodyRegion, ImpactIntensity } from "./types";
 
 /**
  * Body region to sound ID mapping
  * Returns base sound ID without variant number
  */
 export const BODY_REGION_SOUND_MAP: Record<
-  BodyRegion,
+  AudioBodyRegion,
   Record<ImpactIntensity, string>
 > = {
   head: {
@@ -96,7 +96,7 @@ export const IMPACT_VOLUME_MULTIPLIERS: Record<ImpactIntensity, number> = {
  * @returns Sound ID to play (e.g., "hit_critical_3")
  */
 export function getBoneImpactSoundId(
-  region: BodyRegion,
+  region: AudioBodyRegion,
   intensity: ImpactIntensity,
   randomize: boolean = true
 ): string {
@@ -159,10 +159,10 @@ export function calculateImpactIntensity(
  * @param characterHeight - Total height of character model (default: 2.0)
  * @returns Body region struck
  */
-export function detectBodyRegion(
+export function detectAudioBodyRegion(
   hitPosition: { x: number; y: number; z?: number },
   characterHeight: number = 2.0
-): BodyRegion {
+): AudioBodyRegion {
   const { x, y } = hitPosition;
   const normalizedY = y / characterHeight; // Normalize to 0-1 range
 
