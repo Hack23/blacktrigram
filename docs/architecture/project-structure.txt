@@ -430,6 +430,8 @@ src/audio/AudioPool.ts
 src/audio/AudioProvider.tsx
 src/audio/AudioUtils.test.ts
 src/audio/AudioUtils.ts
+src/audio/BoneImpactAudioMap.test.ts
+src/audio/BoneImpactAudioMap.ts
 src/audio/DefaultSoundGenerator.ts
 src/audio/VariantSelector.ts
 src/audio/__tests__/AudioProvider.deferred.test.tsx
@@ -450,6 +452,9 @@ src/components/combat/components/BloodParticles3D.test.tsx
 src/components/combat/components/BloodParticles3D.tsx
 src/components/combat/components/BodyPartHealthDisplay.test.tsx
 src/components/combat/components/BodyPartHealthDisplay.tsx
+src/components/combat/components/BreathingIndicator.css
+src/components/combat/components/BreathingIndicator.test.tsx
+src/components/combat/components/BreathingIndicator.tsx
 src/components/combat/components/CombatArena3D.test.tsx
 src/components/combat/components/CombatArena3D.tsx
 src/components/combat/components/CombatControlsPanel.test.tsx
@@ -521,6 +526,7 @@ src/components/combat/hooks/useAICombat.test.ts
 src/components/combat/hooks/useAICombat.ts
 src/components/combat/hooks/useCombatActions.test.ts
 src/components/combat/hooks/useCombatActions.ts
+src/components/combat/hooks/useCombatAudio.boneimpact.test.tsx
 src/components/combat/hooks/useCombatAudio.test.tsx
 src/components/combat/hooks/useCombatAudio.ts
 src/components/combat/hooks/useCombatLayout.test.ts
@@ -740,10 +746,20 @@ src/systems/animation/index.ts
 src/systems/animation/types.ts
 src/systems/bodypart/BodyPartDamageIntegration.ts
 src/systems/bodypart/BodyPartHealthSystem.ts
+src/systems/bodypart/MovementPenaltySystem.ts
 src/systems/bodypart/__tests__/BodyPartDamageIntegration.test.ts
 src/systems/bodypart/__tests__/BodyPartHealthSystem.test.ts
+src/systems/bodypart/__tests__/MovementPenaltyIntegration.test.ts
+src/systems/bodypart/__tests__/MovementPenaltySystem.test.ts
 src/systems/bodypart/index.ts
 src/systems/bodypart/types.ts
+src/systems/breathing/BreathingDisruptionSystem.test.ts
+src/systems/breathing/BreathingDisruptionSystem.ts
+src/systems/breathing/README.md
+src/systems/breathing/feedback.ts
+src/systems/breathing/index.ts
+src/systems/breathing/integration.test.ts
+src/systems/breathing/integration.ts
 src/systems/combat/BalanceSystem.ts
 src/systems/combat/CombatStateSystem.test.ts
 src/systems/combat/CombatStateSystem.ts
