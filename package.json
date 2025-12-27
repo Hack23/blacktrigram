@@ -104,7 +104,7 @@
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^16.5.0",
     "jsdom": "^27.4.0",
-    "knip": "^5.77.1",
+    "knip": "^5.77.4",
     "license-compliance": "3.0.1",
     "mocha-junit-reporter": "2.2.1",
     "mochawesome": "7.1.4",
