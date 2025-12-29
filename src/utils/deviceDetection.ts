@@ -238,7 +238,12 @@ export function clearPlatformCache(): void {
  * This ensures mobile controls are shown on:
  * - Standard mobile phones (< 768px width)
  * - High-resolution phones (>= 768px width but mobile user-agent)
+ * - Android 15/16 devices with 2K/4K resolutions (1200px+, 1440px+)
  * - Tablets (user preference via touch support)
+ * 
+ * **User-agent detection takes priority over screen size**, ensuring that
+ * high-end Android phones with desktop-class resolutions (e.g., Galaxy S23 Ultra,
+ * Pixel 9 Pro) are correctly identified as mobile devices.
  * 
  * Results are cached to avoid re-parsing user-agent on every call.
  * Cache is invalidated when screen dimensions change.
@@ -250,7 +255,7 @@ export function clearPlatformCache(): void {
  * const platform = detectPlatform();
  * 
  * if (platform.isMobile) {
- *   // Show mobile controls
+ *   // Show mobile controls even on 4K Android phones
  *   return <MobileControls />;
  * }
  * ```
@@ -358,7 +363,20 @@ export function isMobileDevice(): boolean {
  * Check if device should use mobile controls
  * Takes into account device type, screen size, and touch capability
  * 
+ * Uses user-agent detection to correctly identify mobile devices regardless
+ * of screen resolution. This ensures high-end Android 15/16 phones with
+ * 2K/4K displays (1200px+, 1440px+) show mobile controls.
+ * 
  * @returns True if mobile controls should be shown
+ * 
+ * @example
+ * ```typescript
+ * // High-res Android phone (1440x3168) → returns true via user-agent
+ * // Desktop with 1440px screen → returns false (no mobile user-agent)
+ * if (shouldUseMobileControls()) {
+ *   return <VirtualDPad />; // Touch-optimized controls
+ * }
+ * ```
  * 
  * @public
  * @korean 모바일컨트롤사용

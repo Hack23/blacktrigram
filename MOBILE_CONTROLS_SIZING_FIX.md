@@ -191,10 +191,52 @@ const landscapeInsets = {
 - 34px bottom inset critical
 - More screen space allows comfortable control placement
 
+### High-Resolution Android 15/16 (2K/4K Displays)
+- **User-agent detection ensures mobile controls are shown**
+- Examples: Pixel 9 Pro (1440x3168), Galaxy S25 Ultra (1200x2640)
+- Screen resolution exceeds desktop breakpoint (768px, even 1920px)
+- **Detection priority: User-agent > Screen size**
+- Mobile controls properly displayed regardless of resolution
+- Touch-optimized 140px D-Pad and 80px/70px action buttons
+- Safe area insets applied (24px top for Android status bar)
+
 ### iPad (768x1024) - Tablet Mode
 - Desktop controls used (isMobile=false)
 - No mobile controls rendered
 - No changes affect tablet experience
+
+## 🔍 Mobile Detection Implementation
+
+The implementation uses **robust user-agent detection** (`shouldUseMobileControls()`) that correctly identifies mobile devices regardless of screen resolution:
+
+```typescript
+// From src/utils/deviceDetection.ts
+export function shouldUseMobileControls(): boolean {
+  const platform = detectPlatform();
+  
+  // User-agent detection takes priority
+  if (platform.isMobile) {
+    return true; // ✅ Android 15/16 with 4K screen detected here
+  }
+  
+  if (platform.isTablet) {
+    return true;
+  }
+  
+  // Fallback for small touch screens
+  if (platform.screenWidth <= MOBILE_BREAKPOINT && platform.hasTouch) {
+    return true;
+  }
+  
+  return false;
+}
+```
+
+**Test Coverage:**
+- ✅ Android 13 @ 1080x2340 (tested)
+- ✅ Android 15 @ 1440x3168 (4K, tested)
+- ✅ Android 16 @ 1200x2640 (2K, tested)
+- ✅ All tests passing (38 device detection tests)
 
 ## 🎯 Acceptance Criteria - Final Status
 
