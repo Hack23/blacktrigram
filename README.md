@@ -225,18 +225,22 @@ Built for **combat realism** and **authentic simulation**:
 **Virtual Controls** (Auto-displayed on screens < 768px width):
 
 - **🕹️ Virtual D-Pad** (Bottom-Left) – 8-directional movement control
+  - 140x140px touch-optimized size
+  - 48px minimum button targets (exceeds iOS 44px guideline)
   - Tap directional buttons for tactical positioning
   - Korean arrow indicators (↑ ↗ → ↘ ↓ ↙ ← ↖)
-  - 44px+ touch targets for accessibility
+  - Safe area aware positioning (34px from bottom)
   
 - **⚡ Action Buttons** (Bottom-Right)
-  - **Attack Button** (60x60px, Gold ⚡) – Execute current stance technique
-  - **Block Button** (50x50px, Blue 🛡️) – Activate defensive guard
+  - **Attack Button** (80x80px, Gold ⚡) – Execute current stance technique
+  - **Block Button** (70x70px, Blue 🛡️) – Activate defensive guard
+  - Safe area aware positioning (34px from bottom)
   
 - **☯️ Stance Wheel** (Bottom-Center)
   - Tap to expand circular selector (200px diameter)
   - 8 trigram stances (☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷)
   - Korean names: 건 태 리 진 손 감 간 곤
+  - Safe area aware positioning
 
 **Gesture Controls**:
 

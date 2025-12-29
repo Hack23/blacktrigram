@@ -87,9 +87,6 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
       <VirtualDPad
         onMove={onMove}
         disabled={!enabled}
-        size={120}
-        bottom={20}
-        left={20}
         opacity={0.8}
       />
 
@@ -98,8 +95,6 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
         onAttack={onAttack}
         onBlock={onBlock}
         disabled={!enabled}
-        bottom={20}
-        right={20}
         opacity={0.8}
       />
 
