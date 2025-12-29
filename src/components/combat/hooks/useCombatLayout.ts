@@ -59,13 +59,14 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
 
   // Centralized layout constants for easier tweaking
+  // Updated mobile controls height for new sizing: D-Pad (140px), buttons (80px+70px)
   // Optimized: Depends on breakpoint booleans, not exact width
   const layoutConstants = useMemo<LayoutConstants>(
     () => ({
       padding: 10,
       hudHeight: isMobile ? 95 : isLargeDesktop ? 90 : 120,
-      controlsHeight: isMobile ? 130 : isLargeDesktop ? 120 : 160,
-      footerHeight: isMobile ? 22 : isLargeDesktop ? 20 : 28,
+      controlsHeight: isMobile ? 160 : isLargeDesktop ? 120 : 160, // Increased from 130 to 160 for larger mobile controls
+      footerHeight: isMobile ? 34 : isLargeDesktop ? 20 : 28, // Changed from 22 to 34 for safe area
       healthBarHeight: isMobile ? 48 : isLargeDesktop ? 45 : 55,
     }),
     [isMobile, isLargeDesktop]

@@ -231,6 +231,44 @@ describe('deviceDetection', () => {
         expect(result.isMobile).toBe(true);
         // Even with width > 768, user-agent Mobile keyword indicates phone
       });
+
+      it('should detect Android 15/16 with 4K resolution as mobile', () => {
+        mockEnvironment({
+          userAgent: 'Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro) AppleWebKit/537.36 Mobile',
+          width: 1440, // 4K phone resolution (e.g., 1440x3168)
+          height: 3168,
+          hasTouch: true,
+          maxTouchPoints: 10,
+        });
+
+        const result = detectPlatform();
+
+        expect(result.os).toBe('android');
+        expect(result.deviceType).toBe(DeviceType.MOBILE);
+        expect(result.isMobile).toBe(true);
+        expect(result.screenWidth).toBe(1440);
+        expect(result.screenHeight).toBe(3168);
+        // User-agent priority: Even with 4K resolution exceeding desktop breakpoint,
+        // the "Mobile" keyword in user-agent correctly identifies this as a phone
+      });
+
+      it('should detect Android 16 with 2K resolution as mobile', () => {
+        mockEnvironment({
+          userAgent: 'Mozilla/5.0 (Linux; Android 16; Samsung Galaxy S25 Ultra) AppleWebKit/537.36 Mobile',
+          width: 1200, // 2K phone resolution
+          height: 2640,
+          hasTouch: true,
+          maxTouchPoints: 10,
+        });
+
+        const result = detectPlatform();
+
+        expect(result.os).toBe('android');
+        expect(result.deviceType).toBe(DeviceType.MOBILE);
+        expect(result.isMobile).toBe(true);
+        // High-end Android phones with 2K displays are correctly detected
+        // via user-agent string, not screen size breakpoint
+      });
     });
 
     describe('Android tablet detection', () => {
@@ -440,6 +478,31 @@ describe('deviceDetection', () => {
       });
 
       expect(shouldUseMobileControls()).toBe(true);
+    });
+
+    it('should return true for Android 15/16 with 4K resolution', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (Linux; Android 15; Pixel 9 Pro) AppleWebKit/537.36 Mobile',
+        width: 1440,
+        height: 3168,
+        hasTouch: true,
+      });
+
+      expect(shouldUseMobileControls()).toBe(true);
+      // Confirms mobile controls are shown on high-end Android phones
+      // with 4K resolution (exceeds 768px and even 1920px desktop breakpoints)
+    });
+
+    it('should return true for Android 16 with 2K resolution', () => {
+      mockEnvironment({
+        userAgent: 'Mozilla/5.0 (Linux; Android 16; OnePlus 13 Pro) Mobile',
+        width: 1200,
+        height: 2640,
+        hasTouch: true,
+      });
+
+      expect(shouldUseMobileControls()).toBe(true);
+      // User-agent detection ensures mobile controls on 2K Android devices
     });
   });
 

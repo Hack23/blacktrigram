@@ -58,10 +58,10 @@ describe('ActionButtons', () => {
       const props: ActionButtonsProps = {
         onAttack: onAttackMock,
         onBlock: onBlockMock,
-        bottom: 30,
+        bottom: 34,
         right: 40,
       };
-      expect(props.bottom).toBe(30);
+      expect(props.bottom).toBe(34);
       expect(props.right).toBe(40);
     });
 
@@ -88,15 +88,17 @@ describe('ActionButtons', () => {
   });
 
   describe('Button sizing', () => {
-    it('should ensure attack button is 60x60px', () => {
-      const attackButtonSize = { width: 60, height: 60 };
-      expect(attackButtonSize.width).toBe(60);
-      expect(attackButtonSize.height).toBe(60);
+    it('should ensure attack button is 80x80px', () => {
+      const attackButtonSize = { width: 80, height: 80 };
+      expect(attackButtonSize.width).toBe(80);
+      expect(attackButtonSize.height).toBe(80);
       expect(attackButtonSize.width).toBeGreaterThanOrEqual(44);
     });
 
-    it('should ensure block button is at least 44x44px', () => {
-      const blockButtonSize = { width: 50, height: 50 };
+    it('should ensure block button is 70x70px', () => {
+      const blockButtonSize = { width: 70, height: 70 };
+      expect(blockButtonSize.width).toBe(70);
+      expect(blockButtonSize.height).toBe(70);
       expect(blockButtonSize.width).toBeGreaterThanOrEqual(44);
       expect(blockButtonSize.height).toBeGreaterThanOrEqual(44);
     });

@@ -41,9 +41,9 @@ export interface VirtualDPadProps {
   readonly onMove: (direction: Direction | null, eventType: DPadEventType) => void;
   /** Whether D-Pad is disabled */
   readonly disabled?: boolean;
-  /** Size of the D-Pad in pixels (default: 120) */
+  /** Size of the D-Pad in pixels (default: 140) */
   readonly size?: number;
-  /** Position from bottom in pixels (default: 20) */
+  /** Position from bottom in pixels (default: 34 for safe area) */
   readonly bottom?: number;
   /** Position from left in pixels (default: 20) */
   readonly left?: number;
@@ -155,7 +155,8 @@ const DPadButton: React.FC<DPadButtonProps> = ({
  * - Visual feedback on active direction
  * - Haptic feedback on touch
  * - Korean theming with cyberpunk aesthetics
- * - 44x44px minimum touch targets (iOS guideline)
+ * - 48x48px minimum touch targets (improved from iOS 44px guideline)
+ * - 140x140px default size for better mobile usability
  * 
  * Usage in Combat/Training:
  * - Provides tactical positioning and footwork
@@ -173,7 +174,8 @@ const DPadButton: React.FC<DPadButtonProps> = ({
  *     }
  *   }}
  *   disabled={isPaused}
- *   size={120}
+ *   size={140}
+ *   bottom={34}
  * />
  * ```
  * 
@@ -183,8 +185,8 @@ const DPadButton: React.FC<DPadButtonProps> = ({
 export const VirtualDPad: React.FC<VirtualDPadProps> = ({
   onMove,
   disabled = false,
-  size = 120,
-  bottom = 20,
+  size = 140,
+  bottom = 34,
   left = 20,
   opacity = 0.8,
 }) => {
@@ -222,7 +224,7 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
   );
 
   // Calculate dimensions
-  const buttonSize = Math.max(44, size * 0.3); // Minimum 44px for touch target
+  const buttonSize = Math.max(48, size * 0.3); // Minimum 48px for better touch accuracy
   const radius = (size - buttonSize) / 2;
 
   // Extract RGB values for consistent color usage

@@ -31,7 +31,7 @@ export interface StanceWheelProps {
   readonly onToggle: () => void;
   /** Whether wheel is disabled */
   readonly disabled?: boolean;
-  /** Position from bottom in pixels (default: 20 when collapsed, 80 when expanded) */
+  /** Position from bottom in pixels (default: 34 when collapsed, 100 when expanded for safe area) */
   readonly bottom?: number;
   /** Opacity of wheel (default: 0.8) */
   readonly opacity?: number;
@@ -79,8 +79,9 @@ const getStanceColor = (stance: TrigramStance): number => {
  * Circular stance selector with 8 segments for trigram stances
  * Features:
  * - Expandable/collapsible interface
- * - Visual stance indicator when collapsed
- * - 8 touch-optimized stance buttons when expanded
+ * - Visual stance indicator when collapsed (60x60px)
+ * - 8 touch-optimized stance buttons when expanded (50x50px each)
+ * - 200px wheel diameter with safe positioning
  * - Korean trigram symbols and names
  * - Color-coded by stance element
  * - Haptic feedback on selection
@@ -158,8 +159,8 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
     [disabled, onToggle]
   );
 
-  // Dynamic bottom position
-  const dynamicBottom = bottom ?? (expanded ? 80 : 20);
+  // Dynamic bottom position with safe area consideration
+  const dynamicBottom = bottom ?? (expanded ? 100 : 34);
 
   // Get RGB values for colors using shared utility
   const currentStanceColor = getColorRGB(getStanceColor(TRIGRAM_STANCES_ORDER[currentStance]));

@@ -1037,9 +1037,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <VirtualDPad
               onMove={handleMobileMove}
               disabled={!mobileControlsEnabled}
-              size={120}
-              bottom={20}
-              left={20}
               opacity={0.8}
             />
 
@@ -1047,8 +1044,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onAttack={handleMobileAttack}
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
-              bottom={20}
-              right={20}
               opacity={0.8}
             />
 
