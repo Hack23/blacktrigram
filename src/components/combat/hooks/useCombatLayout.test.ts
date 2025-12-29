@@ -55,8 +55,8 @@ describe("useCombatLayout", () => {
 
       expect(result.current.layoutConstants.padding).toBe(10);
       expect(result.current.layoutConstants.hudHeight).toBe(95);
-      expect(result.current.layoutConstants.controlsHeight).toBe(130);
-      expect(result.current.layoutConstants.footerHeight).toBe(22);
+      expect(result.current.layoutConstants.controlsHeight).toBe(160); // Updated from 130
+      expect(result.current.layoutConstants.footerHeight).toBe(34); // Updated from 22
       expect(result.current.layoutConstants.healthBarHeight).toBe(48);
     });
 
@@ -111,7 +111,7 @@ describe("useCombatLayout", () => {
       expect(arenaBounds.x).toBe(480 * 0.1);
 
       // Arena should account for HUD, controls, footer, and padding
-      const expectedArenaHeight = 800 - 95 - 130 - 22 - 10 * 3;
+      const expectedArenaHeight = 800 - 95 - 160 - 34 - 10 * 3; // Updated to match new constants
       expect(arenaBounds.height).toBe(expectedArenaHeight);
 
       // Arena Y should start after HUD and padding
