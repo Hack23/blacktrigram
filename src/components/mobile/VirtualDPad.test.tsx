@@ -43,8 +43,8 @@ describe('VirtualDPad', () => {
     });
 
     it('should accept custom position', () => {
-      const props: VirtualDPadProps = { onMove: onMoveMock, bottom: 30, left: 40 };
-      expect(props.bottom).toBe(30);
+      const props: VirtualDPadProps = { onMove: onMoveMock, bottom: 34, left: 40 };
+      expect(props.bottom).toBe(34);
       expect(props.left).toBe(40);
     });
 
@@ -86,15 +86,15 @@ describe('VirtualDPad', () => {
   });
 
   describe('Button sizing logic', () => {
-    it('should ensure minimum 44px button size for small D-Pad', () => {
-      const size = 120;
-      const buttonSize = Math.max(44, size * 0.3);
-      expect(buttonSize).toBe(44);
+    it('should ensure minimum 48px button size for default D-Pad', () => {
+      const size = 140;
+      const buttonSize = Math.max(48, size * 0.3);
+      expect(buttonSize).toBe(48);
     });
 
     it('should scale button size with larger D-Pad', () => {
       const size = 200;
-      const buttonSize = Math.max(44, size * 0.3);
+      const buttonSize = Math.max(48, size * 0.3);
       expect(buttonSize).toBe(60);
     });
 

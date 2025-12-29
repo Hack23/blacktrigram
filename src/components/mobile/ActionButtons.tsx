@@ -30,7 +30,7 @@ export interface ActionButtonsProps {
   readonly onBlock: (eventType: ButtonEventType) => void;
   /** Whether buttons are disabled */
   readonly disabled?: boolean;
-  /** Position from bottom in pixels (default: 20) */
+  /** Position from bottom in pixels (default: 34 for safe area) */
   readonly bottom?: number;
   /** Position from right in pixels (default: 20) */
   readonly right?: number;
@@ -42,11 +42,13 @@ export interface ActionButtonsProps {
  * ActionButtons Component
  * 
  * Provides two primary combat action buttons:
- * - Attack Button (⚡): Primary combat action, 60x60px
- * - Block Button (🛡️): Defensive action, 50x50px
+ * - Attack Button (⚡): Primary combat action, 80x80px
+ * - Block Button (🛡️): Defensive action, 70x70px
  * 
  * Features:
  * - Touch-optimized with minimum 44x44px targets
+ * - Attack button: 80x80px for primary action
+ * - Block button: 70x70px for secondary action
  * - Visual feedback on press
  * - Haptic feedback for tactile response
  * - Korean cyberpunk theming
@@ -78,7 +80,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   onAttack,
   onBlock,
   disabled = false,
-  bottom = 20,
+  bottom = 34,
   right = 20,
   opacity = 0.8,
 }) => {
@@ -174,8 +176,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
           onMouseUp={handleAttackEnd}
           onMouseLeave={handleAttackEnd}
           style={{
-            width: '60px',
-            height: '60px',
+            width: '80px',
+            height: '80px',
             borderRadius: '50%',
             background: attackPressed
               ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`
@@ -210,8 +212,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
           onMouseUp={handleBlockEnd}
           onMouseLeave={handleBlockEnd}
           style={{
-            width: '50px',
-            height: '50px',
+            width: '70px',
+            height: '70px',
             borderRadius: '50%',
             background: blockPressed
               ? `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`
