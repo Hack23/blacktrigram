@@ -292,7 +292,7 @@ describe("BaseButtonHTML", () => {
 
   it("should support autoFocus prop", () => {
     const handleClick = vi.fn();
-    const { container } = render(
+    render(
       <BaseButtonHTML
         korean="자동 포커스"
         english="Auto Focus"
