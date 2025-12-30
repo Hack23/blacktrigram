@@ -28,6 +28,7 @@ export interface BaseButtonHTMLProps {
   readonly isMobile?: boolean;
   readonly className?: string;
   readonly style?: React.CSSProperties;
+  readonly autoFocus?: boolean;
 }
 
 /**
@@ -60,6 +61,7 @@ export const BaseButtonHTML: React.FC<BaseButtonHTMLProps> = ({
   isMobile = false,
   className,
   style: customStyle,
+  autoFocus = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -111,7 +113,6 @@ export const BaseButtonHTML: React.FC<BaseButtonHTMLProps> = ({
     }
 
     return {
-      ...customStyle,
       background,
       border: `${buttonSize.borderWidth} solid ${hexToRgbaString(buttonVariant.border)}`,
       color: hexToRgbaString(buttonVariant.text),
@@ -132,6 +133,7 @@ export const BaseButtonHTML: React.FC<BaseButtonHTMLProps> = ({
         : "none",
       transform: isPressed && !disabled ? "scale(0.98)" : "scale(1)",
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
+      ...customStyle,
     };
   }, [
     buttonVariant,
@@ -155,6 +157,7 @@ export const BaseButtonHTML: React.FC<BaseButtonHTMLProps> = ({
       style={buttonStyle}
       className={className}
       data-testid={testId ?? "base-button-html"}
+      autoFocus={autoFocus}
     >
       <div style={{ 
         display: "flex", 

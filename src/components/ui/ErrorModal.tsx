@@ -28,14 +28,13 @@ const HEX_COLORS = {
 /**
  * Error modal component with Korean cyberpunk styling
  * Provides retry and continue options for graceful error recovery
- * Includes keyboard navigation and focus management
+ * Includes keyboard navigation
  */
 export const ErrorModal: React.FC<ErrorModalProps> = ({
   message,
   onRetry,
   onContinue,
 }) => {
-  // Note: Focus management for BaseButtonHTML is handled internally
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleRetry = useCallback(() => {
@@ -144,6 +143,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
             variant="primary"
             size="md"
             testId="error-modal-retry"
+            autoFocus={true}
           />
 
           <BaseButtonHTML

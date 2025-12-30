@@ -12,9 +12,10 @@ The `src/components/base/` directory contains centralized Korean-themed UI compo
 src/components/base/
 ├── useKoreanTheme.ts       # Custom hook for Korean theming
 ├── layoutUtils.ts          # Layout calculation utilities
-├── BaseButton.tsx          # Enhanced Korean-themed button
-├── BasePanel.tsx           # Enhanced Korean-themed panel
-├── BaseText.tsx            # Enhanced bilingual text
+├── BaseButton.tsx          # Enhanced Korean-themed button (Three.js)
+├── BaseButtonHTML.tsx      # Enhanced Korean-themed button (HTML)
+├── BasePanel.tsx           # Enhanced Korean-themed panel (Three.js)
+├── BaseText.tsx            # Enhanced bilingual text (Three.js)
 └── index.ts                # Barrel export
 ```
 
@@ -90,6 +91,46 @@ import { BaseButton } from '@/components/base';
   size="md"
 />
 ```
+
+**Note:** BaseButton requires Three.js Canvas context. For regular DOM components (dialogs, modals, forms), use BaseButtonHTML instead.
+
+### BaseButtonHTML
+
+Enhanced Korean-themed button component for HTML contexts (non-Three.js).
+
+**Props:**
+- `korean`: Korean text
+- `english`: English text
+- `onClick`: Click handler
+- `onMouseEnter`: Mouse enter handler (for audio)
+- `disabled`: Disabled state
+- `variant`: 'primary' | 'secondary' | 'danger'
+- `size`: 'sm' | 'md' | 'lg'
+- `fullWidth`: Full width flag
+- `testId`: Test identifier
+- `isMobile`: Mobile flag
+- `className`: Custom CSS class
+- `style`: Custom inline styles (applied last, allows overrides)
+- `autoFocus`: Auto focus on mount (for accessibility)
+
+**Usage:**
+```tsx
+import { BaseButtonHTML } from '@/components/base';
+
+// In dialogs, modals, or standard forms
+<BaseButtonHTML
+  korean="확인"
+  english="Confirm"
+  onClick={() => handleConfirm()}
+  variant="primary"
+  size="md"
+  autoFocus={true}
+/>
+```
+
+**When to Use:**
+- ✅ Use `BaseButtonHTML` for regular DOM components (dialogs, modals, forms)
+- ✅ Use `BaseButton` for Three.js Canvas contexts (3D scenes, Html overlays)
 
 ### BasePanel
 

@@ -274,4 +274,35 @@ describe("BaseButtonHTML", () => {
     const button = screen.getByRole("button");
     expect(button).toHaveStyle({ marginTop: "20px" });
   });
+
+  it("should apply custom styles last (allowing overrides)", () => {
+    const handleClick = vi.fn();
+    render(
+      <BaseButtonHTML
+        korean="재정의"
+        english="Override"
+        onClick={handleClick}
+        style={{ flex: "1", padding: "50px" }}
+      />
+    );
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveStyle({ flex: "1", padding: "50px" });
+  });
+
+  it("should support autoFocus prop", () => {
+    const handleClick = vi.fn();
+    const { container } = render(
+      <BaseButtonHTML
+        korean="자동 포커스"
+        english="Auto Focus"
+        onClick={handleClick}
+        autoFocus={true}
+      />
+    );
+
+    const button = screen.getByRole("button");
+    // Check that button has autoFocus property
+    expect(button).toEqual(document.activeElement);
+  });
 });
