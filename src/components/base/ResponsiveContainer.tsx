@@ -52,10 +52,18 @@ export interface ResponsiveContainerProps {
   /** Z-index layer for stacking */
   readonly zIndex?: ZIndexValue;
 
-  /** Horizontal alignment within parent */
+  /** 
+   * Horizontal alignment within parent
+   * ⚠️ Requires elementWidth to be specified for alignment calculations to work
+   * Without elementWidth, alignment will be silently ignored
+   */
   readonly horizontalAlign?: HorizontalAlignment;
 
-  /** Vertical alignment within parent */
+  /** 
+   * Vertical alignment within parent
+   * ⚠️ Requires elementHeight to be specified for alignment calculations to work
+   * Without elementHeight, alignment will be silently ignored
+   */
   readonly verticalAlign?: VerticalAlignment;
 
   /** Margin in pixels */
@@ -166,6 +174,22 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     let x = 0;
     let y = 0;
     let width = elementWidth;
+
+    // Development-mode validation: warn if alignment props are used without dimensions
+    if (process.env.NODE_ENV === 'development') {
+      if (horizontalAlign && !elementWidth) {
+        console.warn(
+          `ResponsiveContainer: horizontalAlign="${horizontalAlign}" requires elementWidth to work. ` +
+          `Alignment will be ignored. Consider using CSS flexbox instead (display: flex, justifyContent: ${horizontalAlign === 'left' ? 'flex-start' : horizontalAlign === 'right' ? 'flex-end' : 'center'}).`
+        );
+      }
+      if (verticalAlign && !elementHeight) {
+        console.warn(
+          `ResponsiveContainer: verticalAlign="${verticalAlign}" requires elementHeight to work. ` +
+          `Alignment will be ignored. Consider using CSS flexbox instead (display: flex, alignItems: ${verticalAlign === 'top' ? 'flex-start' : verticalAlign === 'bottom' ? 'flex-end' : 'center'}).`
+        );
+      }
+    }
 
     // Calculate based on grid
     if (grid) {

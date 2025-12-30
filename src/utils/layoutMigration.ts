@@ -344,8 +344,8 @@ export function shouldUseSafeArea(
     return { use: true, edge: "top" };
   }
 
-  // Check if positioned near bottom edge (within SAFE_AREA_TOP_THRESHOLD)
-  if (typeof bottom === "number" && bottom < SAFE_AREA_TOP_THRESHOLD) {
+  // Check if positioned near bottom edge (within SAFE_AREA_BOTTOM_THRESHOLD)
+  if (typeof bottom === "number" && bottom < SAFE_AREA_BOTTOM_THRESHOLD) {
     return { use: true, edge: "bottom" };
   }
 
