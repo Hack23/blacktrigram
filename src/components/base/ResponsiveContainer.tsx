@@ -32,8 +32,9 @@ import {
 /**
  * Default row height for grid-based vertical positioning (in pixels)
  * Used when row index is specified in GridPosition
+ * Exported for use in custom layouts requiring consistent vertical spacing
  */
-const DEFAULT_ROW_HEIGHT = 100;
+export const DEFAULT_ROW_HEIGHT = 100;
 
 /**
  * Props for ResponsiveContainer component

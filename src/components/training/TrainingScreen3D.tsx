@@ -842,9 +842,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
             {/* Top Right - Training Stats (below VolumeControl) */}
             <ResponsiveContainer
-              position={{ base: { x: 20, y: isMobile ? 90 : 120 } }}
+              position={{
+                base: {
+                  x: width - (isMobile ? 310 : 320),
+                  y: isMobile ? 90 : 120,
+                },
+              }}
               containerWidth={width}
-              horizontalAlign="right"
               useSafeArea
               safeAreaEdge="top"
               zIndex={Z_INDEX.HUD}
@@ -896,9 +900,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
             {/* Bottom Right - Vital Point Panel */}
             <ResponsiveContainer
-              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
+              position={{
+                base: {
+                  x: width - (isMobile ? 310 : 420),
+                  y: height - (isMobile ? 100 : 110),
+                },
+              }}
               containerWidth={width}
-              horizontalAlign="right"
               useSafeArea
               safeAreaEdge="bottom"
               zIndex={Z_INDEX.HUD}

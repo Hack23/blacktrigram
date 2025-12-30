@@ -1943,16 +1943,22 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 position={{ base: { x: 0, y: 0 } }}
                 containerWidth={width}
                 containerHeight={height}
-                horizontalAlign="center"
-                verticalAlign="middle"
                 zIndex={Z_INDEX.MODAL}
-                style={{ pointerEvents: "none" }}
+                style={{
+                  pointerEvents: "none",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  height: "100%",
+                }}
               >
                 <div
                   style={{
                     fontSize: "72px",
                     fontWeight: "bold",
                     fontFamily: FONT_FAMILY.KOREAN,
+                    textAlign: "center",
                     color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
                       6,
                       "0"
@@ -2027,17 +2033,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <ResponsiveContainer
           position={{ base: { x: 0, y: 10 } }}
           containerWidth={width}
-          containerHeight={height}
-          horizontalAlign="center"
           useSafeArea
           safeAreaEdge="top"
           zIndex={Z_INDEX.HUD}
-          style={{ pointerEvents: "none" }}
+          style={{
+            pointerEvents: "none",
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
         >
           <div
             style={{
               fontSize: isMobile ? "18px" : "24px",
               fontWeight: "bold",
+              textAlign: "center",
               fontFamily: FONT_FAMILY.KOREAN,
               color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
                 6,
@@ -2148,11 +2158,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <ResponsiveContainer
           position={{ base: { x: 0, y: height - (isMobile ? 70 : 80) } }}
           containerWidth={width}
-          horizontalAlign="center"
           useSafeArea
           safeAreaEdge="bottom"
           zIndex={Z_INDEX.HUD}
-          style={{ pointerEvents: "auto", minHeight: "50px" }}
+          style={{
+            pointerEvents: "auto",
+            minHeight: "50px",
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
         >
           {/* Back button container */}
           <div
