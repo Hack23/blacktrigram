@@ -7,6 +7,7 @@
  * @module components/base
  */
 
+// Three.js-based components (require Canvas context)
 export { BaseButton } from "./BaseButton";
 export type { BaseButtonProps } from "./BaseButton";
 
@@ -16,6 +17,11 @@ export type { BasePanelProps } from "./BasePanel";
 export { BaseText } from "./BaseText";
 export type { BaseTextProps } from "./BaseText";
 
+// HTML-based components (no Three.js dependency)
+export { BaseButtonHTML } from "./BaseButtonHTML";
+export type { BaseButtonHTMLProps } from "./BaseButtonHTML";
+
+// Hooks and utilities
 export { useKoreanTheme } from "./useKoreanTheme";
 export type {
   UseKoreanThemeConfig,
