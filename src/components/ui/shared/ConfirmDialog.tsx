@@ -7,12 +7,15 @@
  * - Backdrop blur effect
  * - Responsive sizing
  * - Keyboard shortcuts (Enter = confirm, Esc = cancel)
+ * 
+ * Now uses BaseButtonHTML for consistent styling
  */
 
 import React, { useEffect } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { BaseButtonHTML } from "../../base";
 
 export interface ConfirmDialogProps {
   readonly isOpen: boolean;
@@ -129,87 +132,41 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {message}
         </p>
 
-        {/* Buttons */}
+        {/* Buttons - Now using BaseButtonHTML */}
         <div
           style={{
             display: "flex",
             gap: "12px",
           }}
         >
-          <button
+          <BaseButtonHTML
+            korean="취소"
+            english="Cancel"
             onClick={() => {
               audio.playSFX("menu_back");
               onCancel();
             }}
             onMouseEnter={() => audio.playSFX("menu_hover")}
-            data-testid="cancel-button"
-            style={{
-              flex: 1,
-              padding: isMobile ? "10px" : "12px",
-              fontSize: isMobile ? "14px" : "16px",
-              backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 1),
-              color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-              border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
-              borderRadius: "6px",
-              fontFamily: FONT_FAMILY.KOREAN,
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = hexToRgbaString(
-                KOREAN_COLORS.PRIMARY_CYAN,
-                0.2
-              );
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = hexToRgbaString(
-                KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                1
-              );
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-          >
-            취소 | Cancel
-          </button>
-          <button
+            variant="secondary"
+            size={isMobile ? "sm" : "md"}
+            isMobile={isMobile}
+            testId="cancel-button"
+            style={{ flex: 1 }}
+          />
+          <BaseButtonHTML
+            korean="확인"
+            english="Confirm"
             onClick={() => {
               audio.playSFX("menu_select");
               onConfirm();
             }}
             onMouseEnter={() => audio.playSFX("menu_hover")}
-            data-testid="confirm-button"
-            style={{
-              flex: 1,
-              padding: isMobile ? "10px" : "12px",
-              fontSize: isMobile ? "14px" : "16px",
-              backgroundColor: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-              color: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1),
-              border: "none",
-              borderRadius: "6px",
-              fontFamily: FONT_FAMILY.KOREAN,
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = hexToRgbaString(
-                KOREAN_COLORS.SECONDARY_YELLOW,
-                1
-              );
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = hexToRgbaString(
-                KOREAN_COLORS.ACCENT_GOLD,
-                1
-              );
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-          >
-            확인 | Confirm
-          </button>
+            variant="primary"
+            size={isMobile ? "sm" : "md"}
+            isMobile={isMobile}
+            testId="confirm-button"
+            style={{ flex: 1 }}
+          />
         </div>
       </div>
     </div>

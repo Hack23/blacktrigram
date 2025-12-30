@@ -2,11 +2,14 @@
  * ErrorModal - Korean-themed error dialog component
  * Provides user-friendly error recovery with retry functionality
  * Follows Korean cyberpunk aesthetic and accessibility best practices
+ * 
+ * Now uses BaseButtonHTML for consistent Korean theming
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 import { toHex } from "../../utils/colorUtils";
+import { BaseButtonHTML } from "../base";
 
 interface ErrorModalProps {
   readonly message: string;
@@ -25,14 +28,14 @@ const HEX_COLORS = {
 /**
  * Error modal component with Korean cyberpunk styling
  * Provides retry and continue options for graceful error recovery
- * Includes keyboard navigation and focus management
+ * Includes keyboard navigation
  */
 export const ErrorModal: React.FC<ErrorModalProps> = ({
   message,
   onRetry,
   onContinue,
 }) => {
-  const retryButtonRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleRetry = useCallback(() => {
     onRetry();
@@ -53,13 +56,6 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleContinue]);
-
-  // Set focus to first interactive element when modal opens
-  useEffect(() => {
-    if (retryButtonRef.current) {
-      retryButtonRef.current.focus();
-    }
-  }, []);
 
   return (
     <div
@@ -131,68 +127,33 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
           {message}
         </p>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Now using BaseButtonHTML */}
         <div
+          ref={containerRef}
           style={{
             display: "flex",
             gap: "16px",
             justifyContent: "center",
           }}
         >
-          <button
-            ref={retryButtonRef}
+          <BaseButtonHTML
+            korean="재시도"
+            english="Retry"
             onClick={handleRetry}
-            style={{
-              backgroundColor: `#${HEX_COLORS.PRIMARY_CYAN}`,
-              color: "#000",
-              border: "none",
-              borderRadius: "4px",
-              padding: "12px 24px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              fontFamily: FONT_FAMILY.CYBER,
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = `0 4px 16px #${HEX_COLORS.PRIMARY_CYAN}80`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-            data-testid="error-modal-retry"
-          >
-            재시도 | Retry
-          </button>
+            variant="primary"
+            size="md"
+            testId="error-modal-retry"
+            autoFocus={true}
+          />
 
-          <button
+          <BaseButtonHTML
+            korean="무음으로 계속"
+            english="Continue Without Sound"
             onClick={handleContinue}
-            style={{
-              backgroundColor: "transparent",
-              color: `#${HEX_COLORS.ACCENT_GOLD}`,
-              border: `2px solid #${HEX_COLORS.ACCENT_GOLD}`,
-              borderRadius: "4px",
-              padding: "12px 24px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              fontFamily: FONT_FAMILY.CYBER,
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = `#${HEX_COLORS.ACCENT_GOLD}20`;
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-            data-testid="error-modal-continue"
-          >
-            무음으로 계속 | Continue Without Sound
-          </button>
+            variant="secondary"
+            size="md"
+            testId="error-modal-continue"
+          />
         </div>
       </div>
     </div>
