@@ -161,8 +161,8 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 const cameraConfig = useMemo(() => {
   if (isMobile) {
     return {
-      fov: 60,
-      position: [0, 8, 12] as [number, number, number],
+      fov: 55,
+      position: [0, 6, 10] as [number, number, number],
       near: 0.1,
       far: 1000,
     };
