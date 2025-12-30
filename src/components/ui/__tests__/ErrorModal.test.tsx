@@ -129,8 +129,12 @@ describe("ErrorModal", () => {
       />
     );
 
-    expect(screen.getByText("재시도 | Retry")).toBeInTheDocument();
-    expect(screen.getByText("무음으로 계속 | Continue Without Sound")).toBeInTheDocument();
+    // BaseButtonHTML renders Korean and English in separate spans
+    // Check for both texts separately
+    expect(screen.getByText("재시도")).toBeInTheDocument();
+    expect(screen.getByText("Retry")).toBeInTheDocument();
+    expect(screen.getByText("무음으로 계속")).toBeInTheDocument();
+    expect(screen.getByText("Continue Without Sound")).toBeInTheDocument();
   });
 
   it("should call onContinue when Escape key is pressed", async () => {
