@@ -106,16 +106,19 @@ if (isMobile) {
     arenaWidth = arenaHeight * aspectRatio;
   }
   
-  // Minimum size for playability
-  arenaWidth = Math.max(arenaWidth, 300);
-  arenaHeight = Math.max(arenaHeight, 225);
+  // Minimum size for playability without exceeding available space
+  arenaWidth = Math.min(Math.max(arenaWidth, 300), availableWidth);
+  arenaHeight = Math.min(Math.max(arenaHeight, 225), maxMobileHeight);
   
   // Calculate 3D scale factor
   const scale = arenaWidth / 960; // Desktop reference width
   
+  // Match implementation: position arena below HUD with padding
+  const arenaY = layoutConstants.hudHeight + layoutConstants.padding; // e.g., 95 + 10 = 105px on mobile
+  
   return {
     x: (width - arenaWidth) / 2, // Centered
-    y: minTopClearance + padding,
+    y: arenaY,
     width: arenaWidth,
     height: arenaHeight,
     scale,
@@ -309,8 +312,8 @@ bottomClearance ≥ 120px (min)
 - **Shadow Map Size:** 1024px (reduced from 2048px)
   - Reduces shadow calculation overhead by 75%
   
-- **Arena Scale:** 0.31-0.42 (mobile vs desktop)
-  - Fewer 3D objects need to be rendered
+- **Arena Scale:** 0.31-0.88 (adaptive by viewport width: standard phones ~0.31-0.42, large phones ~0.42-0.52, 2K devices ~0.52-0.63, 4K devices ~0.63-0.83)
+  - Fewer 3D objects need to be rendered on smaller arenas
   - Smaller world space for collision detection
 
 ### Expected Performance Impact

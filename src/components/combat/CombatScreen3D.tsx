@@ -222,15 +222,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Desktop: Wider FOV and further camera for full arena view
     if (isMobile) {
       return {
-        fov: 60,
-        position: [0, 8, 12] as [number, number, number],
+        fov: 55, // Tighter FOV for smaller mobile arena
+        position: [0, 6, 10] as [number, number, number], // Closer camera
         near: 0.1,
         far: 1000,
       };
     }
     return {
-      fov: 60,
-      position: [0, 8, 12] as [number, number, number],
+      fov: 60, // Standard FOV for desktop
+      position: [0, 8, 12] as [number, number, number], // Further back for full view
       near: 0.1,
       far: 1000,
     };

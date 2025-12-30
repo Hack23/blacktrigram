@@ -143,9 +143,14 @@ describe("useCombatLayout", () => {
       expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
       expect(arenaBounds.y).toBeGreaterThanOrEqual(0);
 
-      // Should still maintain minimum size (300 width, 225 height)
-      expect(arenaBounds.width).toBeGreaterThanOrEqual(300);
-      expect(arenaBounds.height).toBeGreaterThanOrEqual(225);
+      // Arena should fit within available space (320 - 40 = 280px)
+      // and not exceed it to prevent overflow
+      const availableWidth = 320 - 40; // 280px
+      expect(arenaBounds.width).toBeLessThanOrEqual(availableWidth);
+      
+      // Arena should still be playable (reasonable size)
+      expect(arenaBounds.width).toBeGreaterThan(200);
+      expect(arenaBounds.height).toBeGreaterThan(150);
 
       // Should have scale property
       expect(arenaBounds.scale).toBeGreaterThan(0);

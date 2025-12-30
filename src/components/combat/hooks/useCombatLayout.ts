@@ -76,9 +76,10 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Fixed player positions for 2-player combat with proper bounds
   // Arena bounds should account for HUD at top and controls at bottom
   // Mobile arena sizing with 4:3 aspect ratio adapts to device resolution:
-  // - Standard mobile (375-430px): 350-400px width
-  // - High-res mobile (1200px+): Up to 600px width (2K Android)
-  // - Ultra high-res (1440px+): Up to 800px width (4K Android, Galaxy S23 Ultra, Pixel 9 Pro)
+  // - Standard phones (< 768px): up to 400px width
+  // - Large phones (768-1199px): up to 500px width
+  // - 2K devices (1200-1439px): up to 600px width
+  // - 4K devices (≥1440px): up to 800px width
   // Optimized: Separate calculation dependencies to reduce recalculation frequency
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
@@ -126,9 +127,9 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
         arenaWidth = arenaHeight * aspectRatio; // width = height * (4/3)
       }
 
-      // Ensure minimum size for playability
-      arenaWidth = Math.max(arenaWidth, 300);
-      arenaHeight = Math.max(arenaHeight, 225); // 300 * 3/4 = 225
+      // Ensure minimum size for playability without exceeding available space
+      arenaWidth = Math.min(Math.max(arenaWidth, 300), availableWidth);
+      arenaHeight = Math.min(Math.max(arenaHeight, 225), maxMobileHeight); // 300 * 3/4 = 225
 
       // Calculate 3D scale factor (mobile arena is smaller than desktop)
       const desktopWidth = 960; // 80% of 1200px
