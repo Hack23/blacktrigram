@@ -17,6 +17,8 @@ import { KOREAN_COLORS } from "../../../types/constants";
 export interface CombatArena3DProps {
   /** Lighting theme affecting ambiance and colors. Defaults to "cyberpunk" */
   readonly lighting?: "cyberpunk" | "traditional" | "neutral";
+  /** Scale factor for arena size (1.0 = desktop, <1.0 = mobile). Defaults to 1.0 */
+  readonly scale?: number;
 }
 
 /**
@@ -25,6 +27,7 @@ export interface CombatArena3DProps {
  */
 export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   lighting = "cyberpunk",
+  scale = 1.0,
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
@@ -34,6 +37,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       gridRef.current.rotation.y += 0.0002;
     }
   });
+
+  // Scale-aware dimensions for arena elements
+  const floorWidth = 20 * scale;
+  const floorDepth = 10 * scale;
+  const gridSize = 20 * scale;
+  const markerDistance = 8 * scale;
+  const markerDepth = 4 * scale;
 
   return (
     <group>
@@ -73,9 +83,9 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         </>
       )}
 
-      {/* Arena floor - dojang mat */}
+      {/* Arena floor - dojang mat (scale-aware) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[20, 10]} />
+        <planeGeometry args={[floorWidth, floorDepth]} />
         <meshStandardMaterial
           color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
           roughness={0.8}
@@ -83,11 +93,11 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         />
       </mesh>
 
-      {/* Cyberpunk grid overlay */}
+      {/* Cyberpunk grid overlay (scale-aware) */}
       <gridHelper
         ref={gridRef}
         args={[
-          20,
+          gridSize,
           20,
           KOREAN_COLORS.PRIMARY_CYAN,
           KOREAN_COLORS.UI_BACKGROUND_DARK,
@@ -95,15 +105,15 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         position={[0, 0.01, 0]}
       />
 
-      {/* Korean traditional boundary markers */}
+      {/* Korean traditional boundary markers (scale-aware) */}
       {[
-        [-8, 0, -4],
-        [-8, 0, 4],
-        [8, 0, -4],
-        [8, 0, 4],
+        [-markerDistance, 0, -markerDepth],
+        [-markerDistance, 0, markerDepth],
+        [markerDistance, 0, -markerDepth],
+        [markerDistance, 0, markerDepth],
       ].map((pos, i) => (
         <mesh key={i} position={pos as [number, number, number]} castShadow>
-          <cylinderGeometry args={[0.1, 0.15, 0.8, 8]} />
+          <cylinderGeometry args={[0.1 * scale, 0.15 * scale, 0.8, 8]} />
           <meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
@@ -112,9 +122,9 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         </mesh>
       ))}
 
-      {/* Center marker - Yin Yang inspired */}
+      {/* Center marker - Yin Yang inspired (scale-aware) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-        <ringGeometry args={[0.8, 1.0, 32]} />
+        <ringGeometry args={[0.8 * scale, 1.0 * scale, 32]} />
         <meshBasicMaterial
           color={KOREAN_COLORS.ACCENT_GOLD}
           transparent

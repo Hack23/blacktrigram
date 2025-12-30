@@ -40,6 +40,7 @@ export interface ArenaBounds {
   readonly y: number;
   readonly width: number;
   readonly height: number;
+  readonly scale: number; // 3D scale factor for arena (1.0 = desktop, <1.0 = mobile)
 }
 
 export interface CombatLayout {
@@ -74,11 +75,53 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
 
   // Fixed player positions for 2-player combat with proper bounds
   // Arena bounds should account for HUD at top and controls at bottom
+  // Mobile arena sizing: 350x500px to 400x600px with 4:3 aspect ratio
   // Optimized: Separate calculation dependencies to reduce recalculation frequency
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
 
-    // Break down complex calculation for clarity and maintainability
+    // Mobile-specific arena sizing for better screen fit
+    if (isMobile) {
+      // Reserve space for HUD (80px min) and controls (120px min)
+      const minTopClearance = 80;
+      const minBottomClearance = 120;
+      const availableHeight = height - minTopClearance - minBottomClearance;
+      const availableWidth = width - 40; // 20px margins on each side
+
+      // Calculate optimal arena size maintaining 4:3 aspect ratio (width:height)
+      // Target: 350x262px (iPhone SE) to 400x300px (larger phones)
+      const maxMobileWidth = Math.min(availableWidth, 400);
+      const maxMobileHeight = Math.min(availableHeight, 600);
+
+      // Maintain 4:3 aspect ratio (width:height = 4:3)
+      const aspectRatio = 4 / 3;
+      let arenaWidth = maxMobileWidth;
+      let arenaHeight = arenaWidth / aspectRatio; // height = width / (4/3) = width * (3/4)
+
+      // If height exceeds available, recalculate based on height constraint
+      if (arenaHeight > maxMobileHeight) {
+        arenaHeight = maxMobileHeight;
+        arenaWidth = arenaHeight * aspectRatio; // width = height * (4/3)
+      }
+
+      // Ensure minimum size for playability
+      arenaWidth = Math.max(arenaWidth, 300);
+      arenaHeight = Math.max(arenaHeight, 225); // 300 * 3/4 = 225
+
+      // Calculate 3D scale factor (mobile arena is smaller than desktop)
+      const desktopWidth = 960; // 80% of 1200px
+      const scale = arenaWidth / desktopWidth;
+
+      return {
+        x: (width - arenaWidth) / 2, // Centered horizontally
+        y: arenaY,
+        width: arenaWidth,
+        height: arenaHeight,
+        scale,
+      };
+    }
+
+    // Desktop arena sizing - use full available space
     const totalReservedHeight =
       layoutConstants.hudHeight +
       layoutConstants.controlsHeight +
@@ -91,8 +134,9 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       y: arenaY,
       width: width * 0.8,
       height: arenaHeight,
+      scale: 1.0, // Desktop uses full scale
     };
-  }, [width, height, layoutConstants]);
+  }, [width, height, layoutConstants, isMobile]);
 
   return {
     layoutConstants,

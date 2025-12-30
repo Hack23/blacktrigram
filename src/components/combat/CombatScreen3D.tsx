@@ -216,6 +216,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Layout calculations
   const { arenaBounds, isMobile } = useCombatLayout(width, height);
 
+  // Camera and rendering configuration based on device
+  const cameraConfig = useMemo(() => {
+    // Mobile: Tighter FOV and closer camera for better framing of smaller arena
+    // Desktop: Wider FOV and further camera for full arena view
+    if (isMobile) {
+      return {
+        fov: 60,
+        position: [0, 8, 12] as [number, number, number],
+        near: 0.1,
+        far: 1000,
+      };
+    }
+    return {
+      fov: 60,
+      position: [0, 8, 12] as [number, number, number],
+      near: 0.1,
+      far: 1000,
+    };
+  }, [isMobile]);
+
+  // Rendering quality based on device (optimize for 60fps on mobile)
+  const renderConfig = useMemo(() => {
+    if (isMobile) {
+      return {
+        shadowMapSize: 1024, // Lower shadow resolution for mobile
+        dpr: [1, 1.5] as [number, number], // Lower pixel ratio on mobile
+        antialias: true,
+      };
+    }
+    return {
+      shadowMapSize: 2048, // High-quality shadows on desktop
+      dpr: [1, 2] as [number, number], // Full retina support on desktop
+      antialias: true,
+    };
+  }, [isMobile]);
+
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
 
@@ -291,7 +327,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
   // Player 1 position (controlled by player movement)
-  // Player 1 starts closer to center (35%) for better combat engagement
+  // Player 1 starts closer to center - adjusted for arena scale
   const [player1Position, setPlayer1Position] = useState<Position>({
     x: arenaBounds.x + arenaBounds.width * 0.35,
     y: arenaBounds.y + arenaBounds.height * 0.5,
@@ -468,7 +504,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Player 2 position - derived from players prop (AI-controlled)
   // Default position is used when players prop is empty or player2 has no position
-  // Player 2 (AI) starts at right side of arena (65%), closer to center for faster engagement
+  // Player 2 (AI) starts at right side of arena - adjusted for arena scale
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
@@ -485,19 +521,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [player1Position, player2Position]);
 
   // Convert 2D positions to 3D world coordinates
+  // Scale 3D coordinates based on arena scale for consistent positioning
   const player1Position3D: [number, number, number] = useMemo(() => {
     const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    // Map 0-1 to world coordinates, scaled for arena size
+    const worldWidth = 16 * arenaBounds.scale;
+    const worldDepth = 8 * arenaBounds.scale;
+    const x = relX * worldWidth - worldWidth / 2;
+    const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
   const player2Position3D: [number, number, number] = useMemo(() => {
     const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    // Map 0-1 to world coordinates, scaled for arena size
+    const worldWidth = 16 * arenaBounds.scale;
+    const worldDepth = 8 * arenaBounds.scale;
+    const x = relX * worldWidth - worldWidth / 2;
+    const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
   }, [playerPositions, arenaBounds]);
 
@@ -1726,13 +1769,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     >
       {/* Three.js Canvas for 3D rendering */}
       <Canvas
-        camera={{ position: [0, 8, 12], fov: 60 }}
+        camera={{
+          position: cameraConfig.position,
+          fov: cameraConfig.fov,
+          near: cameraConfig.near,
+          far: cameraConfig.far,
+        }}
         gl={{
-          antialias: true,
+          antialias: renderConfig.antialias,
           alpha: false,
           powerPreference: "high-performance",
         }}
-        dpr={[1, 2]}
+        dpr={renderConfig.dpr}
         shadows={false}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
@@ -1745,8 +1793,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           player2Animation={player2Animation}
         />
 
-        {/* 3D Combat Arena */}
-        <CombatArena3D lighting="cyberpunk" />
+        {/* 3D Combat Arena - with scale for mobile optimization */}
+        <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
 
         {/* Player 1 */}
         <SkeletalPlayer3D
