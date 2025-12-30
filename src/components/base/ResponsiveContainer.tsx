@@ -11,6 +11,9 @@
  * - Alignment helpers (horizontal/vertical)
  * - Z-index layer management
  *
+ * Note: When both grid and alignment are specified, alignment takes precedence
+ * for the aligned axis. This allows grid-based sizing with custom alignment.
+ *
  * @module components/base/ResponsiveContainer
  * @category Base Components
  * @korean 반응형컨테이너
@@ -25,6 +28,12 @@ import {
   VerticalAlignment,
   ZIndexValue,
 } from "../../types/LayoutTypes";
+
+/**
+ * Default row height for grid-based vertical positioning (in pixels)
+ * Used when row index is specified in GridPosition
+ */
+const DEFAULT_ROW_HEIGHT = 100;
 
 /**
  * Props for ResponsiveContainer component
@@ -167,7 +176,8 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
       );
       x = gridPos.x;
       width = gridPos.width;
-      y = grid.row ? grid.row * 100 : 0; // Basic row positioning
+      // Use DEFAULT_ROW_HEIGHT for vertical grid positioning
+      y = grid.row ? grid.row * DEFAULT_ROW_HEIGHT : 0;
     }
     // Calculate based on responsive position
     else if (position) {
@@ -177,7 +187,10 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     }
 
     // Apply horizontal alignment if specified
-    if (horizontalAlign && width && elementWidth) {
+    // Note: When both grid and horizontalAlign are specified, alignment overrides
+    // the grid x position, but maintains grid-based width. This allows
+    // grid-sized elements with custom horizontal positioning.
+    if (horizontalAlign && elementWidth) {
       x = defaultLayoutSystem.alignHorizontal(
         elementWidth,
         containerWidth,
@@ -187,6 +200,8 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     }
 
     // Apply vertical alignment if specified
+    // Note: When both grid and verticalAlign are specified, alignment overrides
+    // the grid y position. This allows custom vertical positioning with grid columns.
     if (verticalAlign && containerHeight && elementHeight) {
       y = defaultLayoutSystem.alignVertical(
         elementHeight,

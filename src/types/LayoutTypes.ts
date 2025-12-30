@@ -35,17 +35,40 @@ export interface ScreenSize {
 /**
  * Grid-based position configuration
  *
- * Uses 12-column grid system for consistent alignment
+ * Uses 12-column grid system for consistent alignment.
+ * 
+ * **Important:** Valid combinations must satisfy:
+ * - column: 0-11 (starting column)
+ * - span: 1-12 (number of columns to span)
+ * - column + span ≤ 12 (must not exceed grid width)
+ * 
+ * Invalid combinations (e.g., column: 10, span: 5) will throw runtime errors.
+ * Use LayoutSystem.calculateGridPosition() which validates inputs.
  *
  * @category Layout Types
  * @korean 그리드위치
+ * 
+ * @example Valid positions
+ * ```typescript
+ * { column: 0, span: 12 }  // Full width
+ * { column: 2, span: 8 }   // Centered 8 columns
+ * { column: 0, span: 6 }   // Left half
+ * { column: 6, span: 6 }   // Right half
+ * ```
+ * 
+ * @example Invalid positions (will throw errors)
+ * ```typescript
+ * { column: 10, span: 5 }  // ERROR: 10 + 5 = 15 > 12
+ * { column: -1, span: 6 }  // ERROR: column < 0
+ * { column: 5, span: 0 }   // ERROR: span < 1
+ * ```
  */
 export interface GridPosition {
   /** Grid column to start from (0-11) */
   readonly column: number;
   /** Number of columns to span (1-12) */
   readonly span: number;
-  /** Row index for vertical positioning */
+  /** Row index for vertical positioning (multiplied by DEFAULT_ROW_HEIGHT=100px) */
   readonly row?: number;
   /** Gutter size in pixels (default: 20) */
   readonly gutter?: number;

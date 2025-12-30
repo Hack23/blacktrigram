@@ -41,6 +41,36 @@ describe("LayoutSystem", () => {
       const result = layout.calculateGridPosition(0, 1, 1200, 10);
       expect(result.width).toBe(90); // 100 - 10 = 90
     });
+
+    it("should throw error for invalid column (negative)", () => {
+      expect(() => layout.calculateGridPosition(-1, 6, 1200)).toThrow(
+        "Invalid column: -1"
+      );
+    });
+
+    it("should throw error for invalid column (too large)", () => {
+      expect(() => layout.calculateGridPosition(12, 6, 1200)).toThrow(
+        "Invalid column: 12"
+      );
+    });
+
+    it("should throw error for invalid span (zero)", () => {
+      expect(() => layout.calculateGridPosition(0, 0, 1200)).toThrow(
+        "Invalid span: 0"
+      );
+    });
+
+    it("should throw error for invalid span (too large)", () => {
+      expect(() => layout.calculateGridPosition(0, 13, 1200)).toThrow(
+        "Invalid span: 13"
+      );
+    });
+
+    it("should throw error when column + span exceeds grid", () => {
+      expect(() => layout.calculateGridPosition(10, 5, 1200)).toThrow(
+        "Invalid grid position: column 10 + span 5 = 15 exceeds 12 columns"
+      );
+    });
   });
 
   describe("calculateResponsivePosition", () => {

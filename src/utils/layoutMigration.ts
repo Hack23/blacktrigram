@@ -11,6 +11,30 @@
 import { GridPosition, ResponsivePosition, ZIndexValue } from "../types/LayoutTypes";
 
 /**
+ * Tolerance for detecting grid-aligned positions (in pixels)
+ * Values within this threshold are considered aligned to the grid
+ */
+const GRID_POSITION_TOLERANCE = 5;
+
+/**
+ * Tolerance for detecting grid-aligned widths (in pixels)
+ * Widths within this threshold are considered matching a grid span
+ */
+const GRID_WIDTH_TOLERANCE = 10;
+
+/**
+ * Threshold for detecting elements near top edge that need safe area (in pixels)
+ * Elements positioned within this distance from top should use safe area insets
+ */
+const SAFE_AREA_TOP_THRESHOLD = 50;
+
+/**
+ * Threshold for detecting elements near bottom edge that need safe area (in pixels)
+ * Elements positioned within this distance from bottom should use safe area insets
+ */
+const SAFE_AREA_BOTTOM_THRESHOLD = 100;
+
+/**
  * Positioning pattern detected in legacy code
  */
 export interface DetectedPositioningPattern {
@@ -72,8 +96,8 @@ export function analyzePositioningPattern(
 
     // Check if values align with grid
     if (
-      Math.abs(left - column * columnWidth) < 5 &&
-      Math.abs(width - span * columnWidth) < 10
+      Math.abs(left - column * columnWidth) < GRID_POSITION_TOLERANCE &&
+      Math.abs(width - span * columnWidth) < GRID_WIDTH_TOLERANCE
     ) {
       return {
         type: "grid-like",
@@ -238,6 +262,10 @@ function parseValue(value: string | number | undefined): number | undefined {
 
 /**
  * Migration suggestions for common patterns
+ * 
+ * Note: The 'modern.props' examples use placeholder strings (e.g., "width", "modalWidth")
+ * to indicate variable names. When implementing, replace these with actual numeric
+ * variables from your component state/props.
  */
 export const MIGRATION_PATTERNS = {
   // Top-right corner (common for settings/volume)
@@ -246,7 +274,8 @@ export const MIGRATION_PATTERNS = {
     modern: {
       component: "ResponsiveContainer",
       props: {
-        position: { base: { x: "width - 200", y: 20 } },
+        // Replace "width - 200" with actual calculation: { x: width - 200, y: 20 }
+        position: { base: { x: 0, y: 20 } }, // x should be calculated: width - elementWidth - margin
         horizontalAlign: "right",
         margin: 20,
       },
@@ -259,10 +288,11 @@ export const MIGRATION_PATTERNS = {
     modern: {
       component: "ResponsiveContainer",
       props: {
-        containerWidth: "width",
-        containerHeight: "height",
-        elementWidth: "modalWidth",
-        elementHeight: "modalHeight",
+        // Replace string placeholders with actual numeric variables from your component
+        containerWidth: 0, // Use actual width variable
+        containerHeight: 0, // Use actual height variable
+        elementWidth: 0, // Use actual modal width
+        elementHeight: 0, // Use actual modal height
         horizontalAlign: "center",
         verticalAlign: "middle",
       },
@@ -309,19 +339,19 @@ export function shouldUseSafeArea(
   const top = parseValue(style.top);
   const bottom = parseValue(style.bottom);
 
-  // Check if positioned near top edge (within 50px)
-  if (typeof top === "number" && top < 50) {
+  // Check if positioned near top edge (within SAFE_AREA_TOP_THRESHOLD)
+  if (typeof top === "number" && top < SAFE_AREA_TOP_THRESHOLD) {
     return { use: true, edge: "top" };
   }
 
-  // Check if positioned near bottom edge (within 50px)
-  if (typeof bottom === "number" && bottom < 50) {
+  // Check if positioned near bottom edge (within SAFE_AREA_TOP_THRESHOLD)
+  if (typeof bottom === "number" && bottom < SAFE_AREA_TOP_THRESHOLD) {
     return { use: true, edge: "bottom" };
   }
 
   // Check if positioned near bottom via calculated position
   const bottomPos = typeof top === "number" ? screenHeight - top : undefined;
-  if (bottomPos !== undefined && bottomPos < 100) {
+  if (bottomPos !== undefined && bottomPos < SAFE_AREA_BOTTOM_THRESHOLD) {
     return { use: true, edge: "bottom" };
   }
 

@@ -36,6 +36,22 @@ const DEFAULT_GUTTER_SIZE = 20;
 const BASE_DESKTOP_WIDTH = 1200;
 
 /**
+ * Base width for mobile arena scaling calculations (in pixels)
+ * This represents the standard desktop arena width (80% of 1200px)
+ * Used to calculate scale factor for mobile devices
+ */
+const MOBILE_ARENA_BASE_WIDTH = 960;
+
+/**
+ * Default row height for grid-based vertical positioning (in pixels)
+ * Used when row index is specified in grid configuration
+ * Can be overridden by providing explicit y position
+ * 
+ * @public
+ */
+export const DEFAULT_ROW_HEIGHT = 100;
+
+/**
  * Default safe area insets for mobile devices
  * Based on typical iOS device dimensions (iPhone 14 Pro as reference)
  */
@@ -101,6 +117,7 @@ export class LayoutSystem {
    * @param containerWidth - Total container width in pixels
    * @param customGutter - Custom gutter size (optional)
    * @returns Position and width for the grid cell
+   * @throws Error if column or span are outside valid ranges
    *
    * @example
    * ```typescript
@@ -115,6 +132,23 @@ export class LayoutSystem {
     containerWidth: number,
     customGutter?: number
   ): { x: number; width: number } {
+    // Validate inputs
+    if (column < 0 || column >= this.gridColumns) {
+      throw new Error(
+        `Invalid column: ${column}. Column must be between 0 and ${this.gridColumns - 1}`
+      );
+    }
+    if (span < 1 || span > this.gridColumns) {
+      throw new Error(
+        `Invalid span: ${span}. Span must be between 1 and ${this.gridColumns}`
+      );
+    }
+    if (column + span > this.gridColumns) {
+      throw new Error(
+        `Invalid grid position: column ${column} + span ${span} = ${column + span} exceeds ${this.gridColumns} columns`
+      );
+    }
+
     const gutter = customGutter ?? this.gutterSize;
     const columnWidth = containerWidth / this.gridColumns;
 
@@ -337,7 +371,7 @@ export class LayoutSystem {
     const availableWidth = screenWidth - padding * 2;
 
     // Calculate scale for mobile (arena should be smaller on mobile)
-    const scale = screenSize.isMobile ? Math.min(availableWidth / 960, 1.0) : 1.0;
+    const scale = screenSize.isMobile ? Math.min(availableWidth / MOBILE_ARENA_BASE_WIDTH, 1.0) : 1.0;
 
     return {
       x: padding,

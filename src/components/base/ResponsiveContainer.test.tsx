@@ -223,6 +223,57 @@ describe("ResponsiveContainer", () => {
 
       expect(computedStyle.top).toBe("490px"); // 600 - 100 - 10
     });
+
+    it("should handle grid with horizontal alignment override", () => {
+      const { container } = render(
+        <ResponsiveContainer
+          grid={{ column: 0, span: 6 }}
+          containerWidth={1200}
+          elementWidth={300}
+          horizontalAlign="center"
+          data-testid="grid-aligned-container"
+        >
+          <div>Content</div>
+        </ResponsiveContainer>
+      );
+
+      const element = container.querySelector(
+        '[data-testid="grid-aligned-container"]'
+      ) as HTMLElement;
+      const computedStyle = window.getComputedStyle(element);
+
+      // Grid width should be maintained (6 columns = 580px)
+      expect(computedStyle.width).toBe("580px");
+      
+      // But x position should be centered (alignment overrides grid x)
+      expect(computedStyle.left).toBe("450px"); // (1200 - 300) / 2
+    });
+
+    it("should handle grid with vertical alignment override", () => {
+      const { container } = render(
+        <ResponsiveContainer
+          grid={{ column: 2, span: 8, row: 1 }}
+          containerWidth={1200}
+          containerHeight={800}
+          elementHeight={200}
+          verticalAlign="middle"
+          data-testid="grid-aligned-container"
+        >
+          <div>Content</div>
+        </ResponsiveContainer>
+      );
+
+      const element = container.querySelector(
+        '[data-testid="grid-aligned-container"]'
+      ) as HTMLElement;
+      const computedStyle = window.getComputedStyle(element);
+
+      // Grid x position should be maintained
+      expect(computedStyle.left).toBe("200px"); // Column 2 * 100px
+      
+      // But y position should be centered (alignment overrides grid row)
+      expect(computedStyle.top).toBe("300px"); // (800 - 200) / 2
+    });
   });
 
   describe("z-index layering", () => {
