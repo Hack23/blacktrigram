@@ -75,7 +75,10 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
 
   // Fixed player positions for 2-player combat with proper bounds
   // Arena bounds should account for HUD at top and controls at bottom
-  // Mobile arena sizing: 350x500px to 400x600px with 4:3 aspect ratio
+  // Mobile arena sizing with 4:3 aspect ratio adapts to device resolution:
+  // - Standard mobile (375-430px): 350-400px width
+  // - High-res mobile (1200px+): Up to 600px width (2K Android)
+  // - Ultra high-res (1440px+): Up to 800px width (4K Android, Galaxy S23 Ultra, Pixel 9 Pro)
   // Optimized: Separate calculation dependencies to reduce recalculation frequency
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
@@ -89,9 +92,28 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       const availableWidth = width - 40; // 20px margins on each side
 
       // Calculate optimal arena size maintaining 4:3 aspect ratio (width:height)
-      // Target: 350x262px (iPhone SE) to 400x300px (larger phones)
-      const maxMobileWidth = Math.min(availableWidth, 400);
-      const maxMobileHeight = Math.min(availableHeight, 600);
+      // Target sizing based on device resolution:
+      // - Standard mobile (375-430px): 350x262px to 400x300px
+      // - High-res mobile (1200px+): Up to 600x450px (2K Android)
+      // - Ultra high-res (1440px+): Up to 800x600px (4K Android)
+      
+      // Determine max width based on screen width for high-end devices
+      let maxMobileWidth: number;
+      if (width >= 1440) {
+        // 4K/QHD+ Android devices (e.g., Galaxy S23 Ultra, Pixel 9 Pro)
+        maxMobileWidth = Math.min(availableWidth, 800);
+      } else if (width >= 1200) {
+        // 2K Android devices
+        maxMobileWidth = Math.min(availableWidth, 600);
+      } else if (width >= 768) {
+        // Large phones (e.g., iPhone 14 Pro Max)
+        maxMobileWidth = Math.min(availableWidth, 500);
+      } else {
+        // Standard phones (e.g., iPhone SE, standard Android)
+        maxMobileWidth = Math.min(availableWidth, 400);
+      }
+      
+      const maxMobileHeight = Math.min(availableHeight, 800);
 
       // Maintain 4:3 aspect ratio (width:height = 4:3)
       const aspectRatio = 4 / 3;

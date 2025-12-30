@@ -261,6 +261,64 @@ describe("useCombatLayout", () => {
       expect(aspectRatio).toBeCloseTo(4 / 3, 2);
     });
 
+    it("should handle 2K Android devices (1200x2400) with larger arena", () => {
+      // Mock as mobile device (user-agent based detection)
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
+      const { result } = renderHook(() => useCombatLayout(1200, 2400));
+      const { arenaBounds } = result.current;
+
+      // Arena should fit within screen with proper clearances
+      const topClearance = arenaBounds.y;
+      const bottomClearance = 2400 - (arenaBounds.y + arenaBounds.height);
+
+      expect(topClearance).toBeGreaterThanOrEqual(80); // Min 80px top clearance
+      expect(bottomClearance).toBeGreaterThanOrEqual(120); // Min 120px bottom clearance
+
+      // 2K devices should get larger arena (up to 600px width)
+      expect(arenaBounds.width).toBeGreaterThanOrEqual(400);
+      expect(arenaBounds.width).toBeLessThanOrEqual(600);
+      expect(arenaBounds.height).toBeGreaterThanOrEqual(300);
+      expect(arenaBounds.height).toBeLessThanOrEqual(450);
+
+      // Should maintain 4:3 aspect ratio
+      const aspectRatio = arenaBounds.width / arenaBounds.height;
+      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
+
+      // Scale should be appropriate for larger arena
+      expect(arenaBounds.scale).toBeGreaterThan(0.4);
+      expect(arenaBounds.scale).toBeLessThan(0.7);
+    });
+
+    it("should handle 4K Android devices (1440x3168) with largest mobile arena", () => {
+      // Mock as mobile device (user-agent based detection)
+      vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);
+
+      const { result } = renderHook(() => useCombatLayout(1440, 3168));
+      const { arenaBounds } = result.current;
+
+      // Arena should fit within screen with proper clearances
+      const topClearance = arenaBounds.y;
+      const bottomClearance = 3168 - (arenaBounds.y + arenaBounds.height);
+
+      expect(topClearance).toBeGreaterThanOrEqual(80); // Min 80px top clearance
+      expect(bottomClearance).toBeGreaterThanOrEqual(120); // Min 120px bottom clearance
+
+      // 4K devices should get largest mobile arena (up to 800px width)
+      expect(arenaBounds.width).toBeGreaterThanOrEqual(600);
+      expect(arenaBounds.width).toBeLessThanOrEqual(800);
+      expect(arenaBounds.height).toBeGreaterThanOrEqual(450);
+      expect(arenaBounds.height).toBeLessThanOrEqual(600);
+
+      // Should maintain 4:3 aspect ratio
+      const aspectRatio = arenaBounds.width / arenaBounds.height;
+      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
+
+      // Scale should be closer to desktop for high-res devices
+      expect(arenaBounds.scale).toBeGreaterThan(0.6);
+      expect(arenaBounds.scale).toBeLessThan(0.9);
+    });
+
     it("should handle zero dimensions", () => {
       const { result } = renderHook(() => useCombatLayout(0, 0));
 

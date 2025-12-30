@@ -41,6 +41,38 @@ All acceptance criteria have been met with comprehensive testing and validation.
 - Bottom clearance: 534px (✅ >120px minimum)
 - Centered: ✅ 20px margins
 
+### 2K Android Devices (1200x2400px)
+
+**Before:**
+- Arena: 960x2180px (80% width, full available height)
+- Coverage: ~91% of screen height
+- Aspect ratio: Irregular
+- Bottom clearance: Insufficient (~60px)
+
+**After:**
+- Arena: 560x420px (4:3 aspect ratio, capped at 600x450)
+- Coverage: ~18% of screen height
+- Aspect ratio: 4:3 (1.33:1)
+- Top clearance: 105px (✅ >80px minimum)
+- Bottom clearance: 1875px (✅ >120px minimum)
+- Centered: ✅ 20px margins
+
+### 4K/QHD+ Android Devices (1440x3168px)
+
+**Before:**
+- Arena: 1152x2948px (80% width, full available height)
+- Coverage: ~93% of screen height
+- Aspect ratio: Irregular
+- Bottom clearance: Insufficient (~60px)
+
+**After:**
+- Arena: 800x600px (4:3 aspect ratio)
+- Coverage: ~19% of screen height
+- Aspect ratio: 4:3 (1.33:1)
+- Top clearance: 105px (✅ >80px minimum)
+- Bottom clearance: 2463px (✅ >120px minimum)
+- Centered: ✅ 20px margins
+
 ## 🔧 Technical Implementation
 
 ### 1. useCombatLayout Hook Enhancement
@@ -211,8 +243,15 @@ const player1Position3D = useMemo(() => {
 ### Mobile Arena Dimensions
 
 ```
-maxWidth = min(screenWidth - 40, 400)
-maxHeight = min(screenHeight - 200, 600)
+maxWidth = min(screenWidth - 40, deviceMaxWidth)
+
+deviceMaxWidth based on screen width:
+  - width >= 1440: 800px (4K/QHD+ Android: Galaxy S23 Ultra, Pixel 9 Pro)
+  - width >= 1200: 600px (2K Android devices)
+  - width >= 768:  500px (Large phones: iPhone 14 Pro Max)
+  - width < 768:   400px (Standard phones: iPhone SE)
+
+maxHeight = min(screenHeight - 200, 800)
 
 aspectRatio = 4/3
 
@@ -292,8 +331,10 @@ bottomClearance ≥ 120px (min)
 Tested screen sizes:
 - iPhone SE: 375x667 ✅
 - iPhone 14 Pro Max: 430x932 ✅
+- 2K Android (e.g., Galaxy S21): 1200x2400 ✅
+- 4K/QHD+ Android (e.g., Galaxy S23 Ultra, Pixel 9 Pro): 1440x3168 ✅
 - Small phones: 320x568 ✅ (minimum size enforced)
-- Large phones: Up to 400x600 arena ✅
+- Large phones: Up to 800x600 arena ✅
 - Tablets/Desktop: 960+ width (full desktop experience) ✅
 
 ## 🚀 Next Steps
