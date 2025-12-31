@@ -12,7 +12,7 @@
  * @korean 쓰로틀 훅
  */
 
-import { useCallback, useRef, useLayoutEffect } from 'react';
+import { useCallback, useRef, useLayoutEffect, useEffect } from 'react';
 
 /**
  * Hook to throttle a callback function
@@ -40,6 +40,15 @@ export function useThrottle<T extends (...args: never[]) => void>(
   useLayoutEffect(() => {
     callbackRef.current = callback;
   });
+
+  // Cleanup pending timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(

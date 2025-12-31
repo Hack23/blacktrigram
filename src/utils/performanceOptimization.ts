@@ -237,12 +237,17 @@ export function batchUpdates(updates: (() => void)[]): void {
 }
 
 /**
- * Check if object properties have changed (deep comparison for nested objects)
+ * Check if selected object properties have changed using shallow/reference equality
+ *
+ * This compares only the top-level values at the specified keys using strict
+ * equality (`===`). If a key refers to an object or array, only the reference
+ * is compared, not its contents. This is suitable for React.memo-style
+ * performance optimizations where prop references are kept stable.
  * 
  * @param prev - Previous object
  * @param next - Next object
- * @param keys - Keys to check
- * @returns true if any key changed
+ * @param keys - Keys to check with shallow/reference equality
+ * @returns true if any specified key value changed by reference
  */
 export function hasPropsChanged<T extends Record<string, unknown>>(
   prev: T,

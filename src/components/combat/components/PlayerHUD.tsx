@@ -228,7 +228,9 @@ export const PlayerHUD = React.memo(
   (prevProps, nextProps) => {
     // Compare player state
     const healthSame = prevProps.player.health === nextProps.player.health;
+    const maxHealthSame = prevProps.player.maxHealth === nextProps.player.maxHealth;
     const staminaSame = prevProps.player.stamina === nextProps.player.stamina;
+    const maxStaminaSame = prevProps.player.maxStamina === nextProps.player.maxStamina;
     const archetypeSame = prevProps.player.archetype === nextProps.player.archetype;
     const stanceSame = prevProps.player.currentStance === nextProps.player.currentStance;
     const idSame = prevProps.player.id === nextProps.player.id;
@@ -250,7 +252,9 @@ export const PlayerHUD = React.memo(
     // Return true if all relevant props are the same (skip re-render)
     return (
       healthSame &&
+      maxHealthSame &&
       staminaSame &&
+      maxStaminaSame &&
       archetypeSame &&
       stanceSame &&
       idSame &&

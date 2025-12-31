@@ -333,6 +333,12 @@ export const CombatHUDThree = React.memo(
       prevProps.roundsWon?.player2 === nextProps.roundsWon?.player2;
     const pausedSame = prevProps.isPaused === nextProps.isPaused;
     const mobileSame = prevProps.isMobile === nextProps.isMobile;
+    
+    // Compare position array for HUD placement
+    const positionSame = 
+      prevProps.position?.[0] === nextProps.position?.[0] &&
+      prevProps.position?.[1] === nextProps.position?.[1] &&
+      prevProps.position?.[2] === nextProps.position?.[2];
 
     // Return true if all relevant props are the same (skip re-render)
     return (
@@ -351,7 +357,8 @@ export const CombatHUDThree = React.memo(
       maxRoundsSame &&
       roundsWonSame &&
       pausedSame &&
-      mobileSame
+      mobileSame &&
+      positionSame
     );
   }
 );
