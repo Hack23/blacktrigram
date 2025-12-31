@@ -5,6 +5,7 @@
  * Color-coded based on damage type: normal (cyan), critical (gold), vital (red).
  *
  * Uses Html overlays from @react-three/drei for rendering within 3D scenes.
+ * Performance optimized with React.memo to reduce unnecessary re-renders.
  *
  * @module components/combat/components/DamageNumbers
  * @category Combat UI
@@ -69,6 +70,7 @@ function getGlowColor(type: DamageType): string {
 
 /**
  * Individual damage number display
+ * Memoized to prevent unnecessary re-renders
  */
 interface SingleDamageNumberProps {
   readonly damage: DamageNumber;
@@ -77,7 +79,7 @@ interface SingleDamageNumberProps {
   readonly animationDuration: number;
 }
 
-const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
+const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
   damage,
   isMobile,
   arenaBounds,
@@ -146,13 +148,20 @@ const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
       </div>
     </Html>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if damage ID changes
+  return prevProps.damage.id === nextProps.damage.id &&
+         prevProps.isMobile === nextProps.isMobile;
+});
+
+SingleDamageNumber.displayName = "SingleDamageNumber";
 
 /**
  * DamageNumbers Component
  *
  * Renders multiple floating damage numbers in the 3D scene.
  * Each number floats upward and fades out over time.
+ * Performance optimized with React.memo.
  *
  * @example
  * ```tsx
@@ -163,7 +172,7 @@ const SingleDamageNumber: React.FC<SingleDamageNumberProps> = ({
  * />
  * ```
  */
-export const DamageNumbers: React.FC<DamageNumbersProps> = ({
+const DamageNumbersComponent: React.FC<DamageNumbersProps> = ({
   damages,
   isMobile = false,
   arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
@@ -186,5 +195,38 @@ export const DamageNumbers: React.FC<DamageNumbersProps> = ({
     </group>
   );
 };
+
+/**
+ * Memoized DamageNumbers with custom comparison
+ * Only re-renders when damage array changes
+ */
+export const DamageNumbers = React.memo(
+  DamageNumbersComponent,
+  (prevProps, nextProps) => {
+    // Compare damages array length and contents
+    if (prevProps.damages.length !== nextProps.damages.length) {
+      return false;
+    }
+    
+    // Check if array contents changed (compare IDs)
+    for (let i = 0; i < prevProps.damages.length; i++) {
+      if (prevProps.damages[i].id !== nextProps.damages[i].id) {
+        return false;
+      }
+    }
+    
+    // Check other props
+    return (
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.animationDuration === nextProps.animationDuration &&
+      prevProps.arenaBounds?.x === nextProps.arenaBounds?.x &&
+      prevProps.arenaBounds?.y === nextProps.arenaBounds?.y &&
+      prevProps.arenaBounds?.width === nextProps.arenaBounds?.width &&
+      prevProps.arenaBounds?.height === nextProps.arenaBounds?.height
+    );
+  }
+);
+
+DamageNumbers.displayName = "DamageNumbers";
 
 export default DamageNumbers;
