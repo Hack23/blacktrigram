@@ -4,12 +4,15 @@
  * Debounces a function to execute only after a delay since the last call.
  * Useful for search inputs, resize handlers, and other delayed actions.
  * 
+ * Uses a ref pattern to ensure the latest callback is always called
+ * without recreating the debounced function on every render.
+ * 
  * @module hooks/useDebounce
  * @category Performance
  * @korean 디바운스 훅
  */
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useLayoutEffect, useEffect } from 'react';
 
 /**
  * Hook to debounce a callback function
@@ -30,6 +33,21 @@ export function useDebounce<T extends (...args: unknown[]) => void>(
   delay: number
 ): (...args: Parameters<T>) => void {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const callbackRef = useRef(callback);
+  
+  // Keep callback ref up to date
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  });
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return useCallback(
     (...args: Parameters<T>) => {
@@ -40,11 +58,11 @@ export function useDebounce<T extends (...args: unknown[]) => void>(
 
       // Set new timeout
       timeoutRef.current = setTimeout(() => {
-        callback(...args);
+        callbackRef.current(...args);
         timeoutRef.current = null;
       }, delay);
     },
-    [callback, delay]
+    [delay]
   );
 }
 

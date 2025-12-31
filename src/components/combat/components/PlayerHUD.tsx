@@ -236,6 +236,13 @@ export const PlayerHUD = React.memo(
       prevProps.player.name.korean === nextProps.player.name.korean &&
       prevProps.player.name.english === nextProps.player.name.english;
     
+    // Compare statusEffects for BreathingIndicator updates
+    const statusEffectsSame = 
+      prevProps.player.statusEffects.length === nextProps.player.statusEffects.length &&
+      prevProps.player.statusEffects.every((effect, index) => 
+        effect === nextProps.player.statusEffects[index]
+      );
+    
     // Compare other props
     const positionSame = prevProps.position === nextProps.position;
     const mobileSame = prevProps.isMobile === nextProps.isMobile;
@@ -248,6 +255,7 @@ export const PlayerHUD = React.memo(
       stanceSame &&
       idSame &&
       nameSame &&
+      statusEffectsSame &&
       positionSame &&
       mobileSame
     );

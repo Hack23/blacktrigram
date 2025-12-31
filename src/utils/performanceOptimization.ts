@@ -46,12 +46,13 @@ export function shallowCompare<T extends Record<string, unknown>>(
  * Create a memoized component with custom comparison
  * 
  * @param component - Component to memoize
- * @param compareKeys - Keys to compare for equality
+ * @param compareKeys - Top-level prop keys to compare for equality
  * @returns Memoized component
  * 
  * @example
  * ```tsx
- * const MemoizedHUD = memoizeComponent(PlayerHUD, ['player.health', 'player.stamina']);
+ * // If PlayerHUD receives props like { playerHealth, playerStamina }
+ * const MemoizedHUD = memoizeComponent(PlayerHUD, ['playerHealth', 'playerStamina']);
  * ```
  */
 export function memoizeComponent<P extends Record<string, unknown>>(
