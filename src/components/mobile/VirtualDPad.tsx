@@ -17,12 +17,13 @@
  */
 
 import { Html } from '@react-three/drei';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { KOREAN_COLORS } from '../../types/constants';
 import { triggerHaptic } from '../../utils/haptics';
 import { getColorRGB } from '../../utils/colorHelpers';
 import { handleKeyboardNav, getFocusStyle } from '../../utils/accessibility';
 import { createBilingualLabel } from '../../types/AccessibilityTypes';
+import { useThrottle } from '../../hooks/useThrottle';
 
 /**
  * 8 directions for movement control
@@ -103,8 +104,9 @@ interface DPadButtonProps {
 
 /**
  * D-Pad button positioned around the center
+ * Memoized to prevent unnecessary re-renders
  */
-const DPadButton: React.FC<DPadButtonProps> = ({
+const DPadButton = React.memo<DPadButtonProps>(({
   config,
   active,
   focused,
@@ -179,7 +181,14 @@ const DPadButton: React.FC<DPadButtonProps> = ({
       {config.korean}
     </button>
   );
-};
+}, (prevProps, nextProps) => {
+  // Only re-render if active or focused state changes
+  return prevProps.active === nextProps.active &&
+         prevProps.focused === nextProps.focused &&
+         prevProps.config.direction === nextProps.config.direction;
+});
+
+DPadButton.displayName = "DPadButton";
 
 /**
  * VirtualDPad Component
@@ -217,7 +226,7 @@ const DPadButton: React.FC<DPadButtonProps> = ({
  * @public
  * @korean 가상방향패드
  */
-export const VirtualDPad: React.FC<VirtualDPadProps> = ({
+const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
   onMove,
   disabled = false,
   size = 140,
@@ -228,8 +237,12 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
   const [activeDirection, setActiveDirection] = useState<Direction | null>(null);
   const [focusedDirection, setFocusedDirection] = useState<Direction | null>(null);
 
+  // Throttle onMove callbacks to ~60fps for performance
+  const throttledOnMove = useThrottle(onMove, 16);
+
   /**
    * Handle touch or mouse start on a direction button
+   * Throttled for performance
    */
   const handleStart = useCallback(
     (e: React.TouchEvent | React.MouseEvent, direction: Direction) => {
@@ -238,14 +251,15 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
       e.stopPropagation();
 
       setActiveDirection(direction);
-      onMove(direction, 'start');
+      throttledOnMove(direction, 'start');
       triggerHaptic('light');
     },
-    [disabled, onMove]
+    [disabled, throttledOnMove]
   );
 
   /**
    * Handle touch or mouse end
+   * Throttled for performance
    */
   const handleEnd = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -254,9 +268,9 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
       e.stopPropagation();
 
       setActiveDirection(null);
-      onMove(null, 'end');
+      throttledOnMove(null, 'end');
     },
-    [disabled, onMove]
+    [disabled, throttledOnMove]
   );
 
   /**
@@ -268,26 +282,30 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
       handleKeyboardNav(e.nativeEvent, {
         onActivate: () => {
           setActiveDirection(direction);
-          onMove(direction, 'start');
+          throttledOnMove(direction, 'start');
           triggerHaptic('light');
           // Release after brief delay
           setTimeout(() => {
             setActiveDirection(null);
-            onMove(null, 'end');
+            throttledOnMove(null, 'end');
           }, 150);
         },
       });
     },
-    [disabled, onMove]
+    [disabled, throttledOnMove]
   );
 
-  // Calculate dimensions
-  const buttonSize = Math.max(48, size * 0.3); // Minimum 48px for better touch accuracy
-  const radius = (size - buttonSize) / 2;
+  // Memoize calculated dimensions to avoid recalculation
+  const dimensions = useMemo(() => ({
+    buttonSize: Math.max(48, size * 0.3),
+    radius: (size - Math.max(48, size * 0.3)) / 2,
+  }), [size]);
 
-  // Extract RGB values for consistent color usage
-  const primaryColorRgb = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
-  const goldColorRgb = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
+  // Memoize color values
+  const colors = useMemo(() => ({
+    primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
+    gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
+  }), []);
 
   return (
     <Html fullscreen>
@@ -311,8 +329,8 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
             height: '100%',
             background: 'rgba(0, 0, 0, 0.5)',
             borderRadius: '50%',
-            border: `2px solid rgba(${primaryColorRgb.r}, ${primaryColorRgb.g}, ${primaryColorRgb.b}, 0.8)`,
-            boxShadow: `0 0 20px rgba(${primaryColorRgb.r}, ${primaryColorRgb.g}, ${primaryColorRgb.b}, 0.3)`,
+            border: `2px solid rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.8)`,
+            boxShadow: `0 0 20px rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.3)`,
           }}
           role="group"
           aria-label={createBilingualLabel('방향 패드', 'Directional Pad').label}
@@ -329,8 +347,8 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
               onKeyDown={handleKeyDown(config.direction)}
               onFocus={() => setFocusedDirection(config.direction)}
               onBlur={() => setFocusedDirection(null)}
-              radius={radius}
-              buttonSize={buttonSize}
+              radius={dimensions.radius}
+              buttonSize={dimensions.buttonSize}
             />
           ))}
 
@@ -345,12 +363,12 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
               height: '20px',
               borderRadius: '50%',
               background: activeDirection
-                ? `rgba(${goldColorRgb.r}, ${goldColorRgb.g}, ${goldColorRgb.b}, 0.9)`
-                : `rgba(${primaryColorRgb.r}, ${primaryColorRgb.g}, ${primaryColorRgb.b}, 0.7)`,
+                ? `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.9)`
+                : `rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.7)`,
               border: '2px solid #fff',
               transition: 'all 0.15s ease',
               boxShadow: activeDirection
-                ? `0 0 15px rgba(${goldColorRgb.r}, ${goldColorRgb.g}, ${goldColorRgb.b}, 0.8)`
+                ? `0 0 15px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.8)`
                 : 'none',
             }}
             data-testid="dpad-center"
@@ -360,3 +378,23 @@ export const VirtualDPad: React.FC<VirtualDPadProps> = ({
     </Html>
   );
 };
+
+/**
+ * Memoized VirtualDPad with custom comparison
+ * Only re-renders when props change
+ */
+export const VirtualDPad = React.memo(
+  VirtualDPadComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.disabled === nextProps.disabled &&
+      prevProps.size === nextProps.size &&
+      prevProps.bottom === nextProps.bottom &&
+      prevProps.left === nextProps.left &&
+      prevProps.opacity === nextProps.opacity
+      // onMove is not compared as it's typically wrapped in useCallback by parent
+    );
+  }
+);
+
+VirtualDPad.displayName = "VirtualDPad";

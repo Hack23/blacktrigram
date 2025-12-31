@@ -25,15 +25,15 @@ import { useCallback, useRef } from 'react';
  * }, 16); // ~60fps
  * ```
  */
-export function useThrottle<T extends (...args: unknown[]) => void>(
+export function useThrottle<T extends (...args: never[]) => void>(
   callback: T,
   delay: number
-): (...args: Parameters<T>) => void {
+): T {
   const lastRunRef = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   return useCallback(
-    (...args: Parameters<T>) => {
+    ((...args: Parameters<T>) => {
       const now = Date.now();
       const timeSinceLastRun = now - lastRunRef.current;
 
@@ -50,7 +50,7 @@ export function useThrottle<T extends (...args: unknown[]) => void>(
           callback(...args);
         }, timeUntilNext);
       }
-    },
+    }) as T,
     [callback, delay]
   );
 }
