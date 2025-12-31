@@ -32,8 +32,9 @@ export function useThrottle<T extends (...args: never[]) => void>(
   const lastRunRef = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(
-    ((...args: Parameters<T>) => {
+    function(...args: Parameters<T>) {
       const now = Date.now();
       const timeSinceLastRun = now - lastRunRef.current;
 
@@ -50,7 +51,7 @@ export function useThrottle<T extends (...args: never[]) => void>(
           callback(...args);
         }, timeUntilNext);
       }
-    }) as T,
+    } as T,
     [callback, delay]
   );
 }
