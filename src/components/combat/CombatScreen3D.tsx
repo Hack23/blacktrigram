@@ -47,6 +47,8 @@ import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../utils/performance";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
+import { ResponsiveContainer } from "../base/ResponsiveContainer";
+import { Z_INDEX } from "../../types/LayoutTypes";
 import { VolumeControl } from "../ui/VolumeControl";
 import { InputBufferDisplay } from "./components/InputBufferDisplay";
 import { KeyboardHints } from "./components/KeyboardHints";
@@ -1937,29 +1939,39 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           combatState.roundDisplayStatus &&
           combatState.roundDisplayStatus !== null && (
             <Html fullscreen>
-              <div
+              <ResponsiveContainer
+                position={{ base: { x: 0, y: 0 } }}
+                containerWidth={width}
+                containerHeight={height}
+                zIndex={Z_INDEX.MODAL}
                 style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  fontSize: "72px",
-                  fontWeight: "bold",
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
-                    6,
-                    "0"
-                  )}`,
-                  textShadow: "0 0 20px rgba(255, 215, 0, 0.8)",
                   pointerEvents: "none",
-                  zIndex: 1000,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  height: "100%",
                 }}
               >
-                {combatState.roundDisplayStatus === "start" && "라운드 시작!"}
-                {combatState.roundDisplayStatus === "fight" && "전투!"}
-                {combatState.roundDisplayStatus === "end" && "라운드 종료"}
-                {combatState.roundDisplayStatus === "ko" && "K.O.!"}
-              </div>
+                <div
+                  style={{
+                    fontSize: "72px",
+                    fontWeight: "bold",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    textAlign: "center",
+                    color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+                      6,
+                      "0"
+                    )}`,
+                    textShadow: "0 0 20px rgba(255, 215, 0, 0.8)",
+                  }}
+                >
+                  {combatState.roundDisplayStatus === "start" && "라운드 시작!"}
+                  {combatState.roundDisplayStatus === "fight" && "전투!"}
+                  {combatState.roundDisplayStatus === "end" && "라운드 종료"}
+                  {combatState.roundDisplayStatus === "ko" && "K.O.!"}
+                </div>
+              </ResponsiveContainer>
             </Html>
           )}
 
@@ -2014,28 +2026,39 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           width: "100%",
           height: "100%",
           pointerEvents: "none",
+          zIndex: Z_INDEX.HUD,
         }}
       >
         {/* Combat Title - Top Center */}
-        <div
+        <ResponsiveContainer
+          position={{ base: { x: 0, y: 10 } }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD}
           style={{
-            position: "absolute",
-            top: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontSize: isMobile ? "18px" : "24px",
-            fontWeight: "bold",
-            fontFamily: FONT_FAMILY.KOREAN,
-            color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
-              6,
-              "0"
-            )}`,
-            textShadow: "0 0 4px rgba(0,0,0,0.8)",
-            zIndex: 200,
+            pointerEvents: "none",
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
           }}
         >
-          전투 | Combat
-        </div>
+          <div
+            style={{
+              fontSize: isMobile ? "18px" : "24px",
+              fontWeight: "bold",
+              textAlign: "center",
+              fontFamily: FONT_FAMILY.KOREAN,
+              color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+                6,
+                "0"
+              )}`,
+              textShadow: "0 0 4px rgba(0,0,0,0.8)",
+            }}
+          >
+            전투 | Combat
+          </div>
+        </ResponsiveContainer>
 
         {/* Combat Timer - Below Title */}
         {combatState.roundStarted &&
@@ -2132,15 +2155,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Combat Footer - Back Button */}
-        <div
+        <ResponsiveContainer
+          position={{ base: { x: 0, y: height - (isMobile ? 70 : 80) } }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="bottom"
+          zIndex={Z_INDEX.HUD}
           style={{
-            position: "absolute",
-            bottom: isMobile ? "20px" : "30px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            minHeight: "50px",
             pointerEvents: "auto",
-            zIndex: 100,
+            minHeight: "50px",
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
           }}
         >
           {/* Back button container */}
@@ -2196,7 +2222,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               메뉴로 | Return to Menu
             </button>
           </div>
-        </div>
+        </ResponsiveContainer>
 
         {/* Pause Menu Overlay */}
         {(isPaused || showPauseMenu) && (

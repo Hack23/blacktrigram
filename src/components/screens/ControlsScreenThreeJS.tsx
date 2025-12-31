@@ -5,6 +5,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { COMBAT_CONTROLS } from "../../systems";
+import { Z_INDEX } from "../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { BackgroundScene3D } from "../three/BackgroundScene3D";
@@ -144,6 +145,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
           left: 0,
           width: "100%",
           height: "100%",
+          zIndex: Z_INDEX.ARENA,
         }}
         gl={{
           antialias: true,

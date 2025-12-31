@@ -12,6 +12,7 @@ import { useAudio } from "../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../systems";
 import { MatchStatistics } from "../../systems/combat";
+import { Z_INDEX } from "../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { VolumeControl } from "../ui/VolumeControl";
@@ -286,7 +287,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           position: "absolute",
           top: 0,
           left: 0,
-          zIndex: 0,
+          zIndex: Z_INDEX.ARENA,
         }}
         dpr={[1, 2]}
         gl={{
@@ -324,7 +325,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           padding: layoutConstants.padding,
           boxSizing: "border-box",
           overflowY: "auto",
-          zIndex: 1,
+          zIndex: Z_INDEX.HUD,
           pointerEvents: "none",
         }}
       >

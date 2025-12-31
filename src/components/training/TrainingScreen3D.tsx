@@ -22,6 +22,8 @@ import { CombatState, PlayerArchetype, Position, Technique } from "../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { usePlayerMovement } from "../../utils/inputSystem";
+import { ResponsiveContainer } from "../base/ResponsiveContainer";
+import { Z_INDEX } from "../../types/LayoutTypes";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
@@ -822,13 +824,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             }}
           >
             {/* Top Left - Training Controls */}
-            <div
-              style={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-                pointerEvents: "all",
-              }}
+            <ResponsiveContainer
+              position={{ base: { x: 20, y: 20 } }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.HUD}
+              style={{ pointerEvents: "all" }}
             >
               <TrainingControlsHTML
                 isTraining={trainingState.isTraining}
@@ -836,14 +838,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 onStopTraining={handleStopTraining}
                 isMobile={isMobile}
               />
-            </div>
+            </ResponsiveContainer>
 
             {/* Top Right - Training Stats (below VolumeControl) */}
-            <div
+            <ResponsiveContainer
+              position={{
+                base: {
+                  x: width - (isMobile ? 310 : 320),
+                  y: isMobile ? 90 : 120,
+                },
+              }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.HUD}
               style={{
-                position: "absolute",
-                top: isMobile ? 90 : 120,
-                right: 20,
                 pointerEvents: "all",
                 display: "flex",
                 flexDirection: "column",
@@ -860,14 +869,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 }}
                 isMobile={isMobile}
               />
-            </div>
+            </ResponsiveContainer>
 
             {/* Bottom Left - Mode Selector and Anatomy Controls */}
-            <div
+            <ResponsiveContainer
+              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="bottom"
+              zIndex={Z_INDEX.HUD}
               style={{
-                position: "absolute",
-                bottom: isMobile ? 100 : 110,
-                left: isMobile ? 10 : 20,
                 pointerEvents: "all",
                 display: "flex",
                 flexDirection: "column",
@@ -885,79 +896,98 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 onLayerToggle={handleAnatomyLayerToggle}
                 isMobile={isMobile}
               />
-            </div>
+            </ResponsiveContainer>
 
             {/* Bottom Right - Vital Point Panel */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: isMobile ? 100 : 110,
-                right: isMobile ? 10 : 20,
-                pointerEvents: "all",
+            <ResponsiveContainer
+              position={{
+                base: {
+                  x: width - (isMobile ? 310 : 420),
+                  y: height - (isMobile ? 100 : 110),
+                },
               }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="bottom"
+              zIndex={Z_INDEX.HUD}
+              style={{ pointerEvents: "all" }}
             >
               <VitalPointTrainingHTML
                 selectedVitalPoint={trainingState.selectedVitalPoint}
                 onVitalPointSelect={trainingActions.setSelectedVitalPoint}
                 isMobile={isMobile}
               />
-            </div>
+            </ResponsiveContainer>
 
             {/* Vital Point Overlay Hint - Top Center */}
             {!overlayVisible && (
-              <div
+              <ResponsiveContainer
+                position={{ base: { x: 0, y: isMobile ? 20 : 30 } }}
+                containerWidth={width}
+                useSafeArea
+                safeAreaEdge="top"
+                zIndex={Z_INDEX.HUD}
                 style={{
-                  position: "absolute",
-                  top: isMobile ? 20 : 30,
-                  left: "50%",
-                  transform: "translateX(-50%)",
                   pointerEvents: "none",
-                  padding: isMobile ? "8px 12px" : "10px 16px",
-                  background: hexToRgbaString(
-                    KOREAN_COLORS.UI_BACKGROUND_DARK,
-                    0.9
-                  ),
-                  border: `2px solid ${hexToRgbaString(
-                    KOREAN_COLORS.PRIMARY_CYAN,
-                    0.6
-                  )}`,
-                  borderRadius: "8px",
-                  fontSize: isMobile ? "12px" : "14px",
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                  fontWeight: "bold",
-                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
                 }}
               >
-                <div>
-                  💡 급소 오버레이 | Vital Point Overlay: Press{" "}
-                  <span
-                    style={{
-                      color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-                    }}
-                  >
-                    V
-                  </span>
+                <div
+                  style={{
+                    padding: isMobile ? "8px 12px" : "10px 16px",
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.UI_BACKGROUND_DARK,
+                      0.9
+                    ),
+                    border: `2px solid ${hexToRgbaString(
+                      KOREAN_COLORS.PRIMARY_CYAN,
+                      0.6
+                    )}`,
+                    borderRadius: "8px",
+                    fontSize: isMobile ? "12px" : "14px",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  <div>
+                    💡 급소 오버레이 | Vital Point Overlay: Press{" "}
+                    <span
+                      style={{
+                        color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                      }}
+                    >
+                      V
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </ResponsiveContainer>
             )}
 
             {/* Center - Feedback Message */}
             {trainingState.showFeedback && (
-              <div
+              <ResponsiveContainer
+                position={{ base: { x: 0, y: 0 } }}
+                containerWidth={width}
+                containerHeight={height}
+                zIndex={Z_INDEX.MODAL}
                 style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
                   pointerEvents: "none",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  height: "100%",
                 }}
               >
                 <TrainingFeedbackHTML
                   message={trainingState.feedback}
                   isMobile={isMobile}
                 />
-              </div>
+              </ResponsiveContainer>
             )}
 
             {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
@@ -976,15 +1006,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             />
 
             {/* Bottom Center - Return to Menu Button */}
-            <div
+            <ResponsiveContainer
+              position={{ base: { x: 0, y: height - (isMobile ? 75 : 85) } }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="bottom"
+              zIndex={Z_INDEX.HUD}
               style={{
-                position: "absolute",
-                bottom: isMobile ? 25 : 35,
-                left: "50%",
-                transform: "translateX(-50%)",
                 pointerEvents: "all",
                 minHeight: "50px",
-                zIndex: 100,
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
               }}
             >
               <style>
@@ -1027,7 +1060,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               >
                 메뉴로 | Return to Menu
               </button>
-            </div>
+            </ResponsiveContainer>
           </div>
         </Html>
 

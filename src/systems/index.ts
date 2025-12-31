@@ -80,6 +80,7 @@ export * from "./combat";
 export * from "./CombatSystem";
 export * from "./effects";
 export * from "./game";
+export * from "./LayoutSystem";
 export * from "./player";
 export * from "./trigram";
 export * from "./TrigramSystem";

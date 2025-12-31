@@ -17,6 +17,7 @@ import {
   FONT_FAMILY,
   KOREAN_COLORS,
 } from "../../types/constants";
+import { Z_INDEX } from "../../types/LayoutTypes";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { getArchetypeAssets } from "../../utils/playerUtils";
 import { BackgroundScene3D } from "../three/BackgroundScene3D";
@@ -294,7 +295,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
           backgroundRepeat: "no-repeat",
           opacity: 0.08,
           filter: "blur(4px)",
-          zIndex: 0,
+          zIndex: Z_INDEX.BACKGROUND,
         }}
         data-testid="archetype-background"
       />
@@ -310,7 +311,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: 1,
+          zIndex: Z_INDEX.ARENA,
         }}
         gl={{
           antialias: true,

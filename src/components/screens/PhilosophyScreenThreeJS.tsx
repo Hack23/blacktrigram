@@ -8,6 +8,7 @@ import { PLAYER_ARCHETYPES_DATA } from "../../systems";
 import { KoreanCulture } from "../../systems/trigram/KoreanCulture";
 import { TRIGRAM_DATA } from "../../systems/trigram/types";
 import { TrigramStance } from "../../types";
+import { Z_INDEX } from "../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { BackgroundScene3D } from "../three/BackgroundScene3D";
@@ -177,6 +178,7 @@ export const PhilosophyScreenThreeJS: React.FC<
           left: 0,
           width: "100%",
           height: "100%",
+          zIndex: Z_INDEX.ARENA,
         }}
         gl={{
           antialias: true,
