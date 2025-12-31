@@ -924,11 +924,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               <ResponsiveContainer
                 position={{ base: { x: 0, y: isMobile ? 20 : 30 } }}
                 containerWidth={width}
-                horizontalAlign="center"
                 useSafeArea
                 safeAreaEdge="top"
                 zIndex={Z_INDEX.HUD}
-                style={{ pointerEvents: "none" }}
+                style={{
+                  pointerEvents: "none",
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
               >
                 <div
                   style={{
@@ -969,10 +973,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 position={{ base: { x: 0, y: 0 } }}
                 containerWidth={width}
                 containerHeight={height}
-                horizontalAlign="center"
-                verticalAlign="middle"
                 zIndex={Z_INDEX.MODAL}
-                style={{ pointerEvents: "none" }}
+                style={{
+                  pointerEvents: "none",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  height: "100%",
+                }}
               >
                 <TrainingFeedbackHTML
                   message={trainingState.feedback}
@@ -1000,11 +1009,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{ base: { x: 0, y: height - (isMobile ? 75 : 85) } }}
               containerWidth={width}
-              horizontalAlign="center"
               useSafeArea
               safeAreaEdge="bottom"
               zIndex={Z_INDEX.HUD}
-              style={{ pointerEvents: "all", minHeight: "50px" }}
+              style={{
+                pointerEvents: "all",
+                minHeight: "50px",
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+              }}
             >
               <style>
                 {`
