@@ -245,6 +245,13 @@ export const PlayerHUD = React.memo(
         effect === nextProps.player.statusEffects[index]
       );
     
+    // Compare combat readiness factors for CombatReadinessBar updates
+    // These properties are used by calculateCombatReadiness()
+    const bodyPartHealthSame = prevProps.player.bodyPartHealth === nextProps.player.bodyPartHealth;
+    const painSame = prevProps.player.pain === nextProps.player.pain;
+    const consciousnessSame = prevProps.player.consciousness === nextProps.player.consciousness;
+    const balanceSame = prevProps.player.balance === nextProps.player.balance;
+    
     // Compare other props
     const positionSame = prevProps.position === nextProps.position;
     const mobileSame = prevProps.isMobile === nextProps.isMobile;
@@ -260,6 +267,10 @@ export const PlayerHUD = React.memo(
       idSame &&
       nameSame &&
       statusEffectsSame &&
+      bodyPartHealthSame &&
+      painSame &&
+      consciousnessSame &&
+      balanceSame &&
       positionSame &&
       mobileSame
     );
