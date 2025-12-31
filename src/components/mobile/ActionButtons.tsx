@@ -256,7 +256,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'transform, opacity 0.2s ease',
+            transition: 'transform 0.2s ease, opacity 0.2s ease',
             transform: attackPressed ? 'scale(0.95)' : 'scale(1)',
             boxShadow: attackPressed
               ? `0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
@@ -302,7 +302,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'transform, opacity 0.2s ease',
+            transition: 'transform 0.2s ease, opacity 0.2s ease',
             transform: blockPressed ? 'scale(0.95)' : 'scale(1)',
             boxShadow: blockPressed
               ? `0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`

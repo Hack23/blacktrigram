@@ -163,7 +163,7 @@ const DPadButton = React.memo<DPadButtonProps>(({
         cursor: 'pointer',
         userSelect: 'none',
         touchAction: 'none',
-        transition: 'transform, opacity 0.2s ease',
+        transition: 'transform 0.2s ease, opacity 0.2s ease',
         transform: active ? 'scale(1.1)' : 'scale(1)',
         boxShadow: focused
           ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 15px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.8)`
@@ -366,7 +366,7 @@ const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
                 ? `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.9)`
                 : `rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.7)`,
               border: '2px solid #fff',
-              transition: 'transform, opacity 0.15s ease',
+              transition: 'transform 0.15s ease, opacity 0.15s ease',
               boxShadow: activeDirection
                 ? `0 0 15px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.8)`
                 : 'none',

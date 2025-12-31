@@ -144,10 +144,9 @@ export function measureRender<T>(
   componentName: string,
   callback: () => T
 ): T {
-  const result = callback();
-  
   if (import.meta.env.DEV) {
     const start = performance.now();
+    const result = callback();
     const end = performance.now();
     const duration = end - start;
     
@@ -156,9 +155,11 @@ export function measureRender<T>(
         `[Performance] ${componentName} render took ${duration.toFixed(2)}ms (>16.67ms budget)`
       );
     }
+    
+    return result;
   }
   
-  return result;
+  return callback();
 }
 
 /**
