@@ -367,7 +367,7 @@ describe('ResponsiveScaling - createResponsiveConfig', () => {
 
 describe('ResponsiveScaling - calculateResponsiveValues', () => {
   describe('mobile values (375px)', () => {
-    const values = calculateResponsiveValues(375, 667);
+    const values = calculateResponsiveValues(375);
 
     it('should calculate readable font sizes', () => {
       expect(values.fontSize.small).toBeGreaterThanOrEqual(12);
@@ -391,7 +391,7 @@ describe('ResponsiveScaling - calculateResponsiveValues', () => {
   });
 
   describe('tablet values (768px)', () => {
-    const values = calculateResponsiveValues(768, 1024);
+    const values = calculateResponsiveValues(768);
 
     it('should calculate moderate font sizes', () => {
       expect(values.fontSize.body).toBe(14.4); // 16 * 0.9
@@ -404,7 +404,7 @@ describe('ResponsiveScaling - calculateResponsiveValues', () => {
   });
 
   describe('desktop values (1280px)', () => {
-    const values = calculateResponsiveValues(1280, 800);
+    const values = calculateResponsiveValues(1280);
 
     it('should use base font sizes', () => {
       expect(values.fontSize.body).toBe(16); // 16 * 1.0
@@ -416,7 +416,7 @@ describe('ResponsiveScaling - calculateResponsiveValues', () => {
   });
 
   describe('large values (1440px)', () => {
-    const values = calculateResponsiveValues(1440, 900);
+    const values = calculateResponsiveValues(1440);
 
     it('should scale up font sizes', () => {
       expect(values.fontSize.body).toBe(19.2); // 16 * 1.2
@@ -428,7 +428,7 @@ describe('ResponsiveScaling - calculateResponsiveValues', () => {
   });
 
   describe('xlarge values (2560px)', () => {
-    const values = calculateResponsiveValues(2560, 1440);
+    const values = calculateResponsiveValues(2560);
 
     it('should scale to maximum readable sizes', () => {
       expect(values.fontSize.body).toBe(22.4); // 16 * 1.4
@@ -443,12 +443,12 @@ describe('ResponsiveScaling - calculateResponsiveValues', () => {
 
   describe('custom base values', () => {
     it('should accept custom base font size', () => {
-      const values = calculateResponsiveValues(1280, 800, 18);
+      const values = calculateResponsiveValues(1280, 18);
       expect(values.fontSize.body).toBe(18); // 18 * 1.0 for desktop
     });
 
     it('should accept custom base spacing', () => {
-      const values = calculateResponsiveValues(1280, 800, 16, 20);
+      const values = calculateResponsiveValues(1280, 16, 20);
       expect(values.spacing.md).toBe(20); // 20 * 1.0 for desktop
     });
   });
@@ -523,30 +523,30 @@ describe('ResponsiveScaling - Helper Functions', () => {
 
 describe('ResponsiveScaling - Edge Cases', () => {
   it('should handle very small screens (320px)', () => {
-    const values = calculateResponsiveValues(320, 568);
+    const values = calculateResponsiveValues(320);
     expect(values.fontSize.body).toBeGreaterThanOrEqual(14);
     expect(values.spacing.md).toBeGreaterThan(0);
   });
 
   it('should handle very large screens (8K: 7680px)', () => {
-    const values = calculateResponsiveValues(7680, 4320);
+    const values = calculateResponsiveValues(7680);
     expect(values.fontSize.body).toBeLessThanOrEqual(24);
     expect(values.spacing.md).toBeGreaterThan(0);
   });
 
   it('should handle square screens', () => {
-    const values = calculateResponsiveValues(1000, 1000);
+    const values = calculateResponsiveValues(1000);
     expect(values.fontSize.body).toBeGreaterThan(0);
     expect(values.spacing.md).toBeGreaterThan(0);
   });
 
   it('should handle portrait orientations', () => {
-    const values = calculateResponsiveValues(1024, 1366); // iPad Pro portrait
+    const values = calculateResponsiveValues(1024); // iPad Pro portrait
     expect(values.fontSize.body).toBeGreaterThan(0);
   });
 
   it('should handle landscape orientations', () => {
-    const values = calculateResponsiveValues(1366, 1024); // iPad Pro landscape
+    const values = calculateResponsiveValues(1366); // iPad Pro landscape
     expect(values.fontSize.body).toBeGreaterThan(0);
   });
 });

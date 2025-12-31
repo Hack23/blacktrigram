@@ -14,6 +14,36 @@ export {
 } from "./typography";
 export { HEALTH_COLORS, UI_CONSTANTS, UI_DIMENSIONS } from "./ui";
 
+// Responsive scaling system exports  
+export {
+  RESPONSIVE_BREAKPOINTS,
+  FONT_SCALE_MAP,
+  SPACING_SCALE_MAP,
+  FONT_SIZE_CONSTRAINTS,
+  DEFAULT_RESIZE_TRANSITION,
+  getScreenSize,
+  calculateFontSize,
+  calculateSpacing,
+  getFontScale,
+  getSpacingScale,
+  createTransitionString,
+  createResponsiveConfig,
+  calculateResponsiveValues,
+  testScreenSize,
+  isMobileSize,
+  isTabletSize,
+  isDesktopSize,
+  // Use qualified name for ScreenSize to avoid conflict with LayoutTypes.ScreenSize
+  type ScreenSize as ResponsiveScreenSize,
+  type ResponsiveBreakpoints,
+  type FontScaleMap,
+  type SpacingScaleMap,
+  type ResponsiveScaleConfig,
+  type ResizeTransitionConfig,
+  type ResponsiveValues,
+  type ScreenSizeTestResult,
+} from "../../systems/ResponsiveScaling";
+
 // Fix: Provide default export
 export { KOREAN_COLORS as default } from "./colors";
 

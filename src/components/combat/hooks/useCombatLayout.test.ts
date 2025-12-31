@@ -175,13 +175,13 @@ describe("useCombatLayout", () => {
     });
 
     it("should recalculate when crossing mobile breakpoint", () => {
-      // Create first hook instance with desktop
+      // Create first hook instance with tablet (800px)
       vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(false);
       
-      const { result: desktopResult } = renderHook(() => useCombatLayout(800, 800));
+      const { result: tabletResult } = renderHook(() => useCombatLayout(800, 800));
       
-      expect(desktopResult.current.isMobile).toBe(false);
-      expect(desktopResult.current.layoutConstants.hudHeight).toBe(120);
+      expect(tabletResult.current.isMobile).toBe(false);
+      expect(tabletResult.current.layoutConstants.hudHeight).toBe(100); // Tablet gets 100
 
       // Create new hook instance with mobile (device detection returns different value)
       vi.spyOn(deviceDetection, 'shouldUseMobileControls').mockReturnValue(true);

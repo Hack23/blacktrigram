@@ -1,8 +1,13 @@
 /**
- * useResponsiveLayout Hook - Mobile-Optimized Layout Calculations
+ * useResponsiveLayout Hook - Enhanced Responsive Layout System
  * 
- * Provides responsive layout values optimized for mobile screens with touch-friendly
- * element sizing and strategic positioning following iOS Human Interface Guidelines.
+ * Provides comprehensive responsive layout values for all screen sizes with:
+ * - Five screen size categories (mobile, tablet, desktop, large, xlarge)
+ * - Proportional font scaling (0.8x-1.4x) with 14-24px readability constraints
+ * - Proportional spacing scaling (0.5x-1.5x)
+ * - Smooth transitions for resize operations (300ms ease-in-out)
+ * - Touch-friendly element sizing following iOS Human Interface Guidelines
+ * - Safe area insets for notch and home indicator
  * 
  * Uses robust device detection combining user-agent and screen size to ensure
  * mobile controls are shown on all mobile devices, including high-resolution phones.
@@ -13,6 +18,7 @@
  * - Responsive font sizes (14px minimum body text)
  * - Optimized spacing for mobile vs desktop
  * - Portrait and landscape mode support
+ * - Tablet breakpoint support (768-1024px)
  * 
  * @module hooks/useResponsiveLayout
  * @category Mobile UI
@@ -21,19 +27,28 @@
 
 import { useMemo } from 'react';
 import { shouldUseMobileControls, getSafeAreaInsets as getDeviceSafeAreaInsets } from '../utils/deviceDetection';
+import {
+  RESPONSIVE_BREAKPOINTS,
+  getScreenSize,
+  calculateResponsiveValues,
+  createTransitionString,
+} from '../systems/ResponsiveScaling';
+
+import type { ScreenSize } from '../systems/ResponsiveScaling';
 
 /**
  * Breakpoints for responsive design
+ * @deprecated Use RESPONSIVE_BREAKPOINTS from ResponsiveScaling instead
  */
 export const BREAKPOINTS = {
   /** Extra small mobile devices (iPhone SE) */
   MOBILE_SMALL: 375,
   /** Standard mobile devices */
-  MOBILE: 768,
+  MOBILE: RESPONSIVE_BREAKPOINTS.MOBILE,
   /** Tablet devices */
-  TABLET: 1024,
+  TABLET: RESPONSIVE_BREAKPOINTS.TABLET,
   /** Desktop devices */
-  DESKTOP: 1920,
+  DESKTOP: RESPONSIVE_BREAKPOINTS.LARGE,
 } as const;
 
 /**
@@ -105,8 +120,12 @@ export interface ResponsiveLayout {
   readonly isSmallMobile: boolean;
   /** Whether current viewport is tablet-sized */
   readonly isTablet: boolean;
+  /** Whether current viewport is desktop or larger */
+  readonly isDesktop: boolean;
   /** Whether in landscape orientation */
   readonly isLandscape: boolean;
+  /** Current screen size category (mobile, tablet, desktop, large, xlarge) */
+  readonly screenSize: ScreenSize;
   /** Safe area insets for mobile devices */
   readonly safeArea: SafeAreaInsets;
   /** Touch target sizes */
@@ -115,6 +134,8 @@ export interface ResponsiveLayout {
   readonly fontSize: FontSizes;
   /** Spacing scale */
   readonly spacing: Spacing;
+  /** CSS transition string for smooth resizing */
+  readonly transition: string;
   /** Current viewport dimensions */
   readonly viewport: {
     readonly width: number;
@@ -125,12 +146,21 @@ export interface ResponsiveLayout {
 /**
  * Calculate responsive layout values based on viewport dimensions
  * 
+ * Enhanced with centralized responsive scaling system:
+ * - Five screen size categories (mobile, tablet, desktop, large, xlarge)
+ * - Proportional font scaling (0.8x-1.4x) with 14-24px constraints
+ * - Proportional spacing scaling (0.5x-1.5x)
+ * - Smooth CSS transitions for resize operations
+ * 
  * Optimized for:
- * - iPhone SE (375x667)
- * - iPhone 11/12/13 (414x896)
- * - iPhone 14 Pro Max (430x932)
- * - iPad (768x1024)
- * - Desktop (1920x1080+)
+ * - iPhone SE (375x667) - mobile
+ * - iPhone 11/12/13 (414x896) - mobile
+ * - iPhone 14 Pro Max (430x932) - mobile
+ * - iPad (768x1024) - tablet
+ * - iPad Pro (1024x1366) - desktop
+ * - Standard Desktop (1280x800) - desktop
+ * - HD Display (1920x1080) - xlarge
+ * - 4K Display (2560x1440) - xlarge
  * 
  * @param width - Viewport width in pixels
  * @param height - Viewport height in pixels
@@ -144,8 +174,9 @@ export interface ResponsiveLayout {
  *   padding: layout.spacing.md,
  *   fontSize: layout.fontSize.body,
  *   minHeight: layout.touchTarget.small,
+ *   transition: layout.transition,
  * }}>
- *   Mobile-optimized content
+ *   Responsive content
  * </div>
  * ```
  * 
@@ -157,11 +188,15 @@ export function useResponsiveLayout(
   height: number
 ): ResponsiveLayout {
   return useMemo(() => {
+    // Determine screen size category using centralized scaling system
+    const screenSize = getScreenSize(width);
+    
     // Device type detection using robust device detection utility
     // Combines user-agent and screen size for reliable mobile detection
     const isMobile = shouldUseMobileControls();
-    const isSmallMobile = width <= BREAKPOINTS.MOBILE_SMALL; // Changed to <= to include 375
-    const isTablet = width >= BREAKPOINTS.MOBILE && width < BREAKPOINTS.TABLET && !isMobile;
+    const isSmallMobile = width <= BREAKPOINTS.MOBILE_SMALL;
+    const isTablet = screenSize === 'tablet';
+    const isDesktop = screenSize === 'desktop' || screenSize === 'large' || screenSize === 'xlarge';
     const isLandscape = width > height;
 
     // Safe area insets from device detection utility
@@ -180,34 +215,42 @@ export function useResponsiveLayout(
       large: isSmallMobile ? 60 : 80,
     };
 
-    // Font sizes optimized for readability
-    // Mobile: minimum 14px body, 16px for important text
+    // Calculate responsive values using centralized scaling system
+    const responsiveValues = calculateResponsiveValues(width);
+
+    // Map to existing font size structure for backward compatibility
     const fontSize: FontSizes = {
-      small: isSmallMobile ? 12 : 14,
-      body: isSmallMobile ? 14 : 16,
-      title: isSmallMobile ? 18 : isTablet ? 22 : 24,
-      hero: isSmallMobile ? 24 : isTablet ? 32 : 36,
-      hud: isSmallMobile ? 16 : isMobile ? 18 : 20, // Scale up on larger mobile/desktop
+      small: responsiveValues.fontSize.small,
+      body: responsiveValues.fontSize.body,
+      title: responsiveValues.fontSize.title,
+      hero: responsiveValues.fontSize.hero,
+      hud: responsiveValues.fontSize.hud,
     };
 
-    // Spacing scale
+    // Map to existing spacing structure for backward compatibility
     const spacing: Spacing = {
-      xs: isSmallMobile ? 4 : 8,
-      sm: isSmallMobile ? 8 : 12,
-      md: isSmallMobile ? 12 : 16,
-      lg: isSmallMobile ? 16 : 24,
-      xl: isSmallMobile ? 24 : 32,
+      xs: responsiveValues.spacing.xs,
+      sm: responsiveValues.spacing.sm,
+      md: responsiveValues.spacing.md,
+      lg: responsiveValues.spacing.lg,
+      xl: responsiveValues.spacing.xl,
     };
+
+    // Get transition string for smooth resizing
+    const transition = createTransitionString();
 
     return {
       isMobile,
       isSmallMobile,
       isTablet,
+      isDesktop,
       isLandscape,
+      screenSize,
       safeArea,
       touchTarget,
       fontSize,
       spacing,
+      transition,
       viewport: { width, height },
     };
   }, [width, height]);

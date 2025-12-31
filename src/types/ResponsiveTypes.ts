@@ -214,4 +214,6 @@ export interface ScreenSizeTestResult {
   readonly isTablet: boolean;
   /** Whether this is desktop or larger */
   readonly isDesktop: boolean;
+  /** Whether in landscape orientation */
+  readonly isLandscape: boolean;
 }

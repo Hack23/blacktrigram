@@ -28,6 +28,18 @@ import type {
   ScreenSizeTestResult,
 } from '../types/ResponsiveTypes';
 
+// Re-export types for convenience
+export type {
+  ScreenSize,
+  ResponsiveBreakpoints,
+  FontScaleMap,
+  SpacingScaleMap,
+  ResponsiveScaleConfig,
+  ResizeTransitionConfig,
+  ResponsiveValues,
+  ScreenSizeTestResult,
+};
+
 /**
  * Standard breakpoints for responsive design
  * Maps viewport widths to device categories
@@ -284,7 +296,6 @@ export function createTransitionString(
  * 
  * @param width - Viewport width
  * @param height - Viewport height
- * @param transitions - Custom transition config (optional)
  * @returns Complete responsive configuration
  * 
  * @example
@@ -300,8 +311,7 @@ export function createTransitionString(
  */
 export function createResponsiveConfig(
   width: number,
-  height: number,
-  transitions?: Partial<ResizeTransitionConfig>
+  height: number
 ): ResponsiveScaleConfig {
   const screenSize = getScreenSize(width);
   const fontScale = getFontScale(screenSize);
@@ -322,14 +332,13 @@ export function createResponsiveConfig(
  * Ready-to-use values for component styling
  * 
  * @param width - Viewport width
- * @param height - Viewport height
  * @param baseFontSize - Base font size (default: 16px)
  * @param baseSpacing - Base spacing unit (default: 16px)
  * @returns Complete responsive values
  * 
  * @example
  * ```typescript
- * const values = calculateResponsiveValues(375, 667);
+ * const values = calculateResponsiveValues(375);
  * 
  * <div style={{
  *   fontSize: values.fontSize.body,
@@ -345,7 +354,6 @@ export function createResponsiveConfig(
  */
 export function calculateResponsiveValues(
   width: number,
-  height: number,
   baseFontSize: number = FONT_SIZE_CONSTRAINTS.BASE_SIZE,
   baseSpacing: number = 16
 ): ResponsiveValues {
@@ -382,7 +390,9 @@ export function calculateResponsiveValues(
 /**
  * Test screen size determination for validation
  * 
- * Useful for testing and debugging responsive breakpoints
+ * Useful for testing and debugging responsive breakpoints.
+ * Screen size is determined by width (breakpoints), but height is included
+ * in the result for testing portrait/landscape orientations.
  * 
  * @param width - Viewport width to test
  * @param height - Viewport height to test
@@ -404,6 +414,7 @@ export function testScreenSize(
   height: number
 ): ScreenSizeTestResult {
   const screenSize = getScreenSize(width);
+  const isLandscape = width > height;
   
   return {
     width,
@@ -412,6 +423,8 @@ export function testScreenSize(
     isMobile: screenSize === 'mobile',
     isTablet: screenSize === 'tablet',
     isDesktop: screenSize === 'desktop' || screenSize === 'large' || screenSize === 'xlarge',
+    // Include landscape in test result for completeness
+    isLandscape,
   };
 }
 
