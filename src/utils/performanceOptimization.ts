@@ -170,17 +170,20 @@ export function measureRender<T>(
  * @returns Render count
  */
 export function useRenderCount(componentName: string): number {
-  const renderCountRef = React.useRef(0);
+  const [renderCount, setRenderCount] = React.useState(0);
   
-  renderCountRef.current += 1;
-  
-  if (import.meta.env.DEV) {
-    React.useEffect(() => {
-      console.log(`[Render] ${componentName} rendered ${renderCountRef.current} times`);
+  // Increment on each render
+  React.useEffect(() => {
+    setRenderCount(prev => {
+      const newCount = prev + 1;
+      if (import.meta.env.DEV) {
+        console.log(`[Render] ${componentName} rendered ${newCount} times`);
+      }
+      return newCount;
     });
-  }
+  });
   
-  return renderCountRef.current;
+  return renderCount;
 }
 
 /**
@@ -233,7 +236,6 @@ export function useStableCallback<T extends (...args: never[]) => unknown>(
   });
   
   // Return stable function that calls latest callback
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableCallback = React.useCallback(
     (...args: Parameters<T>) => callbackRef.current(...args),
     []

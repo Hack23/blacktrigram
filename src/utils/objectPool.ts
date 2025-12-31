@@ -70,8 +70,9 @@ export class ObjectPool<T extends Poolable> {
    * @returns Object from pool or newly created
    */
   acquire(): T {
-    if (this.pool.length > 0) {
-      return this.pool.pop()!;
+    const pooled = this.pool.pop();
+    if (pooled) {
+      return pooled;
     }
     return this.factory();
   }
