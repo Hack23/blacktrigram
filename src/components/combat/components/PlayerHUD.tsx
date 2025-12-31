@@ -19,6 +19,7 @@ import {
   FONT_FAMILY,
   KOREAN_COLORS,
 } from "../../../types/constants";
+import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { BreathingIndicator } from "./BreathingIndicator";
 import { HealthBar } from "./HealthBar";
@@ -70,7 +71,7 @@ export const PlayerHUD: React.FC<PlayerHUDProps> = ({
         flexDirection: "column",
         gap,
         pointerEvents: "none",
-        zIndex: 100,
+        zIndex: Z_INDEX.HUD,
         maxWidth: isMobile ? "220px" : "300px",
       }}
     >

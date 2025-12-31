@@ -6,8 +6,9 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { FONT_FAMILY } from "../../../types/constants";
+import { applyHtmlOverlayStyles } from "../../../utils/htmlOverlayHelpers";
 
 /**
  * Props for DamageNumber3D component
@@ -48,6 +49,11 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
       ? "#ffd700"
       : "#ffffff";
 
+  // Apply Html overlay styles for damage numbers (effects layer)
+  const overlayStyle = useMemo(() => {
+    return applyHtmlOverlayStyles("effects", false, 10, true, false);
+  }, []);
+
   // Animate floating and fading using refs to avoid unnecessary re-renders
   useFrame(() => {
     // Lazy initialize start time on first frame
@@ -78,9 +84,10 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
   return (
     <Html
       position={position}
-      center
+      center={overlayStyle.center}
+      distanceFactor={overlayStyle.distanceFactor}
       style={{
-        pointerEvents: "none",
+        pointerEvents: overlayStyle.pointerEvents,
         transition: "none",
       }}
     >
@@ -96,6 +103,7 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
           textShadow: `0 0 10px ${color}, 0 0 20px ${color}`,
           opacity: 1,
           transform: type === "critical" ? "scale(1.2)" : "scale(1)",
+          zIndex: overlayStyle.zIndex,
         }}
       >
         -{damage}
