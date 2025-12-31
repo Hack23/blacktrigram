@@ -178,11 +178,12 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
       onToggle();
       triggerHaptic('light');
 
-      // Announce state change to screen readers
+      // Announce state change to screen readers using the toggled value
+      const nextExpanded = !expanded;
       announceToScreenReader({
         message: createBilingualLabel(
-          expanded ? '자세 휠 닫힘' : '자세 휠 열림',
-          expanded ? 'Stance wheel closed' : 'Stance wheel opened'
+          nextExpanded ? '자세 휠 열림' : '자세 휠 닫힘',
+          nextExpanded ? 'Stance wheel opened' : 'Stance wheel closed'
         ).label,
         politeness: 'polite',
       });
@@ -217,13 +218,13 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
             newIndex = (stanceIndex + 1) % 8;
           }
           setFocusedStance(newIndex);
-          // Focus the new stance button
-          setTimeout(() => {
+          // Focus the new stance button on the next animation frame
+          requestAnimationFrame(() => {
             const button = document.querySelector(
               `[data-testid="stance-button-${newIndex}"]`
-            ) as HTMLElement;
+            ) as HTMLElement | null;
             button?.focus();
-          }, 0);
+          });
         },
       });
     },
@@ -318,9 +319,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
                     background: isActive
                       ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.95)`
                       : `rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 0.8)`,
-                    border: focusedStance === index
-                      ? `3px solid rgb(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b})`
-                      : `3px solid ${isActive ? '#fff' : `rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 1)`}`,
+                    border: `3px solid ${isActive ? '#fff' : `rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 1)`}`,
                     fontSize: '24px',
                     color: isActive ? '#000' : '#fff',
                     fontWeight: 'bold',
@@ -333,14 +332,16 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
                     touchAction: 'none',
                     transition: 'all 0.2s ease',
                     transform: isActive || isHovered ? 'scale(1.15)' : 'scale(1)',
-                    boxShadow: focusedStance === index
-                      ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`
-                      : isActive
+                    boxShadow: isActive
                       ? `0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`
                       : isHovered
                       ? `0 0 15px rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 0.8)`
                       : `0 4px 10px rgba(0, 0, 0, 0.5)`,
-                    ...getFocusStyle(focusedStance === index),
+                    ...getFocusStyle(focusedStance === index, {
+                      boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
+                      outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
+                      outlineWidth: 3,
+                    }),
                   }}
                   aria-label={createBilingualLabel(
                     `${STANCE_KOREAN_NAMES[index]} ${TRIGRAM_SYMBOLS[index]}`,
@@ -348,7 +349,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
                   ).label}
                   aria-checked={isActive}
                   role="radio"
-                  tabIndex={isActive ? 0 : -1}
+                  tabIndex={0}
                   disabled={disabled}
                   id={`stance-button-${index}`}
                   data-testid={`stance-button-${index}`}
@@ -410,9 +411,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
             height: '60px',
             borderRadius: '50%',
             background: `rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.9)`,
-            border: focusedStance === currentStance
-              ? `3px solid rgb(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b})`
-              : `3px solid rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
+            border: `3px solid rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
             fontSize: '28px',
             color: '#fff',
             fontWeight: 'bold',
@@ -424,17 +423,19 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
             userSelect: 'none',
             touchAction: 'none',
             transition: 'all 0.2s ease',
-            boxShadow: focusedStance === currentStance
-              ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`
-              : `0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
-            ...getFocusStyle(focusedStance === currentStance),
+            boxShadow: `0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
+            ...getFocusStyle(focusedStance === currentStance, {
+              boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
+              outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
+              outlineWidth: 3,
+            }),
           }}
           disabled={disabled}
           aria-label={createBilingualLabel(
             `현재 자세: ${STANCE_KOREAN_NAMES[currentStance]} ${TRIGRAM_SYMBOLS[currentStance]}. 자세 휠 열기`,
             `Current stance: ${TRIGRAM_STANCES_ORDER[currentStance]}. Open stance wheel`
           ).label}
-          aria-expanded={false}
+          aria-expanded={expanded}
           aria-haspopup="menu"
           role="button"
           tabIndex={disabled ? -1 : 0}

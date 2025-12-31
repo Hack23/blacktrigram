@@ -101,20 +101,27 @@ export function handleKeyboardNav(
 }
 
 /**
- * Default focus indicator style (WCAG 2.1 Level AA compliant)
+ * Get default focus indicator style (WCAG 2.1 Level AA compliant)
  * Uses 2px solid outline with high contrast cyan color
+ * Computed lazily to avoid initialization order dependencies
  */
-export const DEFAULT_FOCUS_STYLE: FocusIndicatorStyle = {
-  outlineWidth: 2,
-  outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
-  outlineOffset: 2,
-  outlineStyle: 'solid',
-  boxShadow: (() => {
-    const rgb = hexToRgb(KOREAN_COLORS.PRIMARY_CYAN);
-    return `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`;
-  })(),
-  transitionDuration: 0.2,
-};
+function getDefaultFocusStyle(): FocusIndicatorStyle {
+  const rgb = hexToRgb(KOREAN_COLORS.PRIMARY_CYAN);
+  return {
+    outlineWidth: 2,
+    outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
+    outlineOffset: 2,
+    outlineStyle: 'solid',
+    boxShadow: `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`,
+    transitionDuration: 0.2,
+  };
+}
+
+/**
+ * Default focus indicator style (WCAG 2.1 Level AA compliant)
+ * @deprecated Use getDefaultFocusStyle() instead for lazy computation
+ */
+export const DEFAULT_FOCUS_STYLE: FocusIndicatorStyle = getDefaultFocusStyle();
 
 /**
  * Get focus indicator CSS style object
@@ -137,14 +144,16 @@ export function getFocusStyle(
   isFocused: boolean,
   customStyle?: Partial<FocusIndicatorStyle>
 ): React.CSSProperties {
+  const defaultStyle = getDefaultFocusStyle();
+  
   if (!isFocused) {
     return {
-      outline: 'none',
-      transition: `all ${DEFAULT_FOCUS_STYLE.transitionDuration}s ease`,
+      // Preserve browser default focus indicator instead of 'none'
+      transition: `all ${defaultStyle.transitionDuration}s ease`,
     };
   }
 
-  const style = { ...DEFAULT_FOCUS_STYLE, ...customStyle };
+  const style = { ...defaultStyle, ...customStyle };
   const rgb = hexToRgb(style.outlineColor ?? KOREAN_COLORS.PRIMARY_CYAN);
 
   return {
@@ -258,6 +267,8 @@ export function getAccessibleForeground(background: number): number {
  * });
  * ```
  */
+let liveRegionInstance: HTMLElement | null = null;
+
 export function announceToScreenReader(
   announcement: ScreenReaderAnnouncement
 ): void {
@@ -265,33 +276,46 @@ export function announceToScreenReader(
 
   setTimeout(() => {
     // Create or get existing live region
-    let liveRegion = document.getElementById('sr-live-region');
-
-    if (!liveRegion) {
-      liveRegion = document.createElement('div');
-      liveRegion.id = 'sr-live-region';
-      liveRegion.setAttribute('aria-live', politeness);
-      liveRegion.setAttribute('aria-atomic', 'true');
-      liveRegion.style.cssText = `
+    if (!liveRegionInstance) {
+      liveRegionInstance = document.createElement('div');
+      liveRegionInstance.id = 'sr-live-region';
+      liveRegionInstance.setAttribute('aria-live', politeness);
+      liveRegionInstance.setAttribute('aria-atomic', 'true');
+      liveRegionInstance.style.cssText = `
         position: absolute;
         left: -10000px;
         width: 1px;
         height: 1px;
         overflow: hidden;
       `;
-      document.body.appendChild(liveRegion);
+      document.body.appendChild(liveRegionInstance);
+    }
+
+    // Update politeness level if changed
+    if (liveRegionInstance.getAttribute('aria-live') !== politeness) {
+      liveRegionInstance.setAttribute('aria-live', politeness);
     }
 
     // Update message
-    liveRegion.textContent = message;
+    liveRegionInstance.textContent = message;
 
     // Clear message after 3 seconds
     setTimeout(() => {
-      if (liveRegion) {
-        liveRegion.textContent = '';
+      if (liveRegionInstance) {
+        liveRegionInstance.textContent = '';
       }
     }, 3000);
   }, delay);
+}
+
+/**
+ * Clean up screen reader live region (for testing or app unmount)
+ */
+export function cleanupScreenReaderRegion(): void {
+  if (liveRegionInstance && liveRegionInstance.parentNode) {
+    liveRegionInstance.parentNode.removeChild(liveRegionInstance);
+    liveRegionInstance = null;
+  }
 }
 
 /**

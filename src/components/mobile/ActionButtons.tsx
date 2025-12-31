@@ -236,9 +236,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             background: attackPressed
               ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`
               : `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
-            border: attackFocused
-              ? `3px solid rgb(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b})`
-              : '3px solid #fff',
+            border: '3px solid #fff',
             fontSize: '28px',
             color: '#000',
             fontWeight: 'bold',
@@ -250,12 +248,13 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             touchAction: 'none',
             transition: 'all 0.2s ease',
             transform: attackPressed ? 'scale(0.95)' : 'scale(1)',
-            boxShadow: attackFocused
-              ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`
-              : attackPressed
+            boxShadow: attackPressed
               ? `0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.6)`,
-            ...getFocusStyle(attackFocused),
+            ...getFocusStyle(attackFocused, {
+              outlineWidth: 3,
+              boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`,
+            }),
           }}
           disabled={disabled}
           aria-label={createBilingualLabel('공격', 'Attack').label}
@@ -284,9 +283,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             background: blockPressed
               ? `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`
               : `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 0.9)`,
-            border: blockFocused
-              ? `3px solid rgb(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b})`
-              : '2px solid #fff',
+            border: '2px solid #fff',
             fontSize: '24px',
             color: '#fff',
             display: 'flex',
@@ -297,12 +294,13 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             touchAction: 'none',
             transition: 'all 0.2s ease',
             transform: blockPressed ? 'scale(0.95)' : 'scale(1)',
-            boxShadow: blockFocused
-              ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`
-              : blockPressed
+            boxShadow: blockPressed
               ? `0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 0.6)`,
-            ...getFocusStyle(blockFocused),
+            ...getFocusStyle(blockFocused, {
+              outlineWidth: 3,
+              boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`,
+            }),
           }}
           disabled={disabled}
           aria-label={createBilingualLabel('방어', 'Block').label}

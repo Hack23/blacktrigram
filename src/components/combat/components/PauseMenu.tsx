@@ -128,7 +128,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
     if (buttonRefs.current[0]) {
       buttonRefs.current[0].focus();
     }
-  }, []);
+  }, [menuItems]);
 
   // Keyboard navigation handler
   const handleKeyDown = useCallback(
@@ -234,9 +234,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
                   0.9
                 ),
                 color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                border: focusedIndex === index
-                  ? `3px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`
-                  : `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+                border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
                 borderRadius: "8px",
                 fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
@@ -247,10 +245,11 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "12px",
-                boxShadow: focusedIndex === index
-                  ? `0 0 0 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}, 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`
-                  : "none",
-                ...getFocusStyle(focusedIndex === index),
+                boxShadow: "none",
+                ...getFocusStyle(focusedIndex === index, {
+                  outlineWidth: 3,
+                  boxShadow: `0 0 0 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}, 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
+                }),
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.backgroundColor = hexToRgbaString(
