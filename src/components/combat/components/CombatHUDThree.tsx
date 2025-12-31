@@ -309,16 +309,22 @@ export const CombatHUDThree = React.memo(
   (prevProps, nextProps) => {
     // Compare player health, ki, stamina, archetype, and names
     const p1HealthSame = prevProps.player1.health === nextProps.player1.health;
+    const p1MaxHealthSame = prevProps.player1.maxHealth === nextProps.player1.maxHealth;
     const p1KiSame = prevProps.player1.ki === nextProps.player1.ki;
+    const p1MaxKiSame = prevProps.player1.maxKi === nextProps.player1.maxKi;
     const p1StaminaSame = prevProps.player1.stamina === nextProps.player1.stamina;
+    const p1MaxStaminaSame = prevProps.player1.maxStamina === nextProps.player1.maxStamina;
     const p1ArchetypeSame = prevProps.player1.archetype === nextProps.player1.archetype;
     const p1NameSame = 
       prevProps.player1.name.korean === nextProps.player1.name.korean &&
       prevProps.player1.name.english === nextProps.player1.name.english;
 
     const p2HealthSame = prevProps.player2.health === nextProps.player2.health;
+    const p2MaxHealthSame = prevProps.player2.maxHealth === nextProps.player2.maxHealth;
     const p2KiSame = prevProps.player2.ki === nextProps.player2.ki;
+    const p2MaxKiSame = prevProps.player2.maxKi === nextProps.player2.maxKi;
     const p2StaminaSame = prevProps.player2.stamina === nextProps.player2.stamina;
+    const p2MaxStaminaSame = prevProps.player2.maxStamina === nextProps.player2.maxStamina;
     const p2ArchetypeSame = prevProps.player2.archetype === nextProps.player2.archetype;
     const p2NameSame = 
       prevProps.player2.name.korean === nextProps.player2.name.korean &&
@@ -343,13 +349,19 @@ export const CombatHUDThree = React.memo(
     // Return true if all relevant props are the same (skip re-render)
     return (
       p1HealthSame &&
+      p1MaxHealthSame &&
       p1KiSame &&
+      p1MaxKiSame &&
       p1StaminaSame &&
+      p1MaxStaminaSame &&
       p1ArchetypeSame &&
       p1NameSame &&
       p2HealthSame &&
+      p2MaxHealthSame &&
       p2KiSame &&
+      p2MaxKiSame &&
       p2StaminaSame &&
+      p2MaxStaminaSame &&
       p2ArchetypeSame &&
       p2NameSame &&
       timeSame &&

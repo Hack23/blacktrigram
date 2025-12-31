@@ -150,9 +150,22 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
     </Html>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison: only re-render if damage ID changes
-  return prevProps.damage.id === nextProps.damage.id &&
-         prevProps.isMobile === nextProps.isMobile;
+  // Custom comparison: re-render only when props that affect rendering change
+  const prevArena = prevProps.arenaBounds;
+  const nextArena = nextProps.arenaBounds;
+
+  const sameArenaBounds =
+    prevArena?.x === nextArena?.x &&
+    prevArena?.y === nextArena?.y &&
+    prevArena?.width === nextArena?.width &&
+    prevArena?.height === nextArena?.height;
+
+  return (
+    prevProps.damage.id === nextProps.damage.id &&
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.animationDuration === nextProps.animationDuration &&
+    sameArenaBounds
+  );
 });
 
 SingleDamageNumber.displayName = "SingleDamageNumber";
