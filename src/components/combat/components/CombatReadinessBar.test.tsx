@@ -262,10 +262,10 @@ describe("CombatReadinessBar", () => {
         expect(bgColor).not.toContain("rgb(22, 33, 62)");
       }
       
-      // Last 5 segments should be empty
+      // Last 5 segments should be empty (UI_BACKGROUND_MEDIUM)
       for (let i = 5; i < 10; i++) {
         const bgColor = (segments[i] as HTMLElement).style.backgroundColor;
-        expect(bgColor).toContain("rgb(22, 33, 62)");
+        expect(bgColor).toContain("rgb(26, 26, 26)"); // Updated for WCAG AA (was rgb(22, 33, 62))
       }
     });
 

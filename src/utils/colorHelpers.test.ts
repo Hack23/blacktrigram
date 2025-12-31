@@ -23,9 +23,10 @@ describe("colorHelpers", () => {
     });
 
     it("should convert KOREAN_COLORS constants correctly", () => {
-      expect(toHexColor(KOREAN_COLORS.PRIMARY_CYAN)).toBe("#00ffff");
-      expect(toHexColor(KOREAN_COLORS.SECONDARY_YELLOW)).toBe("#ffff00");
-      expect(toHexColor(KOREAN_COLORS.UI_BACKGROUND_DARK)).toBe("#1a1a2e");
+      // Updated for WCAG AA compliance
+      expect(toHexColor(KOREAN_COLORS.PRIMARY_CYAN)).toBe("#00e6e6"); // Was #00ffff
+      expect(toHexColor(KOREAN_COLORS.SECONDARY_YELLOW)).toBe("#ffff33"); // Was #ffff00
+      expect(toHexColor(KOREAN_COLORS.UI_BACKGROUND_DARK)).toBe("#0a0a0a"); // Was #1a1a2e
     });
 
     it("should pad short hex values with leading zeros", () => {
