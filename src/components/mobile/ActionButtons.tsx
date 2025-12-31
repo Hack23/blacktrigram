@@ -355,8 +355,9 @@ export const ActionButtons = React.memo(
       prevProps.disabled === nextProps.disabled &&
       prevProps.bottom === nextProps.bottom &&
       prevProps.right === nextProps.right &&
-      prevProps.opacity === nextProps.opacity
-      // onAttack and onBlock are not compared as they're typically wrapped in useCallback
+      prevProps.opacity === nextProps.opacity &&
+      prevProps.onAttack === nextProps.onAttack &&
+      prevProps.onBlock === nextProps.onBlock
     );
   }
 );

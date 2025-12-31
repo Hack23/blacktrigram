@@ -4,12 +4,15 @@
  * Throttles a function to execute at most once per specified interval.
  * Useful for high-frequency events like scroll, resize, or touch move.
  * 
+ * Uses a ref pattern to ensure the latest callback is always called
+ * without recreating the throttled function on every render.
+ * 
  * @module hooks/useThrottle
  * @category Performance
  * @korean 쓰로틀 훅
  */
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useLayoutEffect } from 'react';
 
 /**
  * Hook to throttle a callback function
@@ -31,6 +34,12 @@ export function useThrottle<T extends (...args: never[]) => void>(
 ): T {
   const lastRunRef = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const callbackRef = useRef(callback);
+  
+  // Keep callback ref up to date
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(
@@ -41,18 +50,18 @@ export function useThrottle<T extends (...args: never[]) => void>(
       if (timeSinceLastRun >= delay) {
         // Execute immediately if enough time has passed
         lastRunRef.current = now;
-        callback(...args);
+        callbackRef.current(...args);
       } else if (!timeoutRef.current) {
         // Schedule execution for later
         const timeUntilNext = delay - timeSinceLastRun;
         timeoutRef.current = setTimeout(() => {
           lastRunRef.current = Date.now();
           timeoutRef.current = null;
-          callback(...args);
+          callbackRef.current(...args);
         }, timeUntilNext);
       }
     } as T,
-    [callback, delay]
+    [delay]
   );
 }
 

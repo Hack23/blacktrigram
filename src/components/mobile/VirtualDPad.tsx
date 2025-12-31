@@ -183,9 +183,9 @@ const DPadButton = React.memo<DPadButtonProps>(({
   );
 }, (prevProps, nextProps) => {
   // Only re-render if active or focused state changes
+  // config.direction comparison removed as config is a stable reference
   return prevProps.active === nextProps.active &&
-         prevProps.focused === nextProps.focused &&
-         prevProps.config.direction === nextProps.config.direction;
+         prevProps.focused === nextProps.focused;
 });
 
 DPadButton.displayName = "DPadButton";
@@ -391,8 +391,8 @@ export const VirtualDPad = React.memo(
       prevProps.size === nextProps.size &&
       prevProps.bottom === nextProps.bottom &&
       prevProps.left === nextProps.left &&
-      prevProps.opacity === nextProps.opacity
-      // onMove is not compared as it's typically wrapped in useCallback by parent
+      prevProps.opacity === nextProps.opacity &&
+      prevProps.onMove === nextProps.onMove
     );
   }
 );
