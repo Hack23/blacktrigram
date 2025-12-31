@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/9</span>
+                <span class='fraction'>8/10</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -195,7 +195,19 @@
 <a name='L130'></a><a href='#L130'>130</a>
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,6 +235,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">65x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -231,6 +244,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-yes">65x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">65x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -346,6 +366,8 @@ import { KOREAN_COLORS } from "../../../types/constants";
 export interface CombatArena3DProps {
   /** Lighting theme affecting ambiance and colors. Defaults to "cyberpunk" */
   readonly lighting?: "cyberpunk" | "traditional" | "neutral";
+  /** Scale factor for arena size (1.0 = desktop, &lt;1.0 = mobile). Defaults to 1.0 */
+  readonly scale?: number;
 }
 &nbsp;
 /**
@@ -354,6 +376,7 @@ export interface CombatArena3DProps {
  */
 export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
   lighting = "cyberpunk",
+  scale = 1.0,
 }) =&gt; {
   const gridRef = useRef&lt;THREE.GridHelper&gt;(null);
 &nbsp;
@@ -363,6 +386,13 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >      gridRef.current.rotation.y += 0.0002;</span>
     }
   });
+&nbsp;
+  // Scale-aware dimensions for arena elements
+  const floorWidth = 20 * scale;
+  const floorDepth = 10 * scale;
+  const gridSize = 20 * scale;
+  const markerDistance = 8 * scale;
+  const markerDepth = 4 * scale;
 &nbsp;
   return (
     &lt;group&gt;
@@ -402,9 +432,9 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
         &lt;/&gt;
       )}
 &nbsp;
-      {/* Arena floor - dojang mat */}
+      {/* Arena floor - dojang mat (scale-aware) */}
       &lt;mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow&gt;
-        &lt;planeGeometry args={[20, 10]} /&gt;
+        &lt;planeGeometry args={[floorWidth, floorDepth]} /&gt;
         &lt;meshStandardMaterial
           color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
           roughness={0.8}
@@ -412,11 +442,11 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
         /&gt;
       &lt;/mesh&gt;
 &nbsp;
-      {/* Cyberpunk grid overlay */}
+      {/* Cyberpunk grid overlay (scale-aware) */}
       &lt;gridHelper
         ref={gridRef}
         args={[
-          20,
+          gridSize,
           20,
           KOREAN_COLORS.PRIMARY_CYAN,
           KOREAN_COLORS.UI_BACKGROUND_DARK,
@@ -424,15 +454,15 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
         position={[0, 0.01, 0]}
       /&gt;
 &nbsp;
-      {/* Korean traditional boundary markers */}
+      {/* Korean traditional boundary markers (scale-aware) */}
       {[
-        [-8, 0, -4],
-        [-8, 0, 4],
-        [8, 0, -4],
-        [8, 0, 4],
+        [-markerDistance, 0, -markerDepth],
+        [-markerDistance, 0, markerDepth],
+        [markerDistance, 0, -markerDepth],
+        [markerDistance, 0, markerDepth],
       ].map((pos, i) =&gt; (
         &lt;mesh key={i} position={pos as [number, number, number]} castShadow&gt;
-          &lt;cylinderGeometry args={[0.1, 0.15, 0.8, 8]} /&gt;
+          &lt;cylinderGeometry args={[0.1 * scale, 0.15 * scale, 0.8, 8]} /&gt;
           &lt;meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
@@ -441,9 +471,9 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
         &lt;/mesh&gt;
       ))}
 &nbsp;
-      {/* Center marker - Yin Yang inspired */}
+      {/* Center marker - Yin Yang inspired (scale-aware) */}
       &lt;mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}&gt;
-        &lt;ringGeometry args={[0.8, 1.0, 32]} /&gt;
+        &lt;ringGeometry args={[0.8 * scale, 1.0 * scale, 32]} /&gt;
         &lt;meshBasicMaterial
           color={KOREAN_COLORS.ACCENT_GOLD}
           transparent
@@ -466,7 +496,7 @@ export default CombatArena3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-27T12:30:04.968Z
+                at 2025-12-31T23:05:49.677Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
