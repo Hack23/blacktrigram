@@ -44,6 +44,10 @@ export type {
  * Standard breakpoints for responsive design
  * Maps viewport widths to device categories
  * 
+ * Note: XLARGE is defined as a reference value (2560px) but xlarge category
+ * starts at LARGE (1920px). This allows for consistent scaling across all
+ * displays from 1920px upwards, including 2K, 4K, and ultra-wide monitors.
+ * 
  * @constant
  * @category Responsive Layout
  */
@@ -52,7 +56,7 @@ export const RESPONSIVE_BREAKPOINTS: ResponsiveBreakpoints = {
   TABLET: 1024,     // 768-1024px: Tablets
   DESKTOP: 1440,    // 1024-1440px: Standard desktop
   LARGE: 1920,      // 1440-1920px: HD/2K displays
-  XLARGE: 2560,     // ≥1920px: 4K/ultra-wide displays
+  XLARGE: 2560,     // Reference for 4K displays (xlarge starts at 1920px)
 } as const;
 
 /**

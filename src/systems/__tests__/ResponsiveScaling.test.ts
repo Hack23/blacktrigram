@@ -570,7 +570,8 @@ describe('ResponsiveScaling - Comprehensive Screen Size Coverage', () => {
       const size = getScreenSize(width);
       expect(size).toBe(expected);
       
-      const values = calculateResponsiveValues(width, height);
+      // Note: calculateResponsiveValues only uses width, not height
+      const values = calculateResponsiveValues(width);
       expect(values.fontSize.body).toBeGreaterThanOrEqual(14);
       expect(values.fontSize.body).toBeLessThanOrEqual(24);
     });
