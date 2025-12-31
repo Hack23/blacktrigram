@@ -144,9 +144,10 @@ export function measureRender<T>(
   componentName: string,
   callback: () => T
 ): T {
+  const result = callback();
+  
   if (import.meta.env.DEV) {
     const start = performance.now();
-    const result = callback();
     const end = performance.now();
     const duration = end - start;
     
@@ -155,11 +156,9 @@ export function measureRender<T>(
         `[Performance] ${componentName} render took ${duration.toFixed(2)}ms (>16.67ms budget)`
       );
     }
-    
-    return result;
   }
   
-  return callback();
+  return result;
 }
 
 /**
@@ -222,7 +221,7 @@ export function hasPropsChanged<T extends Record<string, unknown>>(
  * @param callback - Callback function
  * @returns Stable callback reference
  */
-export function useStableCallback<T extends (...args: unknown[]) => unknown>(
+export function useStableCallback<T extends (...args: never[]) => unknown>(
   callback: T
 ): T {
   const callbackRef = React.useRef(callback);
@@ -233,8 +232,11 @@ export function useStableCallback<T extends (...args: unknown[]) => unknown>(
   });
   
   // Return stable function that calls latest callback
-  return React.useCallback(
-    ((...args: unknown[]) => callbackRef.current(...args)) as T,
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stableCallback = React.useCallback(
+    (...args: Parameters<T>) => callbackRef.current(...args),
     []
-  );
+  ) as T;
+  
+  return stableCallback;
 }

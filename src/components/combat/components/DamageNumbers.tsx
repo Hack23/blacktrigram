@@ -18,6 +18,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { DamageNumber, DamageType } from "../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexColorToCSS, hexToRgbaString } from "../../../utils/colorUtils";
+import { withGPUAcceleration } from "../../../utils/performanceOptimization";
 
 /**
  * Props for the DamageNumbers component
@@ -126,7 +127,7 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
     >
       <div
         data-testid={`damage-${damage.id}`}
-        style={{
+        style={withGPUAcceleration({
           fontSize: `${fontSize + criticalBonus}px`,
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
@@ -140,7 +141,7 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
           `,
           whiteSpace: "nowrap",
           userSelect: "none",
-        }}
+        })}
       >
         {damage.damage}
         {damage.type === "critical" && "!"}
