@@ -250,4 +250,54 @@ describe("BaseButton", () => {
     const button = screen.getByRole("button");
     expect(button).toBeInTheDocument();
   });
+
+  it("should apply layer prop for z-index management", () => {
+    const handleClick = vi.fn();
+    const { container } = render(
+      <BaseButton
+        korean="레이어"
+        english="Layer"
+        onClick={handleClick}
+        layer="modal"
+      />
+    );
+
+    // Component should render without error when layer prop is provided
+    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="base-button"]')).toBeInTheDocument();
+  });
+
+  it("should apply occlude prop", () => {
+    const handleClick = vi.fn();
+    const { container } = render(
+      <BaseButton
+        korean="오클루드"
+        english="Occlude"
+        onClick={handleClick}
+        occlude={true}
+      />
+    );
+
+    // Component should render without error when occlude prop is provided
+    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="base-button"]')).toBeInTheDocument();
+  });
+
+  it("should work with both layer and occlude props", () => {
+    const handleClick = vi.fn();
+    render(
+      <BaseButton
+        korean="레이어 오클루드"
+        english="Layer Occlude"
+        onClick={handleClick}
+        layer="tooltip"
+        occlude={true}
+      />
+    );
+
+    const button = screen.getByRole("button");
+    expect(button).toBeInTheDocument();
+    expect(screen.getByText("레이어 오클루드")).toBeInTheDocument();
+    expect(screen.getByText("Layer Occlude")).toBeInTheDocument();
+  });
 });

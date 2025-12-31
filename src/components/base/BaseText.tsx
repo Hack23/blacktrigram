@@ -13,7 +13,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { KOREAN_COLORS, UI_DIMENSIONS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../utils/htmlOverlayHelpers";
@@ -78,14 +78,26 @@ export const BaseText: React.FC<BaseTextProps> = ({
     isMobile,
   });
 
+  // Track screen width for responsive distance factor updates on resize
+  const [screenWidth, setScreenWidth] = useState(() => 
+    typeof window !== "undefined" ? window.innerWidth : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Calculate optimal distance factor for text
   const distanceFactor = useMemo(() => {
-    // Use default screen width constant if window not available (SSR/testing)
-    const screenWidth = typeof window !== "undefined" 
-      ? window.innerWidth 
-      : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH;
     return calculateDistanceFactor(screenWidth, "text", isMobile);
-  }, [isMobile]);
+  }, [screenWidth, isMobile]);
 
   // Apply Html overlay styles with proper z-index
   const overlayStyle = useMemo(() => {

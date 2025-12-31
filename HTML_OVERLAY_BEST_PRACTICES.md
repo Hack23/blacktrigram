@@ -150,10 +150,15 @@ import { BaseButton } from '../base';
 ### Pattern 3: Custom Html Overlay
 
 ```typescript
+import React from 'react';
 import { Html } from '@react-three/drei';
 import { applyHtmlOverlayStyles, calculateDistanceFactor } from '../../utils/htmlOverlayHelpers';
 
-const MyCustomOverlay: React.FC = ({ isMobile }) => {
+interface MyCustomOverlayProps {
+  readonly isMobile: boolean;
+}
+
+const MyCustomOverlay: React.FC<MyCustomOverlayProps> = ({ isMobile }) => {
   const distanceFactor = calculateDistanceFactor(
     window.innerWidth,
     'panel',

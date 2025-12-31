@@ -66,7 +66,19 @@ export function getZIndexForLayer(
   };
 
   const baseZIndex = layerMap[layer];
-  return (baseZIndex + offset) as ZIndexValue;
+  
+  // Derive the valid numeric z-index range from Z_INDEX to ensure we never
+  // return an out-of-bounds value, even if a large offset is provided.
+  const zIndexValues = Object.values(Z_INDEX).filter(
+    (value) => typeof value === "number"
+  ) as number[];
+  const minZIndex = Math.min(...zIndexValues);
+  const maxZIndex = Math.max(...zIndexValues);
+
+  const rawZIndex = baseZIndex + offset;
+  const clampedZIndex = Math.max(minZIndex, Math.min(maxZIndex, rawZIndex));
+
+  return clampedZIndex as ZIndexValue;
 }
 
 /**

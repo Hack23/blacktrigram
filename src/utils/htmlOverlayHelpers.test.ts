@@ -40,6 +40,20 @@ describe("htmlOverlayHelpers", () => {
       expect(offsetZIndex).toBe(baseZIndex + 5);
     });
 
+    it("should clamp z-index when offset exceeds valid range", () => {
+      // Test that a large offset doesn't exceed the maximum z-index
+      const result = getZIndexForLayer("debug", 50);
+      expect(result).toBe(Z_INDEX.DEBUG); // Should clamp to max (80)
+      expect(result).toBeLessThanOrEqual(80);
+    });
+
+    it("should clamp z-index when offset goes below minimum", () => {
+      // Test that a negative offset doesn't go below minimum z-index
+      const result = getZIndexForLayer("background", -10);
+      expect(result).toBe(Z_INDEX.BACKGROUND); // Should clamp to min (0)
+      expect(result).toBeGreaterThanOrEqual(0);
+    });
+
     it("should maintain proper layer hierarchy", () => {
       const background = getZIndexForLayer("background");
       const arena = getZIndexForLayer("arena");
