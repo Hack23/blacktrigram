@@ -4,6 +4,12 @@
  * Touch-optimized action buttons for combat (Attack and Block)
  * Provides tactile combat controls with visual feedback and haptic response
  * 
+ * WCAG 2.1 Level AA Compliance:
+ * - ARIA labels for screen readers
+ * - Keyboard navigation (Enter, Space)
+ * - Visible focus indicators (2px cyan border)
+ * - 80x80px and 70x70px touch targets (exceeds 44x44px minimum)
+ * 
  * @module components/mobile/ActionButtons
  * @category Mobile Controls
  * @korean 액션 버튼
@@ -14,6 +20,8 @@ import React, { useCallback, useState } from 'react';
 import { KOREAN_COLORS } from '../../types/constants';
 import { triggerHaptic } from '../../utils/haptics';
 import { getColorRGB } from '../../utils/colorHelpers';
+import { handleKeyboardNav, getFocusStyle } from '../../utils/accessibility';
+import { createBilingualLabel } from '../../types/AccessibilityTypes';
 
 /**
  * Event type for button interactions
@@ -86,6 +94,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => {
   const [attackPressed, setAttackPressed] = useState(false);
   const [blockPressed, setBlockPressed] = useState(false);
+  const [attackFocused, setAttackFocused] = useState(false);
+  const [blockFocused, setBlockFocused] = useState(false);
 
   /**
    * Handle attack button press (touch or mouse)
@@ -148,6 +158,47 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
     [disabled, onBlock]
   );
 
+  /**
+   * Handle keyboard navigation for attack button
+   */
+  const handleAttackKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (disabled) return;
+      handleKeyboardNav(e.nativeEvent, {
+        onActivate: () => {
+          setAttackPressed(true);
+          onAttack();
+          triggerHaptic('medium');
+          // Release after brief delay
+          setTimeout(() => setAttackPressed(false), 150);
+        },
+      });
+    },
+    [disabled, onAttack]
+  );
+
+  /**
+   * Handle keyboard navigation for block button
+   */
+  const handleBlockKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (disabled) return;
+      handleKeyboardNav(e.nativeEvent, {
+        onActivate: () => {
+          setBlockPressed(true);
+          onBlock('start');
+          triggerHaptic('light');
+          // Release after brief delay
+          setTimeout(() => {
+            setBlockPressed(false);
+            onBlock('end');
+          }, 150);
+        },
+      });
+    },
+    [disabled, onBlock]
+  );
+
   // Extract RGB colors using shared utility
   const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
   const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
@@ -175,6 +226,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
           onMouseDown={handleAttackStart}
           onMouseUp={handleAttackEnd}
           onMouseLeave={handleAttackEnd}
+          onKeyDown={handleAttackKeyDown}
+          onFocus={() => setAttackFocused(true)}
+          onBlur={() => setAttackFocused(false)}
           style={{
             width: '80px',
             height: '80px',
@@ -182,7 +236,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             background: attackPressed
               ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`
               : `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
-            border: '3px solid #fff',
+            border: attackFocused
+              ? `3px solid rgb(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b})`
+              : '3px solid #fff',
             fontSize: '28px',
             color: '#000',
             fontWeight: 'bold',
@@ -192,13 +248,20 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'all 0.1s ease',
+            transition: 'all 0.2s ease',
             transform: attackPressed ? 'scale(0.95)' : 'scale(1)',
-            boxShadow: attackPressed
+            boxShadow: attackFocused
+              ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`
+              : attackPressed
               ? `0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.6)`,
+            ...getFocusStyle(attackFocused),
           }}
           disabled={disabled}
+          aria-label={createBilingualLabel('공격', 'Attack').label}
+          aria-pressed={attackPressed}
+          role="button"
+          tabIndex={disabled ? -1 : 0}
           data-testid="attack-button"
         >
           ⚡
@@ -211,6 +274,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
           onMouseDown={handleBlockStart}
           onMouseUp={handleBlockEnd}
           onMouseLeave={handleBlockEnd}
+          onKeyDown={handleBlockKeyDown}
+          onFocus={() => setBlockFocused(true)}
+          onBlur={() => setBlockFocused(false)}
           style={{
             width: '70px',
             height: '70px',
@@ -218,7 +284,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             background: blockPressed
               ? `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`
               : `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 0.9)`,
-            border: '2px solid #fff',
+            border: blockFocused
+              ? `3px solid rgb(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b})`
+              : '2px solid #fff',
             fontSize: '24px',
             color: '#fff',
             display: 'flex',
@@ -227,13 +295,20 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'all 0.1s ease',
+            transition: 'all 0.2s ease',
             transform: blockPressed ? 'scale(0.95)' : 'scale(1)',
-            boxShadow: blockPressed
+            boxShadow: blockFocused
+              ? `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`
+              : blockPressed
               ? `0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 0.6)`,
+            ...getFocusStyle(blockFocused),
           }}
           disabled={disabled}
+          aria-label={createBilingualLabel('방어', 'Block').label}
+          aria-pressed={blockPressed}
+          role="button"
+          tabIndex={disabled ? -1 : 0}
           data-testid="block-button"
         >
           🛡️
