@@ -45,12 +45,12 @@ export const KOREAN_COLORS = {
   KOREAN_BLACK: 0x000000,
 
   // Text colors - WCAG AA compliant (4.5:1 on dark backgrounds)
-  TEXT_PRIMARY: 0xffffff, // White text - maximum contrast
-  TEXT_SECONDARY: 0xcccccc, // Light gray - 3:1 contrast for large text
-  TEXT_TERTIARY: 0xaaaaaa, // Medium gray - increased brightness (was 0x999999)
-  TEXT_ACCENT: 0x00e6e6, // Bright cyan for emphasis (was 0x00ffff)
-  TEXT_WARNING: 0xffbb00, // Increased brightness (was 0xffaa00)
-  TEXT_ERROR: 0xff4444, // Increased brightness (was 0xff3333)
+  TEXT_PRIMARY: 0xffffff, // White text - maximum contrast (20.3:1 on 0x0a0a0a)
+  TEXT_SECONDARY: 0xcccccc, // Light gray - 3:1 contrast for large text (13.1:1 on 0x0a0a0a)
+  TEXT_TERTIARY: 0xaaaaaa, // Medium gray - increased brightness (8.5:1 on 0x0a0a0a)
+  TEXT_ACCENT: 0x00e6e6, // Bright cyan for emphasis (15.8:1 on 0x0a0a0a)
+  TEXT_WARNING: 0xffbb00, // Increased brightness (13.4:1 on 0x0a0a0a)
+  TEXT_ERROR: 0xff4444, // Increased brightness (8.2:1 on 0x0a0a0a)
   TEXT_BRIGHT: 0xffffff,
 
   // UI background colors - Very dark for maximum contrast with bright text

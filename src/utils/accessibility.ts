@@ -8,6 +8,7 @@
  * @korean 접근성 유틸리티
  */
 
+import React from 'react';
 import {
   KeyboardActions,
   FocusIndicatorStyle,
@@ -108,7 +109,10 @@ export const DEFAULT_FOCUS_STYLE: FocusIndicatorStyle = {
   outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
   outlineOffset: 2,
   outlineStyle: 'solid',
-  boxShadow: `0 0 0 2px rgba(0, 230, 230, 0.5)`,
+  boxShadow: (() => {
+    const rgb = hexToRgb(KOREAN_COLORS.PRIMARY_CYAN);
+    return `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`;
+  })(),
   transitionDuration: 0.2,
 };
 
@@ -365,6 +369,10 @@ export function getFocusableElements(
 /**
  * Validate WCAG 2.1 Level AA compliance for a component
  * 
+ * Note: Color contrast checking requires access to computed styles,
+ * which is not available in all testing environments. This validation
+ * focuses on structural accessibility attributes.
+ * 
  * @param element - Element to validate
  * @param config - Validation configuration
  * @returns Compliance validation result
@@ -373,21 +381,19 @@ export function validateWCAGCompliance(
   element: HTMLElement | null,
   config?: {
     checkKeyboard?: boolean;
-    checkColorContrast?: boolean;
     checkFocusVisible?: boolean;
     checkAria?: boolean;
   }
 ): WCAGComplianceResult {
   const {
     checkKeyboard = true,
-    // checkColorContrast = true, // Reserved for future implementation
     checkFocusVisible = true,
     checkAria = true,
   } = config ?? {};
 
   const issues: string[] = [];
   let keyboardAccessible = true;
-  let colorContrast = true; // Default true, future implementation will check computed styles
+  const colorContrast = true; // Note: Requires computed styles - use getContrastRatio() directly for color validation
   let focusVisible = true;
   let ariaLabels = true;
 
@@ -455,11 +461,11 @@ export function validateWCAGCompliance(
     compliant: allPass,
     criteria: {
       keyboardAccessible,
-      colorContrast,
+      colorContrast, // Note: Always true - use getContrastRatio() for actual color validation
       focusVisible,
       ariaLabels,
-      semanticHTML: true, // Requires manual check
-      errorIdentification: true, // Requires manual check
+      semanticHTML: true, // Requires manual verification
+      errorIdentification: true, // Requires manual verification
     },
     issues,
   };
