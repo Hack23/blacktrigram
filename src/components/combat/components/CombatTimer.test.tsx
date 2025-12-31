@@ -62,8 +62,8 @@ describe("CombatTimer", () => {
     );
 
     const timer = screen.getByTestId("combat-timer");
-    // Check for cyan color in computed styles (rgb format)
-    expect(timer).toHaveStyle({ color: "rgb(0, 255, 255)" });
+    // Check for cyan color in computed styles (rgb format) - WCAG AA compliant
+    expect(timer).toHaveStyle({ color: "rgb(0, 230, 230)" }); // Updated from rgb(0, 255, 255)
   });
 
   it("should have yellow color when warning level is warning", () => {
@@ -77,8 +77,8 @@ describe("CombatTimer", () => {
     );
 
     const timer = screen.getByTestId("combat-timer");
-    // Check for yellow color in computed styles (rgb format)
-    expect(timer).toHaveStyle({ color: "rgb(255, 255, 0)" });
+    // Check for yellow color in computed styles (rgb format) - WCAG AA compliant
+    expect(timer).toHaveStyle({ color: "rgb(255, 255, 51)" }); // Updated from rgb(255, 255, 0)
   });
 
   it("should have red color when warning level is urgent", () => {

@@ -4,6 +4,14 @@
  * Circular 8-segment stance selector for mobile touch controls
  * Provides visual and tactile stance switching interface
  * 
+ * WCAG 2.1 Level AA Compliance:
+ * - ARIA labels for all 8 stance buttons
+ * - Keyboard navigation (Tab, Enter, Arrow keys)
+ * - Visible focus indicators (2px cyan border)
+ * - aria-expanded state for wheel toggle
+ * - role="radiogroup" for stance selection
+ * - 50x50px touch targets (exceeds 44x44px minimum)
+ * 
  * @module components/mobile/StanceWheel
  * @category Mobile Controls
  * @korean 자세 휠
@@ -16,6 +24,8 @@ import { TRIGRAM_STANCES_ORDER } from '../../systems/trigram/types';
 import { TrigramStance } from '../../types/common';
 import { triggerHaptic } from '../../utils/haptics';
 import { getColorRGB } from '../../utils/colorHelpers';
+import { handleKeyboardNav, getFocusStyle, announceToScreenReader } from '../../utils/accessibility';
+import { createBilingualLabel } from '../../types/AccessibilityTypes';
 
 /**
  * Props for StanceWheel component
@@ -117,6 +127,7 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
   opacity = 0.8,
 }) => {
   const [hoveredStance, setHoveredStance] = useState<number | null>(null);
+  const [focusedStance, setFocusedStance] = useState<number | null>(null);
 
   /**
    * Handle stance selection (touch or mouse)
@@ -138,6 +149,17 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
       onStanceChange(stanceIndex);
       triggerHaptic('medium');
 
+      // Announce stance change to screen readers
+      const stanceName = STANCE_KOREAN_NAMES[stanceIndex];
+      const stanceSymbol = TRIGRAM_SYMBOLS[stanceIndex];
+      announceToScreenReader({
+        message: createBilingualLabel(
+          `자세 변경: ${stanceName} ${stanceSymbol}`,
+          `Stance changed to ${TRIGRAM_STANCES_ORDER[stanceIndex]}`
+        ).label,
+        politeness: 'polite',
+      });
+
       // Auto-collapse after selection (optional)
       // onToggle();
     },
@@ -155,6 +177,72 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
 
       onToggle();
       triggerHaptic('light');
+
+      // Announce state change to screen readers using the toggled value
+      const nextExpanded = !expanded;
+      announceToScreenReader({
+        message: createBilingualLabel(
+          nextExpanded ? '자세 휠 열림' : '자세 휠 닫힘',
+          nextExpanded ? 'Stance wheel opened' : 'Stance wheel closed'
+        ).label,
+        politeness: 'polite',
+      });
+    },
+    [disabled, onToggle, expanded]
+  );
+
+  /**
+   * Handle keyboard navigation for stance buttons
+   */
+  const handleStanceKeyDown = useCallback(
+    (stanceIndex: number) => (e: React.KeyboardEvent) => {
+      if (disabled) return;
+      handleKeyboardNav(e.nativeEvent, {
+        onActivate: () => {
+          if (stanceIndex === currentStance) {
+            onToggle();
+          } else {
+            onStanceChange(stanceIndex);
+          }
+          triggerHaptic('medium');
+        },
+        onCancel: () => {
+          onToggle();
+        },
+        onNavigate: (direction) => {
+          // Navigate between stances with arrow keys
+          let newIndex = stanceIndex;
+          if (direction === 'left' || direction === 'up') {
+            newIndex = (stanceIndex - 1 + 8) % 8;
+          } else if (direction === 'right' || direction === 'down') {
+            newIndex = (stanceIndex + 1) % 8;
+          }
+          setFocusedStance(newIndex);
+          // Focus the new stance button on the next animation frame
+          requestAnimationFrame(() => {
+            const button = document.querySelector(
+              `[data-testid="stance-button-${newIndex}"]`
+            ) as HTMLElement | null;
+            button?.focus();
+          });
+        },
+      });
+    },
+    [disabled, currentStance, onStanceChange, onToggle]
+  );
+
+  /**
+   * Handle keyboard navigation for toggle button
+   */
+  const handleToggleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (disabled) return;
+      handleKeyboardNav(e.nativeEvent, {
+        onActivate: () => {
+          onToggle();
+          triggerHaptic('light');
+        },
+      });
     },
     [disabled, onToggle]
   );
@@ -185,6 +273,9 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
             transition: 'all 0.3s ease',
           }}
           data-testid="stance-wheel-expanded"
+          role="radiogroup"
+          aria-label={createBilingualLabel('팔괘 자세 선택', 'Eight Trigram Stance Selection').label}
+          aria-activedescendant={`stance-button-${currentStance}`}
         >
           <div
             style={{
@@ -215,6 +306,9 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
                   onMouseDown={(e) => handleStanceSelect(e, index)}
                   onMouseEnter={() => setHoveredStance(index)}
                   onMouseLeave={() => setHoveredStance(null)}
+                  onKeyDown={handleStanceKeyDown(index)}
+                  onFocus={() => setFocusedStance(index)}
+                  onBlur={() => setFocusedStance(null)}
                   style={{
                     position: 'absolute',
                     left: `${x - 25}px`,
@@ -236,14 +330,28 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
                     cursor: 'pointer',
                     userSelect: 'none',
                     touchAction: 'none',
-                    transition: 'all 0.15s ease',
+                    transition: 'all 0.2s ease',
                     transform: isActive || isHovered ? 'scale(1.15)' : 'scale(1)',
                     boxShadow: isActive
                       ? `0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`
                       : isHovered
                       ? `0 0 15px rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 0.8)`
                       : `0 4px 10px rgba(0, 0, 0, 0.5)`,
+                    ...getFocusStyle(focusedStance === index, {
+                      boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
+                      outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
+                      outlineWidth: 3,
+                    }),
                   }}
+                  aria-label={createBilingualLabel(
+                    `${STANCE_KOREAN_NAMES[index]} ${TRIGRAM_SYMBOLS[index]}`,
+                    `${stance} stance`
+                  ).label}
+                  aria-checked={isActive}
+                  role="radio"
+                  tabIndex={0}
+                  disabled={disabled}
+                  id={`stance-button-${index}`}
                   data-testid={`stance-button-${index}`}
                 >
                   <div style={{ fontSize: '20px', lineHeight: 1 }}>{TRIGRAM_SYMBOLS[index]}</div>
@@ -295,6 +403,9 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
         <button
           onTouchStart={handleToggle}
           onMouseDown={handleToggle}
+          onKeyDown={handleToggleKeyDown}
+          onFocus={() => setFocusedStance(currentStance)}
+          onBlur={() => setFocusedStance(null)}
           style={{
             width: '60px',
             height: '60px',
@@ -311,10 +422,23 @@ export const StanceWheel: React.FC<StanceWheelProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'all 0.15s ease',
+            transition: 'all 0.2s ease',
             boxShadow: `0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
+            ...getFocusStyle(focusedStance === currentStance, {
+              boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
+              outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
+              outlineWidth: 3,
+            }),
           }}
           disabled={disabled}
+          aria-label={createBilingualLabel(
+            `현재 자세: ${STANCE_KOREAN_NAMES[currentStance]} ${TRIGRAM_SYMBOLS[currentStance]}. 자세 휠 열기`,
+            `Current stance: ${TRIGRAM_STANCES_ORDER[currentStance]}. Open stance wheel`
+          ).label}
+          aria-expanded={expanded}
+          aria-haspopup="menu"
+          role="button"
+          tabIndex={disabled ? -1 : 0}
           data-testid="stance-wheel-toggle"
         >
           <div style={{ fontSize: '24px', lineHeight: 1 }}>{TRIGRAM_SYMBOLS[currentStance]}</div>

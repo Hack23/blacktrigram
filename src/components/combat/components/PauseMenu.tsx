@@ -10,15 +10,21 @@
  * - Korean/English bilingual text
  * - Cyberpunk Korean theming
  * - Backdrop blur effect
+ * - WCAG 2.1 Level AA compliant
+ * - Keyboard navigation (Arrow keys, Enter, Escape)
+ * - Focus indicators with high contrast
+ * - ARIA labels for screen readers
  */
 
-import React from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import ConfirmDialog from "../../ui/shared/ConfirmDialog";
 import ControlsGuide from "./ControlsGuide";
 import QuickSettings from "./QuickSettings";
+import { handleKeyboardNav, getFocusStyle } from "../../../utils/accessibility";
+import { createBilingualLabel } from "../../../types/AccessibilityTypes";
 
 export interface PauseMenuProps {
   readonly onResume: () => void;
@@ -46,12 +52,14 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
   isMobile,
 }) => {
   const audio = useAudio();
-  const [activeSubmenu, setActiveSubmenu] = React.useState<
+  const [activeSubmenu, setActiveSubmenu] = useState<
     "controls" | "settings" | null
   >(null);
-  const [showConfirm, setShowConfirm] = React.useState<
+  const [showConfirm, setShowConfirm] = useState<
     "restart" | "menu" | null
   >(null);
+  const [focusedIndex, setFocusedIndex] = useState<number>(0);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Memoize menuItems to prevent recreation on every render
   const menuItems: MenuItem[] = React.useMemo(
@@ -115,6 +123,39 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
     [audio, onResume]
   );
 
+  // Focus first button on mount
+  useEffect(() => {
+    if (buttonRefs.current[0]) {
+      buttonRefs.current[0].focus();
+    }
+  }, [menuItems]);
+
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent, index: number) => {
+      handleKeyboardNav(e.nativeEvent, {
+        onActivate: () => {
+          menuItems[index].onClick();
+        },
+        onCancel: () => {
+          onResume();
+        },
+        onNavigate: (direction) => {
+          if (direction === 'up') {
+            const newIndex = (index - 1 + menuItems.length) % menuItems.length;
+            setFocusedIndex(newIndex);
+            buttonRefs.current[newIndex]?.focus();
+          } else if (direction === 'down') {
+            const newIndex = (index + 1) % menuItems.length;
+            setFocusedIndex(newIndex);
+            buttonRefs.current[newIndex]?.focus();
+          }
+        },
+      });
+    },
+    [menuItems, onResume]
+  );
+
   // ESC key handling is now managed by the parent (CombatScreen3D) to avoid conflicts
 
   return (
@@ -122,6 +163,10 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
       {/* Main Pause Menu */}
       <div
         data-testid="pause-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pause-title"
+        aria-describedby="pause-hint"
         style={{
           position: "fixed",
           top: 0,
@@ -140,6 +185,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
       >
         {/* Pause Title */}
         <h1
+          id="pause-title"
           data-testid="pause-title"
           style={{
             fontSize: isMobile ? "48px" : "72px",
@@ -159,6 +205,8 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
 
         {/* Menu Buttons */}
         <div
+          role="menu"
+          aria-label={createBilingualLabel('일시정지 메뉴', 'Pause Menu').label}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -166,12 +214,18 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
             minWidth: isMobile ? "280px" : "360px",
           }}
         >
-          {menuItems.map((item) => (
+          {menuItems.map((item, index) => (
             <button
               key={item.key}
+              ref={(el) => { buttonRefs.current[index] = el; }}
               onClick={item.onClick}
               onMouseEnter={() => audio.playSFX("menu_hover")}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              onFocus={() => setFocusedIndex(index)}
               data-testid={item.testId}
+              aria-label={createBilingualLabel(item.labelKorean, item.labelEnglish).label}
+              role="menuitem"
+              tabIndex={0}
               style={{
                 padding: isMobile ? "12px 24px" : "16px 32px",
                 fontSize: isMobile ? "16px" : "20px",
@@ -180,20 +234,22 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
                   0.9
                 ),
                 color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
-                  0.6
-                )}`,
+                border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
                 borderRadius: "8px",
                 fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
                 cursor: "pointer",
-                transition: "all 0.3s ease",
+                transition: "all 0.2s ease",
                 textAlign: "center",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "12px",
+                boxShadow: "none",
+                ...getFocusStyle(focusedIndex === index, {
+                  outlineWidth: 3,
+                  boxShadow: `0 0 0 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}, 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
+                }),
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.backgroundColor = hexToRgbaString(
@@ -235,6 +291,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
 
         {/* ESC hint */}
         <div
+          id="pause-hint"
           data-testid="pause-hint"
           style={{
             marginTop: isMobile ? "40px" : "60px",
@@ -245,6 +302,8 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
           }}
         >
           ESC 키를 눌러 계속 | Press ESC to resume
+          <br />
+          ↑↓ 키로 이동 | Use ↑↓ to navigate
         </div>
       </div>
 
