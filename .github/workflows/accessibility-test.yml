@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload accessibility report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: accessibility-report
           path: accessibility-report.md
@@ -136,7 +136,7 @@ jobs:
 
       - name: Upload color contrast report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: color-contrast-report
           path: color-contrast-report.md
