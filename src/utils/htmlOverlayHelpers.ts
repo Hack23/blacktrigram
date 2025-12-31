@@ -15,6 +15,8 @@
  * @korean HTML오버레이헬퍼
  */
 
+// Note: Using Z_INDEX from LayoutTypes which is designed for Three.js Html overlays.
+// This is distinct from the legacy Z_INDEX in ui.ts which is for traditional DOM elements.
 import { Z_INDEX, type ZIndexValue } from "../types/LayoutTypes";
 import type {
   HtmlOverlayLayer,

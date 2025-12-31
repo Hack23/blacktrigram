@@ -20,6 +20,10 @@ export const UI_DIMENSIONS = {
   MODAL_SMALL: { width: 400, height: 300 },
   MODAL_MEDIUM: { width: 600, height: 450 },
   MODAL_LARGE: { width: 800, height: 600 },
+
+  // Default screen dimensions for fallback calculations
+  DEFAULT_SCREEN_WIDTH: 1920,
+  DEFAULT_SCREEN_HEIGHT: 1080,
 } as const;
 
 // Z-index layers

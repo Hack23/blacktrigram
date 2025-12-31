@@ -12,7 +12,7 @@ export {
   KOREAN_FONT_WEIGHTS,
   KOREAN_TEXT_SIZES,
 } from "./typography";
-export { HEALTH_COLORS, UI_CONSTANTS } from "./ui";
+export { HEALTH_COLORS, UI_CONSTANTS, UI_DIMENSIONS } from "./ui";
 
 // Fix: Provide default export
 export { KOREAN_COLORS as default } from "./colors";

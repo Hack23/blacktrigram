@@ -14,7 +14,7 @@
 
 import { Html } from "@react-three/drei";
 import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS } from "../../types/constants";
+import { KOREAN_COLORS, UI_DIMENSIONS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
 import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../utils/htmlOverlayHelpers";
 import type { HtmlOverlayLayer } from "../../types/HtmlOverlayTypes";
@@ -86,7 +86,10 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
 
   // Calculate optimal distance factor for button
   const distanceFactor = useMemo(() => {
-    const screenWidth = typeof window !== "undefined" ? window.innerWidth : 1920;
+    // Use default screen width constant if window not available (SSR/testing)
+    const screenWidth = typeof window !== "undefined" 
+      ? window.innerWidth 
+      : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH;
     return calculateDistanceFactor(screenWidth, "button", isMobile);
   }, [isMobile]);
 
