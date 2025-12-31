@@ -89,6 +89,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
         position={[position[0], position[1] + 1, position[2]]}
         weight="bold"
         color={KOREAN_COLORS.ACCENT_GOLD}
+        layer="hud"
         testId="round-display"
       />
 
@@ -102,6 +103,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
             ? KOREAN_COLORS.ACCENT_RED
             : KOREAN_COLORS.TEXT_PRIMARY
         }
+        layer="hud"
         testId="timer-display"
       />
 
@@ -115,6 +117,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           position={[position[0] - 5, position[1] + 0.2, position[2]]}
           color={player1Archetype.colors.primary}
           weight="bold"
+          layer="hud"
           testId="player1-name"
         />
 
@@ -167,6 +170,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           size="small"
           position={[position[0] - 5, position[1] - 1.8, position[2]]}
           color={KOREAN_COLORS.ACCENT_GOLD}
+          layer="hud"
           testId="player1-score"
         />
       </>
@@ -181,6 +185,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           position={[position[0] + 5, position[1] + 0.2, position[2]]}
           color={player2Archetype.colors.primary}
           weight="bold"
+          layer="hud"
           testId="player2-name"
         />
 
@@ -233,6 +238,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           size="small"
           position={[position[0] + 5, position[1] - 1.8, position[2]]}
           color={KOREAN_COLORS.ACCENT_GOLD}
+          layer="hud"
           testId="player2-score"
         />
       </>
@@ -246,6 +252,7 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
           position={[position[0], position[1], position[2] + 1]}
           color={KOREAN_COLORS.ACCENT_RED}
           weight="bold"
+          layer="modal"
           testId="pause-indicator"
         />
       )}

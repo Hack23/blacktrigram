@@ -216,4 +216,46 @@ describe("BaseText", () => {
 
     expect(screen.getByText("모바일")).toBeInTheDocument();
   });
+
+  it("should apply layer prop for z-index management", () => {
+    const { container } = render(
+      <BaseText
+        korean="레이어"
+        english="Layer"
+        layer="modal"
+      />
+    );
+
+    // Component should render without error when layer prop is provided
+    expect(screen.getByText("레이어")).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="base-text"]')).toBeInTheDocument();
+  });
+
+  it("should apply occlude prop", () => {
+    const { container } = render(
+      <BaseText
+        korean="오클루드"
+        english="Occlude"
+        occlude={true}
+      />
+    );
+
+    // Component should render without error when occlude prop is provided
+    expect(screen.getByText("오클루드")).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="base-text"]')).toBeInTheDocument();
+  });
+
+  it("should work with both layer and occlude props", () => {
+    render(
+      <BaseText
+        korean="레이어 오클루드"
+        english="Layer Occlude"
+        layer="tooltip"
+        occlude={true}
+      />
+    );
+
+    expect(screen.getByText("레이어 오클루드")).toBeInTheDocument();
+    expect(screen.getByText("Layer Occlude")).toBeInTheDocument();
+  });
 });

@@ -4,13 +4,20 @@
  * Builds on existing KoreanButton with extracted common logic
  * Provides consistent button styling across the application
  * 
+ * Now with Html overlay positioning helpers for:
+ * - Consistent z-index management
+ * - Performance optimization with distanceFactor
+ * - GPU acceleration
+ * 
  * @module components/base
  */
 
 import { Html } from "@react-three/drei";
-import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS } from "../../types/constants";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { KOREAN_COLORS, UI_DIMENSIONS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
+import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../utils/htmlOverlayHelpers";
+import type { HtmlOverlayLayer } from "../../types/HtmlOverlayTypes";
 import { useKoreanTheme } from "./useKoreanTheme";
 
 /**
@@ -27,6 +34,10 @@ export interface BaseButtonProps {
   readonly fullWidth?: boolean;
   readonly testId?: string;
   readonly isMobile?: boolean;
+  /** Html overlay layer for z-index (default: 'hud') */
+  readonly layer?: HtmlOverlayLayer;
+  /** Whether button should occlude behind 3D objects (default: false) */
+  readonly occlude?: boolean;
 }
 
 /**
@@ -34,6 +45,7 @@ export interface BaseButtonProps {
  * 
  * Enhanced Korean-themed button with common functionality extracted.
  * Uses useKoreanTheme hook for consistent styling.
+ * Now includes Html overlay positioning helpers for proper z-index and performance.
  * 
  * @example
  * ```tsx
@@ -43,6 +55,7 @@ export interface BaseButtonProps {
  *   onClick={() => console.log("Attack")}
  *   variant="primary"
  *   size="md"
+ *   layer="hud"
  * />
  * ```
  */
@@ -57,6 +70,8 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
   fullWidth = false,
   testId,
   isMobile = false,
+  layer = "hud",
+  occlude = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -68,6 +83,32 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
     disabled,
     isMobile,
   });
+
+  // Track screen width for responsive distance factor updates on resize
+  const [screenWidth, setScreenWidth] = useState(() => 
+    typeof window !== "undefined" ? window.innerWidth : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Calculate optimal distance factor for button
+  const distanceFactor = useMemo(() => {
+    return calculateDistanceFactor(screenWidth, "button", isMobile);
+  }, [screenWidth, isMobile]);
+
+  // Apply Html overlay styles with proper z-index
+  const overlayStyle = useMemo(() => {
+    return applyHtmlOverlayStyles(layer, true, distanceFactor, true, occlude);
+  }, [layer, distanceFactor, occlude]);
 
   const handleClick = useCallback(() => {
     if (!disabled) {
@@ -127,6 +168,9 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
         : "none",
       transform: isPressed && !disabled ? "scale(0.98)" : "scale(1)",
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
+      // Apply GPU acceleration from overlay style
+      WebkitTransform: overlayStyle.transform,
+      zIndex: overlayStyle.zIndex,
     };
   }, [
     buttonVariant,
@@ -136,10 +180,17 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
     fullWidth,
     isHovered,
     isPressed,
+    overlayStyle,
   ]);
 
   return (
-    <Html position={position} center>
+    <Html 
+      position={position} 
+      center={overlayStyle.center}
+      distanceFactor={overlayStyle.distanceFactor}
+      occlude={overlayStyle.occlude}
+      style={{ pointerEvents: overlayStyle.pointerEvents }}
+    >
       <button
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}

@@ -6,11 +6,12 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { VitalPoint } from "../../../systems/vitalpoint/types";
 import { VitalPointSeverity } from "../../../types/common";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY, UI_DIMENSIONS } from "../../../types/constants";
+import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../utils/htmlOverlayHelpers";
 
 /**
  * Props for VitalPointMarker3D component
@@ -89,6 +90,32 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
 
   const color = useMemo(() => getSeverityColor(vitalPoint.severity), [vitalPoint.severity]);
 
+  // Track screen width for responsive distance factor updates on resize
+  const [screenWidth, setScreenWidth] = useState(() => 
+    typeof window !== "undefined" ? window.innerWidth : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Calculate optimal distance factor for tooltip overlay
+  const tooltipDistanceFactor = useMemo(() => {
+    return calculateDistanceFactor(screenWidth, "text", isMobile);
+  }, [screenWidth, isMobile]);
+
+  // Apply Html overlay styles for tooltip
+  const tooltipOverlayStyle = useMemo(() => {
+    return applyHtmlOverlayStyles("tooltip", false, tooltipDistanceFactor, true, false);
+  }, [tooltipDistanceFactor]);
+
   const handleClick = useCallback(() => {
     if (isTraining && onHit) {
       onHit(vitalPoint.id);
@@ -137,10 +164,10 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
       {hovered && (
         <Html
           position={[0, markerSize + 0.2, 0]}
-          center
-          distanceFactor={10}
-          occlude={false}
-          style={{ pointerEvents: "none" }}
+          center={tooltipOverlayStyle.center}
+          distanceFactor={tooltipOverlayStyle.distanceFactor}
+          occlude={tooltipOverlayStyle.occlude}
+          style={{ pointerEvents: tooltipOverlayStyle.pointerEvents }}
         >
           <div
             style={{
@@ -151,6 +178,8 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
               whiteSpace: "nowrap",
               boxShadow: "0 0 15px rgba(0, 255, 255, 0.5)",
+              transform: tooltipOverlayStyle.transform,
+              zIndex: tooltipOverlayStyle.zIndex,
             }}
             data-testid={`vital-point-tooltip-${vitalPoint.id}`}
           >

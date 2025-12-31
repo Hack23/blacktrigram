@@ -11,3 +11,4 @@ export * from "./player-visual";
 export * from "./skeletal";
 export * from "./hand-animation";
 export * from "./LayoutTypes";
+export * from "./HtmlOverlayTypes";
