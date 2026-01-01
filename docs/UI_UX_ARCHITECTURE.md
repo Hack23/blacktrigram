@@ -772,13 +772,24 @@ const CombatUI: React.FC = () => {
 
 ## 📚 **Related Documents**
 
+### **Architectural Guides**
+- [🏗️ System Architecture](../ARCHITECTURE.md) - Overall system architecture (C4 model, game logic, state management)
+- [🔐 Security Architecture](../SECURITY_ARCHITECTURE.md) - Security implementation and threat model
+- [⚔️ Combat Architecture](../COMBAT_ARCHITECTURE.md) - Combat system architecture
+
+### **UI/UX Design Standards**
 - [🎨 Korean Theming Guide](./KOREAN_THEMING_GUIDE.md) - Complete color palette and typography standards
 - [🌐 Three.js UI Integration](./THREEJS_UI_INTEGRATION.md) - Html overlay patterns and best practices
-- [📱 Mobile Controls](./MOBILE_CONTROLS.md) - Touch control and gesture implementation
+- [📱 Mobile Controls](./MOBILE_CONTROLS.md) - Touch control design patterns and architecture
 - [📐 Responsive Design](./RESPONSIVE_DESIGN.md) - Breakpoints and layout system
 - [♿ Accessibility Guide](./ACCESSIBILITY_GUIDE.md) - WCAG compliance checklist
-- [🏗️ ARCHITECTURE.md](../ARCHITECTURE.md) - Overall system architecture
-- [🔐 SECURITY_ARCHITECTURE.md](../SECURITY_ARCHITECTURE.md) - Security implementation
+
+### **Implementation References**
+- [📱 Mobile Touch Controls](./MOBILE_TOUCH_CONTROLS.md) - Detailed component implementation with test coverage and performance metrics
+- [🎮 Three.js Game Patterns](./three-js-patterns.md) - Korean materials, combat effects, vital point markers, spatial audio
+- [⏸️ Pause Menu System](./pause-menu-system.md) - Complete feature implementation example
+
+### **Component Documentation**
 - [📋 Base Components README](../src/components/base/README.md) - Base components documentation
 - [🌐 Three.js Components README](../src/components/three/README.md) - Three.js components documentation
 

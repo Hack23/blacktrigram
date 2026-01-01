@@ -742,6 +742,28 @@ describe('KoreanButton3D', () => {
 
 ---
 
+## 🎮 **Game Engine Patterns**
+
+For game-specific Three.js patterns beyond UI overlays, see the comprehensive game patterns guide:
+
+**📚 [Three.js Game Patterns](./three-js-patterns.md)**
+
+**Topics Covered:**
+- **Korean-themed materials** - Stance colors, health-based materials, traditional aesthetics
+- **Stance-based visual effects** - StanceAura3D component with Eight Trigram colors
+- **Vital point markers** - VitalPointMarkers3D with severity-based coloring
+- **Combat hit effects** - HitEffect3D with impact particles and lighting
+- **Character animation** - Martial arts movements with useFrame
+- **Object pooling** - ParticlePool for performance optimization
+- **3D spatial audio** - PositionalAudio for immersive combat sounds
+- **Complete combat arena** - Full scene setup with Korean lighting and environment
+
+**Scope Distinction:**
+- **This document** (`THREEJS_UI_INTEGRATION.md`): UI architecture patterns for Html overlays, Canvas setup, UI performance
+- **Game patterns** (`three-js-patterns.md`): Game engine implementation patterns for combat mechanics and visual effects
+
+---
+
 ## 📚 **Related Documents**
 
 - [🏗️ UI/UX Architecture](./UI_UX_ARCHITECTURE.md) - Component hierarchy and design patterns

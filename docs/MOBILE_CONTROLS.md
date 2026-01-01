@@ -602,6 +602,26 @@ export const useDoubleTap = (onDoubleTap: () => void) => {
 
 ---
 
+## 📚 **Implementation Reference**
+
+For detailed component implementation, test coverage, and performance metrics, see the comprehensive implementation guide:
+
+**📚 [Mobile Touch Controls Implementation](./MOBILE_TOUCH_CONTROLS.md)**
+
+**Implementation Details:**
+- **Actual component usage examples** - VirtualDPad, ActionButtons, StanceWheel, GestureRecognizer with props and callbacks
+- **149 unit tests** - Complete test coverage with coverage metrics (haptics 100%, useTouchControls 85%+)
+- **Performance optimization checklist** - 60fps target validation and optimization techniques
+- **Integration examples** - CombatScreen3D and TrainingScreen3D integration patterns
+- **Manual testing scenarios** - Device testing on iPhone 11, Samsung S10, iPad Air
+- **Haptic feedback browser support** - Chrome/Edge full support, Safari/Firefox limitations
+
+**Scope Distinction:**
+- **This document** (`MOBILE_CONTROLS.md`): Design patterns, architecture, specifications
+- **Implementation guide** (`MOBILE_TOUCH_CONTROLS.md`): Detailed implementation, testing, performance
+
+---
+
 ## 📚 **Related Documents**
 
 - [🏗️ UI/UX Architecture](./UI_UX_ARCHITECTURE.md) - Component hierarchy and design patterns
