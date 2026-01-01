@@ -21,7 +21,7 @@ export type { BaseTextProps } from "./BaseText";
 export { BaseButtonHTML } from "./BaseButtonHTML";
 export type { BaseButtonHTMLProps } from "./BaseButtonHTML";
 
-// Hooks and utilities
+// Hooks - useKoreanTheme is used by 5 files
 export { useKoreanTheme } from "./useKoreanTheme";
 export type {
   UseKoreanThemeConfig,
@@ -31,14 +31,5 @@ export type {
   TextSizeConfig,
 } from "./useKoreanTheme";
 
-export {
-  calculateResponsiveFontSize,
-  calculateResponsivePadding,
-  calculateResponsiveSpacing,
-  calculateResponsiveDimensions,
-  getLayoutConstants,
-  pxToRem,
-  calculateCenteredPosition,
-  calculateGridLayout,
-} from "./layoutUtils";
-export type { LayoutConfig } from "./layoutUtils";
+// Note: layoutUtils exports removed as they are unused in the application
+// If needed, import directly from "./layoutUtils" in tests
