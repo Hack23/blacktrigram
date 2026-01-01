@@ -91,17 +91,6 @@
   }
 }
 
-@keyframes feedbackFadeOut {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
 .training-feedback {
   background: rgba(0, 0, 0, 0.9);
   border: 3px solid #ffd700;

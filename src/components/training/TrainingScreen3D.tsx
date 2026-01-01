@@ -563,7 +563,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     void startMusic();
 
-    // Auto-start training on mount
+    // Auto-start training on mount (only once)
     handleStartTraining();
 
     return () => {
@@ -574,7 +574,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           .catch((err) => console.warn("Failed to stop training music:", err));
       }
     };
-  }, [audio, trainingActions, handleStartTraining]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - run only once on mount
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 11: Feedback & Session Timer Effects
@@ -611,17 +612,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   useEffect(() => {
-    const modeChanged = prevTrainingModeRef.current !== trainingState.trainingMode;
-    prevTrainingModeRef.current = trainingState.trainingMode;
+    const previousMode = prevTrainingModeRef.current;
+    const modeChanged = previousMode !== trainingState.trainingMode;
 
-    if (modeChanged && trainingState.isTraining) {
-      // Mode changed while training - restart to apply new mode
-      handleStopTraining();
-      // Small delay to allow state to settle, then restart
-      const timer = setTimeout(() => {
-        handleStartTraining();
-      }, 100);
-      return () => clearTimeout(timer);
+    if (modeChanged) {
+      // Update previous mode only when an actual change is detected
+      prevTrainingModeRef.current = trainingState.trainingMode;
+
+      if (trainingState.isTraining) {
+        // Mode changed while training - restart to apply new mode
+        handleStopTraining();
+        // Small delay to allow state to settle, then restart
+        const timer = setTimeout(() => {
+          handleStartTraining();
+        }, 100);
+        return () => clearTimeout(timer);
+      }
     }
   }, [trainingState.trainingMode, trainingState.isTraining, handleStopTraining, handleStartTraining]);
 
