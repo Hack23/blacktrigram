@@ -586,7 +586,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 11: Feedback & Session Timer Effects
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Hide feedback after delay - Increased to 1500ms for better readability of bilingual text
+  // Hide feedback after delay - 1500ms provides adequate time for bilingual text readability
   useEffect(() => {
     if (trainingState.showFeedback) {
       const timer = setTimeout(() => trainingActions.hideFeedback(), 1500);
@@ -624,6 +624,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     isTrainingRef.current = trainingState.isTraining;
   }, [trainingState.isTraining]);
 
+  // Store callbacks in refs to avoid effect re-runs when they change
+  const handleStartTrainingRef = useRef(handleStartTraining);
+  const handleStopTrainingRef = useRef(handleStopTraining);
+  
+  useEffect(() => {
+    handleStartTrainingRef.current = handleStartTraining;
+    handleStopTrainingRef.current = handleStopTraining;
+  }, [handleStartTraining, handleStopTraining]);
+
   useEffect(() => {
     // Explicitly skip the first execution on initial mount
     if (isFirstModeEffectRef.current) {
@@ -650,12 +659,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     // Restart training on mode change (matches UI message "Auto-restarts on mode change")
     if (isTrainingRef.current) {
-      handleStopTraining();
+      handleStopTrainingRef.current();
     }
 
     // Small delay to allow state to settle, then (re)start training unconditionally
     modeChangeTimerRef.current = setTimeout(() => {
-      handleStartTraining();
+      handleStartTrainingRef.current();
       modeChangeTimerRef.current = null;
     }, 100);
     
@@ -665,7 +674,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         modeChangeTimerRef.current = null;
       }
     };
-  }, [trainingState.trainingMode, handleStopTraining, handleStartTraining]);
+  }, [trainingState.trainingMode]); // Only depend on training mode to avoid unnecessary re-runs
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 12: Hit Effect Management
