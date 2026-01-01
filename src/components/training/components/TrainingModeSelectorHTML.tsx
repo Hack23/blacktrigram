@@ -120,7 +120,7 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
       <div 
         style={{ 
           display: "grid", 
-          gridTemplateColumns: panelWidth < 280 ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
           gap: "6px" 
         }}
       >

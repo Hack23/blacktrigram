@@ -606,7 +606,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     trainingActions,
   ]);
 
-  // Auto-restart training when mode changes (only if already training)
+  // Auto-restart training when mode changes (always restart regardless of training state)
   const prevTrainingModeRef = useRef<typeof trainingState.trainingMode>(
     trainingState.trainingMode
   );
@@ -619,15 +619,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       // Update previous mode only when an actual change is detected
       prevTrainingModeRef.current = trainingState.trainingMode;
 
+      // Always restart training on mode change (matches UI message "Auto-restarts on mode change")
       if (trainingState.isTraining) {
-        // Mode changed while training - restart to apply new mode
         handleStopTraining();
-        // Small delay to allow state to settle, then restart
-        const timer = setTimeout(() => {
-          handleStartTraining();
-        }, 100);
-        return () => clearTimeout(timer);
       }
+      // Small delay to allow state to settle, then restart
+      const timer = setTimeout(() => {
+        handleStartTraining();
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [trainingState.trainingMode, trainingState.isTraining, handleStopTraining, handleStartTraining]);
 

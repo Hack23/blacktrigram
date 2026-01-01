@@ -1,9 +1,8 @@
 /**
  * TrainingControlsHTML - Html overlay for training controls
  * 
- * Simplified to show only stop button and status, as training auto-starts.
- * Note: onStartTraining prop is kept in interface for backward compatibility
- * but is not used since training now auto-starts on mount.
+ * Displays start/stop button and training status.
+ * Training auto-starts on mount, but users can manually stop and restart.
  */
 
 import React from "react";
@@ -16,7 +15,7 @@ import "../training.css";
 export interface TrainingControlsHTMLProps {
   /** Whether training is currently active */
   readonly isTraining: boolean;
-  /** Callback to start training (unused - kept for backward compatibility) */
+  /** Callback to start training */
   readonly onStartTraining: () => void;
   /** Callback to stop training */
   readonly onStopTraining: () => void;
@@ -26,10 +25,11 @@ export interface TrainingControlsHTMLProps {
 
 /**
  * TrainingControlsHTML Component
- * Html overlay showing training status and stop control
+ * Html overlay showing training status and start/stop controls
  */
 export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
   isTraining,
+  onStartTraining,
   onStopTraining,
   isMobile,
 }) => {
@@ -88,24 +88,22 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
         }}
       />
 
-      {/* Stop Button - only show when training is active */}
-      {isTraining && (
-        <button
-          onClick={onStopTraining}
-          className="training-button training-button-stop"
-          style={{
-            fontSize: isMobile ? "13px" : "14px",
-            fontFamily: FONT_FAMILY.KOREAN,
-            height: "35px",
-          }}
-          data-testid="stop-button"
-        >
-          <span>⏹</span>
-          <span>중지 | Stop</span>
-        </button>
-      )}
+      {/* Start/Stop Button */}
+      <button
+        onClick={isTraining ? onStopTraining : onStartTraining}
+        className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
+        style={{
+          fontSize: isMobile ? "13px" : "14px",
+          fontFamily: FONT_FAMILY.KOREAN,
+          height: "35px",
+        }}
+        data-testid={isTraining ? "stop-button" : "start-button"}
+      >
+        <span>{isTraining ? "⏹" : "▶"}</span>
+        <span>{isTraining ? "중지 | Stop" : "시작 | Start"}</span>
+      </button>
 
-      {/* Info text when stopped */}
+      {/* Info text about auto-restart */}
       {!isTraining && (
         <div
           style={{
