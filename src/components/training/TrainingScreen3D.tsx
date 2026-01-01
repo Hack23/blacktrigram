@@ -580,17 +580,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           .catch((err) => console.warn("Failed to stop training music:", err));
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audio, trainingActions]); // Exclude handleStartTraining to prevent re-runs
+  }, [audio, trainingActions, handleStartTraining]); // hasMountedRef ensures auto-start runs only once
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 11: Feedback & Session Timer Effects
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Hide feedback after delay - Fast feedback (1000ms for readability)
+  // Hide feedback after delay - Increased to 1500ms for better readability of bilingual text
   useEffect(() => {
     if (trainingState.showFeedback) {
-      const timer = setTimeout(() => trainingActions.hideFeedback(), 1000);
+      const timer = setTimeout(() => trainingActions.hideFeedback(), 1500);
       return () => clearTimeout(timer);
     }
   }, [trainingState.showFeedback, trainingActions]);
@@ -618,6 +617,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
   const isFirstModeEffectRef = useRef<boolean>(true);
   const isTrainingRef = useRef<boolean>(trainingState.isTraining);
+  const modeChangeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Keep a ref in sync with the latest training state for use inside timeouts
   useEffect(() => {
@@ -642,19 +642,32 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     // Update previous mode only when an actual change is detected
     prevTrainingModeRef.current = trainingState.trainingMode;
 
+    // Clear any existing timer to prevent stale callbacks
+    if (modeChangeTimerRef.current) {
+      clearTimeout(modeChangeTimerRef.current);
+      modeChangeTimerRef.current = null;
+    }
+
     // Restart training on mode change (matches UI message "Auto-restarts on mode change")
     if (isTrainingRef.current) {
       handleStopTraining();
     }
 
     // Small delay to allow state to settle, then (re)start training
-    const timer = setTimeout(() => {
+    modeChangeTimerRef.current = setTimeout(() => {
       // Guard against duplicate starts if another effect already started training
       if (!isTrainingRef.current) {
         handleStartTraining();
       }
+      modeChangeTimerRef.current = null;
     }, 100);
-    return () => clearTimeout(timer);
+    
+    return () => {
+      if (modeChangeTimerRef.current) {
+        clearTimeout(modeChangeTimerRef.current);
+        modeChangeTimerRef.current = null;
+      }
+    };
   }, [trainingState.trainingMode, handleStopTraining, handleStartTraining]);
 
   // ═══════════════════════════════════════════════════════════════════════════

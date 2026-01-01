@@ -56,6 +56,12 @@
   transform: scale(1.02);
 }
 
+.mode-button:focus-visible {
+  outline: 2px solid #00ffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
+}
+
 /* Vital Point Button */
 .vital-point-button {
   background: rgba(45, 45, 45, 0.5);
