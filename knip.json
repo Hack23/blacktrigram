@@ -1,6 +1,11 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["./src/index.ts"],
+  "entry": [
+    "./src/main.tsx",
+    "./src/index.ts",
+    "./scripts/capture-screenshots.ts",
+    "./scripts/post-screenshots-to-pr.ts"
+  ],
   "project": ["**/*.{ts,tsx}"],
   "eslint": {
     "config": [".eslintrc.cjs"]
