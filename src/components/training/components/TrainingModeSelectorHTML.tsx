@@ -69,23 +69,23 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
 
 /**
  * TrainingModeSelectorHTML Component
- * Html overlay for selecting training mode
+ * Html overlay for selecting training mode - Compact horizontal layout
  */
 export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> = ({
   currentMode,
   onModeChange,
   isMobile,
 }) => {
-  const panelWidth = isMobile ? 260 : 300;
+  const panelWidth = isMobile ? 280 : 320;
 
   return (
     <div
       style={{
         width: `${panelWidth}px`,
-        background: "rgba(26, 26, 26, 0.85)",
-        border: "2px solid rgba(0, 255, 255, 0.9)",
+        background: "rgba(26, 26, 26, 0.9)",
+        border: "2px solid rgba(255, 215, 0, 0.9)",
         borderRadius: "12px",
-        padding: "15px",
+        padding: isMobile ? "10px" : "12px",
         fontFamily: FONT_FAMILY.KOREAN,
         color: "#ffffff",
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
@@ -93,29 +93,36 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
       data-testid="training-mode-selector-html"
     >
       {/* Header */}
-      <div style={{ marginBottom: "15px" }}>
+      <div style={{ marginBottom: "10px", textAlign: "center" }}>
         <div
           style={{
-            fontSize: isMobile ? "14px" : "16px",
+            fontSize: isMobile ? "13px" : "15px",
             fontWeight: "bold",
-            color: "#00ffff",
+            color: "#ffd700",
           }}
         >
-          훈련 모드
+          훈련 모드 | Training Mode
         </div>
         <div
           style={{
-            fontSize: isMobile ? "10px" : "12px",
+            fontSize: isMobile ? "9px" : "10px",
             color: "#999999",
             fontStyle: "italic",
+            marginTop: "2px",
           }}
         >
-          Training Mode
+          {MODE_INFO[currentMode].description}
         </div>
       </div>
 
-      {/* Mode Buttons */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      {/* Mode Buttons - Horizontal Grid */}
+      <div 
+        style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "6px" 
+        }}
+      >
         {(Object.keys(MODE_INFO) as TrainingMode[]).map((mode) => {
           const isSelected = mode === currentMode;
           const info = MODE_INFO[mode];
@@ -126,38 +133,39 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
               onClick={() => onModeChange(mode)}
               className={`mode-button ${isSelected ? "selected" : ""}`}
               style={{
-                padding: "10px",
-                textAlign: "left",
+                padding: isMobile ? "6px 4px" : "8px 6px",
+                textAlign: "center",
+                fontSize: isMobile ? "10px" : "11px",
+                minHeight: isMobile ? "45px" : "50px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
               }}
               data-testid={`mode-${mode}`}
+              title={info.description}
             >
               <div
                 style={{
-                  fontSize: isMobile ? "12px" : "14px",
                   fontWeight: "bold",
-                  color: isSelected ? "#00ffff" : "#ffffff",
-                  marginBottom: "4px",
+                  color: isSelected ? "#ffd700" : "#ffffff",
+                  fontSize: isMobile ? "11px" : "12px",
+                  marginBottom: "2px",
                 }}
               >
                 {info.korean}
               </div>
               <div
                 style={{
-                  fontSize: isMobile ? "10px" : "11px",
-                  color: "#999999",
-                  marginBottom: "6px",
+                  fontSize: isMobile ? "8px" : "9px",
+                  color: isSelected ? "#00ffff" : "#999999",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  width: "100%",
                 }}
               >
                 {info.english}
-              </div>
-              <div
-                style={{
-                  fontSize: isMobile ? "9px" : "10px",
-                  color: "#888888",
-                  lineHeight: "1.3",
-                }}
-              >
-                {info.description}
               </div>
             </button>
           );

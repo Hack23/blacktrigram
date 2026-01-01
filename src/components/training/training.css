@@ -35,7 +35,7 @@
 /* Training Mode Selector */
 .mode-button {
   background: rgba(45, 45, 45, 0.5);
-  border: 2px solid rgba(0, 255, 255, 0.5);
+  border: 2px solid rgba(255, 215, 0, 0.4);
   border-radius: 8px;
   padding: 10px;
   cursor: pointer;
@@ -45,13 +45,15 @@
 }
 
 .mode-button.selected {
-  background: rgba(0, 255, 255, 0.3);
-  border-color: #00ffff;
+  background: rgba(255, 215, 0, 0.25);
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
 }
 
 .mode-button:not(.selected):hover {
   background: rgba(64, 64, 64, 0.7);
-  border-color: #00ffff;
+  border-color: #ffd700;
+  transform: scale(1.02);
 }
 
 /* Vital Point Button */
@@ -74,18 +76,29 @@
   background: rgba(64, 64, 64, 0.7);
 }
 
-/* Training Feedback Animation */
+/* Training Feedback Animation - Fast and snappy */
 @keyframes feedbackPulse {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.9);
     opacity: 0;
   }
-  50% {
-    transform: scale(1.1);
+  40% {
+    transform: scale(1.05);
   }
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes feedbackFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
   }
 }
 
@@ -96,18 +109,18 @@
   color: #ffd700;
   text-align: center;
   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  animation: feedbackPulse 0.5s ease-in-out;
+  animation: feedbackPulse 0.3s ease-out;
   min-width: 200px;
 }
 
 .training-feedback.mobile {
-  padding: 20px 30px;
-  font-size: 20px;
+  padding: 15px 25px;
+  font-size: 18px;
 }
 
 .training-feedback.desktop {
-  padding: 30px 50px;
-  font-size: 28px;
+  padding: 20px 40px;
+  font-size: 24px;
 }
 
 /* Pulsing Status Indicator (replaces requestAnimationFrame) */

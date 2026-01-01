@@ -543,7 +543,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   }, [onReturnToMenu, handleStanceChange, handleAttack]);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 10: Audio Lifecycle Management
+  // SECTION 10: Audio Lifecycle Management & Auto-Start Training
   // ═══════════════════════════════════════════════════════════════════════════
 
   useEffect(() => {
@@ -563,6 +563,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     void startMusic();
 
+    // Auto-start training on mount
+    handleStartTraining();
+
     return () => {
       if (audioStarted) {
         void audio
@@ -571,16 +574,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           .catch((err) => console.warn("Failed to stop training music:", err));
       }
     };
-  }, [audio, trainingActions]);
+  }, [audio, trainingActions, handleStartTraining]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 11: Feedback & Session Timer Effects
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Hide feedback after delay
+  // Hide feedback after delay - Fast feedback (800ms)
   useEffect(() => {
     if (trainingState.showFeedback) {
-      const timer = setTimeout(() => trainingActions.hideFeedback(), 2000);
+      const timer = setTimeout(() => trainingActions.hideFeedback(), 800);
       return () => clearTimeout(timer);
     }
   }, [trainingState.showFeedback, trainingActions]);
@@ -601,6 +604,26 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     trainingState.sessionStartTime,
     trainingActions,
   ]);
+
+  // Auto-restart training when mode changes (only if already training)
+  const prevTrainingModeRef = useRef<typeof trainingState.trainingMode>(
+    trainingState.trainingMode
+  );
+
+  useEffect(() => {
+    const modeChanged = prevTrainingModeRef.current !== trainingState.trainingMode;
+    prevTrainingModeRef.current = trainingState.trainingMode;
+
+    if (modeChanged && trainingState.isTraining) {
+      // Mode changed while training - restart to apply new mode
+      handleStopTraining();
+      // Small delay to allow state to settle, then restart
+      const timer = setTimeout(() => {
+        handleStartTraining();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [trainingState.trainingMode, trainingState.isTraining, handleStopTraining, handleStartTraining]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 12: Hit Effect Management
@@ -871,7 +894,30 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </ResponsiveContainer>
 
-            {/* Bottom Left - Mode Selector and Anatomy Controls */}
+            {/* Top Center - Training Mode Selector (below hint/above center) */}
+            <ResponsiveContainer
+              position={{
+                base: {
+                  x: width / 2 - (isMobile ? 130 : 150),
+                  y: isMobile ? 70 : 90,
+                },
+              }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.HUD}
+              style={{
+                pointerEvents: "all",
+              }}
+            >
+              <TrainingModeSelectorHTML
+                currentMode={trainingState.trainingMode}
+                onModeChange={trainingActions.setTrainingMode}
+                isMobile={isMobile}
+              />
+            </ResponsiveContainer>
+
+            {/* Bottom Left - Anatomy Controls */}
             <ResponsiveContainer
               position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
               containerWidth={width}
@@ -885,12 +931,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 gap: "15px",
               }}
             >
-              <TrainingModeSelectorHTML
-                currentMode={trainingState.trainingMode}
-                onModeChange={trainingActions.setTrainingMode}
-                isMobile={isMobile}
-              />
-
               <AnatomyControlsHTML
                 visibleLayers={trainingState.visibleAnatomyLayers}
                 onLayerToggle={handleAnatomyLayerToggle}

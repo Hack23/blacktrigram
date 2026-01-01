@@ -1,7 +1,7 @@
 /**
  * TrainingControlsHTML - Html overlay for training controls
  * 
- * Uses CSS animations instead of requestAnimationFrame for better performance
+ * Simplified to show only stop button and status, as training auto-starts
  */
 
 import React from "react";
@@ -24,20 +24,19 @@ export interface TrainingControlsHTMLProps {
 
 /**
  * TrainingControlsHTML Component
- * Html overlay for training start/stop controls with CSS animations
+ * Html overlay showing training status and stop control
  */
 export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
   isTraining,
-  onStartTraining,
   onStopTraining,
   isMobile,
 }) => {
-  const panelWidth = isMobile ? 260 : 280;
-  const panelHeight = isMobile ? 120 : 140;
+  const panelWidth = isMobile ? 200 : 220;
+  const panelHeight = isMobile ? 90 : 100;
 
   const borderColor = isTraining
     ? "rgba(0, 255, 136, 0.9)"
-    : "rgba(0, 255, 255, 0.9)";
+    : "rgba(255, 68, 68, 0.9)";
 
   return (
     <div
@@ -47,7 +46,7 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
         background: "rgba(26, 26, 26, 0.85)",
         border: `2px solid ${borderColor}`,
         borderRadius: "12px",
-        padding: "15px",
+        padding: "12px",
         fontFamily: FONT_FAMILY.KOREAN,
         color: "#ffffff",
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
@@ -56,24 +55,24 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
       data-testid="training-controls-html"
     >
       {/* Header */}
-      <div style={{ marginBottom: "10px" }}>
+      <div style={{ marginBottom: "8px" }}>
         <div
           style={{
-            fontSize: isMobile ? "14px" : "16px",
+            fontSize: isMobile ? "13px" : "14px",
             fontWeight: "bold",
-            color: "#ffd700",
+            color: isTraining ? "#00ff88" : "#ff4444",
           }}
         >
-          훈련 조작
+          {isTraining ? "훈련 진행중" : "훈련 중지"}
         </div>
         <div
           style={{
-            fontSize: isMobile ? "10px" : "12px",
+            fontSize: isMobile ? "9px" : "10px",
             color: "#999999",
             fontStyle: "italic",
           }}
         >
-          Training Controls
+          {isTraining ? "Training Active" : "Training Stopped"}
         </div>
       </div>
 
@@ -82,39 +81,43 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
         className={`status-indicator ${isTraining ? "active" : "inactive"}`}
         style={{
           position: "absolute",
-          top: "15px",
-          right: "15px",
+          top: "12px",
+          right: "12px",
         }}
       />
 
-      {/* Start/Stop Button with CSS hover */}
-      <button
-        onClick={isTraining ? onStopTraining : onStartTraining}
-        className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
-        style={{
-          fontSize: isMobile ? "14px" : "16px",
-          fontFamily: FONT_FAMILY.KOREAN,
-          marginBottom: "10px",
-        }}
-        data-testid="start-stop-button"
-      >
-        <span>{isTraining ? "⏹" : "▶"}</span>
-        <span>{isTraining ? "중지" : "시작"}</span>
-      </button>
+      {/* Stop Button - only show when training is active */}
+      {isTraining && (
+        <button
+          onClick={onStopTraining}
+          className="training-button training-button-stop"
+          style={{
+            fontSize: isMobile ? "13px" : "14px",
+            fontFamily: FONT_FAMILY.KOREAN,
+            height: "35px",
+          }}
+          data-testid="stop-button"
+        >
+          <span>⏹</span>
+          <span>중지 | Stop</span>
+        </button>
+      )}
 
-      {/* Control Instructions */}
-      <div
-        style={{
-          fontSize: isMobile ? "9px" : "10px",
-          color: "#00ffff",
-          marginTop: "auto",
-        }}
-      >
-        <div style={{ fontWeight: "bold", marginBottom: "4px" }}>조작법:</div>
-        <div style={{ color: "#999999" }}>
-          WASD-이동 | Space-공격 | 1-8-자세
+      {/* Info text when stopped */}
+      {!isTraining && (
+        <div
+          style={{
+            fontSize: isMobile ? "9px" : "10px",
+            color: "#999999",
+            textAlign: "center",
+            marginTop: "4px",
+          }}
+        >
+          모드 변경시 자동 재시작
+          <br />
+          Auto-restarts on mode change
         </div>
-      </div>
+      )}
     </div>
   );
 };
