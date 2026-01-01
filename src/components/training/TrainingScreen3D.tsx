@@ -543,8 +543,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   }, [onReturnToMenu, handleStanceChange, handleAttack]);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 10: Audio Lifecycle Management
+  // SECTION 10: Audio Lifecycle Management & Auto-Start Training
   // ═══════════════════════════════════════════════════════════════════════════
+
+  // Track if component has mounted to enable auto-start once
+  const hasMountedRef = useRef(false);
 
   useEffect(() => {
     let audioStarted = false;
@@ -573,14 +576,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     };
   }, [audio, trainingActions]);
 
+  // Auto-start training on mount (only once) - separate effect to avoid re-runs
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      handleStartTraining();
+    }
+  }, [handleStartTraining]);
+
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 11: Feedback & Session Timer Effects
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Hide feedback after delay
+  // Hide feedback after delay - 1500ms provides adequate time for bilingual text readability
   useEffect(() => {
     if (trainingState.showFeedback) {
-      const timer = setTimeout(() => trainingActions.hideFeedback(), 2000);
+      const timer = setTimeout(() => trainingActions.hideFeedback(), 1500);
       return () => clearTimeout(timer);
     }
   }, [trainingState.showFeedback, trainingActions]);
@@ -601,6 +612,71 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     trainingState.sessionStartTime,
     trainingActions,
   ]);
+
+  // Auto-restart training when mode changes
+  const prevTrainingModeRef = useRef<typeof trainingState.trainingMode>(
+    trainingState.trainingMode
+  );
+  const isFirstModeEffectRef = useRef<boolean>(true);
+  const isTrainingRef = useRef<boolean>(trainingState.isTraining);
+  const modeChangeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Keep a ref in sync with the latest training state for use inside timeouts
+  useEffect(() => {
+    isTrainingRef.current = trainingState.isTraining;
+  }, [trainingState.isTraining]);
+
+  // Store callbacks in refs to avoid effect re-runs when they change
+  const handleStartTrainingRef = useRef(handleStartTraining);
+  const handleStopTrainingRef = useRef(handleStopTraining);
+  
+  useEffect(() => {
+    handleStartTrainingRef.current = handleStartTraining;
+    handleStopTrainingRef.current = handleStopTraining;
+  }, [handleStartTraining, handleStopTraining]);
+
+  useEffect(() => {
+    // Explicitly skip the first execution on initial mount
+    if (isFirstModeEffectRef.current) {
+      isFirstModeEffectRef.current = false;
+      prevTrainingModeRef.current = trainingState.trainingMode;
+      return;
+    }
+
+    const previousMode = prevTrainingModeRef.current;
+    const modeChanged = previousMode !== trainingState.trainingMode;
+
+    if (!modeChanged) {
+      return;
+    }
+
+    // Update previous mode only when an actual change is detected
+    prevTrainingModeRef.current = trainingState.trainingMode;
+
+    // Clear any existing timer to prevent stale callbacks
+    if (modeChangeTimerRef.current) {
+      clearTimeout(modeChangeTimerRef.current);
+      modeChangeTimerRef.current = null;
+    }
+
+    // Restart training on mode change (matches UI message "Auto-restarts on mode change")
+    if (isTrainingRef.current) {
+      handleStopTrainingRef.current();
+    }
+
+    // Small delay to allow state to settle, then (re)start training unconditionally
+    modeChangeTimerRef.current = setTimeout(() => {
+      handleStartTrainingRef.current();
+      modeChangeTimerRef.current = null;
+    }, 100);
+    
+    return () => {
+      if (modeChangeTimerRef.current) {
+        clearTimeout(modeChangeTimerRef.current);
+        modeChangeTimerRef.current = null;
+      }
+    };
+  }, [trainingState.trainingMode]); // Only depend on training mode to avoid unnecessary re-runs
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 12: Hit Effect Management
@@ -871,7 +947,30 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </ResponsiveContainer>
 
-            {/* Bottom Left - Mode Selector and Anatomy Controls */}
+            {/* Top Center - Training Mode Selector (below hint/above center) */}
+            <ResponsiveContainer
+              position={{
+                base: {
+                  x: width / 2 - (isMobile ? 140 : 160),
+                  y: isMobile ? 70 : 90,
+                },
+              }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.HUD}
+              style={{
+                pointerEvents: "all",
+              }}
+            >
+              <TrainingModeSelectorHTML
+                currentMode={trainingState.trainingMode}
+                onModeChange={trainingActions.setTrainingMode}
+                isMobile={isMobile}
+              />
+            </ResponsiveContainer>
+
+            {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
             <ResponsiveContainer
               position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
               containerWidth={width}
@@ -885,12 +984,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 gap: "15px",
               }}
             >
-              <TrainingModeSelectorHTML
-                currentMode={trainingState.trainingMode}
-                onModeChange={trainingActions.setTrainingMode}
-                isMobile={isMobile}
-              />
-
               <AnatomyControlsHTML
                 visibleLayers={trainingState.visibleAnatomyLayers}
                 onLayerToggle={handleAnatomyLayerToggle}
