@@ -688,6 +688,8 @@ src/hooks/useActionFeedback.test.ts
 src/hooks/useActionFeedback.ts
 src/hooks/useCombatTimer.test.ts
 src/hooks/useCombatTimer.ts
+src/hooks/useDebounce.test.ts
+src/hooks/useDebounce.ts
 src/hooks/useKeyboardControls.test.ts
 src/hooks/useKeyboardControls.ts
 src/hooks/useMatchCountdown.test.ts
@@ -702,6 +704,8 @@ src/hooks/useRoundTransition.test.ts
 src/hooks/useRoundTransition.ts
 src/hooks/useTechniqueSelection.test.ts
 src/hooks/useTechniqueSelection.ts
+src/hooks/useThrottle.test.ts
+src/hooks/useThrottle.ts
 src/hooks/useTouchControls.test.ts
 src/hooks/useTouchControls.ts
 src/hooks/useWebGLContextLossHandler.test.ts
@@ -871,11 +875,15 @@ src/utils/htmlOverlayHelpers.ts
 src/utils/index.ts
 src/utils/inputSystem.ts
 src/utils/layoutMigration.ts
+src/utils/objectPool.test.ts
+src/utils/objectPool.ts
 src/utils/performance/PerformanceMonitor.test.ts
 src/utils/performance/PerformanceMonitor.ts
 src/utils/performance/PerformanceOverlay3D.tsx
 src/utils/performance/index.ts
 src/utils/performance/usePerformanceMonitor.ts
+src/utils/performanceOptimization.test.ts
+src/utils/performanceOptimization.ts
 src/utils/player3DHelpers.test.ts
 src/utils/player3DHelpers.ts
 src/utils/playerUtils.test.ts
