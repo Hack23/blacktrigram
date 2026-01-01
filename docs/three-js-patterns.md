@@ -1,5 +1,22 @@
 # 🎨 Three.js Patterns for Black Trigram (흑괘)
 
+## 📚 **Documentation Structure**
+
+This document covers **game engine Three.js patterns** for Korean martial arts combat mechanics and visual effects.
+
+**For UI architecture patterns**, see complementary documentation:
+- **[Three.js UI Integration](./THREEJS_UI_INTEGRATION.md)** - Html overlay vs 3D mesh decisions, Canvas setup, UI performance optimization
+- **[UI/UX Architecture](./UI_UX_ARCHITECTURE.md)** - Complete component hierarchy and design patterns
+
+**Topics in this document:**
+- Korean-themed materials and stance-based effects (Eight Trigrams)
+- Combat hit effects and vital point markers
+- Character animations for martial arts movements
+- Object pooling and performance optimization techniques
+- 3D spatial audio integration for immersive combat
+
+---
+
 ## 📚 Purpose
 
 This document provides common Three.js patterns, best practices, and reusable code examples specifically for Black Trigram's Korean martial arts combat system.

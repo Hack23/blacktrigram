@@ -1,5 +1,21 @@
 # Mobile Touch Control System
 
+## 📚 **Documentation Overview**
+
+This document provides **detailed implementation reference** for mobile touch controls with component usage, test coverage, and performance metrics.
+
+**For design patterns and architecture**, see:
+- **[Mobile Controls Design Guide](./MOBILE_CONTROLS.md)** - Mobile design patterns, decision frameworks, UI architecture, specifications
+
+**This document covers:**
+- Actual component implementations with code examples and props
+- 149 unit tests covering all mobile components with coverage metrics
+- Performance optimization techniques for 60fps mobile gameplay
+- Browser support matrix and device testing scenarios
+- Integration examples with CombatScreen3D and TrainingScreen3D
+
+---
+
 ## Overview
 
 Black Trigram features a comprehensive mobile touch control system designed for 375x667+ mobile resolutions, optimized for 60fps performance on mid-tier devices (iPhone 11, Samsung S10).
