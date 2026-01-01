@@ -6,6 +6,6 @@
 export { EndScreen3D } from "./EndScreen3D";
 export type { EndScreen3DProps } from "./EndScreen3D";
 
-// Note: Individual subcomponents removed from exports as they are only used internally by EndScreen3D
-// WinnerDisplay, PerformanceRating, NavigationButtons, MatchStatisticsDisplay, VictoryAnimation3D
-// are not exported to reduce bundle size
+// Note: Individual subcomponents are intentionally not exported because they are internal
+// implementation details of EndScreen3D (WinnerDisplay, PerformanceRating, NavigationButtons,
+// MatchStatisticsDisplay, VictoryAnimation3D) and are not part of the public end screen API.

@@ -149,7 +149,7 @@ Unused exports: 254 (mostly internal component usage, not barrel exports) ⚠️
 - "UI code contributes 850KB to bundle"
   - **Reality:** Three.js contributes 1,000KB (60%)
 - "Estimated 20-30% unused"
-  - **Reality:** <2% truly unused (removed 1,515 lines)
+  - **Reality:** <2% truly unused (removed 1,203 lines)
 - "Target: <720KB (15% reduction)"
   - **Reality:** Not achievable without removing Three.js or major features
 
@@ -159,9 +159,6 @@ Unused exports: 254 (mostly internal component usage, not barrel exports) ⚠️
 - ✅ Unused barrel exports (8 functions)
 - ✅ Improved code maintainability
 - ✅ Fixed Knip configuration (added entry points for scripts and main.tsx)
-- ✅ Unused barrel exports (8 functions)
-- ✅ Improved code maintainability
-- ✅ Fixed Knip configuration
 
 ### Why Bundle Remained 1,673 KB
 1. **Three.js is required** (600 KB) - Cannot remove without losing 3D
