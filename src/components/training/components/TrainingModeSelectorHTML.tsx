@@ -83,7 +83,7 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
       style={{
         width: `${panelWidth}px`,
         background: "rgba(26, 26, 26, 0.9)",
-        border: "2px solid rgba(255, 215, 0, 0.9)",
+        border: "2px solid rgba(0, 255, 255, 0.9)",
         borderRadius: "12px",
         padding: isMobile ? "10px" : "12px",
         fontFamily: FONT_FAMILY.KOREAN,
@@ -98,7 +98,7 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
           style={{
             fontSize: isMobile ? "13px" : "15px",
             fontWeight: "bold",
-            color: "#ffd700",
+            color: "#00ffff",
           }}
         >
           훈련 모드 | Training Mode
@@ -109,6 +109,7 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
             color: "#999999",
             fontStyle: "italic",
             marginTop: "2px",
+            minHeight: "16px",
           }}
         >
           {MODE_INFO[currentMode].description}
@@ -119,7 +120,7 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
       <div 
         style={{ 
           display: "grid", 
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: panelWidth < 280 ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
           gap: "6px" 
         }}
       >
@@ -148,9 +149,13 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
               <div
                 style={{
                   fontWeight: "bold",
-                  color: isSelected ? "#ffd700" : "#ffffff",
+                  color: isSelected ? "#00ffff" : "#ffffff",
                   fontSize: isMobile ? "11px" : "12px",
                   marginBottom: "2px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  width: "100%",
                 }}
               >
                 {info.korean}
@@ -158,7 +163,7 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
               <div
                 style={{
                   fontSize: isMobile ? "8px" : "9px",
-                  color: isSelected ? "#00ffff" : "#999999",
+                  color: isSelected ? "#ffd700" : "#999999",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",

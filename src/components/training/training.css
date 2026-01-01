@@ -35,7 +35,7 @@
 /* Training Mode Selector */
 .mode-button {
   background: rgba(45, 45, 45, 0.5);
-  border: 2px solid rgba(255, 215, 0, 0.4);
+  border: 2px solid rgba(0, 255, 255, 0.4);
   border-radius: 8px;
   padding: 10px;
   cursor: pointer;
@@ -45,14 +45,14 @@
 }
 
 .mode-button.selected {
-  background: rgba(255, 215, 0, 0.25);
-  border-color: #ffd700;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+  background: rgba(0, 255, 255, 0.25);
+  border-color: #00ffff;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
 }
 
 .mode-button:not(.selected):hover {
   background: rgba(64, 64, 64, 0.7);
-  border-color: #ffd700;
+  border-color: #00ffff;
   transform: scale(1.02);
 }
 
@@ -109,7 +109,7 @@
   color: #ffd700;
   text-align: center;
   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  animation: feedbackPulse 0.3s ease-out;
+  animation: feedbackPulse 0.4s ease-out;
   min-width: 200px;
 }
 

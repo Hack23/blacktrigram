@@ -580,10 +580,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 11: Feedback & Session Timer Effects
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Hide feedback after delay - Fast feedback (800ms)
+  // Hide feedback after delay - Fast feedback (1000ms for readability)
   useEffect(() => {
     if (trainingState.showFeedback) {
-      const timer = setTimeout(() => trainingActions.hideFeedback(), 800);
+      const timer = setTimeout(() => trainingActions.hideFeedback(), 1000);
       return () => clearTimeout(timer);
     }
   }, [trainingState.showFeedback, trainingActions]);
@@ -898,7 +898,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{
                 base: {
-                  x: width / 2 - (isMobile ? 130 : 150),
+                  x: width / 2 - (isMobile ? 140 : 160),
                   y: isMobile ? 70 : 90,
                 },
               }}

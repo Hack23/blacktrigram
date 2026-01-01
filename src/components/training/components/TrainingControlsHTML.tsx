@@ -1,7 +1,9 @@
 /**
  * TrainingControlsHTML - Html overlay for training controls
  * 
- * Simplified to show only stop button and status, as training auto-starts
+ * Simplified to show only stop button and status, as training auto-starts.
+ * Note: onStartTraining prop is kept in interface for backward compatibility
+ * but is not used since training now auto-starts on mount.
  */
 
 import React from "react";
@@ -14,7 +16,7 @@ import "../training.css";
 export interface TrainingControlsHTMLProps {
   /** Whether training is currently active */
   readonly isTraining: boolean;
-  /** Callback to start training */
+  /** Callback to start training (unused - kept for backward compatibility) */
   readonly onStartTraining: () => void;
   /** Callback to stop training */
   readonly onStopTraining: () => void;
