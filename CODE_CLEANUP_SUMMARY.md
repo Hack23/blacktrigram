@@ -6,14 +6,16 @@ This cleanup effort focused on removing genuinely unused code while maintaining 
 
 ## 🎯 Achievements
 
-### ✅ Files Removed (7 files, 1,515 lines)
-1. `scripts/capture-screenshots.ts` - Unused screenshot capture utility
+### ✅ Files Removed (6 files, 1,203 lines) - **Updated**
+1. ~~`scripts/capture-screenshots.ts`~~ - **RESTORED** (false positive - used by GitHub workflows)
 2. `src/components/training/hooks/index.ts` - Empty barrel file
 3. `src/components/ui/index.ts` - Unused barrel file
 4. `src/examples/HandAnimationDemo.tsx` - Demo component
 5. `src/test-types.ts` - Unused test type definitions
 6. `src/utils/layoutMigration.ts` - Deprecated migration helper (360 lines)
 7. `test/test-utils.tsx` - Duplicate test utilities
+
+**Note:** `scripts/capture-screenshots.ts` was initially removed as a Knip false positive (it's run via `npx tsx`, not imported). Restored in commit fd4da48 after CI failure.
 
 ### ✅ Dependencies Removed (9 packages, -314 total with transitive deps)
 
@@ -53,8 +55,10 @@ This cleanup effort focused on removing genuinely unused code while maintaining 
   - `MatchStatisticsDisplay`
   - `VictoryAnimation3D`
 
-### ✅ Knip Configuration Fixed
+### ✅ Knip Configuration Fixed and Improved
 - Added `src/main.tsx` as entry point (was missing, causing false positives)
+- Added `scripts/capture-screenshots.ts` and `scripts/post-screenshots-to-pr.ts` as entry points
+- Prevents false positives for scripts run via `npx tsx` (not imported as modules)
 - Improved accuracy of unused code detection
 
 ## 📊 Bundle Size Analysis
@@ -127,14 +131,17 @@ Unused exports: 254 (mostly internal component usage, not barrel exports) ⚠️
 
 | Metric | Before | After | Change | Status |
 |--------|--------|-------|--------|--------|
-| **Files** | 7 unused | 0 unused | -7 (100%) | ✅ Complete |
-| **LOC** | +1,515 dead | 0 dead | -1,515 (100%) | ✅ Complete |
+| **Files** | 7 unused | 0 unused | -7 → -6* (100%) | ✅ Complete |
+| **LOC** | +1,515 dead | 0 dead | -1,203** (100%) | ✅ Complete |
 | **Dependencies** | 1,276 | 962 | -314 (-25%) | ✅ Complete |
 | **Runtime Deps** | 2 unused | 0 unused | -2 (100%) | ✅ Complete |
 | **Dev Deps** | 22 unused | 7 removed | -7 (~30%) | ✅ Good |
 | **Barrel Exports** | 262 | 254 | -8 (~3%) | ✅ Cleaned |
 | **Bundle Size** | 1,673 KB | 1,673 KB | 0% | ℹ️ Expected |
 | **Tests** | 4,002 | 4,002 | 100% pass | ✅ Maintained |
+
+*One file (capture-screenshots.ts) restored after false positive detection
+**Corrected LOC count after restoring capture-screenshots.ts (312 lines)
 
 ## 🎯 Why Bundle Size Didn't Reduce
 
@@ -147,8 +154,11 @@ Unused exports: 254 (mostly internal component usage, not barrel exports) ⚠️
   - **Reality:** Not achievable without removing Three.js or major features
 
 ### What We Actually Cleaned
-- ✅ Unused files and dead code (1,515 lines)
+- ✅ Unused files and dead code (1,203 lines, corrected after restoring capture-screenshots.ts)
 - ✅ Unused dependencies (9 packages)
+- ✅ Unused barrel exports (8 functions)
+- ✅ Improved code maintainability
+- ✅ Fixed Knip configuration (added entry points for scripts and main.tsx)
 - ✅ Unused barrel exports (8 functions)
 - ✅ Improved code maintainability
 - ✅ Fixed Knip configuration
@@ -229,7 +239,8 @@ import { Vector3, Mesh, MeshStandardMaterial } from 'three';
 ## 🎓 Lessons Learned
 
 1. **Knip Requires Proper Configuration**
-   - Entry points must include all actual entry files (main.tsx, index.ts)
+   - Entry points must include all actual entry files (main.tsx, index.ts, scripts)
+   - Scripts run via `npx tsx` need explicit entry points to avoid false positives
    - Configuration files (eslint, cypress, typedoc) cause false positives
 
 2. **Bundle Analysis is Critical**
@@ -239,25 +250,33 @@ import { Vector3, Mesh, MeshStandardMaterial } from 'three';
 3. **"Unused" Doesn't Always Mean Removable**
    - Internal component usage shows as "unused exports"
    - Default exports for React components are intentional patterns
+   - Scripts in package.json may be flagged as unused if not configured properly
 
 4. **Realistic Goals Matter**
    - Original 15% reduction target was based on incorrect assumptions
    - Actual achievable reduction: <2% (already accomplished)
 
+5. **CI/Build Validation is Essential**
+   - Always test npm scripts after removing files
+   - GitHub workflows may reference "unused" scripts
+   - False positives need validation before removal
+
 ## 📝 Conclusion
 
 This cleanup successfully removed all genuinely unused code while maintaining 100% test coverage and functionality. The bundle size target (<720 KB) was unrealistic given the 3D game architecture. The codebase is now:
 
-- ✅ Free of dead code (1,515 lines removed)
+- ✅ Free of dead code (1,203 lines removed, after correcting false positives)
 - ✅ Leaner dependencies (314 packages removed)
 - ✅ Well-tested (4,002 tests passing)
 - ✅ More maintainable (cleaner barrel exports)
-- ✅ Properly configured (Knip accuracy improved)
+- ✅ Properly configured (Knip accuracy improved with script entry points)
+
+One file (`scripts/capture-screenshots.ts`) was initially removed as a false positive but restored after CI failure, demonstrating the importance of validating Knip results against actual usage in workflows and npm scripts.
 
 For significant bundle size reduction, architectural changes (code splitting, lazy loading) are recommended as separate initiatives.
 
 ---
 
-**Generated:** 2026-01-01
+**Generated:** 2026-01-01 (Updated after CI fix)
 **Author:** Code Quality Engineer (Copilot Agent)
 **PR:** #[pending]
