@@ -566,12 +566,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     void startMusic();
 
-    // Auto-start training on mount (only once)
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      handleStartTraining();
-    }
-
     return () => {
       if (audioStarted) {
         void audio
@@ -580,7 +574,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           .catch((err) => console.warn("Failed to stop training music:", err));
       }
     };
-  }, [audio, trainingActions, handleStartTraining]); // hasMountedRef ensures auto-start runs only once
+  }, [audio, trainingActions]);
+
+  // Auto-start training on mount (only once) - separate effect to avoid re-runs
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      handleStartTraining();
+    }
+  }, [handleStartTraining]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 11: Feedback & Session Timer Effects
@@ -968,7 +970,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </ResponsiveContainer>
 
-            {/* Bottom Left - Anatomy Controls */}
+            {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
             <ResponsiveContainer
               position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
               containerWidth={width}

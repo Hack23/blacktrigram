@@ -144,7 +144,6 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
                 alignItems: "center",
               }}
               data-testid={`mode-${mode}`}
-              title={info.description}
             >
               <div
                 style={{

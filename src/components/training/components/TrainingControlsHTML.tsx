@@ -65,7 +65,7 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
             color: isTraining ? "#00ff88" : "#ff4444",
           }}
         >
-          {isTraining ? "훈련 진행중" : "훈련 중지"}
+          {isTraining ? "훈련 진행중" : "훈련 대기"}
         </div>
         <div
           style={{
