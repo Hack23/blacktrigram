@@ -1,6 +1,7 @@
 /**
  * CombatHUDThree - Combat HUD using Three.js Korean UI components
  * 
+ * Performance optimized with React.memo to reduce unnecessary re-renders.
  */
 
 import React, { useMemo } from "react";
@@ -28,6 +29,8 @@ export interface CombatHUDThreeProps {
  * Displays player health, ki, stamina, and round information
  * using the new Three.js Korean UI components.
  * 
+ * Performance optimized with React.memo for 60fps rendering.
+ * 
  * @example
  * ```tsx
  * <CombatHUDThree
@@ -40,7 +43,7 @@ export interface CombatHUDThreeProps {
  * />
  * ```
  */
-export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
+const CombatHUDThreeComponent: React.FC<CombatHUDThreeProps> = ({
   player1,
   player2,
   timeRemaining,
@@ -79,12 +82,53 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
 
   const barWidth = healthBarSize.width;
 
+  // Memoize formatted text strings to avoid recalculating
+  const roundText = useMemo(
+    () => ({
+      korean: `라운드 ${currentRound} / ${maxRounds}`,
+      english: `Round ${currentRound} / ${maxRounds}`,
+    }),
+    [currentRound, maxRounds]
+  );
+
+  const timerText = useMemo(
+    () => ({
+      korean: `시간: ${Math.ceil(timeRemaining)}초`,
+      english: `Time: ${Math.ceil(timeRemaining)}s`,
+    }),
+    [timeRemaining]
+  );
+
+  const timerColor = useMemo(
+    () =>
+      timeRemaining < 10
+        ? KOREAN_COLORS.ACCENT_RED
+        : KOREAN_COLORS.TEXT_PRIMARY,
+    [timeRemaining]
+  );
+
+  const player1ScoreText = useMemo(
+    () => ({
+      korean: `승: ${roundsWon.player1}`,
+      english: `Wins: ${roundsWon.player1}`,
+    }),
+    [roundsWon.player1]
+  );
+
+  const player2ScoreText = useMemo(
+    () => ({
+      korean: `승: ${roundsWon.player2}`,
+      english: `Wins: ${roundsWon.player2}`,
+    }),
+    [roundsWon.player2]
+  );
+
   return (
     <>
       {/* Round and Timer Info */}
       <KoreanText3D
-        korean={`라운드 ${currentRound} / ${maxRounds}`}
-        english={`Round ${currentRound} / ${maxRounds}`}
+        korean={roundText.korean}
+        english={roundText.english}
         size="medium"
         position={[position[0], position[1] + 1, position[2]]}
         weight="bold"
@@ -94,15 +138,11 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
       />
 
       <KoreanText3D
-        korean={`시간: ${Math.ceil(timeRemaining)}초`}
-        english={`Time: ${Math.ceil(timeRemaining)}s`}
+        korean={timerText.korean}
+        english={timerText.english}
         size="medium"
         position={[position[0], position[1] + 0.5, position[2]]}
-        color={
-          timeRemaining < 10
-            ? KOREAN_COLORS.ACCENT_RED
-            : KOREAN_COLORS.TEXT_PRIMARY
-        }
+        color={timerColor}
         layer="hud"
         testId="timer-display"
       />
@@ -165,8 +205,8 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
 
         {/* Player 1 Score */}
         <KoreanText3D
-          korean={`승: ${roundsWon.player1}`}
-          english={`Wins: ${roundsWon.player1}`}
+          korean={player1ScoreText.korean}
+          english={player1ScoreText.english}
           size="small"
           position={[position[0] - 5, position[1] - 1.8, position[2]]}
           color={KOREAN_COLORS.ACCENT_GOLD}
@@ -233,8 +273,8 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
 
         {/* Player 2 Score */}
         <KoreanText3D
-          korean={`승: ${roundsWon.player2}`}
-          english={`Wins: ${roundsWon.player2}`}
+          korean={player2ScoreText.korean}
+          english={player2ScoreText.english}
           size="small"
           position={[position[0] + 5, position[1] - 1.8, position[2]]}
           color={KOREAN_COLORS.ACCENT_GOLD}
@@ -259,5 +299,80 @@ export const CombatHUDThree: React.FC<CombatHUDThreeProps> = ({
     </>
   );
 };
+
+/**
+ * Memoized CombatHUDThree with custom comparison
+ * Only re-renders when relevant props change
+ */
+export const CombatHUDThree = React.memo(
+  CombatHUDThreeComponent,
+  (prevProps, nextProps) => {
+    // Compare player health, ki, stamina, archetype, and names
+    const p1HealthSame = prevProps.player1.health === nextProps.player1.health;
+    const p1MaxHealthSame = prevProps.player1.maxHealth === nextProps.player1.maxHealth;
+    const p1KiSame = prevProps.player1.ki === nextProps.player1.ki;
+    const p1MaxKiSame = prevProps.player1.maxKi === nextProps.player1.maxKi;
+    const p1StaminaSame = prevProps.player1.stamina === nextProps.player1.stamina;
+    const p1MaxStaminaSame = prevProps.player1.maxStamina === nextProps.player1.maxStamina;
+    const p1ArchetypeSame = prevProps.player1.archetype === nextProps.player1.archetype;
+    const p1NameSame = 
+      prevProps.player1.name.korean === nextProps.player1.name.korean &&
+      prevProps.player1.name.english === nextProps.player1.name.english;
+
+    const p2HealthSame = prevProps.player2.health === nextProps.player2.health;
+    const p2MaxHealthSame = prevProps.player2.maxHealth === nextProps.player2.maxHealth;
+    const p2KiSame = prevProps.player2.ki === nextProps.player2.ki;
+    const p2MaxKiSame = prevProps.player2.maxKi === nextProps.player2.maxKi;
+    const p2StaminaSame = prevProps.player2.stamina === nextProps.player2.stamina;
+    const p2MaxStaminaSame = prevProps.player2.maxStamina === nextProps.player2.maxStamina;
+    const p2ArchetypeSame = prevProps.player2.archetype === nextProps.player2.archetype;
+    const p2NameSame = 
+      prevProps.player2.name.korean === nextProps.player2.name.korean &&
+      prevProps.player2.name.english === nextProps.player2.name.english;
+
+    // Compare time and round info
+    const timeSame = Math.ceil(prevProps.timeRemaining) === Math.ceil(nextProps.timeRemaining);
+    const roundSame = prevProps.currentRound === nextProps.currentRound;
+    const maxRoundsSame = prevProps.maxRounds === nextProps.maxRounds;
+    const roundsWonSame = 
+      prevProps.roundsWon?.player1 === nextProps.roundsWon?.player1 &&
+      prevProps.roundsWon?.player2 === nextProps.roundsWon?.player2;
+    const pausedSame = prevProps.isPaused === nextProps.isPaused;
+    const mobileSame = prevProps.isMobile === nextProps.isMobile;
+    
+    // Compare position array for HUD placement
+    const positionSame = 
+      prevProps.position?.[0] === nextProps.position?.[0] &&
+      prevProps.position?.[1] === nextProps.position?.[1] &&
+      prevProps.position?.[2] === nextProps.position?.[2];
+
+    // Return true if all relevant props are the same (skip re-render)
+    return (
+      p1HealthSame &&
+      p1MaxHealthSame &&
+      p1KiSame &&
+      p1MaxKiSame &&
+      p1StaminaSame &&
+      p1MaxStaminaSame &&
+      p1ArchetypeSame &&
+      p1NameSame &&
+      p2HealthSame &&
+      p2MaxHealthSame &&
+      p2KiSame &&
+      p2MaxKiSame &&
+      p2StaminaSame &&
+      p2MaxStaminaSame &&
+      p2ArchetypeSame &&
+      p2NameSame &&
+      timeSame &&
+      roundSame &&
+      maxRoundsSame &&
+      roundsWonSame &&
+      pausedSame &&
+      mobileSame &&
+      positionSame
+    );
+  }
+);
 
 CombatHUDThree.displayName = "CombatHUDThree";

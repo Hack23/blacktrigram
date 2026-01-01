@@ -16,12 +16,13 @@
  */
 
 import { Html } from '@react-three/drei';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { KOREAN_COLORS } from '../../types/constants';
 import { triggerHaptic } from '../../utils/haptics';
 import { getColorRGB } from '../../utils/colorHelpers';
 import { handleKeyboardNav, getFocusStyle } from '../../utils/accessibility';
 import { createBilingualLabel } from '../../types/AccessibilityTypes';
+import { useThrottle } from '../../hooks/useThrottle';
 
 /**
  * Event type for button interactions
@@ -84,7 +85,7 @@ export interface ActionButtonsProps {
  * @public
  * @korean 액션버튼
  */
-export const ActionButtons: React.FC<ActionButtonsProps> = ({
+const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
   onAttack,
   onBlock,
   disabled = false,
@@ -97,8 +98,13 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   const [attackFocused, setAttackFocused] = useState(false);
   const [blockFocused, setBlockFocused] = useState(false);
 
+  // Throttle callbacks to ~60fps for performance
+  const throttledOnAttack = useThrottle(onAttack, 16);
+  const throttledOnBlock = useThrottle(onBlock, 16);
+
   /**
    * Handle attack button press (touch or mouse)
+   * Throttled for performance
    */
   const handleAttackStart = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -107,10 +113,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       e.stopPropagation();
 
       setAttackPressed(true);
-      onAttack();
+      throttledOnAttack();
       triggerHaptic('medium');
     },
-    [disabled, onAttack]
+    [disabled, throttledOnAttack]
   );
 
   /**
@@ -129,6 +135,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
 
   /**
    * Handle block button press (touch or mouse)
+   * Throttled for performance
    */
   const handleBlockStart = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -137,14 +144,15 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       e.stopPropagation();
 
       setBlockPressed(true);
-      onBlock('start');
+      throttledOnBlock('start');
       triggerHaptic('light');
     },
-    [disabled, onBlock]
+    [disabled, throttledOnBlock]
   );
 
   /**
    * Handle block button release (touch or mouse)
+   * Throttled for performance
    */
   const handleBlockEnd = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -153,9 +161,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       e.stopPropagation();
 
       setBlockPressed(false);
-      onBlock('end');
+      throttledOnBlock('end');
     },
-    [disabled, onBlock]
+    [disabled, throttledOnBlock]
   );
 
   /**
@@ -200,9 +208,11 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 
   // Extract RGB colors using shared utility
-  const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
-  const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
-  const blueColor = getColorRGB(KOREAN_COLORS.ACCENT_BLUE);
+  const colors = useMemo(() => ({
+    gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
+    blue: getColorRGB(KOREAN_COLORS.ACCENT_BLUE),
+    primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
+  }), []);
 
   return (
     <Html fullscreen>
@@ -234,8 +244,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             height: '80px',
             borderRadius: '50%',
             background: attackPressed
-              ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`
-              : `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
+              ? `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1)`
+              : `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.9)`,
             border: '3px solid #fff',
             fontSize: '28px',
             color: '#000',
@@ -246,14 +256,14 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'all 0.2s ease',
+            transition: 'transform 0.2s ease, opacity 0.2s ease',
             transform: attackPressed ? 'scale(0.95)' : 'scale(1)',
             boxShadow: attackPressed
-              ? `0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
-              : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.6)`,
+              ? `0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
+              : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.6)`,
             ...getFocusStyle(attackFocused, {
               outlineWidth: 3,
-              boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 1)`,
+              boxShadow: `0 0 0 4px rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.5), 0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1)`,
             }),
           }}
           disabled={disabled}
@@ -281,8 +291,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             height: '70px',
             borderRadius: '50%',
             background: blockPressed
-              ? `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`
-              : `rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 0.9)`,
+              ? `rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1)`
+              : `rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.9)`,
             border: '2px solid #fff',
             fontSize: '24px',
             color: '#fff',
@@ -292,14 +302,14 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'all 0.2s ease',
+            transition: 'transform 0.2s ease, opacity 0.2s ease',
             transform: blockPressed ? 'scale(0.95)' : 'scale(1)',
             boxShadow: blockPressed
-              ? `0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
-              : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 0.6)`,
+              ? `0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
+              : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.6)`,
             ...getFocusStyle(blockFocused, {
               outlineWidth: 3,
-              boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 20px rgba(${blueColor.r}, ${blueColor.g}, ${blueColor.b}, 1)`,
+              boxShadow: `0 0 0 4px rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.5), 0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1)`,
             }),
           }}
           disabled={disabled}
@@ -320,7 +330,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
             gap: '2px',
             alignItems: 'center',
             fontSize: '10px',
-            color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.9)`,
+            color: `rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.9)`,
             textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
             fontWeight: 'bold',
             marginTop: '4px',
@@ -333,3 +343,23 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
     </Html>
   );
 };
+
+/**
+ * Memoized ActionButtons with custom comparison
+ * Only re-renders when props change
+ */
+export const ActionButtons = React.memo(
+  ActionButtonsComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.disabled === nextProps.disabled &&
+      prevProps.bottom === nextProps.bottom &&
+      prevProps.right === nextProps.right &&
+      prevProps.opacity === nextProps.opacity &&
+      prevProps.onAttack === nextProps.onAttack &&
+      prevProps.onBlock === nextProps.onBlock
+    );
+  }
+);
+
+ActionButtons.displayName = "ActionButtons";

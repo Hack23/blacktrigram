@@ -21,7 +21,6 @@ export interface PerformanceOverlay3DProps {
  * Uses screen-space positioning (bottom-left corner)
  */
 export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   position: _position = [0, 0, 0],
   visible = import.meta.env.DEV,
 }) => {

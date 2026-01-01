@@ -198,7 +198,7 @@ function readCSSEnvInsets(): { top: number; bottom: number } | null {
         cachedCSSEnvInsets = result;
         return result;
       }
-    } catch (error) {
+    } catch {
       // Fall through to null
     }
   }
