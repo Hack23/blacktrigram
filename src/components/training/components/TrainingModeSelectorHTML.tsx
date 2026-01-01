@@ -152,10 +152,10 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
                   color: isSelected ? "#00ffff" : "#ffffff",
                   fontSize: isMobile ? "11px" : "12px",
                   marginBottom: "2px",
-                  whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   width: "100%",
+                  minWidth: 0,
                 }}
               >
                 {info.korean}
@@ -164,10 +164,10 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
                 style={{
                   fontSize: isMobile ? "8px" : "9px",
                   color: isSelected ? "#ffd700" : "#999999",
-                  whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   width: "100%",
+                  minWidth: 0,
                 }}
               >
                 {info.english}

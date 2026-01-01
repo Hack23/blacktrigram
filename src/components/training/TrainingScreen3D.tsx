@@ -546,6 +546,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 10: Audio Lifecycle Management & Auto-Start Training
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Track if component has mounted to enable auto-start once
+  const hasMountedRef = useRef(false);
+
   useEffect(() => {
     let audioStarted = false;
 
@@ -564,7 +567,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     void startMusic();
 
     // Auto-start training on mount (only once)
-    handleStartTraining();
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      handleStartTraining();
+    }
 
     return () => {
       if (audioStarted) {
@@ -575,7 +581,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - run only once on mount
+  }, [audio, trainingActions]); // Exclude handleStartTraining to prevent re-runs
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 11: Feedback & Session Timer Effects
@@ -606,30 +612,50 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     trainingActions,
   ]);
 
-  // Auto-restart training when mode changes (always restart regardless of training state)
+  // Auto-restart training when mode changes
   const prevTrainingModeRef = useRef<typeof trainingState.trainingMode>(
     trainingState.trainingMode
   );
+  const isFirstModeEffectRef = useRef<boolean>(true);
+  const isTrainingRef = useRef<boolean>(trainingState.isTraining);
+
+  // Keep a ref in sync with the latest training state for use inside timeouts
+  useEffect(() => {
+    isTrainingRef.current = trainingState.isTraining;
+  }, [trainingState.isTraining]);
 
   useEffect(() => {
+    // Explicitly skip the first execution on initial mount
+    if (isFirstModeEffectRef.current) {
+      isFirstModeEffectRef.current = false;
+      prevTrainingModeRef.current = trainingState.trainingMode;
+      return;
+    }
+
     const previousMode = prevTrainingModeRef.current;
     const modeChanged = previousMode !== trainingState.trainingMode;
 
-    if (modeChanged) {
-      // Update previous mode only when an actual change is detected
-      prevTrainingModeRef.current = trainingState.trainingMode;
-
-      // Always restart training on mode change (matches UI message "Auto-restarts on mode change")
-      if (trainingState.isTraining) {
-        handleStopTraining();
-      }
-      // Small delay to allow state to settle, then restart
-      const timer = setTimeout(() => {
-        handleStartTraining();
-      }, 100);
-      return () => clearTimeout(timer);
+    if (!modeChanged) {
+      return;
     }
-  }, [trainingState.trainingMode, trainingState.isTraining, handleStopTraining, handleStartTraining]);
+
+    // Update previous mode only when an actual change is detected
+    prevTrainingModeRef.current = trainingState.trainingMode;
+
+    // Restart training on mode change (matches UI message "Auto-restarts on mode change")
+    if (isTrainingRef.current) {
+      handleStopTraining();
+    }
+
+    // Small delay to allow state to settle, then (re)start training
+    const timer = setTimeout(() => {
+      // Guard against duplicate starts if another effect already started training
+      if (!isTrainingRef.current) {
+        handleStartTraining();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [trainingState.trainingMode, handleStopTraining, handleStartTraining]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 12: Hit Effect Management

@@ -97,7 +97,8 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
           fontFamily: FONT_FAMILY.KOREAN,
           height: "35px",
         }}
-        data-testid={isTraining ? "stop-button" : "start-button"}
+        data-testid="training-toggle-button"
+        data-training-state={isTraining ? "active" : "inactive"}
       >
         <span>{isTraining ? "⏹" : "▶"}</span>
         <span>{isTraining ? "중지 | Stop" : "시작 | Start"}</span>
