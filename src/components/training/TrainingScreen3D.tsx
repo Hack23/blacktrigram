@@ -653,12 +653,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       handleStopTraining();
     }
 
-    // Small delay to allow state to settle, then (re)start training
+    // Small delay to allow state to settle, then (re)start training unconditionally
     modeChangeTimerRef.current = setTimeout(() => {
-      // Guard against duplicate starts if another effect already started training
-      if (!isTrainingRef.current) {
-        handleStartTraining();
-      }
+      handleStartTraining();
       modeChangeTimerRef.current = null;
     }, 100);
     
