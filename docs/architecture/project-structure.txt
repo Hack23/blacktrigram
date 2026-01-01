@@ -658,7 +658,6 @@ src/components/training/components/VitalPointMarker3D.test.tsx
 src/components/training/components/VitalPointMarker3D.tsx
 src/components/training/components/VitalPointTrainingHTML.tsx
 src/components/training/components/index.ts
-src/components/training/hooks/index.ts
 src/components/training/hooks/useTrainingActions.ts
 src/components/training/hooks/useTrainingState.test.ts
 src/components/training/hooks/useTrainingState.ts
@@ -679,11 +678,9 @@ src/components/ui/VolumeControl.test.tsx
 src/components/ui/VolumeControl.tsx
 src/components/ui/__tests__/ErrorModal.test.tsx
 src/components/ui/__tests__/SplashScreen.test.tsx
-src/components/ui/index.ts
 src/components/ui/shared/ConfirmDialog.test.tsx
 src/components/ui/shared/ConfirmDialog.tsx
 src/data/techniques.ts
-src/examples/HandAnimationDemo.tsx
 src/hooks/useActionFeedback.test.ts
 src/hooks/useActionFeedback.ts
 src/hooks/useCombatTimer.test.ts
@@ -831,7 +828,6 @@ src/systems/vitalpoint/MeridianVitalPointMapping.ts
 src/systems/vitalpoint/VitalPointsData.ts
 src/systems/vitalpoint/index.ts
 src/systems/vitalpoint/types.ts
-src/test-types.ts
 src/test/service-worker.test.ts
 src/test/setup.ts
 src/test/test-setup.ts
@@ -874,7 +870,6 @@ src/utils/htmlOverlayHelpers.test.ts
 src/utils/htmlOverlayHelpers.ts
 src/utils/index.ts
 src/utils/inputSystem.ts
-src/utils/layoutMigration.ts
 src/utils/objectPool.test.ts
 src/utils/objectPool.ts
 src/utils/performance/PerformanceMonitor.test.ts
