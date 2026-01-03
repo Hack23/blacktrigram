@@ -584,6 +584,120 @@ export enum PlayerArchetype {
 }
 
 /**
+ * Physical attributes representing realistic body dimensions and composition.
+ * 
+ * **Korean**: 신체 속성 (Body Attributes)
+ * 
+ * These attributes affect combat calculations including reach, movement speed,
+ * damage output, defense capability, and stamina. Based on realistic human
+ * physiology and Korean martial arts biomechanics.
+ * 
+ * ## Combat Impact
+ * 
+ * - **Weight**: Affects movement speed, knockback resistance, and throw effectiveness
+ * - **Leg Length**: Determines kick range and movement speed base
+ * - **Arm Length**: Determines punch/strike range and grappling reach
+ * - **Muscle Mass**: Affects base damage output and stamina pool
+ * - **Fat Mass**: Affects defense absorption and stamina drain rate
+ * - **Age**: Affects stamina recovery speed and Ki regeneration
+ * 
+ * @example
+ * ```typescript
+ * const musaPhysical: PhysicalAttributes = {
+ *   weight: 75,        // kg - balanced warrior
+ *   legLength: 95,     // cm - average leg reach
+ *   armLength: 75,     // cm - average arm reach
+ *   muscleMass: 38,    // kg - high muscle for power
+ *   fatMass: 12,       // kg - low fat for mobility
+ *   age: 32,           // years - prime combat age
+ * };
+ * ```
+ * 
+ * @public
+ * @category Player & Archetypes
+ * @korean 신체속성
+ */
+export interface PhysicalAttributes {
+  /**
+   * Body weight in kilograms.
+   * 
+   * **Korean**: 체중 (Body Weight)
+   * 
+   * Typical Range: 55-95 kg for combatants
+   * - Affects movement speed (inversely)
+   * - Affects knockback resistance (positively)
+   * - Affects throw effectiveness (positively)
+   * - Affects ground control (positively)
+   */
+  readonly weight: number;
+  
+  /**
+   * Leg length in centimeters (hip to ankle).
+   * 
+   * **Korean**: 다리 길이 (Leg Length)
+   * 
+   * Typical Range: 85-105 cm
+   * - Determines kick technique maximum range
+   * - Affects base movement speed
+   * - Affects sweep technique effectiveness
+   * - Affects jumping attack height
+   */
+  readonly legLength: number;
+  
+  /**
+   * Arm length in centimeters (shoulder to wrist).
+   * 
+   * **Korean**: 팔 길이 (Arm Length)
+   * 
+   * Typical Range: 65-85 cm
+   * - Determines punch/strike technique range
+   * - Affects grappling and throw range
+   * - Affects block coverage area
+   * - Affects elbow strike effectiveness
+   */
+  readonly armLength: number;
+  
+  /**
+   * Muscle mass in kilograms.
+   * 
+   * **Korean**: 근육량 (Muscle Mass)
+   * 
+   * Typical Range: 25-45 kg
+   * - Affects base damage output (positively)
+   * - Affects maximum stamina pool (positively)
+   * - Affects grappling and throw power
+   * - Affects movement acceleration
+   */
+  readonly muscleMass: number;
+  
+  /**
+   * Fat mass in kilograms.
+   * 
+   * **Korean**: 지방량 (Fat Mass)
+   * 
+   * Typical Range: 8-20 kg for combatants
+   * - Affects blunt damage absorption (positively)
+   * - Affects stamina drain rate (negatively)
+   * - Affects movement speed (negatively)
+   * - Affects recovery time between actions
+   */
+  readonly fatMass: number;
+  
+  /**
+   * Age in years.
+   * 
+   * **Korean**: 나이 (Age)
+   * 
+   * Typical Range: 22-45 years for peak combatants
+   * - Affects stamina recovery speed (optimal 25-35)
+   * - Affects Ki regeneration rate (wisdom with age)
+   * - Affects injury recovery time (slower with age)
+   * - Affects technique execution speed (prime 28-35)
+   */
+  readonly age: number;
+}
+
+/**
  * Eight Trigram stances (팔괘) representing fundamental combat principles.
  * 
  * **Korean**: 팔괘 자세 (Eight Trigram Stances)
