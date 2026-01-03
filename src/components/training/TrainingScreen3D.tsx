@@ -33,6 +33,7 @@ import {
   VitalPointOverlayControls,
   type BodyRegionFilter,
 } from "../combat/components";
+import { GuardIndicator } from "../combat/components/GuardIndicator";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
 import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import {
@@ -986,7 +987,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
             {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
             <ResponsiveContainer
-              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
+              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 180 : 200) } }}
               containerWidth={width}
               useSafeArea
               safeAreaEdge="bottom"
@@ -1004,6 +1005,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 isMobile={isMobile}
               />
             </ResponsiveContainer>
+
+            {/* Bottom Left - Guard Indicator (below anatomy controls) */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: isMobile ? "65px" : "75px",
+                left: isMobile ? "10px" : "20px",
+                pointerEvents: "none",
+              }}
+            >
+              <GuardIndicator
+                currentStance={playerState.currentStance}
+                isInGuard={playerAnimation.isInStanceGuard()}
+                position="left"
+                isMobile={isMobile}
+              />
+            </div>
 
             {/* Bottom Right - Vital Point Panel */}
             <ResponsiveContainer

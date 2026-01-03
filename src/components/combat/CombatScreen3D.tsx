@@ -88,6 +88,7 @@ import HitEffects3D from "./components/HitEffects3D";
 import { MobileControlsWrapper } from "./components/MobileControlsWrapper";
 import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
+import { GuardIndicator } from "./components/GuardIndicator";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
 import {
@@ -2102,9 +2103,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
+        {/* Player 1 Guard Indicator - Bottom Left */}
+        <GuardIndicator
+          currentStance={validPlayers[0].currentStance}
+          isInGuard={player1Animation.isInStanceGuard()}
+          position="left"
+          isMobile={isMobile}
+        />
+
         {/* Player 2 HUD - Top Right */}
         <PlayerHUD
           player={validPlayers[1]}
+          position="right"
+          isMobile={isMobile}
+        />
+
+        {/* Player 2 Guard Indicator - Bottom Right */}
+        <GuardIndicator
+          currentStance={validPlayers[1].currentStance}
+          isInGuard={player2Animation.isInStanceGuard()}
           position="right"
           isMobile={isMobile}
         />
