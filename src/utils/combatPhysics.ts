@@ -28,6 +28,10 @@ import {
   calculateDefenseModifier,
   calculateStaminaRecovery,
 } from "@/data/archetypePhysicalAttributes";
+import {
+  calculateChokeEffectiveness,
+  calculateHeadStrikeVulnerability,
+} from "@/utils/skeletonScaling";
 
 /**
  * Get player's physical attributes or use defaults.
@@ -116,8 +120,8 @@ export function calculateAttackRange(
       
     case CombatAttackType.GRAPPLE:
     case CombatAttackType.THROW:
-      // Grappling requires close range, use arm length at 50% extension
-      return calculateEffectiveReach(physical.armLength, 0.5);
+      // Grappling requires close range - cap effective extension at 50%
+      return calculateEffectiveReach(physical.armLength, Math.min(extension, 0.5));
       
     case CombatAttackType.PRESSURE_POINT:
     case CombatAttackType.NERVE_STRIKE:
@@ -474,3 +478,16 @@ export function calculateWeightAdvantage(
   
   return 1.0 + cappedAdvantage;
 }
+
+/**
+ * Re-export skeleton scaling functions for combat system integration.
+ * 
+ * **Korean**: 골격 스케일링 함수 재내보내기
+ * 
+ * These functions from skeletonScaling.ts are re-exported here for
+ * convenient access in combat calculations.
+ * 
+ * @see {@link calculateChokeEffectiveness} - Choke/strangle vulnerability
+ * @see {@link calculateHeadStrikeVulnerability} - Head strike resistance
+ */
+export { calculateChokeEffectiveness, calculateHeadStrikeVulnerability };

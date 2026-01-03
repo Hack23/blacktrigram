@@ -350,6 +350,7 @@ export function calculateVitalPointAdjustment(
   const factors = calculateBoneScalingFactors(attributes);
   
   // Determine which body region this vital point belongs to
+  // Use exact prefix matching to avoid ambiguity
   if (vitalPointId.startsWith("head_")) {
     // Head vital points scale with head size and torso height
     return {
@@ -368,13 +369,13 @@ export function calculateVitalPointAdjustment(
       x: 0,
       y: (factors.spine - 1.0) * 30,
     };
-  } else if (vitalPointId.includes("arm_") || vitalPointId.includes("shoulder_")) {
+  } else if (vitalPointId.startsWith("shoulder_") || vitalPointId.startsWith("arm_")) {
     // Arm vital points scale with arm length and shoulder width
     return {
       x: (factors.shoulder - 1.0) * 15,
       y: (factors.upperArm - 1.0) * 12,
     };
-  } else if (vitalPointId.includes("leg_") || vitalPointId.includes("knee_")) {
+  } else if (vitalPointId.startsWith("leg_") || vitalPointId.startsWith("knee_")) {
     // Leg vital points scale with leg length
     return {
       x: 0,

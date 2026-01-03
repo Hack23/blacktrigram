@@ -360,13 +360,13 @@ export const createScaledHumanoidRig = (
   const neck = createBone(
     BoneName.NECK, 
     spine3, 
-    [0, 0.15 * factors.spine, 0], 
+    [0, 0.15 * factors.neck, 0], 
     0.1 * factors.neck
   );
   const head = createBone(
     BoneName.HEAD, 
     neck, 
-    [0, 0.2 * factors.neck, 0], 
+    [0, 0.2 * factors.head, 0], 
     0.2 * factors.head
   );
 
