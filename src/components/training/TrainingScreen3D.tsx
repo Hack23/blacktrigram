@@ -221,6 +221,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const handleDummyHitRef = useRef<(vitalPointId: string) => boolean>(
     () => false
   );
+  
+  // Ref for playerAnimation to avoid circular dependencies in animation events
+  const playerAnimationRef = useRef<ReturnType<typeof usePlayerAnimation> | null>(null);
 
   // Player animation events (matches CombatScreen pattern)
   const playerAnimationEvents = useMemo<AnimationEvents>(
@@ -236,16 +239,27 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       },
       onAnimationComplete: (state) => {
         if (state === "stance_change") {
+          // Stance change animation completed - transition to stance guard
+          // 자세 변경 완료 - 자세 가드로 전환
           audio.playSFX("menu_select");
+          const currentStance = TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex];
+          if (currentStance && playerAnimationRef.current) {
+            playerAnimationRef.current.transitionToStanceGuard(currentStance);
+          }
         }
       },
     }),
-    [audio]
+    [audio, trainingState.currentStanceIndex]
   );
 
   const playerAnimation = usePlayerAnimation({
     events: playerAnimationEvents,
   });
+  
+  // Store animation ref for use in event callbacks
+  useEffect(() => {
+    playerAnimationRef.current = playerAnimation;
+  }, [playerAnimation]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 5: Training Actions (Hook-based)
