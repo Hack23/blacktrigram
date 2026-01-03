@@ -269,6 +269,38 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  * @korean 플레이어애니메이션상태머신
  */
 export class PlayerAnimationStateMachine {
+  /**
+   * Static mapping from TrigramStance to guard AnimationState
+   * Prevents repeated object allocation in transitionToStanceGuard()
+   * @korean 자세방어상태맵
+   */
+  private static readonly GUARD_STATE_MAP: Record<TrigramStance, AnimationState> = {
+    [TrigramStance.GEON]: "stance_guard_geon",
+    [TrigramStance.TAE]: "stance_guard_tae",
+    [TrigramStance.LI]: "stance_guard_li",
+    [TrigramStance.JIN]: "stance_guard_jin",
+    [TrigramStance.SON]: "stance_guard_son",
+    [TrigramStance.GAM]: "stance_guard_gam",
+    [TrigramStance.GAN]: "stance_guard_gan",
+    [TrigramStance.GON]: "stance_guard_gon",
+  };
+
+  /**
+   * Static reverse mapping from guard AnimationState to TrigramStance
+   * Prevents repeated object allocation in getCurrentGuardStance()
+   * @korean 방어상태자세맵
+   */
+  private static readonly STANCE_FROM_GUARD_MAP: Record<string, TrigramStance> = {
+    "stance_guard_geon": TrigramStance.GEON,
+    "stance_guard_tae": TrigramStance.TAE,
+    "stance_guard_li": TrigramStance.LI,
+    "stance_guard_jin": TrigramStance.JIN,
+    "stance_guard_son": TrigramStance.SON,
+    "stance_guard_gam": TrigramStance.GAM,
+    "stance_guard_gan": TrigramStance.GAN,
+    "stance_guard_gon": TrigramStance.GON,
+  };
+
   private currentState: AnimationState = "idle";
   private frameIndex = 0;
   private timeAccumulator = 0;
@@ -534,19 +566,7 @@ export class PlayerAnimationStateMachine {
    * @korean 자세방어전환
    */
   transitionToStanceGuard(stance: TrigramStance): boolean {
-    // Type-safe mapping from TrigramStance to AnimationState
-    const guardStateMap: Record<TrigramStance, AnimationState> = {
-      [TrigramStance.GEON]: "stance_guard_geon",
-      [TrigramStance.TAE]: "stance_guard_tae",
-      [TrigramStance.LI]: "stance_guard_li",
-      [TrigramStance.JIN]: "stance_guard_jin",
-      [TrigramStance.SON]: "stance_guard_son",
-      [TrigramStance.GAM]: "stance_guard_gam",
-      [TrigramStance.GAN]: "stance_guard_gan",
-      [TrigramStance.GON]: "stance_guard_gon",
-    };
-
-    const guardAnimationState = guardStateMap[stance];
+    const guardAnimationState = PlayerAnimationStateMachine.GUARD_STATE_MAP[stance];
     
     // Verify the guard animation exists in our configs
     if (!guardAnimationState || !this.animations.has(guardAnimationState)) {
@@ -578,19 +598,7 @@ export class PlayerAnimationStateMachine {
       return null;
     }
 
-    // Type-safe reverse mapping from AnimationState to TrigramStance
-    const stanceFromGuardMap: Record<string, TrigramStance> = {
-      "stance_guard_geon": TrigramStance.GEON,
-      "stance_guard_tae": TrigramStance.TAE,
-      "stance_guard_li": TrigramStance.LI,
-      "stance_guard_jin": TrigramStance.JIN,
-      "stance_guard_son": TrigramStance.SON,
-      "stance_guard_gam": TrigramStance.GAM,
-      "stance_guard_gan": TrigramStance.GAN,
-      "stance_guard_gon": TrigramStance.GON,
-    };
-
-    const stance = stanceFromGuardMap[this.currentState];
+    const stance = PlayerAnimationStateMachine.STANCE_FROM_GUARD_MAP[this.currentState];
     
     // Validate that we got a valid stance
     if (!stance) {
