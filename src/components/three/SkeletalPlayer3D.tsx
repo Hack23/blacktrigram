@@ -23,10 +23,12 @@ import {
   getTechniqueHandPose,
   updateAnimation,
   updateHandAnimationState,
+  getGuardPoseForStance,
 } from "../../systems/animation";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
 import { MuscleActivationManager } from "../../systems/animation/MuscleActivation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
+import { TrigramStance } from "../../types/common";
 import { FacialExpression } from "../../types/facial";
 import type { HandAnimationState } from "../../types/hand-animation";
 import { HandPoseType } from "../../types/hand-animation";
@@ -79,6 +81,78 @@ const getTrigramSymbol = (stance: string): string => {
     gon: "☷",
   };
   return symbols[stance] ?? "☰";
+};
+
+/**
+ * Apply stance guard pose to skeletal rig
+ * 
+ * Applies arm positions, torso rotation, and breathing scale from guard pose.
+ * Used when character is in stance_guard_{stance} animation state.
+ * 
+ * @param rig - Skeletal rig to apply pose to
+ * @param stance - Current trigram stance
+ * @param breathingPhase - Breathing phase 0.0-1.0 for scale oscillation
+ * 
+ * @korean 자세방어포즈적용
+ */
+const applyStanceGuardPose = (
+  rig: SkeletalRig,
+  stance: string,
+  breathingPhase: number
+): void => {
+  const guardPose = getGuardPoseForStance(stance as TrigramStance);
+  if (!guardPose) return;
+
+  // Apply left arm rotations
+  const leftShoulder = rig.bones.get("left_shoulder");
+  if (leftShoulder) {
+    leftShoulder.rotation.copy(guardPose.leftArm.shoulder);
+  }
+  const leftElbow = rig.bones.get("left_elbow");
+  if (leftElbow) {
+    leftElbow.rotation.copy(guardPose.leftArm.elbow);
+  }
+  const leftWrist = rig.bones.get("left_wrist");
+  if (leftWrist) {
+    leftWrist.rotation.copy(guardPose.leftArm.wrist);
+  }
+
+  // Apply right arm rotations
+  const rightShoulder = rig.bones.get("right_shoulder");
+  if (rightShoulder) {
+    rightShoulder.rotation.copy(guardPose.rightArm.shoulder);
+  }
+  const rightElbow = rig.bones.get("right_elbow");
+  if (rightElbow) {
+    rightElbow.rotation.copy(guardPose.rightArm.elbow);
+  }
+  const rightWrist = rig.bones.get("right_wrist");
+  if (rightWrist) {
+    rightWrist.rotation.copy(guardPose.rightArm.wrist);
+  }
+
+  // Apply torso rotation
+  const spine = rig.bones.get("spine");
+  if (spine) {
+    spine.rotation.copy(guardPose.torso);
+  }
+
+  // Apply breathing animation scale (chest/shoulder expansion)
+  const breathingScale = THREE.MathUtils.lerp(
+    guardPose.breathingRange.min,
+    guardPose.breathingRange.max,
+    (Math.sin(breathingPhase * Math.PI * 2) + 1) / 2 // Sine wave 0-1
+  );
+
+  // Apply breathing to upper torso
+  const chest = rig.bones.get("chest");
+  if (chest) {
+    chest.scale.setScalar(breathingScale);
+  }
+  const neck = rig.bones.get("neck");
+  if (neck) {
+    neck.scale.y = breathingScale;
+  }
 };
 
 /**
@@ -323,6 +397,9 @@ export const SkeletalPlayer3D: React.FC<
   // Animation time ref - use ref to avoid state updates during render
   const animTimeRef = useRef(0);
 
+  // Breathing phase ref for stance guard animations (0-1 cycle)
+  const breathingPhaseRef = useRef(0);
+
   // Ref for character sway based on balance state
   const swayTimeRef = useRef(0);
 
@@ -517,6 +594,25 @@ export const SkeletalPlayer3D: React.FC<
         isPlaying: false,
         currentTime: 0,
       }));
+    } else if (currentAnimation?.startsWith("stance_guard_")) {
+      // Stance guard animation - 자세 방어 애니메이션
+      // Uses procedural pose application in useFrame, not keyframe animation
+      setAnimState({
+        currentAnimation: null, // No keyframe animation needed
+        currentTime: 0,
+        isPlaying: true, // Keep playing for breathing animation
+        playbackSpeed: 1.0,
+        previousKeyframeIndex: 0,
+        nextKeyframeIndex: 1,
+      });
+
+      // Guard hands in open position
+      setLeftHandState((prev) =>
+        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.2)
+      );
+      setRightHandState((prev) =>
+        updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.2)
+      );
     } else {
       // Idle animation - 대기 애니메이션
       const idleAnim = getAnimation("idle_stance");
@@ -634,32 +730,52 @@ export const SkeletalPlayer3D: React.FC<
       return;
     }
 
-    // Update animation time and get interpolated keyframe
-    const result = updateAnimation(
-      animState.currentAnimation,
-      animTimeRef.current,
-      delta,
-      animState.playbackSpeed
-    );
+    // Check if in stance guard animation (stance_guard_{stance})
+    const isInStanceGuard = currentAnimation?.startsWith("stance_guard_");
+    
+    if (isInStanceGuard) {
+      // Extract stance from currentAnimation (e.g., "stance_guard_geon" -> "geon")
+      const stanceFromAnim = currentAnimation.replace("stance_guard_", "");
+      
+      // Update breathing phase (cycles through 0-1 based on animation time)
+      breathingPhaseRef.current += delta * 0.5; // 0.5 Hz = 2 seconds per breath cycle
+      if (breathingPhaseRef.current > 1.0) {
+        breathingPhaseRef.current -= 1.0;
+      }
+      
+      // Apply stance guard pose with breathing animation
+      applyStanceGuardPose(rig, stanceFromAnim, breathingPhaseRef.current);
+      
+      // Continue animation loop (breathing is continuous)
+      animTimeRef.current += delta;
+    } else {
+      // Normal animation: Update animation time and get interpolated keyframe
+      const result = updateAnimation(
+        animState.currentAnimation,
+        animTimeRef.current,
+        delta,
+        animState.playbackSpeed
+      );
 
-    // Apply keyframe to rig
-    applyKeyframeToRig(rig, result.keyframe);
+      // Apply keyframe to rig
+      applyKeyframeToRig(rig, result.keyframe);
 
-    // Update time ref
-    animTimeRef.current = result.time;
+      // Update time ref
+      animTimeRef.current = result.time;
 
-    // Handle animation completion - only update state when animation completes
-    if (result.completed) {
-      animTimeRef.current = 0;
-      setAnimState((prev) => ({
-        ...prev,
-        isPlaying: false,
-        currentTime: 0,
-      }));
+      // Handle animation completion - only update state when animation completes
+      if (result.completed) {
+        animTimeRef.current = 0;
+        setAnimState((prev) => ({
+          ...prev,
+          isPlaying: false,
+          currentTime: 0,
+        }));
 
-      // Trigger callback
-      if (onAnimationComplete) {
-        onAnimationComplete();
+        // Trigger callback
+        if (onAnimationComplete) {
+          onAnimationComplete();
+        }
       }
     }
   });
