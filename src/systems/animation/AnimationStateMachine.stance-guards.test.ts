@@ -488,7 +488,6 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
 
     it("should handle negative delta time gracefully", () => {
       machine.transitionToStanceGuard(TrigramStance.GAN);
-      const initialFrame = machine.getCurrentFrame();
 
       machine.update(-0.016);
 
