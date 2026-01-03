@@ -231,20 +231,21 @@ describe("StanceGuardPoses", () => {
 
   describe("STANCE_GUARD_CONFIGS Map", () => {
     it("should contain all 8 trigram stances", () => {
-      expect(STANCE_GUARD_CONFIGS.size).toBe(8);
+      const stanceKeys = Object.keys(STANCE_GUARD_CONFIGS) as TrigramStance[];
+      expect(stanceKeys.length).toBe(8);
 
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.GEON)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.TAE)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.LI)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.JIN)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.SON)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.GAM)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.GAN)).toBe(true);
-      expect(STANCE_GUARD_CONFIGS.has(TrigramStance.GON)).toBe(true);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GEON]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.TAE]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.LI]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.JIN]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.SON]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAM]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAN]).toBeDefined();
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GON]).toBeDefined();
     });
 
     it("should have valid animation configs for all stances", () => {
-      STANCE_GUARD_CONFIGS.forEach((config, stance) => {
+      Object.entries(STANCE_GUARD_CONFIGS).forEach(([stance, config]) => {
         expect(config.stance).toBe(stance);
         expect(config.koreanName).toBeTruthy();
         expect(config.englishName).toBeTruthy();
@@ -258,41 +259,41 @@ describe("StanceGuardPoses", () => {
     });
 
     it("should have correct Korean names for all stances", () => {
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GEON)?.koreanName).toBe("건");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.TAE)?.koreanName).toBe("태");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.LI)?.koreanName).toBe("리");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.JIN)?.koreanName).toBe("진");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.SON)?.koreanName).toBe("손");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GAM)?.koreanName).toBe("감");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GAN)?.koreanName).toBe("간");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GON)?.koreanName).toBe("곤");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GEON]?.koreanName).toBe("건");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.TAE]?.koreanName).toBe("태");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.LI]?.koreanName).toBe("리");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.JIN]?.koreanName).toBe("진");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.SON]?.koreanName).toBe("손");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAM]?.koreanName).toBe("감");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAN]?.koreanName).toBe("간");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GON]?.koreanName).toBe("곤");
     });
 
     it("should have correct English names for all stances", () => {
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GEON)?.englishName).toBe("Heaven");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.TAE)?.englishName).toBe("Lake");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.LI)?.englishName).toBe("Fire");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.JIN)?.englishName).toBe("Thunder");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.SON)?.englishName).toBe("Wind");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GAM)?.englishName).toBe("Water");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GAN)?.englishName).toBe("Mountain");
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GON)?.englishName).toBe("Earth");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GEON]?.englishName).toBe("Heaven");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.TAE]?.englishName).toBe("Lake");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.LI]?.englishName).toBe("Fire");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.JIN]?.englishName).toBe("Thunder");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.SON]?.englishName).toBe("Wind");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAM]?.englishName).toBe("Water");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAN]?.englishName).toBe("Mountain");
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GON]?.englishName).toBe("Earth");
     });
 
     it("should have varied breathing frame counts based on martial arts principles", () => {
       // Fire and Mountain use controlled breathing (4 frames)
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.LI)?.breathingFrames).toBe(4);
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GAN)?.breathingFrames).toBe(4);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.LI]?.breathingFrames).toBe(4);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAN]?.breathingFrames).toBe(4);
 
       // Thunder and Earth use deep breathing (5 frames)
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.JIN)?.breathingFrames).toBe(5);
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GON)?.breathingFrames).toBe(5);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.JIN]?.breathingFrames).toBe(5);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GON]?.breathingFrames).toBe(5);
 
       // Others use full breathing cycles (6 frames)
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GEON)?.breathingFrames).toBe(6);
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.TAE)?.breathingFrames).toBe(6);
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.SON)?.breathingFrames).toBe(6);
-      expect(STANCE_GUARD_CONFIGS.get(TrigramStance.GAM)?.breathingFrames).toBe(6);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GEON]?.breathingFrames).toBe(6);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.TAE]?.breathingFrames).toBe(6);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.SON]?.breathingFrames).toBe(6);
+      expect(STANCE_GUARD_CONFIGS[TrigramStance.GAM]?.breathingFrames).toBe(6);
     });
   });
 
@@ -417,11 +418,11 @@ describe("StanceGuardPoses", () => {
       expect(totalTime).toBeLessThan(100); // 1000 iterations in < 100ms
     });
 
-    it("should maintain consistent stance IDs across map and enum", () => {
-      const mapKeys = Array.from(STANCE_GUARD_CONFIGS.keys());
+    it("should maintain consistent stance IDs across record and enum", () => {
+      const recordKeys = Object.keys(STANCE_GUARD_CONFIGS) as TrigramStance[];
       const enumValues = Object.values(TrigramStance);
 
-      mapKeys.forEach((key) => {
+      recordKeys.forEach((key) => {
         expect(enumValues).toContain(key);
       });
     });
@@ -429,7 +430,7 @@ describe("StanceGuardPoses", () => {
     it("should have guard poses that can be applied to skeletal rig", () => {
       // Verify that all bone rotations are THREE.Euler instances
       // This ensures compatibility with skeletal rig bone rotation system
-      STANCE_GUARD_CONFIGS.forEach((config) => {
+      Object.values(STANCE_GUARD_CONFIGS).forEach((config) => {
         const pose = config.guardPose;
 
         expect(pose.leftArm.shoulder).toBeInstanceOf(THREE.Euler);

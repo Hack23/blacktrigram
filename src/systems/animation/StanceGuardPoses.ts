@@ -307,8 +307,10 @@ export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
 /**
  * Stance Guard Animation Configurations
  * 
- * Maps each trigram stance to its complete guard animation config.
+ * Record mapping each trigram stance to its complete guard animation config.
  * Includes 4-6 frame breathing animation at 60fps for realistic idle behavior.
+ * 
+ * Using Record instead of Map for better performance with small static dataset.
  * 
  * Integration:
  * - Links to AnimationStateMachine for stance-specific idle states
@@ -317,112 +319,88 @@ export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
  * 
  * @korean 자세방어애니메이션설정맵
  */
-export const STANCE_GUARD_CONFIGS: Map<TrigramStance, StanceGuardAnimationConfig> = new Map([
-  [
-    TrigramStance.GEON,
-    {
-      stance: TrigramStance.GEON,
-      koreanName: "건",
-      englishName: "Heaven",
-      guardPose: GEON_HIGH_GUARD_POSE,
-      breathingFrames: 6,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.TAE,
-    {
-      stance: TrigramStance.TAE,
-      koreanName: "태",
-      englishName: "Lake",
-      guardPose: TAE_FLUID_GUARD_POSE,
-      breathingFrames: 6,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.LI,
-    {
-      stance: TrigramStance.LI,
-      koreanName: "리",
-      englishName: "Fire",
-      guardPose: LI_FIRE_GUARD_POSE,
-      breathingFrames: 4,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.JIN,
-    {
-      stance: TrigramStance.JIN,
-      koreanName: "진",
-      englishName: "Thunder",
-      guardPose: JIN_THUNDER_GUARD_POSE,
-      breathingFrames: 5,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.SON,
-    {
-      stance: TrigramStance.SON,
-      koreanName: "손",
-      englishName: "Wind",
-      guardPose: SON_WIND_GUARD_POSE,
-      breathingFrames: 6,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.GAM,
-    {
-      stance: TrigramStance.GAM,
-      koreanName: "감",
-      englishName: "Water",
-      guardPose: GAM_WATER_GUARD_POSE,
-      breathingFrames: 6,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.GAN,
-    {
-      stance: TrigramStance.GAN,
-      koreanName: "간",
-      englishName: "Mountain",
-      guardPose: GAN_MOUNTAIN_GUARD_POSE,
-      breathingFrames: 4,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-  [
-    TrigramStance.GON,
-    {
-      stance: TrigramStance.GON,
-      koreanName: "곤",
-      englishName: "Earth",
-      guardPose: GON_EARTH_GUARD_POSE,
-      breathingFrames: 5,
-      fps: 60,
-      loop: true,
-      priority: 0,
-    },
-  ],
-]);
+export const STANCE_GUARD_CONFIGS: Record<TrigramStance, StanceGuardAnimationConfig> = {
+  [TrigramStance.GEON]: {
+    stance: TrigramStance.GEON,
+    koreanName: "건",
+    englishName: "Heaven",
+    guardPose: GEON_HIGH_GUARD_POSE,
+    breathingFrames: 6,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.TAE]: {
+    stance: TrigramStance.TAE,
+    koreanName: "태",
+    englishName: "Lake",
+    guardPose: TAE_FLUID_GUARD_POSE,
+    breathingFrames: 6,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.LI]: {
+    stance: TrigramStance.LI,
+    koreanName: "리",
+    englishName: "Fire",
+    guardPose: LI_FIRE_GUARD_POSE,
+    breathingFrames: 4,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.JIN]: {
+    stance: TrigramStance.JIN,
+    koreanName: "진",
+    englishName: "Thunder",
+    guardPose: JIN_THUNDER_GUARD_POSE,
+    breathingFrames: 5,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.SON]: {
+    stance: TrigramStance.SON,
+    koreanName: "손",
+    englishName: "Wind",
+    guardPose: SON_WIND_GUARD_POSE,
+    breathingFrames: 6,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.GAM]: {
+    stance: TrigramStance.GAM,
+    koreanName: "감",
+    englishName: "Water",
+    guardPose: GAM_WATER_GUARD_POSE,
+    breathingFrames: 6,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.GAN]: {
+    stance: TrigramStance.GAN,
+    koreanName: "간",
+    englishName: "Mountain",
+    guardPose: GAN_MOUNTAIN_GUARD_POSE,
+    breathingFrames: 4,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+  [TrigramStance.GON]: {
+    stance: TrigramStance.GON,
+    koreanName: "곤",
+    englishName: "Earth",
+    guardPose: GON_EARTH_GUARD_POSE,
+    breathingFrames: 5,
+    fps: 60,
+    loop: true,
+    priority: 0,
+  },
+} as const;
 
 /**
  * Get guard pose for a specific trigram stance
@@ -435,7 +413,7 @@ export const STANCE_GUARD_CONFIGS: Map<TrigramStance, StanceGuardAnimationConfig
 export function getGuardPoseForStance(
   stance: TrigramStance
 ): StanceGuardPose | undefined {
-  const config = STANCE_GUARD_CONFIGS.get(stance);
+  const config = STANCE_GUARD_CONFIGS[stance];
   return config?.guardPose;
 }
 
@@ -450,5 +428,5 @@ export function getGuardPoseForStance(
 export function getGuardConfigForStance(
   stance: TrigramStance
 ): StanceGuardAnimationConfig | undefined {
-  return STANCE_GUARD_CONFIGS.get(stance);
+  return STANCE_GUARD_CONFIGS[stance];
 }

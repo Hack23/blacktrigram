@@ -534,10 +534,22 @@ export class PlayerAnimationStateMachine {
    * @korean 자세방어전환
    */
   transitionToStanceGuard(stance: TrigramStance): boolean {
-    const guardAnimationState = `stance_guard_${stance}` as AnimationState;
+    // Type-safe mapping from TrigramStance to AnimationState
+    const guardStateMap: Record<TrigramStance, AnimationState> = {
+      [TrigramStance.GEON]: "stance_guard_geon",
+      [TrigramStance.TAE]: "stance_guard_tae",
+      [TrigramStance.LI]: "stance_guard_li",
+      [TrigramStance.JIN]: "stance_guard_jin",
+      [TrigramStance.SON]: "stance_guard_son",
+      [TrigramStance.GAM]: "stance_guard_gam",
+      [TrigramStance.GAN]: "stance_guard_gan",
+      [TrigramStance.GON]: "stance_guard_gon",
+    };
+
+    const guardAnimationState = guardStateMap[stance];
     
     // Verify the guard animation exists in our configs
-    if (!this.animations.has(guardAnimationState)) {
+    if (!guardAnimationState || !this.animations.has(guardAnimationState)) {
       console.warn(`No guard animation configured for stance: ${stance}`);
       return false;
     }
@@ -566,8 +578,26 @@ export class PlayerAnimationStateMachine {
       return null;
     }
 
-    // Extract stance from "stance_guard_{stance}" format
-    const stancePart = this.currentState.replace("stance_guard_", "");
-    return stancePart as TrigramStance;
+    // Type-safe reverse mapping from AnimationState to TrigramStance
+    const stanceFromGuardMap: Record<string, TrigramStance> = {
+      "stance_guard_geon": TrigramStance.GEON,
+      "stance_guard_tae": TrigramStance.TAE,
+      "stance_guard_li": TrigramStance.LI,
+      "stance_guard_jin": TrigramStance.JIN,
+      "stance_guard_son": TrigramStance.SON,
+      "stance_guard_gam": TrigramStance.GAM,
+      "stance_guard_gan": TrigramStance.GAN,
+      "stance_guard_gon": TrigramStance.GON,
+    };
+
+    const stance = stanceFromGuardMap[this.currentState];
+    
+    // Validate that we got a valid stance
+    if (!stance) {
+      console.warn(`Invalid guard state detected: ${this.currentState}`);
+      return null;
+    }
+
+    return stance;
   }
 }
