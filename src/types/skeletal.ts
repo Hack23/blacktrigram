@@ -463,3 +463,117 @@ export interface SkeletalAnimationState {
    */
   nextKeyframeIndex: number;
 }
+
+/**
+ * Fighting stance guard pose configuration
+ * 
+ * Defines the default guard position for each trigram stance (팔괘),
+ * including arm positions, torso rotation, and weight distribution.
+ * Used for stance-specific idle animations at 60fps.
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세방어포즈
+ */
+export interface StanceGuardPose {
+  /**
+   * Left arm bone rotations (shoulder, elbow, wrist)
+   * @korean 왼팔
+   */
+  readonly leftArm: {
+    readonly shoulder: THREE.Euler;
+    readonly elbow: THREE.Euler;
+    readonly wrist: THREE.Euler;
+  };
+
+  /**
+   * Right arm bone rotations (shoulder, elbow, wrist)
+   * @korean 오른팔
+   */
+  readonly rightArm: {
+    readonly shoulder: THREE.Euler;
+    readonly elbow: THREE.Euler;
+    readonly wrist: THREE.Euler;
+  };
+
+  /**
+   * Torso rotation (spine upper bone)
+   * @korean 몸통회전
+   */
+  readonly torso: THREE.Euler;
+
+  /**
+   * Weight distribution (forward/neutral/back)
+   * @korean 무게중심
+   */
+  readonly weight: "forward" | "neutral" | "back";
+
+  /**
+   * Breathing animation range (min/max for chest movement)
+   * @korean 호흡범위
+   */
+  readonly breathingRange: {
+    readonly min: number;
+    readonly max: number;
+  };
+}
+
+/**
+ * Stance guard animation configuration
+ * 
+ * Extends base AnimationConfig with stance-specific guard pose data.
+ * Includes 4-6 frame breathing animation for realistic idle behavior.
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세방어애니메이션설정
+ */
+export interface StanceGuardAnimationConfig {
+  /**
+   * Trigram stance identifier
+   * @korean 괘
+   */
+  readonly stance: string;
+
+  /**
+   * Korean name of stance
+   * @korean 한글이름
+   */
+  readonly koreanName: string;
+
+  /**
+   * English name of stance
+   * @korean 영어이름
+   */
+  readonly englishName: string;
+
+  /**
+   * Guard pose keyframe (default position)
+   * @korean 방어포즈
+   */
+  readonly guardPose: StanceGuardPose;
+
+  /**
+   * Breathing animation frames (4-6 frames)
+   * @korean 호흡프레임
+   */
+  readonly breathingFrames: number;
+
+  /**
+   * Target frames per second (60fps)
+   * @korean 초당프레임
+   */
+  readonly fps: number;
+
+  /**
+   * Breathing cycle loop enabled
+   * @korean 반복여부
+   */
+  readonly loop: boolean;
+
+  /**
+   * Animation priority (0 for idle guards)
+   * @korean 우선순위
+   */
+  readonly priority: number;
+}

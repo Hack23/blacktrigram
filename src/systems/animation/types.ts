@@ -21,6 +21,7 @@
  * - hit: Taking damage animation
  * - stance_change: Trigram stance transition (600ms)
  * - ko: Knockout/death animation
+ * - stance_guard_{stance}: Stance-specific idle guard animations (4-6 frames each)
  * 
  * @public
  * @korean 애니메이션상태
@@ -33,7 +34,15 @@ export type AnimationState =
   | "defend"
   | "hit"
   | "stance_change"
-  | "ko";
+  | "ko"
+  | "stance_guard_geon"
+  | "stance_guard_tae"
+  | "stance_guard_li"
+  | "stance_guard_jin"
+  | "stance_guard_son"
+  | "stance_guard_gam"
+  | "stance_guard_gan"
+  | "stance_guard_gon";
 
 /**
  * Animation priority levels for interrupt system

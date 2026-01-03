@@ -16,6 +16,9 @@ import { AnimationPriority, AnimationState } from "./types";
 /**
  * Map animation states to their priority levels
  * 
+ * Stance guard animations have same priority as idle (0) since they are
+ * also idle states, just stance-specific.
+ * 
  * @korean 애니메이션우선순위맵
  */
 export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> = {
@@ -27,6 +30,15 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   attack: AnimationPriority.ATTACK,
   hit: AnimationPriority.HIT,
   ko: AnimationPriority.KO,
+  // Stance-specific guard animations (팔괘 방어 자세)
+  stance_guard_geon: AnimationPriority.IDLE,
+  stance_guard_tae: AnimationPriority.IDLE,
+  stance_guard_li: AnimationPriority.IDLE,
+  stance_guard_jin: AnimationPriority.IDLE,
+  stance_guard_son: AnimationPriority.IDLE,
+  stance_guard_gam: AnimationPriority.IDLE,
+  stance_guard_gan: AnimationPriority.IDLE,
+  stance_guard_gon: AnimationPriority.IDLE,
 };
 
 /**
