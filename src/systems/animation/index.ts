@@ -40,6 +40,7 @@ export {
   applyJointConstraint,
   createBone,
   createHumanoidRig,
+  createScaledHumanoidRig,
   getBoneWorldPosition,
   getBoneWorldRotation,
   resetBoneToRestPose,
