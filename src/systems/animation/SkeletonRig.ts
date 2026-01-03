@@ -5,12 +5,16 @@
  * martial arts animations. Implements bone hierarchy following Korean martial
  * arts body mechanics.
  * 
+ * Now supports dynamic scaling based on player physical attributes for
+ * anatomically accurate body proportions per archetype.
+ * 
  * @module systems/animation/SkeletonRig
  * @category Animation System
  * @korean 골격시스템
  */
 
 import * as THREE from "three";
+import { PhysicalAttributes } from "../../types/common";
 import { BoneName } from "../../types/skeletal";
 import type {
   Bone,
@@ -18,6 +22,7 @@ import type {
   JointConstraint,
   BoneChain,
 } from "../../types/skeletal";
+import { calculateBoneScalingFactors, calculateShoulderOffset } from "../../utils/skeletonScaling";
 
 /**
  * Create a bone with default rest pose
@@ -242,6 +247,267 @@ export const createHumanoidRig = (): SkeletalRig => {
     rightShin,
     [0, -0.1, 0.1],
     0.15
+  );
+
+  // Create bone map for fast lookup
+  const bones = new Map<string, Bone>([
+    [BoneName.PELVIS, root],
+    [BoneName.SPINE_LOWER, spine1],
+    [BoneName.SPINE_MIDDLE, spine2],
+    [BoneName.SPINE_UPPER, spine3],
+    [BoneName.NECK, neck],
+    [BoneName.HEAD, head],
+    [BoneName.SHOULDER_L, leftShoulder],
+    [BoneName.UPPER_ARM_L, leftUpperArm],
+    [BoneName.ELBOW_L, leftElbow],
+    [BoneName.FOREARM_L, leftForearm],
+    [BoneName.WRIST_L, leftWrist],
+    [BoneName.HAND_L, leftHand],
+    [BoneName.SHOULDER_R, rightShoulder],
+    [BoneName.UPPER_ARM_R, rightUpperArm],
+    [BoneName.ELBOW_R, rightElbow],
+    [BoneName.FOREARM_R, rightForearm],
+    [BoneName.WRIST_R, rightWrist],
+    [BoneName.HAND_R, rightHand],
+    [BoneName.HIP_L, leftHip],
+    [BoneName.THIGH_L, leftThigh],
+    [BoneName.KNEE_L, leftKnee],
+    [BoneName.SHIN_L, leftShin],
+    [BoneName.FOOT_L, leftFoot],
+    [BoneName.HIP_R, rightHip],
+    [BoneName.THIGH_R, rightThigh],
+    [BoneName.KNEE_R, rightKnee],
+    [BoneName.SHIN_R, rightShin],
+    [BoneName.FOOT_R, rightFoot],
+  ]);
+
+  return {
+    root,
+    bones,
+    boneCount: bones.size,
+  };
+};
+
+/**
+ * Create humanoid rig with dynamic scaling based on physical attributes.
+ * 
+ * **Korean**: 신체 속성 기반 골격 생성 (Physical Attributes-Based Skeleton Creation)
+ * 
+ * Creates a 28-bone humanoid skeleton with bone lengths scaled according to
+ * the fighter's physical attributes. This allows each archetype to have
+ * anatomically accurate body proportions that affect combat hitboxes, vital
+ * point positioning, and visual representation.
+ * 
+ * @param attributes - Physical attributes to scale the skeleton
+ * @returns Complete skeletal rig with scaled bone dimensions
+ * 
+ * @example
+ * ```typescript
+ * import { AMSALJA_PHYSICAL } from "@/data/archetypePhysicalAttributes";
+ * 
+ * // Create skeleton for lean assassin archetype
+ * const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
+ * // Results in taller skeleton with longer limbs, narrower shoulders
+ * 
+ * // Create skeleton for heavy brawler archetype
+ * const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
+ * // Results in stockier skeleton with wider shoulders, thicker torso
+ * ```
+ * 
+ * @public
+ * @korean 크기조정된인간형골격생성
+ */
+export const createScaledHumanoidRig = (
+  attributes: PhysicalAttributes
+): SkeletalRig => {
+  // Calculate scaling factors from physical attributes
+  const factors = calculateBoneScalingFactors(attributes);
+  const shoulderOffset = calculateShoulderOffset(attributes);
+  
+  // Convert shoulder offset from cm to meters for Three.js
+  const shoulderOffsetMeters = shoulderOffset / 100;
+  
+  // Root (pelvis) - center of mass at hip height
+  // Scale pelvis height by overall factor
+  const root = createBone(
+    BoneName.PELVIS, 
+    null, 
+    [0, 0.9 * factors.overall, 0], 
+    0.15 * factors.overall
+  );
+
+  // Spine chain (3 bones) - scaled by torso length
+  const spine1 = createBone(
+    BoneName.SPINE_LOWER,
+    root,
+    [0, 0.15 * factors.spine, 0],
+    0.2 * factors.spine
+  );
+  const spine2 = createBone(
+    BoneName.SPINE_MIDDLE,
+    spine1,
+    [0, 0.2 * factors.spine, 0],
+    0.2 * factors.spine
+  );
+  const spine3 = createBone(
+    BoneName.SPINE_UPPER,
+    spine2,
+    [0, 0.2 * factors.spine, 0],
+    0.2 * factors.spine
+  );
+
+  // Head chain (2 bones) - scaled by neck/head dimensions
+  const neck = createBone(
+    BoneName.NECK, 
+    spine3, 
+    [0, 0.15 * factors.neck, 0], 
+    0.1 * factors.neck
+  );
+  const head = createBone(
+    BoneName.HEAD, 
+    neck, 
+    [0, 0.2 * factors.head, 0], 
+    0.2 * factors.head
+  );
+
+  // Left arm chain (6 bones) - scaled by arm length and shoulder width
+  const leftShoulder = createBone(
+    BoneName.SHOULDER_L,
+    spine3,
+    [-shoulderOffsetMeters, 0.1 * factors.spine, 0],
+    0.1 * factors.shoulder
+  );
+  const leftUpperArm = createBone(
+    BoneName.UPPER_ARM_L,
+    leftShoulder,
+    [-0.15 * factors.shoulder, 0, 0],
+    0.25 * factors.upperArm
+  );
+  const leftElbow = createBone(
+    BoneName.ELBOW_L,
+    leftUpperArm,
+    [-0.25 * factors.upperArm, 0, 0],
+    0.05 * factors.upperArm
+  );
+  const leftForearm = createBone(
+    BoneName.FOREARM_L,
+    leftElbow,
+    [-0.25 * factors.forearm, 0, 0],
+    0.25 * factors.forearm
+  );
+  const leftWrist = createBone(
+    BoneName.WRIST_L,
+    leftForearm,
+    [-0.15 * factors.forearm, 0, 0],
+    0.05 * factors.forearm
+  );
+  const leftHand = createBone(
+    BoneName.HAND_L,
+    leftWrist,
+    [-0.08 * factors.overall, 0, 0],
+    0.08 * factors.overall
+  );
+
+  // Right arm chain (6 bones - mirror of left)
+  const rightShoulder = createBone(
+    BoneName.SHOULDER_R,
+    spine3,
+    [shoulderOffsetMeters, 0.1 * factors.spine, 0],
+    0.1 * factors.shoulder
+  );
+  const rightUpperArm = createBone(
+    BoneName.UPPER_ARM_R,
+    rightShoulder,
+    [0.15 * factors.shoulder, 0, 0],
+    0.25 * factors.upperArm
+  );
+  const rightElbow = createBone(
+    BoneName.ELBOW_R,
+    rightUpperArm,
+    [0.25 * factors.upperArm, 0, 0],
+    0.05 * factors.upperArm
+  );
+  const rightForearm = createBone(
+    BoneName.FOREARM_R,
+    rightElbow,
+    [0.25 * factors.forearm, 0, 0],
+    0.25 * factors.forearm
+  );
+  const rightWrist = createBone(
+    BoneName.WRIST_R,
+    rightForearm,
+    [0.15 * factors.forearm, 0, 0],
+    0.05 * factors.forearm
+  );
+  const rightHand = createBone(
+    BoneName.HAND_R,
+    rightWrist,
+    [0.08 * factors.overall, 0, 0],
+    0.08 * factors.overall
+  );
+
+  // Left leg chain (5 bones) - scaled by leg length
+  const leftHip = createBone(
+    BoneName.HIP_L, 
+    root, 
+    [-0.1 * factors.overall, -0.1 * factors.overall, 0], 
+    0.1 * factors.overall
+  );
+  const leftThigh = createBone(
+    BoneName.THIGH_L,
+    leftHip,
+    [0, -0.3 * factors.thigh, 0],
+    0.3 * factors.thigh
+  );
+  const leftKnee = createBone(
+    BoneName.KNEE_L,
+    leftThigh,
+    [0, -0.3 * factors.thigh, 0],
+    0.05 * factors.thigh
+  );
+  const leftShin = createBone(
+    BoneName.SHIN_L,
+    leftKnee,
+    [0, -0.3 * factors.shin, 0],
+    0.3 * factors.shin
+  );
+  const leftFoot = createBone(
+    BoneName.FOOT_L,
+    leftShin,
+    [0, -0.1 * factors.overall, 0.1 * factors.overall],
+    0.15 * factors.overall
+  );
+
+  // Right leg chain (5 bones - mirror of left)
+  const rightHip = createBone(
+    BoneName.HIP_R, 
+    root, 
+    [0.1 * factors.overall, -0.1 * factors.overall, 0], 
+    0.1 * factors.overall
+  );
+  const rightThigh = createBone(
+    BoneName.THIGH_R,
+    rightHip,
+    [0, -0.3 * factors.thigh, 0],
+    0.3 * factors.thigh
+  );
+  const rightKnee = createBone(
+    BoneName.KNEE_R,
+    rightThigh,
+    [0, -0.3 * factors.thigh, 0],
+    0.05 * factors.thigh
+  );
+  const rightShin = createBone(
+    BoneName.SHIN_R,
+    rightKnee,
+    [0, -0.3 * factors.shin, 0],
+    0.3 * factors.shin
+  );
+  const rightFoot = createBone(
+    BoneName.FOOT_R,
+    rightShin,
+    [0, -0.1 * factors.overall, 0.1 * factors.overall],
+    0.15 * factors.overall
   );
 
   // Create bone map for fast lookup

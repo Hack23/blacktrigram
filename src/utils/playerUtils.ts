@@ -11,6 +11,7 @@ import {
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
 import { ARCHETYPE_ASSETS } from "../types/constants";
+import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
 
 /**
  * Default body part health values (100 HP each)
@@ -60,6 +61,9 @@ export function createPlayerFromArchetype(
     id: `player_${playerIndex + 1}`,
     name: archetypeData.name,
     archetype,
+    
+    // Physical attributes loaded from archetype defaults
+    physicalAttributes: getArchetypePhysicalAttributes(archetype),
 
     // Combat stats
     health: archetypeData.baseHealth,
