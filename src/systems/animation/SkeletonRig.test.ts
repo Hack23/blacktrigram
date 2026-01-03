@@ -10,6 +10,7 @@ import * as THREE from "three";
 import {
   createBone,
   createHumanoidRig,
+  createScaledHumanoidRig,
   applyJointConstraint,
   getBoneWorldPosition,
   getBoneWorldRotation,
@@ -19,6 +20,13 @@ import {
   BONE_CHAINS,
 } from "./SkeletonRig";
 import { BoneName } from "../../types/skeletal";
+import {
+  MUSA_PHYSICAL,
+  AMSALJA_PHYSICAL,
+  HACKER_PHYSICAL,
+  JEONGBO_PHYSICAL,
+  JOJIK_PHYSICAL,
+} from "../../data/archetypePhysicalAttributes";
 
 describe("SkeletonRig", () => {
   describe("createBone", () => {
@@ -373,6 +381,94 @@ describe("SkeletonRig", () => {
       const spine = BONE_CHAINS.find((c) => c.name === "spine");
 
       expect(spine?.bones.length).toBe(6);
+    });
+  });
+
+  describe("createScaledHumanoidRig", () => {
+    it("should create scaled rig with 28 bones", () => {
+      const rig = createScaledHumanoidRig(MUSA_PHYSICAL);
+
+      expect(rig.boneCount).toBe(28);
+      expect(rig.bones.size).toBe(28);
+    });
+
+    it("should scale bones based on physical attributes", () => {
+      const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
+      const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
+
+      // Amsalja has longer legs
+      const amsaljaThigh = amsaljaRig.bones.get(BoneName.THIGH_L);
+      const jojikThigh = jojikRig.bones.get(BoneName.THIGH_L);
+      
+      expect(amsaljaThigh?.length).toBeGreaterThan(jojikThigh?.length ?? 0);
+    });
+
+    it("should apply wider shoulders for wider archetype", () => {
+      const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
+      const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
+
+      // Check shoulder positions (Jojik has wider shoulders)
+      const amsaljaShoulder = amsaljaRig.bones.get(BoneName.SHOULDER_L);
+      const jojikShoulder = jojikRig.bones.get(BoneName.SHOULDER_L);
+      
+      // Jojik's shoulder should be further from center
+      expect(Math.abs(jojikShoulder?.position.x ?? 0)).toBeGreaterThan(
+        Math.abs(amsaljaShoulder?.position.x ?? 0)
+      );
+    });
+
+    it("should scale head size appropriately", () => {
+      const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
+      const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
+
+      // Jojik has larger head
+      const amsaljaHead = amsaljaRig.bones.get(BoneName.HEAD);
+      const jojikHead = jojikRig.bones.get(BoneName.HEAD);
+      
+      expect(jojikHead?.length).toBeGreaterThan(amsaljaHead?.length ?? 0);
+    });
+
+    it("should scale neck length appropriately", () => {
+      const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
+      const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
+
+      // Amsalja has longer neck
+      const amsaljaNeck = amsaljaRig.bones.get(BoneName.NECK);
+      const jojikNeck = jojikRig.bones.get(BoneName.NECK);
+      
+      expect(amsaljaNeck?.length).toBeGreaterThan(jojikNeck?.length ?? 0);
+    });
+
+    it("should maintain bone hierarchy with scaling", () => {
+      const rig = createScaledHumanoidRig(MUSA_PHYSICAL);
+
+      // Check spine hierarchy
+      const pelvis = rig.bones.get(BoneName.PELVIS);
+      const spineLower = rig.bones.get(BoneName.SPINE_LOWER);
+      const spineUpper = rig.bones.get(BoneName.SPINE_UPPER);
+      const neck = rig.bones.get(BoneName.NECK);
+      const head = rig.bones.get(BoneName.HEAD);
+
+      expect(spineLower?.parent).toBe(pelvis);
+      expect(neck?.parent).toBe(spineUpper);
+      expect(head?.parent).toBe(neck);
+    });
+
+    it("should scale all archetypes without errors", () => {
+      const profiles = [
+        MUSA_PHYSICAL,
+        AMSALJA_PHYSICAL,
+        HACKER_PHYSICAL,
+        JEONGBO_PHYSICAL,
+        JOJIK_PHYSICAL,
+      ];
+
+      profiles.forEach(profile => {
+        const rig = createScaledHumanoidRig(profile);
+        expect(rig.boneCount).toBe(28);
+        expect(rig.bones.size).toBe(28);
+        expect(rig.root.name).toBe(BoneName.PELVIS);
+      });
     });
   });
 });

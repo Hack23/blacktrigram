@@ -16,7 +16,7 @@ import * as THREE from "three";
 import {
   applyKeyframeToRig,
   createDefaultFacialDamage,
-  createHumanoidRig,
+  createScaledHumanoidRig,
   createInitialHandAnimationState,
   getAnimation,
   getExpressionFromCombatState,
@@ -24,6 +24,7 @@ import {
   updateAnimation,
   updateHandAnimationState,
 } from "../../systems/animation";
+import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
 import { MuscleActivationManager } from "../../systems/animation/MuscleActivation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { FacialExpression } from "../../types/facial";
@@ -240,8 +241,17 @@ export const SkeletalPlayer3D: React.FC<
   enableEyeTracking = true,
   opponentPosition,
 }) => {
-  // Create skeletal rig
-  const rig = useMemo<SkeletalRig>(() => createHumanoidRig(), []);
+  // Get physical attributes for the archetype
+  const physicalAttributes = useMemo(
+    () => getArchetypePhysicalAttributes(archetype),
+    [archetype]
+  );
+
+  // Create skeletal rig with scaled dimensions based on archetype
+  const rig = useMemo<SkeletalRig>(
+    () => createScaledHumanoidRig(physicalAttributes),
+    [physicalAttributes]
+  );
 
   // Muscle activation manager
   const muscleManager = useRef(new MuscleActivationManager());

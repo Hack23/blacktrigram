@@ -100,6 +100,17 @@ export interface PlayerState {
   readonly name: KoreanText;
   /** Player combat archetype (무사, 암살자, etc.) */
   readonly archetype: PlayerArchetype;
+  
+  // Physical attributes
+  /** 
+   * Physical body attributes affecting combat calculations.
+   * **Korean**: 신체 속성 (Body Attributes)
+   * 
+   * These attributes determine reach, movement speed, damage output,
+   * defense capability, and stamina based on realistic body dimensions
+   * and composition. Loaded from archetype defaults on player creation.
+   */
+  readonly physicalAttributes?: import("@/types").PhysicalAttributes;
 
   // Combat stats
   /** Current health points (0 = defeated) - aggregate of body part health */
