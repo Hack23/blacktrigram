@@ -84,6 +84,46 @@ export const MUSA_PHYSICAL: PhysicalAttributes = {
    * Balanced wisdom and reflexes
    */
   age: 32,
+  
+  /**
+   * Total Height: 178 cm
+   * Average Korean male height for military service
+   * Balanced proportions for all-around combat
+   * Scales skeleton to standard proportions
+   */
+  totalHeight: 178,
+  
+  /**
+   * Torso Length: 58 cm
+   * Balanced torso providing stable core
+   * Optimal for breath control and Ki cultivation
+   * Standard vital point spacing
+   */
+  torsoLength: 58,
+  
+  /**
+   * Head Size: 22 cm
+   * Average head diameter for Korean males
+   * Standard vital point target area
+   * Balanced consciousness vulnerability
+   */
+  headSize: 22,
+  
+  /**
+   * Neck Length: 10 cm
+   * Average neck length
+   * Moderate vulnerability to chokes
+   * Standard blood choke mechanics
+   */
+  neckLength: 10,
+  
+  /**
+   * Shoulder Width: 43 cm
+   * Balanced shoulder span
+   * Good defense coverage
+   * Standard grappling control points
+   */
+  shoulderWidth: 43,
 };
 
 /**
@@ -147,6 +187,46 @@ export const AMSALJA_PHYSICAL: PhysicalAttributes = {
    * Experience balanced with peak conditioning
    */
   age: 28,
+  
+  /**
+   * Total Height: 182 cm
+   * Taller than average for extended reach
+   * Longer limb ratios for vital point access
+   * Advantageous for maintaining distance
+   */
+  totalHeight: 182,
+  
+  /**
+   * Torso Length: 56 cm
+   * Slightly shorter torso for lower center of gravity
+   * Compact core for agile movement
+   * Reduced vital point target area
+   */
+  torsoLength: 56,
+  
+  /**
+   * Head Size: 21 cm
+   * Smaller head profile for stealth
+   * Reduced target area for head strikes
+   * Lower consciousness vulnerability
+   */
+  headSize: 21,
+  
+  /**
+   * Neck Length: 11 cm
+   * Longer neck increases choke vulnerability
+   * Greater exposure to blood chokes
+   * Requires careful guard positioning
+   */
+  neckLength: 11,
+  
+  /**
+   * Shoulder Width: 40 cm
+   * Narrower shoulders for stealth profile
+   * Reduced defense coverage but better mobility
+   * Easier infiltration through tight spaces
+   */
+  shoulderWidth: 40,
 };
 
 /**
@@ -210,6 +290,46 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Peak learning and adaptation capabilities
    */
   age: 26,
+  
+  /**
+   * Total Height: 175 cm
+   * Average Korean male height
+   * Standard proportions for tech integration
+   * Balanced body type for augmentation
+   */
+  totalHeight: 175,
+  
+  /**
+   * Torso Length: 57 cm
+   * Average torso length
+   * Standard core for cyber implants
+   * Balanced Ki flow for tech-bio integration
+   */
+  torsoLength: 57,
+  
+  /**
+   * Head Size: 22 cm
+   * Average head size
+   * Standard neural interface compatibility
+   * Balanced for augmented reality overlays
+   */
+  headSize: 22,
+  
+  /**
+   * Neck Length: 10 cm
+   * Average neck length
+   * Standard vulnerability to chokes
+   * Adequate for neural interface cables
+   */
+  neckLength: 10,
+  
+  /**
+   * Shoulder Width: 42 cm
+   * Average shoulder span
+   * Standard defense coverage
+   * Balanced for wearable tech integration
+   */
+  shoulderWidth: 42,
 };
 
 /**
@@ -273,6 +393,46 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Wisdom from field experience
    */
   age: 34,
+  
+  /**
+   * Total Height: 177 cm
+   * Standard government agency height
+   * Balanced proportions for versatility
+   * Neither imposing nor inconspicuous
+   */
+  totalHeight: 177,
+  
+  /**
+   * Torso Length: 58 cm
+   * Balanced torso for varied operations
+   * Good breath control and stamina
+   * Standard vital point distribution
+   */
+  torsoLength: 58,
+  
+  /**
+   * Head Size: 22 cm
+   * Average head size
+   * Standard tactical gear compatibility
+   * Balanced consciousness resilience
+   */
+  headSize: 22,
+  
+  /**
+   * Neck Length: 10 cm
+   * Average neck length
+   * Trained resistance to chokes
+   * Standard blood choke vulnerability
+   */
+  neckLength: 10,
+  
+  /**
+   * Shoulder Width: 43 cm
+   * Balanced shoulder width
+   * Good defense coverage
+   * Versatile grappling control
+   */
+  shoulderWidth: 43,
 };
 
 /**
@@ -336,6 +496,46 @@ export const JOJIK_PHYSICAL: PhysicalAttributes = {
    * Peak brutality and survival instincts
    */
   age: 36,
+  
+  /**
+   * Total Height: 176 cm
+   * Compact but imposing build
+   * Stockier proportions for power
+   * Low center of gravity for stability
+   */
+  totalHeight: 176,
+  
+  /**
+   * Torso Length: 60 cm
+   * Longer, thicker torso
+   * Larger vital point targets but more padding
+   * Enhanced core strength and durability
+   */
+  torsoLength: 60,
+  
+  /**
+   * Head Size: 23 cm
+   * Larger, thicker skull
+   * Increased head strike resistance
+   * Higher consciousness resilience
+   */
+  headSize: 23,
+  
+  /**
+   * Neck Length: 9 cm
+   * Shorter, thicker neck
+   * Reduced choke vulnerability
+   * Harder to execute blood chokes
+   */
+  neckLength: 9,
+  
+  /**
+   * Shoulder Width: 48 cm
+   * Widest shoulders of all archetypes
+   * Maximum defense coverage
+   * Intimidating presence
+   */
+  shoulderWidth: 48,
 };
 
 /**

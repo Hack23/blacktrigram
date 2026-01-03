@@ -55,6 +55,11 @@ function getPlayerPhysicalAttributes(player: PlayerState): PhysicalAttributes {
     muscleMass: 35,
     fatMass: 12,
     age: 30,
+    totalHeight: 178,
+    torsoLength: 58,
+    headSize: 22,
+    neckLength: 10,
+    shoulderWidth: 43,
   };
 }
 

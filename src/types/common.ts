@@ -695,6 +695,76 @@ export interface PhysicalAttributes {
    * - Affects technique execution speed (prime 28-35)
    */
   readonly age: number;
+  
+  /**
+   * Total body height in centimeters.
+   * 
+   * **Korean**: 키 (Height)
+   * 
+   * Typical Range: 160-195 cm
+   * - Scales entire skeleton proportionally
+   * - Affects reach calculations (combined with limb ratios)
+   * - Affects center of gravity positioning
+   * - Determines visual body model scaling
+   * - Influences balance and stability in stances
+   */
+  readonly totalHeight: number;
+  
+  /**
+   * Torso length in centimeters (pelvis to shoulders).
+   * 
+   * **Korean**: 몸통 길이 (Torso Length)
+   * 
+   * Typical Range: 50-65 cm
+   * - Affects core hitbox size and vital point positioning
+   * - Influences breath control and stamina capacity
+   * - Affects spinal rotation range in techniques
+   * - Determines torso vital point target area
+   * - Impacts center of mass calculations
+   */
+  readonly torsoLength: number;
+  
+  /**
+   * Head size (diameter) in centimeters.
+   * 
+   * **Korean**: 머리 크기 (Head Size)
+   * 
+   * Typical Range: 20-24 cm
+   * - Affects head vital point targeting precision
+   * - Determines head hitbox size for strikes
+   * - Influences helmet/headgear fit (if applicable)
+   * - Affects visual skull scaling in 3D model
+   * - Impacts consciousness vulnerability to head trauma
+   */
+  readonly headSize: number;
+  
+  /**
+   * Neck length in centimeters (skull base to shoulders).
+   * 
+   * **Korean**: 목 길이 (Neck Length)
+   * 
+   * Typical Range: 8-12 cm
+   * - Affects vulnerability to chokes and strangles
+   * - Determines neck vital point target area
+   * - Influences blood choke effectiveness
+   * - Affects guillotine and rear naked choke mechanics
+   * - Impacts head mobility and evasion capability
+   */
+  readonly neckLength: number;
+  
+  /**
+   * Shoulder width in centimeters (shoulder to shoulder).
+   * 
+   * **Korean**: 어깨 너비 (Shoulder Width)
+   * 
+   * Typical Range: 38-48 cm
+   * - Affects defense coverage area (blocking)
+   * - Determines upper body strike zone width
+   * - Influences grappling control positions
+   * - Affects visual upper body model scaling
+   * - Impacts balance and stability in wide stances
+   */
+  readonly shoulderWidth: number;
 }
 
 /**

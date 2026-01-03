@@ -503,6 +503,115 @@ describe("Physical Attributes Realism", () => {
       expect(profile.weight).toBeLessThan(compositeMass + 35);
     });
   });
+  
+  it("should maintain realistic total height ranges", () => {
+    const allHeights = [
+      MUSA_PHYSICAL.totalHeight,
+      AMSALJA_PHYSICAL.totalHeight,
+      HACKER_PHYSICAL.totalHeight,
+      JEONGBO_PHYSICAL.totalHeight,
+      JOJIK_PHYSICAL.totalHeight,
+    ];
+    
+    allHeights.forEach(height => {
+      expect(height).toBeGreaterThanOrEqual(160);
+      expect(height).toBeLessThanOrEqual(195);
+    });
+  });
+  
+  it("should maintain realistic torso length ranges", () => {
+    const allTorsoLengths = [
+      MUSA_PHYSICAL.torsoLength,
+      AMSALJA_PHYSICAL.torsoLength,
+      HACKER_PHYSICAL.torsoLength,
+      JEONGBO_PHYSICAL.torsoLength,
+      JOJIK_PHYSICAL.torsoLength,
+    ];
+    
+    allTorsoLengths.forEach(length => {
+      expect(length).toBeGreaterThanOrEqual(50);
+      expect(length).toBeLessThanOrEqual(65);
+    });
+  });
+  
+  it("should maintain realistic head size ranges", () => {
+    const allHeadSizes = [
+      MUSA_PHYSICAL.headSize,
+      AMSALJA_PHYSICAL.headSize,
+      HACKER_PHYSICAL.headSize,
+      JEONGBO_PHYSICAL.headSize,
+      JOJIK_PHYSICAL.headSize,
+    ];
+    
+    allHeadSizes.forEach(size => {
+      expect(size).toBeGreaterThanOrEqual(20);
+      expect(size).toBeLessThanOrEqual(24);
+    });
+  });
+  
+  it("should maintain realistic neck length ranges", () => {
+    const allNeckLengths = [
+      MUSA_PHYSICAL.neckLength,
+      AMSALJA_PHYSICAL.neckLength,
+      HACKER_PHYSICAL.neckLength,
+      JEONGBO_PHYSICAL.neckLength,
+      JOJIK_PHYSICAL.neckLength,
+    ];
+    
+    allNeckLengths.forEach(length => {
+      expect(length).toBeGreaterThanOrEqual(8);
+      expect(length).toBeLessThanOrEqual(12);
+    });
+  });
+  
+  it("should maintain realistic shoulder width ranges", () => {
+    const allShoulderWidths = [
+      MUSA_PHYSICAL.shoulderWidth,
+      AMSALJA_PHYSICAL.shoulderWidth,
+      HACKER_PHYSICAL.shoulderWidth,
+      JEONGBO_PHYSICAL.shoulderWidth,
+      JOJIK_PHYSICAL.shoulderWidth,
+    ];
+    
+    allShoulderWidths.forEach(width => {
+      expect(width).toBeGreaterThanOrEqual(38);
+      expect(width).toBeLessThanOrEqual(48);
+    });
+  });
+  
+  it("should reflect archetype body proportions", () => {
+    // Amsalja should be tallest and leanest
+    expect(AMSALJA_PHYSICAL.totalHeight).toBeGreaterThan(MUSA_PHYSICAL.totalHeight);
+    expect(AMSALJA_PHYSICAL.torsoLength).toBeLessThan(MUSA_PHYSICAL.torsoLength);
+    
+    // Jojik should be stockier with wider shoulders
+    expect(JOJIK_PHYSICAL.shoulderWidth).toBeGreaterThan(MUSA_PHYSICAL.shoulderWidth);
+    expect(JOJIK_PHYSICAL.torsoLength).toBeGreaterThan(MUSA_PHYSICAL.torsoLength);
+    
+    // Amsalja should have longer neck (vulnerability)
+    expect(AMSALJA_PHYSICAL.neckLength).toBeGreaterThan(JOJIK_PHYSICAL.neckLength);
+    
+    // Jojik should have larger head (resilience)
+    expect(JOJIK_PHYSICAL.headSize).toBeGreaterThan(AMSALJA_PHYSICAL.headSize);
+  });
+  
+  it("should have proportional body dimensions", () => {
+    // Height should be roughly leg length + torso length + neck + head
+    const allProfiles = [
+      MUSA_PHYSICAL,
+      AMSALJA_PHYSICAL,
+      HACKER_PHYSICAL,
+      JEONGBO_PHYSICAL,
+      JOJIK_PHYSICAL,
+    ];
+    
+    allProfiles.forEach(profile => {
+      const summedHeight = profile.legLength + profile.torsoLength + profile.neckLength + profile.headSize;
+      // Allow 10% variance for posture and positioning
+      expect(profile.totalHeight).toBeGreaterThan(summedHeight * 0.9);
+      expect(profile.totalHeight).toBeLessThan(summedHeight * 1.1);
+    });
+  });
 });
 
 describe("Korean Martial Arts Biomechanics", () => {
