@@ -444,7 +444,6 @@ describe("Skeleton Scaling System", () => {
       allProfiles.forEach(profile => {
         // Choke effectiveness should correlate with neck length
         const chokeEff = calculateChokeEffectiveness(profile);
-        const neckFactor = profile.neckLength / 10; // 10cm is average
         
         // Longer necks should generally be more vulnerable
         // (with weight as secondary factor)
