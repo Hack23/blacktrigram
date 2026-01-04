@@ -1016,7 +1016,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               }}
             >
               <GuardIndicator
-                currentStance={playerState.currentStance}
+                currentStance={TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex]}
                 isInGuard={playerAnimation.isInStanceGuard()}
                 position="left"
                 isMobile={isMobile}
