@@ -15,6 +15,7 @@
 
 import React, { useMemo, useCallback } from "react";
 import { PlayerState } from "../../../systems/player";
+import type { StanceLaterality } from "../../../systems/trigram/types";
 import {
   ARCHETYPE_ASSETS,
   FALLBACK_ARCHETYPE_IMAGE,
@@ -35,7 +36,61 @@ export interface PlayerHUDProps {
   readonly position: "left" | "right";
   /** Whether to use mobile-optimized sizing */
   readonly isMobile: boolean;
+  /** Stance laterality: left or right foot forward */
+  readonly laterality?: StanceLaterality;
 }
+
+/**
+ * Laterality Indicator Component - Shows L/R badge with Korean text
+ * @korean 측면성표시기
+ */
+const LateralityIndicator: React.FC<{
+  readonly laterality: StanceLaterality;
+  readonly isMobile: boolean;
+}> = React.memo(({ laterality, isMobile }) => {
+  const isLeft = laterality === "left";
+
+  const badgeStyle = useMemo(
+    () => ({
+      display: "flex",
+      alignItems: "center",
+      gap: isMobile ? "3px" : "4px",
+      fontSize: isMobile ? "10px" : "11px",
+      fontFamily: FONT_FAMILY.KOREAN,
+      color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+    }),
+    [isMobile]
+  );
+
+  const labelStyle = useMemo(
+    () => ({
+      padding: isMobile ? "1px 4px" : "2px 6px",
+      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
+      border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+      borderRadius: "3px",
+      fontWeight: "bold",
+      minWidth: isMobile ? "16px" : "18px",
+      textAlign: "center" as const,
+    }),
+    [isMobile]
+  );
+
+  const textStyle = useMemo(
+    () => ({
+      opacity: 0.8,
+      whiteSpace: "nowrap" as const,
+    }),
+    []
+  );
+
+  return (
+    <div style={badgeStyle} data-testid="laterality-indicator">
+      <span style={labelStyle}>{isLeft ? "L" : "R"}</span>
+      <span style={textStyle}>{isLeft ? "왼발서기" : "오른발서기"}</span>
+    </div>
+  );
+});
+LateralityIndicator.displayName = "LateralityIndicator";
 
 /**
  * PlayerHUD - Complete player status display with health and stamina bars
@@ -45,6 +100,7 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
   player,
   position,
   isMobile,
+  laterality,
 }) => {
   const playerId = player.id;
   const isLeft = position === "left";
@@ -208,6 +264,11 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
       {/* Breathing Disruption Indicator */}
       <BreathingIndicator player={player} isMobile={isMobile} />
 
+      {/* Laterality Indicator */}
+      {laterality && (
+        <LateralityIndicator laterality={laterality} isMobile={isMobile} />
+      )}
+
       {/* Current Stance Indicator */}
       <div
         data-testid={`stance-indicator-${playerId}`}
@@ -255,6 +316,7 @@ export const PlayerHUD = React.memo(
     // Compare other props
     const positionSame = prevProps.position === nextProps.position;
     const mobileSame = prevProps.isMobile === nextProps.isMobile;
+    const lateralitySame = prevProps.laterality === nextProps.laterality;
 
     // Return true if all relevant props are the same (skip re-render)
     return (
@@ -272,7 +334,8 @@ export const PlayerHUD = React.memo(
       consciousnessSame &&
       balanceSame &&
       positionSame &&
-      mobileSame
+      mobileSame &&
+      lateralitySame
     );
   }
 );
