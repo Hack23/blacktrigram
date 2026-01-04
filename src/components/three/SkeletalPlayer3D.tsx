@@ -159,6 +159,134 @@ const applyStanceGuardPose = (
 };
 
 /**
+ * Apply stance guard pose overlay on top of base animation
+ * 
+ * Blends guard arm positions with base animation (idle/walk) to maintain
+ * guard pose during movement. Only affects upper body (arms, torso) while
+ * allowing legs to animate normally.
+ * 
+ * @param rig - Skeletal rig to apply overlay to
+ * @param stance - Current trigram stance
+ * @param breathingPhase - Breathing phase 0.0-1.0 for scale oscillation
+ * @param laterality - Stance laterality (left or right foot forward)
+ * @param blendFactor - How much guard pose to blend (0=base animation, 1=full guard)
+ * 
+ * @korean 자세방어포즈오버레이적용
+ */
+const applyStanceGuardOverlay = (
+  rig: SkeletalRig,
+  stance: string,
+  breathingPhase: number,
+  laterality: StanceLaterality = "right",
+  blendFactor: number = 1.0
+): void => {
+  const guardPose = getGuardPoseForStance(stance as TrigramStance, laterality);
+  if (!guardPose) return;
+
+  const clampedBlend = Math.max(0, Math.min(1, blendFactor));
+
+  // Blend left arm rotations with current pose (maintain animation)
+  const leftShoulder = rig.bones.get("left_shoulder");
+  if (leftShoulder) {
+    const currentRotation = leftShoulder.rotation.clone();
+    const targetRotation = guardPose.leftArm.shoulder;
+    leftShoulder.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      currentRotation.order
+    );
+  }
+  const leftElbow = rig.bones.get("left_elbow");
+  if (leftElbow) {
+    const currentRotation = leftElbow.rotation.clone();
+    const targetRotation = guardPose.leftArm.elbow;
+    leftElbow.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      currentRotation.order
+    );
+  }
+  const leftWrist = rig.bones.get("left_wrist");
+  if (leftWrist) {
+    const currentRotation = leftWrist.rotation.clone();
+    const targetRotation = guardPose.leftArm.wrist;
+    leftWrist.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      currentRotation.order
+    );
+  }
+
+  // Blend right arm rotations with current pose
+  const rightShoulder = rig.bones.get("right_shoulder");
+  if (rightShoulder) {
+    const currentRotation = rightShoulder.rotation.clone();
+    const targetRotation = guardPose.rightArm.shoulder;
+    rightShoulder.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      currentRotation.order
+    );
+  }
+  const rightElbow = rig.bones.get("right_elbow");
+  if (rightElbow) {
+    const currentRotation = rightElbow.rotation.clone();
+    const targetRotation = guardPose.rightArm.elbow;
+    rightElbow.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      currentRotation.order
+    );
+  }
+  const rightWrist = rig.bones.get("right_wrist");
+  if (rightWrist) {
+    const currentRotation = rightWrist.rotation.clone();
+    const targetRotation = guardPose.rightArm.wrist;
+    rightWrist.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      currentRotation.order
+    );
+  }
+
+  // Blend torso rotation with current pose
+  const spine = rig.bones.get("spine");
+  if (spine) {
+    const currentRotation = spine.rotation.clone();
+    const targetRotation = guardPose.torso;
+    spine.rotation.set(
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend * 0.5), // Less torso rotation during movement
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend * 0.5),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend * 0.5),
+      currentRotation.order
+    );
+  }
+
+  // Apply breathing animation scale (chest/shoulder expansion)
+  const breathingScale = THREE.MathUtils.lerp(
+    guardPose.breathingRange.min,
+    guardPose.breathingRange.max,
+    (Math.sin(breathingPhase * Math.PI * 2) + 1) / 2 // Sine wave 0-1
+  );
+
+  // Apply breathing to upper torso
+  const chest = rig.bones.get("chest");
+  if (chest) {
+    chest.scale.setScalar(breathingScale);
+  }
+  const neck = rig.bones.get("neck");
+  if (neck) {
+    neck.scale.y = breathingScale;
+  }
+};
+
+/**
  * Default transition duration for hand pose changes (in seconds)
  * @korean 손자세전환기본지속시간
  */
@@ -600,15 +728,28 @@ export const SkeletalPlayer3D: React.FC<
       }));
     } else if (currentAnimation?.startsWith("stance_guard_")) {
       // Stance guard animation - 자세 방어 애니메이션
-      // Uses procedural pose application in useFrame, not keyframe animation
-      setAnimState({
-        currentAnimation: null, // No keyframe animation needed
-        currentTime: 0,
-        isPlaying: true, // Keep playing for breathing animation
-        playbackSpeed: 1.0,
-        previousKeyframeIndex: 0,
-        nextKeyframeIndex: 1,
-      });
+      // Play idle animation as base, overlay guard pose in useFrame
+      const idleAnim = getAnimation("idle_stance");
+      if (idleAnim) {
+        setAnimState({
+          currentAnimation: idleAnim, // Use idle as base animation
+          currentTime: 0,
+          isPlaying: true, // Keep playing for idle + breathing animation
+          playbackSpeed: 0.5, // Slow breathing animation like idle
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+      } else {
+        // Fallback: no base animation
+        setAnimState({
+          currentAnimation: null,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0,
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+      }
 
       // Guard hands in open position
       setLeftHandState((prev) =>
@@ -729,30 +870,14 @@ export const SkeletalPlayer3D: React.FC<
       setMuscleStates(scratchMap);
     }
 
-    // Update skeletal animation
-    if (!animState.isPlaying || !animState.currentAnimation) {
-      return;
+    // Update breathing phase for guard poses (cycles through 0-1 based on time)
+    breathingPhaseRef.current += delta * 0.5; // 0.5 Hz = 2 seconds per breath cycle
+    if (breathingPhaseRef.current > 1.0) {
+      breathingPhaseRef.current -= 1.0;
     }
 
-    // Check if in stance guard animation (stance_guard_{stance})
-    const isInStanceGuard = currentAnimation?.startsWith("stance_guard_");
-    
-    if (isInStanceGuard) {
-      // Extract stance from currentAnimation (e.g., "stance_guard_geon" -> "geon")
-      const stanceFromAnim = currentAnimation.replace("stance_guard_", "");
-      
-      // Update breathing phase (cycles through 0-1 based on animation time)
-      breathingPhaseRef.current += delta * 0.5; // 0.5 Hz = 2 seconds per breath cycle
-      if (breathingPhaseRef.current > 1.0) {
-        breathingPhaseRef.current -= 1.0;
-      }
-      
-      // Apply stance guard pose with breathing animation
-      applyStanceGuardPose(rig, stanceFromAnim, breathingPhaseRef.current, laterality);
-      
-      // Continue animation loop (breathing is continuous)
-      animTimeRef.current += delta;
-    } else {
+    // Update skeletal animation (base animation)
+    if (animState.isPlaying && animState.currentAnimation) {
       // Normal animation: Update animation time and get interpolated keyframe
       const result = updateAnimation(
         animState.currentAnimation,
@@ -761,7 +886,7 @@ export const SkeletalPlayer3D: React.FC<
         animState.playbackSpeed
       );
 
-      // Apply keyframe to rig
+      // Apply keyframe to rig (base animation: idle, walk, etc.)
       applyKeyframeToRig(rig, result.keyframe);
 
       // Update time ref
@@ -781,6 +906,22 @@ export const SkeletalPlayer3D: React.FC<
           onAnimationComplete();
         }
       }
+    }
+
+    // Apply guard pose overlay on top of base animation
+    // This ensures guard arm positions are maintained during idle/walk
+    const isInStanceGuard = currentAnimation?.startsWith("stance_guard_");
+    const isIdleOrWalk = currentAnimation === "idle" || currentAnimation === "walk";
+    
+    if (isInStanceGuard || isIdleOrWalk) {
+      // Extract stance from either currentAnimation or use current stance prop
+      const stanceToUse = isInStanceGuard 
+        ? currentAnimation.replace("stance_guard_", "")
+        : stance;
+      
+      // Apply guard pose overlay with full blend for stance_guard, partial for idle/walk
+      const blendFactor = isInStanceGuard ? 1.0 : 0.85; // 85% guard during idle/walk
+      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, blendFactor);
     }
   });
 
