@@ -70,10 +70,11 @@ export class StanceManager {
    * - 오른발서기 (Oreun Bal Seogi): Right foot forward
    * 
    * @param player - Current player state
+   * @param currentLaterality - Current laterality to toggle from
    * @returns Result with updated laterality
    * @korean 측면전환
    */
-  public switchStanceSide(player: PlayerState): StanceChangeResult {
+  public switchStanceSide(player: PlayerState, currentLaterality: StanceLaterality): StanceChangeResult {
     const lateralityCost: TrigramTransitionCost = {
       ki: 0,
       stamina: 2,
@@ -86,7 +87,7 @@ export class StanceManager {
         success: false,
         updatedPlayer: player,
         cost: lateralityCost,
-        laterality: this.currentLaterality,
+        laterality: currentLaterality,
         message: "Insufficient stamina to switch stance side",
       };
     }
@@ -98,14 +99,14 @@ export class StanceManager {
         success: false,
         updatedPlayer: player,
         cost: lateralityCost,
-        laterality: this.currentLaterality,
+        laterality: currentLaterality,
         message: "Stance side switch on cooldown",
       };
     }
 
-    // Switch laterality
+    // Switch laterality (toggle from current)
     const newLaterality: StanceLaterality = 
-      this.currentLaterality === "left" ? "right" : "left";
+      currentLaterality === "left" ? "right" : "left";
     this.currentLaterality = newLaterality;
 
     // Apply stamina cost and update timestamp

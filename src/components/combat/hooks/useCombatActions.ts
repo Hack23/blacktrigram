@@ -41,14 +41,14 @@ import { PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { Position, TrigramStance, Technique } from "@/types";
 import { HitEffectType } from "@/systems/effects";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
-import { StanceManager, StanceLaterality } from "@/systems/trigram";
+import { StanceManager } from "@/systems/trigram";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -436,32 +436,31 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
    * Handle stance side switch (left/right)
    * @korean 자세측면전환처리
    */
+  // Reuse StanceManager instance for stance side switches
+  const stanceManagerRef = useRef<StanceManager>(new StanceManager());
+
   const handleStanceSideSwitch = useCallback(
     (playerIndex: 0 | 1) => {
       if (!combatState.roundStarted || combatState.roundEnded) return;
 
       const player = validPlayers[playerIndex];
       const currentLaterality = combatState.playerLaterality[playerIndex];
-      const stanceManager = new StanceManager();
+      
+      const result = stanceManagerRef.current.switchStanceSide(player, currentLaterality);
 
-      // Calculate the new laterality (toggle)
-      const newLaterality: StanceLaterality = currentLaterality === "left" ? "right" : "left";
-
-      const result = stanceManager.switchStanceSide(player);
-
-      if (result.success) {
+      if (result.success && result.laterality) {
         // Update player state with new stamina
         onPlayerUpdate(playerIndex, result.updatedPlayer);
 
-        // Update laterality state with toggled value
-        combatActions.setPlayerLateralityIndex(playerIndex, newLaterality);
+        // Update laterality state with value from StanceManager
+        combatActions.setPlayerLateralityIndex(playerIndex, result.laterality);
 
         // Audio feedback
         combatAudio?.playStanceChangeSound?.();
 
         // Visual feedback
-        const koreanText = newLaterality === "left" ? "왼발서기" : "오른발서기";
-        const englishText = newLaterality === "left" ? "Left Stance" : "Right Stance";
+        const koreanText = result.laterality === "left" ? "왼발서기" : "오른발서기";
+        const englishText = result.laterality === "left" ? "Left Stance" : "Right Stance";
         addCombatMessage(koreanText, englishText);
 
         // Visual effect

@@ -180,7 +180,7 @@ describe("StanceManager", () => {
     });
 
     it("should switch stance side successfully", () => {
-      const result = stanceManager.switchStanceSide(player);
+      const result = stanceManager.switchStanceSide(player, "right");
 
       expect(result.success).toBe(true);
       expect(result.laterality).toBe("left");
@@ -189,7 +189,7 @@ describe("StanceManager", () => {
 
     it("should toggle between left and right", () => {
       // First switch: right -> left
-      const firstSwitch = stanceManager.switchStanceSide(player);
+      const firstSwitch = stanceManager.switchStanceSide(player, "right");
       expect(firstSwitch.laterality).toBe("left");
 
       // Wait for cooldown to expire
@@ -199,7 +199,7 @@ describe("StanceManager", () => {
       };
 
       // Second switch: left -> right
-      const secondSwitch = stanceManager.switchStanceSide(playerAfterCooldown);
+      const secondSwitch = stanceManager.switchStanceSide(playerAfterCooldown, "left");
       expect(secondSwitch.success).toBe(true);
       expect(secondSwitch.laterality).toBe("right");
       expect(stanceManager.getCurrentLaterality()).toBe("right");
@@ -207,7 +207,7 @@ describe("StanceManager", () => {
 
     it("should cost 2 stamina for stance side switch", () => {
       const originalStamina = player.stamina;
-      const result = stanceManager.switchStanceSide(player);
+      const result = stanceManager.switchStanceSide(player, "right");
 
       expect(result.success).toBe(true);
       expect(result.cost.stamina).toBe(2);
@@ -216,7 +216,7 @@ describe("StanceManager", () => {
     });
 
     it("should take 400ms for stance side switch", () => {
-      const result = stanceManager.switchStanceSide(player);
+      const result = stanceManager.switchStanceSide(player, "right");
 
       expect(result.success).toBe(true);
       expect(result.cost.timeMilliseconds).toBe(400);
@@ -228,7 +228,7 @@ describe("StanceManager", () => {
         stamina: 1,
       };
 
-      const result = stanceManager.switchStanceSide(lowStaminaPlayer);
+      const result = stanceManager.switchStanceSide(lowStaminaPlayer, "right");
 
       expect(result.success).toBe(false);
       expect(result.message).toContain("Insufficient stamina");
@@ -237,11 +237,11 @@ describe("StanceManager", () => {
 
     it("should respect cooldown period", () => {
       // First switch
-      const firstResult = stanceManager.switchStanceSide(player);
+      const firstResult = stanceManager.switchStanceSide(player, "right");
       expect(firstResult.success).toBe(true);
 
       // Immediate second switch (should fail due to cooldown)
-      const secondResult = stanceManager.switchStanceSide(firstResult.updatedPlayer);
+      const secondResult = stanceManager.switchStanceSide(firstResult.updatedPlayer, "left");
       expect(secondResult.success).toBe(false);
       expect(secondResult.message).toContain("cooldown");
     });
@@ -254,7 +254,7 @@ describe("StanceManager", () => {
 
     it("should maintain laterality when changing trigram stance", () => {
       // Switch to left laterality
-      const lateralitySwitch = stanceManager.switchStanceSide(player);
+      const lateralitySwitch = stanceManager.switchStanceSide(player, "right");
       expect(lateralitySwitch.laterality).toBe("left");
 
       // Wait for cooldown
@@ -284,7 +284,7 @@ describe("StanceManager", () => {
       };
 
       // Switch laterality
-      const lateralitySwitch = stanceManager.switchStanceSide(updatedPlayer);
+      const lateralitySwitch = stanceManager.switchStanceSide(updatedPlayer, "right");
       expect(lateralitySwitch.success).toBe(true);
       expect(lateralitySwitch.laterality).toBe("left");
       
