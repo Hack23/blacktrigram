@@ -48,7 +48,7 @@ import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
-import { StanceManager } from "@/systems/trigram/StanceManager";
+import { StanceManager, StanceLaterality } from "@/systems/trigram";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -441,7 +441,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       if (!combatState.roundStarted || combatState.roundEnded) return;
 
       const player = validPlayers[playerIndex];
+      const currentLaterality = combatState.playerLaterality[playerIndex];
       const stanceManager = new StanceManager();
+
+      // Calculate the new laterality (toggle)
+      const newLaterality: StanceLaterality = currentLaterality === "left" ? "right" : "left";
 
       const result = stanceManager.switchStanceSide(player);
 
@@ -449,8 +453,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
         // Update player state with new stamina
         onPlayerUpdate(playerIndex, result.updatedPlayer);
 
-        // Update laterality state
-        const newLaterality = result.laterality!;
+        // Update laterality state with toggled value
         combatActions.setPlayerLateralityIndex(playerIndex, newLaterality);
 
         // Audio feedback
@@ -475,6 +478,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     [
       combatState.roundStarted,
       combatState.roundEnded,
+      combatState.playerLaterality,
       validPlayers,
       onPlayerUpdate,
       combatActions,

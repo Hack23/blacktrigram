@@ -1436,8 +1436,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       executeAIActionCallbackRef.current?.(action, targetPos),
     onStanceChange: handleAIStanceChange,
     onLateralityChange: () => handleStanceSideSwitch(1), // AI player (index 1)
-    playerLaterality: combatState.playerLaterality[1], // AI laterality
-    opponentLaterality: combatState.playerLaterality[0], // Human laterality
+    playerLaterality: combatState.playerLaterality[1], // AI's own laterality
+    opponentLaterality: combatState.playerLaterality[0], // Opponent (human) laterality
   });
 
   // Calculate current difficulty tier for display
@@ -1764,8 +1764,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         event.preventDefault();
       }
 
-      // Tab key for stance side switching (laterality)
-      if (event.key === "Tab") {
+      // CapsLock key for stance side switching (laterality)
+      // Using CapsLock because Tab conflicts with browser navigation,
+      // Q-W-E-R-T-Y-U-Y are reserved for combat techniques,
+      // and Shift is already used for blocking
+      if (event.key === "CapsLock") {
         handleStanceSideSwitch(0); // Human player
         event.preventDefault();
       }
