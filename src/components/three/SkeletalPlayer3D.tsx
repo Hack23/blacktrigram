@@ -123,88 +123,68 @@ const applyStanceGuardOverlay = (
   if (!guardPose) return;
 
   // Blend left arm rotations with current pose (maintain animation)
+  // No cloning needed - directly lerp and set components for performance
   const leftShoulder = rig.bones.get("left_shoulder");
   if (leftShoulder) {
-    const currentRotation = leftShoulder.rotation.clone();
-    const targetRotation = guardPose.leftArm.shoulder;
-    leftShoulder.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
-      currentRotation.order
-    );
+    const current = leftShoulder.rotation;
+    const target = guardPose.leftArm.shoulder;
+    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
   const leftElbow = rig.bones.get("left_elbow");
   if (leftElbow) {
-    const currentRotation = leftElbow.rotation.clone();
-    const targetRotation = guardPose.leftArm.elbow;
-    leftElbow.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
-      currentRotation.order
-    );
+    const current = leftElbow.rotation;
+    const target = guardPose.leftArm.elbow;
+    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
   const leftWrist = rig.bones.get("left_wrist");
   if (leftWrist) {
-    const currentRotation = leftWrist.rotation.clone();
-    const targetRotation = guardPose.leftArm.wrist;
-    leftWrist.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
-      currentRotation.order
-    );
+    const current = leftWrist.rotation;
+    const target = guardPose.leftArm.wrist;
+    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
 
   // Blend right arm rotations with current pose
   const rightShoulder = rig.bones.get("right_shoulder");
   if (rightShoulder) {
-    const currentRotation = rightShoulder.rotation.clone();
-    const targetRotation = guardPose.rightArm.shoulder;
-    rightShoulder.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
-      currentRotation.order
-    );
+    const current = rightShoulder.rotation;
+    const target = guardPose.rightArm.shoulder;
+    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
   const rightElbow = rig.bones.get("right_elbow");
   if (rightElbow) {
-    const currentRotation = rightElbow.rotation.clone();
-    const targetRotation = guardPose.rightArm.elbow;
-    rightElbow.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
-      currentRotation.order
-    );
+    const current = rightElbow.rotation;
+    const target = guardPose.rightArm.elbow;
+    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
   const rightWrist = rig.bones.get("right_wrist");
   if (rightWrist) {
-    const currentRotation = rightWrist.rotation.clone();
-    const targetRotation = guardPose.rightArm.wrist;
-    rightWrist.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
-      currentRotation.order
-    );
+    const current = rightWrist.rotation;
+    const target = guardPose.rightArm.wrist;
+    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
 
   // Blend torso rotation with current pose
   const spine = rig.bones.get("spine");
   if (spine) {
-    const currentRotation = spine.rotation.clone();
-    const targetRotation = guardPose.torso;
+    const current = spine.rotation;
+    const target = guardPose.torso;
     // Apply full torso rotation for distinct stance appearance
     const torsoBlend = blendFactor * TORSO_BLEND_FACTOR;
-    spine.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, torsoBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, torsoBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, torsoBlend),
-      currentRotation.order
-    );
+    current.x = THREE.MathUtils.lerp(current.x, target.x, torsoBlend);
+    current.y = THREE.MathUtils.lerp(current.y, target.y, torsoBlend);
+    current.z = THREE.MathUtils.lerp(current.z, target.z, torsoBlend);
   }
 
   // Apply breathing animation scale (chest/shoulder expansion)
@@ -848,13 +828,15 @@ export const SkeletalPlayer3D: React.FC<
     }
 
     // Apply guard pose overlay on top of base animation
-    // This ensures guard arm positions are maintained during idle/walk
-    const isInStanceGuard = currentAnimation?.startsWith("stance_guard_");
-    const isIdleOrWalk = currentAnimation === "idle" || currentAnimation === "walk";
+    // Guard is applied by default for idle/walk/stance states, but not during attack/defend/hit
+    const shouldApplyGuard = currentAnimation !== "attack" 
+      && currentAnimation !== "defend" 
+      && currentAnimation !== "hit"
+      && currentAnimation !== "death";
     
-    if (isInStanceGuard || isIdleOrWalk) {
-      // Extract stance from either currentAnimation or use current stance prop
-      const stanceToUse = isInStanceGuard 
+    if (shouldApplyGuard) {
+      // Extract stance from currentAnimation if it's a stance_guard, otherwise use stance prop
+      const stanceToUse = currentAnimation?.startsWith("stance_guard_")
         ? currentAnimation.replace("stance_guard_", "")
         : stance;
       

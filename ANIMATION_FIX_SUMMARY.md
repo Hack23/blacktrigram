@@ -44,10 +44,59 @@ This document describes the fix for idle and walking animations in the Black Tri
  * Blends guard arm positions with base animation (idle/walk) to maintain
  * guard pose during movement. Only affects upper body (arms, torso) while
  * allowing legs to animate normally.
+ * 
+ * PERFORMANCE: Directly modifies rotation components without cloning
+ * to avoid 7 object allocations per frame (60fps = 420 allocations/sec).
  */
 const applyStanceGuardOverlay = (
   rig: SkeletalRig,
   stance: string,
+  breathingPhase: number,
+  laterality: StanceLaterality = "right",
+  blendFactor: number = 1.0
+): void => {
+  const guardPose = getGuardPoseForStance(stance, laterality);
+  
+  // Direct lerp on rotation components (no cloning)
+  // Arms blended at 100%
+  // Torso blended at 80%
+  // Apply breathing animation
+  // Respect laterality mirroring
+}
+```
+
+### Animation Loop Changes
+
+**Before**:
+```typescript
+if (isInStanceGuard) {
+  applyStanceGuardPose(rig, stance, breathing, laterality);
+} else {
+  applyKeyframeToRig(rig, keyframe);
+}
+```
+
+**After**:
+```typescript
+// Always apply base animation first
+applyKeyframeToRig(rig, keyframe);
+
+// Then apply guard overlay by default (inverted logic)
+const shouldApplyGuard = currentAnimation !== "attack" 
+  && currentAnimation !== "defend" 
+  && currentAnimation !== "hit"
+  && currentAnimation !== "death";
+
+if (shouldApplyGuard) {
+  applyStanceGuardOverlay(rig, stance, breathing, laterality, FULL_GUARD_BLEND);
+}
+```
+
+**Key Changes**:
+1. **Inverted logic**: Apply guards by default, exclude only for attack/defend/hit/death
+2. **Eliminates edge cases**: No need to enumerate all idle/walk states
+3. **More robust**: Automatically covers future animation states like "block", "counter", etc.
+4. **Performance optimized**: Removed 7 clone() operations per frame (420 allocations/second at 60fps)
   breathingPhase: number,
   laterality: StanceLaterality = "right",
   blendFactor: number = 1.0
