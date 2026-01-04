@@ -86,8 +86,15 @@ const getTrigramSymbol = (stance: string): string => {
 
 /**
  * Blend factor for torso rotation during guard overlay
- * Lower than 1.0 to allow some base animation torso movement during walk
- * @korean 몸통블렌드계수
+ * 
+ * This value is multiplied by the main `blendFactor` argument used for the
+ * stance guard overlay. For example, when `blendFactor` is 1.0 (full guard),
+ * the effective torso guard influence becomes `1.0 * 0.8 = 0.8`, allowing
+ * approximately 20% of the base animation (walk/idle) torso movement to show
+ * through. Keep this lower than 1.0 to preserve some natural torso motion
+ * while still maintaining a visible guard posture.
+ * 
+ * @korean 방어자세가 몸통에 적용되는 비율을 줄이는 추가 스케일 계수
  */
 const TORSO_BLEND_FACTOR = 0.8;
 
@@ -123,7 +130,7 @@ const applyStanceGuardOverlay = (
   if (!guardPose) return;
 
   // Blend left arm rotations with current pose (maintain animation)
-  // No cloning needed - directly lerp and set components for performance
+  // Directly modifies rotation components in-place for performance (avoids object allocations)
   const leftShoulder = rig.bones.get("left_shoulder");
   if (leftShoulder) {
     const current = leftShoulder.rotation;
@@ -659,11 +666,15 @@ export const SkeletalPlayer3D: React.FC<
           nextKeyframeIndex: 1,
         });
       } else {
-        // Fallback: no base animation
+        // Fallback: no base animation available for guard stance.
+        // Guard overlay (hands/pose) will still run without an underlying idle_stance clip.
+        console.warn(
+          "[SkeletalPlayer3D] idle_stance animation not found; applying guard overlay without base animation."
+        );
         setAnimState({
           currentAnimation: null,
           currentTime: 0,
-          isPlaying: true,
+          isPlaying: false, // Set to false since no animation available
           playbackSpeed: 1.0,
           previousKeyframeIndex: 0,
           nextKeyframeIndex: 1,
@@ -822,7 +833,8 @@ export const SkeletalPlayer3D: React.FC<
     }
 
     // Apply guard pose overlay on top of base animation
-    // Guard is applied by default for idle/walk/stance states, but not during attack/defend/hit/death
+    // Guard is applied by default for idle/walk/stance/block/counter states,
+    // but not during attack/defend/hit/death animations where specific arm positions are needed
     const shouldApplyGuard = currentAnimation !== "attack" 
       && currentAnimation !== "defend" 
       && currentAnimation !== "hit"
@@ -835,10 +847,9 @@ export const SkeletalPlayer3D: React.FC<
         breathingPhaseRef.current -= 1.0;
       }
 
-      // Extract stance from currentAnimation if it's a stance_guard, otherwise use stance prop
-      const stanceToUse = currentAnimation.startsWith("stance_guard_")
-        ? currentAnimation.replace("stance_guard_", "")
-        : stance;
+      // Use the explicit stance prop for guard overlay
+      // Note: currentAnimation is typed as PlayerAnimation which doesn't include "stance_guard_*" states
+      const stanceToUse = stance;
       
       // Apply full guard pose overlay to maintain fighting stance during all movement
       // Each stance × laterality combination creates distinct appearance
