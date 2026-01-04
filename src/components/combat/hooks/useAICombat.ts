@@ -901,8 +901,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // AI decides whether to switch stance side based on personality and tactical situation
       if (onLateralityChange && playerLaterality && opponentLaterality) {
         const shouldSwitch = shouldAISwitchLaterality(
-          playerLaterality,
-          opponentLaterality,
+          opponentLaterality, // AI's current laterality (player is index 1, opponent is index 0)
+          playerLaterality,   // Human player's laterality
           adjustedPersonality,
           player.health,
           lastLateralitySwitchRef.current,
@@ -964,6 +964,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     player,
     opponent,
     aiState,
+    playerLaterality,
+    opponentLaterality,
+    adaptiveDifficulty,
   ]);
 
   return {
