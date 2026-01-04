@@ -471,6 +471,8 @@ export function getGuardConfigForStance(
  * Returns a map of all possible stance+laterality combinations with their guard poses.
  * This represents the complete set of 16 distinct guard configurations in Black Trigram.
  * 
+ * The result is cached for performance - subsequent calls return the same Map instance.
+ * 
  * Format: `"stance_laterality"` → `StanceGuardPose`
  * - Example keys: "geon_left", "geon_right", "tae_left", "tae_right", etc.
  * 
@@ -478,7 +480,14 @@ export function getGuardConfigForStance(
  * 
  * @korean 모든자세방어포즈
  */
+let cachedAllPoses: Map<string, StanceGuardPose> | null = null;
+
 export function getAllStanceGuardPoses(): Map<string, StanceGuardPose> {
+  // Return cached result if available for performance
+  if (cachedAllPoses) {
+    return cachedAllPoses;
+  }
+
   const allPoses = new Map<string, StanceGuardPose>();
   
   // For each trigram stance
@@ -496,5 +505,7 @@ export function getAllStanceGuardPoses(): Map<string, StanceGuardPose> {
     }
   });
   
+  // Cache the result
+  cachedAllPoses = allPoses;
   return allPoses;
 }
