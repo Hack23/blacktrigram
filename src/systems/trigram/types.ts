@@ -16,6 +16,40 @@ import { EffectType } from "../effects";
 import { PlayerState } from "../player";
 import { KoreanTechnique } from "../vitalpoint";
 
+/**
+ * Stance laterality representing which foot/side is forward.
+ * 
+ * **Korean**: 자세 측면성
+ * 
+ * In authentic Korean martial arts (태권도, 합기도, 택견), stances have
+ * distinct left and right configurations:
+ * - **왼발서기 (Oenbal Seogi)**: Left foot forward, left guard high
+ * - **오른발서기 (Oreun Bal Seogi)**: Right foot forward, right guard high
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 측면성
+ */
+export type StanceLaterality = "left" | "right";
+
+/**
+ * Combined stance with laterality for complete stance specification.
+ * 
+ * **Korean**: 측면 포함 자세
+ * 
+ * Combines the trigram stance (8 types) with laterality (2 sides) to create
+ * 16 distinct stance configurations. Format: `{stance}_{laterality}`
+ * 
+ * Examples:
+ * - "geon_left" - Heaven stance, left foot forward
+ * - "tae_right" - Lake stance, right foot forward
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 측면포함자세
+ */
+export type StanceWithSide = `${TrigramStance}_${StanceLaterality}`;
+
 export interface TrigramTransitionCost {
   readonly ki: number;
   readonly stamina: number;

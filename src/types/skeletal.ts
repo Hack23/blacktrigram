@@ -577,3 +577,70 @@ export interface StanceGuardAnimationConfig {
    */
   readonly priority: number;
 }
+
+/**
+ * Mirror a guard pose for left/right stance laterality.
+ * 
+ * **Korean**: 자세 좌우 대칭
+ * 
+ * Creates a mirror-image guard pose by swapping left and right limb positions
+ * and negating lateral (Y-axis and Z-axis) rotations. This enables authentic
+ * left/right stance differentiation in Korean martial arts.
+ * 
+ * Key transformations:
+ * - Swap leftArm ↔ rightArm bone rotations
+ * - Negate Y rotation (lateral twist)
+ * - Negate Z rotation (roll)
+ * - Preserve X rotation (forward/back bend)
+ * - Keep weight distribution and breathing range unchanged
+ * 
+ * @param pose - Original guard pose to mirror
+ * @returns Mirrored guard pose with swapped and negated rotations
+ * 
+ * @example
+ * ```typescript
+ * // Create right-handed version of a left-handed guard
+ * const leftGeonGuard = GEON_HIGH_GUARD_POSE;
+ * const rightGeonGuard = mirrorGuardPose(leftGeonGuard);
+ * 
+ * // leftGeonGuard has left hand forward
+ * // rightGeonGuard has right hand forward (mirrored)
+ * ```
+ * 
+ * @public
+ * @category Animation
+ * @korean 방어포즈대칭
+ */
+export function mirrorGuardPose(pose: StanceGuardPose): StanceGuardPose {
+  // Helper to negate Y and Z rotations while preserving X
+  const mirrorEuler = (euler: THREE.Euler): THREE.Euler => {
+    return new THREE.Euler(
+      euler.x,      // Preserve forward/back bend
+      -euler.y,     // Negate lateral twist
+      -euler.z      // Negate roll
+    );
+  };
+
+  return {
+    // Swap left and right arms with mirrored rotations
+    leftArm: {
+      shoulder: mirrorEuler(pose.rightArm.shoulder),
+      elbow: mirrorEuler(pose.rightArm.elbow),
+      wrist: mirrorEuler(pose.rightArm.wrist),
+    },
+    rightArm: {
+      shoulder: mirrorEuler(pose.leftArm.shoulder),
+      elbow: mirrorEuler(pose.leftArm.elbow),
+      wrist: mirrorEuler(pose.leftArm.wrist),
+    },
+    // Mirror torso rotation
+    torso: mirrorEuler(pose.torso),
+    // Weight distribution remains the same
+    weight: pose.weight,
+    // Breathing range unchanged
+    breathingRange: {
+      min: pose.breathingRange.min,
+      max: pose.breathingRange.max,
+    },
+  };
+}
