@@ -85,8 +85,12 @@ const LateralityIndicator: React.FC<{
 
   return (
     <div style={badgeStyle} data-testid="laterality-indicator">
-      <span style={labelStyle}>{isLeft ? "L" : "R"}</span>
-      <span style={textStyle}>{isLeft ? "왼발서기" : "오른발서기"}</span>
+      <span style={labelStyle} data-testid="laterality-badge">
+        {isLeft ? "L" : "R"}
+      </span>
+      <span style={textStyle} data-testid="laterality-text">
+        {isLeft ? "왼발서기" : "오른발서기"}
+      </span>
     </div>
   );
 });

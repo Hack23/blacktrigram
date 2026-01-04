@@ -1764,11 +1764,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         event.preventDefault();
       }
 
-      // CapsLock key for stance side switching (laterality)
-      // Using CapsLock because Tab conflicts with browser navigation,
-      // Q-W-E-R-T-Y-U-Y are reserved for combat techniques,
-      // and Shift is already used for blocking
-      if (event.key === "CapsLock") {
+      // F key for stance side switching (laterality)
+      // Using "F" (Flip/Footwork) because:
+      // - Tab conflicts with browser navigation and accessibility
+      // - Q-W-E-R-T-Y-U-Y are reserved for combat techniques
+      // - Shift is already used for blocking
+      // - CapsLock has inconsistent key events across browsers/OSes
+      if (event.key === "f" || event.key === "F") {
         handleStanceSideSwitch(0); // Human player
         event.preventDefault();
       }

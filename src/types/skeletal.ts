@@ -637,10 +637,7 @@ export function mirrorGuardPose(pose: StanceGuardPose): StanceGuardPose {
     torso: mirrorEuler(pose.torso),
     // Weight distribution remains the same
     weight: pose.weight,
-    // Breathing range unchanged
-    breathingRange: {
-      min: pose.breathingRange.min,
-      max: pose.breathingRange.max,
-    },
+    // Breathing range unchanged (not affected by laterality, reuse original object)
+    breathingRange: pose.breathingRange,
   };
 }
