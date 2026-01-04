@@ -434,6 +434,17 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
     }));
   }, [muscleScaleFactor]);
 
+  // Memoize fat layer scales to avoid creating Vector3s on every render
+  const fatLayerScales = useMemo(() => {
+    return scaledMuscleGroups.map(({ muscleGroup }) => {
+      return [
+        muscleGroup.baseScale.x * (1 + fatLayerThickness),
+        muscleGroup.baseScale.y * (1 + fatLayerThickness),
+        muscleGroup.baseScale.z * (1 + fatLayerThickness),
+      ] as [number, number, number];
+    });
+  }, [scaledMuscleGroups, fatLayerThickness]);
+
   return (
     <group data-testid="muscle-system">
       {/* Muscle groups with scaled size based on muscle mass */}
@@ -456,14 +467,7 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
       {/* Fat layer rendering (only visible when fat mass is significant) */}
       {fatLayerOpacity > 0.05 && (
         <group data-testid="fat-layer">
-          {scaledMuscleGroups.map(({ name, muscleGroup }) => {
-            // Fat layer scale is muscle base scale + fat thickness
-            const fatScale = new THREE.Vector3(
-              muscleGroup.baseScale.x * (1 + fatLayerThickness),
-              muscleGroup.baseScale.y * (1 + fatLayerThickness),
-              muscleGroup.baseScale.z * (1 + fatLayerThickness)
-            );
-
+          {scaledMuscleGroups.map(({ name }, index) => {
             // Get original muscle group for geometry params
             const originalMuscleGroup = MUSCLE_GROUPS[name as keyof typeof MUSCLE_GROUPS];
 
@@ -471,7 +475,7 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
               <mesh
                 key={`fat-${name}`}
                 position={originalMuscleGroup.position}
-                scale={fatScale}
+                scale={fatLayerScales[index]}
                 castShadow
                 receiveShadow
                 data-testid={`fat-layer-${originalMuscleGroup.name}`}

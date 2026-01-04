@@ -104,7 +104,7 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 68kg
 
 **Visual Appearance:**
-- **Bone Thickness:** ~0.86x (thin, lean skeleton) ⭐ PRIMARY DIFFERENTIATOR
+- **Bone Thickness:** ~0.93x (thin, lean skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~0.93x (lean, defined muscles)
 - **Fat Layer Opacity:** ~4% (nearly invisible)
 - **Fat Layer Thickness:** +0.7% size increase
