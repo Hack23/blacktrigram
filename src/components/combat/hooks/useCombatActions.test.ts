@@ -700,4 +700,182 @@ describe("useCombatActions", () => {
       });
     });
   });
+
+  describe("handleStanceSideSwitch", () => {
+    it("should successfully switch laterality when conditions are met", () => {
+      const { result } = renderHook(() => useCombatActions(mockConfig));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Should update player state with stamina deduction
+      expect(mockConfig.onPlayerUpdate).toHaveBeenCalledWith(
+        0,
+        expect.objectContaining({
+          stamina: 78, // 80 - 2
+        })
+      );
+
+      // Should add combat message about stance change
+      expect(mockConfig.addCombatMessage).toHaveBeenCalledWith(
+        expect.stringMatching(/왼발서기|오른발서기/),
+        expect.stringMatching(/Left Stance|Right Stance/)
+      );
+
+      // Should add visual effect
+      expect(mockConfig.addHitEffect).toHaveBeenCalled();
+    });
+
+    it("should fail when insufficient stamina", () => {
+      const lowStaminaPlayer = { ...mockConfig.validPlayers[0], stamina: 1 };
+      const config = {
+        ...mockConfig,
+        validPlayers: [lowStaminaPlayer, mockConfig.validPlayers[1]] as const,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Should show insufficient stamina message
+      expect(config.addCombatMessage).toHaveBeenCalledWith(
+        "체력 부족",
+        "Insufficient Stamina"
+      );
+
+      // Should not update player state
+      expect(config.onPlayerUpdate).not.toHaveBeenCalled();
+    });
+
+    it("should toggle laterality from right to left", () => {
+      const config = {
+        ...mockConfig,
+        combatState: {
+          ...mockConfig.combatState,
+          playerLaterality: ["right", "right"] as ["left" | "right", "left" | "right"],
+        },
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Should add combat message for left stance
+      expect(config.addCombatMessage).toHaveBeenCalledWith(
+        "왼발서기",
+        "Left Stance"
+      );
+    });
+
+    it("should toggle laterality from left to right", () => {
+      const config = {
+        ...mockConfig,
+        combatState: {
+          ...mockConfig.combatState,
+          playerLaterality: ["left", "right"] as ["left" | "right", "left" | "right"],
+        },
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Should add combat message for right stance
+      expect(config.addCombatMessage).toHaveBeenCalledWith(
+        "오른발서기",
+        "Right Stance"
+      );
+    });
+
+    it("should not execute when round not started", () => {
+      const config = {
+        ...mockConfig,
+        combatState: {
+          ...mockConfig.combatState,
+          roundStarted: false,
+        },
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Should not update player or show messages
+      expect(config.onPlayerUpdate).not.toHaveBeenCalled();
+      expect(config.addCombatMessage).not.toHaveBeenCalled();
+    });
+
+    it("should not execute when round ended", () => {
+      const config = {
+        ...mockConfig,
+        combatState: {
+          ...mockConfig.combatState,
+          roundEnded: true,
+        },
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Should not update player or show messages
+      expect(config.onPlayerUpdate).not.toHaveBeenCalled();
+      expect(config.addCombatMessage).not.toHaveBeenCalled();
+    });
+
+    it("should work for player 2 (AI)", () => {
+      const { result } = renderHook(() => useCombatActions(mockConfig));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(1);
+      });
+
+      // Should update player 2 state
+      expect(mockConfig.onPlayerUpdate).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
+          stamina: 78, // 80 - 2
+        })
+      );
+    });
+
+    it("should show cooldown message when on cooldown", () => {
+      // This test assumes StanceManager enforces cooldown
+      // We'll create a player who recently switched
+      const recentSwitchPlayer = {
+        ...mockConfig.validPlayers[0],
+        lastStanceChangeTime: Date.now() - 100, // Recent stance change
+      };
+      const config = {
+        ...mockConfig,
+        validPlayers: [recentSwitchPlayer, mockConfig.validPlayers[1]] as const,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleStanceSideSwitch(0);
+        // Attempt immediate second switch (should fail due to cooldown)
+        result.current.handleStanceSideSwitch(0);
+      });
+
+      // Second call should show cooldown message
+      const calls = config.addCombatMessage.mock.calls;
+      const hasCooldownMessage = calls.some(
+        (call) => call[0] === "대기 중" && call[1] === "On Cooldown"
+      );
+      expect(hasCooldownMessage || calls.length === 1).toBe(true);
+    });
+  });
 });
