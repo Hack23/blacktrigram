@@ -85,6 +85,19 @@ const getTrigramSymbol = (stance: string): string => {
 };
 
 /**
+ * Blend factor for torso rotation during guard overlay
+ * Lower than 1.0 to allow some base animation torso movement during walk
+ * @korean 몸통블렌드계수
+ */
+const TORSO_BLEND_FACTOR = 0.8;
+
+/**
+ * Full guard blend factor for maintaining complete fighting stance
+ * @korean 완전방어블렌드계수
+ */
+const FULL_GUARD_BLEND = 1.0;
+
+/**
  * Apply stance guard pose overlay on top of base animation
  * 
  * Blends guard arm positions with base animation (idle/walk) to maintain
@@ -104,12 +117,10 @@ const applyStanceGuardOverlay = (
   stance: string,
   breathingPhase: number,
   laterality: StanceLaterality = "right",
-  blendFactor: number = 1.0
+  blendFactor: number = FULL_GUARD_BLEND
 ): void => {
   const guardPose = getGuardPoseForStance(stance as TrigramStance, laterality);
   if (!guardPose) return;
-
-  const clampedBlend = Math.max(0, Math.min(1, blendFactor));
 
   // Blend left arm rotations with current pose (maintain animation)
   const leftShoulder = rig.bones.get("left_shoulder");
@@ -117,9 +128,9 @@ const applyStanceGuardOverlay = (
     const currentRotation = leftShoulder.rotation.clone();
     const targetRotation = guardPose.leftArm.shoulder;
     leftShoulder.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
       currentRotation.order
     );
   }
@@ -128,9 +139,9 @@ const applyStanceGuardOverlay = (
     const currentRotation = leftElbow.rotation.clone();
     const targetRotation = guardPose.leftArm.elbow;
     leftElbow.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
       currentRotation.order
     );
   }
@@ -139,9 +150,9 @@ const applyStanceGuardOverlay = (
     const currentRotation = leftWrist.rotation.clone();
     const targetRotation = guardPose.leftArm.wrist;
     leftWrist.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
       currentRotation.order
     );
   }
@@ -152,9 +163,9 @@ const applyStanceGuardOverlay = (
     const currentRotation = rightShoulder.rotation.clone();
     const targetRotation = guardPose.rightArm.shoulder;
     rightShoulder.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
       currentRotation.order
     );
   }
@@ -163,9 +174,9 @@ const applyStanceGuardOverlay = (
     const currentRotation = rightElbow.rotation.clone();
     const targetRotation = guardPose.rightArm.elbow;
     rightElbow.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
       currentRotation.order
     );
   }
@@ -174,9 +185,9 @@ const applyStanceGuardOverlay = (
     const currentRotation = rightWrist.rotation.clone();
     const targetRotation = guardPose.rightArm.wrist;
     rightWrist.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, blendFactor),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, blendFactor),
       currentRotation.order
     );
   }
@@ -187,10 +198,11 @@ const applyStanceGuardOverlay = (
     const currentRotation = spine.rotation.clone();
     const targetRotation = guardPose.torso;
     // Apply full torso rotation for distinct stance appearance
+    const torsoBlend = blendFactor * TORSO_BLEND_FACTOR;
     spine.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend * 0.8),
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend * 0.8),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend * 0.8),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, torsoBlend),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, torsoBlend),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, torsoBlend),
       currentRotation.order
     );
   }
@@ -848,8 +860,7 @@ export const SkeletalPlayer3D: React.FC<
       
       // Apply full guard pose overlay to maintain fighting stance during all movement
       // Each stance × laterality combination creates distinct appearance
-      const blendFactor = 1.0; // 100% guard maintained during idle/walk/guard states
-      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, blendFactor);
+      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, FULL_GUARD_BLEND);
     }
   });
 
