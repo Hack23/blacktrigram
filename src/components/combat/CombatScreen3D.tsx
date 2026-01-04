@@ -88,6 +88,7 @@ import HitEffects3D from "./components/HitEffects3D";
 import { MobileControlsWrapper } from "./components/MobileControlsWrapper";
 import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
+import { GuardIndicator } from "./components/GuardIndicator";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
 import { TechniqueBar } from "./components/TechniqueBar";
 import {
@@ -593,6 +594,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Use ref to store attack handler to avoid circular dependencies
   const handleAttackRef = useRef<(() => void) | null>(null);
+  
+  // Ref for player1Animation to avoid circular dependencies in animation events
+  const player1AnimationRef = useRef<ReturnType<typeof usePlayerAnimation> | null>(null);
+  
+  // Ref for validPlayers to avoid circular dependencies
+  const validPlayersRefForAnimation = useRef<[PlayerState, PlayerState] | null>(null);
 
   // Refs to clear attack animations after completion
   const clearPlayer1AttackAnimation = useRef<() => void>(() => {
@@ -623,8 +630,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             clearPlayer1AttackAnimation.current();
           }
         } else if (state === "stance_change") {
-          // Stance change animation completed
+          // Stance change animation completed - transition to stance guard
+          // 자세 변경 완료 - 자세 가드로 전환
           audio.playSFX("menu_select");
+          const players = validPlayersRefForAnimation.current;
+          const currentStance = players?.[0]?.currentStance;
+          if (currentStance && player1AnimationRef.current) {
+            player1AnimationRef.current.transitionToStanceGuard(currentStance);
+          }
         }
       },
     }),
@@ -634,6 +647,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player1Animation = usePlayerAnimation({
     events: player1AnimationEvents,
   });
+  
+  // Store animation ref for use in event callbacks
+  useEffect(() => {
+    player1AnimationRef.current = player1Animation;
+  }, [player1Animation]);
 
   const player2Animation = usePlayerAnimation({
     events: {
@@ -725,6 +743,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const validPlayersRef = useRef<[PlayerState, PlayerState]>(validPlayers);
   useEffect(() => {
     validPlayersRef.current = validPlayers;
+    validPlayersRefForAnimation.current = validPlayers;
   }, [validPlayers]);
 
   // Use refs for stable access to startTransition and internalRound
@@ -2084,9 +2103,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
+        {/* Player 1 Guard Indicator - Bottom Left */}
+        <GuardIndicator
+          currentStance={validPlayers[0].currentStance}
+          isInGuard={player1Animation.isInStanceGuard()}
+          position="left"
+          isMobile={isMobile}
+        />
+
         {/* Player 2 HUD - Top Right */}
         <PlayerHUD
           player={validPlayers[1]}
+          position="right"
+          isMobile={isMobile}
+        />
+
+        {/* Player 2 Guard Indicator - Bottom Right */}
+        <GuardIndicator
+          currentStance={validPlayers[1].currentStance}
+          isInGuard={player2Animation.isInStanceGuard()}
           position="right"
           isMobile={isMobile}
         />

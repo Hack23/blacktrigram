@@ -6,6 +6,7 @@
  * 
  * Transition rules:
  * - idle ↔ walk ↔ run (movement states)
+ * - stance_guard_{stance} ↔ other states (stance-specific guards)
  * - attack → idle (after completion)
  * - defend → idle (after completion)
  * - hit → idle (after completion)
@@ -19,6 +20,76 @@
  */
 
 import { AnimationState, TransitionRule } from "./types";
+
+/**
+ * Stance guard animation states (팔괘 방어 자세)
+ * @korean 자세방어상태들
+ */
+const STANCE_GUARD_STATES: readonly AnimationState[] = [
+  "stance_guard_geon",
+  "stance_guard_tae",
+  "stance_guard_li",
+  "stance_guard_jin",
+  "stance_guard_son",
+  "stance_guard_gam",
+  "stance_guard_gan",
+  "stance_guard_gon",
+] as const;
+
+/**
+ * Generate transition rules for stance guards
+ * 
+ * Each stance guard can transition to:
+ * - walk, run (movement)
+ * - attack, defend (combat actions)
+ * - stance_change (changing stance)
+ * - hit, ko (being hit)
+ * - other stance guards (direct stance change with guard)
+ * 
+ * @korean 자세방어전환규칙생성
+ */
+function generateStanceGuardTransitions(): TransitionRule[] {
+  const transitions: TransitionRule[] = [];
+
+  for (const guardState of STANCE_GUARD_STATES) {
+    // Guard can transition to movement
+    transitions.push(
+      { from: guardState, to: "idle", allowed: true },
+      { from: guardState, to: "walk", allowed: true },
+      { from: guardState, to: "run", allowed: true }
+    );
+
+    // Guard can transition to combat actions
+    transitions.push(
+      { from: guardState, to: "attack", allowed: true },
+      { from: guardState, to: "defend", allowed: true },
+      { from: guardState, to: "stance_change", allowed: true }
+    );
+
+    // Guard can be interrupted by hits
+    transitions.push(
+      { from: guardState, to: "hit", allowed: true },
+      { from: guardState, to: "ko", allowed: true }
+    );
+
+    // Guards can transition between each other (direct stance change)
+    for (const otherGuard of STANCE_GUARD_STATES) {
+      if (guardState !== otherGuard) {
+        transitions.push({ from: guardState, to: otherGuard, allowed: true });
+      }
+    }
+
+    // Other states can transition to guards
+    transitions.push(
+      { from: "idle", to: guardState, allowed: true },
+      { from: "walk", to: guardState, allowed: true },
+      { from: "run", to: guardState, allowed: true },
+      { from: "defend", to: guardState, allowed: true }
+    );
+  }
+
+  return transitions;
+}
 
 /**
  * Default transition rules for animation states
@@ -76,6 +147,9 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
 
   // KO is terminal - no transitions out
   // (Player must be revived/reset to leave KO state)
+
+  // Stance guard transitions (generated dynamically)
+  ...generateStanceGuardTransitions(),
 ] as const;
 
 /**

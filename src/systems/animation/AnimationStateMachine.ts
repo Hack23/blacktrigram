@@ -17,6 +17,7 @@
 
 import { canInterrupt } from "./AnimationPriority";
 import { isTransitionAllowed } from "./AnimationTransitions";
+import { TrigramStance } from "../../types/common";
 import type {
   AnimationConfig,
   AnimationEvents,
@@ -35,6 +36,7 @@ import type {
  * - Walk: 6 frames = 100ms at 60fps
  * - Hit: 4 frames = 67ms at 60fps
  * - Stance change: 36 frames = 600ms at 60fps
+ * - Stance guards: 4-6 frames = breathing animation at 60fps
  * 
  * @korean 기본애니메이션설정
  */
@@ -136,6 +138,103 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         duration: 0.5,
       },
     ],
+    // Stance-specific guard animations (팔괘 방어 자세)
+    [
+      "stance_guard_geon",
+      {
+        state: "stance_guard_geon",
+        frames: 6, // Breathing animation
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_tae",
+      {
+        state: "stance_guard_tae",
+        frames: 6, // Breathing animation
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_li",
+      {
+        state: "stance_guard_li",
+        frames: 4, // Controlled breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "stance_guard_jin",
+      {
+        state: "stance_guard_jin",
+        frames: 5, // Deep breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 5 / 60,
+      },
+    ],
+    [
+      "stance_guard_son",
+      {
+        state: "stance_guard_son",
+        frames: 6, // Rhythmic breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_gam",
+      {
+        state: "stance_guard_gam",
+        frames: 6, // Flowing breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_gan",
+      {
+        state: "stance_guard_gan",
+        frames: 4, // Steady breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "stance_guard_gon",
+      {
+        state: "stance_guard_gon",
+        frames: 5, // Deep diaphragm breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 5 / 60,
+      },
+    ],
   ]);
 
 /**
@@ -170,6 +269,38 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  * @korean 플레이어애니메이션상태머신
  */
 export class PlayerAnimationStateMachine {
+  /**
+   * Static mapping from TrigramStance to guard AnimationState
+   * Prevents repeated object allocation in transitionToStanceGuard()
+   * @korean 자세방어상태맵
+   */
+  private static readonly GUARD_STATE_MAP: Record<TrigramStance, AnimationState> = {
+    [TrigramStance.GEON]: "stance_guard_geon",
+    [TrigramStance.TAE]: "stance_guard_tae",
+    [TrigramStance.LI]: "stance_guard_li",
+    [TrigramStance.JIN]: "stance_guard_jin",
+    [TrigramStance.SON]: "stance_guard_son",
+    [TrigramStance.GAM]: "stance_guard_gam",
+    [TrigramStance.GAN]: "stance_guard_gan",
+    [TrigramStance.GON]: "stance_guard_gon",
+  };
+
+  /**
+   * Static reverse mapping from guard AnimationState to TrigramStance
+   * Prevents repeated object allocation in getCurrentGuardStance()
+   * @korean 방어상태자세맵
+   */
+  private static readonly STANCE_FROM_GUARD_MAP: Record<string, TrigramStance> = {
+    "stance_guard_geon": TrigramStance.GEON,
+    "stance_guard_tae": TrigramStance.TAE,
+    "stance_guard_li": TrigramStance.LI,
+    "stance_guard_jin": TrigramStance.JIN,
+    "stance_guard_son": TrigramStance.SON,
+    "stance_guard_gam": TrigramStance.GAM,
+    "stance_guard_gan": TrigramStance.GAN,
+    "stance_guard_gon": TrigramStance.GON,
+  };
+
   private currentState: AnimationState = "idle";
   private frameIndex = 0;
   private timeAccumulator = 0;
@@ -414,5 +545,67 @@ export class PlayerAnimationStateMachine {
       isPlaying: true,
       previousState: this.previousState,
     };
+  }
+
+  /**
+   * Transition to stance-specific guard animation
+   * 
+   * Convenience method to transition to a stance guard based on trigram stance.
+   * Automatically maps trigram stance to corresponding guard animation state.
+   * 
+   * @param stance - Trigram stance identifier
+   * @returns Whether transition was successful
+   * 
+   * @example
+   * ```typescript
+   * // When player changes to Fire stance
+   * machine.transitionToStanceGuard(TrigramStance.LI);
+   * // Internally transitions to "stance_guard_li" animation state
+   * ```
+   * 
+   * @korean 자세방어전환
+   */
+  transitionToStanceGuard(stance: TrigramStance): boolean {
+    const guardAnimationState = PlayerAnimationStateMachine.GUARD_STATE_MAP[stance];
+    
+    // Verify the guard animation exists in our configs
+    if (!guardAnimationState || !this.animations.has(guardAnimationState)) {
+      console.warn(`No guard animation configured for stance: ${stance}`);
+      return false;
+    }
+
+    return this.transitionTo(guardAnimationState);
+  }
+
+  /**
+   * Check if current animation is a stance guard
+   * 
+   * @returns True if currently in a stance guard animation
+   * @korean 자세방어상태확인
+   */
+  isInStanceGuard(): boolean {
+    return this.currentState.startsWith("stance_guard_");
+  }
+
+  /**
+   * Get current guard stance if in a guard animation
+   * 
+   * @returns Trigram stance or null if not in guard
+   * @korean 현재방어자세가져오기
+   */
+  getCurrentGuardStance(): TrigramStance | null {
+    if (!this.isInStanceGuard()) {
+      return null;
+    }
+
+    const stance = PlayerAnimationStateMachine.STANCE_FROM_GUARD_MAP[this.currentState];
+    
+    // Validate that we got a valid stance
+    if (!stance) {
+      console.warn(`Invalid guard state detected: ${this.currentState}`);
+      return null;
+    }
+
+    return stance;
   }
 }

@@ -19,6 +19,10 @@ import type {
 
 /**
  * Static mapping from AnimationState to PlayerAnimation
+ * 
+ * Stance guard animations map to "idle" since SkeletalPlayer3D
+ * will handle the stance-specific guard rendering.
+ * 
  * @korean 애니메이션상태맵
  */
 const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
@@ -30,6 +34,15 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   hit: "hit",
   stance_change: "stance_change",
   ko: "death", // Map ko to death
+  // Stance guard animations map to idle - guard pose handled by stance system
+  stance_guard_geon: "idle",
+  stance_guard_tae: "idle",
+  stance_guard_li: "idle",
+  stance_guard_jin: "idle",
+  stance_guard_son: "idle",
+  stance_guard_gam: "idle",
+  stance_guard_gan: "idle",
+  stance_guard_gon: "idle",
 };
 
 /**

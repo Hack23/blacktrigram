@@ -2,7 +2,7 @@
  * Animation system exports for Black Trigram
  *
  * Unified exports for the animation state machine, priority system,
- * transition rules, and skeletal animation system.
+ * transition rules, skeletal animation system, and stance guard poses.
  *
  * @module systems/animation
  * @category Animation
@@ -32,6 +32,21 @@ export {
   getValidTransitions,
   isTransitionAllowed,
 } from "./AnimationTransitions";
+
+// Stance guard pose system
+export {
+  GEON_HIGH_GUARD_POSE,
+  TAE_FLUID_GUARD_POSE,
+  LI_FIRE_GUARD_POSE,
+  JIN_THUNDER_GUARD_POSE,
+  SON_WIND_GUARD_POSE,
+  GAM_WATER_GUARD_POSE,
+  GAN_MOUNTAIN_GUARD_POSE,
+  GON_EARTH_GUARD_POSE,
+  STANCE_GUARD_CONFIGS,
+  getGuardPoseForStance,
+  getGuardConfigForStance,
+} from "./StanceGuardPoses";
 
 // Skeletal animation system
 export {

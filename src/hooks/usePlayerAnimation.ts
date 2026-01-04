@@ -17,6 +17,7 @@ import {
   PlayerAnimationStateMachine,
 } from "../systems/animation";
 import type { AnimationConfig, AnimationUpdateResult } from "../systems/animation/types";
+import type { TrigramStance } from "../types/common";
 
 /**
  * Options for usePlayerAnimation hook
@@ -92,6 +93,34 @@ export interface UsePlayerAnimationReturn {
    * @korean 상태전환
    */
   readonly transitionTo: (newState: AnimationState) => boolean;
+
+  /**
+   * Transition to stance-specific guard animation
+   * 
+   * @param stance - Trigram stance
+   * @returns Whether transition was successful
+   * 
+   * @korean 자세가드전환
+   */
+  readonly transitionToStanceGuard: (stance: TrigramStance) => boolean;
+  
+  /**
+   * Check if currently in a stance guard animation
+   * 
+   * @returns True if in any stance guard state
+   * 
+   * @korean 자세가드확인
+   */
+  readonly isInStanceGuard: () => boolean;
+  
+  /**
+   * Get current guard stance (if in guard animation)
+   * 
+   * @returns Trigram stance or null
+   * 
+   * @korean 현재가드자세
+   */
+  readonly getCurrentGuardStance: () => TrigramStance | null;
 
   /**
    * Reset animation to idle state
@@ -212,6 +241,27 @@ export function usePlayerAnimation(
     prevFrameRef.current = stateMachine.getCurrentFrame();
     forceUpdate((n) => n + 1);
   }, [stateMachine]);
+  
+  const transitionToStanceGuard = useCallback(
+    (stance: TrigramStance) => {
+      const success = stateMachine.transitionToStanceGuard(stance);
+      if (success) {
+        prevStateRef.current = stateMachine.getCurrentState();
+        prevFrameRef.current = stateMachine.getCurrentFrame();
+        forceUpdate((n) => n + 1);
+      }
+      return success;
+    },
+    [stateMachine]
+  );
+  
+  const isInStanceGuard = useCallback(() => {
+    return stateMachine.isInStanceGuard();
+  }, [stateMachine]);
+  
+  const getCurrentGuardStance = useCallback(() => {
+    return stateMachine.getCurrentGuardStance();
+  }, [stateMachine]);
 
   // Memoize the return value to ensure stable reference unless state/frame changes
   return useMemo(
@@ -220,8 +270,11 @@ export function usePlayerAnimation(
       currentFrame: prevFrameRef.current,
       update,
       transitionTo,
+      transitionToStanceGuard,
+      isInStanceGuard,
+      getCurrentGuardStance,
       reset,
     }),
-    [prevStateRef.current, prevFrameRef.current, update, transitionTo, reset]
+    [prevStateRef.current, prevFrameRef.current, update, transitionTo, transitionToStanceGuard, isInStanceGuard, getCurrentGuardStance, reset]
   );
 }
