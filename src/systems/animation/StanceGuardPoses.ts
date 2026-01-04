@@ -22,7 +22,9 @@
 
 import * as THREE from "three";
 import type { StanceGuardPose, StanceGuardAnimationConfig } from "../../types/skeletal";
+import { mirrorGuardPose } from "../../types/skeletal";
 import { TrigramStance } from "../../types/common";
+import type { StanceLaterality } from "../trigram/types";
 
 /**
  * ☰ 건 (Geon) - Heaven: High guard with strong forward presence
@@ -403,18 +405,48 @@ export const STANCE_GUARD_CONFIGS: Record<TrigramStance, StanceGuardAnimationCon
 } as const;
 
 /**
- * Get guard pose for a specific trigram stance
+ * Get guard pose for a specific trigram stance with laterality support
  * 
- * @param stance - Trigram stance identifier
+ * **Korean**: 자세 방어 포즈 가져오기
+ * 
+ * Returns the appropriate guard pose for the given stance and laterality.
+ * Right laterality returns the base pose; left laterality returns a mirrored version.
+ * This supports authentic Korean martial arts stance differentiation:
+ * - 오른발서기 (Oreun Bal Seogi): Right foot forward - base pose
+ * - 왼발서기 (Oenbal Seogi): Left foot forward - mirrored pose
+ * 
+ * @param stance - Trigram stance identifier (e.g., "geon", "tae")
+ * @param laterality - Stance side: "left" or "right" (defaults to "right")
  * @returns Guard pose configuration or undefined if not found
+ * 
+ * @example
+ * ```typescript
+ * // Get right Heaven stance (default)
+ * const rightGeon = getGuardPoseForStance("geon", "right");
+ * 
+ * // Get left Heaven stance (mirrored)
+ * const leftGeon = getGuardPoseForStance("geon", "left");
+ * // leftGeon now has left foot forward, left hand lead
+ * ```
  * 
  * @korean 자세방어포즈가져오기
  */
 export function getGuardPoseForStance(
-  stance: TrigramStance
+  stance: TrigramStance,
+  laterality: StanceLaterality = "right"
 ): StanceGuardPose | undefined {
   const config = STANCE_GUARD_CONFIGS[stance];
-  return config?.guardPose;
+  if (!config?.guardPose) {
+    return undefined;
+  }
+
+  // Right laterality returns base pose
+  if (laterality === "right") {
+    return config.guardPose;
+  }
+
+  // Left laterality returns mirrored pose
+  return mirrorGuardPose(config.guardPose);
 }
 
 /**
@@ -429,4 +461,51 @@ export function getGuardConfigForStance(
   stance: TrigramStance
 ): StanceGuardAnimationConfig | undefined {
   return STANCE_GUARD_CONFIGS[stance];
+}
+
+/**
+ * Get all 16 stance guard poses (8 stances × 2 laterality options)
+ * 
+ * **Korean**: 모든 자세 방어 포즈
+ * 
+ * Returns a map of all possible stance+laterality combinations with their guard poses.
+ * This represents the complete set of 16 distinct guard configurations in Black Trigram.
+ * 
+ * The result is cached for performance - subsequent calls return the same Map instance.
+ * 
+ * Format: `"stance_laterality"` → `StanceGuardPose`
+ * - Example keys: "geon_left", "geon_right", "tae_left", "tae_right", etc.
+ * 
+ * @returns Map of all 16 stance guard pose configurations
+ * 
+ * @korean 모든자세방어포즈
+ */
+let cachedAllPoses: Map<string, StanceGuardPose> | null = null;
+
+export function getAllStanceGuardPoses(): Map<string, StanceGuardPose> {
+  // Return cached result if available for performance
+  if (cachedAllPoses) {
+    return cachedAllPoses;
+  }
+
+  const allPoses = new Map<string, StanceGuardPose>();
+  
+  // For each trigram stance
+  Object.values(TrigramStance).forEach((stance) => {
+    // Add right laterality (base pose)
+    const rightPose = getGuardPoseForStance(stance, "right");
+    if (rightPose) {
+      allPoses.set(`${stance}_right`, rightPose);
+    }
+    
+    // Add left laterality (mirrored pose)
+    const leftPose = getGuardPoseForStance(stance, "left");
+    if (leftPose) {
+      allPoses.set(`${stance}_left`, leftPose);
+    }
+  });
+  
+  // Cache the result
+  cachedAllPoses = allPoses;
+  return allPoses;
 }

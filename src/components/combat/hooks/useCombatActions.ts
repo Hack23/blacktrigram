@@ -41,13 +41,14 @@ import { PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { Position, TrigramStance, Technique } from "@/types";
 import { HitEffectType } from "@/systems/effects";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
+import { StanceManager } from "@/systems/trigram";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -108,6 +109,7 @@ export interface UseCombatActionsReturn {
   readonly handleDefend: () => void;
   readonly handleTechniqueExecute: () => void;
   readonly handleStanceSwitch: (stance: TrigramStance) => void;
+  readonly handleStanceSideSwitch: (playerIndex: 0 | 1) => void;
   readonly handleAIAttack: (technique?: KoreanTechnique, targetVitalPoint?: string) => void;
   readonly handleAIDefend: () => void;
   readonly handleAITechnique: (technique?: KoreanTechnique, targetVitalPoint?: string) => void;
@@ -427,6 +429,62 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       addHitEffect,
       playerPositions,
       combatAudio,
+    ]
+  );
+
+  /**
+   * Handle stance side switch (left/right)
+   * @korean 자세측면전환처리
+   */
+  // Reuse StanceManager instance for stance side switches
+  const stanceManagerRef = useRef<StanceManager>(new StanceManager());
+
+  const handleStanceSideSwitch = useCallback(
+    (playerIndex: 0 | 1) => {
+      if (!combatState.roundStarted || combatState.roundEnded) return;
+
+      const player = validPlayers[playerIndex];
+      const currentLaterality = combatState.playerLaterality[playerIndex];
+      
+      const result = stanceManagerRef.current.switchStanceSide(player, currentLaterality);
+
+      if (result.success && result.laterality) {
+        // Update player state with new stamina
+        onPlayerUpdate(playerIndex, result.updatedPlayer);
+
+        // Update laterality state with value from StanceManager
+        combatActions.setPlayerLateralityIndex(playerIndex, result.laterality);
+
+        // Audio feedback
+        combatAudio?.playStanceChangeSound?.();
+
+        // Visual feedback
+        const koreanText = result.laterality === "left" ? "왼발서기" : "오른발서기";
+        const englishText = result.laterality === "left" ? "Left Stance" : "Right Stance";
+        addCombatMessage(koreanText, englishText);
+
+        // Visual effect
+        addHitEffect(HitEffectType.STATUS_EFFECT, playerPositions[playerIndex], 0.5);
+      } else {
+        // Feedback for failed switch
+        if (result.message?.includes("stamina")) {
+          addCombatMessage("체력 부족", "Insufficient Stamina");
+        } else if (result.message?.includes("cooldown")) {
+          addCombatMessage("대기 중", "On Cooldown");
+        }
+      }
+    },
+    [
+      combatState.roundStarted,
+      combatState.roundEnded,
+      combatState.playerLaterality,
+      validPlayers,
+      onPlayerUpdate,
+      combatActions,
+      combatAudio,
+      addCombatMessage,
+      addHitEffect,
+      playerPositions,
     ]
   );
 
@@ -766,6 +824,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     handleDefend,
     handleTechniqueExecute,
     handleStanceSwitch,
+    handleStanceSideSwitch,
     handleAIAttack,
     handleAIDefend,
     handleAITechnique,

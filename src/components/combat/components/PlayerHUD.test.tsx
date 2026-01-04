@@ -278,4 +278,139 @@ describe("PlayerHUD", () => {
       });
     });
   });
+
+  describe("Laterality Indicator", () => {
+    it("should render laterality indicator when laterality prop is provided", () => {
+      render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="left"
+        />
+      );
+      expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
+    });
+
+    it("should not render laterality indicator when laterality prop is undefined", () => {
+      render(
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+      );
+      expect(
+        screen.queryByTestId("laterality-indicator")
+      ).not.toBeInTheDocument();
+    });
+
+    it("should display L badge and 왼발서기 for left laterality", () => {
+      render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="left"
+        />
+      );
+
+      const badge = screen.getByTestId("laterality-badge");
+      const text = screen.getByTestId("laterality-text");
+
+      expect(badge).toHaveTextContent("L");
+      expect(text).toHaveTextContent("왼발서기");
+    });
+
+    it("should display R badge and 오른발서기 for right laterality", () => {
+      render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="right"
+        />
+      );
+
+      const badge = screen.getByTestId("laterality-badge");
+      const text = screen.getByTestId("laterality-text");
+
+      expect(badge).toHaveTextContent("R");
+      expect(text).toHaveTextContent("오른발서기");
+    });
+
+    it("should update when laterality changes", () => {
+      const { rerender } = render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="left"
+        />
+      );
+
+      expect(screen.getByTestId("laterality-badge")).toHaveTextContent("L");
+
+      rerender(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="right"
+        />
+      );
+
+      expect(screen.getByTestId("laterality-badge")).toHaveTextContent("R");
+    });
+
+    it("should adapt to mobile layout", () => {
+      render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={true}
+          laterality="left"
+        />
+      );
+
+      const indicator = screen.getByTestId("laterality-indicator");
+      expect(indicator).toBeInTheDocument();
+      // Mobile styling is handled internally via isMobile prop
+    });
+
+    it("should have proper test IDs for granular testing", () => {
+      render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="right"
+        />
+      );
+
+      // All test IDs should be present
+      expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
+      expect(screen.getByTestId("laterality-badge")).toBeInTheDocument();
+      expect(screen.getByTestId("laterality-text")).toBeInTheDocument();
+    });
+
+    it("should work with both left and right player positions", () => {
+      const { unmount } = render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="left"
+          isMobile={false}
+          laterality="left"
+        />
+      );
+      expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
+      unmount();
+
+      render(
+        <PlayerHUD
+          player={mockPlayer}
+          position="right"
+          isMobile={false}
+          laterality="right"
+        />
+      );
+      expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
+    });
+  });
 });

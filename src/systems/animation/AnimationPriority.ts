@@ -26,6 +26,7 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   walk: AnimationPriority.WALK,
   run: AnimationPriority.RUN,
   stance_change: AnimationPriority.STANCE_CHANGE,
+  stance_side_switch: AnimationPriority.STANCE_CHANGE, // Same priority as stance_change
   defend: AnimationPriority.DEFEND,
   attack: AnimationPriority.ATTACK,
   hit: AnimationPriority.HIT,

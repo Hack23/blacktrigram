@@ -25,6 +25,7 @@ import {
   updateHandAnimationState,
   getGuardPoseForStance,
 } from "../../systems/animation";
+import type { StanceLaterality } from "../../systems/trigram/types";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
 import { MuscleActivationManager } from "../../systems/animation/MuscleActivation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
@@ -92,15 +93,17 @@ const getTrigramSymbol = (stance: string): string => {
  * @param rig - Skeletal rig to apply pose to
  * @param stance - Current trigram stance
  * @param breathingPhase - Breathing phase 0.0-1.0 for scale oscillation
+ * @param laterality - Stance laterality (left or right foot forward)
  * 
  * @korean 자세방어포즈적용
  */
 const applyStanceGuardPose = (
   rig: SkeletalRig,
   stance: string,
-  breathingPhase: number
+  breathingPhase: number,
+  laterality: StanceLaterality = "right"
 ): void => {
-  const guardPose = getGuardPoseForStance(stance as TrigramStance);
+  const guardPose = getGuardPoseForStance(stance as TrigramStance, laterality);
   if (!guardPose) return;
 
   // Apply left arm rotations
@@ -286,6 +289,7 @@ export const SkeletalPlayer3D: React.FC<
   playerId,
   archetype,
   stance,
+  laterality = "right",
   position,
   rotation,
   health,
@@ -744,7 +748,7 @@ export const SkeletalPlayer3D: React.FC<
       }
       
       // Apply stance guard pose with breathing animation
-      applyStanceGuardPose(rig, stanceFromAnim, breathingPhaseRef.current);
+      applyStanceGuardPose(rig, stanceFromAnim, breathingPhaseRef.current, laterality);
       
       // Continue animation loop (breathing is continuous)
       animTimeRef.current += delta;

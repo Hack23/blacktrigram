@@ -72,6 +72,12 @@ export interface Player3DUnifiedProps {
   readonly stance: TrigramStance;
 
   /**
+   * Stance laterality (left or right foot forward)
+   * @korean 측면성
+   */
+  readonly laterality?: "left" | "right";
+
+  /**
    * 3D world position [x, y, z]
    * @korean 위치
    */

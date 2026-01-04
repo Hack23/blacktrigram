@@ -131,4 +131,50 @@ describe("KeyboardHints", () => {
       unmount();
     }
   });
+
+  describe("F Key for Stance Side Switching", () => {
+    it("should display F key hint for stance side switching", () => {
+      render(<KeyboardHints visible={true} currentStance={0} />);
+
+      const container = screen.getByTestId("keyboard-hints");
+      expect(container.textContent).toContain("F");
+      expect(container.textContent).toContain("Switch Side");
+    });
+
+    it("should include Korean text for stance side switching", () => {
+      render(<KeyboardHints visible={true} currentStance={0} />);
+
+      const container = screen.getByTestId("keyboard-hints");
+      expect(container.textContent).toContain("측면 전환");
+    });
+
+    it("should display stance side switching hint alongside other combat actions", () => {
+      render(<KeyboardHints visible={true} currentStance={0} />);
+
+      const container = screen.getByTestId("keyboard-hints");
+
+      // Should show all combat action hints including the new F key
+      expect(container.textContent).toContain("Attack");
+      expect(container.textContent).toContain("Block");
+      expect(container.textContent).toContain("Move");
+      expect(container.textContent).toContain("Switch Side");
+    });
+
+    it("should render F key hint in both mobile and desktop layouts", () => {
+      const { unmount } = render(
+        <KeyboardHints visible={true} currentStance={0} isMobile={false} />
+      );
+      expect(screen.getByTestId("keyboard-hints").textContent).toContain(
+        "Switch Side"
+      );
+      unmount();
+
+      render(
+        <KeyboardHints visible={true} currentStance={0} isMobile={true} />
+      );
+      expect(screen.getByTestId("keyboard-hints").textContent).toContain(
+        "Switch Side"
+      );
+    });
+  });
 });

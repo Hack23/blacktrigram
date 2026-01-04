@@ -958,6 +958,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleAttack,
     handleDefend,
     handleStanceSwitch,
+    handleStanceSideSwitch,
     handleAIAttack,
     handleAIDefend,
     handleAITechnique,
@@ -1434,6 +1435,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onExecuteAction: (action, targetPos) =>
       executeAIActionCallbackRef.current?.(action, targetPos),
     onStanceChange: handleAIStanceChange,
+    onLateralityChange: () => handleStanceSideSwitch(1), // AI player (index 1)
+    playerLaterality: combatState.playerLaterality[1], // AI's own laterality
+    opponentLaterality: combatState.playerLaterality[0], // Opponent (human) laterality
   });
 
   // Calculate current difficulty tier for display
@@ -1759,6 +1763,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleDefendWithFeedback();
         event.preventDefault();
       }
+
+      // F key for stance side switching (laterality)
+      // Using "F" (Flip/Footwork) because:
+      // - Tab conflicts with browser navigation and accessibility
+      // - Q-W-E-R-T-Y-U-Y are reserved for combat techniques
+      // - Shift is already used for blocking
+      // - CapsLock has inconsistent key events across browsers/OSes
+      if (event.key === "f" || event.key === "F") {
+        handleStanceSideSwitch(0); // Human player
+        event.preventDefault();
+      }
     };
 
     window.addEventListener("keydown", handleCombatInput);
@@ -1772,6 +1787,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     isPaused,
     showPauseMenu,
     handleStanceSwitch,
+    handleStanceSideSwitch,
     handleAttackWithFeedback,
     handleDefendWithFeedback,
     handlePause,
@@ -1836,6 +1852,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1Animation.currentState
           )}
           attackAnimation={player1AttackAnimation}
+          laterality={combatState.playerLaterality[0]}
         />
 
         {/* Player 2 (AI) */}
@@ -1857,6 +1874,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2Animation.currentState
           )}
           attackAnimation={player2AttackAnimation}
+          laterality={combatState.playerLaterality[1]}
         />
 
         {/* Hit Effects */}
@@ -2101,6 +2119,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           player={validPlayers[0]}
           position="left"
           isMobile={isMobile}
+          laterality={combatState.playerLaterality[0]}
         />
 
         {/* Player 1 Guard Indicator - Bottom Left */}
@@ -2116,6 +2135,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           player={validPlayers[1]}
           position="right"
           isMobile={isMobile}
+          laterality={combatState.playerLaterality[1]}
         />
 
         {/* Player 2 Guard Indicator - Bottom Right */}

@@ -46,6 +46,7 @@ export {
   STANCE_GUARD_CONFIGS,
   getGuardPoseForStance,
   getGuardConfigForStance,
+  getAllStanceGuardPoses,
 } from "./StanceGuardPoses";
 
 // Skeletal animation system

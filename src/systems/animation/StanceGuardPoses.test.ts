@@ -24,6 +24,7 @@ import {
   STANCE_GUARD_CONFIGS,
   getGuardPoseForStance,
   getGuardConfigForStance,
+  getAllStanceGuardPoses,
 } from "./StanceGuardPoses";
 import { TrigramStance } from "../../types/common";
 import type { StanceGuardPose } from "../../types/skeletal";
@@ -501,6 +502,82 @@ describe("StanceGuardPoses", () => {
         GAN_MOUNTAIN_GUARD_POSE.breathingRange.max -
         GAN_MOUNTAIN_GUARD_POSE.breathingRange.min;
       expect(steadyBreathRange).toBeLessThan(0.03);
+    });
+  });
+});
+
+describe("Laterality Support", () => {
+  describe("getGuardPoseForStance with laterality", () => {
+    it("should return base pose for right laterality", () => {
+      const rightPose = getGuardPoseForStance(TrigramStance.GEON, "right");
+      expect(rightPose).toBeDefined();
+      expect(rightPose).toBe(GEON_HIGH_GUARD_POSE); // Should be exact same object
+    });
+
+    it("should return mirrored pose for left laterality", () => {
+      const leftPose = getGuardPoseForStance(TrigramStance.GEON, "left");
+      const rightPose = getGuardPoseForStance(TrigramStance.GEON, "right");
+      
+      expect(leftPose).toBeDefined();
+      expect(rightPose).toBeDefined();
+      
+      // Left and right should be different
+      expect(leftPose).not.toBe(rightPose);
+      
+      // Left arm should match right arm's position (mirrored)
+      expect(leftPose!.leftArm.shoulder.y).toBeCloseTo(-rightPose!.rightArm.shoulder.y);
+      expect(leftPose!.rightArm.shoulder.y).toBeCloseTo(-rightPose!.leftArm.shoulder.y);
+    });
+
+    it("should default to right laterality when not specified", () => {
+      const defaultPose = getGuardPoseForStance(TrigramStance.GEON);
+      const rightPose = getGuardPoseForStance(TrigramStance.GEON, "right");
+      
+      expect(defaultPose).toBe(rightPose);
+    });
+
+    it("should work for all 8 trigram stances", () => {
+      const stances = Object.values(TrigramStance);
+      
+      stances.forEach((stance) => {
+        const leftPose = getGuardPoseForStance(stance, "left");
+        const rightPose = getGuardPoseForStance(stance, "right");
+        
+        expect(leftPose).toBeDefined();
+        expect(rightPose).toBeDefined();
+        expect(leftPose).not.toBe(rightPose);
+      });
+    });
+  });
+
+  describe("getAllStanceGuardPoses", () => {
+    it("should return 16 total poses (8 stances × 2 laterality)", () => {
+      const allPoses = getAllStanceGuardPoses();
+      expect(allPoses.size).toBe(16);
+    });
+
+    it("should have both left and right variants for each stance", () => {
+      const allPoses = getAllStanceGuardPoses();
+      const stances = Object.values(TrigramStance);
+      
+      stances.forEach((stance) => {
+        expect(allPoses.has(`${stance}_left`)).toBe(true);
+        expect(allPoses.has(`${stance}_right`)).toBe(true);
+      });
+    });
+
+    it("should have distinct poses for left and right variants", () => {
+      const allPoses = getAllStanceGuardPoses();
+      const stances = Object.values(TrigramStance);
+      
+      stances.forEach((stance) => {
+        const leftPose = allPoses.get(`${stance}_left`);
+        const rightPose = allPoses.get(`${stance}_right`);
+        
+        expect(leftPose).toBeDefined();
+        expect(rightPose).toBeDefined();
+        expect(leftPose).not.toBe(rightPose);
+      });
     });
   });
 });
