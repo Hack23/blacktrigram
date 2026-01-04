@@ -78,25 +78,31 @@ if (isInStanceGuard) {
 
 **After**:
 ```typescript
-// Always apply base animation first
-applyKeyframeToRig(rig, keyframe);
+// Apply base animation when available (conditional on animState.isPlaying)
+if (animState.isPlaying && animState.currentAnimation) {
+  applyKeyframeToRig(rig, keyframe);
+}
 
 // Then apply guard overlay by default (inverted logic)
+// Breathing phase only updated when guard is applied
 const shouldApplyGuard = currentAnimation !== "attack" 
   && currentAnimation !== "defend" 
   && currentAnimation !== "hit"
   && currentAnimation !== "death";
 
 if (shouldApplyGuard) {
+  breathingPhaseRef.current += delta * 0.5;
   applyStanceGuardOverlay(rig, stance, breathing, laterality, FULL_GUARD_BLEND);
 }
 ```
 
 **Key Changes**:
 1. **Inverted logic**: Apply guards by default, exclude only for attack/defend/hit/death
-2. **Eliminates edge cases**: No need to enumerate all idle/walk states
-3. **More robust**: Automatically covers future animation states like "block", "counter", etc.
-4. **Performance optimized**: Removed 7 clone() operations per frame (420 allocations/second at 60fps)
+2. **Conditional base animation**: Only applied when animation state is playing
+3. **Optimized breathing**: Only updated when guard overlay is applied
+4. **Eliminates edge cases**: No need to enumerate all idle/walk states
+5. **More robust**: Automatically covers future animation states like "block", "counter", etc.
+6. **Performance optimized**: Removed 7 clone() operations per frame (420 allocations/second at 60fps)
 
 ## Stance-Specific Results
 

@@ -114,7 +114,7 @@ const FULL_GUARD_BLEND = 1.0;
  */
 const applyStanceGuardOverlay = (
   rig: SkeletalRig,
-  stance: string,
+  stance: TrigramStance | string,
   breathingPhase: number,
   laterality: StanceLaterality = "right",
   blendFactor: number = FULL_GUARD_BLEND
@@ -789,12 +789,6 @@ export const SkeletalPlayer3D: React.FC<
       setMuscleStates(scratchMap);
     }
 
-    // Update breathing phase for guard poses (cycles through 0-1 based on time)
-    breathingPhaseRef.current += delta * 0.5; // 0.5 Hz = 2 seconds per breath cycle
-    if (breathingPhaseRef.current > 1.0) {
-      breathingPhaseRef.current -= 1.0;
-    }
-
     // Update skeletal animation (base animation)
     if (animState.isPlaying && animState.currentAnimation) {
       // Normal animation: Update animation time and get interpolated keyframe
@@ -828,15 +822,21 @@ export const SkeletalPlayer3D: React.FC<
     }
 
     // Apply guard pose overlay on top of base animation
-    // Guard is applied by default for idle/walk/stance states, but not during attack/defend/hit
+    // Guard is applied by default for idle/walk/stance states, but not during attack/defend/hit/death
     const shouldApplyGuard = currentAnimation !== "attack" 
       && currentAnimation !== "defend" 
       && currentAnimation !== "hit"
       && currentAnimation !== "death";
     
     if (shouldApplyGuard) {
+      // Update breathing phase for guard poses (cycles through 0-1 based on time)
+      breathingPhaseRef.current += delta * 0.5; // 0.5 Hz = 2 seconds per breath cycle
+      if (breathingPhaseRef.current > 1.0) {
+        breathingPhaseRef.current -= 1.0;
+      }
+
       // Extract stance from currentAnimation if it's a stance_guard, otherwise use stance prop
-      const stanceToUse = currentAnimation?.startsWith("stance_guard_")
+      const stanceToUse = currentAnimation.startsWith("stance_guard_")
         ? currentAnimation.replace("stance_guard_", "")
         : stance;
       
