@@ -45,12 +45,12 @@ This document describes the fix for idle and walking animations in the Black Tri
  * guard pose during movement. Only affects upper body (arms, torso) while
  * allowing legs to animate normally.
  * 
- * PERFORMANCE: Directly modifies rotation components without cloning
- * to avoid 7 object allocations per frame (60fps = 420 allocations/sec).
+ * PERFORMANCE: Directly modifies existing Euler rotation components
+ * to avoid extra Euler object cloning while still using component-wise interpolation.
  */
 const applyStanceGuardOverlay = (
   rig: SkeletalRig,
-  stance: string,
+  stance: TrigramStance | string,
   breathingPhase: number,
   laterality: StanceLaterality = "right",
   blendFactor: number = 1.0
@@ -168,7 +168,7 @@ Breathing animation continues to work correctly:
 ## Testing
 
 ### Automated Tests
-- ✅ 11 SkeletalPlayer3D guard visual tests passing
+- ✅ 11 SkeletalPlayer3D guard visual tests passing (src/components/three/SkeletalPlayer3D.guard-visual.test.tsx)
 - ✅ 4359 total tests passing across repository
 - ✅ TypeScript strict mode compilation clean
 - ✅ No ESLint errors introduced

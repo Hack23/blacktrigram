@@ -111,6 +111,9 @@ const FULL_GUARD_BLEND = 1.0;
  * guard pose during movement. Only affects upper body (arms, torso) while
  * allowing legs to animate normally.
  * 
+ * PERFORMANCE: Directly modifies existing Euler rotation components
+ * to avoid extra Euler object cloning while still using component-wise interpolation.
+ * 
  * @param rig - Skeletal rig to apply overlay to
  * @param stance - Current trigram stance
  * @param breathingPhase - Breathing phase 0.0-1.0 for scale oscillation
@@ -654,6 +657,9 @@ export const SkeletalPlayer3D: React.FC<
       }));
     } else if (currentAnimation?.startsWith("stance_guard_")) {
       // Stance guard animation - 자세 방어 애니메이션
+      // Note: PlayerAnimation type doesn't include "stance_guard_*" variants, but this check
+      // exists for compatibility with internal animation state management. In practice,
+      // the guard overlay is applied via the explicit stance prop in useFrame.
       // Play idle animation as base, overlay guard pose in useFrame
       const idleAnim = getAnimation("idle_stance");
       if (idleAnim) {
@@ -847,8 +853,9 @@ export const SkeletalPlayer3D: React.FC<
         breathingPhaseRef.current -= 1.0;
       }
 
-      // Use the explicit stance prop for guard overlay
-      // Note: currentAnimation is typed as PlayerAnimation which doesn't include "stance_guard_*" states
+      // Use the explicit stance prop for guard overlay rather than deriving it from currentAnimation.
+      // currentAnimation is typed as PlayerAnimation and does not include the "stance_guard_*" variants,
+      // so stance is the single source of truth for selecting the correct guard pose.
       const stanceToUse = stance;
       
       // Apply full guard pose overlay to maintain fighting stance during all movement
