@@ -858,10 +858,17 @@ export const SkeletalPlayer3D: React.FC<
       {/* Stance aura effect */}
       <StanceAura stance={stance} intensity={ki / 100} animated />
 
-      {/* Muscle system rendering */}
-      <MuscleSystem muscleStates={muscleStates} isExhausted={stamina < 20} />
+      {/* Muscle system rendering with physical attributes for visual scaling */}
+      <MuscleSystem 
+        muscleStates={muscleStates} 
+        isExhausted={stamina < 20}
+        physicalAttributes={{
+          muscleMass: physicalAttributes.muscleMass,
+          fatMass: physicalAttributes.fatMass,
+        }}
+      />
 
-      {/* Skeletal rig rendering */}
+      {/* Skeletal rig rendering with physical attributes for bone thickness */}
       <BoneRenderer
         rig={rig}
         color={bodyColor}
@@ -875,6 +882,10 @@ export const SkeletalPlayer3D: React.FC<
         opponentPosition={opponentPos}
         enableFacialExpressions={enableFacialExpressions}
         enableEyeTracking={enableEyeTracking}
+        physicalAttributes={{
+          muscleMass: physicalAttributes.muscleMass,
+          fatMass: physicalAttributes.fatMass,
+        }}
       />
 
       {/* Blocking shield effect */}
