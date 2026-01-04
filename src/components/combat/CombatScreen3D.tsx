@@ -1847,6 +1847,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1Animation.currentState
           )}
           attackAnimation={player1AttackAnimation}
+          laterality={combatState.playerLaterality[0]}
         />
 
         {/* Player 2 (AI) */}
@@ -1868,6 +1869,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2Animation.currentState
           )}
           attackAnimation={player2AttackAnimation}
+          laterality={combatState.playerLaterality[1]}
         />
 
         {/* Hit Effects */}
@@ -2112,6 +2114,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           player={validPlayers[0]}
           position="left"
           isMobile={isMobile}
+          laterality={combatState.playerLaterality[0]}
         />
 
         {/* Player 1 Guard Indicator - Bottom Left */}
@@ -2127,6 +2130,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           player={validPlayers[1]}
           position="right"
           isMobile={isMobile}
+          laterality={combatState.playerLaterality[1]}
         />
 
         {/* Player 2 Guard Indicator - Bottom Right */}
