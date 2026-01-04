@@ -91,6 +91,18 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
+      "stance_side_switch",
+      {
+        state: "stance_side_switch",
+        frames: 24, // 400ms at 60fps for left↔right switch
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 3 as AnimationPriority,
+        duration: 0.4,
+      },
+    ],
+    [
       "defend",
       {
         state: "defend",

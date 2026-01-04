@@ -20,6 +20,7 @@
  * - defend: Block/defense animation (4 frames per game-design.md)
  * - hit: Taking damage animation
  * - stance_change: Trigram stance transition (600ms)
+ * - stance_side_switch: Left↔right stance mirror (400ms at 60fps = 24 frames)
  * - ko: Knockout/death animation
  * - stance_guard_{stance}: Stance-specific idle guard animations (4-6 frames each)
  * 
@@ -34,6 +35,7 @@ export type AnimationState =
   | "defend"
   | "hit"
   | "stance_change"
+  | "stance_side_switch"
   | "ko"
   | "stance_guard_geon"
   | "stance_guard_tae"
