@@ -24,7 +24,7 @@ useEffect(() => {
     
     // Existing stance keys 1-8...
     
-    // NEW: Q key for stance side switch
+    // NEW: Tab key for stance side switch
     if (event.key === 'q' || event.key === 'Q') {
       handleStanceSideSwitch();
     }
@@ -482,7 +482,7 @@ const keyboardHints = [
 - [ ] Add to `KeyboardHints` component
 
 ### Phase 6: Controls & Input (After UI)
-- [ ] Map Q key in `CombatScreen3D.tsx`
+- [ ] Map Tab key in `CombatScreen3D.tsx`
 - [ ] Add `handleStanceSideSwitch` to `useCombatActions`
 - [ ] Implement cooldown feedback
 - [ ] Add mobile touch control for side switch
@@ -510,7 +510,7 @@ const keyboardHints = [
 ### Unit Tests
 ```typescript
 describe("Stance Laterality Integration", () => {
-  it("should handle Q key for stance side switch", () => {
+  it("should handle Tab key for stance side switch", () => {
     // Test keyboard control
   });
   
@@ -536,7 +536,7 @@ describe("Stance Laterality Integration", () => {
 
 ### Playtest Scenarios
 1. **Stance Clarity**: Visual distinction between left/right
-2. **Combat Flow**: Natural feel of Q key switching
+2. **Combat Flow**: Natural feel of Tab key switching
 3. **AI Behavior**: Strategic laterality decisions
 4. **Tactical Impact**: Noticeable advantage/disadvantage
 
@@ -573,7 +573,7 @@ This integration plan provides a comprehensive roadmap for implementing stance l
 
 1. **Solid Foundation**: Phases 1-3 complete (types, manager, animation)
 2. **Visual Feedback**: Phase 4-5 (skeletal rendering, UI)
-3. **Interactive Control**: Phase 6 (Q key, mobile controls)
+3. **Interactive Control**: Phase 6 (Tab key, mobile controls)
 4. **Combat Depth**: Phase 7 (tactical modifiers)
 5. **AI Intelligence**: Phase 8 (strategic decisions)
 6. **Learning**: Phase 9 (training mode)

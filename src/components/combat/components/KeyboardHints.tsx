@@ -223,7 +223,7 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
                   fontWeight: "bold",
                 }}
               >
-                Q
+                Tab
               </span>{" "}
               - Switch Side (측면 전환)
             </div>

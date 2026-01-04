@@ -958,6 +958,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleAttack,
     handleDefend,
     handleStanceSwitch,
+    handleStanceSideSwitch,
     handleAIAttack,
     handleAIDefend,
     handleAITechnique,
@@ -1434,6 +1435,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onExecuteAction: (action, targetPos) =>
       executeAIActionCallbackRef.current?.(action, targetPos),
     onStanceChange: handleAIStanceChange,
+    onLateralityChange: () => handleStanceSideSwitch(1), // AI player (index 1)
+    playerLaterality: combatState.playerLaterality[1], // AI laterality
+    opponentLaterality: combatState.playerLaterality[0], // Human laterality
   });
 
   // Calculate current difficulty tier for display
@@ -1759,6 +1763,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleDefendWithFeedback();
         event.preventDefault();
       }
+
+      // Tab key for stance side switching (laterality)
+      if (event.key === "Tab") {
+        handleStanceSideSwitch(0); // Human player
+        event.preventDefault();
+      }
     };
 
     window.addEventListener("keydown", handleCombatInput);
@@ -1772,6 +1782,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     isPaused,
     showPauseMenu,
     handleStanceSwitch,
+    handleStanceSideSwitch,
     handleAttackWithFeedback,
     handleDefendWithFeedback,
     handlePause,

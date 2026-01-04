@@ -9,7 +9,7 @@
 4. `src/components/combat/CombatScreen3D.tsx` - Pass laterality to components
 
 ### Priority 2: Controls (Phase 6)
-5. `src/components/combat/CombatScreen3D.tsx` - Add Q key handler
+5. `src/components/combat/CombatScreen3D.tsx` - Add Tab key handler
 6. `src/components/combat/hooks/useCombatActions.ts` - Add side switch action
 7. `src/components/combat/components/KeyboardHints.tsx` - Update hints
 
@@ -332,7 +332,7 @@ export function useCombatActions(config: UseCombatActionsConfig) {
 
 ```typescript
 // Find the keyboard control useEffect (around line 800-1000)
-// Add Q key handling
+// Add Tab key handling
 
 useEffect(() => {
   const handleKeyPress = (event: KeyboardEvent) => {
@@ -340,7 +340,7 @@ useEffect(() => {
     
     // ... existing key handlers (1-8 for stances, etc.)
     
-    // NEW: Q key for stance side switch
+    // NEW: Tab key for stance side switch
     if (event.key === 'q' || event.key === 'Q') {
       event.preventDefault();
       handleStanceSideSwitch(0); // Player 1 (human)
@@ -366,7 +366,7 @@ const {
 **File**: `src/components/combat/components/KeyboardHints.tsx`
 
 ```typescript
-// Find the hints array and add Q key entry
+// Find the hints array and add Tab key entry
 const keyboardHints = [
   { key: "WASD", action: "이동", actionEn: "Move" },
   { key: "Space", action: "공격", actionEn: "Attack" },
@@ -436,7 +436,7 @@ if (player.stamina >= 2 && timeSinceLastAction > 500) {
 
 ### Unit Tests
 - [ ] `handleStanceSideSwitch` updates laterality state
-- [ ] Q key triggers side switch action
+- [ ] Tab key triggers side switch action
 - [ ] AI laterality decisions follow personality
 - [ ] Guard pose mirrors correctly for left stance
 - [ ] Laterality indicator displays correct text
@@ -472,7 +472,7 @@ if (player.stamina >= 2 && timeSinceLastAction > 500) {
 ### Issue: Guard pose not mirroring
 **Solution**: Check laterality prop is passed to SkeletalPlayer3D and guard pose effect dependencies include laterality
 
-### Issue: Q key not responding
+### Issue: Tab key not responding
 **Solution**: Verify keyboard event handler is active and handleStanceSideSwitch is in scope
 
 ### Issue: Laterality not persisting
