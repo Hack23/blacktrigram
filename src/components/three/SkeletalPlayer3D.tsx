@@ -85,80 +85,6 @@ const getTrigramSymbol = (stance: string): string => {
 };
 
 /**
- * Apply stance guard pose to skeletal rig
- * 
- * Applies arm positions, torso rotation, and breathing scale from guard pose.
- * Used when character is in stance_guard_{stance} animation state.
- * 
- * @param rig - Skeletal rig to apply pose to
- * @param stance - Current trigram stance
- * @param breathingPhase - Breathing phase 0.0-1.0 for scale oscillation
- * @param laterality - Stance laterality (left or right foot forward)
- * 
- * @korean 자세방어포즈적용
- */
-const applyStanceGuardPose = (
-  rig: SkeletalRig,
-  stance: string,
-  breathingPhase: number,
-  laterality: StanceLaterality = "right"
-): void => {
-  const guardPose = getGuardPoseForStance(stance as TrigramStance, laterality);
-  if (!guardPose) return;
-
-  // Apply left arm rotations
-  const leftShoulder = rig.bones.get("left_shoulder");
-  if (leftShoulder) {
-    leftShoulder.rotation.copy(guardPose.leftArm.shoulder);
-  }
-  const leftElbow = rig.bones.get("left_elbow");
-  if (leftElbow) {
-    leftElbow.rotation.copy(guardPose.leftArm.elbow);
-  }
-  const leftWrist = rig.bones.get("left_wrist");
-  if (leftWrist) {
-    leftWrist.rotation.copy(guardPose.leftArm.wrist);
-  }
-
-  // Apply right arm rotations
-  const rightShoulder = rig.bones.get("right_shoulder");
-  if (rightShoulder) {
-    rightShoulder.rotation.copy(guardPose.rightArm.shoulder);
-  }
-  const rightElbow = rig.bones.get("right_elbow");
-  if (rightElbow) {
-    rightElbow.rotation.copy(guardPose.rightArm.elbow);
-  }
-  const rightWrist = rig.bones.get("right_wrist");
-  if (rightWrist) {
-    rightWrist.rotation.copy(guardPose.rightArm.wrist);
-  }
-
-  // Apply torso rotation
-  const spine = rig.bones.get("spine");
-  if (spine) {
-    spine.rotation.copy(guardPose.torso);
-  }
-
-  // Apply breathing animation scale (chest/shoulder expansion)
-  const breathingScale = THREE.MathUtils.lerp(
-    guardPose.breathingRange.min,
-    guardPose.breathingRange.max,
-    (Math.sin(breathingPhase * Math.PI * 2) + 1) / 2 // Sine wave 0-1
-  );
-
-  // Apply breathing to upper torso
-  const chest = rig.bones.get("chest");
-  if (chest) {
-    chest.scale.setScalar(breathingScale);
-  }
-  const neck = rig.bones.get("neck");
-  if (neck) {
-    neck.scale.y = breathingScale;
-  }
-};
-
-/**
  * Apply stance guard pose overlay on top of base animation
  * 
  * Blends guard arm positions with base animation (idle/walk) to maintain
@@ -260,10 +186,11 @@ const applyStanceGuardOverlay = (
   if (spine) {
     const currentRotation = spine.rotation.clone();
     const targetRotation = guardPose.torso;
+    // Apply full torso rotation for distinct stance appearance
     spine.rotation.set(
-      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend * 0.5), // Less torso rotation during movement
-      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend * 0.5),
-      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend * 0.5),
+      THREE.MathUtils.lerp(currentRotation.x, targetRotation.x, clampedBlend * 0.8),
+      THREE.MathUtils.lerp(currentRotation.y, targetRotation.y, clampedBlend * 0.8),
+      THREE.MathUtils.lerp(currentRotation.z, targetRotation.z, clampedBlend * 0.8),
       currentRotation.order
     );
   }
@@ -919,8 +846,9 @@ export const SkeletalPlayer3D: React.FC<
         ? currentAnimation.replace("stance_guard_", "")
         : stance;
       
-      // Apply guard pose overlay with full blend for stance_guard, partial for idle/walk
-      const blendFactor = isInStanceGuard ? 1.0 : 0.85; // 85% guard during idle/walk
+      // Apply full guard pose overlay to maintain fighting stance during all movement
+      // Each stance × laterality combination creates distinct appearance
+      const blendFactor = 1.0; // 100% guard maintained during idle/walk/guard states
       applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, blendFactor);
     }
   });
