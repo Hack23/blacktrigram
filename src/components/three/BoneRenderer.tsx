@@ -20,6 +20,42 @@ import Hand3D from "./Hand3D";
 import Face3D from "./Face3D";
 
 /**
+ * Calculate bone thickness multiplier based on physical attributes
+ * 
+ * Maps muscle mass and fat mass to bone thickness scaling for visual appearance.
+ * Higher muscle mass = thicker bones (more muscular skeleton).
+ * Higher fat mass = slightly thicker bones (more padding).
+ * 
+ * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
+ * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
+ * @returns Thickness multiplier for bone radius (typically 0.85-1.25)
+ * 
+ * @korean 뼈두께계산
+ */
+const calculateBoneThicknessMultiplier = (
+  muscleMass: number,
+  fatMass: number
+): number => {
+  // Reference: 35kg muscle mass, 12kg fat mass → 1.0x thickness
+  const referenceMuscle = 35;
+  const referenceFat = 12;
+  
+  // Muscle contribution (70% of thickness variation)
+  // 32kg → ~0.91x, 35kg → 1.0x, 42kg → ~1.10x
+  const muscleRatio = muscleMass / referenceMuscle;
+  const muscleContribution = Math.sqrt(muscleRatio) * 0.7;
+  
+  // Fat contribution (30% of thickness variation)
+  // 9kg → ~0.95x, 12kg → 1.0x, 18kg → ~1.09x
+  const fatRatio = fatMass / referenceFat;
+  const fatContribution = Math.sqrt(fatRatio) * 0.3;
+  
+  // Combined thickness multiplier
+  // Typical range: 0.85x (lean Amsalja) to 1.25x (bulky Jojik)
+  return muscleContribution + fatContribution;
+};
+
+/**
  * Props for BoneRenderer component
  * 
  * @public
@@ -98,6 +134,15 @@ export interface BoneRendererProps {
    * @korean 눈추적활성화
    */
   readonly enableEyeTracking?: boolean;
+
+  /**
+   * Physical attributes for bone thickness scaling
+   * @korean 신체속성
+   */
+  readonly physicalAttributes?: {
+    readonly muscleMass: number;
+    readonly fatMass: number;
+  };
 }
 
 /**
@@ -111,6 +156,7 @@ export interface BoneRendererProps {
  * @param leftHandState - Left hand animation state
  * @param rightHandState - Right hand animation state
  * @param cameraDistance - Distance from camera
+ * @param boneThicknessMultiplier - Thickness multiplier for bone radius
  * @korean 단일뼈렌더러
  */
 const SingleBone: React.FC<{
@@ -125,6 +171,7 @@ const SingleBone: React.FC<{
   readonly opponentPosition?: THREE.Vector3;
   readonly enableFacialExpressions?: boolean;
   readonly enableEyeTracking?: boolean;
+  readonly boneThicknessMultiplier?: number;
 }> = ({ 
   bone, 
   color, 
@@ -137,6 +184,7 @@ const SingleBone: React.FC<{
   opponentPosition,
   enableFacialExpressions = false,
   enableEyeTracking = true,
+  boneThicknessMultiplier = 1.0,
 }) => {
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
@@ -179,7 +227,12 @@ const SingleBone: React.FC<{
           receiveShadow
         >
           <capsuleGeometry
-            args={[boneTransform.length * 0.1, boneTransform.length, 4, 8]}
+            args={[
+              boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
+              boneTransform.length, // Length unchanged
+              4, 
+              8
+            ]}
           />
           <meshStandardMaterial
             color={color}
@@ -196,7 +249,12 @@ const SingleBone: React.FC<{
           ]}
         >
           <capsuleGeometry
-            args={[boneTransform.length * 0.1, boneTransform.length, 4, 8]}
+            args={[
+              boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
+              boneTransform.length, // Length unchanged
+              4, 
+              8
+            ]}
           />
           <meshBasicMaterial
             color={color}
@@ -210,7 +268,7 @@ const SingleBone: React.FC<{
       {/* Joint sphere at bone position */}
       {renderMode === "debug" && (
         <mesh>
-          <sphereGeometry args={[boneTransform.length * 0.15, 8, 8]} />
+          <sphereGeometry args={[boneTransform.length * 0.15 * boneThicknessMultiplier, 8, 8]} />
           <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
         </mesh>
       )}
@@ -230,6 +288,7 @@ const SingleBone: React.FC<{
           opponentPosition={opponentPosition}
           enableFacialExpressions={enableFacialExpressions}
           enableEyeTracking={enableEyeTracking}
+          boneThicknessMultiplier={boneThicknessMultiplier}
         />
       ))}
 
@@ -304,7 +363,17 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   opponentPosition,
   enableFacialExpressions = false, // Default false to avoid breaking existing tests
   enableEyeTracking = true,
+  physicalAttributes,
 }) => {
+  // Calculate bone thickness multiplier from physical attributes
+  const boneThicknessMultiplier = useMemo(() => {
+    if (!physicalAttributes) return 1.0;
+    return calculateBoneThicknessMultiplier(
+      physicalAttributes.muscleMass,
+      physicalAttributes.fatMass
+    );
+  }, [physicalAttributes]);
+
   if (!showBones) {
     return null;
   }
@@ -323,6 +392,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
         opponentPosition={opponentPosition}
         enableFacialExpressions={enableFacialExpressions}
         enableEyeTracking={enableEyeTracking}
+        boneThicknessMultiplier={boneThicknessMultiplier}
       />
     </group>
   );

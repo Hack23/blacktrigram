@@ -8,6 +8,31 @@ This document explains how physical attributes (muscle mass and fat mass) affect
 
 ## Implementation Details
 
+### Bone Thickness Scaling (NEW)
+
+**Purpose:** Makes characters with higher muscle and fat mass appear visibly thicker in their skeletal structure.
+
+**Formula:**
+```typescript
+boneThicknessMultiplier = (sqrt(muscleMass / 35) * 0.7) + (sqrt(fatMass / 12) * 0.3)
+```
+
+**Reference:** 
+- 35kg muscle mass, 12kg fat mass = 1.0x thickness (baseline)
+- Muscle contributes 70% of thickness variation
+- Fat contributes 30% of thickness variation
+
+**Range:**
+- Minimum: Amsalja (32kg muscle, 9kg fat) → ~0.86x thickness (thin, lean skeleton)
+- Average: Musa (38kg muscle, 12kg fat) → ~1.02x thickness (normal build)
+- Maximum: Jojik (42kg muscle, 18kg fat) → ~1.17x thickness (thick, bulky skeleton)
+
+**Visual Impact:**
+- Affects bone capsule radius (arms, legs, torso, neck)
+- Affects joint sphere size
+- Makes limbs and body parts visibly thicker/thinner
+- **This is the primary visual differentiator between archetypes**
+
 ### Muscle Mass Scaling
 
 **Purpose:** Makes characters with higher muscle mass appear visibly larger and more muscular.
@@ -64,10 +89,11 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 85kg
 
 **Visual Appearance:**
+- **Bone Thickness:** ~1.17x (thick, sturdy skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~1.09x (bulky, thick muscles)
 - **Fat Layer Opacity:** ~36% (prominently visible)
 - **Fat Layer Thickness:** +11% size increase
-- **Overall Look:** Intimidating powerhouse with visible bulk and some softness
+- **Overall Look:** Thick, powerful frame with intimidating bulk - arms, legs, and torso visibly wider
 - **Combat Style:** Raw power and durability over refined technique
 
 ### 암살자 (Amsalja) - Shadow Assassin
@@ -78,10 +104,11 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 68kg
 
 **Visual Appearance:**
+- **Bone Thickness:** ~0.86x (thin, lean skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~0.93x (lean, defined muscles)
 - **Fat Layer Opacity:** ~4% (nearly invisible)
 - **Fat Layer Thickness:** +0.7% size increase
-- **Overall Look:** Lean and agile with sharply defined muscles
+- **Overall Look:** Thin, agile frame with lean limbs - clearly narrower arms and legs
 - **Combat Style:** Speed and precision through minimal mass
 
 ### 무사 (Musa) - Traditional Warrior
@@ -92,10 +119,11 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 75kg
 
 **Visual Appearance:**
+- **Bone Thickness:** ~1.02x (athletic, balanced skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~1.04x (athletic, balanced)
 - **Fat Layer Opacity:** ~14% (subtle layer)
 - **Fat Layer Thickness:** +4% size increase
-- **Overall Look:** Balanced warrior physique with disciplined conditioning
+- **Overall Look:** Balanced warrior physique with well-proportioned limbs
 - **Combat Style:** Harmony between strength, speed, and endurance
 
 ### 해커 (Hacker) - Cyber Warrior
@@ -106,10 +134,11 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 70kg
 
 **Visual Appearance:**
+- **Bone Thickness:** ~0.97x (slightly below average) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~0.99x (slightly below average)
 - **Fat Layer Opacity:** ~21% (moderately visible)
 - **Fat Layer Thickness:** +6.4% size increase
-- **Overall Look:** Average build with slight softness from sedentary work
+- **Overall Look:** Average frame with slight softness - tech worker build
 - **Combat Style:** Tech augmentation compensates for physical limitations
 
 ### 정보요원 (Jeongbo Yowon) - Intelligence Operative
@@ -120,23 +149,51 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 73kg
 
 **Visual Appearance:**
+- **Bone Thickness:** ~1.00x (fit, standard skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~1.01x (fit and toned)
 - **Fat Layer Opacity:** ~11% (minimal visibility)
 - **Fat Layer Thickness:** +3.2% size increase
-- **Overall Look:** Government fitness standards - functional and versatile
+- **Overall Look:** Government fitness standards - functional and well-proportioned
 - **Combat Style:** Balanced operative training for varied missions
 
 ## Visual Comparison Table
 
-| Archetype | Muscle Scale | Fat Opacity | Overall Appearance |
-|-----------|--------------|-------------|-------------------|
-| **Jojik** | 1.09x (Bulky) | 36% (High) | Thick, powerful, intimidating |
-| **Musa** | 1.04x (Athletic) | 14% (Low) | Balanced, disciplined, toned |
-| **Jeongbo** | 1.01x (Fit) | 11% (Low) | Lean operative, functional |
-| **Hacker** | 0.99x (Average) | 21% (Moderate) | Tech worker, slight softness |
-| **Amsalja** | 0.93x (Lean) | 4% (Minimal) | Defined, agile, efficient |
+| Archetype | Bone Thickness | Muscle Scale | Fat Opacity | Overall Appearance |
+|-----------|----------------|--------------|-------------|-------------------|
+| **Jojik** | 1.17x (Thick) ⭐ | 1.09x (Bulky) | 36% (High) | Thick, powerful frame - wide limbs |
+| **Musa** | 1.02x (Athletic) ⭐ | 1.04x (Athletic) | 14% (Low) | Balanced, disciplined build |
+| **Jeongbo** | 1.00x (Standard) ⭐ | 1.01x (Fit) | 11% (Low) | Fit operative, well-proportioned |
+| **Hacker** | 0.97x (Below Avg) ⭐ | 0.99x (Average) | 21% (Moderate) | Tech worker, slight softness |
+| **Amsalja** | 0.86x (Thin) ⭐ | 0.93x (Lean) | 4% (Minimal) | Thin, agile - narrow limbs |
+
+⭐ = Primary visual differentiator (bone thickness affects arm/leg/torso width)
 
 ## Technical Implementation
+
+### BoneRenderer Component Changes (NEW)
+
+**New Calculation Function:**
+```typescript
+calculateBoneThicknessMultiplier(muscleMass: number, fatMass: number): number
+```
+
+Maps muscle mass (70% weight) and fat mass (30% weight) to bone thickness multiplier.
+
+**Bone Thickness Application:**
+- Applied to capsule geometry radius: `boneLength * 0.1 * boneThicknessMultiplier`
+- Affects all bones recursively (arms, legs, torso, neck)
+- Also scales joint debug spheres
+
+**Integration:**
+```typescript
+<BoneRenderer
+  rig={rig}
+  physicalAttributes={{
+    muscleMass: physicalAttributes.muscleMass,
+    fatMass: physicalAttributes.fatMass,
+  }}
+/>
+```
 
 ### MuscleSystem Component Changes
 
@@ -165,6 +222,16 @@ interface MuscleSystemProps {
 ### SkeletalPlayer3D Integration
 
 ```typescript
+// Bone thickness scaling (primary differentiator)
+<BoneRenderer
+  rig={rig}
+  physicalAttributes={{
+    muscleMass: physicalAttributes.muscleMass,
+    fatMass: physicalAttributes.fatMass,
+  }}
+/>
+
+// Muscle size scaling
 <MuscleSystem 
   muscleStates={muscleStates} 
   isExhausted={stamina < 20}

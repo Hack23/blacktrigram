@@ -806,7 +806,7 @@ export const SkeletalPlayer3D: React.FC<
         }}
       />
 
-      {/* Skeletal rig rendering */}
+      {/* Skeletal rig rendering with physical attributes for bone thickness */}
       <BoneRenderer
         rig={rig}
         color={bodyColor}
@@ -820,6 +820,10 @@ export const SkeletalPlayer3D: React.FC<
         opponentPosition={opponentPos}
         enableFacialExpressions={enableFacialExpressions}
         enableEyeTracking={enableEyeTracking}
+        physicalAttributes={{
+          muscleMass: physicalAttributes.muscleMass,
+          fatMass: physicalAttributes.fatMass,
+        }}
       />
 
       {/* Blocking shield effect */}
