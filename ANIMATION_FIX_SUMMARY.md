@@ -97,41 +97,6 @@ if (shouldApplyGuard) {
 2. **Eliminates edge cases**: No need to enumerate all idle/walk states
 3. **More robust**: Automatically covers future animation states like "block", "counter", etc.
 4. **Performance optimized**: Removed 7 clone() operations per frame (420 allocations/second at 60fps)
-  breathingPhase: number,
-  laterality: StanceLaterality = "right",
-  blendFactor: number = 1.0
-): void => {
-  const guardPose = getGuardPoseForStance(stance, laterality);
-  
-  // Blend arms at 100%
-  // Blend torso at 80%
-  // Apply breathing animation
-  // Respect laterality mirroring
-}
-```
-
-### Animation Loop Changes
-
-**Before**:
-```typescript
-if (isInStanceGuard) {
-  applyStanceGuardPose(rig, stance, breathing, laterality);
-} else {
-  applyKeyframeToRig(rig, keyframe);
-}
-```
-
-**After**:
-```typescript
-// Always apply base animation first
-applyKeyframeToRig(rig, keyframe);
-
-// Then overlay guard pose
-if (isInStanceGuard || isIdleOrWalk) {
-  const blendFactor = 1.0; // 100% guard maintained
-  applyStanceGuardOverlay(rig, stance, breathing, laterality, blendFactor);
-}
-```
 
 ## Stance-Specific Results
 
