@@ -23,9 +23,9 @@ boneThicknessMultiplier = (sqrt(muscleMass / 35) * 0.7) + (sqrt(fatMass / 12) * 
 - Fat contributes 30% of thickness variation
 
 **Range:**
-- Minimum: Amsalja (32kg muscle, 9kg fat) → ~0.86x thickness (thin, lean skeleton)
-- Average: Musa (38kg muscle, 12kg fat) → ~1.02x thickness (normal build)
-- Maximum: Jojik (42kg muscle, 18kg fat) → ~1.17x thickness (thick, bulky skeleton)
+- Minimum: Amsalja (32kg muscle, 9kg fat) → ~0.93x thickness (thin, lean skeleton)
+- Average: Musa (38kg muscle, 12kg fat) → ~1.03x thickness (normal build)
+- Maximum: Jojik (42kg muscle, 18kg fat) → ~1.13x thickness (thick, bulky skeleton)
 
 **Visual Impact:**
 - Affects bone capsule radius (arms, legs, torso, neck)
@@ -89,7 +89,7 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 85kg
 
 **Visual Appearance:**
-- **Bone Thickness:** ~1.17x (thick, sturdy skeleton) ⭐ PRIMARY DIFFERENTIATOR
+- **Bone Thickness:** ~1.13x (thick, sturdy skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~1.09x (bulky, thick muscles)
 - **Fat Layer Opacity:** ~36% (prominently visible)
 - **Fat Layer Thickness:** +11% size increase
@@ -119,7 +119,7 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 75kg
 
 **Visual Appearance:**
-- **Bone Thickness:** ~1.02x (athletic, balanced skeleton) ⭐ PRIMARY DIFFERENTIATOR
+- **Bone Thickness:** ~1.03x (athletic, balanced skeleton) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~1.04x (athletic, balanced)
 - **Fat Layer Opacity:** ~14% (subtle layer)
 - **Fat Layer Thickness:** +4% size increase
@@ -134,7 +134,7 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 - Weight: 70kg
 
 **Visual Appearance:**
-- **Bone Thickness:** ~0.97x (slightly below average) ⭐ PRIMARY DIFFERENTIATOR
+- **Bone Thickness:** ~1.01x (slightly above average) ⭐ PRIMARY DIFFERENTIATOR
 - **Muscle Scale:** ~0.99x (slightly below average)
 - **Fat Layer Opacity:** ~21% (moderately visible)
 - **Fat Layer Thickness:** +6.4% size increase
@@ -160,13 +160,15 @@ fatLayerThickness = clamp((fatMass - 8) / (22 - 8) * 0.15, 0.0, 0.15)
 
 | Archetype | Bone Thickness | Muscle Scale | Fat Opacity | Overall Appearance |
 |-----------|----------------|--------------|-------------|-------------------|
-| **Jojik** | 1.17x (Thick) ⭐ | 1.09x (Bulky) | 36% (High) | Thick, powerful frame - wide limbs |
-| **Musa** | 1.02x (Athletic) ⭐ | 1.04x (Athletic) | 14% (Low) | Balanced, disciplined build |
+| **Jojik** | 1.13x (Thick) ⭐ | 1.09x (Bulky) | 36% (High) | Thick, powerful frame - wide limbs |
+| **Musa** | 1.03x (Athletic) ⭐ | 1.04x (Athletic) | 14% (Low) | Balanced, disciplined build |
 | **Jeongbo** | 1.00x (Standard) ⭐ | 1.01x (Fit) | 11% (Low) | Fit operative, well-proportioned |
-| **Hacker** | 0.97x (Below Avg) ⭐ | 0.99x (Average) | 21% (Moderate) | Tech worker, slight softness |
-| **Amsalja** | 0.86x (Thin) ⭐ | 0.93x (Lean) | 4% (Minimal) | Thin, agile - narrow limbs |
+| **Hacker** | 1.01x (Avg) ⭐ | 0.99x (Average) | 21% (Moderate) | Tech worker, slight softness |
+| **Amsalja** | 0.93x (Thin) ⭐ | 0.93x (Lean) | 4% (Minimal) | Thin, agile - narrow limbs |
 
 ⭐ = Primary visual differentiator (bone thickness affects arm/leg/torso width)
+
+**Difference:** Jojik has **21% thicker bones** than Amsalja (1.13x vs 0.93x)
 
 ## Technical Implementation
 

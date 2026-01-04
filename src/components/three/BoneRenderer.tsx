@@ -28,7 +28,7 @@ import Face3D from "./Face3D";
  * 
  * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
  * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
- * @returns Thickness multiplier for bone radius (typically 0.85-1.25)
+ * @returns Thickness multiplier for bone radius (typically 0.93-1.13)
  * 
  * @korean 뼈두께계산
  */
@@ -41,17 +41,27 @@ const calculateBoneThicknessMultiplier = (
   const referenceFat = 12;
   
   // Muscle contribution (70% of thickness variation)
-  // 32kg → ~0.91x, 35kg → 1.0x, 42kg → ~1.10x
+  // Example calculations:
+  // - 32kg muscle (Amsalja) → sqrt(32/35) * 0.7 ≈ 0.67 contribution
+  // - 35kg muscle (reference) → sqrt(35/35) * 0.7 = 0.70 contribution
+  // - 42kg muscle (Jojik) → sqrt(42/35) * 0.7 ≈ 0.77 contribution
   const muscleRatio = muscleMass / referenceMuscle;
   const muscleContribution = Math.sqrt(muscleRatio) * 0.7;
   
   // Fat contribution (30% of thickness variation)
-  // 9kg → ~0.95x, 12kg → 1.0x, 18kg → ~1.09x
+  // Example calculations:
+  // - 9kg fat (Amsalja) → sqrt(9/12) * 0.3 ≈ 0.26 contribution
+  // - 12kg fat (reference) → sqrt(12/12) * 0.3 = 0.30 contribution
+  // - 18kg fat (Jojik) → sqrt(18/12) * 0.3 ≈ 0.37 contribution
   const fatRatio = fatMass / referenceFat;
   const fatContribution = Math.sqrt(fatRatio) * 0.3;
   
   // Combined thickness multiplier
-  // Typical range: 0.85x (lean Amsalja) to 1.25x (bulky Jojik)
+  // For archetype defaults:
+  // - Amsalja (32kg muscle, 9kg fat): 0.67 + 0.26 ≈ 0.93x thickness
+  // - Musa (38kg muscle, 12kg fat): 0.73 + 0.30 ≈ 1.03x thickness
+  // - Jojik (42kg muscle, 18kg fat): 0.77 + 0.37 ≈ 1.14x thickness
+  // Typical range: ~0.93x (lean Amsalja) to ~1.14x (bulky Jojik)
   return muscleContribution + fatContribution;
 };
 

@@ -320,7 +320,7 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
  * Uses normalized range around average muscle mass of 35kg.
  * 
  * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
- * @returns Scale factor for muscle geometry (typically 0.85-1.15)
+ * @returns Scale factor for muscle geometry (typically 0.93-1.09)
  * 
  * @korean 근육크기계산
  */
@@ -414,34 +414,39 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
     return calculateFatLayerThickness(physicalAttributes.fatMass);
   }, [physicalAttributes]);
 
+  // Memoize scaled muscle groups to avoid recreating them on every render
+  const scaledMuscleGroups = useMemo(() => {
+    return Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => ({
+      name,
+      muscleGroup: {
+        ...muscleGroup,
+        baseScale: new THREE.Vector3(
+          muscleGroup.baseScale.x * muscleScaleFactor,
+          muscleGroup.baseScale.y * muscleScaleFactor,
+          muscleGroup.baseScale.z * muscleScaleFactor
+        ),
+        maxFlexScale: new THREE.Vector3(
+          muscleGroup.maxFlexScale.x * muscleScaleFactor,
+          muscleGroup.maxFlexScale.y * muscleScaleFactor,
+          muscleGroup.maxFlexScale.z * muscleScaleFactor
+        ),
+      },
+    }));
+  }, [muscleScaleFactor]);
+
   return (
     <group data-testid="muscle-system">
       {/* Muscle groups with scaled size based on muscle mass */}
-      {Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => {
+      {scaledMuscleGroups.map(({ name, muscleGroup }) => {
         const tension = muscleStates.get(name) ?? 0;
         const isShaking = 
           isExhausted && 
           tension > DEFAULT_MUSCLE_CONFIG.shakingTensionThreshold;
 
-        // Scale muscle group based on physical attributes
-        const scaledMuscleGroup: MuscleGroup = {
-          ...muscleGroup,
-          baseScale: new THREE.Vector3(
-            muscleGroup.baseScale.x * muscleScaleFactor,
-            muscleGroup.baseScale.y * muscleScaleFactor,
-            muscleGroup.baseScale.z * muscleScaleFactor
-          ),
-          maxFlexScale: new THREE.Vector3(
-            muscleGroup.maxFlexScale.x * muscleScaleFactor,
-            muscleGroup.maxFlexScale.y * muscleScaleFactor,
-            muscleGroup.maxFlexScale.z * muscleScaleFactor
-          ),
-        };
-
         return (
           <MuscleMesh
             key={name}
-            muscleGroup={scaledMuscleGroup}
+            muscleGroup={muscleGroup}
             tension={tension}
             isShaking={isShaking}
           />
@@ -451,29 +456,32 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
       {/* Fat layer rendering (only visible when fat mass is significant) */}
       {fatLayerOpacity > 0.05 && (
         <group data-testid="fat-layer">
-          {Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => {
+          {scaledMuscleGroups.map(({ name, muscleGroup }) => {
             // Fat layer scale is muscle base scale + fat thickness
             const fatScale = new THREE.Vector3(
-              muscleGroup.baseScale.x * muscleScaleFactor * (1 + fatLayerThickness),
-              muscleGroup.baseScale.y * muscleScaleFactor * (1 + fatLayerThickness),
-              muscleGroup.baseScale.z * muscleScaleFactor * (1 + fatLayerThickness)
+              muscleGroup.baseScale.x * (1 + fatLayerThickness),
+              muscleGroup.baseScale.y * (1 + fatLayerThickness),
+              muscleGroup.baseScale.z * (1 + fatLayerThickness)
             );
+
+            // Get original muscle group for geometry params
+            const originalMuscleGroup = MUSCLE_GROUPS[name as keyof typeof MUSCLE_GROUPS];
 
             return (
               <mesh
                 key={`fat-${name}`}
-                position={muscleGroup.position}
+                position={originalMuscleGroup.position}
                 scale={fatScale}
                 castShadow
                 receiveShadow
-                data-testid={`fat-layer-${muscleGroup.name}`}
+                data-testid={`fat-layer-${originalMuscleGroup.name}`}
               >
                 <capsuleGeometry
                   args={[
-                    muscleGroup.geometryParams.radius,
-                    muscleGroup.geometryParams.length,
-                    muscleGroup.geometryParams.capSegments,
-                    muscleGroup.geometryParams.radialSegments,
+                    originalMuscleGroup.geometryParams.radius,
+                    originalMuscleGroup.geometryParams.length,
+                    originalMuscleGroup.geometryParams.capSegments,
+                    originalMuscleGroup.geometryParams.radialSegments,
                   ]}
                 />
                 <meshStandardMaterial
