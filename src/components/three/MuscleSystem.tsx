@@ -426,8 +426,16 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
         // Scale muscle group based on physical attributes
         const scaledMuscleGroup: MuscleGroup = {
           ...muscleGroup,
-          baseScale: muscleGroup.baseScale.clone().multiplyScalar(muscleScaleFactor),
-          maxFlexScale: muscleGroup.maxFlexScale.clone().multiplyScalar(muscleScaleFactor),
+          baseScale: new THREE.Vector3(
+            muscleGroup.baseScale.x * muscleScaleFactor,
+            muscleGroup.baseScale.y * muscleScaleFactor,
+            muscleGroup.baseScale.z * muscleScaleFactor
+          ),
+          maxFlexScale: new THREE.Vector3(
+            muscleGroup.maxFlexScale.x * muscleScaleFactor,
+            muscleGroup.maxFlexScale.y * muscleScaleFactor,
+            muscleGroup.maxFlexScale.z * muscleScaleFactor
+          ),
         };
 
         return (
@@ -445,9 +453,11 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
         <group data-testid="fat-layer">
           {Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => {
             // Fat layer scale is muscle base scale + fat thickness
-            const fatScale = muscleGroup.baseScale.clone()
-              .multiplyScalar(muscleScaleFactor)
-              .multiplyScalar(1 + fatLayerThickness);
+            const fatScale = new THREE.Vector3(
+              muscleGroup.baseScale.x * muscleScaleFactor * (1 + fatLayerThickness),
+              muscleGroup.baseScale.y * muscleScaleFactor * (1 + fatLayerThickness),
+              muscleGroup.baseScale.z * muscleScaleFactor * (1 + fatLayerThickness)
+            );
 
             return (
               <mesh
