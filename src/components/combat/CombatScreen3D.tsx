@@ -903,13 +903,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // AI stance change handler
   const handleAIStanceChange = useCallback(
     (stance: TrigramStance) => {
+      const currentStance = validPlayers[1].currentStance;
+      
+      // Start stance-specific transition animation for AI
+      player2Animation.transitionToStanceChange(currentStance, stance);
+      
       onPlayerUpdate(1, { currentStance: stance });
       addCombatMessage(
         `AI 자세 변경: ${stance}`,
         `AI Stance Change: ${stance}`
       );
     },
-    [onPlayerUpdate, addCombatMessage]
+    [validPlayers, player2Animation, onPlayerUpdate, addCombatMessage]
   );
 
   // Hit effect handlers
@@ -1059,6 +1064,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
   }, [currentPlayerStance]);
 
+  // Handler for stance changes with animation integration
+  const handleStanceChangeWithAnimation = useCallback(
+    (newStance: TrigramStance) => {
+      const currentStance = validPlayers[0].currentStance;
+      
+      // Start stance-specific transition animation
+      const success = player1Animation.transitionToStanceChange(
+        currentStance,
+        newStance
+      );
+      
+      if (success) {
+        // Capture previous stance for visual feedback
+        const prevStance = STANCE_INDEX_MAP.get(currentStance) ?? 0;
+        setPreviousStance(prevStance);
+        
+        // Update combat state
+        handleStanceSwitch(newStance);
+      }
+    },
+    [validPlayers, player1Animation, handleStanceSwitch]
+  );
+
   // Extract player health values for dependency arrays
   const player1Health = validPlayers[0].health;
   const player2Health = validPlayers[1].health;
@@ -1192,15 +1220,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       (stanceIndex: number) => {
         const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
         if (stance) {
-          // Capture previous stance BEFORE changing
-          const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
-          setPreviousStance(prevStance);
-          // Trigger stance change animation
-          player1Animation.transitionTo("stance_change");
-          handleStanceSwitch(stance);
+          // Use integrated stance transition animation
+          handleStanceChangeWithAnimation(stance);
         }
       },
-      [handleStanceSwitch, currentPlayerStance, player1Animation]
+      [handleStanceChangeWithAnimation]
     ),
     onAction: useCallback(
       (action: string) => {
@@ -1329,12 +1353,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (stanceIndex: number) => {
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
       if (stance) {
-        const prevStance = STANCE_INDEX_MAP.get(currentPlayerStance) ?? 0;
-        setPreviousStance(prevStance);
-        handleStanceSwitch(stance);
+        // Use integrated stance transition animation
+        handleStanceChangeWithAnimation(stance);
       }
     },
-    [handleStanceSwitch, currentPlayerStance]
+    [handleStanceChangeWithAnimation]
   );
 
   const handleMobileGesture = useCallback(

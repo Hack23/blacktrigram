@@ -20,6 +20,8 @@
  */
 
 import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types";
+import { TrigramStance } from "../../types/common";
+import { KoreanText } from "../../types";
 
 /**
  * Stance guard animation states (팔괘 방어 자세)
@@ -34,6 +36,90 @@ const STANCE_GUARD_STATES: readonly AnimationState[] = [
   "stance_guard_gam",
   "stance_guard_gan",
   "stance_guard_gon",
+] as const;
+
+/**
+ * Type of stance transition based on stance adjacency
+ * 
+ * **Korean**: 자세 전환 유형
+ * 
+ * - **direct**: Adjacent stances (e.g., geon→tae) - smooth, fast transition
+ * - **indirect**: Opposite stances (e.g., geon→gon) - requires intermediate neutral position
+ * - **self**: Same stance (no transition needed)
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세전환유형
+ */
+export type StanceTransitionType = 'direct' | 'indirect' | 'self';
+
+/**
+ * Keyframe for stance transition animation with blend weight
+ * 
+ * **Korean**: 자세 전환 키프레임
+ * 
+ * Defines a single keyframe in a stance transition animation, specifying
+ * which stance pose to blend and how much weight to apply.
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세전환키프레임
+ */
+export interface StanceTransitionKeyframe {
+  /** Frame number (0-36 for 600ms at 60fps) */
+  readonly frame: number;
+  /** Stance pose to blend towards */
+  readonly stance: TrigramStance | 'neutral';
+  /** Blend weight (0.0 to 1.0) */
+  readonly blend: number;
+}
+
+/**
+ * Complete stance transition animation configuration
+ * 
+ * **Korean**: 자세 전환 애니메이션
+ * 
+ * Defines a complete transition animation between two trigram stances,
+ * including keyframes, timing, and transition type.
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세전환애니메이션
+ */
+export interface StanceTransition {
+  /** Source stance */
+  readonly from: TrigramStance;
+  /** Target stance */
+  readonly to: TrigramStance;
+  /** Transition type based on adjacency */
+  readonly type: StanceTransitionType;
+  /** Duration in milliseconds (600ms standard) */
+  readonly duration: number;
+  /** Animation keyframes */
+  readonly keyframes: readonly StanceTransitionKeyframe[];
+  /** Bilingual description */
+  readonly description: KoreanText;
+}
+
+/**
+ * Order of trigram stances in the stance wheel (circular arrangement)
+ * 
+ * **Korean**: 팔괘 순서
+ * 
+ * The 8 trigrams arranged in traditional order around the Bagua octagon.
+ * Adjacent stances in this array are considered "adjacent" for transition purposes.
+ * 
+ * @korean 팔괘순서
+ */
+export const TRIGRAM_STANCES_ORDER: readonly TrigramStance[] = [
+  TrigramStance.GEON,  // ☰ Heaven
+  TrigramStance.TAE,   // ☱ Lake
+  TrigramStance.LI,    // ☲ Fire
+  TrigramStance.JIN,   // ☳ Thunder
+  TrigramStance.SON,   // ☴ Wind
+  TrigramStance.GAM,   // ☵ Water
+  TrigramStance.GAN,   // ☶ Mountain
+  TrigramStance.GON,   // ☷ Earth
 ] as const;
 
 /**
@@ -433,3 +519,296 @@ export function buildTransitionMap(
 
   return map;
 }
+
+/**
+ * Calculate stance adjacency (distance around the stance wheel)
+ * 
+ * **Korean**: 자세 인접도 계산
+ * 
+ * Determines how many steps apart two stances are on the octagonal stance wheel.
+ * Returns 0 for same stance, 1-3 for adjacent stances, 4 for opposite stances.
+ * 
+ * @param from - Source stance
+ * @param to - Target stance
+ * @returns Number of steps apart (0-4)
+ * 
+ * @example
+ * ```typescript
+ * calculateStanceDistance(TrigramStance.GEON, TrigramStance.TAE); // 1 (adjacent)
+ * calculateStanceDistance(TrigramStance.GEON, TrigramStance.SON); // 4 (opposite)
+ * calculateStanceDistance(TrigramStance.GEON, TrigramStance.GEON); // 0 (same)
+ * ```
+ * 
+ * @korean 자세거리계산
+ */
+export function calculateStanceDistance(
+  from: TrigramStance,
+  to: TrigramStance
+): number {
+  if (from === to) return 0;
+  
+  const fromIndex = TRIGRAM_STANCES_ORDER.indexOf(from);
+  const toIndex = TRIGRAM_STANCES_ORDER.indexOf(to);
+  
+  if (fromIndex === -1 || toIndex === -1) {
+    console.warn(`Invalid stance in distance calculation: ${from} -> ${to}`);
+    return 4; // Treat as opposite stance
+  }
+  
+  // Calculate shortest distance around the circular wheel
+  const directDistance = Math.abs(toIndex - fromIndex);
+  const wrapDistance = TRIGRAM_STANCES_ORDER.length - directDistance;
+  
+  return Math.min(directDistance, wrapDistance);
+}
+
+/**
+ * Determine transition type based on stance distance
+ * 
+ * **Korean**: 전환 유형 결정
+ * 
+ * Classifies transition as direct (adjacent), indirect (opposite), or self.
+ * 
+ * @param from - Source stance
+ * @param to - Target stance
+ * @returns Transition type
+ * 
+ * @korean 전환유형결정
+ */
+export function determineTransitionType(
+  from: TrigramStance,
+  to: TrigramStance
+): StanceTransitionType {
+  const distance = calculateStanceDistance(from, to);
+  
+  if (distance === 0) return 'self';
+  if (distance <= 2) return 'direct'; // Adjacent or near-adjacent
+  return 'indirect'; // Opposite or far apart
+}
+
+/**
+ * Generate keyframes for direct stance transition (adjacent stances)
+ * 
+ * **Korean**: 직접 전환 키프레임 생성
+ * 
+ * Creates smooth keyframes for transitions between adjacent stances.
+ * Phase breakdown:
+ * - Frames 0-12: Weight shift away from source stance
+ * - Frames 12-24: Foot repositioning
+ * - Frames 24-36: Guard change to target stance
+ * 
+ * @param from - Source stance
+ * @param to - Target stance
+ * @returns Array of keyframes
+ * 
+ * @korean 직접전환키프레임생성
+ */
+function generateDirectTransitionKeyframes(
+  from: TrigramStance,
+  to: TrigramStance
+): readonly StanceTransitionKeyframe[] {
+  return [
+    // Phase 1: Initial weight shift (frames 0-12)
+    { frame: 0, stance: from, blend: 1.0 },
+    { frame: 6, stance: from, blend: 0.8 },
+    { frame: 12, stance: 'neutral', blend: 0.5 },
+    
+    // Phase 2: Foot repositioning (frames 12-24)
+    { frame: 18, stance: 'neutral', blend: 0.4 },
+    { frame: 24, stance: to, blend: 0.3 },
+    
+    // Phase 3: Guard position change (frames 24-36)
+    { frame: 30, stance: to, blend: 0.7 },
+    { frame: 36, stance: to, blend: 1.0 },
+  ];
+}
+
+/**
+ * Generate keyframes for indirect stance transition (opposite stances)
+ * 
+ * **Korean**: 간접 전환 키프레임 생성
+ * 
+ * Creates keyframes for transitions between opposite stances via neutral position.
+ * Longer neutral phase for more complex repositioning.
+ * 
+ * @param from - Source stance
+ * @param to - Target stance
+ * @returns Array of keyframes
+ * 
+ * @korean 간접전환키프레임생성
+ */
+function generateIndirectTransitionKeyframes(
+  from: TrigramStance,
+  to: TrigramStance
+): readonly StanceTransitionKeyframe[] {
+  return [
+    // Phase 1: Exit source stance (frames 0-12)
+    { frame: 0, stance: from, blend: 1.0 },
+    { frame: 6, stance: from, blend: 0.7 },
+    { frame: 12, stance: 'neutral', blend: 0.5 },
+    
+    // Phase 2: Extended neutral position (frames 12-24)
+    { frame: 18, stance: 'neutral', blend: 0.5 },
+    { frame: 24, stance: 'neutral', blend: 0.4 },
+    
+    // Phase 3: Enter target stance (frames 24-36)
+    { frame: 30, stance: to, blend: 0.6 },
+    { frame: 36, stance: to, blend: 1.0 },
+  ];
+}
+
+/**
+ * Create a stance transition configuration
+ * 
+ * **Korean**: 자세 전환 생성
+ * 
+ * Generates complete transition configuration between two stances.
+ * 
+ * @param from - Source stance
+ * @param to - Target stance
+ * @returns Complete stance transition configuration
+ * 
+ * @korean 자세전환생성
+ */
+export function createStanceTransition(
+  from: TrigramStance,
+  to: TrigramStance
+): StanceTransition {
+  const type = determineTransitionType(from, to);
+  
+  // Self-transition (no animation)
+  if (type === 'self') {
+    return {
+      from,
+      to,
+      type: 'self',
+      duration: 0,
+      keyframes: [
+        { frame: 0, stance: from, blend: 1.0 },
+      ],
+      description: {
+        korean: `${from} 자세 유지`,
+        english: `Maintain ${from} stance`,
+      },
+    };
+  }
+  
+  // Generate keyframes based on transition type
+  const keyframes = type === 'direct' 
+    ? generateDirectTransitionKeyframes(from, to)
+    : generateIndirectTransitionKeyframes(from, to);
+  
+  return {
+    from,
+    to,
+    type,
+    duration: 600, // 600ms standard transition
+    keyframes,
+    description: {
+      korean: `${from}에서 ${to}로 전환`,
+      english: `Transition from ${from} to ${to}`,
+    },
+  };
+}
+
+/**
+ * Stance transition matrix containing all 64 transitions (8x8)
+ * 
+ * **Korean**: 팔괘 전환 행렬
+ * 
+ * Maps from every stance to every other stance, including self-transitions.
+ * Key format: "from_to" (e.g., "geon_tae")
+ * 
+ * Total transitions: 64 (8 source stances × 8 target stances)
+ * - 8 self-transitions (0ms)
+ * - ~24 direct transitions (600ms, adjacent stances)
+ * - ~32 indirect transitions (600ms, opposite stances)
+ * 
+ * @korean 팔괘전환행렬
+ */
+export const STANCE_TRANSITIONS: Map<string, StanceTransition> = new Map();
+
+/**
+ * Initialize the stance transition matrix
+ * 
+ * **Korean**: 전환 행렬 초기화
+ * 
+ * Generates all 64 stance transitions and populates the transition map.
+ * Call this during system initialization.
+ * 
+ * @korean 전환행렬초기화
+ */
+export function initializeStanceTransitions(): void {
+  // Generate all 64 transitions (8 from × 8 to)
+  for (const from of TRIGRAM_STANCES_ORDER) {
+    for (const to of TRIGRAM_STANCES_ORDER) {
+      const key = `${from}_${to}`;
+      const transition = createStanceTransition(from, to);
+      STANCE_TRANSITIONS.set(key, transition);
+    }
+  }
+  
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[StanceTransitions] Initialized ${STANCE_TRANSITIONS.size} stance transitions`);
+  }
+}
+
+/**
+ * Get stance transition configuration
+ * 
+ * **Korean**: 자세 전환 가져오기
+ * 
+ * Retrieves the transition configuration for moving from one stance to another.
+ * 
+ * @param from - Source stance
+ * @param to - Target stance
+ * @returns Transition configuration, or undefined if not found
+ * 
+ * @example
+ * ```typescript
+ * const transition = getStanceTransition(TrigramStance.GEON, TrigramStance.TAE);
+ * console.log(transition.duration); // 600
+ * console.log(transition.type); // "direct"
+ * ```
+ * 
+ * @korean 자세전환가져오기
+ */
+export function getStanceTransition(
+  from: TrigramStance,
+  to: TrigramStance
+): StanceTransition | undefined {
+  const key = `${from}_${to}`;
+  return STANCE_TRANSITIONS.get(key);
+}
+
+/**
+ * Get all valid transitions from a stance
+ * 
+ * **Korean**: 유효한 전환 목록
+ * 
+ * Returns all possible transitions from the given stance.
+ * 
+ * @param from - Source stance
+ * @returns Array of all transitions from this stance
+ * 
+ * @korean 유효한전환목록
+ */
+export function getTransitionsFromStance(
+  from: TrigramStance
+): StanceTransition[] {
+  const transitions: StanceTransition[] = [];
+  
+  for (const to of TRIGRAM_STANCES_ORDER) {
+    const transition = getStanceTransition(from, to);
+    if (transition) {
+      transitions.push(transition);
+    }
+  }
+  
+  return transitions;
+}
+
+// Note: For production use, consider calling initializeStanceTransitions()
+// during application startup to avoid blocking the main thread.
+// For now, initialize on module load for convenience.
+initializeStanceTransitions();
