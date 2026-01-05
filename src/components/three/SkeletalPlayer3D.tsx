@@ -425,6 +425,9 @@ export const SkeletalPlayer3D: React.FC<
     createInitialHandAnimationState(HandPoseType.OPEN)
   );
 
+  // Diagonal step rotation override (Y-axis rotation in radians)
+  const [diagonalRotationY, setDiagonalRotationY] = useState<number | null>(null);
+
   // Refs for 60fps animation updates without triggering React re-renders
   const leftHandStateRef = useRef<HandAnimationState>(leftHandState);
   const rightHandStateRef = useRef<HandAnimationState>(rightHandState);
@@ -680,8 +683,9 @@ export const SkeletalPlayer3D: React.FC<
         // For diagonal steps, apply rotation to render at 45-degree angles
         // This combines the cardinal animation with angular movement
         if (currentAnimation.includes("_left") || currentAnimation.includes("_right")) {
-          // Diagonal step detected - adjust character rotation
-          let rotationY = rotation[1];
+          // Diagonal step detected - set absolute rotation angles
+          // These angles are independent of the character's current facing direction
+          let rotationY: number;
           
           if (currentAnimation === "step_forward_left") {
             rotationY = Math.PI / 4; // 45° left of forward
@@ -691,9 +695,14 @@ export const SkeletalPlayer3D: React.FC<
             rotationY = (3 * Math.PI) / 4; // 135° (45° left of back)
           } else if (currentAnimation === "step_back_right") {
             rotationY = -(3 * Math.PI) / 4; // -135° (45° right of back)
+          } else {
+            rotationY = 0; // Fallback to forward
           }
           
-          setRotation([rotation[0], rotationY, rotation[2]]);
+          setDiagonalRotationY(rotationY);
+        } else {
+          // Clear diagonal rotation override for non-diagonal animations
+          setDiagonalRotationY(null);
         }
       } else {
         // Fallback to walk if step animation not found
@@ -921,10 +930,13 @@ export const SkeletalPlayer3D: React.FC<
     }
   });
 
+  // Use diagonal rotation override if set, otherwise use prop rotation
+  const effectiveRotation = diagonalRotationY ?? rotation;
+
   return (
     <group
       position={position}
-      rotation={[0, rotation, 0]}
+      rotation={[0, effectiveRotation, 0]}
       scale={[facing === "left" ? -scale : scale, scale, scale]}
       data-testid={`skeletal-player3d-${playerId}`}
     >
