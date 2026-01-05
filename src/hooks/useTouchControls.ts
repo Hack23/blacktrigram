@@ -233,34 +233,43 @@ export function useTouchControls({
     }
     
     // Set up hold detection timer
-    // Note: Hold gesture uses the initial touch position for directional detection
-    // since we don't track movement during the hold (no touchMove handler).
-    // The hold is triggered by duration alone, and direction is determined
-    // from the initial touch location relative to screen center or D-pad.
+    // Note: Hold gesture direction is determined from the initial touch position
+    // relative to screen center. This supports D-pad style layouts where each
+    // region of the screen (or an overlaid control) corresponds to a cardinal direction.
     holdTimerRef.current = window.setTimeout(() => {
       // Touch held for longer than threshold - trigger hold gesture
-      if (touchStartRef.current && isTouching) {
-        // For hold gestures, we detect direction from the initial touch position
-        // This works for D-pad style controls where the user touches and holds
-        // a directional button area, not for dragging gestures
-        const holdGesture = getDirectionalGesture(
-          touchStartRef.current.clientX,
-          touchStartRef.current.clientY,
-          touchStartRef.current.clientX,
-          touchStartRef.current.clientY,
-          false // Not a tap, it's a hold
-        );
-        
+      // Check touchStartRef to ensure touch hasn't ended before timer fired
+      if (touchStartRef.current) {
+        const { clientX, clientY } = touchStartRef.current;
+
+        // Determine hold direction from initial touch position relative to screen center
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        const deltaX = clientX - centerX;
+        // Invert Y so that a touch higher on the screen is considered "forward"
+        const deltaY = centerY - clientY;
+
+        let holdGesture: GestureType | null = null;
+
+        if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+          // Horizontal dominance
+          holdGesture = deltaX > 0 ? 'hold-right' : 'hold-left';
+        } else {
+          // Vertical dominance
+          holdGesture = deltaY > 0 ? 'hold-forward' : 'hold-back';
+        }
+
         if (holdGesture) {
           onGesture({
             type: holdGesture,
-            startX: touchStartRef.current.clientX,
-            startY: touchStartRef.current.clientY,
+            startX: clientX,
+            startY: clientY,
           });
         }
       }
     }, holdThreshold);
-  }, [enabled, onGesture, holdThreshold, getDirectionalGesture, isTouching]);
+  }, [enabled, onGesture, holdThreshold]);
 
   /**
    * Handle touch end event

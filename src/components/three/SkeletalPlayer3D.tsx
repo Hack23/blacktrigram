@@ -676,6 +676,25 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
         );
+
+        // For diagonal steps, apply rotation to render at 45-degree angles
+        // This combines the cardinal animation with angular movement
+        if (currentAnimation.includes("_left") || currentAnimation.includes("_right")) {
+          // Diagonal step detected - adjust character rotation
+          let rotationY = rotation[1];
+          
+          if (currentAnimation === "step_forward_left") {
+            rotationY = Math.PI / 4; // 45° left of forward
+          } else if (currentAnimation === "step_forward_right") {
+            rotationY = -Math.PI / 4; // 45° right of forward
+          } else if (currentAnimation === "step_back_left") {
+            rotationY = (3 * Math.PI) / 4; // 135° (45° left of back)
+          } else if (currentAnimation === "step_back_right") {
+            rotationY = -(3 * Math.PI) / 4; // -135° (45° right of back)
+          }
+          
+          setRotation([rotation[0], rotationY, rotation[2]]);
+        }
       } else {
         // Fallback to walk if step animation not found
         console.warn(

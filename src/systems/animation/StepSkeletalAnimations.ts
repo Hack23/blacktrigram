@@ -429,6 +429,8 @@ export function getStepAnimation(
   }
 
   // Diagonal steps use forward/back as base
+  // The rendering system (SkeletalPlayer3D) handles diagonal movement by
+  // applying rotation (45° angles) while playing the cardinal animation
   if (direction.includes("forward")) {
     return STEP_FORWARD_ANIMATION;
   }
