@@ -49,6 +49,8 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
 import { StanceManager } from "@/systems/trigram";
+import { checkForFall, getFallTypeName } from "@/systems/combat/FallIntegration";
+import type { AnimationState } from "@/systems/animation/types";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -101,6 +103,10 @@ export interface UseCombatActionsConfig {
     readonly playDodgeSound: () => Promise<void>;
     readonly playStanceChangeSound: () => Promise<void>;
     readonly playSpecialTechniqueSound: () => Promise<void>;
+  };
+  readonly playerAnimations?: {
+    readonly player1: { readonly transitionTo: (state: AnimationState) => boolean };
+    readonly player2: { readonly transitionTo: (state: AnimationState) => boolean };
   };
 }
 
@@ -264,9 +270,28 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(0, updatedAttacker);
       onPlayerUpdate(1, updatedDefender);
 
+      // Check if defender should fall after taking damage
+      if (config.playerAnimations?.player2) {
+        const fallCheck = checkForFall(
+          updatedDefender,
+          combatSystem,
+          undefined, // lastImpactAngle not tracked yet
+          undefined  // attackAngle not tracked yet
+        );
+
+        if (fallCheck.shouldFall && fallCheck.animationState && fallCheck.fallType) {
+          config.playerAnimations.player2.transitionTo(fallCheck.animationState);
+          const fallName = getFallTypeName(fallCheck.fallType);
+          addCombatMessage(
+            `${fallName.korean}!`,
+            `${fallName.english}!`
+          );
+        }
+      }
+
       // Display technique name in combat log
-      const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
-      const techniqueNameEnglish = attackTechnique.englishName || attackTechnique.name.english;
+      const techniqueNameKorean = attackTechnique.koreanName ?? attackTechnique.name.korean;
+      const techniqueNameEnglish = attackTechnique.englishName ?? attackTechnique.name.english;
 
       if (result.isCritical) {
         addCombatMessage(
@@ -286,8 +311,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       }
     } else {
       combatActions.resetCombo();
-      const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
-      const techniqueNameEnglish = attackTechnique.englishName || attackTechnique.name.english;
+      const techniqueNameKorean = attackTechnique.koreanName ?? attackTechnique.name.korean;
+      const techniqueNameEnglish = attackTechnique.englishName ?? attackTechnique.name.english;
       addCombatMessage(
         `${techniqueNameKorean} 빗나감`,
         `${techniqueNameEnglish} Missed`
@@ -309,6 +334,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     combatAudio,
+    config.playerAnimations,
   ]);
 
   // Player defend handler
@@ -617,6 +643,25 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
 
+      // Check if player should fall after taking damage from AI
+      if (config.playerAnimations?.player1) {
+        const fallCheck = checkForFall(
+          updatedDefender,
+          combatSystem,
+          undefined, // lastImpactAngle not tracked yet
+          undefined  // attackAngle not tracked yet
+        );
+
+        if (fallCheck.shouldFall && fallCheck.animationState && fallCheck.fallType) {
+          config.playerAnimations.player1.transitionTo(fallCheck.animationState);
+          const fallName = getFallTypeName(fallCheck.fallType);
+          addCombatMessage(
+            `${fallName.korean}!`,
+            `${fallName.english}!`
+          );
+        }
+      }
+
       // Enhanced combat message with vital point info
       if (result.vitalPointHit && targetVitalPoint) {
         const vitalPoint = getVitalPointById(targetVitalPoint);
@@ -648,6 +693,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
     createAITechnique,
     getHitEffectType,
+    config.playerAnimations,
   ]);
 
   // AI defend handler
@@ -713,7 +759,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       combatAudio?.playBoneImpactSound({
         damage: result.damage,
         remainingHealth: validPlayers[0].health - result.damage,
-        vitalPoint: result.isCritical || !!targetVitalPoint, // Special techniques often target vital points
+        vitalPoint: result.isCritical === true || !!targetVitalPoint, // Special techniques often target vital points
         hitPosition,
       });
 
@@ -727,6 +773,25 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
+
+      // Check if player should fall after taking damage from AI technique
+      if (config.playerAnimations?.player1) {
+        const fallCheck = checkForFall(
+          updatedDefender,
+          combatSystem,
+          undefined, // lastImpactAngle not tracked yet
+          undefined  // attackAngle not tracked yet
+        );
+
+        if (fallCheck.shouldFall && fallCheck.animationState && fallCheck.fallType) {
+          config.playerAnimations.player1.transitionTo(fallCheck.animationState);
+          const fallName = getFallTypeName(fallCheck.fallType);
+          addCombatMessage(
+            `${fallName.korean}!`,
+            `${fallName.english}!`
+          );
+        }
+      }
 
       // Enhanced combat message with vital point info
       if (result.vitalPointHit && targetVitalPoint) {
@@ -757,6 +822,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     handleAIAttack,
     combatAudio,
     createAITechnique,
+    config.playerAnimations,
   ]);
 
   // AI movement handler with injury-based movement penalties

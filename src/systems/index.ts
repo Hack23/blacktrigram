@@ -77,6 +77,7 @@ export type {
 
 export * from "./ai";
 export * from "./combat";
+export * from "./combat/FallIntegration";
 export * from "./CombatSystem";
 export * from "./effects";
 export * from "./game";

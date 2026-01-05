@@ -165,3 +165,15 @@ export {
   getHeadMovementByType,
   isHeadMovementComplete,
 } from "./HeadMovements";
+
+// Fall animation system
+export {
+  FALL_BACKWARD_KEYFRAMES,
+  FALL_FORWARD_KEYFRAMES,
+  FALL_IMPACT_FRAMES,
+  FALL_SIDE_KEYFRAMES,
+  determineFallDirection,
+  determineFallFromStance,
+  getFallKeyframes,
+  getImpactFrame,
+} from "./FallAnimations";

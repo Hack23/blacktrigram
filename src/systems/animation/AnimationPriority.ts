@@ -50,6 +50,16 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   step_forward_right: STEP_PRIORITY,
   step_back_left: STEP_PRIORITY,
   step_back_right: STEP_PRIORITY,
+  // Fall animations (낙법) - highest priority
+  fall_forward: AnimationPriority.FALL,
+  fall_backward: AnimationPriority.FALL,
+  fall_side_left: AnimationPriority.FALL,
+  fall_side_right: AnimationPriority.FALL,
+  // Ground states (지면 자세) - idle priority
+  ground_prone: AnimationPriority.IDLE,
+  ground_supine: AnimationPriority.IDLE,
+  ground_side_left: AnimationPriority.IDLE,
+  ground_side_right: AnimationPriority.IDLE,
 };
 
 /**

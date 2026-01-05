@@ -974,6 +974,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     addHitEffect,
     arenaBounds,
     combatAudio,
+    playerAnimations: {
+      player1: player1Animation,
+      player2: player2Animation,
+    },
   });
 
   // Store handleAttack in ref for animation callback (avoid circular dependency)

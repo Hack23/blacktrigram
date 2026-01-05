@@ -1187,6 +1187,88 @@ if (currentDistance > optimalDistance + 50) {
 
 ---
 
+
+---
+
+## 🤕 Fall Down Animation System (낙법 애니메이션 시스템)
+
+**Added**: January 2025 - Realistic fall animations for knockdowns, leg sweeps, and consciousness loss
+
+The Fall Down Animation System implements authentic Korean martial arts falling techniques (낙법 - Nakbeop) for realistic knockdown events. Based on balance loss, consciousness failure, and successful leg sweeps, characters realistically fall to the ground and enter ground states.
+
+### Fall Animation Specifications
+
+#### Four Fall Types (낙법 종류)
+
+| Fall Type | Korean | Frames | Duration | Impact Frame | Trigger |
+|-----------|--------|--------|----------|--------------|---------|
+| **Forward** | 전방낙법 | 24 | 400ms | 18 | Rear attack, aggressive stances |
+| **Backward** | 후방낙법 | 30 | 500ms | 22 | Frontal attack, consciousness loss |
+| **Side Left** | 좌측낙법 | 27 | 450ms | 20 | Left side attack, leg sweep |
+| **Side Right** | 우측낙법 | 27 | 450ms | 20 | Right side attack, leg sweep |
+
+#### Ground States (지면 자세)
+
+| Ground State | Korean | Description |
+|--------------|--------|-------------|
+| **Prone** | 엎드림 | Face down, breathing loop (4 frames) |
+| **Supine** | 누움 | Face up, breathing loop (4 frames) |
+| **Side Left** | 좌측와 | Left side, breathing loop (4 frames) |
+| **Side Right** | 우측와 | Right side, breathing loop (4 frames) |
+
+### System Integration
+
+**Balance System** (균형 시스템):
+- Triggers fall when balance < 20% (FALLING state)
+- Determines fall direction from attack angle and stance
+- Method: `balanceSystem.shouldTriggerFall(player)`
+- Method: `balanceSystem.determineFallType(player, attackAngle, attackHeight)`
+
+**Consciousness System** (의식 시스템):
+- Triggers fall when consciousness < 10% (UNCONSCIOUS state)
+- Uses last impact angle or stance bias for direction
+- Method: `consciousnessSystem.shouldTriggerFall(player)`
+- Method: `consciousnessSystem.determineFallType(player, lastImpactAngle)`
+
+**Animation Priority**:
+- Falls have highest priority (Priority 8, above KO=7)
+- Can interrupt any animation including attacks and stance changes
+- Automatically transition to ground states upon completion
+
+### Implementation Status
+
+| Feature | Status | Tests | File |
+|---------|--------|-------|------|
+| Fall Animation Types | ✅ Complete | 39 | `FallAnimations.ts` |
+| Fall Direction Logic | ✅ Complete | 39 | `FallAnimations.ts` |
+| Keyframe Definitions | ✅ Complete | 39 | `FallAnimations.ts` |
+| Balance Integration | ✅ Complete | 25 | `BalanceSystem.ts` |
+| Consciousness Integration | ✅ Complete | - | `ConsciousnessSystem.ts` |
+| Animation State Machine | ✅ Complete | - | `AnimationStateMachine.ts` |
+| Transition Rules | ✅ Complete | - | `AnimationTransitions.ts` |
+| Priority System | ✅ Complete | - | `AnimationPriority.ts` |
+| Impact Effects | 📋 Planned | - | Future enhancement |
+| Visual Rendering | 📋 Pending | - | Requires 3D integration |
+
+### Korean Terminology
+
+- **낙법 (Nakbeop)**: Falling technique/method
+- **기상 (Gisang)**: Rising/standing up
+- **전방낙법 (Jeonbang Nakbeop)**: Forward fall
+- **후방낙법 (Hubang Nakbeop)**: Backward fall
+- **측방낙법 (Cheukbang Nakbeop)**: Side fall
+- **의식상실낙법 (Uisik Sangsil Nakbeop)**: Consciousness loss fall
+- **기절낙하 (Gijeol Nakha)**: Knockout collapse
+
+### Future Enhancements
+
+- Camera shake on ground impact (2-frame duration)
+- Ground dust particle effects at impact point
+- Body impact audio cues
+- Recovery animations from ground states (기상)
+- Ground combat actions (ground strikes, grappling)
+- Archetype-specific fall variations
+
 ## 🎮 Combat Component Architecture
 
 ```mermaid

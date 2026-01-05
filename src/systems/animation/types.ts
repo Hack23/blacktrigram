@@ -24,6 +24,14 @@
  * - ko: Knockout/death animation
  * - stance_guard_{stance}: Stance-specific idle guard animations (4-6 frames each)
  * - step_{direction}: Tactical step movements (18 frames, 300ms, 30cm distance)
+ * - fall_forward: Forward fall animation (24 frames, 400ms)
+ * - fall_backward: Backward fall animation (30 frames, 500ms)
+ * - fall_side_left: Left side fall animation (27 frames, 450ms)
+ * - fall_side_right: Right side fall animation (27 frames, 450ms)
+ * - ground_prone: Face-down ground position (4 frame breathing loop)
+ * - ground_supine: Face-up ground position (4 frame breathing loop)
+ * - ground_side_left: Left side ground position (4 frame breathing loop)
+ * - ground_side_right: Right side ground position (4 frame breathing loop)
  * 
  * @public
  * @korean 애니메이션상태
@@ -54,6 +62,14 @@ export type AnimationState =
   | "step_forward_right"
   | "step_back_left"
   | "step_back_right";
+  | "fall_forward"
+  | "fall_backward"
+  | "fall_side_left"
+  | "fall_side_right"
+  | "ground_prone"
+  | "ground_supine"
+  | "ground_side_left"
+  | "ground_side_right";
 
 /**
  * Animation priority levels for interrupt system
@@ -63,6 +79,7 @@ export type AnimationState =
  * 
  * Steps are non-interruptible (same priority as attacks) to ensure commitment
  * to tactical repositioning in Korean martial arts.
+ * Priority order: fall > ko > hit > attack > defend > stance_change > movement > idle
  * 
  * @public
  * @korean 애니메이션우선순위
@@ -76,6 +93,7 @@ export enum AnimationPriority {
   ATTACK = 5, // STEP shares ATTACK priority (both non-interruptible)
   HIT = 6,
   KO = 7,
+  FALL = 8,
 }
 
 // Step animations use ATTACK priority (5) - both are non-interruptible
@@ -393,3 +411,74 @@ export interface StepKeyframe {
    */
   readonly cogHeight: number;
 }
+ * Fall direction types for knockdown animations
+ * 
+ * Determines which fall animation to play based on attack direction,
+ * balance loss, or consciousness failure.
+ * 
+ * Korean terminology:
+ * - forward: 전방낙법 (Jeonbang Nakbeop) - Forward falling technique
+ * - backward: 후방낙법 (Hubang Nakbeop) - Backward falling technique
+ * - side_left: 좌측낙법 (Jwacheuk Nakbeop) - Left side falling technique
+ * - side_right: 우측낙법 (Ucheuk Nakbeop) - Right side falling technique
+ * 
+ * @public
+ * @korean 낙법유형
+ */
+export type FallType = "forward" | "backward" | "side_left" | "side_right";
+
+/**
+ * Ground position states after falling
+ * 
+ * Represents the character's position on the ground after a fall.
+ * Each state has a looping breathing animation.
+ * 
+ * Korean terminology:
+ * - prone: 엎드림 (Eopdeurim) - Face down position
+ * - supine: 누움 (Nuum) - Face up position
+ * - side_left: 좌측와 (Jwacheuk Wa) - Left side position
+ * - side_right: 우측와 (Ucheuk Wa) - Right side position
+ * 
+ * @public
+ * @korean 지면자세
+ */
+export type GroundState = "prone" | "supine" | "side_left" | "side_right";
+
+/**
+ * Maps fall types to corresponding ground states
+ * 
+ * @public
+ * @korean 낙법지면맵
+ */
+export const FALL_TO_GROUND_MAP: Record<FallType, GroundState> = {
+  forward: "prone",
+  backward: "supine",
+  side_left: "side_left",
+  side_right: "side_right",
+};
+
+/**
+ * Maps fall types to corresponding animation states
+ * 
+ * @public
+ * @korean 낙법애니메이션맵
+ */
+export const FALL_TYPE_TO_ANIMATION: Record<FallType, AnimationState> = {
+  forward: "fall_forward",
+  backward: "fall_backward",
+  side_left: "fall_side_left",
+  side_right: "fall_side_right",
+};
+
+/**
+ * Maps ground states to corresponding animation states
+ * 
+ * @public
+ * @korean 지면애니메이션맵
+ */
+export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
+  prone: "ground_prone",
+  supine: "ground_supine",
+  side_left: "ground_side_left",
+  side_right: "ground_side_right",
+};

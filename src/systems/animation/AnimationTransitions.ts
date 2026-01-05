@@ -19,7 +19,7 @@
  * @korean 애니메이션전환
  */
 
-import { AnimationState, TransitionRule } from "./types";
+import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types";
 
 /**
  * Stance guard animation states (팔괘 방어 자세)
@@ -35,6 +35,103 @@ const STANCE_GUARD_STATES: readonly AnimationState[] = [
   "stance_guard_gan",
   "stance_guard_gon",
 ] as const;
+
+/**
+ * Fall animation states (낙법 상태)
+ * @korean 낙법상태들
+ */
+const FALL_STATES: readonly AnimationState[] = [
+  "fall_forward",
+  "fall_backward",
+  "fall_side_left",
+  "fall_side_right",
+] as const;
+
+/**
+ * Ground position states (지면 자세)
+ * @korean 지면자세들
+ */
+const GROUND_STATES: readonly AnimationState[] = [
+  "ground_prone",
+  "ground_supine",
+  "ground_side_left",
+  "ground_side_right",
+] as const;
+
+/**
+ * Generate transition rules for fall animations
+ * 
+ * Fall animations have highest priority and can interrupt any state.
+ * Falls automatically transition to ground states upon completion.
+ * Ground states can only transition to recovery animations (future).
+ * 
+ * @korean 낙법전환규칙생성
+ */
+function generateFallTransitions(): TransitionRule[] {
+  const transitions: TransitionRule[] = [];
+  
+  // All states (except falls and ko) can transition to fall states
+  const nonFallStates: AnimationState[] = [
+    "idle",
+    "walk",
+    "run",
+    "attack",
+    "defend",
+    "hit",
+    "stance_change",
+    "stance_side_switch",
+    ...STANCE_GUARD_STATES,
+  ];
+  
+  for (const fromState of nonFallStates) {
+    for (const fallState of FALL_STATES) {
+      transitions.push({
+        from: fromState,
+        to: fallState,
+        allowed: true,
+      });
+    }
+  }
+  
+  // Fall states automatically transition to ground states (handled in state machine)
+  for (const fallState of FALL_STATES) {
+    // Falls can only go to their corresponding ground state
+    // Use FALL_TO_GROUND_MAP for type-safe mapping
+    const fallType = fallState.replace("fall_", "");
+    
+    // Validate that fallType is a valid FallType before using in map
+    if (fallType === "forward" || fallType === "backward" || 
+        fallType === "side_left" || fallType === "side_right") {
+      const groundState = FALL_TO_GROUND_MAP[fallType as FallType];
+      const groundAnimState = `ground_${groundState}` as AnimationState;
+      transitions.push({
+        from: fallState,
+        to: groundAnimState,
+        allowed: true,
+      });
+    }
+  }
+  
+  // Ground states are semi-terminal (can only transition to recovery - future feature)
+  // For now, they can be interrupted by hit or ko
+  for (const groundState of GROUND_STATES) {
+    transitions.push(
+      { from: groundState, to: "hit", allowed: true },
+      { from: groundState, to: "ko", allowed: true }
+    );
+    
+    // Falls can interrupt ground states
+    for (const fallState of FALL_STATES) {
+      transitions.push({
+        from: groundState,
+        to: fallState,
+        allowed: true,
+      });
+    }
+  }
+  
+  return transitions;
+}
 
 /**
  * Generate transition rules for stance guards
@@ -228,6 +325,9 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
 
   // KO is terminal - no transitions out
   // (Player must be revived/reset to leave KO state)
+
+  // Fall transitions (generated dynamically)
+  ...generateFallTransitions(),
 
   // Stance guard transitions (generated dynamically)
   ...generateStanceGuardTransitions(),

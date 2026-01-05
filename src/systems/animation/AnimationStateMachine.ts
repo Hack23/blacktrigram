@@ -25,8 +25,10 @@ import type {
   AnimationPriority,
   AnimationState,
   AnimationUpdateResult,
+  FallType,
 } from "./types";
 import { STEP_PRIORITY } from "./types";
+import { FALL_TO_GROUND_MAP } from "./types";
 
 /**
  * Default animation configurations based on game-design.md
@@ -150,6 +152,104 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: false,
         priority: 7 as AnimationPriority,
         duration: 0.5,
+      },
+    ],
+    // Fall animations (낙법 애니메이션) - Priority 8 (highest)
+    [
+      "fall_forward",
+      {
+        state: "fall_forward",
+        frames: 24, // 400ms at 60fps - stumble forward, knee collapse, hands brace, face-down
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.4,
+      },
+    ],
+    [
+      "fall_backward",
+      {
+        state: "fall_backward",
+        frames: 30, // 500ms at 60fps - backward stumble, sit, back impact, supine
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.5,
+      },
+    ],
+    [
+      "fall_side_left",
+      {
+        state: "fall_side_left",
+        frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.45,
+      },
+    ],
+    [
+      "fall_side_right",
+      {
+        state: "fall_side_right",
+        frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.45,
+      },
+    ],
+    // Ground state animations (지면 자세) - Breathing loops
+    [
+      "ground_prone",
+      {
+        state: "ground_prone",
+        frames: 4, // Breathing loop on ground (face down)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "ground_supine",
+      {
+        state: "ground_supine",
+        frames: 4, // Breathing loop on ground (face up)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "ground_side_left",
+      {
+        state: "ground_side_left",
+        frames: 4, // Breathing loop on ground (left side)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "ground_side_right",
+      {
+        state: "ground_side_right",
+        frames: 4, // Breathing loop on ground (right side)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
       },
     ],
     // Stance-specific guard animations (팔괘 방어 자세)
@@ -489,8 +589,70 @@ export class PlayerAnimationStateMachine {
             this.events.onAnimationComplete(this.currentState);
           }
 
-          // Auto-transition to idle for non-looping animations
-          if (this.currentState !== "idle" && this.currentState !== "ko") {
+          // Auto-transition logic
+          // Fall animations transition to ground states using the mapping
+          if (this.currentState.startsWith("fall_")) {
+            const fallType = this.currentState.replace("fall_", "");
+            
+            // Validate that fallType is a valid FallType before using in map
+            if (fallType === "forward" || fallType === "backward" || 
+                fallType === "side_left" || fallType === "side_right") {
+              const groundState = FALL_TO_GROUND_MAP[fallType as FallType];
+              const groundAnimKey = `ground_${groundState}`;
+
+              // Validate that the constructed ground animation state actually exists
+              if (DEFAULT_ANIMATION_CONFIGS.has(groundAnimKey as AnimationState)) {
+                const groundAnimState = groundAnimKey as AnimationState;
+
+                this.previousState = this.currentState;
+                this.currentState = groundAnimState;
+                this.frameIndex = 0;
+                this.timeAccumulator = 0;
+                this.justStarted = true;
+
+                if (this.events?.onAnimationStart) {
+                  this.events.onAnimationStart(groundAnimState);
+                }
+              } else {
+                // Fallback: if mapping is invalid, safely transition to idle
+                // instead of entering an undefined animation state.
+                console.warn(
+                  "[AnimationStateMachine] Invalid ground animation mapping for fall type:",
+                  fallType,
+                  "->",
+                  groundAnimKey
+                );
+                this.previousState = this.currentState;
+                this.currentState = "idle";
+                this.frameIndex = 0;
+                this.timeAccumulator = 0;
+                this.justStarted = true;
+
+                if (this.events?.onAnimationStart) {
+                  this.events.onAnimationStart("idle");
+                }
+              }
+            } else {
+              // Invalid fall type - fallback to idle
+              console.warn(
+                "[AnimationStateMachine] Invalid fall animation state:",
+                this.currentState
+              );
+              this.previousState = this.currentState;
+              this.currentState = "idle";
+              this.frameIndex = 0;
+              this.timeAccumulator = 0;
+              this.justStarted = true;
+
+              if (this.events?.onAnimationStart) {
+                this.events.onAnimationStart("idle");
+              }
+            }
+          }
+          // Non-fall, non-looping animations transition to idle
+          else if (this.currentState !== "idle" && 
+                   this.currentState !== "ko" &&
+                   !this.currentState.startsWith("ground_")) {
             // Direct transition to idle without interrupt event
             this.previousState = this.currentState;
             this.currentState = "idle";
@@ -502,7 +664,7 @@ export class PlayerAnimationStateMachine {
               this.events.onAnimationStart("idle");
             }
           } else {
-            // Stay on last frame
+            // Stay on last frame (for ko and ground states)
             this.frameIndex = currentAnim.frames - 1;
           }
         }
