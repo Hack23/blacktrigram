@@ -353,16 +353,403 @@ export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation = {
 };
 
 /**
+ * SLIDE STEP LEFT Animation (미끄럼보 좌)
+ *
+ * Both feet slide left together with minimal lift and no weight transfer.
+ * Maintains stable base throughout lateral movement.
+ *
+ * Distance: 30cm left
+ * Duration: 200ms (12 frames at 60fps)
+ * Guard: Maintained throughout
+ *
+ * @korean 미끄럼보좌애니메이션
+ */
+export const FOOTWORK_SLIDE_LEFT_ANIMATION: SkeletalAnimation = {
+  name: "footwork_slide_left",
+  koreanName: "미끄럼보 좌",
+  duration: 0.2,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    {
+      time: 0.0,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0.05, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.02, 0)],
+      ]),
+    },
+    {
+      time: 0.05,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0.03, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.1, -0.02, 0)],
+      ]),
+    },
+    {
+      time: 0.15,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.25, 0, 0)],
+      ]),
+    },
+    {
+      time: 0.2,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(-0.3, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * SLIDE STEP RIGHT Animation (미끄럼보 우)
+ *
+ * Both feet slide right together with minimal lift and no weight transfer.
+ * Mirror of slide left.
+ *
+ * Distance: 30cm right
+ * Duration: 200ms (12 frames at 60fps)
+ * Guard: Maintained throughout
+ *
+ * @korean 미끄럼보우애니메이션
+ */
+export const FOOTWORK_SLIDE_RIGHT_ANIMATION: SkeletalAnimation = {
+  name: "footwork_slide_right",
+  koreanName: "미끄럼보 우",
+  duration: 0.2,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    {
+      time: 0.0,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.05, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.02, 0)],
+      ]),
+    },
+    {
+      time: 0.05,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.03, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0.1, -0.02, 0)],
+      ]),
+    },
+    {
+      time: 0.15,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0.25, 0, 0)],
+      ]),
+    },
+    {
+      time: 0.2,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0.3, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * PIVOT STEP LEFT Animation (축족회전 좌)
+ *
+ * 90-degree counter-clockwise rotation on planted right foot.
+ * Left foot repositions around the pivot point.
+ *
+ * Rotation: 90° counter-clockwise
+ * Duration: 250ms (15 frames at 60fps)
+ * Guard: Maintained throughout
+ *
+ * @korean 축족회전좌애니메이션
+ */
+export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation = {
+  name: "footwork_pivot_left",
+  koreanName: "축족회전 좌",
+  duration: 0.25,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    // Frame 1: Preparation - Weight on right foot (0.0s)
+    {
+      time: 0.0,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0.05, "XYZ")],
+        // Right knee bends (pivot foot)
+        [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        // Guard maintained
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+    // Frame 2: Rotation start (0.08s)
+    {
+      time: 0.08,
+      easing: "ease-out",
+      boneRotations: new Map([
+        // Begin pelvis rotation (counter-clockwise)
+        [BoneName.PELVIS, new THREE.Euler(0, Math.PI / 8, 0.08, "XYZ")], // 22.5° rotation
+        [BoneName.KNEE_R, new THREE.Euler(-0.18, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Arms rotate with body
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+    // Frame 3: Mid-rotation (0.16s)
+    {
+      time: 0.16,
+      easing: "linear",
+      boneRotations: new Map([
+        // 45° rotation
+        [BoneName.PELVIS, new THREE.Euler(0, Math.PI / 4, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+    // Frame 4: Complete rotation (0.25s)
+    {
+      time: 0.25,
+      easing: "ease-in",
+      boneRotations: new Map([
+        // 90° rotation complete
+        [BoneName.PELVIS, new THREE.Euler(0, Math.PI / 2, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * PIVOT STEP RIGHT Animation (축족회전 우)
+ *
+ * 90-degree clockwise rotation on planted left foot.
+ * Right foot repositions around the pivot point.
+ *
+ * Rotation: 90° clockwise
+ * Duration: 250ms (15 frames at 60fps)
+ * Guard: Maintained throughout
+ *
+ * @korean 축족회전우애니메이션
+ */
+export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation = {
+  name: "footwork_pivot_right",
+  koreanName: "축족회전 우",
+  duration: 0.25,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    {
+      time: 0.0,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.05, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+    {
+      time: 0.08,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, -Math.PI / 8, -0.08, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.18, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+    {
+      time: 0.16,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, -Math.PI / 4, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+    {
+      time: 0.25,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, -Math.PI / 2, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
+      ]),
+    },
+  ],
+};
+
+/**
+ * SHUFFLE STEP Animation (섞음보)
+ *
+ * Quick micro-adjustment for fine positioning.
+ * Minimal animation with 15cm omnidirectional movement capability.
+ *
+ * Distance: 15cm (half of standard step)
+ * Duration: 100ms (6 frames at 60fps)
+ * Guard: Maintained throughout
+ *
+ * @korean 섞음보애니메이션
+ */
+export const FOOTWORK_SHUFFLE_ANIMATION: SkeletalAnimation = {
+  name: "footwork_shuffle",
+  koreanName: "섞음보",
+  duration: 0.1,
+  loop: false,
+  type: "movement",
+  keyframes: [
+    // Frame 1: Start (0.0s)
+    {
+      time: 0.0,
+      easing: "linear",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
+      ]),
+    },
+    // Frame 2: Mid-shuffle (0.05s)
+    {
+      time: 0.05,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        // Default forward shuffle - can be overridden by position
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.015, -0.075)],
+      ]),
+    },
+    // Frame 3: Complete (0.1s)
+    {
+      time: 0.1,
+      easing: "ease-in",
+      boneRotations: new Map([
+        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, 0, -0.15)],
+      ]),
+    },
+  ],
+};
+
+/**
  * Map of all footwork skeletal animations
  *
- * Currently implemented:
+ * Complete implementation of all footwork patterns:
  * - Circular left/right: Lateral movement maintaining forward guard
- * - Slide forward/back: Both feet move together, stable base
- *
- * Pending implementation:
- * - Slide left/right: Lateral sliding movements
+ * - Slide forward/back/left/right: Both feet move together, stable base
  * - Pivot left/right: 90° rotations on planted foot
- * - Shuffle: Quick micro-adjustments
+ * - Shuffle: Quick 15cm micro-adjustments
  *
  * @korean 보법애니메이션맵
  */
@@ -371,6 +758,11 @@ export const FOOTWORK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   ["footwork_circular_right", FOOTWORK_CIRCULAR_RIGHT_ANIMATION],
   ["footwork_slide_forward", FOOTWORK_SLIDE_FORWARD_ANIMATION],
   ["footwork_slide_back", FOOTWORK_SLIDE_BACK_ANIMATION],
+  ["footwork_slide_left", FOOTWORK_SLIDE_LEFT_ANIMATION],
+  ["footwork_slide_right", FOOTWORK_SLIDE_RIGHT_ANIMATION],
+  ["footwork_pivot_left", FOOTWORK_PIVOT_LEFT_ANIMATION],
+  ["footwork_pivot_right", FOOTWORK_PIVOT_RIGHT_ANIMATION],
+  ["footwork_shuffle", FOOTWORK_SHUFFLE_ANIMATION],
 ]);
 
 /**
