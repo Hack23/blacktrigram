@@ -97,26 +97,31 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (visible && (koreanName || englishName)) {
-      // Fade in
-      setIsVisible(true);
-      setOpacity(1);
-
-      // Fade out after duration
-      const fadeOutTimer = setTimeout(() => {
-        setOpacity(0);
-      }, duration - 500); // Start fading 500ms before end
-
-      // Hide completely after fade out
-      const hideTimer = setTimeout(() => {
-        setIsVisible(false);
-      }, duration);
-
-      return () => {
-        clearTimeout(fadeOutTimer);
-        clearTimeout(hideTimer);
-      };
+    if (!visible || (!koreanName && !englishName)) {
+      // Ensure overlay is hidden when not visible or no names provided
+      setIsVisible(false);
+      setOpacity(0);
+      return;
     }
+
+    // Fade in
+    setIsVisible(true);
+    setOpacity(1);
+
+    // Fade out after duration
+    const fadeOutTimer = setTimeout(() => {
+      setOpacity(0);
+    }, duration - 500); // Start fading 500ms before end
+
+    // Hide completely after fade out
+    const hideTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, duration);
+
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(hideTimer);
+    };
   }, [visible, koreanName, englishName, duration]);
 
   if (!isVisible || (!koreanName && !englishName)) {

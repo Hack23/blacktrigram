@@ -1,5 +1,6 @@
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { getTechniqueById } from "../data/techniques";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
 import {
   applyBreathingDisruptionFromVitalPoint,
@@ -24,9 +25,15 @@ import {
 } from "./PlayerEffectManager";
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
-import { StatusEffect } from "./types";
+import { StatusEffect, Technique } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
+import {
+  determineAnimationTypeForTechnique,
+  getAnimationNameForType,
+  calculateSpeedModifierForDamage,
+  getAdjustedAnimationDuration,
+} from "./animation/TechniqueAnimationMapper";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -195,14 +202,6 @@ export class CombatSystem implements CombatSystemInterface {
   private getAnimationInfoForTechnique(
     technique: KoreanTechnique
   ): CombatResult["animation"] {
-    // Import animation mapper dynamically to avoid circular dependencies
-    const {
-      determineAnimationTypeForTechnique,
-      getAnimationNameForType,
-      calculateSpeedModifierForDamage,
-      getAdjustedAnimationDuration,
-    } = require("../animation/TechniqueAnimationMapper");
-
     // Check if technique has explicit animation config (from Technique interface)
     // KoreanTechnique may not have animation field, so check the technique data
     const techniqueData = this.getTechniqueData(technique);
@@ -261,10 +260,8 @@ export class CombatSystem implements CombatSystemInterface {
    * @private
    * @korean 기술데이터가져오기
    */
-  private getTechniqueData(technique: KoreanTechnique): any {
-    // Import getTechniqueById from techniques.ts
-    const { getTechniqueById } = require("../../data/techniques");
-    return getTechniqueById(technique.id) || null;
+  private getTechniqueData(technique: KoreanTechnique): Technique | null {
+    return getTechniqueById(technique.id) ?? null;
   }
 
   /**
