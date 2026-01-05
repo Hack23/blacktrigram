@@ -40,7 +40,15 @@ export type PlayerAnimation =
   | "walk"
   | "block"
   | "counter"
-  | "death";
+  | "death"
+  | "step_forward"
+  | "step_back"
+  | "step_left"
+  | "step_right"
+  | "step_forward_left"
+  | "step_forward_right"
+  | "step_back_left"
+  | "step_back_right";
 
 /**
  * Unified props for Player3D visual component.

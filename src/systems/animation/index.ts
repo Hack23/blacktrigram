@@ -79,6 +79,16 @@ export {
   getAnimationForTechnique,
 } from "./AttackAnimations";
 
+// Step movement animations
+export {
+  STEP_FORWARD_ANIMATION,
+  STEP_BACK_ANIMATION,
+  STEP_LEFT_ANIMATION,
+  STEP_RIGHT_ANIMATION,
+  STEP_ANIMATIONS,
+  getStepAnimation,
+} from "./StepSkeletalAnimations";
+
 // Step animation system
 export {
   STEP_ANIMATION_PARAMS,

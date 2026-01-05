@@ -24,6 +24,7 @@ import {
   updateAnimation,
   updateHandAnimationState,
   getGuardPoseForStance,
+  getStepAnimation,
 } from "../../systems/animation";
 import type { StanceLaterality } from "../../systems/trigram/types";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
@@ -655,6 +656,43 @@ export const SkeletalPlayer3D: React.FC<
         isPlaying: false,
         currentTime: 0,
       }));
+    } else if (currentAnimation?.startsWith("step_")) {
+      // Tactical step animation - 전술적 발걸음 애니메이션
+      const stepAnim = getStepAnimation(currentAnimation);
+      if (stepAnim) {
+        setAnimState({
+          currentAnimation: stepAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0, // Normal step speed (300ms duration)
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+
+        // Maintain guard hands during step (hands stay up)
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+      } else {
+        // Fallback to walk if step animation not found
+        console.warn(
+          `[SkeletalPlayer3D] Step animation not found for ${currentAnimation}, using walk fallback`
+        );
+        const walkAnim = getAnimation("walk");
+        if (walkAnim) {
+          setAnimState({
+            currentAnimation: walkAnim,
+            currentTime: 0,
+            isPlaying: true,
+            playbackSpeed: 1.0,
+            previousKeyframeIndex: 0,
+            nextKeyframeIndex: 1,
+          });
+        }
+      }
     } else if (currentAnimation?.startsWith("stance_guard_")) {
       // Stance guard animation - 자세 방어 애니메이션
       // Note: PlayerAnimation type doesn't include "stance_guard_*" variants, but this check
