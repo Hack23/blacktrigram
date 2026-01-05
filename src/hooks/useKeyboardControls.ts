@@ -289,12 +289,20 @@ export function useKeyboardControls({
                 if (playSFX) playSFX("footstep");
               } else {
                 // Cardinal direction tactical step
-                const stepDirection = action.replace("move_", "step_");
+                // Map move_up/move_down to step_forward/step_back to match AnimationState
+                const stepDirectionMap: Record<string, string> = {
+                  move_up: "step_forward",
+                  move_down: "step_back",
+                  move_left: "step_left",
+                  move_right: "step_right",
+                };
+                
+                const stepDirection = stepDirectionMap[action] ?? action.replace("move_", "step_");
                 onAction(stepDirection);
                 
                 const koreanTerms: Record<string, string> = {
-                  "step_up": "전진보법 (Forward Step)",
-                  "step_down": "후퇴보법 (Retreat Step)",
+                  "step_forward": "전진보법 (Forward Step)",
+                  "step_back": "후퇴보법 (Retreat Step)",
                   "step_left": "좌측면보법 (Left Step)",
                   "step_right": "우측면보법 (Right Step)",
                 };

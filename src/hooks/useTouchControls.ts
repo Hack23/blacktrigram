@@ -233,14 +233,21 @@ export function useTouchControls({
     }
     
     // Set up hold detection timer
+    // Note: Hold gesture uses the initial touch position for directional detection
+    // since we don't track movement during the hold (no touchMove handler).
+    // The hold is triggered by duration alone, and direction is determined
+    // from the initial touch location relative to screen center or D-pad.
     holdTimerRef.current = window.setTimeout(() => {
       // Touch held for longer than threshold - trigger hold gesture
       if (touchStartRef.current && isTouching) {
+        // For hold gestures, we detect direction from the initial touch position
+        // This works for D-pad style controls where the user touches and holds
+        // a directional button area, not for dragging gestures
         const holdGesture = getDirectionalGesture(
           touchStartRef.current.clientX,
           touchStartRef.current.clientY,
-          touch.clientX,
-          touch.clientY,
+          touchStartRef.current.clientX,
+          touchStartRef.current.clientY,
           false // Not a tap, it's a hold
         );
         
