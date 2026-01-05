@@ -252,23 +252,16 @@ export function useTouchControls({
         // Invert Y so that a touch higher on the screen is considered "forward"
         const deltaY = screenCenterY - clientY;
 
-        let holdGesture: GestureType | null = null;
+        const holdGesture: GestureType =
+          Math.abs(deltaX) >= Math.abs(deltaY)
+            ? (deltaX > 0 ? 'hold-right' : 'hold-left')
+            : (deltaY > 0 ? 'hold-forward' : 'hold-back');
 
-        if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-          // Horizontal dominance
-          holdGesture = deltaX > 0 ? 'hold-right' : 'hold-left';
-        } else {
-          // Vertical dominance
-          holdGesture = deltaY > 0 ? 'hold-forward' : 'hold-back';
-        }
-
-        if (holdGesture) {
-          onGesture({
-            type: holdGesture,
-            startX: clientX,
-            startY: clientY,
-          });
-        }
+        onGesture({
+          type: holdGesture,
+          startX: clientX,
+          startY: clientY,
+        });
       }
     }, holdThreshold);
   }, [enabled, onGesture, holdThreshold]);
