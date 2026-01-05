@@ -1,5 +1,7 @@
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { Technique } from "../types/technique";
+import { getTechniqueById } from "../data/techniques";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
 import {
   applyBreathingDisruptionFromVitalPoint,
@@ -27,6 +29,12 @@ import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
+import {
+  determineAnimationTypeForTechnique,
+  getAnimationNameForType,
+  calculateSpeedModifierForDamage,
+  getAdjustedAnimationDuration,
+} from "./animation/TechniqueAnimationMapper";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -159,6 +167,9 @@ export class CombatSystem implements CombatSystemInterface {
     const critRoll = Math.random();
     const isCritical = critRoll <= (technique.critChance ?? 0.1);
 
+    // Determine animation information for technique
+    const animationInfo = this.getAnimationInfoForTechnique(technique);
+
     return {
       hit: true,
       damage: damageResult.totalDamage,
@@ -173,7 +184,85 @@ export class CombatSystem implements CombatSystemInterface {
       isCritical: vitalPointResult?.hit ?? false,
       isBlocked: false,
       targetedVitalPointId, // Pass through the targeted vital point ID
+      animation: animationInfo, // Add animation information
     };
+  }
+
+  /**
+   * Get animation information for a technique
+   * 
+   * Determines the skeletal animation to play, duration, and speed modifier
+   * based on technique configuration or automatic determination.
+   * 
+   * @param technique - Korean technique to execute
+   * @returns Animation information or undefined
+   * 
+   * @private
+   * @korean 기술애니메이션정보가져오기
+   */
+  private getAnimationInfoForTechnique(
+    technique: KoreanTechnique
+  ): CombatResult["animation"] {
+    // Check if technique has explicit animation config (from Technique interface)
+    // KoreanTechnique may not have animation field, so check the technique data
+    const techniqueData = this.getTechniqueData(technique);
+    
+    let animationType;
+    let speedModifier;
+
+    if (techniqueData?.animation) {
+      // Use explicit animation configuration
+      animationType = techniqueData.animation.type;
+      speedModifier = techniqueData.animation.speedModifier;
+    } else {
+      // Auto-determine animation from technique characteristics
+      const techniqueName =
+        technique.name?.english || technique.englishName || "";
+      const techniqueId = technique.id || "";
+      const damageType = technique.damageType || "";
+
+      animationType = determineAnimationTypeForTechnique(
+        techniqueName,
+        techniqueId,
+        damageType
+      );
+
+      // Calculate speed modifier based on technique damage
+      speedModifier = calculateSpeedModifierForDamage(technique.damage || 15);
+    }
+
+    // Get base animation name from animation type
+    const animationName = getAnimationNameForType(animationType);
+
+    // Calculate adjusted duration
+    const duration = getAdjustedAnimationDuration(
+      animationName,
+      speedModifier
+    );
+
+    // Get Korean technique name for display
+    const techniqueDisplayName =
+      technique.name?.korean || technique.koreanName || technique.id;
+
+    return {
+      animationName,
+      duration,
+      speedModifier,
+      techniqueDisplayName,
+    };
+  }
+
+  /**
+   * Get Technique data if this KoreanTechnique has an associated Technique definition
+   * 
+   * @param technique - Korean technique
+   * @returns Technique data or null
+   * 
+   * @private
+   * @korean 기술데이터가져오기
+   */
+  private getTechniqueData(technique: KoreanTechnique): Technique | null {
+    return getTechniqueById(technique.id) ?? null;
   }
 
   /**

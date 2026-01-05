@@ -17,6 +17,7 @@ export { default as VitalPointOverlayControls } from "./VitalPointOverlayControl
 export { ActionFeedback, TechniqueName } from "./ActionFeedback";
 export { ComboCounter } from "./ComboCounter";
 export { DamageNumbers } from "./DamageNumbers";
+export { TechniqueNameDisplay } from "./TechniqueNameDisplay";
 
 // Player State Visual Indicators
 export { BalanceIndicator } from "./BalanceIndicator";
@@ -67,6 +68,7 @@ export type { RoundAnnouncementProps, RoundStats } from "./RoundAnnouncement";
 export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { TechniqueBarProps } from "./TechniqueBar";
 export type { TechniqueCardProps } from "./TechniqueCard";
+export type { TechniqueNameDisplayProps } from "./TechniqueNameDisplay";
 export type {
   TraumaOverlay3DProps,
   Injury,
