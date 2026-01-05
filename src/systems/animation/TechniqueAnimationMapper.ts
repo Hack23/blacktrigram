@@ -26,14 +26,14 @@ const ANIMATION_TYPE_TO_NAME_MAP: Record<AttackAnimationType, string> = {
   [AttackAnimationType.PUNCH_MID]: "cross", // Mid-level cross punch
   [AttackAnimationType.PUNCH_LOW]: "jab", // Low punch to body (reuse jab for now)
 
-  // Kick category (발차기) - use existing animations
+  // Kick category (발차기) - use dedicated animations
   [AttackAnimationType.KICK_FRONT]: "front_kick", // Front kick (앞차기)
-  [AttackAnimationType.KICK_SIDE]: "front_kick", // Side kick (옆차기) - reuse front kick for now
+  [AttackAnimationType.KICK_SIDE]: "side_kick", // Side kick (옆차기) - NEW dedicated animation
   [AttackAnimationType.KICK_ROUNDHOUSE]: "roundhouse_kick", // Roundhouse kick (돌려차기)
 
-  // Elbow category (팔꿈치 타격) - use dedicated elbow animation
+  // Elbow category (팔꿈치 타격) - use dedicated elbow animations
   [AttackAnimationType.ELBOW_STRIKE]: "elbow_strike",
-  [AttackAnimationType.ELBOW_UPPERCUT]: "elbow_strike", // Reuse elbow strike with different angle
+  [AttackAnimationType.ELBOW_UPPERCUT]: "elbow_uppercut", // NEW dedicated uppercut animation
 
   // Knee category (무릎 타격) - use dedicated knee animation
   [AttackAnimationType.KNEE_STRIKE]: "knee_strike",
