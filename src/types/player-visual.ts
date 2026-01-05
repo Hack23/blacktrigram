@@ -250,6 +250,18 @@ export interface Player3DUnifiedProps {
    * @korean 상대위치
    */
   readonly opponentPosition?: [number, number, number];
+
+  /**
+   * Body facing state for automatic opponent tracking (optional)
+   * @korean 몸향하기상태
+   */
+  readonly bodyFacing?: import("../systems/animation/types").BodyFacing;
+
+  /**
+   * Callback to update body facing state
+   * @korean 몸향하기업데이트콜백
+   */
+  readonly onBodyFacingUpdate?: (bodyFacing: import("../systems/animation/types").BodyFacing) => void;
 }
 
 /**
