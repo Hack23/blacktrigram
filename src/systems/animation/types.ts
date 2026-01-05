@@ -61,7 +61,7 @@ export type AnimationState =
   | "step_forward_left"
   | "step_forward_right"
   | "step_back_left"
-  | "step_back_right";
+  | "step_back_right"
   | "fall_forward"
   | "fall_backward"
   | "fall_side_left"
@@ -411,6 +411,8 @@ export interface StepKeyframe {
    */
   readonly cogHeight: number;
 }
+
+/**
  * Fall direction types for knockdown animations
  * 
  * Determines which fall animation to play based on attack direction,

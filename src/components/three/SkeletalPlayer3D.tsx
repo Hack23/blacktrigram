@@ -64,6 +64,14 @@ const getStanceColor = (stance: string): number => {
   return stanceColors[stance] ?? KOREAN_COLORS.PRIMARY_CYAN;
 };
 
+// Set of diagonal step animations for O(1) lookup (prevents false positives)
+const DIAGONAL_STEP_ANIMATIONS = new Set([
+  "step_forward_left",
+  "step_forward_right",
+  "step_back_left",
+  "step_back_right",
+]);
+
 /**
  * Get trigram symbol for stance
  *
@@ -589,6 +597,9 @@ export const SkeletalPlayer3D: React.FC<
             handPose.transitionDuration
           )
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "defend" || isBlocking) {
       const blockAnim = getAnimation("block");
@@ -609,6 +620,9 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "walk") {
       // Walking animation - 걷기 애니메이션
@@ -630,6 +644,9 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.2)
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "stance_change") {
       // Stance change animation - 자세 변경 애니메이션
@@ -651,6 +668,9 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.15)
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "hit") {
       // Hit reaction - keep current pose but stop animation
@@ -680,28 +700,28 @@ export const SkeletalPlayer3D: React.FC<
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
         );
 
-        // For diagonal steps, apply rotation to render at 45-degree angles
-        // This combines the cardinal animation with angular movement
-        if (currentAnimation.includes("_left") || currentAnimation.includes("_right")) {
-          // Diagonal step detected - set absolute rotation angles
-          // These angles are independent of the character's current facing direction
-          let rotationY: number;
+        // For diagonal steps, apply rotation offset to preserve current facing direction
+        // This combines the cardinal animation with angular movement relative to current rotation
+        if (DIAGONAL_STEP_ANIMATIONS.has(currentAnimation)) {
+          // Diagonal step detected - apply relative rotation offset
+          const baseRotationY = rotation ?? 0;
+          let rotationOffset: number;
           
           if (currentAnimation === "step_forward_left") {
-            rotationY = Math.PI / 4; // 45° left of forward
+            rotationOffset = Math.PI / 4; // 45° left of current forward
           } else if (currentAnimation === "step_forward_right") {
-            rotationY = -Math.PI / 4; // 45° right of forward
+            rotationOffset = -Math.PI / 4; // 45° right of current forward
           } else if (currentAnimation === "step_back_left") {
-            rotationY = (3 * Math.PI) / 4; // 135° (45° left of back)
+            rotationOffset = (3 * Math.PI) / 4; // 135° left of current forward (45° left of back)
           } else if (currentAnimation === "step_back_right") {
-            rotationY = -(3 * Math.PI) / 4; // -135° (45° right of back)
+            rotationOffset = -(3 * Math.PI) / 4; // 135° right of current forward (45° right of back)
           } else {
-            rotationY = 0; // Fallback to forward
+            rotationOffset = 0; // Fallback: preserve current facing
           }
           
-          setDiagonalRotationY(rotationY);
+          setDiagonalRotationY(baseRotationY + rotationOffset);
         } else {
-          // Clear diagonal rotation override for non-diagonal animations
+          // Clear diagonal rotation override for non-diagonal step animations
           setDiagonalRotationY(null);
         }
       } else {
@@ -760,6 +780,9 @@ export const SkeletalPlayer3D: React.FC<
       setRightHandState((prev) =>
         updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.2)
       );
+      
+      // Clear diagonal rotation override for non-step animations
+      setDiagonalRotationY(null);
     } else {
       // Idle animation - 대기 애니메이션
       const idleAnim = getAnimation("idle_stance");
@@ -788,6 +811,9 @@ export const SkeletalPlayer3D: React.FC<
       setRightHandState((prev) =>
         updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.3)
       );
+      
+      // Clear diagonal rotation override for non-step animations
+      setDiagonalRotationY(null);
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
 

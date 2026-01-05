@@ -232,6 +232,11 @@ export function useTouchControls({
       return;
     }
     
+    // Capture screen dimensions at touch start time to prevent incorrect
+    // direction calculation if window is resized during hold
+    const screenCenterX = window.innerWidth / 2;
+    const screenCenterY = window.innerHeight / 2;
+    
     // Set up hold detection timer
     // Note: Hold gesture direction is determined from the initial touch position
     // relative to screen center. This supports D-pad style layouts where each
@@ -242,13 +247,10 @@ export function useTouchControls({
       if (touchStartRef.current) {
         const { clientX, clientY } = touchStartRef.current;
 
-        // Determine hold direction from initial touch position relative to screen center
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-
-        const deltaX = clientX - centerX;
+        // Use captured screen center coordinates (from touch start time)
+        const deltaX = clientX - screenCenterX;
         // Invert Y so that a touch higher on the screen is considered "forward"
-        const deltaY = centerY - clientY;
+        const deltaY = screenCenterY - clientY;
 
         let holdGesture: GestureType | null = null;
 
