@@ -32,6 +32,8 @@
  * - ground_supine: Face-up ground position (4 frame breathing loop)
  * - ground_side_left: Left side ground position (4 frame breathing loop)
  * - ground_side_right: Right side ground position (4 frame breathing loop)
+ * - turn_left: 180° turn left animation (12 frames, 200ms)
+ * - turn_right: 180° turn right animation (12 frames, 200ms)
  * 
  * @public
  * @korean 애니메이션상태
@@ -69,7 +71,9 @@ export type AnimationState =
   | "ground_prone"
   | "ground_supine"
   | "ground_side_left"
-  | "ground_side_right";
+  | "ground_side_right"
+  | "turn_left"
+  | "turn_right";
 
 /**
  * Animation priority levels for interrupt system

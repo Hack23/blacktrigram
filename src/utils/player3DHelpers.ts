@@ -65,6 +65,9 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   ground_supine: "idle",
   ground_side_left: "idle",
   ground_side_right: "idle",
+  // 180-degree turn animations map to stance_change (body pivot animation)
+  turn_left: "stance_change",
+  turn_right: "stance_change",
 };
 
 /**

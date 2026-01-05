@@ -60,6 +60,9 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   ground_supine: AnimationPriority.IDLE,
   ground_side_left: AnimationPriority.IDLE,
   ground_side_right: AnimationPriority.IDLE,
+  // 180-degree turn animations (180도 회전) - same as steps (committed action)
+  turn_left: STEP_PRIORITY,
+  turn_right: STEP_PRIORITY,
 };
 
 /**

@@ -999,14 +999,22 @@ export const SkeletalPlayer3D: React.FC<
 
     // Apply body facing rotations (torso and head) if available
     if (bodyFacing) {
-      // Apply torso rotation from body facing
+      // Check if 180° turn animation should be triggered
+      if (bodyFacing.isTurning && bodyFacing.turnDirection && onAnimationComplete) {
+        // Note: Turn animation triggering should be handled by parent component
+        // that manages the animation state machine. This is just a detection point.
+        // Parent should listen for bodyFacing.isTurning and call:
+        // animationMachine.transitionTo(bodyFacing.turnDirection === 'left' ? 'turn_left' : 'turn_right')
+      }
+
+      // Apply torso rotation to spine bone from body facing
       const spine = rig.bones.get("spine");
       if (spine) {
         const torsoRotation = getFacingAngleRadians(bodyFacing);
         spine.rotation.y = torsoRotation;
       }
 
-      // Apply head rotation (includes independent offset)
+      // Apply head rotation to head bone (includes independent offset)
       const head = rig.bones.get("head");
       if (head) {
         const headRotation = getHeadAngleRadians(bodyFacing);

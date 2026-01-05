@@ -330,3 +330,37 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
 
   return asset;
 }
+
+/**
+ * Initialize body facing for a player based on opponent position
+ * 
+ * Calculates initial facing angle to point toward opponent.
+ * 
+ * @param playerPosition - Player's position
+ * @param opponentPosition - Opponent's position
+ * @returns Initial BodyFacing state
+ * @korean 몸향하기초기화
+ * 
+ * @example
+ * ```typescript
+ * const player = {
+ *   ...basePlayer,
+ *   bodyFacing: initializeBodyFacing(
+ *     { x: 300, y: 400 },
+ *     { x: 500, y: 400 }
+ *   ),
+ * };
+ * ```
+ */
+export function initializeBodyFacing(
+  playerPosition: Position,
+  opponentPosition: Position
+): import("../systems/animation/types").BodyFacing {
+  // Import here to avoid circular dependency
+  const { createDefaultBodyFacing, calculateAngleToTarget } = require("../systems/animation");
+  
+  // Calculate initial angle to face opponent
+  const initialAngle = calculateAngleToTarget(playerPosition, opponentPosition);
+  
+  return createDefaultBodyFacing(initialAngle);
+}
