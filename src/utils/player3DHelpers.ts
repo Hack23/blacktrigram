@@ -44,6 +44,17 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   stance_guard_gam: "idle",
   stance_guard_gan: "idle",
   stance_guard_gon: "idle",
+  // Fall animations: Using "death" animation as closest approximation for falling
+  // Note: Custom fall 3D animations will be added in future 3D model update
+  fall_forward: "death",
+  fall_backward: "death",
+  fall_side_left: "death",
+  fall_side_right: "death",
+  // Ground states map to idle with minimal movement
+  ground_prone: "idle",
+  ground_supine: "idle",
+  ground_side_left: "idle",
+  ground_side_right: "idle",
 };
 
 /**

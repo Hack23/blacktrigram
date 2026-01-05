@@ -50,9 +50,8 @@ export function useThrottle<T extends (...args: never[]) => void>(
     };
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(
-    function(...args: Parameters<T>) {
+    (...args: Parameters<T>) => {
       const now = Date.now();
       const timeSinceLastRun = now - lastRunRef.current;
 
@@ -69,9 +68,9 @@ export function useThrottle<T extends (...args: never[]) => void>(
           callbackRef.current(...args);
         }, timeUntilNext);
       }
-    } as T,
+    },
     [delay]
-  );
+  ) as T;
 }
 
 export default useThrottle;
