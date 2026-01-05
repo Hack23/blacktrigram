@@ -9,6 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ControlMapper } from "../utils/controlMapping";
+import { FOOTWORK_KOREAN_TERMS } from "../systems/animation/types";
 
 // Korean terminology constants (module-level to avoid recreation on every keystroke)
 const DIAGONAL_KOREAN_TERMS: Record<string, string> = {
@@ -25,17 +26,18 @@ const STEP_KOREAN_TERMS: Record<string, string> = {
   "step_right": "우측면보법 (Right Step)",
 };
 
-// Footwork pattern Korean terminology (보법)
-const FOOTWORK_KOREAN_TERMS: Record<string, string> = {
-  "footwork_circular_left": "원형보 좌 (Circular Left)",
-  "footwork_circular_right": "원형보 우 (Circular Right)",
-  "footwork_pivot_left": "축족회전 좌 (Pivot Left)",
-  "footwork_pivot_right": "축족회전 우 (Pivot Right)",
-  "footwork_slide_forward": "미끄럼보 전 (Slide Forward)",
-  "footwork_slide_back": "미끄럼보 후 (Slide Back)",
-  "footwork_slide_left": "미끄럼보 좌 (Slide Left)",
-  "footwork_slide_right": "미끄럼보 우 (Slide Right)",
-  "footwork_shuffle": "섞음보 (Shuffle)",
+// Footwork pattern Korean terminology - maps animation states to display names
+// Reuses FOOTWORK_KOREAN_TERMS from types.ts but adds specific animation state labels
+const FOOTWORK_DISPLAY_TERMS: Record<string, string> = {
+  "footwork_circular_left": `${FOOTWORK_KOREAN_TERMS.circular.korean} 좌 (Circular Left)`,
+  "footwork_circular_right": `${FOOTWORK_KOREAN_TERMS.circular.korean} 우 (Circular Right)`,
+  "footwork_pivot_left": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 좌 (Pivot Left)`,
+  "footwork_pivot_right": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 우 (Pivot Right)`,
+  "footwork_slide_forward": `${FOOTWORK_KOREAN_TERMS.slide.korean} 전 (Slide Forward)`,
+  "footwork_slide_back": `${FOOTWORK_KOREAN_TERMS.slide.korean} 후 (Slide Back)`,
+  "footwork_slide_left": `${FOOTWORK_KOREAN_TERMS.slide.korean} 좌 (Slide Left)`,
+  "footwork_slide_right": `${FOOTWORK_KOREAN_TERMS.slide.korean} 우 (Slide Right)`,
+  "footwork_shuffle": `${FOOTWORK_KOREAN_TERMS.shuffle.korean} (Shuffle)`,
 };
 
 // Step direction mapping (all move_* actions covered explicitly)
@@ -307,6 +309,8 @@ export function useKeyboardControls({
             // Check for Ctrl modifier for footwork patterns (보법)
             if (e.ctrlKey) {
               // Footwork patterns with Ctrl+WASD
+              // Note: Currently only circular and slide patterns have controls.
+              // Pivot and shuffle patterns are configured but awaiting keybinding.
               let footworkAction: string | null = null;
               
               if (action === "move_left") {
@@ -317,7 +321,9 @@ export function useKeyboardControls({
                 footworkAction = "footwork_circular_right";
               } else if (action === "move_up") {
                 // Ctrl+W: Slide forward (미끄럼보)
-                // Could also be pivot, but slide is more universally useful
+                // Slide chosen for forward/back as it's more universally useful
+                // for quick spacing adjustments. Pivot rotations may be added
+                // with different keybindings in the future.
                 footworkAction = "footwork_slide_forward";
               } else if (action === "move_down") {
                 // Ctrl+S: Slide back (미끄럼보)
@@ -327,7 +333,7 @@ export function useKeyboardControls({
               if (footworkAction) {
                 onAction(footworkAction);
                 addToQueue(
-                  FOOTWORK_KOREAN_TERMS[footworkAction] ?? "Footwork",
+                  FOOTWORK_DISPLAY_TERMS[footworkAction] ?? "Footwork",
                   `Ctrl+${e.key}`
                 );
                 if (playSFX) playSFX("footstep");

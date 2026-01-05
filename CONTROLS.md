@@ -269,14 +269,15 @@ Both feet move together without weight transfer.
 
 | **Input** | **Pattern** | **Korean** | **Rotation** | **Duration** |
 |-----------|-------------|------------|--------------|--------------|
-| `Ctrl+Q` | Pivot Left | 축족회전 좌 | 90° counter-clockwise | 250ms (15 frames) |
-| `Ctrl+E` | Pivot Right | 축족회전 우 | 90° clockwise | 250ms (15 frames) |
+| _Future Enhancement_ | Pivot Left | 축족회전 좌 | 90° counter-clockwise | 250ms (15 frames) |
+| _Future Enhancement_ | Pivot Right | 축족회전 우 | 90° clockwise | 250ms (15 frames) |
 
 **Pivot Properties:**
 - 🔄 **Fast direction change**: 90° rotation in 250ms
 - 🎯 **Planted foot stays**: One foot is pivot point
 - ⚡ **Non-interruptible**: Committed rotation (Priority 5)
 - 🥋 **Tactical repositioning**: Change facing without retreating
+- ⚠️ **Status**: Keyboard controls pending - animations configured, awaiting control binding
 
 ##### Shuffle Step (섞음보 - Seokkeumbo)
 Quick 15cm micro-adjustment for fine positioning.
@@ -297,15 +298,16 @@ Quick 15cm micro-adjustment for fine positioning.
 |---------|--------|--------|----------|----------|----------|---------------|----------|
 | **Tactical Step** | 전술보법 | 18 | 300ms | 30cm | 5 | ❌ | Standard repositioning |
 | **Circular** | 원형보 | 18 | 300ms | 30cm | 5 | ❌ | Lateral while maintaining guard |
-| **Pivot** | 축족회전 | 15 | 250ms | 90° | 5 | ❌ | Fast angle changes |
+| **Pivot** | 축족회전 | 15 | 250ms | 90° | 5 | ❌ | Fast angle changes ⚠️ _Controls pending_ |
 | **Slide** | 미끄럼보 | 12 | 200ms | 30cm | 4 | ✅ | Quick in/out spacing |
-| **Shuffle** | 섞음보 | 6 | 100ms | 15cm | 3 | ✅ | Micro-adjustments |
+| **Shuffle** | 섞음보 | 6 | 100ms | 15cm | 3 | ✅ | Micro-adjustments ⚠️ _Controls pending_ |
 
 **Movement Control Philosophy:**
 - **Regular WASD**: Continuous movement, no commitment
 - **Shift+WASD**: Tactical steps with commitment (30cm)
-- **Ctrl+WASD**: Advanced footwork patterns for specialized movement
-- **All patterns**: Maintain 60fps performance target
+- **Ctrl+A/D**: Circular footwork (lateral movement)
+- **Ctrl+W/S**: Slide footwork (quick spacing)
+- **Note**: Pivot and Shuffle controls TBD (animations ready, awaiting keybinding)
 
 ---
 
