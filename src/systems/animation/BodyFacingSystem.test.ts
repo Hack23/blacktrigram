@@ -29,7 +29,6 @@ import {
   getHeadAngleRadians,
   DEFAULT_ROTATION_SPEED,
   MAX_HEAD_ROTATION,
-  TURN_THRESHOLD_ANGLE,
   TURN_ANIMATION_DURATION,
   BodyFacingSystem,
 } from "./BodyFacingSystem";

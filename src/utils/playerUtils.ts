@@ -8,6 +8,10 @@ import {
   BodyPartHealth,
   BodyPartMaxHealth,
 } from "../systems/bodypart/types";
+import { 
+  createDefaultBodyFacing, 
+  calculateAngleToTarget 
+} from "../systems/animation";
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
 import { ARCHETYPE_ASSETS } from "../types/constants";
@@ -356,9 +360,6 @@ export function initializeBodyFacing(
   playerPosition: Position,
   opponentPosition: Position
 ): import("../systems/animation/types").BodyFacing {
-  // Import here to avoid circular dependency
-  const { createDefaultBodyFacing, calculateAngleToTarget } = require("../systems/animation");
-  
   // Calculate initial angle to face opponent
   const initialAngle = calculateAngleToTarget(playerPosition, opponentPosition);
   

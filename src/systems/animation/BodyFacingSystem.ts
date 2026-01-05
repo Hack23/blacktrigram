@@ -157,7 +157,7 @@ export function calculateAngleToTarget(from: Position, to: Position): number {
   
   // atan2 returns angle in radians, convert to degrees
   // atan2(y, x) where y is forward/back (Z), x is left/right (X)
-  let angle = Math.atan2(dz, dx) * (180 / Math.PI);
+  const angle = Math.atan2(dz, dx) * (180 / Math.PI);
   
   return normalizeAngle(angle);
 }
