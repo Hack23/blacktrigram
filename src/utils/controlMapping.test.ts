@@ -89,7 +89,8 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "b",
         movement: { up: "k", down: "j", left: "h", right: "l" },
-        special: { precision: "Control", quickSwitch: "p", reset: "o" },
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       });
 
       expect(mapper.getStanceForKey("q")).toBe(0);
@@ -130,10 +131,12 @@ describe("ControlMapper", () => {
       expect(mapper.getActionForKey("d")).toBe("move_right");
     });
 
-    it("should detect special keys", () => {
-      expect(mapper.getActionForKey("Control")).toBe("precision");
-      expect(mapper.getActionForKey("q")).toBe("quick_switch");
-      expect(mapper.getActionForKey("r")).toBe("reset");
+    it("should detect vital points overlay and pause keys", () => {
+      expect(mapper.getActionForKey("v")).toBe("vital_points_overlay");
+      expect(mapper.getActionForKey("V")).toBe("vital_points_overlay");
+      expect(mapper.getActionForKey("Escape")).toBe("pause");
+      expect(mapper.getActionForKey("m")).toBe("pause");
+      expect(mapper.getActionForKey("M")).toBe("pause");
     });
 
     it("should return stance action for stance keys", () => {
@@ -149,7 +152,7 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "c", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(customBindings);
@@ -172,7 +175,7 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "c", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       localStorageMock["blacktrigram_controls"] =
@@ -212,7 +215,7 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "c", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       });
 
       // Reset to defaults
@@ -239,7 +242,7 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "q", reset: "r" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(invalidBindings as ControlBinding);
@@ -255,7 +258,7 @@ describe("ControlMapper", () => {
         attack: "1", // Duplicate with stance 1
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "q", reset: "r" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(invalidBindings);
@@ -271,7 +274,7 @@ describe("ControlMapper", () => {
         attack: "1", // Conflict with stance key
         block: "w", // Conflict with movement
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "q", reset: "r" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       const conflicts = mapper.getConflicts(conflictingBindings);
@@ -289,7 +292,7 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "b",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "Control", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(qwerBindings);
@@ -305,7 +308,7 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "0",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "3", reset: "." },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(numpadBindings);

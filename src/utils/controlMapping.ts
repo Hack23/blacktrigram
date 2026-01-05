@@ -31,12 +31,10 @@ export interface ControlBinding {
     readonly left: string;
     readonly right: string;
   };
-  /** Special action keys */
-  readonly special: {
-    readonly precision: string;
-    readonly quickSwitch: string;
-    readonly reset: string;
-  };
+  /** Vital points overlay toggle key */
+  readonly vitalPointsOverlay: string;
+  /** Pause/Menu keys */
+  readonly pause: readonly string[];
 }
 
 /**
@@ -46,7 +44,9 @@ const STORAGE_KEY = "blacktrigram_controls";
 
 /**
  * Default control bindings following game design specifications
- * Based on game-design.md lines 942-947
+ * Based on current implementation in CombatScreen3D and TrainingScreen3D
+ * 
+ * @see CONTROLS.md for complete documentation
  */
 const DEFAULT_BINDINGS: ControlBinding = {
   stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
@@ -58,11 +58,8 @@ const DEFAULT_BINDINGS: ControlBinding = {
     left: "a",
     right: "d",
   },
-  special: {
-    precision: "Control",
-    quickSwitch: "q",
-    reset: "r",
-  },
+  vitalPointsOverlay: "v",
+  pause: ["Escape", "m"],
 };
 
 /**
@@ -238,12 +235,16 @@ export class ControlMapper {
     if (normalizedKey === movement.left.toLowerCase()) return "move_left";
     if (normalizedKey === movement.right.toLowerCase()) return "move_right";
 
-    // Check special
-    const special = this.bindings.special;
-    if (normalizedKey === special.precision.toLowerCase()) return "precision";
-    if (normalizedKey === special.quickSwitch.toLowerCase())
-      return "quick_switch";
-    if (normalizedKey === special.reset.toLowerCase()) return "reset";
+    // Check vital points overlay
+    if (normalizedKey === this.bindings.vitalPointsOverlay.toLowerCase())
+      return "vital_points_overlay";
+
+    // Check pause keys
+    if (
+      this.bindings.pause.some((k) => k.toLowerCase() === normalizedKey)
+    ) {
+      return "pause";
+    }
 
     return null;
   }
@@ -275,9 +276,8 @@ export class ControlMapper {
       bindings.movement.down,
       bindings.movement.left,
       bindings.movement.right,
-      bindings.special.precision,
-      bindings.special.quickSwitch,
-      bindings.special.reset,
+      bindings.vitalPointsOverlay,
+      ...bindings.pause,
     ];
 
     const uniqueKeys = new Set(allKeys.map((k) => k.toLowerCase()));
@@ -309,9 +309,8 @@ export class ControlMapper {
       bindings.movement.down,
       bindings.movement.left,
       bindings.movement.right,
-      bindings.special.precision,
-      bindings.special.quickSwitch,
-      bindings.special.reset,
+      bindings.vitalPointsOverlay,
+      ...bindings.pause,
     ];
 
     allKeys.forEach((key) => {
