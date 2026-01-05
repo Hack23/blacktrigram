@@ -535,7 +535,7 @@ export function buildTransitionMap(
  * @example
  * ```typescript
  * calculateStanceDistance(TrigramStance.GEON, TrigramStance.TAE); // 1 (adjacent)
- * calculateStanceDistance(TrigramStance.GEON, TrigramStance.GON); // 4 (opposite)
+ * calculateStanceDistance(TrigramStance.GEON, TrigramStance.SON); // 4 (opposite)
  * calculateStanceDistance(TrigramStance.GEON, TrigramStance.GEON); // 0 (same)
  * ```
  * 
@@ -748,7 +748,9 @@ export function initializeStanceTransitions(): void {
     }
   }
   
-  console.log(`[StanceTransitions] Initialized ${STANCE_TRANSITIONS.size} stance transitions`);
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[StanceTransitions] Initialized ${STANCE_TRANSITIONS.size} stance transitions`);
+  }
 }
 
 /**

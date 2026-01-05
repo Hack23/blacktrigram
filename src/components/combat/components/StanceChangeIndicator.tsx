@@ -81,7 +81,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   const [showIndicator, setShowIndicator] = useState(false);
   const [progress, setProgress] = useState(0);
   const isMountedRef = useRef(true);
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number>(0);
   const animationFrameRef = useRef<number | undefined>(undefined);
 
   // Track component mount state
@@ -95,17 +95,28 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   // Show/hide indicator based on stance change
   // This effect intentionally sets state synchronously for immediate visual feedback
   useEffect(() => {
+    // Cancel any existing animation frame first
+    if (animationFrameRef.current !== undefined) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = undefined;
+    }
+
     if (currentStance !== previousStance) {
       setShowIndicator(true);
       setProgress(0);
-      startTimeRef.current = Date.now();
+      startTimeRef.current = 0;
 
       // Animation loop for progress bar
       if (showProgress) {
-        const animate = () => {
+        const animate = (timestamp: number) => {
           if (!isMountedRef.current) return;
           
-          const elapsed = Date.now() - startTimeRef.current;
+          // Initialize start time on first frame
+          if (startTimeRef.current === 0) {
+            startTimeRef.current = timestamp;
+          }
+          
+          const elapsed = timestamp - startTimeRef.current;
           const newProgress = Math.min((elapsed / transitionDuration) * 100, 100);
           
           setProgress(newProgress);

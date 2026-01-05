@@ -20,7 +20,6 @@ import {
   STANCE_TRANSITIONS,
   TRIGRAM_STANCES_ORDER,
   initializeStanceTransitions,
-  type StanceTransitionType,
 } from "./AnimationTransitions";
 
 describe("AnimationTransitions - Stance Transition System", () => {
