@@ -52,7 +52,7 @@ export function useThrottle<T extends (...args: never[]) => void>(
 
    
   return useCallback(
-    function(...args: Parameters<T>) {
+    (...args: Parameters<T>) => {
       const now = Date.now();
       const timeSinceLastRun = now - lastRunRef.current;
 
