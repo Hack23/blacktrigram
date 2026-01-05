@@ -286,47 +286,26 @@ export function useTechniqueSelection(
     ]
   );
 
-  // Keyboard shortcut handler
+  // Keyboard shortcuts for technique selection (Q-E-R-T-Y-F-G-Z-X-C)
   useEffect(() => {
     if (!enabled) return;
 
-    const handleKeyPress = (event: KeyboardEvent) => {
-      // Don't capture if user is typing in an input field
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement
-      ) {
-        return;
-      }
-
-      const key = event.key.toUpperCase() as TechniqueKey;
-
-      // Technique keys - top row Q through P (10 keys)
-      const techniqueKeys = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
+    const handleKeyPress = (e: KeyboardEvent) => {
+      const key = e.key.toUpperCase();
+      
+      // Technique keys: Q, E, R, T, Y, F, G, Z, X, C (10 keys around WASD)
+      const techniqueKeys = ["Q", "E", "R", "T", "Y", "F", "G", "Z", "X", "C"];
 
       // Prevent default for all technique keys during combat
       if (techniqueKeys.includes(key)) {
-        event.preventDefault();
+        e.preventDefault();
       }
 
       // Map keys to technique indices
-      const keyMap: Record<TechniqueKey, number> = {
-        Q: 0,
-        W: 1,
-        E: 2,
-        R: 3,
-        T: 4,
-        Y: 5,
-        U: 6,
-        I: 7,
-        O: 8,
-        P: 9,
-      };
-
-      const index = keyMap[key];
-      if (index !== undefined && index < availableTechniques.length) {
-        selectTechnique(index);
-        executeTechnique(index);
+      const techniqueIndex = techniqueKeys.indexOf(key);
+      if (techniqueIndex !== -1 && techniqueIndex < availableTechniques.length) {
+        selectTechnique(techniqueIndex);
+        executeTechnique();
       }
     };
 

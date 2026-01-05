@@ -20,6 +20,8 @@ import { TRIGRAM_STANCES_ORDER } from "../systems/trigram/types";
 export interface ControlBinding {
   /** Stance selection keys (1-8 by default) */
   readonly stances: readonly string[];
+  /** Technique execution keys (F1-F10 by default) */
+  readonly techniques: readonly string[];
   /** Attack action key */
   readonly attack: string;
   /** Block/Guard action key */
@@ -44,22 +46,26 @@ const STORAGE_KEY = "blacktrigram_controls";
 
 /**
  * Default control bindings following game design specifications
- * Based on current implementation in CombatScreen3D and TrainingScreen3D
+ * NEW: Conflict-free control scheme with Q-E-R-T-Y-F-G-Z-X-C for techniques
+ * 
+ * Uses keys around WASD that are easy to reach with left hand
+ * No conflicts with movement, browser shortcuts, or function keys
  * 
  * @see CONTROLS.md for complete documentation
  */
 const DEFAULT_BINDINGS: ControlBinding = {
   stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+  techniques: ["Q", "E", "R", "T", "Y", "F", "G", "Z", "X", "C"],
   attack: " ", // Spacebar
-  block: "b",
+  block: "B",
   movement: {
-    up: "w",
-    down: "s",
-    left: "a",
-    right: "d",
+    up: "W",
+    down: "S",
+    left: "A",
+    right: "D",
   },
-  vitalPointsOverlay: "v",
-  pause: ["Escape", "m"],
+  vitalPointsOverlay: "V",
+  pause: ["Escape", "M"],
 };
 
 /**
@@ -210,6 +216,33 @@ export class ControlMapper {
   }
 
   /**
+   * Get technique index for a key
+   * 
+   * @param key - Keyboard key
+   * @returns Technique index (0-9) or null
+   * @korean 기술 키 확인
+   */
+  getTechniqueForKey(key: string): number | null {
+    const normalizedKey = key;
+    const index = this.bindings.techniques.indexOf(normalizedKey);
+    return index >= 0 ? index : null;
+  }
+
+  /**
+   * Get key for technique index
+   * 
+   * @param index - Technique index (0-9)
+   * @returns Key or null
+   * @korean 기술 인덱스로 키 조회
+   */
+  getKeyForTechnique(index: number): string | null {
+    if (index < 0 || index >= this.bindings.techniques.length) {
+      return null;
+    }
+    return this.bindings.techniques[index];
+  }
+
+  /**
    * Check if a key is bound to an action
    * 
    * @param key - Keyboard key to check
@@ -267,9 +300,20 @@ export class ControlMapper {
       return false;
     }
 
+    // Check that techniques array has up to 10 entries
+    if (
+      !bindings.techniques ||
+      !Array.isArray(bindings.techniques) ||
+      bindings.techniques.length === 0 ||
+      bindings.techniques.length > 10
+    ) {
+      return false;
+    }
+
     // Check for duplicate keys
     const allKeys = [
       ...bindings.stances,
+      ...bindings.techniques,
       bindings.attack,
       bindings.block,
       bindings.movement.up,
@@ -303,6 +347,7 @@ export class ControlMapper {
 
     const allKeys = [
       ...bindings.stances,
+      ...bindings.techniques,
       bindings.attack,
       bindings.block,
       bindings.movement.up,

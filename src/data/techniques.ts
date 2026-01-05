@@ -4,7 +4,7 @@
  * **Korean**: 기술 정의 (Technique Definitions)
  *
  * Each archetype has 3-5 unique techniques that reflect their combat philosophy
- * and specialization. Techniques are mapped to keyboard shortcuts Q, W, E, R.
+ * and specialization. Techniques are mapped to keyboard shortcuts Q-E-R-T-Y-F-G-Z-X-C.
  *
  * @module data/techniques
  * @category Combat System

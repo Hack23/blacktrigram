@@ -22,20 +22,21 @@ This document is the **single source of truth** for all game controls in Black T
 | **Stance 6 - ☵ Gam** | `6` | 감 (Water) | Flow and adaptation |
 | **Stance 7 - ☶ Gan** | `7` | 간 (Mountain) | Defensive mastery |
 | **Stance 8 - ☷ Gon** | `8` | 곤 (Earth) | Grounding techniques |
-| **Technique 1-10** | `Q` `W` `E` `R` `T` `Y` `U` `I` `O` `P` | 기술 실행 | Execute archetype techniques (3-10 available) |
+| **Technique 1-10** | `Q` `E` `R` `T` `Y` `F` `G` `Z` `X` `C` | 기술 실행 | Execute archetype techniques (3-10 available) |
 | **Movement** | `W` `A` `S` `D` or Arrow Keys | 이동 | 8-directional tactical positioning |
 | **Attack** | `Space` | 공격 | Execute current stance technique |
 | **Block/Guard** | `B` | 방어 | Defensive positioning and blocks |
 | **Vital Points Overlay** | `V` | 급소 표시 | Toggle anatomical targeting overlay |
 | **Pause Menu** | `ESC` or `M` | 일시정지 | Pause game / Return to menu |
 
-> ⚠️ **IMPORTANT - Control Conflict Warning**:
+> ✅ **NEW: Zero-Conflict Control Scheme**:
 > 
-> **Q-P technique keys conflict with WASD movement keys** (W, E, R, T, Y, U, I, O are shared).
+> **All control conflicts eliminated!**  Technique keys (Q-E-R-T-Y-F-G-Z-X-C) are positioned around WASD for easy reach with your left hand while keeping WASD free for movement.
 > 
-> **During technique selection, WASD movement is disabled**. Use **Arrow Keys** for movement to avoid conflicts, or wait for technique cooldown to complete.
-> 
-> **Recommended**: Use **Arrow Keys** for movement, **Q-P** for techniques, **1-8** for stances.
+> - **Techniques**: Use keys around WASD (Q, E, R, T, Y, F, G, Z, X, C)
+> - **Movement**: WASD remains fully functional
+> - **No browser conflicts**: No function keys or Ctrl shortcuts
+> - **Ergonomic**: All keys within easy reach of left hand
 
 ### Mobile Controls (Touch Screen)
 
@@ -127,16 +128,17 @@ The core of Black Trigram combat is the Eight Trigrams stance system from the I 
 
 ### 2. Archetype Technique System (기술 체계)
 
-**Implementation**: Q-P keys execute archetype-specific combat techniques (3-10 per archetype)
+**Implementation**: Q-E-R-T-Y-F-G-Z-X-C keys execute archetype-specific combat techniques (3-10 per archetype)
 
 Each player archetype has unique techniques that reflect their combat philosophy. These techniques are more powerful than basic attacks but require Ki and Stamina resources.
 
 #### Technique Properties
-- **Keyboard Shortcuts**: `Q` `W` `E` `R` `T` `Y` `U` `I` `O` `P` (up to 10 techniques)
+- **Keyboard Shortcuts**: `Q` `E` `R` `T` `Y` `F` `G` `Z` `X` `C` (up to 10 techniques)
 - **Resource Cost**: Varies by technique (8-35 stamina, 10-35 Ki)
 - **Cooldown**: 2-5 seconds depending on power level
 - **Damage**: 25-55 base damage (higher than basic attacks)
 - **Stance Requirement**: Some techniques require specific trigram stances
+- **Zero Conflicts**: Keys positioned around WASD for easy access without interfering with movement
 
 #### Archetype Technique Examples
 
@@ -144,21 +146,21 @@ Each player archetype has unique techniques that reflect their combat philosophy
 | Key | Technique | Korean | Damage | Cost | Stance | Description |
 |-----|-----------|--------|--------|------|--------|-------------|
 | `Q` | Thunder Strike | 천둥벽력 | 40-55 | 30🔋 20⚡ | ☰ Geon | Powerful overhead strike |
-| `W` | Iron Defense | 철벽방어 | Defense | 20🔋 15⚡ | ☶ Gan | Defensive stance boost |
-| `E` | Dragon Pierce | 용의 찌르기 | 35-48 | 25🔋 18⚡ | Any | Piercing thrust attack |
+| `E` | Iron Defense | 철벽방어 | Defense | 20🔋 15⚡ | ☶ Gan | Defensive stance boost |
+| `R` | Dragon Pierce | 용의 찌르기 | 35-48 | 25🔋 18⚡ | Any | Piercing thrust attack |
 
 ##### 암살자 (Amsalja) - Shadow Assassin
 | Key | Technique | Korean | Damage | Cost | Stance | Description |
 |-----|-----------|--------|--------|------|--------|-------------|
 | `Q` | Silent Strike | 무음타격 | 30-42 | 22🔋 15⚡ | ☲ Li | Nerve strike causing paralysis |
-| `W` | Shadow Step | 그림자 발걸음 | Mobility | 18🔋 12⚡ | ☴ Son | Rapid repositioning |
-| `E` | Vital Point Strike | 급소타격 | 38-52 | 28🔋 22⚡ | ☲ Li | Targets specific vital points |
+| `E` | Shadow Step | 그림자 발걸음 | Mobility | 18🔋 12⚡ | ☴ Son | Rapid repositioning |
+| `R` | Vital Point Strike | 급소타격 | 38-52 | 28🔋 22⚡ | ☲ Li | Targets specific vital points |
 
 #### Technique Execution Flow
 
 1. **Select Stance** (1-8) - Choose trigram stance for bonuses
 2. **Check Resources** - Ensure sufficient Stamina (🔋) and Ki (⚡)
-3. **Press Technique Key** (Q-P) - Execute the technique
+3. **Press Technique Key** (Q-E-R-T-Y-F-G-Z-X-C) - Execute the technique
 4. **Cooldown Period** - Wait 2-5 seconds before reusing
 5. **Resource Regeneration** - Stamina and Ki regenerate over time
 
@@ -170,21 +172,21 @@ Each player archetype has unique techniques that reflect their combat philosophy
 - **Cooldown Timer**: Shows remaining time before technique available
 - **Resource Costs**: Displays 🔋 stamina and ⚡ Ki requirements
 
-#### ⚠️ Important: Technique vs Movement Keys
+#### ✅ Zero-Conflict Design
 
-**Key Conflict**: W, E, R, T, Y, U, I, O keys serve dual purposes:
-- **As Technique Keys**: Execute archetype techniques
-- **As Movement Keys**: WASD directional movement
+**New Control Scheme Eliminates ALL Conflicts**:
+- **Q, E, R, T, Y**: Top row keys around WASD
+- **F, G**: Middle row keys near left hand
+- **Z, X, C**: Bottom row keys under left hand
+- **Result**: No interference with WASD movement, no browser shortcuts, no function keys
 
-**How it Works**:
-- During combat, technique keys take priority over movement
-- `useTechniqueSelection` hook prevents default WASD behavior
-- **Solution**: Use **Arrow Keys** for movement to avoid conflicts
-
-**Recommended Control Layout**:
+**Left Hand Layout**:
 ```
-Left Hand:  1-8 (Stances), Q-P (Techniques), Arrow Keys (Movement)
-Right Hand: Mouse (optional targeting), Numpad (alternative)
+[1][2][3][4][5][6][7][8]  ← Stances
+   [Q][W][E][R][T][Y]     ← Techniques (Q,E,R,T,Y) + Movement (W)
+    [A][S][D][F][G]       ← Movement (A,S,D) + Techniques (F,G)
+     [Z][X][C][V][B]      ← Techniques (Z,X,C) + Vital Points (V) + Block (B)
+      [Space]             ← Attack
 ```
 
 ---
