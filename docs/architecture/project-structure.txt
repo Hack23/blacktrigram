@@ -530,6 +530,8 @@ src/components/combat/components/StanceChangeIndicator.test.tsx
 src/components/combat/components/StanceChangeIndicator.tsx
 src/components/combat/components/TechniqueBar.tsx
 src/components/combat/components/TechniqueCard.tsx
+src/components/combat/components/TechniqueNameDisplay.test.tsx
+src/components/combat/components/TechniqueNameDisplay.tsx
 src/components/combat/components/TraumaOverlay3D.test.tsx
 src/components/combat/components/TraumaOverlay3D.tsx
 src/components/combat/components/VitalPointMarkers3D.test.tsx
@@ -554,6 +556,8 @@ src/components/combat/hooks/useCombatState.ts
 src/components/combat/hooks/usePreloadCombatAudio.test.tsx
 src/components/combat/hooks/usePreloadCombatAudio.ts
 src/components/combat/index.ts
+src/components/dev/AnimationPreview.tsx
+src/components/dev/index.ts
 src/components/endscreen/EndScreen3D.test.tsx
 src/components/endscreen/EndScreen3D.tsx
 src/components/endscreen/components/MatchStatisticsDisplay.tsx
@@ -760,6 +764,8 @@ src/systems/animation/AttackAnimations.test.ts
 src/systems/animation/AttackAnimations.ts
 src/systems/animation/FacialExpressions.test.ts
 src/systems/animation/FacialExpressions.ts
+src/systems/animation/FallAnimations.test.ts
+src/systems/animation/FallAnimations.ts
 src/systems/animation/HandPoses.test.ts
 src/systems/animation/HandPoses.ts
 src/systems/animation/HeadMovements.test.ts
@@ -773,6 +779,10 @@ src/systems/animation/SkeletonRig.test.ts
 src/systems/animation/SkeletonRig.ts
 src/systems/animation/StanceGuardPoses.test.ts
 src/systems/animation/StanceGuardPoses.ts
+src/systems/animation/StepAnimations.test.ts
+src/systems/animation/StepAnimations.ts
+src/systems/animation/StepSkeletalAnimations.ts
+src/systems/animation/TechniqueAnimationMapper.ts
 src/systems/animation/index.ts
 src/systems/animation/types.ts
 src/systems/bodypart/BodyPartDamageIntegration.ts
@@ -791,11 +801,13 @@ src/systems/breathing/feedback.ts
 src/systems/breathing/index.ts
 src/systems/breathing/integration.test.ts
 src/systems/breathing/integration.ts
+src/systems/combat/BalanceSystem.fall.test.ts
 src/systems/combat/BalanceSystem.ts
 src/systems/combat/CombatStateSystem.test.ts
 src/systems/combat/CombatStateSystem.ts
 src/systems/combat/ConsciousnessSystem.test.ts
 src/systems/combat/ConsciousnessSystem.ts
+src/systems/combat/FallIntegration.ts
 src/systems/combat/PainResponseSystem.test.ts
 src/systems/combat/PainResponseSystem.ts
 src/systems/combat/TrainingCombatSystem.ts
