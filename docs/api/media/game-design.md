@@ -937,6 +937,27 @@ Players press **1–8** to select one of the eight Trigrams (☰–☷). Each Tr
 
 ### 2.4 Controls & Input Mapping
 
+> **⚠️ IMPLEMENTATION STATUS** (v0.5.37 - January 2026)
+> 
+> This section describes the **complete design specification** for Black Trigram controls, including both implemented and planned features.
+> 
+> **✅ Currently Implemented**:
+> - Stance selection (1-8 keys)
+> - Movement (WASD/Arrow keys)
+> - Attack (Space)
+> - Block/Guard (B)
+> - Vital Points Overlay (V)
+> - Pause Menu (ESC/M)
+> 
+> **🚧 Planned for Future Releases**:
+> - Advanced footwork system (X, Z+Arrow, X+Arrow modifiers)
+> - Directional attacks (Space + Arrow combinations)
+> - Rotational backcast (180° pivot attacks)
+> - Queued attacks during movement
+> - Auto-pivot logic
+> 
+> **📖 For current implementation details, see**: [`CONTROLS.md`](/CONTROLS.md)
+
 | **Action**                              | **Key**                                 | **Effect**                                                                                                                             |
 | --------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Select Trigram Style (☰–☷)**          | `1`–`8`                                 | Switch to corresponding stance; apply immediate stat modifiers (no foot change). HUD icon glows **#00FFAA**.                           |
