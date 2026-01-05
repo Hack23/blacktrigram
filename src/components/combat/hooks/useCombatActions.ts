@@ -279,9 +279,9 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           undefined  // attackAngle not tracked yet
         );
 
-        if (fallCheck.shouldFall && fallCheck.animationState) {
+        if (fallCheck.shouldFall && fallCheck.animationState && fallCheck.fallType) {
           config.playerAnimations.player2.transitionTo(fallCheck.animationState);
-          const fallName = getFallTypeName(fallCheck.fallType!);
+          const fallName = getFallTypeName(fallCheck.fallType);
           addCombatMessage(
             `${fallName.korean}!`,
             `${fallName.english}!`
@@ -651,9 +651,9 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           undefined  // attackAngle not tracked yet
         );
 
-        if (fallCheck.shouldFall && fallCheck.animationState) {
+        if (fallCheck.shouldFall && fallCheck.animationState && fallCheck.fallType) {
           config.playerAnimations.player1.transitionTo(fallCheck.animationState);
-          const fallName = getFallTypeName(fallCheck.fallType!);
+          const fallName = getFallTypeName(fallCheck.fallType);
           addCombatMessage(
             `${fallName.korean}!`,
             `${fallName.english}!`
@@ -692,6 +692,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
     createAITechnique,
     getHitEffectType,
+    config.playerAnimations,
   ]);
 
   // AI defend handler
@@ -757,7 +758,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       combatAudio?.playBoneImpactSound({
         damage: result.damage,
         remainingHealth: validPlayers[0].health - result.damage,
-        vitalPoint: result.isCritical || !!targetVitalPoint, // Special techniques often target vital points
+        vitalPoint: result.isCritical ?? !!targetVitalPoint, // Special techniques often target vital points
         hitPosition,
       });
 
@@ -781,9 +782,9 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           undefined  // attackAngle not tracked yet
         );
 
-        if (fallCheck.shouldFall && fallCheck.animationState) {
+        if (fallCheck.shouldFall && fallCheck.animationState && fallCheck.fallType) {
           config.playerAnimations.player1.transitionTo(fallCheck.animationState);
-          const fallName = getFallTypeName(fallCheck.fallType!);
+          const fallName = getFallTypeName(fallCheck.fallType);
           addCombatMessage(
             `${fallName.korean}!`,
             `${fallName.english}!`
@@ -820,6 +821,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     handleAIAttack,
     combatAudio,
     createAITechnique,
+    config.playerAnimations,
   ]);
 
   // AI movement handler with injury-based movement penalties

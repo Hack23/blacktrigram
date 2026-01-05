@@ -81,6 +81,12 @@ export function determineFallDirection(
   // Leg sweeps always cause side falls (more realistic for sweeps)
   if (attackHeight === "low") {
     // Determine which side based on angle
+    // Use a small threshold to avoid edge case at exactly 0
+    const threshold = 0.01; // ~0.6 degrees
+    if (Math.abs(relativeAngle) < threshold) {
+      // For perfectly frontal sweeps, default to right side fall
+      return "side_right";
+    }
     if (relativeAngle < 0) {
       return "side_left";
     } else {

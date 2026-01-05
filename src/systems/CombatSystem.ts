@@ -357,6 +357,11 @@ export class CombatSystem implements CombatSystemInterface {
    * Determines body region from combat result for balance disruption.
    * 
    * Maps vital points to body regions for balance system integration.
+   * Uses string matching on vital point IDs as a pragmatic heuristic since
+   * VitalPoint interface doesn't currently include a bodyRegion property.
+   * 
+   * Future improvement: Add bodyRegion: BodyRegion to VitalPoint interface
+   * for more robust region mapping without string pattern matching.
    * 
    * @param result - Combat result
    * @returns Body region that was struck

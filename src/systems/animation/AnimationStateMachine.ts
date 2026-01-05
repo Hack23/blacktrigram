@@ -25,7 +25,9 @@ import type {
   AnimationPriority,
   AnimationState,
   AnimationUpdateResult,
+  FallType,
 } from "./types";
+import { FALL_TO_GROUND_MAP } from "./types";
 
 /**
  * Default animation configurations based on game-design.md
@@ -488,21 +490,20 @@ export class PlayerAnimationStateMachine {
           }
 
           // Auto-transition logic
-          // Fall animations transition to ground states
+          // Fall animations transition to ground states using the mapping
           if (this.currentState.startsWith("fall_")) {
-            const fallType = this.currentState.replace("fall_", "");
-            const groundState = `ground_${fallType === "forward" ? "prone" :
-              fallType === "backward" ? "supine" :
-              fallType}` as AnimationState;
+            const fallType = this.currentState.replace("fall_", "") as FallType;
+            const groundState = FALL_TO_GROUND_MAP[fallType];
+            const groundAnimState = `ground_${groundState}` as AnimationState;
             
             this.previousState = this.currentState;
-            this.currentState = groundState;
+            this.currentState = groundAnimState;
             this.frameIndex = 0;
             this.timeAccumulator = 0;
             this.justStarted = true;
 
             if (this.events?.onAnimationStart) {
-              this.events.onAnimationStart(groundState);
+              this.events.onAnimationStart(groundAnimState);
             }
           }
           // Non-fall, non-looping animations transition to idle

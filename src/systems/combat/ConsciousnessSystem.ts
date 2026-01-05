@@ -602,7 +602,8 @@ export class ConsciousnessSystem {
       }
       
       // Rear impact (180° ±45°) causes forward fall
-      if (normalizedAngle > (3 * Math.PI) / 4 && normalizedAngle < (5 * Math.PI) / 4) {
+      // Since normalizedAngle is in [0, π], any angle > 3π/4 is a rear impact
+      if (normalizedAngle > (3 * Math.PI) / 4) {
         return "forward";
       }
       

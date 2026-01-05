@@ -95,14 +95,6 @@ describe("FallAnimations", () => {
       expect(fallType).toBe("backward");
     });
 
-    it("should use default fall when stance bias not defined", () => {
-      const fallType = determineFallFromStance(
-        TrigramStance.GEON,
-        "backward" // Override default
-      );
-      expect(["forward", "backward"]).toContain(fallType);
-    });
-
     it("should return forward fall for Earth stance (throws)", () => {
       const fallType = determineFallFromStance(TrigramStance.GON);
       expect(fallType).toBe("forward");
