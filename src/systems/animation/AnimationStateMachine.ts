@@ -447,6 +447,119 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         duration: 0.3,
       },
     ],
+    // Footwork patterns (보법) - Korean martial arts specialized footwork
+    // Circular step (원형보) - Lateral movement maintaining guard facing
+    [
+      "footwork_circular_left",
+      {
+        state: "footwork_circular_left",
+        frames: 18, // 300ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false, // Committed footwork
+        priority: STEP_PRIORITY, // Same as tactical steps
+        duration: 0.3,
+      },
+    ],
+    [
+      "footwork_circular_right",
+      {
+        state: "footwork_circular_right",
+        frames: 18, // 300ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    // Pivot step (축족회전) - Rotation on planted foot
+    [
+      "footwork_pivot_left",
+      {
+        state: "footwork_pivot_left",
+        frames: 15, // 250ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.25,
+      },
+    ],
+    [
+      "footwork_pivot_right",
+      {
+        state: "footwork_pivot_right",
+        frames: 15, // 250ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.25,
+      },
+    ],
+    // Slide step (미끄럼보) - Both feet move together
+    [
+      "footwork_slide_forward",
+      {
+        state: "footwork_slide_forward",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true, // Can be interrupted
+        priority: 4 as AnimationPriority, // Same as defend
+        duration: 0.2,
+      },
+    ],
+    [
+      "footwork_slide_back",
+      {
+        state: "footwork_slide_back",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 4 as AnimationPriority,
+        duration: 0.2,
+      },
+    ],
+    [
+      "footwork_slide_left",
+      {
+        state: "footwork_slide_left",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 4 as AnimationPriority,
+        duration: 0.2,
+      },
+    ],
+    [
+      "footwork_slide_right",
+      {
+        state: "footwork_slide_right",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 4 as AnimationPriority,
+        duration: 0.2,
+      },
+    ],
+    // Shuffle step (섞음보) - Quick micro-adjustment
+    [
+      "footwork_shuffle",
+      {
+        state: "footwork_shuffle",
+        frames: 6, // 100ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 3 as AnimationPriority, // Same as stance_change
+        duration: 0.1,
+      },
+    ],
   ]);
 
 /**

@@ -25,6 +25,19 @@ const STEP_KOREAN_TERMS: Record<string, string> = {
   "step_right": "우측면보법 (Right Step)",
 };
 
+// Footwork pattern Korean terminology (보법)
+const FOOTWORK_KOREAN_TERMS: Record<string, string> = {
+  "footwork_circular_left": "원형보 좌 (Circular Left)",
+  "footwork_circular_right": "원형보 우 (Circular Right)",
+  "footwork_pivot_left": "축족회전 좌 (Pivot Left)",
+  "footwork_pivot_right": "축족회전 우 (Pivot Right)",
+  "footwork_slide_forward": "미끄럼보 전 (Slide Forward)",
+  "footwork_slide_back": "미끄럼보 후 (Slide Back)",
+  "footwork_slide_left": "미끄럼보 좌 (Slide Left)",
+  "footwork_slide_right": "미끄럼보 우 (Slide Right)",
+  "footwork_shuffle": "섞음보 (Shuffle)",
+};
+
 // Step direction mapping (all move_* actions covered explicitly)
 const STEP_DIRECTION_MAP: Record<string, string> = {
   move_up: "step_forward",
@@ -291,8 +304,36 @@ export function useKeyboardControls({
           case "move_down":
           case "move_left":
           case "move_right":
-            // Check if Shift is held for tactical step instead of walk
-            if (e.shiftKey) {
+            // Check for Ctrl modifier for footwork patterns (보법)
+            if (e.ctrlKey) {
+              // Footwork patterns with Ctrl+WASD
+              let footworkAction: string | null = null;
+              
+              if (action === "move_left") {
+                // Ctrl+A: Circular step left (원형보)
+                footworkAction = "footwork_circular_left";
+              } else if (action === "move_right") {
+                // Ctrl+D: Circular step right (원형보)
+                footworkAction = "footwork_circular_right";
+              } else if (action === "move_up") {
+                // Ctrl+W: Slide forward (미끄럼보)
+                // Could also be pivot, but slide is more universally useful
+                footworkAction = "footwork_slide_forward";
+              } else if (action === "move_down") {
+                // Ctrl+S: Slide back (미끄럼보)
+                footworkAction = "footwork_slide_back";
+              }
+              
+              if (footworkAction) {
+                onAction(footworkAction);
+                addToQueue(
+                  FOOTWORK_KOREAN_TERMS[footworkAction] ?? "Footwork",
+                  `Ctrl+${e.key}`
+                );
+                if (playSFX) playSFX("footstep");
+              }
+            } else if (e.shiftKey) {
+              // Check if Shift is held for tactical step instead of walk
               // Check for diagonal step first
               const diagonalStep = getDiagonalStepAction();
               

@@ -32,6 +32,10 @@
  * - ground_supine: Face-up ground position (4 frame breathing loop)
  * - ground_side_left: Left side ground position (4 frame breathing loop)
  * - ground_side_right: Right side ground position (4 frame breathing loop)
+ * - footwork_circular_{left|right}: Circular step maintaining guard (18 frames, 300ms, 30cm)
+ * - footwork_pivot_{left|right}: Pivot rotation on planted foot (15 frames, 250ms, 90°)
+ * - footwork_slide_{forward|back|left|right}: Both feet slide together (12 frames, 200ms, 30cm)
+ * - footwork_shuffle: Quick micro-adjustment (6 frames, 100ms, 15cm)
  * 
  * @public
  * @korean 애니메이션상태
@@ -62,6 +66,15 @@ export type AnimationState =
   | "step_forward_right"
   | "step_back_left"
   | "step_back_right"
+  | "footwork_circular_left"
+  | "footwork_circular_right"
+  | "footwork_pivot_left"
+  | "footwork_pivot_right"
+  | "footwork_slide_forward"
+  | "footwork_slide_back"
+  | "footwork_slide_left"
+  | "footwork_slide_right"
+  | "footwork_shuffle"
   | "fall_forward"
   | "fall_backward"
   | "fall_side_left"
@@ -483,4 +496,64 @@ export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
   supine: "ground_supine",
   side_left: "ground_side_left",
   side_right: "ground_side_right",
+};
+
+/**
+ * Footwork pattern types for Korean martial arts (보법)
+ * 
+ * Four specialized footwork patterns based on traditional Korean martial arts:
+ * - circular: 원형보 (Wonhyeongbo) - Circular stepping while maintaining guard facing
+ * - pivot: 축족회전 (Chukjok Hoejeon) - Pivot rotation on planted foot
+ * - slide: 미끄럼보 (Mikkeureombo) - Sliding step with both feet moving together
+ * - shuffle: 섞음보 (Seokkeumbo) - Quick shuffling micro-adjustment
+ * 
+ * Each pattern serves distinct tactical purposes in combat:
+ * - Circular: Lateral repositioning while keeping opponent in guard
+ * - Pivot: Fast direction changes on planted foot
+ * - Slide: Maintaining stable base while advancing/retreating
+ * - Shuffle: Fine-tuning position without commitment
+ * 
+ * @public
+ * @korean 보법유형
+ */
+export type FootworkPattern = 'circular' | 'pivot' | 'slide' | 'shuffle';
+
+/**
+ * Footwork direction for directional patterns
+ * 
+ * @public
+ * @korean 보법방향
+ */
+export type FootworkDirection = 'left' | 'right' | 'forward' | 'back';
+
+/**
+ * Korean terminology for footwork patterns
+ * 
+ * Maps each footwork pattern to its Korean martial arts terminology
+ * with romanization and English translation.
+ * 
+ * @public
+ * @korean 보법한글용어
+ */
+export const FOOTWORK_KOREAN_TERMS: Record<FootworkPattern, { korean: string; romanized: string; english: string }> = {
+  circular: {
+    korean: '원형보',
+    romanized: 'Wonhyeongbo',
+    english: 'Circular Step',
+  },
+  pivot: {
+    korean: '축족회전',
+    romanized: 'Chukjok Hoejeon',
+    english: 'Pivot Rotation',
+  },
+  slide: {
+    korean: '미끄럼보',
+    romanized: 'Mikkeureombo',
+    english: 'Sliding Step',
+  },
+  shuffle: {
+    korean: '섞음보',
+    romanized: 'Seokkeumbo',
+    english: 'Shuffle Step',
+  },
 };
