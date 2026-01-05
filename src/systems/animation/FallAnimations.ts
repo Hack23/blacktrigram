@@ -82,8 +82,11 @@ export function determineFallDirection(
   if (attackHeight === "low") {
     // Determine which side based on angle
     // Use a small threshold to avoid edge case at exactly 0
-    const threshold = 0.01; // ~0.6 degrees
-    if (Math.abs(relativeAngle) < threshold) {
+    // Threshold represents the angle within which we consider the sweep "frontal"
+    // 0.01 radians ≈ 0.57 degrees - small enough to only catch near-perfect frontal sweeps
+    // while still allowing accurate left/right determination for most angles
+    const SWEEP_ANGLE_THRESHOLD = 0.01;
+    if (Math.abs(relativeAngle) < SWEEP_ANGLE_THRESHOLD) {
       // For perfectly frontal sweeps, default to right side fall
       return "side_right";
     }

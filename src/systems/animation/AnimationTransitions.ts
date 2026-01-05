@@ -97,14 +97,19 @@ function generateFallTransitions(): TransitionRule[] {
   for (const fallState of FALL_STATES) {
     // Falls can only go to their corresponding ground state
     // Use FALL_TO_GROUND_MAP for type-safe mapping
-    const fallType = fallState.replace("fall_", "") as FallType;
-    const groundState = FALL_TO_GROUND_MAP[fallType];
-    const groundAnimState = `ground_${groundState}` as AnimationState;
-    transitions.push({
-      from: fallState,
-      to: groundAnimState,
-      allowed: true,
-    });
+    const fallType = fallState.replace("fall_", "");
+    
+    // Validate that fallType is a valid FallType before using in map
+    if (fallType === "forward" || fallType === "backward" || 
+        fallType === "side_left" || fallType === "side_right") {
+      const groundState = FALL_TO_GROUND_MAP[fallType as FallType];
+      const groundAnimState = `ground_${groundState}` as AnimationState;
+      transitions.push({
+        from: fallState,
+        to: groundAnimState,
+        allowed: true,
+      });
+    }
   }
   
   // Ground states are semi-terminal (can only transition to recovery - future feature)

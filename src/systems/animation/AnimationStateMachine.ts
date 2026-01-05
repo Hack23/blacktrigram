@@ -492,18 +492,61 @@ export class PlayerAnimationStateMachine {
           // Auto-transition logic
           // Fall animations transition to ground states using the mapping
           if (this.currentState.startsWith("fall_")) {
-            const fallType = this.currentState.replace("fall_", "") as FallType;
-            const groundState = FALL_TO_GROUND_MAP[fallType];
-            const groundAnimState = `ground_${groundState}` as AnimationState;
+            const fallType = this.currentState.replace("fall_", "");
             
-            this.previousState = this.currentState;
-            this.currentState = groundAnimState;
-            this.frameIndex = 0;
-            this.timeAccumulator = 0;
-            this.justStarted = true;
+            // Validate that fallType is a valid FallType before using in map
+            if (fallType === "forward" || fallType === "backward" || 
+                fallType === "side_left" || fallType === "side_right") {
+              const groundState = FALL_TO_GROUND_MAP[fallType as FallType];
+              const groundAnimKey = `ground_${groundState}`;
 
-            if (this.events?.onAnimationStart) {
-              this.events.onAnimationStart(groundAnimState);
+              // Validate that the constructed ground animation state actually exists
+              if (DEFAULT_ANIMATION_CONFIGS.has(groundAnimKey as AnimationState)) {
+                const groundAnimState = groundAnimKey as AnimationState;
+
+                this.previousState = this.currentState;
+                this.currentState = groundAnimState;
+                this.frameIndex = 0;
+                this.timeAccumulator = 0;
+                this.justStarted = true;
+
+                if (this.events?.onAnimationStart) {
+                  this.events.onAnimationStart(groundAnimState);
+                }
+              } else {
+                // Fallback: if mapping is invalid, safely transition to idle
+                // instead of entering an undefined animation state.
+                console.warn(
+                  "[AnimationStateMachine] Invalid ground animation mapping for fall type:",
+                  fallType,
+                  "->",
+                  groundAnimKey
+                );
+                this.previousState = this.currentState;
+                this.currentState = "idle";
+                this.frameIndex = 0;
+                this.timeAccumulator = 0;
+                this.justStarted = true;
+
+                if (this.events?.onAnimationStart) {
+                  this.events.onAnimationStart("idle");
+                }
+              }
+            } else {
+              // Invalid fall type - fallback to idle
+              console.warn(
+                "[AnimationStateMachine] Invalid fall animation state:",
+                this.currentState
+              );
+              this.previousState = this.currentState;
+              this.currentState = "idle";
+              this.frameIndex = 0;
+              this.timeAccumulator = 0;
+              this.justStarted = true;
+
+              if (this.events?.onAnimationStart) {
+                this.events.onAnimationStart("idle");
+              }
             }
           }
           // Non-fall, non-looping animations transition to idle
