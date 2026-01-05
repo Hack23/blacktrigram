@@ -211,11 +211,12 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
     // Start with base result
-    let { updatedAttacker, updatedDefender } = CombatSystem.applyCombatResult(
+    const { updatedAttacker, updatedDefender: initialDefender } = CombatSystem.applyCombatResult(
       result,
       attacker,
       defender
     );
+    let updatedDefender = initialDefender;
 
     if (result.hit && result.damage > 0) {
       // Determine vital point category and severity from hit result

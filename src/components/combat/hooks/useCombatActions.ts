@@ -290,8 +290,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       }
 
       // Display technique name in combat log
-      const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
-      const techniqueNameEnglish = attackTechnique.englishName || attackTechnique.name.english;
+      const techniqueNameKorean = attackTechnique.koreanName ?? attackTechnique.name.korean;
+      const techniqueNameEnglish = attackTechnique.englishName ?? attackTechnique.name.english;
 
       if (result.isCritical) {
         addCombatMessage(
@@ -311,8 +311,8 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       }
     } else {
       combatActions.resetCombo();
-      const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
-      const techniqueNameEnglish = attackTechnique.englishName || attackTechnique.name.english;
+      const techniqueNameKorean = attackTechnique.koreanName ?? attackTechnique.name.korean;
+      const techniqueNameEnglish = attackTechnique.englishName ?? attackTechnique.name.english;
       addCombatMessage(
         `${techniqueNameKorean} 빗나감`,
         `${techniqueNameEnglish} Missed`
@@ -334,6 +334,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     combatAudio,
+    config.playerAnimations,
   ]);
 
   // Player defend handler
