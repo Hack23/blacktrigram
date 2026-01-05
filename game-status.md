@@ -13,6 +13,7 @@
 | **Overall Implementation** | **7.9/10** | 🟢 Beta Stage | +0.7 points since Nov 2025 |
 | **Combat System (Backend)** | 7.5/10 | 🟡 In Progress | 4/12 realism systems complete (33%) |
 | **CombatScreen3D (UI)** | 7.8/10 | 🟢 Production-Ready | 93% test coverage, 41 tests |
+| **Control System** | 8.5/10 | 🟢 Production-Ready | Core controls complete, docs unified |
 | **Vital Points** | 9.5/10 | 🟢 Excellent | 70/70 points (100%), up from 4.3% |
 | **Body Part Health** | 10/10 | 🟢 Complete | 8 parts tracked with bilingual labels |
 | **Enhanced Anatomy** | 9.5/10 | 🟢 Near-Complete | Polygon detection, 13 zones, <0.01ms |
@@ -96,6 +97,15 @@ Black Trigram has achieved **significant progress in combat realism systems** si
 - ✅ Critical hit burst effects with starburst geometry
 - ✅ Mobile optimization (375x667)
 - ✅ 60fps performance validated with stress testing (20 simultaneous effects)
+
+### Control System Consolidation (Issue #New - January 2026)
+- ✅ **CONTROLS.md** - Comprehensive single source of truth for all controls
+- ✅ **Core Controls** - Stances (1-8), Movement (WASD/Arrows), Attack (Space), Block (B), Vital Overlay (V), Pause (ESC/M)
+- ✅ **Mobile Controls** - Virtual D-Pad, Action Buttons, Stance Wheel, Gestures, Haptics
+- ✅ **Documentation Sync** - game-design.md, README.md, game-status.md all aligned
+- ✅ **Implementation Status** - Clear marking of implemented vs planned features
+- ✅ **No Conflicts** - Verified CombatScreen3D and TrainingScreen3D use consistent mapping
+- 🚧 **Advanced Controls** - Planned: X (swap foot), Z+Arrow (short step), X+Arrow (step & swap), directional attacks
 
 ---
 

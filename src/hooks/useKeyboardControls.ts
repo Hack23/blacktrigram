@@ -316,24 +316,22 @@ export function useKeyboardControls({
             } else {
               // Regular movement
               onAction(action);
+              addToQueue(action, e.key);
             }
             break;
 
-          case "precision":
-            onAction("precision");
-            addToQueue("Precision Mode", e.key);
+          case "vital_points_overlay":
+            // Vital points overlay toggle
+            onAction("vital_points_overlay");
+            addToQueue("Vital Points", e.key);
             if (playSFX) playSFX("menu_select");
             break;
 
-          case "quick_switch":
-            onAction("quick_switch");
-            addToQueue("Quick Switch", e.key);
-            if (playSFX) playSFX("stance_change");
-            break;
-
-          case "reset":
-            onAction("reset");
-            addToQueue("Reset", e.key);
+          case "pause":
+            // Pause menu toggle
+            onAction("pause");
+            addToQueue("Pause", e.key);
+            if (playSFX) playSFX("menu_select");
             break;
         }
       }

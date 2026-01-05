@@ -212,13 +212,24 @@ Built for **combat realism** and **authentic simulation**:
 
 ## 🎮 Combat Controls
 
-### ⌨️ Desktop Input System
+> **📖 Complete Control Reference**: See [`CONTROLS.md`](/CONTROLS.md) for comprehensive control documentation
 
-- **🏃 Movement**: `WASD` or `Arrow Keys` – Tactical positioning and footwork
-- **⚔️ Techniques**: `1–8` (Trigram-based combat techniques)
-- **🛡️ Guard**: `Spacebar` – Defensive positioning and blocks
-- **🎯 Vital Strike**: `Mouse` – Targeted vital-point attacks
-- **🔄 Archetype Switch**: `Tab` – Change between 5 fighter types
+### ⌨️ Desktop Input System (Currently Implemented)
+
+- **🏃 Movement**: `WASD` or `Arrow Keys` – 8-directional tactical positioning and footwork
+- **⚔️ Stances**: `1–8` (Eight Trigram-based combat stances)
+  - `1` ☰ Geon (Heaven) - Bone-striking force
+  - `2` ☱ Tae (Lake) - Joint manipulation  
+  - `3` ☲ Li (Fire) - Precise nerve strikes
+  - `4` ☳ Jin (Thunder) - Stunning techniques
+  - `5` ☴ Son (Wind) - Continuous pressure
+  - `6` ☵ Gam (Water) - Adaptive counters
+  - `7` ☶ Gan (Mountain) - Defensive mastery
+  - `8` ☷ Gon (Earth) - Ground control
+- **🛡️ Guard**: `B` – Defensive positioning and blocks
+- **⚡ Attack**: `Space` – Execute current stance technique
+- **🎯 Vital Strike**: `V` – Toggle 70-point anatomical targeting overlay
+- **⏸️ Pause**: `ESC` or `M` – Pause menu / Return to intro
 
 ### 📱 Mobile Touch Controls (375x667+ screens)
 

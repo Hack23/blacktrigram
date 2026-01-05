@@ -86,10 +86,12 @@ describe("ControlMapper", () => {
       // Save custom bindings with uppercase (avoid conflicts with movement keys)
       mapper.saveBindings({
         stances: ["Q", "W", "E", "R", "T", "Y", "U", "I"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: " ",
         block: "b",
         movement: { up: "k", down: "j", left: "h", right: "l" },
-        special: { precision: "Control", quickSwitch: "p", reset: "o" },
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       });
 
       expect(mapper.getStanceForKey("q")).toBe(0);
@@ -130,10 +132,12 @@ describe("ControlMapper", () => {
       expect(mapper.getActionForKey("d")).toBe("move_right");
     });
 
-    it("should detect special keys", () => {
-      expect(mapper.getActionForKey("Control")).toBe("precision");
-      expect(mapper.getActionForKey("q")).toBe("quick_switch");
-      expect(mapper.getActionForKey("r")).toBe("reset");
+    it("should detect vital points overlay and pause keys", () => {
+      expect(mapper.getActionForKey("v")).toBe("vital_points_overlay");
+      expect(mapper.getActionForKey("V")).toBe("vital_points_overlay");
+      expect(mapper.getActionForKey("Escape")).toBe("pause");
+      expect(mapper.getActionForKey("m")).toBe("pause");
+      expect(mapper.getActionForKey("M")).toBe("pause");
     });
 
     it("should return stance action for stance keys", () => {
@@ -146,10 +150,11 @@ describe("ControlMapper", () => {
     it("should save custom bindings to localStorage", () => {
       const customBindings: ControlBinding = {
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "c", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(customBindings);
@@ -169,10 +174,11 @@ describe("ControlMapper", () => {
     it("should load custom bindings from localStorage", () => {
       const customBindings: ControlBinding = {
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "c", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       localStorageMock["blacktrigram_controls"] =
@@ -212,7 +218,7 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "c", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       });
 
       // Reset to defaults
@@ -239,7 +245,7 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "q", reset: "r" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(invalidBindings as ControlBinding);
@@ -255,7 +261,7 @@ describe("ControlMapper", () => {
         attack: "1", // Duplicate with stance 1
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "q", reset: "r" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(invalidBindings);
@@ -268,10 +274,11 @@ describe("ControlMapper", () => {
     it("should detect conflicts in bindings", () => {
       const conflictingBindings: ControlBinding = {
         stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: "1", // Conflict with stance key
         block: "w", // Conflict with movement
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "q", reset: "r" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       const conflicts = mapper.getConflicts(conflictingBindings);
@@ -286,10 +293,11 @@ describe("ControlMapper", () => {
     it("should work with QWER layout for stances", () => {
       const qwerBindings: ControlBinding = {
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: " ",
         block: "b",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        special: { precision: "Control", quickSwitch: "t", reset: "y" },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(qwerBindings);
@@ -302,16 +310,82 @@ describe("ControlMapper", () => {
     it("should work with numpad layout", () => {
       const numpadBindings: ControlBinding = {
         stances: ["7", "8", "9", "4", "5", "6", "1", "2"],
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: " ",
         block: "0",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        special: { precision: "Control", quickSwitch: "3", reset: "." },
+        vitalPointsOverlay: "v", pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(numpadBindings);
 
       expect(mapper.getStanceForKey("7")).toBe(0);
       expect(mapper.getStanceForKey("2")).toBe(7);
+    });
+  });
+
+  describe("Technique Key Mapping", () => {
+    it("should get technique index for valid key", () => {
+      expect(mapper.getTechniqueForKey("q")).toBe(0);
+      expect(mapper.getTechniqueForKey("e")).toBe(1);
+      expect(mapper.getTechniqueForKey("r")).toBe(2);
+      expect(mapper.getTechniqueForKey("c")).toBe(9); // Last technique key
+    });
+
+    it("should return null for invalid technique key", () => {
+      expect(mapper.getTechniqueForKey("p")).toBeNull(); // P is not in new layout
+      expect(mapper.getTechniqueForKey("w")).toBeNull(); // W is movement, not technique
+      expect(mapper.getTechniqueForKey("9")).toBeNull();
+    });
+
+    it("should be case-insensitive for technique keys", () => {
+      expect(mapper.getTechniqueForKey("Q")).toBe(0);
+      expect(mapper.getTechniqueForKey("E")).toBe(1);
+      expect(mapper.getTechniqueForKey("R")).toBe(2);
+      expect(mapper.getTechniqueForKey("C")).toBe(9);
+    });
+
+    it("should get key for valid technique index", () => {
+      expect(mapper.getKeyForTechnique(0)).toBe("q");
+      expect(mapper.getKeyForTechnique(1)).toBe("e");
+      expect(mapper.getKeyForTechnique(2)).toBe("r");
+      expect(mapper.getKeyForTechnique(9)).toBe("c");
+    });
+
+    it("should return null for negative technique index", () => {
+      expect(mapper.getKeyForTechnique(-1)).toBeNull();
+      expect(mapper.getKeyForTechnique(-5)).toBeNull();
+    });
+
+    it("should return null for out-of-bounds technique index", () => {
+      expect(mapper.getKeyForTechnique(10)).toBeNull();
+      expect(mapper.getKeyForTechnique(15)).toBeNull();
+    });
+
+    it("should handle boundary conditions correctly", () => {
+      expect(mapper.getKeyForTechnique(0)).toBe("q"); // First index
+      expect(mapper.getKeyForTechnique(9)).toBe("c"); // Last index
+      expect(mapper.getKeyForTechnique(-1)).toBeNull(); // Below range
+      expect(mapper.getKeyForTechnique(10)).toBeNull(); // Above range
+    });
+
+    it("should work with custom technique bindings", () => {
+      const customBindings: ControlBinding = {
+        stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+        techniques: ["n", "m", ",", ".", "/", "[", "]", "\\", "-", "="], // Custom technique keys
+        attack: " ",
+        block: "b",
+        movement: { up: "w", down: "s", left: "a", right: "d" },
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "p"], // Changed from "m" to "p" to avoid conflict
+      };
+
+      mapper.saveBindings(customBindings);
+
+      expect(mapper.getTechniqueForKey("n")).toBe(0);
+      expect(mapper.getTechniqueForKey(",")).toBe(2);
+      expect(mapper.getKeyForTechnique(0)).toBe("n");
+      expect(mapper.getKeyForTechnique(2)).toBe(",");
     });
   });
 });

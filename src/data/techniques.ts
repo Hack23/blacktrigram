@@ -4,7 +4,7 @@
  * **Korean**: 기술 정의 (Technique Definitions)
  *
  * Each archetype has 3-5 unique techniques that reflect their combat philosophy
- * and specialization. Techniques are mapped to keyboard shortcuts Q, W, E, R.
+ * and specialization. Techniques are mapped to keyboard shortcuts Q-E-R-T-Y-F-G-Z-X-C.
  *
  * @module data/techniques
  * @category Combat System
@@ -69,7 +69,7 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
     damageType: DamageType.IMPACT,
     cooldown: 8000,
     requiredStance: TrigramStance.GAN,
-    keyboardShortcut: "W",
+    keyboardShortcut: "T",
     specialEffect: "defense_boost",
     animationDuration: 600,
     animation: {
@@ -175,7 +175,7 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
     damage: { min: 15, max: 25 },
     damageType: DamageType.NERVE,
     cooldown: 6000,
-    keyboardShortcut: "W",
+    keyboardShortcut: "T",
     targetsVitalPoint: true,
     specialEffect: "paralysis",
     animationDuration: 700,
@@ -282,7 +282,7 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
     damage: { min: 22, max: 32 },
     damageType: DamageType.PIERCING,
     cooldown: 5000,
-    keyboardShortcut: "W",
+    keyboardShortcut: "T",
     targetsVitalPoint: true,
     criticalChance: 0.35,
     animationDuration: 700,
@@ -388,7 +388,7 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
     damage: { min: 15, max: 30 },
     damageType: DamageType.IMPACT,
     cooldown: 5000,
-    keyboardShortcut: "W",
+    keyboardShortcut: "T",
     specialEffect: "counter_stance",
     animationDuration: 600,
     animation: {
@@ -492,7 +492,7 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
     damage: { min: 25, max: 35 },
     damageType: DamageType.CRUSHING,
     cooldown: 5000,
-    keyboardShortcut: "W",
+    keyboardShortcut: "T",
     specialEffect: "knockdown",
     animationDuration: 800,
     animation: {
@@ -661,21 +661,21 @@ export function getTechniquesForStanceAndArchetype(
     ...filteredArchetypeTechniques,
   ];
 
-  // Limit to maximum 10 techniques (keyboard shortcuts Q-P)
+  // Limit to maximum 10 techniques (keyboard shortcuts Q-E-R-T-Y-F-G-Z-X-C)
   const limitedTechniques = allTechniques.slice(0, 10);
 
-  // Assign keyboard shortcuts using top row keys Q through P
+  // Assign keyboard shortcuts using conflict-free keys around WASD
   const keyboardShortcuts = [
     "Q",
-    "W",
     "E",
     "R",
     "T",
     "Y",
-    "U",
-    "I",
-    "O",
-    "P",
+    "F",
+    "G",
+    "Z",
+    "X",
+    "C",
   ] as const;
   return limitedTechniques.map((tech, index) => ({
     ...tech,
