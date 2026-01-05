@@ -178,7 +178,7 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
             style={{
               fontSize: isCritical ? "18px" : "16px",
               fontWeight: "normal",
-              color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0')}`,
+              color: toHexColor(KOREAN_COLORS.PRIMARY_CYAN),
               opacity: 0.8,
               letterSpacing: "1px",
             }}
