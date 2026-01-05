@@ -1,5 +1,6 @@
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { Technique } from "../types/technique";
 import { getTechniqueById } from "../data/techniques";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
 import {
@@ -25,7 +26,7 @@ import {
 } from "./PlayerEffectManager";
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
-import { StatusEffect, Technique } from "./types";
+import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
 import {
