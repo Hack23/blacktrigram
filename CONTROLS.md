@@ -29,14 +29,15 @@ This document is the **single source of truth** for all game controls in Black T
 | **Vital Points Overlay** | `V` | 급소 표시 | Toggle anatomical targeting overlay |
 | **Pause Menu** | `ESC` or `M` | 일시정지 | Pause game / Return to menu |
 
-> ✅ **NEW: Zero-Conflict Control Scheme**:
+> ✅ **NEW: Zero-Conflict Control Scheme** (Current Version):
 > 
-> **All control conflicts eliminated!**  Technique keys (Q-E-R-T-Y-F-G-Z-X-C) are positioned around WASD for easy reach with your left hand while keeping WASD free for movement.
+> In **v0.5.37**, all **currently implemented** controls avoid conflicts: technique keys (Q-E-R-T-Y-F-G-Z-X-C) are positioned around WASD for easy reach with your left hand while keeping WASD free for movement.
 > 
-> - **Techniques**: Use keys around WASD (Q, E, R, T, Y, F, G, Z, X, C)
+> - **Techniques (now)**: Use keys around WASD (Q, E, R, T, Y, F, G, Z, X, C)
 > - **Movement**: WASD remains fully functional
 > - **No browser conflicts**: No function keys or Ctrl shortcuts
 > - **Ergonomic**: All keys within easy reach of left hand
+> - **⚠️ Future Note**: The planned **Advanced Footwork System** (NOT YET IMPLEMENTED) proposes using `X` for **Swap Front Foot** and `Z` for **Short Step**. In that future update, technique bindings for `Z`/`X` may be remapped to avoid conflicts; refer to this document's version header for the active scheme.
 
 ### Mobile Controls (Touch Screen)
 

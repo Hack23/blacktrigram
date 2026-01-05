@@ -661,21 +661,21 @@ export function getTechniquesForStanceAndArchetype(
     ...filteredArchetypeTechniques,
   ];
 
-  // Limit to maximum 10 techniques (keyboard shortcuts Q-P)
+  // Limit to maximum 10 techniques (keyboard shortcuts Q-E-R-T-Y-F-G-Z-X-C)
   const limitedTechniques = allTechniques.slice(0, 10);
 
-  // Assign keyboard shortcuts using top row keys Q through P
+  // Assign keyboard shortcuts using conflict-free keys around WASD
   const keyboardShortcuts = [
     "Q",
-    "W",
     "E",
     "R",
     "T",
     "Y",
-    "U",
-    "I",
-    "O",
-    "P",
+    "F",
+    "G",
+    "Z",
+    "X",
+    "C",
   ] as const;
   return limitedTechniques.map((tech, index) => ({
     ...tech,

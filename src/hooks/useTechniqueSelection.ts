@@ -290,6 +290,16 @@ export function useTechniqueSelection(
     if (!enabled) return;
 
     const handleKeyPress = (e: KeyboardEvent) => {
+      // Ignore keypresses when typing in input fields
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
       const key = e.key.toUpperCase();
       
       // Technique keys: Q, E, R, T, Y, F, G, Z, X, C (10 keys around WASD)
