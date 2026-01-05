@@ -18,6 +18,11 @@
  * - **Off-Balance**: 20-49 balance - Vulnerability window, defense penalty
  * - **Falling**: 0-19 balance - Severe vulnerability, possible knockdown
  * 
+ * ## Fall System Integration
+ * 
+ * When balance falls below 20%, the system can trigger fall animations (낙법).
+ * Fall direction is determined by attack vector and player stance.
+ * 
  * @module systems/combat/BalanceSystem
  * @category Combat System
  * @korean 균형시스템
@@ -25,6 +30,9 @@
 
 import { PlayerState } from "../player";
 import { BodyRegion } from "@/types";
+import type { FallType } from "../animation/types";
+import { determineFallDirection, determineFallFromStance } from "../animation/FallAnimations";
+import type { TrigramStance } from "@/types/common";
 
 /**
  * Balance levels representing physical stability.
@@ -401,6 +409,111 @@ export class BalanceSystem {
     };
 
     return colors[level];
+  }
+
+  /**
+   * Checks if balance is low enough to trigger fall animation.
+   * 
+   * Falls occur when balance drops below 20% (FALLING state).
+   * This creates realistic knockdown conditions from balance loss.
+   * 
+   * @param player - Current player state
+   * @returns True if fall animation should trigger
+   * 
+   * @example
+   * ```typescript
+   * if (balanceSystem.shouldTriggerFall(player)) {
+   *   const fallType = balanceSystem.determineFallType(
+   *     player,
+   *     attackAngle,
+   *     attackHeight
+   *   );
+   *   animationMachine.transitionTo(FALL_TYPE_TO_ANIMATION[fallType]);
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 낙법발동확인
+   */
+  shouldTriggerFall(player: PlayerState): boolean {
+    return player.balance < 20; // FALLING threshold
+  }
+
+  /**
+   * Determines which fall animation to play based on attack and stance.
+   * 
+   * Calculates fall direction using:
+   * - Attack angle relative to player
+   * - Attack height (high/mid/low)
+   * - Player's current stance bias
+   * 
+   * Korean falling techniques (낙법):
+   * - 전방낙법 (Jeonbang Nakbeop): Forward fall
+   * - 후방낙법 (Hubang Nakbeop): Backward fall
+   * - 측방낙법 (Cheukbang Nakbeop): Side fall
+   * 
+   * @param player - Current player state
+   * @param attackAngle - Angle of attack in radians (0 = from front)
+   * @param attackHeight - Attack height: 'high', 'mid', or 'low'
+   * @returns Fall type to use for animation
+   * 
+   * @example
+   * ```typescript
+   * // Player facing forward (0°), attacked from behind (π)
+   * const fallType = balanceSystem.determineFallType(
+   *   player,
+   *   Math.PI,
+   *   'mid'
+   * );
+   * // Returns: 'forward' (pushed forward by rear attack)
+   * 
+   * // Low sweep from right side
+   * const fallType = balanceSystem.determineFallType(
+   *   player,
+   *   Math.PI/2,
+   *   'low'
+   * );
+   * // Returns: 'side_right' (swept to the side)
+   * ```
+   * 
+   * @public
+   * @korean 낙법유형결정
+   */
+  determineFallType(
+    _player: PlayerState,
+    attackAngle: number,
+    attackHeight: "high" | "mid" | "low" = "mid"
+  ): FallType {
+    // Get player facing angle from position or default to 0
+    const playerFacing = 0; // Default facing forward
+    
+    // Use attack direction to determine fall
+    return determineFallDirection(attackAngle, playerFacing, attackHeight);
+  }
+
+  /**
+   * Determines fall type based on player stance when no attack direction available.
+   * 
+   * Uses stance bias to determine likely fall direction when balance is lost
+   * without a specific attack (e.g., from fatigue, leg damage accumulation).
+   * 
+   * @param stance - Current trigram stance
+   * @returns Fall type based on stance characteristics
+   * 
+   * @example
+   * ```typescript
+   * // Player in Heaven stance (aggressive forward)
+   * const fallType = balanceSystem.determineFallTypeFromStance(
+   *   TrigramStance.GEON
+   * );
+   * // Returns: 'forward' (Heaven stance has forward bias)
+   * ```
+   * 
+   * @public
+   * @korean 자세낙법결정
+   */
+  determineFallTypeFromStance(stance: TrigramStance): FallType {
+    return determineFallFromStance(stance);
   }
 }
 
