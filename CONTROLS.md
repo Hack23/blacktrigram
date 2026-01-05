@@ -135,7 +135,7 @@ Each player archetype has unique techniques that reflect their combat philosophy
 #### Technique Properties
 - **Keyboard Shortcuts**: `Q` `E` `R` `T` `Y` `F` `G` `Z` `X` `C` (up to 10 techniques)
 - **Resource Cost**: Varies by technique (8-35 stamina, 10-35 Ki)
-- **Cooldown**: 2-5 seconds depending on power level
+- **Cooldown**: 4-12 seconds depending on power level
 - **Damage**: 25-55 base damage (higher than basic attacks)
 - **Stance Requirement**: Some techniques require specific trigram stances
 - **Zero Conflicts**: Keys positioned around WASD for easy access without interfering with movement
@@ -163,7 +163,7 @@ Each player archetype has unique techniques that reflect their combat philosophy
 1. **Select Stance** (1-8) - Choose trigram stance for bonuses
 2. **Check Resources** - Ensure sufficient Stamina (🔋) and Ki (⚡)
 3. **Press Technique Key** (Q-E-R-T-Y-F-G-Z-X-C) - Execute the technique
-4. **Cooldown Period** - Wait 2-12 seconds before reusing (varies by technique)
+4. **Cooldown Period** - Wait 4-12 seconds before reusing (varies by technique)
 5. **Resource Regeneration** - Stamina and Ki regenerate over time
 
 **Note**: Only the first 10 techniques per archetype are assigned keyboard shortcuts. Additional techniques (if any) can be accessed via mouse/touch on the technique bar.

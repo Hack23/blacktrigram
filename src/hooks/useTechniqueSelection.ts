@@ -304,7 +304,7 @@ export function useTechniqueSelection(
       const techniqueIndex = techniqueKeys.indexOf(key);
       if (techniqueIndex !== -1 && techniqueIndex < availableTechniques.length) {
         selectTechnique(techniqueIndex);
-        executeTechnique();
+        executeTechnique(techniqueIndex);
       }
     };
 

@@ -20,7 +20,7 @@ import { TRIGRAM_STANCES_ORDER } from "../systems/trigram/types";
 export interface ControlBinding {
   /** Stance selection keys (1-8 by default) */
   readonly stances: readonly string[];
-  /** Technique execution keys (F1-F10 by default) */
+  /** Technique execution keys (Q-E-R-T-Y-F-G-Z-X-C by default) */
   readonly techniques: readonly string[];
   /** Attack action key */
   readonly attack: string;
@@ -225,7 +225,7 @@ export class ControlMapper {
    * @korean 기술 키 확인
    */
   getTechniqueForKey(key: string): number | null {
-    const normalizedKey = key;
+    const normalizedKey = key.toLowerCase();
     const index = this.bindings.techniques.indexOf(normalizedKey);
     return index >= 0 ? index : null;
   }

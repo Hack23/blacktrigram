@@ -323,4 +323,69 @@ describe("ControlMapper", () => {
       expect(mapper.getStanceForKey("2")).toBe(7);
     });
   });
+
+  describe("Technique Key Mapping", () => {
+    it("should get technique index for valid key", () => {
+      expect(mapper.getTechniqueForKey("q")).toBe(0);
+      expect(mapper.getTechniqueForKey("e")).toBe(1);
+      expect(mapper.getTechniqueForKey("r")).toBe(2);
+      expect(mapper.getTechniqueForKey("c")).toBe(9); // Last technique key
+    });
+
+    it("should return null for invalid technique key", () => {
+      expect(mapper.getTechniqueForKey("p")).toBeNull(); // P is not in new layout
+      expect(mapper.getTechniqueForKey("w")).toBeNull(); // W is movement, not technique
+      expect(mapper.getTechniqueForKey("9")).toBeNull();
+    });
+
+    it("should be case-insensitive for technique keys", () => {
+      expect(mapper.getTechniqueForKey("Q")).toBe(0);
+      expect(mapper.getTechniqueForKey("E")).toBe(1);
+      expect(mapper.getTechniqueForKey("R")).toBe(2);
+      expect(mapper.getTechniqueForKey("C")).toBe(9);
+    });
+
+    it("should get key for valid technique index", () => {
+      expect(mapper.getKeyForTechnique(0)).toBe("q");
+      expect(mapper.getKeyForTechnique(1)).toBe("e");
+      expect(mapper.getKeyForTechnique(2)).toBe("r");
+      expect(mapper.getKeyForTechnique(9)).toBe("c");
+    });
+
+    it("should return null for negative technique index", () => {
+      expect(mapper.getKeyForTechnique(-1)).toBeNull();
+      expect(mapper.getKeyForTechnique(-5)).toBeNull();
+    });
+
+    it("should return null for out-of-bounds technique index", () => {
+      expect(mapper.getKeyForTechnique(10)).toBeNull();
+      expect(mapper.getKeyForTechnique(15)).toBeNull();
+    });
+
+    it("should handle boundary conditions correctly", () => {
+      expect(mapper.getKeyForTechnique(0)).toBe("q"); // First index
+      expect(mapper.getKeyForTechnique(9)).toBe("c"); // Last index
+      expect(mapper.getKeyForTechnique(-1)).toBeNull(); // Below range
+      expect(mapper.getKeyForTechnique(10)).toBeNull(); // Above range
+    });
+
+    it("should work with custom technique bindings", () => {
+      const customBindings: ControlBinding = {
+        stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+        techniques: ["n", "m", ",", ".", "/", "[", "]", "\\", "-", "="], // Custom technique keys
+        attack: " ",
+        block: "b",
+        movement: { up: "w", down: "s", left: "a", right: "d" },
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "p"], // Changed from "m" to "p" to avoid conflict
+      };
+
+      mapper.saveBindings(customBindings);
+
+      expect(mapper.getTechniqueForKey("n")).toBe(0);
+      expect(mapper.getTechniqueForKey(",")).toBe(2);
+      expect(mapper.getKeyForTechnique(0)).toBe("n");
+      expect(mapper.getKeyForTechnique(2)).toBe(",");
+    });
+  });
 });
