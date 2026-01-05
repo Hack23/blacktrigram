@@ -284,13 +284,14 @@ Quick 15cm micro-adjustment for fine positioning.
 
 | **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
 |-----------|-------------|------------|--------------|--------------|
-| `Ctrl+Space` | Shuffle | 섞음보 | 15cm any direction | 100ms (6 frames) |
+| _Future Enhancement_ | Shuffle | 섞음보 | 15cm any direction | 100ms (6 frames) |
 
 **Shuffle Properties:**
 - ⚡ **Fastest footwork**: Only 100ms (6 frames)
 - 🎯 **Micro-adjustment**: Half the distance of other steps (15cm)
 - 🔄 **Fully interruptible**: Can cancel anytime (Priority 3)
 - 🏃 **Fine-tuning**: Perfect for precise positioning
+- ⚠️ **Status**: Keyboard controls pending - animations configured, awaiting control binding
 
 ##### Footwork Pattern Comparison
 

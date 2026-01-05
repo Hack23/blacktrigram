@@ -1,11 +1,13 @@
 /**
  * Korean martial arts footwork animations with skeletal keyframes (보법 애니메이션)
  *
- * Defines realistic footwork animation sequences for specialized movement patterns:
+ * Defines realistic footwork animation sequences for all specialized movement patterns:
  * - Circular steps (원형보): Lateral movement while maintaining guard facing
  * - Slide steps (미끄럼보): Both feet move together with no weight transfer
+ * - Pivot steps (축족회전): 90° rotations on planted foot
+ * - Shuffle step (섞음보): Quick 15cm micro-adjustments
  *
- * Note: Pivot and shuffle patterns are configured but skeletal animations pending.
+ * All 9 footwork patterns (circular, pivot, slide, shuffle) are fully implemented with skeletal animations.
  *
  * @module systems/animation/FootworkSkeletalAnimations
  * @category Animation System
