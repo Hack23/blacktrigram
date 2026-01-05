@@ -28,16 +28,16 @@ const ANIMATION_TYPE_TO_NAME_MAP: Record<AttackAnimationType, string> = {
 
   // Kick category (발차기) - use existing animations
   [AttackAnimationType.KICK_FRONT]: "front_kick", // Front kick (앞차기)
-  [AttackAnimationType.KICK_SIDE]: "front_kick", // Side kick (옆차기) - reuse front kick
+  [AttackAnimationType.KICK_SIDE]: "front_kick", // Side kick (옆차기) - reuse front kick for now
   [AttackAnimationType.KICK_ROUNDHOUSE]: "roundhouse_kick", // Roundhouse kick (돌려차기)
 
-  // Elbow category (팔꿈치 타격) - use jab animation for now
-  [AttackAnimationType.ELBOW_STRIKE]: "jab",
-  [AttackAnimationType.ELBOW_UPPERCUT]: "jab",
+  // Elbow category (팔꿈치 타격) - use dedicated elbow animation
+  [AttackAnimationType.ELBOW_STRIKE]: "elbow_strike",
+  [AttackAnimationType.ELBOW_UPPERCUT]: "elbow_strike", // Reuse elbow strike with different angle
 
-  // Knee category (무릎 타격) - use front kick motion for now
-  [AttackAnimationType.KNEE_STRIKE]: "front_kick",
-  [AttackAnimationType.KNEE_CLINCH]: "front_kick",
+  // Knee category (무릎 타격) - use dedicated knee animation
+  [AttackAnimationType.KNEE_STRIKE]: "knee_strike",
+  [AttackAnimationType.KNEE_CLINCH]: "knee_strike", // Reuse knee strike in clinch position
 
   // Pressure point category (급소 타격) - use precise jab motion
   [AttackAnimationType.PRESSURE_POINT]: "jab",
