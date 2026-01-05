@@ -89,6 +89,16 @@ export {
   getStepAnimation,
 } from "./StepSkeletalAnimations";
 
+// Footwork pattern animations
+export {
+  FOOTWORK_CIRCULAR_LEFT_ANIMATION,
+  FOOTWORK_CIRCULAR_RIGHT_ANIMATION,
+  FOOTWORK_SLIDE_FORWARD_ANIMATION,
+  FOOTWORK_SLIDE_BACK_ANIMATION,
+  FOOTWORK_ANIMATIONS,
+  getFootworkAnimation,
+} from "./FootworkSkeletalAnimations";
+
 // Step animation system
 export {
   STEP_ANIMATION_PARAMS,
