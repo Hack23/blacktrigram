@@ -51,21 +51,23 @@ const STORAGE_KEY = "blacktrigram_controls";
  * Uses keys around WASD that are easy to reach with left hand
  * No conflicts with movement, browser shortcuts, or function keys
  * 
+ * All keys stored in lowercase for consistent comparison
+ * 
  * @see CONTROLS.md for complete documentation
  */
 const DEFAULT_BINDINGS: ControlBinding = {
   stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
-  techniques: ["Q", "E", "R", "T", "Y", "F", "G", "Z", "X", "C"],
+  techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
   attack: " ", // Spacebar
-  block: "B",
+  block: "b",
   movement: {
-    up: "W",
-    down: "S",
-    left: "A",
-    right: "D",
+    up: "w",
+    down: "s",
+    left: "a",
+    right: "d",
   },
-  vitalPointsOverlay: "V",
-  pause: ["Escape", "M"],
+  vitalPointsOverlay: "v",
+  pause: ["escape", "m"],
 };
 
 /**

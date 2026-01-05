@@ -17,7 +17,6 @@ import { PlayerState } from "../systems/player";
 import {
   Technique,
   TechniqueCooldown,
-  TechniqueKey,
   TechniqueValidation,
 } from "../types";
 

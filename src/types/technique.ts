@@ -17,7 +17,10 @@ import { TechniqueAnimationConfig } from "./skeletal";
 /**
  * Keyboard shortcut keys for technique selection.
  *
- * Mapped to top row keys (Q-P) for quick access during combat.
+ * **NEW LAYOUT**: Q-E-R-T-Y-F-G-Z-X-C - Zero conflicts with WASD movement!
+ * 
+ * Ergonomic keys surrounding WASD for quick access during combat.
+ * No overlap with movement keys (W, A, S, D) or browser shortcuts.
  * Supports up to 10 techniques with keyboard shortcuts.
  *
  * @public
@@ -25,15 +28,15 @@ import { TechniqueAnimationConfig } from "./skeletal";
  */
 export type TechniqueKey =
   | "Q"
-  | "W"
   | "E"
   | "R"
   | "T"
   | "Y"
-  | "U"
-  | "I"
-  | "O"
-  | "P";
+  | "F"
+  | "G"
+  | "Z"
+  | "X"
+  | "C";
 
 /**
  * Combat technique definition.

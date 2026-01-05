@@ -86,6 +86,7 @@ describe("ControlMapper", () => {
       // Save custom bindings with uppercase (avoid conflicts with movement keys)
       mapper.saveBindings({
         stances: ["Q", "W", "E", "R", "T", "Y", "U", "I"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: " ",
         block: "b",
         movement: { up: "k", down: "j", left: "h", right: "l" },
@@ -149,6 +150,7 @@ describe("ControlMapper", () => {
     it("should save custom bindings to localStorage", () => {
       const customBindings: ControlBinding = {
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
@@ -172,6 +174,7 @@ describe("ControlMapper", () => {
     it("should load custom bindings from localStorage", () => {
       const customBindings: ControlBinding = {
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
@@ -271,6 +274,7 @@ describe("ControlMapper", () => {
     it("should detect conflicts in bindings", () => {
       const conflictingBindings: ControlBinding = {
         stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: "1", // Conflict with stance key
         block: "w", // Conflict with movement
         movement: { up: "w", down: "s", left: "a", right: "d" },
@@ -289,6 +293,7 @@ describe("ControlMapper", () => {
     it("should work with QWER layout for stances", () => {
       const qwerBindings: ControlBinding = {
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
         attack: " ",
         block: "b",
         movement: { up: "i", down: "k", left: "j", right: "l" },
@@ -305,6 +310,7 @@ describe("ControlMapper", () => {
     it("should work with numpad layout", () => {
       const numpadBindings: ControlBinding = {
         stances: ["7", "8", "9", "4", "5", "6", "1", "2"],
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: " ",
         block: "0",
         movement: { up: "w", down: "s", left: "a", right: "d" },
