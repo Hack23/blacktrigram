@@ -159,6 +159,8 @@ export interface PlayerState {
   readonly combatState: CombatState;
   /** Position in combat arena */
   readonly position: Position;
+  /** Body facing direction for opponent tracking */
+  readonly bodyFacing?: import("@/systems/animation/types").BodyFacing;
   /** Whether player is actively blocking */
   readonly isBlocking: boolean;
   /** Whether player is stunned (cannot act) */

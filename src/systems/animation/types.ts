@@ -484,3 +484,93 @@ export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
   side_left: "ground_side_left",
   side_right: "ground_side_right",
 };
+
+/**
+ * Body facing direction system state
+ * 
+ * Manages automatic character rotation to face opponent with:
+ * - Smooth torso rotation (45°/sec, ±90° range)
+ * - Independent head tracking (±45° range)
+ * - 180° turn animations for repositioning
+ * - Facing lock during attack/defend animations
+ * 
+ * Korean terminology:
+ * - 정면향하기 (Jeongmyeon Hyanghagi) - Face forward
+ * - 몸회전 (Mom Hoejeon) - Body rotation
+ * - 머리추적 (Meori Chujok) - Head tracking
+ * - 180도회전 (180-do Hoejeon) - 180-degree turn
+ * 
+ * @public
+ * @korean 몸향하기상태
+ */
+export interface BodyFacing {
+  /**
+   * Current facing direction in degrees (0-360)
+   * - 0° = facing right (+X axis)
+   * - 90° = facing down (+Z axis)
+   * - 180° = facing left (-X axis)
+   * - 270° = facing up (-Z axis)
+   * 
+   * @korean 현재각도
+   */
+  currentAngle: number;
+
+  /**
+   * Desired facing direction in degrees (0-360)
+   * Typically pointing toward opponent position
+   * 
+   * @korean 목표각도
+   */
+  targetAngle: number;
+
+  /**
+   * Rotation speed in degrees per second
+   * Default: 45°/sec for smooth, realistic rotation
+   * 
+   * @korean 회전속도
+   */
+  rotationSpeed: number;
+
+  /**
+   * Head rotation offset relative to torso (-45° to +45°)
+   * Head can track independently within limited range
+   * - Positive = head turned right
+   * - Negative = head turned left
+   * 
+   * @korean 머리회전각도
+   */
+  headAngleOffset: number;
+
+  /**
+   * Whether facing direction is locked
+   * True during attack/defend animations to lock attack direction
+   * False during idle/movement to allow dynamic tracking
+   * 
+   * @korean 회전잠금
+   */
+  isLocked: boolean;
+
+  /**
+   * Whether character is currently executing a 180° turn animation
+   * Used to prevent movement and other actions during repositioning
+   * 
+   * @korean 180도회전중
+   */
+  isTurning: boolean;
+
+  /**
+   * Direction of current 180° turn ('left' or 'right')
+   * Determines which turn animation to play
+   * 
+   * @korean 회전방향
+   */
+  turnDirection?: 'left' | 'right';
+
+  /**
+   * Timestamp when 180° turn animation started
+   * Used to track turn animation progress (200ms duration)
+   * 
+   * @korean 회전시작시간
+   */
+  turnStartTime?: number;
+}

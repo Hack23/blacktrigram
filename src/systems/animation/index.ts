@@ -177,3 +177,25 @@ export {
   getFallKeyframes,
   getImpactFrame,
 } from "./FallAnimations";
+
+// Body facing direction system
+export {
+  bodyFacingSystem,
+  BodyFacingSystem,
+  createDefaultBodyFacing,
+  updateBodyFacing,
+  updateFacingTowardOpponent,
+  lockFacing,
+  unlockFacing,
+  isTurning,
+  getFacingAngleRadians,
+  getHeadAngleRadians,
+  normalizeAngle,
+  calculateAngleDifference,
+  calculateAngleToTarget,
+  DEFAULT_ROTATION_SPEED,
+  MAX_TORSO_ROTATION,
+  MAX_HEAD_ROTATION,
+  TURN_THRESHOLD_ANGLE,
+  TURN_ANIMATION_DURATION,
+} from "./BodyFacingSystem";
