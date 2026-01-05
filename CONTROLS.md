@@ -145,24 +145,28 @@ Each player archetype has unique techniques that reflect their combat philosophy
 ##### 무사 (Musa) - Traditional Warrior
 | Key | Technique | Korean | Damage | Cost | Stance | Description |
 |-----|-----------|--------|--------|------|--------|-------------|
-| `Q` | Thunder Strike | 천둥벽력 | 40-55 | 30🔋 20⚡ | ☰ Geon | Powerful overhead strike |
-| `E` | Iron Defense | 철벽방어 | Defense | 20🔋 15⚡ | ☶ Gan | Defensive stance boost |
-| `R` | Dragon Pierce | 용의 찌르기 | 35-48 | 25🔋 18⚡ | Any | Piercing thrust attack |
+| `Q` | Thunder Strike | 천둥벽력 | 25-35 | 30🔋 20⚡ | ☰ Geon | Strike with power of heaven |
+| `T` | Iron Defense | 철벽방어 | 0-5 | 20🔋 15⚡ | ☶ Gan | Immovable defensive stance |
+| `E` | Dragon Fist | 용권 | 30-40 | 35🔋 25⚡ | Any | Pierce through with dragon's might |
+| `R` | Mountain Breaker | 파산격 | 35-50 | 40🔋 30⚡ | ☰ Geon | Devastating blow that shatters mountains |
 
 ##### 암살자 (Amsalja) - Shadow Assassin
 | Key | Technique | Korean | Damage | Cost | Stance | Description |
 |-----|-----------|--------|--------|------|--------|-------------|
-| `Q` | Silent Strike | 무음타격 | 30-42 | 22🔋 15⚡ | ☲ Li | Nerve strike causing paralysis |
-| `E` | Shadow Step | 그림자 발걸음 | Mobility | 18🔋 12⚡ | ☴ Son | Rapid repositioning |
-| `R` | Vital Point Strike | 급소타격 | 38-52 | 28🔋 22⚡ | ☲ Li | Targets specific vital points |
+| `Q` | Shadow Strike | 암영격 | 20-35 | 25🔋 20⚡ | ☲ Li | Strike vital points with shadow speed |
+| `T` | Nerve Strike | 신경타 | 15-25 | 30🔋 25⚡ | Any | Paralyze with precise nerve strikes |
+| `E` | Deadly Precision | 치명정밀 | 25-45 | 35🔋 30⚡ | ☲ Li | Attack critical points with perfect accuracy |
+| `R` | Silent Death | 무음살 | 40-60 | 45🔋 35⚡ | Any | Deliver a silent, lethal strike |
 
 #### Technique Execution Flow
 
 1. **Select Stance** (1-8) - Choose trigram stance for bonuses
 2. **Check Resources** - Ensure sufficient Stamina (🔋) and Ki (⚡)
 3. **Press Technique Key** (Q-E-R-T-Y-F-G-Z-X-C) - Execute the technique
-4. **Cooldown Period** - Wait 2-5 seconds before reusing
+4. **Cooldown Period** - Wait 2-12 seconds before reusing (varies by technique)
 5. **Resource Regeneration** - Stamina and Ki regenerate over time
+
+**Note**: Only the first 10 techniques per archetype are assigned keyboard shortcuts. Additional techniques (if any) can be accessed via mouse/touch on the technique bar.
 
 #### Technique UI Indicators
 
@@ -478,6 +482,7 @@ The following controls are documented in `game-design.md` but **NOT YET IMPLEMEN
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.5.37 | Jan 2026 | **Zero-conflict control redesign**: Technique keys changed from Q-W-E-R-T-Y-U-I-O-P to Q-E-R-T-Y-F-G-Z-X-C to eliminate WASD movement conflicts |
 | 0.5.37 | Jan 2026 | Initial comprehensive controls documentation |
 | 0.5.36 | Dec 2025 | Vital points overlay (V key) implemented |
 | 0.5.30 | Nov 2025 | Mobile touch controls complete |
