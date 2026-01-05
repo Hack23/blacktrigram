@@ -276,7 +276,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
                 marginTop: "4px",
               }}
             >
-              {Math.max(0, Math.ceil((transitionDuration * (1 - progress / 100)) / 100) * 100)}ms
+              {Math.max(0, Math.ceil(transitionDuration * (1 - progress / 100)))}ms
             </div>
           </div>
         )}

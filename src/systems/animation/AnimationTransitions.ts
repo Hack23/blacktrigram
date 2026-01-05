@@ -806,5 +806,7 @@ export function getTransitionsFromStance(
   return transitions;
 }
 
-// Initialize transitions on module load
+// Note: For production use, consider calling initializeStanceTransitions()
+// during application startup to avoid blocking the main thread.
+// For now, initialize on module load for convenience.
 initializeStanceTransitions();
