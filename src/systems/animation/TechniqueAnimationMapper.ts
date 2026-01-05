@@ -253,6 +253,7 @@ export function getAdjustedAnimationDuration(
 ): number {
   const animation = ATTACK_ANIMATIONS.get(baseAnimationName);
   if (!animation) {
+    console.warn("Animation not found:", baseAnimationName);
     return 200; // Default 200ms for missing animations
   }
 

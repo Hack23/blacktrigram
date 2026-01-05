@@ -13,6 +13,7 @@
 import React, { useEffect, useState } from "react";
 import { Html } from "@react-three/drei";
 import { KOREAN_COLORS } from "../../../types/constants";
+import { toHexColor } from "../../../utils/colorHelpers";
 
 /**
  * Props for TechniqueNameDisplay component
@@ -129,8 +130,8 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
   }
 
   // Color based on critical hit
-  const textColor = isCritical ? "#FF0055" : `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, '0')}`;
-  const glowColor = isCritical ? "#FF0055" : `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0')}`;
+  const textColor = isCritical ? "#FF0055" : toHexColor(KOREAN_COLORS.ACCENT_GOLD);
+  const glowColor = isCritical ? "#FF0055" : toHexColor(KOREAN_COLORS.PRIMARY_CYAN);
 
   return (
     <Html

@@ -14,6 +14,7 @@ import { Canvas } from "@react-three/fiber";
 import { Html, PerspectiveCamera, Grid, OrbitControls } from "@react-three/drei";
 import { ATTACK_ANIMATIONS } from "../../systems/animation/AttackAnimations";
 import { KOREAN_COLORS } from "../../types/constants";
+import { toHexColor } from "../../utils/colorHelpers";
 
 /**
  * Props for AnimationPreview component
@@ -78,9 +79,9 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
 
   const currentAnim = ATTACK_ANIMATIONS.get(selectedAnimation);
 
-  const cyanHex = KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0');
-  const goldHex = KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, '0');
-  const darkHex = KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, '0');
+  const cyanHex = toHexColor(KOREAN_COLORS.PRIMARY_CYAN).substring(1);
+  const goldHex = toHexColor(KOREAN_COLORS.ACCENT_GOLD).substring(1);
+  const darkHex = toHexColor(KOREAN_COLORS.UI_BACKGROUND_DARK).substring(1);
 
   return (
     <div style={{ width, height, position: "relative" }}>
