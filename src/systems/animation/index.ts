@@ -79,6 +79,18 @@ export {
   getAnimationForTechnique,
 } from "./AttackAnimations";
 
+// Step animation system
+export {
+  STEP_ANIMATION_PARAMS,
+  STEP_KEYFRAMES,
+  STEP_ANIMATION_CONFIGS,
+  STEP_KOREAN_TERMS,
+  createStepConfig,
+  interpolateStepKeyframes,
+  getStepKeyframeAtFrame,
+  getStepDirectionVector,
+} from "./StepAnimations";
+
 export {
   applyKeyframeToRig,
   blendKeyframes,

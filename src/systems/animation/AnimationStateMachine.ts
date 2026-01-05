@@ -37,6 +37,7 @@ import type {
  * - Hit: 4 frames = 67ms at 60fps
  * - Stance change: 36 frames = 600ms at 60fps
  * - Stance guards: 4-6 frames = breathing animation at 60fps
+ * - Tactical steps: 18 frames = 300ms at 60fps, 30cm distance
  * 
  * @korean 기본애니메이션설정
  */
@@ -245,6 +246,104 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: true,
         priority: 0 as AnimationPriority,
         duration: 5 / 60,
+      },
+    ],
+    // Tactical step animations (전술적 발걸음)
+    // 18 frames = 300ms at 60fps, 30cm distance per step
+    [
+      "step_forward",
+      {
+        state: "step_forward",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false, // Non-interruptible for commitment
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_back",
+      {
+        state: "step_back",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_left",
+      {
+        state: "step_left",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_right",
+      {
+        state: "step_right",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_forward_left",
+      {
+        state: "step_forward_left",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_forward_right",
+      {
+        state: "step_forward_right",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_back_left",
+      {
+        state: "step_back_left",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_back_right",
+      {
+        state: "step_back_right",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 5 as AnimationPriority,
+        duration: 0.3,
       },
     ],
   ]);

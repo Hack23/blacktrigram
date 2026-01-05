@@ -23,6 +23,7 @@
  * - stance_side_switch: Left↔right stance mirror (400ms at 60fps = 24 frames)
  * - ko: Knockout/death animation
  * - stance_guard_{stance}: Stance-specific idle guard animations (4-6 frames each)
+ * - step_{direction}: Tactical step movements (18 frames, 300ms, 30cm distance)
  * 
  * @public
  * @korean 애니메이션상태
@@ -44,13 +45,24 @@ export type AnimationState =
   | "stance_guard_son"
   | "stance_guard_gam"
   | "stance_guard_gan"
-  | "stance_guard_gon";
+  | "stance_guard_gon"
+  | "step_forward"
+  | "step_back"
+  | "step_left"
+  | "step_right"
+  | "step_forward_left"
+  | "step_forward_right"
+  | "step_back_left"
+  | "step_back_right";
 
 /**
  * Animation priority levels for interrupt system
  * 
  * Higher priority animations can interrupt lower priority ones.
- * Priority order: ko > hit > attack > defend > stance_change > movement > idle
+ * Priority order: ko > hit > attack > defend > step > stance_change > movement > idle
+ * 
+ * Steps are non-interruptible (same priority as attacks) to ensure commitment
+ * to tactical repositioning in Korean martial arts.
  * 
  * @public
  * @korean 애니메이션우선순위
@@ -61,6 +73,7 @@ export enum AnimationPriority {
   RUN = 2,
   STANCE_CHANGE = 3,
   DEFEND = 4,
+  STEP = 5, // Non-interruptible tactical step
   ATTACK = 5,
   HIT = 6,
   KO = 7,
@@ -262,4 +275,119 @@ export interface AnimationUpdateResult {
    * @korean 시작여부
    */
   readonly justStarted: boolean;
+}
+
+/**
+ * Step direction for tactical movement
+ * 
+ * Eight directions for tactical stepping (전술적 발놀림):
+ * - forward: 전진보법 (Jeonjin Bobeop) - Forward step
+ * - back: 후퇴보법 (Hutoe Bobeop) - Retreat step
+ * - left: 좌측면보법 (Jwacheuk Myeon Bobeop) - Left side step
+ * - right: 우측면보법 (Ucheuk Myeon Bobeop) - Right side step
+ * - forward_left: 전좌측보법 (Jeon Jwacheuk Bobeop) - Forward-left diagonal
+ * - forward_right: 전우측보법 (Jeon Ucheuk Bobeop) - Forward-right diagonal
+ * - back_left: 후좌측보법 (Hu Jwacheuk Bobeop) - Back-left diagonal
+ * - back_right: 후우측보법 (Hu Ucheuk Bobeop) - Back-right diagonal
+ * 
+ * Each step moves exactly 30cm (one foot width) for tactical repositioning
+ * in Korean martial arts combat.
+ * 
+ * @public
+ * @korean 발걸음방향
+ */
+export type StepDirection =
+  | 'forward'
+  | 'back'
+  | 'left'
+  | 'right'
+  | 'forward_left'
+  | 'forward_right'
+  | 'back_left'
+  | 'back_right';
+
+/**
+ * Step animation configuration
+ * 
+ * Defines keyframes for tactical step movements with:
+ * - Weight transfer from back foot to front foot
+ * - Foot lift and placement
+ * - Guard position maintenance
+ * - 30cm distance movement
+ * - 300ms duration (18 frames at 60fps)
+ * 
+ * @public
+ * @korean 발걸음애니메이션설정
+ */
+export interface StepConfig extends AnimationConfig {
+  /**
+   * Step direction
+   * @korean 방향
+   */
+  readonly direction: StepDirection;
+
+  /**
+   * Distance moved in meters (always 0.3m = 30cm)
+   * @korean 이동거리
+   */
+  readonly distance: number;
+
+  /**
+   * Whether guard position is maintained during step
+   * @korean 방어자세유지
+   */
+  readonly maintainsGuard: boolean;
+
+  /**
+   * Stamina cost for this step
+   * @korean 체력소모
+   */
+  readonly staminaCost: number;
+}
+
+/**
+ * Step keyframe data for animation interpolation
+ * 
+ * Defines weight distribution, foot positions, and body center of gravity
+ * at specific frames during the step animation.
+ * 
+ * @public
+ * @korean 발걸음키프레임
+ */
+export interface StepKeyframe {
+  /**
+   * Frame number (0-17 for 18-frame step)
+   * @korean 프레임번호
+   */
+  readonly frame: number;
+
+  /**
+   * Weight distribution (0 = fully on back foot, 1 = fully on front foot)
+   * @korean 체중분배
+   */
+  readonly weight: number;
+
+  /**
+   * Front foot position offset from start (0-1, where 1 = full step distance)
+   * @korean 앞발위치
+   */
+  readonly frontFootOffset: number;
+
+  /**
+   * Back foot position offset from start (0-1)
+   * @korean 뒷발위치
+   */
+  readonly backFootOffset: number;
+
+  /**
+   * Vertical lift of front foot in meters
+   * @korean 앞발들어올림
+   */
+  readonly frontFootLift: number;
+
+  /**
+   * Body center of gravity height offset
+   * @korean 무게중심높이
+   */
+  readonly cogHeight: number;
 }

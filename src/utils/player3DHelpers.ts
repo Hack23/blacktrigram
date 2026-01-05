@@ -22,6 +22,7 @@ import type {
  * 
  * Stance guard animations map to "idle" since SkeletalPlayer3D
  * will handle the stance-specific guard rendering.
+ * Tactical steps map to "walk" for now (visual will be enhanced later).
  * 
  * @korean 애니메이션상태맵
  */
@@ -44,6 +45,16 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   stance_guard_gam: "idle",
   stance_guard_gan: "idle",
   stance_guard_gon: "idle",
+  // Tactical step animations map to walk temporarily
+  // TODO: Create dedicated step animations with guard maintenance
+  step_forward: "walk",
+  step_back: "walk",
+  step_left: "walk",
+  step_right: "walk",
+  step_forward_left: "walk",
+  step_forward_right: "walk",
+  step_back_left: "walk",
+  step_back_right: "walk",
 };
 
 /**

@@ -18,6 +18,7 @@ import { AnimationPriority, AnimationState } from "./types";
  * 
  * Stance guard animations have same priority as idle (0) since they are
  * also idle states, just stance-specific.
+ * Tactical steps have priority 5 (same as attacks) to ensure commitment.
  * 
  * @korean 애니메이션우선순위맵
  */
@@ -40,6 +41,15 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   stance_guard_gam: AnimationPriority.IDLE,
   stance_guard_gan: AnimationPriority.IDLE,
   stance_guard_gon: AnimationPriority.IDLE,
+  // Tactical step animations (전술적 발걸음) - non-interruptible
+  step_forward: AnimationPriority.STEP,
+  step_back: AnimationPriority.STEP,
+  step_left: AnimationPriority.STEP,
+  step_right: AnimationPriority.STEP,
+  step_forward_left: AnimationPriority.STEP,
+  step_forward_right: AnimationPriority.STEP,
+  step_back_left: AnimationPriority.STEP,
+  step_back_right: AnimationPriority.STEP,
 };
 
 /**
