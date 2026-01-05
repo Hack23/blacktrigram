@@ -22,11 +22,20 @@ This document is the **single source of truth** for all game controls in Black T
 | **Stance 6 - ☵ Gam** | `6` | 감 (Water) | Flow and adaptation |
 | **Stance 7 - ☶ Gan** | `7` | 간 (Mountain) | Defensive mastery |
 | **Stance 8 - ☷ Gon** | `8` | 곤 (Earth) | Grounding techniques |
+| **Technique 1-10** | `Q` `W` `E` `R` `T` `Y` `U` `I` `O` `P` | 기술 실행 | Execute archetype techniques (3-10 available) |
 | **Movement** | `W` `A` `S` `D` or Arrow Keys | 이동 | 8-directional tactical positioning |
 | **Attack** | `Space` | 공격 | Execute current stance technique |
 | **Block/Guard** | `B` | 방어 | Defensive positioning and blocks |
 | **Vital Points Overlay** | `V` | 급소 표시 | Toggle anatomical targeting overlay |
 | **Pause Menu** | `ESC` or `M` | 일시정지 | Pause game / Return to menu |
+
+> ⚠️ **IMPORTANT - Control Conflict Warning**:
+> 
+> **Q-P technique keys conflict with WASD movement keys** (W, E, R, T, Y, U, I, O are shared).
+> 
+> **During technique selection, WASD movement is disabled**. Use **Arrow Keys** for movement to avoid conflicts, or wait for technique cooldown to complete.
+> 
+> **Recommended**: Use **Arrow Keys** for movement, **Q-P** for techniques, **1-8** for stances.
 
 ### Mobile Controls (Touch Screen)
 
@@ -116,7 +125,71 @@ The core of Black Trigram combat is the Eight Trigrams stance system from the I 
 
 ---
 
-### 2. Movement Controls (이동 조작)
+### 2. Archetype Technique System (기술 체계)
+
+**Implementation**: Q-P keys execute archetype-specific combat techniques (3-10 per archetype)
+
+Each player archetype has unique techniques that reflect their combat philosophy. These techniques are more powerful than basic attacks but require Ki and Stamina resources.
+
+#### Technique Properties
+- **Keyboard Shortcuts**: `Q` `W` `E` `R` `T` `Y` `U` `I` `O` `P` (up to 10 techniques)
+- **Resource Cost**: Varies by technique (8-35 stamina, 10-35 Ki)
+- **Cooldown**: 2-5 seconds depending on power level
+- **Damage**: 25-55 base damage (higher than basic attacks)
+- **Stance Requirement**: Some techniques require specific trigram stances
+
+#### Archetype Technique Examples
+
+##### 무사 (Musa) - Traditional Warrior
+| Key | Technique | Korean | Damage | Cost | Stance | Description |
+|-----|-----------|--------|--------|------|--------|-------------|
+| `Q` | Thunder Strike | 천둥벽력 | 40-55 | 30🔋 20⚡ | ☰ Geon | Powerful overhead strike |
+| `W` | Iron Defense | 철벽방어 | Defense | 20🔋 15⚡ | ☶ Gan | Defensive stance boost |
+| `E` | Dragon Pierce | 용의 찌르기 | 35-48 | 25🔋 18⚡ | Any | Piercing thrust attack |
+
+##### 암살자 (Amsalja) - Shadow Assassin
+| Key | Technique | Korean | Damage | Cost | Stance | Description |
+|-----|-----------|--------|--------|------|--------|-------------|
+| `Q` | Silent Strike | 무음타격 | 30-42 | 22🔋 15⚡ | ☲ Li | Nerve strike causing paralysis |
+| `W` | Shadow Step | 그림자 발걸음 | Mobility | 18🔋 12⚡ | ☴ Son | Rapid repositioning |
+| `E` | Vital Point Strike | 급소타격 | 38-52 | 28🔋 22⚡ | ☲ Li | Targets specific vital points |
+
+#### Technique Execution Flow
+
+1. **Select Stance** (1-8) - Choose trigram stance for bonuses
+2. **Check Resources** - Ensure sufficient Stamina (🔋) and Ki (⚡)
+3. **Press Technique Key** (Q-P) - Execute the technique
+4. **Cooldown Period** - Wait 2-5 seconds before reusing
+5. **Resource Regeneration** - Stamina and Ki regenerate over time
+
+#### Technique UI Indicators
+
+- **Technique Bar**: Displays available techniques with icons and shortcuts
+- **Green Indicator**: Technique ready to use
+- **Red Indicator**: Insufficient resources or on cooldown
+- **Cooldown Timer**: Shows remaining time before technique available
+- **Resource Costs**: Displays 🔋 stamina and ⚡ Ki requirements
+
+#### ⚠️ Important: Technique vs Movement Keys
+
+**Key Conflict**: W, E, R, T, Y, U, I, O keys serve dual purposes:
+- **As Technique Keys**: Execute archetype techniques
+- **As Movement Keys**: WASD directional movement
+
+**How it Works**:
+- During combat, technique keys take priority over movement
+- `useTechniqueSelection` hook prevents default WASD behavior
+- **Solution**: Use **Arrow Keys** for movement to avoid conflicts
+
+**Recommended Control Layout**:
+```
+Left Hand:  1-8 (Stances), Q-P (Techniques), Arrow Keys (Movement)
+Right Hand: Mouse (optional targeting), Numpad (alternative)
+```
+
+---
+
+### 3. Movement Controls (이동 조작)
 
 **Current Implementation**: Simple 8-directional movement on arena grid
 
