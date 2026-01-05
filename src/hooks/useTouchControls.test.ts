@@ -260,10 +260,10 @@ describe('useTouchControls', () => {
         document.dispatchEvent(touchEnd);
       });
 
-      // Should detect as tap instead
+      // Should detect as directional tap (20px right is above 15px threshold)
       expect(onGestureMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'tap',
+          type: 'tap-right', // Directional tap for tactical step
         })
       );
     });
@@ -437,10 +437,10 @@ describe('useTouchControls', () => {
         document.dispatchEvent(touchEnd);
       });
 
-      // 70px distance < 100px threshold, should be tap
+      // 70px distance < 100px threshold, should be directional tap
       expect(onGestureMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'tap',
+          type: 'tap-right', // Directional tap for tactical step
         })
       );
     });
