@@ -42,6 +42,7 @@ const STANCE_GUARD_STATES: readonly AnimationState[] = [
  * Each stance guard can transition to:
  * - walk, run (movement)
  * - attack, defend (combat actions)
+ * - step_{direction} (tactical steps while maintaining guard)
  * - stance_change (changing stance)
  * - hit, ko (being hit)
  * - other stance guards (direct stance change with guard)
@@ -50,6 +51,18 @@ const STANCE_GUARD_STATES: readonly AnimationState[] = [
  */
 function generateStanceGuardTransitions(): TransitionRule[] {
   const transitions: TransitionRule[] = [];
+
+  // Step directions for guard transitions
+  const stepDirections: AnimationState[] = [
+    'step_forward',
+    'step_back',
+    'step_left',
+    'step_right',
+    'step_forward_left',
+    'step_forward_right',
+    'step_back_left',
+    'step_back_right',
+  ];
 
   for (const guardState of STANCE_GUARD_STATES) {
     // Guard can transition to movement
@@ -65,6 +78,11 @@ function generateStanceGuardTransitions(): TransitionRule[] {
       { from: guardState, to: "defend", allowed: true },
       { from: guardState, to: "stance_change", allowed: true }
     );
+    
+    // Guard can transition to tactical steps (guard maintained during step)
+    for (const stepDirection of stepDirections) {
+      transitions.push({ from: guardState, to: stepDirection, allowed: true });
+    }
 
     // Guard can be interrupted by hits
     transitions.push(
@@ -86,6 +104,11 @@ function generateStanceGuardTransitions(): TransitionRule[] {
       { from: "run", to: guardState, allowed: true },
       { from: "defend", to: guardState, allowed: true }
     );
+    
+    // Steps can return to guard (guard maintained throughout step)
+    for (const stepDirection of stepDirections) {
+      transitions.push({ from: stepDirection, to: guardState, allowed: true });
+    }
   }
 
   return transitions;
@@ -144,6 +167,64 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
   { from: "stance_change", to: "idle", allowed: true },
   { from: "stance_change", to: "hit", allowed: true }, // Can be interrupted by hit
   { from: "stance_change", to: "ko", allowed: true },
+  
+  // Tactical step transitions (non-interruptible, returns to idle/guard after completion)
+  // Steps can be initiated from idle, walk, or guard states
+  // 전진보법 (Forward Step)
+  { from: "idle", to: "step_forward", allowed: true },
+  { from: "walk", to: "step_forward", allowed: true },
+  { from: "step_forward", to: "idle", allowed: true },
+  { from: "step_forward", to: "hit", allowed: true }, // Can be hit during step
+  { from: "step_forward", to: "ko", allowed: true },
+  
+  // 후퇴보법 (Retreat Step)
+  { from: "idle", to: "step_back", allowed: true },
+  { from: "walk", to: "step_back", allowed: true },
+  { from: "step_back", to: "idle", allowed: true },
+  { from: "step_back", to: "hit", allowed: true },
+  { from: "step_back", to: "ko", allowed: true },
+  
+  // 좌측면보법 (Left Side Step)
+  { from: "idle", to: "step_left", allowed: true },
+  { from: "walk", to: "step_left", allowed: true },
+  { from: "step_left", to: "idle", allowed: true },
+  { from: "step_left", to: "hit", allowed: true },
+  { from: "step_left", to: "ko", allowed: true },
+  
+  // 우측면보법 (Right Side Step)
+  { from: "idle", to: "step_right", allowed: true },
+  { from: "walk", to: "step_right", allowed: true },
+  { from: "step_right", to: "idle", allowed: true },
+  { from: "step_right", to: "hit", allowed: true },
+  { from: "step_right", to: "ko", allowed: true },
+  
+  // 전좌측보법 (Forward-Left Diagonal Step)
+  { from: "idle", to: "step_forward_left", allowed: true },
+  { from: "walk", to: "step_forward_left", allowed: true },
+  { from: "step_forward_left", to: "idle", allowed: true },
+  { from: "step_forward_left", to: "hit", allowed: true },
+  { from: "step_forward_left", to: "ko", allowed: true },
+  
+  // 전우측보법 (Forward-Right Diagonal Step)
+  { from: "idle", to: "step_forward_right", allowed: true },
+  { from: "walk", to: "step_forward_right", allowed: true },
+  { from: "step_forward_right", to: "idle", allowed: true },
+  { from: "step_forward_right", to: "hit", allowed: true },
+  { from: "step_forward_right", to: "ko", allowed: true },
+  
+  // 후좌측보법 (Back-Left Diagonal Step)
+  { from: "idle", to: "step_back_left", allowed: true },
+  { from: "walk", to: "step_back_left", allowed: true },
+  { from: "step_back_left", to: "idle", allowed: true },
+  { from: "step_back_left", to: "hit", allowed: true },
+  { from: "step_back_left", to: "ko", allowed: true },
+  
+  // 후우측보법 (Back-Right Diagonal Step)
+  { from: "idle", to: "step_back_right", allowed: true },
+  { from: "walk", to: "step_back_right", allowed: true },
+  { from: "step_back_right", to: "idle", allowed: true },
+  { from: "step_back_right", to: "hit", allowed: true },
+  { from: "step_back_right", to: "ko", allowed: true },
 
   // KO is terminal - no transitions out
   // (Player must be revived/reset to leave KO state)
