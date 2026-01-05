@@ -25,8 +25,12 @@ export interface StanceChangeIndicatorProps {
   readonly previousStance: number;
   /** Mobile layout flag */
   readonly isMobile?: boolean;
-  /** Display duration in milliseconds */
+  /** Display duration in milliseconds (default: 1000ms) */
   readonly duration?: number;
+  /** Show transition progress bar (default: true) */
+  readonly showProgress?: boolean;
+  /** Transition duration in milliseconds for progress bar (default: 600ms) */
+  readonly transitionDuration?: number;
 }
 
 /**
@@ -71,9 +75,14 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   previousStance,
   isMobile = false,
   duration = 1000,
+  showProgress = true,
+  transitionDuration = 600,
 }) => {
   const [showIndicator, setShowIndicator] = useState(false);
+  const [progress, setProgress] = useState(0);
   const isMountedRef = useRef(true);
+  const startTimeRef = useRef<number>(Date.now());
+  const animationFrameRef = useRef<number | undefined>(undefined);
 
   // Track component mount state
   useEffect(() => {
@@ -88,6 +97,26 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   useEffect(() => {
     if (currentStance !== previousStance) {
       setShowIndicator(true);
+      setProgress(0);
+      startTimeRef.current = Date.now();
+
+      // Animation loop for progress bar
+      if (showProgress) {
+        const animate = () => {
+          if (!isMountedRef.current) return;
+          
+          const elapsed = Date.now() - startTimeRef.current;
+          const newProgress = Math.min((elapsed / transitionDuration) * 100, 100);
+          
+          setProgress(newProgress);
+
+          if (newProgress < 100) {
+            animationFrameRef.current = requestAnimationFrame(animate);
+          }
+        };
+
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
 
       const timer = setTimeout(() => {
         if (isMountedRef.current) {
@@ -97,9 +126,12 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
 
       return () => {
         clearTimeout(timer);
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
       };
     }
-  }, [currentStance, previousStance, duration]);
+  }, [currentStance, previousStance, duration, showProgress, transitionDuration]);
 
   // Get trigram info
   const { data } = useMemo(
@@ -139,6 +171,10 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   const subFontSize = isMobile ? 14 : 18;
   const top = isMobile ? "30%" : "20%";
 
+  // Get color for current stance
+  const primaryColor = data.theme?.primary ?? KOREAN_COLORS.PRIMARY_CYAN;
+  const primaryColorHex = hexToRgbaString(primaryColor, 1);
+
   return (
     <Html fullscreen>
       <div
@@ -161,11 +197,11 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
         <div
           style={{
             fontSize: `${fontSize}px`,
-            color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+            color: primaryColorHex,
             fontFamily: FONT_FAMILY.KOREAN,
             fontWeight: "bold",
-            textShadow: `0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}, 
-                        0 0 40px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
+            textShadow: `0 0 20px ${hexToRgbaString(primaryColor, 0.8)}, 
+                        0 0 40px ${hexToRgbaString(primaryColor, 0.5)}`,
             marginBottom: "8px",
           }}
         >
@@ -179,10 +215,71 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
             color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
             fontFamily: FONT_FAMILY.KOREAN,
             textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`,
+            marginBottom: showProgress ? "12px" : "0",
           }}
         >
           {data.name.english}
         </div>
+
+        {/* Transition progress bar (600ms) */}
+        {showProgress && (
+          <div
+            data-testid="stance-transition-progress"
+            style={{
+              width: "200px",
+              margin: "0 auto",
+              padding: "8px 0",
+            }}
+          >
+            {/* Progress label */}
+            <div
+              style={{
+                fontSize: "11px",
+                color: "rgba(255, 255, 255, 0.7)",
+                fontFamily: FONT_FAMILY.KOREAN,
+                marginBottom: "4px",
+                letterSpacing: "1px",
+              }}
+            >
+              팔괘전환 | Transition
+            </div>
+            
+            {/* Progress bar container */}
+            <div
+              style={{
+                width: "100%",
+                height: "6px",
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                borderRadius: "3px",
+                overflow: "hidden",
+                border: `1px solid ${hexToRgbaString(primaryColor, 0.3)}`,
+              }}
+            >
+              {/* Progress bar fill */}
+              <div
+                style={{
+                  width: `${progress}%`,
+                  height: "100%",
+                  backgroundColor: primaryColorHex,
+                  transition: "width 0.05s linear",
+                  boxShadow: `0 0 8px ${primaryColorHex}`,
+                }}
+              />
+            </div>
+            
+            {/* Time remaining */}
+            <div
+              style={{
+                fontSize: "10px",
+                color: "rgba(255, 255, 255, 0.5)",
+                fontFamily: FONT_FAMILY.KOREAN,
+                marginTop: "4px",
+              }}
+            >
+              {Math.max(0, Math.ceil((transitionDuration * (1 - progress / 100)) / 100) * 100)}ms
+            </div>
+          </div>
+        )}
 
         {/* CSS Animation - Memoized to prevent redefinition */}
         {animationStyles}
