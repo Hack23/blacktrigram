@@ -21,7 +21,7 @@ import {
   getStepDirectionVector,
 } from './StepAnimations';
 import type { StepDirection } from './types';
-import { AnimationPriority } from './types';
+import { AnimationPriority, STEP_PRIORITY } from './types';
 
 describe('StepAnimations', () => {
   describe('STEP_ANIMATION_PARAMS', () => {
@@ -41,8 +41,9 @@ describe('StepAnimations', () => {
     });
 
     it('should define step priority as 5 (same as attacks)', () => {
-      expect(STEP_ANIMATION_PARAMS.PRIORITY).toBe(AnimationPriority.STEP);
-      expect(AnimationPriority.STEP).toBe(5);
+      expect(STEP_ANIMATION_PARAMS.PRIORITY).toBe(STEP_PRIORITY);
+      expect(STEP_PRIORITY).toBe(AnimationPriority.ATTACK);
+      expect(AnimationPriority.ATTACK).toBe(5);
     });
 
     it('should define reasonable stamina cost', () => {
@@ -177,7 +178,7 @@ describe('StepAnimations', () => {
       expect(config.distance).toBe(0.3);
       expect(config.maintainsGuard).toBe(true);
       expect(config.interruptible).toBe(false);
-      expect(config.priority).toBe(AnimationPriority.STEP);
+      expect(config.priority).toBe(STEP_PRIORITY);
     });
 
     it('should map direction to correct animation state', () => {
@@ -223,7 +224,7 @@ describe('StepAnimations', () => {
         expect(config.distance).toBe(0.3);
         expect(config.maintainsGuard).toBe(true);
         expect(config.interruptible).toBe(false);
-        expect(config.priority).toBe(AnimationPriority.STEP);
+        expect(config.priority).toBe(STEP_PRIORITY);
       }
     });
   });

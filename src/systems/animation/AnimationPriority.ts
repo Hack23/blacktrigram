@@ -11,7 +11,7 @@
  * @korean 애니메이션우선순위
  */
 
-import { AnimationPriority, AnimationState } from "./types";
+import { AnimationPriority, AnimationState, STEP_PRIORITY } from "./types";
 
 /**
  * Map animation states to their priority levels
@@ -42,14 +42,14 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   stance_guard_gan: AnimationPriority.IDLE,
   stance_guard_gon: AnimationPriority.IDLE,
   // Tactical step animations (전술적 발걸음) - non-interruptible
-  step_forward: AnimationPriority.STEP,
-  step_back: AnimationPriority.STEP,
-  step_left: AnimationPriority.STEP,
-  step_right: AnimationPriority.STEP,
-  step_forward_left: AnimationPriority.STEP,
-  step_forward_right: AnimationPriority.STEP,
-  step_back_left: AnimationPriority.STEP,
-  step_back_right: AnimationPriority.STEP,
+  step_forward: STEP_PRIORITY,
+  step_back: STEP_PRIORITY,
+  step_left: STEP_PRIORITY,
+  step_right: STEP_PRIORITY,
+  step_forward_left: STEP_PRIORITY,
+  step_forward_right: STEP_PRIORITY,
+  step_back_left: STEP_PRIORITY,
+  step_back_right: STEP_PRIORITY,
 };
 
 /**

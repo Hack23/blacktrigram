@@ -16,8 +16,8 @@
  * @korean 발걸음애니메이션시스템
  */
 
-import type { StepConfig, StepDirection, StepKeyframe } from './types';
-import { AnimationPriority } from './types';
+import type { AnimationState, StepConfig, StepDirection, StepKeyframe } from './types';
+import { STEP_PRIORITY } from './types';
 
 /**
  * Standard step animation parameters
@@ -49,7 +49,7 @@ export const STEP_ANIMATION_PARAMS = {
   INTERRUPTIBLE: false,
   
   /** Animation priority (same as attack) */
-  PRIORITY: AnimationPriority.STEP,
+  PRIORITY: STEP_PRIORITY,
 } as const;
 
 /**
@@ -172,7 +172,7 @@ export function createStepConfig(direction: StepDirection): StepConfig {
   };
 
   return {
-    state: stateMap[direction] as any,
+    state: stateMap[direction] as AnimationState,
     direction,
     frames: STEP_ANIMATION_PARAMS.FRAMES,
     fps: STEP_ANIMATION_PARAMS.FPS,

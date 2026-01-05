@@ -73,11 +73,13 @@ export enum AnimationPriority {
   RUN = 2,
   STANCE_CHANGE = 3,
   DEFEND = 4,
-  STEP = 5, // Non-interruptible tactical step
-  ATTACK = 5,
+  ATTACK = 5, // STEP shares ATTACK priority (both non-interruptible)
   HIT = 6,
   KO = 7,
 }
+
+// Step animations use ATTACK priority (5) - both are non-interruptible
+export const STEP_PRIORITY = AnimationPriority.ATTACK;
 
 /**
  * Animation configuration for a single animation state
