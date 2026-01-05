@@ -20,9 +20,10 @@ import {
   isTurning,
   getFacingAngleRadians,
   getHeadAngleRadians,
-} from "../BodyFacingSystem";
-import type { PlayerState } from "../../player";
-import type { Position } from "@/types";
+} from "./BodyFacingSystem";
+import type { PlayerState } from "../player";
+import type * as THREE from "three";
+import { PlayerArchetype, TrigramStance, CombatState } from "@/types";
 
 /**
  * Example: Initialize player with body facing
@@ -345,7 +346,7 @@ function createBasePlayer(): PlayerState {
   return {
     id: "example-player",
     name: { korean: "예제", english: "Example" },
-    archetype: "musa" as const,
+    archetype: PlayerArchetype.MUSA,
     health: 100,
     maxHealth: 100,
     ki: 100,
@@ -362,8 +363,8 @@ function createBasePlayer(): PlayerState {
     consciousness: 100,
     balance: 100,
     momentum: 0,
-    currentStance: "geon" as const,
-    combatState: "idle" as const,
+    currentStance: TrigramStance.GEON,
+    combatState: CombatState.IDLE,
     position: { x: 100, y: 200 },
     isBlocking: false,
     isStunned: false,
