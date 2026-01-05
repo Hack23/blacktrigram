@@ -605,6 +605,7 @@ src/components/three/ArchetypeCard.test.tsx
 src/components/three/ArchetypeCard.tsx
 src/components/three/BackgroundScene3D.test.tsx
 src/components/three/BackgroundScene3D.tsx
+src/components/three/BoneRenderer.test.tsx
 src/components/three/BoneRenderer.tsx
 src/components/three/Face3D.tsx
 src/components/three/Hand3D.test.tsx
