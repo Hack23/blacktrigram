@@ -7,6 +7,7 @@ import {
   causesBreathingDisruption,
   updateBreathingDisruption,
 } from "./breathing";
+import BalanceSystem from "./combat/BalanceSystem";
 import ConsciousnessSystem from "./combat/ConsciousnessSystem";
 import {
   extractVitalPointCategory,
@@ -39,6 +40,7 @@ export class CombatSystem implements CombatSystemInterface {
   protected trigramSystem: TrigramSystem;
   private painSystem: PainResponseSystem;
   private consciousnessSystem: ConsciousnessSystem;
+  private balanceSystem: BalanceSystem;
 
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
@@ -54,6 +56,7 @@ export class CombatSystem implements CombatSystemInterface {
     this.trigramSystem = new TrigramSystem();
     this.painSystem = new PainResponseSystem();
     this.consciousnessSystem = new ConsciousnessSystem();
+    this.balanceSystem = new BalanceSystem();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
   }
@@ -72,6 +75,28 @@ export class CombatSystem implements CombatSystemInterface {
   public cleanupPlayerData(playerId: string): void {
     this.shockPainEffects.delete(playerId);
     this.lastHeadTraumaTime.delete(playerId);
+  }
+
+  /**
+   * Get the balance system instance for fall checking.
+   * 
+   * @returns BalanceSystem instance
+   * @public
+   * @korean 균형시스템가져오기
+   */
+  public getBalanceSystem(): BalanceSystem {
+    return this.balanceSystem;
+  }
+
+  /**
+   * Get the consciousness system instance for fall checking.
+   * 
+   * @returns ConsciousnessSystem instance
+   * @public
+   * @korean 의식시스템가져오기
+   */
+  public getConsciousnessSystem(): ConsciousnessSystem {
+    return this.consciousnessSystem;
   }
 
   /**
@@ -251,6 +276,15 @@ export class CombatSystem implements CombatSystemInterface {
       );
       updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
 
+      // Apply balance disruption from the hit
+      // Determine body region from vital point or use default
+      const bodyRegion = this.getBodyRegionFromResult(result);
+      updatedDefender = this.balanceSystem.disruptBalance(
+        updatedDefender,
+        result.damage,
+        bodyRegion
+      );
+
       // Apply breathing disruption for torso vital point strikes
       if (result.vitalPointHit && result.targetedVitalPointId) {
         const vitalPoint = this.vitalPointSystem.getVitalPointById(
@@ -320,7 +354,51 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Updates player states for recovery (pain dissipation, consciousness recovery).
+   * Determines body region from combat result for balance disruption.
+   * 
+   * Maps vital points to body regions for balance system integration.
+   * 
+   * @param result - Combat result
+   * @returns Body region that was struck
+   * @private
+   * @korean 신체부위결정
+   */
+  private getBodyRegionFromResult(result: CombatResult): BodyRegion {
+    // If we have a targeted vital point, try to determine region
+    if (result.targetedVitalPointId) {
+      const vitalPoint = this.vitalPointSystem.getVitalPointById(
+        result.targetedVitalPointId
+      );
+      
+      if (vitalPoint) {
+        const pointId = vitalPoint.id.toLowerCase();
+        
+        // Check for leg/lower body targets
+        if (pointId.includes('leg') || pointId.includes('knee') || 
+            pointId.includes('ankle') || pointId.includes('thigh')) {
+          return BodyRegion.LEFT_LEG; // Generic leg for balance disruption
+        }
+        
+        // Check for head targets
+        if (pointId.includes('head') || pointId.includes('temple') || 
+            pointId.includes('jaw') || pointId.includes('nose')) {
+          return BodyRegion.HEAD;
+        }
+        
+        // Check for arm targets
+        if (pointId.includes('arm') || pointId.includes('elbow') || 
+            pointId.includes('wrist') || pointId.includes('shoulder')) {
+          return BodyRegion.LEFT_ARM;
+        }
+      }
+    }
+    
+    // Default to torso for general strikes
+    return BodyRegion.TORSO;
+  }
+
+  /**
+   * Updates player states for recovery (pain dissipation, consciousness recovery, balance recovery).
    * Call this regularly in game loop.
    *
    * @param player - Player to update
@@ -340,6 +418,9 @@ export class CombatSystem implements CombatSystemInterface {
       deltaTime,
       lastTrauma
     );
+
+    // Apply balance recovery
+    updatedPlayer = this.balanceSystem.applyRecovery(updatedPlayer, deltaTime);
 
     // Clean up expired shock pain effects
     const shockEffect = this.shockPainEffects.get(player.id);
