@@ -19,7 +19,7 @@
  * @korean 애니메이션전환
  */
 
-import { AnimationState, TransitionRule } from "./types";
+import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types";
 
 /**
  * Stance guard animation states (팔괘 방어 자세)
@@ -96,11 +96,13 @@ function generateFallTransitions(): TransitionRule[] {
   // Fall states automatically transition to ground states (handled in state machine)
   for (const fallState of FALL_STATES) {
     // Falls can only go to their corresponding ground state
-    // (this is automatic in the state machine update logic)
-    const groundState = fallState.replace("fall_", "ground_") as AnimationState;
+    // Use FALL_TO_GROUND_MAP for type-safe mapping
+    const fallType = fallState.replace("fall_", "") as FallType;
+    const groundState = FALL_TO_GROUND_MAP[fallType];
+    const groundAnimState = `ground_${groundState}` as AnimationState;
     transitions.push({
       from: fallState,
-      to: groundState,
+      to: groundAnimState,
       allowed: true,
     });
   }

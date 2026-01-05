@@ -759,7 +759,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       combatAudio?.playBoneImpactSound({
         damage: result.damage,
         remainingHealth: validPlayers[0].health - result.damage,
-        vitalPoint: result.isCritical ?? !!targetVitalPoint, // Special techniques often target vital points
+        vitalPoint: result.isCritical === true || !!targetVitalPoint, // Special techniques often target vital points
         hitPosition,
       });
 

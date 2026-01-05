@@ -607,12 +607,19 @@ export class ConsciousnessSystem {
         return "forward";
       }
       
-      // Side impacts
+      // Side impacts: at this point normalizedAngle is in (π/4, 3π/4),
+      // so lastImpactAngle cannot be 0 or ±π.
       if (lastImpactAngle < 0) {
         return "side_left";
-      } else {
+      }
+      if (lastImpactAngle > 0) {
         return "side_right";
       }
+
+      // Fallback for exact 0 (or extremely small) angles in case future
+      // changes alter the front/rear checks above. We treat this as a
+      // natural backward collapse rather than a side fall.
+      return "backward";
     }
     
     // Default to backward fall (natural collapse from consciousness loss)

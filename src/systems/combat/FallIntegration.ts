@@ -11,18 +11,8 @@
 
 import type { PlayerState } from "../player";
 import type { AnimationState, FallType } from "../animation/types";
+import { FALL_TYPE_TO_ANIMATION } from "../animation/types";
 import type { CombatSystem } from "../CombatSystem";
-
-/**
- * Maps fall types to animation states
- * @korean 낙법애니메이션맵
- */
-export const FALL_TYPE_TO_ANIMATION: Record<FallType, AnimationState> = {
-  forward: "fall_forward",
-  backward: "fall_backward",
-  side_left: "fall_side_left",
-  side_right: "fall_side_right",
-};
 
 /**
  * Result of fall check with animation state

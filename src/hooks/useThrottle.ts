@@ -50,7 +50,6 @@ export function useThrottle<T extends (...args: never[]) => void>(
     };
   }, []);
 
-   
   return useCallback(
     (...args: Parameters<T>) => {
       const now = Date.now();
@@ -69,9 +68,9 @@ export function useThrottle<T extends (...args: never[]) => void>(
           callbackRef.current(...args);
         }, timeUntilNext);
       }
-    } as T,
+    },
     [delay]
-  );
+  ) as T;
 }
 
 export default useThrottle;
