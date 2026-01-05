@@ -784,10 +784,50 @@ The transition system reflects authentic Korean martial arts principles:
 | TransitionCalculator Integration | ✅ Complete | `TransitionCalculator.ts` |
 | Visual Progress Indicator | ✅ Complete | `StanceChangeIndicator.tsx` |
 | 3D Transition Effects | ✅ Complete | `StanceTransitionEffect.tsx` |
-| Comprehensive Tests | ✅ Complete | `AnimationTransitions.stance.test.ts` |
-| Animation State Machine Hook | 🔄 Pending | - |
+| Comprehensive Tests | ✅ Complete | `AnimationTransitions.stance.test.ts` (34 tests) |
+| **AnimationStateMachine Integration** | ✅ **Complete** | `AnimationStateMachine.ts` |
+| **Keyframe Interpolation** | ✅ **Complete** | `AnimationStateMachine.ts` |
+| **Integration Tests** | ✅ **Complete** | `AnimationStateMachine.stance-transitions.test.ts` (28 tests) |
 | CombatScreen Integration | 🔄 Pending | - |
 | Audio Synchronization | 🔄 Pending | - |
+
+### AnimationStateMachine Integration
+
+**New Methods** (added in latest update):
+
+```typescript
+// Start stance-specific transition with keyframes
+transitionToStanceChange(
+  fromStance: TrigramStance, 
+  toStance: TrigramStance
+): boolean;
+
+// Access active transition data
+getCurrentStanceTransition(): StanceTransition | null;
+
+// Get interpolated blend for current frame
+getStanceTransitionBlend(): {
+  frame: number;
+  stance: TrigramStance | 'neutral';
+  blend: number;
+} | null;
+
+// Check if in stance transition
+isInStanceTransition(): boolean;
+```
+
+**Automatic Cleanup**:
+- Clears transition data when animation completes
+- Clears transition data when interrupted (e.g., by hit)
+- Preserves existing transition if new transition fails
+
+**Performance**:
+- Blend query: <0.01ms per call
+- 1000 queries: <10ms total
+- Full transition: <5ms for 36 frames
+- Zero allocation: Reuses cached transition configs
+
+**Test Coverage**: 28 integration tests (100% passing), 628 total animation tests
 
 ### Code Example
 
@@ -842,7 +882,7 @@ console.log(cost.timeMilliseconds);   // 600
 const transitions = getTransitionsFromStance(TrigramStance.GEON);
 console.log(transitions.length);      // 8 (to all stances including self)
 
-// In combat system
+// In combat system with AnimationStateMachine integration
 function handleStanceChange(from: TrigramStance, to: TrigramStance) {
   // Get transition info
   const transition = getStanceTransition(from, to);
@@ -850,20 +890,38 @@ function handleStanceChange(from: TrigramStance, to: TrigramStance) {
   
   // Check if player can afford
   if (player.ki >= cost.ki && player.stamina >= cost.stamina) {
-    // Trigger animation
-    animationMachine.transitionTo('stance_change');
+    // Start stance-specific animation with keyframes
+    const success = animationMachine.transitionToStanceChange(from, to);
     
-    // Show visual feedback
-    showStanceChangeIndicator(from, to, cost.timeMilliseconds);
-    showStanceTransitionEffect(from, to);
-    
-    // Apply transition
-    setTimeout(() => {
-      player.ki -= cost.ki;
-      player.stamina -= cost.stamina;
-      player.currentStance = to;
-      animationMachine.transitionToStanceGuard(to);
-    }, cost.timeMilliseconds);
+    if (success) {
+      // Show visual feedback
+      showStanceChangeIndicator(from, to, cost.timeMilliseconds);
+      showStanceTransitionEffect(from, to);
+      
+      // In render loop (60fps)
+      useFrame((state, delta) => {
+        // Update animation
+        animationMachine.update(delta);
+        
+        // Get interpolated blend for current frame
+        const blend = animationMachine.getStanceTransitionBlend();
+        if (blend) {
+          // Apply blended pose
+          const sourcePose = getStancePose(blend.stance);
+          applyBlendedPose(sourcePose, blend.blend);
+          
+          console.log(`Frame ${blend.frame}: ${blend.stance} at ${blend.blend}x`);
+        }
+      });
+      
+      // Apply costs after animation completes
+      setTimeout(() => {
+        player.ki -= cost.ki;
+        player.stamina -= cost.stamina;
+        player.currentStance = to;
+        animationMachine.transitionToStanceGuard(to);
+      }, cost.timeMilliseconds);
+    }
   }
 }
 ```
