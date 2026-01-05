@@ -49,6 +49,8 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { movementPenaltySystem } from "@/systems/bodypart";
 import { StanceManager } from "@/systems/trigram";
+import { checkForFall, getFallTypeName } from "@/systems/combat/FallIntegration";
+import type { AnimationState } from "@/systems/animation/types";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -101,6 +103,10 @@ export interface UseCombatActionsConfig {
     readonly playDodgeSound: () => Promise<void>;
     readonly playStanceChangeSound: () => Promise<void>;
     readonly playSpecialTechniqueSound: () => Promise<void>;
+  };
+  readonly playerAnimations?: {
+    readonly player1: { readonly transitionTo: (state: AnimationState) => boolean };
+    readonly player2: { readonly transitionTo: (state: AnimationState) => boolean };
   };
 }
 
@@ -263,6 +269,25 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
       onPlayerUpdate(0, updatedAttacker);
       onPlayerUpdate(1, updatedDefender);
+
+      // Check if defender should fall after taking damage
+      if (config.playerAnimations?.player2) {
+        const fallCheck = checkForFall(
+          updatedDefender,
+          combatSystem,
+          undefined, // lastImpactAngle not tracked yet
+          undefined  // attackAngle not tracked yet
+        );
+
+        if (fallCheck.shouldFall && fallCheck.animationState) {
+          config.playerAnimations.player2.transitionTo(fallCheck.animationState);
+          const fallName = getFallTypeName(fallCheck.fallType!);
+          addCombatMessage(
+            `${fallName.korean}!`,
+            `${fallName.english}!`
+          );
+        }
+      }
 
       // Display technique name in combat log
       const techniqueNameKorean = attackTechnique.koreanName || attackTechnique.name.korean;
@@ -617,6 +642,25 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
 
+      // Check if player should fall after taking damage from AI
+      if (config.playerAnimations?.player1) {
+        const fallCheck = checkForFall(
+          updatedDefender,
+          combatSystem,
+          undefined, // lastImpactAngle not tracked yet
+          undefined  // attackAngle not tracked yet
+        );
+
+        if (fallCheck.shouldFall && fallCheck.animationState) {
+          config.playerAnimations.player1.transitionTo(fallCheck.animationState);
+          const fallName = getFallTypeName(fallCheck.fallType!);
+          addCombatMessage(
+            `${fallName.korean}!`,
+            `${fallName.english}!`
+          );
+        }
+      }
+
       // Enhanced combat message with vital point info
       if (result.vitalPointHit && targetVitalPoint) {
         const vitalPoint = getVitalPointById(targetVitalPoint);
@@ -727,6 +771,25 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
+
+      // Check if player should fall after taking damage from AI technique
+      if (config.playerAnimations?.player1) {
+        const fallCheck = checkForFall(
+          updatedDefender,
+          combatSystem,
+          undefined, // lastImpactAngle not tracked yet
+          undefined  // attackAngle not tracked yet
+        );
+
+        if (fallCheck.shouldFall && fallCheck.animationState) {
+          config.playerAnimations.player1.transitionTo(fallCheck.animationState);
+          const fallName = getFallTypeName(fallCheck.fallType!);
+          addCombatMessage(
+            `${fallName.korean}!`,
+            `${fallName.english}!`
+          );
+        }
+      }
 
       // Enhanced combat message with vital point info
       if (result.vitalPointHit && targetVitalPoint) {
