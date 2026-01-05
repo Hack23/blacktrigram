@@ -24,6 +24,7 @@ import {
   updateAnimation,
   updateHandAnimationState,
   getGuardPoseForStance,
+  getStepAnimation,
 } from "../../systems/animation";
 import type { StanceLaterality } from "../../systems/trigram/types";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
@@ -62,6 +63,14 @@ const getStanceColor = (stance: string): number => {
   };
   return stanceColors[stance] ?? KOREAN_COLORS.PRIMARY_CYAN;
 };
+
+// Set of diagonal step animations for O(1) lookup (prevents false positives)
+const DIAGONAL_STEP_ANIMATIONS = new Set([
+  "step_forward_left",
+  "step_forward_right",
+  "step_back_left",
+  "step_back_right",
+]);
 
 /**
  * Get trigram symbol for stance
@@ -424,6 +433,9 @@ export const SkeletalPlayer3D: React.FC<
     createInitialHandAnimationState(HandPoseType.OPEN)
   );
 
+  // Diagonal step rotation override (Y-axis rotation in radians)
+  const [diagonalRotationY, setDiagonalRotationY] = useState<number | null>(null);
+
   // Refs for 60fps animation updates without triggering React re-renders
   const leftHandStateRef = useRef<HandAnimationState>(leftHandState);
   const rightHandStateRef = useRef<HandAnimationState>(rightHandState);
@@ -585,6 +597,9 @@ export const SkeletalPlayer3D: React.FC<
             handPose.transitionDuration
           )
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "defend" || isBlocking) {
       const blockAnim = getAnimation("block");
@@ -605,6 +620,9 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "walk") {
       // Walking animation - 걷기 애니메이션
@@ -626,6 +644,9 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.2)
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "stance_change") {
       // Stance change animation - 자세 변경 애니메이션
@@ -647,6 +668,9 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.15)
         );
+        
+        // Clear diagonal rotation override for non-step animations
+        setDiagonalRotationY(null);
       }
     } else if (currentAnimation === "hit") {
       // Hit reaction - keep current pose but stop animation
@@ -655,6 +679,68 @@ export const SkeletalPlayer3D: React.FC<
         isPlaying: false,
         currentTime: 0,
       }));
+    } else if (currentAnimation?.startsWith("step_")) {
+      // Tactical step animation - 전술적 발걸음 애니메이션
+      const stepAnim = getStepAnimation(currentAnimation);
+      if (stepAnim) {
+        setAnimState({
+          currentAnimation: stepAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0, // Normal step speed (300ms duration)
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+
+        // Maintain guard hands during step (hands stay up)
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+
+        // For diagonal steps, apply rotation offset to preserve current facing direction
+        // This combines the cardinal animation with angular movement relative to current rotation
+        if (DIAGONAL_STEP_ANIMATIONS.has(currentAnimation)) {
+          // Diagonal step detected - apply relative rotation offset
+          const baseRotationY = rotation ?? 0;
+          let rotationOffset: number;
+          
+          if (currentAnimation === "step_forward_left") {
+            rotationOffset = Math.PI / 4; // 45° left of current forward
+          } else if (currentAnimation === "step_forward_right") {
+            rotationOffset = -Math.PI / 4; // 45° right of current forward
+          } else if (currentAnimation === "step_back_left") {
+            rotationOffset = (3 * Math.PI) / 4; // 135° left of current forward (45° left of back)
+          } else if (currentAnimation === "step_back_right") {
+            rotationOffset = -(3 * Math.PI) / 4; // 135° right of current forward (45° right of back)
+          } else {
+            rotationOffset = 0; // Fallback: preserve current facing
+          }
+          
+          setDiagonalRotationY(baseRotationY + rotationOffset);
+        } else {
+          // Clear diagonal rotation override for non-diagonal step animations
+          setDiagonalRotationY(null);
+        }
+      } else {
+        // Fallback to walk if step animation not found
+        console.warn(
+          `[SkeletalPlayer3D] Step animation not found for ${currentAnimation}, using walk fallback`
+        );
+        const walkAnim = getAnimation("walk");
+        if (walkAnim) {
+          setAnimState({
+            currentAnimation: walkAnim,
+            currentTime: 0,
+            isPlaying: true,
+            playbackSpeed: 1.0,
+            previousKeyframeIndex: 0,
+            nextKeyframeIndex: 1,
+          });
+        }
+      }
     } else if (currentAnimation?.startsWith("stance_guard_")) {
       // Stance guard animation - 자세 방어 애니메이션
       // Note: PlayerAnimation type doesn't include "stance_guard_*" variants, but this check
@@ -694,6 +780,9 @@ export const SkeletalPlayer3D: React.FC<
       setRightHandState((prev) =>
         updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.2)
       );
+      
+      // Clear diagonal rotation override for non-step animations
+      setDiagonalRotationY(null);
     } else {
       // Idle animation - 대기 애니메이션
       const idleAnim = getAnimation("idle_stance");
@@ -722,6 +811,9 @@ export const SkeletalPlayer3D: React.FC<
       setRightHandState((prev) =>
         updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.3)
       );
+      
+      // Clear diagonal rotation override for non-step animations
+      setDiagonalRotationY(null);
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
 
@@ -864,10 +956,13 @@ export const SkeletalPlayer3D: React.FC<
     }
   });
 
+  // Use diagonal rotation override if set, otherwise use prop rotation
+  const effectiveRotation = diagonalRotationY ?? rotation;
+
   return (
     <group
       position={position}
-      rotation={[0, rotation, 0]}
+      rotation={[0, effectiveRotation, 0]}
       scale={[facing === "left" ? -scale : scale, scale, scale]}
       data-testid={`skeletal-player3d-${playerId}`}
     >

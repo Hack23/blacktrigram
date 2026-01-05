@@ -22,6 +22,7 @@ import type {
  * 
  * Stance guard animations map to "idle" since SkeletalPlayer3D
  * will handle the stance-specific guard rendering.
+ * Tactical steps now use dedicated step animations with guard maintenance.
  * 
  * @korean 애니메이션상태맵
  */
@@ -44,6 +45,15 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   stance_guard_gam: "idle",
   stance_guard_gan: "idle",
   stance_guard_gon: "idle",
+  // Tactical step animations now map to dedicated step animations
+  step_forward: "step_forward",
+  step_back: "step_back",
+  step_left: "step_left",
+  step_right: "step_right",
+  step_forward_left: "step_forward_left",
+  step_forward_right: "step_forward_right",
+  step_back_left: "step_back_left",
+  step_back_right: "step_back_right",
   // Fall animations: Using "death" animation as closest approximation for falling
   // Note: Custom fall 3D animations will be added in future 3D model update
   fall_forward: "death",

@@ -10,6 +10,29 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ControlMapper } from "../utils/controlMapping";
 
+// Korean terminology constants (module-level to avoid recreation on every keystroke)
+const DIAGONAL_KOREAN_TERMS: Record<string, string> = {
+  "step_forward_left": "전좌측보법 (Forward-Left)",
+  "step_forward_right": "전우측보법 (Forward-Right)",
+  "step_back_left": "후좌측보법 (Back-Left)",
+  "step_back_right": "후우측보법 (Back-Right)",
+};
+
+const STEP_KOREAN_TERMS: Record<string, string> = {
+  "step_forward": "전진보법 (Forward Step)",
+  "step_back": "후퇴보법 (Retreat Step)",
+  "step_left": "좌측면보법 (Left Step)",
+  "step_right": "우측면보법 (Right Step)",
+};
+
+// Step direction mapping (all move_* actions covered explicitly)
+const STEP_DIRECTION_MAP: Record<string, string> = {
+  move_up: "step_forward",
+  move_down: "step_back",
+  move_left: "step_left",
+  move_right: "step_right",
+};
+
 /**
  * Queued input for input buffer display
  */
@@ -96,6 +119,9 @@ export function useKeyboardControls({
   const [showHints, setShowHints] = useState(false);
   const controlMapperRef = useRef<ControlMapper>(new ControlMapper());
   const lastStanceChangeRef = useRef<number>(0);
+  
+  // Track currently pressed keys for diagonal step detection
+  const pressedKeysRef = useRef<Set<string>>(new Set());
 
   /**
    * Toggle hints visibility
@@ -113,6 +139,39 @@ export function useKeyboardControls({
       return newState;
     });
   }, [onToggleHints, playSFX]);
+  
+  /**
+   * Detect diagonal step direction from pressed keys
+   * Returns step action for diagonal or null if not diagonal
+   * 
+   * @korean 대각선발걸음감지
+   */
+  const getDiagonalStepAction = useCallback((): string | null => {
+    const keys = pressedKeysRef.current;
+    const mapper = controlMapperRef.current;
+    
+    // Check for forward diagonals
+    if (keys.has(mapper.getBindings().movement.up.toLowerCase())) {
+      if (keys.has(mapper.getBindings().movement.left.toLowerCase())) {
+        return "step_forward_left"; // 전좌측보법
+      }
+      if (keys.has(mapper.getBindings().movement.right.toLowerCase())) {
+        return "step_forward_right"; // 전우측보법
+      }
+    }
+    
+    // Check for backward diagonals
+    if (keys.has(mapper.getBindings().movement.down.toLowerCase())) {
+      if (keys.has(mapper.getBindings().movement.left.toLowerCase())) {
+        return "step_back_left"; // 후좌측보법
+      }
+      if (keys.has(mapper.getBindings().movement.right.toLowerCase())) {
+        return "step_back_right"; // 후우측보법
+      }
+    }
+    
+    return null;
+  }, []);
 
   /**
    * Add input to queue
@@ -152,8 +211,14 @@ export function useKeyboardControls({
   useEffect(() => {
     if (!enabled) return;
 
+    // Copy ref value for cleanup
+    const pressedKeys = pressedKeysRef.current;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       const mapper = controlMapperRef.current;
+      
+      // Track pressed keys for diagonal detection
+      pressedKeysRef.current.add(e.key.toLowerCase());
 
       // F1: Toggle hints (prevent default browser help)
       if (e.key === "F1") {
@@ -226,7 +291,32 @@ export function useKeyboardControls({
           case "move_down":
           case "move_left":
           case "move_right":
-            onAction(action);
+            // Check if Shift is held for tactical step instead of walk
+            if (e.shiftKey) {
+              // Check for diagonal step first
+              const diagonalStep = getDiagonalStepAction();
+              
+              if (diagonalStep) {
+                // Diagonal tactical step
+                onAction(diagonalStep);
+                
+                addToQueue(DIAGONAL_KOREAN_TERMS[diagonalStep] ?? "Diagonal Step", `Shift+${e.key}`);
+                
+                if (playSFX) playSFX("footstep");
+              } else {
+                // Cardinal direction tactical step
+                // Map move_up/move_down to step_forward/step_back to match AnimationState
+                const stepDirection = STEP_DIRECTION_MAP[action];
+                onAction(stepDirection);
+                
+                addToQueue(STEP_KOREAN_TERMS[stepDirection] ?? "Step", `Shift+${e.key}`);
+                
+                if (playSFX) playSFX("footstep");
+              }
+            } else {
+              // Regular movement
+              onAction(action);
+            }
             break;
 
           case "precision":
@@ -248,9 +338,21 @@ export function useKeyboardControls({
         }
       }
     };
+    
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // Remove key from pressed keys set
+      pressedKeysRef.current.delete(e.key.toLowerCase());
+    };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      // Clear pressed keys on cleanup using copied ref value
+      pressedKeys.clear();
+    };
   }, [
     enabled,
     currentStance,
@@ -258,6 +360,7 @@ export function useKeyboardControls({
     onAction,
     addToQueue,
     toggleHints,
+    getDiagonalStepAction,
     showHints,
     playSFX,
   ]);
