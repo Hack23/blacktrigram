@@ -146,6 +146,66 @@ export interface AnimationKeyframe {
 }
 
 /**
+ * Attack animation type categories
+ * 
+ * Defines the 5 base categories of attack animations with variants.
+ * Each technique maps to one of these animation types.
+ * 
+ * @public
+ * @category Animation
+ * @korean 공격애니메이션타입
+ */
+export enum AttackAnimationType {
+  // Punch category (주먹 타격)
+  PUNCH_HIGH = "punch_high",
+  PUNCH_MID = "punch_mid",
+  PUNCH_LOW = "punch_low",
+
+  // Kick category (발차기)
+  KICK_FRONT = "kick_front",
+  KICK_SIDE = "kick_side",
+  KICK_ROUNDHOUSE = "kick_round",
+
+  // Elbow category (팔꿈치 타격)
+  ELBOW_STRIKE = "elbow_strike",
+  ELBOW_UPPERCUT = "elbow_uppercut",
+
+  // Knee category (무릎 타격)
+  KNEE_STRIKE = "knee_strike",
+  KNEE_CLINCH = "knee_clinch",
+
+  // Pressure point category (급소 타격)
+  PRESSURE_POINT = "pressure_point",
+  PRESSURE_POINT_RAPID = "pressure_point_rapid",
+}
+
+/**
+ * Animation configuration for a technique
+ * 
+ * Links a technique to its specific attack animation with speed modifier.
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술애니메이션설정
+ */
+export interface TechniqueAnimationConfig {
+  /**
+   * Type of attack animation to play
+   * @korean 애니메이션타입
+   */
+  readonly type: AttackAnimationType;
+
+  /**
+   * Speed modifier (0.8-1.2)
+   * - Light techniques: 1.2x speed
+   * - Normal techniques: 1.0x speed
+   * - Heavy techniques: 0.8x speed
+   * @korean 속도배율
+   */
+  readonly speedModifier: number;
+}
+
+/**
  * Complete skeletal animation sequence
  * 
  * Sequence of keyframes defining a complete animation

@@ -20,6 +20,7 @@ import {
   TechniqueKey,
   TrigramStance,
 } from "../types";
+import { AttackAnimationType } from "../types/skeletal";
 
 /**
  * Technique definitions for 무사 (Musa) - Traditional Warrior.
@@ -47,6 +48,10 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "Q",
     criticalChance: 0.25,
     animationDuration: 800,
+    animation: {
+      type: AttackAnimationType.PUNCH_HIGH,
+      speedModifier: 0.9, // Powerful strike, slightly slower
+    },
   },
   {
     id: "musa_iron_defense",
@@ -67,6 +72,10 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "W",
     specialEffect: "defense_boost",
     animationDuration: 600,
+    animation: {
+      type: AttackAnimationType.PUNCH_MID,
+      speedModifier: 1.0, // Normal defensive speed
+    },
   },
   {
     id: "musa_dragon_fist",
@@ -87,6 +96,10 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     criticalChance: 0.3,
     animationDuration: 1000,
+    animation: {
+      type: AttackAnimationType.PUNCH_MID,
+      speedModifier: 0.8, // Heavy piercing strike
+    },
   },
   {
     id: "musa_mountain_breaker",
@@ -108,6 +121,10 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
     criticalChance: 0.2,
     specialEffect: "armor_break",
     animationDuration: 1200,
+    animation: {
+      type: AttackAnimationType.PUNCH_HIGH,
+      speedModifier: 0.8, // Powerful, slower strike
+    },
   },
 ];
 
@@ -138,6 +155,10 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     criticalChance: 0.4,
     animationDuration: 600,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.2, // Very fast, precise strike
+    },
   },
   {
     id: "amsalja_nerve_strike",
@@ -158,6 +179,10 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     specialEffect: "paralysis",
     animationDuration: 700,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.1, // Fast precision
+    },
   },
   {
     id: "amsalja_deadly_precision",
@@ -179,6 +204,10 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     criticalChance: 0.5,
     animationDuration: 900,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.0, // Precise, deliberate
+    },
   },
   {
     id: "amsalja_silent_death",
@@ -200,6 +229,10 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
     criticalChance: 0.6,
     specialEffect: "instant_kill_chance",
     animationDuration: 1000,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 0.9, // Powerful lethal strike
+    },
   },
 ];
 
@@ -229,6 +262,10 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "Q",
     specialEffect: "stun",
     animationDuration: 500,
+    animation: {
+      type: AttackAnimationType.PUNCH_MID,
+      speedModifier: 1.2, // Fast electric strike
+    },
   },
   {
     id: "hacker_data_strike",
@@ -249,6 +286,10 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     criticalChance: 0.35,
     animationDuration: 700,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.1, // Data-enhanced precision
+    },
   },
   {
     id: "hacker_cyber_overdrive",
@@ -269,6 +310,10 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "E",
     specialEffect: "multi_hit",
     animationDuration: 1200,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT_RAPID,
+      speedModifier: 1.3, // Ultra-fast combo
+    },
   },
   {
     id: "hacker_system_crash",
@@ -289,6 +334,10 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     specialEffect: "system_shutdown",
     animationDuration: 1100,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.0, // Calculated precision
+    },
   },
 ];
 
@@ -319,6 +368,10 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     criticalChance: 0.3,
     animationDuration: 650,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.1, // Strategic precision
+    },
   },
   {
     id: "jeongbo_counter_intelligence",
@@ -338,6 +391,10 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "W",
     specialEffect: "counter_stance",
     animationDuration: 600,
+    animation: {
+      type: AttackAnimationType.PUNCH_MID,
+      speedModifier: 1.2, // Fast counter
+    },
   },
   {
     id: "jeongbo_psychological_warfare",
@@ -357,6 +414,10 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "E",
     specialEffect: "confusion",
     animationDuration: 800,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 1.0, // Deliberate mental attack
+    },
   },
   {
     id: "jeongbo_intelligence_strike",
@@ -378,6 +439,10 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
     targetsVitalPoint: true,
     criticalChance: 0.45,
     animationDuration: 1000,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 0.9, // Powerful decisive strike
+    },
   },
 ];
 
@@ -407,6 +472,10 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "Q",
     criticalChance: 0.25,
     animationDuration: 600,
+    animation: {
+      type: AttackAnimationType.PUNCH_MID,
+      speedModifier: 1.1, // Fast brawl strike
+    },
   },
   {
     id: "jojik_brutal_takedown",
@@ -426,6 +495,10 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
     keyboardShortcut: "W",
     specialEffect: "knockdown",
     animationDuration: 800,
+    animation: {
+      type: AttackAnimationType.ELBOW_STRIKE,
+      speedModifier: 0.9, // Heavy takedown
+    },
   },
   {
     id: "jojik_improvised_weapon",
@@ -447,6 +520,10 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
     criticalChance: 0.3,
     specialEffect: "bleed",
     animationDuration: 700,
+    animation: {
+      type: AttackAnimationType.PUNCH_HIGH,
+      speedModifier: 1.0, // Unpredictable weapon strike
+    },
   },
   {
     id: "jojik_ruthless_assault",
@@ -467,6 +544,10 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
     criticalChance: 0.35,
     specialEffect: "rage",
     animationDuration: 1300,
+    animation: {
+      type: AttackAnimationType.PUNCH_LOW,
+      speedModifier: 0.8, // Heavy brutal assault
+    },
   },
 ];
 

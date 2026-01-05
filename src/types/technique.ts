@@ -12,6 +12,7 @@
  */
 
 import { DamageType, KoreanText, TrigramStance } from "./common";
+import { TechniqueAnimationConfig } from "./skeletal";
 
 /**
  * Keyboard shortcut keys for technique selection.
@@ -121,6 +122,24 @@ export interface Technique {
    * Defaults to "⚔️" if not specified in the UI.
    */
   readonly icon?: string;
+
+  /**
+   * Animation configuration for technique execution.
+   * 
+   * Links the technique to a specific attack animation type and speed modifier.
+   * When technique is executed, the appropriate animation is played at the specified speed.
+   * 
+   * **Korean**: 애니메이션 설정
+   * 
+   * @example
+   * ```typescript
+   * animation: {
+   *   type: AttackAnimationType.KICK_ROUNDHOUSE,
+   *   speedModifier: 1.1 // Slightly faster for precision
+   * }
+   * ```
+   */
+  readonly animation?: TechniqueAnimationConfig;
 }
 
 /**
