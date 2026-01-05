@@ -188,6 +188,9 @@ export function useKeyboardControls({
   useEffect(() => {
     if (!enabled) return;
 
+    // Copy ref value for cleanup
+    const pressedKeys = pressedKeysRef.current;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       const mapper = controlMapperRef.current;
       
@@ -281,7 +284,7 @@ export function useKeyboardControls({
                   "step_back_right": "후우측보법 (Back-Right)",
                 };
                 
-                addToQueue(diagonalKoreanTerms[diagonalStep] || "Diagonal Step", `Shift+${e.key}`);
+                addToQueue(diagonalKoreanTerms[diagonalStep] ?? "Diagonal Step", `Shift+${e.key}`);
                 
                 if (playSFX) playSFX("footstep");
               } else {
@@ -296,7 +299,7 @@ export function useKeyboardControls({
                   "step_right": "우측면보법 (Right Step)",
                 };
                 
-                addToQueue(koreanTerms[stepDirection] || "Step", `Shift+${e.key}`);
+                addToQueue(koreanTerms[stepDirection] ?? "Step", `Shift+${e.key}`);
                 
                 if (playSFX) playSFX("footstep");
               }
@@ -337,8 +340,8 @@ export function useKeyboardControls({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      // Clear pressed keys on cleanup
-      pressedKeysRef.current.clear();
+      // Clear pressed keys on cleanup using copied ref value
+      pressedKeys.clear();
     };
   }, [
     enabled,
