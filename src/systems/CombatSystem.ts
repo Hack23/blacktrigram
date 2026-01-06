@@ -861,6 +861,82 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
+   * Process defensive action and determine animation type.
+   * 
+   * Determines the appropriate defensive animation based on:
+   * - Defender's balance and stamina (defensive power)
+   * - Attacker's technique power
+   * - Combat readiness state
+   * 
+   * **Korean**: 방어 행동 처리
+   * 
+   * @param defender - Defending player state
+   * @param attacker - Attacking player state (unused but kept for future enhancements)
+   * @param attackPower - Power of the incoming attack
+   * @returns Defensive animation type to play
+   * 
+   * @example
+   * ```typescript
+   * const animType = combatSystem.processDefensiveAction(
+   *   defender,
+   *   attacker,
+   *   technique.damage
+   * );
+   * // Returns: 'parry_deflect', 'block_success', 'guard_break', or 'guard_recovery'
+   * ```
+   * 
+   * @public
+   * @korean 방어행동처리
+   */
+  public processDefensiveAction(
+    defender: PlayerState,
+    _attacker: PlayerState,
+    attackPower: number
+  ): import("./animation/types").DefensiveAnimationType {
+    // Guard Break: Check balance threshold first (highest priority condition)
+    if (defender.balance < 30) {
+      return "guard_break";
+    }
+
+    // Calculate defensive power based on balance and stamina
+    // Balance represents physical stability (0-100)
+    // Stamina represents energy reserves (0-100)
+    const balanceFactor = defender.balance / 100;
+    const staminaFactor = defender.stamina / 100;
+    
+    // Apply defensive modifiers from effects
+    const effectModifiers = getEffectModifiers(defender);
+    const defenseMultiplier = effectModifiers.defense;
+    
+    // Defense stat provides moderate bonus (normalized to 0.5-1.5 range for typical 5-15 defense)
+    const defenseBonus = Math.max(0.5, Math.min(1.5, defender.defense / 10));
+    
+    // Calculate final defensive power
+    const defensePower = balanceFactor * staminaFactor * 100 * defenseMultiplier * defenseBonus;
+
+    // Normalize attack power (typical range: 10-30 base damage)
+    const normalizedAttackPower = attackPower;
+
+    // Determine defensive outcome based on power ratio
+    // Parry: Strong defense (1.8x attack power or more) - Perfect deflection
+    if (defensePower >= normalizedAttackPower * 1.8) {
+      return "parry_deflect";
+    }
+    // Block Success: Adequate defense (1.0x to 1.8x attack power) - Absorb impact
+    else if (defensePower >= normalizedAttackPower) {
+      return "block_success";
+    }
+    // Guard Break: Defense insufficient against powerful attack (<60% of attack power)
+    else if (defensePower < normalizedAttackPower * 0.6) {
+      return "guard_break";
+    }
+    // Block Success: Marginal defense (60-100% of attack power) - barely hold
+    else {
+      return "block_success";
+    }
+  }
+
+  /**
    * Execute attack with technique
    */
   protected executeAttack(
