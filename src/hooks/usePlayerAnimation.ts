@@ -105,6 +105,23 @@ export interface UsePlayerAnimationReturn {
   readonly transitionToStanceGuard: (stance: TrigramStance) => boolean;
   
   /**
+   * Transition to stance_change animation with specific transition data
+   * 
+   * **Korean**: 자세 전환 애니메이션 시작
+   * 
+   * Initiates a stance change animation with the specific transition data
+   * from the 64-transition matrix. This provides stance-specific keyframes
+   * and blend weights for smooth interpolation.
+   * 
+   * @param fromStance - Source trigram stance
+   * @param toStance - Target trigram stance
+   * @returns Whether transition was successful
+   * 
+   * @korean 자세전환애니메이션시작
+   */
+  readonly transitionToStanceChange: (fromStance: TrigramStance, toStance: TrigramStance) => boolean;
+  
+  /**
    * Check if currently in a stance guard animation
    * 
    * @returns True if in any stance guard state
@@ -255,6 +272,19 @@ export function usePlayerAnimation(
     [stateMachine]
   );
   
+  const transitionToStanceChange = useCallback(
+    (fromStance: TrigramStance, toStance: TrigramStance) => {
+      const success = stateMachine.transitionToStanceChange(fromStance, toStance);
+      if (success) {
+        prevStateRef.current = stateMachine.getCurrentState();
+        prevFrameRef.current = stateMachine.getCurrentFrame();
+        forceUpdate((n) => n + 1);
+      }
+      return success;
+    },
+    [stateMachine]
+  );
+  
   const isInStanceGuard = useCallback(() => {
     return stateMachine.isInStanceGuard();
   }, [stateMachine]);
@@ -271,10 +301,11 @@ export function usePlayerAnimation(
       update,
       transitionTo,
       transitionToStanceGuard,
+      transitionToStanceChange,
       isInStanceGuard,
       getCurrentGuardStance,
       reset,
     }),
-    [prevStateRef.current, prevFrameRef.current, update, transitionTo, transitionToStanceGuard, isInStanceGuard, getCurrentGuardStance, reset]
+    [prevStateRef.current, prevFrameRef.current, update, transitionTo, transitionToStanceGuard, transitionToStanceChange, isInStanceGuard, getCurrentGuardStance, reset]
   );
 }
