@@ -95,8 +95,6 @@ const Eye: React.FC<EyeProps> = ({
             color={swellingColor}
             transparent
             opacity={swelling * 0.6}
-            emissive={swellingColor}
-            emissiveIntensity={0.1}
           />
         </mesh>
       )}

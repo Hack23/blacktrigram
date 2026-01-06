@@ -40,14 +40,13 @@ import { TrigramStance } from "../../types/common";
 import { FacialExpression } from "../../types/facial";
 import type { HandAnimationState } from "../../types/hand-animation";
 import { HandPoseType } from "../../types/hand-animation";
-import type { Player3DUnifiedProps } from "../../types/player-visual";
+import type { Player3DUnifiedProps, PlayerAnimation } from "../../types/player-visual";
 import type { SkeletalAnimationState, SkeletalRig } from "../../types/skeletal";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
 import MuscleSystem from "./MuscleSystem";
 import PlayerStateIndicators from "./PlayerStateIndicators";
-import StanceAura from "./StanceAura";
 
 /**
  * Get stance-specific color from Korean theming
@@ -117,7 +116,37 @@ const TORSO_BLEND_FACTOR = 0.8;
  * Full guard blend factor for maintaining complete fighting stance
  * @korean 완전방어블렌드계수
  */
-const FULL_GUARD_BLEND = 1.0;
+// Dynamic guard blend factors for natural movement while maintaining stance character
+const getGuardBlendFactor = (animation: PlayerAnimation): number => {
+  switch (animation) {
+    case "idle":
+    case "block":
+    case "counter":
+    case "stance_change":
+      return 1.0; // Full guard - maximum stance visibility when stationary/defensive
+    
+    case "walk":
+    case "step_forward":
+    case "step_back":
+    case "step_left":
+    case "step_right":
+    case "step_forward_left":
+    case "step_forward_right":
+    case "step_back_left":
+    case "step_back_right":
+      return 0.7; // Partial guard - balanced movement with stance character
+    
+    case "attack":
+    case "defend":
+    case "hit":
+    case "death":
+    case "technique_execute":
+      return 0.0; // No guard - technique animations have full control
+    
+    default:
+      return 1.0; // Default to full guard for unknown animations
+  }
+};
 
 /**
  * Apply stance guard pose overlay on top of base animation
@@ -137,19 +166,38 @@ const FULL_GUARD_BLEND = 1.0;
  * 
  * @korean 자세방어포즈오버레이적용
  */
+/**
+ * Helper function to apply bone rotation with lerp blending
+ * Reduces code duplication for leg positioning
+ */
+const applyBoneRotation = (
+  rig: SkeletalRig,
+  boneName: string,
+  targetRotation: THREE.Euler,
+  blend: number
+): void => {
+  const bone = rig.bones.get(boneName);
+  if (!bone) return;
+
+  const current = bone.rotation;
+  current.x = THREE.MathUtils.lerp(current.x, targetRotation.x, blend);
+  current.y = THREE.MathUtils.lerp(current.y, targetRotation.y, blend);
+  current.z = THREE.MathUtils.lerp(current.z, targetRotation.z, blend);
+};
+
 const applyStanceGuardOverlay = (
   rig: SkeletalRig,
   stance: TrigramStance | string,
   breathingPhase: number,
   laterality: StanceLaterality = "right",
-  blendFactor: number = FULL_GUARD_BLEND
+  blendFactor: number = 1.0
 ): void => {
   const guardPose = getGuardPoseForStance(stance as TrigramStance, laterality);
   if (!guardPose) return;
 
   // Blend left arm rotations with current pose (maintain animation)
   // Directly modifies rotation components in-place for performance (avoids object allocations)
-  const leftShoulder = rig.bones.get("left_shoulder");
+  const leftShoulder = rig.bones.get("shoulder_L");
   if (leftShoulder) {
     const current = leftShoulder.rotation;
     const target = guardPose.leftArm.shoulder;
@@ -157,7 +205,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const leftElbow = rig.bones.get("left_elbow");
+  const leftElbow = rig.bones.get("elbow_L");
   if (leftElbow) {
     const current = leftElbow.rotation;
     const target = guardPose.leftArm.elbow;
@@ -165,7 +213,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const leftWrist = rig.bones.get("left_wrist");
+  const leftWrist = rig.bones.get("wrist_L");
   if (leftWrist) {
     const current = leftWrist.rotation;
     const target = guardPose.leftArm.wrist;
@@ -175,7 +223,7 @@ const applyStanceGuardOverlay = (
   }
 
   // Blend right arm rotations with current pose
-  const rightShoulder = rig.bones.get("right_shoulder");
+  const rightShoulder = rig.bones.get("shoulder_R");
   if (rightShoulder) {
     const current = rightShoulder.rotation;
     const target = guardPose.rightArm.shoulder;
@@ -183,7 +231,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const rightElbow = rig.bones.get("right_elbow");
+  const rightElbow = rig.bones.get("elbow_R");
   if (rightElbow) {
     const current = rightElbow.rotation;
     const target = guardPose.rightArm.elbow;
@@ -191,7 +239,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const rightWrist = rig.bones.get("right_wrist");
+  const rightWrist = rig.bones.get("wrist_R");
   if (rightWrist) {
     const current = rightWrist.rotation;
     const target = guardPose.rightArm.wrist;
@@ -201,7 +249,7 @@ const applyStanceGuardOverlay = (
   }
 
   // Blend torso rotation with current pose
-  const spine = rig.bones.get("spine");
+  const spine = rig.bones.get("spine_upper");
   if (spine) {
     const current = spine.rotation;
     const target = guardPose.torso;
@@ -212,6 +260,19 @@ const applyStanceGuardOverlay = (
     current.z = THREE.MathUtils.lerp(current.z, target.z, torsoBlend);
   }
 
+  // NEW: Blend left leg rotations for authentic Taekwondo stance positioning
+  applyBoneRotation(rig, "hip_L", guardPose.leftLeg.hip, blendFactor);
+  applyBoneRotation(rig, "knee_L", guardPose.leftLeg.knee, blendFactor);
+  applyBoneRotation(rig, "foot_L", guardPose.leftLeg.ankle, blendFactor);
+
+  // NEW: Blend right leg rotations for authentic Taekwondo stance positioning
+  applyBoneRotation(rig, "hip_R", guardPose.rightLeg.hip, blendFactor);
+  applyBoneRotation(rig, "knee_R", guardPose.rightLeg.knee, blendFactor);
+  applyBoneRotation(rig, "foot_R", guardPose.rightLeg.ankle, blendFactor);
+
+  // NEW: Blend pelvis rotation for proper stance base
+  applyBoneRotation(rig, "pelvis", guardPose.pelvis, blendFactor);
+
   // Apply breathing animation scale (chest/shoulder expansion)
   const breathingScale = THREE.MathUtils.lerp(
     guardPose.breathingRange.min,
@@ -220,7 +281,7 @@ const applyStanceGuardOverlay = (
   );
 
   // Apply breathing to upper torso
-  const chest = rig.bones.get("chest");
+  const chest = rig.bones.get("spine_middle");
   if (chest) {
     chest.scale.setScalar(breathingScale);
   }
@@ -1043,15 +1104,17 @@ export const SkeletalPlayer3D: React.FC<
       // so stance is the single source of truth for selecting the correct guard pose.
       const stanceToUse = stance;
       
-      // Apply full guard pose overlay to maintain fighting stance during all movement
+      // Apply guard pose overlay with dynamic blend factor based on animation type
+      // Full guard (1.0) for stationary/defensive, reduced for natural movement
       // Each stance × laterality combination creates distinct appearance
-      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, FULL_GUARD_BLEND);
+      const blendFactor = getGuardBlendFactor(currentAnimation);
+      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, blendFactor);
     }
 
     // Apply body facing rotations (torso and head) if available
     if (bodyFacing) {
       // Apply torso rotation to spine bone from body facing
-      const spine = rig.bones.get("spine");
+      const spine = rig.bones.get("spine_upper");
       if (spine) {
         const torsoRotation = getFacingAngleRadians(bodyFacing);
         spine.rotation.y = torsoRotation;
@@ -1078,9 +1141,6 @@ export const SkeletalPlayer3D: React.FC<
     >
       {/* Inner group for sway animation and helpless lean */}
       <group position={swayPosition} rotation={[helplessRotation, 0, 0]}>
-      {/* Stance aura effect */}
-      <StanceAura stance={stance} intensity={ki / 100} animated />
-
       {/* Muscle system rendering with physical attributes for visual scaling */}
       <MuscleSystem 
         muscleStates={muscleStates} 

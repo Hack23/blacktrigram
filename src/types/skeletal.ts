@@ -527,8 +527,10 @@ export interface SkeletalAnimationState {
 /**
  * Fighting stance guard pose configuration
  * 
- * Defines the default guard position for each trigram stance (팔괘),
- * including arm positions, torso rotation, and weight distribution.
+ * Defines complete body positioning for authentic Korean martial arts stances.
+ * Includes arms, torso, legs, and pelvis rotations based on traditional Taekwondo/Hapkido.
+ * 
+ * Each stance corresponds to a real martial arts position with unique leg positioning.
  * Used for stance-specific idle animations at 60fps.
  * 
  * @public
@@ -561,6 +563,49 @@ export interface StanceGuardPose {
    * @korean 몸통회전
    */
   readonly torso: THREE.Euler;
+
+  /**
+   * Left leg bone rotations (hip, knee, ankle)
+   * NEW: For authentic Taekwondo stance positioning
+   * @korean 왼다리
+   */
+  readonly leftLeg: {
+    readonly hip: THREE.Euler;      // Hip rotation/abduction
+    readonly knee: THREE.Euler;     // Knee bend angle
+    readonly ankle: THREE.Euler;    // Ankle dorsiflexion/plantarflexion
+  };
+
+  /**
+   * Right leg bone rotations (hip, knee, ankle)
+   * NEW: For authentic Taekwondo stance positioning
+   * @korean 오른다리
+   */
+  readonly rightLeg: {
+    readonly hip: THREE.Euler;      // Hip rotation/abduction
+    readonly knee: THREE.Euler;     // Knee bend angle
+    readonly ankle: THREE.Euler;    // Ankle dorsiflexion/plantarflexion
+  };
+
+  /**
+   * Pelvis rotation (hip tilt and rotation)
+   * NEW: For proper stance base
+   * @korean 골반회전
+   */
+  readonly pelvis: THREE.Euler;
+
+  /**
+   * Stance width (foot spacing in meters)
+   * NEW: Defines lateral distance between feet
+   * Range: 0.3 (narrow) to 1.5 (wide horse stance)
+   *
+   * This value describes the intended lateral spacing between the feet for this
+   * stance configuration. Consumers (e.g. animation systems or positioning
+   * overlays) may use it to drive foot placement, validation, or visualization
+   * as needed.
+   *
+   * @korean 자세너비
+   */
+  readonly stanceWidth: number;
 
   /**
    * Weight distribution (forward/neutral/back)
@@ -695,6 +740,21 @@ export function mirrorGuardPose(pose: StanceGuardPose): StanceGuardPose {
     },
     // Mirror torso rotation
     torso: mirrorEuler(pose.torso),
+    // NEW: Swap and mirror leg positions
+    leftLeg: {
+      hip: mirrorEuler(pose.rightLeg.hip),
+      knee: mirrorEuler(pose.rightLeg.knee),
+      ankle: mirrorEuler(pose.rightLeg.ankle),
+    },
+    rightLeg: {
+      hip: mirrorEuler(pose.leftLeg.hip),
+      knee: mirrorEuler(pose.leftLeg.knee),
+      ankle: mirrorEuler(pose.leftLeg.ankle),
+    },
+    // Mirror pelvis rotation
+    pelvis: mirrorEuler(pose.pelvis),
+    // Stance width remains the same
+    stanceWidth: pose.stanceWidth,
     // Weight distribution remains the same
     weight: pose.weight,
     // Breathing range unchanged (not affected by laterality, reuse original object)
