@@ -835,16 +835,25 @@ export const SkeletalPlayer3D: React.FC<
       const playerPos = { x: position[0], y: position[2] }; // X and Z for 2D top-down
       const opponentPos = { x: opponentPosition[0], y: opponentPosition[2] };
       
-      // Check if facing should be locked (during attack or defend animations)
-      const shouldLock = currentAnimation === "attack" || currentAnimation === "defend";
+      // Check if facing should be locked during committed animations
+      const isStepAnimation =
+        typeof currentAnimation === "string" && currentAnimation.startsWith("step_");
+      const isTurnAnimation =
+        typeof currentAnimation === "string" && currentAnimation.startsWith("turn_");
+
+      const shouldLock =
+        currentAnimation === "attack" ||
+        currentAnimation === "defend" ||
+        isStepAnimation ||
+        isTurnAnimation;
       
       let updatedFacing = bodyFacing;
       
       if (shouldLock && !bodyFacing.isLocked) {
-        // Lock facing at start of attack/defend
+        // Lock facing at start of committed action (attack/defend/step/turn)
         updatedFacing = lockFacing(bodyFacing);
       } else if (!shouldLock && bodyFacing.isLocked) {
-        // Unlock facing after attack/defend completes
+        // Unlock facing after committed action completes
         updatedFacing = unlockFacing(bodyFacing);
       }
       

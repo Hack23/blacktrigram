@@ -12,6 +12,7 @@ import {
   createDefaultBodyFacing, 
   calculateAngleToTarget 
 } from "../systems/animation";
+import type { BodyFacing } from "../systems/animation/types";
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
 import { ARCHETYPE_ASSETS } from "../types/constants";
@@ -359,7 +360,7 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
 export function initializeBodyFacing(
   playerPosition: Position,
   opponentPosition: Position
-): import("../systems/animation/types").BodyFacing {
+): BodyFacing {
   // Calculate initial angle to face opponent
   const initialAngle = calculateAngleToTarget(playerPosition, opponentPosition);
   

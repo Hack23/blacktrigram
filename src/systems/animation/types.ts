@@ -517,7 +517,7 @@ export interface BodyFacing {
    * 
    * @korean 현재각도
    */
-  currentAngle: number;
+  readonly currentAngle: number;
 
   /**
    * Desired facing direction in degrees (0-360)
@@ -525,7 +525,7 @@ export interface BodyFacing {
    * 
    * @korean 목표각도
    */
-  targetAngle: number;
+  readonly targetAngle: number;
 
   /**
    * Rotation speed in degrees per second
@@ -533,7 +533,7 @@ export interface BodyFacing {
    * 
    * @korean 회전속도
    */
-  rotationSpeed: number;
+  readonly rotationSpeed: number;
 
   /**
    * Head rotation offset relative to torso (-45° to +45°)
@@ -543,7 +543,7 @@ export interface BodyFacing {
    * 
    * @korean 머리회전각도
    */
-  headAngleOffset: number;
+  readonly headAngleOffset: number;
 
   /**
    * Whether facing direction is locked
@@ -552,7 +552,7 @@ export interface BodyFacing {
    * 
    * @korean 회전잠금
    */
-  isLocked: boolean;
+  readonly isLocked: boolean;
 
   /**
    * Whether character is currently executing a 180° turn animation
@@ -560,7 +560,7 @@ export interface BodyFacing {
    * 
    * @korean 180도회전중
    */
-  isTurning: boolean;
+  readonly isTurning: boolean;
 
   /**
    * Direction of current 180° turn ('left' or 'right')
@@ -568,7 +568,7 @@ export interface BodyFacing {
    * 
    * @korean 회전방향
    */
-  turnDirection?: 'left' | 'right';
+  readonly turnDirection?: 'left' | 'right';
 
   /**
    * Timestamp when 180° turn animation started
@@ -576,5 +576,5 @@ export interface BodyFacing {
    * 
    * @korean 회전시작시간
    */
-  turnStartTime?: number;
+  readonly turnStartTime?: number;
 }
