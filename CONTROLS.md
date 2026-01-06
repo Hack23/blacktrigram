@@ -284,7 +284,7 @@ Quick 15cm micro-adjustment for fine positioning.
 
 | **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
 |-----------|-------------|------------|--------------|--------------|
-| _Future Enhancement_ | Shuffle | 섞음보 | 15cm any direction | 100ms (6 frames) |
+| _Future Enhancement_ | Shuffle | 섞음보 | 15cm omnidirectional | 100ms (6 frames) |
 
 **Shuffle Properties:**
 - ⚡ **Fastest footwork**: Only 100ms (6 frames)

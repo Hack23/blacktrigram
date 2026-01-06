@@ -157,9 +157,6 @@ Korean martial arts (태권도, 택견, 합기도) emphasize precise footwork (�
 - [x] Type definitions added
 - [x] Animation configurations created
 - [x] Keyboard controls implemented (Ctrl+A/D, Ctrl+W/S)
-- [x] Type definitions added
-- [x] Animation configurations created
-- [x] Keyboard controls implemented (Ctrl+A/D, Ctrl+W/S)
 - [x] Test coverage achieved
 - [x] Visual keyframe data (ALL skeletal animations implemented)
 - [x] 3D skeletal animation integration (SkeletalPlayer3D updated)
@@ -218,7 +215,7 @@ All footwork patterns now have complete skeletal animations and are ready for ke
 ## See Also
 
 - [Issue #1073](https://github.com/Hack23/blacktrigram/issues/1073) - Step Movement Animations
-- [Issue #1074](https://github.com/Hack23/blacktrigram/issues/1074) - Footwork Animation (this implementation)
+- [Issue #1076](https://github.com/Hack23/blacktrigram/issues/1076) - Footwork Animation (this implementation)
 - [COMBAT_ARCHITECTURE.md](../../COMBAT_ARCHITECTURE.md) - Overall combat system
 - [StepAnimations.ts](./StepAnimations.ts) - Tactical step implementation
 

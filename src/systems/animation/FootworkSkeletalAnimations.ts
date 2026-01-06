@@ -7,7 +7,7 @@
  * - Pivot steps (축족회전): 90° rotations on planted foot
  * - Shuffle step (섞음보): Quick 15cm micro-adjustments
  *
- * All 9 footwork patterns (circular, pivot, slide, shuffle) are fully implemented with skeletal animations.
+ * All 9 footwork animation variants (4 pattern types: circular, pivot, slide, shuffle) are fully implemented with skeletal animations.
  *
  * @module systems/animation/FootworkSkeletalAnimations
  * @category Animation System
