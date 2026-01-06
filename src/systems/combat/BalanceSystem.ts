@@ -30,8 +30,9 @@
 
 import { PlayerState } from "../player";
 import { BodyRegion } from "@/types";
-import type { FallType } from "../animation/types";
+import type { FallType, RecoveryAnimationType, GroundState } from "../animation/types";
 import { determineFallDirection, determineFallFromStance } from "../animation/FallAnimations";
+import { getRecoveryConfig, isVulnerableFrame } from "../animation/RecoveryAnimations";
 import type { TrigramStance } from "@/types/common";
 
 /**
@@ -514,6 +515,180 @@ export class BalanceSystem {
    */
   determineFallTypeFromStance(stance: TrigramStance): FallType {
     return determineFallFromStance(stance);
+  }
+
+  /**
+   * Check if player is in a grounded state based on animation state.
+   * 
+   * Player is considered grounded when in any ground_* animation state
+   * (ground_prone, ground_supine, ground_side_left, ground_side_right).
+   * 
+   * @param animationState - Current animation state from AnimationStateMachine
+   * @returns True if player is on the ground
+   * 
+   * @example
+   * ```typescript
+   * const isGrounded = balanceSystem.isGrounded("ground_prone");
+   * // Returns: true
+   * 
+   * const notGrounded = balanceSystem.isGrounded("idle");
+   * // Returns: false
+   * ```
+   * 
+   * @public
+   * @korean 지면상태확인
+   */
+  isGrounded(animationState: string): boolean {
+    return animationState.startsWith("ground_");
+  }
+
+  /**
+   * Get ground state from animation state.
+   * 
+   * Extracts the ground position type from animation state name.
+   * Returns null if not in a ground state.
+   * 
+   * @param animationState - Current animation state from AnimationStateMachine
+   * @returns Ground state or null if not grounded
+   * 
+   * @example
+   * ```typescript
+   * const state = balanceSystem.getGroundState("ground_prone");
+   * // Returns: "prone"
+   * 
+   * const none = balanceSystem.getGroundState("idle");
+   * // Returns: null
+   * ```
+   * 
+   * @public
+   * @korean 지면자세가져오기
+   */
+  getGroundState(animationState: string): GroundState | null {
+    if (!this.isGrounded(animationState)) {
+      return null;
+    }
+
+    // Extract ground state from animation state name
+    // "ground_prone" -> "prone"
+    const groundType = animationState.replace("ground_", "");
+    
+    // Validate that it's a valid ground state
+    if (groundType === "prone" || groundType === "supine" || 
+        groundType === "side_left" || groundType === "side_right") {
+      return groundType as GroundState;
+    }
+
+    return null;
+  }
+
+  /**
+   * Check if player can execute recovery based on stamina.
+   * 
+   * Some recovery animations (like roll recovery) require stamina.
+   * This checks if player has sufficient stamina for the recovery type.
+   * 
+   * @param player - Current player state
+   * @param recoveryType - Type of recovery animation
+   * @returns True if player has enough stamina
+   * 
+   * @example
+   * ```typescript
+   * // Roll recovery costs 20 stamina
+   * const canRoll = balanceSystem.canRecoverWithType(player, "roll_recovery");
+   * // Returns: true if player.stamina >= 20
+   * 
+   * // Normal recoveries have no cost
+   * const canStand = balanceSystem.canRecoverWithType(player, "prone_standup");
+   * // Returns: true (no stamina requirement)
+   * ```
+   * 
+   * @public
+   * @korean 회복가능확인
+   */
+  canRecoverWithType(
+    player: PlayerState,
+    recoveryType: RecoveryAnimationType
+  ): boolean {
+    const config = getRecoveryConfig(recoveryType);
+    
+    // Check if player has enough stamina
+    return player.stamina >= config.staminaCost;
+  }
+
+  /**
+   * Apply stamina cost for recovery animation.
+   * 
+   * Deducts stamina cost from player state for recovery animations
+   * that require stamina (like roll recovery).
+   * 
+   * @param player - Current player state
+   * @param recoveryType - Type of recovery animation
+   * @returns Updated player state with stamina deducted
+   * 
+   * @example
+   * ```typescript
+   * // Roll recovery costs 20 stamina
+   * const recovered = balanceSystem.applyRecoveryCost(player, "roll_recovery");
+   * // recovered.stamina = player.stamina - 20
+   * ```
+   * 
+   * @public
+   * @korean 회복비용적용
+   */
+  applyRecoveryCost(
+    player: PlayerState,
+    recoveryType: RecoveryAnimationType
+  ): PlayerState {
+    const config = getRecoveryConfig(recoveryType);
+    
+    if (config.staminaCost === 0) {
+      return player;
+    }
+
+    return {
+      ...player,
+      stamina: Math.max(0, player.stamina - config.staminaCost),
+    };
+  }
+
+  /**
+   * Get damage multiplier during recovery animation.
+   * 
+   * Some recovery animations (like defensive getup) provide damage reduction.
+   * This returns the multiplier to apply to incoming damage.
+   * 
+   * @param recoveryType - Type of recovery animation
+   * @param currentFrame - Current frame in the animation
+   * @returns Damage multiplier (1.0 = normal, 0.5 = 50% reduction)
+   * 
+   * @example
+   * ```typescript
+   * // Defensive getup has 50% damage reduction
+   * const multiplier = balanceSystem.getRecoveryDamageMultiplier("defensive_getup", 20);
+   * // Returns: 0.5 (50% damage reduction)
+   * 
+   * // Normal recoveries have no reduction
+   * const normal = balanceSystem.getRecoveryDamageMultiplier("prone_standup", 15);
+   * // Returns: 1.0 (full damage)
+   * ```
+   * 
+   * @public
+   * @korean 회복피해배율
+   */
+  getRecoveryDamageMultiplier(
+    recoveryType: RecoveryAnimationType,
+    currentFrame: number
+  ): number {
+    const config = getRecoveryConfig(recoveryType);
+    
+    // Only apply damage reduction during vulnerable frames
+    if (!isVulnerableFrame(recoveryType, currentFrame)) {
+      return 1.0; // No vulnerability = full damage (or no damage if invulnerable)
+    }
+
+    // Apply damage reduction
+    // damageReduction of 0.5 means 50% reduction, so multiplier is 0.5
+    return 1.0 - config.damageReduction;
   }
 }
 
