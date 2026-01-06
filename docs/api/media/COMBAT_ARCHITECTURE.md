@@ -1784,9 +1784,228 @@ The Fall Down Animation System implements authentic Korean martial arts falling 
 - Camera shake on ground impact (2-frame duration)
 - Ground dust particle effects at impact point
 - Body impact audio cues
-- Recovery animations from ground states (기상)
 - Ground combat actions (ground strikes, grappling)
 - Archetype-specific fall variations
+
+## 🏃 Recovery Animation System (기상 애니메이션 시스템)
+
+**Added**: January 2025 - Recovery animations for getting up from ground states with Korean martial arts principles
+
+The Recovery Animation System completes the knockdown-recovery cycle by implementing authentic Korean martial arts recovery techniques (기상 - Gisang) from fallen states. Players can choose between quick standard recovery, fast roll recovery (costs stamina), or slow defensive getup (provides protection).
+
+### Recovery Animation Specifications
+
+#### Four Recovery Types (기상 종류)
+
+| Recovery Type | Korean | Frames | Duration | Stamina Cost | Special |
+|---------------|--------|--------|----------|--------------|---------|
+| **Prone Stand-Up** | 엎드린 기상 | 30 | 500ms | 0 | Push up from face-down |
+| **Supine Stand-Up** | 누운 기상 | 36 | 600ms | 0 | Sit up, roll forward, stand |
+| **Roll Recovery** | 회전기상 | 24 | 400ms | 20 | Fastest, roll to side |
+| **Defensive Getup** | 방어기상 | 42 | 700ms | 0 | Slow but 50% damage reduction |
+
+#### Recovery Animation Details
+
+**Prone Stand-Up (엎드린 기상)**:
+- **Frames 0-8**: Hands push ground, torso lifts
+- **Frames 9-18**: Legs swing under body, kneeling position
+- **Frames 19-24**: Rise from kneeling to standing (vulnerable)
+- **Frames 25-29**: Final stance adjustment (interruptible)
+
+**Supine Stand-Up (누운 기상)**:
+- **Frames 0-10**: Abs crunch sit-up motion
+- **Frames 11-22**: Forward roll onto feet
+- **Frames 23-30**: Feet plant, rise to standing (vulnerable)
+- **Frames 31-35**: Final stance adjustment (interruptible)
+
+**Roll Recovery (회전기상)**:
+- **Frames 0-6**: Roll to side, momentum building
+- **Frames 7-14**: Spring to feet with explosive movement
+- **Frames 15-18**: Quick stance (vulnerable)
+- **Frames 19-23**: Combat ready (interruptible)
+- **Cost**: 20 stamina for speed advantage
+
+**Defensive Getup (방어기상)**:
+- **Frames 0-14**: Slow rise with arms guarding head/torso
+- **Frames 15-28**: Gradual stand with maintained guard
+- **Frames 29-36**: Stance formation with guard (50% damage reduction)
+- **Frames 37-41**: Ready stance (interruptible)
+
+#### Ground State to Recovery Mapping
+
+| Ground State | Default Recovery | Alternative Options |
+|--------------|------------------|---------------------|
+| **Prone (엎드림)** | Prone Stand-Up | Roll, Defensive |
+| **Supine (누움)** | Supine Stand-Up | Roll, Defensive |
+| **Side Left (좌측와)** | Roll Recovery | Prone/Supine, Defensive |
+| **Side Right (우측와)** | Roll Recovery | Prone/Supine, Defensive |
+
+### Keyboard Controls (키보드 조작)
+
+**When Grounded (지면 상태)**:
+- **Space**: Quick/default recovery (based on ground position)
+- **R or Enter**: Roll recovery (회전기상) - fastest, costs 20 stamina
+- **Shift**: Defensive getup (방어기상) - slow but protected
+- **All other inputs**: Blocked (cannot attack/move while down)
+
+**Input Queue Display**:
+- "기상 (Quick Recovery)" - Space
+- "회전기상 (Roll Recovery)" - R/Enter
+- "방어기상 (Defensive Getup)" - Shift
+
+### System Integration
+
+**Balance System Integration** (균형 시스템):
+```typescript
+// Detect grounded state
+balanceSystem.isGrounded(animationState) // true if in ground_* state
+balanceSystem.getGroundState(animationState) // "prone" | "supine" | "side_left" | "side_right"
+
+// Check stamina for roll recovery
+balanceSystem.canRecoverWithType(player, "roll_recovery") // true if stamina >= 20
+
+// Apply stamina cost
+const updatedPlayer = balanceSystem.applyRecoveryCost(player, "roll_recovery")
+
+// Get damage multiplier during recovery
+const multiplier = balanceSystem.getRecoveryDamageMultiplier("defensive_getup", frame)
+// Returns 0.5 for defensive getup, 1.0 for others
+```
+
+**Animation State Machine** (애니메이션 상태 머신):
+```typescript
+// Determine recovery type from ground state
+const recoveryType = determineRecoveryType(groundState)
+
+// Get animation state name
+const animationState = getRecoveryAnimationState(recoveryType)
+
+// Transition to recovery animation
+animationMachine.transitionTo(animationState)
+// Auto-transitions to "idle" when complete
+```
+
+**Keyboard Controls Hook**:
+```typescript
+useKeyboardControls({
+  currentAnimationState: player1Animation.currentState,
+  onAction: (action) => {
+    if (action === "recovery_quick") {
+      // Handle quick recovery
+    } else if (action === "recovery_roll") {
+      // Handle roll recovery
+    } else if (action === "recovery_defensive") {
+      // Handle defensive getup
+    }
+  }
+})
+```
+
+### Vulnerable Frames & Interruptibility
+
+**Vulnerability Windows**:
+- **Prone/Supine Stand-Up**: First 80% of animation (frames 0-24/0-30)
+- **Roll Recovery**: First 75% of animation (frames 0-18)
+- **Defensive Getup**: All frames (but 50% damage reduction)
+
+**Interruptibility**:
+- Last 6 frames (100ms) of each recovery are interruptible
+- High-priority states (hit, ko, falls) can interrupt at any time
+- Normal actions cannot interrupt recovery
+
+**Animation Priority**:
+- Recovery has highest priority (Priority 9)
+- Only falls (8), KO (7), and hits (6) can interrupt
+- Cannot switch between recovery types mid-execution
+
+### Implementation Status
+
+| Feature | Status | Tests | File |
+|---------|--------|-------|------|
+| Recovery Animation Types | ✅ Complete | 31 | `RecoveryAnimations.ts` |
+| Keyframe Definitions | ✅ Complete | 31 | `RecoveryAnimations.ts` |
+| Stamina Cost System | ✅ Complete | 38 | `BalanceSystem.ts` |
+| Damage Reduction | ✅ Complete | 38 | `BalanceSystem.ts` |
+| Ground State Detection | ✅ Complete | 38 | `BalanceSystem.ts` |
+| Animation State Machine | ✅ Complete | 25 | `AnimationStateMachine.ts` |
+| Transition Rules | ✅ Complete | - | `AnimationTransitions.ts` |
+| Priority System | ✅ Complete | - | `AnimationPriority.ts` |
+| Keyboard Input Detection | ✅ Complete | - | `useKeyboardControls.ts` |
+| Combat Screen Integration | ✅ Complete | - | `CombatScreen3D.tsx` |
+| Visual Rendering | 📋 Pending | - | Requires 3D keyframe rendering |
+
+### Korean Terminology (한국어 용어)
+
+**Recovery Types**:
+- **기상 (Gisang)**: Rising/standing up
+- **낙법 (Nakbeop)**: Falling/recovery technique
+- **엎드린 기상 (Eopdeurin Gisang)**: Prone stand-up
+- **누운 기상 (Nuun Gisang)**: Supine stand-up
+- **회전기상 (Hoejeon Gisang)**: Roll recovery
+- **방어기상 (Bangeo Gisang)**: Defensive getup
+
+**Ground States**:
+- **엎드림 (Eopdeurim)**: Prone (face down)
+- **누움 (Nueum)**: Supine (face up)
+- **좌측와 (Jwacheukwa)**: Left side
+- **우측와 (Ucheukwa)**: Right side
+
+**Combat Terms**:
+- **취약프레임 (Chwiyak Frame)**: Vulnerable frames
+- **방어배율 (Bangeo Baeyul)**: Damage reduction multiplier
+- **체력소모 (Cheryeok Somo)**: Stamina cost
+
+### Usage Example
+
+```typescript
+// Complete fall-ground-recovery cycle
+// 1. Player falls forward
+animationMachine.transitionTo("fall_forward");
+
+// 2. Fall completes, auto-transition to ground_prone
+// (handled by AnimationStateMachine)
+
+// 3. Player presses Space while grounded
+if (balanceSystem.isGrounded(currentState)) {
+  const groundState = balanceSystem.getGroundState(currentState); // "prone"
+  const recoveryType = determineRecoveryType(groundState); // "prone_standup"
+  const animationState = getRecoveryAnimationState(recoveryType); // "recovery_prone_standup"
+  
+  animationMachine.transitionTo(animationState);
+}
+
+// 4. Recovery completes, auto-transition to idle
+// (handled by AnimationStateMachine)
+```
+
+### Design Philosophy
+
+Recovery animations follow Black Trigram's Korean martial arts principles:
+
+**정확한 타격 (Precise Targeting)**:
+- Vulnerable frame tracking for realistic combat
+- Damage reduction mechanics for defensive options
+
+**최대 효과 (Maximum Effectiveness)**:
+- Stamina costs balance speed advantage
+- Risk/reward for different recovery types
+
+**전통 지식 (Traditional Knowledge)**:
+- Based on Korean 낙법 (nakbeop) principles
+- Authentic martial arts recovery techniques
+
+**원형 특화 (Archetype Specialization)**:
+- Ready for archetype-specific recovery bonuses
+- Musa: Faster prone recovery
+- Amsalja: Stealthier roll recovery
+- Hacker: Enhanced defensive getup
+
+### Performance Targets
+
+- **60 FPS**: All recovery animations maintain 60fps
+- **Frame Accuracy**: Precise timing for vulnerable windows
+- **Instant Response**: Recovery input detection < 16ms
+- **Smooth Transitions**: No animation stuttering during recovery
 
 ## 🎮 Combat Component Architecture
 

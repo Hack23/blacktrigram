@@ -724,6 +724,7 @@ src/hooks/useWindowSize.ts
 src/index.css
 src/index.ts
 src/main.tsx
+src/systems/CombatSystem.defensive.test.ts
 src/systems/CombatSystem.test.ts
 src/systems/CombatSystem.ts
 src/systems/CombatSystemIntegration.test.ts
@@ -756,6 +757,7 @@ src/systems/ai/__tests__/AI-Performance.bench.ts
 src/systems/ai/index.ts
 src/systems/animation/AnimationPriority.test.ts
 src/systems/animation/AnimationPriority.ts
+src/systems/animation/AnimationStateMachine.recovery.test.ts
 src/systems/animation/AnimationStateMachine.stance-guards.test.ts
 src/systems/animation/AnimationStateMachine.stance-transitions.test.ts
 src/systems/animation/AnimationStateMachine.test.ts
@@ -767,6 +769,7 @@ src/systems/animation/AttackAnimations.test.ts
 src/systems/animation/AttackAnimations.ts
 src/systems/animation/BodyFacingSystem.test.ts
 src/systems/animation/BodyFacingSystem.ts
+src/systems/animation/DefensiveAnimations.test.ts
 src/systems/animation/FOOTWORK_INTEGRATION.md
 src/systems/animation/FacialExpressions.test.ts
 src/systems/animation/FacialExpressions.ts
@@ -784,6 +787,8 @@ src/systems/animation/KeyframeInterpolation.ts
 src/systems/animation/MuscleActivation.test.ts
 src/systems/animation/MuscleActivation.ts
 src/systems/animation/README.md
+src/systems/animation/RecoveryAnimations.test.ts
+src/systems/animation/RecoveryAnimations.ts
 src/systems/animation/SkeletonRig.test.ts
 src/systems/animation/SkeletonRig.ts
 src/systems/animation/StanceGuardPoses.test.ts
@@ -811,6 +816,7 @@ src/systems/breathing/index.ts
 src/systems/breathing/integration.test.ts
 src/systems/breathing/integration.ts
 src/systems/combat/BalanceSystem.fall.test.ts
+src/systems/combat/BalanceSystem.recovery.test.ts
 src/systems/combat/BalanceSystem.ts
 src/systems/combat/CombatStateSystem.test.ts
 src/systems/combat/CombatStateSystem.ts
