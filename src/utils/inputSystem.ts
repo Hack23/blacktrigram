@@ -94,6 +94,9 @@ export function usePlayerMovement(
     left: false,
     right: false,
   });
+  // Physics state for render (velocity and speed)
+  const [velocity, setVelocity] = useState<{ x: number; y: number } | undefined>(undefined);
+  const [speed, setSpeed] = useState<number | undefined>(undefined);
 
   // Physics-based movement state (always initialized for realistic combat)
   const physicsEngineRef = useRef<MovementPhysics | null>(null);
@@ -271,9 +274,21 @@ export function usePlayerMovement(
 
       const newPosition = { x: newX, y: newY };
 
+      // Update velocity and speed state for render
+      const newVelocity = { x: state.velocity.x, y: state.velocity.z };
+      const newSpeed = state.velocity.length();
+      
       if (newPosition.x !== playerPosition.x || newPosition.y !== playerPosition.y) {
         setPlayerPosition(newPosition);
         onPositionChange?.(newPosition);
+      }
+      
+      // Update velocity and speed if changed
+      if (!velocity || velocity.x !== newVelocity.x || velocity.y !== newVelocity.y) {
+        setVelocity(newVelocity);
+      }
+      if (speed !== newSpeed) {
+        setSpeed(newSpeed);
       }
     }
 
@@ -337,14 +352,6 @@ export function usePlayerMovement(
       }
     };
   }, [isMoving, updatePosition]);
-
-  // Calculate velocity and speed for physics mode
-  const velocity = physicsStateRef.current
-    ? { x: physicsStateRef.current.velocity.x, y: physicsStateRef.current.velocity.z }
-    : undefined;
-  const speed = physicsStateRef.current
-    ? physicsStateRef.current.velocity.length()
-    : undefined;
 
   return {
     playerPosition,
