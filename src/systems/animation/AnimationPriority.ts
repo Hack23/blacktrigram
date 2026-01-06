@@ -29,6 +29,11 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   stance_change: AnimationPriority.STANCE_CHANGE,
   stance_side_switch: AnimationPriority.STANCE_CHANGE, // Same priority as stance_change
   defend: AnimationPriority.DEFEND,
+  // Defensive animations (방어 애니메이션)
+  defend_block_success: AnimationPriority.HIT, // Priority 6 - same as hit
+  defend_parry: AnimationPriority.KO, // Priority 7 - higher than block
+  defend_guard_break: AnimationPriority.FALL, // Priority 8 - highest (same as fall)
+  defend_recovery: AnimationPriority.RUN, // Priority 2 - interruptible recovery
   attack: AnimationPriority.ATTACK,
   hit: AnimationPriority.HIT,
   ko: AnimationPriority.KO,

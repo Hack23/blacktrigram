@@ -32,6 +32,11 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   run: "walk", // Map run to walk for now (SkeletalPlayer3D doesn't have run animation yet)
   attack: "attack",
   defend: "defend",
+  // Defensive animations (방어 애니메이션) - map to defend with variations handled by skeletal system
+  defend_block_success: "defend",
+  defend_parry: "defend",
+  defend_guard_break: "defend",
+  defend_recovery: "defend",
   hit: "hit",
   stance_change: "stance_change",
   stance_side_switch: "stance_change", // Map to stance_change animation (mirroring guard)

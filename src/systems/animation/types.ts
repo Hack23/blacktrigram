@@ -48,6 +48,10 @@ export type AnimationState =
   | "run"
   | "attack"
   | "defend"
+  | "defend_block_success"
+  | "defend_parry"
+  | "defend_guard_break"
+  | "defend_recovery"
   | "hit"
   | "stance_change"
   | "stance_side_switch"
@@ -117,12 +121,36 @@ export enum AnimationPriority {
 export const STEP_PRIORITY = AnimationPriority.ATTACK;
 
 /**
+ * Defensive animation types for guard break and defensive stance mechanics.
+ * 
+ * **Korean Terminology**:
+ * - block_success: 막기 (makgi) - Successful block, absorb impact
+ * - parry_deflect: 받아넘기기 (badaneumgigi) - Parry deflection, redirect attack
+ * - guard_break: 방어붕괴 (bangeo bunggoe) - Guard break, defensive stance destroyed
+ * - guard_recovery: 방어복구 (bangeo bokgu) - Guard recovery, restore defensive posture
+ * 
+ * @public
+ * @korean 방어애니메이션타입
+ */
+export type DefensiveAnimationType = 
+  | 'block_success'
+  | 'parry_deflect'
+  | 'guard_break'
+  | 'guard_recovery';
+
+/**
  * Animation configuration for a single animation state
  * 
  * Frame counts based on game-design.md:
  * - Attack: 12 frames (200ms at 60fps)
  * - Block: 4 frames (67ms at 60fps)
  * - Walk: 6 frames
+ * 
+ * Extended with defensive animation support:
+ * - Block Success: 8 frames (133ms)
+ * - Parry Deflect: 10 frames (167ms)
+ * - Guard Break: 15 frames (250ms)
+ * - Guard Recovery: 12 frames (200ms)
  * 
  * @public
  * @korean 애니메이션설정
@@ -169,6 +197,20 @@ export interface AnimationConfig {
    * @korean 지속시간
    */
   readonly duration: number;
+
+  /**
+   * Counter-attack window in seconds (for parry animations)
+   * Creates an opportunity window for immediate counter-attacks after successful parry.
+   * @korean 반격시간
+   */
+  readonly counterWindow?: number;
+
+  /**
+   * Vulnerability window duration in seconds (for guard break animations)
+   * Extended vulnerability period where defender takes increased damage.
+   * @korean 취약시간
+   */
+  readonly vulnerabilityDuration?: number;
 }
 
 /**
