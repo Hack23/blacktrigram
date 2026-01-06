@@ -42,6 +42,12 @@ import { FALL_TO_GROUND_MAP } from "./types";
  * - Stance guards: 4-6 frames = breathing animation at 60fps
  * - Tactical steps: 18 frames = 300ms at 60fps, 30cm distance
  * 
+ * Defensive animations (방어 애니메이션):
+ * - Block Success (막기): 8 frames = 133ms - absorb impact, maintain guard
+ * - Parry Deflect (받아넘기기): 10 frames = 167ms - redirect attack, counter window
+ * - Guard Break (방어붕괴): 15 frames = 250ms - arms forced wide, vulnerable
+ * - Guard Recovery (방어복구): 12 frames = 200ms - restore guard position
+ * 
  * @korean 기본애니메이션설정
  */
 export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
@@ -116,6 +122,57 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: true,
         priority: 4 as AnimationPriority,
         duration: 4 / 60,
+      },
+    ],
+    // Defensive animations (방어 애니메이션) - Enhanced guard break system
+    [
+      "defend_block_success",
+      {
+        state: "defend_block_success",
+        frames: 8, // 133ms at 60fps - absorb impact, maintain guard
+        fps: 60,
+        loop: false,
+        interruptible: false, // Must complete block animation
+        priority: 6 as AnimationPriority, // Higher than defend, same as hit
+        duration: 0.133,
+      },
+    ],
+    [
+      "defend_parry",
+      {
+        state: "defend_parry",
+        frames: 10, // 167ms at 60fps - redirect attack, open counter opportunity
+        fps: 60,
+        loop: false,
+        interruptible: false, // Must complete parry animation
+        priority: 7 as AnimationPriority, // Higher than block, creates counter window
+        duration: 0.167,
+        counterWindow: 0.2, // 200ms counter-attack opportunity after parry
+      },
+    ],
+    [
+      "defend_guard_break",
+      {
+        state: "defend_guard_break",
+        frames: 15, // 250ms at 60fps - arms forced wide, vulnerable state
+        fps: 60,
+        loop: false,
+        interruptible: false, // Cannot interrupt guard break
+        priority: 8 as AnimationPriority, // Highest priority (same as fall)
+        duration: 0.25,
+        vulnerabilityDuration: 0.5, // 500ms vulnerable state after guard break
+      },
+    ],
+    [
+      "defend_recovery",
+      {
+        state: "defend_recovery",
+        frames: 12, // 200ms at 60fps - restore guard position
+        fps: 60,
+        loop: false,
+        interruptible: true, // Can be interrupted by attacks
+        priority: 2 as AnimationPriority, // Same as run, lower than defend
+        duration: 0.2,
       },
     ],
     [
