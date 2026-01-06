@@ -93,6 +93,12 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
  * - Weight forward for reach (+15% reach from game-design.md)
  * - Breathing flows smoothly for continuous adaptation
  * 
+ * **Leg Position (Ap Koobi Seogi)**:
+ * - Deep front lunge, front knee over toes
+ * - Back leg straight, heel down
+ * - 70% weight forward, powerful reach
+ * - Wide stance (0.9m) for stability
+ * 
  * Combat Application:
  * - Joint locks and throwing techniques
  * - +15% reach for throws/sweeps
@@ -114,6 +120,21 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(0.2, -0.3, 0),        // Ready to deflect
   },
   torso: new THREE.Euler(0.15, 0.2, 0), // Forward, ROTATED for reach - DISTINCT
+  
+  // NEW: Ap Koobi Seogi (Front Stance) - Deep lunge position
+  leftLeg: {
+    hip: new THREE.Euler(0.4, 0.1, 0),      // Forward, knee over toes
+    knee: new THREE.Euler(0.9, 0, 0),       // 90° deep bend - POWER
+    ankle: new THREE.Euler(-0.2, 0, 0),     // Dorsiflexed, stable
+  },
+  rightLeg: {
+    hip: new THREE.Euler(-0.1, -0.1, 0),    // Extended back
+    knee: new THREE.Euler(0.1, 0, 0),       // Nearly straight - locked
+    ankle: new THREE.Euler(-0.05, 0, 0),    // Heel planted
+  },
+  pelvis: new THREE.Euler(0.1, 0, 0),       // Forward tilt for reach
+  stanceWidth: 0.9,                          // Wide for stability
+  
   weight: "forward",
   breathingRange: {
     min: 0.97,  // Smooth inhale
@@ -129,6 +150,12 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
  * - Ready for precise nerve strikes
  * - Weight neutral but low center of gravity
  * - Breathing controlled for precision (+5% crit hit chance)
+ * 
+ * **Leg Position (Juchum Seogi)**:
+ * - WIDE stance (1.2m) - parallel feet
+ * - Both knees bent deeply (horse riding position)
+ * - Low center of gravity for stability
+ * - Equal weight distribution
  * 
  * Combat Application:
  * - Precise vital point strikes
@@ -151,6 +178,21 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(0.1, -0.1, 0),        // Ready to strike
   },
   torso: new THREE.Euler(0.05, 0.3, 0), // HEAVY rotation for power - DISTINCT
+  
+  // NEW: Juchum Seogi (Horse Stance) - Wide, low, stable
+  leftLeg: {
+    hip: new THREE.Euler(0, 0.15, 0.2),     // Outward rotation, wide
+    knee: new THREE.Euler(0.8, 0, 0),       // 80° deep bend - LOW
+    ankle: new THREE.Euler(-0.15, 0, 0),    // Flexed for stability
+  },
+  rightLeg: {
+    hip: new THREE.Euler(0, -0.15, -0.2),   // Outward rotation, wide
+    knee: new THREE.Euler(0.8, 0, 0),       // 80° deep bend - LOW
+    ankle: new THREE.Euler(-0.15, 0, 0),    // Flexed for stability
+  },
+  pelvis: new THREE.Euler(0, 0, 0),         // Level, stable platform
+  stanceWidth: 1.2,                          // WIDE horse stance - VERY DISTINCT
+  
   weight: "neutral",
   breathingRange: {
     min: 0.99,  // Shallow, controlled breathing
@@ -166,6 +208,12 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
  * - Ready for shocking nerve strikes
  * - Weight back but explosive forward (+15% shock damage)
  * - Breathing deep for power generation
+ * 
+ * **Leg Position (Dwi Koobi Seogi)**:
+ * - 70% weight on back leg
+ * - Front leg light, ready to kick or step
+ * - Back knee bent deeply, coiled spring
+ * - Moderate width (0.7m) for mobility
  * 
  * Combat Application:
  * - Nerve strike warfare
@@ -188,6 +236,21 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(0.4, -0.1, 0),        // Cocked for strike
   },
   torso: new THREE.Euler(-0.15, 0, 0), // INCREASED backward lean - DISTINCT
+  
+  // NEW: Dwi Koobi Seogi (Back Stance) - Weight back, coiled
+  leftLeg: {
+    hip: new THREE.Euler(0.1, 0.05, 0),     // Front leg light
+    knee: new THREE.Euler(0.3, 0, 0),       // 30° slight bend - ready
+    ankle: new THREE.Euler(-0.1, 0, 0),     // Light on ball of foot
+  },
+  rightLeg: {
+    hip: new THREE.Euler(-0.1, -0.05, 0),   // Back leg loaded
+    knee: new THREE.Euler(0.7, 0, 0),       // 70° deep bend - COILED
+    ankle: new THREE.Euler(-0.2, 0, 0),     // Firmly planted
+  },
+  pelvis: new THREE.Euler(-0.1, 0, 0),      // Tilted back for coiling
+  stanceWidth: 0.7,                          // Moderate - mobile but stable
+  
   weight: "back",
   breathingRange: {
     min: 0.96,  // Deep inhale for power
@@ -203,6 +266,12 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  * - Ready for continuous pressure attacks
  * - Weight neutral for lateral movement (+10% lateral)
  * - Breathing rhythmic for sustained combos
+ * 
+ * **Leg Position (Niunja Seogi)**:
+ * - L-shaped narrow stance (0.4m)
+ * - Front foot turned inward (L-shape)
+ * - Back foot pointing forward
+ * - Weight 50/50 for quick lateral shifts
  * 
  * Combat Application:
  * - Pressure point sequences
@@ -225,6 +294,21 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(-0.1, -0.4, 0),       // Rotated downward
   },
   torso: new THREE.Euler(0.05, -0.25, 0), // ROTATED for circular motion - DISTINCT
+  
+  // NEW: Niunja Seogi (L-Stance) - Narrow, mobile
+  leftLeg: {
+    hip: new THREE.Euler(0, 0.3, 0),        // Turned inward (L-shape)
+    knee: new THREE.Euler(0.4, 0, 0),       // 40° moderate bend
+    ankle: new THREE.Euler(-0.1, 0, 0),     // Flexible for movement
+  },
+  rightLeg: {
+    hip: new THREE.Euler(0, 0, 0),          // Forward facing
+    knee: new THREE.Euler(0.4, 0, 0),       // 40° moderate bend
+    ankle: new THREE.Euler(-0.1, 0, 0),     // Flexible for movement
+  },
+  pelvis: new THREE.Euler(0, -0.15, 0),     // Rotated for L-shape
+  stanceWidth: 0.4,                          // NARROW - highly mobile
+  
   weight: "neutral",
   breathingRange: {
     min: 0.985, // Rhythmic breathing
@@ -240,6 +324,12 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
  * - Ready for counter-grappling and sweeps
  * - Weight centered for adaptability (+10% counter speed)
  * - Breathing deep and flowing
+ * 
+ * **Leg Position (Narani Seogi)**:
+ * - Feet parallel, shoulder-width (0.5m)
+ * - Natural standing position
+ * - Slight knee bend for readiness
+ * - Balanced, adaptive stance
  * 
  * Combat Application:
  * - Flow-into counters
@@ -262,6 +352,21 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(-0.2, -0.3, 0),       // Downward ready
   },
   torso: new THREE.Euler(0, 0, 0), // Centered, no rotation
+  
+  // NEW: Narani Seogi (Parallel Stance) - Natural, adaptive
+  leftLeg: {
+    hip: new THREE.Euler(0, 0, 0),          // Neutral, parallel
+    knee: new THREE.Euler(0.25, 0, 0),      // 25° slight ready bend
+    ankle: new THREE.Euler(-0.08, 0, 0),    // Natural position
+  },
+  rightLeg: {
+    hip: new THREE.Euler(0, 0, 0),          // Neutral, parallel
+    knee: new THREE.Euler(0.25, 0, 0),      // 25° slight ready bend
+    ankle: new THREE.Euler(-0.08, 0, 0),    // Natural position
+  },
+  pelvis: new THREE.Euler(0, 0, 0),         // Neutral, centered
+  stanceWidth: 0.5,                          // Shoulder width - natural
+  
   weight: "neutral",
   breathingRange: {
     min: 0.97,  // Deep, flowing inhale
@@ -277,6 +382,12 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
  * - Immovable blocking stance
  * - Weight balanced for maximum stability (+15% block strength)
  * - Breathing steady and controlled
+ * 
+ * **Leg Position (Gibo Seogi)**:
+ * - Feet close together (0.3m) - NARROW
+ * - Mountain-solid, immovable
+ * - Knees slightly bent for shock absorption
+ * - Maximum stability for blocking
  * 
  * Combat Application:
  * - Impenetrable defense
@@ -299,6 +410,21 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(0.3, -0.2, 0),        // Protective
   },
   torso: new THREE.Euler(0, 0, 0), // Straight, unmoved
+  
+  // NEW: Gibo Seogi (Basic Stance) - Narrow, mountain-solid
+  leftLeg: {
+    hip: new THREE.Euler(0, 0, 0),          // Close, neutral
+    knee: new THREE.Euler(0.2, 0, 0),       // 20° slight bend - shock absorber
+    ankle: new THREE.Euler(-0.05, 0, 0),    // Stable platform
+  },
+  rightLeg: {
+    hip: new THREE.Euler(0, 0, 0),          // Close, neutral
+    knee: new THREE.Euler(0.2, 0, 0),       // 20° slight bend - shock absorber
+    ankle: new THREE.Euler(-0.05, 0, 0),    // Stable platform
+  },
+  pelvis: new THREE.Euler(0, 0, 0),         // Centered, immovable
+  stanceWidth: 0.3,                          // NARROW - mountain solid
+  
   weight: "neutral",
   breathingRange: {
     min: 0.99,  // Minimal movement
@@ -314,6 +440,12 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
  * - Ready for throws and takedowns
  * - Weight low and stable (+20% ground-control)
  * - Breathing deep from diaphragm
+ * 
+ * **Leg Position (Joong Ha Seogi)**:
+ * - VERY DEEP squat position
+ * - Wide stance (0.8m) for grounding
+ * - Knees bent 100° - DEEP
+ * - Low center of gravity - earth connection
  * 
  * Combat Application:
  * - Ground clinches and throws
@@ -336,6 +468,21 @@ export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(-0.3, -0.2, 0),       // Downward grip
   },
   torso: new THREE.Euler(-0.08, 0, 0), // INCREASED forward, low - DISTINCT
+  
+  // NEW: Joong Ha Seogi (Deep Stance) - VERY low, grounded
+  leftLeg: {
+    hip: new THREE.Euler(0, 0.1, 0.15),     // Wide, outward
+    knee: new THREE.Euler(1.0, 0, 0),       // 100° VERY DEEP bend - GROUNDED
+    ankle: new THREE.Euler(-0.2, 0, 0),     // Deep dorsiflexion
+  },
+  rightLeg: {
+    hip: new THREE.Euler(0, -0.1, -0.15),   // Wide, outward
+    knee: new THREE.Euler(1.0, 0, 0),       // 100° VERY DEEP bend - GROUNDED
+    ankle: new THREE.Euler(-0.2, 0, 0),     // Deep dorsiflexion
+  },
+  pelvis: new THREE.Euler(-0.1, 0, 0),      // Tilted forward and low
+  stanceWidth: 0.8,                          // Wide - grounded and stable
+  
   weight: "neutral",
   breathingRange: {
     min: 0.96,  // Deep diaphragm breathing
