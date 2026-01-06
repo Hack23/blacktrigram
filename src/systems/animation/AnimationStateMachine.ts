@@ -16,7 +16,7 @@
  */
 
 import { canInterrupt } from "./AnimationPriority";
-import { isTransitionAllowed } from "./AnimationTransitions";
+import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
 import { TrigramStance } from "../../types/common";
 import type {
   AnimationConfig,
@@ -632,6 +632,18 @@ export class PlayerAnimationStateMachine {
   private previousState: AnimationState | null = null;
   private justStarted = false;
   private justCompleted = false;
+  
+  /**
+   * Current stance transition data (null when not in stance_change animation)
+   * 
+   * **Korean**: 현재 자세 전환 데이터
+   * 
+   * Tracks the active stance transition for use during stance_change animation.
+   * Provides access to keyframes and blend weights for smooth interpolation.
+   * 
+   * @korean 현재자세전환데이터
+   */
+  private currentStanceTransition: StanceTransition | null = null;
 
   /**
    * Create a new animation state machine
@@ -766,6 +778,11 @@ export class PlayerAnimationStateMachine {
           else if (this.currentState !== "idle" && 
                    this.currentState !== "ko" &&
                    !this.currentState.startsWith("ground_")) {
+            // Clear stance transition data if completing stance_change
+            if (this.currentState === "stance_change") {
+              this.clearStanceTransition();
+            }
+            
             // Direct transition to idle without interrupt event
             this.previousState = this.currentState;
             this.currentState = "idle";
@@ -846,6 +863,11 @@ export class PlayerAnimationStateMachine {
       if (this.events?.onAnimationInterrupted) {
         this.events.onAnimationInterrupted(this.currentState, newState);
       }
+    }
+
+    // Clear stance transition data if interrupting stance_change
+    if (this.currentState === "stance_change") {
+      this.clearStanceTransition();
     }
 
     // Execute transition
@@ -994,5 +1016,184 @@ export class PlayerAnimationStateMachine {
     }
 
     return stance;
+  }
+
+  /**
+   * Transition to stance_change animation with specific stance transition data
+   * 
+   * **Korean**: 자세 전환 애니메이션 시작
+   * 
+   * Initiates a stance change animation with the specific transition data
+   * from the 64-transition matrix. This provides stance-specific keyframes
+   * and blend weights for smooth interpolation.
+   * 
+   * @param fromStance - Source trigram stance
+   * @param toStance - Target trigram stance
+   * @returns Whether transition was successful
+   * 
+   * @example
+   * ```typescript
+   * // Start transition from Heaven to Lake stance
+   * const success = machine.transitionToStanceChange(
+   *   TrigramStance.GEON, 
+   *   TrigramStance.TAE
+   * );
+   * 
+   * if (success) {
+   *   // During update loop, use getStanceTransitionBlend() to interpolate
+   *   const blend = machine.getStanceTransitionBlend();
+   *   if (blend) {
+   *     // Apply blend weights to stance poses
+   *     applyStanceBlend(blend);
+   *   }
+   * }
+   * ```
+   * 
+   * @korean 자세전환애니메이션시작
+   */
+  transitionToStanceChange(
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ): boolean {
+    // Get the specific transition data from the 64-transition matrix
+    const transitionData = getStanceTransition(fromStance, toStance);
+    
+    if (!transitionData) {
+      console.warn(
+        `[AnimationStateMachine] No transition data found for ${fromStance} -> ${toStance}`
+      );
+      return false;
+    }
+
+    // Store current transition data in case we need to restore it
+    const previousTransitionData = this.currentStanceTransition;
+
+    // Temporarily set the new transition data
+    this.currentStanceTransition = transitionData;
+
+    // Initiate the stance_change animation
+    const success = this.transitionTo("stance_change");
+
+    // If transition failed, restore previous transition data
+    if (!success) {
+      this.currentStanceTransition = previousTransitionData;
+    }
+
+    return success;
+  }
+
+  /**
+   * Get current stance transition data
+   * 
+   * **Korean**: 현재 자세 전환 데이터 가져오기
+   * 
+   * Returns the active stance transition data during stance_change animation.
+   * Null if not currently in a stance transition.
+   * 
+   * @returns Current stance transition or null
+   * 
+   * @korean 현재자세전환데이터가져오기
+   */
+  getCurrentStanceTransition(): StanceTransition | null {
+    return this.currentStanceTransition;
+  }
+
+  /**
+   * Get interpolated blend weights for current stance transition frame
+   * 
+   * **Korean**: 현재 프레임 블렌드 가중치
+   * 
+   * Returns the interpolated blend data for the current frame during
+   * stance_change animation. Uses the keyframe data from the transition
+   * matrix to provide smooth stance interpolation.
+   * 
+   * @returns Blend data with stance and weight, or null if not in transition
+   * 
+   * @example
+   * ```typescript
+   * // In rendering loop during stance transition
+   * const blend = machine.getStanceTransitionBlend();
+   * if (blend) {
+   *   console.log(`Frame ${blend.frame}: ${blend.stance} at ${blend.blend}x weight`);
+   *   // Apply blended pose: blend.blend * targetPose + (1 - blend.blend) * sourcePose
+   * }
+   * ```
+   * 
+   * @korean 현재프레임블렌드가중치
+   */
+  getStanceTransitionBlend(): {
+    frame: number;
+    stance: TrigramStance | 'neutral';
+    blend: number;
+  } | null {
+    // Only valid during stance_change animation
+    if (this.currentState !== "stance_change" || !this.currentStanceTransition) {
+      return null;
+    }
+
+    const keyframes = this.currentStanceTransition.keyframes;
+    const currentFrame = this.frameIndex;
+
+    // Find the two keyframes to interpolate between
+    let prevKeyframe = keyframes[0];
+    let nextKeyframe = keyframes[keyframes.length - 1];
+
+    for (let i = 0; i < keyframes.length - 1; i++) {
+      if (keyframes[i].frame <= currentFrame && keyframes[i + 1].frame > currentFrame) {
+        prevKeyframe = keyframes[i];
+        nextKeyframe = keyframes[i + 1];
+        break;
+      }
+    }
+
+    // If we're exactly on a keyframe, return it directly
+    const exactKeyframe = keyframes.find(kf => kf.frame === currentFrame);
+    if (exactKeyframe) {
+      return {
+        frame: currentFrame,
+        stance: exactKeyframe.stance,
+        blend: exactKeyframe.blend,
+      };
+    }
+
+    // Linear interpolation between keyframes
+    const frameRange = nextKeyframe.frame - prevKeyframe.frame;
+    const frameProgress = frameRange > 0 
+      ? (currentFrame - prevKeyframe.frame) / frameRange 
+      : 0;
+
+    const interpolatedBlend = 
+      prevKeyframe.blend + (nextKeyframe.blend - prevKeyframe.blend) * frameProgress;
+
+    // Use the next keyframe's stance as we're transitioning towards it
+    return {
+      frame: currentFrame,
+      stance: nextKeyframe.stance,
+      blend: interpolatedBlend,
+    };
+  }
+
+  /**
+   * Check if currently in a stance transition animation
+   * 
+   * **Korean**: 자세 전환 중 확인
+   * 
+   * @returns True if currently executing a stance_change animation
+   * @korean 자세전환중확인
+   */
+  isInStanceTransition(): boolean {
+    return this.currentState === "stance_change" && this.currentStanceTransition !== null;
+  }
+
+  /**
+   * Clear stance transition data (called automatically when transition completes)
+   * 
+   * **Korean**: 자세 전환 데이터 초기화
+   * 
+   * @internal
+   * @korean 자세전환데이터초기화
+   */
+  private clearStanceTransition(): void {
+    this.currentStanceTransition = null;
   }
 }
