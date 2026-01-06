@@ -223,7 +223,7 @@ describe("Defensive Audio Integration", () => {
         guard_recovery: audioManager.playGuardRecoverySound.bind(audioManager),
       };
 
-      for (const [type, method] of Object.entries(mapping)) {
+      for (const [, method] of Object.entries(mapping)) {
         expect(method).toBeDefined();
         expect(typeof method).toBe("function");
       }
