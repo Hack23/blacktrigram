@@ -44,7 +44,7 @@ export interface PlayerMovementResult {
 
 /**
  * Hook for handling player movement input - supports both config and legacy APIs
- * Now with optional physics-based movement for realistic acceleration/deceleration
+ * Now with physics-based movement as the default, always-on system for realistic acceleration/deceleration
  * 
  * **Korean**: 플레이어 이동 훅 (Player Movement Hook)
  * 
@@ -107,6 +107,8 @@ export function usePlayerMovement(
   } | null>(null);
 
   // Initialize physics engine (always enabled)
+  // Initialize physics engine once on mount
+  // Note: stance and legInjuryFactor are updated dynamically in updatePosition callback
   useEffect(() => {
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
@@ -120,7 +122,7 @@ export function usePlayerMovement(
         legInjuryFactor: legInjuryFactor ?? 0,
       };
     }
-  }, [initialPosition.x, initialPosition.y, currentStance, legInjuryFactor]);
+  }, [initialPosition.x, initialPosition.y]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -250,7 +252,9 @@ export function usePlayerMovement(
       state.currentStance = currentStance;
       state.legInjuryFactor = legInjuryFactor ?? 0;
       
-      physicsEngineRef.current.updateMovement(state, physicsInput, deltaTime / 1000);
+      // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
+      const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
+      physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
       let newX = state.position.x * 100;

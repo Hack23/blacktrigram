@@ -196,6 +196,7 @@ export class MovementPhysics {
   // Temporary vectors to avoid allocations in update loop
   private readonly tempTargetVelocity = new THREE.Vector3();
   private readonly tempMovement = new THREE.Vector3();
+  private readonly tempDirection = new THREE.Vector3();
 
   /**
    * Update player movement based on input and physics.
@@ -245,10 +246,10 @@ export class MovementPhysics {
       
       if (currentSpeed < targetSpeed) {
         // Accelerate
-        const velocityDirection = this.tempTargetVelocity.clone().normalize();
+        this.tempDirection.copy(this.tempTargetVelocity).normalize();
         const velocityDelta = this.BASE_ACCELERATION * deltaTime;
         const newSpeed = Math.min(currentSpeed + velocityDelta, targetSpeed);
-        state.velocity.copy(velocityDirection.multiplyScalar(newSpeed));
+        state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
       } else {
         // Already at or above target speed
         state.velocity.copy(this.tempTargetVelocity);
@@ -258,10 +259,10 @@ export class MovementPhysics {
       // Decelerate to stop
       const currentSpeed = state.velocity.length();
       if (currentSpeed > 0.01) {
-        const velocityDirection = state.velocity.clone().normalize();
+        this.tempDirection.copy(state.velocity).normalize();
         const velocityDelta = this.BASE_DECELERATION * deltaTime;
         const newSpeed = Math.max(currentSpeed - velocityDelta, 0);
-        state.velocity.copy(velocityDirection.multiplyScalar(newSpeed));
+        state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
       } else {
         state.velocity.set(0, 0, 0);
       }

@@ -159,16 +159,30 @@ describe('MovementPhysics', () => {
         useTacticalSteps: false,
       };
 
-      // Test forward speed
-      const forwardState = { ...state, velocity: new THREE.Vector3() };
+      // Test forward speed (deep clone state to avoid shared Vector3 references)
+      const forwardState = {
+        position: state.position.clone(),
+        velocity: new THREE.Vector3(),
+        acceleration: state.acceleration,
+        maxSpeed: state.maxSpeed,
+        currentStance: state.currentStance,
+        legInjuryFactor: state.legInjuryFactor,
+      };
       const deltaTime = 1 / 60;
       for (let i = 0; i < 60; i++) {
         physics.updateMovement(forwardState, forwardInput, deltaTime);
       }
       const forwardSpeed = Math.abs(forwardState.velocity.z);
 
-      // Test backward speed
-      const backwardState = { ...state, velocity: new THREE.Vector3() };
+      // Test backward speed (deep clone state to avoid shared Vector3 references)
+      const backwardState = {
+        position: state.position.clone(),
+        velocity: new THREE.Vector3(),
+        acceleration: state.acceleration,
+        maxSpeed: state.maxSpeed,
+        currentStance: state.currentStance,
+        legInjuryFactor: state.legInjuryFactor,
+      };
       for (let i = 0; i < 60; i++) {
         physics.updateMovement(backwardState, backwardInput, deltaTime);
       }

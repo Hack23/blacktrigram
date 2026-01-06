@@ -588,13 +588,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Get player1 data for movement physics
+  // Memoize based on actual player state values, not array reference
+  const player1 = players.length > 0 ? players[0] : undefined;
   const player1Data = useMemo(() => {
-    const p1 = players.length > 0 ? players[0] : createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+    const p1 =
+      player1 ?? createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
     return {
       currentStance: p1.currentStance,
       legInjuryFactor: calculateLegInjuryFactor(p1),
     };
-  }, [players, calculateLegInjuryFactor]);
+  }, [player1?.currentStance, player1?.bodyPartHealth?.legLeft, player1?.bodyPartHealth?.legRight, player1?.maxHealth, calculateLegInjuryFactor]);
 
   // Track current attack animation for each player
   // Used to determine which skeletal animation to play during attacks
