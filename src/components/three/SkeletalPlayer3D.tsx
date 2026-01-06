@@ -40,7 +40,7 @@ import { TrigramStance } from "../../types/common";
 import { FacialExpression } from "../../types/facial";
 import type { HandAnimationState } from "../../types/hand-animation";
 import { HandPoseType } from "../../types/hand-animation";
-import type { Player3DUnifiedProps } from "../../types/player-visual";
+import type { Player3DUnifiedProps, PlayerAnimation } from "../../types/player-visual";
 import type { SkeletalAnimationState, SkeletalRig } from "../../types/skeletal";
 import { toHexColor } from "../../utils/colorHelpers";
 import { getArchetypeColors } from "../../utils/colorUtils";
@@ -116,7 +116,37 @@ const TORSO_BLEND_FACTOR = 0.8;
  * Full guard blend factor for maintaining complete fighting stance
  * @korean 완전방어블렌드계수
  */
-const FULL_GUARD_BLEND = 1.0;
+// Dynamic guard blend factors for natural movement while maintaining stance character
+const getGuardBlendFactor = (animation: PlayerAnimation): number => {
+  switch (animation) {
+    case "idle":
+    case "block":
+    case "counter":
+    case "stance_change":
+      return 1.0; // Full guard - maximum stance visibility when stationary/defensive
+    
+    case "walk":
+    case "step_forward":
+    case "step_back":
+    case "step_left":
+    case "step_right":
+    case "step_forward_left":
+    case "step_forward_right":
+    case "step_back_left":
+    case "step_back_right":
+      return 0.7; // Partial guard - balanced movement with stance character
+    
+    case "attack":
+    case "defend":
+    case "hit":
+    case "death":
+    case "technique_execute":
+      return 0.0; // No guard - technique animations have full control
+    
+    default:
+      return 1.0; // Default to full guard for unknown animations
+  }
+};
 
 /**
  * Apply stance guard pose overlay on top of base animation
@@ -160,7 +190,7 @@ const applyStanceGuardOverlay = (
   stance: TrigramStance | string,
   breathingPhase: number,
   laterality: StanceLaterality = "right",
-  blendFactor: number = FULL_GUARD_BLEND
+  blendFactor: number = 1.0
 ): void => {
   const guardPose = getGuardPoseForStance(stance as TrigramStance, laterality);
   if (!guardPose) return;
@@ -1074,9 +1104,11 @@ export const SkeletalPlayer3D: React.FC<
       // so stance is the single source of truth for selecting the correct guard pose.
       const stanceToUse = stance;
       
-      // Apply full guard pose overlay to maintain fighting stance during all movement
+      // Apply guard pose overlay with dynamic blend factor based on animation type
+      // Full guard (1.0) for stationary/defensive, reduced for natural movement
       // Each stance × laterality combination creates distinct appearance
-      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, FULL_GUARD_BLEND);
+      const blendFactor = getGuardBlendFactor(currentAnimation);
+      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, blendFactor);
     }
 
     // Apply body facing rotations (torso and head) if available
