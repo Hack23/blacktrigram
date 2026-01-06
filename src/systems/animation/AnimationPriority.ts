@@ -60,6 +60,16 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   ground_supine: AnimationPriority.IDLE,
   ground_side_left: AnimationPriority.IDLE,
   ground_side_right: AnimationPriority.IDLE,
+  // Footwork patterns (보법) - Korean martial arts specialized footwork
+  footwork_circular_left: STEP_PRIORITY,
+  footwork_circular_right: STEP_PRIORITY,
+  footwork_pivot_left: STEP_PRIORITY,
+  footwork_pivot_right: STEP_PRIORITY,
+  footwork_slide_forward: AnimationPriority.DEFEND,
+  footwork_slide_back: AnimationPriority.DEFEND,
+  footwork_slide_left: AnimationPriority.DEFEND,
+  footwork_slide_right: AnimationPriority.DEFEND,
+  footwork_shuffle: AnimationPriority.STANCE_CHANGE,
 };
 
 /**

@@ -65,6 +65,16 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   ground_supine: "idle",
   ground_side_left: "idle",
   ground_side_right: "idle",
+  // Footwork patterns (보법) - Korean martial arts specialized footwork
+  footwork_circular_left: "walk", // Lateral movement
+  footwork_circular_right: "walk",
+  footwork_pivot_left: "walk", // Rotation movement
+  footwork_pivot_right: "walk",
+  footwork_slide_forward: "walk", // Sliding movement
+  footwork_slide_back: "walk",
+  footwork_slide_left: "walk",
+  footwork_slide_right: "walk",
+  footwork_shuffle: "walk", // Quick adjustment
 };
 
 /**
