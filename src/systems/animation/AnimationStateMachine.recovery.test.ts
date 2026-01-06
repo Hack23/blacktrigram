@@ -96,8 +96,13 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
 
   describe("Transitioning from Ground States to Recovery", () => {
     it("should allow transition from ground_prone to recovery_prone_standup", () => {
-      // Set to ground prone state
-      machine.transitionTo("ground_prone");
+      // Fall forward leads to prone position
+      machine.transitionTo("fall_forward");
+      // Complete the fall animation to reach ground state
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
       expect(machine.getCurrentState()).toBe("ground_prone");
 
       // Transition to recovery
@@ -107,7 +112,13 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should allow transition from ground_supine to recovery_supine_standup", () => {
-      machine.transitionTo("ground_supine");
+      // Fall backward leads to supine position
+      machine.transitionTo("fall_backward");
+      // Complete the fall animation to reach ground state
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 31; i++) {
+        machine.update(frameDuration);
+      }
       expect(machine.getCurrentState()).toBe("ground_supine");
 
       const success = machine.transitionTo("recovery_supine_standup");
@@ -116,7 +127,13 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should allow transition from ground_side_left to recovery_roll", () => {
-      machine.transitionTo("ground_side_left");
+      // Fall to side left
+      machine.transitionTo("fall_side_left");
+      // Complete the fall animation to reach ground state
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 28; i++) {
+        machine.update(frameDuration);
+      }
       expect(machine.getCurrentState()).toBe("ground_side_left");
 
       const success = machine.transitionTo("recovery_roll");
@@ -125,7 +142,13 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should allow transition from ground_side_right to recovery_defensive", () => {
-      machine.transitionTo("ground_side_right");
+      // Fall to side right
+      machine.transitionTo("fall_side_right");
+      // Complete the fall animation to reach ground state
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 28; i++) {
+        machine.update(frameDuration);
+      }
       expect(machine.getCurrentState()).toBe("ground_side_right");
 
       const success = machine.transitionTo("recovery_defensive");
@@ -134,6 +157,13 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should allow any recovery type from any ground state", () => {
+      const fallToGroundMapping = {
+        ground_prone: "fall_forward",
+        ground_supine: "fall_backward", 
+        ground_side_left: "fall_side_left",
+        ground_side_right: "fall_side_right",
+      } as const;
+      
       const groundStates: AnimationState[] = [
         "ground_prone",
         "ground_supine",
@@ -150,7 +180,18 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
       for (const ground of groundStates) {
         for (const recovery of recoveryAnimations) {
           machine.reset();
-          machine.transitionTo(ground);
+          // Transition through fall to reach ground state
+          const fallAnimation = fallToGroundMapping[ground as keyof typeof fallToGroundMapping];
+          machine.transitionTo(fallAnimation);
+          // Complete fall animation
+          const frameDuration = 1 / 60;
+          for (let i = 0; i < 31; i++) {
+            machine.update(frameDuration);
+          }
+          // Should be in ground state now
+          expect(machine.getCurrentState()).toBe(ground);
+          
+          // Now test recovery transition
           const success = machine.transitionTo(recovery);
           expect(success).toBe(true);
           expect(machine.getCurrentState()).toBe(recovery);
@@ -161,11 +202,17 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
 
   describe("Recovery Animation Completion", () => {
     it("should transition from recovery_prone_standup to idle when complete", () => {
-      machine.transitionTo("ground_prone");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
       machine.transitionTo("recovery_prone_standup");
       
       // Update through all 30 frames (500ms at 60fps)
-      const frameDuration = 1 / 60;
       for (let i = 0; i < 30; i++) {
         machine.update(frameDuration);
       }
@@ -176,11 +223,17 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should transition from recovery_supine_standup to idle when complete", () => {
-      machine.transitionTo("ground_supine");
+      // Fall backward to reach supine
+      machine.transitionTo("fall_backward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 31; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_supine");
+      
       machine.transitionTo("recovery_supine_standup");
       
       // Update through all 36 frames (600ms at 60fps)
-      const frameDuration = 1 / 60;
       for (let i = 0; i < 36; i++) {
         machine.update(frameDuration);
       }
@@ -190,11 +243,17 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should transition from recovery_roll to idle when complete", () => {
-      machine.transitionTo("ground_side_left");
+      // Fall to side left
+      machine.transitionTo("fall_side_left");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 28; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_side_left");
+      
       machine.transitionTo("recovery_roll");
       
       // Update through all 24 frames (400ms at 60fps)
-      const frameDuration = 1 / 60;
       for (let i = 0; i < 24; i++) {
         machine.update(frameDuration);
       }
@@ -204,11 +263,17 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should transition from recovery_defensive to idle when complete", () => {
-      machine.transitionTo("ground_side_right");
+      // Fall to side right
+      machine.transitionTo("fall_side_right");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 28; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_side_right");
+      
       machine.transitionTo("recovery_defensive");
       
       // Update through all 42 frames (700ms at 60fps)
-      const frameDuration = 1 / 60;
       for (let i = 0; i < 42; i++) {
         machine.update(frameDuration);
       }
@@ -218,13 +283,19 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should emit onAnimationComplete and onAnimationStart events", () => {
-      machine.transitionTo("ground_prone");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
       eventLog = []; // Clear start events
       
       machine.transitionTo("recovery_prone_standup");
       
       // Update through animation
-      const frameDuration = 1 / 60;
       for (let i = 0; i <= 30; i++) {
         machine.update(frameDuration);
       }
@@ -255,8 +326,12 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should allow transition from idle to recovery for testing", () => {
-      // From idle, can transition to ground states for testing
-      machine.transitionTo("ground_prone");
+      // Fall forward to reach prone state
+      machine.transitionTo("fall_forward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
       expect(machine.getCurrentState()).toBe("ground_prone");
 
       // Then to recovery
@@ -266,7 +341,14 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should not allow switching between recovery animations mid-execution", () => {
-      machine.transitionTo("ground_prone");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
       machine.transitionTo("recovery_prone_standup");
       expect(machine.getCurrentState()).toBe("recovery_prone_standup");
       
@@ -279,7 +361,14 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
 
   describe("Recovery Animation Interruptibility", () => {
     it("should not allow switching between recovery animations mid-execution", () => {
-      machine.transitionTo("ground_prone");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
       machine.transitionTo("recovery_prone_standup");
       expect(machine.getCurrentState()).toBe("recovery_prone_standup");
       
@@ -290,9 +379,15 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should complete recovery animation without interruption from lower priority", () => {
-      machine.transitionTo("ground_prone");
-      machine.transitionTo("recovery_roll");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
       const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
+      machine.transitionTo("recovery_roll");
       
       // Update through most of animation
       for (let i = 0; i < 20; i++) {
@@ -304,9 +399,15 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
 
   describe("Frame Progression", () => {
     it("should progress through frames at 60fps for prone recovery", () => {
-      machine.transitionTo("ground_prone");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
+      const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
       machine.transitionTo("recovery_prone_standup");
-      const frameDuration = 1 / 60; // 16.67ms
 
       // Check initial state
       expect(machine.getCurrentFrame()).toBe(0);
@@ -320,9 +421,15 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should progress through frames at 60fps for roll recovery", () => {
-      machine.transitionTo("ground_side_left");
-      machine.transitionTo("recovery_roll");
+      // Fall to side left
+      machine.transitionTo("fall_side_left");
       const frameDuration = 1 / 60;
+      for (let i = 0; i < 28; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_side_left");
+      
+      machine.transitionTo("recovery_roll");
 
       for (let i = 0; i < 23; i++) {
         machine.update(frameDuration);
@@ -333,12 +440,18 @@ describe("AnimationStateMachine - Recovery Transitions", () => {
     });
 
     it("should report animation progress correctly", () => {
-      machine.transitionTo("ground_prone");
-      machine.transitionTo("recovery_prone_standup");
+      // Fall forward to reach prone
+      machine.transitionTo("fall_forward");
       const frameDuration = 1 / 60;
+      for (let i = 0; i < 25; i++) {
+        machine.update(frameDuration);
+      }
+      expect(machine.getCurrentState()).toBe("ground_prone");
+      
+      machine.transitionTo("recovery_prone_standup");
 
       // At frame 0
-      let result = machine.update(0);
+      const result = machine.update(0);
       expect(result.progress).toBeCloseTo(0, 2);
 
       // At frame 15 (halfway through 30 frames)
