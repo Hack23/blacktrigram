@@ -27,6 +27,18 @@ describe("mirrorGuardPose", () => {
           wrist: new THREE.Euler(0.2, 0.0, 0.0),
         },
         torso: new THREE.Euler(0.1, 0.0, 0.0),
+        leftLeg: {
+          hip: new THREE.Euler(0.1, 0.05, 0.0),
+          knee: new THREE.Euler(0.3, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.1, 0.0, 0.0),
+        },
+        rightLeg: {
+          hip: new THREE.Euler(0.1, -0.05, 0.0),
+          knee: new THREE.Euler(0.3, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.1, 0.0, 0.0),
+        },
+        pelvis: new THREE.Euler(0.05, 0.0, 0.0),
+        stanceWidth: 0.5,
         weight: "forward",
         breathingRange: { min: 0.98, max: 1.02 },
       };
@@ -57,6 +69,18 @@ describe("mirrorGuardPose", () => {
           wrist: new THREE.Euler(0.2, 0.0, 0.0),
         },
         torso: new THREE.Euler(0.1, 0.0, 0.0),
+        leftLeg: {
+          hip: new THREE.Euler(0.2, 0.1, 0.0),
+          knee: new THREE.Euler(0.4, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.15, 0.0, 0.0),
+        },
+        rightLeg: {
+          hip: new THREE.Euler(0.2, -0.1, 0.0),
+          knee: new THREE.Euler(0.4, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.15, 0.0, 0.0),
+        },
+        pelvis: new THREE.Euler(0.08, 0.0, 0.0),
+        stanceWidth: 0.6,
         weight: "forward",
         breathingRange: { min: 0.98, max: 1.02 },
       };
@@ -83,6 +107,18 @@ describe("mirrorGuardPose", () => {
           wrist: new THREE.Euler(0.0, -0.1, -0.2),
         },
         torso: new THREE.Euler(0.0, 0.2, 0.1),
+        leftLeg: {
+          hip: new THREE.Euler(0.0, 0.15, 0.1),
+          knee: new THREE.Euler(0.25, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.1, 0.0, 0.05),
+        },
+        rightLeg: {
+          hip: new THREE.Euler(0.0, -0.15, -0.1),
+          knee: new THREE.Euler(0.25, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.1, 0.0, -0.05),
+        },
+        pelvis: new THREE.Euler(0.0, 0.1, 0.0),
+        stanceWidth: 0.5,
         weight: "neutral",
         breathingRange: { min: 0.97, max: 1.03 },
       };
@@ -113,6 +149,18 @@ describe("mirrorGuardPose", () => {
           wrist: new THREE.Euler(0.2, 0.0, 0.0),
         },
         torso: new THREE.Euler(0.1, 0.2, 0.3),
+        leftLeg: {
+          hip: new THREE.Euler(0.15, 0.08, 0.05),
+          knee: new THREE.Euler(0.35, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.12, 0.0, 0.02),
+        },
+        rightLeg: {
+          hip: new THREE.Euler(0.15, -0.08, -0.05),
+          knee: new THREE.Euler(0.35, 0.0, 0.0),
+          ankle: new THREE.Euler(-0.12, 0.0, -0.02),
+        },
+        pelvis: new THREE.Euler(0.06, 0.04, 0.0),
+        stanceWidth: 0.55,
         weight: "forward",
         breathingRange: { min: 0.98, max: 1.02 },
       };
