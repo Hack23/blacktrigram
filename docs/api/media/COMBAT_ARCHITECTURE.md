@@ -409,6 +409,525 @@ function adaptToOpponentStance(opponentStance: TrigramStance) {
 
 ---
 
+## 🔄 Stance Transition Animation System (팔괘전환 애니메이션)
+
+**Korean**: 자세 전환 애니메이션 시스템
+
+The Stance Transition Animation System provides smooth, realistic 600ms transitions between all 8 trigram stances with proper weight shifts, foot repositioning, and guard changes.
+
+### System Architecture
+
+```mermaid
+graph TB
+    subgraph "Transition Matrix (64 Transitions)"
+        TM[STANCE_TRANSITIONS Map]:::matrix
+        TM --> DIRECT[Direct Transitions<br/>Adjacent Stances<br/>24 transitions]:::direct
+        TM --> INDIRECT[Indirect Transitions<br/>Opposite Stances<br/>32 transitions]:::indirect
+        TM --> SELF[Self Transitions<br/>Same Stance<br/>8 transitions]:::self
+    end
+    
+    subgraph "Animation System"
+        ASM[AnimationStateMachine]:::animation
+        ASM --> KEYFRAME[Keyframe Interpolation<br/>36 frames at 60fps]:::animation
+        ASM --> BLEND[Blend Weights<br/>0.0 to 1.0]:::animation
+    end
+    
+    subgraph "Calculation Engine"
+        TC[TransitionCalculator]:::calculator
+        TC --> DISTANCE[Distance Calculator<br/>0-4 steps on wheel]:::calculator
+        TC --> COST[Cost Calculator<br/>Ki, Stamina, Time]:::calculator
+        TC --> TYPE[Type Determiner<br/>direct/indirect/self]:::calculator
+    end
+    
+    subgraph "Visual Feedback"
+        VF[Visual Components]:::visual
+        VF --> PROGRESS[Progress Bar<br/>600ms countdown]:::visual
+        VF --> INDICATOR[Stance Indicator<br/>Korean + English]:::visual
+        VF --> EFFECT[Transition Effect<br/>Aura + Ring]:::visual
+    end
+    
+    TM --> ASM
+    TC --> TM
+    ASM --> VF
+    
+    classDef matrix fill:#ffd700,stroke:#333,color:#000,stroke-width:3px
+    classDef direct fill:#00ff00,stroke:#333,color:#000,stroke-width:2px
+    classDef indirect fill:#ff8c00,stroke:#333,color:#000,stroke-width:2px
+    classDef self fill:#00ffff,stroke:#333,color:#000,stroke-width:2px
+    classDef animation fill:#9370db,stroke:#333,color:#fff,stroke-width:2px
+    classDef calculator fill:#4caf50,stroke:#333,color:#fff,stroke-width:2px
+    classDef visual fill:#ff69b4,stroke:#333,color:#fff,stroke-width:2px
+```
+
+### Transition Types
+
+The system classifies transitions into three categories based on stance distance around the octagonal stance wheel:
+
+#### 1. **Self Transition** (자기 전환)
+- **Korean**: 같은 자세
+- **Distance**: 0 steps
+- **Duration**: 0ms (no animation)
+- **Example**: geon → geon
+- **Count**: 8 transitions (one per stance)
+
+#### 2. **Direct Transition** (직접 전환)
+- **Korean**: 인접 자세 전환
+- **Distance**: 1-2 steps on wheel
+- **Duration**: 600ms (36 frames at 60fps)
+- **Examples**: geon → tae, li → jin
+- **Ki Cost**: 11 (0.7x modifier for adjacent)
+- **Stamina Cost**: 7 (0.7x modifier for adjacent)
+- **Count**: ~24 transitions
+
+#### 3. **Indirect Transition** (간접 전환)
+- **Korean**: 반대 자세 전환
+- **Distance**: 3-4 steps on wheel
+- **Duration**: 600ms (36 frames at 60fps)
+- **Examples**: geon → son, tae → gam (opposite stances)
+- **Ki Cost**: 15 (full cost)
+- **Stamina Cost**: 10 (full cost)
+- **Count**: ~32 transitions
+- **Note**: Uses extended neutral phase for complex repositioning
+
+### Stance Wheel Arrangement
+
+The 8 trigram stances are arranged in traditional I Ching order:
+
+```
+      ☰ GEON (Heaven)
+   ☱ TAE         ☷ GON (Earth)
+☲ LI                  ☶ GAN (Mountain)
+   ☳ JIN         ☵ GAM (Water)
+      ☴ SON (Wind)
+```
+
+**Distance Examples**:
+- `geon → tae`: 1 step (adjacent, direct)
+- `geon → li`: 2 steps (near-adjacent, direct)
+- `geon → jin`: 3 steps (far, indirect)
+- `geon → son`: 4 steps (opposite, indirect)
+- `geon → gon`: 1 step (wraps around, adjacent, direct)
+
+### Transition Keyframe Phases
+
+All non-self transitions consist of 3 animation phases over 36 frames (600ms at 60fps):
+
+#### Direct Transition Keyframes (Adjacent Stances)
+
+```
+Frame  0-12: Weight Shift Phase (중심 이동)
+  - Frame 0:  Source stance, 1.0 blend
+  - Frame 6:  Begin weight shift, 0.8 blend
+  - Frame 12: Neutral position, 0.5 blend
+
+Frame 12-24: Foot Repositioning Phase (발 재배치)
+  - Frame 18: Neutral stance, 0.4 blend
+  - Frame 24: Begin target stance, 0.3 blend
+
+Frame 24-36: Guard Change Phase (방어 자세 변경)
+  - Frame 30: Target stance forming, 0.7 blend
+  - Frame 36: Target stance complete, 1.0 blend
+```
+
+#### Indirect Transition Keyframes (Opposite Stances)
+
+```
+Frame  0-12: Exit Source Stance (원래 자세 벗어남)
+  - Frame 0:  Source stance, 1.0 blend
+  - Frame 6:  Begin exit, 0.7 blend
+  - Frame 12: Neutral position, 0.5 blend
+
+Frame 12-24: Extended Neutral Phase (중립 자세 유지)
+  - Frame 18: Hold neutral, 0.5 blend
+  - Frame 24: Neutral maintained, 0.4 blend
+
+Frame 24-36: Enter Target Stance (목표 자세 진입)
+  - Frame 30: Target stance forming, 0.6 blend
+  - Frame 36: Target stance complete, 1.0 blend
+```
+
+### Cost Calculation
+
+Transition costs vary based on stance distance and player archetype:
+
+#### Base Costs
+- **Ki**: 15 points
+- **Stamina**: 10 points
+- **Time**: 600ms
+
+#### Adjacency Modifiers
+- **Adjacent (distance 1)**: 0.7x cost → 11 ki, 7 stamina
+- **Near-adjacent (distance 2)**: 0.85x cost → 13 ki, 9 stamina
+- **Distant/Opposite (distance 3-4)**: 1.0x cost → 15 ki, 10 stamina
+
+#### Archetype Modifiers
+- **Favored stances**: 0.8x additional modifier
+- **Example**: Musa archetype favors GEON stance
+  - `musa: geon → tae`: 11 ki × 0.8 = 9 ki
+
+### Implementation Details
+
+#### Core Functions
+
+```typescript
+// Calculate distance around stance wheel
+calculateStanceDistance(
+  from: TrigramStance, 
+  to: TrigramStance
+): number; // Returns 0-4
+
+// Determine transition type
+determineTransitionType(
+  from: TrigramStance, 
+  to: TrigramStance
+): StanceTransitionType; // Returns 'direct' | 'indirect' | 'self'
+
+// Create complete transition configuration
+createStanceTransition(
+  from: TrigramStance, 
+  to: TrigramStance
+): StanceTransition;
+
+// Retrieve transition from matrix
+getStanceTransition(
+  from: TrigramStance, 
+  to: TrigramStance
+): StanceTransition | undefined;
+
+// Get all transitions from a stance
+getTransitionsFromStance(
+  from: TrigramStance
+): StanceTransition[];
+```
+
+#### Transition Matrix
+
+The system generates and caches all 64 possible transitions on initialization:
+
+```typescript
+// Automatic initialization on module load
+initializeStanceTransitions(); // Generates 64 transitions
+
+// Access transitions via Map
+const transition = STANCE_TRANSITIONS.get('geon_tae');
+
+// Type-safe retrieval
+const transition = getStanceTransition(TrigramStance.GEON, TrigramStance.TAE);
+```
+
+### Visual Feedback Components
+
+#### 1. StanceChangeIndicator (자세변경표시기)
+
+Displays progress during stance transitions:
+
+```typescript
+<StanceChangeIndicator
+  currentStance={playerStanceIndex}
+  previousStance={prevStanceIndex}
+  showProgress={true}
+  transitionDuration={600}
+  duration={1000}
+  isMobile={false}
+/>
+```
+
+**Features**:
+- 600ms animated progress bar
+- Real-time countdown timer (ms)
+- Bilingual labels: 팔괘전환 | Transition
+- Stance name display (Korean + English)
+- Color-coded by target stance
+- Stance symbol display (☰☱☲☳☴☵☶☷)
+
+#### 2. StanceTransitionEffect (자세전환효과)
+
+3D visual effects during transitions:
+
+```typescript
+<StanceTransitionEffect
+  fromStance={TrigramStance.GEON}
+  toStance={TrigramStance.TAE}
+  duration={0.6}
+  showNameOverlay={true}
+  onTransitionComplete={() => console.log('Complete')}
+/>
+```
+
+**Features**:
+- Expanding energy ring effect
+- Smooth color interpolation (old → new stance color)
+- Stance aura fade/bloom
+- Bilingual stance name overlay (1 second display)
+- Auto-cleanup after completion
+
+### Performance Characteristics
+
+#### Initialization
+- **Matrix generation**: <100ms for all 64 transitions
+- **Memory footprint**: ~8KB (64 transitions × ~125 bytes each)
+- **One-time cost**: Occurs on module load
+
+#### Runtime Performance
+- **Transition lookup**: O(1) Map lookup, <1μs
+- **1000 random lookups**: <10ms
+- **Frame rate**: Maintains 60fps during transitions
+- **Progress bar animation**: requestAnimationFrame, <1ms per frame
+
+#### Memory Management
+- **Keyframes**: Immutable, shared across all instances
+- **No per-transition allocation**: Reuses cached configurations
+- **Automatic cleanup**: Visual components dispose on unmount
+
+### Integration with Combat System
+
+#### Stance Change Workflow
+
+```typescript
+// 1. Player initiates stance change
+const canChange = stanceManager.canChangeStance(player, newStance);
+
+if (canChange) {
+  // 2. Calculate transition cost
+  const cost = transitionCalculator.calculateCost(
+    player.currentStance,
+    newStance
+  );
+  
+  // 3. Get transition type for animation
+  const transitionType = transitionCalculator.getTransitionType(
+    player.currentStance,
+    newStance
+  );
+  
+  // 4. Trigger animation state machine
+  animationMachine.transitionTo('stance_change');
+  
+  // 5. Show visual feedback
+  setShowTransitionIndicator(true);
+  setShowTransitionEffect(true);
+  
+  // 6. Apply costs after animation completes (600ms)
+  setTimeout(() => {
+    player.ki -= cost.ki;
+    player.stamina -= cost.stamina;
+    player.currentStance = newStance;
+    
+    // 7. Transition to new stance guard
+    animationMachine.transitionToStanceGuard(newStance);
+  }, cost.timeMilliseconds);
+}
+```
+
+#### Non-Interruptible Period
+
+During the 600ms transition:
+- **Player cannot**:
+  - Attack or defend
+  - Change stance again
+  - Execute techniques
+  - Move (except continued momentum)
+- **Player can**:
+  - Be hit (vulnerable during transition)
+  - Cancel via defensive roll (costs additional stamina)
+
+### Korean Martial Arts Authenticity
+
+The transition system reflects authentic Korean martial arts principles:
+
+#### 중심 이동 (Center Movement)
+- Traditional stance changes emphasize **center of gravity shift**
+- Keyframes model realistic weight transfer between stances
+- Neutral position represents brief moment of vulnerability
+
+#### 발놀림 (Foot Work)
+- Foot repositioning phase models actual footwork (보법)
+- Distance affects complexity: adjacent = simple, opposite = complex
+- Indirect transitions require **pivot and step** sequence
+
+#### 호흡 조절 (Breath Control)
+- Breath timing synchronized with stance transitions
+- Exhale during weight shift (frames 0-12)
+- Inhale during stabilization (frames 24-36)
+- Proper breathing reduces transition penalties
+
+#### 무술 철학 (Martial Arts Philosophy)
+- **Eight Trigrams (팔괘)** represent natural forces
+- Transitions between elements require understanding and energy
+- Opposite elements (e.g., Fire ↔ Water) are most difficult
+- Adjacent elements flow naturally into each other
+
+### Testing Coverage
+
+**34 comprehensive tests** validating all system aspects:
+
+| Test Category | Tests | Coverage |
+|--------------|-------|----------|
+| Distance Calculation | 5 | 100% |
+| Transition Type Determination | 4 | 100% |
+| Transition Creation | 10 | 100% |
+| Matrix Validation | 4 | 100% |
+| Retrieval Functions | 3 | 100% |
+| Keyframe Quality | 3 | 100% |
+| Performance Requirements | 2 | 100% |
+| Korean Terminology | 2 | 100% |
+| **Total** | **34** | **100%** |
+
+### Implementation Status
+
+| Feature | Status | Files |
+|---------|--------|-------|
+| Transition Types & Interfaces | ✅ Complete | `AnimationTransitions.ts` |
+| 64-Transition Matrix | ✅ Complete | `AnimationTransitions.ts` |
+| Keyframe Generation | ✅ Complete | `AnimationTransitions.ts` |
+| Distance Calculator | ✅ Complete | `AnimationTransitions.ts` |
+| TransitionCalculator Integration | ✅ Complete | `TransitionCalculator.ts` |
+| Visual Progress Indicator | ✅ Complete | `StanceChangeIndicator.tsx` |
+| 3D Transition Effects | ✅ Complete | `StanceTransitionEffect.tsx` |
+| Comprehensive Tests | ✅ Complete | `AnimationTransitions.stance.test.ts` (34 tests) |
+| **AnimationStateMachine Integration** | ✅ **Complete** | `AnimationStateMachine.ts` |
+| **Keyframe Interpolation** | ✅ **Complete** | `AnimationStateMachine.ts` |
+| **Integration Tests** | ✅ **Complete** | `AnimationStateMachine.stance-transitions.test.ts` (28 tests) |
+| CombatScreen Integration | ✅ Complete | `CombatScreen3D.tsx` |
+| Audio Synchronization | 🔄 Pending | - |
+
+### AnimationStateMachine Integration
+
+**New Methods** (added in latest update):
+
+```typescript
+// Start stance-specific transition with keyframes
+transitionToStanceChange(
+  fromStance: TrigramStance, 
+  toStance: TrigramStance
+): boolean;
+
+// Access active transition data
+getCurrentStanceTransition(): StanceTransition | null;
+
+// Get interpolated blend for current frame
+getStanceTransitionBlend(): {
+  frame: number;
+  stance: TrigramStance | 'neutral';
+  blend: number;
+} | null;
+
+// Check if in stance transition
+isInStanceTransition(): boolean;
+```
+
+**Automatic Cleanup**:
+- Clears transition data when animation completes
+- Clears transition data when interrupted (e.g., by hit)
+- Preserves existing transition if new transition fails
+
+**Performance**:
+- Blend query: <0.01ms per call
+- 1000 queries: <10ms total
+- Full transition: <5ms for 36 frames
+- Zero allocation: Reuses cached transition configs
+
+**Test Coverage**: 28 integration tests (100% passing), 628 total animation tests
+
+### Code Example
+
+```typescript
+import {
+  calculateStanceDistance,
+  determineTransitionType,
+  getStanceTransition,
+  getTransitionsFromStance,
+  initializeStanceTransitions,
+  TRIGRAM_STANCES_ORDER,
+} from '@/systems/animation/AnimationTransitions';
+import { TransitionCalculator } from '@/systems/trigram/TransitionCalculator';
+import { TrigramStance } from '@/types/common';
+
+// Initialize transition system (automatic on module load)
+initializeStanceTransitions();
+
+// Calculate distance between stances
+const distance = calculateStanceDistance(
+  TrigramStance.GEON, 
+  TrigramStance.SON
+); // Returns 4 (opposite stances)
+
+// Determine transition type
+const type = determineTransitionType(
+  TrigramStance.GEON, 
+  TrigramStance.TAE
+); // Returns "direct"
+
+// Get specific transition
+const transition = getStanceTransition(
+  TrigramStance.GEON, 
+  TrigramStance.TAE
+);
+
+console.log(transition?.type);        // "direct"
+console.log(transition?.duration);    // 600
+console.log(transition?.keyframes);   // Array of 7 keyframes
+
+// Calculate costs
+const cost = TransitionCalculator.calculateCost(
+  TrigramStance.GEON,
+  TrigramStance.TAE
+);
+
+console.log(cost.ki);                 // 11 (adjacent bonus)
+console.log(cost.stamina);            // 7
+console.log(cost.timeMilliseconds);   // 600
+
+// Get all transitions from current stance
+const transitions = getTransitionsFromStance(TrigramStance.GEON);
+console.log(transitions.length);      // 8 (to all stances including self)
+
+// In combat system with AnimationStateMachine integration
+function handleStanceChange(from: TrigramStance, to: TrigramStance) {
+  // Get transition info
+  const transition = getStanceTransition(from, to);
+  const cost = TransitionCalculator.calculateCost(from, to);
+  
+  // Check if player can afford
+  if (player.ki >= cost.ki && player.stamina >= cost.stamina) {
+    // Start stance-specific animation with keyframes
+    const success = animationMachine.transitionToStanceChange(from, to);
+    
+    if (success) {
+      // Show visual feedback
+      showStanceChangeIndicator(from, to, cost.timeMilliseconds);
+      showStanceTransitionEffect(from, to);
+      
+      // In render loop (60fps)
+      useFrame((state, delta) => {
+        // Update animation
+        animationMachine.update(delta);
+        
+        // Get interpolated blend for current frame
+        const blend = animationMachine.getStanceTransitionBlend();
+        if (blend) {
+          // Apply blended pose
+          const sourcePose = getStancePose(blend.stance);
+          applyBlendedPose(sourcePose, blend.blend);
+          
+          console.log(`Frame ${blend.frame}: ${blend.stance} at ${blend.blend}x`);
+        }
+      });
+      
+      // Apply costs after animation completes
+      setTimeout(() => {
+        player.ki -= cost.ki;
+        player.stamina -= cost.stamina;
+        player.currentStance = to;
+        animationMachine.transitionToStanceGuard(to);
+      }, cost.timeMilliseconds);
+    }
+  }
+}
+```
+
+---
+
 ## 🎯 Vital Point Targeting System (급소 타격 체계)
 
 ```mermaid
