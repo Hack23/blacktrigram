@@ -108,9 +108,9 @@ export function usePlayerMovement(
     legInjuryFactor: number;
   } | null>(null);
 
-  // Initialize physics engine (always enabled)
-  // Initialize physics engine once on mount
+  // Initialize physics engine once on mount (always enabled)
   // Note: stance and legInjuryFactor are updated dynamically in updatePosition callback
+  // Note: initialPosition only used for initial state; position updates happen in updatePosition
   useEffect(() => {
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
@@ -124,7 +124,7 @@ export function usePlayerMovement(
         legInjuryFactor: legInjuryFactor ?? 0,
       };
     }
-  }, [initialPosition.x, initialPosition.y]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -252,7 +252,7 @@ export function usePlayerMovement(
       // Update physics state
       const state = physicsStateRef.current;
       state.currentStance = currentStance;
-      state.legInjuryFactor = legInjuryFactor ?? 0;
+      state.legInjuryFactor = legInjuryFactor;
       
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
@@ -282,11 +282,15 @@ export function usePlayerMovement(
         onPositionChange?.(newPosition);
       }
       
-      // Update velocity and speed if changed
-      if (velocity?.x !== newVelocity.x || velocity?.y !== newVelocity.y) {
+      // Update velocity and speed if changed (with epsilon tolerance for floating-point stability)
+      const EPSILON = 0.001;
+      const velocityChanged = !velocity || 
+        Math.abs(velocity.x - newVelocity.x) > EPSILON || 
+        Math.abs(velocity.y - newVelocity.y) > EPSILON;
+      if (velocityChanged) {
         setVelocity(newVelocity);
       }
-      if (speed !== newSpeed) {
+      if (speed !== undefined && Math.abs(speed - newSpeed) > EPSILON) {
         setSpeed(newSpeed);
       }
     }

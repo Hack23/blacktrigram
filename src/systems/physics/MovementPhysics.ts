@@ -239,22 +239,52 @@ export class MovementPhysics {
 
     // Apply acceleration or deceleration
     if (input.isMoving) {
-      // Accelerate toward target velocity
-      // Use acceleration to calculate velocity delta
+      // Accelerate toward target velocity with realistic direction changes
       const currentSpeed = state.velocity.length();
       const targetSpeed = this.tempTargetVelocity.length();
       
       if (currentSpeed < targetSpeed) {
-        // Accelerate
-        this.tempDirection.copy(this.tempTargetVelocity).normalize();
-        const velocityDelta = this.BASE_ACCELERATION * deltaTime;
-        const newSpeed = Math.min(currentSpeed + velocityDelta, targetSpeed);
-        state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
+        // Check if direction change is needed
+        if (currentSpeed > 0.001 && targetSpeed > 0.001) {
+          // Current movement direction
+          this.tempDirection.copy(state.velocity).normalize();
+          // Desired movement direction
+          const targetDirection = this.tempTargetVelocity.clone().normalize();
+          const directionDot = this.tempDirection.dot(targetDirection);
+
+          if (directionDot < 0) {
+            // Moving in opposite direction: decelerate first before reversing
+            const velocityDelta = this.BASE_DECELERATION * deltaTime;
+            const newSpeed = Math.max(currentSpeed - velocityDelta, 0);
+            
+            if (newSpeed > 0.001) {
+              state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
+            } else {
+              // Fully stopped; can now start accelerating in new direction
+              state.velocity.set(0, 0, 0);
+            }
+            state.acceleration = -this.BASE_DECELERATION;
+          } else {
+            // Same or similar direction: accelerate
+            this.tempDirection.copy(this.tempTargetVelocity).normalize();
+            const velocityDelta = this.BASE_ACCELERATION * deltaTime;
+            const newSpeed = Math.min(currentSpeed + velocityDelta, targetSpeed);
+            state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
+            state.acceleration = this.BASE_ACCELERATION;
+          }
+        } else {
+          // Very low speed: safe to accelerate directly toward target
+          this.tempDirection.copy(this.tempTargetVelocity).normalize();
+          const velocityDelta = this.BASE_ACCELERATION * deltaTime;
+          const newSpeed = Math.min(currentSpeed + velocityDelta, targetSpeed);
+          state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
+          state.acceleration = this.BASE_ACCELERATION;
+        }
       } else {
-        // Already at or above target speed
+        // Already at or above target speed: snap to target velocity
         state.velocity.copy(this.tempTargetVelocity);
+        state.acceleration = 0;
       }
-      state.acceleration = this.BASE_ACCELERATION;
     } else {
       // Decelerate to stop
       const currentSpeed = state.velocity.length();
