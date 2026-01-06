@@ -574,6 +574,28 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Balance system for recovery mechanics
   const balanceSystem = useMemo(() => new BalanceSystem(), []);
 
+  // Calculate leg injury factor for physics-based movement
+  // Averages left and right leg health to determine speed penalty
+  const calculateLegInjuryFactor = useCallback((player: PlayerState): number => {
+    if (!player.bodyPartHealth) return 0;
+    
+    const leftLeg = player.bodyPartHealth.legLeft ?? player.maxHealth;
+    const rightLeg = player.bodyPartHealth.legRight ?? player.maxHealth;
+    const maxHealth = player.maxHealth;
+    
+    const averageLegHealth = (leftLeg + rightLeg) / (2 * maxHealth);
+    return Math.max(0, Math.min(1, 1.0 - averageLegHealth)); // 0 = healthy, 1 = critical
+  }, []);
+
+  // Get player1 data for movement physics
+  const player1Data = useMemo(() => {
+    const p1 = players.length > 0 ? players[0] : createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+    return {
+      currentStance: p1.currentStance,
+      legInjuryFactor: calculateLegInjuryFactor(p1),
+    };
+  }, [players, calculateLegInjuryFactor]);
+
   // Track current attack animation for each player
   // Used to determine which skeletal animation to play during attacks
   // 각 플레이어의 현재 공격 애니메이션 추적
@@ -584,7 +606,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
-  // Player movement
+  // Player movement with physics-based acceleration and stance modifiers
   const { isMoving: player1IsMoving } = usePlayerMovement({
     enabled:
       !isPaused &&
@@ -599,6 +621,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     },
     initialPosition: player1Position,
     moveSpeed: 300,
+    // Physics parameters for realistic movement (always enabled)
+    currentStance: player1Data.currentStance,
+    legInjuryFactor: player1Data.legInjuryFactor,
+    isRunning: false, // Can be enhanced with Shift key detection
   });
 
   // Use ref to store attack handler to avoid circular dependencies

@@ -17,8 +17,7 @@ export interface InputSystemConfig {
   readonly onPositionChange?: (position: Position) => void;
   readonly initialPosition?: Position;
   readonly moveSpeed?: number;
-  // Physics-based movement options
-  readonly usePhysics?: boolean;
+  // Physics-based movement parameters (always enabled)
   readonly currentStance?: TrigramStance;
   readonly legInjuryFactor?: number;
   readonly isRunning?: boolean;
@@ -81,7 +80,6 @@ export function usePlayerMovement(
     onPositionChange,
     initialPosition = { x: 0, y: 0 },
     moveSpeed = 300,
-    usePhysics = false,
     currentStance = TrigramStance.GEON,
     legInjuryFactor = 0,
     isRunning: isRunningProp = false,
@@ -97,7 +95,7 @@ export function usePlayerMovement(
     right: false,
   });
 
-  // Physics-based movement state (only when usePhysics is true)
+  // Physics-based movement state (always initialized for realistic combat)
   const physicsEngineRef = useRef<MovementPhysics | null>(null);
   const physicsStateRef = useRef<{
     position: THREE.Vector3;
@@ -108,9 +106,9 @@ export function usePlayerMovement(
     legInjuryFactor: number;
   } | null>(null);
 
-  // Initialize physics engine if physics mode is enabled
+  // Initialize physics engine (always enabled)
   useEffect(() => {
-    if (usePhysics && !physicsEngineRef.current) {
+    if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
       // Convert 2D position to 3D (y becomes z for 3D)
       physicsStateRef.current = {
@@ -122,7 +120,7 @@ export function usePlayerMovement(
         legInjuryFactor: legInjuryFactor ?? 0,
       };
     }
-  }, [usePhysics, initialPosition.x, initialPosition.y, currentStance, legInjuryFactor]);
+  }, [initialPosition.x, initialPosition.y, currentStance, legInjuryFactor]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -233,8 +231,8 @@ export function usePlayerMovement(
       return;
     }
 
-    // Physics-based movement
-    if (usePhysics && physicsEngineRef.current && physicsStateRef.current) {
+    // Physics-based movement (always enabled for realistic combat)
+    if (physicsEngineRef.current && physicsStateRef.current) {
       // Convert key state to physics input
       const forward = keyState.up ? 1 : keyState.down ? -1 : 0;
       const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
@@ -273,40 +271,6 @@ export function usePlayerMovement(
         setPlayerPosition(newPosition);
         onPositionChange?.(newPosition);
       }
-    } 
-    // Original non-physics movement
-    else {
-      const speed = moveSpeed * (deltaTime / 1000);
-      let newX = playerPosition.x;
-      let newY = playerPosition.y;
-
-      // Apply movement with diagonal adjustment
-      const diagonalFactor =
-        (keyState.left || keyState.right) && (keyState.up || keyState.down)
-          ? 0.707
-          : 1;
-      const adjustedSpeed = speed * diagonalFactor;
-
-      if (keyState.left) newX -= adjustedSpeed;
-      if (keyState.right) newX += adjustedSpeed;
-      if (keyState.up) newY -= adjustedSpeed;
-      if (keyState.down) newY += adjustedSpeed;
-
-      if (bounds) {
-        newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX));
-        newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY));
-      }
-
-      const newPosition = { x: newX, y: newY };
-
-      // Only update if position actually changed
-      if (
-        newPosition.x !== playerPosition.x ||
-        newPosition.y !== playerPosition.y
-      ) {
-        setPlayerPosition(newPosition);
-        onPositionChange?.(newPosition);
-      }
     }
 
     // Continue animation if still moving
@@ -325,7 +289,6 @@ export function usePlayerMovement(
     onPositionChange,
     moveSpeed,
     isMoving,
-    usePhysics,
     currentStance,
     legInjuryFactor,
     isRunningProp,
