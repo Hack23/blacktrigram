@@ -89,6 +89,15 @@ export interface IAudioManager {
   playTrigramStanceSound(stance: string): Promise<void>;
   playVitalPointHitSound(severity: string): Promise<void>;
   playDojiangAmbience(): Promise<void>;
+  
+  // Defensive animation sound methods
+  playDefensiveSound(
+    defensiveType: 'block_success' | 'parry_deflect' | 'guard_break' | 'guard_recovery'
+  ): Promise<void>;
+  playBlockSuccessSound(): Promise<void>;
+  playParryDeflectSound(): Promise<void>;
+  playGuardBreakSound(): Promise<void>;
+  playGuardRecoverySound(): Promise<void>;
 }
 
 export interface AudioAsset {

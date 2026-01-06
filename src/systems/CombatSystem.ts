@@ -36,6 +36,7 @@ import {
   calculateSpeedModifierForDamage,
   getAdjustedAnimationDuration,
 } from "./animation/TechniqueAnimationMapper";
+import type { DefensiveAnimationType } from "./animation/types";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -873,7 +874,7 @@ export class CombatSystem implements CombatSystemInterface {
    * @param defender - Defending player state
    * @param attacker - Attacking player state (unused but kept for future enhancements)
    * @param attackPower - Power of the incoming attack
-   * @returns Defensive animation type to play
+   * @returns Defensive animation type to play (parry_deflect, block_success, or guard_break)
    * 
    * @example
    * ```typescript
@@ -882,7 +883,7 @@ export class CombatSystem implements CombatSystemInterface {
    *   attacker,
    *   technique.damage
    * );
-   * // Returns: 'parry_deflect', 'block_success', 'guard_break', or 'guard_recovery'
+   * // Returns: 'parry_deflect', 'block_success', or 'guard_break'
    * ```
    * 
    * @public
@@ -892,7 +893,7 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState,
     _attacker: PlayerState,
     attackPower: number
-  ): import("./animation/types").DefensiveAnimationType {
+  ): Exclude<DefensiveAnimationType, 'guard_recovery'> {
     // Guard Break: Check balance threshold first (highest priority condition)
     if (defender.balance < 30) {
       return "guard_break";
@@ -914,20 +915,17 @@ export class CombatSystem implements CombatSystemInterface {
     // Calculate final defensive power
     const defensePower = balanceFactor * staminaFactor * 100 * defenseMultiplier * defenseBonus;
 
-    // Normalize attack power (typical range: 10-30 base damage)
-    const normalizedAttackPower = attackPower;
-
     // Determine defensive outcome based on power ratio
     // Parry: Strong defense (1.8x attack power or more) - Perfect deflection
-    if (defensePower >= normalizedAttackPower * 1.8) {
+    if (defensePower >= attackPower * 1.8) {
       return "parry_deflect";
     }
     // Block Success: Adequate defense (1.0x to 1.8x attack power) - Absorb impact
-    else if (defensePower >= normalizedAttackPower) {
+    else if (defensePower >= attackPower) {
       return "block_success";
     }
     // Guard Break: Defense insufficient against powerful attack (<60% of attack power)
-    else if (defensePower < normalizedAttackPower * 0.6) {
+    else if (defensePower < attackPower * 0.6) {
       return "guard_break";
     }
     // Block Success: Marginal defense (60-100% of attack power) - barely hold
