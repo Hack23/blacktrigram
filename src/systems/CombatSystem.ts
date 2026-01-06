@@ -37,6 +37,8 @@ import {
   getAdjustedAnimationDuration,
 } from "./animation/TechniqueAnimationMapper";
 import type { DefensiveAnimationType } from "./animation/types";
+import { KnockbackPhysics, type KnockbackConfig } from "./physics";
+import * as THREE from 'three';
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -50,6 +52,7 @@ export class CombatSystem implements CombatSystemInterface {
   private painSystem: PainResponseSystem;
   private consciousnessSystem: ConsciousnessSystem;
   private balanceSystem: BalanceSystem;
+  private knockbackPhysics: KnockbackPhysics;
 
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
@@ -66,6 +69,7 @@ export class CombatSystem implements CombatSystemInterface {
     this.painSystem = new PainResponseSystem();
     this.consciousnessSystem = new ConsciousnessSystem();
     this.balanceSystem = new BalanceSystem();
+    this.knockbackPhysics = new KnockbackPhysics();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
   }
@@ -106,6 +110,71 @@ export class CombatSystem implements CombatSystemInterface {
    */
   public getConsciousnessSystem(): ConsciousnessSystem {
     return this.consciousnessSystem;
+  }
+
+  /**
+   * Calculate knockback physics for combat hit.
+   * 
+   * **Korean**: 밀침 계산 (Calculate Knockback)
+   * 
+   * Determines knockback displacement, duration, and fall state based on:
+   * - Attack damage amount
+   * - Defender's balance state
+   * - Defender's stance resistance
+   * - Attack direction vector
+   * 
+   * @param attacker - Attacking player state
+   * @param defender - Defending player state
+   * @param damage - Total damage dealt
+   * @returns Knockback information or undefined if no knockback
+   * 
+   * @example
+   * ```typescript
+   * const knockback = this.calculateKnockback(attacker, defender, 80);
+   * // Returns: { displacement: {x:2.5,y:0,z:0}, duration:0.8, recoveryWindow:0.7, shouldFall:false }
+   * ```
+   * 
+   * @private
+   * @korean 밀침계산
+   */
+  private calculateKnockback(
+    attacker: PlayerState,
+    defender: PlayerState,
+    damage: number
+  ): CombatResult["knockback"] {
+    // Calculate attack direction vector (attacker → defender)
+    const attackDirection = new THREE.Vector3(
+      defender.position.x - attacker.position.x,
+      0, // Keep knockback on horizontal plane
+      defender.position.y - attacker.position.y
+    ).normalize();
+
+    // Create knockback configuration
+    const config: KnockbackConfig = {
+      force: damage * 10, // Convert damage to force (arbitrary scaling)
+      direction: attackDirection,
+      duration: 0, // Will be calculated by physics engine
+      balanceState: {
+        current: defender.balance,
+        max: 100, // Assuming max balance is always 100
+      },
+      currentStance: defender.currentStance,
+    };
+
+    // Calculate knockback result
+    const result = this.knockbackPhysics.calculateKnockback(config, damage);
+
+    // Convert Three.js Vector3 to plain object for serialization
+    return {
+      displacement: {
+        x: result.displacement.x,
+        y: result.displacement.y,
+        z: result.displacement.z,
+      },
+      duration: result.duration,
+      recoveryWindow: result.recoveryWindow,
+      shouldFall: result.shouldFall,
+    };
   }
 
   /**
@@ -196,6 +265,13 @@ export class CombatSystem implements CombatSystemInterface {
     // Determine animation information for technique
     const animationInfo = this.getAnimationInfoForTechnique(technique);
 
+    // Calculate knockback physics (밀침 물리)
+    const knockbackInfo = this.calculateKnockback(
+      attacker,
+      defender,
+      damageResult.totalDamage
+    );
+
     return {
       hit: true,
       damage: damageResult.totalDamage,
@@ -211,6 +287,7 @@ export class CombatSystem implements CombatSystemInterface {
       isBlocked: false,
       targetedVitalPointId, // Pass through the targeted vital point ID
       animation: animationInfo, // Add animation information
+      knockback: knockbackInfo, // Add knockback information
     };
   }
 
