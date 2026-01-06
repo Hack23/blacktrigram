@@ -252,6 +252,55 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         duration: 4 / 60,
       },
     ],
+    // Recovery animations (기상 애니메이션) - Priority 9 (higher than falls)
+    [
+      "recovery_prone_standup",
+      {
+        state: "recovery_prone_standup",
+        frames: 30, // 500ms at 60fps - push up from prone, rise to standing
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.5,
+      },
+    ],
+    [
+      "recovery_supine_standup",
+      {
+        state: "recovery_supine_standup",
+        frames: 36, // 600ms at 60fps - sit up, roll forward, stand
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.6,
+      },
+    ],
+    [
+      "recovery_roll",
+      {
+        state: "recovery_roll",
+        frames: 24, // 400ms at 60fps - roll to side, spring to feet (quick recovery)
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.4,
+      },
+    ],
+    [
+      "recovery_defensive",
+      {
+        state: "recovery_defensive",
+        frames: 42, // 700ms at 60fps - slow rise with guard up (vulnerable but defended)
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.7,
+      },
+    ],
     // 180-degree turn animations (180도 회전 애니메이션)
     [
       "turn_left",
@@ -799,7 +848,19 @@ export class PlayerAnimationStateMachine {
               }
             }
           }
-          // Non-fall, non-looping animations transition to idle
+          // Recovery animations transition to idle when complete
+          else if (this.currentState.startsWith("recovery_")) {
+            this.previousState = this.currentState;
+            this.currentState = "idle";
+            this.frameIndex = 0;
+            this.timeAccumulator = 0;
+            this.justStarted = true;
+
+            if (this.events?.onAnimationStart) {
+              this.events.onAnimationStart("idle");
+            }
+          }
+          // Non-fall, non-recovery, non-looping animations transition to idle
           else if (this.currentState !== "idle" && 
                    this.currentState !== "ko" &&
                    !this.currentState.startsWith("ground_")) {
