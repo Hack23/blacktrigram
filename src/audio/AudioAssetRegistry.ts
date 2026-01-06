@@ -535,6 +535,38 @@ export class AudioAssetRegistry {
       });
     }
 
+    // Defensive Animation Sounds - Parry Deflection (받아넘기기)
+    // Using dodge sounds as placeholder for parry whoosh/deflection
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`parry_deflect_${i}`, {
+        id: `parry_deflect_${i}`,
+        type: "sound",
+        name: `Parry Deflection ${i} (막기)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/movement/dodge_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.65, // Slightly lower for deflection sound
+        pitch: 1.2, // Higher pitch for quick deflection
+      });
+    }
+
+    // Defensive Animation Sounds - Guard Recovery (방어복구)
+    // Using stance change sounds for guard recovery
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`guard_recovery_${i}`, {
+        id: `guard_recovery_${i}`,
+        type: "sound",
+        name: `Guard Recovery ${i} (방어복구)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/movement/stance_change_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.6, // Lower volume for recovery motion
+        pitch: 0.9, // Slightly lower pitch for recovery
+      });
+    }
+
     // Dodge Sounds (8 variations)
     for (let i = 1; i <= 8; i++) {
       this.registerSFX(`dodge_${i}`, {

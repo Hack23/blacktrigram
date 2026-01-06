@@ -149,12 +149,12 @@ All defensive animations maintain 60fps target:
 
 #### Terminology
 
-| Korean | Romanization | English | Animation |
-|--------|--------------|---------|-----------|
-| 막기 | Makgi | Block | Block Success |
-| 받아넘기기 | Badaneumgigi | Parry | Parry Deflection |
-| 방어붕괴 | Bangeo Bunggoe | Guard Break | Guard Break |
-| 방어복구 | Bangeo Bokgu | Guard Recovery | Guard Recovery |
+| Korean | Romanization | English | Animation | Audio |
+|--------|--------------|---------|-----------|-------|
+| 막기 | Makgi | Block | Block Success | block_success_[1-4] |
+| 받아넘기기 | Badaneumgigi | Parry | Parry Deflection | parry_deflect_[1-4] |
+| 방어붕괴 | Bangeo Bunggoe | Guard Break | Guard Break | block_break_[1-4] |
+| 방어복구 | Bangeo Bokgu | Guard Recovery | Guard Recovery | guard_recovery_[1-4] |
 
 #### Martial Arts Context
 
@@ -163,21 +163,89 @@ All defensive animations maintain 60fps target:
 - **Guard Break (방어붕괴)**: Loss of defensive posture from overwhelming force or weak balance
 - **Guard Recovery (방어복구)**: Restoration of defensive stance after disruption
 
-### 8. Future Enhancements
+### 8. Audio Integration (Phase 4 - Completed)
+
+#### Audio Asset Registration
+
+**Block Success Sounds (막기)**:
+- 4 variations: `block_success_1` through `block_success_4`
+- Volume: 0.7 (70%)
+- Format: MP3/WebM
+- Location: `/assets/audio/sfx/blocks/`
+- Description: Defensive impact sound for absorbing attacks
+
+**Parry Deflection Sounds (받아넘기기)**:
+- 4 variations: `parry_deflect_1` through `parry_deflect_4`
+- Volume: 0.65 (65% - slightly lower for deflection)
+- Pitch: 1.2 (higher pitch for quick deflection)
+- Format: MP3/WebM
+- Source: Dodge movement sounds (repurposed)
+- Description: Whoosh/deflection sound for redirecting attacks
+
+**Guard Break Sounds (방어붕괴)**:
+- 4 variations: `block_break_1` through `block_break_4`
+- Volume: 0.7 (70%)
+- Format: MP3/WebM
+- Location: `/assets/audio/sfx/blocks/`
+- Description: Breaking/cracking sound for defensive failure
+
+**Guard Recovery Sounds (방어복구)**:
+- 4 variations: `guard_recovery_1` through `guard_recovery_4`
+- Volume: 0.6 (60% - lower for recovery motion)
+- Pitch: 0.9 (slightly lower for recovery effort)
+- Format: MP3/WebM
+- Source: Stance change sounds (repurposed)
+- Description: Breathing/repositioning sound for guard restoration
+
+#### AudioManager Methods
+
+```typescript
+// Generic method with type parameter
+await audioManager.playDefensiveSound('block_success');
+await audioManager.playDefensiveSound('parry_deflect');
+await audioManager.playDefensiveSound('guard_break');
+await audioManager.playDefensiveSound('guard_recovery');
+
+// Convenience methods
+await audioManager.playBlockSuccessSound();     // 막기
+await audioManager.playParryDeflectSound();     // 받아넘기기
+await audioManager.playGuardBreakSound();       // 방어붕괴
+await audioManager.playGuardRecoverySound();    // 방어복구
+```
+
+#### Audio Features
+
+- **Random Variation Selection**: Automatically selects from 4 variations per sound type
+- **Korean Documentation**: All methods include Korean terminology in comments
+- **Pitch Modulation**: Parry (1.2x) and recovery (0.9x) have adjusted pitch
+- **Volume Balancing**: Different volumes for impact vs motion sounds
+- **Format Support**: Dual format (MP3/WebM) for cross-browser compatibility
+
+#### Testing
+
+- **21 comprehensive audio tests** (all passing)
+  - Asset registration validation (16 sounds registered)
+  - AudioManager method availability
+  - Sound playback with variation
+  - Korean terminology verification
+  - Audio configuration validation
+  - Integration mapping tests
+
+### 9. Future Enhancements
 
 Potential improvements for future iterations:
 
-1. **Audio Integration**
-   - Block success: Defensive impact sound
-   - Parry: Deflection whoosh
-   - Guard break: Breaking/cracking sound
-   - Guard recovery: Breathing/repositioning sound
-
-2. **Visual Effects**
+1. **Visual Effects** (Still to be implemented)
    - Block: Impact spark at guard point
    - Parry: Deflection trail effect
    - Guard break: Stance collapse with particle effects
    - Guard recovery: Aura restoration effect
+
+2. **Dedicated Audio Assets** (Enhancement opportunity)
+   - Custom parry sound recordings (currently using dodge sounds)
+   - Custom guard recovery sounds (currently using stance change sounds)
+   - Multiple audio layers for impact feedback
+   - Environmental audio variations (indoor vs outdoor dojang)
 
 3. **AI Integration**
    - AI opponents recognize guard break vulnerability
@@ -200,31 +268,46 @@ Potential improvements for future iterations:
 
 ✅ **Block Success Maintains Defensive Stance**
 - Animation keeps guard up, absorbs impact
+- Audio feedback: block_success_[1-4] sounds
 
 ✅ **Parry Creates Counter-Attack Window**
 - 200ms window configured in AnimationConfig
 - Higher priority than block
+- Audio feedback: parry_deflect_[1-4] whoosh sounds
 
 ✅ **Guard Break Creates Vulnerability Window**
 - 500ms vulnerability configured
 - Triggered by low balance (<30) or insufficient defense
+- Audio feedback: block_break_[1-4] impact sounds
 
 ✅ **Guard Recovery Can Be Interrupted**
 - Interruptible flag set to true
 - Low priority (2) allows attacks to interrupt
+- Audio feedback: guard_recovery_[1-4] restoration sounds
 
 ✅ **Korean Terminology Documented**
 - All 4 animations have Korean names
 - Proper romanization provided
 - Cultural context documented
+- Audio assets include Korean names
 
 ✅ **60fps Performance Maintained**
 - All animations use 60fps
 - Frame durations verified in tests
 - No performance degradation
+- Audio playback optimized
+
+✅ **Audio Integration Complete** (Phase 4)
+- 16 defensive sound variations registered
+- 4 convenience methods in AudioManager
+- Random variation selection
+- Korean terminology in all documentation
+- 21 comprehensive audio tests passing
 
 ## Conclusion
 
 The defensive animation system successfully implements realistic guard break and defensive stance mechanics following Korean martial arts principles. The system integrates seamlessly with the existing combat system, maintaining performance standards while adding depth to defensive gameplay.
+
+**Phase 4 (Audio Integration)** has been completed with full sound effect support for all 4 defensive animation types, including Korean terminology, random variation selection, and comprehensive testing.
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
