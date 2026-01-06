@@ -290,7 +290,8 @@ export function usePlayerMovement(
       if (velocityChanged) {
         setVelocity(newVelocity);
       }
-      if (speed !== undefined && Math.abs(speed - newSpeed) > EPSILON) {
+      // Initialize speed when undefined, then update only on significant changes
+      if (speed === undefined || Math.abs(speed - newSpeed) > EPSILON) {
         setSpeed(newSpeed);
       }
     }

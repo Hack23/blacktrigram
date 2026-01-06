@@ -58,9 +58,24 @@ export interface MovementInput {
  * @korean 이동상태
  */
 export interface MovementState {
-  /** Current position in 3D space (meters) */
+  /**
+   * Current position in 3D space (meters).
+   * 
+   * NOTE: This is a readonly reference to a mutable THREE.Vector3.
+   * The physics engine intentionally mutates the vector in-place
+   * (e.g. via position.add(...)) for performance. The readonly
+   * modifier prevents reassignment of the Vector3 instance, not
+   * mutation of its components.
+   */
   readonly position: THREE.Vector3;
-  /** Current velocity vector (m/s) */
+  /**
+   * Current velocity vector (m/s).
+   * 
+   * NOTE: This is a readonly reference to a mutable THREE.Vector3.
+   * The physics engine updates this vector in-place each frame.
+   * Callers must not reassign the velocity reference, but may pass
+   * it to APIs that read or modify its components.
+   */
   readonly velocity: THREE.Vector3;
   /** Current acceleration magnitude (m/s²) */
   acceleration: number;
@@ -197,6 +212,7 @@ export class MovementPhysics {
   private readonly tempTargetVelocity = new THREE.Vector3();
   private readonly tempMovement = new THREE.Vector3();
   private readonly tempDirection = new THREE.Vector3();
+  private readonly tempTargetDirection = new THREE.Vector3();
 
   /**
    * Update player movement based on input and physics.
@@ -248,9 +264,9 @@ export class MovementPhysics {
         if (currentSpeed > 0.001 && targetSpeed > 0.001) {
           // Current movement direction
           this.tempDirection.copy(state.velocity).normalize();
-          // Desired movement direction
-          const targetDirection = this.tempTargetVelocity.clone().normalize();
-          const directionDot = this.tempDirection.dot(targetDirection);
+          // Desired movement direction (reuse temp vector to avoid allocation)
+          this.tempTargetDirection.copy(this.tempTargetVelocity).normalize();
+          const directionDot = this.tempDirection.dot(this.tempTargetDirection);
 
           if (directionDot < 0) {
             // Moving in opposite direction: decelerate first before reversing
@@ -264,8 +280,16 @@ export class MovementPhysics {
               state.velocity.set(0, 0, 0);
             }
             state.acceleration = -this.BASE_DECELERATION;
+          } else if (directionDot < 0.7) {
+            // Perpendicular direction change (e.g., forward to strafe): moderate deceleration
+            const blendedAccel = this.BASE_ACCELERATION * 0.6; // Reduced acceleration for sharp turns
+            const velocityDelta = blendedAccel * deltaTime;
+            const newSpeed = Math.min(currentSpeed + velocityDelta, targetSpeed);
+            this.tempDirection.copy(this.tempTargetVelocity).normalize();
+            state.velocity.copy(this.tempDirection.multiplyScalar(newSpeed));
+            state.acceleration = blendedAccel;
           } else {
-            // Same or similar direction: accelerate
+            // Same or similar direction: full acceleration
             this.tempDirection.copy(this.tempTargetVelocity).normalize();
             const velocityDelta = this.BASE_ACCELERATION * deltaTime;
             const newSpeed = Math.min(currentSpeed + velocityDelta, targetSpeed);
