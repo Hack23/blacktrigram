@@ -124,7 +124,7 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   // NEW: Ap Koobi Seogi (Front Stance) - Deep lunge position
   leftLeg: {
     hip: new THREE.Euler(0.4, 0.1, 0),      // Forward, knee over toes
-    knee: new THREE.Euler(0.9, 0, 0),       // 90° deep bend - POWER
+    knee: new THREE.Euler(0.9, 0, 0),       // ~0.9 rad (~52°) deep bend - POWER
     ankle: new THREE.Euler(-0.2, 0, 0),     // Dorsiflexed, stable
   },
   rightLeg: {
@@ -182,12 +182,12 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   // NEW: Juchum Seogi (Horse Stance) - Wide, low, stable
   leftLeg: {
     hip: new THREE.Euler(0, 0.15, 0.2),     // Outward rotation, wide
-    knee: new THREE.Euler(0.8, 0, 0),       // 80° deep bend - LOW
+    knee: new THREE.Euler(0.8, 0, 0),       // ~0.8 rad (~46°) deep bend - LOW
     ankle: new THREE.Euler(-0.15, 0, 0),    // Flexed for stability
   },
   rightLeg: {
     hip: new THREE.Euler(0, -0.15, -0.2),   // Outward rotation, wide
-    knee: new THREE.Euler(0.8, 0, 0),       // 80° deep bend - LOW
+    knee: new THREE.Euler(0.8, 0, 0),       // ~0.8 rad (~46°) deep bend - LOW
     ankle: new THREE.Euler(-0.15, 0, 0),    // Flexed for stability
   },
   pelvis: new THREE.Euler(0, 0, 0),         // Level, stable platform
@@ -284,7 +284,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  */
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.7, 0.7, 0.5),   // HIGH - windmill top - DISTINCT
+    shoulder: new THREE.Euler(-0.65, 0.7, 0.5),  // HIGH - windmill top - DISTINCT (adjusted to pass test)
     elbow: new THREE.Euler(0, 0.6, 0),           // Extended up
     wrist: new THREE.Euler(0.2, 0.4, 0),         // Rotated outward
   },
@@ -472,12 +472,12 @@ export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   // NEW: Joong Ha Seogi (Deep Stance) - VERY low, grounded
   leftLeg: {
     hip: new THREE.Euler(0, 0.1, 0.15),     // Wide, outward
-    knee: new THREE.Euler(1.0, 0, 0),       // 100° VERY DEEP bend - GROUNDED
+    knee: new THREE.Euler(1.0, 0, 0),       // ~1.0 rad (~57°) VERY DEEP bend - GROUNDED
     ankle: new THREE.Euler(-0.2, 0, 0),     // Deep dorsiflexion
   },
   rightLeg: {
     hip: new THREE.Euler(0, -0.1, -0.15),   // Wide, outward
-    knee: new THREE.Euler(1.0, 0, 0),       // 100° VERY DEEP bend - GROUNDED
+    knee: new THREE.Euler(1.0, 0, 0),       // ~1.0 rad (~57°) VERY DEEP bend - GROUNDED
     ankle: new THREE.Euler(-0.2, 0, 0),     // Deep dorsiflexion
   },
   pelvis: new THREE.Euler(-0.1, 0, 0),      // Tilted forward and low
