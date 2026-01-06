@@ -145,11 +145,23 @@ const GROUND_STATES: readonly AnimationState[] = [
 ] as const;
 
 /**
+ * Recovery animation states (기상 애니메이션)
+ * @korean 회복애니메이션들
+ */
+const RECOVERY_STATES: readonly AnimationState[] = [
+  "recovery_prone_standup",
+  "recovery_supine_standup",
+  "recovery_roll",
+  "recovery_defensive",
+] as const;
+
+/**
  * Generate transition rules for fall animations
  * 
  * Fall animations have highest priority and can interrupt any state.
  * Falls automatically transition to ground states upon completion.
- * Ground states can only transition to recovery animations (future).
+ * Ground states can transition to recovery animations.
+ * Recovery animations transition to idle upon completion.
  * 
  * @korean 낙법전환규칙생성
  */
@@ -198,15 +210,24 @@ function generateFallTransitions(): TransitionRule[] {
     }
   }
   
-  // Ground states are semi-terminal (can only transition to recovery - future feature)
-  // For now, they can be interrupted by hit or ko
+  // Ground states can transition to recovery animations
   for (const groundState of GROUND_STATES) {
+    // Allow transitions to all recovery types from any ground state
+    for (const recoveryState of RECOVERY_STATES) {
+      transitions.push({
+        from: groundState,
+        to: recoveryState,
+        allowed: true,
+      });
+    }
+    
+    // Ground states can still be interrupted by hit or ko
     transitions.push(
       { from: groundState, to: "hit", allowed: true },
       { from: groundState, to: "ko", allowed: true }
     );
     
-    // Falls can interrupt ground states
+    // Falls can interrupt ground states (getting hit while down)
     for (const fallState of FALL_STATES) {
       transitions.push({
         from: groundState,
@@ -214,6 +235,32 @@ function generateFallTransitions(): TransitionRule[] {
         allowed: true,
       });
     }
+  }
+  
+  // Recovery animations can be interrupted by high-priority states
+  // (falls, hit, ko) but transition to idle when complete
+  for (const recoveryState of RECOVERY_STATES) {
+    // Falls can interrupt recovery (getting hit during recovery)
+    for (const fallState of FALL_STATES) {
+      transitions.push({
+        from: recoveryState,
+        to: fallState,
+        allowed: true,
+      });
+    }
+    
+    // Hit and KO can interrupt recovery
+    transitions.push(
+      { from: recoveryState, to: "hit", allowed: true },
+      { from: recoveryState, to: "ko", allowed: true }
+    );
+    
+    // Recovery animations automatically transition to idle (handled in state machine)
+    transitions.push({
+      from: recoveryState,
+      to: "idle",
+      allowed: true,
+    });
   }
   
   return transitions;

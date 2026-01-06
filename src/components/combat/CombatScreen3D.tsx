@@ -22,6 +22,11 @@ import { useRoundTransition } from "../../hooks/useRoundTransition";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
+import { BalanceSystem } from "../../systems/combat/BalanceSystem";
+import {
+  determineRecoveryType,
+  getRecoveryAnimationState,
+} from "../../systems/animation/RecoveryAnimations";
 import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
@@ -30,6 +35,7 @@ import {
   AnimationEvents,
   getAnimationForTechnique,
 } from "../../systems/animation";
+import type { AnimationState } from "../../systems/animation/types";
 import { HitEffectType } from "../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../systems/trigram/types";
 import {
@@ -564,6 +570,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
+
+  // Balance system for recovery mechanics
+  const balanceSystem = useMemo(() => new BalanceSystem(), []);
 
   // Track current attack animation for each player
   // Used to determine which skeletal animation to play during attacks
@@ -1214,6 +1223,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
   }, [handleDefend, playerPositions, feedbackActions, player1Animation]);
 
+  /**
+   * Helper function to execute fallback recovery animation
+   * when a specific recovery type cannot be performed.
+   * 
+   * Determines the appropriate recovery type based on ground state
+   * and transitions to that animation.
+   * 
+   * @korean 대체회복실행
+   */
+  const executeFallbackRecovery = useCallback(() => {
+    const groundState = balanceSystem.getGroundState(player1Animation.currentState);
+    if (groundState) {
+      const recoveryType = determineRecoveryType(groundState);
+      const animationState = getRecoveryAnimationState(recoveryType);
+      player1Animation.transitionTo(animationState as AnimationState);
+    }
+  }, [balanceSystem, player1Animation]);
+
   // Use keyboard controls hook for enhanced input handling with visual feedback
   const { queuedInputs, showHints } = useKeyboardControls({
     onStanceChange: useCallback(
@@ -1236,10 +1263,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           case "block":
             handleDefendWithFeedback();
             break;
+          // Recovery actions (기상 액션)
+          case "recovery_quick": {
+            // Quick recovery: determine type based on ground state
+            executeFallbackRecovery();
+            break;
+          }
+          case "recovery_roll": {
+            // Roll recovery: costs stamina but fastest
+            const player1 = players[0];
+            if (balanceSystem.canRecoverWithType(player1, "roll_recovery")) {
+              const updatedPlayer = balanceSystem.applyRecoveryCost(player1, "roll_recovery");
+              onPlayerUpdate(0, { stamina: updatedPlayer.stamina });
+              player1Animation.transitionTo("recovery_roll");
+            } else {
+              // Not enough stamina, fallback to quick recovery
+              audio.playSFX("menu_error");
+              const player1Pos = playerPositions[0];
+              feedbackActions.addActionFeedback(
+                "blocked",
+                "Not enough stamina!",
+                "체력 부족!",
+                player1Pos
+              );
+              executeFallbackRecovery();
+            }
+            break;
+          }
+          case "recovery_defensive": {
+            // Defensive getup: slow but protected
+            player1Animation.transitionTo("recovery_defensive");
+            break;
+          }
           // Movement and other actions handled by existing system
         }
       },
-      [techniqueSelection, handleDefendWithFeedback]
+      [techniqueSelection, handleDefendWithFeedback, executeFallbackRecovery, balanceSystem, player1Animation, players, onPlayerUpdate, audio, feedbackActions, playerPositions]
     ),
     enabled:
       !isPaused &&
@@ -1251,6 +1310,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       !combatState.isExecutingTechnique,
     currentStance: currentStanceIndex,
     playSFX: audio.playSFX,
+    currentAnimationState: player1Animation.currentState,
   });
 
   // Mobile touch control state

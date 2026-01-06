@@ -83,6 +83,12 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   footwork_slide_left: "walk",
   footwork_slide_right: "walk",
   footwork_shuffle: "walk", // Quick adjustment
+  // Recovery animations (기상 애니메이션) - Getting up from ground states
+  // Map to idle for now, custom 3D recovery animations will be added in future
+  recovery_prone_standup: "idle",
+  recovery_supine_standup: "idle",
+  recovery_roll: "walk", // Rolling motion approximated by walk
+  recovery_defensive: "defend", // Guarded getup approximated by defend
 };
 
 /**

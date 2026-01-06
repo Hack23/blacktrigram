@@ -78,6 +78,11 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   footwork_slide_left: AnimationPriority.DEFEND,
   footwork_slide_right: AnimationPriority.DEFEND,
   footwork_shuffle: AnimationPriority.STANCE_CHANGE,
+  // Recovery animations (기상 애니메이션) - highest priority (can interrupt anything)
+  recovery_prone_standup: AnimationPriority.RECOVERY,
+  recovery_supine_standup: AnimationPriority.RECOVERY,
+  recovery_roll: AnimationPriority.RECOVERY,
+  recovery_defensive: AnimationPriority.RECOVERY,
 };
 
 /**

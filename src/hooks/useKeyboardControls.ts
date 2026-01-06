@@ -73,6 +73,8 @@ export interface UseKeyboardControlsProps {
   readonly onToggleHints?: () => void;
   /** Play sound effect function */
   readonly playSFX?: (soundId: string) => void;
+  /** Current animation state for grounded detection */
+  readonly currentAnimationState?: string;
 }
 
 /**
@@ -129,6 +131,7 @@ export function useKeyboardControls({
   currentStance = 0,
   onToggleHints,
   playSFX,
+  currentAnimationState,
 }: UseKeyboardControlsProps): UseKeyboardControlsReturn {
   const [queuedInputs, setQueuedInputs] = useState<readonly QueuedInput[]>([]);
   const [showHints, setShowHints] = useState(false);
@@ -246,6 +249,42 @@ export function useKeyboardControls({
       if (e.key === "Escape" && showHints) {
         e.preventDefault();
         setShowHints(false);
+        return;
+      }
+
+      // Recovery input detection (기상 입력 감지)
+      // When player is in ground state, any button triggers recovery options
+      const isGrounded = currentAnimationState?.startsWith("ground_");
+      
+      if (isGrounded) {
+        // Space: Quick/default recovery
+        if (e.key === " ") {
+          e.preventDefault();
+          onAction("recovery_quick");
+          addToQueue("기상 (Quick Recovery)", "Space");
+          if (playSFX) playSFX("stance_change");
+          return;
+        }
+        
+        // R or Enter: Roll recovery (회전기상) - fast but costs stamina
+        if (e.key.toLowerCase() === "r" || e.key === "Enter") {
+          e.preventDefault();
+          onAction("recovery_roll");
+          addToQueue("회전기상 (Roll Recovery)", e.key);
+          if (playSFX) playSFX("stance_change");
+          return;
+        }
+        
+        // Shift: Defensive getup (방어기상) - slow but protected
+        if (e.shiftKey) {
+          e.preventDefault();
+          onAction("recovery_defensive");
+          addToQueue("방어기상 (Defensive Getup)", "Shift");
+          if (playSFX) playSFX("stance_change");
+          return;
+        }
+        
+        // If grounded, don't process other inputs (can't attack/move while down)
         return;
       }
 
@@ -405,6 +444,7 @@ export function useKeyboardControls({
     getDiagonalStepAction,
     showHints,
     playSFX,
+    currentAnimationState,
   ]);
 
   return {

@@ -38,6 +38,10 @@
  * - footwork_pivot_{left|right}: Pivot rotation on planted foot (15 frames, 250ms, 90°)
  * - footwork_slide_{forward|back|left|right}: Both feet slide together (12 frames, 200ms, 30cm)
  * - footwork_shuffle: Quick micro-adjustment (6 frames, 100ms, 15cm)
+ * - recovery_prone_standup: Stand up from prone position (30 frames, 500ms)
+ * - recovery_supine_standup: Stand up from supine position (36 frames, 600ms)
+ * - recovery_roll: Roll recovery to standing (24 frames, 400ms, costs 20 stamina)
+ * - recovery_defensive: Defensive getup with guard (42 frames, 700ms, 50% damage reduction)
  * 
  * @public
  * @korean 애니메이션상태
@@ -90,17 +94,21 @@ export type AnimationState =
   | "ground_side_left"
   | "ground_side_right"
   | "turn_left"
-  | "turn_right";
+  | "turn_right"
+  | "recovery_prone_standup"
+  | "recovery_supine_standup"
+  | "recovery_roll"
+  | "recovery_defensive";
 
 /**
  * Animation priority levels for interrupt system
  * 
  * Higher priority animations can interrupt lower priority ones.
- * Priority order: ko > hit > attack > defend > step > stance_change > movement > idle
+ * Priority order: recovery > fall > ko > hit > attack > defend > step > stance_change > movement > idle
  * 
  * Steps are non-interruptible (same priority as attacks) to ensure commitment
  * to tactical repositioning in Korean martial arts.
- * Priority order: fall > ko > hit > attack > defend > stance_change > movement > idle
+ * Recovery animations have highest priority to allow getting up from ground.
  * 
  * @public
  * @korean 애니메이션우선순위
@@ -115,6 +123,7 @@ export enum AnimationPriority {
   HIT = 6,
   KO = 7,
   FALL = 8,
+  RECOVERY = 9,
 }
 
 // Step animations use ATTACK priority (5) - both are non-interruptible
@@ -692,4 +701,80 @@ export const FOOTWORK_KOREAN_TERMS: Record<FootworkPattern, { korean: string; ro
     romanized: 'Seokkeumbo',
     english: 'Shuffle Step',
   },
+};
+
+/**
+ * Recovery animation types for getting up from ground states
+ * 
+ * Korean terminology:
+ * - prone_standup: 엎드린 기상 (Eopdeurin Gisang) - Stand up from prone
+ * - supine_standup: 누운 기상 (Nuun Gisang) - Stand up from supine
+ * - roll: 회전기상 (Hoejeon Gisang) - Roll recovery
+ * - defensive: 방어기상 (Bangeo Gisang) - Defensive getup
+ * 
+ * @public
+ * @korean 회복애니메이션유형
+ */
+export type RecoveryAnimationType = 
+  | 'prone_standup'
+  | 'supine_standup'
+  | 'roll_recovery'
+  | 'defensive_getup';
+
+/**
+ * Korean terminology for recovery animations
+ * 
+ * Maps each recovery type to its Korean martial arts terminology
+ * with romanization and English translation.
+ * 
+ * @public
+ * @korean 회복한글용어
+ */
+export const RECOVERY_KOREAN_TERMS: Record<RecoveryAnimationType, { korean: string; romanized: string; english: string }> = {
+  prone_standup: {
+    korean: '엎드린 기상',
+    romanized: 'Eopdeurin Gisang',
+    english: 'Prone Stand-Up',
+  },
+  supine_standup: {
+    korean: '누운 기상',
+    romanized: 'Nuun Gisang',
+    english: 'Supine Stand-Up',
+  },
+  roll_recovery: {
+    korean: '회전기상',
+    romanized: 'Hoejeon Gisang',
+    english: 'Roll Recovery',
+  },
+  defensive_getup: {
+    korean: '방어기상',
+    romanized: 'Bangeo Gisang',
+    english: 'Defensive Getup',
+  },
+};
+
+/**
+ * Maps ground states to their default recovery animation
+ * 
+ * @public
+ * @korean 지면회복맵
+ */
+export const GROUND_STATE_TO_RECOVERY: Record<GroundState, RecoveryAnimationType> = {
+  prone: 'prone_standup',
+  supine: 'supine_standup',
+  side_left: 'roll_recovery',  // Side positions use roll by default
+  side_right: 'roll_recovery',
+};
+
+/**
+ * Maps recovery types to their animation states
+ * 
+ * @public
+ * @korean 회복애니메이션맵
+ */
+export const RECOVERY_TYPE_TO_ANIMATION: Record<RecoveryAnimationType, AnimationState> = {
+  prone_standup: 'recovery_prone_standup',
+  supine_standup: 'recovery_supine_standup',
+  roll_recovery: 'recovery_roll',
+  defensive_getup: 'recovery_defensive',
 };
