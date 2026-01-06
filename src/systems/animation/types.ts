@@ -591,6 +591,8 @@ export interface BodyFacing {
    */
   readonly turnStartTime?: number;
 }
+
+/**
  * Footwork pattern types for Korean martial arts (보법)
  * 
  * Four specialized footwork patterns based on traditional Korean martial arts:
