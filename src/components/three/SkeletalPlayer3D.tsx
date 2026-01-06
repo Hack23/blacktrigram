@@ -786,8 +786,8 @@ export const SkeletalPlayer3D: React.FC<
     } else if (currentAnimation?.startsWith("stance_guard_")) {
       // Stance guard animation - 자세 방어 애니메이션
       // Note: PlayerAnimation type doesn't include "stance_guard_*" variants, but this check
-      // exists for compatibility with internal animation state management. In practice,
-      // the guard overlay is applied via the explicit stance prop in useFrame.
+      // exists for compatibility with internal animation state management. The guard overlay
+      // is applied via the explicit stance prop in useFrame.
       // Play idle animation as base, overlay guard pose in useFrame
       const idleAnim = getAnimation("idle_stance");
       if (idleAnim) {

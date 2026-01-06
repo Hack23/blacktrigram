@@ -217,7 +217,7 @@ All footwork patterns now have complete skeletal animations and are ready for ke
 - [Issue #1073](https://github.com/Hack23/blacktrigram/issues/1073) - Step Movement Animations
 - [Issue #1076](https://github.com/Hack23/blacktrigram/issues/1076) - Footwork Animation (this implementation)
 - [COMBAT_ARCHITECTURE.md](../../COMBAT_ARCHITECTURE.md) - Overall combat system
-- [StepAnimations.ts](./StepAnimations.ts) - Tactical step implementation
+- [StepSkeletalAnimations.ts](./StepSkeletalAnimations.ts) - Tactical step implementation
 
 ---
 

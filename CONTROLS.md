@@ -230,13 +230,13 @@ Tactical steps execute committed footwork movements for positional advantage:
 - ✅ **Stamina cost**: 5 stamina per step
 - ✅ **Precise distance**: Exactly 30cm (one foot width)
 
-#### 3.3 Advanced Footwork Patterns (보법 체계 - Ctrl+WASD) ⭐ NEW
+#### 3.3 Advanced Footwork Patterns (보법 체계 - Ctrl+WASD)
 
 **Ctrl + WASD** - Specialized Korean martial arts footwork patterns
 
 Advanced footwork adds 4 distinct movement patterns for tactical combat positioning:
 
-##### Circular Steps (원형보 - Wonhyeongbo)
+##### Circular Steps (원형보 - Wonhyeongbo) ✅ IMPLEMENTED
 Lateral movement while maintaining guard facing forward.
 
 | **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
@@ -250,7 +250,7 @@ Lateral movement while maintaining guard facing forward.
 - 🥋 **Tactical advantage**: Circle around opponent while keeping guard
 - 📊 **Same distance as tactical steps**: 30cm movement
 
-##### Slide Steps (미끄럼보 - Mikkeureombo)
+##### Slide Steps (미끄럼보 - Mikkeureombo) ✅ IMPLEMENTED
 Both feet move together without weight transfer.
 
 | **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
@@ -264,7 +264,7 @@ Both feet move together without weight transfer.
 - ⚖️ **Stable base**: Both feet move together
 - 🎯 **Good for spacing**: Quick in/out without commitment
 
-##### Pivot Rotations (축족회전 - Chukjok Hoejeon)
+##### Pivot Rotations (축족회전 - Chukjok Hoejeon) ⏳ PENDING CONTROLS
 90° rotation on planted foot for angle changes.
 
 | **Input** | **Pattern** | **Korean** | **Rotation** | **Duration** |
@@ -277,9 +277,9 @@ Both feet move together without weight transfer.
 - 🎯 **Planted foot stays**: One foot is pivot point
 - ⚡ **Non-interruptible**: Committed rotation (Priority 5)
 - 🥋 **Tactical repositioning**: Change facing without retreating
-- ⚠️ **Status**: Keyboard controls pending - animations configured, awaiting control binding
+- ⚠️ **Status**: Skeletal animations complete, keyboard controls pending
 
-##### Shuffle Step (섞음보 - Seokkeumbo)
+##### Shuffle Step (섞음보 - Seokkeumbo) ⏳ PENDING CONTROLS
 Quick 15cm micro-adjustment for fine positioning.
 
 | **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
@@ -291,7 +291,7 @@ Quick 15cm micro-adjustment for fine positioning.
 - 🎯 **Micro-adjustment**: Half the distance of other steps (15cm)
 - 🔄 **Fully interruptible**: Can cancel anytime (Priority 3)
 - 🏃 **Fine-tuning**: Perfect for precise positioning
-- ⚠️ **Status**: Keyboard controls pending - animations configured, awaiting control binding
+- ⚠️ **Status**: Skeletal animations complete, keyboard controls pending
 
 ##### Footwork Pattern Comparison
 
