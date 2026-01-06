@@ -444,6 +444,7 @@ export function useKeyboardControls({
     getDiagonalStepAction,
     showHints,
     playSFX,
+    currentAnimationState,
   ]);
 
   return {
