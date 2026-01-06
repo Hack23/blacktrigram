@@ -185,7 +185,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [arenaBounds]
   );
 
-  // Player movement with input system (using pixel-based bounds like CombatScreen)
+  // Player movement with physics-based acceleration and stance modifiers
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: arenaBounds,
@@ -194,6 +194,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     },
     initialPosition,
     moveSpeed: 300,
+    // Physics parameters for realistic training movement (always enabled)
+    currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
+    legInjuryFactor: 0, // No injury in training mode
+    isRunning: false,
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)

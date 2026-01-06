@@ -2,6 +2,9 @@ import { COMBAT_CONTROLS } from "@/systems/types";
 import type { Position } from "@/types/common";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TrigramStance } from "../types/common";
+import { MovementPhysics } from "../systems/physics/MovementPhysics";
+import type { MovementInput } from "../systems/physics/MovementPhysics";
+import * as THREE from "three";
 
 export interface InputSystemConfig {
   readonly enabled?: boolean;
@@ -14,6 +17,11 @@ export interface InputSystemConfig {
   readonly onPositionChange?: (position: Position) => void;
   readonly initialPosition?: Position;
   readonly moveSpeed?: number;
+  // Physics-based movement parameters (always enabled)
+  readonly currentStance?: TrigramStance;
+  readonly legInjuryFactor?: number;
+  readonly isRunning?: boolean;
+  readonly useTacticalSteps?: boolean;
 }
 
 export interface MovementState {
@@ -30,10 +38,19 @@ export interface PlayerMovementResult {
   readonly movementState: MovementState;
   readonly isMoving: boolean;
   readonly isKeyPressed: (key: string) => boolean;
+  readonly velocity?: { x: number; y: number }; // For physics mode
+  readonly speed?: number; // Current speed in m/s for physics mode
 }
 
 /**
  * Hook for handling player movement input - supports both config and legacy APIs
+ * Now with physics-based movement as the default, always-on system for realistic acceleration/deceleration
+ * 
+ * **Korean**: 플레이어 이동 훅 (Player Movement Hook)
+ * 
+ * @param configOrPosition - Configuration object or legacy position
+ * @param legacyBounds - Legacy bounds for backward compatibility
+ * @returns Movement state and physics data
  */
 export function usePlayerMovement(
   configOrPosition: InputSystemConfig | Position,
@@ -62,7 +79,10 @@ export function usePlayerMovement(
     bounds,
     onPositionChange,
     initialPosition = { x: 0, y: 0 },
-    moveSpeed = 300,
+    currentStance = TrigramStance.GEON,
+    legInjuryFactor = 0,
+    isRunning: isRunningProp = false,
+    useTacticalSteps = false,
   } = config;
 
   const [playerPosition, setPlayerPosition] =
@@ -73,6 +93,38 @@ export function usePlayerMovement(
     left: false,
     right: false,
   });
+  // Physics state for render (velocity and speed)
+  const [velocity, setVelocity] = useState<{ x: number; y: number } | undefined>(undefined);
+  const [speed, setSpeed] = useState<number | undefined>(undefined);
+
+  // Physics-based movement state (always initialized for realistic combat)
+  const physicsEngineRef = useRef<MovementPhysics | null>(null);
+  const physicsStateRef = useRef<{
+    position: THREE.Vector3;
+    velocity: THREE.Vector3;
+    acceleration: number;
+    maxSpeed: number;
+    currentStance: TrigramStance;
+    legInjuryFactor: number;
+  } | null>(null);
+
+  // Initialize physics engine once on mount (always enabled)
+  // Note: stance and legInjuryFactor are updated dynamically in updatePosition callback
+  // Note: initialPosition only used for initial state; position updates happen in updatePosition
+  useEffect(() => {
+    if (!physicsEngineRef.current) {
+      physicsEngineRef.current = new MovementPhysics();
+      // Convert 2D position to 3D (y becomes z for 3D)
+      physicsStateRef.current = {
+        position: new THREE.Vector3(initialPosition.x / 100, 0, initialPosition.y / 100),
+        velocity: new THREE.Vector3(0, 0, 0),
+        acceleration: 0,
+        maxSpeed: 2.0,
+        currentStance,
+        legInjuryFactor: legInjuryFactor ?? 0,
+      };
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -183,36 +235,65 @@ export function usePlayerMovement(
       return;
     }
 
-    const speed = moveSpeed * (deltaTime / 1000);
-    let newX = playerPosition.x;
-    let newY = playerPosition.y;
+    // Physics-based movement (always enabled for realistic combat)
+    if (physicsEngineRef.current && physicsStateRef.current) {
+      // Convert key state to physics input
+      const forward = keyState.up ? 1 : keyState.down ? -1 : 0;
+      const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
+      
+      const physicsInput: MovementInput = {
+        forward,
+        lateral,
+        isRunning: isRunningProp,
+        isMoving: forward !== 0 || lateral !== 0,
+        useTacticalSteps,
+      };
 
-    // Apply movement with diagonal adjustment
-    const diagonalFactor =
-      (keyState.left || keyState.right) && (keyState.up || keyState.down)
-        ? 0.707
-        : 1;
-    const adjustedSpeed = speed * diagonalFactor;
+      // Update physics state
+      const state = physicsStateRef.current;
+      state.currentStance = currentStance;
+      state.legInjuryFactor = legInjuryFactor;
+      
+      // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
+      const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
+      physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
-    if (keyState.left) newX -= adjustedSpeed;
-    if (keyState.right) newX += adjustedSpeed;
-    if (keyState.up) newY -= adjustedSpeed;
-    if (keyState.down) newY += adjustedSpeed;
+      // Convert 3D position back to 2D pixel coordinates (z becomes y)
+      let newX = state.position.x * 100;
+      let newY = state.position.z * 100;
 
-    if (bounds) {
-      newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX));
-      newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY));
-    }
+      // Apply bounds
+      if (bounds) {
+        newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX));
+        newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY));
+        // Update 3D position to match clamped 2D position
+        state.position.x = newX / 100;
+        state.position.z = newY / 100;
+      }
 
-    const newPosition = { x: newX, y: newY };
+      const newPosition = { x: newX, y: newY };
 
-    // Only update if position actually changed
-    if (
-      newPosition.x !== playerPosition.x ||
-      newPosition.y !== playerPosition.y
-    ) {
-      setPlayerPosition(newPosition);
-      onPositionChange?.(newPosition);
+      // Update velocity and speed state for render
+      const newVelocity = { x: state.velocity.x, y: state.velocity.z };
+      const newSpeed = state.velocity.length();
+      
+      if (newPosition.x !== playerPosition.x || newPosition.y !== playerPosition.y) {
+        setPlayerPosition(newPosition);
+        onPositionChange?.(newPosition);
+      }
+      
+      // Update velocity and speed if changed (with epsilon tolerance for floating-point stability)
+      const EPSILON = 0.001;
+      const velocityChanged = !velocity || 
+        Math.abs(velocity.x - newVelocity.x) > EPSILON || 
+        Math.abs(velocity.y - newVelocity.y) > EPSILON;
+      if (velocityChanged) {
+        setVelocity(newVelocity);
+      }
+      // Initialize speed when undefined, then update only on significant changes
+      if (speed === undefined || Math.abs(speed - newSpeed) > EPSILON) {
+        setSpeed(newSpeed);
+      }
     }
 
     // Continue animation if still moving
@@ -229,8 +310,13 @@ export function usePlayerMovement(
     keyState,
     bounds,
     onPositionChange,
-    moveSpeed,
     isMoving,
+    currentStance,
+    legInjuryFactor,
+    isRunningProp,
+    useTacticalSteps,
+    velocity,
+    speed,
   ]);
 
   // Keep updatePositionRef in sync via useEffect (not during render)
@@ -277,6 +363,8 @@ export function usePlayerMovement(
     movementState,
     isMoving,
     isKeyPressed,
+    velocity,
+    speed,
   };
 }
 
