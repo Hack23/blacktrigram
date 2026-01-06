@@ -321,9 +321,6 @@ export function useKeyboardControls({
                 footworkAction = "footwork_circular_right";
               } else if (action === "move_up") {
                 // Ctrl+W: Slide forward (미끄럼보)
-                // Slide chosen for forward/back as it's more universally useful
-                // for quick spacing adjustments. Pivot rotations may be added
-                // with different keybindings in the future.
                 footworkAction = "footwork_slide_forward";
               } else if (action === "move_down") {
                 // Ctrl+S: Slide back (미끄럼보)
