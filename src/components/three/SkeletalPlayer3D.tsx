@@ -197,7 +197,7 @@ const applyStanceGuardOverlay = (
 
   // Blend left arm rotations with current pose (maintain animation)
   // Directly modifies rotation components in-place for performance (avoids object allocations)
-  const leftShoulder = rig.bones.get("left_shoulder");
+  const leftShoulder = rig.bones.get("shoulder_L");
   if (leftShoulder) {
     const current = leftShoulder.rotation;
     const target = guardPose.leftArm.shoulder;
@@ -205,7 +205,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const leftElbow = rig.bones.get("left_elbow");
+  const leftElbow = rig.bones.get("elbow_L");
   if (leftElbow) {
     const current = leftElbow.rotation;
     const target = guardPose.leftArm.elbow;
@@ -213,7 +213,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const leftWrist = rig.bones.get("left_wrist");
+  const leftWrist = rig.bones.get("wrist_L");
   if (leftWrist) {
     const current = leftWrist.rotation;
     const target = guardPose.leftArm.wrist;
@@ -223,7 +223,7 @@ const applyStanceGuardOverlay = (
   }
 
   // Blend right arm rotations with current pose
-  const rightShoulder = rig.bones.get("right_shoulder");
+  const rightShoulder = rig.bones.get("shoulder_R");
   if (rightShoulder) {
     const current = rightShoulder.rotation;
     const target = guardPose.rightArm.shoulder;
@@ -231,7 +231,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const rightElbow = rig.bones.get("right_elbow");
+  const rightElbow = rig.bones.get("elbow_R");
   if (rightElbow) {
     const current = rightElbow.rotation;
     const target = guardPose.rightArm.elbow;
@@ -239,7 +239,7 @@ const applyStanceGuardOverlay = (
     current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
     current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
   }
-  const rightWrist = rig.bones.get("right_wrist");
+  const rightWrist = rig.bones.get("wrist_R");
   if (rightWrist) {
     const current = rightWrist.rotation;
     const target = guardPose.rightArm.wrist;
@@ -249,7 +249,7 @@ const applyStanceGuardOverlay = (
   }
 
   // Blend torso rotation with current pose
-  const spine = rig.bones.get("spine");
+  const spine = rig.bones.get("spine_upper");
   if (spine) {
     const current = spine.rotation;
     const target = guardPose.torso;
@@ -261,14 +261,14 @@ const applyStanceGuardOverlay = (
   }
 
   // NEW: Blend left leg rotations for authentic Taekwondo stance positioning
-  applyBoneRotation(rig, "left_hip", guardPose.leftLeg.hip, blendFactor);
-  applyBoneRotation(rig, "left_knee", guardPose.leftLeg.knee, blendFactor);
-  applyBoneRotation(rig, "left_ankle", guardPose.leftLeg.ankle, blendFactor);
+  applyBoneRotation(rig, "hip_L", guardPose.leftLeg.hip, blendFactor);
+  applyBoneRotation(rig, "knee_L", guardPose.leftLeg.knee, blendFactor);
+  applyBoneRotation(rig, "foot_L", guardPose.leftLeg.ankle, blendFactor);
 
   // NEW: Blend right leg rotations for authentic Taekwondo stance positioning
-  applyBoneRotation(rig, "right_hip", guardPose.rightLeg.hip, blendFactor);
-  applyBoneRotation(rig, "right_knee", guardPose.rightLeg.knee, blendFactor);
-  applyBoneRotation(rig, "right_ankle", guardPose.rightLeg.ankle, blendFactor);
+  applyBoneRotation(rig, "hip_R", guardPose.rightLeg.hip, blendFactor);
+  applyBoneRotation(rig, "knee_R", guardPose.rightLeg.knee, blendFactor);
+  applyBoneRotation(rig, "foot_R", guardPose.rightLeg.ankle, blendFactor);
 
   // NEW: Blend pelvis rotation for proper stance base
   applyBoneRotation(rig, "pelvis", guardPose.pelvis, blendFactor);
@@ -281,7 +281,7 @@ const applyStanceGuardOverlay = (
   );
 
   // Apply breathing to upper torso
-  const chest = rig.bones.get("chest");
+  const chest = rig.bones.get("spine_middle");
   if (chest) {
     chest.scale.setScalar(breathingScale);
   }
@@ -1114,7 +1114,7 @@ export const SkeletalPlayer3D: React.FC<
     // Apply body facing rotations (torso and head) if available
     if (bodyFacing) {
       // Apply torso rotation to spine bone from body facing
-      const spine = rig.bones.get("spine");
+      const spine = rig.bones.get("spine_upper");
       if (spine) {
         const torsoRotation = getFacingAngleRadians(bodyFacing);
         spine.rotation.y = torsoRotation;
