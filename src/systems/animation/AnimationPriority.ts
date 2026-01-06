@@ -63,6 +63,16 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   // 180-degree turn animations (180도 회전) - same as steps (committed action)
   turn_left: STEP_PRIORITY,
   turn_right: STEP_PRIORITY,
+  // Footwork patterns (보법) - Korean martial arts specialized footwork
+  footwork_circular_left: STEP_PRIORITY,
+  footwork_circular_right: STEP_PRIORITY,
+  footwork_pivot_left: STEP_PRIORITY,
+  footwork_pivot_right: STEP_PRIORITY,
+  footwork_slide_forward: AnimationPriority.DEFEND,
+  footwork_slide_back: AnimationPriority.DEFEND,
+  footwork_slide_left: AnimationPriority.DEFEND,
+  footwork_slide_right: AnimationPriority.DEFEND,
+  footwork_shuffle: AnimationPriority.STANCE_CHANGE,
 };
 
 /**

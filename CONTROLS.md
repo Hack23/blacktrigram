@@ -198,6 +198,120 @@ Each player archetype has unique techniques that reflect their combat philosophy
 
 ### 3. Movement Controls (이동 조작)
 
+#### 3.1 Basic Movement
+
+**WASD or Arrow Keys** - 8-directional movement
+- **W / ↑**: Forward | 전진 (Jeonjin)
+- **S / ↓**: Backward | 후퇴 (Hutoe)
+- **A / ←**: Left | 좌 (Jwa)
+- **D / →**: Right | 우 (U)
+- **Diagonals**: Combine keys for 45° angles | 대각선 이동 (Daegakseon Idong)
+
+#### 3.2 Tactical Steps (전술보법 - Shift+WASD)
+
+**Shift + WASD** - Precise 30cm tactical repositioning (18 frames, 300ms)
+
+Tactical steps execute committed footwork movements for positional advantage:
+
+| **Input** | **Direction** | **Korean** | **Distance** | **Duration** |
+|-----------|---------------|------------|--------------|--------------|
+| `Shift+W` | Forward Step | 전진보법 | 30cm | 300ms |
+| `Shift+S` | Retreat Step | 후퇴보법 | 30cm | 300ms |
+| `Shift+A` | Left Step | 좌측면보법 | 30cm | 300ms |
+| `Shift+D` | Right Step | 우측면보법 | 30cm | 300ms |
+| `Shift+W+A` | Forward-Left | 전좌측보법 | 30cm | 300ms |
+| `Shift+W+D` | Forward-Right | 전우측보법 | 30cm | 300ms |
+| `Shift+S+A` | Back-Left | 후좌측보법 | 30cm | 300ms |
+| `Shift+S+D` | Back-Right | 후우측보법 | 30cm | 300ms |
+
+**Tactical Step Properties:**
+- ✅ **Non-interruptible**: Committed movement (Priority 5)
+- ✅ **Guard maintained**: Fighting stance preserved
+- ✅ **Stamina cost**: 5 stamina per step
+- ✅ **Precise distance**: Exactly 30cm (one foot width)
+
+#### 3.3 Advanced Footwork Patterns (보법 체계 - Ctrl+WASD)
+
+**Ctrl + WASD** - Specialized Korean martial arts footwork patterns
+
+Advanced footwork adds 4 distinct movement patterns for tactical combat positioning:
+
+##### Circular Steps (원형보 - Wonhyeongbo) ✅ IMPLEMENTED
+Lateral movement while maintaining guard facing forward.
+
+| **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
+|-----------|-------------|------------|--------------|--------------|
+| `Ctrl+A` | Circular Left | 원형보 좌 | 30cm lateral | 300ms (18 frames) |
+| `Ctrl+D` | Circular Right | 원형보 우 | 30cm lateral | 300ms (18 frames) |
+
+**Circular Step Properties:**
+- 🎯 **Maintains guard facing**: Body stays oriented toward opponent
+- ⚡ **Non-interruptible**: Committed footwork (Priority 5)
+- 🥋 **Tactical advantage**: Circle around opponent while keeping guard
+- 📊 **Same distance as tactical steps**: 30cm movement
+
+##### Slide Steps (미끄럼보 - Mikkeureombo) ✅ IMPLEMENTED
+Both feet move together without weight transfer.
+
+| **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
+|-----------|-------------|------------|--------------|--------------|
+| `Ctrl+W` | Slide Forward | 미끄럼보 전 | 30cm | 200ms (12 frames) |
+| `Ctrl+S` | Slide Back | 미끄럼보 후 | 30cm | 200ms (12 frames) |
+
+**Slide Step Properties:**
+- 🏃 **Faster than tactical steps**: 200ms vs 300ms
+- 🔄 **Interruptible**: Can be canceled (Priority 4)
+- ⚖️ **Stable base**: Both feet move together
+- 🎯 **Good for spacing**: Quick in/out without commitment
+
+##### Pivot Rotations (축족회전 - Chukjok Hoejeon) ⏳ PENDING CONTROLS
+90° rotation on planted foot for angle changes.
+
+| **Input** | **Pattern** | **Korean** | **Rotation** | **Duration** |
+|-----------|-------------|------------|--------------|--------------|
+| _Future Enhancement_ | Pivot Left | 축족회전 좌 | 90° counter-clockwise | 250ms (15 frames) |
+| _Future Enhancement_ | Pivot Right | 축족회전 우 | 90° clockwise | 250ms (15 frames) |
+
+**Pivot Properties:**
+- 🔄 **Fast direction change**: 90° rotation in 250ms
+- 🎯 **Planted foot stays**: One foot is pivot point
+- ⚡ **Non-interruptible**: Committed rotation (Priority 5)
+- 🥋 **Tactical repositioning**: Change facing without retreating
+- ⚠️ **Status**: Skeletal animations complete, keyboard controls pending
+
+##### Shuffle Step (섞음보 - Seokkeumbo) ⏳ PENDING CONTROLS
+Quick 15cm micro-adjustment for fine positioning.
+
+| **Input** | **Pattern** | **Korean** | **Distance** | **Duration** |
+|-----------|-------------|------------|--------------|--------------|
+| _Future Enhancement_ | Shuffle | 섞음보 | 15cm omnidirectional | 100ms (6 frames) |
+
+**Shuffle Properties:**
+- ⚡ **Fastest footwork**: Only 100ms (6 frames)
+- 🎯 **Micro-adjustment**: Half the distance of other steps (15cm)
+- 🔄 **Fully interruptible**: Can cancel anytime (Priority 3)
+- 🏃 **Fine-tuning**: Perfect for precise positioning
+- ⚠️ **Status**: Skeletal animations complete, keyboard controls pending
+
+##### Footwork Pattern Comparison
+
+| Pattern | Korean | Frames | Duration | Distance | Priority | Interruptible | Use Case |
+|---------|--------|--------|----------|----------|----------|---------------|----------|
+| **Tactical Step** | 전술보법 | 18 | 300ms | 30cm | 5 | ❌ | Standard repositioning |
+| **Circular** | 원형보 | 18 | 300ms | 30cm | 5 | ❌ | Lateral while maintaining guard |
+| **Pivot** | 축족회전 | 15 | 250ms | 90° | 5 | ❌ | Fast angle changes ⚠️ _Controls pending_ |
+| **Slide** | 미끄럼보 | 12 | 200ms | 30cm | 4 | ✅ | Quick in/out spacing |
+| **Shuffle** | 섞음보 | 6 | 100ms | 15cm | 3 | ✅ | Micro-adjustments ⚠️ _Controls pending_ |
+
+**Movement Control Philosophy:**
+- **Regular WASD**: Continuous movement, no commitment
+- **Shift+WASD**: Tactical steps with commitment (30cm)
+- **Ctrl+A/D**: Circular footwork (lateral movement)
+- **Ctrl+W/S**: Slide footwork (quick spacing)
+- **Note**: Pivot and Shuffle controls TBD (animations ready, awaiting keybinding)
+
+---
+
 **Current Implementation**: Simple 8-directional movement on arena grid
 
 | **Keys** | **Action** | **Description** |

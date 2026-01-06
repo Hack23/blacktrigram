@@ -9,6 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ControlMapper } from "../utils/controlMapping";
+import { FOOTWORK_KOREAN_TERMS } from "../systems/animation/types";
 
 // Korean terminology constants (module-level to avoid recreation on every keystroke)
 const DIAGONAL_KOREAN_TERMS: Record<string, string> = {
@@ -23,6 +24,20 @@ const STEP_KOREAN_TERMS: Record<string, string> = {
   "step_back": "후퇴보법 (Retreat Step)",
   "step_left": "좌측면보법 (Left Step)",
   "step_right": "우측면보법 (Right Step)",
+};
+
+// Footwork pattern Korean terminology - maps animation states to display names
+// Reuses FOOTWORK_KOREAN_TERMS from types.ts but adds specific animation state labels
+const FOOTWORK_DISPLAY_TERMS: Record<string, string> = {
+  "footwork_circular_left": `${FOOTWORK_KOREAN_TERMS.circular.korean} 좌 (Circular Left)`,
+  "footwork_circular_right": `${FOOTWORK_KOREAN_TERMS.circular.korean} 우 (Circular Right)`,
+  "footwork_pivot_left": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 좌 (Pivot Left)`,
+  "footwork_pivot_right": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 우 (Pivot Right)`,
+  "footwork_slide_forward": `${FOOTWORK_KOREAN_TERMS.slide.korean} 전 (Slide Forward)`,
+  "footwork_slide_back": `${FOOTWORK_KOREAN_TERMS.slide.korean} 후 (Slide Back)`,
+  "footwork_slide_left": `${FOOTWORK_KOREAN_TERMS.slide.korean} 좌 (Slide Left)`,
+  "footwork_slide_right": `${FOOTWORK_KOREAN_TERMS.slide.korean} 우 (Slide Right)`,
+  "footwork_shuffle": `${FOOTWORK_KOREAN_TERMS.shuffle.korean} (Shuffle)`,
 };
 
 // Step direction mapping (all move_* actions covered explicitly)
@@ -291,8 +306,37 @@ export function useKeyboardControls({
           case "move_down":
           case "move_left":
           case "move_right":
-            // Check if Shift is held for tactical step instead of walk
-            if (e.shiftKey) {
+            // Check for Ctrl modifier for footwork patterns (보법)
+            if (e.ctrlKey) {
+              // Footwork patterns with Ctrl+WASD
+              // Note: Currently only circular and slide patterns have controls.
+              // Pivot and shuffle patterns are configured but awaiting keybinding.
+              let footworkAction: string | null = null;
+              
+              if (action === "move_left") {
+                // Ctrl+A: Circular step left (원형보)
+                footworkAction = "footwork_circular_left";
+              } else if (action === "move_right") {
+                // Ctrl+D: Circular step right (원형보)
+                footworkAction = "footwork_circular_right";
+              } else if (action === "move_up") {
+                // Ctrl+W: Slide forward (미끄럼보)
+                footworkAction = "footwork_slide_forward";
+              } else if (action === "move_down") {
+                // Ctrl+S: Slide back (미끄럼보)
+                footworkAction = "footwork_slide_back";
+              }
+              
+              if (footworkAction) {
+                onAction(footworkAction);
+                addToQueue(
+                  FOOTWORK_DISPLAY_TERMS[footworkAction] ?? "Footwork",
+                  `Ctrl+${e.key}`
+                );
+                if (playSFX) playSFX("footstep");
+              }
+            } else if (e.shiftKey) {
+              // Check if Shift is held for tactical step instead of walk
               // Check for diagonal step first
               const diagonalStep = getDiagonalStepAction();
               

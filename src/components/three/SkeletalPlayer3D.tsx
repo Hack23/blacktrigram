@@ -30,6 +30,7 @@ import {
   unlockFacing,
   getFacingAngleRadians,
   getHeadAngleRadians,
+  getFootworkAnimation,
 } from "../../systems/animation";
 import type { StanceLaterality } from "../../systems/trigram/types";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
@@ -748,11 +749,52 @@ export const SkeletalPlayer3D: React.FC<
           });
         }
       }
+    } else if (currentAnimation?.startsWith("footwork_")) {
+      // Footwork pattern animation - 보법 애니메이션
+      const footworkAnim = getFootworkAnimation(currentAnimation);
+      if (footworkAnim) {
+        setAnimState({
+          currentAnimation: footworkAnim,
+          currentTime: 0,
+          isPlaying: true,
+          playbackSpeed: 1.0, // Normal footwork speed
+          previousKeyframeIndex: 0,
+          nextKeyframeIndex: 1,
+        });
+
+        // Maintain guard hands during footwork (hands stay up)
+        setLeftHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+        setRightHandState((prev) =>
+          updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
+        );
+
+        // Circular footwork maintains forward facing - no rotation override needed
+        // Slide footwork also maintains facing direction
+        setDiagonalRotationY(null);
+      } else {
+        // Fallback to walk if footwork animation not found
+        console.warn(
+          `[SkeletalPlayer3D] Footwork animation not found for ${currentAnimation}, using walk fallback`
+        );
+        const walkAnim = getAnimation("walk");
+        if (walkAnim) {
+          setAnimState({
+            currentAnimation: walkAnim,
+            currentTime: 0,
+            isPlaying: true,
+            playbackSpeed: 1.0,
+            previousKeyframeIndex: 0,
+            nextKeyframeIndex: 1,
+          });
+        }
+      }
     } else if (currentAnimation?.startsWith("stance_guard_")) {
       // Stance guard animation - 자세 방어 애니메이션
       // Note: PlayerAnimation type doesn't include "stance_guard_*" variants, but this check
-      // exists for compatibility with internal animation state management. In practice,
-      // the guard overlay is applied via the explicit stance prop in useFrame.
+      // exists for compatibility with internal animation state management. The guard overlay
+      // is applied via the explicit stance prop in useFrame.
       // Play idle animation as base, overlay guard pose in useFrame
       const idleAnim = getAnimation("idle_stance");
       if (idleAnim) {
