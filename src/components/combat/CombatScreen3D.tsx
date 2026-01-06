@@ -1279,6 +1279,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             } else {
               // Not enough stamina, fallback to quick recovery
               audio.playSFX("menu_error");
+              const player1Pos = playerPositions[0];
+              feedbackActions.addActionFeedback(
+                "blocked",
+                "Not enough stamina!",
+                "체력 부족!",
+                player1Pos
+              );
               executeFallbackRecovery();
             }
             break;
@@ -1291,7 +1298,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Movement and other actions handled by existing system
         }
       },
-      [techniqueSelection, handleDefendWithFeedback, executeFallbackRecovery, balanceSystem, player1Animation, players, onPlayerUpdate, audio]
+      [techniqueSelection, handleDefendWithFeedback, executeFallbackRecovery, balanceSystem, player1Animation, players, onPlayerUpdate, audio, feedbackActions, playerPositions]
     ),
     enabled:
       !isPaused &&

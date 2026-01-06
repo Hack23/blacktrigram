@@ -276,7 +276,7 @@ export function useKeyboardControls({
         }
         
         // Shift: Defensive getup (방어기상) - slow but protected
-        if (e.key === "Shift") {
+        if (e.shiftKey) {
           e.preventDefault();
           onAction("recovery_defensive");
           addToQueue("방어기상 (Defensive Getup)", "Shift");

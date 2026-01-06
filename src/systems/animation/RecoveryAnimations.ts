@@ -415,7 +415,7 @@ export interface RecoveryConfig {
   /** Damage reduction percentage during animation (0-1) */
   readonly damageReduction: number;
   
-  /** Number of vulnerable frames (first N frames take extra damage) */
+  /** Number of initial vulnerable frames (first N frames are vulnerable to damage) */
   readonly vulnerableFrames: number;
   
   /** Frame when player becomes interruptible (last 6 frames typically) */
