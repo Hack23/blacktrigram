@@ -635,10 +635,6 @@ src/components/three/README.md
 src/components/three/README_STANCE_ANIMATIONS.md
 src/components/three/SkeletalPlayer3D.guard-visual.test.tsx
 src/components/three/SkeletalPlayer3D.tsx
-src/components/three/StanceAura.test.tsx
-src/components/three/StanceAura.tsx
-src/components/three/StanceAuraParticles.test.tsx
-src/components/three/StanceAuraParticles.tsx
 src/components/three/StanceSymbol3D.test.tsx
 src/components/three/StanceSymbol3D.tsx
 src/components/three/StanceTransitionEffect.test.tsx
