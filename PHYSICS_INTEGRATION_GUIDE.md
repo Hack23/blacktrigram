@@ -1,488 +1,320 @@
-# Physics Movement Integration Guide
+# Physics Movement Integration for Existing Components
 
-**Korean**: 물리 이동 통합 가이드 (Physics Movement Integration Guide)
+**Korean**: 기존 컴포넌트 물리 이동 통합 (Existing Component Physics Movement Integration)
 
-This guide shows how to integrate the physics-based movement system into your Black Trigram game components.
+This guide shows how to enable physics-based movement in CombatScreen3D, TrainingScreen3D, and CombatSystem using the enhanced `usePlayerMovement` hook.
 
-## Quick Start
+## Quick Integration
 
-### 1. Basic Player with Physics Movement
+The existing `usePlayerMovement` hook now supports optional physics-based movement. Simply add the `usePhysics` flag and physics parameters:
 
-The simplest way to add physics-based movement to a 3D player:
+### Before (Basic Movement)
+```typescript
+const { playerPosition, isMoving } = usePlayerMovement({
+  initialPosition: { x: 100, y: 400 },
+  bounds: { x: 0, y: 0, width: 1200, height: 800 },
+  onPositionChange: (pos) => onPlayerUpdate({ position: pos }),
+});
+```
+
+### After (Physics-Based Movement)
+```typescript
+const { playerPosition, isMoving, velocity, speed } = usePlayerMovement({
+  initialPosition: { x: 100, y: 400 },
+  bounds: { x: 0, y: 0, width: 1200, height: 800 },
+  onPositionChange: (pos) => onPlayerUpdate({ position: pos }),
+  
+  // ✨ Enable physics-based movement
+  usePhysics: true,
+  currentStance: player.currentStance,
+  legInjuryFactor: calculateLegInjury(player.bodyPartHealth),
+  isRunning: pressedKeys.has('Shift'),
+  useTacticalSteps: false,
+});
+```
+
+---
+
+## CombatScreen3D Integration
+
+Update `src/components/combat/CombatScreen3D.tsx`:
 
 ```typescript
-import { PhysicsPlayer3D } from '@/components/three/PhysicsPlayer3D';
-import { TrigramStance } from '@/types/common';
+// Around line 588 - Update the usePlayerMovement call
+const { 
+  isMoving: player1IsMoving,
+  playerPosition: player1PositionFromMovement,
+  velocity,
+  speed,
+} = usePlayerMovement({
+  initialPosition: { x: 100, y: height / 2 - 90 },
+  bounds: { x: 0, y: 0, width, height },
+  onPositionChange: (newPosition) => {
+    onPlayerUpdate(0, { position: newPosition });
+  },
+  enabled: !isPaused && !isRoundTransitioning && gamePhase === "active",
+  moveSpeed: 200,
+  
+  // ✨ Physics-based movement
+  usePhysics: true,
+  currentStance: player1.currentStance,
+  legInjuryFactor: calculateLegInjuryFactor(player1),
+  isRunning: false, // Can be connected to Shift key or button
+});
 
-function MyGameScene() {
-  const [stance, setStance] = useState(TrigramStance.GEON);
-  const [legInjury, setLegInjury] = useState(0);
-
-  return (
-    <Canvas>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} />
-      
-      <PhysicsPlayer3D
-        stance={stance}
-        legInjuryFactor={legInjury}
-        showVelocity={true}
-      />
-      
-      {/* Ground plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[50, 50]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
-    </Canvas>
-  );
+// Helper function to calculate leg injury
+function calculateLegInjuryFactor(player: PlayerState): number {
+  if (!player.bodyPartHealth) return 0;
+  
+  const leftLeg = player.bodyPartHealth.leftLeg ?? player.maxHealth;
+  const rightLeg = player.bodyPartHealth.rightLeg ?? player.maxHealth;
+  const maxLeg = player.maxHealth;
+  
+  const averageLegHealth = (leftLeg + rightLeg) / (2 * maxLeg);
+  return 1.0 - averageLegHealth; // 0 = healthy, 1 = critical
 }
 ```
 
-**Controls:**
-- `W` - Move forward
-- `S` - Move backward
-- `A` - Strafe left
-- `D` - Strafe right
-- `Shift` - Run (hold while moving)
+### Optional: Display Speed in HUD
 
-### 2. Custom Player Component with Physics
-
-If you need more control, use the `usePlayerMovement` hook directly:
+Add speed feedback to the player HUD:
 
 ```typescript
-import { usePlayerMovement } from '@/hooks/usePlayerMovement';
-import { useEffect } from 'react';
-
-function CustomPlayer3D({ stance, legInjury, onMove }) {
-  // Initialize physics
-  const { position, velocity, speed, updateControls } = usePlayerMovement({
-    stance,
-    legInjuryFactor: legInjury,
-    initialPosition: new THREE.Vector3(0, 0, 0),
-  });
-
-  // Wire up your custom input system
-  useEffect(() => {
-    const handleInput = (input: MyInputType) => {
-      updateControls({
-        forward: input.forward,
-        lateral: input.lateral,
-        isRunning: input.sprint,
-        useTacticalSteps: input.tactical,
-      });
-    };
-
-    myInputSystem.on('move', handleInput);
-    return () => myInputSystem.off('move', handleInput);
-  }, [updateControls]);
-
-  // Notify parent of position changes
-  useEffect(() => {
-    onMove?.(position);
-  }, [position, onMove]);
-
-  return (
-    <mesh position={position}>
-      <capsuleGeometry args={[0.5, 1.6]} />
-      <meshStandardMaterial color={getStanceColor(stance)} />
-    </mesh>
-  );
-}
+// In the PlayerHUD component
+{speed !== undefined && speed > 0.1 && (
+  <div style={{
+    fontSize: isMobile ? 10 : 12,
+    color: KOREAN_COLORS.TEXT_SECONDARY,
+    fontFamily: FONT_FAMILY.KOREAN,
+  }}>
+    속도 | Speed: {speed.toFixed(1)} m/s
+  </div>
+)}
 ```
 
-### 3. Integration with Existing useKeyboardControls
+---
 
-Update your existing keyboard hook to call `updateControls`:
+## TrainingScreen3D Integration
+
+Update `src/components/training/TrainingScreen3D.tsx`:
 
 ```typescript
-import { usePlayerMovement } from '@/hooks/usePlayerMovement';
-import { useKeyboardControls } from '@/hooks/useKeyboardControls';
-
-function Player3DWithKeyboard({ stance, legInjury }) {
-  const { position, updateControls } = usePlayerMovement({
-    stance,
-    legInjuryFactor: legInjury,
-  });
-
-  // Track movement state
-  const [movementState, setMovementState] = useState({
-    forward: 0,
-    lateral: 0,
-    isRunning: false,
-  });
-
-  // Use existing keyboard controls
-  const { queuedInputs } = useKeyboardControls({
-    onStanceChange: (stanceIndex) => {
-      // Handle stance changes
-    },
-    onAction: (action) => {
-      // Parse movement actions
-      switch (action) {
-        case 'move_up':
-          setMovementState(prev => ({ ...prev, forward: 1 }));
-          break;
-        case 'move_down':
-          setMovementState(prev => ({ ...prev, forward: -1 }));
-          break;
-        case 'move_left':
-          setMovementState(prev => ({ ...prev, lateral: -1 }));
-          break;
-        case 'move_right':
-          setMovementState(prev => ({ ...prev, lateral: 1 }));
-          break;
-      }
-    },
-    enabled: true,
-  });
-
-  // Update physics when movement state changes
-  useEffect(() => {
-    updateControls(movementState);
-  }, [movementState, updateControls]);
-
-  return <mesh position={position}>{/* ... */}</mesh>;
-}
+// Around line 189 - Update the usePlayerMovement call
+const { 
+  playerPosition, 
+  isMoving,
+  velocity,
+  speed,
+} = usePlayerMovement({
+  initialPosition: playerState.position,
+  bounds: { x: 0, y: 0, width, height },
+  onPositionChange: (newPosition) => {
+    onPlayerUpdate({ position: newPosition });
+  },
+  enabled: !isPaused,
+  moveSpeed: 300,
+  
+  // ✨ Physics-based movement
+  usePhysics: true,
+  currentStance: playerState.currentStance,
+  legInjuryFactor: 0, // No injury in training mode
+  isRunning: false,
+  useTacticalSteps: tacticalMode, // Can be toggled with 'T' key
+});
 ```
 
-## Advanced Integration
+### Optional: Tactical Step Mode in Training
 
-### Tactical Step Mode
-
-Enable precise 30cm grid movement for tactical positioning:
+Add a toggle for tactical step mode (30cm grid):
 
 ```typescript
 const [tacticalMode, setTacticalMode] = useState(false);
 
-function TacticalPlayer3D({ stance }) {
-  const { position, updateControls } = usePlayerMovement({
-    stance,
-  });
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Toggle tactical mode with 'T' key
-      if (e.key === 't' || e.key === 'T') {
-        setTacticalMode(prev => !prev);
-      }
-
-      // Movement with tactical steps
-      if (e.key === 'w') {
-        updateControls({
-          forward: 1.0,
-          useTacticalSteps: tacticalMode,
-        });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [tacticalMode, updateControls]);
-
-  return (
-    <>
-      <mesh position={position}>{/* player */}</mesh>
-      {/* Visual indicator for tactical mode */}
-      {tacticalMode && (
-        <GridHelper
-          args={[50, 166]}  // 50m grid with 0.3m spacing
-          position={[0, 0.01, 0]}
-        />
-      )}
-    </>
-  );
-}
-```
-
-### Combat Integration with Injury System
-
-Connect movement speed to combat damage:
-
-```typescript
-import { usePlayerMovement } from '@/hooks/usePlayerMovement';
-import { calculateLegInjury } from '@/systems/bodypart';
-
-function CombatPlayer3D({ player, stance }) {
-  // Calculate leg injury from body part health
-  const legInjury = calculateLegInjury(
-    player.bodyPartHealth?.leftLeg,
-    player.bodyPartHealth?.rightLeg,
-    player.bodyPartMaxHealth
-  );
-
-  const { position, maxSpeed, updateControls } = usePlayerMovement({
-    stance,
-    legInjuryFactor: legInjury,
-  });
-
-  // Display speed reduction feedback
-  const speedPenalty = legInjury * 0.5; // 0-50% reduction
-  const displaySpeed = maxSpeed.toFixed(1);
-
-  return (
-    <>
-      <mesh position={position}>{/* player */}</mesh>
-      
-      {/* Speed indicator */}
-      {legInjury > 0 && (
-        <Html position={[position.x, position.y + 2.5, position.z]} center>
-          <div style={{
-            color: legInjury > 0.5 ? '#ff4444' : '#ffaa00',
-            fontSize: '14px',
-            fontFamily: 'Korean Font',
-          }}>
-            {speedPenalty > 0 && `⚠️ -${(speedPenalty * 100).toFixed(0)}% 속도`}
-            <br />
-            {displaySpeed} m/s
-          </div>
-        </Html>
-      )}
-    </>
-  );
-}
-```
-
-### Stance-Based Movement Feedback
-
-Visualize different stance speeds:
-
-```typescript
-function StanceAwarePlayer3D({ stance }) {
-  const physics = new MovementPhysics();
-  const stanceModifier = physics.getStanceSpeedModifier(stance);
-
-  const { position, speed, updateControls } = usePlayerMovement({
-    stance,
-  });
-
-  // Aura intensity based on speed
-  const auraIntensity = (speed / 4.0) * stanceModifier;
-
-  return (
-    <group position={position}>
-      <mesh castShadow>
-        <capsuleGeometry args={[0.5, 1.6]} />
-        <meshStandardMaterial
-          color={getStanceColor(stance)}
-          emissive={getStanceColor(stance)}
-          emissiveIntensity={auraIntensity}
-        />
-      </mesh>
-
-      {/* Speed trail effect for fast stances */}
-      {stanceModifier > 1.1 && speed > 1.0 && (
-        <Trail
-          width={0.3}
-          color={getStanceColor(stance)}
-          length={8}
-          decay={1}
-        >
-          <mesh position={[0, 1, 0]}>
-            <sphereGeometry args={[0.1]} />
-            <meshBasicMaterial color={getStanceColor(stance)} />
-          </mesh>
-        </Trail>
-      )}
-    </group>
-  );
-}
-```
-
-## Mobile/Touch Integration
-
-Add touch controls for mobile devices:
-
-```typescript
-import { useTouchControls } from '@/hooks/useTouchControls';
-
-function MobilePlayer3D({ stance }) {
-  const { position, updateControls } = usePlayerMovement({
-    stance,
-  });
-
-  const { joystickPosition, isActive } = useTouchControls({
-    enabled: true,
-  });
-
-  useEffect(() => {
-    if (isActive) {
-      updateControls({
-        forward: joystickPosition.y,
-        lateral: joystickPosition.x,
-        isRunning: false, // Add sprint button separately
-      });
-    } else {
-      updateControls({
-        forward: 0,
-        lateral: 0,
-        isRunning: false,
-      });
+// Add keyboard handler
+useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 't' || e.key === 'T') {
+      setTacticalMode(prev => !prev);
     }
-  }, [joystickPosition, isActive, updateControls]);
+  };
+  
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, []);
 
-  return <mesh position={position}>{/* player */}</mesh>;
+// Display grid when tactical mode is active
+{tacticalMode && (
+  <Html fullscreen>
+    <div style={{
+      position: 'absolute',
+      top: 10,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      padding: '8px 16px',
+      background: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+      border: `2px solid ${KOREAN_COLORS.ACCENT_GOLD}`,
+      borderRadius: '4px',
+      fontFamily: FONT_FAMILY.KOREAN,
+      color: KOREAN_COLORS.TEXT_PRIMARY,
+    }}>
+      ⚡ 전술 보법 | Tactical Steps Active
+    </div>
+  </Html>
+)}
+```
+
+---
+
+## CombatSystem Integration
+
+The CombatSystem can access physics data through the player state. Update injury calculations to affect movement:
+
+```typescript
+// In CombatSystem.ts
+import { MovementPhysics } from './physics/MovementPhysics';
+
+// Add to class
+private readonly movementPhysics = new MovementPhysics();
+
+// When applying damage to legs
+public applyLegDamage(player: PlayerState, damage: number): PlayerState {
+  // ... existing damage logic ...
+  
+  // Calculate new leg injury factor
+  const leftLeg = updatedPlayer.bodyPartHealth?.leftLeg ?? player.maxHealth;
+  const rightLeg = updatedPlayer.bodyPartHealth?.rightLeg ?? player.maxHealth;
+  const legInjuryFactor = 1.0 - ((leftLeg + rightLeg) / (2 * player.maxHealth));
+  
+  // Get current max speed with injury penalty
+  const maxSpeed = this.movementPhysics.getMaxSpeed(
+    false, // not running
+    updatedPlayer.currentStance,
+    legInjuryFactor
+  );
+  
+  console.log(`Leg injury: ${(legInjuryFactor * 100).toFixed(0)}%, Max speed: ${maxSpeed.toFixed(2)} m/s`);
+  
+  return updatedPlayer;
 }
 ```
 
-## Performance Tips
+---
 
-### 1. Reuse Physics Instance
+## Features You Get
 
-Don't create new `MovementPhysics` instances in render:
+### ✅ Realistic Acceleration
+- 0 → 2m/s in 0.5 seconds (4.0 m/s²)
+- Smooth velocity curves, no instant movement
 
-```typescript
-// ❌ BAD - creates new instance every render
-function Player() {
-  const physics = new MovementPhysics();
-  // ...
-}
+### ✅ Realistic Deceleration
+- 2m/s → 0 in 0.3 seconds (6.67 m/s²)
+- Quick stopping for combat reactions
 
-// ✅ GOOD - hook already reuses instance
-function Player() {
-  const { position, updateControls } = usePlayerMovement({
-    // hook manages physics instance
-  });
-}
-```
+### ✅ Stance-Based Speed Modifiers
+| Stance | Korean | Speed Modifier |
+|--------|--------|----------------|
+| ☰ 건 (Geon) | Heaven | 100% |
+| ☱ 태 (Tae) | Lake | 110% |
+| ☲ 리 (Li) | Fire | 120% |
+| ☳ 진 (Jin) | Thunder | 115% |
+| ☴ 손 (Son) | Wind | 125% (fastest) |
+| ☵ 감 (Gam) | Water | 105% |
+| ☶ 간 (Gan) | Mountain | 80% (slowest) |
+| ☷ 곤 (Gon) | Earth | 85% |
 
-### 2. Batch Control Updates
+### ✅ Injury System Integration
+- Leg damage reduces speed 0-50%
+- Automatically calculated from body part health
+- Smooth speed reduction as damage accumulates
 
-Update controls once per frame, not multiple times:
+### ✅ Tactical Steps (Optional)
+- 30cm grid quantization
+- Precise positioning for vital point attacks
+- Toggle on/off with 'T' key
 
-```typescript
-// ❌ BAD - multiple updates per frame
-updateControls({ forward: 1 });
-updateControls({ lateral: 1 });
-updateControls({ isRunning: true });
-
-// ✅ GOOD - single update with all changes
-updateControls({
-  forward: 1,
-  lateral: 1,
-  isRunning: true,
-});
-```
-
-### 3. Disable When Not Visible
-
-Save CPU by disabling physics for off-screen players:
-
-```typescript
-const { position, updateControls } = usePlayerMovement({
-  stance,
-  enabled: isVisible, // Disable when off-screen
-});
-```
+---
 
 ## Testing
 
-### Unit Testing Physics Integration
+Run the existing test suite - no changes needed:
 
-```typescript
-import { renderHook } from '@testing-library/react';
-import { usePlayerMovement } from '@/hooks/usePlayerMovement';
-
-test('should integrate with stance system', () => {
-  const { result } = renderHook(() =>
-    usePlayerMovement({
-      stance: TrigramStance.SON, // Wind stance
-    })
-  );
-
-  // Wind stance should have 125% speed
-  expect(result.current.maxSpeed).toBe(2.5); // 2.0 * 1.25
-});
+```bash
+npm run test:systems  # All 2,175 tests should pass
+npm run test -- src/systems/physics/  # Physics-specific tests
 ```
 
-### E2E Testing Movement
+---
 
-```typescript
-// cypress/e2e/player-movement.cy.ts
-describe('Player Movement', () => {
-  it('should move with keyboard controls', () => {
-    cy.visit('/game');
-    
-    // Press W to move forward
-    cy.get('canvas').type('w');
-    
-    // Wait for movement
-    cy.wait(1000);
-    
-    // Verify position changed
-    cy.window().its('gameState.playerPosition.z').should('be.gt', 0);
-  });
-});
-```
+## Performance Notes
+
+- **Zero overhead when disabled**: Physics is only calculated when `usePhysics: true`
+- **60fps maintained**: Physics updates use requestAnimationFrame
+- **Memory efficient**: Reuses Three.js vectors, no allocations in hot path
+- **Backward compatible**: Existing code works without changes
+
+---
+
+## Migration Checklist
+
+For each screen component:
+
+- [ ] Add `usePhysics: true` to usePlayerMovement config
+- [ ] Pass `currentStance` from player state
+- [ ] Calculate `legInjuryFactor` from body part health
+- [ ] Optional: Add `isRunning` toggle (Shift key)
+- [ ] Optional: Add `useTacticalSteps` mode
+- [ ] Optional: Display speed/velocity in HUD
+- [ ] Test movement feels realistic
+- [ ] Verify stance changes affect speed
+- [ ] Verify injury reduces speed appropriately
+
+---
+
+## Korean Terminology
+
+**이동속도** (idong sokdo) - Movement speed  
+**가속도** (gasokdo) - Acceleration  
+**감속도** (gamsokdo) - Deceleration  
+**보법** (bobeop) - Footwork  
+**전술보법** (jeonsul bobeop) - Tactical steps  
+**다리부상** (dari busang) - Leg injury  
+
+---
 
 ## Troubleshooting
 
-### Issue: Player not moving
-
-**Check:**
-1. Is `enabled` prop set to `true`?
-2. Are keyboard events being captured?
-3. Is `updateControls` being called?
-
+### Movement feels too slow/fast
+Adjust the position scaling factor in `inputSystem.ts`:
 ```typescript
-// Add debug logging
-useEffect(() => {
-  console.log('Physics enabled:', enabled);
-  console.log('Position:', position);
-  console.log('Velocity:', velocity);
-}, [enabled, position, velocity]);
+// Line ~97: Adjust the 100 multiplier
+position: new THREE.Vector3(initialPosition.x / 100, 0, initialPosition.y / 100)
 ```
 
-### Issue: Stuttering movement
-
-**Causes:**
-1. Delta time not clamped → Use `maxDeltaTime` prop
-2. Too many physics updates → Ensure only one instance per player
-3. Physics running when not needed → Disable for off-screen players
-
+### Stance changes don't affect speed
+Ensure `currentStance` prop is updated reactively:
 ```typescript
-// Clamp delta time
-const { position } = usePlayerMovement({
-  stance,
-  maxDeltaTime: 1 / 30, // Cap at 30fps equivalent
-});
+// This should be in a useEffect or passed as a prop
+currentStance: player.currentStance,
 ```
 
-### Issue: Speed doesn't match stance
-
-**Check:**
-1. Stance prop is correctly passed
-2. Stance changes trigger re-render
-3. Physics engine recognizes stance
-
+### Injury doesn't reduce speed
+Check the `legInjuryFactor` calculation:
 ```typescript
-// Verify stance speed modifier
-import { MovementPhysics } from '@/systems/physics';
+const legHealth = (leftLeg + rightLeg) / (2 * maxHealth);
+const legInjuryFactor = 1.0 - legHealth; // Must be 0-1
 
-const physics = new MovementPhysics();
-console.log('Stance modifier:', physics.getStanceSpeedModifier(stance));
+console.log('Leg injury factor:', legInjuryFactor); // Debug
 ```
 
-## Korean Terminology Reference
-
-| English | Korean | Romanization |
-|---------|--------|--------------|
-| Movement speed | 이동속도 | idong sokdo |
-| Acceleration | 가속도 | gasokdo |
-| Deceleration | 감속도 | gamsokdo |
-| Footwork | 보법 | bobeop |
-| Forward | 전진 | jeonjin |
-| Backward | 후퇴 | hutoe |
-| Lateral | 측면이동 | cheungmyeon idong |
-| Sprint | 질주 | jilju |
-| Tactical step | 전술보법 | jeonsul bobeop |
+---
 
 ## Next Steps
 
-1. **Add Animation Blending**: Connect velocity to animation system
-2. **Arena Boundaries**: Add collision detection with arena edges
-3. **Stamina System**: Reduce speed when stamina is low
-4. **Dash Mechanic**: Add burst movement with momentum
+Once physics movement is working:
+1. **Animation Blending**: Connect velocity to footstep animations
+2. **Dash Mechanic**: Add burst movement with momentum
+3. **Stamina Integration**: Reduce speed when stamina is low
+4. **Arena Boundaries**: Add collision detection with arena edges
 5. **Footstep Audio**: Play sounds based on movement speed
 
 ---
