@@ -79,7 +79,6 @@ export function usePlayerMovement(
     bounds,
     onPositionChange,
     initialPosition = { x: 0, y: 0 },
-    moveSpeed = 300,
     currentStance = TrigramStance.GEON,
     legInjuryFactor = 0,
     isRunning: isRunningProp = false,
@@ -284,7 +283,7 @@ export function usePlayerMovement(
       }
       
       // Update velocity and speed if changed
-      if (!velocity || velocity.x !== newVelocity.x || velocity.y !== newVelocity.y) {
+      if (velocity?.x !== newVelocity.x || velocity?.y !== newVelocity.y) {
         setVelocity(newVelocity);
       }
       if (speed !== newSpeed) {
@@ -306,12 +305,13 @@ export function usePlayerMovement(
     keyState,
     bounds,
     onPositionChange,
-    moveSpeed,
     isMoving,
     currentStance,
     legInjuryFactor,
     isRunningProp,
     useTacticalSteps,
+    velocity,
+    speed,
   ]);
 
   // Keep updatePositionRef in sync via useEffect (not during render)
