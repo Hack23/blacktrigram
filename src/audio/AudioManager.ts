@@ -419,65 +419,6 @@ export class AudioManager implements IAudioManager {
     return this.playSoundEffect(soundId);
   }
 
-  /**
-   * Play defensive animation sound effect with variation
-   * 
-   * Defensive sounds (방어 애니메이션 사운드):
-   * - block_success: 막기 (Makgi) - Block success sound
-   * - parry_deflect: 받아넘기기 (Badaneumgigi) - Parry deflection sound
-   * - guard_break: 방어붕괴 (Bangeo Bunggoe) - Guard break sound
-   * - guard_recovery: 방어복구 (Bangeo Bokgu) - Guard recovery sound
-   * 
-   * @param defensiveType - Type of defensive action
-   * @returns Promise that resolves when sound plays
-   */
-  async playDefensiveSound(
-    defensiveType: 'block_success' | 'parry_deflect' | 'guard_break' | 'guard_recovery'
-  ): Promise<void> {
-    // Select random variation (1-4 for each type)
-    const variation = Math.floor(Math.random() * 4) + 1;
-    const soundId = `${defensiveType}_${variation}`;
-    
-    // Map guard_break to block_break for existing sounds
-    const mappedSoundId = defensiveType === 'guard_break' 
-      ? `block_break_${variation}`
-      : soundId;
-    
-    return this.playSoundEffect(mappedSoundId);
-  }
-
-  /**
-   * Play block success sound (막기)
-   * @returns Promise that resolves when sound plays
-   */
-  async playBlockSuccessSound(): Promise<void> {
-    return this.playDefensiveSound('block_success');
-  }
-
-  /**
-   * Play parry deflection sound (받아넘기기)
-   * @returns Promise that resolves when sound plays
-   */
-  async playParryDeflectSound(): Promise<void> {
-    return this.playDefensiveSound('parry_deflect');
-  }
-
-  /**
-   * Play guard break sound (방어붕괴)
-   * @returns Promise that resolves when sound plays
-   */
-  async playGuardBreakSound(): Promise<void> {
-    return this.playDefensiveSound('guard_break');
-  }
-
-  /**
-   * Play guard recovery sound (방어복구)
-   * @returns Promise that resolves when sound plays
-   */
-  async playGuardRecoverySound(): Promise<void> {
-    return this.playDefensiveSound('guard_recovery');
-  }
-
   async playDojiangAmbience(): Promise<void> {
     return this.playMusic("dojang_ambience");
   }

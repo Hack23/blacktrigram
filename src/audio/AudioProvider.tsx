@@ -200,13 +200,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       playVitalPointHitSound:
         audioManager.playVitalPointHitSound.bind(audioManager),
       playDojiangAmbience: audioManager.playDojiangAmbience.bind(audioManager),
-      
-      // Defensive animation sound methods
-      playDefensiveSound: audioManager.playDefensiveSound.bind(audioManager),
-      playBlockSuccessSound: audioManager.playBlockSuccessSound.bind(audioManager),
-      playParryDeflectSound: audioManager.playParryDeflectSound.bind(audioManager),
-      playGuardBreakSound: audioManager.playGuardBreakSound.bind(audioManager),
-      playGuardRecoverySound: audioManager.playGuardRecoverySound.bind(audioManager),
 
       // Use tracked state values for reactivity (triggers re-renders)
       get isInitialized() {
