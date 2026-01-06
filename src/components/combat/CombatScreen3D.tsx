@@ -22,6 +22,11 @@ import { useRoundTransition } from "../../hooks/useRoundTransition";
 import { useWebGLContextLossHandler } from "../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../systems";
 import { CombatSystem } from "../../systems/CombatSystem";
+import { BalanceSystem } from "../../systems/combat/BalanceSystem";
+import {
+  determineRecoveryType,
+  getRecoveryAnimationState,
+} from "../../systems/animation/RecoveryAnimations";
 import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
@@ -564,6 +569,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Combat system
   const combatSystem = useMemo(() => new CombatSystem(), []);
+
+  // Balance system for recovery mechanics
+  const balanceSystem = useMemo(() => new BalanceSystem(), []);
 
   // Track current attack animation for each player
   // Used to determine which skeletal animation to play during attacks
@@ -1236,10 +1244,45 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           case "block":
             handleDefendWithFeedback();
             break;
+          // Recovery actions (기상 액션)
+          case "recovery_quick": {
+            // Quick recovery: determine type based on ground state
+            const groundState = balanceSystem.getGroundState(player1Animation.currentState);
+            if (groundState) {
+              const recoveryType = determineRecoveryType(groundState);
+              const animationState = getRecoveryAnimationState(recoveryType);
+              player1Animation.transitionTo(animationState as import("../../systems/animation/types").AnimationState);
+            }
+            break;
+          }
+          case "recovery_roll": {
+            // Roll recovery: costs stamina but fastest
+            const player1 = players[0];
+            if (balanceSystem.canRecoverWithType(player1, "roll_recovery")) {
+              const updatedPlayer = balanceSystem.applyRecoveryCost(player1, "roll_recovery");
+              onPlayerUpdate(0, { stamina: updatedPlayer.stamina });
+              player1Animation.transitionTo("recovery_roll");
+            } else {
+              // Not enough stamina, fallback to quick recovery
+              audio.playSFX("menu_error");
+              const groundState = balanceSystem.getGroundState(player1Animation.currentState);
+              if (groundState) {
+                const recoveryType = determineRecoveryType(groundState);
+                const animationState = getRecoveryAnimationState(recoveryType);
+                player1Animation.transitionTo(animationState as import("../../systems/animation/types").AnimationState);
+              }
+            }
+            break;
+          }
+          case "recovery_defensive": {
+            // Defensive getup: slow but protected
+            player1Animation.transitionTo("recovery_defensive");
+            break;
+          }
           // Movement and other actions handled by existing system
         }
       },
-      [techniqueSelection, handleDefendWithFeedback]
+      [techniqueSelection, handleDefendWithFeedback, balanceSystem, player1Animation, players, onPlayerUpdate, audio]
     ),
     enabled:
       !isPaused &&
@@ -1251,6 +1294,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       !combatState.isExecutingTechnique,
     currentStance: currentStanceIndex,
     playSFX: audio.playSFX,
+    currentAnimationState: player1Animation.currentState,
   });
 
   // Mobile touch control state
