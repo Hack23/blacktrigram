@@ -136,6 +136,25 @@ const FULL_GUARD_BLEND = 1.0;
  * 
  * @korean 자세방어포즈오버레이적용
  */
+/**
+ * Helper function to apply bone rotation with lerp blending
+ * Reduces code duplication for leg positioning
+ */
+const applyBoneRotation = (
+  rig: SkeletalRig,
+  boneName: string,
+  targetRotation: THREE.Euler,
+  blend: number
+): void => {
+  const bone = rig.bones.get(boneName);
+  if (!bone) return;
+
+  const current = bone.rotation;
+  current.x = THREE.MathUtils.lerp(current.x, targetRotation.x, blend);
+  current.y = THREE.MathUtils.lerp(current.y, targetRotation.y, blend);
+  current.z = THREE.MathUtils.lerp(current.z, targetRotation.z, blend);
+};
+
 const applyStanceGuardOverlay = (
   rig: SkeletalRig,
   stance: TrigramStance | string,
@@ -212,66 +231,17 @@ const applyStanceGuardOverlay = (
   }
 
   // NEW: Blend left leg rotations for authentic Taekwondo stance positioning
-  const leftHip = rig.bones.get("left_hip");
-  if (leftHip) {
-    const current = leftHip.rotation;
-    const target = guardPose.leftLeg.hip;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
-  const leftKnee = rig.bones.get("left_knee");
-  if (leftKnee) {
-    const current = leftKnee.rotation;
-    const target = guardPose.leftLeg.knee;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
-  const leftAnkle = rig.bones.get("left_ankle");
-  if (leftAnkle) {
-    const current = leftAnkle.rotation;
-    const target = guardPose.leftLeg.ankle;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
+  applyBoneRotation(rig, "left_hip", guardPose.leftLeg.hip, blendFactor);
+  applyBoneRotation(rig, "left_knee", guardPose.leftLeg.knee, blendFactor);
+  applyBoneRotation(rig, "left_ankle", guardPose.leftLeg.ankle, blendFactor);
 
   // NEW: Blend right leg rotations for authentic Taekwondo stance positioning
-  const rightHip = rig.bones.get("right_hip");
-  if (rightHip) {
-    const current = rightHip.rotation;
-    const target = guardPose.rightLeg.hip;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
-  const rightKnee = rig.bones.get("right_knee");
-  if (rightKnee) {
-    const current = rightKnee.rotation;
-    const target = guardPose.rightLeg.knee;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
-  const rightAnkle = rig.bones.get("right_ankle");
-  if (rightAnkle) {
-    const current = rightAnkle.rotation;
-    const target = guardPose.rightLeg.ankle;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
+  applyBoneRotation(rig, "right_hip", guardPose.rightLeg.hip, blendFactor);
+  applyBoneRotation(rig, "right_knee", guardPose.rightLeg.knee, blendFactor);
+  applyBoneRotation(rig, "right_ankle", guardPose.rightLeg.ankle, blendFactor);
 
   // NEW: Blend pelvis rotation for proper stance base
-  const pelvis = rig.bones.get("pelvis");
-  if (pelvis) {
-    const current = pelvis.rotation;
-    const target = guardPose.pelvis;
-    current.x = THREE.MathUtils.lerp(current.x, target.x, blendFactor);
-    current.y = THREE.MathUtils.lerp(current.y, target.y, blendFactor);
-    current.z = THREE.MathUtils.lerp(current.z, target.z, blendFactor);
-  }
+  applyBoneRotation(rig, "pelvis", guardPose.pelvis, blendFactor);
 
   // Apply breathing animation scale (chest/shoulder expansion)
   const breathingScale = THREE.MathUtils.lerp(

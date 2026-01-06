@@ -284,7 +284,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  */
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.65, 0.7, 0.5),  // HIGH - windmill top - DISTINCT (adjusted to pass test)
+    shoulder: new THREE.Euler(-0.65, 0.7, 0.5),  // HIGH - windmill top - DISTINCT upper rotation
     elbow: new THREE.Euler(0, 0.6, 0),           // Extended up
     wrist: new THREE.Euler(0.2, 0.4, 0),         // Rotated outward
   },

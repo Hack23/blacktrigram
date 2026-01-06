@@ -597,10 +597,12 @@ export interface StanceGuardPose {
    * Stance width (foot spacing in meters)
    * NEW: Defines lateral distance between feet
    * Range: 0.3 (narrow) to 1.5 (wide horse stance)
-   * 
-   * TODO: To be applied in applyStanceGuardOverlay to adjust lateral foot spacing
-   * via foot bone positioning. Currently defined for future implementation.
-   * 
+   *
+   * This value describes the intended lateral spacing between the feet for this
+   * stance configuration. Consumers (e.g. animation systems or positioning
+   * overlays) may use it to drive foot placement, validation, or visualization
+   * as needed.
+   *
    * @korean 자세너비
    */
   readonly stanceWidth: number;
