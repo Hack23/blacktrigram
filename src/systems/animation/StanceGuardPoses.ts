@@ -40,20 +40,22 @@ import type { StanceLaterality } from "../trigram/types";
  * - High mobility (+15% movement speed from game-design.md)
  * - Bone-break attacks (+10% startup time)
  * 
+ * ENHANCED: Increased rotation angles for clearer visual distinction
+ * 
  * @korean 건괘방어포즈
  */
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.5, 0.3, 0.1), // Raised, slightly forward
-    elbow: new THREE.Euler(0, 0.8, 0),         // Bent 45 degrees
-    wrist: new THREE.Euler(0.2, 0, 0),         // Slightly flexed
+    shoulder: new THREE.Euler(-0.8, 0.6, 0.2), // Raised HIGH, forward
+    elbow: new THREE.Euler(0, 1.2, 0),         // Bent 70 degrees - DISTINCT
+    wrist: new THREE.Euler(0.3, 0.1, 0),       // Flexed upward
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.5, -0.3, -0.1), // Raised, slightly forward
-    elbow: new THREE.Euler(0, -0.8, 0),          // Bent 45 degrees
-    wrist: new THREE.Euler(0.2, 0, 0),           // Slightly flexed
+    shoulder: new THREE.Euler(-0.8, -0.6, -0.2), // Raised HIGH, forward
+    elbow: new THREE.Euler(0, -1.2, 0),          // Bent 70 degrees - DISTINCT
+    wrist: new THREE.Euler(0.3, -0.1, 0),        // Flexed upward
   },
-  torso: new THREE.Euler(0.1, 0, 0), // Slight forward lean
+  torso: new THREE.Euler(0.15, 0, 0), // INCREASED forward lean - DISTINCT
   weight: "forward",
   breathingRange: {
     min: 0.98,  // Slight chest expansion
@@ -75,20 +77,22 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
  * - +15% reach for throws/sweeps
  * - +10% takedown damage
  * 
+ * ENHANCED: One arm extended forward, one back - ASYMMETRIC for clear distinction
+ * 
  * @korean 태괘방어포즈
  */
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.3, 0.5, 0.2),   // Mid-level, extended
-    elbow: new THREE.Euler(0, 0.6, 0),           // Slightly bent
-    wrist: new THREE.Euler(0.1, 0.2, 0),         // Ready to grip
+    shoulder: new THREE.Euler(-0.4, 0.9, 0.4),   // EXTENDED forward - DISTINCT
+    elbow: new THREE.Euler(0, 0.4, 0),           // Nearly straight - reaching
+    wrist: new THREE.Euler(0.2, 0.3, 0),         // Open hand ready to grip
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.3, -0.4, -0.2), // Mid-level, defensive
-    elbow: new THREE.Euler(0, -0.7, 0),          // Bent for quick guard
-    wrist: new THREE.Euler(0.1, -0.2, 0),        // Ready to deflect
+    shoulder: new THREE.Euler(-0.5, -0.7, -0.4), // Pulled back - defensive
+    elbow: new THREE.Euler(0, -1.1, 0),          // BENT tight - guard
+    wrist: new THREE.Euler(0.2, -0.3, 0),        // Ready to deflect
   },
-  torso: new THREE.Euler(0.15, 0.1, 0), // Forward, slightly rotated
+  torso: new THREE.Euler(0.15, 0.2, 0), // Forward, ROTATED for reach - DISTINCT
   weight: "forward",
   breathingRange: {
     min: 0.97,  // Smooth inhale
@@ -110,20 +114,22 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
  * - +15% stability vs. vital strikes
  * - +10% knockdown resistance
  * 
+ * ENHANCED: Both arms forward - AGGRESSIVE double-jab ready position - DISTINCT
+ * 
  * @korean 리괘방어포즈
  */
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.2, 0.6, 0.3),   // Extended forward
-    elbow: new THREE.Euler(0, 0.4, 0),           // Slightly bent
-    wrist: new THREE.Euler(0, 0, 0),             // Straight for piercing
+    shoulder: new THREE.Euler(-0.3, 0.8, 0.5),   // FORWARD aggressive - DISTINCT
+    elbow: new THREE.Euler(0, 0.5, 0),           // Slightly bent - ready to strike
+    wrist: new THREE.Euler(0, 0.1, 0),           // Straight for piercing
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.4, -0.2, -0.1), // Guard at chest
-    elbow: new THREE.Euler(0, -0.9, 0),          // Bent for protection
-    wrist: new THREE.Euler(0.1, 0, 0),           // Ready to strike
+    shoulder: new THREE.Euler(-0.3, -0.6, -0.3), // ALSO forward but lower - DISTINCT
+    elbow: new THREE.Euler(0, -0.6, 0),          // Bent ready position
+    wrist: new THREE.Euler(0.1, -0.1, 0),        // Ready to strike
   },
-  torso: new THREE.Euler(0, 0.2, 0), // Rotated for power
+  torso: new THREE.Euler(0.05, 0.3, 0), // HEAVY rotation for power - DISTINCT
   weight: "neutral",
   breathingRange: {
     min: 0.99,  // Shallow, controlled breathing
@@ -145,20 +151,22 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
  * - +15% shock damage on nerve strikes
  * - -30 consciousness on head hits
  * 
+ * ENHANCED: Arms PULLED BACK tight to body - coiled spring - VERY DISTINCT
+ * 
  * @korean 진괘방어포즈
  */
 export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.6, 0.2, 0.4),   // Chambered high
-    elbow: new THREE.Euler(0, 1.0, 0),           // Tightly bent
-    wrist: new THREE.Euler(0.3, 0, 0),           // Cocked for strike
+    shoulder: new THREE.Euler(-0.8, 0.3, 0.7),   // Chambered TIGHT to body - DISTINCT
+    elbow: new THREE.Euler(0, 1.4, 0),           // VERY tightly bent - 80 degrees
+    wrist: new THREE.Euler(0.4, 0.1, 0),         // Cocked for strike
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.6, -0.2, -0.4), // Chambered high
-    elbow: new THREE.Euler(0, -1.0, 0),          // Tightly bent
-    wrist: new THREE.Euler(0.3, 0, 0),           // Cocked for strike
+    shoulder: new THREE.Euler(-0.8, -0.3, -0.7), // Chambered TIGHT to body - DISTINCT
+    elbow: new THREE.Euler(0, -1.4, 0),          // VERY tightly bent - 80 degrees
+    wrist: new THREE.Euler(0.4, -0.1, 0),        // Cocked for strike
   },
-  torso: new THREE.Euler(-0.1, 0, 0), // Slight backward lean
+  torso: new THREE.Euler(-0.15, 0, 0), // INCREASED backward lean - DISTINCT
   weight: "back",
   breathingRange: {
     min: 0.96,  // Deep inhale for power
@@ -180,20 +188,22 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  * - +10% chaining speed on pressure sequences
  * - +10% lateral movement
  * 
+ * ENHANCED: Hands in windmill pattern - one high, one low - VERY DISTINCT
+ * 
  * @korean 손괘방어포즈
  */
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.4, 0.4, 0.3),   // Mid-level, flowing
-    elbow: new THREE.Euler(0, 0.5, 0),           // Slightly bent
-    wrist: new THREE.Euler(0.1, 0.3, 0),         // Rotated inward
+    shoulder: new THREE.Euler(-0.7, 0.7, 0.5),   // HIGH - windmill top - DISTINCT
+    elbow: new THREE.Euler(0, 0.6, 0),           // Extended up
+    wrist: new THREE.Euler(0.2, 0.4, 0),         // Rotated outward
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.3, -0.5, -0.2), // Lower guard
-    elbow: new THREE.Euler(0, -0.6, 0),          // Bent for coverage
-    wrist: new THREE.Euler(0, -0.3, 0),          // Ready to deflect
+    shoulder: new THREE.Euler(-0.1, -0.7, -0.3), // LOW - windmill bottom - DISTINCT
+    elbow: new THREE.Euler(0, -0.5, 0),          // Extended down
+    wrist: new THREE.Euler(-0.1, -0.4, 0),       // Rotated downward
   },
-  torso: new THREE.Euler(0, -0.15, 0), // Rotated for circular motion
+  torso: new THREE.Euler(0.05, -0.25, 0), // ROTATED for circular motion - DISTINCT
   weight: "neutral",
   breathingRange: {
     min: 0.985, // Rhythmic breathing
@@ -215,18 +225,20 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
  * - +10% adaptability/counter speed
  * - +15 bleed on rib shots
  * 
+ * ENHANCED: Hands VERY LOW - waist level - sweep ready - DISTINCT
+ * 
  * @korean 감괘방어포즈
  */
 export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.2, 0.3, 0.4),   // Low guard
-    elbow: new THREE.Euler(0, 0.7, 0),           // Bent for flow
-    wrist: new THREE.Euler(-0.1, 0.2, 0),        // Downward ready
+    shoulder: new THREE.Euler(-0.1, 0.5, 0.6),   // VERY LOW - waist level - DISTINCT
+    elbow: new THREE.Euler(0, 0.8, 0),           // Bent for flow
+    wrist: new THREE.Euler(-0.2, 0.3, 0),        // Downward ready
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.2, -0.3, -0.4), // Low guard
-    elbow: new THREE.Euler(0, -0.7, 0),          // Bent for flow
-    wrist: new THREE.Euler(-0.1, -0.2, 0),       // Downward ready
+    shoulder: new THREE.Euler(-0.1, -0.5, -0.6), // VERY LOW - waist level - DISTINCT
+    elbow: new THREE.Euler(0, -0.8, 0),          // Bent for flow
+    wrist: new THREE.Euler(-0.2, -0.3, 0),       // Downward ready
   },
   torso: new THREE.Euler(0, 0, 0), // Centered, no rotation
   weight: "neutral",
@@ -250,18 +262,20 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
  * - +15% block strength
  * - +10% counter-strike speed
  * 
+ * ENHANCED: Arms crossed in front of face - full defensive shell - VERY DISTINCT
+ * 
  * @korean 간괘방어포즈
  */
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.5, 0.1, 0.5),   // Tight to body
-    elbow: new THREE.Euler(0, 1.1, 0),           // Fully bent
-    wrist: new THREE.Euler(0.2, 0, 0),           // Defensive
+    shoulder: new THREE.Euler(-0.7, 0.2, 0.8),   // CROSSED in front - DISTINCT
+    elbow: new THREE.Euler(0, 1.3, 0),           // VERY tightly bent - full cover
+    wrist: new THREE.Euler(0.3, 0.2, 0),         // Protective
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.5, -0.1, -0.5), // Tight to body
-    elbow: new THREE.Euler(0, -1.1, 0),          // Fully bent
-    wrist: new THREE.Euler(0.2, 0, 0),           // Defensive
+    shoulder: new THREE.Euler(-0.7, -0.2, -0.8), // CROSSED in front - DISTINCT
+    elbow: new THREE.Euler(0, -1.3, 0),          // VERY tightly bent - full cover
+    wrist: new THREE.Euler(0.3, -0.2, 0),        // Protective
   },
   torso: new THREE.Euler(0, 0, 0), // Straight, unmoved
   weight: "neutral",
@@ -285,20 +299,22 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
  * - +20% ground-control advantage
  * - +20 bleed on takedowns
  * 
+ * ENHANCED: Hands at KNEE level - grappling ready - VERY DISTINCT
+ * 
  * @korean 곤괘방어포즈
  */
 export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.1, 0.2, 0.6),   // Very low
-    elbow: new THREE.Euler(0, 0.8, 0),           // Bent for grappling
-    wrist: new THREE.Euler(-0.2, 0.1, 0),        // Downward grip
+    shoulder: new THREE.Euler(0.1, 0.4, 0.8),    // VERY LOW - knee level - DISTINCT
+    elbow: new THREE.Euler(0, 0.9, 0),           // Bent for grappling
+    wrist: new THREE.Euler(-0.3, 0.2, 0),        // Downward grip
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.1, -0.2, -0.6), // Very low
-    elbow: new THREE.Euler(0, -0.8, 0),          // Bent for grappling
-    wrist: new THREE.Euler(-0.2, -0.1, 0),       // Downward grip
+    shoulder: new THREE.Euler(0.1, -0.4, -0.8),  // VERY LOW - knee level - DISTINCT
+    elbow: new THREE.Euler(0, -0.9, 0),          // Bent for grappling
+    wrist: new THREE.Euler(-0.3, -0.2, 0),       // Downward grip
   },
-  torso: new THREE.Euler(-0.05, 0, 0), // Slight forward, low
+  torso: new THREE.Euler(-0.08, 0, 0), // INCREASED forward, low - DISTINCT
   weight: "neutral",
   breathingRange: {
     min: 0.96,  // Deep diaphragm breathing

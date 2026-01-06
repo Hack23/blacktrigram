@@ -41,8 +41,11 @@ const getStanceColor = (stance: TrigramStance): number => {
 /**
  * StanceAura Component
  * 
- * Renders an animated 3D aura effect that pulses and glows based on
+ * Renders a SUBTLE animated 3D aura effect that pulses and glows based on
  * the player's stance and Ki energy level.
+ * 
+ * **UPDATED**: Reduced visibility to prevent "radiant circle" effect.
+ * Only visible at high Ki levels (>0.7), creating realistic energy visualization.
  * 
  * @example
  * ```tsx
@@ -72,55 +75,56 @@ export const StanceAura: React.FC<StanceAuraProps> = ({
 
     const time = state.clock.elapsedTime;
 
-    // Inner aura: fast pulse
+    // Inner aura: fast pulse - REDUCED scale
     if (innerAuraRef.current) {
-      const innerPulse = Math.sin(time * 3) * 0.1 + 1;
-      innerAuraRef.current.scale.setScalar(innerPulse * intensity);
+      const innerPulse = Math.sin(time * 3) * 0.05 + 1; // Reduced from 0.1
+      innerAuraRef.current.scale.setScalar(innerPulse * intensity * 0.7); // Reduced overall scale
       innerAuraRef.current.rotation.y = time * 0.5;
     }
 
-    // Outer aura: slow pulse
+    // Outer aura: slow pulse - REDUCED scale
     if (outerAuraRef.current) {
-      const outerPulse = Math.sin(time * 1.5) * 0.15 + 1;
-      outerAuraRef.current.scale.setScalar(outerPulse * intensity * 1.3);
+      const outerPulse = Math.sin(time * 1.5) * 0.08 + 1; // Reduced from 0.15
+      outerAuraRef.current.scale.setScalar(outerPulse * intensity * 0.9); // Reduced overall scale
       outerAuraRef.current.rotation.y = -time * 0.3;
     }
   });
 
-  // Only render if intensity is above threshold
-  if (intensity < 0.1) return null;
+  // INCREASED threshold - only render if intensity is HIGH (Ki > 0.7)
+  // This prevents constant "radiant circle" and makes aura meaningful
+  if (intensity < 0.7) return null;
 
   return (
     <group>
-      {/* Inner aura - solid sphere */}
+      {/* Inner aura - VERY subtle solid sphere - REDUCED opacity */}
       <mesh ref={innerAuraRef} position={[0, 1, 0]}>
-        <sphereGeometry args={[0.6, 16, 16]} />
+        <sphereGeometry args={[0.5, 16, 16]} /> {/* Reduced from 0.6 */}
         <meshBasicMaterial
           color={stanceColor}
           transparent
-          opacity={0.2 * intensity}
+          opacity={0.08 * intensity} // Reduced from 0.2 - VERY subtle
           wireframe={false}
         />
       </mesh>
 
-      {/* Outer aura - wireframe sphere */}
+      {/* Outer aura - VERY subtle wireframe sphere */}
       <mesh ref={outerAuraRef} position={[0, 1, 0]}>
-        <sphereGeometry args={[0.8, 16, 16]} />
+        <sphereGeometry args={[0.7, 16, 16]} /> {/* Reduced from 0.8 */}
         <meshBasicMaterial
           color={stanceColor}
           transparent
-          opacity={0.15 * intensity}
+          opacity={0.06 * intensity} // Reduced from 0.15 - VERY subtle
           wireframe
         />
       </mesh>
 
-      {/* Stance ring on ground */}
+      {/* Stance ring on ground - MORE visible (primary stance indicator) */}
       <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.45, 0.5, 32]} />
+        <ringGeometry args={[0.4, 0.45, 32]} /> {/* Thinner ring */}
         <meshBasicMaterial
           color={stanceColor}
           transparent
-          opacity={0.7 * intensity}
+          opacity={0.5 * intensity} // Reduced from 0.7 - subtle ground indicator
           side={THREE.DoubleSide}
         />
       </mesh>
