@@ -35,6 +35,12 @@ import type { StanceLaterality } from "../trigram/types";
  * - Weight slightly forward for aggressive positioning
  * - Breathing emphasizes chest expansion for power generation
  * 
+ * **Leg Position (Ap Seogi)**:
+ * - Feet shoulder-width apart (0.5m)
+ * - Front leg slightly bent, ready to step
+ * - Back leg providing power base
+ * - Natural, mobile stance for quick movement
+ * 
  * Combat Application:
  * - Direct frontal bone-breaking strikes
  * - High mobility (+15% movement speed from game-design.md)
@@ -56,6 +62,21 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
     wrist: new THREE.Euler(0.3, -0.1, 0),        // Flexed upward
   },
   torso: new THREE.Euler(0.15, 0, 0), // INCREASED forward lean - DISTINCT
+  
+  // NEW: Ap Seogi (Walking Stance) - Natural, mobile leg position
+  leftLeg: {
+    hip: new THREE.Euler(0.1, 0.05, 0),      // Slight forward, minimal rotation
+    knee: new THREE.Euler(0.2, 0, 0),        // 20° bend - ready to move
+    ankle: new THREE.Euler(-0.1, 0, 0),      // Slight dorsiflexion
+  },
+  rightLeg: {
+    hip: new THREE.Euler(0.05, -0.05, 0),    // Slightly back
+    knee: new THREE.Euler(0.15, 0, 0),       // 15° bend - stable base
+    ankle: new THREE.Euler(-0.08, 0, 0),     // Natural position
+  },
+  pelvis: new THREE.Euler(0.05, 0, 0),       // Slight forward tilt
+  stanceWidth: 0.5,                          // Shoulder width - mobile
+  
   weight: "forward",
   breathingRange: {
     min: 0.98,  // Slight chest expansion
