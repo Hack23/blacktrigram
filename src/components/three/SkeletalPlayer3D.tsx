@@ -47,7 +47,6 @@ import { getArchetypeColors } from "../../utils/colorUtils";
 import BoneRenderer from "./BoneRenderer";
 import MuscleSystem from "./MuscleSystem";
 import PlayerStateIndicators from "./PlayerStateIndicators";
-import StanceAura from "./StanceAura";
 
 /**
  * Get stance-specific color from Korean theming
@@ -1078,9 +1077,6 @@ export const SkeletalPlayer3D: React.FC<
     >
       {/* Inner group for sway animation and helpless lean */}
       <group position={swayPosition} rotation={[helplessRotation, 0, 0]}>
-      {/* Stance aura effect */}
-      <StanceAura stance={stance} intensity={ki / 100} animated />
-
       {/* Muscle system rendering with physical attributes for visual scaling */}
       <MuscleSystem 
         muscleStates={muscleStates} 
