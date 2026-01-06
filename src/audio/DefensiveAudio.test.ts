@@ -47,7 +47,7 @@ describe("Defensive Audio Integration", () => {
         expect(sfx).toBeDefined();
         expect(sfx?.id).toBe(`parry_deflect_${i}`);
         expect(sfx?.name).toContain("Parry Deflection");
-        expect(sfx?.name).toContain("막기");
+        expect(sfx?.name).toContain("받아넘기기");
         expect(sfx?.category).toBe("sfx");
         expect(sfx?.volume).toBe(0.65);
         expect(sfx?.pitch).toBe(1.2);
@@ -158,7 +158,7 @@ describe("Defensive Audio Integration", () => {
 
   describe("Korean Terminology", () => {
     it("should use 막기 (Makgi) for block success", () => {
-      const sfx = audioAssetRegistry.getSFX("parry_deflect_1");
+      const sfx = audioAssetRegistry.getSFX("block_success_1");
       expect(sfx?.name).toContain("막기");
     });
 
