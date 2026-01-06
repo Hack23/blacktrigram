@@ -427,6 +427,70 @@ function selectTechniqueForAction(
 }
 
 /**
+ * Determine if AI should switch stance laterality based on personality and tactical situation.
+ * 
+ * Strategic laterality decisions in Korean martial arts:
+ * - **Aggressive personality**: Prefers matched stances (same laterality) for offensive advantage
+ *   Matched stances expose centerlines, creating attack opportunities
+ * - **Defensive personality**: Prefers mismatched stances (opposite laterality) for protection
+ *   Mismatched stances naturally guard centerlines with lead hand
+ * - **Health-based modifier**: Low health increases defensive preference
+ * 
+ * @param aiLaterality - AI's current stance laterality
+ * @param opponentLaterality - Opponent's stance laterality  
+ * @param personality - AI personality archetype
+ * @param aiHealth - AI's current health (0-100)
+ * @param lastSwitchTime - Timestamp of last laterality switch
+ * @param currentTime - Current timestamp for cooldown check
+ * @returns true if AI should switch laterality, false otherwise
+ * 
+ * @korean AI 측면성 전환 결정
+ */
+function shouldAISwitchLaterality(
+  aiLaterality: "left" | "right",
+  opponentLaterality: "left" | "right",
+  personality: AIPersonality,
+  aiHealth: number,
+  lastSwitchTime: number,
+  currentTime: number
+): boolean {
+  // Cooldown: Don't switch more than once per 3 seconds
+  const LATERALITY_COOLDOWN = 3000;
+  if (currentTime - lastSwitchTime < LATERALITY_COOLDOWN) {
+    return false;
+  }
+
+  const isMatched = aiLaterality === opponentLaterality;
+  
+  // Aggressive AI: Prefer matched stances (offensive advantage)
+  // Defensive AI: Prefer mismatched stances (defensive protection)
+  const aggressionFactor = personality.aggressionLevel;
+  const defenseFactor = personality.defensePreference;
+  
+  // Health-based modifier: Lower health increases defensive behavior
+  const healthFactor = aiHealth / 100;
+  const effectiveAggression = aggressionFactor * Math.max(0.3, healthFactor);
+  const effectiveDefense = defenseFactor * (1.2 - healthFactor * 0.2);
+  
+  // Aggressive AI wants matched stances
+  if (effectiveAggression > 0.6 && !isMatched) {
+    return Math.random() < 0.3; // 30% chance to switch to matched
+  }
+  
+  // Defensive AI wants mismatched stances
+  if (effectiveDefense > 0.6 && isMatched) {
+    return Math.random() < 0.25; // 25% chance to switch to mismatched
+  }
+  
+  // Low health emergency: Switch to defensive mismatch
+  if (aiHealth < 30 && isMatched) {
+    return Math.random() < 0.4; // 40% chance when critically low health
+  }
+  
+  return false;
+}
+
+/**
  * AI state management
  */
 interface AIState {
@@ -460,6 +524,9 @@ interface UseAICombatConfig {
   };
   readonly onExecuteAction: (action: string, targetPosition?: Position) => void;
   readonly onStanceChange?: (stance: TrigramStance) => void;
+  readonly onLateralityChange?: () => void;
+  readonly playerLaterality?: "left" | "right";
+  readonly opponentLaterality?: "left" | "right";
 }
 
 /**
@@ -490,6 +557,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     arenaBounds,
     onExecuteAction,
     onStanceChange,
+    onLateralityChange,
+    playerLaterality,
+    opponentLaterality,
   } = config;
 
   // Initialize AI systems (persist across renders)
@@ -549,6 +619,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const [initialActionTime] = useState(() => Date.now());
   const nextActionRef = useRef(initialActionTime);
   const lastWarningTimeRef = useRef(0);
+  const lastLateralitySwitchRef = useRef(0); // Track last laterality switch for cooldown
 
   // Initialize previousDamageRef when round starts (issue #2529728007)
   useEffect(() => {
@@ -826,6 +897,24 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
           break;
       }
 
+      // Check for strategic laterality switch (Phase 8)
+      // AI decides whether to switch stance side based on personality and tactical situation
+      if (onLateralityChange && playerLaterality && opponentLaterality) {
+        const shouldSwitch = shouldAISwitchLaterality(
+          opponentLaterality, // Laterality for player index 1 (AI-controlled in this hook)
+          playerLaterality,   // Laterality for player index 0 (human-controlled in this hook)
+          adjustedPersonality,
+          player.health,
+          lastLateralitySwitchRef.current,
+          now
+        );
+        
+        if (shouldSwitch) {
+          onLateralityChange();
+          lastLateralitySwitchRef.current = now;
+        }
+      }
+
       // Execute action (technique and vital point are stored in aiState)
       executeAIAction(actionType, newTargetPosition);
 
@@ -871,9 +960,13 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     comboSystem,
     executeAIAction,
     onStanceChange,
+    onLateralityChange,
     player,
     opponent,
     aiState,
+    playerLaterality,
+    opponentLaterality,
+    adaptiveDifficulty,
   ]);
 
   return {

@@ -16,6 +16,7 @@ import {
   updatePlayerState,
   updateStatusEffects,
   resetPlayerState,
+  initializeBodyFacing,
 } from "./playerUtils";
 import type { PlayerState } from "../systems/player";
 
@@ -562,6 +563,81 @@ describe("playerUtils", () => {
 
       // MUSA should have different stats than HACKER
       expect(musa.attackPower).not.toBe(hacker.attackPower);
+    });
+  });
+
+  describe("initializeBodyFacing", () => {
+    it("should calculate correct initial facing angle toward opponent", () => {
+      const playerPos = { x: 0, y: 0 };
+      const opponentPos = { x: 10, y: 0 };
+      
+      const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
+      
+      // Facing right (0 degrees for +X axis)
+      expect(bodyFacing.currentAngle).toBeCloseTo(0, 1);
+      expect(bodyFacing.targetAngle).toBeCloseTo(0, 1);
+    });
+
+    it("should initialize with default rotation speed", () => {
+      const playerPos = { x: 0, y: 0 };
+      const opponentPos = { x: 5, y: 5 };
+      
+      const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
+      
+      expect(bodyFacing.rotationSpeed).toBe(45); // Default 45°/sec
+    });
+
+    it("should initialize with unlocked state", () => {
+      const playerPos = { x: 0, y: 0 };
+      const opponentPos = { x: 0, y: 10 };
+      
+      const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
+      
+      expect(bodyFacing.isLocked).toBe(false);
+      expect(bodyFacing.isTurning).toBe(false);
+    });
+
+    it("should initialize with zero head offset", () => {
+      const playerPos = { x: 100, y: 100 };
+      const opponentPos = { x: 200, y: 200 };
+      
+      const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
+      
+      expect(bodyFacing.headAngleOffset).toBe(0);
+    });
+
+    it("should handle different opponent positions", () => {
+      const playerPos = { x: 300, y: 400 };
+      
+      // Test facing opponent to the right
+      const facingRight = initializeBodyFacing(playerPos, { x: 500, y: 400 });
+      expect(facingRight.currentAngle).toBeCloseTo(0, 1);
+      
+      // Test facing opponent below (positive Y is down in top-down 2D)
+      const facingDown = initializeBodyFacing(playerPos, { x: 300, y: 600 });
+      expect(facingDown.currentAngle).toBeCloseTo(90, 1);
+      
+      // Test facing opponent to the left
+      const facingLeft = initializeBodyFacing(playerPos, { x: 100, y: 400 });
+      expect(Math.abs(facingLeft.currentAngle - 180)).toBeLessThan(1);
+      
+      // Test facing opponent above
+      const facingUp = initializeBodyFacing(playerPos, { x: 300, y: 200 });
+      expect(facingUp.currentAngle).toBeCloseTo(270, 1);
+    });
+
+    it("should return BodyFacing with all required properties", () => {
+      const playerPos = { x: 0, y: 0 };
+      const opponentPos = { x: 1, y: 1 };
+      
+      const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
+      
+      expect(bodyFacing).toHaveProperty("currentAngle");
+      expect(bodyFacing).toHaveProperty("targetAngle");
+      expect(bodyFacing).toHaveProperty("rotationSpeed");
+      expect(bodyFacing).toHaveProperty("headAngleOffset");
+      expect(bodyFacing).toHaveProperty("isLocked");
+      expect(bodyFacing).toHaveProperty("isTurning");
     });
   });
 });

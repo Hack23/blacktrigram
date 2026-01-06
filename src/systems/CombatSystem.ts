@@ -1,5 +1,7 @@
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { Technique } from "../types/technique";
+import { getTechniqueById } from "../data/techniques";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
 import {
   applyBreathingDisruptionFromVitalPoint,
@@ -7,6 +9,7 @@ import {
   causesBreathingDisruption,
   updateBreathingDisruption,
 } from "./breathing";
+import BalanceSystem from "./combat/BalanceSystem";
 import ConsciousnessSystem from "./combat/ConsciousnessSystem";
 import {
   extractVitalPointCategory,
@@ -27,6 +30,13 @@ import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
+import {
+  determineAnimationTypeForTechnique,
+  getAnimationNameForType,
+  calculateSpeedModifierForDamage,
+  getAdjustedAnimationDuration,
+} from "./animation/TechniqueAnimationMapper";
+import type { DefensiveAnimationType } from "./animation/types";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -39,6 +49,7 @@ export class CombatSystem implements CombatSystemInterface {
   protected trigramSystem: TrigramSystem;
   private painSystem: PainResponseSystem;
   private consciousnessSystem: ConsciousnessSystem;
+  private balanceSystem: BalanceSystem;
 
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
@@ -54,6 +65,7 @@ export class CombatSystem implements CombatSystemInterface {
     this.trigramSystem = new TrigramSystem();
     this.painSystem = new PainResponseSystem();
     this.consciousnessSystem = new ConsciousnessSystem();
+    this.balanceSystem = new BalanceSystem();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
   }
@@ -72,6 +84,28 @@ export class CombatSystem implements CombatSystemInterface {
   public cleanupPlayerData(playerId: string): void {
     this.shockPainEffects.delete(playerId);
     this.lastHeadTraumaTime.delete(playerId);
+  }
+
+  /**
+   * Get the balance system instance for fall checking.
+   * 
+   * @returns BalanceSystem instance
+   * @public
+   * @korean 균형시스템가져오기
+   */
+  public getBalanceSystem(): BalanceSystem {
+    return this.balanceSystem;
+  }
+
+  /**
+   * Get the consciousness system instance for fall checking.
+   * 
+   * @returns ConsciousnessSystem instance
+   * @public
+   * @korean 의식시스템가져오기
+   */
+  public getConsciousnessSystem(): ConsciousnessSystem {
+    return this.consciousnessSystem;
   }
 
   /**
@@ -159,6 +193,9 @@ export class CombatSystem implements CombatSystemInterface {
     const critRoll = Math.random();
     const isCritical = critRoll <= (technique.critChance ?? 0.1);
 
+    // Determine animation information for technique
+    const animationInfo = this.getAnimationInfoForTechnique(technique);
+
     return {
       hit: true,
       damage: damageResult.totalDamage,
@@ -173,7 +210,85 @@ export class CombatSystem implements CombatSystemInterface {
       isCritical: vitalPointResult?.hit ?? false,
       isBlocked: false,
       targetedVitalPointId, // Pass through the targeted vital point ID
+      animation: animationInfo, // Add animation information
     };
+  }
+
+  /**
+   * Get animation information for a technique
+   * 
+   * Determines the skeletal animation to play, duration, and speed modifier
+   * based on technique configuration or automatic determination.
+   * 
+   * @param technique - Korean technique to execute
+   * @returns Animation information or undefined
+   * 
+   * @private
+   * @korean 기술애니메이션정보가져오기
+   */
+  private getAnimationInfoForTechnique(
+    technique: KoreanTechnique
+  ): CombatResult["animation"] {
+    // Check if technique has explicit animation config (from Technique interface)
+    // KoreanTechnique may not have animation field, so check the technique data
+    const techniqueData = this.getTechniqueData(technique);
+    
+    let animationType;
+    let speedModifier;
+
+    if (techniqueData?.animation) {
+      // Use explicit animation configuration
+      animationType = techniqueData.animation.type;
+      speedModifier = techniqueData.animation.speedModifier;
+    } else {
+      // Auto-determine animation from technique characteristics
+      const techniqueName =
+        technique.name?.english || technique.englishName || "";
+      const techniqueId = technique.id || "";
+      const damageType = technique.damageType || "";
+
+      animationType = determineAnimationTypeForTechnique(
+        techniqueName,
+        techniqueId,
+        damageType
+      );
+
+      // Calculate speed modifier based on technique damage
+      speedModifier = calculateSpeedModifierForDamage(technique.damage || 15);
+    }
+
+    // Get base animation name from animation type
+    const animationName = getAnimationNameForType(animationType);
+
+    // Calculate adjusted duration
+    const duration = getAdjustedAnimationDuration(
+      animationName,
+      speedModifier
+    );
+
+    // Get Korean technique name for display
+    const techniqueDisplayName =
+      technique.name?.korean || technique.koreanName || technique.id;
+
+    return {
+      animationName,
+      duration,
+      speedModifier,
+      techniqueDisplayName,
+    };
+  }
+
+  /**
+   * Get Technique data if this KoreanTechnique has an associated Technique definition
+   * 
+   * @param technique - Korean technique
+   * @returns Technique data or null
+   * 
+   * @private
+   * @korean 기술데이터가져오기
+   */
+  private getTechniqueData(technique: KoreanTechnique): Technique | null {
+    return getTechniqueById(technique.id) ?? null;
   }
 
   /**
@@ -186,11 +301,12 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
     // Start with base result
-    let { updatedAttacker, updatedDefender } = CombatSystem.applyCombatResult(
+    const { updatedAttacker, updatedDefender: initialDefender } = CombatSystem.applyCombatResult(
       result,
       attacker,
       defender
     );
+    let updatedDefender = initialDefender;
 
     if (result.hit && result.damage > 0) {
       // Determine vital point category and severity from hit result
@@ -250,6 +366,15 @@ export class CombatSystem implements CombatSystemInterface {
         currentShockEffect
       );
       updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
+
+      // Apply balance disruption from the hit
+      // Determine body region from vital point or use default
+      const bodyRegion = this.getBodyRegionFromResult(result);
+      updatedDefender = this.balanceSystem.disruptBalance(
+        updatedDefender,
+        result.damage,
+        bodyRegion
+      );
 
       // Apply breathing disruption for torso vital point strikes
       if (result.vitalPointHit && result.targetedVitalPointId) {
@@ -320,7 +445,56 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Updates player states for recovery (pain dissipation, consciousness recovery).
+   * Determines body region from combat result for balance disruption.
+   * 
+   * Maps vital points to body regions for balance system integration.
+   * Uses string matching on vital point IDs as a pragmatic heuristic since
+   * VitalPoint interface doesn't currently include a bodyRegion property.
+   * 
+   * Future improvement: Add bodyRegion: BodyRegion to VitalPoint interface
+   * for more robust region mapping without string pattern matching.
+   * 
+   * @param result - Combat result
+   * @returns Body region that was struck
+   * @private
+   * @korean 신체부위결정
+   */
+  private getBodyRegionFromResult(result: CombatResult): BodyRegion {
+    // If we have a targeted vital point, try to determine region
+    if (result.targetedVitalPointId) {
+      const vitalPoint = this.vitalPointSystem.getVitalPointById(
+        result.targetedVitalPointId
+      );
+      
+      if (vitalPoint) {
+        const pointId = vitalPoint.id.toLowerCase();
+        
+        // Check for leg/lower body targets
+        if (pointId.includes('leg') || pointId.includes('knee') || 
+            pointId.includes('ankle') || pointId.includes('thigh')) {
+          return BodyRegion.LEFT_LEG; // Generic leg for balance disruption
+        }
+        
+        // Check for head targets
+        if (pointId.includes('head') || pointId.includes('temple') || 
+            pointId.includes('jaw') || pointId.includes('nose')) {
+          return BodyRegion.HEAD;
+        }
+        
+        // Check for arm targets
+        if (pointId.includes('arm') || pointId.includes('elbow') || 
+            pointId.includes('wrist') || pointId.includes('shoulder')) {
+          return BodyRegion.LEFT_ARM;
+        }
+      }
+    }
+    
+    // Default to torso for general strikes
+    return BodyRegion.TORSO;
+  }
+
+  /**
+   * Updates player states for recovery (pain dissipation, consciousness recovery, balance recovery).
    * Call this regularly in game loop.
    *
    * @param player - Player to update
@@ -340,6 +514,9 @@ export class CombatSystem implements CombatSystemInterface {
       deltaTime,
       lastTrauma
     );
+
+    // Apply balance recovery
+    updatedPlayer = this.balanceSystem.applyRecovery(updatedPlayer, deltaTime);
 
     // Clean up expired shock pain effects
     const shockEffect = this.shockPainEffects.get(player.id);
@@ -682,6 +859,79 @@ export class CombatSystem implements CombatSystemInterface {
       attacker.archetype, // Attacker archetype for offensive modifiers
       defender.archetype // Defender archetype for defensive modifiers
     );
+  }
+
+  /**
+   * Process defensive action and determine animation type.
+   * 
+   * Determines the appropriate defensive animation based on:
+   * - Defender's balance and stamina (defensive power)
+   * - Attacker's technique power
+   * - Combat readiness state
+   * 
+   * **Korean**: 방어 행동 처리
+   * 
+   * @param defender - Defending player state
+   * @param attacker - Attacking player state (unused but kept for future enhancements)
+   * @param attackPower - Power of the incoming attack
+   * @returns Defensive animation type to play (parry_deflect, block_success, or guard_break)
+   * 
+   * @example
+   * ```typescript
+   * const animType = combatSystem.processDefensiveAction(
+   *   defender,
+   *   attacker,
+   *   technique.damage
+   * );
+   * // Returns: 'parry_deflect', 'block_success', or 'guard_break'
+   * ```
+   * 
+   * @public
+   * @korean 방어행동처리
+   */
+  public processDefensiveAction(
+    defender: PlayerState,
+    _attacker: PlayerState,
+    attackPower: number
+  ): Exclude<DefensiveAnimationType, 'guard_recovery'> {
+    // Guard Break: Check balance threshold first (highest priority condition)
+    if (defender.balance < 30) {
+      return "guard_break";
+    }
+
+    // Calculate defensive power based on balance and stamina
+    // Balance represents physical stability (0-100)
+    // Stamina represents energy reserves (0-100)
+    const balanceFactor = defender.balance / 100;
+    const staminaFactor = defender.stamina / 100;
+    
+    // Apply defensive modifiers from effects
+    const effectModifiers = getEffectModifiers(defender);
+    const defenseMultiplier = effectModifiers.defense;
+    
+    // Defense stat provides moderate bonus (normalized to 0.5-1.5 range for typical 5-15 defense)
+    const defenseBonus = Math.max(0.5, Math.min(1.5, defender.defense / 10));
+    
+    // Calculate final defensive power
+    const defensePower = balanceFactor * staminaFactor * 100 * defenseMultiplier * defenseBonus;
+
+    // Determine defensive outcome based on power ratio
+    // Parry: Strong defense (1.8x attack power or more) - Perfect deflection
+    if (defensePower >= attackPower * 1.8) {
+      return "parry_deflect";
+    }
+    // Block Success: Adequate defense (1.0x to 1.8x attack power) - Absorb impact
+    else if (defensePower >= attackPower) {
+      return "block_success";
+    }
+    // Guard Break: Defense insufficient against powerful attack (<60% of attack power)
+    else if (defensePower < attackPower * 0.6) {
+      return "guard_break";
+    }
+    // Block Success: Marginal defense (60-100% of attack power) - barely hold
+    else {
+      return "block_success";
+    }
   }
 
   /**

@@ -173,4 +173,123 @@ describe("StanceManager", () => {
       expect(Object.values(TrigramStance)).toContain(recommendation);
     });
   });
+
+  describe("Laterality Support", () => {
+    it("should initialize with right laterality by default", () => {
+      expect(stanceManager.getCurrentLaterality()).toBe("right");
+    });
+
+    it("should switch stance side successfully", () => {
+      const result = stanceManager.switchStanceSide(player, "right");
+
+      expect(result.success).toBe(true);
+      expect(result.laterality).toBe("left");
+      expect(stanceManager.getCurrentLaterality()).toBe("left");
+    });
+
+    it("should toggle between left and right", () => {
+      // First switch: right -> left
+      const firstSwitch = stanceManager.switchStanceSide(player, "right");
+      expect(firstSwitch.laterality).toBe("left");
+
+      // Wait for cooldown to expire
+      const playerAfterCooldown: PlayerState = {
+        ...firstSwitch.updatedPlayer,
+        lastStanceChangeTime: Date.now() - 600, // 600ms ago (> 500ms cooldown)
+      };
+
+      // Second switch: left -> right
+      const secondSwitch = stanceManager.switchStanceSide(playerAfterCooldown, "left");
+      expect(secondSwitch.success).toBe(true);
+      expect(secondSwitch.laterality).toBe("right");
+      expect(stanceManager.getCurrentLaterality()).toBe("right");
+    });
+
+    it("should cost 2 stamina for stance side switch", () => {
+      const originalStamina = player.stamina;
+      const result = stanceManager.switchStanceSide(player, "right");
+
+      expect(result.success).toBe(true);
+      expect(result.cost.stamina).toBe(2);
+      expect(result.cost.ki).toBe(0);
+      expect(result.updatedPlayer.stamina).toBe(originalStamina - 2);
+    });
+
+    it("should take 400ms for stance side switch", () => {
+      const result = stanceManager.switchStanceSide(player, "right");
+
+      expect(result.success).toBe(true);
+      expect(result.cost.timeMilliseconds).toBe(400);
+    });
+
+    it("should fail if player has insufficient stamina", () => {
+      const lowStaminaPlayer: PlayerState = {
+        ...player,
+        stamina: 1,
+      };
+
+      const result = stanceManager.switchStanceSide(lowStaminaPlayer, "right");
+
+      expect(result.success).toBe(false);
+      expect(result.message).toContain("Insufficient stamina");
+      expect(stanceManager.getCurrentLaterality()).toBe("right"); // Should not change
+    });
+
+    it("should respect cooldown period", () => {
+      // First switch
+      const firstResult = stanceManager.switchStanceSide(player, "right");
+      expect(firstResult.success).toBe(true);
+
+      // Immediate second switch (should fail due to cooldown)
+      const secondResult = stanceManager.switchStanceSide(firstResult.updatedPlayer, "left");
+      expect(secondResult.success).toBe(false);
+      expect(secondResult.message).toContain("cooldown");
+    });
+
+    it("should include laterality in stance change results", () => {
+      const result = stanceManager.changeStance(player, TrigramStance.TAE);
+
+      expect(result.laterality).toBe("right"); // Default laterality
+    });
+
+    it("should maintain laterality when changing trigram stance", () => {
+      // Switch to left laterality
+      const lateralitySwitch = stanceManager.switchStanceSide(player, "right");
+      expect(lateralitySwitch.laterality).toBe("left");
+
+      // Wait for cooldown
+      const updatedPlayer: PlayerState = {
+        ...lateralitySwitch.updatedPlayer,
+        lastStanceChangeTime: Date.now() - 600, // 600ms ago
+      };
+
+      // Change trigram stance
+      const stanceChange = stanceManager.changeStance(updatedPlayer, TrigramStance.LI);
+      
+      // Laterality should remain left
+      expect(stanceChange.laterality).toBe("left");
+      expect(stanceManager.getCurrentLaterality()).toBe("left");
+    });
+
+    it("should allow stance side switch and stance change independently", () => {
+      // Change stance first
+      const stanceChange = stanceManager.changeStance(player, TrigramStance.TAE);
+      expect(stanceChange.success).toBe(true);
+      expect(stanceManager.getCurrent()).toBe(TrigramStance.TAE);
+
+      // Wait for cooldown
+      const updatedPlayer: PlayerState = {
+        ...stanceChange.updatedPlayer,
+        lastStanceChangeTime: Date.now() - 600,
+      };
+
+      // Switch laterality
+      const lateralitySwitch = stanceManager.switchStanceSide(updatedPlayer, "right");
+      expect(lateralitySwitch.success).toBe(true);
+      expect(lateralitySwitch.laterality).toBe("left");
+      
+      // Stance should remain TAE
+      expect(stanceManager.getCurrent()).toBe(TrigramStance.TAE);
+    });
+  });
 });

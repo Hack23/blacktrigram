@@ -314,25 +314,141 @@ export const MuscleMesh: React.FC<MuscleMeshProps> = ({
 };
 
 /**
+ * Calculate muscle scale factor based on muscle mass
+ * 
+ * Maps muscle mass (kg) to visual scale factor for muscle rendering.
+ * Uses normalized range around average muscle mass of 35kg.
+ * 
+ * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
+ * @returns Scale factor for muscle geometry (typically 0.93-1.09)
+ * 
+ * @korean 근육크기계산
+ */
+const calculateMuscleScaleFactor = (muscleMass: number): number => {
+  // Reference: 35kg average muscle mass → 1.0 scale
+  const referenceMass = 35;
+  const massRatio = muscleMass / referenceMass;
+  
+  // Apply square root to make scaling more gradual and realistic
+  // 32kg → ~0.93 scale, 35kg → 1.0 scale, 42kg → ~1.09 scale
+  return Math.sqrt(massRatio);
+};
+
+/**
+ * Calculate fat layer opacity based on fat mass
+ * 
+ * Maps fat mass (kg) to visual opacity for fat layer rendering.
+ * Lower fat mass = less visible fat layer, higher = more prominent.
+ * 
+ * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
+ * @returns Opacity value for fat layer (0.0-0.5)
+ * 
+ * @korean 지방층투명도계산
+ */
+const calculateFatLayerOpacity = (fatMass: number): number => {
+  // Reference: 12kg average fat mass → moderate opacity
+  const minFat = 8;
+  const maxFat = 22;
+  const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
+  
+  // Clamp to 0-0.5 range (0 = invisible, 0.5 = semi-visible layer)
+  return Math.max(0, Math.min(0.5, normalizedFat * 0.5));
+};
+
+/**
+ * Calculate fat layer thickness based on fat mass
+ * 
+ * Maps fat mass to additional geometry scale for fat layer.
+ * 
+ * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
+ * @returns Scale increase for fat layer (0-0.15)
+ * 
+ * @korean 지방층두께계산
+ */
+const calculateFatLayerThickness = (fatMass: number): number => {
+  // Reference: 12kg average → minimal thickness
+  const minFat = 8;
+  const maxFat = 22;
+  const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
+  
+  // Fat layer adds 0-15% to muscle size
+  return Math.max(0, Math.min(0.15, normalizedFat * 0.15));
+};
+
+/**
  * Complete muscle system rendering all muscle groups
  * 
  * @param muscleStates - Map of muscle group names to tension levels (0-1)
  * @param isExhausted - Whether character is exhausted (triggers shaking)
+ * @param physicalAttributes - Physical attributes (muscleMass, fatMass) for visual scaling
  * 
  * @korean 전체근육시스템
  */
 export interface MuscleSystemProps {
   readonly muscleStates: Map<string, number>;
   readonly isExhausted?: boolean;
+  readonly physicalAttributes?: {
+    readonly muscleMass: number;
+    readonly fatMass: number;
+  };
 }
 
 export const MuscleSystem: React.FC<MuscleSystemProps> = ({
   muscleStates,
   isExhausted = false,
+  physicalAttributes,
 }) => {
+  // Calculate scaling factors based on physical attributes
+  const muscleScaleFactor = useMemo(() => {
+    if (!physicalAttributes) return 1.0;
+    return calculateMuscleScaleFactor(physicalAttributes.muscleMass);
+  }, [physicalAttributes]);
+
+  const fatLayerOpacity = useMemo(() => {
+    if (!physicalAttributes) return 0.0;
+    return calculateFatLayerOpacity(physicalAttributes.fatMass);
+  }, [physicalAttributes]);
+
+  const fatLayerThickness = useMemo(() => {
+    if (!physicalAttributes) return 0.0;
+    return calculateFatLayerThickness(physicalAttributes.fatMass);
+  }, [physicalAttributes]);
+
+  // Memoize scaled muscle groups to avoid recreating them on every render
+  const scaledMuscleGroups = useMemo(() => {
+    return Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => ({
+      name,
+      muscleGroup: {
+        ...muscleGroup,
+        baseScale: new THREE.Vector3(
+          muscleGroup.baseScale.x * muscleScaleFactor,
+          muscleGroup.baseScale.y * muscleScaleFactor,
+          muscleGroup.baseScale.z * muscleScaleFactor
+        ),
+        maxFlexScale: new THREE.Vector3(
+          muscleGroup.maxFlexScale.x * muscleScaleFactor,
+          muscleGroup.maxFlexScale.y * muscleScaleFactor,
+          muscleGroup.maxFlexScale.z * muscleScaleFactor
+        ),
+      },
+    }));
+  }, [muscleScaleFactor]);
+
+  // Memoize fat layer scales to avoid creating Vector3s on every render
+  const fatLayerScales = useMemo(() => {
+    return scaledMuscleGroups.map(({ muscleGroup }) => {
+      return [
+        muscleGroup.baseScale.x * (1 + fatLayerThickness),
+        muscleGroup.baseScale.y * (1 + fatLayerThickness),
+        muscleGroup.baseScale.z * (1 + fatLayerThickness),
+      ] as [number, number, number];
+    });
+  }, [scaledMuscleGroups, fatLayerThickness]);
+
   return (
     <group data-testid="muscle-system">
-      {Object.entries(MUSCLE_GROUPS).map(([name, muscleGroup]) => {
+      {/* Muscle groups with scaled size based on muscle mass */}
+      {scaledMuscleGroups.map(({ name, muscleGroup }) => {
         const tension = muscleStates.get(name) ?? 0;
         const isShaking = 
           isExhausted && 
@@ -347,6 +463,44 @@ export const MuscleSystem: React.FC<MuscleSystemProps> = ({
           />
         );
       })}
+
+      {/* Fat layer rendering (only visible when fat mass is significant) */}
+      {fatLayerOpacity > 0.05 && (
+        <group data-testid="fat-layer">
+          {scaledMuscleGroups.map(({ name }, index) => {
+            // Get original muscle group for geometry params
+            const originalMuscleGroup = MUSCLE_GROUPS[name as keyof typeof MUSCLE_GROUPS];
+
+            return (
+              <mesh
+                key={`fat-${name}`}
+                position={originalMuscleGroup.position}
+                scale={fatLayerScales[index]}
+                castShadow
+                receiveShadow
+                data-testid={`fat-layer-${originalMuscleGroup.name}`}
+              >
+                <capsuleGeometry
+                  args={[
+                    originalMuscleGroup.geometryParams.radius,
+                    originalMuscleGroup.geometryParams.length,
+                    originalMuscleGroup.geometryParams.capSegments,
+                    originalMuscleGroup.geometryParams.radialSegments,
+                  ]}
+                />
+                <meshStandardMaterial
+                  color={KOREAN_COLORS.SKIN_TONE}
+                  metalness={0.05}
+                  roughness={0.95}
+                  transparent={true}
+                  opacity={fatLayerOpacity}
+                  depthWrite={false}
+                />
+              </mesh>
+            );
+          })}
+        </group>
+      )}
     </group>
   );
 };

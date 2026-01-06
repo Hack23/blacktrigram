@@ -16,6 +16,118 @@ import { EffectType } from "../effects";
 import { PlayerState } from "../player";
 import { KoreanTechnique } from "../vitalpoint";
 
+/**
+ * Stance laterality representing which foot/side is forward.
+ * 
+ * **Korean**: 자세 측면성
+ * 
+ * In authentic Korean martial arts (태권도, 합기도, 택견), stances have
+ * distinct left and right configurations:
+ * - **왼발서기 (Oenbal Seogi)**: Left foot forward, left guard high
+ * - **오른발서기 (Oreun Bal Seogi)**: Right foot forward, right guard high
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 측면성
+ */
+export type StanceLaterality = "left" | "right";
+
+/**
+ * Combined stance with laterality for complete stance specification.
+ * 
+ * **Korean**: 측면 포함 자세
+ * 
+ * Combines the trigram stance (8 types) with laterality (2 sides) to create
+ * 16 distinct stance configurations. Format: `{stance}_{laterality}`
+ * 
+ * Examples:
+ * - "geon_left" - Heaven stance, left foot forward
+ * - "tae_right" - Lake stance, right foot forward
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 측면포함자세
+ */
+export type StanceWithSide = `${TrigramStance}_${StanceLaterality}`;
+
+/**
+ * Parse a combined stance+laterality string into its components.
+ * 
+ * **Korean**: 자세 측면 분리
+ * 
+ * Takes a string in the format "stance_laterality" and returns the
+ * individual stance and laterality components.
+ * 
+ * @param stanceWithSide - Combined stance string (e.g., "geon_left")
+ * @returns Object with stance and laterality, or null if invalid format
+ * 
+ * @example
+ * ```typescript
+ * const result = parseStanceWithSide("geon_left");
+ * // { stance: "geon", laterality: "left" }
+ * 
+ * const invalid = parseStanceWithSide("invalid");
+ * // null
+ * ```
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 자세측면분리
+ */
+export function parseStanceWithSide(
+  stanceWithSide: string
+): { stance: TrigramStance; laterality: StanceLaterality } | null {
+  const parts = stanceWithSide.split("_");
+  if (parts.length !== 2) {
+    return null;
+  }
+
+  const [stancePart, lateralityPart] = parts;
+  
+  // Validate stance
+  if (!Object.values(TrigramStance).includes(stancePart as TrigramStance)) {
+    return null;
+  }
+  
+  // Validate laterality
+  if (lateralityPart !== "left" && lateralityPart !== "right") {
+    return null;
+  }
+
+  return {
+    stance: stancePart as TrigramStance,
+    laterality: lateralityPart as StanceLaterality,
+  };
+}
+
+/**
+ * Create a combined stance+laterality string.
+ * 
+ * **Korean**: 자세 측면 결합
+ * 
+ * Combines a trigram stance and laterality into a single string identifier.
+ * 
+ * @param stance - Trigram stance
+ * @param laterality - Stance laterality
+ * @returns Combined string in format "stance_laterality"
+ * 
+ * @example
+ * ```typescript
+ * const combined = combineStanceWithSide("geon", "left");
+ * // "geon_left"
+ * ```
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 자세측면결합
+ */
+export function combineStanceWithSide(
+  stance: TrigramStance,
+  laterality: StanceLaterality
+): StanceWithSide {
+  return `${stance}_${laterality}` as StanceWithSide;
+}
+
 export interface TrigramTransitionCost {
   readonly ki: number;
   readonly stamina: number;

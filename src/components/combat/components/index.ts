@@ -17,12 +17,14 @@ export { default as VitalPointOverlayControls } from "./VitalPointOverlayControl
 export { ActionFeedback, TechniqueName } from "./ActionFeedback";
 export { ComboCounter } from "./ComboCounter";
 export { DamageNumbers } from "./DamageNumbers";
+export { TechniqueNameDisplay } from "./TechniqueNameDisplay";
 
 // Player State Visual Indicators
 export { BalanceIndicator } from "./BalanceIndicator";
 export { BloodLossOverlay } from "./BloodLossOverlay";
 export { BodyPartHealthDisplay } from "./BodyPartHealthDisplay";
 export { ConsciousnessBlur } from "./ConsciousnessBlur";
+export { GuardIndicator } from "./GuardIndicator";
 export { PainVignette } from "./PainVignette";
 export { PlayerStateOverlay } from "./PlayerStateOverlay";
 export { StaminaWarning } from "./StaminaWarning";
@@ -66,6 +68,7 @@ export type { RoundAnnouncementProps, RoundStats } from "./RoundAnnouncement";
 export type { RoundStartAnnouncementProps } from "./RoundStartAnnouncement";
 export type { TechniqueBarProps } from "./TechniqueBar";
 export type { TechniqueCardProps } from "./TechniqueCard";
+export type { TechniqueNameDisplayProps } from "./TechniqueNameDisplay";
 export type {
   TraumaOverlay3DProps,
   Injury,
@@ -79,6 +82,7 @@ export type { BalanceIndicatorProps } from "./BalanceIndicator";
 export type { BloodLossOverlayProps } from "./BloodLossOverlay";
 export type { BodyPartHealthDisplayProps } from "./BodyPartHealthDisplay";
 export type { ConsciousnessBlurProps } from "./ConsciousnessBlur";
+export type { GuardIndicatorProps } from "./GuardIndicator";
 export type { PainVignetteProps } from "./PainVignette";
 export type { PlayerStateOverlayProps } from "./PlayerStateOverlay";
 export type { StaminaWarningProps } from "./StaminaWarning";

@@ -20,6 +20,8 @@ import { TRIGRAM_STANCES_ORDER } from "../systems/trigram/types";
 export interface ControlBinding {
   /** Stance selection keys (1-8 by default) */
   readonly stances: readonly string[];
+  /** Technique execution keys (Q-E-R-T-Y-F-G-Z-X-C by default) */
+  readonly techniques: readonly string[];
   /** Attack action key */
   readonly attack: string;
   /** Block/Guard action key */
@@ -31,12 +33,10 @@ export interface ControlBinding {
     readonly left: string;
     readonly right: string;
   };
-  /** Special action keys */
-  readonly special: {
-    readonly precision: string;
-    readonly quickSwitch: string;
-    readonly reset: string;
-  };
+  /** Vital points overlay toggle key */
+  readonly vitalPointsOverlay: string;
+  /** Pause/Menu keys */
+  readonly pause: readonly string[];
 }
 
 /**
@@ -46,10 +46,18 @@ const STORAGE_KEY = "blacktrigram_controls";
 
 /**
  * Default control bindings following game design specifications
- * Based on game-design.md lines 942-947
+ * NEW: Conflict-free control scheme with Q-E-R-T-Y-F-G-Z-X-C for techniques
+ * 
+ * Uses keys around WASD that are easy to reach with left hand
+ * No conflicts with movement, browser shortcuts, or function keys
+ * 
+ * All keys stored in lowercase for consistent comparison
+ * 
+ * @see CONTROLS.md for complete documentation
  */
 const DEFAULT_BINDINGS: ControlBinding = {
   stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+  techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
   attack: " ", // Spacebar
   block: "b",
   movement: {
@@ -58,11 +66,8 @@ const DEFAULT_BINDINGS: ControlBinding = {
     left: "a",
     right: "d",
   },
-  special: {
-    precision: "Control",
-    quickSwitch: "q",
-    reset: "r",
-  },
+  vitalPointsOverlay: "v",
+  pause: ["escape", "m"],
 };
 
 /**
@@ -213,6 +218,33 @@ export class ControlMapper {
   }
 
   /**
+   * Get technique index for a key
+   * 
+   * @param key - Keyboard key
+   * @returns Technique index (0-9) or null
+   * @korean 기술 키 확인
+   */
+  getTechniqueForKey(key: string): number | null {
+    const normalizedKey = key.toLowerCase();
+    const index = this.bindings.techniques.indexOf(normalizedKey);
+    return index >= 0 ? index : null;
+  }
+
+  /**
+   * Get key for technique index
+   * 
+   * @param index - Technique index (0-9)
+   * @returns Key or null
+   * @korean 기술 인덱스로 키 조회
+   */
+  getKeyForTechnique(index: number): string | null {
+    if (index < 0 || index >= this.bindings.techniques.length) {
+      return null;
+    }
+    return this.bindings.techniques[index];
+  }
+
+  /**
    * Check if a key is bound to an action
    * 
    * @param key - Keyboard key to check
@@ -238,12 +270,16 @@ export class ControlMapper {
     if (normalizedKey === movement.left.toLowerCase()) return "move_left";
     if (normalizedKey === movement.right.toLowerCase()) return "move_right";
 
-    // Check special
-    const special = this.bindings.special;
-    if (normalizedKey === special.precision.toLowerCase()) return "precision";
-    if (normalizedKey === special.quickSwitch.toLowerCase())
-      return "quick_switch";
-    if (normalizedKey === special.reset.toLowerCase()) return "reset";
+    // Check vital points overlay
+    if (normalizedKey === this.bindings.vitalPointsOverlay.toLowerCase())
+      return "vital_points_overlay";
+
+    // Check pause keys
+    if (
+      this.bindings.pause.some((k) => k.toLowerCase() === normalizedKey)
+    ) {
+      return "pause";
+    }
 
     return null;
   }
@@ -266,18 +302,28 @@ export class ControlMapper {
       return false;
     }
 
+    // Check that techniques array has up to 10 entries
+    if (
+      !bindings.techniques ||
+      !Array.isArray(bindings.techniques) ||
+      bindings.techniques.length === 0 ||
+      bindings.techniques.length > 10
+    ) {
+      return false;
+    }
+
     // Check for duplicate keys
     const allKeys = [
       ...bindings.stances,
+      ...bindings.techniques,
       bindings.attack,
       bindings.block,
       bindings.movement.up,
       bindings.movement.down,
       bindings.movement.left,
       bindings.movement.right,
-      bindings.special.precision,
-      bindings.special.quickSwitch,
-      bindings.special.reset,
+      bindings.vitalPointsOverlay,
+      ...bindings.pause,
     ];
 
     const uniqueKeys = new Set(allKeys.map((k) => k.toLowerCase()));
@@ -303,15 +349,15 @@ export class ControlMapper {
 
     const allKeys = [
       ...bindings.stances,
+      ...bindings.techniques,
       bindings.attack,
       bindings.block,
       bindings.movement.up,
       bindings.movement.down,
       bindings.movement.left,
       bindings.movement.right,
-      bindings.special.precision,
-      bindings.special.quickSwitch,
-      bindings.special.reset,
+      bindings.vitalPointsOverlay,
+      ...bindings.pause,
     ];
 
     allKeys.forEach((key) => {

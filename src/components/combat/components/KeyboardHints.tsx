@@ -223,6 +223,17 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
                   fontWeight: "bold",
                 }}
               >
+                F
+              </span>{" "}
+              - Switch Side (측면 전환)
+            </div>
+            <div>
+              <span
+                style={{
+                  color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                  fontWeight: "bold",
+                }}
+              >
                 WASD
               </span>{" "}
               - Move

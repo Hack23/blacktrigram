@@ -12,6 +12,7 @@
 
 import type { PlayerArchetype, TrigramStance } from "./common";
 import type { FacialExpression, FacialDamageState } from "./facial";
+import type { BodyFacing } from "../systems/animation/types";
 
 /**
  * Balance state representing player stability in combat.
@@ -40,7 +41,15 @@ export type PlayerAnimation =
   | "walk"
   | "block"
   | "counter"
-  | "death";
+  | "death"
+  | "step_forward"
+  | "step_back"
+  | "step_left"
+  | "step_right"
+  | "step_forward_left"
+  | "step_forward_right"
+  | "step_back_left"
+  | "step_back_right";
 
 /**
  * Unified props for Player3D visual component.
@@ -70,6 +79,12 @@ export interface Player3DUnifiedProps {
    * @korean 현재자세
    */
   readonly stance: TrigramStance;
+
+  /**
+   * Stance laterality (left or right foot forward)
+   * @korean 측면성
+   */
+  readonly laterality?: "left" | "right";
 
   /**
    * 3D world position [x, y, z]
@@ -236,6 +251,18 @@ export interface Player3DUnifiedProps {
    * @korean 상대위치
    */
   readonly opponentPosition?: [number, number, number];
+
+  /**
+   * Body facing state for automatic opponent tracking (optional)
+   * @korean 몸향하기상태
+   */
+  readonly bodyFacing?: BodyFacing;
+
+  /**
+   * Callback to update body facing state
+   * @korean 몸향하기업데이트콜백
+   */
+  readonly onBodyFacingUpdate?: (bodyFacing: BodyFacing) => void;
 }
 
 /**

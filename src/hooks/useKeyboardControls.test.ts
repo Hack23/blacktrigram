@@ -316,21 +316,30 @@ describe("useKeyboardControls", () => {
         })
       );
 
-      // Precision mode
+      // Vital points overlay (v)
       act(() => {
-        const event = new KeyboardEvent("keydown", { key: "Control" });
+        const event = new KeyboardEvent("keydown", { key: "v" });
         window.dispatchEvent(event);
       });
-      expect(onAction).toHaveBeenCalledWith("precision");
+      expect(onAction).toHaveBeenCalledWith("vital_points_overlay");
 
       onAction.mockClear();
 
-      // Quick switch
+      // Pause (Escape)
       act(() => {
-        const event = new KeyboardEvent("keydown", { key: "q" });
+        const event = new KeyboardEvent("keydown", { key: "Escape" });
         window.dispatchEvent(event);
       });
-      expect(onAction).toHaveBeenCalledWith("quick_switch");
+      expect(onAction).toHaveBeenCalledWith("pause");
+
+      onAction.mockClear();
+
+      // Pause alternative (m)
+      act(() => {
+        const event = new KeyboardEvent("keydown", { key: "m" });
+        window.dispatchEvent(event);
+      });
+      expect(onAction).toHaveBeenCalledWith("pause");
     });
   });
 

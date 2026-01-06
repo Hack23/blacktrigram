@@ -146,6 +146,66 @@ export interface AnimationKeyframe {
 }
 
 /**
+ * Attack animation type categories
+ * 
+ * Defines the 5 base categories of attack animations with variants.
+ * Each technique maps to one of these animation types.
+ * 
+ * @public
+ * @category Animation
+ * @korean 공격애니메이션타입
+ */
+export enum AttackAnimationType {
+  // Punch category (주먹 타격)
+  PUNCH_HIGH = "punch_high",
+  PUNCH_MID = "punch_mid",
+  PUNCH_LOW = "punch_low",
+
+  // Kick category (발차기)
+  KICK_FRONT = "kick_front",
+  KICK_SIDE = "kick_side",
+  KICK_ROUNDHOUSE = "kick_round",
+
+  // Elbow category (팔꿈치 타격)
+  ELBOW_STRIKE = "elbow_strike",
+  ELBOW_UPPERCUT = "elbow_uppercut",
+
+  // Knee category (무릎 타격)
+  KNEE_STRIKE = "knee_strike",
+  KNEE_CLINCH = "knee_clinch",
+
+  // Pressure point category (급소 타격)
+  PRESSURE_POINT = "pressure_point",
+  PRESSURE_POINT_RAPID = "pressure_point_rapid",
+}
+
+/**
+ * Animation configuration for a technique
+ * 
+ * Links a technique to its specific attack animation with speed modifier.
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술애니메이션설정
+ */
+export interface TechniqueAnimationConfig {
+  /**
+   * Type of attack animation to play
+   * @korean 애니메이션타입
+   */
+  readonly type: AttackAnimationType;
+
+  /**
+   * Speed modifier (0.8-1.2)
+   * - Light techniques: 1.2x speed
+   * - Normal techniques: 1.0x speed
+   * - Heavy techniques: 0.8x speed
+   * @korean 속도배율
+   */
+  readonly speedModifier: number;
+}
+
+/**
  * Complete skeletal animation sequence
  * 
  * Sequence of keyframes defining a complete animation
@@ -462,4 +522,182 @@ export interface SkeletalAnimationState {
    * @korean 다음키프레임
    */
   nextKeyframeIndex: number;
+}
+
+/**
+ * Fighting stance guard pose configuration
+ * 
+ * Defines the default guard position for each trigram stance (팔괘),
+ * including arm positions, torso rotation, and weight distribution.
+ * Used for stance-specific idle animations at 60fps.
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세방어포즈
+ */
+export interface StanceGuardPose {
+  /**
+   * Left arm bone rotations (shoulder, elbow, wrist)
+   * @korean 왼팔
+   */
+  readonly leftArm: {
+    readonly shoulder: THREE.Euler;
+    readonly elbow: THREE.Euler;
+    readonly wrist: THREE.Euler;
+  };
+
+  /**
+   * Right arm bone rotations (shoulder, elbow, wrist)
+   * @korean 오른팔
+   */
+  readonly rightArm: {
+    readonly shoulder: THREE.Euler;
+    readonly elbow: THREE.Euler;
+    readonly wrist: THREE.Euler;
+  };
+
+  /**
+   * Torso rotation (spine upper bone)
+   * @korean 몸통회전
+   */
+  readonly torso: THREE.Euler;
+
+  /**
+   * Weight distribution (forward/neutral/back)
+   * @korean 무게중심
+   */
+  readonly weight: "forward" | "neutral" | "back";
+
+  /**
+   * Breathing animation range (min/max for chest movement)
+   * @korean 호흡범위
+   */
+  readonly breathingRange: {
+    readonly min: number;
+    readonly max: number;
+  };
+}
+
+/**
+ * Stance guard animation configuration
+ * 
+ * Extends base AnimationConfig with stance-specific guard pose data.
+ * Includes 4-6 frame breathing animation for realistic idle behavior.
+ * 
+ * @public
+ * @category Animation
+ * @korean 자세방어애니메이션설정
+ */
+export interface StanceGuardAnimationConfig {
+  /**
+   * Trigram stance identifier
+   * @korean 괘
+   */
+  readonly stance: string;
+
+  /**
+   * Korean name of stance
+   * @korean 한글이름
+   */
+  readonly koreanName: string;
+
+  /**
+   * English name of stance
+   * @korean 영어이름
+   */
+  readonly englishName: string;
+
+  /**
+   * Guard pose keyframe (default position)
+   * @korean 방어포즈
+   */
+  readonly guardPose: StanceGuardPose;
+
+  /**
+   * Breathing animation frames (4-6 frames)
+   * @korean 호흡프레임
+   */
+  readonly breathingFrames: number;
+
+  /**
+   * Target frames per second (60fps)
+   * @korean 초당프레임
+   */
+  readonly fps: number;
+
+  /**
+   * Breathing cycle loop enabled
+   * @korean 반복여부
+   */
+  readonly loop: boolean;
+
+  /**
+   * Animation priority (0 for idle guards)
+   * @korean 우선순위
+   */
+  readonly priority: number;
+}
+
+/**
+ * Mirror a guard pose for left/right stance laterality.
+ * 
+ * **Korean**: 자세 좌우 대칭
+ * 
+ * Creates a mirror-image guard pose by swapping left and right limb positions
+ * and negating lateral (Y-axis and Z-axis) rotations. This enables authentic
+ * left/right stance differentiation in Korean martial arts.
+ * 
+ * Key transformations:
+ * - Swap leftArm ↔ rightArm bone rotations
+ * - Negate Y rotation (lateral twist)
+ * - Negate Z rotation (roll)
+ * - Preserve X rotation (forward/back bend)
+ * - Keep weight distribution and breathing range unchanged
+ * 
+ * @param pose - Original guard pose to mirror
+ * @returns Mirrored guard pose with swapped and negated rotations
+ * 
+ * @example
+ * ```typescript
+ * // Create right-handed version of a left-handed guard
+ * const leftGeonGuard = GEON_HIGH_GUARD_POSE;
+ * const rightGeonGuard = mirrorGuardPose(leftGeonGuard);
+ * 
+ * // leftGeonGuard has left hand forward
+ * // rightGeonGuard has right hand forward (mirrored)
+ * ```
+ * 
+ * @public
+ * @category Animation
+ * @korean 방어포즈대칭
+ */
+export function mirrorGuardPose(pose: StanceGuardPose): StanceGuardPose {
+  // Helper to negate Y and Z rotations while preserving X
+  const mirrorEuler = (euler: THREE.Euler): THREE.Euler => {
+    return new THREE.Euler(
+      euler.x,      // Preserve forward/back bend
+      -euler.y,     // Negate lateral twist
+      -euler.z      // Negate roll
+    );
+  };
+
+  return {
+    // Swap left and right arms with mirrored rotations
+    leftArm: {
+      shoulder: mirrorEuler(pose.rightArm.shoulder),
+      elbow: mirrorEuler(pose.rightArm.elbow),
+      wrist: mirrorEuler(pose.rightArm.wrist),
+    },
+    rightArm: {
+      shoulder: mirrorEuler(pose.leftArm.shoulder),
+      elbow: mirrorEuler(pose.leftArm.elbow),
+      wrist: mirrorEuler(pose.leftArm.wrist),
+    },
+    // Mirror torso rotation
+    torso: mirrorEuler(pose.torso),
+    // Weight distribution remains the same
+    weight: pose.weight,
+    // Breathing range unchanged (not affected by laterality, reuse original object)
+    breathingRange: pose.breathingRange,
+  };
 }

@@ -507,12 +507,12 @@ export class AudioAssetRegistry {
       volume: 0.7,
     });
 
-    // Block Sounds - Success (4 variations)
+    // Block Sounds - Success (4 variations) - 막기 (Makgi)
     for (let i = 1; i <= 4; i++) {
       this.registerSFX(`block_success_${i}`, {
         id: `block_success_${i}`,
         type: "sound",
-        name: `Block Success ${i}`,
+        name: `Block Success ${i} (막기)`,
         category: "sfx",
         url: `/assets/audio/sfx/blocks/block_success_${i}.webm`,
         formats: ["audio/mp3", "audio/webm"],
@@ -521,17 +521,49 @@ export class AudioAssetRegistry {
       });
     }
 
-    // Block Sounds - Break (4 variations)
+    // Block Sounds - Break (4 variations) - 방어붕괴 (Bangeo Bunggoe)
     for (let i = 1; i <= 4; i++) {
       this.registerSFX(`block_break_${i}`, {
         id: `block_break_${i}`,
         type: "sound",
-        name: `Block Break ${i}`,
+        name: `Block Break ${i} (방어붕괴)`,
         category: "sfx",
         url: `/assets/audio/sfx/blocks/block_break_${i}.webm`,
         formats: ["audio/mp3", "audio/webm"],
         loaded: false,
         volume: 0.7, // 70% volume per acceptance criteria
+      });
+    }
+
+    // Defensive Animation Sounds - Parry Deflection (받아넘기기)
+    // Using dodge sounds as placeholder for parry whoosh/deflection
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`parry_deflect_${i}`, {
+        id: `parry_deflect_${i}`,
+        type: "sound",
+        name: `Parry Deflection ${i} (받아넘기기)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/movement/dodge_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.65, // Slightly lower for deflection sound
+        pitch: 1.2, // Higher pitch for quick deflection
+      });
+    }
+
+    // Defensive Animation Sounds - Guard Recovery (방어복구)
+    // Using stance change sounds for guard recovery
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`guard_recovery_${i}`, {
+        id: `guard_recovery_${i}`,
+        type: "sound",
+        name: `Guard Recovery ${i} (방어복구)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/movement/stance_change_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.6, // Lower volume for recovery motion
+        pitch: 0.9, // Slightly lower pitch for recovery
       });
     }
 

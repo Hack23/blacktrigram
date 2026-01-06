@@ -12,11 +12,15 @@
  */
 
 import { DamageType, KoreanText, TrigramStance } from "./common";
+import { TechniqueAnimationConfig } from "./skeletal";
 
 /**
  * Keyboard shortcut keys for technique selection.
  *
- * Mapped to top row keys (Q-P) for quick access during combat.
+ * **NEW LAYOUT**: Q-E-R-T-Y-F-G-Z-X-C - Zero conflicts with WASD movement!
+ * 
+ * Ergonomic keys surrounding WASD for quick access during combat.
+ * No overlap with movement keys (W, A, S, D) or browser shortcuts.
  * Supports up to 10 techniques with keyboard shortcuts.
  *
  * @public
@@ -24,15 +28,15 @@ import { DamageType, KoreanText, TrigramStance } from "./common";
  */
 export type TechniqueKey =
   | "Q"
-  | "W"
   | "E"
   | "R"
   | "T"
   | "Y"
-  | "U"
-  | "I"
-  | "O"
-  | "P";
+  | "F"
+  | "G"
+  | "Z"
+  | "X"
+  | "C";
 
 /**
  * Combat technique definition.
@@ -121,6 +125,24 @@ export interface Technique {
    * Defaults to "⚔️" if not specified in the UI.
    */
   readonly icon?: string;
+
+  /**
+   * Animation configuration for technique execution.
+   * 
+   * Links the technique to a specific attack animation type and speed modifier.
+   * When technique is executed, the appropriate animation is played at the specified speed.
+   * 
+   * **Korean**: 애니메이션 설정
+   * 
+   * @example
+   * ```typescript
+   * animation: {
+   *   type: AttackAnimationType.KICK_ROUNDHOUSE,
+   *   speedModifier: 1.1 // Slightly faster for precision
+   * }
+   * ```
+   */
+  readonly animation?: TechniqueAnimationConfig;
 }
 
 /**

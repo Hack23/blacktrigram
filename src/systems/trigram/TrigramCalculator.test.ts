@@ -239,4 +239,327 @@ describe("TrigramCalculator", () => {
       });
     });
   });
+
+  describe("calculateLateralityModifier", () => {
+    describe("mid-level attacks (centerline)", () => {
+      it("should return advantage for matched stances on mid attacks", () => {
+        // Left vs Left - matched stance, exposed centerline
+        expect(
+          TrigramCalculator.calculateLateralityModifier("left", "left", "mid")
+        ).toBe(1.15);
+
+        // Right vs Right - matched stance, exposed centerline
+        expect(
+          TrigramCalculator.calculateLateralityModifier("right", "right", "mid")
+        ).toBe(1.15);
+      });
+
+      it("should return disadvantage for mismatched stances on mid attacks", () => {
+        // Left vs Right - mismatched stance, protected centerline
+        expect(
+          TrigramCalculator.calculateLateralityModifier("left", "right", "mid")
+        ).toBe(0.90);
+
+        // Right vs Left - mismatched stance, protected centerline
+        expect(
+          TrigramCalculator.calculateLateralityModifier("right", "left", "mid")
+        ).toBe(0.90);
+      });
+
+      it("should apply 15% offensive advantage for matched mid-level attacks", () => {
+        const modifier = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "mid"
+        );
+        expect(modifier).toBe(1.15);
+        expect(modifier - 1.0).toBeCloseTo(0.15, 2);
+      });
+
+      it("should apply 10% defensive advantage for mismatched mid-level attacks", () => {
+        const modifier = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "right",
+          "mid"
+        );
+        expect(modifier).toBe(0.90);
+        expect(1.0 - modifier).toBeCloseTo(0.10, 2);
+      });
+    });
+
+    describe("high-level attacks", () => {
+      it("should return slight advantage for matched stances on high attacks", () => {
+        expect(
+          TrigramCalculator.calculateLateralityModifier("left", "left", "high")
+        ).toBe(1.05);
+        expect(
+          TrigramCalculator.calculateLateralityModifier("right", "right", "high")
+        ).toBe(1.05);
+      });
+
+      it("should return slight disadvantage for mismatched stances on high attacks", () => {
+        expect(
+          TrigramCalculator.calculateLateralityModifier("left", "right", "high")
+        ).toBe(0.98);
+        expect(
+          TrigramCalculator.calculateLateralityModifier("right", "left", "high")
+        ).toBe(0.98);
+      });
+
+      it("should have smaller modifiers than mid-level attacks", () => {
+        const matchedHigh = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "high"
+        );
+        const matchedMid = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "mid"
+        );
+
+        expect(matchedHigh).toBeLessThan(matchedMid);
+        expect(matchedHigh - 1.0).toBeLessThan(matchedMid - 1.0);
+      });
+    });
+
+    describe("low-level attacks", () => {
+      it("should return minimal advantage for matched stances on low attacks", () => {
+        expect(
+          TrigramCalculator.calculateLateralityModifier("left", "left", "low")
+        ).toBe(1.03);
+        expect(
+          TrigramCalculator.calculateLateralityModifier("right", "right", "low")
+        ).toBe(1.03);
+      });
+
+      it("should return minimal disadvantage for mismatched stances on low attacks", () => {
+        expect(
+          TrigramCalculator.calculateLateralityModifier("left", "right", "low")
+        ).toBe(0.99);
+        expect(
+          TrigramCalculator.calculateLateralityModifier("right", "left", "low")
+        ).toBe(0.99);
+      });
+
+      it("should have smallest modifiers of all attack levels", () => {
+        const matchedLow = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "low"
+        );
+        const matchedMid = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "mid"
+        );
+        const matchedHigh = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "high"
+        );
+
+        expect(matchedLow - 1.0).toBeLessThan(matchedHigh - 1.0);
+        expect(matchedLow - 1.0).toBeLessThan(matchedMid - 1.0);
+      });
+    });
+
+    describe("default behavior", () => {
+      it("should default to mid-level attacks when no attack level specified", () => {
+        const withoutLevel = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left"
+        );
+        const withMidLevel = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "mid"
+        );
+
+        expect(withoutLevel).toBe(withMidLevel);
+        expect(withoutLevel).toBe(1.15);
+      });
+
+      it("should return neutral modifier for invalid attack levels", () => {
+        // TypeScript would prevent this, but test runtime behavior
+        const result = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "invalid" as any
+        );
+        expect(result).toBe(1.0);
+      });
+    });
+
+    describe("symmetry and consistency", () => {
+      it("should be symmetric for both left and right matched stances", () => {
+        const leftMatched = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "mid"
+        );
+        const rightMatched = TrigramCalculator.calculateLateralityModifier(
+          "right",
+          "right",
+          "mid"
+        );
+
+        expect(leftMatched).toBe(rightMatched);
+      });
+
+      it("should be symmetric for both left/right and right/left mismatches", () => {
+        const leftVsRight = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "right",
+          "mid"
+        );
+        const rightVsLeft = TrigramCalculator.calculateLateralityModifier(
+          "right",
+          "left",
+          "mid"
+        );
+
+        expect(leftVsRight).toBe(rightVsLeft);
+      });
+
+      it("should maintain consistent advantage/disadvantage across all attack levels", () => {
+        const levels: Array<"high" | "mid" | "low"> = ["high", "mid", "low"];
+
+        levels.forEach((level) => {
+          const matched = TrigramCalculator.calculateLateralityModifier(
+            "left",
+            "left",
+            level
+          );
+          const mismatched = TrigramCalculator.calculateLateralityModifier(
+            "left",
+            "right",
+            level
+          );
+
+          // Matched should always provide advantage (>1.0)
+          expect(matched).toBeGreaterThan(1.0);
+
+          // Mismatched should always provide disadvantage (<1.0)
+          expect(mismatched).toBeLessThan(1.0);
+        });
+      });
+    });
+
+    describe("Korean martial arts tactical principles", () => {
+      it("should reflect centerline theory for mid-level attacks", () => {
+        // In Korean martial arts (Hapkido, Taekwondo), matched stances
+        // expose the centerline creating offensive opportunities
+        const matchedMid = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "left",
+          "mid"
+        );
+
+        // Mismatched stances protect the centerline with asymmetric guard
+        const mismatchedMid = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "right",
+          "mid"
+        );
+
+        expect(matchedMid).toBeGreaterThan(1.0); // Exposed centerline
+        expect(mismatchedMid).toBeLessThan(1.0); // Protected centerline
+      });
+
+      it("should have realistic combat modifiers within reasonable bounds", () => {
+        const levels: Array<"high" | "mid" | "low"> = ["high", "mid", "low"];
+        const lateralities: Array<"left" | "right"> = ["left", "right"];
+
+        lateralities.forEach((attackerLat) => {
+          lateralities.forEach((defenderLat) => {
+            levels.forEach((level) => {
+              const modifier = TrigramCalculator.calculateLateralityModifier(
+                attackerLat,
+                defenderLat,
+                level
+              );
+
+              // All modifiers should be within realistic combat bounds
+              expect(modifier).toBeGreaterThanOrEqual(0.85);
+              expect(modifier).toBeLessThanOrEqual(1.20);
+
+              // Mid-level should have strongest modifiers
+              if (level === "mid") {
+                expect(modifier).toBeGreaterThanOrEqual(0.90);
+                expect(modifier).toBeLessThanOrEqual(1.15);
+              }
+            });
+          });
+        });
+      });
+
+      it("should emphasize mid-level centerline attacks as primary tactical consideration", () => {
+        const midAdvantage =
+          TrigramCalculator.calculateLateralityModifier("left", "left", "mid") -
+          1.0;
+        const highAdvantage =
+          TrigramCalculator.calculateLateralityModifier(
+            "left",
+            "left",
+            "high"
+          ) - 1.0;
+        const lowAdvantage =
+          TrigramCalculator.calculateLateralityModifier("left", "left", "low") -
+          1.0;
+
+        // Mid-level should have strongest tactical impact
+        expect(midAdvantage).toBeGreaterThan(highAdvantage);
+        expect(midAdvantage).toBeGreaterThan(lowAdvantage);
+
+        // Ratio of mid to high/low should reflect centerline emphasis
+        expect(midAdvantage / highAdvantage).toBeGreaterThan(2.5);
+        expect(midAdvantage / lowAdvantage).toBeGreaterThan(4.0);
+      });
+    });
+
+    describe("edge cases", () => {
+      it("should handle all laterality combinations", () => {
+        const lateralities: Array<"left" | "right"> = ["left", "right"];
+        const levels: Array<"high" | "mid" | "low"> = ["high", "mid", "low"];
+
+        lateralities.forEach((attackerLat) => {
+          lateralities.forEach((defenderLat) => {
+            levels.forEach((level) => {
+              const modifier = TrigramCalculator.calculateLateralityModifier(
+                attackerLat,
+                defenderLat,
+                level
+              );
+
+              expect(modifier).toBeGreaterThan(0);
+              expect(typeof modifier).toBe("number");
+              expect(isFinite(modifier)).toBe(true);
+            });
+          });
+        });
+      });
+
+      it("should return consistent values across multiple calls", () => {
+        const firstCall = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "right",
+          "mid"
+        );
+        const secondCall = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "right",
+          "mid"
+        );
+        const thirdCall = TrigramCalculator.calculateLateralityModifier(
+          "left",
+          "right",
+          "mid"
+        );
+
+        expect(firstCall).toBe(secondCall);
+        expect(secondCall).toBe(thirdCall);
+      });
+    });
+  });
 });
