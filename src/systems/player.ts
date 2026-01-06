@@ -24,6 +24,7 @@
  */
 
 import { StatusEffect } from "@/systems/types";
+import type { BodyFacing } from "@/systems/animation/types";
 import {
   CombatState,
   KoreanText,
@@ -159,6 +160,8 @@ export interface PlayerState {
   readonly combatState: CombatState;
   /** Position in combat arena */
   readonly position: Position;
+  /** Body facing direction for opponent tracking */
+  readonly bodyFacing?: BodyFacing;
   /** Whether player is actively blocking */
   readonly isBlocking: boolean;
   /** Whether player is stunned (cannot act) */

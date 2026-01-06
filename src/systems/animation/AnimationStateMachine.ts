@@ -252,6 +252,31 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         duration: 4 / 60,
       },
     ],
+    // 180-degree turn animations (180도 회전 애니메이션)
+    [
+      "turn_left",
+      {
+        state: "turn_left",
+        frames: 12, // 200ms at 60fps for 180° turn
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY, // Same priority as attacks/steps - committed action
+        duration: 12 / 60,
+      },
+    ],
+    [
+      "turn_right",
+      {
+        state: "turn_right",
+        frames: 12, // 200ms at 60fps for 180° turn
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY, // Same priority as attacks/steps - committed action
+        duration: 12 / 60,
+      },
+    ],
     // Stance-specific guard animations (팔괘 방어 자세)
     [
       "stance_guard_geon",

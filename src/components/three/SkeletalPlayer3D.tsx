@@ -25,6 +25,11 @@ import {
   updateHandAnimationState,
   getGuardPoseForStance,
   getStepAnimation,
+  updateFacingTowardOpponent,
+  lockFacing,
+  unlockFacing,
+  getFacingAngleRadians,
+  getHeadAngleRadians,
   getFootworkAnimation,
 } from "../../systems/animation";
 import type { StanceLaterality } from "../../systems/trigram/types";
@@ -385,6 +390,8 @@ export const SkeletalPlayer3D: React.FC<
   enableFacialExpressions = false,
   enableEyeTracking = true,
   opponentPosition,
+  bodyFacing,
+  onBodyFacingUpdate,
 }) => {
   // Get physical attributes for the archetype
   const physicalAttributes = useMemo(
@@ -865,6 +872,50 @@ export const SkeletalPlayer3D: React.FC<
 
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
+    // Update body facing to track opponent (if enabled)
+    if (bodyFacing && opponentPosition && onBodyFacingUpdate) {
+      const playerPos = { x: position[0], y: position[2] }; // X and Z for 2D top-down
+      const opponentPos = { x: opponentPosition[0], y: opponentPosition[2] };
+      
+      // Check if facing should be locked during committed animations
+      const isStepAnimation =
+        typeof currentAnimation === "string" && currentAnimation.startsWith("step_");
+      const isTurnAnimation =
+        typeof currentAnimation === "string" && currentAnimation.startsWith("turn_");
+
+      const shouldLock =
+        currentAnimation === "attack" ||
+        currentAnimation === "defend" ||
+        isStepAnimation ||
+        isTurnAnimation;
+      
+      let updatedFacing = bodyFacing;
+      
+      if (shouldLock && !bodyFacing.isLocked) {
+        // Lock facing at start of committed action (attack/defend/step/turn)
+        updatedFacing = lockFacing(bodyFacing);
+      } else if (!shouldLock && bodyFacing.isLocked) {
+        // Unlock facing after committed action completes
+        updatedFacing = unlockFacing(bodyFacing);
+      }
+      
+      // Update facing direction (handles rotation speed, head tracking, turns)
+      if (!updatedFacing.isLocked) {
+        updatedFacing = updateFacingTowardOpponent(
+          updatedFacing,
+          playerPos,
+          opponentPos,
+          delta,
+          Date.now()
+        );
+      }
+      
+      // Notify parent if facing changed
+      if (updatedFacing !== bodyFacing) {
+        onBodyFacingUpdate(updatedFacing);
+      }
+    }
+
     // Calculate sway/stumble based on balance state
     if (balance === "HELPLESS") {
       // Helpless state: pronounced stumbling motion
@@ -995,6 +1046,23 @@ export const SkeletalPlayer3D: React.FC<
       // Apply full guard pose overlay to maintain fighting stance during all movement
       // Each stance × laterality combination creates distinct appearance
       applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, FULL_GUARD_BLEND);
+    }
+
+    // Apply body facing rotations (torso and head) if available
+    if (bodyFacing) {
+      // Apply torso rotation to spine bone from body facing
+      const spine = rig.bones.get("spine");
+      if (spine) {
+        const torsoRotation = getFacingAngleRadians(bodyFacing);
+        spine.rotation.y = torsoRotation;
+      }
+
+      // Apply head rotation to head bone (includes independent offset)
+      const head = rig.bones.get("head");
+      if (head) {
+        const headRotation = getHeadAngleRadians(bodyFacing);
+        head.rotation.y = headRotation;
+      }
     }
   });
 

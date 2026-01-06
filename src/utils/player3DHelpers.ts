@@ -65,6 +65,9 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   ground_supine: "idle",
   ground_side_left: "idle",
   ground_side_right: "idle",
+  // 180-degree turn animations map to stance_change (body pivot animation)
+  turn_left: "stance_change",
+  turn_right: "stance_change",
   // Footwork patterns (보법) - Korean martial arts specialized footwork
   footwork_circular_left: "walk", // Lateral movement
   footwork_circular_right: "walk",

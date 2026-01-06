@@ -12,6 +12,7 @@
 
 import type { PlayerArchetype, TrigramStance } from "./common";
 import type { FacialExpression, FacialDamageState } from "./facial";
+import type { BodyFacing } from "../systems/animation/types";
 
 /**
  * Balance state representing player stability in combat.
@@ -250,6 +251,18 @@ export interface Player3DUnifiedProps {
    * @korean 상대위치
    */
   readonly opponentPosition?: [number, number, number];
+
+  /**
+   * Body facing state for automatic opponent tracking (optional)
+   * @korean 몸향하기상태
+   */
+  readonly bodyFacing?: BodyFacing;
+
+  /**
+   * Callback to update body facing state
+   * @korean 몸향하기업데이트콜백
+   */
+  readonly onBodyFacingUpdate?: (bodyFacing: BodyFacing) => void;
 }
 
 /**

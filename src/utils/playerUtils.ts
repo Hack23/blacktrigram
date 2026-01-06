@@ -8,6 +8,11 @@ import {
   BodyPartHealth,
   BodyPartMaxHealth,
 } from "../systems/bodypart/types";
+import { 
+  createDefaultBodyFacing, 
+  calculateAngleToTarget 
+} from "../systems/animation";
+import type { BodyFacing } from "../systems/animation/types";
 import { PlayerArchetype, Position, TrigramStance } from "../types";
 import { CombatState } from "../types/common";
 import { ARCHETYPE_ASSETS } from "../types/constants";
@@ -329,4 +334,35 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
   }
 
   return asset;
+}
+
+/**
+ * Initialize body facing for a player based on opponent position
+ * 
+ * Calculates initial facing angle to point toward opponent.
+ * 
+ * @param playerPosition - Player's position
+ * @param opponentPosition - Opponent's position
+ * @returns Initial BodyFacing state
+ * @korean 몸향하기초기화
+ * 
+ * @example
+ * ```typescript
+ * const player = {
+ *   ...basePlayer,
+ *   bodyFacing: initializeBodyFacing(
+ *     { x: 300, y: 400 },
+ *     { x: 500, y: 400 }
+ *   ),
+ * };
+ * ```
+ */
+export function initializeBodyFacing(
+  playerPosition: Position,
+  opponentPosition: Position
+): BodyFacing {
+  // Calculate initial angle to face opponent
+  const initialAngle = calculateAngleToTarget(playerPosition, opponentPosition);
+  
+  return createDefaultBodyFacing(initialAngle);
 }

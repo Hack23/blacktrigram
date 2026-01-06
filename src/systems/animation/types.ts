@@ -32,6 +32,8 @@
  * - ground_supine: Face-up ground position (4 frame breathing loop)
  * - ground_side_left: Left side ground position (4 frame breathing loop)
  * - ground_side_right: Right side ground position (4 frame breathing loop)
+ * - turn_left: 180° turn left animation (12 frames, 200ms)
+ * - turn_right: 180° turn right animation (12 frames, 200ms)
  * - footwork_circular_{left|right}: Circular step maintaining guard (18 frames, 300ms, 30cm)
  * - footwork_pivot_{left|right}: Pivot rotation on planted foot (15 frames, 250ms, 90°)
  * - footwork_slide_{forward|back|left|right}: Both feet slide together (12 frames, 200ms, 30cm)
@@ -82,7 +84,9 @@ export type AnimationState =
   | "ground_prone"
   | "ground_supine"
   | "ground_side_left"
-  | "ground_side_right";
+  | "ground_side_right"
+  | "turn_left"
+  | "turn_right";
 
 /**
  * Animation priority levels for interrupt system
@@ -497,6 +501,96 @@ export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
   side_left: "ground_side_left",
   side_right: "ground_side_right",
 };
+
+/**
+ * Body facing direction system state
+ * 
+ * Manages automatic character rotation to face opponent with:
+ * - Smooth torso rotation (45°/sec, ±90° range)
+ * - Independent head tracking (±45° range)
+ * - 180° turn animations for repositioning
+ * - Facing lock during attack/defend animations
+ * 
+ * Korean terminology:
+ * - 정면향하기 (Jeongmyeon Hyanghagi) - Face forward
+ * - 몸회전 (Mom Hoejeon) - Body rotation
+ * - 머리추적 (Meori Chujok) - Head tracking
+ * - 180도회전 (180-do Hoejeon) - 180-degree turn
+ * 
+ * @public
+ * @korean 몸향하기상태
+ */
+export interface BodyFacing {
+  /**
+   * Current facing direction in degrees (0-360)
+   * - 0° = facing right (+X axis)
+   * - 90° = facing down (+Z axis)
+   * - 180° = facing left (-X axis)
+   * - 270° = facing up (-Z axis)
+   * 
+   * @korean 현재각도
+   */
+  readonly currentAngle: number;
+
+  /**
+   * Desired facing direction in degrees (0-360)
+   * Typically pointing toward opponent position
+   * 
+   * @korean 목표각도
+   */
+  readonly targetAngle: number;
+
+  /**
+   * Rotation speed in degrees per second
+   * Default: 45°/sec for smooth, realistic rotation
+   * 
+   * @korean 회전속도
+   */
+  readonly rotationSpeed: number;
+
+  /**
+   * Head rotation offset relative to torso (-45° to +45°)
+   * Head can track independently within limited range
+   * - Positive = head turned right
+   * - Negative = head turned left
+   * 
+   * @korean 머리회전각도
+   */
+  readonly headAngleOffset: number;
+
+  /**
+   * Whether facing direction is locked
+   * True during attack/defend animations to lock attack direction
+   * False during idle/movement to allow dynamic tracking
+   * 
+   * @korean 회전잠금
+   */
+  readonly isLocked: boolean;
+
+  /**
+   * Whether character is currently executing a 180° turn animation
+   * Used to prevent movement and other actions during repositioning
+   * 
+   * @korean 180도회전중
+   */
+  readonly isTurning: boolean;
+
+  /**
+   * Direction of current 180° turn ('left' or 'right')
+   * Determines which turn animation to play
+   * 
+   * @korean 회전방향
+   */
+  readonly turnDirection?: 'left' | 'right';
+
+  /**
+   * Timestamp when 180° turn animation started
+   * Used to track turn animation progress (200ms duration)
+   * 
+   * @korean 회전시작시간
+   */
+  readonly turnStartTime?: number;
+}
 
 /**
  * Footwork pattern types for Korean martial arts (보법)
