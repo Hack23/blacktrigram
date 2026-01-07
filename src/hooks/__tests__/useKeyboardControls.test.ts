@@ -1,9 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useKeyboardControls } from "../useKeyboardControls";
 
 /**
  * Tests for useKeyboardControls hook
  * 
- * Focuses on verifying that keyboard event handling logic works correctly,
+ * Verifies that keyboard event handling logic works correctly,
  * especially for modifier key combinations (Shift+Ctrl, Ctrl, Shift).
  */
 
@@ -14,209 +16,447 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
   beforeEach(() => {
     mockOnAction = vi.fn();
     mockOnStanceChange = vi.fn();
-    // Note: These mocks are for future integration tests
-    // Currently these tests document the expected keyboard event behavior
-    void mockOnAction;
-    void mockOnStanceChange;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe("Shift+Ctrl modifier combinations", () => {
     it("should trigger pivot_left when Shift+Ctrl+A is pressed", () => {
-      // Create keyboard event with Shift+Ctrl+A
-      const event = new KeyboardEvent("keydown", {
-        key: "a",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      const { result } = renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      // Simulate Shift+Ctrl+A keyboard event
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "a",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      // The hook should detect this as a move_left action with both modifiers
-      // and trigger footwork_pivot_left
+      // Verify that pivot_left action is triggered
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_left");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
       
-      // Verify that when both modifiers are present:
-      // 1. e.shiftKey && e.ctrlKey check happens FIRST (before e.ctrlKey alone)
-      // 2. The correct action is triggered
-      expect(event.shiftKey).toBe(true);
-      expect(event.ctrlKey).toBe(true);
-      expect(event.key).toBe("a");
+      // Verify queued inputs are updated
+      expect(result.current.queuedInputs).toHaveLength(1);
+      expect(result.current.queuedInputs[0].action).toContain("Pivot Left");
     });
 
     it("should trigger pivot_right when Shift+Ctrl+D is pressed", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "d",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      const { result } = renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "d",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(true);
-      expect(event.ctrlKey).toBe(true);
-      expect(event.key).toBe("d");
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_right");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
+      expect(result.current.queuedInputs[0].action).toContain("Pivot Right");
     });
 
     it("should trigger shuffle when Shift+Ctrl+W is pressed", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "w",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      const { result } = renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "w",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(true);
-      expect(event.ctrlKey).toBe(true);
-      expect(event.key).toBe("w");
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_shuffle");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
+      expect(result.current.queuedInputs[0].action).toContain("Shuffle");
     });
 
     it("should trigger shuffle when Shift+Ctrl+S is pressed", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "s",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      const { result } = renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "s",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(true);
-      expect(event.ctrlKey).toBe(true);
-      expect(event.key).toBe("s");
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_shuffle");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
+      expect(result.current.queuedInputs[0].action).toContain("Shuffle");
     });
   });
 
   describe("Ctrl-only combinations should not trigger when Shift+Ctrl is pressed", () => {
     it("should NOT trigger circular_left when Shift+Ctrl+A is pressed", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "a",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "a",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      // When Shift+Ctrl+A is pressed, it should trigger pivot_left,
-      // NOT circular_left (which is Ctrl+A alone)
-      
-      // This verifies the fix for the modifier check order bug
-      expect(event.shiftKey && event.ctrlKey).toBe(true);
-      // The Shift+Ctrl check MUST come before the Ctrl-only check
+      // Should trigger pivot_left, NOT circular_left
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_left");
+      expect(mockOnAction).not.toHaveBeenCalledWith("footwork_circular_left");
     });
 
     it("should NOT trigger circular_right when Shift+Ctrl+D is pressed", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "d",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "d",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey && event.ctrlKey).toBe(true);
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_right");
+      expect(mockOnAction).not.toHaveBeenCalledWith("footwork_circular_right");
     });
 
     it("should NOT trigger slide_forward when Shift+Ctrl+W is pressed", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "w",
-        shiftKey: true,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "w",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey && event.ctrlKey).toBe(true);
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_shuffle");
+      expect(mockOnAction).not.toHaveBeenCalledWith("footwork_slide_forward");
     });
   });
 
   describe("Ctrl-only combinations", () => {
     it("should trigger circular_left when Ctrl+A is pressed (without Shift)", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "a",
-        shiftKey: false,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "a",
+          shiftKey: false,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(false);
-      expect(event.ctrlKey).toBe(true);
-      expect(event.key).toBe("a");
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_circular_left");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
     });
 
     it("should trigger circular_right when Ctrl+D is pressed (without Shift)", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "d",
-        shiftKey: false,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "d",
+          shiftKey: false,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(false);
-      expect(event.ctrlKey).toBe(true);
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_circular_right");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
     });
 
     it("should trigger slide_forward when Ctrl+W is pressed (without Shift)", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "w",
-        shiftKey: false,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "w",
+          shiftKey: false,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(false);
-      expect(event.ctrlKey).toBe(true);
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_slide_forward");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
     });
 
     it("should trigger slide_back when Ctrl+S is pressed (without Shift)", () => {
-      const event = new KeyboardEvent("keydown", {
-        key: "s",
-        shiftKey: false,
-        ctrlKey: true,
-        bubbles: true,
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "s",
+          shiftKey: false,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
       });
 
-      expect(event.shiftKey).toBe(false);
-      expect(event.ctrlKey).toBe(true);
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_slide_back");
+      expect(mockOnAction).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("Modifier check order verification", () => {
     it("should demonstrate the correct check order: Shift+Ctrl before Ctrl alone", () => {
-      // This test documents the correct check order to prevent the bug
+      renderHook(() =>
+        useKeyboardControls({
+          onAction: mockOnAction,
+          onStanceChange: mockOnStanceChange,
+          enabled: true,
+        })
+      );
+
+      // First, test Shift+Ctrl combination
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "a",
+          shiftKey: true,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
+      });
+
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_left");
+      mockOnAction.mockClear();
+
+      // Then test Ctrl-only
+      act(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "a",
+          shiftKey: false,
+          ctrlKey: true,
+          bubbles: true,
+        });
+        document.dispatchEvent(event);
+      });
+
+      expect(mockOnAction).toHaveBeenCalledWith("footwork_circular_left");
       
-      const hasShiftAndCtrl = true;
-      const hasCtrl = true; // Note: this is also true when both are pressed
-      
-      // CORRECT order (FIXED):
-      if (hasShiftAndCtrl) {
-        // Handle Shift+Ctrl combination first
-        expect(true).toBe(true); // This branch should execute
-      } else if (hasCtrl) {
-        // Handle Ctrl-only combination
-        expect(false).toBe(true); // This should NOT execute when both are pressed
-      }
-      
-      // INCORRECT order (BUG):
-      // if (hasCtrl) {  // This would be true for both Ctrl and Shift+Ctrl
-      //   // This would incorrectly handle Shift+Ctrl as Ctrl-only
-      // } else if (hasShiftAndCtrl) {
-      //   // This would never execute because hasCtrl is already true
-      // }
+      // Verify they trigger different actions
+      expect(mockOnAction).not.toHaveBeenCalledWith("footwork_pivot_left");
     });
   });
 });
 
 describe("useKeyboardControls - Stance Side Switch", () => {
+  let mockOnAction: ReturnType<typeof vi.fn>;
+  let mockOnStanceChange: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    mockOnAction = vi.fn();
+    mockOnStanceChange = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should trigger stance_side_switch when H key is pressed", () => {
-    const event = new KeyboardEvent("keydown", {
-      key: "h",
-      bubbles: true,
+    const { result } = renderHook(() =>
+      useKeyboardControls({
+        onAction: mockOnAction,
+        onStanceChange: mockOnStanceChange,
+        enabled: true,
+      })
+    );
+
+    act(() => {
+      const event = new KeyboardEvent("keydown", {
+        key: "h",
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
     });
 
-    expect(event.key).toBe("h");
-    expect(event.shiftKey).toBe(false);
-    expect(event.ctrlKey).toBe(false);
+    expect(mockOnAction).toHaveBeenCalledWith("stance_side_switch");
+    expect(mockOnAction).toHaveBeenCalledTimes(1);
+    expect(result.current.queuedInputs[0].action).toContain("발 바꿈");
   });
 
   it("should handle uppercase H key correctly", () => {
-    const event = new KeyboardEvent("keydown", {
-      key: "H",
-      bubbles: true,
+    renderHook(() =>
+      useKeyboardControls({
+        onAction: mockOnAction,
+        onStanceChange: mockOnStanceChange,
+        enabled: true,
+      })
+    );
+
+    act(() => {
+      const event = new KeyboardEvent("keydown", {
+        key: "H",
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
     });
 
-    // Key detection should be case-insensitive
-    expect(event.key.toLowerCase()).toBe("h");
+    // Key detection should work for uppercase
+    expect(mockOnAction).toHaveBeenCalledWith("stance_side_switch");
+  });
+});
+
+describe("useKeyboardControls - Disabled State", () => {
+  it("should not trigger actions when disabled", () => {
+    const mockOnAction = vi.fn();
+    const mockOnStanceChange = vi.fn();
+
+    renderHook(() =>
+      useKeyboardControls({
+        onAction: mockOnAction,
+        onStanceChange: mockOnStanceChange,
+        enabled: false, // Hook disabled
+      })
+    );
+
+    act(() => {
+      const event = new KeyboardEvent("keydown", {
+        key: "a",
+        shiftKey: true,
+        ctrlKey: true,
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
+    });
+
+    // Should not trigger any action when disabled
+    expect(mockOnAction).not.toHaveBeenCalled();
+  });
+});
+
+describe("useKeyboardControls - Hints Toggle", () => {
+  it("should toggle hints with F1 key", () => {
+    const mockOnAction = vi.fn();
+    const mockOnStanceChange = vi.fn();
+
+    const { result } = renderHook(() =>
+      useKeyboardControls({
+        onAction: mockOnAction,
+        onStanceChange: mockOnStanceChange,
+        enabled: true,
+      })
+    );
+
+    // Initially hints should be hidden
+    expect(result.current.showHints).toBe(false);
+
+    // Press F1
+    act(() => {
+      const event = new KeyboardEvent("keydown", {
+        key: "F1",
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
+    });
+
+    // Hints should now be visible
+    expect(result.current.showHints).toBe(true);
+
+    // Press F1 again
+    act(() => {
+      const event = new KeyboardEvent("keydown", {
+        key: "F1",
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
+    });
+
+    // Hints should be hidden again
+    expect(result.current.showHints).toBe(false);
   });
 });
