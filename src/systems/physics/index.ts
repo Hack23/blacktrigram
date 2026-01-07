@@ -14,3 +14,4 @@ export type {
   KnockbackResult,
   BalanceState,
 } from './KnockbackPhysics';
+export { CollisionDetection } from './CollisionDetection';

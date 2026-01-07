@@ -12,3 +12,4 @@ export * from "./skeletal";
 export * from "./hand-animation";
 export * from "./LayoutTypes";
 export * from "./HtmlOverlayTypes";
+export * from "./physics";
