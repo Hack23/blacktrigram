@@ -37,7 +37,7 @@ import {
   getAdjustedAnimationDuration,
 } from "./animation/TechniqueAnimationMapper";
 import type { DefensiveAnimationType } from "./animation/types";
-import { KnockbackPhysics, type KnockbackConfig } from "./physics";
+import { KnockbackPhysics, type KnockbackConfig, CollisionDetection } from "./physics";
 import * as THREE from 'three';
 
 /**
@@ -53,6 +53,7 @@ export class CombatSystem implements CombatSystemInterface {
   private consciousnessSystem: ConsciousnessSystem;
   private balanceSystem: BalanceSystem;
   private knockbackPhysics: KnockbackPhysics;
+  private collisionDetection: CollisionDetection;
 
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
@@ -70,6 +71,7 @@ export class CombatSystem implements CombatSystemInterface {
     this.consciousnessSystem = new ConsciousnessSystem();
     this.balanceSystem = new BalanceSystem();
     this.knockbackPhysics = new KnockbackPhysics();
+    this.collisionDetection = new CollisionDetection();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
   }
@@ -110,6 +112,17 @@ export class CombatSystem implements CombatSystemInterface {
    */
   public getConsciousnessSystem(): ConsciousnessSystem {
     return this.consciousnessSystem;
+  }
+
+  /**
+   * Get the collision detection system instance.
+   * 
+   * @returns CollisionDetection instance
+   * @public
+   * @korean 충돌감지시스템가져오기
+   */
+  public getCollisionDetection(): CollisionDetection {
+    return this.collisionDetection;
   }
 
   /**
