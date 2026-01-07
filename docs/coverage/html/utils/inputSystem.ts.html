@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.91% </span>
+                <span class="strong">20.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/196</span>
+                <span class='fraction'>41/200</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.67% </span>
+                <span class="strong">19.04% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>24/122</span>
+                <span class='fraction'>24/126</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.91% </span>
+                <span class="strong">21.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/178</span>
+                <span class='fraction'>39/182</span>
             </div>
         
             
@@ -611,7 +611,25 @@
 <a name='L546'></a><a href='#L546'>546</a>
 <a name='L547'></a><a href='#L547'>547</a>
 <a name='L548'></a><a href='#L548'>548</a>
-<a name='L549'></a><a href='#L549'>549</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L549'></a><a href='#L549'>549</a>
+<a name='L550'></a><a href='#L550'>550</a>
+<a name='L551'></a><a href='#L551'>551</a>
+<a name='L552'></a><a href='#L552'>552</a>
+<a name='L553'></a><a href='#L553'>553</a>
+<a name='L554'></a><a href='#L554'>554</a>
+<a name='L555'></a><a href='#L555'>555</a>
+<a name='L556'></a><a href='#L556'>556</a>
+<a name='L557'></a><a href='#L557'>557</a>
+<a name='L558'></a><a href='#L558'>558</a>
+<a name='L559'></a><a href='#L559'>559</a>
+<a name='L560'></a><a href='#L560'>560</a>
+<a name='L561'></a><a href='#L561'>561</a>
+<a name='L562'></a><a href='#L562'>562</a>
+<a name='L563'></a><a href='#L563'>563</a>
+<a name='L564'></a><a href='#L564'>564</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -672,6 +690,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -855,6 +875,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -916,6 +944,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1183,6 +1213,9 @@ export interface InputSystemConfig {
   readonly legInjuryFactor?: number;
   readonly isRunning?: boolean;
   readonly useTacticalSteps?: boolean;
+  // Speed modifier overrides from SpeedModifierSystem
+  readonly maxSpeedOverride?: number; // Final calculated speed in m/s
+  readonly accelerationOverride?: number; // Final calculated acceleration in m/s²
 }
 &nbsp;
 export interface MovementState {
@@ -1244,6 +1277,8 @@ export function usePlayerMovement(
     legInjuryFactor = 0,
     isRunning: isRunningProp = false,
     useTacticalSteps = false,
+    maxSpeedOverride,
+    accelerationOverride,
   } = config;
 &nbsp;
   const [playerPosition, setPlayerPosition] =
@@ -1398,6 +1433,14 @@ export function usePlayerMovement(
 &nbsp;
     // Physics-based movement (always enabled for realistic combat)
 <span class="cstat-no" title="statement not covered" >    if (physicsEngineRef.current &amp;&amp; physicsStateRef.current) {</span>
+      // Apply speed modifiers if provided by SpeedModifierSystem
+<span class="cstat-no" title="statement not covered" >      if (maxSpeedOverride !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >        physicsEngineRef.current.setMaxSpeed(maxSpeedOverride);</span>
+      }
+<span class="cstat-no" title="statement not covered" >      if (accelerationOverride !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >        physicsEngineRef.current.setAcceleration(accelerationOverride);</span>
+      }
+      
       // Convert key state to physics input
       const forward = <span class="cstat-no" title="statement not covered" >keyState.up ? 1 : keyState.down ? -1 : 0;</span>
       const lateral = <span class="cstat-no" title="statement not covered" >keyState.right ? 1 : keyState.left ? -1 : 0;</span>
@@ -1478,6 +1521,8 @@ export function usePlayerMovement(
     useTacticalSteps,
     velocity,
     speed,
+    maxSpeedOverride,
+    accelerationOverride,
   ]);
 &nbsp;
   // Keep updatePositionRef in sync via useEffect (not during render)
@@ -1714,7 +1759,7 @@ export function <span class="fstat-no" title="function not covered" >useCombatIn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-06T23:54:21.225Z
+                at 2026-01-07T14:22:25.390Z
             </div>
         <script src="../prettify.js"></script>
         <script>

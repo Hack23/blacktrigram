@@ -522,6 +522,8 @@ src/components/combat/components/RoundAnnouncement.test.tsx
 src/components/combat/components/RoundAnnouncement.tsx
 src/components/combat/components/RoundStartAnnouncement.test.tsx
 src/components/combat/components/RoundStartAnnouncement.tsx
+src/components/combat/components/SpeedIndicatorHUD.test.tsx
+src/components/combat/components/SpeedIndicatorHUD.tsx
 src/components/combat/components/StaminaBar.test.tsx
 src/components/combat/components/StaminaBar.tsx
 src/components/combat/components/StaminaWarning.test.tsx
@@ -611,6 +613,8 @@ src/components/three/BackgroundScene3D.test.tsx
 src/components/three/BackgroundScene3D.tsx
 src/components/three/BoneRenderer.test.tsx
 src/components/three/BoneRenderer.tsx
+src/components/three/DebugCollision.test.tsx
+src/components/three/DebugCollision.tsx
 src/components/three/Face3D.tsx
 src/components/three/Hand3D.test.tsx
 src/components/three/Hand3D.tsx
@@ -833,8 +837,14 @@ src/systems/combat/types.ts
 src/systems/effects.ts
 src/systems/game.ts
 src/systems/index.ts
+src/systems/physics/CollisionDetection.test.ts
+src/systems/physics/CollisionDetection.ts
+src/systems/physics/KnockbackPhysics.test.ts
+src/systems/physics/KnockbackPhysics.ts
 src/systems/physics/MovementPhysics.test.ts
 src/systems/physics/MovementPhysics.ts
+src/systems/physics/SpeedModifierSystem.test.ts
+src/systems/physics/SpeedModifierSystem.ts
 src/systems/physics/index.ts
 src/systems/player.ts
 src/systems/trigram/DarkOpsTechniques.test.ts
@@ -890,6 +900,7 @@ src/types/facial.ts
 src/types/hand-animation.ts
 src/types/index.ts
 src/types/muscle.ts
+src/types/physics.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
