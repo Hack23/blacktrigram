@@ -163,10 +163,11 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI - only render when content is ready */}
         <Html fullscreen>
-          {/* WebKit Scrollbar Styling */}
+          {/* WebKit Scrollbar Styling - Using !important to override global hide */}
           <style>{`
             .korean-scrollbar::-webkit-scrollbar {
-              width: 12px;
+              width: 12px !important;
+              display: block !important;
             }
             .korean-scrollbar::-webkit-scrollbar-track {
               background: ${colors.sectionBg};
@@ -678,7 +679,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                       marginBottom: "10px",
                     }}
                   >
-                    전술보법 (Shift + WASD) | Tactical Steps
+                    ✅ 전술보법 (Shift + WASD) | Tactical Steps - IMPLEMENTED
                   </h3>
                   <p
                     style={{
@@ -775,7 +776,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                         marginBottom: "6px",
                       }}
                     >
-                      ✅ 원형보 (Wonhyeongbo) | Circular Step
+                      ✅ 원형보 (Wonhyeongbo) | Circular Step - IMPLEMENTED
                     </div>
                     <p
                       style={{
@@ -847,7 +848,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                         marginBottom: "6px",
                       }}
                     >
-                      ✅ 미끄럼보 (Mikkeureombo) | Slide Step
+                      ✅ 미끄럼보 (Mikkeureombo) | Slide Step - IMPLEMENTED
                     </div>
                     <p
                       style={{

@@ -226,7 +226,7 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
               >
                 V
               </span>{" "}
-              - Vital Points
+              - Toggle vital points overlay
             </div>
             <div>
               <span

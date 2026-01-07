@@ -77,7 +77,7 @@ describe("KeyboardHints", () => {
     expect(container.textContent).toContain("Attack");
     expect(container.textContent).toContain("Block");
     expect(container.textContent).toContain("Move");
-    expect(container.textContent).toContain("Vital Points");
+    expect(container.textContent).toContain("Toggle vital points overlay");
     expect(container.textContent).toContain("Techniques");
     expect(container.textContent).toContain("Press F1 to toggle");
   });
@@ -140,7 +140,7 @@ describe("KeyboardHints", () => {
 
       const container = screen.getByTestId("keyboard-hints");
       expect(container.textContent).toContain("V");
-      expect(container.textContent).toContain("Vital Points");
+      expect(container.textContent).toContain("Toggle vital points overlay");
     });
 
     it("should display technique execution hints", () => {
@@ -160,7 +160,7 @@ describe("KeyboardHints", () => {
       // Should show all combat action hints
       expect(container.textContent).toContain("Attack");
       expect(container.textContent).toContain("Block");
-      expect(container.textContent).toContain("Vital Points");
+      expect(container.textContent).toContain("Toggle vital points overlay");
       expect(container.textContent).toContain("Move");
     });
 
@@ -170,7 +170,7 @@ describe("KeyboardHints", () => {
       );
 
       let container = screen.getByTestId("keyboard-hints");
-      expect(container.textContent).toContain("Vital Points");
+      expect(container.textContent).toContain("Toggle vital points overlay");
 
       unmount();
 
@@ -179,7 +179,7 @@ describe("KeyboardHints", () => {
       );
 
       container = screen.getByTestId("keyboard-hints");
-      expect(container.textContent).toContain("Vital Points");
+      expect(container.textContent).toContain("Toggle vital points overlay");
     });
   });
 });
