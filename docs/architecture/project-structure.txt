@@ -691,6 +691,8 @@ src/components/ui/shared/ConfirmDialog.tsx
 src/data/archetypePhysicalAttributes.test.ts
 src/data/archetypePhysicalAttributes.ts
 src/data/techniques.ts
+src/hooks/__tests__/useKeyboardControls.test.ts
+src/hooks/__tests__/useKeyboardControls.test.ts.backup
 src/hooks/useActionFeedback.test.ts
 src/hooks/useActionFeedback.ts
 src/hooks/useCombatTimer.test.ts
@@ -839,12 +841,16 @@ src/systems/game.ts
 src/systems/index.ts
 src/systems/physics/CollisionDetection.test.ts
 src/systems/physics/CollisionDetection.ts
+src/systems/physics/CoordinateMapper.test.ts
+src/systems/physics/CoordinateMapper.ts
 src/systems/physics/KnockbackPhysics.test.ts
 src/systems/physics/KnockbackPhysics.ts
 src/systems/physics/MovementPhysics.test.ts
 src/systems/physics/MovementPhysics.ts
 src/systems/physics/SpeedModifierSystem.test.ts
 src/systems/physics/SpeedModifierSystem.ts
+src/systems/physics/__tests__/CombatPhysicsIntegration.test.ts
+src/systems/physics/__tests__/PhysicsPerformance.bench.ts
 src/systems/physics/index.ts
 src/systems/player.ts
 src/systems/trigram/DarkOpsTechniques.test.ts

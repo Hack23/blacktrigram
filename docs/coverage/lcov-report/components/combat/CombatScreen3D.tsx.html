@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.11% </span>
+                <span class="strong">41.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>259/615</span>
+                <span class='fraction'>259/619</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.71% </span>
+                <span class="strong">26.2% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>109/408</span>
+                <span class='fraction'>109/416</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.87% </span>
+                <span class="strong">41.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>250/597</span>
+                <span class='fraction'>250/601</span>
             </div>
         
             
@@ -2643,7 +2643,26 @@
 <a name='L2578'></a><a href='#L2578'>2578</a>
 <a name='L2579'></a><a href='#L2579'>2579</a>
 <a name='L2580'></a><a href='#L2580'>2580</a>
-<a name='L2581'></a><a href='#L2581'>2581</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2581'></a><a href='#L2581'>2581</a>
+<a name='L2582'></a><a href='#L2582'>2582</a>
+<a name='L2583'></a><a href='#L2583'>2583</a>
+<a name='L2584'></a><a href='#L2584'>2584</a>
+<a name='L2585'></a><a href='#L2585'>2585</a>
+<a name='L2586'></a><a href='#L2586'>2586</a>
+<a name='L2587'></a><a href='#L2587'>2587</a>
+<a name='L2588'></a><a href='#L2588'>2588</a>
+<a name='L2589'></a><a href='#L2589'>2589</a>
+<a name='L2590'></a><a href='#L2590'>2590</a>
+<a name='L2591'></a><a href='#L2591'>2591</a>
+<a name='L2592'></a><a href='#L2592'>2592</a>
+<a name='L2593'></a><a href='#L2593'>2593</a>
+<a name='L2594'></a><a href='#L2594'>2594</a>
+<a name='L2595'></a><a href='#L2595'>2595</a>
+<a name='L2596'></a><a href='#L2596'>2596</a>
+<a name='L2597'></a><a href='#L2597'>2597</a>
+<a name='L2598'></a><a href='#L2598'>2598</a>
+<a name='L2599'></a><a href='#L2599'>2599</a>
+<a name='L2600'></a><a href='#L2600'>2600</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -4041,6 +4060,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -6627,6 +6665,25 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo("recovery_defensive");</span>
 <span class="cstat-no" title="statement not covered" >            break;</span>
           }
+          
+          // Footwork pattern actions
+          case "footwork_circular_left":
+          case "footwork_circular_right":
+          case "footwork_slide_forward":
+          case "footwork_slide_back":
+          case "footwork_pivot_left":
+          case "footwork_pivot_right":
+          case "footwork_shuffle":
+            // Execute footwork animation
+<span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo(action as AnimationState);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+          
+          // Stance side switch
+          case "stance_side_switch":
+            // Switch front foot (mirror stance)
+<span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo("stance_side_switch");</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+          
           // Movement and other actions handled by existing system
         }
       },
@@ -7810,7 +7867,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-07T14:22:25.632Z
+                at 2026-01-07T18:32:44.155Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
