@@ -56,28 +56,86 @@ export interface CharacterModelConfig {
 }
 
 /**
+ * Average adult standing height used for physics mapping (meters).
+ * 
+ * This value is based on common anthropometric data and provides a
+ * reasonable default for a neutral, unarmed character in Black Trigram.
+ */
+const AVERAGE_ADULT_HEIGHT_M = 1.75; // 175cm average adult height
+
+/**
+ * Average shoulder width used for frontal collision and UI mapping (meters).
+ * 
+ * This approximates the biacromial (shoulder-to-shoulder) breadth for an
+ * adult, which is sufficient for our hitbox and overlay alignment needs.
+ */
+const AVERAGE_SHOULDER_WIDTH_M = 0.5; // 50cm shoulder width
+
+/**
+ * Average torso depth (chest to back) used for front/back hit placement (meters).
+ */
+const AVERAGE_TORSO_DEPTH_M = 0.3; // 30cm chest depth
+
+/**
+ * Default UI overlay width in pixels.
+ * 
+ * This matches the designed vital-point sprite asset width, ensuring that
+ * pixel coordinates from the overlay map consistently to the 3D character.
+ */
+const DEFAULT_OVERLAY_WIDTH_PX = 200; // Standard UI overlay width
+
+/**
+ * Default UI overlay height in pixels.
+ * 
+ * This matches the designed vital-point sprite asset height, keeping the
+ * 2D→3D mapping resolution-independent but asset-consistent.
+ */
+const DEFAULT_OVERLAY_HEIGHT_PX = 300; // Standard UI overlay height
+
+/**
  * Default character model configuration based on average adult proportions.
  */
 const DEFAULT_CHARACTER_CONFIG: CharacterModelConfig = {
-  height: 1.75,    // 175cm average adult height
-  width: 0.5,      // 50cm shoulder width
-  depth: 0.3,      // 30cm chest depth
-  overlayWidth: 200,   // Standard UI overlay width
-  overlayHeight: 300,  // Standard UI overlay height
+  height: AVERAGE_ADULT_HEIGHT_M,
+  width: AVERAGE_SHOULDER_WIDTH_M,
+  depth: AVERAGE_TORSO_DEPTH_M,
+  overlayWidth: DEFAULT_OVERLAY_WIDTH_PX,
+  overlayHeight: DEFAULT_OVERLAY_HEIGHT_PX,
 };
 
 /**
  * Z-depth (front-to-back) offsets for different anatomical regions.
  * 
- * These values determine how far forward or back a vital point sits relative
- * to the character's center plane.
+ * Units are **meters in model space**, measured along the character's local Z axis,
+ * and are applied relative to the character's center plane (Z = 0) and the
+ * configured {@link CharacterModelConfig.depth}. With the default depth of
+ * `0.3m`, an offset of `0.05` corresponds to ≈5 cm of forward displacement.
+ *
+ * These values were chosen as simple, stable approximations based on average
+ * adult proportions and validated visually against the default rig:
+ *
+ * - `head: 0.05` → head center sits slightly in front of the torso plane
+ *   (≈1/6 of torso depth) to match typical forward head posture.
+ * - `neck: 0.02` → neck base is close to the torso plane but not perfectly
+ *   centered, acknowledging slight anterior offset of the trachea/sternum.
+ * - `torso: 0.0` → torso vital points lie on the reference center plane that
+ *   approximates the mid‑chest / spine midpoint.
+ * - `arms: 0.05` → relaxed arms hang slightly in front of the torso plane,
+ *   using the same forward offset as the head for consistency.
+ * - `legs: 0.0` → leg targets (front of thighs/shins) are modeled on the
+ *   center plane; depth variation is instead captured by vertical placement.
+ *
+ * If you change {@link CharacterModelConfig.depth}, you may keep these absolute
+ * meter values (for physical fidelity) or re‑express them as fractions of the
+ * new depth, but they should continue to represent small (≈0–5 cm) anatomical
+ * offsets from the torso midline.
  */
 const REGION_DEPTH_OFFSETS: Record<AnatomicalRegionPhysics, number> = {
-  head: 0.05,    // Head slightly forward
-  neck: 0.02,    // Neck nearly centered
-  torso: 0.0,    // Torso at center plane
-  arms: 0.05,    // Arms slightly forward when relaxed
-  legs: 0.0,     // Legs at center plane
+  head: 0.05,    // ≈5 cm forward from torso mid-plane to match cranial alignment
+  neck: 0.02,    // ≈2 cm forward; neck base is near, but not exactly on, center
+  torso: 0.0,    // Torso reference plane (mid‑chest / spine midpoint)
+  arms: 0.05,    // ≈5 cm forward; relaxed arms rest slightly in front of torso
+  legs: 0.0,     // Legs aligned to torso center plane; front/back handled elsewhere
 };
 
 /**
