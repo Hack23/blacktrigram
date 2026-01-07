@@ -57,14 +57,13 @@ interface ValidationResult {
 // Optimized for reliable content rendering with minimal overhead
 const TIMING = {
   CANVAS_TIMEOUT: 15000, // Max wait for canvas element
-  INITIAL_RENDER_DELAY: 2500, // Wait for initial Three.js render (increased from 2000ms)
-  ANIMATION_SETTLE_DELAY: 2000, // Wait for animations to settle (increased from 1500ms)
-  BUTTON_CLICK_DELAY: 3000, // Wait after button clicks (increased from 2500ms)
-  CONTENT_LOAD_DELAY: 4000, // Wait for dynamic content to load (increased from 3000ms)
-  RETRY_DELAY: 2500, // Delay between retries (increased from 2000ms)
-  HTML_OVERLAY_DELAY: 4000, // Wait for Html overlays in Three.js to render (increased from 3000ms)
-  SCREEN_TRANSITION_DELAY: 5000, // Wait for screen transitions with lazy loading (increased from 4000ms)
-  RAF_CYCLES: 3, // Number of requestAnimationFrame cycles to wait for rendering
+  INITIAL_RENDER_DELAY: 3000, // Wait for initial Three.js render (increased from 2500ms)
+  ANIMATION_SETTLE_DELAY: 2500, // Wait for animations to settle (increased from 2000ms)
+  BUTTON_CLICK_DELAY: 3500, // Wait after button clicks (increased from 3000ms)
+  CONTENT_LOAD_DELAY: 5000, // Wait for dynamic content to load (increased from 4000ms)
+  RETRY_DELAY: 3000, // Delay between retries (increased from 2500ms)
+  HTML_OVERLAY_DELAY: 5000, // Wait for Html overlays in Three.js to render (increased from 4000ms)
+  SCREEN_TRANSITION_DELAY: 6000, // Wait for screen transitions with lazy loading (increased from 5000ms)
 } as const;
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
@@ -77,26 +76,6 @@ if (!fs.existsSync(SCREENSHOTS_DIR)) {
 }
 if (!fs.existsSync(REPORT_DIR)) {
   fs.mkdirSync(REPORT_DIR, { recursive: true });
-}
-
-/**
- * Wait for multiple requestAnimationFrame cycles to ensure rendering is complete
- */
-async function waitForRenderCycles(page: Page, cycles: number = TIMING.RAF_CYCLES): Promise<void> {
-  await page.evaluate((cycleCount) => {
-    return new Promise<void>((resolve) => {
-      let count = 0;
-      const waitForFrame = () => {
-        if (count >= cycleCount) {
-          resolve();
-        } else {
-          count++;
-          requestAnimationFrame(waitForFrame);
-        }
-      };
-      requestAnimationFrame(waitForFrame);
-    });
-  }, cycles);
 }
 
 /**
@@ -134,9 +113,6 @@ async function waitForThreeJsReady(
       );
     }
 
-    // Wait for multiple render frames to complete
-    await waitForRenderCycles(page);
-
     // Wait for animations to settle
     await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
 
@@ -162,9 +138,6 @@ async function waitForHtmlOverlayContent(
   try {
     // Try to wait for the element to be visible
     await page.waitForSelector(selector, { state: "visible", timeout });
-
-    // Wait for React to finish rendering and DOM to stabilize
-    await waitForRenderCycles(page);
 
     // Additional delay for React state updates
     await page.waitForTimeout(500);
@@ -203,9 +176,6 @@ async function waitForMenuReady(page: Page): Promise<void> {
       5000
     );
   }
-
-  // Wait for render cycles to complete
-  await waitForRenderCycles(page);
 
   // Additional delay for any CSS transitions/animations and Html overlay positioning
   await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
@@ -281,9 +251,6 @@ async function waitForContentWithRetry(
     } catch {
       console.log("  ⚠️  Network still active, continuing...");
     }
-
-    // Wait for render cycles to complete
-    await waitForRenderCycles(page);
 
     // Wait for content to load
     await page.waitForTimeout(TIMING.CONTENT_LOAD_DELAY);
@@ -370,10 +337,17 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "02-intro-screen-menu",
     description: "Intro Screen - Main menu with game modes",
     path: "/",
-    waitForTimeout: 4000, // Increased from 3000ms for Html overlay rendering
+    waitForTimeout: 6000, // Increased from 4000ms - menu needs significant time to render
     actions: async (page) => {
       // Wait for menu to be fully rendered (handles the "just lines" issue)
       await waitForMenuReady(page);
+      
+      // Extra wait to ensure all 4 menu buttons are fully visible
+      await page.waitForTimeout(2000);
+      
+      // Verify all menu items are present
+      const menuItems = await page.$$('[data-testid^="menu-item-"]');
+      console.log(`  📋 Found ${menuItems.length} menu items`);
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
@@ -392,6 +366,11 @@ const screenshotConfigs: ScreenshotConfig[] = [
         selector: '[data-testid="menu-item-versus"]',
         description: "Versus menu item",
         required: false,
+      },
+      {
+        selector: '[data-testid="menu-item-philosophy"]',
+        description: "Philosophy menu item (4th button)",
+        required: true, // Make this required to ensure it's visible
       },
     ],
   },
@@ -728,8 +707,7 @@ async function captureScreenshot(
 
     // Final wait to ensure all rendering is complete before screenshot
     console.log("  ⏳ Final render stabilization...");
-    await waitForRenderCycles(page);
-    await page.waitForTimeout(1000); // Final 1s wait for any last-moment updates
+    await page.waitForTimeout(1500); // Extra wait for final render
 
     // Capture screenshot
     const screenshotPath = path.join(SCREENSHOTS_DIR, `${config.name}.png`);

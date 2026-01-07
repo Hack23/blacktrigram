@@ -1,7 +1,7 @@
 # Black Trigram - UI/UX Screenshot Analysis Report
 
-**Generated:** 2025-12-24T18:45:13.224Z
-**Success Rate:** 8/8 (100%)
+**Generated:** 2026-01-07T16:59:56.141Z
+**Success Rate:** 0/8 (0%)
 
 ---
 
@@ -13,14 +13,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### Screens Captured
 
-- ✅ **01-splash-screen**: Splash Screen - Initial app loading screen
-- ✅ **02-intro-screen-menu**: Intro Screen - Main menu with game modes
-- ✅ **03-intro-screen-archetype-selector**: Intro Screen - Player archetype selection
-- ✅ **04-controls-screen**: Controls Screen - Game controls and keybindings
-- ✅ **05-philosophy-screen**: Philosophy Screen - Korean martial arts philosophy
-- ✅ **06-training-screen**: Training Screen - Training mode with vital points
-- ✅ **07-combat-screen-practice**: Combat Screen - Practice mode gameplay
-- ✅ **08-combat-screen-versus**: Combat Screen - Versus mode gameplay
+- ❌ **01-splash-screen**: Splash Screen - Initial app loading screen
+- ❌ **02-intro-screen-menu**: Intro Screen - Main menu with game modes
+- ❌ **03-intro-screen-archetype-selector**: Intro Screen - Player archetype selection
+- ❌ **04-controls-screen**: Controls Screen - Game controls and keybindings
+- ❌ **05-philosophy-screen**: Philosophy Screen - Korean martial arts philosophy
+- ❌ **06-training-screen**: Training Screen - Training mode with vital points
+- ❌ **07-combat-screen-practice**: Combat Screen - Practice mode gameplay
+- ❌ **08-combat-screen-versus**: Combat Screen - Versus mode gameplay
 
 ---
 
@@ -28,11 +28,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 1. Splash Screen - Initial app loading screen
 
-![Splash Screen - Initial app loading screen](../01-splash-screen.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `01-splash-screen.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - Splash screen container (🔴 required)
@@ -44,11 +47,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 2. Intro Screen - Main menu with game modes
 
-![Intro Screen - Main menu with game modes](../02-intro-screen-menu.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `02-intro-screen-menu.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
@@ -62,11 +68,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 3. Intro Screen - Player archetype selection
 
-![Intro Screen - Player archetype selection](../03-intro-screen-archetype-selector.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `03-intro-screen-archetype-selector.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
@@ -78,11 +87,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 4. Controls Screen - Game controls and keybindings
 
-![Controls Screen - Game controls and keybindings](../04-controls-screen.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `04-controls-screen.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
@@ -95,11 +107,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 5. Philosophy Screen - Korean martial arts philosophy
 
-![Philosophy Screen - Korean martial arts philosophy](../05-philosophy-screen.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `05-philosophy-screen.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
@@ -112,11 +127,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 6. Training Screen - Training mode with vital points
 
-![Training Screen - Training mode with vital points](../06-training-screen.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `06-training-screen.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
@@ -128,11 +146,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 7. Combat Screen - Practice mode gameplay
 
-![Combat Screen - Practice mode gameplay](../07-combat-screen-practice.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `07-combat-screen-practice.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
@@ -144,11 +165,14 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 ### 8. Combat Screen - Versus mode gameplay
 
-![Combat Screen - Versus mode gameplay](../08-combat-screen-versus.png)
+**Status:** ❌ Failed to capture
 
-**Status:** ✅ Captured successfully
-
-**File:** `08-combat-screen-versus.png`
+**Error:** page.evaluate: ReferenceError: __name is not defined
+    at eval (eval at evaluate (:290:30), <anonymous>:1:161)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:21)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
 
 **Required Content:**
 - 3D canvas (🔴 required)
