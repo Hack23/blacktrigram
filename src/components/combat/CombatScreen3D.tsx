@@ -96,6 +96,7 @@ import { PauseMenu } from "./components/PauseMenu";
 import { PlayerHUD } from "./components/PlayerHUD";
 import { GuardIndicator } from "./components/GuardIndicator";
 import { PlayerStateOverlay } from "./components/PlayerStateOverlay";
+import { SpeedIndicatorHUD } from "./components/SpeedIndicatorHUD";
 import { TechniqueBar } from "./components/TechniqueBar";
 import {
   AnimationUpdater,
@@ -108,6 +109,7 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
+import { SpeedModifierSystem, MovementType } from "../../systems/physics/SpeedModifierSystem";
 
 /**
  * Props for the CombatScreen3D component.
@@ -573,6 +575,57 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Balance system for recovery mechanics
   const balanceSystem = useMemo(() => new BalanceSystem(), []);
+
+  // Speed Modifier System for dynamic movement speed calculations
+  const speedModifierSystem = useMemo(() => new SpeedModifierSystem(), []);
+
+  // Track speed modifiers for HUD display
+  const [player1SpeedModifiers, setPlayer1SpeedModifiers] = useState({
+    finalSpeed: 2.0,
+    baseSpeed: 2.0,
+  });
+  const [player2SpeedModifiers, setPlayer2SpeedModifiers] = useState({
+    finalSpeed: 2.0,
+    baseSpeed: 2.0,
+  });
+
+  // Calculate speed modifiers for both players when state changes
+  // Updates at 10Hz (every 100ms) to balance responsiveness and performance
+  useEffect(() => {
+    const updateSpeedModifiers = () => {
+      if (players.length >= 2) {
+        // Player 1 speed modifiers
+        const player1Modifiers = speedModifierSystem.calculateSpeedModifiers(
+          players[0],
+          MovementType.WALKING, // Base calculation, actual type determined by input
+          false // isCrouching
+        );
+        setPlayer1SpeedModifiers({
+          finalSpeed: player1Modifiers.finalSpeed,
+          baseSpeed: player1Modifiers.baseSpeed,
+        });
+
+        // Player 2 speed modifiers
+        const player2Modifiers = speedModifierSystem.calculateSpeedModifiers(
+          players[1],
+          MovementType.WALKING,
+          false
+        );
+        setPlayer2SpeedModifiers({
+          finalSpeed: player2Modifiers.finalSpeed,
+          baseSpeed: player2Modifiers.baseSpeed,
+        });
+      }
+    };
+
+    // Initial calculation
+    updateSpeedModifiers();
+
+    // Update every 100ms for responsive feedback without excessive re-renders
+    const intervalId = setInterval(updateSpeedModifiers, 100);
+
+    return () => clearInterval(intervalId);
+  }, [players, speedModifierSystem]);
 
   // Calculate leg injury factor for physics-based movement
   // Averages left and right leg health to determine speed penalty
@@ -2276,6 +2329,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isInGuard={player2Animation.isInStanceGuard()}
           position="right"
           isMobile={isMobile}
+        />
+
+        {/* Player 1 Speed Indicator - Shows movement speed percentage */}
+        <SpeedIndicatorHUD
+          finalSpeed={player1SpeedModifiers.finalSpeed}
+          baseSpeed={player1SpeedModifiers.baseSpeed}
+          position="left"
+          isMobile={isMobile}
+          visible={true}
+        />
+
+        {/* Player 2 Speed Indicator - Shows movement speed percentage */}
+        <SpeedIndicatorHUD
+          finalSpeed={player2SpeedModifiers.finalSpeed}
+          baseSpeed={player2SpeedModifiers.baseSpeed}
+          position="right"
+          isMobile={isMobile}
+          visible={true}
         />
 
         {/* Body Part Health Displays - show individual body part health bars */}
