@@ -5,7 +5,7 @@
  * @category Testing
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTouchControls, type GestureEvent } from './useTouchControls';
 
@@ -260,10 +260,10 @@ describe('useTouchControls', () => {
         document.dispatchEvent(touchEnd);
       });
 
-      // Should detect as tap instead
+      // Should detect as directional tap (20px right is above 15px threshold)
       expect(onGestureMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'tap',
+          type: 'tap-right', // Directional tap for tactical step
         })
       );
     });
@@ -338,6 +338,226 @@ describe('useTouchControls', () => {
           type: 'tap',
         })
       );
+    });
+  });
+
+  describe('Hold gesture detection', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      // Mock window dimensions for screen-center-based detection
+      Object.defineProperty(window, 'innerWidth', { value: 1000, writable: true });
+      Object.defineProperty(window, 'innerHeight', { value: 800, writable: true });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should detect hold-forward gesture (touch above center)', () => {
+      renderHook(() =>
+        useTouchControls({
+          onGesture: onGestureMock,
+          holdThreshold: 300,
+        })
+      );
+
+      act(() => {
+        // Touch at top of screen (y=100, center is 400)
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [
+            {
+              clientX: 500, // center X
+              clientY: 100, // above center
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchStart);
+
+        // Advance timer past hold threshold
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(onGestureMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'hold-forward',
+          startX: 500,
+          startY: 100,
+        })
+      );
+    });
+
+    it('should detect hold-back gesture (touch below center)', () => {
+      renderHook(() =>
+        useTouchControls({
+          onGesture: onGestureMock,
+          holdThreshold: 300,
+        })
+      );
+
+      act(() => {
+        // Touch at bottom of screen (y=700, center is 400)
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [
+            {
+              clientX: 500, // center X
+              clientY: 700, // below center
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchStart);
+
+        // Advance timer past hold threshold
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(onGestureMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'hold-back',
+          startX: 500,
+          startY: 700,
+        })
+      );
+    });
+
+    it('should detect hold-left gesture (touch left of center)', () => {
+      renderHook(() =>
+        useTouchControls({
+          onGesture: onGestureMock,
+          holdThreshold: 300,
+        })
+      );
+
+      act(() => {
+        // Touch at left side (x=100, center is 500)
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [
+            {
+              clientX: 100, // left of center
+              clientY: 400, // center Y
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchStart);
+
+        // Advance timer past hold threshold
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(onGestureMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'hold-left',
+          startX: 100,
+          startY: 400,
+        })
+      );
+    });
+
+    it('should detect hold-right gesture (touch right of center)', () => {
+      renderHook(() =>
+        useTouchControls({
+          onGesture: onGestureMock,
+          holdThreshold: 300,
+        })
+      );
+
+      act(() => {
+        // Touch at right side (x=900, center is 500)
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [
+            {
+              clientX: 900, // right of center
+              clientY: 400, // center Y
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchStart);
+
+        // Advance timer past hold threshold
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(onGestureMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'hold-right',
+          startX: 900,
+          startY: 400,
+        })
+      );
+    });
+
+    it('should not trigger hold if touch ends before threshold', () => {
+      renderHook(() =>
+        useTouchControls({
+          onGesture: onGestureMock,
+          holdThreshold: 300,
+        })
+      );
+
+      act(() => {
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [
+            {
+              clientX: 500,
+              clientY: 100,
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchStart);
+
+        // Advance timer only partway
+        vi.advanceTimersByTime(150);
+
+        // End touch before hold threshold
+        const touchEnd = new TouchEvent('touchend', {
+          changedTouches: [
+            {
+              clientX: 500,
+              clientY: 100,
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchEnd);
+      });
+
+      // Should detect as tap (no movement, so generic tap)
+      expect(onGestureMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'tap',
+        })
+      );
+    });
+
+    it('should clear hold timer on touch cancel', () => {
+      renderHook(() =>
+        useTouchControls({
+          onGesture: onGestureMock,
+          holdThreshold: 300,
+        })
+      );
+
+      act(() => {
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [
+            {
+              clientX: 500,
+              clientY: 100,
+            } as Touch,
+          ],
+        });
+        document.dispatchEvent(touchStart);
+
+        // Cancel touch before threshold
+        const touchCancel = new TouchEvent('touchcancel', {
+          touches: [],
+        });
+        document.dispatchEvent(touchCancel);
+
+        // Advance timer past threshold
+        vi.advanceTimersByTime(300);
+      });
+
+      // Should not trigger hold gesture after cancel
+      expect(onGestureMock).not.toHaveBeenCalled();
     });
   });
 
@@ -437,10 +657,10 @@ describe('useTouchControls', () => {
         document.dispatchEvent(touchEnd);
       });
 
-      // 70px distance < 100px threshold, should be tap
+      // 70px distance < 100px threshold, should be directional tap
       expect(onGestureMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'tap',
+          type: 'tap-right', // Directional tap for tactical step
         })
       );
     });

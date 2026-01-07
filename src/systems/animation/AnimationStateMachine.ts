@@ -16,7 +16,8 @@
  */
 
 import { canInterrupt } from "./AnimationPriority";
-import { isTransitionAllowed } from "./AnimationTransitions";
+import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
+import { TrigramStance } from "../../types/common";
 import type {
   AnimationConfig,
   AnimationEvents,
@@ -24,7 +25,10 @@ import type {
   AnimationPriority,
   AnimationState,
   AnimationUpdateResult,
+  FallType,
 } from "./types";
+import { STEP_PRIORITY } from "./types";
+import { FALL_TO_GROUND_MAP } from "./types";
 
 /**
  * Default animation configurations based on game-design.md
@@ -35,6 +39,14 @@ import type {
  * - Walk: 6 frames = 100ms at 60fps
  * - Hit: 4 frames = 67ms at 60fps
  * - Stance change: 36 frames = 600ms at 60fps
+ * - Stance guards: 4-6 frames = breathing animation at 60fps
+ * - Tactical steps: 18 frames = 300ms at 60fps, 30cm distance
+ * 
+ * Defensive animations (방어 애니메이션):
+ * - Block Success (막기): 8 frames = 133ms - absorb impact, maintain guard
+ * - Parry Deflect (받아넘기기): 10 frames = 167ms - redirect attack, counter window
+ * - Guard Break (방어붕괴): 15 frames = 250ms - arms forced wide, vulnerable
+ * - Guard Recovery (방어복구): 12 frames = 200ms - restore guard position
  * 
  * @korean 기본애니메이션설정
  */
@@ -89,6 +101,18 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
+      "stance_side_switch",
+      {
+        state: "stance_side_switch",
+        frames: 24, // 400ms at 60fps for left↔right switch
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 3 as AnimationPriority,
+        duration: 0.4,
+      },
+    ],
+    [
       "defend",
       {
         state: "defend",
@@ -100,6 +124,57 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         duration: 4 / 60,
       },
     ],
+    // Defensive animations (방어 애니메이션) - Enhanced guard break system
+    [
+      "defend_block_success",
+      {
+        state: "defend_block_success",
+        frames: 8, // 133ms at 60fps - absorb impact, maintain guard
+        fps: 60,
+        loop: false,
+        interruptible: false, // Must complete block animation
+        priority: 6 as AnimationPriority, // Higher than defend, same as hit
+        duration: 0.133,
+      },
+    ],
+    [
+      "defend_parry",
+      {
+        state: "defend_parry",
+        frames: 10, // 167ms at 60fps - redirect attack, open counter opportunity
+        fps: 60,
+        loop: false,
+        interruptible: false, // Must complete parry animation
+        priority: 7 as AnimationPriority, // Higher than block, creates counter window
+        duration: 0.167,
+        counterWindow: 0.2, // 200ms counter-attack opportunity after parry
+      },
+    ],
+    [
+      "defend_guard_break",
+      {
+        state: "defend_guard_break",
+        frames: 15, // 250ms at 60fps - arms forced wide, vulnerable state
+        fps: 60,
+        loop: false,
+        interruptible: false, // Cannot interrupt guard break
+        priority: 8 as AnimationPriority, // Highest priority (same as fall)
+        duration: 0.25,
+        vulnerabilityDuration: 0.5, // 500ms vulnerable state after guard break
+      },
+    ],
+    [
+      "defend_recovery",
+      {
+        state: "defend_recovery",
+        frames: 12, // 200ms at 60fps - restore guard position
+        fps: 60,
+        loop: false,
+        interruptible: true, // Can be interrupted by attacks
+        priority: 2 as AnimationPriority, // Same as run, lower than defend
+        duration: 0.2,
+      },
+    ],
     [
       "attack",
       {
@@ -108,7 +183,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         fps: 60,
         loop: false,
         interruptible: true,
-        priority: 5 as AnimationPriority,
+        priority: STEP_PRIORITY,
         duration: 12 / 60,
       },
     ],
@@ -134,6 +209,486 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: false,
         priority: 7 as AnimationPriority,
         duration: 0.5,
+      },
+    ],
+    // Fall animations (낙법 애니메이션) - Priority 8 (highest)
+    [
+      "fall_forward",
+      {
+        state: "fall_forward",
+        frames: 24, // 400ms at 60fps - stumble forward, knee collapse, hands brace, face-down
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.4,
+      },
+    ],
+    [
+      "fall_backward",
+      {
+        state: "fall_backward",
+        frames: 30, // 500ms at 60fps - backward stumble, sit, back impact, supine
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.5,
+      },
+    ],
+    [
+      "fall_side_left",
+      {
+        state: "fall_side_left",
+        frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.45,
+      },
+    ],
+    [
+      "fall_side_right",
+      {
+        state: "fall_side_right",
+        frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: 8 as AnimationPriority,
+        duration: 0.45,
+      },
+    ],
+    // Ground state animations (지면 자세) - Breathing loops
+    [
+      "ground_prone",
+      {
+        state: "ground_prone",
+        frames: 4, // Breathing loop on ground (face down)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "ground_supine",
+      {
+        state: "ground_supine",
+        frames: 4, // Breathing loop on ground (face up)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "ground_side_left",
+      {
+        state: "ground_side_left",
+        frames: 4, // Breathing loop on ground (left side)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "ground_side_right",
+      {
+        state: "ground_side_right",
+        frames: 4, // Breathing loop on ground (right side)
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    // Recovery animations (기상 애니메이션) - Priority 9 (higher than falls)
+    [
+      "recovery_prone_standup",
+      {
+        state: "recovery_prone_standup",
+        frames: 30, // 500ms at 60fps - push up from prone, rise to standing
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.5,
+      },
+    ],
+    [
+      "recovery_supine_standup",
+      {
+        state: "recovery_supine_standup",
+        frames: 36, // 600ms at 60fps - sit up, roll forward, stand
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.6,
+      },
+    ],
+    [
+      "recovery_roll",
+      {
+        state: "recovery_roll",
+        frames: 24, // 400ms at 60fps - roll to side, spring to feet (quick recovery)
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.4,
+      },
+    ],
+    [
+      "recovery_defensive",
+      {
+        state: "recovery_defensive",
+        frames: 42, // 700ms at 60fps - slow rise with guard up (vulnerable but defended)
+        fps: 60,
+        loop: false,
+        interruptible: false, // Last 6 frames (100ms) are interruptible
+        priority: 9 as AnimationPriority,
+        duration: 0.7,
+      },
+    ],
+    // 180-degree turn animations (180도 회전 애니메이션)
+    [
+      "turn_left",
+      {
+        state: "turn_left",
+        frames: 12, // 200ms at 60fps for 180° turn
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY, // Same priority as attacks/steps - committed action
+        duration: 12 / 60,
+      },
+    ],
+    [
+      "turn_right",
+      {
+        state: "turn_right",
+        frames: 12, // 200ms at 60fps for 180° turn
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY, // Same priority as attacks/steps - committed action
+        duration: 12 / 60,
+      },
+    ],
+    // Stance-specific guard animations (팔괘 방어 자세)
+    [
+      "stance_guard_geon",
+      {
+        state: "stance_guard_geon",
+        frames: 6, // Breathing animation
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_tae",
+      {
+        state: "stance_guard_tae",
+        frames: 6, // Breathing animation
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_li",
+      {
+        state: "stance_guard_li",
+        frames: 4, // Controlled breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "stance_guard_jin",
+      {
+        state: "stance_guard_jin",
+        frames: 5, // Deep breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 5 / 60,
+      },
+    ],
+    [
+      "stance_guard_son",
+      {
+        state: "stance_guard_son",
+        frames: 6, // Rhythmic breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_gam",
+      {
+        state: "stance_guard_gam",
+        frames: 6, // Flowing breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 6 / 60,
+      },
+    ],
+    [
+      "stance_guard_gan",
+      {
+        state: "stance_guard_gan",
+        frames: 4, // Steady breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 4 / 60,
+      },
+    ],
+    [
+      "stance_guard_gon",
+      {
+        state: "stance_guard_gon",
+        frames: 5, // Deep diaphragm breathing
+        fps: 60,
+        loop: true,
+        interruptible: true,
+        priority: 0 as AnimationPriority,
+        duration: 5 / 60,
+      },
+    ],
+    // Tactical step animations (전술적 발걸음)
+    // 18 frames = 300ms at 60fps, 30cm distance per step
+    [
+      "step_forward",
+      {
+        state: "step_forward",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false, // Non-interruptible for commitment
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_back",
+      {
+        state: "step_back",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_left",
+      {
+        state: "step_left",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_right",
+      {
+        state: "step_right",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_forward_left",
+      {
+        state: "step_forward_left",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_forward_right",
+      {
+        state: "step_forward_right",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_back_left",
+      {
+        state: "step_back_left",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    [
+      "step_back_right",
+      {
+        state: "step_back_right",
+        frames: 18,
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    // Footwork patterns (보법) - Korean martial arts specialized footwork
+    // Circular step (원형보) - Lateral movement maintaining guard facing
+    [
+      "footwork_circular_left",
+      {
+        state: "footwork_circular_left",
+        frames: 18, // 300ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false, // Committed footwork
+        priority: STEP_PRIORITY, // Same as tactical steps
+        duration: 0.3,
+      },
+    ],
+    [
+      "footwork_circular_right",
+      {
+        state: "footwork_circular_right",
+        frames: 18, // 300ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.3,
+      },
+    ],
+    // Pivot step (축족회전) - Rotation on planted foot
+    [
+      "footwork_pivot_left",
+      {
+        state: "footwork_pivot_left",
+        frames: 15, // 250ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.25,
+      },
+    ],
+    [
+      "footwork_pivot_right",
+      {
+        state: "footwork_pivot_right",
+        frames: 15, // 250ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: false,
+        priority: STEP_PRIORITY,
+        duration: 0.25,
+      },
+    ],
+    // Slide step (미끄럼보) - Both feet move together
+    [
+      "footwork_slide_forward",
+      {
+        state: "footwork_slide_forward",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true, // Can be interrupted
+        priority: 4 as AnimationPriority, // Same as defend
+        duration: 0.2,
+      },
+    ],
+    [
+      "footwork_slide_back",
+      {
+        state: "footwork_slide_back",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 4 as AnimationPriority,
+        duration: 0.2,
+      },
+    ],
+    [
+      "footwork_slide_left",
+      {
+        state: "footwork_slide_left",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 4 as AnimationPriority,
+        duration: 0.2,
+      },
+    ],
+    [
+      "footwork_slide_right",
+      {
+        state: "footwork_slide_right",
+        frames: 12, // 200ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 4 as AnimationPriority,
+        duration: 0.2,
+      },
+    ],
+    // Shuffle step (섞음보) - Quick micro-adjustment
+    [
+      "footwork_shuffle",
+      {
+        state: "footwork_shuffle",
+        frames: 6, // 100ms at 60fps
+        fps: 60,
+        loop: false,
+        interruptible: true,
+        priority: 3 as AnimationPriority, // Same as stance_change
+        duration: 0.1,
       },
     ],
   ]);
@@ -170,12 +725,56 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  * @korean 플레이어애니메이션상태머신
  */
 export class PlayerAnimationStateMachine {
+  /**
+   * Static mapping from TrigramStance to guard AnimationState
+   * Prevents repeated object allocation in transitionToStanceGuard()
+   * @korean 자세방어상태맵
+   */
+  private static readonly GUARD_STATE_MAP: Record<TrigramStance, AnimationState> = {
+    [TrigramStance.GEON]: "stance_guard_geon",
+    [TrigramStance.TAE]: "stance_guard_tae",
+    [TrigramStance.LI]: "stance_guard_li",
+    [TrigramStance.JIN]: "stance_guard_jin",
+    [TrigramStance.SON]: "stance_guard_son",
+    [TrigramStance.GAM]: "stance_guard_gam",
+    [TrigramStance.GAN]: "stance_guard_gan",
+    [TrigramStance.GON]: "stance_guard_gon",
+  };
+
+  /**
+   * Static reverse mapping from guard AnimationState to TrigramStance
+   * Prevents repeated object allocation in getCurrentGuardStance()
+   * @korean 방어상태자세맵
+   */
+  private static readonly STANCE_FROM_GUARD_MAP: Record<string, TrigramStance> = {
+    "stance_guard_geon": TrigramStance.GEON,
+    "stance_guard_tae": TrigramStance.TAE,
+    "stance_guard_li": TrigramStance.LI,
+    "stance_guard_jin": TrigramStance.JIN,
+    "stance_guard_son": TrigramStance.SON,
+    "stance_guard_gam": TrigramStance.GAM,
+    "stance_guard_gan": TrigramStance.GAN,
+    "stance_guard_gon": TrigramStance.GON,
+  };
+
   private currentState: AnimationState = "idle";
   private frameIndex = 0;
   private timeAccumulator = 0;
   private previousState: AnimationState | null = null;
   private justStarted = false;
   private justCompleted = false;
+  
+  /**
+   * Current stance transition data (null when not in stance_change animation)
+   * 
+   * **Korean**: 현재 자세 전환 데이터
+   * 
+   * Tracks the active stance transition for use during stance_change animation.
+   * Provides access to keyframes and blend weights for smooth interpolation.
+   * 
+   * @korean 현재자세전환데이터
+   */
+  private currentStanceTransition: StanceTransition | null = null;
 
   /**
    * Create a new animation state machine
@@ -246,8 +845,87 @@ export class PlayerAnimationStateMachine {
             this.events.onAnimationComplete(this.currentState);
           }
 
-          // Auto-transition to idle for non-looping animations
-          if (this.currentState !== "idle" && this.currentState !== "ko") {
+          // Auto-transition logic
+          // Fall animations transition to ground states using the mapping
+          if (this.currentState.startsWith("fall_")) {
+            const fallType = this.currentState.replace("fall_", "");
+            
+            // Validate that fallType is a valid FallType before using in map
+            if (fallType === "forward" || fallType === "backward" || 
+                fallType === "side_left" || fallType === "side_right") {
+              const groundState = FALL_TO_GROUND_MAP[fallType as FallType];
+              const groundAnimKey = `ground_${groundState}`;
+
+              // Validate that the constructed ground animation state actually exists
+              if (DEFAULT_ANIMATION_CONFIGS.has(groundAnimKey as AnimationState)) {
+                const groundAnimState = groundAnimKey as AnimationState;
+
+                this.previousState = this.currentState;
+                this.currentState = groundAnimState;
+                this.frameIndex = 0;
+                this.timeAccumulator = 0;
+                this.justStarted = true;
+
+                if (this.events?.onAnimationStart) {
+                  this.events.onAnimationStart(groundAnimState);
+                }
+              } else {
+                // Fallback: if mapping is invalid, safely transition to idle
+                // instead of entering an undefined animation state.
+                console.warn(
+                  "[AnimationStateMachine] Invalid ground animation mapping for fall type:",
+                  fallType,
+                  "->",
+                  groundAnimKey
+                );
+                this.previousState = this.currentState;
+                this.currentState = "idle";
+                this.frameIndex = 0;
+                this.timeAccumulator = 0;
+                this.justStarted = true;
+
+                if (this.events?.onAnimationStart) {
+                  this.events.onAnimationStart("idle");
+                }
+              }
+            } else {
+              // Invalid fall type - fallback to idle
+              console.warn(
+                "[AnimationStateMachine] Invalid fall animation state:",
+                this.currentState
+              );
+              this.previousState = this.currentState;
+              this.currentState = "idle";
+              this.frameIndex = 0;
+              this.timeAccumulator = 0;
+              this.justStarted = true;
+
+              if (this.events?.onAnimationStart) {
+                this.events.onAnimationStart("idle");
+              }
+            }
+          }
+          // Recovery animations transition to idle when complete
+          else if (this.currentState.startsWith("recovery_")) {
+            this.previousState = this.currentState;
+            this.currentState = "idle";
+            this.frameIndex = 0;
+            this.timeAccumulator = 0;
+            this.justStarted = true;
+
+            if (this.events?.onAnimationStart) {
+              this.events.onAnimationStart("idle");
+            }
+          }
+          // Non-fall, non-recovery, non-looping animations transition to idle
+          else if (this.currentState !== "idle" && 
+                   this.currentState !== "ko" &&
+                   !this.currentState.startsWith("ground_")) {
+            // Clear stance transition data if completing stance_change
+            if (this.currentState === "stance_change") {
+              this.clearStanceTransition();
+            }
+            
             // Direct transition to idle without interrupt event
             this.previousState = this.currentState;
             this.currentState = "idle";
@@ -259,7 +937,7 @@ export class PlayerAnimationStateMachine {
               this.events.onAnimationStart("idle");
             }
           } else {
-            // Stay on last frame
+            // Stay on last frame (for ko and ground states)
             this.frameIndex = currentAnim.frames - 1;
           }
         }
@@ -328,6 +1006,11 @@ export class PlayerAnimationStateMachine {
       if (this.events?.onAnimationInterrupted) {
         this.events.onAnimationInterrupted(this.currentState, newState);
       }
+    }
+
+    // Clear stance transition data if interrupting stance_change
+    if (this.currentState === "stance_change") {
+      this.clearStanceTransition();
     }
 
     // Execute transition
@@ -414,5 +1097,246 @@ export class PlayerAnimationStateMachine {
       isPlaying: true,
       previousState: this.previousState,
     };
+  }
+
+  /**
+   * Transition to stance-specific guard animation
+   * 
+   * Convenience method to transition to a stance guard based on trigram stance.
+   * Automatically maps trigram stance to corresponding guard animation state.
+   * 
+   * @param stance - Trigram stance identifier
+   * @returns Whether transition was successful
+   * 
+   * @example
+   * ```typescript
+   * // When player changes to Fire stance
+   * machine.transitionToStanceGuard(TrigramStance.LI);
+   * // Internally transitions to "stance_guard_li" animation state
+   * ```
+   * 
+   * @korean 자세방어전환
+   */
+  transitionToStanceGuard(stance: TrigramStance): boolean {
+    const guardAnimationState = PlayerAnimationStateMachine.GUARD_STATE_MAP[stance];
+    
+    // Verify the guard animation exists in our configs
+    if (!guardAnimationState || !this.animations.has(guardAnimationState)) {
+      console.warn(`No guard animation configured for stance: ${stance}`);
+      return false;
+    }
+
+    return this.transitionTo(guardAnimationState);
+  }
+
+  /**
+   * Check if current animation is a stance guard
+   * 
+   * @returns True if currently in a stance guard animation
+   * @korean 자세방어상태확인
+   */
+  isInStanceGuard(): boolean {
+    return this.currentState.startsWith("stance_guard_");
+  }
+
+  /**
+   * Get current guard stance if in a guard animation
+   * 
+   * @returns Trigram stance or null if not in guard
+   * @korean 현재방어자세가져오기
+   */
+  getCurrentGuardStance(): TrigramStance | null {
+    if (!this.isInStanceGuard()) {
+      return null;
+    }
+
+    const stance = PlayerAnimationStateMachine.STANCE_FROM_GUARD_MAP[this.currentState];
+    
+    // Validate that we got a valid stance
+    if (!stance) {
+      console.warn(`Invalid guard state detected: ${this.currentState}`);
+      return null;
+    }
+
+    return stance;
+  }
+
+  /**
+   * Transition to stance_change animation with specific stance transition data
+   * 
+   * **Korean**: 자세 전환 애니메이션 시작
+   * 
+   * Initiates a stance change animation with the specific transition data
+   * from the 64-transition matrix. This provides stance-specific keyframes
+   * and blend weights for smooth interpolation.
+   * 
+   * @param fromStance - Source trigram stance
+   * @param toStance - Target trigram stance
+   * @returns Whether transition was successful
+   * 
+   * @example
+   * ```typescript
+   * // Start transition from Heaven to Lake stance
+   * const success = machine.transitionToStanceChange(
+   *   TrigramStance.GEON, 
+   *   TrigramStance.TAE
+   * );
+   * 
+   * if (success) {
+   *   // During update loop, use getStanceTransitionBlend() to interpolate
+   *   const blend = machine.getStanceTransitionBlend();
+   *   if (blend) {
+   *     // Apply blend weights to stance poses
+   *     applyStanceBlend(blend);
+   *   }
+   * }
+   * ```
+   * 
+   * @korean 자세전환애니메이션시작
+   */
+  transitionToStanceChange(
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ): boolean {
+    // Get the specific transition data from the 64-transition matrix
+    const transitionData = getStanceTransition(fromStance, toStance);
+    
+    if (!transitionData) {
+      console.warn(
+        `[AnimationStateMachine] No transition data found for ${fromStance} -> ${toStance}`
+      );
+      return false;
+    }
+
+    // Store current transition data in case we need to restore it
+    const previousTransitionData = this.currentStanceTransition;
+
+    // Temporarily set the new transition data
+    this.currentStanceTransition = transitionData;
+
+    // Initiate the stance_change animation
+    const success = this.transitionTo("stance_change");
+
+    // If transition failed, restore previous transition data
+    if (!success) {
+      this.currentStanceTransition = previousTransitionData;
+    }
+
+    return success;
+  }
+
+  /**
+   * Get current stance transition data
+   * 
+   * **Korean**: 현재 자세 전환 데이터 가져오기
+   * 
+   * Returns the active stance transition data during stance_change animation.
+   * Null if not currently in a stance transition.
+   * 
+   * @returns Current stance transition or null
+   * 
+   * @korean 현재자세전환데이터가져오기
+   */
+  getCurrentStanceTransition(): StanceTransition | null {
+    return this.currentStanceTransition;
+  }
+
+  /**
+   * Get interpolated blend weights for current stance transition frame
+   * 
+   * **Korean**: 현재 프레임 블렌드 가중치
+   * 
+   * Returns the interpolated blend data for the current frame during
+   * stance_change animation. Uses the keyframe data from the transition
+   * matrix to provide smooth stance interpolation.
+   * 
+   * @returns Blend data with stance and weight, or null if not in transition
+   * 
+   * @example
+   * ```typescript
+   * // In rendering loop during stance transition
+   * const blend = machine.getStanceTransitionBlend();
+   * if (blend) {
+   *   console.log(`Frame ${blend.frame}: ${blend.stance} at ${blend.blend}x weight`);
+   *   // Apply blended pose: blend.blend * targetPose + (1 - blend.blend) * sourcePose
+   * }
+   * ```
+   * 
+   * @korean 현재프레임블렌드가중치
+   */
+  getStanceTransitionBlend(): {
+    frame: number;
+    stance: TrigramStance | 'neutral';
+    blend: number;
+  } | null {
+    // Only valid during stance_change animation
+    if (this.currentState !== "stance_change" || !this.currentStanceTransition) {
+      return null;
+    }
+
+    const keyframes = this.currentStanceTransition.keyframes;
+    const currentFrame = this.frameIndex;
+
+    // Find the two keyframes to interpolate between
+    let prevKeyframe = keyframes[0];
+    let nextKeyframe = keyframes[keyframes.length - 1];
+
+    for (let i = 0; i < keyframes.length - 1; i++) {
+      if (keyframes[i].frame <= currentFrame && keyframes[i + 1].frame > currentFrame) {
+        prevKeyframe = keyframes[i];
+        nextKeyframe = keyframes[i + 1];
+        break;
+      }
+    }
+
+    // If we're exactly on a keyframe, return it directly
+    const exactKeyframe = keyframes.find(kf => kf.frame === currentFrame);
+    if (exactKeyframe) {
+      return {
+        frame: currentFrame,
+        stance: exactKeyframe.stance,
+        blend: exactKeyframe.blend,
+      };
+    }
+
+    // Linear interpolation between keyframes
+    const frameRange = nextKeyframe.frame - prevKeyframe.frame;
+    const frameProgress = frameRange > 0 
+      ? (currentFrame - prevKeyframe.frame) / frameRange 
+      : 0;
+
+    const interpolatedBlend = 
+      prevKeyframe.blend + (nextKeyframe.blend - prevKeyframe.blend) * frameProgress;
+
+    // Use the next keyframe's stance as we're transitioning towards it
+    return {
+      frame: currentFrame,
+      stance: nextKeyframe.stance,
+      blend: interpolatedBlend,
+    };
+  }
+
+  /**
+   * Check if currently in a stance transition animation
+   * 
+   * **Korean**: 자세 전환 중 확인
+   * 
+   * @returns True if currently executing a stance_change animation
+   * @korean 자세전환중확인
+   */
+  isInStanceTransition(): boolean {
+    return this.currentState === "stance_change" && this.currentStanceTransition !== null;
+  }
+
+  /**
+   * Clear stance transition data (called automatically when transition completes)
+   * 
+   * **Korean**: 자세 전환 데이터 초기화
+   * 
+   * @internal
+   * @korean 자세전환데이터초기화
+   */
+  private clearStanceTransition(): void {
+    this.currentStanceTransition = null;
   }
 }

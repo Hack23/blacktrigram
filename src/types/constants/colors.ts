@@ -135,6 +135,7 @@ export const KOREAN_COLORS = {
   MUSCLE_TONE: 0xd4a373, // Base muscle tone - tan/brown
   MUSCLE_FLEXED: 0xe8b896, // Flexed muscle - lighter tan
   MUSCLE_EXHAUSTED: 0xa67856, // Exhausted muscle - darker brown
+  SKIN_TONE: 0xf5d7b1, // Skin/fat layer - light peachy tone
 
   // Fix: Add missing color constants for game components
   ARENA_BACKGROUND: 0x1a1a2e,

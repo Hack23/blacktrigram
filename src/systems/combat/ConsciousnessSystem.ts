@@ -14,6 +14,12 @@
  * - **기절직전 (Stunned)**: 40% - Severe impairment, incapacitation opportunity
  * - **무의식 (Unconscious)**: 0% - Complete incapacitation
  * 
+ * ## Fall System Integration
+ * 
+ * When consciousness drops below 10%, the system triggers fall animations (낙법).
+ * The character loses the ability to stand and collapses to the ground.
+ * Fall direction is based on last impact location.
+ * 
  * @module systems/combat/ConsciousnessSystem
  * @category Combat System
  * @korean 의식시스템
@@ -21,6 +27,9 @@
 
 import { PlayerState } from "../player";
 import { VitalPointCategory } from "@/types";
+import type { FallType } from "../animation/types";
+import { determineFallFromStance } from "../animation/FallAnimations";
+import type { TrigramStance } from "@/types/common";
 
 /**
  * Consciousness levels representing cognitive function and awareness.
@@ -493,6 +502,156 @@ export class ConsciousnessSystem {
     };
 
     return descriptions[level];
+  }
+
+  /**
+   * Gets color indicator for consciousness level (for UI).
+   * 
+   * @param level - Consciousness level
+   * @returns Hex color code
+   * 
+   * @public
+   * @korean 의식색상
+   */
+  getLevelColor(level: ConsciousnessLevel): number {
+    const colors: Record<ConsciousnessLevel, number> = {
+      [ConsciousnessLevel.COMBAT_ALERT]: 0x00ff00, // Green
+      [ConsciousnessLevel.DISORIENTED]: 0xffaa00, // Orange
+      [ConsciousnessLevel.STUNNED]: 0xff4400, // Red-orange
+      [ConsciousnessLevel.UNCONSCIOUS]: 0xff0000, // Red
+    };
+
+    return colors[level];
+  }
+
+  /**
+   * Checks if consciousness is low enough to trigger fall animation.
+   * 
+   * Falls occur when consciousness drops below 10% (UNCONSCIOUS threshold).
+   * This represents complete loss of ability to maintain standing position.
+   * 
+   * Korean terminology:
+   * - 의식상실낙법 (Uisik Sangsil Nakbeop): Consciousness loss fall
+   * - 기절낙하 (Gijeol Nakha): Knockout collapse
+   * 
+   * @param player - Current player state
+   * @returns True if fall animation should trigger
+   * 
+   * @example
+   * ```typescript
+   * if (consciousnessSystem.shouldTriggerFall(player)) {
+   *   const fallType = consciousnessSystem.determineFallType(
+   *     player,
+   *     lastImpactAngle
+   *   );
+   *   animationMachine.transitionTo(FALL_TYPE_TO_ANIMATION[fallType]);
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 의식상실낙법확인
+   */
+  shouldTriggerFall(player: PlayerState): boolean {
+    return player.consciousness < 10; // UNCONSCIOUS threshold
+  }
+
+  /**
+   * Determines fall direction based on last impact and stance.
+   * 
+   * When consciousness is lost, fall direction is determined by:
+   * - Last attack angle (if available)
+   * - Current stance bias (if no attack data)
+   * - Default to backward fall (natural collapse)
+   * 
+   * Korean falling from consciousness loss:
+   * - 후방의식상실 (Hubang Uisik Sangsil): Backward consciousness loss fall
+   * - 전방기절 (Jeonbang Gijeol): Forward knockout
+   * 
+   * @param player - Current player state
+   * @param lastImpactAngle - Angle of last hit (optional)
+   * @returns Fall type to use for animation
+   * 
+   * @example
+   * ```typescript
+   * // Player loses consciousness from frontal head strike
+   * const fallType = consciousnessSystem.determineFallType(
+   *   player,
+   *   0 // Front angle
+   * );
+   * // Returns: 'backward' (knocked back by frontal strike)
+   * 
+   * // Player loses consciousness without specific impact
+   * const fallType = consciousnessSystem.determineFallType(player);
+   * // Returns: Stance-based fall or 'backward' default
+   * ```
+   * 
+   * @public
+   * @korean 의식상실낙법결정
+   */
+  determineFallType(
+    _player: PlayerState,
+    lastImpactAngle?: number
+  ): FallType {
+    // If we have impact angle, use simple direction logic
+    if (lastImpactAngle !== undefined) {
+      const normalizedAngle = Math.abs(lastImpactAngle);
+      
+      // Front impact (0° ±45°) causes backward fall
+      if (normalizedAngle < Math.PI / 4) {
+        return "backward";
+      }
+      
+      // Rear impact (180° ±45°) causes forward fall
+      // Since normalizedAngle is in [0, π], any angle > 3π/4 is a rear impact
+      if (normalizedAngle > (3 * Math.PI) / 4) {
+        return "forward";
+      }
+      
+      // Side impacts: at this point normalizedAngle is in (π/4, 3π/4),
+      // so lastImpactAngle cannot be 0 or ±π.
+      if (lastImpactAngle < 0) {
+        return "side_left";
+      }
+      if (lastImpactAngle > 0) {
+        return "side_right";
+      }
+
+      // Fallback for exact 0 (or extremely small) angles in case future
+      // changes alter the front/rear checks above. We treat this as a
+      // natural backward collapse rather than a side fall.
+      return "backward";
+    }
+    
+    // Default to backward fall (natural collapse from consciousness loss)
+    return "backward";
+  }
+
+  /**
+   * Determines fall type based on stance when consciousness is lost.
+   * 
+   * Uses stance bias to determine fall direction when consciousness
+   * is lost without specific impact data.
+   * 
+   * Korean terminology:
+   * - 자세의식상실 (Jase Uisik Sangsil): Stance-based consciousness loss
+   * 
+   * @param stance - Current trigram stance
+   * @returns Fall type based on stance characteristics
+   * 
+   * @example
+   * ```typescript
+   * // Player in Mountain stance (defensive back)
+   * const fallType = consciousnessSystem.determineFallTypeFromStance(
+   *   TrigramStance.GAN
+   * );
+   * // Returns: 'backward' (Mountain has defensive backward bias)
+   * ```
+   * 
+   * @public
+   * @korean 자세의식상실낙법
+   */
+  determineFallTypeFromStance(stance: TrigramStance): FallType {
+    return determineFallFromStance(stance, "backward");
   }
 }
 

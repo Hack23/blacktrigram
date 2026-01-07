@@ -21,6 +21,7 @@
  */
 
 import { HitEffect } from "@/systems";
+import type { StanceLaterality } from "@/systems/trigram/types";
 import { useCallback, useReducer } from "react";
 
 /**
@@ -37,6 +38,7 @@ export interface CombatScreenState {
   readonly comboCount: number;
   readonly lastHitTime: number;
   readonly screenShake: { x: number; y: number };
+  readonly playerLaterality: readonly [StanceLaterality, StanceLaterality];
 }
 
 /**
@@ -57,7 +59,9 @@ type CombatAction =
   | { type: "SET_LAST_HIT_TIME"; payload: number }
   | { type: "SET_SCREEN_SHAKE"; payload: { x: number; y: number } }
   | { type: "RESET_SCREEN_SHAKE" }
-  | { type: "RESET_ROUND_STATE" };
+  | { type: "RESET_ROUND_STATE" }
+  | { type: "SET_PLAYER_LATERALITY"; payload: readonly [StanceLaterality, StanceLaterality] }
+  | { type: "SET_PLAYER_LATERALITY_INDEX"; payload: { index: 0 | 1; laterality: StanceLaterality } };
 
 /**
  * Initial combat state
@@ -72,6 +76,7 @@ const initialState: CombatScreenState = {
   comboCount: 0,
   lastHitTime: 0,
   screenShake: { x: 0, y: 0 },
+  playerLaterality: ["right", "right"],
 };
 
 /**
@@ -139,6 +144,14 @@ function combatReducer(state: CombatScreenState, action: CombatAction): CombatSc
         combatMessages: [],
       };
 
+    case "SET_PLAYER_LATERALITY":
+      return { ...state, playerLaterality: action.payload };
+
+    case "SET_PLAYER_LATERALITY_INDEX":
+      const newLaterality: [StanceLaterality, StanceLaterality] = [...state.playerLaterality] as [StanceLaterality, StanceLaterality];
+      newLaterality[action.payload.index] = action.payload.laterality;
+      return { ...state, playerLaterality: newLaterality };
+
     default:
       return state;
   }
@@ -163,6 +176,8 @@ export interface CombatActions {
   readonly setScreenShake: (shake: { x: number; y: number }) => void;
   readonly resetScreenShake: () => void;
   readonly resetRoundState: () => void;
+  readonly setPlayerLaterality: (laterality: readonly [StanceLaterality, StanceLaterality]) => void;
+  readonly setPlayerLateralityIndex: (index: 0 | 1, laterality: StanceLaterality) => void;
 }
 
 /**
@@ -224,6 +239,16 @@ export function useCombatState() {
     ),
     resetScreenShake: useCallback(() => dispatch({ type: "RESET_SCREEN_SHAKE" }), []),
     resetRoundState: useCallback(() => dispatch({ type: "RESET_ROUND_STATE" }), []),
+    setPlayerLaterality: useCallback(
+      (laterality: readonly [StanceLaterality, StanceLaterality]) =>
+        dispatch({ type: "SET_PLAYER_LATERALITY", payload: laterality }),
+      []
+    ),
+    setPlayerLateralityIndex: useCallback(
+      (index: 0 | 1, laterality: StanceLaterality) =>
+        dispatch({ type: "SET_PLAYER_LATERALITY_INDEX", payload: { index, laterality } }),
+      []
+    ),
   };
 
   return { state, actions };

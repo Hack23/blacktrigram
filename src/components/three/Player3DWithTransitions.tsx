@@ -2,7 +2,6 @@
  * Enhanced Player3D component with stance transition animations
  *
  * Demonstrates integration of stance change visual effects:
- * - StanceAuraParticles for particle system
  * - StanceSymbol3D for floating trigram symbol
  * - StanceTransitionEffect for smooth transitions
  *
@@ -19,7 +18,6 @@ import { useAudio } from "../../audio/AudioProvider";
 import { TrigramStance } from "../../types/common";
 import type { Player3DUnifiedProps } from "../../types/player-visual";
 import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
-import StanceAuraParticles from "./StanceAuraParticles";
 import StanceSymbol3D from "./StanceSymbol3D";
 import StanceTransitionEffect from "./StanceTransitionEffect";
 
@@ -29,8 +27,6 @@ import StanceTransitionEffect from "./StanceTransitionEffect";
 export interface Player3DWithTransitionsProps extends Player3DUnifiedProps {
   /** Enable stance transition effects (default: true) */
   readonly enableTransitionEffects?: boolean;
-  /** Enable particle effects (default: true) */
-  readonly enableParticles?: boolean;
   /** Enable floating stance symbol (default: true) */
   readonly enableStanceSymbol?: boolean;
   /** Enable stance change audio (default: true) */
@@ -58,7 +54,6 @@ const AUDIO_ASSETS = {
  *
  * Enhanced player component with automatic stance change detection and visual effects.
  * Wraps SkeletalPlayer3D and adds:
- * - Particle system for stance aura
  * - Floating trigram symbol
  * - Smooth transition effects
  * - Audio synchronization
@@ -87,7 +82,6 @@ const AUDIO_ASSETS = {
  *   currentAnimation="idle"
  *   isMobile={false}
  *   enableTransitionEffects={true}
- *   enableParticles={true}
  *   enableStanceSymbol={true}
  *   onStanceTransitionComplete={(stance) => console.log('Transitioned to:', stance)}
  * />
@@ -100,7 +94,6 @@ export const Player3DWithTransitions: React.FC<
   ki,
   isMobile = false,
   enableTransitionEffects = true,
-  enableParticles = true,
   enableStanceSymbol = true,
   enableStanceAudio = true,
   transitionDuration = 0.5,
@@ -141,9 +134,6 @@ export const Player3DWithTransitions: React.FC<
     onStanceTransitionComplete?.(stance);
   }, [stance, onStanceTransitionComplete]);
 
-  // Calculate particle intensity based on Ki
-  const particleIntensity = ki / 100;
-
   return (
     <group data-testid="player3d-with-transitions">
       {/* Base player model */}
@@ -153,17 +143,6 @@ export const Player3DWithTransitions: React.FC<
         isMobile={isMobile}
         {...playerProps}
       />
-
-      {/* Particle effects (stance-specific aura) */}
-      {enableParticles && (
-        <StanceAuraParticles
-          stance={stance}
-          intensity={particleIntensity}
-          count={isMobile ? 100 : 200} // Reduce particle count on mobile
-          animated={true}
-          spread={2.0}
-        />
-      )}
 
       {/* Floating stance symbol */}
       {enableStanceSymbol && (

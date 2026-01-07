@@ -11,10 +11,14 @@
  * @korean 애니메이션우선순위
  */
 
-import { AnimationPriority, AnimationState } from "./types";
+import { AnimationPriority, AnimationState, STEP_PRIORITY } from "./types";
 
 /**
  * Map animation states to their priority levels
+ * 
+ * Stance guard animations have same priority as idle (0) since they are
+ * also idle states, just stance-specific.
+ * Tactical steps have priority 5 (same as attacks) to ensure commitment.
  * 
  * @korean 애니메이션우선순위맵
  */
@@ -23,10 +27,62 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   walk: AnimationPriority.WALK,
   run: AnimationPriority.RUN,
   stance_change: AnimationPriority.STANCE_CHANGE,
+  stance_side_switch: AnimationPriority.STANCE_CHANGE, // Same priority as stance_change
   defend: AnimationPriority.DEFEND,
+  // Defensive animations (방어 애니메이션)
+  defend_block_success: AnimationPriority.HIT, // Priority 6 - same as hit
+  defend_parry: AnimationPriority.KO, // Priority 7 - higher than block
+  defend_guard_break: AnimationPriority.FALL, // Priority 8 - highest (same as fall)
+  defend_recovery: AnimationPriority.RUN, // Priority 2 - interruptible recovery
   attack: AnimationPriority.ATTACK,
   hit: AnimationPriority.HIT,
   ko: AnimationPriority.KO,
+  // Stance-specific guard animations (팔괘 방어 자세)
+  stance_guard_geon: AnimationPriority.IDLE,
+  stance_guard_tae: AnimationPriority.IDLE,
+  stance_guard_li: AnimationPriority.IDLE,
+  stance_guard_jin: AnimationPriority.IDLE,
+  stance_guard_son: AnimationPriority.IDLE,
+  stance_guard_gam: AnimationPriority.IDLE,
+  stance_guard_gan: AnimationPriority.IDLE,
+  stance_guard_gon: AnimationPriority.IDLE,
+  // Tactical step animations (전술적 발걸음) - non-interruptible
+  step_forward: STEP_PRIORITY,
+  step_back: STEP_PRIORITY,
+  step_left: STEP_PRIORITY,
+  step_right: STEP_PRIORITY,
+  step_forward_left: STEP_PRIORITY,
+  step_forward_right: STEP_PRIORITY,
+  step_back_left: STEP_PRIORITY,
+  step_back_right: STEP_PRIORITY,
+  // Fall animations (낙법) - highest priority
+  fall_forward: AnimationPriority.FALL,
+  fall_backward: AnimationPriority.FALL,
+  fall_side_left: AnimationPriority.FALL,
+  fall_side_right: AnimationPriority.FALL,
+  // Ground states (지면 자세) - idle priority
+  ground_prone: AnimationPriority.IDLE,
+  ground_supine: AnimationPriority.IDLE,
+  ground_side_left: AnimationPriority.IDLE,
+  ground_side_right: AnimationPriority.IDLE,
+  // 180-degree turn animations (180도 회전) - same as steps (committed action)
+  turn_left: STEP_PRIORITY,
+  turn_right: STEP_PRIORITY,
+  // Footwork patterns (보법) - Korean martial arts specialized footwork
+  footwork_circular_left: STEP_PRIORITY,
+  footwork_circular_right: STEP_PRIORITY,
+  footwork_pivot_left: STEP_PRIORITY,
+  footwork_pivot_right: STEP_PRIORITY,
+  footwork_slide_forward: AnimationPriority.DEFEND,
+  footwork_slide_back: AnimationPriority.DEFEND,
+  footwork_slide_left: AnimationPriority.DEFEND,
+  footwork_slide_right: AnimationPriority.DEFEND,
+  footwork_shuffle: AnimationPriority.STANCE_CHANGE,
+  // Recovery animations (기상 애니메이션) - highest priority (can interrupt anything)
+  recovery_prone_standup: AnimationPriority.RECOVERY,
+  recovery_supine_standup: AnimationPriority.RECOVERY,
+  recovery_roll: AnimationPriority.RECOVERY,
+  recovery_defensive: AnimationPriority.RECOVERY,
 };
 
 /**

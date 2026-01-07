@@ -137,8 +137,6 @@ interface FingerSegmentProps {
   readonly length: number;
   readonly radius: number;
   readonly color: number;
-  readonly emissive: number;
-  readonly emissiveIntensity: number;
 }
 
 const FingerSegment: React.FC<FingerSegmentProps> = ({
@@ -147,16 +145,12 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
   length,
   radius,
   color,
-  emissive,
-  emissiveIntensity,
 }) => {
   return (
     <mesh position={position} rotation={rotation} castShadow receiveShadow>
       <capsuleGeometry args={[radius, length, 4, 8]} />
       <meshStandardMaterial
         color={color}
-        emissive={emissive}
-        emissiveIntensity={emissiveIntensity}
         metalness={0.1}
         roughness={0.8}
       />
@@ -210,9 +204,8 @@ const Finger: React.FC<FingerProps> = ({
   const intermediateCurl = curl * INTERMEDIATE_CURL_FACTOR * Math.PI;
   const distalCurl = curl * DISTAL_CURL_FACTOR * Math.PI;
 
-  // Highlight settings
-  const emissive = isHighlighted ? KOREAN_COLORS.ACCENT_RED : 0x000000;
-  const emissiveIntensity = isHighlighted ? 0.7 : 0;
+  // Highlight with color change only (NO glow/emissive)
+  const highlightColor = isHighlighted ? KOREAN_COLORS.ACCENT_RED : skinColor;
 
   return (
     <group position={basePosition}>
@@ -222,9 +215,7 @@ const Finger: React.FC<FingerProps> = ({
         rotation={[0, 0, proximalCurl]}
         length={dimensions.proximalLength}
         radius={dimensions.radius}
-        color={skinColor}
-        emissive={emissive}
-        emissiveIntensity={emissiveIntensity}
+        color={highlightColor}
       />
 
       {/* Intermediate phalanx (middle joint) - skip for thumb or low detail */}
@@ -238,9 +229,7 @@ const Finger: React.FC<FingerProps> = ({
           rotation={[0, 0, intermediateCurl]}
           length={dimensions.intermediateLength}
           radius={dimensions.radius * 0.9}
-          color={skinColor}
-          emissive={emissive}
-          emissiveIntensity={emissiveIntensity}
+          color={highlightColor}
         />
       )}
 
@@ -258,9 +247,7 @@ const Finger: React.FC<FingerProps> = ({
         rotation={[0, 0, distalCurl]}
         length={dimensions.distalLength}
         radius={dimensions.radius * 0.7}
-        color={skinColor}
-        emissive={emissive}
-        emissiveIntensity={isHighlighted ? 1.0 : 0} // Extra bright at fingertip
+        color={highlightColor}
       />
     </group>
   );
@@ -324,11 +311,10 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   const highlightKnifeEdge = highlightMode === "knife_edge";
   const highlightFingertips = highlightMode === "fingertips";
 
-  // Palm highlight settings
-  const palmEmissive = isHighlighted && highlightPalm
+  // Palm color (highlight with brighter color, NO emissive/glow)
+  const palmColor = isHighlighted && highlightPalm
     ? KOREAN_COLORS.ACCENT_GOLD
-    : 0x000000;
-  const palmEmissiveIntensity = isHighlighted && highlightPalm ? 0.5 : 0;
+    : skinColor;
 
   return (
     <group rotation={[wristRotation.x, wristRotation.y, wristRotation.z]} data-testid={`hand-3d-${side}`}>
@@ -336,15 +322,13 @@ export const Hand3D: React.FC<Hand3DProps> = ({
       <mesh castShadow receiveShadow data-testid={`hand-palm-${side}`}>
         <boxGeometry args={[palmWidth, palmLength, palmThickness]} />
         <meshStandardMaterial
-          color={skinColor}
-          emissive={palmEmissive}
-          emissiveIntensity={palmEmissiveIntensity}
+          color={palmColor}
           metalness={0.1}
           roughness={0.8}
         />
       </mesh>
 
-      {/* Knife edge highlight (pinky side of hand) */}
+      {/* Knife edge highlight (pinky side of hand) - color only, NO glow */}
       {isHighlighted && highlightKnifeEdge && (
         <mesh
           position={[-palmWidth / 2 * sideMultiplier, 0, 0]}
@@ -355,8 +339,6 @@ export const Hand3D: React.FC<Hand3DProps> = ({
           <boxGeometry args={[0.005, palmLength, palmThickness]} />
           <meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
-            emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.8}
             metalness={0.3}
             roughness={0.5}
           />

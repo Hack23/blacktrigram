@@ -2,7 +2,7 @@
  * Animation system exports for Black Trigram
  *
  * Unified exports for the animation state machine, priority system,
- * transition rules, and skeletal animation system.
+ * transition rules, skeletal animation system, and stance guard poses.
  *
  * @module systems/animation
  * @category Animation
@@ -33,6 +33,22 @@ export {
   isTransitionAllowed,
 } from "./AnimationTransitions";
 
+// Stance guard pose system
+export {
+  GEON_HIGH_GUARD_POSE,
+  TAE_FLUID_GUARD_POSE,
+  LI_FIRE_GUARD_POSE,
+  JIN_THUNDER_GUARD_POSE,
+  SON_WIND_GUARD_POSE,
+  GAM_WATER_GUARD_POSE,
+  GAN_MOUNTAIN_GUARD_POSE,
+  GON_EARTH_GUARD_POSE,
+  STANCE_GUARD_CONFIGS,
+  getGuardPoseForStance,
+  getGuardConfigForStance,
+  getAllStanceGuardPoses,
+} from "./StanceGuardPoses";
+
 // Skeletal animation system
 export {
   BONE_CHAINS,
@@ -40,6 +56,7 @@ export {
   applyJointConstraint,
   createBone,
   createHumanoidRig,
+  createScaledHumanoidRig,
   getBoneWorldPosition,
   getBoneWorldRotation,
   resetBoneToRestPose,
@@ -61,6 +78,43 @@ export {
   getAnimation,
   getAnimationForTechnique,
 } from "./AttackAnimations";
+
+// Step movement animations
+export {
+  STEP_FORWARD_ANIMATION,
+  STEP_BACK_ANIMATION,
+  STEP_LEFT_ANIMATION,
+  STEP_RIGHT_ANIMATION,
+  STEP_ANIMATIONS,
+  getStepAnimation,
+} from "./StepSkeletalAnimations";
+
+// Footwork pattern animations
+export {
+  FOOTWORK_CIRCULAR_LEFT_ANIMATION,
+  FOOTWORK_CIRCULAR_RIGHT_ANIMATION,
+  FOOTWORK_SLIDE_FORWARD_ANIMATION,
+  FOOTWORK_SLIDE_BACK_ANIMATION,
+  FOOTWORK_SLIDE_LEFT_ANIMATION,
+  FOOTWORK_SLIDE_RIGHT_ANIMATION,
+  FOOTWORK_PIVOT_LEFT_ANIMATION,
+  FOOTWORK_PIVOT_RIGHT_ANIMATION,
+  FOOTWORK_SHUFFLE_ANIMATION,
+  FOOTWORK_ANIMATIONS,
+  getFootworkAnimation,
+} from "./FootworkSkeletalAnimations";
+
+// Step animation system
+export {
+  STEP_ANIMATION_PARAMS,
+  STEP_KEYFRAMES,
+  STEP_ANIMATION_CONFIGS,
+  STEP_KOREAN_TERMS,
+  createStepConfig,
+  interpolateStepKeyframes,
+  getStepKeyframeAtFrame,
+  getStepDirectionVector,
+} from "./StepAnimations";
 
 export {
   applyKeyframeToRig,
@@ -126,3 +180,37 @@ export {
   getHeadMovementByType,
   isHeadMovementComplete,
 } from "./HeadMovements";
+
+// Fall animation system
+export {
+  FALL_BACKWARD_KEYFRAMES,
+  FALL_FORWARD_KEYFRAMES,
+  FALL_IMPACT_FRAMES,
+  FALL_SIDE_KEYFRAMES,
+  determineFallDirection,
+  determineFallFromStance,
+  getFallKeyframes,
+  getImpactFrame,
+} from "./FallAnimations";
+
+// Body facing direction system
+export {
+  bodyFacingSystem,
+  BodyFacingSystem,
+  createDefaultBodyFacing,
+  updateBodyFacing,
+  updateFacingTowardOpponent,
+  lockFacing,
+  unlockFacing,
+  isTurning,
+  getFacingAngleRadians,
+  getHeadAngleRadians,
+  normalizeAngle,
+  calculateAngleDifference,
+  calculateAngleToTarget,
+  DEFAULT_ROTATION_SPEED,
+  MAX_TORSO_ROTATION,
+  MAX_HEAD_ROTATION,
+  TURN_THRESHOLD_ANGLE,
+  TURN_ANIMATION_DURATION,
+} from "./BodyFacingSystem";

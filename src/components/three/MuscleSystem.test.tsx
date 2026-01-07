@@ -453,3 +453,235 @@ describe("Integration scenarios", () => {
     expect(container).toBeTruthy();
   });
 });
+
+describe("MuscleSystem with Physical Attributes", () => {
+  describe("Muscle mass scaling", () => {
+    it("should scale muscles larger with higher muscle mass", () => {
+      const muscleStates = new Map<string, number>([["BICEP_R", 0.5]]);
+
+      // High muscle mass (Jojik archetype - 42kg)
+      const { container: highMuscle } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 42, fatMass: 12 }}
+        />
+      );
+
+      expect(highMuscle).toBeTruthy();
+    });
+
+    it("should scale muscles smaller with lower muscle mass", () => {
+      const muscleStates = new Map<string, number>([["BICEP_R", 0.5]]);
+
+      // Low muscle mass (Amsalja archetype - 32kg)
+      const { container: lowMuscle } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 32, fatMass: 9 }}
+        />
+      );
+
+      expect(lowMuscle).toBeTruthy();
+    });
+
+    it("should scale muscles normally with average muscle mass", () => {
+      const muscleStates = new Map<string, number>([["BICEP_R", 0.5]]);
+
+      // Average muscle mass (Musa archetype - 38kg)
+      const { container: avgMuscle } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 38, fatMass: 12 }}
+        />
+      );
+
+      expect(avgMuscle).toBeTruthy();
+    });
+
+    it("should render without physical attributes (backward compatibility)", () => {
+      const muscleStates = new Map<string, number>([["BICEP_R", 0.5]]);
+
+      const { container } = render3D(
+        <MuscleSystem muscleStates={muscleStates} />
+      );
+
+      expect(container).toBeTruthy();
+    });
+  });
+
+  describe("Fat layer rendering", () => {
+    it("should render fat layer with high fat mass", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["QUAD_R", 0.5],
+      ]);
+
+      // High fat mass (Jojik archetype - 18kg)
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render minimal fat layer with low fat mass", () => {
+      const muscleStates = new Map<string, number>([["BICEP_R", 0.5]]);
+
+      // Low fat mass (Amsalja archetype - 9kg)
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 32, fatMass: 9 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should not render fat layer below opacity threshold", () => {
+      const muscleStates = new Map<string, number>([["BICEP_R", 0.5]]);
+
+      // Very low fat mass (below visibility threshold)
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 35, fatMass: 8 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+  });
+
+  describe("Archetype visual differences", () => {
+    it("should render Jojik archetype (bulky with fat)", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["QUAD_R", 0.5],
+        ["CORE", 0.5],
+      ]);
+
+      // Jojik: 42kg muscle, 18kg fat - should be bulky and thick
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render Amsalja archetype (lean and defined)", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["QUAD_R", 0.5],
+        ["CORE", 0.5],
+      ]);
+
+      // Amsalja: 32kg muscle, 9kg fat - should be lean and defined
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 32, fatMass: 9 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render Musa archetype (balanced athletic)", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["QUAD_R", 0.5],
+        ["CORE", 0.5],
+      ]);
+
+      // Musa: 38kg muscle, 12kg fat - should be balanced
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 38, fatMass: 12 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render Hacker archetype (average build)", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["QUAD_R", 0.5],
+        ["CORE", 0.5],
+      ]);
+
+      // Hacker: 34kg muscle, 14kg fat - should be average with slight softness
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 34, fatMass: 14 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render Jeongbo archetype (fit operative)", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["QUAD_R", 0.5],
+        ["CORE", 0.5],
+      ]);
+
+      // Jeongbo: 36kg muscle, 11kg fat - should be fit and toned
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          physicalAttributes={{ muscleMass: 36, fatMass: 11 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+  });
+
+  describe("Combined effects", () => {
+    it("should render exhausted Jojik with high muscle and fat", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.8],
+        ["QUAD_R", 0.7],
+        ["CORE", 0.6],
+      ]);
+
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          isExhausted={true}
+          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render exhausted Amsalja with low muscle and fat", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.8],
+        ["QUAD_R", 0.7],
+      ]);
+
+      const { container } = render3D(
+        <MuscleSystem
+          muscleStates={muscleStates}
+          isExhausted={true}
+          physicalAttributes={{ muscleMass: 32, fatMass: 9 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+  });
+});

@@ -33,6 +33,7 @@ import {
   VitalPointOverlayControls,
   type BodyRegionFilter,
 } from "../combat/components";
+import { GuardIndicator } from "../combat/components/GuardIndicator";
 import { TechniqueBar } from "../combat/components/TechniqueBar";
 import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import {
@@ -184,7 +185,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [arenaBounds]
   );
 
-  // Player movement with input system (using pixel-based bounds like CombatScreen)
+  // Player movement with physics-based acceleration and stance modifiers
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: arenaBounds,
@@ -193,6 +194,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     },
     initialPosition,
     moveSpeed: 300,
+    // Physics parameters for realistic training movement (always enabled)
+    currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
+    legInjuryFactor: 0, // No injury in training mode
+    isRunning: false,
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
@@ -221,6 +226,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const handleDummyHitRef = useRef<(vitalPointId: string) => boolean>(
     () => false
   );
+  
+  // Ref for playerAnimation to avoid circular dependencies in animation events
+  const playerAnimationRef = useRef<ReturnType<typeof usePlayerAnimation> | null>(null);
 
   // Player animation events (matches CombatScreen pattern)
   const playerAnimationEvents = useMemo<AnimationEvents>(
@@ -236,16 +244,27 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       },
       onAnimationComplete: (state) => {
         if (state === "stance_change") {
+          // Stance change animation completed - transition to stance guard
+          // 자세 변경 완료 - 자세 가드로 전환
           audio.playSFX("menu_select");
+          const currentStance = TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex];
+          if (currentStance && playerAnimationRef.current) {
+            playerAnimationRef.current.transitionToStanceGuard(currentStance);
+          }
         }
       },
     }),
-    [audio]
+    [audio, trainingState.currentStanceIndex]
   );
 
   const playerAnimation = usePlayerAnimation({
     events: playerAnimationEvents,
   });
+  
+  // Store animation ref for use in event callbacks
+  useEffect(() => {
+    playerAnimationRef.current = playerAnimation;
+  }, [playerAnimation]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 5: Training Actions (Hook-based)
@@ -972,7 +991,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
             {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
             <ResponsiveContainer
-              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 100 : 110) } }}
+              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 180 : 200) } }}
               containerWidth={width}
               useSafeArea
               safeAreaEdge="bottom"
@@ -990,6 +1009,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 isMobile={isMobile}
               />
             </ResponsiveContainer>
+
+            {/* Bottom Left - Guard Indicator (below anatomy controls) */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: isMobile ? "65px" : "75px",
+                left: isMobile ? "10px" : "20px",
+                pointerEvents: "none",
+              }}
+            >
+              <GuardIndicator
+                currentStance={TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex]}
+                isInGuard={playerAnimation.isInStanceGuard()}
+                position="left"
+                isMobile={isMobile}
+              />
+            </div>
 
             {/* Bottom Right - Vital Point Panel */}
             <ResponsiveContainer

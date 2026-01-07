@@ -19,6 +19,11 @@ import type {
 
 /**
  * Static mapping from AnimationState to PlayerAnimation
+ * 
+ * Stance guard animations map to "idle" since SkeletalPlayer3D
+ * will handle the stance-specific guard rendering.
+ * Tactical steps now use dedicated step animations with guard maintenance.
+ * 
  * @korean 애니메이션상태맵
  */
 const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
@@ -27,9 +32,63 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   run: "walk", // Map run to walk for now (SkeletalPlayer3D doesn't have run animation yet)
   attack: "attack",
   defend: "defend",
+  // Defensive animations (방어 애니메이션) - map to defend with variations handled by skeletal system
+  defend_block_success: "defend",
+  defend_parry: "defend",
+  defend_guard_break: "defend",
+  defend_recovery: "defend",
   hit: "hit",
   stance_change: "stance_change",
+  stance_side_switch: "stance_change", // Map to stance_change animation (mirroring guard)
   ko: "death", // Map ko to death
+  // Stance guard animations map to idle - guard pose handled by stance system
+  stance_guard_geon: "idle",
+  stance_guard_tae: "idle",
+  stance_guard_li: "idle",
+  stance_guard_jin: "idle",
+  stance_guard_son: "idle",
+  stance_guard_gam: "idle",
+  stance_guard_gan: "idle",
+  stance_guard_gon: "idle",
+  // Tactical step animations now map to dedicated step animations
+  step_forward: "step_forward",
+  step_back: "step_back",
+  step_left: "step_left",
+  step_right: "step_right",
+  step_forward_left: "step_forward_left",
+  step_forward_right: "step_forward_right",
+  step_back_left: "step_back_left",
+  step_back_right: "step_back_right",
+  // Fall animations: Using "death" animation as closest approximation for falling
+  // Note: Custom fall 3D animations will be added in future 3D model update
+  fall_forward: "death",
+  fall_backward: "death",
+  fall_side_left: "death",
+  fall_side_right: "death",
+  // Ground states map to idle with minimal movement
+  ground_prone: "idle",
+  ground_supine: "idle",
+  ground_side_left: "idle",
+  ground_side_right: "idle",
+  // 180-degree turn animations map to stance_change (body pivot animation)
+  turn_left: "stance_change",
+  turn_right: "stance_change",
+  // Footwork patterns (보법) - Korean martial arts specialized footwork
+  footwork_circular_left: "walk", // Lateral movement
+  footwork_circular_right: "walk",
+  footwork_pivot_left: "walk", // Rotation movement
+  footwork_pivot_right: "walk",
+  footwork_slide_forward: "walk", // Sliding movement
+  footwork_slide_back: "walk",
+  footwork_slide_left: "walk",
+  footwork_slide_right: "walk",
+  footwork_shuffle: "walk", // Quick adjustment
+  // Recovery animations (기상 애니메이션) - Getting up from ground states
+  // Map to idle for now, custom 3D recovery animations will be added in future
+  recovery_prone_standup: "idle",
+  recovery_supine_standup: "idle",
+  recovery_roll: "walk", // Rolling motion approximated by walk
+  recovery_defensive: "defend", // Guarded getup approximated by defend
 };
 
 /**

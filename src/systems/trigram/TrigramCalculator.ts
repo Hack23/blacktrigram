@@ -1,4 +1,5 @@
 import { TrigramStance } from "../../types/common";
+import { StanceLaterality } from "./types";
 
 /**
  * Enhanced stance effectiveness matrix for Korean martial arts
@@ -161,6 +162,61 @@ export class TrigramCalculator {
     // Normalize distance to 0-1 range and add base difficulty
     const normalizedDistance = distance / (stanceOrder.length / 2);
     return baseDifficulty + normalizedDistance * 0.5;
+  }
+
+  /**
+   * Calculate laterality modifier based on stance matching.
+   * 
+   * In Korean martial arts, matched stances (both fighters in same laterality)
+   * create tactical advantages for mid-level attacks as centerlines are more exposed.
+   * Mismatched stances (opposite laterality) provide defensive advantages as lead guards
+   * naturally protect the centerline.
+   * 
+   * @param attackerLaterality - Attacker's stance laterality (left or right)
+   * @param defenderLaterality - Defender's stance laterality (left or right)
+   * @param attackLevel - Attack level: "high", "mid", or "low"
+   * @returns Damage multiplier (1.0 = neutral, >1.0 = advantage, <1.0 = disadvantage)
+   * 
+   * @example
+   * ```typescript
+   * // Matched stances: attacker gains mid-level advantage
+   * const modifier = TrigramCalculator.calculateLateralityModifier("left", "left", "mid");
+   * // Returns 1.15 (+15% effectiveness)
+   * 
+   * // Mismatched stances: defender's guard protects centerline
+   * const modifier = TrigramCalculator.calculateLateralityModifier("left", "right", "mid");
+   * // Returns 0.90 (-10% effectiveness)
+   * ```
+   * 
+   * @public
+   * @korean 측면성수정자계산
+   */
+  static calculateLateralityModifier(
+    attackerLaterality: StanceLaterality,
+    defenderLaterality: StanceLaterality,
+    attackLevel: "high" | "mid" | "low" = "mid"
+  ): number {
+    const isMatched = attackerLaterality === defenderLaterality;
+
+    // Laterality primarily affects mid-level attacks (centerline attacks)
+    if (attackLevel === "mid") {
+      // Matched stances: Open centerline = offensive advantage
+      // Mismatched stances: Protected centerline = defensive advantage
+      return isMatched ? 1.15 : 0.90;
+    }
+
+    // High and low attacks less affected by laterality
+    // Slight tactical variation still exists
+    if (attackLevel === "high") {
+      return isMatched ? 1.05 : 0.98;
+    }
+
+    if (attackLevel === "low") {
+      return isMatched ? 1.03 : 0.99;
+    }
+
+    // Default neutral
+    return 1.0;
   }
 } // end of class
 

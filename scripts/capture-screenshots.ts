@@ -54,15 +54,16 @@ interface ValidationResult {
 }
 
 // Timing constants for Three.js rendering and animations
+// Optimized for reliable content rendering with minimal overhead
 const TIMING = {
-  CANVAS_TIMEOUT: 15000, // Max wait for canvas element (increased)
-  INITIAL_RENDER_DELAY: 2000, // Wait for initial Three.js render (increased)
-  ANIMATION_SETTLE_DELAY: 1500, // Wait for animations to settle (increased)
-  BUTTON_CLICK_DELAY: 2500, // Wait after button clicks (increased)
-  CONTENT_LOAD_DELAY: 3000, // Wait for dynamic content to load
-  RETRY_DELAY: 2000, // Delay between retries
-  HTML_OVERLAY_DELAY: 3000, // Wait for Html overlays in Three.js to render
-  SCREEN_TRANSITION_DELAY: 4000, // Wait for screen transitions with lazy loading
+  CANVAS_TIMEOUT: 15000, // Max wait for canvas element
+  INITIAL_RENDER_DELAY: 3000, // Wait for initial Three.js render (increased from 2500ms)
+  ANIMATION_SETTLE_DELAY: 2500, // Wait for animations to settle (increased from 2000ms)
+  BUTTON_CLICK_DELAY: 3500, // Wait after button clicks (increased from 3000ms)
+  CONTENT_LOAD_DELAY: 5000, // Wait for dynamic content to load (increased from 4000ms)
+  RETRY_DELAY: 3000, // Delay between retries (increased from 2500ms)
+  HTML_OVERLAY_DELAY: 5000, // Wait for Html overlays in Three.js to render (increased from 4000ms)
+  SCREEN_TRANSITION_DELAY: 6000, // Wait for screen transitions with lazy loading (increased from 5000ms)
 } as const;
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
@@ -138,7 +139,7 @@ async function waitForHtmlOverlayContent(
     // Try to wait for the element to be visible
     await page.waitForSelector(selector, { state: "visible", timeout });
 
-    // Additional delay for React to finish rendering
+    // Additional delay for React state updates
     await page.waitForTimeout(500);
 
     console.log(`  ✅ ${description} is visible`);
@@ -176,7 +177,7 @@ async function waitForMenuReady(page: Page): Promise<void> {
     );
   }
 
-  // Additional delay for any CSS transitions/animations
+  // Additional delay for any CSS transitions/animations and Html overlay positioning
   await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
 }
 
@@ -242,6 +243,14 @@ async function waitForContentWithRetry(
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     console.log(`  🔍 Content validation attempt ${attempt}/${maxRetries}...`);
+
+    // Wait for network to be idle (no active requests for 500ms)
+    try {
+      await page.waitForLoadState('networkidle', { timeout: 5000 });
+      console.log("  ✅ Network idle");
+    } catch {
+      console.log("  ⚠️  Network still active, continuing...");
+    }
 
     // Wait for content to load
     await page.waitForTimeout(TIMING.CONTENT_LOAD_DELAY);
@@ -328,10 +337,50 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "02-intro-screen-menu",
     description: "Intro Screen - Main menu with game modes",
     path: "/",
-    waitForTimeout: 3000,
+    waitForTimeout: 6000, // Increased from 4000ms - menu needs significant time to render
     actions: async (page) => {
       // Wait for menu to be fully rendered (handles the "just lines" issue)
       await waitForMenuReady(page);
+      
+      // Extra wait to ensure all 4 menu buttons are fully visible
+      await page.waitForTimeout(2000);
+      
+      // Verify all menu items are present
+      const menuItems = await page.$$('[data-testid^="menu-item-"]');
+      console.log(`  📋 Found ${menuItems.length} menu items`);
+      
+      // Debug: Check menu visibility and styles
+      const menuDebug = await page.evaluate(() => {
+        const menu = document.querySelector('[data-testid="main-menu-section"]');
+        if (!menu) return { found: false };
+        
+        const rect = menu.getBoundingClientRect();
+        const styles = window.getComputedStyle(menu);
+        
+        return {
+          found: true,
+          position: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+            bottom: rect.bottom,
+            right: rect.right,
+          },
+          styles: {
+            display: styles.display,
+            opacity: styles.opacity,
+            visibility: styles.visibility,
+            zIndex: styles.zIndex,
+            position: styles.position,
+          },
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          }
+        };
+      });
+      console.log(`  🔍 Menu debug:`, JSON.stringify(menuDebug, null, 2));
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
@@ -351,13 +400,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
         description: "Versus menu item",
         required: false,
       },
+      {
+        selector: '[data-testid="menu-item-philosophy"]',
+        description: "Philosophy menu item (4th button)",
+        required: true, // Make this required to ensure it's visible
+      },
     ],
   },
   {
     name: "03-intro-screen-archetype-selector",
     description: "Intro Screen - Player archetype selection",
     path: "/",
-    waitForTimeout: 3000,
+    waitForTimeout: 4000, // Increased from 3000ms for Html overlay rendering
     actions: async (page) => {
       // Wait for menu to be fully rendered first
       await waitForMenuReady(page);
@@ -386,7 +440,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "04-controls-screen",
     description: "Controls Screen - Game controls and keybindings",
     path: "/",
-    waitForTimeout: 5000, // Increased for Html overlay rendering
+    waitForTimeout: 6000, // Increased from 5000ms for Html overlay rendering
     actions: async (page) => {
       // Return to menu first for a clean state
       await page.goto(BASE_URL);
@@ -445,7 +499,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "05-philosophy-screen",
     description: "Philosophy Screen - Korean martial arts philosophy",
     path: "/",
-    waitForTimeout: 4000, // Increased for Html overlay rendering
+    waitForTimeout: 5000, // Increased from 4000ms for Html overlay rendering
     actions: async (page) => {
       // Return to menu first
       await page.goto(BASE_URL);
@@ -492,7 +546,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "06-training-screen",
     description: "Training Screen - Training mode with vital points",
     path: "/",
-    waitForTimeout: 5000, // Increased for full UI load
+    waitForTimeout: 6000, // Increased from 5000ms for full UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
@@ -534,7 +588,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "07-combat-screen-practice",
     description: "Combat Screen - Practice mode gameplay",
     path: "/",
-    waitForTimeout: 5000, // Increased for full combat UI load
+    waitForTimeout: 6000, // Increased from 5000ms for full combat UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
@@ -576,7 +630,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     name: "08-combat-screen-versus",
     description: "Combat Screen - Versus mode gameplay",
     path: "/",
-    waitForTimeout: 5000, // Increased for full combat UI load
+    waitForTimeout: 6000, // Increased from 5000ms for full combat UI load
     actions: async (page) => {
       // Return to menu
       await page.goto(BASE_URL);
@@ -683,6 +737,10 @@ async function captureScreenshot(
         validationResult,
       };
     }
+
+    // Final wait to ensure all rendering is complete before screenshot
+    console.log("  ⏳ Final render stabilization...");
+    await page.waitForTimeout(1500); // Extra wait for final render
 
     // Capture screenshot
     const screenshotPath = path.join(SCREENSHOTS_DIR, `${config.name}.png`);
