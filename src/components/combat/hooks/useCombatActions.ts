@@ -41,7 +41,7 @@ import { PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { Position, TrigramStance, Technique } from "@/types";
 import { HitEffectType } from "@/systems/effects";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
@@ -51,6 +51,8 @@ import { movementPenaltySystem } from "@/systems/bodypart";
 import { StanceManager } from "@/systems/trigram";
 import { checkForFall, getFallTypeName } from "@/systems/combat/FallIntegration";
 import type { AnimationState } from "@/systems/animation/types";
+import type { CombatResult } from "@/systems/combat/types";
+import { KnockbackPhysics } from "@/systems/physics";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -73,6 +75,56 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
   };
 }
 
+/**
+ * Apply knockback displacement to defender position
+ * 
+ * **Korean**: 밀침 적용 (Apply Knockback)
+ * 
+ * Updates the defender's position based on knockback physics calculation.
+ * The knockback displacement is applied in the direction of the attack vector
+ * (attacker → defender), respecting arena boundaries.
+ * 
+ * @param result - Combat result containing knockback data
+ * @param defenderPos - Current defender position
+ * @param arenaBounds - Arena boundary limits
+ * @returns Updated defender position after knockback
+ * 
+ * @example
+ * ```typescript
+ * const newPosition = applyKnockbackDisplacement(
+ *   result,
+ *   playerPositions[1],
+ *   arenaBounds
+ * );
+ * // Returns: { x: 5.5, y: 0 } (displaced 2.5m from x=3)
+ * ```
+ */
+function applyKnockbackDisplacement(
+  result: CombatResult,
+  defenderPos: Position,
+  arenaBounds: { x: number; y: number; width: number; height: number }
+): Position {
+  if (!result.knockback) {
+    return defenderPos;
+  }
+
+  // Apply knockback displacement
+  // Note: knockback.displacement.z maps to position.y in 2D arena
+  let newX = defenderPos.x + result.knockback.displacement.x;
+  let newY = defenderPos.y + result.knockback.displacement.z;
+
+  // Clamp to arena boundaries
+  const minX = arenaBounds.x;
+  const maxX = arenaBounds.x + arenaBounds.width;
+  const minY = arenaBounds.y;
+  const maxY = arenaBounds.y + arenaBounds.height;
+
+  newX = Math.max(minX, Math.min(maxX, newX));
+  newY = Math.max(minY, Math.min(maxY, newY));
+
+  return { x: newX, y: newY };
+}
+
 export interface UseCombatActionsConfig {
   readonly validPlayers: readonly [PlayerState, PlayerState];
   readonly playerPositions: readonly [Position, Position];
@@ -80,6 +132,7 @@ export interface UseCombatActionsConfig {
   readonly combatActions: CombatActions;
   readonly combatSystem: CombatSystem;
   readonly onPlayerUpdate: (playerIndex: number, updates: Partial<PlayerState>) => void;
+  readonly onPlayerPositionUpdate?: (playerIndex: number, position: Position) => void;
   readonly addCombatMessage: (korean: string, english: string) => void;
   readonly addHitEffect: (type: HitEffectType, position: Position, intensity?: number) => void;
   readonly arenaBounds: {
@@ -176,6 +229,22 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
   } = config;
 
+  // Refs to track knockback recovery timeouts for cleanup
+  const player1KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const player2KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (player1KnockbackTimeoutRef.current) {
+        clearTimeout(player1KnockbackTimeoutRef.current);
+      }
+      if (player2KnockbackTimeoutRef.current) {
+        clearTimeout(player2KnockbackTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Player attack handler
   const handleAttack = useCallback((technique?: Technique) => {
     if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
@@ -270,6 +339,42 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(0, updatedAttacker);
       onPlayerUpdate(1, updatedDefender);
 
+      // Apply knockback displacement (밀침 적용)
+      if (result.knockback && config.onPlayerPositionUpdate) {
+        const newDefenderPosition = applyKnockbackDisplacement(
+          result,
+          playerPositions[1],
+          config.arenaBounds
+        );
+        config.onPlayerPositionUpdate(1, newDefenderPosition);
+
+        // Add combat message for significant knockback
+        const knockbackDistance = Math.sqrt(
+          result.knockback.displacement.x ** 2 +
+          result.knockback.displacement.z ** 2
+        );
+        if (knockbackDistance > 1.5) {
+          const knockbackName = KnockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
+          addCombatMessage(knockbackName.korean, knockbackName.english);
+        }
+
+        // Set stunned state for knockback duration (non-interruptible)
+        if (result.knockback.duration > 0) {
+          // Clear any existing timeout for player 2
+          if (player2KnockbackTimeoutRef.current) {
+            clearTimeout(player2KnockbackTimeoutRef.current);
+          }
+          
+          onPlayerUpdate(1, { isStunned: true });
+          
+          // Schedule recovery after knockback duration + recovery window
+          player2KnockbackTimeoutRef.current = setTimeout(() => {
+            onPlayerUpdate(1, { isStunned: false });
+            player2KnockbackTimeoutRef.current = null;
+          }, (result.knockback.duration + result.knockback.recoveryWindow) * 1000);
+        }
+      }
+
       // Check if defender should fall after taking damage
       if (config.playerAnimations?.player2) {
         const fallCheck = checkForFall(
@@ -334,7 +439,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     combatAudio,
-    config.playerAnimations,
+    config,
   ]);
 
   // Player defend handler
@@ -643,6 +748,45 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
 
+      // Apply knockback displacement for AI attacks (밀침 적용)
+      if (result.knockback && config.onPlayerPositionUpdate) {
+        const newDefenderPosition = applyKnockbackDisplacement(
+          result,
+          playerPositions[0],
+          config.arenaBounds
+        );
+        config.onPlayerPositionUpdate(0, newDefenderPosition);
+
+        // Add combat message for significant knockback
+        const knockbackDistance = Math.sqrt(
+          result.knockback.displacement.x ** 2 +
+          result.knockback.displacement.z ** 2
+        );
+        if (knockbackDistance > 1.5) {
+          const knockbackName = KnockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
+          addCombatMessage(
+            `AI ${knockbackName.korean}`,
+            `AI ${knockbackName.english}`
+          );
+        }
+
+        // Set stunned state for knockback duration (non-interruptible)
+        if (result.knockback.duration > 0) {
+          // Clear any existing timeout for player 1
+          if (player1KnockbackTimeoutRef.current) {
+            clearTimeout(player1KnockbackTimeoutRef.current);
+          }
+          
+          onPlayerUpdate(0, { isStunned: true });
+          
+          // Schedule recovery after knockback duration + recovery window
+          player1KnockbackTimeoutRef.current = setTimeout(() => {
+            onPlayerUpdate(0, { isStunned: false });
+            player1KnockbackTimeoutRef.current = null;
+          }, (result.knockback.duration + result.knockback.recoveryWindow) * 1000);
+        }
+      }
+
       // Check if player should fall after taking damage from AI
       if (config.playerAnimations?.player1) {
         const fallCheck = checkForFall(
@@ -693,7 +837,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
     createAITechnique,
     getHitEffectType,
-    config.playerAnimations,
+    config,
   ]);
 
   // AI defend handler
@@ -774,6 +918,45 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       onPlayerUpdate(1, updatedAttacker);
       onPlayerUpdate(0, updatedDefender);
 
+      // Apply knockback displacement for AI special techniques (밀침 적용)
+      if (result.knockback && config.onPlayerPositionUpdate) {
+        const newDefenderPosition = applyKnockbackDisplacement(
+          result,
+          playerPositions[0],
+          config.arenaBounds
+        );
+        config.onPlayerPositionUpdate(0, newDefenderPosition);
+
+        // Add combat message for significant knockback
+        const knockbackDistance = Math.sqrt(
+          result.knockback.displacement.x ** 2 +
+          result.knockback.displacement.z ** 2
+        );
+        if (knockbackDistance > 1.5) {
+          const knockbackName = KnockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
+          addCombatMessage(
+            `AI 특수 ${knockbackName.korean}`,
+            `AI Special ${knockbackName.english}`
+          );
+        }
+
+        // Set stunned state for knockback duration (non-interruptible)
+        if (result.knockback.duration > 0) {
+          // Clear any existing timeout for player 1
+          if (player1KnockbackTimeoutRef.current) {
+            clearTimeout(player1KnockbackTimeoutRef.current);
+          }
+          
+          onPlayerUpdate(0, { isStunned: true });
+          
+          // Schedule recovery after knockback duration + recovery window
+          player1KnockbackTimeoutRef.current = setTimeout(() => {
+            onPlayerUpdate(0, { isStunned: false });
+            player1KnockbackTimeoutRef.current = null;
+          }, (result.knockback.duration + result.knockback.recoveryWindow) * 1000);
+        }
+      }
+
       // Check if player should fall after taking damage from AI technique
       if (config.playerAnimations?.player1) {
         const fallCheck = checkForFall(
@@ -822,7 +1005,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     handleAIAttack,
     combatAudio,
     createAITechnique,
-    config.playerAnimations,
+    config,
   ]);
 
   // AI movement handler with injury-based movement penalties

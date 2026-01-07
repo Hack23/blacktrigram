@@ -36,6 +36,17 @@ export interface CombatResult {
     /** Technique name to display (Korean) */
     readonly techniqueDisplayName?: string;
   };
+  /** Knockback physics information (밀침 물리) */
+  readonly knockback?: {
+    /** Knockback displacement vector in world space */
+    readonly displacement: { x: number; y: number; z: number };
+    /** Knockback animation duration in seconds */
+    readonly duration: number;
+    /** Recovery window (vulnerable state) in seconds */
+    readonly recoveryWindow: number;
+    /** Whether knockback triggers fall animation (넘어짐) */
+    readonly shouldFall: boolean;
+  };
 }
 
 // Round result information

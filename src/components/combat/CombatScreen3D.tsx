@@ -996,6 +996,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [createHitEffect, combatActions]
   );
 
+  // Callback for updating player positions after knockback
+  const handlePlayerPositionUpdate = useCallback(
+    (playerIndex: number, position: Position) => {
+      if (playerIndex === 0) {
+        setPlayer1Position(position);
+        onPlayerUpdate(0, { position });
+      } else if (playerIndex === 1) {
+        // For AI, update position through onPlayerUpdate
+        // This will be reflected in player2Position which is derived from players prop
+        onPlayerUpdate(1, { position });
+      }
+    },
+    [onPlayerUpdate, setPlayer1Position]
+  );
+
   // Combat action handlers
   const {
     handleAttack,
@@ -1013,6 +1028,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions,
     combatSystem,
     onPlayerUpdate,
+    onPlayerPositionUpdate: handlePlayerPositionUpdate,
     addCombatMessage,
     addHitEffect,
     arenaBounds,

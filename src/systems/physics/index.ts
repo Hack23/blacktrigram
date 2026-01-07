@@ -8,3 +8,9 @@
  */
 
 export * from './MovementPhysics';
+export { default as KnockbackPhysics } from './KnockbackPhysics';
+export type {
+  KnockbackConfig,
+  KnockbackResult,
+  BalanceState,
+} from './KnockbackPhysics';
