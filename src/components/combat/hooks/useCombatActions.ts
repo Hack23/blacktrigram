@@ -439,7 +439,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     addCombatMessage,
     addHitEffect,
     combatAudio,
-    config.playerAnimations,
+    config,
   ]);
 
   // Player defend handler
@@ -837,7 +837,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
     createAITechnique,
     getHitEffectType,
-    config.playerAnimations,
+    config,
   ]);
 
   // AI defend handler
@@ -1005,7 +1005,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     handleAIAttack,
     combatAudio,
     createAITechnique,
-    config.playerAnimations,
+    config,
   ]);
 
   // AI movement handler with injury-based movement penalties
