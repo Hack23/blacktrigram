@@ -22,6 +22,9 @@ export interface InputSystemConfig {
   readonly legInjuryFactor?: number;
   readonly isRunning?: boolean;
   readonly useTacticalSteps?: boolean;
+  // Speed modifier overrides from SpeedModifierSystem
+  readonly maxSpeedOverride?: number; // Final calculated speed in m/s
+  readonly accelerationOverride?: number; // Final calculated acceleration in m/s²
 }
 
 export interface MovementState {
@@ -83,6 +86,8 @@ export function usePlayerMovement(
     legInjuryFactor = 0,
     isRunning: isRunningProp = false,
     useTacticalSteps = false,
+    maxSpeedOverride,
+    accelerationOverride,
   } = config;
 
   const [playerPosition, setPlayerPosition] =
@@ -237,6 +242,14 @@ export function usePlayerMovement(
 
     // Physics-based movement (always enabled for realistic combat)
     if (physicsEngineRef.current && physicsStateRef.current) {
+      // Apply speed modifiers if provided by SpeedModifierSystem
+      if (maxSpeedOverride !== undefined) {
+        physicsEngineRef.current.setMaxSpeed(maxSpeedOverride);
+      }
+      if (accelerationOverride !== undefined) {
+        physicsEngineRef.current.setAcceleration(accelerationOverride);
+      }
+      
       // Convert key state to physics input
       const forward = keyState.up ? 1 : keyState.down ? -1 : 0;
       const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
@@ -317,6 +330,8 @@ export function usePlayerMovement(
     useTacticalSteps,
     velocity,
     speed,
+    maxSpeedOverride,
+    accelerationOverride,
   ]);
 
   // Keep updatePositionRef in sync via useEffect (not during render)
