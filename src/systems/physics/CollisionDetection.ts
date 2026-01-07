@@ -64,6 +64,7 @@ import {
 } from "../../types/physics";
 import type { VitalPoint } from "../vitalpoint/types";
 import { VITAL_POINTS_DATA } from "../vitalpoint/VitalPointsData";
+import { CoordinateMapper } from "./CoordinateMapper";
 
 /**
  * Collision Detection Engine for combat physics.
@@ -84,6 +85,9 @@ export class CollisionDetection {
   
   // Geometry cache for object pooling to avoid repeated allocations during combat
   private readonly geometryCache: Map<string, THREE.BufferGeometry> = new Map();
+  
+  // Coordinate mapper for 2D→3D conversion
+  private readonly coordinateMapper: CoordinateMapper;
 
   /**
    * Creates a new CollisionDetection instance.
@@ -92,6 +96,7 @@ export class CollisionDetection {
    * vital points by region for efficient lookup.
    */
   constructor() {
+    this.coordinateMapper = new CoordinateMapper();
     this.initializeBoundingBoxes();
     this.organizeVitalPointsByRegion();
     this.initializeGeometryCache();
@@ -392,31 +397,18 @@ export class CollisionDetection {
       return null;
     }
     
-    // Find closest vital point to hit location
-    let closestPoint: VitalPoint | null = null;
-    let minDistance = Infinity;
+    // Use CoordinateMapper to find the closest vital point in 3D space
+    const result = this.coordinateMapper.findClosestVitalPoint(
+      hitPoint,
+      vitalPoints,
+      region
+    );
     
-    for (const vp of vitalPoints) {
-      // TODO: Convert 2D vital point position to 3D world position
-      // Current limitation: Vital points use 2D pixel coordinates (e.g., x: 100, y: 50)
-      // but we need 3D meter coordinates (e.g., x: 0, y: 1.7, z: 0).
-      // This temporary implementation will produce incorrect positions.
-      // A proper 2D→3D coordinate mapper is needed.
-      const vpWorldPos: Position3D = {
-        x: defenderPosition.x + vp.position.x / 1000, // Convert pixels to meters (rough approximation)
-        y: defenderPosition.y + vp.position.y / 1000, // Convert pixels to meters (rough approximation)
-        z: defenderPosition.z,
-      };
-      
-      const distance = this.calculateDistance3D(hitPoint, vpWorldPos);
-      
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestPoint = vp;
-      }
-    }
-    
-    return closestPoint;
+    // For collision detection, we accept any vital point in the region
+    // even if it's not very close, as long as the region was hit
+    // This provides more forgiving collision detection while still
+    // using accurate 3D positioning for scoring/accuracy
+    return result ? result.vitalPoint : (vitalPoints.length > 0 ? vitalPoints[0] : null);
   }
 
   /**
@@ -440,22 +432,12 @@ export class CollisionDetection {
     vitalPoint: VitalPoint,
     defenderPosition: Position3D
   ): number {
-    // TODO: Convert 2D vital point position to 3D world position
-    // Current limitation: Vital points use 2D pixel coordinates (e.g., x: 100, y: 50)
-    // but we need 3D meter coordinates (e.g., x: 0, y: 1.7, z: 0).
-    // This temporary implementation will produce incorrect accuracy calculations.
-    // A proper 2D→3D coordinate mapper is needed.
-    const vpWorldPos: Position3D = {
-      x: defenderPosition.x + vitalPoint.position.x / 1000, // Convert pixels to meters (rough approximation)
-      y: defenderPosition.y + vitalPoint.position.y / 1000, // Convert pixels to meters (rough approximation)
-      z: defenderPosition.z,
-    };
+    // Use CoordinateMapper to convert vital point to 3D and calculate distance
+    const distance = this.coordinateMapper.distanceToVitalPoint(hitPoint, vitalPoint);
     
-    const distance = this.calculateDistance3D(hitPoint, vpWorldPos);
-    const maxAccuracyDistance = 0.05; // 5cm radius for perfect hit
-    
-    // Accuracy decreases linearly with distance
-    const accuracy = Math.max(0, 1 - distance / maxAccuracyDistance);
+    // Accuracy calculation: Perfect (1.0) at center, decreasing to 0 at 5cm radius
+    const maxDistance = 0.05; // 5cm radius for vital points
+    const accuracy = Math.max(0, 1 - (distance / maxDistance));
     
     return accuracy;
   }
