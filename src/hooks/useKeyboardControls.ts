@@ -345,9 +345,32 @@ export function useKeyboardControls({
           case "move_down":
           case "move_left":
           case "move_right":
-            // Check for Ctrl modifier for footwork patterns (보법)
-            if (e.ctrlKey) {
-              // Footwork patterns with Ctrl+WASD and additional keys
+            // Check for Shift+Ctrl modifier for advanced footwork patterns (MUST be checked before Ctrl alone)
+            if (e.shiftKey && e.ctrlKey) {
+              // Shift+Ctrl modifier for advanced footwork patterns
+              let advancedFootwork: string | null = null;
+              
+              if (action === "move_left") {
+                // Shift+Ctrl+A: Pivot left (축족회전 좌)
+                advancedFootwork = "footwork_pivot_left";
+              } else if (action === "move_right") {
+                // Shift+Ctrl+D: Pivot right (축족회전 우)
+                advancedFootwork = "footwork_pivot_right";
+              } else if (action === "move_up" || action === "move_down") {
+                // Shift+Ctrl+W or Shift+Ctrl+S: Shuffle step (섞음보)
+                advancedFootwork = "footwork_shuffle";
+              }
+              
+              if (advancedFootwork) {
+                onAction(advancedFootwork);
+                addToQueue(
+                  FOOTWORK_DISPLAY_TERMS[advancedFootwork] ?? "Advanced Footwork",
+                  `Shift+Ctrl+${e.key}`
+                );
+                if (playSFX) playSFX("footstep");
+              }
+            } else if (e.ctrlKey) {
+              // Footwork patterns with Ctrl+WASD
               let footworkAction: string | null = null;
               
               if (action === "move_left") {
@@ -369,29 +392,6 @@ export function useKeyboardControls({
                 addToQueue(
                   FOOTWORK_DISPLAY_TERMS[footworkAction] ?? "Footwork",
                   `Ctrl+${e.key}`
-                );
-                if (playSFX) playSFX("footstep");
-              }
-            } else if (e.shiftKey && e.ctrlKey) {
-              // Shift+Ctrl modifier for advanced footwork patterns
-              let advancedFootwork: string | null = null;
-              
-              if (action === "move_left") {
-                // Shift+Ctrl+A: Pivot left (축족회전 좌)
-                advancedFootwork = "footwork_pivot_left";
-              } else if (action === "move_right") {
-                // Shift+Ctrl+D: Pivot right (축족회전 우)
-                advancedFootwork = "footwork_pivot_right";
-              } else if (action === "move_up" || action === "move_down") {
-                // Shift+Ctrl+W or Shift+Ctrl+S: Shuffle step (섞음보)
-                advancedFootwork = "footwork_shuffle";
-              }
-              
-              if (advancedFootwork) {
-                onAction(advancedFootwork);
-                addToQueue(
-                  FOOTWORK_DISPLAY_TERMS[advancedFootwork] ?? "Advanced Footwork",
-                  `Shift+Ctrl+${e.key}`
                 );
                 if (playSFX) playSFX("footstep");
               }

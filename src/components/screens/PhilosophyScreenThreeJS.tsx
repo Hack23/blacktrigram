@@ -259,8 +259,29 @@ export const PhilosophyScreenThreeJS: React.FC<
               />
             </div>
 
+            {/* WebKit Scrollbar Styling - Using !important to override global hide */}
+            <style>{`
+              .philosophy-scrollbar::-webkit-scrollbar {
+                width: 12px !important;
+                display: block !important;
+              }
+              .philosophy-scrollbar::-webkit-scrollbar-track {
+                background: ${colors.sectionBg};
+                border-radius: 6px;
+              }
+              .philosophy-scrollbar::-webkit-scrollbar-thumb {
+                background: ${colors.accentGold};
+                border-radius: 6px;
+                border: 2px solid ${colors.sectionBg};
+              }
+              .philosophy-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: ${colors.accentCyan};
+              }
+            `}</style>
+
             {/* Content Area - Scrollable */}
             <div
+              className="philosophy-scrollbar"
               style={{
                 flex: 1,
                 overflowY: "auto",

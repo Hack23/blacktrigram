@@ -1402,6 +1402,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1Animation.transitionTo("recovery_defensive");
             break;
           }
+          
+          // Footwork pattern actions
+          case "footwork_circular_left":
+          case "footwork_circular_right":
+          case "footwork_slide_forward":
+          case "footwork_slide_back":
+          case "footwork_pivot_left":
+          case "footwork_pivot_right":
+          case "footwork_shuffle":
+            // Execute footwork animation
+            player1Animation.transitionTo(action as AnimationState);
+            break;
+          
+          // Stance side switch
+          case "stance_side_switch":
+            // Switch front foot (mirror stance)
+            player1Animation.transitionTo("stance_side_switch");
+            break;
+          
           // Movement and other actions handled by existing system
         }
       },
