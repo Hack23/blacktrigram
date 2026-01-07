@@ -106,7 +106,7 @@ export interface MovementState {
  * 
  * @korean 자세속도배수
  */
-const STANCE_SPEED_MODIFIERS: Record<TrigramStance, number> = {
+export const STANCE_SPEED_MODIFIERS: Record<TrigramStance, number> = {
   [TrigramStance.GEON]: 1.00, // Heaven: balanced
   [TrigramStance.TAE]: 1.10,  // Lake: fluid
   [TrigramStance.LI]: 1.20,   // Fire: aggressive
@@ -207,6 +207,20 @@ export class MovementPhysics {
    * **Korean**: 후퇴 속도 배수 (Backward Speed Multiplier)
    */
   private readonly BACKWARD_SPEED_MULTIPLIER = 0.75;
+
+  /**
+   * Override for max speed from external speed modifier systems.
+   * 
+   * **Korean**: 최대속도 재정의 (Max Speed Override)
+   */
+  private _overrideMaxSpeed: number | null = null;
+
+  /**
+   * Override for acceleration from external speed modifier systems.
+   * 
+   * **Korean**: 가속도 재정의 (Acceleration Override)
+   */
+  private _overrideAcceleration: number | null = null;
 
   // Temporary vectors to avoid allocations in update loop
   private readonly tempTargetVelocity = new THREE.Vector3();
@@ -457,8 +471,6 @@ export class MovementPhysics {
    * 
    * @public
    */
-  private _overrideMaxSpeed: number | null = null;
-
   public setMaxSpeed(speed: number): void {
     this._overrideMaxSpeed = speed;
   }
@@ -476,8 +488,6 @@ export class MovementPhysics {
    * 
    * @public
    */
-  private _overrideAcceleration: number | null = null;
-
   public setAcceleration(acceleration: number): void {
     this._overrideAcceleration = acceleration;
   }

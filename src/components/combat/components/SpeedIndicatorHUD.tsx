@@ -61,17 +61,22 @@ export interface SpeedIndicatorHUDProps {
  * - Red: <25% (critical reduction)
  */
 function getSpeedColor(speedPercent: number): string {
+  let colorValue: number;
+  
   if (speedPercent >= 100) {
-    return `#${KOREAN_COLORS.POSITIVE_GREEN.toString(16).padStart(6, "0")}`;
+    colorValue = KOREAN_COLORS.POSITIVE_GREEN;
   } else if (speedPercent >= 80) {
-    return `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`;
+    colorValue = KOREAN_COLORS.PRIMARY_CYAN;
   } else if (speedPercent >= 50) {
-    return `#${KOREAN_COLORS.WARNING_YELLOW.toString(16).padStart(6, "0")}`;
+    colorValue = KOREAN_COLORS.WARNING_YELLOW;
   } else if (speedPercent >= 25) {
-    return `#${KOREAN_COLORS.WARNING_ORANGE.toString(16).padStart(6, "0")}`;
+    colorValue = KOREAN_COLORS.WARNING_ORANGE;
   } else {
-    return `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`;
+    colorValue = KOREAN_COLORS.ACCENT_RED;
   }
+  
+  // Convert number to properly formatted hex string with # prefix
+  return `#${colorValue.toString(16).padStart(6, "0")}`;
 }
 
 /**

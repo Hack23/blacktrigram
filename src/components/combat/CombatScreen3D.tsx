@@ -583,14 +583,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [player1SpeedModifiers, setPlayer1SpeedModifiers] = useState({
     finalSpeed: 2.0,
     baseSpeed: 2.0,
+    finalAcceleration: 4.0,
   });
   const [player2SpeedModifiers, setPlayer2SpeedModifiers] = useState({
     finalSpeed: 2.0,
     baseSpeed: 2.0,
+    finalAcceleration: 4.0,
   });
 
   // Calculate speed modifiers for both players when state changes
-  // Updates at 10Hz (every 100ms) to balance responsiveness and performance
+  // Updates at 5Hz (every 200ms) to balance responsiveness and performance
   useEffect(() => {
     const updateSpeedModifiers = () => {
       if (players.length >= 2) {
@@ -603,6 +605,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         setPlayer1SpeedModifiers({
           finalSpeed: player1Modifiers.finalSpeed,
           baseSpeed: player1Modifiers.baseSpeed,
+          finalAcceleration: player1Modifiers.finalAcceleration,
         });
 
         // Player 2 speed modifiers
@@ -614,6 +617,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         setPlayer2SpeedModifiers({
           finalSpeed: player2Modifiers.finalSpeed,
           baseSpeed: player2Modifiers.baseSpeed,
+          finalAcceleration: player2Modifiers.finalAcceleration,
         });
       }
     };
@@ -621,8 +625,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Initial calculation
     updateSpeedModifiers();
 
-    // Update every 100ms for responsive feedback without excessive re-renders
-    const intervalId = setInterval(updateSpeedModifiers, 100);
+    // Update every 200ms (5Hz) for responsive feedback without excessive re-renders
+    const intervalId = setInterval(updateSpeedModifiers, 200);
 
     return () => clearInterval(intervalId);
   }, [players, speedModifierSystem]);
@@ -684,7 +688,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     useTacticalSteps: false,
     // Speed modifier overrides from SpeedModifierSystem
     maxSpeedOverride: player1SpeedModifiers.finalSpeed,
-    accelerationOverride: undefined, // Let SpeedModifierSystem handle acceleration via stamina
+    accelerationOverride: player1SpeedModifiers.finalAcceleration,
   });
 
   // Use ref to store attack handler to avoid circular dependencies

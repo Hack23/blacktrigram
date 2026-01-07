@@ -38,6 +38,7 @@ import { TrigramStance, CombatState } from '@/types/common';
 import type { PlayerState } from '@/systems/player';
 import { MovementPenaltySystem } from '@/systems/bodypart/MovementPenaltySystem';
 import type { BodyPartHealth, BodyPartMaxHealth } from '@/systems/bodypart/types';
+import { STANCE_SPEED_MODIFIERS } from './MovementPhysics';
 
 /**
  * Complete speed modifier state for physics calculations.
@@ -90,36 +91,6 @@ export enum MovementType {
   /** Crouching movement - Korean: 웅크리기 */
   CROUCHING = 'crouching',
 }
-
-/**
- * Stance-based speed modifiers for Eight Trigram system.
- * 
- * **Korean**: 팔괘 속도 배수 (Eight Trigram Speed Multipliers)
- * 
- * Each trigram stance has unique movement characteristics based on
- * traditional Korean martial arts philosophy:
- * 
- * - ☰ 건 (Geon/Heaven): 100% - Balanced, standard speed
- * - ☱ 태 (Tae/Lake): 110% - Fluid movement, flowing techniques
- * - ☲ 리 (Li/Fire): 120% - Aggressive, fast attacks
- * - ☳ 진 (Jin/Thunder): 115% - Explosive power
- * - ☴ 손 (Son/Wind): 125% - Continuous motion, fastest stance
- * - ☵ 감 (Gam/Water): 105% - Adaptive, slightly faster than neutral
- * - ☶ 간 (Gan/Mountain): 80% - Solid defense, slower movement
- * - ☷ 곤 (Gon/Earth): 85% - Grounded, stable but slower
- * 
- * @korean 자세속도배수
- */
-const STANCE_SPEED_MODIFIERS: Record<TrigramStance, number> = {
-  [TrigramStance.GEON]: 1.00, // Heaven: balanced
-  [TrigramStance.TAE]: 1.10,  // Lake: fluid
-  [TrigramStance.LI]: 1.20,   // Fire: aggressive
-  [TrigramStance.JIN]: 1.15,  // Thunder: explosive
-  [TrigramStance.SON]: 1.25,  // Wind: fastest
-  [TrigramStance.GAM]: 1.05,  // Water: adaptive
-  [TrigramStance.GAN]: 0.80,  // Mountain: defensive
-  [TrigramStance.GON]: 0.85,  // Earth: grounded
-};
 
 /**
  * Speed Modifier System class.
