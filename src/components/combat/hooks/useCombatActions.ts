@@ -41,7 +41,7 @@ import { PlayerState } from "@/systems";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { Position, TrigramStance, Technique } from "@/types";
 import { HitEffectType } from "@/systems/effects";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { CombatScreenState, CombatActions } from "./useCombatState";
 import { AttackIntensity } from "./useCombatAudio";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
@@ -229,6 +229,22 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
   } = config;
 
+  // Refs to track knockback recovery timeouts for cleanup
+  const player1KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const player2KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (player1KnockbackTimeoutRef.current) {
+        clearTimeout(player1KnockbackTimeoutRef.current);
+      }
+      if (player2KnockbackTimeoutRef.current) {
+        clearTimeout(player2KnockbackTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Player attack handler
   const handleAttack = useCallback((technique?: Technique) => {
     if (combatState.isExecutingTechnique || !combatState.roundStarted || combatState.roundEnded) return;
@@ -338,18 +354,23 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           result.knockback.displacement.z ** 2
         );
         if (knockbackDistance > 1.5) {
-          const knockbackPhysics = new KnockbackPhysics();
-          const knockbackName = knockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
+          const knockbackName = KnockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
           addCombatMessage(knockbackName.korean, knockbackName.english);
         }
 
         // Set stunned state for knockback duration (non-interruptible)
         if (result.knockback.duration > 0) {
+          // Clear any existing timeout for player 2
+          if (player2KnockbackTimeoutRef.current) {
+            clearTimeout(player2KnockbackTimeoutRef.current);
+          }
+          
           onPlayerUpdate(1, { isStunned: true });
           
           // Schedule recovery after knockback duration + recovery window
-          setTimeout(() => {
+          player2KnockbackTimeoutRef.current = setTimeout(() => {
             onPlayerUpdate(1, { isStunned: false });
+            player2KnockbackTimeoutRef.current = null;
           }, (result.knockback.duration + result.knockback.recoveryWindow) * 1000);
         }
       }
@@ -742,8 +763,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           result.knockback.displacement.z ** 2
         );
         if (knockbackDistance > 1.5) {
-          const knockbackPhysics = new KnockbackPhysics();
-          const knockbackName = knockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
+          const knockbackName = KnockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
           addCombatMessage(
             `AI ${knockbackName.korean}`,
             `AI ${knockbackName.english}`
@@ -752,11 +772,17 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
         // Set stunned state for knockback duration (non-interruptible)
         if (result.knockback.duration > 0) {
+          // Clear any existing timeout for player 1
+          if (player1KnockbackTimeoutRef.current) {
+            clearTimeout(player1KnockbackTimeoutRef.current);
+          }
+          
           onPlayerUpdate(0, { isStunned: true });
           
           // Schedule recovery after knockback duration + recovery window
-          setTimeout(() => {
+          player1KnockbackTimeoutRef.current = setTimeout(() => {
             onPlayerUpdate(0, { isStunned: false });
+            player1KnockbackTimeoutRef.current = null;
           }, (result.knockback.duration + result.knockback.recoveryWindow) * 1000);
         }
       }
@@ -907,8 +933,7 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           result.knockback.displacement.z ** 2
         );
         if (knockbackDistance > 1.5) {
-          const knockbackPhysics = new KnockbackPhysics();
-          const knockbackName = knockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
+          const knockbackName = KnockbackPhysics.getKnockbackStateName(result.knockback.shouldFall);
           addCombatMessage(
             `AI 특수 ${knockbackName.korean}`,
             `AI Special ${knockbackName.english}`
@@ -917,11 +942,17 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
         // Set stunned state for knockback duration (non-interruptible)
         if (result.knockback.duration > 0) {
+          // Clear any existing timeout for player 1
+          if (player1KnockbackTimeoutRef.current) {
+            clearTimeout(player1KnockbackTimeoutRef.current);
+          }
+          
           onPlayerUpdate(0, { isStunned: true });
           
           // Schedule recovery after knockback duration + recovery window
-          setTimeout(() => {
+          player1KnockbackTimeoutRef.current = setTimeout(() => {
             onPlayerUpdate(0, { isStunned: false });
+            player1KnockbackTimeoutRef.current = null;
           }, (result.knockback.duration + result.knockback.recoveryWindow) * 1000);
         }
       }

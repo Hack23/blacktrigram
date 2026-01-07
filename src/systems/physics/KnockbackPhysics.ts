@@ -326,13 +326,13 @@ export class KnockbackPhysics {
    */
   private calculateRecoveryWindow(damage: number, balanceState: BalanceState): number {
     // Base recovery time from damage
-    const baseDamage = damage < 40 ? 0.2 : damage < 70 ? 0.4 : damage < 100 ? 0.7 : 1.5;
+    const baseRecoveryTime = damage < 40 ? 0.2 : damage < 70 ? 0.4 : damage < 100 ? 0.7 : 1.5;
     
     // Increase recovery time if balance is low (more vulnerable)
     const balancePercent = (balanceState.current / balanceState.max) * 100;
     const balanceModifier = balancePercent < 40 ? 1.5 : 1.0;
     
-    return baseDamage * balanceModifier;
+    return baseRecoveryTime * balanceModifier;
   }
 
   /**
@@ -431,7 +431,7 @@ export class KnockbackPhysics {
    * @public
    * @korean 밀침상태이름
    */
-  getKnockbackStateName(shouldFall: boolean): { korean: string; english: string } {
+  static getKnockbackStateName(shouldFall: boolean): { korean: string; english: string } {
     if (shouldFall) {
       return {
         korean: "넘어짐",

@@ -488,11 +488,11 @@ describe('KnockbackPhysics', () => {
 
   describe('Korean Terminology', () => {
     it('should provide knockback state names', () => {
-      const normal = physics.getKnockbackStateName(false);
+      const normal = KnockbackPhysics.getKnockbackStateName(false);
       expect(normal.korean).toBe('밀침');
       expect(normal.english).toBe('Knockback');
 
-      const falling = physics.getKnockbackStateName(true);
+      const falling = KnockbackPhysics.getKnockbackStateName(true);
       expect(falling.korean).toBe('넘어짐');
       expect(falling.english).toBe('Falling');
     });
