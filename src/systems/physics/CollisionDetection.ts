@@ -81,6 +81,9 @@ export class CollisionDetection {
   private readonly boundingBoxes: Map<AnatomicalRegionPhysics, BoundingBox> = new Map();
   private readonly raycaster: THREE.Raycaster = new THREE.Raycaster();
   private vitalPointsByRegion: Map<AnatomicalRegionPhysics, VitalPoint[]> = new Map();
+  
+  // Geometry cache for object pooling to avoid repeated allocations during combat
+  private readonly geometryCache: Map<string, THREE.BufferGeometry> = new Map();
 
   /**
    * Creates a new CollisionDetection instance.
@@ -91,6 +94,26 @@ export class CollisionDetection {
   constructor() {
     this.initializeBoundingBoxes();
     this.organizeVitalPointsByRegion();
+    this.initializeGeometryCache();
+  }
+  
+  /**
+   * Cleans up Three.js resources.
+   * 
+   * **Korean**: 자원 정리
+   * 
+   * Disposes of cached geometries and releases memory to prevent leaks.
+   * Should be called when the CollisionDetection instance is no longer needed.
+   * 
+   * @public
+   * @korean 자원정리
+   */
+  public dispose(): void {
+    // Dispose all cached geometries
+    for (const geometry of this.geometryCache.values()) {
+      geometry.dispose();
+    }
+    this.geometryCache.clear();
   }
 
   /**
@@ -254,8 +277,9 @@ export class CollisionDetection {
    * 
    * **Korean**: 경계 상자 광선 투사
    * 
-   * Creates a Three.js mesh for the bounding box and performs raycasting
-   * to detect intersection points.
+   * Uses cached geometries from object pool to avoid repeated allocations
+   * during combat. Creates a Three.js mesh for the bounding box and performs
+   * raycasting to detect intersection points.
    * 
    * @param query - Raycast query parameters
    * @param box - Bounding box to test
@@ -270,31 +294,17 @@ export class CollisionDetection {
     box: BoundingBox,
     defenderPosition: Position3D
   ): { point: Position3D } | null {
-    // Create Three.js geometry for bounding box
-    let geometry: THREE.BufferGeometry;
+    // Get cached geometry from pool to avoid repeated allocations
+    const cacheKey = `${box.type}-${box.region}`;
+    let geometry = this.geometryCache.get(cacheKey);
     
-    switch (box.type) {
-      case "sphere":
-        geometry = new THREE.SphereGeometry(box.dimensions.x, 8, 8);
-        break;
-      case "box":
-        geometry = new THREE.BoxGeometry(
-          box.dimensions.x,
-          box.dimensions.y,
-          box.dimensions.z
-        );
-        break;
-      case "capsule":
-        geometry = new THREE.CapsuleGeometry(
-          box.dimensions.x,
-          box.dimensions.y,
-          4,
-          8
-        );
-        break;
+    // If not cached (shouldn't happen after initialization), create it
+    if (!geometry) {
+      geometry = this.createGeometryForBox(box);
+      this.geometryCache.set(cacheKey, geometry);
     }
     
-    // Position geometry at defender position + box offset
+    // Create temporary mesh for raycasting (mesh is lightweight, geometry is cached)
     const mesh = new THREE.Mesh(geometry);
     mesh.position.set(
       defenderPosition.x + box.center.x,
@@ -312,28 +322,8 @@ export class CollisionDetection {
     // Perform raycast
     const intersections = this.raycaster.intersectObject(mesh);
     
-    // Clean up temporary Three.js resources used only for raycasting
-    try {
-      // Dispose geometry attached to the mesh
-      mesh.geometry.dispose();
-
-      // Dispose any material(s) attached to the mesh
-      if (Array.isArray(mesh.material)) {
-        for (const material of mesh.material) {
-          if (material && typeof material.dispose === "function") {
-            material.dispose();
-          }
-        }
-      } else if (mesh.material && typeof (mesh.material as THREE.Material).dispose === "function") {
-        (mesh.material as THREE.Material).dispose();
-      }
-    } catch (error) {
-      // Ensure disposal errors do not break combat simulation
-      console.warn(
-        "CollisionDetection: Failed to dispose temporary raycast mesh:",
-        error
-      );
-    }
+    // Clean up temporary mesh (geometry remains cached)
+    // Note: mesh.material is undefined, no need to dispose
     
     if (intersections.length > 0) {
       const point = intersections[0].point;
@@ -343,6 +333,37 @@ export class CollisionDetection {
     }
     
     return null;
+  }
+  
+  /**
+   * Creates Three.js geometry for a bounding box.
+   * 
+   * Helper method for geometry cache initialization.
+   * 
+   * @param box - Bounding box specification
+   * @returns Three.js geometry
+   * 
+   * @private
+   * @korean 경계상자지오메트리생성
+   */
+  private createGeometryForBox(box: BoundingBox): THREE.BufferGeometry {
+    switch (box.type) {
+      case "sphere":
+        return new THREE.SphereGeometry(box.dimensions.x, 8, 8);
+      case "box":
+        return new THREE.BoxGeometry(
+          box.dimensions.x,
+          box.dimensions.y,
+          box.dimensions.z
+        );
+      case "capsule":
+        return new THREE.CapsuleGeometry(
+          box.dimensions.x,
+          box.dimensions.y,
+          4,
+          8
+        );
+    }
   }
 
   /**
@@ -587,6 +608,25 @@ export class CollisionDetection {
       region: "legs",
     });
   }
+  
+  /**
+   * Initializes geometry cache for object pooling.
+   * 
+   * Pre-creates all geometries needed for raycasting to avoid repeated
+   * allocations during combat. Critical for maintaining 60fps with up to
+   * 100 collision checks per frame.
+   * 
+   * @private
+   * @korean 지오메트리캐시초기화
+   */
+  private initializeGeometryCache(): void {
+    // Pre-create and cache geometries for all bounding boxes
+    for (const [_region, box] of this.boundingBoxes.entries()) {
+      const cacheKey = `${box.type}-${box.region}`;
+      const geometry = this.createGeometryForBox(box);
+      this.geometryCache.set(cacheKey, geometry);
+    }
+  }
 
   /**
    * Organizes vital points by anatomical region for efficient lookup.
@@ -624,20 +664,33 @@ export class CollisionDetection {
     // NOTE: This logic is temporarily disabled due to coordinate system mismatch
     // Vital points use pixel coordinates but thresholds assume meters
     for (const vp of VITAL_POINTS_DATA) {
+      const x = vp.position.x / 1000; // Rough conversion from pixels to meters
       const y = vp.position.y / 1000; // Rough conversion from pixels to meters
       
-      // Categorize by vertical position (using converted coordinates)
+      // Categorize by position: check x-coordinate first for arms/legs distinction
+      // to avoid overlap with torso y-range
       let region: AnatomicalRegionPhysics;
+      
       if (y >= 1.6) {
+        // Head region (top of body)
         region = "head";
       } else if (y >= 1.4 && y < 1.6) {
+        // Neck region
         region = "neck";
       } else if (y >= 0.8 && y < 1.4) {
-        region = "torso";
-      } else if (y >= 0.8 && Math.abs(vp.position.x / 1000) > 0.2) {
-        region = "arms";
+        // Mid-body: distinguish between torso and arms by x-coordinate
+        if (Math.abs(x) > 0.2) {
+          region = "arms"; // Lateral position indicates arms
+        } else {
+          region = "torso"; // Central position indicates torso
+        }
       } else {
-        region = "legs";
+        // Lower body: distinguish between torso (if upper) and legs
+        if (y >= 0.6 && Math.abs(x) < 0.15) {
+          region = "torso"; // Lower torso
+        } else {
+          region = "legs";
+        }
       }
       
       const list = regionMap.get(region);

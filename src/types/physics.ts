@@ -300,32 +300,32 @@ export const COLLISION_KOREAN_TERMS = {
 export const ANATOMICAL_DIMENSIONS = {
   head: {
     type: "sphere" as const,
-    radius: 0.125,        // 12.5cm radius for head sphere
-    center: { x: 0, y: 1.7, z: 0 }, // Average adult head height
+    radius: 0.125,        // 머리 구 반경 (Meori sphere radius) – 12.5cm radius for head sphere
+    center: { x: 0, y: 1.7, z: 0 }, // 머리 중심 높이 (Meori center height) – Average adult head height
   },
   neck: {
     type: "capsule" as const,
-    radius: 0.075,        // 7.5cm radius for neck cylinder
-    height: 0.15,         // 15cm height
-    center: { x: 0, y: 1.5, z: 0 },
+    radius: 0.075,        // 목 캡슐 반경 (Mok capsule radius) – 7.5cm radius for neck cylinder
+    height: 0.15,         // 목 캡슐 높이 (Mok capsule height) – 15cm height
+    center: { x: 0, y: 1.5, z: 0 }, // 목 중심 높이 (Mok center height)
   },
   torso: {
     type: "box" as const,
-    width: 0.4,           // 40cm width (shoulder to shoulder)
-    height: 0.6,          // 60cm height (neck to waist)
-    depth: 0.25,          // 25cm depth (front to back)
-    center: { x: 0, y: 1.1, z: 0 },
+    width: 0.4,           // 몸통 상자 가로 (Momtong box width) – 40cm width (shoulder to shoulder)
+    height: 0.6,          // 몸통 상자 세로 (Momtong box height) – 60cm height (neck to waist)
+    depth: 0.25,          // 몸통 상자 깊이 (Momtong box depth) – 25cm depth (front to back)
+    center: { x: 0, y: 1.1, z: 0 }, // 몸통 중심 높이 (Momtong center height)
   },
   arms: {
     type: "capsule" as const,
-    radius: 0.05,         // 5cm radius for arm cylinder
-    height: 0.6,          // 60cm length (shoulder to hand)
-    center: { x: 0.3, y: 1.1, z: 0 }, // Offset for arm position
+    radius: 0.05,         // 팔 캡슐 반경 (Pal capsule radius) – 5cm radius for arm cylinder
+    height: 0.6,          // 팔 캡슐 길이 (Pal capsule length) – 60cm length (shoulder to hand)
+    center: { x: 0.3, y: 1.1, z: 0 }, // 팔 위치 오프셋 (Pal position offset) – Offset for arm position
   },
   legs: {
     type: "capsule" as const,
-    radius: 0.06,         // 6cm radius for leg cylinder
-    height: 0.8,          // 80cm length (hip to foot)
-    center: { x: 0.15, y: 0.4, z: 0 }, // Offset for leg position
+    radius: 0.06,         // 다리 캡슐 반경 (Dari capsule radius) – 6cm radius for leg cylinder
+    height: 0.8,          // 다리 캡슐 길이 (Dari capsule length) – 80cm length (hip to foot)
+    center: { x: 0.15, y: 0.4, z: 0 }, // 다리 위치 오프셋 (Dari position offset) – Offset for leg position
   },
 } as const;

@@ -13,7 +13,7 @@
  * @korean 충돌디버그
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { CollisionDetection } from "../../systems/physics/CollisionDetection";
 import { KOREAN_COLORS } from "../../types/constants";
 import type { Position3D, AnatomicalRegionPhysics } from "../../types/physics";
@@ -93,6 +93,13 @@ export const DebugCollision: React.FC<DebugCollisionProps> = ({
 }) => {
   // Create collision detection instance
   const collision = useMemo(() => new CollisionDetection(), []);
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      collision.dispose();
+    };
+  }, [collision]);
   
   // Get all bounding boxes
   const boundingBoxes = useMemo(() => {

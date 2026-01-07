@@ -75,7 +75,8 @@ describe("CollisionDetection", () => {
   describe("Attack Reach Calculation", () => {
     // Note: These tests are skipped due to coordinate mapping issue
     // Vital points use 2D pixel coordinates, collision detection uses 3D world coordinates
-    // Tests will be enabled after implementing 2D→3D coordinate mapper
+    // TODO: Enable these tests after implementing 2D→3D coordinate mapper
+    // Track progress: https://github.com/Hack23/blacktrigram/issues/[COORDINATE_MAPPING_ISSUE]
     it.skip("should calculate correct reach for punch technique", () => {
       const attackerPos: Position3D = { x: 0, y: 0, z: 5 };
       const defenderPos: Position3D = { x: 0, y: 0, z: 5.6 }; // 0.6m away (within 0.7m punch range)
@@ -160,6 +161,8 @@ describe("CollisionDetection", () => {
     });
 
     // Note: Skipped due to coordinate mapping issue (2D→3D conversion needed)
+    // TODO: Enable after implementing proper coordinate mapper
+    // Track progress: https://github.com/Hack23/blacktrigram/issues/[COORDINATE_MAPPING_ISSUE]
     it.skip("should accept hits within attack reach", () => {
       const attackerPos: Position3D = { x: 0, y: 0, z: 5 };
       const defenderPos: Position3D = { x: 0, y: 0, z: 5.5 }; // 0.5m away (within range)
@@ -178,6 +181,8 @@ describe("CollisionDetection", () => {
 
   describe("Narrow-Phase Raycasting", () => {
     // Note: Skipped due to coordinate mapping issue (2D→3D conversion needed)
+    // TODO: Enable after implementing proper coordinate mapper
+    // Track progress: https://github.com/Hack23/blacktrigram/issues/[COORDINATE_MAPPING_ISSUE]
     it.skip("should detect hits on head region", () => {
       const attackerPos: Position3D = { x: 0, y: 0, z: 5 };
       const defenderPos: Position3D = { x: 0, y: 0, z: 5.6 };
@@ -233,6 +238,8 @@ describe("CollisionDetection", () => {
 
   describe("Vital Points Organization", () => {
     // Note: Skipped due to coordinate mapping issue - vital points use 2D coordinates
+    // TODO: Enable after implementing proper coordinate mapper
+    // Track progress: https://github.com/Hack23/blacktrigram/issues/[COORDINATE_MAPPING_ISSUE]
     it.skip("should organize vital points by anatomical region", () => {
       const headPoints = collision.getVitalPointsInRegion("head");
       const neckPoints = collision.getVitalPointsInRegion("neck");

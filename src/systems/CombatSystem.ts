@@ -91,6 +91,23 @@ export class CombatSystem implements CombatSystemInterface {
     this.shockPainEffects.delete(playerId);
     this.lastHeadTraumaTime.delete(playerId);
   }
+  
+  /**
+   * Dispose of all combat system resources.
+   * 
+   * **Korean**: 전투 시스템 자원 정리
+   * 
+   * Cleans up Three.js resources (geometries, raycaster) used by the collision
+   * detection system to prevent memory leaks. Should be called when the
+   * CombatSystem is destroyed or reinitialized.
+   * 
+   * @public
+   * @korean 전투시스템자원정리
+   */
+  public dispose(): void {
+    // Dispose collision detection resources (cached geometries, raycaster)
+    this.collisionDetection.dispose();
+  }
 
   /**
    * Get the balance system instance for fall checking.
