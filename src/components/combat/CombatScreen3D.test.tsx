@@ -55,6 +55,9 @@ vi.mock("three", () => ({
     add(v: MockVector3) {
       return new MockVector3(this.x + v.x, this.y + v.y, this.z + v.z);
     }
+    sub(v: MockVector3) {
+      return new MockVector3(this.x - v.x, this.y - v.y, this.z - v.z);
+    }
     toArray() {
       return [this.x, this.y, this.z];
     }
@@ -67,6 +70,18 @@ vi.mock("three", () => ({
         return new MockVector3(this.x / len, this.y / len, this.z / len);
       }
       return new MockVector3(0, 0, 0);
+    }
+    set(x: number, y: number, z: number) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      return this;
+    }
+    copy(v: MockVector3) {
+      this.x = v.x;
+      this.y = v.y;
+      this.z = v.z;
+      return this;
     }
   },
   Euler: class MockEuler {
@@ -100,11 +115,24 @@ vi.mock("three", () => ({
       return this;
     }
   },
+  Raycaster: class MockRaycaster {
+    set(_origin: any, _direction: any) {
+      return this;
+    }
+    intersectObject(_object: any) {
+      return [];
+    }
+    far = 1000;
+  },
   MeshStandardMaterial: class MockMeshStandardMaterial {},
   DoubleSide: 2,
   Color: class MockColor {},
   BoxGeometry: class MockBoxGeometry {},
   SphereGeometry: class MockSphereGeometry {},
+  CapsuleGeometry: class MockCapsuleGeometry {},
+  BufferGeometry: class MockBufferGeometry {
+    dispose() {}
+  },
 }));
 
 describe("CombatScreen3D", () => {
