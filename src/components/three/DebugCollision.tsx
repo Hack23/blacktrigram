@@ -14,7 +14,6 @@
  */
 
 import React, { useMemo } from "react";
-import * as THREE from "three";
 import { CollisionDetection } from "../../systems/physics/CollisionDetection";
 import { KOREAN_COLORS } from "../../types/constants";
 import type { Position3D, AnatomicalRegionPhysics } from "../../types/physics";
@@ -52,11 +51,11 @@ export interface DebugCollisionProps {
  * @korean 영역색상매핑
  */
 const REGION_COLORS: Record<AnatomicalRegionPhysics, number> = {
-  head: KOREAN_COLORS.CARDINAL_NORTH,    // Black for head
-  neck: KOREAN_COLORS.ACCENT_BLUE,        // Blue for neck
-  torso: KOREAN_COLORS.CARDINAL_CENTER,   // Yellow for torso
-  arms: KOREAN_COLORS.ACCENT_GOLD,        // Gold for arms
-  legs: KOREAN_COLORS.CARDINAL_EAST,      // Green for legs
+  head: 0x000000,                             // Black for head
+  neck: KOREAN_COLORS.ACCENT_BLUE,            // Blue for neck
+  torso: KOREAN_COLORS.ACCENT_GOLD,           // Yellow/Gold for torso
+  arms: KOREAN_COLORS.SECONDARY_MAGENTA,      // Magenta for arms
+  legs: 0x00FF88,                             // Green for legs
 };
 
 /**
@@ -190,11 +189,10 @@ export const DebugCollision: React.FC<DebugCollisionProps> = ({
             <bufferAttribute
               attach="attributes-position"
               count={2}
-              array={new Float32Array([
+              args={[new Float32Array([
                 attackerPosition.x, attackerPosition.y, attackerPosition.z,
                 defenderPosition.x, defenderPosition.y, defenderPosition.z,
-              ])}
-              itemSize={3}
+              ]), 3]}
             />
           </bufferGeometry>
           <lineBasicMaterial
