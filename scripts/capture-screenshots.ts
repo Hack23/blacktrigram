@@ -348,6 +348,39 @@ const screenshotConfigs: ScreenshotConfig[] = [
       // Verify all menu items are present
       const menuItems = await page.$$('[data-testid^="menu-item-"]');
       console.log(`  📋 Found ${menuItems.length} menu items`);
+      
+      // Debug: Check menu visibility and styles
+      const menuDebug = await page.evaluate(() => {
+        const menu = document.querySelector('[data-testid="main-menu-section"]');
+        if (!menu) return { found: false };
+        
+        const rect = menu.getBoundingClientRect();
+        const styles = window.getComputedStyle(menu);
+        
+        return {
+          found: true,
+          position: {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+            bottom: rect.bottom,
+            right: rect.right,
+          },
+          styles: {
+            display: styles.display,
+            opacity: styles.opacity,
+            visibility: styles.visibility,
+            zIndex: styles.zIndex,
+            position: styles.position,
+          },
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          }
+        };
+      });
+      console.log(`  🔍 Menu debug:`, JSON.stringify(menuDebug, null, 2));
     },
     requiredContent: [
       { selector: "canvas", description: "3D canvas", required: true },
