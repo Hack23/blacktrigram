@@ -593,10 +593,11 @@ The following controls are documented in `game-design.md` but **NOT YET IMPLEMEN
 
 ---
 
-## 🔄 Version History
+## 📝 Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.5.44 | Jan 2026 | **✅ FIXED: Arrow key bug** - ArrowUp now moves UP, ArrowDown moves DOWN (inverted forward mapping). Enhanced ControlsScreen with complete documentation including techniques, movement, and special features. |
 | 0.5.37 | Jan 2026 | **Zero-conflict control redesign**: Technique keys changed from Q-W-E-R-T-Y-U-I-O-P to Q-E-R-T-Y-F-G-Z-X-C to eliminate WASD movement conflicts |
 | 0.5.37 | Jan 2026 | Initial comprehensive controls documentation |
 | 0.5.36 | Dec 2025 | Vital points overlay (V key) implemented |

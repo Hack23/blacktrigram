@@ -62,6 +62,28 @@ export const PhilosophyScreenThreeJS: React.FC<
     [isMobile, isTablet, isLargeDesktop]
   );
 
+  // Memoize scrollbar style to prevent re-creating style tag on every render
+  const scrollbarStyle = useMemo(() => ({
+    __html: `
+      .philosophy-scrollbar::-webkit-scrollbar {
+        width: 12px !important;
+        display: block !important;
+      }
+      .philosophy-scrollbar::-webkit-scrollbar-track {
+        background: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        border-radius: 6px;
+      }
+      .philosophy-scrollbar::-webkit-scrollbar-thumb {
+        background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+        border-radius: 6px;
+        border: 2px solid ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+      }
+      .philosophy-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)};
+      }
+    `
+  }), []); // Empty deps - colors are constants
+
   // Memoize colors for performance
   const colors = useMemo(
     () => ({
@@ -259,8 +281,12 @@ export const PhilosophyScreenThreeJS: React.FC<
               />
             </div>
 
+            {/* WebKit Scrollbar Styling - Using !important to override global hide */}
+            <style dangerouslySetInnerHTML={scrollbarStyle} />
+
             {/* Content Area - Scrollable */}
             <div
+              className="philosophy-scrollbar"
               style={{
                 flex: 1,
                 overflowY: "auto",

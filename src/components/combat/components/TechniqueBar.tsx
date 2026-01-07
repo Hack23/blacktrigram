@@ -143,7 +143,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
         })}
       </div>
 
-      {/* Keyboard Hints (Optional) */}
+      {/* Keyboard Hints */}
       {!isMobile && (
         <div
           style={{
@@ -154,12 +154,13 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             width: `${layout.totalWidth}px`,
             textAlign: "center",
             fontSize: "11px",
-            color: "#888",
+            color: "#aaa",
             fontFamily: "monospace",
             pointerEvents: "none",
+            textShadow: "0 0 4px rgba(0,0,0,0.8)",
           }}
         >
-          Press Q-P to use techniques
+          기술 실행: Q-E-R-T-Y-F-G-Z-X-C | Press technique keys to execute
         </div>
       )}
     </>

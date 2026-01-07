@@ -35,6 +35,8 @@ export interface ControlBinding {
   };
   /** Vital points overlay toggle key */
   readonly vitalPointsOverlay: string;
+  /** Stance side switch key (swap front foot) */
+  readonly stanceSideSwitch?: string;
   /** Pause/Menu keys */
   readonly pause: readonly string[];
 }
@@ -67,6 +69,7 @@ const DEFAULT_BINDINGS: ControlBinding = {
     right: "d",
   },
   vitalPointsOverlay: "v",
+  stanceSideSwitch: "h", // H key for switching front foot
   pause: ["escape", "m"],
 };
 
@@ -273,6 +276,14 @@ export class ControlMapper {
     // Check vital points overlay
     if (normalizedKey === this.bindings.vitalPointsOverlay.toLowerCase())
       return "vital_points_overlay";
+
+    // Check stance side switch
+    if (
+      this.bindings.stanceSideSwitch &&
+      normalizedKey === this.bindings.stanceSideSwitch.toLowerCase()
+    ) {
+      return "stance_side_switch";
+    }
 
     // Check pause keys
     if (

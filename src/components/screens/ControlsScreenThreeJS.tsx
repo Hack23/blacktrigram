@@ -48,6 +48,28 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
+  
+  // Memoize scrollbar style to prevent re-creating style tag on every render
+  const scrollbarStyle = useMemo(() => ({
+    __html: `
+      .korean-scrollbar::-webkit-scrollbar {
+        width: 12px !important;
+        display: block !important;
+      }
+      .korean-scrollbar::-webkit-scrollbar-track {
+        background: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        border-radius: 6px;
+      }
+      .korean-scrollbar::-webkit-scrollbar-thumb {
+        background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+        border-radius: 6px;
+        border: 2px solid ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+      }
+      .korean-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)};
+      }
+    `
+  }), []); // Empty deps - colors are constants
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
   const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
@@ -163,6 +185,9 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
         {/* HTML Overlay for UI - only render when content is ready */}
         <Html fullscreen>
+          {/* WebKit Scrollbar Styling - Using !important to override global hide */}
+          <style dangerouslySetInnerHTML={scrollbarStyle} />
+
           <div
             style={{
               width: "100%",
@@ -224,9 +249,11 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                 overflowY: "auto",
                 overflowX: "hidden",
                 padding: `${layoutConstants.padding}px`,
+                // Custom scrollbar styling for Korean aesthetic (Firefox)
                 scrollbarWidth: "thin",
                 scrollbarColor: `${colors.accentGold} ${colors.sectionBg}`,
               }}
+              className="korean-scrollbar"
               data-testid="controls-content"
             >
               {/* Trigram Stances Section */}
@@ -518,6 +545,706 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                           }}
                         >
                           {description.english}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Movement Controls Section */}
+              <div
+                style={{
+                  marginBottom: `${layoutConstants.sectionSpacing}px`,
+                  background: colors.sectionBg,
+                  borderRadius: "12px",
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.SECONDARY_MAGENTA,
+                    0.5
+                  )}`,
+                  padding: "20px",
+                }}
+                data-testid="movement-controls"
+              >
+                <h2
+                  style={{
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "bold",
+                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                      16
+                    ).padStart(6, "0")}`,
+                    margin: "0 0 20px 0",
+                  }}
+                >
+                  이동 조작 - Movement Controls
+                </h2>
+
+                {/* Movement Keys */}
+                <div style={{ marginBottom: "15px" }}>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "12px" : "14px",
+                      fontWeight: "bold",
+                      color: colors.accentGold,
+                      marginBottom: "10px",
+                    }}
+                  >
+                    WASD 또는 방향키 | WASD or Arrow Keys
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
+                      gap: "8px",
+                    }}
+                  >
+                    {[
+                      { key: "W/↑", korean: "전진", english: "Forward" },
+                      { key: "S/↓", korean: "후퇴", english: "Backward" },
+                      { key: "A/←", korean: "좌", english: "Left" },
+                      { key: "D/→", korean: "우", english: "Right" },
+                    ].map((move) => (
+                      <div
+                        key={move.key}
+                        style={{
+                          background: hexToRgbaString(
+                            KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                            0.8
+                          ),
+                          borderRadius: "6px",
+                          padding: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: isMobile ? "11px" : "13px",
+                            fontWeight: "bold",
+                            color: colors.accentCyan,
+                          }}
+                        >
+                          {move.key}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: isMobile ? "8px" : "9px",
+                            color: colors.textSecondary,
+                          }}
+                        >
+                          {move.korean} | {move.english}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Advanced Footwork Section */}
+              <div
+                style={{
+                  marginBottom: `${layoutConstants.sectionSpacing}px`,
+                  background: colors.sectionBg,
+                  borderRadius: "12px",
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.PRIMARY_CYAN,
+                    0.5
+                  )}`,
+                  padding: "20px",
+                }}
+                data-testid="advanced-footwork"
+              >
+                <h2
+                  style={{
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "bold",
+                    color: colors.accentCyan,
+                    margin: "0 0 10px 0",
+                  }}
+                >
+                  고급 보법 - Advanced Footwork
+                </h2>
+                <p
+                  style={{
+                    fontSize: isMobile ? "10px" : "12px",
+                    color: colors.textSecondary,
+                    fontStyle: "italic",
+                    margin: "0 0 15px 0",
+                  }}
+                >
+                  🥋 전통 한국 무예 발놀림 기법 | Traditional Korean martial arts footwork techniques
+                </p>
+
+                {/* Tactical Steps */}
+                <div style={{ marginBottom: "20px" }}>
+                  <h3
+                    style={{
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "bold",
+                      color: colors.accentGold,
+                      marginBottom: "10px",
+                    }}
+                  >
+                    ✅ 전술보법 (Shift + WASD) | Tactical Steps - IMPLEMENTED
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: isMobile ? "9px" : "10px",
+                      color: colors.textSecondary,
+                      marginBottom: "10px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Precise 30cm repositioning • 300ms duration • Non-interruptible • 5 stamina cost
+                  </p>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
+                      gap: "8px",
+                    }}
+                  >
+                    {[
+                      { key: "Shift+W", korean: "전진보법", english: "Forward Step" },
+                      { key: "Shift+S", korean: "후퇴보법", english: "Retreat Step" },
+                      { key: "Shift+A", korean: "좌측면보법", english: "Left Step" },
+                      { key: "Shift+D", korean: "우측면보법", english: "Right Step" },
+                      { key: "Shift+W+A", korean: "전좌측보법", english: "Forward-Left" },
+                      { key: "Shift+W+D", korean: "전우측보법", english: "Forward-Right" },
+                      { key: "Shift+S+A", korean: "후좌측보법", english: "Back-Left" },
+                      { key: "Shift+S+D", korean: "후우측보법", english: "Back-Right" },
+                    ].map((step) => (
+                      <div
+                        key={step.key}
+                        style={{
+                          background: hexToRgbaString(
+                            KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                            0.8
+                          ),
+                          borderRadius: "6px",
+                          border: `1px solid ${colors.borderCyan}`,
+                          padding: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: isMobile ? "9px" : "10px",
+                            fontWeight: "bold",
+                            color: colors.accentGold,
+                            marginBottom: "4px",
+                          }}
+                        >
+                          {step.key}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: isMobile ? "7px" : "8px",
+                            color: colors.textPrimary,
+                          }}
+                        >
+                          {step.korean}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: isMobile ? "6px" : "7px",
+                            color: colors.textSecondary,
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {step.english}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footwork Patterns */}
+                <div>
+                  <h3
+                    style={{
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "bold",
+                      color: colors.accentGold,
+                      marginBottom: "10px",
+                    }}
+                  >
+                    보법 패턴 (Ctrl + WASD) | Footwork Patterns
+                  </h3>
+                  
+                  {/* Circular Steps */}
+                  <div style={{ marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        fontSize: isMobile ? "11px" : "12px",
+                        fontWeight: "bold",
+                        color: colors.textPrimary,
+                        marginBottom: "6px",
+                      }}
+                    >
+                      ✅ 원형보 (Wonhyeongbo) | Circular Step - IMPLEMENTED
+                    </div>
+                    <p
+                      style={{
+                        fontSize: isMobile ? "8px" : "9px",
+                        color: colors.textSecondary,
+                        marginBottom: "8px",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Lateral movement while maintaining guard • 30cm distance • 300ms
+                    </p>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      {[
+                        { key: "Ctrl+A", korean: "원형보 좌", english: "Circular Left" },
+                        { key: "Ctrl+D", korean: "원형보 우", english: "Circular Right" },
+                      ].map((move) => (
+                        <div
+                          key={move.key}
+                          style={{
+                            flex: 1,
+                            background: hexToRgbaString(
+                              KOREAN_COLORS.ACCENT_CYAN,
+                              0.2
+                            ),
+                            borderRadius: "6px",
+                            border: `1px solid ${colors.borderCyan}`,
+                            padding: "8px",
+                            textAlign: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: isMobile ? "10px" : "11px",
+                              fontWeight: "bold",
+                              color: colors.accentGold,
+                            }}
+                          >
+                            {move.key}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: isMobile ? "8px" : "9px",
+                              color: colors.textPrimary,
+                            }}
+                          >
+                            {move.korean}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: isMobile ? "7px" : "8px",
+                              color: colors.textSecondary,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {move.english}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Slide Steps */}
+                  <div style={{ marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        fontSize: isMobile ? "11px" : "12px",
+                        fontWeight: "bold",
+                        color: colors.textPrimary,
+                        marginBottom: "6px",
+                      }}
+                    >
+                      ✅ 미끄럼보 (Mikkeureombo) | Slide Step - IMPLEMENTED
+                    </div>
+                    <p
+                      style={{
+                        fontSize: isMobile ? "8px" : "9px",
+                        color: colors.textSecondary,
+                        marginBottom: "8px",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Both feet move together • 30cm distance • 200ms (faster!)
+                    </p>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      {[
+                        { key: "Ctrl+W", korean: "미끄럼보 전", english: "Slide Forward" },
+                        { key: "Ctrl+S", korean: "미끄럼보 후", english: "Slide Back" },
+                      ].map((move) => (
+                        <div
+                          key={move.key}
+                          style={{
+                            flex: 1,
+                            background: hexToRgbaString(
+                              KOREAN_COLORS.ACCENT_CYAN,
+                              0.2
+                            ),
+                            borderRadius: "6px",
+                            border: `1px solid ${colors.borderCyan}`,
+                            padding: "8px",
+                            textAlign: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: isMobile ? "10px" : "11px",
+                              fontWeight: "bold",
+                              color: colors.accentGold,
+                            }}
+                          >
+                            {move.key}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: isMobile ? "8px" : "9px",
+                              color: colors.textPrimary,
+                            }}
+                          >
+                            {move.korean}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: isMobile ? "7px" : "8px",
+                              color: colors.textSecondary,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {move.english}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pending Footwork */}
+                  <div
+                    style={{
+                      marginTop: "15px",
+                      padding: "10px",
+                      background: hexToRgbaString(
+                        KOREAN_COLORS.ACCENT_CYAN,
+                        0.2
+                      ),
+                      borderRadius: "6px",
+                      border: `1px solid ${colors.borderCyan}`,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: isMobile ? "10px" : "11px",
+                        fontWeight: "bold",
+                        color: colors.accentGold,
+                        marginBottom: "6px",
+                      }}
+                    >
+                      ✅ 추가 보법 (Advanced Patterns) - IMPLEMENTED
+                    </div>
+                    <p
+                      style={{
+                        fontSize: isMobile ? "8px" : "9px",
+                        color: colors.textPrimary,
+                        margin: "0 0 6px 0",
+                      }}
+                    >
+                      <strong>축족회전 (Chukjok Hoejeon) | Pivot</strong>: Shift+Ctrl+A (left) / Shift+Ctrl+D (right) • 90° rotation on planted foot • 250ms
+                    </p>
+                    <p
+                      style={{
+                        fontSize: isMobile ? "8px" : "9px",
+                        color: colors.textPrimary,
+                        margin: 0,
+                      }}
+                    >
+                      <strong>섞음보 (Seokkeumbo) | Shuffle</strong>: Shift+Ctrl+W or Shift+Ctrl+S • 15cm micro-adjustment • 100ms
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stance Side Switch Section */}
+              <div
+                style={{
+                  marginBottom: `${layoutConstants.sectionSpacing}px`,
+                  background: colors.sectionBg,
+                  borderRadius: "12px",
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.5
+                  )}`,
+                  padding: "20px",
+                }}
+                data-testid="stance-side-switch"
+              >
+                <h2
+                  style={{
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "bold",
+                    color: colors.accentGold,
+                    margin: "0 0 10px 0",
+                  }}
+                >
+                  자세 발 바꿈 - Stance Side Switch
+                </h2>
+                <p
+                  style={{
+                    fontSize: isMobile ? "10px" : "12px",
+                    color: colors.textSecondary,
+                    fontStyle: "italic",
+                    margin: "0 0 15px 0",
+                  }}
+                >
+                  ✅ 전방 발 전환 | Switch front foot position - IMPLEMENTED
+                </p>
+
+                <div
+                  style={{
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.2
+                    ),
+                    borderRadius: "6px",
+                    border: `1px solid ${colors.borderGold}`,
+                    padding: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: isMobile ? "16px" : "18px",
+                      fontWeight: "bold",
+                      color: colors.accentGold,
+                      marginBottom: "8px",
+                    }}
+                  >
+                    H
+                  </div>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "10px" : "11px",
+                      color: colors.textPrimary,
+                      marginBottom: "4px",
+                    }}
+                  >
+                    발 바꿈 (Bal Bakkum)
+                  </div>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "9px" : "10px",
+                      color: colors.textSecondary,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Switch Front Foot
+                  </div>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "7px" : "8px",
+                      color: colors.textSecondary,
+                      marginTop: "6px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Mirrors your stance (left ↔ right) • 400ms duration
+                  </div>
+                </div>
+              </div>
+
+              {/* Technique Controls Section */}
+              <div
+                style={{
+                  marginBottom: `${layoutConstants.sectionSpacing}px`,
+                  background: colors.sectionBg,
+                  borderRadius: "12px",
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.6
+                  )}`,
+                  padding: "20px",
+                }}
+                data-testid="technique-controls"
+              >
+                <h2
+                  style={{
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "bold",
+                    color: colors.accentGold,
+                    margin: "0 0 10px 0",
+                  }}
+                >
+                  기술 실행 - Technique Execution
+                </h2>
+                <p
+                  style={{
+                    fontSize: isMobile ? "10px" : "12px",
+                    color: colors.textSecondary,
+                    fontStyle: "italic",
+                    margin: "0 0 15px 0",
+                  }}
+                >
+                  ⚡ 원형별 고유 기술 (최대 10개) | Archetype-specific techniques (up to 10)
+                </p>
+
+                {/* Technique Keys Grid */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "repeat(5, 1fr)" : "repeat(10, 1fr)",
+                    gap: isMobile ? "6px" : "8px",
+                  }}
+                >
+                  {["Q", "E", "R", "T", "Y", "F", "G", "Z", "X", "C"].map(
+                    (key, index) => (
+                      <div
+                        key={key}
+                        style={{
+                          background: `linear-gradient(135deg, ${hexToRgbaString(
+                            KOREAN_COLORS.ACCENT_GOLD,
+                            0.3
+                          )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.1)})`,
+                          borderRadius: "6px",
+                          border: `2px solid ${colors.borderGold}`,
+                          padding: isMobile ? "8px 4px" : "10px 6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: isMobile ? "14px" : "16px",
+                            fontWeight: "bold",
+                            color: colors.accentGold,
+                          }}
+                        >
+                          {key}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: isMobile ? "7px" : "8px",
+                            color: colors.textSecondary,
+                            marginTop: "2px",
+                          }}
+                        >
+                          기술 {index + 1}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+
+                {/* Technique Notes */}
+                <div
+                  style={{
+                    marginTop: "15px",
+                    padding: "10px",
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.UI_BACKGROUND_DARK,
+                      0.6
+                    ),
+                    borderRadius: "6px",
+                    fontSize: isMobile ? "9px" : "10px",
+                    color: colors.textSecondary,
+                    fontStyle: "italic",
+                  }}
+                >
+                  💡 <strong>Tip</strong>: Keys positioned around WASD for easy access
+                  without interfering with movement. Each archetype has unique techniques.
+                </div>
+              </div>
+
+              {/* Special Features Section */}
+              <div
+                style={{
+                  marginBottom: `${layoutConstants.sectionSpacing}px`,
+                  background: colors.sectionBg,
+                  borderRadius: "12px",
+                  border: `2px solid ${colors.borderRed}`,
+                  padding: "20px",
+                }}
+                data-testid="special-features"
+              >
+                <h2
+                  style={{
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "bold",
+                    color: `#${KOREAN_COLORS.KOREAN_RED.toString(16).padStart(
+                      6,
+                      "0"
+                    )}`,
+                    margin: "0 0 20px 0",
+                  }}
+                >
+                  특수 기능 - Special Features
+                </h2>
+
+                {/* Special Keys List */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {[
+                    {
+                      key: "V",
+                      korean: "급소 표시 전환",
+                      english: "Toggle vital points overlay (70 points)",
+                    },
+                    {
+                      key: "B",
+                      korean: "방어 자세",
+                      english: "Defensive guard position",
+                    },
+                    {
+                      key: "F1",
+                      korean: "조작법 힌트",
+                      english: "Show control hints",
+                    },
+                    {
+                      key: "ESC / M",
+                      korean: "일시정지 / 메뉴",
+                      english: "Pause menu / Return to menu",
+                    },
+                  ].map((special) => (
+                    <div
+                      key={special.key}
+                      style={{
+                        background: hexToRgbaString(
+                          KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                          0.8
+                        ),
+                        borderRadius: "8px",
+                        border: `1px solid ${colors.borderRed}`,
+                        padding: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: hexToRgbaString(KOREAN_COLORS.KOREAN_RED, 0.3),
+                          borderRadius: "6px",
+                          padding: "4px 10px",
+                          fontSize: isMobile ? "12px" : "14px",
+                          fontWeight: "bold",
+                          color: colors.accentGold,
+                          minWidth: "50px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {special.key}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontSize: isMobile ? "10px" : "12px",
+                            fontWeight: "bold",
+                            color: colors.textPrimary,
+                          }}
+                        >
+                          {special.korean}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: isMobile ? "8px" : "10px",
+                            color: colors.textSecondary,
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {special.english}
                         </div>
                       </div>
                     </div>
