@@ -154,15 +154,29 @@ describe("ControlsScreenThreeJS", () => {
       expect(footworkSection.textContent).toContain("Ctrl+S");
     });
 
-    it("should indicate pending footwork patterns", () => {
+    it("should display all advanced footwork patterns including pivot and shuffle", () => {
       const onReturnToMenu = vi.fn();
       render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
 
       const footworkSection = screen.getByTestId("advanced-footwork");
-      expect(footworkSection.textContent).toContain("추가 예정"); // Coming Soon
+      expect(footworkSection.textContent).toContain("추가 보법"); // Advanced Patterns
       expect(footworkSection.textContent).toContain("축족회전"); // Pivot
       expect(footworkSection.textContent).toContain("섞음보"); // Shuffle
-      expect(footworkSection.textContent).toContain("Controls pending");
+      expect(footworkSection.textContent).toContain("IMPLEMENTED"); // Now implemented
+      expect(footworkSection.textContent).toContain("Shift+Ctrl"); // New keybinding
+    });
+
+    it("should render stance side switch section", () => {
+      const onReturnToMenu = vi.fn();
+      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+
+      const sideSwitchSection = screen.getByTestId("stance-side-switch");
+      expect(sideSwitchSection).toBeTruthy();
+      expect(sideSwitchSection.textContent).toContain("자세 발 바꿈");
+      expect(sideSwitchSection.textContent).toContain("Stance Side Switch");
+      expect(sideSwitchSection.textContent).toContain("H"); // H key
+      expect(sideSwitchSection.textContent).toContain("Switch Front Foot");
+      expect(sideSwitchSection.textContent).toContain("IMPLEMENTED");
     });
 
     it("should render technique controls section", () => {

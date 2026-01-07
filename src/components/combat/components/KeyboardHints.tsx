@@ -322,7 +322,7 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
                 {" "}
                 - Tactical steps (30cm)
               </div>
-              <div>
+              <div style={{ marginBottom: "4px" }}>
                 <span
                   style={{
                     color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
@@ -333,6 +333,42 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
                 </span>
                 {" "}
                 - Footwork patterns
+              </div>
+              <div style={{ marginBottom: "4px" }}>
+                <span
+                  style={{
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    fontWeight: "bold",
+                  }}
+                >
+                  Shift+Ctrl+A/D
+                </span>
+                {" "}
+                - Pivot rotation
+              </div>
+              <div style={{ marginBottom: "4px" }}>
+                <span
+                  style={{
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    fontWeight: "bold",
+                  }}
+                >
+                  Shift+Ctrl+W/S
+                </span>
+                {" "}
+                - Shuffle step
+              </div>
+              <div>
+                <span
+                  style={{
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    fontWeight: "bold",
+                  }}
+                >
+                  H
+                </span>
+                {" "}
+                - Switch front foot
               </div>
             </div>
           </div>

@@ -916,43 +916,129 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
                       marginTop: "15px",
                       padding: "10px",
                       background: hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_DARK,
-                        0.6
+                        KOREAN_COLORS.ACCENT_CYAN,
+                        0.2
                       ),
                       borderRadius: "6px",
-                      border: `1px dashed ${colors.textSecondary}`,
+                      border: `1px solid ${colors.borderCyan}`,
                     }}
                   >
                     <div
                       style={{
                         fontSize: isMobile ? "10px" : "11px",
                         fontWeight: "bold",
-                        color: colors.textSecondary,
+                        color: colors.accentGold,
                         marginBottom: "6px",
                       }}
                     >
-                      ⏳ 추가 예정 | Coming Soon
+                      ✅ 추가 보법 (Advanced Patterns) - IMPLEMENTED
                     </div>
                     <p
                       style={{
                         fontSize: isMobile ? "8px" : "9px",
-                        color: colors.textSecondary,
+                        color: colors.textPrimary,
                         margin: "0 0 6px 0",
-                        fontStyle: "italic",
                       }}
                     >
-                      <strong>축족회전 (Chukjok Hoejeon) | Pivot</strong>: 90° rotation on planted foot • 250ms • Controls pending
+                      <strong>축족회전 (Chukjok Hoejeon) | Pivot</strong>: Shift+Ctrl+A (left) / Shift+Ctrl+D (right) • 90° rotation on planted foot • 250ms
                     </p>
                     <p
                       style={{
                         fontSize: isMobile ? "8px" : "9px",
-                        color: colors.textSecondary,
+                        color: colors.textPrimary,
                         margin: 0,
-                        fontStyle: "italic",
                       }}
                     >
-                      <strong>섞음보 (Seokkeumbo) | Shuffle</strong>: 15cm micro-adjustment • 100ms • Controls pending
+                      <strong>섞음보 (Seokkeumbo) | Shuffle</strong>: Shift+Ctrl+W or Shift+Ctrl+S • 15cm micro-adjustment • 100ms
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stance Side Switch Section */}
+              <div
+                style={{
+                  marginBottom: `${layoutConstants.sectionSpacing}px`,
+                  background: colors.sectionBg,
+                  borderRadius: "12px",
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.5
+                  )}`,
+                  padding: "20px",
+                }}
+                data-testid="stance-side-switch"
+              >
+                <h2
+                  style={{
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "bold",
+                    color: colors.accentGold,
+                    margin: "0 0 10px 0",
+                  }}
+                >
+                  자세 발 바꿈 - Stance Side Switch
+                </h2>
+                <p
+                  style={{
+                    fontSize: isMobile ? "10px" : "12px",
+                    color: colors.textSecondary,
+                    fontStyle: "italic",
+                    margin: "0 0 15px 0",
+                  }}
+                >
+                  ✅ 전방 발 전환 | Switch front foot position - IMPLEMENTED
+                </p>
+
+                <div
+                  style={{
+                    background: hexToRgbaString(
+                      KOREAN_COLORS.ACCENT_GOLD,
+                      0.2
+                    ),
+                    borderRadius: "6px",
+                    border: `1px solid ${colors.borderGold}`,
+                    padding: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: isMobile ? "16px" : "18px",
+                      fontWeight: "bold",
+                      color: colors.accentGold,
+                      marginBottom: "8px",
+                    }}
+                  >
+                    H
+                  </div>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "10px" : "11px",
+                      color: colors.textPrimary,
+                      marginBottom: "4px",
+                    }}
+                  >
+                    발 바꿈 (Bal Bakkum)
+                  </div>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "9px" : "10px",
+                      color: colors.textSecondary,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Switch Front Foot
+                  </div>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "7px" : "8px",
+                      color: colors.textSecondary,
+                      marginTop: "6px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Mirrors your stance (left ↔ right) • 400ms duration
                   </div>
                 </div>
               </div>
