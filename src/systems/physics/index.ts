@@ -18,3 +18,6 @@ export { CollisionDetection } from './CollisionDetection';
 
 export { SpeedModifierSystem, MovementType } from './SpeedModifierSystem';
 export type { SpeedModifierState } from './SpeedModifierSystem';
+
+export { CoordinateMapper, defaultCoordinateMapper } from './CoordinateMapper';
+export type { CharacterModelConfig } from './CoordinateMapper';
