@@ -680,7 +680,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Physics parameters for realistic movement (always enabled)
     currentStance: player1Data.currentStance,
     legInjuryFactor: player1Data.legInjuryFactor,
-    isRunning: false, // Can be enhanced with Shift key detection
+    isRunning: false, // TODO: Add run key detection
+    useTacticalSteps: false,
+    // Speed modifier overrides from SpeedModifierSystem
+    maxSpeedOverride: player1SpeedModifiers.finalSpeed,
+    accelerationOverride: undefined, // Let SpeedModifierSystem handle acceleration via stamina
   });
 
   // Use ref to store attack handler to avoid circular dependencies
