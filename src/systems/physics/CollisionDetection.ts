@@ -660,37 +660,30 @@ export class CollisionDetection {
       ["legs", []],
     ]);
     
-    // Organize vital points by region based on position
-    // NOTE: This logic is temporarily disabled due to coordinate system mismatch
-    // Vital points use pixel coordinates but thresholds assume meters
+    // Use existing VitalPointsData categorization by ID prefix
+    // This is more reliable than coordinate-based heuristics
     for (const vp of VITAL_POINTS_DATA) {
-      const x = vp.position.x / 1000; // Rough conversion from pixels to meters
-      const y = vp.position.y / 1000; // Rough conversion from pixels to meters
-      
-      // Categorize by position: check x-coordinate first for arms/legs distinction
-      // to avoid overlap with torso y-range
       let region: AnatomicalRegionPhysics;
       
-      if (y >= 1.6) {
-        // Head region (top of body)
+      // Categorize by ID prefix (existing VitalPointsData convention)
+      if (vp.id.startsWith("head_")) {
         region = "head";
-      } else if (y >= 1.4 && y < 1.6) {
-        // Neck region
+      } else if (
+        vp.id.includes("_neck") ||
+        vp.id.includes("_throat") ||
+        vp.id === "head_side_neck" ||
+        vp.id === "head_throat"
+      ) {
         region = "neck";
-      } else if (y >= 0.8 && y < 1.4) {
-        // Mid-body: distinguish between torso and arms by x-coordinate
-        if (Math.abs(x) > 0.2) {
-          region = "arms"; // Lateral position indicates arms
-        } else {
-          region = "torso"; // Central position indicates torso
-        }
+      } else if (vp.id.startsWith("torso_")) {
+        region = "torso";
+      } else if (vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")) {
+        region = "arms";
+      } else if (vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")) {
+        region = "legs";
       } else {
-        // Lower body: distinguish between torso (if upper) and legs
-        if (y >= 0.6 && Math.abs(x) < 0.15) {
-          region = "torso"; // Lower torso
-        } else {
-          region = "legs";
-        }
+        // Default to torso for uncategorized points (core region)
+        region = "torso";
       }
       
       const list = regionMap.get(region);

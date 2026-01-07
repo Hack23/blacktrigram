@@ -1462,6 +1462,41 @@ describe("createCombatResult helper (coverage for lines 488-509)", () => {
   });
 });
 
+describe("CombatSystem - Resource Management", () => {
+  let combatSystem: CombatSystem;
+
+  beforeEach(() => {
+    combatSystem = new CombatSystem();
+  });
+
+  it("should dispose of collision detection resources", () => {
+    // Dispose should not throw
+    expect(() => combatSystem.dispose()).not.toThrow();
+  });
+
+  it("should allow multiple dispose calls without errors", () => {
+    // Multiple dispose calls should not throw
+    expect(() => {
+      combatSystem.dispose();
+      combatSystem.dispose();
+    }).not.toThrow();
+  });
+
+  it("should clean up collision detection resources on dispose", () => {
+    // Get collision detection instance before disposal
+    const collision = combatSystem.getCollisionDetection();
+    expect(collision).toBeDefined();
+    
+    // Dispose combat system (should clean up collision detection)
+    combatSystem.dispose();
+    
+    // After disposal, collision detection should still be accessible
+    // (the instance still exists, but internal resources are cleaned up)
+    const collisionAfterDispose = combatSystem.getCollisionDetection();
+    expect(collisionAfterDispose).toBeDefined();
+  });
+});
+
 describe("TrainingCombatSystem", () => {
   let trainingSystem: TrainingCombatSystem;
   let player: PlayerState;

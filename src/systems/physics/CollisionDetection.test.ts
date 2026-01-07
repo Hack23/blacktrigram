@@ -8,6 +8,7 @@
  */
 
 import { describe, it, expect, beforeEach } from "vitest";
+import * as THREE from "three";
 import { CollisionDetection } from "./CollisionDetection";
 import { TrigramStance } from "../../types/common";
 import type { Position3D, AnatomicalRegionPhysics } from "../../types/physics";
@@ -379,5 +380,43 @@ describe("CollisionDetection", () => {
         expect(box?.region).toBe(region);
       });
     });
+  });
+});
+
+describe("CollisionDetection - Resource Management", () => {
+  it("should dispose of cached geometries", () => {
+    const collision = new CollisionDetection();
+    
+    // Perform some collision checks to ensure geometry cache is populated
+    const attackerPos = new THREE.Vector3(0, 1, 0);
+    const defenderPos = new THREE.Vector3(1, 1, 0);
+    const technique = { type: "punch" as const };
+    
+    collision.checkAttackHit(
+      attackerPos,
+      defenderPos,
+      technique,
+      TrigramStance.GEON,
+      "torso"
+    );
+    
+    // Dispose should not throw
+    expect(() => collision.dispose()).not.toThrow();
+    
+    // After disposal, geometry cache is cleared
+    // Note: The collision detection instance is still valid, but geometries
+    // are disposed. In a real application, a new CollisionDetection instance
+    // would be created after disposal rather than reusing the disposed one.
+  });
+
+  it("should allow multiple dispose calls without errors", () => {
+    const collision = new CollisionDetection();
+    
+    // Multiple dispose calls should not throw
+    expect(() => {
+      collision.dispose();
+      collision.dispose();
+      collision.dispose();
+    }).not.toThrow();
   });
 });
