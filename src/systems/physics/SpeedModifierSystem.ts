@@ -202,11 +202,13 @@ export class SpeedModifierSystem {
    * **Korean**: 전투 상태 속도 패널티 (Combat State Speed Penalties)
    */
   private readonly COMBAT_STATE_PENALTIES: Record<CombatState, number> = {
-    [CombatState.IDLE]: 0.0,        // No penalty when idle
-    [CombatState.ATTACKING]: 0.30,  // -30% during attack commitment
-    [CombatState.DEFENDING]: 0.20,  // -20% while guarding
-    [CombatState.STUNNED]: 1.0,     // Cannot move when stunned
-    [CombatState.RECOVERING]: 0.40, // -40% during recovery frames
+    [CombatState.IDLE]: 0.0,           // No penalty when idle
+    [CombatState.ATTACKING]: 0.30,     // -30% during attack commitment
+    [CombatState.DEFENDING]: 0.20,     // -20% while guarding
+    [CombatState.STUNNED]: 1.0,        // Cannot move when stunned
+    [CombatState.RECOVERING]: 0.40,    // -40% during recovery frames
+    [CombatState.COUNTERING]: 0.25,    // -25% during counter execution
+    [CombatState.TRANSITIONING]: 0.15, // -15% during stance transitions
   };
 
   private readonly movementPenaltySystem: MovementPenaltySystem;
@@ -381,6 +383,8 @@ export class SpeedModifierSystem {
    * - DEFENDING: -20% penalty (guard up, limited mobility)
    * - STUNNED: -100% penalty (cannot move)
    * - RECOVERING: -40% penalty (vulnerable, slow movement)
+   * - COUNTERING: -25% penalty (counter execution)
+   * - TRANSITIONING: -15% penalty (stance change)
    * 
    * @param combatState - Current combat state
    * @returns Speed penalty as percentage (0.0 to 1.0)
