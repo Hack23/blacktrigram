@@ -23,13 +23,11 @@ import type { Position3D } from '@/types/physics';
 
 describe('CombatPhysicsIntegration', () => {
   describe('MovementPhysics + SpeedModifierSystem', () => {
-    let movement: MovementPhysics;
     let speedModifier: SpeedModifierSystem;
     let movementState: MovementState;
     let playerState: PlayerState;
 
     beforeEach(() => {
-      movement = new MovementPhysics();
       speedModifier = new SpeedModifierSystem();
       
       movementState = {
@@ -63,12 +61,18 @@ describe('CombatPhysicsIntegration', () => {
 
     it('should reduce movement speed with leg injury', () => {
       // Apply leg injury to create LIMPING state (50% health)
-      playerState.bodyPartHealth!.legLeft = 50;
-      playerState.bodyPartHealth!.legRight = 50;
+      const injuredPlayerState = {
+        ...playerState,
+        bodyPartHealth: {
+          ...playerState.bodyPartHealth!,
+          legLeft: 50,
+          legRight: 50,
+        },
+      };
 
       // Calculate modifiers with injury
       const modifiers = speedModifier.calculateSpeedModifiers(
-        playerState,
+        injuredPlayerState,
         MovementType.WALKING,
         false
       );
@@ -84,11 +88,14 @@ describe('CombatPhysicsIntegration', () => {
     });
 
     it('should prevent running when stamina is depleted', () => {
-      // Deplete stamina
-      playerState.stamina = 5; // Below 10% threshold
+      // Create state with depleted stamina
+      const depletedStaminaState = {
+        ...playerState,
+        stamina: 5, // Below 10% threshold
+      };
 
       const modifiers = speedModifier.calculateSpeedModifiers(
-        playerState,
+        depletedStaminaState,
         MovementType.RUNNING,
         false
       );
@@ -318,21 +325,20 @@ describe('CombatPhysicsIntegration', () => {
 
     it('should validate stance reach modifiers', () => {
       const attackerPos: Position3D = { x: 0, y: 0, z: 5 };
-      const defenderPos: Position3D = { x: 0, y: 0, z: 5.8 }; // 0.8m away
 
-      // Fire stance (+20% reach): 0.7m * 1.2 = 0.84m
-      const fireResult = collision.checkAttackHit(
+      // Fire stance (+20% reach): 0.7m * 1.2 = 0.84m (0.8m target should hit)
+      collision.checkAttackHit(
         attackerPos,
-        defenderPos,
+        { x: 0, y: 0, z: 5.8 },
         { type: 'punch' },
         TrigramStance.LI, // Fire: +20% reach
         'torso'
       );
 
-      // Mountain stance (-10% reach): 0.7m * 0.9 = 0.63m
+      // Mountain stance (-10% reach): 0.7m * 0.9 = 0.63m (0.8m target should miss)
       const mountainResult = collision.checkAttackHit(
         attackerPos,
-        defenderPos,
+        { x: 0, y: 0, z: 5.8 },
         { type: 'punch' },
         TrigramStance.GAN, // Mountain: -10% reach
         'torso'
@@ -462,7 +468,7 @@ describe('CombatPhysicsIntegration', () => {
 
       for (let frame = 0; frame < frames; frame++) {
         // 1. Calculate speed modifiers
-        const modifiers = speedModifier.calculateSpeedModifiers(
+        speedModifier.calculateSpeedModifiers(
           playerState,
           MovementType.WALKING,
           false

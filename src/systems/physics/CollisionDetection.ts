@@ -389,7 +389,7 @@ export class CollisionDetection {
   private identifyVitalPoint(
     region: AnatomicalRegionPhysics,
     hitPoint: Position3D,
-    defenderPosition: Position3D
+    _defenderPosition: Position3D // Prefixed with _ to indicate intentionally unused
   ): VitalPoint | null {
     // Get all vital points for this region
     const vitalPoints = this.vitalPointsByRegion.get(region);
@@ -430,7 +430,7 @@ export class CollisionDetection {
   private calculateHitAccuracy(
     hitPoint: Position3D,
     vitalPoint: VitalPoint,
-    defenderPosition: Position3D
+    _defenderPosition: Position3D // Prefixed with _ to indicate intentionally unused
   ): number {
     // Use CoordinateMapper to convert vital point to 3D and calculate distance
     const distance = this.coordinateMapper.distanceToVitalPoint(hitPoint, vitalPoint);

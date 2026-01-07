@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CoordinateMapper, defaultCoordinateMapper } from './CoordinateMapper';
 import type { Position } from '@/types/common';
-import type { Position3D, AnatomicalRegionPhysics } from '@/types/physics';
+import type { Position3D } from '@/types/physics';
 
 describe('CoordinateMapper', () => {
   let mapper: CoordinateMapper;

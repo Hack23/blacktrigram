@@ -206,11 +206,23 @@ describe('PhysicsPerformance - 60fps Validation', () => {
     bench('Calculate modifiers with injury', () => {
       const system = new SpeedModifierSystem();
       const playerState = createBenchmarkPlayerState();
-      playerState.bodyPartHealth!.legLeft = 50;
-      playerState.bodyPartHealth!.legRight = 50;
+      // Create a modified copy with injuries instead of mutating readonly properties
+      const injuredState: PlayerState = {
+        ...playerState,
+        bodyPartHealth: {
+          head: 100,
+          neck: 100,
+          torsoUpper: 100,
+          torsoLower: 100,
+          armLeft: 100,
+          armRight: 100,
+          legLeft: 50,
+          legRight: 50,
+        },
+      };
       
       system.calculateSpeedModifiers(
-        playerState,
+        injuredState,
         MovementType.WALKING,
         false
       );
@@ -236,7 +248,7 @@ describe('PhysicsPerformance - 60fps Validation', () => {
       };
       
       // 1. Calculate speed modifiers
-      const modifiers = speedModifier.calculateSpeedModifiers(
+      speedModifier.calculateSpeedModifiers(
         playerState,
         MovementType.WALKING,
         false
