@@ -257,13 +257,14 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
     : Math.min(screenWidth, screenHeight) * 0.14; // Standard desktop
 
   // Optimized component heights - scale for large displays
+  // Menu needs to fit 4 buttons vertically: title + 4 buttons + gaps + padding
   const menuHeight = isMobile
-    ? 280
+    ? 280 // Mobile: ~20px title + 4×45px buttons + 3×8px gaps + 12px section gap + 2×20px padding = 276px
     : isTablet
-    ? 320
+    ? 380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px
     : isLargeDesktop
-    ? 220
-    : 320;
+    ? 220 // Large desktop: ~18px title + 4×38px buttons + 3×4px gaps + 8px section gap + 2×12px padding = 214px
+    : 380; // Desktop: same as tablet to ensure all 4 menu items fit
   const archetypeHeight = isMobile
     ? 260
     : isTablet
