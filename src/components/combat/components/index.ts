@@ -27,6 +27,7 @@ export { ConsciousnessBlur } from "./ConsciousnessBlur";
 export { GuardIndicator } from "./GuardIndicator";
 export { PainVignette } from "./PainVignette";
 export { PlayerStateOverlay } from "./PlayerStateOverlay";
+export { SpeedIndicatorHUD } from "./SpeedIndicatorHUD";
 export { StaminaWarning } from "./StaminaWarning";
 
 // UI components
