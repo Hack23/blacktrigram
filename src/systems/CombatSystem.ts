@@ -37,7 +37,7 @@ import {
   getAdjustedAnimationDuration,
 } from "./animation/TechniqueAnimationMapper";
 import type { DefensiveAnimationType } from "./animation/types";
-import { KnockbackPhysics, type KnockbackConfig } from "./physics";
+import { KnockbackPhysics, type KnockbackConfig, CollisionDetection } from "./physics";
 import * as THREE from 'three';
 
 /**
@@ -53,6 +53,7 @@ export class CombatSystem implements CombatSystemInterface {
   private consciousnessSystem: ConsciousnessSystem;
   private balanceSystem: BalanceSystem;
   private knockbackPhysics: KnockbackPhysics;
+  private collisionDetection: CollisionDetection;
 
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
@@ -70,6 +71,7 @@ export class CombatSystem implements CombatSystemInterface {
     this.consciousnessSystem = new ConsciousnessSystem();
     this.balanceSystem = new BalanceSystem();
     this.knockbackPhysics = new KnockbackPhysics();
+    this.collisionDetection = new CollisionDetection();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
   }
@@ -88,6 +90,23 @@ export class CombatSystem implements CombatSystemInterface {
   public cleanupPlayerData(playerId: string): void {
     this.shockPainEffects.delete(playerId);
     this.lastHeadTraumaTime.delete(playerId);
+  }
+  
+  /**
+   * Dispose of all combat system resources.
+   * 
+   * **Korean**: 전투 시스템 자원 정리
+   * 
+   * Cleans up Three.js resources (geometries, raycaster) used by the collision
+   * detection system to prevent memory leaks. Should be called when the
+   * CombatSystem is destroyed or reinitialized.
+   * 
+   * @public
+   * @korean 전투시스템자원정리
+   */
+  public dispose(): void {
+    // Dispose collision detection resources (cached geometries, raycaster)
+    this.collisionDetection.dispose();
   }
 
   /**
@@ -110,6 +129,17 @@ export class CombatSystem implements CombatSystemInterface {
    */
   public getConsciousnessSystem(): ConsciousnessSystem {
     return this.consciousnessSystem;
+  }
+
+  /**
+   * Get the collision detection system instance.
+   * 
+   * @returns CollisionDetection instance
+   * @public
+   * @korean 충돌감지시스템가져오기
+   */
+  public getCollisionDetection(): CollisionDetection {
+    return this.collisionDetection;
   }
 
   /**
