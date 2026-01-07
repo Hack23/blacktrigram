@@ -56,7 +56,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
     });
 
     it("should trigger pivot_right when Shift+Ctrl+D is pressed", () => {
-      const { result, unmount } = renderHook(() =>
+      const { result } = renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -77,12 +77,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_right");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
       expect(result.current.queuedInputs[0].action).toContain("Pivot Right");
-      // Clean up event listeners
-      unmount();
     });
 
     it("should trigger shuffle when Shift+Ctrl+W is pressed", () => {
-      const { result, unmount } = renderHook(() =>
+      const { result } = renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -103,12 +101,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       expect(mockOnAction).toHaveBeenCalledWith("footwork_shuffle");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
       expect(result.current.queuedInputs[0].action).toContain("Shuffle");
-      // Clean up event listeners
-      unmount();
     });
 
     it("should trigger shuffle when Shift+Ctrl+S is pressed", () => {
-      const { result, unmount } = renderHook(() =>
+      const { result } = renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -129,14 +125,12 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       expect(mockOnAction).toHaveBeenCalledWith("footwork_shuffle");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
       expect(result.current.queuedInputs[0].action).toContain("Shuffle");
-      // Clean up event listeners
-      unmount();
     });
   });
 
   describe("Ctrl-only combinations should not trigger when Shift+Ctrl is pressed", () => {
     it("should NOT trigger circular_left when Shift+Ctrl+A is pressed", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -157,12 +151,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       // Should trigger pivot_left, NOT circular_left
       expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_left");
       expect(mockOnAction).not.toHaveBeenCalledWith("footwork_circular_left");
-      // Clean up event listeners
-      unmount();
     });
 
     it("should NOT trigger circular_right when Shift+Ctrl+D is pressed", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -182,12 +174,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_right");
       expect(mockOnAction).not.toHaveBeenCalledWith("footwork_circular_right");
-      // Clean up event listeners
-      unmount();
     });
 
     it("should NOT trigger slide_forward when Shift+Ctrl+W is pressed", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -207,14 +197,12 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_shuffle");
       expect(mockOnAction).not.toHaveBeenCalledWith("footwork_slide_forward");
-      // Clean up event listeners
-      unmount();
     });
   });
 
   describe("Ctrl-only combinations", () => {
     it("should trigger circular_left when Ctrl+A is pressed (without Shift)", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -234,12 +222,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_circular_left");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
-      // Clean up event listeners
-      unmount();
     });
 
     it("should trigger circular_right when Ctrl+D is pressed (without Shift)", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -259,12 +245,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_circular_right");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
-      // Clean up event listeners
-      unmount();
     });
 
     it("should trigger slide_forward when Ctrl+W is pressed (without Shift)", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -284,12 +268,10 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_slide_forward");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
-      // Clean up event listeners
-      unmount();
     });
 
     it("should trigger slide_back when Ctrl+S is pressed (without Shift)", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -309,14 +291,12 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_slide_back");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
-      // Clean up event listeners
-      unmount();
     });
   });
 
   describe("Modifier check order verification", () => {
     it("should demonstrate the correct check order: Shift+Ctrl before Ctrl alone", () => {
-      const { unmount } = renderHook(() =>
+      renderHook(() =>
         useKeyboardControls({
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
@@ -353,8 +333,6 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       
       // Verify they trigger different actions
       expect(mockOnAction).not.toHaveBeenCalledWith("footwork_pivot_left");
-      // Clean up event listeners
-      unmount();
     });
   });
 });
@@ -373,7 +351,7 @@ describe("useKeyboardControls - Stance Side Switch", () => {
   });
 
   it("should trigger stance_side_switch when H key is pressed", () => {
-    const { result, unmount } = renderHook(() =>
+    const { result } = renderHook(() =>
       useKeyboardControls({
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
@@ -392,12 +370,10 @@ describe("useKeyboardControls - Stance Side Switch", () => {
     expect(mockOnAction).toHaveBeenCalledWith("stance_side_switch");
     expect(mockOnAction).toHaveBeenCalledTimes(1);
     expect(result.current.queuedInputs[0].action).toContain("발 바꿈");
-    // Clean up event listeners
-    unmount();
   });
 
   it("should handle uppercase H key correctly", () => {
-    const { unmount } = renderHook(() =>
+    renderHook(() =>
       useKeyboardControls({
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
@@ -415,8 +391,6 @@ describe("useKeyboardControls - Stance Side Switch", () => {
 
     // Key detection should work for uppercase
     expect(mockOnAction).toHaveBeenCalledWith("stance_side_switch");
-    // Clean up event listeners
-    unmount();
   });
 });
 
@@ -425,7 +399,7 @@ describe("useKeyboardControls - Disabled State", () => {
     const mockOnAction = vi.fn();
     const mockOnStanceChange = vi.fn();
 
-    const { unmount } = renderHook(() =>
+    renderHook(() =>
       useKeyboardControls({
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
@@ -445,8 +419,6 @@ describe("useKeyboardControls - Disabled State", () => {
 
     // Should not trigger any action when disabled
     expect(mockOnAction).not.toHaveBeenCalled();
-    // Clean up event listeners
-    unmount();
   });
 });
 
@@ -455,7 +427,7 @@ describe("useKeyboardControls - Hints Toggle", () => {
     const mockOnAction = vi.fn();
     const mockOnStanceChange = vi.fn();
 
-    const { result, unmount } = renderHook(() =>
+    const { result } = renderHook(() =>
       useKeyboardControls({
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
@@ -489,7 +461,5 @@ describe("useKeyboardControls - Hints Toggle", () => {
 
     // Hints should be hidden again
     expect(result.current.showHints).toBe(false);
-    // Clean up event listeners
-    unmount();
   });
 });

@@ -48,6 +48,28 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
+  
+  // Memoize scrollbar style to prevent re-creating style tag on every render
+  const scrollbarStyle = useMemo(() => ({
+    __html: `
+      .korean-scrollbar::-webkit-scrollbar {
+        width: 12px !important;
+        display: block !important;
+      }
+      .korean-scrollbar::-webkit-scrollbar-track {
+        background: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        border-radius: 6px;
+      }
+      .korean-scrollbar::-webkit-scrollbar-thumb {
+        background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+        border-radius: 6px;
+        border: 2px solid ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+      }
+      .korean-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)};
+      }
+    `
+  }), []); // Empty deps - colors are constants
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
   const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
@@ -164,24 +186,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
         {/* HTML Overlay for UI - only render when content is ready */}
         <Html fullscreen>
           {/* WebKit Scrollbar Styling - Using !important to override global hide */}
-          <style>{`
-            .korean-scrollbar::-webkit-scrollbar {
-              width: 12px !important;
-              display: block !important;
-            }
-            .korean-scrollbar::-webkit-scrollbar-track {
-              background: ${colors.sectionBg};
-              border-radius: 6px;
-            }
-            .korean-scrollbar::-webkit-scrollbar-thumb {
-              background: ${colors.accentGold};
-              border-radius: 6px;
-              border: 2px solid ${colors.sectionBg};
-            }
-            .korean-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: ${colors.accentCyan};
-            }
-          `}</style>
+          <style dangerouslySetInnerHTML={scrollbarStyle} />
 
           <div
             style={{
