@@ -666,15 +666,16 @@ export class CollisionDetection {
       let region: AnatomicalRegionPhysics;
       
       // Categorize by ID prefix (existing VitalPointsData convention)
-      if (vp.id.startsWith("head_")) {
-        region = "head";
-      } else if (
+      // Check neck-related patterns first (more specific) before head (broader)
+      if (
         vp.id.includes("_neck") ||
         vp.id.includes("_throat") ||
         vp.id === "head_side_neck" ||
         vp.id === "head_throat"
       ) {
         region = "neck";
+      } else if (vp.id.startsWith("head_")) {
+        region = "head";
       } else if (vp.id.startsWith("torso_")) {
         region = "torso";
       } else if (vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")) {
