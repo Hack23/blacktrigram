@@ -2,6 +2,52 @@
 
 This directory contains utility scripts for the Black Trigram (흑괘) project.
 
+## Screenshot Capture
+
+### capture-screenshots.ts
+
+**Purpose:** Systematically capture screenshots of all major screens for UI/UX analysis using Playwright.
+
+**Usage:**
+```bash
+# Capture screenshots (requires dev server running)
+npm run screenshots:capture
+
+# Or use the all-in-one command
+npm run screenshots:all
+```
+
+**Features:**
+- Waits for Three.js canvas and Html overlays to fully render
+- Validates required content before capturing
+- Retries on transient failures
+- Generates comprehensive UI/UX analysis report
+- Supports both desktop and mobile viewports
+- Handles audio initialization automatically
+
+**Documentation:**
+- [Screenshot Timing Guide](../docs/SCREENSHOT_TIMING_GUIDE.md) - Complete timing strategy and best practices
+
+**Configuration:**
+- Base URL: `http://localhost:5173` (configurable via `BASE_URL` env var)
+- Viewport: 1280x800
+- Format: PNG
+- Output: `screenshots/` directory
+
+**Exit Codes:**
+- `0` - All screenshots captured successfully
+- `1` - One or more screenshots failed
+
+### post-screenshots-to-pr.ts
+
+**Purpose:** Post captured screenshots to GitHub Pull Requests for review.
+
+**Usage:**
+```bash
+# Post screenshots to PR (requires GITHUB_TOKEN)
+npm run screenshots:post
+```
+
 ## Asset Management
 
 ### audit-assets.ts
