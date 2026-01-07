@@ -61,15 +61,23 @@ if (result.hit && result.knockback) {
   // Set non-interruptible state
   defender.isStunned = true;
   
+  // IMPORTANT: In production code, store timeout IDs in refs or instance fields
+  // and clear them in cleanup logic (component unmount, state reset, entity despawn)
+  // to prevent memory leaks or updates to destroyed/unmounted defenders.
+  
   // Schedule recovery window (vulnerable state)
-  setTimeout(() => {
+  const stunTimeout = setTimeout(() => {
     defender.isStunned = false;
     // Player can now act but is vulnerable
   }, animationDuration);
   
-  setTimeout(() => {
+  const recoveryTimeout = setTimeout(() => {
     // Recovery window ends
   }, animationDuration + result.knockback.recoveryWindow * 1000);
+  
+  // In your cleanup function (e.g., useEffect return or entity despawn):
+  // clearTimeout(stunTimeout);
+  // clearTimeout(recoveryTimeout);
   
   // Trigger fall if needed
   if (result.knockback.shouldFall) {

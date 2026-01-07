@@ -147,7 +147,14 @@ export class CombatSystem implements CombatSystemInterface {
       defender.position.x - attacker.position.x,
       0, // Keep knockback on horizontal plane
       defender.position.y - attacker.position.y
-    ).normalize();
+    );
+
+    // If attacker and defender are at the exact same position, skip knockback to avoid NaN direction
+    if (attackDirection.lengthSq() === 0) {
+      return undefined;
+    }
+
+    attackDirection.normalize();
 
     // Create knockback configuration
     const config: KnockbackConfig = {

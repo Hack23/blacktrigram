@@ -1008,7 +1008,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         onPlayerUpdate(1, { position });
       }
     },
-    [onPlayerUpdate]
+    [onPlayerUpdate, setPlayer1Position]
   );
 
   // Combat action handlers
