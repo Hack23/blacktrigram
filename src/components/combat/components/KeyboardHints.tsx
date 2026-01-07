@@ -186,6 +186,7 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
             style={{
               borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
               paddingTop: "8px",
+              marginBottom: "8px",
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
               gap: "4px",
@@ -223,9 +224,9 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
                   fontWeight: "bold",
                 }}
               >
-                F
+                V
               </span>{" "}
-              - Switch Side (측면 전환)
+              - Vital Points
             </div>
             <div>
               <span
@@ -234,21 +235,63 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
                   fontWeight: "bold",
                 }}
               >
-                WASD
+                WASD/Arrows
               </span>{" "}
               - Move
             </div>
-            <div>
+          </div>
+
+          {/* Technique keys section */}
+          <div
+            style={{
+              borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
+              paddingTop: "8px",
+            }}
+          >
+            <div
+              style={{
+                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontSize: `${layout.labelFontSize}px`,
+                textAlign: "center",
+                marginBottom: "6px",
+                fontWeight: "bold",
+              }}
+            >
+              Techniques (기술)
+            </div>
+            <div
+              style={{
+                fontSize: `${layout.labelFontSize}px`,
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.9),
+                fontFamily: FONT_FAMILY.KOREAN,
+                textAlign: "center",
+              }}
+            >
               <span
                 style={{
                   color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
                   fontWeight: "bold",
                 }}
               >
-                F1
-              </span>{" "}
-              - Toggle Hints
+                Q-E-R-T-Y-F-G-Z-X-C
+              </span>
+              {" "}
+              - Execute techniques
             </div>
+          </div>
+
+          {/* Toggle hint */}
+          <div
+            style={{
+              marginTop: "8px",
+              textAlign: "center",
+              fontSize: `${layout.labelFontSize - 2}px`,
+              color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.7),
+              fontStyle: "italic",
+            }}
+          >
+            Press F1 to toggle • ESC/M for pause
           </div>
         </div>
       </div>

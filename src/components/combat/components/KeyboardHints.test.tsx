@@ -77,7 +77,9 @@ describe("KeyboardHints", () => {
     expect(container.textContent).toContain("Attack");
     expect(container.textContent).toContain("Block");
     expect(container.textContent).toContain("Move");
-    expect(container.textContent).toContain("Toggle Hints");
+    expect(container.textContent).toContain("Vital Points");
+    expect(container.textContent).toContain("Techniques");
+    expect(container.textContent).toContain("Press F1 to toggle");
   });
 
   it("should adapt to mobile layout", () => {
@@ -132,49 +134,52 @@ describe("KeyboardHints", () => {
     }
   });
 
-  describe("F Key for Stance Side Switching", () => {
-    it("should display F key hint for stance side switching", () => {
+  describe("Control hints display", () => {
+    it("should display vital points hint with V key", () => {
       render(<KeyboardHints visible={true} currentStance={0} />);
 
       const container = screen.getByTestId("keyboard-hints");
-      expect(container.textContent).toContain("F");
-      expect(container.textContent).toContain("Switch Side");
+      expect(container.textContent).toContain("V");
+      expect(container.textContent).toContain("Vital Points");
     });
 
-    it("should include Korean text for stance side switching", () => {
+    it("should display technique execution hints", () => {
       render(<KeyboardHints visible={true} currentStance={0} />);
 
       const container = screen.getByTestId("keyboard-hints");
-      expect(container.textContent).toContain("측면 전환");
+      expect(container.textContent).toContain("Techniques");
+      expect(container.textContent).toContain("기술");
+      expect(container.textContent).toContain("Q-E-R-T-Y-F-G-Z-X-C");
     });
 
-    it("should display stance side switching hint alongside other combat actions", () => {
+    it("should display all combat action hints together", () => {
       render(<KeyboardHints visible={true} currentStance={0} />);
 
       const container = screen.getByTestId("keyboard-hints");
 
-      // Should show all combat action hints including the new F key
+      // Should show all combat action hints
       expect(container.textContent).toContain("Attack");
       expect(container.textContent).toContain("Block");
+      expect(container.textContent).toContain("Vital Points");
       expect(container.textContent).toContain("Move");
-      expect(container.textContent).toContain("Switch Side");
     });
 
-    it("should render F key hint in both mobile and desktop layouts", () => {
+    it("should render control hints in both mobile and desktop layouts", () => {
       const { unmount } = render(
         <KeyboardHints visible={true} currentStance={0} isMobile={false} />
       );
-      expect(screen.getByTestId("keyboard-hints").textContent).toContain(
-        "Switch Side"
-      );
+
+      let container = screen.getByTestId("keyboard-hints");
+      expect(container.textContent).toContain("Vital Points");
+
       unmount();
 
       render(
         <KeyboardHints visible={true} currentStance={0} isMobile={true} />
       );
-      expect(screen.getByTestId("keyboard-hints").textContent).toContain(
-        "Switch Side"
-      );
+
+      container = screen.getByTestId("keyboard-hints");
+      expect(container.textContent).toContain("Vital Points");
     });
   });
 });
