@@ -1013,6 +1013,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions,
     combatSystem,
     onPlayerUpdate,
+    onPlayerPositionUpdate: useCallback((playerIndex: number, position: Position) => {
+      if (playerIndex === 0) {
+        setPlayer1Position(position);
+      }
+      // Player 2 (AI) position is managed by moveAIPlayer, not directly set here
+      // For AI knockback, we could add state management, but for now only player 1
+    }, []),
     addCombatMessage,
     addHitEffect,
     arenaBounds,
