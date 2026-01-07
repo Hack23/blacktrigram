@@ -251,7 +251,9 @@ export function usePlayerMovement(
       }
       
       // Convert key state to physics input
-      const forward = keyState.up ? 1 : keyState.down ? -1 : 0;
+      // ✅ FIXED: Inverted forward direction so ArrowUp/W moves UP on screen (negative Z/Y)
+      // and ArrowDown/S moves DOWN on screen (positive Z/Y)
+      const forward = keyState.up ? -1 : keyState.down ? 1 : 0;
       const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
       
       const physicsInput: MovementInput = {
