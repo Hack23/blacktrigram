@@ -246,6 +246,7 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
             style={{
               borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
               paddingTop: "8px",
+              marginBottom: "8px",
             }}
           >
             <div
@@ -278,6 +279,61 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
               </span>
               {" "}
               - Execute techniques
+            </div>
+          </div>
+
+          {/* Advanced footwork section */}
+          <div
+            style={{
+              borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
+              paddingTop: "8px",
+            }}
+          >
+            <div
+              style={{
+                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontSize: `${layout.labelFontSize}px`,
+                textAlign: "center",
+                marginBottom: "6px",
+                fontWeight: "bold",
+              }}
+            >
+              Advanced Footwork (보법)
+            </div>
+            <div
+              style={{
+                fontSize: `${layout.labelFontSize - 1}px`,
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.9),
+                fontFamily: FONT_FAMILY.KOREAN,
+                textAlign: "center",
+                lineHeight: 1.4,
+              }}
+            >
+              <div style={{ marginBottom: "4px" }}>
+                <span
+                  style={{
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    fontWeight: "bold",
+                  }}
+                >
+                  Shift+WASD
+                </span>
+                {" "}
+                - Tactical steps (30cm)
+              </div>
+              <div>
+                <span
+                  style={{
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    fontWeight: "bold",
+                  }}
+                >
+                  Ctrl+WASD
+                </span>
+                {" "}
+                - Footwork patterns
+              </div>
             </div>
           </div>
 
