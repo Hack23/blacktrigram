@@ -57,6 +57,11 @@ import type {
   RaycastQuery,
   TechniqueType,
 } from "../../types/physics";
+import { 
+  BASE_REACH, 
+  STANCE_REACH_MODIFIERS, 
+  ANATOMICAL_DIMENSIONS 
+} from "../../types/physics";
 import type { VitalPoint } from "../vitalpoint/types";
 import { VITAL_POINTS_DATA } from "../vitalpoint/VitalPointsData";
 
@@ -228,30 +233,11 @@ export class CollisionDetection {
     stanceModifier: number;
     effectiveReach: number;
   } {
-    // Base reach by technique type (imported from physics types)
-    const baseReaches: Record<TechniqueType, number> = {
-      punch: 0.7,
-      kick: 1.0,
-      elbow: 0.4,
-      knee: 0.4,
-      pressure_point: 0.5,
-    };
+    // Use BASE_REACH constant from physics types
+    const baseReach = BASE_REACH[techniqueType];
     
-    const baseReach = baseReaches[techniqueType];
-    
-    // Stance reach modifiers (imported from physics types)
-    const stanceModifiers: Record<TrigramStance, number> = {
-      li: 1.20,   // Fire: +20% reach
-      jin: 1.15,  // Thunder: +15% reach
-      geon: 1.10, // Heaven: +10% reach
-      son: 1.05,  // Wind: +5% reach
-      tae: 1.00,  // Lake: neutral
-      gam: 1.00,  // Water: neutral
-      gon: 0.95,  // Earth: -5% reach
-      gan: 0.90,  // Mountain: -10% reach
-    };
-    
-    const stanceModifier = stanceModifiers[stance];
+    // Use STANCE_REACH_MODIFIERS constant from physics types
+    const stanceModifier = STANCE_REACH_MODIFIERS[stance];
     const effectiveReach = baseReach * stanceModifier;
     
     return {
@@ -326,8 +312,28 @@ export class CollisionDetection {
     // Perform raycast
     const intersections = this.raycaster.intersectObject(mesh);
     
-    // Clean up
-    geometry.dispose();
+    // Clean up temporary Three.js resources used only for raycasting
+    try {
+      // Dispose geometry attached to the mesh
+      mesh.geometry.dispose();
+
+      // Dispose any material(s) attached to the mesh
+      if (Array.isArray(mesh.material)) {
+        for (const material of mesh.material) {
+          if (material && typeof material.dispose === "function") {
+            material.dispose();
+          }
+        }
+      } else if (mesh.material && typeof (mesh.material as THREE.Material).dispose === "function") {
+        (mesh.material as THREE.Material).dispose();
+      }
+    } catch (error) {
+      // Ensure disposal errors do not break combat simulation
+      console.warn(
+        "CollisionDetection: Failed to dispose temporary raycast mesh:",
+        error
+      );
+    }
     
     if (intersections.length > 0) {
       const point = intersections[0].point;
@@ -370,10 +376,14 @@ export class CollisionDetection {
     let minDistance = Infinity;
     
     for (const vp of vitalPoints) {
-      // Convert 2D vital point position to 3D world position
+      // TODO: Convert 2D vital point position to 3D world position
+      // Current limitation: Vital points use 2D pixel coordinates (e.g., x: 100, y: 50)
+      // but we need 3D meter coordinates (e.g., x: 0, y: 1.7, z: 0).
+      // This temporary implementation will produce incorrect positions.
+      // A proper 2D→3D coordinate mapper is needed.
       const vpWorldPos: Position3D = {
-        x: defenderPosition.x + vp.position.x,
-        y: defenderPosition.y + vp.position.y,
+        x: defenderPosition.x + vp.position.x / 1000, // Convert pixels to meters (rough approximation)
+        y: defenderPosition.y + vp.position.y / 1000, // Convert pixels to meters (rough approximation)
         z: defenderPosition.z,
       };
       
@@ -409,9 +419,14 @@ export class CollisionDetection {
     vitalPoint: VitalPoint,
     defenderPosition: Position3D
   ): number {
+    // TODO: Convert 2D vital point position to 3D world position
+    // Current limitation: Vital points use 2D pixel coordinates (e.g., x: 100, y: 50)
+    // but we need 3D meter coordinates (e.g., x: 0, y: 1.7, z: 0).
+    // This temporary implementation will produce incorrect accuracy calculations.
+    // A proper 2D→3D coordinate mapper is needed.
     const vpWorldPos: Position3D = {
-      x: defenderPosition.x + vitalPoint.position.x,
-      y: defenderPosition.y + vitalPoint.position.y,
+      x: defenderPosition.x + vitalPoint.position.x / 1000, // Convert pixels to meters (rough approximation)
+      y: defenderPosition.y + vitalPoint.position.y / 1000, // Convert pixels to meters (rough approximation)
       z: defenderPosition.z,
     };
     
@@ -505,60 +520,86 @@ export class CollisionDetection {
   /**
    * Initializes bounding boxes for all anatomical regions.
    * 
-   * Creates sphere, box, and capsule bounding volumes for the 5 anatomical regions:
-   * - Head: 25cm diameter sphere
-   * - Neck: 15cm diameter, 15cm height capsule
-   * - Torso: 40cm × 60cm × 25cm box
-   * - Arms: 10cm diameter, 60cm length capsules (×2)
-   * - Legs: 12cm diameter, 80cm length capsules (×2)
+   * Creates collision volumes for the 5 anatomical regions using the
+   * ANATOMICAL_DIMENSIONS constants from the physics types module.
    * 
    * @private
    * @korean 경계상자초기화
    */
   private initializeBoundingBoxes(): void {
-    // Head: Sphere
+    // Head: Sphere (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("head", {
-      type: "sphere",
-      center: { x: 0, y: 1.7, z: 0 },
-      dimensions: { x: 0.125, y: 0, z: 0 }, // radius only
+      type: ANATOMICAL_DIMENSIONS.head.type,
+      center: ANATOMICAL_DIMENSIONS.head.center,
+      dimensions: { 
+        x: ANATOMICAL_DIMENSIONS.head.radius, 
+        y: 0, 
+        z: 0 
+      }, // radius only
       region: "head",
     });
     
-    // Neck: Capsule
+    // Neck: Capsule (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("neck", {
-      type: "capsule",
-      center: { x: 0, y: 1.5, z: 0 },
-      dimensions: { x: 0.075, y: 0.15, z: 0 }, // radius and height
+      type: ANATOMICAL_DIMENSIONS.neck.type,
+      center: ANATOMICAL_DIMENSIONS.neck.center,
+      dimensions: { 
+        x: ANATOMICAL_DIMENSIONS.neck.radius, 
+        y: ANATOMICAL_DIMENSIONS.neck.height, 
+        z: 0 
+      }, // radius and height
       region: "neck",
     });
     
-    // Torso: Box
+    // Torso: Box (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("torso", {
-      type: "box",
-      center: { x: 0, y: 1.1, z: 0 },
-      dimensions: { x: 0.4, y: 0.6, z: 0.25 }, // width, height, depth
+      type: ANATOMICAL_DIMENSIONS.torso.type,
+      center: ANATOMICAL_DIMENSIONS.torso.center,
+      dimensions: { 
+        x: ANATOMICAL_DIMENSIONS.torso.width, 
+        y: ANATOMICAL_DIMENSIONS.torso.height, 
+        z: ANATOMICAL_DIMENSIONS.torso.depth 
+      }, // width, height, depth
       region: "torso",
     });
     
-    // Arms: Capsules (using single representative bounding box)
+    // Arms: Capsules (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("arms", {
-      type: "capsule",
-      center: { x: 0.3, y: 1.1, z: 0 }, // Right arm position
-      dimensions: { x: 0.05, y: 0.6, z: 0 }, // radius and length
+      type: ANATOMICAL_DIMENSIONS.arms.type,
+      center: ANATOMICAL_DIMENSIONS.arms.center,
+      dimensions: { 
+        x: ANATOMICAL_DIMENSIONS.arms.radius, 
+        y: ANATOMICAL_DIMENSIONS.arms.height, 
+        z: 0 
+      }, // radius and length
       region: "arms",
     });
     
-    // Legs: Capsules (using single representative bounding box)
+    // Legs: Capsules (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("legs", {
-      type: "capsule",
-      center: { x: 0.15, y: 0.4, z: 0 }, // Right leg position
-      dimensions: { x: 0.06, y: 0.8, z: 0 }, // radius and length
+      type: ANATOMICAL_DIMENSIONS.legs.type,
+      center: ANATOMICAL_DIMENSIONS.legs.center,
+      dimensions: { 
+        x: ANATOMICAL_DIMENSIONS.legs.radius, 
+        y: ANATOMICAL_DIMENSIONS.legs.height, 
+        z: 0 
+      }, // radius and length
       region: "legs",
     });
   }
 
   /**
    * Organizes vital points by anatomical region for efficient lookup.
+   * 
+   * NOTE: This categorization currently uses y-coordinate thresholds that assume
+   * positions are in meters. However, VITAL_POINTS_DATA uses pixel coordinates
+   * (e.g., y: 50), which will cause incorrect categorization. Most vital points
+   * will end up in the "legs" region since pixel y-coordinates are typically less
+   * than 0.8.
+   * 
+   * TODO: After implementing 2D→3D coordinate mapping, update this method to use
+   * the converted 3D positions, or use the anatomical region data that may already
+   * exist in the vital points data structure.
    * 
    * Categorizes the 70 vital points into their respective regions:
    * - Head: 10 vital points
@@ -580,10 +621,12 @@ export class CollisionDetection {
     ]);
     
     // Organize vital points by region based on position
+    // NOTE: This logic is temporarily disabled due to coordinate system mismatch
+    // Vital points use pixel coordinates but thresholds assume meters
     for (const vp of VITAL_POINTS_DATA) {
-      const y = vp.position.y;
+      const y = vp.position.y / 1000; // Rough conversion from pixels to meters
       
-      // Categorize by vertical position
+      // Categorize by vertical position (using converted coordinates)
       let region: AnatomicalRegionPhysics;
       if (y >= 1.6) {
         region = "head";
@@ -591,7 +634,7 @@ export class CollisionDetection {
         region = "neck";
       } else if (y >= 0.8 && y < 1.4) {
         region = "torso";
-      } else if (y >= 0.8 && Math.abs(vp.position.x) > 0.2) {
+      } else if (y >= 0.8 && Math.abs(vp.position.x / 1000) > 0.2) {
         region = "arms";
       } else {
         region = "legs";

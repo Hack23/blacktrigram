@@ -184,7 +184,7 @@ export const DebugCollision: React.FC<DebugCollisionProps> = ({
       
       {/* Attack direction ray */}
       {showAttackReach && (
-        <line>
+        <line key="attack-direction-ray">
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
