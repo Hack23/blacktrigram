@@ -703,6 +703,8 @@ src/hooks/usePlayerAnimation.guard-integration.test.ts
 src/hooks/usePlayerAnimation.stance-transition.test.ts
 src/hooks/usePlayerAnimation.test.ts
 src/hooks/usePlayerAnimation.ts
+src/hooks/usePlayerMovement.test.ts
+src/hooks/usePlayerMovement.ts
 src/hooks/useResponsiveLayout.test.ts
 src/hooks/useResponsiveLayout.ts
 src/hooks/useRoundTransition.test.ts
@@ -831,6 +833,9 @@ src/systems/combat/types.ts
 src/systems/effects.ts
 src/systems/game.ts
 src/systems/index.ts
+src/systems/physics/MovementPhysics.test.ts
+src/systems/physics/MovementPhysics.ts
+src/systems/physics/index.ts
 src/systems/player.ts
 src/systems/trigram/DarkOpsTechniques.test.ts
 src/systems/trigram/IMPLEMENTATION_GUIDE.md
