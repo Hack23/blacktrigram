@@ -8,10 +8,9 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { SpeedModifierSystem, MovementType, SpeedModifierState } from './SpeedModifierSystem';
+import { SpeedModifierSystem, MovementType } from './SpeedModifierSystem';
 import { TrigramStance, CombatState } from '@/types/common';
 import type { PlayerState } from '@/systems/player';
-import type { BodyPartHealth, BodyPartMaxHealth } from '@/systems/bodypart/types';
 
 describe('SpeedModifierSystem', () => {
   let system: SpeedModifierSystem;

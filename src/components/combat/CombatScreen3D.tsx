@@ -629,7 +629,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const intervalId = setInterval(updateSpeedModifiers, 200);
 
     return () => clearInterval(intervalId);
-  }, [players, speedModifierSystem]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [players]); // speedModifierSystem is memoized and never changes
 
   // Calculate leg injury factor for physics-based movement
   // Averages left and right leg health to determine speed penalty
