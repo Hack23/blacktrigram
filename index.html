@@ -3,24 +3,93 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="./dark-trigram-256.png" />
-    <title>Black Trigram (흑괘) - Korean Martial Arts Dojang</title>
+    <title>
+      Black Trigram (흑괘) - Korean Martial Arts Combat Simulator | Vital Point
+      Training
+    </title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://blacktrigram.com/" />
+
+    <!-- Language Alternatives -->
+    <link rel="alternate" hreflang="en" href="https://blacktrigram.com/" />
+    <link
+      rel="alternate"
+      hreflang="ko"
+      href="https://blacktrigram.com/?lang=ko"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://blacktrigram.com/"
+    />
 
     <!-- SEO and Social Meta Tags -->
     <meta
       name="description"
-      content="Master authentic Korean martial arts through immersive 3D combat simulation powered by Three.js. Learn 70 vital points, practice traditional trigram techniques, and train across 5 fighter archetypes in this precision combat game inspired by Budokan and I Ching philosophy."
+      content="Master authentic Korean martial arts (태권도, 합기도, 택견, 국술) through immersive 3D combat simulation. Learn 70 vital points (급소), practice Eight Trigram (팔괘) techniques from I Ching philosophy, and train across 5 fighter archetypes in this precision combat game inspired by Budokan. Features realistic anatomical targeting, cyberpunk Korean aesthetics, and WebGL-powered Three.js graphics."
     />
     <meta
       name="keywords"
-      content="Korean martial arts, vital point training, trigram combat, realistic fighting simulator, anatomical targeting, Korean dojang, martial arts training, combat simulation, pressure points, Three.js, WebGL, 3D combat, immersive martial arts"
+      content="Korean martial arts, 한국 무술, 태권도, Taekwondo, 합기도, Hapkido, 택견, Taekkyeon, 국술, Kuksool, vital point combat, 급소, pressure points, trigram combat, 팔괘, Eight Trigrams, I Ching martial arts, 주역, realistic fighting simulator, anatomical targeting, Korean dojang, 도장, martial arts training, combat simulation, Three.js game, WebGL combat, 3D martial arts, immersive training, cyberpunk Korean, 흑괘, Black Trigram, Budokan inspired, 무사, warrior archetype, 암살자, assassin, precision combat, vital point training, Korean fighting game, martial arts game, browser game, free martial arts game"
     />
-    <meta name="author" content="Black Trigram Development Team" />
+    <meta name="author" content="Hack23 - Black Trigram Development Team" />
     <meta name="language" content="English" />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="googlebot" content="index, follow" />
     <meta name="geo.region" content="US" />
     <meta name="geo.placename" content="Global" />
+    <meta name="rating" content="general" />
+    <meta name="revisit-after" content="7 days" />
+
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Black Trigram (흑괘)" />
+    <meta property="og:url" content="https://blacktrigram.com/" />
+    <meta
+      property="og:title"
+      content="Black Trigram (흑괘) - Korean Martial Arts Combat Simulator"
+    />
+    <meta
+      property="og:description"
+      content="Master authentic Korean martial arts through immersive 3D combat. Learn 70 vital points, practice Eight Trigram techniques, and train across 5 fighter archetypes. Free browser-based WebGL game."
+    />
+    <meta
+      property="og:image"
+      content="https://blacktrigram.com/black-trigram.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Black Trigram - Korean Martial Arts Combat Simulator featuring cyberpunk aesthetics and Eight Trigram combat system"
+    />
+    <meta property="og:site_name" content="Black Trigram" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ko_KR" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://blacktrigram.com/" />
+    <meta
+      name="twitter:title"
+      content="Black Trigram (흑괘) - Korean Martial Arts Combat Simulator"
+    />
+    <meta
+      name="twitter:description"
+      content="Master authentic Korean martial arts through immersive 3D combat. Learn 70 vital points, practice Eight Trigram techniques. Free browser game."
+    />
+    <meta
+      name="twitter:image"
+      content="https://blacktrigram.com/black-trigram.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Black Trigram Korean Martial Arts Game"
+    />
+    <meta name="twitter:creator" content="@Hack23" />
 
     <!-- Three.js WebGL optimizations & viewport -->
     <meta name="format-detection" content="telephone=no" />
@@ -31,24 +100,43 @@
     />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Structured Data (JSON-LD) - VideoGame -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
-        "name": "Black Trigram (흑괘)",
-        "alternateName": "흑괘",
-        "description": "Master authentic Korean martial arts through immersive 3D combat simulation powered by Three.js. Learn 70 vital points, practice traditional trigram techniques, and train across 5 fighter archetypes in this precision combat game inspired by Budokan and I Ching philosophy.",
+        "name": "Black Trigram",
+        "alternateName": ["흑괘", "Black Trigram Korean Martial Arts"],
+        "description": "Master authentic Korean martial arts through immersive 3D combat simulation powered by Three.js. Learn 70 vital points, practice traditional Eight Trigram techniques from I Ching philosophy, and train across 5 fighter archetypes in this precision combat game inspired by Budokan.",
         "url": "https://blacktrigram.com/",
-        "image": "https://blacktrigram.com/black-trigram.png",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://blacktrigram.com/black-trigram.png",
+          "width": 1200,
+          "height": 630
+        },
+        "screenshot": "https://blacktrigram.com/black-trigram.png",
         "genre": [
           "Combat Simulation",
           "Martial Arts Training",
-          "Educational Game"
+          "Educational Game",
+          "Fighting Game",
+          "Action Game"
         ],
-        "gamePlatform": ["Web Browser", "WebGL 2.0"],
-        "operatingSystem": ["Windows", "macOS", "Linux", "iOS", "Android"],
+        "gamePlatform": ["Web Browser", "WebGL 2.0", "HTML5"],
+        "operatingSystem": [
+          "Windows",
+          "macOS",
+          "Linux",
+          "iOS",
+          "Android",
+          "ChromeOS"
+        ],
         "applicationCategory": "Game",
+        "applicationSubCategory": "Martial Arts Combat Simulator",
+        "browserRequirements": "Requires WebGL 2.0 support",
+        "memoryRequirements": "4GB RAM recommended",
+        "processorRequirements": "Modern multi-core processor",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -57,39 +145,132 @@
         },
         "creator": {
           "@type": "Organization",
-          "name": "Black Trigram Development Team"
+          "name": "Hack23",
+          "url": "https://github.com/Hack23"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Hack23"
         },
         "inLanguage": ["en", "ko"],
-        "keywords": "Korean martial arts, vital point training, trigram combat, realistic fighting simulator, anatomical targeting, Korean dojang, martial arts training, combat simulation, pressure points, Three.js, WebGL, 3D combat, immersive martial arts",
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "150",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
+        "keywords": "Korean martial arts, vital point training, trigram combat, 태권도, 합기도, 팔괘, I Ching, Budokan, Three.js, WebGL",
         "gameItem": [
           {
             "@type": "Thing",
-            "name": "Korean Martial Arts Training",
-            "description": "Authentic Korean martial arts techniques including 태권도, 합기도, 택견"
+            "name": "Eight Trigram Combat System (팔괘)",
+            "description": "I Ching-based combat system featuring 8 distinct stances: 건(Heaven), 태(Lake), 리(Fire), 진(Thunder), 손(Wind), 감(Water), 간(Mountain), 곤(Earth)"
           },
           {
             "@type": "Thing",
-            "name": "70 Vital Points System",
-            "description": "Anatomical targeting system with 70 authentic vital points for combat training"
+            "name": "70 Vital Points System (급소)",
+            "description": "Anatomical targeting system with 70 authentic vital points for realistic combat training"
+          },
+          {
+            "@type": "Thing",
+            "name": "Korean Martial Arts Styles",
+            "description": "Authentic techniques from 태권도 (Taekwondo), 합기도 (Hapkido), 택견 (Taekkyeon), and 국술 (Kuksool)"
           },
           {
             "@type": "Thing",
             "name": "5 Fighter Archetypes",
-            "description": "무사, 암살자, 해커, 정보요원, 조직폭력배 - Five distinct combat specializations"
-          },
-          {
-            "@type": "Thing",
-            "name": "Eight Trigram Combat",
-            "description": "I Ching-based combat system using traditional trigram philosophy"
+            "description": "무사 (Warrior), 암살자 (Assassin), 해커 (Hacker), 정보요원 (Intelligence), 조직폭력배 (Enforcer)"
           }
         ]
+      }
+    </script>
+
+    <!-- Structured Data (JSON-LD) - SoftwareApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Black Trigram",
+        "alternateName": "흑괘",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "70 anatomical vital points",
+          "Eight Trigram combat system",
+          "5 fighter archetypes",
+          "Korean-English bilingual support",
+          "Immersive 3D graphics with Three.js",
+          "WebGL 2.0 powered",
+          "Mobile responsive design",
+          "Progressive Web App support"
+        ]
+      }
+    </script>
+
+    <!-- Structured Data (JSON-LD) - FAQPage -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Black Trigram (흑괘)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Black Trigram is a free browser-based Korean martial arts combat simulator featuring authentic techniques from Taekwondo, Hapkido, Taekkyeon, and Kuksool. It uses Three.js for immersive 3D graphics and teaches 70 vital points through the Eight Trigram (팔괘) combat system."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What martial arts styles are featured in Black Trigram?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Black Trigram features authentic Korean martial arts including 태권도 (Taekwondo), 합기도 (Hapkido), 택견 (Taekkyeon), and 국술 (Kuksool), combined with I Ching philosophy and the Eight Trigram combat system."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Black Trigram free to play?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Black Trigram is completely free to play in your web browser. No download or installation required - just WebGL 2.0 support."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What are the Eight Trigrams in the combat system?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Eight Trigrams (팔괘) are: ☰ 건 (Heaven) - Direct force, ☱ 태 (Lake) - Joint manipulation, ☲ 리 (Fire) - Nerve strikes, ☳ 진 (Thunder) - Explosive power, ☴ 손 (Wind) - Continuous pressure, ☵ 감 (Water) - Flow adaptation, ☶ 간 (Mountain) - Defense mastery, ☷ 곤 (Earth) - Grounding techniques."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What are the 5 fighter archetypes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The five archetypes are: 무사 (Musa/Warrior) - Traditional disciplined fighter, 암살자 (Amsalja/Assassin) - Stealth and precision, 해커 (Hacker) - Technology-enhanced combat, 정보요원 (Intelligence) - Strategic analysis, 조직폭력배 (Enforcer) - Ruthless pragmatism."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Structured Data (JSON-LD) - WebSite with SearchAction -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Black Trigram",
+        "alternateName": "흑괘",
+        "url": "https://blacktrigram.com/",
+        "description": "Korean Martial Arts Combat Simulator",
+        "inLanguage": ["en", "ko"],
+        "publisher": {
+          "@type": "Organization",
+          "name": "Hack23",
+          "url": "https://github.com/Hack23"
+        }
       }
     </script>
 
@@ -154,8 +335,8 @@
             window.location.hostname === "127.0.0.1" ||
             window.location.hostname.startsWith("192.168.") ||
             window.location.hostname.startsWith("10.") ||
-            window.location.hostname.includes(".app.github.dev") || // GitHub Codespaces
-            window.location.hostname.includes("gitpod.io") || // Gitpod
+            window.location.hostname.includes(".app.github.dev") ||
+            window.location.hostname.includes("gitpod.io") ||
             window.location.port !== "";
 
           // Skip SW in development to avoid caching issues
@@ -205,7 +386,7 @@
                       console.log(
                         "New version available! Reloading to update..."
                       );
-                      
+
                       // Create update banner with accessibility support
                       const updateBanner = document.createElement("div");
                       updateBanner.id = "update-banner";
@@ -231,9 +412,11 @@
                       updateBanner.innerHTML = `
                         🎮 New version available! Tap to reload and get the latest features 🚀
                       `;
-                      
+
                       // Add animation (only if not already present)
-                      if (!document.getElementById("slideDown-animation-style")) {
+                      if (
+                        !document.getElementById("slideDown-animation-style")
+                      ) {
                         const style = document.createElement("style");
                         style.id = "slideDown-animation-style";
                         style.textContent = `
@@ -244,7 +427,7 @@
                         `;
                         document.head.appendChild(style);
                       }
-                      
+
                       // Guard to prevent double reload
                       let hasReloaded = false;
 
@@ -258,15 +441,18 @@
 
                       // Reload on keyboard interaction (Enter or Space)
                       updateBanner.addEventListener("keydown", (e) => {
-                        if ((e.key === "Enter" || e.key === " ") && !hasReloaded) {
+                        if (
+                          (e.key === "Enter" || e.key === " ") &&
+                          !hasReloaded
+                        ) {
                           e.preventDefault();
                           hasReloaded = true;
                           window.location.reload();
                         }
                       });
-                      
+
                       document.body.appendChild(updateBanner);
-                      
+
                       // Auto-reload after 5 seconds if user doesn't click
                       setTimeout(() => {
                         if (!hasReloaded) {
@@ -297,6 +483,7 @@
       />
       <div class="loading">
         <h1>Black Trigram (흑괘)</h1>
+        <p>Korean Martial Arts Combat Simulator</p>
         <p>
           This experience requires JavaScript to run. Please enable it in your
           browser.

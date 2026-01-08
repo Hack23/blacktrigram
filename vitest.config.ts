@@ -32,6 +32,14 @@ export default defineConfig({
     css: true,
     // Korean martial arts specific test configuration
     testTimeout: 10000, // Allow longer tests for complex combat calculations
+
+    // Test result reporters - output to build/test-results
+    reporters: [
+      "default", // Console output
+      ["junit", { outputFile: "./build/test-results/junit.xml" }],
+      ["html", { outputFile: "./build/test-results/index.html" }],
+    ],
+
     include: [
       "src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
       "src/**/__tests__/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
