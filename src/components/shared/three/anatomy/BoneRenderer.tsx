@@ -1,9 +1,9 @@
 /**
  * BoneRenderer component for visualizing skeletal hierarchy
- * 
+ *
  * Renders bone hierarchy as connected capsule meshes with proper transformations.
  * Recursively renders parent-child bone relationships for complete skeleton visualization.
- * 
+ *
  * @module components/three/BoneRenderer
  * @category 3D Components
  * @korean 뼈렌더러컴포넌트
@@ -12,24 +12,39 @@
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import type {
+  FacialDamageState,
+  FacialExpression,
+} from "../../../../types/facial";
+import { DEFAULT_FACIAL_DAMAGE } from "../../../../types/facial";
 import type { HandAnimationState } from "../../../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../../../types/skeletal";
-import type { FacialExpression, FacialDamageState } from "../../../../types/facial";
-import { DEFAULT_FACIAL_DAMAGE } from "../../../../types/facial";
-import Hand3D from "./Hand3D";
+import { BoneMuscles } from "./BoneAttachedMuscles";
 import Face3D from "./Face3D";
+import Hand3D from "./Hand3D";
+
+/**
+ * Visual amplification factor for bone thickness.
+ *
+ * Amplifies the visual difference between lean and muscular archetypes
+ * for more noticeable body type distinction.
+ *
+ * @korean 뼈두께시각적증폭계수
+ */
+const THICKNESS_AMPLIFICATION_FACTOR = 2.0;
 
 /**
  * Calculate bone thickness multiplier based on physical attributes
- * 
+ *
  * Maps muscle mass and fat mass to bone thickness scaling for visual appearance.
  * Higher muscle mass = thicker bones (more muscular skeleton).
  * Higher fat mass = slightly thicker bones (more padding).
- * 
+ * Differences are amplified for more noticeable archetype distinction.
+ *
  * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
  * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
- * @returns Thickness multiplier for bone radius (typically 0.93-1.13)
- * 
+ * @returns Thickness multiplier for bone radius (amplified range: ~0.86-1.28)
+ *
  * @korean 뼈두께계산
  */
 const calculateBoneThicknessMultiplier = (
@@ -39,7 +54,7 @@ const calculateBoneThicknessMultiplier = (
   // Reference: 35kg muscle mass, 12kg fat mass → 1.0x thickness
   const referenceMuscle = 35;
   const referenceFat = 12;
-  
+
   // Muscle contribution (70% of thickness variation)
   // Example calculations:
   // - 32kg muscle (Amsalja) → sqrt(32/35) * 0.7 ≈ 0.67 contribution
@@ -47,7 +62,7 @@ const calculateBoneThicknessMultiplier = (
   // - 42kg muscle (Jojik) → sqrt(42/35) * 0.7 ≈ 0.77 contribution
   const muscleRatio = muscleMass / referenceMuscle;
   const muscleContribution = Math.sqrt(muscleRatio) * 0.7;
-  
+
   // Fat contribution (30% of thickness variation)
   // Example calculations:
   // - 9kg fat (Amsalja) → sqrt(9/12) * 0.3 ≈ 0.26 contribution
@@ -55,19 +70,23 @@ const calculateBoneThicknessMultiplier = (
   // - 18kg fat (Jojik) → sqrt(18/12) * 0.3 ≈ 0.37 contribution
   const fatRatio = fatMass / referenceFat;
   const fatContribution = Math.sqrt(fatRatio) * 0.3;
-  
-  // Combined thickness multiplier
+
+  // Combined raw thickness multiplier
   // For archetype defaults:
-  // - Amsalja (32kg muscle, 9kg fat): 0.67 + 0.26 ≈ 0.93x thickness
-  // - Musa (38kg muscle, 12kg fat): 0.73 + 0.30 ≈ 1.03x thickness
-  // - Jojik (42kg muscle, 18kg fat): 0.77 + 0.37 ≈ 1.14x thickness
-  // Typical range: ~0.93x (lean Amsalja) to ~1.14x (bulky Jojik)
-  return muscleContribution + fatContribution;
+  // - Amsalja (32kg muscle, 9kg fat): 0.67 + 0.26 ≈ 0.93x raw thickness
+  // - Musa (38kg muscle, 12kg fat): 0.73 + 0.30 ≈ 1.03x raw thickness
+  // - Jojik (42kg muscle, 18kg fat): 0.77 + 0.37 ≈ 1.14x raw thickness
+  const rawMultiplier = muscleContribution + fatContribution;
+
+  // Apply visual amplification for more noticeable differences
+  // Amplified range: ~0.86x (lean Amsalja) to ~1.28x (bulky Jojik)
+  const deviation = rawMultiplier - 1.0;
+  return 1.0 + deviation * THICKNESS_AMPLIFICATION_FACTOR;
 };
 
 /**
  * Props for BoneRenderer component
- * 
+ *
  * @public
  * @category Component Props
  * @korean 뼈렌더러속성
@@ -153,13 +172,26 @@ export interface BoneRendererProps {
     readonly muscleMass: number;
     readonly fatMass: number;
   };
+
+  /**
+   * Muscle tension states for bone-attached muscles
+   * Map of muscle group name to tension level (0-1)
+   * @korean 근육상태들
+   */
+  readonly muscleStates?: Map<string, number>;
+
+  /**
+   * Whether player is exhausted (triggers muscle shaking)
+   * @korean 피로여부
+   */
+  readonly isExhausted?: boolean;
 }
 
 /**
  * Single bone renderer with transformation
- * 
+ *
  * Renders a single bone as a capsule connecting to its parent.
- * 
+ *
  * @param bone - Bone to render
  * @param color - Bone color
  * @param renderMode - Render mode
@@ -182,12 +214,18 @@ const SingleBone: React.FC<{
   readonly enableFacialExpressions?: boolean;
   readonly enableEyeTracking?: boolean;
   readonly boneThicknessMultiplier?: number;
-}> = ({ 
-  bone, 
-  color, 
-  renderMode, 
-  leftHandState, 
-  rightHandState, 
+  readonly muscleStates?: Map<string, number>;
+  readonly isExhausted?: boolean;
+  readonly physicalAttributes?: {
+    readonly muscleMass: number;
+    readonly fatMass: number;
+  };
+}> = ({
+  bone,
+  color,
+  renderMode,
+  leftHandState,
+  rightHandState,
   cameraDistance = 10,
   facialExpression,
   facialDamage,
@@ -195,6 +233,9 @@ const SingleBone: React.FC<{
   enableFacialExpressions = false,
   enableEyeTracking = true,
   boneThicknessMultiplier = 1.0,
+  muscleStates,
+  isExhausted = false,
+  physicalAttributes,
 }) => {
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
@@ -240,15 +281,11 @@ const SingleBone: React.FC<{
             args={[
               boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
               boneTransform.length, // Length unchanged
-              4, 
-              8
+              4,
+              8,
             ]}
           />
-          <meshStandardMaterial
-            color={color}
-            metalness={0.3}
-            roughness={0.7}
-          />
+          <meshStandardMaterial color={color} metalness={0.3} roughness={0.7} />
         </mesh>
       ) : (
         <mesh
@@ -262,8 +299,8 @@ const SingleBone: React.FC<{
             args={[
               boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
               boneTransform.length, // Length unchanged
-              4, 
-              8
+              4,
+              8,
             ]}
           />
           <meshBasicMaterial
@@ -278,9 +315,21 @@ const SingleBone: React.FC<{
       {/* Joint sphere at bone position */}
       {renderMode === "debug" && (
         <mesh>
-          <sphereGeometry args={[boneTransform.length * 0.15 * boneThicknessMultiplier, 8, 8]} />
+          <sphereGeometry
+            args={[boneTransform.length * 0.15 * boneThicknessMultiplier, 8, 8]}
+          />
           <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
         </mesh>
+      )}
+
+      {/* Render bone-attached muscles */}
+      {renderMode === "solid" && muscleStates && (
+        <BoneMuscles
+          boneName={bone.name}
+          muscleStates={muscleStates}
+          isExhausted={isExhausted}
+          physicalAttributes={physicalAttributes}
+        />
       )}
 
       {/* Render children recursively */}
@@ -299,13 +348,16 @@ const SingleBone: React.FC<{
           enableFacialExpressions={enableFacialExpressions}
           enableEyeTracking={enableEyeTracking}
           boneThicknessMultiplier={boneThicknessMultiplier}
+          muscleStates={muscleStates}
+          isExhausted={isExhausted}
+          physicalAttributes={physicalAttributes}
         />
       ))}
 
       {/* Add hands at hand bones with animation state */}
       {bone.name === "hand_L" && leftHandState && (
-        <Hand3D 
-          side="left" 
+        <Hand3D
+          side="left"
           pose={leftHandState.currentPose}
           fingerCurl={leftHandState.currentFingerCurl}
           distanceFromCamera={cameraDistance}
@@ -313,12 +365,12 @@ const SingleBone: React.FC<{
           isHighlighted={leftHandState.isHighlighted}
           highlightMode={leftHandState.highlightMode}
           skinColor={color}
-          scale={1.0} 
+          scale={1.0}
         />
       )}
       {bone.name === "hand_R" && rightHandState && (
-        <Hand3D 
-          side="right" 
+        <Hand3D
+          side="right"
           pose={rightHandState.currentPose}
           fingerCurl={rightHandState.currentFingerCurl}
           distanceFromCamera={cameraDistance}
@@ -326,7 +378,7 @@ const SingleBone: React.FC<{
           isHighlighted={rightHandState.isHighlighted}
           highlightMode={rightHandState.highlightMode}
           skinColor={color}
-          scale={1.0} 
+          scale={1.0}
         />
       )}
 
@@ -349,15 +401,15 @@ const SingleBone: React.FC<{
 
 /**
  * BoneRenderer component
- * 
+ *
  * Renders complete skeletal rig with recursive bone hierarchy.
- * 
+ *
  * @example
  * ```tsx
  * const rig = createHumanoidRig();
  * <BoneRenderer rig={rig} color={0xFF6B6B} renderMode="solid" />
  * ```
- * 
+ *
  * @korean 뼈렌더러컴포넌트
  */
 export const BoneRenderer: React.FC<BoneRendererProps> = ({
@@ -374,6 +426,8 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   enableFacialExpressions = false, // Default false to avoid breaking existing tests
   enableEyeTracking = true,
   physicalAttributes,
+  muscleStates,
+  isExhausted = false,
 }) => {
   // Calculate bone thickness multiplier from physical attributes
   const boneThicknessMultiplier = useMemo(() => {
@@ -390,9 +444,9 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
 
   return (
     <group data-testid="bone-renderer">
-      <SingleBone 
-        bone={rig.root} 
-        color={color} 
+      <SingleBone
+        bone={rig.root}
+        color={color}
         renderMode={renderMode}
         leftHandState={leftHandState}
         rightHandState={rightHandState}
@@ -403,6 +457,9 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
         enableFacialExpressions={enableFacialExpressions}
         enableEyeTracking={enableEyeTracking}
         boneThicknessMultiplier={boneThicknessMultiplier}
+        muscleStates={muscleStates}
+        isExhausted={isExhausted}
+        physicalAttributes={physicalAttributes}
       />
     </group>
   );

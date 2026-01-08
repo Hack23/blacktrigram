@@ -1,14 +1,14 @@
 /**
  * Hand3D component with finger geometry for martial arts techniques
- * 
+ *
  * Renders detailed hand with palm and 5 fingers, supporting multiple
  * Korean martial arts hand poses (Fist, Knife-hand, Spear-hand, etc.).
- * 
+ *
  * Implements LOD (Level of Detail) for performance optimization:
  * - High detail (<5 units): Full finger bones (4 segments per finger)
  * - Medium detail (5-15 units): Simplified fingers (3 segments)
  * - Low detail (>15 units): No finger detail (hand as single unit)
- * 
+ *
  * @module components/three/Hand3D
  * @category 3D Components
  * @korean 손3D컴포넌트
@@ -18,15 +18,15 @@ import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type {
-  HandSide,
-  HandPoseType,
   FingerCurl,
   HandLODConfig,
+  HandPoseType,
+  HandSide,
 } from "../../../../types/hand-animation";
 
 /**
  * Props for Hand3D component
- * 
+ *
  * @public
  * @korean 손3D속성
  */
@@ -94,7 +94,7 @@ export interface Hand3DProps {
 
 /**
  * Determine LOD config based on camera distance
- * 
+ *
  * @param distance - Distance from camera
  * @returns LOD configuration
  * @korean LOD설정결정
@@ -126,9 +126,9 @@ const getLODConfig = (distance: number): HandLODConfig => {
 
 /**
  * Finger segment component
- * 
+ *
  * Renders a single finger segment (proximal, intermediate, or distal phalanx).
- * 
+ *
  * @korean 손가락세그먼트컴포넌트
  */
 interface FingerSegmentProps {
@@ -149,18 +149,14 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
   return (
     <mesh position={position} rotation={rotation} castShadow receiveShadow>
       <capsuleGeometry args={[radius, length, 4, 8]} />
-      <meshStandardMaterial
-        color={color}
-        metalness={0.1}
-        roughness={0.8}
-      />
+      <meshStandardMaterial color={color} metalness={0.1} roughness={0.8} />
     </mesh>
   );
 };
 
 /**
  * Single finger component with curl animation
- * 
+ *
  * @korean 손가락컴포넌트
  */
 interface FingerProps {
@@ -180,15 +176,25 @@ const Finger: React.FC<FingerProps> = ({
   isHighlighted,
   skinColor,
 }) => {
-  // Finger dimensions based on anatomical proportions
+  // Finger dimensions based on anatomical proportions (realistic for 185cm person)
+  // Scaled 1.6x from original for anatomically correct finger size (reduced from 2.0)
   const dimensions = useMemo(() => {
-    const baseLength = fingerName === "thumb" ? 0.02 : 0.025;
-    const baseRadius = fingerName === "pinky" ? 0.003 : 0.004;
+    const fingerScaleFactor = 1.6;
+    // Finger lengths: index ~7cm, middle ~8cm, ring ~7.5cm, pinky ~6cm, thumb ~5cm
+    const baseLength =
+      fingerName === "thumb"
+        ? 0.05 * fingerScaleFactor
+        : 0.07 * fingerScaleFactor;
+    // Finger thickness: ~1.5-2cm diameter
+    const baseRadius =
+      fingerName === "pinky"
+        ? 0.007 * fingerScaleFactor
+        : 0.008 * fingerScaleFactor;
 
     return {
       proximalLength: baseLength,
-      intermediateLength: baseLength * 0.8,
-      distalLength: baseLength * 0.6,
+      intermediateLength: baseLength * 0.75,
+      distalLength: baseLength * 0.55,
       radius: baseRadius,
     };
   }, [fingerName]);
@@ -199,7 +205,7 @@ const Finger: React.FC<FingerProps> = ({
   const PROXIMAL_CURL_FACTOR = 0.5; // Proximal joint bends less (0-90 degrees)
   const INTERMEDIATE_CURL_FACTOR = 0.7; // Middle joint bends moderately (0-126 degrees)
   const DISTAL_CURL_FACTOR = 1.0; // Distal joint bends most (0-180 degrees)
-  
+
   const proximalCurl = curl * PROXIMAL_CURL_FACTOR * Math.PI;
   const intermediateCurl = curl * INTERMEDIATE_CURL_FACTOR * Math.PI;
   const distalCurl = curl * DISTAL_CURL_FACTOR * Math.PI;
@@ -255,10 +261,10 @@ const Finger: React.FC<FingerProps> = ({
 
 /**
  * Hand3D Component
- * 
+ *
  * Complete hand with palm and 5 fingers, supporting Korean martial arts
  * hand poses with LOD optimization for performance.
- * 
+ *
  * @example
  * ```tsx
  * <Hand3D
@@ -277,7 +283,7 @@ const Finger: React.FC<FingerProps> = ({
  *   highlightMode="knuckles"
  * />
  * ```
- * 
+ *
  * @korean 손3D컴포넌트
  */
 export const Hand3D: React.FC<Hand3DProps> = ({
@@ -300,10 +306,12 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   // Hand orientation
   const sideMultiplier = side === "left" ? -1 : 1;
 
-  // Palm dimensions
-  const palmWidth = 0.06 * scale;
-  const palmLength = 0.1 * scale;
-  const palmThickness = 0.02 * scale;
+  // Palm dimensions (realistic: ~9cm wide, ~19cm long for 185cm person)
+  // Scale 1.6x from original for anatomically correct size (reduced from 2.0)
+  const handScaleFactor = 1.6;
+  const palmWidth = 0.09 * scale * handScaleFactor; // ~7.2cm palm width
+  const palmLength = 0.19 * scale * handScaleFactor; // ~15cm total hand length
+  const palmThickness = 0.025 * scale * handScaleFactor; // ~2cm palm thickness
 
   // Determine which parts to highlight
   const highlightKnuckles = highlightMode === "knuckles";
@@ -312,12 +320,14 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   const highlightFingertips = highlightMode === "fingertips";
 
   // Palm color (highlight with brighter color, NO emissive/glow)
-  const palmColor = isHighlighted && highlightPalm
-    ? KOREAN_COLORS.ACCENT_GOLD
-    : skinColor;
+  const palmColor =
+    isHighlighted && highlightPalm ? KOREAN_COLORS.ACCENT_GOLD : skinColor;
 
   return (
-    <group rotation={[wristRotation.x, wristRotation.y, wristRotation.z]} data-testid={`hand-3d-${side}`}>
+    <group
+      rotation={[wristRotation.x, wristRotation.y, wristRotation.z]}
+      data-testid={`hand-3d-${side}`}
+    >
       {/* Palm */}
       <mesh castShadow receiveShadow data-testid={`hand-palm-${side}`}>
         <boxGeometry args={[palmWidth, palmLength, palmThickness]} />
@@ -331,7 +341,7 @@ export const Hand3D: React.FC<Hand3DProps> = ({
       {/* Knife edge highlight (pinky side of hand) - color only, NO glow */}
       {isHighlighted && highlightKnifeEdge && (
         <mesh
-          position={[-palmWidth / 2 * sideMultiplier, 0, 0]}
+          position={[(-palmWidth / 2) * sideMultiplier, 0, 0]}
           castShadow
           receiveShadow
           data-testid={`hand-knife-edge-${side}`}

@@ -13,39 +13,44 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import {
   applyKeyframeToRig,
   createDefaultFacialDamage,
-  createScaledHumanoidRig,
   createInitialHandAnimationState,
+  createScaledHumanoidRig,
   getAnimation,
   getExpressionFromCombatState,
-  getTechniqueHandPose,
-  updateAnimation,
-  updateHandAnimationState,
+  getFacingAngleRadians,
+  getFootworkAnimation,
   getGuardPoseForStance,
+  getHeadAngleRadians,
   getStepAnimation,
-  updateFacingTowardOpponent,
+  getTechniqueHandPose,
   lockFacing,
   unlockFacing,
-  getFacingAngleRadians,
-  getHeadAngleRadians,
-  getFootworkAnimation,
+  updateAnimation,
+  updateFacingTowardOpponent,
+  updateHandAnimationState,
 } from "../../../../systems/animation";
-import type { StanceLaterality } from "../../../../systems/trigram/types";
-import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import { MuscleActivationManager } from "../../../../systems/animation/MuscleActivation";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import type { StanceLaterality } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { FacialExpression } from "../../../../types/facial";
 import type { HandAnimationState } from "../../../../types/hand-animation";
 import { HandPoseType } from "../../../../types/hand-animation";
-import type { Player3DUnifiedProps, PlayerAnimation } from "../../../../types/player-visual";
-import type { SkeletalAnimationState, SkeletalRig } from "../../../../types/skeletal";
+import type {
+  Player3DUnifiedProps,
+  PlayerAnimation,
+} from "../../../../types/player-visual";
+import type {
+  SkeletalAnimationState,
+  SkeletalRig,
+} from "../../../../types/skeletal";
 import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeColors } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
-import MuscleSystem from "../anatomy/MuscleSystem";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
 
 /**
@@ -100,14 +105,14 @@ const getTrigramSymbol = (stance: string): string => {
 
 /**
  * Blend factor for torso rotation during guard overlay
- * 
+ *
  * This value is multiplied by the main `blendFactor` argument used for the
  * stance guard overlay. For example, when `blendFactor` is 1.0 (full guard),
  * the effective torso guard influence becomes `1.0 * 0.8 = 0.8`, allowing
  * approximately 20% of the base animation (walk/idle) torso movement to show
  * through. Keep this lower than 1.0 to preserve some natural torso motion
  * while still maintaining a visible guard posture.
- * 
+ *
  * @korean 방어자세가 몸통에 적용되는 비율을 줄이는 추가 스케일 계수
  */
 const TORSO_BLEND_FACTOR = 0.8;
@@ -124,7 +129,7 @@ const getGuardBlendFactor = (animation: PlayerAnimation): number => {
     case "counter":
     case "stance_change":
       return 1.0; // Full guard - maximum stance visibility when stationary/defensive
-    
+
     case "walk":
     case "step_forward":
     case "step_back":
@@ -135,14 +140,14 @@ const getGuardBlendFactor = (animation: PlayerAnimation): number => {
     case "step_back_left":
     case "step_back_right":
       return 0.7; // Partial guard - balanced movement with stance character
-    
+
     case "attack":
     case "defend":
     case "hit":
     case "death":
     case "technique_execute":
       return 0.0; // No guard - technique animations have full control
-    
+
     default:
       return 1.0; // Default to full guard for unknown animations
   }
@@ -150,20 +155,20 @@ const getGuardBlendFactor = (animation: PlayerAnimation): number => {
 
 /**
  * Apply stance guard pose overlay on top of base animation
- * 
+ *
  * Blends guard arm positions with base animation (idle/walk) to maintain
  * guard pose during movement. Only affects upper body (arms, torso) while
  * allowing legs to animate normally.
- * 
+ *
  * PERFORMANCE: Directly modifies existing Euler rotation components
  * to avoid extra Euler object cloning while still using component-wise interpolation.
- * 
+ *
  * @param rig - Skeletal rig to apply overlay to
  * @param stance - Current trigram stance
  * @param breathingPhase - Breathing phase 0.0-1.0 for scale oscillation
  * @param laterality - Stance laterality (left or right foot forward)
  * @param blendFactor - How much guard pose to blend (0=base animation, 1=full guard)
- * 
+ *
  * @korean 자세방어포즈오버레이적용
  */
 /**
@@ -370,7 +375,7 @@ const updateHandAnimationFrame = (
 
 /**
  * Checks if there is significant sway that requires animation updates.
- * 
+ *
  * @param swayPosition - Current sway position [x, y, z]
  * @param helplessRotation - Current helpless rotation angle
  * @returns True if sway is above threshold
@@ -381,9 +386,12 @@ const hasSignificantSway = (
   helplessRotation: number
 ): boolean => {
   return (
-    Math.abs(swayPosition[0]) > BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD ||
-    Math.abs(swayPosition[1]) > BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD ||
-    Math.abs(helplessRotation) > BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD
+    Math.abs(swayPosition[0]) >
+      BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD ||
+    Math.abs(swayPosition[1]) >
+      BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD ||
+    Math.abs(helplessRotation) >
+      BALANCE_STATE_ANIMATION_CONSTANTS.SWAY_THRESHOLD
   );
 };
 
@@ -503,7 +511,9 @@ export const SkeletalPlayer3D: React.FC<
   );
 
   // Diagonal step rotation override (Y-axis rotation in radians)
-  const [diagonalRotationY, setDiagonalRotationY] = useState<number | null>(null);
+  const [diagonalRotationY, setDiagonalRotationY] = useState<number | null>(
+    null
+  );
 
   // Refs for 60fps animation updates without triggering React re-renders
   const leftHandStateRef = useRef<HandAnimationState>(leftHandState);
@@ -666,7 +676,7 @@ export const SkeletalPlayer3D: React.FC<
             handPose.transitionDuration
           )
         );
-        
+
         // Clear diagonal rotation override for non-step animations
         setDiagonalRotationY(null);
       }
@@ -689,7 +699,7 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.1)
         );
-        
+
         // Clear diagonal rotation override for non-step animations
         setDiagonalRotationY(null);
       }
@@ -713,7 +723,7 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.2)
         );
-        
+
         // Clear diagonal rotation override for non-step animations
         setDiagonalRotationY(null);
       }
@@ -737,7 +747,7 @@ export const SkeletalPlayer3D: React.FC<
         setRightHandState((prev) =>
           updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.15)
         );
-        
+
         // Clear diagonal rotation override for non-step animations
         setDiagonalRotationY(null);
       }
@@ -775,7 +785,7 @@ export const SkeletalPlayer3D: React.FC<
           // Diagonal step detected - apply relative rotation offset
           const baseRotationY = rotation ?? 0;
           let rotationOffset: number;
-          
+
           if (currentAnimation === "step_forward_left") {
             rotationOffset = Math.PI / 4; // 45° left of current forward
           } else if (currentAnimation === "step_forward_right") {
@@ -787,7 +797,7 @@ export const SkeletalPlayer3D: React.FC<
           } else {
             rotationOffset = 0; // Fallback: preserve current facing
           }
-          
+
           setDiagonalRotationY(baseRotationY + rotationOffset);
         } else {
           // Clear diagonal rotation override for non-diagonal step animations
@@ -890,7 +900,7 @@ export const SkeletalPlayer3D: React.FC<
       setRightHandState((prev) =>
         updateHandAnimationState(prev, HandPoseType.OPEN, 0, 0.2)
       );
-      
+
       // Clear diagonal rotation override for non-step animations
       setDiagonalRotationY(null);
     } else {
@@ -921,14 +931,16 @@ export const SkeletalPlayer3D: React.FC<
       setRightHandState((prev) =>
         updateHandAnimationState(prev, HandPoseType.RELAXED, 0, 0.3)
       );
-      
+
       // Clear diagonal rotation override for non-step animations
       setDiagonalRotationY(null);
     }
   }, [currentAnimation, attackAnimation, isBlocking]);
 
   // Calculate sway position based on balance state
-  const [swayPosition, setSwayPosition] = useState<[number, number, number]>([0, 0, 0]);
+  const [swayPosition, setSwayPosition] = useState<[number, number, number]>([
+    0, 0, 0,
+  ]);
   const [helplessRotation, setHelplessRotation] = useState<number>(0);
 
   // Animation loop using useFrame (60fps)
@@ -937,21 +949,23 @@ export const SkeletalPlayer3D: React.FC<
     if (bodyFacing && opponentPosition && onBodyFacingUpdate) {
       const playerPos = { x: position[0], y: position[2] }; // X and Z for 2D top-down
       const opponentPos = { x: opponentPosition[0], y: opponentPosition[2] };
-      
+
       // Check if facing should be locked during committed animations
       const isStepAnimation =
-        typeof currentAnimation === "string" && currentAnimation.startsWith("step_");
+        typeof currentAnimation === "string" &&
+        currentAnimation.startsWith("step_");
       const isTurnAnimation =
-        typeof currentAnimation === "string" && currentAnimation.startsWith("turn_");
+        typeof currentAnimation === "string" &&
+        currentAnimation.startsWith("turn_");
 
       const shouldLock =
         currentAnimation === "attack" ||
         currentAnimation === "defend" ||
         isStepAnimation ||
         isTurnAnimation;
-      
+
       let updatedFacing = bodyFacing;
-      
+
       if (shouldLock && !bodyFacing.isLocked) {
         // Lock facing at start of committed action (attack/defend/step/turn)
         updatedFacing = lockFacing(bodyFacing);
@@ -959,7 +973,7 @@ export const SkeletalPlayer3D: React.FC<
         // Unlock facing after committed action completes
         updatedFacing = unlockFacing(bodyFacing);
       }
-      
+
       // Update facing direction (handles rotation speed, head tracking, turns)
       if (!updatedFacing.isLocked) {
         updatedFacing = updateFacingTowardOpponent(
@@ -970,7 +984,7 @@ export const SkeletalPlayer3D: React.FC<
           Date.now()
         );
       }
-      
+
       // Notify parent if facing changed
       if (updatedFacing !== bodyFacing) {
         onBodyFacingUpdate(updatedFacing);
@@ -981,14 +995,20 @@ export const SkeletalPlayer3D: React.FC<
     if (balance === "HELPLESS") {
       // Helpless state: pronounced stumbling motion
       swayTimeRef.current += delta;
-      
+
       const { stumbleIntensity, stumbleSpeed, leanIntensity, lowerStance } =
         BALANCE_STATE_ANIMATION_CONSTANTS.HELPLESS;
-      
-      const swayX = Math.sin(swayTimeRef.current * stumbleSpeed) * stumbleIntensity;
-      const swayY = Math.cos(swayTimeRef.current * stumbleSpeed * 0.5) * stumbleIntensity * 0.3 + lowerStance;
-      const leanAngle = Math.sin(swayTimeRef.current * stumbleSpeed * 0.7) * leanIntensity;
-      
+
+      const swayX =
+        Math.sin(swayTimeRef.current * stumbleSpeed) * stumbleIntensity;
+      const swayY =
+        Math.cos(swayTimeRef.current * stumbleSpeed * 0.5) *
+          stumbleIntensity *
+          0.3 +
+        lowerStance;
+      const leanAngle =
+        Math.sin(swayTimeRef.current * stumbleSpeed * 0.7) * leanIntensity;
+
       // Update periodically to reduce React re-renders while keeping helpless animation dramatic
       if (frameCounter.current % 2 === 0) {
         setSwayPosition([swayX, swayY, 0]);
@@ -997,14 +1017,20 @@ export const SkeletalPlayer3D: React.FC<
     } else if (balance === "SHAKEN" || balance === "VULNERABLE") {
       // Shaken/Vulnerable state: subtle sway
       swayTimeRef.current += delta;
-      
-      const animConfig = balance === "SHAKEN"
-        ? BALANCE_STATE_ANIMATION_CONSTANTS.SHAKEN
-        : BALANCE_STATE_ANIMATION_CONSTANTS.VULNERABLE;
-      
-      const swayX = Math.sin(swayTimeRef.current * animConfig.swaySpeed) * animConfig.swayIntensity;
-      const swayY = Math.cos(swayTimeRef.current * animConfig.swaySpeed * 0.8) * animConfig.swayIntensity * 0.5;
-      
+
+      const animConfig =
+        balance === "SHAKEN"
+          ? BALANCE_STATE_ANIMATION_CONSTANTS.SHAKEN
+          : BALANCE_STATE_ANIMATION_CONSTANTS.VULNERABLE;
+
+      const swayX =
+        Math.sin(swayTimeRef.current * animConfig.swaySpeed) *
+        animConfig.swayIntensity;
+      const swayY =
+        Math.cos(swayTimeRef.current * animConfig.swaySpeed * 0.8) *
+        animConfig.swayIntensity *
+        0.5;
+
       // Update sway position periodically to reduce re-renders
       if (frameCounter.current % 2 === 0) {
         setSwayPosition([swayX, swayY, 0]);
@@ -1012,11 +1038,14 @@ export const SkeletalPlayer3D: React.FC<
       }
     } else {
       // Smoothly return to neutral position
-      if (frameCounter.current % 2 === 0 && hasSignificantSway(swayPosition, helplessRotation)) {
+      if (
+        frameCounter.current % 2 === 0 &&
+        hasSignificantSway(swayPosition, helplessRotation)
+      ) {
         setSwayPosition([swayPosition[0] * 0.95, swayPosition[1] * 0.95, 0]);
         setHelplessRotation(helplessRotation * 0.95);
       }
-      
+
       // Reset sway time when not swaying
       if (!hasSignificantSway(swayPosition, helplessRotation)) {
         swayTimeRef.current = 0;
@@ -1087,11 +1116,12 @@ export const SkeletalPlayer3D: React.FC<
     // Apply guard pose overlay on top of base animation
     // Guard is applied by default for idle/walk/stance/block/counter states,
     // but not during attack/defend/hit/death animations where specific arm positions are needed
-    const shouldApplyGuard = currentAnimation !== "attack" 
-      && currentAnimation !== "defend" 
-      && currentAnimation !== "hit"
-      && currentAnimation !== "death";
-    
+    const shouldApplyGuard =
+      currentAnimation !== "attack" &&
+      currentAnimation !== "defend" &&
+      currentAnimation !== "hit" &&
+      currentAnimation !== "death";
+
     if (shouldApplyGuard) {
       // Update breathing phase for guard poses (cycles through 0-1 based on time)
       breathingPhaseRef.current += delta * 0.5; // 0.5 Hz = 2 seconds per breath cycle
@@ -1103,12 +1133,18 @@ export const SkeletalPlayer3D: React.FC<
       // currentAnimation is typed as PlayerAnimation and does not include the "stance_guard_*" variants,
       // so stance is the single source of truth for selecting the correct guard pose.
       const stanceToUse = stance;
-      
+
       // Apply guard pose overlay with dynamic blend factor based on animation type
       // Full guard (1.0) for stationary/defensive, reduced for natural movement
       // Each stance × laterality combination creates distinct appearance
       const blendFactor = getGuardBlendFactor(currentAnimation);
-      applyStanceGuardOverlay(rig, stanceToUse, breathingPhaseRef.current, laterality, blendFactor);
+      applyStanceGuardOverlay(
+        rig,
+        stanceToUse,
+        breathingPhaseRef.current,
+        laterality,
+        blendFactor
+      );
     }
 
     // Apply body facing rotations (torso and head) if available
@@ -1141,132 +1177,125 @@ export const SkeletalPlayer3D: React.FC<
     >
       {/* Inner group for sway animation and helpless lean */}
       <group position={swayPosition} rotation={[helplessRotation, 0, 0]}>
-      {/* Muscle system rendering with physical attributes for visual scaling */}
-      <MuscleSystem 
-        muscleStates={muscleStates} 
-        isExhausted={stamina < 20}
-        physicalAttributes={{
-          muscleMass: physicalAttributes.muscleMass,
-          fatMass: physicalAttributes.fatMass,
-        }}
-      />
+        {/* Skeletal rig rendering with bone-attached muscles */}
+        <BoneRenderer
+          rig={rig}
+          color={bodyColor}
+          showBones={true}
+          renderMode={showSkeleton ? "debug" : "solid"}
+          leftHandState={leftHandState}
+          rightHandState={rightHandState}
+          cameraDistance={10}
+          facialExpression={calculatedExpression}
+          facialDamage={calculatedFacialDamage}
+          opponentPosition={opponentPos}
+          enableFacialExpressions={enableFacialExpressions}
+          enableEyeTracking={enableEyeTracking}
+          physicalAttributes={{
+            muscleMass: physicalAttributes.muscleMass,
+            fatMass: physicalAttributes.fatMass,
+          }}
+          muscleStates={muscleStates}
+          isExhausted={stamina < 20}
+        />
 
-      {/* Skeletal rig rendering with physical attributes for bone thickness */}
-      <BoneRenderer
-        rig={rig}
-        color={bodyColor}
-        showBones={true}
-        renderMode={showSkeleton ? "debug" : "solid"}
-        leftHandState={leftHandState}
-        rightHandState={rightHandState}
-        cameraDistance={10}
-        facialExpression={calculatedExpression}
-        facialDamage={calculatedFacialDamage}
-        opponentPosition={opponentPos}
-        enableFacialExpressions={enableFacialExpressions}
-        enableEyeTracking={enableEyeTracking}
-        physicalAttributes={{
-          muscleMass: physicalAttributes.muscleMass,
-          fatMass: physicalAttributes.fatMass,
-        }}
-      />
+        {/* Blocking shield effect */}
+        {isBlocking && (
+          <mesh position={[0, 1.2, 0.3]}>
+            <circleGeometry args={[0.5, 32]} />
+            <meshBasicMaterial
+              color={KOREAN_COLORS.PRIMARY_BLUE}
+              transparent
+              opacity={0.5}
+              side={2}
+            />
+          </mesh>
+        )}
 
-      {/* Blocking shield effect */}
-      {isBlocking && (
-        <mesh position={[0, 1.2, 0.3]}>
-          <circleGeometry args={[0.5, 32]} />
-          <meshBasicMaterial
-            color={KOREAN_COLORS.PRIMARY_BLUE}
-            transparent
-            opacity={0.5}
-            side={2}
-          />
-        </mesh>
-      )}
+        {/* Counter indicator */}
+        {isCountering && (
+          <mesh position={[0, 1.5, 0]}>
+            <torusGeometry args={[0.4, 0.05, 8, 32]} />
+            <meshBasicMaterial color={KOREAN_COLORS.ACCENT_PURPLE} />
+          </mesh>
+        )}
 
-      {/* Counter indicator */}
-      {isCountering && (
-        <mesh position={[0, 1.5, 0]}>
-          <torusGeometry args={[0.4, 0.05, 8, 32]} />
-          <meshBasicMaterial color={KOREAN_COLORS.ACCENT_PURPLE} />
-        </mesh>
-      )}
-
-      {/* Player name overlay */}
-      {showDetails && name && (
-        <Html
-          position={[0, 2.8, 0]}
-          center
-          distanceFactor={isMobile ? 15 : 10}
-          occlude={false}
-          style={{ pointerEvents: "none", userSelect: "none" }}
-        >
-          <div
-            style={{
-              fontFamily: FONT_FAMILY.KOREAN,
-              textAlign: "center",
-              color: "white",
-              textShadow: "0 0 4px rgba(0,0,0,0.8)",
-            }}
+        {/* Player name overlay */}
+        {showDetails && name && (
+          <Html
+            position={[0, 2.8, 0]}
+            center
+            distanceFactor={isMobile ? 15 : 10}
+            occlude={false}
+            style={{ pointerEvents: "none", userSelect: "none" }}
           >
-            {/* Player name */}
             <div
               style={{
-                fontSize: isMobile ? "12px" : "14px",
-                fontWeight: "bold",
-                marginBottom: "4px",
+                fontFamily: FONT_FAMILY.KOREAN,
+                textAlign: "center",
+                color: "white",
+                textShadow: "0 0 4px rgba(0,0,0,0.8)",
               }}
-              data-testid="player-name"
             >
-              {name.korean}
-            </div>
-
-            {/* Trigram symbol */}
-            {showStanceIndicator && (
+              {/* Player name */}
               <div
                 style={{
-                  fontSize: isMobile ? "14px" : "16px",
-                  color: toHexColor(stanceColor),
-                }}
-                data-testid="trigram-symbol"
-              >
-                {trigramSymbol}
-              </div>
-            )}
-
-            {/* Combat state text */}
-            {(isBlocking || isStunned || isCountering) && (
-              <div
-                style={{
-                  fontSize: isMobile ? "10px" : "12px",
+                  fontSize: isMobile ? "12px" : "14px",
                   fontWeight: "bold",
-                  color: "#ffff00",
-                  marginTop: "4px",
+                  marginBottom: "4px",
                 }}
-                data-testid="combat-state"
+                data-testid="player-name"
               >
-                {isBlocking ? "방어" : isStunned ? "기절" : "반격"}
+                {name.korean}
               </div>
-            )}
-          </div>
-        </Html>
-      )}
 
-      {/* State indicators (health, stamina, Ki, balance) */}
-      {showDetails && (
-        <PlayerStateIndicators
-          health={health}
-          maxHealth={maxHealth}
-          stamina={stamina}
-          ki={ki}
-          balance={balance}
-          consciousness={consciousness}
-          pain={pain}
-          bloodLoss={bloodLoss}
-          isMobile={isMobile}
-        />
-      )}
-      </group> {/* Close inner sway group */}
+              {/* Trigram symbol */}
+              {showStanceIndicator && (
+                <div
+                  style={{
+                    fontSize: isMobile ? "14px" : "16px",
+                    color: toHexColor(stanceColor),
+                  }}
+                  data-testid="trigram-symbol"
+                >
+                  {trigramSymbol}
+                </div>
+              )}
+
+              {/* Combat state text */}
+              {(isBlocking || isStunned || isCountering) && (
+                <div
+                  style={{
+                    fontSize: isMobile ? "10px" : "12px",
+                    fontWeight: "bold",
+                    color: "#ffff00",
+                    marginTop: "4px",
+                  }}
+                  data-testid="combat-state"
+                >
+                  {isBlocking ? "방어" : isStunned ? "기절" : "반격"}
+                </div>
+              )}
+            </div>
+          </Html>
+        )}
+
+        {/* State indicators (health, stamina, Ki, balance) */}
+        {showDetails && (
+          <PlayerStateIndicators
+            health={health}
+            maxHealth={maxHealth}
+            stamina={stamina}
+            ki={ki}
+            balance={balance}
+            consciousness={consciousness}
+            pain={pain}
+            bloodLoss={bloodLoss}
+            isMobile={isMobile}
+          />
+        )}
+      </group>{" "}
+      {/* Close inner sway group */}
     </group>
   );
 };

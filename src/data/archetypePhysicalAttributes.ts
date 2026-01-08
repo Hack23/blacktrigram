@@ -1,24 +1,24 @@
 /**
  * Physical attribute profiles for each player archetype.
- * 
+ *
  * **Korean**: 원형별 신체 속성 (Archetype Physical Attributes)
- * 
+ *
  * Defines realistic body dimensions and composition for each of the five
  * player archetypes based on their combat style and background. These
  * attributes directly affect combat calculations including reach, movement
  * speed, damage, and stamina.
- * 
+ *
  * ## Design Philosophy
- * 
+ *
  * Each archetype's physical profile reflects their training, lifestyle, and
  * combat specialization:
- * 
+ *
  * - **무사 (Musa)**: Balanced warrior with traditional training
  * - **암살자 (Amsalja)**: Lean and agile for stealth operations
  * - **해커 (Hacker)**: Average build with tech enhancements
  * - **정보요원 (Jeongbo)**: Fit operative with intelligence background
  * - **조직폭력배 (Jojik)**: Heavy and brutal street fighter
- * 
+ *
  * @module data/archetypePhysicalAttributes
  * @category Player & Archetypes
  * @korean 원형신체데이터
@@ -28,55 +28,58 @@ import { PhysicalAttributes, PlayerArchetype } from "@/types";
 
 /**
  * 무사 (Musa) - Traditional Warrior Physical Profile
- * 
+ *
  * **Philosophy**: Honor through disciplined strength
  * **Training**: Military special forces with traditional martial arts
  * **Build**: Balanced, athletic, well-conditioned warrior
- * 
+ *
  * Physical characteristics reflect years of traditional Korean martial arts
  * training combined with modern military conditioning. Optimal balance between
  * strength, speed, and endurance for prolonged combat effectiveness.
- * 
+ *
  * @korean 무사신체
  */
 export const MUSA_PHYSICAL: PhysicalAttributes = {
-  /** 
-   * Weight: 75 kg
-   * Balanced weight for strength and mobility
-   * Reflects disciplined diet and training regimen
-   */
-  weight: 75,
-  
   /**
-   * Leg Length: 95 cm
-   * Average leg length providing balanced kicking range
-   * Trained for powerful Taekwondo kicks and stable stances
+   * Weight: 82 kg
+   * Athletic military build for strength and mobility
+   * Korean Special Forces standard physique
+   * Optimal power-to-weight ratio for combat
    */
-  legLength: 95,
-  
+  weight: 82,
+
   /**
-   * Arm Length: 75 cm
-   * Standard arm reach for disciplined striking
-   * Conditioned for precision and power in equal measure
+   * Leg Length: 96 cm
+   * Athletic leg length for powerful kicks
+   * Trained for devastating Taekwondo kicks
+   * Balanced reach and stability
    */
-  armLength: 75,
-  
+  legLength: 96,
+
   /**
-   * Muscle Mass: 38 kg
-   * High muscle mass from traditional warrior training
-   * Provides excellent strength-to-weight ratio
-   * Supports sustained combat effectiveness
+   * Arm Length: 77 cm
+   * Strong arm reach for disciplined striking
+   * Conditioned for both precision and power
+   * Effective grappling range
    */
-  muscleMass: 38,
-  
+  armLength: 77,
+
   /**
-   * Fat Mass: 12 kg
-   * Low body fat from rigorous training
-   * Maintains enough for energy reserves
-   * Optimal for combat endurance
+   * Muscle Mass: 35 kg (43% of body weight)
+   * High muscle mass from military training
+   * Realistic for trained special forces soldier
+   * Excellent functional strength
    */
-  fatMass: 12,
-  
+  muscleMass: 35,
+
+  /**
+   * Fat Mass: 13 kg (16% body fat)
+   * Athletic body fat percentage
+   * Maintains energy reserves for combat endurance
+   * Optimal for sustained operations
+   */
+  fatMass: 13,
+
   /**
    * Age: 32 years
    * Prime combat age combining experience and physical capability
@@ -84,102 +87,102 @@ export const MUSA_PHYSICAL: PhysicalAttributes = {
    * Balanced wisdom and reflexes
    */
   age: 32,
-  
+
   /**
-   * Total Height: 178 cm
-   * Average Korean male height for military service
-   * Balanced proportions for all-around combat
-   * Scales skeleton to standard proportions
+   * Total Height: 180 cm
+   * Solid military build height
+   * Above average for imposing presence
+   * Good proportions for all-around combat
    */
-  totalHeight: 178,
-  
+  totalHeight: 180,
+
   /**
-   * Torso Length: 58 cm
-   * Balanced torso providing stable core
+   * Torso Length: 59 cm
+   * Strong core providing stable base
    * Optimal for breath control and Ki cultivation
-   * Standard vital point spacing
+   * Protected vital points
    */
-  torsoLength: 58,
-  
+  torsoLength: 59,
+
   /**
    * Head Size: 22 cm
-   * Average head diameter for Korean males
+   * Average head diameter
    * Standard vital point target area
    * Balanced consciousness vulnerability
    */
   headSize: 22,
-  
+
   /**
-   * Neck Length: 10 cm
-   * Average neck length
+   * Neck Length: 11 cm
+   * Strong, trained neck
    * Moderate vulnerability to chokes
-   * Standard blood choke mechanics
+   * Conditioned for impact resistance
    */
-  neckLength: 10,
-  
+  neckLength: 11,
+
   /**
-   * Shoulder Width: 43 cm
-   * Balanced shoulder span
-   * Good defense coverage
-   * Standard grappling control points
+   * Shoulder Width: 46 cm
+   * Broad military shoulders
+   * Strong defense coverage
+   * Excellent grappling control points
    */
-  shoulderWidth: 43,
+  shoulderWidth: 46,
 };
 
 /**
  * 암살자 (Amsalja) - Shadow Assassin Physical Profile
- * 
+ *
  * **Philosophy**: Efficiency through invisibility
  * **Training**: Covert operations and silent elimination specialist
  * **Build**: Lean, agile, optimized for stealth and precision
- * 
+ *
  * Physical characteristics emphasize low body mass for stealth movement,
  * exceptional reach for vital point targeting, and minimal fat for maximum
  * agility. Every attribute optimized for silent, deadly efficiency.
- * 
+ *
  * @korean 암살자신체
  */
 export const AMSALJA_PHYSICAL: PhysicalAttributes = {
   /**
-   * Weight: 68 kg
-   * Lighter build for stealth and agility
-   * Optimized for silent movement and quick escapes
-   * Lower mass reduces detection probability
+   * Weight: 75 kg
+   * Lean athletic build like a kickboxer (Israel Adesanya type)
+   * Optimized for speed, reach, and precision
+   * Light enough for stealth, heavy enough for power
    */
-  weight: 68,
-  
+  weight: 75,
+
   /**
-   * Leg Length: 98 cm
-   * Longer legs for extended reach and stride
+   * Leg Length: 102 cm
+   * Long legs for exceptional reach and stride
    * Enables precise high kicks to vital points
-   * Excellent for silent, long-distance movement
+   * Excellent for maintaining distance
    */
-  legLength: 98,
-  
+  legLength: 102,
+
   /**
-   * Arm Length: 78 cm
-   * Extended reach for maintaining distance
+   * Arm Length: 82 cm
+   * Extended reach for range advantage
    * Crucial for vital point precision strikes
-   * Allows attacking from safer positions
+   * Keeps opponents at safe distance
    */
-  armLength: 78,
-  
+  armLength: 82,
+
   /**
-   * Muscle Mass: 32 kg
-   * Lean muscle optimized for speed over power
-   * Minimal bulk for stealth operations
-   * Sufficient for nerve strikes and pressure points
+   * Muscle Mass: 30 kg (40% of body weight)
+   * Lean, functional muscle for speed
+   * Optimized for explosive movements
+   * Sufficient for devastating precision strikes
    */
-  muscleMass: 32,
-  
+  muscleMass: 30,
+
   /**
-   * Fat Mass: 9 kg
-   * Extremely low fat percentage
-   * Maximum agility and flexibility
-   * Optimized metabolic efficiency
+   * Fat Mass: 10 kg (13% body fat)
+   * Very low fat for maximum definition
+   * Peak agility and flexibility
+   * Athletic performance optimized
    */
-  fatMass: 9,
-  
+  fatMass: 10,
+
   /**
    * Age: 28 years
    * Young and at peak physical agility
@@ -187,70 +190,70 @@ export const AMSALJA_PHYSICAL: PhysicalAttributes = {
    * Experience balanced with peak conditioning
    */
   age: 28,
-  
+
   /**
-   * Total Height: 182 cm
-   * Taller than average for extended reach
-   * Longer limb ratios for vital point access
-   * Advantageous for maintaining distance
+   * Total Height: 186 cm
+   * Tall for exceptional reach advantage
+   * Long limb ratios for vital point access
+   * Intimidating presence while maintaining agility
    */
-  totalHeight: 182,
-  
+  totalHeight: 186,
+
   /**
-   * Torso Length: 56 cm
-   * Slightly shorter torso for lower center of gravity
-   * Compact core for agile movement
+   * Torso Length: 58 cm
+   * Compact torso for lower center of gravity
+   * Agile core for quick movement
    * Reduced vital point target area
    */
-  torsoLength: 56,
-  
+  torsoLength: 58,
+
   /**
-   * Head Size: 21 cm
-   * Smaller head profile for stealth
-   * Reduced target area for head strikes
-   * Lower consciousness vulnerability
+   * Head Size: 22 cm
+   * Normal head profile
+   * Standard target area for head strikes
+   * Balanced consciousness vulnerability
    */
-  headSize: 21,
-  
+  headSize: 22,
+
   /**
    * Neck Length: 11 cm
-   * Longer neck increases choke vulnerability
-   * Greater exposure to blood chokes
-   * Requires careful guard positioning
+   * Longer neck for head movement evasion
+   * Slightly increased choke vulnerability
+   * Requires skilled guard positioning
    */
   neckLength: 11,
-  
+
   /**
-   * Shoulder Width: 40 cm
-   * Narrower shoulders for stealth profile
-   * Reduced defense coverage but better mobility
-   * Easier infiltration through tight spaces
+   * Shoulder Width: 44 cm
+   * Lean but athletic shoulders
+   * Good mobility with adequate coverage
+   * Efficient for striking mechanics
    */
-  shoulderWidth: 40,
+  shoulderWidth: 44,
 };
 
 /**
  * 해커 (Hacker) - Cyber Warrior Physical Profile
- * 
+ *
  * **Philosophy**: Information as power through technology
  * **Training**: Digital native with supplemental physical training
  * **Build**: Average physique enhanced by technological augmentation
- * 
+ *
  * Physical characteristics reflect a tech-focused lifestyle with functional
  * fitness rather than peak athletic conditioning. Attributes are average
  * but compensated by cybernetic enhancements and data-driven combat analysis.
- * 
+ *
  * @korean 해커신체
  */
 export const HACKER_PHYSICAL: PhysicalAttributes = {
   /**
-   * Weight: 70 kg
+   * Weight: 72 kg
    * Average weight for height
    * Functional fitness from regular training
-   * Not optimized for pure physicality
+   * Tech worker who maintains fitness
    */
-  weight: 70,
-  
+  weight: 72,
+
   /**
    * Leg Length: 92 cm
    * Standard leg proportions
@@ -258,7 +261,7 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Compensated by augmented targeting systems
    */
   legLength: 92,
-  
+
   /**
    * Arm Length: 73 cm
    * Average arm reach
@@ -266,23 +269,23 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Precision compensated by data analysis
    */
   armLength: 73,
-  
+
   /**
-   * Muscle Mass: 34 kg
-   * Moderate muscle mass
-   * Maintained through efficient training programs
-   * Tech augmentation reduces pure strength requirements
+   * Muscle Mass: 28 kg (39% of body weight)
+   * Moderate muscle mass for tech worker
+   * Maintained through efficient training
+   * Relies more on tech than raw strength
    */
-  muscleMass: 34,
-  
+  muscleMass: 28,
+
   /**
-   * Fat Mass: 14 kg
-   * Slightly higher fat from sedentary tech work
-   * Still within functional combat range
-   * Less emphasis on peak physical conditioning
+   * Fat Mass: 15 kg (21% body fat)
+   * Average body fat from desk work
+   * Still functional for combat
+   * Less emphasis on peak conditioning
    */
-  fatMass: 14,
-  
+  fatMass: 15,
+
   /**
    * Age: 26 years
    * Young digital native
@@ -290,7 +293,7 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Peak learning and adaptation capabilities
    */
   age: 26,
-  
+
   /**
    * Total Height: 175 cm
    * Average Korean male height
@@ -298,7 +301,7 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Balanced body type for augmentation
    */
   totalHeight: 175,
-  
+
   /**
    * Torso Length: 57 cm
    * Average torso length
@@ -306,7 +309,7 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Balanced Ki flow for tech-bio integration
    */
   torsoLength: 57,
-  
+
   /**
    * Head Size: 22 cm
    * Average head size
@@ -314,7 +317,7 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Balanced for augmented reality overlays
    */
   headSize: 22,
-  
+
   /**
    * Neck Length: 10 cm
    * Average neck length
@@ -322,70 +325,70 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Adequate for neural interface cables
    */
   neckLength: 10,
-  
+
   /**
-   * Shoulder Width: 42 cm
+   * Shoulder Width: 43 cm
    * Average shoulder span
    * Standard defense coverage
    * Balanced for wearable tech integration
    */
-  shoulderWidth: 42,
+  shoulderWidth: 43,
 };
 
 /**
  * 정보요원 (Jeongbo Yowon) - Intelligence Operative Physical Profile
- * 
+ *
  * **Philosophy**: Knowledge through observation and strategy
  * **Training**: Government intelligence agency with specialized combat
  * **Build**: Athletic operative with strategic fitness
- * 
+ *
  * Physical characteristics reflect intelligence agency fitness standards
  * with emphasis on versatility, endurance, and adaptability. Balanced
  * attributes suitable for varied operational requirements.
- * 
+ *
  * @korean 정보요원신체
  */
 export const JEONGBO_PHYSICAL: PhysicalAttributes = {
   /**
-   * Weight: 73 kg
+   * Weight: 78 kg
+   * Fit intelligence operative build
    * Government agency fitness standard
-   * Optimized for versatile operations
-   * Balance between mobility and presence
+   * Balance between capability and inconspicuousness
    */
-  weight: 73,
-  
+  weight: 78,
+
   /**
-   * Leg Length: 94 cm
+   * Leg Length: 95 cm
    * Balanced leg length for varied terrain
    * Standard proportions for operational flexibility
    * Suitable for extended pursuit or evasion
    */
-  legLength: 94,
-  
+  legLength: 95,
+
   /**
-   * Arm Length: 74 cm
+   * Arm Length: 76 cm
    * Standard operative reach
    * Trained for weapon and hand-to-hand versatility
    * Balanced for multiple combat scenarios
    */
-  armLength: 74,
-  
+  armLength: 76,
+
   /**
-   * Muscle Mass: 36 kg
+   * Muscle Mass: 32 kg (41% of body weight)
    * Agency-required conditioning
    * Balanced strength for operational demands
    * Emphasis on functional fitness
    */
-  muscleMass: 36,
-  
+  muscleMass: 32,
+
   /**
-   * Fat Mass: 11 kg
+   * Fat Mass: 12 kg (15% body fat)
    * Low but sustainable body fat
    * Maintains energy reserves for long operations
    * Within intelligence service standards
    */
-  fatMass: 11,
-  
+  fatMass: 12,
+
   /**
    * Age: 34 years
    * Experienced operative
@@ -393,15 +396,15 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Wisdom from field experience
    */
   age: 34,
-  
+
   /**
-   * Total Height: 177 cm
+   * Total Height: 179 cm
    * Standard government agency height
    * Balanced proportions for versatility
    * Neither imposing nor inconspicuous
    */
-  totalHeight: 177,
-  
+  totalHeight: 179,
+
   /**
    * Torso Length: 58 cm
    * Balanced torso for varied operations
@@ -409,7 +412,7 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Standard vital point distribution
    */
   torsoLength: 58,
-  
+
   /**
    * Head Size: 22 cm
    * Average head size
@@ -417,7 +420,7 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Balanced consciousness resilience
    */
   headSize: 22,
-  
+
   /**
    * Neck Length: 10 cm
    * Average neck length
@@ -425,70 +428,70 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Standard blood choke vulnerability
    */
   neckLength: 10,
-  
+
   /**
-   * Shoulder Width: 43 cm
-   * Balanced shoulder width
+   * Shoulder Width: 45 cm
+   * Athletic shoulder width
    * Good defense coverage
    * Versatile grappling control
    */
-  shoulderWidth: 43,
+  shoulderWidth: 45,
 };
 
 /**
  * 조직폭력배 (Jojik Pokryeokbae) - Organized Crime Physical Profile
- * 
+ *
  * **Philosophy**: Survival through ruthlessness and brutality
  * **Training**: Street fighting and underground martial arts
  * **Build**: Heavy, powerful, intimidating presence
- * 
+ *
  * Physical characteristics emphasize raw power and intimidation over
  * refined technique. Heavier build with high muscle mass for brutal
  * effectiveness and street-proven durability.
- * 
+ *
  * @korean 조직폭력배신체
  */
 export const JOJIK_PHYSICAL: PhysicalAttributes = {
   /**
-   * Weight: 85 kg
-   * Heavy build for power and intimidation
-   * Mass advantage in close combat
-   * Street-hardened physique
+   * Weight: 105 kg
+   * MASSIVE build for power and intimidation
+   * Like a heavyweight MMA fighter or large taekwondo practitioner
+   * Dominant mass advantage in any confrontation
    */
-  weight: 85,
-  
+  weight: 105,
+
   /**
-   * Leg Length: 90 cm
-   * Shorter legs relative to body mass
-   * Lower center of gravity for stability
-   * Powerful base for brutal strikes
+   * Leg Length: 100 cm
+   * Long, powerful legs despite heavy build
+   * Devastating kicks with massive power
+   * Surprising mobility for size
    */
-  legLength: 90,
-  
+  legLength: 100,
+
   /**
-   * Arm Length: 76 cm
-   * Strong, thick arms
-   * Optimized for grappling and heavy blows
-   * Street-fighting practicality
+   * Arm Length: 84 cm
+   * Long, thick arms for crushing power
+   * Exceptional reach for grappling and strikes
+   * Street-fighting dominance
    */
-  armLength: 76,
-  
+  armLength: 84,
+
   /**
-   * Muscle Mass: 42 kg
+   * Muscle Mass: 48 kg (46% of body weight)
    * Highest muscle mass of all archetypes
-   * Built through street combat and training
-   * Raw power over refined technique
+   * Built through intense street combat and heavy training
+   * Raw, overwhelming power
    */
-  muscleMass: 42,
-  
+  muscleMass: 48,
+
   /**
-   * Fat Mass: 18 kg
-   * Higher fat mass from lifestyle
-   * Provides damage absorption
-   * Less concern for optimal conditioning
+   * Fat Mass: 20 kg (19% body fat)
+   * Functional body fat for damage absorption
+   * Provides padding against strikes
+   * Still very fit despite bulk
    */
-  fatMass: 18,
-  
+  fatMass: 20,
+
   /**
    * Age: 36 years
    * Veteran of street conflicts
@@ -496,64 +499,64 @@ export const JOJIK_PHYSICAL: PhysicalAttributes = {
    * Peak brutality and survival instincts
    */
   age: 36,
-  
+
   /**
-   * Total Height: 176 cm
-   * Compact but imposing build
-   * Stockier proportions for power
-   * Low center of gravity for stability
+   * Total Height: 188 cm
+   * Tall AND massive build
+   * Physically imposing presence
+   * Dominates any confrontation visually
    */
-  totalHeight: 176,
-  
+  totalHeight: 188,
+
   /**
-   * Torso Length: 60 cm
-   * Longer, thicker torso
-   * Larger vital point targets but more padding
-   * Enhanced core strength and durability
+   * Torso Length: 64 cm
+   * Thick, powerful torso
+   * Massive core strength
+   * Enhanced durability and power generation
    */
-  torsoLength: 60,
-  
+  torsoLength: 64,
+
   /**
-   * Head Size: 23 cm
-   * Larger, thicker skull
-   * Increased head strike resistance
-   * Higher consciousness resilience
+   * Head Size: 24 cm
+   * Large, thick skull
+   * Significant head strike resistance
+   * High consciousness resilience
    */
-  headSize: 23,
-  
+  headSize: 24,
+
   /**
-   * Neck Length: 9 cm
-   * Shorter, thicker neck
-   * Reduced choke vulnerability
-   * Harder to execute blood chokes
+   * Neck Length: 11 cm
+   * Thick, muscular neck
+   * Very difficult to choke
+   * Protected blood vessels
    */
-  neckLength: 9,
-  
+  neckLength: 11,
+
   /**
-   * Shoulder Width: 48 cm
-   * Widest shoulders of all archetypes
+   * Shoulder Width: 54 cm
+   * WIDEST shoulders - intimidating presence
    * Maximum defense coverage
-   * Intimidating presence
+   * Overwhelming physical dominance
    */
-  shoulderWidth: 48,
+  shoulderWidth: 54,
 };
 
 /**
  * Archetype physical attributes lookup map.
- * 
+ *
  * **Korean**: 원형 신체 속성 맵 (Archetype Physical Attributes Map)
- * 
+ *
  * Provides quick access to physical attribute profiles by archetype.
  * Used by combat system to retrieve realistic body dimensions and
  * composition for calculations.
- * 
+ *
  * @example
  * ```typescript
  * const playerArchetype = PlayerArchetype.MUSA;
  * const physicalAttrs = ARCHETYPE_PHYSICAL_ATTRIBUTES[playerArchetype];
  * const kickRange = calculateKickRange(physicalAttrs.legLength);
  * ```
- * 
+ *
  * @public
  * @korean 원형신체맵
  */
@@ -570,22 +573,22 @@ export const ARCHETYPE_PHYSICAL_ATTRIBUTES: Record<
 
 /**
  * Get physical attributes for a specific archetype.
- * 
+ *
  * **Korean**: 원형 신체 속성 가져오기 (Get Archetype Physical Attributes)
- * 
+ *
  * Retrieves the physical attribute profile for the specified player archetype.
  * Returns a readonly copy to prevent accidental mutations.
- * 
+ *
  * @param archetype - The player archetype to get attributes for
  * @returns Physical attributes for the specified archetype
- * 
+ *
  * @example
  * ```typescript
  * const musaAttrs = getArchetypePhysicalAttributes(PlayerArchetype.MUSA);
  * console.log(`Musa weight: ${musaAttrs.weight}kg`);
  * console.log(`Musa arm reach: ${musaAttrs.armLength}cm`);
  * ```
- * 
+ *
  * @public
  * @korean 원형신체가져오기
  */
@@ -597,26 +600,26 @@ export function getArchetypePhysicalAttributes(
 
 /**
  * Calculate effective reach based on limb length and stance.
- * 
+ *
  * **Korean**: 유효 거리 계산 (Calculate Effective Reach)
- * 
+ *
  * Computes the effective combat reach considering limb length and
  * body positioning. Different techniques use different limbs and
  * leverage different amounts of body extension.
- * 
+ *
  * @param limbLength - Length of the limb in centimeters
  * @param extension - Percentage of full extension (0.0 to 1.0)
  * @returns Effective reach in centimeters
- * 
+ *
  * @example
  * ```typescript
  * // Full extension punch
  * const punchReach = calculateEffectiveReach(75, 1.0); // 75cm
- * 
+ *
  * // 70% extension kick (stable stance)
  * const kickReach = calculateEffectiveReach(95, 0.7); // 66.5cm
  * ```
- * 
+ *
  * @public
  * @korean 유효거리계산
  */
@@ -629,29 +632,29 @@ export function calculateEffectiveReach(
 
 /**
  * Calculate movement speed modifier based on weight and leg length.
- * 
+ *
  * **Korean**: 이동 속도 계산 (Calculate Movement Speed)
- * 
+ *
  * Computes movement speed modifier based on body weight (inversely)
  * and leg length (positively). Heavier fighters move slower, while
  * longer legs provide faster base movement.
- * 
+ *
  * Formula: baseSpeed * (legLength / 95) * (75 / weight)
  * - Normalized around 95cm legs and 75kg weight
- * 
+ *
  * @param physical - Physical attributes of the fighter
  * @param baseSpeed - Base movement speed (default: 100)
  * @returns Modified movement speed
- * 
+ *
  * @example
  * ```typescript
  * const musaSpeed = calculateMovementSpeed(MUSA_PHYSICAL);
  * // Result: 100 * (95/95) * (75/75) = 100
- * 
+ *
  * const jojikSpeed = calculateMovementSpeed(JOJIK_PHYSICAL);
  * // Result: 100 * (90/95) * (75/85) = ~88.2 (slower)
  * ```
- * 
+ *
  * @public
  * @korean 이동속도계산
  */
@@ -666,67 +669,63 @@ export function calculateMovementSpeed(
 
 /**
  * Calculate damage modifier based on muscle mass.
- * 
+ *
  * **Korean**: 공격력 계산 (Calculate Damage Output)
- * 
+ *
  * Computes damage output modifier based on muscle mass. More muscle
  * means more power in strikes, but with diminishing returns.
- * 
+ *
  * Formula: 1.0 + ((muscleMass - 35) / 35) * 0.3
  * - Normalized around 35kg muscle mass
  * - Maximum 30% bonus from muscle
- * 
+ *
  * @param physical - Physical attributes of the fighter
  * @returns Damage multiplier (typically 0.7 to 1.3)
- * 
+ *
  * @example
  * ```typescript
  * const musaDamage = calculateDamageModifier(MUSA_PHYSICAL);
  * // Result: 1.0 + ((38-35)/35)*0.3 = ~1.026
- * 
+ *
  * const jojikDamage = calculateDamageModifier(JOJIK_PHYSICAL);
  * // Result: 1.0 + ((42-35)/35)*0.3 = ~1.06 (stronger)
  * ```
- * 
+ *
  * @public
  * @korean 공격력계산
  */
-export function calculateDamageModifier(
-  physical: PhysicalAttributes
-): number {
+export function calculateDamageModifier(physical: PhysicalAttributes): number {
   const normalizedMuscle = (physical.muscleMass - 35) / 35;
   return 1.0 + normalizedMuscle * 0.3;
 }
 
 /**
  * Calculate defense modifier based on fat mass and muscle mass.
- * 
+ *
  * **Korean**: 방어력 계산 (Calculate Defense)
- * 
+ *
  * Computes defense modifier based on fat mass (padding) and muscle mass
  * (structural integrity). Fat absorbs blunt damage, muscle protects
  * against impact.
- * 
+ *
  * Formula: 1.0 + (fatMass / 100) + (muscleMass / 200)
- * 
+ *
  * @param physical - Physical attributes of the fighter
  * @returns Defense multiplier (typically 1.0 to 1.3)
- * 
+ *
  * @example
  * ```typescript
  * const amsaljaDefense = calculateDefenseModifier(AMSALJA_PHYSICAL);
  * // Result: 1.0 + (9/100) + (32/200) = 1.25
- * 
+ *
  * const jojikDefense = calculateDefenseModifier(JOJIK_PHYSICAL);
  * // Result: 1.0 + (18/100) + (42/200) = 1.39 (tankier)
  * ```
- * 
+ *
  * @public
  * @korean 방어력계산
  */
-export function calculateDefenseModifier(
-  physical: PhysicalAttributes
-): number {
+export function calculateDefenseModifier(physical: PhysicalAttributes): number {
   const fatPadding = physical.fatMass / 100;
   const muscleStructure = physical.muscleMass / 200;
   return 1.0 + fatPadding + muscleStructure;
@@ -734,30 +733,30 @@ export function calculateDefenseModifier(
 
 /**
  * Calculate stamina regeneration rate based on age and fat mass.
- * 
+ *
  * **Korean**: 체력 회복 속도 (Stamina Recovery Rate)
- * 
+ *
  * Computes stamina recovery speed based on age (optimal 25-35) and
  * fat mass (lower is better for recovery). Younger fighters and leaner
  * builds recover faster.
- * 
+ *
  * Formula: baseRate * ageFactor * fatFactor
  * - Age factor peaks at 30 years (1.0), decreases before and after
  * - Fat factor = 1.0 - (fatMass - 10) / 50
- * 
+ *
  * @param physical - Physical attributes of the fighter
  * @param baseRate - Base recovery rate (default: 10 per second)
  * @returns Modified stamina recovery rate
- * 
+ *
  * @example
  * ```typescript
  * const amsaljaRecovery = calculateStaminaRecovery(AMSALJA_PHYSICAL);
  * // Age 28, fat 9kg: ~10.2 per second
- * 
+ *
  * const jojikRecovery = calculateStaminaRecovery(JOJIK_PHYSICAL);
  * // Age 36, fat 18kg: ~8.4 per second (slower)
  * ```
- * 
+ *
  * @public
  * @korean 체력회복계산
  */
@@ -769,9 +768,9 @@ export function calculateStaminaRecovery(
   const ageOptimal = 30;
   const ageDiff = Math.abs(physical.age - ageOptimal);
   const ageFactor = Math.max(0.7, 1.0 - ageDiff / 30);
-  
+
   // Fat factor: lower fat = faster recovery
   const fatFactor = Math.max(0.7, 1.0 - (physical.fatMass - 10) / 50);
-  
+
   return baseRate * ageFactor * fatFactor;
 }
