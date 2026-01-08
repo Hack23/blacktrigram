@@ -38,15 +38,7 @@
     "types": ["node", "vitest/globals"] // Add vitest/globals for vi namespace
   },
   "include": ["src"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.cy.ts",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
-  ],
+  "exclude": ["node_modules", "dist", "**/*.cy.ts"],
   "watchOptions": {
     "watchFile": "useFsEvents",
     "watchDirectory": "useFsEvents",

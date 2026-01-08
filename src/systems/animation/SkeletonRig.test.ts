@@ -1,32 +1,32 @@
 /**
  * Unit tests for SkeletonRig
- * 
+ *
  * Tests bone creation, humanoid rig structure, joint constraints,
  * and bone transformation calculations.
  */
 
-import { describe, it, expect } from "vitest";
 import * as THREE from "three";
+import { describe, expect, it } from "vitest";
 import {
-  createBone,
-  createHumanoidRig,
-  createScaledHumanoidRig,
-  applyJointConstraint,
-  getBoneWorldPosition,
-  getBoneWorldRotation,
-  resetBoneToRestPose,
-  resetRigToRestPose,
-  JOINT_CONSTRAINTS,
-  BONE_CHAINS,
-} from "./SkeletonRig";
-import { BoneName } from "../../types/skeletal";
-import {
-  MUSA_PHYSICAL,
   AMSALJA_PHYSICAL,
   HACKER_PHYSICAL,
   JEONGBO_PHYSICAL,
   JOJIK_PHYSICAL,
+  MUSA_PHYSICAL,
 } from "../../data/archetypePhysicalAttributes";
+import { BoneName } from "../../types/skeletal";
+import {
+  applyJointConstraint,
+  BONE_CHAINS,
+  createBone,
+  createHumanoidRig,
+  createScaledHumanoidRig,
+  getBoneWorldPosition,
+  getBoneWorldRotation,
+  JOINT_CONSTRAINTS,
+  resetBoneToRestPose,
+  resetRigToRestPose,
+} from "./SkeletonRig";
 
 describe("SkeletonRig", () => {
   describe("createBone", () => {
@@ -399,7 +399,7 @@ describe("SkeletonRig", () => {
       // Amsalja has longer legs
       const amsaljaThigh = amsaljaRig.bones.get(BoneName.THIGH_L);
       const jojikThigh = jojikRig.bones.get(BoneName.THIGH_L);
-      
+
       expect(amsaljaThigh?.length).toBeGreaterThan(jojikThigh?.length ?? 0);
     });
 
@@ -410,7 +410,7 @@ describe("SkeletonRig", () => {
       // Check shoulder positions (Jojik has wider shoulders)
       const amsaljaShoulder = amsaljaRig.bones.get(BoneName.SHOULDER_L);
       const jojikShoulder = jojikRig.bones.get(BoneName.SHOULDER_L);
-      
+
       // Jojik's shoulder should be further from center
       expect(Math.abs(jojikShoulder?.position.x ?? 0)).toBeGreaterThan(
         Math.abs(amsaljaShoulder?.position.x ?? 0)
@@ -424,7 +424,7 @@ describe("SkeletonRig", () => {
       // Jojik has larger head
       const amsaljaHead = amsaljaRig.bones.get(BoneName.HEAD);
       const jojikHead = jojikRig.bones.get(BoneName.HEAD);
-      
+
       expect(jojikHead?.length).toBeGreaterThan(amsaljaHead?.length ?? 0);
     });
 
@@ -432,11 +432,12 @@ describe("SkeletonRig", () => {
       const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
       const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
 
-      // Amsalja has longer neck
+      // Amsalja and Jojik both have 11cm necks (same length)
       const amsaljaNeck = amsaljaRig.bones.get(BoneName.NECK);
       const jojikNeck = jojikRig.bones.get(BoneName.NECK);
-      
-      expect(amsaljaNeck?.length).toBeGreaterThan(jojikNeck?.length ?? 0);
+
+      // Both should have similar neck lengths since attributes are equal (11cm)
+      expect(amsaljaNeck?.length).toBeCloseTo(jojikNeck?.length ?? 0, 1);
     });
 
     it("should maintain bone hierarchy with scaling", () => {
@@ -463,7 +464,7 @@ describe("SkeletonRig", () => {
         JOJIK_PHYSICAL,
       ];
 
-      profiles.forEach(profile => {
+      profiles.forEach((profile) => {
         const rig = createScaledHumanoidRig(profile);
         expect(rig.boneCount).toBe(28);
         expect(rig.bones.size).toBe(28);
