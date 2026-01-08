@@ -8,7 +8,7 @@ import { COMBAT_CONTROLS } from "../../systems";
 import { Z_INDEX } from "../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../types/constants";
 import { hexToRgbaString } from "../../utils/colorUtils";
-import { BackgroundScene3D } from "../three/BackgroundScene3D";
+import { BackgroundScene3D } from "../three";
 import { VolumeControl } from "../ui/VolumeControl";
 
 export interface ControlsScreenThreeJSProps {

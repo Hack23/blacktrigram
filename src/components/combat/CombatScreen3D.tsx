@@ -79,7 +79,7 @@ import {
 } from "../../utils/player3DHelpers";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
-import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
+import { SkeletalPlayer3D } from "../three";
 import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
 import { ActionFeedback, TechniqueName } from "./components/feedback/ActionFeedback";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";

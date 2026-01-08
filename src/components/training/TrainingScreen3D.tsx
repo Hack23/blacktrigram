@@ -44,7 +44,7 @@ import {
 } from "../mobile";
 import { ButtonEventType } from "../mobile/ActionButtons";
 import { Direction, DPadEventType } from "../mobile/VirtualDPad";
-import { SkeletalPlayer3D } from "../three/SkeletalPlayer3D";
+import { SkeletalPlayer3D } from "../three";
 import { VolumeControl } from "../ui/VolumeControl";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {

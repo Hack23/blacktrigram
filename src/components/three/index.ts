@@ -6,44 +6,53 @@
  * @module components/three
  */
 
-export { KoreanButton } from "./KoreanButton";
-export type { KoreanButtonProps } from "./KoreanButton";
+// UI Components
+export { KoreanButton } from "./ui/KoreanButton";
+export type { KoreanButtonProps } from "./ui/KoreanButton";
 
-export { KoreanPanel } from "./KoreanPanel";
-export type { KoreanPanelProps } from "./KoreanPanel";
+export { KoreanPanel } from "./ui/KoreanPanel";
+export type { KoreanPanelProps } from "./ui/KoreanPanel";
 
-export { KoreanText } from "./KoreanText";
-export type { KoreanTextProps } from "./KoreanText";
+export { KoreanText } from "./ui/KoreanText";
+export type { KoreanTextProps } from "./ui/KoreanText";
 
-export { MenuList } from "./MenuList";
-export type { MenuListProps, MenuItem } from "./MenuList";
+export { MenuList } from "./ui/MenuList";
+export type { MenuListProps, MenuItem } from "./ui/MenuList";
 
-export { ArchetypeCard } from "./ArchetypeCard";
-export type { ArchetypeCardProps } from "./ArchetypeCard";
+export { ArchetypeCard } from "./ui/ArchetypeCard";
+export type { ArchetypeCardProps } from "./ui/ArchetypeCard";
 
-export { ProgressBar } from "./ProgressBar";
-export type { ProgressBarProps, ProgressBarType } from "./ProgressBar";
+export { ProgressBar } from "./ui/ProgressBar";
+export type { ProgressBarProps, ProgressBarType } from "./ui/ProgressBar";
 
-export { KoreanUIDemo } from "./KoreanUIDemo";
-export type { KoreanUIDemoProps } from "./KoreanUIDemo";
+export { KoreanUIDemo } from "./ui/KoreanUIDemo";
+export type { KoreanUIDemoProps } from "./ui/KoreanUIDemo";
 
 export type { Player3DUnifiedProps } from "../../types/player-visual";
 
-export { PlayerStateIndicators } from "./PlayerStateIndicators";
+// Effects
+export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
 export type { PlayerStateIndicatorsProps } from "../../types/player-visual";
 
-export { StanceSymbol3D } from "./StanceSymbol3D";
-export type { StanceSymbol3DProps } from "./StanceSymbol3D";
+export { StanceSymbol3D } from "./effects/StanceSymbol3D";
+export type { StanceSymbol3DProps } from "./effects/StanceSymbol3D";
 
-export { StanceTransitionEffect } from "./StanceTransitionEffect";
-export type { StanceTransitionEffectProps } from "./StanceTransitionEffect";
+export { StanceTransitionEffect } from "./effects/StanceTransitionEffect";
+export type { StanceTransitionEffectProps } from "./effects/StanceTransitionEffect";
 
-export { Player3DWithTransitions } from "./Player3DWithTransitions";
-export type { Player3DWithTransitionsProps } from "./Player3DWithTransitions";
+// Models
+export { Player3DWithTransitions } from "./models/Player3DWithTransitions";
+export type { Player3DWithTransitionsProps } from "./models/Player3DWithTransitions";
 
 // Skeletal Animation Components
-export { SkeletalPlayer3D } from "./SkeletalPlayer3D";
-export { BoneRenderer } from "./BoneRenderer";
-export type { BoneRendererProps } from "./BoneRenderer";
-export { Hand3D } from "./Hand3D";
-export type { Hand3DProps } from "./Hand3D";
+export { SkeletalPlayer3D } from "./models/SkeletalPlayer3D";
+
+// Anatomy
+export { BoneRenderer } from "./anatomy/BoneRenderer";
+export type { BoneRendererProps } from "./anatomy/BoneRenderer";
+export { Hand3D } from "./anatomy/Hand3D";
+export type { Hand3DProps } from "./anatomy/Hand3D";
+
+// Scene
+export { BackgroundScene3D } from "./scene/BackgroundScene3D";
+export type { BackgroundScene3DProps } from "./scene/BackgroundScene3D";
