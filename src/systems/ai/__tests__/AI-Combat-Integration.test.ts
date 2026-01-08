@@ -20,7 +20,7 @@ import { PlayerState } from "@/systems/player";
 import { PlayerArchetype } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useAICombat } from "@/components/combat/hooks/useAICombat";
+import { useAICombat } from "@/components/screens/combat/hooks/useAICombat";
 import { createMockPlayerState, createMockArena, type ArenaBounds } from "@/test/test-utils";
 
 // ==================== Test Utilities ====================

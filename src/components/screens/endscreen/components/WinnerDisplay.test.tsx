@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { WinnerDisplay } from "./WinnerDisplay";
-import { AudioProvider } from "../../../audio/AudioProvider";
+import { AudioProvider } from "../../../../audio/AudioProvider";
 import { PlayerArchetype } from "../../../../types/common";
 import { createPlayerFromArchetype } from "../../../../utils/playerUtils";
 

@@ -19,9 +19,9 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { HitEffectType } from "../../../../../systems/effects";
-import { ActionFeedback, TechniqueName } from "./ActionFeedback";
-import { ComboCounter } from "./ComboCounter";
-import { DamageNumbers } from "./DamageNumbers";
+import { ActionFeedback, TechniqueName } from "../feedback/ActionFeedback";
+import { ComboCounter } from "../indicators/ComboCounter";
+import { DamageNumbers } from "../feedback/DamageNumbers";
 import HitEffects3D from "./HitEffects3D";
 
 // Mock Three.js and React Three Fiber
