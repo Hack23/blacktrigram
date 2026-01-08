@@ -4397,1927 +4397,1135 @@
 
   <!-- Test Results -->
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioAssetLoader.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioAssetLoader.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioAssetRegistry.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioAssetRegistry.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioManager.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioManager.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioMonitor.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioMonitor.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioPool.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioPool.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioProvider.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioProvider.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/AudioUtils.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/AudioUtils.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/BoneImpactAudioMap.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/BoneImpactAudioMap.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/placeholder-sounds.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/placeholder-sounds.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/audio/types.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/audio/types.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/CombatScreen3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/CombatScreen3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/arena/CombatArena3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/arena/CombatArena3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/arena/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/arena/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/CombatControlsPanel.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/CombatControlsPanel.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/ControlsGuide.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/ControlsGuide.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/KeyboardHints.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/KeyboardHints.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/PauseMenu.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/PauseMenu.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/QuickSettings.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/QuickSettings.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/controls/VitalPointOverlayControls.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/controls/VitalPointOverlayControls.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/BloodDecals3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/BloodDecals3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/BloodLossOverlay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/BloodLossOverlay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/BloodParticles3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/BloodParticles3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/ConsciousnessBlur.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/ConsciousnessBlur.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/HitEffects3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/HitEffects3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/PainVignette.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/PainVignette.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/TraumaOverlay3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/TraumaOverlay3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/effects/VitalPointMarkers3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/effects/VitalPointMarkers3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/feedback/ActionFeedback.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/feedback/ActionFeedback.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/feedback/DamageNumbers.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/feedback/DamageNumbers.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/feedback/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/feedback/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/feedback/MatchCountdown.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/feedback/MatchCountdown.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/feedback/RoundAnnouncement.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/feedback/RoundAnnouncement.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/feedback/RoundStartAnnouncement.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/feedback/RoundStartAnnouncement.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/CombatHUDThree.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/CombatHUDThree.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/CombatReadinessBar.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/CombatReadinessBar.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/CombatTimer.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/CombatTimer.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/DifficultyIndicator.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/DifficultyIndicator.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/FPSMonitor.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/FPSMonitor.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/MobileControlsWrapper.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/MobileControlsWrapper.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/PlayerHUD.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/PlayerHUD.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/PlayerStateOverlay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/PlayerStateOverlay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/hud/SpeedIndicatorHUD.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/hud/SpeedIndicatorHUD.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/index.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/index.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/BalanceIndicator.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/BalanceIndicator.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/BodyPartHealthDisplay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/BodyPartHealthDisplay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/BreathingIndicator.css.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/BreathingIndicator.css.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/BreathingIndicator.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/BreathingIndicator.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/ComboCounter.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/ComboCounter.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/GuardIndicator.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/GuardIndicator.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/HealthBar.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/HealthBar.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/InputBufferDisplay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/InputBufferDisplay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/StaminaBar.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/StaminaBar.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/StaminaWarning.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/StaminaWarning.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/StanceChangeIndicator.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/StanceChangeIndicator.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/TechniqueBar.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/TechniqueBar.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/TechniqueCard.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/TechniqueCard.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/components/indicators/TechniqueNameDisplay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/components/indicators/TechniqueNameDisplay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/helpers/AnimationUpdater.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/helpers/AnimationUpdater.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/helpers/combatHelpers.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/helpers/combatHelpers.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/helpers/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/helpers/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/helpers/index.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/helpers/index.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/useAICombat.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/useAICombat.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/useCombatActions.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/useCombatActions.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/useCombatAudio.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/useCombatAudio.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/useCombatLayout.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/useCombatLayout.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/useCombatState.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/useCombatState.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/hooks/usePreloadCombatAudio.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/hooks/usePreloadCombatAudio.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/combat/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/combat/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/controls/ControlsScreenThreeJS.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/controls/ControlsScreenThreeJS.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/controls/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/controls/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/animations.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/animations.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/MatchStatisticsDisplay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/MatchStatisticsDisplay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/NavigationButtons.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/NavigationButtons.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/PerformanceRating.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/PerformanceRating.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/VictoryAnimation3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/VictoryAnimation3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/components/WinnerDisplay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/components/WinnerDisplay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/EndScreen3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/EndScreen3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/endscreen/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/endscreen/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/AbilityList.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/AbilityList.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/ArchetypeCard.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/ArchetypeCard.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/ArchetypeCardGrid.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/ArchetypeCardGrid.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/ArchetypeDisplayHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/ArchetypeDisplayHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/EnhancedArchetypeDisplay.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/EnhancedArchetypeDisplay.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/MenuSection.css.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/MenuSection.css.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/MenuSectionHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/MenuSectionHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/components/StatBar.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/components/StatBar.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/intro/IntroScreenThreeJS.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/intro/IntroScreenThreeJS.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/philosophy/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/philosophy/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/philosophy/PhilosophyScreenThreeJS.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/philosophy/PhilosophyScreenThreeJS.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/AnatomyControlsHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/AnatomyControlsHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/AnatomyOverlay3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/AnatomyOverlay3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/HitFeedbackEffect3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/HitFeedbackEffect3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingAICharacter3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingAICharacter3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingArena3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingArena3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingControlsHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingControlsHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingDummy3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingDummy3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingFeedbackHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingFeedbackHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingModeSelectorHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingModeSelectorHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/TrainingStatsHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/TrainingStatsHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/VitalPointMarker3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/VitalPointMarker3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/components/VitalPointTrainingHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/components/VitalPointTrainingHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/hooks/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/hooks/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/hooks/useTrainingActions.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/hooks/useTrainingActions.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/hooks/useTrainingState.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/hooks/useTrainingState.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/training.css.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/training.css.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/screens/training/TrainingScreen3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/screens/training/TrainingScreen3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/BaseButton.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/BaseButton.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/BaseButtonHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/BaseButtonHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/BasePanel.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/BasePanel.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/BaseText.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/BaseText.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/index.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/index.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/layoutUtils.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/layoutUtils.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/ResponsiveContainer.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/ResponsiveContainer.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/base/useKoreanTheme.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/base/useKoreanTheme.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/mobile/ActionButtons.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/mobile/ActionButtons.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/mobile/GestureRecognizer.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/mobile/GestureRecognizer.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/mobile/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/mobile/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/mobile/index.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/mobile/index.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/mobile/StanceWheel.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/mobile/StanceWheel.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/mobile/VirtualDPad.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/mobile/VirtualDPad.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/anatomy/BoneRenderer.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/anatomy/BoneRenderer.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/anatomy/Face3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/anatomy/Face3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/anatomy/Hand3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/anatomy/Hand3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/anatomy/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/anatomy/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/anatomy/MuscleSystem.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/anatomy/MuscleSystem.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/effects/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/effects/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/effects/PlayerStateIndicators.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/effects/PlayerStateIndicators.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/effects/StanceSymbol3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/effects/StanceSymbol3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/effects/StanceTransitionEffect.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/effects/StanceTransitionEffect.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/index.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/index.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/models/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/models/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/models/Player3DWithTransitions.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/models/Player3DWithTransitions.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/models/SkeletalPlayer3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/models/SkeletalPlayer3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/scene/BackgroundScene3D.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/scene/BackgroundScene3D.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/scene/DebugCollision.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/scene/DebugCollision.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/scene/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/scene/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/ArchetypeCard.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/ArchetypeCard.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/KoreanButton.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/KoreanButton.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/KoreanPanel.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/KoreanPanel.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/KoreanText.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/KoreanText.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/KoreanUIDemo.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/KoreanUIDemo.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/MenuList.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/MenuList.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/three/ui/ProgressBar.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/three/ui/ProgressBar.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/ErrorModal.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/ErrorModal.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/KoreanHeaderHTML.css.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/KoreanHeaderHTML.css.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/KoreanHeaderHTML.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/KoreanHeaderHTML.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/MobileHUDLayout.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/MobileHUDLayout.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/ResponsiveContainer.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/ResponsiveContainer.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/shared/ConfirmDialog.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/shared/ConfirmDialog.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/shared/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/shared/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/SplashScreen.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/SplashScreen.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/shared/ui/VolumeControl.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/shared/ui/VolumeControl.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/test/HelloThreeJS.tsx.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/test/HelloThreeJS.tsx.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/components/test/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/components/test/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/data/archetypePhysicalAttributes.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/data/archetypePhysicalAttributes.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/data/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/data/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/data/techniques.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/data/techniques.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/index.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useActionFeedback.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useActionFeedback.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useCombatTimer.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useCombatTimer.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useDebounce.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useDebounce.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useKeyboardControls.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useKeyboardControls.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useMatchCountdown.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useMatchCountdown.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/usePauseMenu.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/usePauseMenu.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/usePlayerAnimation.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/usePlayerAnimation.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useResponsiveLayout.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useResponsiveLayout.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useRoundTransition.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useRoundTransition.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useTechniqueSelection.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useTechniqueSelection.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useThrottle.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useThrottle.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useTouchControls.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useTouchControls.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useWebGLContextLossHandler.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useWebGLContextLossHandler.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/hooks/useWindowSize.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/hooks/useWindowSize.ts.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/coverage/html/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/AdaptiveDifficulty.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/AIPersonality.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/ComboSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/DecisionTree.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ai/TrainingAI.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/AnimationPriority.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/AnimationStateMachine.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/AnimationTransitions.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/AttackAnimations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/BodyFacingSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/FacialExpressions.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/FallAnimations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/FootworkSkeletalAnimations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/HandPoses.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/HeadMovements.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/KeyframeInterpolation.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/MuscleActivation.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/RecoveryAnimations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/SkeletonRig.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/StanceGuardPoses.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/StepAnimations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/StepSkeletalAnimations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/TechniqueAnimationMapper.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/animation/types.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/bodypart/BodyPartDamageIntegration.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/bodypart/BodyPartHealthSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/bodypart/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/bodypart/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/bodypart/MovementPenaltySystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/bodypart/types.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/breathing/BreathingDisruptionSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/breathing/feedback.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/breathing/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/breathing/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/breathing/integration.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/BalanceSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/CombatStateSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/ConsciousnessSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/FallIntegration.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/painConsciousnessUtils.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/PainResponseSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/TrainingCombatSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/typeGuards.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/combat/types.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/CombatSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/EffectCalculator.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/effects.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/game.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/LayoutSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/CollisionDetection.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/CoordinateMapper.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/KnockbackPhysics.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/MovementPhysics.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/physics/SpeedModifierSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/player.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/PlayerEffectManager.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/ResponsiveScaling.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/KoreanCulture.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/KoreanTechniques.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/StanceManager.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/techniques.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/TransitionCalculator.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/TrigramCalculator.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/trigram/types.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/TrigramSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/types.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/DamageCalculator.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/HitDetection.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/KoreanAnatomy.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/KoreanVitalPoints.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/MeridianVitalPointMapping.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/types.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/vitalpoint/VitalPointsData.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/systems/VitalPointSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/test/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/test/setup.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/test/test-utils.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/AccessibilityTypes.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/common.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/constants/animations.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/constants/colors.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/constants/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/constants/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/constants/typography.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/constants/ui.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/facial.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/hand-animation.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/HtmlOverlayTypes.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/LayoutTypes.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/muscle.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/physics.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/player-visual.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/skeletal.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/types/technique.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/accessibility.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/colorHelpers.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/colorUtils.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/combatReadiness.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/controlMapping.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/deviceDetection.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/haptics.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/htmlOverlayHelpers.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/inputSystem.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/objectPool.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/performance/index.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/performance/index.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/performance/PerformanceMonitor.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/performance/PerformanceOverlay3D.tsx.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/performance/usePerformanceMonitor.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/performanceOptimization.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/player3DHelpers.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/playerUtils.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/responsiveLayout.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/skeletonScaling.ts.html</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://blacktrigram.com/coverage/html/utils/stanceHelpers.ts.html</loc>
+    <loc>https://blacktrigram.com/coverage/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -8249,6 +7457,798 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/AdaptiveDifficulty.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/AIPersonality.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/ComboSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/DecisionTree.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ai/TrainingAI.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/AnimationPriority.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/AnimationStateMachine.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/AnimationTransitions.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/AttackAnimations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/BodyFacingSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/FacialExpressions.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/FallAnimations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/FootworkSkeletalAnimations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/HandPoses.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/HeadMovements.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/KeyframeInterpolation.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/MuscleActivation.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/RecoveryAnimations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/SkeletonRig.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/StanceGuardPoses.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/StepAnimations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/StepSkeletalAnimations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/TechniqueAnimationMapper.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/types.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/bodypart/BodyPartDamageIntegration.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/bodypart/BodyPartHealthSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/bodypart/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/bodypart/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/bodypart/MovementPenaltySystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/bodypart/types.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/breathing/BreathingDisruptionSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/breathing/feedback.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/breathing/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/breathing/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/breathing/integration.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/BalanceSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/CombatStateSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/ConsciousnessSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/FallIntegration.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/painConsciousnessUtils.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/PainResponseSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/TrainingCombatSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/typeGuards.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/combat/types.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/CombatSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/EffectCalculator.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/effects.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/game.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/LayoutSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/CollisionDetection.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/CoordinateMapper.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/KnockbackPhysics.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/MovementPhysics.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/SpeedModifierSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/player.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/PlayerEffectManager.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/ResponsiveScaling.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/KoreanCulture.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/KoreanTechniques.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/StanceManager.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/techniques.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/TransitionCalculator.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/TrigramCalculator.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/trigram/types.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/TrigramSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/types.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/DamageCalculator.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/HitDetection.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/KoreanAnatomy.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/KoreanVitalPoints.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/MeridianVitalPointMapping.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/types.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/vitalpoint/VitalPointsData.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/VitalPointSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/test/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/test/setup.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/test/test-utils.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/AccessibilityTypes.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/common.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/constants/animations.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/constants/colors.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/constants/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/constants/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/constants/typography.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/constants/ui.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/facial.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/hand-animation.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/HtmlOverlayTypes.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/LayoutTypes.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/muscle.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/physics.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/player-visual.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/skeletal.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/types/technique.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/accessibility.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/colorHelpers.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/colorUtils.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/combatReadiness.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/controlMapping.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/deviceDetection.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/haptics.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/htmlOverlayHelpers.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/inputSystem.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/objectPool.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/performance/index.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/performance/index.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/performance/PerformanceMonitor.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/performance/PerformanceOverlay3D.tsx.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/performance/usePerformanceMonitor.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/performanceOptimization.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/player3DHelpers.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/playerUtils.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/responsiveLayout.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/skeletonScaling.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/utils/stanceHelpers.ts.html</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/test-results/index.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -8263,43 +8263,43 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202558.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_211711.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202737.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_211850.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202751.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_211904.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202805.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_211918.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202816.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_211929.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202830.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_211943.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_202848.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01082026_212002.html</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
