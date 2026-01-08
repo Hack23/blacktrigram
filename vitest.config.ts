@@ -63,7 +63,7 @@ export default defineConfig({
       provider: "v8",
       reporter: [
         ["text", { maxCols: 120 }], // Wider columns for full filenames
-        ["html", { subdir: "html" }],
+        ["html", { }],
         ["lcov", { file: "lcov.info" }],
         ["json", { file: "coverage.json" }],
         ["json-summary", { file: "coverage-summary.json" }],
