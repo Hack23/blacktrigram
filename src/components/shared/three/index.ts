@@ -28,11 +28,8 @@ export type { ProgressBarProps, ProgressBarType } from "./ui/ProgressBar";
 export { KoreanUIDemo } from "./ui/KoreanUIDemo";
 export type { KoreanUIDemoProps } from "./ui/KoreanUIDemo";
 
-export type { Player3DUnifiedProps } from "../../../types/player-visual";
-
 // Effects
 export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
-export type { PlayerStateIndicatorsProps } from "../../../types/player-visual";
 
 export { StanceSymbol3D } from "./effects/StanceSymbol3D";
 export type { StanceSymbol3DProps } from "./effects/StanceSymbol3D";
@@ -52,7 +49,12 @@ export { BoneRenderer } from "./anatomy/BoneRenderer";
 export type { BoneRendererProps } from "./anatomy/BoneRenderer";
 export { Hand3D } from "./anatomy/Hand3D";
 export type { Hand3DProps } from "./anatomy/Hand3D";
+export { Face3D } from "./anatomy/Face3D";
+export { MuscleSystem } from "./anatomy/MuscleSystem";
+export type { MuscleSystemProps } from "./anatomy/MuscleSystem";
 
 // Scene
 export { BackgroundScene3D } from "./scene/BackgroundScene3D";
 export type { BackgroundScene3DProps } from "./scene/BackgroundScene3D";
+export { DebugCollision } from "./scene/DebugCollision";
+export type { DebugCollisionProps } from "./scene/DebugCollision";

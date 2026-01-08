@@ -58,10 +58,9 @@ export { CombatReadinessBar } from "./hud/CombatReadinessBar";
 export { default as HealthBar } from "./indicators/HealthBar";
 export { default as StaminaBar } from "./indicators/StaminaBar";
 export { BreathingIndicator } from "./indicators/BreathingIndicator";
-
-// Re-export ConfirmDialog from shared
-export { default as ConfirmDialog } from "../../../shared/ui/shared/ConfirmDialog";
-export type { ConfirmDialogProps } from "../../../shared/ui/shared/ConfirmDialog";
+export { InputBufferDisplay } from "./indicators/InputBufferDisplay";
+export { StanceChangeIndicator } from "./indicators/StanceChangeIndicator";
+export { KeyboardHints } from "./controls/KeyboardHints";
 
 // Re-export component prop types
 export type { ActionFeedbackProps, TechniqueNameProps } from "./feedback/ActionFeedback";
