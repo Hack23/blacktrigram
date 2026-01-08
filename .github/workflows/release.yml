@@ -164,7 +164,10 @@ jobs:
           NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp" npm run test:e2e || TEST_EXIT_CODE=$?
           exit ${TEST_EXIT_CODE:-0}
 
-      # Run tests with coverage
+
+      - name: Clean old docs
+        run: rm -rf docs/api/*; rm -rf docs/cypress/*; rm -rf docs/test-results/*
+
       - name: Run tests with coverage
         run: npm run coverage
 
@@ -183,9 +186,11 @@ jobs:
       - name: Generate e2e html report
         run: npm run test:e2ereporthtmlall
 
-      # Copy test reports from build/ to docs/ for GitHub Pages
       - name: Copy test reports to docs
         run: npm run build:test-reports
+
+      - name: Update sitemap
+        run: npm run docs:sitemap
 
       - name: Deploy Documentation to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@9d877eea73427180ae43cf98e8914934fe157a1a # v4.7.6
