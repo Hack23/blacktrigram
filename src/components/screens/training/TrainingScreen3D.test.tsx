@@ -21,7 +21,7 @@ vi.mock("@react-three/drei", () => ({
 }));
 
 // Mock audio provider
-vi.mock("../../audio/AudioProvider", () => ({
+vi.mock("../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     playSFX: vi.fn(),
     fadeIn: vi.fn(() => Promise.resolve()),
@@ -31,7 +31,7 @@ vi.mock("../../audio/AudioProvider", () => ({
 }));
 
 // Mock input system
-vi.mock("../../utils/inputSystem", () => ({
+vi.mock("../../../utils/inputSystem", () => ({
   usePlayerMovement: () => ({
     playerPosition: { x: 0, y: 0 },
     isMoving: false,

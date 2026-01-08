@@ -8,7 +8,7 @@ import { RoundStartAnnouncement } from "./RoundStartAnnouncement";
 import React from "react";
 
 // Mock Audio Provider
-vi.mock("../../../audio/AudioProvider", () => ({
+vi.mock("../../../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isAudioReady: true,
     playSFX: vi.fn(),

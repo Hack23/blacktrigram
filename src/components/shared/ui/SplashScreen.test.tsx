@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { SplashScreen } from "../SplashScreen";
+import { SplashScreen } from "./SplashScreen";
 
 describe("SplashScreen", () => {
   const defaultProps = {

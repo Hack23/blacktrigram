@@ -7,7 +7,7 @@ import { Canvas } from '@react-three/fiber';
 import { describe, expect, it, vi } from 'vitest';
 import { MobileHUDLayout } from './MobileHUDLayout';
 import { PlayerState } from '../../../systems';
-import { PlayerArchetype } from '../../types';
+import { PlayerArchetype } from '../../../types';
 
 // Mock useWindowSize hook
 vi.mock('../../hooks/useWindowSize', () => ({

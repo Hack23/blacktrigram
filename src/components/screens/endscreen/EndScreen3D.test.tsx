@@ -7,7 +7,7 @@ import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { EndScreen3D } from "./EndScreen3D";
 
 // Mock AudioProvider
-vi.mock("../../audio/AudioProvider", () => ({
+vi.mock("../../../audio/AudioProvider", () => ({
   AudioProvider: ({ children }: { children: React.ReactNode }) => children,
   useAudio: () => ({
     isInitialized: true,

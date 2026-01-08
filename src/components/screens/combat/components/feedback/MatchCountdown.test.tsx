@@ -8,7 +8,7 @@ import { MatchCountdown } from "./MatchCountdown";
 import React from "react";
 
 // Mock Audio Provider
-vi.mock("../../../audio/AudioProvider", () => ({
+vi.mock("../../../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isAudioReady: true,
     playSFX: vi.fn(),
@@ -32,7 +32,7 @@ let mockHookState = {
 const getMockHookState = () => ({ ...mockHookState });
 
 // Mock useMatchCountdown hook
-vi.mock("../../../hooks/useMatchCountdown", () => ({
+vi.mock("../../../../../hooks/useMatchCountdown", () => ({
   useMatchCountdown: () => getMockHookState(),
 }));
 

@@ -8,12 +8,12 @@ import { usePreloadCombatAudio } from "./usePreloadCombatAudio";
 import type { IAudioManager } from "../../../../audio/types";
 
 // Mock AudioProvider
-vi.mock("../../../audio/AudioProvider", () => ({
+vi.mock("../../../../audio/AudioProvider", () => ({
   useAudio: vi.fn(),
 }));
 
 // Mock AudioAssetRegistry
-vi.mock("../../../audio/AudioAssetRegistry", () => ({
+vi.mock("../../../../audio/AudioAssetRegistry", () => ({
   audioAssetRegistry: {
     getSFX: vi.fn(),
     getMusic: vi.fn(),

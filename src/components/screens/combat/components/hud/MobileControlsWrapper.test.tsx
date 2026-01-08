@@ -11,7 +11,7 @@ interface MockComponentProps {
   readonly [key: string]: unknown;
 }
 
-vi.mock("../../mobile", () => ({
+vi.mock("../../../../shared/mobile", () => ({
   VirtualDPad: (_props: MockComponentProps) => <div data-testid="virtual-dpad">DPad</div>,
   ActionButtons: (_props: MockComponentProps) => <div data-testid="action-buttons">Buttons</div>,
   StanceWheel: (_props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,

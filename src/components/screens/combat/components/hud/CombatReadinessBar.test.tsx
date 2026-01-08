@@ -5,7 +5,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { CombatReadinessBar } from "./CombatReadinessBar";
-import { createMockPlayerState } from "../../../test/test-utils";
+import { createMockPlayerState } from "../../../../../test/test-utils";
 
 describe("CombatReadinessBar", () => {
   const defaultProps = {

@@ -6,12 +6,12 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CombatScreen3D } from "./CombatScreen3D";
-import { PlayerState } from "../../systems";
+import { PlayerState } from "../../../systems";
 import { PlayerArchetype, TrigramStance } from "../../../types/common";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 
 // Mock AudioProvider
-vi.mock("../../audio/AudioProvider", () => ({
+vi.mock("../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isInitialized: true,
     playMusic: vi.fn(),

@@ -11,7 +11,7 @@ import { render } from "@testing-library/react";
 import { BreathingIndicator } from "./BreathingIndicator";
 import { BreathingDisruptionLevel } from "../../../../../systems/breathing/BreathingDisruptionSystem";
 import { PlayerState } from "../../../../../systems/player";
-import { createMockPlayerState } from "../../../test/test-utils";
+import { createMockPlayerState } from "../../../../../test/test-utils";
 import { VitalPointEffectType } from "../../../../../types/common";
 
 describe("BreathingIndicator", () => {

@@ -9,7 +9,7 @@ import { useCombatAudio } from "./useCombatAudio";
 import * as AudioProvider from "../../../../audio/AudioProvider";
 
 // Mock the AudioProvider
-vi.mock("../../../audio/AudioProvider", () => ({
+vi.mock("../../../../audio/AudioProvider", () => ({
   useAudio: vi.fn(),
 }));
 

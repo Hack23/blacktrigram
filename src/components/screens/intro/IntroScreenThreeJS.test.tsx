@@ -5,7 +5,7 @@ import { PlayerArchetype } from "../../../types/common";
 import { AudioProvider } from "../../../audio/AudioProvider";
 
 // Mock AudioProvider
-vi.mock("../../audio/AudioProvider", () => ({
+vi.mock("../../../audio/AudioProvider", () => ({
   AudioProvider: ({ children }: { children: React.ReactNode }) => children,
   useAudio: () => ({
     isInitialized: true,
