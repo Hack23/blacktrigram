@@ -24,7 +24,15 @@
     "exactOptionalPropertyTypes": false, // Changed from true or default
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/systems/*": ["src/systems/*"],
+      "@/types/*": ["src/types/*"],
+      "@/audio/*": ["src/audio/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/data/*": ["src/data/*"],
+      "@/assets/*": ["src/assets/*"]
     },
 
     "types": ["node", "vitest/globals"] // Add vitest/globals for vi namespace
