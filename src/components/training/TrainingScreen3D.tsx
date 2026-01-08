@@ -33,8 +33,8 @@ import {
   VitalPointOverlayControls,
   type BodyRegionFilter,
 } from "../combat/components";
-import { GuardIndicator } from "../combat/components/GuardIndicator";
-import { TechniqueBar } from "../combat/components/TechniqueBar";
+import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
+import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
 import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import {
   ActionButtons,
