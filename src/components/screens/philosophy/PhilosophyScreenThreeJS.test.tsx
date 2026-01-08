@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
-import { PhilosophyScreenThreeJS } from "../PhilosophyScreenThreeJS";
+import { PhilosophyScreenThreeJS } from "./PhilosophyScreenThreeJS";
 
 // Mock Three.js Canvas to avoid WebGL issues in test environment
 vi.mock("@react-three/fiber", () => ({
