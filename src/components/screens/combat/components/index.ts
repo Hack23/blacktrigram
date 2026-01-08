@@ -111,3 +111,6 @@ export type { SpeedIndicatorHUDProps } from "./hud/SpeedIndicatorHUD";
 export type { HealthBarProps } from "./indicators/HealthBar";
 export type { StaminaBarProps } from "./indicators/StaminaBar";
 export type { BreathingIndicatorProps } from "./indicators/BreathingIndicator";
+export type { InputBufferDisplayProps } from "./indicators/InputBufferDisplay";
+export type { StanceChangeIndicatorProps } from "./indicators/StanceChangeIndicator";
+export type { KeyboardHintsProps } from "./controls/KeyboardHints";
