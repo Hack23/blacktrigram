@@ -9,9 +9,9 @@
  * @korean 전투화면도우미
  */
 
-import { PlayerState } from "../../../../../systems";
-import { TrigramStance } from "../../../../../types";
-import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
+import { PlayerState } from "../../../../systems";
+import { TrigramStance } from "../../../../types";
+import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 
 /**
  * Map of trigram stances to their array indices for fast lookups

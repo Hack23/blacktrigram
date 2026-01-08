@@ -17,9 +17,9 @@ import React, { useMemo, useRef, useState } from "react";
 import {
   ActionFeedback as ActionFeedbackData,
   ActionFeedbackType,
-} from "../../../../hooks/useActionFeedback";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
+} from "../../../../../hooks/useActionFeedback";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexColorToCSS, hexToRgbaString } from "../../../../../utils/colorUtils";
 
 // Animation phase thresholds (as percentage of total duration)
 /** Fade in completes at 20% of total duration */

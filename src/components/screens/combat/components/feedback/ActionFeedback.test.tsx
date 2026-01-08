@@ -7,7 +7,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ActionFeedback, TechniqueName } from "./ActionFeedback";
-import type { ActionFeedback as ActionFeedbackData } from "../../../../hooks/useActionFeedback";
+import type { ActionFeedback as ActionFeedbackData } from "../../../../../hooks/useActionFeedback";
 
 // Mock Three.js and React Three Fiber
 vi.mock("@react-three/fiber", () => ({

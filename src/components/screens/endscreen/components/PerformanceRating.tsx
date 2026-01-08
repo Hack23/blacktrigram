@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import { MatchStatistics } from "../../../../../systems/combat";
+import { MatchStatistics } from "../../../../systems/combat";
 import {
   FONT_FAMILY,
   KOREAN_COLORS,
   PERFORMANCE_RATING_THRESHOLDS,
-} from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+} from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import { pulseAnimation } from "./animations";
 
 export interface PerformanceRatingProps {

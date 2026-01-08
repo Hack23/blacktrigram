@@ -8,7 +8,7 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useRef } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../../types/constants";
 
 /**
  * Props for the CombatArena3D component.

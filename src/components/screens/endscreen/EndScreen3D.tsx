@@ -8,13 +8,13 @@ import React, {
   useState,
 } from "react";
 import * as THREE from "three";
-import { useAudio } from "../../../../../audio/AudioProvider";
-import { useWebGLContextLossHandler } from "../../../../../hooks/useWebGLContextLossHandler";
-import { PlayerState } from "../../systems";
-import { MatchStatistics } from "../../../../../systems/combat";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { useAudio } from "../../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { PlayerState } from "../../../systems";
+import { MatchStatistics } from "../../../systems/combat";
+import { Z_INDEX } from "../../../types/LayoutTypes";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
 import { NavigationButtons } from "./components/NavigationButtons";

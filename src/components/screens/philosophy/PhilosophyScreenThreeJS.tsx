@@ -1,17 +1,17 @@
 import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useAudio } from "../../../../../audio/AudioProvider";
-import { useWebGLContextLossHandler } from "../../../../../hooks/useWebGLContextLossHandler";
-import { useWindowSize } from "../../../../../hooks/useWindowSize";
-import { PLAYER_ARCHETYPES_DATA } from "../../systems";
-import { KoreanCulture } from "../../../../../systems/trigram/KoreanCulture";
-import { TRIGRAM_DATA } from "../../../../../systems/trigram/types";
-import { TrigramStance } from "../../types";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { BackgroundScene3D } from "../three";
+import { useAudio } from "../../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { useWindowSize } from "../../../hooks/useWindowSize";
+import { PLAYER_ARCHETYPES_DATA } from "../../../systems";
+import { KoreanCulture } from "../../../systems/trigram/KoreanCulture";
+import { TRIGRAM_DATA } from "../../../systems/trigram/types";
+import { TrigramStance } from "../../../types";
+import { Z_INDEX } from "../../../types/LayoutTypes";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
+import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
 export interface PhilosophyScreenThreeJSProps {

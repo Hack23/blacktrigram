@@ -7,20 +7,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useAudio } from "../../../../../audio/AudioProvider";
-import { useWebGLContextLossHandler } from "../../../../../hooks/useWebGLContextLossHandler";
-import { useWindowSize } from "../../../../../hooks/useWindowSize";
-import { PLAYER_ARCHETYPES_DATA } from "../../../../../systems/types";
-import { GameMode, PlayerArchetype } from "../../../../../types/common";
+import { useAudio } from "../../../audio/AudioProvider";
+import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { useWindowSize } from "../../../hooks/useWindowSize";
+import { PLAYER_ARCHETYPES_DATA } from "../../../systems/types";
+import { GameMode, PlayerArchetype } from "../../../types/common";
 import {
   ARCHETYPE_BACKGROUNDS,
   FONT_FAMILY,
   KOREAN_COLORS,
-} from "../../../../../types/constants";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { getArchetypeAssets } from "../../../../../utils/playerUtils";
-import { BackgroundScene3D } from "../three";
+} from "../../../types/constants";
+import { Z_INDEX } from "../../../types/LayoutTypes";
+import { hexToRgbaString } from "../../../utils/colorUtils";
+import { getArchetypeAssets } from "../../../utils/playerUtils";
+import { BackgroundScene3D } from "../../shared/three";
 import { KoreanHeaderHTML } from "../../shared/ui/KoreanHeaderHTML";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";

@@ -5,17 +5,17 @@
  */
 
 import { useCallback, useEffect, useRef } from "react";
-import { useAudio } from "../../../../../audio/AudioProvider";
+import { useAudio } from "../../../../audio/AudioProvider";
 import {
   AudioBodyRegion,
   ImpactIntensity,
-} from "../../../../../audio/types";
+} from "../../../../audio/types";
 import {
   getBoneImpactSoundId,
   calculateImpactIntensity,
   detectAudioBodyRegion,
   getImpactVolumeMultiplier,
-} from "../../../../../audio/BoneImpactAudioMap";
+} from "../../../../audio/BoneImpactAudioMap";
 
 /**
  * Attack intensity levels for sound selection

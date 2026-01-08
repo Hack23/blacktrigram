@@ -1,9 +1,9 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AudioProvider } from "../../../../../audio/AudioProvider";
-import { MatchStatistics } from "../../../../../systems/combat";
-import { PlayerArchetype } from "../../../../../types/common";
-import { createPlayerFromArchetype } from "../../../../../utils/playerUtils";
+import { AudioProvider } from "../../../audio/AudioProvider";
+import { MatchStatistics } from "../../../systems/combat";
+import { PlayerArchetype } from "../../../types/common";
+import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { EndScreen3D } from "./EndScreen3D";
 
 // Mock AudioProvider

@@ -8,7 +8,7 @@ import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
 import { describe, it, expect } from "vitest";
 import React, { Suspense } from "react";
-import { BodyRegion } from "../../../../types/common";
+import { BodyRegion } from "../../../../../types/common";
 import TraumaOverlay3D, {
   TraumaOverlay3DProps,
   Injury,

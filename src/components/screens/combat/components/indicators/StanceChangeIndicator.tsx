@@ -10,10 +10,10 @@
  
 import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
-import { TrigramStance } from "../../../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
+import { TrigramStance } from "../../../../../types/common";
 
 /**
  * Props for StanceChangeIndicator component

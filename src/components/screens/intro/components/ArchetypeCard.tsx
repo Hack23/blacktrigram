@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
-import { PlayerArchetype } from "../../../../../types/common";
-import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString, hexColorToCSS } from "../../../../../utils/colorUtils";
+import { PlayerArchetype } from "../../../../types/common";
+import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
 import { AbilityList } from "./AbilityList";
 import { StatBar } from "./StatBar";
 

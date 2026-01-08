@@ -5,7 +5,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { TrainingAICharacter3D } from "./TrainingAICharacter3D";
-import { TrigramStance } from "../../../../../types/common";
+import { TrigramStance } from "../../../../types/common";
 
 // Mock React Three Fiber
 vi.mock("@react-three/fiber", () => ({

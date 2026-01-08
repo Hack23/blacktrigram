@@ -12,8 +12,8 @@
  */
 
 import React, { useMemo } from "react";
-import { PlayerState } from "../../../../systems/player";
-import { Technique } from "../../../../types";
+import { PlayerState } from "../../../../../systems/player";
+import { Technique } from "../../../../../types";
 import { TechniqueCard } from "./TechniqueCard";
 
 /**

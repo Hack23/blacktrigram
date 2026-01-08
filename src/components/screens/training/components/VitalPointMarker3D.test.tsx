@@ -15,10 +15,10 @@ import { Canvas } from "@react-three/fiber";
 import { describe, expect, it, vi } from "vitest";
 import { Suspense } from "react";
 import { VitalPointMarker3D } from "./VitalPointMarker3D";
-import type { VitalPoint } from "../../../../../systems/vitalpoint/types";
-import { VitalPointCategory, VitalPointSeverity, TrigramStance } from "../../../../../types/common";
-import { EffectIntensity } from "../../../../../systems/effects";
-import { VitalPointEffectType } from "../../../../../types/common";
+import type { VitalPoint } from "../../../../systems/vitalpoint/types";
+import { VitalPointCategory, VitalPointSeverity, TrigramStance } from "../../../../types/common";
+import { EffectIntensity } from "../../../../systems/effects";
+import { VitalPointEffectType } from "../../../../types/common";
 
 // Helper to render Three.js components
 function render3D(component: React.ReactElement) {

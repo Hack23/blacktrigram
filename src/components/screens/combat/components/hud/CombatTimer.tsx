@@ -14,9 +14,9 @@
  */
 
 import React, { useMemo, useEffect } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
-import { hexColorToCSS } from "../../../../utils/colorUtils";
-import { TimerWarningLevel } from "../../../../hooks/useCombatTimer";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { hexColorToCSS } from "../../../../../utils/colorUtils";
+import { TimerWarningLevel } from "../../../../../hooks/useCombatTimer";
 
 // Define CSS animation once at module level to avoid re-insertion
 const PULSE_ANIMATION_ID = "combat-timer-pulse-animation";

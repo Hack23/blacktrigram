@@ -12,13 +12,13 @@
  */
 
 import React, { useEffect, useMemo, useRef } from "react";
-import { useAudio } from "../../../../audio/AudioProvider";
+import { useAudio } from "../../../../../audio/AudioProvider";
 import {
   MatchCountdownState,
   useMatchCountdown,
-} from "../../../../hooks/useMatchCountdown";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexColorToCSS } from "../../../../utils/colorUtils";
+} from "../../../../../hooks/useMatchCountdown";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexColorToCSS } from "../../../../../utils/colorUtils";
 
 /**
  * Props for the MatchCountdown component

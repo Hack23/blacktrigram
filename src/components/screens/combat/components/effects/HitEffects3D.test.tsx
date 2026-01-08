@@ -6,7 +6,7 @@ import { render } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import HitEffects3D from "./HitEffects3D";
 import { HitEffect } from "../../../../../systems";
-import { HitEffectType } from "../../../../systems/effects";
+import { HitEffectType } from "../../../../../systems/effects";
 
 // Mock Three.js and React Three Fiber
 vi.mock("@react-three/fiber", () => ({

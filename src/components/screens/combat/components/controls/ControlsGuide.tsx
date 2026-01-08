@@ -9,9 +9,9 @@
  */
 
 import React from "react";
-import { useAudio } from "../../../../audio/AudioProvider";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { useAudio } from "../../../../../audio/AudioProvider";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface ControlsGuideProps {
   readonly onClose: () => void;

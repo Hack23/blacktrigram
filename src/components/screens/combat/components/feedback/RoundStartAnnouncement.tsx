@@ -17,9 +17,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useAudio } from "../../../../audio/AudioProvider";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexColorToCSS } from "../../../../utils/colorUtils";
+import { useAudio } from "../../../../../audio/AudioProvider";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexColorToCSS } from "../../../../../utils/colorUtils";
 
 /**
  * Props for the RoundStartAnnouncement component

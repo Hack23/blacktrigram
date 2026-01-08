@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { GameMode } from "../../../../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { GameMode } from "../../../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import "./MenuSection.css";
 
 export interface MenuSectionHTMLProps {

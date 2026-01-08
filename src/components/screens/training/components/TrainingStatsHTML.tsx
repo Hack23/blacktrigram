@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from "react";
-import { FONT_FAMILY } from "../../../../../types/constants";
+import { FONT_FAMILY } from "../../../../types/constants";
 
 /**
  * Training statistics interface

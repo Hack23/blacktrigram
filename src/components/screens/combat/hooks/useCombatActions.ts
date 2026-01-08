@@ -145,8 +145,8 @@ export interface UseCombatActionsConfig {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
     readonly playHitSound: (damage: number) => Promise<void>;
     readonly playBoneImpactSound: (options: {
-      region?: import("../../../audio/types").AudioBodyRegion;
-      intensity?: import("../../../audio/types").ImpactIntensity;
+      region?: import("../../../../audio/types").AudioBodyRegion;
+      intensity?: import("../../../../audio/types").ImpactIntensity;
       damage?: number;
       remainingHealth?: number;
       vitalPoint?: boolean;

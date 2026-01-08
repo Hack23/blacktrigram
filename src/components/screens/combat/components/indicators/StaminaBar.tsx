@@ -11,8 +11,8 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface StaminaBarProps {
   /** Current stamina value */

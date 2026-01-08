@@ -21,7 +21,7 @@ import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry.js";
 import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo, useEffect } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../../types/constants";
 
 /**
  * Blood decal configuration

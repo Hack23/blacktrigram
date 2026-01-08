@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { audioAssetRegistry } from "../../../../../audio/AudioAssetRegistry";
+import { audioAssetRegistry } from "../../../audio/AudioAssetRegistry";
 
 describe("Screen Audio Integration", () => {
   beforeEach(() => {

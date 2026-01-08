@@ -20,8 +20,8 @@
 import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../types/constants";
-import { BodyRegion } from "../../../../types/common";
+import { KOREAN_COLORS } from "../../../../../types/constants";
+import { BodyRegion } from "../../../../../types/common";
 
 /**
  * Injury type classification

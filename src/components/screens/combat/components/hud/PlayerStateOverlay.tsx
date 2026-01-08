@@ -19,7 +19,7 @@ import { BalanceIndicator } from "../indicators/BalanceIndicator";
 import { ConsciousnessBlur } from "../effects/ConsciousnessBlur";
 import { BloodLossOverlay } from "../effects/BloodLossOverlay";
 import { StaminaWarning } from "../indicators/StaminaWarning";
-import type { BalanceState } from "../../../../types/player-visual";
+import type { BalanceState } from "../../../../../types/player-visual";
 
 export interface PlayerStateOverlayProps {
   /**

@@ -13,7 +13,7 @@
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import React, { useRef, useState, useCallback, useEffect, useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
 
 export interface FPSMonitorProps {
   /** Whether to show the FPS monitor */

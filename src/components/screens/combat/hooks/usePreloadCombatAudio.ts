@@ -15,9 +15,9 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { audioAssetRegistry } from "../../../../../audio/AudioAssetRegistry";
-import { useAudio } from "../../../../../audio/AudioProvider";
-import type { AudioAsset } from "../../../../../audio/types";
+import { audioAssetRegistry } from "../../../../audio/AudioAssetRegistry";
+import { useAudio } from "../../../../audio/AudioProvider";
+import type { AudioAsset } from "../../../../audio/types";
 
 export interface PreloadCombatAudioState {
   /**

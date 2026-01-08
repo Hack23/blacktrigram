@@ -6,7 +6,7 @@
 
 import React, { useCallback, useState } from "react";
 import type { AnatomyLayer } from "./AnatomyOverlay3D";
-import { FONT_FAMILY } from "../../../../../types/constants";
+import { FONT_FAMILY } from "../../../../types/constants";
 import "../training.css";
 
 /**

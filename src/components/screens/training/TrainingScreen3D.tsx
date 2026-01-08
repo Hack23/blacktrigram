@@ -10,41 +10,41 @@
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { useAudio } from "../../../../../audio/AudioProvider";
-import { usePlayerAnimation } from "../../../../../hooks/usePlayerAnimation";
-import { useTechniqueSelection } from "../../../../../hooks/useTechniqueSelection";
-import { GestureEvent } from "../../../../../hooks/useTouchControls";
-import { useWebGLContextLossHandler } from "../../../../../hooks/useWebGLContextLossHandler";
-import { PlayerState } from "../../systems";
-import { AnimationEvents } from "../../../../../systems/animation";
-import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
-import { CombatState, PlayerArchetype, Position, Technique } from "../../types";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { usePlayerMovement } from "../../../../../utils/inputSystem";
+import { useAudio } from "../../../audio/AudioProvider";
+import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
+import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
+import { GestureEvent } from "../../../hooks/useTouchControls";
+import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { PlayerState } from "../../../systems";
+import { AnimationEvents } from "../../../systems/animation";
+import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
+import { CombatState, PlayerArchetype, Position, Technique } from "../../../types";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
+import { usePlayerMovement } from "../../../utils/inputSystem";
 import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
-} from "../../../../../utils/player3DHelpers";
+} from "../../../utils/player3DHelpers";
 import {
   VitalPointMarkers3D,
   VitalPointOverlayControls,
   type BodyRegionFilter,
-} from "../screens/combat/components";
-import { GuardIndicator } from "../screens/combat/components/indicators/GuardIndicator";
-import { TechniqueBar } from "../screens/combat/components/indicators/TechniqueBar";
-import { useCombatLayout } from "../screens/combat/hooks/useCombatLayout";
+} from "../combat/components";
+import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
+import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
+import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import {
   ActionButtons,
   GestureRecognizer,
   StanceWheel,
   VirtualDPad,
-} from "../mobile";
+} from "../../shared/mobile";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
-import { SkeletalPlayer3D } from "../three";
+import { SkeletalPlayer3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
@@ -130,7 +130,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Vital point overlay state
   const [overlayVisible, setOverlayVisible] = React.useState(false);
   const [severityFilters, setSeverityFilters] = React.useState<
-    import("../../types/common").VitalPointSeverity[]
+    import("../../../types/common").VitalPointSeverity[]
   >([]);
   const [regionFilter, setRegionFilter] =
     React.useState<BodyRegionFilter>("all");

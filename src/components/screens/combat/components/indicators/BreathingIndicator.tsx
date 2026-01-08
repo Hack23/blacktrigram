@@ -14,10 +14,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   BreathingDisruptionSystem,
   createBreathingIndicator,
-} from "../../../../systems/breathing";
-import { PlayerState } from "../../../../systems/player";
-import { FONT_FAMILY } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
+} from "../../../../../systems/breathing";
+import { PlayerState } from "../../../../../systems/player";
+import { FONT_FAMILY } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import "./BreathingIndicator.css";
 
 export interface BreathingIndicatorProps {

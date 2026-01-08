@@ -6,7 +6,7 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useCombatLayout } from "./useCombatLayout";
-import * as deviceDetection from "../../../../../utils/deviceDetection";
+import * as deviceDetection from "../../../../utils/deviceDetection";
 
 describe("useCombatLayout", () => {
   beforeEach(() => {

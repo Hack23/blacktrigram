@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { PlayerArchetype } from "../../../../../types/common";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { PlayerArchetype } from "../../../../types/common";
+import { KOREAN_COLORS } from "../../../../types/constants";
 import { ArchetypeCardGrid, ArchetypeCardGridProps } from "./ArchetypeCardGrid";
 import { ArchetypeCardData } from "./ArchetypeCard";
 

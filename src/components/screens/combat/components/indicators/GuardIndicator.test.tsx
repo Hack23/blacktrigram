@@ -8,7 +8,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { GuardIndicator } from "./GuardIndicator";
-import { TrigramStance } from "../../../../types/common";
+import { TrigramStance } from "../../../../../types/common";
 
 describe("GuardIndicator", () => {
   describe("Rendering", () => {

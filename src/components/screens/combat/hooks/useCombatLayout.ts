@@ -31,10 +31,10 @@
  */
 
 import { useMemo } from "react";
-import { shouldUseMobileControls } from "../../../../../utils/deviceDetection";
-import { getScreenSize } from "../../../../../systems/ResponsiveScaling";
+import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
+import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 
-import type { ScreenSize } from "../../../../../systems/ResponsiveScaling";
+import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
 export interface LayoutConstants {
   readonly padding: number;

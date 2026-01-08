@@ -14,9 +14,9 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
-import { Technique } from "../../../../types";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { triggerHaptic } from "../../../../utils/haptics";
+import { Technique } from "../../../../../types";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { triggerHaptic } from "../../../../../utils/haptics";
 
 /**
  * Props for TechniqueCard component.

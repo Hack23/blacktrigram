@@ -18,7 +18,7 @@
 
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { HitEffectType } from "../../../../systems/effects";
+import { HitEffectType } from "../../../../../systems/effects";
 import { ActionFeedback, TechniqueName } from "./ActionFeedback";
 import { ComboCounter } from "./ComboCounter";
 import { DamageNumbers } from "./DamageNumbers";

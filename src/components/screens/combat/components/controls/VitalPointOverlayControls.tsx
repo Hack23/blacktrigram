@@ -18,9 +18,9 @@ import React, { useCallback, useMemo, useState } from "react";
 import {
   KOREAN_VITAL_POINTS,
   getVitalPointsStats,
-} from "../../../../systems/vitalpoint/KoreanVitalPoints";
-import { VitalPointSeverity } from "../../../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+} from "../../../../../systems/vitalpoint/KoreanVitalPoints";
+import { VitalPointSeverity } from "../../../../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
 import type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
 
 // Re-export BodyRegionFilter for convenience

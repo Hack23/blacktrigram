@@ -20,10 +20,10 @@ import {
   GestureRecognizer,
   StanceWheel,
   VirtualDPad,
-} from "../../../mobile";
-import { ButtonEventType } from "../../../shared/mobile/ActionButtons";
-import { Direction, DPadEventType } from "../../../shared/mobile/VirtualDPad";
-import { GestureEvent } from "../../../../hooks/useTouchControls";
+} from "../../../../shared/mobile";
+import { ButtonEventType } from "../../../../shared/mobile/ActionButtons";
+import { Direction, DPadEventType } from "../../../../shared/mobile/VirtualDPad";
+import { GestureEvent } from "../../../../../hooks/useTouchControls";
 
 export interface MobileControlsWrapperProps {
   /** Whether mobile controls are enabled */

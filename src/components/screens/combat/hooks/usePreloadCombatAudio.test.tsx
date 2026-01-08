@@ -5,7 +5,7 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { usePreloadCombatAudio } from "./usePreloadCombatAudio";
-import type { IAudioManager } from "../../../../../audio/types";
+import type { IAudioManager } from "../../../../audio/types";
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
@@ -20,8 +20,8 @@ vi.mock("../../../audio/AudioAssetRegistry", () => ({
   },
 }));
 
-import { useAudio } from "../../../../../audio/AudioProvider";
-import { audioAssetRegistry } from "../../../../../audio/AudioAssetRegistry";
+import { useAudio } from "../../../../audio/AudioProvider";
+import { audioAssetRegistry } from "../../../../audio/AudioAssetRegistry";
 
 describe("usePreloadCombatAudio", () => {
   let mockAudioManager: Partial<IAudioManager>;

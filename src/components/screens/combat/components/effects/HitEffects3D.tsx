@@ -7,9 +7,9 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { HitEffect } from "../../../../systems";
-import { HitEffectType } from "../../../../systems/effects";
-import { KOREAN_COLORS } from "../../../../types/constants";
+import { HitEffect } from "../../../../../systems";
+import { HitEffectType } from "../../../../../systems/effects";
+import { KOREAN_COLORS } from "../../../../../types/constants";
 
 /**
  * Props for the HitEffects3D component.

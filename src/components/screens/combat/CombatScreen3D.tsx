@@ -15,46 +15,46 @@ import React, {
   useState,
 } from "react";
 import * as THREE from "three";
-import { useAudio } from "../../../../../audio/AudioProvider";
-import { useKeyboardControls } from "../../../../../hooks/useKeyboardControls";
-import { usePlayerAnimation } from "../../../../../hooks/usePlayerAnimation";
-import { useRoundTransition } from "../../../../../hooks/useRoundTransition";
-import { useWebGLContextLossHandler } from "../../../../../hooks/useWebGLContextLossHandler";
-import { HitEffect, PlayerState } from "../../systems";
-import { CombatSystem } from "../../../../../systems/CombatSystem";
-import { BalanceSystem } from "../../../../../systems/combat/BalanceSystem";
+import { useAudio } from "../../../audio/AudioProvider";
+import { useKeyboardControls } from "../../../hooks/useKeyboardControls";
+import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
+import { useRoundTransition } from "../../../hooks/useRoundTransition";
+import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { HitEffect, PlayerState } from "../../../systems";
+import { CombatSystem } from "../../../systems/CombatSystem";
+import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import {
   determineRecoveryType,
   getRecoveryAnimationState,
-} from "../../../../../systems/animation/RecoveryAnimations";
+} from "../../../systems/animation/RecoveryAnimations";
 import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
-} from "../../../../../systems/ai";
+} from "../../../systems/ai";
 import {
   AnimationEvents,
   getAnimationForTechnique,
-} from "../../../../../systems/animation";
-import type { AnimationState } from "../../../../../systems/animation/types";
-import { HitEffectType } from "../../../../../systems/effects";
-import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
+} from "../../../systems/animation";
+import type { AnimationState } from "../../../systems/animation/types";
+import { HitEffectType } from "../../../systems/effects";
+import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
   GameMode,
   PlayerArchetype,
   Position,
   TrigramStance,
-} from "../../types";
+} from "../../../types";
 import {
   FONT_FAMILY,
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
-} from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { usePlayerMovement } from "../../../../../utils/inputSystem";
-import { PerformanceOverlay3D } from "../../../../../utils/performance";
-import { createPlayerFromArchetype } from "../../../../../utils/playerUtils";
+} from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
+import { usePlayerMovement } from "../../../utils/inputSystem";
+import { PerformanceOverlay3D } from "../../../utils/performance";
+import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { Z_INDEX } from "../../../types/LayoutTypes";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
 import { KeyboardHints } from "./components/controls/KeyboardHints";
@@ -67,16 +67,16 @@ import { StanceChangeIndicator } from "./components/indicators/StanceChangeIndic
 // import { CombatFooter } from "./components/CombatFooter";
 // import { CombatHUD } from "./components/CombatHUD";
 // import { CombatStatsPanel } from "./components/CombatStatsPanel";
-import { useActionFeedback } from "../../../../../hooks/useActionFeedback";
-import { useCombatTimer } from "../../../../../hooks/useCombatTimer";
-import { useTechniqueSelection } from "../../../../../hooks/useTechniqueSelection";
-import { GestureEvent } from "../../../../../hooks/useTouchControls";
-import { Technique } from "../../types";
+import { useActionFeedback } from "../../../hooks/useActionFeedback";
+import { useCombatTimer } from "../../../hooks/useCombatTimer";
+import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
+import { GestureEvent } from "../../../hooks/useTouchControls";
+import { Technique } from "../../../types";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
   getBalanceState,
-} from "../../../../../utils/player3DHelpers";
+} from "../../../utils/player3DHelpers";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../../shared/three";
@@ -109,7 +109,7 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-import { SpeedModifierSystem, MovementType } from "../../../../../systems/physics/SpeedModifierSystem";
+import { SpeedModifierSystem, MovementType } from "../../../systems/physics/SpeedModifierSystem";
 
 /**
  * Props for the CombatScreen3D component.
@@ -273,7 +273,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Vital point overlay state (for both players)
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [severityFilters, setSeverityFilters] = useState<
-    import("../../types/common").VitalPointSeverity[]
+    import("../../../types/common").VitalPointSeverity[]
   >([]);
   const [regionFilter, setRegionFilter] =
     useState<import("./components").BodyRegionFilter>("all");

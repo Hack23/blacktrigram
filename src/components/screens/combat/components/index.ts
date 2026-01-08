@@ -60,8 +60,8 @@ export { default as StaminaBar } from "./indicators/StaminaBar";
 export { BreathingIndicator } from "./indicators/BreathingIndicator";
 
 // Re-export ConfirmDialog from shared
-export { default as ConfirmDialog } from "../../shared/ui/shared/ConfirmDialog";
-export type { ConfirmDialogProps } from "../../shared/ui/shared/ConfirmDialog";
+export { default as ConfirmDialog } from "../../../shared/ui/shared/ConfirmDialog";
+export type { ConfirmDialogProps } from "../../../shared/ui/shared/ConfirmDialog";
 
 // Re-export component prop types
 export type { ActionFeedbackProps, TechniqueNameProps } from "./feedback/ActionFeedback";

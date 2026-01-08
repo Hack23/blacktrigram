@@ -17,9 +17,9 @@
  */
 
 import React, { useMemo } from "react";
-import { BodyPart, BodyPartHealth } from "../../../../systems/bodypart/types";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { BodyPart, BodyPartHealth } from "../../../../../systems/bodypart/types";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface BodyPartHealthDisplayProps {
   /** Body part health data */

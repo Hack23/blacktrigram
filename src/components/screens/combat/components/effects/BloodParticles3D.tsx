@@ -20,7 +20,7 @@ import { Points, PointMaterial } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../../types/constants";
 
 /**
  * Blood particle data structure for efficient simulation

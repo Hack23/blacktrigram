@@ -14,7 +14,7 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
 
 export interface SpeedIndicatorHUDProps {
   /**

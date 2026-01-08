@@ -6,7 +6,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useCombatAudio } from "./useCombatAudio";
-import * as AudioProvider from "../../../../../audio/AudioProvider";
+import * as AudioProvider from "../../../../audio/AudioProvider";
 
 // Mock the AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({

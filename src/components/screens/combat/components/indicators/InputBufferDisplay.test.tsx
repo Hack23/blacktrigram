@@ -5,7 +5,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { InputBufferDisplay } from "./InputBufferDisplay";
-import { QueuedInput } from "../../../../hooks/useKeyboardControls";
+import { QueuedInput } from "../../../../../hooks/useKeyboardControls";
 import React from "react";
 
 // Mock Html from @react-three/drei

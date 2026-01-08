@@ -5,7 +5,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { DifficultyIndicator } from "./DifficultyIndicator";
-import { DifficultyTier } from "../../../../systems/ai";
+import { DifficultyTier } from "../../../../../systems/ai";
 
 describe("DifficultyIndicator", () => {
   it("should render difficulty indicator", () => {

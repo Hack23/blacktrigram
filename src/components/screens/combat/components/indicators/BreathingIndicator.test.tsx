@@ -9,10 +9,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { BreathingIndicator } from "./BreathingIndicator";
-import { BreathingDisruptionLevel } from "../../../../systems/breathing/BreathingDisruptionSystem";
-import { PlayerState } from "../../../../systems/player";
+import { BreathingDisruptionLevel } from "../../../../../systems/breathing/BreathingDisruptionSystem";
+import { PlayerState } from "../../../../../systems/player";
 import { createMockPlayerState } from "../../../test/test-utils";
-import { VitalPointEffectType } from "../../../../types/common";
+import { VitalPointEffectType } from "../../../../../types/common";
 
 describe("BreathingIndicator", () => {
   let mockPlayer: PlayerState;

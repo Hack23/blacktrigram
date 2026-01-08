@@ -9,9 +9,9 @@
 
 import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { ControlBinding } from "../../../../utils/controlMapping";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { ControlBinding } from "../../../../../utils/controlMapping";
 
 /**
  * Props for KeyboardHints component

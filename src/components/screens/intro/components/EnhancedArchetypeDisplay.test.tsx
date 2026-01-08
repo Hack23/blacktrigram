@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../types/constants";
 import { EnhancedArchetypeDisplay, EnhancedArchetypeDisplayProps } from "./EnhancedArchetypeDisplay";
 import { ArchetypeDataShape } from "./ArchetypeDisplayHTML";
 

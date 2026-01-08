@@ -8,10 +8,10 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
-import { VitalPoint } from "../../../../../systems/vitalpoint/types";
-import { VitalPointSeverity } from "../../../../../types/common";
-import { KOREAN_COLORS, FONT_FAMILY, UI_DIMENSIONS } from "../../../../../types/constants";
-import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../../../utils/htmlOverlayHelpers";
+import { VitalPoint } from "../../../../systems/vitalpoint/types";
+import { VitalPointSeverity } from "../../../../types/common";
+import { KOREAN_COLORS, FONT_FAMILY, UI_DIMENSIONS } from "../../../../types/constants";
+import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../../utils/htmlOverlayHelpers";
 
 /**
  * Props for VitalPointMarker3D component

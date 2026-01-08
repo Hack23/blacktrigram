@@ -13,8 +13,8 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS } from "../../../../types/constants";
-import type { BalanceState } from "../../../../types/player-visual";
+import { KOREAN_COLORS } from "../../../../../types/constants";
+import type { BalanceState } from "../../../../../types/player-visual";
 
 export interface BalanceIndicatorProps {
   /**

@@ -5,11 +5,11 @@
  */
 
 import React, { useMemo } from "react";
-import { PlayerState } from "../../../../systems";
-import { PLAYER_ARCHETYPES_DATA } from "../../../../systems/types";
-import { KOREAN_COLORS } from "../../../../types/constants";
-import { ProgressBar, KoreanText as KoreanText3D } from "../../../three";
-import { calculateProgressBarSize } from "../../../../utils/responsiveLayout";
+import { PlayerState } from "../../../../../systems";
+import { PLAYER_ARCHETYPES_DATA } from "../../../../../systems/types";
+import { KOREAN_COLORS } from "../../../../../types/constants";
+import { ProgressBar, KoreanText as KoreanText3D } from "../../../../shared/three";
+import { calculateProgressBarSize } from "../../../../../utils/responsiveLayout";
 
 export interface CombatHUDThreeProps {
   readonly player1: PlayerState;

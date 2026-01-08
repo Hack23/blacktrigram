@@ -10,8 +10,8 @@
  */
 
 import React from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface CombatControlsPanelProps {
   /** Combat message log (most recent messages) */

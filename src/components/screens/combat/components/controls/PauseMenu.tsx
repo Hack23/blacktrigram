@@ -17,14 +17,14 @@
  */
 
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { useAudio } from "../../../../audio/AudioProvider";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
-import ConfirmDialog from "../../../shared/ui/shared/ConfirmDialog";
+import { useAudio } from "../../../../../audio/AudioProvider";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import ConfirmDialog from "../../../../shared/ui/shared/ConfirmDialog";
 import ControlsGuide from "./ControlsGuide";
 import QuickSettings from "./QuickSettings";
-import { handleKeyboardNav, getFocusStyle } from "../../../../utils/accessibility";
-import { createBilingualLabel } from "../../../../types/AccessibilityTypes";
+import { handleKeyboardNav, getFocusStyle } from "../../../../../utils/accessibility";
+import { createBilingualLabel } from "../../../../../types/AccessibilityTypes";
 
 export interface PauseMenuProps {
   readonly onResume: () => void;

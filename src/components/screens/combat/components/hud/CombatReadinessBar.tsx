@@ -12,15 +12,15 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { 
   calculateCombatReadiness, 
   getCombatReadinessColor, 
   getCombatReadinessLabel,
   getCombatReadinessBars
-} from "../../../../utils/combatReadiness";
-import type { PlayerState } from "../../../../systems/player";
+} from "../../../../../utils/combatReadiness";
+import type { PlayerState } from "../../../../../systems/player";
 
 export interface CombatReadinessBarProps {
   /** Player state containing all combat factors */

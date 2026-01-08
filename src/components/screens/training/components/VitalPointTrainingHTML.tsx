@@ -4,9 +4,9 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_VITAL_POINTS } from "../../../../../systems/vitalpoint/KoreanVitalPoints";
-import { VitalPointSeverity } from "../../../../../types/common";
-import { FONT_FAMILY } from "../../../../../types/constants";
+import { KOREAN_VITAL_POINTS } from "../../../../systems/vitalpoint/KoreanVitalPoints";
+import { VitalPointSeverity } from "../../../../types/common";
+import { FONT_FAMILY } from "../../../../types/constants";
 import "../training.css";
 
 /**

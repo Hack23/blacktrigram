@@ -1,11 +1,11 @@
 import React from "react";
-import { PlayerState } from "../../../../../systems";
+import { PlayerState } from "../../../../systems";
 import {
   ARCHETYPE_ASSETS,
   FONT_FAMILY,
   KOREAN_COLORS,
-} from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+} from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import { fadeInAnimation, scaleInAnimation } from "./animations";
 
 export interface WinnerDisplayProps {

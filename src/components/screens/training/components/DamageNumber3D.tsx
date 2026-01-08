@@ -7,8 +7,8 @@
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
-import { FONT_FAMILY } from "../../../../../types/constants";
-import { applyHtmlOverlayStyles } from "../../../../../utils/htmlOverlayHelpers";
+import { FONT_FAMILY } from "../../../../types/constants";
+import { applyHtmlOverlayStyles } from "../../../../utils/htmlOverlayHelpers";
 
 /**
  * Props for DamageNumber3D component

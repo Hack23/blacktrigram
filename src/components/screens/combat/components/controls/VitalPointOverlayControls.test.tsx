@@ -8,7 +8,7 @@
 
 import { describe, it, expect, vi } from "vitest";
 import VitalPointOverlayControls from "./VitalPointOverlayControls";
-import { VitalPointSeverity } from "../../../../types/common";
+import { VitalPointSeverity } from "../../../../../types/common";
 import type { BodyRegionFilter } from "./VitalPointMarkers3D";
 
 describe("VitalPointOverlayControls", () => {

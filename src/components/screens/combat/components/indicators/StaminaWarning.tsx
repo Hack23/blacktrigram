@@ -13,7 +13,7 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS } from "../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../../types/constants";
 
 export interface StaminaWarningProps {
   /**

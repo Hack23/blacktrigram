@@ -12,8 +12,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Html } from "@react-three/drei";
-import { KOREAN_COLORS } from "../../../../types/constants";
-import { toHexColor } from "../../../../utils/colorHelpers";
+import { KOREAN_COLORS } from "../../../../../types/constants";
+import { toHexColor } from "../../../../../utils/colorHelpers";
 
 /**
  * Props for TechniqueNameDisplay component

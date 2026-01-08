@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
-import { PlayerArchetype } from "../../../../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString, hexColorToCSS } from "../../../../../utils/colorUtils";
+import { PlayerArchetype } from "../../../../types/common";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
 import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
 
 export interface ArchetypeCardGridProps {

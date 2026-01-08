@@ -11,7 +11,7 @@
 
 import { useFrame } from "@react-three/fiber";
 import React from "react";
-import { usePlayerAnimation } from "../../../../../hooks/usePlayerAnimation";
+import { usePlayerAnimation } from "../../../../hooks/usePlayerAnimation";
 
 /**
  * Props for AnimationUpdater component

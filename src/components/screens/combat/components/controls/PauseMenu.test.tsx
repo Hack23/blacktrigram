@@ -6,7 +6,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { AudioProvider } from "../../../../audio/AudioProvider";
+import { AudioProvider } from "../../../../../audio/AudioProvider";
 import { PauseMenu } from "./PauseMenu";
 
 // Mock audio provider

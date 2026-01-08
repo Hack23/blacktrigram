@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
-import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import "./MenuSection.css";
 
 // Enhanced shape matching PLAYER_ARCHETYPES_DATA entries

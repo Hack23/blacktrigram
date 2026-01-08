@@ -17,8 +17,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { PlayerState } from "../../../../systems";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { PlayerState } from "../../../../../systems";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
 
 /**
  * Round statistics displayed between rounds

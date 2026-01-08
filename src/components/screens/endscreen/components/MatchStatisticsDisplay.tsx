@@ -1,8 +1,8 @@
 import React from "react";
-import { MatchStatistics } from "../../../../../systems/combat";
-import { PlayerMatchStats } from "../../../../../systems/player";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { MatchStatistics } from "../../../../systems/combat";
+import { PlayerMatchStats } from "../../../../systems/player";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 
 export interface MatchStatisticsDisplayProps {
   readonly matchStats: MatchStatistics;

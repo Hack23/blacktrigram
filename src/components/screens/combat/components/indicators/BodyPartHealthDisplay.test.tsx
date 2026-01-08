@@ -5,7 +5,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { BodyPartHealthDisplay } from "./BodyPartHealthDisplay";
-import { BodyPart, BodyPartHealth } from "../../../../systems/bodypart/types";
+import { BodyPart, BodyPartHealth } from "../../../../../systems/bodypart/types";
 
 describe("BodyPartHealthDisplay", () => {
   const mockBodyPartHealth: BodyPartHealth = {

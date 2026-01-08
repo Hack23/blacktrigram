@@ -10,9 +10,9 @@
  */
 
 import React from "react";
-import { DifficultyTier } from "../../../../systems/ai";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
+import { DifficultyTier } from "../../../../../systems/ai";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { hexColorToCSS, hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface DifficultyIndicatorProps {
   /** Current difficulty tier (1-5) */
