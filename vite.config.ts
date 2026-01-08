@@ -66,13 +66,16 @@ export default defineConfig(({ command, mode: _mode }) => ({
   base: command === "build" ? "./" : "/",
   resolve: {
     alias: {
-      // Add path aliases for better tree shaking
+      // Add path aliases for better tree shaking and import convenience
       "@": "/src",
       "@/components": "/src/components",
       "@/systems": "/src/systems",
       "@/types": "/src/types",
       "@/audio": "/src/audio",
       "@/utils": "/src/utils",
+      "@/hooks": "/src/hooks",
+      "@/data": "/src/data",
+      "@/assets": "/src/assets",
     },
     // Deduplicate React to prevent multiple instances in the bundle,
     // which can cause "Cannot read properties of undefined (reading 'createContext')"

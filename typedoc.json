@@ -35,14 +35,22 @@
     "Core",
     "Game Systems",
     "Combat System",
+    "AI System",
+    "Animation System",
+    "Physics System",
     "Trigram System",
     "Vital Point System",
+    "Body Part System",
+    "Audio System",
     "Player & Archetypes",
     "UI Components",
+    "Screen Components",
+    "Shared Components",
+    "Three.js Components",
     "Game Components",
-    "Audio System",
     "Hooks",
     "Utilities",
+    "Performance",
     "Type Definitions",
     "Enumerations",
     "Constants",
@@ -135,25 +143,33 @@
   "titleLink": "/",
   "excludeTags": ["@internal", "@hidden", "@ignore"],
   "externalSymbolLinkMappings": {
-    "pixi.js": {
-      "Application": "https://pixijs.download/release/docs/app.Application.html",
-      "Container": "https://pixijs.download/release/docs/scene.Container.html",
-      "Graphics": "https://pixijs.download/release/docs/scene.Graphics.html",
-      "Text": "https://pixijs.download/release/docs/scene.Text.html",
-      "Sprite": "https://pixijs.download/release/docs/scene.Sprite.html",
-      "DisplayObject": "https://pixijs.download/release/docs/scene.DisplayObject.html"
+    "three": {
+      "Mesh": "https://threejs.org/docs/#api/en/objects/Mesh",
+      "Group": "https://threejs.org/docs/#api/en/objects/Group",
+      "Scene": "https://threejs.org/docs/#api/en/scenes/Scene",
+      "PerspectiveCamera": "https://threejs.org/docs/#api/en/cameras/PerspectiveCamera",
+      "WebGLRenderer": "https://threejs.org/docs/#api/en/renderers/WebGLRenderer",
+      "Vector3": "https://threejs.org/docs/#api/en/math/Vector3",
+      "Color": "https://threejs.org/docs/#api/en/math/Color",
+      "Material": "https://threejs.org/docs/#api/en/materials/Material",
+      "Geometry": "https://threejs.org/docs/#api/en/core/BufferGeometry",
+      "Light": "https://threejs.org/docs/#api/en/lights/Light"
     },
     "react": {
       "*": "https://react.dev/reference/react/"
     },
-    "@pixi/react": {
-      "*": "https://pixijs.io/pixi-react/"
+    "@react-three/fiber": {
+      "*": "https://docs.pmnd.rs/react-three-fiber/"
+    },
+    "@react-three/drei": {
+      "*": "https://github.com/pmndrs/drei#readme"
     }
   },
   "blockTags": [
     "@alpha",
     "@beta",
     "@category",
+    "@constant",
     "@deprecated",
     "@enum",
     "@event",
@@ -188,7 +204,9 @@
     "@template",
     "@throws",
     "@todo",
+    "@trigram",
     "@typeParam",
+    "@vitalpoint",
     "@virtual"
   ],
   "inlineTags": ["@link", "@linkcode", "@linkplain", "@inheritDoc"],
