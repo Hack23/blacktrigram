@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Relaxed settings for test files
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    // Allow less strict type checking for mocks
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    // Vitest globals
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/test/**/*"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
