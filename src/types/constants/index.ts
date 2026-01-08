@@ -54,6 +54,13 @@ export { KOREAN_COLORS as default } from "./colors";
 // Fix: Add missing ANIMATION_DURATIONS export
 export { ANIMATION_DURATIONS } from "./animations";
 
+/**
+ * Archetype-specific technique damage bonuses
+ * Maps archetype to technique ID to bonus multiplier
+ * 
+ * @category Combat System
+ * @korean 원형별 기술 보너스
+ */
 export const ARCHETYPE_TECHNIQUE_BONUSES: Record<
   string,
   Record<string, number>
@@ -61,8 +68,25 @@ export const ARCHETYPE_TECHNIQUE_BONUSES: Record<
   // Define bonuses for each archetype
 };
 
+/**
+ * Maximum ki cost for stance transitions
+ * @category Combat System
+ * @korean 최대 기 전환 비용
+ */
 export const MAX_TRANSITION_COST_KI = 50;
+
+/**
+ * Maximum stamina cost for stance transitions
+ * @category Combat System
+ * @korean 최대 체력 전환 비용
+ */
 export const MAX_TRANSITION_COST_STAMINA = 30;
+
+/**
+ * Maximum time allowed for stance transitions in milliseconds
+ * @category Combat System
+ * @korean 최대 전환 시간
+ */
 export const MAX_TRANSITION_TIME_MILLISECONDS = 1000;
 
 /**

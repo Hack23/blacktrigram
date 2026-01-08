@@ -37,26 +37,50 @@ export interface EnergyMeridian {
   readonly relatedVitalPoints: readonly string[]; // Add missing property
 }
 
+/**
+ * Elemental relations detail mapping
+ * @category Vital Point System
+ */
 interface ElementalRelationDetail {
   [element: string]: string; // e.g. fire: "화재" (Fire produces Ash/Earth)
 }
-interface ElementalRelations {
+
+/**
+ * Elemental relations for Korean five-element theory
+ * @category Vital Point System
+ */
+export interface ElementalRelations {
+  /** Elements that produce or create this element */
   producing: ElementalRelationDetail;
+  /** Elements that control or weaken this element */
   controlling: ElementalRelationDetail;
-  // element property was redundant here, it's the key in the main record
 }
 
-interface KoreanAnatomicalZone {
+/**
+ * Korean anatomical zone definition
+ * @category Vital Point System
+ */
+export interface KoreanAnatomicalZone {
+  /** Unique identifier for the zone */
   id: string;
-  koreanName: string; // Plain string
-  englishName: string; // Plain string
-  vitalPoints: string[]; // IDs of VitalPoints in this zone
-  meridians: string[]; // IDs of EnergyMeridians passing through
-  description: KoreanText; // Object { korean, english }
+  /** Korean name of the zone */
+  koreanName: string;
+  /** English name of the zone */
+  englishName: string;
+  /** IDs of VitalPoints in this zone */
+  vitalPoints: string[];
+  /** IDs of EnergyMeridians passing through this zone */
+  meridians: string[];
+  /** Bilingual description of the zone */
+  description: KoreanText;
+  /** Optional vulnerability notes in Korean and English */
   vulnerabilityNotes?: KoreanText;
-  boundaries: { top: number; bottom: number; left: number; right: number }; // Added
-  vulnerability: number; // Added
-  traditionalImportance: number; // Added
+  /** Rectangular boundaries of the zone */
+  boundaries: { top: number; bottom: number; left: number; right: number };
+  /** Vulnerability multiplier (0-2) */
+  vulnerability: number;
+  /** Traditional importance ranking (0-10) */
+  traditionalImportance: number;
 }
 
 /**
