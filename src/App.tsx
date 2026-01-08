@@ -8,14 +8,14 @@ import {
 } from "react";
 import "./App.css";
 import { useAudio } from "./audio/AudioProvider";
-import { CombatScreen3D as CombatScreen } from "./components/combat/CombatScreen3D";
-import { EndScreen3D } from "./components/endscreen";
-import { IntroScreenThreeJS as IntroScreen } from "./components/intro/IntroScreenThreeJS";
-import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/ControlsScreenThreeJS";
-import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/PhilosophyScreenThreeJS";
-import { ErrorModal } from "./components/ui/ErrorModal";
-import { LoadingState } from "./components/ui/LoadingState";
-import { SplashScreen } from "./components/ui/SplashScreen";
+import { CombatScreen3D as CombatScreen } from "./components/screens/combat/CombatScreen3D";
+import { EndScreen3D } from "./components/screens/endscreen";
+import { IntroScreenThreeJS as IntroScreen } from "./components/screens/intro/IntroScreenThreeJS";
+import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/controls/ControlsScreenThreeJS";
+import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/philosophy/PhilosophyScreenThreeJS";
+import { ErrorModal } from "./components/shared/ui/ErrorModal";
+import { LoadingState } from "./components/shared/ui/LoadingState";
+import { SplashScreen } from "./components/shared/ui/SplashScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
@@ -23,7 +23,7 @@ import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
 const TrainingScreen = lazy(() =>
-  import("./components/training/TrainingScreen3D").then((m) => ({
+  import("./components/screens/training/TrainingScreen3D").then((m) => ({
     default: m.TrainingScreen3D,
   }))
 );
