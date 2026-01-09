@@ -1585,7 +1585,7 @@ export const ALL_ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
 export function getAttackAnimationsForStance(
   stance: TrigramStance
 ): readonly SkeletalAnimation[] {
-  return ATTACK_ANIMATIONS_BY_STANCE.get(stance) || [];
+  return ATTACK_ANIMATIONS_BY_STANCE.get(stance) ?? [];
 }
 
 /**

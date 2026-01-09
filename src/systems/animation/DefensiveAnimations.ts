@@ -954,7 +954,7 @@ export const ALL_DEFENSIVE_ANIMATIONS = new Map<string, SkeletalAnimation>([
 export function getDefensiveAnimationsForStance(
   stance: TrigramStance
 ): readonly SkeletalAnimation[] {
-  return DEFENSIVE_ANIMATIONS_BY_STANCE.get(stance) || [];
+  return DEFENSIVE_ANIMATIONS_BY_STANCE.get(stance) ?? [];
 }
 
 /**

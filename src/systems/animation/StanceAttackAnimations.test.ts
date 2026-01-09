@@ -11,7 +11,6 @@
 
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { BoneName } from "../../types/skeletal";
 import { TrigramStance } from "../../types/common";
 import {
   // GEON (Heaven) attacks
