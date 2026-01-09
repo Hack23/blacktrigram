@@ -66,6 +66,8 @@ import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
 import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
 import TrainingStatsHTML from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
+import FootworkDrillsHTML, { type FootworkDrill } from "./components/FootworkDrillsHTML";
+import FootPlacementMarkers3D, { type FootworkDrillPattern } from "./components/FootPlacementMarkers3D";
 import useTrainingActions from "./hooks/useTrainingActions";
 import useTrainingState from "./hooks/useTrainingState";
 
@@ -912,6 +914,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           )}
         />
 
+        {/* Foot Placement Markers for Footwork Drills */}
+        {trainingState.trainingMode === "footwork" && trainingState.footworkDrillActive && (
+          <FootPlacementMarkers3D
+            centerPosition={dummyPosition}
+            pattern={trainingState.footworkDrillType as FootworkDrillPattern}
+            currentStep={trainingState.footworkDrillStep}
+            visible={true}
+            scale={1.0}
+            animated={true}
+          />
+        )}
+
         {/* Hit effects */}
         {trainingState.hitEffects.map((effect) => (
           <HitFeedbackEffect3D
@@ -1150,7 +1164,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </div>
 
-            {/* Bottom Right - Vital Point Panel */}
+            {/* Bottom Right - Vital Point Panel / Footwork Drills Panel */}
             <ResponsiveContainer
               position={{
                 base: {
@@ -1164,11 +1178,29 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               zIndex={Z_INDEX.HUD}
               style={{ pointerEvents: "all" }}
             >
-              <VitalPointTrainingHTML
-                selectedVitalPoint={trainingState.selectedVitalPoint}
-                onVitalPointSelect={trainingActions.setSelectedVitalPoint}
-                isMobile={isMobile}
-              />
+              {trainingState.trainingMode === "footwork" ? (
+                <FootworkDrillsHTML
+                  currentDrill={trainingState.footworkDrillType as FootworkDrill}
+                  onDrillChange={(drill) => trainingActions.startFootworkDrill(drill)}
+                  currentStep={trainingState.footworkDrillStep}
+                  onStepComplete={() => trainingActions.advanceFootworkStep()}
+                  isActive={trainingState.footworkDrillActive}
+                  onToggleActive={() => {
+                    if (trainingState.footworkDrillActive) {
+                      trainingActions.stopFootworkDrill();
+                    } else {
+                      trainingActions.startFootworkDrill(trainingState.footworkDrillType);
+                    }
+                  }}
+                  isMobile={isMobile}
+                />
+              ) : (
+                <VitalPointTrainingHTML
+                  selectedVitalPoint={trainingState.selectedVitalPoint}
+                  onVitalPointSelect={trainingActions.setSelectedVitalPoint}
+                  isMobile={isMobile}
+                />
+              )}
             </ResponsiveContainer>
 
             {/* Vital Point Overlay Hint - Top Center */}
