@@ -1133,12 +1133,12 @@ export const TORSO_CONSTRAINTS = {
  * @example
  * ```typescript
  * const playerPos = new THREE.Vector3(0, 0, 0);
- * const opponentPos = new THREE.Vector3(5, 0, 0);
+ * const opponentPos = new THREE.Vector3(0, 0, 5); // Directly in front along Z+
  * const moveDir = new THREE.Vector3(0, 0, 1); // Moving forward
- * const hipRot = 0; // Hips facing right
+ * const hipRot = 0; // Hips facing forward (Z+)
  * 
  * const torsoRot = calculateTorsoRotation(playerPos, opponentPos, moveDir, hipRot);
- * // Returns 0 (opponent is already in front of hips)
+ * // Returns 0 (opponent is already aligned with hips)
  * ```
  * 
  * @public

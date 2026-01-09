@@ -7,7 +7,7 @@ import { PlayerState } from "../player";
 import { TrigramCalculator } from "../trigram/TrigramCalculator";
 import { StatusEffect } from "../types";
 import { calculateHipRotationPowerModifier } from "../animation/SkeletonRig";
-import { calculateKickPowerFromHipRotation, type HipRotationState } from "../animation/AdvancedJointMovements";
+import { calculateKickPowerFromHipRotation, type HipRotationState, type KickType } from "../animation/AdvancedJointMovements";
 import { calculateMeridianFlow } from "./KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
 import {
@@ -373,7 +373,7 @@ export class DamageCalculator {
    * @private
    * @korean 차기유형결정
    */
-  private static determineKickType(techniqueName: string): 'front' | 'roundhouse' | 'side' | 'hook' | 'axe' {
+  private static determineKickType(techniqueName: string): KickType {
     const name = techniqueName.toLowerCase();
     
     if (name.includes('front') || name.includes('앞차기') || name.includes('snap')) {

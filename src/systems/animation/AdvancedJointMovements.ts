@@ -1022,7 +1022,7 @@ export function calculateSpinalFlexion(
  * 
  * @example
  * ```typescript
- * const kneeState = calculateKneeDrive('knee-strike', 'impact', 'right');
+ * const kneeState = calculateKneeDrive('knee-strike', 'execution', 'right');
  * // Returns: { height: 0.7, forward: 0.25, side: 'right' }
  * ```
  * 
