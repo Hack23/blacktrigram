@@ -19,7 +19,7 @@
  * @korean 애니메이션전환
  */
 
-import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types"; // Changed to value import
+import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types";
 import { TrigramStance } from "../../types/common";
 import { KoreanText } from "../../types";
 

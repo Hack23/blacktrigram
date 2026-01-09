@@ -1,5 +1,4 @@
 /**
-import { AnimationState } from "../../../systems/animation/types";
  * CombatScreen3D - Three.js-based combat screen
  *
  * Maintains all existing combat logic and state management
@@ -36,7 +35,7 @@ import {
   AnimationEvents,
   getAnimationForTechnique,
 } from "../../../systems/animation";
-import { AnimationState } from "../../../systems/animation/types"; // Changed from type import
+import { AnimationState } from "../../../systems/animation/types";
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
@@ -730,7 +729,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           if (state === AnimationState.ATTACK) {
             clearPlayer1AttackAnimation.current();
           }
-        } else if (state === "stance_change") {
+        } else if (state === AnimationState.STANCE_CHANGE) {
           // Stance change animation completed - transition to stance guard
           // 자세 변경 완료 - 자세 가드로 전환
           audio.playSFX("menu_select");
@@ -1364,7 +1363,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onAction: useCallback(
       (action: string) => {
         switch (action) {
-          case AnimationState.ATTACK:
+          case "attack":
             // Execute currently selected technique via technique selection system
             techniqueSelection.executeTechnique();
             break;
@@ -1715,7 +1714,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const executeAIActionCallback = useCallback(
     (action: string, targetPos?: Position) => {
       switch (action) {
-        case AnimationState.ATTACK:
+        case "attack":
           // Set AI attack animation based on technique
           // AI 공격 애니메이션 설정
           if (

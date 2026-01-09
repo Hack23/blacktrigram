@@ -18,7 +18,7 @@
 import { canInterrupt } from "./AnimationPriority";
 import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
 import { TrigramStance } from "../../types/common";
-import { AnimationState } from "./types"; // Changed from type import to value import
+import { AnimationState } from "./types";
 import type {
   AnimationConfig,
   AnimationEvents,
