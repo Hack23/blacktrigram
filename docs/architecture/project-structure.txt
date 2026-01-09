@@ -713,7 +713,6 @@ src/data/archetypePhysicalAttributes.test.ts
 src/data/archetypePhysicalAttributes.ts
 src/data/techniques.ts
 src/hooks/__tests__/useKeyboardControls.test.ts
-src/hooks/__tests__/useKeyboardControls.test.ts.backup
 src/hooks/useActionFeedback.test.ts
 src/hooks/useActionFeedback.ts
 src/hooks/useCombatTimer.test.ts
@@ -780,6 +779,8 @@ src/systems/ai/TrainingAI.ts
 src/systems/ai/__tests__/AI-Combat-Integration.test.ts
 src/systems/ai/__tests__/AI-Performance.bench.ts
 src/systems/ai/index.ts
+src/systems/animation/AdvancedJointMovements.test.ts
+src/systems/animation/AdvancedJointMovements.ts
 src/systems/animation/AnimationPriority.test.ts
 src/systems/animation/AnimationPriority.ts
 src/systems/animation/AnimationStateMachine.recovery.test.ts
@@ -795,6 +796,7 @@ src/systems/animation/AttackAnimations.ts
 src/systems/animation/BodyFacingSystem.test.ts
 src/systems/animation/BodyFacingSystem.ts
 src/systems/animation/DefensiveAnimations.test.ts
+src/systems/animation/DefensiveAnimations.ts
 src/systems/animation/FOOTWORK_INTEGRATION.md
 src/systems/animation/FacialExpressions.test.ts
 src/systems/animation/FacialExpressions.ts
@@ -816,12 +818,16 @@ src/systems/animation/RecoveryAnimations.test.ts
 src/systems/animation/RecoveryAnimations.ts
 src/systems/animation/SkeletonRig.test.ts
 src/systems/animation/SkeletonRig.ts
+src/systems/animation/StanceAttackAnimations.test.ts
+src/systems/animation/StanceAttackAnimations.ts
 src/systems/animation/StanceGuardPoses.test.ts
 src/systems/animation/StanceGuardPoses.ts
 src/systems/animation/StepAnimations.test.ts
 src/systems/animation/StepAnimations.ts
 src/systems/animation/StepSkeletalAnimations.ts
+src/systems/animation/TechniqueAnimationMapper.enhanced.test.ts
 src/systems/animation/TechniqueAnimationMapper.ts
+src/systems/animation/TorsoRotation.test.ts
 src/systems/animation/index.ts
 src/systems/animation/types.ts
 src/systems/bodypart/BodyPartDamageIntegration.ts
