@@ -17,7 +17,8 @@ export type TrainingMode =
   | "free"                // Free Practice - Open combat vs AI
   | "stance_training"     // Stance Training - Practice 8 trigrams
   | "vital_point"         // Vital Point Training - Precision targeting
-  | "combo_practice";     // Combo Practice - Multi-hit techniques
+  | "combo_practice"      // Combo Practice - Multi-hit techniques
+  | "footwork";           // Footwork Training - Movement drills (보법 훈련)
 
 /**
  * Props for TrainingModeSelectorHTML component
@@ -64,6 +65,11 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
     korean: "연속 기술",
     english: "Combo Practice",
     description: "연속 타격 훈련 | Multi-hit techniques",
+  },
+  footwork: {
+    korean: "보법 훈련",
+    english: "Footwork Training",
+    description: "보법 수련 | Movement drills",
   },
 };
 
