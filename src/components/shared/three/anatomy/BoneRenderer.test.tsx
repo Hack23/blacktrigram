@@ -13,6 +13,7 @@ import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
 import { describe, it, expect } from "vitest";
 import React, { Suspense } from "react";
+import * as THREE from "three";
 import { BoneRenderer } from "./BoneRenderer";
 import { createHumanoidRig } from "../../../../systems/animation/SkeletonRig";
 import { KOREAN_COLORS } from "../../../../types/constants";
@@ -258,9 +259,97 @@ describe("BoneRenderer", () => {
   });
 
   describe("Bone orientation correctness", () => {
-    it("should render leg bones pointing downward (not backwards like a tail)", () => {
-      // This test ensures the fix for the "tail" issue where leg bones
-      // were rendered pointing backwards instead of downward
+    it("should calculate correct rotation for downward-pointing leg bones", () => {
+      // Test the rotation calculation logic directly for leg bones (pointing down in -Y)
+      const leftThigh = testRig.bones.get("thigh_L");
+      expect(leftThigh).toBeDefined();
+      
+      if (leftThigh) {
+        // Thigh bone position is [0, -0.3, 0] (pointing downward in negative Y)
+        // When normalized, this becomes [0, -1, 0]
+        const normalizedDirection = leftThigh.position.clone().normalize();
+        
+        // Verify the bone is pointing downward (negative Y direction)
+        expect(normalizedDirection.x).toBeCloseTo(0, 5);
+        expect(normalizedDirection.y).toBeCloseTo(-1, 5);
+        expect(normalizedDirection.z).toBeCloseTo(0, 5);
+        
+        // Calculate expected rotation from Y-axis (0,1,0) to downward (-Y)
+        // This should result in a 180-degree rotation around Z-axis
+        const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(
+          capsuleDefaultDirection,
+          normalizedDirection
+        );
+        const rotation = new THREE.Euler().setFromQuaternion(quaternion);
+        
+        // The rotation should be approximately PI radians (180 degrees) around Z-axis
+        // to flip the capsule from pointing up to pointing down
+        expect(Math.abs(rotation.z)).toBeGreaterThan(3.0); // Close to PI (3.14159)
+      }
+    });
+
+    it("should calculate correct rotation for horizontal arm bones", () => {
+      // Test the rotation calculation logic for arm bones (pointing horizontally in -X)
+      const leftUpperArm = testRig.bones.get("upper_arm_L");
+      expect(leftUpperArm).toBeDefined();
+      
+      if (leftUpperArm) {
+        // Upper arm position is [-0.15, 0, 0] (pointing left in negative X)
+        // When normalized, this becomes [-1, 0, 0]
+        const normalizedDirection = leftUpperArm.position.clone().normalize();
+        
+        // Verify the bone is pointing horizontally left (negative X direction)
+        expect(normalizedDirection.x).toBeCloseTo(-1, 5);
+        expect(normalizedDirection.y).toBeCloseTo(0, 5);
+        expect(normalizedDirection.z).toBeCloseTo(0, 5);
+        
+        // Calculate expected rotation from Y-axis (0,1,0) to left (-X)
+        const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(
+          capsuleDefaultDirection,
+          normalizedDirection
+        );
+        const rotation = new THREE.Euler().setFromQuaternion(quaternion);
+        
+        // The rotation should be approximately PI/2 (90 degrees) around Z-axis
+        // to rotate the capsule from pointing up to pointing left
+        expect(Math.abs(rotation.z)).toBeGreaterThan(1.4); // Close to PI/2 (1.5708)
+      }
+    });
+
+    it("should calculate correct rotation for upward-pointing spine bones", () => {
+      // Test the rotation calculation logic for spine bones (pointing upward in +Y)
+      const spineLower = testRig.bones.get("spine_lower");
+      expect(spineLower).toBeDefined();
+      
+      if (spineLower) {
+        // Spine lower position is [0, 0.15, 0] (pointing upward in positive Y)
+        // When normalized, this becomes [0, 1, 0]
+        const normalizedDirection = spineLower.position.clone().normalize();
+        
+        // Verify the bone is pointing upward (positive Y direction)
+        expect(normalizedDirection.x).toBeCloseTo(0, 5);
+        expect(normalizedDirection.y).toBeCloseTo(1, 5);
+        expect(normalizedDirection.z).toBeCloseTo(0, 5);
+        
+        // Calculate expected rotation from Y-axis (0,1,0) to upward (+Y)
+        const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(
+          capsuleDefaultDirection,
+          normalizedDirection
+        );
+        const rotation = new THREE.Euler().setFromQuaternion(quaternion);
+        
+        // The rotation should be near zero since both source and target are the same (0,1,0)
+        expect(Math.abs(rotation.x)).toBeLessThan(0.01);
+        expect(Math.abs(rotation.y)).toBeLessThan(0.01);
+        expect(Math.abs(rotation.z)).toBeLessThan(0.01);
+      }
+    });
+
+    it("should render without crashing with various bone orientations", () => {
+      // Smoke test to ensure the component renders with the corrected orientation logic
       const { container } = render3D(
         <BoneRenderer 
           rig={testRig}
@@ -270,36 +359,7 @@ describe("BoneRenderer", () => {
       );
 
       expect(container).toBeTruthy();
-      // Visual validation: In debug mode, leg bones should clearly point downward
-      // from hip to foot, not backwards. This is a regression test for the
-      // capsule orientation bug where Y-axis alignment was incorrect.
-    });
-
-    it("should render arm bones pointing outward correctly", () => {
-      const { container } = render3D(
-        <BoneRenderer 
-          rig={testRig}
-          renderMode="solid"
-          showBones={true}
-        />
-      );
-
-      expect(container).toBeTruthy();
-      // Visual validation: Arm bones should extend from shoulders to hands
-      // in the correct horizontal direction, not twisted
-    });
-
-    it("should render spine bones pointing upward", () => {
-      const { container } = render3D(
-        <BoneRenderer 
-          rig={testRig}
-          renderMode="solid"
-          showBones={true}
-        />
-      );
-
-      expect(container).toBeTruthy();
-      // Visual validation: Spine bones should stack vertically from pelvis to head
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 });
