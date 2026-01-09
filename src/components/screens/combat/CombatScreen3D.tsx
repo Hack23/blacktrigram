@@ -1,4 +1,5 @@
 /**
+import { AnimationState } from "../../../systems/animation/types";
  * CombatScreen3D - Three.js-based combat screen
  *
  * Maintains all existing combat logic and state management
@@ -35,7 +36,7 @@ import {
   AnimationEvents,
   getAnimationForTechnique,
 } from "../../../systems/animation";
-import type { AnimationState } from "../../../systems/animation/types";
+import { AnimationState } from "../../../systems/animation/types"; // Changed from type import
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
@@ -776,9 +777,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Only trigger transition when isMoving changes
     if (prevPlayer1IsMovingRef.current !== player1IsMoving) {
       if (player1IsMoving) {
-        player1Animation.transitionTo("walk");
-      } else if (player1Animation.currentState === "walk") {
-        player1Animation.transitionTo("idle");
+        player1Animation.transitionTo(AnimationState.WALK);
+      } else if (player1Animation.currentState === AnimationState.WALK) {
+        player1Animation.transitionTo(AnimationState.IDLE);
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
@@ -802,15 +803,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     if (isMoving) {
       // AI is moving - transition to walk animation
       if (
-        player2Animation.currentState !== "walk" &&
+        player2Animation.currentState !== AnimationState.WALK &&
         player2Animation.currentState !== "attack"
       ) {
-        player2Animation.transitionTo("walk");
+        player2Animation.transitionTo(AnimationState.WALK);
       }
     } else {
       // AI stopped - transition back to idle if currently walking
-      if (player2Animation.currentState === "walk") {
-        player2Animation.transitionTo("idle");
+      if (player2Animation.currentState === AnimationState.WALK) {
+        player2Animation.transitionTo(AnimationState.IDLE);
       }
     }
 
@@ -1132,7 +1133,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         // Trigger attack animation transition
         // 공격 애니메이션 전환 트리거
-        player1Animation.transitionTo("attack");
+        player1Animation.transitionTo(AnimationState.ATTACK);
         combatActions.setExecutingTechnique(true);
 
         // Deduct resources
@@ -1289,7 +1290,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     setPlayer1AttackAnimation("jab");
 
     // Try to transition to attack animation
-    const success = player1Animation.transitionTo("attack");
+    const success = player1Animation.transitionTo(AnimationState.ATTACK);
     if (success) {
       // Attack execution will happen at frame 6 in onFrame callback
       combatActions.setExecutingTechnique(true);
@@ -1306,7 +1307,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const handleDefendWithFeedback = useCallback(() => {
     const defenderPos = playerPositions[0];
     // Try to transition to defend animation
-    const success = player1Animation.transitionTo("defend");
+    const success = player1Animation.transitionTo(AnimationState.DEFEND);
     if (success) {
       handleDefend();
       feedbackActions.addActionFeedback(
@@ -1382,7 +1383,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             if (balanceSystem.canRecoverWithType(player1, "roll_recovery")) {
               const updatedPlayer = balanceSystem.applyRecoveryCost(player1, "roll_recovery");
               onPlayerUpdate(0, { stamina: updatedPlayer.stamina });
-              player1Animation.transitionTo("recovery_roll");
+              player1Animation.transitionTo(AnimationState.RECOVERY_ROLL);
             } else {
               // Not enough stamina, fallback to quick recovery
               audio.playSFX("menu_error");
@@ -1399,7 +1400,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }
           case "recovery_defensive": {
             // Defensive getup: slow but protected
-            player1Animation.transitionTo("recovery_defensive");
+            player1Animation.transitionTo(AnimationState.RECOVERY_DEFENSIVE);
             break;
           }
           
@@ -1418,7 +1419,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Stance side switch
           case "stance_side_switch":
             // Switch front foot (mirror stance)
-            player1Animation.transitionTo("stance_side_switch");
+            player1Animation.transitionTo(AnimationState.STANCE_SIDE_SWITCH);
             break;
           
           // Movement and other actions handled by existing system
@@ -1729,11 +1730,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           } else {
             setPlayer2AttackAnimation("jab");
           }
-          player2Animation.transitionTo("attack");
+          player2Animation.transitionTo(AnimationState.ATTACK);
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           break;
         case "defend":
-          player2Animation.transitionTo("defend");
+          player2Animation.transitionTo(AnimationState.DEFEND);
           handleAIDefend();
           break;
         case "technique":
@@ -1752,7 +1753,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           } else {
             setPlayer2AttackAnimation("cross");
           }
-          player2Animation.transitionTo("attack");
+          player2Animation.transitionTo(AnimationState.ATTACK);
           handleAITechnique(
             aiState.selectedTechnique,
             aiState.targetVitalPoint
@@ -1824,7 +1825,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           } else {
             setPlayer2AttackAnimation("cross");
           }
-          player2Animation.transitionTo("attack");
+          player2Animation.transitionTo(AnimationState.ATTACK);
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");
           break;

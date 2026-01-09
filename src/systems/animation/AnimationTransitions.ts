@@ -19,7 +19,7 @@
  * @korean 애니메이션전환
  */
 
-import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types";
+import { AnimationState, TransitionRule, FallType, FALL_TO_GROUND_MAP } from "./types"; // Changed to value import
 import { TrigramStance } from "../../types/common";
 import { KoreanText } from "../../types";
 
@@ -28,14 +28,14 @@ import { KoreanText } from "../../types";
  * @korean 자세방어상태들
  */
 const STANCE_GUARD_STATES: readonly AnimationState[] = [
-  "stance_guard_geon",
-  "stance_guard_tae",
-  "stance_guard_li",
-  "stance_guard_jin",
-  "stance_guard_son",
-  "stance_guard_gam",
-  "stance_guard_gan",
-  "stance_guard_gon",
+  AnimationState.STANCE_GUARD_GEON,
+  AnimationState.STANCE_GUARD_TAE,
+  AnimationState.STANCE_GUARD_LI,
+  AnimationState.STANCE_GUARD_JIN,
+  AnimationState.STANCE_GUARD_SON,
+  AnimationState.STANCE_GUARD_GAM,
+  AnimationState.STANCE_GUARD_GAN,
+  AnimationState.STANCE_GUARD_GON,
 ] as const;
 
 /**

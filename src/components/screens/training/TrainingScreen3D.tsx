@@ -1,4 +1,5 @@
 /**
+import { AnimationState } from "../../../systems/animation/types";
  * TrainingScreen3D - Three.js-based training screen
  *
  * Refactored to use consolidated hooks matching CombatScreen architecture.
@@ -326,9 +327,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   useEffect(() => {
     if (prevIsMovingRef.current !== isMoving) {
       if (isMoving) {
-        playerAnimation.transitionTo("walk");
+        playerAnimation.transitionTo(AnimationState.WALK);
       } else if (playerAnimation.currentState === "walk") {
-        playerAnimation.transitionTo("idle");
+        playerAnimation.transitionTo(AnimationState.IDLE);
       }
       prevIsMovingRef.current = isMoving;
     }
