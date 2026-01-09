@@ -430,6 +430,7 @@ describe("PlayerAnimationStateMachine", () => {
       
       // Create mock keyframes with proper Euler angle format
       const keyframe1 = {
+        time: 0,
         bonePositions: new Map([
           ["root", { x: 0, y: 0, z: 0 }],
           ["spine", { x: 0, y: 1, z: 0 }],
@@ -441,6 +442,7 @@ describe("PlayerAnimationStateMachine", () => {
       };
       
       const keyframe2 = {
+        time: 0.01667,
         bonePositions: new Map([
           ["root", { x: 0.1, y: 0, z: 0 }],
           ["spine", { x: 0.1, y: 1, z: 0 }],
@@ -484,11 +486,13 @@ describe("PlayerAnimationStateMachine", () => {
       
       // Setup velocity tracking with two keyframes using proper THREE.Vector3
       const keyframe1 = {
+        time: 0,
         bonePositions: new Map([["root", new THREE.Vector3(0, 0, 0)]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
       };
       
       const keyframe2 = {
+        time: 0.01667,
         bonePositions: new Map([["root", new THREE.Vector3(1, 0, 0)]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0.1, 0, "XYZ")]]),
       };
@@ -520,10 +524,12 @@ describe("PlayerAnimationStateMachine", () => {
       // Enable and setup velocity with two keyframes
       machine.setMotionPrediction(true);
       const keyframe1 = {
+        time: 0,
         bonePositions: new Map([["root", { x: 0, y: 0, z: 0 }]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
       };
       const keyframe2 = {
+        time: 0.01667,
         bonePositions: new Map([["root", { x: 1, y: 0, z: 0 }]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0.1, 0, "XYZ")]]),
       };
