@@ -5298,7 +5298,7 @@ import {
   AnimationEvents,
   getAnimationForTechnique,
 } from "../../../systems/animation";
-import type { AnimationState } from "../../../systems/animation/types";
+import { AnimationState } from "../../../systems/animation/types";
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
@@ -5978,21 +5978,21 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     () =&gt; ({
       onFrame: <span class="fstat-no" title="function not covered" >(f</span>rame, state) =&gt; {
         // Execute attack at midpoint of animation (frame 6 of 12)
-<span class="cstat-no" title="statement not covered" >        if (state === "attack" &amp;&amp; frame === 6) {</span>
+<span class="cstat-no" title="statement not covered" >        if (state === AnimationState.ATTACK &amp;&amp; frame === 6) {</span>
           // Attack connects at the midpoint - execute combat logic here
 <span class="cstat-no" title="statement not covered" >          handleAttackRef.current?.();</span>
         }
       },
       onAnimationComplete: <span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; {
         // Handle animation completion
-<span class="cstat-no" title="statement not covered" >        if (state === "attack" || state === "defend") {</span>
+<span class="cstat-no" title="statement not covered" >        if (state === AnimationState.ATTACK || state === AnimationState.DEFEND) {</span>
 <span class="cstat-no" title="statement not covered" >          combatActions.setExecutingTechnique(false);</span>
           // Clear attack animation when attack completes
           // 공격 완료 시 공격 애니메이션 초기화
-<span class="cstat-no" title="statement not covered" >          if (state === "attack") {</span>
+<span class="cstat-no" title="statement not covered" >          if (state === AnimationState.ATTACK) {</span>
 <span class="cstat-no" title="statement not covered" >            clearPlayer1AttackAnimation.current();</span>
           }
-<span class="cstat-no" title="statement not covered" >        } else if (state === "stance_change") {</span>
+<span class="cstat-no" title="statement not covered" >        } else if (state === AnimationState.STANCE_CHANGE) {</span>
           // Stance change animation completed - transition to stance guard
           // 자세 변경 완료 - 자세 가드로 전환
 <span class="cstat-no" title="statement not covered" >          audio.playSFX("menu_select");</span>
@@ -6019,14 +6019,14 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
   const player2Animation = usePlayerAnimation({
     events: {
       onFrame: <span class="fstat-no" title="function not covered" >(f</span>rame, state) =&gt; {
-<span class="cstat-no" title="statement not covered" >        if (state === "attack" &amp;&amp; frame === 6) {</span>
+<span class="cstat-no" title="statement not covered" >        if (state === AnimationState.ATTACK &amp;&amp; frame === 6) {</span>
           // AI attack hit detection
         }
       },
       onAnimationComplete: <span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; {
         // Clear AI attack animation when attack completes
         // AI 공격 완료 시 공격 애니메이션 초기화
-<span class="cstat-no" title="statement not covered" >        if (state === "attack") {</span>
+<span class="cstat-no" title="statement not covered" >        if (state === AnimationState.ATTACK) {</span>
 <span class="cstat-no" title="statement not covered" >          clearPlayer2AttackAnimation.current();</span>
         }
       },
@@ -6039,9 +6039,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     // Only trigger transition when isMoving changes
     <span class="missing-if-branch" title="if path not taken" >I</span>if (prevPlayer1IsMovingRef.current !== player1IsMoving) {
 <span class="cstat-no" title="statement not covered" >      if (player1IsMoving) {</span>
-<span class="cstat-no" title="statement not covered" >        player1Animation.transitionTo("walk");</span>
-<span class="cstat-no" title="statement not covered" >      } else if (player1Animation.currentState === "walk") {</span>
-<span class="cstat-no" title="statement not covered" >        player1Animation.transitionTo("idle");</span>
+<span class="cstat-no" title="statement not covered" >        player1Animation.transitionTo(AnimationState.WALK);</span>
+<span class="cstat-no" title="statement not covered" >      } else if (player1Animation.currentState === AnimationState.WALK) {</span>
+<span class="cstat-no" title="statement not covered" >        player1Animation.transitionTo(AnimationState.IDLE);</span>
       }
 <span class="cstat-no" title="statement not covered" >      prevPlayer1IsMovingRef.current = player1IsMoving;</span>
     }
@@ -6065,15 +6065,15 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     <span class="missing-if-branch" title="if path not taken" >I</span>if (isMoving) {
       // AI is moving - transition to walk animation
 <span class="cstat-no" title="statement not covered" >      if (</span>
-        player2Animation.currentState !== "walk" &amp;&amp;
-        player2Animation.currentState !== "attack"
+        player2Animation.currentState !== AnimationState.WALK &amp;&amp;
+        player2Animation.currentState !== AnimationState.ATTACK
       ) {
-<span class="cstat-no" title="statement not covered" >        player2Animation.transitionTo("walk");</span>
+<span class="cstat-no" title="statement not covered" >        player2Animation.transitionTo(AnimationState.WALK);</span>
       }
     } else {
       // AI stopped - transition back to idle if currently walking
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (player2Animation.currentState === "walk") {
-<span class="cstat-no" title="statement not covered" >        player2Animation.transitionTo("idle");</span>
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (player2Animation.currentState === AnimationState.WALK) {
+<span class="cstat-no" title="statement not covered" >        player2Animation.transitionTo(AnimationState.IDLE);</span>
       }
     }
 &nbsp;
@@ -6395,7 +6395,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 &nbsp;
         // Trigger attack animation transition
         // 공격 애니메이션 전환 트리거
-<span class="cstat-no" title="statement not covered" >        player1Animation.transitionTo("attack");</span>
+<span class="cstat-no" title="statement not covered" >        player1Animation.transitionTo(AnimationState.ATTACK);</span>
 <span class="cstat-no" title="statement not covered" >        combatActions.setExecutingTechnique(true);</span>
 &nbsp;
         // Deduct resources
@@ -6552,7 +6552,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >    setPlayer1AttackAnimation("jab");</span>
 &nbsp;
     // Try to transition to attack animation
-    const success = <span class="cstat-no" title="statement not covered" >player1Animation.transitionTo("attack");</span>
+    const success = <span class="cstat-no" title="statement not covered" >player1Animation.transitionTo(AnimationState.ATTACK);</span>
 <span class="cstat-no" title="statement not covered" >    if (success) {</span>
       // Attack execution will happen at frame 6 in onFrame callback
 <span class="cstat-no" title="statement not covered" >      combatActions.setExecutingTechnique(true);</span>
@@ -6569,7 +6569,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
   const handleDefendWithFeedback = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
     const defenderPos = <span class="cstat-no" title="statement not covered" >playerPositions[0];</span>
     // Try to transition to defend animation
-    const success = <span class="cstat-no" title="statement not covered" >player1Animation.transitionTo("defend");</span>
+    const success = <span class="cstat-no" title="statement not covered" >player1Animation.transitionTo(AnimationState.DEFEND);</span>
 <span class="cstat-no" title="statement not covered" >    if (success) {</span>
 <span class="cstat-no" title="statement not covered" >      handleDefend();</span>
 <span class="cstat-no" title="statement not covered" >      feedbackActions.addActionFeedback(</span>
@@ -6645,7 +6645,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >            if (balanceSystem.canRecoverWithType(player1, "roll_recovery")) {</span>
               const updatedPlayer = <span class="cstat-no" title="statement not covered" >balanceSystem.applyRecoveryCost(player1, "roll_recovery");</span>
 <span class="cstat-no" title="statement not covered" >              onPlayerUpdate(0, { stamina: updatedPlayer.stamina });</span>
-<span class="cstat-no" title="statement not covered" >              player1Animation.transitionTo("recovery_roll");</span>
+<span class="cstat-no" title="statement not covered" >              player1Animation.transitionTo(AnimationState.RECOVERY_ROLL);</span>
             } else {
               // Not enough stamina, fallback to quick recovery
 <span class="cstat-no" title="statement not covered" >              audio.playSFX("menu_error");</span>
@@ -6662,7 +6662,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           }
           case "recovery_defensive": {
             // Defensive getup: slow but protected
-<span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo("recovery_defensive");</span>
+<span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo(AnimationState.RECOVERY_DEFENSIVE);</span>
 <span class="cstat-no" title="statement not covered" >            break;</span>
           }
           
@@ -6681,7 +6681,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           // Stance side switch
           case "stance_side_switch":
             // Switch front foot (mirror stance)
-<span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo("stance_side_switch");</span>
+<span class="cstat-no" title="statement not covered" >            player1Animation.transitionTo(AnimationState.STANCE_SIDE_SWITCH);</span>
 <span class="cstat-no" title="statement not covered" >            break;</span>
           
           // Movement and other actions handled by existing system
@@ -6992,11 +6992,11 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           } else {
 <span class="cstat-no" title="statement not covered" >            setPlayer2AttackAnimation("jab");</span>
           }
-<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo("attack");</span>
+<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo(AnimationState.ATTACK);</span>
 <span class="cstat-no" title="statement not covered" >          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         case "defend":
-<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo("defend");</span>
+<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo(AnimationState.DEFEND);</span>
 <span class="cstat-no" title="statement not covered" >          handleAIDefend();</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
         case "technique":
@@ -7015,7 +7015,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           } else {
 <span class="cstat-no" title="statement not covered" >            setPlayer2AttackAnimation("cross");</span>
           }
-<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo("attack");</span>
+<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo(AnimationState.ATTACK);</span>
 <span class="cstat-no" title="statement not covered" >          handleAITechnique(</span>
             aiState.selectedTechnique,
             aiState.targetVitalPoint
@@ -7087,7 +7087,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           } else {
 <span class="cstat-no" title="statement not covered" >            setPlayer2AttackAnimation("cross");</span>
           }
-<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo("attack");</span>
+<span class="cstat-no" title="statement not covered" >          player2Animation.transitionTo(AnimationState.ATTACK);</span>
 <span class="cstat-no" title="statement not covered" >          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);</span>
 <span class="cstat-no" title="statement not covered" >          addCombatMessage("AI 반격!", "AI Counter!");</span>
 <span class="cstat-no" title="statement not covered" >          break;</span>
@@ -7867,7 +7867,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-09T01:16:43.952Z
+                at 2026-01-09T11:53:21.384Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
