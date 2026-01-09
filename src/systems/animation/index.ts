@@ -220,6 +220,16 @@ export {
   TURN_ANIMATION_DURATION,
 } from "./BodyFacingSystem";
 
+// Enhanced technique animation mapper
+export {
+  TechniqueAnimationMapper,
+  techniqueAnimationMapper,
+  getAnimationNameForType,
+  hasAnimationForType,
+  determineAnimationTypeForTechnique,
+  calculateSpeedModifierForDamage,
+  getAdjustedAnimationDuration,
+} from "./TechniqueAnimationMapper";
 // Advanced joint movements system
 export {
   ADVANCED_JOINT_CONSTRAINTS,
