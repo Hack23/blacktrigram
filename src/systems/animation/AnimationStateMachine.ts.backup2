@@ -188,7 +188,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.HIT,
+      "hit",
       {
         state: AnimationState.HIT,
         frames: 4, // 67ms at 60fps
@@ -200,7 +200,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.KO,
+      "ko",
       {
         state: AnimationState.KO,
         frames: 30, // 500ms at 60fps
@@ -213,7 +213,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Fall animations (낙법 애니메이션) - Priority 8 (highest)
     [
-      AnimationState.FALL_FORWARD,
+      "fall_forward",
       {
         state: AnimationState.FALL_FORWARD,
         frames: 24, // 400ms at 60fps - stumble forward, knee collapse, hands brace, face-down
@@ -225,7 +225,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FALL_BACKWARD,
+      "fall_backward",
       {
         state: AnimationState.FALL_BACKWARD,
         frames: 30, // 500ms at 60fps - backward stumble, sit, back impact, supine
@@ -237,7 +237,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FALL_SIDE_LEFT,
+      "fall_side_left",
       {
         state: AnimationState.FALL_SIDE_LEFT,
         frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
@@ -249,7 +249,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FALL_SIDE_RIGHT,
+      "fall_side_right",
       {
         state: AnimationState.FALL_SIDE_RIGHT,
         frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
@@ -262,7 +262,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Ground state animations (지면 자세) - Breathing loops
     [
-      AnimationState.GROUND_PRONE,
+      "ground_prone",
       {
         state: AnimationState.GROUND_PRONE,
         frames: 4, // Breathing loop on ground (face down)
@@ -274,7 +274,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.GROUND_SUPINE,
+      "ground_supine",
       {
         state: AnimationState.GROUND_SUPINE,
         frames: 4, // Breathing loop on ground (face up)
@@ -286,7 +286,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.GROUND_SIDE_LEFT,
+      "ground_side_left",
       {
         state: AnimationState.GROUND_SIDE_LEFT,
         frames: 4, // Breathing loop on ground (left side)
@@ -298,7 +298,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.GROUND_SIDE_RIGHT,
+      "ground_side_right",
       {
         state: AnimationState.GROUND_SIDE_RIGHT,
         frames: 4, // Breathing loop on ground (right side)
@@ -311,7 +311,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Recovery animations (기상 애니메이션) - Priority 9 (higher than falls)
     [
-      AnimationState.RECOVERY_PRONE_STANDUP,
+      "recovery_prone_standup",
       {
         state: AnimationState.RECOVERY_PRONE_STANDUP,
         frames: 30, // 500ms at 60fps - push up from prone, rise to standing
@@ -323,7 +323,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.RECOVERY_SUPINE_STANDUP,
+      "recovery_supine_standup",
       {
         state: AnimationState.RECOVERY_SUPINE_STANDUP,
         frames: 36, // 600ms at 60fps - sit up, roll forward, stand
@@ -335,7 +335,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.RECOVERY_ROLL,
+      "recovery_roll",
       {
         state: AnimationState.RECOVERY_ROLL,
         frames: 24, // 400ms at 60fps - roll to side, spring to feet (quick recovery)
@@ -347,7 +347,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.RECOVERY_DEFENSIVE,
+      "recovery_defensive",
       {
         state: AnimationState.RECOVERY_DEFENSIVE,
         frames: 42, // 700ms at 60fps - slow rise with guard up (vulnerable but defended)
@@ -360,7 +360,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // 180-degree turn animations (180도 회전 애니메이션)
     [
-      AnimationState.TURN_LEFT,
+      "turn_left",
       {
         state: AnimationState.TURN_LEFT,
         frames: 12, // 200ms at 60fps for 180° turn
@@ -372,7 +372,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.TURN_RIGHT,
+      "turn_right",
       {
         state: AnimationState.TURN_RIGHT,
         frames: 12, // 200ms at 60fps for 180° turn
@@ -385,7 +385,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Stance-specific guard animations (팔괘 방어 자세)
     [
-      AnimationState.STANCE_GUARD_GEON,
+      "stance_guard_geon",
       {
         state: AnimationState.STANCE_GUARD_GEON,
         frames: 6, // Breathing animation
@@ -397,7 +397,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_TAE,
+      "stance_guard_tae",
       {
         state: AnimationState.STANCE_GUARD_TAE,
         frames: 6, // Breathing animation
@@ -409,7 +409,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_LI,
+      "stance_guard_li",
       {
         state: AnimationState.STANCE_GUARD_LI,
         frames: 4, // Controlled breathing
@@ -421,7 +421,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_JIN,
+      "stance_guard_jin",
       {
         state: AnimationState.STANCE_GUARD_JIN,
         frames: 5, // Deep breathing
@@ -433,7 +433,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_SON,
+      "stance_guard_son",
       {
         state: AnimationState.STANCE_GUARD_SON,
         frames: 6, // Rhythmic breathing
@@ -445,7 +445,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_GAM,
+      "stance_guard_gam",
       {
         state: AnimationState.STANCE_GUARD_GAM,
         frames: 6, // Flowing breathing
@@ -457,7 +457,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_GAN,
+      "stance_guard_gan",
       {
         state: AnimationState.STANCE_GUARD_GAN,
         frames: 4, // Steady breathing
@@ -469,7 +469,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STANCE_GUARD_GON,
+      "stance_guard_gon",
       {
         state: AnimationState.STANCE_GUARD_GON,
         frames: 5, // Deep diaphragm breathing
@@ -483,7 +483,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     // Tactical step animations (전술적 발걸음)
     // 18 frames = 300ms at 60fps, 30cm distance per step
     [
-      AnimationState.STEP_FORWARD,
+      "step_forward",
       {
         state: AnimationState.STEP_FORWARD,
         frames: 18,
@@ -495,7 +495,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_BACK,
+      "step_back",
       {
         state: AnimationState.STEP_BACK,
         frames: 18,
@@ -507,7 +507,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_LEFT,
+      "step_left",
       {
         state: AnimationState.STEP_LEFT,
         frames: 18,
@@ -519,7 +519,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_RIGHT,
+      "step_right",
       {
         state: AnimationState.STEP_RIGHT,
         frames: 18,
@@ -531,7 +531,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_FORWARD_LEFT,
+      "step_forward_left",
       {
         state: AnimationState.STEP_FORWARD_LEFT,
         frames: 18,
@@ -543,7 +543,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_FORWARD_RIGHT,
+      "step_forward_right",
       {
         state: AnimationState.STEP_FORWARD_RIGHT,
         frames: 18,
@@ -555,7 +555,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_BACK_LEFT,
+      "step_back_left",
       {
         state: AnimationState.STEP_BACK_LEFT,
         frames: 18,
@@ -567,7 +567,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.STEP_BACK_RIGHT,
+      "step_back_right",
       {
         state: AnimationState.STEP_BACK_RIGHT,
         frames: 18,
@@ -581,7 +581,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     // Footwork patterns (보법) - Korean martial arts specialized footwork
     // Circular step (원형보) - Lateral movement maintaining guard facing
     [
-      AnimationState.FOOTWORK_CIRCULAR_LEFT,
+      "footwork_circular_left",
       {
         state: AnimationState.FOOTWORK_CIRCULAR_LEFT,
         frames: 18, // 300ms at 60fps
@@ -593,7 +593,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FOOTWORK_CIRCULAR_RIGHT,
+      "footwork_circular_right",
       {
         state: AnimationState.FOOTWORK_CIRCULAR_RIGHT,
         frames: 18, // 300ms at 60fps
@@ -606,7 +606,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Pivot step (축족회전) - Rotation on planted foot
     [
-      AnimationState.FOOTWORK_PIVOT_LEFT,
+      "footwork_pivot_left",
       {
         state: AnimationState.FOOTWORK_PIVOT_LEFT,
         frames: 15, // 250ms at 60fps
@@ -618,7 +618,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FOOTWORK_PIVOT_RIGHT,
+      "footwork_pivot_right",
       {
         state: AnimationState.FOOTWORK_PIVOT_RIGHT,
         frames: 15, // 250ms at 60fps
@@ -631,7 +631,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Slide step (미끄럼보) - Both feet move together
     [
-      AnimationState.FOOTWORK_SLIDE_FORWARD,
+      "footwork_slide_forward",
       {
         state: AnimationState.FOOTWORK_SLIDE_FORWARD,
         frames: 12, // 200ms at 60fps
@@ -643,7 +643,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FOOTWORK_SLIDE_BACK,
+      "footwork_slide_back",
       {
         state: AnimationState.FOOTWORK_SLIDE_BACK,
         frames: 12, // 200ms at 60fps
@@ -655,7 +655,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FOOTWORK_SLIDE_LEFT,
+      "footwork_slide_left",
       {
         state: AnimationState.FOOTWORK_SLIDE_LEFT,
         frames: 12, // 200ms at 60fps
@@ -667,7 +667,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      AnimationState.FOOTWORK_SLIDE_RIGHT,
+      "footwork_slide_right",
       {
         state: AnimationState.FOOTWORK_SLIDE_RIGHT,
         frames: 12, // 200ms at 60fps
@@ -680,7 +680,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Shuffle step (섞음보) - Quick micro-adjustment
     [
-      AnimationState.FOOTWORK_SHUFFLE,
+      "footwork_shuffle",
       {
         state: AnimationState.FOOTWORK_SHUFFLE,
         frames: 6, // 100ms at 60fps

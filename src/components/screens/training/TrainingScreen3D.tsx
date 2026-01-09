@@ -1,5 +1,4 @@
 /**
-import { AnimationState } from "../../../systems/animation/types";
  * TrainingScreen3D - Three.js-based training screen
  *
  * Refactored to use consolidated hooks matching CombatScreen architecture.
@@ -7,6 +6,8 @@ import { AnimationState } from "../../../systems/animation/types";
  *
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
+
+import { AnimationState } from "../../../systems/animation/types";
 
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";

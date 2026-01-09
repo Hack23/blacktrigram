@@ -127,10 +127,10 @@ export const TRIGRAM_STANCES_ORDER: readonly TrigramStance[] = [
  * @korean 낙법상태들
  */
 const FALL_STATES: readonly AnimationState[] = [
-  "fall_forward",
-  "fall_backward",
-  "fall_side_left",
-  "fall_side_right",
+  AnimationState.FALL_FORWARD,
+  AnimationState.FALL_BACKWARD,
+  AnimationState.FALL_SIDE_LEFT,
+  AnimationState.FALL_SIDE_RIGHT,
 ] as const;
 
 /**
@@ -138,10 +138,10 @@ const FALL_STATES: readonly AnimationState[] = [
  * @korean 지면자세들
  */
 const GROUND_STATES: readonly AnimationState[] = [
-  "ground_prone",
-  "ground_supine",
-  "ground_side_left",
-  "ground_side_right",
+  AnimationState.GROUND_PRONE,
+  AnimationState.GROUND_SUPINE,
+  AnimationState.GROUND_SIDE_LEFT,
+  AnimationState.GROUND_SIDE_RIGHT,
 ] as const;
 
 /**
@@ -149,10 +149,10 @@ const GROUND_STATES: readonly AnimationState[] = [
  * @korean 회복애니메이션들
  */
 const RECOVERY_STATES: readonly AnimationState[] = [
-  "recovery_prone_standup",
-  "recovery_supine_standup",
-  "recovery_roll",
-  "recovery_defensive",
+  AnimationState.RECOVERY_PRONE_STANDUP,
+  AnimationState.RECOVERY_SUPINE_STANDUP,
+  AnimationState.RECOVERY_ROLL,
+  AnimationState.RECOVERY_DEFENSIVE,
 ] as const;
 
 /**
@@ -170,14 +170,14 @@ function generateFallTransitions(): TransitionRule[] {
   
   // All states (except falls and ko) can transition to fall states
   const nonFallStates: AnimationState[] = [
-    "idle",
-    "walk",
-    "run",
-    "attack",
-    "defend",
-    "hit",
-    "stance_change",
-    "stance_side_switch",
+    AnimationState.IDLE,
+    AnimationState.WALK,
+    AnimationState.RUN,
+    AnimationState.ATTACK,
+    AnimationState.DEFEND,
+    AnimationState.HIT,
+    AnimationState.STANCE_CHANGE,
+    AnimationState.STANCE_SIDE_SWITCH,
     ...STANCE_GUARD_STATES,
   ];
   
@@ -223,8 +223,8 @@ function generateFallTransitions(): TransitionRule[] {
     
     // Ground states can still be interrupted by hit or ko
     transitions.push(
-      { from: groundState, to: "hit", allowed: true },
-      { from: groundState, to: "ko", allowed: true }
+      { from: groundState, to: AnimationState.HIT, allowed: true },
+      { from: groundState, to: AnimationState.KO, allowed: true }
     );
     
     // Falls can interrupt ground states (getting hit while down)
@@ -251,14 +251,14 @@ function generateFallTransitions(): TransitionRule[] {
     
     // Hit and KO can interrupt recovery
     transitions.push(
-      { from: recoveryState, to: "hit", allowed: true },
-      { from: recoveryState, to: "ko", allowed: true }
+      { from: recoveryState, to: AnimationState.HIT, allowed: true },
+      { from: recoveryState, to: AnimationState.KO, allowed: true }
     );
     
     // Recovery animations automatically transition to idle (handled in state machine)
     transitions.push({
       from: recoveryState,
-      to: "idle",
+      to: AnimationState.IDLE,
       allowed: true,
     });
   }
@@ -284,29 +284,29 @@ function generateStanceGuardTransitions(): TransitionRule[] {
 
   // Step directions for guard transitions
   const stepDirections: AnimationState[] = [
-    'step_forward',
-    'step_back',
-    'step_left',
-    'step_right',
-    'step_forward_left',
-    'step_forward_right',
-    'step_back_left',
-    'step_back_right',
+    AnimationState.STEP_FORWARD,
+    AnimationState.STEP_BACK,
+    AnimationState.STEP_LEFT,
+    AnimationState.STEP_RIGHT,
+    AnimationState.STEP_FORWARD_LEFT,
+    AnimationState.STEP_FORWARD_RIGHT,
+    AnimationState.STEP_BACK_LEFT,
+    AnimationState.STEP_BACK_RIGHT,
   ];
 
   for (const guardState of STANCE_GUARD_STATES) {
     // Guard can transition to movement
     transitions.push(
-      { from: guardState, to: "idle", allowed: true },
-      { from: guardState, to: "walk", allowed: true },
-      { from: guardState, to: "run", allowed: true }
+      { from: guardState, to: AnimationState.IDLE, allowed: true },
+      { from: guardState, to: AnimationState.WALK, allowed: true },
+      { from: guardState, to: AnimationState.RUN, allowed: true }
     );
 
     // Guard can transition to combat actions
     transitions.push(
-      { from: guardState, to: "attack", allowed: true },
-      { from: guardState, to: "defend", allowed: true },
-      { from: guardState, to: "stance_change", allowed: true }
+      { from: guardState, to: AnimationState.ATTACK, allowed: true },
+      { from: guardState, to: AnimationState.DEFEND, allowed: true },
+      { from: guardState, to: AnimationState.STANCE_CHANGE, allowed: true }
     );
     
     // Guard can transition to tactical steps (guard maintained during step)
@@ -316,8 +316,8 @@ function generateStanceGuardTransitions(): TransitionRule[] {
 
     // Guard can be interrupted by hits
     transitions.push(
-      { from: guardState, to: "hit", allowed: true },
-      { from: guardState, to: "ko", allowed: true }
+      { from: guardState, to: AnimationState.HIT, allowed: true },
+      { from: guardState, to: AnimationState.KO, allowed: true }
     );
 
     // Guards can transition between each other (direct stance change)
@@ -329,10 +329,10 @@ function generateStanceGuardTransitions(): TransitionRule[] {
 
     // Other states can transition to guards
     transitions.push(
-      { from: "idle", to: guardState, allowed: true },
-      { from: "walk", to: guardState, allowed: true },
-      { from: "run", to: guardState, allowed: true },
-      { from: "defend", to: guardState, allowed: true }
+      { from: AnimationState.IDLE, to: guardState, allowed: true },
+      { from: AnimationState.WALK, to: guardState, allowed: true },
+      { from: AnimationState.RUN, to: guardState, allowed: true },
+      { from: AnimationState.DEFEND, to: guardState, allowed: true }
     );
     
     // Steps can return to guard (guard maintained throughout step)
@@ -351,110 +351,110 @@ function generateStanceGuardTransitions(): TransitionRule[] {
  */
 export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
   // Idle transitions
-  { from: "idle", to: "walk", allowed: true },
-  { from: "idle", to: "run", allowed: true },
-  { from: "idle", to: "attack", allowed: true },
-  { from: "idle", to: "defend", allowed: true },
-  { from: "idle", to: "stance_change", allowed: true },
-  { from: "idle", to: "hit", allowed: true },
-  { from: "idle", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.WALK, allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.RUN, allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.ATTACK, allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.DEFEND, allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STANCE_CHANGE, allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.KO, allowed: true },
 
   // Walk transitions
-  { from: "walk", to: "idle", allowed: true },
-  { from: "walk", to: "run", allowed: true },
-  { from: "walk", to: "attack", allowed: true },
-  { from: "walk", to: "defend", allowed: true },
-  { from: "walk", to: "stance_change", allowed: true },
-  { from: "walk", to: "hit", allowed: true },
-  { from: "walk", to: "ko", allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.RUN, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.ATTACK, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.DEFEND, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STANCE_CHANGE, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.KO, allowed: true },
 
   // Run transitions
-  { from: "run", to: "idle", allowed: true },
-  { from: "run", to: "walk", allowed: true },
-  { from: "run", to: "attack", allowed: true },
-  { from: "run", to: "defend", allowed: true },
-  { from: "run", to: "stance_change", allowed: true },
-  { from: "run", to: "hit", allowed: true },
-  { from: "run", to: "ko", allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.WALK, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.ATTACK, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.DEFEND, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.STANCE_CHANGE, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.KO, allowed: true },
 
   // Attack transitions (typically returns to idle after completion)
-  { from: "attack", to: "idle", allowed: true },
-  { from: "attack", to: "hit", allowed: true }, // Can be interrupted by hit
-  { from: "attack", to: "ko", allowed: true },
+  { from: AnimationState.ATTACK, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.ATTACK, to: AnimationState.HIT, allowed: true }, // Can be interrupted by hit
+  { from: AnimationState.ATTACK, to: AnimationState.KO, allowed: true },
 
   // Defend transitions (typically returns to idle after completion)
-  { from: "defend", to: "idle", allowed: true },
-  { from: "defend", to: "walk", allowed: true },
-  { from: "defend", to: "hit", allowed: true }, // Can be interrupted by hit
-  { from: "defend", to: "ko", allowed: true },
+  { from: AnimationState.DEFEND, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.DEFEND, to: AnimationState.WALK, allowed: true },
+  { from: AnimationState.DEFEND, to: AnimationState.HIT, allowed: true }, // Can be interrupted by hit
+  { from: AnimationState.DEFEND, to: AnimationState.KO, allowed: true },
 
   // Hit transitions (returns to idle after completion)
-  { from: "hit", to: "idle", allowed: true },
-  { from: "hit", to: "hit", allowed: true }, // Can take multiple hits
-  { from: "hit", to: "ko", allowed: true },
+  { from: AnimationState.HIT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.HIT, to: AnimationState.HIT, allowed: true }, // Can take multiple hits
+  { from: AnimationState.HIT, to: AnimationState.KO, allowed: true },
 
   // Stance change transitions (returns to idle after completion)
-  { from: "stance_change", to: "idle", allowed: true },
-  { from: "stance_change", to: "hit", allowed: true }, // Can be interrupted by hit
-  { from: "stance_change", to: "ko", allowed: true },
+  { from: AnimationState.STANCE_CHANGE, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STANCE_CHANGE, to: AnimationState.HIT, allowed: true }, // Can be interrupted by hit
+  { from: AnimationState.STANCE_CHANGE, to: AnimationState.KO, allowed: true },
   
   // Tactical step transitions (non-interruptible, returns to idle/guard after completion)
   // Steps can be initiated from idle, walk, or guard states
   // 전진보법 (Forward Step)
-  { from: "idle", to: "step_forward", allowed: true },
-  { from: "walk", to: "step_forward", allowed: true },
-  { from: "step_forward", to: "idle", allowed: true },
-  { from: "step_forward", to: "hit", allowed: true }, // Can be hit during step
-  { from: "step_forward", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_FORWARD, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_FORWARD, allowed: true },
+  { from: AnimationState.STEP_FORWARD, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_FORWARD, to: AnimationState.HIT, allowed: true }, // Can be hit during step
+  { from: AnimationState.STEP_FORWARD, to: AnimationState.KO, allowed: true },
   
   // 후퇴보법 (Retreat Step)
-  { from: "idle", to: "step_back", allowed: true },
-  { from: "walk", to: "step_back", allowed: true },
-  { from: "step_back", to: "idle", allowed: true },
-  { from: "step_back", to: "hit", allowed: true },
-  { from: "step_back", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_BACK, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_BACK, allowed: true },
+  { from: AnimationState.STEP_BACK, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_BACK, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_BACK, to: AnimationState.KO, allowed: true },
   
   // 좌측면보법 (Left Side Step)
-  { from: "idle", to: "step_left", allowed: true },
-  { from: "walk", to: "step_left", allowed: true },
-  { from: "step_left", to: "idle", allowed: true },
-  { from: "step_left", to: "hit", allowed: true },
-  { from: "step_left", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_LEFT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_LEFT, allowed: true },
+  { from: AnimationState.STEP_LEFT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_LEFT, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_LEFT, to: AnimationState.KO, allowed: true },
   
   // 우측면보법 (Right Side Step)
-  { from: "idle", to: "step_right", allowed: true },
-  { from: "walk", to: "step_right", allowed: true },
-  { from: "step_right", to: "idle", allowed: true },
-  { from: "step_right", to: "hit", allowed: true },
-  { from: "step_right", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_RIGHT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_RIGHT, allowed: true },
+  { from: AnimationState.STEP_RIGHT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_RIGHT, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_RIGHT, to: AnimationState.KO, allowed: true },
   
   // 전좌측보법 (Forward-Left Diagonal Step)
-  { from: "idle", to: "step_forward_left", allowed: true },
-  { from: "walk", to: "step_forward_left", allowed: true },
-  { from: "step_forward_left", to: "idle", allowed: true },
-  { from: "step_forward_left", to: "hit", allowed: true },
-  { from: "step_forward_left", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_FORWARD_LEFT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_FORWARD_LEFT, allowed: true },
+  { from: AnimationState.STEP_FORWARD_LEFT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_FORWARD_LEFT, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_FORWARD_LEFT, to: AnimationState.KO, allowed: true },
   
   // 전우측보법 (Forward-Right Diagonal Step)
-  { from: "idle", to: "step_forward_right", allowed: true },
-  { from: "walk", to: "step_forward_right", allowed: true },
-  { from: "step_forward_right", to: "idle", allowed: true },
-  { from: "step_forward_right", to: "hit", allowed: true },
-  { from: "step_forward_right", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_FORWARD_RIGHT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_FORWARD_RIGHT, allowed: true },
+  { from: AnimationState.STEP_FORWARD_RIGHT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_FORWARD_RIGHT, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_FORWARD_RIGHT, to: AnimationState.KO, allowed: true },
   
   // 후좌측보법 (Back-Left Diagonal Step)
-  { from: "idle", to: "step_back_left", allowed: true },
-  { from: "walk", to: "step_back_left", allowed: true },
-  { from: "step_back_left", to: "idle", allowed: true },
-  { from: "step_back_left", to: "hit", allowed: true },
-  { from: "step_back_left", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_BACK_LEFT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_BACK_LEFT, allowed: true },
+  { from: AnimationState.STEP_BACK_LEFT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_BACK_LEFT, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_BACK_LEFT, to: AnimationState.KO, allowed: true },
   
   // 후우측보법 (Back-Right Diagonal Step)
-  { from: "idle", to: "step_back_right", allowed: true },
-  { from: "walk", to: "step_back_right", allowed: true },
-  { from: "step_back_right", to: "idle", allowed: true },
-  { from: "step_back_right", to: "hit", allowed: true },
-  { from: "step_back_right", to: "ko", allowed: true },
+  { from: AnimationState.IDLE, to: AnimationState.STEP_BACK_RIGHT, allowed: true },
+  { from: AnimationState.WALK, to: AnimationState.STEP_BACK_RIGHT, allowed: true },
+  { from: AnimationState.STEP_BACK_RIGHT, to: AnimationState.IDLE, allowed: true },
+  { from: AnimationState.STEP_BACK_RIGHT, to: AnimationState.HIT, allowed: true },
+  { from: AnimationState.STEP_BACK_RIGHT, to: AnimationState.KO, allowed: true },
 
   // KO is terminal - no transitions out
   // (Player must be revived/reset to leave KO state)
