@@ -17,6 +17,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import * as THREE from "three";
 import {
   cubicBezier,
+  cubicBezierWithOptions,
   createBezierEasing,
   BEZIER_PRESETS,
   easeNaturalMotion,
@@ -34,7 +35,7 @@ import {
 import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
 
 describe("Cubic Bezier Interpolation", () => {
-  describe("cubicBezier() - Core Function", () => {
+  describe("cubicBezier() - Core Function (Legacy API)", () => {
     it("should return 0 at t=0", () => {
       const result = cubicBezier(0, 0.25, 0.1, 0.25, 1.0);
       expect(result).toBeCloseTo(0, 5);
@@ -79,6 +80,143 @@ describe("Cubic Bezier Interpolation", () => {
       const results = points.map((t) =>
         cubicBezier(t, 0.25, 0.1, 0.25, 1.0)
       );
+
+      for (let i = 1; i < results.length; i++) {
+        expect(results[i]).toBeGreaterThanOrEqual(results[i - 1]);
+      }
+    });
+  });
+
+  describe("cubicBezierWithOptions() - Modern Configuration API", () => {
+    it("should return 0 at t=0 with options object", () => {
+      const result = cubicBezierWithOptions(0, {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+      });
+      expect(result).toBeCloseTo(0, 5);
+    });
+
+    it("should return 1 at t=1 with options object", () => {
+      const result = cubicBezierWithOptions(1, {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+      });
+      expect(result).toBeCloseTo(1, 5);
+    });
+
+    it("should produce identical results to legacy cubicBezier()", () => {
+      const options: BezierControlPoints = {
+        p1x: 0.42,
+        p1y: 0,
+        p2x: 0.58,
+        p2y: 1.0,
+      };
+
+      // Test multiple points
+      const testPoints = [0, 0.25, 0.5, 0.75, 1.0];
+      
+      testPoints.forEach((t) => {
+        const modernResult = cubicBezierWithOptions(t, options);
+        const legacyResult = cubicBezier(t, options.p1x, options.p1y, options.p2x, options.p2y);
+        
+        expect(modernResult).toBeCloseTo(legacyResult, 5);
+      });
+    });
+
+    it("should handle precisionMode: false (default behavior)", () => {
+      const result = cubicBezierWithOptions(0.5, {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+        precisionMode: false,
+      });
+
+      // Should use standard approximation (same as without precisionMode)
+      const resultWithoutFlag = cubicBezierWithOptions(0.5, {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+      });
+
+      expect(result).toBeCloseTo(resultWithoutFlag, 5);
+    });
+
+    it("should handle precisionMode: true (currently same as false, reserved for future)", () => {
+      const result = cubicBezierWithOptions(0.5, {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+        precisionMode: true,
+      });
+
+      // Currently should behave same as false since precision mode is not yet implemented
+      // This test documents expected behavior for future implementation
+      expect(typeof result).toBe("number");
+      expect(isFinite(result)).toBe(true);
+      expect(result).toBeGreaterThan(0);
+      expect(result).toBeLessThan(1);
+    });
+
+    it("should work with Korean martial arts preset control points", () => {
+      // Test with natural motion preset
+      const naturalMotion = cubicBezierWithOptions(0.5, BEZIER_PRESETS.naturalMotion);
+      expect(typeof naturalMotion).toBe("number");
+      expect(isFinite(naturalMotion)).toBe(true);
+
+      // Test with explosive power preset
+      const explosivePower = cubicBezierWithOptions(0.5, BEZIER_PRESETS.explosivePower);
+      expect(typeof explosivePower).toBe("number");
+      expect(isFinite(explosivePower)).toBe(true);
+
+      // Explosive power should accelerate faster than natural motion
+      expect(explosivePower).toBeGreaterThan(naturalMotion);
+    });
+
+    it("should clamp input t to [0,1] range with options", () => {
+      const options: BezierControlPoints = {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+      };
+
+      const belowZero = cubicBezierWithOptions(-0.5, options);
+      const aboveOne = cubicBezierWithOptions(1.5, options);
+
+      expect(belowZero).toBeCloseTo(0, 5);
+      expect(aboveOne).toBeCloseTo(1, 5);
+    });
+
+    it("should handle control points outside [0,1] for overshoot effects", () => {
+      const result = cubicBezierWithOptions(0.5, {
+        p1x: 0.5,
+        p1y: 1.5, // Overshoot effect
+        p2x: 0.5,
+        p2y: 1.0,
+      });
+
+      // Should produce valid result even with y > 1
+      expect(typeof result).toBe("number");
+      expect(isFinite(result)).toBe(true);
+    });
+
+    it("should be monotonic for standard easing curves with options", () => {
+      const options: BezierControlPoints = {
+        p1x: 0.25,
+        p1y: 0.1,
+        p2x: 0.25,
+        p2y: 1.0,
+      };
+
+      const points = [0, 0.25, 0.5, 0.75, 1.0];
+      const results = points.map((t) => cubicBezierWithOptions(t, options));
 
       for (let i = 1; i < results.length; i++) {
         expect(results[i]).toBeGreaterThanOrEqual(results[i - 1]);
