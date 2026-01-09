@@ -87,6 +87,19 @@ PR #1132 introduced comprehensive advanced joint movement systems:
 1. ✅ **GEON_BONE_BREAKING_STRIKE_1** - Overhead strike with segmented spine and hip rotation
 2. ✅ **GEON_THUNDEROUS_UPPERCUT** - Explosive uppercut with knee drive and spinal extension
 
+### In Progress: Systematic Enhancement Plan
+
+The remaining 38 animations will be enhanced in batches following this priority:
+
+**Phase 1: Strike Techniques (High Priority)** - Most benefit from hip rotation
+- Direct strikes, punches, elbows benefit from 30% damage bonus
+
+**Phase 2: Grappling/Throwing (Medium Priority)** - Require spinal flexion
+- Throws, joint locks need full body coordination
+
+**Phase 3: Defensive Techniques (Lower Priority)** - Benefit from stability
+- Blocks, parries need shoulder elevation and spine stability
+
 ### Remaining Attack Animations (22/24)
 
 **GEON (Heaven) - 1 remaining:**
