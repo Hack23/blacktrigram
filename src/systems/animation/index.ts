@@ -219,3 +219,17 @@ export {
   TURN_THRESHOLD_ANGLE,
   TURN_ANIMATION_DURATION,
 } from "./BodyFacingSystem";
+
+// Advanced joint movements system
+export {
+  ADVANCED_JOINT_CONSTRAINTS,
+  calculateHipRotationForKick,
+  calculateKickPowerFromHipRotation,
+  applyHipRotationToEuler,
+  type HipRotationState,
+  type ShoulderElevationState,
+  type AnkleArticulationState,
+  type WristSnapState,
+  type KneeDriveState,
+  type SpinalFlexionState,
+} from "./AdvancedJointMovements";

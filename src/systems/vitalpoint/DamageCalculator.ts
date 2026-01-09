@@ -7,6 +7,7 @@ import { PlayerState } from "../player";
 import { TrigramCalculator } from "../trigram/TrigramCalculator";
 import { StatusEffect } from "../types";
 import { calculateHipRotationPowerModifier } from "../animation/SkeletonRig";
+import { calculateKickPowerFromHipRotation, type HipRotationState } from "../animation/AdvancedJointMovements";
 import { calculateMeridianFlow } from "./KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
 import {
@@ -227,6 +228,7 @@ export class DamageCalculator {
    * @param currentHour - Current hour of day (0-23) for meridian flow
    * @param meridianStates - Current meridian disruption states (0=blocked, 1=normal)
    * @param hipRotationAngle - Hip rotation angle in radians (optional, defaults to 0)
+   * @param kickHipState - Hip rotation state for kicks (optional, for kick-specific power)
    * @returns Comprehensive damage result with all modifiers applied
    *
    * @example
@@ -253,7 +255,8 @@ export class DamageCalculator {
     vitalPointHit: VitalPointHitResult,
     currentHour: number,
     meridianStates: Record<string, number>,
-    hipRotationAngle: number = 0
+    hipRotationAngle: number = 0,
+    kickHipState?: HipRotationState
   ): DamageResult {
     // 1. Base damage from technique
     const attackerStrength = attacker.attackPower || 50;
@@ -300,13 +303,27 @@ export class DamageCalculator {
 
     // 8. Hip rotation power modifier (허리회전 파워 보너스)
     // Determine technique type for appropriate modifier calculation
-    const techniqueType: 'strike' | 'throw' | 'joint' = 
-      technique.type === 'throw' ? 'throw' :
-      technique.type === 'joint_lock' ? 'joint' : 'strike';
-    const hipRotationModifier = calculateHipRotationPowerModifier(
-      hipRotationAngle,
-      techniqueType
-    );
+    let hipRotationModifier = 1.0;
+    
+    // Check if this is a kick technique and we have kick-specific hip state
+    const techniqueName = technique.name?.english || technique.englishName || '';
+    const isKickTechnique = technique.type === 'kick' || 
+                           techniqueName.toLowerCase().includes('kick');
+    
+    if (kickHipState && isKickTechnique) {
+      // Use advanced kick-specific hip rotation calculation (up to 40% bonus)
+      const kickType = DamageCalculator.determineKickType(techniqueName);
+      hipRotationModifier = calculateKickPowerFromHipRotation(kickHipState, kickType);
+    } else if (hipRotationAngle !== 0) {
+      // Use general hip rotation for strikes/throws/joints (up to 30% bonus)
+      const techniqueType: 'strike' | 'throw' | 'joint' = 
+        technique.type === 'throw' ? 'throw' :
+        technique.type === 'joint_lock' ? 'joint' : 'strike';
+      hipRotationModifier = calculateHipRotationPowerModifier(
+        hipRotationAngle,
+        techniqueType
+      );
+    }
 
     // 9. Critical hit (accuracy > 0.9)
     const criticalMultiplier = accuracy > 0.9 ? 2.0 : 1.0;
@@ -345,6 +362,34 @@ export class DamageCalculator {
       isCritical,
       isVitalPoint: !!vitalPointHit.vitalPointHit,
     };
+  }
+
+  /**
+   * Determine kick type from technique name for hip rotation power calculation
+   * 
+   * @param techniqueName - Name of the technique
+   * @returns Kick type for hip rotation calculation
+   * 
+   * @private
+   * @korean 차기유형결정
+   */
+  private static determineKickType(techniqueName: string): 'front' | 'roundhouse' | 'side' | 'hook' | 'axe' {
+    const name = techniqueName.toLowerCase();
+    
+    if (name.includes('front') || name.includes('앞차기') || name.includes('snap')) {
+      return 'front';
+    } else if (name.includes('roundhouse') || name.includes('돌려차기') || name.includes('round')) {
+      return 'roundhouse';
+    } else if (name.includes('side') || name.includes('옆차기') || name.includes('lateral')) {
+      return 'side';
+    } else if (name.includes('hook') || name.includes('후려차기')) {
+      return 'hook';
+    } else if (name.includes('axe') || name.includes('내려차기') || name.includes('downward')) {
+      return 'axe';
+    }
+    
+    // Default to front kick for unknown kick types
+    return 'front';
   }
 
   /**
