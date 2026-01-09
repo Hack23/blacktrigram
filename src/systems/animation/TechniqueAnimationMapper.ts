@@ -533,62 +533,94 @@ export class TechniqueAnimationMapper {
     const bodyParts = Object.values(BodyPart);
     const intensities: TechniqueIntensity[] = ["light", "medium", "heavy", "critical"];
 
-    // Geon emphasizes direct striking techniques
+    // Geon emphasizes direct striking techniques with strong hip engagement
     bodyParts.forEach((bodyPart) => {
       intensities.forEach((intensity) => {
-        // Strike techniques - direct and forceful
+        // Strike techniques - direct and forceful with full hip rotation
+        const strikeType: TechniqueTypeCategory = "strike";
+        const torsoRotationStrike = this.getTorsoRotationForStanceTechnique(stance, strikeType);
+        const hipEngagementStrike = this.getHipEngagementForStanceTechnique(stance, strikeType, intensity);
+        const powerModifierStrike = this.calculatePowerModifier(hipEngagementStrike, strikeType);
+        
         this.mapTechnique(
-          { stance, techniqueType: "strike", bodyPart, intensity },
+          { stance, techniqueType: strikeType, bodyPart, intensity },
           {
             animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity),
             impactFrame: this.getImpactFrameForIntensity(intensity),
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
             priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(stance, "strike", bodyPart, intensity),
-            englishName: this.generateEnglishName(stance, "strike", bodyPart, intensity),
+            koreanName: this.generateKoreanName(stance, strikeType, bodyPart, intensity),
+            englishName: this.generateEnglishName(stance, strikeType, bodyPart, intensity),
+            torsoRotation: torsoRotationStrike,
+            hipEngagement: hipEngagementStrike,
+            powerModifier: powerModifierStrike,
           }
         );
 
-        // Joint techniques - forceful control
+        // Joint techniques - forceful control with moderate hip engagement
+        const jointType: TechniqueTypeCategory = "joint";
+        const torsoRotationJoint = this.getTorsoRotationForStanceTechnique(stance, jointType);
+        const hipEngagementJoint = this.getHipEngagementForStanceTechnique(stance, jointType, intensity);
+        const powerModifierJoint = this.calculatePowerModifier(hipEngagementJoint, jointType);
+        
         this.mapTechnique(
-          { stance, techniqueType: "joint", bodyPart, intensity },
+          { stance, techniqueType: jointType, bodyPart, intensity },
           {
             animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity) * 1.2, // Slightly slower
             impactFrame: this.getImpactFrameForIntensity(intensity),
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
             priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(stance, "joint", bodyPart, intensity),
-            englishName: this.generateEnglishName(stance, "joint", bodyPart, intensity),
+            koreanName: this.generateKoreanName(stance, jointType, bodyPart, intensity),
+            englishName: this.generateEnglishName(stance, jointType, bodyPart, intensity),
+            torsoRotation: torsoRotationJoint,
+            hipEngagement: hipEngagementJoint,
+            powerModifier: powerModifierJoint,
           }
         );
 
-        // Throw techniques - powerful
+        // Throw techniques - powerful with maximum hip engagement
+        const throwType: TechniqueTypeCategory = "throw";
+        const torsoRotationThrow = this.getTorsoRotationForStanceTechnique(stance, throwType);
+        const hipEngagementThrow = this.getHipEngagementForStanceTechnique(stance, throwType, intensity);
+        const powerModifierThrow = this.calculatePowerModifier(hipEngagementThrow, throwType);
+        
         this.mapTechnique(
-          { stance, techniqueType: "throw", bodyPart, intensity },
+          { stance, techniqueType: throwType, bodyPart, intensity },
           {
             animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity) * 1.5, // Longer for throws
             impactFrame: this.getImpactFrameForIntensity(intensity) + 4,
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 5,
             priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(stance, "throw", bodyPart, intensity),
-            englishName: this.generateEnglishName(stance, "throw", bodyPart, intensity),
+            koreanName: this.generateKoreanName(stance, throwType, bodyPart, intensity),
+            englishName: this.generateEnglishName(stance, throwType, bodyPart, intensity),
+            torsoRotation: torsoRotationThrow,
+            hipEngagement: hipEngagementThrow,
+            powerModifier: powerModifierThrow,
           }
         );
 
-        // Pressure point techniques - forceful precision
+        // Pressure point techniques - forceful precision with focused hip engagement
+        const pressureType: TechniqueTypeCategory = "pressure_point";
+        const torsoRotationPressure = this.getTorsoRotationForStanceTechnique(stance, pressureType);
+        const hipEngagementPressure = this.getHipEngagementForStanceTechnique(stance, pressureType, intensity);
+        const powerModifierPressure = this.calculatePowerModifier(hipEngagementPressure, pressureType);
+        
         this.mapTechnique(
-          { stance, techniqueType: "pressure_point", bodyPart, intensity },
+          { stance, techniqueType: pressureType, bodyPart, intensity },
           {
             animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity) * 0.8, // Faster
             impactFrame: this.getImpactFrameForIntensity(intensity) - 2,
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
             priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(stance, "pressure_point", bodyPart, intensity),
-            englishName: this.generateEnglishName(stance, "pressure_point", bodyPart, intensity),
+            koreanName: this.generateKoreanName(stance, pressureType, bodyPart, intensity),
+            englishName: this.generateEnglishName(stance, pressureType, bodyPart, intensity),
+            torsoRotation: torsoRotationPressure,
+            hipEngagement: hipEngagementPressure,
+            powerModifier: powerModifierPressure,
           }
         );
       });
@@ -849,7 +881,7 @@ export class TechniqueAnimationMapper {
   }
 
   /**
-   * Add single technique mapping to the map
+   * Add single technique mapping to the map with automatic rotation calculation
    * 
    * **Korean**: 단일 기술 매핑 추가
    * 
@@ -859,8 +891,24 @@ export class TechniqueAnimationMapper {
     key: TechniqueAnimationKey,
     animation: TechniqueAnimation
   ): void {
+    // Calculate rotation properties if not provided
+    const torsoRotation = animation.torsoRotation 
+      ?? this.getTorsoRotationForStanceTechnique(key.stance, key.techniqueType);
+    const hipEngagement = animation.hipEngagement 
+      ?? this.getHipEngagementForStanceTechnique(key.stance, key.techniqueType, key.intensity);
+    const powerModifier = animation.powerModifier 
+      ?? this.calculatePowerModifier(hipEngagement, key.techniqueType);
+    
+    // Create complete animation with rotation properties
+    const completeAnimation: TechniqueAnimation = {
+      ...animation,
+      torsoRotation,
+      hipEngagement,
+      powerModifier,
+    };
+    
     const lookupKey = this.createLookupKey(key);
-    this.animationMap.set(lookupKey, animation);
+    this.animationMap.set(lookupKey, completeAnimation);
   }
 
   /**
@@ -922,6 +970,121 @@ export class TechniqueAnimationMapper {
       case "critical":
         return 24; // 24 frames recovery
     }
+  }
+
+  /**
+   * Calculate torso rotation for stance-technique combination
+   * 
+   * **Korean**: 자세-기술 조합의 허리 회전 계산
+   * 
+   * Returns rotation in radians (-π/2 to π/2)
+   * 
+   * @private
+   */
+  private getTorsoRotationForStanceTechnique(
+    stance: string,
+    techniqueType: TechniqueTypeCategory
+  ): number {
+    // Stance-specific base rotations (in radians)
+    const stanceRotations: Record<string, number> = {
+      [TrigramStance.GEON]: Math.PI / 6,      // 30° - Direct, moderate rotation
+      [TrigramStance.TAE]: Math.PI / 18,      // 10° - Minimal rotation, fluid
+      [TrigramStance.LI]: Math.PI / 9,        // 20° - Quick snap rotation
+      [TrigramStance.JIN]: Math.PI / 4,       // 45° - Wide explosive rotation
+      [TrigramStance.SON]: Math.PI / 12,      // 15° - Continuous adaptive flow
+      [TrigramStance.GAM]: Math.PI / 8,       // 22.5° - Circular wave motion
+      [TrigramStance.GAN]: Math.PI / 36,      // 5° - Stable, minimal rotation
+      [TrigramStance.GON]: Math.PI / 3,       // 60° - Deep grounded rotation
+    };
+
+    const baseRotation = stanceRotations[stance] || 0;
+    
+    // Technique type modifiers
+    const techniqueMultipliers: Record<TechniqueTypeCategory, number> = {
+      strike: 1.2,        // 20% more rotation for strikes
+      joint: 0.7,         // 30% less for joint locks
+      throw: 1.5,         // 50% more for throws
+      pressure_point: 0.8, // 20% less for precision strikes
+    };
+    
+    const multiplier = techniqueMultipliers[techniqueType] || 1.0;
+    return Math.min(Math.PI / 2, baseRotation * multiplier); // Clamp to ±90°
+  }
+
+  /**
+   * Calculate hip engagement for stance-technique combination
+   * 
+   * **Korean**: 자세-기술 조합의 골반 참여도 계산
+   * 
+   * Returns engagement factor (0-1)
+   * 
+   * @private
+   */
+  private getHipEngagementForStanceTechnique(
+    stance: string,
+    techniqueType: TechniqueTypeCategory,
+    intensity: TechniqueIntensity
+  ): number {
+    // Stance-specific base hip engagement
+    const stanceEngagement: Record<string, number> = {
+      [TrigramStance.GEON]: 0.9,   // High engagement - direct force
+      [TrigramStance.TAE]: 0.5,    // Moderate - fluid movement
+      [TrigramStance.LI]: 0.7,     // Good - rapid techniques
+      [TrigramStance.JIN]: 1.0,    // Maximum - explosive power
+      [TrigramStance.SON]: 0.6,    // Moderate - continuous pressure
+      [TrigramStance.GAM]: 0.7,    // Good - adaptive flow
+      [TrigramStance.GAN]: 0.3,    // Low - stable defensive
+      [TrigramStance.GON]: 0.95,   // Very high - grounding techniques
+    };
+
+    const baseEngagement = stanceEngagement[stance] || 0.6;
+    
+    // Technique type modifiers
+    const techniqueMultipliers: Record<TechniqueTypeCategory, number> = {
+      strike: 1.0,        // Full engagement for strikes
+      joint: 0.6,         // Lower for joint manipulation
+      throw: 1.1,         // Highest for throws
+      pressure_point: 0.7, // Moderate for precision
+    };
+    
+    // Intensity modifiers
+    const intensityMultipliers: Record<TechniqueIntensity, number> = {
+      light: 0.7,
+      medium: 0.9,
+      heavy: 1.0,
+      critical: 1.1,
+    };
+    
+    const engagement = baseEngagement 
+      * techniqueMultipliers[techniqueType] 
+      * intensityMultipliers[intensity];
+    
+    return Math.min(1.0, Math.max(0.0, engagement)); // Clamp to 0-1
+  }
+
+  /**
+   * Calculate power modifier from hip engagement
+   * 
+   * **Korean**: 골반 참여도로부터 파워 배율 계산
+   * 
+   * Based on PR #1132 calculateHipRotationPowerModifier system
+   * 
+   * @private
+   */
+  private calculatePowerModifier(
+    hipEngagement: number,
+    techniqueType: TechniqueTypeCategory
+  ): number {
+    // Base power curve: 1.0 + (engagement * maxBonus)
+    const maxBonusByType: Record<TechniqueTypeCategory, number> = {
+      strike: 0.30,        // 30% max bonus for strikes
+      joint: 0.10,         // 10% for joint locks
+      throw: 0.20,         // 20% for throws
+      pressure_point: 0.25, // 25% for pressure points
+    };
+    
+    const maxBonus = maxBonusByType[techniqueType] || 0.20;
+    return 1.0 + (hipEngagement * maxBonus);
   }
 
   /**

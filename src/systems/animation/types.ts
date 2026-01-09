@@ -1263,6 +1263,48 @@ export interface TechniqueAnimation {
   readonly koreanName: string;
   /** English technique name */
   readonly englishName: string;
+  
+  // ===== Advanced Joint Movement Properties (고급 관절 동작) =====
+  
+  /**
+   * Torso rotation angle in radians relative to hips
+   * 
+   * **Korean**: 허리회전 (Heorhwoejeon)
+   * 
+   * Range: -π/2 to π/2 (-90° to 90°)
+   * Used for independent upper/lower body movement
+   * 
+   * @korean 허리회전각도
+   */
+  readonly torsoRotation?: number;
+  
+  /**
+   * Hip rotation engagement factor (0-1)
+   * 
+   * **Korean**: 골반회전 참여도 (Golbanhwoejeon Chamyeodo)
+   * 
+   * - 0.0: No hip engagement (isolated technique)
+   * - 0.3: Minimal hip involvement
+   * - 0.6: Moderate hip rotation
+   * - 1.0: Full hip engagement (maximum power)
+   * 
+   * Contributes 10-30% damage bonus based on technique type
+   * 
+   * @korean 골반회전도
+   */
+  readonly hipEngagement?: number;
+  
+  /**
+   * Power modifier from hip rotation (calculated)
+   * 
+   * **Korean**: 파워배율 (Pawo Baeyul)
+   * 
+   * Multiplier applied to technique damage (1.0-1.3)
+   * Calculated from hipEngagement and techniqueType
+   * 
+   * @korean 파워배율
+   */
+  readonly powerModifier?: number;
 }
 
 /**

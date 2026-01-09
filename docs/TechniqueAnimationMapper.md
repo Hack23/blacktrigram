@@ -49,7 +49,92 @@ console.log(animation.impactFrame); // Frame 14
 console.log(animation.recoveryFrames); // 18 frames
 ```
 
+### Advanced Joint Movement Integration (PR #1132)
+
+The mapper now includes comprehensive torso and hip rotation data for all 1024 technique combinations, integrating with the advanced joint movement system for realistic Korean martial arts execution.
+
+#### Torso Rotation (허리회전)
+
+```typescript
+const animation = techniqueAnimationMapper.getAnimation({
+  stance: TrigramStance.GON,  // Earth stance - deep rotation
+  techniqueType: "throw",
+  bodyPart: BodyPart.TORSO_LOWER,
+  intensity: "critical",
+});
+
+console.log(animation.torsoRotation); // ~1.05 radians (60°)
+// Torso rotation relative to hips (-π/2 to π/2)
+// Varies by stance and technique type
+```
+
+**Stance-Specific Torso Rotation**:
+- **건 (Geon)**: 30° - Moderate direct rotation
+- **태 (Tae)**: 10° - Minimal fluid rotation
+- **리 (Li)**: 20° - Quick snap rotation
+- **진 (Jin)**: 45° - Wide explosive rotation
+- **손 (Son)**: 15° - Continuous adaptive flow
+- **감 (Gam)**: 22.5° - Circular wave motion
+- **간 (Gan)**: 5° - Stable minimal rotation
+- **곤 (Gon)**: 60° - Deep grounded rotation
+
+#### Hip Engagement (골반참여도)
+
+```typescript
+const animation = techniqueAnimationMapper.getAnimation({
+  stance: TrigramStance.JIN,  // Thunder - maximum hip drive
+  techniqueType: "strike",
+  bodyPart: BodyPart.HEAD,
+  intensity: "critical",
+});
+
+console.log(animation.hipEngagement); // ~1.0 (100%)
+console.log(animation.powerModifier);  // ~1.30 (30% bonus)
+// Hip engagement scales with stance, technique, and intensity
+```
+
+**Hip Engagement by Stance**:
+- **건 (Geon)**: 90% - High engagement for direct force
+- **태 (Tae)**: 50% - Moderate fluid movement
+- **리 (Li)**: 70% - Good engagement for rapid techniques
+- **진 (Jin)**: 100% - Maximum explosive power
+- **손 (Son)**: 60% - Moderate continuous pressure
+- **감 (Gam)**: 70% - Good adaptive flow
+- **간 (Gan)**: 30% - Low stable defensive
+- **곤 (Gon)**: 95% - Very high grounding techniques
+
+#### Power Modifiers (파워배율)
+
+Power modifiers are automatically calculated based on hip engagement and technique type:
+
+```typescript
+// Strike with high hip engagement
+const strikeAnim = techniqueAnimationMapper.getAnimation({
+  stance: TrigramStance.GEON,
+  techniqueType: "strike",
+  bodyPart: BodyPart.HEAD,
+  intensity: "heavy",
+});
+console.log(strikeAnim.powerModifier); // 1.27 (27% damage bonus)
+
+// Joint technique with lower engagement
+const jointAnim = techniqueAnimationMapper.getAnimation({
+  stance: TrigramStance.TAE,
+  techniqueType: "joint",
+  bodyPart: BodyPart.ARM_LEFT,
+  intensity: "heavy",
+});
+console.log(jointAnim.powerModifier); // 1.03 (3% damage bonus)
+```
+
+**Power Modifier Ranges by Technique**:
+- **Strike**: 1.0 - 1.30 (up to 30% bonus)
+- **Throw**: 1.0 - 1.20 (up to 20% bonus)
+- **Pressure Point**: 1.0 - 1.25 (up to 25% bonus)
+- **Joint**: 1.0 - 1.10 (up to 10% bonus)
+
 ### Validation
+```
 
 ```typescript
 // Validate mapping completeness

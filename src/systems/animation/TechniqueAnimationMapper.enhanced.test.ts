@@ -58,7 +58,7 @@ describe("TechniqueAnimationMapper", () => {
           bodyPart: BodyPart.HEAD,
           intensity: "medium",
         };
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation).toBeDefined();
         expect(animation.koreanName).toContain(stanceKoreanNames[stance]);
       });
@@ -79,7 +79,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "heavy",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation).toBeDefined();
       expect(animation.animationState).toBe(AnimationState.ATTACK);
@@ -101,7 +101,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity: "medium",
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation).toBeDefined();
         expect(animation.koreanName).toBeTruthy();
         expect(animation.englishName).toBeTruthy();
@@ -124,7 +124,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity: "medium",
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation).toBeDefined();
         expect(animation.duration).toBeGreaterThan(0);
       });
@@ -141,7 +141,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity: "medium",
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation).toBeDefined();
         expect(animation.impactFrame).toBeGreaterThan(0);
       });
@@ -163,7 +163,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity,
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation).toBeDefined();
         expect(animation.recoveryFrames).toBeGreaterThan(0);
       });
@@ -181,10 +181,10 @@ describe("TechniqueAnimationMapper", () => {
       const heavyKey: TechniqueAnimationKey = { ...baseKey, intensity: "heavy" };
       const criticalKey: TechniqueAnimationKey = { ...baseKey, intensity: "critical" };
 
-      const mediumAnim = mapper.getAnimation(baseKey);
-      const lightAnim = mapper.getAnimation(lightKey);
-      const heavyAnim = mapper.getAnimation(heavyKey);
-      const criticalAnim = mapper.getAnimation(criticalKey);
+      const mediumAnim = techniqueAnimationMapper.getAnimation(baseKey);
+      const lightAnim = techniqueAnimationMapper.getAnimation(lightKey);
+      const heavyAnim = techniqueAnimationMapper.getAnimation(heavyKey);
+      const criticalAnim = techniqueAnimationMapper.getAnimation(criticalKey);
 
       // Light should be faster (shorter duration)
       expect(lightAnim.duration).toBeLessThan(mediumAnim.duration);
@@ -204,7 +204,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "critical",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       // Should return a valid animation even if exact match doesn't exist
       expect(animation).toBeDefined();
@@ -224,7 +224,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "heavy",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("건괘");
       expect(animation.englishName).toContain("Heaven");
@@ -241,7 +241,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "medium",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("태괘");
       expect(animation.englishName).toContain("Lake");
@@ -257,7 +257,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "medium",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("리괘");
       expect(animation.englishName).toContain("Fire");
@@ -273,7 +273,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "heavy",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("진괘");
       expect(animation.englishName).toContain("Thunder");
@@ -289,7 +289,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "light",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("손괘");
       expect(animation.englishName).toContain("Wind");
@@ -305,7 +305,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "medium",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("감괘");
       expect(animation.englishName).toContain("Water");
@@ -321,7 +321,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "heavy",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("간괘");
       expect(animation.englishName).toContain("Mountain");
@@ -338,7 +338,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "heavy",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       expect(animation.koreanName).toContain("곤괘");
       expect(animation.englishName).toContain("Earth");
@@ -370,7 +370,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity: "medium",
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation.koreanName).toContain(stanceKoreanNames[index]);
       });
     });
@@ -391,7 +391,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity: "medium",
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
         expect(animation.koreanName).toContain(koreanName);
       });
     });
@@ -404,7 +404,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "critical",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       // Should have both Korean and English names
       expect(animation.koreanName).toBeTruthy();
@@ -486,7 +486,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity,
         };
 
-        mapper.getAnimation(key);
+        techniqueAnimationMapper.getAnimation(key);
       }
 
       const endTime = performance.now();
@@ -523,7 +523,7 @@ describe("TechniqueAnimationMapper", () => {
 
       for (let i = 0; i < 1000; i++) {
         keys.forEach((key) => {
-          mapper.getAnimation(key);
+          techniqueAnimationMapper.getAnimation(key);
         });
       }
 
@@ -561,7 +561,7 @@ describe("TechniqueAnimationMapper", () => {
           intensity: allIntensities[Math.floor(Math.random() * allIntensities.length)],
         };
 
-        const animation = mapper.getAnimation(key);
+        const animation = techniqueAnimationMapper.getAnimation(key);
 
         // Should always return valid animation
         expect(animation).toBeDefined();
@@ -584,7 +584,7 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "light",
       };
 
-      const animation = mapper.getAnimation(key);
+      const animation = techniqueAnimationMapper.getAnimation(key);
 
       // Even if it's a fallback, should have reasonable values
       expect(animation.duration).toBeGreaterThan(0.2);
@@ -613,8 +613,8 @@ describe("TechniqueAnimationMapper", () => {
           intensity: "critical",
         };
 
-        const lightAnim = mapper.getAnimation(lightKey);
-        const criticalAnim = mapper.getAnimation(criticalKey);
+        const lightAnim = techniqueAnimationMapper.getAnimation(lightKey);
+        const criticalAnim = techniqueAnimationMapper.getAnimation(criticalKey);
 
         // Light attacks should have earlier impact frames
         expect(lightAnim.impactFrame).toBeLessThan(criticalAnim.impactFrame);
@@ -629,10 +629,10 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "medium",
       };
 
-      const lightAnim = mapper.getAnimation({ ...key, intensity: "light" });
-      const mediumAnim = mapper.getAnimation(key);
-      const heavyAnim = mapper.getAnimation({ ...key, intensity: "heavy" });
-      const criticalAnim = mapper.getAnimation({ ...key, intensity: "critical" });
+      const lightAnim = techniqueAnimationMapper.getAnimation({ ...key, intensity: "light" });
+      const mediumAnim = techniqueAnimationMapper.getAnimation(key);
+      const heavyAnim = techniqueAnimationMapper.getAnimation({ ...key, intensity: "heavy" });
+      const criticalAnim = techniqueAnimationMapper.getAnimation({ ...key, intensity: "critical" });
 
       // Recovery frames should increase with intensity
       expect(lightAnim.recoveryFrames).toBeLessThan(mediumAnim.recoveryFrames);
@@ -692,5 +692,195 @@ describe("techniqueAnimationMapper singleton", () => {
     expect(result1.englishName).toBe(result2.englishName);
     expect(result1.duration).toBe(result2.duration);
     expect(result1.impactFrame).toBe(result2.impactFrame);
+  });
+
+  // ===== Torso & Hip Rotation Tests (허리 및 골반 회전 테스트) =====
+  
+  describe("Torso and Hip Rotation Integration", () => {
+    it("should include torso rotation for all techniques", () => {
+      const key: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const animation = techniqueAnimationMapper.getAnimation(key);
+
+      expect(animation.torsoRotation).toBeDefined();
+      expect(typeof animation.torsoRotation).toBe("number");
+      expect(animation.torsoRotation).toBeGreaterThanOrEqual(-Math.PI / 2);
+      expect(animation.torsoRotation).toBeLessThanOrEqual(Math.PI / 2);
+    });
+
+    it("should include hip engagement for all techniques", () => {
+      const key: TechniqueAnimationKey = {
+        stance: TrigramStance.JIN,
+        techniqueType: "throw",
+        bodyPart: BodyPart.TORSO_LOWER,
+        intensity: "critical",
+      };
+
+      const animation = techniqueAnimationMapper.getAnimation(key);
+
+      expect(animation.hipEngagement).toBeDefined();
+      expect(typeof animation.hipEngagement).toBe("number");
+      expect(animation.hipEngagement).toBeGreaterThanOrEqual(0);
+      expect(animation.hipEngagement).toBeLessThanOrEqual(1);
+    });
+
+    it("should calculate power modifier based on hip engagement", () => {
+      const key: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const animation = techniqueAnimationMapper.getAnimation(key);
+
+      expect(animation.powerModifier).toBeDefined();
+      expect(typeof animation.powerModifier).toBe("number");
+      expect(animation.powerModifier).toBeGreaterThanOrEqual(1.0);
+      expect(animation.powerModifier).toBeLessThanOrEqual(1.3);
+    });
+
+    it("should have higher hip engagement for Jin (Thunder) stance", () => {
+      const jinKey: TechniqueAnimationKey = {
+        stance: TrigramStance.JIN,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const ganKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GAN, // Mountain - defensive, low engagement
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const jinAnimation = techniqueAnimationMapper.getAnimation(jinKey);
+      const ganAnimation = techniqueAnimationMapper.getAnimation(ganKey);
+
+      expect(jinAnimation.hipEngagement).toBeGreaterThan(ganAnimation.hipEngagement!);
+    });
+
+    it("should have higher torso rotation for throws than joint techniques", () => {
+      const throwKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "throw",
+        bodyPart: BodyPart.TORSO_UPPER,
+        intensity: "heavy",
+      };
+
+      const jointKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "joint",
+        bodyPart: BodyPart.TORSO_UPPER,
+        intensity: "heavy",
+      };
+
+      const throwAnimation = techniqueAnimationMapper.getAnimation(throwKey);
+      const jointAnimation = techniqueAnimationMapper.getAnimation(jointKey);
+
+      expect(throwAnimation.torsoRotation).toBeGreaterThan(jointAnimation.torsoRotation!);
+    });
+
+    it("should increase hip engagement with technique intensity", () => {
+      const lightKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "light",
+      };
+
+      const criticalKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "critical",
+      };
+
+      const lightAnimation = techniqueAnimationMapper.getAnimation(lightKey);
+      const criticalAnimation = techniqueAnimationMapper.getAnimation(criticalKey);
+
+      expect(criticalAnimation.hipEngagement).toBeGreaterThan(lightAnimation.hipEngagement!);
+    });
+
+    it("should give strikes higher power modifier than joint techniques", () => {
+      const strikeKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const jointKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GEON,
+        techniqueType: "joint",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const strikeAnimation = techniqueAnimationMapper.getAnimation(strikeKey);
+      const jointAnimation = techniqueAnimationMapper.getAnimation(jointKey);
+
+      expect(strikeAnimation.powerModifier).toBeGreaterThan(jointAnimation.powerModifier!);
+    });
+
+    it("should have minimal torso rotation for Gan (Mountain) stance", () => {
+      const ganKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GAN,
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const gonKey: TechniqueAnimationKey = {
+        stance: TrigramStance.GON, // Earth - deep rotation
+        techniqueType: "strike",
+        bodyPart: BodyPart.HEAD,
+        intensity: "heavy",
+      };
+
+      const ganAnimation = techniqueAnimationMapper.getAnimation(ganKey);
+      const gonAnimation = techniqueAnimationMapper.getAnimation(gonKey);
+
+      expect(ganAnimation.torsoRotation).toBeLessThan(gonAnimation.torsoRotation!);
+      expect(ganAnimation.torsoRotation).toBeLessThan(Math.PI / 18); // Less than 10°
+    });
+
+    it("should provide rotation data for all 1024 combinations", () => {
+      const stances = Object.values(TrigramStance);
+      const techniqueTypes: TechniqueTypeCategory[] = ["strike", "joint", "throw", "pressure_point"];
+      const bodyParts = Object.values(BodyPart);
+      const intensities: TechniqueIntensity[] = ["light", "medium", "heavy", "critical"];
+
+      let countWithRotation = 0;
+
+      stances.forEach((stance) => {
+        techniqueTypes.forEach((techniqueType) => {
+          bodyParts.forEach((bodyPart) => {
+            intensities.forEach((intensity) => {
+              const animation = techniqueAnimationMapper.getAnimation({
+                stance,
+                techniqueType,
+                bodyPart,
+                intensity,
+              });
+
+              if (animation.torsoRotation !== undefined && 
+                  animation.hipEngagement !== undefined &&
+                  animation.powerModifier !== undefined) {
+                countWithRotation++;
+              }
+            });
+          });
+        });
+      });
+
+      expect(countWithRotation).toBe(1024); // All combinations have rotation data
+    });
   });
 });
