@@ -1,22 +1,27 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { PerformanceRating } from "./PerformanceRating";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../../audio/AudioProvider";
 import { MatchStatistics } from "../../../../systems/combat";
+import { PerformanceRating } from "./PerformanceRating";
 
 // Mock AudioProvider
 vi.mock("../../../../audio/AudioProvider", () => ({
   AudioProvider: ({ children }: { children: React.ReactNode }) => children,
   useAudio: () => ({
     isInitialized: true,
+    isAudioReady: true,
     playMusic: vi.fn(),
     stopMusic: vi.fn(),
     playSFX: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 
 describe("PerformanceRating", () => {
-  const createMockMatchStats = (overrides: Partial<MatchStatistics> = {}): MatchStatistics => ({
+  const createMockMatchStats = (
+    overrides: Partial<MatchStatistics> = {}
+  ): MatchStatistics => ({
     totalDamageDealt: 150,
     totalDamageTaken: 100,
     criticalHits: 3,
@@ -234,8 +239,12 @@ describe("PerformanceRating", () => {
 
     const performanceScore = getByTestId("performance-score");
     expect(performanceScore).toBeInTheDocument();
-    expect(parseInt(performanceScore.textContent || "0")).toBeGreaterThanOrEqual(0);
-    expect(parseInt(performanceScore.textContent || "100")).toBeLessThanOrEqual(100);
+    expect(
+      parseInt(performanceScore.textContent || "0")
+    ).toBeGreaterThanOrEqual(0);
+    expect(parseInt(performanceScore.textContent || "100")).toBeLessThanOrEqual(
+      100
+    );
   });
 
   it("should display score breakdown with combat stats", () => {

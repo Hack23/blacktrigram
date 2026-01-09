@@ -2,21 +2,22 @@
  * Combat Readiness Calculation Tests
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { createMockPlayerState } from "../test/test-utils";
 import {
-  calculateCombatReadiness,
   calculateBodyHealthPercentage,
+  calculateCombatReadiness,
+  COMBAT_READINESS_THRESHOLDS,
+  getCombatReadinessBars,
   getCombatReadinessColor,
   getCombatReadinessLabel,
-  getCombatReadinessBars,
-  COMBAT_READINESS_THRESHOLDS,
 } from "./combatReadiness";
-import { createMockPlayerState } from "../test/test-utils";
 
 describe("calculateBodyHealthPercentage", () => {
   it("should return 100% for full health on all body parts", () => {
     const bodyHealth = {
       head: 100,
+      neck: 100,
       torsoUpper: 100,
       torsoLower: 100,
       armLeft: 100,
@@ -24,13 +25,14 @@ describe("calculateBodyHealthPercentage", () => {
       legLeft: 100,
       legRight: 100,
     };
-    
+
     expect(calculateBodyHealthPercentage(bodyHealth)).toBe(100);
   });
 
   it("should return 0% when all body parts are at 0", () => {
     const bodyHealth = {
       head: 0,
+      neck: 0,
       torsoUpper: 0,
       torsoLower: 0,
       armLeft: 0,
@@ -38,13 +40,14 @@ describe("calculateBodyHealthPercentage", () => {
       legLeft: 0,
       legRight: 0,
     };
-    
+
     expect(calculateBodyHealthPercentage(bodyHealth)).toBe(0);
   });
 
   it("should calculate correct average for mixed health values", () => {
     const bodyHealth = {
       head: 80,
+      neck: 80,
       torsoUpper: 90,
       torsoLower: 70,
       armLeft: 85,
@@ -52,7 +55,7 @@ describe("calculateBodyHealthPercentage", () => {
       legLeft: 65,
       legRight: 95,
     };
-    
+
     // Average = (80+90+70+85+75+65+95)/7 = 560/7 = 80
     expect(calculateBodyHealthPercentage(bodyHealth)).toBe(80);
   });
@@ -67,7 +70,7 @@ describe("calculateBodyHealthPercentage", () => {
       legLeft: 100,
       legRight: 100,
     };
-    
+
     // Average = (20+600)/7 = 620/7 ≈ 88.57 → 89 (rounded)
     const result = calculateBodyHealthPercentage(bodyHealth);
     expect(result).toBeGreaterThanOrEqual(88);
@@ -92,6 +95,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 100,
+        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -103,7 +107,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 100,
       balance: 100,
     });
-    
+
     const readiness = calculateCombatReadiness(player);
     expect(readiness).toBe(100);
   });
@@ -112,6 +116,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 0,
+        neck: 0,
         torsoUpper: 0,
         torsoLower: 0,
         armLeft: 0,
@@ -123,7 +128,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 0,
       balance: 0,
     });
-    
+
     const readiness = calculateCombatReadiness(player);
     expect(readiness).toBe(0);
   });
@@ -133,6 +138,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 50,
+        neck: 50,
         torsoUpper: 50,
         torsoLower: 50,
         armLeft: 50,
@@ -144,7 +150,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 100,
       balance: 100,
     });
-    
+
     // Expected: 50% body health * 0.4 + 100% * 0.6 = 20 + 60 = 80%
     const readiness = calculateCombatReadiness(player);
     expect(readiness).toBe(80);
@@ -155,6 +161,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 100,
+        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -166,7 +173,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 100,
       balance: 100,
     });
-    
+
     // Expected: 100% * 0.4 + 50% pain reduction * 0.2 + 100% * 0.4 = 40 + 10 + 40 = 90%
     const readiness = calculateCombatReadiness(player);
     expect(readiness).toBe(90);
@@ -177,6 +184,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 100,
+        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -188,7 +196,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 50,
       balance: 100,
     });
-    
+
     // Expected: 100% * 0.4 + 100% * 0.2 + 50% * 0.2 + 100% * 0.2 = 40 + 20 + 10 + 20 = 90%
     const readiness = calculateCombatReadiness(player);
     expect(readiness).toBe(90);
@@ -199,6 +207,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 100,
+        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -210,7 +219,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 100,
       balance: 50,
     });
-    
+
     // Expected: 100% * 0.4 + 100% * 0.2 + 100% * 0.2 + 50% * 0.2 = 40 + 20 + 20 + 10 = 90%
     const readiness = calculateCombatReadiness(player);
     expect(readiness).toBe(90);
@@ -220,6 +229,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 80,
+        neck: 80,
         torsoUpper: 70,
         torsoLower: 75,
         armLeft: 90,
@@ -231,7 +241,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 85,
       balance: 70,
     });
-    
+
     // Expected breakdown:
     // Body: 76.4 * 0.4 = 30.56
     // Pain: (100-35) * 0.2 = 13
@@ -247,6 +257,7 @@ describe("calculateCombatReadiness", () => {
     const player = createMockPlayerState({
       bodyPartHealth: {
         head: 45,
+        neck: 45,
         torsoUpper: 60,
         torsoLower: 50,
         armLeft: 70,
@@ -258,7 +269,7 @@ describe("calculateCombatReadiness", () => {
       consciousness: 50,
       balance: 45,
     });
-    
+
     // Expected breakdown:
     // Body: 55 * 0.4 = 22
     // Pain: (100-65) * 0.2 = 7
@@ -275,6 +286,7 @@ describe("calculateCombatReadiness", () => {
     const player1 = createMockPlayerState({
       bodyPartHealth: {
         head: -10,
+        neck: -10,
         torsoUpper: -10,
         torsoLower: -10,
         armLeft: -10,
@@ -286,13 +298,14 @@ describe("calculateCombatReadiness", () => {
       consciousness: -10,
       balance: -10,
     });
-    
+
     expect(calculateCombatReadiness(player1)).toBe(0);
-    
+
     // Test upper bound (shouldn't exceed 100)
     const player2 = createMockPlayerState({
       bodyPartHealth: {
         head: 100,
+        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -304,20 +317,20 @@ describe("calculateCombatReadiness", () => {
       consciousness: 100,
       balance: 100,
     });
-    
+
     expect(calculateCombatReadiness(player2)).toBe(100);
   });
 
   it("should complete calculation in under 1ms (performance requirement)", () => {
     const player = createMockPlayerState({});
     const iterations = 1000;
-    
+
     const startTime = performance.now();
     for (let i = 0; i < iterations; i++) {
       calculateCombatReadiness(player);
     }
     const endTime = performance.now();
-    
+
     const avgTime = (endTime - startTime) / iterations;
     expect(avgTime).toBeLessThan(1);
   });
@@ -353,37 +366,69 @@ describe("calculateCombatReadiness", () => {
 
 describe("getCombatReadinessColor", () => {
   it("should return green for 100-80% (full capability)", () => {
-    expect(getCombatReadinessColor(100)).toBe(COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color);
-    expect(getCombatReadinessColor(90)).toBe(COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color);
-    expect(getCombatReadinessColor(80)).toBe(COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color);
+    expect(getCombatReadinessColor(100)).toBe(
+      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color
+    );
+    expect(getCombatReadinessColor(90)).toBe(
+      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color
+    );
+    expect(getCombatReadinessColor(80)).toBe(
+      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color
+    );
   });
 
   it("should return yellow for 79-60% (light impairment)", () => {
-    expect(getCombatReadinessColor(79)).toBe(COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color);
-    expect(getCombatReadinessColor(70)).toBe(COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color);
-    expect(getCombatReadinessColor(60)).toBe(COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color);
+    expect(getCombatReadinessColor(79)).toBe(
+      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color
+    );
+    expect(getCombatReadinessColor(70)).toBe(
+      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color
+    );
+    expect(getCombatReadinessColor(60)).toBe(
+      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color
+    );
   });
 
   it("should return orange for 59-40% (moderate impairment)", () => {
-    expect(getCombatReadinessColor(59)).toBe(COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color);
-    expect(getCombatReadinessColor(50)).toBe(COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color);
-    expect(getCombatReadinessColor(40)).toBe(COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color);
+    expect(getCombatReadinessColor(59)).toBe(
+      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color
+    );
+    expect(getCombatReadinessColor(50)).toBe(
+      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color
+    );
+    expect(getCombatReadinessColor(40)).toBe(
+      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color
+    );
   });
 
   it("should return red for 39-20% (heavy impairment)", () => {
-    expect(getCombatReadinessColor(39)).toBe(COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color);
-    expect(getCombatReadinessColor(30)).toBe(COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color);
-    expect(getCombatReadinessColor(20)).toBe(COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color);
+    expect(getCombatReadinessColor(39)).toBe(
+      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color
+    );
+    expect(getCombatReadinessColor(30)).toBe(
+      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color
+    );
+    expect(getCombatReadinessColor(20)).toBe(
+      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color
+    );
   });
 
   it("should return dark red for 19-0% (critical)", () => {
-    expect(getCombatReadinessColor(19)).toBe(COMBAT_READINESS_THRESHOLDS.CRITICAL.color);
-    expect(getCombatReadinessColor(10)).toBe(COMBAT_READINESS_THRESHOLDS.CRITICAL.color);
-    expect(getCombatReadinessColor(0)).toBe(COMBAT_READINESS_THRESHOLDS.CRITICAL.color);
+    expect(getCombatReadinessColor(19)).toBe(
+      COMBAT_READINESS_THRESHOLDS.CRITICAL.color
+    );
+    expect(getCombatReadinessColor(10)).toBe(
+      COMBAT_READINESS_THRESHOLDS.CRITICAL.color
+    );
+    expect(getCombatReadinessColor(0)).toBe(
+      COMBAT_READINESS_THRESHOLDS.CRITICAL.color
+    );
   });
 
   it("should throw error for NaN readiness", () => {
-    expect(() => getCombatReadinessColor(NaN)).toThrow("readiness cannot be NaN");
+    expect(() => getCombatReadinessColor(NaN)).toThrow(
+      "readiness cannot be NaN"
+    );
   });
 });
 
@@ -411,7 +456,9 @@ describe("getCombatReadinessLabel", () => {
   });
 
   it("should throw error for NaN readiness", () => {
-    expect(() => getCombatReadinessLabel(NaN)).toThrow("readiness cannot be NaN");
+    expect(() => getCombatReadinessLabel(NaN)).toThrow(
+      "readiness cannot be NaN"
+    );
   });
 });
 
@@ -462,7 +509,9 @@ describe("getCombatReadinessBars", () => {
   });
 
   it("should throw error for NaN readiness", () => {
-    expect(() => getCombatReadinessBars(NaN, 10)).toThrow("readiness cannot be NaN");
+    expect(() => getCombatReadinessBars(NaN, 10)).toThrow(
+      "readiness cannot be NaN"
+    );
   });
 
   it("should throw error for invalid totalBars", () => {

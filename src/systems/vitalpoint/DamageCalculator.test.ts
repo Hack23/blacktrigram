@@ -1,9 +1,16 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { PlayerArchetype, TrigramStance, VitalPointCategory, VitalPointEffectType, VitalPointSeverity } from "../../types/common";
 import { createMockPlayerState } from "../../test/test-utils";
+import {
+  CombatAttackType,
+  DamageType,
+  PlayerArchetype,
+  TrigramStance,
+  VitalPointCategory,
+  VitalPointEffectType,
+  VitalPointSeverity,
+} from "../../types/common";
 import { DamageCalculator } from "./DamageCalculator";
-import { VitalPoint, KoreanTechnique } from "./types";
-import { CombatAttackType, DamageType } from "../../types/common";
+import { KoreanTechnique, VitalPoint } from "./types";
 
 describe("DamageCalculator", () => {
   let mockPlayer: ReturnType<typeof createMockPlayerState>;
@@ -12,7 +19,7 @@ describe("DamageCalculator", () => {
 
   beforeEach(() => {
     mockPlayer = createMockPlayerState();
-    
+
     mockVitalPoint = {
       id: "test_vital_point",
       names: {
@@ -21,7 +28,7 @@ describe("DamageCalculator", () => {
         romanized: "teseuteu hyeoljali",
       },
       position: { x: 100, y: 100 },
-      category: VitalPointCategory.HEAD,
+      category: VitalPointCategory.NEUROLOGICAL,
       severity: VitalPointSeverity.MAJOR,
       baseDamage: 20,
       targetingDifficulty: 0.7,
@@ -101,12 +108,17 @@ describe("DamageCalculator", () => {
         0.95
       );
 
-      expect(highAccuracyResult.damage).toBeGreaterThan(lowAccuracyResult.damage);
+      expect(highAccuracyResult.damage).toBeGreaterThan(
+        lowAccuracyResult.damage
+      );
     });
 
     it("should apply archetype modifiers", () => {
       const musaPlayer = { ...mockPlayer, archetype: PlayerArchetype.MUSA };
-      const amsaljaPlayer = { ...mockPlayer, archetype: PlayerArchetype.AMSALJA };
+      const amsaljaPlayer = {
+        ...mockPlayer,
+        archetype: PlayerArchetype.AMSALJA,
+      };
 
       const musaResult = DamageCalculator.calculateVitalPointDamage(
         mockVitalPoint,
@@ -191,32 +203,44 @@ describe("DamageCalculator", () => {
 
   describe("getArchetypeModifier", () => {
     it("should return correct modifier for MUSA", () => {
-      const modifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.MUSA);
+      const modifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.MUSA
+      );
       expect(modifier).toBe(1.2);
     });
 
     it("should return correct modifier for AMSALJA", () => {
-      const modifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.AMSALJA);
+      const modifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.AMSALJA
+      );
       expect(modifier).toBe(1.5);
     });
 
     it("should return correct modifier for HACKER", () => {
-      const modifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.HACKER);
+      const modifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.HACKER
+      );
       expect(modifier).toBe(1.1);
     });
 
     it("should return correct modifier for JEONGBO_YOWON", () => {
-      const modifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.JEONGBO_YOWON);
+      const modifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.JEONGBO_YOWON
+      );
       expect(modifier).toBe(1.1);
     });
 
     it("should return correct modifier for JOJIK_POKRYEOKBAE", () => {
-      const modifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.JOJIK_POKRYEOKBAE);
+      const modifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.JOJIK_POKRYEOKBAE
+      );
       expect(modifier).toBe(1.3);
     });
 
     it("should return 1.0 for unknown archetype", () => {
-      const modifier = DamageCalculator.getArchetypeModifier("UNKNOWN" as PlayerArchetype);
+      const modifier = DamageCalculator.getArchetypeModifier(
+        "UNKNOWN" as PlayerArchetype
+      );
       expect(modifier).toBe(1.0);
     });
   });
@@ -255,7 +279,10 @@ describe("DamageCalculator", () => {
 
     it("should apply archetype modifiers to technique damage", () => {
       const musaPlayer = { ...mockPlayer, archetype: PlayerArchetype.MUSA };
-      const amsaljaPlayer = { ...mockPlayer, archetype: PlayerArchetype.AMSALJA };
+      const amsaljaPlayer = {
+        ...mockPlayer,
+        archetype: PlayerArchetype.AMSALJA,
+      };
 
       const musaResult = DamageCalculator.calculateTechniqueDamage(
         mockTechnique,
@@ -376,14 +403,26 @@ describe("DamageCalculator", () => {
     });
 
     it("should reduce damage more with higher defense", () => {
-      const lowDefense = DamageCalculator.calculateDamageReduction(100, 25, false);
-      const highDefense = DamageCalculator.calculateDamageReduction(100, 100, false);
+      const lowDefense = DamageCalculator.calculateDamageReduction(
+        100,
+        25,
+        false
+      );
+      const highDefense = DamageCalculator.calculateDamageReduction(
+        100,
+        100,
+        false
+      );
 
       expect(highDefense).toBeLessThan(lowDefense);
     });
 
     it("should apply blocking multiplier", () => {
-      const notBlocking = DamageCalculator.calculateDamageReduction(100, 50, false);
+      const notBlocking = DamageCalculator.calculateDamageReduction(
+        100,
+        50,
+        false
+      );
       const blocking = DamageCalculator.calculateDamageReduction(100, 50, true);
 
       expect(blocking).toBeLessThan(notBlocking);
@@ -391,7 +430,11 @@ describe("DamageCalculator", () => {
     });
 
     it("should cap defense reduction at 80%", () => {
-      const maxDefense = DamageCalculator.calculateDamageReduction(100, 999, false);
+      const maxDefense = DamageCalculator.calculateDamageReduction(
+        100,
+        999,
+        false
+      );
 
       // 100 * (1 - 0.8) = 20 minimum (allow floating point tolerance)
       expect(maxDefense).toBeGreaterThanOrEqual(19.9);
@@ -440,7 +483,10 @@ describe("DamageCalculator", () => {
 
     it("should increase crit chance for assassin archetype", () => {
       const musaPlayer = { ...mockPlayer, archetype: PlayerArchetype.MUSA };
-      const amsaljaPlayer = { ...mockPlayer, archetype: PlayerArchetype.AMSALJA };
+      const amsaljaPlayer = {
+        ...mockPlayer,
+        archetype: PlayerArchetype.AMSALJA,
+      };
 
       const musaCrit = DamageCalculator.calculateCriticalChance(
         0.1,
@@ -649,8 +695,14 @@ describe("DamageCalculator", () => {
 
     it("should apply vital point severity multipliers", () => {
       // Test different severities produce different ranges
-      const minorVP = { ...vitalPointHitResult, severity: VitalPointSeverity.MINOR };
-      const lethalVP = { ...vitalPointHitResult, severity: VitalPointSeverity.LETHAL };
+      const minorVP = {
+        ...vitalPointHitResult,
+        severity: VitalPointSeverity.MINOR,
+      };
+      const lethalVP = {
+        ...vitalPointHitResult,
+        severity: VitalPointSeverity.LETHAL,
+      };
 
       // Average over runs
       let minorTotal = 0;
@@ -768,8 +820,12 @@ describe("DamageCalculator", () => {
 
     it("should apply archetype-specific bonuses", () => {
       // Test that archetype modifiers are applied by checking the calculation directly
-      const musaModifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.MUSA);
-      const amsaljaModifier = DamageCalculator.getArchetypeModifier(PlayerArchetype.AMSALJA);
+      const musaModifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.MUSA
+      );
+      const amsaljaModifier = DamageCalculator.getArchetypeModifier(
+        PlayerArchetype.AMSALJA
+      );
 
       expect(musaModifier).toBe(1.2);
       expect(amsaljaModifier).toBe(1.5);
@@ -814,7 +870,7 @@ describe("DamageCalculator", () => {
       // Test that defense reduction is applied using the existing method
       // We need to use the same base damage to compare, so we test with different defenders
       // in the same calculation run
-      
+
       let zeroDefTotal = 0;
       let midDefTotal = 0;
       let highDefTotal = 0;
@@ -882,7 +938,7 @@ describe("DamageCalculator", () => {
       // Mid defense (50% reduction) should leave ~50% damage
       expect(midDefAvg).toBeLessThan(zeroDefAvg * 0.6); // Allow some margin
       expect(midDefAvg).toBeGreaterThan(zeroDefAvg * 0.4);
-      
+
       // High defense (80% reduction) should leave ~20% damage
       expect(highDefAvg).toBeLessThan(zeroDefAvg * 0.3);
       expect(highDefAvg).toBeGreaterThan(0); // But still some damage
@@ -918,7 +974,7 @@ describe("DamageCalculator", () => {
 
         critTotal += critResult.damage;
         normalTotal += normalResult.damage;
-        
+
         expect(critResult.isCritical).toBe(true);
         expect(normalResult.isCritical).toBe(false);
       }
@@ -1025,7 +1081,7 @@ describe("DamageCalculator", () => {
 
     it("should calculate damage within reasonable performance bounds", () => {
       const startTime = performance.now();
-      
+
       // Perform 1000 calculations
       for (let i = 0; i < 1000; i++) {
         DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -1037,7 +1093,7 @@ describe("DamageCalculator", () => {
           meridianStates
         );
       }
-      
+
       const endTime = performance.now();
       const averageTime = (endTime - startTime) / 1000;
 

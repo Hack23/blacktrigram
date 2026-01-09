@@ -2,16 +2,18 @@
  * CombatReadinessBar Component Tests
  */
 
-import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { CombatReadinessBar } from "./CombatReadinessBar";
+import { describe, expect, it } from "vitest";
 import { createMockPlayerState } from "../../../../../test/test-utils";
+import { CombatReadinessBar } from "./CombatReadinessBar";
 
 describe("CombatReadinessBar", () => {
   const defaultProps = {
     player: createMockPlayerState({
       bodyPartHealth: {
         head: 100,
+        neck: 100,
+        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -30,29 +32,39 @@ describe("CombatReadinessBar", () => {
   describe("Rendering", () => {
     it("should render combat readiness bar with correct test ID", () => {
       render(<CombatReadinessBar {...defaultProps} />);
-      expect(screen.getByTestId("combat-readiness-bar-player-1")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("combat-readiness-bar-player-1")
+      ).toBeInTheDocument();
     });
 
     it("should display Korean and English labels", () => {
       render(<CombatReadinessBar {...defaultProps} />);
-      expect(screen.getByText(/전투 준비도.*Combat Readiness/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/전투 준비도.*Combat Readiness/)
+      ).toBeInTheDocument();
     });
 
     it("should display combat readiness percentage", () => {
       render(<CombatReadinessBar {...defaultProps} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       expect(valueElement.textContent).toContain("100%");
     });
 
     it("should render correct number of segments (10)", () => {
       render(<CombatReadinessBar {...defaultProps} />);
-      const segments = screen.getAllByTestId(/combat-readiness-segment-player-1-/);
+      const segments = screen.getAllByTestId(
+        /combat-readiness-segment-player-1-/
+      );
       expect(segments).toHaveLength(10);
     });
 
     it("should display status label for combat ready state", () => {
       render(<CombatReadinessBar {...defaultProps} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       expect(valueElement.textContent).toContain("전투 준비");
     });
   });
@@ -67,7 +79,10 @@ describe("CombatReadinessBar", () => {
     it("should have proper ARIA label with Korean and English text", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       const bar = screen.getByTestId("combat-readiness-bar-player-1");
-      expect(bar).toHaveAttribute("aria-label", "전투 준비도 | Combat Readiness");
+      expect(bar).toHaveAttribute(
+        "aria-label",
+        "전투 준비도 | Combat Readiness"
+      );
     });
 
     it("should have correct aria-valuenow attribute", () => {
@@ -106,6 +121,7 @@ describe("CombatReadinessBar", () => {
       const updatedPlayer = createMockPlayerState({
         bodyPartHealth: {
           head: 50,
+          neck: 50,
           torsoUpper: 50,
           torsoLower: 50,
           armLeft: 50,
@@ -126,7 +142,9 @@ describe("CombatReadinessBar", () => {
   describe("Combat Readiness Colors", () => {
     it("should use green color for readiness >80%", () => {
       const { container } = render(<CombatReadinessBar {...defaultProps} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
       const firstSegment = segments[0] as HTMLElement;
       // Green color (full capability)
       expect(firstSegment.style.backgroundColor).toContain("rgb(0, 255, 0)");
@@ -136,6 +154,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 70,
+          neck: 70,
           torsoUpper: 70,
           torsoLower: 70,
           armLeft: 70,
@@ -148,8 +167,12 @@ describe("CombatReadinessBar", () => {
         balance: 70,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
       const firstSegment = segments[0] as HTMLElement;
       // Yellow color (light impairment)
       expect(firstSegment.style.backgroundColor).toContain("rgb(255, 255, 0)");
@@ -159,6 +182,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 50,
+          neck: 50,
           torsoUpper: 50,
           torsoLower: 50,
           armLeft: 50,
@@ -171,8 +195,12 @@ describe("CombatReadinessBar", () => {
         balance: 50,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
       const firstSegment = segments[0] as HTMLElement;
       // Orange color (moderate impairment)
       expect(firstSegment.style.backgroundColor).toContain("rgb(255, 136, 0)");
@@ -182,6 +210,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 30,
+          neck: 30,
           torsoUpper: 30,
           torsoLower: 30,
           armLeft: 30,
@@ -194,8 +223,12 @@ describe("CombatReadinessBar", () => {
         balance: 30,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
       const firstSegment = segments[0] as HTMLElement;
       // Red color (heavy impairment)
       expect(firstSegment.style.backgroundColor).toContain("rgb(255, 51, 51)");
@@ -205,6 +238,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 10,
+          neck: 10,
           torsoUpper: 10,
           torsoLower: 10,
           armLeft: 10,
@@ -217,8 +251,12 @@ describe("CombatReadinessBar", () => {
         balance: 10,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
       const firstSegment = segments[0] as HTMLElement;
       // Dark red color (critical)
       expect(firstSegment.style.backgroundColor).toContain("rgb(153, 0, 0)");
@@ -228,8 +266,10 @@ describe("CombatReadinessBar", () => {
   describe("Segment Filling", () => {
     it("should fill all 10 segments at 100% readiness", () => {
       const { container } = render(<CombatReadinessBar {...defaultProps} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
-      
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
+
       segments.forEach((segment) => {
         const bgColor = (segment as HTMLElement).style.backgroundColor;
         // Should be filled (not dark gray)
@@ -241,6 +281,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 50,
+          neck: 50,
           torsoUpper: 50,
           torsoLower: 50,
           armLeft: 50,
@@ -253,15 +294,19 @@ describe("CombatReadinessBar", () => {
         balance: 50,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segments = container.querySelectorAll('[data-testid*="combat-readiness-segment"]');
-      
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segments = container.querySelectorAll(
+        '[data-testid*="combat-readiness-segment"]'
+      );
+
       // First 5 segments should be filled
       for (let i = 0; i < 5; i++) {
         const bgColor = (segments[i] as HTMLElement).style.backgroundColor;
         expect(bgColor).not.toContain("rgb(22, 33, 62)");
       }
-      
+
       // Last 5 segments should be empty (UI_BACKGROUND_MEDIUM)
       for (let i = 5; i < 10; i++) {
         const bgColor = (segments[i] as HTMLElement).style.backgroundColor;
@@ -273,6 +318,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 0,
+          neck: 0,
           torsoUpper: 0,
           torsoLower: 0,
           armLeft: 0,
@@ -286,21 +332,31 @@ describe("CombatReadinessBar", () => {
       });
 
       render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       expect(valueElement.textContent).toContain("0%");
     });
   });
 
   describe("Responsive Sizing", () => {
     it("should use mobile sizing when isMobile is true", () => {
-      const { container } = render(<CombatReadinessBar {...defaultProps} isMobile={true} />);
-      const bar = container.querySelector('[data-testid="combat-readiness-bar-player-1"]') as HTMLElement;
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} isMobile={true} />
+      );
+      const bar = container.querySelector(
+        '[data-testid="combat-readiness-bar-player-1"]'
+      ) as HTMLElement;
       expect(bar.style.width).toBe("180px");
     });
 
     it("should use desktop sizing when isMobile is false", () => {
-      const { container } = render(<CombatReadinessBar {...defaultProps} isMobile={false} />);
-      const bar = container.querySelector('[data-testid="combat-readiness-bar-player-1"]') as HTMLElement;
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} isMobile={false} />
+      );
+      const bar = container.querySelector(
+        '[data-testid="combat-readiness-bar-player-1"]'
+      ) as HTMLElement;
       expect(bar.style.width).toBe("250px");
     });
   });
@@ -310,6 +366,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 15,
+          neck: 15,
           torsoUpper: 15,
           torsoLower: 15,
           armLeft: 15,
@@ -322,8 +379,12 @@ describe("CombatReadinessBar", () => {
         balance: 15,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segmentContainer = container.querySelector('[data-testid*="combat-readiness-segment"]')?.parentElement;
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segmentContainer = container.querySelector(
+        '[data-testid*="combat-readiness-segment"]'
+      )?.parentElement;
       expect(segmentContainer?.style.animation).toContain("healthPulse");
     });
 
@@ -331,6 +392,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 25,
+          neck: 25,
           torsoUpper: 25,
           torsoLower: 25,
           armLeft: 25,
@@ -343,8 +405,12 @@ describe("CombatReadinessBar", () => {
         balance: 25,
       });
 
-      const { container } = render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const segmentContainer = container.querySelector('[data-testid*="combat-readiness-segment"]')?.parentElement;
+      const { container } = render(
+        <CombatReadinessBar {...defaultProps} player={player} />
+      );
+      const segmentContainer = container.querySelector(
+        '[data-testid*="combat-readiness-segment"]'
+      )?.parentElement;
       expect(segmentContainer?.style.animation).toBe("none");
     });
   });
@@ -352,7 +418,9 @@ describe("CombatReadinessBar", () => {
   describe("Status Labels", () => {
     it("should show 'Combat Ready' label at 100%", () => {
       render(<CombatReadinessBar {...defaultProps} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       expect(valueElement.textContent).toContain("전투 준비");
     });
 
@@ -360,6 +428,7 @@ describe("CombatReadinessBar", () => {
       const player = createMockPlayerState({
         bodyPartHealth: {
           head: 30,
+          neck: 30,
           torsoUpper: 30,
           torsoLower: 30,
           armLeft: 30,
@@ -373,7 +442,9 @@ describe("CombatReadinessBar", () => {
       });
 
       render(<CombatReadinessBar {...defaultProps} player={player} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       // Should show Korean label for heavy damage
       expect(valueElement.textContent).toContain("중증 손상");
     });
@@ -389,6 +460,7 @@ describe("CombatReadinessBar", () => {
       const damagedPlayer = createMockPlayerState({
         bodyPartHealth: {
           head: 60,
+          neck: 60,
           torsoUpper: 60,
           torsoLower: 60,
           armLeft: 60,
@@ -420,8 +492,12 @@ describe("CombatReadinessBar", () => {
       // Don't set bodyPartHealth
       const playerWithoutBodyParts = { ...player, bodyPartHealth: undefined };
 
-      render(<CombatReadinessBar {...defaultProps} player={playerWithoutBodyParts} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      render(
+        <CombatReadinessBar {...defaultProps} player={playerWithoutBodyParts} />
+      );
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       // Should still calculate readiness
       expect(valueElement.textContent).toMatch(/\d+%/);
     });
@@ -438,8 +514,15 @@ describe("CombatReadinessBar", () => {
       const playerWithZeroMaxHealth = { ...player, bodyPartHealth: undefined };
 
       // Should not crash
-      render(<CombatReadinessBar {...defaultProps} player={playerWithZeroMaxHealth} />);
-      const valueElement = screen.getByTestId("combat-readiness-value-player-1");
+      render(
+        <CombatReadinessBar
+          {...defaultProps}
+          player={playerWithZeroMaxHealth}
+        />
+      );
+      const valueElement = screen.getByTestId(
+        "combat-readiness-value-player-1"
+      );
       expect(valueElement.textContent).toMatch(/\d+%/);
     });
   });
@@ -447,15 +530,17 @@ describe("CombatReadinessBar", () => {
   describe("Error Handling", () => {
     it("should handle invalid player gracefully", () => {
       // Component should have proper error boundary or validation
-      const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-      
+      const consoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
       try {
         render(<CombatReadinessBar {...defaultProps} player={null as any} />);
       } catch (error) {
         // Expected to throw or handle gracefully
         expect(error).toBeDefined();
       }
-      
+
       consoleError.mockRestore();
     });
   });

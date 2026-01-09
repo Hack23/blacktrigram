@@ -4,21 +4,24 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { CombatScreen3D } from "./CombatScreen3D";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerState } from "../../../systems";
 import { PlayerArchetype, TrigramStance } from "../../../types/common";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
+import { CombatScreen3D } from "./CombatScreen3D";
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isInitialized: true,
+    isAudioReady: true,
     playMusic: vi.fn(),
     stopMusic: vi.fn(),
     playSFX: vi.fn(),
     setSFXVolume: vi.fn(),
     setMusicVolume: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 
@@ -85,7 +88,12 @@ vi.mock("three", () => ({
     }
   },
   Euler: class MockEuler {
-    constructor(public x = 0, public y = 0, public z = 0, public order = "XYZ") {}
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+      public order = "XYZ"
+    ) {}
     clone() {
       return new MockEuler(this.x, this.y, this.z, this.order);
     }
@@ -137,9 +145,12 @@ vi.mock("three", () => ({
 
 describe("CombatScreen3D", () => {
   let mockPlayers: PlayerState[];
-  let mockOnPlayerUpdate: ReturnType<typeof vi.fn>;
-  let mockOnReturnToMenu: ReturnType<typeof vi.fn>;
-  let mockOnGameEnd: ReturnType<typeof vi.fn>;
+  let mockOnPlayerUpdate: (
+    playerIndex: number,
+    updates: Partial<PlayerState>
+  ) => void;
+  let mockOnReturnToMenu: () => void;
+  let mockOnGameEnd: (winner: number) => void;
 
   beforeEach(() => {
     // Create two test players
@@ -148,10 +159,11 @@ describe("CombatScreen3D", () => {
       createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1),
     ];
 
-    // Create mock callbacks
-    mockOnPlayerUpdate = vi.fn();
-    mockOnReturnToMenu = vi.fn();
-    mockOnGameEnd = vi.fn();
+    // Create mock callbacks with proper types
+    mockOnPlayerUpdate =
+      vi.fn<(playerIndex: number, updates: Partial<PlayerState>) => void>();
+    mockOnReturnToMenu = vi.fn<() => void>();
+    mockOnGameEnd = vi.fn<(winner: number) => void>();
   });
 
   it("should render without crashing", () => {
@@ -339,7 +351,9 @@ describe("CombatScreen3D", () => {
 
     expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
     // Check for Korean-English archetype label for both players
-    expect(screen.getAllByText(/암살자|Amsalja/i).length).toBeGreaterThanOrEqual(2);
+    expect(
+      screen.getAllByText(/암살자|Amsalja/i).length
+    ).toBeGreaterThanOrEqual(2);
     unmount();
   });
 

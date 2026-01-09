@@ -5,6 +5,28 @@ import React from "react";
 import { CombatState, PlayerArchetype, TrigramStance } from "../types/common";
 
 /**
+ * Generic mutable type - removes readonly modifier from all properties
+ * Use this type when you need to modify readonly properties in tests
+ */
+export type Mutable<T> = {
+  -readonly [K in keyof T]: T[K];
+};
+
+/**
+ * Mutable version of PlayerState for test setup
+ * Use this type when you need to modify player properties in tests
+ */
+export type MutablePlayerState = Mutable<PlayerState>;
+
+/**
+ * Cast any object to a mutable version for test setup purposes
+ * This allows direct property assignment during test setup on readonly properties
+ */
+export function asMutable<T>(obj: T): Mutable<T> {
+  return obj as Mutable<T>;
+}
+
+/**
  * Arena bounds for combat testing
  */
 export interface ArenaBounds {
@@ -26,7 +48,9 @@ export function createMockArena(): ArenaBounds {
   };
 }
 
-export function createMockPlayerState(overrides?: Partial<PlayerState>): PlayerState {
+export function createMockPlayerState(
+  overrides?: Partial<PlayerState>
+): PlayerState {
   return {
     id: "test",
     name: { korean: "테스트", english: "Test" },
@@ -68,6 +92,17 @@ export function createMockPlayerState(overrides?: Partial<PlayerState>): PlayerS
     experiencePoints: 0,
     ...overrides,
   };
+}
+
+/**
+ * Create a modified copy of player state (for tests that need to mutate state)
+ * Use this instead of direct property assignment on readonly PlayerState
+ */
+export function withPlayerState(
+  player: PlayerState,
+  updates: Partial<PlayerState>
+): PlayerState {
+  return { ...player, ...updates };
 }
 
 // Enhanced render function with proper options

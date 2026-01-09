@@ -9,9 +9,9 @@ import {
 import "./App.css";
 import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/screens/combat/CombatScreen3D";
+import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/controls/ControlsScreenThreeJS";
 import { EndScreen3D } from "./components/screens/endscreen";
 import { IntroScreenThreeJS as IntroScreen } from "./components/screens/intro/IntroScreenThreeJS";
-import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/controls/ControlsScreenThreeJS";
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/philosophy/PhilosophyScreenThreeJS";
 import { ErrorModal } from "./components/shared/ui/ErrorModal";
 import { LoadingState } from "./components/shared/ui/LoadingState";
@@ -319,6 +319,7 @@ function App() {
                 onReturnToMenu={handleReturnToMenu}
                 width={screenSize.width}
                 height={screenSize.height}
+                initialArchetype={selectedArchetype}
               />
             </Suspense>
           );

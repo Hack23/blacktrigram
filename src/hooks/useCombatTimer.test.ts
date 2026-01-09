@@ -2,8 +2,8 @@
  * Tests for useCombatTimer hook
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useCombatTimer } from "./useCombatTimer";
 
 // Create a mock playSFX function that we can track
@@ -17,6 +17,8 @@ vi.mock("../audio/AudioProvider", () => ({
       return mockIsAudioReady;
     },
     playSFX: mockPlaySFX,
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 

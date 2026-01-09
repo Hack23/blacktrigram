@@ -1,19 +1,19 @@
 /**
  * Unit tests for Combat System Defensive Action Processing
- * 
+ *
  * Tests the processDefensiveAction function that determines which
  * defensive animation to trigger based on combat state.
- * 
+ *
  * @module systems/CombatSystem.defensive.test
  * @category Combat System Tests
  * @korean 전투시스템방어테스트
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { CombatState, PlayerArchetype, TrigramStance } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
+import type { DefensiveAnimationType } from "./animation/types";
 import CombatSystem from "./CombatSystem";
 import { PlayerState } from "./player";
-import { PlayerArchetype, TrigramStance, CombatState } from "@/types";
-import type { DefensiveAnimationType } from "./animation/types";
 
 describe("CombatSystem - Defensive Action Processing", () => {
   let combatSystem: CombatSystem;
@@ -41,7 +41,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       speed: 10,
       technique: 10,
       currentStance: TrigramStance.GAN, // Mountain stance (defensive)
-      combatState: CombatState.BLOCKING,
+      combatState: CombatState.DEFENDING,
       position: { x: 100, y: 200 },
       isBlocking: true,
       isStunned: false,
@@ -288,7 +288,12 @@ describe("CombatSystem - Defensive Action Processing", () => {
 
   describe("Combat Progression", () => {
     it("should show progression from parry to block to guard break", () => {
-      let defender = { ...baseDefender, balance: 100, stamina: 100, defense: 15 };
+      let defender = {
+        ...baseDefender,
+        balance: 100,
+        stamina: 100,
+        defense: 15,
+      };
       const attackPower = 15;
 
       // Initial state: Strong defense -> Parry

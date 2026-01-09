@@ -1,8 +1,8 @@
 /**
  * Three.js-based Korean UI Component Library
- * 
+ *
  * Exports all reusable Three.js UI components with Korean theming
- * 
+ *
  * @module components/three
  */
 
@@ -17,7 +17,7 @@ export { KoreanText } from "./ui/KoreanText";
 export type { KoreanTextProps } from "./ui/KoreanText";
 
 export { MenuList } from "./ui/MenuList";
-export type { MenuListProps, MenuItem } from "./ui/MenuList";
+export type { MenuItem, MenuListProps } from "./ui/MenuList";
 
 export { ArchetypeCard } from "./ui/ArchetypeCard";
 export type { ArchetypeCardProps } from "./ui/ArchetypeCard";
@@ -45,13 +45,21 @@ export type { Player3DWithTransitionsProps } from "./models/Player3DWithTransiti
 export { SkeletalPlayer3D } from "./models/SkeletalPlayer3D";
 
 // Anatomy
+export {
+  BONE_MUSCLE_MAP,
+  BoneAttachedMuscle,
+  BoneMuscles,
+} from "./anatomy/BoneAttachedMuscles";
+export type {
+  BoneAttachedMuscleProps,
+  BoneMusclesProps,
+  MuscleAttachment,
+} from "./anatomy/BoneAttachedMuscles";
 export { BoneRenderer } from "./anatomy/BoneRenderer";
 export type { BoneRendererProps } from "./anatomy/BoneRenderer";
+export { Face3D } from "./anatomy/Face3D";
 export { Hand3D } from "./anatomy/Hand3D";
 export type { Hand3DProps } from "./anatomy/Hand3D";
-export { Face3D } from "./anatomy/Face3D";
-export { MuscleSystem } from "./anatomy/MuscleSystem";
-export type { MuscleSystemProps } from "./anatomy/MuscleSystem";
 
 // Scene
 export { BackgroundScene3D } from "./scene/BackgroundScene3D";

@@ -2,12 +2,13 @@
  * Tests for AI Combo System
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { AIComboSystem } from "./ComboSystem";
-import { AI_PERSONALITIES } from "./AIPersonality";
 import { PlayerState } from "@/systems/player";
-import { TrigramStance, PlayerArchetype } from "@/types";
+import { asMutable } from "@/test/test-utils";
+import { PlayerArchetype, TrigramStance } from "@/types";
 import { CombatState } from "@/types/common";
+import { beforeEach, describe, expect, it } from "vitest";
+import { AI_PERSONALITIES } from "./AIPersonality";
+import { AIComboSystem } from "./ComboSystem";
 
 describe("AIComboSystem", () => {
   let comboSystem: AIComboSystem;
@@ -125,8 +126,9 @@ describe("AIComboSystem", () => {
   describe("startCombo", () => {
     it("should start combo when conditions are met", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
-      mockPlayer.ki = 100;
-      mockPlayer.stamina = 100;
+      const mutablePlayer = asMutable(mockPlayer);
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
 
       const started = comboSystem.startCombo(
         mockPlayer,
@@ -140,7 +142,7 @@ describe("AIComboSystem", () => {
 
     it("should not start combo when too far", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
-      mockOpponent.position = { x: 1000, y: 1000 };
+      asMutable(mockOpponent).position = { x: 1000, y: 1000 };
 
       const started = comboSystem.startCombo(
         mockPlayer,
@@ -153,8 +155,9 @@ describe("AIComboSystem", () => {
 
     it("should not start combo with insufficient resources", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
-      mockPlayer.ki = 5;
-      mockPlayer.stamina = 5;
+      const mutablePlayer = asMutable(mockPlayer);
+      mutablePlayer.ki = 5;
+      mutablePlayer.stamina = 5;
 
       const started = comboSystem.startCombo(
         mockPlayer,
@@ -181,7 +184,7 @@ describe("AIComboSystem", () => {
     it("should return false when too far from opponent", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
       comboSystem.startCombo(mockPlayer, mockOpponent, personality);
-      mockOpponent.position = { x: 1000, y: 1000 };
+      asMutable(mockOpponent).position = { x: 1000, y: 1000 };
 
       const shouldContinue = comboSystem.shouldContinueCombo(
         mockPlayer,
@@ -195,8 +198,9 @@ describe("AIComboSystem", () => {
     it("should return false with insufficient resources", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
       comboSystem.startCombo(mockPlayer, mockOpponent, personality);
-      mockPlayer.ki = 0;
-      mockPlayer.stamina = 0;
+      const mutablePlayer = asMutable(mockPlayer);
+      mutablePlayer.ki = 0;
+      mutablePlayer.stamina = 0;
 
       const shouldContinue = comboSystem.shouldContinueCombo(
         mockPlayer,
@@ -216,8 +220,9 @@ describe("AIComboSystem", () => {
 
     it("should return technique when combo is active", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
-      mockPlayer.ki = 100;
-      mockPlayer.stamina = 100;
+      const mutablePlayer = asMutable(mockPlayer);
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
 
       const started = comboSystem.startCombo(
         mockPlayer,
@@ -257,8 +262,9 @@ describe("AIComboSystem", () => {
 
     it("should track combo progress", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
-      mockPlayer.ki = 100;
-      mockPlayer.stamina = 100;
+      const mutablePlayer = asMutable(mockPlayer);
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
 
       comboSystem.startCombo(mockPlayer, mockOpponent, personality);
       const info = comboSystem.getComboInfo();

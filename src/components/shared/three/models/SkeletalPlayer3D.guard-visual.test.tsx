@@ -1,26 +1,22 @@
 /**
  * Tests for SkeletalPlayer3D stance guard visual integration (Phase 2)
- * 
+ *
  * Validates that guard poses are correctly applied to skeletal rig
  * with breathing animations when in stance_guard_{stance} state.
- * 
+ *
  * @module components/three/SkeletalPlayer3D.guard-visual.test
  * @category Tests
  */
 
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
+import { render } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { PlayerArchetype, TrigramStance } from "../../../../types/common";
+import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
 
 describe("SkeletalPlayer3D - Guard Visual Integration", () => {
   const renderWithCanvas = (component: React.ReactElement) => {
-    return render(
-      <Canvas>
-        {component}
-      </Canvas>
-    );
+    return render(<Canvas>{component}</Canvas>);
   };
 
   describe("Stance Guard Animation Detection", () => {
@@ -40,8 +36,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={false}
         />
       );
-      
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should render when currentAnimation is stance_guard_tae", () => {
@@ -60,8 +56,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={false}
         />
       );
-      
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should render all 8 trigram stance guards", () => {
@@ -92,8 +88,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
             showDetails={false}
           />
         );
-        
-        expect(container.querySelector('canvas')).toBeInTheDocument();
+
+        expect(container.querySelector("canvas")).toBeInTheDocument();
       });
     });
   });
@@ -115,16 +111,16 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={true}
         />
       );
-      
+
       // Should render with ki-enhanced color
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should handle stance guard with low health", () => {
       const { container } = renderWithCanvas(
         <SkeletalPlayer3D
           playerId="test-player"
-          archetype={PlayerArchetype.JEONGBO}
+          archetype={PlayerArchetype.JEONGBO_YOWON}
           stance={TrigramStance.GAM}
           position={[0, 0, 0]}
           rotation={0}
@@ -136,9 +132,9 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={true}
         />
       );
-      
+
       // Should render with low health color
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
@@ -160,13 +156,18 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={true}
         />
       );
-      
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should handle stance guard with balance states", () => {
-      const balanceStates = ["STABLE", "SHAKEN", "VULNERABLE", "HELPLESS"] as const;
-      
+      const balanceStates = [
+        "STABLE",
+        "SHAKEN",
+        "VULNERABLE",
+        "HELPLESS",
+      ] as const;
+
       balanceStates.forEach((balance) => {
         const { container } = renderWithCanvas(
           <SkeletalPlayer3D
@@ -184,8 +185,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
             showDetails={false}
           />
         );
-        
-        expect(container.querySelector('canvas')).toBeInTheDocument();
+
+        expect(container.querySelector("canvas")).toBeInTheDocument();
       });
     });
   });
@@ -195,7 +196,7 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
       const { container } = renderWithCanvas(
         <SkeletalPlayer3D
           playerId="test-player"
-          archetype={PlayerArchetype.JOJIK}
+          archetype={PlayerArchetype.JOJIK_POKRYEOKBAE}
           stance={TrigramStance.GON}
           position={[0, 0, 0]}
           rotation={0}
@@ -207,8 +208,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={false}
         />
       );
-      
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should render during idle animation", () => {
@@ -227,8 +228,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={false}
         />
       );
-      
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
@@ -250,13 +251,13 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           showDetails={true}
         />
       );
-      
-      expect(container.querySelector('canvas')).toBeInTheDocument();
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should render with different scales", () => {
       const scales = [0.5, 1.0, 1.5, 2.0];
-      
+
       scales.forEach((scale) => {
         const { container } = renderWithCanvas(
           <SkeletalPlayer3D
@@ -274,8 +275,8 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
             showDetails={false}
           />
         );
-        
-        expect(container.querySelector('canvas')).toBeInTheDocument();
+
+        expect(container.querySelector("canvas")).toBeInTheDocument();
       });
     });
   });

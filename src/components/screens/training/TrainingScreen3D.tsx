@@ -18,24 +18,21 @@ import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHa
 import { PlayerState } from "../../../systems";
 import { AnimationEvents } from "../../../systems/animation";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
-import { CombatState, PlayerArchetype, Position, Technique } from "../../../types";
+import {
+  CombatState,
+  PlayerArchetype,
+  Position,
+  Technique,
+} from "../../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
-import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
-import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
 } from "../../../utils/player3DHelpers";
-import {
-  VitalPointMarkers3D,
-  VitalPointOverlayControls,
-  type BodyRegionFilter,
-} from "../combat/components";
-import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
-import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
-import { useCombatLayout } from "../combat/hooks/useCombatLayout";
+import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -46,6 +43,14 @@ import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { SkeletalPlayer3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
+import {
+  VitalPointMarkers3D,
+  VitalPointOverlayControls,
+  type BodyRegionFilter,
+} from "../combat/components";
+import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
+import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
+import { useCombatLayout } from "../combat/hooks/useCombatLayout";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -93,6 +98,8 @@ export interface TrainingScreen3DProps {
   readonly width?: number;
   /** Canvas height in pixels. Defaults to 800 */
   readonly height?: number;
+  /** Initial archetype from IntroScreen selection. Defaults to MUSA */
+  readonly initialArchetype?: PlayerArchetype;
 }
 
 /**
@@ -106,6 +113,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   onReturnToMenu,
   width = 1200,
   height = 800,
+  initialArchetype = PlayerArchetype.MUSA,
 }) => {
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 1: Core State Management (Hooks)
@@ -126,6 +134,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
   const vitalPointCount = 70; // Show all 70 vital points
+
+  // Archetype selection for training (allows testing different body types)
+  // 원형 선택 - 다양한 체형 테스트 가능
+  // Uses initialArchetype from IntroScreen selection, can be changed locally
+  const [selectedArchetype, setSelectedArchetype] =
+    React.useState<PlayerArchetype>(initialArchetype);
 
   // Vital point overlay state
   const [overlayVisible, setOverlayVisible] = React.useState(false);
@@ -226,9 +240,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const handleDummyHitRef = useRef<(vitalPointId: string) => boolean>(
     () => false
   );
-  
+
   // Ref for playerAnimation to avoid circular dependencies in animation events
-  const playerAnimationRef = useRef<ReturnType<typeof usePlayerAnimation> | null>(null);
+  const playerAnimationRef = useRef<ReturnType<
+    typeof usePlayerAnimation
+  > | null>(null);
 
   // Player animation events (matches CombatScreen pattern)
   const playerAnimationEvents = useMemo<AnimationEvents>(
@@ -247,7 +263,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           // Stance change animation completed - transition to stance guard
           // 자세 변경 완료 - 자세 가드로 전환
           audio.playSFX("menu_select");
-          const currentStance = TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex];
+          const currentStance =
+            TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex];
           if (currentStance && playerAnimationRef.current) {
             playerAnimationRef.current.transitionToStanceGuard(currentStance);
           }
@@ -260,7 +277,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const playerAnimation = usePlayerAnimation({
     events: playerAnimationEvents,
   });
-  
+
   // Store animation ref for use in event callbacks
   useEffect(() => {
     playerAnimationRef.current = playerAnimation;
@@ -326,7 +343,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return {
       id: "training-player",
       name: { korean: "훈련생", english: "Trainee" },
-      archetype: PlayerArchetype.MUSA,
+      archetype: selectedArchetype,
       health: 100,
       maxHealth: 100,
       ki: 100,
@@ -365,7 +382,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       accuracy: trainingState.stats.accuracy,
       comboCount: trainingState.stats.combo,
     };
-  }, [playerPosition, trainingState]);
+  }, [playerPosition, trainingState, selectedArchetype]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7B: Technique Selection System
@@ -648,7 +665,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Store callbacks in refs to avoid effect re-runs when they change
   const handleStartTrainingRef = useRef(handleStartTraining);
   const handleStopTrainingRef = useRef(handleStopTraining);
-  
+
   useEffect(() => {
     handleStartTrainingRef.current = handleStartTraining;
     handleStopTrainingRef.current = handleStopTraining;
@@ -688,7 +705,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       handleStartTrainingRef.current();
       modeChangeTimerRef.current = null;
     }, 100);
-    
+
     return () => {
       if (modeChangeTimerRef.current) {
         clearTimeout(modeChangeTimerRef.current);
@@ -989,9 +1006,111 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               />
             </ResponsiveContainer>
 
+            {/* Archetype Selector - Top Left below Training Controls */}
+            <ResponsiveContainer
+              position={{
+                base: {
+                  x: 20,
+                  y: isMobile ? 80 : 100,
+                },
+              }}
+              containerWidth={width}
+              useSafeArea
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.MODAL}
+              style={{
+                pointerEvents: "all",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  padding: isMobile ? "8px 12px" : "10px 16px",
+                  background: hexToRgbaString(
+                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    0.9
+                  ),
+                  border: `2px solid ${hexToRgbaString(
+                    KOREAN_COLORS.ACCENT_GOLD,
+                    0.6
+                  )}`,
+                  borderRadius: "8px",
+                  fontFamily: FONT_FAMILY.KOREAN,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: isMobile ? "10px" : "12px",
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  원형 선택 | Archetype
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "4px",
+                    justifyContent: "center",
+                  }}
+                >
+                  {Object.values(PlayerArchetype).map((arch) => (
+                    <button
+                      key={arch}
+                      onClick={() => {
+                        setSelectedArchetype(arch);
+                        audio.playSFX("menu_select");
+                      }}
+                      style={{
+                        padding: isMobile ? "4px 8px" : "6px 10px",
+                        fontSize: isMobile ? "9px" : "11px",
+                        fontFamily: FONT_FAMILY.KOREAN,
+                        fontWeight:
+                          selectedArchetype === arch ? "bold" : "normal",
+                        background:
+                          selectedArchetype === arch
+                            ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)
+                            : hexToRgbaString(
+                                KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                                0.8
+                              ),
+                        color:
+                          selectedArchetype === arch
+                            ? hexToRgbaString(
+                                KOREAN_COLORS.UI_BACKGROUND_DARK,
+                                1
+                              )
+                            : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
+                        border: `1px solid ${hexToRgbaString(
+                          selectedArchetype === arch
+                            ? KOREAN_COLORS.ACCENT_GOLD
+                            : KOREAN_COLORS.UI_BORDER,
+                          0.6
+                        )}`,
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      {arch.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </ResponsiveContainer>
+
             {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
             <ResponsiveContainer
-              position={{ base: { x: isMobile ? 10 : 20, y: height - (isMobile ? 180 : 200) } }}
+              position={{
+                base: {
+                  x: isMobile ? 10 : 20,
+                  y: height - (isMobile ? 180 : 200),
+                },
+              }}
               containerWidth={width}
               useSafeArea
               safeAreaEdge="bottom"
@@ -1020,7 +1139,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               }}
             >
               <GuardIndicator
-                currentStance={TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex]}
+                currentStance={
+                  TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex]
+                }
                 isInGuard={playerAnimation.isInStanceGuard()}
                 position="left"
                 isMobile={isMobile}

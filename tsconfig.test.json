@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Session 1: Enable strictBindCallApply (was false)
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": true,
+    // Unused variables - keep relaxed for now
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    // Vitest globals and Vite client types for import.meta.env
+    "types": ["node", "vitest/globals", "vite/client"]
+  },
+  "include": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/test/**/*"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

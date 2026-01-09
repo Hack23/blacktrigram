@@ -41,9 +41,9 @@
   "exclude": [
     "node_modules",
     "dist",
+    "**/*.cy.ts",
     "**/*.test.ts",
     "**/*.test.tsx",
-    "**/*.cy.ts",
     "**/*.spec.ts",
     "**/*.spec.tsx"
   ],

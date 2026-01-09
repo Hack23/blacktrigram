@@ -55,7 +55,7 @@ describe("TraumaOverlay3D", () => {
     it("should render fresh bruise with dark red color", () => {
       const injury: Injury = {
         id: "bruise-1",
-        region: BodyRegion.CHEST,
+        region: BodyRegion.TORSO,
         type: InjuryType.BRUISE,
         position: [0, 0.5, 0],
         severity: 0.3,
@@ -74,7 +74,7 @@ describe("TraumaOverlay3D", () => {
     it("should render moderate bruise with indigo color", () => {
       const injury: Injury = {
         id: "bruise-2",
-        region: BodyRegion.ABDOMEN,
+        region: BodyRegion.CORE,
         type: InjuryType.BRUISE,
         position: [0, 0, 0],
         severity: 0.6,
@@ -152,7 +152,7 @@ describe("TraumaOverlay3D", () => {
     it("should handle maximum severity bruise", () => {
       const injury: Injury = {
         id: "progressive-3",
-        region: BodyRegion.CHEST,
+        region: BodyRegion.TORSO,
         type: InjuryType.BRUISE,
         position: [0, 0.5, 0],
         severity: 1.0,
@@ -211,7 +211,7 @@ describe("TraumaOverlay3D", () => {
     it("should render deep laceration", () => {
       const injury: Injury = {
         id: "laceration-2",
-        region: BodyRegion.CHEST,
+        region: BodyRegion.TORSO,
         type: InjuryType.LACERATION,
         position: [0, 0.5, 0],
         severity: 1.0,
@@ -307,7 +307,7 @@ describe("TraumaOverlay3D", () => {
         },
         {
           id: "multi-2",
-          region: BodyRegion.CHEST,
+          region: BodyRegion.TORSO,
           type: InjuryType.BRUISE,
           position: [0, 0.5, 0],
           severity: 0.6,
@@ -316,7 +316,7 @@ describe("TraumaOverlay3D", () => {
         },
         {
           id: "multi-3",
-          region: BodyRegion.ABDOMEN,
+          region: BodyRegion.CORE,
           type: InjuryType.BRUISE,
           position: [0, 0.2, 0],
           severity: 0.4,
@@ -346,7 +346,7 @@ describe("TraumaOverlay3D", () => {
         },
         {
           id: "mixed-2",
-          region: BodyRegion.CHEST,
+          region: BodyRegion.TORSO,
           type: InjuryType.CUT,
           position: [0, 0.5, 0],
           severity: 0.6,
@@ -377,8 +377,8 @@ describe("TraumaOverlay3D", () => {
         id: `heavy-damage-${i}`,
         region: [
           BodyRegion.HEAD,
-          BodyRegion.CHEST,
-          BodyRegion.ABDOMEN,
+          BodyRegion.TORSO,
+          BodyRegion.CORE,
           BodyRegion.LEFT_ARM,
           BodyRegion.RIGHT_ARM,
           BodyRegion.LEFT_LEG,
@@ -410,7 +410,7 @@ describe("TraumaOverlay3D", () => {
     it("should use simplified geometry on mobile", () => {
       const injury: Injury = {
         id: "mobile-1",
-        region: BodyRegion.CHEST,
+        region: BodyRegion.TORSO,
         type: InjuryType.BRUISE,
         position: [0, 0.5, 0],
         severity: 0.6,
@@ -432,7 +432,7 @@ describe("TraumaOverlay3D", () => {
     it("should position injuries relative to character", () => {
       const injury: Injury = {
         id: "position-1",
-        region: BodyRegion.CHEST,
+        region: BodyRegion.TORSO,
         type: InjuryType.BRUISE,
         position: [0, 0.5, 0],
         severity: 0.5,
@@ -489,7 +489,7 @@ describe("TraumaOverlay3D", () => {
     it("should handle minimum severity", () => {
       const injury: Injury = {
         id: "severity-min",
-        region: BodyRegion.ABDOMEN,
+        region: BodyRegion.CORE,
         type: InjuryType.BRUISE,
         position: [0, 0, 0],
         severity: 0.0,
@@ -508,7 +508,7 @@ describe("TraumaOverlay3D", () => {
     it("should handle maximum severity", () => {
       const injury: Injury = {
         id: "severity-max",
-        region: BodyRegion.CHEST,
+        region: BodyRegion.TORSO,
         type: InjuryType.BRUISE,
         position: [0, 0.5, 0],
         severity: 1.0,

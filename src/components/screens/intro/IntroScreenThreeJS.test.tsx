@@ -1,17 +1,20 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { IntroScreenThreeJS } from "./IntroScreenThreeJS";
-import { PlayerArchetype } from "../../../types/common";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
+import { PlayerArchetype } from "../../../types/common";
+import { IntroScreenThreeJS } from "./IntroScreenThreeJS";
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
   AudioProvider: ({ children }: { children: React.ReactNode }) => children,
   useAudio: () => ({
     isInitialized: true,
+    isAudioReady: true,
     playMusic: vi.fn(),
     stopMusic: vi.fn(),
     playSFX: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 

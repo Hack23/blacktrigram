@@ -13,6 +13,8 @@ const mockAudio = {
   setMasterVolume: vi.fn(),
   getMasterVolume: vi.fn(() => 0.7),
   isEnabled: vi.fn(() => true),
+  fadeIn: vi.fn(() => Promise.resolve()),
+  fadeOut: vi.fn(() => Promise.resolve()),
 };
 
 vi.mock("../../audio/AudioManager", () => ({
