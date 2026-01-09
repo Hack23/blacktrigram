@@ -446,34 +446,34 @@ Each of the 8 trigram stances has 3 unique attack variations that reflect its ph
 - **나선 어깨 던지기** (Spiral Shoulder Throw): Rotational shoulder throw (400ms)
 
 #### ☲ 리 (Li/Fire) - Nerve Strike Attacks
-- **불타는 손가락 타격 1** (Burning Finger Strike 1): Two-finger spear hand (200ms)
-- **태양신경총 찌르기** (Solar Plexus Spear): Precise nerve cluster strike (220ms)
-- **봉황의 눈 타격** (Phoenix Eye Strike): Single-knuckle strike (190ms)
+- **불타는 손가락 타격 1** (Burning Finger Strike 1): Two-finger spear hand (250ms)
+- **태양신경총 찌르기** (Solar Plexus Spear): Precise nerve cluster strike (260ms)
+- **봉황의 눈 타격** (Phoenix Eye Strike): Single-knuckle strike (240ms)
 
 #### ☳ 진 (Jin/Thunder) - Explosive Power Attacks
-- **번개 직선** (Lightning Straight): Explosive straight punch (180ms)
-- **충격 망치 주먹** (Shocking Hammer Fist): Downward hammer strike (250ms)
+- **번개 직선** (Lightning Straight): Explosive straight punch (200ms)
+- **충격 망치 주먹** (Shocking Hammer Fist): Downward hammer strike (220ms)
 - **폭발적 무릎** (Explosive Knee): Powerful knee strike (280ms)
 
 #### ☴ 손 (Son/Wind) - Continuous Pressure Attacks
-- **회오리 연속 1** (Whirlwind Combo 1): 3-hit pressure combo (450ms)
-- **압력점 연쇄** (Pressure Point Chain): Sequential vital strikes (400ms)
-- **관통 장풍** (Penetrating Palm Rush): Palm strike combination (380ms)
+- **회오리 연속 1** (Whirlwind Combo 1): 3-hit pressure combo (400ms)
+- **압력점 연쇄** (Pressure Point Chain): Sequential vital strikes (380ms)
+- **관통 장풍** (Penetrating Palm Rush): Palm strike combination (420ms)
 
 #### ☵ 감 (Gam/Water) - Flow-Counter Attacks
-- **흐르는 강 타격** (Flowing River Strike): Deflect and counter (300ms)
-- **해일 장타** (Tidal Wave Palm): Momentum redirect strike (320ms)
-- **소용돌이 반격** (Whirlpool Counter): Circular counter technique (350ms)
+- **흐르는 강 타격** (Flowing River Strike): Deflect and counter (340ms)
+- **해일 장타** (Tidal Wave Palm): Momentum redirect strike (360ms)
+- **소용돌이 반격** (Whirlpool Counter): Circular counter technique (380ms)
 
 #### ☶ 간 (Gan/Mountain) - Defensive Counter Attacks
-- **요새 반격 타격** (Fortress Counter Strike): Block to punch (290ms)
-- **눈사태 망치** (Avalanche Hammer): Heavy counter strike (330ms)
-- **돌벽 찌르기** (Stone Wall Thrust): Immovable thrust (280ms)
+- **요새 반격 타격** (Fortress Counter Strike): Block to punch (300ms)
+- **눈사태 망치** (Avalanche Hammer): Heavy counter strike (350ms)
+- **돌벽 찌르기** (Stone Wall Thrust): Immovable thrust (320ms)
 
 #### ☷ 곤 (Gon/Earth) - Grounding/Takedown Attacks
-- **지면 쓸기 타격** (Ground Sweep Strike): Low sweeping attack (320ms)
-- **지진 짓밟기** (Earthquake Stomp): Powerful stomp technique (300ms)
-- **뿌리내리기 꺾기** (Rooting Takedown): Grounding takedown (420ms)
+- **지면 쓸기 타격** (Ground Sweep Strike): Low sweeping attack (380ms)
+- **지진 짓밟기** (Earthquake Stomp): Powerful stomp technique (320ms)
+- **뿌리내리기 꺾기** (Rooting Takedown): Grounding takedown (450ms)
 
 ### Stance-Specific Defensive Animations (16 Total)
 
@@ -528,10 +528,10 @@ Each of the 8 trigram stances has 2 unique defensive moves:
 ### Animation Characteristics
 
 **Timing Guidelines**:
-- **Fast Attacks** (150-220ms): Fire nerve strikes, Thunder explosive techniques
-- **Medium Attacks** (250-350ms): Heaven direct strikes, Mountain counters
+- **Fast Attacks** (200-260ms): Fire nerve strikes, Thunder explosive techniques
+- **Medium Attacks** (280-360ms): Heaven direct strikes, Mountain counters, Water flow-counters
 - **Slow Attacks** (380-450ms): Lake throws, Earth takedowns, Wind combos
-- **Defenses** (150-350ms): Quicker than attacks for realistic reaction times
+- **Defenses** (150-450ms): Varied timing based on stance philosophy
 - **Transitions** (600ms): Smooth stance changes with proper mechanics
 
 **Body Mechanics**:
