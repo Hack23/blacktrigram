@@ -401,7 +401,7 @@ const STANCE_ENGLISH: Record<string, string> = {
  * 
  * **Korean**: 기술 애니메이션 매퍼 클래스
  * 
- * Provides O(1) lookup for all 560 technique-stance combinations
+ * Provides O(1) lookup for all 1024 technique-stance combinations
  * with intelligent fallback system and build-time validation.
  * 
  * @class
@@ -929,8 +929,8 @@ export class TechniqueAnimationMapper {
    * 
    * **Korean**: 한글 기술 이름 생성
    * 
-   * Format: "스탠스 신체부위 기술유형"
-   * Example: "건괘 두부 타격"
+   * Format: "스탠스 신체부위 강도 기술유형"
+   * Example: "건괘 두부 강 타격"
    * 
    * @private
    */
@@ -1093,7 +1093,6 @@ export class TechniqueAnimationMapper {
    * 
    * Reports coverage percentage and lists missing mappings.
    * Expected: 8 stances × 4 technique types × 8 body parts × 4 intensities = 1024 combinations
-   * (Note: The issue mentions 560 combinations, but with 8 body parts this is 1024)
    * 
    * @returns Validation result with coverage and missing mappings
    * 

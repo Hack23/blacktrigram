@@ -38,6 +38,18 @@ describe("TechniqueAnimationMapper", () => {
       const stances = Object.values(TrigramStance);
       expect(stances).toHaveLength(8);
 
+      // Mapping of stances to their Korean names
+      const stanceKoreanNames: Record<string, string> = {
+        [TrigramStance.GEON]: "건괘",
+        [TrigramStance.TAE]: "태괘",
+        [TrigramStance.LI]: "리괘",
+        [TrigramStance.JIN]: "진괘",
+        [TrigramStance.SON]: "손괘",
+        [TrigramStance.GAM]: "감괘",
+        [TrigramStance.GAN]: "간괘",
+        [TrigramStance.GON]: "곤괘",
+      };
+
       // Verify at least one mapping exists for each stance
       stances.forEach((stance) => {
         const key: TechniqueAnimationKey = {
@@ -48,7 +60,7 @@ describe("TechniqueAnimationMapper", () => {
         };
         const animation = mapper.getAnimation(key);
         expect(animation).toBeDefined();
-        expect(animation.koreanName).toContain(stance === TrigramStance.GEON ? "건괘" : "");
+        expect(animation.koreanName).toContain(stanceKoreanNames[stance]);
       });
     });
 
