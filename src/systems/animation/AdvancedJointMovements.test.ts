@@ -4,6 +4,11 @@
  * Tests specialized joint movements for Korean martial arts:
  * - Hip rotation for kicks
  * - Kick power modifiers
+ * - Ankle articulation
+ * - Wrist snap mechanics
+ * - Shoulder elevation
+ * - Spinal flexion
+ * - Knee drive
  * - Constraint enforcement
  * - Three.js integration
  */
@@ -14,7 +19,16 @@ import {
   calculateHipRotationForKick,
   calculateKickPowerFromHipRotation,
   applyHipRotationToEuler,
+  calculateAnkleArticulation,
+  calculateWristSnap,
+  calculateWristSnapPowerModifier,
+  calculateShoulderElevation,
+  calculateSpinalFlexion,
+  calculateKneeDrive,
+  calculateKneeStrikePowerModifier,
   type HipRotationState,
+  type WristSnapState,
+  type KneeDriveState,
 } from "./AdvancedJointMovements";
 
 describe("AdvancedJointMovements - Hip Rotation", () => {
@@ -319,3 +333,302 @@ describe("AdvancedJointMovements - Hip Rotation", () => {
     });
   });
 });
+
+describe("AdvancedJointMovements - Ankle Articulation", () => {
+  describe("calculateAnkleArticulation", () => {
+    it("should calculate correct flexion for front kick chamber", () => {
+      const ankleState = calculateAnkleArticulation('front', 'chamber', 'right');
+      
+      expect(ankleState.side).toBe('right');
+      expect(ankleState.flexion).toBeGreaterThan(0); // Dorsiflexion
+      expect(ankleState.inversion).toBe(0); // Neutral
+    });
+
+    it("should have maximum dorsiflexion at front kick extension", () => {
+      const ankleState = calculateAnkleArticulation('front', 'extension', 'right');
+      
+      expect(ankleState.flexion).toBeCloseTo(0.5, 1); // Strong dorsiflexion
+    });
+
+    it("should use plantarflexion for roundhouse kick", () => {
+      const ankleState = calculateAnkleArticulation('roundhouse', 'extension', 'right');
+      
+      expect(ankleState.flexion).toBeLessThan(0); // Plantarflexion
+      expect(ankleState.inversion).toBeLessThan(0); // Eversion for instep
+    });
+
+    it("should enforce anatomical constraints", () => {
+      const kickTypes: Array<'front' | 'roundhouse' | 'side' | 'hook' | 'axe'> = [
+        'front', 'roundhouse', 'side', 'hook', 'axe'
+      ];
+      
+      kickTypes.forEach(kickType => {
+        const ankleState = calculateAnkleArticulation(kickType, 'extension', 'left');
+        
+        expect(ankleState.flexion).toBeGreaterThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.ANKLE_ARTICULATION.FLEXION_MIN
+        );
+        expect(ankleState.flexion).toBeLessThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.ANKLE_ARTICULATION.FLEXION_MAX
+        );
+      });
+    });
+  });
+});
+
+describe("AdvancedJointMovements - Wrist Snap", () => {
+  describe("calculateWristSnap", () => {
+    it("should calculate correct snap for backfist impact", () => {
+      const wristState = calculateWristSnap('backfist', 'impact', 'right');
+      
+      expect(wristState.side).toBe('right');
+      expect(wristState.rotation).toBeGreaterThan(0); // Forward snap
+      expect(wristState.velocity).toBeGreaterThan(20); // High velocity
+    });
+
+    it("should have maximum velocity at impact phase", () => {
+      const windUp = calculateWristSnap('backfist', 'wind-up', 'right');
+      const impact = calculateWristSnap('backfist', 'impact', 'right');
+      const followThrough = calculateWristSnap('backfist', 'follow-through', 'right');
+      
+      expect(impact.velocity).toBeGreaterThan(windUp.velocity);
+      expect(impact.velocity).toBeGreaterThan(followThrough.velocity);
+    });
+
+    it("should use reverse snap for ridge-hand", () => {
+      const wristState = calculateWristSnap('ridge-hand', 'impact', 'right');
+      
+      expect(wristState.rotation).toBeLessThan(0); // Reverse direction
+      expect(wristState.velocity).toBeGreaterThan(0);
+    });
+
+    it("should enforce velocity constraints", () => {
+      const strikeTypes: Array<'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-hand' | 'hammer-fist'> = [
+        'backfist', 'knife-hand', 'palm-heel', 'ridge-hand', 'hammer-fist'
+      ];
+      
+      strikeTypes.forEach(strikeType => {
+        const wristState = calculateWristSnap(strikeType, 'impact', 'left');
+        
+        expect(wristState.velocity).toBeLessThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.WRIST_SNAP.MAX_VELOCITY
+        );
+      });
+    });
+  });
+
+  describe("calculateWristSnapPowerModifier", () => {
+    it("should return 1.0 with zero velocity and rotation", () => {
+      const wristState: WristSnapState = {
+        rotation: 0,
+        velocity: 0,
+        side: 'right',
+      };
+      
+      const power = calculateWristSnapPowerModifier(wristState);
+      expect(power).toBe(1.0);
+    });
+
+    it("should return up to 1.25 with maximum wrist snap", () => {
+      const wristState = calculateWristSnap('backfist', 'impact', 'right');
+      const power = calculateWristSnapPowerModifier(wristState);
+      
+      expect(power).toBeGreaterThan(1.0);
+      expect(power).toBeLessThanOrEqual(1.25);
+    });
+
+    it("should weight velocity more heavily than rotation", () => {
+      const highVelocity: WristSnapState = {
+        rotation: 0.5,
+        velocity: 30.0,
+        side: 'right',
+      };
+      
+      const highRotation: WristSnapState = {
+        rotation: 1.5,
+        velocity: 10.0,
+        side: 'right',
+      };
+      
+      const velocityPower = calculateWristSnapPowerModifier(highVelocity);
+      const rotationPower = calculateWristSnapPowerModifier(highRotation);
+      
+      expect(velocityPower).toBeGreaterThan(rotationPower);
+    });
+  });
+});
+
+describe("AdvancedJointMovements - Shoulder Elevation", () => {
+  describe("calculateShoulderElevation", () => {
+    it("should elevate shoulder for high-block", () => {
+      const shoulderState = calculateShoulderElevation('high-block', 'execution', 'left');
+      
+      expect(shoulderState.side).toBe('left');
+      expect(shoulderState.elevation).toBeGreaterThan(0);
+    });
+
+    it("should have maximum elevation for overhead-strike", () => {
+      const shoulderState = calculateShoulderElevation('overhead-strike', 'execution', 'right');
+      
+      expect(shoulderState.elevation).toBeCloseTo(0.05, 2); // Max elevation
+    });
+
+    it("should depress shoulder during preparation phase", () => {
+      const shoulderState = calculateShoulderElevation('high-block', 'preparation', 'left');
+      
+      expect(shoulderState.elevation).toBeLessThan(0); // Depression
+    });
+
+    it("should enforce elevation constraints", () => {
+      const techniques: Array<'high-block' | 'overhead-strike' | 'rising-block' | 'shrug' | 'neutral'> = [
+        'high-block', 'overhead-strike', 'rising-block', 'shrug', 'neutral'
+      ];
+      
+      techniques.forEach(technique => {
+        const shoulderState = calculateShoulderElevation(technique, 'execution', 'right');
+        
+        expect(shoulderState.elevation).toBeGreaterThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.SHOULDER_ELEVATION.MIN
+        );
+        expect(shoulderState.elevation).toBeLessThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.SHOULDER_ELEVATION.MAX
+        );
+      });
+    });
+  });
+});
+
+describe("AdvancedJointMovements - Spinal Flexion", () => {
+  describe("calculateSpinalFlexion", () => {
+    it("should flex forward for duck", () => {
+      const spineState = calculateSpinalFlexion('duck', 1.0);
+      
+      expect(spineState.flexion).toBeGreaterThan(0); // Forward bend
+      expect(spineState.lateralBend).toBe(0); // No lateral
+    });
+
+    it("should extend backward for lean-back", () => {
+      const spineState = calculateSpinalFlexion('lean-back', 1.0);
+      
+      expect(spineState.flexion).toBeLessThan(0); // Backward bend
+      expect(spineState.lateralBend).toBe(0);
+    });
+
+    it("should bend laterally for lean-left", () => {
+      const spineState = calculateSpinalFlexion('lean-left', 1.0);
+      
+      expect(spineState.lateralBend).toBeLessThan(0); // Left bend
+    });
+
+    it("should scale with intensity", () => {
+      const partial = calculateSpinalFlexion('duck', 0.5);
+      const full = calculateSpinalFlexion('duck', 1.0);
+      
+      expect(full.flexion).toBeGreaterThan(partial.flexion);
+    });
+
+    it("should enforce anatomical constraints", () => {
+      const movements: Array<'duck' | 'lean-back' | 'lean-left' | 'lean-right' | 'low-attack' | 'neutral'> = [
+        'duck', 'lean-back', 'lean-left', 'lean-right', 'low-attack', 'neutral'
+      ];
+      
+      movements.forEach(movement => {
+        const spineState = calculateSpinalFlexion(movement, 1.0);
+        
+        expect(spineState.flexion).toBeGreaterThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.SPINAL_FLEXION.FLEXION_MIN
+        );
+        expect(spineState.flexion).toBeLessThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.SPINAL_FLEXION.FLEXION_MAX
+        );
+      });
+    });
+  });
+});
+
+describe("AdvancedJointMovements - Knee Drive", () => {
+  describe("calculateKneeDrive", () => {
+    it("should calculate correct drive for knee-strike", () => {
+      const kneeState = calculateKneeDrive('knee-strike', 'execution', 'right');
+      
+      expect(kneeState.side).toBe('right');
+      expect(kneeState.height).toBeGreaterThan(0.5); // High drive
+      expect(kneeState.forward).toBeGreaterThan(0.2); // Forward power
+    });
+
+    it("should have maximum drive at execution phase", () => {
+      const windUp = calculateKneeDrive('knee-strike', 'wind-up', 'right');
+      const execution = calculateKneeDrive('knee-strike', 'execution', 'right');
+      const recovery = calculateKneeDrive('knee-strike', 'recovery', 'right');
+      
+      expect(execution.height).toBeGreaterThan(windUp.height);
+      expect(execution.height).toBeGreaterThan(recovery.height);
+    });
+
+    it("should balance height and forward for clinch control", () => {
+      const kneeState = calculateKneeDrive('clinch-control', 'execution', 'left');
+      
+      expect(kneeState.height).toBeGreaterThan(0);
+      expect(kneeState.forward).toBeGreaterThan(0);
+      expect(kneeState.height).toBeLessThan(0.6); // Moderate height
+    });
+
+    it("should enforce drive constraints", () => {
+      const techniques: Array<'knee-strike' | 'clinch-control' | 'push-kick' | 'neutral'> = [
+        'knee-strike', 'clinch-control', 'push-kick', 'neutral'
+      ];
+      
+      techniques.forEach(technique => {
+        const kneeState = calculateKneeDrive(technique, 'execution', 'right');
+        
+        expect(kneeState.height).toBeLessThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.HEIGHT_MAX
+        );
+        expect(kneeState.forward).toBeLessThanOrEqual(
+          ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.FORWARD_MAX
+        );
+      });
+    });
+  });
+
+  describe("calculateKneeStrikePowerModifier", () => {
+    it("should return 1.0 with zero drive", () => {
+      const kneeState: KneeDriveState = {
+        height: 0,
+        forward: 0,
+        side: 'right',
+      };
+      
+      const power = calculateKneeStrikePowerModifier(kneeState);
+      expect(power).toBe(1.0);
+    });
+
+    it("should return up to 1.35 with maximum knee drive", () => {
+      const kneeState = calculateKneeDrive('knee-strike', 'execution', 'right');
+      const power = calculateKneeStrikePowerModifier(kneeState);
+      
+      expect(power).toBeGreaterThan(1.0);
+      expect(power).toBeLessThanOrEqual(1.35);
+    });
+
+    it("should weight height more heavily than forward drive", () => {
+      const highHeight: KneeDriveState = {
+        height: 0.8,
+        forward: 0.1,
+        side: 'right',
+      };
+      
+      const highForward: KneeDriveState = {
+        height: 0.3,
+        forward: 0.3,
+        side: 'right',
+      };
+      
+      const heightPower = calculateKneeStrikePowerModifier(highHeight);
+      const forwardPower = calculateKneeStrikePowerModifier(highForward);
+      
+      expect(heightPower).toBeGreaterThan(forwardPower);
+    });
+  });
+});
+

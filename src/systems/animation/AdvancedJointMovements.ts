@@ -467,3 +467,514 @@ export function applyHipRotationToEuler(hipState: HipRotationState): THREE.Euler
     'XYZ'
   );
 }
+
+/**
+ * Calculate ankle articulation for kick chamber
+ * 
+ * Determines proper ankle positioning for kick chambering and extension,
+ * crucial for proper foot alignment and power transfer in Korean martial arts.
+ * 
+ * @param kickType - Type of kick being chambered
+ * @param phase - Kick phase: 'chamber', 'extension', 'retraction'
+ * @param side - Which ankle
+ * @returns Ankle articulation state with flexion and inversion angles
+ * 
+ * @example
+ * ```typescript
+ * const ankleState = calculateAnkleArticulation('front', 'extension', 'right');
+ * // Returns: { flexion: 0.5, inversion: 0, side: 'right' }
+ * ```
+ * 
+ * @public
+ * @korean 차기챔버용발목관절계산
+ */
+export function calculateAnkleArticulation(
+  kickType: 'front' | 'roundhouse' | 'side' | 'hook' | 'axe',
+  phase: 'chamber' | 'extension' | 'retraction',
+  side: 'left' | 'right'
+): AnkleArticulationState {
+  let flexion = 0;
+  let inversion = 0;
+
+  switch (kickType) {
+    case 'front':
+      if (phase === 'chamber') {
+        flexion = 0.2; // Slight dorsiflexion in chamber
+      } else if (phase === 'extension') {
+        flexion = 0.5; // Strong dorsiflexion for striking with ball of foot
+      } else {
+        flexion = 0.1; // Slight flexion during retraction
+      }
+      inversion = 0; // Neutral for front kicks
+      break;
+
+    case 'roundhouse':
+      if (phase === 'chamber') {
+        flexion = -0.3; // Plantarflexion in chamber
+      } else if (phase === 'extension') {
+        flexion = -0.5; // Strong plantarflexion for instep strike
+        inversion = -0.2; // Slight eversion to align instep
+      } else {
+        flexion = -0.2;
+        inversion = 0;
+      }
+      break;
+
+    case 'side':
+      if (phase === 'chamber') {
+        flexion = 0.3; // Dorsiflexion in chamber
+      } else if (phase === 'extension') {
+        flexion = 0.4; // Dorsiflexion for heel/blade strike
+        inversion = 0.3; // Inversion to present blade edge
+      } else {
+        flexion = 0.2;
+        inversion = 0.1;
+      }
+      break;
+
+    case 'hook':
+      if (phase === 'chamber') {
+        flexion = -0.2;
+      } else if (phase === 'extension') {
+        flexion = -0.4; // Plantarflexion for heel strike
+        inversion = -0.15; // Slight eversion
+      } else {
+        flexion = -0.1;
+        inversion = 0;
+      }
+      break;
+
+    case 'axe':
+      if (phase === 'chamber') {
+        flexion = 0.1; // Minimal flexion in high chamber
+      } else if (phase === 'extension') {
+        flexion = 0.5; // Strong dorsiflexion for downward strike
+      } else {
+        flexion = 0.2;
+      }
+      inversion = 0; // Neutral for axe kicks
+      break;
+  }
+
+  // Apply constraints
+  flexion = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.ANKLE_ARTICULATION.FLEXION_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.ANKLE_ARTICULATION.FLEXION_MAX, flexion)
+  );
+  inversion = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.ANKLE_ARTICULATION.INVERSION_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.ANKLE_ARTICULATION.INVERSION_MAX, inversion)
+  );
+
+  return { flexion, inversion, side };
+}
+
+/**
+ * Calculate wrist snap for hand strikes
+ * 
+ * Determines wrist rotation and velocity for power generation in
+ * backfist, knife-hand, and other Korean martial arts hand techniques.
+ * 
+ * @param strikeType - Type of hand strike
+ * @param phase - Strike phase: 'wind-up', 'impact', 'follow-through'
+ * @param side - Which wrist
+ * @returns Wrist snap state with rotation angle and velocity
+ * 
+ * @example
+ * ```typescript
+ * const wristState = calculateWristSnap('backfist', 'impact', 'right');
+ * // Returns: { rotation: 1.2, velocity: 25.0, side: 'right' }
+ * ```
+ * 
+ * @public
+ * @korean 수격용손목스냅계산
+ */
+export function calculateWristSnap(
+  strikeType: 'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-hand' | 'hammer-fist',
+  phase: 'wind-up' | 'impact' | 'follow-through',
+  side: 'left' | 'right'
+): WristSnapState {
+  let rotation = 0;
+  let velocity = 0;
+
+  switch (strikeType) {
+    case 'backfist':
+      if (phase === 'wind-up') {
+        rotation = -0.8; // Cocked back
+        velocity = 0;
+      } else if (phase === 'impact') {
+        rotation = 1.2; // Snapped forward
+        velocity = 25.0; // High velocity snap
+      } else {
+        rotation = 0.5;
+        velocity = 5.0;
+      }
+      break;
+
+    case 'knife-hand':
+      if (phase === 'wind-up') {
+        rotation = -0.5;
+        velocity = 0;
+      } else if (phase === 'impact') {
+        rotation = 0.8; // Moderate snap for precision
+        velocity = 20.0;
+      } else {
+        rotation = 0.3;
+        velocity = 3.0;
+      }
+      break;
+
+    case 'palm-heel':
+      if (phase === 'wind-up') {
+        rotation = -0.3; // Minimal wind-up
+        velocity = 0;
+      } else if (phase === 'impact') {
+        rotation = 0.5; // Push through
+        velocity = 15.0; // Lower velocity, more push
+      } else {
+        rotation = 0.2;
+        velocity = 2.0;
+      }
+      break;
+
+    case 'ridge-hand':
+      if (phase === 'wind-up') {
+        rotation = 0.8; // Opposite direction
+        velocity = 0;
+      } else if (phase === 'impact') {
+        rotation = -1.0; // Reverse snap
+        velocity = 22.0;
+      } else {
+        rotation = -0.4;
+        velocity = 4.0;
+      }
+      break;
+
+    case 'hammer-fist':
+      if (phase === 'wind-up') {
+        rotation = 0.2; // Minimal rotation
+        velocity = 0;
+      } else if (phase === 'impact') {
+        rotation = 0.3; // Downward strike, less rotation
+        velocity = 18.0;
+      } else {
+        rotation = 0.1;
+        velocity = 2.0;
+      }
+      break;
+  }
+
+  // Apply constraints
+  rotation = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.WRIST_SNAP.ROTATION_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.WRIST_SNAP.ROTATION_MAX, rotation)
+  );
+  velocity = Math.min(ADVANCED_JOINT_CONSTRAINTS.WRIST_SNAP.MAX_VELOCITY, Math.abs(velocity));
+
+  return { rotation, velocity, side };
+}
+
+/**
+ * Calculate wrist snap power modifier
+ * 
+ * Determines power bonus based on wrist snap velocity and rotation.
+ * Higher velocity generates more power for whipping strikes.
+ * 
+ * @param wristState - Current wrist snap state
+ * @returns Power multiplier (1.0-1.25x, with hand strikes getting up to 25% bonus)
+ * 
+ * @example
+ * ```typescript
+ * const wristState = calculateWristSnap('backfist', 'impact', 'right');
+ * const power = calculateWristSnapPowerModifier(wristState);
+ * // Returns ~1.20 for proper backfist snap
+ * ```
+ * 
+ * @public
+ * @korean 손목스냅파워배율계산
+ */
+export function calculateWristSnapPowerModifier(wristState: WristSnapState): number {
+  // Normalize velocity to 0-1 range
+  const normalizedVelocity = wristState.velocity / ADVANCED_JOINT_CONSTRAINTS.WRIST_SNAP.MAX_VELOCITY;
+  
+  // Normalize rotation magnitude to 0-1 range
+  const normalizedRotation = Math.abs(wristState.rotation) / ADVANCED_JOINT_CONSTRAINTS.WRIST_SNAP.ROTATION_MAX;
+  
+  // Velocity contributes 70%, rotation contributes 30%
+  const powerFactor = (normalizedVelocity * 0.7) + (normalizedRotation * 0.3);
+  
+  // Hand strikes get up to 25% power bonus from wrist snap
+  return 1.0 + (powerFactor * 0.25);
+}
+
+/**
+ * Calculate shoulder elevation for blocks and overhead strikes
+ * 
+ * Determines vertical shoulder movement for defensive blocks and
+ * overhead striking techniques in Korean martial arts.
+ * 
+ * @param techniqueType - Type of technique requiring shoulder movement
+ * @param phase - Technique phase
+ * @param side - Which shoulder
+ * @returns Shoulder elevation state with vertical displacement
+ * 
+ * @example
+ * ```typescript
+ * const shoulderState = calculateShoulderElevation('high-block', 'execution', 'left');
+ * // Returns: { elevation: 0.04, side: 'left' }
+ * ```
+ * 
+ * @public
+ * @korean 블록및상단공격용어깨들어올림계산
+ */
+export function calculateShoulderElevation(
+  techniqueType: 'high-block' | 'overhead-strike' | 'rising-block' | 'shrug' | 'neutral',
+  phase: 'preparation' | 'execution' | 'recovery',
+  side: 'left' | 'right'
+): ShoulderElevationState {
+  let elevation = 0;
+
+  switch (techniqueType) {
+    case 'high-block':
+      if (phase === 'preparation') {
+        elevation = -0.02; // Slight drop before elevation
+      } else if (phase === 'execution') {
+        elevation = 0.04; // Elevate for high block
+      } else {
+        elevation = 0.01; // Slight elevation maintained
+      }
+      break;
+
+    case 'overhead-strike':
+      if (phase === 'preparation') {
+        elevation = 0.03; // Pre-elevation for wind-up
+      } else if (phase === 'execution') {
+        elevation = 0.05; // Maximum elevation for overhead power
+      } else {
+        elevation = 0.01;
+      }
+      break;
+
+    case 'rising-block':
+      if (phase === 'preparation') {
+        elevation = -0.03; // Lower for rising motion
+      } else if (phase === 'execution') {
+        elevation = 0.04; // Elevate as block rises
+      } else {
+        elevation = 0.02;
+      }
+      break;
+
+    case 'shrug':
+      if (phase === 'execution') {
+        elevation = 0.05; // Maximum elevation for defensive shrug
+      } else {
+        elevation = 0;
+      }
+      break;
+
+    case 'neutral':
+      elevation = 0;
+      break;
+  }
+
+  // Apply constraints
+  elevation = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.SHOULDER_ELEVATION.MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.SHOULDER_ELEVATION.MAX, elevation)
+  );
+
+  return { elevation, side };
+}
+
+/**
+ * Calculate spinal flexion for dodges and low attacks
+ * 
+ * Determines forward/backward and lateral bending of spine for
+ * defensive movements and low attack positioning.
+ * 
+ * @param movementType - Type of movement requiring spinal flexion
+ * @param intensity - Movement intensity (0=minimal, 1=full)
+ * @returns Spinal flexion state with flexion and lateral bend angles
+ * 
+ * @example
+ * ```typescript
+ * const spineState = calculateSpinalFlexion('duck', 0.8);
+ * // Returns: { flexion: 0.6, lateralBend: 0 }
+ * ```
+ * 
+ * @public
+ * @korean 회피및하단공격용척추굽힘계산
+ */
+export function calculateSpinalFlexion(
+  movementType: 'duck' | 'lean-back' | 'lean-left' | 'lean-right' | 'low-attack' | 'neutral',
+  intensity: number = 1.0
+): SpinalFlexionState {
+  let flexion = 0;
+  let lateralBend = 0;
+
+  // Clamp intensity to 0-1 range
+  intensity = Math.max(0, Math.min(1, intensity));
+
+  switch (movementType) {
+    case 'duck':
+      flexion = 0.7 * intensity; // Forward bend for ducking
+      lateralBend = 0;
+      break;
+
+    case 'lean-back':
+      flexion = -0.4 * intensity; // Backward bend for evasion
+      lateralBend = 0;
+      break;
+
+    case 'lean-left':
+      flexion = 0.1 * intensity; // Slight forward component
+      lateralBend = -0.25 * intensity; // Left lateral bend
+      break;
+
+    case 'lean-right':
+      flexion = 0.1 * intensity;
+      lateralBend = 0.25 * intensity; // Right lateral bend
+      break;
+
+    case 'low-attack':
+      flexion = 0.5 * intensity; // Forward bend for low strikes
+      lateralBend = 0;
+      break;
+
+    case 'neutral':
+      flexion = 0;
+      lateralBend = 0;
+      break;
+  }
+
+  // Apply constraints
+  flexion = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.SPINAL_FLEXION.FLEXION_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.SPINAL_FLEXION.FLEXION_MAX, flexion)
+  );
+  lateralBend = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.SPINAL_FLEXION.LATERAL_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.SPINAL_FLEXION.LATERAL_MAX, lateralBend)
+  );
+
+  return { flexion, lateralBend };
+}
+
+/**
+ * Calculate knee drive for knee strikes and clinch
+ * 
+ * Determines independent knee positioning for close-range combat,
+ * crucial for knee strike power and clinch work positioning.
+ * 
+ * @param technique - Technique requiring knee drive
+ * @param phase - Technique phase
+ * @param side - Which knee
+ * @returns Knee drive state with height and forward distance
+ * 
+ * @example
+ * ```typescript
+ * const kneeState = calculateKneeDrive('knee-strike', 'impact', 'right');
+ * // Returns: { height: 0.7, forward: 0.25, side: 'right' }
+ * ```
+ * 
+ * @public
+ * @korean 무릎차기및클린치용무릎밀어올림계산
+ */
+export function calculateKneeDrive(
+  technique: 'knee-strike' | 'clinch-control' | 'push-kick' | 'neutral',
+  phase: 'wind-up' | 'execution' | 'recovery',
+  side: 'left' | 'right'
+): KneeDriveState {
+  let height = 0;
+  let forward = 0;
+
+  switch (technique) {
+    case 'knee-strike':
+      if (phase === 'wind-up') {
+        height = 0.3; // Partial chamber
+        forward = 0.1;
+      } else if (phase === 'execution') {
+        height = 0.7; // Drive upward
+        forward = 0.25; // Drive forward for power
+      } else {
+        height = 0.2;
+        forward = 0.05;
+      }
+      break;
+
+    case 'clinch-control':
+      if (phase === 'execution') {
+        height = 0.4; // Moderate elevation for control
+        forward = 0.15; // Forward pressure
+      } else {
+        height = 0.2;
+        forward = 0.08;
+      }
+      break;
+
+    case 'push-kick':
+      if (phase === 'wind-up') {
+        height = 0.5; // High chamber
+        forward = 0.05;
+      } else if (phase === 'execution') {
+        height = 0.6; // Maintain height
+        forward = 0.3; // Strong forward drive
+      } else {
+        height = 0.3;
+        forward = 0.1;
+      }
+      break;
+
+    case 'neutral':
+      height = 0;
+      forward = 0;
+      break;
+  }
+
+  // Apply constraints
+  height = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.HEIGHT_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.HEIGHT_MAX, height)
+  );
+  forward = Math.max(
+    ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.FORWARD_MIN,
+    Math.min(ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.FORWARD_MAX, forward)
+  );
+
+  return { height, forward, side };
+}
+
+/**
+ * Calculate knee strike power modifier
+ * 
+ * Determines power bonus based on knee drive height and forward momentum.
+ * Greater drive generates more power through proper mechanics.
+ * 
+ * @param kneeState - Current knee drive state
+ * @returns Power multiplier (1.0-1.35x, with knee strikes getting up to 35% bonus)
+ * 
+ * @example
+ * ```typescript
+ * const kneeState = calculateKneeDrive('knee-strike', 'execution', 'right');
+ * const power = calculateKneeStrikePowerModifier(kneeState);
+ * // Returns ~1.30 for properly executed knee strike
+ * ```
+ * 
+ * @public
+ * @korean 무릎차기파워배율계산
+ */
+export function calculateKneeStrikePowerModifier(kneeState: KneeDriveState): number {
+  // Normalize height to 0-1 range
+  const normalizedHeight = kneeState.height / ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.HEIGHT_MAX;
+  
+  // Normalize forward drive to 0-1 range
+  const normalizedForward = kneeState.forward / ADVANCED_JOINT_CONSTRAINTS.KNEE_DRIVE.FORWARD_MAX;
+  
+  // Height contributes 60%, forward drive contributes 40%
+  const powerFactor = (normalizedHeight * 0.6) + (normalizedForward * 0.4);
+  
+  // Knee strikes get up to 35% power bonus from proper drive
+  return 1.0 + (powerFactor * 0.35);
+}
+
