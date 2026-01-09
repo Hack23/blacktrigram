@@ -100,8 +100,8 @@ export interface FootworkDrillsHTMLProps {
   readonly onDrillChange: (drill: FootworkDrill) => void;
   /** Current step in drill pattern (0-based) */
   readonly currentStep: number;
-  /** Callback when drill step completes */
-  readonly onStepComplete: () => void;
+  /** Callback when drill step completes (optional, not yet implemented) */
+  readonly onStepComplete?: () => void;
   /** Whether drill is currently active */
   readonly isActive: boolean;
   /** Callback to start/stop drill */

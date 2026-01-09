@@ -14,17 +14,16 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import type { FootworkDrill } from "./FootworkDrillsHTML";
 
 /**
- * Footwork drill pattern types
+ * Footwork drill pattern types for 3D visualization
+ * 
+ * Derived from FootworkDrill, excluding "free_practice" (which has no pattern),
+ * and adding a "none" sentinel for cases with no active pattern.
  */
 export type FootworkDrillPattern = 
-  | "circular_left"
-  | "circular_right"
-  | "pivot_combo"
-  | "triangle_step"
-  | "slide_drill"
-  | "shuffle_practice"
+  | Exclude<FootworkDrill, "free_practice">
   | "none";
 
 /**

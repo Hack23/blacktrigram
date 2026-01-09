@@ -918,7 +918,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         {trainingState.trainingMode === "footwork" && trainingState.footworkDrillActive && (
           <FootPlacementMarkers3D
             centerPosition={dummyPosition}
-            pattern={trainingState.footworkDrillType as FootworkDrillPattern}
+            pattern={
+              trainingState.footworkDrillType === "free_practice" 
+                ? "none" 
+                : (trainingState.footworkDrillType as FootworkDrillPattern)
+            }
             currentStep={trainingState.footworkDrillStep}
             visible={true}
             scale={1.0}
