@@ -18,6 +18,154 @@
 import * as THREE from "three";
 
 /**
+ * Body side for limb-specific movements
+ * 
+ * @public
+ * @korean 신체측면
+ */
+export type BodySide = 'left' | 'right';
+
+/**
+ * Kick technique types for hip rotation calculation
+ * 
+ * Korean terminology:
+ * - front: 앞차기 (Apchagi)
+ * - roundhouse: 돌려차기 (Dollyeochagi)
+ * - side: 옆차기 (Yeopchagi)
+ * - hook: 후려차기 (Huryeochagi)
+ * - axe: 내려차기 (Naeryeochagi)
+ * 
+ * @public
+ * @korean 차기기술유형
+ */
+export type KickType = 'front' | 'roundhouse' | 'side' | 'hook' | 'axe';
+
+/**
+ * Hand strike technique types for wrist snap calculation
+ * 
+ * Korean terminology:
+ * - backfist: 등주먹 (Deungjumeok)
+ * - knife-hand: 수도 (Sudo)
+ * - palm-heel: 장저 (Jangjeo)
+ * - ridge-hand: 손날등 (Sonnaldeung)
+ * - hammer-fist: 망치주먹 (Mangchijumeok)
+ * 
+ * @public
+ * @korean 수격기술유형
+ */
+export type HandStrikeType = 'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-hand' | 'hammer-fist';
+
+/**
+ * Kick height levels for hip rotation scaling
+ * 
+ * Korean terminology:
+ * - 0: 하단 (Hadan) - Low section
+ * - 1: 중단 (Jungdan) - Middle section
+ * - 2: 상단 (Sangdan) - High section
+ * 
+ * @public
+ * @korean 차기높이
+ */
+export type KickHeight = 0 | 1 | 2;
+
+/**
+ * Technique execution phases
+ * 
+ * Korean terminology:
+ * - chamber: 준비 (Junbi) - Preparation/chamber
+ * - extension: 확장 (Hwakjang) - Extension
+ * - retraction: 회수 (Hoesu) - Retraction
+ * 
+ * @public
+ * @korean 기술단계
+ */
+export type TechniquePhase = 'chamber' | 'extension' | 'retraction';
+
+/**
+ * Strike execution phases
+ * 
+ * Korean terminology:
+ * - wind-up: 예비동작 (Yebi Dongjak) - Wind-up
+ * - impact: 타격 (Tagyeok) - Impact
+ * - follow-through: 후속동작 (Husok Dongjak) - Follow-through
+ * 
+ * @public
+ * @korean 타격단계
+ */
+export type StrikePhase = 'wind-up' | 'impact' | 'follow-through';
+
+/**
+ * Block and overhead technique types for shoulder elevation
+ * 
+ * Korean terminology:
+ * - high-block: 상단막기 (Sangdan Makgi)
+ * - overhead-strike: 상단공격 (Sangdan Gonggyeok)
+ * - rising-block: 올려막기 (Ollyeo Makgi)
+ * - shrug: 어깨올리기 (Eokkae Olligi)
+ * - neutral: 중립 (Jungnip)
+ * 
+ * @public
+ * @korean 어깨기술유형
+ */
+export type ShoulderTechniqueType = 'high-block' | 'overhead-strike' | 'rising-block' | 'shrug' | 'neutral';
+
+/**
+ * Shoulder and block technique execution phases
+ * 
+ * Korean terminology:
+ * - preparation: 준비 (Junbi)
+ * - execution: 실행 (Silhaeng)
+ * - recovery: 복귀 (Bokgwi)
+ * 
+ * @public
+ * @korean 어깨단계
+ */
+export type ShoulderPhase = 'preparation' | 'execution' | 'recovery';
+
+/**
+ * Spinal movement types for dodging and positioning
+ * 
+ * Korean terminology:
+ * - duck: 숙이기 (Sugigi) - Duck down
+ * - lean-back: 뒤로기울기 (Dwiro Giulgi) - Lean back
+ * - lean-left: 왼쪽기울기 (Oenjjok Giulgi) - Lean left
+ * - lean-right: 오른쪽기울기 (Oreunjjok Giulgi) - Lean right
+ * - low-attack: 낮은공격 (Najeun Gonggyeok) - Low attack
+ * - neutral: 중립 (Jungnip) - Neutral
+ * 
+ * @public
+ * @korean 척추동작유형
+ */
+export type SpinalMovementType = 'duck' | 'lean-back' | 'lean-left' | 'lean-right' | 'low-attack' | 'neutral';
+
+/**
+ * Knee drive technique types for close-range combat
+ * 
+ * Korean terminology:
+ * - knee-strike: 무릎차기 (Mureup Chagi)
+ * - clinch-control: 붙잡기제어 (Butjapgi Jeeo)
+ * - push-kick: 밀어차기 (Mireo Chagi)
+ * - neutral: 중립 (Jungnip)
+ * 
+ * @public
+ * @korean 무릎기술유형
+ */
+export type KneeTechniqueType = 'knee-strike' | 'clinch-control' | 'push-kick' | 'neutral';
+
+/**
+ * Knee technique execution phases
+ * 
+ * Korean terminology:
+ * - wind-up: 예비동작 (Yebi Dongjak)
+ * - execution: 실행 (Silhaeng)
+ * - recovery: 복귀 (Bokgwi)
+ * 
+ * @public
+ * @korean 무릎단계
+ */
+export type KneePhase = 'wind-up' | 'execution' | 'recovery';
+
+/**
  * Hip rotation state for dynamic kick mechanics
  * 
  * Tracks independent hip rotation in multiple planes for realistic
@@ -63,7 +211,7 @@ export interface HipRotationState {
    * Which hip (left or right)
    * @korean 측면
    */
-  readonly side: 'left' | 'right';
+  readonly side: BodySide;
 }
 
 /**
@@ -91,7 +239,7 @@ export interface ShoulderElevationState {
    * Which shoulder (left or right)
    * @korean 측면
    */
-  readonly side: 'left' | 'right';
+  readonly side: BodySide;
 }
 
 /**
@@ -127,7 +275,7 @@ export interface AnkleArticulationState {
    * Which ankle (left or right)
    * @korean 측면
    */
-  readonly side: 'left' | 'right';
+  readonly side: BodySide;
 }
 
 /**
@@ -159,7 +307,7 @@ export interface WristSnapState {
    * Which wrist (left or right)
    * @korean 측면
    */
-  readonly side: 'left' | 'right';
+  readonly side: BodySide;
 }
 
 /**
@@ -193,7 +341,7 @@ export interface KneeDriveState {
    * Which knee (left or right)
    * @korean 측면
    */
-  readonly side: 'left' | 'right';
+  readonly side: BodySide;
 }
 
 /**
@@ -322,9 +470,9 @@ export const ADVANCED_JOINT_CONSTRAINTS = {
  * @korean 차기용고관절회전계산
  */
 export function calculateHipRotationForKick(
-  kickType: 'front' | 'roundhouse' | 'side' | 'hook' | 'axe',
-  targetHeight: 0 | 1 | 2, // low=0, medium=1, high=2
-  side: 'left' | 'right'
+  kickType: KickType,
+  targetHeight: KickHeight,
+  side: BodySide
 ): HipRotationState {
   let frontalRotation = 0;
   let sagittalRotation = 0;
@@ -414,7 +562,7 @@ export function calculateHipRotationForKick(
  */
 export function calculateKickPowerFromHipRotation(
   hipState: HipRotationState,
-  kickType: 'front' | 'roundhouse' | 'side' | 'hook' | 'axe'
+  kickType: KickType
 ): number {
   // Normalize rotations to 0-1 range based on constraints
   const normalizedFrontal = Math.abs(hipState.frontalRotation) / 
@@ -489,9 +637,9 @@ export function applyHipRotationToEuler(hipState: HipRotationState): THREE.Euler
  * @korean 차기챔버용발목관절계산
  */
 export function calculateAnkleArticulation(
-  kickType: 'front' | 'roundhouse' | 'side' | 'hook' | 'axe',
-  phase: 'chamber' | 'extension' | 'retraction',
-  side: 'left' | 'right'
+  kickType: KickType,
+  phase: TechniquePhase,
+  side: BodySide
 ): AnkleArticulationState {
   let flexion = 0;
   let inversion = 0;
@@ -590,9 +738,9 @@ export function calculateAnkleArticulation(
  * @korean 수격용손목스냅계산
  */
 export function calculateWristSnap(
-  strikeType: 'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-hand' | 'hammer-fist',
-  phase: 'wind-up' | 'impact' | 'follow-through',
-  side: 'left' | 'right'
+  strikeType: HandStrikeType,
+  phase: StrikePhase,
+  side: BodySide
 ): WristSnapState {
   let rotation = 0;
   let velocity = 0;
@@ -728,9 +876,9 @@ export function calculateWristSnapPowerModifier(wristState: WristSnapState): num
  * @korean 블록및상단공격용어깨들어올림계산
  */
 export function calculateShoulderElevation(
-  techniqueType: 'high-block' | 'overhead-strike' | 'rising-block' | 'shrug' | 'neutral',
-  phase: 'preparation' | 'execution' | 'recovery',
-  side: 'left' | 'right'
+  techniqueType: ShoulderTechniqueType,
+  phase: ShoulderPhase,
+  side: BodySide
 ): ShoulderElevationState {
   let elevation = 0;
 
@@ -807,7 +955,7 @@ export function calculateShoulderElevation(
  * @korean 회피및하단공격용척추굽힘계산
  */
 export function calculateSpinalFlexion(
-  movementType: 'duck' | 'lean-back' | 'lean-left' | 'lean-right' | 'low-attack' | 'neutral',
+  movementType: SpinalMovementType,
   intensity: number = 1.0
 ): SpinalFlexionState {
   let flexion = 0;
@@ -882,9 +1030,9 @@ export function calculateSpinalFlexion(
  * @korean 무릎차기및클린치용무릎밀어올림계산
  */
 export function calculateKneeDrive(
-  technique: 'knee-strike' | 'clinch-control' | 'push-kick' | 'neutral',
-  phase: 'wind-up' | 'execution' | 'recovery',
-  side: 'left' | 'right'
+  technique: KneeTechniqueType,
+  phase: KneePhase,
+  side: BodySide
 ): KneeDriveState {
   let height = 0;
   let forward = 0;

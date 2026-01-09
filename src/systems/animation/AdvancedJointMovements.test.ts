@@ -29,6 +29,11 @@ import {
   type HipRotationState,
   type WristSnapState,
   type KneeDriveState,
+  type KickType,
+  type HandStrikeType,
+  type ShoulderTechniqueType,
+  type SpinalMovementType,
+  type KneeTechniqueType,
 } from "./AdvancedJointMovements";
 
 describe("AdvancedJointMovements - Hip Rotation", () => {
@@ -245,7 +250,7 @@ describe("AdvancedJointMovements - Hip Rotation", () => {
       });
 
       it("should never exceed 1.40x multiplier", () => {
-        const kickTypes: Array<'front' | 'roundhouse' | 'side' | 'hook' | 'axe'> = [
+        const kickTypes: KickType[] = [
           'front', 'roundhouse', 'side', 'hook', 'axe'
         ];
         
@@ -358,7 +363,7 @@ describe("AdvancedJointMovements - Ankle Articulation", () => {
     });
 
     it("should enforce anatomical constraints", () => {
-      const kickTypes: Array<'front' | 'roundhouse' | 'side' | 'hook' | 'axe'> = [
+      const kickTypes: KickType[] = [
         'front', 'roundhouse', 'side', 'hook', 'axe'
       ];
       
@@ -403,7 +408,7 @@ describe("AdvancedJointMovements - Wrist Snap", () => {
     });
 
     it("should enforce velocity constraints", () => {
-      const strikeTypes: Array<'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-hand' | 'hammer-fist'> = [
+      const strikeTypes: HandStrikeType[] = [
         'backfist', 'knife-hand', 'palm-heel', 'ridge-hand', 'hammer-fist'
       ];
       
@@ -480,7 +485,7 @@ describe("AdvancedJointMovements - Shoulder Elevation", () => {
     });
 
     it("should enforce elevation constraints", () => {
-      const techniques: Array<'high-block' | 'overhead-strike' | 'rising-block' | 'shrug' | 'neutral'> = [
+      const techniques: ShoulderTechniqueType[] = [
         'high-block', 'overhead-strike', 'rising-block', 'shrug', 'neutral'
       ];
       
@@ -528,7 +533,7 @@ describe("AdvancedJointMovements - Spinal Flexion", () => {
     });
 
     it("should enforce anatomical constraints", () => {
-      const movements: Array<'duck' | 'lean-back' | 'lean-left' | 'lean-right' | 'low-attack' | 'neutral'> = [
+      const movements: SpinalMovementType[] = [
         'duck', 'lean-back', 'lean-left', 'lean-right', 'low-attack', 'neutral'
       ];
       
@@ -574,7 +579,7 @@ describe("AdvancedJointMovements - Knee Drive", () => {
     });
 
     it("should enforce drive constraints", () => {
-      const techniques: Array<'knee-strike' | 'clinch-control' | 'push-kick' | 'neutral'> = [
+      const techniques: KneeTechniqueType[] = [
         'knee-strike', 'clinch-control', 'push-kick', 'neutral'
       ];
       
