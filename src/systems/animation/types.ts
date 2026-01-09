@@ -1156,6 +1156,180 @@ export const RECOVERY_TYPE_TO_ANIMATION: Record<RecoveryAnimationType, Animation
   defensive_getup: AnimationState.RECOVERY_DEFENSIVE,
 };
 
+/**
+ * Technique intensity levels for animation speed and impact
+ * 
+ * **Korean**: 기술 강도 레벨
+ * 
+ * Determines animation speed modifier and visual impact effects:
+ * - light: Fast techniques (1.2x speed), lower damage
+ * - medium: Normal techniques (1.0x speed), standard damage
+ * - heavy: Powerful techniques (0.8x speed), high damage
+ * - critical: Maximum power (0.6x speed), critical damage
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술강도
+ */
+export type TechniqueIntensity = 'light' | 'medium' | 'heavy' | 'critical';
+
+/**
+ * Technique type categories for animation selection
+ * 
+ * **Korean**: 기술 유형
+ * 
+ * Core technique categories that determine base animation style:
+ * - strike: Direct striking attacks (punches, palm strikes)
+ * - joint: Joint manipulation and locks
+ * - throw: Throwing and sweeping techniques
+ * - pressure_point: Precise vital point strikes
+ * 
+ * @public
+ * @category Combat
+ * @korean 기술타입
+ */
+export type TechniqueTypeCategory = 'strike' | 'joint' | 'throw' | 'pressure_point';
+
+/**
+ * Composite key for technique animation lookup
+ * 
+ * **Korean**: 기술 애니메이션 키
+ * 
+ * Combines stance, technique type, target body part, and intensity
+ * to uniquely identify the appropriate animation to play.
+ * 
+ * @example
+ * ```typescript
+ * const key: TechniqueAnimationKey = {
+ *   stance: TrigramStance.GEON,
+ *   techniqueType: 'strike',
+ *   bodyPart: BodyPart.HEAD,
+ *   intensity: 'heavy',
+ * };
+ * ```
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술애니메이션키
+ */
+export interface TechniqueAnimationKey {
+  /** Trigram stance (8 stances) */
+  readonly stance: string;
+  /** Technique category */
+  readonly techniqueType: TechniqueTypeCategory;
+  /** Target body part */
+  readonly bodyPart: string;
+  /** Attack intensity level */
+  readonly intensity: TechniqueIntensity;
+}
+
+/**
+ * Complete technique animation configuration
+ * 
+ * **Korean**: 기술 애니메이션 설정
+ * 
+ * Defines all properties needed to execute a technique animation,
+ * including timing, impact frame, Korean terminology, and priority.
+ * 
+ * @example
+ * ```typescript
+ * const animation: TechniqueAnimation = {
+ *   animationState: AnimationState.ATTACK,
+ *   duration: 0.8,
+ *   impactFrame: 12,
+ *   recoveryFrames: 15,
+ *   priority: 8,
+ *   koreanName: '건괘 두부 강 타격',
+ *   englishName: 'Heaven Stance Head Strike',
+ * };
+ * ```
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술애니메이션
+ */
+export interface TechniqueAnimation {
+  /** Animation state to play */
+  readonly animationState: AnimationState;
+  /** Duration in seconds */
+  readonly duration: number;
+  /** Frame number where hit lands (0-indexed) */
+  readonly impactFrame: number;
+  /** Number of recovery frames after impact */
+  readonly recoveryFrames: number;
+  /** Animation priority for interrupt system */
+  readonly priority: AnimationPriority;
+  /** Korean technique name */
+  readonly koreanName: string;
+  /** English technique name */
+  readonly englishName: string;
+  
+  // ===== Advanced Joint Movement Properties (고급 관절 동작) =====
+  
+  /**
+   * Torso rotation angle in radians relative to hips
+   * 
+   * **Korean**: 허리회전 (Heorhwoejeon)
+   * 
+   * Range: -π/2 to π/2 (-90° to 90°)
+   * Used for independent upper/lower body movement
+   * 
+   * @korean 허리회전각도
+   */
+  readonly torsoRotation?: number;
+  
+  /**
+   * Hip rotation engagement factor (0-1)
+   * 
+   * **Korean**: 골반회전 참여도 (Golbanhwoejeon Chamyeodo)
+   * 
+   * - 0.0: No hip engagement (isolated technique)
+   * - 0.3: Minimal hip involvement
+   * - 0.6: Moderate hip rotation
+   * - 1.0: Full hip engagement (maximum power)
+   * 
+   * Contributes 10-30% damage bonus based on technique type
+   * 
+   * @korean 골반회전도
+   */
+  readonly hipEngagement?: number;
+  
+  /**
+   * Power modifier from hip rotation (calculated)
+   * 
+   * **Korean**: 파워배율 (Pawo Baeyul)
+   * 
+   * Multiplier applied to technique damage (1.0-1.3)
+   * Calculated from hipEngagement and techniqueType
+   * 
+   * @korean 파워배율
+   */
+  readonly powerModifier?: number;
+}
+
+/**
+ * Validation result for technique animation mapping completeness
+ * 
+ * **Korean**: 기술 애니메이션 매핑 검증 결과
+ * 
+ * Reports coverage percentage and lists any missing mappings
+ * that need to be filled in.
+ * 
+ * @public
+ * @category Animation
+ * @korean 매핑검증결과
+ */
+export interface MappingValidationResult {
+  /** Coverage percentage (0-100) */
+  readonly coverage: number;
+  /** Total combinations expected */
+  readonly total: number;
+  /** Number of mapped combinations */
+  readonly mapped: number;
+  /** List of missing combinations */
+  readonly missing: readonly TechniqueAnimationKey[];
+}
+
 // ===== Backward Compatibility Helpers (하위 호환성 도우미) =====
 
 /**
