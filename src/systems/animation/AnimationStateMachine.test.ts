@@ -432,8 +432,8 @@ describe("PlayerAnimationStateMachine", () => {
       const keyframe1 = {
         time: 0,
         bonePositions: new Map([
-          ["root", { x: 0, y: 0, z: 0 }],
-          ["spine", { x: 0, y: 1, z: 0 }],
+          ["root", new THREE.Vector3(0, 0, 0)],
+          ["spine", new THREE.Vector3(0, 1, 0)],
         ]),
         boneRotations: new Map([
           ["root", new THREE.Euler(0, 0, 0, "XYZ")],
@@ -444,8 +444,8 @@ describe("PlayerAnimationStateMachine", () => {
       const keyframe2 = {
         time: 0.01667,
         bonePositions: new Map([
-          ["root", { x: 0.1, y: 0, z: 0 }],
-          ["spine", { x: 0.1, y: 1, z: 0 }],
+          ["root", new THREE.Vector3(0.1, 0, 0)],
+          ["spine", new THREE.Vector3(0.1, 1, 0)],
         ]),
         boneRotations: new Map([
           ["root", new THREE.Euler(0, 0.1, 0, "XYZ")],
@@ -471,7 +471,8 @@ describe("PlayerAnimationStateMachine", () => {
       const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
       
       const currentKeyframe = {
-        bonePositions: new Map([["root", { x: 0, y: 0, z: 0 }]]),
+        time: 0,
+        bonePositions: new Map([["root", new THREE.Vector3(0, 0, 0)]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
       };
       
@@ -525,12 +526,12 @@ describe("PlayerAnimationStateMachine", () => {
       machine.setMotionPrediction(true);
       const keyframe1 = {
         time: 0,
-        bonePositions: new Map([["root", { x: 0, y: 0, z: 0 }]]),
+        bonePositions: new Map([["root", new THREE.Vector3(0, 0, 0)]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
       };
       const keyframe2 = {
         time: 0.01667,
-        bonePositions: new Map([["root", { x: 1, y: 0, z: 0 }]]),
+        bonePositions: new Map([["root", new THREE.Vector3(1, 0, 0)]]),
         boneRotations: new Map([["root", new THREE.Euler(0, 0.1, 0, "XYZ")]]),
       };
       

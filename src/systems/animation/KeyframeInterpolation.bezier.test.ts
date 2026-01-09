@@ -423,7 +423,7 @@ describe("Cubic Bezier Interpolation", () => {
               ["arm_r", new THREE.Euler(1.5, 0, 0)],
             ]),
             bonePositions: new Map([["spine", new THREE.Vector3(0, 0.9, 0.2)]]),
-            easing: "explosive-power",
+            easing: "ease-out",
           },
         ],
       };
