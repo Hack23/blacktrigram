@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { asMutable } from "../test/test-utils";
 import type { PlayerState } from "../types";
 import {
   CombatAttackType,
@@ -55,7 +56,7 @@ describe("CombatSystem", () => {
     // Fix: Ensure mockTechnique is properly defined in beforeEach
     mockTechnique = {
       id: "test_punch",
-      name: { korean: "주먹질", english: "Punch" },
+      name: { korean: "주먹질", english: "Punch", romanized: "jumeokjil" },
       koreanName: "주먹질",
       englishName: "Punch",
       romanized: "jumeokjil",
@@ -196,7 +197,7 @@ describe("CombatSystem", () => {
     it("should filter out techniques from wrong stance", () => {
       const player = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
       // Player in GEON stance
-      player.currentStance = TrigramStance.GEON;
+      asMutable(player).currentStance = TrigramStance.GEON;
 
       const techniques = combatSystem.getAvailableTechniques(player);
 
@@ -659,10 +660,11 @@ describe("CombatSystem", () => {
         0
       );
       // Ensure player is in correct stance and has resources
-      amsaljaPlayer.currentStance = TrigramStance.GEON;
-      amsaljaPlayer.ki = 100;
-      amsaljaPlayer.stamina = 100;
-      amsaljaPlayer.isStunned = false;
+      const mutablePlayer = asMutable(amsaljaPlayer);
+      mutablePlayer.currentStance = TrigramStance.GEON;
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
+      mutablePlayer.isStunned = false;
 
       // Mock Math.random to ensure hit (need >0 but <accuracy to hit)
       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5); // 50% will hit with 85% accuracy
@@ -706,10 +708,11 @@ describe("CombatSystem", () => {
     it("should apply base modifier (1.0) for HACKER on NON-neurological vital point (line 356 - false branch)", () => {
       const hackerPlayer = createPlayerFromArchetype(PlayerArchetype.HACKER, 0);
       // Ensure player is in correct stance and has resources
-      hackerPlayer.currentStance = TrigramStance.GEON;
-      hackerPlayer.ki = 100;
-      hackerPlayer.stamina = 100;
-      hackerPlayer.isStunned = false;
+      const mutablePlayer = asMutable(hackerPlayer);
+      mutablePlayer.currentStance = TrigramStance.GEON;
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
+      mutablePlayer.isStunned = false;
 
       // Mock Math.random to ensure hit
       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5); // 50% will hit with 85% accuracy
@@ -738,10 +741,11 @@ describe("CombatSystem", () => {
         0
       );
       // Ensure player is in correct stance and has resources
-      jeongboPlayer.currentStance = TrigramStance.GEON;
-      jeongboPlayer.ki = 100;
-      jeongboPlayer.stamina = 100;
-      jeongboPlayer.isStunned = false;
+      const mutablePlayer = asMutable(jeongboPlayer);
+      mutablePlayer.currentStance = TrigramStance.GEON;
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
+      mutablePlayer.isStunned = false;
 
       // Mock Math.random to ensure hit
       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
@@ -770,10 +774,11 @@ describe("CombatSystem", () => {
         0
       );
       // Ensure player is in correct stance and has resources
-      jojikPlayer.currentStance = TrigramStance.GEON;
-      jojikPlayer.ki = 100;
-      jojikPlayer.stamina = 100;
-      jojikPlayer.isStunned = false;
+      const mutablePlayer = asMutable(jojikPlayer);
+      mutablePlayer.currentStance = TrigramStance.GEON;
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
+      mutablePlayer.isStunned = false;
 
       // Mock Math.random to ensure hit
       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
@@ -802,12 +807,12 @@ describe("CombatSystem", () => {
         0
       );
       // Force an invalid archetype value for testing error handling
-      (playerWithInvalidArchetype as any).archetype =
-        "INVALID_ARCHETYPE" as any;
-      playerWithInvalidArchetype.currentStance = TrigramStance.GEON;
-      playerWithInvalidArchetype.ki = 100;
-      playerWithInvalidArchetype.stamina = 100;
-      playerWithInvalidArchetype.isStunned = false;
+      const mutablePlayer = asMutable(playerWithInvalidArchetype);
+      (mutablePlayer as any).archetype = "INVALID_ARCHETYPE" as any;
+      mutablePlayer.currentStance = TrigramStance.GEON;
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
+      mutablePlayer.isStunned = false;
 
       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
       const consoleWarnSpy = vi
@@ -839,10 +844,11 @@ describe("CombatSystem", () => {
         PlayerArchetype.AMSALJA,
         0
       );
-      amsaljaPlayer.currentStance = TrigramStance.GEON;
-      amsaljaPlayer.ki = 100;
-      amsaljaPlayer.stamina = 100;
-      amsaljaPlayer.isStunned = false;
+      const mutablePlayer = asMutable(amsaljaPlayer);
+      mutablePlayer.currentStance = TrigramStance.GEON;
+      mutablePlayer.ki = 100;
+      mutablePlayer.stamina = 100;
+      mutablePlayer.isStunned = false;
 
       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.5);
       const consoleWarnSpy = vi
@@ -1419,7 +1425,7 @@ describe("createCombatResult helper (coverage for lines 488-509)", () => {
     const player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
     const mockTechnique: KoreanTechnique = {
       id: "test",
-      name: { korean: "테스트", english: "Test" },
+      name: { korean: "테스트", english: "Test", romanized: "teseuteu" },
       koreanName: "테스트",
       englishName: "Test",
       romanized: "teseuteu",
@@ -1486,10 +1492,10 @@ describe("CombatSystem - Resource Management", () => {
     // Get collision detection instance before disposal
     const collision = combatSystem.getCollisionDetection();
     expect(collision).toBeDefined();
-    
+
     // Dispose combat system (should clean up collision detection)
     combatSystem.dispose();
-    
+
     // After disposal, collision detection should still be accessible
     // (the instance still exists, but internal resources are cleaned up)
     const collisionAfterDispose = combatSystem.getCollisionDetection();
@@ -1509,7 +1515,11 @@ describe("TrainingCombatSystem", () => {
     // Fix: Define mockTechnique properly
     mockTechnique = {
       id: "basic_strike",
-      name: { korean: "기본 타격", english: "Basic Strike" },
+      name: {
+        korean: "기본 타격",
+        english: "Basic Strike",
+        romanized: "gibon tagyeok",
+      },
       koreanName: "기본 타격",
       englishName: "Basic Strike",
       romanized: "gibon tagyeok",

@@ -1,12 +1,12 @@
 /**
  * Unit tests for Control Mapping System
- * 
+ *
  * @module utils/controlMapping.test
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { ControlMapper, ControlBinding } from "./controlMapping";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TrigramStance } from "../types/common";
+import { ControlBinding, ControlMapper } from "./controlMapping";
 
 describe("ControlMapper", () => {
   let mapper: ControlMapper;
@@ -154,7 +154,8 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(customBindings);
@@ -178,7 +179,8 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       localStorageMock["blacktrigram_controls"] =
@@ -218,7 +220,8 @@ describe("ControlMapper", () => {
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       });
 
       // Reset to defaults
@@ -245,7 +248,8 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(invalidBindings as ControlBinding);
@@ -258,10 +262,12 @@ describe("ControlMapper", () => {
     it("should reject bindings with duplicate keys", () => {
       const invalidBindings: ControlBinding = {
         stances: ["1", "2", "3", "4", "5", "6", "7", "8"],
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: "1", // Duplicate with stance 1
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(invalidBindings);
@@ -278,7 +284,8 @@ describe("ControlMapper", () => {
         attack: "1", // Conflict with stance key
         block: "w", // Conflict with movement
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       const conflicts = mapper.getConflicts(conflictingBindings);
@@ -297,7 +304,8 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "b",
         movement: { up: "i", down: "k", left: "j", right: "l" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(qwerBindings);
@@ -314,7 +322,8 @@ describe("ControlMapper", () => {
         attack: " ",
         block: "0",
         movement: { up: "w", down: "s", left: "a", right: "d" },
-        vitalPointsOverlay: "v", pause: ["Escape", "m"],
+        vitalPointsOverlay: "v",
+        pause: ["Escape", "m"],
       };
 
       mapper.saveBindings(numpadBindings);

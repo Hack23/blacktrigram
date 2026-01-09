@@ -1,29 +1,34 @@
 /**
  * Unit tests for PlayerEffectManager
- * 
+ *
  * Tests effect tracking, expiration, removal, combat modifiers,
  * and player state management.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { asMutable } from "../test/test-utils";
+import { CombatState } from "../types";
+import {
+  PlayerArchetype,
+  TrigramStance,
+  VitalPointEffectType,
+} from "../types/common";
+import { MAX_CONCURRENT_EFFECTS } from "./EffectCalculator";
+import { EffectIntensity } from "./effects";
+import { PlayerState } from "./player";
 import {
   addEffectsToPlayer,
-  removeExpiredEffects,
+  canAddMoreEffects,
+  clearAllEffects,
+  getActiveEffectCount,
+  getEffectModifiers,
+  getEffectsByType,
+  hasEffect,
   removeEffectById,
   removeEffectsByType,
-  clearAllEffects,
-  getEffectModifiers,
-  hasEffect,
-  getEffectsByType,
-  getActiveEffectCount,
-  canAddMoreEffects,
+  removeExpiredEffects,
 } from "./PlayerEffectManager";
-import { PlayerArchetype, TrigramStance, VitalPointEffectType } from "../types/common";
-import { EffectIntensity } from "./effects";
 import { StatusEffect } from "./types";
-import { PlayerState } from "./player";
-import { CombatState } from "../types";
-import { MAX_CONCURRENT_EFFECTS } from "./EffectCalculator";
 
 describe("PlayerEffectManager", () => {
   const createMockPlayer = (): PlayerState => ({
@@ -86,7 +91,11 @@ describe("PlayerEffectManager", () => {
     it("should add effects to player with empty effect list", () => {
       const player = createMockPlayer();
       const effects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, Date.now() + 5000),
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          Date.now() + 5000
+        ),
       ];
 
       const updatedPlayer = addEffectsToPlayer(player, effects);
@@ -100,8 +109,16 @@ describe("PlayerEffectManager", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
       const effects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("effect2", VitalPointEffectType.STUN, currentTime + 5000),
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect2",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
       ];
 
       const updatedPlayer = addEffectsToPlayer(player, effects);
@@ -116,13 +133,21 @@ describe("PlayerEffectManager", () => {
 
       // Add more effects than allowed
       const effects = Array.from({ length: 10 }, (_, i) =>
-        createMockEffect(`effect${i}`, VitalPointEffectType.PAIN, currentTime + 5000)
+        createMockEffect(
+          `effect${i}`,
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        )
       );
 
       const updatedPlayer = addEffectsToPlayer(player, effects);
 
-      expect(updatedPlayer.statusEffects.length).toBeLessThanOrEqual(MAX_CONCURRENT_EFFECTS);
-      expect(updatedPlayer.activeEffects.length).toBeLessThanOrEqual(MAX_CONCURRENT_EFFECTS);
+      expect(updatedPlayer.statusEffects.length).toBeLessThanOrEqual(
+        MAX_CONCURRENT_EFFECTS
+      );
+      expect(updatedPlayer.activeEffects.length).toBeLessThanOrEqual(
+        MAX_CONCURRENT_EFFECTS
+      );
     });
   });
 
@@ -130,11 +155,20 @@ describe("PlayerEffectManager", () => {
     it("should remove effects that have expired", () => {
       const currentTime = Date.now();
       const player = createMockPlayer();
-      player.statusEffects = [
-        createMockEffect("expired", VitalPointEffectType.PAIN, currentTime - 1000),
-        createMockEffect("active", VitalPointEffectType.STUN, currentTime + 5000),
+      const mutablePlayer = asMutable(player);
+      mutablePlayer.statusEffects = [
+        createMockEffect(
+          "expired",
+          VitalPointEffectType.PAIN,
+          currentTime - 1000
+        ),
+        createMockEffect(
+          "active",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
       ];
-      player.activeEffects = ["expired", "active"];
+      mutablePlayer.activeEffects = ["expired", "active"];
 
       const updatedPlayer = removeExpiredEffects(player, currentTime);
 
@@ -147,11 +181,20 @@ describe("PlayerEffectManager", () => {
     it("should keep all effects if none expired", () => {
       const currentTime = Date.now();
       const player = createMockPlayer();
-      player.statusEffects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("effect2", VitalPointEffectType.STUN, currentTime + 5000),
+      const mutablePlayer = asMutable(player);
+      mutablePlayer.statusEffects = [
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect2",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
       ];
-      player.activeEffects = ["effect1", "effect2"];
+      mutablePlayer.activeEffects = ["effect1", "effect2"];
 
       const updatedPlayer = removeExpiredEffects(player, currentTime);
 
@@ -164,11 +207,20 @@ describe("PlayerEffectManager", () => {
     it("should remove specific effect by ID", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("effect2", VitalPointEffectType.STUN, currentTime + 5000),
+      const mutablePlayer = asMutable(player);
+      mutablePlayer.statusEffects = [
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect2",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
       ];
-      player.activeEffects = ["effect1", "effect2"];
+      mutablePlayer.activeEffects = ["effect1", "effect2"];
 
       const updatedPlayer = removeEffectById(player, "effect1");
 
@@ -180,10 +232,15 @@ describe("PlayerEffectManager", () => {
     it("should do nothing if effect ID not found", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
+      const mutablePlayer = asMutable(player);
+      mutablePlayer.statusEffects = [
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
       ];
-      player.activeEffects = ["effect1"];
+      mutablePlayer.activeEffects = ["effect1"];
 
       const updatedPlayer = removeEffectById(player, "nonexistent");
 
@@ -196,17 +253,31 @@ describe("PlayerEffectManager", () => {
     it("should remove all effects of specific type", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("pain1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("pain2", VitalPointEffectType.PAIN, currentTime + 5000),
+      const mutablePlayer = asMutable(player);
+      mutablePlayer.statusEffects = [
+        createMockEffect(
+          "pain1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "pain2",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
         createMockEffect("stun", VitalPointEffectType.STUN, currentTime + 5000),
       ];
-      player.activeEffects = ["pain1", "pain2", "stun"];
+      mutablePlayer.activeEffects = ["pain1", "pain2", "stun"];
 
-      const updatedPlayer = removeEffectsByType(player, VitalPointEffectType.PAIN);
+      const updatedPlayer = removeEffectsByType(
+        player,
+        VitalPointEffectType.PAIN
+      );
 
       expect(updatedPlayer.statusEffects).toHaveLength(1);
-      expect(updatedPlayer.statusEffects[0].type).toBe(VitalPointEffectType.STUN);
+      expect(updatedPlayer.statusEffects[0].type).toBe(
+        VitalPointEffectType.STUN
+      );
       expect(updatedPlayer.activeEffects).toHaveLength(1);
     });
   });
@@ -215,12 +286,25 @@ describe("PlayerEffectManager", () => {
     it("should remove all effects from player", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("effect2", VitalPointEffectType.STUN, currentTime + 5000),
-        createMockEffect("effect3", VitalPointEffectType.PARALYSIS, currentTime + 5000),
+      const mutablePlayer = asMutable(player);
+      mutablePlayer.statusEffects = [
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect2",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect3",
+          VitalPointEffectType.PARALYSIS,
+          currentTime + 5000
+        ),
       ];
-      player.activeEffects = ["effect1", "effect2", "effect3"];
+      mutablePlayer.activeEffects = ["effect1", "effect2", "effect3"];
 
       const updatedPlayer = clearAllEffects(player);
 
@@ -246,8 +330,12 @@ describe("PlayerEffectManager", () => {
     it("should apply unconsciousness effect (total incapacitation)", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("unconscious", VitalPointEffectType.UNCONSCIOUSNESS, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "unconscious",
+          VitalPointEffectType.UNCONSCIOUSNESS,
+          currentTime + 5000
+        ),
       ];
 
       const modifiers = getEffectModifiers(player);
@@ -261,8 +349,12 @@ describe("PlayerEffectManager", () => {
     it("should apply paralysis effect (severe impairment)", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("paralysis", VitalPointEffectType.PARALYSIS, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "paralysis",
+          VitalPointEffectType.PARALYSIS,
+          currentTime + 5000
+        ),
       ];
 
       const modifiers = getEffectModifiers(player);
@@ -275,7 +367,7 @@ describe("PlayerEffectManager", () => {
     it("should apply pain effect (moderate impairment)", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
+      asMutable(player).statusEffects = [
         createMockEffect("pain", VitalPointEffectType.PAIN, currentTime + 5000),
       ];
 
@@ -290,8 +382,12 @@ describe("PlayerEffectManager", () => {
     it("should apply breathlessness effect (stamina focus)", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("breathless", VitalPointEffectType.BREATHLESSNESS, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "breathless",
+          VitalPointEffectType.BREATHLESSNESS,
+          currentTime + 5000
+        ),
       ];
 
       const modifiers = getEffectModifiers(player);
@@ -303,8 +399,12 @@ describe("PlayerEffectManager", () => {
     it("should apply nerve disruption effect (ki focus)", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("nerve", VitalPointEffectType.NERVE_DISRUPTION, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "nerve",
+          VitalPointEffectType.NERVE_DISRUPTION,
+          currentTime + 5000
+        ),
       ];
 
       const modifiers = getEffectModifiers(player);
@@ -317,9 +417,13 @@ describe("PlayerEffectManager", () => {
     it("should combine multiple effects multiplicatively", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
+      asMutable(player).statusEffects = [
         createMockEffect("pain", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("weakness", VitalPointEffectType.WEAKNESS, currentTime + 5000),
+        createMockEffect(
+          "weakness",
+          VitalPointEffectType.WEAKNESS,
+          currentTime + 5000
+        ),
       ];
 
       const modifiers = getEffectModifiers(player);
@@ -333,7 +437,7 @@ describe("PlayerEffectManager", () => {
     it("should return true if effect type is active", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
+      asMutable(player).statusEffects = [
         createMockEffect("pain", VitalPointEffectType.PAIN, currentTime + 5000),
       ];
 
@@ -343,7 +447,7 @@ describe("PlayerEffectManager", () => {
     it("should return false if effect type is not active", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
+      asMutable(player).statusEffects = [
         createMockEffect("pain", VitalPointEffectType.PAIN, currentTime + 5000),
       ];
 
@@ -355,9 +459,17 @@ describe("PlayerEffectManager", () => {
     it("should return all effects of specific type", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("pain1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("pain2", VitalPointEffectType.PAIN, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "pain1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "pain2",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
         createMockEffect("stun", VitalPointEffectType.STUN, currentTime + 5000),
       ];
 
@@ -387,10 +499,22 @@ describe("PlayerEffectManager", () => {
     it("should return correct count of active effects", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("effect2", VitalPointEffectType.STUN, currentTime + 5000),
-        createMockEffect("effect3", VitalPointEffectType.PARALYSIS, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect2",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect3",
+          VitalPointEffectType.PARALYSIS,
+          currentTime + 5000
+        ),
       ];
 
       expect(getActiveEffectCount(player)).toBe(3);
@@ -401,9 +525,17 @@ describe("PlayerEffectManager", () => {
     it("should return true if under MAX_CONCURRENT_EFFECTS", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = [
-        createMockEffect("effect1", VitalPointEffectType.PAIN, currentTime + 5000),
-        createMockEffect("effect2", VitalPointEffectType.STUN, currentTime + 5000),
+      asMutable(player).statusEffects = [
+        createMockEffect(
+          "effect1",
+          VitalPointEffectType.PAIN,
+          currentTime + 5000
+        ),
+        createMockEffect(
+          "effect2",
+          VitalPointEffectType.STUN,
+          currentTime + 5000
+        ),
       ];
 
       expect(canAddMoreEffects(player)).toBe(true);
@@ -412,8 +544,14 @@ describe("PlayerEffectManager", () => {
     it("should return false if at MAX_CONCURRENT_EFFECTS", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
-      player.statusEffects = Array.from({ length: MAX_CONCURRENT_EFFECTS }, (_, i) =>
-        createMockEffect(`effect${i}`, VitalPointEffectType.PAIN, currentTime + 5000)
+      asMutable(player).statusEffects = Array.from(
+        { length: MAX_CONCURRENT_EFFECTS },
+        (_, i) =>
+          createMockEffect(
+            `effect${i}`,
+            VitalPointEffectType.PAIN,
+            currentTime + 5000
+          )
       );
 
       expect(canAddMoreEffects(player)).toBe(false);

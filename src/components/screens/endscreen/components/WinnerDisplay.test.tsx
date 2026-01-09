@@ -1,9 +1,10 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { WinnerDisplay } from "./WinnerDisplay";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../../audio/AudioProvider";
+import { asMutable } from "../../../../test/test-utils";
 import { PlayerArchetype } from "../../../../types/common";
 import { createPlayerFromArchetype } from "../../../../utils/playerUtils";
+import { WinnerDisplay } from "./WinnerDisplay";
 
 // Mock AudioProvider
 vi.mock("../../../../audio/AudioProvider", () => ({
@@ -119,9 +120,10 @@ describe("WinnerDisplay", () => {
   it("should display combat stats summary", () => {
     const winner = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
     // Set some stats
-    winner.health = 75;
-    winner.ki = 60;
-    winner.stamina = 80;
+    const mutableWinner = asMutable(winner);
+    mutableWinner.health = 75;
+    mutableWinner.ki = 60;
+    mutableWinner.stamina = 80;
 
     const { getByTestId } = render(
       <AudioProvider>
@@ -200,7 +202,7 @@ describe("WinnerDisplay", () => {
 
       const archetypeCode = getByTestId("archetype-code");
       expect(archetypeCode).toHaveTextContent(archetype.toUpperCase());
-      
+
       // Clean up after each render
       unmount();
     });

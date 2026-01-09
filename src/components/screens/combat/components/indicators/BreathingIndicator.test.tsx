@@ -1,18 +1,21 @@
 /**
  * BreathingIndicator Component Tests
- * 
+ *
  * Tests component props, breathing disruption logic, and TypeScript interfaces.
  * Tests bilingual Korean-English labels, timer countdown, recovery states,
  * and mobile responsive behavior.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render } from "@testing-library/react";
-import { BreathingIndicator } from "./BreathingIndicator";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BreathingDisruptionLevel } from "../../../../../systems/breathing/BreathingDisruptionSystem";
 import { PlayerState } from "../../../../../systems/player";
-import { createMockPlayerState } from "../../../../../test/test-utils";
+import {
+  asMutable,
+  createMockPlayerState,
+} from "../../../../../test/test-utils";
 import { VitalPointEffectType } from "../../../../../types/common";
+import { BreathingIndicator } from "./BreathingIndicator";
 
 describe("BreathingIndicator", () => {
   let mockPlayer: PlayerState;
@@ -96,7 +99,7 @@ describe("BreathingIndicator", () => {
 
     it("should render when breathing disruption is active", () => {
       // Add breathing disruption effect to player
-      mockPlayer.statusEffects = [
+      asMutable(mockPlayer).statusEffects = [
         {
           id: "breathing_disruption",
           type: "breathing_disruption",
@@ -195,7 +198,7 @@ describe("BreathingIndicator", () => {
       const windedScale = 1.0;
       const gaspingScale = 1.1;
       const severelyWindedScale = 1.2;
-      
+
       expect(gaspingScale).toBeGreaterThan(windedScale);
       expect(severelyWindedScale).toBeGreaterThan(gaspingScale);
       expect(severelyWindedScale - windedScale).toBeCloseTo(0.2, 1);
@@ -205,7 +208,7 @@ describe("BreathingIndicator", () => {
       const windedOpacity = 0.7;
       const gaspingOpacity = 0.85;
       const severelyWindedOpacity = 1.0;
-      
+
       expect(gaspingOpacity).toBeGreaterThan(windedOpacity);
       expect(severelyWindedOpacity).toBeGreaterThan(gaspingOpacity);
       expect(severelyWindedOpacity).toBe(1.0); // Max opacity
