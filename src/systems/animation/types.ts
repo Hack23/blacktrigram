@@ -778,3 +778,135 @@ export const RECOVERY_TYPE_TO_ANIMATION: Record<RecoveryAnimationType, Animation
   roll_recovery: 'recovery_roll',
   defensive_getup: 'recovery_defensive',
 };
+
+/**
+ * Technique intensity levels for animation speed and impact
+ * 
+ * **Korean**: 기술 강도 레벨
+ * 
+ * Determines animation speed modifier and visual impact effects:
+ * - light: Fast techniques (1.2x speed), lower damage
+ * - medium: Normal techniques (1.0x speed), standard damage
+ * - heavy: Powerful techniques (0.8x speed), high damage
+ * - critical: Maximum power (0.6x speed), critical damage
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술강도
+ */
+export type TechniqueIntensity = 'light' | 'medium' | 'heavy' | 'critical';
+
+/**
+ * Technique type categories for animation selection
+ * 
+ * **Korean**: 기술 유형
+ * 
+ * Core technique categories that determine base animation style:
+ * - strike: Direct striking attacks (punches, palm strikes)
+ * - joint: Joint manipulation and locks
+ * - throw: Throwing and sweeping techniques
+ * - pressure_point: Precise vital point strikes
+ * 
+ * @public
+ * @category Combat
+ * @korean 기술타입
+ */
+export type TechniqueTypeCategory = 'strike' | 'joint' | 'throw' | 'pressure_point';
+
+/**
+ * Composite key for technique animation lookup
+ * 
+ * **Korean**: 기술 애니메이션 키
+ * 
+ * Combines stance, technique type, target body part, and intensity
+ * to uniquely identify the appropriate animation to play.
+ * 
+ * @example
+ * ```typescript
+ * const key: TechniqueAnimationKey = {
+ *   stance: 'geon',
+ *   techniqueType: 'strike',
+ *   bodyPart: 'head',
+ *   intensity: 'heavy',
+ * };
+ * ```
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술애니메이션키
+ */
+export interface TechniqueAnimationKey {
+  /** Trigram stance (8 stances) */
+  readonly stance: string;
+  /** Technique category */
+  readonly techniqueType: TechniqueTypeCategory;
+  /** Target body part */
+  readonly bodyPart: string;
+  /** Attack intensity level */
+  readonly intensity: TechniqueIntensity;
+}
+
+/**
+ * Complete technique animation configuration
+ * 
+ * **Korean**: 기술 애니메이션 설정
+ * 
+ * Defines all properties needed to execute a technique animation,
+ * including timing, impact frame, Korean terminology, and priority.
+ * 
+ * @example
+ * ```typescript
+ * const animation: TechniqueAnimation = {
+ *   animationState: 'attack',
+ *   duration: 0.8,
+ *   impactFrame: 12,
+ *   recoveryFrames: 15,
+ *   priority: 8,
+ *   koreanName: '건괘 두부 중타',
+ *   englishName: 'Heaven Stance Head Strike',
+ * };
+ * ```
+ * 
+ * @public
+ * @category Animation
+ * @korean 기술애니메이션
+ */
+export interface TechniqueAnimation {
+  /** Animation state to play */
+  readonly animationState: AnimationState;
+  /** Duration in seconds */
+  readonly duration: number;
+  /** Frame number where hit lands (0-indexed) */
+  readonly impactFrame: number;
+  /** Number of recovery frames after impact */
+  readonly recoveryFrames: number;
+  /** Animation priority for interrupt system */
+  readonly priority: AnimationPriority;
+  /** Korean technique name */
+  readonly koreanName: string;
+  /** English technique name */
+  readonly englishName: string;
+}
+
+/**
+ * Validation result for technique animation mapping completeness
+ * 
+ * **Korean**: 기술 애니메이션 매핑 검증 결과
+ * 
+ * Reports coverage percentage and lists any missing mappings
+ * that need to be filled in.
+ * 
+ * @public
+ * @category Animation
+ * @korean 매핑검증결과
+ */
+export interface MappingValidationResult {
+  /** Coverage percentage (0-100) */
+  readonly coverage: number;
+  /** Total combinations expected */
+  readonly total: number;
+  /** Number of mapped combinations */
+  readonly mapped: number;
+  /** List of missing combinations */
+  readonly missing: readonly TechniqueAnimationKey[];
+}
