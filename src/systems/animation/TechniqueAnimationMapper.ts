@@ -262,14 +262,6 @@ export function getAdjustedAnimationDuration(
   return Math.round(baseDurationMs / speedModifier);
 }
 
-export default {
-  getAnimationNameForType,
-  hasAnimationForType,
-  determineAnimationTypeForTechnique,
-  calculateSpeedModifierForDamage,
-  getAdjustedAnimationDuration,
-};
-
 /**
  * Comprehensive Technique Animation Mapping System
  * 
