@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">94.44% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>30/32</span>
+                <span class='fraction'>34/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.92% </span>
+                <span class="strong">78.72% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/41</span>
+                <span class='fraction'>37/47</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.77% </span>
+                <span class="strong">97.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/31</span>
+                <span class='fraction'>34/35</span>
             </div>
         
             
@@ -531,7 +531,20 @@
 <a name='L466'></a><a href='#L466'>466</a>
 <a name='L467'></a><a href='#L467'>467</a>
 <a name='L468'></a><a href='#L468'>468</a>
-<a name='L469'></a><a href='#L469'>469</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a>
+<a name='L477'></a><a href='#L477'>477</a>
+<a name='L478'></a><a href='#L478'>478</a>
+<a name='L479'></a><a href='#L479'>479</a>
+<a name='L480'></a><a href='#L480'>480</a>
+<a name='L481'></a><a href='#L481'>481</a>
+<a name='L482'></a><a href='#L482'>482</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -773,14 +786,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3976x</span>
 <span class="cline-any cline-yes">1988x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1988x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1988x</span>
 <span class="cline-any cline-yes">1988x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1917x</span>
 <span class="cline-any cline-yes">1917x</span>
+<span class="cline-any cline-yes">1917x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1917x</span>
+<span class="cline-any cline-yes">1917x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1917x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1917x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1241,16 +1267,29 @@ const SingleBone: React.FC&lt;{
   // Calculate bone direction and length
   const boneTransform = useMemo(() =&gt; {
     const length = bone.length;
-    const direction = new THREE.Vector3(1, 0, 0); // Default direction along X-axis
+    // CapsuleGeometry in Three.js is aligned along the Y-axis by default (0, 1, 0)
+    const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
 &nbsp;
     // Calculate rotation to align with bone direction if parent exists
     let rotation = new THREE.Euler(0, 0, 0);
     if (bone.parent) {
-      // Point towards local position
-      const target = bone.position.clone().normalize();
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (target.length() &gt; 0.001) {
+      // Use this bone's local position (parent → child vector) and normalize to get the direction
+      // Extract coordinates and manually normalize to avoid issues with Vector3 method availability
+      const x = bone.position.x ?? <span class="branch-1 cbranch-no" title="branch not covered" >0;</span>
+      const y = bone.position.y ?? <span class="branch-1 cbranch-no" title="branch not covered" >0;</span>
+      const z = bone.position.z ?? <span class="branch-1 cbranch-no" title="branch not covered" >0;</span>
+      
+      const positionLength = Math.sqrt(x * x + y * y + z * z);
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (positionLength &gt; 0.001) {
+        // Manually normalize to get a stable direction vector
+        const target = new THREE.Vector3(
+          x / positionLength,
+          y / positionLength,
+          z / positionLength
+        );
+        // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
-          direction,
+          capsuleDefaultDirection,
           target
         );
         rotation = new THREE.Euler().setFromQuaternion(quaternion);
@@ -1273,7 +1312,7 @@ const SingleBone: React.FC&lt;{
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
-            boneTransform.rotation.z + Math.PI / 2,
+            boneTransform.rotation.z,
           ]}
           castShadow
           receiveShadow
@@ -1293,7 +1332,7 @@ const SingleBone: React.FC&lt;{
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
-            boneTransform.rotation.z + Math.PI / 2,
+            boneTransform.rotation.z,
           ]}
         &gt;
           &lt;capsuleGeometry
@@ -1474,7 +1513,7 @@ export default BoneRenderer;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-09T11:53:21.384Z
+                at 2026-01-09T21:18:27.776Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

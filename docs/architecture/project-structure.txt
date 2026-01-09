@@ -598,6 +598,10 @@ src/components/screens/training/components/AnatomyControlsHTML.tsx
 src/components/screens/training/components/AnatomyOverlay3D.test.tsx
 src/components/screens/training/components/AnatomyOverlay3D.tsx
 src/components/screens/training/components/DamageNumber3D.tsx
+src/components/screens/training/components/FootPlacementMarkers3D.test.tsx
+src/components/screens/training/components/FootPlacementMarkers3D.tsx
+src/components/screens/training/components/FootworkDrillsHTML.test.tsx
+src/components/screens/training/components/FootworkDrillsHTML.tsx
 src/components/screens/training/components/HitFeedbackEffect3D.tsx
 src/components/screens/training/components/TrainingAICharacter3D.test.tsx
 src/components/screens/training/components/TrainingAICharacter3D.tsx
@@ -810,6 +814,7 @@ src/systems/animation/HandPoses.ts
 src/systems/animation/HeadMovements.test.ts
 src/systems/animation/HeadMovements.ts
 src/systems/animation/INTEGRATION_EXAMPLES.md
+src/systems/animation/KeyframeInterpolation.bezier.test.ts
 src/systems/animation/KeyframeInterpolation.ts
 src/systems/animation/MuscleActivation.test.ts
 src/systems/animation/MuscleActivation.ts
