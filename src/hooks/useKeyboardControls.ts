@@ -345,8 +345,28 @@ export function useKeyboardControls({
           case "move_down":
           case "move_left":
           case "move_right":
-            // Check for Shift+Ctrl modifier for advanced footwork patterns (MUST be checked before Ctrl alone)
-            if (e.shiftKey && e.ctrlKey) {
+            // Check for Alt+A/D modifier for slide left/right (MUST be checked first)
+            if (e.altKey) {
+              // Alt modifier for slide left/right footwork patterns
+              let slideFootwork: string | null = null;
+              
+              if (action === "move_left") {
+                // Alt+A: Slide left (미끄럼보 좌)
+                slideFootwork = "footwork_slide_left";
+              } else if (action === "move_right") {
+                // Alt+D: Slide right (미끄럼보 우)
+                slideFootwork = "footwork_slide_right";
+              }
+              
+              if (slideFootwork) {
+                onAction(slideFootwork);
+                addToQueue(
+                  FOOTWORK_DISPLAY_TERMS[slideFootwork] ?? "Slide Footwork",
+                  `Alt+${e.key}`
+                );
+                if (playSFX) playSFX("footstep");
+              }
+            } else if (e.shiftKey && e.ctrlKey) {
               // Shift+Ctrl modifier for advanced footwork patterns
               let advancedFootwork: string | null = null;
               
