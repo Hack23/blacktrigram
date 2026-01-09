@@ -42,11 +42,25 @@ The footwork animation system adds 4 specialized Korean martial arts footwork pa
 
 ### Keyboard Controls
 
-**New Ctrl+WASD controls for footwork:**
+**Complete Footwork Control System:**
+
+**Circular Steps (원형보 - Lateral movement maintaining guard):**
 - `Ctrl+A`: Circular step left (원형보 좌)
 - `Ctrl+D`: Circular step right (원형보 우)
+
+**Slide Steps (미끄럼보 - Both feet move together):**
 - `Ctrl+W`: Slide forward (미끄럼보 전)
 - `Ctrl+S`: Slide back (미끄럼보 후)
+- `Alt+A`: Slide left (미끄럼보 좌)
+- `Alt+D`: Slide right (미끄럼보 우)
+
+**Pivot Rotations (축족회전 - 90° rotation on planted foot):**
+- `Shift+Ctrl+A`: Pivot left (축족회전 좌)
+- `Shift+Ctrl+D`: Pivot right (축족회전 우)
+
+**Shuffle Step (섞음보 - Quick 15cm micro-adjustment):**
+- `Shift+Ctrl+W`: Shuffle step (섞음보)
+- `Shift+Ctrl+S`: Shuffle step (섞음보)
 
 **Existing controls unchanged:**
 - `Shift+WASD`: Tactical steps (8 directions, 30cm)
@@ -156,39 +170,60 @@ Korean martial arts (태권도, 택견, 합기도) emphasize precise footwork (�
 
 - [x] Type definitions added
 - [x] Animation configurations created
-- [x] Keyboard controls implemented (Ctrl+A/D, Ctrl+W/S)
+- [x] Keyboard controls implemented (ALL 9 footwork patterns)
+  - [x] Circular left/right (Ctrl+A/D)
+  - [x] Slide forward/back (Ctrl+W/S)
+  - [x] Slide left/right (Alt+A/D) ✨ NEW
+  - [x] Pivot left/right (Shift+Ctrl+A/D) ✨ NEW
+  - [x] Shuffle step (Shift+Ctrl+W/S) ✨ NEW
 - [x] Test coverage achieved
 - [x] Visual keyframe data (ALL skeletal animations implemented)
 - [x] 3D skeletal animation integration (SkeletalPlayer3D updated)
 - [x] All 9 footwork skeletal animations complete
-- [ ] Additional keyboard controls (pivot, shuffle, slide L/R)
+- [x] Training mode footwork exercises ✨ COMPLETE
+  - [x] FootworkDrillsHTML component with 7 drill types
+  - [x] FootPlacementMarkers3D for 3D visual guidance
+  - [x] Training state with footwork drill support
+  - [x] Integration into TrainingScreen3D
+- [x] Visual foot placement indicators ✨ COMPLETE
+- [ ] Movement trail effects (future enhancement)
 - [ ] Body facing system integration (future work)
-- [ ] Training mode footwork exercises (future enhancement)
 
 ## Implementation Status
 
 ### Completed ✅
 1. **Type System**: FootworkPattern type and 9 AnimationState values
 2. **Animation Configs**: All 4 patterns configured with proper frame counts and priorities
-3. **Keyboard Controls**: Ctrl+A/D (circular), Ctrl+W/S (slide)
+3. **Keyboard Controls**: ALL 9 footwork patterns accessible ✨ COMPLETE
+   - Circular left/right (Ctrl+A/D) ✅
+   - Slide forward/back (Ctrl+W/S) ✅
+   - Slide left/right (Alt+A/D) ✅ NEW
+   - Pivot left/right (Shift+Ctrl+A/D) ✅ NEW
+   - Shuffle step (Shift+Ctrl+W/S) ✅ NEW
 4. **Skeletal Animations**: ALL PATTERNS FULLY IMPLEMENTED
    - Circular left/right with detailed keyframes ✅
    - Slide forward/back with detailed keyframes ✅
-   - Slide left/right with detailed keyframes ✅ NEW
-   - Pivot left/right with 90° rotation keyframes ✅ NEW
-   - Shuffle with micro-adjustment keyframes ✅ NEW
+   - Slide left/right with detailed keyframes ✅
+   - Pivot left/right with 90° rotation keyframes ✅
+   - Shuffle with micro-adjustment keyframes ✅
 5. **3D Integration**: SkeletalPlayer3D.tsx handles all footwork animations
 6. **Test Coverage**: 26 tests covering all patterns and integration
+7. **Training Mode Integration**: ✨ COMPLETE
+   - FootworkDrillsHTML component with 7 drill types ✅
+   - FootPlacementMarkers3D for 3D visual guidance ✅
+   - Training state with footwork drill support ✅
+   - Footwork training mode in mode selector ✅
+   - Real-time 3D foot placement markers ✅
 
-### Ready for Control Binding 🎮
-All footwork patterns now have complete skeletal animations and are ready for keyboard bindings:
-1. **Pivot Rotations**: Full skeletal animations with 90° rotation - awaiting keybinding
-2. **Shuffle Step**: Full skeletal animations with 15cm micro-adjustment - awaiting keybinding
-3. **Slide Left/Right**: Full skeletal animations with lateral movement - awaiting keybinding
+### In Progress 🚧
+1. **Visual Enhancements**: Movement trail effects and ground contact particles
+2. **Performance Testing**: 60fps validation during complex footwork sequences
 
 ### Future Enhancements ⏭️
-1. **Body Facing Integration**: Future work for maintaining facing direction during circular steps
-2. **Training Mode**: Footwork exercises and drills
+1. **Body Facing Integration**: Maintaining facing direction during circular steps
+2. **Stance-Specific Footwork**: Trigram stance synergy with footwork patterns
+3. **Footwork Combinations**: Circular → Pivot chains and advanced sequences
+4. **AI Training Partner**: Footwork drills with AI opponent for reactive training
 
 ## Future Enhancements
 

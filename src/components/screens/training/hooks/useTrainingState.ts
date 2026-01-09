@@ -11,9 +11,10 @@ import { useCallback, useReducer } from "react";
 // Re-export types from components for consistency
 import type { AnatomyLayer } from "../components/AnatomyOverlay3D";
 import type { TrainingMode } from "../components/TrainingModeSelectorHTML";
+import type { FootworkDrill } from "../components/FootworkDrillsHTML";
 
 // Re-export for convenience
-export type { AnatomyLayer, TrainingMode };
+export type { AnatomyLayer, TrainingMode, FootworkDrill };
 
 /**
  * Training statistics
@@ -60,6 +61,10 @@ export interface TrainingScreenState {
   readonly currentStanceIndex: number;
   readonly stanceWheelExpanded: boolean;
   readonly visibleAnatomyLayers: AnatomyLayer[];
+  // Footwork drill state
+  readonly footworkDrillActive: boolean;
+  readonly footworkDrillType: FootworkDrill;
+  readonly footworkDrillStep: number;
 }
 
 /**
@@ -88,7 +93,11 @@ type TrainingAction =
   | { type: "TOGGLE_STANCE_WHEEL" }
   | { type: "UPDATE_BEST_COMBO"; payload: number }
   | { type: "TOGGLE_ANATOMY_LAYER"; payload: AnatomyLayer }
-  | { type: "SET_ANATOMY_LAYERS"; payload: AnatomyLayer[] };
+  | { type: "SET_ANATOMY_LAYERS"; payload: AnatomyLayer[] }
+  | { type: "START_FOOTWORK_DRILL"; payload: FootworkDrill }
+  | { type: "STOP_FOOTWORK_DRILL" }
+  | { type: "ADVANCE_FOOTWORK_STEP" }
+  | { type: "RESET_FOOTWORK_DRILL" };
 
 /**
  * Initial training state
@@ -116,6 +125,9 @@ const initialState: TrainingScreenState = {
   currentStanceIndex: 0,
   stanceWheelExpanded: false,
   visibleAnatomyLayers: [],
+  footworkDrillActive: false,
+  footworkDrillType: "circular_left",
+  footworkDrillStep: 0,
 };
 
 /**
@@ -270,6 +282,37 @@ function trainingReducer(
     case "SET_ANATOMY_LAYERS":
       return { ...state, visibleAnatomyLayers: action.payload };
 
+    case "START_FOOTWORK_DRILL":
+      return {
+        ...state,
+        footworkDrillActive: true,
+        footworkDrillType: action.payload,
+        footworkDrillStep: 0,
+        feedback: "보법 훈련 시작! | Footwork drill started!",
+        showFeedback: true,
+      };
+
+    case "STOP_FOOTWORK_DRILL":
+      return {
+        ...state,
+        footworkDrillActive: false,
+        footworkDrillStep: 0,
+        feedback: "보법 훈련 종료! | Footwork drill stopped!",
+        showFeedback: true,
+      };
+
+    case "ADVANCE_FOOTWORK_STEP":
+      return {
+        ...state,
+        footworkDrillStep: state.footworkDrillStep + 1,
+      };
+
+    case "RESET_FOOTWORK_DRILL":
+      return {
+        ...state,
+        footworkDrillStep: 0,
+      };
+
     default:
       return state;
   }
@@ -298,8 +341,13 @@ export interface TrainingActions {
   readonly registerMiss: () => void;
   readonly setStanceIndex: (index: number) => void;
   readonly toggleStanceWheel: () => void;
+  readonly updateBestCombo: (combo: number) => void;
   readonly toggleAnatomyLayer: (layer: AnatomyLayer) => void;
   readonly setAnatomyLayers: (layers: AnatomyLayer[]) => void;
+  readonly startFootworkDrill: (drillType: FootworkDrill) => void;
+  readonly stopFootworkDrill: () => void;
+  readonly advanceFootworkStep: () => void;
+  readonly resetFootworkDrill: () => void;
 }
 
 /**
@@ -373,6 +421,10 @@ export function useTrainingState(): UseTrainingStateReturn {
       () => dispatch({ type: "TOGGLE_STANCE_WHEEL" }),
       []
     ),
+    updateBestCombo: useCallback(
+      (combo: number) => dispatch({ type: "UPDATE_BEST_COMBO", payload: combo }),
+      []
+    ),
     toggleAnatomyLayer: useCallback(
       (layer: AnatomyLayer) =>
         dispatch({ type: "TOGGLE_ANATOMY_LAYER", payload: layer }),
@@ -383,6 +435,21 @@ export function useTrainingState(): UseTrainingStateReturn {
         dispatch({ type: "SET_ANATOMY_LAYERS", payload: layers }),
       []
     ),
+    startFootworkDrill: useCallback(
+      (drillType: FootworkDrill) => {
+        dispatch({ type: "START_FOOTWORK_DRILL", payload: drillType });
+      },
+      []
+    ),
+    stopFootworkDrill: useCallback(() => {
+      dispatch({ type: "STOP_FOOTWORK_DRILL" });
+    }, []),
+    advanceFootworkStep: useCallback(() => {
+      dispatch({ type: "ADVANCE_FOOTWORK_STEP" });
+    }, []),
+    resetFootworkDrill: useCallback(() => {
+      dispatch({ type: "RESET_FOOTWORK_DRILL" });
+    }, []),
   };
 
   return { state, actions };
