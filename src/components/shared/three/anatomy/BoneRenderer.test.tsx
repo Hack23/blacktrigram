@@ -285,7 +285,7 @@ describe("BoneRenderer", () => {
         
         // The rotation should be approximately PI radians (180 degrees) around Z-axis
         // to flip the capsule from pointing up to pointing down
-        expect(Math.abs(rotation.z)).toBeGreaterThan(3.0); // Close to PI (3.14159)
+        expect(Math.abs(rotation.z)).toBeCloseTo(Math.PI, 1);
       }
     });
 
@@ -314,7 +314,7 @@ describe("BoneRenderer", () => {
         
         // The rotation should be approximately PI/2 (90 degrees) around Z-axis
         // to rotate the capsule from pointing up to pointing left
-        expect(Math.abs(rotation.z)).toBeGreaterThan(1.4); // Close to PI/2 (1.5708)
+        expect(Math.abs(rotation.z)).toBeCloseTo(Math.PI / 2, 1);
       }
     });
 

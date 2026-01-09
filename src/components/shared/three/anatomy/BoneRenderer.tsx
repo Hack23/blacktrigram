@@ -246,9 +246,11 @@ const SingleBone: React.FC<{
     // Calculate rotation to align with bone direction if parent exists
     let rotation = new THREE.Euler(0, 0, 0);
     if (bone.parent) {
-      // Get the direction from parent bone to this bone (normalized)
-      const target = bone.position.clone().normalize();
-      if (target.length() > 0.001) {
+      // Use this bone's local position (parent → child vector) and normalize to get the direction
+      const positionLength = bone.position.length();
+      if (positionLength > 0.001) {
+        // Normalize position to get a stable direction vector
+        const target = bone.position.clone().divideScalar(positionLength);
         // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
