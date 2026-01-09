@@ -214,3 +214,14 @@ export {
   TURN_THRESHOLD_ANGLE,
   TURN_ANIMATION_DURATION,
 } from "./BodyFacingSystem";
+
+// Enhanced technique animation mapper
+export {
+  TechniqueAnimationMapper,
+  techniqueAnimationMapper,
+  getAnimationNameForType,
+  hasAnimationForType,
+  determineAnimationTypeForTechnique,
+  calculateSpeedModifierForDamage,
+  getAdjustedAnimationDuration,
+} from "./TechniqueAnimationMapper";
