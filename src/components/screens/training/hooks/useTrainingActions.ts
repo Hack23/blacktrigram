@@ -185,7 +185,7 @@ export function useTrainingActions(
       actions.setStanceIndex(stanceIndex);
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
       if (stance) {
-        playerAnimation.transitionTo("stance_change");
+        playerAnimation.transitionTo(AnimationState.STANCE_CHANGE);
         onPlayerUpdate({ currentStance: stance });
         audio.playSFX("stance_change");
       }
@@ -201,7 +201,7 @@ export function useTrainingActions(
       vitalPoint: state.selectedVitalPoint ?? "generic",
     };
     // Trigger attack animation - this will fire onFrame event at frame 6
-    playerAnimation.transitionTo("attack");
+    playerAnimation.transitionTo(AnimationState.ATTACK);
 
     // Play attack sound
     audio.playSFX("whoosh");

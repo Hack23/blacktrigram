@@ -10,95 +10,406 @@
  */
 
 /**
- * Animation states for player characters
+ * Animation states for player characters (애니메이션 상태)
+ * 
+ * Enum-based animation state system for type safety and IDE autocomplete.
+ * Each state includes Korean terminology and timing specifications.
  * 
  * Based on game-design.md specifications:
- * - idle: Default state, breathing animation
- * - walk: Movement animation (6 frames)
- * - run: Fast movement animation
- * - attack: Attack animation (12 frames per game-design.md)
- * - defend: Block/defense animation (4 frames per game-design.md)
- * - hit: Taking damage animation
- * - stance_change: Trigram stance transition (600ms)
- * - stance_side_switch: Left↔right stance mirror (400ms at 60fps = 24 frames)
- * - ko: Knockout/death animation
- * - stance_guard_{stance}: Stance-specific idle guard animations (4-6 frames each)
- * - step_{direction}: Tactical step movements (18 frames, 300ms, 30cm distance)
- * - fall_forward: Forward fall animation (24 frames, 400ms)
- * - fall_backward: Backward fall animation (30 frames, 500ms)
- * - fall_side_left: Left side fall animation (27 frames, 450ms)
- * - fall_side_right: Right side fall animation (27 frames, 450ms)
- * - ground_prone: Face-down ground position (4 frame breathing loop)
- * - ground_supine: Face-up ground position (4 frame breathing loop)
- * - ground_side_left: Left side ground position (4 frame breathing loop)
- * - ground_side_right: Right side ground position (4 frame breathing loop)
- * - turn_left: 180° turn left animation (12 frames, 200ms)
- * - turn_right: 180° turn right animation (12 frames, 200ms)
- * - footwork_circular_{left|right}: Circular step maintaining guard (18 frames, 300ms, 30cm)
- * - footwork_pivot_{left|right}: Pivot rotation on planted foot (15 frames, 250ms, 90°)
- * - footwork_slide_{forward|back|left|right}: Both feet slide together (12 frames, 200ms, 30cm)
- * - footwork_shuffle: Quick micro-adjustment (6 frames, 100ms, 15cm)
- * - recovery_prone_standup: Stand up from prone position (30 frames, 500ms)
- * - recovery_supine_standup: Stand up from supine position (36 frames, 600ms)
- * - recovery_roll: Roll recovery to standing (24 frames, 400ms, costs 20 stamina)
- * - recovery_defensive: Defensive getup with guard (42 frames, 700ms, 50% damage reduction)
+ * - Attack: 12 frames (200ms at 60fps)
+ * - Block: 4 frames (67ms at 60fps)
+ * - Walk: 6 frames (100ms at 60fps)
+ * - Stance transitions: 36 frames (600ms at 60fps)
+ * - Tactical steps: 18 frames (300ms at 60fps, 30cm distance)
  * 
  * @public
  * @korean 애니메이션상태
  */
-export type AnimationState =
-  | "idle"
-  | "walk"
-  | "run"
-  | "attack"
-  | "defend"
-  | "defend_block_success"
-  | "defend_parry"
-  | "defend_guard_break"
-  | "defend_recovery"
-  | "hit"
-  | "stance_change"
-  | "stance_side_switch"
-  | "ko"
-  | "stance_guard_geon"
-  | "stance_guard_tae"
-  | "stance_guard_li"
-  | "stance_guard_jin"
-  | "stance_guard_son"
-  | "stance_guard_gam"
-  | "stance_guard_gan"
-  | "stance_guard_gon"
-  | "step_forward"
-  | "step_back"
-  | "step_left"
-  | "step_right"
-  | "step_forward_left"
-  | "step_forward_right"
-  | "step_back_left"
-  | "step_back_right"
-  | "footwork_circular_left"
-  | "footwork_circular_right"
-  | "footwork_pivot_left"
-  | "footwork_pivot_right"
-  | "footwork_slide_forward"
-  | "footwork_slide_back"
-  | "footwork_slide_left"
-  | "footwork_slide_right"
-  | "footwork_shuffle"
-  | "fall_forward"
-  | "fall_backward"
-  | "fall_side_left"
-  | "fall_side_right"
-  | "ground_prone"
-  | "ground_supine"
-  | "ground_side_left"
-  | "ground_side_right"
-  | "turn_left"
-  | "turn_right"
-  | "recovery_prone_standup"
-  | "recovery_supine_standup"
-  | "recovery_roll"
-  | "recovery_defensive";
+export enum AnimationState {
+  // ===== Basic Movement States (기본 이동 상태) =====
+  
+  /** 
+   * Idle stance - Default breathing animation
+   * Korean: 대기 (daegi) - Standing ready
+   * Duration: 4 frames (67ms)
+   */
+  IDLE = "idle",
+  
+  /** 
+   * Walk - Normal walking movement
+   * Korean: 보행 (bohaeng) - Walking
+   * Duration: 6 frames (100ms)
+   */
+  WALK = "walk",
+  
+  /** 
+   * Run - Fast movement animation
+   * Korean: 달리기 (dalligi) - Running
+   * Duration: 8 frames (133ms)
+   */
+  RUN = "run",
+  
+  // ===== Combat Actions (전투 행동) =====
+  
+  /** 
+   * Attack - Generic attack animation
+   * Korean: 공격 (gonggyeok) - Attack
+   * Duration: 12 frames (200ms)
+   */
+  ATTACK = "attack",
+  
+  /** 
+   * Defend - Basic block/defense
+   * Korean: 방어 (bangeo) - Defense
+   * Duration: 4 frames (67ms)
+   */
+  DEFEND = "defend",
+  
+  /** 
+   * Defend Block Success - Successful block, absorb impact
+   * Korean: 막기 (makgi) - Block successfully
+   * Duration: 8 frames (133ms)
+   */
+  DEFEND_BLOCK_SUCCESS = "defend_block_success",
+  
+  /** 
+   * Defend Parry - Parry deflection, redirect attack
+   * Korean: 받아넘기기 (badaneumgigi) - Parry deflect
+   * Duration: 10 frames (167ms)
+   */
+  DEFEND_PARRY = "defend_parry",
+  
+  /** 
+   * Defend Guard Break - Guard break, defensive stance destroyed
+   * Korean: 방어붕괴 (bangeo bunggoe) - Guard broken
+   * Duration: 15 frames (250ms)
+   */
+  DEFEND_GUARD_BREAK = "defend_guard_break",
+  
+  /** 
+   * Defend Recovery - Guard recovery, restore defensive posture
+   * Korean: 방어복구 (bangeo bokgu) - Guard recovery
+   * Duration: 12 frames (200ms)
+   */
+  DEFEND_RECOVERY = "defend_recovery",
+  
+  /** 
+   * Hit - Taking damage animation
+   * Korean: 피격 (pigyeok) - Being hit
+   * Duration: 4 frames (67ms)
+   */
+  HIT = "hit",
+  
+  /** 
+   * KO - Knockout/death animation
+   * Korean: 기절 (gijeol) - Knockout
+   * Duration: 30 frames (500ms)
+   */
+  KO = "ko",
+  
+  // ===== Stance Transitions (자세 전환) =====
+  
+  /** 
+   * Stance Change - Trigram stance transition
+   * Korean: 자세변경 (jaseybyeongyeong) - Stance change
+   * Duration: 36 frames (600ms)
+   */
+  STANCE_CHANGE = "stance_change",
+  
+  /** 
+   * Stance Side Switch - Left↔right stance mirror
+   * Korean: 좌우전환 (jwaujeonhwan) - Left-right switch
+   * Duration: 24 frames (400ms)
+   */
+  STANCE_SIDE_SWITCH = "stance_side_switch",
+  
+  // ===== Stance Guard Animations (팔괘 방어 자세) =====
+  
+  /** 
+   * Stance Guard Geon - ☰ Heaven stance guard
+   * Korean: 건괘수비 (geon-goe subi) - Heaven guard
+   * Duration: 6 frames (breathing loop)
+   */
+  STANCE_GUARD_GEON = "stance_guard_geon",
+  
+  /** 
+   * Stance Guard Tae - ☱ Lake stance guard
+   * Korean: 태괘수비 (tae-goe subi) - Lake guard
+   * Duration: 6 frames (breathing loop)
+   */
+  STANCE_GUARD_TAE = "stance_guard_tae",
+  
+  /** 
+   * Stance Guard Li - ☲ Fire stance guard
+   * Korean: 리괘수비 (li-goe subi) - Fire guard
+   * Duration: 4 frames (breathing loop)
+   */
+  STANCE_GUARD_LI = "stance_guard_li",
+  
+  /** 
+   * Stance Guard Jin - ☳ Thunder stance guard
+   * Korean: 진괘수비 (jin-goe subi) - Thunder guard
+   * Duration: 5 frames (breathing loop)
+   */
+  STANCE_GUARD_JIN = "stance_guard_jin",
+  
+  /** 
+   * Stance Guard Son - ☴ Wind stance guard
+   * Korean: 손괘수비 (son-goe subi) - Wind guard
+   * Duration: 6 frames (breathing loop)
+   */
+  STANCE_GUARD_SON = "stance_guard_son",
+  
+  /** 
+   * Stance Guard Gam - ☵ Water stance guard
+   * Korean: 감괘수비 (gam-goe subi) - Water guard
+   * Duration: 6 frames (breathing loop)
+   */
+  STANCE_GUARD_GAM = "stance_guard_gam",
+  
+  /** 
+   * Stance Guard Gan - ☶ Mountain stance guard
+   * Korean: 간괘수비 (gan-goe subi) - Mountain guard
+   * Duration: 4 frames (breathing loop)
+   */
+  STANCE_GUARD_GAN = "stance_guard_gan",
+  
+  /** 
+   * Stance Guard Gon - ☷ Earth stance guard
+   * Korean: 곤괘수비 (gon-goe subi) - Earth guard
+   * Duration: 5 frames (breathing loop)
+   */
+  STANCE_GUARD_GON = "stance_guard_gon",
+  
+  // ===== Tactical Step Movements (전술적 발걸음) =====
+  
+  /** 
+   * Step Forward - Forward tactical step
+   * Korean: 전진보법 (jeonjin bobeop) - Forward step
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_FORWARD = "step_forward",
+  
+  /** 
+   * Step Back - Retreat tactical step
+   * Korean: 후퇴보법 (hutoe bobeop) - Retreat step
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_BACK = "step_back",
+  
+  /** 
+   * Step Left - Left side tactical step
+   * Korean: 좌측면보법 (jwacheuk myeon bobeop) - Left side step
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_LEFT = "step_left",
+  
+  /** 
+   * Step Right - Right side tactical step
+   * Korean: 우측면보법 (ucheuk myeon bobeop) - Right side step
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_RIGHT = "step_right",
+  
+  /** 
+   * Step Forward Left - Forward-left diagonal step
+   * Korean: 전좌측보법 (jeon jwacheuk bobeop) - Forward-left diagonal
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_FORWARD_LEFT = "step_forward_left",
+  
+  /** 
+   * Step Forward Right - Forward-right diagonal step
+   * Korean: 전우측보법 (jeon ucheuk bobeop) - Forward-right diagonal
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_FORWARD_RIGHT = "step_forward_right",
+  
+  /** 
+   * Step Back Left - Back-left diagonal step
+   * Korean: 후좌측보법 (hu jwacheuk bobeop) - Back-left diagonal
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_BACK_LEFT = "step_back_left",
+  
+  /** 
+   * Step Back Right - Back-right diagonal step
+   * Korean: 후우측보법 (hu ucheuk bobeop) - Back-right diagonal
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  STEP_BACK_RIGHT = "step_back_right",
+  
+  // ===== Footwork Patterns (보법) =====
+  
+  /** 
+   * Footwork Circular Left - Circular step maintaining guard (left)
+   * Korean: 원형보 좌 (wonhyeongbo jwa) - Circular step left
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  FOOTWORK_CIRCULAR_LEFT = "footwork_circular_left",
+  
+  /** 
+   * Footwork Circular Right - Circular step maintaining guard (right)
+   * Korean: 원형보 우 (wonhyeongbo u) - Circular step right
+   * Duration: 18 frames (300ms), Distance: 30cm
+   */
+  FOOTWORK_CIRCULAR_RIGHT = "footwork_circular_right",
+  
+  /** 
+   * Footwork Pivot Left - Pivot rotation on planted foot (left)
+   * Korean: 축족회전 좌 (chukjok hoejeon jwa) - Pivot rotation left
+   * Duration: 15 frames (250ms), Rotation: 90°
+   */
+  FOOTWORK_PIVOT_LEFT = "footwork_pivot_left",
+  
+  /** 
+   * Footwork Pivot Right - Pivot rotation on planted foot (right)
+   * Korean: 축족회전 우 (chukjok hoejeon u) - Pivot rotation right
+   * Duration: 15 frames (250ms), Rotation: 90°
+   */
+  FOOTWORK_PIVOT_RIGHT = "footwork_pivot_right",
+  
+  /** 
+   * Footwork Slide Forward - Both feet slide together (forward)
+   * Korean: 미끄럼보 전 (mikkeureombo jeon) - Sliding step forward
+   * Duration: 12 frames (200ms), Distance: 30cm
+   */
+  FOOTWORK_SLIDE_FORWARD = "footwork_slide_forward",
+  
+  /** 
+   * Footwork Slide Back - Both feet slide together (back)
+   * Korean: 미끄럼보 후 (mikkeureombo hu) - Sliding step back
+   * Duration: 12 frames (200ms), Distance: 30cm
+   */
+  FOOTWORK_SLIDE_BACK = "footwork_slide_back",
+  
+  /** 
+   * Footwork Slide Left - Both feet slide together (left)
+   * Korean: 미끄럼보 좌 (mikkeureombo jwa) - Sliding step left
+   * Duration: 12 frames (200ms), Distance: 30cm
+   */
+  FOOTWORK_SLIDE_LEFT = "footwork_slide_left",
+  
+  /** 
+   * Footwork Slide Right - Both feet slide together (right)
+   * Korean: 미끄럼보 우 (mikkeureombo u) - Sliding step right
+   * Duration: 12 frames (200ms), Distance: 30cm
+   */
+  FOOTWORK_SLIDE_RIGHT = "footwork_slide_right",
+  
+  /** 
+   * Footwork Shuffle - Quick micro-adjustment
+   * Korean: 섞음보 (seokkeumbo) - Shuffle step
+   * Duration: 6 frames (100ms), Distance: 15cm
+   */
+  FOOTWORK_SHUFFLE = "footwork_shuffle",
+  
+  // ===== Fall Animations (낙법 애니메이션) =====
+  
+  /** 
+   * Fall Forward - Forward fall animation
+   * Korean: 전방낙법 (jeonbang nakbeop) - Forward falling technique
+   * Duration: 24 frames (400ms)
+   */
+  FALL_FORWARD = "fall_forward",
+  
+  /** 
+   * Fall Backward - Backward fall animation
+   * Korean: 후방낙법 (hubang nakbeop) - Backward falling technique
+   * Duration: 30 frames (500ms)
+   */
+  FALL_BACKWARD = "fall_backward",
+  
+  /** 
+   * Fall Side Left - Left side fall animation
+   * Korean: 좌측낙법 (jwacheuk nakbeop) - Left side falling technique
+   * Duration: 27 frames (450ms)
+   */
+  FALL_SIDE_LEFT = "fall_side_left",
+  
+  /** 
+   * Fall Side Right - Right side fall animation
+   * Korean: 우측낙법 (ucheuk nakbeop) - Right side falling technique
+   * Duration: 27 frames (450ms)
+   */
+  FALL_SIDE_RIGHT = "fall_side_right",
+  
+  // ===== Ground States (지면 자세) =====
+  
+  /** 
+   * Ground Prone - Face-down ground position
+   * Korean: 엎드림 (eopdeurim) - Face down position
+   * Duration: 4 frames (breathing loop)
+   */
+  GROUND_PRONE = "ground_prone",
+  
+  /** 
+   * Ground Supine - Face-up ground position
+   * Korean: 누움 (nuum) - Face up position
+   * Duration: 4 frames (breathing loop)
+   */
+  GROUND_SUPINE = "ground_supine",
+  
+  /** 
+   * Ground Side Left - Left side ground position
+   * Korean: 좌측와 (jwacheuk wa) - Left side position
+   * Duration: 4 frames (breathing loop)
+   */
+  GROUND_SIDE_LEFT = "ground_side_left",
+  
+  /** 
+   * Ground Side Right - Right side ground position
+   * Korean: 우측와 (ucheuk wa) - Right side position
+   * Duration: 4 frames (breathing loop)
+   */
+  GROUND_SIDE_RIGHT = "ground_side_right",
+  
+  // ===== Turn Animations (180도 회전) =====
+  
+  /** 
+   * Turn Left - 180° turn left animation
+   * Korean: 좌회전 (jwahoejeon) - Left turn
+   * Duration: 12 frames (200ms), Rotation: 180°
+   */
+  TURN_LEFT = "turn_left",
+  
+  /** 
+   * Turn Right - 180° turn right animation
+   * Korean: 우회전 (uhoejeon) - Right turn
+   * Duration: 12 frames (200ms), Rotation: 180°
+   */
+  TURN_RIGHT = "turn_right",
+  
+  // ===== Recovery Animations (회복 애니메이션) =====
+  
+  /** 
+   * Recovery Prone Standup - Stand up from prone position
+   * Korean: 엎드린 기상 (eopdeurin gisang) - Prone stand-up
+   * Duration: 30 frames (500ms)
+   */
+  RECOVERY_PRONE_STANDUP = "recovery_prone_standup",
+  
+  /** 
+   * Recovery Supine Standup - Stand up from supine position
+   * Korean: 누운 기상 (nuun gisang) - Supine stand-up
+   * Duration: 36 frames (600ms)
+   */
+  RECOVERY_SUPINE_STANDUP = "recovery_supine_standup",
+  
+  /** 
+   * Recovery Roll - Roll recovery to standing
+   * Korean: 회전기상 (hoejeon gisang) - Roll recovery
+   * Duration: 24 frames (400ms), Stamina cost: 20
+   */
+  RECOVERY_ROLL = "recovery_roll",
+  
+  /** 
+   * Recovery Defensive - Defensive getup with guard
+   * Korean: 방어기상 (bangeo gisang) - Defensive getup
+   * Duration: 42 frames (700ms), Damage reduction: 50%
+   */
+  RECOVERY_DEFENSIVE = "recovery_defensive",
+}
 
 /**
  * Animation priority levels for interrupt system
@@ -534,10 +845,10 @@ export const FALL_TO_GROUND_MAP: Record<FallType, GroundState> = {
  * @korean 낙법애니메이션맵
  */
 export const FALL_TYPE_TO_ANIMATION: Record<FallType, AnimationState> = {
-  forward: "fall_forward",
-  backward: "fall_backward",
-  side_left: "fall_side_left",
-  side_right: "fall_side_right",
+  forward: AnimationState.FALL_FORWARD,
+  backward: AnimationState.FALL_BACKWARD,
+  side_left: AnimationState.FALL_SIDE_LEFT,
+  side_right: AnimationState.FALL_SIDE_RIGHT,
 };
 
 /**
@@ -547,10 +858,10 @@ export const FALL_TYPE_TO_ANIMATION: Record<FallType, AnimationState> = {
  * @korean 지면애니메이션맵
  */
 export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
-  prone: "ground_prone",
-  supine: "ground_supine",
-  side_left: "ground_side_left",
-  side_right: "ground_side_right",
+  prone: AnimationState.GROUND_PRONE,
+  supine: AnimationState.GROUND_SUPINE,
+  side_left: AnimationState.GROUND_SIDE_LEFT,
+  side_right: AnimationState.GROUND_SIDE_RIGHT,
 };
 
 /**
@@ -773,10 +1084,10 @@ export const GROUND_STATE_TO_RECOVERY: Record<GroundState, RecoveryAnimationType
  * @korean 회복애니메이션맵
  */
 export const RECOVERY_TYPE_TO_ANIMATION: Record<RecoveryAnimationType, AnimationState> = {
-  prone_standup: 'recovery_prone_standup',
-  supine_standup: 'recovery_supine_standup',
-  roll_recovery: 'recovery_roll',
-  defensive_getup: 'recovery_defensive',
+  prone_standup: AnimationState.RECOVERY_PRONE_STANDUP,
+  supine_standup: AnimationState.RECOVERY_SUPINE_STANDUP,
+  roll_recovery: AnimationState.RECOVERY_ROLL,
+  defensive_getup: AnimationState.RECOVERY_DEFENSIVE,
 };
 
 /**
@@ -909,4 +1220,240 @@ export interface MappingValidationResult {
   readonly mapped: number;
   /** List of missing combinations */
   readonly missing: readonly TechniqueAnimationKey[];
+// ===== Backward Compatibility Helpers (하위 호환성 도우미) =====
+
+/**
+ * Convert string to AnimationState enum (backward compatibility)
+ * 
+ * **Korean**: 문자열을 애니메이션 상태로 변환
+ * 
+ * Provides backward compatibility for code using string-based animation states.
+ * Returns null if the string doesn't match any valid animation state.
+ * 
+ * @param state - String representation of animation state
+ * @returns AnimationState enum or null if invalid
+ * 
+ * @example
+ * ```typescript
+ * const state = stringToAnimationState("idle"); // AnimationState.IDLE
+ * const invalid = stringToAnimationState("invalid"); // null
+ * ```
+ * 
+ * @public
+ * @korean 문자열을애니메이션상태로변환
+ */
+export function stringToAnimationState(state: string): AnimationState | null {
+  const normalized = state.toLowerCase();
+  
+  // Check if the normalized string is a valid AnimationState enum value
+  const values = Object.values(AnimationState) as string[];
+  if (values.includes(normalized)) {
+    return normalized as AnimationState;
+  }
+  
+  return null;
+}
+
+/**
+ * Check if a value is a valid AnimationState enum
+ * 
+ * **Korean**: 유효한 애니메이션 상태인지 확인
+ * 
+ * Type guard to validate that a value is a valid AnimationState enum value.
+ * 
+ * @param value - Value to check
+ * @returns True if value is a valid AnimationState
+ * 
+ * @example
+ * ```typescript
+ * if (isValidAnimationState(someValue)) {
+ *   // TypeScript knows someValue is AnimationState here
+ *   machine.transitionTo(someValue);
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 유효한애니메이션상태확인
+ */
+export function isValidAnimationState(value: unknown): value is AnimationState {
+  if (typeof value !== 'string') {
+    return false;
+  }
+  
+  const values = Object.values(AnimationState) as string[];
+  return values.includes(value);
+}
+
+/**
+ * Get all animation state enum values as an array
+ * 
+ * **Korean**: 모든 애니메이션 상태 값 배열
+ * 
+ * Returns an array of all valid AnimationState enum values.
+ * Useful for iteration, validation, and testing.
+ * 
+ * @returns Array of all AnimationState values
+ * 
+ * @example
+ * ```typescript
+ * const allStates = getAllAnimationStates();
+ * allStates.forEach(state => {
+ *   console.log(`State: ${state}`);
+ * });
+ * ```
+ * 
+ * @public
+ * @korean 모든애니메이션상태가져오기
+ */
+export function getAllAnimationStates(): AnimationState[] {
+  return Object.values(AnimationState);
+}
+
+/**
+ * Check if an animation state is a stance guard state
+ * 
+ * **Korean**: 자세 방어 상태인지 확인
+ * 
+ * Determines if the given animation state is one of the eight trigram
+ * stance guard animations.
+ * 
+ * @param state - Animation state to check
+ * @returns True if state is a stance guard animation
+ * 
+ * @example
+ * ```typescript
+ * if (isStanceGuardState(AnimationState.STANCE_GUARD_GEON)) {
+ *   // Handle stance guard logic
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 자세방어상태확인
+ */
+export function isStanceGuardState(state: AnimationState): boolean {
+  return state.startsWith('stance_guard_');
+}
+
+/**
+ * Check if an animation state is a step movement state
+ * 
+ * **Korean**: 발걸음 이동 상태인지 확인
+ * 
+ * Determines if the given animation state is one of the tactical step
+ * movement animations.
+ * 
+ * @param state - Animation state to check
+ * @returns True if state is a step movement animation
+ * 
+ * @example
+ * ```typescript
+ * if (isStepState(AnimationState.STEP_FORWARD)) {
+ *   // Handle step movement logic
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 발걸음상태확인
+ */
+export function isStepState(state: AnimationState): boolean {
+  return state.startsWith('step_');
+}
+
+/**
+ * Check if an animation state is a footwork pattern state
+ * 
+ * **Korean**: 보법 패턴 상태인지 확인
+ * 
+ * Determines if the given animation state is one of the specialized
+ * Korean martial arts footwork patterns.
+ * 
+ * @param state - Animation state to check
+ * @returns True if state is a footwork pattern animation
+ * 
+ * @example
+ * ```typescript
+ * if (isFootworkState(AnimationState.FOOTWORK_CIRCULAR_LEFT)) {
+ *   // Handle footwork pattern logic
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 보법상태확인
+ */
+export function isFootworkState(state: AnimationState): boolean {
+  return state.startsWith('footwork_');
+}
+
+/**
+ * Check if an animation state is a fall animation state
+ * 
+ * **Korean**: 낙법 애니메이션 상태인지 확인
+ * 
+ * Determines if the given animation state is one of the fall animations.
+ * 
+ * @param state - Animation state to check
+ * @returns True if state is a fall animation
+ * 
+ * @example
+ * ```typescript
+ * if (isFallState(AnimationState.FALL_FORWARD)) {
+ *   // Handle fall animation logic
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 낙법상태확인
+ */
+export function isFallState(state: AnimationState): boolean {
+  return state.startsWith('fall_');
+}
+
+/**
+ * Check if an animation state is a ground position state
+ * 
+ * **Korean**: 지면 자세 상태인지 확인
+ * 
+ * Determines if the given animation state is one of the ground position
+ * breathing loops.
+ * 
+ * @param state - Animation state to check
+ * @returns True if state is a ground position animation
+ * 
+ * @example
+ * ```typescript
+ * if (isGroundState(AnimationState.GROUND_PRONE)) {
+ *   // Handle ground position logic
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 지면상태확인
+ */
+export function isGroundState(state: AnimationState): boolean {
+  return state.startsWith('ground_');
+}
+
+/**
+ * Check if an animation state is a recovery animation state
+ * 
+ * **Korean**: 회복 애니메이션 상태인지 확인
+ * 
+ * Determines if the given animation state is one of the recovery/getup
+ * animations.
+ * 
+ * @param state - Animation state to check
+ * @returns True if state is a recovery animation
+ * 
+ * @example
+ * ```typescript
+ * if (isRecoveryState(AnimationState.RECOVERY_ROLL)) {
+ *   // Handle recovery animation logic
+ * }
+ * ```
+ * 
+ * @public
+ * @korean 회복상태확인
+ */
+export function isRecoveryState(state: AnimationState): boolean {
+  return state.startsWith('recovery_');
 }
