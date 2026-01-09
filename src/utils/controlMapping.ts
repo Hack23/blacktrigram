@@ -279,8 +279,7 @@ export class ControlMapper {
 
     // Check stance side switch
     if (
-      this.bindings.stanceSideSwitch &&
-      normalizedKey === this.bindings.stanceSideSwitch.toLowerCase()
+      normalizedKey === this.bindings.stanceSideSwitch?.toLowerCase()
     ) {
       return "stance_side_switch";
     }
