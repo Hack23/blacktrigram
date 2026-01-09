@@ -87,7 +87,51 @@ PR #1132 introduced comprehensive advanced joint movement systems:
 1. ✅ **GEON_BONE_BREAKING_STRIKE_1** - Overhead strike with segmented spine and hip rotation
 2. ✅ **GEON_THUNDEROUS_UPPERCUT** - Explosive uppercut with knee drive and spinal extension
 
-### In Progress: Systematic Enhancement Plan
+### Remaining Attack Animations (22/24)
+
+**GEON (Heaven) - 1 remaining:**
+- GEON_CRUSHING_ELBOW - Needs hip rotation + spine twist enhancement
+
+**TAE (Lake) - 3 remaining:**
+- TAE_WRIST_LOCK_STRIKE - Needs wrist articulation enhancement
+- TAE_FLOWING_ARM_BAR - Needs spinal flexion + grappling hip control
+- TAE_SPIRAL_SHOULDER_THROW - Needs full spine rotation + hip pivot
+
+**LI (Fire) - 3 remaining:**
+- LI_BURNING_FINGER_STRIKE_1 - Needs precision wrist snap + hip rotation
+- LI_SOLAR_PLEXUS_SPEAR - Needs ankle articulation + spine extension
+- LI_PHOENIX_EYE_STRIKE - Needs wrist snap + shoulder drive
+
+**JIN (Thunder) - 3 remaining:**
+- JIN_LIGHTNING_STRAIGHT - Needs explosive hip rotation + spine snap
+- JIN_SHOCKING_HAMMER_FIST - Needs shoulder elevation + full hip drive
+- JIN_EXPLOSIVE_KNEE - Needs knee drive mechanics + hip flexion
+
+**SON (Wind) - 3 remaining:**
+- SON_WHIRLWIND_COMBO_1 - Needs continuous spine rotation + hip rhythm
+- SON_PRESSURE_POINT_CHAIN - Needs ankle pivots + wrist snaps
+- SON_PENETRATING_PALM_RUSH - Needs segmented spine waves + hip drive
+
+**GAM (Water) - 3 remaining:**
+- GAM_FLOWING_RIVER_STRIKE - Needs adaptive spine flexion + hip redirection
+- GAM_TIDAL_WAVE_PALM - Needs full body wave motion + hip momentum
+- GAM_WHIRLPOOL_COUNTER - Needs circular spine rotation + hip pivot
+
+**GAN (Mountain) - 3 remaining:**
+- GAN_FORTRESS_COUNTER_STRIKE - Needs grounded hip rotation + stable spine
+- GAN_AVALANCHE_HAMMER - Needs overhead shoulder elevation + hip drop
+- GAN_STONE_WALL_THRUST - Needs forward spine drive + hip thrust
+
+**GON (Earth) - 3 remaining:**
+- GON_GROUND_SWEEP_STRIKE - Needs spinal flexion forward + hip sink
+- GON_EARTHQUAKE_STOMP - Needs knee drive downward + hip compression
+- GON_ROOTING_TAKEDOWN - Needs full spinal flexion + grappling hip control
+
+### Remaining Defensive Animations (16/16)
+
+All 8 stances × 2 defensive moves remain unenhanced.
+
+### Systematic Enhancement Plan
 
 The remaining 38 animations will be enhanced in batches following this priority:
 
