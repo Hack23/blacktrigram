@@ -187,6 +187,7 @@ function lerp(start: number, end: number, t: number): number {
  * @korean 기본몸향하기생성
  */
 export function createDefaultBodyFacing(initialAngle = 0): BodyFacing {
+  const initialRadians = (initialAngle * Math.PI) / 180;
   return {
     currentAngle: normalizeAngle(initialAngle),
     targetAngle: normalizeAngle(initialAngle),
@@ -194,6 +195,8 @@ export function createDefaultBodyFacing(initialAngle = 0): BodyFacing {
     headAngleOffset: 0,
     isLocked: false,
     isTurning: false,
+    torsoRotation: 0, // No initial torso twist
+    hipRotation: initialRadians, // Hips aligned with current angle
   };
 }
 
@@ -420,6 +423,34 @@ export function getFacingAngleRadians(facing: BodyFacing): number {
 export function getHeadAngleRadians(facing: BodyFacing): number {
   const totalAngle = facing.currentAngle + facing.headAngleOffset;
   return (totalAngle * Math.PI) / 180;
+}
+
+/**
+ * Gets torso rotation in radians
+ * Returns the torso rotation relative to hips
+ * 
+ * @param facing - Current body facing state
+ * @returns Torso rotation in radians (defaults to 0 if not set)
+ * 
+ * @public
+ * @korean 허리회전라디안
+ */
+export function getTorsoRotationRadians(facing: BodyFacing): number {
+  return facing.torsoRotation ?? 0;
+}
+
+/**
+ * Gets hip rotation in radians
+ * Returns the hip/pelvis base rotation
+ * 
+ * @param facing - Current body facing state
+ * @returns Hip rotation in radians
+ * 
+ * @public
+ * @korean 골반회전라디안
+ */
+export function getHipRotationRadians(facing: BodyFacing): number {
+  return facing.hipRotation ?? getFacingAngleRadians(facing);
 }
 
 /**

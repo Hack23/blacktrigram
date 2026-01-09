@@ -53,6 +53,7 @@ export {
 export {
   BONE_CHAINS,
   JOINT_CONSTRAINTS,
+  TORSO_CONSTRAINTS,
   applyJointConstraint,
   createBone,
   createHumanoidRig,
@@ -61,6 +62,8 @@ export {
   getBoneWorldRotation,
   resetBoneToRestPose,
   resetRigToRestPose,
+  calculateTorsoRotation,
+  calculateHipRotationPowerModifier,
 } from "./SkeletonRig";
 
 export {
@@ -205,6 +208,8 @@ export {
   isTurning,
   getFacingAngleRadians,
   getHeadAngleRadians,
+  getTorsoRotationRadians,
+  getHipRotationRadians,
   normalizeAngle,
   calculateAngleDifference,
   calculateAngleToTarget,
@@ -214,3 +219,35 @@ export {
   TURN_THRESHOLD_ANGLE,
   TURN_ANIMATION_DURATION,
 } from "./BodyFacingSystem";
+
+// Advanced joint movements system
+export {
+  ADVANCED_JOINT_CONSTRAINTS,
+  calculateHipRotationForKick,
+  calculateKickPowerFromHipRotation,
+  applyHipRotationToEuler,
+  calculateAnkleArticulation,
+  calculateWristSnap,
+  calculateWristSnapPowerModifier,
+  calculateShoulderElevation,
+  calculateSpinalFlexion,
+  calculateKneeDrive,
+  calculateKneeStrikePowerModifier,
+  type BodySide,
+  type KickType,
+  type HandStrikeType,
+  type KickHeight,
+  type TechniquePhase,
+  type StrikePhase,
+  type ShoulderTechniqueType,
+  type ShoulderPhase,
+  type SpinalMovementType,
+  type KneeTechniqueType,
+  type KneePhase,
+  type HipRotationState,
+  type ShoulderElevationState,
+  type AnkleArticulationState,
+  type WristSnapState,
+  type KneeDriveState,
+  type SpinalFlexionState,
+} from "./AdvancedJointMovements";
