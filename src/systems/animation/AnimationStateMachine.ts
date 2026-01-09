@@ -18,12 +18,12 @@
 import { canInterrupt } from "./AnimationPriority";
 import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
 import { TrigramStance } from "../../types/common";
+import { AnimationState } from "./types";
 import type {
   AnimationConfig,
   AnimationEvents,
   AnimationMachineState,
   AnimationPriority,
-  AnimationState,
   AnimationUpdateResult,
   FallType,
 } from "./types";
@@ -51,11 +51,11 @@ import { FALL_TO_GROUND_MAP } from "./types";
  * @korean 기본애니메이션설정
  */
 export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
-  new Map([
+  new Map<AnimationState, AnimationConfig>([
     [
-      "idle",
+      AnimationState.IDLE,
       {
-        state: "idle",
+        state: AnimationState.IDLE,
         frames: 4,
         fps: 60,
         loop: true,
@@ -65,9 +65,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "walk",
+      AnimationState.WALK,
       {
-        state: "walk",
+        state: AnimationState.WALK,
         frames: 6,
         fps: 60,
         loop: true,
@@ -77,9 +77,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "run",
+      AnimationState.RUN,
       {
-        state: "run",
+        state: AnimationState.RUN,
         frames: 8,
         fps: 60,
         loop: true,
@@ -89,9 +89,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_change",
+      AnimationState.STANCE_CHANGE,
       {
-        state: "stance_change",
+        state: AnimationState.STANCE_CHANGE,
         frames: 36, // 600ms at 60fps
         fps: 60,
         loop: false,
@@ -101,9 +101,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_side_switch",
+      AnimationState.STANCE_SIDE_SWITCH,
       {
-        state: "stance_side_switch",
+        state: AnimationState.STANCE_SIDE_SWITCH,
         frames: 24, // 400ms at 60fps for left↔right switch
         fps: 60,
         loop: false,
@@ -113,9 +113,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "defend",
+      AnimationState.DEFEND,
       {
-        state: "defend",
+        state: AnimationState.DEFEND,
         frames: 4, // 67ms at 60fps
         fps: 60,
         loop: false,
@@ -126,9 +126,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Defensive animations (방어 애니메이션) - Enhanced guard break system
     [
-      "defend_block_success",
+      AnimationState.DEFEND_BLOCK_SUCCESS,
       {
-        state: "defend_block_success",
+        state: AnimationState.DEFEND_BLOCK_SUCCESS,
         frames: 8, // 133ms at 60fps - absorb impact, maintain guard
         fps: 60,
         loop: false,
@@ -138,9 +138,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "defend_parry",
+      AnimationState.DEFEND_PARRY,
       {
-        state: "defend_parry",
+        state: AnimationState.DEFEND_PARRY,
         frames: 10, // 167ms at 60fps - redirect attack, open counter opportunity
         fps: 60,
         loop: false,
@@ -151,9 +151,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "defend_guard_break",
+      AnimationState.DEFEND_GUARD_BREAK,
       {
-        state: "defend_guard_break",
+        state: AnimationState.DEFEND_GUARD_BREAK,
         frames: 15, // 250ms at 60fps - arms forced wide, vulnerable state
         fps: 60,
         loop: false,
@@ -164,9 +164,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "defend_recovery",
+      AnimationState.DEFEND_RECOVERY,
       {
-        state: "defend_recovery",
+        state: AnimationState.DEFEND_RECOVERY,
         frames: 12, // 200ms at 60fps - restore guard position
         fps: 60,
         loop: false,
@@ -176,9 +176,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "attack",
+      AnimationState.ATTACK,
       {
-        state: "attack",
+        state: AnimationState.ATTACK,
         frames: 12, // 200ms at 60fps
         fps: 60,
         loop: false,
@@ -188,9 +188,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "hit",
+      AnimationState.HIT,
       {
-        state: "hit",
+        state: AnimationState.HIT,
         frames: 4, // 67ms at 60fps
         fps: 60,
         loop: false,
@@ -200,9 +200,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "ko",
+      AnimationState.KO,
       {
-        state: "ko",
+        state: AnimationState.KO,
         frames: 30, // 500ms at 60fps
         fps: 60,
         loop: false,
@@ -213,9 +213,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Fall animations (낙법 애니메이션) - Priority 8 (highest)
     [
-      "fall_forward",
+      AnimationState.FALL_FORWARD,
       {
-        state: "fall_forward",
+        state: AnimationState.FALL_FORWARD,
         frames: 24, // 400ms at 60fps - stumble forward, knee collapse, hands brace, face-down
         fps: 60,
         loop: false,
@@ -225,9 +225,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "fall_backward",
+      AnimationState.FALL_BACKWARD,
       {
-        state: "fall_backward",
+        state: AnimationState.FALL_BACKWARD,
         frames: 30, // 500ms at 60fps - backward stumble, sit, back impact, supine
         fps: 60,
         loop: false,
@@ -237,9 +237,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "fall_side_left",
+      AnimationState.FALL_SIDE_LEFT,
       {
-        state: "fall_side_left",
+        state: AnimationState.FALL_SIDE_LEFT,
         frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
         fps: 60,
         loop: false,
@@ -249,9 +249,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "fall_side_right",
+      AnimationState.FALL_SIDE_RIGHT,
       {
-        state: "fall_side_right",
+        state: AnimationState.FALL_SIDE_RIGHT,
         frames: 27, // 450ms at 60fps - rotation, shoulder roll, side sprawl
         fps: 60,
         loop: false,
@@ -262,9 +262,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Ground state animations (지면 자세) - Breathing loops
     [
-      "ground_prone",
+      AnimationState.GROUND_PRONE,
       {
-        state: "ground_prone",
+        state: AnimationState.GROUND_PRONE,
         frames: 4, // Breathing loop on ground (face down)
         fps: 60,
         loop: true,
@@ -274,9 +274,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "ground_supine",
+      AnimationState.GROUND_SUPINE,
       {
-        state: "ground_supine",
+        state: AnimationState.GROUND_SUPINE,
         frames: 4, // Breathing loop on ground (face up)
         fps: 60,
         loop: true,
@@ -286,9 +286,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "ground_side_left",
+      AnimationState.GROUND_SIDE_LEFT,
       {
-        state: "ground_side_left",
+        state: AnimationState.GROUND_SIDE_LEFT,
         frames: 4, // Breathing loop on ground (left side)
         fps: 60,
         loop: true,
@@ -298,9 +298,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "ground_side_right",
+      AnimationState.GROUND_SIDE_RIGHT,
       {
-        state: "ground_side_right",
+        state: AnimationState.GROUND_SIDE_RIGHT,
         frames: 4, // Breathing loop on ground (right side)
         fps: 60,
         loop: true,
@@ -311,9 +311,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Recovery animations (기상 애니메이션) - Priority 9 (higher than falls)
     [
-      "recovery_prone_standup",
+      AnimationState.RECOVERY_PRONE_STANDUP,
       {
-        state: "recovery_prone_standup",
+        state: AnimationState.RECOVERY_PRONE_STANDUP,
         frames: 30, // 500ms at 60fps - push up from prone, rise to standing
         fps: 60,
         loop: false,
@@ -323,9 +323,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "recovery_supine_standup",
+      AnimationState.RECOVERY_SUPINE_STANDUP,
       {
-        state: "recovery_supine_standup",
+        state: AnimationState.RECOVERY_SUPINE_STANDUP,
         frames: 36, // 600ms at 60fps - sit up, roll forward, stand
         fps: 60,
         loop: false,
@@ -335,9 +335,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "recovery_roll",
+      AnimationState.RECOVERY_ROLL,
       {
-        state: "recovery_roll",
+        state: AnimationState.RECOVERY_ROLL,
         frames: 24, // 400ms at 60fps - roll to side, spring to feet (quick recovery)
         fps: 60,
         loop: false,
@@ -347,9 +347,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "recovery_defensive",
+      AnimationState.RECOVERY_DEFENSIVE,
       {
-        state: "recovery_defensive",
+        state: AnimationState.RECOVERY_DEFENSIVE,
         frames: 42, // 700ms at 60fps - slow rise with guard up (vulnerable but defended)
         fps: 60,
         loop: false,
@@ -360,9 +360,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // 180-degree turn animations (180도 회전 애니메이션)
     [
-      "turn_left",
+      AnimationState.TURN_LEFT,
       {
-        state: "turn_left",
+        state: AnimationState.TURN_LEFT,
         frames: 12, // 200ms at 60fps for 180° turn
         fps: 60,
         loop: false,
@@ -372,9 +372,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "turn_right",
+      AnimationState.TURN_RIGHT,
       {
-        state: "turn_right",
+        state: AnimationState.TURN_RIGHT,
         frames: 12, // 200ms at 60fps for 180° turn
         fps: 60,
         loop: false,
@@ -385,9 +385,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Stance-specific guard animations (팔괘 방어 자세)
     [
-      "stance_guard_geon",
+      AnimationState.STANCE_GUARD_GEON,
       {
-        state: "stance_guard_geon",
+        state: AnimationState.STANCE_GUARD_GEON,
         frames: 6, // Breathing animation
         fps: 60,
         loop: true,
@@ -397,9 +397,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_tae",
+      AnimationState.STANCE_GUARD_TAE,
       {
-        state: "stance_guard_tae",
+        state: AnimationState.STANCE_GUARD_TAE,
         frames: 6, // Breathing animation
         fps: 60,
         loop: true,
@@ -409,9 +409,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_li",
+      AnimationState.STANCE_GUARD_LI,
       {
-        state: "stance_guard_li",
+        state: AnimationState.STANCE_GUARD_LI,
         frames: 4, // Controlled breathing
         fps: 60,
         loop: true,
@@ -421,9 +421,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_jin",
+      AnimationState.STANCE_GUARD_JIN,
       {
-        state: "stance_guard_jin",
+        state: AnimationState.STANCE_GUARD_JIN,
         frames: 5, // Deep breathing
         fps: 60,
         loop: true,
@@ -433,9 +433,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_son",
+      AnimationState.STANCE_GUARD_SON,
       {
-        state: "stance_guard_son",
+        state: AnimationState.STANCE_GUARD_SON,
         frames: 6, // Rhythmic breathing
         fps: 60,
         loop: true,
@@ -445,9 +445,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_gam",
+      AnimationState.STANCE_GUARD_GAM,
       {
-        state: "stance_guard_gam",
+        state: AnimationState.STANCE_GUARD_GAM,
         frames: 6, // Flowing breathing
         fps: 60,
         loop: true,
@@ -457,9 +457,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_gan",
+      AnimationState.STANCE_GUARD_GAN,
       {
-        state: "stance_guard_gan",
+        state: AnimationState.STANCE_GUARD_GAN,
         frames: 4, // Steady breathing
         fps: 60,
         loop: true,
@@ -469,9 +469,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "stance_guard_gon",
+      AnimationState.STANCE_GUARD_GON,
       {
-        state: "stance_guard_gon",
+        state: AnimationState.STANCE_GUARD_GON,
         frames: 5, // Deep diaphragm breathing
         fps: 60,
         loop: true,
@@ -483,9 +483,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     // Tactical step animations (전술적 발걸음)
     // 18 frames = 300ms at 60fps, 30cm distance per step
     [
-      "step_forward",
+      AnimationState.STEP_FORWARD,
       {
-        state: "step_forward",
+        state: AnimationState.STEP_FORWARD,
         frames: 18,
         fps: 60,
         loop: false,
@@ -495,9 +495,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_back",
+      AnimationState.STEP_BACK,
       {
-        state: "step_back",
+        state: AnimationState.STEP_BACK,
         frames: 18,
         fps: 60,
         loop: false,
@@ -507,9 +507,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_left",
+      AnimationState.STEP_LEFT,
       {
-        state: "step_left",
+        state: AnimationState.STEP_LEFT,
         frames: 18,
         fps: 60,
         loop: false,
@@ -519,9 +519,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_right",
+      AnimationState.STEP_RIGHT,
       {
-        state: "step_right",
+        state: AnimationState.STEP_RIGHT,
         frames: 18,
         fps: 60,
         loop: false,
@@ -531,9 +531,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_forward_left",
+      AnimationState.STEP_FORWARD_LEFT,
       {
-        state: "step_forward_left",
+        state: AnimationState.STEP_FORWARD_LEFT,
         frames: 18,
         fps: 60,
         loop: false,
@@ -543,9 +543,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_forward_right",
+      AnimationState.STEP_FORWARD_RIGHT,
       {
-        state: "step_forward_right",
+        state: AnimationState.STEP_FORWARD_RIGHT,
         frames: 18,
         fps: 60,
         loop: false,
@@ -555,9 +555,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_back_left",
+      AnimationState.STEP_BACK_LEFT,
       {
-        state: "step_back_left",
+        state: AnimationState.STEP_BACK_LEFT,
         frames: 18,
         fps: 60,
         loop: false,
@@ -567,9 +567,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "step_back_right",
+      AnimationState.STEP_BACK_RIGHT,
       {
-        state: "step_back_right",
+        state: AnimationState.STEP_BACK_RIGHT,
         frames: 18,
         fps: 60,
         loop: false,
@@ -581,9 +581,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     // Footwork patterns (보법) - Korean martial arts specialized footwork
     // Circular step (원형보) - Lateral movement maintaining guard facing
     [
-      "footwork_circular_left",
+      AnimationState.FOOTWORK_CIRCULAR_LEFT,
       {
-        state: "footwork_circular_left",
+        state: AnimationState.FOOTWORK_CIRCULAR_LEFT,
         frames: 18, // 300ms at 60fps
         fps: 60,
         loop: false,
@@ -593,9 +593,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "footwork_circular_right",
+      AnimationState.FOOTWORK_CIRCULAR_RIGHT,
       {
-        state: "footwork_circular_right",
+        state: AnimationState.FOOTWORK_CIRCULAR_RIGHT,
         frames: 18, // 300ms at 60fps
         fps: 60,
         loop: false,
@@ -606,9 +606,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Pivot step (축족회전) - Rotation on planted foot
     [
-      "footwork_pivot_left",
+      AnimationState.FOOTWORK_PIVOT_LEFT,
       {
-        state: "footwork_pivot_left",
+        state: AnimationState.FOOTWORK_PIVOT_LEFT,
         frames: 15, // 250ms at 60fps
         fps: 60,
         loop: false,
@@ -618,9 +618,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "footwork_pivot_right",
+      AnimationState.FOOTWORK_PIVOT_RIGHT,
       {
-        state: "footwork_pivot_right",
+        state: AnimationState.FOOTWORK_PIVOT_RIGHT,
         frames: 15, // 250ms at 60fps
         fps: 60,
         loop: false,
@@ -631,9 +631,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Slide step (미끄럼보) - Both feet move together
     [
-      "footwork_slide_forward",
+      AnimationState.FOOTWORK_SLIDE_FORWARD,
       {
-        state: "footwork_slide_forward",
+        state: AnimationState.FOOTWORK_SLIDE_FORWARD,
         frames: 12, // 200ms at 60fps
         fps: 60,
         loop: false,
@@ -643,9 +643,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "footwork_slide_back",
+      AnimationState.FOOTWORK_SLIDE_BACK,
       {
-        state: "footwork_slide_back",
+        state: AnimationState.FOOTWORK_SLIDE_BACK,
         frames: 12, // 200ms at 60fps
         fps: 60,
         loop: false,
@@ -655,9 +655,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "footwork_slide_left",
+      AnimationState.FOOTWORK_SLIDE_LEFT,
       {
-        state: "footwork_slide_left",
+        state: AnimationState.FOOTWORK_SLIDE_LEFT,
         frames: 12, // 200ms at 60fps
         fps: 60,
         loop: false,
@@ -667,9 +667,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
       },
     ],
     [
-      "footwork_slide_right",
+      AnimationState.FOOTWORK_SLIDE_RIGHT,
       {
-        state: "footwork_slide_right",
+        state: AnimationState.FOOTWORK_SLIDE_RIGHT,
         frames: 12, // 200ms at 60fps
         fps: 60,
         loop: false,
@@ -680,9 +680,9 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
     ],
     // Shuffle step (섞음보) - Quick micro-adjustment
     [
-      "footwork_shuffle",
+      AnimationState.FOOTWORK_SHUFFLE,
       {
-        state: "footwork_shuffle",
+        state: AnimationState.FOOTWORK_SHUFFLE,
         frames: 6, // 100ms at 60fps
         fps: 60,
         loop: false,
@@ -731,14 +731,14 @@ export class PlayerAnimationStateMachine {
    * @korean 자세방어상태맵
    */
   private static readonly GUARD_STATE_MAP: Record<TrigramStance, AnimationState> = {
-    [TrigramStance.GEON]: "stance_guard_geon",
-    [TrigramStance.TAE]: "stance_guard_tae",
-    [TrigramStance.LI]: "stance_guard_li",
-    [TrigramStance.JIN]: "stance_guard_jin",
-    [TrigramStance.SON]: "stance_guard_son",
-    [TrigramStance.GAM]: "stance_guard_gam",
-    [TrigramStance.GAN]: "stance_guard_gan",
-    [TrigramStance.GON]: "stance_guard_gon",
+    [TrigramStance.GEON]: AnimationState.STANCE_GUARD_GEON,
+    [TrigramStance.TAE]: AnimationState.STANCE_GUARD_TAE,
+    [TrigramStance.LI]: AnimationState.STANCE_GUARD_LI,
+    [TrigramStance.JIN]: AnimationState.STANCE_GUARD_JIN,
+    [TrigramStance.SON]: AnimationState.STANCE_GUARD_SON,
+    [TrigramStance.GAM]: AnimationState.STANCE_GUARD_GAM,
+    [TrigramStance.GAN]: AnimationState.STANCE_GUARD_GAN,
+    [TrigramStance.GON]: AnimationState.STANCE_GUARD_GON,
   };
 
   /**
@@ -747,17 +747,17 @@ export class PlayerAnimationStateMachine {
    * @korean 방어상태자세맵
    */
   private static readonly STANCE_FROM_GUARD_MAP: Record<string, TrigramStance> = {
-    "stance_guard_geon": TrigramStance.GEON,
-    "stance_guard_tae": TrigramStance.TAE,
-    "stance_guard_li": TrigramStance.LI,
-    "stance_guard_jin": TrigramStance.JIN,
-    "stance_guard_son": TrigramStance.SON,
-    "stance_guard_gam": TrigramStance.GAM,
-    "stance_guard_gan": TrigramStance.GAN,
-    "stance_guard_gon": TrigramStance.GON,
+    [AnimationState.STANCE_GUARD_GEON]: TrigramStance.GEON,
+    [AnimationState.STANCE_GUARD_TAE]: TrigramStance.TAE,
+    [AnimationState.STANCE_GUARD_LI]: TrigramStance.LI,
+    [AnimationState.STANCE_GUARD_JIN]: TrigramStance.JIN,
+    [AnimationState.STANCE_GUARD_SON]: TrigramStance.SON,
+    [AnimationState.STANCE_GUARD_GAM]: TrigramStance.GAM,
+    [AnimationState.STANCE_GUARD_GAN]: TrigramStance.GAN,
+    [AnimationState.STANCE_GUARD_GON]: TrigramStance.GON,
   };
 
-  private currentState: AnimationState = "idle";
+  private currentState: AnimationState = AnimationState.IDLE;
   private frameIndex = 0;
   private timeAccumulator = 0;
   private previousState: AnimationState | null = null;
@@ -879,13 +879,13 @@ export class PlayerAnimationStateMachine {
                   groundAnimKey
                 );
                 this.previousState = this.currentState;
-                this.currentState = "idle";
+                this.currentState = AnimationState.IDLE;
                 this.frameIndex = 0;
                 this.timeAccumulator = 0;
                 this.justStarted = true;
 
                 if (this.events?.onAnimationStart) {
-                  this.events.onAnimationStart("idle");
+                  this.events.onAnimationStart(AnimationState.IDLE);
                 }
               }
             } else {
@@ -895,46 +895,46 @@ export class PlayerAnimationStateMachine {
                 this.currentState
               );
               this.previousState = this.currentState;
-              this.currentState = "idle";
+              this.currentState = AnimationState.IDLE;
               this.frameIndex = 0;
               this.timeAccumulator = 0;
               this.justStarted = true;
 
               if (this.events?.onAnimationStart) {
-                this.events.onAnimationStart("idle");
+                this.events.onAnimationStart(AnimationState.IDLE);
               }
             }
           }
           // Recovery animations transition to idle when complete
           else if (this.currentState.startsWith("recovery_")) {
             this.previousState = this.currentState;
-            this.currentState = "idle";
+            this.currentState = AnimationState.IDLE;
             this.frameIndex = 0;
             this.timeAccumulator = 0;
             this.justStarted = true;
 
             if (this.events?.onAnimationStart) {
-              this.events.onAnimationStart("idle");
+              this.events.onAnimationStart(AnimationState.IDLE);
             }
           }
           // Non-fall, non-recovery, non-looping animations transition to idle
-          else if (this.currentState !== "idle" && 
-                   this.currentState !== "ko" &&
+          else if (this.currentState !== AnimationState.IDLE && 
+                   this.currentState !== AnimationState.KO &&
                    !this.currentState.startsWith("ground_")) {
             // Clear stance transition data if completing stance_change
-            if (this.currentState === "stance_change") {
+            if (this.currentState === AnimationState.STANCE_CHANGE) {
               this.clearStanceTransition();
             }
             
             // Direct transition to idle without interrupt event
             this.previousState = this.currentState;
-            this.currentState = "idle";
+            this.currentState = AnimationState.IDLE;
             this.frameIndex = 0;
             this.timeAccumulator = 0;
             this.justStarted = true;
 
             if (this.events?.onAnimationStart) {
-              this.events.onAnimationStart("idle");
+              this.events.onAnimationStart(AnimationState.IDLE);
             }
           } else {
             // Stay on last frame (for ko and ground states)
@@ -1009,7 +1009,7 @@ export class PlayerAnimationStateMachine {
     }
 
     // Clear stance transition data if interrupting stance_change
-    if (this.currentState === "stance_change") {
+    if (this.currentState === AnimationState.STANCE_CHANGE) {
       this.clearStanceTransition();
     }
 
@@ -1075,7 +1075,7 @@ export class PlayerAnimationStateMachine {
    * @korean 초기화
    */
   reset(): void {
-    this.currentState = "idle";
+    this.currentState = AnimationState.IDLE;
     this.frameIndex = 0;
     this.timeAccumulator = 0;
     this.previousState = null;
@@ -1215,7 +1215,7 @@ export class PlayerAnimationStateMachine {
     this.currentStanceTransition = transitionData;
 
     // Initiate the stance_change animation
-    const success = this.transitionTo("stance_change");
+    const success = this.transitionTo(AnimationState.STANCE_CHANGE);
 
     // If transition failed, restore previous transition data
     if (!success) {
@@ -1270,7 +1270,7 @@ export class PlayerAnimationStateMachine {
     blend: number;
   } | null {
     // Only valid during stance_change animation
-    if (this.currentState !== "stance_change" || !this.currentStanceTransition) {
+    if (this.currentState !== AnimationState.STANCE_CHANGE || !this.currentStanceTransition) {
       return null;
     }
 
@@ -1325,7 +1325,7 @@ export class PlayerAnimationStateMachine {
    * @korean 자세전환중확인
    */
   isInStanceTransition(): boolean {
-    return this.currentState === "stance_change" && this.currentStanceTransition !== null;
+    return this.currentState === AnimationState.STANCE_CHANGE && this.currentStanceTransition !== null;
   }
 
   /**

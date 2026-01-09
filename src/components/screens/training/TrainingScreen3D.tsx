@@ -7,6 +7,8 @@
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
+import { AnimationState } from "../../../systems/animation/types";
+
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
@@ -326,9 +328,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   useEffect(() => {
     if (prevIsMovingRef.current !== isMoving) {
       if (isMoving) {
-        playerAnimation.transitionTo("walk");
-      } else if (playerAnimation.currentState === "walk") {
-        playerAnimation.transitionTo("idle");
+        playerAnimation.transitionTo(AnimationState.WALK);
+      } else if (playerAnimation.currentState === AnimationState.WALK) {
+        playerAnimation.transitionTo(AnimationState.IDLE);
       }
       prevIsMovingRef.current = isMoving;
     }
