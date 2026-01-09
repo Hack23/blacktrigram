@@ -42,7 +42,7 @@ const animation = techniqueAnimationMapper.getAnimation({
 });
 
 // Use animation properties
-console.log(animation.koreanName); // "건괘 두부 중 타격"
+console.log(animation.koreanName); // "건괘 두부 강 타격"
 console.log(animation.englishName); // "Heaven Head Heavy Strike"
 console.log(animation.duration); // 0.78 seconds
 console.log(animation.impactFrame); // Frame 14
@@ -382,14 +382,14 @@ The mapper provides full bilingual support with authentic Korean martial arts te
 |-----------|--------|--------------|
 | Light | 경 | Gyeong |
 | Medium | 중 | Jung |
-| Heavy | 중 | Jung |
+| Heavy | 강 | Gang |
 | Critical | 극 | Geuk |
 
 ### Example Korean Names
 
 ```typescript
-// 건괘 두부 중 타격
-// Geon-goe Dubu Jung Tagyeok
+// 건괘 두부 강 타격
+// Geon-goe Dubu Gang Tagyeok
 // Heaven Head Heavy Strike
 
 // 리괘 경부 극 급소

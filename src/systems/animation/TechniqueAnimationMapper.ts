@@ -275,7 +275,8 @@ export default {
  * 
  * **Korean**: 포괄적 기술 애니메이션 매핑 시스템
  * 
- * Maps all 560 technique-stance combinations (70 vital points × 8 stances)
+ * Maps all 1024 technique configuration combinations
+ * (8 stances × 4 technique types × 8 body parts × 4 intensities)
  * to appropriate animations with O(1) lookup performance.
  * 
  * ## Architecture
@@ -498,7 +499,7 @@ export class TechniqueAnimationMapper {
    * 
    * **Korean**: 전체 매핑 테이블 초기화
    * 
-   * Maps all 560 combinations organized by:
+   * Maps all 1024 combinations organized by:
    * - 8 stances
    * - 4 technique types
    * - 8 body parts
@@ -981,7 +982,7 @@ export class TechniqueAnimationMapper {
       case "medium":
         return "중";
       case "heavy":
-        return "중";
+        return "강";
       case "critical":
         return "극";
     }

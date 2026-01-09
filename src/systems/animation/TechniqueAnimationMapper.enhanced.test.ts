@@ -14,10 +14,11 @@ import {
 } from "./TechniqueAnimationMapper";
 import { TrigramStance } from "@/types";
 import { BodyPart } from "../bodypart/types";
-import type {
-  TechniqueAnimationKey,
-  TechniqueIntensity,
-  TechniqueTypeCategory,
+import {
+  AnimationState,
+  type TechniqueAnimationKey,
+  type TechniqueIntensity,
+  type TechniqueTypeCategory,
 } from "./types";
 
 describe("TechniqueAnimationMapper", () => {
@@ -69,7 +70,7 @@ describe("TechniqueAnimationMapper", () => {
       const animation = mapper.getAnimation(key);
 
       expect(animation).toBeDefined();
-      expect(animation.animationState).toBe("attack");
+      expect(animation.animationState).toBe(AnimationState.ATTACK);
       expect(animation.koreanName).toContain("건괘");
       expect(animation.koreanName).toContain("두부");
       expect(animation.englishName).toContain("Heaven");

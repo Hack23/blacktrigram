@@ -1135,9 +1135,9 @@ export type TechniqueTypeCategory = 'strike' | 'joint' | 'throw' | 'pressure_poi
  * @example
  * ```typescript
  * const key: TechniqueAnimationKey = {
- *   stance: 'geon',
+ *   stance: TrigramStance.GEON,
  *   techniqueType: 'strike',
- *   bodyPart: 'head',
+ *   bodyPart: BodyPart.HEAD,
  *   intensity: 'heavy',
  * };
  * ```
@@ -1168,12 +1168,12 @@ export interface TechniqueAnimationKey {
  * @example
  * ```typescript
  * const animation: TechniqueAnimation = {
- *   animationState: 'attack',
+ *   animationState: AnimationState.ATTACK,
  *   duration: 0.8,
  *   impactFrame: 12,
  *   recoveryFrames: 15,
  *   priority: 8,
- *   koreanName: '건괘 두부 중타',
+ *   koreanName: '건괘 두부 강타',
  *   englishName: 'Heaven Stance Head Strike',
  * };
  * ```
