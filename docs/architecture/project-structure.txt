@@ -647,13 +647,13 @@ src/components/shared/mobile/VirtualDPad.tsx
 src/components/shared/mobile/index.ts
 src/components/shared/three/README.md
 src/components/shared/three/README_STANCE_ANIMATIONS.md
+src/components/shared/three/anatomy/BoneAttachedMuscles.test.tsx
+src/components/shared/three/anatomy/BoneAttachedMuscles.tsx
 src/components/shared/three/anatomy/BoneRenderer.test.tsx
 src/components/shared/three/anatomy/BoneRenderer.tsx
 src/components/shared/three/anatomy/Face3D.tsx
 src/components/shared/three/anatomy/Hand3D.test.tsx
 src/components/shared/three/anatomy/Hand3D.tsx
-src/components/shared/three/anatomy/MuscleSystem.test.tsx
-src/components/shared/three/anatomy/MuscleSystem.tsx
 src/components/shared/three/anatomy/index.ts
 src/components/shared/three/effects/PlayerStateIndicators.test.tsx
 src/components/shared/three/effects/PlayerStateIndicators.tsx
