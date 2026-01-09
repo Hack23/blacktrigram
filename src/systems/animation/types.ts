@@ -1239,7 +1239,7 @@ export interface TechniqueAnimationKey {
  *   impactFrame: 12,
  *   recoveryFrames: 15,
  *   priority: 8,
- *   koreanName: '건괘 두부 강타',
+ *   koreanName: '건괘 두부 강 타격',
  *   englishName: 'Heaven Stance Head Strike',
  * };
  * ```

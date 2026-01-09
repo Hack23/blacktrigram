@@ -134,7 +134,6 @@ console.log(jointAnim.powerModifier); // 1.03 (3% damage bonus)
 - **Joint**: 1.0 - 1.10 (up to 10% bonus)
 
 ### Validation
-```
 
 ```typescript
 // Validate mapping completeness
