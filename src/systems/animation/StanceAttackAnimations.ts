@@ -30,6 +30,11 @@ import { TrigramStance } from "../../types/common";
  * Powerful overhead descending strike targeting collarbone or shoulder.
  * Direct downward force with full body weight transfer.
  * 
+ * Enhanced with PR #1132 mobility improvements:
+ * - Hip rotation (골반회전) for power generation (30% damage bonus)
+ * - Segmented spine rotation (척추분절회전) for realistic torso twist
+ * - Shoulder elevation (어깨들어올림) for overhead mechanics
+ * 
  * Duration: 350ms
  * 
  * @korean 건뼈부러뜨리기1
@@ -45,9 +50,16 @@ export const GEON_BONE_BREAKING_STRIKE_1: SkeletalAnimation = {
       time: 0.0,
       easing: "ease-out",
       boneRotations: new Map([
+        // Upper body coiled back, preparing for strike
         [BoneName.SHOULDER_R, new THREE.Euler(-1.2, -0.3, -0.5, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.5, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.4, 0, "XYZ")],
+        // Spine segments - wind-up phase with torso rotation
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.4, 0.1, "XYZ")],  // Twist back
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, -0.3, 0, "XYZ")],   // Mid-spine twist
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.2, -0.1, "XYZ")], // Lower twist
+        // Hip and pelvis - load phase
+        [BoneName.PELVIS, new THREE.Euler(-0.1, -0.3, 0, "XYZ")],      // Hip rotation back
+        [BoneName.HIP_R, new THREE.Euler(0, -0.2, 0, "XYZ")],          // Right hip engaged
       ]),
       bonePositions: new Map(),
     },
@@ -55,10 +67,17 @@ export const GEON_BONE_BREAKING_STRIKE_1: SkeletalAnimation = {
       time: 0.18,
       easing: "linear",
       boneRotations: new Map([
+        // Strike impact - maximum power delivery
         [BoneName.SHOULDER_R, new THREE.Euler(0.8, -0.2, 0.7, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.1, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0.2, 0.5, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0.1, 0.3, 0, "XYZ")],
+        // Spine segments - explosive forward rotation
+        [BoneName.SPINE_UPPER, new THREE.Euler(0.2, 0.5, -0.1, "XYZ")],  // Forward twist peak
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.15, 0.4, 0, "XYZ")],   // Mid-spine follows
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.1, 0.3, 0.05, "XYZ")],  // Lower drives
+        // Hip and pelvis - power generation phase (30% bonus)
+        [BoneName.PELVIS, new THREE.Euler(0.1, 0.5, 0, "XYZ")],          // Hip explosion forward
+        [BoneName.HIP_R, new THREE.Euler(0, 0.3, 0, "XYZ")],             // Right hip drives
+        [BoneName.HIP_L, new THREE.Euler(0, 0.1, 0, "XYZ")],             // Left hip supports
       ]),
       bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 1.0)]]),
     },
@@ -66,10 +85,17 @@ export const GEON_BONE_BREAKING_STRIKE_1: SkeletalAnimation = {
       time: 0.35,
       easing: "ease-in",
       boneRotations: new Map([
+        // Recovery to guard position
         [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.3, -0.3, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
+        // Spine segments - return to neutral
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Hip and pelvis - reset
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
       bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
     },
@@ -81,6 +107,11 @@ export const GEON_BONE_BREAKING_STRIKE_1: SkeletalAnimation = {
  * 
  * Rising strike targeting jaw or solar plexus with explosive upward force.
  * Uses leg drive and hip rotation for maximum power.
+ * 
+ * Enhanced with PR #1132 mobility improvements:
+ * - Strong hip rotation (골반회전) for upward power generation
+ * - Knee drive (무릎밀어올림) for explosive leg power
+ * - Spinal extension (척추확장) for upward trajectory
  * 
  * Duration: 300ms
  * 
@@ -97,10 +128,19 @@ export const GEON_THUNDEROUS_UPPERCUT: SkeletalAnimation = {
       time: 0.0,
       easing: "ease-out",
       boneRotations: new Map([
+        // Arms chambered low, coiled for upward strike
         [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.5, 0.8, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.6, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.6, 0, 0, "XYZ")],
+        // Legs bent, loading power
+        [BoneName.KNEE_L, new THREE.Euler(-0.8, 0, 0, "XYZ")],          // Deep crouch
+        [BoneName.KNEE_R, new THREE.Euler(-0.8, 0, 0, "XYZ")],          // Deep crouch
+        [BoneName.HIP_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],           // Hip flexed
+        [BoneName.HIP_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],           // Hip flexed
+        // Spine segments - slightly forward lean for loading
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.15, -0.2, 0, "XYZ")], // Lower lean
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.1, -0.1, 0, "XYZ")], // Mid lean
+        [BoneName.SPINE_UPPER, new THREE.Euler(-0.05, 0, 0, "XYZ")],    // Upper ready
+        [BoneName.PELVIS, new THREE.Euler(-0.2, -0.3, 0, "XYZ")],       // Pelvis loaded
       ]),
       bonePositions: new Map(),
     },
@@ -108,27 +148,41 @@ export const GEON_THUNDEROUS_UPPERCUT: SkeletalAnimation = {
       time: 0.15,
       easing: "linear",
       boneRotations: new Map([
+        // Strike rising - explosive upward motion
         [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.3, 0.5, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.3, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        // Legs exploding upward - knee drive mechanics
+        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],          // Extending
+        [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],          // Extending
+        [BoneName.HIP_L, new THREE.Euler(0.1, 0.2, 0, "XYZ")],          // Hip extension
+        [BoneName.HIP_R, new THREE.Euler(0.1, 0.2, 0, "XYZ")],          // Hip extension
+        // Spine segments - explosive extension upward
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.2, 0.4, 0, "XYZ")],   // Drive upward
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.15, 0.3, 0, "XYZ")], // Follow through
+        [BoneName.SPINE_UPPER, new THREE.Euler(-0.1, 0.2, 0, "XYZ")],   // Upper rises
+        [BoneName.PELVIS, new THREE.Euler(0, 0.5, 0, "XYZ")],           // Pelvis rotates up
       ]),
-      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0.9)]]),
+      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0.6, 0.5)]]),
     },
     {
       time: 0.3,
       easing: "ease-in",
       boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.5, 0.8, "XYZ")],
+        // Recovery to guard
+        [BoneName.SHOULDER_L, new THREE.Euler(-0.4, 0.2, 0.3, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        // Legs stabilize
+        [BoneName.KNEE_L, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
+        [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Spine segments - return to neutral
         [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.5, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.5, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
-      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0)]]),
+      bonePositions: new Map(),
     },
   ],
 };
