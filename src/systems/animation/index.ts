@@ -53,6 +53,7 @@ export {
 export {
   BONE_CHAINS,
   JOINT_CONSTRAINTS,
+  TORSO_CONSTRAINTS,
   applyJointConstraint,
   createBone,
   createHumanoidRig,
@@ -61,6 +62,8 @@ export {
   getBoneWorldRotation,
   resetBoneToRestPose,
   resetRigToRestPose,
+  calculateTorsoRotation,
+  calculateHipRotationPowerModifier,
 } from "./SkeletonRig";
 
 export {

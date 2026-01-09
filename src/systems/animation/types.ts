@@ -641,6 +641,72 @@ export interface BodyFacing {
    * @korean 회전시작시간
    */
   readonly turnStartTime?: number;
+
+  /**
+   * Torso rotation relative to hips in radians
+   * Range: ±π/2 (±90°) for anatomically correct movement
+   * - Positive = torso rotated right relative to hips
+   * - Negative = torso rotated left relative to hips
+   * 
+   * @korean 허리회전 (Heorhwoejeon)
+   */
+  readonly torsoRotation?: number;
+
+  /**
+   * Hip/pelvis rotation in radians (lower body facing direction)
+   * Base rotation for the lower body, torsoRotation is relative to this
+   * 
+   * @korean 골반회전 (Golbanhwoejeon)
+   */
+  readonly hipRotation?: number;
+}
+
+/**
+ * Torso rotation state for independent upper/lower body movement
+ * 
+ * Manages realistic torso rotation allowing upper body to face opponent
+ * while lower body moves in different direction (strafing).
+ * 
+ * Korean terminology:
+ * - 허리회전 (Heorhwoejeon) - Torso rotation
+ * - 상체비틀기 (Sangchebiteulgi) - Upper body twist
+ * - 골반고정 (Golbangojeong) - Hip stabilization
+ * 
+ * @public
+ * @korean 허리회전상태
+ */
+export interface TorsoRotationState {
+  /**
+   * Current torso Y-axis rotation in radians
+   * Range: ±π/2 (±90°) relative to hip direction
+   * 
+   * @korean 현재회전
+   */
+  readonly currentRotation: number;
+
+  /**
+   * Target rotation towards opponent in radians
+   * Smoothly interpolated to currentRotation
+   * 
+   * @korean 목표회전
+   */
+  readonly targetRotation: number;
+
+  /**
+   * Lower body (hip/pelvis) rotation in radians
+   * Base rotation for movement direction
+   * 
+   * @korean 골반회전
+   */
+  readonly hipRotation: number;
+
+  /**
+   * Interpolation speed in seconds
+   * Default: 0.2 (200ms for smooth rotation)
+   * 
+   * @korean 보간속도
+   */
+  readonly interpolationSpeed: number;
 }
 
 /**

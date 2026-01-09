@@ -1069,3 +1069,149 @@ export const createHumanoidRigWithHands = (
     boneCount: baseRig.bones.size,
   };
 };
+
+/**
+ * Torso rotation constraints for anatomically correct upper/lower body movement
+ * 
+ * Defines limits and behavior for independent torso rotation relative to hips,
+ * enabling realistic strafing and lateral movement while facing opponent.
+ * 
+ * Korean terminology:
+ * - 허리회전 (Heorhwoejeon) - Torso rotation
+ * - 해부학적제약 (Haebuhakjeok Jeyak) - Anatomical constraints
+ * 
+ * @public
+ * @korean 허리회전제약조건
+ */
+export const TORSO_CONSTRAINTS = {
+  /**
+   * Maximum torso rotation relative to hips (radians)
+   * ±90° = π/2 radians - anatomically safe rotation limit
+   * 
+   * @korean 최대회전각도
+   */
+  MAX_ROTATION: Math.PI / 2,
+
+  /**
+   * Minimum torso rotation relative to hips (radians)
+   * -90° = -π/2 radians
+   * 
+   * @korean 최소회전각도
+   */
+  MIN_ROTATION: -Math.PI / 2,
+
+  /**
+   * Target interpolation time in seconds
+   * 200ms provides smooth, natural rotation feel
+   * 
+   * @korean 보간시간
+   */
+  INTERPOLATION_TIME: 0.2,
+
+  /**
+   * Power modifier range for hip rotation
+   * [min, max] = [10%, 30%] damage bonus from proper hip engagement
+   * 
+   * @korean 파워배율범위
+   */
+  POWER_MODIFIER_RANGE: [0.10, 0.30] as const,
+} as const;
+
+/**
+ * Calculate torso rotation to face opponent while moving
+ * 
+ * Determines optimal torso rotation angle to keep upper body facing opponent
+ * while hips/legs are oriented in movement direction. Enforces anatomical
+ * constraints (±90° max rotation).
+ * 
+ * @param currentPosition - Player's current world position
+ * @param opponentPosition - Opponent's current world position
+ * @param _movementDirection - Direction of player movement (reserved for future use)
+ * @param hipRotation - Current hip/pelvis rotation in radians
+ * @returns Torso rotation in radians relative to hips (clamped to ±90°)
+ * 
+ * @example
+ * ```typescript
+ * const playerPos = new THREE.Vector3(0, 0, 0);
+ * const opponentPos = new THREE.Vector3(5, 0, 0);
+ * const moveDir = new THREE.Vector3(0, 0, 1); // Moving forward
+ * const hipRot = 0; // Hips facing right
+ * 
+ * const torsoRot = calculateTorsoRotation(playerPos, opponentPos, moveDir, hipRot);
+ * // Returns 0 (opponent is already in front of hips)
+ * ```
+ * 
+ * @public
+ * @korean 상대를향한허리회전계산
+ */
+export function calculateTorsoRotation(
+  currentPosition: THREE.Vector3,
+  opponentPosition: THREE.Vector3,
+  _movementDirection: THREE.Vector3,
+  hipRotation: number
+): number {
+  // Calculate angle to opponent
+  const directionToOpponent = opponentPosition.clone().sub(currentPosition).normalize();
+  // Use atan2(x, z) - X is horizontal, Z is forward/back in Three.js
+  const angleToOpponent = Math.atan2(directionToOpponent.x, directionToOpponent.z);
+  
+  // Calculate torso rotation relative to hips
+  let torsoRotation = angleToOpponent - hipRotation;
+  
+  // Normalize to -π to π range
+  while (torsoRotation > Math.PI) torsoRotation -= 2 * Math.PI;
+  while (torsoRotation < -Math.PI) torsoRotation += 2 * Math.PI;
+  
+  // Apply anatomical constraints (±90°)
+  torsoRotation = Math.max(
+    TORSO_CONSTRAINTS.MIN_ROTATION,
+    Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, torsoRotation)
+  );
+  
+  return torsoRotation;
+}
+
+/**
+ * Calculate damage modifier from hip rotation
+ * 
+ * Determines power bonus applied to techniques based on hip rotation angle.
+ * Greater hip rotation generates more power through proper biomechanics,
+ * with strikes benefiting most from full rotation.
+ * 
+ * @param hipRotationAngle - Hip rotation angle in radians (typically from torso twist)
+ * @param techniqueType - Type of technique ('strike', 'throw', or 'joint')
+ * @returns Damage multiplier (1.0-1.3 for strikes, 1.0-1.1 for throws/joints)
+ * 
+ * @example
+ * ```typescript
+ * // Full hip rotation on strike technique
+ * const modifier = calculateHipRotationPowerModifier(Math.PI / 2, 'strike');
+ * // Returns 1.30 (30% damage bonus)
+ * 
+ * // Half rotation on throw
+ * const throwMod = calculateHipRotationPowerModifier(Math.PI / 4, 'throw');
+ * // Returns 1.05 (5% damage bonus)
+ * ```
+ * 
+ * @public
+ * @korean 허리회전으로인한데미지배율계산
+ */
+export function calculateHipRotationPowerModifier(
+  hipRotationAngle: number,
+  techniqueType: 'strike' | 'throw' | 'joint'
+): number {
+  // Normalize rotation to 0-1 range (0 = no rotation, 1 = max rotation)
+  // Clamp to max rotation first to handle any values exceeding ±90°
+  const clampedAngle = Math.max(
+    -TORSO_CONSTRAINTS.MAX_ROTATION,
+    Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, Math.abs(hipRotationAngle))
+  );
+  const normalizedRotation = clampedAngle / TORSO_CONSTRAINTS.MAX_ROTATION;
+  
+  // Strikes benefit most from hip rotation (up to 30% bonus)
+  // Throws get moderate benefit (up to 10% bonus)
+  // Joint locks get minimal benefit (up to 10% bonus)
+  const baseModifier = techniqueType === 'strike' ? 0.30 : 0.10;
+  
+  return 1.0 + (normalizedRotation * baseModifier);
+}

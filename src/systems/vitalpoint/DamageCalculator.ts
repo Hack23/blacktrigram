@@ -6,6 +6,7 @@ import {
 import { PlayerState } from "../player";
 import { TrigramCalculator } from "../trigram/TrigramCalculator";
 import { StatusEffect } from "../types";
+import { calculateHipRotationPowerModifier } from "../animation/SkeletonRig";
 import { calculateMeridianFlow } from "./KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
 import {
@@ -197,6 +198,7 @@ export class DamageCalculator {
    * - Meridian flow bonus (1.0x-1.3x at peak hours)
    * - Time-of-day bonus (+20% for Dark Ops techniques at night)
    * - Archetype-specific bonuses
+   * - Hip rotation power modifier (1.0x-1.3x for strikes with full rotation)
    * - Critical hit multiplier (2x when accuracy > 0.9)
    * - Damage variance (±10% randomness)
    * - Defense reduction
@@ -212,6 +214,7 @@ export class DamageCalculator {
    *   meridianBonus ×
    *   timeBonus ×
    *   archetypeBonus ×
+   *   hipRotationModifier ×
    *   criticalMultiplier ×
    *   variance ×
    *   defenseReduction
@@ -223,6 +226,7 @@ export class DamageCalculator {
    * @param vitalPointHit - Result of vital point hit detection
    * @param currentHour - Current hour of day (0-23) for meridian flow
    * @param meridianStates - Current meridian disruption states (0=blocked, 1=normal)
+   * @param hipRotationAngle - Hip rotation angle in radians (optional, defaults to 0)
    * @returns Comprehensive damage result with all modifiers applied
    *
    * @example
@@ -248,7 +252,8 @@ export class DamageCalculator {
     technique: KoreanTechnique,
     vitalPointHit: VitalPointHitResult,
     currentHour: number,
-    meridianStates: Record<string, number>
+    meridianStates: Record<string, number>,
+    hipRotationAngle: number = 0
   ): DamageResult {
     // 1. Base damage from technique
     const attackerStrength = attacker.attackPower || 50;
@@ -293,11 +298,21 @@ export class DamageCalculator {
       vitalPointHit.vitalPointHit
     );
 
-    // 8. Critical hit (accuracy > 0.9)
+    // 8. Hip rotation power modifier (허리회전 파워 보너스)
+    // Determine technique type for appropriate modifier calculation
+    const techniqueType: 'strike' | 'throw' | 'joint' = 
+      technique.type === 'throw' ? 'throw' :
+      technique.type === 'joint_lock' ? 'joint' : 'strike';
+    const hipRotationModifier = calculateHipRotationPowerModifier(
+      hipRotationAngle,
+      techniqueType
+    );
+
+    // 9. Critical hit (accuracy > 0.9)
     const criticalMultiplier = accuracy > 0.9 ? 2.0 : 1.0;
     const isCritical = accuracy > 0.9;
 
-    // 9. Calculate total damage before defense
+    // 10. Calculate total damage before defense
     let totalDamage =
       baseDamage *
       stanceEffectiveness *
@@ -306,13 +321,14 @@ export class DamageCalculator {
       meridianBonus *
       timeBonus *
       archetypeBonus *
+      hipRotationModifier *
       criticalMultiplier;
 
-    // 10. Add damage variance (±10%)
+    // 11. Add damage variance (±10%)
     const variance = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
     totalDamage *= variance;
 
-    // 11. Apply defense reduction using existing method for consistency
+    // 12. Apply defense reduction using existing method for consistency
     const defenderDefense = defender.defense || 0;
     const finalDamage = DamageCalculator.calculateDamageReduction(
       totalDamage,
@@ -320,7 +336,7 @@ export class DamageCalculator {
       false
     );
 
-    // 12. Combine effects from vital point hit
+    // 13. Combine effects from vital point hit
     const effects = vitalPointHit.effects || [];
 
     return {
