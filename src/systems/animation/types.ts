@@ -1220,6 +1220,8 @@ export interface MappingValidationResult {
   readonly mapped: number;
   /** List of missing combinations */
   readonly missing: readonly TechniqueAnimationKey[];
+}
+
 // ===== Backward Compatibility Helpers (하위 호환성 도우미) =====
 
 /**

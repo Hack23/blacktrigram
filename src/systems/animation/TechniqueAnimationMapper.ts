@@ -486,10 +486,10 @@ export class TechniqueAnimationMapper {
    */
   private initializeFallbacks(): Map<TechniqueTypeCategory, AnimationState> {
     return new Map([
-      ["strike", "attack"],
-      ["joint", "attack"],
-      ["throw", "attack"],
-      ["pressure_point", "attack"],
+      ["strike", AnimationState.ATTACK],
+      ["joint", AnimationState.ATTACK],
+      ["throw", AnimationState.ATTACK],
+      ["pressure_point", AnimationState.ATTACK],
     ]);
   }
 
@@ -539,7 +539,7 @@ export class TechniqueAnimationMapper {
         this.mapTechnique(
           { stance, techniqueType: "strike", bodyPart, intensity },
           {
-            animationState: "attack",
+            animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity),
             impactFrame: this.getImpactFrameForIntensity(intensity),
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
@@ -553,7 +553,7 @@ export class TechniqueAnimationMapper {
         this.mapTechnique(
           { stance, techniqueType: "joint", bodyPart, intensity },
           {
-            animationState: "attack",
+            animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity) * 1.2, // Slightly slower
             impactFrame: this.getImpactFrameForIntensity(intensity),
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
@@ -567,7 +567,7 @@ export class TechniqueAnimationMapper {
         this.mapTechnique(
           { stance, techniqueType: "throw", bodyPart, intensity },
           {
-            animationState: "attack",
+            animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity) * 1.5, // Longer for throws
             impactFrame: this.getImpactFrameForIntensity(intensity) + 4,
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 5,
@@ -581,7 +581,7 @@ export class TechniqueAnimationMapper {
         this.mapTechnique(
           { stance, techniqueType: "pressure_point", bodyPart, intensity },
           {
-            animationState: "attack",
+            animationState: AnimationState.ATTACK,
             duration: this.getDurationForIntensity(intensity) * 0.8, // Faster
             impactFrame: this.getImpactFrameForIntensity(intensity) - 2,
             recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
@@ -617,7 +617,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * (techniqueType === "joint" ? 1.3 : 1.0),
               impactFrame: this.getImpactFrameForIntensity(intensity),
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity) - 2, // Faster recovery (fluid)
@@ -653,7 +653,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * 0.85, // Faster (fire)
               impactFrame: this.getImpactFrameForIntensity(intensity) - 1,
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity) - 3, // Quick recovery
@@ -689,7 +689,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * 0.9, // Slightly faster (explosive)
               impactFrame: this.getImpactFrameForIntensity(intensity),
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 2, // Longer recovery (explosive power)
@@ -725,7 +725,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * 0.95, // Slightly faster (continuous)
               impactFrame: this.getImpactFrameForIntensity(intensity),
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity) - 1, // Faster recovery (mobility)
@@ -761,7 +761,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * 1.1, // Slightly slower (adaptive)
               impactFrame: this.getImpactFrameForIntensity(intensity) + 1,
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity), // Standard recovery
@@ -797,7 +797,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * 1.2, // Slower (defensive)
               impactFrame: this.getImpactFrameForIntensity(intensity) + 2,
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 3, // Longer recovery (immovable)
@@ -833,7 +833,7 @@ export class TechniqueAnimationMapper {
           this.mapTechnique(
             { stance, techniqueType, bodyPart, intensity },
             {
-              animationState: "attack",
+              animationState: AnimationState.ATTACK,
               duration: this.getDurationForIntensity(intensity) * (techniqueType === "throw" ? 1.6 : 1.0),
               impactFrame: this.getImpactFrameForIntensity(intensity) + (techniqueType === "throw" ? 3 : 0),
               recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + (techniqueType === "throw" ? 4 : 0),
@@ -1034,7 +1034,7 @@ export class TechniqueAnimationMapper {
    * @private
    */
   private getFallbackAnimation(key: TechniqueAnimationKey): TechniqueAnimation {
-    const fallbackState = this.fallbackMap.get(key.techniqueType) || "attack";
+    const fallbackState = this.fallbackMap.get(key.techniqueType) ?? AnimationState.ATTACK;
     
     return {
       animationState: fallbackState,
