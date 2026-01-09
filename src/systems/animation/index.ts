@@ -208,6 +208,8 @@ export {
   isTurning,
   getFacingAngleRadians,
   getHeadAngleRadians,
+  getTorsoRotationRadians,
+  getHipRotationRadians,
   normalizeAngle,
   calculateAngleDifference,
   calculateAngleToTarget,
