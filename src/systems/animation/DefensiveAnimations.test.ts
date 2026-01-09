@@ -14,6 +14,38 @@ import {
   DEFAULT_ANIMATION_CONFIGS,
 } from "./AnimationStateMachine";
 import { AnimationPriority } from "./types";
+import { TrigramStance } from "../../types/common";
+import {
+  // GEON (Heaven) defenses
+  GEON_HIGH_BLOCK,
+  GEON_COUNTER_STRIKE,
+  // TAE (Lake) defenses
+  TAE_JOINT_LOCK_DEFENSE,
+  TAE_SWEEP_DEFENSE,
+  // LI (Fire) defenses
+  LI_PRECISION_PARRY,
+  LI_NERVE_STRIKE_COUNTER,
+  // JIN (Thunder) defenses
+  JIN_EXPLOSIVE_BLOCK,
+  JIN_SHOCKING_COUNTER,
+  // SON (Wind) defenses
+  SON_CONTINUOUS_DEFLECTION,
+  SON_PRESSURE_COUNTER,
+  // GAM (Water) defenses
+  GAM_FLOW_DEFENSE,
+  GAM_REDIRECTION_COUNTER,
+  // GAN (Mountain) defenses
+  GAN_IMMOVABLE_BLOCK,
+  GAN_COUNTER_FORTRESS,
+  // GON (Earth) defenses
+  GON_GROUNDING_DEFENSE,
+  GON_TAKEDOWN_COUNTER,
+  // Helper functions
+  getDefensiveAnimationsForStance,
+  getDefensiveAnimation,
+  DEFENSIVE_ANIMATIONS_BY_STANCE,
+  ALL_DEFENSIVE_ANIMATIONS,
+} from "./DefensiveAnimations";
 
 describe("Defensive Animations - Configuration", () => {
   describe("Block Success (막기)", () => {
@@ -180,40 +212,6 @@ describe("Defensive Animations - Configuration", () => {
  * Tests all 16 stance-specific defensive animations (2 per stance × 8 stances),
  * verifying keyframe data, Korean terminology, and animation integrity.
  */
-
-import { TrigramStance } from "../../types/common";
-import {
-  // GEON (Heaven) defenses
-  GEON_HIGH_BLOCK,
-  GEON_COUNTER_STRIKE,
-  // TAE (Lake) defenses
-  TAE_JOINT_LOCK_DEFENSE,
-  TAE_SWEEP_DEFENSE,
-  // LI (Fire) defenses
-  LI_PRECISION_PARRY,
-  LI_NERVE_STRIKE_COUNTER,
-  // JIN (Thunder) defenses
-  JIN_EXPLOSIVE_BLOCK,
-  JIN_SHOCKING_COUNTER,
-  // SON (Wind) defenses
-  SON_CONTINUOUS_DEFLECTION,
-  SON_PRESSURE_COUNTER,
-  // GAM (Water) defenses
-  GAM_FLOW_DEFENSE,
-  GAM_REDIRECTION_COUNTER,
-  // GAN (Mountain) defenses
-  GAN_IMMOVABLE_BLOCK,
-  GAN_COUNTER_FORTRESS,
-  // GON (Earth) defenses
-  GON_GROUNDING_DEFENSE,
-  GON_TAKEDOWN_COUNTER,
-  // Helper functions
-  getDefensiveAnimationsForStance,
-  getDefensiveAnimation,
-  DEFENSIVE_ANIMATIONS_BY_STANCE,
-  ALL_DEFENSIVE_ANIMATIONS,
-} from "./DefensiveAnimations";
-
 describe("Stance-Specific Defensive Animations", () => {
   describe("☰ GEON (Heaven) - Direct Force Defense", () => {
     it("should have 2 defensive variations", () => {
