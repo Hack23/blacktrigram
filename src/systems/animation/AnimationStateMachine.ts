@@ -34,6 +34,7 @@ import type {
   AnimationUpdateResult,
   FallType,
 } from "./types";
+import type { AnimationKeyframe } from "../../types/skeletal";
 import { STEP_PRIORITY } from "./types";
 import { FALL_TO_GROUND_MAP } from "./types";
 
@@ -830,7 +831,7 @@ export class PlayerAnimationStateMachine {
    * 
    * @korean 이전키프레임
    */
-  private previousKeyframe: any = null; // Will store AnimationKeyframe when available
+  private previousKeyframe: AnimationKeyframe | null = null;
 
   /**
    * Preferred easing function for smooth transitions
@@ -1530,7 +1531,7 @@ export class PlayerAnimationStateMachine {
    * 
    * @korean 동작예측업데이트
    */
-  updateMotionPredictionState(currentKeyframe: any, deltaTime: number): void {
+  updateMotionPredictionState(currentKeyframe: AnimationKeyframe, deltaTime: number): void {
     if (!this.enableMotionPrediction) {
       return;
     }
@@ -1578,7 +1579,7 @@ export class PlayerAnimationStateMachine {
    * 
    * @korean 예측키프레임가져오기
    */
-  getPredictedKeyframe(currentKeyframe: any): any {
+  getPredictedKeyframe(currentKeyframe: AnimationKeyframe): AnimationKeyframe {
     if (!this.enableMotionPrediction || !this.previousKeyframe) {
       return currentKeyframe;
     }

@@ -46,8 +46,17 @@ export interface BezierControlPoints {
   readonly p2y: number;
   /** 
    * Enable precision mode for exact bezier curve calculation
-   * When false (default), uses simplified approximation assuming x progresses linearly with t
-   * When true, performs iterative solving for accurate x-t mapping (higher CPU cost)
+   * 
+   * **Reserved for future implementation.**
+   * 
+   * When false (default), uses simplified approximation assuming x progresses linearly with t.
+   * This is standard for CSS cubic-bezier() and provides good results with minimal overhead.
+   * 
+   * When true (future), will perform iterative solving for accurate x-t mapping (higher CPU cost).
+   * This would enable non-linear time progression for more complex easing curves.
+   * 
+   * Currently unused - kept in interface for forward compatibility without breaking API changes.
+   * 
    * @korean 정밀모드
    */
   readonly precisionMode?: boolean;
@@ -94,7 +103,8 @@ export function cubicBezierWithOptions(
   const clampedT = Math.max(0, Math.min(1, t));
   
   // For performance, use direct calculation (standard for CSS cubic-bezier)
-  // In the future, precisionMode could enable iterative solving for exact x-t mapping
+  // Note: options.precisionMode is currently unused and reserved for future implementation
+  // where we could add iterative solving for exact x-t mapping
   const u = 1 - clampedT;
   
   // Cubic bezier formula: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
