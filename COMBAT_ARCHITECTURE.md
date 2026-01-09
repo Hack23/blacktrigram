@@ -606,8 +606,8 @@ console.log(transition.type); // "indirect" (opposite stances)
 | Component | Tests | Coverage | Status |
 |-----------|-------|----------|--------|
 | Guard Poses | 104 tests | 100% | ✅ All Passing |
-| Defensive Animations | 16 tests | 100% | ✅ All Passing |
-| Attack Animations | 24 tests | 100% | ✅ All Passing |
+| Defensive Animations | 59 tests | 100% | ✅ All Passing |
+| Attack Animations | 46 tests | 100% | ✅ All Passing |
 | Stance Transitions | 29 tests | 100% | ✅ All Passing |
 | Animation State Machine | 40 tests | 100% | ✅ All Passing |
 

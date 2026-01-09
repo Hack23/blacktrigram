@@ -173,3 +173,346 @@ describe("Defensive Animations - Configuration", () => {
     });
   });
 });
+
+/**
+ * Tests for Stance-Specific Defensive Animations
+ * 
+ * Tests all 16 stance-specific defensive animations (2 per stance × 8 stances),
+ * verifying keyframe data, Korean terminology, and animation integrity.
+ */
+
+import * as THREE from "three";
+import { TrigramStance } from "../../types/common";
+import {
+  // GEON (Heaven) defenses
+  GEON_HIGH_BLOCK,
+  GEON_COUNTER_STRIKE,
+  // TAE (Lake) defenses
+  TAE_JOINT_LOCK_DEFENSE,
+  TAE_SWEEP_DEFENSE,
+  // LI (Fire) defenses
+  LI_PRECISION_PARRY,
+  LI_NERVE_STRIKE_COUNTER,
+  // JIN (Thunder) defenses
+  JIN_EXPLOSIVE_BLOCK,
+  JIN_SHOCKING_COUNTER,
+  // SON (Wind) defenses
+  SON_CONTINUOUS_DEFLECTION,
+  SON_PRESSURE_COUNTER,
+  // GAM (Water) defenses
+  GAM_FLOW_DEFENSE,
+  GAM_REDIRECTION_COUNTER,
+  // GAN (Mountain) defenses
+  GAN_IMMOVABLE_BLOCK,
+  GAN_COUNTER_FORTRESS,
+  // GON (Earth) defenses
+  GON_GROUNDING_DEFENSE,
+  GON_TAKEDOWN_COUNTER,
+  // Helper functions
+  getDefensiveAnimationsForStance,
+  getDefensiveAnimation,
+  DEFENSIVE_ANIMATIONS_BY_STANCE,
+  ALL_DEFENSIVE_ANIMATIONS,
+} from "./DefensiveAnimations";
+
+describe("Stance-Specific Defensive Animations", () => {
+  describe("☰ GEON (Heaven) - Direct Force Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.GEON);
+      expect(animations).toHaveLength(2);
+    });
+
+    describe("High Block (상단막기)", () => {
+      it("should have correct metadata", () => {
+        expect(GEON_HIGH_BLOCK.name).toBe("geon_high_block");
+        expect(GEON_HIGH_BLOCK.koreanName).toBe("건 상단막기");
+        expect(GEON_HIGH_BLOCK.type).toBe("defense");
+        expect(GEON_HIGH_BLOCK.loop).toBe(false);
+      });
+
+      it("should have appropriate duration (200ms)", () => {
+        expect(GEON_HIGH_BLOCK.duration).toBe(0.2);
+      });
+
+      it("should have valid keyframes", () => {
+        expect(GEON_HIGH_BLOCK.keyframes.length).toBeGreaterThan(1);
+        expect(GEON_HIGH_BLOCK.keyframes[0].time).toBe(0);
+      });
+    });
+
+    describe("Counter Strike (반격)", () => {
+      it("should have correct metadata", () => {
+        expect(GEON_COUNTER_STRIKE.name).toBe("geon_counter_strike");
+        expect(GEON_COUNTER_STRIKE.koreanName).toBe("건 반격");
+        expect(GEON_COUNTER_STRIKE.type).toBe("defense");
+      });
+
+      it("should have appropriate duration (250ms)", () => {
+        expect(GEON_COUNTER_STRIKE.duration).toBe(0.25);
+      });
+    });
+  });
+
+  describe("☱ TAE (Lake) - Joint Manipulation Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.TAE);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(TAE_JOINT_LOCK_DEFENSE.koreanName).toBe("태 관절방어");
+      expect(TAE_SWEEP_DEFENSE.koreanName).toBe("태 쓸어치기방어");
+    });
+
+    it("should have appropriate durations (280-300ms)", () => {
+      expect(TAE_JOINT_LOCK_DEFENSE.duration).toBe(0.3);
+      expect(TAE_SWEEP_DEFENSE.duration).toBe(0.28);
+    });
+  });
+
+  describe("☲ LI (Fire) - Precision Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.LI);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have fast precision defenses (180-220ms)", () => {
+      expect(LI_PRECISION_PARRY.duration).toBe(0.18);
+      expect(LI_NERVE_STRIKE_COUNTER.duration).toBe(0.22);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(LI_PRECISION_PARRY.koreanName).toBe("리 정밀받아넘기기");
+      expect(LI_NERVE_STRIKE_COUNTER.koreanName).toBe("리 신경타격반격");
+    });
+  });
+
+  describe("☳ JIN (Thunder) - Explosive Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.JIN);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have explosive fast defenses (150-180ms)", () => {
+      expect(JIN_EXPLOSIVE_BLOCK.duration).toBe(0.15);
+      expect(JIN_SHOCKING_COUNTER.duration).toBe(0.18);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(JIN_EXPLOSIVE_BLOCK.koreanName).toBe("진 폭발막기");
+      expect(JIN_SHOCKING_COUNTER.koreanName).toBe("진 충격반격");
+    });
+  });
+
+  describe("☴ SON (Wind) - Continuous Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.SON);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have longer continuous defenses (350-400ms)", () => {
+      expect(SON_CONTINUOUS_DEFLECTION.duration).toBe(0.35);
+      expect(SON_PRESSURE_COUNTER.duration).toBe(0.4);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(SON_CONTINUOUS_DEFLECTION.koreanName).toBe("손 연속막기");
+      expect(SON_PRESSURE_COUNTER.koreanName).toBe("손 압박반격");
+    });
+  });
+
+  describe("☵ GAM (Water) - Flow Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.GAM);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have medium flow defenses (300-320ms)", () => {
+      expect(GAM_FLOW_DEFENSE.duration).toBe(0.32);
+      expect(GAM_REDIRECTION_COUNTER.duration).toBe(0.3);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(GAM_FLOW_DEFENSE.koreanName).toBe("감 흐름방어");
+      expect(GAM_REDIRECTION_COUNTER.koreanName).toBe("감 전환반격");
+    });
+  });
+
+  describe("☶ GAN (Mountain) - Immovable Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.GAN);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have solid defensive durations (250-350ms)", () => {
+      expect(GAN_IMMOVABLE_BLOCK.duration).toBe(0.25);
+      expect(GAN_COUNTER_FORTRESS.duration).toBe(0.35);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(GAN_IMMOVABLE_BLOCK.koreanName).toBe("간 부동막기");
+      expect(GAN_COUNTER_FORTRESS.koreanName).toBe("간 반격요새");
+    });
+  });
+
+  describe("☷ GON (Earth) - Grounding Defense", () => {
+    it("should have 2 defensive variations", () => {
+      const animations = getDefensiveAnimationsForStance(TrigramStance.GON);
+      expect(animations).toHaveLength(2);
+    });
+
+    it("should have grounding defense durations (280-450ms)", () => {
+      expect(GON_GROUNDING_DEFENSE.duration).toBe(0.28);
+      expect(GON_TAKEDOWN_COUNTER.duration).toBe(0.45);
+    });
+
+    it("should have correct Korean names", () => {
+      expect(GON_GROUNDING_DEFENSE.koreanName).toBe("곤 접지방어");
+      expect(GON_TAKEDOWN_COUNTER.koreanName).toBe("곤 꺾기반격");
+    });
+  });
+
+  describe("Complete Defensive Coverage", () => {
+    it("should have all 16 defensive animations (8 stances × 2 defenses)", () => {
+      expect(ALL_DEFENSIVE_ANIMATIONS.size).toBe(16);
+    });
+
+    it("should have all 8 stances in the map", () => {
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.size).toBe(8);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.GEON)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.TAE)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.LI)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.JIN)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.SON)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.GAM)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.GAN)).toBe(true);
+      expect(DEFENSIVE_ANIMATIONS_BY_STANCE.has(TrigramStance.GON)).toBe(true);
+    });
+
+    it("should have correct animation type for all defenses", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        expect(animation.type).toBe("defense");
+      });
+    });
+
+    it("should have Korean names for all animations", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        expect(animation.koreanName).toBeDefined();
+        expect(animation.koreanName.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("should have non-looping animations", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        expect(animation.loop).toBe(false);
+      });
+    });
+
+    it("should have realistic durations (150-450ms)", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        expect(animation.duration).toBeGreaterThanOrEqual(0.15);
+        expect(animation.duration).toBeLessThanOrEqual(0.45);
+      });
+    });
+  });
+
+  describe("Helper Functions", () => {
+    describe("getDefensiveAnimationsForStance", () => {
+      it("should return 2 animations for each stance", () => {
+        const stances = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
+        ];
+
+        stances.forEach((stance) => {
+          const animations = getDefensiveAnimationsForStance(stance);
+          expect(animations).toHaveLength(2);
+        });
+      });
+
+      it("should return empty array for invalid stance", () => {
+        const animations = getDefensiveAnimationsForStance("invalid" as TrigramStance);
+        expect(animations).toHaveLength(0);
+      });
+    });
+
+    describe("getDefensiveAnimation", () => {
+      it("should retrieve animation by name", () => {
+        const animation = getDefensiveAnimation("geon_high_block");
+        expect(animation).toBeDefined();
+        expect(animation?.name).toBe("geon_high_block");
+      });
+
+      it("should return undefined for non-existent animation", () => {
+        const animation = getDefensiveAnimation("nonexistent_animation");
+        expect(animation).toBeUndefined();
+      });
+    });
+  });
+
+  describe("Animation Quality Checks", () => {
+    it("should have at least 2 keyframes per animation", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        expect(animation.keyframes.length).toBeGreaterThanOrEqual(2);
+      });
+    });
+
+    it("should have keyframes at time 0", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        const firstKeyframe = animation.keyframes[0];
+        expect(firstKeyframe.time).toBe(0);
+      });
+    });
+
+    it("should have valid easing values", () => {
+      const validEasings = ["linear", "ease-in", "ease-out", "ease-in-out"];
+      
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        animation.keyframes.forEach((keyframe) => {
+          expect(validEasings).toContain(keyframe.easing);
+        });
+      });
+    });
+
+    it("should have bone rotations in each keyframe", () => {
+      ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
+        animation.keyframes.forEach((keyframe) => {
+          expect(keyframe.boneRotations).toBeInstanceOf(Map);
+        });
+      });
+    });
+  });
+
+  describe("Korean Martial Arts Authenticity", () => {
+    it("should reflect stance philosophy in defense characteristics", () => {
+      // Thunder (JIN) should have fastest defenses (explosive)
+      const jinAnimations = getDefensiveAnimationsForStance(TrigramStance.JIN);
+      const jinAvgDuration = jinAnimations.reduce((sum, a) => sum + a.duration, 0) / jinAnimations.length;
+      
+      // Wind (SON) should have longer defenses (continuous)
+      const sonAnimations = getDefensiveAnimationsForStance(TrigramStance.SON);
+      const sonAvgDuration = sonAnimations.reduce((sum, a) => sum + a.duration, 0) / sonAnimations.length;
+      
+      expect(jinAvgDuration).toBeLessThan(sonAvgDuration);
+    });
+
+    it("should have unique defense names per stance", () => {
+      const animationNames = new Set();
+      
+      DEFENSIVE_ANIMATIONS_BY_STANCE.forEach((animations) => {
+        animations.forEach((animation) => {
+          animationNames.add(animation.name);
+        });
+      });
+      
+      // All 16 animations should be unique
+      expect(animationNames.size).toBe(16);
+    });
+  });
+});
