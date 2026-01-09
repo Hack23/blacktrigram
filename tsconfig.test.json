@@ -9,8 +9,8 @@
     // Unused variables - keep relaxed for now
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    // Vitest globals
-    "types": ["node", "vitest/globals"]
+    // Vitest globals and Vite client types for import.meta.env
+    "types": ["node", "vitest/globals", "vite/client"]
   },
   "include": [
     "src/**/*.test.ts",
