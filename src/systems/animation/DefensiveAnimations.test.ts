@@ -181,7 +181,6 @@ describe("Defensive Animations - Configuration", () => {
  * verifying keyframe data, Korean terminology, and animation integrity.
  */
 
-import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
 import {
   // GEON (Heaven) defenses
