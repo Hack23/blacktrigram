@@ -2,16 +2,17 @@
  * Tests for MatchCountdown component
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MatchCountdown } from "./MatchCountdown";
-import React from "react";
 
 // Mock Audio Provider
 vi.mock("../../../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isAudioReady: true,
     playSFX: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 
@@ -40,7 +41,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   mockStartCountdown.mockClear();
   mockSkipCountdown.mockClear();
-  
+
   // Reset to default state
   mockHookState = {
     state: "ready",
@@ -143,7 +144,7 @@ describe("MatchCountdown", () => {
     render(<MatchCountdown onComplete={onComplete} isMobile={false} />);
 
     const overlay = screen.getByTestId("match-countdown");
-    
+
     // Check for cyberpunk background
     expect(overlay).toHaveStyle({
       position: "fixed",

@@ -2,16 +2,17 @@
  * Tests for RoundStartAnnouncement component
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RoundStartAnnouncement } from "./RoundStartAnnouncement";
-import React from "react";
 
 // Mock Audio Provider
 vi.mock("../../../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isAudioReady: true,
     playSFX: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 
@@ -51,7 +52,7 @@ describe("RoundStartAnnouncement", () => {
 
     const text = screen.getByTestId("round-start-text");
     expect(text).toBeInTheDocument();
-    
+
     // Should contain both Korean and English text
     expect(text.textContent).toMatch(/라운드 2 시작!/);
     expect(text.textContent).toMatch(/Round 2 Begin!/);
@@ -142,7 +143,7 @@ describe("RoundStartAnnouncement", () => {
     );
 
     const announcement = screen.getByTestId("round-start-announcement");
-    
+
     // Component sets opacity through state after a delay
     // Just verify the announcement renders
     expect(announcement).toBeInTheDocument();
@@ -159,7 +160,7 @@ describe("RoundStartAnnouncement", () => {
     );
 
     const announcement = screen.getByTestId("round-start-announcement");
-    
+
     // Check for cyberpunk styling
     expect(announcement).toHaveStyle({
       position: "fixed",

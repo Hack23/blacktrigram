@@ -14,11 +14,14 @@ import { CombatScreen3D } from "./CombatScreen3D";
 vi.mock("../../../audio/AudioProvider", () => ({
   useAudio: () => ({
     isInitialized: true,
+    isAudioReady: true,
     playMusic: vi.fn(),
     stopMusic: vi.fn(),
     playSFX: vi.fn(),
     setSFXVolume: vi.fn(),
     setMusicVolume: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 

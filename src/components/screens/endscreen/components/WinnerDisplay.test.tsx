@@ -11,9 +11,12 @@ vi.mock("../../../../audio/AudioProvider", () => ({
   AudioProvider: ({ children }: { children: React.ReactNode }) => children,
   useAudio: () => ({
     isInitialized: true,
+    isAudioReady: true,
     playMusic: vi.fn(),
     stopMusic: vi.fn(),
     playSFX: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 
