@@ -329,7 +329,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     if (prevIsMovingRef.current !== isMoving) {
       if (isMoving) {
         playerAnimation.transitionTo(AnimationState.WALK);
-      } else if (playerAnimation.currentState === "walk") {
+      } else if (playerAnimation.currentState === AnimationState.WALK) {
         playerAnimation.transitionTo(AnimationState.IDLE);
       }
       prevIsMovingRef.current = isMoving;

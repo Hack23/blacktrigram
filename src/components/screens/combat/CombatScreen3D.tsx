@@ -716,18 +716,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     () => ({
       onFrame: (frame, state) => {
         // Execute attack at midpoint of animation (frame 6 of 12)
-        if (state === "attack" && frame === 6) {
+        if (state === AnimationState.ATTACK && frame === 6) {
           // Attack connects at the midpoint - execute combat logic here
           handleAttackRef.current?.();
         }
       },
       onAnimationComplete: (state) => {
         // Handle animation completion
-        if (state === "attack" || state === "defend") {
+        if (state === AnimationState.ATTACK || state === AnimationState.DEFEND) {
           combatActions.setExecutingTechnique(false);
           // Clear attack animation when attack completes
           // 공격 완료 시 공격 애니메이션 초기화
-          if (state === "attack") {
+          if (state === AnimationState.ATTACK) {
             clearPlayer1AttackAnimation.current();
           }
         } else if (state === "stance_change") {
@@ -757,14 +757,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player2Animation = usePlayerAnimation({
     events: {
       onFrame: (frame, state) => {
-        if (state === "attack" && frame === 6) {
+        if (state === AnimationState.ATTACK && frame === 6) {
           // AI attack hit detection
         }
       },
       onAnimationComplete: (state) => {
         // Clear AI attack animation when attack completes
         // AI 공격 완료 시 공격 애니메이션 초기화
-        if (state === "attack") {
+        if (state === AnimationState.ATTACK) {
           clearPlayer2AttackAnimation.current();
         }
       },
@@ -804,7 +804,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // AI is moving - transition to walk animation
       if (
         player2Animation.currentState !== AnimationState.WALK &&
-        player2Animation.currentState !== "attack"
+        player2Animation.currentState !== AnimationState.ATTACK
       ) {
         player2Animation.transitionTo(AnimationState.WALK);
       }
@@ -1364,7 +1364,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onAction: useCallback(
       (action: string) => {
         switch (action) {
-          case "attack":
+          case AnimationState.ATTACK:
             // Execute currently selected technique via technique selection system
             techniqueSelection.executeTechnique();
             break;
@@ -1715,7 +1715,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const executeAIActionCallback = useCallback(
     (action: string, targetPos?: Position) => {
       switch (action) {
-        case "attack":
+        case AnimationState.ATTACK:
           // Set AI attack animation based on technique
           // AI 공격 애니메이션 설정
           if (

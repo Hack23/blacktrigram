@@ -919,7 +919,7 @@ export class PlayerAnimationStateMachine {
           }
           // Non-fall, non-recovery, non-looping animations transition to idle
           else if (this.currentState !== AnimationState.IDLE && 
-                   this.currentState !== "ko" &&
+                   this.currentState !== AnimationState.KO &&
                    !this.currentState.startsWith("ground_")) {
             // Clear stance transition data if completing stance_change
             if (this.currentState === AnimationState.STANCE_CHANGE) {
