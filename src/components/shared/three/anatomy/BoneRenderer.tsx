@@ -240,16 +240,18 @@ const SingleBone: React.FC<{
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
     const length = bone.length;
-    const direction = new THREE.Vector3(1, 0, 0); // Default direction along X-axis
+    // CapsuleGeometry in Three.js is aligned along the Y-axis by default (0, 1, 0)
+    const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
 
     // Calculate rotation to align with bone direction if parent exists
     let rotation = new THREE.Euler(0, 0, 0);
     if (bone.parent) {
-      // Point towards local position
+      // Get the direction from parent bone to this bone (normalized)
       const target = bone.position.clone().normalize();
       if (target.length() > 0.001) {
+        // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
-          direction,
+          capsuleDefaultDirection,
           target
         );
         rotation = new THREE.Euler().setFromQuaternion(quaternion);
@@ -272,7 +274,7 @@ const SingleBone: React.FC<{
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
-            boneTransform.rotation.z + Math.PI / 2,
+            boneTransform.rotation.z,
           ]}
           castShadow
           receiveShadow
@@ -292,7 +294,7 @@ const SingleBone: React.FC<{
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
-            boneTransform.rotation.z + Math.PI / 2,
+            boneTransform.rotation.z,
           ]}
         >
           <capsuleGeometry
