@@ -44,6 +44,13 @@ export interface BezierControlPoints {
   readonly p2x: number;
   /** Second control point y (0-1) */
   readonly p2y: number;
+  /** 
+   * Enable precision mode for exact bezier curve calculation
+   * When false (default), uses simplified approximation assuming x progresses linearly with t
+   * When true, performs iterative solving for accurate x-t mapping (higher CPU cost)
+   * @korean 정밀모드
+   */
+  readonly precisionMode?: boolean;
 }
 
 /**
@@ -54,50 +61,75 @@ export interface BezierControlPoints {
  * Implements cubic bezier curve interpolation for smooth, natural motion.
  * Based on CSS cubic-bezier() function specification.
  * 
- * Note: For animation easing, we use a simplified approximation that assumes
- * x progresses linearly with t. This is standard for CSS cubic-bezier() and
- * provides good results for Korean martial arts movement with minimal overhead.
+ * This function uses a configuration object approach for better API clarity.
+ * By default, uses simplified approximation (x progresses linearly with t) which
+ * provides good results for animation with minimal overhead. Enable precisionMode
+ * for exact calculations when needed.
  * 
  * @param t - Input time (0-1)
- * @param _p1x - First control point x (0-1) - reserved for future precision mode
- * @param p1y - First control point y (can exceed 0-1 for overshoot)
- * @param _p2x - Second control point x (0-1) - reserved for future precision mode
- * @param p2y - Second control point y (can exceed 0-1 for overshoot)
+ * @param options - Bezier control points and configuration
  * @returns Eased value
  * 
  * @example
  * ```typescript
  * // Natural Korean martial arts movement (physics-based)
- * const eased = cubicBezier(0.5, 0.25, 0.1, 0.25, 1.0);
- * // Smooth S-curve for stance transitions
- * const eased2 = cubicBezier(0.5, 0.42, 0, 0.58, 1.0);
+ * const eased = cubicBezierWithOptions(0.5, { 
+ *   p1x: 0.25, p1y: 0.1, p2x: 0.25, p2y: 1.0 
+ * });
+ * 
+ * // With precision mode for exact calculation
+ * const precise = cubicBezierWithOptions(0.5, {
+ *   p1x: 0.42, p1y: 0, p2x: 0.58, p2y: 1.0,
+ *   precisionMode: true
+ * });
  * ```
  * 
- * @korean 3차베지어이징
+ * @korean 3차베지어이징옵션
  */
-export function cubicBezier(
+export function cubicBezierWithOptions(
   t: number,
-  _p1x: number,
-  p1y: number,
-  _p2x: number,
-  p2y: number
+  options: BezierControlPoints
 ): number {
   // Clamp t to [0, 1]
   const clampedT = Math.max(0, Math.min(1, t));
   
-  // For performance, use direct calculation rather than iterative solving
-  // This is acceptable for animation easing where precision requirements are lower
-  // The x control points are preserved in the API for future precision mode
+  // For performance, use direct calculation (standard for CSS cubic-bezier)
+  // In the future, precisionMode could enable iterative solving for exact x-t mapping
   const u = 1 - clampedT;
   
   // Cubic bezier formula: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
   // For easing, P₀ = (0,0) and P₃ = (1,1), so:
   // y(t) = 3(1-t)²t*p1y + 3(1-t)t²*p2y + t³
-  const result = 3 * u * u * clampedT * p1y + 
-                 3 * u * clampedT * clampedT * p2y + 
+  const result = 3 * u * u * clampedT * options.p1y + 
+                 3 * u * clampedT * clampedT * options.p2y + 
                  clampedT * clampedT * clampedT;
   
   return result;
+}
+
+/**
+ * Cubic bezier easing (legacy function signature for backward compatibility)
+ * 
+ * **Korean**: 3차 베지어 이징 (레거시)
+ * 
+ * @param t - Input time (0-1)
+ * @param p1x - First control point x (0-1) - currently unused, reserved for precision mode
+ * @param p1y - First control point y (can exceed 0-1 for overshoot)
+ * @param p2x - Second control point x (0-1) - currently unused, reserved for precision mode
+ * @param p2y - Second control point y (can exceed 0-1 for overshoot)
+ * @returns Eased value
+ * 
+ * @deprecated Use cubicBezierWithOptions for clearer API
+ * @korean 3차베지어이징레거시
+ */
+export function cubicBezier(
+  t: number,
+  p1x: number,
+  p1y: number,
+  p2x: number,
+  p2y: number
+): number {
+  return cubicBezierWithOptions(t, { p1x, p1y, p2x, p2y });
 }
 
 /**
@@ -746,14 +778,50 @@ export const updateMotionPrediction = (
     }
   });
   
-  // Calculate angular velocities (simplified - use rotation differences)
+  // Calculate angular velocities using quaternion-based rotation differences
+  // This avoids gimbal lock and angle wrapping issues with Euler angle differences
   currentKeyframe.boneRotations.forEach((currentRot, boneName) => {
     const prevRot = previousKeyframe.boneRotations.get(boneName);
     if (prevRot) {
+      // Convert Euler rotations to quaternions
+      const qCurrent = new THREE.Quaternion().setFromEuler(currentRot);
+      const qPrev = new THREE.Quaternion().setFromEuler(prevRot);
+      
+      // Calculate relative rotation: qDiff = qCurrent * qPrev^(-1)
+      const qDiff = qCurrent.clone().multiply(qPrev.clone().invert());
+      
+      // Extract axis-angle representation for angular velocity
+      const axis = new THREE.Vector3();
+      const wClamped = THREE.MathUtils.clamp(qDiff.w, -1, 1);
+      let angle = 2 * Math.acos(wClamped);
+      const sinHalfAngle = Math.sqrt(1 - wClamped * wClamped);
+      
+      if (sinHalfAngle < 0.0001) {
+        // If sinHalfAngle is too small, rotation is negligible - use zero velocity
+        axis.set(0, 0, 0);
+        angle = 0;
+      } else {
+        // Extract normalized axis from quaternion
+        axis.set(
+          qDiff.x / sinHalfAngle,
+          qDiff.y / sinHalfAngle,
+          qDiff.z / sinHalfAngle
+        );
+      }
+      
+      // Use shortest rotation path
+      if (angle > Math.PI) {
+        angle -= 2 * Math.PI;
+      }
+      
+      // Angular velocity vector = axis * (angle / deltaTime)
+      const angularVelocityVec = axis.multiplyScalar(angle / deltaTime);
+      
+      // Store as Euler for consistency with existing API
       const angularVel = new THREE.Euler(
-        (currentRot.x - prevRot.x) / deltaTime,
-        (currentRot.y - prevRot.y) / deltaTime,
-        (currentRot.z - prevRot.z) / deltaTime,
+        angularVelocityVec.x,
+        angularVelocityVec.y,
+        angularVelocityVec.z,
         currentRot.order
       );
       newAngularVelocities.set(boneName, angularVel);

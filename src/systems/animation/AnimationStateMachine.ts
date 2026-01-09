@@ -19,8 +19,8 @@ import { canInterrupt } from "./AnimationPriority";
 import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
 import { 
   createMotionPredictionState, 
-  // updateMotionPrediction, // Reserved for future motion prediction integration
-  // predictFutureKeyframe, // Reserved for future motion prediction integration
+  updateMotionPrediction,
+  predictFutureKeyframe,
   type MotionPredictionState,
   type EasingName,
 } from "./KeyframeInterpolation";
@@ -818,11 +818,19 @@ export class PlayerAnimationStateMachine {
    * 
    * How far ahead to predict motion (default: 1 frame = 16.67ms at 60fps).
    * Typical range: 0.016-0.033 seconds for <50ms total latency.
-   * Reserved for future implementation.
    * 
    * @korean 예측시간
    */
-  // private predictionTimeAhead: number = 0.01667; // Reserved for future implementation
+  private predictionTimeAhead: number = 0.01667; // 1 frame at 60fps
+  
+  /**
+   * Previous keyframe for motion prediction velocity calculation
+   * 
+   * **Korean**: 이전 키프레임
+   * 
+   * @korean 이전키프레임
+   */
+  private previousKeyframe: any = null; // Will store AnimationKeyframe when available
 
   /**
    * Preferred easing function for smooth transitions
@@ -1409,25 +1417,25 @@ export class PlayerAnimationStateMachine {
    * future animation frames based on current velocity (1-2 frames ahead).
    * 
    * @param enabled - Whether to enable motion prediction
-   * @param _predictionTime - Reserved: time ahead to predict (default: 16.67ms)
+   * @param predictionTime - Optional: time ahead to predict (default: 16.67ms)
    * 
    * @example
    * ```typescript
    * // Enable motion prediction for 1 frame (16.67ms at 60fps)
    * machine.setMotionPrediction(true);
    * 
-   * // Enable with 2 frames prediction (33.33ms) - reserved for future
+   * // Enable with 2 frames prediction (33.33ms)
    * machine.setMotionPrediction(true, 0.03333);
    * ```
    * 
    * @korean 동작예측설정
    */
-  setMotionPrediction(enabled: boolean, _predictionTime?: number): void {
+  setMotionPrediction(enabled: boolean, predictionTime?: number): void {
     this.enableMotionPrediction = enabled;
-    // Future: implement prediction time configuration
-    // if (predictionTime !== undefined) {
-    //   this.predictionTimeAhead = Math.min(predictionTime, 0.05);
-    // }
+    if (predictionTime !== undefined) {
+      // Clamp to 50ms maximum for <50ms total latency
+      this.predictionTimeAhead = Math.min(predictionTime, 0.05);
+    }
   }
 
   /**
@@ -1489,5 +1497,96 @@ export class PlayerAnimationStateMachine {
    */
   getPreferredEasing(): EasingName {
     return this.preferredEasing;
+  }
+
+  /**
+   * Update motion prediction with skeletal keyframe data
+   * 
+   * **Korean**: 동작 예측 업데이트
+   * 
+   * This should be called from the skeletal animation layer when applying
+   * interpolated keyframes to the rig. It updates velocity tracking for
+   * motion prediction to reduce perceived latency.
+   * 
+   * Integration point: Call this from your skeletal animation system after
+   * computing the current interpolated keyframe (e.g., from getInterpolatedKeyframe).
+   * 
+   * @param currentKeyframe - Current skeletal animation keyframe with bone positions/rotations
+   * @param deltaTime - Time elapsed since last update
+   * 
+   * @example
+   * ```typescript
+   * // In your skeletal animation update loop:
+   * const currentKeyframe = getInterpolatedKeyframe(animation, time);
+   * 
+   * // Update motion prediction (for next frame)
+   * if (machine.isMotionPredictionEnabled()) {
+   *   machine.updateMotionPredictionState(currentKeyframe, deltaTime);
+   * }
+   * 
+   * // Apply keyframe to rig
+   * applyKeyframeToRig(rig, currentKeyframe);
+   * ```
+   * 
+   * @korean 동작예측업데이트
+   */
+  updateMotionPredictionState(currentKeyframe: any, deltaTime: number): void {
+    if (!this.enableMotionPrediction) {
+      return;
+    }
+
+    // Update velocity tracking if we have a previous keyframe
+    if (this.previousKeyframe) {
+      this.motionPrediction = updateMotionPrediction(
+        this.motionPrediction,
+        this.previousKeyframe,
+        currentKeyframe,
+        deltaTime
+      );
+    }
+
+    // Store current keyframe for next update
+    this.previousKeyframe = currentKeyframe;
+  }
+
+  /**
+   * Get predicted future keyframe for latency reduction
+   * 
+   * **Korean**: 예측된 미래 키프레임 가져오기
+   * 
+   * Returns a keyframe predicted ahead by predictionTimeAhead (default: 1 frame).
+   * This reduces perceived input latency by showing where the animation will be
+   * in the near future rather than where it currently is.
+   * 
+   * Integration point: Use this instead of the current keyframe when applying
+   * to the rig if motion prediction is enabled.
+   * 
+   * @param currentKeyframe - Current skeletal animation keyframe
+   * @returns Predicted future keyframe, or current if prediction disabled
+   * 
+   * @example
+   * ```typescript
+   * // In your skeletal animation update loop:
+   * let keyframeToApply = currentKeyframe;
+   * 
+   * if (machine.isMotionPredictionEnabled()) {
+   *   keyframeToApply = machine.getPredictedKeyframe(currentKeyframe);
+   * }
+   * 
+   * applyKeyframeToRig(rig, keyframeToApply);
+   * ```
+   * 
+   * @korean 예측키프레임가져오기
+   */
+  getPredictedKeyframe(currentKeyframe: any): any {
+    if (!this.enableMotionPrediction || !this.previousKeyframe) {
+      return currentKeyframe;
+    }
+
+    return predictFutureKeyframe(
+      currentKeyframe,
+      this.motionPrediction,
+      this.predictionTimeAhead
+    );
   }
 }
