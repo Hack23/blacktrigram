@@ -17,6 +17,13 @@
 
 import { canInterrupt } from "./AnimationPriority";
 import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
+import { 
+  createMotionPredictionState, 
+  updateMotionPrediction,
+  predictFutureKeyframe,
+  type MotionPredictionState,
+  type EasingName,
+} from "./KeyframeInterpolation";
 import { TrigramStance } from "../../types/common";
 import { AnimationState } from "./types";
 import type {
@@ -27,6 +34,7 @@ import type {
   AnimationUpdateResult,
   FallType,
 } from "./types";
+import type { AnimationKeyframe } from "../../types/skeletal";
 import { STEP_PRIORITY } from "./types";
 import { FALL_TO_GROUND_MAP } from "./types";
 
@@ -98,6 +106,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: false,
         priority: 3 as AnimationPriority,
         duration: 0.6,
+        easing: "smooth-transition", // Smooth S-curve for stance changes
       },
     ],
     [
@@ -135,6 +144,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: false, // Must complete block animation
         priority: 6 as AnimationPriority, // Higher than defend, same as hit
         duration: 0.133,
+        easing: "controlled-slow", // Controlled deceleration for impact absorption
       },
     ],
     [
@@ -173,6 +183,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: true, // Can be interrupted by attacks
         priority: 2 as AnimationPriority, // Same as run, lower than defend
         duration: 0.2,
+        easing: "natural-motion", // Physics-based recovery
       },
     ],
     [
@@ -185,6 +196,7 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
         interruptible: true,
         priority: STEP_PRIORITY,
         duration: 12 / 60,
+        easing: "explosive-power", // Explosive acceleration for attacks
       },
     ],
     [
@@ -777,6 +789,63 @@ export class PlayerAnimationStateMachine {
   private currentStanceTransition: StanceTransition | null = null;
 
   /**
+   * Motion prediction state for latency reduction
+   * 
+   * **Korean**: 동작 예측 상태
+   * 
+   * Tracks animation velocities for motion prediction to reduce perceived latency.
+   * Updated each frame with velocity calculations for smooth anticipation.
+   * 
+   * @korean 동작예측상태
+   */
+  private motionPrediction: MotionPredictionState = createMotionPredictionState();
+
+  /**
+   * Enable motion prediction for latency reduction
+   * 
+   * **Korean**: 동작 예측 활성화
+   * 
+   * When enabled, predicts future animation frames based on current velocity
+   * to reduce perceived input latency by 16-33ms (1-2 frames at 60fps).
+   * 
+   * @korean 동작예측활성화
+   */
+  private enableMotionPrediction: boolean = false;
+
+  /**
+   * Motion prediction time ahead (seconds)
+   * 
+   * **Korean**: 예측 시간
+   * 
+   * How far ahead to predict motion (default: 1 frame = 16.67ms at 60fps).
+   * Typical range: 0.016-0.033 seconds for <50ms total latency.
+   * 
+   * @korean 예측시간
+   */
+  private predictionTimeAhead: number = 0.01667; // 1 frame at 60fps
+  
+  /**
+   * Previous keyframe for motion prediction velocity calculation
+   * 
+   * **Korean**: 이전 키프레임
+   * 
+   * @korean 이전키프레임
+   */
+  private previousKeyframe: AnimationKeyframe | null = null;
+
+  /**
+   * Preferred easing function for smooth transitions
+   * 
+   * **Korean**: 선호 이징 함수
+   * 
+   * Default easing curve for animation blending and transitions.
+   * Can be overridden per animation or transition.
+   * 
+   * @korean 선호이징함수
+   */
+  private preferredEasing: EasingName = "natural-motion";
+
+  /**
    * Create a new animation state machine
    * 
    * @param animations - Map of animation configurations
@@ -1338,5 +1407,187 @@ export class PlayerAnimationStateMachine {
    */
   private clearStanceTransition(): void {
     this.currentStanceTransition = null;
+  }
+
+  /**
+   * Enable or disable motion prediction
+   * 
+   * **Korean**: 동작 예측 설정
+   * 
+   * Enables motion prediction to reduce perceived input latency by predicting
+   * future animation frames based on current velocity (1-2 frames ahead).
+   * 
+   * @param enabled - Whether to enable motion prediction
+   * @param predictionTime - Optional: time ahead to predict (default: 16.67ms)
+   * 
+   * @example
+   * ```typescript
+   * // Enable motion prediction for 1 frame (16.67ms at 60fps)
+   * machine.setMotionPrediction(true);
+   * 
+   * // Enable with 2 frames prediction (33.33ms)
+   * machine.setMotionPrediction(true, 0.03333);
+   * ```
+   * 
+   * @korean 동작예측설정
+   */
+  setMotionPrediction(enabled: boolean, predictionTime?: number): void {
+    this.enableMotionPrediction = enabled;
+    if (predictionTime !== undefined) {
+      // Clamp to 50ms maximum for <50ms total latency
+      this.predictionTimeAhead = Math.min(predictionTime, 0.05);
+    }
+  }
+
+  /**
+   * Get motion prediction state
+   * 
+   * **Korean**: 동작 예측 상태 가져오기
+   * 
+   * @returns Current motion prediction state
+   * @korean 동작예측상태가져오기
+   */
+  getMotionPredictionState(): MotionPredictionState {
+    return this.motionPrediction;
+  }
+
+  /**
+   * Check if motion prediction is enabled
+   * 
+   * **Korean**: 동작 예측 활성화 확인
+   * 
+   * @returns True if motion prediction is enabled
+   * @korean 동작예측활성화확인
+   */
+  isMotionPredictionEnabled(): boolean {
+    return this.enableMotionPrediction;
+  }
+
+  /**
+   * Set preferred easing function for transitions
+   * 
+   * **Korean**: 선호 이징 함수 설정
+   * 
+   * Sets the default easing curve for animation transitions.
+   * Can use presets like "natural-motion", "smooth-transition", etc.
+   * 
+   * @param easingName - Easing function name
+   * 
+   * @example
+   * ```typescript
+   * // Use natural motion for Korean martial arts
+   * machine.setPreferredEasing("natural-motion");
+   * 
+   * // Use explosive power for strike animations
+   * machine.setPreferredEasing("explosive-power");
+   * ```
+   * 
+   * @korean 선호이징함수설정
+   */
+  setPreferredEasing(easingName: EasingName): void {
+    this.preferredEasing = easingName;
+  }
+
+  /**
+   * Get preferred easing function
+   * 
+   * **Korean**: 선호 이징 함수 가져오기
+   * 
+   * @returns Current preferred easing name
+   * @korean 선호이징함수가져오기
+   */
+  getPreferredEasing(): EasingName {
+    return this.preferredEasing;
+  }
+
+  /**
+   * Update motion prediction with skeletal keyframe data
+   * 
+   * **Korean**: 동작 예측 업데이트
+   * 
+   * This should be called from the skeletal animation layer when applying
+   * interpolated keyframes to the rig. It updates velocity tracking for
+   * motion prediction to reduce perceived latency.
+   * 
+   * Integration point: Call this from your skeletal animation system after
+   * computing the current interpolated keyframe (e.g., from getInterpolatedKeyframe).
+   * 
+   * @param currentKeyframe - Current skeletal animation keyframe with bone positions/rotations
+   * @param deltaTime - Time elapsed since last update
+   * 
+   * @example
+   * ```typescript
+   * // In your skeletal animation update loop:
+   * const currentKeyframe = getInterpolatedKeyframe(animation, time);
+   * 
+   * // Update motion prediction (for next frame)
+   * if (machine.isMotionPredictionEnabled()) {
+   *   machine.updateMotionPredictionState(currentKeyframe, deltaTime);
+   * }
+   * 
+   * // Apply keyframe to rig
+   * applyKeyframeToRig(rig, currentKeyframe);
+   * ```
+   * 
+   * @korean 동작예측업데이트
+   */
+  updateMotionPredictionState(currentKeyframe: AnimationKeyframe, deltaTime: number): void {
+    if (!this.enableMotionPrediction) {
+      return;
+    }
+
+    // Update velocity tracking if we have a previous keyframe
+    if (this.previousKeyframe) {
+      this.motionPrediction = updateMotionPrediction(
+        this.motionPrediction,
+        this.previousKeyframe,
+        currentKeyframe,
+        deltaTime
+      );
+    }
+
+    // Store current keyframe for next update
+    this.previousKeyframe = currentKeyframe;
+  }
+
+  /**
+   * Get predicted future keyframe for latency reduction
+   * 
+   * **Korean**: 예측된 미래 키프레임 가져오기
+   * 
+   * Returns a keyframe predicted ahead by predictionTimeAhead (default: 1 frame).
+   * This reduces perceived input latency by showing where the animation will be
+   * in the near future rather than where it currently is.
+   * 
+   * Integration point: Use this instead of the current keyframe when applying
+   * to the rig if motion prediction is enabled.
+   * 
+   * @param currentKeyframe - Current skeletal animation keyframe
+   * @returns Predicted future keyframe, or current if prediction disabled
+   * 
+   * @example
+   * ```typescript
+   * // In your skeletal animation update loop:
+   * let keyframeToApply = currentKeyframe;
+   * 
+   * if (machine.isMotionPredictionEnabled()) {
+   *   keyframeToApply = machine.getPredictedKeyframe(currentKeyframe);
+   * }
+   * 
+   * applyKeyframeToRig(rig, keyframeToApply);
+   * ```
+   * 
+   * @korean 예측키프레임가져오기
+   */
+  getPredictedKeyframe(currentKeyframe: AnimationKeyframe): AnimationKeyframe {
+    if (!this.enableMotionPrediction || !this.previousKeyframe) {
+      return currentKeyframe;
+    }
+
+    return predictFutureKeyframe(
+      currentKeyframe,
+      this.motionPrediction,
+      this.predictionTimeAhead
+    );
   }
 }

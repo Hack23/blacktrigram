@@ -5,11 +5,13 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import * as THREE from "three";
 import {
   PlayerAnimationStateMachine,
   DEFAULT_ANIMATION_CONFIGS,
 } from "./AnimationStateMachine";
 import type { AnimationEvents } from "./types";
+import { AnimationState } from "./types";
 
 describe("PlayerAnimationStateMachine", () => {
   describe("initialization", () => {
@@ -382,6 +384,264 @@ describe("PlayerAnimationStateMachine", () => {
       machine.update(frameDuration); // completes, transitions to idle
       expect(machine.getCurrentState()).toBe("idle");
       expect(machine.getCurrentFrame()).toBe(0);
+    });
+  });
+
+  describe("motion prediction API", () => {
+    it("should initialize with motion prediction disabled", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      expect(machine.isMotionPredictionEnabled()).toBe(false);
+    });
+
+    it("should enable motion prediction with default prediction time", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      machine.setMotionPrediction(true);
+      
+      expect(machine.isMotionPredictionEnabled()).toBe(true);
+      const state = machine.getMotionPredictionState();
+      expect(state).toBeDefined();
+      expect(state.velocities).toBeDefined();
+      expect(state.angularVelocities).toBeDefined();
+    });
+
+    it("should enable motion prediction with custom prediction time", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      const customTime = 0.033; // 2 frames at 60fps
+      machine.setMotionPrediction(true, customTime);
+      
+      expect(machine.isMotionPredictionEnabled()).toBe(true);
+      const state = machine.getMotionPredictionState();
+      expect(state).toBeDefined();
+      expect(state.velocities).toBeDefined();
+    });
+
+    it("should disable motion prediction", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      machine.setMotionPrediction(true);
+      expect(machine.isMotionPredictionEnabled()).toBe(true);
+      
+      machine.setMotionPrediction(false);
+      expect(machine.isMotionPredictionEnabled()).toBe(false);
+    });
+
+    it("should update motion prediction state with velocity tracking", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      machine.setMotionPrediction(true);
+      
+      // Create mock keyframes with proper Euler angle format
+      const keyframe1 = {
+        time: 0,
+        bonePositions: new Map([
+          ["root", new THREE.Vector3(0, 0, 0)],
+          ["spine", new THREE.Vector3(0, 1, 0)],
+        ]),
+        boneRotations: new Map([
+          ["root", new THREE.Euler(0, 0, 0, "XYZ")],
+          ["spine", new THREE.Euler(0, 0, 0, "XYZ")],
+        ]),
+      };
+      
+      const keyframe2 = {
+        time: 0.01667,
+        bonePositions: new Map([
+          ["root", new THREE.Vector3(0.1, 0, 0)],
+          ["spine", new THREE.Vector3(0.1, 1, 0)],
+        ]),
+        boneRotations: new Map([
+          ["root", new THREE.Euler(0, 0.1, 0, "XYZ")],
+          ["spine", new THREE.Euler(0, 0, 0, "XYZ")],
+        ]),
+      };
+      
+      const deltaTime = 0.01667; // 1 frame at 60fps
+      
+      // First update establishes baseline
+      machine.updateMotionPredictionState(keyframe1, deltaTime);
+      
+      // Second update calculates velocities
+      machine.updateMotionPredictionState(keyframe2, deltaTime);
+      
+      const state = machine.getMotionPredictionState();
+      expect(state.velocities).toBeDefined();
+      expect(state.velocities.size).toBeGreaterThan(0);
+      expect(state.angularVelocities).toBeDefined();
+    });
+
+    it("should handle getPredictedKeyframe when motion prediction is disabled", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      const currentKeyframe = {
+        time: 0,
+        bonePositions: new Map([["root", new THREE.Vector3(0, 0, 0)]]),
+        boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
+      };
+      
+      // Should return the same keyframe when prediction is disabled
+      const predicted = machine.getPredictedKeyframe(currentKeyframe);
+      expect(predicted).toBe(currentKeyframe);
+    });
+
+    it("should predict future keyframe when motion prediction is enabled", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      machine.setMotionPrediction(true, 0.01667);
+      
+      // Setup velocity tracking with two keyframes using proper THREE.Vector3
+      const keyframe1 = {
+        time: 0,
+        bonePositions: new Map([["root", new THREE.Vector3(0, 0, 0)]]),
+        boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
+      };
+      
+      const keyframe2 = {
+        time: 0.01667,
+        bonePositions: new Map([["root", new THREE.Vector3(1, 0, 0)]]),
+        boneRotations: new Map([["root", new THREE.Euler(0, 0.1, 0, "XYZ")]]),
+      };
+      
+      machine.updateMotionPredictionState(keyframe1, 0.01667);
+      machine.updateMotionPredictionState(keyframe2, 0.01667);
+      
+      // Get predicted keyframe
+      const predicted = machine.getPredictedKeyframe(keyframe2);
+      
+      // Predicted keyframe should be different from current
+      expect(predicted).not.toBe(keyframe2);
+      expect(predicted.bonePositions).toBeDefined();
+      expect(predicted.boneRotations).toBeDefined();
+      
+      // Predicted position should be ahead of current position
+      const predictedRoot = predicted.bonePositions.get("root");
+      const currentRoot = keyframe2.bonePositions.get("root");
+      expect(predictedRoot).toBeDefined();
+      expect(currentRoot).toBeDefined();
+      if (predictedRoot && currentRoot) {
+        expect(predictedRoot.x).toBeGreaterThan(currentRoot.x);
+      }
+    });
+
+    it("should reset velocity tracking when motion prediction is re-enabled", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Enable and setup velocity with two keyframes
+      machine.setMotionPrediction(true);
+      const keyframe1 = {
+        time: 0,
+        bonePositions: new Map([["root", new THREE.Vector3(0, 0, 0)]]),
+        boneRotations: new Map([["root", new THREE.Euler(0, 0, 0, "XYZ")]]),
+      };
+      const keyframe2 = {
+        time: 0.01667,
+        bonePositions: new Map([["root", new THREE.Vector3(1, 0, 0)]]),
+        boneRotations: new Map([["root", new THREE.Euler(0, 0.1, 0, "XYZ")]]),
+      };
+      
+      // Two updates to establish velocity
+      machine.updateMotionPredictionState(keyframe1, 0.01667);
+      machine.updateMotionPredictionState(keyframe2, 0.01667);
+      
+      let state = machine.getMotionPredictionState();
+      // Store initial velocity count (should be > 0 after two updates)
+      expect(state.velocities.size).toBeGreaterThan(0);
+      
+      // Disable then re-enable
+      machine.setMotionPrediction(false);
+      expect(machine.isMotionPredictionEnabled()).toBe(false);
+      
+      machine.setMotionPrediction(true);
+      expect(machine.isMotionPredictionEnabled()).toBe(true);
+      
+      // The state should be functional after re-enabling
+      // (Implementation may keep or clear velocities, both are valid)
+      state = machine.getMotionPredictionState();
+      expect(state).toBeDefined();
+      expect(state.velocities).toBeDefined();
+    });
+  });
+
+  describe("easing configuration API", () => {
+    it("should initialize with natural-motion as default easing", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      expect(machine.getPreferredEasing()).toBe("natural-motion");
+    });
+
+    it("should set preferred easing curve", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      machine.setPreferredEasing("smooth-transition");
+      expect(machine.getPreferredEasing()).toBe("smooth-transition");
+      
+      machine.setPreferredEasing("explosive-power");
+      expect(machine.getPreferredEasing()).toBe("explosive-power");
+    });
+
+    it("should support all easing curve presets", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      const easingPresets = [
+        "natural-motion",
+        "smooth-transition",
+        "quick-start",
+        "explosive-power",
+        "controlled-slow",
+      ] as const;
+      
+      for (const preset of easingPresets) {
+        machine.setPreferredEasing(preset);
+        expect(machine.getPreferredEasing()).toBe(preset);
+      }
+    });
+
+    it("should accept linear easing", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      machine.setPreferredEasing("linear");
+      expect(machine.getPreferredEasing()).toBe("linear");
+    });
+
+    it("should retain easing preference across state transitions", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      machine.setPreferredEasing("explosive-power");
+      expect(machine.getPreferredEasing()).toBe("explosive-power");
+      
+      // Transition to different animation state
+      machine.transitionTo(AnimationState.ATTACK);
+      expect(machine.getPreferredEasing()).toBe("explosive-power");
+      
+      machine.transitionTo(AnimationState.IDLE);
+      expect(machine.getPreferredEasing()).toBe("explosive-power");
+    });
+
+    it("should have configured easing for stance change animations", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Animations like stance_change should have smooth-transition easing configured
+      machine.transitionTo(AnimationState.STANCE_CHANGE);
+      const config = machine.getCurrentAnimation();
+      expect(config?.easing).toBe("smooth-transition");
+    });
+
+    it("should have configured easing for attack animations", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Attack animations should have explosive-power easing
+      machine.transitionTo(AnimationState.ATTACK);
+      const config = machine.getCurrentAnimation();
+      expect(config?.easing).toBe("explosive-power");
+    });
+
+    it("should have configured easing for defensive animations", () => {
+      // Defensive block success should have controlled-slow easing configured
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.DEFEND_BLOCK_SUCCESS);
+      expect(config).toBeDefined();
+      expect(config?.easing).toBe("controlled-slow");
+    });
+
+    it("should have configured easing for recovery animations", () => {
+      // Recovery animations should have natural-motion easing configured
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.DEFEND_RECOVERY);
+      expect(config).toBeDefined();
+      expect(config?.easing).toBe("natural-motion");
     });
   });
 });

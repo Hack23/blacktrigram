@@ -531,6 +531,18 @@ export interface AnimationConfig {
    * @korean 취약시간
    */
   readonly vulnerabilityDuration?: number;
+
+  /**
+   * Easing function for smooth animation transitions
+   * 
+   * **Korean**: 이징 함수
+   * 
+   * Specifies the easing curve for this animation's transitions.
+   * Uses cubic bezier presets for natural Korean martial arts movement.
+   * 
+   * @korean 이징함수
+   */
+  readonly easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out" | "natural-motion" | "smooth-transition" | "quick-start" | "explosive-power" | "controlled-slow";
 }
 
 /**
