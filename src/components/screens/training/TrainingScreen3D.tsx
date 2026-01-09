@@ -66,8 +66,8 @@ import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
 import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
 import TrainingStatsHTML from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
-import FootworkDrillsHTML, { type FootworkDrill } from "./components/FootworkDrillsHTML";
-import FootPlacementMarkers3D, { type FootworkDrillPattern } from "./components/FootPlacementMarkers3D";
+import FootworkDrillsHTML from "./components/FootworkDrillsHTML";
+import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
 import useTrainingActions from "./hooks/useTrainingActions";
 import useTrainingState from "./hooks/useTrainingState";
 
@@ -921,7 +921,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             pattern={
               trainingState.footworkDrillType === "free_practice" 
                 ? "none" 
-                : (trainingState.footworkDrillType as FootworkDrillPattern)
+                : trainingState.footworkDrillType
             }
             currentStep={trainingState.footworkDrillStep}
             visible={true}
@@ -1184,7 +1184,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             >
               {trainingState.trainingMode === "footwork" ? (
                 <FootworkDrillsHTML
-                  currentDrill={trainingState.footworkDrillType as FootworkDrill}
+                  currentDrill={trainingState.footworkDrillType}
                   onDrillChange={(drill) => trainingActions.startFootworkDrill(drill)}
                   currentStep={trainingState.footworkDrillStep}
                   onStepComplete={() => trainingActions.advanceFootworkStep()}

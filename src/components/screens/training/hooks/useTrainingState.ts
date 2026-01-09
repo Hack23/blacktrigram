@@ -11,9 +11,10 @@ import { useCallback, useReducer } from "react";
 // Re-export types from components for consistency
 import type { AnatomyLayer } from "../components/AnatomyOverlay3D";
 import type { TrainingMode } from "../components/TrainingModeSelectorHTML";
+import type { FootworkDrill } from "../components/FootworkDrillsHTML";
 
 // Re-export for convenience
-export type { AnatomyLayer, TrainingMode };
+export type { AnatomyLayer, TrainingMode, FootworkDrill };
 
 /**
  * Training statistics
@@ -62,7 +63,7 @@ export interface TrainingScreenState {
   readonly visibleAnatomyLayers: AnatomyLayer[];
   // Footwork drill state
   readonly footworkDrillActive: boolean;
-  readonly footworkDrillType: string;
+  readonly footworkDrillType: FootworkDrill;
   readonly footworkDrillStep: number;
 }
 
@@ -93,7 +94,7 @@ type TrainingAction =
   | { type: "UPDATE_BEST_COMBO"; payload: number }
   | { type: "TOGGLE_ANATOMY_LAYER"; payload: AnatomyLayer }
   | { type: "SET_ANATOMY_LAYERS"; payload: AnatomyLayer[] }
-  | { type: "START_FOOTWORK_DRILL"; payload: string }
+  | { type: "START_FOOTWORK_DRILL"; payload: FootworkDrill }
   | { type: "STOP_FOOTWORK_DRILL" }
   | { type: "ADVANCE_FOOTWORK_STEP" }
   | { type: "RESET_FOOTWORK_DRILL" };
@@ -343,7 +344,7 @@ export interface TrainingActions {
   readonly updateBestCombo: (combo: number) => void;
   readonly toggleAnatomyLayer: (layer: AnatomyLayer) => void;
   readonly setAnatomyLayers: (layers: AnatomyLayer[]) => void;
-  readonly startFootworkDrill: (drillType: string) => void;
+  readonly startFootworkDrill: (drillType: FootworkDrill) => void;
   readonly stopFootworkDrill: () => void;
   readonly advanceFootworkStep: () => void;
   readonly resetFootworkDrill: () => void;
@@ -435,7 +436,7 @@ export function useTrainingState(): UseTrainingStateReturn {
       []
     ),
     startFootworkDrill: useCallback(
-      (drillType: string) => {
+      (drillType: FootworkDrill) => {
         dispatch({ type: "START_FOOTWORK_DRILL", payload: drillType });
       },
       []
