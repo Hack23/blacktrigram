@@ -27,7 +27,6 @@ import {
   createMotionPredictionState,
   updateMotionPrediction,
   predictFutureKeyframe,
-  blendKeyframes,
   type BezierControlPoints,
   type MotionPredictionState,
   type EasingName,
@@ -306,8 +305,10 @@ describe("Cubic Bezier Interpolation", () => {
       expect(blendedSpineRot).toBeDefined();
       // At 0% blend, should be close to idle animation (interpolated at t=0.5)
       // Idle interpolation at 0.5: blend between keyframes at 0 and 1.0
-      expect(blendedSpineRot!.x).toBeGreaterThanOrEqual(0);
-      expect(blendedSpineRot!.x).toBeLessThan(0.1); // Close to idle values
+      if (blendedSpineRot) {
+        expect(blendedSpineRot.x).toBeGreaterThanOrEqual(0);
+        expect(blendedSpineRot.x).toBeLessThan(0.1); // Close to idle values
+      }
     });
 
     it("should blend between two animations at 100% (second animation)", () => {
@@ -319,12 +320,13 @@ describe("Cubic Bezier Interpolation", () => {
         1.0 // 100% blend = 100% attack
       );
 
-      const attackSpineRot = attackAnimation.keyframes[1].boneRotations.get("spine");
       const blendedSpineRot = blended.boneRotations.get("spine");
 
       expect(blendedSpineRot).toBeDefined();
       // Should be close to attack animation values
-      expect(Math.abs(blendedSpineRot!.x)).toBeGreaterThan(0.1);
+      if (blendedSpineRot) {
+        expect(Math.abs(blendedSpineRot.x)).toBeGreaterThan(0.1);
+      }
     });
 
     it("should create smooth intermediate blend at 50%", () => {
