@@ -230,6 +230,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Dummy position (fixed in 3D space, right side of arena)
   const dummyPosition = useMemo<[number, number, number]>(() => [5, 0, 0], []);
 
+  // Calculate rotation to face the dummy (same as CombatScreen3D pattern)
+  const playerRotation = useMemo(() => {
+    const dx = dummyPosition[0] - player3DPosition[0];
+    const dz = dummyPosition[2] - player3DPosition[2];
+    return Math.atan2(dx, dz);
+  }, [player3DPosition, dummyPosition]);
+
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
   // ═══════════════════════════════════════════════════════════════════════════
@@ -899,7 +906,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           {...convertPlayerStateToProps(
             trainingPlayerState,
             player3DPosition,
-            0, // rotation - facing right towards dummy
+            playerRotation, // rotation - dynamically face towards dummy
             {
               isMobile,
               facing: "right",

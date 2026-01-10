@@ -694,10 +694,13 @@ describe("AttackAnimations", () => {
 
     it("FRONT_KICK should have balance recovery", () => {
       const recoveryKeyframe = FRONT_KICK_ANIMATION.keyframes[4];
-      const pelvisPos = recoveryKeyframe.bonePositions?.get(BoneName.PELVIS);
+      // After animation fix: uses pure rotations for stability
+      // Pelvis rotation returns to neutral (0)
+      const pelvisRot = recoveryKeyframe.boneRotations.get(BoneName.PELVIS);
 
-      expect(pelvisPos).toBeDefined();
-      expect(pelvisPos!.y).toBe(0); // Returns to stable height
+      expect(pelvisRot).toBeDefined();
+      expect(pelvisRot!.x).toBe(0); // Returns to neutral tilt
+      expect(pelvisRot!.y).toBe(0); // Returns to neutral rotation
     });
 
     it("ROUNDHOUSE_KICK should have ankle flexion on impact", () => {
