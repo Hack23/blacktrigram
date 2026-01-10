@@ -19,6 +19,252 @@ import type {
 import { BoneName } from "../../types/skeletal";
 
 // ═══════════════════════════════════════════════════════════════════════════
+// HAND POSES FOR MARTIAL ARTS (무술 손 자세)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Hand poses for different strike types
+ * 타격 유형별 손 자세
+ *
+ * @korean 손자세
+ */
+export const HAND_POSES = {
+  /**
+   * Closed Fist - Standard punch (주먹)
+   * Fingers curled tight, thumb outside
+   */
+  FIST: {
+    thumb_meta: [0.3, 0.5, 0.2] as const,
+    thumb_prox: [0.4, 0, 0] as const,
+    thumb_dist: [0.3, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [1.57, 0, 0] as const, // 90° curl
+    index_inter: [1.57, 0, 0] as const,
+    index_dist: [0.8, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [1.57, 0, 0] as const,
+    middle_inter: [1.57, 0, 0] as const,
+    middle_dist: [0.8, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [1.57, 0, 0] as const,
+    ring_inter: [1.57, 0, 0] as const,
+    ring_dist: [0.8, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [1.57, 0, 0] as const,
+    pinky_inter: [1.57, 0, 0] as const,
+    pinky_dist: [0.8, 0, 0] as const,
+  },
+
+  /**
+   * Open Palm - Palm strikes, blocks (장권)
+   * Fingers extended, slight spread
+   */
+  OPEN_PALM: {
+    thumb_meta: [0, 0.4, -0.3] as const,
+    thumb_prox: [0.1, 0, 0] as const,
+    thumb_dist: [0, 0, 0] as const,
+    index_meta: [0, 0, -0.1] as const,
+    index_prox: [0, 0, 0] as const,
+    index_inter: [0, 0, 0] as const,
+    index_dist: [0, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [0, 0, 0] as const,
+    middle_inter: [0, 0, 0] as const,
+    middle_dist: [0, 0, 0] as const,
+    ring_meta: [0, 0, 0.1] as const,
+    ring_prox: [0, 0, 0] as const,
+    ring_inter: [0, 0, 0] as const,
+    ring_dist: [0, 0, 0] as const,
+    pinky_meta: [0, 0, 0.2] as const,
+    pinky_prox: [0, 0, 0] as const,
+    pinky_inter: [0, 0, 0] as const,
+    pinky_dist: [0, 0, 0] as const,
+  },
+
+  /**
+   * Spear Hand - Finger strikes (관수)
+   * Fingers together, extended straight
+   */
+  SPEAR_HAND: {
+    thumb_meta: [0.4, 0.6, 0.3] as const,
+    thumb_prox: [0.2, 0, 0] as const,
+    thumb_dist: [0.1, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [0, 0, 0] as const,
+    index_inter: [0, 0, 0] as const,
+    index_dist: [0, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [0, 0, 0] as const,
+    middle_inter: [0, 0, 0] as const,
+    middle_dist: [0, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [0, 0, 0] as const,
+    ring_inter: [0, 0, 0] as const,
+    ring_dist: [0, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [0, 0, 0] as const,
+    pinky_inter: [0, 0, 0] as const,
+    pinky_dist: [0, 0, 0] as const,
+  },
+
+  /**
+   * Knife Hand - Ridge hand strikes (수도)
+   * Fingers together, thumb tucked
+   */
+  KNIFE_HAND: {
+    thumb_meta: [0.5, 0.7, 0.4] as const,
+    thumb_prox: [0.3, 0, 0] as const,
+    thumb_dist: [0.2, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [0, 0, 0] as const,
+    index_inter: [0, 0, 0] as const,
+    index_dist: [0, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [0, 0, 0] as const,
+    middle_inter: [0, 0, 0] as const,
+    middle_dist: [0, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [0, 0, 0] as const,
+    ring_inter: [0, 0, 0] as const,
+    ring_dist: [0, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [0, 0, 0] as const,
+    pinky_inter: [0, 0, 0] as const,
+    pinky_dist: [0, 0, 0] as const,
+  },
+
+  /**
+   * Hammer Fist - Bottom fist strikes (철퇴)
+   * Tight fist with wrist cocked
+   */
+  HAMMER_FIST: {
+    thumb_meta: [0.4, 0.6, 0.3] as const,
+    thumb_prox: [0.5, 0, 0] as const,
+    thumb_dist: [0.4, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [1.7, 0, 0] as const, // Extra tight curl
+    index_inter: [1.7, 0, 0] as const,
+    index_dist: [1.0, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [1.7, 0, 0] as const,
+    middle_inter: [1.7, 0, 0] as const,
+    middle_dist: [1.0, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [1.7, 0, 0] as const,
+    ring_inter: [1.7, 0, 0] as const,
+    ring_dist: [1.0, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [1.7, 0, 0] as const,
+    pinky_inter: [1.7, 0, 0] as const,
+    pinky_dist: [1.0, 0, 0] as const,
+  },
+
+  /**
+   * Backfist - Knuckle strike (등주먹)
+   * Fist with wrist rotation
+   */
+  BACKFIST: {
+    thumb_meta: [0.3, 0.5, 0.2] as const,
+    thumb_prox: [0.4, 0, 0] as const,
+    thumb_dist: [0.3, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [1.4, 0, 0] as const,
+    index_inter: [1.4, 0, 0] as const,
+    index_dist: [0.7, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [1.4, 0, 0] as const,
+    middle_inter: [1.4, 0, 0] as const,
+    middle_dist: [0.7, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [1.4, 0, 0] as const,
+    ring_inter: [1.4, 0, 0] as const,
+    ring_dist: [0.7, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [1.4, 0, 0] as const,
+    pinky_inter: [1.4, 0, 0] as const,
+    pinky_dist: [0.7, 0, 0] as const,
+  },
+
+  /**
+   * Grab/Grip - For grappling (잡기)
+   * Fingers curled for grabbing
+   */
+  GRAB: {
+    thumb_meta: [0.2, 0.4, 0.1] as const,
+    thumb_prox: [0.3, 0, 0] as const,
+    thumb_dist: [0.2, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [1.2, 0, 0] as const,
+    index_inter: [1.0, 0, 0] as const,
+    index_dist: [0.6, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [1.2, 0, 0] as const,
+    middle_inter: [1.0, 0, 0] as const,
+    middle_dist: [0.6, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [1.2, 0, 0] as const,
+    ring_inter: [1.0, 0, 0] as const,
+    ring_dist: [0.6, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [1.2, 0, 0] as const,
+    pinky_inter: [1.0, 0, 0] as const,
+    pinky_dist: [0.6, 0, 0] as const,
+  },
+
+  /**
+   * Two Finger - Eye strikes (이지권)
+   * Index and middle extended
+   */
+  TWO_FINGER: {
+    thumb_meta: [0.5, 0.7, 0.4] as const,
+    thumb_prox: [0.4, 0, 0] as const,
+    thumb_dist: [0.3, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [0, 0, 0] as const,
+    index_inter: [0, 0, 0] as const,
+    index_dist: [0, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [0, 0, 0] as const,
+    middle_inter: [0, 0, 0] as const,
+    middle_dist: [0, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [1.57, 0, 0] as const, // Curled
+    ring_inter: [1.57, 0, 0] as const,
+    ring_dist: [0.8, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [1.57, 0, 0] as const,
+    pinky_inter: [1.57, 0, 0] as const,
+    pinky_dist: [0.8, 0, 0] as const,
+  },
+
+  /**
+   * Relaxed/Neutral - Idle state (자연)
+   * Natural hand position
+   */
+  RELAXED: {
+    thumb_meta: [0.1, 0.2, 0] as const,
+    thumb_prox: [0.1, 0, 0] as const,
+    thumb_dist: [0.05, 0, 0] as const,
+    index_meta: [0, 0, 0] as const,
+    index_prox: [0.2, 0, 0] as const,
+    index_inter: [0.2, 0, 0] as const,
+    index_dist: [0.1, 0, 0] as const,
+    middle_meta: [0, 0, 0] as const,
+    middle_prox: [0.25, 0, 0] as const,
+    middle_inter: [0.25, 0, 0] as const,
+    middle_dist: [0.1, 0, 0] as const,
+    ring_meta: [0, 0, 0] as const,
+    ring_prox: [0.3, 0, 0] as const,
+    ring_inter: [0.3, 0, 0] as const,
+    ring_dist: [0.15, 0, 0] as const,
+    pinky_meta: [0, 0, 0] as const,
+    pinky_prox: [0.35, 0, 0] as const,
+    pinky_inter: [0.35, 0, 0] as const,
+    pinky_dist: [0.2, 0, 0] as const,
+  },
+} as const;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // KOREAN MARTIAL ARTS POSES (한국 무술 자세)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -620,6 +866,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.ELBOW_R, ...phase.elbow);
       kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
       kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+      // Form fist during windup
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -638,6 +886,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
       kf.rotate(BoneName.SPINE_MIDDLE, 0, phase.spineY * 0.7, 0);
       kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+      // Apply fist pose to punching hand
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -656,6 +906,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.35, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, 0.25, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.3, 0);
+      // Apply fist pose to punching hand
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
     });
     this.currentTime += timeOffset;
     return this;
@@ -672,6 +924,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.WRIST_R, -0.5, 0, 0.1);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.4, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.25, 0);
+      // Apply open palm pose for palm strike
+      this.applyHandPose(kf, HAND_POSES.OPEN_PALM, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -689,6 +943,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.5, 0);
       kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.35, 0);
+      // Apply fist pose to punching hand
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -704,6 +960,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.ELBOW_R, 0, 0, 1.57);
       kf.rotate(BoneName.SPINE_UPPER, 0, -0.3, 0);
       kf.rotate(BoneName.PELVIS, 0, -0.2, 0);
+      // Form fist during hook windup
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -721,6 +979,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.PELVIS, -0.2, 0.15, 0);
       kf.position(BoneName.PELVIS, 0, 0.1, 0.1);
+      // Apply fist pose to punching hand
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -738,6 +998,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
       kf.rotate(BoneName.PELVIS, 0.15, -0.1, 0);
       kf.position(BoneName.PELVIS, 0, -0.1, 0);
+      // Apply fist pose to punching hand during preparation
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -755,6 +1017,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_MIDDLE, 0.15, 0.3, 0);
       kf.rotate(BoneName.PELVIS, 0.1, 0.25, 0);
       kf.position(BoneName.PELVIS, 0, -0.05, 0.1);
+      // Apply hammer fist pose for overhand impact
+      this.applyHandPose(kf, HAND_POSES.HAMMER_FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -792,6 +1056,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.5, 0.1);
       kf.rotate(BoneName.PELVIS, 0, 0.4, 0);
       kf.position(BoneName.ELBOW_R, 0, 0, 0.7);
+      // Clenched fist for elbow strikes
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -810,6 +1076,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, -0.15, 0, 0);
       kf.position(BoneName.PELVIS, 0, 0.08, 0.15);
       kf.position(BoneName.ELBOW_R, 0, 0.7, 0.5);
+      // Clenched fist for elbow uppercut
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -829,6 +1097,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, 0.2, 0, 0);
       kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
       kf.position(BoneName.KNEE_R, 0, 0.4, 0.5);
+      // Grab hands for clinch knee strike
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -853,6 +1123,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
       kf.position(BoneName.PELVIS, 0, -0.05, 0.2);
+      // Apply grab pose to both hands for grappling
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -871,6 +1143,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0.7, 1.2, -0.2);
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
+      // Apply grab pose - maintaining grip during throw
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -891,6 +1165,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0.25, 0.4, -0.2);
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.position(BoneName.PELVIS, 0, -0.1, 0.05);
+      // Apply grab pose for control during lock
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -909,6 +1185,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.2);
       kf.rotate(BoneName.WRIST_L, -0.2, 0.3, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.2, 0);
+      // Apply grab pose to both hands for wrist control
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -929,6 +1207,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, 0, 0.4, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.3, 0);
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+      // Apply grab pose for maintaining control during twist
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1028,6 +1308,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
       kf.rotate(BoneName.PELVIS, 0.2, 0, 0);
+      // Apply grab pose for clinch control
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1045,6 +1327,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SHOULDER_R, 0.1, 0, -0.2);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
       kf.rotate(BoneName.PELVIS, 0, -0.2, 0);
+      // Apply open palm for parrying
+      this.applyHandPose(kf, HAND_POSES.OPEN_PALM, "left");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1062,6 +1346,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.35, 0);
       kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.2, 0);
+      // Apply fist for counter punch
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1097,6 +1383,9 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, 0, -0.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -0.2, 0);
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      // Open palm for parry deflection
+      this.applyHandPose(kf, HAND_POSES.OPEN_PALM, "left");
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1113,6 +1402,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.3);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+      // Fists for solid blocking surface
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1130,6 +1421,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.ELBOW_R, 0, 0, 0.6);
       kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
       kf.rotate(BoneName.PELVIS, 0.1, 0, 0);
+      // Fists for blocking
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1356,6 +1649,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.6, 0.2);
       kf.rotate(BoneName.PELVIS, 0, 0.5, 0);
       kf.position(BoneName.SHOULDER_R, 0, 0, 0.15);
+      // Clenched fist for power transfer
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1389,6 +1684,8 @@ export class MartialArtsAnimationBuilder {
         BoneName.ELBOW_R,
         new THREE.Euler(...guard.rightElbow)
       );
+      // Fists up for guard
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, "both");
     }
     return this;
   }
@@ -1450,6 +1747,687 @@ export class MartialArtsAnimationBuilder {
   }
 
   // ═══════════════════════════════════════════════════════════════════════
+  // HAND POSES (손 모양)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Helper to apply finger rotations from a hand pose to a keyframe
+   * @internal
+   */
+  private applyHandPose(
+    kf: KeyframeConfig,
+    pose: (typeof HAND_POSES)[keyof typeof HAND_POSES],
+    hand: "left" | "right" | "both"
+  ): void {
+    const applyLeft = hand === "left" || hand === "both";
+    const applyRight = hand === "right" || hand === "both";
+
+    if (applyLeft) {
+      kf.rotate(
+        BoneName.THUMB_META_L,
+        pose.thumb_meta[0],
+        pose.thumb_meta[1],
+        pose.thumb_meta[2]
+      );
+      kf.rotate(
+        BoneName.THUMB_PROX_L,
+        pose.thumb_prox[0],
+        pose.thumb_prox[1],
+        pose.thumb_prox[2]
+      );
+      kf.rotate(
+        BoneName.THUMB_DIST_L,
+        pose.thumb_dist[0],
+        pose.thumb_dist[1],
+        pose.thumb_dist[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_META_L,
+        pose.index_meta[0],
+        pose.index_meta[1],
+        pose.index_meta[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_PROX_L,
+        pose.index_prox[0],
+        pose.index_prox[1],
+        pose.index_prox[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_INTER_L,
+        pose.index_inter[0],
+        pose.index_inter[1],
+        pose.index_inter[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_DIST_L,
+        pose.index_dist[0],
+        pose.index_dist[1],
+        pose.index_dist[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_META_L,
+        pose.middle_meta[0],
+        pose.middle_meta[1],
+        pose.middle_meta[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_PROX_L,
+        pose.middle_prox[0],
+        pose.middle_prox[1],
+        pose.middle_prox[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_INTER_L,
+        pose.middle_inter[0],
+        pose.middle_inter[1],
+        pose.middle_inter[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_DIST_L,
+        pose.middle_dist[0],
+        pose.middle_dist[1],
+        pose.middle_dist[2]
+      );
+      kf.rotate(
+        BoneName.RING_META_L,
+        pose.ring_meta[0],
+        pose.ring_meta[1],
+        pose.ring_meta[2]
+      );
+      kf.rotate(
+        BoneName.RING_PROX_L,
+        pose.ring_prox[0],
+        pose.ring_prox[1],
+        pose.ring_prox[2]
+      );
+      kf.rotate(
+        BoneName.RING_INTER_L,
+        pose.ring_inter[0],
+        pose.ring_inter[1],
+        pose.ring_inter[2]
+      );
+      kf.rotate(
+        BoneName.RING_DIST_L,
+        pose.ring_dist[0],
+        pose.ring_dist[1],
+        pose.ring_dist[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_META_L,
+        pose.pinky_meta[0],
+        pose.pinky_meta[1],
+        pose.pinky_meta[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_PROX_L,
+        pose.pinky_prox[0],
+        pose.pinky_prox[1],
+        pose.pinky_prox[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_INTER_L,
+        pose.pinky_inter[0],
+        pose.pinky_inter[1],
+        pose.pinky_inter[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_DIST_L,
+        pose.pinky_dist[0],
+        pose.pinky_dist[1],
+        pose.pinky_dist[2]
+      );
+    }
+
+    if (applyRight) {
+      kf.rotate(
+        BoneName.THUMB_META_R,
+        pose.thumb_meta[0],
+        pose.thumb_meta[1],
+        pose.thumb_meta[2]
+      );
+      kf.rotate(
+        BoneName.THUMB_PROX_R,
+        pose.thumb_prox[0],
+        pose.thumb_prox[1],
+        pose.thumb_prox[2]
+      );
+      kf.rotate(
+        BoneName.THUMB_DIST_R,
+        pose.thumb_dist[0],
+        pose.thumb_dist[1],
+        pose.thumb_dist[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_META_R,
+        pose.index_meta[0],
+        pose.index_meta[1],
+        pose.index_meta[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_PROX_R,
+        pose.index_prox[0],
+        pose.index_prox[1],
+        pose.index_prox[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_INTER_R,
+        pose.index_inter[0],
+        pose.index_inter[1],
+        pose.index_inter[2]
+      );
+      kf.rotate(
+        BoneName.INDEX_DIST_R,
+        pose.index_dist[0],
+        pose.index_dist[1],
+        pose.index_dist[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_META_R,
+        pose.middle_meta[0],
+        pose.middle_meta[1],
+        pose.middle_meta[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_PROX_R,
+        pose.middle_prox[0],
+        pose.middle_prox[1],
+        pose.middle_prox[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_INTER_R,
+        pose.middle_inter[0],
+        pose.middle_inter[1],
+        pose.middle_inter[2]
+      );
+      kf.rotate(
+        BoneName.MIDDLE_DIST_R,
+        pose.middle_dist[0],
+        pose.middle_dist[1],
+        pose.middle_dist[2]
+      );
+      kf.rotate(
+        BoneName.RING_META_R,
+        pose.ring_meta[0],
+        pose.ring_meta[1],
+        pose.ring_meta[2]
+      );
+      kf.rotate(
+        BoneName.RING_PROX_R,
+        pose.ring_prox[0],
+        pose.ring_prox[1],
+        pose.ring_prox[2]
+      );
+      kf.rotate(
+        BoneName.RING_INTER_R,
+        pose.ring_inter[0],
+        pose.ring_inter[1],
+        pose.ring_inter[2]
+      );
+      kf.rotate(
+        BoneName.RING_DIST_R,
+        pose.ring_dist[0],
+        pose.ring_dist[1],
+        pose.ring_dist[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_META_R,
+        pose.pinky_meta[0],
+        pose.pinky_meta[1],
+        pose.pinky_meta[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_PROX_R,
+        pose.pinky_prox[0],
+        pose.pinky_prox[1],
+        pose.pinky_prox[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_INTER_R,
+        pose.pinky_inter[0],
+        pose.pinky_inter[1],
+        pose.pinky_inter[2]
+      );
+      kf.rotate(
+        BoneName.PINKY_DIST_R,
+        pose.pinky_dist[0],
+        pose.pinky_dist[1],
+        pose.pinky_dist[2]
+      );
+    }
+  }
+
+  /**
+   * Apply fist pose to hands - Closed fist for punches (주먹)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 주먹쥐기
+   */
+  withFist(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply open palm pose - Palm strikes and blocks (장권)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 손바닥펴기
+   */
+  withOpenPalm(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.OPEN_PALM, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply spear hand pose - Finger strikes to throat/eyes (관수)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 관수펴기
+   */
+  withSpearHand(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.SPEAR_HAND, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply knife hand pose - Ridge hand strikes (수도)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 수도펴기
+   */
+  withKnifeHand(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.KNIFE_HAND, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply hammer fist pose - Bottom fist strikes (철퇴)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 철퇴주먹
+   */
+  withHammerFist(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.HAMMER_FIST, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply backfist pose - Knuckle strikes (등주먹)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 등주먹
+   */
+  withBackfist(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.BACKFIST, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply grab pose - Grappling and holds (잡기)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 잡기손
+   */
+  withGrab(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.GRAB, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply two finger pose - Eye strikes (이지권)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 이지권
+   */
+  withTwoFinger(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.TWO_FINGER, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Apply relaxed pose - Natural/idle hands (자연)
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 자연손
+   */
+  withRelaxedHands(hand: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.RELAXED, hand);
+    }
+    return this;
+  }
+
+  /**
+   * Helper to apply finger rotations from a hand pose to an existing keyframe
+   * @internal
+   */
+  private applyHandPoseToKeyframe(
+    kf: AnimationKeyframe,
+    pose: (typeof HAND_POSES)[keyof typeof HAND_POSES],
+    hand: "left" | "right" | "both"
+  ): void {
+    const applyLeft = hand === "left" || hand === "both";
+    const applyRight = hand === "right" || hand === "both";
+
+    if (applyLeft) {
+      kf.boneRotations.set(
+        BoneName.THUMB_META_L,
+        new THREE.Euler(
+          pose.thumb_meta[0],
+          pose.thumb_meta[1],
+          pose.thumb_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.THUMB_PROX_L,
+        new THREE.Euler(
+          pose.thumb_prox[0],
+          pose.thumb_prox[1],
+          pose.thumb_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.THUMB_DIST_L,
+        new THREE.Euler(
+          pose.thumb_dist[0],
+          pose.thumb_dist[1],
+          pose.thumb_dist[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_META_L,
+        new THREE.Euler(
+          pose.index_meta[0],
+          pose.index_meta[1],
+          pose.index_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_PROX_L,
+        new THREE.Euler(
+          pose.index_prox[0],
+          pose.index_prox[1],
+          pose.index_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_INTER_L,
+        new THREE.Euler(
+          pose.index_inter[0],
+          pose.index_inter[1],
+          pose.index_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_DIST_L,
+        new THREE.Euler(
+          pose.index_dist[0],
+          pose.index_dist[1],
+          pose.index_dist[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_META_L,
+        new THREE.Euler(
+          pose.middle_meta[0],
+          pose.middle_meta[1],
+          pose.middle_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_PROX_L,
+        new THREE.Euler(
+          pose.middle_prox[0],
+          pose.middle_prox[1],
+          pose.middle_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_INTER_L,
+        new THREE.Euler(
+          pose.middle_inter[0],
+          pose.middle_inter[1],
+          pose.middle_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_DIST_L,
+        new THREE.Euler(
+          pose.middle_dist[0],
+          pose.middle_dist[1],
+          pose.middle_dist[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.RING_META_L,
+        new THREE.Euler(pose.ring_meta[0], pose.ring_meta[1], pose.ring_meta[2])
+      );
+      kf.boneRotations.set(
+        BoneName.RING_PROX_L,
+        new THREE.Euler(pose.ring_prox[0], pose.ring_prox[1], pose.ring_prox[2])
+      );
+      kf.boneRotations.set(
+        BoneName.RING_INTER_L,
+        new THREE.Euler(
+          pose.ring_inter[0],
+          pose.ring_inter[1],
+          pose.ring_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.RING_DIST_L,
+        new THREE.Euler(pose.ring_dist[0], pose.ring_dist[1], pose.ring_dist[2])
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_META_L,
+        new THREE.Euler(
+          pose.pinky_meta[0],
+          pose.pinky_meta[1],
+          pose.pinky_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_PROX_L,
+        new THREE.Euler(
+          pose.pinky_prox[0],
+          pose.pinky_prox[1],
+          pose.pinky_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_INTER_L,
+        new THREE.Euler(
+          pose.pinky_inter[0],
+          pose.pinky_inter[1],
+          pose.pinky_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_DIST_L,
+        new THREE.Euler(
+          pose.pinky_dist[0],
+          pose.pinky_dist[1],
+          pose.pinky_dist[2]
+        )
+      );
+    }
+
+    if (applyRight) {
+      kf.boneRotations.set(
+        BoneName.THUMB_META_R,
+        new THREE.Euler(
+          pose.thumb_meta[0],
+          pose.thumb_meta[1],
+          pose.thumb_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.THUMB_PROX_R,
+        new THREE.Euler(
+          pose.thumb_prox[0],
+          pose.thumb_prox[1],
+          pose.thumb_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.THUMB_DIST_R,
+        new THREE.Euler(
+          pose.thumb_dist[0],
+          pose.thumb_dist[1],
+          pose.thumb_dist[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_META_R,
+        new THREE.Euler(
+          pose.index_meta[0],
+          pose.index_meta[1],
+          pose.index_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_PROX_R,
+        new THREE.Euler(
+          pose.index_prox[0],
+          pose.index_prox[1],
+          pose.index_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_INTER_R,
+        new THREE.Euler(
+          pose.index_inter[0],
+          pose.index_inter[1],
+          pose.index_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.INDEX_DIST_R,
+        new THREE.Euler(
+          pose.index_dist[0],
+          pose.index_dist[1],
+          pose.index_dist[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_META_R,
+        new THREE.Euler(
+          pose.middle_meta[0],
+          pose.middle_meta[1],
+          pose.middle_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_PROX_R,
+        new THREE.Euler(
+          pose.middle_prox[0],
+          pose.middle_prox[1],
+          pose.middle_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_INTER_R,
+        new THREE.Euler(
+          pose.middle_inter[0],
+          pose.middle_inter[1],
+          pose.middle_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.MIDDLE_DIST_R,
+        new THREE.Euler(
+          pose.middle_dist[0],
+          pose.middle_dist[1],
+          pose.middle_dist[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.RING_META_R,
+        new THREE.Euler(pose.ring_meta[0], pose.ring_meta[1], pose.ring_meta[2])
+      );
+      kf.boneRotations.set(
+        BoneName.RING_PROX_R,
+        new THREE.Euler(pose.ring_prox[0], pose.ring_prox[1], pose.ring_prox[2])
+      );
+      kf.boneRotations.set(
+        BoneName.RING_INTER_R,
+        new THREE.Euler(
+          pose.ring_inter[0],
+          pose.ring_inter[1],
+          pose.ring_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.RING_DIST_R,
+        new THREE.Euler(pose.ring_dist[0], pose.ring_dist[1], pose.ring_dist[2])
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_META_R,
+        new THREE.Euler(
+          pose.pinky_meta[0],
+          pose.pinky_meta[1],
+          pose.pinky_meta[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_PROX_R,
+        new THREE.Euler(
+          pose.pinky_prox[0],
+          pose.pinky_prox[1],
+          pose.pinky_prox[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_INTER_R,
+        new THREE.Euler(
+          pose.pinky_inter[0],
+          pose.pinky_inter[1],
+          pose.pinky_inter[2]
+        )
+      );
+      kf.boneRotations.set(
+        BoneName.PINKY_DIST_R,
+        new THREE.Euler(
+          pose.pinky_dist[0],
+          pose.pinky_dist[1],
+          pose.pinky_dist[2]
+        )
+      );
+    }
+  }
+
+  /**
+   * Apply hand pose during a keyframe (inline version for addKeyframe)
+   * @param pose The hand pose to apply
+   * @param hand Which hand(s) to apply the pose to
+   * @korean 손모양적용
+   */
+  applyHandPoseDuring(
+    kf: KeyframeConfig,
+    pose: keyof typeof HAND_POSES,
+    hand: "left" | "right" | "both" = "both"
+  ): void {
+    this.applyHandPose(kf, HAND_POSES[pose], hand);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
   // RECOVERY & COMMON (복귀 & 공통)
   // ═══════════════════════════════════════════════════════════════════════
 
@@ -1478,6 +2456,8 @@ export class MartialArtsAnimationBuilder {
       // Reset positions
       kf.position(BoneName.PELVIS, 0, 0, 0);
       kf.position(BoneName.FOOT_R, 0, 0, 0);
+      // Fists up for guard
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
     });
     this.currentTime += timeOffset;
     return this;
