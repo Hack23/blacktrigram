@@ -1807,6 +1807,389 @@ export const PALM_STRIKE_ANIMATION = AnimationBuilder.create("palm_strike")
   .build();
 
 /**
+ * Hook punch animation (후크 - 횡타)
+ *
+ * Circular punch targeting the side of the head. Power technique.
+ *
+ * Animation phases:
+ * 1. Wind-up (0.0s): Arm pulls to side
+ * 2. Arc swing (0.1s): Arm swings in horizontal arc
+ * 3. Impact (0.15s): Fist connects at temple level
+ * 4. Recovery (0.3s): Return to guard
+ *
+ * Duration: 300ms
+ *
+ * @korean 후크애니메이션
+ */
+export const HOOK_ANIMATION = AnimationBuilder.create("hook")
+  .withKoreanName("후크")
+  .withDuration(0.3)
+  .withType("attack")
+  // Wind-up: arm pulls back and to side
+  .keyframe(0.0, "linear")
+  .rotate(BoneName.SHOULDER_R, 0.1, -0.6, -0.5) // Shoulder rotated out
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.57) // 90° bend
+  .rotate(BoneName.SPINE_UPPER, 0, -0.3, 0) // Torso twisted back
+  .rotate(BoneName.PELVIS, 0, -0.2, 0) // Hip loaded
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.2) // Guard
+  .build()
+  // Arc swing: horizontal sweep
+  .keyframe(0.1, "ease-out")
+  .rotate(BoneName.SHOULDER_R, 0, 0.4, 0.3) // Shoulder drives across
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.4) // Elbow stays bent
+  .rotate(BoneName.SPINE_UPPER, 0, 0.4, 0) // Torso rotates into punch
+  .rotate(BoneName.SPINE_MIDDLE, 0, 0.3, 0)
+  .rotate(BoneName.PELVIS, 0, 0.25, 0) // Hip rotation for power
+  .build()
+  // Impact: full rotation
+  .keyframe(0.15, "linear")
+  .rotate(BoneName.SHOULDER_R, -0.1, 0.6, 0.4) // Full horizontal
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.35) // Elbow locked at angle
+  .rotate(BoneName.WRIST_R, 0, 0.2, 0) // Wrist aligned
+  .rotate(BoneName.SPINE_UPPER, 0, 0.5, 0)
+  .rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0)
+  .rotate(BoneName.PELVIS, 0, 0.35, 0)
+  .build()
+  // Recovery: return to guard
+  .keyframe(0.3, "ease-in")
+  .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+  .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+  .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+  .rotate(BoneName.PELVIS, 0, 0, 0)
+  .build()
+  .build();
+
+/**
+ * Low kick animation (하단차기 - 낮은차기)
+ *
+ * Low sweeping kick targeting opponent's thighs or calves.
+ * Used to destabilize and damage legs.
+ *
+ * Animation phases:
+ * 1. Chamber (0.0s): Small knee lift
+ * 2. Swing (0.12s): Leg sweeps low horizontally
+ * 3. Impact (0.18s): Shin connects at thigh height
+ * 4. Recovery (0.35s): Return to stance
+ *
+ * Duration: 350ms
+ *
+ * @korean 하단차기애니메이션
+ */
+export const LOW_KICK_ANIMATION = AnimationBuilder.create("low_kick")
+  .withKoreanName("하단차기")
+  .withDuration(0.35)
+  .withType("attack")
+  // Chamber: small lift
+  .keyframe(0.0, "linear")
+  .rotate(BoneName.HIP_R, 0.5, 0, 0.3) // Low hip flexion
+  .rotate(BoneName.KNEE_R, -0.8, 0, 0) // Knee bent
+  .rotate(BoneName.KNEE_L, -0.2, 0, 0) // Support knee bent
+  .rotate(BoneName.PELVIS, 0, -0.2, 0) // Slight turn
+  .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3) // High guard
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+  .build()
+  // Swing: low horizontal sweep
+  .keyframe(0.12, "ease-out")
+  .rotate(BoneName.HIP_R, 0.4, 0, 1.2) // Hip rotates out
+  .rotate(BoneName.KNEE_R, -0.3, 0, 0) // Leg extends
+  .rotate(BoneName.FOOT_R, 0.2, 0, 0.2) // Ankle pointed
+  .rotate(BoneName.PELVIS, 0, -0.8, 0) // Full hip rotation
+  .rotate(BoneName.SPINE_UPPER, 0, 0.4, 0) // Counter-rotate
+  .rotate(BoneName.KNEE_L, -0.4, 0, 0) // Lower for stability
+  .build()
+  // Impact: shin at thigh height
+  .keyframe(0.18, "linear")
+  .rotate(BoneName.HIP_R, 0.3, 0, 1.5) // Full rotation
+  .rotate(BoneName.KNEE_R, -0.15, 0, 0) // Nearly straight
+  .rotate(BoneName.FOOT_R, 0.3, 0, 0.3)
+  .rotate(BoneName.PELVIS, 0, -1.2, 0)
+  .rotate(BoneName.SPINE_UPPER, 0, 0.6, 0)
+  .build()
+  // Recovery: return to stance
+  .keyframe(0.35, "ease-in")
+  .rotate(BoneName.HIP_R, 0, 0, 0)
+  .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+  .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+  .rotate(BoneName.FOOT_R, 0, 0, 0)
+  .rotate(BoneName.PELVIS, 0, 0, 0)
+  .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+  .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+  .build()
+  .build();
+
+/**
+ * Slam animation (슬램 - 내던지기)
+ *
+ * Powerful lifting and slamming throw. High damage grappling technique.
+ *
+ * Animation phases:
+ * 1. Clinch (0.0s): Grab and secure opponent
+ * 2. Lift (0.2s): Hoist opponent up
+ * 3. Slam (0.35s): Drive opponent down
+ * 4. Recovery (0.5s): Return to stance
+ *
+ * Duration: 500ms
+ *
+ * @korean 슬램애니메이션
+ */
+export const SLAM_ANIMATION = AnimationBuilder.create("slam")
+  .withKoreanName("슬램")
+  .withDuration(0.5)
+  .withType("attack")
+  // Clinch: grab opponent
+  .keyframe(0.0, "linear")
+  .rotate(BoneName.SHOULDER_L, 0.6, 0.4, -0.5) // Arms wrap around
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.3)
+  .rotate(BoneName.SHOULDER_R, 0.6, -0.4, 0.5)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.3)
+  .rotate(BoneName.KNEE_L, -0.4, 0, 0) // Deep stance
+  .rotate(BoneName.KNEE_R, -0.4, 0, 0)
+  .rotate(BoneName.PELVIS, 0.2, 0, 0) // Lean in
+  .build()
+  // Lift: hoist up
+  .keyframe(0.2, "ease-out")
+  .rotate(BoneName.SHOULDER_L, 0.9, 0.2, -0.3) // Arms lift high
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.8)
+  .rotate(BoneName.SHOULDER_R, 0.9, -0.2, 0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 0.8)
+  .rotate(BoneName.KNEE_L, -0.1, 0, 0) // Standing tall
+  .rotate(BoneName.KNEE_R, -0.1, 0, 0)
+  .rotate(BoneName.PELVIS, -0.3, 0, 0) // Lean back
+  .rotate(BoneName.SPINE_UPPER, -0.2, 0, 0) // Arched back
+  .position(BoneName.PELVIS, 0, 0.1, 0) // Slight rise
+  .build()
+  // Slam: drive down
+  .keyframe(0.35, "ease-in")
+  .rotate(BoneName.SHOULDER_L, 0.3, 0.3, -0.6) // Arms drive down
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.4)
+  .rotate(BoneName.SHOULDER_R, 0.3, -0.3, 0.6)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.4)
+  .rotate(BoneName.KNEE_L, -0.6, 0, 0) // Deep squat
+  .rotate(BoneName.KNEE_R, -0.6, 0, 0)
+  .rotate(BoneName.PELVIS, 0.4, 0, 0) // Lean forward
+  .rotate(BoneName.SPINE_UPPER, 0.3, 0, 0) // Forward bend
+  .rotate(BoneName.SPINE_MIDDLE, 0.2, 0, 0)
+  .position(BoneName.PELVIS, 0, -0.15, 0.2) // Low position
+  .build()
+  // Recovery
+  .keyframe(0.5, "ease-in")
+  .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+  .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+  .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+  .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+  .rotate(BoneName.PELVIS, 0, 0, 0)
+  .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+  .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+  .position(BoneName.PELVIS, 0, 0, 0)
+  .build()
+  .build();
+
+/**
+ * Wrist lock animation (손목꺾기 - 손목관절기)
+ *
+ * Joint lock targeting the wrist. Painful control technique.
+ *
+ * Animation phases:
+ * 1. Grab (0.0s): Secure opponent's wrist
+ * 2. Control (0.15s): Two-hand grip
+ * 3. Lock (0.3s): Apply rotational pressure
+ * 4. Hold (0.4s): Maintain lock position
+ *
+ * Duration: 400ms
+ *
+ * @korean 손목꺾기애니메이션
+ */
+export const WRIST_LOCK_ANIMATION = AnimationBuilder.create("wrist_lock")
+  .withKoreanName("손목꺾기")
+  .withDuration(0.4)
+  .withType("attack")
+  // Grab: secure wrist
+  .keyframe(0.0, "linear")
+  .rotate(BoneName.SHOULDER_R, 0.4, 0, 0.2) // Reach forward
+  .rotate(BoneName.ELBOW_R, 0, 0, 0.6) // Arm extended
+  .rotate(BoneName.WRIST_R, 0, -0.3, 0) // Palm faces opponent
+  .rotate(BoneName.SHOULDER_L, 0.3, 0.2, -0.1) // Support hand
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.8)
+  .rotate(BoneName.KNEE_L, -0.3, 0, 0) // Stable stance
+  .rotate(BoneName.KNEE_R, -0.3, 0, 0)
+  .build()
+  // Control: two-hand grip
+  .keyframe(0.15, "ease-out")
+  .rotate(BoneName.SHOULDER_R, 0.2, 0.3, 0.4) // Hands come together
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.0)
+  .rotate(BoneName.WRIST_R, 0.3, -0.4, 0.2) // Grip position
+  .rotate(BoneName.SHOULDER_L, 0.3, 0.4, -0.3) // Both hands on wrist
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
+  .rotate(BoneName.WRIST_L, -0.2, 0.3, 0)
+  .rotate(BoneName.PELVIS, 0, 0.2, 0) // Body turns
+  .rotate(BoneName.SPINE_UPPER, 0, 0.15, 0)
+  .build()
+  // Lock: apply pressure
+  .keyframe(0.3, "ease-in")
+  .rotate(BoneName.SHOULDER_R, -0.1, 0.5, 0.6) // Rotate wrist down
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.3)
+  .rotate(BoneName.WRIST_R, 0.5, -0.5, 0.4) // Twist
+  .rotate(BoneName.SHOULDER_L, 0.1, 0.6, -0.4) // Counter-pressure
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.4)
+  .rotate(BoneName.WRIST_L, -0.3, 0.4, -0.2)
+  .rotate(BoneName.PELVIS, 0, 0.4, 0) // Body supports lock
+  .rotate(BoneName.SPINE_UPPER, 0.1, 0.3, 0) // Lean in
+  .rotate(BoneName.KNEE_L, -0.4, 0, 0) // Lower for control
+  .build()
+  // Hold: maintain position
+  .keyframe(0.4, "linear")
+  .rotate(BoneName.SHOULDER_R, -0.1, 0.5, 0.6)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.3)
+  .rotate(BoneName.WRIST_R, 0.5, -0.5, 0.4)
+  .rotate(BoneName.SHOULDER_L, 0.1, 0.6, -0.4)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.4)
+  .rotate(BoneName.WRIST_L, -0.3, 0.4, -0.2)
+  .rotate(BoneName.PELVIS, 0, 0.4, 0)
+  .rotate(BoneName.SPINE_UPPER, 0.1, 0.3, 0)
+  .rotate(BoneName.KNEE_L, -0.4, 0, 0)
+  .build()
+  .build();
+
+/**
+ * Arm bar animation (팔꺾기 - 팔관절기)
+ *
+ * Arm lock submission technique. Hyperextends the elbow.
+ *
+ * Animation phases:
+ * 1. Grab (0.0s): Secure opponent's arm
+ * 2. Control (0.2s): Pull arm across body
+ * 3. Drop (0.35s): Go to ground position
+ * 4. Lock (0.5s): Apply elbow pressure
+ *
+ * Duration: 500ms
+ *
+ * @korean 팔꺾기애니메이션
+ */
+export const ARM_BAR_ANIMATION = AnimationBuilder.create("arm_bar")
+  .withKoreanName("팔꺾기")
+  .withDuration(0.5)
+  .withType("attack")
+  // Grab: secure arm
+  .keyframe(0.0, "linear")
+  .rotate(BoneName.SHOULDER_R, 0.5, 0.3, 0.3) // Reach for arm
+  .rotate(BoneName.ELBOW_R, 0, 0, 0.8)
+  .rotate(BoneName.SHOULDER_L, 0.4, -0.2, -0.2) // Support hand
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.9)
+  .rotate(BoneName.KNEE_L, -0.3, 0, 0)
+  .rotate(BoneName.KNEE_R, -0.3, 0, 0)
+  .build()
+  // Control: pull across
+  .keyframe(0.2, "ease-out")
+  .rotate(BoneName.SHOULDER_R, 0.2, 0.6, 0.5) // Arms wrap arm
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.4)
+  .rotate(BoneName.SHOULDER_L, 0.3, 0.5, -0.4)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.3)
+  .rotate(BoneName.PELVIS, 0.2, 0.5, 0) // Turn body
+  .rotate(BoneName.SPINE_UPPER, 0.1, 0.4, 0)
+  .build()
+  // Drop: go to ground
+  .keyframe(0.35, "ease-in")
+  .rotate(BoneName.SHOULDER_R, -0.2, 0.8, 0.7)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.5)
+  .rotate(BoneName.SHOULDER_L, 0.1, 0.7, -0.5)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.5)
+  .rotate(BoneName.PELVIS, 0.8, 0.3, 0) // Lean back for drop
+  .rotate(BoneName.SPINE_UPPER, 0.6, 0.2, 0)
+  .rotate(BoneName.SPINE_MIDDLE, 0.4, 0.1, 0)
+  .rotate(BoneName.HIP_R, 1.2, 0, 0.3) // Legs go up
+  .rotate(BoneName.KNEE_R, -0.5, 0, 0)
+  .rotate(BoneName.HIP_L, 1.0, 0, -0.2)
+  .rotate(BoneName.KNEE_L, -0.4, 0, 0)
+  .position(BoneName.PELVIS, 0, -0.3, 0) // Lower position
+  .build()
+  // Lock: apply pressure
+  .keyframe(0.5, "linear")
+  .rotate(BoneName.SHOULDER_R, -0.3, 0.9, 0.8)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
+  .rotate(BoneName.SHOULDER_L, 0, 0.8, -0.6)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+  .rotate(BoneName.PELVIS, 1.0, 0.2, 0) // Full recline
+  .rotate(BoneName.SPINE_UPPER, 0.7, 0.15, 0)
+  .rotate(BoneName.SPINE_MIDDLE, 0.5, 0.1, 0)
+  .rotate(BoneName.HIP_R, 1.4, 0, 0.4) // Legs over opponent
+  .rotate(BoneName.KNEE_R, -0.3, 0, 0)
+  .rotate(BoneName.HIP_L, 1.2, 0, -0.3)
+  .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+  .position(BoneName.PELVIS, 0, -0.4, -0.1) // Ground position
+  .build()
+  .build();
+
+/**
+ * Counter strike animation (반격 - 반격타격)
+ *
+ * Quick counter-attack after parrying. Exploits opponent's opening.
+ *
+ * Animation phases:
+ * 1. Parry (0.0s): Deflect incoming attack
+ * 2. Open (0.08s): Create opening
+ * 3. Strike (0.15s): Fast counter punch
+ * 4. Recovery (0.25s): Return to guard
+ *
+ * Duration: 250ms
+ *
+ * @korean 반격애니메이션
+ */
+export const COUNTER_STRIKE_ANIMATION = AnimationBuilder.create(
+  "counter_strike"
+)
+  .withKoreanName("반격")
+  .withDuration(0.25)
+  .withType("attack")
+  // Parry: deflect
+  .keyframe(0.0, "linear")
+  .rotate(BoneName.SHOULDER_L, 0.2, 0.5, -0.6) // Parrying arm
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.9)
+  .rotate(BoneName.WRIST_L, 0, 0.3, 0) // Palm out
+  .rotate(BoneName.SHOULDER_R, 0.1, 0, -0.2) // Counter arm ready
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.5)
+  .rotate(BoneName.PELVIS, 0, -0.2, 0) // Slight turn
+  .rotate(BoneName.KNEE_L, -0.25, 0, 0)
+  .rotate(BoneName.KNEE_R, -0.3, 0, 0)
+  .build()
+  // Open: create gap
+  .keyframe(0.08, "ease-out")
+  .rotate(BoneName.SHOULDER_L, 0.3, 0.7, -0.5) // Push away
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.7)
+  .rotate(BoneName.SHOULDER_R, 0.2, 0, -0.3) // Load counter
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
+  .rotate(BoneName.SPINE_UPPER, 0, -0.2, 0)
+  .rotate(BoneName.PELVIS, 0, -0.15, 0)
+  .build()
+  // Strike: counter punch
+  .keyframe(0.15, "ease-out")
+  .rotate(BoneName.SHOULDER_R, -0.6, 0, 0.4) // Fast extension
+  .rotate(BoneName.ELBOW_R, 0, 0, 0.1) // Full extend
+  .rotate(BoneName.WRIST_R, 0, 0, -0.2)
+  .rotate(BoneName.SHOULDER_L, 0.1, 0.3, -0.4) // Guard returns
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
+  .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // Torso rotates
+  .rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0)
+  .rotate(BoneName.PELVIS, 0, 0.2, 0)
+  .build()
+  // Recovery: guard
+  .keyframe(0.25, "ease-in")
+  .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+  .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+  .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+  .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+  .rotate(BoneName.PELVIS, 0, 0, 0)
+  .rotate(BoneName.WRIST_R, 0, 0, 0)
+  .build()
+  .build();
+
+/**
  * All skeletal animations mapped by name
  *
  * Includes attack, defense, movement, and idle animations.
@@ -1816,6 +2199,7 @@ export const PALM_STRIKE_ANIMATION = AnimationBuilder.create("palm_strike")
 export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   ["jab", JAB_ANIMATION],
   ["cross", CROSS_ANIMATION],
+  ["hook", HOOK_ANIMATION],
   ["front_kick", FRONT_KICK_ANIMATION],
   ["roundhouse_kick", ROUNDHOUSE_KICK_ANIMATION],
   ["side_kick", SIDE_KICK_ANIMATION],
@@ -1823,14 +2207,19 @@ export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   ["back_kick", BACK_KICK_ANIMATION],
   ["tornado_kick", TORNADO_KICK_ANIMATION],
   ["jumping_kick", JUMPING_KICK_ANIMATION],
+  ["low_kick", LOW_KICK_ANIMATION],
   ["elbow_strike", ELBOW_STRIKE_ANIMATION],
   ["elbow_uppercut", ELBOW_UPPERCUT_ANIMATION],
   ["knee_strike", KNEE_STRIKE_ANIMATION],
   ["block", BLOCK_ANIMATION],
   ["sweep", SWEEP_ANIMATION],
   ["throw", THROW_ANIMATION],
+  ["slam", SLAM_ANIMATION],
   ["grapple", GRAPPLE_ANIMATION],
+  ["wrist_lock", WRIST_LOCK_ANIMATION],
+  ["arm_bar", ARM_BAR_ANIMATION],
   ["counter_attack", COUNTER_ATTACK_ANIMATION],
+  ["counter_strike", COUNTER_STRIKE_ANIMATION],
   ["palm_strike", PALM_STRIKE_ANIMATION],
   ["walk", WALK_ANIMATION],
   ["idle_stance", IDLE_STANCE_ANIMATION],
@@ -1869,21 +2258,27 @@ const TECHNIQUE_ANIMATION_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/jump|뛰어|ttwi/i, "jumping_kick"],
   [/sweep|쓸기|걸기|품밟기|dari.?geolgi/i, "sweep"],
   [/side.?kick|옆차기|yeop.?chagi/i, "side_kick"],
+  [/low.?kick|하단차기|낮은차기|thigh.?kick|leg.?kick/i, "low_kick"],
   [/front.?kick|앞차기|snap.?kick|ap.?chagi/i, "front_kick"],
   [/roundhouse|돌려차기|dolryeo/i, "roundhouse_kick"],
   // Knee strikes (무릎)
   [/knee|무릎|mureup/i, "knee_strike"],
   // Elbow strikes (팔꿈치)
   [/elbow|팔꿈치|팔굽|palkkumchi/i, "elbow_strike"],
-  // Throws (던지기)
-  [/throw|던지기|deonjigi|slam|ground.?pound/i, "throw"],
-  // Grapple/Lock (꺾기/잡기)
-  [/lock|grapple|꺾기|잡기|embrace|kkeokgi|japgi|bar|submission/i, "grapple"],
-  // Counter attacks (반격)
+  // Throws & Slams (던지기/내던지기)
+  [/slam|내던지기|smash/i, "slam"],
+  [/throw|던지기|deonjigi|ground.?pound/i, "throw"],
+  // Grapple/Lock (꺾기/잡기) - specific locks first
+  [/arm.?bar|팔꺾기|팔관절기|juji.?gatame/i, "arm_bar"],
+  [/wrist.?lock|손목꺾기|손목관절기|kote.?gaeshi/i, "wrist_lock"],
+  [/lock|grapple|꺾기|잡기|embrace|kkeokgi|japgi|submission/i, "grapple"],
+  // Counter attacks (반격) - specific counter types
+  [/counter.?strike|반격타격|카운터스트라이크/i, "counter_strike"],
   [/counter|반격|bangyeok|parry|redirect/i, "counter_attack"],
   // Blocks (막기)
   [/block|막기|makgi|defense|방어/i, "block"],
   // Punches (주먹) - check after specific patterns
+  [/hook|후크|횡타|갈고리/i, "hook"],
   [/palm|장권|jang.?gwon/i, "palm_strike"],
   [/cross|십자|교차/i, "cross"],
   [/jab|잽|직권|찌르기|punch|주먹|권/i, "jab"],

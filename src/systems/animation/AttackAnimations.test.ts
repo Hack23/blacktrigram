@@ -253,8 +253,8 @@ describe("AttackAnimations", () => {
   });
 
   describe("ATTACK_ANIMATIONS map", () => {
-    it("should contain all 23 animations", () => {
-      expect(ATTACK_ANIMATIONS.size).toBe(23); // 18 attacks + 1 walk + 4 movement animations
+    it("should contain all 29 animations", () => {
+      expect(ATTACK_ANIMATIONS.size).toBe(29); // 24 attacks + 1 walk + 4 movement animations
     });
 
     it("should have jab animation", () => {
