@@ -983,118 +983,71 @@ export const SIDE_STEP_ANIMATION: SkeletalAnimation = {
  *
  * @korean 팔꿈치타격애니메이션
  */
-export const ELBOW_STRIKE_ANIMATION: SkeletalAnimation = {
-  name: "elbow_strike",
-  koreanName: "팔꿈치타격",
-  duration: 0.2,
-  loop: false,
-  type: "attack",
-  keyframes: [
-    // Frame 1: Chamber position (0.0s)
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        // Right arm chambers across body
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0.8, -0.3, "XYZ")], // Shoulder forward and across
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.57, "XYZ")], // 90 degree bend
-        [BoneName.FOREARM_R, new THREE.Euler(0, -0.5, 0, "XYZ")], // Forearm rotates in
-        // Torso winds up (opposite direction)
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.3, 0, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, -0.2, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, -0.15, 0, "XYZ")],
-        // Left arm guards
-        [BoneName.SHOULDER_L, new THREE.Euler(0, -0.5, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.HAND_R, new THREE.Vector3(-0.2, 0, 0.3)], // Hand near opposite shoulder
-      ]),
-    },
-
-    // Frame 2: Rotation begins (0.05s)
-    {
-      time: 0.05,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0.5, 0, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.57, "XYZ")], // Maintain 90 degree bend
-        [BoneName.FOREARM_R, new THREE.Euler(0, -0.3, 0, "XYZ")],
-        // Torso begins rotation
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.1, 0, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0.05, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.HAND_R, new THREE.Vector3(-0.1, 0, 0.4)],
-      ]),
-    },
-
-    // Frame 3: Strike through target (0.1s-0.12s)
-    {
-      time: 0.1,
-      easing: "linear",
-      boneRotations: new Map([
-        // Elbow drives forward
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.4, "XYZ")], // Slightly opens for power
-        [BoneName.FOREARM_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        // Full torso rotation
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.5, 0.1, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0.4, 0.05, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0.3, 0, "XYZ")],
-        // Hip engagement
-        [BoneName.HIP_R, new THREE.Euler(0, 0.2, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.ELBOW_R, new THREE.Vector3(0, 0, 0.6)], // Elbow extends forward
-      ]),
-    },
-
-    // Frame 4: Impact point (0.12s)
-    {
-      time: 0.12,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-        [BoneName.FOREARM_R, new THREE.Euler(0, 0.1, 0, "XYZ")],
-        // Maximum rotation
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.6, 0.15, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0.5, 0.1, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0.4, 0, "XYZ")],
-        [BoneName.HIP_R, new THREE.Euler(0, 0.3, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.ELBOW_R, new THREE.Vector3(0, 0, 0.7)],
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0.1)], // Weight shift forward
-      ]),
-    },
-
-    // Frame 5: Recovery (0.2s)
-    {
-      time: 0.2,
-      easing: "ease-in",
-      boneRotations: new Map([
-        // Return to guard
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, -0.1, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
-        [BoneName.FOREARM_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.ELBOW_R, new THREE.Vector3(0, 0, 0)],
-        [BoneName.HAND_R, new THREE.Vector3(0, 0, 0)],
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
-    },
-  ],
-};
+export const ELBOW_STRIKE_ANIMATION = AnimationBuilder.create("elbow_strike")
+  .withKoreanName("팔꿈치타격")
+  .withDuration(0.2)
+  .withType("attack")
+  // Frame 1: Chamber position
+  .keyframe(0.0, "linear")
+    .rotate(BoneName.SHOULDER_R, 0, 0.8, -0.3) // Shoulder forward and across
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.57) // 90 degree bend
+    .rotate(BoneName.FOREARM_R, 0, -0.5, 0) // Forearm rotates in
+    .rotate(BoneName.SPINE_UPPER, 0, -0.3, 0) // Torso winds up
+    .rotate(BoneName.SPINE_MIDDLE, 0, -0.2, 0)
+    .rotate(BoneName.PELVIS, 0, -0.15, 0)
+    .rotate(BoneName.SHOULDER_L, 0, -0.5, 0.5) // Left arm guards
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
+    .position(BoneName.HAND_R, -0.2, 0, 0.3) // Hand near opposite shoulder
+    .build()
+  // Frame 2: Rotation begins
+  .keyframe(0.05, "ease-out")
+    .rotate(BoneName.SHOULDER_R, 0, 0.5, 0)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.57) // Maintain 90 degree bend
+    .rotate(BoneName.FOREARM_R, 0, -0.3, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.1, 0) // Torso begins rotation
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.05, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .position(BoneName.HAND_R, -0.1, 0, 0.4)
+    .build()
+  // Frame 3: Strike through target
+  .keyframe(0.1, "linear")
+    .rotate(BoneName.SHOULDER_R, 0, 0, 0.3) // Elbow drives forward
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.4) // Slightly opens for power
+    .rotate(BoneName.FOREARM_R, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.5, 0.1) // Full torso rotation
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0.05)
+    .rotate(BoneName.PELVIS, 0, 0.3, 0)
+    .rotate(BoneName.HIP_R, 0, 0.2, 0) // Hip engagement
+    .position(BoneName.ELBOW_R, 0, 0, 0.6) // Elbow extends forward
+    .build()
+  // Frame 4: Impact point
+  .keyframe(0.12, "linear")
+    .rotate(BoneName.SHOULDER_R, 0, 0, 0.5)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.3)
+    .rotate(BoneName.FOREARM_R, 0, 0.1, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.6, 0.15) // Maximum rotation
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.5, 0.1)
+    .rotate(BoneName.PELVIS, 0, 0.4, 0)
+    .rotate(BoneName.HIP_R, 0, 0.3, 0)
+    .position(BoneName.ELBOW_R, 0, 0, 0.7)
+    .position(BoneName.PELVIS, 0, 0, 0.1) // Weight shift forward
+    .build()
+  // Frame 5: Recovery
+  .keyframe(0.2, "ease-in")
+    .rotate(BoneName.SHOULDER_R, 0, 0, -0.1) // Return to guard
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.2)
+    .rotate(BoneName.FOREARM_R, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.HIP_R, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, 0, 0, 0.5)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
+    .position(BoneName.ELBOW_R, 0, 0, 0)
+    .position(BoneName.HAND_R, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .build()
+  .build();
 
 /**
  * Knee strike animation (무릎 타격 - Mureup Tagyeok)
@@ -1114,153 +1067,89 @@ export const ELBOW_STRIKE_ANIMATION: SkeletalAnimation = {
  *
  * @korean 무릎타격애니메이션
  */
-export const KNEE_STRIKE_ANIMATION: SkeletalAnimation = {
-  name: "knee_strike",
-  koreanName: "무릎타격",
-  duration: 0.2,
-  loop: false,
-  type: "attack",
-  keyframes: [
-    // Frame 1: Clinch setup (0.0s)
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        // Arms in clinch position
-        [BoneName.SHOULDER_L, new THREE.Euler(0.8, 0, -0.5, "XYZ")], // Arms forward
-        [BoneName.SHOULDER_R, new THREE.Euler(0.8, 0, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")], // Bent for control
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-        // Support leg stabilizes
-        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0.03, "XYZ")],
-        // Striking leg neutral
-        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
-      ]),
-    },
-
-    // Frame 2: Chamber begins (0.05s)
-    {
-      time: 0.05,
-      easing: "ease-out",
-      boneRotations: new Map([
-        // Arms pull opponent down (simulation)
-        [BoneName.SHOULDER_L, new THREE.Euler(0.5, 0, -0.6, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.5, 0, 0.6, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.4, "XYZ")],
-        // Right knee chambers
-        [BoneName.HIP_R, new THREE.Euler(1.0, 0, 0, "XYZ")], // Hip flexes
-        [BoneName.KNEE_R, new THREE.Euler(-1.3, 0, 0, "XYZ")], // Knee bends tight
-        // Support leg adjusts
-        [BoneName.KNEE_L, new THREE.Euler(-0.25, 0, 0, "XYZ")],
-        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0.05, "XYZ")],
-        // Torso leans back slightly
-        [BoneName.SPINE_UPPER, new THREE.Euler(-0.1, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, -0.02, -0.05)],
-      ]),
-    },
-
-    // Frame 3: Knee drive begins (0.1s)
-    {
-      time: 0.1,
-      easing: "ease-out",
-      boneRotations: new Map([
-        // Arms maintain clinch
-        [BoneName.SHOULDER_L, new THREE.Euler(0.3, 0, -0.7, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.3, 0, 0.7, "XYZ")],
-        // Knee drives upward
-        [BoneName.HIP_R, new THREE.Euler(1.3, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.8, 0, 0, "XYZ")], // Opens slightly
-        [BoneName.FOOT_R, new THREE.Euler(0.3, 0, 0, "XYZ")], // Ankle plantarflexion
-        // Hip thrust
-        [BoneName.PELVIS, new THREE.Euler(0.15, 0, 0, "XYZ")], // Forward thrust
-        [BoneName.SPINE_LOWER, new THREE.Euler(0.1, 0, 0, "XYZ")],
-        // Support leg extends
-        [BoneName.KNEE_L, new THREE.Euler(-0.15, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.KNEE_R, new THREE.Vector3(0, 0.3, 0.4)], // Knee rises forward
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0.15)], // Hip drives forward
-      ]),
-    },
-
-    // Frame 4: Impact point (0.12s)
-    {
-      time: 0.12,
-      easing: "linear",
-      boneRotations: new Map([
-        // Maximum pull down
-        [BoneName.SHOULDER_L, new THREE.Euler(0.2, 0, -0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.2, 0, 0.8, "XYZ")],
-        // Maximum knee extension
-        [BoneName.HIP_R, new THREE.Euler(1.4, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.5, 0, 0, "XYZ")],
-        [BoneName.FOOT_R, new THREE.Euler(0.4, 0, 0, "XYZ")],
-        // Full hip thrust
-        [BoneName.PELVIS, new THREE.Euler(0.2, 0, 0, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0.15, 0, 0, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.05, 0, 0, "XYZ")],
-        // Support leg fully extended
-        [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.KNEE_R, new THREE.Vector3(0, 0.4, 0.5)],
-        [BoneName.PELVIS, new THREE.Vector3(0, 0.02, 0.2)],
-      ]),
-    },
-
-    // Frame 5: Retraction (0.15s)
-    {
-      time: 0.15,
-      easing: "ease-in",
-      boneRotations: new Map([
-        // Return to chamber
-        [BoneName.HIP_R, new THREE.Euler(1.0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-1.3, 0, 0, "XYZ")],
-        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.KNEE_R, new THREE.Vector3(0, 0.2, 0.2)],
-        [BoneName.PELVIS, new THREE.Vector3(0, -0.01, 0)],
-      ]),
-    },
-
-    // Frame 6: Recovery (0.2s)
-    {
-      time: 0.2,
-      easing: "ease-in",
-      boneRotations: new Map([
-        // Arms return to guard
-        [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0.5, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, -0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
-        // Leg returns to stance
-        [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-        [BoneName.FOOT_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-        [BoneName.FOOT_L, new THREE.Euler(0, 0, 0, "XYZ")],
-        // Body neutral
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.KNEE_R, new THREE.Vector3(0, 0, 0)],
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
-    },
-  ],
-};
+export const KNEE_STRIKE_ANIMATION = AnimationBuilder.create("knee_strike")
+  .withKoreanName("무릎타격")
+  .withDuration(0.2)
+  .withType("attack")
+  // Frame 1: Clinch setup
+  .keyframe(0.0, "linear")
+    .rotate(BoneName.SHOULDER_L, 0.8, 0, -0.5) // Arms in clinch position
+    .rotate(BoneName.SHOULDER_R, 0.8, 0, 0.5)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.3) // Bent for control
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.3)
+    .rotate(BoneName.KNEE_L, -0.2, 0, 0) // Support leg stabilizes
+    .rotate(BoneName.FOOT_L, 0, 0, 0.03)
+    .rotate(BoneName.HIP_R, 0, 0, 0) // Striking leg neutral
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+    .position(BoneName.PELVIS, 0, -0.01, 0)
+    .build()
+  // Frame 2: Chamber begins
+  .keyframe(0.05, "ease-out")
+    .rotate(BoneName.SHOULDER_L, 0.5, 0, -0.6) // Arms pull opponent down
+    .rotate(BoneName.SHOULDER_R, 0.5, 0, 0.6)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.4)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.4)
+    .rotate(BoneName.HIP_R, 1.0, 0, 0) // Hip flexes
+    .rotate(BoneName.KNEE_R, -1.3, 0, 0) // Knee bends tight
+    .rotate(BoneName.KNEE_L, -0.25, 0, 0) // Support leg adjusts
+    .rotate(BoneName.FOOT_L, 0, 0, 0.05)
+    .rotate(BoneName.SPINE_UPPER, -0.1, 0, 0) // Torso leans back slightly
+    .position(BoneName.PELVIS, 0, -0.02, -0.05)
+    .build()
+  // Frame 3: Knee drive begins
+  .keyframe(0.1, "ease-out")
+    .rotate(BoneName.SHOULDER_L, 0.3, 0, -0.7) // Arms maintain clinch
+    .rotate(BoneName.SHOULDER_R, 0.3, 0, 0.7)
+    .rotate(BoneName.HIP_R, 1.3, 0, 0) // Knee drives upward
+    .rotate(BoneName.KNEE_R, -0.8, 0, 0) // Opens slightly
+    .rotate(BoneName.FOOT_R, 0.3, 0, 0) // Ankle plantarflexion
+    .rotate(BoneName.PELVIS, 0.15, 0, 0) // Forward thrust
+    .rotate(BoneName.SPINE_LOWER, 0.1, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.15, 0, 0) // Support leg extends
+    .position(BoneName.KNEE_R, 0, 0.3, 0.4) // Knee rises forward
+    .position(BoneName.PELVIS, 0, 0, 0.15) // Hip drives forward
+    .build()
+  // Frame 4: Impact point
+  .keyframe(0.12, "linear")
+    .rotate(BoneName.SHOULDER_L, 0.2, 0, -0.8) // Maximum pull down
+    .rotate(BoneName.SHOULDER_R, 0.2, 0, 0.8)
+    .rotate(BoneName.HIP_R, 1.4, 0, 0) // Maximum knee extension
+    .rotate(BoneName.KNEE_R, -0.5, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.4, 0, 0)
+    .rotate(BoneName.PELVIS, 0.2, 0, 0) // Full hip thrust
+    .rotate(BoneName.SPINE_LOWER, 0.15, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.05, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.1, 0, 0) // Support leg fully extended
+    .position(BoneName.KNEE_R, 0, 0.4, 0.5)
+    .position(BoneName.PELVIS, 0, 0.02, 0.2)
+    .build()
+  // Frame 5: Retraction
+  .keyframe(0.15, "ease-in")
+    .rotate(BoneName.HIP_R, 1.0, 0, 0) // Return to chamber
+    .rotate(BoneName.KNEE_R, -1.3, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .position(BoneName.KNEE_R, 0, 0.2, 0.2)
+    .position(BoneName.PELVIS, 0, -0.01, 0)
+    .build()
+  // Frame 6: Recovery
+  .keyframe(0.2, "ease-in")
+    .rotate(BoneName.SHOULDER_L, 0, 0, 0.5) // Arms return to guard
+    .rotate(BoneName.SHOULDER_R, 0, 0, -0.5)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.2)
+    .rotate(BoneName.HIP_R, 0, 0, 0) // Leg returns to stance
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+    .rotate(BoneName.FOOT_L, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Body neutral
+    .position(BoneName.KNEE_R, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .build()
+  .build();
 
 /**
  * Side kick animation (옆차기 - Yeopchagi)
