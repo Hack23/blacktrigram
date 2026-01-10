@@ -12,6 +12,14 @@
 
 import type { SkeletalAnimation } from "../../types/skeletal";
 import {
+  ARM_BAR_ANIMATION,
+  COUNTER_STRIKE_ANIMATION,
+  HOOK_ANIMATION,
+  LOW_KICK_ANIMATION,
+  SLAM_ANIMATION,
+  WRIST_LOCK_ANIMATION,
+} from "./AttackAnimations";
+import {
   ELBOW_KNEE_ANIMATIONS,
   ELBOW_STRIKE_ANIMATION,
   ELBOW_UPPERCUT_ANIMATION,
@@ -67,10 +75,12 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.BACK_KICK, BACK_KICK_ANIMATION],
     [AnimationType.TORNADO_KICK, TORNADO_KICK_ANIMATION],
     [AnimationType.JUMPING_KICK, JUMPING_KICK_ANIMATION],
+    [AnimationType.LOW_KICK, LOW_KICK_ANIMATION],
 
     // Punches (주먹)
     [AnimationType.JAB, JAB_ANIMATION],
     [AnimationType.CROSS, CROSS_ANIMATION],
+    [AnimationType.HOOK, HOOK_ANIMATION],
     [AnimationType.PALM_STRIKE, PALM_STRIKE_ANIMATION],
 
     // Elbow/Knee (팔꿈치/무릎)
@@ -82,7 +92,11 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.THROW, THROW_ANIMATION],
     [AnimationType.GRAPPLE, GRAPPLE_ANIMATION],
     [AnimationType.SWEEP, SWEEP_ANIMATION],
+    [AnimationType.SLAM, SLAM_ANIMATION],
+    [AnimationType.WRIST_LOCK, WRIST_LOCK_ANIMATION],
+    [AnimationType.ARM_BAR, ARM_BAR_ANIMATION],
     [AnimationType.COUNTER_ATTACK, COUNTER_ATTACK_ANIMATION],
+    [AnimationType.COUNTER_STRIKE, COUNTER_STRIKE_ANIMATION],
 
     // Defense (방어)
     [AnimationType.BLOCK, BLOCK_ANIMATION],
@@ -192,10 +206,12 @@ export function getAnimationByName(
 
 // Re-export all individual animations for direct access
 export {
+  ARM_BAR_ANIMATION,
   AXE_KICK_ANIMATION,
   BACK_KICK_ANIMATION,
   BLOCK_ANIMATION,
   COUNTER_ATTACK_ANIMATION,
+  COUNTER_STRIKE_ANIMATION,
   CROSS_ANIMATION,
   // Elbow/Knee
   ELBOW_STRIKE_ANIMATION,
@@ -203,17 +219,21 @@ export {
   // Kicks
   FRONT_KICK_ANIMATION,
   GRAPPLE_ANIMATION,
+  HOOK_ANIMATION,
   // Punches
   JAB_ANIMATION,
   JUMPING_KICK_ANIMATION,
   KNEE_STRIKE_ANIMATION,
+  LOW_KICK_ANIMATION,
   PALM_STRIKE_ANIMATION,
   ROUNDHOUSE_KICK_ANIMATION,
   SIDE_KICK_ANIMATION,
+  SLAM_ANIMATION,
   SWEEP_ANIMATION,
   // Grappling
   THROW_ANIMATION,
   TORNADO_KICK_ANIMATION,
+  WRIST_LOCK_ANIMATION,
 };
 
 // Re-export category maps
