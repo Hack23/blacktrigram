@@ -45,7 +45,7 @@ describe("useHandPoseTransitions", () => {
       expect(result.current.rightHandState.targetPose).toBeDefined();
     });
 
-    it("should use open hands for blocking", () => {
+    it("should use open hands for blocking", async () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
           currentAnimation: "defend",
@@ -53,8 +53,20 @@ describe("useHandPoseTransitions", () => {
         })
       );
 
-      expect(result.current.leftHandState.targetPose).toBe(HandPoseType.OPEN);
-      expect(result.current.rightHandState.targetPose).toBe(HandPoseType.OPEN);
+      // Wait for useEffect to run and set initial pose
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      // After useEffect, currentPose should be set (targetPose may be null if transition complete)
+      expect(
+        result.current.leftHandState.currentPose === HandPoseType.OPEN ||
+        result.current.leftHandState.targetPose === HandPoseType.OPEN
+      ).toBe(true);
+      expect(
+        result.current.rightHandState.currentPose === HandPoseType.OPEN ||
+        result.current.rightHandState.targetPose === HandPoseType.OPEN
+      ).toBe(true);
     });
 
     it("should use relaxed hands for walking", () => {

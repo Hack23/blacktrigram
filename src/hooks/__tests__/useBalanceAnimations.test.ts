@@ -5,7 +5,7 @@
  */
 
 import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { useBalanceAnimations } from "../useBalanceAnimations";
 import { useMuscleActivation } from "../useMuscleActivation";
 
@@ -152,25 +152,32 @@ describe("useBalanceAnimations", () => {
 
   describe("animation continuity", () => {
     it("should maintain continuous sway motion", () => {
-      const { result } = renderHook(() =>
+      const { result, rerender } = renderHook(() =>
         useBalanceAnimations({
           balance: "VULNERABLE",
         })
       );
 
-      const positions: number[][] = [];
+      const xPositions: number[] = [];
 
-      // Collect positions over time
-      act(() => {
-        for (let i = 0; i < 10; i++) {
-          result.current.updateBalanceAnimations(0.1, i % 2);
-          positions.push([...result.current.swayPosition]);
-        }
-      });
+      // Update with even frame counters to trigger state updates
+      for (let i = 0; i < 10; i++) {
+        act(() => {
+          result.current.updateBalanceAnimations(0.1, i * 2); // Even frames only
+        });
+        
+        // Force a re-render to get updated state
+        rerender();
+        xPositions.push(result.current.swayPosition[0]);
+      }
 
-      // Positions should vary smoothly (not all the same)
-      const uniquePositions = new Set(positions.map((p) => p.join(",")));
-      expect(uniquePositions.size).toBeGreaterThan(1);
+      // X positions should vary (sine wave motion)
+      const uniqueXPositions = new Set(xPositions.map(x => x.toFixed(6)));
+      expect(uniqueXPositions.size).toBeGreaterThan(2);
+      
+      // Verify sway is actually happening (some non-zero positions)
+      const nonZeroPositions = xPositions.filter(x => Math.abs(x) > 0.001);
+      expect(nonZeroPositions.length).toBeGreaterThan(0);
     });
   });
 });
@@ -272,7 +279,8 @@ describe("useMuscleActivation", () => {
         }
       });
 
-      const activatedStateSize = result.current.muscleStates.size;
+      // Verify muscles activated
+      expect(result.current.muscleStates.size).toBeGreaterThan(0);
 
       // Transition to idle
       rerender({
@@ -334,7 +342,8 @@ describe("useMuscleActivation", () => {
         })
       );
 
-      const initialStateSize = result.current.muscleStates.size;
+      // Verify initial state exists
+      expect(result.current.muscleStates).toBeDefined();
 
       // Update 9 frames (no sync)
       act(() => {
@@ -344,7 +353,7 @@ describe("useMuscleActivation", () => {
       });
 
       // State may not have changed (depending on initial timing)
-      const stateAfter9Frames = result.current.muscleStates.size;
+      expect(result.current.muscleStates).toBeDefined();
 
       // Frame 0 (sync frame)
       act(() => {
