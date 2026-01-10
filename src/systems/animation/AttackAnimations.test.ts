@@ -253,8 +253,8 @@ describe("AttackAnimations", () => {
   });
 
   describe("ATTACK_ANIMATIONS map", () => {
-    it("should contain all 14 animations", () => {
-      expect(ATTACK_ANIMATIONS.size).toBe(14); // 8 attacks + 1 walk + 5 guard/idle animations
+    it("should contain all 23 animations", () => {
+      expect(ATTACK_ANIMATIONS.size).toBe(23); // 18 attacks + 1 walk + 4 movement animations
     });
 
     it("should have jab animation", () => {
@@ -306,12 +306,18 @@ describe("AttackAnimations", () => {
   });
 
   describe("getAnimationForTechnique", () => {
-    it("should return roundhouse_kick for kick techniques", () => {
+    it("should return roundhouse_kick for roundhouse kick techniques", () => {
       expect(getAnimationForTechnique("roundhouse_kick")).toBe(
         "roundhouse_kick"
       );
       expect(getAnimationForTechnique("돌려차기")).toBe("roundhouse_kick");
-      expect(getAnimationForTechnique("Side Kick")).toBe("roundhouse_kick");
+      expect(getAnimationForTechnique("dolryeo")).toBe("roundhouse_kick");
+    });
+
+    it("should return side_kick for side kick techniques", () => {
+      expect(getAnimationForTechnique("Side Kick")).toBe("side_kick");
+      expect(getAnimationForTechnique("옆차기")).toBe("side_kick");
+      expect(getAnimationForTechnique("yeop-chagi")).toBe("side_kick");
     });
 
     it("should return front_kick for front kick techniques", () => {
@@ -340,9 +346,42 @@ describe("AttackAnimations", () => {
     });
 
     it("should be case-insensitive", () => {
-      expect(getAnimationForTechnique("KICK")).toBe("roundhouse_kick");
+      expect(getAnimationForTechnique("FRONT_KICK")).toBe("front_kick");
       expect(getAnimationForTechnique("Cross")).toBe("cross");
       expect(getAnimationForTechnique("JAB")).toBe("jab");
+    });
+
+    it("should return correct animations for new techniques", () => {
+      // Elbow and knee techniques
+      expect(getAnimationForTechnique("elbow_strike")).toBe("elbow_strike");
+      expect(getAnimationForTechnique("팔꿈치")).toBe("elbow_strike");
+      expect(getAnimationForTechnique("knee_strike")).toBe("knee_strike");
+      expect(getAnimationForTechnique("무릎")).toBe("knee_strike");
+
+      // New kick types
+      expect(getAnimationForTechnique("axe_kick")).toBe("axe_kick");
+      expect(getAnimationForTechnique("내려차기")).toBe("axe_kick");
+      expect(getAnimationForTechnique("back_kick")).toBe("back_kick");
+      expect(getAnimationForTechnique("뒤차기")).toBe("back_kick");
+      expect(getAnimationForTechnique("tornado_kick")).toBe("tornado_kick");
+      expect(getAnimationForTechnique("회오리")).toBe("tornado_kick");
+
+      // Grappling techniques
+      expect(getAnimationForTechnique("throw")).toBe("throw");
+      expect(getAnimationForTechnique("던지기")).toBe("throw");
+      expect(getAnimationForTechnique("grapple")).toBe("grapple");
+      expect(getAnimationForTechnique("꺾기")).toBe("grapple");
+      expect(getAnimationForTechnique("잡기")).toBe("grapple");
+
+      // Counter and sweep
+      expect(getAnimationForTechnique("counter_attack")).toBe("counter_attack");
+      expect(getAnimationForTechnique("반격")).toBe("counter_attack");
+      expect(getAnimationForTechnique("sweep")).toBe("sweep");
+      expect(getAnimationForTechnique("다리걸기")).toBe("sweep");
+
+      // Palm strike
+      expect(getAnimationForTechnique("palm_strike")).toBe("palm_strike");
+      expect(getAnimationForTechnique("장권")).toBe("palm_strike");
     });
   });
 
