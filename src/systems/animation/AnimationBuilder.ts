@@ -93,8 +93,10 @@ class KeyframeBuilder {
       return this.parentBuilder;
     }
     
-    // Shouldn't happen, but return a new builder as fallback
-    return AnimationBuilder.create("error");
+    // This indicates incorrect usage of the builder API; parent must be set via setParent(...)
+    throw new Error(
+      "KeyframeBuilder.build() called without a parent AnimationBuilder. Ensure setParent(...) is called before build()."
+    );
   }
 }
 
@@ -335,6 +337,9 @@ export class BoneRotationHelpers {
    * @returns Euler rotation
    */
   static kneeBend(_side: "L" | "R", bend: number): THREE.Euler {
+    // NOTE: `_side` is intentionally unused: knee bends are currently symmetric for both legs.
+    // The parameter is kept to preserve API compatibility for future asymmetric leg animations.
+    void _side;
     return new THREE.Euler(0, 0, bend, "XYZ");
   }
 }
