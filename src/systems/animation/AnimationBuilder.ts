@@ -25,12 +25,22 @@ class KeyframeBuilder {
   private easing: string;
   private boneRotations: Map<BoneName, THREE.Euler>;
   private bonePositions: Map<BoneName, THREE.Vector3>;
+  private parentBuilder: AnimationBuilder | null = null;
 
   constructor(time: number, easing: string = "linear") {
     this.time = time;
     this.easing = easing;
     this.boneRotations = new Map();
     this.bonePositions = new Map();
+  }
+
+  /**
+   * Set parent animation builder (for chaining)
+   * @internal
+   */
+  setParent(parent: AnimationBuilder): this {
+    this.parentBuilder = parent;
+    return this;
   }
 
   /**
@@ -67,16 +77,24 @@ class KeyframeBuilder {
   }
 
   /**
-   * Build the keyframe
-   * @returns Complete animation keyframe
+   * Build the keyframe and return to animation builder
+   * @returns Animation builder for chaining
    */
-  build(): AnimationKeyframe {
-    return {
+  build(): AnimationBuilder {
+    const keyframe: AnimationKeyframe = {
       time: this.time,
       easing: this.easing as "linear" | "ease-in" | "ease-out" | "ease-in-out",
       boneRotations: this.boneRotations,
       bonePositions: this.bonePositions,
     };
+    
+    if (this.parentBuilder) {
+      this.parentBuilder.addKeyframe(keyframe);
+      return this.parentBuilder;
+    }
+    
+    // Shouldn't happen, but return a new builder as fallback
+    return AnimationBuilder.create("error");
   }
 }
 
@@ -158,14 +176,7 @@ export class AnimationBuilder {
    */
   keyframe(time: number, easing: string = "linear"): KeyframeBuilder {
     const kfBuilder = new KeyframeBuilder(time, easing);
-    const self = this;
-    // Override build to add keyframe and return animation builder
-    const originalBuild = kfBuilder.build.bind(kfBuilder);
-    (kfBuilder.build as any) = function(): AnimationBuilder {
-      const kf = originalBuild();
-      self.keyframes.push(kf);
-      return self;
-    };
+    kfBuilder.setParent(this);
     return kfBuilder;
   }
 
