@@ -978,10 +978,12 @@ export enum AnimationType {
   BACK_KICK = "back_kick",
   TORNADO_KICK = "tornado_kick",
   JUMPING_KICK = "jumping_kick",
+  LOW_KICK = "low_kick",
 
   // Punches (주먹)
   JAB = "jab",
   CROSS = "cross",
+  HOOK = "hook",
   PALM_STRIKE = "palm_strike",
 
   // Elbow/Knee (팔꿈치/무릎)
@@ -993,7 +995,13 @@ export enum AnimationType {
   THROW = "throw",
   GRAPPLE = "grapple",
   SWEEP = "sweep",
+  SLAM = "slam",
+  WRIST_LOCK = "wrist_lock",
+  ARM_BAR = "arm_bar",
+
+  // Counters (반격)
   COUNTER_ATTACK = "counter_attack",
+  COUNTER_STRIKE = "counter_strike",
 
   // Defense (방어)
   BLOCK = "block",

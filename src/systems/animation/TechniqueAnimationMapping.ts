@@ -43,10 +43,12 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
     type: AnimationType.JUMPING_KICK,
     speed: 1.0,
   },
+  [AnimationType.LOW_KICK]: { type: AnimationType.LOW_KICK, speed: 1.1 },
 
   // Punches (주먹)
   [AnimationType.JAB]: { type: AnimationType.JAB, speed: 1.2 },
   [AnimationType.CROSS]: { type: AnimationType.CROSS, speed: 1.1 },
+  [AnimationType.HOOK]: { type: AnimationType.HOOK, speed: 1.0 },
   [AnimationType.PALM_STRIKE]: { type: AnimationType.PALM_STRIKE, speed: 1.0 },
 
   // Elbow/Knee (팔꿈치/무릎)
@@ -64,8 +66,17 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
   [AnimationType.THROW]: { type: AnimationType.THROW, speed: 0.9 },
   [AnimationType.GRAPPLE]: { type: AnimationType.GRAPPLE, speed: 0.85 },
   [AnimationType.SWEEP]: { type: AnimationType.SWEEP, speed: 1.0 },
+  [AnimationType.SLAM]: { type: AnimationType.SLAM, speed: 0.9 },
+  [AnimationType.WRIST_LOCK]: { type: AnimationType.WRIST_LOCK, speed: 0.85 },
+  [AnimationType.ARM_BAR]: { type: AnimationType.ARM_BAR, speed: 0.8 },
+
+  // Counters (반격)
   [AnimationType.COUNTER_ATTACK]: {
     type: AnimationType.COUNTER_ATTACK,
+    speed: 1.1,
+  },
+  [AnimationType.COUNTER_STRIKE]: {
+    type: AnimationType.COUNTER_STRIKE,
     speed: 1.1,
   },
 
