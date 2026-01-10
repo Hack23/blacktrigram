@@ -30,9 +30,9 @@ export {
 // Technique animation mapping
 export {
   TECHNIQUE_ANIMATIONS,
-  getAnimationForTechnique as getTechniqueAnimationConfig,
   getAnimationForTechniqueOrDefault,
   getAnimationStats,
+  getAnimationForTechnique as getTechniqueAnimationConfig,
   getTechniquesByAnimationType,
   hasAnimationMapping,
   type AnimationConfig,

@@ -28,12 +28,21 @@ export interface AnimationConfig {
 const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
   // Kicks (발차기)
   [AnimationType.FRONT_KICK]: { type: AnimationType.FRONT_KICK, speed: 1.0 },
-  [AnimationType.ROUNDHOUSE_KICK]: { type: AnimationType.ROUNDHOUSE_KICK, speed: 1.0 },
+  [AnimationType.ROUNDHOUSE_KICK]: {
+    type: AnimationType.ROUNDHOUSE_KICK,
+    speed: 1.0,
+  },
   [AnimationType.SIDE_KICK]: { type: AnimationType.SIDE_KICK, speed: 1.0 },
   [AnimationType.AXE_KICK]: { type: AnimationType.AXE_KICK, speed: 0.9 },
   [AnimationType.BACK_KICK]: { type: AnimationType.BACK_KICK, speed: 1.0 },
-  [AnimationType.TORNADO_KICK]: { type: AnimationType.TORNADO_KICK, speed: 1.1 },
-  [AnimationType.JUMPING_KICK]: { type: AnimationType.JUMPING_KICK, speed: 1.0 },
+  [AnimationType.TORNADO_KICK]: {
+    type: AnimationType.TORNADO_KICK,
+    speed: 1.1,
+  },
+  [AnimationType.JUMPING_KICK]: {
+    type: AnimationType.JUMPING_KICK,
+    speed: 1.0,
+  },
 
   // Punches (주먹)
   [AnimationType.JAB]: { type: AnimationType.JAB, speed: 1.2 },
@@ -41,15 +50,24 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
   [AnimationType.PALM_STRIKE]: { type: AnimationType.PALM_STRIKE, speed: 1.0 },
 
   // Elbow/Knee (팔꿈치/무릎)
-  [AnimationType.ELBOW_STRIKE]: { type: AnimationType.ELBOW_STRIKE, speed: 1.1 },
-  [AnimationType.ELBOW_UPPERCUT]: { type: AnimationType.ELBOW_UPPERCUT, speed: 1.0 },
+  [AnimationType.ELBOW_STRIKE]: {
+    type: AnimationType.ELBOW_STRIKE,
+    speed: 1.1,
+  },
+  [AnimationType.ELBOW_UPPERCUT]: {
+    type: AnimationType.ELBOW_UPPERCUT,
+    speed: 1.0,
+  },
   [AnimationType.KNEE_STRIKE]: { type: AnimationType.KNEE_STRIKE, speed: 1.0 },
 
   // Grappling (잡기)
   [AnimationType.THROW]: { type: AnimationType.THROW, speed: 0.9 },
   [AnimationType.GRAPPLE]: { type: AnimationType.GRAPPLE, speed: 0.85 },
   [AnimationType.SWEEP]: { type: AnimationType.SWEEP, speed: 1.0 },
-  [AnimationType.COUNTER_ATTACK]: { type: AnimationType.COUNTER_ATTACK, speed: 1.1 },
+  [AnimationType.COUNTER_ATTACK]: {
+    type: AnimationType.COUNTER_ATTACK,
+    speed: 1.1,
+  },
 
   // Defense (방어)
   [AnimationType.BLOCK]: { type: AnimationType.BLOCK, speed: 1.0 },
@@ -57,8 +75,14 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
   // Movement (이동)
   [AnimationType.WALK]: { type: AnimationType.WALK, speed: 1.0 },
   [AnimationType.IDLE_STANCE]: { type: AnimationType.IDLE_STANCE, speed: 1.0 },
-  [AnimationType.FORWARD_DASH]: { type: AnimationType.FORWARD_DASH, speed: 1.2 },
-  [AnimationType.BACKWARD_RETREAT]: { type: AnimationType.BACKWARD_RETREAT, speed: 1.0 },
+  [AnimationType.FORWARD_DASH]: {
+    type: AnimationType.FORWARD_DASH,
+    speed: 1.2,
+  },
+  [AnimationType.BACKWARD_RETREAT]: {
+    type: AnimationType.BACKWARD_RETREAT,
+    speed: 1.0,
+  },
   [AnimationType.SIDE_STEP]: { type: AnimationType.SIDE_STEP, speed: 1.1 },
 };
 
@@ -72,109 +96,134 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
  *
  * @korean 기술애니메이션매핑
  */
-export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> = new Map([
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☰ GEON (건) - HEAVEN: Direct Force (태권도 타격)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["geon_heaven_strike", { type: AnimationType.CROSS, speed: 1.0 }],
-  ["geon_heavenly_fist", { type: AnimationType.JAB, speed: 1.1 }],
-  ["geon_frontal_kick", { type: AnimationType.FRONT_KICK, speed: 1.0 }],
-  ["geon_roundhouse_kick", { type: AnimationType.ROUNDHOUSE_KICK, speed: 1.0 }],
-  ["geon_axe_kick", { type: AnimationType.AXE_KICK, speed: 0.9 }],
-  ["geon_palm_strike", { type: AnimationType.PALM_STRIKE, speed: 1.0 }],
-  ["geon_elbow_smash", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
+export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
+  new Map([
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☰ GEON (건) - HEAVEN: Direct Force (태권도 타격)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["geon_heaven_strike", { type: AnimationType.CROSS, speed: 1.0 }],
+    ["geon_heavenly_fist", { type: AnimationType.JAB, speed: 1.1 }],
+    ["geon_frontal_kick", { type: AnimationType.FRONT_KICK, speed: 1.0 }],
+    [
+      "geon_roundhouse_kick",
+      { type: AnimationType.ROUNDHOUSE_KICK, speed: 1.0 },
+    ],
+    ["geon_axe_kick", { type: AnimationType.AXE_KICK, speed: 0.9 }],
+    ["geon_palm_strike", { type: AnimationType.PALM_STRIKE, speed: 1.0 }],
+    ["geon_elbow_smash", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☱ TAE (태) - LAKE: Fluid Joint Manipulation (합기도)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["tae_flowing_strikes", { type: AnimationType.CROSS, speed: 1.2 }],
-  ["tae_wrist_lock", { type: AnimationType.GRAPPLE, speed: 0.85 }],
-  ["tae_small_circle", { type: AnimationType.GRAPPLE, speed: 0.85 }],
-  ["tae_finger_lock", { type: AnimationType.GRAPPLE, speed: 0.9 }],
-  ["tae_elbow_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
-  ["tae_shoulder_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
-  ["tae_arm_bar", { type: AnimationType.GRAPPLE, speed: 0.75 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☱ TAE (태) - LAKE: Fluid Joint Manipulation (합기도)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["tae_flowing_strikes", { type: AnimationType.CROSS, speed: 1.2 }],
+    ["tae_wrist_lock", { type: AnimationType.GRAPPLE, speed: 0.85 }],
+    ["tae_small_circle", { type: AnimationType.GRAPPLE, speed: 0.85 }],
+    ["tae_finger_lock", { type: AnimationType.GRAPPLE, speed: 0.9 }],
+    ["tae_elbow_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
+    ["tae_shoulder_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
+    ["tae_arm_bar", { type: AnimationType.GRAPPLE, speed: 0.75 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☲ LI (리) - FIRE: Precision Nerve Strikes (정밀 타격)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["li_flame_spear", { type: AnimationType.JAB, speed: 1.3 }],
-  ["li_temple_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
-  ["li_nerve_strike", { type: AnimationType.JAB, speed: 1.2 }],
-  ["li_sidekick", { type: AnimationType.SIDE_KICK, speed: 1.0 }],
-  ["li_pressure_point", { type: AnimationType.JAB, speed: 1.0 }],
-  ["li_solar_plexus_strike", { type: AnimationType.PALM_STRIKE, speed: 1.1 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☲ LI (리) - FIRE: Precision Nerve Strikes (정밀 타격)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["li_flame_spear", { type: AnimationType.JAB, speed: 1.3 }],
+    ["li_temple_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
+    ["li_nerve_strike", { type: AnimationType.JAB, speed: 1.2 }],
+    ["li_sidekick", { type: AnimationType.SIDE_KICK, speed: 1.0 }],
+    ["li_pressure_point", { type: AnimationType.JAB, speed: 1.0 }],
+    ["li_solar_plexus_strike", { type: AnimationType.PALM_STRIKE, speed: 1.1 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☳ JIN (진) - THUNDER: Explosive Power (폭발력)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["jin_lightning_flash", { type: AnimationType.JAB, speed: 1.4 }],
-  ["jin_jumping_front_kick", { type: AnimationType.JUMPING_KICK, speed: 1.0 }],
-  ["jin_tornado_kick", { type: AnimationType.TORNADO_KICK, speed: 1.0 }],
-  ["jin_flying_sidekick", { type: AnimationType.JUMPING_KICK, speed: 1.1 }],
-  ["jin_back_kick", { type: AnimationType.BACK_KICK, speed: 1.0 }],
-  ["jin_knee_strike", { type: AnimationType.KNEE_STRIKE, speed: 1.1 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☳ JIN (진) - THUNDER: Explosive Power (폭발력)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["jin_lightning_flash", { type: AnimationType.JAB, speed: 1.4 }],
+    [
+      "jin_jumping_front_kick",
+      { type: AnimationType.JUMPING_KICK, speed: 1.0 },
+    ],
+    ["jin_tornado_kick", { type: AnimationType.TORNADO_KICK, speed: 1.0 }],
+    ["jin_flying_sidekick", { type: AnimationType.JUMPING_KICK, speed: 1.1 }],
+    ["jin_back_kick", { type: AnimationType.BACK_KICK, speed: 1.0 }],
+    ["jin_knee_strike", { type: AnimationType.KNEE_STRIKE, speed: 1.1 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☴ SON (손) - WIND: Continuous Pressure (지속 공격)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["son_whirlwind_barrage", { type: AnimationType.JAB, speed: 1.5 }],
-  ["son_sweeping_low_kick", { type: AnimationType.SWEEP, speed: 1.0 }],
-  ["son_rhythmic_strikes", { type: AnimationType.JAB, speed: 1.3 }],
-  ["son_flowing_push", { type: AnimationType.PALM_STRIKE, speed: 1.1 }],
-  ["son_spinning_elbow", { type: AnimationType.ELBOW_STRIKE, speed: 1.2 }],
-  ["son_rapid_footwork", { type: AnimationType.SIDE_STEP, speed: 1.3 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☴ SON (손) - WIND: Continuous Pressure (지속 공격)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["son_whirlwind_barrage", { type: AnimationType.JAB, speed: 1.5 }],
+    ["son_sweeping_low_kick", { type: AnimationType.SWEEP, speed: 1.0 }],
+    ["son_rhythmic_strikes", { type: AnimationType.JAB, speed: 1.3 }],
+    ["son_flowing_push", { type: AnimationType.PALM_STRIKE, speed: 1.1 }],
+    ["son_spinning_elbow", { type: AnimationType.ELBOW_STRIKE, speed: 1.2 }],
+    ["son_rapid_footwork", { type: AnimationType.SIDE_STEP, speed: 1.3 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☵ GAM (감) - WATER: Flow & Adaptation (유동 반격)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["gam_water_counter", { type: AnimationType.COUNTER_ATTACK, speed: 1.0 }],
-  ["gam_redirect_throw", { type: AnimationType.THROW, speed: 0.9 }],
-  ["gam_flowing_block", { type: AnimationType.BLOCK, speed: 1.0 }],
-  ["gam_circular_parry", { type: AnimationType.BLOCK, speed: 1.1 }],
-  ["gam_hip_throw", { type: AnimationType.THROW, speed: 0.85 }],
-  ["gam_wrist_twist_counter", { type: AnimationType.GRAPPLE, speed: 0.9 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☵ GAM (감) - WATER: Flow & Adaptation (유동 반격)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["gam_water_counter", { type: AnimationType.COUNTER_ATTACK, speed: 1.0 }],
+    ["gam_redirect_throw", { type: AnimationType.THROW, speed: 0.9 }],
+    ["gam_flowing_block", { type: AnimationType.BLOCK, speed: 1.0 }],
+    ["gam_circular_parry", { type: AnimationType.BLOCK, speed: 1.1 }],
+    ["gam_hip_throw", { type: AnimationType.THROW, speed: 0.85 }],
+    ["gam_wrist_twist_counter", { type: AnimationType.GRAPPLE, speed: 0.9 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☶ GAN (간) - MOUNTAIN: Defensive Mastery (방어 마스터리)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["gan_rock_defense", { type: AnimationType.BLOCK, speed: 0.9 }],
-  ["gan_immovable_stance", { type: AnimationType.IDLE_STANCE, speed: 0.8 }],
-  ["gan_iron_block", { type: AnimationType.BLOCK, speed: 0.85 }],
-  ["gan_counter_strike", { type: AnimationType.COUNTER_ATTACK, speed: 1.1 }],
-  ["gan_mountain_stance_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
-  ["gan_reversal_technique", { type: AnimationType.COUNTER_ATTACK, speed: 1.0 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☶ GAN (간) - MOUNTAIN: Defensive Mastery (방어 마스터리)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["gan_rock_defense", { type: AnimationType.BLOCK, speed: 0.9 }],
+    ["gan_immovable_stance", { type: AnimationType.IDLE_STANCE, speed: 0.8 }],
+    ["gan_iron_block", { type: AnimationType.BLOCK, speed: 0.85 }],
+    ["gan_counter_strike", { type: AnimationType.COUNTER_ATTACK, speed: 1.1 }],
+    ["gan_mountain_stance_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
+    [
+      "gan_reversal_technique",
+      { type: AnimationType.COUNTER_ATTACK, speed: 1.0 },
+    ],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ☷ GON (곤) - EARTH: Grounding & Takedowns (넘어뜨리기)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["gon_earth_embrace", { type: AnimationType.GRAPPLE, speed: 0.85 }],
-  ["gon_leg_sweep", { type: AnimationType.SWEEP, speed: 1.0 }],
-  ["gon_ssireum_throw", { type: AnimationType.THROW, speed: 0.9 }],
-  ["gon_ground_pound", { type: AnimationType.JAB, speed: 1.0 }],
-  ["gon_ankle_pick", { type: AnimationType.SWEEP, speed: 1.1 }],
-  ["gon_body_lock_takedown", { type: AnimationType.THROW, speed: 0.85 }],
-  ["gon_sacrifice_throw", { type: AnimationType.THROW, speed: 0.8 }],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ☷ GON (곤) - EARTH: Grounding & Takedowns (넘어뜨리기)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["gon_earth_embrace", { type: AnimationType.GRAPPLE, speed: 0.85 }],
+    ["gon_leg_sweep", { type: AnimationType.SWEEP, speed: 1.0 }],
+    ["gon_ssireum_throw", { type: AnimationType.THROW, speed: 0.9 }],
+    ["gon_ground_pound", { type: AnimationType.JAB, speed: 1.0 }],
+    ["gon_ankle_pick", { type: AnimationType.SWEEP, speed: 1.1 }],
+    ["gon_body_lock_takedown", { type: AnimationType.THROW, speed: 0.85 }],
+    ["gon_sacrifice_throw", { type: AnimationType.THROW, speed: 0.8 }],
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // DARK OPS (암살자) - Lethal Techniques (치명 기술)
-  // ═══════════════════════════════════════════════════════════════════════
-  ["darkops_silent_carotid", { type: AnimationType.GRAPPLE, speed: 0.9 }],
-  ["darkops_nerve_paralysis", { type: AnimationType.JAB, speed: 1.1 }],
-  ["darkops_liver_disruption", { type: AnimationType.PALM_STRIKE, speed: 1.0 }],
-  ["darkops_kidney_strike", { type: AnimationType.KNEE_STRIKE, speed: 1.0 }],
-  ["darkops_throat_strike", { type: AnimationType.JAB, speed: 1.2 }],
-  ["darkops_solar_plexus_paralyze", { type: AnimationType.PALM_STRIKE, speed: 1.1 }],
-  ["darkops_brachial_plexus_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
-  ["darkops_femoral_nerve_strike", { type: AnimationType.KNEE_STRIKE, speed: 1.0 }],
-  ["darkops_rear_choke", { type: AnimationType.GRAPPLE, speed: 0.8 }],
-  ["darkops_spinal_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.0 }],
-  ["darkops_jaw_dislocation", { type: AnimationType.ELBOW_UPPERCUT, speed: 1.0 }],
-  ["darkops_temple_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
-  ["darkops_achilles_sever", { type: AnimationType.SWEEP, speed: 1.2 }],
-  ["darkops_ear_strike", { type: AnimationType.PALM_STRIKE, speed: 1.2 }],
-  ["darkops_eye_gouge", { type: AnimationType.JAB, speed: 1.3 }],
-]);
+    // ═══════════════════════════════════════════════════════════════════════
+    // DARK OPS (암살자) - Lethal Techniques (치명 기술)
+    // ═══════════════════════════════════════════════════════════════════════
+    ["darkops_silent_carotid", { type: AnimationType.GRAPPLE, speed: 0.9 }],
+    ["darkops_nerve_paralysis", { type: AnimationType.JAB, speed: 1.1 }],
+    [
+      "darkops_liver_disruption",
+      { type: AnimationType.PALM_STRIKE, speed: 1.0 },
+    ],
+    ["darkops_kidney_strike", { type: AnimationType.KNEE_STRIKE, speed: 1.0 }],
+    ["darkops_throat_strike", { type: AnimationType.JAB, speed: 1.2 }],
+    [
+      "darkops_solar_plexus_paralyze",
+      { type: AnimationType.PALM_STRIKE, speed: 1.1 },
+    ],
+    [
+      "darkops_brachial_plexus_strike",
+      { type: AnimationType.ELBOW_STRIKE, speed: 1.1 },
+    ],
+    [
+      "darkops_femoral_nerve_strike",
+      { type: AnimationType.KNEE_STRIKE, speed: 1.0 },
+    ],
+    ["darkops_rear_choke", { type: AnimationType.GRAPPLE, speed: 0.8 }],
+    ["darkops_spinal_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.0 }],
+    [
+      "darkops_jaw_dislocation",
+      { type: AnimationType.ELBOW_UPPERCUT, speed: 1.0 },
+    ],
+    ["darkops_temple_strike", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
+    ["darkops_achilles_sever", { type: AnimationType.SWEEP, speed: 1.2 }],
+    ["darkops_ear_strike", { type: AnimationType.PALM_STRIKE, speed: 1.2 }],
+    ["darkops_eye_gouge", { type: AnimationType.JAB, speed: 1.3 }],
+  ]);
 
 /**
  * Get animation configuration for a technique

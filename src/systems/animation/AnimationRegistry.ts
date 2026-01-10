@@ -11,24 +11,6 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
-import { AnimationType } from "./MartialArtsAnimationBuilder";
-import {
-  KICK_ANIMATIONS,
-  FRONT_KICK_ANIMATION,
-  ROUNDHOUSE_KICK_ANIMATION,
-  SIDE_KICK_ANIMATION,
-  AXE_KICK_ANIMATION,
-  BACK_KICK_ANIMATION,
-  TORNADO_KICK_ANIMATION,
-  JUMPING_KICK_ANIMATION,
-  SWEEP_ANIMATION,
-} from "./KickAnimations";
-import {
-  PUNCH_ANIMATIONS,
-  JAB_ANIMATION,
-  CROSS_ANIMATION,
-  PALM_STRIKE_ANIMATION,
-} from "./PunchAnimations";
 import {
   ELBOW_KNEE_ANIMATIONS,
   ELBOW_STRIKE_ANIMATION,
@@ -36,15 +18,33 @@ import {
   KNEE_STRIKE_ANIMATION,
 } from "./ElbowKneeAnimations";
 import {
+  BLOCK_ANIMATION,
+  COUNTER_ATTACK_ANIMATION,
+  GRAPPLE_ANIMATION,
   GRAPPLING_ANIMATIONS,
   THROW_ANIMATION,
-  GRAPPLE_ANIMATION,
-  COUNTER_ATTACK_ANIMATION,
-  BLOCK_ANIMATION,
 } from "./GrapplingAnimations";
 import {
-  getAnimationForTechniqueOrDefault,
+  AXE_KICK_ANIMATION,
+  BACK_KICK_ANIMATION,
+  FRONT_KICK_ANIMATION,
+  JUMPING_KICK_ANIMATION,
+  KICK_ANIMATIONS,
+  ROUNDHOUSE_KICK_ANIMATION,
+  SIDE_KICK_ANIMATION,
+  SWEEP_ANIMATION,
+  TORNADO_KICK_ANIMATION,
+} from "./KickAnimations";
+import { AnimationType } from "./MartialArtsAnimationBuilder";
+import {
+  CROSS_ANIMATION,
+  JAB_ANIMATION,
+  PALM_STRIKE_ANIMATION,
+  PUNCH_ANIMATIONS,
+} from "./PunchAnimations";
+import {
   getAnimationForTechnique,
+  getAnimationForTechniqueOrDefault,
   hasAnimationMapping,
   type AnimationConfig,
 } from "./TechniqueAnimationMapping";
@@ -192,36 +192,36 @@ export function getAnimationByName(
 
 // Re-export all individual animations for direct access
 export {
-  // Kicks
-  FRONT_KICK_ANIMATION,
-  ROUNDHOUSE_KICK_ANIMATION,
-  SIDE_KICK_ANIMATION,
   AXE_KICK_ANIMATION,
   BACK_KICK_ANIMATION,
-  TORNADO_KICK_ANIMATION,
-  JUMPING_KICK_ANIMATION,
-  SWEEP_ANIMATION,
-  // Punches
-  JAB_ANIMATION,
+  BLOCK_ANIMATION,
+  COUNTER_ATTACK_ANIMATION,
   CROSS_ANIMATION,
-  PALM_STRIKE_ANIMATION,
   // Elbow/Knee
   ELBOW_STRIKE_ANIMATION,
   ELBOW_UPPERCUT_ANIMATION,
+  // Kicks
+  FRONT_KICK_ANIMATION,
+  GRAPPLE_ANIMATION,
+  // Punches
+  JAB_ANIMATION,
+  JUMPING_KICK_ANIMATION,
   KNEE_STRIKE_ANIMATION,
+  PALM_STRIKE_ANIMATION,
+  ROUNDHOUSE_KICK_ANIMATION,
+  SIDE_KICK_ANIMATION,
+  SWEEP_ANIMATION,
   // Grappling
   THROW_ANIMATION,
-  GRAPPLE_ANIMATION,
-  COUNTER_ATTACK_ANIMATION,
-  BLOCK_ANIMATION,
+  TORNADO_KICK_ANIMATION,
 };
 
 // Re-export category maps
 export {
-  KICK_ANIMATIONS,
-  PUNCH_ANIMATIONS,
   ELBOW_KNEE_ANIMATIONS,
   GRAPPLING_ANIMATIONS,
+  KICK_ANIMATIONS,
+  PUNCH_ANIMATIONS,
 };
 
 // Re-export animation types and mapping

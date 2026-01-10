@@ -328,7 +328,10 @@ export class MartialArtsAnimationBuilder {
    * Roundhouse chamber - Hip rotates for 돌려차기
    * @korean 돌려차기준비
    */
-  roundhouseChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+  roundhouseChamber(
+    timeOffset: number = 0.1,
+    easing: string = "ease-out"
+  ): this {
     const phase = KICK_PHASES.ROUNDHOUSE_CHAMBER;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.HIP_R, ...phase.hip);
@@ -344,7 +347,10 @@ export class MartialArtsAnimationBuilder {
    * Roundhouse extension - Full hip rotation for 돌려차기
    * @korean 돌려차기
    */
-  roundhouseExtend(timeOffset: number = 0.15, easing: string = "ease-out"): this {
+  roundhouseExtend(
+    timeOffset: number = 0.15,
+    easing: string = "ease-out"
+  ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.HIP_R, 1.2, 0, 1.6);
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);

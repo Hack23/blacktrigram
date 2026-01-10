@@ -14,10 +14,10 @@ import type {
   VitalPointEffectType,
   VitalPointSeverity,
 } from "../../types";
+import { AnimationType } from "../animation/MartialArtsAnimationBuilder";
 import { EffectIntensity } from "../effects";
 import { PlayerState } from "../player";
 import { StatusEffect } from "../types";
-import { AnimationType } from "../animation/MartialArtsAnimationBuilder";
 
 /**
  * Korean Technique - Core martial arts technique definition
