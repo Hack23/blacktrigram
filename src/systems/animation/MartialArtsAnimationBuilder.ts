@@ -641,6 +641,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.FOREARM_R, 0, -0.5, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -0.3, 0);
       kf.position(BoneName.HAND_R, -0.2, 0, 0.3);
+      // Fist for elbow chamber
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
     this.currentTime += timeOffset;
     return this;
@@ -828,6 +830,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.3);
       kf.rotate(BoneName.PELVIS, 0.2, 0.5, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.4, 0);
+      // Grab pose to control opponent's arm
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -850,6 +854,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.HIP_L, 1.2, 0, -0.3);
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
       kf.position(BoneName.PELVIS, 0, -0.4, -0.1);
+      // Grab pose to maintain arm control during drop
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -870,6 +876,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, -0.3, 0, 0);
       kf.rotate(BoneName.SPINE_UPPER, -0.2, 0, 0);
       kf.position(BoneName.PELVIS, 0, 0.1, 0);
+      // Grab pose for lifting opponent
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
@@ -891,6 +899,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0.3, 0, 0);
       kf.rotate(BoneName.SPINE_MIDDLE, 0.2, 0, 0);
       kf.position(BoneName.PELVIS, 0, -0.15, 0.2);
+      // Grab pose maintained during slam
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });
     this.currentTime += timeOffset;
     return this;
