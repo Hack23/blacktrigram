@@ -11,6 +11,8 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
+import { COMBO_ANIMATIONS } from "./ComboAnimations";
+import { DARKOPS_ANIMATIONS } from "./DarkOpsAnimations";
 import {
   ELBOW_KNEE_ANIMATIONS,
   ELBOW_STRIKE_ANIMATION,
@@ -52,6 +54,7 @@ import {
   TORNADO_KICK_ANIMATION,
 } from "./KickAnimations";
 import { AnimationType } from "./MartialArtsAnimationBuilder";
+import { MOVEMENT_ANIMATIONS } from "./MovementAnimations";
 import {
   BACKFIST_ANIMATION,
   CROSS_ANIMATION,
@@ -143,6 +146,9 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...ELBOW_KNEE_ANIMATIONS,
   ...GRAPPLING_ANIMATIONS,
   ...STANCE_ANIMATIONS,
+  ...DARKOPS_ANIMATIONS,
+  ...COMBO_ANIMATIONS,
+  ...MOVEMENT_ANIMATIONS,
 ]);
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -270,10 +276,14 @@ export {
 
 // Re-export category maps
 export {
+  COMBO_ANIMATIONS,
+  DARKOPS_ANIMATIONS,
   ELBOW_KNEE_ANIMATIONS,
   GRAPPLING_ANIMATIONS,
   KICK_ANIMATIONS,
+  MOVEMENT_ANIMATIONS,
   PUNCH_ANIMATIONS,
+  STANCE_ANIMATIONS,
 };
 
 // Re-export animation types and mapping
