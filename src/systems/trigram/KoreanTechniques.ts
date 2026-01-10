@@ -7,7 +7,7 @@ import {
   DARK_OPS_ARCHETYPE_BONUSES,
   DARK_OPS_TECHNIQUES,
   TRIGRAM_TECHNIQUES,
-} from "./techniques";
+} from "./techniques/index";
 
 /**
  * Korean martial arts techniques system
@@ -168,7 +168,7 @@ export function getTechniquesByStance(
 }
 
 // Export TRIGRAM_TECHNIQUES for tests
-export { DARK_OPS_TECHNIQUES, TRIGRAM_TECHNIQUES } from "./techniques";
+export { DARK_OPS_TECHNIQUES, TRIGRAM_TECHNIQUES } from "./techniques/index";
 
 // Export Dark Ops constants
 export {
@@ -176,7 +176,7 @@ export {
   DARK_OPS_NIGHT_BONUS,
   DARK_OPS_SPECIAL_EFFECTS,
   DARK_OPS_UNITS,
-} from "./techniques";
+} from "./techniques/index";
 
 // Export technique effectiveness matrix
 export const TECHNIQUE_EFFECTIVENESS_MATRIX: Record<
