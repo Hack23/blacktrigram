@@ -63,6 +63,7 @@ import {
   PUNCH_ANIMATIONS,
   UPPERCUT_ANIMATION,
 } from "./PunchAnimations";
+import { STANCE_ANIMATIONS } from "./StanceAnimations";
 import {
   getAnimationForTechnique,
   getAnimationForTechniqueOrDefault,
@@ -141,6 +142,7 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...PUNCH_ANIMATIONS,
   ...ELBOW_KNEE_ANIMATIONS,
   ...GRAPPLING_ANIMATIONS,
+  ...STANCE_ANIMATIONS,
 ]);
 
 // ═══════════════════════════════════════════════════════════════════════════

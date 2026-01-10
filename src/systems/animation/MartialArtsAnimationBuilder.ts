@@ -255,6 +255,16 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
+  /**
+   * Configure as idle/stance animation (대기 애니메이션)
+   */
+  asIdle(duration: number, shouldLoop: boolean = true): this {
+    this.type = "idle";
+    this.duration = duration;
+    this.loop = shouldLoop;
+    return this;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // KICK TECHNIQUES (발차기 기술)
   // ═══════════════════════════════════════════════════════════════════════
