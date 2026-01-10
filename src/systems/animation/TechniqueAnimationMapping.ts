@@ -127,12 +127,12 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     // ☱ TAE (태) - LAKE: Fluid Joint Manipulation (합기도)
     // ═══════════════════════════════════════════════════════════════════════
     ["tae_flowing_strikes", { type: AnimationType.CROSS, speed: 1.2 }],
-    ["tae_wrist_lock", { type: AnimationType.GRAPPLE, speed: 0.85 }],
+    ["tae_wrist_lock", { type: AnimationType.WRIST_LOCK, speed: 0.85 }],
     ["tae_small_circle", { type: AnimationType.GRAPPLE, speed: 0.85 }],
     ["tae_finger_lock", { type: AnimationType.GRAPPLE, speed: 0.9 }],
     ["tae_elbow_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
     ["tae_shoulder_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
-    ["tae_arm_bar", { type: AnimationType.GRAPPLE, speed: 0.75 }],
+    ["tae_arm_bar", { type: AnimationType.ARM_BAR, speed: 0.75 }],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☲ LI (리) - FIRE: Precision Nerve Strikes (정밀 타격)
@@ -161,7 +161,7 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     // ☴ SON (손) - WIND: Continuous Pressure (지속 공격)
     // ═══════════════════════════════════════════════════════════════════════
     ["son_whirlwind_barrage", { type: AnimationType.JAB, speed: 1.5 }],
-    ["son_sweeping_low_kick", { type: AnimationType.SWEEP, speed: 1.0 }],
+    ["son_sweeping_low_kick", { type: AnimationType.LOW_KICK, speed: 1.0 }],
     ["son_rhythmic_strikes", { type: AnimationType.JAB, speed: 1.3 }],
     ["son_flowing_push", { type: AnimationType.PALM_STRIKE, speed: 1.1 }],
     ["son_spinning_elbow", { type: AnimationType.ELBOW_STRIKE, speed: 1.2 }],
@@ -170,12 +170,12 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     // ═══════════════════════════════════════════════════════════════════════
     // ☵ GAM (감) - WATER: Flow & Adaptation (유동 반격)
     // ═══════════════════════════════════════════════════════════════════════
-    ["gam_water_counter", { type: AnimationType.COUNTER_ATTACK, speed: 1.0 }],
+    ["gam_water_counter", { type: AnimationType.COUNTER_STRIKE, speed: 1.0 }],
     ["gam_redirect_throw", { type: AnimationType.THROW, speed: 0.9 }],
     ["gam_flowing_block", { type: AnimationType.BLOCK, speed: 1.0 }],
     ["gam_circular_parry", { type: AnimationType.BLOCK, speed: 1.1 }],
     ["gam_hip_throw", { type: AnimationType.THROW, speed: 0.85 }],
-    ["gam_wrist_twist_counter", { type: AnimationType.GRAPPLE, speed: 0.9 }],
+    ["gam_wrist_twist_counter", { type: AnimationType.WRIST_LOCK, speed: 0.9 }],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☶ GAN (간) - MOUNTAIN: Defensive Mastery (방어 마스터리)
@@ -183,7 +183,7 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     ["gan_rock_defense", { type: AnimationType.BLOCK, speed: 0.9 }],
     ["gan_immovable_stance", { type: AnimationType.IDLE_STANCE, speed: 0.8 }],
     ["gan_iron_block", { type: AnimationType.BLOCK, speed: 0.85 }],
-    ["gan_counter_strike", { type: AnimationType.COUNTER_ATTACK, speed: 1.1 }],
+    ["gan_counter_strike", { type: AnimationType.COUNTER_STRIKE, speed: 1.1 }],
     ["gan_mountain_stance_lock", { type: AnimationType.GRAPPLE, speed: 0.8 }],
     [
       "gan_reversal_technique",
@@ -196,9 +196,9 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     ["gon_earth_embrace", { type: AnimationType.GRAPPLE, speed: 0.85 }],
     ["gon_leg_sweep", { type: AnimationType.SWEEP, speed: 1.0 }],
     ["gon_ssireum_throw", { type: AnimationType.THROW, speed: 0.9 }],
-    ["gon_ground_pound", { type: AnimationType.JAB, speed: 1.0 }],
+    ["gon_ground_pound", { type: AnimationType.SLAM, speed: 1.0 }],
     ["gon_ankle_pick", { type: AnimationType.SWEEP, speed: 1.1 }],
-    ["gon_body_lock_takedown", { type: AnimationType.THROW, speed: 0.85 }],
+    ["gon_body_lock_takedown", { type: AnimationType.SLAM, speed: 0.85 }],
     ["gon_sacrifice_throw", { type: AnimationType.THROW, speed: 0.8 }],
 
     // ═══════════════════════════════════════════════════════════════════════
