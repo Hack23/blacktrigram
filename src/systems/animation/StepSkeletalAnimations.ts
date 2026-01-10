@@ -67,8 +67,12 @@ export const STEP_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.HIP_L, new THREE.Euler(0.2, 0, 0, "XYZ")],
         // Ankle dorsiflexion
         [BoneName.FOOT_L, new THREE.Euler(0.15, 0, 0, "XYZ")],
-        // Pelvis tilts forward slightly
-        [BoneName.PELVIS, new THREE.Euler(0.08, 0, 0, "XYZ")],
+        // Pelvis tilts forward slightly with subtle hip drive (Y-rotation)
+        [BoneName.PELVIS, new THREE.Euler(0.08, 0.03, 0, "XYZ")],
+        // Spine counter-rotation for natural walking mechanics
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.02, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.02, -0.03, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.04, 0, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -93,6 +97,11 @@ export const STEP_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.FOOT_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         // Back leg begins to extend
         [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        // Hip and spine transition - reducing counter-rotation
+        [BoneName.PELVIS, new THREE.Euler(0.02, 0.02, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.01, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.01, -0.02, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.02, 0, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -115,8 +124,11 @@ export const STEP_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        // Pelvis level
+        // Pelvis and spine return to neutral
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -172,7 +184,12 @@ export const STEP_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(0.2, 0, 0, "XYZ")],
         [BoneName.FOOT_R, new THREE.Euler(0.15, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Pelvis tilts back with subtle hip drive (Y-rotation opposite to forward step)
+        [BoneName.PELVIS, new THREE.Euler(-0.08, -0.03, 0, "XYZ")],
+        // Spine counter-rotation for natural retreating mechanics
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.02, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.02, 0.03, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.04, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -191,6 +208,11 @@ export const STEP_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.HIP_R, new THREE.Euler(0.05, 0, 0, "XYZ")],
         [BoneName.FOOT_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        // Hip and spine transition - reducing counter-rotation
+        [BoneName.PELVIS, new THREE.Euler(-0.02, -0.02, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.01, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.01, 0.02, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.02, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -209,7 +231,11 @@ export const STEP_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Pelvis and spine return to neutral
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),

@@ -56,19 +56,22 @@ export const FOOTWORK_CIRCULAR_LEFT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
     // Frame 2: Movement start - Left foot begins lateral slide (0.1s)
     {
       time: 0.1,
       easing: "ease-out",
       boneRotations: new Map([
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0.08, "XYZ")],
+        // Pelvis begins lateral movement with subtle Y-rotation for hip engagement
+        [BoneName.PELVIS, new THREE.Euler(0, 0.05, 0.08, "XYZ")],
         // Left leg extends slightly for lateral movement
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.15, 0, 0, "XYZ")],
+        // Spine counter-rotates to keep guard facing forward while hips move left
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.03, 0.02, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, -0.04, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.05, -0.02, "XYZ")],
         // Guard stays forward
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -82,9 +85,14 @@ export const FOOTWORK_CIRCULAR_LEFT_ANIMATION: SkeletalAnimation = {
       time: 0.2,
       easing: "linear",
       boneRotations: new Map([
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")], // Center weight
+        // Pelvis at peak lateral with Y-rotation
+        [BoneName.PELVIS, new THREE.Euler(0, 0.03, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        // Maximum spine counter-rotation
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.02, 0.01, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, -0.03, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.03, -0.01, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -98,9 +106,13 @@ export const FOOTWORK_CIRCULAR_LEFT_ANIMATION: SkeletalAnimation = {
       time: 0.3,
       easing: "ease-in",
       boneRotations: new Map([
+        // Everything returns to neutral
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         // Guard returns to neutral
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -140,31 +152,37 @@ export const FOOTWORK_CIRCULAR_RIGHT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
     {
       time: 0.1,
       easing: "ease-out",
       boneRotations: new Map([
-        [BoneName.PELVIS, new THREE.Euler(0, 0, -0.08, "XYZ")],
+        // Pelvis begins lateral movement with subtle Y-rotation for hip engagement (opposite direction)
+        [BoneName.PELVIS, new THREE.Euler(0, -0.05, -0.08, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.15, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        // Spine counter-rotates to keep guard facing forward while hips move right
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.03, -0.02, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0.04, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.05, 0.02, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0.1, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0.1, 0, 0)]]),
     },
     {
       time: 0.2,
       easing: "linear",
       boneRotations: new Map([
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Pelvis at peak lateral with Y-rotation
+        [BoneName.PELVIS, new THREE.Euler(0, -0.03, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0, "XYZ")],
+        // Maximum spine counter-rotation
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.02, -0.01, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0.03, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.03, 0.01, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -176,15 +194,17 @@ export const FOOTWORK_CIRCULAR_RIGHT_ANIMATION: SkeletalAnimation = {
       time: 0.3,
       easing: "ease-in",
       boneRotations: new Map([
+        // Everything returns to neutral
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0.3, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0.3, 0, 0)]]),
     },
   ],
 };
@@ -236,6 +256,9 @@ export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0.03, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Subtle forward lean in spine for momentum
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.02, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.02, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -251,6 +274,8 @@ export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.01, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.01, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -266,6 +291,8 @@ export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -316,6 +343,9 @@ export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0.03, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Subtle backward lean in spine for momentum
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.02, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.02, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -330,6 +360,8 @@ export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(-0.01, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.01, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -344,12 +376,12 @@ export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0.3)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0.3)]]),
     },
   ],
 };
@@ -394,6 +426,9 @@ export const FOOTWORK_SLIDE_LEFT_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0.03, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Subtle lateral lean toward movement direction
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0.02, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0.02, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -408,6 +443,8 @@ export const FOOTWORK_SLIDE_LEFT_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0.01, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0.01, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -422,6 +459,8 @@ export const FOOTWORK_SLIDE_LEFT_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -472,6 +511,9 @@ export const FOOTWORK_SLIDE_RIGHT_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, -0.03, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.08, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Subtle lateral lean toward movement direction
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, -0.02, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, -0.02, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -486,6 +528,8 @@ export const FOOTWORK_SLIDE_RIGHT_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, -0.01, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, -0.01, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -500,12 +544,12 @@ export const FOOTWORK_SLIDE_RIGHT_ANIMATION: SkeletalAnimation = {
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0.3, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0.3, 0, 0)]]),
     },
   ],
 };
@@ -542,9 +586,7 @@ export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
     // Frame 2: Rotation start (0.08s)
     {
@@ -591,9 +633,7 @@ export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
@@ -627,9 +667,7 @@ export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
     {
       time: 0.08,
@@ -669,9 +707,7 @@ export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation = {
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
-      bonePositions: new Map([
-        [BoneName.PELVIS, new THREE.Vector3(0, 0, 0)],
-      ]),
+      bonePositions: new Map([[BoneName.PELVIS, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
