@@ -18,6 +18,41 @@ export {
   KeyframeFactories,
 } from "./AnimationBuilder";
 
+// Martial arts animation builder (semantic API)
+export {
+  AnimationType,
+  KICK_PHASES,
+  MARTIAL_POSES,
+  MartialArtsAnimationBuilder,
+  PUNCH_PHASES,
+} from "./MartialArtsAnimationBuilder";
+
+// Technique animation mapping
+export {
+  TECHNIQUE_ANIMATIONS,
+  getAnimationForTechnique as getTechniqueAnimationConfig,
+  getAnimationForTechniqueOrDefault,
+  getAnimationStats,
+  getTechniquesByAnimationType,
+  hasAnimationMapping,
+  type AnimationConfig,
+} from "./TechniqueAnimationMapping";
+
+// Animation registry (unified access)
+export {
+  ALL_ANIMATIONS,
+  ANIMATION_REGISTRY,
+  ELBOW_KNEE_ANIMATIONS,
+  GRAPPLING_ANIMATIONS,
+  KICK_ANIMATIONS,
+  PUNCH_ANIMATIONS,
+  getAnimationByName,
+  getAnimationByType,
+  getAnimationByTypeOrDefault,
+  getAnimationForTechniqueId,
+  getAnimationForTechniqueIdWithConfig,
+} from "./AnimationRegistry";
+
 export * from "./AnimationPriority";
 export * from "./AnimationStateMachine";
 export * from "./AnimationTransitions";
