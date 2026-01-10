@@ -12,6 +12,8 @@
 // Animation builder utilities (new)
 export {
   AnimationBuilder,
+  AnimationPatternHelpers,
+  AnimationPresets,
   BoneRotationHelpers,
   KeyframeFactories,
 } from "./AnimationBuilder";

@@ -142,14 +142,15 @@ export const CROSS_ANIMATION = AnimationBuilder.create("cross")
  *
  * Traditional Taekwondo front kick with knee lift, leg extension,
  * ankle dorsiflexion, support leg adjustments, and balance recovery.
+ * Hands maintain guard position throughout for face protection.
  *
  * Animation phases:
- * 1. Chamber (0.0s-0.1s): Knee lifts to waist height, support leg micro-adjust
+ * 1. Chamber (0.0s-0.1s): Knee lifts to waist height, hands guard face
  * 2. Extension (0.1s-0.2s): Lower leg extends forward with ankle flexion
  * 3. Impact (0.2s): Maximum extension point with dorsiflexion
  * 4. Retraction (0.2s-0.35s): Leg returns to chamber
  * 5. Set down (0.35s-0.45s): Foot returns to ground with balance recovery
- * 6. Recovery shuffle (0.45s-0.55s): Support leg adjustment for balance
+ * 6. Recovery shuffle (0.45s-0.55s): Return to fighting guard
  *
  * Duration: 550ms (enhanced with recovery)
  *
@@ -159,7 +160,7 @@ export const FRONT_KICK_ANIMATION = AnimationBuilder.create("front_kick")
   .withKoreanName("앞차기")
   .withDuration(0.55)
   .withType("attack")
-  // Frame 1: Chamber - knee lifts with support leg adjustment
+  // Frame 1: Chamber - knee lifts, hands protect face
   // Hip flexion ~90° lifts thigh to horizontal, knee bent tight
   .keyframe(0.1, "ease-out")
   .rotate(BoneName.HIP_R, 1.57, 0, 0) // 90 degrees - thigh horizontal
@@ -168,22 +169,30 @@ export const FRONT_KICK_ANIMATION = AnimationBuilder.create("front_kick")
   .rotate(BoneName.FOOT_L, 0, 0, 0.05) // Slight outward pivot
   .rotate(BoneName.PELVIS, -0.1, 0, 0) // Tilts slightly back for balance
   .rotate(BoneName.SPINE_LOWER, -0.05, 0, 0) // Spine counters
-  .rotate(BoneName.SHOULDER_L, 0, 0, -0.5)
-  .rotate(BoneName.SHOULDER_R, 0, 0, 0.5)
+  // HIGH GUARD - protect face during kick
+  .rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4) // Left hand high, near temple
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.6) // Tight bend
+  .rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4) // Right hand high, near temple
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.6) // Tight bend
   .build()
-  // Frame 2: Extension - leg snaps forward toward opponent
+  // Frame 2: Extension - leg snaps forward, hands stay up
   // Knee extends while hip drives forward, creating reach
   .keyframe(0.2, "ease-out")
   .rotate(BoneName.HIP_R, 1.7, 0, 0) // Hip drives slightly higher for reach
-  .rotate(BoneName.KNEE_R, 0.1, 0, 0) // Knee fully extends (slightly hyperextended)
+  .rotate(BoneName.KNEE_R, 0.1, 0, 0) // Knee fully extends
   .rotate(BoneName.FOOT_R, 0.5, 0, 0) // Ball of foot strikes (dorsiflexion)
   .rotate(BoneName.KNEE_L, -0.35, 0, 0) // Support leg bends for balance
   .rotate(BoneName.FOOT_L, 0, 0, 0.08)
   .rotate(BoneName.PELVIS, 0.15, 0, 0) // Pelvis tilts forward to drive kick
   .rotate(BoneName.SPINE_LOWER, 0.1, 0, 0) // Spine drives forward
   .rotate(BoneName.SPINE_MIDDLE, 0.05, 0, 0)
+  // Maintain high guard
+  .rotate(BoneName.SHOULDER_L, -0.85, 0.25, 0.35)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+  .rotate(BoneName.SHOULDER_R, -0.85, -0.25, -0.35)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.7)
   .build()
-  // Frame 3: Retraction to chamber
+  // Frame 3: Retraction to chamber, guard stays up
   .keyframe(0.35, "ease-in")
   .rotate(BoneName.HIP_R, 1.57, 0, 0)
   .rotate(BoneName.KNEE_R, -2.0, 0, 0)
@@ -193,26 +202,36 @@ export const FRONT_KICK_ANIMATION = AnimationBuilder.create("front_kick")
   .rotate(BoneName.PELVIS, 0, 0, 0)
   .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
   .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+  .rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+  .rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
   .build()
-  // Frame 4: Set down with balance recovery start
+  // Frame 4: Set down, transition to fighting guard
   .keyframe(0.45, "ease-in")
   .rotate(BoneName.HIP_R, 0, 0, 0)
   .rotate(BoneName.KNEE_R, -0.15, 0, 0) // Slight bend on landing
   .rotate(BoneName.FOOT_R, 0, 0, 0)
   .rotate(BoneName.KNEE_L, -0.2, 0, 0)
   .rotate(BoneName.FOOT_L, 0, 0, 0.03)
-  .rotate(BoneName.SHOULDER_L, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+  // Transition to fighting guard
+  .rotate(BoneName.SHOULDER_L, -0.7, 0.35, 0.25)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+  .rotate(BoneName.SHOULDER_R, -0.7, -0.35, -0.25)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.7)
   .build()
-  // Frame 5: Balance recovery shuffle
+  // Frame 5: Balance recovery - fighting guard
   .keyframe(0.55, "ease-in")
   .rotate(BoneName.KNEE_R, -0.2, 0, 0)
   .rotate(BoneName.KNEE_L, -0.2, 0, 0)
   .rotate(BoneName.FOOT_R, 0, 0, 0)
   .rotate(BoneName.FOOT_L, 0, 0, 0)
   .rotate(BoneName.PELVIS, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_L, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+  // Return to standard fighting guard
+  .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+  .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
   .build()
   .build();
 
@@ -221,15 +240,16 @@ export const FRONT_KICK_ANIMATION = AnimationBuilder.create("front_kick")
  *
  * Traditional Taekwondo roundhouse kick with hip rotation,
  * ankle flexion, support leg adjustments, and balance recovery.
+ * Hands maintain high guard position throughout for face protection.
  *
  * Animation phases:
- * 1. Chamber (0.0s-0.1s): Knee lifts, hip begins rotation
+ * 1. Chamber (0.0s-0.1s): Knee lifts, hip begins rotation, hands guard face
  * 2. Rotation (0.1s-0.2s): Hip rotates 90 degrees
  * 3. Extension (0.2s-0.25s): Leg extends in arc with ankle flexion
  * 4. Impact (0.25s): Maximum extension with support leg adjustment
  * 5. Retraction (0.25s-0.4s): Return to chamber
  * 6. Set down (0.4s-0.5s): Foot to ground with balance recovery
- * 7. Recovery shuffle (0.5s-0.6s): Support leg adjustment for balance
+ * 7. Recovery shuffle (0.5s-0.6s): Return to fighting guard
  *
  * Duration: 600ms (enhanced with recovery)
  *
@@ -241,21 +261,28 @@ export const ROUNDHOUSE_KICK_ANIMATION = AnimationBuilder.create(
   .withKoreanName("돌려차기")
   .withDuration(0.6)
   .withType("attack")
-  // Frame 1: Chamber with rotation start
+  // Frame 1: Chamber with rotation start, hands protect face
   .keyframe(0.1, "ease-out")
   .rotate(BoneName.HIP_R, 1.2, 0, 0.8) // Right leg chambers
   .rotate(BoneName.KNEE_R, -1.5, 0, 0)
   .rotate(BoneName.PELVIS, 0, -0.5, 0) // Hips rotate
-  .rotate(BoneName.SPINE_UPPER, 0, 0.3, 0) // Torso counter-rotates for balance
-  .rotate(BoneName.SHOULDER_L, 0, 0, -1.0) // Arms out for balance
-  .rotate(BoneName.SHOULDER_R, 0, 0, 1.0)
+  .rotate(BoneName.SPINE_UPPER, 0, 0.3, 0) // Torso counter-rotates
+  // HIGH GUARD - protect face during kick
+  .rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+  .rotate(BoneName.SHOULDER_R, -0.85, -0.25, -0.35)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.65)
   .build()
-  // Frame 2: Full hip rotation
+  // Frame 2: Full hip rotation, maintain guard
   .keyframe(0.2, "ease-out")
   .rotate(BoneName.HIP_R, 1.2, 0, 1.4)
   .rotate(BoneName.KNEE_R, -1.2, 0, 0)
   .rotate(BoneName.PELVIS, 0, -1.2, 0)
   .rotate(BoneName.SPINE_UPPER, 0, 0.6, 0)
+  .rotate(BoneName.SHOULDER_L, -0.85, 0.25, 0.35)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+  .rotate(BoneName.SHOULDER_R, -0.85, -0.25, -0.35)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.7)
   .build()
   // Frame 3: Extension and impact with ankle flexion
   .keyframe(0.25, "linear")
@@ -263,38 +290,50 @@ export const ROUNDHOUSE_KICK_ANIMATION = AnimationBuilder.create(
   .rotate(BoneName.KNEE_R, -0.1, 0, 0)
   .rotate(BoneName.PELVIS, 0, -1.5, 0)
   .rotate(BoneName.SPINE_UPPER, 0, 0.8, 0)
-  .rotate(BoneName.FOOT_R, 0.4, 0, 0.3) // Foot plantar flexion (point toes)
+  .rotate(BoneName.FOOT_R, 0.4, 0, 0.3) // Foot plantar flexion
   .rotate(BoneName.KNEE_L, -0.35, 0, 0) // Support leg micro-adjustment
   .rotate(BoneName.FOOT_L, 0, 0, -0.1) // Pivot for power
+  // Maintain high guard at impact
+  .rotate(BoneName.SHOULDER_L, -0.85, 0.25, 0.35)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+  .rotate(BoneName.SHOULDER_R, -0.85, -0.25, -0.35)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.7)
   .position(BoneName.FOOT_R, 0.8, 0, 0) // Side strike
   .position(BoneName.PELVIS, 0, -0.02, 0) // Slight drop for power
   .build()
-  // Frame 4: Retraction
+  // Frame 4: Retraction, guard remains up
   .keyframe(0.4, "ease-in")
   .rotate(BoneName.HIP_R, 1.2, 0, 0.8)
   .rotate(BoneName.KNEE_R, -1.5, 0, 0)
   .rotate(BoneName.FOOT_R, 0, 0, 0)
   .rotate(BoneName.PELVIS, 0, -0.3, 0)
   .rotate(BoneName.SPINE_UPPER, 0, 0.2, 0)
-  .rotate(BoneName.KNEE_L, -0.25, 0, 0) // Support leg returns
+  .rotate(BoneName.KNEE_L, -0.25, 0, 0)
   .rotate(BoneName.FOOT_L, 0, 0, 0)
+  .rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+  .rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
   .position(BoneName.FOOT_R, 0, 0, 0)
   .position(BoneName.PELVIS, 0, 0, 0)
   .build()
-  // Frame 5: Set down with balance recovery
+  // Frame 5: Set down, transition to fighting guard
   .keyframe(0.5, "ease-in")
   .rotate(BoneName.HIP_R, 0, 0, 0)
-  .rotate(BoneName.KNEE_R, -0.15, 0, 0) // Slight bend on landing
+  .rotate(BoneName.KNEE_R, -0.15, 0, 0)
   .rotate(BoneName.FOOT_R, 0, 0, 0)
   .rotate(BoneName.PELVIS, 0, 0, 0)
   .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_L, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_R, 0, 0, 0)
-  .rotate(BoneName.KNEE_L, -0.2, 0, 0) // Support leg adjusts
+  .rotate(BoneName.KNEE_L, -0.2, 0, 0)
   .rotate(BoneName.FOOT_L, 0, 0, 0)
-  .position(BoneName.PELVIS, 0, -0.01, 0) // Slight drop on landing
+  // Transition to fighting guard
+  .rotate(BoneName.SHOULDER_L, -0.7, 0.35, 0.25)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+  .rotate(BoneName.SHOULDER_R, -0.7, -0.35, -0.25)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.7)
+  .position(BoneName.PELVIS, 0, -0.01, 0)
   .build()
-  // Frame 6: Balance recovery shuffle
+  // Frame 6: Recovery - fighting guard
   .keyframe(0.6, "ease-in")
   .rotate(BoneName.HIP_R, 0, 0, 0)
   .rotate(BoneName.KNEE_R, -0.2, 0, 0)
@@ -303,9 +342,12 @@ export const ROUNDHOUSE_KICK_ANIMATION = AnimationBuilder.create(
   .rotate(BoneName.FOOT_L, 0, 0, 0)
   .rotate(BoneName.PELVIS, 0, 0, 0)
   .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_L, 0, 0, 0)
-  .rotate(BoneName.SHOULDER_R, 0, 0, 0)
-  .position(BoneName.PELVIS, 0, 0, 0) // Return to stable height
+  // Return to standard fighting guard
+  .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+  .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+  .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+  .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+  .position(BoneName.PELVIS, 0, 0, 0)
   .build()
   .build();
 
