@@ -17,14 +17,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAudio } from "../../../../audio/AudioProvider";
 import { TrigramStance } from "../../../../types/common";
 import type { Player3DUnifiedProps } from "../../../../types/player-visual";
-import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
 import StanceSymbol3D from "../effects/StanceSymbol3D";
 import StanceTransitionEffect from "../effects/StanceTransitionEffect";
+import { SkeletalPlayer3D } from "./SkeletalPlayer3D";
 
 /**
  * Props for Player3DWithTransitions component
  */
 export interface Player3DWithTransitionsProps extends Player3DUnifiedProps {
+  /** Specific attack animation name (for attack state) */
+  readonly attackAnimation?: string;
   /** Enable stance transition effects (default: true) */
   readonly enableTransitionEffects?: boolean;
   /** Enable floating stance symbol (default: true) */
@@ -93,6 +95,7 @@ export const Player3DWithTransitions: React.FC<
   stance,
   ki,
   isMobile = false,
+  attackAnimation,
   enableTransitionEffects = true,
   enableStanceSymbol = true,
   enableStanceAudio = true,
@@ -107,7 +110,7 @@ export const Player3DWithTransitions: React.FC<
   const [fromStance, setFromStance] = useState<TrigramStance>(stance);
 
   // Detect stance changes - external effect (audio) justifies useEffect
-   
+
   useEffect(() => {
     const previousStance = prevStanceRef.current;
 
@@ -141,6 +144,7 @@ export const Player3DWithTransitions: React.FC<
         stance={stance}
         ki={ki}
         isMobile={isMobile}
+        attackAnimation={attackAnimation}
         {...playerProps}
       />
 

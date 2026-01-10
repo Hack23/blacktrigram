@@ -22,11 +22,6 @@ import { useRoundTransition } from "../../../hooks/useRoundTransition";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../../systems";
 import { CombatSystem } from "../../../systems/CombatSystem";
-import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
-import {
-  determineRecoveryType,
-  getRecoveryAnimationState,
-} from "../../../systems/animation/RecoveryAnimations";
 import {
   AdaptiveDifficulty,
   getPersonalityByArchetype,
@@ -35,7 +30,12 @@ import {
   AnimationEvents,
   getAnimationForTechnique,
 } from "../../../systems/animation";
+import {
+  determineRecoveryType,
+  getRecoveryAnimationState,
+} from "../../../systems/animation/RecoveryAnimations";
 import { AnimationState } from "../../../systems/animation/types";
+import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
@@ -44,6 +44,7 @@ import {
   Position,
   TrigramStance,
 } from "../../../types";
+import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
   FONT_FAMILY,
   KOREAN_COLORS,
@@ -54,13 +55,12 @@ import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
-import { Z_INDEX } from "../../../types/LayoutTypes";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
-import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
 import { KeyboardHints } from "./components/controls/KeyboardHints";
 import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncement";
+import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
 import { StanceChangeIndicator } from "./components/indicators/StanceChangeIndicator";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
@@ -71,6 +71,10 @@ import { useActionFeedback } from "../../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { GestureEvent } from "../../../hooks/useTouchControls";
+import {
+  MovementType,
+  SpeedModifierSystem,
+} from "../../../systems/physics/SpeedModifierSystem";
 import { Technique } from "../../../types";
 import {
   animationStateToPlayerAnimation,
@@ -79,24 +83,27 @@ import {
 } from "../../../utils/player3DHelpers";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
-import { SkeletalPlayer3D } from "../../shared/three";
+import { Player3DWithTransitions } from "../../shared/three";
 import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
-import { ActionFeedback, TechniqueName } from "./components/feedback/ActionFeedback";
-import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import CombatArena3D from "./components/arena/CombatArena3D";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
-import { CombatTimer } from "./components/hud/CombatTimer";
-import { ComboCounter } from "./components/indicators/ComboCounter";
+import { PauseMenu } from "./components/controls/PauseMenu";
+import HitEffects3D from "./components/effects/HitEffects3D";
+import {
+  ActionFeedback,
+  TechniqueName,
+} from "./components/feedback/ActionFeedback";
 import { DamageNumbers } from "./components/feedback/DamageNumbers";
+import { CombatTimer } from "./components/hud/CombatTimer";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
-import HitEffects3D from "./components/effects/HitEffects3D";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
-import { PauseMenu } from "./components/controls/PauseMenu";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
-import { GuardIndicator } from "./components/indicators/GuardIndicator";
 import { PlayerStateOverlay } from "./components/hud/PlayerStateOverlay";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
+import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
+import { ComboCounter } from "./components/indicators/ComboCounter";
+import { GuardIndicator } from "./components/indicators/GuardIndicator";
 import { TechniqueBar } from "./components/indicators/TechniqueBar";
 import {
   AnimationUpdater,
@@ -109,7 +116,6 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-import { SpeedModifierSystem, MovementType } from "../../../systems/physics/SpeedModifierSystem";
 
 /**
  * Props for the CombatScreen3D component.
@@ -634,23 +640,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Calculate leg injury factor for physics-based movement
   // Averages left and right leg health to determine speed penalty
-  const calculateLegInjuryFactor = useCallback((player: PlayerState): number => {
-    if (!player.bodyPartHealth) return 0;
-    
-    const leftLeg = player.bodyPartHealth.legLeft ?? player.maxHealth;
-    const rightLeg = player.bodyPartHealth.legRight ?? player.maxHealth;
-    const maxHealth = player.maxHealth;
-    
-    const averageLegHealth = (leftLeg + rightLeg) / (2 * maxHealth);
-    return Math.max(0, Math.min(1, 1.0 - averageLegHealth)); // 0 = healthy, 1 = critical
-  }, []);
+  const calculateLegInjuryFactor = useCallback(
+    (player: PlayerState): number => {
+      if (!player.bodyPartHealth) return 0;
+
+      const leftLeg = player.bodyPartHealth.legLeft ?? player.maxHealth;
+      const rightLeg = player.bodyPartHealth.legRight ?? player.maxHealth;
+      const maxHealth = player.maxHealth;
+
+      const averageLegHealth = (leftLeg + rightLeg) / (2 * maxHealth);
+      return Math.max(0, Math.min(1, 1.0 - averageLegHealth)); // 0 = healthy, 1 = critical
+    },
+    []
+  );
 
   // Get player1 data for movement physics
   // Memoize based on player1 reference (React Compiler prefers less specific dependencies)
   const player1 = players.length > 0 ? players[0] : undefined;
   const player1Data = useMemo(() => {
-    const p1 =
-      player1 ?? createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+    const p1 = player1 ?? createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
     return {
       currentStance: p1.currentStance,
       legInjuryFactor: calculateLegInjuryFactor(p1),
@@ -694,12 +702,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Use ref to store attack handler to avoid circular dependencies
   const handleAttackRef = useRef<(() => void) | null>(null);
-  
+
   // Ref for player1Animation to avoid circular dependencies in animation events
-  const player1AnimationRef = useRef<ReturnType<typeof usePlayerAnimation> | null>(null);
-  
+  const player1AnimationRef = useRef<ReturnType<
+    typeof usePlayerAnimation
+  > | null>(null);
+
   // Ref for validPlayers to avoid circular dependencies
-  const validPlayersRefForAnimation = useRef<[PlayerState, PlayerState] | null>(null);
+  const validPlayersRefForAnimation = useRef<[PlayerState, PlayerState] | null>(
+    null
+  );
 
   // Refs to clear attack animations after completion
   const clearPlayer1AttackAnimation = useRef<() => void>(() => {
@@ -722,7 +734,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       },
       onAnimationComplete: (state) => {
         // Handle animation completion
-        if (state === AnimationState.ATTACK || state === AnimationState.DEFEND) {
+        if (
+          state === AnimationState.ATTACK ||
+          state === AnimationState.DEFEND
+        ) {
           combatActions.setExecutingTechnique(false);
           // Clear attack animation when attack completes
           // 공격 완료 시 공격 애니메이션 초기화
@@ -747,7 +762,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player1Animation = usePlayerAnimation({
     events: player1AnimationEvents,
   });
-  
+
   // Store animation ref for use in event callbacks
   useEffect(() => {
     player1AnimationRef.current = player1Animation;
@@ -1004,10 +1019,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const handleAIStanceChange = useCallback(
     (stance: TrigramStance) => {
       const currentStance = validPlayers[1].currentStance;
-      
+
       // Start stance-specific transition animation for AI
       player2Animation.transitionToStanceChange(currentStance, stance);
-      
+
       onPlayerUpdate(1, { currentStance: stance });
       addCombatMessage(
         `AI 자세 변경: ${stance}`,
@@ -1184,18 +1199,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const handleStanceChangeWithAnimation = useCallback(
     (newStance: TrigramStance) => {
       const currentStance = validPlayers[0].currentStance;
-      
+
       // Start stance-specific transition animation
       const success = player1Animation.transitionToStanceChange(
         currentStance,
         newStance
       );
-      
+
       if (success) {
         // Capture previous stance for visual feedback
         const prevStance = STANCE_INDEX_MAP.get(currentStance) ?? 0;
         setPreviousStance(prevStance);
-        
+
         // Update combat state
         handleStanceSwitch(newStance);
       }
@@ -1333,14 +1348,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   /**
    * Helper function to execute fallback recovery animation
    * when a specific recovery type cannot be performed.
-   * 
+   *
    * Determines the appropriate recovery type based on ground state
    * and transitions to that animation.
-   * 
+   *
    * @korean 대체회복실행
    */
   const executeFallbackRecovery = useCallback(() => {
-    const groundState = balanceSystem.getGroundState(player1Animation.currentState);
+    const groundState = balanceSystem.getGroundState(
+      player1Animation.currentState
+    );
     if (groundState) {
       const recoveryType = determineRecoveryType(groundState);
       const animationState = getRecoveryAnimationState(recoveryType);
@@ -1380,7 +1397,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             // Roll recovery: costs stamina but fastest
             const player1 = players[0];
             if (balanceSystem.canRecoverWithType(player1, "roll_recovery")) {
-              const updatedPlayer = balanceSystem.applyRecoveryCost(player1, "roll_recovery");
+              const updatedPlayer = balanceSystem.applyRecoveryCost(
+                player1,
+                "roll_recovery"
+              );
               onPlayerUpdate(0, { stamina: updatedPlayer.stamina });
               player1Animation.transitionTo(AnimationState.RECOVERY_ROLL);
             } else {
@@ -1402,7 +1422,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1Animation.transitionTo(AnimationState.RECOVERY_DEFENSIVE);
             break;
           }
-          
+
           // Footwork pattern actions
           case "footwork_circular_left":
           case "footwork_circular_right":
@@ -1414,17 +1434,28 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             // Execute footwork animation
             player1Animation.transitionTo(action as AnimationState);
             break;
-          
+
           // Stance side switch
           case "stance_side_switch":
             // Switch front foot (mirror stance)
             player1Animation.transitionTo(AnimationState.STANCE_SIDE_SWITCH);
             break;
-          
+
           // Movement and other actions handled by existing system
         }
       },
-      [techniqueSelection, handleDefendWithFeedback, executeFallbackRecovery, balanceSystem, player1Animation, players, onPlayerUpdate, audio, feedbackActions, playerPositions]
+      [
+        techniqueSelection,
+        handleDefendWithFeedback,
+        executeFallbackRecovery,
+        balanceSystem,
+        player1Animation,
+        players,
+        onPlayerUpdate,
+        audio,
+        feedbackActions,
+        playerPositions,
+      ]
     ),
     enabled:
       !isPaused &&
@@ -2047,7 +2078,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
 
         {/* Player 1 */}
-        <SkeletalPlayer3D
+        <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[0],
             player1Position3D,
@@ -2066,10 +2097,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           )}
           attackAnimation={player1AttackAnimation}
           laterality={combatState.playerLaterality[0]}
+          enableTransitionEffects={!isMobile}
+          enableStanceSymbol={!isMobile}
+          enableStanceAudio={true}
         />
 
         {/* Player 2 (AI) */}
-        <SkeletalPlayer3D
+        <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[1],
             player2Position3D,
@@ -2088,6 +2122,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           )}
           attackAnimation={player2AttackAnimation}
           laterality={combatState.playerLaterality[1]}
+          enableTransitionEffects={!isMobile}
+          enableStanceSymbol={!isMobile}
+          enableStanceAudio={true}
         />
 
         {/* Hit Effects */}

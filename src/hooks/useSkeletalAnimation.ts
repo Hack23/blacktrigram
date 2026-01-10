@@ -14,6 +14,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   applyKeyframeToRig,
   getAnimation,
+  getAttackAnimation,
+  getDefensiveAnimation,
   getFootworkAnimation,
   getStepAnimation,
   updateAnimation,
@@ -131,12 +133,20 @@ export function useSkeletalAnimation(
     let shouldClearDiagonalRotation = true;
 
     if (currentAnimation === "attack" && attackAnimation) {
-      // Attack animation
-      selectedAnim = getAnimation(attackAnimation);
+      // Attack animation - first check stance-specific attacks, then generic
+      selectedAnim =
+        getAttackAnimation(attackAnimation) ?? getAnimation(attackAnimation);
       playbackSpeed = 1.0;
     } else if (currentAnimation === "defend" || isBlocking) {
-      // Block/defend animation
-      selectedAnim = getAnimation("block");
+      // Block/defend animation - check stance-specific defensive animations first
+      // If attackAnimation contains a defensive animation name, use it
+      if (attackAnimation) {
+        selectedAnim = getDefensiveAnimation(attackAnimation);
+      }
+      // Fall back to generic block animation
+      if (!selectedAnim) {
+        selectedAnim = getAnimation("block");
+      }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "walk") {
       // Walking animation
