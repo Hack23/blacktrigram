@@ -470,6 +470,131 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
+  /**
+   * Low kick chamber - Small knee lift for low kick (하단차기준비)
+   * @korean 하단차기준비
+   */
+  lowKickChamber(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.HIP_R, 0.5, 0, 0.3);
+      kf.rotate(BoneName.KNEE_R, -0.8, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0, -0.2, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Low kick sweep - Shin sweeps at thigh height (하단차기)
+   * @korean 하단차기
+   */
+  lowKickSweep(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.HIP_R, 0.3, 0, 1.5);
+      kf.rotate(BoneName.KNEE_R, -0.15, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, 0.3);
+      kf.rotate(BoneName.PELVIS, 0, -1.2, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.6, 0);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Crescent kick chamber - Leg swings inward (반달차기준비)
+   * @korean 반달차기준비
+   */
+  crescentKickChamber(
+    timeOffset: number = 0.1,
+    easing: string = "ease-out"
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.HIP_R, 0.8, 0, -0.8);
+      kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.3, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -0.2, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Crescent kick arc - Leg sweeps across body (반달차기)
+   * @korean 반달차기
+   */
+  crescentKickArc(
+    timeOffset: number = 0.12,
+    easing: string = "ease-out"
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.HIP_R, 1.2, 0, 1.0);
+      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.2, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0, -0.5, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.4, 0);
+      kf.position(BoneName.FOOT_R, 0.5, 0.8, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Push kick chamber - Ball of foot position (밀어차기준비)
+   * @korean 밀어차기준비
+   */
+  pushKickChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.HIP_R, 1.2, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -1.8, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.PELVIS, -0.1, 0, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Push kick thrust - Foot pushes opponent back (밀어차기)
+   * @korean 밀어차기
+   */
+  pushKickThrust(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.HIP_R, 1.0, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.15, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.5, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0.1, 0, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.05, 0, 0);
+      kf.position(BoneName.FOOT_R, 0, 0, 0.5);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Spinning heel kick - 360° with heel strike (뒤돌려차기)
+   * @korean 뒤돌려차기
+   */
+  spinningHeelKick(
+    timeOffset: number = 0.15,
+    easing: string = "ease-out"
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.PELVIS, 0, -4.5, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -4.3, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -4.0, 0.15);
+      kf.rotate(BoneName.HIP_R, 0.8, 0, 1.2);
+      kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, 0.2);
+      kf.position(BoneName.FOOT_R, 0.6, 0.5, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // PUNCH TECHNIQUES (주먹 기술)
   // ═══════════════════════════════════════════════════════════════════════
@@ -537,6 +662,89 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.WRIST_R, -0.5, 0, 0.1);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.4, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.25, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Hook punch - Circular punch targeting temple (후크)
+   * @korean 후크
+   */
+  hookPunch(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, -0.1, 0.6, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.35);
+      kf.rotate(BoneName.WRIST_R, 0, 0.2, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.5, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.35, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Hook wind-up - Arm pulls to side (후크준비)
+   * @korean 후크준비
+   */
+  hookWindup(timeOffset: number = 0.08, easing: string = "linear"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, 0.1, -0.6, -0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.57);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -0.3, 0);
+      kf.rotate(BoneName.PELVIS, 0, -0.2, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Uppercut punch - Rising punch to chin (어퍼컷)
+   * @korean 어퍼컷
+   */
+  uppercutPunch(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, 0.8, 0, 1.0);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.2);
+      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
+      kf.rotate(BoneName.PELVIS, -0.2, 0.15, 0);
+      kf.position(BoneName.PELVIS, 0, 0.1, 0.1);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Uppercut crouch - Dip before rising punch (어퍼컷준비)
+   * @korean 어퍼컷준비
+   */
+  uppercutCrouch(timeOffset: number = 0.08, easing: string = "linear"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, 0.3, 0, 0.2);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0.15, -0.1, 0);
+      kf.position(BoneName.PELVIS, 0, -0.1, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Overhand punch - Looping downward punch (오버핸드)
+   * @korean 오버핸드
+   */
+  overhandPunch(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.4, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.8);
+      kf.rotate(BoneName.SPINE_UPPER, 0.2, 0.4, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.15, 0.3, 0);
+      kf.rotate(BoneName.PELVIS, 0.1, 0.25, 0);
+      kf.position(BoneName.PELVIS, 0, -0.05, 0.1);
     });
     this.currentTime += timeOffset;
     return this;
@@ -673,6 +881,177 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_UPPER, 0.25, 0.4, -0.2);
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.position(BoneName.PELVIS, 0, -0.1, 0.05);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Wrist lock grab - Two-hand wrist control (손목잡기)
+   * @korean 손목잡기
+   */
+  wristGrab(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, 0.2, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.0);
+      kf.rotate(BoneName.WRIST_R, 0.3, -0.4, 0.2);
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.4, -0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.2);
+      kf.rotate(BoneName.WRIST_L, -0.2, 0.3, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.2, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Wrist lock twist - Apply rotational pressure (손목꺾기)
+   * @korean 손목꺾기
+   */
+  wristTwist(timeOffset: number = 0.15, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, -0.1, 0.5, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
+      kf.rotate(BoneName.WRIST_R, 0.5, -0.5, 0.4);
+      kf.rotate(BoneName.SHOULDER_L, 0.1, 0.6, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.WRIST_L, -0.3, 0.4, -0.2);
+      kf.rotate(BoneName.PELVIS, 0, 0.4, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.3, 0);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Arm bar entry - Wrap arm across body (팔꺾기진입)
+   * @korean 팔꺾기진입
+   */
+  armBarEntry(timeOffset: number = 0.15, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, 0.2, 0.6, 0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.5, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.3);
+      kf.rotate(BoneName.PELVIS, 0.2, 0.5, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.4, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Arm bar drop - Go to ground for submission (팔꺾기)
+   * @korean 팔꺾기
+   */
+  armBarDrop(timeOffset: number = 0.2, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.9, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+      kf.rotate(BoneName.SHOULDER_L, 0, 0.8, -0.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.PELVIS, 1.0, 0.2, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.7, 0.15, 0);
+      kf.rotate(BoneName.HIP_R, 1.4, 0, 0.4);
+      kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
+      kf.rotate(BoneName.HIP_L, 1.2, 0, -0.3);
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+      kf.position(BoneName.PELVIS, 0, -0.4, -0.1);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Slam lift - Hoist opponent up (슬램올리기)
+   * @korean 슬램올리기
+   */
+  slamLift(timeOffset: number = 0.2, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_L, 0.9, 0.2, -0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.8);
+      kf.rotate(BoneName.SHOULDER_R, 0.9, -0.2, 0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.8);
+      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
+      kf.rotate(BoneName.PELVIS, -0.3, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, -0.2, 0, 0);
+      kf.position(BoneName.PELVIS, 0, 0.1, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Slam down - Drive opponent to ground (슬램)
+   * @korean 슬램
+   */
+  slamDown(timeOffset: number = 0.15, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.3, -0.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, 0.3, -0.3, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+      kf.rotate(BoneName.KNEE_L, -0.6, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.6, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0.4, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.3, 0, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.2, 0, 0);
+      kf.position(BoneName.PELVIS, 0, -0.15, 0.2);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Clinch grab - Arms wrap around opponent (클린치잡기)
+   * @korean 클린치잡기
+   */
+  clinchGrab(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    const clinch = MARTIAL_POSES.CLINCH;
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_L, ...clinch.leftShoulder);
+      kf.rotate(BoneName.ELBOW_L, ...clinch.leftElbow);
+      kf.rotate(BoneName.SHOULDER_R, ...clinch.rightShoulder);
+      kf.rotate(BoneName.ELBOW_R, ...clinch.rightElbow);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0.2, 0, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Counter parry - Quick deflection (반격막기)
+   * @korean 반격막기
+   */
+  counterParry(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_L, 0.2, 0.5, -0.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.9);
+      kf.rotate(BoneName.WRIST_L, 0, 0.3, 0);
+      kf.rotate(BoneName.SHOULDER_R, 0.1, 0, -0.2);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+      kf.rotate(BoneName.PELVIS, 0, -0.2, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Counter strike - Fast return strike (반격치기)
+   * @korean 반격치기
+   */
+  counterStrike(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      kf.rotate(BoneName.SHOULDER_R, -0.6, 0, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.1);
+      kf.rotate(BoneName.WRIST_R, 0, 0, -0.2);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.35, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.2, 0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -979,17 +1358,26 @@ export enum AnimationType {
   TORNADO_KICK = "tornado_kick",
   JUMPING_KICK = "jumping_kick",
   LOW_KICK = "low_kick",
+  CRESCENT_KICK = "crescent_kick",
+  PUSH_KICK = "push_kick",
+  SPINNING_HEEL_KICK = "spinning_heel_kick",
 
   // Punches (주먹)
   JAB = "jab",
   CROSS = "cross",
   HOOK = "hook",
+  UPPERCUT = "uppercut",
+  OVERHAND = "overhand",
   PALM_STRIKE = "palm_strike",
+  BACKFIST = "backfist",
+  HAMMER_FIST = "hammer_fist",
 
   // Elbow/Knee (팔꿈치/무릎)
   ELBOW_STRIKE = "elbow_strike",
   ELBOW_UPPERCUT = "elbow_uppercut",
+  SPINNING_ELBOW = "spinning_elbow",
   KNEE_STRIKE = "knee_strike",
+  FLYING_KNEE = "flying_knee",
 
   // Grappling (잡기)
   THROW = "throw",
@@ -998,13 +1386,19 @@ export enum AnimationType {
   SLAM = "slam",
   WRIST_LOCK = "wrist_lock",
   ARM_BAR = "arm_bar",
+  SHOULDER_LOCK = "shoulder_lock",
+  HIP_THROW = "hip_throw",
+  LEG_REAP = "leg_reap",
 
   // Counters (반격)
   COUNTER_ATTACK = "counter_attack",
   COUNTER_STRIKE = "counter_strike",
+  PARRY_COUNTER = "parry_counter",
 
   // Defense (방어)
   BLOCK = "block",
+  BLOCK_HIGH = "block_high",
+  BLOCK_LOW = "block_low",
 
   // Movement (이동)
   WALK = "walk",

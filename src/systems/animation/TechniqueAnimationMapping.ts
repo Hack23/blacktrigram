@@ -44,12 +44,25 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
     speed: 1.0,
   },
   [AnimationType.LOW_KICK]: { type: AnimationType.LOW_KICK, speed: 1.1 },
+  [AnimationType.CRESCENT_KICK]: {
+    type: AnimationType.CRESCENT_KICK,
+    speed: 1.0,
+  },
+  [AnimationType.PUSH_KICK]: { type: AnimationType.PUSH_KICK, speed: 1.1 },
+  [AnimationType.SPINNING_HEEL_KICK]: {
+    type: AnimationType.SPINNING_HEEL_KICK,
+    speed: 0.95,
+  },
 
   // Punches (주먹)
   [AnimationType.JAB]: { type: AnimationType.JAB, speed: 1.2 },
   [AnimationType.CROSS]: { type: AnimationType.CROSS, speed: 1.1 },
   [AnimationType.HOOK]: { type: AnimationType.HOOK, speed: 1.0 },
+  [AnimationType.UPPERCUT]: { type: AnimationType.UPPERCUT, speed: 1.0 },
+  [AnimationType.OVERHAND]: { type: AnimationType.OVERHAND, speed: 0.95 },
   [AnimationType.PALM_STRIKE]: { type: AnimationType.PALM_STRIKE, speed: 1.0 },
+  [AnimationType.BACKFIST]: { type: AnimationType.BACKFIST, speed: 1.05 },
+  [AnimationType.HAMMER_FIST]: { type: AnimationType.HAMMER_FIST, speed: 1.0 },
 
   // Elbow/Knee (팔꿈치/무릎)
   [AnimationType.ELBOW_STRIKE]: {
@@ -60,7 +73,12 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
     type: AnimationType.ELBOW_UPPERCUT,
     speed: 1.0,
   },
+  [AnimationType.SPINNING_ELBOW]: {
+    type: AnimationType.SPINNING_ELBOW,
+    speed: 0.95,
+  },
   [AnimationType.KNEE_STRIKE]: { type: AnimationType.KNEE_STRIKE, speed: 1.0 },
+  [AnimationType.FLYING_KNEE]: { type: AnimationType.FLYING_KNEE, speed: 0.95 },
 
   // Grappling (잡기)
   [AnimationType.THROW]: { type: AnimationType.THROW, speed: 0.9 },
@@ -69,6 +87,12 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
   [AnimationType.SLAM]: { type: AnimationType.SLAM, speed: 0.9 },
   [AnimationType.WRIST_LOCK]: { type: AnimationType.WRIST_LOCK, speed: 0.85 },
   [AnimationType.ARM_BAR]: { type: AnimationType.ARM_BAR, speed: 0.8 },
+  [AnimationType.SHOULDER_LOCK]: {
+    type: AnimationType.SHOULDER_LOCK,
+    speed: 0.85,
+  },
+  [AnimationType.HIP_THROW]: { type: AnimationType.HIP_THROW, speed: 0.9 },
+  [AnimationType.LEG_REAP]: { type: AnimationType.LEG_REAP, speed: 1.0 },
 
   // Counters (반격)
   [AnimationType.COUNTER_ATTACK]: {
@@ -79,9 +103,15 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
     type: AnimationType.COUNTER_STRIKE,
     speed: 1.1,
   },
+  [AnimationType.PARRY_COUNTER]: {
+    type: AnimationType.PARRY_COUNTER,
+    speed: 1.1,
+  },
 
   // Defense (방어)
   [AnimationType.BLOCK]: { type: AnimationType.BLOCK, speed: 1.0 },
+  [AnimationType.BLOCK_HIGH]: { type: AnimationType.BLOCK_HIGH, speed: 1.0 },
+  [AnimationType.BLOCK_LOW]: { type: AnimationType.BLOCK_LOW, speed: 1.0 },
 
   // Movement (이동)
   [AnimationType.WALK]: { type: AnimationType.WALK, speed: 1.0 },
