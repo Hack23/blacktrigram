@@ -18,7 +18,10 @@ import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { GestureEvent } from "../../../hooks/useTouchControls";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../../systems";
-import { AnimationEvents } from "../../../systems/animation";
+import {
+  AnimationEvents,
+  getAnimationForTechnique,
+} from "../../../systems/animation";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
   CombatState,
@@ -156,6 +159,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [showLabels, setShowLabels] = React.useState(true);
   const [animated, setAnimated] = React.useState(true);
   const [scale, setScale] = React.useState(1.0);
+
+  // Track current attack animation for technique-specific animations
+  // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
+  const [attackAnimation, setAttackAnimation] = React.useState<
+    string | undefined
+  >(undefined);
 
   // Keyboard shortcut for toggling overlay (V key)
   React.useEffect(() => {
@@ -409,6 +418,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         trainingActions.setFeedback(
           `${technique.name.korean} 사용! | Used ${technique.name.english}!`
         );
+
+        // Set attack animation based on technique
+        // 기술에 따른 공격 애니메이션 설정
+        const animationName = getAnimationForTechnique(
+          technique.name.english || technique.id
+        );
+        setAttackAnimation(animationName);
 
         // In training mode, do not deduct resources to allow continuous practice
         // Resources are displayed for educational purposes only
@@ -919,6 +935,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           currentAnimation={animationStateToPlayerAnimation(
             playerAnimation.currentState
           )}
+          attackAnimation={attackAnimation}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={true}
           enableStanceAudio={true}
