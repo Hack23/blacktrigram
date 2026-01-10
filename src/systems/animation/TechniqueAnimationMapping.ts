@@ -112,6 +112,7 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
   [AnimationType.BLOCK]: { type: AnimationType.BLOCK, speed: 1.0 },
   [AnimationType.BLOCK_HIGH]: { type: AnimationType.BLOCK_HIGH, speed: 1.0 },
   [AnimationType.BLOCK_LOW]: { type: AnimationType.BLOCK_LOW, speed: 1.0 },
+  [AnimationType.PARRY]: { type: AnimationType.PARRY, speed: 1.1 },
 
   // Movement (이동)
   [AnimationType.WALK]: { type: AnimationType.WALK, speed: 1.0 },
@@ -125,6 +126,36 @@ const DEFAULT_CONFIGS: Record<AnimationType, AnimationConfig> = {
     speed: 1.0,
   },
   [AnimationType.SIDE_STEP]: { type: AnimationType.SIDE_STEP, speed: 1.1 },
+  [AnimationType.STEP_FORWARD]: {
+    type: AnimationType.STEP_FORWARD,
+    speed: 1.0,
+  },
+  [AnimationType.STEP_BACK]: { type: AnimationType.STEP_BACK, speed: 1.0 },
+  [AnimationType.SIDESTEP]: { type: AnimationType.SIDESTEP, speed: 1.1 },
+  [AnimationType.PIVOT]: { type: AnimationType.PIVOT, speed: 1.0 },
+  [AnimationType.DUCK]: { type: AnimationType.DUCK, speed: 1.2 },
+  [AnimationType.LEAN]: { type: AnimationType.LEAN, speed: 1.0 },
+
+  // Recovery & Stance (복귀 및 자세)
+  [AnimationType.RECOVERY]: { type: AnimationType.RECOVERY, speed: 1.0 },
+  [AnimationType.IDLE]: { type: AnimationType.IDLE, speed: 1.0 },
+  [AnimationType.STANCE]: { type: AnimationType.STANCE, speed: 1.0 },
+
+  // Additional Kicks (추가 발차기)
+  [AnimationType.SPINNING_HOOK]: {
+    type: AnimationType.SPINNING_HOOK,
+    speed: 0.95,
+  },
+  [AnimationType.KNEE_KICK]: { type: AnimationType.KNEE_KICK, speed: 1.0 },
+  [AnimationType.FLYING_KICK]: { type: AnimationType.FLYING_KICK, speed: 0.95 },
+
+  // Additional Knee/Elbow (추가 무릎/팔꿈치)
+  [AnimationType.CLINCH_KNEE]: { type: AnimationType.CLINCH_KNEE, speed: 1.0 },
+
+  // Additional Grappling (추가 잡기)
+  [AnimationType.JOINT_LOCK]: { type: AnimationType.JOINT_LOCK, speed: 0.8 },
+  [AnimationType.TAKEDOWN]: { type: AnimationType.TAKEDOWN, speed: 0.9 },
+  [AnimationType.CLINCH]: { type: AnimationType.CLINCH, speed: 0.85 },
 };
 
 /**
