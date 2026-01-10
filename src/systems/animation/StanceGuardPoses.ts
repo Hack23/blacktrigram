@@ -113,7 +113,7 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
  */
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.5, 0.5, 0.35), // Lead hand forward, elbow in
+    shoulder: new THREE.Euler(-0.35, 0.5, 0.35), // Lead hand forward/mid, elbow in
     elbow: new THREE.Euler(0, 0, -1.3), // Moderately bent - parrying
     wrist: new THREE.Euler(0.15, 0.2, 0), // Open hand ready to grip
   },
@@ -461,12 +461,12 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
  */
 export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.35, 0.35, 0.5), // Low but elbows in front of ribs
+    shoulder: new THREE.Euler(-0.15, 0.35, 0.5), // Low underhook - hands at hip level
     elbow: new THREE.Euler(0, 0, -1.6), // Bent tight - protects liver
     wrist: new THREE.Euler(0.1, 0.15, 0), // Hands at hip/belt level
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.35, -0.35, -0.5), // Low but elbows in front of ribs
+    shoulder: new THREE.Euler(-0.15, -0.35, -0.5), // Low underhook - hands at hip level
     elbow: new THREE.Euler(0, 0, 1.6), // Bent tight - protects liver
     wrist: new THREE.Euler(0.1, -0.15, 0), // Hands at hip/belt level
   },

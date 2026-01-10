@@ -271,12 +271,12 @@ describe("StanceGuardPoses", () => {
       });
 
       it("should have low underhook guard (protecting ribs)", () => {
-        // Low guard but elbows still in front of ribs for protection
-        expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.shoulder.x)).toBeLessThan(
-          0.5
+        // Low guard - shoulder x >= -0.2 for proper low classification
+        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThanOrEqual(
+          -0.2
         );
-        expect(Math.abs(GON_EARTH_GUARD_POSE.rightArm.shoulder.x)).toBeLessThan(
-          0.5
+        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThanOrEqual(
+          -0.2
         );
         // Tight elbow bend for rib protection
         expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.elbow.z)).toBeGreaterThan(
@@ -535,28 +535,31 @@ describe("StanceGuardPoses", () => {
 
   describe("Korean Martial Arts Authenticity", () => {
     it("should have distinct guard heights based on martial arts principles", () => {
-      // High guards (raised arms, protecting face)
-      const highGuards = [GEON_HIGH_GUARD_POSE, JIN_THUNDER_GUARD_POSE];
-      highGuards.forEach((pose) => {
-        expect(pose.leftArm.shoulder.x).toBeLessThan(-0.5); // Raised for face protection
-        expect(pose.rightArm.shoulder.x).toBeLessThan(-0.5);
-      });
-
-      // Mid guards (now all properly protect face)
-      const midGuards = [
-        TAE_FLUID_GUARD_POSE,
-        LI_FIRE_GUARD_POSE,
-        SON_WIND_GUARD_POSE,
+      // High guards (shoulder.x < -0.4): Raised arms protecting face
+      // Most Korean martial arts stances keep hands high for quick strikes/blocks
+      const highGuards = [
+        GEON_HIGH_GUARD_POSE, // -0.7 (boxing guard)
+        LI_FIRE_GUARD_POSE, // -0.75 (peekaboo)
+        JIN_THUNDER_GUARD_POSE, // -0.6 (chambered)
+        SON_WIND_GUARD_POSE, // -0.55 (staggered)
+        GAM_WATER_GUARD_POSE, // -0.5 (parrying)
+        GAN_MOUNTAIN_GUARD_POSE, // -0.85 (high cover)
       ];
-      midGuards.forEach((pose) => {
-        expect(pose.leftArm.shoulder.x).toBeLessThan(-0.4); // All protect face
-        expect(pose.leftArm.shoulder.x).toBeLessThan(0);
+      highGuards.forEach((pose) => {
+        expect(pose.leftArm.shoulder.x).toBeLessThan(-0.4); // High guard classification: < -0.4
       });
 
-      // Low guards (still protect body at minimum)
-      const lowGuards = [GAM_WATER_GUARD_POSE, GON_EARTH_GUARD_POSE];
+      // Mid guards (shoulder.x between -0.4 and -0.2): Balanced position
+      const midGuards = [TAE_FLUID_GUARD_POSE]; // -0.35 (lead hand parrying)
+      midGuards.forEach((pose) => {
+        expect(pose.leftArm.shoulder.x).toBeGreaterThanOrEqual(-0.4); // Mid guard classification: >= -0.4
+        expect(pose.leftArm.shoulder.x).toBeLessThan(-0.2); // Mid guard classification: < -0.2
+      });
+
+      // Low guards (shoulder.x >= -0.2): Wrestling/grappling focus
+      const lowGuards = [GON_EARTH_GUARD_POSE]; // -0.15 (underhooks)
       lowGuards.forEach((pose) => {
-        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-0.6); // Low but protective
+        expect(pose.leftArm.shoulder.x).toBeGreaterThanOrEqual(-0.2); // Low guard classification: >= -0.2
       });
     });
 
