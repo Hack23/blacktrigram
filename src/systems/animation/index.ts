@@ -9,6 +9,13 @@
  * @korean 애니메이션시스템
  */
 
+// Animation builder utilities (new)
+export {
+  AnimationBuilder,
+  KeyframeFactories,
+  BoneRotationHelpers,
+} from "./AnimationBuilder";
+
 export * from "./AnimationPriority";
 export * from "./AnimationStateMachine";
 export * from "./AnimationTransitions";
