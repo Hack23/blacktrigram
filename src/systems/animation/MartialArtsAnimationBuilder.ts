@@ -11,7 +11,6 @@
  * @korean 무술애니메이션빌더
  */
 
-import * as THREE from "three";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
@@ -35,6 +34,20 @@ import {
   applyHandPoseToConfig,
   applyHandPoseToKeyframe,
 } from "./HandPoseApplicator";
+
+// Import kick phase utilities
+import {
+  applyHighPeakPhaseToConfig,
+  applyKickPhaseToConfig,
+  applyRoundhousePhaseToConfig,
+  applySideKickPhaseToConfig,
+} from "./KickPhaseApplicator";
+
+// Import martial pose utilities
+import { applyMartialPoseToKeyframe } from "./MartialPoseApplicator";
+
+// Import punch phase utilities
+import { applyPunchPhaseToConfig } from "./PunchPhaseApplicator";
 
 // Re-export constants for backward compatibility
 export { AnimationType, HAND_POSES, KICK_PHASES, MARTIAL_POSES, PUNCH_PHASES };
@@ -140,12 +153,8 @@ export class MartialArtsAnimationBuilder {
    * @korean 준비자세
    */
   chamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
-    const phase = KICK_PHASES.CHAMBER;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.HIP_R, ...phase.hip);
-      kf.rotate(BoneName.KNEE_R, ...phase.knee);
-      kf.rotate(BoneName.KNEE_L, ...phase.supportKnee);
-      kf.rotate(BoneName.PELVIS, ...phase.pelvis);
+      applyKickPhaseToConfig(kf, KICK_PHASES.CHAMBER);
     });
     this.currentTime += timeOffset;
     return this;
@@ -156,13 +165,8 @@ export class MartialArtsAnimationBuilder {
    * @korean 차기확장
    */
   extend(timeOffset: number = 0.1, easing: string = "ease-out"): this {
-    const phase = KICK_PHASES.EXTENSION;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.HIP_R, ...phase.hip);
-      kf.rotate(BoneName.KNEE_R, ...phase.knee);
-      kf.rotate(BoneName.FOOT_R, ...phase.ankle);
-      kf.rotate(BoneName.KNEE_L, ...phase.supportKnee);
-      kf.rotate(BoneName.PELVIS, ...phase.pelvis);
+      applyKickPhaseToConfig(kf, KICK_PHASES.EXTENSION, { includeAnkle: true });
     });
     this.currentTime += timeOffset;
     return this;
@@ -173,12 +177,11 @@ export class MartialArtsAnimationBuilder {
    * @korean 회수자세
    */
   retract(timeOffset: number = 0.15, easing: string = "ease-in"): this {
-    const phase = KICK_PHASES.CHAMBER;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.HIP_R, ...phase.hip);
-      kf.rotate(BoneName.KNEE_R, ...phase.knee);
-      kf.rotate(BoneName.FOOT_R, 0, 0, 0);
-      kf.rotate(BoneName.KNEE_L, ...phase.supportKnee);
+      applyKickPhaseToConfig(kf, KICK_PHASES.CHAMBER, {
+        includePelvis: false,
+        resetFoot: true,
+      });
     });
     this.currentTime += timeOffset;
     return this;
@@ -207,12 +210,8 @@ export class MartialArtsAnimationBuilder {
     timeOffset: number = 0.1,
     easing: string = "ease-out"
   ): this {
-    const phase = KICK_PHASES.ROUNDHOUSE_CHAMBER;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.HIP_R, ...phase.hip);
-      kf.rotate(BoneName.KNEE_R, ...phase.knee);
-      kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
+      applyRoundhousePhaseToConfig(kf, KICK_PHASES.ROUNDHOUSE_CHAMBER);
     });
     this.currentTime += timeOffset;
     return this;
@@ -243,13 +242,8 @@ export class MartialArtsAnimationBuilder {
    * @korean 옆차기준비
    */
   sideKickChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
-    const phase = KICK_PHASES.SIDE_CHAMBER;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.HIP_R, ...phase.hip);
-      kf.rotate(BoneName.KNEE_R, ...phase.knee);
-      kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, phase.spineY, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, phase.spineLean);
+      applySideKickPhaseToConfig(kf, KICK_PHASES.SIDE_CHAMBER);
     });
     this.currentTime += timeOffset;
     return this;
@@ -277,13 +271,9 @@ export class MartialArtsAnimationBuilder {
    * @korean 내려차기올리기
    */
   axeKickRise(timeOffset: number = 0.15, easing: string = "ease-out"): this {
-    const phase = KICK_PHASES.HIGH_PEAK;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.HIP_R, ...phase.hip);
-      kf.rotate(BoneName.KNEE_R, ...phase.knee);
-      kf.rotate(BoneName.FOOT_R, ...phase.ankle);
-      kf.rotate(BoneName.KNEE_L, ...phase.supportKnee);
-      kf.rotate(BoneName.PELVIS, ...phase.pelvis);
+      applyHighPeakPhaseToConfig(kf, KICK_PHASES.HIGH_PEAK);
+      // Additional spine lean for axe kick balance
       kf.rotate(BoneName.SPINE_LOWER, -0.2, 0, 0);
       kf.rotate(BoneName.SPINE_UPPER, -0.15, 0, 0);
       kf.position(BoneName.FOOT_R, 0, 1.5, 0.3);
@@ -479,12 +469,8 @@ export class MartialArtsAnimationBuilder {
    * @korean 주먹준비
    */
   punchWindup(timeOffset: number = 0.08, easing: string = "linear"): this {
-    const phase = PUNCH_PHASES.WINDUP;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, ...phase.shoulder);
-      kf.rotate(BoneName.ELBOW_R, ...phase.elbow);
-      kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
-      kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+      applyPunchPhaseToConfig(kf, PUNCH_PHASES.WINDUP, "right");
       // Form fist during windup
       this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
@@ -497,14 +483,11 @@ export class MartialArtsAnimationBuilder {
    * @korean 지르기
    */
   punchExtend(timeOffset: number = 0.07, easing: string = "ease-out"): this {
-    const phase = PUNCH_PHASES.EXTENSION;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, ...phase.shoulder);
-      kf.rotate(BoneName.ELBOW_R, ...phase.elbow);
-      kf.rotate(BoneName.WRIST_R, ...phase.wrist!);
-      kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
-      kf.rotate(BoneName.SPINE_MIDDLE, 0, phase.spineY * 0.7, 0);
-      kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+      applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, "right", {
+        includeWrist: true,
+        includeSpineMiddle: true,
+      });
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, "right");
     });
@@ -1284,25 +1267,9 @@ export class MartialArtsAnimationBuilder {
    * @korean 경계자세
    */
   withGuard(): this {
-    const guard = MARTIAL_POSES.GUARD;
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
-      lastKf.boneRotations.set(
-        BoneName.SHOULDER_L,
-        new THREE.Euler(...guard.leftShoulder)
-      );
-      lastKf.boneRotations.set(
-        BoneName.ELBOW_L,
-        new THREE.Euler(...guard.leftElbow)
-      );
-      lastKf.boneRotations.set(
-        BoneName.SHOULDER_R,
-        new THREE.Euler(...guard.rightShoulder)
-      );
-      lastKf.boneRotations.set(
-        BoneName.ELBOW_R,
-        new THREE.Euler(...guard.rightElbow)
-      );
+      applyMartialPoseToKeyframe(lastKf, MARTIAL_POSES.GUARD);
       // Fists up for guard
       this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, "both");
     }
@@ -1314,25 +1281,9 @@ export class MartialArtsAnimationBuilder {
    * @korean 상단방어
    */
   withHighGuard(): this {
-    const guard = MARTIAL_POSES.HIGH_GUARD;
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
-      lastKf.boneRotations.set(
-        BoneName.SHOULDER_L,
-        new THREE.Euler(...guard.leftShoulder)
-      );
-      lastKf.boneRotations.set(
-        BoneName.ELBOW_L,
-        new THREE.Euler(...guard.leftElbow)
-      );
-      lastKf.boneRotations.set(
-        BoneName.SHOULDER_R,
-        new THREE.Euler(...guard.rightShoulder)
-      );
-      lastKf.boneRotations.set(
-        BoneName.ELBOW_R,
-        new THREE.Euler(...guard.rightElbow)
-      );
+      applyMartialPoseToKeyframe(lastKf, MARTIAL_POSES.HIGH_GUARD);
     }
     return this;
   }
@@ -1342,25 +1293,9 @@ export class MartialArtsAnimationBuilder {
    * @korean 클린치
    */
   withClinch(): this {
-    const clinch = MARTIAL_POSES.CLINCH;
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
-      lastKf.boneRotations.set(
-        BoneName.SHOULDER_L,
-        new THREE.Euler(...clinch.leftShoulder)
-      );
-      lastKf.boneRotations.set(
-        BoneName.ELBOW_L,
-        new THREE.Euler(...clinch.leftElbow)
-      );
-      lastKf.boneRotations.set(
-        BoneName.SHOULDER_R,
-        new THREE.Euler(...clinch.rightShoulder)
-      );
-      lastKf.boneRotations.set(
-        BoneName.ELBOW_R,
-        new THREE.Euler(...clinch.rightElbow)
-      );
+      applyMartialPoseToKeyframe(lastKf, MARTIAL_POSES.CLINCH);
     }
     return this;
   }
