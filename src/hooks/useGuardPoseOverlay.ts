@@ -10,12 +10,12 @@
  */
 
 import { useRef } from "react";
+import * as THREE from "three";
 import { getGuardPoseForStance } from "../systems/animation";
 import type { StanceLaterality } from "../systems/trigram/types";
 import { TrigramStance } from "../types/common";
 import type { PlayerAnimation } from "../types/player-visual";
 import type { SkeletalRig } from "../types/skeletal";
-import * as THREE from "three";
 
 /**
  * Blend factor for torso rotation during guard overlay
@@ -30,6 +30,20 @@ import * as THREE from "three";
  * @korean 방어자세가몸통에적용되는비율을줄이는추가스케일계수
  */
 const TORSO_BLEND_FACTOR = 0.8;
+
+/**
+ * Base hip offset in skeleton rig (X position from pelvis center)
+ * From SkeletonRig.ts: hip_L at [-0.1, ...], hip_R at [0.1, ...]
+ * @korean 기본고관절오프셋
+ */
+const BASE_HIP_OFFSET_X = 0.1;
+
+/**
+ * Default stance width (neutral standing)
+ * stanceWidth = 1.0 means shoulder width (standard)
+ * @korean 기본자세너비
+ */
+const DEFAULT_STANCE_WIDTH = 1.0;
 
 /**
  * Get dynamic guard blend factor for natural movement while maintaining stance character
@@ -91,6 +105,48 @@ const applyBoneRotation = (
   current.x = THREE.MathUtils.lerp(current.x, targetRotation.x, blend);
   current.y = THREE.MathUtils.lerp(current.y, targetRotation.y, blend);
   current.z = THREE.MathUtils.lerp(current.z, targetRotation.z, blend);
+};
+
+/**
+ * Apply hip position offset based on stance width
+ *
+ * Moves hip bones laterally to achieve wider or narrower stances.
+ * stanceWidth = 1.0 is shoulder width (neutral)
+ * stanceWidth > 1.0 spreads legs wider (e.g., horse stance)
+ * stanceWidth < 1.0 brings legs closer (e.g., cat stance)
+ *
+ * @param rig - Skeletal rig
+ * @param stanceWidth - Stance width multiplier (0.3 to 1.5)
+ * @param blend - Blend factor (0.0-1.0)
+ * @korean 자세너비에따른고관절위치적용
+ */
+const applyHipPositionForStanceWidth = (
+  rig: SkeletalRig,
+  stanceWidth: number,
+  blend: number
+): void => {
+  const leftHip = rig.bones.get("hip_L");
+  const rightHip = rig.bones.get("hip_R");
+
+  if (!leftHip || !rightHip) return;
+
+  // Calculate target X position based on stance width
+  // stanceWidth = 1.0 → baseOffset (0.1)
+  // stanceWidth = 1.5 → 0.15 (50% wider)
+  // stanceWidth = 0.5 → 0.05 (50% narrower)
+  const targetOffset = BASE_HIP_OFFSET_X * stanceWidth;
+
+  // Lerp hip X positions (left is negative X, right is positive X)
+  leftHip.position.x = THREE.MathUtils.lerp(
+    leftHip.position.x,
+    -targetOffset,
+    blend
+  );
+  rightHip.position.x = THREE.MathUtils.lerp(
+    rightHip.position.x,
+    targetOffset,
+    blend
+  );
 };
 
 /**
@@ -199,6 +255,11 @@ export const applyStanceGuardOverlay = (
 
   // Blend pelvis rotation for proper stance base
   applyBoneRotation(rig, "pelvis", guardPose.pelvis, blendFactor);
+
+  // Apply hip positions based on stance width (spreads or narrows legs)
+  // This is crucial for authentic Korean martial arts stances
+  const stanceWidth = guardPose.stanceWidth ?? DEFAULT_STANCE_WIDTH;
+  applyHipPositionForStanceWidth(rig, stanceWidth, blendFactor);
 
   // Apply breathing animation scale (chest/shoulder expansion)
   const breathingScale = THREE.MathUtils.lerp(
