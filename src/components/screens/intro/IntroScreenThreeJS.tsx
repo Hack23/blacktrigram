@@ -86,8 +86,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
   // Track Canvas initialization to prevent Html overlay from rendering before Canvas is ready
   const [canvasReady, setCanvasReady] = useState(false);
-  // Content visibility controlled by canvasReady state
-  const isMounted = canvasReady;
 
   // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
@@ -347,8 +345,6 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 padding: 0,
                 gap: isMobile ? "8px" : "16px",
                 pointerEvents: "none",
-                opacity: isMounted ? 1 : 0,
-                transition: "opacity 0.2s ease-out",
                 zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
               }}
             >

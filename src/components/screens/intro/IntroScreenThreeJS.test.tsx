@@ -30,12 +30,13 @@ vi.mock("@react-three/fiber", () => ({
   }) => {
     // Simulate Canvas initialization by calling onCreated in useEffect
     // Note: useEffect is imported at module level
-    const React = { useEffect };
-    React.useEffect(() => {
+    // Empty dependency array ensures onCreated is only called once (matches real Canvas behavior)
+    useEffect(() => {
       if (onCreated) {
         onCreated({ gl: { setClearColor: () => {} } });
       }
-    }, [onCreated]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return <div data-testid="three-canvas">{children}</div>;
   },
   useFrame: vi.fn(),
