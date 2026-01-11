@@ -12,9 +12,46 @@
 // Animation builder utilities (new)
 export {
   AnimationBuilder,
-  KeyframeFactories,
+  AnimationPatternHelpers,
+  AnimationPresets,
   BoneRotationHelpers,
+  KeyframeFactories,
 } from "./AnimationBuilder";
+
+// Martial arts animation builder (semantic API)
+export {
+  AnimationType,
+  KICK_PHASES,
+  MARTIAL_POSES,
+  MartialArtsAnimationBuilder,
+  PUNCH_PHASES,
+} from "./MartialArtsAnimationBuilder";
+
+// Technique animation mapping
+export {
+  TECHNIQUE_ANIMATIONS,
+  getAnimationForTechniqueOrDefault,
+  getAnimationStats,
+  getAnimationForTechnique as getTechniqueAnimationConfig,
+  getTechniquesByAnimationType,
+  hasAnimationMapping,
+  type AnimationConfig,
+} from "./TechniqueAnimationMapping";
+
+// Animation registry (unified access)
+export {
+  ALL_ANIMATIONS,
+  ANIMATION_REGISTRY,
+  ELBOW_KNEE_ANIMATIONS,
+  GRAPPLING_ANIMATIONS,
+  KICK_ANIMATIONS,
+  PUNCH_ANIMATIONS,
+  getAnimationByName,
+  getAnimationByType,
+  getAnimationByTypeOrDefault,
+  getAnimationForTechniqueId,
+  getAnimationForTechniqueIdWithConfig,
+} from "./AnimationRegistry";
 
 export * from "./AnimationPriority";
 export * from "./AnimationStateMachine";
@@ -42,18 +79,18 @@ export {
 
 // Stance guard pose system
 export {
-  GEON_HIGH_GUARD_POSE,
-  TAE_FLUID_GUARD_POSE,
-  LI_FIRE_GUARD_POSE,
-  JIN_THUNDER_GUARD_POSE,
-  SON_WIND_GUARD_POSE,
   GAM_WATER_GUARD_POSE,
   GAN_MOUNTAIN_GUARD_POSE,
+  GEON_HIGH_GUARD_POSE,
   GON_EARTH_GUARD_POSE,
+  JIN_THUNDER_GUARD_POSE,
+  LI_FIRE_GUARD_POSE,
+  SON_WIND_GUARD_POSE,
   STANCE_GUARD_CONFIGS,
-  getGuardPoseForStance,
-  getGuardConfigForStance,
+  TAE_FLUID_GUARD_POSE,
   getAllStanceGuardPoses,
+  getGuardConfigForStance,
+  getGuardPoseForStance,
 } from "./StanceGuardPoses";
 
 // Skeletal animation system
@@ -62,6 +99,8 @@ export {
   JOINT_CONSTRAINTS,
   TORSO_CONSTRAINTS,
   applyJointConstraint,
+  calculateHipRotationPowerModifier,
+  calculateTorsoRotation,
   createBone,
   createHumanoidRig,
   createScaledHumanoidRig,
@@ -69,8 +108,6 @@ export {
   getBoneWorldRotation,
   resetBoneToRestPose,
   resetRigToRestPose,
-  calculateTorsoRotation,
-  calculateHipRotationPowerModifier,
 } from "./SkeletonRig";
 
 export {
@@ -91,39 +128,39 @@ export {
 
 // Step movement animations
 export {
-  STEP_FORWARD_ANIMATION,
+  STEP_ANIMATIONS,
   STEP_BACK_ANIMATION,
+  STEP_FORWARD_ANIMATION,
   STEP_LEFT_ANIMATION,
   STEP_RIGHT_ANIMATION,
-  STEP_ANIMATIONS,
   getStepAnimation,
 } from "./StepSkeletalAnimations";
 
 // Footwork pattern animations
 export {
+  FOOTWORK_ANIMATIONS,
   FOOTWORK_CIRCULAR_LEFT_ANIMATION,
   FOOTWORK_CIRCULAR_RIGHT_ANIMATION,
-  FOOTWORK_SLIDE_FORWARD_ANIMATION,
-  FOOTWORK_SLIDE_BACK_ANIMATION,
-  FOOTWORK_SLIDE_LEFT_ANIMATION,
-  FOOTWORK_SLIDE_RIGHT_ANIMATION,
   FOOTWORK_PIVOT_LEFT_ANIMATION,
   FOOTWORK_PIVOT_RIGHT_ANIMATION,
   FOOTWORK_SHUFFLE_ANIMATION,
-  FOOTWORK_ANIMATIONS,
+  FOOTWORK_SLIDE_BACK_ANIMATION,
+  FOOTWORK_SLIDE_FORWARD_ANIMATION,
+  FOOTWORK_SLIDE_LEFT_ANIMATION,
+  FOOTWORK_SLIDE_RIGHT_ANIMATION,
   getFootworkAnimation,
 } from "./FootworkSkeletalAnimations";
 
 // Step animation system
 export {
+  STEP_ANIMATION_CONFIGS,
   STEP_ANIMATION_PARAMS,
   STEP_KEYFRAMES,
-  STEP_ANIMATION_CONFIGS,
   STEP_KOREAN_TERMS,
   createStepConfig,
-  interpolateStepKeyframes,
-  getStepKeyframeAtFrame,
   getStepDirectionVector,
+  getStepKeyframeAtFrame,
+  interpolateStepKeyframes,
 } from "./StepAnimations";
 
 export {
@@ -205,66 +242,134 @@ export {
 
 // Body facing direction system
 export {
-  bodyFacingSystem,
   BodyFacingSystem,
-  createDefaultBodyFacing,
-  updateBodyFacing,
-  updateFacingTowardOpponent,
-  lockFacing,
-  unlockFacing,
-  isTurning,
-  getFacingAngleRadians,
-  getHeadAngleRadians,
-  getTorsoRotationRadians,
-  getHipRotationRadians,
-  normalizeAngle,
+  DEFAULT_ROTATION_SPEED,
+  MAX_HEAD_ROTATION,
+  MAX_TORSO_ROTATION,
+  TURN_ANIMATION_DURATION,
+  TURN_THRESHOLD_ANGLE,
+  bodyFacingSystem,
   calculateAngleDifference,
   calculateAngleToTarget,
-  DEFAULT_ROTATION_SPEED,
-  MAX_TORSO_ROTATION,
-  MAX_HEAD_ROTATION,
-  TURN_THRESHOLD_ANGLE,
-  TURN_ANIMATION_DURATION,
+  createDefaultBodyFacing,
+  getFacingAngleRadians,
+  getHeadAngleRadians,
+  getHipRotationRadians,
+  getTorsoRotationRadians,
+  isTurning,
+  lockFacing,
+  normalizeAngle,
+  unlockFacing,
+  updateBodyFacing,
+  updateFacingTowardOpponent,
 } from "./BodyFacingSystem";
 
 // Enhanced technique animation mapper
 export {
   TechniqueAnimationMapper,
-  techniqueAnimationMapper,
+  calculateSpeedModifierForDamage,
+  determineAnimationTypeForTechnique,
+  getAdjustedAnimationDuration,
   getAnimationNameForType,
   hasAnimationForType,
-  determineAnimationTypeForTechnique,
-  calculateSpeedModifierForDamage,
-  getAdjustedAnimationDuration,
+  techniqueAnimationMapper,
 } from "./TechniqueAnimationMapper";
+
+// Defensive animations system (16 stance-specific defensive moves)
+export {
+  ALL_DEFENSIVE_ANIMATIONS,
+  // Collections and lookup functions
+  DEFENSIVE_ANIMATIONS_BY_STANCE,
+  GAM_FLOW_DEFENSE,
+  GAM_REDIRECTION_COUNTER,
+  GAN_COUNTER_FORTRESS,
+  GAN_IMMOVABLE_BLOCK,
+  GEON_COUNTER_STRIKE,
+  // Individual defensive animations
+  GEON_HIGH_BLOCK,
+  GON_GROUNDING_DEFENSE,
+  GON_TAKEDOWN_COUNTER,
+  JIN_EXPLOSIVE_BLOCK,
+  JIN_SHOCKING_COUNTER,
+  LI_NERVE_STRIKE_COUNTER,
+  LI_PRECISION_PARRY,
+  SON_CONTINUOUS_DEFLECTION,
+  SON_PRESSURE_COUNTER,
+  TAE_JOINT_LOCK_DEFENSE,
+  TAE_SWEEP_DEFENSE,
+  getDefensiveAnimation,
+  getDefensiveAnimationsForStance,
+} from "./DefensiveAnimations";
+
+// Stance-specific attack animations (24 unique attacks - 3 per stance)
+export {
+  ALL_ATTACK_ANIMATIONS,
+  // Collections and lookup functions
+  ATTACK_ANIMATIONS_BY_STANCE,
+  // GAM (Water) attacks
+  GAM_FLOWING_RIVER_STRIKE,
+  GAM_TIDAL_WAVE_PALM,
+  GAM_WHIRLPOOL_COUNTER,
+  GAN_AVALANCHE_HAMMER,
+  // GAN (Mountain) attacks
+  GAN_FORTRESS_COUNTER_STRIKE,
+  GAN_STONE_WALL_THRUST,
+  // GEON (Heaven) attacks
+  GEON_BONE_BREAKING_STRIKE_1,
+  GEON_CRUSHING_ELBOW,
+  GEON_THUNDEROUS_UPPERCUT,
+  GON_EARTHQUAKE_STOMP,
+  // GON (Earth) attacks
+  GON_GROUND_SWEEP_STRIKE,
+  GON_ROOTING_TAKEDOWN,
+  JIN_EXPLOSIVE_KNEE,
+  // JIN (Thunder) attacks
+  JIN_LIGHTNING_STRAIGHT,
+  JIN_SHOCKING_HAMMER_FIST,
+  // LI (Fire) attacks
+  LI_BURNING_FINGER_STRIKE_1,
+  LI_PHOENIX_EYE_STRIKE,
+  LI_SOLAR_PLEXUS_SPEAR,
+  SON_PENETRATING_PALM_RUSH,
+  SON_PRESSURE_POINT_CHAIN,
+  // SON (Wind) attacks
+  SON_WHIRLWIND_COMBO_1,
+  TAE_FLOWING_ARM_BAR,
+  TAE_SPIRAL_SHOULDER_THROW,
+  // TAE (Lake) attacks
+  TAE_WRIST_LOCK_STRIKE,
+  getAttackAnimation,
+  getAttackAnimationsForStance,
+} from "./StanceAttackAnimations";
+
 // Advanced joint movements system
 export {
   ADVANCED_JOINT_CONSTRAINTS,
-  calculateHipRotationForKick,
-  calculateKickPowerFromHipRotation,
   applyHipRotationToEuler,
   calculateAnkleArticulation,
-  calculateWristSnap,
-  calculateWristSnapPowerModifier,
-  calculateShoulderElevation,
-  calculateSpinalFlexion,
+  calculateHipRotationForKick,
+  calculateKickPowerFromHipRotation,
   calculateKneeDrive,
   calculateKneeStrikePowerModifier,
-  type BodySide,
-  type KickType,
-  type HandStrikeType,
-  type KickHeight,
-  type TechniquePhase,
-  type StrikePhase,
-  type ShoulderTechniqueType,
-  type ShoulderPhase,
-  type SpinalMovementType,
-  type KneeTechniqueType,
-  type KneePhase,
-  type HipRotationState,
-  type ShoulderElevationState,
+  calculateShoulderElevation,
+  calculateSpinalFlexion,
+  calculateWristSnap,
+  calculateWristSnapPowerModifier,
   type AnkleArticulationState,
-  type WristSnapState,
+  type BodySide,
+  type HandStrikeType,
+  type HipRotationState,
+  type KickHeight,
+  type KickType,
   type KneeDriveState,
+  type KneePhase,
+  type KneeTechniqueType,
+  type ShoulderElevationState,
+  type ShoulderPhase,
+  type ShoulderTechniqueType,
   type SpinalFlexionState,
+  type SpinalMovementType,
+  type StrikePhase,
+  type TechniquePhase,
+  type WristSnapState,
 } from "./AdvancedJointMovements";

@@ -18,7 +18,10 @@ import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { GestureEvent } from "../../../hooks/useTouchControls";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { PlayerState } from "../../../systems";
-import { AnimationEvents } from "../../../systems/animation";
+import {
+  AnimationEvents,
+  getAnimationForTechnique,
+} from "../../../systems/animation";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
   CombatState,
@@ -43,7 +46,7 @@ import {
 } from "../../shared/mobile";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
-import { SkeletalPlayer3D } from "../../shared/three";
+import { Player3DWithTransitions } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import {
   VitalPointMarkers3D,
@@ -57,6 +60,8 @@ import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
 } from "./components/AnatomyOverlay3D";
+import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
+import FootworkDrillsHTML from "./components/FootworkDrillsHTML";
 import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
 import TrainingArena3D from "./components/TrainingArena3D";
 import TrainingControlsHTML from "./components/TrainingControlsHTML";
@@ -66,8 +71,6 @@ import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
 import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
 import TrainingStatsHTML from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
-import FootworkDrillsHTML from "./components/FootworkDrillsHTML";
-import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
 import useTrainingActions from "./hooks/useTrainingActions";
 import useTrainingState from "./hooks/useTrainingState";
 
@@ -157,6 +160,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [animated, setAnimated] = React.useState(true);
   const [scale, setScale] = React.useState(1.0);
 
+  // Track current attack animation for technique-specific animations
+  // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
+  const [attackAnimation, setAttackAnimation] = React.useState<
+    string | undefined
+  >(undefined);
+
   // Keyboard shortcut for toggling overlay (V key)
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -229,6 +238,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Dummy position (fixed in 3D space, right side of arena)
   const dummyPosition = useMemo<[number, number, number]>(() => [5, 0, 0], []);
+
+  // Calculate rotation to face the dummy (same as CombatScreen3D pattern)
+  const playerRotation = useMemo(() => {
+    const dx = dummyPosition[0] - player3DPosition[0];
+    const dz = dummyPosition[2] - player3DPosition[2];
+    return Math.atan2(dx, dz);
+  }, [player3DPosition, dummyPosition]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
@@ -402,6 +418,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         trainingActions.setFeedback(
           `${technique.name.korean} 사용! | Used ${technique.name.english}!`
         );
+
+        // Set attack animation based on technique
+        // 기술에 따른 공격 애니메이션 설정
+        const animationName = getAnimationForTechnique(
+          technique.name.english || technique.id
+        );
+        setAttackAnimation(animationName);
 
         // In training mode, do not deduct resources to allow continuous practice
         // Resources are displayed for educational purposes only
@@ -895,11 +918,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         )}
 
         {/* Player model */}
-        <SkeletalPlayer3D
+        <Player3DWithTransitions
           {...convertPlayerStateToProps(
             trainingPlayerState,
             player3DPosition,
-            0, // rotation - facing right towards dummy
+            playerRotation, // rotation - dynamically face towards dummy
             {
               isMobile,
               facing: "right",
@@ -912,23 +935,28 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           currentAnimation={animationStateToPlayerAnimation(
             playerAnimation.currentState
           )}
+          attackAnimation={attackAnimation}
+          enableTransitionEffects={!isMobile}
+          enableStanceSymbol={true}
+          enableStanceAudio={true}
         />
 
         {/* Foot Placement Markers for Footwork Drills */}
-        {trainingState.trainingMode === "footwork" && trainingState.footworkDrillActive && (
-          <FootPlacementMarkers3D
-            centerPosition={dummyPosition}
-            pattern={
-              trainingState.footworkDrillType === "free_practice" 
-                ? "none" 
-                : trainingState.footworkDrillType
-            }
-            currentStep={trainingState.footworkDrillStep}
-            visible={true}
-            scale={1.0}
-            animated={true}
-          />
-        )}
+        {trainingState.trainingMode === "footwork" &&
+          trainingState.footworkDrillActive && (
+            <FootPlacementMarkers3D
+              centerPosition={dummyPosition}
+              pattern={
+                trainingState.footworkDrillType === "free_practice"
+                  ? "none"
+                  : trainingState.footworkDrillType
+              }
+              currentStep={trainingState.footworkDrillStep}
+              visible={true}
+              scale={1.0}
+              animated={true}
+            />
+          )}
 
         {/* Hit effects */}
         {trainingState.hitEffects.map((effect) => (
@@ -1185,7 +1213,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               {trainingState.trainingMode === "footwork" ? (
                 <FootworkDrillsHTML
                   currentDrill={trainingState.footworkDrillType}
-                  onDrillChange={(drill) => trainingActions.startFootworkDrill(drill)}
+                  onDrillChange={(drill) =>
+                    trainingActions.startFootworkDrill(drill)
+                  }
                   currentStep={trainingState.footworkDrillStep}
                   onStepComplete={() => trainingActions.advanceFootworkStep()}
                   isActive={trainingState.footworkDrillActive}
@@ -1193,7 +1223,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     if (trainingState.footworkDrillActive) {
                       trainingActions.stopFootworkDrill();
                     } else {
-                      trainingActions.startFootworkDrill(trainingState.footworkDrillType);
+                      trainingActions.startFootworkDrill(
+                        trainingState.footworkDrillType
+                      );
                     }
                   }}
                   isMobile={isMobile}

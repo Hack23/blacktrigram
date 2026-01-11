@@ -14,27 +14,50 @@ import type {
   VitalPointEffectType,
   VitalPointSeverity,
 } from "../../types";
+import { AnimationType } from "../animation/MartialArtsAnimationBuilder";
 import { EffectIntensity } from "../effects";
 import { PlayerState } from "../player";
 import { StatusEffect } from "../types";
 
+/**
+ * Korean Technique - Core martial arts technique definition
+ * 한국 무술 기술 정의
+ *
+ * @korean 한국무술기술
+ */
 export interface KoreanTechnique {
+  /** Unique identifier for the technique */
   id: string;
+
+  /** Bilingual name with romanization */
   name: {
     korean: string;
     english: string;
     romanized: string;
   };
+
+  /** Korean name (한글) */
   koreanName: string;
+  /** English name */
   englishName: string;
+  /** Romanized Korean (로마자) */
   romanized: string;
+
+  /** Technique description */
   description: {
     korean: string;
     english: string;
   };
+
+  /** Required stance for execution (팔괘 자세) */
   stance: TrigramStance;
+
+  /** Combat attack type (e.g., "strike", "kick", "throw") */
   type: string;
+  /** Damage type (e.g., "blunt", "internal", "joint") */
   damageType: string;
+
+  // Combat stats (전투 능력치)
   damage: number;
   kiCost: number;
   staminaCost: number;
@@ -44,7 +67,23 @@ export interface KoreanTechnique {
   recoveryTime: number;
   critChance: number;
   critMultiplier: number;
+
+  /** Status effects applied on hit */
   effects: readonly StatusEffect[];
+
+  /**
+   * Animation type for direct mapping to skeletal animation
+   * 스켈레탈 애니메이션에 직접 매핑하기 위한 애니메이션 타입
+   *
+   * @korean 애니메이션타입
+   */
+  animationType?: AnimationType;
+
+  /**
+   * Animation speed modifier (default: 1.0)
+   * 애니메이션 속도 조절 (기본: 1.0)
+   */
+  animationSpeed?: number;
 }
 
 /**
