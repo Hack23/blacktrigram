@@ -227,7 +227,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Player movement with physics-based acceleration and stance modifiers
   // Speed modifiers matching CombatScreen (2.0 m/s walking, 4.0 m/s² acceleration)
-  const { playerPosition, isMoving } = usePlayerMovement({
+  const { playerPosition, isMoving, velocity } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: expandedBounds,
     onPositionChange: (newPosition: Position) => {
@@ -263,12 +263,27 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [arenaBounds.scale]
   );
 
-  // Calculate rotation to face the dummy (same as CombatScreen3D pattern)
+  // Track last facing rotation for when movement stops
+  const lastFacingRotationRef = useRef<number>(0);
+
+  // Calculate rotation: face movement direction when moving, face dummy when idle
+  // 이동 중에는 이동 방향을, 정지 시에는 더미를 향함
   const playerRotation = useMemo(() => {
-    const dx = dummyPosition[0] - player3DPosition[0];
-    const dz = dummyPosition[2] - player3DPosition[2];
-    return Math.atan2(dx, dz);
-  }, [player3DPosition, dummyPosition]);
+    if (isMoving && velocity && (velocity.x !== 0 || velocity.y !== 0)) {
+      // When moving: face the direction of movement
+      // velocity.y is actually the Z direction in 3D space
+      const movementRotation = Math.atan2(velocity.x, -velocity.y);
+      lastFacingRotationRef.current = movementRotation;
+      return movementRotation;
+    } else {
+      // When idle: face the dummy (target)
+      const dx = dummyPosition[0] - player3DPosition[0];
+      const dz = dummyPosition[2] - player3DPosition[2];
+      const targetRotation = Math.atan2(dx, dz);
+      lastFacingRotationRef.current = targetRotation;
+      return targetRotation;
+    }
+  }, [isMoving, velocity, player3DPosition, dummyPosition]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
