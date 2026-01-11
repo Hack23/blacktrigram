@@ -165,9 +165,10 @@ export class AIDecisionTree {
    */
   private isKillModeActive(context: CombatContext, personality: AIPersonality): boolean {
     const opponentHealthPercent = context.opponentHealth / context.playerMaxHealth;
-    const isOpponentVulnerable = 
-      context.opponentBalance === "HELPLESS" || 
-      context.opponentBalance === "VULNERABLE";
+    const isOpponentVulnerable =
+      context.opponentBalance != null &&
+      (context.opponentBalance === "HELPLESS" ||
+        context.opponentBalance === "VULNERABLE");
     
     // Kill mode activates for aggressive archetypes when opponent is weakened
     const isAggressiveArchetype = 
@@ -187,7 +188,7 @@ export class AIDecisionTree {
    * 
    * **Kill Mode Behavior (결정타 행동)**:
    * - **Musa**: All-in overwhelming force (2.5x attack, 0x retreat)
-   * - **Amsalja**: Instant takedown focus (3.0x technique, 0.5x feint)
+   * - **Amsalja**: Instant takedown focus (3.0x technique, feints disabled in kill mode)
    * 
    * @korean 결정타 모드 가중치 적용
    * 
