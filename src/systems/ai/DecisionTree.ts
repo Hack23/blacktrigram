@@ -67,6 +67,7 @@ export interface CombatContext {
   readonly timeInMatch: number;
   readonly isOpponentAttacking: boolean;
   readonly recentDamageTaken: number;
+  readonly opponentBalance?: string; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
   readonly arenaBounds: {
     readonly x: number;
     readonly y: number;
@@ -146,6 +147,86 @@ export class AIDecisionTree {
   }
 
   /**
+   * Check if kill mode should be activated for aggressive archetypes
+   * 
+   * Kill mode activates when:
+   * - Opponent health is low (<30%)
+   * - Opponent is in vulnerable balance state (HELPLESS/VULNERABLE)
+   * 
+   * **Korean Philosophy (결정타 모드)**:
+   * - Musa: Honor demands finishing the fight decisively
+   * - Amsalja: Opportunity for instant takedown with precision
+   * 
+   * @korean 결정타 모드 활성화 확인
+   * 
+   * @param context - Current combat context
+   * @param personality - AI personality archetype
+   * @returns True if kill mode should be active
+   */
+  private isKillModeActive(context: CombatContext, personality: AIPersonality): boolean {
+    const opponentHealthPercent = context.opponentHealth / context.playerMaxHealth;
+    const isOpponentVulnerable = 
+      context.opponentBalance === "HELPLESS" || 
+      context.opponentBalance === "VULNERABLE";
+    
+    // Kill mode activates for aggressive archetypes when opponent is weakened
+    const isAggressiveArchetype = 
+      personality.archetype === PlayerArchetype.MUSA ||
+      personality.archetype === PlayerArchetype.AMSALJA;
+    
+    if (!isAggressiveArchetype) {
+      return false;
+    }
+    
+    // Activate kill mode when opponent is low health OR vulnerable
+    return opponentHealthPercent < 0.30 || isOpponentVulnerable;
+  }
+
+  /**
+   * Apply kill mode modifiers to action weights for finishing behavior
+   * 
+   * **Kill Mode Behavior (결정타 행동)**:
+   * - **Musa**: All-in overwhelming force (2.5x attack, 0x retreat)
+   * - **Amsalja**: Instant takedown focus (3.0x technique, 0.5x feint)
+   * 
+   * @korean 결정타 모드 가중치 적용
+   * 
+   * @param baseWeights - Base action weight multipliers
+   * @param personality - AI personality archetype
+   * @param isKillMode - Whether kill mode is active
+   * @returns Modified action weights for kill mode
+   */
+  private applyKillModeModifiers(
+    baseWeights: { attack: number; technique: number; defend: number; retreat: number },
+    personality: AIPersonality,
+    isKillMode: boolean
+  ): { attack: number; technique: number; defend: number; retreat: number } {
+    if (!isKillMode) {
+      return baseWeights;
+    }
+
+    const modified = { ...baseWeights };
+    
+    // Warrior (Musa): All-in overwhelming force
+    if (personality.archetype === PlayerArchetype.MUSA) {
+      modified.attack *= 2.5; // Massive attack priority
+      modified.technique *= 2.0; // Prefer powerful techniques
+      modified.defend *= 0.2; // Minimal defense
+      modified.retreat = 0.0; // No retreat (honor code)
+    }
+    
+    // Assassin (Amsalja): Instant takedown focus
+    if (personality.archetype === PlayerArchetype.AMSALJA) {
+      modified.technique *= 3.0; // Prioritize lethal techniques
+      modified.attack *= 1.5; // Quick finishers
+      modified.defend *= 0.3; // Reduce defense during kill window
+      // Note: retreat remains available for tactical repositioning
+    }
+    
+    return modified;
+  }
+
+  /**
    * Make strategic decision based on combat context
    * 
    * Applies difficulty-based reaction time delays if difficulty parameters are set
@@ -176,6 +257,9 @@ export class AIDecisionTree {
 
     this.lastDecisionTime = now;
 
+    // Check for kill mode activation (Issue #enhance-ai-aggression)
+    const killModeActive = this.isKillModeActive(context, personality);
+
     // Check for active combo first
     if (comboSystem.isComboActive()) {
       return this.decideComboAction(context, personality);
@@ -204,15 +288,15 @@ export class AIDecisionTree {
     // 4. Stance transition
     decisions.push(this.evaluateStanceChange(context, personality, now));
 
-    // 5. Feint attack (only at mid-close range)
-    if (distance < optimalRange * 1.8) {
+    // 5. Feint attack (only at mid-close range) - reduced priority in kill mode
+    if (distance < optimalRange * 1.8 && !killModeActive) {
       decisions.push(this.evaluateFeint(context, personality));
     }
 
     // 6. Distance-based tactics (archetype-aware ranges)
     if (distance < optimalRange * 1.2) {
       // Close to optimal range - use close-range tactics including vital point targeting
-      decisions.push(this.evaluateCloseRange(context, personality));
+      decisions.push(this.evaluateCloseRange(context, personality, killModeActive));
     } else if (distance > optimalRange * 1.8) {
       // Too far - need to approach
       decisions.push(this.evaluateApproach(context, personality));
@@ -221,8 +305,37 @@ export class AIDecisionTree {
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
-    // 7. Defensive positioning
-    decisions.push(this.evaluateDefense(context, personality));
+    // 7. Defensive positioning (reduced in kill mode)
+    if (!killModeActive || personality.archetype !== PlayerArchetype.MUSA) {
+      decisions.push(this.evaluateDefense(context, personality));
+    }
+
+    // Apply kill mode modifiers to boost aggression (Issue #enhance-ai-aggression)
+    if (killModeActive) {
+      decisions.forEach((decision) => {
+        // Calculate base action weights
+        const weights = {
+          attack: decision.action === AIActionType.ATTACK ? 1.0 : 0.0,
+          technique: decision.action === AIActionType.TECHNIQUE ? 1.0 : 0.0,
+          defend: decision.action === AIActionType.DEFEND ? 1.0 : 0.0,
+          retreat: decision.action === AIActionType.RETREAT ? 1.0 : 0.0,
+        };
+        
+        // Apply kill mode modifiers
+        const modifiedWeights = this.applyKillModeModifiers(weights, personality, true);
+        
+        // Adjust priority based on modified weights
+        if (decision.action === AIActionType.ATTACK) {
+          decision = { ...decision, priority: decision.priority * modifiedWeights.attack };
+        } else if (decision.action === AIActionType.TECHNIQUE) {
+          decision = { ...decision, priority: decision.priority * modifiedWeights.technique };
+        } else if (decision.action === AIActionType.DEFEND) {
+          decision = { ...decision, priority: decision.priority * modifiedWeights.defend };
+        } else if (decision.action === AIActionType.RETREAT) {
+          decision = { ...decision, priority: decision.priority * modifiedWeights.retreat };
+        }
+      });
+    }
 
     // Select highest priority decision
     const bestDecision = decisions.reduce((best, current) =>
@@ -499,10 +612,18 @@ export class AIDecisionTree {
    * **Korean Philosophy (급소 공격)**:
    * At close range, AI targets specific vital points based on difficulty level.
    * Higher difficulty = more precise targeting of critical points.
+   * 
+   * **Kill Mode Enhancement (결정타)**:
+   * When kill mode is active, AI prioritizes finishing techniques with boosted priority.
+   * 
+   * @param context - Combat context
+   * @param personality - AI personality
+   * @param killModeActive - Whether kill mode is active (opponent <30% health or vulnerable)
    */
   private evaluateCloseRange(
     context: CombatContext,
-    personality: AIPersonality
+    personality: AIPersonality,
+    killModeActive: boolean = false
   ): AIDecision {
     const hasResources = context.playerKi > 10 && context.playerStamina > 15;
     const aggression = personality.aggressionLevel;
@@ -515,6 +636,34 @@ export class AIDecisionTree {
       ? getVitalPointById(targetVitalPoint)?.names.korean ?? targetVitalPoint
       : undefined;
 
+    // Kill mode: Prioritize finishing attacks with maximum aggression
+    if (killModeActive) {
+      const killModeSuffix = personality.archetype === PlayerArchetype.MUSA 
+        ? " (결정타 - 압도적 공격)" 
+        : " (결정타 - 즉사 기술)";
+      
+      if (hasResources) {
+        return {
+          action: AIActionType.TECHNIQUE,
+          targetVitalPoint,
+          priority: targetVitalPoint ? 9 : 8, // Highest priority with vital point
+          reason: targetVitalPoint
+            ? `Kill mode - finishing technique on vital point (급소 결정타: ${vitalPointName})${killModeSuffix}`
+            : `Kill mode - finishing technique${killModeSuffix}`,
+        };
+      } else {
+        return {
+          action: AIActionType.ATTACK,
+          targetVitalPoint,
+          priority: targetVitalPoint ? 8 : 7, // Very high priority
+          reason: targetVitalPoint
+            ? `Kill mode - finishing attack (결정타 급소: ${vitalPointName})${killModeSuffix}`
+            : `Kill mode - finishing attack${killModeSuffix}`,
+        };
+      }
+    }
+
+    // Normal close range behavior
     if (Math.random() < aggression * 0.8) {
       return {
         action: AIActionType.ATTACK,

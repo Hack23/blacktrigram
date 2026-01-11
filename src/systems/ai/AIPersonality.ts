@@ -94,7 +94,7 @@ export const ARCHETYPE_BEHAVIORS: Record<PlayerArchetype, ArchetypeBehavior> = {
   [PlayerArchetype.MUSA]: {
     preferredStances: [TrigramStance.GEON, TrigramStance.JIN, TrigramStance.GAN], // Heaven, Thunder, Mountain
     optimalRange: 1, // Close quarters (1 cell = ~40px)
-    retreatThreshold: 30, // Only retreats at very low health
+    retreatThreshold: 5, // Enhanced: fights to near-death (honor code)
     techniqueSelectionBias: ["joint_manipulation", "bone_strikes"],
     movementPattern: "aggressive",
     honorCode: true, // Never retreats above threshold
@@ -103,7 +103,7 @@ export const ARCHETYPE_BEHAVIORS: Record<PlayerArchetype, ArchetypeBehavior> = {
   [PlayerArchetype.AMSALJA]: {
     preferredStances: [TrigramStance.SON, TrigramStance.GAM], // Wind, Water
     optimalRange: 1, // Stealth melee (1 cell)
-    retreatThreshold: 60, // Retreats early if detected
+    retreatThreshold: 20, // Enhanced: tactical retreat, not cowardice
     techniqueSelectionBias: ["nerve_strikes", "silent_takedowns"],
     movementPattern: "evasive",
     honorCode: false,
@@ -145,17 +145,23 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 맹공자 (Maenggongja) - Fierce Attacker
    * Aggressive pressure fighter using Musa archetype
+   * 
+   * **Enhanced Aggression (Issue #enhance-ai-aggression)**:
+   * - Increased aggression: 0.85 → 0.95 (overwhelming force)
+   * - Reduced defense: 0.2 → 0.1 (all-in offensive)
+   * - Increased combo tendency: 0.7 → 0.8 (sustained pressure)
+   * - Reduced retreat threshold: 0.15 → 0.05 (honor code: fights to near-death)
    */
   AGGRESSIVE_STRIKER: {
     name: "Aggressive Striker",
     koreanName: "맹공자",
     archetype: PlayerArchetype.MUSA,
-    aggressionLevel: 0.85,
-    defensePreference: 0.2,
-    comboTendency: 0.7,
+    aggressionLevel: 0.95, // Enhanced from 0.85
+    defensePreference: 0.1, // Reduced from 0.2
+    comboTendency: 0.8, // Increased from 0.7
     stanceSwitchFrequency: 0.3,
     feintChance: 0.15,
-    tacticalRetreatThreshold: 0.15,
+    tacticalRetreatThreshold: 0.05, // Reduced from 0.15
     favoredStances: [
       TrigramStance.GEON, // Heaven - Direct force
       TrigramStance.JIN, // Thunder - Explosive power
@@ -170,17 +176,23 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 기술가 (Gisulga) - Technical Master
    * Precision fighter using Amsalja archetype
+   * 
+   * **Enhanced Aggression (Issue #enhance-ai-aggression)**:
+   * - Increased aggression: 0.5 → 0.85 (instant takedown focus)
+   * - Reduced defense: 0.6 → 0.3 (opportunistic aggression)
+   * - Increased combo tendency: 0.4 → 0.6 (lethal sequences)
+   * - Reduced retreat threshold: 0.35 → 0.20 (tactical retreat, not cowardice)
    */
   TECHNICAL_MASTER: {
     name: "Technical Master",
     koreanName: "기술가",
     archetype: PlayerArchetype.AMSALJA,
-    aggressionLevel: 0.5,
-    defensePreference: 0.6,
-    comboTendency: 0.4,
+    aggressionLevel: 0.85, // Enhanced from 0.5
+    defensePreference: 0.3, // Reduced from 0.6
+    comboTendency: 0.6, // Increased from 0.4
     stanceSwitchFrequency: 0.7,
     feintChance: 0.35,
-    tacticalRetreatThreshold: 0.35,
+    tacticalRetreatThreshold: 0.20, // Reduced from 0.35
     favoredStances: [
       TrigramStance.SON, // Wind - Continuous pressure
       TrigramStance.GAM, // Water - Flow and adaptation
