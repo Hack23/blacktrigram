@@ -32,6 +32,21 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
   physicalAttributes,
   scale = 1,
 }) => {
+  // Destructure item properties for stable useMemo dependencies
+  const {
+    type: itemType,
+    fit: itemFit,
+    scaleMultiplier,
+    colorPrimary,
+    colorEmissive,
+    emissiveIntensity,
+    metalness,
+    roughness,
+    castShadow,
+    receiveShadow,
+    id: itemId,
+  } = item;
+
   // Calculate scale factors based on physical attributes
   const scaleFactors = useMemo(() => {
     const baseHeight = 180; // Base height in cm
@@ -47,22 +62,22 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       torso: torsoScale,
       leg: legScale,
       shoulder: shoulderScale,
-      overall: heightScale * scale * (item.scaleMultiplier ?? 1.0),
+      overall: heightScale * scale * (scaleMultiplier ?? 1.0),
     };
-  }, [physicalAttributes, scale, item.scaleMultiplier]);
+  }, [physicalAttributes, scale, scaleMultiplier]);
 
   // Get geometry and position based on clothing type
   const clothingGeometry = useMemo(() => {
     // Map fit type to scale multiplier
-    const fitScaleMap: Record<typeof item.fit, number> = {
+    const fitScaleMap: Record<typeof itemFit, number> = {
       tight: 1.02,
       fitted: 1.05,
       loose: 1.15,
       oversized: 1.3,
     };
-    const fitScale = fitScaleMap[item.fit];
+    const fitScale = fitScaleMap[itemFit];
     
-    switch (item.type) {
+    switch (itemType) {
       case "torso": {
         // Torso clothing (shirt, jacket, bodysuit)
         const width = (physicalAttributes.shoulderWidth / 100) * fitScale;
@@ -76,12 +91,19 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       }
       
       case "pants": {
-        // Pants (per leg)
+        // Pants (per leg) - create separate geometries for left and right legs
         const legThickness = 0.08 * fitScale;
         const legHeight = (physicalAttributes.legLength / 100) * scaleFactors.leg;
         
         return {
           geometry: new THREE.CylinderGeometry(
+            legThickness,
+            legThickness * 0.9,
+            legHeight,
+            16
+          ),
+          // Create a second geometry for the other leg to avoid shared geometry issues
+          geometryRight: new THREE.CylinderGeometry(
             legThickness,
             legThickness * 0.9,
             legHeight,
@@ -156,58 +178,60 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
         };
       }
     }
-  }, [item, physicalAttributes, scaleFactors]);
+  }, [itemType, itemFit, physicalAttributes, scaleFactors]);
 
   // Material configuration
   const material = useMemo(() => {
     const mat = new THREE.MeshStandardMaterial({
-      color: item.colorPrimary,
-      metalness: item.metalness ?? 0.2,
-      roughness: item.roughness ?? 0.7,
+      color: colorPrimary,
+      metalness: metalness ?? 0.2,
+      roughness: roughness ?? 0.7,
     });
     
-    if (item.colorEmissive !== undefined) {
-      mat.emissive = new THREE.Color(item.colorEmissive);
-      mat.emissiveIntensity = item.emissiveIntensity ?? 0.1;
+    if (colorEmissive !== undefined) {
+      mat.emissive = new THREE.Color(colorEmissive);
+      mat.emissiveIntensity = emissiveIntensity ?? 0.1;
     }
     
     return mat;
-  }, [item.colorPrimary, item.colorEmissive, item.emissiveIntensity, item.metalness, item.roughness]);
+  }, [colorPrimary, colorEmissive, emissiveIntensity, metalness, roughness]);
 
   // Clean up Three.js resources when component unmounts or dependencies change
   useEffect(() => {
     return () => {
       clothingGeometry.geometry.dispose();
+      // For pants, also dispose the second geometry
+      if ('geometryRight' in clothingGeometry && clothingGeometry.geometryRight) {
+        clothingGeometry.geometryRight.dispose();
+      }
       material.dispose();
     };
-  }, [clothingGeometry.geometry, material]);
+  }, [clothingGeometry, material]);
 
-  // For pants, create two meshes (left and right leg)
-  if (item.type === "pants") {
+  // For pants, create two meshes (left and right leg) with separate geometries
+  if (itemType === "pants") {
     const hipWidth = (physicalAttributes.shoulderWidth / 100) * 0.4;
-    
-    // Common mesh properties
-    const meshProps = {
-      geometry: clothingGeometry.geometry,
-      material: material,
-      castShadow: item.castShadow ?? true,
-      receiveShadow: item.receiveShadow ?? true,
-    };
     
     return (
       <>
         {/* Left leg */}
         <mesh
-          {...meshProps}
           position={[-hipWidth / 2, clothingGeometry.position.y, 0]}
-          data-testid={`clothing-item-${item.id}-left`}
+          geometry={clothingGeometry.geometry}
+          material={material}
+          castShadow={castShadow ?? true}
+          receiveShadow={receiveShadow ?? true}
+          data-testid={`clothing-item-${itemId}-left`}
         />
         
-        {/* Right leg */}
+        {/* Right leg with separate geometry */}
         <mesh
-          {...meshProps}
           position={[hipWidth / 2, clothingGeometry.position.y, 0]}
-          data-testid={`clothing-item-${item.id}-right`}
+          geometry={'geometryRight' in clothingGeometry ? clothingGeometry.geometryRight : clothingGeometry.geometry}
+          material={material}
+          castShadow={castShadow ?? true}
+          receiveShadow={receiveShadow ?? true}
+          data-testid={`clothing-item-${itemId}-right`}
         />
       </>
     );
@@ -219,9 +243,9 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       position={clothingGeometry.position}
       geometry={clothingGeometry.geometry}
       material={material}
-      castShadow={item.castShadow ?? true}
-      receiveShadow={item.receiveShadow ?? true}
-      data-testid={`clothing-item-${item.id}`}
+      castShadow={castShadow ?? true}
+      receiveShadow={receiveShadow ?? true}
+      data-testid={`clothing-item-${itemId}`}
     />
   );
 };
