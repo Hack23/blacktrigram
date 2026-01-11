@@ -12,7 +12,9 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
+import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
+import { KOREAN_STANCE_BIOMECHANICS } from "./MartialArtsConstants";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON (건) - HEAVEN: Direct Force (태권도 타격)
@@ -901,9 +903,6 @@ export const GON_SACRIFICE_THROW_ANIMATION: SkeletalAnimation =
  * @module systems/animation/StanceAnimations
  * @korean 자세대기애니메이션
  */
-
-import { KOREAN_STANCE_BIOMECHANICS } from "./MartialArtsConstants";
-import { BoneName } from "../../types/skeletal";
 
 /**
  * Helper function to convert degrees to radians
