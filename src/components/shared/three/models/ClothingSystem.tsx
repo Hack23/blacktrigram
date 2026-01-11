@@ -3,8 +3,11 @@
  *
  * **Korean**: 의류 시스템 컴포넌트 (Clothing System Component)
  *
- * Renders archetype-specific clothing attached to the skeletal rig.
- * Clothing scales with body proportions and follows bone transformations.
+ * Renders archetype-specific clothing as static meshes positioned with the character.
+ * Clothing scales based on physical attributes but is not yet skinned to individual bones.
+ *
+ * **Current Implementation**: Static meshes with automatic scaling
+ * **Future Enhancement**: Full skeletal skinning for bone-following animations
  *
  * @module components/three/ClothingSystem
  * @category 3D Components
@@ -20,7 +23,7 @@ import type { ClothingSystemProps, ClothingItemProps } from "../../../../types/c
  * Individual clothing item renderer
  *
  * Renders a single clothing item (torso, pants, belt, etc.) with proper
- * scaling and attachment to skeletal bones.
+ * scaling based on physical attributes. Items are rendered as static meshes.
  *
  * @korean 의류아이템렌더러
  */

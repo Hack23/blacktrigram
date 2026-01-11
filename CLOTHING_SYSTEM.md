@@ -23,14 +23,16 @@ The Clothing System provides realistic, culturally-appropriate attire for each o
    - Material configurations
 
 3. **Rendering Component** (`src/components/shared/three/models/ClothingSystem.tsx`)
-   - Three.js mesh generation
-   - Automatic scaling based on physical attributes
-   - Performance-optimized rendering
+   - Three.js mesh generation for static clothing meshes
+   - Automatic scaling based on archetype physical attributes
+   - Performance-optimized rendering with proper resource cleanup
+   - **Current Limitation**: Clothing meshes are static and not yet skinned to individual bones
 
 4. **Integration** (`src/components/shared/three/models/SkeletalPlayer3D.tsx`)
-   - Seamless integration with existing skeletal rig
+   - Positioned alignment with the existing skeletal player model
    - Visibility toggle for debug mode
    - Proper layering with other visual effects
+   - **Note**: Full skeletal-rig integration (per-bone attachment) is planned for future versions
 
 ## Archetype Clothing Sets | 원형별 의류 세트
 
