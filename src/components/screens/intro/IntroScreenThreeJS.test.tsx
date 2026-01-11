@@ -19,12 +19,27 @@ vi.mock("../../../audio/AudioProvider", () => ({
 }));
 
 // Mock Three.js Canvas
-vi.mock("@react-three/fiber", () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="three-canvas">{children}</div>
-  ),
-  useFrame: vi.fn(),
-}));
+vi.mock("@react-three/fiber", () => {
+  const React = require("react");
+  return {
+    Canvas: ({
+      children,
+      onCreated,
+    }: {
+      children: React.ReactNode;
+      onCreated?: (state: { gl: { setClearColor: () => void } }) => void;
+    }) => {
+      // Simulate Canvas initialization by calling onCreated in useEffect
+      React.useEffect(() => {
+        if (onCreated) {
+          onCreated({ gl: { setClearColor: () => {} } });
+        }
+      }, [onCreated]);
+      return <div data-testid="three-canvas">{children}</div>;
+    },
+    useFrame: vi.fn(),
+  };
+});
 
 // Mock @react-three/drei
 vi.mock("@react-three/drei", () => ({
