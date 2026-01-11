@@ -43,6 +43,10 @@ The Black Trigram project uses GitHub Actions for automation with the following 
 7. **🔒 Setup Labels** - Repository label management
 8. **🔆 Lighthouse Performance** - Performance auditing using budget.json
 9. **🕷️ ZAP Security Scan** - Dynamic security testing of deployed application
+10. **🤖 Copilot Setup Steps** - GitHub Copilot environment preparation with MCP servers
+11. **♿ Accessibility Test** - WCAG 2.1 Level AA compliance validation
+12. **📦 Audit Assets** - Asset reference validation and integrity checking
+13. **📸 Screenshot Analysis** - Automated UI/UX screenshot capture and analysis
 
 ## 🔐 Security Hardening Practices
 
@@ -361,6 +365,202 @@ flowchart TD
 - **🌐 Dynamic Testing**: Live application security assessment
 - **📋 Issue Creation**: Optional GitHub issue creation for vulnerabilities
 
+## 🤖 Copilot Setup Steps Workflow
+
+GitHub Copilot environment preparation with Model Context Protocol (MCP) servers:
+
+```mermaid
+flowchart TD
+    Trigger[🚀 Workflow Trigger] --> Setup[🔧 Environment Setup]
+    Setup --> Chrome[🌐 Chrome Installation]
+    Setup --> Node[📦 Node.js 24]
+    Setup --> ThreeJS[🎮 Three.js Test Environment]
+    
+    Chrome --> WebGL[🎨 WebGL Support]
+    Node --> Dependencies[📦 npm ci]
+    ThreeJS --> Xvfb[🖥️ Xvfb Display Server]
+    
+    WebGL --> Cypress[🧪 Cypress Verification]
+    Dependencies --> Cypress
+    Xvfb --> Cypress
+    
+    Cypress --> Ready[✅ Copilot Ready]
+    
+    classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
+    classDef setup fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
+    classDef install fill:#27ae60,stroke:#1e8449,stroke-width:1.5px,color:white
+    classDef ready fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:black
+    
+    class Trigger trigger
+    class Setup,Node,Chrome,ThreeJS setup
+    class WebGL,Dependencies,Xvfb,Cypress install
+    class Ready ready
+```
+
+### Copilot Environment Features
+
+- **🌐 Complete Three.js Test Environment**: Chrome with WebGL, Xvfb for headless rendering
+- **📦 Node.js 24**: Latest LTS with npm caching for faster builds
+- **🎮 Gaming Test Infrastructure**: Fonts, graphics libraries, Korean language support
+- **🔧 MCP Server Integration**: GitHub, filesystem, git, memory, sequential-thinking, playwright servers
+- **🔒 Security Hardening**: StepSecurity harden-runner with egress policy auditing
+- **📊 Environment Validation**: Comprehensive display of setup status and version info
+- **⚡ Performance Optimized**: APT package caching, dependency caching, build artifact caching
+
+### MCP Servers Available
+
+The workflow sets up the following MCP servers for enhanced Copilot capabilities:
+
+- **github**: Repository data, issues, PRs, workflows (with PAT for cross-repo access)
+- **filesystem**: Secure filesystem access for reading/editing project files
+- **git**: Git operations and repository history context
+- **memory**: Conversation history and context between agent sessions
+- **sequential-thinking**: Step-by-step problem-solving capabilities
+- **playwright**: Browser automation for testing and debugging (enabled)
+- **brave-search**: Documentation search (disabled by default)
+- **aws**: AWS infrastructure operations (disabled by default)
+
+## ♿ Accessibility Testing Workflow
+
+WCAG 2.1 Level AA compliance validation for Korean-English bilingual UI:
+
+```mermaid
+flowchart TD
+    Trigger[🔄 PR/Push Trigger] --> AxeTests[♿ axe-core Tests]
+    Trigger --> ColorTests[🎨 Color Contrast Tests]
+    
+    AxeTests --> ARIAValidation[🏷️ ARIA Labels]
+    AxeTests --> KeyboardNav[⌨️ Keyboard Navigation]
+    AxeTests --> FocusIndicators[🔍 Focus Indicators]
+    
+    ColorTests --> TextContrast[📝 Text Contrast 4.5:1]
+    ColorTests --> UIContrast[🎨 UI Contrast 3:1]
+    
+    ARIAValidation --> Report[📋 Accessibility Report]
+    KeyboardNav --> Report
+    FocusIndicators --> Report
+    TextContrast --> Report
+    UIContrast --> Report
+    
+    Report --> PRComment[💬 PR Comment]
+    Report --> Artifacts[📦 Upload Artifacts]
+    
+    classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
+    classDef test fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
+    classDef validation fill:#27ae60,stroke:#1e8449,stroke-width:1.5px,color:white
+    classDef report fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:black
+    
+    class Trigger trigger
+    class AxeTests,ColorTests test
+    class ARIAValidation,KeyboardNav,FocusIndicators,TextContrast,UIContrast validation
+    class Report,PRComment,Artifacts report
+```
+
+### Accessibility Standards
+
+Black Trigram implements comprehensive accessibility testing for inclusive gaming:
+
+- **♿ WCAG 2.1 Level AA Compliance**: Full conformance with international accessibility standards
+- **🎨 Color Contrast**: 4.5:1 for text, 3:1 for UI components on Korean cyberpunk theme
+- **⌨️ Keyboard Navigation**: Full game control without mouse (WASD, 1-8 stances, Space, B, V)
+- **🏷️ Bilingual ARIA**: Korean-English labels for all interactive elements
+- **🔍 Focus Management**: Visible focus indicators meeting 3:1 contrast
+- **🎮 Gaming-Specific**: Dialog semantics, progress bars, timers with proper ARIA roles
+
+### Components Tested
+
+- **VirtualDPad**: Mobile touch controls with button groups
+- **StanceWheel**: Eight trigram stance selector with radiogroup semantics
+- **PauseMenu**: Dialog with escape key and modal behavior
+- **HealthBar/StaminaBar**: Progress bars with live regions
+- **CombatTimer**: Timer with countdown announcements
+- **BilingualText**: Korean-English dual labels with proper language tagging
+
+## 📦 Asset Audit Workflow
+
+Automated validation of asset references and integrity:
+
+```mermaid
+flowchart TD
+    Trigger[🔄 Code/Asset Changes] --> Audit[🔍 Asset Audit Script]
+    
+    Audit --> Images[🖼️ Image References]
+    Audit --> Audio[🎵 Audio Files]
+    Audit --> Fonts[🔤 Font Files]
+    
+    Images --> Validate[✅ Validate Existence]
+    Audio --> Validate
+    Fonts --> Validate
+    
+    Validate --> Pass{All Valid?}
+    
+    Pass -->|Yes| Success[✅ Audit Passed]
+    Pass -->|No| PRComment[❌ PR Comment with Missing Assets]
+    
+    Success --> Complete[🎉 Complete]
+    PRComment --> Fail[❌ Workflow Failed]
+    
+    classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
+    classDef audit fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
+    classDef check fill:#27ae60,stroke:#1e8449,stroke-width:1.5px,color:white
+    classDef decision fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:black
+    classDef fail fill:#e74c3c,stroke:#c0392b,stroke-width:2px,color:white
+    
+    class Trigger trigger
+    class Audit,Images,Audio,Fonts audit
+    class Validate,Success,Complete check
+    class Pass decision
+    class PRComment,Fail fail
+```
+
+### Asset Validation Features
+
+- **🖼️ Image References**: Validates all image imports and public asset references
+- **🎵 Audio Files**: Checks audio file existence for Howler.js integration
+- **🔤 Font Files**: Validates Korean and English font availability
+- **📦 Dependency Tracking**: Ensures assets match code references
+- **🔍 Automated Detection**: Runs on code and asset changes
+- **💬 PR Feedback**: Automatic comments on pull requests for missing assets
+
+## 📸 Screenshot Analysis Workflow
+
+Automated UI/UX screenshot capture for visual regression and documentation:
+
+```mermaid
+flowchart TD
+    Trigger[🔄 PR Trigger] --> SetupEnv[🔧 Playwright Setup]
+    SetupEnv --> BuildApp[🏗️ Build Application]
+    
+    BuildApp --> Xvfb[🖥️ Start Xvfb Display]
+    Xvfb --> CaptureIntro[📸 Capture IntroScreen]
+    
+    CaptureIntro --> CaptureCombat[📸 Capture CombatScreen]
+    CaptureCombat --> CaptureSettings[📸 Capture SettingsScreen]
+    
+    CaptureSettings --> Upload[📦 Upload Artifacts]
+    Upload --> PostPR[💬 Post to PR]
+    
+    classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
+    classDef setup fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
+    classDef capture fill:#27ae60,stroke:#1e8449,stroke-width:1.5px,color:white
+    classDef output fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:black
+    
+    class Trigger trigger
+    class SetupEnv,BuildApp,Xvfb setup
+    class CaptureIntro,CaptureCombat,CaptureSettings capture
+    class Upload,PostPR output
+```
+
+### Screenshot Capabilities
+
+- **📸 Automated Capture**: Playwright-based screenshot generation for all game screens
+- **🎮 Three.js Rendering**: WebGL rendering with SwiftShader in headless environment
+- **🖥️ Multiple Resolutions**: Desktop (1280x1024) and mobile (375x667) screenshots
+- **🎨 Visual Documentation**: Automatic UI/UX documentation for PRs
+- **📊 Retention**: 30-day artifact retention for comparison
+- **🇰🇷 Korean UI**: Captures bilingual Korean-English interface elements
+- **🔍 PR Integration**: Posts screenshots directly to pull request for review
+
 ## Workflow Integration & Dependencies
 
 The complete CI/CD pipeline shows how all workflows interact:
@@ -371,6 +571,9 @@ flowchart TB
         PR[📝 Pull Request] --> TestReport[🧪 Test & Report]
         PR --> DepReview[📦 Dependency Review]
         PR --> Labeler[🏷️ PR Labeler]
+        PR --> A11yTest[♿ Accessibility Test]
+        PR --> AssetAudit[📦 Asset Audit]
+        PR --> Screenshots[📸 Screenshot Analysis]
         TestReport --> CodeQL[🔍 CodeQL Analysis]
     end
 
@@ -385,6 +588,16 @@ flowchart TB
         Schedule[⏰ Scheduled] --> Scorecard[⭐ Scorecard Analysis]
         Schedule --> CodeQLScheduled[🔍 CodeQL Weekly]
     end
+    
+    subgraph "🤖 Developer Experience"
+        CopilotTrigger[🔧 Copilot Setup] --> CopilotEnv[🤖 MCP Servers & Environment]
+        CopilotEnv --> AgentReady[✅ Agent Ready]
+    end
+    
+    subgraph "🛠️ Repository Management"
+        LabelSetup[🔒 Setup Labels] --> LabelsReady[✅ Labels Created]
+        LabelsReady -.->|enables| Labeler
+    end
 
     PR -.->|"approved & merged"| Main[🌟 Main Branch]
     Main --> CodeQL
@@ -394,11 +607,15 @@ flowchart TB
     classDef deployment fill:#86b5d9,stroke:#27ae60,stroke-width:1.5px,color:black
     classDef monitoring fill:#d1c4e9,stroke:#8e44ad,stroke-width:1.5px,color:black
     classDef trigger fill:#bbdefb,stroke:#e67e22,stroke-width:1.5px,color:black
+    classDef devex fill:#ffccbc,stroke:#ff5722,stroke-width:1.5px,color:black
+    classDef repo fill:#c5e1a5,stroke:#689f38,stroke-width:1.5px,color:black
 
-    class PR,TestReport,DepReview,Labeler,CodeQL integration
+    class PR,TestReport,DepReview,Labeler,CodeQL,A11yTest,AssetAudit,Screenshots integration
     class Release,Build,Deploy,Lighthouse,ZAPScan deployment
     class Schedule,Scorecard,CodeQLScheduled monitoring
     class Main trigger
+    class CopilotTrigger,CopilotEnv,AgentReady devex
+    class LabelSetup,LabelsReady repo
 ```
 
 ## 🔐 Security Compliance
