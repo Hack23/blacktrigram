@@ -1233,11 +1233,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (newStance: TrigramStance) => {
       const currentStance = validPlayers[0].currentStance;
 
-      // Start stance-specific transition animation
-      const success = player1Animation.transitionToStanceChange(
-        currentStance,
-        newStance
-      );
+      // Transition directly to stance guard (skip transitional animation)
+      // The transitional STANCE_CHANGE animation uses idle_stance which loops forever
+      // and never completes, so we go directly to the target stance guard
+      const success = player1Animation.transitionToStanceGuard(newStance);
 
       if (success) {
         // Capture previous stance for visual feedback
@@ -1246,9 +1245,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         // Update combat state
         handleStanceSwitch(newStance);
+
+        // Play stance change sound
+        audio.playSFX("menu_select");
       }
     },
-    [validPlayers, player1Animation, handleStanceSwitch]
+    [validPlayers, player1Animation, handleStanceSwitch, audio]
   );
 
   // Extract player health values for dependency arrays

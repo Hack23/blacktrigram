@@ -367,6 +367,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     },
     playerAnimation: {
       transitionTo: playerAnimation.transitionTo,
+      transitionToStanceGuard: playerAnimation.transitionToStanceGuard,
       currentState: playerAnimation.currentState,
     },
     pendingAttackRef, // Share the ref with animation events
