@@ -15,6 +15,7 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance, PlayerArchetype } from "@/types";
+import { BalanceState } from "@/types/player-visual";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
@@ -67,7 +68,7 @@ export interface CombatContext {
   readonly timeInMatch: number;
   readonly isOpponentAttacking: boolean;
   readonly recentDamageTaken: number;
-  readonly opponentBalance?: string; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
+  readonly opponentBalance?: BalanceState; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
   readonly arenaBounds: {
     readonly x: number;
     readonly y: number;
@@ -272,7 +273,7 @@ export class AIDecisionTree {
         modified.attack *= 2.2; // Brutal finishing attacks
         modified.technique *= 1.7; // Dirty techniques
         modified.defend *= 0.4; // Reduced defense (pragmatic risk)
-        modified.retreat *= 1.2; // Will retreat if needed (surviv survival instinct)
+        modified.retreat *= 1.2; // Will retreat if needed (survival instinct)
         break;
     }
     
@@ -370,13 +371,26 @@ export class AIDecisionTree {
         // CRITICAL: Survival decisions (retreat for self-preservation) should NOT be affected by kill mode
         // Kill mode is about finishing the opponent, not about ignoring the AI's own safety
         // Survival retreats are identified by priority 20 OR reason containing survival keywords
-        const isSurvivalRetreat = 
-          decision.action === AIActionType.RETREAT && 
-          (decision.priority === 20 || 
-           decision.reason.includes('Critical health') || 
-           decision.reason.includes('High pain') ||
-           decision.reason.includes('위급 상황') ||
-           decision.reason.includes('고통 회피'));
+        // Survival retreat detection with English and Korean keywords
+        const SURVIVAL_REASON_KEYWORDS = [
+          // English survival indicators (lowercase)
+          "critical health",
+          "high pain",
+          "survival retreat",
+          "emergency retreat",
+          // Korean survival indicators
+          "위급 상황",
+          "고통 회피",
+        ];
+
+        const reasonLower = decision.reason.toLowerCase();
+        const hasSurvivalKeyword = SURVIVAL_REASON_KEYWORDS.some((keyword) =>
+          reasonLower.includes(keyword)
+        );
+
+        const isSurvivalRetreat =
+          decision.action === AIActionType.RETREAT &&
+          (decision.priority === 20 || hasSurvivalKeyword);
            
         if (isSurvivalRetreat) {
           // This is a survival retreat decision - preserve its priority

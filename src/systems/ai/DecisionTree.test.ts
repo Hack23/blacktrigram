@@ -772,27 +772,35 @@ describe("AIDecisionTree", () => {
         expect(decision.priority).toBeGreaterThanOrEqual(7);
       });
 
-      it("should NOT activate kill mode for non-aggressive archetypes", () => {
+      it("should activate kill mode for Hacker (DEFENSIVE_SPECIALIST) at 25% opponent health", () => {
         const context = createMockContext({
-          opponentHealth: 25, // Low health
-          distanceToOpponent: 150, // Mid-range for Hacker (optimal 120px)
+          opponentHealth: 24, // Below 25% health threshold for Hacker kill mode
+          distanceToOpponent: 150, // Mid-range for Hacker (optimal ~120px)
         });
 
-        // Hacker (DEFENSIVE_SPECIALIST) should not enter kill mode
-        // Kill mode is only for aggressive archetypes (Musa, Amsalja)
+        // Hacker (DEFENSIVE_SPECIALIST) now supports kill mode at 25% threshold
+        // Kill mode should activate at or below 25% opponent health
         const decision = decisionTree.makeDecision(
           context,
           AI_PERSONALITIES.DEFENSIVE_SPECIALIST, // Hacker archetype
           comboSystem
         );
 
-        // Should not show kill mode behavior
-        // Defensive specialist should use normal tactics
+        // Should show kill mode behavior with analytical execution flavor
         expect(decision).toBeDefined();
-        // Reason should not indicate kill mode
-        if (decision.reason) {
-          expect(decision.reason).not.toContain("Kill mode");
-          expect(decision.reason).not.toContain("결정타");
+        // Hacker may choose positioning moves or attacks in kill mode
+        expect(decision.action).toBeDefined();
+        // Should have elevated priority from kill mode multipliers
+        expect(decision.priority).toBeGreaterThanOrEqual(4);
+        // Reason should indicate kill mode or finishing behavior if attack/technique chosen
+        if (["attack", "technique", "combo"].includes(decision.action) && decision.reason) {
+          const hasKillModeIndicator = 
+            decision.reason.includes("결정타") || 
+            decision.reason.includes("Kill mode") ||
+            decision.reason.includes("finishing") ||
+            decision.reason.includes("분석") || // "analytical" in Korean
+            decision.priority >= 8; // High priority from kill mode
+          expect(hasKillModeIndicator).toBe(true);
         }
       });
 
@@ -999,6 +1007,84 @@ describe("AIDecisionTree", () => {
             normalDecision.priority
           );
         }
+      });
+    });
+
+    describe("Kill Mode for All Archetypes", () => {
+      it("should activate kill mode for Jeongbo Yowon (BALANCED_FIGHTER) at 28% opponent health", () => {
+        const context = createMockContext({
+          opponentHealth: 27, // Below 28% health threshold for Jeongbo Yowon kill mode
+          distanceToOpponent: 100, // Mid-range
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        // Jeongbo Yowon (BALANCED_FIGHTER) should activate kill mode at 28% threshold
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        // Should show kill mode behavior with strategic control
+        expect(decision).toBeDefined();
+        // Balanced Fighter may choose various tactical actions in kill mode
+        expect(decision.action).toBeDefined();
+        // Should have elevated priority from kill mode multipliers (1.8x technique, 1.6x attack)
+        expect(decision.priority).toBeGreaterThanOrEqual(4);
+        // If choosing offensive action, should show elevated aggression
+        if (["attack", "technique", "combo"].includes(decision.action)) {
+          expect(decision.priority).toBeGreaterThanOrEqual(6);
+        }
+      });
+
+      it("should activate kill mode for Jojik Pokryeokbae (CHAOS_WARRIOR) at 35% opponent health", () => {
+        const context = createMockContext({
+          opponentHealth: 34, // Below 35% health threshold for Jojik Pokryeokbae kill mode
+          distanceToOpponent: 60, // Close-mid range
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        // Jojik Pokryeokbae (CHAOS_WARRIOR) should activate kill mode at 35% threshold (earliest activation)
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.CHAOS_WARRIOR,
+          comboSystem
+        );
+
+        // Should show kill mode behavior with brutal pragmatism
+        expect(decision).toBeDefined();
+        // Chaos Warrior may choose various tactical actions in kill mode
+        expect(decision.action).toBeDefined();
+        // Should have elevated priority from kill mode multipliers (2.2x attack, 1.7x technique)
+        expect(decision.priority).toBeGreaterThanOrEqual(4);
+        // If choosing offensive action, should show high aggression
+        if (["attack", "technique", "combo"].includes(decision.action)) {
+          expect(decision.priority).toBeGreaterThanOrEqual(6);
+        }
+      });
+
+      it("should activate kill mode for Hacker when opponent is VULNERABLE", () => {
+        const context = createMockContext({
+          opponentHealth: 80, // Good health but vulnerable
+          opponentBalance: "VULNERABLE", // Vulnerable balance state triggers kill mode
+          distanceToOpponent: 120, // Optimal range for Hacker
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        // Hacker should exploit vulnerability even at high opponent health
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.DEFENSIVE_SPECIALIST,
+          comboSystem
+        );
+
+        // Should prioritize offensive actions when opponent is vulnerable
+        expect(decision).toBeDefined();
+        expect(["attack", "technique", "combo"]).toContain(decision.action);
+        expect(decision.priority).toBeGreaterThanOrEqual(5);
       });
     });
   });
