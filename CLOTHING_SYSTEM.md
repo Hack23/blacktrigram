@@ -173,11 +173,11 @@ Each clothing item has configurable material properties:
 
 The clothing system is designed for 60fps performance:
 
-1. **Simple Geometry**: Box and cylinder primitives
-2. **Shared Materials**: Material instances reused where possible
-3. **Instanced Rendering**: Pants rendered as two instances (left/right leg)
+1. **Simple Geometry**: Box and cylinder primitives (< 1000 triangles per character)
+2. **Optimized Dependencies**: useMemo with specific property dependencies to prevent unnecessary re-renders
+3. **Dual Mesh Rendering**: Pants rendered as two separate meshes (left/right leg) with independent geometries and materials
 4. **LOD Support**: Ready for level-of-detail implementation
-5. **Efficient Updates**: Clothing follows bone transforms without manual updates
+5. **Static Positioning**: Clothing positioned with character (skeletal skinning planned for future)
 
 ## Usage Example | 사용 예시
 

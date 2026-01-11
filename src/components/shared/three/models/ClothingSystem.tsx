@@ -196,6 +196,24 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
     return mat;
   }, [colorPrimary, colorEmissive, emissiveIntensity, metalness, roughness]);
 
+  // For pants, create a second material instance for the right leg
+  const materialRight = useMemo(() => {
+    if (itemType !== "pants") return null;
+    
+    const mat = new THREE.MeshStandardMaterial({
+      color: colorPrimary,
+      metalness: metalness ?? 0.2,
+      roughness: roughness ?? 0.7,
+    });
+    
+    if (colorEmissive !== undefined) {
+      mat.emissive = new THREE.Color(colorEmissive);
+      mat.emissiveIntensity = emissiveIntensity ?? 0.1;
+    }
+    
+    return mat;
+  }, [itemType, colorPrimary, colorEmissive, emissiveIntensity, metalness, roughness]);
+
   // Clean up Three.js resources when component unmounts or dependencies change
   useEffect(() => {
     return () => {
@@ -205,10 +223,14 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
         clothingGeometry.geometryRight.dispose();
       }
       material.dispose();
+      // For pants, also dispose the second material
+      if (materialRight) {
+        materialRight.dispose();
+      }
     };
-  }, [clothingGeometry, material]);
+  }, [clothingGeometry, material, materialRight]);
 
-  // For pants, create two meshes (left and right leg) with separate geometries
+  // For pants, create two meshes (left and right leg) with separate geometries and materials
   if (itemType === "pants") {
     const hipWidth = (physicalAttributes.shoulderWidth / 100) * 0.4;
     
@@ -224,11 +246,11 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
           data-testid={`clothing-item-${itemId}-left`}
         />
         
-        {/* Right leg with separate geometry */}
+        {/* Right leg with separate geometry and material */}
         <mesh
           position={[hipWidth / 2, clothingGeometry.position.y, 0]}
           geometry={'geometryRight' in clothingGeometry ? clothingGeometry.geometryRight : clothingGeometry.geometry}
-          material={material}
+          material={materialRight ?? material}
           castShadow={castShadow ?? true}
           receiveShadow={receiveShadow ?? true}
           data-testid={`clothing-item-${itemId}-right`}
