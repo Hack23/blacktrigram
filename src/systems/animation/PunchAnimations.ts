@@ -363,8 +363,7 @@ export const DOUBLE_HOOK_ANIMATION: SkeletalAnimation =
     .hookWindup(TECHNIQUE_TIMING.HEAVY.chamber * 0.6) // First hook prep - 120ms (0.6 × 200ms)
     .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6) // First hook - 180ms (0.6 × 300ms)
     .hookWindup(TECHNIQUE_TIMING.HEAVY.retract * 0.8) // Second hook prep - 120ms (0.8 × 150ms)
-    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.67) // Second hook - 200ms (0.67 × 300ms)
-    .hookPunch(TECHNIQUE_TIMING.HEAVY.peak) // Peak - 120ms
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6 + TECHNIQUE_TIMING.HEAVY.peak) // Second hook - 300ms (180ms + 120ms peak)
     .recover(TECHNIQUE_TIMING.HEAVY.recover) // Recover - 230ms
     .build();
 

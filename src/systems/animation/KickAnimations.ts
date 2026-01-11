@@ -87,8 +87,9 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
  * Phases:
  * 1. Chamber (준비): Turn sideways, knee lifts - 120ms
  * 2. Extension (차기): Heel drives through target - 200ms
- * 3. Retraction (회수): Leg returns - 150ms
- * 4. Recovery (복귀): Return to stance - 280ms
+ * 3. Peak (정점): Hold at extension - 80ms
+ * 4. Retraction (회수): Leg returns - 150ms
+ * 5. Recovery (복귀): Return to stance - 200ms
  *
  * Total duration: 750ms (MEDIUM_HEAVY technique)
  *
@@ -100,6 +101,7 @@ export const SIDE_KICK_ANIMATION: SkeletalAnimation =
     .sideKickChamber(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber) // 준비 - 120ms turn sideways
     .withHighGuard()
     .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend) // 차기 - 200ms heel drives
+    .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.peak) // 정점 - 80ms hold at extension
     .retract(TECHNIQUE_TIMING.MEDIUM_HEAVY.retract) // 회수 - 150ms
     .recover(TECHNIQUE_TIMING.MEDIUM_HEAVY.recover) // 복귀 - 200ms
     .build();
@@ -115,10 +117,11 @@ export const SIDE_KICK_ANIMATION: SkeletalAnimation =
  * Heel strikes head or collarbone from above.
  *
  * Phases:
- * 1. Rise (올리기): Leg rises high above target - 250ms
- * 2. Peak: Leg nearly vertical - 120ms
- * 3. Chop (내려치기): Heel drives down - 250ms
- * 4. Recovery (복귀): Return to stance - 380ms
+ * 1. Rise (올리기): Leg rises high above target - 200ms
+ * 2. Chop (내려치기): Heel drives down - 300ms
+ * 3. Peak (정점): Brief hold at impact - 120ms
+ * 4. Set down (착지): Controlled leg descent - 150ms
+ * 5. Recovery (복귀): Return to stance - 230ms
  *
  * Total duration: 1000ms (HEAVY technique)
  *
@@ -127,12 +130,12 @@ export const SIDE_KICK_ANIMATION: SkeletalAnimation =
 export const AXE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("axe_kick", "내려차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
-    .axeKickRise(0.25) // 올리기 - 250ms leg rises high
+    .axeKickRise(TECHNIQUE_TIMING.HEAVY.chamber) // 올리기 - 200ms leg rises high
     .withHighGuard()
-    .axeKickChop(0.25) // 내려치기 - 250ms heel chops down
-    .axeKickChop(0.12) // 정점 - 120ms hold
-    .setDown(0.18) // 착지 - 180ms
-    .recover(0.2) // 복귀 - 200ms
+    .axeKickChop(TECHNIQUE_TIMING.HEAVY.extend) // 내려치기 - 300ms heel chops down
+    .axeKickChop(TECHNIQUE_TIMING.HEAVY.peak) // 정점 - 120ms hold at impact
+    .setDown(TECHNIQUE_TIMING.HEAVY.retract) // 착지 - 150ms controlled descent
+    .recover(TECHNIQUE_TIMING.HEAVY.recover) // 복귀 - 230ms return to stance
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -146,10 +149,10 @@ export const AXE_KICK_ANIMATION: SkeletalAnimation =
  * Body rotates 180° for surprise attack.
  *
  * Phases:
- * 1. Spin (회전): Body begins 180° rotation - 200ms
- * 2. Chamber: Leg loads while spinning
- * 3. Thrust (차기): Heel drives backward - 250ms
- * 4. Recovery (복귀): Complete rotation, return to stance - 550ms
+ * 1. Spin & chamber (회전+준비): Body rotates 180° and leg loads - 200ms
+ * 2. Thrust (차기): Heel drives backward - 300ms
+ * 3. Peak (정점): Hold at extension - 120ms
+ * 4. Recovery (복귀): Complete rotation, return to stance - 380ms
  *
  * Total duration: 1000ms (HEAVY technique)
  *
@@ -158,10 +161,10 @@ export const AXE_KICK_ANIMATION: SkeletalAnimation =
 export const BACK_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("back_kick", "뒤차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
-    .backKickSpin(0.2) // 회전 - 200ms body rotates
-    .backKickThrust(0.25) // 차기 - 250ms heel thrusts
-    .backKickThrust(0.1) // 정점 - 100ms hold
-    .spinRecover(0.45) // 복귀 - 450ms complete rotation
+    .backKickSpin(TECHNIQUE_TIMING.HEAVY.chamber) // 회전+준비 - 200ms body rotates and chambers
+    .backKickThrust(TECHNIQUE_TIMING.HEAVY.extend) // 차기 - 300ms heel thrusts
+    .backKickThrust(TECHNIQUE_TIMING.HEAVY.peak) // 정점 - 120ms hold at extension
+    .spinRecover(TECHNIQUE_TIMING.HEAVY.retract + TECHNIQUE_TIMING.HEAVY.recover) // 복귀 - 380ms (150ms + 230ms)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -444,8 +447,8 @@ export const DOUBLE_KICK_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.COMBO_HEAVY.total)
     .lowKickChamber(TECHNIQUE_TIMING.COMBO_HEAVY.chamber) // First kick chamber - 120ms
     .lowKickSweep(TECHNIQUE_TIMING.COMBO_HEAVY.extend) // First kick strikes - 220ms (includes execution)
-    .roundhouseChamber(0.15) // Second kick chamber - 150ms
-    .roundhouseExtend(0.22) // Second kick strikes - 220ms
+    .roundhouseChamber(TECHNIQUE_TIMING.COMBO_HEAVY.retract) // Second kick chamber - 150ms (use retract for transition)
+    .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.extend) // Second kick strikes - 220ms
     .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.peak) // Peak - 80ms
     .recover(TECHNIQUE_TIMING.COMBO_HEAVY.recover) // Recover - 380ms
     .build();
