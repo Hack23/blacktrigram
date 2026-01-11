@@ -12,8 +12,7 @@
  * @korean 의류타입
  */
 
-import type { PlayerArchetype } from "./common";
-import type { PhysicalAttributes } from "./index";
+import type { PlayerArchetype, PhysicalAttributes } from "./common";
 import type { Bone } from "./skeletal";
 
 /**

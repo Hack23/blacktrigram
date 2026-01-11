@@ -12,7 +12,7 @@
  */
 
 import { PlayerArchetype } from "@/types";
-import { KOREAN_COLORS } from "@/types/constants";
+import { KOREAN_COLORS } from "@/types/constants/colors";
 import type { ClothingSet, ClothingItem } from "@/types/clothing";
 
 /**

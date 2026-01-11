@@ -50,8 +50,14 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
 
   // Get geometry and position based on clothing type
   const clothingGeometry = useMemo(() => {
-    const fit = item.fit;
-    const fitScale = fit === "tight" ? 1.02 : fit === "fitted" ? 1.05 : fit === "loose" ? 1.15 : 1.3;
+    // Map fit type to scale multiplier
+    const fitScaleMap: Record<typeof item.fit, number> = {
+      tight: 1.02,
+      fitted: 1.05,
+      loose: 1.15,
+      oversized: 1.3,
+    };
+    const fitScale = fitScaleMap[item.fit];
     
     switch (item.type) {
       case "torso": {
@@ -169,25 +175,27 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
   if (item.type === "pants") {
     const hipWidth = (physicalAttributes.shoulderWidth / 100) * 0.4;
     
+    // Common mesh properties
+    const meshProps = {
+      geometry: clothingGeometry.geometry,
+      material: material,
+      castShadow: item.castShadow ?? true,
+      receiveShadow: item.receiveShadow ?? true,
+    };
+    
     return (
       <>
         {/* Left leg */}
         <mesh
+          {...meshProps}
           position={[-hipWidth / 2, clothingGeometry.position.y, 0]}
-          geometry={clothingGeometry.geometry}
-          material={material}
-          castShadow={item.castShadow ?? true}
-          receiveShadow={item.receiveShadow ?? true}
           data-testid={`clothing-item-${item.id}-left`}
         />
         
         {/* Right leg */}
         <mesh
+          {...meshProps}
           position={[hipWidth / 2, clothingGeometry.position.y, 0]}
-          geometry={clothingGeometry.geometry}
-          material={material}
-          castShadow={item.castShadow ?? true}
-          receiveShadow={item.receiveShadow ?? true}
           data-testid={`clothing-item-${item.id}-right`}
         />
       </>
@@ -232,16 +240,16 @@ export const ClothingSystem: React.FC<ClothingSystemProps> = ({
   scale = 1,
   visible = true,
 }) => {
+  // Early return if not visible to avoid unnecessary computation
+  if (!visible) {
+    return null;
+  }
+
   // Get clothing set for archetype
   const clothingSet = useMemo(
     () => getArchetypeClothing(archetype),
     [archetype]
   );
-
-  // Don't render if not visible
-  if (!visible) {
-    return null;
-  }
 
   // Render all clothing items
   return (

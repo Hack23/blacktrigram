@@ -16,6 +16,15 @@ import {
   JOJIK_CLOTHING,
 } from "./archetypeClothing";
 
+// Common array of all clothing sets used across multiple tests
+const ALL_CLOTHING_SETS = [
+  MUSA_CLOTHING,
+  AMSALJA_CLOTHING,
+  HACKER_CLOTHING,
+  JEONGBO_CLOTHING,
+  JOJIK_CLOTHING,
+];
+
 describe("archetypeClothing", () => {
   describe("getArchetypeClothing", () => {
     it("should return MUSA clothing for MUSA archetype", () => {
@@ -223,16 +232,8 @@ describe("archetypeClothing", () => {
   });
 
   describe("Clothing Item Validation", () => {
-    const allClothingSets = [
-      MUSA_CLOTHING,
-      AMSALJA_CLOTHING,
-      HACKER_CLOTHING,
-      JEONGBO_CLOTHING,
-      JOJIK_CLOTHING,
-    ];
-
     it("all clothing items should have unique IDs within their set", () => {
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         const ids = clothingSet.items.map(item => item.id);
         const uniqueIds = new Set(ids);
         expect(ids.length).toBe(uniqueIds.size);
@@ -240,7 +241,7 @@ describe("archetypeClothing", () => {
     });
 
     it("all clothing items should have valid attached bones", () => {
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         clothingSet.items.forEach((item) => {
           expect(item.attachedBones).toBeDefined();
           expect(item.attachedBones.length).toBeGreaterThan(0);
@@ -249,7 +250,7 @@ describe("archetypeClothing", () => {
     });
 
     it("all clothing items should have valid color values", () => {
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         clothingSet.items.forEach((item) => {
           expect(typeof item.colorPrimary).toBe("number");
           expect(item.colorPrimary).toBeGreaterThanOrEqual(0);
@@ -259,7 +260,7 @@ describe("archetypeClothing", () => {
     });
 
     it("all clothing items should have valid material properties", () => {
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         clothingSet.items.forEach((item) => {
           if (item.metalness !== undefined) {
             expect(item.metalness).toBeGreaterThanOrEqual(0);
@@ -280,7 +281,7 @@ describe("archetypeClothing", () => {
     });
 
     it("clothing with emissive intensity should also have emissive color", () => {
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         clothingSet.items.forEach((item) => {
           if (item.emissiveIntensity !== undefined && item.emissiveIntensity > 0) {
             expect(item.colorEmissive).toBeDefined();
@@ -317,15 +318,7 @@ describe("archetypeClothing", () => {
 
   describe("Theme Colors", () => {
     it("all clothing sets should have theme colors", () => {
-      const allClothingSets = [
-        MUSA_CLOTHING,
-        AMSALJA_CLOTHING,
-        HACKER_CLOTHING,
-        JEONGBO_CLOTHING,
-        JOJIK_CLOTHING,
-      ];
-
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         expect(clothingSet.themeColors).toBeDefined();
         expect(clothingSet.themeColors.primary).toBeDefined();
         expect(clothingSet.themeColors.secondary).toBeDefined();
@@ -334,15 +327,7 @@ describe("archetypeClothing", () => {
     });
 
     it("theme colors should be valid hex numbers", () => {
-      const allClothingSets = [
-        MUSA_CLOTHING,
-        AMSALJA_CLOTHING,
-        HACKER_CLOTHING,
-        JEONGBO_CLOTHING,
-        JOJIK_CLOTHING,
-      ];
-
-      allClothingSets.forEach((clothingSet) => {
+      ALL_CLOTHING_SETS.forEach((clothingSet) => {
         expect(typeof clothingSet.themeColors.primary).toBe("number");
         expect(typeof clothingSet.themeColors.secondary).toBe("number");
         expect(typeof clothingSet.themeColors.accent).toBe("number");
