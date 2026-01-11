@@ -72,7 +72,7 @@ const Eye: React.FC<EyeProps> = ({
   const swellingColor = 0x663366;
 
   return (
-    <group position={position} data-testid={`eye-${side}`}>
+    <group position={position} name={`eye-${side}`}>
       {/* Eye white (sclera) */}
       <mesh scale={[1, eyeOpenness, 1]}>
         <sphereGeometry args={[0.04, 8, 8]} />
@@ -122,7 +122,7 @@ const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
   const bloodColor = KOREAN_COLORS.ACCENT_RED;
 
   return (
-    <group position={position} data-testid="mouth">
+    <group position={position} name="mouth">
       {/* Mouth line */}
       <mesh scale={[0.08, mouthOpenness * 0.04 + 0.005, 0.01]}>
         <boxGeometry args={[1, 1, 1]} />
@@ -179,7 +179,7 @@ const Nose: React.FC<{
   const bloodColor = KOREAN_COLORS.ACCENT_RED;
 
   return (
-    <group position={position} data-testid="nose">
+    <group position={position} name="nose">
       {/* Nose */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <coneGeometry args={[0.03, 0.06, 8]} />
@@ -299,7 +299,7 @@ export const Face3D: React.FC<Face3DProps> = ({
     <group
       position={[0, HEAD_POSITION_OFFSET, 0]}
       rotation={headRotation}
-      data-testid="face3d"
+      name="face3d"
     >
       {/* Head sphere */}
       <mesh>

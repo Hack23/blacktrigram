@@ -1,10 +1,10 @@
 /**
  * StanceSymbol3D - Floating trigram symbol above player
- * 
+ *
  * Displays the Unicode trigram symbol (☰☱☲☳☴☵☶☷) floating above the player's head,
  * with rotation animation and pulsing glow effect. Provides immediate visual feedback
  * of the current stance to the player and observers.
- * 
+ *
  * @module components/three/StanceSymbol3D
  * @category 3D Components
  * @korean 자세기호3D
@@ -12,11 +12,15 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../../../types/common";
 import { FONT_FAMILY } from "../../../../types/constants";
-import { getTrigramSymbol, getStanceKoreanName, getStanceColorHex } from "../../../../utils/stanceHelpers";
+import {
+  getStanceColorHex,
+  getStanceKoreanName,
+  getTrigramSymbol,
+} from "../../../../utils/stanceHelpers";
 
 /**
  * Props for StanceSymbol3D component
@@ -45,18 +49,18 @@ const ANIMATION_CONSTANTS = {
 
 /**
  * StanceSymbol3D Component
- * 
+ *
  * Renders a floating trigram symbol above the player with:
  * - Rotation animation
  * - Pulsing glow effect
  * - Stance-specific coloring
  * - Optional Korean name display
- * 
+ *
  * Uses Html from @react-three/drei for crisp text rendering that always faces camera.
- * 
+ *
  * @example
  * ```tsx
- * <StanceSymbol3D 
+ * <StanceSymbol3D
  *   stance={TrigramStance.GEON}
  *   heightOffset={2.5}
  *   animated={true}
@@ -72,7 +76,7 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
   showName = true,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
-  
+
   // Get stance properties
   const symbol = useMemo(() => getTrigramSymbol(stance), [stance]);
   const koreanName = useMemo(() => getStanceKoreanName(stance), [stance]);
@@ -88,27 +92,33 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
     groupRef.current.rotation.y = time * ANIMATION_CONSTANTS.ROTATION_SPEED;
 
     // Gentle vertical bob - oscillate around 0 (group is already positioned at heightOffset)
-    groupRef.current.position.y = Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;
+    groupRef.current.position.y =
+      Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) *
+      ANIMATION_CONSTANTS.BOB_AMPLITUDE;
   });
 
   return (
-    <group ref={groupRef} position={[0, heightOffset, 0]} data-testid="stance-symbol-3d">
+    <group
+      ref={groupRef}
+      position={[0, heightOffset, 0]}
+      name="stance-symbol-3d"
+    >
       {/* Trigram symbol with glow effect */}
       <Html
         center
         distanceFactor={10}
         zIndexRange={[100, 0]}
         style={{
-          pointerEvents: 'none',
-          userSelect: 'none',
+          pointerEvents: "none",
+          userSelect: "none",
         }}
       >
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "4px",
           }}
         >
           {/* Main trigram symbol */}
@@ -122,15 +132,15 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
                 0 0 20px ${colorHex},
                 0 0 30px ${colorHex}
               `,
-              fontWeight: 'bold',
-              lineHeight: '1',
-              animation: 'pulse 2s ease-in-out infinite',
+              fontWeight: "bold",
+              lineHeight: "1",
+              animation: "pulse 2s ease-in-out infinite",
             }}
             data-testid="trigram-symbol"
           >
             {symbol}
           </div>
-          
+
           {/* Korean name below symbol */}
           {showName && (
             <div
@@ -139,8 +149,8 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
                 fontFamily: FONT_FAMILY.KOREAN,
                 color: colorHex,
                 textShadow: `0 0 5px ${colorHex}`,
-                fontWeight: 'bold',
-                letterSpacing: '2px',
+                fontWeight: "bold",
+                letterSpacing: "2px",
               }}
               data-testid="stance-korean-name"
             >

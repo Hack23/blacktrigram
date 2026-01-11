@@ -326,10 +326,10 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   return (
     <group
       rotation={[wristRotation.x, wristRotation.y, wristRotation.z]}
-      data-testid={`hand-3d-${side}`}
+      name={`hand-3d-${side}`}
     >
       {/* Palm */}
-      <mesh castShadow receiveShadow data-testid={`hand-palm-${side}`}>
+      <mesh castShadow receiveShadow name={`hand-palm-${side}`}>
         <boxGeometry args={[palmWidth, palmLength, palmThickness]} />
         <meshStandardMaterial
           color={palmColor}
@@ -344,7 +344,7 @@ export const Hand3D: React.FC<Hand3DProps> = ({
           position={[(-palmWidth / 2) * sideMultiplier, 0, 0]}
           castShadow
           receiveShadow
-          data-testid={`hand-knife-edge-${side}`}
+          name={`hand-knife-edge-${side}`}
         >
           <boxGeometry args={[0.005, palmLength, palmThickness]} />
           <meshStandardMaterial
@@ -428,7 +428,7 @@ export const Hand3D: React.FC<Hand3DProps> = ({
           position={[0, palmLength / 2, 0]}
           castShadow
           receiveShadow
-          data-testid={`hand-simple-${side}`}
+          name={`hand-simple-${side}`}
         >
           <capsuleGeometry args={[palmWidth / 2, palmLength * 0.3, 4, 8]} />
           <meshStandardMaterial

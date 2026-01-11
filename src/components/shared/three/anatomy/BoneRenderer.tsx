@@ -21,8 +21,8 @@ import type { HandAnimationState } from "../../../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../../../types/skeletal";
 import { BoneMuscles } from "./BoneAttachedMuscles";
 import Face3D from "./Face3D";
-import Hand3D from "./Hand3D";
 import Foot3D from "./Foot3D";
+import Hand3D from "./Hand3D";
 
 /**
  * Visual amplification factor for bone thickness.
@@ -252,7 +252,7 @@ const SingleBone: React.FC<{
       const x = bone.position.x ?? 0;
       const y = bone.position.y ?? 0;
       const z = bone.position.z ?? 0;
-      
+
       const positionLength = Math.sqrt(x * x + y * y + z * z);
       if (positionLength > 0.001) {
         // Manually normalize to get a stable direction vector
@@ -278,7 +278,7 @@ const SingleBone: React.FC<{
       position={bone.position.toArray()}
       rotation={[bone.rotation.x, bone.rotation.y, bone.rotation.z]}
       scale={bone.scale.toArray()}
-      data-testid={`bone-${bone.name}`}
+      name={`bone-${bone.name}`}
     >
       {/* Bone capsule connecting to parent */}
       {renderMode === "solid" ? (
@@ -475,7 +475,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   }
 
   return (
-    <group data-testid="bone-renderer">
+    <group name="bone-renderer">
       <SingleBone
         bone={rig.root}
         color={color}

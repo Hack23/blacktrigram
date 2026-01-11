@@ -1,17 +1,30 @@
 /**
  * VitalPointMarker3D - Individual vital point marker with hover labels
- * 
+ *
  * Provides interactive 3D markers for vital points with Korean-English bilingual labels
  */
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import { VitalPoint } from "../../../../systems/vitalpoint/types";
 import { VitalPointSeverity } from "../../../../types/common";
-import { KOREAN_COLORS, FONT_FAMILY, UI_DIMENSIONS } from "../../../../types/constants";
-import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../../utils/htmlOverlayHelpers";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+  UI_DIMENSIONS,
+} from "../../../../types/constants";
+import {
+  applyHtmlOverlayStyles,
+  calculateDistanceFactor,
+} from "../../../../utils/htmlOverlayHelpers";
 
 /**
  * Props for VitalPointMarker3D component
@@ -88,11 +101,16 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     }
   });
 
-  const color = useMemo(() => getSeverityColor(vitalPoint.severity), [vitalPoint.severity]);
+  const color = useMemo(
+    () => getSeverityColor(vitalPoint.severity),
+    [vitalPoint.severity]
+  );
 
   // Track screen width for responsive distance factor updates on resize
-  const [screenWidth, setScreenWidth] = useState(() => 
-    typeof window !== "undefined" ? window.innerWidth : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
+  const [screenWidth, setScreenWidth] = useState(() =>
+    typeof window !== "undefined"
+      ? window.innerWidth
+      : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
   );
 
   useEffect(() => {
@@ -113,7 +131,13 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
 
   // Apply Html overlay styles for tooltip
   const tooltipOverlayStyle = useMemo(() => {
-    return applyHtmlOverlayStyles("tooltip", false, tooltipDistanceFactor, true, false);
+    return applyHtmlOverlayStyles(
+      "tooltip",
+      false,
+      tooltipDistanceFactor,
+      true,
+      false
+    );
   }, [tooltipDistanceFactor]);
 
   const handleClick = useCallback(() => {
@@ -133,7 +157,7 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
         onClick={handleClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        data-testid={`vital-point-marker-${vitalPoint.id}`}
+        name={`vital-point-marker-${vitalPoint.id}`}
       >
         <sphereGeometry args={[markerSize, 16, 16]} />
         <meshStandardMaterial

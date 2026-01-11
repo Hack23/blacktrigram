@@ -14,6 +14,11 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
+import { useBalanceAnimations } from "../../../../hooks/useBalanceAnimations";
+import { useGuardPoseOverlay } from "../../../../hooks/useGuardPoseOverlay";
+import { useHandPoseTransitions } from "../../../../hooks/useHandPoseTransitions";
+import { useMuscleActivation } from "../../../../hooks/useMuscleActivation";
+import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
 import {
   createDefaultFacialDamage,
   createScaledHumanoidRig,
@@ -24,19 +29,10 @@ import {
   unlockFacing,
   updateFacingTowardOpponent,
 } from "../../../../systems/animation";
-import { useBalanceAnimations } from "../../../../hooks/useBalanceAnimations";
-import { useGuardPoseOverlay } from "../../../../hooks/useGuardPoseOverlay";
-import { useHandPoseTransitions } from "../../../../hooks/useHandPoseTransitions";
-import { useMuscleActivation } from "../../../../hooks/useMuscleActivation";
-import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { FacialExpression } from "../../../../types/facial";
-import type {
-  Player3DUnifiedProps,
-} from "../../../../types/player-visual";
-import type {
-  SkeletalRig,
-} from "../../../../types/skeletal";
+import type { Player3DUnifiedProps } from "../../../../types/player-visual";
+import type { SkeletalRig } from "../../../../types/skeletal";
 import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeColors } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
@@ -169,13 +165,12 @@ export const SkeletalPlayer3D: React.FC<
   // ========================================
 
   // Base skeletal animation (idle, walk, attack, etc.)
-  const { updateRigAnimation, diagonalRotationY } =
-    useSkeletalAnimation({
-      currentAnimation,
-      attackAnimation,
-      isBlocking,
-      onAnimationComplete,
-    });
+  const { updateRigAnimation, diagonalRotationY } = useSkeletalAnimation({
+    currentAnimation,
+    attackAnimation,
+    isBlocking,
+    onAnimationComplete,
+  });
 
   // Hand pose transitions for both hands
   const { leftHandState, rightHandState, updateHandAnimations } =
@@ -395,7 +390,8 @@ export const SkeletalPlayer3D: React.FC<
       const spine = rig.bones.get("spine_upper");
       if (spine) {
         // Use torso rotation if available, otherwise fall back to full body facing
-        const torsoRotation = bodyFacing.torsoRotation ?? getFacingAngleRadians(bodyFacing);
+        const torsoRotation =
+          bodyFacing.torsoRotation ?? getFacingAngleRadians(bodyFacing);
         spine.rotation.y = torsoRotation;
       }
 
@@ -417,7 +413,7 @@ export const SkeletalPlayer3D: React.FC<
       position={position}
       rotation={[0, effectiveRotation, 0]}
       scale={[facing === "left" ? -scale : scale, scale, scale]}
-      data-testid={`skeletal-player3d-${playerId}`}
+      name={`skeletal-player3d-${playerId}`}
     >
       {/* Inner group for sway animation and helpless lean */}
       <group position={swayPosition} rotation={[helplessRotation, 0, 0]}>
