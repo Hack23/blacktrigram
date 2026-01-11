@@ -53,6 +53,184 @@ import { applyPunchPhaseToConfig } from "./PunchPhaseApplicator";
 export { AnimationType, HAND_POSES, KICK_PHASES, MARTIAL_POSES, PUNCH_PHASES };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// TECHNIQUE TIMING CONSTANTS (기술 타이밍 상수)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Technique Timing Constants
+ *
+ * Defines standard timing phases for martial arts techniques to ensure
+ * all movements are visible and comprehensible. Minimum total duration
+ * is 0.5s to prevent "teleporting" strikes.
+ *
+ * Korean martial arts emphasize visible technique phases:
+ * - 준비 (Preparation) - Wind-up/chamber
+ * - 실행 (Execution) - Strike/extension
+ * - 회수 (Recovery) - Retraction
+ * - 복귀 (Return) - Return to stance
+ *
+ * @korean 기술타이밍상수
+ */
+export const TECHNIQUE_TIMING = {
+  /**
+   * Fast techniques (빠른 기술)
+   * Examples: Jabs, quick strikes, fast kicks
+   * Total: 550ms
+   */
+  FAST: {
+    chamber: 0.10,    // 100ms wind-up (준비)
+    extend: 0.15,     // 150ms strike (실행)
+    peak: 0.05,       // 50ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.15,    // 150ms return to stance (복귀)
+    total: 0.55,      // 550ms total
+  },
+  /**
+   * Fast-Medium techniques (빠른-중간 기술)
+   * Examples: Low kicks, lead hooks, quick counters
+   * Total: 600ms
+   */
+  FAST_MEDIUM: {
+    chamber: 0.10,    // 100ms wind-up (준비)
+    extend: 0.15,     // 150ms strike (실행)
+    peak: 0.05,       // 50ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.20,    // 200ms return to stance (복귀)
+    total: 0.60,      // 600ms total
+  },
+  /**
+   * Medium-Light techniques (중간-가벼운 기술)
+   * Examples: Lead uppercuts, backfists, push kicks
+   * Total: 700ms
+   */
+  MEDIUM_LIGHT: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.18,     // 180ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.22,    // 220ms return to stance (복귀)
+    total: 0.70,      // 700ms total
+  },
+  /**
+   * Medium techniques (중간 기술)
+   * Examples: Crosses, roundhouse kicks, hooks
+   * Total: 730ms
+   */
+  MEDIUM: {
+    chamber: 0.15,    // 150ms wind-up (준비)
+    extend: 0.20,     // 200ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.12,    // 120ms pull back (회수)
+    recover: 0.18,    // 180ms return to stance (복귀)
+    total: 0.73,      // 730ms total
+  },
+  /**
+   * Medium-Heavy techniques (중간-무거운 기술)
+   * Examples: Body shots, side kicks, crescent kicks
+   * Total: 750ms
+   */
+  MEDIUM_HEAVY: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.20,     // 200ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.20,    // 200ms return to stance (복귀)
+    total: 0.75,      // 750ms total
+  },
+  /**
+   * Heavy-Light techniques (무거운-가벼운 기술)
+   * Examples: Hooks, uppercuts, sweep kicks
+   * Total: 800ms
+   */
+  HEAVY_LIGHT: {
+    chamber: 0.15,    // 150ms wind-up (준비)
+    extend: 0.20,     // 200ms strike (실행)
+    peak: 0.10,       // 100ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.20,    // 200ms return to stance (복귀)
+    total: 0.80,      // 800ms total
+  },
+  /**
+   * Heavy-Medium techniques (무거운-중간 기술)
+   * Examples: Question mark kicks, crescent kicks
+   * Total: 850ms
+   */
+  HEAVY_MEDIUM: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.22,     // 220ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.28,    // 280ms return to stance (복귀)
+    total: 0.85,      // 850ms total
+  },
+  /**
+   * Heavy techniques (무거운 기술)
+   * Examples: Spinning kicks, power punches, jumping techniques
+   * Total: 1000ms
+   */
+  HEAVY: {
+    chamber: 0.20,    // 200ms wind-up (준비)
+    extend: 0.30,     // 300ms strike (실행)
+    peak: 0.12,       // 120ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.23,    // 230ms return to stance (복귀)
+    total: 1.00,      // 1000ms total
+  },
+  /**
+   * Combo techniques (연속 기술)
+   * Examples: Jab-cross, double hooks, double kicks
+   * Total: 700ms
+   */
+  COMBO_FAST: {
+    chamber: 0.08,    // 80ms wind-up (준비)
+    extend: 0.12,     // 120ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.32,    // 320ms return to stance (복귀)
+    total: 0.70,      // 700ms total (sum of all phases)
+  },
+  /**
+   * Jumping techniques (뛰어차기 기술)
+   * Examples: Jumping kicks, jumping punches
+   * Total: 900ms
+   */
+  JUMPING: {
+    chamber: 0.18,    // 180ms wind-up (준비)
+    extend: 0.22,     // 220ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.12,    // 120ms pull back (회수)
+    recover: 0.30,    // 300ms return to stance (복귀)
+    total: 0.90,      // 900ms total
+  },
+  /**
+   * Combo heavy techniques (연속 무거운 기술)
+   * Examples: Double kicks with different heights
+   * Total: 950ms
+   */
+  COMBO_HEAVY: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.22,     // 220ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.38,    // 380ms return to stance (복귀)
+    total: 0.95,      // 950ms total (sum of all phases)
+  },
+  /**
+   * Spinning techniques (회전 기술)
+   * Examples: Spinning backfist, tornado kick, spinning heel kick, spinning back kick
+   * Total: 1200ms
+   */
+  SPINNING: {
+    chamber: 0.30,    // 300ms wind-up with rotation start (준비+회전)
+    extend: 0.35,     // 350ms strike through rotation (실행)
+    peak: 0.12,       // 120ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.28,    // 280ms complete rotation recovery (복귀)
+    total: 1.20,      // 1200ms total
+  },
+} as const;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MARTIAL ARTS ANIMATION BUILDER (무술 애니메이션 빌더)
 // ═══════════════════════════════════════════════════════════════════════════
 
