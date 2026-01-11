@@ -1,0 +1,24 @@
+# CodeQL configuration for Black Trigram (흑괘)
+# This configuration limits CodeQL scanning to source code in src/
+# and excludes documentation, build artifacts, and dependencies
+# Note: Test code and config files are included for security scanning
+
+name: "CodeQL Config"
+
+# Paths to include in analysis
+paths:
+  - src
+
+# Paths to exclude from analysis
+paths-ignore:
+  - docs
+  - "**/*.md"
+  - "**/*.txt"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/coverage/**"
+
+# Disable default queries to reduce noise (optional)
+# queries:
+#   - uses: security-and-quality
