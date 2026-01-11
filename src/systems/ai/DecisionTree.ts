@@ -147,15 +147,19 @@ export class AIDecisionTree {
   }
 
   /**
-   * Check if kill mode should be activated for aggressive archetypes
+   * Check if kill mode should be activated based on archetype behavior
    * 
    * Kill mode activates when:
    * - Opponent health is low (<30%)
    * - Opponent is in vulnerable balance state (HELPLESS/VULNERABLE)
    * 
    * **Korean Philosophy (결정타 모드)**:
-   * - Musa: Honor demands finishing the fight decisively
-   * - Amsalja: Opportunity for instant takedown with precision
+   * Each archetype activates kill mode differently based on combat philosophy:
+   * - **Musa**: Honor demands finishing the fight decisively
+   * - **Amsalja**: Opportunity for instant takedown with precision
+   * - **Hacker**: Analytical window for calculated strike
+   * - **Jeongbo Yowon**: Strategic opportunity for submission
+   * - **Jojik Pokryeokbae**: Pragmatic moment to finish brutally
    * 
    * @korean 결정타 모드 활성화 확인
    * 
@@ -170,25 +174,46 @@ export class AIDecisionTree {
       (context.opponentBalance === "HELPLESS" ||
         context.opponentBalance === "VULNERABLE");
     
-    // Kill mode activates for aggressive archetypes when opponent is weakened
-    const isAggressiveArchetype = 
-      personality.archetype === PlayerArchetype.MUSA ||
-      personality.archetype === PlayerArchetype.AMSALJA;
+    // Different activation thresholds based on archetype philosophy
+    let healthThreshold = 0.30; // Default 30%
     
-    if (!isAggressiveArchetype) {
-      return false;
+    switch (personality.archetype) {
+      case PlayerArchetype.MUSA:
+        // Aggressive: Activate kill mode early (honor code)
+        healthThreshold = 0.30;
+        break;
+      case PlayerArchetype.AMSALJA:
+        // Precise: Activate when perfect opportunity presents
+        healthThreshold = 0.30;
+        break;
+      case PlayerArchetype.HACKER:
+        // Analytical: Calculate optimal finishing window
+        healthThreshold = 0.25; // More conservative, waits for clear advantage
+        break;
+      case PlayerArchetype.JEONGBO_YOWON:
+        // Strategic: Balanced approach
+        healthThreshold = 0.28;
+        break;
+      case PlayerArchetype.JOJIK_POKRYEOKBAE:
+        // Pragmatic: Opportunistic finishing
+        healthThreshold = 0.35; // Earlier activation, dirty fighter mentality
+        break;
     }
     
     // Activate kill mode when opponent is low health OR vulnerable
-    return opponentHealthPercent < 0.30 || isOpponentVulnerable;
+    return opponentHealthPercent < healthThreshold || isOpponentVulnerable;
   }
 
   /**
    * Apply kill mode modifiers to action weights for finishing behavior
    * 
    * **Kill Mode Behavior (결정타 행동)**:
+   * Each archetype has unique finishing behavior based on combat philosophy:
    * - **Musa**: All-in overwhelming force (2.5x attack, 0x retreat)
-   * - **Amsalja**: Instant takedown focus (3.0x technique, feints disabled in kill mode)
+   * - **Amsalja**: Instant takedown focus (3.0x technique, feints disabled)
+   * - **Hacker**: Analytical precision (2.0x technique, counter focus)
+   * - **Jeongbo Yowon**: Strategic control (1.8x technique, balanced approach)
+   * - **Jojik Pokryeokbae**: Brutal pragmatism (2.2x attack, dirty tactics)
    * 
    * @korean 결정타 모드 가중치 적용
    * 
@@ -208,20 +233,47 @@ export class AIDecisionTree {
 
     const modified = { ...baseWeights };
     
-    // Warrior (Musa): All-in overwhelming force
-    if (personality.archetype === PlayerArchetype.MUSA) {
-      modified.attack *= 2.5; // Massive attack priority
-      modified.technique *= 2.0; // Prefer powerful techniques
-      modified.defend *= 0.2; // Minimal defense
-      modified.retreat = 0.0; // No retreat (honor code)
-    }
-    
-    // Assassin (Amsalja): Instant takedown focus
-    if (personality.archetype === PlayerArchetype.AMSALJA) {
-      modified.technique *= 3.0; // Prioritize lethal techniques
-      modified.attack *= 1.5; // Quick finishers
-      modified.defend *= 0.3; // Reduce defense during kill window
-      // Note: retreat remains available for tactical repositioning
+    // Apply archetype-specific kill mode behavior
+    switch (personality.archetype) {
+      case PlayerArchetype.MUSA:
+        // Warrior: All-in overwhelming force (honor code)
+        modified.attack *= 2.5; // Massive attack priority
+        modified.technique *= 2.0; // Prefer powerful techniques
+        modified.defend *= 0.2; // Minimal defense
+        modified.retreat = 0.0; // No retreat (honor code)
+        break;
+        
+      case PlayerArchetype.AMSALJA:
+        // Assassin: Instant takedown focus (precision)
+        modified.technique *= 3.0; // Prioritize lethal techniques
+        modified.attack *= 1.5; // Quick finishers
+        modified.defend *= 0.3; // Reduce defense during kill window
+        // Note: retreat remains available for tactical repositioning
+        break;
+        
+      case PlayerArchetype.HACKER:
+        // Hacker: Analytical precision (calculated strike)
+        modified.technique *= 2.0; // Calculated finishing techniques
+        modified.attack *= 1.3; // Measured attacks
+        modified.defend *= 0.7; // Maintain defensive awareness
+        // Counter-attack focus through higher base defense
+        break;
+        
+      case PlayerArchetype.JEONGBO_YOWON:
+        // Intelligence Operative: Strategic control (psychological pressure)
+        modified.technique *= 1.8; // Strategic techniques
+        modified.attack *= 1.6; // Balanced offensive
+        modified.defend *= 0.6; // Moderate defense reduction
+        modified.retreat *= 0.5; // Tactical retreat available
+        break;
+        
+      case PlayerArchetype.JOJIK_POKRYEOKBAE:
+        // Organized Crime: Brutal pragmatism (dirty fighter)
+        modified.attack *= 2.2; // Brutal finishing attacks
+        modified.technique *= 1.7; // Dirty techniques
+        modified.defend *= 0.4; // Reduced defense (pragmatic risk)
+        modified.retreat *= 1.2; // Will retreat if needed (surviv survival instinct)
+        break;
     }
     
     return modified;
@@ -428,9 +480,12 @@ export class AIDecisionTree {
    * Evaluate counter-attack opportunity
    * 
    * **Kill Mode Enhancement (결정타 반격)**:
-   * - Aggressive archetypes become more reactive during kill mode
-   * - Musa: Increased counter frequency (honor demands swift response)
-   * - Amsalja: Enhanced counter timing with precision strikes
+   * All archetypes enhance counter behavior during kill mode based on philosophy:
+   * - **Musa**: Increased counter frequency (honor demands swift response)
+   * - **Amsalja**: Enhanced counter timing with precision strikes
+   * - **Hacker**: Calculated counter-attacks (analytical opportunity)
+   * - **Jeongbo Yowon**: Strategic counters (psychological advantage)
+   * - **Jojik Pokryeokbae**: Opportunistic counters (dirty tactics)
    * 
    * @param context - Combat context
    * @param personality - AI personality
@@ -445,16 +500,38 @@ export class AIDecisionTree {
     let counterChance = personality.defensePreference * 0.8;
     let counterPriority = 8;
     
-    // Kill mode: Aggressive archetypes enhance counter behavior
+    // Kill mode: Archetype-specific counter behavior enhancements
     if (killModeActive) {
-      if (personality.archetype === PlayerArchetype.MUSA) {
-        // Musa: Honor code demands swift aggressive counter
-        counterChance = Math.min(0.95, counterChance + 0.3); // +30% counter chance
-        counterPriority = 9; // Highest priority counter
-      } else if (personality.archetype === PlayerArchetype.AMSALJA) {
-        // Amsalja: Precision counter-strikes for instant takedown
-        counterChance = Math.min(0.90, counterChance + 0.25); // +25% counter chance
-        counterPriority = 9; // Highest priority counter
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+          // Musa: Honor code demands swift aggressive counter
+          counterChance = Math.min(0.95, counterChance + 0.3); // +30% counter chance
+          counterPriority = 9; // Highest priority counter
+          break;
+          
+        case PlayerArchetype.AMSALJA:
+          // Amsalja: Precision counter-strikes for instant takedown
+          counterChance = Math.min(0.90, counterChance + 0.25); // +25% counter chance
+          counterPriority = 9; // Highest priority counter
+          break;
+          
+        case PlayerArchetype.HACKER:
+          // Hacker: Calculated counter with analytical precision
+          counterChance = Math.min(0.85, counterChance + 0.15); // +15% counter chance
+          counterPriority = 9; // Enhanced priority for analytical strike
+          break;
+          
+        case PlayerArchetype.JEONGBO_YOWON:
+          // Jeongbo Yowon: Strategic counter with psychological pressure
+          counterChance = Math.min(0.80, counterChance + 0.20); // +20% counter chance
+          counterPriority = 8; // Moderate priority increase
+          break;
+          
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          // Jojik: Opportunistic dirty counter
+          counterChance = Math.min(0.85, counterChance + 0.25); // +25% counter chance
+          counterPriority = 8; // Pragmatic priority
+          break;
       }
     }
     
@@ -463,11 +540,26 @@ export class AIDecisionTree {
       context.distanceToOpponent < 150;
 
     if (shouldCounter) {
-      const killModeReason = killModeActive 
-        ? (personality.archetype === PlayerArchetype.MUSA 
-          ? " - 명예 반격 (honor counter)" 
-          : " - 정밀 반격 (precision counter)")
-        : "";
+      let killModeReason = "";
+      if (killModeActive) {
+        switch (personality.archetype) {
+          case PlayerArchetype.MUSA:
+            killModeReason = " - 명예 반격 (honor counter)";
+            break;
+          case PlayerArchetype.AMSALJA:
+            killModeReason = " - 정밀 반격 (precision counter)";
+            break;
+          case PlayerArchetype.HACKER:
+            killModeReason = " - 분석 반격 (analytical counter)";
+            break;
+          case PlayerArchetype.JEONGBO_YOWON:
+            killModeReason = " - 전략 반격 (strategic counter)";
+            break;
+          case PlayerArchetype.JOJIK_POKRYEOKBAE:
+            killModeReason = " - 기습 반격 (opportunistic counter)";
+            break;
+        }
+      }
       
       return {
         action: AIActionType.COUNTER,
@@ -855,9 +947,12 @@ export class AIDecisionTree {
    * - Hacker maintains optimal distance (prefers not to close too much)
    * 
    * **Kill Mode Enhancement (결정타 접근)**:
-   * - Aggressive archetypes close distance faster with enhanced footwork
-   * - Musa: Direct charging with leg shifts for maximum speed
-   * - Amsalja: Swift stepping patterns for rapid positioning
+   * All archetypes enhance movement speed in kill mode based on combat philosophy:
+   * - **Musa**: Direct charging with leg shifts for maximum speed (40% faster)
+   * - **Amsalja**: Swift stepping patterns for rapid positioning (30% faster)
+   * - **Hacker**: Calculated approach for optimal strike position (20% faster)
+   * - **Jeongbo Yowon**: Strategic positioning for control (25% faster)
+   * - **Jojik Pokryeokbae**: Unpredictable rush for brutal finish (35% faster)
    * 
    * @param context - Combat context
    * @param personality - AI personality
@@ -883,12 +978,24 @@ export class AIDecisionTree {
     // Apply archetype-specific movement bias
     let movementBias = this.getArchetypeMovementBias(personality.archetype);
     
-    // Kill mode: Enhance movement speed for aggressive archetypes
+    // Kill mode: Enhance movement speed for all archetypes based on philosophy
     if (killModeActive) {
-      if (personality.archetype === PlayerArchetype.MUSA) {
-        movementBias *= 1.4; // 40% faster closing speed with leg shifts
-      } else if (personality.archetype === PlayerArchetype.AMSALJA) {
-        movementBias *= 1.3; // 30% faster with stepping patterns
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+          movementBias *= 1.4; // 40% faster closing speed with leg shifts
+          break;
+        case PlayerArchetype.AMSALJA:
+          movementBias *= 1.3; // 30% faster with stepping patterns
+          break;
+        case PlayerArchetype.HACKER:
+          movementBias *= 1.2; // 20% faster for calculated approach
+          break;
+        case PlayerArchetype.JEONGBO_YOWON:
+          movementBias *= 1.25; // 25% faster for strategic positioning
+          break;
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          movementBias *= 1.35; // 35% faster for unpredictable rush
+          break;
       }
     }
     
@@ -910,20 +1017,47 @@ export class AIDecisionTree {
     // Very far: priority ~6-7, moderate distance: priority ~5
     let basePriority = 4;
     
-    // Kill mode: Increase approach priority for closing distance
+    // Kill mode: Increase approach priority for closing distance (archetype-dependent)
     if (killModeActive && distance > optimalRange * 1.5) {
-      basePriority = 6; // Higher priority to close the gap quickly
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          basePriority = 6; // Aggressive approach
+          break;
+        case PlayerArchetype.AMSALJA:
+          basePriority = 6; // Swift approach for takedown
+          break;
+        case PlayerArchetype.HACKER:
+        case PlayerArchetype.JEONGBO_YOWON:
+          basePriority = 5; // Calculated/strategic approach
+          break;
+      }
     }
     
     const distanceRatio = Math.min(2, (distance - optimalRange) / optimalRange);
     const priorityBoost = distanceRatio * movementBias * 0.8;
     const finalPriority = basePriority + priorityBoost;
 
-    const killModeReason = killModeActive 
-      ? (personality.archetype === PlayerArchetype.MUSA 
-        ? " - 돌격 (charging)" 
-        : " - 신속 접근 (swift approach)")
-      : "";
+    let killModeReason = "";
+    if (killModeActive) {
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+          killModeReason = " - 돌격 (charging)";
+          break;
+        case PlayerArchetype.AMSALJA:
+          killModeReason = " - 신속 접근 (swift approach)";
+          break;
+        case PlayerArchetype.HACKER:
+          killModeReason = " - 분석 접근 (calculated approach)";
+          break;
+        case PlayerArchetype.JEONGBO_YOWON:
+          killModeReason = " - 전략 접근 (strategic approach)";
+          break;
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          killModeReason = " - 돌진 (rush)";
+          break;
+      }
+    }
 
     return {
       action: AIActionType.APPROACH,
