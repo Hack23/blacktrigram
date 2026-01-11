@@ -720,6 +720,19 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     );
     previousDamageRef.current = player.totalDamageReceived;
 
+    // Convert opponent balance number to balance state for kill mode detection
+    // Balance thresholds: >=80 READY, >=50 SHAKEN, >=20 VULNERABLE, <20 HELPLESS
+    let opponentBalance: string | undefined;
+    if (opponent.balance >= 80) {
+      opponentBalance = "READY";
+    } else if (opponent.balance >= 50) {
+      opponentBalance = "SHAKEN";
+    } else if (opponent.balance >= 20) {
+      opponentBalance = "VULNERABLE";
+    } else {
+      opponentBalance = "HELPLESS";
+    }
+
     return {
       playerPosition: player.position,
       opponentPosition: opponent.position,
@@ -736,6 +749,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       timeInMatch: Date.now() - matchStartTimeRef.current,
       isOpponentAttacking: opponent.combatState === "attacking",
       recentDamageTaken,
+      opponentBalance, // Added for kill mode detection
       arenaBounds,
     };
   }, [player, opponent, arenaBounds]);
