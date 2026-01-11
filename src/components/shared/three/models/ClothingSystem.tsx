@@ -153,7 +153,7 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
         };
       }
     }
-  }, [item.type, item.fit, physicalAttributes, scaleFactors]);
+  }, [item, physicalAttributes, scaleFactors]);
 
   // Material configuration
   const material = useMemo(() => {
@@ -240,16 +240,16 @@ export const ClothingSystem: React.FC<ClothingSystemProps> = ({
   scale = 1,
   visible = true,
 }) => {
-  // Early return if not visible to avoid unnecessary computation
-  if (!visible) {
-    return null;
-  }
-
-  // Get clothing set for archetype
+  // Get clothing set for archetype (must be called before any early returns)
   const clothingSet = useMemo(
     () => getArchetypeClothing(archetype),
     [archetype]
   );
+
+  // Early return if not visible to avoid unnecessary rendering
+  if (!visible) {
+    return null;
+  }
 
   // Render all clothing items
   return (
