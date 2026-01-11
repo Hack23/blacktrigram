@@ -644,4 +644,207 @@ describe("PlayerAnimationStateMachine", () => {
       expect(config?.easing).toBe("natural-motion");
     });
   });
+
+  // ===== Animation Queue Integration Tests =====
+
+  describe("animation queue integration", () => {
+    it("should have queue enabled by default", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      expect(machine.isQueueEnabled()).toBe(true);
+      
+      const queueState = machine.getQueueState();
+      expect(queueState.enabled).toBe(true);
+      expect(queueState.size).toBe(0);
+      expect(queueState.maxSize).toBe(3); // Default max size
+    });
+
+    it("should queue animations when transition fails", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Start a non-interruptible attack animation
+      machine.transitionTo(AnimationState.ATTACK);
+      expect(machine.getCurrentState()).toBe(AnimationState.ATTACK);
+      
+      // Try to transition to defend (lower priority, should queue)
+      const result = machine.transitionToQueued(AnimationState.DEFEND);
+      expect(result).toBe("queued");
+      
+      // Check queue state
+      const queueState = machine.getQueueState();
+      expect(queueState.size).toBe(1);
+      expect(queueState.pending[0].state).toBe(AnimationState.DEFEND);
+    });
+
+    it("should process queued animation when current animation completes", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      const attackConfig = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK)!;
+      
+      // Start attack animation
+      machine.transitionTo(AnimationState.ATTACK);
+      
+      // Queue a walk animation (lower priority than attack)
+      const result = machine.transitionToQueued(AnimationState.WALK);
+      expect(result).toBe("queued");
+      expect(machine.getQueueState().size).toBe(1);
+      
+      // Complete the attack animation by updating through all frames
+      const frameDuration = 1 / attackConfig.fps;
+      for (let i = 0; i < attackConfig.frames; i++) {
+        machine.update(frameDuration);
+      }
+      
+      // After attack completes, it normally goes to idle, but queued animation should execute
+      // The next update should trigger the queue processing
+      machine.update(frameDuration);
+      
+      // Machine should have transitioned to the queued animation
+      expect(machine.getCurrentState()).toBe(AnimationState.WALK);
+      expect(machine.getQueueState().size).toBe(0);
+    });
+
+    it("should maintain priority order in queue", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Start attack
+      machine.transitionTo(AnimationState.ATTACK);
+      
+      // Queue lower priority animations
+      machine.transitionToQueued(AnimationState.WALK); // Priority 1
+      machine.transitionToQueued(AnimationState.DEFEND); // Priority 4
+      machine.transitionToQueued(AnimationState.RUN); // Priority 2
+      
+      const queueState = machine.getQueueState();
+      expect(queueState.size).toBe(3);
+      
+      // Queue should be sorted by priority (highest first)
+      expect(queueState.pending[0].state).toBe(AnimationState.DEFEND); // Priority 4
+      expect(queueState.pending[1].state).toBe(AnimationState.RUN); // Priority 2
+      expect(queueState.pending[2].state).toBe(AnimationState.WALK); // Priority 1
+    });
+
+    it("should allow immediate transition for high priority animations", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Start attack animation
+      machine.transitionTo(AnimationState.ATTACK);
+      
+      // HIT has higher priority, should interrupt immediately
+      const result = machine.transitionToQueued(AnimationState.HIT);
+      expect(result).toBe("success");
+      expect(machine.getCurrentState()).toBe(AnimationState.HIT);
+      expect(machine.getQueueState().size).toBe(0);
+    });
+
+    it("should clear queue when requested", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Start attack and queue some animations
+      machine.transitionTo(AnimationState.ATTACK);
+      machine.transitionToQueued(AnimationState.DEFEND);
+      machine.transitionToQueued(AnimationState.WALK);
+      
+      expect(machine.getQueueState().size).toBe(2);
+      
+      // Clear queue
+      machine.clearQueue();
+      expect(machine.getQueueState().size).toBe(0);
+    });
+
+    it("should reconfigure queue with enableQueue()", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Reconfigure with larger size and different strategy
+      machine.enableQueue(5, "requested");
+      
+      const queueState = machine.getQueueState();
+      expect(queueState.maxSize).toBe(5);
+      expect(machine.getConflictStrategy()).toBe("requested");
+    });
+
+    it("should disable queue when requested", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      expect(machine.isQueueEnabled()).toBe(true);
+      
+      machine.disableQueue();
+      
+      expect(machine.isQueueEnabled()).toBe(false);
+      
+      // transitionToQueued should fail when queue is disabled
+      machine.transitionTo(AnimationState.ATTACK);
+      const result = machine.transitionToQueued(AnimationState.DEFEND);
+      expect(result).toBe("failed");
+    });
+
+    it("should keep conflict strategy in sync with queue", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Change conflict strategy
+      machine.setConflictStrategy("state_order");
+      expect(machine.getConflictStrategy()).toBe("state_order");
+      
+      // Queue an animation to verify queue uses new strategy
+      machine.transitionTo(AnimationState.ATTACK);
+      machine.transitionToQueued(AnimationState.DEFEND);
+      
+      // Strategy should be reflected in queue behavior
+      const queueState = machine.getQueueState();
+      expect(queueState.size).toBe(1);
+    });
+
+    it("should respect max queue size", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Start attack
+      machine.transitionTo(AnimationState.ATTACK);
+      
+      // Try to queue more than max size (default 3)
+      machine.transitionToQueued(AnimationState.WALK); // Priority 1
+      machine.transitionToQueued(AnimationState.RUN); // Priority 2
+      machine.transitionToQueued(AnimationState.STANCE_CHANGE); // Priority 3
+      
+      expect(machine.getQueueState().size).toBe(3);
+      
+      // Try to add lower priority - should fail
+      const result = machine.transitionToQueued(AnimationState.IDLE); // Priority 0
+      expect(result).toBe("failed");
+      expect(machine.getQueueState().size).toBe(3);
+      
+      // Try to add higher priority - should replace lowest
+      const result2 = machine.transitionToQueued(AnimationState.DEFEND); // Priority 4
+      expect(result2).toBe("queued");
+      expect(machine.getQueueState().size).toBe(3);
+      
+      // Verify WALK (priority 1) was replaced
+      const pending = machine.getQueueState().pending;
+      const states = pending.map(r => r.state);
+      expect(states).not.toContain(AnimationState.WALK);
+      expect(states).toContain(AnimationState.DEFEND);
+    });
+
+    it("should handle equal-priority conflicts with timestamp strategy", () => {
+      const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
+      
+      // Ensure timestamp strategy (default)
+      machine.setConflictStrategy("timestamp");
+      
+      // Start attack
+      machine.transitionTo(AnimationState.ATTACK);
+      
+      // Queue two animations with same priority (both are ATTACK priority = 5)
+      machine.transitionToQueued(AnimationState.ATTACK);
+      
+      // Wait a tiny bit to ensure different timestamp
+      const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      return sleep(5).then(() => {
+        machine.transitionToQueued(AnimationState.ATTACK);
+        
+        const queueState = machine.getQueueState();
+        expect(queueState.size).toBe(2);
+        
+        // First request should be at index 0 (FIFO with timestamp strategy)
+        expect(queueState.pending[0].timestamp).toBeLessThan(queueState.pending[1].timestamp);
+      });
+    });
+  });
 });
