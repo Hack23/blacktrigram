@@ -153,8 +153,12 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
  * apparent while keeping proportions realistic.
  *
  * Increased from 2.0 to 2.5 for more distinct visual silhouettes:
- * - Jojik shoulders (54cm) vs Hacker (43cm) = 25% difference → 63% visual difference
- * - Amsalja legs (102cm) vs Hacker (92cm) = 11% difference → 28% visual difference
+ * - Limb/torso scaling: 5% raw difference → 12.5% visual difference
+ * - Combined with shoulder amplification (1.15x), creates noticeable silhouettes
+ * - Absolute differences amplified while maintaining proportional relationships
+ *
+ * Note: Percentage differences remain constant, but absolute differences
+ * are amplified (e.g., Jojik 54cm vs Hacker 43cm = 11cm gap → 12.6cm visual gap)
  *
  * @internal
  * @korean 시각적증폭계수

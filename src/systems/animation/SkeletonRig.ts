@@ -309,13 +309,21 @@ export const createHumanoidRig = (): SkeletalRig => {
  * 
  * ### Archetype Silhouettes Created
  * 
- * | Archetype | Shoulders | Height | Silhouette |
- * |-----------|-----------|--------|------------|
+ * The following table shows the effective shoulder span after amplification
+ * (full span = offset * 2). Values show raw attribute → amplified visual span.
+ * 
+ * | Archetype | Shoulders (Raw → Amplified Span) | Height | Silhouette |
+ * |-----------|----------------------------------|--------|------------|
  * | Hacker    | 43cm → 49.5cm | 175cm | Compact, narrow |
  * | Amsalja   | 44cm → 50.6cm | 186cm | Tall, lean |
  * | Jeongbo   | 45cm → 51.8cm | 179cm | Balanced |
  * | Musa      | 46cm → 52.9cm | 180cm | Athletic |
  * | Jojik     | 54cm → 62.1cm | 188cm | Massive, wide |
+ * 
+ * Note: Amplified span = raw width * 1.15 (shoulder amplification factor)
+ * Percentage differences remain constant, but absolute gaps are amplified:
+ * - Raw gap: Jojik (54cm) - Hacker (43cm) = 11cm
+ * - Amplified gap: 62.1cm - 49.5cm = 12.6cm (15% larger absolute difference)
  * 
  * @param attributes - Physical attributes to scale the skeleton
  * @returns Complete skeletal rig with scaled bone dimensions
