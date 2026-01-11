@@ -505,7 +505,33 @@
 <a name='L440'></a><a href='#L440'>440</a>
 <a name='L441'></a><a href='#L441'>441</a>
 <a name='L442'></a><a href='#L442'>442</a>
-<a name='L443'></a><a href='#L443'>443</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L443'></a><a href='#L443'>443</a>
+<a name='L444'></a><a href='#L444'>444</a>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a>
+<a name='L459'></a><a href='#L459'>459</a>
+<a name='L460'></a><a href='#L460'>460</a>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a>
+<a name='L467'></a><a href='#L467'>467</a>
+<a name='L468'></a><a href='#L468'>468</a>
+<a name='L469'></a><a href='#L469'>469</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -649,7 +675,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1016,8 +1068,12 @@ export const STEP_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.HIP_L, new THREE.Euler(0.2, 0, 0, "XYZ")],
         // Ankle dorsiflexion
         [BoneName.FOOT_L, new THREE.Euler(0.15, 0, 0, "XYZ")],
-        // Pelvis tilts forward slightly
-        [BoneName.PELVIS, new THREE.Euler(0.08, 0, 0, "XYZ")],
+        // Pelvis tilts forward slightly with subtle hip drive (Y-rotation)
+        [BoneName.PELVIS, new THREE.Euler(0.08, 0.03, 0, "XYZ")],
+        // Spine counter-rotation for natural walking mechanics
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.02, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.02, -0.03, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.04, 0, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -1042,6 +1098,11 @@ export const STEP_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.FOOT_L, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         // Back leg begins to extend
         [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        // Hip and spine transition - reducing counter-rotation
+        [BoneName.PELVIS, new THREE.Euler(0.02, 0.02, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, -0.01, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0.01, -0.02, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.02, 0, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -1064,8 +1125,11 @@ export const STEP_FORWARD_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        // Pelvis level
+        // Pelvis and spine return to neutral
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         // Guard maintained
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
@@ -1121,7 +1185,12 @@ export const STEP_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.3, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(0.2, 0, 0, "XYZ")],
         [BoneName.FOOT_R, new THREE.Euler(0.15, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(-0.08, 0, 0, "XYZ")],
+        // Pelvis tilts back with subtle hip drive (Y-rotation opposite to forward step)
+        [BoneName.PELVIS, new THREE.Euler(-0.08, -0.03, 0, "XYZ")],
+        // Spine counter-rotation for natural retreating mechanics
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.02, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.02, 0.03, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.04, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -1140,6 +1209,11 @@ export const STEP_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.HIP_R, new THREE.Euler(0.05, 0, 0, "XYZ")],
         [BoneName.FOOT_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+        // Hip and spine transition - reducing counter-rotation
+        [BoneName.PELVIS, new THREE.Euler(-0.02, -0.02, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0.01, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(-0.01, 0.02, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.02, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -1158,7 +1232,11 @@ export const STEP_BACK_ANIMATION: SkeletalAnimation = {
         [BoneName.KNEE_R, new THREE.Euler(-0.05, 0, 0, "XYZ")],
         [BoneName.HIP_L, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(0, 0, 0, "XYZ")],
+        // Pelvis and spine return to neutral
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
         [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
       ]),
@@ -1396,7 +1474,7 @@ export function getStepAnimation(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-10T18:21:42.630Z
+                at 2026-01-11T01:04:16.876Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

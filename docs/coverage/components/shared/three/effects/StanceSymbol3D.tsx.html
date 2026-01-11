@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/16</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>5/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>4/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/12</span>
+                <span class='fraction'>8/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -302,27 +302,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -461,22 +461,22 @@ const ANIMATION_CONSTANTS = {
  * /&gt;
  * ```
  */
-export const StanceSymbol3D: React.FC&lt;StanceSymbol3DProps&gt; = <span class="fstat-no" title="function not covered" >({</span>
+export const StanceSymbol3D: React.FC&lt;StanceSymbol3DProps&gt; = ({
   stance,
-  heightOffset = <span class="branch-0 cbranch-no" title="branch not covered" >2.5,</span>
-  animated = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
-  scale = <span class="branch-0 cbranch-no" title="branch not covered" >1.0,</span>
-  showName = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
+  heightOffset = 2.5,
+  animated = true,
+  scale = 1.0,
+  showName = true,
 }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = useRef&lt;THREE.Group&gt;(null);
   
   // Get stance properties
-  const <span class="cstat-no" title="statement not covered" >symbol = useMemo(<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; g</span>etTrigramSymbol(stance), [</span>stance]);</span>
-  const <span class="cstat-no" title="statement not covered" >koreanName = useMemo(<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; g</span>etStanceKoreanName(stance), [</span>stance]);</span>
-  const <span class="cstat-no" title="statement not covered" >colorHex = useMemo(<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; g</span>etStanceColorHex(stance), [</span>stance]);</span>
+  const symbol = useMemo(() =&gt; getTrigramSymbol(stance), [stance]);
+  const koreanName = useMemo(() =&gt; getStanceKoreanName(stance), [stance]);
+  const colorHex = useMemo(() =&gt; getStanceColorHex(stance), [stance]);
 &nbsp;
   // Animation loop - rotation and pulse
-<span class="cstat-no" title="statement not covered" >  useFrame(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; {</span>
+  useFrame(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; {
 <span class="cstat-no" title="statement not covered" >    if (!animated || !groupRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
     const time = <span class="cstat-no" title="statement not covered" >state.clock.elapsedTime;</span>
@@ -488,7 +488,7 @@ export const StanceSymbol3D: React.FC&lt;StanceSymbol3DProps&gt; = <span class="
 <span class="cstat-no" title="statement not covered" >    groupRef.current.position.y = Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) * ANIMATION_CONSTANTS.BOB_AMPLITUDE;</span>
   });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;group ref={groupRef} position={[0, heightOffset, 0]} data-testid="stance-symbol-3d"&gt;
       {/* Trigram symbol with glow effect */}
       &lt;Html
@@ -530,7 +530,7 @@ export const StanceSymbol3D: React.FC&lt;StanceSymbol3DProps&gt; = <span class="
           
           {/* Korean name below symbol */}
           {showName &amp;&amp; (
-            &lt;div
+<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;div</span>
               style={{
                 fontSize: `${16 * scale}px`,
                 fontFamily: FONT_FAMILY.KOREAN,
@@ -568,7 +568,7 @@ export default StanceSymbol3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-10T18:21:42.366Z
+                at 2026-01-11T01:04:16.589Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
