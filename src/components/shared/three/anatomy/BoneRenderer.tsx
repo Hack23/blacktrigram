@@ -22,6 +22,7 @@ import type { Bone, SkeletalRig } from "../../../../types/skeletal";
 import { BoneMuscles } from "./BoneAttachedMuscles";
 import Face3D from "./Face3D";
 import Hand3D from "./Hand3D";
+import Foot3D from "./Foot3D";
 
 /**
  * Visual amplification factor for bone thickness.
@@ -392,6 +393,24 @@ const SingleBone: React.FC<{
           highlightMode={rightHandState.highlightMode}
           skinColor={color}
           scale={1.0}
+        />
+      )}
+
+      {/* Add feet at foot bones with archetype scaling */}
+      {bone.name === "foot_L" && (
+        <Foot3D
+          side="left"
+          skinColor={color}
+          scale={boneThicknessMultiplier}
+          isHighlighted={false}
+        />
+      )}
+      {bone.name === "foot_R" && (
+        <Foot3D
+          side="right"
+          skinColor={color}
+          scale={boneThicknessMultiplier}
+          isHighlighted={false}
         />
       )}
 
