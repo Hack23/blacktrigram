@@ -64,6 +64,7 @@ import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import {
   KOREAN_VITAL_POINTS,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
+import { getBalanceState } from "@/utils/player3DHelpers";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -720,6 +721,11 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     );
     previousDamageRef.current = player.totalDamageReceived;
 
+    // Convert opponent balance number to balance state for kill mode detection
+    // Uses getBalanceState() from player3DHelpers.ts to ensure consistency
+    // Thresholds: >=80 READY, >=50 SHAKEN, >=20 VULNERABLE, <20 HELPLESS
+    const opponentBalance = getBalanceState(opponent.balance);
+
     return {
       playerPosition: player.position,
       opponentPosition: opponent.position,
@@ -736,6 +742,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       timeInMatch: Date.now() - matchStartTimeRef.current,
       isOpponentAttacking: opponent.combatState === "attacking",
       recentDamageTaken,
+      opponentBalance, // Added for kill mode detection
       arenaBounds,
     };
   }, [player, opponent, arenaBounds]);
