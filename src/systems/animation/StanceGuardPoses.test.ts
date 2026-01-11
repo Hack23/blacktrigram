@@ -195,8 +195,9 @@ describe("StanceGuardPoses", () => {
         expect(range).toBeGreaterThan(0.04);
       });
 
-      it("should have centered torso (no rotation)", () => {
-        expect(GAM_WATER_GUARD_POSE.torso.y).toBe(0);
+      it("should have side stance torso rotation for martial arts positioning", () => {
+        // All stances now include side rotation for proper martial arts form
+        expect(GAM_WATER_GUARD_POSE.torso.y).toBeLessThan(0);
       });
 
       it("should have mid-level guard position for parrying", () => {
@@ -241,11 +242,12 @@ describe("StanceGuardPoses", () => {
         ).toBeGreaterThan(1.5);
       });
 
-      it("should have compact protective torso (slight forward lean)", () => {
+      it("should have compact protective torso (slight forward lean with side rotation)", () => {
         // Slight forward lean for compact defensive shell
         expect(GAN_MOUNTAIN_GUARD_POSE.torso.x).toBeGreaterThanOrEqual(0);
         expect(GAN_MOUNTAIN_GUARD_POSE.torso.x).toBeLessThan(0.1);
-        expect(GAN_MOUNTAIN_GUARD_POSE.torso.y).toBe(0);
+        // Side stance rotation for proper martial arts positioning
+        expect(GAN_MOUNTAIN_GUARD_POSE.torso.y).toBeLessThan(0);
       });
     });
 

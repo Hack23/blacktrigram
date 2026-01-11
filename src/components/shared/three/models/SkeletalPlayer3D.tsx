@@ -23,7 +23,6 @@ import {
   createDefaultFacialDamage,
   createScaledHumanoidRig,
   getExpressionFromCombatState,
-  getFacingAngleRadians,
   getHeadAngleRadians,
   lockFacing,
   unlockFacing,
@@ -379,21 +378,10 @@ export const SkeletalPlayer3D: React.FC<
     // 5. Muscle activation states
     updateMuscleActivations(delta, frameCounter.current);
 
-    // Apply body facing rotations (torso and head) if available
-    // Note: This system already supports independent torso rotation via bodyFacing.torsoRotation
-    // The torso rotation can be calculated using calculateTorsoRotation() from SkeletonRig
-    // and integrated into bodyFacing state for dynamic upper/lower body separation
+    // Apply head rotation toward opponent (if body facing tracking is enabled)
+    // Note: Torso rotation is now handled by guard pose overlay for proper stance positioning
+    // Only the head tracks the opponent independently for natural looking
     if (bodyFacing) {
-      // Apply torso rotation to spine bone from body facing
-      // This rotation is relative to hips and allows strafing while facing opponent
-      const spine = rig.bones.get("spine_upper");
-      if (spine) {
-        // Use torso rotation if available, otherwise fall back to full body facing
-        const torsoRotation =
-          bodyFacing.torsoRotation ?? getFacingAngleRadians(bodyFacing);
-        spine.rotation.y = torsoRotation;
-      }
-
       // Apply head rotation to head bone (includes independent offset)
       // Head can track ±45° independently from torso for natural looking
       const head = rig.bones.get("head");

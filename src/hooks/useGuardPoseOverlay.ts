@@ -34,9 +34,10 @@ const TORSO_BLEND_FACTOR = 0.8;
 /**
  * Base hip offset in skeleton rig (X position from pelvis center)
  * From SkeletonRig.ts: hip_L at [-0.1, ...], hip_R at [0.1, ...]
+ * Increased to make stance width visually more dramatic
  * @korean 기본고관절오프셋
  */
-const BASE_HIP_OFFSET_X = 0.1;
+const BASE_HIP_OFFSET_X = 0.15;
 
 /**
  * Default stance width (neutral standing)
@@ -44,6 +45,13 @@ const BASE_HIP_OFFSET_X = 0.1;
  * @korean 기본자세너비
  */
 const DEFAULT_STANCE_WIDTH = 1.0;
+
+/**
+ * Amplification factor for knee bend angles
+ * Makes knee bends more visually pronounced
+ * @korean 무릎굽힘증폭계수
+ */
+const KNEE_BEND_AMPLIFICATION = 1.5;
 
 /**
  * Get dynamic guard blend factor for natural movement while maintaining stance character
@@ -90,21 +98,35 @@ const getGuardBlendFactor = (animation: PlayerAnimation): number => {
  * @param boneName - Name of bone to rotate
  * @param targetRotation - Target rotation
  * @param blend - Blend factor (0.0-1.0)
+ * @param amplify - Optional amplification factor for the rotation
  * @korean 뼈회전적용
  */
 const applyBoneRotation = (
   rig: SkeletalRig,
   boneName: string,
   targetRotation: THREE.Euler,
-  blend: number
+  blend: number,
+  amplify: number = 1.0
 ): void => {
   const bone = rig.bones.get(boneName);
   if (!bone) return;
 
   const current = bone.rotation;
-  current.x = THREE.MathUtils.lerp(current.x, targetRotation.x, blend);
-  current.y = THREE.MathUtils.lerp(current.y, targetRotation.y, blend);
-  current.z = THREE.MathUtils.lerp(current.z, targetRotation.z, blend);
+  current.x = THREE.MathUtils.lerp(
+    current.x,
+    targetRotation.x * amplify,
+    blend
+  );
+  current.y = THREE.MathUtils.lerp(
+    current.y,
+    targetRotation.y * amplify,
+    blend
+  );
+  current.z = THREE.MathUtils.lerp(
+    current.z,
+    targetRotation.z * amplify,
+    blend
+  );
 };
 
 /**
@@ -114,6 +136,9 @@ const applyBoneRotation = (
  * stanceWidth = 1.0 is shoulder width (neutral)
  * stanceWidth > 1.0 spreads legs wider (e.g., horse stance)
  * stanceWidth < 1.0 brings legs closer (e.g., cat stance)
+ *
+ * The calculation uses a large visual multiplier to make stance differences
+ * clearly visible even on screen.
  *
  * @param rig - Skeletal rig
  * @param stanceWidth - Stance width multiplier (0.3 to 1.5)
@@ -131,9 +156,16 @@ const applyHipPositionForStanceWidth = (
   if (!leftHip || !rightHip) return;
 
   // Calculate target X position based on stance width
-  // stanceWidth = 1.0 → baseOffset (0.1)
-  // stanceWidth = 1.5 → 0.15 (50% wider)
-  // stanceWidth = 0.5 → 0.05 (50% narrower)
+  // Use larger base offset for more dramatic visual effect
+  // stanceWidth = 0.3 → very narrow (feet almost together)
+  // stanceWidth = 1.0 → shoulder width (neutral)
+  // stanceWidth = 1.2 → wide horse stance
+  //
+  // Formula: offset = BASE * stanceWidth
+  // With BASE = 0.15:
+  // - stanceWidth 0.3 → 0.045 (narrow, 9cm total width)
+  // - stanceWidth 1.0 → 0.15 (normal, 30cm total width)
+  // - stanceWidth 1.2 → 0.18 (wide, 36cm total width)
   const targetOffset = BASE_HIP_OFFSET_X * stanceWidth;
 
   // Lerp hip X positions (left is negative X, right is positive X)
@@ -145,6 +177,19 @@ const applyHipPositionForStanceWidth = (
   rightHip.position.x = THREE.MathUtils.lerp(
     rightHip.position.x,
     targetOffset,
+    blend
+  );
+
+  // Also adjust Y position slightly for lower stances (wider = lower)
+  // This creates a more authentic squat effect for deep stances
+  const heightDrop = (stanceWidth - 1.0) * 0.05; // Drop up to 5cm for wide stances
+  const restY = -0.1; // Rest Y position of hips
+  const targetY = restY - heightDrop;
+
+  leftHip.position.y = THREE.MathUtils.lerp(leftHip.position.y, targetY, blend);
+  rightHip.position.y = THREE.MathUtils.lerp(
+    rightHip.position.y,
+    targetY,
     blend
   );
 };
@@ -244,17 +289,40 @@ export const applyStanceGuardOverlay = (
     current.z = THREE.MathUtils.lerp(current.z, target.z, torsoBlend);
   }
 
+  // Also apply some rotation to lower spine for more natural side stance
+  const spineLower = rig.bones.get("spine_lower");
+  if (spineLower) {
+    const current = spineLower.rotation;
+    // Lower spine follows pelvis rotation partially for natural look
+    const pelvisY = guardPose.pelvis.y * 0.3; // 30% of pelvis rotation
+    current.y = THREE.MathUtils.lerp(current.y, pelvisY, blendFactor);
+  }
+
   // Blend leg rotations for authentic stance positioning
-  applyBoneRotation(rig, "hip_L", guardPose.leftLeg.hip, blendFactor);
-  applyBoneRotation(rig, "knee_L", guardPose.leftLeg.knee, blendFactor);
+  // Hip rotations are amplified for more visible side stances
+  applyBoneRotation(rig, "hip_L", guardPose.leftLeg.hip, blendFactor, 1.3);
+  applyBoneRotation(
+    rig,
+    "knee_L",
+    guardPose.leftLeg.knee,
+    blendFactor,
+    KNEE_BEND_AMPLIFICATION
+  );
   applyBoneRotation(rig, "foot_L", guardPose.leftLeg.ankle, blendFactor);
 
-  applyBoneRotation(rig, "hip_R", guardPose.rightLeg.hip, blendFactor);
-  applyBoneRotation(rig, "knee_R", guardPose.rightLeg.knee, blendFactor);
+  applyBoneRotation(rig, "hip_R", guardPose.rightLeg.hip, blendFactor, 1.3);
+  applyBoneRotation(
+    rig,
+    "knee_R",
+    guardPose.rightLeg.knee,
+    blendFactor,
+    KNEE_BEND_AMPLIFICATION
+  );
   applyBoneRotation(rig, "foot_R", guardPose.rightLeg.ankle, blendFactor);
 
-  // Blend pelvis rotation for proper stance base
-  applyBoneRotation(rig, "pelvis", guardPose.pelvis, blendFactor);
+  // Blend pelvis rotation for proper stance base (side stance rotation)
+  // Amplify pelvis Y rotation for more visible side stances
+  applyBoneRotation(rig, "pelvis", guardPose.pelvis, blendFactor, 1.2);
 
   // Apply hip positions based on stance width (spreads or narrows legs)
   // This is crucial for authentic Korean martial arts stances
